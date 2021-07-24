@@ -20,16 +20,30 @@ package org.apache.jena.sparql.engine.http;
 
 import static java.util.stream.Collectors.toList;
 
-import java.nio.charset.StandardCharsets ;
-import java.util.* ;
-import org.apache.http.NameValuePair ;
-import org.apache.http.client.utils.URLEncodedUtils ;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 
 /** A collection of parameters for protocol use. */
-public class Params
-{
+//public class Params extends org.apache.jena.sparql.exec.http.Params {
+//    public Params() {
+//        super();
+//    }
+//
+//    public Params(Params other) {
+//        super();
+//        merge(other);
+//    }
+//}
+
+public class Params {
     // As seen.
-    private List<Pair> paramList = new ArrayList<>() ;
+    private List<Param> paramList = new ArrayList<>() ;
 
     // string -> list -> string
     private Map<String, List<String>> params = new HashMap<>() ;
@@ -64,7 +78,7 @@ public class Params
      */
     public Params addParam(String name, String value)
     {
-        Pair p = new Pair(name, value) ;
+        Param p = new Param(name, value) ;
         paramList.add(p) ;
         params.computeIfAbsent(name, n -> new ArrayList<>()).add(value);
         return this;
@@ -99,7 +113,7 @@ public class Params
     }
 
     /** Exactly as seen */
-    public List<Pair> pairs()
+    public List<Param> pairs()
     {
         return paramList ;
     }
@@ -109,7 +123,7 @@ public class Params
     /** Get the names of parameters - one occurrence */
     public List<String> names()
     {
-        return paramList.stream().map(Pair::getName).distinct().collect(toList());
+        return paramList.stream().map(Param::getName).distinct().collect(toList());
     }
 
     /** Query string, without leading "?" */
@@ -132,8 +146,8 @@ public class Params
         MultiValueException(String msg) { super(msg) ; }
     }
 
-    public static class Pair extends org.apache.jena.atlas.lib.Pair<String, String> implements NameValuePair {
-        public Pair(String name, String value) { super(name, value); }
+    public static class Param extends org.apache.jena.atlas.lib.Pair<String, String> implements NameValuePair {
+        public Param(String name, String value) { super(name, value); }
         @Override
         public String getName()  { return getLeft() ;  }
         @Override

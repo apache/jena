@@ -18,14 +18,13 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.apache.jena.fuseki.test.FusekiTest.execWithHttpException;
-import static org.apache.jena.fuseki.test.FusekiTest.expect404;
 import static org.apache.jena.riot.web.HttpOp.initialDefaultHttpClient;
 import static org.junit.Assert.*;
 
 import org.apache.http.client.HttpClient;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.engine.http.Params;
@@ -34,7 +33,7 @@ import org.junit.Test;
 
 // This a mixture of testing HttpOp and testing basic operation of the SPARQL server
 // especially error cases and unusual usage that the higher level APIs don't use.
-public class TestHttpOp extends AbstractFusekiTest {
+public class TestHttpOp_AHC extends AbstractFusekiTest {
 
     static String pingURL           = urlRoot()+"$/ping";
     static String gspServiceURL     = serviceGSP();
@@ -58,7 +57,7 @@ public class TestHttpOp extends AbstractFusekiTest {
 
     @Test
     public void httpGet_02() {
-        expect404(() -> HttpOp.execHttpGet(urlRoot() + "does-not-exist"));
+        HttpTest.expect404(() -> HttpOp.execHttpGet(urlRoot() + "does-not-exist"));
     }
 
     @Test public void httpGet_03() {
@@ -82,21 +81,21 @@ public class TestHttpOp extends AbstractFusekiTest {
 
     public void queryGet_02() {
         // No query.
-        execWithHttpException(HttpSC.BAD_REQUEST_400, () -> HttpOp.execHttpGetString(queryURL + "?query="));
+        HttpTest.execWithHttpException(HttpSC.BAD_REQUEST_400, () -> HttpOp.execHttpGetString(queryURL + "?query="));
     }
 
     public void httpPost_01() {
-        execWithHttpException(HttpSC.UNSUPPORTED_MEDIA_TYPE_415,
+        HttpTest.execWithHttpException(HttpSC.UNSUPPORTED_MEDIA_TYPE_415,
                 () -> HttpOp.execHttpPost(queryURL, "ASK{}", "text/plain"));
     }
 
     public void httpPost_02() {
-        execWithHttpException(HttpSC.UNSUPPORTED_MEDIA_TYPE_415,
+        HttpTest.execWithHttpException(HttpSC.UNSUPPORTED_MEDIA_TYPE_415,
                 () -> HttpOp.execHttpPost(queryURL, "ASK{}", WebContent.contentTypeSPARQLQuery));
     }
 
     public void httpPost_03() {
-        execWithHttpException(HttpSC.UNSUPPORTED_MEDIA_TYPE_415,
+        HttpTest.execWithHttpException(HttpSC.UNSUPPORTED_MEDIA_TYPE_415,
                 () -> HttpOp.execHttpPost(queryURL, "ASK{}", WebContent.contentTypeOctets));
     }
 
@@ -108,7 +107,7 @@ public class TestHttpOp extends AbstractFusekiTest {
     public void httpPost_05() {
         Params params = new Params().addParam("query", "ASK{}");
         // Query to Update
-        execWithHttpException(HttpSC.BAD_REQUEST_400,
+        HttpTest.execWithHttpException(HttpSC.BAD_REQUEST_400,
                 () -> HttpOp.execHttpPostFormStream(updateURL, params, WebContent.contentTypeResultsJSON));
     }
 
@@ -168,7 +167,7 @@ public class TestHttpOp extends AbstractFusekiTest {
         String s3 = HttpOp.execHttpGetString(defaultGraphURL, WebContent.contentTypeNTriples);
         assertTrue(s3.isEmpty());
 
-        expect404(()->HttpOp.execHttpDelete(namedGraphURL));
+        HttpTest.expect404(()->HttpOp.execHttpDelete(namedGraphURL));
     }
 
     @Test public void gsp_10() {
@@ -177,7 +176,7 @@ public class TestHttpOp extends AbstractFusekiTest {
 
     // Extended GSP - no ?default, no ?graph acts on the datasets as a whole.
     @Test public void gsp_12() {
-        execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, () -> HttpOp.execHttpDelete(gspServiceURL));
+        HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, () -> HttpOp.execHttpDelete(gspServiceURL));
     }
 
     @Test public void gsp_20() {

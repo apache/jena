@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.NameValuePair;
 import org.apache.jena.http.HttpLib;
 
 /** A collection of parameters for HTTP protocol use. */
@@ -37,7 +38,7 @@ public class Params
     private Map<String, List<String>> params = new HashMap<>();
 
     /** Create a Params object */
-    private Params() { }
+    protected Params() { }
 
     /** Pattern: {@code String URL = Params.create().add("name", "value")... .httpString(endpoint);} */
     public static Params create() { return new Params(); }
@@ -174,9 +175,9 @@ public class Params
     }
 
     // Pair, with more appropriate method names.
-    static class Param extends org.apache.jena.atlas.lib.Pair<String, String> {
+    public static class Param extends org.apache.jena.atlas.lib.Pair<String, String> implements NameValuePair {
         public Param(String name, String value) { super(name, value); }
-        public String getName()  { return getLeft();  }
-        public String getValue() { return getRight(); }
+        @Override public String getName()  { return getLeft();  }
+        @Override public String getValue() { return getRight(); }
     }
 }

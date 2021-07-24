@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.exec.http;
 
-import static org.apache.jena.fuseki.test.FusekiTest.expect400;
-import static org.apache.jena.fuseki.test.FusekiTest.expect404;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -28,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.StringReader;
 
 import org.apache.jena.atlas.web.HttpException;
+import static org.apache.jena.fuseki.test.HttpTest.*;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -198,6 +197,56 @@ public class TestGSP {
     public void gsp_ds_err_01() {
         GSP.service(gspServiceURL()).defaultGraph().putDataset(dataset);
     }
+
+    @Test
+    public void gsp_head_01() {
+        // HEAD on the GSP endpoint would be the default graph.
+        // DELETE on the dataset endpoint is not supported by Fuseki - this does "CLER ALL"
+        GSP.service(env.datasetURL()).clearDataset();
+    }
+
+    /*
+    @Test public void gspHead_dataset_1() {
+        // Base URL, default content type => N-Quads (dump format)
+        HttpOp.execHttpHead(URL, null, (base, response)->{
+            String h = response.getFirstHeader(HttpNames.hContentType).getValue();
+            assertNotNull(h);
+            assertEquals(Lang.NQUADS.getHeaderString(), h);
+        });
+    }
+
+
+    @Test public void gspHead_dataset_2() {
+        String ct = Lang.TRIG.getHeaderString();
+        HttpOp.execHttpHead(URL, ct, (base, response)->{
+            String h = response.getFirstHeader(HttpNames.hContentType).getValue();
+            assertNotNull(h);
+            assertEquals(ct, h);
+        });
+    }
+
+    @Test public void gspHead_graph_1() {
+        String target = URL+"?default";
+        HttpOp.execHttpHead(target, null, (base, response)->{
+            String h = response.getFirstHeader(HttpNames.hContentType).getValue();
+            assertNotNull(h);
+            // "Traditional default".
+            assertEquals(Lang.RDFXML.getHeaderString(), h);
+        });
+    }
+
+    @Test public void gspHead_graph_2() {
+        String target = URL+"?default";
+        String ct = Lang.TTL.getHeaderString();
+        HttpOp.execHttpHead(target, ct, (base, response)->{
+            String h = response.getFirstHeader(HttpNames.hContentType).getValue();
+            assertNotNull(h);
+            assertEquals(ct, h);
+        });
+    }
+
+     */
+
 
     @Test
     public void gsp_ds_clear_01() {

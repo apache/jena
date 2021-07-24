@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.main.examples;
 
 import java.io.IOException;
+import java.net.http.HttpRequest.BodyPublishers;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -27,7 +28,7 @@ import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.system.FusekiLogging;
-import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.http.HttpOp2;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.util.FileUtils;
 
@@ -91,7 +92,7 @@ public class ExFuseki_03_AddService_ContentType {
         try {
 
             // Dataset endpoint name : POST, with Content-type.
-            try ( TypedInputStream stream = HttpOp.execHttpPostStream(datasetURL, contentType, "", "text/plain") ) {
+            try ( TypedInputStream stream = HttpOp2.httpPostStream(datasetURL, contentType, BodyPublishers.ofString(""), "text/plain")) {
                 String s2 = FileUtils.readWholeFileAsUTF8(stream);
                 System.out.print(s2);
                 if ( s2 == null )

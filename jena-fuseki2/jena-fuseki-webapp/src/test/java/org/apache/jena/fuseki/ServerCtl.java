@@ -127,7 +127,8 @@ public class ServerCtl {
 
     // Abstraction that runs a SPARQL server for tests.
     public static final String urlRoot()        { return "http://localhost:"+port()+"/"; }
-    public static final String datasetPath()    { return "/dataset"; }
+    public static final String datasetName()    { return "dataset"; }
+    public static final String datasetPath()    { return "/"+datasetName(); }
     public static final String urlDataset()     { return "http://localhost:"+port()+datasetPath(); }
 
     public static final String serviceUpdate()  { return "http://localhost:"+port()+datasetPath()+"/update"; }

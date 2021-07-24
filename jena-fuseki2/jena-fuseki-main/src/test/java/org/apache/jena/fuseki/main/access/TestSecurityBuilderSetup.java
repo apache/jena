@@ -36,7 +36,6 @@ import org.apache.jena.http.HttpOp2;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdfconnection.LibSec;
 import org.apache.jena.riot.web.HttpCaptureResponse;
-import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.riot.web.HttpOp.CaptureInput;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.web.AuthSetup;
@@ -129,7 +128,7 @@ public class TestSecurityBuilderSetup {
     // Server authentication.
 
     @Test public void access_server() {
-        try( TypedInputStream in = HttpOp.execHttpGet(serverURL) ) {
+        try( TypedInputStream in = HttpOp2.httpGet(serverURL) ) {
             assertNotNull(in);
             fail("Didn't expect to succeed");
         } catch (HttpException ex) {
@@ -140,7 +139,7 @@ public class TestSecurityBuilderSetup {
     }
 
     @Test public void access_open() {
-        try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"open") ) {
+        try( TypedInputStream in = HttpOp2.httpGet(serverURL+"open") ) {
             assertNotNull(in);
         }
     }
@@ -161,7 +160,7 @@ public class TestSecurityBuilderSetup {
 
     // Should fail.
     @Test public void access_deny_ds() {
-        try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"ds") ) {
+        try( TypedInputStream in = HttpOp2.httpGet(serverURL+"ds") ) {
             fail("Didn't expect to succeed");
         } catch (HttpException ex) {
             if ( ex.getStatusCode() != HttpSC.UNAUTHORIZED_401 )
@@ -171,7 +170,7 @@ public class TestSecurityBuilderSetup {
 
     // Should be 401, not be 404.
     @Test public void access_deny_nowhere() {
-        try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"nowhere") ) {
+        try( TypedInputStream in = HttpOp2.httpGet(serverURL+"nowhere") ) {
             fail("Didn't expect to succeed");
         } catch (HttpException ex) {
             if ( ex.getStatusCode() != HttpSC.UNAUTHORIZED_401 )

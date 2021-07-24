@@ -17,48 +17,32 @@
  */
 package org.apache.jena.fuseki;
 
-import java.io.IOException;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.jena.riot.WebContent;
-import org.apache.jena.riot.web.HttpOp;
-import org.apache.jena.riot.web.HttpResponseHandler;
-import org.apache.jena.web.HttpSC;
-import org.junit.Test;
-
-import static org.apache.commons.lang3.StringUtils.substringAfter;
-import static org.apache.commons.lang3.StringUtils.substringBefore;
-import static org.junit.Assert.assertEquals;
+import static org.apache.jena.http.HttpLib.handleResponseRtnString;
 import static org.junit.Assert.assertTrue;
+
+import java.io.InputStream;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+
+import org.apache.jena.http.HttpEnv;
+import org.apache.jena.http.HttpLib;
+import org.apache.jena.riot.WebContent;
+import org.apache.jena.riot.web.HttpNames;
+import org.junit.Test;
 
 public class TestWebappMetrics extends AbstractFusekiWebappTest {
 
     @Test
     public void can_retrieve_metrics() {
-        RecordingResponseHandler responseHandler = new RecordingResponseHandler();
+        String r = ServerCtl.urlRoot() + "$/metrics";
+        HttpRequest request = HttpRequest.newBuilder().uri(HttpLib.toRequestURI(r)).build();
+        HttpResponse<InputStream> response = HttpLib.executeJDK(HttpEnv.getDftHttpClient(), request, BodyHandlers.ofInputStream());
+        String body = handleResponseRtnString(response);
 
-        HttpOp.execHttpGet( ServerCtl.urlRoot() + "$/metrics" , "", responseHandler);
-
-        assertEquals(HttpSC.OK_200, responseHandler.statusCode);
-        assertEquals(WebContent.contentTypeTextPlain, responseHandler.contentType);
-        assertEquals(WebContent.charsetUTF8, responseHandler.encoding);
-        assertTrue(responseHandler.content.contains("fuseki_requests_good"));
-    }
-
-    static class RecordingResponseHandler implements HttpResponseHandler {
-
-        private int statusCode;
-        private String contentType;
-        private String encoding;
-        private String content;
-
-        @Override
-        public void handle(String baseIRI, HttpResponse response) throws IOException {
-            statusCode = response.getStatusLine().getStatusCode();
-            String rawContentType = response.getEntity().getContentType().toString();
-            contentType = substringBefore( substringAfter(rawContentType, "Content-Type: "), ";");
-            encoding = substringAfter(rawContentType, "charset=");
-            content = IOUtils.toString( response.getEntity().getContent(), encoding);
-        }
+        String ct = response.headers().firstValue(HttpNames.hContentType).orElse(null);
+        assertTrue(ct.contains(WebContent.contentTypeTextPlain));
+        assertTrue(ct.contains(WebContent.charsetUTF8));
+        assertTrue(body.contains("fuseki_requests_good"));
     }
 }

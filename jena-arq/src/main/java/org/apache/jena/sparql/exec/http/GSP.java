@@ -274,8 +274,6 @@ public class GSP {
         return graph;
     }
 
-
-
 //    /**
 //     * Get a graph.
 //     * <p>

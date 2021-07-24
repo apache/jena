@@ -166,7 +166,9 @@ public class HttpLib {
     }
 
     /**
-     * Handle the HTTP response and return the InputStream if a 200.
+     * Handle the HTTP response (see {@link #handleHttpStatusCode(HttpResponse)}) and
+     * return the InputStream if a 200.
+     *
      * @param httpResponse
      * @return InputStream
      */
@@ -176,8 +178,9 @@ public class HttpLib {
     }
 
     /**
-     * Handle the HTTP response and return the TypedInputStream that includes the
-     * {@code Content-Type} if a 200.
+     * Handle the HTTP response (see {@link #handleHttpStatusCode(HttpResponse)}) and
+     * return the TypedInputStream that includes the {@code Content-Type} if a 200.
+     *
      * @param httpResponse
      * @return TypedInputStream
      */
@@ -206,19 +209,14 @@ public class HttpLib {
     public static String handleResponseRtnString(HttpResponse<InputStream> response) {
         InputStream input = handleResponseInputStream(response);
         try {
-            String string = IO.readWholeFileAsUTF8(input);
-            // Convert no body, no Content-Length to null.
-//            if ( msg.isEmpty() ) {
-//                if ( r.headers().firstValue(HttpNames.hContentLength).isEmpty() )
-//                    // No Content-Length -> null
-//                    return null;
-//            }
-            // Finished, don't close.
-            return string;
+            return IO.readWholeFileAsUTF8(input);
         } catch (RuntimeIOException e) { throw new HttpException(e); }
     }
 
     static HttpException exception(HttpResponse<InputStream> response, int httpStatusCode) {
+
+        URI uri = response.request().uri();
+
         InputStream in = response.body();
         String msg;
         try {
@@ -396,7 +394,7 @@ public class HttpLib {
     }
 
     public static HttpRequest.Builder requestBuilderFor(String serviceEndpoint) {
-        HttpRequest.Builder requestBuilder= HttpRequest.newBuilder();
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
         return AuthEnv.get().addAuth(requestBuilder, serviceEndpoint);
     }
 
@@ -467,17 +465,54 @@ public class HttpLib {
 //        return builder;
 //    }
 
-    /** Execute a request, return a {@code HttpResponse<InputStream>} which
-     * can be passed to {@link #handleHttpStatusCode(HttpResponse)}.
+    /**
+     * Execute a request, return a {@code HttpResponse<InputStream>} which
+     * can be passed to {@link #handleResponseInputStream(HttpResponse)} which will
+     * convert non-2xx status code to {@link HttpException HttpExceptions}.
+     * <p>
+     * This function applies the HTTP authentication challenge support
+     * and will repeat the request if necessary with added authentication.
+     * <p>
+     * See {@link AuthEnv} for authentication registration.
+     * <br/>
+     * See {@link #executeJDK} to execute exactly once without challenge response handling.
+     *
+     * @see AuthEnv AuthEnv for authentic registration
+     * @see #executeJDK executeJDK to execute exacly once.
+     *
      * @param httpClient
      * @param httpRequest
      * @return HttpResponse
      */
+    public static HttpResponse<InputStream> execute(HttpClient httpClient, HttpRequest httpRequest) {
+        return execute(httpClient, httpRequest, BodyHandlers.ofInputStream());
+    }
+
+    /**
+     * Execute a request, return a {@code HttpResponse<X>} which
+     * can be passed to {@link #handleHttpStatusCode(HttpResponse)} which will
+     * convert non-2xx status code to {@link HttpException HttpExceptions}.
+     * <p>
+     * This function applies the HTTP authentication challenge support
+     * and will repeat the request if necessary with added authentication.
+     * <p>
+     * See {@link AuthEnv} for authentication registration.
+     * <br/>
+     * See {@link #executeJDK} to execute exactly once without challenge response handling.
+     *
+     * @see AuthEnv AuthEnv for authentic registration
+     * @see #executeJDK executeJDK to execute exacly once.
+     *
+     * @param httpClient
+     * @param httpRequest
+     * @param bodyHandler
+     * @return HttpResponse
+     */
     public
-    /*package*/ static HttpResponse<InputStream> execute(HttpClient httpClient, HttpRequest httpRequest) {
+    /*package*/ static <X> HttpResponse<X> execute(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<X> bodyHandler) {
         // To run with no jena-supplied authentication handling.
         if ( false )
-            return executeJDK(httpClient, httpRequest, BodyHandlers.ofInputStream());
+            return executeJDK(httpClient, httpRequest, bodyHandler);
         URI uri = httpRequest.uri();
         URI key = null;
 
@@ -493,7 +528,7 @@ public class HttpLib {
             }
         }
         try {
-            return AuthLib.authExecute(httpClient, httpRequest, BodyHandlers.ofInputStream());
+            return AuthLib.authExecute(httpClient, httpRequest, bodyHandler);
         } finally {
             if ( key != null )
                 authEnv.unregisterUsernamePassword(key);
@@ -541,7 +576,8 @@ public class HttpLib {
     }
 
     // Worker
-    /*package*/ static HttpResponse<InputStream> httpPushWithResponse(HttpClient httpClient, Push style, String url, Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
+    /*package*/ static HttpResponse<InputStream> httpPushWithResponse(HttpClient httpClient, Push style, String url,
+                                                                      Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
         URI uri = toRequestURI(url);
         HttpRequest.Builder builder = requestBuilderFor(url);
         builder.uri(uri);

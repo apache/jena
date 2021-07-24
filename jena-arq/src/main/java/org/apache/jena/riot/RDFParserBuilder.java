@@ -21,15 +21,16 @@ package org.apache.jena.riot;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.http.HttpClient;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-import org.apache.http.Header;
-import org.apache.http.client.HttpClient;
-import org.apache.http.message.BasicHeader;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.BlankNodeId;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.http.HttpEnv;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.Dataset;
@@ -38,8 +39,6 @@ import org.apache.jena.riot.RDFParser.LangTagForm;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.system.stream.StreamManager;
-import org.apache.jena.riot.web.HttpNames;
-import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
@@ -72,13 +71,14 @@ public class RDFParserBuilder {
     // Reusable parser
     private String uri = null;
     private Path path = null;
-    private String content = null;
+    private String stringToParse = null;
     // The not reusable sources.
     private InputStream inputStream;
     private Reader javaReader = null;
     private StreamManager streamManager = null;
 
     // HTTP
+    private String appAcceptHeader = null;
     private Map<String, String> httpHeaders = new HashMap<>();
     private HttpClient httpClient = null;
 
@@ -107,7 +107,6 @@ public class RDFParserBuilder {
 
     // Parsing process
     private Context context = null;
-
     public static RDFParserBuilder create() { return new RDFParserBuilder() ; }
     private RDFParserBuilder() {}
 
@@ -152,7 +151,7 @@ public class RDFParserBuilder {
      */
     public RDFParserBuilder fromString(String string) {
         clearSource();
-        this.content = string;
+        this.stringToParse = string;
         return this;
     }
 
@@ -222,7 +221,7 @@ public class RDFParserBuilder {
     private void clearSource() {
         this.uri = null;
         this.path = null;
-        this.content = null;
+        this.stringToParse = null;
         this.inputStream = null;
         this.javaReader = null;
     }
@@ -259,9 +258,16 @@ public class RDFParserBuilder {
      * @param acceptHeader
      * @return this
      */
-    public RDFParserBuilder httpAccept(String acceptHeader) {
-        httpHeader(HttpNames.hAccept, acceptHeader);
+    public RDFParserBuilder acceptHeader(String acceptHeader) {
+        // Manage separately because it is set to a default if not provided by the caller.
+        appAcceptHeader = acceptHeader;
         return this;
+    }
+
+    /** @deprecated Use {@link #acceptHeader} */
+    @Deprecated
+    public RDFParserBuilder httpAccept(String acceptHeader) {
+        return acceptHeader(acceptHeader);
     }
 
     /**
@@ -275,13 +281,13 @@ public class RDFParserBuilder {
         return this;
     }
 
-    /** Set the HttpClient to use.
-     *  This will override any HTTP header settings set for this builder.
-     */
-    public RDFParserBuilder httpClient(HttpClient httpClient) {
-        this.httpClient = httpClient;
-        return this;
-    }
+//    /** Set the HttpClient to use.
+//     *  This will override any HTTP header settings set for this builder.
+//     */
+//    public RDFParserBuilder httpClient(HttpClient httpClient) {
+//        this.httpClient = httpClient;
+//        return this;
+//    }
 
     /** Set the base URI for parsing.  The default is to have no base URI. */
     public RDFParserBuilder base(String base) { this.baseURI = base ; return this; }
@@ -611,12 +617,15 @@ public class RDFParserBuilder {
      */
     public RDFParser build() {
         // Build what we can now - some things have to be built in the parser.
-        if ( uri == null && path == null && content == null && inputStream == null && javaReader == null )
+        if ( uri == null && path == null && stringToParse == null && inputStream == null && javaReader == null )
             throw new RiotException("No source specified");
         if ( context == null )
             context = RIOT.getContext().copy();
+
+
+
         // Setup the HTTP client.
-        HttpClient client = buildHttpClient();
+        HttpClient clientJDK = ( httpClient != null ) ? httpClient : HttpEnv.getDftHttpClient();
         FactoryRDF factory$ = buildFactoryRDF();
         ErrorHandler errorHandler$ = errorHandler;
         if ( errorHandler$ == null )
@@ -642,8 +651,10 @@ public class RDFParserBuilder {
             sMgr = StreamManager.get(context);
 
         // Can't build the profile here as it is Lang/conneg dependent.
-        return new RDFParser(uri, path, content, inputStream, javaReader, sMgr,
-                             client, hintLang, forceLang,
+        return new RDFParser(uri, path, stringToParse, inputStream, javaReader, sMgr,
+                             appAcceptHeader, httpHeaders,
+                             clientJDK,
+                             hintLang, forceLang,
                              parserBaseURI, strict, checking,
                              canonicalValues, langTagForm,
                              resolveURIs, resolver, factory$, errorHandler$, context);
@@ -660,28 +671,6 @@ public class RDFParserBuilder {
         return factory$;
     }
 
-    private HttpClient buildHttpClient() {
-        if ( httpClient != null )
-            return httpClient;
-        if ( httpHeaders.isEmpty() )
-            // System default.
-            // In this case, RDFParser will use the current-at-parse-time,
-            // settings of HttpOp, not frozen here. The HTTP step operation will use a
-            // general purpose accept header, WebContent.defaultRDFAcceptHeader, that
-            // gets any syntax of triples or quads. To freeze now to HttpOp settings,
-            // call httpClient(HttpOp.getDefaultHttpClient).
-            return null;
-        List<Header> hdrs = new ArrayList<>();
-        httpHeaders.forEach((k,v)->{
-            Header header = new BasicHeader(k, v);
-            hdrs.add(header);
-        });
-        HttpClient hc = HttpOp.createPoolingHttpClientBuilder()
-            .setDefaultHeaders(hdrs)
-            .build() ;
-        return hc ;
-    }
-
     /**
      * Duplicate this builder with current settings.
      * Changes to setting to this builder do not affect the clone.
@@ -691,7 +680,7 @@ public class RDFParserBuilder {
         RDFParserBuilder builder = new RDFParserBuilder();
         builder.uri =               this.uri;
         builder.path =              this.path;
-        builder.content =           this.content;
+        builder.stringToParse =           this.stringToParse;
         builder.inputStream =       this.inputStream;
         builder.javaReader =        this.javaReader;
         builder.httpHeaders =       new HashMap<>(this.httpHeaders);

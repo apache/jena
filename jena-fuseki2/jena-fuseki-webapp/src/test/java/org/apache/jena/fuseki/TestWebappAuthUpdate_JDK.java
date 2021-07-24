@@ -18,10 +18,9 @@
 
 package org.apache.jena.fuseki;
 
-import static org.apache.jena.fuseki.test.FusekiTest.expect401;
-
 import java.net.URI;
 
+import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.http.auth.AuthEnv;
 import org.apache.jena.sparql.exec.http.UpdateExecutionHTTP;
 import org.apache.jena.update.UpdateFactory;
@@ -41,7 +40,7 @@ public class TestWebappAuthUpdate_JDK extends AbstractTestWebappAuth_JDK {
                                     .update(updates)
                                     .build();
         // No auth credentials should result in an error
-        expect401(()->ue.execute());
+        HttpTest.expect401(()->ue.execute());
     }
 
     @Test
@@ -51,7 +50,7 @@ public class TestWebappAuthUpdate_JDK extends AbstractTestWebappAuth_JDK {
                                                .endpoint(authServiceUpdate)
                                                .update(updates),
                                            "allowed", "bad-password");
-        expect401(()->ue.execute());
+        HttpTest.expect401(()->ue.execute());
     }
 
     @Test

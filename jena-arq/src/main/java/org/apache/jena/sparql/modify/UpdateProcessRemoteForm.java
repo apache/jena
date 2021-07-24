@@ -33,13 +33,15 @@ import org.apache.jena.update.UpdateRequest ;
  * UpdateProcess that send the request to a SPARQL endpoint by using an HTML
  * form and POST Use of application/sparql-update via @link{UpdateProcessRemote}
  * is preferred.
+ * @deprecated Use {@code UpdateExecutionHTTP} created with {@code UpdateExecutionHTTPBuilder}.
  */
+@Deprecated
 public class UpdateProcessRemoteForm extends UpdateProcessRemoteBase {
 
     /**
      * Creates a new remote update processor that uses the form URL encoded
      * submission method
-     * 
+     *
      * @param request
      *            Update request
      * @param endpoint
@@ -54,7 +56,7 @@ public class UpdateProcessRemoteForm extends UpdateProcessRemoteBase {
     /**
      * Creates a new remote update processor that uses the form URL encoded
      * submission method
-     * 
+     *
      * @param request
      *            Update request
      * @param endpoint

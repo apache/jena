@@ -18,29 +18,22 @@
 
 package org.apache.jena.fuseki;
 
-import static org.apache.jena.riot.web.HttpOp.execHttpGet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.base.Sys;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;
+import org.apache.jena.http.HttpOp2;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
-import org.apache.jena.riot.web.HttpOp;
-import org.apache.jena.sparql.engine.http.Params;
+import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.web.HttpSC;
 import org.junit.Test;
 
@@ -70,11 +63,12 @@ public class TestAdminAPI extends AbstractFusekiWebappTest {
     private static void testAddDelete(String dbName, String dbType, boolean hasFiles) {
         String datasetURL = ServerCtl.urlRoot()+dbName;
         String admin = ServerCtl.urlRoot()+"$/";
-        HttpEntity e = createFormEntity(dbName, dbType);
+
+        Params params = Params.create().add("dbName", dbName).add("dbType", dbType);
 
         assertFalse(exists(datasetURL));
 
-        HttpOp.execHttpPost(admin+"datasets", e);
+        HttpOp2.httpPostForm(admin+"datasets", params);
 
         RDFConnection conn = RDFConnectionFactory.connect(datasetURL);
         conn.update("INSERT DATA { <x:s> <x:p> 123 }");
@@ -86,7 +80,7 @@ public class TestAdminAPI extends AbstractFusekiWebappTest {
         if ( hasFiles )
             assertTrue(Files.exists(pathDB));
 
-        HttpOp.execHttpDelete(admin+"datasets/"+dbName);
+        HttpOp2.httpDelete(admin+"datasets/"+dbName);
 
         assertFalse(exists(datasetURL));
 
@@ -94,7 +88,7 @@ public class TestAdminAPI extends AbstractFusekiWebappTest {
             assertFalse(Files.exists(pathDB));
 
         // Recreate : no contents.
-        HttpOp.execHttpPost(admin+"datasets", e);
+        HttpOp2.httpPostForm(admin+"datasets", params);
         assertTrue("false: exists("+datasetURL+")", exists(datasetURL));
         int x2 = count(conn);
         assertEquals(0, x2);
@@ -103,7 +97,7 @@ public class TestAdminAPI extends AbstractFusekiWebappTest {
     }
 
     private static boolean exists(String url) {
-        try ( TypedInputStream in = execHttpGet(url) ) {
+        try ( TypedInputStream in = HttpOp2.httpGet(url) ) {
             return true;
         } catch (HttpException ex) {
             if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
@@ -116,15 +110,6 @@ public class TestAdminAPI extends AbstractFusekiWebappTest {
         try ( QueryExecution qExec = conn.query("SELECT (count(*) AS ?C) { ?s ?p ?o }")) {
             return qExec.execSelect().next().getLiteral("C").getInt();
         }
-    }
-
-    static HttpEntity createFormEntity(String dbName, String dbType) {
-        List <? extends NameValuePair> parameters =
-            Arrays.asList(
-                new Params.Pair("dbName", dbName),
-                new Params.Pair("dbType", dbType));
-        UrlEncodedFormEntity e = new UrlEncodedFormEntity(parameters, StandardCharsets.UTF_8);
-        return e;
     }
 }
 

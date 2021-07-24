@@ -31,10 +31,10 @@ import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.system.FusekiLogging;
+import org.apache.jena.http.HttpOp2;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
-import org.apache.jena.riot.web.HttpOp;
 import org.junit.After;
 import org.junit.Test;
 
@@ -78,20 +78,20 @@ public class TestFusekiMainCmd {
 
     @Test public void ping_01() {
         server("--mem", "--ping", "/ds");
-        String x = HttpOp.execHttpGetString(serverURL+"/$/ping");
+        String x = HttpOp2.httpGetString(serverURL+"/$/ping");
         assertNotNull(x);
     }
 
     @Test public void stats_01() {
         server("--mem", "--stats", "/ds");
-        String x = HttpOp.execHttpGetString(serverURL+"/$/stats");
+        String x = HttpOp2.httpGetString(serverURL+"/$/stats");
         assertNotNull(x);
         JSON.parse(x);
     }
 
     @Test public void metrics_01() {
         server("--mem", "--metrics", "/ds");
-        String x = HttpOp.execHttpGetString(serverURL+"/$/metrics");
+        String x = HttpOp2.httpGetString(serverURL+"/$/metrics");
         assertNotNull(x);
     }
 
@@ -100,12 +100,12 @@ public class TestFusekiMainCmd {
         FileOps.ensureDir(DB_DIR);
         FileOps.clearAll(DB_DIR);
         server("--loc="+DATABASES+"/DB-compact1", "--tdb2", "--compact", "/ds");
-        try(TypedInputStream x0 = HttpOp.execHttpPostStream(serverURL+"/$/compact/ds", null, "application/json")) {
+        try(TypedInputStream x0 = HttpOp2.httpPostStream(serverURL+"/$/compact/ds", "application/json")) {
             assertNotNull(x0);
             assertNotEquals(0, x0.readAllBytes().length);
         }
 
-        String x1 = HttpOp.execHttpGetString(serverURL+"/$/tasks");
+        String x1 = HttpOp2.httpGetString(serverURL+"/$/tasks");
         assertNotNull(x1);
         JSON.parseAny(x1);
         // Leaves "DB-compact" behind.
@@ -116,11 +116,11 @@ public class TestFusekiMainCmd {
         FileOps.ensureDir(DB_DIR);
         FileOps.clearAll(DB_DIR);
         server("--loc="+DATABASES+"/DB-compact2", "--tdb2", "--compact", "/ds");
-        try(TypedInputStream x0 = HttpOp.execHttpPostStream(serverURL+"/$/compact/ds?deleteOld", null, "application/json")) {
+        try(TypedInputStream x0 = HttpOp2.httpPostStream(serverURL+"/$/compact/ds?deleteOld", "application/json")) {
             assertNotNull(x0);
             assertNotEquals(0, x0.readAllBytes().length);
         }
-        String x1 = HttpOp.execHttpGetString(serverURL+"/$/tasks");
+        String x1 = HttpOp2.httpGetString(serverURL+"/$/tasks");
         assertNotNull(x1);
         // Leaves "DB-compact" behind.
     }

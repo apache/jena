@@ -118,17 +118,6 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
         return thisBuilder();
     }
 
-//    /**
-//     * Whether to send the update request using POST and an HTML form, content type
-//     * "application/x-www-form-urlencoded".
-//     *
-//     * If false (the default), send as "application/sparql-query" (default).
-//     */
-//    public UpdateExecutionHTTPBuilder sendHtmlForm(boolean htmlForm) {
-//        this.sendMode =  htmlForm ? UpdateSendMode.asPostForm : UpdateSendMode.asPostBody;
-//        return thisBuilder();
-//    }
-
     /**
      * Choose whether to send using POST as "application/sparql-update" (preferred) or
      * as an HTML form, content type "application/x-www-form-urlencoded".
@@ -137,10 +126,6 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
         this.sendMode = mode;
         return thisBuilder();
     }
-
-
-    // The old code, UpdateProcessRemote, didn't support this so may be not
-    // provide it as its not being used.
 
     public Y addUsingGraphURI(String uri) {
         if (this.usingGraphURIs == null)

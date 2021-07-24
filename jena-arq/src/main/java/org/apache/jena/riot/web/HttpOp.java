@@ -48,7 +48,6 @@ import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.sparql.engine.http.Params ;
-import org.apache.jena.sparql.engine.http.Params.Pair ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -76,21 +75,6 @@ import org.slf4j.LoggerFactory ;
  * @see WebContent WebContent, for content type name constants
  */
 public class HttpOp {
-    /*
-     * Implementation notes:
-     *
-     * Test are in Fuseki (need a server to test against)
-     *
-     * Pattern of functions provided: 1/ The full operation (includes
-     * HttpClient, HttpContext) either of which can be null for
-     * "default" 2/ Provide common use options without those two arguments.
-     * These all become the full operation. 3/ All calls go via exec for logging
-     * and debugging.
-     */
-
-    // See also:
-    // Fluent API in HttpClient from v4.2
-
     static private Logger log = LoggerFactory.getLogger(HttpOp.class);
 
     /** System wide HTTP operation counter for log messages */
@@ -424,7 +408,7 @@ public class HttpOp {
 
     // ---- HTTP POST
     /**
-     * Executes a HTTP POST with the given contentype/string as the request body
+     * Executes a HTTP POST with the given content-type/string as the request body
      * and throws away success responses, failure responses will throw an error.
      *
      * @param url
@@ -1113,7 +1097,7 @@ public class HttpOp {
 
     private static HttpEntity convertFormParams(Params params) {
         List<NameValuePair> nvps = new ArrayList<>();
-        for (Pair p : params.pairs())
+        for (Params.Param p : params.pairs())
             nvps.add(new BasicNameValuePair(p.getName(), p.getValue()));
         HttpEntity e = new UrlEncodedFormEntity(nvps, StandardCharsets.UTF_8);
         return e;

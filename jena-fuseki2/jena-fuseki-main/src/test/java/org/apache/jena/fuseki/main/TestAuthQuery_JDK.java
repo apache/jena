@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.apache.jena.fuseki.test.FusekiTest.expectQuery401;
+import static org.apache.jena.fuseki.test.HttpTest.*;
 
 import java.net.URI;
 

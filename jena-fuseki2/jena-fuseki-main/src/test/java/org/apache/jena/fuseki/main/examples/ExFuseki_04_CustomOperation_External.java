@@ -22,7 +22,7 @@ import java.util.ServiceLoader;
 
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.system.FusekiLogging;
-import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.http.HttpOp2;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sys.JenaSystem;
 
@@ -67,7 +67,7 @@ public class ExFuseki_04_CustomOperation_External {
     }
 
     private static void callOperation(String name) {
-        String x = HttpOp.execHttpGetString("http://localhost:3230/ds/"+name);
+        String x = HttpOp2.httpGetString("http://localhost:3230/ds/"+name);
         if ( x == null ) {
             System.out.println("Not found : <null>");
         } else {

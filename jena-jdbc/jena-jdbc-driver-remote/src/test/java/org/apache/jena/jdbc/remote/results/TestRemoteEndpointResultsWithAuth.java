@@ -51,6 +51,7 @@ import org.junit.Ignore;
  * Tests result sets from a remote endpoint
  *
  */
+@SuppressWarnings("deprecation")
 @Ignore
 public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointResultSetTests {
 

@@ -20,9 +20,6 @@ package org.apache.jena.fuseki.test;
 
 import java.util.Objects;
 
-import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.web.HttpSC;
 import org.junit.Assert;
 
 public class FusekiTest {
@@ -46,69 +43,6 @@ public class FusekiTest {
                 return true;
         }
         return false;
-    }
-
-    public static void expect4xx(Runnable action) {
-        try {
-            action.run();
-            Assert.fail("Expected HttpException");
-        } catch (QueryExceptionHTTP ex) {
-            if ( ex.getStatusCode() < 400 || ex.getStatusCode() > 499 )
-                Assert.fail(ex.getMessage());
-            } catch (HttpException ex) {
-            // -1 : any status code in HttpException
-            if ( ex.getStatusCode() < 400 || ex.getStatusCode() > 499 )
-                Assert.fail(ex.getMessage());
-        }
-    }
-
-    public static void expect400(Runnable action) {
-        execWithHttpException(HttpSC.BAD_REQUEST_400, action);
-    }
-
-    public static void expect401(Runnable action) {
-        execWithHttpException(HttpSC.UNAUTHORIZED_401, action);
-    }
-
-    public static void expect403(Runnable action) {
-        execWithHttpException(HttpSC.FORBIDDEN_403, action);
-    }
-
-    public static void expect404(Runnable action) {
-        execWithHttpException(HttpSC.NOT_FOUND_404, action);
-    }
-
-    public static void execWithHttpException(int expectedStatusCode, Runnable action) {
-        try {
-            action.run();
-            Assert.fail("Expected HttpException "+expectedStatusCode);
-        } catch (QueryExceptionHTTP ex) {
-            if ( expectedStatusCode > 0 )
-                Assert.assertEquals(ex.getMessage()+":: ", expectedStatusCode, ex.getStatusCode());
-        } catch (HttpException ex) {
-            if ( expectedStatusCode > 0 )
-                Assert.assertEquals(ex.getMessage()+":: ", expectedStatusCode, ex.getStatusCode());
-        }
-    }
-
-    // Specifically  QueryExceptionHTTP
-
-    public static void expectQuery403(Runnable action) {
-        expectQuery(action, HttpSC.FORBIDDEN_403);
-    }
-
-    public static void expectQuery401(Runnable action) {
-        expectQuery(action, HttpSC.UNAUTHORIZED_401);
-    }
-
-    public static void expectQuery(Runnable action, int expected) {
-        try {
-            action.run();
-            throw new HttpException("Expected QueryExceptionHTTP["+expected+"]");
-        } catch (QueryExceptionHTTP ex) {
-            if ( ex.getStatusCode() != expected )
-                throw ex;
-        }
     }
 }
 

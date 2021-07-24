@@ -39,8 +39,9 @@ import org.slf4j.LoggerFactory ;
 /**
  * Abstract base class for update processors that perform remote updates over
  * HTTP
- *
+ * @deprecated Use {@code UpdateExecutionHTTP} created with {@code UpdateExecutionHTTPBuilder}.
  */
+@Deprecated
 public abstract class UpdateProcessRemoteBase implements UpdateExec {
     private static Logger log = LoggerFactory.getLogger(UpdateProcessRemoteBase.class);
 

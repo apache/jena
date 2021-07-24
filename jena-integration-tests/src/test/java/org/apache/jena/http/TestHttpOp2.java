@@ -18,21 +18,15 @@
 
 package org.apache.jena.http;
 
-import static org.apache.jena.fuseki.test.FusekiTest.execWithHttpException;
-import static org.apache.jena.fuseki.test.FusekiTest.expect404;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpResponse;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.atlas.web.TypedInputStream;
+import static org.apache.jena.fuseki.test.HttpTest.*;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -110,7 +104,8 @@ public class TestHttpOp2 {
     }
 
     @Test public void httpGet_04() {
-        expect404(()->HttpOp2.httpGetString(urlRoot()+"does-not-exist"));
+        String x = HttpOp2.httpGetString(urlRoot()+"does-not-exist");
+        assertNull(x);
     }
 
     @Test public void httpGet_05() {
@@ -167,8 +162,10 @@ public class TestHttpOp2 {
 
     @Test public void httpPostForm_01() {
         Params params = Params.create().add("query", "ASK{}");
-        HttpResponse<InputStream> response = HttpOp2.httpPostForm(sparqlURL(), params, WebContent.contentTypeResultsJSON);
-        try ( InputStream in = response.body() ) {} catch (IOException e) { IO.exception(e); }
+        try ( TypedInputStream in = HttpOp2.httpPostForm(sparqlURL(), params, WebContent.contentTypeResultsJSON) ) {
+            assertEquals(WebContent.contentTypeResultsJSON, in.getContentType());
+            IO.readWholeFile(in);
+        }
     }
 
     @Test public void httpPostForm_02() {
@@ -191,9 +188,13 @@ public class TestHttpOp2 {
         HttpOp2.httpPostForm(updateURL(), params, "*/*");
     }
 
-    static BodyPublisher graphString() { return BodyPublishers.ofString("PREFIX : <http://example/> :s :p :o ."); }
+    @Test public void httpPostStream_01() {
+        try(TypedInputStream in = HttpOp2.httpPostStream(pingURL())) {}
+    }
 
-    static BodyPublisher datasetString() {return BodyPublishers.ofString("PREFIX : <http://example/> :s :p :o . :g { :sg :pg :og }"); }
+    private static BodyPublisher graphString() { return BodyPublishers.ofString("PREFIX : <http://example/> :s :p :o ."); }
+
+    private static BodyPublisher datasetString() {return BodyPublishers.ofString("PREFIX : <http://example/> :s :p :o . :g { :sg :pg :og }"); }
 
     // The HTTP actions that go with GSP.
 

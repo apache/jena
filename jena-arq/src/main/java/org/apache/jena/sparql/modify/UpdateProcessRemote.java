@@ -27,10 +27,12 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.update.UpdateRequest ;
 
 /**
- * UpdateProcess that send the request to a SPARQL endpoint by using POST of application/sparql-update.  
+ * UpdateProcess that send the request to a SPARQL endpoint by using POST of application/sparql-update.
+ * @deprecated Use {@code UpdateExecutionHTTP} created with {@code UpdateExecutionHTTPBuilder}.
  */
+@Deprecated
 public class UpdateProcessRemote extends UpdateProcessRemoteBase
-{    
+{
     /**
      * Creates a new remote update processor that uses the application/sparql-update submission method
      * @param request Update request
@@ -41,14 +43,14 @@ public class UpdateProcessRemote extends UpdateProcessRemoteBase
     {
         super(request, endpoint, context);
     }
-    
+
     /**
      * Creates a new remote update processor that uses the application/sparql-update submission method
      * @param request Update request
      * @param endpoint Update endpoint
      * @param context Context
      * @param client HTTP client
-     * @param httpContext HTTP Context 
+     * @param httpContext HTTP Context
      */
     public UpdateProcessRemote(UpdateRequest request, String endpoint, Context context, HttpClient client, HttpContext httpContext)
     {
@@ -68,14 +70,14 @@ public class UpdateProcessRemote extends UpdateProcessRemoteBase
             throw new ARQException("Null endpoint for remote update") ;
         if ( this.getUpdateRequest() == null )
             throw new ARQException("Null update request for remote update") ;
-        
+
         // Build endpoint URL
         String endpoint = this.getEndpoint();
         String querystring = this.getUpdateString();
         if (querystring != null && !querystring.equals("")) {
             endpoint = endpoint.contains("?") ? endpoint + "&" + querystring : endpoint + "?" + querystring;
         }
-        
+
         // Execution
         String reqStr = this.getUpdateRequest().toString() ;
         HttpOp.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr, getClient(), getHttpContext()) ;

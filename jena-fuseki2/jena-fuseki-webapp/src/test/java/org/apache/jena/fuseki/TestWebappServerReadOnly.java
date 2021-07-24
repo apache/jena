@@ -21,18 +21,17 @@ package org.apache.jena.fuseki;
 import static org.apache.jena.fuseki.ServerCtl.serviceQuery;
 import static org.apache.jena.fuseki.ServerCtl.serviceUpdate;
 
-import java.nio.charset.StandardCharsets;
+import java.net.http.HttpRequest.BodyPublisher;
+import java.net.http.HttpRequest.BodyPublishers;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.StringEntity;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.test.FusekiTest;
+import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.http.HttpOp2;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
-import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
@@ -67,7 +66,7 @@ public class TestWebappServerReadOnly
 
     @Test()
     public void update_readonly() {
-        FusekiTest.expect404( () -> {
+        HttpTest.expect404( () -> {
             UpdateRequest update = UpdateFactory.create("INSERT DATA {}");
             UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, serviceUpdate());
             proc.execute();
@@ -77,59 +76,59 @@ public class TestWebappServerReadOnly
     @Test
     public void gsp_w_readonly_POST() {
         // Try to write
-        FusekiTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
-            HttpEntity e = new StringEntity("", StandardCharsets.UTF_8);
-            HttpOp.execHttpPost(ServerCtl.serviceGSP()+"?default", e);
+        HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
+            BodyPublisher bodyPublisher = BodyPublishers.ofString("");
+            HttpOp2.httpPost(ServerCtl.serviceGSP()+"?default", null, bodyPublisher);
         });
     }
 
     @Test
     public void gsp_w_readonly_PUT() {
         // Try to write
-        FusekiTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
-            HttpEntity e = new StringEntity("", StandardCharsets.UTF_8);
-            HttpOp.execHttpPut(ServerCtl.serviceGSP()+"?default", e);
+        HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
+            BodyPublisher bodyPublisher = BodyPublishers.ofString("");
+            HttpOp2.httpPut(ServerCtl.serviceGSP()+"?default", null, bodyPublisher);
         });
     }
 
     @Test
     public void gsp_w_readonly_DELETE() {
         // Try to write
-        FusekiTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
-            HttpOp.execHttpDelete(ServerCtl.serviceGSP()+"?default");
+        HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
+            HttpOp2.httpDelete(ServerCtl.serviceGSP()+"?default");
         });
     }
 
     @Test
     public void dataset_readonly_GET() {
         // Try to read
-        try ( TypedInputStream in = HttpOp.execHttpGet(ServerCtl.urlDataset()) ) {}
+        try ( TypedInputStream in = HttpOp2.httpGet(ServerCtl.urlDataset()) ) {}
     }
 
 
     @Test
     public void dataset_w_readonly_POST() {
         // Try to write
-        FusekiTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
-            HttpEntity e = new StringEntity("", StandardCharsets.UTF_8);
-            HttpOp.execHttpPost(ServerCtl.urlDataset(), e);
+        HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
+            BodyPublisher bodyPublisher = BodyPublishers.ofString("");
+            HttpOp2.httpPost(ServerCtl.urlDataset(), null, bodyPublisher);
         });
     }
 
     @Test
     public void dataset_w_readonly_PUT() {
         // Try to write
-        FusekiTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
-            HttpEntity e = new StringEntity("", StandardCharsets.UTF_8);
-            HttpOp.execHttpPut(ServerCtl.urlDataset(), e);
+        HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
+            BodyPublisher bodyPublisher = BodyPublishers.ofString("");
+            HttpOp2.httpPut(ServerCtl.urlDataset(), null, bodyPublisher);
         });
     }
 
     @Test
     public void dataset_w_readonly_DELETE() {
         // Try to write
-        FusekiTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
-            HttpOp.execHttpDelete(ServerCtl.urlDataset());
+        HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
+            HttpOp2.httpDelete(ServerCtl.urlDataset());
         });
     }
 

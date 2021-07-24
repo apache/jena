@@ -20,7 +20,7 @@ package org.apache.jena.http;
 
 import static org.junit.Assert.assertTrue;
 
-import org.apache.jena.fuseki.test.FusekiTest;
+import static org.apache.jena.fuseki.test.HttpTest.*;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.http.sys.HttpRequestModifier;
@@ -66,7 +66,7 @@ public class TestAuthRemote {
 
     @Test
     public void auth_qe_no_auth() {
-        FusekiTest.expect401(()->{
+        expect401(()->{
             try ( QueryExec qexec = QueryExecHTTP.newBuilder()
                     //.httpClient(hc)
                     .endpoint(env.datasetURL())
@@ -90,7 +90,7 @@ public class TestAuthRemote {
 
     @Test
     public void auth_qe_bad_auth() {
-        FusekiTest.expect401(()->{
+        expect401(()->{
             try ( QueryExec qexec = QueryExecHTTP.newBuilder()
                     .httpClient(env.httpClientAuthBad())
                     .endpoint(env.datasetURL())
@@ -104,7 +104,7 @@ public class TestAuthRemote {
     // Retries up to "java.net.httpclient.redirects.retrylimit" (3 by default).
     @Test
     public void auth_qe_bad_auth_retries() {
-        FusekiTest.expect401(()->{
+        expect401(()->{
             try ( QueryExec qexec = QueryExecHTTP.newBuilder()
                     // retry blindly.
                     .httpClient(EnvTest.httpClient(env.authenticatorBadRetries()))
@@ -120,7 +120,7 @@ public class TestAuthRemote {
 
     @Test
     public void auth_update_no_auth() {
-        FusekiTest.expect401(()->
+        expect401(()->
             UpdateExecHTTP.newBuilder()
                 .endpoint(env.datasetURL())
                 .updateString("INSERT DATA { <x:s> <x:p> <x:o> }")
@@ -141,7 +141,7 @@ public class TestAuthRemote {
 
     @Test
     public void auth_update_bad_auth() {
-        FusekiTest.expect401(()->
+        expect401(()->
             UpdateExecHTTP.newBuilder()
                 .httpClient(env.httpClientAuthBad())
                 .endpoint(env.datasetURL())
@@ -155,7 +155,7 @@ public class TestAuthRemote {
 
     @Test
     public void auth_gsp_no_auth() {
-        FusekiTest.expect401(()->{
+        expect401(()->{
             GSP.service(env.datasetURL()).defaultGraph().GET();
         });
     }
@@ -168,7 +168,7 @@ public class TestAuthRemote {
     @Test
     public void auth_gsp_bad_auth() {
         // 401 because we didn't authenticate.
-        FusekiTest.expect401(()->
+        expect401(()->
             GSP.service(env.datasetURL()).httpClient(env.httpClientAuthBad()).defaultGraph().GET()
         );
     }
@@ -177,7 +177,7 @@ public class TestAuthRemote {
 
     @Test
     public void auth_link_no_auth_1() {
-        FusekiTest.expect401(()->{
+        expect401(()->{
             try ( RDFLink link = RDFLinkFactory.connect(env.datasetURL()) ) {
                 link.queryAsk("ASK{}");
             }
@@ -186,7 +186,7 @@ public class TestAuthRemote {
 
     @Test
     public void auth_link_no_auth_2() {
-        FusekiTest.expect401(()->{
+        expect401(()->{
             try ( RDFLink link = RDFLinkFactory.connect(env.datasetURL()) ) {
                 link.update("INSERT DATA { <x:s> <x:p> <x:o> }");
             }
@@ -195,7 +195,7 @@ public class TestAuthRemote {
 
     @Test
     public void auth_link_no_auth_3() {
-        FusekiTest.expect401(()->{
+        expect401(()->{
             try ( RDFLink link = RDFLinkFactory.connect(env.datasetURL()) ) {
                 link.get();
             }
@@ -218,7 +218,7 @@ public class TestAuthRemote {
     public void auth_link_bad_auth_1() {
         // 401 (not 403) because we didn't authenticate
         // 403 is recognized authenticate, not sufficient for ths resource.
-        FusekiTest.expect401(()->{
+        expect401(()->{
             try ( RDFLink link = RDFLinkRemote.newBuilder()
                     .destination(env.datasetURL())
                     .httpClient(env.httpClientAuthBad())
@@ -231,7 +231,7 @@ public class TestAuthRemote {
     @Test
     public void auth_link_bad_auth_2() {
         // 401 (not 403) because we didn't authenticate
-        FusekiTest.expect401(()->{
+        expect401(()->{
             try ( RDFLink link = RDFLinkRemote.newBuilder()
                     .destination(env.datasetURL())
                     .httpClient(env.httpClientAuthBad())
@@ -244,7 +244,7 @@ public class TestAuthRemote {
     @Test
     public void auth_link_bad_auth_3() {
         // 401 (not 403) because we didn't authenticate
-        FusekiTest.expect401(()->{
+        expect401(()->{
             try ( RDFLink link = RDFLinkRemote.newBuilder()
                         .destination(env.datasetURL())
                         .httpClient(env.httpClientAuthBad())
@@ -286,14 +286,14 @@ public class TestAuthRemote {
     @Test
     public void auth_registryHttpClient_exact_2() {
         // Use prefix match for server-wide
-        FusekiTest.expect401(()->{
+        expect401(()->{
             exec_auth_registry_exact(env.serverBaseURL());
         });
     }
 
     @Test
     public void auth_registryHttpClient_exact_401_1() {
-        FusekiTest.expect401(()->{
+        expect401(()->{
             exec_auth_registry_exact("Junk");
         });
     }
@@ -302,7 +302,7 @@ public class TestAuthRemote {
     public void auth_registryHttpClient_exact_401_2() {
         // Longer name, child
         String registerKey = env.serverPath(env.dsName()+"/XYZ");
-        FusekiTest.expect401(()->{
+        expect401(()->{
             exec_auth_registry_exact(registerKey);
         });
     }
@@ -312,7 +312,7 @@ public class TestAuthRemote {
         // Longer name.
         // It does not match; prefixes are limited to ending in "/"
         String registerKey = env.serverPath(env.dsName()+"X");
-        FusekiTest.expect401(()->{
+        expect401(()->{
             exec_auth_registry_exact(registerKey);
         });
     }
@@ -321,7 +321,7 @@ public class TestAuthRemote {
     public void auth_registryHttpClient_exact_401_4() {
         // Different dataset
         String registerKey = env.serverPath("ABC");
-        FusekiTest.expect401(()->{
+        expect401(()->{
             exec_auth_registry_exact(registerKey);
         });
     }
@@ -331,7 +331,7 @@ public class TestAuthRemote {
         // Shorter dataset name, prefix of actual one.
         // It does not match.
         String registerKey = env.serverPath("d");
-        FusekiTest.expect401(()->{
+        expect401(()->{
             exec_auth_registry_exact(registerKey);
         });
     }
@@ -350,7 +350,7 @@ public class TestAuthRemote {
 
     @Test
     public void auth_registryHttpClient_prefix_401_1() {
-        FusekiTest.expect401(()->{
+        expect401(()->{
             exec_auth_registry_prefix("Junk/");
         });
     }
@@ -359,7 +359,7 @@ public class TestAuthRemote {
     public void auth_registryHttpClient_prefix_401_2() {
         // Longer name.
         String registerKey = env.serverPath(env.dsName()+"/");
-        FusekiTest.expect401(()->{
+        expect401(()->{
             exec_auth_registry_prefix(registerKey);
         });
     }
@@ -368,7 +368,7 @@ public class TestAuthRemote {
     public void auth_registryHttpClient_prefix_401_3() {
         // Longer name.
         String registerKey = env.serverPath(env.dsName()+"/xyz/");
-        FusekiTest.expect401(()->{
+        expect401(()->{
             exec_auth_registry_prefix(registerKey);
         });
     }
@@ -377,7 +377,7 @@ public class TestAuthRemote {
     public void auth_registryHttpClient_prefix_401_4() {
         // Different dataset
         String registerKey = env.serverPath("A/");
-        FusekiTest.expect401(()->{
+        expect401(()->{
             exec_auth_registry_prefix(registerKey);
         });
     }

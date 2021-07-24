@@ -18,10 +18,9 @@
 
 package org.apache.jena.fuseki;
 
-import static org.apache.jena.fuseki.test.FusekiTest.expectQuery401;
-
 import java.net.URI;
 
+import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.http.auth.AuthEnv;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.junit.Assert;
@@ -35,7 +34,7 @@ public class TestWebappAuthQuery_JDK extends AbstractTestWebappAuth_JDK {
     public void query_auth_jdk_01_no_auth() {
         QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(authServiceQuery).query("ASK { }").build();
         // No auth credentials should result in an error
-        expectQuery401(()->qe.execAsk());
+        HttpTest.expectQuery401(()->qe.execAsk());
     }
 
     @Test
@@ -43,7 +42,7 @@ public class TestWebappAuthQuery_JDK extends AbstractTestWebappAuth_JDK {
         // Auth - bad password
         QueryExecutionHTTP qe = withAuthJDK(QueryExecutionHTTP.create().endpoint(authServiceQuery).query("ASK { }"),
                                               "allowed", "incorrect");
-        expectQuery401(()->qe.execAsk());
+        HttpTest.expectQuery401(()->qe.execAsk());
     }
 
     @Test
@@ -91,7 +90,7 @@ public class TestWebappAuthQuery_JDK extends AbstractTestWebappAuth_JDK {
         URI uri = URI.create(dsURL);
         AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
         try {
-            expectQuery401(()->qe.execAsk());
+            HttpTest.expectQuery401(()->qe.execAsk());
         } finally {
             AuthEnv.get().unregisterUsernamePassword(uri);
         }

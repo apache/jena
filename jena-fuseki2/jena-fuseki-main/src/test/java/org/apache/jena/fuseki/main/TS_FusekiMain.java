@@ -26,7 +26,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     //17
 
-  TestEmbeddedFuseki.class
+  TestPlainServer.class
+  , TestEmbeddedFuseki.class
   , TestMultipleEmbedded.class
   , TestFusekiCustomOperation.class
   , TestFusekiMainCmd.class
@@ -37,8 +38,7 @@ import org.junit.runners.Suite.SuiteClasses;
   , TestFileUpload.class
   , TestAuthQuery_JDK.class
   , TestAuthUpdate_JDK.class
-  , TestHTTP.class
-  , TestHttpOp.class
+  , TestHttpOp_AHC.class
   , TestHttpOperations.class
   , TestHttpOptions.class
 

@@ -18,8 +18,7 @@
 
 package org.apache.jena.fuseki.main.access;
 
-import static org.apache.jena.fuseki.test.FusekiTest.expectQuery401;
-import static org.apache.jena.fuseki.test.FusekiTest.expectQuery403;
+import static org.apache.jena.fuseki.test.HttpTest.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -36,7 +35,6 @@ import org.apache.jena.http.HttpOp2;
 import org.apache.jena.rdfconnection.LibSec;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
-import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.web.AuthSetup;
 import org.apache.jena.web.HttpSC;
 import org.junit.Test;
@@ -84,7 +82,7 @@ public class TestSecurityConfig {
     @Test public void access_serverNone() {
         test("testing/Access/config-server-0.ttl", fusekiServer -> {
             // Server access.
-            try (TypedInputStream in = HttpOp.execHttpGet(fusekiServer.serverURL()) ) {
+            try (TypedInputStream in = HttpOp2.httpGet(fusekiServer.serverURL()) ) {
                 assertNotNull(in);
             } catch (HttpException ex) {
                 // 404 is OK - no static file area.
