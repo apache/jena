@@ -67,9 +67,9 @@ import org.apache.jena.web.HttpSC;
  * @see HttpRDF
  * @see GSP
  */
-public class HttpOp2 {
+public class HttpOp {
 
-    private HttpOp2() {}
+    private HttpOp() {}
 
     // -- GET, POST returning a string (shorthand helpers, esp for tests).
 

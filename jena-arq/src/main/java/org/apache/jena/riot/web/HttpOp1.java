@@ -74,8 +74,9 @@ import org.slf4j.LoggerFactory ;
  * @see HttpNames HttpNames, for HTTP related constants
  * @see WebContent WebContent, for content type name constants
  */
-public class HttpOp {
-    static private Logger log = LoggerFactory.getLogger(HttpOp.class);
+@SuppressWarnings("deprecation")
+public class HttpOp1 {
+    static private Logger log = LoggerFactory.getLogger(HttpOp1.class);
 
     /** System wide HTTP operation counter for log messages */
     static private AtomicLong counter = new AtomicLong(0);
@@ -257,7 +258,7 @@ public class HttpOp {
      *            User-Agent string
      */
     public static void setUserAgent(String userAgent) {
-        HttpOp.userAgent = userAgent;
+        HttpOp1.userAgent = userAgent;
     }
 
     // ---- HTTP GET

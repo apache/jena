@@ -23,7 +23,7 @@ import java.util.List ;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext ;
-import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.riot.web.HttpOp1 ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.http.HttpParams ;
 import org.apache.jena.sparql.engine.http.Params ;
@@ -264,7 +264,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateExec {
      * Sets the client to use
      * <p>
      * Note that you can globally set an client via
-     * {@link HttpOp#setDefaultHttpClient(HttpClient)} to avoid the
+     * {@link HttpOp1#setDefaultHttpClient(HttpClient)} to avoid the
      * need to set client on a per-request basis
      * </p>
      *
@@ -280,7 +280,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateExec {
      * <p>
      * If no client is used then the default client will be used,
      * this can be configured via the
-     * {@link HttpOp#setDefaultHttpClient(HttpClient)} method.
+     * {@link HttpOp1#setDefaultHttpClient(HttpClient)} method.
      * </p>
      *
      * @return HTTP client if set, null otherwise

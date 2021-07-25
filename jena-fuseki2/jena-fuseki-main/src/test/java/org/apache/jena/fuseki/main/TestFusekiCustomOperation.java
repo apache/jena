@@ -40,7 +40,7 @@ import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.server.OperationRegistry;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -210,7 +210,7 @@ public class TestFusekiCustomOperation {
                 testServerCT(server, svcCall);
 
             // DELETE -> fails
-            int statusCode = expectFail(() -> HttpOp2.httpDelete(svcCall));
+            int statusCode = expectFail(() -> HttpOp.httpDelete(svcCall));
             switch (statusCode) {
                 // Acceptable.
                 case HttpSC.BAD_REQUEST_400 :
@@ -228,7 +228,7 @@ public class TestFusekiCustomOperation {
 
     private static void testServerCT(FusekiServer server, String svcCall) {
         // Content-type
-        try (TypedInputStream stream = HttpOp2.httpPostStream(svcCall, contentType, BodyPublishers.ofString(""), "text/plain")) {
+        try (TypedInputStream stream = HttpOp.httpPostStream(svcCall, contentType, BodyPublishers.ofString(""), "text/plain")) {
             assertNotNull(stream);
             String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
             assertValidResponseBody(customHandlerBodyPost, x);
@@ -239,13 +239,13 @@ public class TestFusekiCustomOperation {
 
     private static void testServerNoCT(FusekiServer server, String svcCall) {
         // Service endpoint name : GET
-        String s1 = HttpOp2.httpGetString(svcCall);
+        String s1 = HttpOp.httpGetString(svcCall);
         if ( s1 == null )
             throw new HttpException(HttpSC.NOT_FOUND_404, "Not Found", "");
         assertValidResponseBody(customHandlerBodyGet, s1);
 
         // Service endpoint name : POST
-        try (TypedInputStream stream = HttpOp2.httpPostStream(svcCall, "ignored", BodyPublishers.ofString(""), "text/plain")) {
+        try (TypedInputStream stream = HttpOp.httpPostStream(svcCall, "ignored", BodyPublishers.ofString(""), "text/plain")) {
             assertNotNull(stream);
             String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
             assertValidResponseBody(customHandlerBodyPost, x);

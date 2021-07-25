@@ -31,7 +31,7 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.rdfconnection.LibSec;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
@@ -82,7 +82,7 @@ public class TestSecurityConfig {
     @Test public void access_serverNone() {
         test("testing/Access/config-server-0.ttl", fusekiServer -> {
             // Server access.
-            try (TypedInputStream in = HttpOp2.httpGet(fusekiServer.serverURL()) ) {
+            try (TypedInputStream in = HttpOp.httpGet(fusekiServer.serverURL()) ) {
                 assertNotNull(in);
             } catch (HttpException ex) {
                 // 404 is OK - no static file area.
@@ -133,7 +133,7 @@ public class TestSecurityConfig {
         test("testing/Access/config-server-1.ttl", fusekiServer->{
             // Must be logged in.
             HttpClient hc = LibSec.httpClient(authSetup1(fusekiServer));
-            try( InputStream in = HttpOp2.httpGet(hc, fusekiServer.serverURL()) ) {
+            try( InputStream in = HttpOp.httpGet(hc, fusekiServer.serverURL()) ) {
                 assertNull(in);
             } catch (HttpException  ex) {
                 // 404 is OK - no static file area.

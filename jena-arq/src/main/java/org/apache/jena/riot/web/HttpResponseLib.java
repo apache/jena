@@ -44,7 +44,7 @@ import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 
 /** A collection of handlers for response handling.
- * @see HttpOp
+ * @see HttpOp1
  */
 public class HttpResponseLib
 {

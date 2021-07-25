@@ -24,7 +24,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestBlankNodeBinary.class
-    , TestHttpOp2.class
+    , TestHttpOp.class
     , TestHttpRDF.class
     , TestAsyncHttpRDF.class
     , TestAuthRemote.class

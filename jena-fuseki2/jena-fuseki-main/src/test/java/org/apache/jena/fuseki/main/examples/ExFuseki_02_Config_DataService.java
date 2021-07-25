@@ -24,7 +24,7 @@ import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.system.FusekiLogging;
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -115,7 +115,7 @@ public class ExFuseki_02_Config_DataService {
 
             // Make an HTTP GET to the custom operation.
             // Service endpoint name : GET
-            String s1 = HttpOp2.httpGetString(customOperationURL);
+            String s1 = HttpOp.httpGetString(customOperationURL);
             if ( s1 == null )
                 throw new RuntimeException("Failed: "+customOperationURL);
 

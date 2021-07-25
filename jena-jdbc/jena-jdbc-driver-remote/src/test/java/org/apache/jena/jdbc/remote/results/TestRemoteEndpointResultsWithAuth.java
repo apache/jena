@@ -34,7 +34,7 @@ import org.apache.jena.jdbc.remote.FusekiTestAuth;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.riot.web.HttpOp1;
 import org.apache.jena.sparql.modify.UpdateProcessRemote;
 import org.apache.jena.sparql.modify.request.Target ;
 import org.apache.jena.sparql.modify.request.UpdateDrop ;
@@ -98,7 +98,7 @@ public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointRes
      */
     @AfterClass
     public static void cleanup() throws SQLException {
-        HttpOp.setDefaultHttpClient(HttpOp.createPoolingHttpClient());
+        HttpOp1.setDefaultHttpClient(HttpOp1.createPoolingHttpClient());
         connection.close();
         FusekiTestAuth.teardownServer();
     }

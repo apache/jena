@@ -34,7 +34,7 @@ import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.http.HttpEnv;
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.http.HttpRDF;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -168,17 +168,17 @@ public class TestEmbeddedFuseki {
         server.start();
         try {
             // No server services
-            String x1 = HttpOp2.httpGetString("http://localhost:"+port+"/$/ping");
+            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/$/ping");
             assertNull(x1);
 
-            String x2 = HttpOp2.httpGetString("http://localhost:"+port+"/$/stats");
+            String x2 = HttpOp.httpGetString("http://localhost:"+port+"/$/stats");
             assertNull(x2);
 
-            String x3 = HttpOp2.httpGetString("http://localhost:"+port+"/$/metrics");
+            String x3 = HttpOp.httpGetString("http://localhost:"+port+"/$/metrics");
             assertNull(x3);
 
             HttpException ex = assertThrows(HttpException.class,
-                () -> HttpOp2.httpPostStream("http://localhost:"+port+"/$/compact/ds", "application/json"));
+                () -> HttpOp.httpPostStream("http://localhost:"+port+"/$/compact/ds", "application/json"));
             assertEquals(404, ex.getStatusCode());
         } finally { server.stop(); }
     }
@@ -192,7 +192,7 @@ public class TestEmbeddedFuseki {
             .enablePing(true)
             .build();
         server.start();
-        String x = HttpOp2.httpGetString("http://localhost:"+port+"/$/ping");
+        String x = HttpOp.httpGetString("http://localhost:"+port+"/$/ping");
         assertNotNull(x);
         server.stop();
     }
@@ -206,7 +206,7 @@ public class TestEmbeddedFuseki {
             .enableStats(true)
             .build();
         server.start();
-        String x = HttpOp2.httpGetString("http://localhost:"+port+"/$/stats");
+        String x = HttpOp.httpGetString("http://localhost:"+port+"/$/stats");
         assertNotNull(x);
         server.stop();
     }
@@ -220,7 +220,7 @@ public class TestEmbeddedFuseki {
             .enableMetrics(true)
             .build();
         server.start();
-        String x = HttpOp2.httpGetString("http://localhost:"+port+"/$/metrics");
+        String x = HttpOp.httpGetString("http://localhost:"+port+"/$/metrics");
         assertNotNull(x);
         server.stop();
     }
@@ -233,11 +233,11 @@ public class TestEmbeddedFuseki {
             .enableCompact(true)
             .build();
         server.start();
-        try(TypedInputStream x0 = HttpOp2.httpPostStream("http://localhost:"+port+"/$/compact/FuTest", "application/json")) {
+        try(TypedInputStream x0 = HttpOp.httpPostStream("http://localhost:"+port+"/$/compact/FuTest", "application/json")) {
             assertNotNull(x0);
             assertNotEquals(0, x0.readAllBytes().length);
 
-            String x1 = HttpOp2.httpGetString("http://localhost:"+port+"/$/tasks");
+            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/$/tasks");
             assertNotNull(x1);
         } finally {
             server.stop();
@@ -253,7 +253,7 @@ public class TestEmbeddedFuseki {
             .enableTasks(true)
             .build();
         server.start();
-        String x = HttpOp2.httpGetString("http://localhost:"+port+"/$/tasks");
+        String x = HttpOp.httpGetString("http://localhost:"+port+"/$/tasks");
         assertNotNull(x);
         server.stop();
     }
@@ -270,9 +270,9 @@ public class TestEmbeddedFuseki {
             .build();
         server.start();
         try {
-            String x1 = HttpOp2.httpGetString("http://localhost:"+port+"/ds");
+            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/ds");
             assertNull(x1);
-            String x2 = HttpOp2.httpGetString("http://localhost:"+port+"/ABC/ds");
+            String x2 = HttpOp.httpGetString("http://localhost:"+port+"/ABC/ds");
             assertNotNull(x2);
         } finally { server.stop(); }
     }
@@ -327,7 +327,7 @@ public class TestEmbeddedFuseki {
         server.start();
         try {
             query("http://localhost:"+port+"/dsrv1/q","ASK{}",x->{});
-            String x1 = HttpOp2.httpGetString("http://localhost:"+port+"/dsrv1/gsp?default");
+            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/dsrv1/gsp?default");
             assertNotNull(x1);
         } finally { server.stop(); }
     }
@@ -349,10 +349,10 @@ public class TestEmbeddedFuseki {
 
         try {
             query("http://localhost:"+port+"/dsrv1/q","ASK{}",x->{});
-            String x1 = HttpOp2.httpGetString("http://localhost:"+port+"/dsrv1/gsp?default");
+            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/dsrv1/gsp?default");
             assertNotNull(x1);
             // Static
-            String x2 = HttpOp2.httpGetString("http://localhost:"+port+"/test.txt");
+            String x2 = HttpOp.httpGetString("http://localhost:"+port+"/test.txt");
             assertNotNull(x2);
         } finally { server.stop(); }
     }

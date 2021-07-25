@@ -38,7 +38,7 @@ import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.fuseki.webapp.FusekiServerListener;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;
 import org.apache.jena.fuseki.webapp.SystemState;
-import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.riot.web.HttpOp1;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.modify.request.Target;
@@ -70,7 +70,7 @@ import org.apache.jena.update.UpdateProcessor;
  * <p>
  * The data in the server is always reseet between tests.
  * <p>
- * Using a connection pooling HttpClient (see {@link HttpOp#createPoolingHttpClient()}) is
+ * Using a connection pooling HttpClient (see {@link HttpOp1#createPoolingHttpClient()}) is
  * important, both for test performance and for reducing the TCP connection load on the
  * operating system.
  * <p>
@@ -193,20 +193,20 @@ public class ServerCtl {
 
     /** Set a PoolingHttpClient */
     private static void setPoolingHttpClient() {
-        setHttpClient(HttpOp.createPoolingHttpClient());
+        setHttpClient(HttpOp1.createPoolingHttpClient());
     }
 
     /** Restore the original setup */
     private static void resetDefaultHttpClient() {
-        setHttpClient(HttpOp.createDefaultHttpClient());
+        setHttpClient(HttpOp1.createDefaultHttpClient());
     }
 
     /** Set the HttpClient - close the old one if appropriate */
     /*package*/ static void setHttpClient(HttpClient newHttpClient) {
-        HttpClient hc = HttpOp.getDefaultHttpClient();
+        HttpClient hc = HttpOp1.getDefaultHttpClient();
         if ( hc instanceof CloseableHttpClient )
             IO.close((CloseableHttpClient)hc);
-        HttpOp.setDefaultHttpClient(newHttpClient);
+        HttpOp1.setDefaultHttpClient(newHttpClient);
     }
 
     // reference count of start/stop server

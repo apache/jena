@@ -29,7 +29,7 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.base.Sys;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
@@ -68,7 +68,7 @@ public class TestAdminAPI extends AbstractFusekiWebappTest {
 
         assertFalse(exists(datasetURL));
 
-        HttpOp2.httpPostForm(admin+"datasets", params);
+        HttpOp.httpPostForm(admin+"datasets", params);
 
         RDFConnection conn = RDFConnectionFactory.connect(datasetURL);
         conn.update("INSERT DATA { <x:s> <x:p> 123 }");
@@ -80,7 +80,7 @@ public class TestAdminAPI extends AbstractFusekiWebappTest {
         if ( hasFiles )
             assertTrue(Files.exists(pathDB));
 
-        HttpOp2.httpDelete(admin+"datasets/"+dbName);
+        HttpOp.httpDelete(admin+"datasets/"+dbName);
 
         assertFalse(exists(datasetURL));
 
@@ -88,7 +88,7 @@ public class TestAdminAPI extends AbstractFusekiWebappTest {
             assertFalse(Files.exists(pathDB));
 
         // Recreate : no contents.
-        HttpOp2.httpPostForm(admin+"datasets", params);
+        HttpOp.httpPostForm(admin+"datasets", params);
         assertTrue("false: exists("+datasetURL+")", exists(datasetURL));
         int x2 = count(conn);
         assertEquals(0, x2);
@@ -97,7 +97,7 @@ public class TestAdminAPI extends AbstractFusekiWebappTest {
     }
 
     private static boolean exists(String url) {
-        try ( TypedInputStream in = HttpOp2.httpGet(url) ) {
+        try ( TypedInputStream in = HttpOp.httpGet(url) ) {
             return true;
         } catch (HttpException ex) {
             if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )

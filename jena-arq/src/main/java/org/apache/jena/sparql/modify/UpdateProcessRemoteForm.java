@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.modify;
 
-import static org.apache.jena.riot.web.HttpOp.execHttpPostForm;
+import static org.apache.jena.riot.web.HttpOp1.execHttpPostForm;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext;

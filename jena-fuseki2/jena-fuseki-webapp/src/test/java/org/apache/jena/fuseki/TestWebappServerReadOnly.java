@@ -27,7 +27,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.test.FusekiTest;
 import org.apache.jena.fuseki.test.HttpTest;
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -78,7 +78,7 @@ public class TestWebappServerReadOnly
         // Try to write
         HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
             BodyPublisher bodyPublisher = BodyPublishers.ofString("");
-            HttpOp2.httpPost(ServerCtl.serviceGSP()+"?default", null, bodyPublisher);
+            HttpOp.httpPost(ServerCtl.serviceGSP()+"?default", null, bodyPublisher);
         });
     }
 
@@ -87,7 +87,7 @@ public class TestWebappServerReadOnly
         // Try to write
         HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
             BodyPublisher bodyPublisher = BodyPublishers.ofString("");
-            HttpOp2.httpPut(ServerCtl.serviceGSP()+"?default", null, bodyPublisher);
+            HttpOp.httpPut(ServerCtl.serviceGSP()+"?default", null, bodyPublisher);
         });
     }
 
@@ -95,14 +95,14 @@ public class TestWebappServerReadOnly
     public void gsp_w_readonly_DELETE() {
         // Try to write
         HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
-            HttpOp2.httpDelete(ServerCtl.serviceGSP()+"?default");
+            HttpOp.httpDelete(ServerCtl.serviceGSP()+"?default");
         });
     }
 
     @Test
     public void dataset_readonly_GET() {
         // Try to read
-        try ( TypedInputStream in = HttpOp2.httpGet(ServerCtl.urlDataset()) ) {}
+        try ( TypedInputStream in = HttpOp.httpGet(ServerCtl.urlDataset()) ) {}
     }
 
 
@@ -111,7 +111,7 @@ public class TestWebappServerReadOnly
         // Try to write
         HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
             BodyPublisher bodyPublisher = BodyPublishers.ofString("");
-            HttpOp2.httpPost(ServerCtl.urlDataset(), null, bodyPublisher);
+            HttpOp.httpPost(ServerCtl.urlDataset(), null, bodyPublisher);
         });
     }
 
@@ -120,7 +120,7 @@ public class TestWebappServerReadOnly
         // Try to write
         HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
             BodyPublisher bodyPublisher = BodyPublishers.ofString("");
-            HttpOp2.httpPut(ServerCtl.urlDataset(), null, bodyPublisher);
+            HttpOp.httpPut(ServerCtl.urlDataset(), null, bodyPublisher);
         });
     }
 
@@ -128,13 +128,13 @@ public class TestWebappServerReadOnly
     public void dataset_w_readonly_DELETE() {
         // Try to write
         HttpTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
-            HttpOp2.httpDelete(ServerCtl.urlDataset());
+            HttpOp.httpDelete(ServerCtl.urlDataset());
         });
     }
 
     @Test
     public void options_gsp_readonly() {
-        String v = HttpOp2.httpOptions(ServerCtl.serviceGSP()+"?default");
+        String v = HttpOp.httpOptions(ServerCtl.serviceGSP()+"?default");
         FusekiTest.assertStringList(v, "GET", "OPTIONS", "HEAD");
     }
 

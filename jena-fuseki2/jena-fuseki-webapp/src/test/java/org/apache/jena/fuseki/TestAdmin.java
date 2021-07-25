@@ -21,7 +21,7 @@ package org.apache.jena.fuseki;
 import static org.apache.jena.fuseki.mgt.ServerMgtConst.*;
 import static org.apache.jena.fuseki.server.ServerConst.opPing;
 import static org.apache.jena.fuseki.server.ServerConst.opStats;
-import static org.apache.jena.http.HttpOp2.*;
+import static org.apache.jena.http.HttpOp.*;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.*;
 

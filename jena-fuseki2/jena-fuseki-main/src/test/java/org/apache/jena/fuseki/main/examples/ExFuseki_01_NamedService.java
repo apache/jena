@@ -28,7 +28,7 @@ import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.system.FusekiLogging;
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.util.FileUtils;
 import org.apache.jena.web.HttpSC;
@@ -128,13 +128,13 @@ public class ExFuseki_01_NamedService {
         try {
 
             // Service endpoint name : GET
-            String s1 = HttpOp2.httpGetString(customOperationURL);
+            String s1 = HttpOp.httpGetString(customOperationURL);
             System.out.print(s1);
             if ( s1 == null )
                 System.out.println();
 
             // Service endpoint name : POST
-            try ( TypedInputStream stream = HttpOp2.httpPostStream(customOperationURL, "text/plain") ) {
+            try ( TypedInputStream stream = HttpOp.httpPostStream(customOperationURL, "text/plain") ) {
                 String s2 = FileUtils.readWholeFileAsUTF8(stream);
                 System.out.print(s2);
                 if ( s2 == null )
@@ -143,7 +143,7 @@ public class ExFuseki_01_NamedService {
 
             // Service endpoint name. DELETE -> fails 405
             try {
-                HttpOp2.httpDelete(customOperationURL);
+                HttpOp.httpDelete(customOperationURL);
                 throw new IllegalStateException("DELETE succeeded");
             } catch (HttpException ex) {
                 if ( ex.getStatusCode() != HttpSC.METHOD_NOT_ALLOWED_405 )

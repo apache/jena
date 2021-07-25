@@ -515,7 +515,7 @@ public class GSP {
         validateDatasetOperation();
         // DELETE on a dataset URL is not supported in Fuseki.
 //        String url = serviceEndpoint;
-//        HttpOp2.httpDelete(url);
+//        HttpOp.httpDelete(url);
         UpdateExecHTTP.service(serviceEndpoint).update("CLEAR ALL").execute();
     }
 

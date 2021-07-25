@@ -39,10 +39,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * {@link HttpOp2} testing, and including {@link HttpOp2} used directly for SPARQL operations.
+ * {@link HttpOp} testing, and including {@link HttpOp} used directly for SPARQL operations.
  * Includes error cases and unusual usage that the higher level APIs may not use but are correct.
  */
-public class TestHttpOp2 {
+public class TestHttpOp {
 
     // replacement.
     private static EnvTest env;
@@ -92,77 +92,77 @@ public class TestHttpOp2 {
     // Basic operations
 
     @Test public void httpGet_01() {
-        assertNotNull(HttpOp2.httpGetString(pingURL()));
+        assertNotNull(HttpOp.httpGetString(pingURL()));
     }
 
     @Test public void httpGet_02() {
-        expect404(() -> HttpOp2.httpGet(urlRoot() + "does-not-exist"));
+        expect404(() -> HttpOp.httpGet(urlRoot() + "does-not-exist"));
     }
 
     @Test public void httpGet_03() {
-        assertNotNull(HttpOp2.httpGetString(pingURL()));
+        assertNotNull(HttpOp.httpGetString(pingURL()));
     }
 
     @Test public void httpGet_04() {
-        String x = HttpOp2.httpGetString(urlRoot()+"does-not-exist");
+        String x = HttpOp.httpGetString(urlRoot()+"does-not-exist");
         assertNull(x);
     }
 
     @Test public void httpGet_05() {
-        assertNotNull(HttpOp2.httpGetString(simpleQuery()));
+        assertNotNull(HttpOp.httpGetString(simpleQuery()));
     }
 
     // GET, POST, PUT, DELETE
 
     @Test public void httpREST_get_1() {
-        assertNotNull(HttpOp2.httpGetString(PLAIN()));
+        assertNotNull(HttpOp.httpGetString(PLAIN()));
     }
 
     @Test public void httpREST_put_1() {
-        HttpOp2.httpPut(PLAIN(), WebContent.contentTypeTextPlain, HttpLib.stringBody("Hello"));
-        assertEquals("Hello", HttpOp2.httpGetString(PLAIN()));
+        HttpOp.httpPut(PLAIN(), WebContent.contentTypeTextPlain, HttpLib.stringBody("Hello"));
+        assertEquals("Hello", HttpOp.httpGetString(PLAIN()));
     }
 
     @Test public void httpREST_post_1() {
-        HttpOp2.httpPut(PLAIN(), WebContent.contentTypeTextPlain, HttpLib.stringBody("Hello"));
-        HttpOp2.httpPost(PLAIN(), WebContent.contentTypeTextPlain, HttpLib.stringBody(" "));
-        HttpOp2.httpPost(PLAIN(), WebContent.contentTypeTextPlain, HttpLib.stringBody("World"));
-        assertEquals("Hello World", HttpOp2.httpGetString(PLAIN()));
+        HttpOp.httpPut(PLAIN(), WebContent.contentTypeTextPlain, HttpLib.stringBody("Hello"));
+        HttpOp.httpPost(PLAIN(), WebContent.contentTypeTextPlain, HttpLib.stringBody(" "));
+        HttpOp.httpPost(PLAIN(), WebContent.contentTypeTextPlain, HttpLib.stringBody("World"));
+        assertEquals("Hello World", HttpOp.httpGetString(PLAIN()));
     }
 
     @Test public void httpREST_delete_1() {
-        HttpOp2.httpPut(PLAIN(), WebContent.contentTypeTextPlain, HttpLib.stringBody("Hello"));
-        HttpOp2.httpDelete(PLAIN());
-        assertEquals("", HttpOp2.httpGetString(PLAIN()));
+        HttpOp.httpPut(PLAIN(), WebContent.contentTypeTextPlain, HttpLib.stringBody("Hello"));
+        HttpOp.httpDelete(PLAIN());
+        assertEquals("", HttpOp.httpGetString(PLAIN()));
     }
 
     // SPARQL Query like.
 
     @Test public void queryGet_01() {
-        assertNotNull(HttpOp2.httpGetString(simpleQuery()));
+        assertNotNull(HttpOp.httpGetString(simpleQuery()));
     }
 
     @Test public void queryGet_02() {
         // No query.
-        execWithHttpException(HttpSC.BAD_REQUEST_400, () -> HttpOp2.httpGetString(sparqlURL() + "?query="));
+        execWithHttpException(HttpSC.BAD_REQUEST_400, () -> HttpOp.httpGetString(sparqlURL() + "?query="));
     }
 
     // Conneg always produces an answer, whether in the accept or not.
     //@Test
     public void httpPost_01() {
         execWithHttpException(HttpSC.UNSUPPORTED_MEDIA_TYPE_415,
-                () -> HttpOp2.httpPost(sparqlURL(), "text/plain", BodyPublishers.ofString("ASK{}")));
+                () -> HttpOp.httpPost(sparqlURL(), "text/plain", BodyPublishers.ofString("ASK{}")));
     }
 
     //@Test
     public void httpPost_03() {
         execWithHttpException(HttpSC.UNSUPPORTED_MEDIA_TYPE_415,
-                () -> HttpOp2.httpPost(sparqlURL(), WebContent.contentTypeOctets, BodyPublishers.ofString("ASK{}")));
+                () -> HttpOp.httpPost(sparqlURL(), WebContent.contentTypeOctets, BodyPublishers.ofString("ASK{}")));
     }
 
     @Test public void httpPostForm_01() {
         Params params = Params.create().add("query", "ASK{}");
-        try ( TypedInputStream in = HttpOp2.httpPostForm(sparqlURL(), params, WebContent.contentTypeResultsJSON) ) {
+        try ( TypedInputStream in = HttpOp.httpPostForm(sparqlURL(), params, WebContent.contentTypeResultsJSON) ) {
             assertEquals(WebContent.contentTypeResultsJSON, in.getContentType());
             IO.readWholeFile(in);
         }
@@ -172,24 +172,24 @@ public class TestHttpOp2 {
         Params params = Params.create().add("query", "ASK{}");
         // Query to Update
         execWithHttpException(HttpSC.BAD_REQUEST_400,
-                () -> HttpOp2.httpPostForm(updateURL(), params, WebContent.contentTypeResultsJSON));
+                () -> HttpOp.httpPostForm(updateURL(), params, WebContent.contentTypeResultsJSON));
     }
 
     @Test public void httpPostForm_03() {
         Params params = Params.create().add("update", "CLEAR ALL");
         // Update to Query
         execWithHttpException(HttpSC.BAD_REQUEST_400,
-            ()->HttpOp2.httpPostForm(queryURL(), params, "*/*"));
+            ()->HttpOp.httpPostForm(queryURL(), params, "*/*"));
     }
 
     @Test public void httpPostForm_04() {
         Params params = Params.create().add("update", "CLEAR ALL");
         // Update request to update endpoint.
-        HttpOp2.httpPostForm(updateURL(), params, "*/*");
+        HttpOp.httpPostForm(updateURL(), params, "*/*");
     }
 
     @Test public void httpPostStream_01() {
-        try(TypedInputStream in = HttpOp2.httpPostStream(pingURL())) {}
+        try(TypedInputStream in = HttpOp.httpPostStream(pingURL())) {}
     }
 
     private static BodyPublisher graphString() { return BodyPublishers.ofString("PREFIX : <http://example/> :s :p :o ."); }
@@ -199,76 +199,76 @@ public class TestHttpOp2 {
     // The HTTP actions that go with GSP.
 
     @Test public void http_gsp_01() {
-        String x = HttpOp2.httpGetString(defaultGraphURL(), "application/rdf+xml");
+        String x = HttpOp.httpGetString(defaultGraphURL(), "application/rdf+xml");
         assertTrue(x.contains("</"));
         assertTrue(x.contains(":RDF"));
     }
 
     @Test public void http_gsp_02() {
-        String x = HttpOp2.httpGetString(defaultGraphURL(), "application/n-triples");
+        String x = HttpOp.httpGetString(defaultGraphURL(), "application/n-triples");
         assertTrue(x.isEmpty());
     }
 
     @Test public void http_gsp_03() {
-        HttpOp2.httpPut(defaultGraphURL(), WebContent.contentTypeTurtle, graphString());
-        String s1 = HttpOp2.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
+        HttpOp.httpPut(defaultGraphURL(), WebContent.contentTypeTurtle, graphString());
+        String s1 = HttpOp.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
         assertFalse(s1.isEmpty());
     }
 
     @Test public void http_gsp_04() {
-        HttpOp2.httpPut(defaultGraphURL(), WebContent.contentTypeTurtle, graphString());
-        String s1 = HttpOp2.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
+        HttpOp.httpPut(defaultGraphURL(), WebContent.contentTypeTurtle, graphString());
+        String s1 = HttpOp.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
         assertFalse(s1.isEmpty());
-        HttpOp2.httpDelete(defaultGraphURL());
-        String s2 = HttpOp2.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
+        HttpOp.httpDelete(defaultGraphURL());
+        String s2 = HttpOp.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
         assertTrue(s2.isEmpty());
     }
 
     @Test public void http_gsp_05() {
-        HttpOp2.httpDelete(defaultGraphURL());
+        HttpOp.httpDelete(defaultGraphURL());
 
-        HttpOp2.httpPost(defaultGraphURL(), WebContent.contentTypeTurtle, graphString());
-        String s1 = HttpOp2.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
+        HttpOp.httpPost(defaultGraphURL(), WebContent.contentTypeTurtle, graphString());
+        String s1 = HttpOp.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
         assertFalse(s1.isEmpty());
-        HttpOp2.httpDelete(defaultGraphURL());
-        String s2 = HttpOp2.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
+        HttpOp.httpDelete(defaultGraphURL());
+        String s2 = HttpOp.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
         assertTrue(s2.isEmpty());
     }
 
     @Test public void http_gsp_06() {
-        HttpOp2.httpPost(namedGraphURL(), WebContent.contentTypeTurtle, graphString());
-        String s1 = HttpOp2.httpGetString(namedGraphURL(), WebContent.contentTypeNTriples);
+        HttpOp.httpPost(namedGraphURL(), WebContent.contentTypeTurtle, graphString());
+        String s1 = HttpOp.httpGetString(namedGraphURL(), WebContent.contentTypeNTriples);
         assertFalse(s1.isEmpty());
 
-        String s2 = HttpOp2.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
+        String s2 = HttpOp.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
         assertTrue(s2.isEmpty());
 
-        HttpOp2.httpDelete(namedGraphURL());
-        String s3 = HttpOp2.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
+        HttpOp.httpDelete(namedGraphURL());
+        String s3 = HttpOp.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
         assertTrue(s3.isEmpty());
 
-        expect404(()->HttpOp2.httpDelete(namedGraphURL()));
+        expect404(()->HttpOp.httpDelete(namedGraphURL()));
     }
 
     @Test public void http_gsp_10() {
-        HttpOp2.httpDelete(defaultGraphURL());
+        HttpOp.httpDelete(defaultGraphURL());
     }
 
     // Extended GSP - no ?default, no ?graph acts on the datasets as a whole.
     @Test public void http_gsp_12() {
-        execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, () -> HttpOp2.httpDelete(gspServiceURL()));
+        execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, () -> HttpOp.httpDelete(gspServiceURL()));
     }
 
     @Test public void http_gsp_20() {
-        String s1 = HttpOp2.httpGetString(gspServiceURL(), WebContent.contentTypeNQuads);
+        String s1 = HttpOp.httpGetString(gspServiceURL(), WebContent.contentTypeNQuads);
         assertNotNull("Got 404 (via null)", s1);
         assertTrue(s1.isEmpty());
 
-        HttpOp2.httpPost(gspServiceURL(), WebContent.contentTypeTriG, datasetString());
-        String s2 = HttpOp2.httpGetString(gspServiceURL(), WebContent.contentTypeNQuads);
+        HttpOp.httpPost(gspServiceURL(), WebContent.contentTypeTriG, datasetString());
+        String s2 = HttpOp.httpGetString(gspServiceURL(), WebContent.contentTypeNQuads);
         assertFalse(s2.isEmpty());
 
-        String s4 = HttpOp2.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
+        String s4 = HttpOp.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
         assertFalse(s4.isEmpty());
     }
 }

@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.http.HttpRDF;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
@@ -60,7 +60,7 @@ public class TestFileUpload  extends AbstractFusekiTest {
         HttpRDF.httpGetToStream(databaseURL(), "text/turtle", stream);
 
         Graph graph4 = GraphFactory.createDefaultGraph();
-        TypedInputStream in = HttpOp2.httpGet(databaseURL(), "text/turtle");
+        TypedInputStream in = HttpOp.httpGet(databaseURL(), "text/turtle");
         RDFDataMgr.read(graph4, in, Lang.TTL);
 
         assertEquals(1, graph4.size());

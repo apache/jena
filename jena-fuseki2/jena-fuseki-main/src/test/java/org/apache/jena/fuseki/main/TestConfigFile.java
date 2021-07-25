@@ -28,7 +28,7 @@ import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.base.Sys;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
@@ -209,11 +209,11 @@ public class TestConfigFile {
         server.start();
         int port = server.getPort();
         try {
-            String x1 = HttpOp2.httpGetString("http://localhost:"+port+"/$/ping");
+            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/$/ping");
             assertNotNull(x1);
-            String x2 = HttpOp2.httpGetString("http://localhost:"+port+"/$/stats");
+            String x2 = HttpOp.httpGetString("http://localhost:"+port+"/$/stats");
             assertNotNull(x2);
-            String x3 = HttpOp2.httpGetString("http://localhost:"+port+"/$/metrics");
+            String x3 = HttpOp.httpGetString("http://localhost:"+port+"/$/metrics");
             assertNotNull(x3);
         } finally {
             server.stop();
@@ -225,11 +225,11 @@ public class TestConfigFile {
         server.start();
         int port = server.getPort();
         try {
-            String x1 = HttpOp2.httpGetString("http://localhost:"+port+"/$/ping");
+            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/$/ping");
             assertNotNull(x1);
-            String x2 = HttpOp2.httpGetString("http://localhost:"+port+"/$/stats");
+            String x2 = HttpOp.httpGetString("http://localhost:"+port+"/$/stats");
             assertNotNull(x2);
-            String x3 = HttpOp2.httpGetString("http://localhost:"+port+"/$/metrics");
+            String x3 = HttpOp.httpGetString("http://localhost:"+port+"/$/metrics");
             assertNotNull(x3);
         } finally {
             server.stop();
@@ -241,15 +241,15 @@ public class TestConfigFile {
         server.start();
         int port = server.getPort();
         try {
-            String x1= HttpOp2.httpGetString("http://localhost:"+port+"/$/tasks");
+            String x1= HttpOp.httpGetString("http://localhost:"+port+"/$/tasks");
             assertNotNull(x1);
-            try(TypedInputStream x2 = HttpOp2.httpPostStream("http://localhost:"+port+"/$/compact/ds", "application/json")) {
+            try(TypedInputStream x2 = HttpOp.httpPostStream("http://localhost:"+port+"/$/compact/ds", "application/json")) {
                 assertNotNull(x2);
                 assertNotEquals(0, x2.readAllBytes().length);
             } catch (IOException ex) {
                 IO.exception(ex);
             }
-            String x3 = HttpOp2.httpGetString("http://localhost:"+port+"/$/tasks/1");
+            String x3 = HttpOp.httpGetString("http://localhost:"+port+"/$/tasks/1");
             assertNotNull(x3);
         } finally {
             server.stop();
@@ -266,15 +266,15 @@ public class TestConfigFile {
         server.start();
         int port = server.getPort();
         try {
-            String x1= HttpOp2.httpGetString("http://localhost:"+port+"/$/tasks");
+            String x1= HttpOp.httpGetString("http://localhost:"+port+"/$/tasks");
             assertNotNull(x1);
-            try(TypedInputStream x2 = HttpOp2.httpPostStream("http://localhost:"+port+"/$/compact/ds?deleteOld", "application/json")) {
+            try(TypedInputStream x2 = HttpOp.httpPostStream("http://localhost:"+port+"/$/compact/ds?deleteOld", "application/json")) {
                 assertNotNull(x2);
                 assertNotEquals(0, x2.readAllBytes().length);
             } catch (IOException ex) {
                 IO.exception(ex);
             }
-            String x3 = HttpOp2.httpGetString("http://localhost:"+port+"/$/tasks/1");
+            String x3 = HttpOp.httpGetString("http://localhost:"+port+"/$/tasks/1");
             assertNotNull(x3);
         } finally {
             server.stop();

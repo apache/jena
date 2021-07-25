@@ -35,7 +35,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.riot.web.HttpOp1;
 import org.apache.jena.sparql.core.DatasetGraph ;
 
 /**
@@ -164,7 +164,7 @@ public class TestUtils {
         IO.close(out);
         ByteArrayEntity entity = new ByteArrayEntity(out.toByteArray());
         entity.setContentType(ct);
-        HttpOp.execHttpPut(url, entity, client, null) ;
+        HttpOp1.execHttpPut(url, entity, client, null) ;
     }
 
     /**

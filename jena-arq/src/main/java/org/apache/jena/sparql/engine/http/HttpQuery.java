@@ -37,8 +37,8 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpCaptureResponse;
-import org.apache.jena.riot.web.HttpOp ;
-import org.apache.jena.riot.web.HttpOp.CaptureInput;
+import org.apache.jena.riot.web.HttpOp1 ;
+import org.apache.jena.riot.web.HttpOp1.CaptureInput;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.web.HttpSC;
@@ -361,7 +361,7 @@ public class HttpQuery extends Params {
     // With exception.
     private static TypedInputStream execHttpGet(String url, String acceptHeader, HttpClient httpClient, HttpContext httpContext) {
         HttpCaptureResponse<TypedInputStream> handler = new CaptureInput();
-        HttpOp.execHttpGet(url, acceptHeader, handler, httpClient, httpContext);
+        HttpOp1.execHttpGet(url, acceptHeader, handler, httpClient, httpContext);
         return handler.get();
     }
 
@@ -378,7 +378,7 @@ public class HttpQuery extends Params {
 
         try {
             // Get the actual response stream
-            TypedInputStream stream = HttpOp.execHttpPostFormStream(serviceURL, this, contentTypeResult, client, getContext());
+            TypedInputStream stream = HttpOp1.execHttpPostFormStream(serviceURL, this, contentTypeResult, client, getContext());
             if (stream == null)
                 throw new QueryExceptionHTTP(404);
             return execCommon(stream);

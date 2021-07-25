@@ -31,7 +31,7 @@ import org.apache.jena.jdbc.connections.JenaConnection ;
 import org.apache.jena.jdbc.remote.FusekiTestAuth;
 import org.apache.jena.jdbc.utils.TestUtils ;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.riot.web.HttpOp1;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.system.Txn;
 import org.eclipse.jetty.security.SecurityHandler;
@@ -81,7 +81,7 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
     @AfterClass
     public static void cleanup() {
         FusekiTestAuth.teardownServer();
-        HttpOp.setDefaultHttpClient(HttpOp.createPoolingHttpClient());
+        HttpOp1.setDefaultHttpClient(HttpOp1.createPoolingHttpClient());
     }
 
     @Override

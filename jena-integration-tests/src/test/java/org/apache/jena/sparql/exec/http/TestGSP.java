@@ -30,7 +30,7 @@ import static org.apache.jena.fuseki.test.HttpTest.*;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
@@ -164,7 +164,7 @@ public class TestGSP {
         assertTrue(g2.isEmpty());
 
         // And just to make sure ...
-        String s2 = HttpOp2.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
+        String s2 = HttpOp.httpGetString(defaultGraphURL(), WebContent.contentTypeNTriples);
         // Default always exists so this is the empty graph in N-triples.
         assertTrue(s2.isEmpty());
     }

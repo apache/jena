@@ -23,7 +23,7 @@ import static java.net.http.HttpRequest.BodyPublishers.ofString;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.sparql.util.Convert;
@@ -37,7 +37,7 @@ public class TestHttpOperations extends AbstractFusekiTest {
     public void query_by_get_1() {
         String qs = Convert.encWWWForm("ASK{}");
         String u = serviceQuery()+"?query=" + qs;
-        try (TypedInputStream in = HttpOp2.httpGet(u)) {
+        try (TypedInputStream in = HttpOp.httpGet(u)) {
             Assert.assertNotNull(in);
         }
     }
@@ -45,7 +45,7 @@ public class TestHttpOperations extends AbstractFusekiTest {
     @Test
     public void query_by_post_1() {
         //String url, String contentType, String content, String acceptType
-        try (TypedInputStream in = HttpOp2.httpPostStream(serviceQuery(),
+        try (TypedInputStream in = HttpOp.httpPostStream(serviceQuery(),
                                                           WebContent.contentTypeSPARQLQuery, ofString("ASK{}"),
                                                           "*")) {
             Assert.assertNotNull(in);
@@ -56,7 +56,7 @@ public class TestHttpOperations extends AbstractFusekiTest {
     public void query_by_post_2() {
         String qs = Convert.encWWWForm("ASK{}");
         String u = serviceQuery()+"?query=" + qs;
-        try (TypedInputStream in = HttpOp2.httpPostStream(u)) {
+        try (TypedInputStream in = HttpOp.httpPostStream(u)) {
             Assert.assertNotNull(in);
         }
     }
@@ -64,7 +64,7 @@ public class TestHttpOperations extends AbstractFusekiTest {
     @Test
     public void query_by_form_1() {
         Params params = Params.create().add("query", "ASK{}");
-        try (TypedInputStream in = HttpOp2.httpPostForm(serviceQuery(), params, "*") ) {
+        try (TypedInputStream in = HttpOp.httpPostForm(serviceQuery(), params, "*") ) {
             Assert.assertNotNull(in);
         }
     }
@@ -72,14 +72,14 @@ public class TestHttpOperations extends AbstractFusekiTest {
     @Test(expected=HttpException.class)
     public void query_by_form_2() {
         Params params = Params.create().add("foobar", "ASK{}");    // Wrong.
-        try (TypedInputStream in = HttpOp2.httpPostForm(serviceQuery(), params, "*") ) {
+        try (TypedInputStream in = HttpOp.httpPostForm(serviceQuery(), params, "*") ) {
             Assert.assertNotNull(in);
         }
     }
 
     @Test
     public void update_by_post_1() {
-        HttpOp2.httpPost(serviceUpdate(), WebContent.contentTypeSPARQLUpdate, ofString("INSERT DATA{}"));
+        HttpOp.httpPost(serviceUpdate(), WebContent.contentTypeSPARQLUpdate, ofString("INSERT DATA{}"));
     }
 
     // POST ?request= :: Not supported.
@@ -95,7 +95,7 @@ public class TestHttpOperations extends AbstractFusekiTest {
     @Test
     public void update_by_form_1() {
         Params params = Params.create().add("update", "INSERT DATA{}");
-        try (TypedInputStream in = HttpOp2.httpPostForm(serviceUpdate(), params, "*") ) {
+        try (TypedInputStream in = HttpOp.httpPostForm(serviceUpdate(), params, "*") ) {
             Assert.assertNotNull(in);
         }
     }
@@ -103,7 +103,7 @@ public class TestHttpOperations extends AbstractFusekiTest {
     @Test(expected=HttpException.class)
     public void update_by_form_2() {
         Params params = Params.create().add("query", "INSERT DATA{}");  // Wrong paramater
-        try (TypedInputStream in = HttpOp2.httpPostForm(serviceUpdate(), params, "*") ) {
+        try (TypedInputStream in = HttpOp.httpPostForm(serviceUpdate(), params, "*") ) {
             Assert.assertNotNull(in);
         }
     }
@@ -113,7 +113,7 @@ public class TestHttpOperations extends AbstractFusekiTest {
     @Test
     public void ds_fetch_by_get_1() {
         String u = databaseURL();
-        try (TypedInputStream in = HttpOp2.httpGet(u)) {
+        try (TypedInputStream in = HttpOp.httpGet(u)) {
             Assert.assertNotNull(in);
         }
     }
@@ -121,7 +121,7 @@ public class TestHttpOperations extends AbstractFusekiTest {
     @Test
     public void ds_query_by_post_1() {
         String u = databaseURL();
-        try (TypedInputStream in = HttpOp2.httpPostStream(u, WebContent.contentTypeSPARQLQuery, ofString("ASK{}"), "*")) {
+        try (TypedInputStream in = HttpOp.httpPostStream(u, WebContent.contentTypeSPARQLQuery, ofString("ASK{}"), "*")) {
             Assert.assertNotNull(in);
         }
     }
@@ -129,6 +129,6 @@ public class TestHttpOperations extends AbstractFusekiTest {
     @Test
     public void ds_update_by_post_1() {
         String u = databaseURL();
-        HttpOp2.httpPost(u, WebContent.contentTypeSPARQLUpdate, ofString("INSERT DATA{}"));
+        HttpOp.httpPost(u, WebContent.contentTypeSPARQLUpdate, ofString("INSERT DATA{}"));
     }
 }

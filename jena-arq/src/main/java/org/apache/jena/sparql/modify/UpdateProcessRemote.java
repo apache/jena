@@ -21,7 +21,7 @@ package org.apache.jena.sparql.modify;
 import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.riot.web.HttpOp1 ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.update.UpdateRequest ;
@@ -80,7 +80,7 @@ public class UpdateProcessRemote extends UpdateProcessRemoteBase
 
         // Execution
         String reqStr = this.getUpdateRequest().toString() ;
-        HttpOp.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr, getClient(), getHttpContext()) ;
+        HttpOp1.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr, getClient(), getHttpContext()) ;
     }
 }
 

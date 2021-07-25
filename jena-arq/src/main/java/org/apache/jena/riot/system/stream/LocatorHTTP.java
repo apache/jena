@@ -19,7 +19,7 @@
 package org.apache.jena.riot.system.stream ;
 
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -39,7 +39,7 @@ public class LocatorHTTP extends LocatorURL {
     @Override
     public TypedInputStream performOpen(String uri) {
         if ( uri.startsWith("http://") || uri.startsWith("https://") )
-            return HttpOp2.httpGet(uri, WebContent.defaultRDFAcceptHeader) ;
+            return HttpOp.httpGet(uri, WebContent.defaultRDFAcceptHeader) ;
         return null ;
     }
 

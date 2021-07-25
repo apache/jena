@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.jena.http.HttpOp2;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -88,12 +88,12 @@ public class TestPlainServer {
     }
     // Servlet - mounted at /ds/myServlet, but not a service that Fuseki dispatches.
     @Test public void plainServlet1() {
-        String x = HttpOp2.httpGetString(serverURL+"/ds/myServlet1");
+        String x = HttpOp.httpGetString(serverURL+"/ds/myServlet1");
         assertEquals("SERVLET: 1",x);
     }
 
     @Test public void plainServlet2() {
-        String x = HttpOp2.httpGetString(serverURL+"/myServlet2");
+        String x = HttpOp.httpGetString(serverURL+"/myServlet2");
         assertEquals("SERVLET: 2",x);
     }
 
@@ -101,31 +101,31 @@ public class TestPlainServer {
     // any dataset and its services take precedence.
 
     @Test public void plainFile1() {
-        String x = HttpOp2.httpGetString(serverURL+"/ds/file-ds.txt");
+        String x = HttpOp.httpGetString(serverURL+"/ds/file-ds.txt");
         assertNotNull(x);
         assertTrue(x.contains("CONTENT"));
     }
 
     // Files - a static file not visible via non-existent dataset.
     @Test public void plainFile2() {
-        String x = HttpOp2.httpGetString(serverURL+"/other/file-other.txt");
+        String x = HttpOp.httpGetString(serverURL+"/other/file-other.txt");
         assertNotNull(x);
         assertTrue(x.contains("CONTENT"));
     }
 
     @Test public void plainFile3() {
-        String x = HttpOp2.httpGetString(serverURL+"/file-top.txt");
+        String x = HttpOp.httpGetString(serverURL+"/file-top.txt");
         assertNotNull(x);
         assertTrue(x.contains("CONTENT"));
     }
 
     @Test public void plainFile4() {
-        String x = HttpOp2.httpGetString(serverURL+"/non-existent.txt");
+        String x = HttpOp.httpGetString(serverURL+"/non-existent.txt");
         assertNull(x);
     }
 
     @Test public void plainFile5() {
-        String x = HttpOp2.httpGetString(serverURL+"/ds/non-existent.txt");
+        String x = HttpOp.httpGetString(serverURL+"/ds/non-existent.txt");
         assertNull(x);
     }
 }
