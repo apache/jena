@@ -54,6 +54,6 @@ public class BIOInput
             }
         }
         QueryIterator qIter = QueryIterPlainWrapper.create(bindings.iterator()) ;
-        return new ResultSetStream(Var.varNames(vars), m, qIter) ;
+        return ResultSetStream.create(vars, qIter) ;
     }
 }

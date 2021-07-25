@@ -59,19 +59,12 @@ public interface RowSet extends Iterator<Binding> {
         return new RowSetAdapter(resultSet);
     }
 
-    // [QExec] Migrate to ResultSet
-    public static ResultSet adapt(RowSet rowSet) {
-        if ( rowSet instanceof RowSetAdapter )
-            return ((RowSetAdapter)rowSet).get();
-        return new ResultSetAdapter(rowSet);
-    }
-
     /**
      * Turn a {@link QueryIterator} into a RowSet.
      * This operation does not materialize the QueryIterator.
      */
     public static RowSet create(QueryIterator qIter, List<Var> vars) {
-        return new RowSetStream(qIter, vars);
+        return new RowSetStream(vars, qIter);
     }
 
     /**

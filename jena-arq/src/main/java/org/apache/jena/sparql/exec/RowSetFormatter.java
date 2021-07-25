@@ -22,6 +22,7 @@ import java.io.OutputStream ;
 import java.util.Iterator ;
 
 import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.resultset.ResultSetLang;
@@ -111,7 +112,7 @@ public class RowSetFormatter {
             // [QExec] ResultSetWriter with prefixes.
             .set(ARQConstants.symPrologue, prologue)
             // [QExec]
-            .write(out, RowSet.adapt(rowSet));
+            .write(out, ResultSet.adapt(rowSet));
     }
 
     /**

@@ -32,7 +32,7 @@ public class RowSetStream implements RowSet {
     private List<Var> resultVars ;
     private int rowNumber ;
 
-    public RowSetStream(Iterator<Binding> bindings, List<Var> resultVars) {
+    public RowSetStream(List<Var> resultVars, Iterator<Binding> bindings) {
         this.iterator = bindings;
         this.resultVars = new ArrayList<>(resultVars);
         rowNumber = 0;

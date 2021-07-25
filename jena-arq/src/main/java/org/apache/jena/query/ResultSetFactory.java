@@ -371,6 +371,6 @@ public class ResultSetFactory {
      * @return ResultSet
      */
     static public ResultSet create(QueryIterator queryIterator, List<String> vars) {
-        return new ResultSetStream(vars, null, queryIterator);
+        return ResultSetStream.create(vars, null, queryIterator);
     }
 }

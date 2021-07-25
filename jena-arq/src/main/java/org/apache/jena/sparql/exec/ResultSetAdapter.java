@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.exec;
 
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ResultSetStream;
 
@@ -28,14 +27,12 @@ public class ResultSetAdapter extends ResultSetStream /*implements ResultSet*/ {
     private final RowSet rowSet;
 
     public ResultSetAdapter(RowSet rowSet) {
-        super(Var.varNames(rowSet.getResultVars()),
-              ModelFactory.createDefaultModel(),
-              rowSet);
+        super(0, Var.varNames(rowSet.getResultVars()), null, rowSet);
         this.rowSet = rowSet;
     }
 
     public ResultSetAdapter(RowSet rowSet, Model m) {
-        super(Var.varNames(rowSet.getResultVars()), m, rowSet);
+        super(0, Var.varNames(rowSet.getResultVars()), m, rowSet);
         this.rowSet = rowSet;
     }
 

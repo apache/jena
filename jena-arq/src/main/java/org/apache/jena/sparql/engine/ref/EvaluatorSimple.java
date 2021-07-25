@@ -340,7 +340,7 @@ public class EvaluatorSimple implements Evaluator
     {
         System.out.println("Table: "+Lib.className(table)) ;
         QueryIterator qIter = table.iterator(null) ;
-        ResultSet rs = new ResultSetStream(table.getVarNames(), null, table.iterator(null)) ;
+        ResultSet rs = ResultSetStream.create(table.getVarNames(), null, table.iterator(null)) ;
         ResultSetFormatter.out(rs) ;
     }
 }

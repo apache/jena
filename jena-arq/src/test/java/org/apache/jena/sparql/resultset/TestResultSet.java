@@ -598,7 +598,7 @@ public class TestResultSet
         List<String> vars = new ArrayList<>() ;
         vars.add(var) ;
         QueryIterator qIter = QueryIterSingleton.create(b, null) ;
-        ResultSet rs = new ResultSetStream(vars, null, qIter) ;
+        ResultSet rs = ResultSetStream.create(vars, null, qIter) ;
         return rs ;
     }
 
@@ -615,7 +615,7 @@ public class TestResultSet
         solutions.add(b2) ;
 
         QueryIterator qIter = QueryIterPlainWrapper.create(solutions.iterator(), null) ;
-        ResultSet rs = new ResultSetStream(vars, null, qIter) ;
+        ResultSet rs = ResultSetStream.create(vars, null, qIter) ;
         return rs ;
     }
 
@@ -643,7 +643,7 @@ public class TestResultSet
         vars.add(var2) ;
 
         QueryIterator qIter = QueryIterSingleton.create(b, null) ;
-        ResultSet rs = new ResultSetStream(vars, null, qIter) ;
+        ResultSet rs = ResultSetStream.create(vars, null, qIter) ;
         return rs ;
     }
 

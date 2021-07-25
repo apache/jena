@@ -534,7 +534,7 @@ public class QueryExecutionBase implements QueryExecution
         else
             model = ModelFactory.createDefaultModel() ;
 
-        ResultSetStream rStream = new ResultSetStream(query.getResultVars(), model, qIter) ;
+        ResultSet rStream = ResultSetStream.create(query.getResultVars(), model, qIter) ;
         return rStream ;
     }
 

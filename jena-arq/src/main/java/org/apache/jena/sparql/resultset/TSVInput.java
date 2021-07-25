@@ -46,7 +46,6 @@ public class TSVInput {
     public static ResultSet fromTSV(InputStream in) {
         BufferedReader reader = IO.asBufferedUTF8(in);
         List<Var> vars = new ArrayList<>();
-        List<String> varNames = new ArrayList<>();
 
         String str = null;
         try {
@@ -69,7 +68,6 @@ public class TSVInput {
 
                     Var var = Var.alloc(v);
                     vars.add(var);
-                    varNames.add(var.getName());
                 }
             }
         }
@@ -79,7 +77,7 @@ public class TSVInput {
 
         //Generate an instance of ResultSetStream using TSVInputIterator
         //This will parse actual result rows as needed thus minimising memory usage
-        return new ResultSetStream(varNames, null, new TSVInputIterator(reader, vars));
+        return ResultSetStream.create(vars, new TSVInputIterator(reader, vars));
     }
 
     /**

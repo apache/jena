@@ -46,7 +46,6 @@ import org.apache.jena.sparql.engine.ResultSetStream;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
-import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context;
@@ -76,11 +75,9 @@ public class ResultSetReaderJSON implements ResultSetReader {
             context = ARQ.getContext();
         RS_JSON exec = new RS_JSON(context);
         exec.parse(in);
-        if ( model == null )
-            model = GraphFactory.makeJenaDefaultModel();
         if ( exec.rows != null ) {
             QueryIterator qIter = QueryIterPlainWrapper.create(exec.rows.iterator());
-            ResultSet rs = new ResultSetStream(Var.varNames(exec.vars), model, qIter);
+            ResultSet rs = ResultSetStream.create(Var.varNames(exec.vars), model, qIter);
             return new SPARQLResult(rs);
         } else
             return new SPARQLResult(exec.booleanResult);

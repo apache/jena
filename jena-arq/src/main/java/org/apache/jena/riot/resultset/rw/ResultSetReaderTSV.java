@@ -110,7 +110,7 @@ public class ResultSetReaderTSV implements ResultSetReader {
 
         // Generate an instance of ResultSetStream using TSVInputIterator
         // This will parse actual result rows as needed thus minimising memory usage
-        return new ResultSetStream(varNames, null, new TSVInputIterator(reader, vars));
+        return ResultSetStream.create(varNames, null, new TSVInputIterator(reader, vars));
     }
 
     /**

@@ -31,7 +31,7 @@ public class RowSetAdapter extends RowSetStream {
     public ResultSet get() { return other; }
 
     public RowSetAdapter(ResultSet resultSet) {
-        super(bindingIterator(resultSet), Var.varList(resultSet.getResultVars()));
+        super(Var.varList(resultSet.getResultVars()), bindingIterator(resultSet));
         this.other = resultSet;
     }
 

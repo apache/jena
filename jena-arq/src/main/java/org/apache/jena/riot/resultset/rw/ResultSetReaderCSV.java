@@ -89,7 +89,6 @@ public class ResultSetReaderCSV implements ResultSetReader {
     /** Read ResultSet after header */
     private static ResultSet resultSetFromCSV(List<Var> vars, CSVParser parser) {
         BindingBuilder builder = Binding.builder();
-        List<String> varNames = Var.varNames(vars) ;
         Function<List<String>, Binding> transform = new Function<List<String>, Binding>(){
             private int count = 1 ;
             @Override
@@ -111,7 +110,7 @@ public class ResultSetReaderCSV implements ResultSetReader {
 
         //Generate an instance of ResultSetStream using TSVInputIterator
         //This will parse actual result rows as needed thus minimising memory usage
-        return new ResultSetStream(varNames, null, bindings);
+        return ResultSetStream.create(vars, bindings);
     }
 
     private static List<Var> vars(CSVParser parser) {

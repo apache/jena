@@ -19,12 +19,11 @@
 package org.apache.jena.sparql.sse.builders;
 
 import org.apache.jena.query.ResultSet;
-import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.sse.Item;
 
 public class BuilderResultSet {
 
     public static ResultSet build(Item item) {
-        return RowSet.adapt(BuilderRowSet.build(item));
+        return ResultSet.adapt(BuilderRowSet.build(item));
     }
 }

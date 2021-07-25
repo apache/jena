@@ -55,6 +55,6 @@ public class BuilderRowSet {
             bindings.add(b);
         }
 
-        return new RowSetStream(bindings.iterator(), vars);
+        return new RowSetStream(vars, bindings.iterator());
     }
 }

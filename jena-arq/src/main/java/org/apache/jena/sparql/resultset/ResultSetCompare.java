@@ -228,7 +228,7 @@ public class ResultSetCompare
 
     /** See {@link #isomorphic(ResultSet, ResultSet)} */
     public static boolean isomorphic(RowSet rs1, RowSet rs2) {
-        return isomorphic(RowSet.adapt(rs1), RowSet.adapt(rs2));
+        return isomorphic(ResultSet.adapt(rs1), ResultSet.adapt(rs2));
     }
 
     /** Compare two bindings, use the node equality test provided */

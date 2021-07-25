@@ -23,6 +23,9 @@ import java.util.List ;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.exec.ResultSetAdapter;
+import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.RowSetAdapter;
 
 /** Results from a query in a table-like manner for SELECT queries.
  *  Each row corresponds to a set of bindings which fulfil the conditions
@@ -35,6 +38,14 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 
 public interface ResultSet extends Iterator<QuerySolution>
 {
+
+    public static ResultSet adapt(RowSet rowSet) {
+        if ( rowSet instanceof RowSetAdapter ) {
+            return ((RowSetAdapter)rowSet).get();
+        }
+        return new ResultSetAdapter(rowSet);
+    }
+
     /** Is there another result? */
     @Override
     public boolean hasNext() ;

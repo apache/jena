@@ -106,7 +106,7 @@ public class QueryExecutionAdapter implements QueryExecution
         if ( getDataset() != null )
             return new ResultSetAdapter(get().select(), getDataset().getDefaultModel());
         else
-            return new ResultSetAdapter(get().select());
+            return ResultSet.adapt(get().select());
     }
 
     /** Execute a CONSTRUCT query */
