@@ -19,7 +19,7 @@
 package org.apache.jena.sparql.engine.http;
 
 /** A collection of parameters for protocol use.
- * @deprecated Provides for use of old Apache HttpClient elated code. To be removed.
+ * @deprecated Provides for use of old Apache HttpClient related code. To be removed.
  */
 @Deprecated
 public class Params extends org.apache.jena.sparql.exec.http.Params {

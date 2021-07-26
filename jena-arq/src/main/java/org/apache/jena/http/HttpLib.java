@@ -398,7 +398,7 @@ public class HttpLib {
         return AuthEnv.get().addAuth(requestBuilder, serviceEndpoint);
     }
 
-    // [QExec] Sort out building.
+    // [QExec] Sort out building. newGetRequest
     public static Builder requestBuilder(String url, Map<String, String> httpHeaders, long readTimeout, TimeUnit readTimeoutUnit) {
         HttpRequest.Builder builder = HttpLib.requestBuilderFor(url);
         headers(builder, httpHeaders);

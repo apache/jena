@@ -20,7 +20,6 @@ package org.apache.jena.http.auth;
 
 import java.net.URI;
 import java.net.http.HttpRequest.Builder;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,9 +37,7 @@ public class AuthEnv {
     private static AuthEnv singleton = new AuthEnv();
     public static AuthEnv get() { return singleton; }
 
-    private AuthEnv() {
-        //super(Function.identity());
-    }
+    private AuthEnv() { }
 
     /** Register (username, password) information for a URI endpoint. */
     public void registerUsernamePassword(URI uri, String user, String password) {
@@ -78,13 +75,10 @@ public class AuthEnv {
         authModifiers.clear();
     }
 
-    // Clear the setup active registrations.
+    /** Clear all registrations. */
     public void clearAuthEnv() {
-        List<AuthDomain> items = passwordRegistry.registered();
-        items.forEach(ad->{
-            passwordRegistry.remove(ad);
-            authModifiers.remove(ad.getURI().toString());
-        });
+        passwordRegistry.clearAll();
+        authModifiers.clear();
     }
 
     // [QExec] Clean up. Pass in URI?

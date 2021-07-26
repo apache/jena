@@ -25,7 +25,7 @@ import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.sparql.exec.RowSetFormatter;
+import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.sparql.exec.RowSetRewindable;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.sse.SSE;
@@ -70,9 +70,9 @@ public abstract class AbstractTestAdditional {
         if (! b ) {
             rsExpected.reset();
             rsGot.reset();
-            RowSetFormatter.out(System.out, rsExpected);
+            RowSetOps.out(System.out, rsExpected);
             System.out.println();
-            RowSetFormatter.out(System.out, rsGot);
+            RowSetOps.out(System.out, rsGot);
         }
         assertTrue("result sets different", b);
     }

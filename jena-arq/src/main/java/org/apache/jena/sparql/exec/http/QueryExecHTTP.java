@@ -116,7 +116,6 @@ public class QueryExecHTTP implements QueryExec {
     private InputStream retainedConnection = null;
 
     private HttpClient httpClient = HttpEnv.getDftHttpClient();
-
     private Map<String, String> httpHeaders;
 
     public QueryExecHTTP(String serviceURL, Query query, String queryString, int urlLimit,
@@ -136,7 +135,8 @@ public class QueryExecHTTP implements QueryExec {
         this.appProvidedAcceptHeader = explicitAcceptHeader;
         // Important - handled as special case because the defaults vary by query type.
         if ( httpHeaders.containsKey(HttpNames.hAccept) ) {
-            this.appProvidedAcceptHeader = httpHeaders.get(HttpNames.hAccept);
+            if ( this.appProvidedAcceptHeader != null )
+                this.appProvidedAcceptHeader = httpHeaders.get(HttpNames.hAccept);
             this.httpHeaders.remove(HttpNames.hAccept);
         }
         this.httpHeaders = httpHeaders;
@@ -156,7 +156,6 @@ public class QueryExecHTTP implements QueryExec {
         checkNotClosed();
         check(QueryType.SELECT);
         RowSet rs = execRowSet();
-        // [QExec] Check open - less of an issue in remote - ResultSetCheckCondition
         return rs;
     }
 

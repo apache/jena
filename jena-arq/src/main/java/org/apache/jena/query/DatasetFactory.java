@@ -130,6 +130,13 @@ public class DatasetFactory {
     }
 
     /**
+     * An always empty {@link Dataset}.
+     * It has one graph (the default graph) with zero triples.
+     * No changes allowed - this is not a sink.
+     */
+    public static Dataset empty() { return wrap(DatasetGraphFactory.empty()); }
+
+    /**
 	 * @param uriList URIs merged to form the default dataset
 	 * @return a dataset based on a list of URIs : these are merged into the default graph of the dataset.
 	 */

@@ -38,9 +38,9 @@ import org.apache.jena.sparql.core.Prologue ;
  *  @see ResultSetMgr
  */
 
-public class RowSetFormatter {
+public class RowSetOps {
 
-    private RowSetFormatter() {}
+    private RowSetOps() {}
 
     /**
      * This operation faithfully walks the rowSet but does nothing with the rows.

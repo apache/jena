@@ -31,14 +31,12 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.RowSetStream;
 
-
 /**
  * The main ResultSet implementation for returning results from queries.
  * This version is "use once" - you can not reset the result set because
  * the results of the query are not remembered so as not to consume potentially
  * large amounts of memory.
  */
-
 public class ResultSetStream implements ResultSet
 {
     // Could use QueryIteratorWrapper
@@ -57,7 +55,6 @@ public class ResultSetStream implements ResultSet
     public static ResultSet create(List<Var> resultVars, Iterator<Binding> iter) {
         return ResultSet.adapt(new RowSetStream(resultVars, iter));
     }
-
 
     /** @deprecated Use {@link #create} */
     @Deprecated

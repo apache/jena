@@ -32,7 +32,10 @@ import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.http.*;
+import org.apache.jena.http.HttpEnv;
+import org.apache.jena.http.HttpLib;
+import org.apache.jena.http.HttpRDF;
+import org.apache.jena.http.Push;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDFLib;
@@ -407,7 +410,7 @@ public class GSP {
     }
 
     /**
-     * Return the query string for a graphusing the
+     * Return the query string for a graph using the
      * <a href="https://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store Protocol</a>.
      * The {@code graphName} be a valid, absolute URI (i.e. includes the scheme)
      * or the word "default", or null, for the default graph of the store
@@ -431,7 +434,7 @@ public class GSP {
         }
     }
 
-    // Expose access for subclasses. "final" to enmsure that this class controls constraints and expectations.
+    // Expose access for subclasses. "final" to ensure that this class controls constraints and expectations.
     // Only valid when the request has correctly been setup.
 
     final protected String graphName() { return graphName; }

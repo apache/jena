@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import org.apache.http.client.HttpClient;
 import org.apache.jena.query.Query ;
@@ -91,9 +90,6 @@ public class Service_AHC {
      */
     public static final Symbol queryTimeout = SystemARQ.allocSymbol(base, "queryTimeout");
 
-    // [QExec] DEvELOPMENT !!
-    public static BiFunction<OpService, Context, QueryIterator> braveNewWorld = null;
-
     /**
      * Executes a service operator
      *
@@ -104,9 +100,6 @@ public class Service_AHC {
      * @return Query iterator of service results
      */
     public static QueryIterator exec(OpService op, Context context) {
-        if ( braveNewWorld != null )
-            return braveNewWorld.apply(op, context);
-
         if ( context != null && context.isFalse(serviceAllowed) )
             throw new QueryExecException("SERVICE execution disabled") ;
 

@@ -55,6 +55,10 @@ import org.slf4j.LoggerFactory ;
  */
 @Deprecated
 public class HttpQuery extends Params {
+
+    // This is the previous Apache HttpClient version.
+    // See QueryExecHTTP for current JDK-based HTTP code.
+
     static final Logger log = LoggerFactory.getLogger(HttpQuery.class.getName());
 
     /** The definition of "large" queries */

@@ -142,7 +142,7 @@ public class Service {
                 .params(serviceParams)
                 .context(context)
                 .httpClient(httpClient)
-                .sendMode(QuerySendMode.asGetWithLimitBody)
+                .sendMode(QuerySendMode.asGetWithLimitBody) // [QExec] How to control?
                 .build();
         try {
             // Detach from the network stream.
@@ -155,6 +155,7 @@ public class Service {
     }
 
     private static HttpClient chooseHttpClient(String serviceURL, Context context) {
+        // [QExec] Done in HttpLib?
         // -- RegistryHttpClient : preferred way to set a custom HttpClient
         HttpClient httpClient = RegistryHttpClient.get().find(serviceURL);
         if ( httpClient == null && context != null ) {

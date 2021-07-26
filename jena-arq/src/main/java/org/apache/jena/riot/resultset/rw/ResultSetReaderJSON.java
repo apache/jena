@@ -34,18 +34,15 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.ResultSetReader;
 import org.apache.jena.riot.resultset.ResultSetReaderFactory;
 import org.apache.jena.riot.system.SyntaxLabels;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.ResultSetStream;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
-import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context;
@@ -67,17 +64,16 @@ public class ResultSetReaderJSON implements ResultSetReader {
 
     @Override
     public SPARQLResult readAny(InputStream in, Context context) {
-        return process(in, null, context);
+        return process(in, context);
     }
 
-    static private SPARQLResult process(InputStream in, Model model, Context context) {
+    static private SPARQLResult process(InputStream in, Context context) {
         if ( context == null )
             context = ARQ.getContext();
         RS_JSON exec = new RS_JSON(context);
         exec.parse(in);
         if ( exec.rows != null ) {
-            QueryIterator qIter = QueryIterPlainWrapper.create(exec.rows.iterator());
-            ResultSet rs = ResultSetStream.create(Var.varNames(exec.vars), model, qIter);
+            ResultSet rs = ResultSetStream.create(exec.vars, exec.rows.iterator());
             return new SPARQLResult(rs);
         } else
             return new SPARQLResult(exec.booleanResult);

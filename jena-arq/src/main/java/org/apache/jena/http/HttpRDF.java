@@ -161,7 +161,7 @@ public class HttpRDF {
         Objects.requireNonNull(client);
         Objects.requireNonNull(url);
         HttpRequest requestData = HttpLib.newGetRequest(url, modifier);
-        HttpResponse<InputStream> response = HttpLib.execute(client, requestData);
+        HttpResponse<InputStream> response = execute(client, requestData);
         handleHttpStatusCode(response);
         return response;
     }

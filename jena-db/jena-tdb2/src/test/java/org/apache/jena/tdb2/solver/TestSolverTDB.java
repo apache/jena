@@ -38,7 +38,7 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.RowSet;
-import org.apache.jena.sparql.exec.RowSetFormatter;
+import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.sparql.exec.RowSetRewindable;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.sse.SSE;
@@ -142,8 +142,8 @@ public class TestSolverTDB {
             System.out.println("Different: ");
             rsw1.reset();
             rsw2.reset();
-            RowSetFormatter.out(rsw1);
-            RowSetFormatter.out(rsw2);
+            RowSetOps.out(rsw1);
+            RowSetOps.out(rsw2);
             System.out.println();
         }
         assertTrue(b == result);

@@ -76,11 +76,9 @@ public class ResultSetReaderTSV implements ResultSetReader {
     public static ResultSet resultSetFromTSV(InputStream in) {
         BufferedReader reader = IO.asBufferedUTF8(in);
         List<Var> vars = new ArrayList<>();
-        List<String> varNames = new ArrayList<>();
 
         String str = null;
         try {
-
             // Here we try to parse only the Header Row
             str = reader.readLine();
             if ( str == null )
@@ -100,7 +98,6 @@ public class ResultSetReaderTSV implements ResultSetReader {
 
                     Var var = Var.alloc(v);
                     vars.add(var);
-                    varNames.add(var.getName());
                 }
             }
         }
@@ -110,7 +107,7 @@ public class ResultSetReaderTSV implements ResultSetReader {
 
         // Generate an instance of ResultSetStream using TSVInputIterator
         // This will parse actual result rows as needed thus minimising memory usage
-        return ResultSetStream.create(varNames, null, new TSVInputIterator(reader, vars));
+        return ResultSetStream.create(vars, new TSVInputIterator(reader, vars));
     }
 
     /**

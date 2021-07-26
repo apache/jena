@@ -42,6 +42,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.ResultSetStream;
 import org.apache.jena.sparql.resultset.RDFOutput ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 
@@ -70,7 +71,7 @@ public class QueryExecUtils {
     public static void executeQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat) {
         executeQuery(prologue, queryExecution, outputFormat, System.out);
     }
-    
+
     public static void executeQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat, PrintStream output) {
         Query query = queryExecution.getQuery() ;
         if ( prologue == null && query != null )
@@ -102,19 +103,19 @@ public class QueryExecUtils {
     public static void execute(Op op, DatasetGraph dsg, ResultsFormat outputFormat) {
         execute(op, dsg, outputFormat, System.out);
     }
-        
+
     public static void execute(Op op, DatasetGraph dsg, ResultsFormat outputFormat, PrintStream output) {
         QueryIterator qIter = Algebra.exec(op, dsg) ;
 
-        List<String> vars = null ;
+        List<Var> vars = null ;
         if ( op instanceof OpProject )
-            vars = Var.varNames(((OpProject)op).getVars()) ;
+            vars = ((OpProject)op).getVars() ;
         else
             // The variables defined in patterns (not Filters, nor NOT EXISTS,
             // nor ORDER BY)
-            vars = Var.varNames(OpVars.visibleVars(op)) ;
+            vars = new ArrayList<>(OpVars.visibleVars(op)) ;
 
-        ResultSet results = ResultSetFactory.create(qIter, vars) ;
+        ResultSet results = ResultSetStream.create(vars, qIter) ;
         outputResultSet(results, null, outputFormat, output) ;
         output.flush();
     }
@@ -265,7 +266,7 @@ public class QueryExecUtils {
         System.err.println("Unknown format: " + outputFormat) ;
     }
 
-    
+
     private static void doAskQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat, PrintStream output) {
         boolean b = qe.execAsk() ;
 
@@ -371,7 +372,7 @@ public class QueryExecUtils {
         }
         return r ;
     }
-    
+
     /**
      * Execute, returning all matches, which may be zero.
      */
