@@ -32,7 +32,7 @@ import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.EngineLib;
+import org.apache.jena.sparql.engine.Timeouts;
 import org.apache.jena.sparql.engine.QueryEngineFactory;
 import org.apache.jena.sparql.engine.QueryEngineRegistry;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -70,10 +70,10 @@ public class QueryExecBuilder {
 
     // Uses initial binding to execution (old, original) feature
     private Binding      initialBinding     = null;
-    private long         timeout1           = UNSET;
-    private TimeUnit     timeoutTimeUnit1   = null;
-    private long         timeout2           = UNSET;
-    private TimeUnit     timeoutTimeUnit2   = null;
+    private long         initialTimeout     = UNSET;
+    private TimeUnit     initialTimeoutUnit = null;
+    private long         overallTimeout     = UNSET;
+    private TimeUnit     overallTimeoutUnit = null;
 
     private QueryExecBuilder() { }
 
@@ -157,45 +157,50 @@ public class QueryExecBuilder {
     }
 
     public QueryExecBuilder timeout(long value, TimeUnit timeUnit) {
-        this.timeout1 = value;
-        this.timeoutTimeUnit1 = timeUnit;
-        this.timeout2 = value;
-        this.timeoutTimeUnit2 = timeUnit;
+        this.initialTimeout = value;
+        this.initialTimeoutUnit = timeUnit;
+        this.overallTimeout = value;
+        this.overallTimeoutUnit = timeUnit;
         return this;
     }
 
     public QueryExecBuilder initialTimeout(long value, TimeUnit timeUnit) {
-        this.timeout1 = value < 0 ? -1L : value ;
-        this.timeoutTimeUnit1 = timeUnit;
+        this.initialTimeout = value < 0 ? -1L : value ;
+        this.initialTimeoutUnit = timeUnit;
         return this;
     }
 
     public QueryExecBuilder overallTimeout(long value, TimeUnit timeUnit) {
-        this.timeout2 = value;
-        this.timeoutTimeUnit2 = timeUnit;
+        this.overallTimeout = value;
+        this.overallTimeoutUnit = timeUnit;
         return this;
     }
 
-    // Set times from context if not set directly.
+    // Set times from context if not set directly. e..g Context provides default values.
+    // Contrast with SPARQLQueryProcessor where the context is limiting values of the protocol parameter.
     private static void defaultTimeoutsFromContext(QueryExecBuilder builder, Context cxt) {
         applyTimeouts(builder, cxt.get(ARQ.queryTimeout));
     }
 
     /** Take obj, find the timeout(s) and apply to the builder */
-    public static void applyTimeouts(QueryExecBuilder builder, Object obj) {
+    private static void applyTimeouts(QueryExecBuilder builder, Object obj) {
         if ( obj == null )
             return ;
         try {
             if ( obj instanceof Number ) {
                 long x = ((Number)obj).longValue();
-                if ( builder.timeout2 < 0 )
+                if ( builder.overallTimeout < 0 )
                     builder.overallTimeout(x, TimeUnit.MILLISECONDS);
             } else if ( obj instanceof String ) {
                 String str = obj.toString();
-                Pair<Long, Long> pair = EngineLib.parseTimoutStr(str, TimeUnit.MILLISECONDS);
-                if ( builder.timeout1 < 0 )
+                Pair<Long, Long> pair = Timeouts.parseTimeoutStr(str, TimeUnit.MILLISECONDS);
+                if ( pair == null ) {
+                    Log.warn(builder, "Bad timeout string: "+str);
+                    return ;
+                }
+                if ( builder.initialTimeout < 0 )
                     builder.initialTimeout(pair.getLeft(), TimeUnit.MILLISECONDS);
-                if ( builder.timeout2 < 0 )
+                if ( builder.overallTimeout < 0 )
                     builder.overallTimeout(pair.getRight(), TimeUnit.MILLISECONDS);
             } else
                 Log.warn(builder, "Can't interpret timeout: " + obj);
@@ -222,7 +227,7 @@ public class QueryExecBuilder {
             queryActual = QueryTransformOps.transform(query, substitutionMap);
 
         defaultTimeoutsFromContext(this, cxt);
-        QueryExec qExec = new QueryExecDataset(queryActual, dataset, cxt, f, timeout1, timeoutTimeUnit1, timeout2, timeoutTimeUnit2, initialBinding);
+        QueryExec qExec = new QueryExecDataset(queryActual, dataset, cxt, f, initialTimeout, initialTimeoutUnit, overallTimeout, overallTimeoutUnit, initialBinding);
         return qExec;
     }
 

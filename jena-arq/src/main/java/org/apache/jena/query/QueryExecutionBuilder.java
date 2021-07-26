@@ -151,7 +151,9 @@ public class QueryExecutionBuilder {
     }
 
     public QueryExecution build() {
-        // Delays creating the execution
+        // QueryExecutionCompat delays creating the execution (builder.build) until
+        // it is required so that setters in QueryExecution
+        // (setInitialBinding/setTimeout*) act on the QueryExec builder.
         return new QueryExecutionCompat(builder);
     }
 

@@ -101,7 +101,7 @@ public class QueryExecDataset implements QueryExec
         this.context = (cxt == null) ? Context.setupContextForDataset(cxt, datasetGraph) : cxt;
         this.timeout1 = asMillis(timeout1, timeUnit1);
         this.timeout2 = asMillis(timeout2, timeUnit2);
-        // Wil swap to query substitution handled in QueryExecBuilder
+        // See also query substitution handled in QueryExecBuilder
         this.initialBinding = initialToEngine;
         init();
     }
@@ -256,25 +256,21 @@ public class QueryExecDataset implements QueryExec
         // Prefixes for result (after initialization)
         insertPrefixesInto(graph);
 
+        // Variables in DESCRIBE
         if ( rows != null ) {
-            // [QExec] Write better
-            for (; rows.hasNext(); ) {
-                Binding rb = rows.next();
+            // Single pass over rows.
+            rows.forEachRemaining(row->{
                 for ( Var var : rows.getResultVars() ) {
-                    Node n = rb.get(var);
+                    Node n = row.get(var);
                     if ( n != null )
                         set.add(n);
                 }
-            }
+            });
         }
 
-        // XXX Rewrite!
-        // [QExec] Write better
+        // Any URIs in the DESCRIBE
         if ( query.getResultURIs() != null ) {
-            // Any URIs in the DESCRIBE
-            for ( Node n : query.getResultURIs() ) {
-                set.add(n);
-            }
+            query.getResultURIs().forEach(set::add);
         }
 
         // DescribeHandlers work on models.
@@ -374,10 +370,19 @@ public class QueryExecDataset implements QueryExec
         return x >= 0;
     }
 
-    private class TimeoutCallback implements Runnable {
+    class TimeoutCallback implements Runnable {
+        private final AtomicBoolean cancelSignal;
+
+        public TimeoutCallback(AtomicBoolean cancelSignal) {
+            this.cancelSignal = cancelSignal;
+        }
+
         @Override
         public void run() {
             synchronized (lockTimeout) {
+                if ( cancelSignal != null )
+                    cancelSignal.set(true);
+
                 // Abort query if and only if we are the expected callback.
                 // If the first row has appeared, and we are removing timeout1
                 // callback,
@@ -408,7 +413,7 @@ public class QueryExecDataset implements QueryExec
                 // So nearly not needed.
                 synchronized(lockTimeout)
                 {
-                    TimeoutCallback callback = new TimeoutCallback();
+                    TimeoutCallback callback = new TimeoutCallback(null);
                     expectedCallback.set(callback);
                     // Lock against calls of .abort() or of timeout1Callback.
 
@@ -464,16 +469,28 @@ public class QueryExecDataset implements QueryExec
             return;
         }
 
+        // JENA-2140 - the timeout can go off while building the query iterator structure.
+        // In this case, use a signal passed through the context.
+        // We don't know if getPlan().iterator() does a lot of work or not
+        // (ideally it shouldn't start executing the query but in some sub-systems
+        // it might be necessary)
+        //
+        // This applies to the time to first result because to get the first result, the
+        // queryIterator must have been built. So it does not apply for the second
+        // stage of N,-1 or N,M.
+
         if ( !isTimeoutSet(timeout1) && isTimeoutSet(timeout2) ) {
             // Case -1,N
             // Single overall timeout.
-            TimeoutCallback callback = new TimeoutCallback();
-            expectedCallback.set(callback);
-            timeout2Alarm = alarmClock.add(callback, timeout2);
+            AtomicBoolean cancelSignal = new AtomicBoolean(false);
+            context.set(ARQConstants.symCancelQuery, cancelSignal);
+            TimeoutCallback callback = new TimeoutCallback(cancelSignal) ;
+            expectedCallback.set(callback) ;
+            timeout2Alarm = alarmClock.add(callback, timeout2) ;
             // Start the query.
-            queryIterator = getPlan().iterator();
+            queryIterator = getPlan().iterator() ;
             // But don't add resetter.
-            return;
+            return ;
         }
 
         // Case N,-1
@@ -482,15 +499,15 @@ public class QueryExecDataset implements QueryExec
         //   Whether timeout2 is set is determined by QueryIteratorTimer2
         //   Subcase 2: ! isTimeoutSet(timeout2)
         // Add timeout to first row.
-        TimeoutCallback callback = new TimeoutCallback();
-        timeout1Alarm = alarmClock.add(callback, timeout1);
-        expectedCallback.set(callback);
 
-        // We don't know if getPlan().iterator() does a lot of work or not
-        // (ideally it shouldn't start executing the query but in some sub-systems
-        // it might be necessary)
+        AtomicBoolean cancelSignal = new AtomicBoolean(false);
+        context.set(ARQConstants.symCancelQuery, cancelSignal);
+
+        TimeoutCallback callback = new TimeoutCallback(cancelSignal) ;
+        timeout1Alarm = alarmClock.add(callback, timeout1) ;
+        expectedCallback.set(callback) ;
+
         queryIterator = getPlan().iterator();
-
         // Add the timeout1->timeout2 resetter wrapper.
         queryIterator = new QueryIteratorTimer2(queryIterator);
 

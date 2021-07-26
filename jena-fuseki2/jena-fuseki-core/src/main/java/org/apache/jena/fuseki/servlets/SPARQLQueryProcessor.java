@@ -45,7 +45,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.engine.EngineLib;
+import org.apache.jena.sparql.engine.Timeouts;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.web.HttpSC;
 
@@ -303,7 +303,58 @@ public abstract class SPARQLQueryProcessor extends ActionService
      */
     @SuppressWarnings("deprecation")
     protected QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph dataset) {
-        return QueryExecution.create().query(query).dataset(dataset).context(action.getContext()).build();
+        QueryExecutionBuilder builder = QueryExecution.create()
+                .query(query).dataset(dataset)
+                .context(action.getContext())
+                ;
+        setTimeouts(builder, action);
+        return builder.build();
+    }
+
+    /**
+     * Set the timeouts. The context timeout, which is the system settings, provides
+     * an upper bound to setting by protocol ?timeout.
+     */
+    private static void setTimeouts(QueryExecutionBuilder builder, HttpAction action) {
+        // Protocol settings.
+        long protocolInitialTimeout = -1;
+        long protocolOverallTimeout = -1;
+        String timeoutParameter = action.getRequestParameter("timeout");
+        if ( timeoutParameter != null ) {
+            Pair<Long, Long> pair1 = Timeouts.parseTimeoutStr(timeoutParameter, TimeUnit.SECONDS);
+            if ( pair1 != null ) {
+                protocolInitialTimeout = pair1.getLeft();
+                protocolOverallTimeout = pair1.getRight();
+            }
+        }
+
+        // Timeout from context.
+        long cxtInitialTimeout = -1;
+        long cxtOverallTimeout = -1;
+        String timeoutCxt = action.getContext().getAsString(ARQ.queryTimeout);
+        if ( timeoutCxt != null ) {
+            Pair<Long, Long> pair2 = Timeouts.parseTimeoutStr(timeoutCxt, TimeUnit.MILLISECONDS);
+            cxtInitialTimeout = pair2.getLeft();
+            cxtOverallTimeout = pair2.getRight();
+
+        }
+        long initialTimeout = chooseTimeout(cxtInitialTimeout, protocolInitialTimeout);
+        long overallTimeout = chooseTimeout(cxtOverallTimeout, protocolOverallTimeout);
+
+        if( initialTimeout > 0 )
+            builder.initialTimeout(initialTimeout, TimeUnit.MILLISECONDS);
+        if( overallTimeout > 0 )
+            builder.overallTimeout(overallTimeout, TimeUnit.MILLISECONDS);
+    }
+
+    // Choose the timeout : setupTimeout (if set) limits the protocolTimeout.
+    private static long chooseTimeout(long setupTimeout, long protocolTimeout) {
+        if ( setupTimeout < 0 )
+            return protocolTimeout;
+        if (protocolTimeout > 0 )
+            return Math.min(setupTimeout, protocolTimeout);
+        else
+            return setupTimeout;
     }
 
     /** Perform the {@link QueryExecution} once.
@@ -314,8 +365,6 @@ public abstract class SPARQLQueryProcessor extends ActionService
      * @return
      */
     protected SPARQLResult executeQuery(HttpAction action, QueryExecution queryExecution, Query requestQuery, String queryStringLog) {
-        setAnyProtocolTimeouts(queryExecution, action);
-
         if ( requestQuery.isSelectType() ) {
             ResultSet rs = queryExecution.execSelect();
 
@@ -360,20 +409,6 @@ public abstract class SPARQLQueryProcessor extends ActionService
 
         ServletOps.errorBadRequest("Unknown query type - " + queryStringLog);
         return null;
-    }
-
-    private void setAnyProtocolTimeouts(QueryExecution qExec, HttpAction action) {
-        // The timeout string in the protocol is in seconds, not milliseconds.
-        String desiredTimeoutStr = null;
-        String timeoutHeader = action.getRequestHeader("Timeout");
-        String timeoutParameter = action.getRequestParameter("timeout");
-        if ( timeoutHeader != null )
-            desiredTimeoutStr = timeoutHeader;
-        if ( timeoutParameter != null )
-            desiredTimeoutStr = timeoutParameter;
-
-        // Merge (new timeout can't be greater than current settings for qExec)
-        EngineLib.parseSetTimeout(qExec, desiredTimeoutStr, TimeUnit.SECONDS, true);
     }
 
     /** Choose the dataset for this SPARQL Query request.
