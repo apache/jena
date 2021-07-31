@@ -48,7 +48,7 @@ import org.apache.jena.web.HttpSC;
  * This is a collection of convenience operations for HTTP requests, mostly in
  * support of RDF handling and common, basic use cases for HTTP. It is not
  * comprehensive. For more complicated requirements of HTTP, then the
- * application can use {@link java.net.http} directly.
+ * application can use {@link java.net.http.HttpClient} directly.
  * <p>
  * Authentication can be handled by supplying a {@link java.net.http.HttpClient} which
  * has been built with an {@link Authenticator} or for challenge response (basic and digest)

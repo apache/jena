@@ -295,7 +295,6 @@ public abstract class ExecHTTPBuilder<X, Y> {
 
             queryActual = QueryTransformOps.transform(query, substitutionMap);
         }
-        // [QExec] upgrade and freeze this
         Context cxt = (context!=null) ? context : ARQ.getContext().copy();
         return buildX(hClient, queryActual, cxt);
     }

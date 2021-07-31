@@ -53,7 +53,7 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
     public QueryExecutionCompat(QueryExecBuilder qExecBuilder) {
         super(null);
         this.qExecBuilder = qExecBuilder;
-        // [QExec]
+        // Have the QueryExecBuilder build the context now, even though it is not finished.
         qExecBuilder.setupContext();
     }
 
@@ -72,7 +72,6 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
             qExecHere = qExecBuilder.build();
             Object x = qExecHere.getDataset();
             datasetHere = qExecHere.getDataset() != null ? DatasetFactory.wrap(qExecHere.getDataset()) : null;
-            // [QExec]
             qExecHere.getContext().set(ARQConstants.sysCurrentDataset, datasetHere);
         }
     }

@@ -21,8 +21,7 @@ package org.apache.jena.atlas.web;
 import org.apache.jena.web.HttpSC;
 
 /**
- * Class of HTTP Exceptions from Atlas code
- *
+ * Class of HTTP Exceptions
  */
 public class HttpException extends RuntimeException {
     private final int statusCode;
@@ -84,7 +83,8 @@ public class HttpException extends RuntimeException {
     }
 
     /**
-     * Gets the status line text, may be null if unknown. HTTP/2 does not have status line text.
+     * Gets the status line text, may be null if unknown.
+     * HTTP/2 does not have status line text; the default HTTP 1.1 message is returned.
      * @return Status line
      */
     public String getStatusLine() {

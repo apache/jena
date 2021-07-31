@@ -155,7 +155,7 @@ public class HttpLib {
             } catch (Exception ex) {
                 throw new HttpException("Error discarding body of "+httpStatusCode , ex);
             }
-            throw new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode), null);
+            throw new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode));
         }
         else if ( inRange(httpStatusCode, 400, 499) ) {
             throw exception(response, httpStatusCode);
@@ -217,14 +217,27 @@ public class HttpLib {
 
         URI uri = response.request().uri();
 
+        //long length = HttpLib.getContentLength(response);
+        // Not critical path code. Read body regardless.
         InputStream in = response.body();
         String msg;
         try {
             msg = IO.readWholeFileAsUTF8(in);
+            if ( msg.isBlank())
+                msg = null;
         } catch (RuntimeIOException e) {
             msg = null;
         }
         return new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode), msg);
+    }
+
+    private static long getContentLength(HttpResponse<InputStream> response) {
+        Optional<String> x = response.headers().firstValue(HttpNames.hContentLength);
+        if ( x.isEmpty() )
+            return -1;
+        try {
+            return Long.parseLong(x.get());
+        } catch (NumberFormatException ex) { return -1; }
     }
 
     /** Test x:int in [min, max] */
@@ -314,9 +327,8 @@ public class HttpLib {
                 uri.getRawFragment() == null;
     }
 
-    // [QExec] Check usage - what about endpoint(URI uri)?
     /**
-     * String: URI string with host, without query string or fragment.
+     * Return a string (assumed ot be a URI) without query string or fragment.
      */
     public static String endpoint(String uriStr) {
         int idx1 = uriStr.indexOf('?');
@@ -557,7 +569,7 @@ public class HttpLib {
                 // or IOException("No credentials provided") if the authenticator decides to return null.
                 if ( ex.getMessage().contains("too many authentication attempts") ||
                      ex.getMessage().contains("No credentials provided") ) {
-                    throw new HttpException(401, HttpSC.getMessage(401), null);
+                    throw new HttpException(401, HttpSC.getMessage(401));
                 }
             }
             throw new HttpException(httpRequest.method()+" "+httpRequest.uri().toString(), ex);

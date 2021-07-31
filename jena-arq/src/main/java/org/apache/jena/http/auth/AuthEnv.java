@@ -56,7 +56,6 @@ public class AuthEnv {
         AuthDomain location = new AuthDomain(uri, null);
         passwordRegistry.remove(location);
         // and remove any active modifiers.
-        // [QExec] authModifiers Move to AuthEnv.
         authModifiers.remove(uri.toString());
     }
 
@@ -81,11 +80,14 @@ public class AuthEnv {
         authModifiers.clear();
     }
 
-    // [QExec] Clean up. Pass in URI?
+    /**
+     * Add authentication, if in the authModifiers registry. That is, add the right
+     * headers, and for digest, calculate the new digest string.
+     */
     public Builder addAuth(Builder requestBuilder, String uri) {
         if ( authModifiers.isEmpty() )
             return requestBuilder;
-        // Covert to the key for authentication handlers.
+        // Convert to the key for authentication handlers.
         String endpointURL = HttpLib.endpoint(uri);
         AuthRequestModifier mod = authModifiers.get(endpointURL);
         if ( mod == null )
@@ -100,6 +102,7 @@ public class AuthEnv {
         authModifiers.put(serviceEndpoint, digestAuthModifier);
     }
 
+    // Devlopment - do not provide in production systems.
 //    public void state() {
 //        org.apache.jena.atlas.io.IndentedWriter out = org.apache.jena.atlas.io.IndentedWriter.stdout.clone();
 //        out.setFlushOnNewline(true);

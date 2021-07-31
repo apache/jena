@@ -42,7 +42,6 @@ public class QueryExecutionAdapter implements QueryExecution
     private final QueryExec qExec;
     private final Dataset dataset;
 
-    // [QExec] Move to QueryExecution
     public static QueryExecution adapt(QueryExec qExec) {
         if ( qExec instanceof QueryExecAdapter) {
             return ((QueryExecAdapter)qExec).get();

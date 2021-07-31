@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.exec.http;
 
 import static org.apache.jena.http.HttpLib.*;
+import java.util.Objects;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -38,6 +39,7 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.HttpException;
@@ -93,9 +95,7 @@ public class QueryExecHTTP implements QueryExec {
 
     private boolean closed = false;
 
-    // Timeouts
-    private long connectTimeout = -1;
-    private TimeUnit connectTimeoutUnit = TimeUnit.MILLISECONDS;
+    // Timeout of query execution.
     private long readTimeout = -1;
     private TimeUnit readTimeoutUnit = TimeUnit.MILLISECONDS;
 
@@ -131,7 +131,7 @@ public class QueryExecHTTP implements QueryExec {
         this.httpHeaders = httpHeaders;
         this.defaultGraphURIs = defaultGraphURIs;
         this.namedGraphURIs = namedGraphURIs;
-        this.sendMode = sendMode;
+        this.sendMode = Objects.requireNonNull(sendMode);
         this.appProvidedAcceptHeader = explicitAcceptHeader;
         // Important - handled as special case because the defaults vary by query type.
         if ( httpHeaders.containsKey(HttpNames.hAccept) ) {
@@ -194,7 +194,6 @@ public class QueryExecHTTP implements QueryExec {
             throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for SELECT queries");
         // This returns a streaming result set for some formats.
         // Do not close the InputStream at this point.
-        // [QExec]
         ResultSet result = ResultSetMgr.read(in, lang);
         return RowSet.adapt(result);
     }
@@ -474,7 +473,7 @@ public class QueryExecHTTP implements QueryExec {
                 break;
             default :
                 // Should not happen!
-                throw new HttpException("Send mode not recognized for query request: "+sendMode);
+                throw new InternalErrorException("Invalid value for 'actualSendMode' "+actualSendMode);
         }
         HttpRequest request = requestBuilder.build();
         return executeQuery(request);
@@ -494,7 +493,6 @@ public class QueryExecHTTP implements QueryExec {
     private QuerySendMode actualSendMode() {
         int thisLengthLimit = urlLimit;
         switch(sendMode) {
-            // Not switchable.
             case asGetAlways :
             case asPostForm :
             case asPost :
@@ -502,8 +500,6 @@ public class QueryExecHTTP implements QueryExec {
             case asGetWithLimitBody :
             case asGetWithLimitForm :
                 break;
-            default :
-                throw new HttpException("Send mode not recognized for query request: "+sendMode);
         }
 
         // Only QuerySendMode.asGetWithLimitBody and QuerySendMode.asGetWithLimitForm here.

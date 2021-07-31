@@ -56,16 +56,16 @@ import org.apache.jena.sparql.graph.GraphFactory;
  * Examples:
  * <pre>
  *   // Get the default graph.
- *   Graph graph = GSP.request("http://example/dataset").defaultGraph().GET();
+ *   Graph graph = GSP.service("http://example/dataset").defaultGraph().GET();
  * </pre>
  * <pre>
  *   // Get a named graph.
- *   Graph graph = GSP.request("http://example/dataset").namedGraph("http://my/graph").GET();
+ *   Graph graph = GSP.service("http://example/dataset").namedGraph("http://my/graph").GET();
  * </pre>
  * <pre>
  *   // POST (add) to a named graph.
  *   Graph myData = ...;
- *   GSP.request("http://example/dataset").namedGraph("http://my/graph").POST(myData);
+ *   GSP.service("http://example/dataset").namedGraph("http://my/graph").POST(myData);
  * </pre>
  */
 public class GSP {
@@ -91,6 +91,14 @@ public class GSP {
         return new GSP().endpoint(service);
     }
 
+    /** Create a request to the remote service (without GSP naming).
+     *  Call {@link #endpoint} to set the target.
+     *  Call {@link #defaultGraph()} or {@link #graphName(String)} to select the target graph.
+     */
+    public static GSP request() {
+        return new GSP();
+    }
+
     protected GSP() {}
 
     /**
@@ -110,7 +118,7 @@ public class GSP {
 
     /**
      * Set an HTTP header that is added to the request.
-     * See {@link #accept(Lang)}, {@link #accept(Lang)}, {@link #contentType(RDFFormat)} and {@link #contentTypeFromFilename(String)}
+     * See {@link #accept}, {@link #acceptHeader} and {@link #contentType(RDFFormat)}.
      * for specific handling of {@code Accept:} and {@code Content-Type}.
      */
     public GSP httpHeader(String headerName, String headerValue) {
@@ -130,7 +138,7 @@ public class GSP {
         return httpHeaders.get(header);
     }
 
-    /** Send request for a named graph (used in {@code ?graph=}) */
+    /** Send request for a named graph (that is, {@code ?graph=}) */
     public GSP graphName(String graphName) {
         Objects.requireNonNull(graphName);
         this.graphName = graphName;
@@ -138,7 +146,7 @@ public class GSP {
         return this;
     }
 
-    /** Send request for a named graph (used in {@code ?graph=}) */
+    /** Send request for a named graph (that is, {@code ?graph=}) */
     public GSP graphName(Node graphName) {
         Objects.requireNonNull(graphName);
         clearOperation();
@@ -517,6 +525,7 @@ public class GSP {
         internalDataset();
         validateDatasetOperation();
         // DELETE on a dataset URL is not supported in Fuseki.
+        // HTTP DELETE means "remove resource", not "clear resource".
 //        String url = serviceEndpoint;
 //        HttpOp.httpDelete(url);
         UpdateExecHTTP.service(serviceEndpoint).update("CLEAR ALL").execute();

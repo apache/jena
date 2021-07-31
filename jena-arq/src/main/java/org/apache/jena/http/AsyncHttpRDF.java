@@ -168,7 +168,7 @@ public class AsyncHttpRDF {
                     // Rather than an HTTP exception, bad authentication becomes IOException("too many authentication attempts");
                     if ( iox.getMessage().contains("too many authentication attempts") ||
                             iox.getMessage().contains("No credentials provided") ) {
-                        throw new HttpException(401, HttpSC.getMessage(401), null);
+                        throw new HttpException(401, HttpSC.getMessage(401));
                     }
                     IO.exception((IOException)cause);
                 }

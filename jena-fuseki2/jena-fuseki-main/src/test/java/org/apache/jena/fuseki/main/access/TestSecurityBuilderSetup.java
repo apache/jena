@@ -35,8 +35,6 @@ import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdfconnection.LibSec;
-import org.apache.jena.riot.web.HttpCaptureResponse;
-import org.apache.jena.riot.web.HttpOp1.CaptureInput;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.web.AuthSetup;
 import org.apache.jena.web.HttpSC;
@@ -180,7 +178,6 @@ public class TestSecurityBuilderSetup {
 
     @Test public void access_allow_nowhere() {
         HttpClient hc = LibSec.httpClient(authSetup1);
-        HttpCaptureResponse<TypedInputStream> handler = new CaptureInput();
         try( TypedInputStream in = HttpOp.httpGet(hc, serverURL+"nowhere") ) {
             // null for 404.
             assertNull(in);
@@ -192,7 +189,6 @@ public class TestSecurityBuilderSetup {
 
     @Test public void access_allow_ds() {
         HttpClient hc = LibSec.httpClient(authSetup1);
-        HttpCaptureResponse<TypedInputStream> handler = new CaptureInput();
         try( TypedInputStream in = HttpOp.httpGet(hc, serverURL+"ds") ) {
             assertNotNull(in);
         }
