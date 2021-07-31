@@ -29,7 +29,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.jena.jdbc.JdbcCompatibility ;
 import org.apache.jena.jdbc.connections.JenaConnection ;
 import org.apache.jena.jdbc.remote.FusekiTestAuth;
-import org.apache.jena.jdbc.utils.TestUtils ;
+import org.apache.jena.jdbc.utils.TestJdbcUtils ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.web.HttpOp1;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -46,6 +46,7 @@ import org.junit.Ignore;
  *
  */
 @Ignore
+@SuppressWarnings("deprecation")
 public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpointConnectionTests {
 
     private static String USER = "test";
@@ -101,7 +102,7 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
     @Override
     protected JenaConnection getConnection(Dataset ds) throws SQLException {
         // Set up the dataset
-        TestUtils.copyToRemoteDataset(ds, FusekiTestAuth.serviceGSP(), client);
+        TestJdbcUtils.copyToRemoteDataset(ds, FusekiTestAuth.serviceGSP(), client);
         return new RemoteEndpointConnection(FusekiTestAuth.serviceQuery(), FusekiTestAuth.serviceUpdate(), null, null, null, null,
                 client, JenaConnection.DEFAULT_HOLDABILITY,
                 JdbcCompatibility.DEFAULT, null, null);

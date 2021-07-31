@@ -18,9 +18,9 @@
 
 package org.apache.jena.jdbc.remote;
 
-import static org.apache.jena.jdbc.remote.FusekiTestServer.ServerScope.CLASS;
-import static org.apache.jena.jdbc.remote.FusekiTestServer.ServerScope.SUITE;
-import static org.apache.jena.jdbc.remote.FusekiTestServer.ServerScope.TEST;
+import static org.apache.jena.jdbc.remote.FusekiJdbcTestServer.ServerScope.CLASS;
+import static org.apache.jena.jdbc.remote.FusekiJdbcTestServer.ServerScope.SUITE;
+import static org.apache.jena.jdbc.remote.FusekiJdbcTestServer.ServerScope.TEST;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -102,7 +102,8 @@ import org.apache.jena.update.UpdateProcessor;
  *   }
  * </pre>
  */
-public class FusekiTestServer {
+@SuppressWarnings("deprecation")
+public class FusekiJdbcTestServer {
     /* Cut&Paste versions:
 
     Test suite (TS_*)

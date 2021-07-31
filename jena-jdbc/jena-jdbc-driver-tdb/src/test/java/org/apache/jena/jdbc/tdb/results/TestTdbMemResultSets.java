@@ -18,7 +18,7 @@
 
 package org.apache.jena.jdbc.tdb.results;
 
-import org.apache.jena.jdbc.utils.TestUtils;
+import org.apache.jena.jdbc.utils.TestJdbcUtils;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -51,7 +51,7 @@ public class TestTdbMemResultSets extends AbstractTdbResultSetTests {
         }
         
         Dataset tdb = TDBFactory.createDataset();
-        TestUtils.copyDataset(ds, tdb, true);
+        TestJdbcUtils.copyDataset(ds, tdb, true);
         currDataset = tdb;
         return tdb;
     }

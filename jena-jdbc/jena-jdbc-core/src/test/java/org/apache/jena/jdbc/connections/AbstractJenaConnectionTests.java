@@ -34,7 +34,7 @@ import org.apache.jena.jdbc.results.SelectResults ;
 import org.apache.jena.jdbc.results.TripleIteratorResults ;
 import org.apache.jena.jdbc.results.metadata.AskResultsMetadata ;
 import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata ;
-import org.apache.jena.jdbc.utils.TestUtils ;
+import org.apache.jena.jdbc.utils.TestJdbcUtils ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sys.JenaSystem ;
@@ -510,7 +510,7 @@ public abstract class AbstractJenaConnectionTests {
     @Test
     public void connection_statement_query_select_max_rows_01() throws SQLException {
         // Prepare a dataset
-        Dataset ds = TestUtils.generateDataset(3, 10, false);
+        Dataset ds = TestJdbcUtils.generateDataset(3, 10, false);
 
         // Work with the connection
         JenaConnection conn = this.getConnection(ds);
@@ -554,7 +554,7 @@ public abstract class AbstractJenaConnectionTests {
     @Test
     public void connection_statement_query_select_max_rows_02() throws SQLException {
         // Prepare a dataset
-        Dataset ds = TestUtils.generateDataset(3, 10, false);
+        Dataset ds = TestJdbcUtils.generateDataset(3, 10, false);
 
         // Work with the connection
         JenaConnection conn = this.getConnection(ds);
@@ -601,7 +601,7 @@ public abstract class AbstractJenaConnectionTests {
     @Test
     public void connection_statement_query_select_max_rows_03() throws SQLException {
         // Prepare a dataset
-        Dataset ds = TestUtils.generateDataset(3, 10, false);
+        Dataset ds = TestJdbcUtils.generateDataset(3, 10, false);
 
         // Work with the connection
         JenaConnection conn = this.getConnection(ds);
@@ -650,7 +650,7 @@ public abstract class AbstractJenaConnectionTests {
         Assume.assumeTrue(this.supportsTimeouts());
 
         // Prepare a dataset
-        Dataset ds = TestUtils.generateDataset(1, 1000, true);
+        Dataset ds = TestJdbcUtils.generateDataset(1, 1000, true);
 
         // Work with the connection
         JenaConnection conn = this.getConnection(ds);
@@ -689,7 +689,7 @@ public abstract class AbstractJenaConnectionTests {
         Assume.assumeTrue(this.supportsTimeouts());
 
         // Prepare a dataset
-        Dataset ds = TestUtils.generateDataset(1, 1000, true);
+        Dataset ds = TestJdbcUtils.generateDataset(1, 1000, true);
 
         // Work with the connection
         JenaConnection conn = this.getConnection(ds);
@@ -728,7 +728,7 @@ public abstract class AbstractJenaConnectionTests {
         Assume.assumeTrue(this.supportsTimeouts());
 
         // Prepare a dataset
-        Dataset ds = TestUtils.generateDataset(1, 1000, true);
+        Dataset ds = TestJdbcUtils.generateDataset(1, 1000, true);
 
         // Work with the connection
         JenaConnection conn = this.getConnection(ds);
@@ -767,7 +767,7 @@ public abstract class AbstractJenaConnectionTests {
         Assume.assumeTrue(this.supportsTimeouts());
 
         // Prepare a dataset
-        Dataset ds = TestUtils.generateDataset(1, 1000, true);
+        Dataset ds = TestJdbcUtils.generateDataset(1, 1000, true);
 
         // Work with the connection
         JenaConnection conn = this.getConnection(ds);

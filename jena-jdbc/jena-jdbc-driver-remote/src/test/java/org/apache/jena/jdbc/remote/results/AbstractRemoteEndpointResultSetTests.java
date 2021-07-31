@@ -28,20 +28,21 @@ import org.junit.BeforeClass;
 
 /**
  * Abstract tests for remote endpoint connection result sets
- * 
+ *
  */
+@SuppressWarnings("deprecation")
 public abstract class AbstractRemoteEndpointResultSetTests extends AbstractResultSetTests {
 
-	static HttpClient defaultHttpClient = HttpOp1.getDefaultHttpClient() ;
+    static HttpClient defaultHttpClient = HttpOp1.getDefaultHttpClient() ;
 	// Used for all tests except auth tests.
 	static HttpClient globalPoolingClient = HttpOp1.createPoolingHttpClient() ;
-	
+
 	@BeforeClass public static void beforeClassAbstract1() {
         JenaSystem.init() ;
         Fuseki.init();
 		HttpOp1.setDefaultHttpClient(globalPoolingClient) ;
     }
-	
+
 	@AfterClass public static void afterClassAbstract1() {
 		HttpOp1.setDefaultHttpClient(defaultHttpClient) ;
     }

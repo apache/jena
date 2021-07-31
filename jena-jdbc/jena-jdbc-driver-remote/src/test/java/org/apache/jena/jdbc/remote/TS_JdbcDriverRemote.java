@@ -59,11 +59,11 @@ public class TS_JdbcDriverRemote {
 
     @BeforeClass
     public static void beforeClassAbstract1() {
-        FusekiTestServer.ctlBeforeTestSuite() ;
+        FusekiJdbcTestServer.ctlBeforeTestSuite() ;
     }
 
     @AfterClass
     public static void afterClassAbstract1() {
-        FusekiTestServer.ctlAfterTestSuite() ;
+        FusekiJdbcTestServer.ctlAfterTestSuite() ;
     }
 }

@@ -22,8 +22,8 @@ import java.sql.SQLException;
 
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.jena.jdbc.remote.FusekiTestServer;
-import org.apache.jena.jdbc.utils.TestUtils;
+import org.apache.jena.jdbc.remote.FusekiJdbcTestServer;
+import org.apache.jena.jdbc.utils.TestJdbcUtils;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.WebContent;
 import org.junit.After;
@@ -37,10 +37,10 @@ import org.junit.BeforeClass;
  */
 public class TestRemoteEndpointConnectionWithResultSetTypes extends AbstractRemoteEndpointConnectionTests {
         
-    @BeforeClass public static void ctlBeforeClass() { FusekiTestServer.ctlBeforeClass(); }
-    @AfterClass  public static void ctlAfterClass()  { FusekiTestServer.ctlAfterClass(); }
-    @Before      public void ctlBeforeTest()         { FusekiTestServer.ctlBeforeTest(); }
-    @After       public void ctlAfterTest()          { FusekiTestServer.ctlAfterTest(); } 
+    @BeforeClass public static void ctlBeforeClass() { FusekiJdbcTestServer.ctlBeforeClass(); }
+    @AfterClass  public static void ctlAfterClass()  { FusekiJdbcTestServer.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()         { FusekiJdbcTestServer.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { FusekiJdbcTestServer.ctlAfterTest(); } 
     
     @Override
     protected boolean supportsTimeouts() {
@@ -50,13 +50,13 @@ public class TestRemoteEndpointConnectionWithResultSetTypes extends AbstractRemo
 
     @Override
     protected JenaConnection getConnection() throws SQLException {
-        return new RemoteEndpointConnection(FusekiTestServer.serviceQuery(), FusekiTestServer.serviceUpdate(), null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRDFJSON);
+        return new RemoteEndpointConnection(FusekiJdbcTestServer.serviceQuery(), FusekiJdbcTestServer.serviceUpdate(), null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRDFJSON);
     }
 
     @Override
     protected JenaConnection getConnection(Dataset ds) throws SQLException {
         // Set up the dataset
-        TestUtils.copyToRemoteDataset(ds, FusekiTestServer.serviceGSP());
-        return new RemoteEndpointConnection(FusekiTestServer.serviceQuery(), FusekiTestServer.serviceUpdate(), null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRDFJSON);
+        TestJdbcUtils.copyToRemoteDataset(ds, FusekiJdbcTestServer.serviceGSP());
+        return new RemoteEndpointConnection(FusekiJdbcTestServer.serviceQuery(), FusekiJdbcTestServer.serviceUpdate(), null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRDFJSON);
     }
 }

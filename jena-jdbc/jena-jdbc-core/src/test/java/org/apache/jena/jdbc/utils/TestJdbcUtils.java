@@ -41,7 +41,8 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 /**
  * Test utility methods
  */
-public class TestUtils {
+@SuppressWarnings("deprecation")
+public class TestJdbcUtils {
 
     /**
      * Generates a synthetic dataset for testing
@@ -92,7 +93,7 @@ public class TestUtils {
      *            Target Dataset
      */
     public static void copyDataset(Dataset source, Dataset target) {
-        TestUtils.copyDataset(source, target, false);
+        TestJdbcUtils.copyDataset(source, target, false);
     }
 
     /**
