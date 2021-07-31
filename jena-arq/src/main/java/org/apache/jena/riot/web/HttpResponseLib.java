@@ -45,7 +45,9 @@ import org.apache.jena.sparql.resultset.ResultsFormat ;
 
 /** A collection of handlers for response handling.
  * @see HttpOp1
+ * @deprecated This class is for Apache HttpClient. Switch to {@link org.apache.jena.http.HttpOp}
  */
+@Deprecated
 public class HttpResponseLib
 {
     /** Handle a Graph response */

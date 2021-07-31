@@ -73,8 +73,9 @@ import org.slf4j.LoggerFactory ;
  *
  * @see HttpNames HttpNames, for HTTP related constants
  * @see WebContent WebContent, for content type name constants
+ * @deprecated This class depends on Apache HttpClient. See {@link org.apache.jena.http.HttpOp}
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 public class HttpOp1 {
     static private Logger log = LoggerFactory.getLogger(HttpOp1.class);
 
