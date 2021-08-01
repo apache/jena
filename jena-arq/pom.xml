@@ -31,7 +31,6 @@
   <description>ARQ is a SPARQL 1.1 query engine for Apache Jena</description>
 
   <properties>
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
     <automatic.module.name>org.apache.jena.arq</automatic.module.name>
   </properties>

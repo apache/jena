@@ -50,7 +50,6 @@
   </licenses>
 
   <properties>
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
   </properties>
 

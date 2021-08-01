@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>23</version>
+    <version>24</version>
   </parent>
 
   <licenses>
@@ -103,7 +103,8 @@
     <java.version>11</java.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <project.build.outputTimestamp>${maven.build.timestamp}</project.build.outputTimestamp>
+
   </properties>
 
   <issueManagement>
@@ -818,6 +819,7 @@
                  https://maven.apache.org/guides/mini/guide-reproducible-builds.html
                  See FAQ
             -->
+            <notimestamp>true</notimestamp>
             <quiet>true</quiet>
             <doclint>none</doclint>
             <version>true</version>
