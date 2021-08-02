@@ -24,7 +24,6 @@ import java.nio.charset.Charset ;
 import java.nio.charset.StandardCharsets ;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.JenaRuntime ;
@@ -363,7 +362,7 @@ public class FileUtils
      */
 
     public static String readWholeFileAsUTF8(String filename) throws IOException {
-        Path path = Paths.get(filename);
+        Path path = Path.of(filename);
         byte b[] = Files.readAllBytes(path);
         return new String(b, utf8);
     }

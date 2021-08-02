@@ -25,7 +25,7 @@ import java.util.ListIterator ;
 import org.apache.jena.sparql.util.Iso ;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
-/** A class whose purpose is to give a name to a collection of triple paths. */ 
+/** A class whose purpose is to give a name to a collection of triple paths. */
 
 public class PathBlock implements Iterable<TriplePath>
 {
@@ -33,48 +33,48 @@ public class PathBlock implements Iterable<TriplePath>
 
     public PathBlock() {}
     public PathBlock(PathBlock other) {triplePaths.addAll(other.triplePaths) ; }
-    
+
     public void add(TriplePath tp) { triplePaths.add(tp) ; }
     public void addAll(PathBlock other) { triplePaths.addAll(other.triplePaths) ; }
     public void add(int i, TriplePath tp) { triplePaths.add(i, tp) ; }
-    
+
     public TriplePath get(int i) { return triplePaths.get(i) ; }
     @Override
-    public ListIterator<TriplePath> iterator() { return triplePaths.listIterator() ; } 
+    public ListIterator<TriplePath> iterator() { return triplePaths.listIterator() ; }
     public int size() { return triplePaths.size() ; }
     public boolean isEmpty() { return triplePaths.isEmpty() ; }
-    
-    public List<TriplePath> getList() { return triplePaths ; } 
-    
+
+    public List<TriplePath> getList() { return triplePaths ; }
+
     @Override
-    public int hashCode() { return triplePaths.hashCode() ; } 
-    
+    public int hashCode() { return triplePaths.hashCode() ; }
+
     @Override
     public boolean equals(Object other)
-    { 
+    {
         if ( this == other ) return true ;
-        if ( ! ( other instanceof PathBlock) ) 
+        if ( ! ( other instanceof PathBlock) )
             return false ;
         PathBlock bp = (PathBlock)other ;
         return triplePaths.equals(bp.triplePaths) ;
     }
-    
+
     public boolean equiv(PathBlock other, NodeIsomorphismMap isoMap)
-    { 
+    {
         if ( this.triplePaths.size() != other.triplePaths.size() )
             return false ;
-        
+
         for ( int i = 0 ; i < this.triplePaths.size() ; i++ )
         {
             TriplePath tp1 = get(i) ;
             TriplePath tp2 = other.get(i) ;
-            
+
             if ( ! Iso.triplePathIso(tp1, tp2, isoMap) )
                 return false ;
         }
         return true ;
     }
-    
+
     @Override
     public String toString()
     {

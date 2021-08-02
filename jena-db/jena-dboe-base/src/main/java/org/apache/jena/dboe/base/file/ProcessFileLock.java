@@ -30,7 +30,6 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.atlas.RuntimeIOException;
@@ -77,7 +76,7 @@ public class ProcessFileLock {
      */
     public static ProcessFileLock create(String filename) {
         try {
-            Path abspath = Paths.get(filename).toRealPath();
+            Path abspath = Path.of(filename).toRealPath();
             return locks.computeIfAbsent(abspath, ProcessFileLock::new);
         }
         catch (IOException e) { IO.exception(e); return null; }

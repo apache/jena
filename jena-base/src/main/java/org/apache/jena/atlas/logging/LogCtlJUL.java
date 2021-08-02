@@ -24,7 +24,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.lib.StrUtils;
@@ -55,7 +54,7 @@ public class LogCtlJUL {
      * Reset java.util.logging - this overrides the previous configuration, if any.
      */
     static void resetJavaLogging() {
-        Path p = Paths.get(JUL_LOGGING);
+        Path p = Path.of(JUL_LOGGING);
         if ( Files.exists(p) ) {
             setJavaLogging(JUL_LOGGING);
             return;

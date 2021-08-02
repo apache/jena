@@ -102,7 +102,7 @@ public class AuthEnv {
         authModifiers.put(serviceEndpoint, digestAuthModifier);
     }
 
-    // Devlopment - do not provide in production systems.
+    // Development - do not provide in production systems.
 //    public void state() {
 //        org.apache.jena.atlas.io.IndentedWriter out = org.apache.jena.atlas.io.IndentedWriter.stdout.clone();
 //        out.setFlushOnNewline(true);

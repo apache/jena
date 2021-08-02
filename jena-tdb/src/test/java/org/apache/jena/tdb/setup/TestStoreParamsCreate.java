@@ -23,8 +23,6 @@ import static org.junit.Assert.*;
 
 import java.nio.file.Files ;
 import java.nio.file.Path ;
-import java.nio.file.Paths ;
-
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.atlas.lib.FileOps ;
@@ -41,8 +39,8 @@ import org.junit.Test ;
  */
 public class TestStoreParamsCreate {
     private final String DB_DIR = ConfigTest.getCleanDir() ;
-    private final Path db = Paths.get(DB_DIR) ;
-    private final Path cfg = Paths.get(DB_DIR, TDB_CONFIG_FILE) ;
+    private final Path db = Path.of(DB_DIR) ;
+    private final Path cfg = Path.of(DB_DIR, TDB_CONFIG_FILE) ;
     private final Location loc = Location.create(DB_DIR) ;
 
     static final StoreParams pApp = StoreParams.getSmallStoreParams() ;

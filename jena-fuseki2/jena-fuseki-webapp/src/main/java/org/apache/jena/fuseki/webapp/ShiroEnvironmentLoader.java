@@ -21,8 +21,6 @@ package org.apache.jena.fuseki.webapp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -101,7 +99,7 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
             if ( scheme != null ) {
                 if ( scheme.equalsIgnoreCase(FILE)) {
                     // Test file: for exists
-                    Path p = Paths.get(loc.substring(FILE.length()+1));
+                    Path p = Path.of(loc.substring(FILE.length()+1));
                     if ( ! p.toFile().exists() )
                         continue;
                     // Fall through.
@@ -110,7 +108,7 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
                 return loc;
             }
             // No scheme .
-            Path p = Paths.get(loc);
+            Path p = Path.of(loc);
 
             String fn = resolve(FusekiEnv.FUSEKI_BASE, p);
             if ( fn != null )

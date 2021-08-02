@@ -22,12 +22,14 @@ import static org.apache.jena.http.HttpLib.copyArray;
 
 import java.net.http.HttpClient;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.http.sys.ExecHTTPBuilder;
 import org.apache.jena.query.Query;
+import org.apache.jena.sparql.exec.QueryExecMod;
 import org.apache.jena.sparql.util.Context;
 
-public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryExecHTTPBuilder> {
+public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryExecHTTPBuilder> implements QueryExecMod {
 
     public static QueryExecHTTPBuilder newBuilder() { return new QueryExecHTTPBuilder(); }
 
@@ -46,5 +48,21 @@ public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryEx
                                  copyArray(namedGraphURIs),
                                  sendMode, appAcceptHeader,
                                  timeout, timeoutUnit);
+    }
+
+    @Override
+    public QueryExecHTTPBuilder initialTimeout(long timeout, TimeUnit timeUnit) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public QueryExecHTTPBuilder overallTimeout(long timeout, TimeUnit timeUnit) {
+        super.timeout(timeout, timeUnit);
+        return thisBuilder();
+    }
+
+    @Override
+    public Context builtContext() {
+        throw new UnsupportedOperationException();
     }
 }

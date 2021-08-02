@@ -20,7 +20,7 @@ package org.apache.jena.atlas.lib;
 
 import java.io.File ;
 import java.net.URLEncoder;
-import java.nio.file.Paths ;
+import java.nio.file.Path;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.base.Sys ;
@@ -194,14 +194,13 @@ public class IRILib
         // To get Path.toAbsolutePath to work, we need to convert /C:/ to C:/
         // then back again.
         fn = fixupWindows(fn) ;
-        try { 
-            // Windows issue 
+        try {
+            // Windows issue
             // Drive letter may not exists in which case it has no working directory "x:"
-            fn = Paths.get(fn).toAbsolutePath().normalize().toString() ;
+            fn = Path.of(fn).toAbsolutePath().normalize().toString() ;
         } catch (java.io.IOError ex) {
             // Any IO problems - > ignore.
         }
-
         if ( trailingSlash && ! fn.endsWith("/") )
             fn = fn + "/" ;
 

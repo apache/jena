@@ -99,7 +99,7 @@ public class TestQueryCloningEssentials {
         beforeClass();
         List<String> exclusions = Arrays.asList(/* no exclusions as all test cases work */);
 
-        Path startPath = Paths.get("./testing/ARQ").toAbsolutePath().normalize();
+        Path startPath = Path.of("./testing/ARQ").toAbsolutePath().normalize();
         PathMatcher pathMatcher = startPath.getFileSystem().getPathMatcher("glob:**/*.rq");
 
         List<Object[]> testParams = new ArrayList<>();

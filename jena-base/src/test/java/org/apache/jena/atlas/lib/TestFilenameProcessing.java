@@ -24,7 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File ;
-import java.nio.file.Paths ;
+import java.nio.file.Path;
 
 import org.junit.Test ;
 
@@ -39,7 +39,7 @@ public class TestFilenameProcessing
 
     static boolean isWindows = File.separatorChar != '/' ;
 
-    private static String cwd = Paths.get(".").toAbsolutePath().normalize().toString() ;
+    private static String cwd = Path.of(".").toAbsolutePath().normalize().toString() ;
     // Sort out cwd, not using the IRILib code.
     //   Must start "/", must not end "/"
     //   Must be /-style, not \
@@ -54,7 +54,7 @@ public class TestFilenameProcessing
         }
         cwd = IRILib.encodeUriPath(cwd) ;
     }
-    
+
     @Test
     public void fileIRI_1() {
         String uri = testFileIRI("D.ttl") ;
@@ -90,7 +90,7 @@ public class TestFilenameProcessing
         assertEquals(uri1, uri2) ;
         return uri1 ;
     }
-    
+
     @Test
     public void fileURL_1() {
         assertNotEquals(cwd, "") ;
@@ -104,7 +104,7 @@ public class TestFilenameProcessing
             // Windows inserts a drive letter
             filenameToIRI("/abc", "file:///abc") ;
     }
-    
+
     @Test
     public void fileURL_3() {
         if ( isWindows )
@@ -128,7 +128,7 @@ public class TestFilenameProcessing
         else
             filenameToIRI("C:\\Windows\\Path", "file://" + cwd + "/C:%5CWindows%5CPath") ;
     }
-    
+
     @Test
     public void fileURL_6() {
         filenameToIRI("~user", "file://" + cwd + "/~user") ;
@@ -138,22 +138,22 @@ public class TestFilenameProcessing
     public void fileURL_7() {
         filenameToIRI(".", "file://" + cwd) ;
     }
-    
+
     @Test
     public void fileURL_10() {
         filenameToIRI("file:abc", "file://" + cwd + "/abc") ;
     }
-    @Test public void fileURL_11() { 
+    @Test public void fileURL_11() {
         if ( ! isWindows )
             // Windows inserts a drive letter
             filenameToIRI("file:/abc", "file:///abc" ) ;
     }
-    
+
     @Test
     public void fileURL_12() {
         filenameToIRI("file:", "file://" + cwd) ;
     }
-    
+
     @Test
     public void fileURL_13() {
         filenameToIRI("file:.", "file://" + cwd + "") ;
@@ -163,9 +163,9 @@ public class TestFilenameProcessing
         String x = cwd.replaceAll("/[^/]*$", "") ;
         filenameToIRI("file:..", "file://"+x ) ;
     }
-    
+
     // Windows + URL.toString().
-    // Should be stable on all systems. 
+    // Should be stable on all systems.
     @Test public void fileURL_15() {
         filenameToIRI("file:/C:/path/file", "file:///C:/path/file") ;
     }

@@ -43,10 +43,7 @@ import org.apache.jena.sparql.util.Symbol;
 /**
  * Query execution for local datasets - builder style.
  */
-public class QueryExecBuilder {
-    // Had been migrated.
-    // May have evolved.
-    // Improvements to QueryExecutionBuilder
+public class QueryExecBuilder implements QueryExecMod{
 
     /** Create a new builder of {@link QueryExecution} for a local dataset. */
     public static QueryExecBuilder newBuilder() {
@@ -69,11 +66,11 @@ public class QueryExecBuilder {
     private Map<Var, Node>  substitutionMap  = null;
 
     // Uses initial binding to execution (old, original) feature
-    private Binding      initialBinding     = null;
-    private long         initialTimeout     = UNSET;
-    private TimeUnit     initialTimeoutUnit = null;
-    private long         overallTimeout     = UNSET;
-    private TimeUnit     overallTimeoutUnit = null;
+    private Binding      initialBinding      = null;
+    private long         initialTimeout      = UNSET;
+    private TimeUnit     initialTimeoutUnit  = null;
+    private long         overallTimeout      = UNSET;
+    private TimeUnit     overallTimeoutUnit  = null;
 
     private QueryExecBuilder() { }
 
@@ -119,16 +116,9 @@ public class QueryExecBuilder {
         return this;
     }
 
-    // Help with QueryExec migration.
-    // This allows the build context to be available to QueryExecutionCompact
-    // To be removed!
-    /** @deprecated Do not use - migration only */
-    @Deprecated
-    public Context setupContext() {
-        return builtContext();
-    }
-
-    private Context builtContext() {
+    /** Only valid after buildPartial() or build() */
+    @Override
+    public  Context builtContext() {
         if ( builtContext == null )
             builtContext = buildContext(baseContext, dataset, addedContext);
         return builtContext;
@@ -156,20 +146,23 @@ public class QueryExecBuilder {
         return this;
     }
 
+    @Override
     public QueryExecBuilder timeout(long value, TimeUnit timeUnit) {
-        this.initialTimeout = value;
-        this.initialTimeoutUnit = timeUnit;
+        this.initialTimeout = UNSET;
+        this.initialTimeoutUnit = null;
         this.overallTimeout = value;
         this.overallTimeoutUnit = timeUnit;
         return this;
     }
 
+    @Override
     public QueryExecBuilder initialTimeout(long value, TimeUnit timeUnit) {
         this.initialTimeout = value < 0 ? -1L : value ;
         this.initialTimeoutUnit = timeUnit;
         return this;
     }
 
+    @Override
     public QueryExecBuilder overallTimeout(long value, TimeUnit timeUnit) {
         this.overallTimeout = value;
         this.overallTimeoutUnit = timeUnit;
@@ -209,13 +202,19 @@ public class QueryExecBuilder {
         }
     }
 
+    public QueryExecMod buildPartial() {
+        builtContext();
+        return this;
+    }
+
+    @Override
     public QueryExec build() {
-        Objects.requireNonNull(query, "Query for QueryExecution");
+        Objects.requireNonNull(query, "No query for QueryExecution");
         query.setResultVars();
         Context cxt = builtContext();
 
-        QueryEngineFactory f = QueryEngineRegistry.get().find(query, dataset, cxt);
-        if ( f == null ) {
+        QueryEngineFactory qeFactory = QueryEngineRegistry.get().find(query, dataset, cxt);
+        if ( qeFactory == null ) {
             Log.warn(QueryExecBuilder.class, "Failed to find a QueryEngineFactory");
             return null;
         }
@@ -227,7 +226,10 @@ public class QueryExecBuilder {
             queryActual = QueryTransformOps.transform(query, substitutionMap);
 
         defaultTimeoutsFromContext(this, cxt);
-        QueryExec qExec = new QueryExecDataset(queryActual, dataset, cxt, f, initialTimeout, initialTimeoutUnit, overallTimeout, overallTimeoutUnit, initialBinding);
+        QueryExec qExec = new QueryExecDataset(queryActual, dataset, cxt, qeFactory,
+                                               initialTimeout, initialTimeoutUnit,
+                                               overallTimeout, overallTimeoutUnit,
+                                               initialBinding);
         return qExec;
     }
 

@@ -56,15 +56,17 @@ public class Service {
 
     // [QExec] Put this in ARQ or ARQConstants
     public static final String base = ARQ.arqParamNS; //"http://jena.apache.org/ARQ/http#";
-    public static final Symbol httpQueryCompression  = SystemARQ.allocSymbol("httpQueryCompression");
-    public static final Symbol httpQueryClient       = SystemARQ.allocSymbol("httpQueryClient");
-    // [QExec]
-    public static final Symbol httpServiceContext    = SystemARQ.allocSymbol("httpServiceContext");
-    public static final Symbol httpServiceAllowed    = SystemARQ.allocSymbol("httpServiceAllowed");
-    // Not connection timeout which is now in HttpClient
-    public static final Symbol httpQueryTimeout      = SystemARQ.allocSymbol("httpQueryTimeout");
-    // ContextBuilder?
 
+    public static final Symbol serviceParams            = ARQ.serviceParams;
+    public static final Symbol httpServiceAllowed       = ARQ.httpServiceAllowed;
+//    //public static final Symbol httpQueryCompression    = ARQ.httpQueryCompression;
+    public static final Symbol httpQueryClient          = ARQ.httpQueryClient;
+//
+//    public static final Symbol httpServiceContext       = ARQ.httpServiceContext;
+//    // Not connection timeout which is now in HttpClient
+    public static final Symbol httpQueryTimeout         = ARQ.httpQueryTimeout;
+
+    // ContextBuilder?
     private static Context emptyContext = Context.emptyContext();
 
     // Old names.
@@ -210,7 +212,7 @@ public class Service {
     /*package*/ static Params getServiceParamsFromContext(String serviceURI, Context context) throws QueryExecException {
         Params params = Params.create();
 
-        Object obj = context.get(ARQ.serviceParams);
+        Object obj = context.get(serviceParams);
 
         if ( obj == null )
             return params;

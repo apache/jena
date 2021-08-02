@@ -92,9 +92,11 @@ public class QueryExecDataset implements QueryExec
     private final AlarmClock         alarmClock       = AlarmClock.get();
     private long                     queryStartTime   = -1; // Unset
 
-    protected QueryExecDataset(Query query, DatasetGraph datasetGraph, Context cxt, QueryEngineFactory qeFactory,
-                               long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2, Binding initialToEngine) {
-        // Content cxt is already a safe copy.
+    protected QueryExecDataset(Query query, DatasetGraph datasetGraph, Context cxt,
+                               QueryEngineFactory qeFactory,
+                               long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2,
+                               Binding initialToEngine) {
+        // Context cxt is already a safe copy.
         this.query = query;
         this.dataset = datasetGraph;
         this.qeFactory = qeFactory;

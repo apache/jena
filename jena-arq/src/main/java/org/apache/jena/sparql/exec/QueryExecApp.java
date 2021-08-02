@@ -23,40 +23,42 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.*;
-import org.apache.jena.rdf.model.Model;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.query.Query;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.util.Context;
 
 /**
- * Query execution that delays making the QueryExecution until needed by exec* This
- * means timeout and initialBinds can still be set.
+ * {@link QueryExec} that delays making the QueryExec until needed by a query operation
+ * This means timeouts and initialBinding can still be set.
  *
- * @see QueryExecution
+ * @see QueryExec
  */
-public class QueryExecutionCompat extends QueryExecutionAdapter {
+public class QueryExecApp implements QueryExec {
     private final QueryExecMod qExecBuilder;
     private QueryExec qExecHere = null;
-    private Dataset datasetHere = null;
+    private DatasetGraph datasetHere = null;
 
-    public static QueryExecution compatibility(QueryExecMod qExec) {
-        return new QueryExecutionCompat(qExec);
+    public static QueryExec create(QueryExecMod qExec) {
+        return new QueryExecApp(qExec);
     }
 
-    public QueryExecutionCompat(QueryExecMod qExecBuilder) {
-        super(null);
+    public QueryExecApp(QueryExecMod qExecBuilder) {
         this.qExecBuilder = qExecBuilder;
         // Have the QueryExecBuilder build the context now, even though it is not finished.
-        qExecBuilder.builtContext();
+        //qExecBuilder.setupContext();
     }
 
-    @Override
     protected QueryExec get() { return qExecHere; }
+
+    public QueryExecMod getBuilder() {
+        return qExecBuilder;
+    }
 
     private QueryExec state() {
         // Build, don't keep.
@@ -64,30 +66,20 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
     }
 
     private void execution() {
-        // Delay until used so setTimeout,setInitialBindings work.
-        // Also - rebuild allowed!
         if ( qExecHere == null ) {
             qExecHere = qExecBuilder.build();
+            datasetHere = qExecHere.getDataset();
             DatasetGraph x = qExecHere.getDataset();
-            datasetHere = (x != null) ? DatasetFactory.wrap(x) : null;
-            qExecHere.getContext().set(ARQConstants.sysCurrentDataset, datasetHere);
+            Dataset ds = (x != null) ? DatasetFactory.wrap(x) : null;
+            qExecHere.getContext().set(ARQConstants.sysCurrentDataset, ds);
         }
     }
 
     @Override
-    public void setInitialBinding(Binding binding) {
-        if ( qExecBuilder instanceof QueryExecBuilder)
-            ((QueryExecBuilder)qExecBuilder).initialBinding(binding);
-        else
-            throw new UnsupportedOperationException("setInitialBinding");
-    }
-
-    @Override
-    public Dataset getDataset() {
+    public DatasetGraph getDataset() {
         if ( datasetHere != null )
             return datasetHere;
-        DatasetGraph dsg = ( qExecHere == null ) ? state().getDataset() : qExecHere.getDataset();
-        datasetHere = (dsg != null) ? DatasetFactory.wrap(dsg) : null;
+        datasetHere = ( qExecHere == null ) ? state().getDataset() : qExecHere.getDataset();
         return datasetHere;
     }
 
@@ -102,93 +94,75 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
     }
 
     @Override
-    public ResultSet execSelect() {
+    public RowSet select() {
         execution();
-        return super.execSelect();
+        return qExecHere.select();
     }
 
     @Override
-    public Model execConstruct() {
+    public Graph construct(Graph graph) {
         execution();
-        return super.execConstruct();
+        return qExecHere.construct(graph);
     }
 
     @Override
-    public Model execConstruct(Model model) {
+    public Iterator<Triple> constructTriples() {
         execution();
-        return super.execConstruct(model);
+        return qExecHere.constructTriples();
     }
 
     @Override
-    public Iterator<Triple> execConstructTriples() {
+    public Iterator<Quad> constructQuads() {
         execution();
-        return super.execConstructTriples();
+        return qExecHere.constructQuads();
     }
 
     @Override
-    public Iterator<Quad> execConstructQuads() {
+    public DatasetGraph constructDataset(DatasetGraph dataset) {
         execution();
-        return super.execConstructQuads();
+        return qExecHere.constructDataset(dataset);
     }
 
     @Override
-    public Dataset execConstructDataset() {
+    public Graph describe(Graph graph) {
         execution();
-        return super.execConstructDataset();
+        return qExecHere.describe(graph);
     }
 
     @Override
-    public Dataset execConstructDataset(Dataset dataset) {
+    public Iterator<Triple> describeTriples() {
         execution();
-        return super.execConstructDataset(dataset);
+        return qExecHere.describeTriples();
     }
 
     @Override
-    public Model execDescribe() {
+    public boolean ask() {
         execution();
-        return super.execDescribe();
-    }
-
-    @Override
-    public Model execDescribe(Model model) {
-        execution();
-        return super.execDescribe(model);
-    }
-
-    @Override
-    public Iterator<Triple> execDescribeTriples() {
-        execution();
-        return super.execDescribeTriples();
-    }
-
-    @Override
-    public boolean execAsk() {
-        execution();
-        return super.execAsk();
+        return qExecHere.ask();
     }
 
     @Override
     public JsonArray execJson() {
         execution();
-        return super.execJson();
+        return qExecHere.execJson();
     }
 
     @Override
     public Iterator<JsonObject> execJsonItems() {
         execution();
-        return super.execJsonItems();
+        return qExecHere.execJsonItems();
     }
 
     @Override
     public void abort() {
         execution();
-        super.abort();
+        qExecHere.abort();
     }
 
     @Override
     public void close() {
         execution();
-        super.close();
+        qExecHere.close();
     }
 
     @Override
@@ -198,40 +172,21 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
         return qExecHere.isClosed();
     }
 
-    @Override
-    public void setTimeout(long timeout, TimeUnit timeoutUnits) {
+    public void timeout(long timeout, TimeUnit timeoutUnits) {
         qExecBuilder.timeout(timeout, timeoutUnits);
     }
 
-    @Override
-    public void setTimeout(long timeout) {
+    public void timeout(long timeout) {
         qExecBuilder.timeout(timeout, TimeUnit.MILLISECONDS);
     }
 
-    @Override
-    public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2) {
+    public void timeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2) {
         qExecBuilder.initialTimeout(timeout1, timeUnit1);
         qExecBuilder.overallTimeout(timeout2, timeUnit2);
     }
 
-    @Override
-    public void setTimeout(long timeout1, long timeout2) {
+    public void timeout(long timeout1, long timeout2) {
         qExecBuilder.initialTimeout(timeout1, TimeUnit.MILLISECONDS);
         qExecBuilder.overallTimeout(timeout2, TimeUnit.MILLISECONDS);
-    }
-
-    @Override
-    public long getTimeout1() {
-        return -1L;
-    }
-
-    @Override
-    public long getTimeout2() {
-        return -1L;
-    }
-
-    @Override
-    public void setInitialBinding(QuerySolution querySolution) {
-        setInitialBinding(BindingLib.toBinding(querySolution));
     }
 }

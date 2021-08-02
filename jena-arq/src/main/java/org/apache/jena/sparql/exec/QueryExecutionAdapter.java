@@ -32,7 +32,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.util.Context;
 
 /**
- * Query execution interface working at the Graph-Node-Triple level.
+ * QueryExecution for a QueryExec working at the Graph-Node-Triple level.
  *
  * @see QueryExecution
  */

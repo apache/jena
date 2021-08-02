@@ -19,7 +19,7 @@
 package org.apache.jena.fuseki.main.cmds;
 
 import java.io.File;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.cmd.CmdException;
@@ -34,7 +34,7 @@ import org.apache.jena.tdb2.DatabaseMgr;
      * details of the setup to use.
      */
     /*package*/ static void setupTDB(String directory, boolean useTDB2, ServerConfig serverConfig) {
-        File dir = Paths.get(directory).toFile();
+        File dir = Path.of(directory).toFile();
         if ( ! dir.exists() )
             throw new CmdException("Directory does not exist: " + directory);
         if ( ! dir.isDirectory() )

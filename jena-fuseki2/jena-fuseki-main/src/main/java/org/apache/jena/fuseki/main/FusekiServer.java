@@ -23,7 +23,6 @@ import static org.apache.jena.fuseki.Fuseki.serverLog;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -815,7 +814,7 @@ public class FusekiServer {
         private void setHttpsCert(String filename) {
             try {
                 JsonObject httpsConf = JSON.read(filename);
-                Path path = Paths.get(filename).toAbsolutePath();
+                Path path = Path.of(filename).toAbsolutePath();
                 String keystore = httpsConf.get("keystore").getAsString().value();
                 // Resolve relative to the https setup file.
                 this.httpsKeystore = path.getParent().resolve(keystore).toString();

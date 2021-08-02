@@ -20,7 +20,6 @@ package org.apache.jena.tdb2.sys;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -125,7 +124,7 @@ public class DatabaseConnection {
     public static ProcessFileLock lockForLocation(Location location) {
         FileOps.ensureDir(location.getDirectoryPath());
         String lockFilename = location.getPath(Names.TDB_LOCK_FILE);
-        Path path = Paths.get(lockFilename);
+        Path path = Path.of(lockFilename);
         try {
             path.toFile().createNewFile();
         } catch(IOException ex) { IO.exception(ex); return null; }

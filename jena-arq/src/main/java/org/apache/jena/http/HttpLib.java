@@ -410,7 +410,6 @@ public class HttpLib {
         return AuthEnv.get().addAuth(requestBuilder, serviceEndpoint);
     }
 
-    // [QExec] Sort out building. newGetRequest
     public static Builder requestBuilder(String url, Map<String, String> httpHeaders, long readTimeout, TimeUnit readTimeoutUnit) {
         HttpRequest.Builder builder = HttpLib.requestBuilderFor(url);
         headers(builder, httpHeaders);
@@ -426,13 +425,6 @@ public class HttpLib {
                 .expectContinue(request.expectContinue())
                 .uri(request.uri());
         builder.method(request.method(), request.bodyPublisher().orElse(BodyPublishers.noBody()));
-//      switch(request.method()) {
-//          case HttpNames.METHOD_GET: builder.GET(); break;
-//          case HttpNames.METHOD_HEAD: builder.method(request.method(), request.bodyPublisher().orElse(null)); break;
-//          case HttpNames.METHOD_POST: builder.POST(request.bodyPublisher().orElse(null)); break;
-//          case HttpNames.METHOD_PUT: builder.PUT(request.bodyPublisher().orElse(null)); break;
-//          case HttpNames.METHOD_DELETE: builder.DELETE(); break;
-//      }
         request.timeout().ifPresent(builder::timeout);
         request.version().ifPresent(builder::version);
         request.headers().map().forEach((name, values)->values.forEach(value->builder.header(name, value)));
@@ -445,7 +437,6 @@ public class HttpLib {
             httpHeaders.forEach(builder::header);
         return builder;
     }
-
 
     /** Set the "Accept" header if value is not null. Returns the builder. */
     public static Builder acceptHeader(Builder builder, String acceptHeader) {

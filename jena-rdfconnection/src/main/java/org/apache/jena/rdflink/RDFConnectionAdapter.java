@@ -25,12 +25,10 @@ import static org.apache.jena.rdflink.LibRDFLink.name;
 
 import java.util.function.Consumer;
 
-import org.apache.jena.rdflink.RDFConnectionAdapter;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.sparql.exec.QueryExecutionAdapter;
-import org.apache.jena.sparql.exec.ResultSetAdapter;
+import org.apache.jena.sparql.exec.*;
 import org.apache.jena.update.UpdateRequest;
 
 /** Provide {@link RDFConnection} using a {@link RDFLink} */
@@ -98,12 +96,21 @@ public class RDFConnectionAdapter implements RDFConnection {
 
     @Override
     public QueryExecution query(Query query) {
-        return QueryExecutionAdapter.adapt(get().query(query));
+        QueryExec queryExec = get().query(query);
+        return adapt(get().query(query));
     }
 
     @Override
     public QueryExecution query(String queryString) {
-        return QueryExecutionAdapter.adapt(get().query(queryString));
+        return adapt(get().query(queryString));
+    }
+
+    private static QueryExecution adapt(QueryExec queryExec) {
+        if ( queryExec instanceof QueryExecApp ) {
+            QueryExecMod builder = ((QueryExecApp)queryExec).getBuilder();
+            return QueryExecutionCompat.compatibility(builder);
+        } else
+            return QueryExecutionAdapter.adapt(queryExec);
     }
 
     @Override

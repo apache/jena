@@ -27,7 +27,6 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
-import org.apache.jena.sparql.exec.http.Service;
 import org.apache.jena.sparql.expr.aggregate.AggregateRegistry ;
 import org.apache.jena.sparql.function.FunctionRegistry ;
 import org.apache.jena.sparql.mgt.ARQMgt ;
@@ -249,7 +248,6 @@ public class ARQ
      */
     public static final Symbol serviceParams = SystemARQ.allocSymbol("serviceParams") ;
 
-
     // Jena HTTP related.
 
     // [QExec]
@@ -272,7 +270,15 @@ public class ARQ
      * If the context of the query execution contains this,
      * and it's set to "false", then SERVICE is not allowed.
      */
-    public static final Symbol serviceAllowed = Service.httpServiceAllowed ;
+    public static final Symbol httpServiceAllowed = SystemARQ.allocSymbol("httpServiceAllowed");
+
+    // [QExec] Put this in ARQ or ARQConstants
+    //public static final Symbol httpQueryCompression  = SystemARQ.allocSymbol("httpQueryCompression");
+    public static final Symbol httpQueryClient       = SystemARQ.allocSymbol("httpQueryClient");
+    public static final Symbol httpServiceContext    = SystemARQ.allocSymbol("httpServiceContext");
+    // Not connection timeout which is now in HttpClient
+    public static final Symbol httpQueryTimeout      = SystemARQ.allocSymbol("httpQueryTimeout");
+
 
     /** If set to true, the parsers will convert undefined prefixes to a URI
      * according to the fixup function {@link RiotLib#fixupPrefixes}.

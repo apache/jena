@@ -23,7 +23,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -595,7 +594,7 @@ public class GSP {
     protected static void pushFile(HttpClient httpClient, String endpoint, String file, String fileContentType,
                                    Map<String, String> httpHeaders, Push style) {
         try {
-            Path path = Paths.get(file);
+            Path path = Path.of(file);
             if ( fileContentType != null )
             //if ( ! httpHeaders.containsKey(HttpNames.hContentType) )
                 httpHeaders.put(HttpNames.hContentType, fileContentType);

@@ -263,7 +263,7 @@ public class IO
     }
 
     public static boolean isEmptyDirectory(String directory) {
-        Path path = Paths.get(directory);
+        Path path = Path.of(directory);
         try(DirectoryStream<Path> dirStream = Files.newDirectoryStream(path)) {
             return !dirStream.iterator().hasNext();
         }
@@ -272,12 +272,12 @@ public class IO
     }
 
     public static boolean exists(String directory) {
-        Path path = Paths.get(directory);
+        Path path = Path.of(directory);
         return Files.exists(path);
     }
 
     public static boolean isDirectory(String directory) {
-        Path path = Paths.get(directory);
+        Path path = Path.of(directory);
         return Files.isDirectory(path);
     }
 

@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -41,24 +41,24 @@ import org.apache.jena.sparql.sse.SSE;
 import org.junit.Test;
 
 public class TestRDFParser {
-    
+
     // Location of test files.
     private static String DIR = "testing/RIOT/Parser/";
-    private static String testdata = "@prefix : <http://example/ns#> . :x :x _:b .";  
-    
+    private static String testdata = "@prefix : <http://example/ns#> . :x :x _:b .";
+
     @Test public void source_not_uri_01() {
         Graph graph = GraphFactory.createGraphMem();
         RDFParserBuilder.create().lang(Lang.TTL).fromString(testdata).parse(graph);
         assertEquals(1, graph.size());
     }
-    
+
     @Test public void source_not_uri_02() {
         Graph graph = GraphFactory.createGraphMem();
         InputStream input = new ByteArrayInputStream(testdata.getBytes(StandardCharsets.UTF_8));
         RDFParser.create().lang(Lang.TTL).source(input).parse(graph);
         assertEquals(1, graph.size());
     }
-    
+
     @Test public void source_uri_01() {
         Graph graph = GraphFactory.createGraphMem();
         RDFParser.create().source("file:"+DIR+"data.ttl").parse(graph);
@@ -82,7 +82,7 @@ public class TestRDFParser {
     public void source_uri_04() {
         Graph graph = GraphFactory.createGraphMem();
         RDFParser.create()
-            .source(Paths.get(DIR+"data.ttl"))
+            .source(Path.of(DIR+"data.ttl"))
             .parse(graph);
         assertEquals(3, graph.size());
     }
@@ -104,13 +104,13 @@ public class TestRDFParser {
         RDFParser.fromString(testdata).lang(Lang.TTL).parse(graph);
         assertEquals(1, graph.size());
     }
-    
+
     @Test(expected=RiotNotFoundException.class)
     public void source_notfound_1() {
         // Last source wins.
         Graph graph = GraphFactory.createGraphMem();
         RDFParser.create()
-            .source(Paths.get(DIR+"data.nosuchfile.ttl"))
+            .source(Path.of(DIR+"data.nosuchfile.ttl"))
             .parse(graph);
         assertEquals(3, graph.size());
     }
@@ -147,9 +147,9 @@ public class TestRDFParser {
     @Test(expected=RiotException.class)
     public void errorHandler() {
         Graph graph = GraphFactory.createGraphMem();
-        // This test file contains Turtle. 
+        // This test file contains Turtle.
         RDFParser.create().source(DIR+"data.rdf")
-            // and no test log output.  
+            // and no test log output.
             .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
             .parse(graph);
     }
@@ -178,16 +178,16 @@ public class TestRDFParser {
             return super.createURI(uriStr);
         }
     }
-    
+
     private RDFParserBuilder builder() {
         InputStream input = new ByteArrayInputStream(testdata.getBytes(StandardCharsets.UTF_8));
         return RDFParserBuilder.create().lang(Lang.TTL).source(input);
     }
-    
+
     @Test public void labels_01() {
         Graph graph = GraphFactory.createGraphMem();
         //LabelToNode.createUseLabelEncoded() ;
-        
+
         builder()
             .labelToNode(LabelToNode.createUseLabelAsGiven())
             .parse(graph);
@@ -207,10 +207,10 @@ public class TestRDFParser {
         assertEquals(1, graph.size());
         assertNotEquals(0, f.counter);
     }
-    
+
     // Canonical literals.
-    
-    @Test public void canonical_value_1() { 
+
+    @Test public void canonical_value_1() {
         testNormalization("0123", "0123", builder().canonicalValues(false));
     }
 
@@ -237,11 +237,11 @@ public class TestRDFParser {
     @Test public void canonical_langTag_3() {
         testNormalization("'abc'@En-gB", "'abc'@en-GB", builder().langTagCanonical());
     }
-    
+
     private static String PREFIX = "PREFIX : <http://example/>\n ";
     private static Node s = SSE.parseNode(":s");
     private static Node p = SSE.parseNode(":p");
-    
+
     private void testNormalization(String input, String output, RDFParserBuilder builder) {
         Graph graph = GraphFactory.createGraphMem();
         String x = PREFIX+":s :p "+input;

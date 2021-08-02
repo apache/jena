@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -151,7 +150,7 @@ public class TestAdmin extends AbstractFusekiWebappTest {
         checkNotThere(dsTest);
 
         try {
-            Path f = Paths.get(fileBase+"config-ds-plain-1.ttl");
+            Path f = Path.of(fileBase+"config-ds-plain-1.ttl");
             {
                 httpPost(ServerCtl.urlRoot()+"$/"+opDatasets,
                          WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8,
@@ -546,7 +545,7 @@ public class TestAdmin extends AbstractFusekiWebappTest {
 
     private static void addTestDataset(String filename) {
         try {
-            Path f = Paths.get(filename);
+            Path f = Path.of(filename);
             BodyPublisher body = BodyPublishers.ofFile(f);
             String ct = WebContent.contentTypeTurtle;
             httpPost(ServerCtl.urlRoot()+"$/"+opDatasets, ct, body);
