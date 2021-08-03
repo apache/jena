@@ -101,8 +101,7 @@ public class RDFLanguages
      * and requiring an explicit language name {@code RDFParser.forceLang(Lang.JSONLD11)...}
      */
     public static final String strLangJSONLD11     = "JSON-LD-11";
-    public static final Lang JSONLD11   = LangBuilder.create()
-                                                     .langName(strLangJSONLD11)
+    public static final Lang JSONLD11   = LangBuilder.create(strLangJSONLD11, "x/ld-json-11")
                                                      .addAltNames("JSONLD11")
                                                      .addFileExtensions("jsonld11")
                                                      .build();
@@ -189,6 +188,7 @@ public class RDFLanguages
         Lang.TURTLE     = RDFLanguages.TURTLE;
         Lang.TTL        = RDFLanguages.TTL;
         Lang.JSONLD     = RDFLanguages.JSONLD;
+        Lang.JSONLD11   = RDFLanguages.JSONLD11;
         Lang.RDFJSON    = RDFLanguages.RDFJSON;
         Lang.NQUADS     = RDFLanguages.NQUADS;
         Lang.NQ         = RDFLanguages.NQ;
@@ -220,6 +220,7 @@ public class RDFLanguages
         register(N3);
         register(NTRIPLES);
         register(JSONLD);
+        register(JSONLD11);
         register(RDFJSON);
         register(TRIG);
         register(NQUADS);

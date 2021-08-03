@@ -69,6 +69,27 @@
       <artifactId>jsonld-java</artifactId>
     </dependency>
 
+    <!-- For Titanium JSON-LD 1.1 -->
+    <dependency>
+      <!-- Apache License -->
+      <groupId>com.apicatalog</groupId>
+      <artifactId>titanium-json-ld</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Eclipse Public License 2.0 (category-B) -->
+    <dependency>
+      <groupId>jakarta.json</groupId>
+      <artifactId>jakarta.json-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!--  And an implementation : Eclipse Public License 2.0 (category-B) -->
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.json</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- End Titanium JSON-LD 1.1 -->
+    
     <!-- See parent POM. Our choice of version here. -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
