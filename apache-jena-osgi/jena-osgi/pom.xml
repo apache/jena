@@ -164,6 +164,11 @@
       <artifactId>httpclient-osgi</artifactId>
       <version>${ver.httpclient-osgi}</version>
       <exclusions>
+        <exclusion>
+          <!-- Ignore scope=provided dependency -->
+          <groupId>org.osgi</groupId>
+          <artifactId>org.osgi.core</artifactId>
+        </exclusion>
         <!-- These are all embedded within httpclient-osgi -->
         <exclusion>
           <groupId>org.apache.httpcomponents</groupId>

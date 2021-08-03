@@ -34,9 +34,7 @@
     <description>GeoSPARQL with Fuseki</description>
 
     <properties>
-        <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
         <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-        <!-- @@ TODO Need final check @@ -->
         <automatic.module.name>org.apache.jena.fuseki.geosparql</automatic.module.name>
     </properties>
 

@@ -44,6 +44,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ScriptFunction extends FunctionBase {
+	static {
+        System.setProperty("polyglot.engine.WarnInterpreterOnly", "false");
+    }
+	
     private static final ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 
     private static final String ARQ_NS = "http://jena.apache.org/ARQ/";
