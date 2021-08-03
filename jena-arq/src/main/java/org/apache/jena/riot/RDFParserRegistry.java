@@ -20,23 +20,23 @@ package org.apache.jena.riot;
 
 import static org.apache.jena.riot.Lang.*;
 
-import java.io.InputStream ;
-import java.io.Reader ;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map ;
-import java.util.Set ;
+import java.util.Map;
+import java.util.Set;
 
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.riot.lang.* ;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.web.ContentType;
+import org.apache.jena.riot.lang.*;
 import org.apache.jena.riot.lang.extra.TurtleJCC;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.thrift.BinRDF ;
+import org.apache.jena.riot.thrift.BinRDF;
 import org.apache.jena.riot.thrift.RiotThriftException;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context;
 
 /** The registry of languages and parsers.
  * To register a new parser:
@@ -49,110 +49,106 @@ import org.apache.jena.sparql.util.Context ;
 public class RDFParserRegistry
 {
     /** map language to a parser factory */
-    private static Map<Lang, ReaderRIOTFactory> langToParserFactory    = new HashMap<>() ;
+    private static Map<Lang, ReaderRIOTFactory> langToParserFactory    = new HashMap<>();
 
     /** Known triples languages */
-    private static Set<Lang> langTriples  = new HashSet<>() ;
+    private static Set<Lang> langTriples  = new HashSet<>();
 
     /** Known quads languages */
-    private static Set<Lang> langQuads    = new HashSet<>() ;
+    private static Set<Lang> langQuads    = new HashSet<>();
 
-
-    private static boolean initialized = false ;
-    static { init() ; }
-    public static void init()
-    {
-        if ( initialized ) return ;
-        initialized = true ;
-        initStandard() ;
+    private static boolean initialized = false;
+    static { init(); }
+    public static void init() {
+        if ( initialized )
+            return;
+        initialized = true;
+        initStandard();
     }
 
-    private static void initStandard()
-    {
+    private static void initStandard() {
         // Make sure the constants are initialized.
-        RDFLanguages.init() ;
+        RDFLanguages.init();
 
         /** General parser factory for parsers implemented by "Lang" */
         ReaderRIOTFactory parserFactory          = ReaderRIOTLang.factory;
         // Others
-        ReaderRIOTFactory parserFactoryRDFXML    = ReaderRIOTRDFXML.factory ;
-        ReaderRIOTFactory parserFactoryJsonLD    = new ReaderRIOTFactoryJSONLD() ;
+        ReaderRIOTFactory parserFactoryRDFXML    = ReaderRIOTRDFXML.factory;
+        ReaderRIOTFactory parserFactoryJsonLD    = new ReaderRIOTFactoryJSONLD();
         ReaderRIOTFactory parserFactoryThrift    = ReaderRDFThrift.factory;
         ReaderRIOTFactory parserFactoryTriX      = ReaderTriX.factory;
         ReaderRIOTFactory parserFactoryRDFNULL   = ReaderRDFNULL.factory;
 
-        registerLangTriples(NTRIPLES,   parserFactory) ;
-        registerLangTriples(N3,         parserFactory) ;
-        registerLangTriples(TURTLE,     parserFactory) ;
-        registerLangTriples(RDFJSON,    parserFactory) ;
-        registerLangTriples(RDFXML,     ReaderRIOTRDFXML.factory) ;
-        registerLangTriples(JSONLD,     parserFactoryJsonLD) ;
-        registerLangTriples(RDFTHRIFT,  ReaderRDFThrift.factory) ;
-        registerLangTriples(TRIX,       ReaderTriX.factory) ;
-        registerLangTriples(RDFNULL,    ReaderRDFNULL.factory) ;
+        registerLangTriples(NTRIPLES,   parserFactory);
+        registerLangTriples(N3,         parserFactory);
+        registerLangTriples(TURTLE,     parserFactory);
+        registerLangTriples(RDFJSON,    parserFactory);
+        registerLangTriples(RDFXML,     ReaderRIOTRDFXML.factory);
+        registerLangTriples(JSONLD,     parserFactoryJsonLD);
+        registerLangTriples(RDFTHRIFT,  ReaderRDFThrift.factory);
+        registerLangTriples(TRIX,       ReaderTriX.factory);
+        registerLangTriples(RDFNULL,    ReaderRDFNULL.factory);
 
-        registerLangQuads(JSONLD,       parserFactoryJsonLD) ;
-        registerLangQuads(NQUADS,       parserFactory) ;
-        registerLangQuads(TRIG,         parserFactory) ;
-        registerLangQuads(RDFTHRIFT,    parserFactoryThrift) ;
-        registerLangQuads(TRIX,         parserFactoryTriX) ;
-        registerLangQuads(RDFNULL,      parserFactoryRDFNULL) ;
+        registerLangQuads(JSONLD,       parserFactoryJsonLD);
+        registerLangQuads(NQUADS,       parserFactory);
+        registerLangQuads(TRIG,         parserFactory);
+        registerLangQuads(RDFTHRIFT,    parserFactoryThrift);
+        registerLangQuads(TRIX,         parserFactoryTriX);
+        registerLangQuads(RDFNULL,      parserFactoryRDFNULL);
 
         // Javacc based Turtle parser, different language name.
         TurtleJCC.register();
     }
 
-    /** Register a language and it's parser factory.
+    /**
+     * Register a language and it's parser factory.
      * To create a {@link Lang} object use {@link LangBuilder}.
      */
-    private static void registerLang(Lang lang, ReaderRIOTFactory factory)
-    {
-        RDFLanguages.register(lang) ;
-        langToParserFactory.put(lang, factory) ;
-    }
-
-    /** Register a language and its parser factory.
-     * To create a {@link Lang} object use {@link LangBuilder}.
-     */
-    public static void registerLangTriples(Lang lang, ReaderRIOTFactory factory)
-    {
-        langTriples.add(lang) ;
-        registerLang(lang, factory) ;
-    }
-
-    /** Register a language and its parser factory.
-     * To create a {@link Lang} object use {@link LangBuilder}.
-     */
-    public static void registerLangQuads(Lang lang, ReaderRIOTFactory factory)
-    {
-        langQuads.add(lang) ;
-        registerLang(lang, factory) ;
-    }
-
-    /** Remove registration */
-    public static void removeRegistration(Lang lang)
-    {
-        RDFLanguages.unregister(lang) ;
-        langToParserFactory.remove(lang) ;
+    private static void registerLang(Lang lang, ReaderRIOTFactory factory) {
+        RDFLanguages.register(lang);
+        langToParserFactory.put(lang, factory);
     }
 
     /**
-     * Return the parser factory for the language, or null if not registered.
-     * Use {@code RDFParser.create() ... .build()}
+     * Register a language and its parser factory.
+     * To create a {@link Lang} object use {@link LangBuilder}.
      */
-    public static ReaderRIOTFactory getFactory(Lang language)
-    {
-        return langToParserFactory.get(language) ;
+    public static void registerLangTriples(Lang lang, ReaderRIOTFactory factory) {
+        langTriples.add(lang);
+        registerLang(lang, factory);
+    }
+
+    /**
+     * Register a language and its parser factory.
+     * To create a {@link Lang} object use {@link LangBuilder}.
+     */
+    public static void registerLangQuads(Lang lang, ReaderRIOTFactory factory) {
+        langQuads.add(lang);
+        registerLang(lang, factory);
+    }
+
+    /** Remove registration */
+    public static void removeRegistration(Lang lang) {
+        RDFLanguages.unregister(lang);
+        langToParserFactory.remove(lang);
+    }
+
+    /**
+     * Return the parser factory for the language, or null if not registered. Use
+     * {@code RDFParser.create() ... .build()}
+     */
+    public static ReaderRIOTFactory getFactory(Lang language) {
+        return langToParserFactory.get(language);
     }
 
     /** return true if the language has a registered parser. */
-    public static boolean isRegistered(Lang lang) { return langToParserFactory.containsKey(lang) ; }
+    public static boolean isRegistered(Lang lang) { return langToParserFactory.containsKey(lang); }
 
     /** return true if the language is registered with the triples parser factories */
-    public static boolean isTriples(Lang lang) { return langTriples.contains(lang) ; }
+    public static boolean isTriples(Lang lang) { return langTriples.contains(lang); }
 
     /** return true if the language is registered with the quads parser factories */
-    public static boolean isQuads(Lang lang)   { return langQuads.contains(lang) ; }
+    public static boolean isQuads(Lang lang)   { return langQuads.contains(lang); }
 
     // Parsers and factories.
 
@@ -161,11 +157,11 @@ public class RDFParserRegistry
         static ReaderRIOTFactory factory =
             (Lang lang, ParserProfile parserProfile) -> new ReaderRIOTLang(lang, parserProfile);
 
-        private final Lang lang ;
-        private ParserProfile parserProfile = null ;
+        private final Lang lang;
+        private ParserProfile parserProfile = null;
 
         ReaderRIOTLang(Lang lang, ParserProfile parserProfile) {
-            this.lang = lang ;
+            this.lang = lang;
             this.parserProfile = parserProfile;
         }
 
@@ -173,22 +169,22 @@ public class RDFParserRegistry
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             // Unnecessary - RDFParser did it and set it in the ParserProfile
 //            if ( baseURI != null ) {
-//                IRIResolver newResolver = IRIResolver.create(baseURI) ;
+//                IRIResolver newResolver = IRIResolver.create(baseURI);
 //                parserProfile.setIRIResolver(newResolver);
 //            }
             LangRIOT parser = RiotParsers.createParser(in, lang, output, parserProfile);
-            parser.parse() ;
+            parser.parse();
         }
 
         @Override
         public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             // Unnecessary - RDFParser did it and set it in the ParserProfile
 //          if ( baseURI != null ) {
-//              IRIResolver newResolver = IRIResolver.create(baseURI) ;
+//              IRIResolver newResolver = IRIResolver.create(baseURI);
 //              parserProfile.setIRIResolver(newResolver);
 //          }
             LangRIOT parser = RiotParsers.createParser(in, lang, output, parserProfile);
-            parser.parse() ;
+            parser.parse();
         }
     }
 
@@ -196,7 +192,7 @@ public class RDFParserRegistry
         @Override
         public ReaderRIOT create(Lang language, ParserProfile profile) {
             if ( !Lang.JSONLD.equals(language) )
-                throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD") ;
+                throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD");
             return new JsonLDReader(language, profile, profile.getErrorHandler());
         }
     }
@@ -221,7 +217,7 @@ public class RDFParserRegistry
 
         @Override
         public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            throw new RiotException("RDF Thrift : Reading binary data from a java.io.reader is not supported. Please use an InputStream") ;
+            throw new RiotException("RDF Thrift : Reading binary data from a java.io.reader is not supported. Please use an InputStream");
         }
     }
 }
