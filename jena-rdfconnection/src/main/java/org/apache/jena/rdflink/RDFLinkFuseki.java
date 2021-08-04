@@ -31,17 +31,17 @@ import org.apache.jena.sparql.core.Transactional;
  * <p>
  * This adds the ability to work with blank nodes across the network.
  */
-public class RDFLinkFuseki extends RDFLinkRemote {
+public class RDFLinkFuseki extends RDFLinkHTTP {
 
     /**
      * Create a connection builder which is initialized for the default Fuseki
      * configuration. The application must call
-     * {@link RDFLinkRemoteBuilder#destination(String)} to set the URL of the remote
+     * {@link RDFLinkHTTPBuilder#destination(String)} to set the URL of the remote
      * dataset.
      * @return RDFLinkRemoteBuilder
      */
-    public static RDFLinkRemoteBuilder newBuilder() {
-        return setupForFuseki(RDFLinkRemote.newBuilder());
+    public static RDFLinkHTTPBuilder newBuilder() {
+        return setupForFuseki(RDFLinkHTTP.newBuilder());
     }
 
     /**
@@ -49,12 +49,12 @@ public class RDFLinkFuseki extends RDFLinkRemote {
      * @param other The RDFLinkFuseki to clone.
      * @return RDFLinkRemoteBuilder
      */
-    public static RDFLinkRemoteBuilder from(RDFLinkFuseki other) {
-        return setupCreator(RDFLinkRemote.from(other));
+    public static RDFLinkHTTPBuilder from(RDFLinkFuseki other) {
+        return setupCreator(RDFLinkHTTP.from(other));
     }
 
     /** Fuseki settings */
-    private static RDFLinkRemoteBuilder setupForFuseki(RDFLinkRemoteBuilder builder) {
+    private static RDFLinkHTTPBuilder setupForFuseki(RDFLinkHTTPBuilder builder) {
         String ctRDFThrift = Lang.RDFTHRIFT.getHeaderString();
         String acceptHeaderSPARQL = String.join(","
                             , ResultSetLang.RS_Thrift.getHeaderString()
@@ -73,15 +73,15 @@ public class RDFLinkFuseki extends RDFLinkRemote {
             .creator((b)->fusekiMaker(b));
     }
 
-    private static RDFLinkRemoteBuilder setupCreator(RDFLinkRemoteBuilder builder) {
+    private static RDFLinkHTTPBuilder setupCreator(RDFLinkHTTPBuilder builder) {
         return builder.creator((b)->fusekiMaker(b));
     }
 
-    static RDFLinkFuseki fusekiMaker(RDFLinkRemoteBuilder builder) {
+    static RDFLinkFuseki fusekiMaker(RDFLinkHTTPBuilder builder) {
         return new RDFLinkFuseki(builder);
     }
 
-    protected RDFLinkFuseki(RDFLinkRemoteBuilder base) {
+    protected RDFLinkFuseki(RDFLinkHTTPBuilder base) {
         this(base.txnLifecycle, base.httpClient,
             base.destination, base.queryURL, base.updateURL, base.gspURL,
             base.outputQuads, base.outputTriples,

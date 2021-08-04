@@ -18,279 +18,80 @@
 
 package org.apache.jena.sparql.exec;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
-import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.*;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.Syntax;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.Timeouts;
-import org.apache.jena.sparql.engine.QueryEngineFactory;
-import org.apache.jena.sparql.engine.QueryEngineRegistry;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
-/**
- * Query execution for local datasets - builder style.
- */
-public class QueryExecBuilder implements QueryExecMod{
+/** The common elements of a {@link QueryExec} builder. */
+public interface QueryExecBuilder {
 
-    /** Create a new builder of {@link QueryExecution} for a local dataset. */
-    public static QueryExecBuilder newBuilder() {
-        QueryExecBuilder builder = new QueryExecBuilder();
-        return builder;
-    }
+    /** Set the query. */
+    public QueryExecBuilder query(Query query);
 
-    private static final long UNSET         = -1;
+    /** Set the query. */
+    public QueryExecBuilder query(String queryString);
 
-    private DatasetGraph dataset            = null;
-    private Query        query              = null;
-    // Items added with "set(,)"
-    private Context      addedContext       = new Context();
-    // Explicitly given base context (defaults to a copy of ARQ.getContext() merged with dataset context.
-    private Context      baseContext        = null;
-    // Migration - context when built, but available early to QueryExecution
-    private Context      builtContext        = null;
+    /** Set the query. */
+    public QueryExecBuilder query(String queryString, Syntax syntax);
 
-    // Uses query rewrite to replace variables by values.
-    private Map<Var, Node>  substitutionMap  = null;
+    /** Set a context entry. */
+    public QueryExecBuilder set(Symbol symbol, Object value);
 
-    // Uses initial binding to execution (old, original) feature
-    private Binding      initialBinding      = null;
-    private long         initialTimeout      = UNSET;
-    private TimeUnit     initialTimeoutUnit  = null;
-    private long         overallTimeout      = UNSET;
-    private TimeUnit     overallTimeoutUnit  = null;
+    /** Set a context entry. */
+    public QueryExecBuilder set(Symbol symbol, boolean value);
 
-    private QueryExecBuilder() { }
+    /**
+     * Set the context. if not set, defaults to the system context
+     * ({@link ARQ#getContext}).
+     */
+    public QueryExecBuilder context(Context context);
 
-    public QueryExecBuilder query(Query query) {
-        this.query = query;
-        return this;
-    }
+    /** Provide a set of (Var, Node) for substitution in the query when QueryExec is built. */
+    public QueryExecBuilder substitution(Binding binding);
 
-    public QueryExecBuilder query(String queryString) {
-        query(queryString, Syntax.syntaxARQ);
-        return this;
-    }
+    /** Provide a (Var, Node) for substitution in the query when QueryExec is built. */
+    public QueryExecBuilder substitution(Var var, Node value);
 
-    public QueryExecBuilder query(String queryString, Syntax syntax) {
-        this.query = QueryFactory.create(queryString, syntax);
-        return this;
-    }
+    /** Set the overall query execution timeout. */
+    public QueryExecBuilder timeout(long value, TimeUnit timeUnit);
 
-    public QueryExecBuilder dataset(DatasetGraph dsg) {
-        this.dataset = dsg;
-        return this;
-    }
+    /**
+     * Build the {@link QueryExec}. Further changes to he builder do not affect this
+     * {@link QueryExec}.
+     */
+    public QueryExec build();
 
-    public QueryExecBuilder graph(Graph graph) {
-        DatasetGraph dsg = DatasetGraphFactory.wrap(graph);
-        dataset(dsg);
-        return this;
-    }
+    // build-and-use short cuts
 
-    public QueryExecBuilder set(Symbol symbol, Object value) {
-        addedContext.set(symbol, value);
-        return this;
-    }
-
-    public QueryExecBuilder set(Symbol symbol, boolean value) {
-        addedContext.set(symbol, value);
-        return this;
-    }
-
-    public QueryExecBuilder context(Context context) {
-        this.baseContext = context;
-        this.addedContext.clear();
-        return this;
-    }
-
-    /** Only valid after buildPartial() or build() */
-    @Override
-    public  Context builtContext() {
-        if ( builtContext == null )
-            builtContext = buildContext(baseContext, dataset, addedContext);
-        return builtContext;
-    }
-
-    public QueryExecBuilder substitution(Binding binding) {
-        ensureSubstitutionMap();
-        binding.forEach(this.substitutionMap::put);
-        return this;
-    }
-
-    public QueryExecBuilder substitution(Var var, Node value) {
-        ensureSubstitutionMap();
-        this.substitutionMap.put(var, value);
-        return this;
-    }
-
-    private void ensureSubstitutionMap() {
-        if ( substitutionMap == null )
-            substitutionMap = new HashMap<>();
-    }
-
-    public QueryExecBuilder initialBinding(Binding binding) {
-        this.initialBinding = binding;
-        return this;
-    }
-
-    @Override
-    public QueryExecBuilder timeout(long value, TimeUnit timeUnit) {
-        this.initialTimeout = UNSET;
-        this.initialTimeoutUnit = null;
-        this.overallTimeout = value;
-        this.overallTimeoutUnit = timeUnit;
-        return this;
-    }
-
-    @Override
-    public QueryExecBuilder initialTimeout(long value, TimeUnit timeUnit) {
-        this.initialTimeout = value < 0 ? -1L : value ;
-        this.initialTimeoutUnit = timeUnit;
-        return this;
-    }
-
-    @Override
-    public QueryExecBuilder overallTimeout(long value, TimeUnit timeUnit) {
-        this.overallTimeout = value;
-        this.overallTimeoutUnit = timeUnit;
-        return this;
-    }
-
-    // Set times from context if not set directly. e..g Context provides default values.
-    // Contrast with SPARQLQueryProcessor where the context is limiting values of the protocol parameter.
-    private static void defaultTimeoutsFromContext(QueryExecBuilder builder, Context cxt) {
-        applyTimeouts(builder, cxt.get(ARQ.queryTimeout));
-    }
-
-    /** Take obj, find the timeout(s) and apply to the builder */
-    private static void applyTimeouts(QueryExecBuilder builder, Object obj) {
-        if ( obj == null )
-            return ;
-        try {
-            if ( obj instanceof Number ) {
-                long x = ((Number)obj).longValue();
-                if ( builder.overallTimeout < 0 )
-                    builder.overallTimeout(x, TimeUnit.MILLISECONDS);
-            } else if ( obj instanceof String ) {
-                String str = obj.toString();
-                Pair<Long, Long> pair = Timeouts.parseTimeoutStr(str, TimeUnit.MILLISECONDS);
-                if ( pair == null ) {
-                    Log.warn(builder, "Bad timeout string: "+str);
-                    return ;
-                }
-                if ( builder.initialTimeout < 0 )
-                    builder.initialTimeout(pair.getLeft(), TimeUnit.MILLISECONDS);
-                if ( builder.overallTimeout < 0 )
-                    builder.overallTimeout(pair.getRight(), TimeUnit.MILLISECONDS);
-            } else
-                Log.warn(builder, "Can't interpret timeout: " + obj);
-        } catch (Exception ex) {
-            Log.warn(builder, "Exception setting timeouts (context) from: "+obj);
-        }
-    }
-
-    public QueryExecMod buildPartial() {
-        builtContext();
-        return this;
-    }
-
-    @Override
-    public QueryExec build() {
-        Objects.requireNonNull(query, "No query for QueryExecution");
-        query.setResultVars();
-        Context cxt = builtContext();
-
-        QueryEngineFactory qeFactory = QueryEngineRegistry.get().find(query, dataset, cxt);
-        if ( qeFactory == null ) {
-            Log.warn(QueryExecBuilder.class, "Failed to find a QueryEngineFactory");
-            return null;
-        }
-
-        // Initial bindings / parameterized query
-        Query queryActual = query;
-
-        if ( substitutionMap != null && ! substitutionMap.isEmpty() )
-            queryActual = QueryTransformOps.transform(query, substitutionMap);
-
-        defaultTimeoutsFromContext(this, cxt);
-        QueryExec qExec = new QueryExecDataset(queryActual, dataset, cxt, qeFactory,
-                                               initialTimeout, initialTimeoutUnit,
-                                               overallTimeout, overallTimeoutUnit,
-                                               initialBinding);
-        return qExec;
-    }
-
-    private Context dftContext() {
-        return Context.setupContextForDataset(ARQ.getContext(), dataset) ;
-    }
-
-    private static Context buildContext(Context baseContext, DatasetGraph dataset, Context addedContext) {
-        // Default is to take the global context, the copy it and merge in the dataset context.
-        // If a context is specified by context(Context), use that as given.
-        // The query context is modified to insert the current time.
-        // This copy-isolates.
-
-        Context cxt;
-        if ( baseContext == null )
-            cxt = Context.setupContextForDataset(ARQ.getContext(), dataset) ;
-        else
-            cxt = baseContext;
-        if ( addedContext != null )
-            cxt.putAll(addedContext);
-        return cxt;
-    }
-
-    // (Slightly shorter) abbreviated forms - build-execute now.
-
-    public RowSet select() {
+    /** Build and execute as a SELECT query. */
+    public default RowSet select() {
         return build().select();
     }
 
-    public void select(Consumer<Binding> rowAction) {
-        if ( !query.isSelectType() )
-            throw new QueryExecException("Attempt to execute SELECT for a "+query.queryType()+" query");
-        try ( QueryExec qExec = build() ) {
-            forEachRow(qExec.select(), rowAction);
-        }
-    }
-
-    // Also in RDFLink
-    private static void forEachRow(RowSet rowSet, Consumer<Binding> rowAction) {
-        rowSet.forEachRemaining(rowAction);
-    }
-
-    public Graph construct() {
-        if ( !query.isConstructType() )
-            throw new QueryExecException("Attempt to execute CONSTRUCT for a "+query.queryType()+" query");
+    /** Build and execute as a CONSTRUCT query. */
+    public default Graph construct() {
         try ( QueryExec qExec = build() ) {
             return qExec.construct();
         }
     }
 
-    public Graph describe() {
-        if ( !query.isDescribeType() )
-            throw new QueryExecException("Attempt to execute DESCRIBE for a "+query.queryType()+" query");
+    /** Build and execute as a CONSTRUCT query. */
+    public default Graph describe() {
         try ( QueryExec qExec = build() ) {
             return qExec.describe();
         }
     }
 
-    public boolean ask() {
-        if ( !query.isAskType() )
-            throw new QueryExecException("Attempt to execute ASK for a "+query.queryType()+" query");
+    /** Build and execute as an ASK query. */
+    public default boolean ask() {
         try ( QueryExec qExec = build() ) {
             return qExec.ask();
         }

@@ -25,9 +25,17 @@ import java.util.HashMap;
 
 import org.apache.jena.http.sys.ExecHTTPBuilder;
 import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecutionBuilderCommon;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.util.Context;
 
-public class QueryExecutionHTTPBuilder extends ExecHTTPBuilder<QueryExecutionHTTP, QueryExecutionHTTPBuilder> {
+public class QueryExecutionHTTPBuilder
+    extends ExecHTTPBuilder<QueryExecutionHTTP, QueryExecutionHTTPBuilder>
+    implements QueryExecutionBuilderCommon {
 
     public static QueryExecutionHTTPBuilder newBuilder() { return new QueryExecutionHTTPBuilder(); }
 
@@ -39,12 +47,30 @@ public class QueryExecutionHTTPBuilder extends ExecHTTPBuilder<QueryExecutionHTT
     }
 
     @Override
-    protected QueryExecutionHTTP buildX(HttpClient hClient, Query queryActual, Context cxt) {
-        QueryExecHTTP qExec = new QueryExecHTTP(serviceURL, queryActual, queryString, urlLimit,
+    protected QueryExecutionHTTP buildX(HttpClient hClient, Query queryActual, String queryStringActual, Context cxt) {
+        QueryExecHTTP qExec = new QueryExecHTTP(serviceURL, queryActual, queryStringActual, urlLimit,
                                                 hClient, new HashMap<>(httpHeaders), Params.create(params), cxt,
                                                 copyArray(defaultGraphURIs), copyArray(namedGraphURIs),
                                                 sendMode, appAcceptHeader,
                                                 timeout, timeoutUnit);
         return new QueryExecutionHTTP(qExec);
+    }
+
+    @Override
+    public QueryExecutionBuilderCommon initialBinding(QuerySolution querySolution) {
+        throw new UnsupportedOperationException("Initial bindings for a HTTP query execution");
+    }
+
+    @Override
+    public QueryExecutionBuilderCommon substitution(QuerySolution querySolution) {
+        Binding binding = BindingLib.toBinding(querySolution);
+        super.substitution(binding);
+        return thisBuilder();
+    }
+
+    @Override
+    public QueryExecutionBuilderCommon substitution(String varName, RDFNode value) {
+        super.substitution(Var.alloc(varName), value.asNode());
+        return thisBuilder();
     }
 }

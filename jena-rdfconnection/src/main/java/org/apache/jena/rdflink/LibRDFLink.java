@@ -83,7 +83,7 @@ class LibRDFLink {
     /*package*/ static String formServiceURL(String destination, String srvEndpoint) {
         if ( srvEndpoint == null )
             return null;
-        if ( srvEndpoint == RDFLinkRemoteBuilder.SameAsDestination )
+        if ( srvEndpoint == RDFLinkHTTPBuilder.SameAsDestination )
             return destination;
         if ( destination == null )
             return srvEndpoint;

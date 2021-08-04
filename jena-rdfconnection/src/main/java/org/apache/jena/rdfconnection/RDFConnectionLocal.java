@@ -76,6 +76,11 @@ public class RDFConnectionLocal implements RDFConnection {
     }
 
     @Override
+    public QueryExecutionBuilderCommon newQuery() {
+        return QueryExecution.create().dataset(dataset);
+    }
+
+    @Override
     public void update(UpdateRequest update) {
         checkOpen();
         Txn.executeWrite(dataset, ()->UpdateExecutionFactory.create(update, dataset).execute() );

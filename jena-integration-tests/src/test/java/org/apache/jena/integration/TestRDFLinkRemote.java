@@ -21,15 +21,21 @@ package org.apache.jena.integration;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.main.FusekiServer ;
+import org.apache.jena.fuseki.main.FusekiTestLib;
+import org.apache.jena.query.QueryParseException;
 import org.apache.jena.rdflink.AbstractTestRDFLink;
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkFactory;
+import org.apache.jena.rdflink.RDFLinkHTTP;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.system.Txn ;
+import org.apache.jena.web.HttpSC.Code;
 import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.BeforeClass ;
+import org.junit.Test;
 
 public class TestRDFLinkRemote extends AbstractTestRDFLink {
     private static FusekiServer server ;
@@ -69,9 +75,41 @@ public class TestRDFLinkRemote extends AbstractTestRDFLink {
     @Override
     protected boolean supportsAbort() { return false ; }
 
+    // Whether parseCheckSPARQL=true is the default.
+    protected boolean defaultToCheckQueries() { return true; }
+
     @Override
     protected RDFLink link() {
         return RDFLinkFactory.connect("http://localhost:"+PORT+"/ds");
     }
+
+    protected RDFLink link(boolean parseCheckSPARQL) {
+        return RDFLinkHTTP.service(server.datasetURL("/ds")).parseCheckSPARQL(parseCheckSPARQL).build();
+    }
+
+    @Test(expected=QueryParseException.class)
+    public void non_standard_syntax_1() {
+        RDFLink link = defaultToCheckQueries() ? link() : link(true);
+        // Default setup - local checking.
+        try ( link ) {
+            RowSet rs = link.query("FOOBAR").select();
+        }
+    }
+
+    @Test
+    public void non_standard_syntax_2() {
+        // This should result in a 400 from Fuseki - and not a parse-check before sending.
+        RDFLink link = link(false);
+        try ( link ) {
+            String level = LogCtl.getLevel(Fuseki.actionLog);
+            try {
+                LogCtl.setLevel(Fuseki.actionLog, "ERROR");
+                FusekiTestLib.expectQueryFail(()->link.query("FOOBAR").select(), Code.BAD_REQUEST);
+            } finally {
+                LogCtl.setLevel(Fuseki.actionLog, level);
+            }
+        }
+    }
+
 }
 

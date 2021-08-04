@@ -18,138 +18,48 @@
 
 package org.apache.jena.sparql.exec;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.Query;
-import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.modify.UpdateEngineFactory;
-import org.apache.jena.sparql.modify.UpdateEngineRegistry;
-import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.update.Update;
-import org.apache.jena.update.UpdateException;
-import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
-public class UpdateExecBuilder {
+public interface UpdateExecBuilder {
 
-    public static UpdateExecBuilder newBuilder() { return new UpdateExecBuilder(); }
+    /** Set the update. */
+    public UpdateExecBuilder update(UpdateRequest request);
 
-    private DatasetGraph dataset            = null;
-    private Query        query              = null;
-    private Context      context            = null;
-    // Uses query rewrite to replace variables by values.
-    private Map<Var, Node>  substitutionMap  = null;
+    /** Set the update. */
+    public UpdateExecBuilder update(Update update);
 
-    private Binding      initialBinding     = null;
-    private UpdateRequest update            = null;
-    private UpdateRequest updateRequest     = new UpdateRequest();
+    /** Set the update. */
+    public UpdateExecBuilder update(String updateString);
 
-    private UpdateExecBuilder() {}
+    /** Set a context entry. */
+    public UpdateExecBuilder set(Symbol symbol, Object value);
 
-    /** Append the updates in an {@link UpdateRequest} to the {@link UpdateRequest} being built. */
-    public UpdateExecBuilder update(UpdateRequest updateRequest) {
-        Objects.requireNonNull(updateRequest);
-        add(updateRequest);
-        return this;
-    }
+    /** Set a context entry. */
+    public UpdateExecBuilder set(Symbol symbol, boolean value);
 
-    /** Add the {@link Update} to the {@link UpdateRequest} being built. */
-    public UpdateExecBuilder update(Update update) {
-        Objects.requireNonNull(update);
-        add(update);
-        return this;
-    }
+    /**
+     * Set the context. if not set, defaults to the system context
+     * ({@link ARQ#getContext}).
+     */
+    public UpdateExecBuilder context(Context context);
 
-    /** Parse and update operations to the {@link UpdateRequest} being built. */
-    public UpdateExecBuilder update(String updateRequestString) {
-        UpdateRequest more = UpdateFactory.create(updateRequestString);
-        add(more);
-        return this;
-    }
+    /** Provide a set of (Var, Node) for substitution in the query when QueryExec is built. */
+    public UpdateExecBuilder substitution(Binding binding);
 
-    public UpdateExecBuilder dataset(DatasetGraph dsg) {
-        this.dataset = dsg;
-        return this;
-    }
+    /** Provide a (Var, Node) for substitution in the query when QueryExec is built. */
+    public UpdateExecBuilder substitution(Var var, Node value);
 
-    /** Set the {@link Context}.
-     *  This defaults to the global settings of {@code ARQ.getContext()}.
-     *  If there was a previous call of {@code context} the multiple contexts are merged.
-     * */
-    public UpdateExecBuilder context(Context context) {
-        if ( context == null )
-            return this;
-        ensureContext();
-        this.context.putAll(context);
-        return this;
-    }
+    public UpdateExec build();
 
-    private void ensureContext() {
-        if ( context == null )
-            context = new Context();
-    }
-
-    public UpdateExecBuilder substitution(Binding binding) {
-        ensureSubstitutionMap();
-        binding.forEach(this.substitutionMap::put);
-        return this;
-    }
-
-    public UpdateExecBuilder substitution(Var var, Node value) {
-        ensureSubstitutionMap();
-        this.substitutionMap.put(var, value);
-        return this;
-    }
-
-    private void ensureSubstitutionMap() {
-        if ( substitutionMap == null )
-            substitutionMap = new HashMap<>();
-    }
-
-    public UpdateExecBuilder initialBinding(Binding initialBinding) {
-        this.initialBinding = initialBinding;
-        return this;
-    }
-
-    public UpdateExec build() {
-        Objects.requireNonNull(dataset, "No dataset for update");
-        Objects.requireNonNull(updateRequest, "No update request");
-
-        UpdateRequest actualUpdate = updateRequest;
-
-        if ( substitutionMap != null && ! substitutionMap.isEmpty() )
-            actualUpdate = UpdateTransformOps.transform(actualUpdate, substitutionMap);
-
-        Context cxt = Context.setupContextForDataset(context, dataset);
-        UpdateEngineFactory f = UpdateEngineRegistry.get().find(dataset, cxt);
-        if ( f == null )
-            throw new UpdateException("Failed to find an UpdateEngine");
-        UpdateExec uExec = new UpdateExecDataset(actualUpdate, dataset, initialBinding, cxt, f);
-        return uExec;
-    }
-
-    // Abbreviated forms
-
-    public void execute() {
+    /** Build and execute. */
+    public default void execute() {
         build().execute();
-    }
-
-    public void execute(DatasetGraph dsg) {
-        dataset(dsg);
-        execute();
-    }
-
-    private void add(UpdateRequest request) {
-        request.getOperations().forEach(this::add);
-    }
-
-    private void add(Update update) {
-        this.updateRequest.add(update);
     }
 }

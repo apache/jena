@@ -19,7 +19,7 @@
 package org.apache.jena.update;
 
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.exec.UpdateExecBuilder;
+import org.apache.jena.sparql.exec.UpdateExecDatasetBuilder;
 import org.apache.jena.sparql.exec.http.UpdateExecHTTPBuilder;
 import org.apache.jena.sparql.util.Context ;
 
@@ -32,7 +32,7 @@ public interface UpdateProcessor
      * Java objects (so it is not an RDF graph).
      * Keys should be URIs as strings.
      * May be null (this implementation does not provide any configuration).
-     * @deprecated UpdateProcessors are now built with the builder {@link UpdateExecBuilder} and {@link UpdateExecHTTPBuilder}.
+     * @deprecated UpdateProcessors are now built with the builder {@link UpdateExecDatasetBuilder} and {@link UpdateExecHTTPBuilder}.
      */
     @Deprecated
     public default Context getContext() { return null; }

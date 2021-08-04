@@ -25,6 +25,7 @@ import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.sparql.exec.RowSet;
 
 /** SPARQL Query Operations on a connection.
@@ -100,6 +101,14 @@ public interface LinkSparqlQuery extends Transactional, AutoCloseable
      * @return QExec
      */
     public QueryExec query(String queryString);
+
+    /**
+     * Return a {@link QueryExecBuilder} that is initially configured
+     * using this link setup and type.
+     *
+     * @return QueryExecBuilder
+     */
+    public QueryExecBuilder newQuery();
 
     /** Close this connection.  Use with try-resource. */
     @Override public void close();

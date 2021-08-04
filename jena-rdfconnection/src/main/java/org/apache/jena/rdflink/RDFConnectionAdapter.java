@@ -105,10 +105,18 @@ public class RDFConnectionAdapter implements RDFConnection {
         return adapt(get().query(queryString));
     }
 
+    @Override
+    public QueryExecutionBuilderCommon newQuery() {
+        return new QueryExecutionBuilderAdapter(get().newQuery());
+    }
+
     private static QueryExecution adapt(QueryExec queryExec) {
         if ( queryExec instanceof QueryExecApp ) {
             QueryExecMod builder = ((QueryExecApp)queryExec).getBuilder();
-            return QueryExecutionCompat.compatibility(builder);
+            Dataset ds = null;
+            if ( queryExec.getDataset() != null )
+                ds = DatasetFactory.wrap(queryExec.getDataset());
+            return QueryExecutionCompat.compatibility(builder, ds, queryExec.getQuery(), queryExec.getQueryString());
         } else
             return QueryExecutionAdapter.adapt(queryExec);
     }

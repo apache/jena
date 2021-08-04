@@ -38,7 +38,6 @@ import org.apache.jena.sparql.exec.RowSetAdapter;
 
 public interface ResultSet extends Iterator<QuerySolution>
 {
-
     public static ResultSet adapt(RowSet rowSet) {
         if ( rowSet instanceof RowSetAdapter ) {
             return ((RowSetAdapter)rowSet).get();

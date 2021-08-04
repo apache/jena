@@ -18,8 +18,7 @@
 
 package org.apache.jena.rdfconnection;
 
-public interface RDFConnectionRemote extends RDFConnection{
-
+public interface RDFConnectionRemote extends RDFConnection {
     /**
      * Create a {@link RDFConnectionRemoteBuilder}.
      */

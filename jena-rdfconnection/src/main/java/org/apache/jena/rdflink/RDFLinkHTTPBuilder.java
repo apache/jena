@@ -25,13 +25,13 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.jena.http.HttpEnv;
-import org.apache.jena.rdflink.RDFLinkRemoteBuilder;
+import org.apache.jena.rdflink.RDFLinkHTTPBuilder;
 import org.apache.jena.riot.*;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
 
-/** Builder class for {@link RDFLinkRemote} */
-public class RDFLinkRemoteBuilder {
+/** Builder class for {@link RDFLinkHTTP} */
+public class RDFLinkHTTPBuilder {
     /*package*/ static String SameAsDestination  = "";
 
     protected Transactional txnLifecycle  = TransactionalLock.createMRPlusSW();
@@ -61,11 +61,11 @@ public class RDFLinkRemoteBuilder {
     protected boolean       parseCheckQueries   = true;
     protected boolean       parseCheckUpdates   = true;
 
-    protected RDFLinkRemoteBuilder() {
+    protected RDFLinkHTTPBuilder() {
         // Default settings are the member declarations.
     }
 
-    protected RDFLinkRemoteBuilder(RDFLinkRemote base) {
+    protected RDFLinkHTTPBuilder(RDFLinkHTTP base) {
         Objects.requireNonNull(base);
         txnLifecycle = base.txnLifecycle;
         if ( txnLifecycle == null )
@@ -90,7 +90,7 @@ public class RDFLinkRemoteBuilder {
     /** URL of the remote SPARQL endpoint.
      * For Fuseki, this is the URL of the dataset  e.g. http:/localhost:3030/dataset
      */
-    public RDFLinkRemoteBuilder destination(String destination) {
+    public RDFLinkHTTPBuilder destination(String destination) {
         Objects.requireNonNull(destination);
         this.destination = destination;
         return this;
@@ -105,7 +105,7 @@ public class RDFLinkRemoteBuilder {
      * <br/>
      * Use null for "none".
      */
-    public RDFLinkRemoteBuilder queryEndpoint(String sQuery) {
+    public RDFLinkHTTPBuilder queryEndpoint(String sQuery) {
         this.sQuery = sQuery;
         return this;
     }
@@ -119,7 +119,7 @@ public class RDFLinkRemoteBuilder {
      * <br/>
      * Use null for "none".
      */
-    public RDFLinkRemoteBuilder updateEndpoint(String sUpdate) {
+    public RDFLinkHTTPBuilder updateEndpoint(String sUpdate) {
         this.sUpdate = sUpdate;
         return this;
     }
@@ -133,21 +133,21 @@ public class RDFLinkRemoteBuilder {
      * <br/>
      * Use null for "none".
      */
-    public RDFLinkRemoteBuilder gspEndpoint(String sGSP) {
+    public RDFLinkHTTPBuilder gspEndpoint(String sGSP) {
         this.sGSP = sGSP;
         return this;
     }
 
     /** Set the transaction lifecycle. */
     /*Future possibility*/
-    private RDFLinkRemoteBuilder txnLifecycle(Transactional txnLifecycle) {
+    private RDFLinkHTTPBuilder txnLifecycle(Transactional txnLifecycle) {
         this.txnLifecycle = txnLifecycle;
         return this;
 
     }
 
     /** Set the {@link HttpClient} fir the connection to tbe built */
-    public RDFLinkRemoteBuilder httpClient(HttpClient httpClient) {
+    public RDFLinkHTTPBuilder httpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
         return this;
     }
@@ -156,7 +156,7 @@ public class RDFLinkRemoteBuilder {
      * This is used for HTTP PUT and POST to a dataset.
      * This must be a quads format.
      */
-    public RDFLinkRemoteBuilder quadsFormat(RDFFormat fmtQuads) {
+    public RDFLinkHTTPBuilder quadsFormat(RDFFormat fmtQuads) {
         if ( ! RDFLanguages.isQuads(fmtQuads.getLang()) )
             throw new RiotException("Not a language for RDF Datasets: "+fmtQuads);
         this.outputQuads = fmtQuads;
@@ -167,7 +167,7 @@ public class RDFLinkRemoteBuilder {
      * This is used for HTTP PUT and POST to a dataset.
      * This must be a quads format.
      */
-    public RDFLinkRemoteBuilder quadsFormat(Lang langQuads) {
+    public RDFLinkHTTPBuilder quadsFormat(Lang langQuads) {
         Objects.requireNonNull(langQuads);
         if ( ! RDFLanguages.isQuads(langQuads) )
             throw new RiotException("Not a language for RDF Datasets: "+langQuads);
@@ -182,7 +182,7 @@ public class RDFLinkRemoteBuilder {
      * This is used for HTTP PUT and POST to a dataset.
      * This must be a quads format.
      */
-    public RDFLinkRemoteBuilder quadsFormat(String langQuads) {
+    public RDFLinkHTTPBuilder quadsFormat(String langQuads) {
         Objects.requireNonNull(langQuads);
         Lang lang = RDFLanguages.nameToLang(langQuads);
         if ( lang == null )
@@ -194,7 +194,7 @@ public class RDFLinkRemoteBuilder {
     /** Set the output format for sending RDF graphs to the remote server.
      * This is used for the SPARQ Graph Store Protocol.
      */
-    public RDFLinkRemoteBuilder triplesFormat(RDFFormat fmtTriples) {
+    public RDFLinkHTTPBuilder triplesFormat(RDFFormat fmtTriples) {
         if ( ! RDFLanguages.isTriples(fmtTriples.getLang()) )
             throw new RiotException("Not a language for RDF Graphs: "+fmtTriples);
         this.outputTriples = fmtTriples;
@@ -204,7 +204,7 @@ public class RDFLinkRemoteBuilder {
     /** Set the output format for sending RDF graphs to the remote server.
      * This is used for the SPARQ Graph Store Protocol.
      */
-    public RDFLinkRemoteBuilder triplesFormat(Lang langTriples) {
+    public RDFLinkHTTPBuilder triplesFormat(Lang langTriples) {
         Objects.requireNonNull(langTriples);
         if ( ! RDFLanguages.isTriples(langTriples) )
             throw new RiotException("Not a language for RDF triples: "+langTriples);
@@ -218,7 +218,7 @@ public class RDFLinkRemoteBuilder {
     /** Set the output format for sending RDF graphs to the remote server.
      * This is used for the SPARQ Graph Store Protocol.
      */
-    public RDFLinkRemoteBuilder triplesFormat(String langTriples) {
+    public RDFLinkHTTPBuilder triplesFormat(String langTriples) {
         Objects.requireNonNull(langTriples);
         Lang lang = RDFLanguages.nameToLang(langTriples);
         if ( lang == null )
@@ -228,25 +228,25 @@ public class RDFLinkRemoteBuilder {
     }
 
     /** Set the HTTP {@code Accept:} header used to fetch RDF graph using the SPARQL Graph Store Protocol. */
-    public RDFLinkRemoteBuilder acceptHeaderGraph(String acceptGraph) {
+    public RDFLinkHTTPBuilder acceptHeaderGraph(String acceptGraph) {
         this.acceptGraph = acceptGraph;
         return this;
     }
 
     /** Set the HTTP {@code Accept:} header used to fetch RDF datasets using HTTP GET operations. */
-    public RDFLinkRemoteBuilder acceptHeaderDataset(String acceptDataset) {
+    public RDFLinkHTTPBuilder acceptHeaderDataset(String acceptDataset) {
         this.acceptDataset = acceptDataset;
         return this;
     }
 
     /** Set the HTTP {@code Accept:} header used to when making a SPARQL Protocol SELECT query. */
-    public RDFLinkRemoteBuilder acceptHeaderSelectQuery(String acceptSelectHeader) {
+    public RDFLinkHTTPBuilder acceptHeaderSelectQuery(String acceptSelectHeader) {
         this.acceptSelectResult = acceptSelectHeader;
         return this;
     }
 
     /** Set the HTTP {@code Accept:} header used to when making a SPARQL Protocol ASK query. */
-    public RDFLinkRemoteBuilder acceptHeaderAskQuery(String acceptAskHeader) {
+    public RDFLinkHTTPBuilder acceptHeaderAskQuery(String acceptAskHeader) {
         this.acceptAskResult = acceptAskHeader;
         return this;
     }
@@ -254,7 +254,7 @@ public class RDFLinkRemoteBuilder {
     /** Set the HTTP {@code Accept:} header used to when making a
      * SPARQL Protocol query if no query type specific setting available.
      */
-    public RDFLinkRemoteBuilder acceptHeaderQuery(String acceptHeader) {
+    public RDFLinkHTTPBuilder acceptHeaderQuery(String acceptHeader) {
         this.acceptSparqlResults = acceptHeader;
         return this;
     }
@@ -262,18 +262,18 @@ public class RDFLinkRemoteBuilder {
     /**
      * Set the flag for whether to check SPARQL queries and SPARQL updates provided as a string.
      */
-    public RDFLinkRemoteBuilder parseCheckSPARQL(boolean parseCheck) {
+    public RDFLinkHTTPBuilder parseCheckSPARQL(boolean parseCheck) {
         this.parseCheckQueries = parseCheck;
         this.parseCheckUpdates = parseCheck;
         return this;
     }
 
-    private Function<RDFLinkRemoteBuilder, RDFLink> creator = null;
+    private Function<RDFLinkHTTPBuilder, RDFLink> creator = null;
     /** Provide an alternative function to make the {@link RDFLink} object.
      * <p>
      * Specialized use: This method allows for custom {@code RDFLink}s.
      */
-    public RDFLinkRemoteBuilder creator(Function<RDFLinkRemoteBuilder, RDFLink> function) {
+    public RDFLinkHTTPBuilder creator(Function<RDFLinkHTTPBuilder, RDFLink> function) {
         this.creator = function;
         return this;
     }
@@ -282,7 +282,7 @@ public class RDFLinkRemoteBuilder {
     public RDFLink build() {
         requireNonNull(txnLifecycle);
 
-        Function<RDFLinkRemoteBuilder, RDFLink> maker = creator ;
+        Function<RDFLinkHTTPBuilder, RDFLink> maker = creator ;
 
         if ( maker == null )
             maker = (b)->b.buildConnection();
@@ -298,8 +298,8 @@ public class RDFLinkRemoteBuilder {
         return maker.apply(this);
     }
 
-    protected RDFLinkRemote buildConnection() {
-        return new RDFLinkRemote(txnLifecycle, httpClient,
+    protected RDFLinkHTTP buildConnection() {
+        return new RDFLinkHTTP(txnLifecycle, httpClient,
                                  destination, queryURL, updateURL, gspURL,
                                  outputQuads, outputTriples,
                                  acceptDataset, acceptGraph,

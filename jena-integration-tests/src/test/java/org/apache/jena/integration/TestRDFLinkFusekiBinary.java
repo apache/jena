@@ -27,7 +27,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.rdflink.RDFLinkFuseki;
-import org.apache.jena.rdflink.RDFLinkRemoteBuilder;
+import org.apache.jena.rdflink.RDFLinkHTTPBuilder;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Var;
@@ -54,7 +54,7 @@ public class TestRDFLinkFusekiBinary {
             String dsURL = "http://localhost:"+port+"/ds" ;
             assertTrue(HttpLib.isFuseki(dsURL));
 
-            RDFLinkRemoteBuilder builder = RDFLinkFuseki.newBuilder().destination(dsURL);
+            RDFLinkHTTPBuilder builder = RDFLinkFuseki.newBuilder().destination(dsURL);
 
             try (RDFLinkFuseki link = (RDFLinkFuseki)builder.build()) {
                 //assertTrue(isFuseki(link));

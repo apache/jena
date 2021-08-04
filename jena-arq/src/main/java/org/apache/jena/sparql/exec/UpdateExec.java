@@ -22,7 +22,7 @@ import org.apache.jena.update.UpdateProcessor;
 
 public interface UpdateExec extends UpdateProcessor
 {
-    public static UpdateExecBuilder newBuilder() { return UpdateExecBuilder.newBuilder(); }
+    public static UpdateExecDatasetBuilder newBuilder() { return UpdateExecDatasetBuilder.newBuilder(); }
 
     /** Execute */
     @Override

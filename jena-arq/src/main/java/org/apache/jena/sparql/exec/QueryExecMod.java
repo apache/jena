@@ -22,11 +22,21 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.sparql.util.Context;
 
-/** Aspects of a buiding a {@link QueryExec} that can be delayed. */
+/**
+ * Aspects of a building a {@link QueryExec} that can be changed before use. This is
+ * limited than {@link QueryExecBuilder} and assumes that the query and target for
+ * the query have been set.up.
+ */
 public interface QueryExecMod {
 
-    public QueryExecMod timeout(long timeout, TimeUnit timeoutUnits);
-    public default QueryExecMod timeout(long timeout) { return timeout(timeout, TimeUnit.MILLISECONDS); }
+    public default QueryExecMod timeout(long timeout, TimeUnit timeoutUnits) {
+        overallTimeout(timeout, timeoutUnits);
+        return this;
+    }
+
+    public default QueryExecMod timeout(long timeout) {
+        return timeout(timeout, TimeUnit.MILLISECONDS);
+    }
 
     public default QueryExecMod timeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2) {
         initialTimeout(timeout1, timeUnit1);
@@ -39,9 +49,10 @@ public interface QueryExecMod {
     }
 
     public QueryExecMod initialTimeout(long timeout, TimeUnit timeUnit);
+
     public QueryExecMod overallTimeout(long timeout, TimeUnit timeUnit);
 
-    public Context builtContext();
+    public Context getContext();
 
     public QueryExec build();
 }

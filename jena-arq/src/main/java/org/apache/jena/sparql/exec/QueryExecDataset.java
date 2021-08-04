@@ -68,6 +68,7 @@ import org.apache.jena.sparql.util.ModelUtils;
 public class QueryExecDataset implements QueryExec
 {
     private final Query              query;
+    private String                   queryString = null;
     private final QueryEngineFactory qeFactory;
     private final Context            context;
     private final DatasetGraph       dataset;
@@ -92,12 +93,13 @@ public class QueryExecDataset implements QueryExec
     private final AlarmClock         alarmClock       = AlarmClock.get();
     private long                     queryStartTime   = -1; // Unset
 
-    protected QueryExecDataset(Query query, DatasetGraph datasetGraph, Context cxt,
+    protected QueryExecDataset(Query query, String queryString, DatasetGraph datasetGraph, Context cxt,
                                QueryEngineFactory qeFactory,
                                long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2,
                                Binding initialToEngine) {
         // Context cxt is already a safe copy.
         this.query = query;
+        this.queryString = queryString;
         this.dataset = datasetGraph;
         this.qeFactory = qeFactory;
         this.context = (cxt == null) ? Context.setupContextForDataset(cxt, datasetGraph) : cxt;
@@ -578,4 +580,12 @@ public class QueryExecDataset implements QueryExec
 
     @Override
     public Query getQuery()     { return query; }
+
+    @Override
+    public String getQueryString() {
+        if ( queryString == null )
+            queryString = query.toString();
+        return queryString;
+    }
+
 }

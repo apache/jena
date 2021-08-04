@@ -65,6 +65,14 @@ public class QueryExecAdapter implements QueryExec {
     }
 
     @Override
+    public String getQueryString() {
+        Query q = getQuery();
+        if ( q == null )
+            return null;
+        return q.toString();
+    }
+
+    @Override
     public RowSet select() {
         return new RowSetAdapter(get().execSelect());
     }

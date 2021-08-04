@@ -22,12 +22,12 @@ import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.update.UpdateRequest;
 
-/** Wrapper for an {@link RDFConnection}. */ 
+/** Wrapper for an {@link RDFConnection}. */
 public class RDFConnectionWrapper implements RDFConnection {
     private final RDFConnection other ;
     protected RDFConnection get() { return other; }
     public RDFConnectionWrapper(RDFConnection other) { this.other = other; }
-    
+
     @Override
     public Model fetch() {
         return get().fetch();
@@ -46,6 +46,11 @@ public class RDFConnectionWrapper implements RDFConnection {
     @Override
     public QueryExecution query(Query query) {
         return get().query(query);
+    }
+
+    @Override
+    public QueryExecutionBuilderCommon newQuery() {
+        return get().newQuery();
     }
 
     @Override
@@ -132,7 +137,7 @@ public class RDFConnectionWrapper implements RDFConnection {
     public void close() {
         get().close();
     }
-    
+
     @Override
     public void begin(TxnType type) {
         get().begin(type);

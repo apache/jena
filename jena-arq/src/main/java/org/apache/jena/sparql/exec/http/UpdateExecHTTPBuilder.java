@@ -24,10 +24,11 @@ import java.net.http.HttpClient;
 import java.util.HashMap;
 
 import org.apache.jena.http.sys.ExecUpdateHTTPBuilder;
+import org.apache.jena.sparql.exec.UpdateExecBuilder;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.update.UpdateRequest;
 
-public class UpdateExecHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecHTTP, UpdateExecHTTPBuilder>{
+public class UpdateExecHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecHTTP, UpdateExecHTTPBuilder> implements UpdateExecBuilder {
 
     public static UpdateExecHTTPBuilder newBuilder() { return new UpdateExecHTTPBuilder(); }
 
@@ -45,10 +46,5 @@ public class UpdateExecHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecHTTP,
                                   copyArray(usingNamedGraphURIs),
                                   new HashMap<>(httpHeaders),
                                   sendMode, cxt);
-    }
-
-    /** Short form for {@code build().execute()} */
-    public void execute() {
-        build().execute();
     }
 }

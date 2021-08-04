@@ -20,11 +20,19 @@ package org.apache.jena.integration;
 
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkFactory;
+import org.apache.jena.rdflink.RDFLinkFuseki;
 
 public class TestRDFLinkFuseki extends TestRDFLinkRemote {
     @Override
     protected RDFLink link() {
         return RDFLinkFactory.connectFuseki("http://localhost:"+PORT+"/ds");
     }
-}
 
+    @Override
+    protected boolean defaultToCheckQueries() { return false; }
+
+    @Override
+    protected RDFLink link(boolean parseCheckSPARQL) {
+        return RDFLinkFuseki.service("http://localhost:"+PORT+"/ds").parseCheckSPARQL(parseCheckSPARQL).build();
+    }
+}

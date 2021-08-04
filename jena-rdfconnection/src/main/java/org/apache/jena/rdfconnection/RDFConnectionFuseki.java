@@ -41,6 +41,14 @@ public interface RDFConnectionFuseki extends RDFConnectionRemote {
         return new RDFConnectionFusekiBuilder();
     }
 
+    public static RDFConnectionRemoteBuilder newBuilder() {
+        return new RDFConnectionFusekiBuilder();
+    }
+
+    /** Create a {@link RDFConnectionFuseki} for a remote destination. */
+    public static RDFConnectionRemoteBuilder service(String destinationURL) {
+        return newBuilder().destination(destinationURL);
+    }
 
     static class RDFConnectionFusekiBuilder extends RDFConnectionRemoteBuilder {
         protected RDFConnectionFusekiBuilder() {

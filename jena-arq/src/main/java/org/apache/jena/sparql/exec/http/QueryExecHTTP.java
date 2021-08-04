@@ -425,6 +425,7 @@ public class QueryExecHTTP implements QueryExec {
      * Return the query string. If this was supplied in a constructor, there is no
      * guarantee this is legal SPARQL syntax.
      */
+    @Override
     public String getQueryString() {
         return queryString;
     }

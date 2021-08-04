@@ -26,7 +26,6 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.http.HttpEnv;
-import org.apache.jena.rdflink.RDFLinkRemote;
 import org.apache.jena.query.*;
 import org.apache.jena.rdfconnection.JenaConnectionException;
 import org.apache.jena.riot.RDFFormat;
@@ -36,6 +35,8 @@ import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecApp;
+import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecHTTPBuilder;
@@ -47,7 +48,7 @@ import org.apache.jena.update.UpdateRequest;
 /**
  * Implementation of the {@link RDFLink} interface using remote SPARQL operations.
  */
-public class RDFLinkRemote implements RDFLink {
+public class RDFLinkHTTP implements RDFLink {
     // Adds a Builder to help with HTTP details.
 
 //    private static final String fusekiDftSrvQuery   = "sparql";
@@ -78,26 +79,26 @@ public class RDFLinkRemote implements RDFLink {
     // Whether to check SPARQL updates given as strings by parsing them.
     protected final boolean parseCheckUpdates;
 
-    /** Create a {@link RDFLinkRemoteBuilder}. */
-    public static RDFLinkRemoteBuilder newBuilder() {
-        return new RDFLinkRemoteBuilder();
+    /** Create a {@link RDFLinkHTTPBuilder}. */
+    public static RDFLinkHTTPBuilder newBuilder() {
+        return new RDFLinkHTTPBuilder();
     }
 
-    /** Create a {@link RDFLinkRemoteBuilder}. */
-    public static RDFLinkRemoteBuilder service(String destinationURL) {
-        return new RDFLinkRemoteBuilder().destination(destinationURL);
+    /** Create a {@link RDFLinkHTTPBuilder}. */
+    public static RDFLinkHTTPBuilder service(String destinationURL) {
+        return new RDFLinkHTTPBuilder().destination(destinationURL);
     }
 
     /**
-     * Create a {@link RDFLinkRemoteBuilder} initialized with the
+     * Create a {@link RDFLinkHTTPBuilder} initialized with the
      * settings of another {@code RDFLinkRemote}.
      */
-    public static RDFLinkRemoteBuilder from(RDFLinkRemote base) {
-        return new RDFLinkRemoteBuilder(base);
+    public static RDFLinkHTTPBuilder from(RDFLinkHTTP base) {
+        return new RDFLinkHTTPBuilder(base);
     }
 
     // Used by the builder.
-    protected RDFLinkRemote(Transactional txnLifecycle, HttpClient httpClient, String destination,
+    protected RDFLinkHTTP(Transactional txnLifecycle, HttpClient httpClient, String destination,
                             String queryURL, String updateURL, String gspURL, RDFFormat outputQuads, RDFFormat outputTriples,
                             String acceptDataset, String acceptGraph,
                             String acceptSparqlResults,
@@ -240,12 +241,18 @@ public class RDFLinkRemote implements RDFLink {
         return queryExec(query, null, null);
     }
 
+    @Override
+    public QueryExecBuilder newQuery() {
+        return createQExecBuilder();
+    }
+
     private QueryExec queryExec(Query query, String queryString, QueryType queryType) {
         checkQuery();
         if ( query == null && queryString == null )
             throw new InternalErrorException("Both query and query string are null");
         if ( query == null ) {
             if ( parseCheckQueries )
+                // Don't retain the query.
                 QueryFactory.create(queryString);
         }
 
@@ -255,12 +262,19 @@ public class RDFLinkRemote implements RDFLink {
     }
 
     // Create the QExec
-    private QueryExec createQExec(Query query, String queryStringToSend, QueryType queryType) {
-        QueryExecHTTPBuilder builder = QueryExecHTTPBuilder.newBuilder()
-            .endpoint(svcQuery)
-            .httpClient(httpClient)
-            .queryString(queryStringToSend);
 
+    /** Create a builder, configured with the link setup. */
+    private QueryExecHTTPBuilder createQExecBuilder() {
+        return QueryExecHTTPBuilder.newBuilder()
+                    .endpoint(svcQuery)
+                    .httpClient(httpClient);
+    }
+
+    private QueryExec createQExec(Query query, String queryStringToSend, QueryType queryType) {
+        // [QExec] NO QUERY - delya parse?
+        QueryExecHTTPBuilder builder = createQExecBuilder().queryString(queryStringToSend);
+
+        // [QExec] Can this go in QueryExecHTTP at he point the query type is known?
         QueryType qt = queryType;
         if ( query != null && qt == null )
             qt = query.queryType();
@@ -299,7 +313,10 @@ public class RDFLinkRemote implements RDFLink {
             throw new JenaConnectionException("No Accept header");
         if ( requestAcceptHeader != null )
             builder.acceptHeader(requestAcceptHeader);
-        return builder.build();
+        // Delayed creation so QueryExecution.setTimeout works.
+
+        builder.queryString(queryStringToSend);
+        return QueryExecApp.create(builder, null, query, queryStringToSend);
     }
 
     private void acc(StringBuilder sBuff, String acceptString) {

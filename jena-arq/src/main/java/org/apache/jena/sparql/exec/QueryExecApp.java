@@ -25,33 +25,38 @@ import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.Query;
-import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 
 /**
  * {@link QueryExec} that delays making the QueryExec until needed by a query operation
- * This means timeouts and initialBinding can still be set.
+ * This means timeouts and initialBinding can still be set via the {@link QueryExecMod}.
  *
  * @see QueryExec
  */
 public class QueryExecApp implements QueryExec {
     private final QueryExecMod qExecBuilder;
     private QueryExec qExecHere = null;
-    private DatasetGraph datasetHere = null;
+    // Frozen elements of the build.
+    private final DatasetGraph datasetHere;
+    private final Query queryHere;
+    private final String queryStringHere;
 
-    public static QueryExec create(QueryExecMod qExec) {
-        return new QueryExecApp(qExec);
+    public static QueryExec create(QueryExecMod qExec, DatasetGraph dataset, Query query, String queryString) {
+        return new QueryExecApp(qExec, dataset, query, queryString);
     }
 
-    public QueryExecApp(QueryExecMod qExecBuilder) {
+    private QueryExecApp(QueryExecMod qExecBuilder, DatasetGraph dataset, Query query, String queryString) {
+        // In normal use, one of query and queryString should be non-null
+        // (If being used as a carrier for QueryExecMod
+
         this.qExecBuilder = qExecBuilder;
         // Have the QueryExecBuilder build the context now, even though it is not finished.
-        //qExecBuilder.setupContext();
+        this.datasetHere = dataset;
+        this.queryHere = query;
+        this.queryStringHere = queryString;
     }
 
     protected QueryExec get() { return qExecHere; }
@@ -60,37 +65,29 @@ public class QueryExecApp implements QueryExec {
         return qExecBuilder;
     }
 
-    private QueryExec state() {
-        // Build, don't keep.
-        return qExecBuilder.build();
-    }
-
     private void execution() {
-        if ( qExecHere == null ) {
+        if ( qExecHere == null )
             qExecHere = qExecBuilder.build();
-            datasetHere = qExecHere.getDataset();
-            DatasetGraph x = qExecHere.getDataset();
-            Dataset ds = (x != null) ? DatasetFactory.wrap(x) : null;
-            qExecHere.getContext().set(ARQConstants.sysCurrentDataset, ds);
-        }
     }
 
     @Override
     public DatasetGraph getDataset() {
-        if ( datasetHere != null )
-            return datasetHere;
-        datasetHere = ( qExecHere == null ) ? state().getDataset() : qExecHere.getDataset();
         return datasetHere;
     }
 
     @Override
     public Context getContext() {
-        return qExecBuilder.builtContext();
+        return qExecBuilder.getContext();
     }
 
     @Override
     public Query getQuery() {
-        return state().getQuery();
+        return queryHere;
+    }
+
+    @Override
+    public String getQueryString() {
+        return queryStringHere;
     }
 
     @Override

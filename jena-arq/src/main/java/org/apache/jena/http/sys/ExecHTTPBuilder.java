@@ -24,16 +24,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.http.HttpEnv;
-import org.apache.jena.query.ARQ;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryException;
-import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.sparql.exec.http.QuerySendMode;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
 
 /** Execution builder for remote queries. */
@@ -91,10 +89,11 @@ public abstract class ExecHTTPBuilder<X, Y> {
         return thisBuilder();
     }
 
-    /** Set the query - this also sets the query string to agree with the query argument. */
-    private void setQuery(Query query, String queryStr) {
-        this.query = query;
-        this.queryString = queryStr;
+    public Y query(String queryStr, Syntax syntax) {
+        Objects.requireNonNull(queryStr);
+        Query query = QueryFactory.create(queryStr, syntax);
+        setQuery(query, queryStr);
+        return thisBuilder();
     }
 
     /** Set the query string - this also clears any Query already set.
@@ -102,11 +101,16 @@ public abstract class ExecHTTPBuilder<X, Y> {
      * extensions supported by the target triple store.
      */
     public Y queryString(String queryString) {
-        this.query = null;
-        this.queryString = Objects.requireNonNull(queryString);
+        Objects.requireNonNull(queryString);
+        setQuery(null, queryString);
         return thisBuilder();
     }
 
+    /** Set the query */
+    private void setQuery(Query query, String queryStr) {
+        this.query = query;
+        this.queryString = queryStr;
+    }
     public Y addDefaultGraphURI(String uri) {
         if (this.defaultGraphURIs == null)
             this.defaultGraphURIs = new ArrayList<>();
@@ -248,15 +252,28 @@ public abstract class ExecHTTPBuilder<X, Y> {
         return thisBuilder();
     }
 
-    /** Set the {@link Context}.
-     *  This defaults to the global settings of {@code ARQ.getContext()}.
-     *  If there was a previous call of {@code context} the multiple contexts are merged.
-     * */
+    /**
+     * Set the {@link Context}. This defaults to the global settings of
+     * {@code ARQ.getContext()}. If there was a previous call of {@code context} the
+     * multiple contexts are merged.
+     */
     public Y context(Context context) {
         if ( context == null )
             return thisBuilder();
         ensureContext();
         this.context.putAll(context);
+        return thisBuilder();
+    }
+
+    public Y set(Symbol symbol, Object value) {
+        ensureContext();
+        context.set(symbol, value);
+        return thisBuilder();
+    }
+
+    public Y set(Symbol symbol, boolean value) {
+        ensureContext();
+        context.set(symbol, value);
         return thisBuilder();
     }
 
@@ -288,16 +305,17 @@ public abstract class ExecHTTPBuilder<X, Y> {
         HttpClient hClient = HttpEnv.getHttpClient(serviceURL, httpClient);
 
         Query queryActual = query;
+        String queryStringActual = queryString;
 
         if ( substitutionMap != null && ! substitutionMap.isEmpty() ) {
             if ( query == null )
                 throw new QueryException("Substitution only supported if a Query object was provided");
-
             queryActual = QueryTransformOps.transform(query, substitutionMap);
+            queryStringActual = queryActual.toString();
         }
         Context cxt = (context!=null) ? context : ARQ.getContext().copy();
-        return buildX(hClient, queryActual, cxt);
+        return buildX(hClient, queryActual, queryStringActual, cxt);
     }
 
-    protected abstract X buildX(HttpClient hClient, Query queryActual, Context cxt);
+    protected abstract X buildX(HttpClient hClient, Query queryActual, String queryStringActual, Context cxt);
 }

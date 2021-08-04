@@ -31,14 +31,14 @@ public class RDFLinkFactory {
      * and SPARQL Graph Store Protocol endpoinst are the same URL.
      * Thisis suported by <a href="http://jena.apache.org/documentation/fuseki2">Apache Jena Fuseki</a>.
      * Other names can be specified using {@link #connect(String, String, String, String)}
-     * or {@link RDFLinkRemoteBuilder}.
+     * or {@link RDFLinkHTTPBuilder}.
      *
      * @param destination
      * @return RDFLink
      * @see #connect(String, String, String, String)
      */
     public static RDFLink connect(String destination) {
-        return RDFLinkRemote.service(destination).build();
+        return RDFLinkHTTP.service(destination).build();
     }
 
     /** Create a connection specifying the URLs of the service.
@@ -51,7 +51,7 @@ public class RDFLinkFactory {
     public static RDFLink connect(String queryServiceEndpoint,
                                   String updateServiceEndpoint,
                                   String graphStoreProtocolEndpoint) {
-        return RDFLinkRemote.newBuilder()
+        return RDFLinkHTTP.newBuilder()
             .queryEndpoint(queryServiceEndpoint)
             .updateEndpoint(updateServiceEndpoint)
             .gspEndpoint(graphStoreProtocolEndpoint)
@@ -63,10 +63,10 @@ public class RDFLinkFactory {
      *
      * @param destination
      * @return RDFLink
-     * @see RDFLinkRemoteBuilder
+     * @see RDFLinkHTTPBuilder
      */
-    public static RDFLinkRemoteBuilder newBuilder(String destination) {
-        return RDFLinkRemote.newBuilder().destination(destination);
+    public static RDFLinkHTTPBuilder newBuilder(String destination) {
+        return RDFLinkHTTP.newBuilder().destination(destination);
     }
 
     /** Create a connection to a remote location by URL.
@@ -83,7 +83,7 @@ public class RDFLinkFactory {
                                   String queryServiceEndpoint,
                                   String updateServiceEndpoint,
                                   String graphStoreProtocolEndpoint) {
-        return RDFLinkRemote.newBuilder()
+        return RDFLinkHTTP.newBuilder()
             .destination(datasetURL)
             .queryEndpoint(queryServiceEndpoint)
             .updateEndpoint(updateServiceEndpoint)
@@ -101,7 +101,7 @@ public class RDFLinkFactory {
      * @see RDFLinkDataset
      */
     public static RDFLink connect(DatasetGraph dataset) {
-        return RDFLinkBuilder.connect(dataset);
+        return RDFLinkDatasetBuilder.connect(dataset);
     }
 
     /**
@@ -123,7 +123,7 @@ public class RDFLinkFactory {
      * @return RDFLink
      */
     public static RDFLink connect(DatasetGraph dataset, Isolation isolation) {
-        return RDFLinkBuilder.connect(dataset, isolation);
+        return RDFLinkDatasetBuilder.connect(dataset, isolation);
     }
 
     /** Create a connection to a remote Fuseki server by URL.

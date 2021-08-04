@@ -20,7 +20,7 @@ package org.apache.jena.rdflink;
 
 import java.util.Objects;
 
-import org.apache.jena.rdflink.RDFLinkBuilder;
+import org.apache.jena.rdflink.RDFLinkDatasetBuilder;
 import org.apache.jena.rdfconnection.Isolation;
 import org.apache.jena.sparql.core.DatasetGraph;
 
@@ -28,26 +28,26 @@ import org.apache.jena.sparql.core.DatasetGraph;
  * Builder for RDFLink over a local dataset.
  */
 
-public class RDFLinkBuilder  {
+public class RDFLinkDatasetBuilder  {
     private DatasetGraph dataset = null;
     private Isolation isolation = Isolation.NONE;
 
     public static RDFLink connect(DatasetGraph dsg) { return new RDFLinkDataset(dsg, Isolation.NONE); }
     public static RDFLink connect(DatasetGraph dsg, Isolation isolation) { return new RDFLinkDataset(dsg, isolation); }
 
-    public static RDFLinkBuilder newBuilder() {
-        return new RDFLinkBuilder();
+    public static RDFLinkDatasetBuilder newBuilder() {
+        return new RDFLinkDatasetBuilder();
     }
 
-    private RDFLinkBuilder() {}
+    private RDFLinkDatasetBuilder() {}
 
-    public RDFLinkBuilder dataset(DatasetGraph dataset) {
+    public RDFLinkDatasetBuilder dataset(DatasetGraph dataset) {
         Objects.requireNonNull(dataset);
         this.dataset = dataset;
         return this;
     }
 
-    public RDFLinkBuilder isolation(Isolation isolation) {
+    public RDFLinkDatasetBuilder isolation(Isolation isolation) {
         Objects.requireNonNull(isolation);
         this.isolation = isolation;
         return this;

@@ -26,10 +26,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.http.sys.ExecHTTPBuilder;
 import org.apache.jena.query.Query;
+import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.sparql.exec.QueryExecMod;
 import org.apache.jena.sparql.util.Context;
 
-public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryExecHTTPBuilder> implements QueryExecMod {
+public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryExecHTTPBuilder> implements QueryExecMod, QueryExecBuilder {
 
     public static QueryExecHTTPBuilder newBuilder() { return new QueryExecHTTPBuilder(); }
 
@@ -41,8 +42,8 @@ public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryEx
     }
 
     @Override
-    protected QueryExecHTTP buildX(HttpClient hClient, Query queryActual, Context cxt) {
-        return new QueryExecHTTP(serviceURL, queryActual, queryString, urlLimit,
+    protected QueryExecHTTP buildX(HttpClient hClient, Query queryActual, String queryStringActual, Context cxt) {
+        return new QueryExecHTTP(serviceURL, queryActual, queryStringActual, urlLimit,
                                  hClient, new HashMap<>(httpHeaders), Params.create(params), cxt,
                                  copyArray(defaultGraphURIs),
                                  copyArray(namedGraphURIs),
@@ -62,7 +63,7 @@ public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryEx
     }
 
     @Override
-    public Context builtContext() {
-        throw new UnsupportedOperationException();
+    public Context getContext() {
+        return null;
     }
 }

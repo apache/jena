@@ -26,7 +26,7 @@ import java.util.Objects;
 
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.rdflink.RDFLinkBuilder;
+import org.apache.jena.rdflink.RDFLinkDatasetBuilder;
 import org.apache.jena.sys.JenaSystem;
 
 public class RDFConnectionFactory {
@@ -124,7 +124,7 @@ public class RDFConnectionFactory {
      * @see RDFConnectionLocal
      */
     public static RDFConnection connect(Dataset dataset) {
-        return adapt(RDFLinkBuilder.newBuilder().dataset(dataset.asDatasetGraph()).build());
+        return adapt(RDFLinkDatasetBuilder.newBuilder().dataset(dataset.asDatasetGraph()).build());
     }
 
     /**
@@ -146,7 +146,7 @@ public class RDFConnectionFactory {
      * @return RDFConnection
      */
     public static RDFConnection connect(Dataset dataset, Isolation isolation) {
-        return adapt(RDFLinkBuilder.newBuilder().dataset(dataset.asDatasetGraph()).isolation(isolation).build());
+        return adapt(RDFLinkDatasetBuilder.newBuilder().dataset(dataset.asDatasetGraph()).isolation(isolation).build());
     }
 
     /** Create a connection to a remote Fuseki server by URL.

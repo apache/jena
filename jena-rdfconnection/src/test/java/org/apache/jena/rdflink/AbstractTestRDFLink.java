@@ -23,6 +23,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -34,7 +35,10 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.compose.Union;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.sse.SSE;
@@ -406,6 +410,31 @@ public abstract class AbstractTestRDFLink {
         }
     }
 
+    @Test public void query_build_01() {
+        try ( RDFLink link = link() ) {
+            Txn.executeRead(link, ()->{
+                RowSet rs = link.newQuery().query("SELECT * { ?s ?p ?o}").select();
+                assertNotNull(rs);
+            });
+        }
+    }
+
+    @Test public void query_build_02() {
+        try ( RDFLink link = link() ) {
+            Txn.executeRead(link, ()->{
+                Binding binding = SSE.parseBinding("(binding (?X 123))");
+                QueryExec qExec = link.newQuery().query("SELECT ?X { }")
+                        .substitution(binding)
+                        .build();
+//                String s = qExec.getQueryString();
+//                assertTrue(s.contains("123"));
+                RowSet rs = qExec.select();
+                Node x = rs.next().get(Var.alloc("X"));
+                assertNotNull(x);
+            });
+        }
+    }
+
     @Test public void update_01() {
         try ( RDFLink link = link() ) {
             link.update("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
@@ -468,12 +497,21 @@ public abstract class AbstractTestRDFLink {
         }
     }
 
-    //@Test(expected=JenaTransactionException.class)
+    @Test(expected=JenaTransactionException.class)
     public void transaction_bad_01() {
         try ( RDFLink link = link() ) {
             link.begin(ReadWrite.WRITE);
             // Should have link.commit();
             link.end();
+        }
+    }
+
+    @Test public void setTimeout() {
+        try ( RDFLink link = link() ) {
+            link.newQuery()
+                .query("ASK{}")
+                .timeout(1000, TimeUnit.MILLISECONDS)
+                .ask();
         }
     }
 }

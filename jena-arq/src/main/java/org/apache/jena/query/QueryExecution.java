@@ -78,6 +78,14 @@ public interface QueryExecution extends AutoCloseable
     public Query getQuery() ;
 
     /**
+     * The query as a string.
+     * This may be null (QueryExecution may have been created by other means).
+     * This may contain non-Jena extensions and can not be parsed by Jena.
+     * If {@code getQuery()} is not null, this is a corresponding string that parses to the same query.
+     */
+    public String getQueryString();
+
+    /**
      *  Execute a SELECT query
      *  <p>
      *  <strong>Important:</strong> The name of this method is somewhat of a misnomer in that

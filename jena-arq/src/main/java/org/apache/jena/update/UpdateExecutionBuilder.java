@@ -27,36 +27,40 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.exec.UpdateExec;
-import org.apache.jena.sparql.exec.UpdateExecBuilder;
+import org.apache.jena.sparql.exec.UpdateExecDatasetBuilder;
 import org.apache.jena.sparql.exec.UpdateProcessorAdapter;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 
-public class UpdateExecutionBuilder {
+public class UpdateExecutionBuilder implements UpdateExecutionBuilderCommon {
 
     /** Create a new builder of {@link QueryExecution} for a local dataset. */
     public static UpdateExecutionBuilder newBuilder() { return new UpdateExecutionBuilder(); }
 
     public static UpdateExecutionBuilder create() { return newBuilder(); }
 
-    private final UpdateExecBuilder builder;
+    private final UpdateExecDatasetBuilder builder;
 
     public UpdateExecutionBuilder() {
         builder = UpdateExec.newBuilder();
     }
 
     /** Append the updates in an {@link UpdateRequest} to the {@link UpdateRequest} being built. */
+    @Override
     public UpdateExecutionBuilder update(UpdateRequest updateRequest) {
         builder.update(updateRequest);
         return this;
     }
 
     /** Add the {@link Update} to the {@link UpdateRequest} being built. */
+    @Override
     public UpdateExecutionBuilder update(Update update) {
         builder.update(update);
         return this;
     }
 
     /** Parse and update operations to the {@link UpdateRequest} being built. */
+    @Override
     public UpdateExecutionBuilder update(String updateRequestString) {
         builder.update(updateRequestString);
         return this;
@@ -67,10 +71,23 @@ public class UpdateExecutionBuilder {
         return this;
     }
 
+    @Override
+    public UpdateExecutionBuilder set(Symbol symbol, Object value) {
+        builder.set(symbol, value);
+        return this;
+    }
+
+    @Override
+    public UpdateExecutionBuilder set(Symbol symbol, boolean value) {
+        builder.set(symbol, value);
+        return this;
+    }
+
     /** Set the {@link Context}.
      *  This defaults to the global settings of {@code ARQ.getContext()}.
      *  If there was a previous call of {@code context} the multiple contexts are merged.
      * */
+    @Override
     public UpdateExecutionBuilder context(Context context) {
         builder.context(context);
         return this;
@@ -89,6 +106,7 @@ public class UpdateExecutionBuilder {
         return this;
     }
 
+    @Override
     public UpdateExecutionBuilder substitution(QuerySolution querySolution) {
         if ( querySolution == null )
            return this;
@@ -97,6 +115,7 @@ public class UpdateExecutionBuilder {
         return this;
     }
 
+    @Override
     public UpdateExecutionBuilder substitution(String varName, RDFNode value) {
         Var var = Var.alloc(varName);
         Node val = value.asNode();
@@ -104,6 +123,7 @@ public class UpdateExecutionBuilder {
         return this;
     }
 
+    @Override
     public UpdateExecution build() {
         UpdateExec exec = builder.build();
         return UpdateProcessorAdapter.adapt(exec);
@@ -111,6 +131,7 @@ public class UpdateExecutionBuilder {
 
     // Abbreviated forms
 
+    @Override
     public void execute() {
         build().execute();
     }

@@ -31,9 +31,10 @@ import org.apache.jena.sparql.engine.Plan;
 import org.apache.jena.sparql.engine.QueryEngineFactory;
 import org.apache.jena.sparql.engine.QueryEngineRegistry;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.engine.binding.BindingRoot;
 import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.sparql.exec.QueryExecBuilder;
+import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
 import org.apache.jena.sparql.exec.QueryExecutionCompat;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
@@ -108,7 +109,7 @@ public class QueryExecutionFactory
      */
     static public QueryExecution create(Query query, Dataset dataset) {
         // checkArg(dataset); // Allow null
-        return make(query, dataset, null);
+        return make(query, dataset, null, null);
     }
 
     /**
@@ -121,7 +122,7 @@ public class QueryExecutionFactory
     static public QueryExecution create(Query query, DatasetGraph datasetGraph) {
         requireNonNull(query, "Query is null");
         requireNonNull(datasetGraph, "DatasetGraph is null");
-        return make(query, datasetGraph, null);
+        return make(query, null, datasetGraph, null);
     }
 
     /** Create a QueryExecution to execute over the Dataset.
@@ -133,7 +134,7 @@ public class QueryExecutionFactory
     static public QueryExecution create(String queryStr, Dataset dataset) {
         checkArg(queryStr);
         // checkArg(dataset); // Allow null
-        return make(makeQuery(queryStr), dataset, null);
+        return make(makeQuery(queryStr), dataset, null, null);
     }
 
     /** Create a QueryExecution to execute over the Dataset.
@@ -146,7 +147,7 @@ public class QueryExecutionFactory
     static public QueryExecution create(String queryStr, Syntax syntax, Dataset dataset) {
         checkArg(queryStr);
         // checkArg(dataset); // Allow null
-        return make(makeQuery(queryStr, syntax), dataset, null);
+        return make(makeQuery(queryStr, syntax), dataset, null, null);
     }
 
     // ---------------- Query + Model
@@ -457,7 +458,7 @@ public class QueryExecutionFactory
             // Copy context of the storage dataset to the wrapper dataset.
             dataset.getContext().putAll(gv.getDataset().getContext());
         }
-        return make(query, dataset, null);
+        return make(query, null, dataset, (Binding)null);
     }
 
     private static Graph unwrap(Graph graph) {
@@ -470,22 +471,26 @@ public class QueryExecutionFactory
         }
     }
 
-    protected static QueryExecution make(Query query, Dataset dataset, QuerySolution initialBinding) {
-        QueryExecutionBuilder builder = QueryExecution.create().query(query);
-        if ( dataset != null )
-            builder.dataset(dataset);
+    private static QueryExecution make(Query query, Dataset dataset, QuerySolution initialBinding) {
+        Binding binding = null;
         if ( initialBinding != null )
-            builder.initialBinding(initialBinding);
-        return builder.build();
+            binding = BindingLib.toBinding(initialBinding);
+        return make(query, dataset, null, binding);
     }
 
-    protected static QueryExecution make(Query query, DatasetGraph dataset, Binding initialBinding) {
-        QueryExecBuilder builder = QueryExec.newBuilder().query(query);
-        if ( dataset != null )
-            builder.dataset(dataset);
+    private static QueryExecution make(Query query, Dataset dataset, DatasetGraph datasetGraph, Binding initialBinding) {
+        QueryExecDatasetBuilder builder = QueryExec.newBuilder().query(query);
         if ( initialBinding != null )
             builder.initialBinding(initialBinding);
-        return QueryExecutionCompat.compatibility(builder);
+        if ( dataset == null && datasetGraph == null )
+            return QueryExecutionCompat.compatibility(builder, null, query, builder.getQueryString());
+        if ( dataset == null ) {
+            builder.dataset(datasetGraph);
+            dataset = DatasetFactory.wrap(datasetGraph);
+        } else {
+            builder.dataset(dataset.asDatasetGraph());
+        }
+        return QueryExecutionCompat.compatibility(builder, dataset, query, builder.getQueryString());
     }
 
     static private void checkArg(Model model)

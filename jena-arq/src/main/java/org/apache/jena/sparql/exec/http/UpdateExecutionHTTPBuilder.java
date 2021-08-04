@@ -24,10 +24,18 @@ import java.net.http.HttpClient;
 import java.util.HashMap;
 
 import org.apache.jena.http.sys.ExecUpdateHTTPBuilder;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.update.UpdateExecutionBuilderCommon;
 import org.apache.jena.update.UpdateRequest;
 
-public class UpdateExecutionHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecutionHTTP, UpdateExecutionHTTPBuilder>{
+public class UpdateExecutionHTTPBuilder
+    extends ExecUpdateHTTPBuilder<UpdateExecutionHTTP, UpdateExecutionHTTPBuilder>
+    implements UpdateExecutionBuilderCommon {
 
     public static UpdateExecutionHTTPBuilder newBuilder() { return new UpdateExecutionHTTPBuilder(); }
 
@@ -48,8 +56,16 @@ public class UpdateExecutionHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExec
         return new UpdateExecutionHTTP(uExec);
     }
 
-    /** Short form for {@code build().execute()} */
-    public void execute() {
-        build().execute();
+    @Override
+    public UpdateExecutionHTTPBuilder substitution(QuerySolution querySolution) {
+        Binding binding = BindingLib.toBinding(querySolution);
+        super.substitution(binding);
+        return thisBuilder();
+    }
+
+    @Override
+    public UpdateExecutionHTTPBuilder substitution(String varName, RDFNode value) {
+        super.substitution(Var.alloc(varName), value.asNode());
+        return thisBuilder();
     }
 }

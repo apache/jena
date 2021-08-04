@@ -39,7 +39,8 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.DatasetGraphReadOnly;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecApp;
-import org.apache.jena.sparql.exec.UpdateExecBuilder;
+import org.apache.jena.sparql.exec.QueryExecBuilder;
+import org.apache.jena.sparql.exec.UpdateExecDatasetBuilder;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.graph.GraphReadOnly;
 import org.apache.jena.system.Txn;
@@ -78,14 +79,23 @@ public class RDFLinkDataset implements RDFLink {
     @Override
     public QueryExec query(Query query) {
         checkOpen();
-        //return QueryExec.newBuilder().query(query).dataset(dataset).build();
-        return new QueryExecApp(QueryExec.newBuilder().query(query).dataset(dataset));
+        //return QueryExec.newBuilder().dataset(dataset).query(query).build();
+        // Delayed.
+        return QueryExecApp.create(QueryExec.newBuilder().dataset(dataset).query(query),
+                                   dataset,
+                                   query,
+                                   null);
+    }
+
+    @Override
+    public QueryExecBuilder newQuery() {
+        return QueryExec.newBuilder().dataset(dataset);
     }
 
     @Override
     public void update(UpdateRequest update) {
         checkOpen();
-        Txn.executeWrite(dataset, ()->UpdateExecBuilder.newBuilder().update(update).execute(dataset));
+        Txn.executeWrite(dataset, ()->UpdateExecDatasetBuilder.newBuilder().update(update).execute(dataset));
     }
 
     @Override

@@ -32,6 +32,7 @@ import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.sparql.exec.http.UpdateSendMode;
 import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateException;
@@ -170,6 +171,18 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
             return thisBuilder();
         ensureContext();
         this.context.putAll(context);
+        return thisBuilder();
+    }
+
+    public Y set(Symbol symbol, Object value) {
+        ensureContext();
+        this.context.put(symbol, value);
+        return thisBuilder();
+    }
+
+    public Y set(Symbol symbol, boolean value) {
+        ensureContext();
+        this.context.put(symbol, value);
         return thisBuilder();
     }
 

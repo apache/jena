@@ -32,6 +32,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.Update;
@@ -69,7 +70,7 @@ import org.apache.jena.update.UpdateRequest;
  * @see RDFConnection
  * @see RDFLinkFactory
  * @see RDFLinkDataset
- * @see RDFLinkRemote
+ * @see RDFLinkHTTP
  * @see LinkSparqlQuery
  * @see LinkSparqlUpdate
  * @see LinkDatasetGraph
@@ -276,6 +277,16 @@ public interface RDFLink extends
     public default QueryExec query(String queryString) {
         return query(QueryFactory.create(queryString));
     }
+
+    /**
+     * Return a {@link QueryExecBuilder} that is initially configured for this link
+     * setup and type. The query built will be set to go to the same dataset/remote
+     * endpoint as the other RDFLink operations.
+     *
+     * @return QueryExecBuilder
+     */
+    @Override
+    public QueryExecBuilder newQuery();
 
     // ---- SparqlUpdateConnection
 

@@ -239,6 +239,15 @@ public interface RDFConnection extends
         return query(QueryFactory.create(queryString));
     }
 
+    /**
+     * Return a execution builder initialized with the RDFConnection setup.
+     *
+     * @return QueryExecutionBuilderCommon
+     */
+    @Override
+    public QueryExecutionBuilderCommon newQuery();
+
+
     // ---- SparqlUpdateConnection
 
     /** Execute a SPARQL Update.

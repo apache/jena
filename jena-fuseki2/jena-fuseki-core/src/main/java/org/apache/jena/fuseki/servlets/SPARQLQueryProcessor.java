@@ -303,8 +303,10 @@ public abstract class SPARQLQueryProcessor extends ActionService
      */
     @SuppressWarnings("deprecation")
     protected QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph dataset) {
+        @SuppressWarnings("deprecation")
         QueryExecutionBuilder builder = QueryExecution.create()
-                .query(query).dataset(dataset)
+                .query(query)
+                .dataset(dataset)
                 .context(action.getContext())
                 ;
         setTimeouts(builder, action);
@@ -336,7 +338,6 @@ public abstract class SPARQLQueryProcessor extends ActionService
             Pair<Long, Long> pair2 = Timeouts.parseTimeoutStr(timeoutCxt, TimeUnit.MILLISECONDS);
             cxtInitialTimeout = pair2.getLeft();
             cxtOverallTimeout = pair2.getRight();
-
         }
         long initialTimeout = chooseTimeout(cxtInitialTimeout, protocolInitialTimeout);
         long overallTimeout = chooseTimeout(cxtOverallTimeout, protocolOverallTimeout);

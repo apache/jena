@@ -28,7 +28,7 @@ import org.apache.jena.http.sys.RegistryRequestModifier;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkFactory;
-import org.apache.jena.rdflink.RDFLinkRemote;
+import org.apache.jena.rdflink.RDFLinkHTTP;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.exec.QueryExec;
@@ -204,7 +204,7 @@ public class TestAuthRemote {
 
     @Test
     public void auth_link_good_auth() {
-        try ( RDFLink link = RDFLinkRemote.newBuilder()
+        try ( RDFLink link = RDFLinkHTTP.newBuilder()
                     .destination(env.datasetURL())
                     .httpClient(env.httpClientAuthGood())
                     .build()) {
@@ -219,7 +219,7 @@ public class TestAuthRemote {
         // 401 (not 403) because we didn't authenticate
         // 403 is recognized authenticate, not sufficient for ths resource.
         expect401(()->{
-            try ( RDFLink link = RDFLinkRemote.newBuilder()
+            try ( RDFLink link = RDFLinkHTTP.newBuilder()
                     .destination(env.datasetURL())
                     .httpClient(env.httpClientAuthBad())
                     .build()) {
@@ -232,7 +232,7 @@ public class TestAuthRemote {
     public void auth_link_bad_auth_2() {
         // 401 (not 403) because we didn't authenticate
         expect401(()->{
-            try ( RDFLink link = RDFLinkRemote.newBuilder()
+            try ( RDFLink link = RDFLinkHTTP.newBuilder()
                     .destination(env.datasetURL())
                     .httpClient(env.httpClientAuthBad())
                     .build()) {
@@ -245,7 +245,7 @@ public class TestAuthRemote {
     public void auth_link_bad_auth_3() {
         // 401 (not 403) because we didn't authenticate
         expect401(()->{
-            try ( RDFLink link = RDFLinkRemote.newBuilder()
+            try ( RDFLink link = RDFLinkHTTP.newBuilder()
                         .destination(env.datasetURL())
                         .httpClient(env.httpClientAuthBad())
                         .build()) {
@@ -429,7 +429,7 @@ public class TestAuthRemote {
         HttpRequestModifier mods = (params, headers) -> headers.put(HttpNames.hAuthorization, HttpLib.basicAuth(user, password));
         ARQ.getContext().put(ARQ.httpRequestModifer, mods);
         try {
-            try ( RDFLink link = RDFLinkRemote.newBuilder()
+            try ( RDFLink link = RDFLinkHTTP.newBuilder()
                     .destination(env.datasetURL())
                     .build()) {
                 link.update("INSERT DATA { <x:s> <x:p> <x:z> }");

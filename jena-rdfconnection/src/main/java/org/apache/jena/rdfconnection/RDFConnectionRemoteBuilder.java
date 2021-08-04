@@ -22,8 +22,8 @@ import java.net.http.HttpClient;
 
 import org.apache.jena.rdflink.RDFConnectionAdapter;
 import org.apache.jena.rdflink.RDFLink;
-import org.apache.jena.rdflink.RDFLinkRemote;
-import org.apache.jena.rdflink.RDFLinkRemoteBuilder;
+import org.apache.jena.rdflink.RDFLinkHTTP;
+import org.apache.jena.rdflink.RDFLinkHTTPBuilder;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFLanguages;
@@ -32,18 +32,18 @@ import org.apache.jena.riot.RiotException;
 /** Builder class for {@link RDFConnectionRemote} */
 
 /**
- * @see RDFLinkRemoteBuilder
+ * @see RDFLinkHTTPBuilder
  */
 public class RDFConnectionRemoteBuilder {
     /*package*/ static String SameAsDestination  = "";
 
-    protected final RDFLinkRemoteBuilder builder;
+    protected final RDFLinkHTTPBuilder builder;
 
     protected RDFConnectionRemoteBuilder() {
-        this(RDFLinkRemote.newBuilder());
+        this(RDFLinkHTTP.newBuilder());
     }
 
-    protected RDFConnectionRemoteBuilder(RDFLinkRemoteBuilder builder) {
+    protected RDFConnectionRemoteBuilder(RDFLinkHTTPBuilder builder) {
         this.builder = builder;
     }
 

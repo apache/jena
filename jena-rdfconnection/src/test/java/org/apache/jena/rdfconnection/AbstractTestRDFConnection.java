@@ -20,16 +20,21 @@ package org.apache.jena.rdfconnection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
@@ -344,6 +349,32 @@ public abstract class AbstractTestRDFConnection {
         }
     }
 
+    @Test public void query_build_01() {
+        try ( RDFConnection conn = connection() ) {
+            Txn.executeRead(conn, ()->{
+                ResultSet rs = conn.newQuery().query("SELECT * { ?s ?p ?o}").select();
+                assertNotNull(rs);
+            });
+        }
+    }
+
+    @Test public void query_build_02() {
+        try ( RDFConnection conn = connection() ) {
+            Txn.executeRead(conn, ()->{
+                QuerySolutionMap qsm = new QuerySolutionMap();
+                qsm.add("X", ResourceFactory.createTypedLiteral("123", XSDDatatype.XSDinteger));
+                QueryExecution qExec = conn.newQuery().query("SELECT ?X { }")
+                        .substitution(qsm)
+                        .build();
+                String s = qExec.getQueryString();
+                assertTrue(s.contains("123"));
+                ResultSet rs = qExec.execSelect();
+                RDFNode x = rs.next().get("X");
+                assertNotNull(x);
+            });
+        }
+    }
+
     @Test public void update_01() {
         try ( RDFConnection conn = connection() ) {
             conn.update("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
@@ -405,12 +436,21 @@ public abstract class AbstractTestRDFConnection {
         }
     }
 
-    //@Test(expected=JenaTransactionException.class)
+    @Test(expected=JenaTransactionException.class)
     public void transaction_bad_01() {
         try ( RDFConnection conn = connection() ) {
             conn.begin(ReadWrite.WRITE);
             // Should have conn.commit();
             conn.end();
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test public void setTimeout() {
+        try ( RDFConnection rdfConnection = connection() ) {
+            QueryExecution queryExecution = rdfConnection.query("ASK{}");
+            queryExecution.setTimeout(1000);
+            queryExecution.execAsk();
         }
     }
 }

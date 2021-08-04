@@ -611,8 +611,9 @@ public class QueryEngineHTTP implements QueryExecution {
 
     /**
      * Return the query string. If this was supplied in a constructor, there is no
-     * guaranttee this is legal SPARQL syntax.
+     * guarantee this is legal SPARQL syntax.
      */
+    @Override
     public String getQueryString() {
         return queryString;
     }

@@ -26,8 +26,6 @@ import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.sparql.ARQConstants;
-import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingLib;
@@ -42,63 +40,55 @@ import org.apache.jena.sparql.util.Context;
 public class QueryExecutionCompat extends QueryExecutionAdapter {
     private final QueryExecMod qExecBuilder;
     private QueryExec qExecHere = null;
-    private Dataset datasetHere = null;
+    private final Dataset datasetHere;
+    private final Query queryHere;
 
-    public static QueryExecution compatibility(QueryExecMod qExec) {
-        return new QueryExecutionCompat(qExec);
+    public static QueryExecution compatibility(QueryExecMod qExec, Dataset dataset, Query query, String queryString) {
+        return new QueryExecutionCompat(qExec, dataset, query);
     }
 
-    public QueryExecutionCompat(QueryExecMod qExecBuilder) {
+    private QueryExecutionCompat(QueryExecMod qExecBuilder, Dataset dataset, Query query) {
         super(null);
         this.qExecBuilder = qExecBuilder;
-        // Have the QueryExecBuilder build the context now, even though it is not finished.
-        qExecBuilder.builtContext();
+        this.datasetHere = dataset;
+        this.queryHere = query;
     }
 
     @Override
     protected QueryExec get() { return qExecHere; }
 
-    private QueryExec state() {
-        // Build, don't keep.
-        return qExecBuilder.build();
-    }
-
     private void execution() {
         // Delay until used so setTimeout,setInitialBindings work.
         // Also - rebuild allowed!
-        if ( qExecHere == null ) {
+        if ( qExecHere == null )
             qExecHere = qExecBuilder.build();
-            DatasetGraph x = qExecHere.getDataset();
-            datasetHere = (x != null) ? DatasetFactory.wrap(x) : null;
-            qExecHere.getContext().set(ARQConstants.sysCurrentDataset, datasetHere);
-        }
     }
 
     @Override
     public void setInitialBinding(Binding binding) {
-        if ( qExecBuilder instanceof QueryExecBuilder)
-            ((QueryExecBuilder)qExecBuilder).initialBinding(binding);
+        if ( qExecBuilder instanceof QueryExecDatasetBuilder)
+            ((QueryExecDatasetBuilder)qExecBuilder).initialBinding(binding);
         else
             throw new UnsupportedOperationException("setInitialBinding");
     }
 
     @Override
     public Dataset getDataset() {
-        if ( datasetHere != null )
-            return datasetHere;
-        DatasetGraph dsg = ( qExecHere == null ) ? state().getDataset() : qExecHere.getDataset();
-        datasetHere = (dsg != null) ? DatasetFactory.wrap(dsg) : null;
         return datasetHere;
     }
 
     @Override
     public Context getContext() {
-        return qExecBuilder.builtContext();
+        return qExecBuilder.getContext();
     }
 
     @Override
     public Query getQuery() {
-        return state().getQuery();
+        if ( queryHere != null )
+            return queryHere;
+        // Have to build (and hope! It may be a queryString with non-jena extensions).
+        execution();
+        return qExecHere.getQuery();
     }
 
     @Override

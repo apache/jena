@@ -26,6 +26,7 @@ import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.update.UpdateRequest;
 
 /**
@@ -90,6 +91,9 @@ public class RDFLinkModular implements RDFLink {
 
     @Override
     public QueryExec query(Query query) { return queryConnection().query(query); }
+
+    @Override
+    public QueryExecBuilder newQuery() { return queryConnection().newQuery(); }
 
     @Override
     public void update(UpdateRequest update) {
