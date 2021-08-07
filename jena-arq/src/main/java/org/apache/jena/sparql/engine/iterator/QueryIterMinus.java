@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
@@ -29,22 +30,29 @@ import org.apache.jena.sparql.engine.index.IndexTable;
 
 /** Minus by materializing the RHS - this is not streamed on the right */
 public class QueryIterMinus extends QueryIter2 {
-    private final IndexTable tableRight;
+    private IndexTable tableRight = null;
+    private final Supplier<IndexTable> tableRightMaker;
     private Binding          slot = null;
 
     public static QueryIterator create(QueryIterator left, QueryIterator right, Set<Var> commonVars, ExecutionContext qCxt) {
         if ( ! right.hasNext() )
-            // Empty MINUS -> return left 
+            // Empty MINUS -> return left
             return left ;
         return new QueryIterMinus(left, right, commonVars, qCxt) ;
     }
-    
+
     private QueryIterMinus(QueryIterator left, QueryIterator right, Set<Var> commonVars, ExecutionContext qCxt) {
         super(left, right, qCxt);
-        tableRight = IndexFactory.createIndex(commonVars, right);
+        // Building tableRight is potentially doing a lot of work during this constructor.
+        // Delay until the query starts executing started so it sees timeouts.
+        // See JENA-2139.
+        tableRightMaker = ()->IndexFactory.createIndex(commonVars, right);
     }
 
     protected Binding getNextSlot(Binding bindingLeft) {
+        // Initialize on first use.
+        if ( tableRight == null )
+            tableRight = tableRightMaker.get();
         if ( tableRight.containsCompatibleWithSharedDomain(bindingLeft) )
             return null;
         return bindingLeft;
