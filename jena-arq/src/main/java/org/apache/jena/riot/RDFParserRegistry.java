@@ -83,11 +83,11 @@ public class RDFParserRegistry
         registerLangTriples(N3,         parserFactory);
         registerLangTriples(TURTLE,     parserFactory);
         registerLangTriples(RDFJSON,    parserFactory);
-        registerLangTriples(RDFXML,     ReaderRIOTRDFXML.factory);
+        registerLangTriples(RDFXML,     parserFactoryRDFXML);
         registerLangTriples(JSONLD,     parserFactoryJsonLD);
-        registerLangTriples(RDFTHRIFT,  ReaderRDFThrift.factory);
-        registerLangTriples(TRIX,       ReaderTriX.factory);
-        registerLangTriples(RDFNULL,    ReaderRDFNULL.factory);
+        registerLangTriples(RDFTHRIFT,  parserFactoryTriX);
+        registerLangTriples(TRIX,       parserFactoryTriX);
+        registerLangTriples(RDFNULL,    parserFactoryRDFNULL);
 
         registerLangQuads(JSONLD,       parserFactoryJsonLD);
         registerLangQuads(NQUADS,       parserFactory);
@@ -98,6 +98,11 @@ public class RDFParserRegistry
 
         // Javacc based Turtle parser, different language name.
         TurtleJCC.register();
+
+        // Currently done in currently done in SysJSONLD11.init.
+        //registerLangTriples(Lang.JSONLD11, jsonld11ReaderFactory);
+        //registerLangQuads(Lang.JSONLD11, jsonld11ReaderFactory);
+
     }
 
     /**

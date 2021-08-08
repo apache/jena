@@ -83,6 +83,17 @@ public class RDFFormat {
     // JSONLD related
     //
 
+    // ---- JSONLD 1.1 / Titanium
+
+    /** JSON LD 1.1 - multi-line JSON */
+    public static RDFFormat             JSONLD11_PLAIN  = new RDFFormat(Lang.JSONLD11, RDFFormat.PLAIN);
+    /** JSON LD 1.1 - single-line JSON */
+    public static RDFFormat             JSONLD11_FLAT   = new RDFFormat(Lang.JSONLD11, RDFFormat.FLAT);
+    /** JSON LD 1.1 default form - multi-line JSON */
+    public static RDFFormat             JSONLD11        = JSONLD11_PLAIN;
+
+    // ---- JSONLD 1.0 / jsonld-java
+
     public static class JSONLDVariant extends RDFFormatVariant {
         private static enum JSONLD_FORMAT {
             COMPACT,

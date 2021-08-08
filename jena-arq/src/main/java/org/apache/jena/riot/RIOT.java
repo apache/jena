@@ -21,6 +21,7 @@ package org.apache.jena.riot ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.SysJSONLD11;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
@@ -78,6 +79,9 @@ public class RIOT {
             MappingRegistry.addPrefixMapping("trig", TURTLE_SYMBOL_BASE) ;
 
             IO_Jena.wireIntoJena() ;
+
+            // JSON-LD 11 while still an optional feature.
+            SysJSONLD11.init();
 
             // Don't register JMX info with ARQ as it may not be initialized
             // itself and we can get into a circularity.

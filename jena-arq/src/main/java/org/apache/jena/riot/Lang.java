@@ -58,6 +58,8 @@ public class Lang
     /** <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
     public static Lang JSONLD ;
 
+    //public static Lang JSONLD10 ;
+
     public static Lang JSONLD11 ;
 
     /**

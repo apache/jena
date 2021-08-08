@@ -23,29 +23,31 @@ import static org.junit.Assert.assertTrue;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFWriterRegistry ;
+import org.apache.jena.sys.JenaSystem;
 import org.junit.Test ;
 
 public class TestWriterRegistration
 {
+    static { JenaSystem.init(); }
     static { RDFWriterRegistry.init(); }
     @Test public void registration_01() { testregistration(Lang.RDFXML) ; }
     @Test public void registration_02() { testregistration(Lang.NTRIPLES) ; }
     @Test public void registration_03() { testregistration(Lang.NT) ; }
-    @Test public void registration_04() { testregistration(Lang.N3) ; } 
-    @Test public void registration_05() { testregistration(Lang.TURTLE) ; }   
+    @Test public void registration_04() { testregistration(Lang.N3) ; }
+    @Test public void registration_05() { testregistration(Lang.TURTLE) ; }
     @Test public void registration_06() { testregistration(Lang.TTL) ; }
-    @Test public void registration_07() { testregistration(Lang.RDFJSON) ; }   
+    @Test public void registration_07() { testregistration(Lang.RDFJSON) ; }
     @Test public void registration_08() { testregistration(Lang.NQUADS) ; }
     @Test public void registration_09() { testregistration(Lang.NQ) ; }
     @Test public void registration_10() { testregistration(Lang.TRIG) ; }
     @Test public void registration_11() { testregistration(Lang.RDFNULL) ; }
-    
+
     @Test public void registration_20() { testregistration(RDFFormat.TURTLE_PRETTY) ; }
     @Test public void registration_21() { testregistration(RDFFormat.TURTLE) ; }
     @Test public void registration_22() { testregistration(RDFFormat.TTL) ; }
     @Test public void registration_23() { testregistration(RDFFormat.TURTLE_BLOCKS) ; }
     @Test public void registration_24() { testregistration(RDFFormat.TURTLE_FLAT) ; }
-    
+
     @Test public void registration_25() { testregistration(RDFFormat.NTRIPLES) ; }
     @Test public void registration_26() { testregistration(RDFFormat.NQUADS) ; }
     @Test public void registration_25a() { testregistration(RDFFormat.NTRIPLES_UTF8) ; }
@@ -69,7 +71,7 @@ public class TestWriterRegistration
         assertTrue("No writer registered for language "+lang, RDFWriterRegistry.contains(lang)) ;
         assertTrue( RDFWriterRegistry.getWriterGraphFactory(lang) != null || RDFWriterRegistry.getWriterDatasetFactory(lang) != null ) ;
     }
-    
+
     private void testregistration(RDFFormat format)
     {
         assertTrue("No writer registered for format "+format, RDFWriterRegistry.contains(format)) ;

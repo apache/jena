@@ -21,18 +21,18 @@ package org.apache.jena.riot.writer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream ;
-import java.io.ByteArrayOutputStream ;
-import java.util.Arrays ;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.riot.* ;
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class TestRiotWriterGraph extends AbstractWriterTest
@@ -41,7 +41,7 @@ public class TestRiotWriterGraph extends AbstractWriterTest
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][] {
             { RDFFormat.RDFNULL }
-            
+
             , { RDFFormat.NTRIPLES_UTF8 }
             , { RDFFormat.NTRIPLES_ASCII }
             , { RDFFormat.NTRIPLES }
@@ -65,90 +65,92 @@ public class TestRiotWriterGraph extends AbstractWriterTest
             , { RDFFormat.NQUADS_UTF8}
             , { RDFFormat.NQUADS_ASCII}
             , { RDFFormat.NQUADS}
-            
+
             , { RDFFormat.RDF_THRIFT }
             , { RDFFormat.RDF_THRIFT_VALUES }
             , { RDFFormat.TRIX }
-        }) ; 
+        });
     }
 
-    private RDFFormat format ;
-    
+    private RDFFormat format;
+
     public TestRiotWriterGraph(RDFFormat format)
     {
-        this.format = format ;
+        this.format = format;
     }
-    
-    @Test public void writer00() { test("writer-rt-00.ttl") ; }
-    @Test public void writer01() { test("writer-rt-01.ttl") ; }
-    @Test public void writer02() { test("writer-rt-02.ttl") ; }
-    @Test public void writer03() { test("writer-rt-03.ttl") ; }
-    @Test public void writer04() { test("writer-rt-04.ttl") ; }
-    @Test public void writer05() { test("writer-rt-05.ttl") ; }
-    @Test public void writer06() { test("writer-rt-06.ttl") ; }
-    @Test public void writer07() { test("writer-rt-07.ttl") ; }
-    @Test public void writer08() { test("writer-rt-08.ttl") ; }
-    
-    @Test public void writer09() { 
+
+    @Test public void writer00() { test("writer-rt-00.ttl"); }
+    @Test public void writer01() { test("writer-rt-01.ttl"); }
+    @Test public void writer02() { test("writer-rt-02.ttl"); }
+    @Test public void writer03() { test("writer-rt-03.ttl"); }
+    @Test public void writer04() { test("writer-rt-04.ttl"); }
+    @Test public void writer05() { test("writer-rt-05.ttl"); }
+    @Test public void writer06() { test("writer-rt-06.ttl"); }
+    @Test public void writer07() { test("writer-rt-07.ttl"); }
+    @Test public void writer08() { test("writer-rt-08.ttl"); }
+
+    @Test public void writer09() {
         if ( format.getLang() != Lang.JSONLD )
             // Fails in jsonld-java
-            test("writer-rt-09.ttl") ;
+            test("writer-rt-09.ttl");
         }
-    
-    @Test public void writer10() { 
+
+    @Test public void writer10() {
         if ( format.getLang() != Lang.JSONLD )
             // Fails in jsonld-java
-            test("writer-rt-10.ttl") ; 
+            test("writer-rt-10.ttl");
     }
-    
-    @Test public void writer11() { test("writer-rt-11.ttl") ; }
-    @Test public void writer12() { test("writer-rt-12.ttl") ; }
-    @Test public void writer13() { test("writer-rt-13.ttl") ; }
-    @Test public void writer14() { test("writer-rt-14.ttl") ; }
-    @Test public void writer15() { test("writer-rt-15.ttl") ; }
-    @Test public void writer16() { test("writer-rt-16.ttl") ; }
-    @Test public void writer17() { test("writer-rt-17.ttl") ; }
-    @Test public void writer18() { test("writer-rt-18.ttl") ; }
 
-    private void test(String filename)
-    {
-        String displayname = filename.substring(0, filename.lastIndexOf('.')) ; 
-        Model m = readModel(filename) ;
-        Lang lang = format.getLang() ;
+    @Test public void writer11() { test("writer-rt-11.ttl"); }
+    @Test public void writer12() { test("writer-rt-12.ttl"); }
+    @Test public void writer13() { test("writer-rt-13.ttl"); }
+    @Test public void writer14() { test("writer-rt-14.ttl"); }
+    @Test public void writer15() { test("writer-rt-15.ttl"); }
+    @Test public void writer16() { test("writer-rt-16.ttl"); }
+    @Test public void writer17() { test("writer-rt-17.ttl"); }
+    @Test public void writer18() { test("writer-rt-18.ttl"); }
 
-        WriterGraphRIOT rs = RDFWriterRegistry.getWriterGraphFactory(format).create(format) ;
-        assertEquals(lang, rs.getLang()) ;
+    private void test(String filename) {
+        String displayname = filename.substring(0, filename.lastIndexOf('.'));
+        Model m = readModel(filename);
+        Lang lang = format.getLang();
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        RDFDataMgr.write(out, m, format) ;
-        
+        WriterGraphRIOT rs = RDFWriterRegistry.getWriterGraphFactory(format).create(format);
+        assertEquals(lang, rs.getLang());
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        RDFDataMgr.write(out, m, format);
+
         if ( lang == Lang.RDFNULL )
-            return ;
+            return;
 
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-        String s = StrUtils.fromUTF8bytes(out.toByteArray()) ;
-        
-        Model m2 = ModelFactory.createDefaultModel() ;
-        
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        String s = StrUtils.fromUTF8bytes(out.toByteArray());
+
+        Model m2 = ModelFactory.createDefaultModel();
+
         try {
-            RDFDataMgr.read(m2, in, lang) ;
-        } catch (RiotException ex)
-        {
-            System.out.println(format) ;
-            System.out.println(s) ;
-            throw ex ;
+            RDFDataMgr.read(m2, in, lang);
+        } catch (RiotException ex) {
+            System.out.println(format);
+            System.out.println(s);
+            throw ex;
         }
-        
-        boolean b = m.isIsomorphicWith(m2) ;
-        if ( !b )
-        {
-            System.out.println("------["+format+"]---------------------------------------------------") ;
-            
-            System.out.println("#### file="+displayname) ;
-            System.out.print(s) ;
+
+        boolean b = m.isIsomorphicWith(m2);
+        if ( !b ) {
+            System.out.println("------[" + format + "]---------------------------------------------------");
+
+            System.out.println("#### file=" + displayname);
+            System.out.print(s);
+            System.out.println("--- model");
+            RDFDataMgr.write(System.out, m, Lang.NT);
+            System.out.println("--- model2");
+            RDFDataMgr.write(System.out, m2, Lang.NT);
+            System.out.println("---");
         }
-        
-        assertTrue("Did not round-trip file="+filename+" / format="+format,  b) ; 
+
+        assertTrue("Did not round-trip file=" + filename + " / format=" + format, b);
     }
 }
 

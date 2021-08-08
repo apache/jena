@@ -82,24 +82,21 @@ public class RDFWriterRegistry
     }} ;
 
     // Writing a dataset
-    static WriterDatasetRIOTFactory wdsfactory = new WriterDatasetRIOTFactory() {
-        @Override
-        public WriterDatasetRIOT create(RDFFormat serialization)
-        {
-            if ( Objects.equals(RDFFormat.TRIG_PRETTY, serialization) )
-                return new TriGWriter() ;
-            if ( Objects.equals(RDFFormat.TRIG_BLOCKS, serialization) )
-                return new TriGWriterBlocks() ;
-            if ( Objects.equals(RDFFormat.TRIG_FLAT, serialization) )
-                return new TriGWriterFlat() ;
-            if ( Objects.equals(RDFFormat.NQUADS_UTF8, serialization) )
-                return new NQuadsWriter() ;
-            if ( Objects.equals(RDFFormat.NQUADS_ASCII, serialization) )
-                return new NQuadsWriter(CharSpace.ASCII) ;
-            if ( Objects.equals(RDFFormat.RDFNULL, serialization) )
-                return NullWriter.factory.create(RDFFormat.RDFNULL) ;
-            return null ;
-    }} ;
+    static WriterDatasetRIOTFactory wdsfactory = (RDFFormat serialization) -> {
+        if ( Objects.equals(RDFFormat.TRIG_PRETTY, serialization) )
+            return new TriGWriter() ;
+        if ( Objects.equals(RDFFormat.TRIG_BLOCKS, serialization) )
+            return new TriGWriterBlocks() ;
+        if ( Objects.equals(RDFFormat.TRIG_FLAT, serialization) )
+            return new TriGWriterFlat() ;
+        if ( Objects.equals(RDFFormat.NQUADS_UTF8, serialization) )
+            return new NQuadsWriter() ;
+        if ( Objects.equals(RDFFormat.NQUADS_ASCII, serialization) )
+            return new NQuadsWriter(CharSpace.ASCII) ;
+        if ( Objects.equals(RDFFormat.RDFNULL, serialization) )
+            return NullWriter.factory.create(RDFFormat.RDFNULL) ;
+        return null ;
+    } ;
 
     private static WriterDatasetRIOTFactory wdsJsonldfactory   = syntaxForm -> new JsonLDWriter(syntaxForm);
     private static WriterGraphRIOTFactory wgJsonldfactory      = syntaxForm -> RiotLib.adapter(new JsonLDWriter(syntaxForm));
@@ -108,17 +105,19 @@ public class RDFWriterRegistry
     private static WriterGraphRIOTFactory wgTriXFactory        = syntaxForm -> new WriterTriX();
     private static WriterDatasetRIOTFactory wdsTriXFactory     = syntaxForm -> new WriterTriX() ;
 
-     public static void init() {}
-     static { init$() ; }
-     private static void init$()
-     {
-         // Language to format.
-         register(Lang.TURTLE,      RDFFormat.TURTLE) ;
-         register(Lang.N3,          RDFFormat.TURTLE) ;
-         register(Lang.NTRIPLES,    RDFFormat.NTRIPLES) ;
+    public static void init() {}
+    static { init$() ; }
+    private static void init$()
+    {
+        // Language to format.
+        register(Lang.TURTLE,      RDFFormat.TURTLE) ;
+        register(Lang.N3,          RDFFormat.TURTLE) ;
+        register(Lang.NTRIPLES,    RDFFormat.NTRIPLES) ;
          register(Lang.RDFXML,      RDFFormat.RDFXML) ;
 
          register(Lang.JSONLD,      RDFFormat.JSONLD) ;
+         //register(Lang.JSONLD10,    RDFFormat.JSONLD) ;
+         register(Lang.JSONLD11,    RDFFormat.JSONLD11) ;
          register(Lang.RDFJSON,     RDFFormat.RDFJSON) ;
 
          register(Lang.TRIG,        RDFFormat.TRIG) ;
@@ -136,6 +135,14 @@ public class RDFWriterRegistry
 
          register(RDFFormat.NTRIPLES,       wgfactory) ;
          register(RDFFormat.NTRIPLES_ASCII, wgfactory) ;
+
+         //  Writer.
+
+         // JSONLD 1.1 -- currently done in SysJSONLD11.init.
+         //register(RDFFormat.JSONLD11_PLAIN, jsonld11WriterGraphFactory);
+         //register(RDFFormat.JSONLD11_PLAIN, jsonld11WriterDatasetFactory);
+         //register(RDFFormat.JSONLD11_FLAT, jsonld11WriterGraphFactory);
+         //register(RDFFormat.JSONLD11_FLAT, jsonld11WriterDatasetFactory);
 
          register(RDFFormat.JSONLD,                      wgJsonldfactory) ;
          register(RDFFormat.JSONLD_FLAT,                 wgJsonldfactory) ;
@@ -201,8 +208,7 @@ public class RDFWriterRegistry
      * @param serialization         RDFFormat for the output format.
      * @param graphWriterFactory    Source of writer engines
      */
-    public static void register(RDFFormat serialization, WriterGraphRIOTFactory graphWriterFactory)
-    {
+    public static void register(RDFFormat serialization, WriterGraphRIOTFactory graphWriterFactory) {
         registryGraph.put(serialization, graphWriterFactory) ;
     }
 
@@ -269,7 +275,6 @@ public class RDFWriterRegistry
         x.addAll(registryDataset.keySet()) ;
         return Collections.unmodifiableSet(x) ;
     }
-
 
     /** Get the graph writer factory associated with the language */
     public static WriterGraphRIOTFactory getWriterGraphFactory(Lang lang) {
