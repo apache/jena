@@ -22,24 +22,36 @@ import static org.apache.jena.riot.lang.ReaderTriX.State.*;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.*;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.graph.*;
-import org.apache.jena.riot.*;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_Marker;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.ReaderRIOT;
+import org.apache.jena.riot.ReaderRIOTFactory;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.writer.StreamWriterTriX;
 import org.apache.jena.riot.writer.WriterTriX;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.util.JenaXMLInput;
 import org.apache.jena.vocabulary.RDF;
 
 /** Read TriX.
@@ -82,21 +94,19 @@ public class ReaderTriX implements ReaderRIOT {
 
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        XMLInputFactory xf = XMLInputFactory.newInstance();
         XMLStreamReader xReader;
         try {
-            xReader = xf.createXMLStreamReader(in);
+            xReader = JenaXMLInput.newXMLStreamReader(in);
         } catch (XMLStreamException e) { throw new RiotException("Can't initialize StAX parsing engine", e); }
         read(xReader,  baseURI, output);
     }
 
     @Override
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        XMLInputFactory xf = XMLInputFactory.newInstance();
         XMLStreamReader xReader;
         try {
-            xReader = xf.createXMLStreamReader(reader);
-        } catch (XMLStreamException e) { throw new ResultSetException("Can't initialize StAX parsing engine", e); }
+            xReader = JenaXMLInput.newXMLStreamReader(reader);
+        } catch (XMLStreamException e) { throw new RiotException("Can't initialize StAX parsing engine", e); }
         read(xReader,  baseURI, output);
     }
 
