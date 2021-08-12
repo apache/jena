@@ -23,21 +23,38 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.shacl.compact.reader.ShaclcParseException;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.junit.Test;
 
-/** RIOT reader-writer tests for SHACL Compact Syntax */
-public class TestReaderWriterShaclCompact  extends AbstractTestShaclCompact {
+/**
+ * Test compact reading and writing by round-tripping. Unlike
+ * AbstractTestShaclCompact, this test suite is concerned with
+ * round-trip of compact syntax.
+ */
+public class TestCompactSyntax {
+    protected final String DIR = "src/test/files/local/shaclc-syntax/";
 
-    @Override
-    protected void runTest(String fn, String ttl, String fileBaseName) {
-        String uri = IRILib.filenameToIRI(fn);
+    @Test public void roundTrip_01() {
+        rttTest("nodeParams.shc");
+    }
 
-        Graph graph1 = GraphFactory.createDefaultGraph();
-        RDFDataMgr.read(graph1, uri, BASE, Lang.SHACLC);
+    @Test public void roundTrip_02() {
+        rttTest("propertyParams.shc");
+    }
+
+    @Test(expected=ShaclcParseException.class)
+    public void badSyntax_01() {
+        badSyntax("nodeParam-bad-01.shc");
+    }
+
+    private void rttTest(String fn) {
+        fn = DIR+fn;
+        //String uri = IRILib.filenameToIRI(fn);
+        Graph graph1 = RDFDataMgr.loadGraph(fn);
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         RDFDataMgr.write(bout, graph1, Lang.SHACLC);
 
@@ -45,16 +62,12 @@ public class TestReaderWriterShaclCompact  extends AbstractTestShaclCompact {
         RDFDataMgr.read(graph2, new ByteArrayInputStream(bout.toByteArray()), Lang.SHACLC);
 
         assertTrue(graph1.isIsomorphicWith(graph2));
+    }
 
-        Graph graph0 = RDFDataMgr.loadGraph(ttl);
-//        RDFDataMgr.write(System.out, graph1, Lang.SHACLC);
-//        System.out.println("----");
-//        RDFDataMgr.write(System.out, graph0, Lang.SHACLC);
-//        System.out.println("----");
-        assertTrue(graph0.isIsomorphicWith(graph2));
-
+    private void badSyntax(String fn) {
+        fn = DIR+fn;
+        RDFDataMgr.loadGraph(fn);
     }
 
 
 }
-

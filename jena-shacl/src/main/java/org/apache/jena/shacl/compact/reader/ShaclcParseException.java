@@ -21,6 +21,7 @@ package org.apache.jena.shacl.compact.reader;
 import org.apache.jena.shacl.ShaclException;
 
 public class ShaclcParseException extends ShaclException {
+    // Not a "ShaclParseException", which refers to errors in the RDF graph of SHACL shapes.
     private int line ;
     private int column ;
 

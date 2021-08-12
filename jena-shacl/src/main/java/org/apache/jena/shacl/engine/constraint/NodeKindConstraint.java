@@ -18,6 +18,7 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import static org.apache.jena.shacl.compact.writer.CompactOut.compact;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 import java.util.Objects;
@@ -77,8 +78,10 @@ public class NodeKindConstraint extends ConstraintTerm {
 
     @Override
     public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
-        String s = getKind().getLocalName();
-        out.print(s);
+        compact(out, nodeFmt, "nodeKind", getKind());
+        // Property context only.
+//        String s = getKind().getLocalName();
+//        out.print(s);
     }
 
     @Override

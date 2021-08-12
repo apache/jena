@@ -1,0 +1,8 @@
+PREFIX : <http://example/>
+PREFIX ex:      <http://example.org/test#>
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
+
+shapeClass ex:TestBadNodeParam {
+   # Property sytax in the node position.
+   IRI .
+}
