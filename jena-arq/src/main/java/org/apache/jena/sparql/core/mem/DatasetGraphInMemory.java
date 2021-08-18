@@ -42,10 +42,7 @@ import org.apache.jena.riot.system.PrefixMapStd;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.shared.LockMRPlusSW;
 import org.apache.jena.sparql.JenaTransactionException;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphTriplesQuads;
-import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.sparql.core.*;
 import org.apache.jena.system.Txn;
 import org.slf4j.Logger;
 
@@ -341,17 +338,17 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 
     @Override
     public Graph getGraph(final Node graphNode) {
-        return new GraphInMemory(this, graphNode);
+        return GraphView.createNamedGraph(this, graphNode);
     }
 
     @Override
     public Graph getDefaultGraph() {
-        return getGraph(Quad.defaultGraphNodeGenerated);
+        return GraphView.createDefaultGraph(this);
     }
 
     @Override
     public Graph getUnionGraph() {
-        return getGraph(Quad.unionGraph);
+        return GraphView.createUnionGraph(this);
     }
 
     private Consumer<Graph> addGraph(final Node name) {
