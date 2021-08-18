@@ -29,7 +29,6 @@ import org.apache.jena.sparql.expr.ExprVar ;
 
 /**
  * Transform that rewrites an algebra into quad form
- *
  */
 public class TransformQuadGraph extends TransformCopy
 {
@@ -50,7 +49,8 @@ public class TransformQuadGraph extends TransformCopy
         // ?? Could just leave the (graph) in place always - just rewrite BGPs.
         boolean noPattern = false ;
 
-        /* One case to consider is when the pattern for the GRAPH
+        /*
+         * One case to consider is when the pattern for the GRAPH
          * statement includes uses the variable inside the GRAPH clause.
          * In this case, we must rename away the inner variable
          * to allow stream execution via index joins,

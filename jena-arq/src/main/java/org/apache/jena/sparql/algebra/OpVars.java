@@ -439,5 +439,20 @@ public class OpVars
         public void visit(OpOrder opOrder) {
             ExprVars.varsMentioned(acc, opOrder.getConditions()) ;
         }
+
+        @Override
+        public void visit(OpExtend opExtend) {
+            visitExtendAssign(opExtend);
+        }
+
+        @Override
+        public void visit(OpAssign opAssign) {
+            visitExtendAssign(opAssign);
+        }
+
+        // The expression side of (extend) and (assign)
+        private void visitExtendAssign(OpExtendAssign op) {
+            op.getVarExprList().forEachExpr((v,e)->ExprVars.varsMentioned(acc, e));
+        }
     }
 }

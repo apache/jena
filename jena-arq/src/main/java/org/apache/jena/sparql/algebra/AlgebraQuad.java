@@ -29,53 +29,53 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarAlloc ;
 
-/** 
- * Helper class for converting an algebra expression into a quad form 
+/**
+ * Helper class for converting an algebra expression into a quad form
  * */
 public class AlgebraQuad
 {
     // Transform to a quad form:
     //   + BGPs go to quad patterns
-    //   + Drop (previous) OpGraph 
-    //   + Paths (complex - simple ones are flatten elsewhere) go to (graph (path ...)) [later: quad paths] 
+    //   + Drop (previous) OpGraph
+    //   + Paths (complex - simple ones are flatten elsewhere) go to (graph (path ...)) [later: quad paths]
 
     // Done as a before/after pair to run the stack of graph nodes for rewrite.
     // Need to be careful of use of a variable in GRAPH ?g { .. } and then use ?g inside the pattern.
-    
+
     private AlgebraQuad() { }
 
     public static Op quadize(Op op)
     {
         final Deque<QuadSlot> stack = new ArrayDeque<>() ;
-        QuadSlot qSlot = new QuadSlot(Quad.defaultGraphNodeGenerated, Quad.defaultGraphNodeGenerated) ;  
+        QuadSlot qSlot = new QuadSlot(Quad.defaultGraphNodeGenerated, Quad.defaultGraphNodeGenerated) ;
         stack.push(qSlot) ;             // Starting condition
-        
+
         OpVisitor before = new Pusher(stack) ;
         OpVisitor after = new Popper(stack) ;
-        
+
         TransformQuadGraph qg = new TransformQuadGraph(stack, before, after) ;
         return Transformer.transformSkipService(qg, null, op, before, after) ;
     }
-    
+
     public static Op quadizeBlock(Op op)
     {
         final Deque<QuadSlot> stack = new ArrayDeque<>() ;
-        QuadSlot qSlot = new QuadSlot(Quad.defaultGraphNodeGenerated, Quad.defaultGraphNodeGenerated) ;  
+        QuadSlot qSlot = new QuadSlot(Quad.defaultGraphNodeGenerated, Quad.defaultGraphNodeGenerated) ;
         stack.push(qSlot) ;             // Starting condition
-        
+
         OpVisitor before = new Pusher(stack) ;
         OpVisitor after = new Popper(stack) ;
-        
+
         TransformQuadBlockGraph qg = new TransformQuadBlockGraph(stack, before, after) ;
         return Transformer.transformSkipService(qg, null, op, before, after) ;
     }
-    
+
     /** This is the record of the transformation.
      *  The rewriteGraphName is the node to put in the graph slot of the quad.
      *  The actualGraphName is the node used in SPARQL.
      *  If they are the same (by ==), the quadrewrite is OK as is.
      *  If they are different (and that means they are variables)
-     *  an assign is done after the execution of the graph pattern block. 
+     *  an assign is done after the execution of the graph pattern block.
      */
     static class QuadSlot
     {
@@ -88,9 +88,9 @@ public class AlgebraQuad
             this.actualGraphName = actualGraphName ;
             this.rewriteGraphName = rewriteGraphName ;
         }
-        @Override public String toString() { return "actualGraphName="+actualGraphName+" rewriteGraphName="+rewriteGraphName ; } 
+        @Override public String toString() { return "actualGraphName="+actualGraphName+" rewriteGraphName="+rewriteGraphName ; }
     }
-    
+
     private static class Pusher extends OpVisitorBase
     {
         Deque<QuadSlot> stack ;
@@ -103,7 +103,7 @@ public class AlgebraQuad
             Node gn = opGraph.getNode() ;
             // Name in rewrite
             Node gnQuad = gn ;
-            
+
             if ( Var.isVar(gn) )
             {
                 Collection<Var> vars = OpVars.mentionedVars(opGraph.getSubOp()) ;
@@ -114,7 +114,7 @@ public class AlgebraQuad
             stack.push(new QuadSlot(gn, gnQuad)) ;
         }
     }
-    
+
     private static class Popper extends OpVisitorBase
     {
         Deque<QuadSlot> stack ;
@@ -122,11 +122,11 @@ public class AlgebraQuad
         @Override
         public void visit(OpGraph opGraph)
         {
-            // The final work is done in the main vistor, 
-            // which is called after the subnode has been 
+            // The final work is done in the main vistor,
+            // which is called after the subnode has been
             // rewritten.
             QuadSlot qs = stack.pop() ;
             //System.out.println("Popper: "+qs.rewriteGraphName) ;
         }
-    }    
+    }
 }
