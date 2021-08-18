@@ -26,7 +26,6 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.MediaType;
-import org.apache.jena.riot.lang.LangJSONLD11;
 import org.apache.jena.util.FileUtils;
 
 /**
@@ -90,20 +89,33 @@ public class RDFLanguages
     /** Alternative constant for {@link #NTRIPLES} */
     public static final Lang NT         = NTRIPLES;
 
-    /** <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
+    /** The standard JSON-LD registration.
+     * <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
     public static final Lang JSONLD     = LangBuilder.create(strLangJSONLD, "application/ld+json")
                                                      .addAltNames("JSONLD")
                                                      .addFileExtensions("jsonld")
                                                      .build();
 
     /*
-     * Short term - have JSON-LD as an additional language for reading only
-     * and requiring an explicit language name {@code RDFParser.forceLang(Lang.JSONLD11)...}
+     * Override for JSON-LD 1.1 - requires an explicit language name
+     * {@code RDFParser.forceLang(Lang.JSONLD11)...}
+     * or use of the file extensions {@code .jsonld11}
      */
     public static final String strLangJSONLD11     = "JSON-LD-11";
     public static final Lang JSONLD11   = LangBuilder.create(strLangJSONLD11, "x/ld-json-11")
                                                      .addAltNames("JSONLD11")
                                                      .addFileExtensions("jsonld11")
+                                                     .build();
+
+    /*
+     * Override for JSON-LD 1.0 - requires an explicit language name
+     * {@code RDFParser.forceLang(Lang.JSONLD10)...}
+     * or use of the file extensions {@code .jsonld10}
+     */
+    public static final String strLangJSONLD10     = "JSON-LD-10";
+    public static final Lang JSONLD10   = LangBuilder.create(strLangJSONLD10, "x/ld-json-10")
+                                                     .addAltNames("JSONLD10")
+                                                     .addFileExtensions("jsonld10")
                                                      .build();
 
     /** <a href="http://www.w3.org/TR/rdf-json/">RDF/JSON</a>.  This is not <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
@@ -188,6 +200,7 @@ public class RDFLanguages
         Lang.TURTLE     = RDFLanguages.TURTLE;
         Lang.TTL        = RDFLanguages.TTL;
         Lang.JSONLD     = RDFLanguages.JSONLD;
+        //Lang.JSONLD10   = RDFLanguages.JSONLD10;
         Lang.JSONLD11   = RDFLanguages.JSONLD11;
         Lang.RDFJSON    = RDFLanguages.RDFJSON;
         Lang.NQUADS     = RDFLanguages.NQUADS;
@@ -207,9 +220,6 @@ public class RDFLanguages
             .addAltNames("tsv")
             .addFileExtensions("tsv")
             .build();
-
-        // JSON-LD 11
-        LangJSONLD11.Sys.init();
     }
     // ----------------------
 
@@ -220,6 +230,7 @@ public class RDFLanguages
         register(N3);
         register(NTRIPLES);
         register(JSONLD);
+        register(JSONLD10);
         register(JSONLD11);
         register(RDFJSON);
         register(TRIG);

@@ -25,7 +25,7 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses(
-{ 
+{
     TestSysRIOT.class
     , TestLangRIOT.class
     , TestSyntaxDetermination.class
@@ -36,10 +36,10 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestParserRegistry.class
     , TestRDFWriter.class
     , TestParseURISchemeBases.class
-    
+
     , TestTurtleWriter.class
     , TestTurtleWriterPretty.class
-    
+
     , TestJsonLDReader.class
     , TestJsonLDWriter.class
 })
