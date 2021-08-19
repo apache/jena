@@ -272,3 +272,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+Jakarta JSON Processing (JSON-P)
+https://eclipse-ee4j.github.io/jsonp/
+
+is licensed under the Eclipse Public License 2.0.
+http://www.eclipse.org/legal/epl-2.0
+
+org.glassfish:jakarta.json
+is licensed under the Eclipse Public License 2.0.
+http://www.eclipse.org/legal/epl-2.0
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
