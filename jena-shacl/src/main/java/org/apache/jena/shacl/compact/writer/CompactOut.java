@@ -70,7 +70,7 @@ public class CompactOut {
     public static void compactArrayString(IndentedWriter out, NodeFormatter nodeFmt, String param, Collection<String> values) {
         out.print(param);
         out.print("=");
-        out.print("(");
+        out.print("[");
         boolean first = true;
         for ( String str : values ) {
             if ( ! first )
@@ -78,7 +78,7 @@ public class CompactOut {
             printQuotedString(out, str);
             first = false;
         }
-        out.print(")");
+        out.print("]");
     }
 
     private static void printQuotedString(IndentedWriter out, String str) {

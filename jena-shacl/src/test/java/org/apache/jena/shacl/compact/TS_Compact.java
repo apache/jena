@@ -26,5 +26,6 @@ import org.junit.runners.Suite;
     TestReadShaclCompact.class
     , TestWriteShaclCompact.class
     , TestReaderWriterShaclCompact.class
+    , TestCompactSyntax.class
 })
 public class TS_Compact {}
