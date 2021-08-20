@@ -45,11 +45,11 @@ public class ModLangParse extends ModBase
 
     private ArgDecl argRDFS     = new ArgDecl(ArgDecl.HasValue, "rdfs");
 
-    private ArgDecl argSyntax     = new ArgDecl(ArgDecl.HasValue, "syntax");
+    private ArgDecl argSyntax   = new ArgDecl(ArgDecl.HasValue, "syntax");
 
-    private  String rdfsVocabFilename   = null;
-    private  Model  rdfsVocab           = null;
-    private  String baseIRI             = null;
+    private String rdfsVocabFilename    = null;
+    private Model  rdfsVocab            = null;
+    private String baseIRI              = null;
     private boolean explicitCheck       = false;
     private boolean explicitNoCheck     = false;
 
