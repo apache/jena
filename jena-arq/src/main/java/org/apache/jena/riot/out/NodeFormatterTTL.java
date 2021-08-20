@@ -276,7 +276,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
                 return true ;
             }
         } else if ( dtBoolean.equals(datatypeURI) ) {
-            // We leave "0" and "1" as-is assumign that if written like that,
+            // We leave "0" and "1" as-is assuming that if written like that,
             // there was a reason.
             if ( lex.equals("true") || lex.equals("false") ) {
                 w.print(lex) ;

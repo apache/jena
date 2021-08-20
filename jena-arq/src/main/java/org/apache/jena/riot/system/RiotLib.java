@@ -105,7 +105,7 @@ public class RiotLib {
         return iri.startsWith(bNodeLabelStart);
     }
 
-    private static final String URI_PREFIX_FIXUP = "local://";
+    private static final String URI_PREFIX_FIXUP = "local:";
 
     // These two must be in-step.
     /**
