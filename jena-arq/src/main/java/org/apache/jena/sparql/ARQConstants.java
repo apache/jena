@@ -189,10 +189,10 @@ public class ARQConstants
     //public static final String allocGlobalVarMarker     = allocVarMarker+globalVar ;    // VarAlloc
     public static final String allocPathVariables       = allocVarAnonMarker+"P" ;      // PathCompiler
     public static final String allocQueryVariables      = allocVarMarker ;              // Query
-    
+
     /** Marker for RDF-star variables */
     public static final String allocVarTripleTerm      = "~";                           // RX, SolverRX
-    
+
     public static final String allocParserAnonVars      = allocVarAnonMarker ;          // LabelToModeMap
     // SSE
     public static final String allocSSEUnamedVars       = "_" ;                         // ParseHandlerPlain - SSE token "?" - legal SPARQL
@@ -220,7 +220,7 @@ public class ARQConstants
     public static final Symbol sysCurrentDataset        = Symbol.create(systemVarNS+"dataset") ;
 
     public static final Symbol sysVarAllocRDFStar       = Symbol.create(systemVarNS+"varAllocRDFStar") ;
-    
+
     /** Context key for the dataset description (if any).
      *  See the <a href="http://www.w3.org/TR/sparql11-protocol">SPARQL protocol</a>.
      *  <p>
@@ -258,13 +258,20 @@ public class ARQConstants
     public static final Symbol sysVarAllocAnon          = Symbol.create(systemVarNS+"namedVarAnon") ;
 
     /** Graphs forming the default graph (List&lt;String&gt;) (Dynamic dataset) */
-    public static final Symbol symDatasetDefaultGraphs     = SystemARQ.allocSymbol("datasetDefaultGraphs") ;
+    public static final Symbol symDatasetDefaultGraphs  = SystemARQ.allocSymbol("datasetDefaultGraphs") ;
 
     /** Graphs forming the named graphs (List&lt;String&gt;) (Dynamic dataset) */
-    public static final Symbol symDatasetNamedGraphs       = SystemARQ.allocSymbol("datasetNamedGraphs") ;
+    public static final Symbol symDatasetNamedGraphs    = SystemARQ.allocSymbol("datasetNamedGraphs") ;
 
     /** Context symbol for a supplied {@link Prologue} (used for text out of result sets). */
-    public static final Symbol symPrologue                 = SystemARQ.allocSymbol("prologue");
+    public static final Symbol symPrologue              = SystemARQ.allocSymbol("prologue");
+
+    /**
+     * Internal use context symbol for an AtomicBoolean to signal that a query has been cancelled.
+     * Used by {@code QueryExecutionMain} and {@code QueryIterProcessBinding}.
+     * JENA-2141.
+     */
+    public static final Symbol symCancelQuery           = SystemARQ.allocSymbol("cancelQuery");
 
     /** Context key for making all SELECT queries have DISTINCT applied, whether stated or not */
     public static final Symbol autoDistinct             = SystemARQ.allocSymbol("autoDistinct") ;
