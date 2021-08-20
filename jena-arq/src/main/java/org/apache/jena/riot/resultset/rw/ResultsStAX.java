@@ -26,7 +26,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -52,31 +51,32 @@ import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.util.JenaXMLInput;
 
 /** Public only for use by XMLOutput (legacy) */
 public class ResultsStAX implements ResultSet, Closeable {
     public static SPARQLResult read(InputStream in, Model model, Context context) {
-        XMLInputFactory xf = XMLInputFactory.newInstance() ;
+        XMLStreamReader xReader;
         try {
-            XMLStreamReader xReader = xf.createXMLStreamReader(in) ;
-            return worker(xReader, model, context);
+            xReader = JenaXMLInput.newXMLStreamReader(in);
         } catch (XMLStreamException e) {
             throw new ResultSetException("Can't initialize StAX parsing engine", e) ;
         } catch (Exception ex) {
             throw new ResultSetException("Failed when initializing the StAX parsing engine", ex) ;
         }
+        return worker(xReader, model, context);
     }
 
     public static SPARQLResult read(Reader in, Model model, Context context) {
-        XMLInputFactory xf = XMLInputFactory.newInstance() ;
+        XMLStreamReader xReader;
         try {
-            XMLStreamReader xReader = xf.createXMLStreamReader(in) ;
-            return worker(xReader, model, context) ;
+            xReader = JenaXMLInput.newXMLStreamReader(in);
         } catch (XMLStreamException e) {
             throw new ResultSetException("Can't initialize StAX parsing engine", e) ;
         } catch (Exception ex) {
             throw new ResultSetException("Failed when initializing the StAX parsing engine", ex) ;
         }
+        return worker(xReader, model, context);
     }
 
     private static SPARQLResult worker(XMLStreamReader xReader, Model model, Context context) {
@@ -108,9 +108,6 @@ public class ResultsStAX implements ResultSet, Closeable {
     private boolean         askResult        = false;
 
     private ResultsStAX(XMLStreamReader reader, Model model, Context context) {
-
-
-
         parser = reader ;
         this.model = model ;
         boolean inputGraphBNodeLabels = (context != null) && context.isTrue(ARQ.inputGraphBNodeLabels);

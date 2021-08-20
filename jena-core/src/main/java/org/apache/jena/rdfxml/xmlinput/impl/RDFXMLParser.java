@@ -23,21 +23,18 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UTFDataFormatException;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.apache.jena.rdfxml.xmlinput.FatalParsingErrorException ;
 import org.apache.jena.rdfxml.xmlinput.SAX2RDF ;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.CharEncoding ;
+import org.apache.jena.util.JenaXMLInput;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 /**
- * 
- * The main parser, other variants of XMLHandler are for more specialized purposes.
+ * The main RDFXML parser, other variants of XMLHandler are for more specialized purposes.
  */
 public class RDFXMLParser extends XMLHandler {
 
@@ -72,12 +69,9 @@ public class RDFXMLParser extends XMLHandler {
         return saxParser;
     }
 
-    private static SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
     public static RDFXMLParser create() {
-        try { 
-            SAXParser saxParser = saxParserFactory.newSAXParser();
-            // Get the encapsulated SAX XMLReader
-            XMLReader xmlreader = saxParser.getXMLReader();
+        try {
+            XMLReader xmlreader = JenaXMLInput.createXMLReader();
             RDFXMLParser a = new RDFXMLParser(xmlreader);
             // Default.
             a.setEncoding("UTF");
@@ -99,13 +93,13 @@ public class RDFXMLParser extends XMLHandler {
         initEncodingChecks(input);
         try {
             saxParser.parse(input);
-        } 
+        }
         catch (UTFDataFormatException e) {
                 generalError(ERR_UTF_ENCODING, e);
-        } 
+        }
         catch (IOException e) {
                 generalError(ERR_GENERIC_IO, e);
-        } 
+        }
         catch (WrappedException wrapped) {
             wrapped.throwMe();
         }

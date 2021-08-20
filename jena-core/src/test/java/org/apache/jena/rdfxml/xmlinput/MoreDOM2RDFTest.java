@@ -27,6 +27,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.util.JenaXMLInput;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -37,38 +39,36 @@ public class MoreDOM2RDFTest extends TestCase implements StatementHandler {
 	public MoreDOM2RDFTest(String name) {
 		super(name);
 	}
-	
-	static private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    // DOM must have namespace information inside it!
-	static { factory.setNamespaceAware(true);}
-	static private DocumentBuilder domParser;
-	
-	static {
-		try {
-		domParser = factory.newDocumentBuilder();
-		}
-		catch (ParserConfigurationException rte){
-			throw new RuntimeException(rte);
-		}
-	}
-	
+
+    static private DocumentBuilder domParser;
+
+    static {
+        try {
+            DocumentBuilderFactory factory = JenaXMLInput.newDocumentBuilderFactory();
+            factory.setNamespaceAware(true);
+            domParser = factory.newDocumentBuilder();
+        }
+        catch (ParserConfigurationException rte){
+            throw new JenaException(rte);
+        }
+    }
 
 	public void testDOMwithARP() throws SAXException, IOException {
-		
+
         InputStream in = new FileInputStream("testing/wg/Class/conclusions001.rdf");
 		Document document = domParser
 				.parse(in,"http://www.example.org/");
-			
-		DOM2Model d2m = DOM2Model.createD2M("http://www.example.org/",null);	
+
+		DOM2Model d2m = DOM2Model.createD2M("http://www.example.org/",null);
 
 		d2m.getHandlers().setStatementHandler(this);
-		
+
 			try {
 		        d2m.load(document);
 			} finally {
 				d2m.close();
 			}
-		
+
          assertEquals("Incorrect number of triples",3,count);
 
 	}
@@ -77,14 +77,14 @@ public class MoreDOM2RDFTest extends TestCase implements StatementHandler {
     @Override
     public void statement(AResource subj, AResource pred, AResource obj) {
         count++;
-        
+
     }
 
 
     @Override
     public void statement(AResource subj, AResource pred, ALiteral lit) {
         count++;
-        
+
     }
 
 }
