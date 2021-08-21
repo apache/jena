@@ -19,8 +19,11 @@
 package org.apache.jena.sparql.engine.iterator ;
 
 import java.util.NoSuchElementException ;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.query.QueryCancelledException;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -34,20 +37,28 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 public abstract class QueryIterProcessBinding extends QueryIter1 {
     /** Process the binding - return null for "not accept".
      * Subclasses may return a different Binding to the argument and
-     * the result is the returned Binding.  
+     * the result is the returned Binding.
      */
     abstract public Binding accept(Binding binding) ;
 
     private Binding nextBinding ;
+    private final AtomicBoolean signalCancel ;
 
     public QueryIterProcessBinding(QueryIterator qIter, ExecutionContext context) {
         super(qIter, context) ;
         nextBinding = null ;
+        AtomicBoolean signal;
+        try {
+            signal = context.getContext().get(ARQConstants.symCancelQuery);
+        } catch(Exception ex) {
+            signal = null;
+        }
+        signalCancel = signal;
     }
 
     /**
      * Are there any more acceptable objects.
-     * 
+     *
      * @return true if there is another acceptable object.
      */
     @Override
@@ -64,6 +75,7 @@ public abstract class QueryIterProcessBinding extends QueryIter1 {
             throw new ARQInternalErrorException(Lib.className(this) + ": Null iterator") ;
 
         while (getInput().hasNext()) {
+            checkCancelled();
             // Skip forward until a binding to return is found.
             Binding input = getInput().nextBinding() ;
             Binding output = accept(input) ;
@@ -76,9 +88,16 @@ public abstract class QueryIterProcessBinding extends QueryIter1 {
         return false ;
     }
 
+    private final void checkCancelled() {
+        if ( signalCancel != null && signalCancel.get() ) {
+            this.cancel();
+            throw new QueryCancelledException();
+        }
+    }
+
     /**
      * The next acceptable object in the iterator.
-     * 
+     *
      * @return The next acceptable object.
      */
     @Override

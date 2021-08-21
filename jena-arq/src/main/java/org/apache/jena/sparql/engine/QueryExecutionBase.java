@@ -451,9 +451,18 @@ public class QueryExecutionBase implements QueryExecution
     }
 
     class TimeoutCallback implements Runnable {
+        private final AtomicBoolean cancelSignal;
+
+        public TimeoutCallback(AtomicBoolean cancelSignal) {
+            this.cancelSignal = cancelSignal;
+        }
+
         @Override
         public void run() {
             synchronized (lockTimeout) {
+                if ( cancelSignal != null )
+                    cancelSignal.set(true);
+
                 // Abort query if and only if we are the expected callback.
                 // If the first row has appeared, and we are removing timeout1
                 // callback,
@@ -484,7 +493,7 @@ public class QueryExecutionBase implements QueryExecution
                 // So nearly not needed.
                 synchronized(lockTimeout)
                 {
-                    TimeoutCallback callback = new TimeoutCallback() ;
+                    TimeoutCallback callback = new TimeoutCallback(null) ;
                     expectedCallback.set(callback) ;
                     // Lock against calls of .abort() or of timeout1Callback.
 
@@ -548,10 +557,22 @@ public class QueryExecutionBase implements QueryExecution
             return;
         }
 
+        // JENA-2140 - the timeout can go off while building the query iterator structure.
+        // In this case, use a signal passed through the context.
+        // We don't know if getPlan().iterator() does a lot of work or not
+        // (ideally it shouldn't start executing the query but in some sub-systems
+        // it might be necessary)
+        //
+        // This applies to the time to first result because to get the first result, the
+        // queryIterator must have been built. So it does not apply for the second
+        // stage of N,-1 or N,M.
+
         if ( !isTimeoutSet(timeout1) && isTimeoutSet(timeout2) ) {
             // Case -1,N
             // Single overall timeout.
-            TimeoutCallback callback = new TimeoutCallback() ;
+            AtomicBoolean cancelSignal = new AtomicBoolean(false);
+            context.set(ARQConstants.symCancelQuery, cancelSignal);
+            TimeoutCallback callback = new TimeoutCallback(cancelSignal) ;
             expectedCallback.set(callback) ;
             timeout2Alarm = alarmClock.add(callback, timeout2) ;
             // Start the query.
@@ -566,13 +587,14 @@ public class QueryExecutionBase implements QueryExecution
         //   Whether timeout2 is set is determined by QueryIteratorTimer2
         //   Subcase 2: ! isTimeoutSet(timeout2)
         // Add timeout to first row.
-        TimeoutCallback callback = new TimeoutCallback() ;
+
+        AtomicBoolean cancelSignal = new AtomicBoolean(false);
+        context.set(ARQConstants.symCancelQuery, cancelSignal);
+
+        TimeoutCallback callback = new TimeoutCallback(cancelSignal) ;
         timeout1Alarm = alarmClock.add(callback, timeout1) ;
         expectedCallback.set(callback) ;
 
-        // We don't know if getPlan().iterator() does a lot of work or not
-        // (ideally it shouldn't start executing the query but in some sub-systems
-        // it might be necessary)
         queryIterator = getPlan().iterator() ;
 
         // Add the timeout1->timeout2 resetter wrapper.
