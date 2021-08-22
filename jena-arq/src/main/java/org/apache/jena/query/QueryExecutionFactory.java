@@ -39,16 +39,16 @@ import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.util.Context ;
 
 /** Place to make QueryExecution objects from Query objects or a string. */
- 
+
 public class QueryExecutionFactory
 {
     protected QueryExecutionFactory() {}
-    
+
     // ---------------- Query
-    
+
     /**
      * Create a QueryExecution
-     * 
+     *
      * @param query Query
      * @return QueryExecution
      */
@@ -59,7 +59,7 @@ public class QueryExecutionFactory
 
     /**
      * Create a QueryExecution
-     * 
+     *
      * @param queryStr Query string
      * @return QueryExecution
      */
@@ -70,7 +70,7 @@ public class QueryExecutionFactory
 
     /**
      * Create a QueryExecution
-     * 
+     *
      * @param queryStr Query string
      * @param syntax Query syntax
      * @return QueryExecution
@@ -79,12 +79,12 @@ public class QueryExecutionFactory
         checkArg(queryStr) ;
         return create(makeQuery(queryStr, syntax)) ;
     }
-    
+
     // ---------------- Query + Dataset
-    
+
     /**
      * Create a QueryExecution to execute over the Dataset.
-     * 
+     *
      * @param query Query
      * @param dataset Target of the query
      * @return QueryExecution
@@ -93,10 +93,10 @@ public class QueryExecutionFactory
         // checkArg(dataset) ; // Allow null
         return make(query, dataset) ;
     }
-    
+
     /**
      * Create a QueryExecution to execute over the {@link DatasetGraph}.
-     * 
+     *
      * @param query Query
      * @param datasetGraph Target of the query
      * @return QueryExecution
@@ -106,9 +106,9 @@ public class QueryExecutionFactory
         Objects.requireNonNull(datasetGraph, "DatasetGraph is null") ;
         return make(query, datasetGraph) ;
     }
-    
+
     /** Create a QueryExecution to execute over the Dataset.
-     * 
+     *
      * @param queryStr     Query string
      * @param dataset      Target of the query
      * @return QueryExecution
@@ -120,7 +120,7 @@ public class QueryExecutionFactory
     }
 
     /** Create a QueryExecution to execute over the Dataset.
-     * 
+     *
      * @param queryStr     Query string
      * @param syntax       Query language
      * @param dataset      Target of the query
@@ -133,9 +133,9 @@ public class QueryExecutionFactory
     }
 
     // ---------------- Query + Model
-    
+
     /** Create a QueryExecution to execute over the Model.
-     * 
+     *
      * @param query     Query
      * @param model     Target of the query
      * @return QueryExecution
@@ -147,7 +147,7 @@ public class QueryExecutionFactory
     }
 
     /** Create a QueryExecution to execute over the Model.
-     * 
+     *
      * @param queryStr     Query string
      * @param model     Target of the query
      * @return QueryExecution
@@ -159,7 +159,7 @@ public class QueryExecutionFactory
     }
 
     /** Create a QueryExecution to execute over the Model.
-     * 
+     *
      * @param queryStr     Query string
      * @param lang         Query language
      * @param model        Target of the query
@@ -172,9 +172,9 @@ public class QueryExecutionFactory
     }
 
     /** Create a QueryExecution to execute over the Model.
-     * 
+     *
      * @param query         Query string
-     * @param initialBinding    Any initial binding of variables      
+     * @param initialBinding    Any initial binding of variables
      * @return QueryExecution
      */
     static public QueryExecution create(Query query, QuerySolution initialBinding) {
@@ -186,7 +186,7 @@ public class QueryExecutionFactory
     }
 
     /** Create a QueryExecution given some initial values of variables.
-     * 
+     *
      * @param queryStr          QueryString
      * @param initialBinding    Any initial binding of variables
      * @return QueryExecution
@@ -197,7 +197,7 @@ public class QueryExecutionFactory
     }
 
     /** Create a QueryExecution given some initial values of variables.
-     * 
+     *
      * @param queryStr          QueryString
      * @param syntax            Query language syntax
      * @param initialBinding    Any initial binding of variables
@@ -208,9 +208,9 @@ public class QueryExecutionFactory
         return create(makeQuery(queryStr, syntax), initialBinding) ;
     }
 
-    /** Create a QueryExecution to execute over the Model, 
+    /** Create a QueryExecution to execute over the Model,
      * given some initial values of variables.
-     * 
+     *
      * @param query            Query
      * @param model            Target of the query
      * @param initialBinding    Any initial binding of variables
@@ -220,10 +220,10 @@ public class QueryExecutionFactory
         checkArg(model) ;
         return create(query, DatasetFactory.wrap(model), initialBinding) ;
     }
-    
-    /** Create a QueryExecution to execute over the Model, 
+
+    /** Create a QueryExecution to execute over the Model,
      * given some initial values of variables.
-     * 
+     *
      * @param queryStr         Query string
      * @param model            Target of the query
      * @param initialBinding    Any initial binding of variables
@@ -234,10 +234,10 @@ public class QueryExecutionFactory
         checkArg(model) ;
         return create(makeQuery(queryStr), model, initialBinding) ;
     }
-    
-    /** Create a QueryExecution to execute over the Model, 
+
+    /** Create a QueryExecution to execute over the Model,
      * given some initial values of variables.
-     * 
+     *
      * @param queryStr         Query string
      * @param syntax           Query language
      * @param model            Target of the query
@@ -248,9 +248,9 @@ public class QueryExecutionFactory
         checkArg(queryStr) ;
         return create(makeQuery(queryStr, syntax), model, initialBinding) ;
     }
-    
+
     /** Create a QueryExecution over a Dataset given some initial values of variables.
-     * 
+     *
      * @param query            Query
      * @param dataset          Target of the query
      * @param initialBinding    Any initial binding of variables
@@ -265,7 +265,7 @@ public class QueryExecutionFactory
     }
 
     /** Create a QueryExecution over a Dataset given some initial values of variables.
-     * 
+     *
      * @param queryStr         Query string
      * @param dataset          Target of the query
      * @param initialBinding    Any initial binding of variables
@@ -277,7 +277,7 @@ public class QueryExecutionFactory
     }
 
     /** Create a QueryExecution over a Dataset given some initial values of variables.
-     * 
+     *
      * @param queryStr         Query string
      * @param dataset          Target of the query
      * @param initialBinding    Any initial binding of variables
@@ -289,101 +289,101 @@ public class QueryExecutionFactory
     }
 
     // ---------------- Remote query execution
-    
+
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service   URL of the remote service 
-     * @param query     Query string to execute 
+     * @param service   URL of the remote service
+     * @param query     Query string to execute
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, String query) {
         return sparqlService(service, query, (HttpClient)null) ;
     }
-    
+
     static public QueryExecution sparqlService(String service, String query, HttpClient client) {
         return sparqlService(service, query, client, null);
     }
         /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service   URL of the remote service 
-     * @param query     Query string to execute 
+     * @param service   URL of the remote service
+     * @param query     Query string to execute
      * @param client    HTTP client
      * @param httpContext HTTP Context
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, String query, HttpClient client, HttpContext httpContext) {
         checkNotNull(service, "URL for service is null") ;
         checkArg(query) ;
         return sparqlService(service, QueryFactory.create(query), client) ;
     }
-    
+
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service 
+     * @param service       URL of the remote service
      * @param query         Query string to execute
      * @param defaultGraph  URI of the default graph
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, String query, String defaultGraph) {
         return sparqlService(service, query, defaultGraph, null) ;
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service 
+     * @param service       URL of the remote service
      * @param query         Query string to execute
      * @param defaultGraph  URI of the default graph
      * @param client        HTTP client
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, String query, String defaultGraph, HttpClient client) {
         return sparqlService(service, query, defaultGraph, client, null) ;
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service 
+     * @param service       URL of the remote service
      * @param query         Query string to execute
      * @param defaultGraph  URI of the default graph
      * @param client        HTTP client
      * @param httpContext   HTTP Context
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, String query, String defaultGraph, HttpClient client, HttpContext httpContext) {
         checkNotNull(service, "URL for service is null") ;
         // checkNotNull(defaultGraph, "IRI for default graph is null") ;
         checkArg(query) ;
         return sparqlService(service, QueryFactory.create(query), defaultGraph, client, httpContext) ;
     }
-    
+
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service           URL of the remote service 
+     * @param service           URL of the remote service
      * @param query             Query string to execute
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
         return sparqlService(service, query, defaultGraphURIs, namedGraphURIs, null) ;
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service           URL of the remote service 
+     * @param service           URL of the remote service
      * @param query             Query string to execute
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
      * @param client            HTTP client
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs,
                                                HttpClient client) {
         return sparqlService(service, query, defaultGraphURIs, namedGraphURIs, client, null) ;
     }
-    
+
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service           URL of the remote service 
+     * @param service           URL of the remote service
      * @param query             Query string to execute
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
      * @param client            HTTP client
      * @param httpContext HTTP Context
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs,
                                                HttpClient client, HttpContext httpContext) {
         checkNotNull(service, "URL for service is null") ;
@@ -392,65 +392,65 @@ public class QueryExecutionFactory
         checkArg(query) ;
         return sparqlService(service, QueryFactory.create(query), defaultGraphURIs, namedGraphURIs, client, httpContext) ;
     }
-    
+
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service   URL of the remote service 
-     * @param query     Query to execute 
+     * @param service   URL of the remote service
+     * @param query     Query to execute
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, Query query) {
         return sparqlService(service, query, (HttpClient)null) ;
     }
-    
+
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service   URL of the remote service 
-     * @param query     Query to execute 
+     * @param service   URL of the remote service
+     * @param query     Query to execute
      * @param client    HTTP client
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, Query query, HttpClient client) {
         checkNotNull(service, "URL for service is null") ;
         checkArg(query) ;
         return createServiceRequest(service, query, client) ;
     }
-    
+
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service   URL of the remote service 
-     * @param query     Query to execute 
+     * @param service   URL of the remote service
+     * @param query     Query to execute
      * @param client    HTTP client
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, Query query, HttpClient client, HttpContext httpContext) {
         checkNotNull(service, "URL for service is null") ;
         checkArg(query) ;
         return createServiceRequest(service, query, client, httpContext) ;
     }
-    
+
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service           URL of the remote service 
+     * @param service           URL of the remote service
      * @param query             Query to execute
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
         return sparqlService(service, query, defaultGraphURIs, namedGraphURIs, null, null) ;
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service           URL of the remote service 
+     * @param service           URL of the remote service
      * @param query             Query to execute
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
      * @param client            HTTP client
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs, HttpClient client) {
         return sparqlService(service, query, defaultGraphURIs, namedGraphURIs, client, null);
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service           URL of the remote service 
+     * @param service           URL of the remote service
      * @param query             Query to execute
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
@@ -473,33 +473,33 @@ public class QueryExecutionFactory
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service 
+     * @param service       URL of the remote service
      * @param query         Query to execute
      * @param defaultGraph  URI of the default graph
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, Query query, String defaultGraph) {
         return sparqlService(service, query, defaultGraph, null) ;
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service 
+     * @param service       URL of the remote service
      * @param query         Query to execute
      * @param defaultGraph  URI of the default graph
      * @param client        HTTP client
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, Query query, String defaultGraph, HttpClient client) {
        return sparqlService(service, query, defaultGraph, client, null);
     }
-    
+
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service 
+     * @param service       URL of the remote service
      * @param query         Query to execute
      * @param defaultGraph  URI of the default graph
      * @param client        HTTP client
      * @return QueryExecution
-     */ 
+     */
     static public QueryExecution sparqlService(String service, Query query, String defaultGraph, HttpClient client, HttpContext httpContext) {
         checkNotNull(service, "URL for service is null") ;
         // checkNotNull(defaultGraph, "IRI for default graph is null") ;
@@ -510,7 +510,7 @@ public class QueryExecutionFactory
     }
     /** Create a service request for remote execution over HTTP.  The returned class,
      * {@link QueryEngineHTTP},
-     * allows various HTTP specific parameters to be set. 
+     * allows various HTTP specific parameters to be set.
      * @param service Endpoint URL
      * @param query Query
      * @return Remote Query Engine
@@ -521,10 +521,10 @@ public class QueryExecutionFactory
 
     /** Create a service request for remote execution over HTTP.  The returned class,
      * {@link QueryEngineHTTP},
-     * allows various HTTP specific parameters to be set. 
+     * allows various HTTP specific parameters to be set.
      * @param service Endpoint URL
      * @param query Query
-     * @param client HTTP client 
+     * @param client HTTP client
      * @return Remote Query Engine
      */
     static public QueryEngineHTTP createServiceRequest(String service, Query query, HttpClient client) {
@@ -534,10 +534,10 @@ public class QueryExecutionFactory
 
     /** Create a service request for remote execution over HTTP.  The returned class,
      * {@link QueryEngineHTTP},
-     * allows various HTTP specific parameters to be set. 
+     * allows various HTTP specific parameters to be set.
      * @param service Endpoint URL
      * @param query Query
-     * @param client HTTP client 
+     * @param client HTTP client
      * @param httpContext HTTP Context
      * @return Remote Query Engine
      */
@@ -547,7 +547,7 @@ public class QueryExecutionFactory
     }
 
     // -----------------
-    
+
     static public Plan createPlan(Query query, DatasetGraph dataset, Binding input, Context context) {
         return makePlan(query, dataset, input, context) ;
     }
@@ -569,14 +569,14 @@ public class QueryExecutionFactory
         if ( context == null )
             context = new Context(ARQ.getContext()) ;
         if ( input == null )
-            input = BindingRoot.create() ; 
+            input = BindingRoot.create() ;
         QueryEngineFactory f = QueryEngineRegistry.get().find(query, dataset, context);
         if ( f == null )
             return null ;
         return f.create(query, dataset, input, context) ;
     }
     // ---------------- Internal routines
-    
+
     static private Query makeQuery(String queryStr) {
         return QueryFactory.create(queryStr) ;
     }
@@ -584,7 +584,8 @@ public class QueryExecutionFactory
     static private Query makeQuery(String queryStr, Syntax syntax) {
         return QueryFactory.create(queryStr, syntax) ;
     }
-    
+
+    @SuppressWarnings("deprecation")
     static protected QueryExecution make(Query query) {
         return QueryExecution.create().query(query).build();
     }
@@ -595,12 +596,12 @@ public class QueryExecutionFactory
         Graph g = unwrap(graph);
         if ( g instanceof GraphView ) {
             GraphView gv = (GraphView)g;
-            // Copy context of the storage dataset to the wrapper dataset. 
+            // Copy context of the storage dataset to the wrapper dataset.
             dataset.getContext().putAll(gv.getDataset().getContext());
         }
         return make(query, dataset);
     }
-    
+
     private static Graph unwrap(Graph graph) {
         for(;;) {
             if ( graph instanceof GraphWrapper )
@@ -616,13 +617,14 @@ public class QueryExecutionFactory
         return make(query, dsg);
     }
 
+    @SuppressWarnings("deprecation")
     protected static QueryExecution make(Query query, DatasetGraph datasetGraph)
     { return QueryExecution.create().query(query).dataset(datasetGraph).build(); }
 
     static private <X> void checkNotNull(X obj, String msg) {
         Objects.requireNonNull(obj, msg);
     }
-    
+
     static private void checkArg(Model model)
     { checkNotNull(model, "Model is a null pointer") ; }
 

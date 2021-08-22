@@ -303,6 +303,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
      * @param dataset
      * @return QueryExecution
      */
+    @SuppressWarnings("deprecation")
     protected QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph dataset) {
         return QueryExecution.create().query(query).dataset(dataset).context(action.getContext()).build();
     }

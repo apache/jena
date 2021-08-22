@@ -30,13 +30,17 @@ import org.apache.jena.sparql.engine.QueryExecutionBase;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.util.Context;
 
-/** Query Execution builder. */
+/**
+ * Query Execution builder.
+ * @deprecated Avoid. This class will be renamed {@code QueryExecDatasetBuilder} and replaced with a model/dataset level builder.
+ */
+@Deprecated
 public class QueryExecutionBuilder {
 
     private DatasetGraph dataset = null;
     private Query        query   = null;
     private Context      context = null;
-    private Binding      binding = null;    
+    private Binding      binding = null;
 
     public static QueryExecutionBuilder create() {
         return new QueryExecutionBuilder();
@@ -53,7 +57,7 @@ public class QueryExecutionBuilder {
         this.query = QueryFactory.create(queryString);
         return this;
     }
-    
+
     public QueryExecutionBuilder dataset(DatasetGraph dsg) {
         this.dataset = dsg;
         return this;
@@ -79,7 +83,7 @@ public class QueryExecutionBuilder {
 
         query.setResultVars();
         Context cxt;
-        
+
         if ( context == null ) {
             // Default is to take the global context, the copy it and merge in the dataset context.
             // If a context is specified by context(Context), use that as given.
