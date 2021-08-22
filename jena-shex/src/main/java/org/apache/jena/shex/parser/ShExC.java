@@ -87,7 +87,7 @@ public class ShExC {
     private static Reader setReader(InputStream input) {
         Reader r = IO.asUTF8(input);
         // If not buffered, add a buffering layer.
-        if (  ! ( input instanceof BufferedInputStream ) ) {
+        if ( ! ( input instanceof BufferedInputStream ) ) {
             // Javacc reads in chunks using "read(char[])"
             // so the cost of synchronized on "int read()" is negligible.
             // Convert to Java chars in large chunks.
@@ -103,7 +103,7 @@ public class ShExC {
      * @return ShexSchema
      */
     public static ShexSchema parse(StringReader input, String baseURI) {
-        try ( input ) {
+        try ( StringReader in = input ) {
             ShExJavacc parser = new ShExJavacc(input);
             return parse$(parser, null, baseURI, null);
         }
