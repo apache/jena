@@ -33,7 +33,7 @@ public class SolverLib {
 
     /**
      * Create an abortable iterator, storing it in the killList.
-     * Just return the input iterator if kilList is null.
+     * Just return the input iterator if killList is null.
      */
     public static <T> Iterator<T> makeAbortable(Iterator<T> iter, List<Abortable> killList) {
         if ( killList == null )

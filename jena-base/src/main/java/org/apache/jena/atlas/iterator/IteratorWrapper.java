@@ -20,9 +20,7 @@ package org.apache.jena.atlas.iterator;
 
 import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.Closeable;
-
-public class IteratorWrapper<T> implements Iterator<T>, Closeable {
+public class IteratorWrapper<T> implements IteratorCloseable<T> {
     protected final Iterator<T> iterator;
 
     protected Iterator<T> get() {

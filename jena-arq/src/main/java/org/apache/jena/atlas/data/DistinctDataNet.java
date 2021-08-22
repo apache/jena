@@ -20,15 +20,11 @@ package org.apache.jena.atlas.data;
 
 import java.io.File ;
 import java.io.FileNotFoundException ;
-import java.util.ArrayList ;
-import java.util.Comparator ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.NoSuchElementException ;
+import java.util.*;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.atlas.lib.FileOps ;
 
 
@@ -42,12 +38,12 @@ import org.apache.jena.atlas.lib.FileOps ;
 public class DistinctDataNet<E> extends DistinctDataBag<E>
 {
     protected File firstSpillFile;
-    
+
     public DistinctDataNet(ThresholdPolicy<E> policy, SerializationFactory<E> serializerFactory, Comparator<E> comparator)
     {
         super(policy, serializerFactory, comparator) ;
     }
-    
+
     /**
      * @return true if the item added is known to be distinct.
      */
@@ -57,7 +53,7 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
         super.add(item) ;
         return !spilled && size > s ;
     }
-    
+
     @Override
     protected void registerSpillFile(File spillFile)
     {
@@ -71,7 +67,7 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
             super.registerSpillFile(spillFile);
         }
     }
-    
+
     @Override
     protected void deleteSpillFiles()
     {
@@ -82,7 +78,7 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
             firstSpillFile = null;
         }
     }
-    
+
     // Used by the .iterator() method
     @Override
     protected List<File> getSpillFiles()
@@ -94,13 +90,13 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
         }
         return toReturn;
     }
-    
+
     // TODO: Will be used by the .netIterator() method
     protected List<File> getNetSpillFiles()
     {
         return super.getSpillFiles();
     }
-    
+
     /**
      * Returns an iterator to all additional items that are distinct but were
      * not reported to be so at the time {@link #netAdd(Object)} was invoked.
@@ -115,7 +111,7 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
         {
             return Iter.nullIterator();
         }
-        
+
         Iterator<E> blacklist;
         try
         {
@@ -125,37 +121,37 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
         {
             throw new AtlasException("Cannot find the first spill file", e);
         }
-        
+
         // TODO: Improve performance by making the superclass .iterator() use getNetSpillFiles()
         // instead of getSpillFiles() so it doesn't contain the contents of the first file
         Iterator<E> rest = super.iterator();
-        
+
         SortedDiffIterator<E> sdi = SortedDiffIterator.create(rest, blacklist, comparator);
         registerCloseableIterator(sdi);
-        
+
         return sdi;
     }
-    
+
     /**
      * Produces the set difference of two sorted set sequences.
      */
-    protected static class SortedDiffIterator<T> implements Iterator<T>, Closeable
+    protected static class SortedDiffIterator<T> implements IteratorCloseable<T>
     {
         private final Iterator<T> grayList;
         private final Iterator<T> blackList;
         private final Comparator<? super T> comp;
-        
+
         private boolean finished = false;
         private boolean blackSlotFull = false;
         private T white;
         private T black;
-        
+
         /**
          * Produces the set difference of two sorted set sequences using the natural ordering of the items
          * (null items will always be considered less than any other items).
-         * 
+         *
          * @param first An Iterator&lt;T&gt; whose elements that are not also in second will be returned.
-         * @param second An Iterator&lt;T&gt; whose elements that also occur in the first sequence will cause those elements to be removed from the returned sequence. 
+         * @param second An Iterator&lt;T&gt; whose elements that also occur in the first sequence will cause those elements to be removed from the returned sequence.
          */
         public static <S extends Comparable<? super S>> SortedDiffIterator<S> create(Iterator<S> first, Iterator<S> second)
         {
@@ -171,40 +167,40 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
                 }
             });
         }
-        
+
         /**
          * Produces the set difference of two sorted set sequences using the specified comparator.
-         * 
+         *
          * @param first An Iterator&lt;T&gt; whose elements that are not also in second will be returned.
          * @param second An Iterator&lt;T&gt; whose elements that also occur in the first sequence will cause those elements to be removed from the returned sequence.
-         * @param comparator The comparator used to compare the elements from each iterator. 
+         * @param comparator The comparator used to compare the elements from each iterator.
          */
         public static <S> SortedDiffIterator<S> create(Iterator<S> first, Iterator<S> second, Comparator<? super S> comparator)
         {
             return new SortedDiffIterator<>(first, second, comparator);
         }
-        
-        
+
+
         private SortedDiffIterator(Iterator<T> first, Iterator<T> second, Comparator<? super T> comparator)
         {
             this.grayList = first;
             this.blackList = second;
             this.comp = comparator;
-            
+
             // Prime the white item
             fill();
         }
-        
+
         private void fill()
         {
             if (finished) return;
-            
+
             if (!grayList.hasNext())
             {
                 close();
                 return;
             }
-            
+
             if (!blackSlotFull)
             {
                 if (!blackList.hasNext())
@@ -212,11 +208,11 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
                     white = grayList.next();
                     return;
                 }
-                
+
                 black = blackList.next();
                 blackSlotFull = true;
             }
-            
+
             // Outer loop advances white
             while (true)
             {
@@ -226,11 +222,11 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
                     return;
                 }
                 white = grayList.next();
-                
+
                 int cmp = comp.compare(white, black);
-                
+
                 if (cmp < 0) return;
-                
+
                 // Inner loop advances black until white is less than or equal to it
                 while (cmp > 0)
                 {
@@ -242,12 +238,12 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
                     }
                     black = blackList.next();
                     cmp = comp.compare(white, black);
-                    
+
                     if (cmp < 0) return;
                 }
             }
         }
-        
+
         @Override
         public boolean hasNext()
         {
@@ -268,7 +264,7 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
         {
             throw new UnsupportedOperationException("SortedDiffIterator.remove");
         }
-        
+
         @Override
         public void close()
         {

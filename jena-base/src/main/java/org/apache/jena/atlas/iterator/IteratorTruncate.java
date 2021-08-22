@@ -43,7 +43,6 @@ public class IteratorTruncate<T> extends IteratorSlotted<T> {
 
     @Override
     protected T moveToNext() {
-        // Add IteratorSlotted.inspect(element).
         if ( ! iter.hasNext() )
             return null ;
         T item = iter.next() ;

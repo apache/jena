@@ -36,7 +36,7 @@ public class IteratorFlatMap<IN,OUT> implements Iterator<OUT>, Closeable {
 
     public IteratorFlatMap(Iterator<IN> iter, Function<IN, Iterator<OUT>> mapper) {
         this.input = iter;
-        this.mapper = mapper ;
+        this.mapper = mapper;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class IteratorFlatMap<IN,OUT> implements Iterator<OUT>, Closeable {
             throw new NoSuchElementException();
         return current.next();
     }
-    
+
     @Override
     public void close() {
         if ( current != null )

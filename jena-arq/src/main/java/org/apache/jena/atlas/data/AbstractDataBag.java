@@ -34,6 +34,7 @@ import java.util.List ;
 import java.util.Objects;
 import java.util.UUID ;
 
+import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.FileOps ;
 
@@ -44,13 +45,13 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
 {
     private final List<File> spillFiles = new ArrayList<>();
     protected Collection<E> memory = new ArrayList<>();
-    
+
     private final List<WeakReference<Closeable>> closeableIterators = new ArrayList<>();
-    
+
     // Total size, including tuples on disk.
     protected long size = 0;
-    
-    
+
+
     public boolean isEmpty()
     {
         return (size == 0);
@@ -67,10 +68,10 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
     {
         add(item);
     }
-    
+
     /**
      * Returns a handle to a temporary file.  Does not actually create the file on disk.
-     * 
+     *
      * TODO Improve this by getting the directory from a config file
      */
     protected File getNewTemporaryFile()
@@ -79,7 +80,7 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
         File tmpFile = new File(sysTempDir, "DataBag-" + UUID.randomUUID().toString() + ".tmp") ;
         return tmpFile ;
     }
-    
+
     /**
      * Register the spill file handle for use later in the iterator.
      */
@@ -87,18 +88,18 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
     {
         spillFiles.add(spillFile);
     }
-    
+
     protected static OutputStream getOutputStream(File file) throws FileNotFoundException
     {
         return new BufferedOutputStream(new FileOutputStream(file));
     }
-    
+
     protected static InputStream getInputStream(File file) throws FileNotFoundException
     {
         return new BufferedInputStream(new FileInputStream(file));
     }
-    
-    /** 
+
+    /**
      * Get a stream to spill contents to.  The file that backs this stream will be registered in the spillFiles array.
      * @return stream to write tuples to
      */
@@ -107,21 +108,21 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
         File outputFile = getNewTemporaryFile();
         OutputStream toReturn = getOutputStream(outputFile);
         registerSpillFile(outputFile);
-        
+
         return toReturn;
     }
-    
+
     /**
      * Register an iterator to be closed when this data bag is closed.  The iterator
      * is held via a weak reference, and is meant as a backup if the user does not
      * close it themselves.
      * @param c the Closeable iterator to register
      */
-    protected void registerCloseableIterator(Closeable c)
+    protected void registerCloseableIterator(IteratorCloseable<?> c)
     {
         closeableIterators.add(new WeakReference<>(c)) ;
     }
-    
+
     /**
      * Users should either exhaust or close any iterators they get, but if they don't we
      * should forcibly close them so that we can delete any temporary files.  Any further
@@ -131,12 +132,12 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
     {
         closeableIterators.stream().map(WeakReference::get).filter(Objects::nonNull).forEach(Closeable::close);
     }
-    
+
     protected List<File> getSpillFiles()
     {
         return spillFiles;
     }
-    
+
     protected void deleteSpillFiles()
     {
         for (File file : spillFiles)
@@ -145,7 +146,7 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
         }
         spillFiles.clear();
     }
-    
+
     @Override
     protected void finalize() throws Throwable
     {

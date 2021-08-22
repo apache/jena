@@ -18,94 +18,94 @@
 
 package org.apache.jena.atlas.iterator;
 
-import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.lib.Lib ;
 
 /** An Iterator with a one slot lookahead. */
-public abstract class IteratorSlotted<T> implements Iterator<T>
-{
-    private boolean finished = false ;
-    private boolean slotIsSet = false ;
-    private T slot = null ;
+public abstract class IteratorSlotted<T> implements IteratorCloseable<T> {
+    private boolean finished = false;
+    private boolean slotIsSet = false;
+    private T slot = null;
 
-    protected IteratorSlotted() { }
+    protected IteratorSlotted() {}
 
     // -------- The contract with the subclasses
 
     /** Implement this, not next() or nextBinding() */
-    protected abstract T moveToNext() ;
+    protected abstract T moveToNext();
 
     /** Can return true here then null from moveToNext() to indicate end. */
-    protected abstract boolean hasMore() ;
+    protected abstract boolean hasMore();
     // alter add a flag to say if null is a legal value.
 
     /** Close the iterator. */
-    protected void closeIterator() { }
+    protected void closeIterator() {}
 
     // -------- The contract with the subclasses
 
-    protected boolean isFinished() { return finished ; }
-
-    @Override
-    public final boolean hasNext()
-    {
-        if ( finished )
-            return false ;
-        if ( slotIsSet )
-            return true ;
-
-        boolean r = hasMore() ;
-        if ( ! r )
-        {
-            close() ;
-            return false ;
-        }
-
-        slot = moveToNext() ;
-        if ( slot == null ) {
-            close() ;
-            return false ;
-        }
-
-        slotIsSet = true ;
-        return true ;
+    protected boolean isFinished() {
+        return finished;
     }
 
-    /** final - autoclose and registration relies on it - implement moveToNextBinding() */
     @Override
-    public final T next()
-    {
-        if ( ! hasNext() ) throw new NoSuchElementException(Lib.className(this)) ;
+    public final boolean hasNext() {
+        if ( finished )
+            return false;
+        if ( slotIsSet )
+            return true;
 
-        T obj = slot ;
-        slot = null ;
-        slotIsSet = false ;
-        return obj ;
+        boolean r = hasMore();
+        if ( !r ) {
+            close();
+            return false;
+        }
+
+        slot = moveToNext();
+        if ( slot == null ) {
+            close();
+            return false;
+        }
+
+        slotIsSet = true;
+        return true;
+    }
+
+    /**
+     * final - autoclose and registration relies on it - implement
+     * moveToNextBinding()
+     */
+    @Override
+    public final T next() {
+        if ( !hasNext() )
+            throw new NoSuchElementException(Lib.className(this));
+
+        T obj = slot;
+        slot = null;
+        slotIsSet = false;
+        return obj;
     }
 
     /** Look at the next element - returns null when there is no element */
-    public final T peek()
-    {
-        return peek(null) ;
+    public final T peek() {
+        return peek(null);
     }
 
     /** Look at the next element - returns dft when there is no element */
-    public final T peek(T dft)
-    {
-        hasNext() ;
-        if ( ! slotIsSet ) return dft ;
-        return slot ;
+    public final T peek(T dft) {
+        hasNext();
+        if ( !slotIsSet )
+            return dft;
+        return slot;
     }
 
-    public final void close()
-    {
+    @Override
+    public final void close() {
         if ( finished )
-            return ;
-        closeIterator() ;
-        slotIsSet = false ;
-        slot = null ;
-        finished = true ;
+            return;
+        closeIterator();
+        slotIsSet = false;
+        slot = null;
+        finished = true;
     }
 }

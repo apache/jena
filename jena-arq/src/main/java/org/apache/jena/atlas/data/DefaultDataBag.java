@@ -30,7 +30,7 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
+import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.atlas.lib.Sink ;
 
 /**
@@ -59,32 +59,32 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
 {
     private final ThresholdPolicy<E> policy;
     private final SerializationFactory<E> serializationFactory;
-    
+
     protected boolean finishedAdding = false;
     protected boolean spilled = false;
     protected boolean closed = false;
-    
+
     private Sink<E> serializer;
     private OutputStream out;
-    
+
     public DefaultDataBag(ThresholdPolicy<E> policy, SerializationFactory<E> serializerFactory)
     {
         this.policy = policy;
         this.serializationFactory = serializerFactory;
     }
-    
+
     private void checkClosed()
     {
         if (closed) throw new AtlasException("DefaultDataBag is closed, no operations can be performed on it.") ;
     }
-    
+
     @Override
     public void add(E item)
     {
         checkClosed();
         if (finishedAdding)
             throw new AtlasException("DefaultDataBag: Cannot add any more items after the writing phase is complete.");
-        
+
         if (!policy.isThresholdExceeded())
         {
             memory.add(item);
@@ -96,15 +96,15 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
                 spill();
                 spilled = true;
             }
-            
+
             // Write to disk
             serializer.send(item);
         }
-        
+
         policy.increment(item);
         size++;
     }
-    
+
     private void spill()
     {
         // In the case where we've just hit the threshold, set up the serializer and transfer all existing content to disk.
@@ -119,14 +119,14 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
             throw new AtlasException(e);
         }
         serializer = serializationFactory.createSerializer(out);
-        
+
         for (E e : memory)
         {
             serializer.send(e);
         }
         memory = null;
     }
-    
+
     @Override
     public boolean isSorted()
     {
@@ -138,7 +138,7 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
     {
         return false;
     }
-    
+
     @Override
     public void flush()
     {
@@ -147,22 +147,22 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
             serializer.flush();
         }
     }
-    
+
     @Override
     public Iterator<E> iterator()
     {
         Iterator<E> toReturn;
-        
+
         checkClosed();
-        
+
         // Close the writer
         closeWriter();
-        
+
         // Create a new reader
         if (policy.isThresholdExceeded())
         {
             File spillFile = getSpillFiles().get(0);
-            
+
             InputStream in;
             try
             {
@@ -173,7 +173,7 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
                 throw new AtlasException(ex) ;
             }
             Iterator<E> deserializer = serializationFactory.createDeserializer(in) ;
-            IteratorResourceClosing<E> irc = new IteratorResourceClosing<>(deserializer, in) ;
+            IteratorCloseable<E> irc = Iter.onCloseIO(deserializer, in) ;
             registerCloseableIterator(irc);
             toReturn = irc;
         }
@@ -181,10 +181,10 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
         {
             toReturn = memory.iterator();
         }
-        
+
         return toReturn;
     }
-    
+
     protected void closeWriter()
     {
         if (!finishedAdding)
@@ -205,7 +205,7 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
             finishedAdding = true;
         }
     }
-    
+
     @Override
     public void close()
     {
@@ -214,7 +214,7 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
             closeWriter();
             closeIterators();
             deleteSpillFiles();
-            
+
             memory = null;
             closed = true;
         }
