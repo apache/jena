@@ -20,6 +20,7 @@ package org.apache.jena.sparql.engine.iterator;
 
 import java.util.Iterator;
 
+import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.atlas.iterator.IteratorWrapper;
 import org.apache.jena.query.QueryCancelledException;
 
@@ -29,30 +30,51 @@ import org.apache.jena.query.QueryCancelledException;
  * including from another thread, and causes the iterator to throw an exception
  * when next touched (hasNext, next).
  */
-public class IterAbortable<T> extends IteratorWrapper<T> implements Abortable {
-    volatile boolean abortFlag = false;
+public class IterAbortable<T> extends IteratorWrapper<T> implements Abortable, IteratorCloseable<T> {
+    private volatile boolean abortFlag = false;
+    private boolean haveAborted = false;
 
     public IterAbortable(Iterator<T> iterator) {
         super(iterator);
     }
 
-    /** Can call asynchronously at anytime */
+    /** Can call asynchronously at any time */
     @Override
     public void abort() {
         abortFlag = true;
     }
 
+    private void execAbort() {
+        if ( ! haveAborted )
+            close();
+        haveAborted = true;
+    }
+
     @Override
     public boolean hasNext() {
-        if ( abortFlag )
+        if ( abortFlag ) {
+            execAbort();
             throw new QueryCancelledException();
+        }
         return iterator.hasNext();
     }
 
     @Override
     public T next() {
-        if ( abortFlag )
+        if ( abortFlag ) {
+            execAbort();
             throw new QueryCancelledException();
+        }
         return iterator.next();
     }
+
+    @Override
+    public void remove() {
+        if ( abortFlag ) {
+            execAbort();
+            throw new QueryCancelledException();
+        }
+        iterator.remove();
+    }
+
 }
