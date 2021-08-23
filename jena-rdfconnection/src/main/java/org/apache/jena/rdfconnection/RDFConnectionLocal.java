@@ -76,7 +76,7 @@ public class RDFConnectionLocal implements RDFConnection {
     }
 
     @Override
-    public QueryExecutionBuilderCommon newQuery() {
+    public QueryExecutionBuilder newQuery() {
         return QueryExecution.create().dataset(dataset);
     }
 

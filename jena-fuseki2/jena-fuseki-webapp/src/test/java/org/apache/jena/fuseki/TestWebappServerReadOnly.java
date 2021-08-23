@@ -32,10 +32,7 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
-import org.apache.jena.update.UpdateExecutionFactory;
-import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateProcessor;
-import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.update.*;
 import org.apache.jena.web.HttpSC;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -67,9 +64,7 @@ public class TestWebappServerReadOnly
     @Test()
     public void update_readonly() {
         HttpTest.expect404( () -> {
-            UpdateRequest update = UpdateFactory.create("INSERT DATA {}");
-            UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, serviceUpdate());
-            proc.execute();
+            UpdateExecution.service(serviceUpdate()).update("INSERT DATA {}").execute();
         });
     }
 

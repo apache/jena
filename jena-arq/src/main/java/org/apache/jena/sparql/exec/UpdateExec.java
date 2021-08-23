@@ -18,11 +18,18 @@
 
 package org.apache.jena.sparql.exec;
 
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.update.UpdateProcessor;
 
 public interface UpdateExec extends UpdateProcessor
 {
-    public static UpdateExecDatasetBuilder newBuilder() { return UpdateExecDatasetBuilder.newBuilder(); }
+    public static UpdateExecBuilder dataset(DatasetGraph dataset) {
+        return UpdateExecDatasetBuilder.create().dataset(dataset);
+    }
+
+    public static UpdateExecDatasetBuilder newBuilder() {
+        return UpdateExecDatasetBuilder.create();
+    }
 
     /** Execute */
     @Override

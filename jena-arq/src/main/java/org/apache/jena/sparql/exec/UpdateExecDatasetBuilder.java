@@ -39,7 +39,7 @@ import org.apache.jena.update.UpdateRequest;
 
 public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
 
-    public static UpdateExecDatasetBuilder newBuilder() { return new UpdateExecDatasetBuilder(); }
+    public static UpdateExecDatasetBuilder create() { return new UpdateExecDatasetBuilder(); }
 
     private DatasetGraph dataset            = null;
     private Query        query              = null;

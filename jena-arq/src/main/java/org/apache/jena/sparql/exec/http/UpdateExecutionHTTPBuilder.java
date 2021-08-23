@@ -30,14 +30,14 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.update.UpdateExecutionBuilderCommon;
+import org.apache.jena.update.UpdateExecutionBuilder;
 import org.apache.jena.update.UpdateRequest;
 
 public class UpdateExecutionHTTPBuilder
     extends ExecUpdateHTTPBuilder<UpdateExecutionHTTP, UpdateExecutionHTTPBuilder>
-    implements UpdateExecutionBuilderCommon {
+    implements UpdateExecutionBuilder {
 
-    public static UpdateExecutionHTTPBuilder newBuilder() { return new UpdateExecutionHTTPBuilder(); }
+    public static UpdateExecutionHTTPBuilder create() { return new UpdateExecutionHTTPBuilder(); }
 
     private UpdateExecutionHTTPBuilder() {}
 

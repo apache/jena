@@ -215,7 +215,7 @@ public class TestQuery extends AbstractFusekiTest {
 
             String contentType = type.toHeaderString();
             try (QueryExecutionHTTP qExec =
-                    QueryExecutionHTTPBuilder.newBuilder()
+                    QueryExecutionHTTPBuilder.create()
                     .endpoint(serviceQuery())
                     .queryString(query)
                     .acceptHeader(contentType)
@@ -235,7 +235,7 @@ public class TestQuery extends AbstractFusekiTest {
         for (MediaType type : quadsOfferTest.entries()) {
             String contentType = type.toHeaderString();
             try (QueryExecutionHTTP qExec =
-                    QueryExecutionHTTPBuilder.newBuilder()
+                    QueryExecutionHTTPBuilder.create()
                     .endpoint(serviceQuery())
                     .query(query)
                     .acceptHeader(contentType)
@@ -255,7 +255,7 @@ public class TestQuery extends AbstractFusekiTest {
         for (MediaType type : rdfOfferTest.entries()) {
             String contentType = type.toHeaderString();
             QueryExecutionHTTP qExec =
-                    QueryExecutionHTTPBuilder.newBuilder()
+                    QueryExecutionHTTPBuilder.create()
                     .httpClient(client)
                     .endpoint(serviceQuery())
                     .queryString(query)

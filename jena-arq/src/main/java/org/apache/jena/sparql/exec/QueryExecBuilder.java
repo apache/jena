@@ -31,7 +31,7 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
 /** The common elements of a {@link QueryExec} builder. */
-public interface QueryExecBuilder {
+public interface QueryExecBuilder extends QueryExecMod {
 
     /** Set the query. */
     public QueryExecBuilder query(Query query);
@@ -61,12 +61,14 @@ public interface QueryExecBuilder {
     public QueryExecBuilder substitution(Var var, Node value);
 
     /** Set the overall query execution timeout. */
+    @Override
     public QueryExecBuilder timeout(long value, TimeUnit timeUnit);
 
     /**
      * Build the {@link QueryExec}. Further changes to he builder do not affect this
      * {@link QueryExec}.
      */
+    @Override
     public QueryExec build();
 
     // build-and-use short cuts

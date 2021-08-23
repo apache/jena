@@ -91,9 +91,8 @@ public class TestAPI
         QuerySolutionMap init = new QuerySolutionMap() ;
         init.add("z", m.createLiteral("zzz"));
         String qs = "CONSTRUCT {?s ?p ?z} {?s ?p 'x1'}";
-        try ( QueryExecution qExec = QueryExecution.create()
+        try ( QueryExecution qExec = QueryExecution.model(m)
                 .query(qs)
-                .model(m)
                 .initialBinding(init)
                 .build() ) {
             Model r = qExec.execConstruct() ;
@@ -108,7 +107,7 @@ public class TestAPI
         QuerySolutionMap init = new QuerySolutionMap() ;
         init.add("o", m.createLiteral("x1"));
         String qs = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-        try ( QueryExecution qExec = QueryExecution.create().query(qs).model(m)
+        try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
                 .initialBinding(init)
                 .build() ) {
             Model r = qExec.execConstruct() ;
@@ -139,7 +138,7 @@ public class TestAPI
     @Test public void test_API1()
     {
         String qs = "SELECT * {?s ?p ?o}";
-        try ( QueryExecution qExec = QueryExecution.create().query(qs).model(m)
+        try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
                 .build() ) {
             ResultSet rs = qExec.execSelect() ;
             assertTrue("No results", rs.hasNext()) ;
@@ -173,7 +172,7 @@ public class TestAPI
         QuerySolutionMap init = new QuerySolutionMap() ;
         init.add("o", m.createLiteral("y1"));
         String qs = "SELECT * {?s ?p ?o}";
-        try ( QueryExecution qExec = QueryExecution.create().query(qs).model(m)
+        try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
                 .initialBinding(init)
                 .build() ) {
             int count = queryAndCount(qExec) ;
@@ -186,7 +185,7 @@ public class TestAPI
         QuerySolutionMap init = new QuerySolutionMap() ;
         init.add("z", m.createLiteral("zzz"));
         String qs = "SELECT * {?s ?p ?o}";
-        try ( QueryExecution qExec = QueryExecution.create().query(qs).model(m)
+        try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
                 .initialBinding(init)
                 .build() ) {
             int count = queryAndCount(qExec) ;
@@ -199,7 +198,7 @@ public class TestAPI
         QuerySolutionMap init = new QuerySolutionMap() ;
         init.add("z", m.createLiteral("zzz"));
         String qs = "SELECT * {?s ?p 'x1'}";
-        try ( QueryExecution qExec = QueryExecution.create().query(qs).model(m)
+        try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
                 .initialBinding(init)
                 .build() ) {
             ResultSet rs = qExec.execSelect() ;
@@ -226,7 +225,7 @@ public class TestAPI
         QuerySolutionMap map = new QuerySolutionMap();
         map.add("this", OWL.Thing);
 
-        try ( QueryExecution qExec = QueryExecution.create().query(queryString).model(m)
+        try ( QueryExecution qExec = QueryExecution.model(m).query(queryString)
                 .initialBinding(map)
                 .build() ) {
             ResultSet rs = qExec.execSelect();
@@ -252,7 +251,7 @@ public class TestAPI
         model.add(OWL.Thing, RDF.type, OWL.Class);
         QuerySolutionMap initialBinding = new QuerySolutionMap();
         initialBinding.add("a", ResourceFactory.createResource("http://constant"));
-        try ( QueryExecution qExec = QueryExecution.create().query(query).model(model).initialBinding(initialBinding).build() ) {
+        try ( QueryExecution qExec = QueryExecution.model(model).query(query).initialBinding(initialBinding).build() ) {
             boolean result = qExec.execAsk();
             assertTrue(result);
         }
@@ -275,7 +274,7 @@ public class TestAPI
         QuerySolutionMap initialBinding = new QuerySolutionMap();
         initialBinding.add("a", ResourceFactory.createTypedLiteral(Boolean.TRUE));
         initialBinding.add("b", ResourceFactory.createTypedLiteral(Boolean.TRUE));
-        try ( QueryExecution qExec = QueryExecution.create().query(query).model(model).initialBinding(initialBinding).build() ) {
+        try ( QueryExecution qExec = QueryExecution.model(model).query(query).initialBinding(initialBinding).build() ) {
             boolean result = qExec.execAsk();
             assertTrue(result);
         }
@@ -616,7 +615,7 @@ public class TestAPI
     }
 
     private int queryAndCount(String queryString) {
-        QueryExecution qExec = QueryExecution.create().query(queryString).model(m).build();
+        QueryExecution qExec = QueryExecution.model(m).query(queryString).build();
         return queryAndCount(qExec);
     }
 

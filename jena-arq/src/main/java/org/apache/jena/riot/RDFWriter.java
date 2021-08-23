@@ -71,7 +71,7 @@ public class RDFWriter {
      *        .output(System.out);
      * </pre>
      */
-    public static RDFWriterBuilder create() { return new RDFWriterBuilder(); }
+    public static RDFWriterBuilder create() { return RDFWriterBuilder.create(); }
 
     /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
      * @param graph     A {@link Graph}.

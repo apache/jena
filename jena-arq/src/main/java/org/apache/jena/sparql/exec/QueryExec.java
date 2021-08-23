@@ -29,6 +29,7 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.exec.http.QueryExecHTTPBuilder;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Context;
 
@@ -38,8 +39,29 @@ import org.apache.jena.sparql.util.Context;
  * @see QueryExecution
  */
 public interface QueryExec extends AutoCloseable {
+
+    /**
+     * Create a {@link QueryExecBuilder} for a dataset.
+     * For local dataset specific configuration, use {@link #newBuilder}().dataset(dataset)
+     * to get a {@link QueryExecDatasetBuilder}.
+     */
+    public static QueryExecBuilder dataset(DatasetGraph dataset) {
+        return QueryExecDatasetBuilder.create().dataset(dataset);
+    }
+
+    /** Create a {@link QueryExecBuilder} for a graph. */
+    public static QueryExecBuilder dataset(Graph graph) {
+        return QueryExecDatasetBuilder.create().graph(graph);
+    }
+
+    /** Create a {@link QueryExecBuilder} for a remote endpoint. */
+    public static QueryExecBuilder endpoint(String serviceURL) {
+        return QueryExecHTTPBuilder.create().endpoint(serviceURL);
+    }
+
+    /** Create an uninitialized {@link QueryExecDatasetBuilder}. */
     public static QueryExecDatasetBuilder newBuilder() {
-        return QueryExecDatasetBuilder.newBuilder();
+        return QueryExecDatasetBuilder.create();
     }
 
     /**

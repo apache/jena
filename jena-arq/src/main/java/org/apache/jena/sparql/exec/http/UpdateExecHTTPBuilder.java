@@ -30,7 +30,7 @@ import org.apache.jena.update.UpdateRequest;
 
 public class UpdateExecHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecHTTP, UpdateExecHTTPBuilder> implements UpdateExecBuilder {
 
-    public static UpdateExecHTTPBuilder newBuilder() { return new UpdateExecHTTPBuilder(); }
+    public static UpdateExecHTTPBuilder create() { return new UpdateExecHTTPBuilder(); }
 
     private UpdateExecHTTPBuilder() {}
 

@@ -58,7 +58,7 @@ public abstract class AbstractTestAdditional {
             dataset.asDatasetGraph().addAll(dsg);
             String qs = PREFIXES+"SELECT * { VALUES ?s { :s1 } GRAPH <"+Quad.unionGraph+"> { ?s ?p ?o } }";
             Query query = QueryFactory.create(qs);
-            try ( QueryExec qExec = QueryExec.newBuilder().dataset(dsg).query(query).build() ) {
+            try ( QueryExec qExec = QueryExec.dataset(dsg).query(query).build() ) {
                 RowSetRewindable rs = qExec.select().rewindable();
                 testRS(expected, rs);
             }

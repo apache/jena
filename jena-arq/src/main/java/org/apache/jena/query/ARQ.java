@@ -27,6 +27,7 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.sparql.exec.http.QuerySendMode;
 import org.apache.jena.sparql.expr.aggregate.AggregateRegistry ;
 import org.apache.jena.sparql.function.FunctionRegistry ;
 import org.apache.jena.sparql.mgt.ARQMgt ;
@@ -253,7 +254,12 @@ public class ARQ
     // [QExec]
     // Sort out context and setup.
     /**
-     * Use this symbol to provide a {@link RegistryRequestModifier} that can modifier
+     * Use this symbol to provide a {@link QuerySendMode} to use on the HTTP call.
+     */
+    public static final Symbol httpServiceSendMode = SystemARQ.allocSymbol("httpServiceSendMode") ;
+
+    /**
+     * Use this symbol to provide a {@link RegistryRequestModifier} that can modify
      * an HTTP request just before it is sent.
      */
     public static final Symbol httpRegistryRequestModifer = SystemARQ.allocSymbol("httpRegistryRequestModifer") ;

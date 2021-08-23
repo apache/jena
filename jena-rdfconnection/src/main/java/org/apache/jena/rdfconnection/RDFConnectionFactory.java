@@ -29,6 +29,14 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.rdflink.RDFLinkDatasetBuilder;
 import org.apache.jena.sys.JenaSystem;
 
+/**
+ * Factory for RDF connections, both local and remote.
+ * <p>
+ * For complex remote (HTTP) connections, see
+ * {@link RDFConnectionRemote#newBuilder} for detailed control. This class provides only
+ * some common cases.
+ * </p>
+ */
 public class RDFConnectionFactory {
     static { JenaSystem.init(); }
 

@@ -29,10 +29,7 @@ import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Convert;
-import org.apache.jena.update.UpdateExecutionFactory;
-import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateProcessor;
-import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.update.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,9 +77,7 @@ public class TestSPARQLProtocol extends AbstractFusekiTest
 
     @Test
     public void update_01() {
-        UpdateRequest update = UpdateFactory.create("INSERT DATA {}");
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, serviceUpdate());
-        proc.execute();
+        UpdateExecution.service(serviceUpdate()).update("INSERT DATA {}").execute();
     }
 
     @Test

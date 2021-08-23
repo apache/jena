@@ -47,7 +47,8 @@ public class RDFConnectionRemoteBuilder {
         this.builder = builder;
     }
 
-    /** URL of the remote SPARQL endpoint.
+    /**
+     * URL of the remote SPARQL endpoint.
      * For Fuseki, this is the URL of the dataset  e.g. http://localhost:3030/dataset
      */
     public RDFConnectionRemoteBuilder destination(String destination) {

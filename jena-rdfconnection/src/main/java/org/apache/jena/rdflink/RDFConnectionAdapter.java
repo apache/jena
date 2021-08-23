@@ -106,7 +106,7 @@ public class RDFConnectionAdapter implements RDFConnection {
     }
 
     @Override
-    public QueryExecutionBuilderCommon newQuery() {
+    public QueryExecutionBuilder newQuery() {
         return new QueryExecutionBuilderAdapter(get().newQuery());
     }
 

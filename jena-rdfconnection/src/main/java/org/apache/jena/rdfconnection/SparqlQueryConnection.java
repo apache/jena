@@ -104,7 +104,7 @@ public interface SparqlQueryConnection extends Transactional, AutoCloseable
      *
      * @return QueryExecutionBuilderCommon
      */
-    public QueryExecutionBuilderCommon newQuery();
+    public QueryExecutionBuilder newQuery();
 
     /** Close this connection.  Use with try-resource. */
     @Override public void close();

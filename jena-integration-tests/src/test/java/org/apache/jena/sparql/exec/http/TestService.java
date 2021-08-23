@@ -252,7 +252,7 @@ public class TestService {
         logOnlyErrors(Fuseki.class, ()->{
             runWithModifier(SERVICE, inspector, ()->{
                 String queryString = "ASK { SERVICE <"+SERVICE+"> { BIND(now() AS ?now) } }";
-                try ( QueryExec qExec = QueryExec.newBuilder().query(queryString).dataset(clientDGS).build() ) {
+                try ( QueryExec qExec = QueryExec.dataset(clientDGS).query(queryString).build() ) {
                     boolean b = qExec.ask();
                     assertTrue(b);
                 }
@@ -280,7 +280,7 @@ public class TestService {
         logOnlyErrors(Fuseki.class, ()->{
             runWithModifier(SERVICE, inspector, ()->{
                 String queryString = "ASK { SERVICE <"+SERVICE+"> { BIND(now() AS ?now) } }";
-                try ( QueryExec qExec = QueryExec.newBuilder().query(queryString).dataset(clientDGS).build() ) {
+                try ( QueryExec qExec = QueryExec.dataset(clientDGS).query(queryString).build() ) {
                     boolean b = qExec.ask();
                     assertTrue(b);
                 }
@@ -319,7 +319,7 @@ public class TestService {
     public void service_query_disabled_queryexec() {
         String queryString = "ASK { SERVICE <"+SERVICE+"?format=json> { BIND(now() AS ?now) } }";
         Context context = Context.create().set(Service.httpServiceAllowed, false);
-        try ( QueryExec qExec = QueryExec.newBuilder().query(queryString).dataset(localDataset()).context(context).build() ) {
+        try ( QueryExec qExec = QueryExec.dataset(localDataset()).query(queryString).context(context).build() ) {
             qExec.ask();
         }
     }
@@ -364,7 +364,7 @@ public class TestService {
         runWithModifier(SERVICE, testModifier, ()->{
             // Via RDFLink(local) and QueryExec
             // Connect to local, unused, permanently empty dataset
-            try ( QueryExec qExec = QueryExec.newBuilder().dataset(localDataset()).query(queryString).build() ) {
+            try ( QueryExec qExec = QueryExec.dataset(localDataset()).query(queryString).build() ) {
                 RowSet rs = qExec.select();
                 long x = Iter.count(rs);
                 assertEquals(1, x);

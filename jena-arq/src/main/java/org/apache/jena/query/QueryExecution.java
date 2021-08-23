@@ -27,21 +27,38 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 import org.apache.jena.sparql.util.Context;
 
 /** A interface for a single execution of a query. */
 public interface QueryExecution extends AutoCloseable
 {
-    public static QueryExecutionBuilder create() { return QueryExecutionBuilder.newBuilder(); }
+    /** Create a local execution on a dataset */
+    public static QueryExecutionDatasetBuilder dataset(Dataset dataset) {
+        return QueryExecutionDatasetBuilder.create().dataset(dataset);
+    }
+
+    /** Create a local execution on a model */
+    public static QueryExecutionDatasetBuilder model(Model model) {
+        return QueryExecutionDatasetBuilder.create().model(model);
+    }
+
+    /** Create a remote execution going to an endpoint URL. */
+    public static QueryExecutionBuilder endpoint(String serviceURL) {
+        return QueryExecutionHTTPBuilder.create().endpoint(serviceURL);
+    }
+
+    /** Create a local execution on a dataset */
+    public static QueryExecutionDatasetBuilder create() { return QueryExecutionDatasetBuilder.create(); }
 
     /** Set the initial association of variables and values.
      * May not be supported by all QueryExecution implementations.
      * <p>
-     * The preferred way is to use {@link QueryExecutionBuilder#substitution(QuerySolution)}
+     * The preferred way is to use {@link QueryExecutionDatasetBuilder#substitution(QuerySolution)}
      * which is supported uniformly for local and remote queries.
      *
      * @param binding
-     * @deprecated Use {@link QueryExecutionBuilder} and set the initial binding before building.
+     * @deprecated Use {@link QueryExecutionDatasetBuilder} and set the initial binding before building.
      */
     @Deprecated
     public void setInitialBinding(QuerySolution binding) ;
@@ -49,10 +66,10 @@ public interface QueryExecution extends AutoCloseable
     /** Set the initial association of variables and values.
      * May not be supported by all QueryExecution implementations.
      * <p>
-     * The preferred way is to use {@link QueryExecutionBuilder#substitution(Binding)}
+     * The preferred way is to use {@link QueryExecutionDatasetBuilder#substitution(Binding)}
      * which is supported uniformly for local and remote queries.
      * @param binding
-     * @deprecated Use {@link QueryExecutionBuilder} and set the initial binding before building.
+     * @deprecated Use {@link QueryExecutionDatasetBuilder} and set the initial binding before building.
      */
     @Deprecated
     void setInitialBinding(Binding binding);
@@ -221,14 +238,14 @@ public interface QueryExecution extends AutoCloseable
 	 * Not all query execution systems support timeouts.
 	 * A timeout of less than zero means no timeout.
 	 *
-	 * @see QueryExecutionBuilder#timeout
+	 * @see QueryExecutionDatasetBuilder#timeout
 	 * @deprecated Use {@code QueryExecution.create().timeout(....)...}
 	 */
     @Deprecated
 	public void setTimeout(long timeout, TimeUnit timeoutUnits) ;
 
 	/** Set time, in milliseconds
-     * @see QueryExecutionBuilder#timeout
+     * @see QueryExecutionDatasetBuilder#timeout
      * @deprecated Use {@code QueryExecution.create().timeout(....)...}
 	 */
     @Deprecated

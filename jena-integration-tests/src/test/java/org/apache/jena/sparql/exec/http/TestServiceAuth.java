@@ -74,14 +74,14 @@ public class TestServiceAuth {
 
     private static void runServiceQuery(String serviceURL) {
         String queryString = "SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }";
-        try ( QueryExec qExec = QueryExec.newBuilder().query(queryString).dataset(empty).build() ) {
+        try ( QueryExec qExec = QueryExec.dataset(empty).query(queryString).build() ) {
             qExec.select().materialize();
         }
     }
 
     private static void runServiceQueryWithContext(String serviceURL, Context cxt) {
         String queryString = "SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }";
-        try ( QueryExec qExec = QueryExec.newBuilder().query(queryString).dataset(empty).context(cxt).build() ) {
+        try ( QueryExec qExec = QueryExec.dataset(empty).query(queryString).context(cxt).build() ) {
             qExec.select().materialize();
         }
     }

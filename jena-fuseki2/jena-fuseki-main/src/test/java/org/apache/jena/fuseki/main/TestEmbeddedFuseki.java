@@ -45,9 +45,7 @@ import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
-import org.apache.jena.update.UpdateExecutionFactory;
-import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.update.UpdateExecution;
 import org.apache.jena.web.HttpSC;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -148,8 +146,7 @@ public class TestEmbeddedFuseki {
                 assertEquals(3, x);
             });
             // Update
-            UpdateRequest req = UpdateFactory.create("CLEAR DEFAULT");
-            UpdateExecutionFactory.createRemote(req, "http://localhost:"+port+"/data").execute();
+            UpdateExecution.service("http://localhost:"+port+"/data").update("CLEAR DEFAULT").execute();
             // Query again.
             query("http://localhost:"+port+"/data", "SELECT * { ?s ?p ?o}", qExec-> {
                 RowSet rs = qExec.select();

@@ -24,8 +24,8 @@ import org.apache.jena.sparql.util.Context;
 
 /**
  * Aspects of a building a {@link QueryExec} that can be changed before use. This is
- * limited than {@link QueryExecBuilder} and assumes that the query and target for
- * the query have been set.up.
+ * more limited than {@link QueryExecBuilder} and assumes that the query and target
+ * for the query have been setup.
  */
 public interface QueryExecMod {
 
@@ -38,15 +38,19 @@ public interface QueryExecMod {
         return timeout(timeout, TimeUnit.MILLISECONDS);
     }
 
-    public default QueryExecMod timeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2) {
-        initialTimeout(timeout1, timeUnit1);
-        overallTimeout(timeout2, timeUnit2);
-        return this;
-    }
-
-    public default QueryExecMod timeout(long timeout1, long timeout2) {
-        return timeout(timeout1, TimeUnit.MILLISECONDS, timeout2, TimeUnit.MILLISECONDS);
-    }
+    // [QExec]
+    // Remove these, leave only the explicit names?
+    // Legacy issues?
+    // QueryExecutionAdapter has the names and translation.
+//    public default QueryExecMod timeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2) {
+//        initialTimeout(timeout1, timeUnit1);
+//        overallTimeout(timeout2, timeUnit2);
+//        return this;
+//    }
+//
+//    public default QueryExecMod timeout(long timeout1, long timeout2) {
+//        return timeout(timeout1, TimeUnit.MILLISECONDS, timeout2, TimeUnit.MILLISECONDS);
+//    }
 
     public QueryExecMod initialTimeout(long timeout, TimeUnit timeUnit);
 

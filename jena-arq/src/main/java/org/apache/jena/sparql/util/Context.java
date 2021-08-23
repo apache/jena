@@ -120,8 +120,8 @@ public class Context {
      * Get the object value of a property - return the default value if not
      * present .
      */
-    public Object get(Symbol property, Object defaultValue) {
-        Object x = mapGet(property);
+    public <T> T get(Symbol property, T defaultValue) {
+        T x = get(property);
         if ( x == null )
             return defaultValue;
         return x;
@@ -358,6 +358,13 @@ public class Context {
             sep = "\n";
         }
         return x;
+    }
+
+    /** Return the context of the dataset (not copied); if the dataset is null, return null */
+    public static Context fromDataset(DatasetGraph dataset) {
+        if ( dataset == null )
+            return null;
+        return dataset.getContext();
     }
 
     /** Setup a context using another context and a dataset.*/

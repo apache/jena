@@ -23,11 +23,11 @@ import org.apache.jena.sparql.exec.UpdateProcessorAdapter;
 public class UpdateExecutionHTTP extends UpdateProcessorAdapter {
 
     public static UpdateExecutionHTTPBuilder create() {
-        return UpdateExecutionHTTPBuilder.newBuilder();
+        return UpdateExecutionHTTPBuilder.create();
     }
 
     public static UpdateExecutionHTTPBuilder service(String endpointURL) {
-        return UpdateExecutionHTTPBuilder.newBuilder().endpoint(endpointURL);
+        return UpdateExecutionHTTPBuilder.create().endpoint(endpointURL);
     }
 
     public UpdateExecutionHTTP(UpdateExecHTTP execHttp) {

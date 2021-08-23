@@ -40,7 +40,7 @@ public class ExampleDBpedia3
         Query query = QueryFactory.create(queryString) ;
 
         // Local execution which uses SERBVICE for remote access.
-        QueryExecutionBuilder.newBuilder().context(null);
+        QueryExecutionDatasetBuilder.create().context(null);
 
         try(QueryExecution qexec = QueryExecutionFactory.create(query, ModelFactory.createDefaultModel())) {
 

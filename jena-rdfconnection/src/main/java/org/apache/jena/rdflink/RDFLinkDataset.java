@@ -81,7 +81,7 @@ public class RDFLinkDataset implements RDFLink {
         checkOpen();
         //return QueryExec.newBuilder().dataset(dataset).query(query).build();
         // Delayed.
-        return QueryExecApp.create(QueryExec.newBuilder().dataset(dataset).query(query),
+        return QueryExecApp.create(QueryExec.dataset(dataset).query(query),
                                    dataset,
                                    query,
                                    null);
@@ -89,13 +89,13 @@ public class RDFLinkDataset implements RDFLink {
 
     @Override
     public QueryExecBuilder newQuery() {
-        return QueryExec.newBuilder().dataset(dataset);
+        return QueryExec.dataset(dataset);
     }
 
     @Override
     public void update(UpdateRequest update) {
         checkOpen();
-        Txn.executeWrite(dataset, ()->UpdateExecDatasetBuilder.newBuilder().update(update).execute(dataset));
+        Txn.executeWrite(dataset, ()->UpdateExecDatasetBuilder.create().update(update).execute(dataset));
     }
 
     @Override

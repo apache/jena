@@ -31,6 +31,7 @@ import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.sparql.exec.http.QuerySendMode;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.ContextAccumulator;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
 
@@ -46,7 +47,8 @@ public abstract class ExecHTTPBuilder<X, Y> {
     private HttpClient httpClient = null;
     protected Map<String, String> httpHeaders = new HashMap<>();
     protected Params params = Params.create();
-    private Context context = null;
+    private ContextAccumulator contextAcc = ContextAccumulator.newBuilder(()->ARQ.getContext());
+
     // Accept choice by the application
     protected String appAcceptHeader = null;
     protected long timeout = -1;
@@ -261,25 +263,28 @@ public abstract class ExecHTTPBuilder<X, Y> {
         if ( context == null )
             return thisBuilder();
         ensureContext();
-        this.context.putAll(context);
+        contextAcc.context(context);
+        //this.context.putAll(context);
         return thisBuilder();
     }
 
     public Y set(Symbol symbol, Object value) {
         ensureContext();
-        context.set(symbol, value);
+        contextAcc.set(symbol, value);
+        //context.set(symbol, value);
         return thisBuilder();
     }
 
     public Y set(Symbol symbol, boolean value) {
         ensureContext();
-        context.set(symbol, value);
+        contextAcc.set(symbol, value);
+        //context.set(symbol, value);
         return thisBuilder();
     }
 
     private void ensureContext() {
-        if ( context == null )
-            context = new Context();
+//        if ( context == null )
+//            context = new Context();
     }
 
     /**
@@ -313,7 +318,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
             queryActual = QueryTransformOps.transform(query, substitutionMap);
             queryStringActual = queryActual.toString();
         }
-        Context cxt = (context!=null) ? context : ARQ.getContext().copy();
+        Context cxt = contextAcc.context();
         return buildX(hClient, queryActual, queryStringActual, cxt);
     }
 

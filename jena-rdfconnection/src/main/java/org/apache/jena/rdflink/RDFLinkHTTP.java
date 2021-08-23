@@ -265,7 +265,7 @@ public class RDFLinkHTTP implements RDFLink {
 
     /** Create a builder, configured with the link setup. */
     private QueryExecHTTPBuilder createQExecBuilder() {
-        return QueryExecHTTPBuilder.newBuilder()
+        return QueryExecHTTPBuilder.create()
                     .endpoint(svcQuery)
                     .httpClient(httpClient);
     }

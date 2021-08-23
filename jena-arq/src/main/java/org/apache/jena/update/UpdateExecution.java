@@ -18,10 +18,20 @@
 
 package org.apache.jena.update;
 
+import org.apache.jena.query.Dataset;
+import org.apache.jena.sparql.exec.http.UpdateExecutionHTTP;
+import org.apache.jena.sparql.exec.http.UpdateExecutionHTTPBuilder;
+
 /** An instance of a execution of an UpdateRequest */
 public interface UpdateExecution extends UpdateProcessor
 {
-    public static UpdateExecutionBuilder create() { return UpdateExecutionBuilder.create(); }
+    public static UpdateExecutionDatasetBuilder dataset(Dataset dataset) {
+        return UpdateExecutionDatasetBuilder.create().dataset(dataset);
+    }
+
+    public static UpdateExecutionHTTPBuilder service(String serviceURL) {
+        return UpdateExecutionHTTP.service(serviceURL);
+    }
 
     /** Execute */
     @Override

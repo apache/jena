@@ -22,7 +22,21 @@ import java.util.function.Supplier;
 
 import org.apache.jena.query.ARQ;
 
+/**
+ * Context builder component.
+ * <p>
+ * Use in a buildee either inherited, or use as a component
+ * (implementation inheritance) with the following code:
+ * <pre>
+ * ContextAccumulator contextAcc = ContextAccumulator.newBuilder(..)
+ *
+ * public MyBuilder set(Symbol symbol, Object value) { contextAcc.set(symbol, value); return this; }
+ * public MyBuilder set(Symbol symbol, boolean value) { contextAcc.set(symbol, value); return this; }
+ * public MyBuilder context(Context cxt) { contextAcc.context(cxt); return this; }
+ * </pre>
+ */
 public class ContextAccumulator {
+
     // Items added with "set(,)"
     private Context      addedContext       = new Context();
     // Explicitly given base context
@@ -33,6 +47,10 @@ public class ContextAccumulator {
 
     public static ContextAccumulator newBuilder() {
         return new ContextAccumulator();
+    }
+
+    public static ContextAccumulator newBuilder(Supplier<Context> baseSupplier) {
+        return newBuilder(baseSupplier, null);
     }
 
     public static ContextAccumulator newBuilder(Supplier<Context> baseSupplier, Supplier<Context> extraSupplier) {
@@ -58,7 +76,7 @@ public class ContextAccumulator {
     protected Context extra() { return null; }
 
     /**
-     * If no explicit base, this is the default. It will be copied to isolate it at the built point.
+     * If no explicit base, this is the default. It will be copied to isolate it at the build point.
      * Default implement is to return ARQ.getContext().
      */
     protected Context baseContext() { return ARQ.getContext(); }
@@ -76,6 +94,8 @@ public class ContextAccumulator {
     }
 
     public ContextAccumulator context(Context context) {
+        if ( context == null )
+            return this;
         update();
         this.addedContext.clear();
         this.baseContext = context;
@@ -86,9 +106,21 @@ public class ContextAccumulator {
      * Build and return.
      * This will return the same object if called again with no intermediate updates.
      */
-    protected Context context() {
+    public Context context() {
         // Freeze and return.
         return getOrBuiltContext();
+    }
+
+    /**
+     * Duplicate.
+     */
+    @Override
+    public ContextAccumulator clone() {
+        ContextAccumulator clone = new ContextAccumulator();
+        clone.addedContext.putAll(addedContext);
+        if ( baseContext != null )
+            clone.baseContext = baseContext.copy();
+        return clone;
     }
 
     // If an update happens, ensure there is no cached build.
@@ -106,7 +138,7 @@ public class ContextAccumulator {
     private Context buildProcess() {
         // Build context:
         //   If a supplied context, use that.
-        //   If defaulting, take from  dftContext (e.g. ARQ.getComtext) and local extras (e.g. dataset.getContext);
+        //   If defaulting, take from baseContext() (e.g. ARQ.getContext) and local extras (e.g. dataset.getContext);
         // In each case, then add the local added settings.
         Context cxt;
         if ( baseContext != null ) {

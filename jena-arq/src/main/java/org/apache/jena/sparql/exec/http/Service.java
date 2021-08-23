@@ -61,6 +61,7 @@ public class Service {
     public static final Symbol httpServiceAllowed       = ARQ.httpServiceAllowed;
 //    //public static final Symbol httpQueryCompression    = ARQ.httpQueryCompression;
     public static final Symbol httpQueryClient          = ARQ.httpQueryClient;
+    public static final Symbol httpServiceSendMode      = ARQ.httpServiceSendMode;
 //
 //    public static final Symbol httpServiceContext       = ARQ.httpServiceContext;
 //    // Not connection timeout which is now in HttpClient
@@ -77,20 +78,20 @@ public class Service {
     public static final Symbol oldQueryTimeout      = SystemARQ.allocSymbol(baseOld, "queryTimeout");
     public static final Symbol oldQueryCompression  = SystemARQ.allocSymbol(baseOld, "queryCompression");
 
-    // Compatibility with old AHC (Aapche HttpClient)version
+    // Compatibility with old AHC (Apache HttpClient) version
     public static final Symbol serviceAllowed    = SystemARQ.allocSymbol(baseOld, "serviceAllowed");
 
     private void oldCheckForOldParameters(Context context) {
         if ( context == null )
             return ;
-        oldCheckForOldParameters(context, oldQueryClient);
-        oldCheckForOldParameters(context, oldServiceContext);
-        oldCheckForOldParameters(context, oldServiceAllowed);
-        oldCheckForOldParameters(context, oldQueryTimeout);
-        oldCheckForOldParameters(context, oldQueryCompression);
+        checkForOldParameters(context, oldQueryClient);
+        checkForOldParameters(context, oldServiceContext);
+        checkForOldParameters(context, oldServiceAllowed);
+        checkForOldParameters(context, oldQueryTimeout);
+        checkForOldParameters(context, oldQueryCompression);
     }
 
-    private void oldCheckForOldParameters(Context context, Symbol oldSymbol) {
+    private void checkForOldParameters(Context context, Symbol oldSymbol) {
         if ( context.isDefined(oldSymbol) )
             Log.warnOnce(LOGGER, "Service context parameter '"+oldSymbol.getSymbol()+"' no longer used - see ARQ constants for replacements.", oldSymbol);
     }
@@ -134,6 +135,9 @@ public class Service {
         Params serviceParams = getServiceParamsFromContext(serviceURL, context);
 
         HttpClient httpClient = chooseHttpClient(serviceURL, context);
+
+        QuerySendMode querySendMode = chooseQuerySendMode(serviceURL, context, QuerySendMode.asGetWithLimitBody);
+
         // -- End setup
 
         // Build the execution
@@ -144,7 +148,7 @@ public class Service {
                 .params(serviceParams)
                 .context(context)
                 .httpClient(httpClient)
-                .sendMode(QuerySendMode.asGetWithLimitBody) // [QExec] How to control?
+                .sendMode(querySendMode)
                 .build();
         try {
             // Detach from the network stream.
@@ -184,7 +188,14 @@ public class Service {
         return httpClient;
     }
 
+    private static QuerySendMode chooseQuerySendMode(String serviceURL, Context context, QuerySendMode dftValue) {
+        if ( context == null )
+            return dftValue;
+        return context.get(httpServiceSendMode, dftValue);
+    }
+
     // Timeout for connection is part of HttpClient (our default is 10s).
+
     /*package*/ static long timeoutFromContext(Context context) {
         return parseTimeout(context.get(httpQueryTimeout));
     }

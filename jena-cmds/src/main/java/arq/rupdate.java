@@ -22,18 +22,14 @@ import java.util.List ;
 
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.update.UpdateExecutionFactory ;
-import org.apache.jena.update.UpdateFactory ;
-import org.apache.jena.update.UpdateProcessor ;
-import org.apache.jena.update.UpdateRequest ;
-
+import org.apache.jena.update.*;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModRemote ;
 
 public class rupdate extends CmdARQ
 {
     static final ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "update", "file") ;
-    
+
     protected ModRemote     modRemote =     new ModRemote() ;
 
     List<String> requestFiles = null ;
@@ -56,8 +52,8 @@ public class rupdate extends CmdARQ
         requestFiles = getValues(updateArg) ;   // ????
         super.processModulesAndArgs() ;
     }
-    
-    
+
+
     @Override
     protected String getSummary()
     {
@@ -87,10 +83,9 @@ public class rupdate extends CmdARQ
         }
     }
 
-    private void exec(String endpoint, UpdateRequest req) 
+    private void exec(String endpoint, UpdateRequest req)
     {
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(req, endpoint) ;
-        proc.execute() ;
+        UpdateExecution.service(endpoint).update(req).execute();
     }
 
 }

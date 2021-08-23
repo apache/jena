@@ -18,9 +18,6 @@
 
 package org.apache.jena.query;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Node;
@@ -36,13 +33,19 @@ import org.apache.jena.sparql.util.Symbol;
 /**
  * Query Execution for local datasets - builder style.
  */
-public class QueryExecutionBuilderAdapter implements QueryExecutionBuilderCommon {
+public class QueryExecutionBuilderAdapter implements QueryExecutionBuilder {
+
+    // This only implements QueryExecutionBuilderCommon, the builder steps in common between
+    // local (dataset) and remote (HTTP) query building. In particular, it does not
+    // provide operations to change the target of the query.
 
     private final QueryExecBuilder builder;
 
     public QueryExecutionBuilderAdapter(QueryExecBuilder builder) {
         this.builder = builder;
     }
+
+    public QueryExecBuilder getExecBuilder() { return builder; }
 
     @Override
     public QueryExecutionBuilderAdapter query(Query query) {
@@ -112,24 +115,6 @@ public class QueryExecutionBuilderAdapter implements QueryExecutionBuilderCommon
     public QueryExecution build() {
         // No support for delayed setup.
         return QueryExecutionAdapter.adapt(builder.build());
-    }
-
-    // ==> BindingUtils
-    /** Binding as a Map */
-    public static Map<Var, Node> bindingToMap(Binding binding) {
-        Map<Var, Node> substitutions = new HashMap<>();
-        Iterator<Var> iter = binding.vars();
-        while(iter.hasNext()) {
-            Var v = iter.next();
-            Node n = binding.get(v);
-            substitutions.put(v, n);
-        }
-        return substitutions;
-    }
-
-    @Override
-    public QueryExecutionBuilderCommon initialBinding(QuerySolution querySolution) {
-        throw new UnsupportedOperationException("QueryExecutionBuilderAdapter.initialBinding");
     }
 }
 

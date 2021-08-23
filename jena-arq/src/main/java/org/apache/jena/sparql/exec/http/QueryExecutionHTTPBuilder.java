@@ -25,7 +25,7 @@ import java.util.HashMap;
 
 import org.apache.jena.http.sys.ExecHTTPBuilder;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecutionBuilderCommon;
+import org.apache.jena.query.QueryExecutionBuilder;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.Var;
@@ -35,9 +35,9 @@ import org.apache.jena.sparql.util.Context;
 
 public class QueryExecutionHTTPBuilder
     extends ExecHTTPBuilder<QueryExecutionHTTP, QueryExecutionHTTPBuilder>
-    implements QueryExecutionBuilderCommon {
+    implements QueryExecutionBuilder {
 
-    public static QueryExecutionHTTPBuilder newBuilder() { return new QueryExecutionHTTPBuilder(); }
+    public static QueryExecutionHTTPBuilder create() { return new QueryExecutionHTTPBuilder(); }
 
     private QueryExecutionHTTPBuilder() {}
 
@@ -57,19 +57,14 @@ public class QueryExecutionHTTPBuilder
     }
 
     @Override
-    public QueryExecutionBuilderCommon initialBinding(QuerySolution querySolution) {
-        throw new UnsupportedOperationException("Initial bindings for a HTTP query execution");
-    }
-
-    @Override
-    public QueryExecutionBuilderCommon substitution(QuerySolution querySolution) {
+    public QueryExecutionBuilder substitution(QuerySolution querySolution) {
         Binding binding = BindingLib.toBinding(querySolution);
         super.substitution(binding);
         return thisBuilder();
     }
 
     @Override
-    public QueryExecutionBuilderCommon substitution(String varName, RDFNode value) {
+    public QueryExecutionBuilder substitution(String varName, RDFNode value) {
         super.substitution(Var.alloc(varName), value.asNode());
         return thisBuilder();
     }

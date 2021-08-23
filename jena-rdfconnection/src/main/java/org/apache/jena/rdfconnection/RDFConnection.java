@@ -59,6 +59,7 @@ import org.apache.jena.update.UpdateRequest;
  * @see RDFConnectionFactory
  * @see RDFConnectionLocal
  * @see RDFConnectionRemote
+ * @see RDFConnectionRemoteBuilder
  * @see SparqlQueryConnection
  * @see SparqlUpdateConnection
  * @see RDFDatasetConnection
@@ -68,6 +69,20 @@ public interface RDFConnection extends
         SparqlQueryConnection, SparqlUpdateConnection, RDFDatasetConnection,
         Transactional, AutoCloseable
  {
+    /** Create an RDFConnection to a local dataset. */
+    public static RDFConnection connect(Dataset dataset) {
+        return RDFConnectionFactory.connect(dataset);
+    }
+
+    /**
+     * Create an RDFConnection to a remote HTTP endpoint.
+     * <p>
+     * See {@link RDFConnectionRemote#newBuilder} for more control over the setup.
+     */
+    public static RDFConnection connect(String serviceURL) {
+        return RDFConnectionRemote.service(serviceURL).build();
+    }
+
     // Default implementations could be pushed up but then they can't be mentioned here
     // and the javadoc for RDFConnection is not in one place.
     // Inheriting interfaces and re-mentioning gets the javadoc in one place.
@@ -245,7 +260,7 @@ public interface RDFConnection extends
      * @return QueryExecutionBuilderCommon
      */
     @Override
-    public QueryExecutionBuilderCommon newQuery();
+    public QueryExecutionBuilder newQuery();
 
 
     // ---- SparqlUpdateConnection

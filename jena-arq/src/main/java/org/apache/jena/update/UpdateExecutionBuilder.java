@@ -18,126 +18,36 @@
 
 package org.apache.jena.update;
 
-import org.apache.jena.graph.Node;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingLib;
-import org.apache.jena.sparql.exec.UpdateExec;
-import org.apache.jena.sparql.exec.UpdateExecDatasetBuilder;
-import org.apache.jena.sparql.exec.UpdateProcessorAdapter;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
-public class UpdateExecutionBuilder implements UpdateExecutionBuilderCommon {
-
-    /** Create a new builder of {@link QueryExecution} for a local dataset. */
-    public static UpdateExecutionBuilder newBuilder() { return new UpdateExecutionBuilder(); }
-
-    public static UpdateExecutionBuilder create() { return newBuilder(); }
-
-    private final UpdateExecDatasetBuilder builder;
-
-    public UpdateExecutionBuilder() {
-        builder = UpdateExec.newBuilder();
-    }
+public interface UpdateExecutionBuilder {
 
     /** Append the updates in an {@link UpdateRequest} to the {@link UpdateRequest} being built. */
-    @Override
-    public UpdateExecutionBuilder update(UpdateRequest updateRequest) {
-        builder.update(updateRequest);
-        return this;
-    }
+    public UpdateExecutionBuilder update(UpdateRequest updateRequest);
 
     /** Add the {@link Update} to the {@link UpdateRequest} being built. */
-    @Override
-    public UpdateExecutionBuilder update(Update update) {
-        builder.update(update);
-        return this;
-    }
+    public UpdateExecutionBuilder update(Update update);
 
     /** Parse and update operations to the {@link UpdateRequest} being built. */
-    @Override
-    public UpdateExecutionBuilder update(String updateRequestString) {
-        builder.update(updateRequestString);
-        return this;
-    }
+    public UpdateExecutionBuilder update(String updateRequestString);
 
-    public UpdateExecutionBuilder dataset(Dataset dataset) {
-        builder.dataset(dataset.asDatasetGraph());
-        return this;
-    }
+    public UpdateExecutionBuilder set(Symbol symbol, Object value);
 
-    @Override
-    public UpdateExecutionBuilder set(Symbol symbol, Object value) {
-        builder.set(symbol, value);
-        return this;
-    }
+    public UpdateExecutionBuilder set(Symbol symbol, boolean value);
 
-    @Override
-    public UpdateExecutionBuilder set(Symbol symbol, boolean value) {
-        builder.set(symbol, value);
-        return this;
-    }
+    public UpdateExecutionBuilder context(Context context);
 
-    /** Set the {@link Context}.
-     *  This defaults to the global settings of {@code ARQ.getContext()}.
-     *  If there was a previous call of {@code context} the multiple contexts are merged.
-     * */
-    @Override
-    public UpdateExecutionBuilder context(Context context) {
-        builder.context(context);
-        return this;
-    }
+    public UpdateExecutionBuilder substitution(QuerySolution querySolution);
 
-//    public UpdateExecutionBuilder initialBinding(Binding initialBinding) {
-//        builder.initialBinding(initialBinding);
-//        return this;
-//    }
+    public UpdateExecutionBuilder substitution(String varName, RDFNode value);
 
-    public UpdateExecutionBuilder initialBinding(QuerySolution querySolution) {
-        if ( querySolution == null )
-            return this;
-        Binding binding = BindingLib.asBinding(querySolution);
-        builder.initialBinding(binding);
-        return this;
-    }
+    public UpdateExecution build();
 
-    @Override
-    public UpdateExecutionBuilder substitution(QuerySolution querySolution) {
-        if ( querySolution == null )
-           return this;
-        Binding binding = BindingLib.asBinding(querySolution);
-        builder.substitution(binding);
-        return this;
-    }
-
-    @Override
-    public UpdateExecutionBuilder substitution(String varName, RDFNode value) {
-        Var var = Var.alloc(varName);
-        Node val = value.asNode();
-        builder.substitution(var, val);
-        return this;
-    }
-
-    @Override
-    public UpdateExecution build() {
-        UpdateExec exec = builder.build();
-        return UpdateProcessorAdapter.adapt(exec);
-    }
-
-    // Abbreviated forms
-
-    @Override
-    public void execute() {
+    /** Build and execute */
+    public default void execute() {
         build().execute();
-    }
-
-    public void execute(Dataset dataset) {
-        dataset(dataset);
-        execute();
     }
 }

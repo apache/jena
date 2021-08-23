@@ -33,7 +33,7 @@ import org.apache.jena.sparql.engine.QueryEngineRegistry;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.engine.binding.BindingRoot;
-import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecDataset;
 import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
 import org.apache.jena.sparql.exec.QueryExecutionCompat;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
@@ -54,7 +54,7 @@ import org.apache.jena.sparql.util.Context;
  * <p>
  * See also {@code RDFConnection} for working with SPARQL Query, SPARQL Update and SPARQL Graph Store Protocol together.
  *
- * @see QueryExecutionBuilder
+ * @see QueryExecutionDatasetBuilder
  * @see QueryExecutionHTTPBuilder
  */
 
@@ -479,7 +479,7 @@ public class QueryExecutionFactory
     }
 
     private static QueryExecution make(Query query, Dataset dataset, DatasetGraph datasetGraph, Binding initialBinding) {
-        QueryExecDatasetBuilder builder = QueryExec.newBuilder().query(query);
+        QueryExecDatasetBuilder builder = QueryExecDataset.newBuilder().query(query);
         if ( initialBinding != null )
             builder.initialBinding(initialBinding);
         if ( dataset == null && datasetGraph == null )

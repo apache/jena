@@ -49,7 +49,7 @@ public class RDFConnectionWrapper implements RDFConnection {
     }
 
     @Override
-    public QueryExecutionBuilderCommon newQuery() {
+    public QueryExecutionBuilder newQuery() {
         return get().newQuery();
     }
 

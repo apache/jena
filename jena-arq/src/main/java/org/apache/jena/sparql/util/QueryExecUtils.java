@@ -43,6 +43,8 @@ import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecutionAdapter;
 import org.apache.jena.sparql.resultset.RDFOutput ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 
@@ -59,6 +61,23 @@ public class QueryExecUtils {
         globalPrefixMap.setNsPrefix("" ,    "http://example/") ;
     }
     protected static Prologue      dftPrologue     = new Prologue(globalPrefixMap) ;
+
+    public static void exec(QueryExec queryExec) {
+        exec(queryExec.getQuery(), queryExec) ;
+    }
+
+    public static void exec(Prologue prologue, QueryExec queryExec) {
+        exec(prologue, queryExec, ResultsFormat.FMT_TEXT) ;
+    }
+
+    public static void exec(Prologue prologue, QueryExec queryExec, ResultsFormat outputFormat) {
+        exec(prologue, queryExec, outputFormat, System.out);
+    }
+
+    public static void exec(Prologue prologue, QueryExec queryExec, ResultsFormat outputFormat, PrintStream output) {
+        QueryExecution queryExecution = QueryExecutionAdapter.adapt(queryExec);
+        executeQuery(prologue, queryExecution, outputFormat, output);
+    }
 
     public static void executeQuery(QueryExecution queryExecution) {
         executeQuery(null, queryExecution) ;

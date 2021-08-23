@@ -92,9 +92,9 @@ public class TestQueryExecutionTimeout1
     public void timeout_01() {
         // Test unstable on loaded Jenkins CI
         String qs = prefix + "SELECT * { ?s ?p ?o }";
-        QueryExecution qExec = QueryExecution.create()
+        QueryExecution qExec = QueryExecution.dataset(ds)
                 .query(qs)
-                .dataset(ds)
+
                 .timeout(50, TimeUnit.MILLISECONDS)
                 .build();
         ResultSet rs = qExec.execSelect();
@@ -105,7 +105,7 @@ public class TestQueryExecutionTimeout1
     public void timeout_02() {
         String qs = prefix + "SELECT * { ?s ?p ?o }";
         // No timeout
-        try ( QueryExecution qExec = QueryExecution.create().query(qs).dataset(ds)
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
                 .timeout(100, TimeUnit.MILLISECONDS)
                 .build()) {
             ResultSet rs = qExec.execSelect();
@@ -116,7 +116,7 @@ public class TestQueryExecutionTimeout1
     @Test
     public void timeout_03() {
         String qs = prefix + "SELECT * { ?s ?p ?o }";
-        try ( QueryExecution qExec = QueryExecution.create().query(qs).dataset(ds)
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
                 .timeout(50, TimeUnit.MILLISECONDS)
                 .build()) {
             ResultSet rs = qExec.execSelect();
@@ -130,7 +130,7 @@ public class TestQueryExecutionTimeout1
     public void timeout_04()
     {
         String qs = prefix + "SELECT * { ?s ?p ?o FILTER f:wait(1) }" ; // Sleep in execution to kick timer thread.
-        try ( QueryExecution qExec = QueryExecution.create().query(qs).dataset(ds)
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
                 .timeout(100, TimeUnit.MILLISECONDS)
                 .build()) {
             ResultSet rs = qExec.execSelect() ;
@@ -154,7 +154,7 @@ public class TestQueryExecutionTimeout1
     {
         // No timeout.
         String qs = prefix + "SELECT * { ?s ?p ?o FILTER f:wait(1) }" ;
-        try ( QueryExecution qExec = QueryExecution.create().query(qs).dataset(ds)
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
                 .timeout(-1, TimeUnit.MILLISECONDS)
                 .build()) {
             ResultSet rs = qExec.execSelect() ;
@@ -166,7 +166,7 @@ public class TestQueryExecutionTimeout1
     public void timeout_10()
     {
         String qs = prefix + "SELECT * { ?s ?p ?o }" ;
-        try ( QueryExecution qExec = QueryExecution.create().query(qs).dataset(ds)
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
                 .initialTimeout(500, TimeUnit.MILLISECONDS)
                 .overallTimeout(-1, TimeUnit.MILLISECONDS)
                 .build()) {
@@ -183,7 +183,7 @@ public class TestQueryExecutionTimeout1
     public void timeout_11()
     {
         String qs = prefix + "SELECT * { ?s ?p ?o }" ;
-        try ( QueryExecution qExec = QueryExecution.create().query(qs).dataset(ds)
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
                 .initialTimeout(100, TimeUnit.MILLISECONDS)
                 .overallTimeout(100, TimeUnit.MILLISECONDS)
                 .build()) {
@@ -199,7 +199,7 @@ public class TestQueryExecutionTimeout1
     public void timeout_12()
     {
         String qs = prefix + "SELECT * { ?s ?p ?o }" ;
-        try ( QueryExecution qExec = QueryExecution.create().query(qs).dataset(ds)
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
                 .initialTimeout(-1, TimeUnit.MILLISECONDS)
                 .overallTimeout(100, TimeUnit.MILLISECONDS)
                 .build()) {

@@ -295,31 +295,31 @@ public class UpdateAction
 
     // Streaming Updates:
 
-    /** Parse update operations into a GraphStore by reading it from a file */
+    /** Parse update operations into a DatasetGraph by reading it from a file */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName)
     {
         parseExecute(usingList, dataset, fileName, null, Syntax.defaultUpdateSyntax) ;
     }
 
-    /** Parse update operations into a GraphStore by reading it from a file */
+    /** Parse update operations into a DatasetGraph by reading it from a file */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, Syntax syntax)
     {
         parseExecute(usingList, dataset, fileName, null, syntax) ;
     }
 
-    /** Parse update operations into a GraphStore by reading it from a file */
+    /** Parse update operations into a DatasetGraph by reading it from a file */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, String baseURI, Syntax syntax)
     {
         parseExecute(usingList, dataset, fileName, (Binding)null, baseURI, syntax);
     }
 
-    /** Parse update operations into a GraphStore by reading it from a file */
+    /** Parse update operations into a DatasetGraph by reading it from a file */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, QuerySolution inputBinding, String baseURI, Syntax syntax)
     {
         parseExecute(usingList, dataset, fileName, BindingLib.asBinding(inputBinding), baseURI, syntax) ;
     }
 
-    /** Parse update operations into a GraphStore by reading it from a file */
+    /** Parse update operations into a DatasetGraph by reading it from a file */
     @SuppressWarnings("resource")
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, Binding inputBinding, String baseURI, Syntax syntax)
     {
@@ -337,7 +337,7 @@ public class UpdateAction
     }
 
     /**
-     * Parse update operations into a GraphStore by parsing from an InputStream.
+     * Parse update operations into a DatasetGraph by parsing from an InputStream.
      * @param usingList A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
      * @param input     The source of the update request (must be UTF-8).
      */
@@ -347,7 +347,7 @@ public class UpdateAction
     }
 
     /**
-     * Parse update operations into a GraphStore by parsing from an InputStream.
+     * Parse update operations into a DatasetGraph by parsing from an InputStream.
      * @param usingList A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
      * @param input     The source of the update request (must be UTF-8).
      * @param syntax    The update language syntax
@@ -358,7 +358,7 @@ public class UpdateAction
     }
 
     /**
-     * Parse update operations into a GraphStore by parsing from an InputStream.
+     * Parse update operations into a DatasetGraph by parsing from an InputStream.
      * @param usingList A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
      * @param input     The source of the update request (must be UTF-8).
      * @param baseURI   The base URI for resolving relative URIs.
@@ -369,7 +369,7 @@ public class UpdateAction
     }
 
     /**
-     * Parse update operations into a GraphStore by parsing from an InputStream.
+     * Parse update operations into a DatasetGraph by parsing from an InputStream.
      * @param usingList A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
      * @param dataset   The dataset to apply the changes to
      * @param input     The source of the update request (must be UTF-8).
@@ -382,7 +382,7 @@ public class UpdateAction
     }
 
     /**
-     * Parse update operations into a GraphStore by parsing from an InputStream.
+     * Parse update operations into a DatasetGraph by parsing from an InputStream.
      * @param usingList    A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
      * @param dataset      The dataset to apply the changes to
      * @param input        The source of the update request (must be UTF-8).
@@ -397,7 +397,7 @@ public class UpdateAction
     }
 
     /**
-     * Parse update operations into a GraphStore by parsing from an InputStream.
+     * Parse update operations into a DatasetGraph by parsing from an InputStream.
      * @param usingList    A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
      * @param dataset      The dataset to apply the changes to
      * @param input        The source of the update request (must be UTF-8).
@@ -408,6 +408,7 @@ public class UpdateAction
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, Binding inputBinding, String baseURI, Syntax syntax)
     {
+        @SuppressWarnings("deprecation")
         UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(dataset, inputBinding) ;
         if (uProc == null)
             throw new ARQException("No suitable update procesors are registered/able to execute your updates");

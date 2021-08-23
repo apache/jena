@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.query.Query;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
@@ -33,7 +34,7 @@ public class TestQueryExecDataset {
     // Most QueryExec testing gets tested via QueryExecution usage
 
     @Test public void queryExec_substitution_01() {
-        QueryExec queryExec = QueryExec.newBuilder()
+        QueryExec queryExec = QueryExec.dataset(DatasetGraphFactory.empty())
                 .query("SELECT * { ?s ?p ?o }")
                 .substitution(Var.alloc("s"), SSE.parseNode(":x"))
                 .build();
@@ -46,7 +47,7 @@ public class TestQueryExecDataset {
     private static final Symbol testSymbol = Symbol.create("a:b:c");
 
     @Test public void queryExec_substitution_02() {
-        QueryExecBuilder builder = QueryExec.newBuilder()
+        QueryExecBuilder builder = QueryExec.dataset(DatasetGraphFactory.empty())
                 .query("SELECT * { ?s ?p ?o }")
                 .set(testSymbol, "TRUE")
                 .substitution(Var.alloc("s"), SSE.parseNode(":x"));

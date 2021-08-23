@@ -41,6 +41,7 @@ import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.ContextAccumulator;
 import org.apache.jena.sparql.util.Symbol;
 
 /**
@@ -87,6 +88,7 @@ public class RDFParserBuilder {
     private Lang forceLang = null;
 
     private String baseURI = null;
+    private ContextAccumulator contextAcc = ContextAccumulator.newBuilder(()->RIOT.getContext());
 
     private boolean canonicalValues = false;
     private LangTagForm langTagForm = LangTagForm.NONE;
@@ -105,8 +107,6 @@ public class RDFParserBuilder {
     // Bad news.
     private ErrorHandler errorHandler = null;
 
-    // Parsing process
-    private Context context = null;
     public static RDFParserBuilder create() { return new RDFParserBuilder() ; }
     private RDFParserBuilder() {}
 
@@ -504,43 +504,39 @@ public class RDFParserBuilder {
 //        return this;
 //    }
 
-    private void ensureContext() {
-        if ( context == null )
-            context = new Context();
-    }
-
     /**
      * Set the context for the parser when built.
-     *
-     * If a context is already partly set
-     * for this builder, merge the new settings
-     * into the outstanding context.
-     *
-     * If the context argument is null, do nothing.
      *
      * @param context
      * @return this
      * @see Context
      */
     public RDFParserBuilder context(Context context) {
-        if ( context == null )
-            return this;
-        ensureContext();
-        this.context.putAll(context);
+        contextAcc.context(context);
         return this;
     }
 
     /**
-     * Added a setting to the context for the parser when built.
+     * Add a setting to the context for the parser when built.
      * A value of "null" removes a previous setting.
      * @param symbol
      * @param value
      * @return this
-     * @see Context
      */
     public RDFParserBuilder set(Symbol symbol, Object value) {
-        ensureContext();
-        context.put(symbol, value);
+        contextAcc.set(symbol, value);
+        return this;
+    }
+
+
+    /**
+     * Add a setting to the context for the parser when built.
+     * @param symbol
+     * @param value
+     * @return this
+     */
+    public RDFParserBuilder set(Symbol symbol, boolean value) {
+        contextAcc.set(symbol, value);
         return this;
     }
 
@@ -619,10 +615,7 @@ public class RDFParserBuilder {
         // Build what we can now - some things have to be built in the parser.
         if ( uri == null && path == null && stringToParse == null && inputStream == null && javaReader == null )
             throw new RiotException("No source specified");
-        if ( context == null )
-            context = RIOT.getContext().copy();
-
-
+        Context context = contextAcc.context();
 
         // Setup the HTTP client.
         HttpClient clientJDK = ( httpClient != null ) ? httpClient : HttpEnv.getDftHttpClient();
@@ -680,7 +673,7 @@ public class RDFParserBuilder {
         RDFParserBuilder builder = new RDFParserBuilder();
         builder.uri =               this.uri;
         builder.path =              this.path;
-        builder.stringToParse =           this.stringToParse;
+        builder.stringToParse =     this.stringToParse;
         builder.inputStream =       this.inputStream;
         builder.javaReader =        this.javaReader;
         builder.httpHeaders =       new HashMap<>(this.httpHeaders);
@@ -688,6 +681,7 @@ public class RDFParserBuilder {
         builder.hintLang =          this.hintLang;
         builder.forceLang =         this.forceLang;
         builder.baseURI =           this.baseURI;
+        builder.contextAcc =        this.contextAcc.clone();
         builder.checking =          this.checking;
         builder.canonicalValues =   this.canonicalValues;
         builder.langTagForm =       this.langTagForm;
@@ -696,7 +690,6 @@ public class RDFParserBuilder {
         builder.factory =           this.factory;
         builder.labelToNode =       this.labelToNode;
         builder.errorHandler =      this.errorHandler;
-        builder.context =           this.context;
         return builder;
     }
 }

@@ -37,288 +37,203 @@ import org.apache.jena.sparql.modify.UpdateProcessorStreamingBase;
 import org.apache.jena.sparql.util.Context ;
 
 /**
- * Create {@link UpdateProcessor} execution objects.
+ * Create {@link UpdateExecution} execution objects.
  * <p>
- * For more control of building a local or remote {@link UpdateProcessor} object see the builder pattern:
+ * For more control of building a local or remote {@link UpdateExecution} object see the builder pattern:
  * <ul>
- * <li>{@code UpdateProcessor.create(). ... .build()} for querying local data.</li>
+ * <li>{@code UpdateExecution.create(). ... .build()} for querying local data.</li>
  * <li>{@code UpdateProcessorHTTP.service(url). ... .build()} for querying a remote store using HTTP.</li>
  * </ul>
  * <p>
  * See also {@code RDFConnection} for working with SPARQL Query, SPARQL Update and SPARQL Graph Store Protocol together.
  *
- * @see UpdateExecutionBuilder
+ * @see UpdateExecutionDatasetBuilder
  * @see UpdateExecutionHTTPBuilder
  */
 public class UpdateExecutionFactory
 {
     /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
      *
      * @param update
      * @param dataset
-     * @return UpdateProcessor or null
+     * @return UpdateExecution
      */
-    public static UpdateProcessor create(Update update, Dataset dataset) {
+    public static UpdateExecution create(Update update, Dataset dataset) {
         return create(new UpdateRequest(update), dataset);
     }
 
     /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
      *
      * @param update
      * @param datasetGraph
-     * @return UpdateProcessor or null
+     * @return UpdateExec
+     * @deprecated Use {@code UpdateExec.dataset(datasetGraph)... build();}
      */
-    public static UpdateProcessor create(Update update, DatasetGraph datasetGraph) {
+    @Deprecated
+    public static UpdateExec create(Update update, DatasetGraph datasetGraph) {
         return create(new UpdateRequest(update), datasetGraph);
     }
 
     /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
      *
      * @param update
      * @param dataset
      * @param inputBinding Initial binding to be applied to Update operations that
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @return UpdateProcessor or null
+     * @return UpdateExec
+     * @deprecated Use {@code UpdateExecution.dataset(dataset)... build()}
      */
-    public static UpdateProcessor create(Update update, Dataset dataset, QuerySolution inputBinding) {
+    @Deprecated
+
+    public static UpdateExec create(Update update, Dataset dataset, QuerySolution inputBinding) {
         return create(update, dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding));
     }
 
     /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
      *
      * @param update
      * @param datasetGraph
      * @param inputBinding Initial binding to be applied to Update operations that
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @return UpdateProcessor or null
+     * @return UpdateExec
+     * @deprecated Use {@code UpdateExec.dataset(datasetGraph)... build()}
      */
-    public static UpdateProcessor create(Update update, DatasetGraph datasetGraph, Binding inputBinding) {
+    @Deprecated
+    public static UpdateExec create(Update update, DatasetGraph datasetGraph, Binding inputBinding) {
         return create(new UpdateRequest(update), datasetGraph, inputBinding);
     }
 
     /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
      *
      * @param updateRequest
      * @param dataset
-     * @return UpdateProcessor or null
+     * @return UpdateExecution
      */
-    public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset) {
+    public static UpdateExecution create(UpdateRequest updateRequest, Dataset dataset) {
         return make(updateRequest, dataset, null, null);
     }
 
     /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
      *
      * @param updateRequest
      * @param datasetGraph
-     * @return UpdateProcessor or null
-     * @deprecated Use {@code UpdateExec.newBuilder(). ... build()}
+     * @return UpdateExec
+     * @deprecated Use {@code UpdateExec.dataset(datasetGraph)... build()}
      */
     @Deprecated
-    public static UpdateProcessor create(UpdateRequest updateRequest, DatasetGraph datasetGraph) {
+    public static UpdateExec create(UpdateRequest updateRequest, DatasetGraph datasetGraph) {
         return make(updateRequest, datasetGraph, null, null);
     }
 
     /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
      *
      * @param updateRequest
      * @param dataset
      * @param inputBinding Initial binding to be applied to Update operations that
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @return UpdateProcessor or null
+     * @return UpdateExecution
+     * @deprecated Use {@code UpdateExecution.dataset(dataset)... build()}
      */
-    public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding) {
+    @Deprecated
+    public static UpdateExecution create(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding) {
         return make(updateRequest, dataset, inputBinding, null);
     }
 
     /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
      *
      * @param updateRequest
      * @param datasetGraph
      * @param inputBinding Initial binding to be applied to Update operations that
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @return UpdateProcessor or null
-     * @deprecated Use {@code UpdateExec.newBuilder(). ... build()}
+     * @return UpdateExec
+     * @deprecated Use {@code UpdateExec.dataset(datasetGraph)... build()}
      */
     @Deprecated
-    public static UpdateProcessor create(UpdateRequest updateRequest, DatasetGraph datasetGraph, Binding inputBinding) {
+    public static UpdateExec create(UpdateRequest updateRequest, DatasetGraph datasetGraph, Binding inputBinding) {
         return make(updateRequest, datasetGraph, inputBinding, null);
     }
 
     /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
-     *
-     * @param dataset
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(Dataset dataset) {
-        return makeStreaming(dataset.asDatasetGraph(), null, null);
-    }
-
-    /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
-     *
-     * @param datasetGraph
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph) {
-        return makeStreaming(datasetGraph, null, null);
-    }
-
-    /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
-     *
-     * @param dataset
-     * @param inputBinding Initial binding to be applied to Update operations that
-     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(Dataset dataset, QuerySolution inputBinding) {
-        return createStreaming(dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding));
-    }
-
-    /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
-     *
-     * @param datasetGraph
-     * @param inputBinding Initial binding to be applied to Update operations that
-     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Binding inputBinding) {
-        return makeStreaming(datasetGraph, inputBinding, null);
-    }
-
-    /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
-     *
-     * @param dataset
-     * @param context (null means use merge of global and graph store context))
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(Dataset dataset, Context context) {
-        return makeStreaming(dataset.asDatasetGraph(), null, context);
-    }
-
-    /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
-     *
-     * @param datasetGraph
-     * @param context (null means use merge of global and graph store context))
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Context context) {
-        return makeStreaming(datasetGraph, null, context);
-    }
-
-    /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
-     *
-     * @param dataset
-     * @param inputBinding Initial binding to be applied to Update operations that
-     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @param context (null means use merge of global and graph store context))
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(Dataset dataset, QuerySolution inputBinding, Context context) {
-        return createStreaming(dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding), context);
-    }
-
-    /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
-     *
-     * @param datasetGraph
-     * @param inputBinding Initial binding to be applied to Update operations that
-     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @param context (null means use merge of global and graph store context))
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Binding inputBinding, Context context) {
-        return makeStreaming(datasetGraph, inputBinding, context);
-    }
-
-    /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
      *
      * @param updateRequest
      * @param dataset
      * @param context (null means use merge of global and graph store context))
-     * @return UpdateProcessor or null
+     * @return UpdateExecution
      */
-    public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset, Context context) {
+    public static UpdateExecution create(UpdateRequest updateRequest, Dataset dataset, Context context) {
         return make(updateRequest, dataset, null, context);
     }
 
     /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
      *
      * @param updateRequest
      * @param datasetGraph
      * @param context (null means use merge of global and graph store context))
-     * @return UpdateProcessor or null
+     * @return UpdateExec
+     * @deprecated Use {@code UpdateExec.dataset(datasetGraph)... build()}
      */
-    public static UpdateProcessor create(UpdateRequest updateRequest, DatasetGraph datasetGraph, Context context) {
+    @Deprecated
+    public static UpdateExec create(UpdateRequest updateRequest, DatasetGraph datasetGraph, Context context) {
         return make(updateRequest, datasetGraph, null, context);
     }
 
     /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
      *
      * @param updateRequest
      * @param dataset
      * @param inputBinding Initial binding to be applied to Update operations that
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @param context (null means use merge of global and graph store context))
-     * @return UpdateProcessor or null
+     * @return UpdateExecution
+     * @deprecated Use {@code UpdateExecution.dataset(dataset)... build()}
      */
-    public static UpdateProcessor create(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding, Context context) {
+    @Deprecated
+    public static UpdateExecution create(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding, Context context) {
         return make(updateRequest, dataset, inputBinding, context);
     }
 
     /**
-     * Create an UpdateProcessor appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateProcessor
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
      *
      * @param updateRequest
      * @param datasetGraph
      * @param inputBinding Initial binding to be applied to Update operations that
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @param context (null means use merge of global and graph store context))
-     * @return UpdateProcessor or null
+     * @return UpdateExec
+     * @deprecated Use {@code UpdateExecution.dataset(dataset)... build()}
      */
-    public static UpdateProcessor create(UpdateRequest updateRequest, DatasetGraph datasetGraph, Binding inputBinding, Context context) {
+    @Deprecated
+    public static UpdateExec create(UpdateRequest updateRequest, DatasetGraph datasetGraph, Binding inputBinding, Context context) {
         return make(updateRequest, datasetGraph, inputBinding, context);
     }
 
     // Everything for local updates comes through one of these two make methods
-    private static UpdateProcessor make(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding, Context context) {
-        return UpdateExecution.create().update(updateRequest).dataset(dataset).initialBinding(inputBinding).build();
+    private static UpdateExecution make(UpdateRequest updateRequest, Dataset dataset, QuerySolution inputBinding, Context context) {
+        return UpdateExecution.dataset(dataset).update(updateRequest).initialBinding(inputBinding).build();
     }
 
     // Everything for local updates comes through one of these two make methods
@@ -327,7 +242,118 @@ public class UpdateExecutionFactory
         return UpdateExec.newBuilder().update(updateRequest).dataset(datasetGraph).initialBinding(inputBinding).context(cxt).build();
     }
 
+    /**
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
+     *
+     * @param dataset
+     * @return UpdateExecution
+     */
+    public static UpdateProcessorStreaming createStreaming(Dataset dataset) {
+        return makeStreaming(dataset.asDatasetGraph(), null, null);
+    }
+
+    /**
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
+     *
+     * @param datasetGraph
+     * @return UpdateExecution
+     */
+    @Deprecated
+    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph) {
+        return makeStreaming(datasetGraph, null, null);
+    }
+
+    /**
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
+     *
+     * @param dataset
+     * @param inputBinding Initial binding to be applied to Update operations that
+     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @return UpdateExecution
+     */
+    @Deprecated
+    public static UpdateProcessorStreaming createStreaming(Dataset dataset, QuerySolution inputBinding) {
+        return createStreaming(dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding));
+    }
+
+    /**
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
+     *
+     * @param datasetGraph
+     * @param inputBinding Initial binding to be applied to Update operations that
+     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @return UpdateExecution
+     * @deprecated Use {@code UpdateExecution.dataset(dataset)... build()}
+     */
+    @Deprecated
+    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Binding inputBinding) {
+        return makeStreaming(datasetGraph, inputBinding, null);
+    }
+
+    /**
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
+     *
+     * @param dataset
+     * @param context (null means use merge of global and graph store context))
+     * @return UpdateExecution
+     */
+    @Deprecated
+    public static UpdateProcessorStreaming createStreaming(Dataset dataset, Context context) {
+        return makeStreaming(dataset.asDatasetGraph(), null, context);
+    }
+
+    /**
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
+     *
+     * @param datasetGraph
+     * @param context (null means use merge of global and graph store context))
+     * @return UpdateExecution
+     */
+    @Deprecated
+    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Context context) {
+        return makeStreaming(datasetGraph, null, context);
+    }
+
+    /**
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
+     *
+     * @param dataset
+     * @param inputBinding Initial binding to be applied to Update operations that
+     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @param context (null means use merge of global and graph store context))
+     * @return UpdateExecution
+     * @deprecated Use {@code UpdateExecution.dataset(dataset)... build()}
+     */
+    @Deprecated
+    public static UpdateProcessorStreaming createStreaming(Dataset dataset, QuerySolution inputBinding, Context context) {
+        return createStreaming(dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding), context);
+    }
+
+    /**
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
+     *
+     * @param datasetGraph
+     * @param inputBinding Initial binding to be applied to Update operations that
+     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @param context (null means use merge of global and graph store context))
+     * @return UpdateExecution
+     * @deprecated Use {@code UpdateExecution.dataset(dataset)... build()}
+     */
+    @Deprecated
+    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Binding inputBinding, Context context) {
+        return makeStreaming(datasetGraph, inputBinding, context);
+    }
+
     // Everything for local updates comes through one of these two make methods
+    @Deprecated
     private static UpdateProcessorStreaming makeStreaming(DatasetGraph datasetGraph, Binding inputBinding, Context context) {
         Prologue prologue = new Prologue();
         Context cxt = Context.setupContextForDataset(context, datasetGraph);
@@ -337,138 +363,156 @@ public class UpdateExecutionFactory
     }
 
     /**
-     * Create an UpdateProcessor that sends the update to a remote SPARQL Update
+     * Create an UpdateExecution that sends the update to a remote SPARQL Update
      * service.
      *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @return Remote Update processor
      */
-    public static UpdateProcessor createRemote(Update update, String remoteEndpoint) {
+    public static UpdateExecution createRemote(Update update, String remoteEndpoint) {
         return makeRemote(new UpdateRequest(update), remoteEndpoint, null);
     }
 
     /**
-     * Create an UpdateProcessor that sends the update to a remote SPARQL Update
+     * Create an UpdateExecution that sends the update to a remote SPARQL Update
      * service.
      *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
      * @return Remote Update processor
+     * @deprecated Use {@code UpdateExecution.service(remoteEndpoint)...build();}
      */
-    public static UpdateProcessor createRemote(Update update, String remoteEndpoint, Context context) {
+    @Deprecated
+    public static UpdateExecution createRemote(Update update, String remoteEndpoint, Context context) {
         return makeRemote(new UpdateRequest(update), remoteEndpoint, context);
     }
 
     /**
-     * Create an UpdateProcessor that sends the update request to a remote SPARQL
+     * Create an UpdateExecution that sends the update request to a remote SPARQL
      * Update service.
      *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @return Remote Update processor
+     * @deprecated Use {@code UpdateExecution.service(remoteEndpoint)...build();}
      */
-    public static UpdateProcessor createRemote(UpdateRequest updateRequest, String remoteEndpoint) {
+    @Deprecated
+    public static UpdateExecution createRemote(UpdateRequest updateRequest, String remoteEndpoint) {
         return makeRemote(updateRequest, remoteEndpoint, null);
     }
 
     /**
-     * Create an UpdateProcessor that sends the update request to a remote SPARQL
+     * Create an UpdateExecution that sends the update request to a remote SPARQL
      * Update service.
      *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
      * @return Remote Update processor
+     * @deprecated Use {@code UpdateExecution.service(remoteEndpoint)...build();}
      */
-    public static UpdateProcessor createRemote(UpdateRequest updateRequest, String remoteEndpoint, Context context) {
+    @Deprecated
+    public static UpdateExecution createRemote(UpdateRequest updateRequest, String remoteEndpoint, Context context) {
         return makeRemote(updateRequest, remoteEndpoint, context);
     }
 
     /**
-     * Create an UpdateProcessor that sends the update request to a remote SPARQL
+     * Create an UpdateExecution that sends the update request to a remote SPARQL
      * Update service.
      *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
      * @return Remote Update processor
+     * @deprecated Use {@code UpdateExecution.service(remoteEndpoint)...build();}
      */
-
-    private static UpdateProcessor makeRemote(UpdateRequest updateRequest, String remoteEndpoint, Context context) {
+    @Deprecated
+    private static UpdateExecution makeRemote(UpdateRequest updateRequest, String remoteEndpoint, Context context) {
         return makeRemote(updateRequest, remoteEndpoint, context, UpdateSendMode.asPost);
     }
 
     /**
-     * Create an UpdateProcessor that sends the update request to a remote SPARQL
-     * Update service using an HTML form
+     * Create an UpdateExecution that sends the update request to a remote SPARQL
+     * Update service using an HTML form.  Using an HTML form should be avoided unless the
+     * endpoint does not offer POST application/sparql-update.
      *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @return Remote Update processor
+     * @deprecated Use {@code UpdateExecution.service(remoteEndpoint).snedMode(UpdateSendMode.asPostForm)..build();}
      */
-    public static UpdateProcessor createRemoteForm(Update update, String remoteEndpoint) {
+    @Deprecated
+    public static UpdateExecution createRemoteForm(Update update, String remoteEndpoint) {
         return makeRemoteForm(new UpdateRequest(update), remoteEndpoint, null);
     }
 
     /**
-     * Create an UpdateProcessor that sends the update request to a remote SPARQL
-     * Update service using an HTML form
+     * Create an UpdateExecution that sends the update request to a remote SPARQL
+     * Update service using an HTML form.  Using an HTML form should be avoided unless the
+     * endpoint does not offer POST application/sparql-update.
      *
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
      * @return Remote Update processor
+     * @deprecated Use {@code UpdateExecution.service(remoteEndpoint)...build();}
      */
-    public static UpdateProcessor createRemoteForm(Update update, String remoteEndpoint, Context context) {
+    @Deprecated
+    public static UpdateExecution createRemoteForm(Update update, String remoteEndpoint, Context context) {
         return makeRemoteForm(new UpdateRequest(update), remoteEndpoint, context);
     }
 
     /**
-     * Create an UpdateProcessor that sends the update request to a remote SPARQL
-     * Update service using an HTML form
+     * Create an UpdateExecution that sends the update request to a remote SPARQL
+     * Update service using an HTML form.  Using an HTML form should be avoided unless the
+     * endpoint does not offer POST application/sparql-update.
      *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @return Remote Update processor
      */
-    public static UpdateProcessor createRemoteForm(UpdateRequest updateRequest, String remoteEndpoint) {
+    public static UpdateExecution createRemoteForm(UpdateRequest updateRequest, String remoteEndpoint) {
         return makeRemoteForm(updateRequest, remoteEndpoint, null);
     }
 
     /**
-     * Create an UpdateProcessor that sends the update request to a remote SPARQL
-     * Update service using an HTML form
+     * Create an UpdateExecution that sends the update request to a remote SPARQL
+     * Update service using an HTML form.  Using an HTML form should be avoided unless the
+     * endpoint does not offer POST application/sparql-update.
      *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
      * @return Remote Update processor
+     * @deprecated Use {@code UpdateExecution.service(remoteEndpoint)...build();}
      */
-    public static UpdateProcessor createRemoteForm(UpdateRequest updateRequest, String remoteEndpoint, Context context) {
+    @Deprecated
+    public static UpdateExecution createRemoteForm(UpdateRequest updateRequest, String remoteEndpoint, Context context) {
         return makeRemoteForm(updateRequest, remoteEndpoint, context);
     }
 
     /**
-     * Create an UpdateProcessor that sends the update request to a remote SPARQL
+     * Create an UpdateExecution that sends the update request to a remote SPARQL
      * Update service using an HTML form
      *
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
      * @return Remote Update processor
+     * @deprecated Use {@code UpdateExecution.service(remoteEndpoint)...build();}
      */
-    private static UpdateProcessor makeRemoteForm(UpdateRequest updateRequest, String remoteEndpoint, Context context) {
+    @Deprecated
+    private static UpdateExecution makeRemoteForm(UpdateRequest updateRequest, String remoteEndpoint, Context context) {
         return makeRemote(updateRequest, remoteEndpoint, context, UpdateSendMode.asPostForm);
     }
 
-    private static UpdateProcessor makeRemote(UpdateRequest updateRequest, String remoteEndpoint, Context context, UpdateSendMode updateSendMode) {
+    private static UpdateExecution makeRemote(UpdateRequest updateRequest, String remoteEndpoint, Context context, UpdateSendMode updateSendMode) {
         Objects.requireNonNull(updateRequest, "updateRequest");
         Objects.requireNonNull(remoteEndpoint, "remoteEndpoint");
         Objects.requireNonNull(updateSendMode, "updateSendMode");
         context = (context==null) ? ARQ.getContext() : context;
-
         return UpdateExecutionHTTP.create()
                 .context(context)
                 .endpoint(remoteEndpoint)

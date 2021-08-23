@@ -32,7 +32,7 @@ import org.apache.jena.sparql.util.Context;
 
 public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryExecHTTPBuilder> implements QueryExecMod, QueryExecBuilder {
 
-    public static QueryExecHTTPBuilder newBuilder() { return new QueryExecHTTPBuilder(); }
+    public static QueryExecHTTPBuilder create() { return new QueryExecHTTPBuilder(); }
 
     private QueryExecHTTPBuilder() {}
 

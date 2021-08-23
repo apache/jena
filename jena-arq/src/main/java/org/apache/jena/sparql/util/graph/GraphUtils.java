@@ -184,7 +184,7 @@ public class GraphUtils {
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("ATYPE", atype) ;
 
-        try(QueryExecution qExec = QueryExecution.create().query(q).model(model).initialBinding(qsm).build() ) {
+        try(QueryExecution qExec = QueryExecution.model(model).query(q).initialBinding(qsm).build() ) {
             return (Resource)QueryExecUtils.getAtMostOne(qExec, "root") ;
         }
     }
@@ -197,7 +197,7 @@ public class GraphUtils {
         Query q = QueryFactory.create(s) ;
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("ATYPE", atype) ;
-        try(QueryExecution qExec = QueryExecution.create().query(q).model(model).initialBinding(qsm).build() ) {
+        try(QueryExecution qExec = QueryExecution.model(model).query(q).initialBinding(qsm).build() ) {
             return ListUtils.toList(
                     QueryExecUtils.getAll(qExec, "root").stream().map(r->(Resource)r));
 

@@ -21,18 +21,18 @@ package org.apache.jena.fuseki;
 import static org.apache.jena.fuseki.ServerCtl.serviceGSP;
 import static org.apache.jena.fuseki.ServerCtl.serviceQuery;
 import static org.apache.jena.fuseki.ServerCtl.serviceUpdate;
-import static org.apache.jena.fuseki.ServerTest.*;
+import static org.apache.jena.fuseki.ServerTest.gn1;
+import static org.apache.jena.fuseki.ServerTest.graph1;
+import static org.apache.jena.fuseki.ServerTest.graph2;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.query.*;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
+import org.apache.jena.sparql.exec.http.UpdateSendMode;
 import org.apache.jena.sparql.util.Convert;
-import org.apache.jena.update.UpdateExecutionFactory;
-import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateProcessor;
-import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.update.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,15 +72,11 @@ public class TestWebappSPARQLProtocol extends AbstractFusekiWebappTest
 
     @Test
     public void update_01() {
-        UpdateRequest update = UpdateFactory.create("INSERT DATA {}");
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, serviceUpdate());
-        proc.execute();
+        UpdateExecution.service(serviceUpdate()).update("INSERT DATA {}").execute();
     }
 
     @Test
     public void update_02() {
-        UpdateRequest update = UpdateFactory.create("INSERT DATA {}");
-        UpdateProcessor proc = UpdateExecutionFactory.createRemoteForm(update, serviceUpdate());
-        proc.execute();
+        UpdateExecution.service(serviceUpdate()).update("INSERT DATA {}").sendMode(UpdateSendMode.asPostForm).execute();
     }
 }
