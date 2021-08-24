@@ -18,18 +18,16 @@
 
 package org.apache.jena.atlas.iterator;
 
-import java.util.HashSet ;
-import java.util.Set ;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 
-public class FilterUnique<T> implements Predicate<T>
-{
-    private Set<T> seen = new HashSet<>() ;
-    
+public class FilterUnique<T> implements Predicate<T> {
+    private Set<T> seen = new HashSet<>();
+
     @Override
-    public boolean test(T item)
-    {
-        return seen.add(item) ;
+    public boolean test(T item) {
+        return seen.add(item);
     }
 
 }

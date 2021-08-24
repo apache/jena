@@ -18,40 +18,37 @@
 
 package org.apache.jena.atlas.iterator;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Add an "onClose" action to an Iterator.
+ * Iterator base class that adds "closeable" to an iterator.
+ * close() is always called, whether explicitly or by end-of-iterator.
  */
-public class IteratorOnClose<T> extends IteratorWrapper<T> implements IteratorCloseable<T> {
-    private final Runnable closeHandler;
+public abstract class IteratorBase<X> implements IteratorCloseable<X> {
+
     private boolean hasClosed = false;
 
-    public static <T> IteratorOnClose<T> atEnd(Iterator<T> iterator, Runnable closeHandler) {
-        return new IteratorOnClose<>(iterator, closeHandler);
-    }
+    protected IteratorBase() {}
 
-    private IteratorOnClose(Iterator<T> iterator, Runnable closeHandler) {
-        super(iterator);
-        this.closeHandler = closeHandler;
-    }
+    protected abstract boolean hasNextElt();
+    protected abstract X nextElt();
+    protected abstract void onFinish();
 
     @Override
+    final
     public boolean hasNext() {
-        if( hasClosed )
-            return false;
-        boolean b = super.hasNext();
-        if ( !b )
+        boolean b = hasNextElt();
+        if ( ! b )
             close();
         return b;
     }
 
     @Override
-    public T next() {
+    final
+    public X next() {
         try {
-            return get().next();
-        } catch (NoSuchElementException ex) {
+            return nextElt();
+        } catch(NoSuchElementException ex) {
             close();
             throw ex;
         }
@@ -59,14 +56,8 @@ public class IteratorOnClose<T> extends IteratorWrapper<T> implements IteratorCl
 
     @Override
     public void close() {
-        if ( ! hasClosed ) {
-            try {
-                if ( closeHandler != null )
-                    closeHandler.run();
-            }
-            finally { hasClosed = true; }
-        }
-        // Multiple calls possible.
-        super.close();
+        if ( ! hasClosed )
+            onFinish();
+        hasClosed = true;
     }
 }

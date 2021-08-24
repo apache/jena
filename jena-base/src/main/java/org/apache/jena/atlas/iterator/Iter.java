@@ -31,7 +31,7 @@ import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.atlas.lib.Sink;
 
 /**
- * Iter provides general utilities for working with {@link Iterator}s.
+ * Iter provides general utilities for working with {@linkplain Iterator Iterators}.
  * This class provides functionality similar to {@code Stream}
  * except for iterators (and hence single threaded).
  * <p>
@@ -54,6 +54,8 @@ import org.apache.jena.atlas.lib.Sink;
  * The operations attempt to close iterators - see {@link Iter#close(Iterator)}.
  * Caution - not all Iterators in this package provide close or passdown close operations
  * {@link IteratorOnClose} adds a {@link Runnable} action called once on close.
+ * <p>
+ * Iterators do not guarantee {@code .remove}.
  *
  * @param <T> the type of element over which an instance of {@code Iter} iterates,
  */
@@ -240,49 +242,7 @@ public class Iter<T> implements IteratorCloseable<T> {
     // ---- Filter
 
     public static <T> Iterator<T> filter(final Iterator<? extends T> stream, final Predicate<T> filter) {
-        final Iterator<T> iter = new Iterator<T>() {
-            private boolean finished     = false;
-            private boolean slotOccupied = false;
-            private T       slot;
-
-            @Override
-            public boolean hasNext() {
-                if ( finished )
-                    return false;
-                while (!slotOccupied) {
-                    if ( !stream.hasNext() ) {
-                        closeIterator();
-                        break;
-                    }
-                    T nextItem = stream.next();
-                    if ( filter.test(nextItem) ) {
-                        slot = nextItem;
-                        slotOccupied = true;
-                        break;
-                    }
-                }
-                return slotOccupied;
-            }
-
-            @Override
-            public T next() {
-                if ( hasNext() ) {
-                    slotOccupied = false;
-                    return slot;
-                }
-                closeIterator();
-                throw new NoSuchElementException("filter.next");
-            }
-
-            private void closeIterator() {
-                if ( finished )
-                    return;
-                finished = true;
-                Iter.close(stream);
-            }
-        };
-
-        return iter;
+        return new IterFiltered<T>(stream, filter);
     }
 
     public static <T> Iterator<T> notFilter(final Iterator<? extends T> stream, final Predicate<T> filter) {
@@ -290,6 +250,59 @@ public class Iter<T> implements IteratorCloseable<T> {
     }
 
     // Filter-related
+
+    private static final class IterFiltered<T> implements IteratorCloseable<T> {
+        private final Iterator<? extends T> stream;
+        private final Predicate<T> filter;
+        private boolean finished     = false;
+        private boolean slotOccupied = false;
+        private T       slot;
+        private IterFiltered(Iterator<? extends T> stream, Predicate<T> filter) {
+            this.stream = stream;
+            this.filter = filter;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if ( finished )
+                return false;
+            while (!slotOccupied) {
+                if ( !stream.hasNext() ) {
+                    closeIterator();
+                    break;
+                }
+                T nextItem = stream.next();
+                if ( filter.test(nextItem) ) {
+                    slot = nextItem;
+                    slotOccupied = true;
+                    break;
+                }
+            }
+            return slotOccupied;
+        }
+
+        @Override
+        public T next() {
+            if ( hasNext() ) {
+                slotOccupied = false;
+                return slot;
+            }
+            closeIterator();
+            throw new NoSuchElementException("filter.next");
+        }
+
+        private void closeIterator() {
+            if ( finished )
+                return;
+            finished = true;
+            Iter.close(stream);
+        }
+
+        @Override
+        public void close() {
+            closeIterator();
+        }
+    }
 
     /**
      * Return true if every element of stream passes the filter (reads the
@@ -353,7 +366,7 @@ public class Iter<T> implements IteratorCloseable<T> {
     /**
      * Return an Optional with the last element of an iterator that matches the predicate.
      * Return {@code Optional.empty} if no match.
-     * Reads the iterator.
+     * Reads the iterator to completion.
      */
     public static <T> Optional<T> findLast(Iterator<T> iter, Predicate<? super T> predicate) {
         T thing = null;
@@ -381,18 +394,31 @@ public class Iter<T> implements IteratorCloseable<T> {
      * from a {@code T} to an {@code R}.
      */
     public static <T, R> Iterator<R> map(Iterator<? extends T> stream, Function<T, R> converter) {
-        Iterator<R> iter = new Iterator<R>() {
-            @Override
-            public boolean hasNext() {
-                return stream.hasNext();
-            }
+        return new IterMap<>(stream, converter);
+    }
 
-            @Override
-            public R next() {
-                return converter.apply(stream.next());
-            }
-        };
-        return iter;
+    private static final class IterMap<T,R> implements IteratorCloseable<R> {
+        private final Iterator<? extends T> stream;
+        private final Function<T, R> converter;
+        private IterMap(Iterator<? extends T> stream, Function<T, R> converter) {
+            this.stream = stream;
+            this.converter = converter;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return stream.hasNext();
+        }
+
+        @Override
+        public R next() {
+            return converter.apply(stream.next());
+        }
+
+        @Override
+        public void close() {
+            Iter.close(stream);
+        }
     }
 
     /**
@@ -408,25 +434,34 @@ public class Iter<T> implements IteratorCloseable<T> {
      * same items.
      */
     public static <T> Iterator<T> operate(final Iterator<? extends T> stream, final Consumer<T> action) {
-        final Iterator<T> iter = new IteratorCloseable<T>() {
-            @Override
-            public boolean hasNext() {
-                return stream.hasNext();
-            }
-
-            @Override
-            public T next() {
-                T t = stream.next();
-                action.accept(t);
-                return t;
-            }
-
-            @Override
-            public void close() {
-                Iter.close(stream);
-            }
-        };
+        final Iterator<T> iter = new IterOperate<T>(stream, action);
         return iter;
+    }
+
+    private static final class IterOperate<T> implements IteratorCloseable<T> {
+        private final Iterator<? extends T> stream;
+        private final Consumer<T> action;
+        private IterOperate(Iterator<? extends T> stream, Consumer<T> action) {
+            this.stream = stream;
+            this.action = action;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return stream.hasNext();
+        }
+
+        @Override
+        public T next() {
+            T t = stream.next();
+            action.accept(t);
+            return t;
+        }
+
+        @Override
+        public void close() {
+            Iter.close(stream);
+        }
     }
 
     /** Print an iterator as it gets used - this adds a printing wrapper */
@@ -487,7 +522,7 @@ public class Iter<T> implements IteratorCloseable<T> {
      * @see #limit(Iterator, long)
      */
     public static <T> List<T> take(Iterator<T> iter, int N) {
-        iter = new IteratorN<>(iter, N);
+        iter = new IterLimit<>(iter, N);
         List<T> x = new ArrayList<>(N);
         while ( iter.hasNext() )
             x.add(iter.next());
@@ -545,42 +580,59 @@ public class Iter<T> implements IteratorCloseable<T> {
      * @see #take(Iterator, int)
      */
     public static <X> Iterator<X> limit(Iterator<X> iterator, long limit) {
-        final Iterator<X> iter = new IteratorCloseable<X>() {
-            private long count = 0;
-            private boolean closed = false;
-            @Override
-            public boolean hasNext() {
-                if ( count >= limit ) {
-                    closeOnce();
-                    return false;
-                }
-                boolean b = iterator.hasNext();
-                if ( !b )
-                    closeOnce();
-                return b;
-            }
+        return new IterLimit<>(iterator, limit);
+    }
 
-            @Override
-            public X next() {
-                if ( ! hasNext() ) {
-                    closeOnce();
-                    throw new NoSuchElementException();
-                }
-                X t = next();
+    private static class IterLimit<T> implements IteratorCloseable<T> {
+        private long count = 0;
+        private final long limit;
+        private boolean closed = false;
+        private final Iterator<? extends T> iterator;
+
+        private IterLimit(Iterator<? extends T> stream, long limit) {
+            this.iterator = stream;
+            this.limit = limit;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if ( count >= limit ) {
+                closeOnce();
+                return false;
+            }
+            boolean b = iterator.hasNext();
+            if ( !b )
+                closeOnce();
+            return b;
+        }
+
+        @Override
+        public T next() {
+            try {
+                T t = iterator.next();
                 count++;
                 return t;
+            } catch (NoSuchElementException ex) {
+                closeOnce();
+                throw ex;
             }
+        }
 
-            private void closeOnce() {
-                if ( ! closed )
-                    Iter.close(iterator);
-                closed = true;
-            }
+        private void closeOnce() {
+            if ( ! closed )
+                Iter.close(iterator);
+            closed = true;
+        }
 
-            @Override
-            public void close() { closeOnce(); }
-        };
-        return iter;
+        @Override
+        public void close() { closeOnce(); }
+
+
+        @Override
+        public void remove() {
+            // But leave the count as-is.
+            iterator.remove();
+        }
     }
 
     /** Skip over a number of elements of an iterator */
@@ -593,41 +645,6 @@ public class Iter<T> implements IteratorCloseable<T> {
                 break;
         }
         return iterator;
-    }
-
-    /** Iterator that only returns upto N items */
-    static class IteratorN<T> implements Iterator<T> {
-        private final Iterator<T> iter;
-        private final int         N;
-        private int               count;
-
-        IteratorN(Iterator<T> iter, int N) {
-            this.iter = iter;
-            this.N = N;
-            this.count = 0;
-        }
-
-        @Override
-        public boolean hasNext() {
-            if ( count >= N )
-                return false;
-            return iter.hasNext();
-        }
-
-        @Override
-        public T next() {
-            if ( count >= N )
-                throw new NoSuchElementException();
-            T x = iter.next();
-            count++;
-            return x;
-        }
-
-        @Override
-        public void remove() {
-            // But leave the count as-is.
-            iter.remove();
-        }
     }
 
     /** Count the iterator (this is destructive on the iterator) */

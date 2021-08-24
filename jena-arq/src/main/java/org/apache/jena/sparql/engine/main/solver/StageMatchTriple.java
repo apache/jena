@@ -32,7 +32,6 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-
 /**
  * Triple version of {@link StageMatchData}. This goes directly to the graph.
  * <p>
