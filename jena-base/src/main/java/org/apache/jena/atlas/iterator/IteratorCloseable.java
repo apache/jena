@@ -18,28 +18,9 @@
 
 package org.apache.jena.atlas.iterator;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-public class WrapperIterator<T> implements Iterator<T>
-{
-    private final Iterator<T> iter ;
+import org.apache.jena.atlas.lib.Closeable;
 
-    public WrapperIterator(Iterator<T> iter) { this.iter = iter ; }
-    
-    @Override
-    public boolean hasNext()
-    {
-        return iter.hasNext() ;
-    }
-
-    @Override
-    public T next()
-    {
-        return iter.next() ;
-    }
-
-    @Override
-    public void remove()
-    { iter.remove() ; }
-
-}
+/** Convenience name for an iterator which is {@link Closeable}. */
+public interface IteratorCloseable<T> extends Iterator<T>, Closeable {}

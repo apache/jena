@@ -22,7 +22,7 @@ import java.io.*;
 import java.util.Iterator;
 import java.util.Objects;
 
-import org.apache.jena.atlas.iterator.IteratorResourceClosing;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
@@ -1065,7 +1065,7 @@ public class RDFDataMgr
     public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Triples, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
-            return new IteratorResourceClosing<>(RiotParsers.createIteratorNTriples(input, null), input);
+            return Iter.onCloseIO(RiotParsers.createIteratorNTriples(input, null), input);
         // Otherwise, we have to spin up a thread to deal with it
         PipedRDFIterator<Triple> it = new PipedRDFIterator<>();
         PipedTriplesStream out = new PipedTriplesStream(it);
@@ -1084,9 +1084,7 @@ public class RDFDataMgr
     public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Quads, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) ) {
-            return new IteratorResourceClosing<>(
-                RiotParsers.createIteratorNQuads(input, null, RiotLib.dftProfile()),
-                input);
+            return Iter.onCloseIO(RiotParsers.createIteratorNQuads(input, null, RiotLib.dftProfile()), input);
         }
         // Otherwise, we have to spin up a thread to deal with it
         final PipedRDFIterator<Quad> it = new PipedRDFIterator<>();

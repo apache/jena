@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.main.solver;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -30,7 +31,6 @@ import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.util.iterator.ExtendedIterator;
-
 
 /**
  * Triple version of {@link StageMatchData}. This goes directly to the graph.
@@ -58,9 +58,8 @@ public class StageMatchTriple {
         Node p2 = tripleNode(p) ;
         Node o2 = tripleNode(o) ;
         ExtendedIterator<Triple> graphIter = graph.find(s2, p2, o2) ;
-        Iterator<Binding> iter = graphIter.mapWith( r -> mapper(resultsBuilder, s, p, o, r));
-        //Iterator<Binding> iter = Iter.map(graphIter, r -> mapper(resultsBuilder, s, p, o, r));
-        return Iter.removeNulls(iter);
+        ExtendedIterator<Binding> iter = graphIter.mapWith( r -> mapper(resultsBuilder, s, p, o, r)).filterDrop(Objects::isNull);
+        return iter;
     }
 
     private static Node tripleNode(Node node) {

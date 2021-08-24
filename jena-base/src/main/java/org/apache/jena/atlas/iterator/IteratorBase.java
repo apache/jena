@@ -18,41 +18,46 @@
 
 package org.apache.jena.atlas.iterator;
 
-import java.util.Iterator ;
-import java.util.function.Predicate ;
+import java.util.NoSuchElementException;
 
-/** Iterate while a condition is true, then stop.
- *  This iterator does not touch any elements after the first
- *  where the predicate is false.
+/**
+ * Iterator base class that adds "closeable" to an iterator.
+ * close() is always called, whether explicitly or by end-of-iterator.
  */
-final
-public class IteratorTruncate<T> extends IteratorSlotted<T> {
-    private final Predicate<T> predicate ;
-    private Iterator<T> iter ;
+public abstract class IteratorBase<X> implements IteratorCloseable<X> {
 
-    public IteratorTruncate(Iterator<T> iter, Predicate<T> predicate) {
-        this.iter = iter ;
-        this.predicate = predicate ;
+    private boolean hasClosed = false;
+
+    protected IteratorBase() {}
+
+    protected abstract boolean hasNextElt();
+    protected abstract X nextElt();
+    protected abstract void onFinish();
+
+    @Override
+    final
+    public boolean hasNext() {
+        boolean b = hasNextElt();
+        if ( ! b )
+            close();
+        return b;
     }
 
     @Override
-    protected boolean hasMore() {
-        // OK to return true then deny it in moveToNext by returning null.
-        return iter.hasNext() ;
+    final
+    public X next() {
+        try {
+            return nextElt();
+        } catch(NoSuchElementException ex) {
+            close();
+            throw ex;
+        }
     }
 
     @Override
-    protected T moveToNext() {
-        if ( ! iter.hasNext() )
-            return null ;
-        T item = iter.next() ;
-        if ( ! predicate.test(item) )
-            return null ;
-        return item ;
-    }
-
-    @Override
-    protected void closeIterator() {
-        Iter.close(iter);
+    public void close() {
+        if ( ! hasClosed )
+            onFinish();
+        hasClosed = true;
     }
 }

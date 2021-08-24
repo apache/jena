@@ -28,15 +28,15 @@ import org.apache.jena.atlas.lib.Closeable;
 /** flatMap iterator.
  * See {@link Stream#flatMap}
  */
-public class IteratorFlatMap<IN,OUT> implements Iterator<OUT>, Closeable {
+/*package*/ class IteratorFlatMap<IN,OUT> implements Iterator<OUT>, Closeable {
     private boolean         finished = false;
     private Iterator<OUT>   current  = null;
     private Iterator<IN>    input;
     final private Function<IN, Iterator<OUT>> mapper;
 
-    public IteratorFlatMap(Iterator<IN> iter, Function<IN, Iterator<OUT>> mapper) {
+    /*package*/ IteratorFlatMap(Iterator<IN> iter, Function<IN, Iterator<OUT>> mapper) {
         this.input = iter;
-        this.mapper = mapper ;
+        this.mapper = mapper;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class IteratorFlatMap<IN,OUT> implements Iterator<OUT>, Closeable {
             throw new NoSuchElementException();
         return current.next();
     }
-    
+
     @Override
     public void close() {
         if ( current != null )

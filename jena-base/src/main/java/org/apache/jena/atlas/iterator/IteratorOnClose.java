@@ -21,22 +21,18 @@ package org.apache.jena.atlas.iterator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.jena.atlas.lib.Closeable;
-
 /**
  * Add an "onClose" action to an Iterator.
  */
-public class IteratorOnClose<T> extends IteratorWrapper<T> implements Closeable {
-
-    /**
-     * Ensure that an iterator is Closeable.
-     * If it is, return the input argument, otherwise add a wrapper.
-     */
-
+public class IteratorOnClose<T> extends IteratorWrapper<T> implements IteratorCloseable<T> {
     private final Runnable closeHandler;
     private boolean hasClosed = false;
 
-    public IteratorOnClose(Iterator<T> iterator, Runnable closeHandler) {
+    public static <T> IteratorOnClose<T> atEnd(Iterator<T> iterator, Runnable closeHandler) {
+        return new IteratorOnClose<>(iterator, closeHandler);
+    }
+
+    private IteratorOnClose(Iterator<T> iterator, Runnable closeHandler) {
         super(iterator);
         this.closeHandler = closeHandler;
     }

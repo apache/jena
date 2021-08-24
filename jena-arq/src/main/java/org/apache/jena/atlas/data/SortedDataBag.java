@@ -18,24 +18,13 @@
 
 package org.apache.jena.atlas.data;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.PriorityQueue;
+import java.io.*;
+import java.util.*;
 
 import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.data.AbortableComparator.Finish;
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.iterator.IteratorResourceClosing;
-import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.atlas.lib.Sink;
 
 /**
@@ -104,7 +93,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
     public boolean isCancelled() {
         return comparator.cancelled;
     }
-    
+
     /**
      * isClosed returns true iff this bag has been closed.
      * (Used in testing.)
@@ -186,7 +175,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
     protected Iterator<E> getInputIterator(File spillFile) throws FileNotFoundException {
         InputStream in = getInputStream(spillFile);
         Iterator<E> deserializer = serializationFactory.createDeserializer(in);
-        return new IteratorResourceClosing<>(deserializer, in);
+        return Iter.onCloseIO(deserializer, in);
     }
 
     /**
@@ -194,7 +183,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
      * exhaust the iterator, you should call
      * {@link org.apache.jena.atlas.iterator.Iter#close(Iterator)} to be sure
      * any open file handles are closed.
-     * 
+     *
      * @return an Iterator
      */
     @Override
@@ -303,7 +292,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
     /**
      * An iterator that handles getting the next tuple from the bag.
      */
-    protected static class SpillSortIterator<T> implements Iterator<T>, Closeable {
+    protected static class SpillSortIterator<T> implements IteratorCloseable<T> {
         private final List<Iterator<T>> inputs;
         private final Comparator<? super T> comp;
         private final PriorityQueue<Item<T>> minHeap;

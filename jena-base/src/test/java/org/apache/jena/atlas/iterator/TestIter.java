@@ -37,19 +37,19 @@ public class TestIter
     private List<String> data1 = Arrays.asList("a") ;
     private List<String> data2 = Arrays.asList("x","y","z") ;
     private List<String> data3 = Arrays.asList(null, "x", null, null, null, "y", "z", null);
- 
+
     @Test
     public void append_1() {
         Iterator<String> iter = Iter.append(data1.iterator(), data0.iterator());
         test(iter, "a");
     }
-       
+
     @Test
     public void append_2() {
         Iterator<String> iter = Iter.append(data0.iterator(), data1.iterator());
         test(iter, "a");
     }
-        
+
     @Test
     public void append_3() {
         Iterator<String> iter = Iter.append(data1.iterator(), data2.iterator());
@@ -62,7 +62,7 @@ public class TestIter
             list.add(s);
         return list;
     }
-    
+
     @Test
     public void append_4() {
         List<String> L = mutableList("a", "b", "c");
@@ -127,9 +127,9 @@ public class TestIter
         }
         assertFalse(iter.hasNext());
     }
-    
+
     static Iter.Folder<String, String> f1 = (acc, arg)->acc + arg ;
-    
+
     @Test
     public void fold_01() {
         String[] x = {"a", "b", "c"};
@@ -163,13 +163,13 @@ public class TestIter
         Iterator<String> it = Iter.map(data2.iterator(), item -> item + item);
         test(it, "xx", "yy", "zz");
     }
-	
+
     @Test
     public void flatmap_01() {
         Iterator<String> it = Iter.flatMap(data2.iterator(), item -> Arrays.asList(item+item, item).iterator());
         test(it, "xx", "x", "yy", "y", "zz", "z");
     }
-    
+
     @Test
     public void flatmap_02() {
         List<Integer> data = Arrays.asList(1,2,3);
@@ -188,16 +188,16 @@ public class TestIter
                     case 1: return Iter.nullIterator();
                     case 2: return Arrays.asList("two").iterator();
                     case 3: return Iter.nullIterator();
-                    default: throw new IllegalArgumentException(); 
+                    default: throw new IllegalArgumentException();
                 }
             };
-            
+
         Iter<String> it = Iter.iter(data.iterator()).flatMap(mapper);
         test(it, "two");
     }
 
     private Predicate<String> filter = item -> item.length() == 1;
-   
+
     @Test
     public void first_01() {
         Iter<String> iter = Iter.nullIter();
@@ -273,7 +273,7 @@ public class TestIter
         int x = Iter.step(iter, 6);
         assertEquals(5, x);
     }
-    
+
     @SafeVarargs
     private static <X> Iterator<X> data(X ... items) {
         List<X> a = new ArrayList<>(items.length);
@@ -423,7 +423,7 @@ public class TestIter
         Iter.forEach(data.iterator(), x->counter.incrementAndGet());
         assertEquals(4, counter.get());
     }
-    
+
     @Test
     public void forEach_2() {
         List<String> data = Collections.emptyList();
@@ -431,7 +431,7 @@ public class TestIter
         Iter.forEach(data.iterator(), x->counter.incrementAndGet());
         assertEquals(0, counter.get());
     }
-    
+
     @Test
     public void take_02() {
         List<String> data = Arrays.asList("1", "A", "B", "CC");
@@ -540,30 +540,5 @@ public class TestIter
         List<String> x = Arrays.asList("a", "a", "b", "b", "b", "a", "a");
         Iterator<String> iter = Iter.distinctAdjacent(x.iterator());
         test(iter, "a", "b", "a");
-    }
-
-    private static class AlwaysAcceptFilterStack extends FilterStack<Object> {
-        public AlwaysAcceptFilterStack(Predicate<Object> f) {
-            super(f);
-        }
-
-        @Override
-        public boolean acceptAdditional(Object o) {
-            return true;
-        }
-    }
-
-    @Test
-    public void testFilterStack_01() {
-        Predicate<Object> filter = x -> true;
-        FilterStack<Object> filterStack = new AlwaysAcceptFilterStack(filter);
-        assertTrue(filterStack.test(new Object()));
-    }
-
-    @Test
-    public void testFilterStack_02() {
-        Predicate<Object> filter = x -> false;
-        FilterStack<Object> filterStack = new AlwaysAcceptFilterStack(filter);
-        assertFalse(filterStack.test(new Object()));
     }
 }

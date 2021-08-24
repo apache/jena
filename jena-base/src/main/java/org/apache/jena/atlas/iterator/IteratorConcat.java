@@ -19,85 +19,73 @@
 package org.apache.jena.atlas.iterator;
 
 import java.util.ArrayList;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.NoSuchElementException ;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
-/** Iterator of Iterators
- *  IteratorConcat is better when there are lots of iterators to be joined.
- *  IteratorCons is slightly better for two iterators. 
+/**
+ * Iterator of Iterators IteratorConcat is better when there are lots of iterators to
+ * be joined. IteratorCons is slightly better for two iterators.
  */
 
-public class IteratorConcat<T> implements Iterator<T>
-{
-    private List<Iterator<T>> iterators = new ArrayList<>(); 
-    int idx = -1 ;
-    private Iterator<T> current = null ;
-    private Iterator<T> removeFrom = null ;
-    boolean finished = false ;
-    
-    /** 
-     * Usually, it is better to create an IteratorConcat explicitly and add iterator if there are going to be many.
+public class IteratorConcat<T> implements Iterator<T> {
+    private List<Iterator<T>> iterators = new ArrayList<>();
+    int idx = -1;
+    private Iterator<T> current = null;
+    private Iterator<T> removeFrom = null;
+    boolean finished = false;
+
+    /**
+     * Usually, it is better to create an IteratorConcat explicitly and add iterator
+     * if there are going to be many.
+     *
      * @param iter1
      * @param iter2
      * @return Iterator
      * @see IteratorCons
      */
-    public static <T> Iterator<T> concat(Iterator<T> iter1, Iterator<T> iter2)
-    {
-        if (iter2 == null) return iter1 ;
-        if (iter1 == null) return iter2 ;
-        IteratorConcat<T> c = new IteratorConcat<>() ;
-        c.add(iter1) ;
-        c.add(iter2) ;
-        return c ;
+    public static <T> Iterator<T> concat(Iterator<T> iter1, Iterator<T> iter2) {
+        if ( iter2 == null )
+            return iter1;
+        if ( iter1 == null )
+            return iter2;
+        IteratorConcat<T> c = new IteratorConcat<>();
+        c.add(iter1);
+        c.add(iter2);
+        return c;
     }
- 
+
     public IteratorConcat() {}
 
-    
-    public void add(Iterator<T> iter) { iterators.add(iter) ; }
-    
+    public void add(Iterator<T> iter) {
+        iterators.add(iter);
+    }
+
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         if ( finished )
-            return false ;
+            return false;
 
         if ( current != null && current.hasNext() )
-            return true ;
-        
-        while ( idx < iterators.size()-1 )
-        {
-            idx++ ;
-            current = iterators.get(idx) ;
+            return true;
+
+        while (idx < iterators.size() - 1) {
+            idx++;
+            current = iterators.get(idx);
             if ( current.hasNext() )
-                return true ;
+                return true;
             // Nothing here - move on.
-            current = null ;
+            current = null;
         }
         // idx has run off the end.
-        return false ;
+        return false;
     }
 
     @Override
-    public T next()
-    {
-        if ( ! hasNext() )
-            throw new NoSuchElementException() ; 
-        removeFrom = current ;
+    public T next() {
+        if ( !hasNext() )
+            throw new NoSuchElementException();
+        removeFrom = current;
         return current.next();
     }
-
-    @Override
-    public void remove()
-    { 
-        if ( null == removeFrom )
-            throw new IllegalStateException("no calls to next() since last call to remove()") ;
-        
-        removeFrom.remove() ;
-        removeFrom = null ;
-
-    }
-
 }
