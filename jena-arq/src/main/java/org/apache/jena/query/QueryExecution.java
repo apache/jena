@@ -30,10 +30,11 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.util.Context;
 
 /** A interface for a single execution of a query. */
-public interface QueryExecution extends AutoCloseable 
+public interface QueryExecution extends AutoCloseable
 {
+    @SuppressWarnings("deprecation")
     public static QueryExecutionBuilder create() { return QueryExecutionBuilder.create(); }
-    
+
     /** Set the initial association of variables and values.
      * May not be supported by all QueryExecution implementations.
      * @param binding
@@ -49,27 +50,27 @@ public interface QueryExecution extends AutoCloseable
     /**
      * The dataset against which the query will execute.
      * May be null, implying it is expected that the query itself
-     * has a dataset description. 
+     * has a dataset description.
      */
     public Dataset getDataset() ;
-    
-    /** The properties associated with a query execution -  
+
+    /** The properties associated with a query execution -
      *  implementation specific parameters  This includes
      *  Java objects (so it is not an RDF graph).
-     *  Keys should be URIs as strings.  
+     *  Keys should be URIs as strings.
      *  May be null (this implementation does not provide any configuration).
-     */ 
+     */
     public Context getContext() ;
-    
-    /** The query associated with a query execution.  
+
+    /** The query associated with a query execution.
      *  May be null (QueryExecution may have been created by other means)
-     */ 
+     */
     public Query getQuery() ;
 
     /**
-     *  Execute a SELECT query 
+     *  Execute a SELECT query
      *  <p>
-     *  <strong>Important:</strong> The name of this method is somewhat of a misnomer in that 
+     *  <strong>Important:</strong> The name of this method is somewhat of a misnomer in that
      *  depending on the underlying implementation this typically does not execute the
      *  SELECT query but rather answers a wrapper over an internal data structure that can be
      *  used to answer the query.  In essence calling this method only returns a plan for
@@ -78,7 +79,7 @@ public interface QueryExecution extends AutoCloseable
      *  </p>
      *  */
 	public ResultSet execSelect();
-    
+
     /** Execute a CONSTRUCT query */
     public Model execConstruct();
 
@@ -86,7 +87,7 @@ public interface QueryExecution extends AutoCloseable
      *  @return Model The model argument for cascaded code.
      */
     public Model execConstruct(Model model);
-    
+
     /**
      * Execute a CONSTRUCT query, returning the results as an iterator of {@link Triple}.
      * <p>
@@ -94,7 +95,7 @@ public interface QueryExecution extends AutoCloseable
      * need the results for stream processing, as it can avoid having to place the results in a Model.
      * </p>
      * <p>
-     * <strong>Important:</strong> The name of this method is somewhat of a misnomer in that 
+     * <strong>Important:</strong> The name of this method is somewhat of a misnomer in that
      * depending on the underlying implementation this typically does not execute the
      * CONSTRUCT query but rather answers a wrapper over an internal data structure that can be
      * used to answer the query.  In essence calling this method only returns a plan for
@@ -105,7 +106,7 @@ public interface QueryExecution extends AutoCloseable
      * by applying the CONSTRUCT template of the query to the bindings in the WHERE clause.
      */
     public Iterator<Triple> execConstructTriples();
-    
+
     /**
      * Execute a CONSTRUCT query, returning the results as an iterator of {@link Quad}.
      * <p>
@@ -119,17 +120,17 @@ public interface QueryExecution extends AutoCloseable
      * See {@link #execConstructTriples} for usage and features.
      */
     public Iterator<Quad> execConstructQuads();
-    
+
     /** Execute a CONSTRUCT query, putting the statements into 'dataset'.
-     *  This maybe an extended syntax query (if supported).   
+     *  This maybe an extended syntax query (if supported).
      */
     public Dataset execConstructDataset();
 
     /** Execute a CONSTRUCT query, putting the statements into 'dataset'.
-     *  This maybe an extended syntax query (if supported).   
+     *  This maybe an extended syntax query (if supported).
      */
     public Dataset execConstructDataset(Dataset dataset);
-    
+
     /** Execute a DESCRIBE query */
     public Model execDescribe();
 
@@ -137,7 +138,7 @@ public interface QueryExecution extends AutoCloseable
      *  @return Model The model argument for cascaded code.
      */
     public Model execDescribe(Model model);
-    
+
     /**
      * Execute a DESCRIBE query, returning the results as an iterator of {@link Triple}.
      * <p>
@@ -145,7 +146,7 @@ public interface QueryExecution extends AutoCloseable
      * need the results for stream processing, as it can avoid having to place the results in a Model.
      * </p>
      * <p>
-     * <strong>Important:</strong> The name of this method is somewhat of a misnomer in that 
+     * <strong>Important:</strong> The name of this method is somewhat of a misnomer in that
      * depending on the underlying implementation this typically does not execute the
      * DESCRIBE query but rather answers a wrapper over an internal data structure that can be
      * used to answer the query.  In essence calling this method only returns a plan for
@@ -175,10 +176,10 @@ public interface QueryExecution extends AutoCloseable
 	 */
 
 	public void abort();
-	
+
     /** Close the query execution and stop query evaluation as soon as convenient.
      *  QueryExecution objects, and a {@link ResultSet} from {@link #execSelect},
-     *  can not be used once the QueryExecution is closed.  
+     *  can not be used once the QueryExecution is closed.
      *  Model results from {@link #execConstruct} and {@link #execDescribe}
      *  are still valid.
      *  It is important to close query execution objects in order to release
@@ -190,10 +191,10 @@ public interface QueryExecution extends AutoCloseable
      */
     @Override
     public void close();
-	
+
     /**
      * Answer whether this QueryExecution object has been closed or not.
-     * @return boolean 
+     * @return boolean
      */
     public boolean isClosed();
 
@@ -203,14 +204,14 @@ public interface QueryExecution extends AutoCloseable
 	 * A timeout of less than zero means no timeout.
 	 */
 	public void setTimeout(long timeout, TimeUnit timeoutUnits) ;
-	
-	/** Set time, in milliseconds 
+
+	/** Set time, in milliseconds
 	 * @see #setTimeout(long, TimeUnit)
 	 */
 	public void setTimeout(long timeout) ;
-    
-	/** Set timeouts on the query execution; the first timeout refers to time to first result, 
-	 * the second refers to overall query execution after the first result.  
+
+	/** Set timeouts on the query execution; the first timeout refers to time to first result,
+	 * the second refers to overall query execution after the first result.
 	 * Processing will be aborted if a timeout expires.
 	 * Not all query execution systems support timeouts.
 	 * A timeout of less than zero means no timeout; this can be used for timeout1 or timeout2.
@@ -227,12 +228,12 @@ public interface QueryExecution extends AutoCloseable
     public long getTimeout1() ;
     /** Return the second timeout (overall query execution after first result), in milliseconds: negative if unset */
     public long getTimeout2() ;
-    
+
     //	/** Say whether this QueryExecution is useable or not.
 //	 * An active execution is one that has not been closed, ended or aborted yet.
 //     * May not be supported or meaningful for all QueryExecution implementations.
 //     * aborted queries may not immediate show as no longer active.
-//     * This should not be called in parallel with other QueryExecution methods. 
-//     */  
+//     * This should not be called in parallel with other QueryExecution methods.
+//     */
 //    public boolean isActive() ;
 }
