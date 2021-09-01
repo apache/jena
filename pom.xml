@@ -71,7 +71,7 @@
          and use that or later.
     -->
     <ver.jsonldjava>0.13.3</ver.jsonldjava>
-    <ver.jackson>2.12.4</ver.jackson>
+    <ver.jackson>2.12.5</ver.jackson>
 
     <ver.commonsio>2.11.0</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
