@@ -446,11 +446,17 @@
         <version>1.1.0</version>
       </dependency>
       <!-- Eclipse Public License 2.0 (category-B) -->
+      <!--
+          Not required if using org.glassfish:jakarta.json because 
+          that contains a copy. Less shading warnings if not used
+          in jena-arq.
+      -->
       <dependency>
         <groupId>jakarta.json</groupId>
         <artifactId>jakarta.json-api</artifactId>
         <version>2.0.1</version>
       </dependency>
+
       <!-- Eclipse Public License 2.0 (category-B) -->
       <dependency>
         <groupId>org.glassfish</groupId>
