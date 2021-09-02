@@ -62,10 +62,8 @@ public class TestCustomServiceExecutor {
     /** Test setting the registory on a local context*/
     @Test
     public void testLocalServiceExecutorRegistry() {
-        ServiceExecutorRegistry registry = new ServiceExecutorRegistry();
-        registry.add(factory);
-
-        assertResult("urn:customService", qe -> ServiceExecutorRegistry.set(qe.getContext(), registry));
+        assertResult("urn:customService",
+                qe -> ServiceExecutorRegistry.set(qe.getContext(), customRegistry));
     }
 
     /** Sanity check: Use of an illegal service iri */
