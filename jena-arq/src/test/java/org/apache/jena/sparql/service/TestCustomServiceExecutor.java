@@ -73,7 +73,7 @@ public class TestCustomServiceExecutor {
                 qe -> ServiceExecutorRegistry.set(qe.getContext(), customRegistry));
     }
 
-    // Sanity check to rule out interference where access to remote endpoints
+    // Sanity check to rule out interference with conventional access to remote endpoints
     // Uncommenting @Test is expected to print out data from the remote endpoint
     // @Test
     public void testAgainstDBpedia() {
