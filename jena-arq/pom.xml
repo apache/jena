@@ -76,10 +76,12 @@
       <artifactId>titanium-json-ld</artifactId>
     </dependency>
     <!-- Eclipse Public License 2.0 (category-B) -->
-    <dependency>
-      <groupId>jakarta.json</groupId>
-      <artifactId>jakarta.json-api</artifactId>
-    </dependency>
+    <!-- Not required - contained in org.glassfish:jakarta.json
+         <dependency>
+           <groupId>jakarta.json</groupId>
+           <artifactId>jakarta.json-api</artifactId>
+         </dependency>
+    -->
     <!--  Eclipse Public License 2.0 (category-B) -->
     <dependency>
       <groupId>org.glassfish</groupId>
