@@ -62,10 +62,8 @@ public class TestCustomServiceExecutor {
     /** Test setting the registory on a local context*/
     @Test
     public void testLocalServiceExecutorRegistry() {
-        ServiceExecutorRegistry registry = new ServiceExecutorRegistry();
-        registry.add(factory);
-
-        assertResult("urn:customService", qe -> ServiceExecutorRegistry.set(qe.getContext(), registry));
+        assertResult("urn:customService",
+                qe -> ServiceExecutorRegistry.set(qe.getContext(), customRegistry));
     }
 
     /** Sanity check: Use of an illegal service iri */
@@ -75,7 +73,7 @@ public class TestCustomServiceExecutor {
                 qe -> ServiceExecutorRegistry.set(qe.getContext(), customRegistry));
     }
 
-    // Sanity check to rule out interference where access to remote endpoints
+    // Sanity check to rule out interference with conventional access to remote endpoints
     // Uncommenting @Test is expected to print out data from the remote endpoint
     // @Test
     public void testAgainstDBpedia() {
