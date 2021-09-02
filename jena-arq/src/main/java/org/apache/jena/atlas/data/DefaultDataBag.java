@@ -18,20 +18,20 @@
 
 package org.apache.jena.atlas.data;
 
-import java.io.BufferedInputStream ;
-import java.io.File ;
-import java.io.FileInputStream ;
-import java.io.FileNotFoundException ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.OutputStream ;
-import java.util.Iterator ;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.AtlasException ;
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.AtlasException;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorCloseable;
-import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Sink;
 
 /**
  * <p>
@@ -55,8 +55,8 @@ import org.apache.jena.atlas.lib.Sink ;
  * Creating an iterator will read all the data out of that single file.
  * </p>
  */
-public class DefaultDataBag<E> extends AbstractDataBag<E>
-{
+public class DefaultDataBag<E> extends AbstractDataBag<E> {
+
     private final ThresholdPolicy<E> policy;
     private final SerializationFactory<E> serializationFactory;
 
@@ -67,32 +67,26 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
     private Sink<E> serializer;
     private OutputStream out;
 
-    public DefaultDataBag(ThresholdPolicy<E> policy, SerializationFactory<E> serializerFactory)
-    {
+    public DefaultDataBag(ThresholdPolicy<E> policy, SerializationFactory<E> serializerFactory) {
         this.policy = policy;
         this.serializationFactory = serializerFactory;
     }
 
-    private void checkClosed()
-    {
-        if (closed) throw new AtlasException("DefaultDataBag is closed, no operations can be performed on it.") ;
+    private void checkClosed() {
+        if ( closed )
+            throw new AtlasException("DefaultDataBag is closed, no operations can be performed on it.");
     }
 
     @Override
-    public void add(E item)
-    {
+    public void add(E item) {
         checkClosed();
-        if (finishedAdding)
+        if ( finishedAdding )
             throw new AtlasException("DefaultDataBag: Cannot add any more items after the writing phase is complete.");
 
-        if (!policy.isThresholdExceeded())
-        {
+        if ( !policy.isThresholdExceeded() ) {
             memory.add(item);
-        }
-        else
-        {
-            if (!spilled)
-            {
+        } else {
+            if ( !spilled ) {
                 spill();
                 spilled = true;
             }
@@ -105,52 +99,44 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
         size++;
     }
 
-    private void spill()
-    {
-        // In the case where we've just hit the threshold, set up the serializer and transfer all existing content to disk.
-        // This makes the logic a little simpler, and also prevents us from using what may be a fair amount of memory for
+    private void spill() {
+        // In the case where we've just hit the threshold, set up the serializer and
+        // transfer all existing content to disk.
+        // This makes the logic a little simpler, and also prevents us from using
+        // what may be a fair amount of memory for
         // a prolonged period of time.
-        try
-        {
+        try {
             out = getSpillStream();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new AtlasException(e);
         }
         serializer = serializationFactory.createSerializer(out);
 
-        for (E e : memory)
-        {
+        for ( E e : memory ) {
             serializer.send(e);
         }
         memory = null;
     }
 
     @Override
-    public boolean isSorted()
-    {
+    public boolean isSorted() {
         return false;
     }
 
     @Override
-    public boolean isDistinct()
-    {
+    public boolean isDistinct() {
         return false;
     }
 
     @Override
-    public void flush()
-    {
-        if (policy.isThresholdExceeded() && (null != serializer))
-        {
+    public void flush() {
+        if ( policy.isThresholdExceeded() && (null != serializer) ) {
             serializer.flush();
         }
     }
 
     @Override
-    public Iterator<E> iterator()
-    {
+    public Iterator<E> iterator() {
         Iterator<E> toReturn;
 
         checkClosed();
@@ -159,46 +145,37 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
         closeWriter();
 
         // Create a new reader
-        if (policy.isThresholdExceeded())
-        {
+        if ( policy.isThresholdExceeded() ) {
             File spillFile = getSpillFiles().get(0);
 
             InputStream in;
-            try
-            {
-                in = new BufferedInputStream(new FileInputStream(spillFile)) ;
+            try {
+                in = new BufferedInputStream(new FileInputStream(spillFile));
+            } catch (FileNotFoundException ex) {
+                throw new AtlasException(ex);
             }
-            catch ( FileNotFoundException ex )
-            {
-                throw new AtlasException(ex) ;
-            }
-            Iterator<E> deserializer = serializationFactory.createDeserializer(in) ;
-            IteratorCloseable<E> irc = Iter.onCloseIO(deserializer, in) ;
+            Iterator<E> deserializer = serializationFactory.createDeserializer(in);
+            IteratorCloseable<E> irc = Iter.onCloseIO(deserializer, in);
             registerCloseableIterator(irc);
             toReturn = irc;
-        }
-        else
-        {
+        } else {
             toReturn = memory.iterator();
         }
 
         return toReturn;
     }
 
-    protected void closeWriter()
-    {
-        if (!finishedAdding)
-        {
-            if (policy.isThresholdExceeded())
-            {
-                // It is possible for "serializer" and "out" to be null even if the policy is exceeded.
-                // This can happen if nothing was ever added (i.e. a zero count policy)
-                if (null != serializer)
-                {
+    protected void closeWriter() {
+        if ( !finishedAdding ) {
+            if ( policy.isThresholdExceeded() ) {
+                // It is possible for "serializer" and "out" to be null even if the
+                // policy is exceeded.
+                // This can happen if nothing was ever added (i.e. a zero count
+                // policy)
+                if ( null != serializer ) {
                     serializer.close();
                 }
-                if (null != out)
-                {
+                if ( null != out ) {
                     IO.close(out);
                 }
             }
@@ -207,10 +184,8 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
     }
 
     @Override
-    public void close()
-    {
-        if (!closed)
-        {
+    public void close() {
+        if ( !closed ) {
             closeWriter();
             closeIterators();
             deleteSpillFiles();
@@ -219,5 +194,4 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
             closed = true;
         }
     }
-
 }

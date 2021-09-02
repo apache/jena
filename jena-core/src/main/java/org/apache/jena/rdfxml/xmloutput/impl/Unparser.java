@@ -23,96 +23,96 @@ package org.apache.jena.rdfxml.xmloutput.impl;
  * modelListSubjects() by removing those subjects that we have already
  * considered.
  *  - Set Default language during first pass.
- * 
- * 
+ *
+ *
  * Notes on ID and BagID: Our preferences are follows: for a Stating with an
  * explicit local ID we avoid explicitly constructing the reification, and try
  * and use rule 6.12 with an idAttr. If the Stating is anonymous or non-local
  * then we construct the reification explicitly.
- * 
+ *
  *
  * [[The numbering here seems to refer to a old working draft]]
- * 
+ *
  * Notes: The following rules are not supported by the current Jena RDF parser:
  * 6.8
- * 
- * 
+ *
+ *
  * [6.1] RDF ::= ['<rdf:RDF>'] obj* ['</rdf:RDF>']
- * 
- * [6.2] obj ::= description | container 
- * 
+ *
+ * [6.2] obj ::= description | container
+ *
  * [6.3] description ::= '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '/>' |
  *                       '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</rdf:Description>' |
- *                       typedNode 
- * 
+ *                       typedNode
+ *
  * [6.4] container ::= sequence | bag | alternative
- * 
+ *
  * [6.5] idAboutAttr ::= idAttr | aboutAttr | aboutEachAttr
- * 
- * [6.6] idAttr ::= ' ID="' IDsymbol '"' 
- * 
+ *
+ * [6.6] idAttr ::= ' ID="' IDsymbol '"'
+ *
  * [6.7] aboutAttr ::= ' about="' URI-reference '"'
- *  
+ *
  * [6.8] aboutEachAttr ::= ' aboutEach="' URI-reference '"' | 'aboutEachPrefix="' string '"'
- *  
+ *
  * [6.9] bagIdAttr ::= ' bagID="' IDsymbol '"'
- * 
- * [6.10] propAttr ::= typeAttr | propName '="' string '"' (with embedded quotes escaped) 
+ *
+ * [6.10] propAttr ::= typeAttr | propName '="' string '"' (with embedded quotes escaped)
  *
  * [6.11] typeAttr ::= ' type="' URI-reference '"'
- *  
+ *
  * [6.12] propertyElt  ::= '<' propName idAttr? '>' value '</' propName '>' | '<' propName
  * idAttr? parseLiteral '>' literal '</' propName '>' | '<' propName idAttr?
  * parseResource '>' propertyElt* '</' propName '>' | '<' propName idRefAttr?
  * bagIdAttr? propAttr* '/>'
- * 
- * 
+ *
+ *
  * | '<' propName idAttr? parseCollection '>' obj* '</'
  * propName '>' [daml.2] parseCollection ::= ' parseType="rdf:collection"'
- * 
+ *
  * [6.13] typedNode ::= '<' typeName idAboutAttr? bagIdAttr? propAttr* '/>' | '<'
  * typeName idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</' typeName * '>'
- *  
+ *
  * [6.14] propName ::= Qname
- *  
+ *
  * [6.15] typeName ::= Qname
- * 
+ *
  * [6.16] idRefAttr ::= idAttr | resourceAttr
- *  
+ *
  * [6.17] value ::= obj | string
- *  
+ *
  * [6.18] resourceAttr ::= 'resource="' URI-reference '"'
- *  
+ *
  * [6.19] Qname ::= [ NSprefix ':' ] name
- *  
+ *
  * [6.20] URI-reference ::= string, interpreted per [URI]
- *  
+ *
  * [6.21] IDsymbol ::= (any legal XML name symbol)
- * 
+ *
  * [6.22] name ::= (any legal XML name symbol)
- * 
+ *
  * [6.23] NSprefix ::= (any legal XML namespace prefix)
- * 
+ *
  * [6.24] string ::= (any XML text, with "<", ">", and "&" escaped)
- * 
+ *
  * [6.25] sequence ::= '<rdf:Seq' idAttr? '>' member* '</rdf:Seq>' | '<rdf:Seq' idAttr? memberAttr* '/>'
- * 
+ *
  * [6.26] bag ::= '<rdf:Bag' idAttr? '>' member* '</rdf:Bag>' | '<rdf:Bag' idAttr? memberAttr* '/>'
- * 
+ *
  * [6.27] alternative ::= '<rdf:Alt' idAttr? '>' member+ '</rdf:Alt>' | '<rdf:Alt' idAttr? memberAttr? '/>'
- * 
+ *
  * [6.28] member ::= referencedItem | inlineItem
- * 
+ *
  * [6.29] referencedItem ::= '<rdf:li' resourceAttr '/>'
- * 
+ *
  * [6.30] inlineItem ::= '<rdf:li' '>' value </rdf:li>' | '<rdf:li' parseLiteral '>' literal </rdf:li>' | '<rdf:li' parseResource '>' propertyElt* </rdf:li>'
- * 
+ *
  * [6.31] memberAttr ::= ' rdf:_n="' string '"' (where n is an integer)
- * 
+ *
  * [6.32] parseLiteral ::= ' parseType="Literal"'
- * 
+ *
  * [6.33] parseResource ::= ' parseType="Resource"'
- * 
+ *
  * [6.34] literal ::= (any well-formed XML)
  */
 
@@ -150,7 +150,7 @@ class Unparser {
      * (typical URL) intended for the output file. No trailing "#" should be
      * used. This will control the use of <I>ID</I> or <I>about</I> or
      * <I>resource</I> on various rules.
-     * 
+     *
      * @param localName
      *            The intended URI of the output file. No trailing "#".
      * @param m
@@ -227,12 +227,12 @@ class Unparser {
         if (uri == null || uri.equals(""))
             localName = "";
         else
-//            try 
+//            try
         {
                 IRI u = BaseXMLWriter.factory.create(uri);
                 u = u.create("");
                 localName = u.toString();
-            } 
+            }
 //        catch (MalformedURIException e) {
 //                throw new BadURIException(uri, e);
 //            }
@@ -255,10 +255,10 @@ class Unparser {
     /**
      * Set a list of types of objects that will be expanded at the top-level of
      * the file.
-     * 
+     *
      * @param types
      *            An array of rdf:Class'es.
-     * 
+     *
      */
     void setTopLevelTypes(Resource types[]) {
         pleasingTypes = types;
@@ -370,10 +370,10 @@ class Unparser {
      * [6.12] propertyElt ::= '<' propName idAttr? '>' value '</' propName '>' | '<'
      * propName idAttr? parseLiteral '>' literal '</' propName '>' | '<'
      * propName idAttr? parseResource '>' propertyElt* '</' propName '>' | '<'
-     * propName idRefAttr? bagIdAttr? propAttr* '/>' 
+     * propName idRefAttr? bagIdAttr? propAttr* '/>'
      *  | '<' * propName idAttr? parseDamlCollection '>' obj* '</' propName '>' [daml.2]
      *    parseDamlCollection ::= ' parseType="rdf:collection"'
-     * 
+     *
      * For RDF collections we prefer the special syntax otherwise: We prefer
      * choice 4 where possible, except in the case where the statement is
      * reified and the object is not anonymous in which case we use one of the
@@ -455,17 +455,17 @@ class Unparser {
         print(">");
         return true;
     }
-    
+
     private boolean wPropertyEltDatatype(WType wt, Property prop, Statement s,
             RDFNode r) {
         if (! (r instanceof Literal) )
             return false ;
         Literal lit = ((Literal) r) ;
-        if ( Util.isSimpleString(lit) ) 
+        if ( Util.isSimpleString(lit) )
             return false;
         if ( Util.isLangString(lit) )
             return false;
-        
+
         // print out with "datatype="
         done(s);
         tab();
@@ -661,14 +661,14 @@ class Unparser {
      * description | container | typedNode [6.3a] description ::= '<rdf:Description'
      * idAboutAttr? bagIdAttr? propAttr* '/>' | '<rdf:Description' idAboutAttr?
      * bagIdAttr? propAttr* '>' propertyElt* '</rdf:Description>'
-     * 
+     *
      * This method has got somewhat messy. If we are not at the topLevel we may
      * choose to not expand a node but just use a typedNode ::= '<' typeName
      * idAboutAttr '/>' rule. This rules also applies to Bags that we feel
      * unconfortable with, such as a Bag arising from a BagId rule that we don't
      * handle properly.
-     * 
-     * 
+     *
+     *
      */
     private boolean wObj(Resource r, boolean topLevel) {
         try {
@@ -996,10 +996,10 @@ class Unparser {
 
     /*
      * [6.19] Qname ::= [ NSprefix ':' ] name
-     * 
+     *
      * private void wQnameStart(String ns, String local) {
      * print(prettyWriter.startElementTag(ns, local)); }
-     * 
+     *
      * private void wQnameEnd(String ns, String local) {
      * print(prettyWriter.endElementTag(ns, local)); }
      */
@@ -1078,7 +1078,7 @@ class Unparser {
 
     /***************************************************************************
      * Utility routines ...
-     * 
+     *
      **************************************************************************/
 
     /***************************************************************************
@@ -1207,10 +1207,10 @@ class Unparser {
 
     /*
      * Utility for turning an integer into an alphabetic string.
-     * 
+     *
      * private static String getSuffix(int suffixId) { if (suffixId == 0) return
      * ""; else { suffixId--; int more = (suffixId / 26);
-     * 
+     *
      * return getSuffix(more) + new Character((char) ('a' + suffixId % 26)); } }
      */
 
@@ -1334,7 +1334,7 @@ class Unparser {
         if (s.getObject() instanceof Literal) {
             Literal l = s.getLiteral();
             if ( ! Util.isSimpleString(l) )
-            
+
             if (l.getDatatypeURI() != null)
                 return false;
 
@@ -1388,7 +1388,7 @@ class Unparser {
 
     private Statement[][] getList(RDFNode r, Resource list, Property first,
             Property rest, Resource nil) {
-       
+
         Vector<Statement[]> rslt = new Vector<>();
         Set<RDFNode> seen = new HashSet<>();
         RDFNode next = r;
@@ -1454,7 +1454,7 @@ class Unparser {
             if (rslt.size() == 0)
                 return null;
         } finally {
-            
+
         }
         Statement array[][] = new Statement[rslt.size()][];
         rslt.copyInto(array);
@@ -1604,8 +1604,8 @@ class Unparser {
      * <li>any other resource.
      * <li>reifications
      * </ul>
-     * 
-     * 
+     *
+     *
      * At the end, we need to close any underlying ResIterators from the model,
      * however to avoid complications in much of this code we use general
      * java.util.Iterator-s. We hence use a wrapper around a ResIterator to
@@ -1616,9 +1616,9 @@ class Unparser {
         // The pleasing types
         Iterator<Resource> pleasing = pleasingTypeIterator();
 
-        Iterator<Resource> fakeStopPleasing = new NullIterator<Resource>() 
+        Iterator<Resource> fakeStopPleasing = new NullIterator<Resource>()
             {
-            @Override public boolean hasNext() 
+            @Override public boolean hasNext()
                 {
                 pleasingTypeSet = new HashSet<>();
                 return false;
@@ -1637,7 +1637,7 @@ class Unparser {
 
         // At these stage we evaluate a dependency graph of the remaining
         // resources.
-        // This is stuck in the master iterator so that it's hasNext is called
+        // This is stuck in the main iterator so that it's hasNext is called
         // at an appropriate time (after the earlier stages, before the later
         // stages).
         // We use this to trigger the dependency graph evalaution.
@@ -1695,14 +1695,14 @@ class Unparser {
                             }
                         }, backStop };
         ExtendedIterator<Resource> allAsOne = WrappedIterator.createIteratorIterator( Arrays.asList(all).iterator() );
-        		
+
         // Filter for those that still have something to list.
         return allAsOne.filterKeep(this::hasProperties);
     }
 
     private Set<ResIterator> openResIterators = new HashSet<>();
 
-   
+
 
     private synchronized void closeAllResIterators() {
         Iterator<ResIterator> members = openResIterators.iterator();

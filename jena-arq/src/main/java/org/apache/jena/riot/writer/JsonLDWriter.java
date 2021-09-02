@@ -280,7 +280,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
             // by looking whether the argument passed is a map with key "@context" and if so, takes corresponding value
             // Then, better not to do this: we create a map for nothing, and worse,
             // if the context object has been created by a user and passed through the (jena) context
-            // in case he got the same idea, we would end up with 2 levels of maps and it would not work
+            // in case the user got the same idea, we would end up with 2 levels of maps and it would not work
             //        Map<String, Object> localCtx = new HashMap<>() ;
             //        localCtx.put("@context", ctx) ;
         }

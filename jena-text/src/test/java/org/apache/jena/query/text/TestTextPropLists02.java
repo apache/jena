@@ -45,21 +45,21 @@ import org.apache.jena.vocabulary.SKOS;
 public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
     private static final String INDEX_PATH = "target/test/TestDatasetWithLuceneIndex";
     private static final File indexDir = new File(INDEX_PATH);
-    
+
     private static final String RES_BASE = "http://example.org/resource#";
     private static final String SPEC_BASE = "http://example.org/spec#";
     private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";
     private static final String SPEC_ROOT_URI = SPEC_BASE + SPEC_ROOT_LOCAL;
 
-    protected static final String TURTLE_PROLOG2 = 
+    protected static final String TURTLE_PROLOG2 =
             StrUtils.strjoinNL(
                     "@prefix  res:  <" + RES_BASE + "> .",
                     "@prefix  spec: <" + SPEC_BASE + "> .",
                     "@prefix text: <http://jena.apache.org/text#> .",
                     "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .",
                     "@prefix skos: <http://www.w3.org/2004/02/skos/core#> ."
-                    );    
-    protected static final String QUERY_PROLOG2 = 
+                    );
+    protected static final String QUERY_PROLOG2 =
             StrUtils.strjoinNL(
                     "prefix res:  <" + RES_BASE + "> ",
                     "prefix spec: <" + SPEC_BASE + "> ",
@@ -81,7 +81,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
                     "[] ja:loadClass       \"org.apache.jena.query.text.TextQuery\" .",
                     "text:TextDataset      rdfs:subClassOf   ja:RDFDataset .",
                     "text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .",
-                    
+
                     "spec:" + SPEC_ROOT_LOCAL,
                     "    a              text:TextDataset ;",
                     "    text:dataset   spec:dataset ;",
@@ -101,7 +101,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
                     "    text:directory   \"mem\" ;",
                     "    text:storeValues true ;",
                     "    text:entityMap   spec:entMap ;",
-                    "#    text:multilingualSupport true ;", 
+                    "#    text:multilingualSupport true ;",
                     "    text:propLists (",
                     "      [ text:propListProp spec:labels ;",
                     "        text:props ( skos:prefLabel ",
@@ -114,7 +114,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
                     "                     spec:workAuthorshipStatement ",
                     "                     spec:workEditionStatement ) ;",
                     "      ]",
-                    "    )",                    
+                    "    )",
                     "    .",
                     "",
                     "spec:entMap",
@@ -137,36 +137,36 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
                     "         [ text:field \"workColophon\" ; text:predicate spec:workColophon ]",
                     "         ) ."
                     );
-    }      
-    
+    }
+
     public void init() {
         Reader reader = new StringReader(SPEC);
         Model specModel = ModelFactory.createDefaultModel();
         specModel.read(reader, "", "TURTLE");
-        TextAssembler.init();            
+        TextAssembler.init();
         indexDir.mkdirs();
         Resource root = specModel.getResource(SPEC_ROOT_URI);
         dataset = (Dataset) Assembler.general.open(root);
     }
-    
-    
+
+
     public void deleteOldFiles() {
         dataset.close();
         if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
-    }    
+    }
 
     @Before
     public void beforeClass() {
         init();
-    }    
-    
+    }
+
     @After
     public void afterClass() {
         deleteOldFiles();
     }
-    
+
     @Test
-    public void test02ForSanity01() {
+    public void test02ForExpectation01() {
         final String turtle = StrUtils.strjoinNL(
                 TURTLE_PROLOG2,
                 "res:oneThing rdfs:label 'bar the barfoo foo'",
@@ -183,9 +183,9 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
         expectedURIs.addAll( Arrays.asList(RES_BASE+"oneThing")) ;
         doTestSearch(turtle, qyString, expectedURIs);
     }
-    
+
     @Test
-    public void testForSanity02() {
+    public void testForExpectation02() {
         final String turtle = StrUtils.strjoinNL(
                 TURTLE_PROLOG2,
                 "res:oneThing rdfs:label 'bar the barfoo foo'",
@@ -203,9 +203,9 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
         expectedURIs.addAll( Arrays.asList(RES_BASE+"oneThing")) ;
         doTestSearch(turtle, qyString, expectedURIs);
     }
-    
+
     @Test
-    public void testForSanity03() {
+    public void testForExpectation03() {
         final String turtle = StrUtils.strjoinNL(
                 TURTLE_PROLOG2,
                 "res:oneThing skos:prefLabel 'bar the barfoo foo'",
@@ -223,7 +223,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
         expectedURIs.addAll( Arrays.asList(RES_BASE+"oneThing")) ;
         doTestSearch(turtle, qyString, expectedURIs);
     }
-    
+
     @Test
     public void testSingleTextProp01() {
         final String turtle = StrUtils.strjoinNL(
@@ -243,7 +243,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
         expectedURIs.addAll( Arrays.asList(RDFS.getURI()+"label")) ;
         doTestSearch(turtle, qyString, expectedURIs);
     }
-    
+
     @Test
     public void testSingleTextProp02() {
         final String turtle = StrUtils.strjoinNL(
@@ -263,7 +263,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
         expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"altLabel")) ;
         doTestSearch(turtle, qyString, expectedURIs);
     }
-    
+
     @Test
     public void testListTextProp01() {
         final String turtle = StrUtils.strjoinNL(
@@ -282,7 +282,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
         expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"prefLabel")) ;
         doTestSearch(turtle, qyString, expectedURIs);
     }
-    
+
     @Test
     public void testListTextProp02() {
         final String turtle = StrUtils.strjoinNL(
@@ -307,7 +307,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
         expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"prefLabel", SKOS.getURI()+"altLabel")) ;
         doTestSearch(turtle, qyString, expectedURIs);
     }
-    
+
     @Test
     public void testListTextProp03() {
         final String turtle = StrUtils.strjoinNL(
@@ -332,7 +332,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
         expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"altLabel")) ;
         doTestSearch(turtle, qyString, expectedURIs);
     }
-    
+
     @Test
     public void testListTextProp04() {
         final String turtle = StrUtils.strjoinNL(
@@ -357,7 +357,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
         expectedURIs.addAll( Arrays.asList(SKOS.getURI()+"prefLabel", SKOS.getURI()+"altLabel")) ;
         doTestSearch(turtle, qyString, expectedURIs);
     }
-    
+
     @Test
     public void testListTextProp05() {
         final String turtle = StrUtils.strjoinNL(

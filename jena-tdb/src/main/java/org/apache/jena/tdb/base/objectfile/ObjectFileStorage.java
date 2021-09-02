@@ -34,38 +34,38 @@ import org.apache.jena.tdb.sys.SystemTDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** 
- *  Variable length ByteBuffer file on disk with 
+/**
+ *  Variable length ByteBuffer file on disk with
  *  buffering for delayed writes.
- */  
+ */
 
-public class ObjectFileStorage implements ObjectFile 
+public class ObjectFileStorage implements ObjectFile
 {
     private static Logger log = LoggerFactory.getLogger(ObjectFileStorage.class);
     public static boolean logging = false;
-    private void log(String fmt, Object... args) { 
+    private void log(String fmt, Object... args) {
         if ( ! logging ) return;
         log.debug(state()+" "+String.format(fmt, args));
     }
-    
-    /* 
+
+    /*
      * No synchronization except for the write buffer.
      * This code assumes that the caller has some appropriate lock
      * because the combination of file and cache operations needs to be thread safe.
-     * 
+     *
      * The position of the channel is assumed to be the end of the file always.
-     * Read operations are done with absolute channel calls, 
+     * Read operations are done with absolute channel calls,
      * which do not reset the position.
-     * 
+     *
      * Writing is buffered.
      */
-    
+
     private final Object lockWriteBuffer = new Object();
     private final ByteBuffer writeBuffer;
-    
+
     private final BufferChannel file;              // Access to storage
-    private volatile long filesize;                // Size of on-disk. 
-    
+    private volatile long filesize;                // Size of on-disk.
+
     public ObjectFileStorage(BufferChannel file) {
         this(file, ObjectFileWriteCacheSize);
     }
@@ -207,11 +207,11 @@ public class ObjectFileStorage implements ObjectFile
             throw new FileException(msg);
         }
         int len = lengthBuffer.getInt(0);
-        // Sanity check.
+        // Check.
         if ( len > filesize - (loc + SizeOfInt) ) {
             String msg = "ObjectFileStorage.read[" + file.getLabel() + "](" + loc + ")[filesize=" + filesize + "][file.size()="
                          + file.size() + "]: Impossibly large object : " + len + " bytes > filesize-(loc+SizeOfInt)="
-                         + (filesize - (loc + SizeOfInt) 
+                         + (filesize - (loc + SizeOfInt)
                          + "\n" + TDB.tdbFaqsLink);
             throw new FileException(msg);
         }
@@ -250,7 +250,7 @@ public class ObjectFileStorage implements ObjectFile
 
     @Override
     public String getLabel()            { return file.getLabel(); }
-    
+
     @Override
     public String toString()            { return file.getLabel(); }
 
