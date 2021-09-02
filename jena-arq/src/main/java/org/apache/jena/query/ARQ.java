@@ -33,6 +33,7 @@ import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.mgt.Explain.InfoLevel ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
+import org.apache.jena.sparql.service.ServiceExecutorRegistry;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
@@ -611,6 +612,7 @@ public class ARQ
 
             // Initialise the standard library.
             FunctionRegistry.init() ;
+            ServiceExecutorRegistry.init();
             AggregateRegistry.init() ;
             PropertyFunctionRegistry.init() ;
 

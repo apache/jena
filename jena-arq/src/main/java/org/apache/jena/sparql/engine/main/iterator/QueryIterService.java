@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.engine.main.iterator;
 
+import java.util.function.Supplier;
+
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.sparql.algebra.Op ;
@@ -31,46 +33,96 @@ import org.apache.jena.sparql.engine.iterator.QueryIterCommonParent ;
 import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply ;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
 import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.service.ServiceExecutorFactory;
+import org.apache.jena.sparql.service.ServiceExecutorRegistry;
+import org.apache.jena.sparql.util.Context;
 
 
 public class QueryIterService extends QueryIterRepeatApply
 {
-    OpService opService ;
-    
+    protected OpService opService ;
+
     public QueryIterService(QueryIterator input, OpService opService, ExecutionContext context)
     {
         super(input, context) ;
         if ( context.getContext().isFalse(Service.serviceAllowed) )
-            throw new QueryExecException("SERVICE not allowed") ; 
+            throw new QueryExecException("SERVICE not allowed") ;
         this.opService = opService ;
     }
-    
+
+
     @Override
     protected QueryIterator nextStage(Binding outerBinding)
     {
-        Op op = QC.substitute(opService, outerBinding) ;
+        OpService substitutedOp = null ; // Initialized lazily
         boolean silent = opService.getSilent() ;
-        QueryIterator qIter ;
+
+        // Check for custom service executors first.
+        // If none matches then fall back to default processing
+
+        ExecutionContext execCxt = getExecContext();
+        Context cxt = execCxt.getContext();
+
+        ServiceExecutorRegistry registry = ServiceExecutorRegistry.get(cxt);
+
+        QueryIterator qIter = null;
+
         try {
-            qIter = Service.exec((OpService)op, getExecContext().getContext()) ;
-            // This iterator is materialized already otherwise we may end up
-            // not servicing the HTTP connection as needed.
-            // In extremis, can cause a deadlock when SERVICE loops back to this server.
-            // Add tracking.
-            qIter = QueryIter.makeTracked(qIter, getExecContext()) ;
+            if (registry != null) {
+                for (ServiceExecutorFactory factory : registry.getFactories()) {
+
+                    // Sanity check
+                    if (factory == null) {
+                        Log.warn(this, "SERVICE <" + opService.getService().toString() + ">: Null item in custom ServiceExecutionRegistry") ;
+                        continue;
+                    }
+
+                    // Whether to pass the original or substituted op to the executor
+                    OpService arg;
+                    if (factory.substituteOp()) {
+                        if (substitutedOp == null) {
+                            substitutedOp = (OpService)QC.substitute(opService, outerBinding);
+                        }
+                        arg = substitutedOp;
+                    } else {
+                        arg = opService;
+                    }
+
+                    Supplier<QueryIterator> executor = factory.createExecutor(arg, outerBinding, execCxt);
+                    if (executor != null) {
+                        qIter = executor.get();
+                        break;
+                    }
+                }
+            }
+
+            // Default processing
+            if (qIter == null) {
+
+                if (substitutedOp == null) {
+                    substitutedOp = (OpService)QC.substitute(opService, outerBinding);
+                }
+
+                qIter = Service.exec(substitutedOp, getExecContext().getContext()) ;
+                // This iterator is materialized already otherwise we may end up
+                // not servicing the HTTP connection as needed.
+                // In extremis, can cause a deadlock when SERVICE loops back to this server.
+                // Add tracking.
+                qIter = QueryIter.makeTracked(qIter, getExecContext()) ;
+            }
         } catch (RuntimeException ex)
         {
             if ( silent )
             {
                 Log.warn(this, "SERVICE <" + opService.getService().toString() + ">: " + ex.getMessage()) ;
                 // Return the input
-                return QueryIterSingleton.create(outerBinding, getExecContext()) ; 
+                return QueryIterSingleton.create(outerBinding, getExecContext()) ;
             }
             throw ex ;
         }
-            
+
         // Need to put the outerBinding as parent to every binding of the service call.
-        // There should be no variables in common because of the OpSubstitute.substitute 
+        // There should be no variables in common because of the OpSubstitute.substitute
         QueryIterator qIter2 = new QueryIterCommonParent(qIter, outerBinding, getExecContext()) ;
         return qIter2 ;
     }
