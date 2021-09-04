@@ -28,14 +28,14 @@ public class ACL {
 */    private static final Model m = ModelFactory.createDefaultModel();
     public static final String NS = "http://www.w3.org/ns/auth/acl#";
 
-    public static Resource APPEND = m.createResource(NS+"Append");
-    public static Resource WRITE = m.createResource(NS+"Write");
-    public static Resource CONTROL = m.createResource(NS+"Control");
-    public static Resource ACCESS = m.createResource(NS+"Access");
-    public static Resource AUTHORIZATION = m.createResource(NS+"Authorization");
-    public static Resource AUTHENTICATEDAGENT = m.createResource(NS+"AuthenticatedAgent");
-    public static Resource ORIGIN = m.createResource(NS+"Origin");
-    public static Resource READ = m.createResource(NS+"Read");
+    public static final Resource APPEND = m.createResource(NS+"Append");
+    public static final Resource WRITE = m.createResource(NS+"Write");
+    public static final Resource CONTROL = m.createResource(NS+"Control");
+    public static final Resource ACCESS = m.createResource(NS+"Access");
+    public static final Resource AUTHORIZATION = m.createResource(NS+"Authorization");
+    public static final Resource AUTHENTICATEDAGENT = m.createResource(NS+"AuthenticatedAgent");
+    public static final Resource ORIGIN = m.createResource(NS+"Origin");
+    public static final Resource READ = m.createResource(NS+"Read");
     public static final Property accessControl = m.createProperty(NS+"accessControl");
     public static final Property accessTo = m.createProperty(NS+"accessTo");
     public static final Property delegates = m.createProperty(NS+"delegates");
