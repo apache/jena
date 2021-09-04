@@ -25,7 +25,8 @@ import org.apache.jena.rdf.model.Resource ;
 public class ACL {
 /**
     Basic Access Control ontology.
-*/    private static final Model m = ModelFactory.createDefaultModel();
+*/
+    private static final Model m = ModelFactory.createDefaultModel();
     public static final String NS = "http://www.w3.org/ns/auth/acl#";
 
     public static final Resource APPEND = m.createResource(NS+"Append");
