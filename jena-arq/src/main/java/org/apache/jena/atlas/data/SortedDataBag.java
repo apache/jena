@@ -57,8 +57,8 @@ import org.apache.jena.atlas.lib.Sink;
  */
 public class SortedDataBag<E> extends AbstractDataBag<E> {
     /**
-     * The the maximum number of files to merge at the same time. Without this,
-     * you can run out of file handles and other bad things.
+     * The the maximum number of files to merge at the same time. Without this, you
+     * can run out of file handles and other bad things.
      */
     protected static int MAX_SPILL_FILES = 100;
 
@@ -70,16 +70,15 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
     protected boolean spilled = false;
     protected boolean closed = false;
 
-    public SortedDataBag(ThresholdPolicy<E> policy, SerializationFactory<E> serializerFactory,
-            Comparator<? super E> comparator) {
+    public SortedDataBag(ThresholdPolicy<E> policy, SerializationFactory<E> serializerFactory, Comparator<? super E> comparator) {
         this.policy = policy;
         this.serializationFactory = serializerFactory;
         this.comparator = new AbortableComparator<>(comparator);
     }
 
     /**
-     * cancel arranges that further comparisons using the supplied comparator
-     * will abandon the sort in progress.
+     * cancel arranges that further comparisons using the supplied comparator will
+     * abandon the sort in progress.
      */
     public void cancel() {
         comparator.cancel();
@@ -87,23 +86,22 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
     }
 
     /**
-     * isCancelled is true iff cancel has been called on this bags comparator.
-     * (Used in testing.)
+     * isCancelled is true iff cancel has been called on this bags comparator. (Used
+     * in testing.)
      */
     public boolean isCancelled() {
         return comparator.cancelled;
     }
 
     /**
-     * isClosed returns true iff this bag has been closed.
-     * (Used in testing.)
+     * isClosed returns true iff this bag has been closed. (Used in testing.)
      */
     public boolean isClosed() {
         return closed;
     }
 
     protected void checkClosed() {
-        if (closed)
+        if ( closed )
             throw new AtlasException("SortedDataBag is closed, no operations can be performed on it.");
     }
 
@@ -120,23 +118,23 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
     @Override
     public void add(E item) {
         checkClosed();
-        if (finishedAdding)
+        if ( finishedAdding )
             throw new AtlasException("SortedDataBag: Cannot add any more items after the writing phase is complete.");
 
-        if (policy.isThresholdExceeded()) {
+        if ( policy.isThresholdExceeded() ) {
             spill();
         }
 
-        if (memory.add(item)) {
+        if ( memory.add(item) ) {
             policy.increment(item);
             size++;
         }
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     protected void spill() {
         // Make sure we have something to spill.
-        if (memory.size() > 0) {
+        if ( memory.size() > 0 ) {
             OutputStream out;
             try {
                 out = getSpillStream();
@@ -149,14 +147,15 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
             // aborted, don't bother messing around with the serialisation.
             // We'll never get around to using it anyway.
 
-            E[] array = (E[]) memory.toArray();
-            if (comparator.abortableSort(array) == Finish.COMPLETED) {
+            E[] array = (E[])memory.toArray();
+            if ( comparator.abortableSort(array) == Finish.COMPLETED ) {
                 Sink<E> serializer = serializationFactory.createSerializer(out);
                 try {
-                    for (Object tuple : array) {
-                        serializer.send((E) tuple);
+                    for ( Object tuple : array ) {
+                        serializer.send((E)tuple);
                     }
-                } finally {
+                }
+                finally {
                     serializer.close();
                 }
             }
@@ -179,10 +178,10 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
     }
 
     /**
-     * Returns an iterator over a set of elements of type E. If you do not
-     * exhaust the iterator, you should call
-     * {@link org.apache.jena.atlas.iterator.Iter#close(Iterator)} to be sure
-     * any open file handles are closed.
+     * Returns an iterator over a set of elements of type E. If you do not exhaust
+     * the iterator, you should call
+     * {@link org.apache.jena.atlas.iterator.Iter#close(Iterator)} to be sure any
+     * open file handles are closed.
      *
      * @return an Iterator
      */
@@ -193,7 +192,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
         return iterator(getSpillFiles().size());
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     private Iterator<E> iterator(int size) {
         checkClosed();
 
@@ -201,29 +200,29 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
 
         // Constructing an iterator from this class is not thread-safe (just
         // like all the the other methods)
-        if (!finishedAdding && memSize > 1) {
-            E[] array = (E[]) memory.toArray();
+        if ( !finishedAdding && memSize > 1 ) {
+            E[] array = (E[])memory.toArray();
             comparator.abortableSort(array); // don't care if we aborted or not
             memory = Arrays.asList(array);
         }
 
         finishedAdding = true;
 
-        if (spilled) {
+        if ( spilled ) {
             List<Iterator<E>> inputs = new ArrayList<>(size + (memSize > 0 ? 1 : 0));
 
-            if (memSize > 0) {
+            if ( memSize > 0 ) {
                 inputs.add(memory.iterator());
             }
 
-            for (int i = 0; i < size; i++) {
+            for ( int i = 0 ; i < size ; i++ ) {
                 File spillFile = getSpillFiles().get(i);
                 try {
                     Iterator<E> irc = getInputIterator(spillFile);
                     inputs.add(irc);
                 } catch (FileNotFoundException e) {
                     // Close any open streams before we throw an exception
-                    for (Iterator<E> it : inputs) {
+                    for ( Iterator<E> it : inputs ) {
                         Iter.close(it);
                     }
 
@@ -236,7 +235,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
 
             return ssi;
         } else {
-            if (memSize > 0) {
+            if ( memSize > 0 ) {
                 return memory.iterator();
             } else {
                 return Iter.nullIterator();
@@ -245,7 +244,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
     }
 
     private void preMerge() {
-        if (getSpillFiles() == null || getSpillFiles().size() <= MAX_SPILL_FILES) {
+        if ( getSpillFiles() == null || getSpillFiles().size() <= MAX_SPILL_FILES ) {
             return;
         }
 
@@ -257,13 +256,14 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
                     while (ssi.hasNext()) {
                         sink.send(ssi.next());
                     }
-                } finally {
+                }
+                finally {
                     Iter.close(ssi);
                     sink.close();
                 }
 
                 List<File> toRemove = new ArrayList<>(MAX_SPILL_FILES);
-                for (int i = 0; i < MAX_SPILL_FILES; i++) {
+                for ( int i = 0 ; i < MAX_SPILL_FILES ; i++ ) {
                     File file = getSpillFiles().get(i);
                     file.delete();
                     toRemove.add(file);
@@ -280,7 +280,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
 
     @Override
     public void close() {
-        if (!closed) {
+        if ( !closed ) {
             closeIterators();
             deleteSpillFiles();
 
@@ -303,14 +303,14 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
             this.minHeap = new PriorityQueue<>(inputs.size());
 
             // Prime the heap
-            for (int i = 0; i < inputs.size(); i++) {
+            for ( int i = 0 ; i < inputs.size() ; i++ ) {
                 replaceItem(i);
             }
         }
 
         private void replaceItem(int index) {
             Iterator<T> it = inputs.get(index);
-            if (it.hasNext()) {
+            if ( it.hasNext() ) {
                 T tuple = it.next();
                 minHeap.add(new Item<>(index, tuple, comp));
             }
@@ -323,7 +323,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
 
         @Override
         public T next() {
-            if (!hasNext()) {
+            if ( !hasNext() ) {
                 throw new NoSuchElementException();
             }
 
@@ -341,7 +341,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
 
         @Override
         public void close() {
-            for (Iterator<T> it : inputs) {
+            for ( Iterator<T> it : inputs ) {
                 Iter.close(it);
             }
         }
@@ -368,14 +368,14 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
             @Override
             @SuppressWarnings("unchecked")
             public int compareTo(Item<U> o) {
-                return (null != c) ? c.compare(tuple, o.getTuple()) : ((Comparable<U>) tuple).compareTo(o.getTuple());
+                return (null != c) ? c.compare(tuple, o.getTuple()) : ((Comparable<U>)tuple).compareTo(o.getTuple());
             }
 
             @SuppressWarnings("unchecked")
             @Override
             public boolean equals(Object obj) {
-                if (obj instanceof Item) {
-                    return compareTo((Item<U>) obj) == 0;
+                if ( obj instanceof Item ) {
+                    return compareTo((Item<U>)obj) == 0;
                 }
 
                 return false;
@@ -388,5 +388,4 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
         }
 
     }
-
 }

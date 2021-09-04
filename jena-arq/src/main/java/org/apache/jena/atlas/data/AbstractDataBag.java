@@ -18,25 +18,25 @@
 
 package org.apache.jena.atlas.data;
 
-import java.io.BufferedInputStream ;
-import java.io.BufferedOutputStream ;
-import java.io.File ;
-import java.io.FileInputStream ;
-import java.io.FileNotFoundException ;
-import java.io.FileOutputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.OutputStream ;
-import java.lang.ref.WeakReference ;
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.List ;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
-import java.util.UUID ;
+import java.util.UUID;
 
 import org.apache.jena.atlas.iterator.IteratorCloseable;
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.lib.FileOps;
 
 /**
  * Abstract implementation of DataBag.  Used as a parent for all three of the types of data bags.
@@ -51,60 +51,52 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
     // Total size, including tuples on disk.
     protected long size = 0;
 
-
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return (size == 0);
     }
 
     @Override
-    public long size()
-    {
+    public long size() {
         return size;
     }
 
     @Override
-    public void send(E item)
-    {
+    public void send(E item) {
         add(item);
     }
 
     /**
-     * Returns a handle to a temporary file.  Does not actually create the file on disk.
-     *
-     * TODO Improve this by getting the directory from a config file
+     * Returns a handle to a temporary file. Does not actually create the file on
+     * disk. TODO Improve this by getting the directory from a config file
      */
-    protected File getNewTemporaryFile()
-    {
-        File sysTempDir = new File(System.getProperty("java.io.tmpdir")) ;
-        File tmpFile = new File(sysTempDir, "DataBag-" + UUID.randomUUID().toString() + ".tmp") ;
-        return tmpFile ;
+    protected File getNewTemporaryFile() {
+        File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
+        File tmpFile = new File(sysTempDir, "DataBag-" + UUID.randomUUID().toString() + ".tmp");
+        return tmpFile;
     }
 
     /**
      * Register the spill file handle for use later in the iterator.
      */
-    protected void registerSpillFile(File spillFile)
-    {
+    protected void registerSpillFile(File spillFile) {
         spillFiles.add(spillFile);
     }
 
-    protected static OutputStream getOutputStream(File file) throws FileNotFoundException
-    {
+    protected static OutputStream getOutputStream(File file) throws FileNotFoundException {
         return new BufferedOutputStream(new FileOutputStream(file));
     }
 
-    protected static InputStream getInputStream(File file) throws FileNotFoundException
-    {
+    protected static InputStream getInputStream(File file) throws FileNotFoundException {
         return new BufferedInputStream(new FileInputStream(file));
     }
 
     /**
-     * Get a stream to spill contents to.  The file that backs this stream will be registered in the spillFiles array.
+     * Get a stream to spill contents to. The file that backs this stream will be
+     * registered in the spillFiles array.
+     *
      * @return stream to write tuples to
      */
-    protected OutputStream getSpillStream() throws IOException
-    {
+    protected OutputStream getSpillStream() throws IOException {
         File outputFile = getNewTemporaryFile();
         OutputStream toReturn = getOutputStream(outputFile);
         registerSpillFile(outputFile);
@@ -113,43 +105,38 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
     }
 
     /**
-     * Register an iterator to be closed when this data bag is closed.  The iterator
+     * Register an iterator to be closed when this data bag is closed. The iterator
      * is held via a weak reference, and is meant as a backup if the user does not
      * close it themselves.
+     *
      * @param c the Closeable iterator to register
      */
-    protected void registerCloseableIterator(IteratorCloseable<?> c)
-    {
-        closeableIterators.add(new WeakReference<>(c)) ;
+    protected void registerCloseableIterator(IteratorCloseable<? > c) {
+        closeableIterators.add(new WeakReference<>(c));
     }
 
     /**
-     * Users should either exhaust or close any iterators they get, but if they don't we
-     * should forcibly close them so that we can delete any temporary files.  Any further
-     * operations on the iterator will throw an exception.
+     * Users should either exhaust or close any iterators they get, but if they don't
+     * we should forcibly close them so that we can delete any temporary files. Any
+     * further operations on the iterator will throw an exception.
      */
-    protected void closeIterators()
-    {
+    protected void closeIterators() {
         closeableIterators.stream().map(WeakReference::get).filter(Objects::nonNull).forEach(Closeable::close);
     }
 
-    protected List<File> getSpillFiles()
-    {
+    protected List<File> getSpillFiles() {
         return spillFiles;
     }
 
-    protected void deleteSpillFiles()
-    {
-        for (File file : spillFiles)
-        {
+    protected void deleteSpillFiles() {
+        for ( File file : spillFiles ) {
             FileOps.delete(file, false);
         }
         spillFiles.clear();
     }
 
     @Override
-    protected void finalize() throws Throwable
-    {
+    protected void finalize() throws Throwable {
         // Last chance to remove any files if the user forgot to call close()
         close();
     }

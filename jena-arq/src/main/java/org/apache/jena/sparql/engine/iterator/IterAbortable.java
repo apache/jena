@@ -76,5 +76,4 @@ public class IterAbortable<T> extends IteratorWrapper<T> implements Abortable, I
         }
         iterator.remove();
     }
-
 }

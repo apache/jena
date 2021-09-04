@@ -41,18 +41,19 @@ public abstract class PMapTupleTable<TupleMapType, TupleType, ConsumerType>
      * This method should always return the same value, but note that the same value may not necessarily be the same
      * instance.
      *
-     * @return a value to which to initialize the master table data.
+     * @return a value to which to initialize the table data.
      */
     protected abstract TupleMapType initial();
-    
-    private final AtomicReference<TupleMapType> master = new AtomicReference<>(initial());
+
+    // Current and committed version.
+    private final AtomicReference<TupleMapType> current = new AtomicReference<>(initial());
 
     /**
      * We use an {@link AtomicReference} to the internal structure that holds our table data to be able to swap
      * transactional versions of the data with the shared version atomically.
      */
-    protected AtomicReference<TupleMapType> master() {
-        return master;
+    protected AtomicReference<TupleMapType> primary() {
+        return current;
     }
 
     private final ThreadLocal<TupleMapType> local = withInitial(()->null);
@@ -89,7 +90,7 @@ public abstract class PMapTupleTable<TupleMapType, TupleType, ConsumerType>
      */
     @Override
     public void begin(final ReadWrite rw) {
-        local.set(master().get());
+        local.set(primary().get());
     }
 
     @Override
@@ -101,7 +102,7 @@ public abstract class PMapTupleTable<TupleMapType, TupleType, ConsumerType>
     @Override
     public void commit() {
         debug("Swapping transactional reference in for shared reference");
-        master().set(local.get());
+        primary().set(local.get());
         end();
     }
 

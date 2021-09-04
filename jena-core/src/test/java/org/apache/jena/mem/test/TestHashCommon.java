@@ -31,51 +31,51 @@ public class TestHashCommon extends ModelTestBase
 
     public TestHashCommon( String name )
         { super( name ); }
-    
+
     static class ProbeHashCommon extends HashCommon<Object>
         {
         protected ProbeHashCommon( int initialCapacity )
             { super( initialCapacity ); }
-        
+
         protected void set( int index, Item object )
             { keys[index] = object; }
-        
+
         @Override public Object removeFrom( int here )
             { return super.removeFrom( here ); }
-        
+
         public int top()
             { return capacity - 1; }
 
         public int capacity()
             { return capacity; }
-        
+
         /*
-            Leaving the hashcode alone makes testing simpler. 
+            Leaving the hashcode alone makes testing simpler.
         */
         @Override protected int improveHashCode( int hashCode )
             { return hashCode; }
 
         @Override protected Object[] newKeyArray( int size )
-            { return new Object[size]; }   
+            { return new Object[size]; }
         }
-    
+
     static class Item
         {
         protected final int n;
         protected final String s;
-        
+
         public Item( int n, String s ) { this.n = n; this.s = s; }
-        
+
         @Override public int hashCode() { return n; }
-        
+
         @Override public boolean equals( Object other )
             { return other instanceof Item && s.equals( ((Item) other).s ); }
-        
+
         @Override public String toString()
             { return s + "#" + n; }
-        }    
+        }
 
-    public void testSanityCheckTestDataConstruction()
+    public void testCheckTestDataConstruction()
         {
         ProbeHashCommon h = probeWith( "1:2:x 4:7:y -1:5:z" );
         assertEquals( new Item( 2, "x" ), h.getItemForTestingAt( 1 ) );
@@ -94,7 +94,7 @@ public class TestHashCommon extends ModelTestBase
 //            assertSame( t, htb.getItemForTestingAt( i ) );
             }
         }
-    
+
     public void testRemoveNoMove()
         {
         ProbeHashCommon h = probeWith( "1:1:Y 2:2:Z" );
@@ -109,7 +109,7 @@ public class TestHashCommon extends ModelTestBase
         assertSame( null, h.removeFrom( 1 ) );
         assertAlike( probeWith( "1:2:X 2:2:Z"), h );
         }
-    
+
     public void testRemoveCircularMove()
         {
         ProbeHashCommon h = probeWith( "0:0:X 1:2:Y -1:2:Z" );
@@ -117,7 +117,7 @@ public class TestHashCommon extends ModelTestBase
         assertAlike( probeWith( "0:0:X 1:2:Z" ), h );
         assertEquals( new Item( 2, "Z" ), moved );
         }
-    
+
     public void testKeyIterator()
         {
         ProbeHashCommon h = probeWith( "0:0:X" );
@@ -127,7 +127,7 @@ public class TestHashCommon extends ModelTestBase
 
     /**
         Assert that the two probe HashCommon's are "alike", that is, that they
-        have key arrays of equal size and are element-by-element equal. 
+        have key arrays of equal size and are element-by-element equal.
         Otherwise, fail (preferably with an appropriate message).
     */
     private void assertAlike( ProbeHashCommon desired, ProbeHashCommon got )
@@ -136,14 +136,14 @@ public class TestHashCommon extends ModelTestBase
         for (int i = 0; i < desired.capacity(); i += 1)
             assertEquals( desired.getItemForTestingAt( i ), got.getItemForTestingAt( i ) );
         }
-    
+
     /**
         Answer a probe with the specified items. <code>items</code> is a
         space-separated string of item descriptions. Each description is a
         colon-separated sequence <code>index:hash:label</code>: the
         item <code>(hash, label)</code> will be placed at <code>index</code>.
         Negative index values are interpreted as indexs from the <i>end</code>
-        of the key array, by adding the probe's capacity to them. 
+        of the key array, by adding the probe's capacity to them.
     */
     protected ProbeHashCommon probeWith( String items )
         {
@@ -160,7 +160,7 @@ public class TestHashCommon extends ModelTestBase
             }
         return result;
         }
-    
+
     protected Set<Item> itemSet( String items )
         {
         Set<Item> result = new HashSet<>();

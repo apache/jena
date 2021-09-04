@@ -58,7 +58,7 @@ public class ResourceImpl extends EnhNode implements Resource {
 };
 
     /**
-        the master constructor: make a new Resource in the given model,
+        the main constructor: make a new Resource in the given model,
         rooted in the given node.
 
         NOT FOR PUBLIC USE - used in ModelCom [and ContainerImpl]
