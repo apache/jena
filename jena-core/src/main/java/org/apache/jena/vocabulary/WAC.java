@@ -22,10 +22,14 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
 
-public class WAC {
 /**
-    Basic Access Control ontology.
-*/
+ *  Basic Access Control ontology.
+ *	<p>
+ *	See <a href="https://www.w3.org/wiki/WebAccessControl">W3C WebAccessControl</a>.
+ *  <p>
+ *  <a href="http://www.w3.org/ns/auth/acl">Base URI and namepace</a>.
+ */
+public class WAC {
     private static final Model m = ModelFactory.createDefaultModel();
     public static final String NS = "http://www.w3.org/ns/auth/acl#";
 
