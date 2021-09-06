@@ -18,21 +18,20 @@
 
 package org.apache.jena.sparql.engine.main.iterator;
 
-import java.util.function.Supplier;
-
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.QueryExecException ;
-import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.sparql.algebra.op.OpService ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.http.Service ;
-import org.apache.jena.sparql.engine.iterator.QueryIter ;
-import org.apache.jena.sparql.engine.iterator.QueryIterCommonParent ;
-import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply ;
-import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
+import org.apache.jena.sparql.engine.iterator.QueryIter;
+import org.apache.jena.sparql.engine.iterator.QueryIterCommonParent;
+import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply;
+import org.apache.jena.sparql.engine.iterator.QueryIterSingleton;
 import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.service.ServiceExecution;
 import org.apache.jena.sparql.service.ServiceExecutorFactory;
 import org.apache.jena.sparql.service.ServiceExecutorRegistry;
 import org.apache.jena.sparql.util.Context;
@@ -52,78 +51,45 @@ public class QueryIterService extends QueryIterRepeatApply
 
 
     @Override
-    protected QueryIterator nextStage(Binding outerBinding)
-    {
-        OpService substitutedOp = null ; // Initialized lazily
-        boolean silent = opService.getSilent() ;
-
-        // Check for custom service executors first.
-        // If none matches then fall back to default processing
-
+    protected QueryIterator nextStage(Binding outerBinding) {
+        boolean silent = opService.getSilent();
         ExecutionContext execCxt = getExecContext();
         Context cxt = execCxt.getContext();
-
         ServiceExecutorRegistry registry = ServiceExecutorRegistry.get(cxt);
-
-        QueryIterator qIter = null;
+        ServiceExecution svcExec = null;
+        OpService substitutedOp = (OpService)QC.substitute(opService, outerBinding);
 
         try {
-            if (registry != null) {
-                for (ServiceExecutorFactory factory : registry.getFactories()) {
-
-                    // Sanity check
-                    if (factory == null) {
-                        Log.warn(this, "SERVICE <" + opService.getService().toString() + ">: Null item in custom ServiceExecutionRegistry") ;
+            // ---- Find handler
+            if ( registry != null ) {
+                for ( ServiceExecutorFactory factory : registry.getFactories() ) {
+                    // Internal consistency check
+                    if ( factory == null ) {
+                        Log.warn(this, "SERVICE <" + opService.getService().toString() + ">: Null item in custom ServiceExecutionRegistry");
                         continue;
                     }
 
-                    // Whether to pass the original or substituted op to the executor
-                    OpService arg;
-                    if (factory.substituteOp()) {
-                        if (substitutedOp == null) {
-                            substitutedOp = (OpService)QC.substitute(opService, outerBinding);
-                        }
-                        arg = substitutedOp;
-                    } else {
-                        arg = opService;
-                    }
-
-                    Supplier<QueryIterator> executor = factory.createExecutor(arg, outerBinding, execCxt);
-                    if (executor != null) {
-                        qIter = executor.get();
+                    svcExec = factory.createExecutor(substitutedOp, opService, outerBinding, execCxt);
+                    if ( svcExec != null )
                         break;
-                    }
                 }
             }
 
-            // Default processing
-            if (qIter == null) {
-
-                if (substitutedOp == null) {
-                    substitutedOp = (OpService)QC.substitute(opService, outerBinding);
-                }
-
-                qIter = Service.exec(substitutedOp, getExecContext().getContext()) ;
-                // This iterator is materialized already otherwise we may end up
-                // not servicing the HTTP connection as needed.
-                // In extremis, can cause a deadlock when SERVICE loops back to this server.
-                // Add tracking.
-                qIter = QueryIter.makeTracked(qIter, getExecContext()) ;
-            }
-        } catch (RuntimeException ex)
-        {
-            if ( silent )
-            {
-                Log.warn(this, "SERVICE <" + opService.getService().toString() + ">: " + ex.getMessage()) ;
+            // ---- Execute
+            if ( svcExec == null )
+                throw new QueryExecException("No SERVICE handler");
+            QueryIterator qIter = svcExec.exec();
+            qIter = QueryIter.makeTracked(qIter, getExecContext());
+            // Need to put the outerBinding as parent to every binding of the service call.
+            // There should be no variables in common because of the OpSubstitute.substitute
+            return new QueryIterCommonParent(qIter, outerBinding, getExecContext());
+        } catch (RuntimeException ex) {
+            if ( silent ) {
+                Log.warn(this, "SERVICE " + NodeFmtLib.str(substitutedOp.getService()) + " : " + ex.getMessage());
                 // Return the input
-                return QueryIterSingleton.create(outerBinding, getExecContext()) ;
+                return QueryIterSingleton.create(outerBinding, getExecContext());
             }
-            throw ex ;
+            throw ex;
         }
-
-        // Need to put the outerBinding as parent to every binding of the service call.
-        // There should be no variables in common because of the OpSubstitute.substitute
-        QueryIterator qIter2 = new QueryIterCommonParent(qIter, outerBinding, getExecContext()) ;
-        return qIter2 ;
     }
 }

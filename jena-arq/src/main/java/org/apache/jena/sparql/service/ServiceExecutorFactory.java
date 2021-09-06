@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.service;
 
-import java.util.function.Supplier;
-
 import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -28,21 +26,13 @@ import org.apache.jena.sparql.engine.binding.Binding;
 /**
  * Interface for custom handling of service execution requests.
  */
+@FunctionalInterface
 public interface ServiceExecutorFactory {
-
     /**
-     * Whether the OpService instance passed to {@link #createExecutor(OpService, Binding, ExecutionContext)}
-     * should already be substituted with the binding. Defaults to true.
-     */
-    default boolean substituteOp() {
-        return true;
-    }
-
-    /**
-     * If this factory cannot handle the execution request then this method needs to return null.
-     * Otherwise, a supplier with the corresponding QueryIterator needs to be supplied.
+     * If this factory cannot handle the execution request then this method should return null.
+     * Otherwise, a {@link ServiceExecution} with the corresponding {@link QueryIterator} is returned.
      *
-     * @return A QueryIterator supplier if this factory can handle the request, null otherwise.
+     * @return A QueryIterator if this factory can handle the request, or null otherwise.
      */
-    Supplier<QueryIterator> createExecutor(OpService op, Binding binding, ExecutionContext execCxt);
+    public ServiceExecution createExecutor(OpService opExecute, OpService original, Binding binding, ExecutionContext execCxt);
 }

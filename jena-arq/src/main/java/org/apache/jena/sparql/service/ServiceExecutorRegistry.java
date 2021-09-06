@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.engine.http.Service;
 import org.apache.jena.sparql.util.Context;
 
 public class ServiceExecutorRegistry
@@ -37,9 +38,13 @@ public class ServiceExecutorRegistry
         return reg ;
     }
 
+    /** A "call with SPARQL query" service execution factory. */
+    public static ServiceExecutorFactory httpService = (op, opx, binding, execCxt) -> ()->Service.exec(op, execCxt.getContext());
+
     public static void init() {
         // Initialize if there is no registry already set
         ServiceExecutorRegistry reg = new ServiceExecutorRegistry() ;
+        reg.add(httpService);
         set(ARQ.getContext(), reg) ;
     }
 
@@ -75,7 +80,7 @@ public class ServiceExecutorRegistry
     /** Insert a service executor factory. Must not be null. */
     public ServiceExecutorRegistry add(ServiceExecutorFactory f) {
         Objects.requireNonNull(f) ;
-        registry.add(f) ;
+        registry.add(0, f) ;
         return this;
     }
 
