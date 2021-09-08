@@ -30,23 +30,23 @@ import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.ReasonerVocabulary ;
 
 /**
- * Test suite to test experimental versions of the OWL reasoner, not 
- * included in the master regression test suite.
+ * Test suite to test experimental versions of the OWL reasoner, not
+ * included in the main regression test suite.
  */
 public class TestTrialOWLRules extends TestCase {
 
     /** The name of the manifest file to test */
     protected String manifest;
-       
+
     /** Flag to control whether tracing and logging enabled */
     protected static boolean enableTracing = false;
-    
+
     /** Flag to control whether to print performance stats as we go */
     protected static boolean printStats = true;
-    
+
     /** Configuration spec for the reasoner under test */
     protected static Resource configuration;
-    
+
     static {
         Model m = ModelFactory.createDefaultModel();
         configuration = m.createResource(GenericRuleReasonerFactory.URI);
@@ -54,22 +54,22 @@ public class TestTrialOWLRules extends TestCase {
         configuration.addProperty(ReasonerVocabulary.PROPruleSet, "etc/owl-fb-test.rules");
         configuration.addProperty(ReasonerVocabulary.PROPenableOWLTranslation, "true" );
     }
-    
+
     /**
      * Boilerplate for junit
-     */ 
+     */
     public TestTrialOWLRules( String manifest ) {
-        super( manifest ); 
+        super( manifest );
         this.manifest = manifest;
     }
-    
+
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
-        
+
         // Basic property and equivalence tests
         suite.addTest(new TestTrialOWLRules("SymmetricProperty/Manifest001.rdf"));
         suite.addTest(new TestTrialOWLRules("FunctionalProperty/Manifest001.rdf"));
@@ -124,14 +124,14 @@ public class TestTrialOWLRules extends TestCase {
         suite.addTest(new TestTrialOWLRules("cardinality/Manifest005-mod.rdf")); // bx gets lost
         suite.addTest(new TestTrialOWLRules("cardinality/Manifest006-mod.rdf")); // bx gets lost
         suite.addTest(new TestTrialOWLRules("equivalentClass/Manifest004.rdf"));  // bx - timeout
-        
+
         // Needs prototype creation rule
 //        suite.addTest(new TestTrialOWLRules("someValuesFrom/Manifest001.rdf")); // bx needs creation rule
-        
+
         // Duplications of tests included earlier
 //        suite.addTest(new TestTrialOWLRules("differentFrom/Manifest002.rdf"));  // Duplication of AllDifferent#1
 //        suite.addTest(new TestTrialOWLRules("distinctMembers/Manifest001.rdf"));  // Duplication of AllDifferent#1
-        
+
         // Consistency tests - not yet implemented by tester
 //      suite.addTest(new TestTrialOWLRules("I5.3/Manifest005.rdf"));
 //      suite.addTest(new TestTrialOWLRules("I5.3/Manifest006.rdf"));
@@ -141,7 +141,7 @@ public class TestTrialOWLRules extends TestCase {
 //      suite.addTest(new TestTrialOWLRules("Nothing/Manifest001.rdf"));
 //      suite.addTest(new TestTrialOWLRules("miscellaneous/Manifest001.rdf"));
 //      suite.addTest(new TestTrialOWLRules("miscellaneous/Manifest002.rdf"));
-        
+
         // Non-feature tests
 //      suite.addTest(new TestTrialOWLRules("I3.2/Manifest001.rdf"));
 //      suite.addTest(new TestTrialOWLRules("I3.2/Manifest002.rdf"));
@@ -166,10 +166,10 @@ public class TestTrialOWLRules extends TestCase {
         suite.addTest(new TestTrialOWLRules("equivalentProperty/Manifest005.rdf"));
         suite.addTest(new TestTrialOWLRules("Nothing/Manifest002.rdf"));
         */
-        
+
         return suite;
-    }  
-   
+    }
+
     /**
      * The test runner
      */
@@ -188,12 +188,12 @@ public class TestTrialOWLRules extends TestCase {
         Model premises = FileManager.getInternal().loadModelInternal("file:testing/wg/someValuesFrom/premises001.rdf");
         Reasoner reasoner = GenericRuleReasonerFactory.theInstance().create(configuration);
         InfModel conclusions = ModelFactory.createInfModel(reasoner, premises);
-        
+
         System.out.println("Premises = ");
         for (StmtIterator i = premises.listStatements(); i.hasNext(); ) {
             System.out.println(" - " + i.next());
         }
-        
+
         Resource i = conclusions.getResource("http://www.w3.org/2002/03owlt/someValuesFrom/premises001#i");
         Property p = conclusions.getProperty("http://www.w3.org/2002/03owlt/someValuesFrom/premises001#p");
         Resource c = conclusions.getResource("http://www.w3.org/2002/03owlt/someValuesFrom/premises001#c");
@@ -216,6 +216,6 @@ public class TestTrialOWLRules extends TestCase {
 //        for (Iterator it = conclusions.listStatements(null, RDF.type, r); it.hasNext(); ) {
 //            System.out.println(" - " + it.next());
 //        }
-        
+
     }
 }

@@ -121,7 +121,7 @@ public class GraphMatcher extends java.lang.Object {
     // this is reflected in state=BAD
     private Map<Integer, Bucket> table;
 
-    // This variable is mainly for sanity checking and
+    // This variable is mainly for checking and
     // documentation. It has one logical impact in
     // AnonResource.myHashCodeFromStatement() and
     // AnonResource.wrapStatements()

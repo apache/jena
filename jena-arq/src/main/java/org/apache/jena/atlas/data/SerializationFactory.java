@@ -18,11 +18,11 @@
 
 package org.apache.jena.atlas.data;
 
-import java.io.InputStream ;
-import java.io.OutputStream ;
-import java.util.Iterator ;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Sink;
 
 public interface SerializationFactory<E>
 {
