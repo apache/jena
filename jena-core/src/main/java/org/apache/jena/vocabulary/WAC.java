@@ -17,30 +17,32 @@
  */
 
 package org.apache.jena.vocabulary;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+
+public class WAC {
 
 /**
  *  Basic Access Control ontology.
- *	<p>
+ *  <p>
  *	See <a href="https://www.w3.org/wiki/WebAccessControl">W3C WebAccessControl</a>.
  *  <p>
  *  <a href="http://www.w3.org/ns/auth/acl">Base URI and namepace</a>.
  */
-public class WAC {
     private static final Model m = ModelFactory.createDefaultModel();
     public static final String NS = "http://www.w3.org/ns/auth/acl#";
 
-    public static final Resource APPEND = m.createResource(NS+"Append");
-    public static final Resource WRITE = m.createResource(NS+"Write");
-    public static final Resource CONTROL = m.createResource(NS+"Control");
-    public static final Resource ACCESS = m.createResource(NS+"Access");
-    public static final Resource AUTHORIZATION = m.createResource(NS+"Authorization");
-    public static final Resource AUTHENTICATEDAGENT = m.createResource(NS+"AuthenticatedAgent");
-    public static final Resource ORIGIN = m.createResource(NS+"Origin");
-    public static final Resource READ = m.createResource(NS+"Read");
+    public static final Resource Append = m.createResource(NS+"Append");
+    public static final Resource Write = m.createResource(NS+"Write");
+    public static final Resource Control = m.createResource(NS+"Control");
+    public static final Resource Access = m.createResource(NS+"Access");
+    public static final Resource Authorization = m.createResource(NS+"Authorization");
+    public static final Resource AuthenticatedAgent = m.createResource(NS+"AuthenticatedAgent");
+    public static final Resource Origin = m.createResource(NS+"Origin");
+    public static final Resource Read = m.createResource(NS+"Read");
     public static final Property accessControl = m.createProperty(NS+"accessControl");
     public static final Property accessTo = m.createProperty(NS+"accessTo");
     public static final Property delegates = m.createProperty(NS+"delegates");
