@@ -26,8 +26,12 @@ import org.apache.jena.rdf.model.Resource;
 public class SO {
 
 /**
-    Schema.org is a collaborative, community activity with a mission to create, maintain, and promote schemas for structured data on the Internet, on web pages, in email messages, and beyond. - https://schema.org/
-**/
+ *  Schema.org is a collaborative, community activity with a mission to create, maintain, and promote schemas for structured data on the Internet, on web pages, in email messages, and beyond.
+ *  <p>
+ *	See <a href="https://schema.org/">Schema.org</a>.
+ *  <p>
+ *  <a href="https://schema.org/">Base URI and namepace</a>.
+ */
     private static final Model m = ModelFactory.createDefaultModel();
     public static final String NS = "https://schema.org/";
 
