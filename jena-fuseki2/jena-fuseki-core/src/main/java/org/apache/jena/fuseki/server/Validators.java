@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import org.apache.jena.irix.Chars3986;
 import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIException;
 
 import static org.apache.jena.fuseki.server.Validators.ValidationPolicy.*;
 
@@ -34,27 +35,34 @@ public class Validators {
         }
     }
 
-    // ---- Service Names
+    // ---- Service Names - must be a path.
     private static Function<String, Boolean> fServiceName = Validators::isPath;
     private static Validator vServiceName = new Validator(SERVICE, Validators::isPath);
+
     public static ValidString serviceName(String name) {
         return ValidString.create(name, vServiceName);
     }
 
-    // ---- Endpoints
+    // ---- Endpoints - must be a path
     private static Function<String, Boolean> fEndpointName = (epName) -> {
         return epName == null || Validators.isPath(epName);
     };
     private static Validator vEndpointName = new Validator(ENDPOINT, fEndpointName);
+
     public static ValidString endpointName(String name) {
         return ValidString.create(name, vEndpointName);
     }
 
-    // ---- Graph names
-    private static Function<String, Boolean> fGraphName = str -> { return IRIs.check(str); };
+    // ---- Graph names - any legal IRI.
+    private static Function<String, Boolean> fGraphName = str -> {
+        try {
+            return IRIs.check(str);
+        } catch (IRIException ex) { return false; }
+    };
     private static Validator vGraphName = new Validator(GRAPH, fGraphName);
+
     public static ValidString graphName(String name) {
-        return ValidString.create(name, vEndpointName);
+        return ValidString.create(name, vGraphName);
     }
 
     // test whether str is multiple segments suitable for an IRI path
