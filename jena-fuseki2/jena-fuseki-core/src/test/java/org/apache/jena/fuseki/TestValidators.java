@@ -172,4 +172,21 @@ public class TestValidators {
         Validators.endpointName("<http://example/>");
     }
 
+    @Test public void validator_graph_1() {
+        Validators.graphName("http://example/abc");
+    }
+
+    @Test public void validator_graph_2() {
+        Validators.graphName("http://example/abc#def");
+    }
+
+    @Test(expected=FusekiConfigException.class)
+    public void validator_graph_bad_1() {
+        Validators.graphName("abc");
+    }
+
+    @Test(expected=FusekiConfigException.class)
+    public void validator_graph_bad_2() {
+        Validators.graphName("#abc");
+    }
 }
