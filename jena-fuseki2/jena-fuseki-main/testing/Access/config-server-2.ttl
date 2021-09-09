@@ -47,7 +47,7 @@ PREFIX access:  <http://jena.apache.org/access#>
     .
 
 ## Dataset 2
-## No users allowed (no whitelist)
+## No users allowed (no fuseki:allowedUsers)
 <#service_plain> rdf:type fuseki:Service ;
     fuseki:name                  "database2";
     fuseki:serviceQuery          "query";

@@ -245,8 +245,7 @@ public class Checker {
         return validateByDatatypeJena(lexicalForm, datatype, errorHandler, line, col);
     }
 
-    protected static boolean validateByDatatypeJena(String lexicalForm, RDFDatatype datatype, ErrorHandler errorHandler, long line,
-                                                    long col) {
+    protected static boolean validateByDatatypeJena(String lexicalForm, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
         if ( datatype.isValid(lexicalForm) )
             return true;
         errorHandler(errorHandler).warning("Lexical form '" + lexicalForm + "' not valid for datatype " + xsdDatatypeName(datatype), line, col);

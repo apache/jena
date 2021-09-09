@@ -133,12 +133,16 @@ public abstract class NodeValue extends ExprNode
 
     public static final NodeValue nvEmptyString  = NodeValue.makeString("") ;
 
-    // Use "==" for equality.
-    private static final String strForUnNode = "node value nothing" ;
-
     public static final String xsdNamespace = XSD+"#" ;
 
-    public static  DatatypeFactory xmlDatatypeFactory = DatatypeFactoryInst.newDatatypeFactory();
+    public static DatatypeFactory xmlDatatypeFactory = null;
+
+    static {
+        // JDK default regardless.
+        //xmlDatatypeFactory = DatatypeFactory.newDefaultInstance();
+        // Extracted Xerces.
+        xmlDatatypeFactory = DatatypeFactoryInst.newDatatypeFactory();
+    }
 
     private Node node = null ;     // Null used when a value has not been turned into a Node.
 
