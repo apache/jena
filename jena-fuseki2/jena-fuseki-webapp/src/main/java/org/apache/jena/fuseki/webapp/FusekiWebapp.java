@@ -276,8 +276,7 @@ public class FusekiWebapp
             Fuseki.configLog.warn("Configuration file '" + configFilename+"' does not exist");
             return Collections.emptyList();
         }
-        Fuseki.configLog.info("Configuration file: " + configFilename);
-        //return FusekiConfig.readServerConfigFile(configFilename);
+        //Fuseki.configLog.info("Configuration file: " + configFilename);
         Model model = AssemblerUtils.readAssemblerFile(configFilename);
         if ( model.size() == 0 )
             return Collections.emptyList();

@@ -96,8 +96,8 @@ public class SysRIOT
     }
 
     /**
-     * Choose base IRI, from a given one and a filename. Prefer the given base ; turn
-     * any filename into an IRI. String will need to be resolved as well.
+     * Choose base IRI, from a given one and a filename. Prefer the given base;
+     * turn any filename into an IRI which is resolved as well.
      */
     public static String chooseBaseIRI(String baseIRI, String fileOrIri) {
         if ( baseIRI != null )

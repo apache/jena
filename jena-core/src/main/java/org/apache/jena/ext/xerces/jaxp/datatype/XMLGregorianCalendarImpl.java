@@ -2093,13 +2093,13 @@ class XMLGregorianCalendarImpl
             return false;
         }
 
-        // XML Schema 1.0 specification defines year value of zero as
-        // invalid. Allow this class to set year field to zero
-        // since XML Schema 1.0 errata states that lexical zero will 
-        // be allowed in next version and treated as 1 B.C.E.
-        if (eon == null && year == 0) {
-            return false;
-        }
+//        // XML Schema 1.0 specification defines year value of zero as
+//        // invalid. Allow this class to set year field to zero
+//        // since XML Schema 1.0 errata states that lexical zero will 
+//        // be allowed in next version and treated as 1 B.C.E.
+//        if (eon == null && year == 0) {
+//            return false;
+//        }
         return true;
     }
 

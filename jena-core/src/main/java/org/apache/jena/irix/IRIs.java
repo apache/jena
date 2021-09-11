@@ -21,6 +21,7 @@ package org.apache.jena.irix;
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.base.Sys;
 
 /**
  * Operations in support of {@link IRIx}.
@@ -78,9 +79,11 @@ public class IRIs {
      */
     public static String toBase(String baseURI) {
         String scheme = scheme(baseURI);
-        // Assume scheme of one letter are Windows drive letters.
-        if ( scheme != null && scheme.length() == 1 )
-            scheme = "file";
+        if ( Sys.isWindows ) {
+            // Assume a scheme of one letter is a Windows drive letter.
+            if ( scheme != null && scheme.length() == 1 )
+                scheme = "file";
+        }
         if ( scheme != null && scheme.equals("file") )
             return IRILib.filenameToIRI(baseURI);
         return IRIs.getSystemBase().resolve(baseURI).toString();

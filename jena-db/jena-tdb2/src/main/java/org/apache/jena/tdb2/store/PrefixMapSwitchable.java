@@ -25,8 +25,8 @@ import org.apache.jena.riot.system.PrefixMapWrapper;
  * {@link PrefixMap} that goes to the current DatasetGraphTDB prefixes.
  */
 public class PrefixMapSwitchable extends PrefixMapWrapper {
-    // PrefixMapProxy not needed. It calls a Supplier
-    // but in TDB2
+    // PrefixMapProxy not needed.
+    // TDB2 datasets already have switchability built-in.
 
     private final DatasetGraphSwitchable dsgx;
     protected DatasetGraphSwitchable getx() { return dsgx; }
@@ -42,5 +42,4 @@ public class PrefixMapSwitchable extends PrefixMapWrapper {
 
     @Override
     protected PrefixMap getW() { return dsgx.get().prefixes(); }
-
 }

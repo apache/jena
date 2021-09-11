@@ -470,7 +470,8 @@ public final class Constants {
     public final static short XML_VERSION_1_1 = 2;
     
     // Constant to enable Schema 1.1 support
-    public final static boolean SCHEMA_1_1_SUPPORT = false;
+    // XSD 1.1 (affects the value of negative years and allows a year of "0000"). 
+    public final static boolean SCHEMA_1_1_SUPPORT = true;
     public final static short SCHEMA_VERSION_1_0          = 1;
     public final static short SCHEMA_VERSION_1_0_EXTENDED = 2;
     

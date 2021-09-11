@@ -194,7 +194,13 @@ public class IRILib
         // To get Path.toAbsolutePath to work, we need to convert /C:/ to C:/
         // then back again.
         fn = fixupWindows(fn) ;
-        fn = Paths.get(fn).toAbsolutePath().normalize().toString() ;
+        try { 
+            // Windows issue 
+            // Drive letter may not exists in which case it has no working directory "x:"
+            fn = Paths.get(fn).toAbsolutePath().normalize().toString() ;
+        } catch (java.io.IOError ex) {
+            // Any IO problems - > ignore.
+        }
 
         if ( trailingSlash && ! fn.endsWith("/") )
             fn = fn + "/" ;

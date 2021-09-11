@@ -1496,6 +1496,8 @@ public class XSDFuncOp
     public static NodeValue dtGetYear(NodeValue nv) {
         if ( nv.isDateTime() || nv.isDate() || nv.isGYear() || nv.isGYearMonth() ) {
             DateTimeStruct dts = parseAnyDT(nv) ;
+            if ( dts.neg != null )
+                return NodeValue.makeNode("-"+dts.year, XSDDatatype.XSDinteger) ;
             return NodeValue.makeNode(dts.year, XSDDatatype.XSDinteger) ;
         }
         throw new ExprEvalException("Not a year datatype") ;
