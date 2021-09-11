@@ -16,29 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.engine;
+package org.apache.jena.test.service;
 
-import org.apache.jena.sparql.engine.binding.TestBinding;
-import org.apache.jena.sparql.engine.binding.TestBindingStreams ;
-import org.apache.jena.sparql.engine.binding.TestItr;
-import org.apache.jena.sparql.engine.http.TestQueryEngineHTTP ;
-import org.apache.jena.sparql.engine.ref.TestTableJoin ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-        TestItr.class
-      , TestBinding.class
-      , TestBindingStreams.class
-
-      , TestTableJoin.class
-
-      , TestQueryEngineHTTP.class
-
-      , TestQueryEngineMultiThreaded.class
-      , TestJsonIterator.class
-      , TestJsonEval.class
+    TestServiceExec.class,
+    TestServiceSetup.class,
+    TestCustomServiceExecutor.class
 })
+public class TS_SPARQLService {}
 
-public class TS_Engine {}
+

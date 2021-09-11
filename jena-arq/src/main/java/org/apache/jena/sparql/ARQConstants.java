@@ -290,6 +290,10 @@ public class ARQConstants
     public static final Symbol registryFunctions =
         SystemARQ.allocSymbol("registryFunctions") ;
 
+    /** The service executor library registry key */
+    public static final Symbol registryServiceExecutors =
+        SystemARQ.allocSymbol("registryServiceExecutors") ;
+
     /** The function library registry key */
     public static final Symbol registryProcedures =
         SystemARQ.allocSymbol("registryProcedures") ;
