@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-db</artifactId>
-    <version>4.2.0</version>
+    <version>4.3.0-SNAPSHOT</version>
   </parent> 
 
   <properties>
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-base</artifactId>
-      <version>4.2.0</version>
+      <version>4.3.0-SNAPSHOT</version>
     </dependency>
 
   </dependencies>
