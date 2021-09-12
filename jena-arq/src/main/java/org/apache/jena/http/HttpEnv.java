@@ -30,8 +30,8 @@ import org.apache.jena.riot.RDFFormat;
 public class HttpEnv {
 
     // These preserve prefixes.
-    public static final RDFFormat dftTriplesFormat = RDFFormat.TURTLE_BLOCKS;
-    public static final RDFFormat dftQuadsFormat = RDFFormat.TRIG_BLOCKS;
+    public static final RDFFormat defaultTriplesFormat = RDFFormat.TURTLE_BLOCKS;
+    public static final RDFFormat defaultQuadsFormat = RDFFormat.TRIG_BLOCKS;
 
     /**
      * Maximum length of URL for GET requests for SPARQL queries

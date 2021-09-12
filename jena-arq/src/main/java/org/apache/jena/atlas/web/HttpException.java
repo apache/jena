@@ -26,19 +26,19 @@ import org.apache.jena.web.HttpSC;
 public class HttpException extends RuntimeException {
     private final int statusCode;
     private final String statusLine;
-	private final String response;
+    private final String response;
 
-	// HTTP/2 does not have an information message.
-	public HttpException(int statusCode) {
-	    this(statusCode, null);
-	}
+    // HTTP/2 does not have an information message.
+    public HttpException(int statusCode) {
+        this(statusCode, null);
+    }
 
-	public HttpException(int statusCode, String statusLine) {
-		super(exMessage(statusCode, statusLine));
-		this.statusCode = statusCode;
-		this.statusLine = statusLine ;
-		this.response = null;
-	}
+    public HttpException(int statusCode, String statusLine) {
+        super(exMessage(statusCode, statusLine));
+        this.statusCode = statusCode;
+        this.statusLine = statusLine ;
+        this.response = null;
+    }
 
     public HttpException(int statusCode, String statusLine, String response) {
         super(exMessage(statusCode, statusLine));
@@ -47,11 +47,11 @@ public class HttpException extends RuntimeException {
         this.response = response;
     }
 
-	private static String exMessage(int statusCode, String statusLine) {
-	    if ( statusLine == null )
-	        statusLine = HttpSC.getMessage(statusCode);
-	    return statusCode+" - "+HttpSC.getMessage(statusCode);
-	}
+    private static String exMessage(int statusCode, String statusLine) {
+        if ( statusLine == null )
+            statusLine = HttpSC.getMessage(statusCode);
+        return statusCode+" - "+HttpSC.getMessage(statusCode);
+    }
 
     public HttpException(String message) {
         super(message);
@@ -91,11 +91,11 @@ public class HttpException extends RuntimeException {
         return this.statusLine;
     }
 
-	/**
-	 * The response payload from the remote.
-	 * @return The payload, or null if no payload
-	 */
-	public String getResponse() {
-		return response;
-	}
+    /**
+     * The response payload from the remote.
+     * @return The payload, or null if no payload
+     */
+    public String getResponse() {
+        return response;
+    }
 }

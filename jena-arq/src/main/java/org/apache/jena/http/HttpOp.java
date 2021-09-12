@@ -414,23 +414,4 @@ public class HttpOp {
         HttpLib.handleResponseNoBody(response);
         return response.headers().firstValue(HttpNames.hContentType).orElse(null);
     }
-
-    // ---- Misc
-
-    /**
-     * Content-Type, without charset.
-     * <p>
-     * RDF formats are either UTF-8 or XML , where the charset is determined by the
-     * processing instruction at the start of the content. Parsing is on byte
-     * streams.
-     */
-    private static <T> String determineContentType(HttpResponse<T> response) {
-        String ctStr = HttpLib.responseHeader(response, HttpNames.hContentType);
-        if ( ctStr != null ) {
-            int i = ctStr.indexOf(';');
-            if ( i >= 0 )
-                ctStr = ctStr.substring(0, i);
-        }
-        return ctStr;
-    }
 }

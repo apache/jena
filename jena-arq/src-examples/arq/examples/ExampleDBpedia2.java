@@ -24,9 +24,9 @@ import org.apache.jena.sparql.util.Context;
 
 public class ExampleDBpedia2
 {
-    static public void main(String...argv)
+    static public void main(String... argv)
     {
-        String queryStr = "select distinct ?Concept where {[] a ?Concept} LIMIT 10";
+        String queryStr = "SELECT DISTINCT ?Concept where {[] a ?Concept} LIMIT 10";
         Query query = QueryFactory.create(queryStr);
 
         Context cxt = ARQ.getContext().copy();
@@ -37,9 +37,9 @@ public class ExampleDBpedia2
                     .query(query)
                     .param("timeout", "10000")
                     .build() ) {
-          // Execute.
-          ResultSet rs = qExec.execSelect();
-          ResultSetFormatter.out(System.out, rs, query);
+            // Execute.
+            ResultSet rs = qExec.execSelect();
+            ResultSetFormatter.out(System.out, rs, query);
         }
     }
 }

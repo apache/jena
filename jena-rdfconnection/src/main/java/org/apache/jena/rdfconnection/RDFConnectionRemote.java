@@ -27,7 +27,7 @@ public interface RDFConnectionRemote extends RDFConnection {
     /** Create a {@link RDFConnectionRemoteBuilder}. */
     public static RDFConnectionRemoteBuilder newBuilder() { return new RDFConnectionRemoteBuilder(); }
 
-    /** Create a {@link RDFConnectionRemoteBuilder} for a nremnote destination. */
+    /** Create a {@link RDFConnectionRemoteBuilder} for a remote destination. */
     public static RDFConnectionRemoteBuilder service(String destinationURL) {
         return newBuilder().destination(destinationURL);
     }

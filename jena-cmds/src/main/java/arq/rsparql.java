@@ -67,7 +67,7 @@ public class rsparql extends CmdARQ
 
             QueryExecUtils.executeQuery(query, qe, modResults.getResultsFormat());
         } catch (QueryExceptionHTTP ex) {
-            throw new CmdException("HTTP Exeception", ex);
+            throw new CmdException("HTTP Exception", ex);
         } catch (Exception ex) {
             System.out.flush();
             ex.printStackTrace(System.err);

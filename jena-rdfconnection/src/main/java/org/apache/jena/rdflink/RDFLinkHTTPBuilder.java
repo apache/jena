@@ -47,8 +47,8 @@ public class RDFLinkHTTPBuilder {
     protected String        gspURL        = null;
 
     // On-the-wire settings.
-    protected RDFFormat     outputQuads        = HttpEnv.dftQuadsFormat;
-    protected RDFFormat     outputTriples      = HttpEnv.dftTriplesFormat;
+    protected RDFFormat     outputQuads        = HttpEnv.defaultQuadsFormat;
+    protected RDFFormat     outputTriples      = HttpEnv.defaultTriplesFormat;
 
     protected String        acceptGraph        = WebContent.defaultGraphAcceptHeader;
     protected String        acceptDataset      = WebContent.defaultDatasetAcceptHeader;

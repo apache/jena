@@ -40,8 +40,8 @@ import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
 /**
- * Interface for SPARQL operations on a datasets, whether local or remote.
- * Operations can performed via this interface or via the various
+ * Interface for SPARQL operations on a dataset, whether local or remote.
+ * Operations can be performed via this interface or via the various
  * interfaces for a subset of the operations.
  *
  * <ul>
@@ -260,15 +260,17 @@ public interface RDFLink extends
     @Override
     public QueryExec query(Query query);
 
-    /** Setup a SPARQL query execution.
+    /**
+     * Setup a SPARQL query execution.
+     * <p>
      * This is a low-level operation.
      * Handling the {@link QueryExecution} should be done with try-resource.
      * Some {@link QueryExecution QueryExecutions}, such as ones connecting to a remote server,
      * need to be properly closed to release system resources.
-     *
-     *  See also {@link #querySelect(String, Consumer)}, {@link #queryConstruct(String)},
-     *  {@link #queryDescribe(String)}, {@link #queryAsk(String)}
-     *  for ways to execute queries of a specific form.
+     * <p>
+     * See also {@link #querySelect(String, Consumer)}, {@link #queryConstruct(String)},
+     * {@link #queryDescribe(String)}, {@link #queryAsk(String)}
+     * for ways to execute queries of a specific form.
      *
      * @param queryString
      * @return QueryExecution

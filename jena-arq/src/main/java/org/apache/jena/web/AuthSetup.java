@@ -50,6 +50,6 @@ public class AuthSetup {
 
     @Override
     public String toString() {
-        return "AuthSetup [host=" + host + ", port=" + port + ", user=" + user + ", password=" + password + ", realm=" + realm + "]";
+        return "AuthSetup [host=" + host + ", port=" + port + ", user=" + user + ", password=......, realm=" + realm + "]";
     }
 }

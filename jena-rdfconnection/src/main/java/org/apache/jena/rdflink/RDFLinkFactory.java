@@ -28,8 +28,8 @@ public class RDFLinkFactory {
     /**
      * Create a connection to a remote location by URL. This is the URL for the
      * dataset. This call assumes the SPARQL Query endpoint, SPARQL Update endpoint
-     * and SPARQL Graph Store Protocol endpoinst are the same URL.
-     * Thisis suported by <a href="http://jena.apache.org/documentation/fuseki2">Apache Jena Fuseki</a>.
+     * and SPARQL Graph Store Protocol endpoints are the same URL.
+     * This is supported by <a href="http://jena.apache.org/documentation/fuseki2">Apache Jena Fuseki</a>.
      * Other names can be specified using {@link #connect(String, String, String, String)}
      * or {@link RDFLinkHTTPBuilder}.
      *

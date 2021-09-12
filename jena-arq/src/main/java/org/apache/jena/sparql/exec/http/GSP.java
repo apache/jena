@@ -326,7 +326,7 @@ public class GSP {
     /** POST a graph. */
     public void POST(Graph graph) {
         validateGraphOperation();
-        RDFFormat requestFmt = rdfFormat(HttpEnv.dftTriplesFormat);
+        RDFFormat requestFmt = rdfFormat(HttpEnv.defaultTriplesFormat);
         String url = graphRequestURL();
         HttpClient hc = requestHttpClient(serviceEndpoint, url);
         HttpRDF.httpPostGraph(hc, url, graph, requestFmt, httpHeaders);
@@ -378,7 +378,7 @@ public class GSP {
      */
     public void PUT(Graph graph) {
         validateGraphOperation();
-        RDFFormat requestFmt = rdfFormat(HttpEnv.dftTriplesFormat);
+        RDFFormat requestFmt = rdfFormat(HttpEnv.defaultTriplesFormat);
         String url = graphRequestURL();
         HttpClient hc = requestHttpClient(serviceEndpoint, url);
         HttpRDF.httpPutGraph(hc, url, graph, requestFmt, httpHeaders);
@@ -491,7 +491,7 @@ public class GSP {
     public void postDataset(DatasetGraph dataset) {
         internalDataset();
         validateDatasetOperation();
-        RDFFormat requestFmt = rdfFormat(HttpEnv.dftQuadsFormat);
+        RDFFormat requestFmt = rdfFormat(HttpEnv.defaultQuadsFormat);
         HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
         HttpRDF.httpPostDataset(hc, serviceEndpoint, dataset, requestFmt, httpHeaders);
     }
@@ -514,7 +514,7 @@ public class GSP {
     public void putDataset(DatasetGraph dataset) {
         internalDataset();
         validateDatasetOperation();
-        RDFFormat requestFmt = rdfFormat(HttpEnv.dftQuadsFormat);
+        RDFFormat requestFmt = rdfFormat(HttpEnv.defaultQuadsFormat);
         HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
         HttpRDF.httpPutDataset(hc, serviceEndpoint, dataset, requestFmt, httpHeaders);
     }

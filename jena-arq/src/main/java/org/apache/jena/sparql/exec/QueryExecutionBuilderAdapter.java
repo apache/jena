@@ -16,17 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query;
+package org.apache.jena.sparql.exec;
 
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingLib;
-import org.apache.jena.sparql.exec.QueryExecBuilder;
-import org.apache.jena.sparql.exec.QueryExecutionAdapter;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
@@ -35,7 +34,7 @@ import org.apache.jena.sparql.util.Symbol;
  */
 public class QueryExecutionBuilderAdapter implements QueryExecutionBuilder {
 
-    // This only implements QueryExecutionBuilderCommon, the builder steps in common between
+    // This only implements QueryExecutionBuilder, the builder steps in common between
     // local (dataset) and remote (HTTP) query building. In particular, it does not
     // provide operations to change the target of the query.
 

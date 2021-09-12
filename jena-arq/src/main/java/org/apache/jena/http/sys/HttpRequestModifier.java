@@ -23,8 +23,10 @@ import java.util.Map;
 import org.apache.jena.sparql.exec.http.Params;
 
 /**
- * A {@code HttpRequestModifer} allows the application to HTTP query parameters and HTTP headers
- * that will be used to create an {@link java.net.http.HttpRequest}.
+ * A {@code HttpRequestModifer} allows the application to HTTP query parameters and
+ * HTTP headers that will be used to create an {@link java.net.http.HttpRequest}.
  */
 @FunctionalInterface
-public interface HttpRequestModifier { void modify(Params params, Map<String, String> httpHeaders) ; }
+public interface HttpRequestModifier {
+    public void modify(Params params, Map<String, String> httpHeaders);
+}

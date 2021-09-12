@@ -40,7 +40,6 @@ import org.apache.jena.sparql.util.Symbol;
  * Query Execution for local datasets - builder style.
  */
 public class QueryExecutionDatasetBuilder implements QueryExecutionBuilder {
-    // implements but overrides everything to get the right return type.
 
     /** Create a new builder of {@link QueryExecution} for a local dataset. */
     public static QueryExecutionDatasetBuilder create() { return new QueryExecutionDatasetBuilder(); }

@@ -18,8 +18,10 @@
 
 package org.apache.jena.query;
 
-/** QueryExecException indicates a condition encountered during
- *  query evaluation. */
+/**
+ * QueryExecException indicates a condition encountered during
+ * query evaluation.
+ */
 
 
 public class QueryExecException extends QueryException

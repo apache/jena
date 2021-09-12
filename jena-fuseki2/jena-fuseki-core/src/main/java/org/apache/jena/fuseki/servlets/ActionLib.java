@@ -280,7 +280,7 @@ public class ActionLib {
         // If there isn't a Content-Length, we can't recover.
         try {
             if ( action.getRequestContentLengthLong() > 0 ) {
-                InputStream input = action.getRequestInputStream();
+                InputStream input = action.getRequestInputStreamRaw();
                 IO.skipToEnd(input);
             }
         } catch (IOException ex) { IO.exception(ex); }

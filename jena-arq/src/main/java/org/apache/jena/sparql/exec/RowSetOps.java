@@ -18,20 +18,20 @@
 
 package org.apache.jena.sparql.exec;
 
-import java.io.OutputStream ;
-import java.util.Iterator ;
+import java.io.OutputStream;
+import java.util.Iterator;
 
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.riot.ResultSetMgr ;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.riot.ResultSetMgr;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.rw.ResultsWriter;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
-import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.core.Prologue;
 
 /** RowSetFormatter - Convenience ways to call the various output formatters.
  *  in various formats.
@@ -59,32 +59,32 @@ public class RowSetOps {
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
      * <p>
-     *  This caches the entire results in memory in order to determine the appropriate
-     *  column widths and therefore may exhaust memory for large results
-     *  </p>
+     * This caches the entire results in memory in order to determine the appropriate
+     * column widths and therefore may exhaust memory for large results
+     * </p>
      * @param rowSet   result set
      */
     public static void out(RowSet rowSet)
-    { out(System.out, rowSet) ; }
+    { out(System.out, rowSet); }
 
     /**
      * Output a result set in a text format.
      * <p>
-     *  This caches the entire results in memory in order to determine the appropriate
-     *  column widths and therefore may exhaust memory for large results
-     *  </p>
+     * This caches the entire results in memory in order to determine the appropriate
+     * column widths and therefore may exhaust memory for large results
+     * </p>
      * @param out        OutputStream
      * @param rowSet   result set
      */
     public static void out(OutputStream out, RowSet rowSet)
-    { out(out, rowSet, (PrefixMap)null) ; }
+    { out(out, rowSet, (PrefixMap)null); }
 
     /**
      * Output a result set in a text format.
      * <p>
-     *  This caches the entire results in memory in order to determine the appropriate
-     *  column widths and therefore may exhaust memory for large results
-     *  </p>
+     * This caches the entire results in memory in order to determine the appropriate
+     * column widths and therefore may exhaust memory for large results
+     * </p>
      * @param out        OutputStream
      * @param resultSet  Result set
      * @param pmap       Prefix mapping for abbreviating URIs.
@@ -99,9 +99,10 @@ public class RowSetOps {
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
      * <p>
-     *  This caches the entire results in memory in order to determine the appropriate
-     *  column widths and therefore may exhaust memory for large results
-     *  </p>
+     * This caches the entire results in memory in order to determine the appropriate
+     * column widths and therefore may exhaust memory for large results
+     * </p>
+     *
      * @param out        OutputStream
      * @param rowSet  result set
      * @param prologue   Prologue, used to abbreviate IRIs
@@ -120,7 +121,7 @@ public class RowSetOps {
      * @param answer    The boolean answer
      */
     public static void out(boolean answer)
-    { out(System.out, answer) ; }
+    { out(System.out, answer); }
 
     /**
      * Output an ASK answer
@@ -133,9 +134,9 @@ public class RowSetOps {
 
     /** Touch every var/value */
     private static void materialize(QuerySolution qs) {
-        for ( Iterator<String> iter = qs.varNames() ; iter.hasNext() ; ) {
+        for ( Iterator<String> iter = qs.varNames(); iter.hasNext(); ) {
             String vn = iter.next();
-            RDFNode n = qs.get(vn) ;
+            RDFNode n = qs.get(vn);
         }
     }
 

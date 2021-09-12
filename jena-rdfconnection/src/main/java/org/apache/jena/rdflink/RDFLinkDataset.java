@@ -49,8 +49,8 @@ import org.apache.jena.update.UpdateRequest;
 /**
  * Implement of {@link RDFLink} over a {@link Graph} in the same JVM.
  * <p>
- * Multiple levels of {@link Isolation} are provided, The default {@code COPY} level makes a local
- * {@link RDFLink} behave like a remote connection. This should be the normal use in
+ * Multiple levels of {@link Isolation} are provided. The default {@code COPY} level makes a local
+ * {@link RDFLink} that behaves like a remote connection. This should be the normal use in
  * testing.
  * <ul>
  * <li>{@code COPY} &ndash; {@code Graph}s and {@code Dataset}s are copied.
@@ -126,6 +126,7 @@ public class RDFLinkDataset implements RDFLink {
 
     @Override
     public Graph get(Node graphName) {
+        checkOpen();
         return Txn.calculateRead(dataset, ()-> {
             Graph graph = graphFor(graphName);
             return isolate(graph);
@@ -227,7 +228,7 @@ public class RDFLinkDataset implements RDFLink {
     }
 
     /**
-     * Called to isolate a dataset from it's storage.
+     * Called to isolate a dataset from its storage.
      * Must be inside a transaction.
      */
     private DatasetGraph isolate(DatasetGraph dataset) {

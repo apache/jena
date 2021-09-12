@@ -442,34 +442,6 @@ public class HttpAction
         this.finishTime = System.nanoTime();
     }
 
-    private InputStream inputStream = null;
-    private OutputStream outputStream = null;
-
-//    public InputStream getInputStream() {
-//        if ( inputStream == null ) {
-//            inputStream = getInputStreamOneTime(this);
-//        }
-//        return inputStream;
-//    }
-
-    /** Get the input stream, bypassing any compression.
-     * The state of the input stream is unknown.
-     * Only useful for skipping a body on a connection.
-     */
-    public InputStream getRequestInputStreamRaw() {
-        try {
-            return request.getInputStream();
-        } catch (IOException ex) { IO.exception(ex); return null; }
-    }
-
-//    public OutputStream getOutputStream() {
-//        if ( outputStream == null ) {
-//            outputStream = getOutputStreamOneTime(this);
-//        }
-//        return outputStream;
-//    }
-//
-
     /**
      * Return the recorded time taken in milliseconds. {@link #setStartTime} and
      * {@link #setFinishTime} must have been called.
@@ -548,8 +520,21 @@ public class HttpAction
         return request.getContentLengthLong();
     }
 
+    private InputStream inputStream = null;
+
     public InputStream getRequestInputStream() throws IOException {
-        return getInputStreamOneTime(this);
+        if ( inputStream == null )
+            inputStream = getInputStreamOneTime(this);
+        return inputStream;
+    }
+
+    /** Get the request input stream, bypassing any compression.
+     * The state of the input stream is unknown.
+     * Only useful for skipping a body on a connection.
+     * @throws IOException
+     */
+    public InputStream getRequestInputStreamRaw() throws IOException {
+        return request.getInputStream();
     }
 
     public String getRequestQueryString() {

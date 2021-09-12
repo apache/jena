@@ -100,7 +100,7 @@ public interface SparqlQueryConnection extends Transactional, AutoCloseable
     public QueryExecution query(String queryString);
 
     /**
-     * Return a execution builder initialized with the RDFConnection setup.
+     * Return an execution builder initialized with the RDFConnection setup.
      *
      * @return QueryExecutionBuilderCommon
      */

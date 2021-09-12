@@ -167,7 +167,7 @@ public class HttpRDF {
     }
 
     public static void httpPostGraph(String url, Graph graph) {
-        httpPostGraph(HttpEnv.getDftHttpClient(), url, graph, HttpEnv.dftTriplesFormat);
+        httpPostGraph(HttpEnv.getDftHttpClient(), url, graph, HttpEnv.defaultTriplesFormat);
     }
 
     public static void httpPostGraph(HttpClient httpClient, String url, Graph graph, RDFFormat format) {
@@ -182,12 +182,12 @@ public class HttpRDF {
 
     /** Post a graph and expect an RDF graph back as the result. */
     public static Graph httpPostGraphRtn(String url, Graph graph) {
-        return httpPostGraphRtn(HttpEnv.getDftHttpClient(), url, graph,  HttpEnv.dftTriplesFormat, null);
+        return httpPostGraphRtn(HttpEnv.getDftHttpClient(), url, graph,  HttpEnv.defaultTriplesFormat, null);
     }
 
     /** Post a graph and expect an RDF graph back as the result. */
     public static Graph httpPostGraphRtn(HttpClient httpClient, String url, Graph graph, RDFFormat format, Map<String, String> httpHeaders) {
-        BodyPublisher bodyPublisher = graphToHttpBody(graph, HttpEnv.dftTriplesFormat);
+        BodyPublisher bodyPublisher = graphToHttpBody(graph, HttpEnv.defaultTriplesFormat);
         HttpResponse<InputStream> httpResponse = pushWithResponse(httpClient, url, Push.POST, bodyPublisher, format, httpHeaders);
         Graph graphResponse = GraphFactory.createDefaultGraph();
         StreamRDF dest = StreamRDFLib.graph(graphResponse);
@@ -206,7 +206,7 @@ public class HttpRDF {
     }
 
     public static void httpPutGraph(String url, Graph graph) {
-        httpPutGraph(HttpEnv.getDftHttpClient(), url, graph, HttpEnv.dftTriplesFormat);
+        httpPutGraph(HttpEnv.getDftHttpClient(), url, graph, HttpEnv.defaultTriplesFormat);
     }
 
     public static void httpPutGraph(HttpClient httpClient, String url, Graph graph, RDFFormat fmt) {
@@ -266,14 +266,26 @@ public class HttpRDF {
 
     /** RDF {@link Lang}. */
     /*package*/ static <T> Lang determineSyntax(HttpResponse<T> response, Lang dftSyntax) {
-        String ctStr = responseHeader(response, HttpNames.hContentType);
+        String ctStr = determineContentType(response);
+        Lang lang = RDFLanguages.contentTypeToLang(ctStr);
+        return dft(lang, dftSyntax);
+    }
+
+    /**
+     * Content-Type, without charset.
+     * <p>
+     * RDF formats are either UTF-8 or XML, where the charset is determined by the
+     * processing instruction at the start of the content. Parsing is on byte
+     * streams.
+     */
+    /*package*/ static <T> String determineContentType(HttpResponse<T> response) {
+        String ctStr = HttpLib.responseHeader(response, HttpNames.hContentType);
         if ( ctStr != null ) {
             int i = ctStr.indexOf(';');
             if ( i >= 0 )
                 ctStr = ctStr.substring(0, i);
         }
-        Lang lang = RDFLanguages.contentTypeToLang(ctStr);
-        return dft(lang, dftSyntax);
+        return ctStr;
     }
 
     /*package*/ static <T> String determineBaseURI(String url, HttpResponse<T> response) {

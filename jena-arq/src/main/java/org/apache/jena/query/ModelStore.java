@@ -30,10 +30,11 @@ import org.apache.jena.sparql.exec.http.GSP;
 
 /**
  * Client for the
- * <a href="https://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store Protocol</a>
+ * <a href="https://www.w3.org/TR/sparql11-http-rdf-update/"
+ * >SPARQL 1.1 Graph Store Protocol</a>
  * working at the Model/Resource API level.
  * <p>
- * This is extended to include operations GET, POST and PUT on RDF datasets.
+ * This is extended to include operations GET, POST and PUT on RDF Datasets.
  * <p>
  * Examples:
  * <pre>
@@ -49,11 +50,14 @@ import org.apache.jena.sparql.exec.http.GSP;
  *   Model myData = ...;
  *   ModelStore.request("http://example/dataset").namedGraph("http://my/graph").POST(myData);
  * </pre>
+ *
+ * @see GSP
  */
 public class ModelStore {
 
-    /** Create a request to the remote service (without Graph Store Protocol naming).
-     *  Call {@link #defaultModel()} or {@link #namedGraph(String)} to select the target graph.
+    /**
+     * Create a request to the remote service (without Graph Store Protocol naming).
+     * Call {@link #defaultModel()} or {@link #namedGraph(String)} to select the target graph.
      * @param service
      */
     public static ModelStore service(String service) {

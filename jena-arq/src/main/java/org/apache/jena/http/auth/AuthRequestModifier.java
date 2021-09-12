@@ -21,4 +21,6 @@ package org.apache.jena.http.auth;
 import java.net.http.HttpRequest;
 
 @FunctionalInterface
-public interface AuthRequestModifier { HttpRequest.Builder addAuth(HttpRequest.Builder builder); }
+public interface AuthRequestModifier {
+    public HttpRequest.Builder addAuth(HttpRequest.Builder builder);
+}

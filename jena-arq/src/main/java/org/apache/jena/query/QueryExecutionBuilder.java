@@ -22,11 +22,17 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
 /**
  * Common elements of query execution building.
+ * <p>
+ * The dataset ({@link QueryExecutionDatasetBuilder}) and remote endpoint ({@link QueryExecutionHTTPBuilder})
+ * set the target for the {@link QueryExecution} and may provide operations specific to those two cases.
+ * <p>
+ * Appropriate builders are available from {QueryExecution#dataset(Dataset)} and {@link QueryExecution#endpoint(String)}.
  */
 public interface QueryExecutionBuilder {
 

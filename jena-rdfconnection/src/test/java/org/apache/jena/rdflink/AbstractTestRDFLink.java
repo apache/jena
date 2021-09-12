@@ -426,8 +426,6 @@ public abstract class AbstractTestRDFLink {
                 QueryExec qExec = link.newQuery().query("SELECT ?X { }")
                         .substitution(binding)
                         .build();
-//                String s = qExec.getQueryString();
-//                assertTrue(s.contains("123"));
                 RowSet rs = qExec.select();
                 Node x = rs.next().get(Var.alloc("X"));
                 assertNotNull(x);

@@ -251,8 +251,6 @@ public class ARQ
 
     // Jena HTTP related.
 
-    // [QExec]
-    // Sort out context and setup.
     /**
      * Use this symbol to provide a {@link QuerySendMode} to use on the HTTP call.
      */
@@ -268,7 +266,6 @@ public class ARQ
      * Use this symbol to provide a {@link HttpRequestModifier} directly.
      * This takes precedence over registry lookup.
      */
-
     public static final Symbol httpRequestModifer = SystemARQ.allocSymbol("httpRequestModifer") ;
 
     /**
@@ -278,15 +275,14 @@ public class ARQ
      */
     public static final Symbol httpServiceAllowed = SystemARQ.allocSymbol("httpServiceAllowed");
 
-    // [QExec] Put this in ARQ or ARQConstants
     //public static final Symbol httpQueryCompression  = SystemARQ.allocSymbol("httpQueryCompression");
     public static final Symbol httpQueryClient       = SystemARQ.allocSymbol("httpQueryClient");
     public static final Symbol httpServiceContext    = SystemARQ.allocSymbol("httpServiceContext");
     // Not connection timeout which is now in HttpClient
     public static final Symbol httpQueryTimeout      = SystemARQ.allocSymbol("httpQueryTimeout");
 
-
-    /** If set to true, the parsers will convert undefined prefixes to a URI
+    /**
+     * If set to true, the parsers will convert undefined prefixes to a URI
      * according to the fixup function {@link RiotLib#fixupPrefixes}.
      * Normally, unset (which equates to false).
      *

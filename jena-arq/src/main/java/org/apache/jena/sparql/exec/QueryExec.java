@@ -66,7 +66,7 @@ public interface QueryExec extends AutoCloseable {
 
     /**
      * The dataset against which the query will execute. May be null - the dataset
-     * may be remote or the query itself has a dataset description.s
+     * may be remote or the query itself has a dataset description.
      */
     public DatasetGraph getDataset();
 
@@ -249,9 +249,6 @@ public interface QueryExec extends AutoCloseable {
     public boolean isClosed();
 
     static QueryExec adapt(QueryExecution qExec) {
-        if ( qExec instanceof QueryExecutionAdapter ) {
-            return ((QueryExecutionAdapter)qExec).get();
-        }
-        return new QueryExecAdapter(qExec);
+        return QueryExecAdapter.adapt(qExec);
     }
 }

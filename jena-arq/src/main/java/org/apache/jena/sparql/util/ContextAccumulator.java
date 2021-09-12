@@ -25,7 +25,7 @@ import org.apache.jena.query.ARQ;
 /**
  * Context builder component.
  * <p>
- * Use in a buildee either inherited, or use as a component
+ * Use in a builder either inherited, or use as a component
  * (implementation inheritance) with the following code:
  * <pre>
  * ContextAccumulator contextAcc = ContextAccumulator.newBuilder(..)

@@ -31,8 +31,10 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.http.RegistryHttpClient;
 import org.apache.jena.http.auth.AuthEnv;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkFactory;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.algebra.op.OpService ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -41,6 +43,7 @@ import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.service.ServiceExecutorRegistry;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.test.conn.EnvTest;
@@ -72,6 +75,17 @@ public class TestServiceAuth {
 
     private static DatasetGraph empty = DatasetGraphZero.create();
 
+    private static Context minimalContext() {
+        Context context = new Context();
+        minimalContext(context);
+        return context;
+    }
+
+    private static void minimalContext(Context context) {
+        ServiceExecutorRegistry registry = ARQ.getContext().get(ARQConstants.registryServiceExecutors);
+        context.put(ARQConstants.registryServiceExecutors, registry);
+    }
+
     private static void runServiceQuery(String serviceURL) {
         String queryString = "SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }";
         try ( QueryExec qExec = QueryExec.dataset(empty).query(queryString).build() ) {
@@ -85,6 +99,14 @@ public class TestServiceAuth {
             qExec.select().materialize();
         }
     }
+
+    private static void runServiceQueryWithDataset(String serviceURL, DatasetGraph dsg) {
+        String queryString = "SELECT * { SERVICE <"+serviceURL+"> { BIND( 'X' as ?X) } }";
+        try ( QueryExec qExec = QueryExec.dataset(dsg).query(queryString).build() ) {
+            qExec.select().materialize();
+        }
+    }
+
 
     @Test(expected=QueryExceptionHTTP.class)
     public void service_auth_none() {
@@ -194,8 +216,7 @@ public class TestServiceAuth {
     }
 
     @Test public void service_auth_good_cxt_1() {
-        // context
-        Context context = new Context();
+        Context context = minimalContext();
         HttpClient hc = env.httpClientAuthGood();
         context.set(Service.httpQueryClient, hc);
         runServiceQueryWithContext(env.datasetURL(), context);
@@ -203,7 +224,7 @@ public class TestServiceAuth {
 
     @Test(expected=QueryExceptionHTTP.class)
     public void service_auth_bad_cxt_2() {
-        Context context = new Context();
+        Context context = minimalContext();
         HttpClient hc = env.httpClientAuthBadRetry();    // Bad
         context.set(Service.httpQueryClient, hc);
         runServiceQueryWithContext(env.datasetURL(), context);
@@ -213,9 +234,10 @@ public class TestServiceAuth {
         // Context dataset graph.
         DatasetGraph local = DatasetGraphZero.create();
         Context context = local.getContext();
+        minimalContext(context);
         HttpClient hc = env.httpClientAuthGood();
         context.set(Service.httpQueryClient, hc);
-        runServiceQueryWithContext(SERVICE, context);
+        runServiceQueryWithDataset(SERVICE, local);
     }
 
     @Test(expected=QueryExceptionHTTP.class)
@@ -223,6 +245,7 @@ public class TestServiceAuth {
         // Context dataset graph.
         DatasetGraph local = DatasetGraphZero.create();
         Context context = local.getContext();
+        minimalContext(context);
         HttpClient hc = env.httpClientAuthBad();    // Bad
         context.set(Service.httpQueryClient, hc);
         runServiceQuery(SERVICE);

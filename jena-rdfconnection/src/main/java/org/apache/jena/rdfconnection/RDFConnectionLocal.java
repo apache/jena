@@ -40,8 +40,8 @@ import org.apache.jena.update.UpdateRequest;
 /**
  * Implement of {@link RDFConnection} over a {@link Dataset} in the same JVM.
  * <p>
- * Multiple levels of {@link Isolation} are provided, The default {@code COPY} level makes a local
- * {@link RDFConnection} behave like a remote connection. This should be the normal use in
+ * Multiple levels of {@link Isolation} are provided. The default {@code COPY} level makes a local
+ * {@link RDFConnection} that behaves like a remote connection. This should be the normal use in
  * testing.
  * <ul>
  * <li>{@code COPY} &ndash; {@code Model}s and {@code Dataset}s are copied.
@@ -193,7 +193,7 @@ public class RDFConnectionLocal implements RDFConnection {
     }
 
     /**
-     * Called to isolate a model from it's storage.
+     * Called to isolate a model from its storage.
      * Must be inside a transaction.
      */
     private Model isolate(Model model) {

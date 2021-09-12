@@ -50,7 +50,7 @@ public class QueryExecApp implements QueryExec {
 
     private QueryExecApp(QueryExecMod qExecBuilder, DatasetGraph dataset, Query query, String queryString) {
         // In normal use, one of query and queryString should be non-null
-        // (If being used as a carrier for QueryExecMod
+        // (if being used as a carrier for QueryExecMod
 
         this.qExecBuilder = qExecBuilder;
         // Have the QueryExecBuilder build the context now, even though it is not finished.

@@ -703,9 +703,8 @@ public class HttpLib {
         if ( value2.isEmpty() )
             return false;
         String headerValue = value2.get();
-        boolean isFuseki = headerValue.startsWith("Apache Jena Fuseki");
-        if ( !isFuseki )
-            isFuseki = headerValue.toLowerCase().contains("fuseki");
+        boolean isFuseki = headerValue.startsWith("Apache Jena Fuseki") ||
+                           headerValue.toLowerCase().contains("fuseki");
         return isFuseki;
     }
 }

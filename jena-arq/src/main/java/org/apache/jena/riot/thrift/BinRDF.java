@@ -180,7 +180,6 @@ public class BinRDF {
         ThriftRDF.dump(out, in);
     }
 
-
     /**
      * @deprecated Use {@link ThriftRDF#readResultSet(InputStream)} instead
      */

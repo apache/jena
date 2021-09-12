@@ -49,7 +49,7 @@ public interface QueryExecBuilder extends QueryExecMod {
     public QueryExecBuilder set(Symbol symbol, boolean value);
 
     /**
-     * Set the context. if not set, defaults to the system context
+     * Set the context. If not set, defaults to the system context
      * ({@link ARQ#getContext}).
      */
     public QueryExecBuilder context(Context context);

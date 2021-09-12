@@ -55,7 +55,7 @@ public class Service {
     private static final Logger LOGGER = LoggerFactory.getLogger(Service.class);
 
     // [QExec] Put this in ARQ or ARQConstants
-    public static final String base = ARQ.arqParamNS; //"http://jena.apache.org/ARQ/http#";
+    public static final String base = ARQ.arqParamNS;
 
     public static final Symbol serviceParams            = ARQ.serviceParams;
     public static final Symbol httpServiceAllowed       = ARQ.httpServiceAllowed;

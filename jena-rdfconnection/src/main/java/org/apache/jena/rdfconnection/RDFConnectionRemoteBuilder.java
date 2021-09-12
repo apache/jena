@@ -215,7 +215,7 @@ public class RDFConnectionRemoteBuilder {
      *     <pre>
      *     public final RDFConnection build() {
      *         RDFLink rdfLink = buildLink();
-     *         return adapt(rdfLink);
+     *         return adaptLink(rdfLink);
      *     }
      *     </pre>
      *

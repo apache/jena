@@ -23,7 +23,7 @@ import java.util.function.Function;
 /**
  * A service registry is a set of actions to take to modify an HTTP request before
  * sending it to a specific endpoint.
- *
+ * <p>
  * The key can be a prefix which must end in "/"
  */
 public class RegistryRequestModifier extends AbstractRegistryWithPrefix<String, HttpRequestModifier> {

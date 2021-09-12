@@ -25,7 +25,7 @@ import java.util.function.Function;
 import org.apache.jena.atlas.lib.Trie;
 
 /**
- * Abstract base class for registries with exact and prefix lookup..
+ * Abstract base class for registries with exact and prefix lookup.
  * <p>
  * The lookup ({@link #find}) is by exact match then by longest prefix. e.g. a registration of
  * "http://someHost/" or "http://someHost/dataset" will apply to

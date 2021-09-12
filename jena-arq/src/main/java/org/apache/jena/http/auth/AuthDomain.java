@@ -23,41 +23,41 @@ import java.util.Objects;
 
 /** URI and optional realm, as a value-equality pair. */
 public class AuthDomain {
-        URI uri;
-        // May be null;
-        private String realm;
+    URI uri;
+    // May be null;
+    private String realm;
 
-        public AuthDomain(URI uri) {
-            this(uri, null);
-        }
-
-        public AuthDomain(URI uri, String realm) {
-            this.uri = uri;
-            this.realm = realm;
-        }
-
-        public URI getURI() {
-            return uri;
-        }
-
-        public String getRealm() {
-            return realm;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(realm, uri);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if ( this == obj )
-                return true;
-            if ( obj == null )
-                return false;
-            if ( getClass() != obj.getClass() )
-                return false;
-            AuthDomain other = (AuthDomain)obj;
-            return Objects.equals(realm, other.realm) && Objects.equals(uri, other.uri);
-        }
+    public AuthDomain(URI uri) {
+        this(uri, null);
     }
+
+    public AuthDomain(URI uri, String realm) {
+        this.uri = uri;
+        this.realm = realm;
+    }
+
+    public URI getURI() {
+        return uri;
+    }
+
+    public String getRealm() {
+        return realm;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(realm, uri);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        AuthDomain other = (AuthDomain)obj;
+        return Objects.equals(realm, other.realm) && Objects.equals(uri, other.uri);
+    }
+}

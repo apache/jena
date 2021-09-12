@@ -44,7 +44,7 @@ import org.apache.jena.web.HttpSC;
 
 /**
  * A collection of convenience operations for HTTP level operations
- * for RDF related tasks. performed asynchronously.
+ * for RDF related tasks which are performed asynchronously.
  *
  * See also {@link HttpRDF}.
  */

@@ -138,7 +138,7 @@ public class ProtobufRDF {
     public static ResultSet readResultSet(InputStream input) {
         Protobuf2Binding p2b = new Protobuf2Binding(input);
         var resultVars = p2b.getVarNames();
-        return new ResultSetStream(resultVars, null, p2b);
+        return ResultSetStream.create(resultVars, null, p2b);
     }
 
     /**

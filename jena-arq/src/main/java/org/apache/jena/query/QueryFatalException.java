@@ -18,9 +18,10 @@
 
 package org.apache.jena.query;
 
-/** QueryFatalException is such that the query aborts do to some 
+/** QueryFatalException is such that the query aborts do to some
  *  problem (this might be an internal error or something in the way the query
- *  builds or executes). */
+ *  builds or executes).
+ */
 
 
 public class QueryFatalException extends QueryException
