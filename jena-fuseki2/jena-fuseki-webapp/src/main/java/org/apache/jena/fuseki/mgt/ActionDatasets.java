@@ -127,7 +127,7 @@ public class ActionDatasets extends ActionContainerItem {
 
         ContentType ct = ActionLib.getContentType(action);
 
-        boolean hasParams = action.request.getParameterNames().hasMoreElements();
+        boolean hasParams = action.getRequestParameterNames().hasMoreElements();
 
         if ( ct == null && ! hasParams )
             ServletOps.errorBadRequest("Bad request - Content-Type or both parameters dbName and dbType required");
@@ -223,7 +223,7 @@ public class ActionDatasets extends ActionContainerItem {
                 FmtLog.warn(action.log, "Inconsistent names: datasetPath = %s; DataAccessPoint name = %s", datasetPath, dataAccessPoint);
 
             action.getDataAccessPointRegistry().register(dataAccessPoint);
-            action.getResponse().setContentType(WebContent.contentTypeTextPlain);
+            action.setResponseContentType(WebContent.contentTypeTextPlain);
             ServletOps.success(action);
             system.commit();
             committed = true;
@@ -297,7 +297,7 @@ public class ActionDatasets extends ActionContainerItem {
             // If not set explicitly, take from DataAccessPoint
             dSrv = action.getDataAccessPoint().getDataService();
 
-        String s = action.request.getParameter("state");
+        String s = action.getRequestParameter("state");
         if ( s == null || s.isEmpty() )
             ServletOps.errorBadRequest("No state change given");
 
@@ -454,9 +454,9 @@ public class ActionDatasets extends ActionContainerItem {
     }
 
     private static void assemblerFromForm(HttpAction action, StreamRDF dest) {
-        String x = action.getRequest().getQueryString();
-        String dbType = action.getRequest().getParameter(paramDatasetType);
-        String dbName = action.getRequest().getParameter(paramDatasetName);
+        String x = action.getRequestQueryString();
+        String dbType = action.getRequestParameter(paramDatasetType);
+        String dbName = action.getRequestParameter(paramDatasetName);
         if ( StringUtils.isBlank(dbType) || StringUtils.isBlank(dbName) )
             ServletOps.errorBadRequest("Received HTML form.  Both parameters 'dbName' and 'dbType' required");
 
@@ -536,7 +536,7 @@ public class ActionDatasets extends ActionContainerItem {
     // TODO Merge with Upload.incomingData
 
     private static void bodyAsGraph(HttpAction action, StreamRDF dest) {
-        HttpServletRequest request = action.request;
+        HttpServletRequest request = action.getRequest();
         String base = ActionLib.wholeRequestURL(request);
         ContentType ct = FusekiNetLib.getContentType(request);
         Lang lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());

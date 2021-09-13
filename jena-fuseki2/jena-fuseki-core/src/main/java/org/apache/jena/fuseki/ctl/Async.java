@@ -44,11 +44,11 @@ public class Async
     }
 
     private static void setLocationHeader(HttpAction action, AsyncTask asyncTask) {
-        String x = action.getRequest().getRequestURI();
+        String x = action.getRequestRequestURI();
         if ( ! x.endsWith("/") )
             x += "/";
         x += asyncTask.getTaskId();
-        action.getResponse().setHeader(HttpHeaders.LOCATION, x);
+        action.setResponseHeader(HttpHeaders.LOCATION, x);
     }
 
     public static AsyncTask execASyncTask(HttpAction action, AsyncPool asyncPool, String displayName, Runnable runnable) {

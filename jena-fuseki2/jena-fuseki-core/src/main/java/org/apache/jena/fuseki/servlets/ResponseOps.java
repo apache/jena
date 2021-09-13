@@ -96,7 +96,7 @@ class ResponseOps {
             if ( charset != null && !isXML(contentType) )
                 contentType = contentType + "; charset=" + charset;
             action.log.trace("Content-Type for response: " + contentType);
-            action.response.setContentType(contentType);
+            action.setResponseContentType(contentType);
         }
     }
 

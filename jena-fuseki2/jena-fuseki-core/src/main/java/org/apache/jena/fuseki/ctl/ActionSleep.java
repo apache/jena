@@ -60,7 +60,7 @@ public class ActionSleep extends ActionCtl /* Not ActionAsyncTask - that is a co
     }
 
     protected SleepTask createRunnable(HttpAction action) {
-        String interval = action.request.getParameter("interval");
+        String interval = action.getRequestParameter("interval");
         int sleepMilli = 5000;
         if ( interval != null ) {
             try {

@@ -27,11 +27,8 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.dboe.base.file.ChannelManager;
 import org.apache.jena.dboe.base.file.FileException;
 
-// => IO
 public class FileLib
 {
-    // Check whether still used.
-
     public static FileChannel openUnmanaged(String filename) {
         return openUnmanaged(filename, "rw");
     }

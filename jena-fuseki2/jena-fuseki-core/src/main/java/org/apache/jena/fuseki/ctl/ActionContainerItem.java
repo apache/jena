@@ -36,7 +36,7 @@ public abstract class ActionContainerItem extends ActionCtl {
     @Override
     final
     public void execute(HttpAction action) {
-        String method = action.request.getMethod();
+        String method = action.getRequestMethod();
         if ( method.equals(METHOD_GET) )
             performGet(action);
         else if ( method.equals(METHOD_POST) )

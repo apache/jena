@@ -60,7 +60,7 @@ public class DataAccessCtl {
      * Get the user from {@code ?user} query string parameter. Use carefully; for situations where the user name has
      * been authenticated already and is being passed on securely. Also for testing.
      */
-    public static final Function<HttpAction, String> paramUserServlet = (action)->action.request.getParameter("user");
+    public static final Function<HttpAction, String> paramUserServlet = (action)->action.getRequestParameter("user");
 
     /**
      * Add data access control information on a {@link DatasetGraph}. This modifies the

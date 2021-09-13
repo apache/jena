@@ -90,7 +90,7 @@ public class ActionExecLib {
             logRequest(action);
             action.setStartTime();
             initResponse(action);
-            HttpServletResponse response = action.response;
+            HttpServletResponse response = action.getResponse();
 
             startRequest(action);
 
@@ -196,7 +196,7 @@ public class ActionExecLib {
      *            Request ID
      */
     public static void addRequestId(HttpServletResponse response, long id) {
-        response.addHeader(Fuseki.FusekiRequestIdHeader, Long.toString(id));
+        response.setHeader(Fuseki.FusekiRequestIdHeader, Long.toString(id));
     }
 
     /**
@@ -220,16 +220,16 @@ public class ActionExecLib {
 
     /** Log an {@link HttpAction} request. */
     public static void logRequest(HttpAction action) {
-        String url = ActionLib.wholeRequestURL(action.request);
-        String method = action.request.getMethod();
+        String url = ActionLib.wholeRequestURL(action.getRequest());
+        String method = action.getRequestMethod();
 
         if ( logLifecycle(action) )
             FmtLog.info(action.log, "[%d] %s %s", action.id, method, url);
         if ( action.verbose ) {
-            Enumeration<String> en = action.request.getHeaderNames();
+            Enumeration<String> en = action.getRequestHeaderNames();
             for (; en.hasMoreElements();) {
                 String h = en.nextElement();
-                Enumeration<String> vals = action.request.getHeaders(h);
+                Enumeration<String> vals = action.getRequestHeaders(h);
                 if ( !vals.hasMoreElements() )
                     FmtLog.info(action.log, "[%d]   => %s", action.id, h+":");
                 else {
@@ -247,7 +247,6 @@ public class ActionExecLib {
     public static void logResponse(HttpAction action) {
         long time = action.getTime();
 
-        HttpServletResponseTracker response = action.response;
         if ( action.verbose ) {
             if ( action.responseContentType != null )
                 FmtLog.info(action.log,"[%d]   <= %-20s %s", action.id, HttpNames.hContentType+":", action.responseContentType);
@@ -290,11 +289,11 @@ public class ActionExecLib {
 
     /** Set headers for the response. */
     public static void initResponse(HttpAction action) {
-        ServletBase.setCommonHeaders(action.response);
-        String method = action.request.getMethod();
+        ActionLib.setCommonHeaders(action);
+        String method = action.getRequestMethod();
         // All GET and HEAD operations are sensitive to conneg so ...
         if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) || HttpNames.METHOD_HEAD.equalsIgnoreCase(method) )
-            ServletBase.setVaryHeader(action.response);
+            ServletBase.setVaryHeader(action.getResponse());
     }
 
     /**

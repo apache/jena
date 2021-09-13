@@ -58,8 +58,8 @@ public class SPARQL_Upload extends ActionService
 
     @Override
     public void execOptions(HttpAction action) {
-        ServletBase.setCommonHeadersForOptions(action.response);
-        action.response.setHeader(HttpNames.hAllow, "POST,PATCH,OPTIONS");
+        ActionLib.setCommonHeadersForOptions(action);
+        action.setResponseHeader(HttpNames.hAllow, "POST,PATCH,OPTIONS");
         ServletOps.success(action);
     }
 
@@ -71,16 +71,16 @@ public class SPARQL_Upload extends ActionService
     public void execute(HttpAction action) {
 
         // Only allows one file in the upload.
-        boolean isMultipart = ServletFileUpload.isMultipartContent(action.request);
+        boolean isMultipart = ServletFileUpload.isMultipartContent(action.getRequest());
         if ( ! isMultipart )
             ServletOps.error(HttpSC.BAD_REQUEST_400 , "Not a file upload");
 
         long count = upload(action, Fuseki.BaseUpload);
         ServletOps.success(action);
         try {
-            action.response.setContentType("text/html");
-            action.response.setStatus(HttpSC.OK_200);
-            PrintWriter out = action.response.getWriter();
+            action.setResponseContentType("text/html");
+            action.setResponseStatus(HttpSC.OK_200);
+            PrintWriter out = action.getResponseWriter();
             out.println("<html>");
             out.println("<head>");
             out.println("</head>");

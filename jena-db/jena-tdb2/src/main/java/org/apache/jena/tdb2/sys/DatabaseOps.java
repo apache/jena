@@ -26,10 +26,12 @@ import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.jena.atlas.RuntimeIOException;
+import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.file.Location;
+import org.apache.jena.dboe.sys.IO_DB;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
@@ -87,14 +89,14 @@ public class DatabaseOps {
         // Exists?
         if ( ! location.exists() )
             throw new TDBException("No such location: "+location);
-        Path path = IOX.asPath(location);
+        Path path = IO_DB.asPath(location);
         // Scan for DBs
         Path db = findLocation(path, dbPrefix);
         if ( db == null ) {
             db = path.resolve(dbPrefix+SEP+startCount);
             IOX.createDirectory(db);
         }
-        Location loc2 = IOX.asLocation(db);
+        Location loc2 = IO_DB.asLocation(db);
         DatasetGraphTDB dsg = StoreConnection.connectCreate(loc2, params).getDatasetGraphTDB();
         DatasetGraphSwitchable appDSG = new DatasetGraphSwitchable(path, location, dsg);
         return appDSG;
@@ -183,7 +185,7 @@ public class DatabaseOps {
             Path db1 = findLocation(base, dbPrefix);
             if ( db1 == null )
                 throw new TDBException("No location: ("+base+", "+dbPrefix+")");
-            Location loc1 = IOX.asLocation(db1);
+            Location loc1 = IO_DB.asLocation(db1);
 
             // -- Checks
             Location loc1a = ((DatasetGraphTDB)container.get()).getLocation();
@@ -197,18 +199,18 @@ public class DatabaseOps {
             // -- Checks
 
             // Version
-            int v = IOX.extractIndex(db1.getFileName().toString(), dbPrefix, SEP);
+            int v = IO_DB.extractIndex(db1.getFileName().toString(), dbPrefix, SEP);
             String next = FilenameUtils.filename(dbPrefix, SEP, v+1);
 
             Path db2 = db1.getParent().resolve(next);
             IOX.createDirectory(db2);
-            Location loc2 = IOX.asLocation(db2);
+            Location loc2 = IO_DB.asLocation(db2);
             LOG.debug(String.format("Compact %s -> %s\n", db1.getFileName(), db2.getFileName()));
 
             compact(container, loc1, loc2);
 
             if ( shouldDeleteOld ) {
-                Path loc1Path = IOX.asPath(loc1);
+                Path loc1Path = IO_DB.asPath(loc1);
                 LOG.debug("Deleting old database after successful compaction (old db path='" + loc1Path + "')...");
 
                 try (Stream<Path> walk = Files.walk(loc1Path)){
@@ -307,7 +309,7 @@ public class DatabaseOps {
         if ( ! Files.exists(directory) )
             return null;
         // In-order, low to high.
-        List<Path> maybe = IOX.scanForDirByPattern(directory, namebase, SEP);
+        List<Path> maybe = IO_DB.scanForDirByPattern(directory, namebase, SEP);
         return Util.getLastOrNull(maybe);
     }
 }

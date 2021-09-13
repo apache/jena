@@ -28,12 +28,12 @@ public class GSPLib {
     
     /** Test whether the operation has either of the GSP parameters. */
     public static boolean hasGSPParams(HttpAction action) {
-        if ( action.request.getQueryString() == null )
+        if ( action.getRequestQueryString() == null )
             return false;
-        boolean hasParamGraphDefault = action.request.getParameter(HttpNames.paramGraphDefault) != null;
+        boolean hasParamGraphDefault = action.getRequestParameter(HttpNames.paramGraphDefault) != null;
         if ( hasParamGraphDefault )
             return true;
-        boolean hasParamGraph = action.request.getParameter(HttpNames.paramGraph) != null;
+        boolean hasParamGraph = action.getRequestParameter(HttpNames.paramGraph) != null;
         if ( hasParamGraph )
             return true;
         return false;
@@ -41,9 +41,9 @@ public class GSPLib {
 
     /** Test whether the operation has exactly one GSP parameter and no other parameters. */ 
     public static boolean hasGSPParamsStrict(HttpAction action) {
-        if ( action.request.getQueryString() == null )
+        if ( action.getRequestQueryString() == null )
             return false;
-        Map<String, String[]> params = action.request.getParameterMap();
+        Map<String, String[]> params = action.getRequestParameterMap();
         if ( params.size() != 1 )
             return false;
         boolean hasParamGraphDefault = GSPLib.hasExactlyOneValue(action, HttpNames.paramGraphDefault);
@@ -54,7 +54,7 @@ public class GSPLib {
 
     /** Check whether there is exactly one HTTP header value */
     public static boolean hasExactlyOneValue(HttpAction action, String name) {
-        String[] values = action.request.getParameterValues(name);
+        String[] values = action.getRequestParameterValues(name);
         if ( values == null )
             return false;
         if ( values.length == 0 )

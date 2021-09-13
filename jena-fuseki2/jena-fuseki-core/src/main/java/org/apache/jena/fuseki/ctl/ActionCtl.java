@@ -52,7 +52,7 @@ public abstract class ActionCtl extends ServletProcessor implements ActionLifecy
 
     /** Get the item name - the part after the URI for the servlet (which is the container). */
     public static String getItemName(HttpAction action) {
-        return action.request.getPathInfo();
+        return action.getRequestPathInfo();
     }
 
     /**

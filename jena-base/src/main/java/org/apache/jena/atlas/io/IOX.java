@@ -16,36 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.sys;
+package org.apache.jena.atlas.io;
 
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.dboe.DBOpEnvException;
-import org.apache.jena.dboe.base.file.Location;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
- *  PathX
- */
 public class IOX {
 
     public static final Path currentDirectory = Paths.get(".");
 
     /** A Consumer that can throw {@link IOException}. */
+    @FunctionalInterface
     public interface IOConsumer<X> {
         void actionEx(X arg) throws IOException;
     }
@@ -76,10 +65,25 @@ public class IOX {
     public static RuntimeIOException exception(String message, IOException ioException) {
         return new RuntimeIOException(message, ioException);
     }
+    
+    /** Run IO code */
+    @FunctionalInterface
+    public interface ActionIO { void run() throws IOException; }
+
+    /** Run an action, converting an {@link IOException} into a {@link RuntimeIOException}.
+     * <p>
+     * Idiom:
+     * <pre>
+     *     run(()-&gt;...));
+     * </pre>
+     */
+    public static void run(ActionIO action) {
+        try { action.run(); }
+        catch (IOException e) { throw exception(e); }
+    }
 
     /** Write a file safely - the change happens (the function returns true) or
      * something went wrong (the function throws a runtime exception) and the file is not changed.
-     * Note that the tempfile must be in the same direct as the actual file so an OS-atomic rename can be done.
      */
     public static boolean safeWrite(Path file, IOConsumer<OutputStream> writerAction) {
         Path tmp = createTempFile(file.getParent(), file.getFileName().toString(), ".tmp");
@@ -117,6 +121,36 @@ public class IOX {
             throw IOX.exception(ex);
         }
     }
+    
+    public static void deleteAll(String start) {
+        deleteAll(Paths.get(start));
+    }
+
+    /** Delete everything from a {@code Path} start point, including the path itself.
+     * Works on files or directories.
+     * Walks down the tree and deletes directories on the way backup.
+     */
+    public static void deleteAll(Path start) {
+        try {
+            Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
+                }
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
+                    if (e == null) {
+                        Files.delete(dir);
+                        return FileVisitResult.CONTINUE;
+                    } else {
+                        throw e;
+                    }
+                }
+            });
+        }
+        catch (IOException ex) { throw IOX.exception(ex) ; }
+    }
 
     /** Copy a file, not atomic. *
      * Can copy to a directory or over an existing file.
@@ -139,39 +173,12 @@ public class IOX {
         }
     }
 
-    /** Create a directory - thgrow a runtime exception if there are any problems.
+    /** Create a directory - throw a runtime exception if there are any problems.
      * This function wraps {@code Files.createDirectory}.
      */
     public static void createDirectory(Path dir) {
         try { Files.createDirectory(dir); }
         catch (IOException ex) { throw IOX.exception(ex); }
-    }
-
-    /** Convert a {@link Path}  to a {@link Location}. */
-    public static Location asLocation(Path path) {
-        Objects.requireNonNull(path, "IOX.asLocation(null)");
-        if ( ! Files.isDirectory(path) )
-            throw new RuntimeIOException("Path is not naming a directory: "+path);
-        return Location.create(path.toString());
-    }
-
-//    /** Convert a {@link org.apache.jena.tdb.base.file.Location} to a {@link Path}. */
-//    public static Path asPath(org.apache.jena.tdb.base.file.Location location) {
-//        if ( location.isMem() )
-//            throw new RuntimeIOException("Location is a memory location: "+location);
-//        return Paths.get(location.getDirectoryPath());
-//    }
-
-    /** Convert a {@link Location} to a {@link Path}. */
-    public static Path asPath(org.apache.jena.dboe.base.file.Location location) {
-        if ( location.isMem() )
-            throw new RuntimeIOException("Location is a memory location: "+location);
-        return Paths.get(location.getDirectoryPath());
-    }
-
-    /** Convert a {@link Location} to a {@link File}. */
-    public static File asFile(Location loc) {
-        return new File(loc.getDirectoryPath());
     }
 
     /** Read the whole of a file */
@@ -242,53 +249,4 @@ public class IOX {
         }
         return null;
     }
-
-    private static Logger LOG = LoggerFactory.getLogger(Util.class);
-
-    /** Find the files in this directory that have namebase as a prefix and
-     *  are then numbered.
-     *  <p>
-     *  Returns a sorted list from, low to high index.
-     */
-    public static List<Path> scanForDirByPattern(Path directory, String namebase, String nameSep) {
-        Pattern pattern = Pattern.compile(Pattern.quote(namebase)+
-                                          Pattern.quote(nameSep)+
-                                          "[\\d]+");
-        List<Path> paths = new ArrayList<>();
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory, namebase + "*")) {
-            for ( Path entry : stream ) {
-                if ( !pattern.matcher(entry.getFileName().toString()).matches() ) {
-                    throw new DBOpEnvException("Invalid filename for matching: "+entry.getFileName());
-                    // Alternative: Skip bad trailing parts but more likely there is a naming problem.
-                    //   LOG.warn("Invalid filename for matching: {} skipped", entry.getFileName());
-                    //   continue;
-                }
-                // Follows symbolic links.
-                if ( !Files.isDirectory(entry) )
-                    throw new DBOpEnvException("Not a directory: "+entry);
-                paths.add(entry);
-            }
-        }
-        catch (IOException ex) {
-            FmtLog.warn(LOG, "Can't inspect directory: (%s, %s)", directory, namebase);
-            throw new DBOpEnvException(ex);
-        }
-        Comparator<Path> comp = (f1, f2) -> {
-            int num1 = extractIndex(f1.getFileName().toString(), namebase, nameSep);
-            int num2 = extractIndex(f2.getFileName().toString(), namebase, nameSep);
-            return Integer.compare(num1, num2);
-        };
-        paths.sort(comp);
-        //indexes.sort(Long::compareTo);
-        return paths;
-    }
-
-    /** Given a filename in "base-NNNN" format, return the value of NNNN */
-    public static int extractIndex(String name, String namebase, String nameSep) {
-        int i = namebase.length()+nameSep.length();
-        String numStr = name.substring(i);
-        int num = Integer.parseInt(numStr);
-        return num;
-    }
-
 }

@@ -106,15 +106,15 @@ public class ServletOps {
 
     //
     public static void success(HttpAction action, int httpStatusCode) {
-        action.response.setStatus(httpStatusCode);
+        action.setResponseStatus(httpStatusCode);
     }
 
     public static void successPage(HttpAction action, String message) {
         try {
-            action.response.setContentType("text/html");
-            action.response.setCharacterEncoding(WebContent.charsetUTF8);
-            action.response.setStatus(HttpSC.OK_200);
-            PrintWriter out = action.response.getWriter();
+            action.setResponseContentType("text/html");
+            action.setResponseCharacterEncoding(WebContent.charsetUTF8);
+            action.setResponseStatus(HttpSC.OK_200);
+            PrintWriter out = action.getResponseWriter();
             out.println("<html>");
             out.println("<head>");
             out.println("</head>");
@@ -211,7 +211,7 @@ public class ServletOps {
     }
 
     public static void setNoCache(HttpAction action) {
-        setNoCache(action.response);
+        setNoCache(action.getResponse());
     }
 
     public static void setNoCache(HttpServletResponse response) {
@@ -250,11 +250,10 @@ public class ServletOps {
         JSON.write(bytesOut, jValue);
         byte[] bytes = bytesOut.toByteArray();
         try {
-            HttpServletResponse response = action.response;
-            ServletOutputStream out = response.getOutputStream();
-            response.setContentType(WebContent.contentTypeJSON);
-            response.setContentLength(bytes.length);
-            response.setCharacterEncoding(WebContent.charsetUTF8);
+            ServletOutputStream out = action.getResponseOutputStream();
+            action.setResponseContentType(WebContent.contentTypeJSON);
+            action.setResponseContentLength(bytes.length);
+            action.setResponseCharacterEncoding(WebContent.charsetUTF8);
             out.write(bytes);
             out.flush();
         } catch (IOException ex) { ServletOps.errorOccurred(ex); }

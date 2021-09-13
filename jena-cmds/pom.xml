@@ -108,12 +108,14 @@
       <!-- This module can be used as a dependency downstream -->
       <optional>true</optional>
     </dependency>
+
+    <!--
     <dependency>
-      <!-- Titanium -->
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
       <optional>true</optional>
     </dependency>
+    -->
 
     <dependency>
       <groupId>junit</groupId>

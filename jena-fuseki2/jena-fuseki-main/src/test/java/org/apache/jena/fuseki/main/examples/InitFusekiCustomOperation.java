@@ -74,10 +74,10 @@ public class InitFusekiCustomOperation implements JenaSubsystemLifecycle {
 
         @Override
         public void execute(HttpAction action) {
-            action.response.setStatus(HttpSC.OK_200);
-            action.response.setContentType(WebContent.contentTypeTextPlain);
+            action.setResponseStatus(HttpSC.OK_200);
+            action.setResponseContentType(WebContent.contentTypeTextPlain);
             try {
-                action.response.getOutputStream().print("** GET ** "+DateTimeUtils.nowAsXSDDateTimeString());
+                action.getResponseOutputStream().print("** GET ** "+DateTimeUtils.nowAsXSDDateTimeString());
             } catch (IOException e) {
                 throw new FusekiException(e);
             }

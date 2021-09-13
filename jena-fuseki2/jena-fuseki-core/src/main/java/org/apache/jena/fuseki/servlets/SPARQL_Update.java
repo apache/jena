@@ -21,6 +21,7 @@ package org.apache.jena.fuseki.servlets;
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.server.CounterName.UpdateExecErrors;
 import static org.apache.jena.fuseki.servlets.ActionExecLib.incCounter;
+import static org.apache.jena.fuseki.servlets.SPARQLProtocol.countParamOccurences;
 import static org.apache.jena.fuseki.servlets.SPARQLProtocol.messageForException;
 import static org.apache.jena.fuseki.servlets.SPARQLProtocol.messageForParseException;
 import static org.apache.jena.riot.WebContent.*;
@@ -75,8 +76,8 @@ public class SPARQL_Update extends ActionService
 
     @Override
     public void execOptions(HttpAction action) {
-        ServletBase.setCommonHeadersForOptions(action.response);
-        action.response.setHeader(HttpNames.hAllow, "POST,PATCH,OPTIONS");
+        ActionLib.setCommonHeadersForOptions(action);
+        action.setResponseHeader(HttpNames.hAllow, "POST,PATCH,OPTIONS");
         ServletOps.success(action);
     }
 
@@ -109,7 +110,7 @@ public class SPARQL_Update extends ActionService
             executeForm(action);
             return;
         }
-        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + action.request.getContentType());
+        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + action.getRequestContentType());
     }
 
     protected static List<String> paramsForm = Arrays.asList(paramRequest, paramUpdate,
@@ -118,12 +119,12 @@ public class SPARQL_Update extends ActionService
 
     @Override
     public void validate(HttpAction action) {
-        HttpServletRequest request = action.request;
+        //HttpServletRequest request = action.getRequest();
 
-        if ( HttpNames.METHOD_OPTIONS.equals(request.getMethod()) )
+        if ( HttpNames.METHOD_OPTIONS.equals(action.getRequestMethod()) )
             return;
 
-        if ( ! HttpNames.METHOD_POST.equalsIgnoreCase(request.getMethod()) )
+        if ( ! HttpNames.METHOD_POST.equalsIgnoreCase(action.getRequestMethod()) )
             ServletOps.errorMethodNotAllowed("SPARQL Update : use POST");
 
         ContentType ct = ActionLib.getContentType(action);
@@ -131,7 +132,7 @@ public class SPARQL_Update extends ActionService
             ct = ctSPARQLUpdate;
 
         if ( matchContentType(ctSPARQLUpdate, ct) ) {
-            String charset = request.getCharacterEncoding();
+            String charset = action.getRequestCharacterEncoding();
             if ( charset != null && !charset.equalsIgnoreCase(charsetUTF8) )
                 ServletOps.errorBadRequest("Bad charset: " + charset);
             validate(action, paramsPOST);
@@ -139,15 +140,15 @@ public class SPARQL_Update extends ActionService
         }
 
         if ( isHtmlForm(ct) ) {
-            int x = SPARQLProtocol.countParamOccurences(request, paramUpdate) + SPARQLProtocol.countParamOccurences(request, paramRequest);
+            int x = countParamOccurences(action.getRequest(), paramUpdate) + countParamOccurences(action.getRequest(), paramRequest);
             if ( x == 0 )
                 ServletOps.errorBadRequest("SPARQL Update: No 'update=' parameter");
             if ( x != 1 )
                 ServletOps.errorBadRequest("SPARQL Update: Multiple 'update=' parameters");
 
-            String requestStr = request.getParameter(paramUpdate);
+            String requestStr = action.getRequestParameter(paramUpdate);
             if ( requestStr == null )
-                requestStr = request.getParameter(paramRequest);
+                requestStr = action.getRequestParameter(paramRequest);
             if ( requestStr == null )
                 ServletOps.errorBadRequest("SPARQL Update: No update= in HTML form");
             validate(action, paramsForm);
@@ -159,7 +160,7 @@ public class SPARQL_Update extends ActionService
 
     protected void validate(HttpAction action, Collection<String> params) {
         if ( params != null ) {
-            Enumeration<String> en = action.request.getParameterNames();
+            Enumeration<String> en = action.getRequestParameterNames();
             for (; en.hasMoreElements(); ) {
                 String name = en.nextElement();
                 if ( !params.contains(name) )
@@ -170,7 +171,7 @@ public class SPARQL_Update extends ActionService
 
     private void executeBody(HttpAction action) {
         InputStream input = null;
-        try { input = action.request.getInputStream(); }
+        try { input = action.getRequestInputStream(); }
         catch (IOException ex) { ServletOps.errorOccurred(ex); }
 
         if ( action.verbose ) {
@@ -192,9 +193,9 @@ public class SPARQL_Update extends ActionService
     }
 
     private void executeForm(HttpAction action) {
-        String requestStr = action.request.getParameter(paramUpdate);
+        String requestStr = action.getRequestParameter(paramUpdate);
         if ( requestStr == null )
-            requestStr = action.request.getParameter(paramRequest);
+            requestStr = action.getRequestParameter(paramRequest);
 
         if ( action.verbose )
             action.log.info(format("[%d] Form update = \n%s", action.id, requestStr));
@@ -208,7 +209,7 @@ public class SPARQL_Update extends ActionService
     }
 
     protected void execute(HttpAction action, InputStream input) {
-        UsingList usingList = processProtocol(action.request);
+        UsingList usingList = processProtocol(action.getRequest());
 
         // If the dsg is transactional, then we can parse and execute the update in a streaming fashion.
         // If it isn't, we need to read the entire update request before performing any updates, because

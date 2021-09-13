@@ -24,7 +24,6 @@ import static org.apache.jena.riot.WebContent.contentTypeTextPlain;
 import java.io.IOException;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.fuseki.ctl.ActionCtl;
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -45,10 +44,9 @@ public class ActionLogs extends ActionCtl
     @Override
     public void execute(HttpAction action) {
         try {
-            HttpServletResponse response = action.response;
-            ServletOutputStream out = response.getOutputStream();
-            response.setContentType(contentTypeTextPlain);
-            response.setCharacterEncoding(charsetUTF8);
+            ServletOutputStream out = action.getResponseOutputStream();
+            action.setResponseContentType(contentTypeTextPlain);
+            action.setResponseCharacterEncoding(charsetUTF8);
             out.println("Not implemented yet");
             out.println();
             out.flush();
