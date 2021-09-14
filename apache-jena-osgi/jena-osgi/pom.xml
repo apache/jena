@@ -279,6 +279,9 @@
               !com.google.errorprone.annotations.*,
               !com.google.appengine.api,
               !com.google.apphosting.api,
+              com.apicatalog.jsonld.*;resolution:=optional,
+              com.apicatalog.rdf.*;resolution:=optional,
+              jakarta.json;resolution:=optional,
               org.apache.logging.*;resolution:=optional,
               sun.misc;resolution:=optional,
               *
