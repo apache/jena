@@ -43,21 +43,22 @@ import org.junit.runners.Suite ;
     , TestStoreConnectionsDirect.class
     , TestStoreConnectionsMapped.class
     , TestLocationLockStoreConnection.class
+    , TestGraphTDB_Prefixes.class
 } )
 public class TS_Store
-{ 
-    static FileMode mode ; 
-    
+{
+    static FileMode mode ;
+
     @BeforeClass
     public static void beforeClass()
     {
         mode = SystemTDB.fileMode() ;
     }
-    
+
     @AfterClass
     public static void afterClass()
     {
         if ( ! SystemTDB.fileMode().equals(mode) )
-            TestOps.setFileMode(mode) ;    
+            TestOps.setFileMode(mode) ;
     }
 }
