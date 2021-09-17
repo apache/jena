@@ -43,7 +43,7 @@ public class TestNodeFmt
     private static NodeFormatter nodeFormatterNTutf8 = new NodeFormatterNT(CharSpace.UTF8) ;
     private static NodeFormatter nodeFormatterNTascii = new NodeFormatterNT(CharSpace.ASCII) ;
     private static NodeFormatter nodeFormatterTTL = new NodeFormatterTTL(base, prefixMap) ;
-    
+
     public static void test(NodeFormatter nodeFormatter, String str)
     {
         test(nodeFormatter, str, str) ;
@@ -59,6 +59,7 @@ public class TestNodeFmt
     {
         StringWriterI sw = new StringWriterI() ;
         nodeFormatter.format(sw, n) ;
+        sw.flush();
         String str2 = sw.toString() ;
         assertEquals(str, str2) ;
     }
@@ -76,32 +77,32 @@ public class TestNodeFmt
     @Test public void nodefmt_nt_07a() { test(nodeFormatterNTutf8, "\"abc\"@en") ; }
     @Test public void nodefmt_nt_08()  { test(nodeFormatterNTutf8, "\"123\"^^<http://www.w3.org/2001/XMLSchema#integer>" ) ; }
     @Test public void nodefmt_nt_09()  { test(nodeFormatterNTutf8, Node.ANY, "ANY") ; }
-    
+
     @Test public void nodefmt_nt_10()  { test(nodeFormatterNTutf8, "'Ω'", "\"Ω\"") ; }
     @Test public void nodefmt_nt_11()  { test(nodeFormatterNTascii, "'Ω'", "\"\\u03A9\"") ; }
-    
+
     @Test public void nodefmt_nt_12()        { test(nodeFormatterNTascii,"<http://example/>") ; }
     @Test public void nodefmt_nt_13()        { test(nodeFormatterNTascii, "\"abc\"^^<http://example/dt>") ; }
-    
+
     @Test public void nodefmt_nt_14()        { test(nodeFormatterNTascii, "'é'", "\"\\u00E9\"") ; }
 
     @Test public void nodefmt_nt_15()        { test(nodeFormatterNTascii, "'\\n\\t\\f'", "\"\\n\\t\\f\"") ; }
-    
+
     // RDF 1.1 sensitive.
     // xsd:strings output without ^^
-    @Test public void nodefmt_rdf11_01()     
-    { 
+    @Test public void nodefmt_rdf11_01()
+    {
         if ( JenaRuntime.isRDF11 )
             test(nodeFormatterNTutf8, "'abc'^^xsd:string", "\"abc\"") ;
         else
             test(nodeFormatterNTutf8, "'abc'^^xsd:string", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#string>") ;
     }
-    
+
     @Test public void nodefmt_rdf11_02() {
         // Same in RDF 1.0 and RDF 1.1
         test(nodeFormatterNTutf8, "'abc'^^rdf:langString",  "\"abc\"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#langString>") ;
     }
-    
+
     @Test public void nodefmt_ttl_01()  { test(nodeFormatterTTL, "?x") ; }
     @Test public void nodefmt_ttl_02()  { test(nodeFormatterTTL, "?xyz") ; }
     @Test public void nodefmt_ttl_03()  { test(nodeFormatterTTL, Var.alloc(""), "?") ; }
@@ -111,7 +112,7 @@ public class TestNodeFmt
     @Test public void nodefmt_ttl_06()  { test(nodeFormatterTTL, "\"\"") ; }
     @Test public void nodefmt_ttl_07()  { test(nodeFormatterTTL, "\"abc\"@en") ; }
     @Test public void nodefmt_ttl_08()  { test(nodeFormatterTTL, Node.ANY, "ANY") ; }
-    
+
     @Test public void nodefmt_ttl_11()  { test(nodeFormatterTTL, "<http://example.com/resources>") ; }    // No match
     @Test public void nodefmt_ttl_12()  { test(nodeFormatterTTL, "<http://example/ex/>", "ex:") ; }
     @Test public void nodefmt_ttl_13()  { test(nodeFormatterTTL, "<http://example/ex/abc>", "ex:abc") ; }
@@ -124,7 +125,7 @@ public class TestNodeFmt
 
     // Trailing DOT
     @Test public void nodefmt_ttl_19()  { test(nodeFormatterTTL, "<http://example/ex/abc.>", "<http://example/ex/abc.>") ; }
-    
+
     @Test public void nodefmt_ttl_20()  { test(nodeFormatterTTL, "<http://example/ex/abc.x>", "ex:abc.x") ; }
     @Test public void nodefmt_ttl_21()  { test(nodeFormatterTTL, "<http://example/ex/abc456.123>", "ex:abc456.123") ; }
     @Test public void nodefmt_ttl_22()  { test(nodeFormatterTTL, "<http://example/ex/abc:x>", "ex:abc:x") ; }
@@ -132,11 +133,11 @@ public class TestNodeFmt
     @Test public void nodefmt_ttl_24()  { test(nodeFormatterTTL, "<urn:test:abc:x>", "ns:abc:x") ; }
     @Test public void nodefmt_ttl_25()  { test(nodeFormatterTTL, "<urn:test:00:1234>", "ns:00:1234") ; }
     @Test public void nodefmt_ttl_26()  { test(nodeFormatterTTL, "<http://example/ex/::>", "ex:::") ; }
-    
+
     @Test public void nodefmt_ttl_29()  { test(nodeFormatterTTL, "'Ω'", "\"Ω\"") ; }
-    
-    @Test public void prefixedname_01() { testPrefix("", "") ; } 
-    
+
+    @Test public void prefixedname_01() { testPrefix("", "") ; }
+
     private void testPrefix(String prefix, String local)
     {
         assertTrue(NodeFormatterTTL.safeForPrefix(prefix)) ;
@@ -164,7 +165,7 @@ public class TestNodeFmt
     // No trailing digit.  RDF 1.1.
     @Test public void nodefmt_ttl_48()  { test(nodeFormatterTTL, "\"1.\"^^<http://www.w3.org/2001/XMLSchema#decimal>", "\"1.\"^^<http://www.w3.org/2001/XMLSchema#decimal>") ; }
     @Test public void nodefmt_ttl_49()  { test(nodeFormatterTTL, "'.45'^^<http://www.w3.org/2001/XMLSchema#decimal>", ".45") ; }
-    
+
     // Doubles.
     @Test public void nodefmt_ttl_50()  { test(nodeFormatterTTL, "'123'^^<http://www.w3.org/2001/XMLSchema#double>", "\"123\"^^<http://www.w3.org/2001/XMLSchema#double>") ; }
     @Test public void nodefmt_ttl_51()  { test(nodeFormatterTTL, "'123.0'^^<http://www.w3.org/2001/XMLSchema#double>", "\"123.0\"^^<http://www.w3.org/2001/XMLSchema#double>") ; }
@@ -182,7 +183,7 @@ public class TestNodeFmt
     @Test public void nodefmt_ttl_60()  { test(nodeFormatterTTL, "'-123.e-10'^^<http://www.w3.org/2001/XMLSchema#double>", "-123.e-10") ; }
     @Test public void nodefmt_ttl_61()  { test(nodeFormatterTTL, "'.1e-10'^^<http://www.w3.org/2001/XMLSchema#double>", ".1e-10") ; }
     @Test public void nodefmt_ttl_62()  { test(nodeFormatterTTL, "'.e9'^^<http://www.w3.org/2001/XMLSchema#double>", "\".e9\"^^<http://www.w3.org/2001/XMLSchema#double>") ; }
-    
+
     // Booleans
     @Test public void nodefmt_ttl_70()  { test(nodeFormatterTTL, "'true'^^<http://www.w3.org/2001/XMLSchema#boolean>", "true") ; }
     @Test public void nodefmt_ttl_71()  { test(nodeFormatterTTL, "'1'^^<http://www.w3.org/2001/XMLSchema#boolean>", "\"1\"^^<http://www.w3.org/2001/XMLSchema#boolean>") ; }
@@ -193,17 +194,37 @@ public class TestNodeFmt
     // Illegal lexical form.
     @Test public void nodefmt_ttl_74()  { test(nodeFormatterTTL, "'False'^^<http://www.w3.org/2001/XMLSchema#boolean>", "\"False\"^^<http://www.w3.org/2001/XMLSchema#boolean>") ; }
     @Test public void nodefmt_ttl_75()  { test(nodeFormatterTTL, "'True'^^<http://www.w3.org/2001/XMLSchema#boolean>", "\"True\"^^<http://www.w3.org/2001/XMLSchema#boolean>") ; }
-    
+
+    // -- Multiline formatter
+
     private static String QuoteDouble3 = "\"\"\"" ;
     private static String QuoteSingle3 = "'''" ;
 
-    // Multiline
-    
     private static NodeFormatter nodeFormatterTTL_ML = new NodeFormatterTTL_MultiLine(base, prefixMap) ;
-    
-    @Test public void nodefmt_ttl_ML_01()  { test(nodeFormatterTTL_ML, "'A\\nB'", QuoteDouble3+"A\nB"+QuoteDouble3) ; }
-    @Test public void nodefmt_ttl_ML_02()  { test(nodeFormatterTTL_ML, "'A\\nB'@en", QuoteDouble3+"A\nB"+QuoteDouble3+"@en") ; }
-    @Test public void nodefmt_ttl_ML_03()  { test(nodeFormatterTTL_ML, "'A\\nB'^^:ex\\/datatype", QuoteDouble3+"A\nB"+QuoteDouble3+"^^ex:datatype") ; }
 
-    
+    // Multiline formatter - single line output - xsd:string
+    @Test public void nodefmt_ttl_ML_10()  { test(nodeFormatterTTL_ML, "'A'", "\"A\""); }
+    @Test public void nodefmt_ttl_ML_11()  { test(nodeFormatterTTL_ML, "'A\\'B'", "\"A'B\""); }
+    @Test public void nodefmt_ttl_ML_12()  { test(nodeFormatterTTL_ML, "'A\"B'", "'A\"B'"); }
+
+    // Multiline formatter - single line output - rdf:langString
+    @Test public void nodefmt_ttl_ML_13()  { test(nodeFormatterTTL_ML, "'A'@en","\"A\"@en"); }
+    @Test public void nodefmt_ttl_ML_14()  { test(nodeFormatterTTL_ML, "'A\\'B'@en", "\"A'B\"@en"); }
+    @Test public void nodefmt_ttl_ML_15()  { test(nodeFormatterTTL_ML, "'A\"B'@en", "'A\"B'@en"); }
+
+    // Multiline output - xsd:string
+    @Test public void nodefmt_ttl_ML_16()  { test(nodeFormatterTTL_ML, "'A\\n\"B'", QuoteSingle3+"A\n\"B"+QuoteSingle3); }
+    @Test public void nodefmt_ttl_ML_17()  { test(nodeFormatterTTL_ML, "'A\\n\\'B'", QuoteDouble3+"A\n'B"+QuoteDouble3); }
+
+    // Multiline output - rdf:langString
+    @Test public void nodefmt_ttl_ML_18()  { test(nodeFormatterTTL_ML, "'A\\nB\"c'@en", QuoteSingle3+"A\nB\"c"+QuoteSingle3+"@en"); }
+    @Test public void nodefmt_ttl_ML_19()  { test(nodeFormatterTTL_ML, "'A\\nB\\'c'@en", QuoteDouble3+"A\nB'c"+QuoteDouble3+"@en"); }
+
+    // Multiline output - datatype
+    @Test public void nodefmt_ttl_ML_20()  { test(nodeFormatterTTL_ML, "'A\\nB\\''^^<ex:dt>", QuoteDouble3+"A\nB'"+QuoteDouble3+"^^<ex:dt>"); }
+    @Test public void nodefmt_ttl_ML_21()  { test(nodeFormatterTTL_ML, "'A\\nB\"c'^^<ex:dt>", QuoteSingle3+"A\nB\"c"+QuoteSingle3+"^^<ex:dt>"); }
+
+    // With escapes of trailing quotes.
+    @Test public void nodefmt_ttl_ML_esc_01()  { test(nodeFormatterTTL_ML, "'A\\'\"B\\nCD\\''", QuoteDouble3+"A'\"B\nCD'"+QuoteDouble3) ; }
+    @Test public void nodefmt_ttl_ML_esc_02()  { test(nodeFormatterTTL_ML, "'A\\'\"B\\nCD\"'",  QuoteDouble3+"A'\"B\nCD\\\""+QuoteDouble3) ; }
 }
