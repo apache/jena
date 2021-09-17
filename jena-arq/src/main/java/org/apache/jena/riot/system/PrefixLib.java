@@ -56,12 +56,14 @@ public class PrefixLib {
      * Further checking for the rules of a particular syntax are necessary.
      */
     public static String abbreviate(PrefixMap prefixes, String uriStr) {
+        // With a test for ":".
         Map<String, String> map = prefixes.getMapping();
         for ( Entry<String, String> e : map.entrySet() ) {
             String prefix = e.getKey();
-            String prefixUri = e.getValue();
-            if ( uriStr.startsWith(prefixUri) ) {
-                String ln = uriStr.substring(prefixUri.length());
+            String uriForPrefix = e.getValue();
+            if ( uriStr.startsWith(uriForPrefix) ) {
+                String ln = uriStr.substring(uriForPrefix.length());
+                // Safe for RDF/XML as well
                 if ( strSafeFor(ln, '/') && strSafeFor(ln, '#') && strSafeFor(ln, ':') )
                     return prefix + ":" + ln;
             }

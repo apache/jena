@@ -32,11 +32,16 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.PrefixMappingAdapter;
 
+
+/**
+ * Functions related to {@link PrefixMap}.
+ *
+ * @see PrefixMapFactory
+ */
 public class Prefixes {
     // Distinguished nodes:
     // Default graph : Quad.defaultGraphNodeGenerated would have been preferred.
     // For compatibility reasons, in TDB2, this is the URI <> (empty string).
-
 
     // **** Implementations
     // ** DatasetGraphMap, DatasetGraphMapLink : adapter to the default graph

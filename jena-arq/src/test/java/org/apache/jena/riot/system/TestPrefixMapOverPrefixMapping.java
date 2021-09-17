@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,36 +18,17 @@
 
 package org.apache.jena.riot.system;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
 
 /**
- * Test suite for RIOT system
- *
+ * Test PrefixMap which is an adapter of a PrefixMapping.
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-    TestChecker.class
-    , TestStreamRDF.class
-    , TestFactoryRDF.class
-    , TestFactoryRDFCaching.class
+public class TestPrefixMapOverPrefixMapping extends AbstractTestPrefixMap {
 
-    // Prefix Map implementations
-    , TestPrefixMap.class
-    , TestPrefixMapOverPrefixMapping.class
-    , TestPrefixMapWrapper.class
-    , TestPrefixMapOther.class
-
-    , TestIO_JenaReaders.class
-    , TestIO_JenaWriters.class
-    , TestLangRegistration.class
-    , TestFormatRegistration.class
-    , TestJsonLDReadWrite.class         // Some simple testing of the jsonld-java engine.
-    , TestSerializable.class
-    , TestIRIxRIOT.class
-    , TestRiotLib.class
-})
-
-public class TS_RiotSystem
-{}
+    @Override
+    protected PrefixMap getPrefixMap() {
+        PrefixMapping prefixMapping = new PrefixMappingImpl();
+        return Prefixes.adapt(prefixMapping);
+    }
+}
