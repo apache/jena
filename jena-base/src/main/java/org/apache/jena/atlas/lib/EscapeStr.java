@@ -80,7 +80,9 @@ public class EscapeStr
                 // Multiline string.
                 if ( c == quoteChar ) {
                     quotesInARow++ ;
-                    if ( quotesInARow == 3 ) {
+                    if ( (quotesInARow == 3) || (!singleLineString && (i == len - 1)) ) {
+                        // Always quote the final character for multiline use
+                        // otherwise it will run into the wrapping 3 quotes.
                         out.print("\\");
                         out.print(quoteChar);
                         quotesInARow = 0;
