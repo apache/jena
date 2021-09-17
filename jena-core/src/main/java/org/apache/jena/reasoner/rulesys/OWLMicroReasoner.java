@@ -41,10 +41,10 @@ public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
 
     /** The location of the OWL rule definitions on the class path */
     protected static final String MICRO_RULE_FILE = "etc/owl-fb-micro.rules";
-    
+
     /** The parsed rules */
     protected static List<Rule> microRuleSet;
-    
+
     /**
      * Return the rule set, loading it in if necessary
      */
@@ -52,8 +52,8 @@ public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
         if (microRuleSet == null) microRuleSet = loadRules( MICRO_RULE_FILE );
         return microRuleSet;
     }
-    
-    
+
+
     /**
      * Constructor
      */
@@ -63,10 +63,10 @@ public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
         setMode(HYBRID);
         setTransitiveClosureCaching(true);
     }
-    
+
 
     /**
-     * Return the Jena Graph Capabilties that the inference graphs generated
+     * Return the Jena Graph Capabilities that the inference graphs generated
      * by this reasoner are expected to conform to.
      */
     @Override
@@ -76,12 +76,12 @@ public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
         }
         return capabilities;
     }
-    
+
     /**
      * Attach the reasoner to a set of RDF data to process.
      * The reasoner may already have been bound to specific rules or ontology
      * axioms (encoded in RDF) through earlier bindRuleset calls.
-     * 
+     *
      * @param data the RDF data to be processed, some reasoners may restrict
      * the range of RDF which is legal here (e.g. syntactic restrictions in OWL).
      * @return an inference graph through which the data+reasoner can be queried.

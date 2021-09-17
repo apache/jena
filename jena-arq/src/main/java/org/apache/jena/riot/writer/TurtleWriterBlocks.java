@@ -28,14 +28,12 @@ import org.apache.jena.sparql.util.Context ;
 /** Turtle writer that streams - print in blocks of triples formatted
  *  by adjacent same subject.
  */
-public class TurtleWriterBlocks extends TurtleWriterBase
-{
+public class TurtleWriterBlocks extends TurtleWriterBase {
     @Override
     protected void output(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF dest = new WriterStreamRDFBlocks(out, context) ;
-        dest.start() ;
-        StreamRDFOps.sendGraphToStream(graph, dest, baseURI, prefixMap) ;
-        dest.finish() ;
+        StreamRDF dest = new WriterStreamRDFBlocks(out, context);
+        dest.start();
+        StreamRDFOps.sendGraphToStream(graph, dest, baseURI, prefixMap);
+        dest.finish();
     }
 }
-

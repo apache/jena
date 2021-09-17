@@ -28,13 +28,13 @@ import org.apache.jena.sparql.util.Context ;
 /** TriG writer that streams - print in blocks of quads clustered
  *  by adjacent same graph and same subject
  */
-public class TriGWriterBlocks extends TriGWriterBase
-{
+public class TriGWriterBlocks extends TriGWriterBase {
+
     @Override
     protected void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF dest = new WriterStreamRDFBlocks(iOut, context) ;
-        dest.start() ;
-        StreamRDFOps.sendDatasetToStream(dsg, dest, baseURI, prefixMap) ;
-        dest.finish() ;
+        StreamRDF dest = new WriterStreamRDFBlocks(iOut, context);
+        dest.start();
+        StreamRDFOps.sendDatasetToStream(dsg, dest, baseURI, prefixMap);
+        dest.finish();
     }
 }

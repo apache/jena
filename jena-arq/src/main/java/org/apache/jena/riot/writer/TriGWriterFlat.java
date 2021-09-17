@@ -26,16 +26,16 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 
 /** TriG writer that writes quads one per line
- *  in TriG form with prefixes and short form literals (e.g. integers) 
+ *  in TriG form with prefixes and short form literals (e.g. integers)
  */
 
-public class TriGWriterFlat extends TriGWriterBase
-{
+public class TriGWriterFlat extends TriGWriterBase {
+
     @Override
     protected void output(IndentedWriter iOut, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF dest = new WriterStreamRDFFlat(iOut, context) ;
-        dest.start() ;
-        StreamRDFOps.sendDatasetToStream(datasetGraph, dest, baseURI, prefixMap) ;
-        dest.finish() ;
+        StreamRDF dest = new WriterStreamRDFFlat(iOut, context);
+        dest.start();
+        StreamRDFOps.sendDatasetToStream(datasetGraph, dest, baseURI, prefixMap);
+        dest.finish();
     }
 }

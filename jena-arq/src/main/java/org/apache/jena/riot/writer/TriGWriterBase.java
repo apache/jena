@@ -30,31 +30,31 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 
 /** TriG writer base class - ways to invoke a TriG writer */
-public abstract class TriGWriterBase extends WriterDatasetRIOTBase
-{
+public abstract class TriGWriterBase extends WriterDatasetRIOTBase {
+
     @Override
     public Lang getLang() {
-        return Lang.TRIG ;
+        return Lang.TRIG;
     }
 
     @Override
     public void write(Writer out, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
-        IndentedWriter iOut = RiotLib.create(out) ;
-        output$(iOut, dsg, prefixMap, baseURI, context) ;
+        IndentedWriter iOut = RiotLib.create(out);
+        output$(iOut, dsg, prefixMap, baseURI, context);
     }
 
     @Override
     public void write(OutputStream out, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
-        IndentedWriter iOut = new IndentedWriter(out) ;
-        output$(iOut, dsg, prefixMap, baseURI, context) ;
+        IndentedWriter iOut = new IndentedWriter(out);
+        output$(iOut, dsg, prefixMap, baseURI, context);
     }
 
     private void output$(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
         if ( baseURI != null )
             baseURI = IRIs.resolve(baseURI);
-        output(iOut, dsg, prefixMap, baseURI, context) ;
-        iOut.flush() ;
+        output(iOut, dsg, prefixMap, baseURI, context);
+        iOut.flush();
     }
 
-    protected abstract void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) ;
+    protected abstract void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context);
 }
