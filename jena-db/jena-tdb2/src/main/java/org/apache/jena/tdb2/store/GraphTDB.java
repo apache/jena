@@ -30,7 +30,6 @@ import org.apache.jena.dboe.storage.system.GraphViewStorage;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.other.G;
-import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
@@ -38,8 +37,12 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
 
 /**
- * General operations for TDB graphs (free-standing graph, default graph and
- * named graphs)
+ * General operations for TDB graphs based on GraphViewStorage (TDB2).
+ * This is only valid within a transaction.
+ * {@link GraphViewSwitchable} is the implementation seen by the application
+ * and works across transaction boundaries.
+ *
+ * @see GraphViewSwitchable
  */
 public class GraphTDB extends GraphViewStorage {
 
@@ -54,7 +57,7 @@ public class GraphTDB extends GraphViewStorage {
 
     private final DatasetGraphTDB datasetTDB;
 
-    private GraphTDB(DatasetGraphTDB dataset, Node graphName, StoragePrefixes prefixes) {
+    protected GraphTDB(DatasetGraphTDB dataset, Node graphName, StoragePrefixes prefixes) {
         super(dataset, graphName, prefixes);
         this.datasetTDB = dataset;
     }
@@ -66,11 +69,6 @@ public class GraphTDB extends GraphViewStorage {
     /** The NodeTupleTable for this graph */
     public NodeTupleTable getNodeTupleTable() {
         return getDSG().chooseNodeTupleTable(getGraphName());
-    }
-
-    @Override
-    public PrefixMapping getPrefixMapping() {
-        return createPrefixMapping();
     }
 
     // Better ways to execute.
@@ -120,10 +118,8 @@ public class GraphTDB extends GraphViewStorage {
         return WrappedIterator.createNoRemove(iter);
     }
 
-
     @Override
-    public final void sync() {
-    }
+    public final void sync() {}
 
     @Override
     final public void close() {

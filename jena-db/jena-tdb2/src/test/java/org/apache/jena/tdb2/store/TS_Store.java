@@ -51,6 +51,7 @@ import org.junit.runners.Suite;
     , TestTransactionLifecycleTDB.class
     , TestTransPromoteTDB.class
     , TestQuadFilter.class
+    , TestGraphView_Prefixes.class
 } )
 public class TS_Store
 {

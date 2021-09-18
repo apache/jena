@@ -27,6 +27,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.system.PrefixEntry;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.sparql.core.Quad;
 
 /**
@@ -39,16 +40,16 @@ public class StoragePrefixesView implements StoragePrefixMap
     private final Node graphName;
 
     public static StoragePrefixMap viewDataset(StoragePrefixes dsgPrefixes)
-    { return new StoragePrefixesView(dsgPrefixes, Quad.defaultGraphNodeGenerated); }
+    { return new StoragePrefixesView(dsgPrefixes, Prefixes.nodeDataset);}
 
-    // Used by tests only
+    // Used by tests only and example code for separate prefixes of TDB2 graphs.
     // ** Not for dataset prefixes.
-    /*package*/ static StoragePrefixMap viewDefaultGraph(StoragePrefixes dsgPrefixes)
-    { return new StoragePrefixesView(dsgPrefixes, Quad.defaultGraphNodeGenerated); }
+    /*package*/ public static StoragePrefixMap internal_viewDefaultGraph(StoragePrefixes dsgPrefixes)
+    { return new StoragePrefixesView(dsgPrefixes, Prefixes.nodeDefaultGraph); }
 
-    // Used by tests only
+    // Used by tests only and example code for separate prefixes of TDB2 graphs.
     // ** Not for dataset prefixes.
-    /*package*/ static StoragePrefixMap viewGraph(StoragePrefixes dsgPrefixes, Node graphName)
+    /*package*/ public static StoragePrefixMap internal_viewGraph(StoragePrefixes dsgPrefixes, Node graphName)
     { return new StoragePrefixesView(dsgPrefixes, graphName); }
 
     private StoragePrefixesView(StoragePrefixes dsgPrefixes, Node graphName) {
