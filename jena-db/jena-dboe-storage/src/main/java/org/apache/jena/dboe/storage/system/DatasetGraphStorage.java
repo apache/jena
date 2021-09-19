@@ -88,9 +88,9 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
         this.txn = transactional;
     }
 
-    @Override public StorageRDF getData()               { return storage; }
-    @Override public StoragePrefixes getStoragePrefixes()    { return prefixes; }
-    @Override public Transactional getTransactional()   { return txn; }
+    @Override public StorageRDF getData()                   { return storage; }
+    @Override public StoragePrefixes getStoragePrefixes()   { return prefixes; }
+    @Override public Transactional getTransactional()       { return txn; }
 
     @Override
     public PrefixMap prefixes() {

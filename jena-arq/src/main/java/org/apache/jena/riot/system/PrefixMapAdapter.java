@@ -23,9 +23,8 @@ import java.util.Map;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.graph.PrefixMappingAdapter;
-import org.apache.jena.util.SplitIRI;
 
-/** 
+/**
  * Provided {@link PrefixMap} for a {@link PrefixMapping}.
  * @see PrefixMappingAdapter
  */
@@ -59,7 +58,6 @@ public class PrefixMapAdapter extends PrefixMapBase implements PrefixMap {
 
     @Override
     public void add(String prefix, String iriString) {
-        // Will apply addition PrefixMapping restrictions.
         prefixMapping.setNsPrefix(prefix, iriString);
     }
 
@@ -80,18 +78,17 @@ public class PrefixMapAdapter extends PrefixMapBase implements PrefixMap {
 
     @Override
     public String abbreviate(String uriStr) {
-        return prefixMapping.qnameFor(uriStr);
+        // PrefixMapiing has a reverse map, PrefixMap does not.
+        // Try using the prefix mapping else resort to general purpose library code. 
+        String x = prefixMapping.qnameFor(uriStr);
+        if ( x != null )
+            return x;
+        return PrefixLib.abbreviate(this, uriStr);
     }
 
     @Override
     public Pair<String, String> abbrev(String uriStr) {
-        int split = SplitIRI.splitXML(uriStr);
-        if ( split == uriStr.length() ) {
-            return null;
-        }
-        String ns = uriStr.substring(0, split);
-        String local = uriStr.substring(split);
-        return Pair.create(ns, local);
+        return PrefixLib.abbrev(this, uriStr);
     }
 
     @Override

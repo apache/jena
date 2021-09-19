@@ -20,6 +20,7 @@ package org.apache.jena.riot.system;
 
 import static org.junit.Assert.*;
 
+import org.apache.jena.atlas.lib.Pair;
 import org.junit.Test ;
 
 /**
@@ -289,6 +290,11 @@ public abstract class AbstractTestPrefixMap {
     }
 
     @Test
+    public void prefixMap_abbrev_19() {
+        pmTest("http://example/z");
+    }
+
+    @Test
     public void prefixMap_abbrev_20() {
         PrefixMap pmap = PrefixMapFactory.create();
         pmap.add("ex", "http://example/");
@@ -297,34 +303,62 @@ public abstract class AbstractTestPrefixMap {
         assertNull(x);
     }
 
-    public void pmTest(String iriStr, String... expected) {
+    private void pmTest(String iriStr, String...expected) {
         PrefixMap pm = create();
-        String x = pm.abbreviate(iriStr);
-        if ( expected.length == 0 )
-        {
-            assertNull("expected no abbreviation for "+iriStr, x) ;
-            return ;
-        }
+        pmTestAbbreviate(pm, iriStr, expected);
+        pmTestAbbrev(pm, iriStr, expected);
+    }
 
-        for (String possible : expected) {
-            if (possible.equals(x))
+    private void pmTestAbbrev(PrefixMap pm, String iriStr, String...expected) {
+        Pair<String, String> p = pm.abbrev(iriStr);
+        if ( expected.length == 0 ) {
+            assertNull("expected no abbrev for " + iriStr, p);
+            return;
+        }
+        assertNotNull(p);
+        String ns = p.getLeft();
+        String nsIRI = pm.get(ns);
+        String ln = p.getRight();
+        String iriStr2 = nsIRI+p.getRight();
+        assertEquals(iriStr, iriStr2);
+
+        // Agree with abbreviate? (due to multiple choices, this isn't guaranteed).
+        String x1 = pm.abbreviate(iriStr);
+        String abbrevString = ns+":"+ln;
+        assertEquals(x1, abbrevString);
+
+        for ( String possible : expected ) {
+            if ( possible.equals(abbrevString) ) {
+                assertTrue(iriStr.startsWith(nsIRI));
+                return;
+            }
+        }
+        fail("abbrev: Expected one of [" + String.join(" , ", expected) + "] but got " + abbrevString);
+    }
+
+    private void pmTestAbbreviate(PrefixMap pm, String iriStr, String...expected) {
+        String x = pm.abbreviate(iriStr);
+        if ( expected.length == 0 ) {
+            assertNull("expected no abbreviation for " + iriStr, x);
+            return;
+        }
+        assertNotNull(x);
+
+        for ( String possible : expected ) {
+            if ( possible.equals(x) )
                 return;
         }
-        fail("Expected one of " + String.join(" , ", expected) + " but got " + x);
+        fail("abbreviate: Expected one of [" + String.join(" , ", expected) + "] but got " + x);
     }
 
     /**
      * Helper method for adding a namespace mapping
      *
-     * @param pmap
-     *            Prefix Map
-     * @param prefix
-     *            Prefix
-     * @param uri
-     *            URI
+     * @param pmap Prefix Map
+     * @param prefix Prefix
+     * @param uri URI
      */
     protected void add(PrefixMap pmap, String prefix, String uri) {
         pmap.add(prefix, uri);
     }
-
 }

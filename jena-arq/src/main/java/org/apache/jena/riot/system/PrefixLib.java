@@ -45,8 +45,13 @@ public class PrefixLib {
 
     /** Canonical name for graphs */
     public static Node canonicalGraphName(Node graphName) {
-        if ( graphName == null || Quad.isDefaultGraph(graphName) )
+        // Compatibility with old style dataset prefixes are the default graph prefixes.
+        // To force apart, use Prefixes.nodeDefaultGraph
+        if ( graphName == null || Quad.isDefaultGraph(graphName) ) {
+            // Sept 2021: probably now safe -- no output in the test suite
+            // System.err.println("** Convert to Prefixes.nodeDataset");
             return Prefixes.nodeDataset;
+        }
         return graphName;
     }
 
@@ -56,12 +61,14 @@ public class PrefixLib {
      * Further checking for the rules of a particular syntax are necessary.
      */
     public static String abbreviate(PrefixMap prefixes, String uriStr) {
+        // With a test for ":".
         Map<String, String> map = prefixes.getMapping();
         for ( Entry<String, String> e : map.entrySet() ) {
             String prefix = e.getKey();
-            String prefixUri = e.getValue();
-            if ( uriStr.startsWith(prefixUri) ) {
-                String ln = uriStr.substring(prefixUri.length());
+            String uriForPrefix = e.getValue();
+            if ( uriStr.startsWith(uriForPrefix) ) {
+                String ln = uriStr.substring(uriForPrefix.length());
+                // Safe for RDF/XML as well
                 if ( strSafeFor(ln, '/') && strSafeFor(ln, '#') && strSafeFor(ln, ':') )
                     return prefix + ":" + ln;
             }

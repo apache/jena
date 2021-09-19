@@ -52,8 +52,7 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     private final Graph defaultGraph ;
     private final PrefixMap prefixes ;
 
-    /**  DatasetGraphMap defaulting to storage in memory.
-     */
+    /** DatasetGraphMap defaulting to storage in memory. */
     public DatasetGraphMap() {
         this(DatasetGraphFactory.graphMakerNamedGraphMem) ;
     }
@@ -68,7 +67,7 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     private DatasetGraphMap(Graph defaultGraph, GraphMaker graphMaker) {
         this.defaultGraph = defaultGraph ;
         this.graphMaker = graphMaker ;
-        // Preserves legacy behaviour of "getDefaultPraph" having prefixes.
+        // Preserves legacy behaviour of "getDefaultGraph" having prefixes.
         this.prefixes = Prefixes.adapt(defaultGraph);
     }
 

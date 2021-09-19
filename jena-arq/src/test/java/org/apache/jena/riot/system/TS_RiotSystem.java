@@ -35,6 +35,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
     // Prefix Map implementations
     , TestPrefixMap.class
+    , TestPrefixMapOverPrefixMapping.class
     , TestPrefixMapWrapper.class
     , TestPrefixMapOther.class
 

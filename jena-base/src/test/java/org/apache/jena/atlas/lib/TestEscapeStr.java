@@ -18,6 +18,10 @@
 
 package org.apache.jena.atlas.lib;
 
+import java.io.StringWriter;
+
+import org.apache.jena.atlas.io.AWriter;
+import org.apache.jena.atlas.io.IO;
 import org.junit.Assert ;
 import org.junit.Test ;
 
@@ -26,21 +30,101 @@ import org.junit.Test ;
 
 public class TestEscapeStr {
 
+    private static char S_QUOTE = '\'';
+    private static char D_QUOTE = '"';
+
+    // General, for double quoted strings.
     @Test public void escape_str_01()   { test_esc("", "") ; }
     @Test public void escape_str_02()   { test_esc("A", "A") ; }
     @Test public void escape_str_03()   { test_esc("\n", "\\n") ; }
     @Test public void escape_str_04()   { test_esc("A\tB", "A\\tB") ; }
     @Test public void escape_str_05()   { test_esc("\"", "\\\"") ; }
+    @Test public void escape_str_06()   { test_esc("'", "'") ; }
 
+    private static void test_esc(String input, String expected) {
+        String output = EscapeStr.stringEsc(input) ;
+        Assert.assertEquals("Failed at escape", expected, output);
+        String output2 = EscapeStr.unescapeStr(output);
+        Assert.assertEquals("Failed at unescape", input, output2);
+    }
+
+    // Single line
+    @Test public void escape_str_single_01()   { test_esc1("a'x",  S_QUOTE,  "a\\'x") ; }
+    @Test public void escape_str_single_02()   { test_esc1("a\"x", D_QUOTE,  "a\\\"x") ; }
+
+    @Test public void escape_str_single_03()   { test_esc1("a\"x", S_QUOTE,  "a\"x") ; }
+    @Test public void escape_str_single_04()   { test_esc1("a'x",  D_QUOTE,  "a'x") ; }
+
+    @Test public void escape_str_single_05()   { test_esc1("a'",   S_QUOTE,  "a\\'") ; }
+    @Test public void escape_str_single_06()   { test_esc1("a\"",  D_QUOTE,  "a\\\"") ; }
+
+    @Test public void escape_str_single_07()   { test_esc1("\"",  S_QUOTE,  "\"") ; }
+    @Test public void escape_str_single_08()   { test_esc1("'",   D_QUOTE,  "'") ; }
+
+    private static void test_esc1(String input, char quoteChar, String expected) {
+        StringWriter sw = new StringWriter();
+        AWriter w = IO.wrap(sw);
+        EscapeStr.stringEsc(w, input, quoteChar, true);
+        w.flush();
+        String output = sw.toString();
+        Assert.assertEquals(expected, output);
+    }
+
+
+    // Multiline quoting.
+    // One character
+    @Test public void escape_str_multi_01()    { test_esc3("a'x",  S_QUOTE,  "a'x") ; }
+    @Test public void escape_str_multi_02()    { test_esc3("a\"x", D_QUOTE,  "a\"x") ; }
+
+    @Test public void escape_str_multi_03()    { test_esc3("'x", S_QUOTE, "'x") ; }
+    @Test public void escape_str_multi_04()    { test_esc3("'x", D_QUOTE, "'x") ; }
+
+    // Last character
+    @Test public void escape_str_multi_05()    { test_esc3("a'", S_QUOTE, "a\\'") ; }
+    @Test public void escape_str_multi_06()    { test_esc3("a'", D_QUOTE, "a'") ; }
+
+    @Test public void escape_str_multi_07()    { test_esc3("a\"", S_QUOTE, "a\"") ; }
+    @Test public void escape_str_multi_08()    { test_esc3("a\"", D_QUOTE, "a\\\"") ; }
+
+    @Test public void escape_str_multi_09()    { test_esc3("'", S_QUOTE, "\\'") ; }
+    @Test public void escape_str_multi_10()    { test_esc3("'", D_QUOTE, "'") ; }
+
+    @Test public void escape_str_multi_11()    { test_esc3("\"", S_QUOTE, "\"") ; }
+    @Test public void escape_str_multi_12()    { test_esc3("\"", D_QUOTE, "\\\"") ; }
+
+    // 2 in a row
+    @Test public void escape_str_multi_2q_1()  { test_esc3("a''z", S_QUOTE, "a''z") ; }
+    @Test public void escape_str_multi_2q_2()  { test_esc3("a''z", D_QUOTE, "a''z") ; }
+    @Test public void escape_str_multi_2q_3()  { test_esc3("a''",  S_QUOTE, "a'\\'") ; }
+    @Test public void escape_str_multi_2q_4()  { test_esc3("a''",  D_QUOTE, "a''") ; }
+
+    // 3 in a row.
+    @Test public void escape_str_multi_3q_1()  { test_esc3("a'''z", S_QUOTE, "a''\\'z") ; }
+    @Test public void escape_str_multi_3q_2()  { test_esc3("a'''z", D_QUOTE, "a'''z") ; }
+    @Test public void escape_str_multi_3q_3()  { test_esc3("a'''",  S_QUOTE, "a''\\'") ; }
+    @Test public void escape_str_multi_3q_4()  { test_esc3("a'''",  D_QUOTE, "a'''") ; }
+
+    // 4 in a row.
+    @Test public void escape_str_multi_4q_1()    { test_esc3("a''''z", S_QUOTE, "a''\\''z") ; }
+    @Test public void escape_str_multi_4q_2()    { test_esc3("a''''z", D_QUOTE, "a''''z") ; }
+
+    @Test public void escape_str_multi_4q_3()    { test_esc3("a''''", S_QUOTE, "a''\\'\\'") ; }
+    @Test public void escape_str_multi_4q_4()    { test_esc3("a''''", D_QUOTE, "a''''") ; }
+
+    private static void test_esc3(String input, char quoteChar, String expected) {
+        StringWriter sw = new StringWriter();
+        AWriter w = IO.wrap(sw);
+        EscapeStr.stringEsc(w, input, quoteChar, false);
+        w.flush();
+        String output = sw.toString();
+        Assert.assertEquals(expected, output);
+    }
+
+    // Unescape
     @Test public void unescape_str_10()   { test_unesc("\\u0041", "A") ; }
     @Test public void unescape_str_11()   { test_unesc("\\U00000041", "A") ; }
     @Test public void unescape_str_12()   { test_unesc("12\\u004134", "12A34") ; }
     @Test public void unescape_str_13()   { test_unesc("12\\U0000004134", "12A34") ; }
-
-    private static void test_esc(String input, String expected) {
-        String output = EscapeStr.stringEsc(input) ;
-        Assert.assertEquals(expected, output);
-    }
 
     private void test_unesc(String input, String expected) {
         String output = EscapeStr.unescapeStr(input) ;

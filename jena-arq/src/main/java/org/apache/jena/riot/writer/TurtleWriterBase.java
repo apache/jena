@@ -29,31 +29,30 @@ import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.sparql.util.Context ;
 
-public abstract class TurtleWriterBase extends WriterGraphRIOTBase
-{
+public abstract class TurtleWriterBase extends WriterGraphRIOTBase {
     @Override
     public Lang getLang() {
-        return Lang.TURTLE ;
+        return Lang.TURTLE;
     }
 
     @Override
     public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        IndentedWriter iOut = RiotLib.create(out) ;
-        output$(iOut, graph, prefixMap, baseURI, context) ;
+        IndentedWriter iOut = RiotLib.create(out);
+        output$(iOut, graph, prefixMap, baseURI, context);
     }
 
     @Override
     public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        IndentedWriter iOut = new IndentedWriter(out) ;
-        output$(iOut, graph, prefixMap, baseURI, context) ;
+        IndentedWriter iOut = new IndentedWriter(out);
+        output$(iOut, graph, prefixMap, baseURI, context);
     }
 
     private void output$(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
         if ( baseURI != null )
             baseURI = IRIs.resolve(baseURI);
-        output(iOut, graph, prefixMap, baseURI, context) ;
-        iOut.flush() ;
+        output(iOut, graph, prefixMap, baseURI, context);
+        iOut.flush();
     }
 
-    protected abstract void output(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI, Context context) ;
+    protected abstract void output(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI, Context context);
 }

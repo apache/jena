@@ -37,7 +37,7 @@ public class TestPrefixMappingOverDatasetPrefixes extends AbstractTestPrefixMapp
 
     @Override
     protected PrefixMapping view() {
-        StoragePrefixMap view = StoragePrefixesView.viewDefaultGraph(dsgprefixes);
+        StoragePrefixMap view = StoragePrefixesView.internal_viewDefaultGraph(dsgprefixes);
         PrefixMap pmap = PrefixesDboeFactory.newPrefixMap(view);
         return Prefixes.adapt(pmap);
     }

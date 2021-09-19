@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.writer;
+package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamRDFOps ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
 
-/** Write Turtle with one triple on one line with prefixed names, with short form literals (e.g. integers) */
-public class TurtleWriterFlat extends TurtleWriterBase {
+/**
+ * Test PrefixMap which is an adapter of a PrefixMapping.
+ */
+public class TestPrefixMapOverPrefixMapping extends AbstractTestPrefixMap {
+
     @Override
-    protected void output(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF dest = new WriterStreamRDFFlat(out, context);
-        dest.start();
-        StreamRDFOps.sendGraphToStream(graph, dest, baseURI, prefixMap);
-        dest.finish();
+    protected PrefixMap getPrefixMap() {
+        PrefixMapping prefixMapping = new PrefixMappingImpl();
+        return Prefixes.adapt(prefixMapping);
     }
 }

@@ -79,7 +79,8 @@ public abstract class PrefixMapBase implements PrefixMap {
     @Override
     public String abbreviate(String uriStr) {
         Objects.requireNonNull(uriStr);
-        PrefixLib.abbreviate(this, uriStr);
+        // Includes safe ":"
+        // return PrefixLib.abbreviate(this, uriStr);
         Pair<String, String> p = abbrev(uriStr);
         if (p == null)
             return null;

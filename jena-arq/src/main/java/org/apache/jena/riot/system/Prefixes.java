@@ -18,25 +18,30 @@
 
 package org.apache.jena.riot.system;
 
-import java.util.Map.Entry;
-
 import static java.lang.String.format;
 
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.PrefixMappingAdapter;
 
+
+/**
+ * Functions related to {@link PrefixMap}.
+ *
+ * @see PrefixMapFactory
+ */
 public class Prefixes {
     // Distinguished nodes:
     // Default graph : Quad.defaultGraphNodeGenerated would have been preferred.
     // For compatibility reasons, in TDB2, this is the URI <> (empty string).
-
 
     // **** Implementations
     // ** DatasetGraphMap, DatasetGraphMapLink : adapter to the default graph
@@ -60,15 +65,26 @@ public class Prefixes {
     // ** DatasetGraphNull > DatasetGraphSink/DatasetGraphZero
     //    PrefixMapNull > PrefixMapSink/PrefixMapZero
 
-//    /** Name for dataset-wide prefixes. */
-//    public static final String  dftGraphPrefixSet = "";
+    /**
+     * Special name for default graph prefixes.
+     * This is different to the datasetPrefixSet.
+     * Only used by (TDB1) GraphTxnTDB_Prefixes and (TDB2) GraphViewSwitchable_Prefixes
+     * which have separated dataset/default graph prefixes.
+     *
+     * For legacy migration reasons, TDB1 uses "" and TDB2 uses
+     * defaultGraphNodeGenerated for the dataset prefix set.
+     * See {@code}
+     * TDB1 )
+     * TDB2 {@code StoragePrefixesView}
+     */
+    public static final String  dftGraphPrefixSet = ARQ.arqParamNS+"dftGraphPrefixSet";
 
     /** Name for dataset-wide prefixes. */
-    public static final String  datasetPrefixSet  = ""; //dftGraphPrefixSet;
+    public static final String  datasetPrefixSet  = "";
 
     // As Nodes.
     /** Name assigned to the default graph. */
-//    public static Node          nodeDefaultGraph  = NodeFactory.createURI(dftGraphPrefixSet);
+    public static Node          nodeDefaultGraph  = NodeFactory.createURI(dftGraphPrefixSet);
 
     /** Name for dataset prefixes. */
     public static Node          nodeDataset       = NodeFactory.createURI(datasetPrefixSet);
@@ -76,21 +92,22 @@ public class Prefixes {
     private static final String dftUri1           = Quad.defaultGraphIRI.getURI();
     private static final String dftUri2           = Quad.defaultGraphNodeGenerated.getURI();
 
-    /** Is this a name for the default graph prefix set? */
-    public static boolean isDftGraph(String graphName) {
-        return graphName == null
-               //|| graphName.equals(dftGraphPrefixSet)
-               || graphName.equals(dftUri1) || graphName.equals(dftUri2);
-    }
-
-    /** Is this a name node for the default graph prefix set? */
-    public static boolean isDftGraph(Node graphName) {
-        if ( !graphName.isURI() )
-            return false;
-        return graphName == null
-            //|| graphName.equals(nodeDefaultGraph)
-            || Quad.isDefaultGraph(graphName);
-    }
+    // Unused : datasets have prefix sets and all graphs for the dataset use that prefix set.
+//    /** Is this a name for the default graph prefix set? */
+//    public static boolean isDftGraph(String graphName) {
+//        return graphName == null
+//               //|| graphName.equals(dftGraphPrefixSet)
+//               || graphName.equals(dftUri1) || graphName.equals(dftUri2);
+//    }
+//
+//    /** Is this a name node for the default graph prefix set? */
+//    public static boolean isDftGraph(Node graphName) {
+//        if ( !graphName.isURI() )
+//            return false;
+//        return graphName == null
+//            //|| graphName.equals(nodeDefaultGraph)
+//            || Quad.isDefaultGraph(graphName);
+//    }
 
     /**
      * Canonical prefix - remove a trailing ":". The return is not null.
@@ -153,8 +170,8 @@ public class Prefixes {
     public static String toString(PrefixMap prefixMap) {
         if ( prefixMap.isEmpty() )
             return "{}";
-        StringJoiner sj = new StringJoiner("\n", "{\n", "}");
-        prefixMap.getMapping().forEach((p,u)->sj.add(format("  %-6s <%s>\n", p+":", u)));
+        StringJoiner sj = new StringJoiner("\n", "{\n", "\n}");
+        prefixMap.getMapping().forEach((p,u)->sj.add(format("  %-8s <%s>", p+":", u)));
         return sj.toString();
     }
 }
