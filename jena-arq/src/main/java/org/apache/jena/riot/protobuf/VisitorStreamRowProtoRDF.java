@@ -16,22 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.thrift;
+package org.apache.jena.riot.protobuf;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_IRI;
+import org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_PrefixDecl;
+import org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_Quad;
+import org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_Triple;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestThriftTerm.class
-    , TestThriftSetup.class
-    , TestThriftStreamRDF.class
-    , TestThriftResultSet.class
-    //, TestPatchThrift.class
-    
-} )
+/** Visitor for RDF_StreamRow */
+public interface VisitorStreamRowProtoRDF {
+    public void visit(RDF_Triple triple);
 
-public class TS_RDFThrift {
-    public static final String TestingDir = "testing/RIOT/RDF-Thrift" ;
+    public void visit(RDF_Quad quad);
+
+    public void visit(RDF_IRI base);
+
+    public void visit(RDF_PrefixDecl prefix);
 }
-

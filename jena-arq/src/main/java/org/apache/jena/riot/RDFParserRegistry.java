@@ -31,11 +31,13 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.riot.lang.*;
 import org.apache.jena.riot.lang.extra.TurtleJCC;
+import org.apache.jena.riot.protobuf.ProtobufRDF;
+import org.apache.jena.riot.protobuf.RiotProtobufException;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.thrift.BinRDF;
 import org.apache.jena.riot.thrift.RiotThriftException;
+import org.apache.jena.riot.thrift.ThriftRDF;
 import org.apache.jena.sparql.util.Context;
 
 /** The registry of languages and parsers.
@@ -75,6 +77,7 @@ public class RDFParserRegistry
         // Others
         ReaderRIOTFactory parserFactoryRDFXML    = ReaderRIOTRDFXML.factory;
         ReaderRIOTFactory parserFactoryJsonLD    = new ReaderRIOTFactoryJSONLD();
+        ReaderRIOTFactory parserFactoryProtobuf  = ReaderRDFProtobuf.factory;
         ReaderRIOTFactory parserFactoryThrift    = ReaderRDFThrift.factory;
         ReaderRIOTFactory parserFactoryTriX      = ReaderTriX.factory;
         ReaderRIOTFactory parserFactoryRDFNULL   = ReaderRDFNULL.factory;
@@ -85,6 +88,7 @@ public class RDFParserRegistry
         registerLangTriples(RDFJSON,    parserFactory);
         registerLangTriples(RDFXML,     parserFactoryRDFXML);
         registerLangTriples(JSONLD,     parserFactoryJsonLD);
+        registerLangTriples(RDFPROTO,   parserFactoryProtobuf);
         registerLangTriples(RDFTHRIFT,  parserFactoryTriX);
         registerLangTriples(TRIX,       parserFactoryTriX);
         registerLangTriples(RDFNULL,    parserFactoryRDFNULL);
@@ -92,6 +96,7 @@ public class RDFParserRegistry
         registerLangQuads(JSONLD,       parserFactoryJsonLD);
         registerLangQuads(NQUADS,       parserFactory);
         registerLangQuads(TRIG,         parserFactory);
+        registerLangQuads(RDFPROTO,     parserFactoryProtobuf);
         registerLangQuads(RDFTHRIFT,    parserFactoryThrift);
         registerLangQuads(TRIX,         parserFactoryTriX);
         registerLangQuads(RDFNULL,      parserFactoryRDFNULL);
@@ -202,6 +207,34 @@ public class RDFParserRegistry
         }
     }
 
+    private static class ReaderRDFProtobuf implements ReaderRIOT {
+        static ReaderRIOTFactory factory = (Lang language, ParserProfile profile) -> new ReaderRDFProtobuf(profile);
+
+        private final ParserProfile profile;
+
+        public ReaderRDFProtobuf(ParserProfile profile) {
+            this.profile = profile;
+        }
+
+        @Override
+        public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+            try {
+                ProtobufRDF.inputStreamToStreamRDF(in, output);
+            } catch (RiotProtobufException ex) {
+                if ( profile != null && profile.getErrorHandler() != null )
+                    profile.getErrorHandler().error(ex.getMessage(), -1, -1);
+                else
+                    ErrorHandlerFactory.errorHandlerStd.error(ex.getMessage(), -1, -1);
+                throw ex;
+            }
+        }
+
+        @Override
+        public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
+            throw new RiotException("RDF Protobuf : Reading binary data from a java.io.reader is not supported. Please use an InputStream");
+        }
+    }
+
     private static class ReaderRDFThrift implements ReaderRIOT {
         static ReaderRIOTFactory factory = (Lang language, ParserProfile profile) -> new ReaderRDFThrift(profile);
         private final ParserProfile profile;
@@ -210,7 +243,7 @@ public class RDFParserRegistry
         @Override
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             try {
-                BinRDF.inputStreamToStream(in, output);
+                ThriftRDF.inputStreamToStream(in, output);
             } catch (RiotThriftException ex) {
                 if ( profile != null && profile.getErrorHandler() != null )
                     profile.getErrorHandler().error(ex.getMessage(), -1, -1);

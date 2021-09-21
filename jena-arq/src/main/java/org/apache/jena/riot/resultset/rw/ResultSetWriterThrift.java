@@ -27,7 +27,7 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.ResultSetWriter;
 import org.apache.jena.riot.resultset.ResultSetWriterFactory;
-import org.apache.jena.riot.thrift.BinRDF;
+import org.apache.jena.riot.thrift.ThriftRDF;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.util.Context;
 
@@ -41,7 +41,7 @@ public class ResultSetWriterThrift implements ResultSetWriter {
 
     @Override
     public void write(OutputStream out, ResultSet resultSet, Context context)
-    { BinRDF.writeResultSet(out, resultSet) ; }
+    { ThriftRDF.writeResultSet(out, resultSet) ; }
 
     @Override
     public void write(Writer out, ResultSet resultSet, Context context) {

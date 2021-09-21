@@ -51,7 +51,7 @@ public class WriterGraphThrift implements WriterGraphRIOT
 
     @Override
     public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF stream = BinRDF.streamToOutputStream(out, withValues) ;
+        StreamRDF stream = ThriftRDF.streamToOutputStream(out, withValues) ;
         stream.start() ;
         StreamRDFOps.graphToStream(graph, stream) ;
         stream.finish() ;

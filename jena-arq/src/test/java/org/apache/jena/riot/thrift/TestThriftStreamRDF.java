@@ -45,7 +45,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.IsoMatcher ;
 import org.junit.Test ;
 
-public class TestStreamRDFThrift {
+public class TestThriftStreamRDF {
 
     private static final String DIR = TS_RDFThrift.TestingDir ;
     
@@ -74,7 +74,7 @@ public class TestStreamRDFThrift {
     
     @Test public void graph_01() {
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        StreamRDF stream = BinRDF.streamToOutputStream(out, true) ; // With values.
+        StreamRDF stream = ThriftRDF.streamToOutputStream(out, true) ; // With values.
         StreamRDFOps.graphToStream(graph, stream) ;
         
         byte[] bytes = out.toByteArray() ;
@@ -82,7 +82,7 @@ public class TestStreamRDFThrift {
         
         Graph g2 = GraphFactory.createGraphMem() ;
         StreamRDF stream2 = StreamRDFLib.graph(g2) ;
-        BinRDF.inputStreamToStream(in, stream2) ;
+        ThriftRDF.inputStreamToStream(in, stream2) ;
         
         //assertTrue(graph.isIsomorphicWith(g2)) ;
         boolean b = IsoMatcher.isomorphic(graph, g2) ;
@@ -123,14 +123,14 @@ public class TestStreamRDFThrift {
     @Test public void dataset_01() {
         DatasetGraph dsg1 = datasetGraph ;
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        StreamRDF stream = BinRDF.streamToOutputStream(out) ;
+        StreamRDF stream = ThriftRDF.streamToOutputStream(out) ;
         StreamRDFOps.datasetToStream(dsg1, stream) ;
         
         byte[] bytes = out.toByteArray() ;
         ByteArrayInputStream in = new ByteArrayInputStream(bytes) ;
         DatasetGraph dsg2 = DatasetGraphFactory.create() ;
         StreamRDF stream2 = StreamRDFLib.dataset(dsg2) ;
-        BinRDF.inputStreamToStream(in, stream2) ;
+        ThriftRDF.inputStreamToStream(in, stream2) ;
         
         boolean b = IsoMatcher.isomorphic(dsg1, dsg2) ;
         assertTrue(b) ;
@@ -149,7 +149,7 @@ public class TestStreamRDFThrift {
         DatasetGraph dsg2 = DatasetGraphFactory.create() ;
         
         StreamRDF stream2 = StreamRDFLib.dataset(dsg2) ;
-        BinRDF.inputStreamToStream(in, stream2) ;
+        ThriftRDF.inputStreamToStream(in, stream2) ;
         
         boolean b = IsoMatcher.isomorphic(dsg1, dsg2) ;
         assertTrue(b) ;

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,28 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.thrift;
+package org.apache.jena.riot.protobuf;
 
 import static org.junit.Assert.assertFalse;
 
-import java.io.ByteArrayInputStream ;
-import java.io.ByteArrayOutputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFactory ;
-import org.apache.jena.query.ResultSetRewindable ;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
-import org.junit.Test ;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.ResultSetRewindable;
+import org.apache.jena.sparql.resultset.ResultSetCompare;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.sse.builders.BuilderResultSet;
+import org.junit.Test;
 
-public class TestResultSetThrift {
-    // Only datatypes that transmitted perfectly. 
+public class TestProtobufResultSet {
+    // Only datatypes that transmitted perfectly.
     static ResultSetRewindable rs0 = make
         ("(resultset (?x ?y)"
          , "   (row (?x _:a) (?y 3))"
@@ -46,25 +46,28 @@ public class TestResultSetThrift {
          , "   (row (?x _:a))"
          , "   (row)"
          , "   (row (?x 2) (?y 10))"
+         , "   (row (?x 2) (?y <<_:a :p :o>>))"
          , ")"
          ) ;
-    
+
     static ResultSetRewindable rs1 = make
         ("(resultset (?x ?y)"
          , "   (row (?x 1) (?y 3))"
          , "   (row (?x 1) (?y 'a'))"
+         , "   (row (?x 2) (?y <<:s :p :o>>))"
          , ")"
          ) ;
     static ResultSetRewindable rs2 = make
         ("(resultset (?x ?y)"
          , "   (row (?x 1) (?y 'a'))"
+         , "   (row (?x 2) (?y <<:s :p :o>>))"
          , "   (row (?x 1) (?y 3))"
          , ")"
          ) ;
 
     @Test public void resultSet_01() { test(rs0) ; }
-    
-    @Test public void resultSet_02() { 
+
+    @Test public void resultSet_02() {
         ResultSetRewindable r1 = test(rs1) ;
         // not reordered
         r1.reset();
@@ -72,8 +75,8 @@ public class TestResultSetThrift {
         assertFalse(ResultSetCompare.equalsByTermAndOrder(r1, rs2)) ;
         rs2.reset() ;
     }
-    
-    @Test public void resultSet_03() { 
+
+    @Test public void resultSet_03() {
         ResultSetRewindable r2 = test(rs2) ;
         // not reordered
         r2.reset();
@@ -83,30 +86,30 @@ public class TestResultSetThrift {
     }
 
     private static ResultSetRewindable test(ResultSetRewindable resultSet) {
-        resultSet.reset(); 
+        resultSet.reset();
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        BinRDF.writeResultSet(out, resultSet, true) ; 
+        ProtobufRDF.writeResultSet(out, resultSet) ;
         resultSet.reset();
 
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-        ResultSet rs$ = BinRDF.readResultSet(in) ;
+        ResultSet rs$ = ProtobufRDF.readResultSet(in) ;
         ResultSetRewindable resultSet2 = ResultSetFactory.makeRewindable(rs$) ;
-        // Includes bnode labels. 
+        // Includes bnode labels.
         ResultSetCompare.equalsExact(resultSet, resultSet2) ;
-        resultSet.reset(); 
+        resultSet.reset();
         resultSet2.reset();
         return resultSet2 ;
     }
 
     private static ResultSetRewindable make(String ... strings) {
-        String s = StrUtils.strjoinNL(strings) ; 
+        String s = StrUtils.strjoinNL(strings) ;
         Item item = SSE.parse(s) ;
         ResultSetRewindable rs = ResultSetFactory.makeRewindable(BuilderResultSet.build(item)) ;
         return rs ;
     }
-    
-    private static final String DIR = TS_RDFThrift.TestingDir ;
-    
+
+    private static final String DIR = TS_RDFProtobuf.TestingDir ;
+
     @Test public void resultSet_10() {
         try (InputStream in = IO.openFile(DIR+"/results-1.srj")) {
             ResultSet rs = ResultSetFactory.fromJSON(in) ;
@@ -114,4 +117,3 @@ public class TestResultSetThrift {
         } catch (IOException ex) { IO.exception(ex) ; }
     }
 }
-

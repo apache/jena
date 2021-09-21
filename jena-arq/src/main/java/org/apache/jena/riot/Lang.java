@@ -80,6 +80,9 @@ public class Lang
     public static Lang NQ ;
 
     /** The RDF syntax <a href="https://jena.apache.org/documentation/io/rdf-binary.html">RDF Thrift</a> */
+    public static Lang RDFPROTO ;
+
+    /** The RDF syntax <a href="https://jena.apache.org/documentation/io/rdf-binary.html">RDF Thrift</a> */
     public static Lang RDFTHRIFT ;
 
     /** <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a> (2020-07-01) */
