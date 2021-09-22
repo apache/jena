@@ -104,7 +104,15 @@ fi
 
 JVM_ARGS=${JVM_ARGS:--Xmx4G}
 
-exec $JAVA $JVM_ARGS -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+## Logging
+# Setting log4j2 with some other file.
+if [ -z "$LOGGING" ]
+then
+    DFT_LOG_CONF="$FUSEKI_HOME/log4j2.properties"
+    LOGGING="-Dlog4j.configurationFile=$DFT_LOG_CONF"
+fi
+
+exec $JAVA $JVM_ARGS $LOGGING -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
 
 ## Adding custom code to the Fuseki server:
 ##
