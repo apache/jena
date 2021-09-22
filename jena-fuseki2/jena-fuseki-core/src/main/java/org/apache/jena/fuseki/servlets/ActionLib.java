@@ -28,6 +28,7 @@ import java.nio.charset.CharacterCodingException;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -128,7 +129,7 @@ public class ActionLib {
         return ds;
     }
 
-    /** Calculate the fill URL including query string
+    /** Calculate the full URL including query string
      * for the HTTP request. This may be quite long.
      * @param request HttpServletRequest
      * @return String The full URL, including query string.
@@ -152,8 +153,7 @@ public class ActionLib {
      * "/APP/dataset/server" becomes "/dataset/server"
      */
     public static String removeContextPath(HttpAction action) {
-
-        return actionURI(action.request);
+        return actionURI(action.getRequest());
     }
 
     /**
@@ -166,7 +166,11 @@ public class ActionLib {
 //      ServletContext cxt = this.getServletContext();
 //      Log.info(this, "ServletContext path     = '"+cxt.getContextPath()+"'");
 
-        String contextPath = request.getServletContext().getContextPath();
+        ServletContext servletCxt = request.getServletContext();
+        if ( servletCxt == null )
+            return request.getRequestURI();
+                    
+        String contextPath = servletCxt.getContextPath();
         String uri = request.getRequestURI();
         if ( contextPath == null )
             return uri;
@@ -180,13 +184,13 @@ public class ActionLib {
 
     /** Negotiate the content-type and set the response headers */
     public static MediaType contentNegotation(HttpAction action, AcceptList myPrefs, MediaType defaultMediaType) {
-        MediaType mt = ConNeg.chooseContentType(action.request, myPrefs, defaultMediaType);
+        MediaType mt = ConNeg.chooseContentType(action.getRequest(), myPrefs, defaultMediaType);
         if ( mt == null )
             return null;
         if ( mt.getContentTypeStr() != null )
-            action.response.setContentType(mt.getContentTypeStr());
+            action.setResponseContentType(mt.getContentTypeStr());
         if ( mt.getCharset() != null )
-            action.response.setCharacterEncoding(mt.getCharset());
+            action.setResponseCharacterEncoding(mt.getCharset());
         return mt;
     }
 
@@ -221,7 +225,7 @@ public class ActionLib {
      */
     public static void parse(HttpAction action, StreamRDF dest, Lang lang, String base) {
         InputStream input = null;
-        try { input = action.request.getInputStream(); }
+        try { input = action.getRequestInputStream(); }
         catch (IOException ex) { IO.exception(ex); }
         parse(action, dest, input, lang, base);
     }
@@ -254,9 +258,9 @@ public class ActionLib {
      * If there is a no {@code Content-Length} header, no need to do anything - the connection is not reusable.
      */
     public static void consumeBody(HttpAction action) {
-        if ( action.request.getContentLengthLong() > 0 ) {
+        if ( action.getRequestContentLengthLong() > 0 ) {
             try {
-                IO.skipToEnd(action.request.getInputStream());
+                IO.skipToEnd(action.getRequestInputStream());
             } catch (IOException ex) {}
         }
     }
@@ -334,7 +338,7 @@ public class ActionLib {
             ct = lang.getContentType().toHeaderString();
 
         try {
-            OutputStream out = action.response.getOutputStream();
+            OutputStream out = action.getResponseOutputStream();
             // Do not use try-finally here. Error handling headers are written later.
             // RDF/XML can go wrong during writing so we buffered to know it will succeed when we produce the output bytes.
             // (Other formats are much less prone to this.)
@@ -351,13 +355,13 @@ public class ActionLib {
                     return;
                 }
                 // Succeeded in formatting the RDF
-                action.response.setContentLength(bytes.length);
-                action.response.setContentType(ct);
-                action.response.setStatus(HttpSC.OK_200);
+                action.setResponseContentLength(bytes.length);
+                action.setResponseContentType(ct);
+                action.setResponseStatus(HttpSC.OK_200);
                 out.write(bytes);
             } else {
                 // Try to write directly (streaming if possible).
-                action.response.setContentType(ct);
+                action.setResponseContentType(ct);
                 writeAction.accept(out, fmt);
             }
             out.flush();
@@ -381,16 +385,24 @@ public class ActionLib {
      * @return ContentType
      */
     public static ContentType getContentType(HttpAction action) {
-        return FusekiNetLib.getContentType(action.request);
+        return FusekiNetLib.getContentType(action.getRequest());
     }
 
-    public static void setCommonHeadersForOptions(HttpServletResponse httpResponse) {
+    public static void setCommonHeadersForOptions(HttpAction action) {
+        setCommonHeadersForOptions(action.getResponse());
+    }
+    
+    private static void setCommonHeadersForOptions(HttpServletResponse httpResponse) {
         if ( Fuseki.CORS_ENABLED )
             httpResponse.setHeader(HttpNames.hAccessControlAllowHeaders, "X-Requested-With, Content-Type, Authorization");
         setCommonHeaders(httpResponse);
     }
 
-    public static void setCommonHeaders(HttpServletResponse httpResponse) {
+    public static void setCommonHeaders(HttpAction action) {
+        setCommonHeaders(action.getResponse());
+    }
+    
+    private static void setCommonHeaders(HttpServletResponse httpResponse) {
         if ( Fuseki.CORS_ENABLED )
             httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*");
         if ( Fuseki.outputFusekiServerHeader )
@@ -403,19 +415,19 @@ public class ActionLib {
      * @return item name as "/name" or {@code null}
      */
     private /*unused*/ static String extractItemName(HttpAction action) {
-//          action.log.info("context path  = "+action.request.getContextPath());
-//          action.log.info("pathinfo      = "+action.request.getPathInfo());
-//          action.log.info("servlet path  = "+action.request.getServletPath());
+//          action.log.info("context path  = "+action.getRequestContextPath());
+//          action.log.info("pathinfo      = "+action.getRequestPathInfo());
+//          action.log.info("servlet path  = "+action.getRequestServletPath());
         // if /name
         //    request.getServletPath() otherwise it's null
         // if /*
         //    request.getPathInfo(); otherwise it's null.
 
         // PathInfo is after the servlet name.
-        String x1 = action.request.getServletPath();
-        String x2 = action.request.getPathInfo();
+        String x1 = action.getRequestServletPath();
+        String x2 = action.getRequestPathInfo();
 
-        String pathInfo = action.request.getPathInfo();
+        String pathInfo = action.getRequestPathInfo();
         if ( pathInfo == null || pathInfo.isEmpty() || pathInfo.equals("/") )
             // Includes calling as a container.
             return null;
@@ -431,37 +443,37 @@ public class ActionLib {
     // Packing of OPTIONS.
 
     public static void doOptionsGet(HttpAction action) {
-        ServletBase.setCommonHeadersForOptions(action.response);
-        action.response.setHeader(HttpNames.hAllow, "GET,OPTIONS");
+        setCommonHeadersForOptions(action);
+        action.setResponseHeader(HttpNames.hAllow, "GET,OPTIONS");
     }
 
     public static void doOptionsGetHead(HttpAction action) {
-        ServletBase.setCommonHeadersForOptions(action.response);
-        action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS");
+        setCommonHeadersForOptions(action);
+        action.setResponseHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS");
     }
 
     public static void doOptionsGetPost(HttpAction action) {
-        ServletBase.setCommonHeadersForOptions(action.response);
-        action.response.setHeader(HttpNames.hAllow, "GET,POST,OPTIONS");
+        setCommonHeadersForOptions(action);
+        action.setResponseHeader(HttpNames.hAllow, "GET,POST,OPTIONS");
     }
 
     public static void doOptionsGetPostHead(HttpAction action) {
-        ServletBase.setCommonHeadersForOptions(action.response);
-        action.response.setHeader(HttpNames.hAllow, "GET,POST,HEAD,OPTIONS");
+        setCommonHeadersForOptions(action);
+        action.setResponseHeader(HttpNames.hAllow, "GET,POST,HEAD,OPTIONS");
     }
 
     public static void doOptionsGetPostDelete(HttpAction action) {
-        ServletBase.setCommonHeadersForOptions(action.response);
-        action.response.setHeader(HttpNames.hAllow, "GET,POST,DELETE,OPTIONS");
+        setCommonHeadersForOptions(action);
+        action.setResponseHeader(HttpNames.hAllow, "GET,POST,DELETE,OPTIONS");
     }
 
     public static void doOptionsGetPostDeleteHead(HttpAction action) {
-        ServletBase.setCommonHeadersForOptions(action.response);
-        action.response.setHeader(HttpNames.hAllow, "GET,HEAD,POST,DELETE,OPTIONS");
+        setCommonHeadersForOptions(action);
+        action.setResponseHeader(HttpNames.hAllow, "GET,HEAD,POST,DELETE,OPTIONS");
     }
 
     public static void doOptionsPost(HttpAction action) {
-        ServletBase.setCommonHeadersForOptions(action.response);
-        action.response.setHeader(HttpNames.hAllow, "POST,OPTIONS");
+        setCommonHeadersForOptions(action);
+        action.setResponseHeader(HttpNames.hAllow, "POST,OPTIONS");
     }
 }

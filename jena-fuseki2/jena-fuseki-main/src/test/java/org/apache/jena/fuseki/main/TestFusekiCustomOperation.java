@@ -58,10 +58,10 @@ public class TestFusekiCustomOperation {
         new CustomTestService() {
         @Override
         protected void doGet(HttpAction action) {
-            action.response.setStatus(HttpSC.OK_200);
+            action.setResponseStatus(HttpSC.OK_200);
             try {
-                action.response.setContentType(WebContent.contentTypeTextPlain);
-                action.response.getOutputStream().print(customHandlerBodyGet);
+                action.setResponseContentType(WebContent.contentTypeTextPlain);
+                action.getResponseOutputStream().print(customHandlerBodyGet);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -69,16 +69,16 @@ public class TestFusekiCustomOperation {
 
         @Override
         protected void doHead(HttpAction action) {
-            action.response.setStatus(HttpSC.OK_200);
-            action.response.setContentType(WebContent.contentTypeTextPlain);
+            action.setResponseStatus(HttpSC.OK_200);
+            action.setResponseContentType(WebContent.contentTypeTextPlain);
         }
 
         @Override
         protected void doPost(HttpAction action) {
-            action.response.setStatus(HttpSC.OK_200);
+            action.setResponseStatus(HttpSC.OK_200);
             try {
-                action.response.setContentType(WebContent.contentTypeTextPlain);
-                action.response.getOutputStream().print(customHandlerBodyPost);
+                action.setResponseContentType(WebContent.contentTypeTextPlain);
+                action.getResponseOutputStream().print(customHandlerBodyPost);
             } catch (IOException e) {
                 e.printStackTrace();
             }

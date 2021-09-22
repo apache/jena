@@ -65,13 +65,13 @@ public class ActionServerStatus extends ActionCtl
     }
 
     private void description(HttpAction action) throws IOException {
-        ServletOutputStream out = action.response.getOutputStream();
-        action.response.setContentType(contentTypeJSON);
-        action.response.setCharacterEncoding(charsetUTF8);
+        ServletOutputStream out = action.getResponseOutputStream();
+        action.setResponseContentType(contentTypeJSON);
+        action.setResponseCharacterEncoding(charsetUTF8);
 
         JsonBuilder builder = new JsonBuilder();
         builder.startObject();
-        describeServer(builder, action.request.getLocalPort());
+        describeServer(builder, action.getRequestLocalPort());
         describeDatasets(builder, action.getDataAccessPointRegistry());
         builder.finishObject();
 

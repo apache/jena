@@ -55,7 +55,7 @@ public class SHACL_Validation extends BaseActionREST { //ActionREST {
         if ( lang == null )
             lang = RDFLanguages.TTL;
 
-        String targetNodeStr = action.getRequest().getParameter(HttpNames.paramTarget);
+        String targetNodeStr = action.getRequestParameter(HttpNames.paramTarget);
 
         action.beginRead();
         try {
@@ -81,7 +81,7 @@ public class SHACL_Validation extends BaseActionREST { //ActionREST {
             else
                 action.log.info(format("[%d] shacl: %d validation errors", action.id, report.getEntries().size()));
             report.getEntries().size();
-            action.response.setStatus(HttpSC.OK_200);
+            action.setResponseStatus(HttpSC.OK_200);
             ActionLib.graphResponse(action, report.getGraph(), lang);
         } finally {
             action.endRead();

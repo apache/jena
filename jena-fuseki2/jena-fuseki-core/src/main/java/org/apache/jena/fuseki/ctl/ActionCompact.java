@@ -95,7 +95,7 @@ public class ActionCompact extends ActionAsyncTask
         public CompactTask(HttpAction action) {
             super(action);
 
-            String deleteOldParam = action.request.getParameter("deleteOld");
+            String deleteOldParam = action.getRequestParameter("deleteOld");
 
             this.shouldDeleteOld = ( deleteOldParam != null
                                      && ( deleteOldParam.isEmpty() || deleteOldParam.equalsIgnoreCase("true") ) );

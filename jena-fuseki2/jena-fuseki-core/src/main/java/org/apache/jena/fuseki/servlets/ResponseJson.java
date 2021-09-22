@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.json.JsonObject;
@@ -71,8 +69,8 @@ public class ResponseJson {
         };
 
         try {
-            String callback = ResponseOps.paramCallback(action.request);
-            ServletOutputStream out = action.response.getOutputStream();
+            String callback = ResponseOps.paramCallback(action.getRequest());
+            ServletOutputStream out = action.getResponseOutputStream();
 
             if ( callback != null ) {
                 callback = StringUtils.replaceChars(callback, "\r", "");
@@ -92,9 +90,9 @@ public class ResponseJson {
 
     private static void output(HttpAction action, String contentType, String charset, OutputContent proc) {
         try {
-            setHttpResponse(action.request, action.response, contentType, charset);
-            action.response.setStatus(HttpSC.OK_200);
-            ServletOutputStream out = action.response.getOutputStream();
+            setHttpResponse(action, contentType, charset);
+            action.setResponseStatus(HttpSC.OK_200);
+            ServletOutputStream out = action.getResponseOutputStream();
             try {
                 proc.output(out);
                 out.flush();
@@ -117,21 +115,16 @@ public class ResponseJson {
         // then the JSON callback closing details can't be added.
     }
 
-    public static void setHttpResponse(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String contentType,
-                                       String charset) {
+    public static void setHttpResponse(HttpAction action, String contentType, String charset) {
         // ---- Set up HTTP Response
         // Stop caching (not that ?queryString URLs are cached anyway)
-        if ( true ) {
-            httpResponse.setHeader("Cache-Control", "no-cache");
-            httpResponse.setHeader("Pragma", "no-cache");
-        }
+        ServletOps.setNoCache(action);
         // See: http://www.w3.org/International/O-HTTP-charset.html
         if ( contentType != null ) {
             if ( charset != null )
                 contentType = contentType + "; charset=" + charset;
             xlog.trace("Content-Type for response: " + contentType);
-            httpResponse.setContentType(contentType);
+            action.setResponseContentType(contentType);
         }
     }
-
 }

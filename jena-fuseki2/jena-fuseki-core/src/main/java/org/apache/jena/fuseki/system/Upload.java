@@ -68,13 +68,13 @@ public class Upload {
         }
         // Single graph (or quads) in body.
 
-        String base = ActionLib.wholeRequestURL(action.request);
+        String base = ActionLib.wholeRequestURL(action.getRequest());
         Lang lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
         if ( lang == null ) {
             ServletOps.errorBadRequest("Unknown content type for triples: " + ct);
             return null;
         }
-        long len = action.request.getContentLengthLong();
+        long len = action.getRequestContentLengthLong();
 
         StreamRDFCounting countingDest = StreamRDFLib.count(dest);
         try {
@@ -100,12 +100,12 @@ public class Upload {
      */
 
     public static UploadDetails fileUploadWorker(HttpAction action, StreamRDF dest) {
-        String base = ActionLib.wholeRequestURL(action.request);
+        String base = ActionLib.wholeRequestURL(action.getRequest());
         ServletFileUpload upload = new ServletFileUpload();
         StreamRDFCounting countingDest =  StreamRDFLib.count(dest);
 
         try {
-            FileItemIterator iter = upload.getItemIterator(action.request);
+            FileItemIterator iter = upload.getItemIterator(action.getRequest());
             while (iter.hasNext()) {
                 FileItemStream fileStream = iter.next();
                 if (fileStream.isFormField()) {
@@ -196,7 +196,7 @@ public class Upload {
         Lang lang = null;
 
         try {
-            FileItemIterator iter = upload.getItemIterator(action.request);
+            FileItemIterator iter = upload.getItemIterator(action.getRequest());
             while (iter.hasNext()) {
                 FileItemStream item = iter.next();
                 String fieldName = item.getFieldName();

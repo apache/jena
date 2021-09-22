@@ -57,7 +57,7 @@ public class ActionBackupList extends ActionCtl {
     @Override
     public void execute(HttpAction action) {
         JsonValue result = description(action);
-        ServletOps.setNoCache(action.response);
+        ServletOps.setNoCache(action);
         ServletOps.sendJsonReponse(action, result);
     }
 

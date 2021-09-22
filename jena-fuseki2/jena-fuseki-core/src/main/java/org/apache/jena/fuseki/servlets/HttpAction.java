@@ -22,9 +22,14 @@ import static org.apache.jena.query.TxnType.READ;
 import static org.apache.jena.query.TxnType.READ_PROMOTE;
 import static org.apache.jena.query.TxnType.WRITE;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -89,8 +94,8 @@ public class HttpAction
 
     // Cleared to archive:
     public Map <String, String> headers = new HashMap<>();
-    public HttpServletRequest request;
-    public HttpServletResponseTracker response;
+    private HttpServletRequest request;
+    private HttpServletResponseTracker response;
     private final String actionURI;
     private final String contextPath;
 
@@ -195,7 +200,8 @@ public class HttpAction
         return context;
     }
 
-    /** Return the authenticated user this {@code HttpAction}.
+    /**
+     * Return the authenticated user this {@code HttpAction}.
      * Return null for no authenticated user.
      */
     public String getUser() {
@@ -417,12 +423,6 @@ public class HttpAction
         this.finishTime = System.nanoTime();
     }
 
-    public String getMethod()                           { return request.getMethod(); }
-
-    public HttpServletRequest getRequest()              { return request; }
-
-    public HttpServletResponseTracker getResponse()     { return response; }
-
     /**
      * Return the recorded time taken in milliseconds. {@link #setStartTime} and
      * {@link #setFinishTime} must have been called.
@@ -442,5 +442,124 @@ public class HttpAction
     @Override
     public String toString() {
         return request.getMethod()+" "+request.getRequestURL().toString();
+    }
+
+    // ---- Request - response abstraction. 
+    
+    public String getMethod()                           { return request.getMethod(); }
+
+    public HttpServletRequest getRequest()              { return request; }
+    public HttpServletResponse getResponse()            { return response; }
+    
+    // ---- Request accessors
+    
+    public String getRequestParameter(String string) {
+        return request.getParameter(string);
+    }
+
+    public Enumeration<String> getRequestParameterNames() {
+        return request.getParameterNames();
+    }
+    
+    public String[] getRequestParameterValues(String name) {
+        return request.getParameterValues(name);
+    }
+    
+    public Map<String, String[]> getRequestParameterMap() {
+        return request.getParameterMap();
+    }
+
+    public String getRequestMethod() {
+        return request.getMethod();
+    }
+
+    public Enumeration<String> getRequestHeaderNames() {
+        return request.getHeaderNames();
+    }
+    
+    public String getRequestHeader(String name) {
+        return request.getHeader(name);
+    }
+    
+    public Enumeration<String> getRequestHeaders(String name) {
+        return request.getHeaders(name);
+    }
+
+    public String getRequestContentType() {
+        return request.getContentType();
+    }
+
+    public String getRequestCharacterEncoding() {
+        return request.getCharacterEncoding();
+    }
+
+    public int getRequestContentLength() {
+        return request.getContentLength();
+    }
+    
+    public long getRequestContentLengthLong() {
+        return request.getContentLengthLong();
+    }
+
+    public InputStream getRequestInputStream() throws IOException {
+        return request.getInputStream();
+    }
+
+    public String getRequestQueryString() {
+        return request.getQueryString();
+    }
+    
+    public String getRequestRequestURI() {
+        return request.getRequestURI();
+    }
+
+    public StringBuffer getRequestRequestURL() {
+        return request.getRequestURL();
+    }
+    
+    public String getRequestPathInfo() {
+        return request.getPathInfo();
+    }
+    
+    public String getRequestServletPath() {
+        return request.getServletPath();
+    }
+
+    public int getRequestLocalPort() {
+        return request.getLocalPort();
+    }
+    
+    // ---- Response setters
+
+    public void setResponseCharacterEncoding(String charset) {
+        response.setCharacterEncoding(charset);
+    }
+
+    public void setResponseContentType(String ct) {
+        response.setContentType(ct);
+    }
+
+    public void setResponseContentLength(int length) {
+        response.setContentLength(length);
+    }
+    
+    public void setResponseContentLengthLong(long length) {
+        response.setContentLengthLong(length);
+    }
+
+    public void setResponseHeader(String name, String value) {
+        response.setHeader(name, value);
+    }
+
+    public void setResponseStatus(int statusCode) {
+        response.setStatus(statusCode);
+    }
+
+    public ServletOutputStream getResponseOutputStream() throws IOException {
+        return response.getOutputStream();
+    }
+
+    public PrintWriter getResponseWriter() throws IOException {
+        return response.getWriter();
     }
 }

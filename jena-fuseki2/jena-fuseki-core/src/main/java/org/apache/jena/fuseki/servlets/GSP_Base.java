@@ -37,7 +37,7 @@ public abstract class GSP_Base extends ActionREST {
     }
     
     protected static boolean isQuads(HttpAction action) {
-        return action.request.getQueryString() == null;
+        return action.getRequestQueryString() == null;
     }
 
     private static void validateQuads(HttpAction action) { }
@@ -48,7 +48,7 @@ public abstract class GSP_Base extends ActionREST {
      * identified.
      */
     private static void validateGSP(HttpAction action) {    
-        HttpServletRequest request = action.request;
+        HttpServletRequest request = action.getRequest();
         if ( request.getQueryString() == null )
             ServletOps.errorBadRequest("No query string. ?default or ?graph required.");
 

@@ -57,7 +57,7 @@ public class ActionTasks extends ActionCtl
                 action.log.warn("Unexpected task name : "+name);
         }
 
-        String method = action.request.getMethod();
+        String method = action.getRequestMethod();
         if ( method.equals(METHOD_GET) )
             execGet(action, name);
         else if ( method.equals(METHOD_POST) )

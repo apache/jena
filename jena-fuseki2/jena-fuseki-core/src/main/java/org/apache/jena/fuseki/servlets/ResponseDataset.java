@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
+//import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.fuseki.DEF;
@@ -35,7 +35,9 @@ import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.web.HttpSC;
 
@@ -74,8 +76,7 @@ public class ResponseDataset
     }
 
     public static void doResponseDataset(HttpAction action, Dataset dataset) {
-        HttpServletRequest request = action.request;
-        HttpServletResponse response = action.response;
+        HttpServletRequest request = action.getRequest();
 
         String mimeType = null;        // Header request type
 
@@ -116,7 +117,7 @@ public class ResponseDataset
 
         try {
             ServletOps.success(action);
-            ServletOutputStream out = response.getOutputStream();
+            ServletOutputStream out = action.getResponseOutputStream();
             try {
                 // Use the Content-Type from the content negotiation.
                 if ( RDFLanguages.isQuads(lang) )

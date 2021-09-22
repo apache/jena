@@ -59,7 +59,7 @@ public class FusekiNetLib {
      * @return ContentType
      */
     public static Lang getLangFromAction(HttpAction action, Lang dft) {
-        String contentTypeHeader = action.request.getContentType();
+        String contentTypeHeader = action.getRequestContentType();
         if ( contentTypeHeader == null )
             return dft;
         return RDFLanguages.contentTypeToLang(contentTypeHeader);

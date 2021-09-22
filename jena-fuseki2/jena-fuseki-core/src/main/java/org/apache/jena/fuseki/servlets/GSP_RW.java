@@ -46,11 +46,11 @@ public class GSP_RW extends GSP_R {
 
     @Override
     protected void doOptions(HttpAction action) {
-        ActionLib.setCommonHeadersForOptions(action.response);
+        ActionLib.setCommonHeadersForOptions(action);
         if ( GSPLib.hasGSPParams(action) )
-            action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,PUT,DELETE,POST");
+            action.setResponseHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,PUT,DELETE,POST");
         else
-            action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,PUT,POST");
+            action.setResponseHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,PUT,POST");
         ServletOps.success(action);
     }
 
@@ -153,7 +153,7 @@ public class GSP_RW extends GSP_R {
             DatasetGraph dsg = decideDataset(action);
             GraphTarget target = determineTargetGSP(dsg, action);
             if ( action.log.isDebugEnabled() )
-                action.log.debug(action.request.getMethod().toUpperCase()+"->"+target);
+                action.log.debug(action.getRequestMethod().toUpperCase()+"->"+target);
             if ( target.isUnion() )
                 ServletOps.errorBadRequest("Can't delete the union graph");
             // Check URI.

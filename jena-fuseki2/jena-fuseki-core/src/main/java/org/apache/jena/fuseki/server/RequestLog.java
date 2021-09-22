@@ -67,8 +67,8 @@ NCSA extended/combined log format
      * xxx.xxx.xxx.xxx - - [01/Feb/2014:03:19:09 +0000] "GET / HTTP/1.1" 200 6190  "-" "check_http/v1.4.16 (nagios-plugins 1.4.16)"
      */
     public static String combinedNCSA(HttpAction action) {
-        HttpServletRequest request = action.request;
-        HttpServletResponse response = action.response;
+        HttpServletRequest request = action.getRequest();
+        HttpServletResponse response = action.getResponse();
         return combinedNCSA(request, response);
     }
 

@@ -87,8 +87,8 @@ public class SPARQLProtocol {
     }
 
     public static DatasetDescription getProtocolDatasetDescription(HttpAction action) {
-        List<String> graphURLs = toStrList(action.request.getParameterValues(paramDefaultGraphURI));
-        List<String> namedGraphs = toStrList(action.request.getParameterValues(paramNamedGraphURI));
+        List<String> graphURLs = toStrList(action.getRequestParameterValues(paramDefaultGraphURI));
+        List<String> namedGraphs = toStrList(action.getRequestParameterValues(paramNamedGraphURI));
 
         graphURLs = removeEmptyValues(graphURLs);
         namedGraphs = removeEmptyValues(namedGraphs);

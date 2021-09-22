@@ -68,7 +68,6 @@ public abstract class SPARQLQueryProcessor extends ActionService
 
     @Override
     public void execOptions(HttpAction action) {
-        ServletBase.setCommonHeadersForOptions(action.response);
         ActionLib.doOptionsGetPost(action);
         ServletOps.success(action);    }
 
@@ -109,7 +108,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
      */
     @Override
     public void validate(HttpAction action) {
-        String method = action.request.getMethod().toUpperCase(Locale.ROOT);
+        String method = action.getRequestMethod().toUpperCase(Locale.ROOT);
 
         if ( HttpNames.METHOD_OPTIONS.equals(method) )
             return;
@@ -117,9 +116,9 @@ public abstract class SPARQLQueryProcessor extends ActionService
         if ( !HttpNames.METHOD_POST.equals(method) && !HttpNames.METHOD_GET.equals(method) )
             ServletOps.errorMethodNotAllowed("Not a GET or POST request");
 
-        if ( HttpNames.METHOD_GET.equals(method) && action.request.getQueryString() == null ) {
-            ServletOps.warning(action, "Service Description / SPARQL Query / " + action.request.getRequestURI());
-            ServletOps.errorNotFound("Service Description: " + action.request.getRequestURI());
+        if ( HttpNames.METHOD_GET.equals(method) && action.getRequestQueryString() == null ) {
+            ServletOps.warning(action, "Service Description / SPARQL Query / " + action.getRequestRequestURI());
+            ServletOps.errorNotFound("Service Description: " + action.getRequestRequestURI());
         }
 
         // Use of the dataset describing parameters is checked later.
@@ -145,7 +144,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
      * @param params parameters in a collection of Strings
      */
     protected void validateParams(HttpAction action, Collection<String> params) {
-        HttpServletRequest request = action.request;
+        HttpServletRequest request = action.getRequest();
         ContentType ct = FusekiNetLib.getContentType(request);
         boolean mustHaveQueryParam = true;
         if ( ct != null ) {
@@ -193,7 +192,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
     @Override
     public final void execute(HttpAction action) {
         // GET
-        if ( action.request.getMethod().equals(HttpNames.METHOD_GET) ) {
+        if ( action.getRequestMethod().equals(HttpNames.METHOD_GET) ) {
             executeWithParameter(action);
             return;
         }
@@ -218,14 +217,14 @@ public abstract class SPARQLQueryProcessor extends ActionService
     }
 
     protected void executeWithParameter(HttpAction action) {
-        String queryString = action.request.getParameter(paramQuery);
+        String queryString = action.getRequestParameter(paramQuery);
         execute(queryString, action);
     }
 
     protected void executeBody(HttpAction action) {
         String queryString = null;
         try {
-            InputStream input = action.request.getInputStream();
+            InputStream input = action.getRequestInputStream();
             queryString = IO.readWholeFileAsUTF8(input);
         } catch (IOException ex) {
             ServletOps.errorOccurred(ex);
@@ -367,8 +366,8 @@ public abstract class SPARQLQueryProcessor extends ActionService
     private void setAnyProtocolTimeouts(QueryExecution qExec, HttpAction action) {
         // The timeout string in the protocol is in seconds, not milliseconds.
         String desiredTimeoutStr = null;
-        String timeoutHeader = action.request.getHeader("Timeout");
-        String timeoutParameter = action.request.getParameter("timeout");
+        String timeoutHeader = action.getRequestHeader("Timeout");
+        String timeoutParameter = action.getRequestParameter("timeout");
         if ( timeoutHeader != null )
             desiredTimeoutStr = timeoutHeader;
         if ( timeoutParameter != null )

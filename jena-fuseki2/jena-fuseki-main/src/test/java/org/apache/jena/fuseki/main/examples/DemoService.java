@@ -35,10 +35,10 @@ public class DemoService extends ActionREST {
 
     @Override
     protected void doGet(HttpAction action) {
-        action.response.setStatus(HttpSC.OK_200);
+        action.setResponseStatus(HttpSC.OK_200);
         try {
-            action.response.setContentType(WebContent.contentTypeTextPlain);
-            action.response.getOutputStream().println("    ** Hello world (GET) **");
+            action.setResponseContentType(WebContent.contentTypeTextPlain);
+            action.getResponseOutputStream().println("    ** Hello world (GET) **");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -47,16 +47,16 @@ public class DemoService extends ActionREST {
 
     @Override
     protected void doHead(HttpAction action) {
-        action.response.setStatus(HttpSC.OK_200);
-        action.response.setContentType(WebContent.contentTypeTextPlain);
+        action.setResponseStatus(HttpSC.OK_200);
+        action.setResponseContentType(WebContent.contentTypeTextPlain);
     }
 
     @Override
     protected void doPost(HttpAction action) {
-        action.response.setStatus(HttpSC.OK_200);
+        action.setResponseStatus(HttpSC.OK_200);
         try {
-            action.response.setContentType(WebContent.contentTypeTextPlain);
-            action.response.getOutputStream().println("    ** Hello world (POST) **");
+            action.setResponseContentType(WebContent.contentTypeTextPlain);
+            action.getResponseOutputStream().println("    ** Hello world (POST) **");
         }
         catch (IOException e) {
             e.printStackTrace();

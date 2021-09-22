@@ -28,7 +28,6 @@ import java.util.Objects;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.MediaType;
@@ -89,8 +88,7 @@ public class ResponseResultSet
     private static void doResponseResultSet$(HttpAction action,
                                              ResultSet resultSet, Boolean booleanResult,
                                              Prologue qPrologue, AcceptList contentTypeOffer) {
-        HttpServletRequest request = action.request;
-        HttpServletResponse response = action.response;
+        HttpServletRequest request = action.getRequest();
         long id = action.id;
 
         if ( resultSet == null && booleanResult == null ) {
@@ -165,7 +163,7 @@ public class ResponseResultSet
                 cxt.set(ResultSetWriterXML.xmlStylesheet, stylesheetURL);
         }
         if ( Objects.equals(serializationType, contentTypeResultsJSON) ) {
-            jsonCallback = ResponseOps.paramCallback(action.request);
+            jsonCallback = ResponseOps.paramCallback(action.getRequest());
         }
         if (Objects.equals(serializationType, WebContent.contentTypeResultsThrift) ) {
             if ( booleanResult != null )
@@ -221,7 +219,7 @@ public class ResponseResultSet
         try {
             ResponseOps.setHttpResponse(action, contentType, charset);
             ServletOps.success(action);
-            ServletOutputStream out = action.response.getOutputStream();
+            ServletOutputStream out = action.getResponseOutputStream();
             try {
                 proc.output(out);
                 out.flush();
@@ -229,7 +227,7 @@ public class ResponseResultSet
                 // Status code 200 may have already been sent.
                 // We can try to set the HTTP response code anyway.
                 // Breaking the results is the best we can do to indicate the timeout.
-                action.response.setStatus(HttpSC.BAD_REQUEST_400);
+                action.setResponseStatus(HttpSC.BAD_REQUEST_400);
                 action.log.info(format("[%d] Query Cancelled - results truncated (but 200 may have already been sent)", action.id));
                 out.println();
                 out.println("##  Query cancelled due to timeout during execution   ##");

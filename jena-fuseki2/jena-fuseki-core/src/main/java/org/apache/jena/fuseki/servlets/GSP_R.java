@@ -48,11 +48,11 @@ public class GSP_R extends GSP_Base {
     }
 
     protected void execGetQuads(HttpAction action) {
-        ActionLib.setCommonHeaders(action.response);
+        ActionLib.setCommonHeaders(action);
         // If this asks for triples, get N-Quads. Don't want the named graphs hidden.
         MediaType mediaType = ActionLib.contentNegotationQuads(action);
         ServletOutputStream output;
-        try { output = action.response.getOutputStream(); }
+        try { output = action.getResponseOutputStream(); }
         catch (IOException ex) { ServletOps.errorOccurred(ex); output = null; }
 
         Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentTypeStr());
@@ -85,11 +85,11 @@ public class GSP_R extends GSP_Base {
     }
 
     protected void execGetGSP(HttpAction action) {
-        ActionLib.setCommonHeaders(action.response);
+        ActionLib.setCommonHeaders(action);
         MediaType mediaType = ActionLib.contentNegotationRDF(action);
 
         ServletOutputStream output;
-        try { output = action.response.getOutputStream(); }
+        try { output = action.getResponseOutputStream(); }
         catch (IOException ex) { ServletOps.errorOccurred(ex); output = null; }
 
         Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentTypeStr());
@@ -129,8 +129,8 @@ public class GSP_R extends GSP_Base {
 
     @Override
     protected void doOptions(HttpAction action) {
-        ActionLib.setCommonHeadersForOptions(action.response);
-        action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS");
+        ActionLib.setCommonHeadersForOptions(action);
+        action.setResponseHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS");
         ServletOps.success(action);
     }
 
@@ -143,7 +143,7 @@ public class GSP_R extends GSP_Base {
     }
 
     protected void execHeadQuads(HttpAction action) {
-        ActionLib.setCommonHeaders(action.response);
+        ActionLib.setCommonHeaders(action);
         MediaType mediaType = ActionLib.contentNegotationQuads(action);
         if ( action.verbose )
             action.log.info(format("[%d]   Head: Content-Type=%s", action.id, mediaType.getContentTypeStr()));
@@ -151,7 +151,7 @@ public class GSP_R extends GSP_Base {
     }
 
     protected void execHeadGSP(HttpAction action) {
-        ActionLib.setCommonHeaders(action.response);
+        ActionLib.setCommonHeaders(action);
         MediaType mediaType = ActionLib.contentNegotationRDF(action);
         if ( action.verbose )
             action.log.info(format("[%d]   Head: Content-Type=%s", action.id, mediaType.getContentTypeStr()));

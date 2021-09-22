@@ -25,6 +25,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.base.Sys;
 import org.apache.jena.dboe.base.file.Location;
+import org.apache.jena.dboe.sys.IO_DB;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RDFDataMgr;
@@ -62,7 +63,7 @@ public class TestDatabaseOps
     @After
     public void after() {
         TDBInternal.reset();
-        FileUtils.deleteQuietly(IOX.asFile(dir));
+        FileUtils.deleteQuietly(IO_DB.asFile(dir));
     }
 
     @Test public void compact_dsg_1() {
@@ -236,7 +237,7 @@ public class TestDatabaseOps
         // This is a long standing JDK issue.
         // https://bugs.openjdk.java.net/browse/JDK-4715154
         if ( ! Sys.isWindows )
-            assertFalse(IOX.asFile(loc1).exists());
+            assertFalse(IO_DB.asFile(loc1).exists());
 
         DatasetGraph dsg2 = dsgs.get();
         Location loc2 = ((DatasetGraphTDB)dsg2).getLocation();

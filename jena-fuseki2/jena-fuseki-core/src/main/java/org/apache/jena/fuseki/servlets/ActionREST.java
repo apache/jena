@@ -23,9 +23,6 @@ import static org.apache.jena.riot.web.HttpNames.*;
 
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.jena.fuseki.server.CounterName;
 import org.apache.jena.sparql.core.DatasetGraph;
 
@@ -39,9 +36,7 @@ public abstract class ActionREST extends ActionService
     @Override
     public void execute(HttpAction action) {
         // Intercept to put counters around calls.
-        HttpServletRequest req = action.request;
-        HttpServletResponse resp = action.response;
-        String method = req.getMethod().toUpperCase(Locale.ROOT);
+        String method = action.getRequestMethod().toUpperCase(Locale.ROOT);
 
         if (method.equals(METHOD_GET))
             doGet$(action);

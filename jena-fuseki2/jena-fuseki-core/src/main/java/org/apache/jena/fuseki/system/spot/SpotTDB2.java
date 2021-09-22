@@ -28,12 +28,12 @@ import java.util.List;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.dboe.base.file.Location;
+import org.apache.jena.dboe.sys.IO_DB;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.params.StoreParamsCodec;
 import org.apache.jena.tdb2.sys.DatabaseOps;
-import org.apache.jena.tdb2.sys.IOX;
 import org.apache.jena.tdb2.sys.Util;
 
 class SpotTDB2 {
@@ -82,7 +82,7 @@ class SpotTDB2 {
             // Or TDB1?
             return ! SpotTDB1.isTDB1(location.getDirectoryPath());
         // Validate storage.
-        Location storageLocation = IOX.asLocation(db);
+        Location storageLocation = IO_DB.asLocation(db);
         return isTDB2_Storage(storageLocation);
     }
 
@@ -117,7 +117,7 @@ class SpotTDB2 {
     /** Return the current active database area within a database directory. */
     private static Path storageDir(Location location) {
         // Database directory
-        Path path = IOX.asPath(location);
+        Path path = IO_DB.asPath(location);
         // Storage directory in database directory.
         Path db = findLocation(path, DatabaseOps.dbPrefix);
         return db;
@@ -127,7 +127,7 @@ class SpotTDB2 {
         if ( ! Files.exists(directory) )
             return null;
         // In-order, low to high.
-        List<Path> maybe = IOX.scanForDirByPattern(directory, namebase, DatabaseOps.SEP);
+        List<Path> maybe = IO_DB.scanForDirByPattern(directory, namebase, DatabaseOps.SEP);
         return Util.getLastOrNull(maybe);
     }
 
