@@ -87,11 +87,6 @@
 
     <ver.httpclient>4.5.13</ver.httpclient>
     <ver.httpcore>4.4.14</ver.httpcore>
-    <!-- Normally, these are the same as the above
-         In the case of 4.2.6, there isn't a httpcore-osgi.
-    -->
-    <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
-    <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
     
     <ver.lucene>8.8.0</ver.lucene>
     <ver.graalvm>21.2.0</ver.graalvm>
@@ -259,7 +254,6 @@
         <!-- Slow building modules -->
 
         <module>jena-jdbc</module>
-        <module>apache-jena-osgi</module>
       </modules>
     </profile>
   </profiles>
