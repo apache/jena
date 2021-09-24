@@ -623,6 +623,9 @@ public class XSDFuncOp
         if ( x == null )
             // No replacement.
             return nvStr ;
+        if ( x.equals(n) )
+            // No change - return original.
+            return nvStr;
         return calcReturn(x, nvStr.asNode()) ;
     }
 
@@ -634,7 +637,6 @@ public class XSDFuncOp
     // ARQ
 
     private static String replaceAll(Matcher matcher, String rep) {
-        // Follow Java -- return matcher.replaceAll(rep) ;
         try {
             StringBuffer sb = null ;   // Delay until needed
             while(matcher.find()) {
