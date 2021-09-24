@@ -62,12 +62,6 @@ public class SystemTDB
 
     // ---- Constants that can't be changed without invalidating on-disk data.
 
-//    /** Size, in bytes, of a Java long */
-//    public static final int SizeOfLong              = Long.SIZE/Byte.SIZE;
-//
-//    /** Size, in bytes, of a Java int */
-//    public static final int SizeOfInt               = Integer.SIZE/Byte.SIZE;
-
     /** Size, in bytes, of the persistent representation of a node id */
     public static final int SizeOfNodeId            = NodeId.SIZE;
 
@@ -190,7 +184,7 @@ public class SystemTDB
 //    /** Number of adds/deletes between calls to sync (-ve to disable) */
 //    public static final int SyncTick                = intValue("SyncTick", -1);
 
-    
+
     /** Default BGP optimizer */
     private static ReorderTransformation defaultReorderTransform = ReorderLib.fixed();
 
@@ -201,7 +195,7 @@ public class SystemTDB
     public static ReorderTransformation getDefaultReorderTransform() {
         return defaultReorderTransform;
     }
-    
+
     /** Unsupported (for non-standard setups)
      * @see #enableInlineLiterals
      */
