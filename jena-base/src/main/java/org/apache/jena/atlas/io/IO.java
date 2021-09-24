@@ -39,12 +39,6 @@ public class IO
     public static final int EOF = -1;
     public static final int UNSET = -2;
 
-    // Buffer size.  Larger than Java's default.
-    private static final int BUFFER_SIZE = 128*1024;
-
-//    private static Charset utf8  = StandardCharsets.UTF_8;
-//    private static Charset ascii = xStandardCharsets.US_ASCII;
-
     /** Open an input stream to a file.
      * <p>
      * If the filename is null or "-", return System.in
@@ -68,7 +62,7 @@ public class IO
      */
     static public InputStream openFileBuffered(String filename) {
         InputStream in = openFile(filename);
-        return new BufferedInputStream(in, BUFFER_SIZE);
+        return ensureBuffered(in);
     }
 
     private static final String ext_gz = "gz";
@@ -198,7 +192,8 @@ public class IO
 
     /** Create an buffered reader that uses UTF-8 encoding */
     static public BufferedReader asBufferedUTF8(InputStream in) {
-        return new BufferedReader(asUTF8(in));
+        // Alway buffered - for readLine.
+        return new BufferedReader(asUTF8(in), BUFSIZE_IN / 2);
     }
 
     /** Create a writer that uses UTF-8 encoding */
@@ -214,7 +209,7 @@ public class IO
     /** Create a writer that uses UTF-8 encoding and is buffered. */
     static public Writer asBufferedUTF8(OutputStream out) {
         Writer w =  new OutputStreamWriter(out, StandardCharsets.UTF_8);
-        return new BufferingWriter(w);
+        return ensureBuffered(w);
     }
 
     /**
@@ -363,8 +358,43 @@ public class IO
         out.flush();
     }
 
+    private static final int BUFSIZE_IN   = 128*1024 ;
+    private static final int BUFSIZE_OUT  = 128*1024; ;
+    private static final int WHOLE_FILE_BUFFER_SIZE = 32*1024;
+
+    public static InputStream ensureBuffered(InputStream input) {
+        if ( input instanceof BufferedInputStream )
+            return input;
+        if ( input instanceof ByteArrayInputStream )
+            return input;
+        return new BufferedInputStream(input, BUFSIZE_IN);
+    }
+
+    public static Reader ensureBuffered(Reader input) {
+        if ( input instanceof BufferedReader )
+            return input;
+        if ( input instanceof StringReader )
+            return input;
+        return new BufferedReader(input, BUFSIZE_IN / 2);
+    }
+
+    public static OutputStream ensureBuffered(OutputStream output) {
+        if ( output instanceof BufferedOutputStream )
+            return output;
+        if ( output instanceof ByteArrayOutputStream )
+            return output;
+        return new BufferedOutputStream(output, BUFSIZE_OUT);
+    }
+
+    public static Writer ensureBuffered(Writer output) {
+        if ( output instanceof BufferedWriter )
+            return output;
+        if ( output instanceof StringWriter )
+            return output;
+        return new BufferedWriter(output, BUFSIZE_OUT / 2);
+    }
+
     public static byte[] readWholeFile(InputStream in) {
-        final int WHOLE_FILE_BUFFER_SIZE = 32*1024;
         try(ByteArrayOutputStream out = new ByteArrayOutputStream(WHOLE_FILE_BUFFER_SIZE)) {
             byte buff[] = new byte[WHOLE_FILE_BUFFER_SIZE];
             while (true) {

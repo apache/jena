@@ -281,7 +281,7 @@ fi
 # Some JVM settings
 if [ -z "$JAVA_OPTIONS" ]
 then
-  JAVA_OPTIONS="-Xmx1200M"
+  JAVA_OPTIONS="-Xmx1500M"
 fi
 
 # Default Fuseki Arguments

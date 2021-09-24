@@ -56,11 +56,15 @@ public class TestFormatRegistration
         add("NQ",       x, RDFFormat.NQ,         true, true) ;
         add("TRIG",     x, RDFFormat.TRIG,       true, true) ;
         add("TRIX",     x, RDFFormat.TRIX,       true, true) ;
+
+        add("PB RDF",   x, RDFFormat.RDF_PROTO, true, true) ;
+        add("PB RDF",   x, RDFFormat.RDF_PROTO_VALUES, true, true) ;
+
         add("TRDF",     x, RDFFormat.RDF_THRIFT, true, true) ;
         add("TRDF",     x, RDFFormat.RDF_THRIFT_VALUES, true, true) ;
         return x ;
     }
-    
+
     private static void add(String name, List<Object[]> x, RDFFormat format, boolean istriples, boolean isquads) {
         x.add(new Object[] {name, format, istriples , isquads }) ;
     }
@@ -86,10 +90,10 @@ public class TestFormatRegistration
         if ( istriples ) assertNotNull(RDFWriterRegistry.getWriterGraphFactory(format)) ;
         if ( isquads )   assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(format)) ;
     }
-    
+
   @Test public void xjenaSystem_write_3() {
       RDFWriterRegistry.contains(format);
-      if ( istriples ) 
+      if ( istriples )
           assertTrue(RDFWriterRegistry.registeredGraphFormats().contains(format));
       if ( isquads )
           assertTrue(RDFWriterRegistry.registeredDatasetFormats().contains(format));

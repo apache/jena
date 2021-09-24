@@ -1,0 +1,19 @@
+{
+  "head": {
+    "vars": [ "x" , "v" ]
+  } ,
+  "results": {
+    "bindings": [
+      {
+        "x": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "123" } ,
+        "v": { "type": "literal" , "value": "foobar1" }
+      } ,
+      {
+        "x": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "456" }
+      } ,
+      {
+        "v": { "type": "literal" , "value": "foobar2" }
+      }
+    ]
+  }
+}

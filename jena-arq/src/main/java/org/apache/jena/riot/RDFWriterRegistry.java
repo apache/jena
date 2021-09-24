@@ -21,6 +21,8 @@ package org.apache.jena.riot;
 import java.util.* ;
 
 import org.apache.jena.atlas.lib.CharSpace ;
+import org.apache.jena.riot.protobuf.WriterDatasetProtobuf;
+import org.apache.jena.riot.protobuf.WriterGraphProtobuf;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDFWriter;
 import org.apache.jena.riot.thrift.WriterDatasetThrift ;
@@ -100,8 +102,13 @@ public class RDFWriterRegistry
 
     private static WriterDatasetRIOTFactory wdsJsonldfactory   = syntaxForm -> new JsonLDWriter(syntaxForm);
     private static WriterGraphRIOTFactory wgJsonldfactory      = syntaxForm -> RiotLib.adapter(new JsonLDWriter(syntaxForm));
+
+    private static WriterGraphRIOTFactory wgProtoFactory       = syntaxForm -> new WriterGraphProtobuf(syntaxForm);
+    private static WriterDatasetRIOTFactory wdsProtoFactory    = syntaxForm -> new WriterDatasetProtobuf(syntaxForm);
+
     private static WriterGraphRIOTFactory wgThriftFactory      = syntaxForm -> new WriterGraphThrift(syntaxForm);
     private static WriterDatasetRIOTFactory wdsThriftFactory   = syntaxForm -> new WriterDatasetThrift(syntaxForm);
+
     private static WriterGraphRIOTFactory wgTriXFactory        = syntaxForm -> new WriterTriX();
     private static WriterDatasetRIOTFactory wdsTriXFactory     = syntaxForm -> new WriterTriX() ;
 
@@ -109,98 +116,103 @@ public class RDFWriterRegistry
     static { init$() ; }
     private static void init$()
     {
-        // Language to format.
+        //  Language to format.
         register(Lang.TURTLE,      RDFFormat.TURTLE) ;
         register(Lang.N3,          RDFFormat.TURTLE) ;
         register(Lang.NTRIPLES,    RDFFormat.NTRIPLES) ;
-         register(Lang.RDFXML,      RDFFormat.RDFXML) ;
+        register(Lang.RDFXML,      RDFFormat.RDFXML) ;
 
-         register(Lang.JSONLD,      RDFFormat.JSONLD) ;
-         //register(Lang.JSONLD10,    RDFFormat.JSONLD) ;
-         register(Lang.JSONLD11,    RDFFormat.JSONLD11) ;
-         register(Lang.RDFJSON,     RDFFormat.RDFJSON) ;
+        register(Lang.JSONLD,      RDFFormat.JSONLD) ;
+        //register(Lang.JSONLD10,    RDFFormat.JSONLD) ;
+        register(Lang.JSONLD11,    RDFFormat.JSONLD11) ;
+        register(Lang.RDFJSON,     RDFFormat.RDFJSON) ;
 
-         register(Lang.TRIG,        RDFFormat.TRIG) ;
-         register(Lang.NQUADS,      RDFFormat.NQUADS) ;
-         register(Lang.RDFNULL,     RDFFormat.RDFNULL) ;
-         register(Lang.RDFTHRIFT,   RDFFormat.RDF_THRIFT) ;
+        register(Lang.TRIG,        RDFFormat.TRIG) ;
+        register(Lang.NQUADS,      RDFFormat.NQUADS) ;
+        register(Lang.RDFNULL,     RDFFormat.RDFNULL) ;
+        register(Lang.RDFPROTO,    RDFFormat.RDF_PROTO) ;
+        register(Lang.RDFTHRIFT,   RDFFormat.RDF_THRIFT) ;
 
-         register(Lang.TRIX,        RDFFormat.TRIX) ;
-         register(Lang.SHACLC,      RDFFormat.SHACLC);
+        register(Lang.TRIX,        RDFFormat.TRIX) ;
+        register(Lang.SHACLC,      RDFFormat.SHACLC);
 
-         // Writer factories.
-         register(RDFFormat.TURTLE_PRETTY,  wgfactory) ;
-         register(RDFFormat.TURTLE_BLOCKS,  wgfactory) ;
-         register(RDFFormat.TURTLE_FLAT,    wgfactory) ;
+        // Writer factories.
+        register(RDFFormat.TURTLE_PRETTY,  wgfactory) ;
+        register(RDFFormat.TURTLE_BLOCKS,  wgfactory) ;
+        register(RDFFormat.TURTLE_FLAT,    wgfactory) ;
 
-         register(RDFFormat.NTRIPLES,       wgfactory) ;
-         register(RDFFormat.NTRIPLES_ASCII, wgfactory) ;
+        register(RDFFormat.NTRIPLES,       wgfactory) ;
+        register(RDFFormat.NTRIPLES_ASCII, wgfactory) ;
 
-         //  Writer.
+        //  Writer.
 
-         // JSONLD 1.1 -- currently done in SysJSONLD11.init.
-         //register(RDFFormat.JSONLD11_PLAIN, jsonld11WriterGraphFactory);
-         //register(RDFFormat.JSONLD11_PLAIN, jsonld11WriterDatasetFactory);
-         //register(RDFFormat.JSONLD11_FLAT, jsonld11WriterGraphFactory);
-         //register(RDFFormat.JSONLD11_FLAT, jsonld11WriterDatasetFactory);
+        // JSONLD 1.1 -- currently done in SysJSONLD11.init.
+        //register(RDFFormat.JSONLD11_PLAIN, jsonld11WriterGraphFactory);
+        //register(RDFFormat.JSONLD11_PLAIN, jsonld11WriterDatasetFactory);
+        //register(RDFFormat.JSONLD11_FLAT, jsonld11WriterGraphFactory);
+        //register(RDFFormat.JSONLD11_FLAT, jsonld11WriterDatasetFactory);
 
-         register(RDFFormat.JSONLD,                      wgJsonldfactory) ;
-         register(RDFFormat.JSONLD_FLAT,                 wgJsonldfactory) ;
-         register(RDFFormat.JSONLD_PRETTY,               wgJsonldfactory) ;
-         register(RDFFormat.JSONLD_COMPACT_PRETTY,       wgJsonldfactory) ;
-         register(RDFFormat.JSONLD_FLATTEN_PRETTY,       wgJsonldfactory) ;
-         register(RDFFormat.JSONLD_EXPAND_PRETTY,        wgJsonldfactory) ;
-         register(RDFFormat.JSONLD_FRAME_PRETTY,         wgJsonldfactory) ;
-         register(RDFFormat.JSONLD_COMPACT_FLAT,         wgJsonldfactory) ;
-         register(RDFFormat.JSONLD_FLATTEN_FLAT,         wgJsonldfactory) ;
-         register(RDFFormat.JSONLD_EXPAND_FLAT,          wgJsonldfactory) ;
-         register(RDFFormat.JSONLD_FRAME_FLAT,           wgJsonldfactory) ;
+        register(RDFFormat.JSONLD,                      wgJsonldfactory) ;
+        register(RDFFormat.JSONLD_FLAT,                 wgJsonldfactory) ;
+        register(RDFFormat.JSONLD_PRETTY,               wgJsonldfactory) ;
+        register(RDFFormat.JSONLD_COMPACT_PRETTY,       wgJsonldfactory) ;
+        register(RDFFormat.JSONLD_FLATTEN_PRETTY,       wgJsonldfactory) ;
+        register(RDFFormat.JSONLD_EXPAND_PRETTY,        wgJsonldfactory) ;
+        register(RDFFormat.JSONLD_FRAME_PRETTY,         wgJsonldfactory) ;
+        register(RDFFormat.JSONLD_COMPACT_FLAT,         wgJsonldfactory) ;
+        register(RDFFormat.JSONLD_FLATTEN_FLAT,         wgJsonldfactory) ;
+        register(RDFFormat.JSONLD_EXPAND_FLAT,          wgJsonldfactory) ;
+        register(RDFFormat.JSONLD_FRAME_FLAT,           wgJsonldfactory) ;
 
-         register(RDFFormat.RDFJSON,        wgfactory) ;
+        register(RDFFormat.RDFJSON,        wgfactory) ;
 
-         register(RDFFormat.RDFXML_PRETTY,  wgfactory) ;
-         register(RDFFormat.RDFXML_PLAIN,   wgfactory) ;
+        register(RDFFormat.RDFXML_PRETTY,  wgfactory) ;
+        register(RDFFormat.RDFXML_PLAIN,   wgfactory) ;
 
-         // Graphs in a quad format.
-         register(RDFFormat.TRIG_PRETTY,    wgfactory) ;
-         register(RDFFormat.TRIG_BLOCKS,    wgfactory) ;
-         register(RDFFormat.TRIG_FLAT,      wgfactory) ;
+        // Graphs in a quad format.
+        register(RDFFormat.TRIG_PRETTY,    wgfactory) ;
+        register(RDFFormat.TRIG_BLOCKS,    wgfactory) ;
+        register(RDFFormat.TRIG_FLAT,      wgfactory) ;
 
-         register(RDFFormat.NQUADS,         wgfactory) ;
-         register(RDFFormat.NQUADS_ASCII,   wgfactory) ;
-         register(RDFFormat.RDFNULL,        wgfactory) ;
+        register(RDFFormat.NQUADS,         wgfactory) ;
+        register(RDFFormat.NQUADS_ASCII,   wgfactory) ;
+        register(RDFFormat.RDFNULL,        wgfactory) ;
 
-         register(RDFFormat.RDF_THRIFT,     wgThriftFactory) ;
-         register(RDFFormat.RDF_THRIFT_VALUES, wgThriftFactory) ;
+        register(RDFFormat.RDF_PROTO,           wgProtoFactory) ;
+        register(RDFFormat.RDF_PROTO_VALUES,    wgProtoFactory) ;
+        register(RDFFormat.RDF_THRIFT,          wgThriftFactory) ;
+        register(RDFFormat.RDF_THRIFT_VALUES,   wgThriftFactory) ;
 
-         register(RDFFormat.TRIX, wgTriXFactory) ;
+        register(RDFFormat.TRIX, wgTriXFactory) ;
 
-         // Datasets
-         register(RDFFormat.TRIG_PRETTY,    wdsfactory) ;
-         register(RDFFormat.TRIG_BLOCKS,    wdsfactory) ;
-         register(RDFFormat.TRIG_FLAT,      wdsfactory) ;
+        // Datasets
+        register(RDFFormat.TRIG_PRETTY,    wdsfactory) ;
+        register(RDFFormat.TRIG_BLOCKS,    wdsfactory) ;
+        register(RDFFormat.TRIG_FLAT,      wdsfactory) ;
 
-         register(RDFFormat.NQUADS,         wdsfactory) ;
-         register(RDFFormat.NQUADS_ASCII,   wdsfactory) ;
-         register(RDFFormat.RDFNULL,        wdsfactory) ;
+        register(RDFFormat.NQUADS,         wdsfactory) ;
+        register(RDFFormat.NQUADS_ASCII,   wdsfactory) ;
+        register(RDFFormat.RDFNULL,        wdsfactory) ;
 
-         register(RDFFormat.JSONLD,                      wdsJsonldfactory) ;
-         register(RDFFormat.JSONLD_FLAT,                 wdsJsonldfactory) ;
-         register(RDFFormat.JSONLD_PRETTY,               wdsJsonldfactory) ;
-         register(RDFFormat.JSONLD_COMPACT_PRETTY,       wdsJsonldfactory) ;
-         register(RDFFormat.JSONLD_FLATTEN_PRETTY,       wdsJsonldfactory) ;
-         register(RDFFormat.JSONLD_EXPAND_PRETTY,        wdsJsonldfactory) ;
-         register(RDFFormat.JSONLD_FRAME_PRETTY,         wdsJsonldfactory) ;
-         register(RDFFormat.JSONLD_COMPACT_FLAT,         wdsJsonldfactory) ;
-         register(RDFFormat.JSONLD_FLATTEN_FLAT,         wdsJsonldfactory) ;
-         register(RDFFormat.JSONLD_EXPAND_FLAT,          wdsJsonldfactory) ;
-         register(RDFFormat.JSONLD_FRAME_FLAT,           wdsJsonldfactory) ;
+        register(RDFFormat.JSONLD,                      wdsJsonldfactory) ;
+        register(RDFFormat.JSONLD_FLAT,                 wdsJsonldfactory) ;
+        register(RDFFormat.JSONLD_PRETTY,               wdsJsonldfactory) ;
+        register(RDFFormat.JSONLD_COMPACT_PRETTY,       wdsJsonldfactory) ;
+        register(RDFFormat.JSONLD_FLATTEN_PRETTY,       wdsJsonldfactory) ;
+        register(RDFFormat.JSONLD_EXPAND_PRETTY,        wdsJsonldfactory) ;
+        register(RDFFormat.JSONLD_FRAME_PRETTY,         wdsJsonldfactory) ;
+        register(RDFFormat.JSONLD_COMPACT_FLAT,         wdsJsonldfactory) ;
+        register(RDFFormat.JSONLD_FLATTEN_FLAT,         wdsJsonldfactory) ;
+        register(RDFFormat.JSONLD_EXPAND_FLAT,          wdsJsonldfactory) ;
+        register(RDFFormat.JSONLD_FRAME_FLAT,           wdsJsonldfactory) ;
 
-         register(RDFFormat.RDF_THRIFT,     wdsThriftFactory) ;
-         register(RDFFormat.RDF_THRIFT_VALUES, wdsThriftFactory) ;
+        register(RDFFormat.RDF_PROTO,           wdsProtoFactory) ;
+        register(RDFFormat.RDF_PROTO_VALUES,    wdsProtoFactory) ;
+        register(RDFFormat.RDF_THRIFT,          wdsThriftFactory) ;
+        register(RDFFormat.RDF_THRIFT_VALUES,   wdsThriftFactory) ;
 
-         register(RDFFormat.TRIX, wdsTriXFactory) ;
-     }
+        register(RDFFormat.TRIX, wdsTriXFactory) ;
+    }
 
      // ---- Compatibility
 

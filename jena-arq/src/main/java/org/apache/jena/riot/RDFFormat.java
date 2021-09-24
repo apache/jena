@@ -165,7 +165,29 @@ public class RDFFormat {
     public static final RDFFormat        TRIX           = new RDFFormat(Lang.TRIX) ;
 
     /**
-     * RDF Thrift output. This format is faithful representation of RDF writtern
+     * RDF Protobuf output. This format is faithful representation of RDF written
+     * and it is suitable for database dumps. It does not encode numeric
+     * literals as values (see {@link #RDF_PROTO_VALUES}).
+     *
+     * @see #RDF_PROTO_VALUES
+     */
+
+    public static final RDFFormat RDF_PROTO            = new RDFFormat(Lang.RDFPROTO) ;
+    /**
+     * A variant of an an RDFFormat that uses value encoding (e.g. integers,
+     * doubles, decimals as binary). This does not preserve exact representation
+     * (+001 is the same value as 1, +1 and 001) which may matter for database
+     * dumps. It looses datatype for derived types (xsd:long, xsd:int, xsd:short
+     * and xsd:byte become xsd:integer).
+     * For large volumes of numeric data, it may provide a significant reduction in size
+     * in combination with using prefixes for subjects and predicates.
+     *
+     * @see #RDF_PROTO
+     */
+    public static final RDFFormat RDF_PROTO_VALUES     = new RDFFormat(Lang.RDFPROTO, RDFFormat.ValueEncoding) ;
+
+    /**
+     * RDF Thrift output. This format is faithful representation of RDF written
      * and it is suitable for database dumps. It does not encode numeric
      * literals as values (see {@link #RDF_THRIFT_VALUES}).
      *
@@ -177,7 +199,7 @@ public class RDFFormat {
      * A variant of an an RDFFormat that uses value encoding (e.g. integers,
      * doubles, decimals as binary). This does not preserve exact representation
      * (+001 is the same value as 1, +1 and 001) which may matter for database
-     * dumps. It looses datatype for derived types (xsd;long, xsd:int, xsd:short
+     * dumps. It looses datatype for derived types (xsd:long, xsd:int, xsd:short
      * and xsd:byte become xsd:integer).
      * For large volumes of numeric data, it may provide a significant reduction in size
      * in combination with using prefixes for subjects and predicates.

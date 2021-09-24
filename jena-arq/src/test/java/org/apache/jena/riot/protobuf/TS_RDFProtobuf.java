@@ -16,22 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.thrift;
+package org.apache.jena.riot.protobuf;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestThriftTerm.class
-    , TestThriftSetup.class
-    , TestThriftStreamRDF.class
-    , TestThriftResultSet.class
-    //, TestPatchThrift.class
-    
+    TestProtobufTerm.class
+    , TestProtobufSetup.class
+    , TestProtobufStreamRDF.class
+    , TestProtobufResultSet.class
+//    , TestProtobufPatch.class
 } )
 
-public class TS_RDFThrift {
-    public static final String TestingDir = "testing/RIOT/RDF-Thrift" ;
+public class TS_RDFProtobuf {
+    public static final String TestingDir = "testing/RIOT/RDF-Protobuf" ;
 }
 

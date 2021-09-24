@@ -27,7 +27,7 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.ResultSetReader;
 import org.apache.jena.riot.resultset.ResultSetReaderFactory;
-import org.apache.jena.riot.thrift.BinRDF;
+import org.apache.jena.riot.thrift.ThriftRDF;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context;
@@ -44,7 +44,7 @@ public class ResultSetReaderThrift implements ResultSetReader {
 
     @Override
     public ResultSet read(InputStream in, Context context) {
-        return BinRDF.readResultSet(in);
+        return ThriftRDF.readResultSet(in);
     }
 
     @Override

@@ -20,8 +20,8 @@ package org.apache.jena.riot.lang.extra;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.riot.ReaderRIOT;
 import org.apache.jena.riot.RiotParseException;
@@ -47,12 +47,16 @@ public class TurtleJavaccReaderRIOT implements ReaderRIOT {
 
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        TurtleJavacc parser = new TurtleJavacc(in, StandardCharsets.UTF_8.name());
+        // Do bytes -> chars in big units.
+        Reader r = IO.asBufferedUTF8(in);
+        TurtleJavacc parser = new TurtleJavacc(r);
         read(parser, baseURI, ct, output, context);
     }
 
     @Override
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
+        // Causes some double buffering but the JJavaCC buffer is only 4k.
+        //reader = IO.ensureBuffered(reader);
         TurtleJavacc parser = new TurtleJavacc(reader);
         read(parser, baseURI, ct, output, context);
     }

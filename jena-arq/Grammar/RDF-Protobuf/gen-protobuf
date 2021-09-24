@@ -1,0 +1,52 @@
+#!/bin/bash
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+## Must run in the RDF-Protobuf directory within the Jena codebase.
+
+## if [ "$#" != 1 ]
+## then
+##     echo "Usage: $(basename $0) FILE" 2>&1
+##     exit 1
+## fi
+
+## With protobuf, the compiler generates a single file with
+## nested static classes in it.
+## This is easier to clean up afterwards.
+
+## Root of Jena code.
+#ROOT="$(realpath -L ../../..)"
+ROOT="$(cd  ../../.. ; pwd)"
+
+PROTO="${1:-binary-rdf.proto}"
+
+# Package directory
+PKG=../../src/main/java/
+PKG="$PKG/org/apache/jena/riot/protobuf/wire"
+OUTPUT="$PKG/PB_RDF.java"
+
+# Delete the current genrated code.
+rm -f "$OUTPUT"
+
+# Generate
+protoc --proto_path=$PWD \
+       --java_out=../../src/main/java/ \
+       "$PROTO"
+
+# Output
+
+if [ -e "$OUTPUT" ]
+then
+    # Clean up.
+    perl -i -p -e \
+	 's/^public final class/\@SuppressWarnings("all")\npublic final class/' \
+	 "$OUTPUT"
+    (
+	cat "$ROOT/build-files/license-header"
+	echo
+	cat "$OUTPUT"
+    ) > F
+    mv F "$OUTPUT"
+else
+    echo "No output" 2>&1
+    exit 1
+fi

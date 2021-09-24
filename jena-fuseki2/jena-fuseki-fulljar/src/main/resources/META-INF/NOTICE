@@ -24,6 +24,13 @@ Licensed under BSD-style license (see licenses/LICENSE_Scala.txt)
 
 - - - - - - - - - - - - - - - - - - - - - - -
 
+This product bundles Google Protocol Buffers java runtime:
+
+Copyright 2008 Google Inc.  All rights reserved.
+https://github.com/protocolbuffers/protobuf/blob/master/LICENSE
+
+- - - - - - - - - - - - - - - - - - - - - - -
+
 This product bundles "LatencyUtils"
 which is available under a "BSD 2-Clause License" (BSD-2-Clause).
 See https://github.com/LatencyUtils/LatencyUtils/blob/master/LICENSE

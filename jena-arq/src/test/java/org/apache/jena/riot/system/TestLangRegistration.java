@@ -51,6 +51,7 @@ public class TestLangRegistration
         add("NQ",       x, Lang.NQ,         false, true) ;
         add("TRIG",     x, Lang.TRIG,       false, true) ;
         add("TRIX",     x, Lang.TRIX,       true, true) ;
+        add("PB RDF",   x, Lang.RDFPROTO,   true, true) ;
         add("TRDF",     x, Lang.RDFTHRIFT,  true, true) ;
         return x ;
     }

@@ -30,7 +30,8 @@ import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.* ;
-import org.apache.jena.riot.thrift.BinRDF ;
+import org.apache.jena.riot.protobuf.ProtobufRDF;
+import org.apache.jena.riot.thrift.ThriftRDF;
 import org.apache.jena.riot.writer.StreamWriterTriX ;
 import org.apache.jena.riot.writer.WriterStreamRDFBlocks ;
 import org.apache.jena.riot.writer.WriterStreamRDFFlat ;
@@ -80,11 +81,19 @@ public class StreamRDFWriter {
         }
     } ;
 
+    private static StreamRDFWriterFactory streamWriterFactoryProtobuf = new StreamRDFWriterFactory() {
+        @Override
+        public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
+            boolean withValues = RDFFormat.RDF_PROTO_VALUES.equals(format) ;
+            return ProtobufRDF.streamToOutputStream(output, withValues) ;
+        }
+    } ;
+
     private static StreamRDFWriterFactory streamWriterFactoryThrift = new StreamRDFWriterFactory() {
         @Override
         public StreamRDF create(OutputStream output, RDFFormat format, Context context) {
             boolean withValues = RDFFormat.RDF_THRIFT_VALUES.equals(format) ;
-            return BinRDF.streamToOutputStream(output, withValues) ;
+            return ThriftRDF.streamToOutputStream(output, withValues) ;
         }
     } ;
 
@@ -101,7 +110,6 @@ public class StreamRDFWriter {
             return StreamRDFLib.sinkNull() ;
         }
     } ;
-
 
     private static WriterRegistry<StreamRDFWriterFactory> registry = new WriterRegistry<>() ;
 
@@ -127,10 +135,12 @@ public class StreamRDFWriter {
     }
 
     static {
+        // Default serializations
         register(Lang.TURTLE,       RDFFormat.TURTLE_BLOCKS) ;
         register(Lang.TRIG,         RDFFormat.TRIG_BLOCKS) ;
         register(Lang.NTRIPLES,     RDFFormat.NTRIPLES) ;
         register(Lang.NQUADS,       RDFFormat.NQUADS) ;
+        register(Lang.RDFPROTO,     RDFFormat.RDF_PROTO) ;
         register(Lang.RDFTHRIFT,    RDFFormat.RDF_THRIFT) ;
         register(Lang.TRIX,         RDFFormat.TRIX) ;
         register(Lang.RDFNULL,      RDFFormat.RDFNULL) ;
@@ -147,6 +157,9 @@ public class StreamRDFWriter {
         register(RDFFormat.NQUADS,          streamWriterFactoryTriplesQuads) ;
         register(RDFFormat.NQUADS_UTF8,     streamWriterFactoryTriplesQuads) ;
         register(RDFFormat.NQUADS_ASCII,    streamWriterFactoryTriplesQuadsAscii) ;
+
+        register(RDFFormat.RDF_PROTO,           streamWriterFactoryProtobuf) ;
+        register(RDFFormat.RDF_PROTO_VALUES,    streamWriterFactoryProtobuf) ;
 
         register(RDFFormat.RDF_THRIFT,          streamWriterFactoryThrift) ;
         register(RDFFormat.RDF_THRIFT_VALUES,   streamWriterFactoryThrift) ;

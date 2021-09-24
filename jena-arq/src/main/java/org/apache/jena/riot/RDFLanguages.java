@@ -47,6 +47,7 @@ public class RDFLanguages
     public static final String strLangCSV        = "CSV";
     public static final String strLangTSV        = "TSV";
     public static final String strLangTriX       = "TriX";
+    public static final String strLangRDFPROTO   = "RDF-PROTO";
     public static final String strLangRDFTHRIFT  = "RDF-THRIFT";
 
     /* ".owl" is not a formally registered file extension for OWL using RDF/XML. It
@@ -140,6 +141,12 @@ public class RDFLanguages
     /** Alternative constant {@link #NQUADS} */
     public static final Lang NQ         = NQUADS;
 
+    ///** The RDF syntax <a href="https://jena.apache.org/documentation/io/rdf-binary.html">RDF Thrift</a> */
+    public static final  Lang RDFPROTO  = LangBuilder.create(strLangRDFPROTO, contentTypeRDFProto)
+                                                     .addAltNames("RDF_PB", "RDFPB", "RDF/PB", "PBRDF")
+                                                     .addFileExtensions("rpb", "pbrdf")
+                                                     .build();
+
     /** The RDF syntax <a href="https://jena.apache.org/documentation/io/rdf-binary.html">RDF Thrift</a> */
     public static final Lang RDFTHRIFT  = LangBuilder.create(strLangRDFTHRIFT, contentTypeRDFThrift)
                                                      .addAltNames("RDF_THRIFT", "RDFTHRIFT", "RDF/THRIFT", "TRDF")
@@ -206,6 +213,7 @@ public class RDFLanguages
         Lang.NQUADS     = RDFLanguages.NQUADS;
         Lang.NQ         = RDFLanguages.NQ;
         Lang.TRIG       = RDFLanguages.TRIG;
+        Lang.RDFPROTO   = RDFLanguages.RDFPROTO;
         Lang.RDFTHRIFT  = RDFLanguages.RDFTHRIFT;
         Lang.TRIX       = RDFLanguages.TRIX;
         Lang.RDFNULL    = RDFLanguages.RDFNULL;
@@ -235,6 +243,7 @@ public class RDFLanguages
         register(RDFJSON);
         register(TRIG);
         register(NQUADS);
+        register(RDFPROTO);
         register(RDFTHRIFT);
         register(TRIX);
         register(RDFNULL);

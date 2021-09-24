@@ -18,10 +18,7 @@
 
 package org.apache.jena.riot.thrift;
 
-import java.io.BufferedInputStream ;
-import java.io.BufferedOutputStream ;
-import java.io.InputStream ;
-import java.io.OutputStream ;
+import java.io.*;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.logging.Log ;
@@ -41,17 +38,32 @@ import org.apache.thrift.transport.TTransport ;
 
 /** Support operations for RDF Thrift */
 public class TRDF {
-    public static final int InputBufferSize     = 128*1024 ;
-    public static final int OutputBufferSize    = 128*1024 ;
+    private static final int BUFSIZE_IN   = 128*1024 ;
+    private static final int BUFSIZE_OUT  = 128*1024; ;
+
+    public static InputStream ensureBuffered(InputStream input) {
+        if ( input instanceof BufferedInputStream )
+            return input;
+        if ( input instanceof ByteArrayInputStream )
+            return input;
+        return new BufferedInputStream(input, BUFSIZE_IN);
+    }
+
+    public static OutputStream ensureBuffered(OutputStream output) {
+        if ( output instanceof BufferedOutputStream )
+            return output;
+        if ( output instanceof ByteArrayOutputStream )
+            return output;
+        return new BufferedOutputStream(output, BUFSIZE_OUT);
+    }
 
     /**
      * Create Thrift protocol for the InputStream.
      * @param in InputStream
      */
     public static TProtocol protocol(InputStream in) {
+        in = ensureBuffered(in);
         try {
-            if ( ! ( in instanceof BufferedInputStream ) )
-                in = new BufferedInputStream(in, InputBufferSize) ;
             TTransport transport = new TIOStreamTransport(in) ;
             transport.open() ;
             TProtocol protocol = protocol(transport) ;
@@ -66,10 +78,9 @@ public class TRDF {
      * @param out OutputStream
      */
     public static TProtocol protocol(OutputStream out) {
+        out = ensureBuffered(out);
         try {
             // Flushing the protocol will flush the BufferedOutputStream
-            if ( !( out instanceof BufferedOutputStream ) )
-                out = new BufferedOutputStream(out, OutputBufferSize) ;
             TTransport transport = new TIOStreamTransport(out) ;
             transport.open() ;
             TProtocol protocol = protocol(transport) ;

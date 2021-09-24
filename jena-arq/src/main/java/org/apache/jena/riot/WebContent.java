@@ -70,6 +70,10 @@ public class WebContent
     public static final String      contentTypeTriGAlt1          = "text/trig" ;
     public static final ContentType ctTriGAlt1                   = ContentType.create(contentTypeTriGAlt1) ;
 
+    // Unofficial
+    public static final String      contentTypeRDFProto          = "application/rdf+protobuf" ;
+    public static final ContentType ctRDFProto                   = ContentType.create(contentTypeRDFProto) ;
+
     // Name no longer supported - Jena 4.0.0.
 //    public static final String      contentTypeTriGAlt2          = "application/x-trig" ;
 //    public static final ContentType ctTriGAlt2                   = ContentType.create(contentTypeTriGAlt2) ;
@@ -118,6 +122,10 @@ public class WebContent
 
     public static final String      contentTypeJSON              = "application/json" ;
     public static final ContentType ctJSON                       = ContentType.create(contentTypeJSON) ;
+
+    // Unofficial
+    public static final String      contentTypeResultsProtobuf   = "application/sparql-results+protobuf" ;
+    public static final ContentType ctResultsProtobuf            = ContentType.create(contentTypeResultsProtobuf) ;
 
     // Unofficial
     public static final String      contentTypeResultsThrift     = "application/sparql-results+thrift" ;

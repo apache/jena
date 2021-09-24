@@ -52,25 +52,27 @@ public class TestRiotWriterDataset extends AbstractWriterTest
             , { RDFFormat.NQUADS}
             , { RDFFormat.NQUADS_UTF8}
             , { RDFFormat.NQUADS_ASCII}
+            , { RDFFormat.RDF_PROTO }
+            , { RDFFormat.RDF_PROTO_VALUES }
             , { RDFFormat.RDF_THRIFT }
             , { RDFFormat.RDF_THRIFT_VALUES }
             , { RDFFormat.TRIX }
-        }) ; 
+        }) ;
     }
 
     private RDFFormat format ;
-    
+
     public TestRiotWriterDataset(RDFFormat format)
     {
         this.format = format ;
     }
-    
+
     @Test public void writer00() { test("writer-rt-20.trig") ; }
     @Test public void writer01() { test("writer-rt-21.trig") ; }
     @Test public void writer02() { test("writer-rt-22.trig") ; }
     @Test public void writer03() { test("writer-rt-23.trig") ; }
     @Test public void writer04() { test("writer-rt-24.trig") ; }
-    
+
     @Test public void writer05() { test("writer-rt-25.trig") ; }
     @Test public void writer06() { test("writer-rt-26.trig") ; }
     @Test public void writer07() { test("writer-rt-27.trig") ; }
@@ -79,14 +81,14 @@ public class TestRiotWriterDataset extends AbstractWriterTest
             // Broken for JSON-LD (json-ld-java 0.5.0)
             return ;
         test("writer-rt-28.trig") ;
-    }    
+    }
     @Test public void writer09() { test("writer-rt-29.trig") ; }
     @Test public void writer10() { test("writer-rt-30.trig") ; }
-    
+
     private void test(String filename)
     {
         String displayname = filename.substring(0, filename.lastIndexOf('.')) ;
-        Dataset ds = readDataset(filename) ; 
+        Dataset ds = readDataset(filename) ;
         Lang lang = format.getLang() ;
 
         WriterDatasetRIOT rs = RDFWriterRegistry.getWriterDatasetFactory(format).create(format) ;
@@ -94,10 +96,10 @@ public class TestRiotWriterDataset extends AbstractWriterTest
 
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         RDFDataMgr.write(out, ds, format) ;
-        
+
         if ( lang == Lang.RDFNULL )
             return ;
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
         String s = StrUtils.fromUTF8bytes(out.toByteArray()) ;
         Dataset ds2 = DatasetFactory.create() ;
@@ -109,7 +111,7 @@ public class TestRiotWriterDataset extends AbstractWriterTest
             System.out.println(s) ;
             throw ex ;
         }
-        
+
         boolean b = IsoMatcher.isomorphic(ds.asDatasetGraph(), ds2.asDatasetGraph()) ;
         if ( ! b ) {
             System.out.println("Test: "+format.toString()) ;
@@ -122,10 +124,10 @@ public class TestRiotWriterDataset extends AbstractWriterTest
             RDFDataMgr.write(System.out, ds2.asDatasetGraph(), Lang.NQUADS ) ;
             System.out.println("-------------") ;
         }
-        
+
         assertTrue("Datasets are not isomorphic", b) ;
         //**** Test ds2 iso ds
-        
+
     }
 }
 

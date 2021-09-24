@@ -58,3 +58,10 @@ Licensed under BSD-style license (see licenses/LICENSE_Scala.txt)
 ----------
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+This product bundles Google Protocol Buffers java runtime:
+
+Copyright 2008 Google Inc.  All rights reserved.
+https://github.com/protocolbuffers/protobuf/blob/master/LICENSE
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
