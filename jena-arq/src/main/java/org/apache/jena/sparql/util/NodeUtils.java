@@ -190,11 +190,11 @@ public class NodeUtils
         // -- Two literals already done just leaving ...
         if ( node2.isLiteral() )
             return Expr.CMP_GREATER;
-        
+
         // Because triple terms are after literals ...
         if ( node1.isLiteral() )
             return Expr.CMP_LESS;
-        
+
         // -- Triple nodes.
         if ( node1.isNodeTriple() ) {
             if ( node2.isNodeTriple() ) {
@@ -212,10 +212,10 @@ public class NodeUtils
                 return Expr.CMP_EQUAL;
             }
         }
-        
+
         if ( node2.isNodeTriple() )
             return Expr.CMP_GREATER;
-        
+
         // No URIs, no blanks, no literals, no triple terms nodes by this point
 
         // Should not happen.
@@ -326,4 +326,36 @@ public class NodeUtils
             return false;
         }
     };
+
+    static Set<RDFDatatype> numericDatatypes = new HashSet<>();
+    static {
+        numericDatatypes.add(XSDDatatype.XSDdecimal) ;
+        numericDatatypes.add(XSDDatatype.XSDinteger) ;
+
+        numericDatatypes.add(XSDDatatype.XSDlong) ;
+        numericDatatypes.add(XSDDatatype.XSDint) ;
+        numericDatatypes.add(XSDDatatype.XSDshort) ;
+        numericDatatypes.add(XSDDatatype.XSDbyte) ;
+
+        numericDatatypes.add(XSDDatatype.XSDnonPositiveInteger) ;
+        numericDatatypes.add(XSDDatatype.XSDnegativeInteger) ;
+
+        numericDatatypes.add(XSDDatatype.XSDnonNegativeInteger) ;
+        numericDatatypes.add(XSDDatatype.XSDpositiveInteger) ;
+        numericDatatypes.add(XSDDatatype.XSDunsignedLong) ;
+        numericDatatypes.add(XSDDatatype.XSDunsignedInt) ;
+        numericDatatypes.add(XSDDatatype.XSDunsignedShort) ;
+
+        numericDatatypes.add(XSDDatatype.XSDdouble) ;
+        numericDatatypes.add(XSDDatatype.XSDfloat) ;
+    }
+
+    /**
+     * Return true if the node is a literal and has an XSD numeric datatype.
+     */
+    public static boolean isXSDNumeric(Node node) {
+        if ( ! node.isLiteral() )
+            return false;
+        return numericDatatypes.contains(node.getLiteralDatatype());
+    }
 }
