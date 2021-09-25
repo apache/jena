@@ -119,10 +119,10 @@ message RDF_PrefixDecl {
 // StreamRDF
 message RDF_StreamRow {
   oneof row {
-  	RDF_PrefixDecl   prefixDecl  = 1 ;
-	  RDF_Triple       triple      = 2 ;
-  	RDF_Quad         quad        = 3 ;
-	  RDF_IRI          base        = 4 ;
+    RDF_PrefixDecl   prefixDecl  = 1 ;
+    RDF_Triple       triple      = 2 ;
+    RDF_Quad         quad        = 3 ;
+    RDF_IRI          base        = 4 ;
   }
 }
 
