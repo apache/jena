@@ -20,25 +20,19 @@ package org.apache.jena.atlas.iterator;
 
 import java.util.Iterator;
 
-public class IteratorNoRemove<T> implements Iterator<T> {
-    protected final Iterator<T> iterator;
+/**
+ * Wrap an iterator except for remove which throws UnsupportedOperationException.
+ * @deprecated Use {@link Iter#noRemove(Iterator)}.
+ */
+@Deprecated
+public class IteratorNoRemove<T> extends IteratorWrapper<T> {
 
-    public IteratorNoRemove(Iterator<T> iterator) {
-        this.iterator = iterator;
+    public IteratorNoRemove(int x, Iterator<T> iterator) {
+        super(iterator);
     }
 
     @Override
-    public boolean hasNext() {
-        return iterator.hasNext();
-    }
-
-    @Override
-    public T next() {
-        return iterator.next();
-    }
-
-    @Override
-    public final void remove() {
-        throw new UnsupportedOperationException("remove");
+    public void close() {
+        Iter.close(iterator);
     }
 }

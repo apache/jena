@@ -107,14 +107,16 @@ public class Iter<T> implements IteratorCloseable<T> {
         return t == null ? Iter.empty() : Iter.of(t);
     }
 
-    // --
-
     /**
      * Return an iterator that does not permit remove.
      * This makes an "UnmodifiableIterator".
      */
     public static <T> Iterator<T> noRemove(Iterator<T> iter) {
-        return new IteratorNoRemove<T>(iter);
+        return new IteratorWrapper<T>(iter) {
+            @Override public final void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
+        };
     }
 
     // ---- Collectors.

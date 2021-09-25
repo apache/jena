@@ -32,7 +32,7 @@ import java.util.NoSuchElementException ;
  * @see PushbackIterator
  * @see IteratorWithHistory
  */
-public class IteratorWithBuffer<T> implements Iterator<T> {
+public class IteratorWithBuffer<T> implements IteratorCloseable<T> {
     private List<T>     lookahead ;
     private Iterator<T> iter ;
     private int         capacity ;
@@ -70,11 +70,8 @@ public class IteratorWithBuffer<T> implements Iterator<T> {
             atEndInner() ;
 
         T item = lookahead.remove(0) ;
-        // System.out.println("remove: "+item) ;
         if ( iter.hasNext() ) {
-            // Should not throw NoSuchElementException.
             T nextItem = iter.next() ;
-            // System.out.println("add   : "+nextItem) ;
             lookahead.add(nextItem) ;
         }
         return item ;
@@ -123,5 +120,10 @@ public class IteratorWithBuffer<T> implements Iterator<T> {
 
     /** Called, once, at the end of the wrapped iterator. */
     protected void endReachedInner() {}
+
+    @Override
+    public void close() {
+        Iter.close(iter);
+    }
 
 }
