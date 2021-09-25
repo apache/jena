@@ -35,6 +35,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIx;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.expr.ExprEvalException ;
@@ -196,12 +197,11 @@ public class NodeFunctions {
             return node.getLiteral().getLexicalForm() ;
         if ( node.isURI() )
             return node.getURI() ;
-        // if ( node.isBlank() ) return node.getBlankNodeId().getLabelString() ;
-        // if ( node.isBlank() ) return "" ;
+        if ( node.isBlank() && ! ARQ.isTrue(ARQ.strictSPARQL) )
+             return RiotLib.blankNodeToIriString(node);
         if ( node.isBlank() )
-            NodeValue.raise(new ExprTypeException("Blank node: " + node)) ;
-
-        NodeValue.raise(new ExprEvalException("Not a string: " + node)) ;
+            NodeValue.raise(new ExprEvalException("Blank node: " + node)) ;
+        NodeValue.raise(new ExprEvalException("Not valid for STR(): " + node)) ;
         return "[undef]" ;
     }
 
