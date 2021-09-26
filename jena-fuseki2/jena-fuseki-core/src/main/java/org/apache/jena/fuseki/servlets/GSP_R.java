@@ -22,6 +22,7 @@ import static java.lang.String.format;
 import static org.apache.jena.fuseki.servlets.GraphTarget.determineTargetGSP;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.servlet.ServletOutputStream;
 
@@ -88,7 +89,7 @@ public class GSP_R extends GSP_Base {
         ActionLib.setCommonHeaders(action);
         MediaType mediaType = ActionLib.contentNegotationRDF(action);
 
-        ServletOutputStream output;
+        OutputStream output;
         try { output = action.getResponseOutputStream(); }
         catch (IOException ex) { ServletOps.errorOccurred(ex); output = null; }
 

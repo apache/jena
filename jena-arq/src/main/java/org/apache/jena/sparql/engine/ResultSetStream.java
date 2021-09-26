@@ -18,67 +18,85 @@
 
 package org.apache.jena.sparql.engine;
 
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.NoSuchElementException ;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.query.QuerySolution ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sparql.core.ResultBinding ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.core.ResultBinding;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.RowSetStream;
 
-
-/** The main ResultSet implementation for returning results from queries.
+/**
+ * The main ResultSet implementation for returning results from queries.
  * This version is "use once" - you can not reset the result set because
  * the results of the query are not remembered so as not to consume potentially
- * large amounts of memory. */
-
+ * large amounts of memory.
+ */
 public class ResultSetStream implements ResultSet
 {
     // Could use QueryIteratorWrapper
-    private Iterator<Binding> queryExecutionIter ;
-    private List<String> resultVars ;
-    private QuerySolution currentQuerySolution ;
-    private int rowNumber ;
-    private Model model ;
+    private Iterator<Binding> queryExecutionIter;
+    private List<String> resultVars;
+    private QuerySolution currentQuerySolution;
+    private int rowNumber;
+    private Model model;
 
-    public ResultSetStream(List<String> resultVars, Model m, Iterator<Binding> iter)
-    {
-        queryExecutionIter = iter ;
-        this.resultVars = resultVars ;
-        currentQuerySolution = null ;
-        rowNumber = 0 ;
-        model = m ;
+    /** Create a streaming ResultSet, with resources sharing a common Model */
+    public static ResultSet create(List<String> resultVars, Model m, Iterator<Binding> iter) {
+        return new ResultSetStream(0, resultVars, m, iter);
+    }
+
+    /** Create a {@code ResultSet} from a {@literal List<Var>} and an {@literal Iterator<Binding>}. */
+    public static ResultSet create(List<Var> resultVars, Iterator<Binding> iter) {
+        return ResultSet.adapt(new RowSetStream(resultVars, iter));
+    }
+
+    /** @deprecated Use {@link #create} */
+    @Deprecated
+    public ResultSetStream(List<String> resultVars, Model m, Iterator<Binding> iter) {
+        this(57, resultVars, m, iter);
+    }
+
+
+    protected ResultSetStream(int dummy, List<String> resultVars, Model m, Iterator<Binding> iter) {
+        this.queryExecutionIter = iter;
+        this.resultVars = resultVars;
+        this.currentQuerySolution = null;
+        this.rowNumber = 0;
+        this.model = m;
     }
 
     /**
      * Is there another possibility?
      */
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         if ( queryExecutionIter == null )
-            return false ;
-        boolean r = queryExecutionIter.hasNext() ;
+            return false;
+        boolean r = queryExecutionIter.hasNext();
         if ( !r )
-            close() ;
+            close();
         return r;
     }
 
     @Override
-    public Binding nextBinding()
-    {
-        if (queryExecutionIter == null) throw new NoSuchElementException(this.getClass() + ".next") ;
+    public Binding nextBinding() {
+        if ( queryExecutionIter == null )
+            throw new NoSuchElementException(this.getClass() + ".next");
 
         try {
-            Binding binding = queryExecutionIter.next() ;
-            if (binding != null) rowNumber++ ;
-            return binding ;
+            Binding binding = queryExecutionIter.next();
+            if ( binding != null )
+                rowNumber++;
+            return binding;
         } catch (NoSuchElementException ex) {
-            close() ;
-            throw ex ;
+            close();
+            throw ex;
         }
     }
 
@@ -86,7 +104,8 @@ public class ResultSetStream implements ResultSet
     {
         // ARQ QueryIterators are org.apache.jena.atlas.lib.Closable.
         if ( queryExecutionIter instanceof Closeable )
-            ((Closeable)queryExecutionIter).close() ;
+            ((Closeable)queryExecutionIter).close();
+        queryExecutionIter = null;
     }
 
     /** Moves onto the next result possibility.
@@ -94,43 +113,35 @@ public class ResultSetStream implements ResultSet
      *  result.
      */
     @Override
-    public QuerySolution nextSolution()
-    {
+    public QuerySolution nextSolution() {
         if ( queryExecutionIter == null )
-//            ||
-//             ( queryExecution != null && ! queryExecution.isActive() ) )
-            throw new NoSuchElementException(this.getClass()+".next") ;
-
-        Binding binding = nextBinding() ;
-        currentQuerySolution = new ResultBinding(model, binding) ;
-        return currentQuerySolution ;
+            throw new NoSuchElementException(this.getClass() + ".next");
+        Binding binding = nextBinding();
+        currentQuerySolution = new ResultBinding(model, binding);
+        return currentQuerySolution;
     }
-
 
     /** Moves onto the next result possibility.*/
 
     @Override
-    public QuerySolution next() { return nextSolution() ; }
+    public QuerySolution next() { return nextSolution(); }
 
     /** Return the "row number" - a count of the number of possibilities returned so far.
      *  Remains valid (as the total number of possibilities) after the iterator ends.
      */
 
     @Override
-    public int getRowNumber()
-    {
-        return rowNumber ;
+    public int getRowNumber() {
+        return rowNumber;
     }
 
-    /** Get the variable names for the projection
-     */
+    /** Get the variable names for the projection */
+    @Override
+    public List<String> getResultVars() { return resultVars; }
+
+    public Model getModel() { return model; }
 
     @Override
-    public List<String> getResultVars() { return resultVars ; }
-
-    public Model getModel() { return model ; }
-
-    @Override
-    public Model getResourceModel() { return model ; }
+    public Model getResourceModel() { return model; }
 
 }

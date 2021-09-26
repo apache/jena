@@ -21,7 +21,6 @@ package org.apache.jena.shex.runner;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +83,7 @@ public abstract class AbstractRunnerFiles extends ParentRunner<Runner> {
     }
 
     protected final List<String> getFiles(String directory, Set<String> includes, Set<String> excludes) {
-        Path src = Paths.get(directory);
+        Path src = Path.of(directory);
         BiPredicate<Path, BasicFileAttributes> predicate = (path,attr)->attr.isRegularFile() && path.toString().endsWith(".shex");
 
         List<String> files = new ArrayList<>();

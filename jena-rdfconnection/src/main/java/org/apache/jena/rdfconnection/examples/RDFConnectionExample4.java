@@ -31,7 +31,7 @@ import org.apache.jena.rdfconnection.RDFConnectionRemote;
 public class RDFConnectionExample4 {
     public static void main(String ...args) {
 
-        RDFConnection conn0 = RDFConnectionRemote.create()
+        RDFConnection conn0 = RDFConnectionRemote.newBuilder()
             .destination("http://sparql.org/")
             .queryEndpoint("sparql")
             // Set a specific accept header; here, sparql-results+json (preferred) and text/tab-separated-values

@@ -37,7 +37,7 @@ import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
 import org.junit.Test ;
 
 public class TestThriftResultSet {
-    // Only datatypes that transmitted perfectly. 
+    // Only datatypes that transmitted perfectly.
     static ResultSetRewindable rs0 = make
         ("(resultset (?x ?y)"
          , "   (row (?x _:a) (?y 3))"
@@ -48,7 +48,7 @@ public class TestThriftResultSet {
          , "   (row (?x 2) (?y 10))"
          , ")"
          ) ;
-    
+
     static ResultSetRewindable rs1 = make
         ("(resultset (?x ?y)"
          , "   (row (?x 1) (?y 3))"
@@ -63,8 +63,8 @@ public class TestThriftResultSet {
          ) ;
 
     @Test public void resultSet_01() { test(rs0) ; }
-    
-    @Test public void resultSet_02() { 
+
+    @Test public void resultSet_02() {
         ResultSetRewindable r1 = test(rs1) ;
         // not reordered
         r1.reset();
@@ -72,8 +72,8 @@ public class TestThriftResultSet {
         assertFalse(ResultSetCompare.equalsByTermAndOrder(r1, rs2)) ;
         rs2.reset() ;
     }
-    
-    @Test public void resultSet_03() { 
+
+    @Test public void resultSet_03() {
         ResultSetRewindable r2 = test(rs2) ;
         // not reordered
         r2.reset();
@@ -83,30 +83,30 @@ public class TestThriftResultSet {
     }
 
     private static ResultSetRewindable test(ResultSetRewindable resultSet) {
-        resultSet.reset(); 
+        resultSet.reset();
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        ThriftRDF.writeResultSet(out, resultSet, true) ; 
+        ThriftRDF.writeResultSet(out, resultSet, true) ;
         resultSet.reset();
 
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
         ResultSet rs$ = ThriftRDF.readResultSet(in) ;
         ResultSetRewindable resultSet2 = ResultSetFactory.makeRewindable(rs$) ;
-        // Includes bnode labels. 
+        // Includes bnode labels.
         ResultSetCompare.equalsExact(resultSet, resultSet2) ;
-        resultSet.reset(); 
+        resultSet.reset();
         resultSet2.reset();
         return resultSet2 ;
     }
 
     private static ResultSetRewindable make(String ... strings) {
-        String s = StrUtils.strjoinNL(strings) ; 
+        String s = StrUtils.strjoinNL(strings) ;
         Item item = SSE.parse(s) ;
         ResultSetRewindable rs = ResultSetFactory.makeRewindable(BuilderResultSet.build(item)) ;
         return rs ;
     }
-    
+
     private static final String DIR = TS_RDFThrift.TestingDir ;
-    
+
     @Test public void resultSet_10() {
         try (InputStream in = IO.openFile(DIR+"/results-1.srj")) {
             ResultSet rs = ResultSetFactory.fromJSON(in) ;

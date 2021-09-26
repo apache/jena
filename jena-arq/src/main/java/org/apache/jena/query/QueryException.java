@@ -20,10 +20,10 @@ package org.apache.jena.query;
 
 import org.apache.jena.sparql.ARQException ;
 
-/** QueryException is root exception for all (intentional) exceptions
- *  associated with query parsing and execution. */
-
-
+/**
+ * QueryException is root exception for all (intentional) exceptions associated with
+ * query parsing and execution.
+ */
 public class QueryException extends ARQException
 {
     public QueryException() { super() ; }

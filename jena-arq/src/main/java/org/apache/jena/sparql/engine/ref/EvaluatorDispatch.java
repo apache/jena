@@ -31,7 +31,7 @@ import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.algebra.TableFactory ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.http.Service ;
+import org.apache.jena.sparql.exec.http.Service;
 
 /**  Class to provide type-safe eval() dispatch using the visitor support of Op */
 

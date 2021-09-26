@@ -129,8 +129,8 @@ public class BindingFactory
     }
 
     /**
-     * Create a root binding. A root binding has no parent nor var/node pairs with aa
-     * distinctive type/toString.
+     * Create a root binding. A root binding has no parent nor var/node pairs
+     * and has a distinctive type/toString.
      */
     public static Binding root() {
         return BindingRoot.create();

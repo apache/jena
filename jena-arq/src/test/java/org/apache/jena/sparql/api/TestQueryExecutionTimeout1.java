@@ -83,98 +83,94 @@ public class TestQueryExecutionTimeout1
         "PREFIX afn:     <http://jena.apache.org/ARQ/function#>\n" ;
 
     // Numbers all a bit iffy and can result in test failures
-    // on a heavily loaded CI system.
-    // But we don't want testing to be to slow when used in general
-    // development.  Could split into development and integration
-    // level checking.
+    // on a heavily loaded CI system and some OS'es seem to occasionally
+    // suspend a process for many seconds. That means timeouts can go off when they
+    // shouldn't. It's not the test framework ; the query execution semantics have
+    // been changed.
 
     @Test
     public void timeout_01() {
-        // Test unstable on loaded Jenkins CI on Windows.
-        String qs = prefix + "SELECT * { ?s ?p ?o }" ;
-        QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
-        qExec.setTimeout(50, TimeUnit.MILLISECONDS) ;
-        ResultSet rs = qExec.execSelect() ;
-        exceptionExpected(rs, 100, 100, 500) ;
-    }
-
-    @Test
-    public void timeout_02()
-    {
         // Test unstable on loaded Jenkins CI
-        String qs = prefix + "SELECT * { ?s ?p ?o }" ;
-        QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
-        qExec.setTimeout(50, TimeUnit.MILLISECONDS) ;
-        ResultSet rs = qExec.execSelect() ;
+        String qs = prefix + "SELECT * { ?s ?p ?o }";
+        QueryExecution qExec = QueryExecution.dataset(ds)
+                .query(qs)
+
+                .timeout(50, TimeUnit.MILLISECONDS)
+                .build();
+        ResultSet rs = qExec.execSelect();
         exceptionExpected(rs, 10, 100, 1000); // 100 then every 100 upto 1000
     }
 
     @Test
-    public void timeout_03()
-    {
-        String qs = prefix + "SELECT * { ?s ?p ?o }" ;
-        @SuppressWarnings("resource")
-        QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
-        qExec.setTimeout(100, TimeUnit.MILLISECONDS) ;
-        ResultSet rs = qExec.execSelect() ;
-        ResultSetFormatter.consume(rs) ;
-        qExec.close() ;
-        qExec.abort() ;
+    public void timeout_02() {
+        String qs = prefix + "SELECT * { ?s ?p ?o }";
+        // No timeout
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
+                .timeout(100, TimeUnit.MILLISECONDS)
+                .build()) {
+            ResultSet rs = qExec.execSelect();
+            ResultSetFormatter.consume(rs);
+        }
+    }
+
+    @Test
+    public void timeout_03() {
+        String qs = prefix + "SELECT * { ?s ?p ?o }";
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
+                .timeout(50, TimeUnit.MILLISECONDS)
+                .build()) {
+            ResultSet rs = qExec.execSelect();
+            ResultSetFormatter.consume(rs);
+            sleep(100);
+            rs.hasNext();         // Query ended - calling rs.hasNext() is safe.
+        }
     }
 
     @Test
     public void timeout_04()
     {
-        String qs = prefix + "SELECT * { ?s ?p ?o }" ;
-        try(QueryExecution qExec = QueryExecutionFactory.create(qs, ds)) {
-            qExec.setTimeout(50, TimeUnit.MILLISECONDS) ;
+        String qs = prefix + "SELECT * { ?s ?p ?o FILTER f:wait(1) }" ; // Sleep in execution to kick timer thread.
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
+                .timeout(100, TimeUnit.MILLISECONDS)
+                .build()) {
             ResultSet rs = qExec.execSelect() ;
             ResultSetFormatter.consume(rs) ;
-            sleep(100) ;
-            rs.hasNext() ;         // Query ended - calling rs.hasNext() is safe.
+        }
+    }
+
+    @Test
+    public void timeout_05()
+    {
+        // No timeout.
+        String qs = prefix + "SELECT * { ?s ?p ?o FILTER f:wait(1) }" ;
+        try(QueryExecution qExec = QueryExecutionFactory.create(qs, ds)) {
+            ResultSet rs = qExec.execSelect() ;
+            ResultSetFormatter.consume(rs) ;
         }
     }
 
     @Test
     public void timeout_06()
     {
-        String qs = prefix + "SELECT * { ?s ?p ?o FILTER f:wait(1) }" ; // Sleep in execution to kick timer thread.
-        try(QueryExecution qExec = QueryExecutionFactory.create(qs, ds)) {
-            qExec.setTimeout(100, TimeUnit.MILLISECONDS) ;
-            ResultSet rs = qExec.execSelect() ;
-            ResultSetFormatter.consume(rs) ;
-        }
-    }
-
-    @Test
-    public void timeout_07()
-    {
         // No timeout.
         String qs = prefix + "SELECT * { ?s ?p ?o FILTER f:wait(1) }" ;
-        try(QueryExecution qExec = QueryExecutionFactory.create(qs, ds)) {
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
+                .timeout(-1, TimeUnit.MILLISECONDS)
+                .build()) {
             ResultSet rs = qExec.execSelect() ;
             ResultSetFormatter.consume(rs) ;
         }
     }
 
     @Test
-    public void timeout_08()
-    {
-        // No timeout.
-        String qs = prefix + "SELECT * { ?s ?p ?o FILTER f:wait(1) }" ;
-        try(QueryExecution qExec = QueryExecutionFactory.create(qs, ds)) {
-            qExec.setTimeout(-1, TimeUnit.MILLISECONDS) ;
-            ResultSet rs = qExec.execSelect() ;
-            ResultSetFormatter.consume(rs) ;
-        }
-    }
-
-    @Test
-    public void timeout_09()
+    public void timeout_10()
     {
         String qs = prefix + "SELECT * { ?s ?p ?o }" ;
-        try(QueryExecution qExec = QueryExecutionFactory.create(qs, ds)) {
-            qExec.setTimeout(500, TimeUnit.MILLISECONDS, -1, TimeUnit.MILLISECONDS) ;
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
+                .initialTimeout(500, TimeUnit.MILLISECONDS)
+                .overallTimeout(-1, TimeUnit.MILLISECONDS)
+                .build()) {
+            //was qExec.setTimeout(500, TimeUnit.MILLISECONDS, -1, TimeUnit.MILLISECONDS) ;
             ResultSet rs = qExec.execSelect() ;
             rs.next() ; // First timeout does not go off. Resets timers.
             rs.next() ; // Second timeout never goes off
@@ -184,11 +180,13 @@ public class TestQueryExecutionTimeout1
     }
 
     @Test
-    public void timeout_10()
+    public void timeout_11()
     {
         String qs = prefix + "SELECT * { ?s ?p ?o }" ;
-        try(QueryExecution qExec = QueryExecutionFactory.create(qs, ds)) {
-            qExec.setTimeout(100, TimeUnit.MILLISECONDS, 100, TimeUnit.MILLISECONDS) ;
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
+                .initialTimeout(100, TimeUnit.MILLISECONDS)
+                .overallTimeout(100, TimeUnit.MILLISECONDS)
+                .build()) {
             ResultSet rs = qExec.execSelect() ;
             rs.next() ; // First timeout does not go off. Resets timers.
             rs.next() ; // Second timeout never goes off
@@ -198,11 +196,13 @@ public class TestQueryExecutionTimeout1
     }
 
     @Test
-    public void timeout_11()
+    public void timeout_12()
     {
         String qs = prefix + "SELECT * { ?s ?p ?o }" ;
-        try(QueryExecution qExec = QueryExecutionFactory.create(qs, ds)) {
-            qExec.setTimeout(-1, TimeUnit.MILLISECONDS, 100, TimeUnit.MILLISECONDS) ;
+        try ( QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
+                .initialTimeout(-1, TimeUnit.MILLISECONDS)
+                .overallTimeout(100, TimeUnit.MILLISECONDS)
+                .build()) {
             ResultSet rs = qExec.execSelect() ;
             rs.next() ; // First timeout does not go off. Resets timer.
             rs.next() ; // Second timeout does not go off
@@ -219,7 +219,7 @@ public class TestQueryExecutionTimeout1
         ARQ.getContext().set(ARQ.queryTimeout, "10") ;
         QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
         ResultSet rs = qExec.execSelect() ;
-        exceptionExpected(rs, 50, 50, 150) ;
+        exceptionExpected(rs, 50, 50, 250) ;
     }
 
     @Test
@@ -229,7 +229,7 @@ public class TestQueryExecutionTimeout1
         ARQ.getContext().set(ARQ.queryTimeout, "20,10") ;
         QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
         ResultSet rs = qExec.execSelect() ;
-        exceptionExpected(rs, 50, 50, 150) ;
+        exceptionExpected(rs, 50, 50, 250) ;
     }
 
     @Test

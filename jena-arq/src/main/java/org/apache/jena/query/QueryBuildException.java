@@ -18,10 +18,10 @@
 
 package org.apache.jena.query;
 
-/** QueryBuildException is exception for all exceptions during query 
- *  execution construction. */
-
-
+/**
+ * QueryBuildException is exception for all exceptions during query execution
+ * construction.
+ */
 public class QueryBuildException extends QueryFatalException
 {
     public QueryBuildException() { super() ; }

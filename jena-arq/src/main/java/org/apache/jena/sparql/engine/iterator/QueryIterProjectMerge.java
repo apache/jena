@@ -95,7 +95,7 @@ public class QueryIterProjectMerge extends QueryIterRepeatApply {
                     // Checking!
                     Node n1 = outer.get(v) ;
                     if ( ! n1.equals(n2) )
-                        Log.warn(BindingUtils.class,  "merge: Mismatch : "+n1+" != "+n2);
+                        Log.warn(ProjectEnsureBindingConverter.class,  "merge: Mismatch : "+n1+" != "+n2);
                 }
             }
             return b2.build() ;

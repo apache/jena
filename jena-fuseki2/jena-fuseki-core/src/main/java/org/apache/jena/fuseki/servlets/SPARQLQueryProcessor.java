@@ -27,7 +27,6 @@ import static org.apache.jena.riot.WebContent.isHtmlForm;
 import static org.apache.jena.riot.WebContent.matchContentType;
 import static org.apache.jena.riot.web.HttpNames.*;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -44,10 +43,12 @@ import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.web.HttpNames;
-import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.engine.EngineLib;
+import org.apache.jena.sparql.engine.Timeouts;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
+import org.apache.jena.sparql.exec.QueryExecutionAdapter;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.web.HttpSC;
 
@@ -226,7 +227,8 @@ public abstract class SPARQLQueryProcessor extends ActionService
         try {
             InputStream input = action.getRequestInputStream();
             queryString = IO.readWholeFileAsUTF8(input);
-        } catch (IOException ex) {
+        } catch (Throwable ex) {
+            ActionLib.consumeBody(action);
             ServletOps.errorOccurred(ex);
         }
         execute(queryString, action);
@@ -302,9 +304,60 @@ public abstract class SPARQLQueryProcessor extends ActionService
      * @param dataset
      * @return QueryExecution
      */
-    @SuppressWarnings("deprecation")
     protected QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph dataset) {
-        return QueryExecution.create().query(query).dataset(dataset).context(action.getContext()).build();
+        QueryExecDatasetBuilder builder = QueryExec.newBuilder()
+                .dataset(dataset)
+                .query(query)
+                .context(action.getContext())
+                ;
+        setTimeouts(builder, action);
+        QueryExec qExec = builder.build();
+        return QueryExecutionAdapter.adapt(qExec);
+    }
+
+    /**
+     * Set the timeouts. The context timeout, which is the system settings, provides
+     * an upper bound to setting by protocol ?timeout.
+     */
+    private static void setTimeouts(QueryExecDatasetBuilder builder, HttpAction action) {
+        // Protocol settings.
+        long protocolInitialTimeout = -1;
+        long protocolOverallTimeout = -1;
+        String timeoutParameter = action.getRequestParameter("timeout");
+        if ( timeoutParameter != null ) {
+            Pair<Long, Long> pair1 = Timeouts.parseTimeoutStr(timeoutParameter, TimeUnit.SECONDS);
+            if ( pair1 != null ) {
+                protocolInitialTimeout = pair1.getLeft();
+                protocolOverallTimeout = pair1.getRight();
+            }
+        }
+
+        // Timeout from context.
+        long cxtInitialTimeout = -1;
+        long cxtOverallTimeout = -1;
+        String timeoutCxt = action.getContext().getAsString(ARQ.queryTimeout);
+        if ( timeoutCxt != null ) {
+            Pair<Long, Long> pair2 = Timeouts.parseTimeoutStr(timeoutCxt, TimeUnit.MILLISECONDS);
+            cxtInitialTimeout = pair2.getLeft();
+            cxtOverallTimeout = pair2.getRight();
+        }
+        long initialTimeout = chooseTimeout(cxtInitialTimeout, protocolInitialTimeout);
+        long overallTimeout = chooseTimeout(cxtOverallTimeout, protocolOverallTimeout);
+
+        if( initialTimeout > 0 )
+            builder.initialTimeout(initialTimeout, TimeUnit.MILLISECONDS);
+        if( overallTimeout > 0 )
+            builder.overallTimeout(overallTimeout, TimeUnit.MILLISECONDS);
+    }
+
+    // Choose the timeout : setupTimeout (if set) limits the protocolTimeout.
+    private static long chooseTimeout(long setupTimeout, long protocolTimeout) {
+        if ( setupTimeout < 0 )
+            return protocolTimeout;
+        if (protocolTimeout > 0 )
+            return Math.min(setupTimeout, protocolTimeout);
+        else
+            return setupTimeout;
     }
 
     /** Perform the {@link QueryExecution} once.
@@ -315,8 +368,6 @@ public abstract class SPARQLQueryProcessor extends ActionService
      * @return
      */
     protected SPARQLResult executeQuery(HttpAction action, QueryExecution queryExecution, Query requestQuery, String queryStringLog) {
-        setAnyProtocolTimeouts(queryExecution, action);
-
         if ( requestQuery.isSelectType() ) {
             ResultSet rs = queryExecution.execSelect();
 
@@ -363,20 +414,6 @@ public abstract class SPARQLQueryProcessor extends ActionService
         return null;
     }
 
-    private void setAnyProtocolTimeouts(QueryExecution qExec, HttpAction action) {
-        // The timeout string in the protocol is in seconds, not milliseconds.
-        String desiredTimeoutStr = null;
-        String timeoutHeader = action.getRequestHeader("Timeout");
-        String timeoutParameter = action.getRequestParameter("timeout");
-        if ( timeoutHeader != null )
-            desiredTimeoutStr = timeoutHeader;
-        if ( timeoutParameter != null )
-            desiredTimeoutStr = timeoutParameter;
-
-        // Merge (new timeout can't be greater than current settings for qExec)
-        EngineLib.parseSetTimeout(qExec, desiredTimeoutStr, TimeUnit.SECONDS, true);
-    }
-
     /** Choose the dataset for this SPARQL Query request.
      * @param action
      * @param query  Query - this may be modified to remove a DatasetDescription.
@@ -412,10 +449,6 @@ public abstract class SPARQLQueryProcessor extends ActionService
         out.setFlatMode(true);
         query.serialize(out);
         return out.asString();
-    }
-
-    private String getRemoteString(String queryURI) {
-        return HttpOp.execHttpGetString(queryURI);
     }
 
     // ---- Query parameters for validation

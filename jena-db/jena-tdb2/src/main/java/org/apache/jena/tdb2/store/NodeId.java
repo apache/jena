@@ -51,13 +51,15 @@ public class NodeId implements Comparable<NodeId>
     // Code search:
     // [64 bits]
 
-
     // Encoding:
+    // Long:
     //   8 bits type, except PTR which is 0 high bit.
     //   24 bits int
     //   64 bit value
     // The high byte of value1==type as integer value
-    // In-memory:
+    // Short:
+    //  64 bit value
+
     // Long:
     //   type PTR high bit zero, then 31+64 bits of value.
     //  Inlines:
@@ -65,12 +67,12 @@ public class NodeId implements Comparable<NodeId>
     //   value1 is 24 bits
     //   value2 is 64 bits
     //   type is a type and is OR'ed into value1 to store.
+
     // Short: 64 bit:
-    //   type PTR high bit zero, then 63 bits of value.
-    //  Inlines:
-    //   value1 is not used.
-    //   value2 is 56 bits
-    // type is a type and is OR'ed into value2 to store.
+    //   See NodeIdInline
+    //   High bit 0 => PTR => 63 bits
+    //   Bit 63 = 1, bit 62 =1 => double in 62 bits.
+    //   Bit 63 = 1, bit 62 = 0 => 6 bits of type, 56 bits of value
 
     final NodeIdType type;
     final int  value1;

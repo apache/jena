@@ -58,7 +58,7 @@ public class SPARQL_QueryGeneral extends ServletAction {
         static private DataAccessPoint dap = new DataAccessPoint("SPARQL_General", dSrv);
 
         static DataService emptyDataService() {
-            DataService dSrv = DataService.newBuilder(new DatasetGraphZero()).build();
+            DataService dSrv = DataService.newBuilder(DatasetGraphZero.create()).build();
             dSrv.goActive();
             return dSrv;
         }
@@ -85,7 +85,7 @@ public class SPARQL_QueryGeneral extends ServletAction {
             DatasetDescription datasetDesc = SPARQLProtocol.getDatasetDescription(action, query);
             if ( datasetDesc == null ) {
                 //ServletOps.errorBadRequest("No dataset description in protocol request or in the query string");
-                return Pair.create(new DatasetGraphZero(), query);
+                return Pair.create(DatasetGraphZero.create(), query);
             }
 
             // These will have been taken care of by the "getDatasetDescription"

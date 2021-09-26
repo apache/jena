@@ -29,22 +29,27 @@ public class AuthSetup {
     public final String user;
     public final String password;
     public final String realm;
-    
+
     public AuthSetup(String host, Integer port, String user, String password, String realm) {
         this.host = any(host, AuthScope.ANY_HOST);
-        this.port = (port == null || port <= 0 ) ? AuthScope.ANY_PORT : port; 
+        this.port = (port == null || port <= 0 ) ? AuthScope.ANY_PORT : port;
         this.user = user;
         this.password = password;
         this.realm = any(host, AuthScope.ANY_REALM);
     }
-    
+
     public AuthScope authScope() {
         return new AuthScope(host, port, realm, AuthScope.ANY_SCHEME);
     }
-    
+
     private <X> X any(X value, X anyVal) {
         if ( value == null )
             return anyVal;
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthSetup [host=" + host + ", port=" + port + ", user=" + user + ", password=......, realm=" + realm + "]";
     }
 }

@@ -205,7 +205,7 @@ public class ThriftRDF {
     public static ResultSet readResultSet(TProtocol protocol) {
         Thift2Binding t2b = new Thift2Binding(protocol) ;
         List<String> varsNames = Var.varNames(t2b.getVars()) ;
-        return new ResultSetStream(varsNames, null, t2b) ;
+        return ResultSetStream.create(varsNames, null, t2b) ;
     }
 
     public static void writeResultSet(OutputStream out, ResultSet resultSet) {

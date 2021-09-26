@@ -30,6 +30,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.rw.ReadAnything;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.graph.GraphFactory ;
@@ -371,6 +372,6 @@ public class ResultSetFactory {
      * @return ResultSet
      */
     static public ResultSet create(QueryIterator queryIterator, List<String> vars) {
-        return new ResultSetStream(vars, null, queryIterator);
+        return ResultSetStream.create(Var.varList(vars), queryIterator);
     }
 }

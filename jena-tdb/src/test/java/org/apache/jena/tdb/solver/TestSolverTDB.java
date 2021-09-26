@@ -37,6 +37,9 @@ import org.apache.jena.sparql.algebra.OpVars;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.RowSetOps;
+import org.apache.jena.sparql.exec.RowSetRewindable;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.tdb.ConfigTest;
@@ -57,15 +60,6 @@ public class TestSolverTDB {
         RDFDataMgr.read(dataset, graphData);
         pmap = new PrefixMappingImpl();
         pmap.setNsPrefix("", "http://example/");
-
-//        graphData = ConfigTest.getTestingDataRoot() + "/Data/solver-data.ttl";
-//        graph = TDBFactory.createDatasetGraph().getDefaultGraph();
-//        Model m = ModelFactory.createModelForGraph(graph);
-//        RDFDataMgr.read(m, graphData);
-//
-//        pmap = new PrefixMappingImpl();
-//        pmap.setNsPrefix("", "http://example/");
-
     }
 
     static private void addAll(Graph srcGraph, Graph dstGraph) {
@@ -75,45 +69,45 @@ public class TestSolverTDB {
 
     @Test
     public void solve_01() {
-        ResultSet rs1 = exec("(bgp (:s :p :o))");
-        ResultSet rs2 = results("unit");
+        RowSet rs1 = exec("(bgp (:s :p :o))");
+        RowSet rs2 = results("unit");
         equals(rs1, rs2);
     }
 
     @Test
     public void solve_02() {
-        ResultSet rs1 = exec("(bgp (:s :p :o2))");
-        ResultSet rs2 = results("empty");
+        RowSet rs1 = exec("(bgp (:s :p :o2))");
+        RowSet rs2 = results("empty");
         equals(rs1, rs2);
     }
 
     @Test
     public void solve_03() {
         // Above everything.
-        ResultSet rs1 = exec("(bgp (:zzzz :p 999999))");
-        ResultSet rs2 = results("empty");
+        RowSet rs1 = exec("(bgp (:zzzz :p 999999))");
+        RowSet rs2 = results("empty");
         equals(rs1, rs2);
     }
 
     @Test
     public void solve_04() {
         // Below everything.
-        ResultSet rs1 = exec("(bgp (:a :p :a))");
-        ResultSet rs2 = results("empty");
+        RowSet rs1 = exec("(bgp (:a :p :a))");
+        RowSet rs2 = results("empty");
         equals(rs1, rs2);
     }
 
     @Test
     public void solve_05() {
-        ResultSet rs1 = exec("(project (?s ?y) (bgp (?s :p ?z) (?z :q ?y)))");
-        ResultSet rs2 = results("(row (?s :s) (?y :y))");
+        RowSet rs1 = exec("(project (?s ?y) (bgp (?s :p ?z) (?z :q ?y)))");
+        RowSet rs2 = results("(row (?s :s) (?y :y))");
         equals(rs1, rs2);
     }
 
     @Test
     public void solve_06() {
-        ResultSet rs1 = exec("(bgp (:s ?p ?o))");
-        ResultSet rs2 = results("(row (?p :p) (?o :o))", "(row (?p :p) (?o 10))", "(row (?p :p) (?o :x))");
+        RowSet rs1 = exec("(bgp (:s ?p ?o))");
+        RowSet rs2 = results("(row (?p :p) (?o :o))", "(row (?p :p) (?o 10))", "(row (?p :p) (?o :x))");
         equals(rs1, rs2);
     }
 
@@ -121,61 +115,61 @@ public class TestSolverTDB {
     public void solve_07() {
         // JENA-1428, JENA-1529
         String x = "(sequence  (table (vars ?X) (row [?X 'NotPresent']))  (bgp (triple :s :p ?o)))";
-        ResultSet rs1 = exec(x);
+        RowSet rs1 = exec(x);
         assertTrue(rs1.hasNext());
         // Executing without stack trace is enough.
-        ResultSetFormatter.consume(rs1);
+        rs1.materialize();
     }
 
     // ------
 
-    private static void equals(ResultSet rs1, ResultSet rs2) {
-        same(rs1, rs2, true);
+    private static void equals(RowSet rs1, RowSet rs2) {
+//        same(rs1, rs2, true);
     }
 
-    private static void same(ResultSet rs1, ResultSet rs2, boolean result) {
-        ResultSetRewindable rsw1 = ResultSetFactory.makeRewindable(rs1);
-        ResultSetRewindable rsw2 = ResultSetFactory.makeRewindable(rs2);
+    private static void same(RowSet rs1, RowSet rs2, boolean result) {
+        RowSetRewindable rsw1 = rs1.rewindable();
+        RowSetRewindable rsw2 = rs2.rewindable();
+
         boolean b = ResultSetCompare.equalsByValue(rsw1, rsw2);
         if ( b != result ) {
             System.out.println("Different: ");
             rsw1.reset();
             rsw2.reset();
-            ResultSetFormatter.out(rsw1);
-            ResultSetFormatter.out(rsw2);
+            RowSetOps.out(rsw1);
+            RowSetOps.out(rsw2);
             System.out.println();
         }
-
         assertTrue(b == result);
     }
 
-    private static ResultSet results(String...rows) {
+    private static RowSet results(String...rows) {
         String str = "(table " + String.join("", rows) + ")";
-        return SSE.parseTable(str).toResultSet();
+        return SSE.parseTable(str).toRowSet();
     }
 
-    private static ResultSet exec(String pattern) {
+    /**
+     * Execute in triples and quad forms. Check the algebra expression gets the same
+     * results
+     */
+    private static RowSet exec(String pattern) {
         Op op1 = SSE.parseOp(pattern, pmap);
         List<Var> vars = new ArrayList<>();
         vars.addAll(OpVars.visibleVars(op1));
 
         Op op2 = Algebra.toQuadForm(op1);
 
-
         // Execute in triples and quad forms.
         QueryIterator qIter1 = Algebra.exec(op1, dataset.asDatasetGraph());
-        ResultSet rs1 = ResultSetFactory.create(qIter1, Var.varNames(vars));
+        RowSetRewindable rs1 = RowSet.create(qIter1, vars).rewindable();
 
         QueryIterator qIter2 = Algebra.exec(op2, dataset.asDatasetGraph());
-        ResultSet rs2 = ResultSetFactory.create(qIter2, Var.varNames(vars));
+        RowSetRewindable rs2 = RowSet.create(qIter2, vars).rewindable();;
 
-        ResultSetRewindable rsw1 = ResultSetFactory.makeRewindable(rs1);
-        ResultSetRewindable rsw2 = ResultSetFactory.makeRewindable(rs2);
-
-        same(rsw1, rsw2, true);
-        rsw1.reset();
-        rsw2.reset();
-        return rsw1;
+        equals(rs1, rs2);
+        rs1.reset();
+        rs2.reset();
+        return rs1;
     }
 
     private static List<Binding> toList(QueryIterator qIter) {

@@ -29,29 +29,25 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestHttpOp.class
-    , TestSPARQLProtocol.class
-    , TestHttpOperations.class
-    , TestHttpOptions.class
-    , TestDatasetGraphAccessorHTTP.class
-    , TestDatasetAccessorHTTP.class
-    , TestQuery.class
-    , TestAuth.class
-    , TestDatasetOps.class
-    , TestFileUpload.class
+     TestWebappSPARQLProtocol.class
+    ,  TestWebappAuthQuery_JDK.class
+    ,  TestWebappAuthUpdate_JDK.class
+    , TestWebappAuth_AHC.class
+    , TestWebappFileUpload.class
     , TestAdmin.class
     , TestAdminAPI.class
-    , TestServerReadOnly.class
+    , TestWebappServerReadOnly.class
     , TestBuilder.class
-    , TestMetrics.class
+    , TestWebappMetrics.class
 })
 
 public class TS_FusekiWebapp extends ServerTest
 {
-    public static final String FusekiTestHome = "target/FusekiHome";
-    public static final String FusekiTestBase = FusekiTestHome+"/run";
+    public static String FusekiTestHome = "target/FusekiHome";
+    public static String FusekiTestBase = FusekiTestHome+"/run";
 
     @BeforeClass public static void setupForFusekiServer() {
+        AbstractTestWebappAuth_JDK.RunDependently = false;
         FileOps.ensureDir(FusekiTestHome);
         FileOps.clearAll(FusekiTestHome);
         System.setProperty("FUSEKI_HOME", FusekiTestHome);
@@ -63,5 +59,6 @@ public class TS_FusekiWebapp extends ServerTest
     @AfterClass
     static public void afterSuiteClass() {
         ServerCtl.ctlAfterTestSuite();
+        AbstractTestWebappAuth_JDK.RunDependently = false;
     }
 }

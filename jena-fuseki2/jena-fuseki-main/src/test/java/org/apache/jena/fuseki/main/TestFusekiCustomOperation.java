@@ -22,6 +22,7 @@ import static org.apache.jena.fuseki.main.FusekiTestLib.expectFail;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.net.http.HttpRequest.BodyPublishers;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
@@ -39,8 +40,8 @@ import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.server.OperationRegistry;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.riot.WebContent;
-import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.web.HttpSC;
@@ -209,7 +210,7 @@ public class TestFusekiCustomOperation {
                 testServerCT(server, svcCall);
 
             // DELETE -> fails
-            int statusCode = expectFail(() -> HttpOp.execHttpDelete(svcCall));
+            int statusCode = expectFail(() -> HttpOp.httpDelete(svcCall));
             switch (statusCode) {
                 // Acceptable.
                 case HttpSC.BAD_REQUEST_400 :
@@ -227,7 +228,7 @@ public class TestFusekiCustomOperation {
 
     private static void testServerCT(FusekiServer server, String svcCall) {
         // Content-type
-        try (TypedInputStream stream = HttpOp.execHttpPostStream(svcCall, contentType, "", "text/plain")) {
+        try (TypedInputStream stream = HttpOp.httpPostStream(svcCall, contentType, BodyPublishers.ofString(""), "text/plain")) {
             assertNotNull(stream);
             String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
             assertValidResponseBody(customHandlerBodyPost, x);
@@ -238,13 +239,13 @@ public class TestFusekiCustomOperation {
 
     private static void testServerNoCT(FusekiServer server, String svcCall) {
         // Service endpoint name : GET
-        String s1 = HttpOp.execHttpGetString(svcCall);
+        String s1 = HttpOp.httpGetString(svcCall);
         if ( s1 == null )
-            throw new HttpException(HttpSC.NOT_FOUND_404, "Not Found", "");
+            throw new HttpException(HttpSC.NOT_FOUND_404, "Not Found");
         assertValidResponseBody(customHandlerBodyGet, s1);
 
         // Service endpoint name : POST
-        try (TypedInputStream stream = HttpOp.execHttpPostStream(svcCall, "ignored", "", "text/plain")) {
+        try (TypedInputStream stream = HttpOp.httpPostStream(svcCall, "ignored", BodyPublishers.ofString(""), "text/plain")) {
             assertNotNull(stream);
             String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
             assertValidResponseBody(customHandlerBodyPost, x);

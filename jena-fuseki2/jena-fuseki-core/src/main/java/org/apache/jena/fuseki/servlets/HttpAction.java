@@ -24,26 +24,34 @@ import static org.apache.jena.query.TxnType.WRITE;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.DeflaterInputStream;
+import java.util.zip.GZIPInputStream;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.system.ActionCategory;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.WebContent;
+import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
 
 /**
@@ -93,9 +101,10 @@ public class HttpAction
     public String responseContentType = null;
 
     // Cleared to archive:
-    public Map <String, String> headers = new HashMap<>();
+    /*package*/ Map <String, String> headers = new HashMap<>();
     private HttpServletRequest request;
     private HttpServletResponseTracker response;
+
     private final String actionURI;
     private final String contextPath;
 
@@ -294,12 +303,10 @@ public class HttpAction
             try { transactional.commit(); } catch (RuntimeException ex) {}
             try { transactional.end(); } catch (RuntimeException ex) {}
         }
-        activeDSG = null;
     }
 
     public void end() {
         dataService.finishTxn();
-
         if ( transactional.isInTransaction() ) {
             Log.warn(this, "Transaction still active - no commit or abort seen (forced abort)");
             try {
@@ -312,7 +319,19 @@ public class HttpAction
             try { transactional.end(); }
             catch (RuntimeException ex) {}
         }
+        endOfAction();
+    }
+
+    private void endOfAction() {
         activeDSG = null;
+        // Should be handled where necessary in the request handling.
+//        if ( inputStream != null ) {
+//            ActionLib.consumeBody(this);
+//        }
+//        if ( outputStream != null ) {
+//            IO.flush(outputStream);
+//            IO.close(outputStream);
+//        }
     }
 
     public void commit() {
@@ -444,15 +463,15 @@ public class HttpAction
         return request.getMethod()+" "+request.getRequestURL().toString();
     }
 
-    // ---- Request - response abstraction. 
-    
+    // ---- Request - response abstraction.
+
     public String getMethod()                           { return request.getMethod(); }
 
     public HttpServletRequest getRequest()              { return request; }
     public HttpServletResponse getResponse()            { return response; }
-    
+
     // ---- Request accessors
-    
+
     public String getRequestParameter(String string) {
         return request.getParameter(string);
     }
@@ -460,11 +479,11 @@ public class HttpAction
     public Enumeration<String> getRequestParameterNames() {
         return request.getParameterNames();
     }
-    
+
     public String[] getRequestParameterValues(String name) {
         return request.getParameterValues(name);
     }
-    
+
     public Map<String, String[]> getRequestParameterMap() {
         return request.getParameterMap();
     }
@@ -476,11 +495,11 @@ public class HttpAction
     public Enumeration<String> getRequestHeaderNames() {
         return request.getHeaderNames();
     }
-    
+
     public String getRequestHeader(String name) {
         return request.getHeader(name);
     }
-    
+
     public Enumeration<String> getRequestHeaders(String name) {
         return request.getHeaders(name);
     }
@@ -496,19 +515,32 @@ public class HttpAction
     public int getRequestContentLength() {
         return request.getContentLength();
     }
-    
+
     public long getRequestContentLengthLong() {
         return request.getContentLengthLong();
     }
 
+    private InputStream inputStream = null;
+
     public InputStream getRequestInputStream() throws IOException {
+        if ( inputStream == null )
+            inputStream = getInputStreamOneTime(this);
+        return inputStream;
+    }
+
+    /** Get the request input stream, bypassing any compression.
+     * The state of the input stream is unknown.
+     * Only useful for skipping a body on a connection.
+     * @throws IOException
+     */
+    public InputStream getRequestInputStreamRaw() throws IOException {
         return request.getInputStream();
     }
 
     public String getRequestQueryString() {
         return request.getQueryString();
     }
-    
+
     public String getRequestRequestURI() {
         return request.getRequestURI();
     }
@@ -516,11 +548,11 @@ public class HttpAction
     public StringBuffer getRequestRequestURL() {
         return request.getRequestURL();
     }
-    
+
     public String getRequestPathInfo() {
         return request.getPathInfo();
     }
-    
+
     public String getRequestServletPath() {
         return request.getServletPath();
     }
@@ -528,11 +560,56 @@ public class HttpAction
     public int getRequestLocalPort() {
         return request.getLocalPort();
     }
-    
+
     // ---- Response setters
 
     public void setResponseCharacterEncoding(String charset) {
         response.setCharacterEncoding(charset);
+    }
+
+    /**
+     * Get the output stream for the response, respecting "Accept-Encoding" in the
+     * request. This function sets the "Content-Encoding" header of the response if
+     * compression is added.
+     * @implNote
+     * This most be called only once per response is encoding
+     * is used because GZIPOutputStream adds header information when created.
+     */
+    private static OutputStream __getOutputStreamOneTime(HttpAction action) {
+        try {
+            OutputStream output = action.response.getOutputStream();
+            // Ignore requests to encode response.
+            if ( true )
+                return output;
+            // This does not work.
+            // It requires:
+            // * better handling so that the Content-Encoding is "chunked, gzip", not "gzip", when
+            //   combined with streaming. Jetty seems to lose this only sending "chunked".
+            // * The client to cooperate.
+            // It is of dubious value to gzip one-off responses.
+            // Also needs to work with Content-Length
+            throw new NotImplemented("Content-Encoding: chunked, gzip");
+
+//            String encoding = action.request.getHeader(HttpNames.hAcceptEncoding);
+//            if ( encoding == null )
+//                return output;
+//            String[] options = ActionLib.splitOnComma(encoding);
+//            if ( ActionLib.splitContains(options, WebContent.encodingGzip) ) {
+//                action.response.setHeader(HttpNames.hContentEncoding, WebContent.encodingGzip);
+//                // This must be closed to finish the compression.
+//                // flush is not enough.
+//                return new GZIPOutputStream(output, 8192);
+//            }
+//            if ( ActionLib.splitContains(options, WebContent.encodingDeflate) ) {
+//                action.response.setHeader(HttpNames.hContentEncoding, WebContent.encodingDeflate);
+//                return new DeflaterOutputStream(output);
+//            }
+//            // "compress" is legacy - ignore.
+//            // Bad. Log and continue with no added encoding.
+//            String msg = HttpNames.hAcceptEncoding+" '"+encoding+"' encoding not supported";
+//            action.log.warn(msg);
+//            return output;
+        } catch (IOException ex) { IO.exception(ex); return null; }
     }
 
     public void setResponseContentType(String ct) {
@@ -542,7 +619,7 @@ public class HttpAction
     public void setResponseContentLength(int length) {
         response.setContentLength(length);
     }
-    
+
     public void setResponseContentLengthLong(long length) {
         response.setContentLengthLong(length);
     }
@@ -561,5 +638,32 @@ public class HttpAction
 
     public PrintWriter getResponseWriter() throws IOException {
         return response.getWriter();
+    }
+
+    /**
+     * Get the InputStream for the request, adding a compression decoder if the
+     * "Content-Encoding" is set in the request. Responds 400 if the encoding is not
+     * one that the server understands.
+     */
+    private static InputStream getInputStreamOneTime(HttpAction action) throws IOException {
+        InputStream input = action.request.getInputStream();
+        String encoding = action.request.getHeader(HttpNames.hContentEncoding);
+        if ( encoding == null )
+            return input;
+        switch (encoding) {
+            case WebContent.encodingGzip :
+                return new GZIPInputStream(input, 8192);
+            case WebContent.encodingDeflate :
+                return new DeflaterInputStream(input);
+                // Not supported:
+            case "br" :
+                // From Apache Common Compress but needs extra org.brotli.dec.BrotliInputStream
+            case "compress" :
+                // Legacy - not supported
+            default :
+        }
+        // Not supported or not understood.
+        ServletOps.error(HttpSC.BAD_REQUEST_400, HttpNames.hContentEncoding+" '"+encoding+"' encoding not supported");
+        return null;
     }
 }

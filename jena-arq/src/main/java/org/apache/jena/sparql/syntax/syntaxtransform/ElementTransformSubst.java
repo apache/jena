@@ -23,6 +23,7 @@ import java.util.Map ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Node_Variable ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.TriplePath ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.graph.NodeTransform ;
@@ -30,7 +31,7 @@ import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.ElementPathBlock ;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock ;
 
-/** An {@link ElementTransform} which replaces occurrences of a variable with a Node value. 
+/** An {@link ElementTransform} which replaces occurrences of a variable with a Node value.
  * Because a {@link Var} is a subclass of {@link Node_Variable} which is a {@link Node},
  * this includes variable renaming.
  * <p>
@@ -102,6 +103,22 @@ public class ElementTransformSubst extends ElementTransformCopyBase {
         if ( s == s1 && p == p1 && o == o1 )
             return triple ;
         return Triple.create(s1, p1, o1) ;
+    }
+
+    @Override
+    public Quad transform(Quad quad) {
+        Node g = quad.getGraph() ;
+        Node g1 = transform(g) ;
+        Node s = quad.getSubject() ;
+        Node s1 = transform(s) ;
+        Node p = quad.getPredicate() ;
+        Node p1 = transform(p) ;
+        Node o = quad.getObject() ;
+        Node o1 = transform(o) ;
+
+        if ( g == g1 && s == s1 && p == p1 && o == o1 )
+            return quad ;
+        return Quad.create(g1, s1, p1, o1) ;
     }
 
     private Node transform(Node n) {

@@ -69,7 +69,7 @@ public class EvalSparql {
             // Done with pre-binding.
             Model model = ModelFactory.createModelForGraph(data);
             QuerySolutionMap qsm = parametersToPreBinding(model, node, sparqlComponent.getParams());
-            try ( QueryExecution qExec = QueryExecutionFactory.create(query, model, qsm)) {
+            try ( QueryExecution qExec = QueryExecution.create().query(query).model(model).initialBinding(qsm).build() ) {
                 return evalSparqlOneVar(qExec);
             }
         }

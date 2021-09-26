@@ -28,15 +28,14 @@ import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.query.LabelExistsException ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.util.DatasetUtils ;
 import org.apache.jena.system.Txn;
 
-/** ModDataset: arguments to build a dataset - 
+/** ModDataset: arguments to build a dataset -
  * see also ModDatasetAssembler which extends ModDataset
- * with a description parameter. */ 
+ * with a description parameter. */
 
 public class ModDatasetGeneral extends ModDataset
 {
@@ -44,12 +43,12 @@ public class ModDatasetGeneral extends ModDataset
     protected final ArgDecl graphDecl      = new ArgDecl(ArgDecl.HasValue, "graph") ;
     protected final ArgDecl dataDecl       = new ArgDecl(ArgDecl.HasValue, "data") ;
     protected final ArgDecl namedGraphDecl = new ArgDecl(ArgDecl.HasValue, "named", "namedgraph", "namedGraph", "namedData", "nameddata") ;
-    
+
     private List<String> dataURLs                = null ;
     private List<String> graphURLs               = null ;
     private List<String> namedGraphURLs          = null ;
     protected ModDatasetGeneral() {}
-    
+
     @Override
     public void registerWith(CmdGeneral cl) {
         cl.getUsage().startCategory("Dataset") ;
@@ -70,7 +69,7 @@ public class ModDatasetGeneral extends ModDataset
         graphURLs = cmdLine.getValues(graphDecl);
         namedGraphURLs = cmdLine.getValues(namedGraphDecl);
     }
-    
+
     @Override
     public Dataset createDataset() {
         // If nothing specified for this module, Leave alone and hope the query has FROM/FROM NAMED
@@ -78,19 +77,19 @@ public class ModDatasetGeneral extends ModDataset
              (graphURLs == null || graphURLs.size() == 0) &&
              (namedGraphURLs == null || namedGraphURLs.size() == 0) )
             return null ;
-        
+
         Dataset ds = DatasetFactory.createTxnMem() ;
         addGraphs(ds) ;
         dataset = ds ;
         return dataset ;
     }
-        
+
     static <X> boolean hasEntries(List<X> list) {
         if ( list == null )
             return false ;
         return ! list.isEmpty() ;
     }
-    
+
     protected void addGraphs(Dataset ds) {
         try {
             if ( hasEntries(dataURLs) ) {
@@ -109,9 +108,7 @@ public class ModDatasetGeneral extends ModDataset
                 List<String> x = ListUtils.toList(namedGraphURLs.stream().map(IRILib::filenameToIRI));
                 DatasetUtils.addInGraphs(ds, graphURLs, x, null) ;
             }
-        } 
-        catch (LabelExistsException ex)
-        { throw new CmdException(ex.getMessage()) ; }
+        }
         catch (JenaException ex)
         { throw ex ; }
         catch (Exception ex)

@@ -18,6 +18,19 @@
 
 package org.apache.jena.sparql.function.scripting;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.script.*;
+
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.Pool;
 import org.apache.jena.atlas.lib.PoolBase;
@@ -30,18 +43,6 @@ import org.apache.jena.sparql.expr.ExprUndefFunction;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase;
 import org.apache.jena.sparql.sse.builders.ExprBuildException;
-
-import javax.script.*;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ScriptFunction extends FunctionBase {
 	static {
@@ -143,7 +144,7 @@ public class ScriptFunction extends FunctionBase {
 
         String functionLibFile = ARQ.getContext().getAsString(LanguageSymbols.scriptLibrary(lang));
         if (functionLibFile != null) {
-            try (Reader reader = Files.newBufferedReader(Paths.get(functionLibFile), StandardCharsets.UTF_8)) {
+            try (Reader reader = Files.newBufferedReader(Path.of(functionLibFile), StandardCharsets.UTF_8)) {
                 engine.eval(reader);
             } catch (NoSuchFileException | FileNotFoundException ex) {
                 throw new RiotNotFoundException("File: " + functionLibFile);

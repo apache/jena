@@ -38,17 +38,17 @@ public abstract class AbstractTestDyadicDatasetGraph {
     public abstract DatasetGraph testInstance(DatasetGraph left, DatasetGraph right, Context c);
 
     private DatasetGraph emptyDsg() {
-        return testInstance(createTxnMem(), createTxnMem(), Context.emptyContext);
+        return testInstance(createTxnMem(), createTxnMem(), Context.emptyContext());
     }
 
     @Test(expected = NullPointerException.class)
     public void nullDatasetGraphsNotAllowed() {
-        testInstance(null, null, Context.emptyContext);
+        testInstance(null, null, Context.emptyContext());
     }
 
     @Test(expected = NullPointerException.class)
     public void nullContextNotAllowed() {
-        testInstance(new DatasetGraphZero(), new DatasetGraphZero(), null);
+        testInstance(DatasetGraphZero.create(), DatasetGraphZero.create(), null);
     }
 
     @Test(expected = UnsupportedOperationException.class)

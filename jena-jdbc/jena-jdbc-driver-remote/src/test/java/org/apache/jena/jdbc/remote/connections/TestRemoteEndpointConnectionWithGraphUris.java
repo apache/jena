@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.jena.jdbc.remote.FusekiTestServer;
-import org.apache.jena.jdbc.utils.TestUtils;
+import org.apache.jena.jdbc.remote.FusekiJdbcTestServer;
+import org.apache.jena.jdbc.utils.TestJdbcUtils;
 import org.apache.jena.query.Dataset ;
 import org.junit.* ;
 
@@ -43,10 +43,10 @@ public class TestRemoteEndpointConnectionWithGraphUris extends AbstractRemoteEnd
      */
     private static final String DEFAULT_GRAPH_URI = "http://example.org/defaultGraph";
 
-    @BeforeClass public static void ctlBeforeClass() { FusekiTestServer.ctlBeforeClass(); }
-    @AfterClass  public static void ctlAfterClass()  { FusekiTestServer.ctlAfterClass(); }
-    @Before      public void ctlBeforeTest()         { FusekiTestServer.ctlBeforeTest(); }
-    @After       public void ctlAfterTest()          { FusekiTestServer.ctlAfterTest(); } 
+    @BeforeClass public static void ctlBeforeClass() { FusekiJdbcTestServer.ctlBeforeClass(); }
+    @AfterClass  public static void ctlAfterClass()  { FusekiJdbcTestServer.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()         { FusekiJdbcTestServer.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { FusekiJdbcTestServer.ctlAfterTest(); } 
 
     @Override
     protected boolean supportsTimeouts() {
@@ -59,7 +59,7 @@ public class TestRemoteEndpointConnectionWithGraphUris extends AbstractRemoteEnd
     protected JenaConnection getConnection() throws SQLException {
         List<String> defaultGraphs = new ArrayList<>();
         defaultGraphs.add(DEFAULT_GRAPH_URI);
-        return new RemoteEndpointConnection(FusekiTestServer.serviceQuery(), FusekiTestServer.serviceUpdate(), defaultGraphs, null,
+        return new RemoteEndpointConnection(FusekiJdbcTestServer.serviceQuery(), FusekiJdbcTestServer.serviceUpdate(), defaultGraphs, null,
                 defaultGraphs, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, null, null);
     }
 
@@ -77,10 +77,10 @@ public class TestRemoteEndpointConnectionWithGraphUris extends AbstractRemoteEnd
         }
 
         // Set up the dataset
-        ds = TestUtils.renameGraph(ds, null, DEFAULT_GRAPH_URI);
+        ds = TestJdbcUtils.renameGraph(ds, null, DEFAULT_GRAPH_URI);
         Assert.assertEquals(0, ds.getDefaultModel().size());
-        TestUtils.copyToRemoteDataset(ds, FusekiTestServer.serviceGSP());
-        return new RemoteEndpointConnection(FusekiTestServer.serviceQuery(), FusekiTestServer.serviceUpdate(), defaultGraphs, namedGraphs,
+        TestJdbcUtils.copyToRemoteDataset(ds, FusekiJdbcTestServer.serviceGSP());
+        return new RemoteEndpointConnection(FusekiJdbcTestServer.serviceQuery(), FusekiJdbcTestServer.serviceUpdate(), defaultGraphs, namedGraphs,
                 defaultGraphs, namedGraphs, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, null, null);
     }
 

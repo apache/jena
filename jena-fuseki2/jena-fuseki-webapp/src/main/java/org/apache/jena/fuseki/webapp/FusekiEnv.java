@@ -19,8 +19,6 @@
 package org.apache.jena.fuseki.webapp;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import org.apache.commons.lang3.SystemUtils;
 
 /**
@@ -109,7 +107,7 @@ public class FusekiEnv {
             if ( x1 == null )
                 x1 = mode.dftFusekiHome;
             if ( x1 != null )
-                FUSEKI_HOME = Paths.get(x1);
+                FUSEKI_HOME = Path.of(x1);
         }
 
         if ( FUSEKI_BASE == null ) {
@@ -117,7 +115,7 @@ public class FusekiEnv {
             if ( x2 == null )
                 x2 = mode.dftFusekiBase;
             if ( x2 != null )
-                FUSEKI_BASE = Paths.get(x2);
+                FUSEKI_BASE = Path.of(x2);
             else {
                 if ( FUSEKI_HOME != null )
                     FUSEKI_BASE = FUSEKI_HOME.resolve(ENV_runArea);
@@ -125,7 +123,7 @@ public class FusekiEnv {
                     // This is bad - there should have been a default by now.
                     logInitError("Can't find a setting for FUSEKI_BASE - guessing wildy");
                     // Neither FUSEKI_HOME nor FUSEKI_BASE set.
-                    FUSEKI_BASE = Paths.get(DFT_FUSEKI_BASE);
+                    FUSEKI_BASE = Path.of(DFT_FUSEKI_BASE);
                 }
             }
         }

@@ -59,6 +59,11 @@ public class ResultsWriter {
             return this;
         }
 
+        private void ensureContext() {
+            if ( context == null )
+                context = new Context();
+        }
+
         /** Set a value in the writing context. */
         public Builder set(Symbol symbol, Object value) {
             if ( context == null )
@@ -110,7 +115,7 @@ public class ResultsWriter {
         this.context = context;
     }
 
-    /** Write a result set, using the configurartion of the {@code ResultWriter}, to a file */
+    /** Write a result set, using the configuration of the {@code ResultsWriter}, to a file */
     public void write(String filename, ResultSet resultSet) {
         Objects.requireNonNull(filename);
         Objects.requireNonNull(resultSet);
@@ -126,7 +131,7 @@ public class ResultsWriter {
         write(output, resultSet, null, lang);
     }
 
-    /** Write a boolean result, using the configurartion of the {@code ResultWriter}, to a file */
+    /** Write a boolean result, using the configuration of the {@code ResultWriter}, to a file */
     public void write(String filename, boolean booleanResult) {
         Objects.requireNonNull(filename);
         try ( OutputStream out = openURL(filename) ) {
@@ -134,7 +139,7 @@ public class ResultsWriter {
         } catch (IOException ex) { IO.exception(ex); }
     }
 
-    /** Write a boolean result, using the configurartion of the {@code ResultWriter}, to an {@code OutputStream}. */
+    /** Write a boolean result, using the configuration of the {@code ResultWriter}, to an {@code OutputStream}. */
     public void write(OutputStream output, boolean booleanResult) {
         Objects.requireNonNull(output);
         write(output, null, booleanResult, lang);

@@ -17,28 +17,20 @@
  */
 package org.apache.jena.fuseki.geosparql;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import com.beust.jcommander.JCommander;
+
 import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.update.UpdateExecutionFactory;
-import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateProcessor;
-import org.apache.jena.update.UpdateRequest;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.jena.update.*;
+import org.junit.*;
 
 /**
  *
@@ -84,7 +76,9 @@ public class EmptyTest {
                 + "}";
 
         UpdateRequest updateRequest = UpdateFactory.create(update);
-        UpdateProcessor updateProcessor = UpdateExecutionFactory.createRemote(updateRequest, SERVER.getLocalServiceURL());
+        UpdateProcessor updateProcessor = UpdateExecution.service(SERVER.getLocalServiceURL()).update(updateRequest).build();
+
+        //UpdateProcessor updateProcessor = UpdateExecutionFactory.createRemote(updateRequest, SERVER.getLocalServiceURL());
         updateProcessor.execute();
 
         System.out.println("Server: " + SERVER.getLocalServiceURL());

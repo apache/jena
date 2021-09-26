@@ -20,16 +20,21 @@ package org.apache.jena.rdfconnection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
@@ -71,15 +76,15 @@ public abstract class AbstractTestRDFConnection {
         ("(graph (:s :p :o) (:s2 :p2 :o))"
         );
 
-    static DatasetGraph dsg        = SSE.parseDatasetGraph(dsgdata);
-    static Dataset      dataset    = DatasetFactory.wrap(dsg);
-    static DatasetGraph dsg2       = SSE.parseDatasetGraph(dsgdata2);
-    static Dataset      dataset2   = DatasetFactory.wrap(dsg2);
+    static DatasetGraph dsgTest1       = SSE.parseDatasetGraph(dsgdata);
+    static Dataset      datasetTest1   = DatasetFactory.wrap(dsgTest1);
+    static DatasetGraph dsgTest2       = SSE.parseDatasetGraph(dsgdata2);
+    static Dataset      datasetTest2   = DatasetFactory.wrap(dsgTest2);
 
-    static String       graphName  = "http://test/graph";
-    static String       graphName2 = "http://test/graph2";
-    static Model        model1     = ModelFactory.createModelForGraph(SSE.parseGraph(graph1));
-    static Model        model2     = ModelFactory.createModelForGraph(SSE.parseGraph(graph2));
+    static String       graphName      = "http://test/graph";
+    static String       graphName2     = "http://test/graph2";
+    static Model        model1         = ModelFactory.createModelForGraph(SSE.parseGraph(graph1));
+    static Model        model2         = ModelFactory.createModelForGraph(SSE.parseGraph(graph2));
     // ---- Data
 
     @Test public void connect_01() {
@@ -104,38 +109,38 @@ public abstract class AbstractTestRDFConnection {
 
     @Test public void dataset_put_1() {
         try ( RDFConnection conn = connection() ) {
-            conn.putDataset(dataset);
+            conn.putDataset(datasetTest1);
             Dataset ds1 = conn.fetchDataset();
-            assertTrue("Datasets not isomorphic", isomorphic(dataset, ds1));
+            assertTrue("Datasets not isomorphic", isomorphic(datasetTest1, ds1));
         }
     }
 
     @Test public void dataset_put_2() {
         try ( RDFConnection conn = connection() ) {
-            conn.putDataset(dataset);
-            conn.putDataset(dataset2);
+            conn.putDataset(datasetTest1);
+            conn.putDataset(datasetTest2);
             Dataset ds1 = conn.fetchDataset();
-            assertTrue("Datasets not isomorphic", isomorphic(dataset2, ds1));
+            assertTrue("Datasets not isomorphic", isomorphic(datasetTest2, ds1));
         }
     }
 
     @Test public void dataset_post_1() {
         try ( RDFConnection conn = connection() ) {
-            conn.loadDataset(dataset);
+            conn.loadDataset(datasetTest1);
             Dataset ds1 = conn.fetchDataset();
-            assertTrue("Datasets not isomorphic", isomorphic(dataset, ds1));
+            assertTrue("Datasets not isomorphic", isomorphic(datasetTest1, ds1));
         }
     }
 
     @Test public void dataset_post_2() {
         try ( RDFConnection conn = connection() ) {
-            conn.loadDataset(dataset);
-            conn.loadDataset(dataset2);
+            conn.loadDataset(datasetTest1);
+            conn.loadDataset(datasetTest2);
             Dataset ds1 = conn.fetchDataset();
             long x = Iter.count(ds1.listNames());
             assertEquals("NG count", 3, x);
-            assertFalse("Datasets are isomorphic", isomorphic(dataset, ds1));
-            assertFalse("Datasets are isomorphic", isomorphic(dataset2, ds1));
+            assertFalse("Datasets are isomorphic", isomorphic(datasetTest1, ds1));
+            assertFalse("Datasets are isomorphic", isomorphic(datasetTest2, ds1));
         }
     }
 
@@ -344,6 +349,32 @@ public abstract class AbstractTestRDFConnection {
         }
     }
 
+    @Test public void query_build_01() {
+        try ( RDFConnection conn = connection() ) {
+            Txn.executeRead(conn, ()->{
+                ResultSet rs = conn.newQuery().query("SELECT * { ?s ?p ?o}").select();
+                assertNotNull(rs);
+            });
+        }
+    }
+
+    @Test public void query_build_02() {
+        try ( RDFConnection conn = connection() ) {
+            Txn.executeRead(conn, ()->{
+                QuerySolutionMap qsm = new QuerySolutionMap();
+                qsm.add("X", ResourceFactory.createTypedLiteral("123", XSDDatatype.XSDinteger));
+                QueryExecution qExec = conn.newQuery().query("SELECT ?X { }")
+                        .substitution(qsm)
+                        .build();
+                String s = qExec.getQueryString();
+                assertTrue(s.contains("123"));
+                ResultSet rs = qExec.execSelect();
+                RDFNode x = rs.next().get("X");
+                assertNotNull(x);
+            });
+        }
+    }
+
     @Test public void update_01() {
         try ( RDFConnection conn = connection() ) {
             conn.update("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
@@ -373,17 +404,16 @@ public abstract class AbstractTestRDFConnection {
     }
     // Not all Transactional support abort.
     @Test public void transaction_commit_read_01() {
-        String testDataFile = DIR+"data.trig";
         try ( RDFConnection conn = connection() ) {
 
             conn.begin(ReadWrite.WRITE);
-            conn.loadDataset(dataset);
+            conn.loadDataset(datasetTest1);
             conn.commit();
             conn.end();
 
             conn.begin(ReadWrite.READ);
             Model m = conn.fetch();
-            assertTrue(isomorphic(m, dataset.getDefaultModel()));
+            assertTrue(isomorphic(m, datasetTest1.getDefaultModel()));
             conn.end();
         }
     }
@@ -406,12 +436,21 @@ public abstract class AbstractTestRDFConnection {
         }
     }
 
-    //@Test(expected=JenaTransactionException.class)
+    @Test(expected=JenaTransactionException.class)
     public void transaction_bad_01() {
         try ( RDFConnection conn = connection() ) {
             conn.begin(ReadWrite.WRITE);
             // Should have conn.commit();
             conn.end();
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test public void setTimeout() {
+        try ( RDFConnection rdfConnection = connection() ) {
+            QueryExecution queryExecution = rdfConnection.query("ASK{}");
+            queryExecution.setTimeout(1000);
+            queryExecution.execAsk();
         }
     }
 }

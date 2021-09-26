@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.StringReader ;
-import java.nio.file.Paths ;
+import java.nio.file.Path;
 
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.StrUtils ;
@@ -43,7 +43,7 @@ public class TestJenaReaderRIOT
     private static final String directory = "testing/RIOT/Reader" ;
 
     private static Context context = new Context() ;
-    
+
     @Test public void read_01() { jenaread("D.nt") ; }
     @Test public void read_02() { jenaread("D.ttl") ; }
     @Test public void read_03() { jenaread("D.rdf") ; }
@@ -65,11 +65,11 @@ public class TestJenaReaderRIOT
 
     @Test public void read_22a() { jenaread("D-ttl", "TURTLE") ; }
     @Test public void read_22b() { jenaread("D-ttl", "TTL") ; }
-    
+
     @Test public void read_23a()  { jenaread("D-rdf", "RDF/XML") ; }
     @Test public void read_23b()  { jenaread("D-rdf", "RDFXML") ; }
     @Test public void read_24()   { jenaread("D-json", "RDF/JSON") ; }
-    
+
     @Test public void read_30()
     {
         {
@@ -82,27 +82,27 @@ public class TestJenaReaderRIOT
         Model m1 = ModelFactory.createDefaultModel() ;
         m1.read(in1, null, "RDF/XML") ;
     }
-    
+
     // test read from StringReader..
     @Test public void read_StringReader_31()
     {
         String x = "<s> <p> <p> ." ;
-        
+
         {
             StringReader s = new StringReader(x) ;
             Model m = ModelFactory.createDefaultModel() ;
             RDFDataMgr.read(m, s, null, RDFLanguages.NTRIPLES) ;
         }
-        
+
         StringReader s1 = new StringReader("<s> <p> <p> .") ;
         Model m1 = ModelFactory.createDefaultModel() ;
         m1.read(s1, null, "N-TRIPLES") ;
     }
-    
+
     @Test public void read_StringReader_32()
     {
         String x = StrUtils.strjoinNL(
-            "<rdf:RDF", 
+            "<rdf:RDF",
             "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"",
             "   xmlns:j.0=\"http://example/\">" ,
             "  <rdf:Description rdf:about=\"http://example/s\">" ,
@@ -120,29 +120,29 @@ public class TestJenaReaderRIOT
     }
 
     // Stream opening is hardwired into jena!
-    @Test public void read_base_1() 
+    @Test public void read_base_1()
     { jenaread("D-no-base.ttl", "TTL", "http://baseuri/") ; }
-    
+
     @Test public void read_input_1() throws IOException
     { jenaread_stream("D.ttl", "TTL") ; }
-        
+
     @Test public void read_input_2() throws IOException
     { jenaread_stream("D.rdf", "RDF/XML") ; }
-    
-    private static final String plainRelFnTTL = directory+"/D.ttl" ; 
-    private static final String plainRelFnRDFXML = directory+"/D.rdf" ; 
-    
+
+    private static final String plainRelFnTTL = directory+"/D.ttl" ;
+    private static final String plainRelFnRDFXML = directory+"/D.rdf" ;
+
     // Ways to pass in the filename.
     // The RDF/XML path is slightly different so test it as well.
-    
+
     @Test public void read_url_1() {
         modelRead(plainRelFnTTL) ;
     }
-    
+
     @Test public void read_url_1x() {
         modelRead(plainRelFnRDFXML) ;
     }
-    
+
     @Test public void read_url_2() {
         modelRead("file:"+plainRelFnTTL) ;
     }
@@ -152,24 +152,24 @@ public class TestJenaReaderRIOT
     }
 
     @Test public void read_url_3() {
-        String cwd = Paths.get(".").toAbsolutePath().normalize().toString() ;
+        String cwd = Path.of(".").toAbsolutePath().normalize().toString() ;
         modelRead("file:"+cwd+"/"+plainRelFnTTL) ;
     }
-    
+
     @Test public void read_url_3x() {
-        String cwd = Paths.get(".").toAbsolutePath().normalize().toString() ;
+        String cwd = Path.of(".").toAbsolutePath().normalize().toString() ;
         modelRead("file:"+cwd+"/"+plainRelFnRDFXML) ;
     }
-    
+
     @Test public void read_url_4() {
-        String cwd = Paths.get(".").toAbsolutePath().normalize().toString() ;
+        String cwd = Path.of(".").toAbsolutePath().normalize().toString() ;
         String fn = "file:"+cwd+"/"+plainRelFnTTL ;
         String fn2 = IRILib.filenameToIRI(fn) ;
         modelRead(fn2) ;
     }
-    
+
     @Test public void read_url_4x() {
-        String cwd = Paths.get(".").toAbsolutePath().normalize().toString() ;
+        String cwd = Path.of(".").toAbsolutePath().normalize().toString() ;
         String fn = "file:"+cwd+"/"+plainRelFnRDFXML ;
         String fn2 = IRILib.filenameToIRI(fn) ;
         modelRead(fn2) ;
@@ -178,13 +178,13 @@ public class TestJenaReaderRIOT
     private static Model modelRead(String fn) {
         Model m = ModelFactory.createDefaultModel();
         m.read(fn) ;
-        return m ; 
+        return m ;
     }
-    
+
     // -----------------------------------------
-    
+
     private static String filename(String filename) { return directory+"/"+filename ; }
-    
+
     private static void jenaread_stream(String filename, String lang) throws IOException {
         filename = filename(filename);
 
@@ -217,7 +217,7 @@ public class TestJenaReaderRIOT
         m.read(dataurl);
         assertTrue(m.size() != 0);
     }
-    
+
     private static void jenaread(String dataurl, String lang) {
         // read via WebReader to make sure the test setup is right.
         dataurl = filename(dataurl);
@@ -243,7 +243,7 @@ public class TestJenaReaderRIOT
         dataurl = filename(dataurl) ;
         Model m1 = ModelFactory.createDefaultModel() ;
         Model m2 = ModelFactory.createDefaultModel() ;
-        
+
         // This call
         RDFDataMgr.read(m1, dataurl, base, RDFLanguages.nameToLang(lang)) ;
         // should be an implementation of:

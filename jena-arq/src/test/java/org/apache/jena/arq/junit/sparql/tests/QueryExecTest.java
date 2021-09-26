@@ -268,7 +268,7 @@ public class QueryExecTest implements Runnable {
             }
             bindings.add(builder.build());
         }
-        ResultSet rs = new ResultSetStream(resultsActual.getResultVars(), null, QueryIterPlainWrapper.create(bindings.iterator()));
+        ResultSet rs = ResultSetStream.create(resultsActual.getResultVars(), null, QueryIterPlainWrapper.create(bindings.iterator()));
         return rs.rewindable();
     }
 
@@ -285,7 +285,7 @@ public class QueryExecTest implements Runnable {
             x.add(b);
         }
         QueryIterator qIter = QueryIterPlainWrapper.create(x.iterator());
-        ResultSet rs = new ResultSetStream(results.getResultVars(), ModelFactory.createDefaultModel(), qIter);
+        ResultSet rs = ResultSetStream.create(results.getResultVars(), null, qIter);
         return rs.rewindable();
     }
 

@@ -23,7 +23,6 @@ import static arq.cmdline.ModAssembler.assemblerDescDecl;
 import java.net.BindException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import arq.cmdline.CmdARQ;
@@ -295,7 +294,7 @@ public class FusekiMain extends CmdARQ {
             if ( file.startsWith("file:") )
                 file = file.substring("file:".length());
 
-            Path path = Paths.get(file);
+            Path path = Path.of(file);
             if ( ! Files.exists(path) )
                 throw new CmdException("File not found: "+file);
             if ( Files.isDirectory(path) )

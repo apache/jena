@@ -18,131 +18,45 @@
 
 package org.apache.jena.rdfconnection;
 
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.net.URI;
+import java.net.http.HttpClient;
 import java.util.function.Consumer;
 
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.auth.DigestScheme;
-import org.apache.http.impl.auth.RFC2617Scheme;
-import org.apache.http.impl.client.BasicAuthCache;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.protocol.HttpContext;
-import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.atlas.web.AuthScheme;
-import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.http.HttpEnv;
+import org.apache.jena.http.auth.AuthDomain;
+import org.apache.jena.http.auth.AuthEnv;
 import org.apache.jena.web.AuthSetup;
 
-/** Library for client side use of access control. */ 
 public class LibSec {
-    // See also DataAccessLib (package lib)
-    
-    // [AuthScheme] default
-    public static AuthScheme authMode = AuthScheme.DIGEST;
-    
+    /** Construct an {@link Authenticator} to hold user and password */
+    public static Authenticator authenticator(String user, String password) {
+        return new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(user, password.toCharArray());
+            }
+        };
+    }
+
+    public static HttpClient httpClient(AuthSetup authSetup) {
+        Authenticator a = authenticator(authSetup.user, authSetup.password);
+        return HttpEnv.httpClientBuilder().authenticator(a).build();
+    }
+
     public static void withAuth(String urlStr, AuthSetup auth, Consumer<RDFConnection> action) {
-        CredentialsProvider credsProvider = credsProvider(auth);
-        HttpHost target = new HttpHost(auth.host, auth.port, "http");
-        // --- AuthCache : not necessary
-        // Create AuthCache instance - necessary for non-repeatable request entity. (i.e. streaming)
-        
-        // [AuthScheme]
-        AuthCache authCache = new BasicAuthCache();
-        if ( LibSec.authMode == AuthScheme.BASIC ) {
-            RFC2617Scheme authScheme = authScheme(auth.realm);
-            // Can force the client to use basic first time by setting authCache.
-            // This does not work for digest because the nonce's will be wrong.
-            authCache.put(target, authScheme);
+        // Prefix
+        URI urix = URI.create(urlStr);
+        //String requestTarget = HttpLib.requestTarget(urix);
+        AuthDomain domain = new AuthDomain(urix, null);
+        try {
+            AuthEnv.get().registerUsernamePassword(urix, auth.user, auth.password);
+            try ( RDFConnection conn = RDFConnectionRemote.newBuilder().destination(urlStr).build() ) {
+                action.accept(conn);
+            }
+        } finally {
+            AuthEnv.get().unregisterUsernamePassword(urix);
         }
-        
-        HttpContext httpContext = httpContext(authCache, credsProvider);
-        HttpClient httpClient = httpClient(auth); 
-        
-        // Needs retryable mods to RDFConnectionRemote??
-        try ( RDFConnection conn = RDFConnectionRemote.create()
-                .destination(urlStr)
-                .httpClient(httpClient)
-                .httpContext(httpContext)
-                .build() ) {
-            action.accept(conn);
-        }
-    }
-
-    /** Create digest auth {@link DigestScheme} */
-    private static RFC2617Scheme authScheme(String realm) {
-        switch (authMode) {
-            case BASIC: return authBasicScheme(realm);
-            case DIGEST : return authDigestScheme(realm);
-            default:
-                throw new InternalErrorException("RFC2617 auth scheme not reocgnized: "+authMode);
-        }
-    }
-    
-    /** Create digest auth {@link DigestScheme} */
-    private static DigestScheme authDigestScheme(String realm) {
-        //Objects.requireNonNull(realm);
-        DigestScheme authScheme = new DigestScheme();
-        authScheme.overrideParamter("realm", realm);
-        authScheme.overrideParamter("nonce", "whatever");
-        return authScheme;
-    }
-
-    /** Create basic auth {@link BasicScheme} */
-    private static BasicScheme authBasicScheme(String realm) {
-        BasicScheme authScheme = new BasicScheme();
-        return authScheme;
-    }
-
-    /**
-     * Create an {@link HttpClient} with authentication as given by
-     * the {@link AuthSetup} for a particular host and port.
-     */
-    public static HttpClient httpClient(AuthSetup auth) {
-        // HttpClient with password.
-        CredentialsProvider credsProvider = credsProvider(auth);
-        HttpClient client = HttpOp.createPoolingHttpClientBuilder()
-            .setDefaultCredentialsProvider(credsProvider)
-            .build();
-        return client;
-    }
-    
-    /**
-     * Create an {@link HttpClient} with authentication by user/password
-     * a particular host and port.
-     */
-    public static HttpClient httpClient(String host, int port, String user, String password, String realm) {
-        AuthSetup auth = new AuthSetup(host, port, user, password, realm);
-        return httpClient(auth);
-    }
-
-    public static HttpClientContext httpContext(AuthCache authCache, CredentialsProvider provider) {
-        // Add AuthCache to the execution context
-        HttpClientContext localContext = HttpClientContext.create();
-        return httpContext(localContext, authCache, provider);
-    }
-
-    public static HttpClientContext httpContext(HttpClientContext localContext, AuthCache authCache, CredentialsProvider provider) {
-        // Add AuthCache to the execution context
-        if ( authCache != null )
-            localContext.setAuthCache(authCache);
-        localContext.setCredentialsProvider(provider);
-        return localContext;
-    }
-
-    public static CredentialsProvider credsProvider(AuthSetup auth) {
-        return credsProvider(auth.host, auth.port, auth.user, auth.password);
-    }
-    
-    private static CredentialsProvider credsProvider(String host, int port, String user, String password) {
-        CredentialsProvider credsProvider = new BasicCredentialsProvider();
-        credsProvider.setCredentials(
-            new AuthScope(host, port),
-            new UsernamePasswordCredentials(user, password));
-        return credsProvider;
     }
 }

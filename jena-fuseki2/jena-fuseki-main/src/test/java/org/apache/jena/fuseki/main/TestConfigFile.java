@@ -18,28 +18,22 @@
 
 package org.apache.jena.fuseki.main;
 
-import java.io.IOException;
+import static org.apache.jena.fuseki.test.HttpTest.*;
+import static org.junit.Assert.*;
 
-import static org.apache.jena.fuseki.test.FusekiTest.expect400;
-import static org.apache.jena.fuseki.test.FusekiTest.expect404;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.io.IOException;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.base.Sys;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
-import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.Var;
 import org.junit.Test;
 
@@ -57,7 +51,7 @@ public class TestConfigFile {
         );
 
     private static RDFConnection namedServices(String baseURL) {
-        return RDFConnectionRemote.create()
+        return RDFConnectionRemote.newBuilder()
             .destination(baseURL)
             .queryEndpoint("sparql")
             .updateEndpoint("update")
@@ -66,9 +60,9 @@ public class TestConfigFile {
     }
 
     @Test public void basic () {
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, "basic.ttl");
+        FusekiServer server = server(0, "basic.ttl");
         server.start();
+        int port = server.getPort();
         try ( RDFConnection conn = RDFConnectionFactory.connect("http://localhost:"+port+"/ds") ) {
             assertCxtValueNotNull (conn, "CONTEXT:SERVER");
             assertCxtValue        (conn, "CONTEXT:SERVER", "server");
@@ -78,9 +72,9 @@ public class TestConfigFile {
     }
 
     @Test public void context() {
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, "context.ttl");
+        FusekiServer server = server(0, "context.ttl");
         server.start();
+        int port = server.getPort();
         try {
             try ( RDFConnection conn = RDFConnectionFactory.connect("http://localhost:"+port+"/ds-server") ) {
                 assertCxtValue     (conn, "CONTEXT:SERVER",   "server");
@@ -104,10 +98,10 @@ public class TestConfigFile {
     }
 
     @Test public void stdServicesNamed () {
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, "std-named.ttl");
-        String serverURL = "http://localhost:"+port+"/ds-named";
+        FusekiServer server = server(0, "std-named.ttl");
         server.start();
+        int port = server.getPort();
+        String serverURL = "http://localhost:"+port+"/ds-named";
         try {
             try ( RDFConnection conn = namedServices(serverURL) ) {
                 // Try each operation. The test is whether the operations can be called.
@@ -130,42 +124,33 @@ public class TestConfigFile {
     }
 
     @Test public void stdServicesDirect() {
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, "std-dataset.ttl");
-        String serverURL = "http://localhost:"+port+"/ds-direct";
+        FusekiServer server = server(0, "std-dataset.ttl");
         server.start();
+        int port = server.getPort();
+        String serverURL = "http://localhost:"+port+"/ds-direct";
         try {
-//            try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
-//                conn.update("INSERT DATA { <x:s> <x:p> 123 }");
-//                conn.queryAsk("ASK{}");
-//                Graph g = conn.fetch().getGraph();
-//                assertEquals(1, g.size());
-//            }
-
-            // No named endpoints.
             try ( RDFConnection conn = namedServices(serverURL) ) {
                 expect404(()->conn.update("INSERT DATA { <x:s> <x:p> 123 }"));
                 expect404(()->conn.queryAsk("ASK{}"));
                 expect404(()->conn.fetch());
             }
-
         } finally {
             server.stop();
         }
     }
 
     @Test public void stdServicesNoConfig() {
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, "std-empty.ttl");
+        FusekiServer server = server(0, "std-empty.ttl");
+        server.start();
+        int port = server.getPort();
         String serverURL = "http://localhost:"+port+"/ds-no-ep";
 
-        server.start();
         try {
             try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
                 // 400 if on the dataset
                 expect400(()->conn.queryAsk("ASK{}"));
             }
-            RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
+            RDFConnectionRemoteBuilder builder = RDFConnectionRemote.newBuilder()
                 .destination(serverURL)
                 .queryEndpoint("sparql")
                 .updateEndpoint("update")
@@ -181,17 +166,16 @@ public class TestConfigFile {
 
     // Named services mirrored onto the dataset
     @Test public void stdServicesOldStyle() {
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, "std-old-style.ttl");
-        String serverURL = "http://localhost:"+port+"/ds0";
-
+        FusekiServer server = server(0, "std-old-style.ttl");
         server.start();
+        int port = server.getPort();
+        String serverURL = "http://localhost:"+port+"/ds0";
         try {
-            RDFConnectionRemoteBuilder builderUnamedServices = RDFConnectionRemote.create()
+            RDFConnectionRemoteBuilder builderUnamedServices = RDFConnectionRemote.newBuilder()
                 .destination(serverURL)
                 .updateEndpoint("")
                 .queryEndpoint("");
-            RDFConnectionRemoteBuilder builderNamedServices = RDFConnectionRemote.create()
+            RDFConnectionRemoteBuilder builderNamedServices = RDFConnectionRemote.newBuilder()
                 .destination(serverURL)
                 .queryEndpoint("sparql")
                 .updateEndpoint("update")
@@ -221,15 +205,15 @@ public class TestConfigFile {
     }
 
     @Test public void serverMisc() {
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, "server.ttl");
+        FusekiServer server = server(0, "server.ttl");
         server.start();
+        int port = server.getPort();
         try {
-            String x1 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/ping");
+            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/$/ping");
             assertNotNull(x1);
-            String x2 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/stats");
+            String x2 = HttpOp.httpGetString("http://localhost:"+port+"/$/stats");
             assertNotNull(x2);
-            String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/metrics");
+            String x3 = HttpOp.httpGetString("http://localhost:"+port+"/$/metrics");
             assertNotNull(x3);
         } finally {
             server.stop();
@@ -237,15 +221,15 @@ public class TestConfigFile {
     }
 
     @Test public void serverTDB2() {
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, "server-tdb2.ttl");
+        FusekiServer server = server(0, "server-tdb2.ttl");
         server.start();
+        int port = server.getPort();
         try {
-            String x1 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/ping");
+            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/$/ping");
             assertNotNull(x1);
-            String x2 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/stats");
+            String x2 = HttpOp.httpGetString("http://localhost:"+port+"/$/stats");
             assertNotNull(x2);
-            String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/metrics");
+            String x3 = HttpOp.httpGetString("http://localhost:"+port+"/$/metrics");
             assertNotNull(x3);
         } finally {
             server.stop();
@@ -253,19 +237,19 @@ public class TestConfigFile {
     }
 
     @Test public void serverTDB2_compact0() {
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, "server-tdb2_compact0.ttl");
+        FusekiServer server = server(0, "server-tdb2_compact0.ttl");
         server.start();
+        int port = server.getPort();
         try {
-            String x1= HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks");
+            String x1= HttpOp.httpGetString("http://localhost:"+port+"/$/tasks");
             assertNotNull(x1);
-            try(TypedInputStream x2 = HttpOp.execHttpPostStream("http://localhost:"+port+"/$/compact/ds", null, "application/json")) {
+            try(TypedInputStream x2 = HttpOp.httpPostStream("http://localhost:"+port+"/$/compact/ds", "application/json")) {
                 assertNotNull(x2);
                 assertNotEquals(0, x2.readAllBytes().length);
             } catch (IOException ex) {
                 IO.exception(ex);
             }
-            String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks/1");
+            String x3 = HttpOp.httpGetString("http://localhost:"+port+"/$/tasks/1");
             assertNotNull(x3);
         } finally {
             server.stop();
@@ -278,19 +262,19 @@ public class TestConfigFile {
             return;
         }
 
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, "server-tdb2_compact1.ttl");
+        FusekiServer server = server(0, "server-tdb2_compact1.ttl");
         server.start();
+        int port = server.getPort();
         try {
-            String x1= HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks");
+            String x1= HttpOp.httpGetString("http://localhost:"+port+"/$/tasks");
             assertNotNull(x1);
-            try(TypedInputStream x2 = HttpOp.execHttpPostStream("http://localhost:"+port+"/$/compact/ds?deleteOld", null, "application/json")) {
+            try(TypedInputStream x2 = HttpOp.httpPostStream("http://localhost:"+port+"/$/compact/ds?deleteOld", "application/json")) {
                 assertNotNull(x2);
                 assertNotEquals(0, x2.readAllBytes().length);
             } catch (IOException ex) {
                 IO.exception(ex);
             }
-            String x3 = HttpOp.execHttpGetString("http://localhost:"+port+"/$/tasks/1");
+            String x3 = HttpOp.httpGetString("http://localhost:"+port+"/$/tasks/1");
             assertNotNull(x3);
         } finally {
             server.stop();
@@ -306,10 +290,10 @@ public class TestConfigFile {
     }
 
     @Test public void setupOpsSameName() {
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, "setup1.ttl");
-        String serverURL = "http://localhost:"+port+"/ds";
+        FusekiServer server = server(0, "setup1.ttl");
         server.start();
+        int port = server.getPort();
+        String serverURL = "http://localhost:"+port+"/ds";
         try {
             try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL+"/sparql") ) {
                 conn.update("INSERT DATA { <x:s> <x:p> 1,2,3 }");
@@ -322,10 +306,10 @@ public class TestConfigFile {
     }
 
     @Test public void setupRootDataset() {
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, "setup2.ttl");
-        String serverURL = "http://localhost:"+port+"/";
+        FusekiServer server = server(0, "setup2.ttl");
         server.start();
+        int port = server.getPort();
+        String serverURL = "http://localhost:"+port+"/";
         try {
             try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
                 conn.update("INSERT DATA { <x:s> <x:p> 1,2,3,4 }");
@@ -340,10 +324,10 @@ public class TestConfigFile {
     private static String NL = "\n";
 
     private void unionGraph(String fnConfig, String dbName) {
-        int port = WebLib.choosePort();
-        FusekiServer server = server(port, fnConfig);
-        String serverURL = "http://localhost:"+port+dbName;
+        FusekiServer server = server(0, fnConfig);
         server.start();
+        int port = server.getPort();
+        String serverURL = "http://localhost:"+port+dbName;
 
         try {
             try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
@@ -356,7 +340,7 @@ public class TestConfigFile {
                 assertEquals(1, x);
             }
             // Query union endpoint.
-            RDFConnectionRemoteBuilder builder = RDFConnectionRemote.create()
+            RDFConnectionRemoteBuilder builder = RDFConnectionRemote.newBuilder()
                 .destination(serverURL)
                 .queryEndpoint("sparql-union");
             try ( RDFConnection conn = builder.build() ) {
@@ -409,7 +393,7 @@ public class TestConfigFile {
     private FusekiServer server(int port, String configFile) {
         FusekiServer server = FusekiServer.create()
             .parseConfigFile(DIR+configFile)
-            .port(port)
+            .port(0)
             .build();
         return server;
     }

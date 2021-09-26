@@ -96,9 +96,12 @@ public class TestSecurityFilterFuseki {
         ConstraintSecurityHandler sh = JettyLib.makeSecurityHandler("*", userStore);
         JettyLib.addPathConstraint(sh, "/*");
 
+        // If used, also check log4j2.properties.
+        //FusekiLogging.setLogging();
         fusekiServer = FusekiServer.create()
             .securityHandler(sh)
             .port(0)
+            //.verbose(true)
             .add("data1", testdsg1)
             .add("data2", testdsg2)
             .add("data3", testdsg3)
@@ -233,7 +236,7 @@ public class TestSecurityFilterFuseki {
     private Set<Node> gsp(String user, String password, String graphName) {
         Set<Node> results = new HashSet<>();
         try (RDFConnection conn = RDFConnectionFactory.connectPW(baseUrl, user, password)) {
-            Model model = graphName == null ? conn.fetch() : conn.fetch(graphName);
+            Model model = (graphName == null) ? conn.fetch() : conn.fetch(graphName);
             // Extract subjects.
             Set<Node> seen =
                 SetUtils.toSet(

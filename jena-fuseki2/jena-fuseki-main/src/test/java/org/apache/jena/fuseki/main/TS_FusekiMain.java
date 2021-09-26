@@ -18,23 +18,37 @@
 
 package org.apache.jena.fuseki.main;
 
-import org.apache.jena.fuseki.main.old.TestFusekiTestAuthOld;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-  TestEmbeddedFuseki.class
+    //17
+
+  TestPlainServer.class
+  , TestEmbeddedFuseki.class
   , TestMultipleEmbedded.class
-  , TestFusekiTestAuthOld.class
   , TestFusekiCustomOperation.class
   , TestFusekiMainCmd.class
   , TestStdSetup.class
   , TestConfigFile.class
-  , TestHTTP.class
   , TestFusekiServerBuild.class
+
+  , TestFileUpload.class
+  , TestAuthQuery_JDK.class
+  , TestAuthUpdate_JDK.class
+  , TestHttpOp_AHC.class
+  , TestHttpOperations.class
+  , TestHttpOptions.class
+
+  , TestQuery.class
+  , TestSPARQLProtocol.class
+
+  // Test ping.
+  , TestMetrics.class
   , TestFusekiShaclValidation.class
+
 })
 public class TS_FusekiMain {}
 

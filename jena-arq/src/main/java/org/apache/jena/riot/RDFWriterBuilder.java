@@ -25,21 +25,24 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.ContextAccumulator;
 import org.apache.jena.sparql.util.Symbol;
 
 public class RDFWriterBuilder {
     private DatasetGraph dataset = null;
     private Graph        graph   = null;
-    private Context      context = null;
     private Lang         lang    = null;
     private RDFFormat    format  = null;
     private String       baseURI = null;
+    private ContextAccumulator contextAcc = ContextAccumulator.newBuilder(()->RIOT.getContext());
 
     /** A new {@code RDFWriterBuilder}.
      * <p>
      * See also {@link RDFWriter#create()}
      */
-    RDFWriterBuilder () {}
+    private RDFWriterBuilder () {}
+
+    public static RDFWriterBuilder create() { return new RDFWriterBuilder() ; }
 
     /** Set the source of writing to the graph argument.
      * <p>
@@ -97,27 +100,27 @@ public class RDFWriterBuilder {
 //    // Not implemented
 //    public RDFWriterBuilder formatter(NodeFormatter nodeFormatter) { return this; }
 
-    private void ensureContext() {
-        if ( context == null )
-            context = new Context();
-    }
-
     /**
      * Set the context for the writer when built.
-     *
-     * If a context is already partly set
-     * for this builder, merge the new settings
-     * into the outstanding context.
      *
      * @param context
      * @return this
      * @see Context
      */
     public RDFWriterBuilder context(Context context) {
-        if ( context == null )
-            return this;
-        ensureContext();
-        this.context.putAll(context);
+        contextAcc.context(context);
+        return this;
+    }
+
+    /**
+     * Add a setting to the context for the writer when built.
+     * @param symbol
+     * @param value
+     * @return this
+     * @see Context
+     */
+    public RDFWriterBuilder set(Symbol symbol, boolean value) {
+        contextAcc.set(symbol, value);
         return this;
     }
 
@@ -130,8 +133,7 @@ public class RDFWriterBuilder {
      * @see Context
      */
     public RDFWriterBuilder set(Symbol symbol, Object value) {
-        ensureContext();
-        context.put(symbol, value);
+        contextAcc.set(symbol, value);
         return this;
     }
 
@@ -178,18 +180,17 @@ public class RDFWriterBuilder {
     @Override
     public RDFWriterBuilder clone() {
         RDFWriterBuilder clone = new RDFWriterBuilder();
-        clone.dataset   = this.dataset;
-        clone.graph     = this.graph;
-        clone.context   = this.context;
-        clone.lang      = this.lang;
-        clone.format    = this.format;
-        clone.baseURI   = this.baseURI;
+        clone.dataset       = this.dataset;
+        clone.graph         = this.graph;
+        clone.contextAcc    = this.contextAcc.clone();
+        clone.lang          = this.lang;
+        clone.format        = this.format;
+        clone.baseURI       = this.baseURI;
         return clone;
     }
 
     public RDFWriter build() {
-        if ( context == null )
-            context = RIOT.getContext().copy();
+        Context context = contextAcc.context();
         if ( dataset == null && graph == null )
             throw new RiotException("No source to be written");
         return new RDFWriter(dataset, graph, format, lang, baseURI, context);

@@ -42,6 +42,7 @@ import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.graph.NodeConst ;
@@ -284,13 +285,20 @@ public class SSE
         Item item = parse(string);
         return BuilderBinding.build(item);
     }
-    
+
+    /** Build a {@link RowSet} */
+    public static RowSet parseRowSet(String string) {
+        Item item = parse(string);
+        return BuilderRowSet.build(item);
+    }
+
     /** Build a {@link ResultSet} */
+    @Deprecated
     public static ResultSet parseResultSet(String string) {
         Item item = parse(string);
         return BuilderResultSet.build(item);
     }
-   
+
     /** Read in a file, parse, and obtain a SPARQL algebra op */
     public static Op readOp(String filename) { return Algebra.read(filename) ; }
 

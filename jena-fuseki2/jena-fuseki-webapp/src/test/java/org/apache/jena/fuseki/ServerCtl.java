@@ -23,12 +23,8 @@ import static org.apache.jena.fuseki.ServerCtl.ServerScope.SUITE;
 import static org.apache.jena.fuseki.ServerCtl.ServerScope.TEST;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.cmd.FusekiArgs;
@@ -38,7 +34,6 @@ import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.fuseki.webapp.FusekiServerListener;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;
 import org.apache.jena.fuseki.webapp.SystemState;
-import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.modify.request.Target;
@@ -68,11 +63,7 @@ import org.apache.jena.update.UpdateProcessor;
  * fast enough (left in TCP state {@code TIME_WAIT} which is 2 minutes) and also can be
  * slow. One server per test class is a good compromise.
  * <p>
- * The data in the server is always reseet between tests.
- * <p>
- * Using a connection pooling HttpClient (see {@link HttpOp#createPoolingHttpClient()}) is
- * important, both for test performance and for reducing the TCP connection load on the
- * operating system.
+ * The data in the server is always reset between tests.
  * <p>
  * Usage:
  * </p>
@@ -127,7 +118,8 @@ public class ServerCtl {
 
     // Abstraction that runs a SPARQL server for tests.
     public static final String urlRoot()        { return "http://localhost:"+port()+"/"; }
-    public static final String datasetPath()    { return "/dataset"; }
+    public static final String datasetName()    { return "dataset"; }
+    public static final String datasetPath()    { return "/"+datasetName(); }
     public static final String urlDataset()     { return "http://localhost:"+port()+datasetPath(); }
 
     public static final String serviceUpdate()  { return "http://localhost:"+port()+datasetPath()+"/update"; }
@@ -137,7 +129,7 @@ public class ServerCtl {
 
     public static void ctlBeforeTestSuite() {
         if ( serverScope == SUITE  ) {
-            setPoolingHttpClient();
+            setHttpClient();
             allocServer();
         }
     }
@@ -154,7 +146,7 @@ public class ServerCtl {
      */
     public static void ctlBeforeClass() {
         if ( serverScope == CLASS  ) {
-            setPoolingHttpClient();
+            setHttpClient();
             allocServer();
         }
     }
@@ -174,7 +166,7 @@ public class ServerCtl {
      */
     public static void ctlBeforeTest() {
         if ( serverScope == TEST  ) {
-            setPoolingHttpClient();
+            setHttpClient();
             allocServer();
         }
     }
@@ -190,23 +182,8 @@ public class ServerCtl {
             resetServer();
     }
 
-    /** Set a PoolingHttpClient */
-    private static void setPoolingHttpClient() {
-        setHttpClient(HttpOp.createPoolingHttpClient());
-    }
-
-    /** Restore the original setup */
-    private static void resetDefaultHttpClient() {
-        setHttpClient(HttpOp.createDefaultHttpClient());
-    }
-
-    /** Set the HttpClient - close the old one if appropriate */
-    /*package*/ static void setHttpClient(HttpClient newHttpClient) {
-        HttpClient hc = HttpOp.getDefaultHttpClient();
-        if ( hc instanceof CloseableHttpClient )
-            IO.close((CloseableHttpClient)hc);
-        HttpOp.setDefaultHttpClient(newHttpClient);
-    }
+    private static void setHttpClient() {}
+    private static void resetDefaultHttpClient() {}
 
     // reference count of start/stop server
     private static AtomicInteger countServer = new AtomicInteger();
@@ -224,11 +201,11 @@ public class ServerCtl {
 
     protected static void setupServer(boolean updateable) {
         // Does not initial Fuseki webapp.
-        FusekiEnv.FUSEKI_HOME = Paths.get(TS_FusekiWebapp.FusekiTestHome).toAbsolutePath();
+        FusekiEnv.FUSEKI_HOME = Path.of(TS_FusekiWebapp.FusekiTestHome).toAbsolutePath();
         FileOps.ensureDir("target");
         FileOps.ensureDir(TS_FusekiWebapp.FusekiTestHome);
         FileOps.ensureDir(TS_FusekiWebapp.FusekiTestBase);
-        FusekiEnv.FUSEKI_BASE = Paths.get(TS_FusekiWebapp.FusekiTestBase).toAbsolutePath();
+        FusekiEnv.FUSEKI_BASE = Path.of(TS_FusekiWebapp.FusekiTestBase).toAbsolutePath();
         // Must have shiro.ini.
         // This fakes the state after FusekiSystem initialization
         // in the case of starting in the same location. FusekiSystem has statics.

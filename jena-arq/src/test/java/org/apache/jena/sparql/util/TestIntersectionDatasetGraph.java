@@ -47,7 +47,7 @@ public class TestIntersectionDatasetGraph extends AbstractTestDyadicDatasetGraph
         final Node graphName3 = NodeFactory.createBlankNode();
         dsg1.addGraph(graphName3, g1);
         dsg2.addGraph(graphName3, g1);
-        DatasetGraph dsg = testInstance(dsg1, dsg2, Context.emptyContext);
+        DatasetGraph dsg = testInstance(dsg1, dsg2, Context.emptyContext());
         assertEquals(1, dsg.size());
         assertTrue(dsg.getDefaultGraph().isEmpty());
         assertTrue(dsg.getGraph(graphName1).isEmpty());

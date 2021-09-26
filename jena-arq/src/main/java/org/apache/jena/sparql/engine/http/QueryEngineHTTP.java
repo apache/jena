@@ -56,8 +56,9 @@ import org.slf4j.LoggerFactory ;
 /**
  * A query execution implementation where queries are executed against a remote
  * service
- *
+ * @deprecated Use the QueryExecutionHTTP builder. {@code QueryExecutionHTTP.create()....execute()}
  */
+@Deprecated
 public class QueryEngineHTTP implements QueryExecution {
     private static Logger log = LoggerFactory.getLogger(QueryEngineHTTP.class);
 
@@ -85,18 +86,21 @@ public class QueryEngineHTTP implements QueryExecution {
     private TimeUnit readTimeoutUnit = TimeUnit.MILLISECONDS;
 
     // Compression Support
+    // Note that compression setting is used in HttpQuery.
+    /** See {@link HttpQuery} */
     private boolean allowCompression = true;
 
-    // Content Types
-    private String selectContentType    = defaultSelectHeader();
-    private String askContentType       = defaultAskHeader();
-    private String modelContentType     = defaultConstructHeader();
+    // Updates default headers, same variables.
+    private String selectContentType    = WebContent.defaultSparqlResultsHeader;
+    private String askContentType       = WebContent.defaultSparqlAskHeader;
+    private String modelContentType     = WebContent.defaultGraphAcceptHeader;
 
-    private String constructContentType = defaultConstructHeader() ;
-    private String datasetContentType   = defaultConstructDatasetHeader() ;
+//    private String constructContentType = WebContent.defaultGraphAcceptHeader;
+    private String datasetContentType   = WebContent.defaultDatasetAcceptHeader;
 
     // If this is non-null, it overrides the ???ContentType choice.
     private String acceptHeader         = null;
+
 
     // Received content type
     private String httpResponseContentType = null ;
@@ -164,7 +168,7 @@ public class QueryEngineHTTP implements QueryExecution {
      * <p>
      * Based off proposed patch for JENA-405 but modified to apply all relevant
      * configuration, this is in part also based off of the private
-     * {@code configureQuery()} method of the {@link Service} class though it
+     * {@code configureQuery()} method of the {@link Service_AHC} class though it
      * omits parameter merging since that will be done automatically whenever
      * the {@link QueryEngineHTTP} instance makes a query for remote submission.
      * </p>
@@ -177,18 +181,18 @@ public class QueryEngineHTTP implements QueryExecution {
             return;
 
         @SuppressWarnings("unchecked")
-        Map<String, Context> serviceContextMap = (Map<String, Context>) engine.context.get(Service.serviceContext);
+        Map<String, Context> serviceContextMap = (Map<String, Context>) engine.context.get(Service_AHC.serviceContext);
         if (serviceContextMap != null && serviceContextMap.containsKey(serviceURI)) {
             Context serviceContext = serviceContextMap.get(serviceURI);
             if (log.isDebugEnabled())
                 log.debug("Endpoint URI {} has SERVICE Context: {} ", serviceURI, serviceContext);
 
-            // Apply behavioral options
-            engine.setAllowCompression(serviceContext.isTrueOrUndef(Service.queryCompression));
+            // Apply behavioural options
+            engine.setAllowCompression(serviceContext.isTrueOrUndef(Service_AHC.queryCompression));
             applyServiceTimeouts(engine, serviceContext);
 
             // Apply context-supplied client settings
-            HttpClient client = serviceContext.get(Service.queryClient);
+            HttpClient client = serviceContext.get(Service_AHC.queryClient);
 
             if (client != null) {
                 if (log.isDebugEnabled())
@@ -207,8 +211,8 @@ public class QueryEngineHTTP implements QueryExecution {
      *            Context
      */
     private static void applyServiceTimeouts(QueryEngineHTTP engine, Context context) {
-        if (context.isDefined(Service.queryTimeout)) {
-            Object obj = context.get(Service.queryTimeout);
+        if (context.isDefined(Service_AHC.queryTimeout)) {
+            Object obj = context.get(Service_AHC.queryTimeout);
             if (obj instanceof Number) {
                 int x = ((Number) obj).intValue();
                 engine.setTimeout(-1, x);
@@ -216,7 +220,6 @@ public class QueryEngineHTTP implements QueryExecution {
                 try {
                     String str = obj.toString();
                     if (str.contains(",")) {
-
                         String[] a = str.split(",");
                         int connect = Integer.parseInt(a[0]);
                         int read = Integer.parseInt(a[1]);
@@ -380,6 +383,7 @@ public class QueryEngineHTTP implements QueryExecution {
             throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for SELECT queries");
         // This returns a streaming result set for some formats.
         // Do not close the InputStream at this point.
+
         ResultSet result = ResultSetMgr.read(in, lang);
         return result;
     }
@@ -607,8 +611,9 @@ public class QueryEngineHTTP implements QueryExecution {
 
     /**
      * Return the query string. If this was supplied in a constructor, there is no
-     * guaranttee this is legal SPARQL syntax.
+     * guarantee this is legal SPARQL syntax.
      */
+    @Override
     public String getQueryString() {
         return queryString;
     }
@@ -687,11 +692,11 @@ public class QueryEngineHTTP implements QueryExecution {
         httpQuery.setAllowCompression(allowCompression);
 
         // check for service context overrides
-        if (context.isDefined(Service.serviceContext)) {
-            Map<String, Context> servicesContext = context.get(Service.serviceContext);
+        if (context.isDefined(Service_AHC.serviceContext)) {
+            Map<String, Context> servicesContext = context.get(Service_AHC.serviceContext);
             if (servicesContext.containsKey(service)) {
                 Context serviceContext = servicesContext.get(service);
-                if (serviceContext.isDefined(Service.queryClient)) client = serviceContext.get(Service.queryClient);
+                if (serviceContext.isDefined(Service_AHC.queryClient)) client = serviceContext.get(Service_AHC.queryClient);
             }
         }
         httpQuery.setClient(client);
@@ -845,85 +850,6 @@ public class QueryEngineHTTP implements QueryExecution {
         if (!RDFLanguages.isQuads(lang))
             throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a RDF Dataset format");
         datasetContentType = contentType;
-    }
-
-    private static final String dftSelectContentTypeHeader = initSelectContentTypes() ;
-
-    public static String defaultSelectHeader() {
-        return dftSelectContentTypeHeader ;
-    }
-
-    private static String initSelectContentTypes() {
-        StringBuilder sBuff = new StringBuilder() ;
-        accumulateContentTypeString(sBuff, WebContent.contentTypeResultsJSON,  1.0);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeResultsXML,   0.9);     // Less efficient
-
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTextTSV,      0.7);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTextCSV,      0.5);
-
-        accumulateContentTypeString(sBuff, WebContent.contentTypeJSON,         0.2);     // We try to parse these in
-        accumulateContentTypeString(sBuff, WebContent.contentTypeXML,          0.2) ;    // the hope they are right.
-        accumulateContentTypeString(sBuff, "*/*",                              0.1) ;    // Get something!
-        return sBuff.toString() ;
-    }
-
-    private static final String askContentTypeHeader = initAskContentTypes() ;
-
-    public static String defaultAskHeader() {
-        return dftSelectContentTypeHeader ;
-    }
-
-    // These happen to be the same.
-    private static String initAskContentTypes() { return initSelectContentTypes(); }
-
-    private static final String dftConstructContentTypeHeader = initConstructContentTypes() ;
-
-    public static String defaultConstructHeader() {
-        return dftConstructContentTypeHeader ;
-    }
-
-    private static String initConstructContentTypes() {
-        // Or use WebContent.defaultGraphAcceptHeader which is slightly
-        // narrower. Here, we have a tuned setting for SPARQL operations.
-        StringBuilder sBuff = new StringBuilder() ;
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtle,       1.0);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriples,     1.0);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeRDFXML,       0.9);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriplesAlt,  0.5);    // text/plain
-        accumulateContentTypeString(sBuff, WebContent.contentTypeN3,           0.3);
-        accumulateContentTypeString(sBuff, "*/*",                              0.1) ;
-        return sBuff.toString();
-    }
-
-    private static final String dftConstructDatasetContentTypeHeader = initConstructDatasetContentTypes() ;
-
-    public static String defaultConstructDatasetHeader() {
-        return dftConstructDatasetContentTypeHeader ;
-    }
-
-    private static String initConstructDatasetContentTypes() {
-        // Or use WebContent.defaultDatasetAcceptHeader which is slightly
-        // narrower. Here, we have a tuned setting for SPARQL operations.
-        StringBuilder sBuff = new StringBuilder() ;
-
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTriG,         1.0) ;
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNQuads,       1.0) ;
-        accumulateContentTypeString(sBuff, WebContent.contentTypeJSONLD,       0.9) ;
-        // And triple formats (the case of execConstructDatasets but a regular triples CONSTRUCT).
-        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtle,       0.8);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriples,     0.8);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeRDFXML,       0.7);
-        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriplesAlt,  0.4);
-        accumulateContentTypeString(sBuff, "*/*",                              0.1) ;
-        return sBuff.toString();
-    }
-
-    private static void accumulateContentTypeString(StringBuilder sBuff, String str, double v) {
-        if ( sBuff.length() != 0 )
-            sBuff.append(", ") ;
-        sBuff.append(str) ;
-        if ( v < 1 )
-            sBuff.append(";q=").append(v) ;
     }
 
     /** Get the HTTP Accept header for the request. */

@@ -31,7 +31,7 @@ import org.apache.jena.atlas.logging.FmtLog;
 
 public class IOX {
 
-    public static final Path currentDirectory = Paths.get(".");
+    public static final Path currentDirectory = Path.of(".");
 
     /** A Consumer that can throw {@link IOException}. */
     @FunctionalInterface
@@ -65,7 +65,7 @@ public class IOX {
     public static RuntimeIOException exception(String message, IOException ioException) {
         return new RuntimeIOException(message, ioException);
     }
-    
+
     /** Run IO code */
     @FunctionalInterface
     public interface ActionIO { void run() throws IOException; }
@@ -121,7 +121,7 @@ public class IOX {
             throw IOX.exception(ex);
         }
     }
-    
+
     public static void deleteAll(String start) {
         deleteAll(Paths.get(start));
     }
@@ -158,11 +158,11 @@ public class IOX {
      * @param dstFilename
      */
     public static void copy(String srcFilename, String dstFilename) {
-        Path src = Paths.get(srcFilename);
+        Path src = Path.of(srcFilename);
         if ( ! Files.exists(src) )
             throw new RuntimeIOException("No such file: "+srcFilename);
 
-        Path dst = Paths.get(dstFilename);
+        Path dst = Path.of(dstFilename);
         if ( Files.isDirectory(dst) )
             dst = dst.resolve(src.getFileName());
 

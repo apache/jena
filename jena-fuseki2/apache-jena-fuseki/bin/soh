@@ -64,7 +64,7 @@ $mtSparqlQuery      = "application/sparql-query" ;
 $fileMediaTypes = {}
 $fileMediaTypes['ttl']   = $mtTurtle
 $fileMediaTypes['n3']    = 'text/n3; charset=utf-8'
-$fileMediaTypes['nt']    = $mtText
+$fileMediaTypes['nt']    = $mtNTriples
 $fileMediaTypes['rdf']   = $mtRDF
 $fileMediaTypes['owl']   = $mtRDF
 $fileMediaTypes['nq']    = $mtNQuads
@@ -73,10 +73,9 @@ $fileMediaTypes['json-ld']  = $mtJSONLD
 $fileMediaTypes['jsonld']  = $mtJSONLD
 
 # Global charset : no entry means "don't set"
-$charsetUTF8      = 'utf-8'
+$charsetUTF8          = 'utf-8'
 $charset = {}
 $charset[$mtTurtle]   = 'utf-8'
-$charset[$mtText]     = 'ascii'
 $charset[$mtTriG]     = 'utf-8'
 $charset[$mtNQuads]   = 'utf-8'
 

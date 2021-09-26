@@ -27,18 +27,18 @@ import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.statements.JenaStatement;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecution ;
-import org.apache.jena.query.QueryExecutionFactory ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
+import org.apache.jena.sparql.modify.UpdateProcessRemote;
 import org.apache.jena.sparql.modify.UpdateProcessRemoteBase ;
-import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
 
 /**
  * A Jena JDBC statement against a remote endpoint
- * 
+ *
  */
+@SuppressWarnings("deprecation")
 public class RemoteEndpointStatement extends JenaStatement {
 
     private RemoteEndpointConnection remoteConn;
@@ -46,7 +46,7 @@ public class RemoteEndpointStatement extends JenaStatement {
 
     /**
      * Creates a new statement
-     * 
+     *
      * @param connection
      *            Connection
      * @throws SQLException
@@ -58,7 +58,7 @@ public class RemoteEndpointStatement extends JenaStatement {
 
     /**
      * Creates a new statement
-     * 
+     *
      * @param connection
      *            Connection
      * @param type
@@ -73,7 +73,7 @@ public class RemoteEndpointStatement extends JenaStatement {
      *            Result Set holdability
      * @throws SQLException
      *             Thrown if there is an error with the statement parameters
-     * 
+     *
      */
     public RemoteEndpointStatement(RemoteEndpointConnection connection, HttpClient client, int type, int fetchDir,
             int fetchSize, int holdability) throws SQLException {
@@ -88,7 +88,7 @@ public class RemoteEndpointStatement extends JenaStatement {
             throw new SQLException("This statement is backed by a write-only connection, read operations are not supported");
 
         // Create basic execution
-        QueryEngineHTTP exec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(this.remoteConn.getQueryEndpoint(), q);
+        QueryEngineHTTP exec = new QueryEngineHTTP(this.remoteConn.getQueryEndpoint(), q);
 
         // Apply HTTP settings
         if (this.client != null) {
@@ -110,15 +110,14 @@ public class RemoteEndpointStatement extends JenaStatement {
         if (this.remoteConn.getModelResultsType() != null) {
             exec.setModelContentType(this.remoteConn.getModelResultsType());
         }
-        
+
         // Return execution
         return exec;
     }
 
     @Override
     protected UpdateProcessor createUpdateProcessor(UpdateRequest u) {
-        UpdateProcessRemoteBase proc = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(u,
-                this.remoteConn.getUpdateEndpoint());
+        UpdateProcessRemoteBase proc = new UpdateProcessRemote(u, this.remoteConn.getUpdateEndpoint(), null);
 
         // Apply HTTP settings
         if (this.client != null) {

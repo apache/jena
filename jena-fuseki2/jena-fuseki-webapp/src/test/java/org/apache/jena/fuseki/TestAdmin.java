@@ -21,24 +21,21 @@ package org.apache.jena.fuseki;
 import static org.apache.jena.fuseki.mgt.ServerMgtConst.*;
 import static org.apache.jena.fuseki.server.ServerConst.opPing;
 import static org.apache.jena.fuseki.server.ServerConst.opStats;
-import static org.apache.jena.riot.web.HttpOp.execHttpDelete;
-import static org.apache.jena.riot.web.HttpOp.execHttpGet;
-import static org.apache.jena.riot.web.HttpOp.execHttpPost;
-import static org.apache.jena.riot.web.HttpOp.execHttpPostStream;
-import static org.junit.Assert.*;
+import static org.apache.jena.http.HttpOp.*;
 import static org.awaitility.Awaitility.await;
+import static org.junit.Assert.*;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.http.HttpRequest.BodyPublisher;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.entity.FileEntity;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
@@ -51,16 +48,14 @@ import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.ctl.JsonConstCtl;
 import org.apache.jena.fuseki.mgt.ServerMgtConst;
 import org.apache.jena.fuseki.server.ServerConst;
-import org.apache.jena.fuseki.test.FusekiTest;
+import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.riot.WebContent;
-import org.apache.jena.riot.web.HttpOp;
-import org.apache.jena.riot.web.HttpResponseHandler;
 import org.apache.jena.web.HttpSC;
 import org.awaitility.Awaitility;
 import org.junit.*;
 
 /** Tests of the admin functionality */
-public class TestAdmin extends AbstractFusekiTest {
+public class TestAdmin extends AbstractFusekiWebappTest {
 
     // Name of the dataset in the assembler file.
     static String dsTest      = "test-ds1";
@@ -83,11 +78,11 @@ public class TestAdmin extends AbstractFusekiTest {
     // --- Ping
 
     @Test public void ping_1() {
-        execHttpGet(ServerCtl.urlRoot()+"$/"+opPing);
+        httpGet(ServerCtl.urlRoot()+"$/"+opPing);
     }
 
     @Test public void ping_2() {
-        execHttpPost(ServerCtl.urlRoot()+"$/"+opPing, null);
+        httpPost(ServerCtl.urlRoot()+"$/"+opPing);
     }
 
     // --- Server status
@@ -102,17 +97,17 @@ public class TestAdmin extends AbstractFusekiTest {
     }
 
     @Test public void server_2() {
-        execHttpPost(ServerCtl.urlRoot()+"$/"+opServer, null);
+        httpPost(ServerCtl.urlRoot()+"$/"+opServer);
     }
 
     // --- List all datasets
 
     @Test public void list_datasets_1() {
-        try ( TypedInputStream in = execHttpGet(ServerCtl.urlRoot()+"$/"+opDatasets); ) { }
+        try ( TypedInputStream in = httpGet(ServerCtl.urlRoot()+"$/"+opDatasets); ) { }
     }
 
     @Test public void list_datasets_2() {
-        try ( TypedInputStream in = execHttpGet(ServerCtl.urlRoot()+"$/"+opDatasets) ) {
+        try ( TypedInputStream in = httpGet(ServerCtl.urlRoot()+"$/"+opDatasets) ) {
             assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
             JsonValue v = JSON.parseAny(in);
             assertNotNull(v.getAsObject().get("datasets"));
@@ -122,17 +117,17 @@ public class TestAdmin extends AbstractFusekiTest {
 
     // Specific dataset
     @Test public void list_datasets_3() {
-        checkExists(ServerCtl.datasetPath());
+        checkExists(ServerCtl.datasetName());
     }
 
     // Specific dataset
     @Test public void list_datasets_4() {
-        FusekiTest.expect404( () -> getDatasetDescription("does-not-exist") );
+        HttpTest.expect404( () -> getDatasetDescription("does-not-exist") );
     }
 
     // Specific dataset
     @Test public void list_datasets_5() {
-        JsonValue v = getDatasetDescription(ServerCtl.datasetPath());
+        JsonValue v = getDatasetDescription(ServerCtl.datasetName());
         checkJsonDatasetsOne(v.getAsObject());
     }
 
@@ -154,21 +149,24 @@ public class TestAdmin extends AbstractFusekiTest {
     @Test public void add_delete_dataset_2() {
         checkNotThere(dsTest);
 
-        File f = new File(fileBase+"config-ds-plain-1.ttl");
-        {
-            org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8);
-            HttpEntity e = new FileEntity(f, ct);
-            execHttpPost(ServerCtl.urlRoot()+"$/"+opDatasets, e);
-        }
-        // Check exists.
-        checkExists(dsTest);
         try {
-            org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8);
-            HttpEntity e = new FileEntity(f, ct);
-            execHttpPost(ServerCtl.urlRoot()+"$/"+opDatasets, e);
-        } catch (HttpException ex) {
-            assertEquals(HttpSC.CONFLICT_409, ex.getStatusCode());
-        }
+            Path f = Path.of(fileBase+"config-ds-plain-1.ttl");
+            {
+                httpPost(ServerCtl.urlRoot()+"$/"+opDatasets,
+                         WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8,
+                         BodyPublishers.ofFile(f));
+            }
+            // Check exists.
+            checkExists(dsTest);
+            try {
+            } catch (HttpException ex) {
+                httpPost(ServerCtl.urlRoot()+"$/"+opDatasets,
+                         WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8,
+                         BodyPublishers.ofFile(f));
+                assertEquals(HttpSC.CONFLICT_409, ex.getStatusCode());
+            }
+        } catch (IOException ex) { IO.exception(ex); return; }
+
         // Check exists.
         checkExists(dsTest);
         deleteDataset(dsTest);
@@ -221,28 +219,28 @@ public class TestAdmin extends AbstractFusekiTest {
     }
 
     @Test public void add_error_1() {
-        FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400,
+        HttpTest.execWithHttpException(HttpSC.BAD_REQUEST_400,
                                          ()-> addTestDataset(fileBase+"config-ds-bad-name-1.ttl"));
     }
 
     @Test public void add_error_2() {
-        FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400,
+        HttpTest.execWithHttpException(HttpSC.BAD_REQUEST_400,
                                          ()-> addTestDataset(fileBase+"config-ds-bad-name-2.ttl"));
     }
 
     @Test public void add_error_3() {
-        FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400,
+        HttpTest.execWithHttpException(HttpSC.BAD_REQUEST_400,
                                          ()-> addTestDataset(fileBase+"config-ds-bad-name-3.ttl"));
     }
 
     @Test public void add_error_4() {
-        FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400,
+        HttpTest.execWithHttpException(HttpSC.BAD_REQUEST_400,
                                          ()-> addTestDataset(fileBase+"config-ds-bad-name-4.ttl"));
     }
 
     @Test public void delete_dataset_1() {
         String name = "NoSuchDataset";
-        FusekiTest.expect404( ()-> execHttpDelete(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+name) );
+        HttpTest.expect404( ()-> httpDelete(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+name) );
     }
 
     // ---- Active/Offline.
@@ -253,11 +251,11 @@ public class TestAdmin extends AbstractFusekiTest {
         try {
             checkExists(dsTest);
 
-            execHttpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+dsTest+"?state=offline", null);
+            httpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+dsTest+"?state=offline");
 
             checkExistsNotActive(dsTest);
 
-            execHttpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+dsTest+"?state=active", null);
+            httpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+dsTest+"?state=active");
 
             checkExists(dsTest);
         } finally {
@@ -267,14 +265,14 @@ public class TestAdmin extends AbstractFusekiTest {
 
     @Test public void state_2() {
         addTestDataset();
-        execHttpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+dsTest+"?state=offline", null);
+        httpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+dsTest+"?state=offline");
         deleteDataset(dsTest);
         checkNotThere(dsTest);
     }
 
     @Test public void state_3() {
         addTestDataset();
-        FusekiTest.expect404(()->execHttpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/DoesNotExist?state=offline", null));
+        HttpTest.expect404(()->httpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/DoesNotExist?state=offline"));
         deleteDataset(dsTest);
     }
 
@@ -283,9 +281,7 @@ public class TestAdmin extends AbstractFusekiTest {
     @Test public void create_backup_1() {
         String id = null;
         try {
-            JsonResponseHandler x = new JsonResponseHandler();
-            execHttpPost(ServerCtl.urlRoot() + "$/" + opBackup + "/" + ServerCtl.datasetPath(), null, WebContent.contentTypeJSON, x);
-            JsonValue v = x.getJSON();
+            JsonValue v = httpPostRtnJSON(ServerCtl.urlRoot() + "$/" + opBackup + "/" + ServerCtl.datasetName());
             id = v.getAsObject().getString("taskId");
         } finally {
             waitForTasksToFinish(1000, 10, 20000);
@@ -294,7 +290,7 @@ public class TestAdmin extends AbstractFusekiTest {
         checkInTasks(id);
 
         // Check a backup was created
-        try ( TypedInputStream in = execHttpGet(ServerCtl.urlRoot()+"$/"+opListBackups) ) {
+        try ( TypedInputStream in = httpGet(ServerCtl.urlRoot()+"$/"+opListBackups) ) {
             assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
             JsonValue v = JSON.parseAny(in);
             assertNotNull(v.getAsObject().get("backups"));
@@ -310,14 +306,13 @@ public class TestAdmin extends AbstractFusekiTest {
 
     @Test
     public void create_backup_2() {
-        FusekiTest.expect400(()->{
-            JsonResponseHandler x = new JsonResponseHandler();
-            execHttpPost(ServerCtl.urlRoot() + "$/" + opBackup + "/noSuchDataset", null, WebContent.contentTypeJSON, x);
+        HttpTest.expect400(()->{
+            JsonValue v = httpPostRtnJSON(ServerCtl.urlRoot() + "$/" + opBackup + "/noSuchDataset");
         });
     }
 
     @Test public void list_backups_1() {
-        try ( TypedInputStream in = execHttpGet(ServerCtl.urlRoot()+"$/"+opListBackups) ) {
+        try ( TypedInputStream in = httpGet(ServerCtl.urlRoot()+"$/"+opListBackups) ) {
             assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
             JsonValue v = JSON.parseAny(in);
             assertNotNull(v.getAsObject().get("backups"));
@@ -335,9 +330,7 @@ public class TestAdmin extends AbstractFusekiTest {
 
             String id = null;
             try {
-                JsonResponseHandler x = new JsonResponseHandler();
-                execHttpPost(ServerCtl.urlRoot() + "$/" + opCompact + "/" + dsTestTdb2, null, WebContent.contentTypeJSON, x);
-                JsonValue v = x.getJSON();
+                JsonValue v = httpPostRtnJSON(ServerCtl.urlRoot() + "$/" + opCompact + "/" + dsTestTdb2);
                 id = v.getAsObject().getString(JsonConstCtl.taskId);
             } finally {
                 waitForTasksToFinish(1000, 500, 20_000);
@@ -365,9 +358,8 @@ public class TestAdmin extends AbstractFusekiTest {
     }
 
     @Test public void compact_02() {
-        FusekiTest.expect400(()->{
-            JsonResponseHandler x = new JsonResponseHandler();
-            execHttpPost(ServerCtl.urlRoot() + "$/" + opCompact + "/noSuchDataset", null, WebContent.contentTypeJSON, x);
+        HttpTest.expect400(()->{
+            JsonValue v = httpPostRtnJSON(ServerCtl.urlRoot() + "$/" + opCompact + "/noSuchDataset");
         });
     }
 
@@ -394,7 +386,7 @@ public class TestAdmin extends AbstractFusekiTest {
 
     @Test public void stats_3() {
         addTestDataset();
-        FusekiTest.expect404(()-> execGetJSON(ServerCtl.urlRoot()+"$/"+opStats+"/DoesNotExist"));
+        HttpTest.expect404(()-> execGetJSON(ServerCtl.urlRoot()+"$/"+opStats+"/DoesNotExist"));
         deleteDataset(dsTest);
     }
 
@@ -443,7 +435,7 @@ public class TestAdmin extends AbstractFusekiTest {
     @Test public void task_2() {
         String x = "NoSuchTask";
         String url = ServerCtl.urlRoot()+"$/tasks/"+x;
-        FusekiTest.expect404(()->httpGetJson(url) );
+        HttpTest.expect404(()->httpGetJson(url) );
         try {
             checkInTasks(x);
             fail("No failure!");
@@ -528,7 +520,9 @@ public class TestAdmin extends AbstractFusekiTest {
     }
 
     private static JsonValue getDatasetDescription(String dsName) {
-        try (TypedInputStream in = execHttpGet(ServerCtl.urlRoot() + "$/" + opDatasets + "/" + dsName)) {
+        if ( dsName.startsWith("/") )
+            dsName = dsName.substring(1);
+        try (TypedInputStream in = httpGet(ServerCtl.urlRoot() + "$/" + opDatasets + "/" + dsName)) {
             AssertExtra.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
             JsonValue v = JSON.parse(in);
             return v;
@@ -550,30 +544,18 @@ public class TestAdmin extends AbstractFusekiTest {
     }
 
     private static void addTestDataset(String filename) {
-        File f = new File(filename);
-        org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8);
-        HttpEntity e = new FileEntity(f, ct);
-        execHttpPost(ServerCtl.urlRoot()+"$/"+opDatasets, e);
+        try {
+            Path f = Path.of(filename);
+            BodyPublisher body = BodyPublishers.ofFile(f);
+            String ct = WebContent.contentTypeTurtle;
+            httpPost(ServerCtl.urlRoot()+"$/"+opDatasets, ct, body);
+        } catch (FileNotFoundException e) {
+            IO.exception(e);
+        }
     }
 
     private static void deleteDataset(String name) {
-        execHttpDelete(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+name);
-    }
-
-    static class JsonResponseHandler implements HttpResponseHandler {
-
-        private JsonValue result = null;
-
-        public JsonValue getJSON() {
-            return result;
-        }
-
-        @Override
-        public void handle(String baseIRI, HttpResponse response) throws IOException {
-            try ( InputStream in = response.getEntity().getContent() ) {
-                result = JSON.parseAny(in);
-            }
-        }
+        httpDelete(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+name);
     }
 
     private static String execSleepTask(String name, int millis) {
@@ -584,17 +566,9 @@ public class TestAdmin extends AbstractFusekiTest {
             url = url + "/"+name;
         }
 
-        JsonResponseHandler x = new JsonResponseHandler();
-        HttpOp.execHttpPost(url+"?interval="+millis, null, WebContent.contentTypeJSON, x);
-        JsonValue v = x.getJSON();
+        JsonValue v = httpPostRtnJSON(url+"?interval="+millis);
         String id = v.getAsObject().getString("taskId");
         return id;
-    }
-
-    private static JsonValue httpGetJson(String url) {
-        JsonResponseHandler x = new JsonResponseHandler();
-        HttpOp.execHttpGet(url, WebContent.contentTypeJSON, x);
-        return x.getJSON();
     }
 
     private static void checkTask(String x) {
@@ -693,11 +667,11 @@ public class TestAdmin extends AbstractFusekiTest {
     private static void askPing(String name) {
         if ( name.startsWith("/") )
             name = name.substring(1);
-        try ( TypedInputStream in = execHttpGet(ServerCtl.urlRoot()+name+"/sparql?query=ASK%7B%7D") ) {}
+        try ( TypedInputStream in = httpGet(ServerCtl.urlRoot()+name+"/sparql?query=ASK%7B%7D") ) {}
     }
 
     private static void adminPing(String name) {
-        try ( TypedInputStream in = execHttpGet(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+name) ) {}
+        try ( TypedInputStream in = httpGet(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+name) ) {}
     }
 
     private static void checkExists(String name)  {
@@ -717,8 +691,8 @@ public class TestAdmin extends AbstractFusekiTest {
     private static void checkNotThere(String name) {
         String n = (name.startsWith("/")) ? name.substring(1) : name;
         // Check gone exists.
-        FusekiTest.expect404(()->  adminPing(n) );
-        FusekiTest.expect404(() -> askPing(n) );
+        HttpTest.expect404(()->  adminPing(n) );
+        HttpTest.expect404(() -> askPing(n) );
     }
 
     private static void checkJsonDatasetsAll(JsonValue v) {
@@ -765,14 +739,14 @@ public class TestAdmin extends AbstractFusekiTest {
     }
 
     private static JsonValue execGetJSON(String url) {
-        try ( TypedInputStream in = execHttpGet(url) ) {
+        try ( TypedInputStream in = httpGet(url) ) {
             AssertExtra.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
             return JSON.parse(in);
         }
     }
 
     private static JsonValue execPostJSON(String url) {
-        try ( TypedInputStream in = execHttpPostStream(url, null, null, null) ) {
+        try ( TypedInputStream in = httpPostStream(url, null, null, null) ) {
             AssertExtra.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
             return JSON.parse(in);
         }

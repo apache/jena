@@ -18,19 +18,18 @@
 
 package arq;
 
-import org.apache.jena.cmd.CmdException;
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryExecution ;
-import org.apache.jena.query.QueryExecutionFactory ;
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.engine.http.HttpQuery ;
-import org.apache.jena.sparql.engine.http.QueryExceptionHTTP ;
-import org.apache.jena.sparql.util.QueryExecUtils ;
-
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModQueryIn ;
 import arq.cmdline.ModRemote ;
 import arq.cmdline.ModResultsOut ;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.query.Query ;
+import org.apache.jena.query.Syntax ;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP ;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
+import org.apache.jena.sparql.exec.http.QuerySendMode;
+import org.apache.jena.sparql.util.QueryExecUtils ;
 
 public class rsparql extends CmdARQ
 {
@@ -38,57 +37,45 @@ public class rsparql extends CmdARQ
     protected ModRemote     modRemote =     new ModRemote() ;
     protected ModResultsOut modResults =    new ModResultsOut() ;
 
-    public static void main (String... argv)
-    {
-        new rsparql(argv).mainRun() ;
+    public static void main(String...argv) {
+        new rsparql(argv).mainRun();
     }
 
-
-    public rsparql(String[] argv)
-    {
-        super(argv) ;
-        super.addModule(modRemote) ;
-        super.addModule(modQuery) ;
-        super.addModule(modResults) ;
+    public rsparql(String[] argv) {
+        super(argv);
+        super.addModule(modRemote);
+        super.addModule(modQuery);
+        super.addModule(modResults);
     }
-    
-    
+
     @Override
-    protected void processModulesAndArgs()
-    {
-        super.processModulesAndArgs() ;
+    protected void processModulesAndArgs() {
+        super.processModulesAndArgs();
         if ( modRemote.getServiceURL() == null )
-            throw new CmdException("No SPARQL endpoint specificied") ;
+            throw new CmdException("No SPARQL endpoint specificied");
     }
-    
+
     @Override
-    protected void exec()
-    {
-        Query query = modQuery.getQuery() ;
+    protected void exec() {
+        Query query = modQuery.getQuery();
 
         try {
-            String serviceURL = modRemote.getServiceURL() ;
-            QueryExecution qe = QueryExecutionFactory.sparqlService(serviceURL, query) ;
-            if ( modRemote.usePost() )
-                HttpQuery.urlLimit = 0 ;
+            String serviceURL = modRemote.getServiceURL();
+            QuerySendMode sendMode = modRemote.usePost() ? QuerySendMode.asPost : QuerySendMode.systemDefault;
 
-            QueryExecUtils.executeQuery(query, qe, modResults.getResultsFormat()) ;
-        } catch (QueryExceptionHTTP ex)
-        {
-            throw new CmdException("HTTP Exeception", ex) ;
-        }
-        catch (Exception ex)
-        {
-            System.out.flush() ;
-            ex.printStackTrace(System.err) ;
+            QueryExecutionHTTP qe = QueryExecutionHTTPBuilder.create().endpoint(serviceURL).query(query).sendMode(sendMode).build();
+
+            QueryExecUtils.executeQuery(query, qe, modResults.getResultsFormat());
+        } catch (QueryExceptionHTTP ex) {
+            throw new CmdException("HTTP Exception", ex);
+        } catch (Exception ex) {
+            System.out.flush();
+            ex.printStackTrace(System.err);
         }
     }
-
 
     @Override
-    protected String getSummary()
-    {
-        return null ;
+    protected String getSummary() {
+        return null;
     }
-
 }

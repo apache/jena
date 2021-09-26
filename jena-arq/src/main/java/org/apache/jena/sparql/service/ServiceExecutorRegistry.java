@@ -24,8 +24,8 @@ import java.util.Objects;
 
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.ARQConstants;
-import org.apache.jena.sparql.engine.http.Service;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.exec.http.*;
 
 public class ServiceExecutorRegistry
 {

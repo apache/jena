@@ -22,14 +22,22 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapZero;
 import org.apache.jena.sparql.graph.GraphZero;
+import org.apache.jena.sparql.util.Context;
 
 /** An always empty {@link DatasetGraph}.
  * One graph (the default graph) with zero triples.
  * No changes allowed - this is not a sink.
+ * <p>
+ * This class of {@code DatasetGraph} does track transaction state.
+ * <p>
+ * It does have a mutable {@link Context}.
  * @see DatasetGraphSink
  */
 public class DatasetGraphZero extends DatasetGraphNull {
-    /**Invariant {@link DatasetGraph}; it does have transaction state so new object here. */
+    /**
+     * Invariant {@link DatasetGraph}; it does have transaction state so create new
+     * object here.
+     */
     public static DatasetGraph create() { return new DatasetGraphZero(); }
 
     @Override
@@ -37,7 +45,7 @@ public class DatasetGraphZero extends DatasetGraphNull {
         return GraphZero.instance();
     }
 
-    public DatasetGraphZero() {}
+    private DatasetGraphZero() {}
 
     @Override
     public PrefixMap prefixes() {

@@ -140,8 +140,6 @@ public class TransactionalLock implements Transactional {
 
     @Override
     public void abort() {
-//        if ( isTransactionType(ReadWrite.WRITE) )
-//            error("Transactional.abort()") ;
         endOnce() ;
     }
 

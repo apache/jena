@@ -24,9 +24,9 @@ import java.sql.Statement;
 
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.jena.jdbc.remote.FusekiTestServer;
+import org.apache.jena.jdbc.remote.FusekiJdbcTestServer;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-import org.apache.jena.jdbc.utils.TestUtils;
+import org.apache.jena.jdbc.utils.TestJdbcUtils;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.WebContent;
 import org.junit.After;
@@ -42,8 +42,8 @@ public class TestRemoteEndpointResultsWithResultSetTypes extends AbstractRemoteE
 
     //@BeforeClass public static void ctlBeforeClass() { FusekiTestServer.ctlBeforeClass(); }
     //@AfterClass  public static void ctlAfterClass()  { FusekiTestServer.ctlAfterClass(); }
-    @Before      public void ctlBeforeTest()  { FusekiTestServer.ctlBeforeTest(); }
-    @After       public void ctlAfterTest()   { FusekiTestServer.ctlAfterTest(); } 
+    @Before      public void ctlBeforeTest()  { FusekiJdbcTestServer.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()   { FusekiJdbcTestServer.ctlAfterTest(); } 
 
     private static RemoteEndpointConnection connection;
     
@@ -53,8 +53,8 @@ public class TestRemoteEndpointResultsWithResultSetTypes extends AbstractRemoteE
      */
     @BeforeClass
     public static void setup() throws SQLException {
-        FusekiTestServer.ctlBeforeClass();
-        connection = new RemoteEndpointConnection(FusekiTestServer.serviceQuery(), FusekiTestServer.serviceUpdate(), null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRDFJSON);
+        FusekiJdbcTestServer.ctlBeforeClass();
+        connection = new RemoteEndpointConnection(FusekiJdbcTestServer.serviceQuery(), FusekiJdbcTestServer.serviceUpdate(), null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRDFJSON);
         connection.setJdbcCompatibilityLevel(JdbcCompatibility.HIGH);
     }
     
@@ -65,7 +65,7 @@ public class TestRemoteEndpointResultsWithResultSetTypes extends AbstractRemoteE
     @AfterClass
     public static void cleanup() throws SQLException {
         connection.close();
-        FusekiTestServer.ctlAfterClass();
+        FusekiJdbcTestServer.ctlAfterClass();
     }
 
     @Override
@@ -75,7 +75,7 @@ public class TestRemoteEndpointResultsWithResultSetTypes extends AbstractRemoteE
     
     @Override
     protected ResultSet createResults(Dataset ds, String query, int resultSetType) throws SQLException {
-        TestUtils.copyToRemoteDataset(ds, FusekiTestServer.serviceGSP());
+        TestJdbcUtils.copyToRemoteDataset(ds, FusekiJdbcTestServer.serviceGSP());
         Statement stmt = connection.createStatement(resultSetType, ResultSet.CONCUR_READ_ONLY);
         return stmt.executeQuery(query);
     }

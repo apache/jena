@@ -122,7 +122,7 @@ import org.apache.jena.sparql.util.ModelUtils;
             QuerySolutionMap qsm = parameterMapToPreBinding(parameterMap, focusNode, path, model);
             if ( query.isAskType() )
                 qsm.add("value", ModelUtils.convertGraphNodeToRDFNode(valueNode, model));
-            qExec = QueryExecutionFactory.create(query, model, qsm);
+            qExec = QueryExecution.create().query(query).model(model).initialBinding(qsm).build();
         }
 
         // ASK validator.

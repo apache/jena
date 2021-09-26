@@ -30,7 +30,6 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
-import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionErrorException;
@@ -257,7 +256,7 @@ public class Upload {
                     try {
                         ActionLib.parse(action, dest, input, lang, base);
                     } catch (RiotParseException ex) {
-                        IO.skipToEnd(input);
+                        ActionLib.consumeBody(action);
                         ServletOps.errorParseError(ex);
                     }
                     count = dest.count();

@@ -139,7 +139,7 @@ public class TestCustomServiceExecutor {
 
     public static void assertResult(String serviceIri, Consumer<QueryExecution> qePostProcessor, boolean withSilent) {
         ResultSetRewindable actual = runTestQuery(serviceIri, qePostProcessor, withSilent);
-        boolean isEqual = ResultSetCompare.equalsExact(actual, table.toResultSet());
+        boolean isEqual = ResultSetCompare.equalsExact(actual, ResultSet.adapt(table.toRowSet()));
         if (!isEqual) {
             actual.reset();
             ResultSetMgr.write(System.err, actual, ResultSetLang.RS_Text);

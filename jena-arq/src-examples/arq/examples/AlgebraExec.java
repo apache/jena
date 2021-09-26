@@ -90,7 +90,7 @@ public class AlgebraExec
             List<String> varNames = new ArrayList<>() ;
             varNames.add("x") ;
             varNames.add("z") ;
-            ResultSet rs = new ResultSetStream(varNames, m, qIter);
+            ResultSet rs = ResultSetStream.create(varNames, m, qIter);
             ResultSetFormatter.out(rs) ;
             qIter.close() ;
         }

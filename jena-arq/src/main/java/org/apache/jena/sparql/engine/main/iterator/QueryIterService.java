@@ -25,12 +25,12 @@ import org.apache.jena.sparql.algebra.op.OpService ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.http.Service ;
 import org.apache.jena.sparql.engine.iterator.QueryIter;
 import org.apache.jena.sparql.engine.iterator.QueryIterCommonParent;
 import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton;
 import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.exec.http.Service;
 import org.apache.jena.sparql.service.ServiceExecution;
 import org.apache.jena.sparql.service.ServiceExecutorFactory;
 import org.apache.jena.sparql.service.ServiceExecutorRegistry;
@@ -44,11 +44,14 @@ public class QueryIterService extends QueryIterRepeatApply
     public QueryIterService(QueryIterator input, OpService opService, ExecutionContext context)
     {
         super(input, context) ;
+        if ( context.getContext().isFalse(Service.httpServiceAllowed) )
+            throw new QueryExecException("SERVICE not allowed") ;
+        // Old name.
         if ( context.getContext().isFalse(Service.serviceAllowed) )
             throw new QueryExecException("SERVICE not allowed") ;
+
         this.opService = opService ;
     }
-
 
     @Override
     protected QueryIterator nextStage(Binding outerBinding) {
@@ -88,6 +91,7 @@ public class QueryIterService extends QueryIterRepeatApply
                 Log.warn(this, "SERVICE " + NodeFmtLib.str(substitutedOp.getService()) + " : " + ex.getMessage());
                 // Return the input
                 return QueryIterSingleton.create(outerBinding, getExecContext());
+
             }
             throw ex;
         }

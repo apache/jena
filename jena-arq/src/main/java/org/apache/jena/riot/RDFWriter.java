@@ -21,7 +21,6 @@ package org.apache.jena.riot;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 import org.apache.jena.atlas.io.IO;
@@ -72,7 +71,7 @@ public class RDFWriter {
      *        .output(System.out);
      * </pre>
      */
-    public static RDFWriterBuilder create() { return new RDFWriterBuilder(); }
+    public static RDFWriterBuilder create() { return RDFWriterBuilder.create(); }
 
     /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
      * @param graph     A {@link Graph}.
@@ -182,7 +181,7 @@ public class RDFWriter {
             output(System.out, fmt);
             return;
         }
-        Path p = Paths.get(filename);
+        Path p = Path.of(filename);
         try ( OutputStream out1 = Files.newOutputStream(p);
               OutputStream out = new BufferedOutputStream(out1, BUF_SIZE)){
             output(out, fmt);

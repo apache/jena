@@ -91,34 +91,9 @@ public class TestSyntaxTransform
                   "srv", "<urn:ex:service>"); }
 
     @Test public void subst_query_30() {
-        testQuery("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }",
-                  "CONSTRUCT { ?s ?p 1 } WHERE { ?s ?p 1 } ",
-                  "o", "1"); }
-
-    @Test public void subst_query_31() {
-        testQuery("CONSTRUCT { GRAPH ?g { ?s ?p ?g } } WHERE { ?s ?p ?g }",
-                  "CONSTRUCT { GRAPH <urn:x:g> { ?s ?p <urn:x:g>} } WHERE { ?s ?p <urn:x:g> }",
-                  "g", "<urn:x:g>"); }
-
-    @Test public void subst_query_40() {
-        testQuery("DESCRIBE ?o ?x",
-                  "DESCRIBE ?x <urn:x:obj>",
-                  "o", "<urn:x:obj>"); }
-
-    @Test public void subst_query_41() {
-        testQuery("DESCRIBE ?o ?x WHERE { ?s ?p ?o } ",
-                  "DESCRIBE ?x <urn:x:obj> WHERE { ?s ?p <urn:x:obj> } ",
-                  "o", "<urn:x:obj>"); }
-
-    @Test public void subst_query_50() {
-        testQuery("ASK { ?s ?p ?o } ",
-                  "ASK { ?s ?p <urn:x:obj> } ",
-                  "o", "<urn:x:obj>"); }
-
-    @Test public void subst_query_model_1() {
         testQuery("SELECT * { ?s ?p ?o } ORDER BY ?s",
                   "SELECT * { <urn:ex:z> ?p ?o } ORDER BY (<urn:ex:z>)",
-                  "s", "<urn:ex:z>");
+                "s", "<urn:ex:z>");
     }
 
     // Same except use the Model API.
@@ -126,6 +101,36 @@ public class TestSyntaxTransform
         testQueryModel("SELECT * { ?s ?p ?o } ORDER BY ?s",
                        "SELECT * { <urn:ex:z> ?p ?o } ORDER BY (<urn:ex:z>)",
                        "s", "<urn:ex:z>");
+    }
+
+    @Test public void subst_query_40() {
+        testQueryModel("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }",
+                       "CONSTRUCT { <urn:ex:z> ?p ?o } WHERE { <urn:ex:z> ?p ?o }",
+                       "s", "<urn:ex:z>");
+    }
+
+    @Test public void subst_query_41() {
+        testQueryModel("CONSTRUCTWHERE { ?s ?p ?o }",
+                       "CONSTRUCT { <urn:ex:z> ?p ?o } WHERE { <urn:ex:z> ?p ?o }",
+                       "s", "<urn:ex:z>");
+    }
+
+    @Test public void subst_query_42() {
+        testQueryModel("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }",
+                       "CONSTRUCT { <urn:ex:z> ?p 57 } WHERE { <urn:ex:z> ?p 57 }",
+                       "s", "<urn:ex:z>", "o", "57");
+    }
+
+    @Test public void subst_query_43() {
+        testQueryModel("CONSTRUCT { GRAPH ?g {?s ?p ?o } } WHERE { GRAPH ?g {?s ?p ?o } }",
+                       "CONSTRUCT { GRAPH <urn:ex:g> { <urn:ex:z> ?p ?o } } WHERE { GRAPH <urn:ex:g> { <urn:ex:z> ?p ?o } }",
+                       "s", "<urn:ex:z>", "g", "<urn:ex:g>");
+    }
+
+    @Test public void subst_query_44() {
+        testQueryModel("CONSTRUCTWHERE { GRAPH ?g {?s ?p ?o } }",
+                       "CONSTRUCT { GRAPH <urn:ex:g> { <urn:ex:z> ?p ?o } } WHERE { GRAPH <urn:ex:g> { <urn:ex:z> ?p ?o } }",
+                       "s", "<urn:ex:z>", "g", "<urn:ex:g>");
     }
 
     @Test public void subst_update_01() {
@@ -185,13 +190,26 @@ public class TestSyntaxTransform
         Query q1 = QueryFactory.create(PREFIX+input);
         Query qExpected = QueryFactory.create(PREFIX+output);
 
-        Map<String, RDFNode> map = new HashMap<>();
+        Map<String, RDFNode> map = Map.of(varStr, fromString(valStr));
+        Query qTrans = QueryTransformOps.transformQuery(q1, map) ;
+        assertEquals(qExpected, qTrans) ;
+    }
+
+    private void testQueryModel(String input, String output, String varStr1, String valStr1, String varStr2, String valStr2) {
+        Query q1 = QueryFactory.create(PREFIX+input) ;
+        Query qExpected = QueryFactory.create(PREFIX+output) ;
+
+        Map<String, RDFNode> map = Map.of(varStr1, fromString(valStr1), varStr2, fromString(valStr2));
+
+        Query qTrans = QueryTransformOps.transformQuery(q1, map) ;
+        assertEquals(qExpected, qTrans) ;
+
+    }
+
+    private RDFNode fromString(String valStr) {
         Node n = SSE.parseNode(valStr);
         RDFNode x = ModelUtils.convertGraphNodeToRDFNode(n);
-        map.put(varStr, x);
-
-        Query qTrans = QueryTransformOps.transformQuery(q1, map);
-        assertEquals(qExpected, qTrans);
+        return x;
     }
 
     private void testUpdate(String input, String output, String varStr, String valStr) {

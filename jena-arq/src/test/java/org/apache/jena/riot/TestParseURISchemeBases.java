@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.rdf.model.*;
@@ -60,7 +59,7 @@ public class TestParseURISchemeBases {
      * Run with -Ddebug=true to log all parsed models to System.out
      */
     private static boolean DEBUG = Boolean.getBoolean("debug");
-    private static Path DIR = Paths.get("testing/RIOT/URISchemes/");
+    private static Path DIR = Path.of("testing/RIOT/URISchemes/");
 
     // private
     // https://www.w3.org/TR/app-uri/

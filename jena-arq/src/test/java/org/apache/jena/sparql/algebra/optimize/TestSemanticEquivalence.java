@@ -24,7 +24,6 @@ import java.util.List ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVars ;
@@ -251,8 +250,7 @@ public class TestSemanticEquivalence {
             ARQ.set(opt, false);
             QueryEngineMain engine = new QueryEngineMain(op, ds.asDatasetGraph(), BindingFactory.empty(), ARQ.getContext());
             QueryIterator iter = engine.eval(op, ds.asDatasetGraph(), BindingFactory.empty(), ARQ.getContext());
-            ResultSetRewindable rs = ResultSetFactory.makeRewindable(new ResultSetStream(vars, ModelFactory.createDefaultModel(),
-                    iter));
+            ResultSetRewindable rs = ResultSetStream.create(vars, null, iter).rewindable();
             if (expected != rs.size()) {
                 System.err.println("Non-optimized results not as expected");
                 ResultSetFormatter.out(System.out, rs);
@@ -265,8 +263,7 @@ public class TestSemanticEquivalence {
             ARQ.set(opt, true);
             engine = new QueryEngineMain(op, ds.asDatasetGraph(), BindingFactory.empty(), ARQ.getContext());
             QueryIterator iterOpt = engine.eval(op, ds.asDatasetGraph(), BindingFactory.empty(), ARQ.getContext());
-            ResultSetRewindable rsOpt = ResultSetFactory.makeRewindable(new ResultSetStream(vars, ModelFactory
-                    .createDefaultModel(), iterOpt));
+            ResultSetRewindable rsOpt = ResultSetStream.create(vars, null, iterOpt).rewindable();
             if (expected != rsOpt.size()) {
                 System.err.println("Optimized results not as expected");
                 ResultSetFormatter.out(System.out, rsOpt);

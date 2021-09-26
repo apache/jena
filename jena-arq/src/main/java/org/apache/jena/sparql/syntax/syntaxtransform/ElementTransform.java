@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.syntax.*;
@@ -38,6 +39,7 @@ public interface ElementTransform
     public Element transform(ElementAssign el, Var v, Expr expr2);
     public Element transform(ElementBind el, Var v, Expr expr2);
     public Triple  transform(Triple triple);
+    public Quad    transform(Quad quad);
     public Element transform(ElementData el);
     public Element transform(ElementDataset el, Element subElt);
     public Element transform(ElementUnion el, List<Element> elements);

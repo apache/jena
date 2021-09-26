@@ -27,10 +27,9 @@ import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
  * Transaction-capable version of {@link GraphTDB}.
  * Valid across transactions except where noted (caution: prefix mappings are not).
  * Valid to use when TDB is not transactional.
- * 
- * @see GraphTDB  
- * @see GraphNonTxnTDB  
-
+ *
+ * @see GraphTDB
+ * @see GraphNonTxnTDB
  */
 public class GraphTxnTDB extends GraphTDB implements Closeable, Sync {
 

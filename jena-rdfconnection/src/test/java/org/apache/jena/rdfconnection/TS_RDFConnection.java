@@ -23,10 +23,10 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
+    // The main testing is RDFLink.
     // Other tests, for RDFConnectionRemote and RDFConnectionFuseki, are in jena-integration-tests
     TestRDFConnectionLocalTxnMem.class
     , TestRDFConnectionLocalMRSW.class
-    , TestLocalIsolation.class
     , TestLibRDFConn.class
 })
 

@@ -16,17 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.util ;
+package org.apache.jena.sparql.util;
 
-import java.util.* ;
-import java.util.concurrent.ConcurrentHashMap ;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.core.DatasetGraph;
 
 /**
  * A class for setting and keeping named values. Used to pass
@@ -34,18 +34,24 @@ import org.apache.jena.sparql.core.DatasetGraph ;
  */
 
 public class Context {
-    public static final Context      emptyContext = new Context(true) ;
+    private static final Context EMPTY = new Context(true);
 
-    protected Map<Symbol, Object>    context      = new ConcurrentHashMap<>() ;
+    protected Map<Symbol, Object>    context      = new ConcurrentHashMap<>();
 
-    protected boolean                readonly     = false ;
+    protected boolean                readonly     = false;
+
+    /** Empty, immutable context */
+    public static final Context emptyContext() { return EMPTY; }
+
+    /** Create an empty context */
+    public static Context create() { return new Context(); }
 
     /** Create an empty context */
     public Context() {}
 
     /* Create an empty context, mark its read-only state */
     private Context(boolean readonly) {
-        this.readonly = readonly ;
+        this.readonly = readonly;
     }
 
     /**
@@ -53,25 +59,25 @@ public class Context {
      * another one. Shallow copy: the values themselves are not copied
      */
     public Context(Context cxt) {
-        putAll(cxt) ;
+        putAll(cxt);
     }
 
     // All access to the underlying goes via map*.
-    
+
     protected Object mapGet(Symbol property) {
         return context.get(property);
     }
 
     protected void mapPut(Symbol property, Object value) {
         if ( readonly )
-            throw new ARQException("Context is readonly") ;
+            throw new ARQException("Context is readonly");
         if ( property == null )
-            throw new ARQException("Context key is null") ;
+            throw new ARQException("Context key is null");
         if ( value == null ) {
-            mapRemove(property) ;
-            return ;
+            mapRemove(property);
+            return;
         }
-        context.put(property, value) ;
+        context.put(property, value);
     }
 
     protected void mapRemove(Symbol property) {
@@ -99,63 +105,83 @@ public class Context {
      * the original context.
      */
     public Context copy() {
-        return new Context(this) ;
+        return new Context(this);
     }
 
     // -- basic operations
-    
+
     /** Get the object value of a property or null */
     @SuppressWarnings("unchecked")
     public <T> T get(Symbol property) {
-        return (T) mapGet(property) ;
+        return (T) mapGet(property);
     }
 
     /**
      * Get the object value of a property - return the default value if not
      * present .
      */
-    public Object get(Symbol property, Object defaultValue) {
-        Object x = mapGet(property) ;
+    public <T> T get(Symbol property, T defaultValue) {
+        T x = get(property);
         if ( x == null )
-            return defaultValue ;
-        return x ;
+            return defaultValue;
+        return x;
     }
 
     /** Store a named value - overwrites any previous set value */
     public void put(Symbol property, Object value) {
-        mapPut(property, value) ;
+        mapPut(property, value);
     }
 
-    /** Store a named value - overwrites any previous set value */
-    public void set(Symbol property, Object value) {
-        mapPut(property, value) ;
+    /** Store a named value - overwrites any previous set value. Returns "this". */
+    public Context set(Symbol property, Object value) {
+        mapPut(property, value);
+        return this;
     }
 
     // All access to the underlying goes via map*.
-    
-    /** Store a named value - overwrites any previous set value */
-    public void set(Symbol property, boolean value) {
+
+    /** Store a named value - overwrites any previous set value. Returns "this". */
+    public Context set(Symbol property, boolean value) {
         if ( value )
-            setTrue(property) ;
+            setTrue(property);
         else
-            setFalse(property) ;
+            setFalse(property);
+        return this;
     }
 
-    /** Store a named value only if it is not currently set */
-    public void setIfUndef(Symbol property, Object value) {
-        Object x = mapGet(property) ;
+    /** Store a named value only if it is not currently set. Returns "this". */
+    public Context setIfUndef(Symbol property, Object value) {
+        Object x = mapGet(property);
         if ( x == null )
-            put(property, value) ;
+            put(property, value);
+        return this;
+    }
+
+    /** Set property value to be true. Returns "this". */
+    public Context setTrue(Symbol property) {
+        return set(property, Boolean.TRUE);
+    }
+
+    /** Set property value to be false. Returns "this". */
+    public Context setFalse(Symbol property) {
+        return set(property, Boolean.FALSE);
+    }
+
+    public void putAll(Context other) {
+        if ( readonly )
+            throw new ARQException("Context is readonly");
+        if ( other != null )
+            other.mapForEach(this::put);
     }
 
     /** Remove any value associated with a property */
     public void remove(Symbol property) {
-        mapRemove(property) ;
+        mapRemove(property);
     }
 
     /** Remove any value associated with a property - alternative method name */
     public void unset(Symbol property) {
-        remove(property) ;
+        remove(property);
     }
 
     // ---- Helpers
@@ -164,12 +190,12 @@ public class Context {
 
     /** Is a property set? */
     public boolean isDefined(Symbol property) {
-        return mapContains(property) ;
+        return mapContains(property);
     }
 
     /** Is a property not set? */
     public boolean isUndef(Symbol property) {
-        return !isDefined(property) ;
+        return !isDefined(property);
     }
 
     // -- as string
@@ -179,72 +205,53 @@ public class Context {
      * supply a default string value
      */
     public String getAsString(Symbol property, String defaultValue) {
-        String x = getAsString(property) ;
+        String x = getAsString(property);
         if ( x == null )
-            return defaultValue ;
-        return x ;
+            return defaultValue;
+        return x;
     }
 
     /** Get the value a string (uses .toString() if the value is not null) */
     public String getAsString(Symbol property) {
-        Object x = mapGet(property) ;
+        Object x = mapGet(property);
         if ( x == null )
-            return null ;
-        return x.toString() ;
+            return null;
+        return x.toString();
     }
-    
+
     /** Get the value as a long value. The context entry can be a string, Integer or Long. */
     public int getInt(Symbol symbol, int defaultValue) {
         if (  isUndef(symbol) )
-            return defaultValue ; 
-        Object obj = mapGet(symbol) ;
+            return defaultValue;
+        Object obj = mapGet(symbol);
         if ( obj instanceof String ) {
-            return Integer.parseInt((String)obj) ;
+            return Integer.parseInt((String)obj);
         } else if ( obj instanceof Integer ) {
-            return ((Integer)obj).intValue() ;
+            return ((Integer)obj).intValue();
         } else {
-            throw new ARQException("Value for "+symbol+" is not a recoginized class: "+Lib.className(obj)) ;
+            throw new ARQException("Value for "+symbol+" is not a recoginized class: "+Lib.className(obj));
         }
     }
 
     /** Get the value as a long value. The context entry can be a string, Integer or Long. */
     public long getLong(Symbol symbol, long defaultValue) {
         if (  isUndef(symbol) )
-            return defaultValue ; 
-        Object obj = mapGet(symbol) ;
+            return defaultValue;
+        Object obj = mapGet(symbol);
         if ( obj instanceof String ) {
-            return Long.parseLong((String)obj) ;
+            return Long.parseLong((String)obj);
         } else if ( obj instanceof Integer ) {
-            return ((Integer)obj).intValue() ;
+            return ((Integer)obj).intValue();
         } else if ( obj instanceof Long ) {
-            return ((Long)obj) ;
+            return ((Long)obj);
         } else {
-            throw new ARQException("Value for "+symbol+" is not a recognized class: "+Lib.className(obj)) ;
+            throw new ARQException("Value for "+symbol+" is not a recognized class: "+Lib.className(obj));
         }
-    }
-    
-    public void putAll(Context other) {
-        if ( readonly )
-            throw new ARQException("Context is readonly") ;
-        if ( other != null )
-            other.mapForEach(this::put);
-    }
-
-    // -- true/false
-
-    /** Set property value to be true */
-    public void setTrue(Symbol property) {
-        set(property, Boolean.TRUE) ;
-    }
-
-    /** Set property value to be false */
-    public void setFalse(Symbol property) {
-        set(property, Boolean.FALSE) ;
     }
 
     /** Is the value 'true' (either set to the string "true" or Boolean.TRUE) */
     public boolean isTrue(Symbol property) {
-        return isTrue(property, false) ;
+        return isTrue(property, false);
     }
 
     /**
@@ -252,24 +259,24 @@ public class Context {
      * undefined?
      */
     public boolean isTrueOrUndef(Symbol property) {
-        return isTrue(property, true) ;
+        return isTrue(property, true);
     }
 
     private boolean isTrue(Symbol property, boolean dft) {
-        Object x = get(property) ;
+        Object x = get(property);
         if ( x == null )
-            return dft ;
+            return dft;
         if ( x instanceof String ) {
-            String s = (String)x ;
+            String s = (String)x;
             if ( s.equalsIgnoreCase("true") )
-                return true ;
+                return true;
         }
-        return x.equals(Boolean.TRUE) ;
+        return x.equals(Boolean.TRUE);
     }
 
     /** Is the value 'false' (either set to the string "false" or Boolean.FALSE) */
     public boolean isFalse(Symbol property) {
-        return isFalse(property, false) ;
+        return isFalse(property, false);
     }
 
     /**
@@ -277,19 +284,19 @@ public class Context {
      * or undefined
      */
     public boolean isFalseOrUndef(Symbol property) {
-        return isFalse(property, true) ;
+        return isFalse(property, true);
     }
 
     private boolean isFalse(Symbol property, boolean dft) {
-        Object x = get(property) ;
+        Object x = get(property);
         if ( x == null )
-            return dft ;
+            return dft;
         if ( x instanceof String ) {
-            String s = (String)x ;
+            String s = (String)x;
             if ( s.equalsIgnoreCase("false") )
-                return true ;
+                return true;
         }
-        return x.equals(Boolean.FALSE) ;
+        return x.equals(Boolean.FALSE);
     }
 
     // -- Test for value
@@ -297,18 +304,18 @@ public class Context {
     /** Test whether a named value is a specific value (.equals) */
 
     public boolean hasValue(Symbol property, Object value) {
-        Object x = get(property) ;
+        Object x = get(property);
         if ( x == null && value == null )
-            return true ;
+            return true;
         if ( x == null || value == null )
-            return false ;
-        return x.equals(value) ;
+            return false;
+        return x.equals(value);
     }
 
     /** Test whether a named value (as a string) has a specific string form */
 
     public boolean hasValueAsString(Symbol property, String value) {
-        return hasValueAsString(property, value, false) ;
+        return hasValueAsString(property, value, false);
     }
 
     /**
@@ -316,57 +323,67 @@ public class Context {
      * ignore case
      */
     public boolean hasValueAsString(Symbol property, String value, boolean ignoreCase) {
-        String s = getAsString(property) ;
+        String s = getAsString(property);
         if ( s == null && value == null )
-            return true ;
+            return true;
         if ( s == null || value == null )
-            return false ;
+            return false;
 
         if ( ignoreCase )
-            return s.equalsIgnoreCase(value) ;
-        return s.equals(value) ;
+            return s.equalsIgnoreCase(value);
+        return s.equals(value);
     }
 
     /** Set of properties (as Symbols) currently defined */
     public Set<Symbol> keys() {
-        return mapKeySet() ;
+        return mapKeySet();
     }
 
     /** Return the number of context items */
     public int size() {
-        return mapSize() ;
+        return mapSize();
+    }
+
+    public void clear() {
+        context.clear();
     }
 
     @Override
     public String toString() {
-        String x = "" ;
-        String sep = "" ;
+        String x = "";
+        String sep = "";
         for ( Symbol s : keys() ) {
-            Object value = get(s) ;
-            x = x + sep + s + " = " + value ;
-            sep = "\n" ;
+            Object value = get(s);
+            x = x + sep + s + " = " + value;
+            sep = "\n";
         }
-        return x ;
+        return x;
+    }
+
+    /** Return the context of the dataset (not copied); if the dataset is null, return null */
+    public static Context fromDataset(DatasetGraph dataset) {
+        if ( dataset == null )
+            return null;
+        return dataset.getContext();
     }
 
     /** Setup a context using another context and a dataset.*/
     public static Context setupContextForDataset(Context globalContext, DatasetGraph dataset) {
         // Copy per-dataset settings.
-        Context dsgCxt = ( dataset != null && dataset.getContext() != null ) 
+        Context dsgCxt = ( dataset != null )
             ? dataset.getContext()
             : null;
-        
-        Context context = mergeCopy(globalContext, dsgCxt); 
+        Context context = mergeCopy(globalContext, dsgCxt);
         return context;
     }
 
     public static void setCurrentDateTime(Context context) {
-        context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
+        context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime());
     }
-    
+
     /** Merge an outer (defaults to the system global context)
      *  and local context to produce a new context
-     *  The new context is always a separate copy.  
+     *  The new context is always a separate copy.
      */
     public static Context mergeCopy(Context contextGlobal, Context contextLocal) {
         if ( contextGlobal == null )
@@ -374,34 +391,34 @@ public class Context {
         Context context = contextGlobal.copy();
         if ( contextLocal != null )
             context.putAll(contextLocal);
-        return context ;
+        return context;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31 ;
-        int result = 1 ;
-        result = prime * result + ((context == null) ? 0 : context.hashCode()) ;
-        result = prime * result + (readonly ? 1231 : 1237) ;
-        return result ;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((context == null) ? 0 : context.hashCode());
+        result = prime * result + (readonly ? 1231 : 1237);
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
         if ( this == obj )
-            return true ;
+            return true;
         if ( obj == null )
-            return false ;
+            return false;
         if ( getClass() != obj.getClass() )
-            return false ;
-        Context other = (Context)obj ;
+            return false;
+        Context other = (Context)obj;
         if ( context == null ) {
             if ( other.context != null )
-                return false ;
+                return false;
         } else if ( !context.equals(other.context) )
-            return false ;
+            return false;
         if ( readonly != other.readonly )
-            return false ;
-        return true ;
+            return false;
+        return true;
     }
 }

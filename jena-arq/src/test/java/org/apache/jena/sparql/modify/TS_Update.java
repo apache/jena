@@ -23,12 +23,13 @@ import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
-@SuiteClasses( { 
+@SuiteClasses( {
     TestUpdateGraphMem.class
     , TestUpdateGraphMgtMem.class
     , TestUpdateOperations.class
     , TestUpdateCompare.class
     , TestUpdateWriter.class
+    , TestUpdateBuild.class
 })
 public class TS_Update
 {
