@@ -23,13 +23,17 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.NoSuchElementException ;
 
-/** Remembers the last N yields.
+/**
+ * Remembers the last N yields.
  * See also {@link IteratorWithBuffer}, for an iterator that looks ahead to what it will yield.
+ * History is retained at the end of iterator.
+ * "Close" releases the history.
+ *
  * @see IteratorWithBuffer
  * @see PeekIterator
  * @see PushbackIterator
  */
-public class IteratorWithHistory<T> implements Iterator<T>
+public class IteratorWithHistory<T> implements IteratorCloseable<T>
 {
     private List<T> history ;
     private Iterator<T> iter ;
@@ -102,4 +106,10 @@ public class IteratorWithHistory<T> implements Iterator<T>
 
     /** Called, once, at the end */
     protected void endReached() { }
+
+    @Override
+    public void close() {
+        Iter.close(iter);
+        history.clear();
+    }
 }

@@ -57,6 +57,10 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 public class RiotLib {
     // ---- BlankNode skolemization as IRIs
     private final static boolean skolomizedBNodes = ARQ.isTrueOrUndef(ARQ.constantBNodeLabels);
+    /**
+     * BNodes as pseudo-IRIs
+     */
+    private final static String bNodeLabelStart = "_:";
 
     /**
      * "Skolemize" to a node.
@@ -74,14 +78,12 @@ public class RiotLib {
     public static String blankNodeToIriString(Node node) {
         if ( node.isBlank() ) {
             String x = node.getBlankNodeLabel();
-            return "_:" + x;
+            return bNodeLabelStart + x;
         }
         if ( node.isURI() )
             return node.getURI();
         throw new RiotException("Not a blank node or URI");
     }
-
-    private final static String bNodeLabelStart = "_:";
 
     /**
      * Implement {@code <_:....>} as a "Node IRI"

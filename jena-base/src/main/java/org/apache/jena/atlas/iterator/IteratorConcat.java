@@ -28,11 +28,10 @@ import java.util.NoSuchElementException;
  * be joined. IteratorCons is slightly better for two iterators.
  */
 
-public class IteratorConcat<T> implements Iterator<T> {
+public class IteratorConcat<T> implements IteratorCloseable<T> {
     private List<Iterator<T>> iterators = new ArrayList<>();
     int idx = -1;
     private Iterator<T> current = null;
-    private Iterator<T> removeFrom = null;
     boolean finished = false;
 
     /**
@@ -68,11 +67,14 @@ public class IteratorConcat<T> implements Iterator<T> {
 
         if ( current != null && current.hasNext() )
             return true;
-
-        while (idx < iterators.size() - 1) {
-            idx++;
+        if ( current != null )
+            Iter.close(current);
+        idx++;
+        current = null;
+        for ( ; idx < iterators.size() ; idx++ ) {
             current = iterators.get(idx);
             if ( current.hasNext() )
+                // Next
                 return true;
             // Nothing here - move on.
             current = null;
@@ -85,7 +87,17 @@ public class IteratorConcat<T> implements Iterator<T> {
     public T next() {
         if ( !hasNext() )
             throw new NoSuchElementException();
-        removeFrom = current;
         return current.next();
+    }
+
+    @Override
+    public void close() {
+        //iterators.forEach(Iter::close);
+        // Earlier iterators already closed
+        for ( int i = idx ; i < iterators.size() ; i++ ) {
+            Iterator<T> iter = iterators.get(idx);
+            Iter.close(iter);
+        }
+
     }
 }

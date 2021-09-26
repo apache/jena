@@ -30,17 +30,17 @@ import org.apache.jena.riot.web.LangTag ;
 import org.apache.jena.sparql.util.NodeUtils ;
 import org.apache.jena.vocabulary.RDF ;
 
-/** Convert literals to canonical form. */   
-public class CanonicalizeLiteral implements Function<Node, Node>    
+/** Convert literals to canonical form. */
+public class CanonicalizeLiteral implements Function<Node, Node>
 {
-    private static final CanonicalizeLiteral singleton = new CanonicalizeLiteral(); 
+    private static final CanonicalizeLiteral singleton = new CanonicalizeLiteral();
 
     public static CanonicalizeLiteral get() { return singleton ; }
 
     private CanonicalizeLiteral() {}
-    
+
     /**
-     * Canonicaize a literal, both lexical form and language tag (RFc canonical). 
+     * Canonicaize a literal, both lexical form and language tag (RFc canonical).
      */
     @Override
     public Node apply(Node node) {
@@ -50,34 +50,34 @@ public class CanonicalizeLiteral implements Function<Node, Node>
         if ( ! node.getLiteralDatatype().isValid(node.getLiteralLexicalForm()) )
             // Invalid lexical form for the datatype - do nothing.
             return node;
-            
+
         RDFDatatype dt = node.getLiteralDatatype() ;
         Node n2 ;
         if ( NodeUtils.isLangString(node) ) {
-            // RDF 1.0, no datatype ; RDF 1.1 : datatype is rdf:langString 
+            // RDF 1.0, no datatype ; RDF 1.1 : datatype is rdf:langString
             if ( node.getLiteralLanguage().equals("") )
                 //n2 = NormalizeValue.dtSimpleLiteral.handle(node, node.getLiteralLexicalForm(), null) ;
                 return node ;
             else
-                n2 = canonicalLangtag(node.getLiteralLexicalForm(), node.getLiteralLanguage()) ; 
+                n2 = canonicalLangtag(node.getLiteralLexicalForm(), node.getLiteralLanguage()) ;
         } else if ( dt == null ) {
             // RDF 1.0 / no lang.
             n2 = NormalizeValue.dtSimpleLiteral.handle(node, node.getLiteralLexicalForm(), null) ;
         } else {
-            // Dataype, not rdf:langString (RDF 1.1). 
+            // Dataype, not rdf:langString (RDF 1.1).
             DatatypeHandler handler = dispatch.get(dt) ;
             if ( handler == null )
                 return node ;
             n2 = handler.handle(node, node.getLiteralLexicalForm(), dt) ;
         }
-        
+
         if ( n2 == null )
             return node ;
         return n2 ;
     }
-    
+
     /** Convert the lexical form to a canonical form if one of the known datatypes,
-     * otherwise return the node argument. (same object :: {@code ==})  
+     * otherwise return the node argument. (same object :: {@code ==})
      */
     public static Node canonicalValue(Node node) {
         if ( ! node.isLiteral() )
@@ -91,9 +91,9 @@ public class CanonicalizeLiteral implements Function<Node, Node>
         if ( ! node.getLiteralDatatype().isValid(node.getLiteralLexicalForm()) )
             // Invalid lexical form for the datatype - do nothing.
             return node;
-            
+
         RDFDatatype dt = node.getLiteralDatatype() ;
-        // Datatype, not rdf:langString (RDF 1.1). 
+        // Datatype, not rdf:langString (RDF 1.1).
         DatatypeHandler handler = dispatch.get(dt) ;
         if ( handler == null )
             return node ;
@@ -102,9 +102,9 @@ public class CanonicalizeLiteral implements Function<Node, Node>
             return node ;
         return n2 ;
     }
-    
+
     /** Convert the language tag of a lexical form to a canonical form if one of the known datatypes,
-     * otherwise return the node argument. (same object; compare by {@code ==})  
+     * otherwise return the node argument. (same object; compare by {@code ==})
      */
     private static Node canonicalLangtag(String lexicalForm, String langTag) {
         String langTag2 = LangTag.canonical(langTag);
@@ -114,17 +114,17 @@ public class CanonicalizeLiteral implements Function<Node, Node>
     }
 
     private static final RDFDatatype dtPlainLiteral = NodeFactory.getType(RDF.getURI()+"PlainLiteral") ;
-    
+
     private final static Map<RDFDatatype, DatatypeHandler> dispatch = new HashMap<>() ;
 
-    // MUST be after the handler definitions as these assign to statics, so it's code lexcial order.
-    // or use static class to force touching that, initializing and then getting the values. 
+    // MUST be after the handler definitions as these assign to statics, so it's code lexical order,
+    // or use a static class to force touching that, initializing and then getting the values.
     static {
         dispatch.put(XSDDatatype.XSDinteger,                NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDdecimal,                NormalizeValue.dtDecimal) ;
 
         // Subtypes. Changes the datatype.
-        dispatch.put(XSDDatatype.XSDint,                    NormalizeValue.dtInteger) ;        
+        dispatch.put(XSDDatatype.XSDint,                    NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDlong,                   NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDshort,                  NormalizeValue.dtInteger) ;
         dispatch.put(XSDDatatype.XSDbyte,                   NormalizeValue.dtInteger) ;
@@ -142,10 +142,10 @@ public class CanonicalizeLiteral implements Function<Node, Node>
         dispatch.put(XSDDatatype.XSDfloat,      NormalizeValue.dtFloat ) ;
         dispatch.put(XSDDatatype.XSDdouble,     NormalizeValue.dtDouble ) ;
 
-        // Only fractional seconds part can vary for the same value. 
+        // Only fractional seconds part can vary for the same value.
         dispatch.put(XSDDatatype.XSDdateTime,   NormalizeValue.dtDateTime) ;
-        
-        // These are fixed format 
+
+        // These are fixed format
 //        dispatch.put(XSDDatatype.XSDdate,       null) ;
 //        dispatch.put(XSDDatatype.XSDtime,       null) ;
 //        dispatch.put(XSDDatatype.XSDgYear,      null) ;
@@ -156,8 +156,8 @@ public class CanonicalizeLiteral implements Function<Node, Node>
 
         dispatch.put(XSDDatatype.XSDduration,   null) ;
         dispatch.put(XSDDatatype.XSDboolean,    NormalizeValue.dtBoolean) ;
-        
-        // Convert to RDF 1.1 form - no explicit datatype. 
+
+        // Convert to RDF 1.1 form - no explicit datatype.
         dispatch.put(XSDDatatype.XSDstring,     NormalizeValue.dtXSDString) ;
         // Convert (illegal) rdf:PlainLiteral to a legal RDF term.
         dispatch.put(dtPlainLiteral,            NormalizeValue.dtPlainLiteral) ;

@@ -42,19 +42,19 @@ import org.apache.jena.sparql.util.Symbol ;
  * {@link AdapterRDFWriter} is a {@link WriterGraphRIOT} over a
  * {@link RDFWriterI}.
  */
-public class RDFWriterRIOT implements RDFWriterI 
+public class RDFWriterRIOT implements RDFWriterI
 {
     // ---- Compatibility
-    private final String basename ; 
-    private final String jenaName ; 
-    private Context context = new Context() ;
-    private Map<String, Object> properties = new HashMap<>() ;
+    private final String basename ;
+    private final String jenaName ;
+    private Context context = null;
+    private Map<String, Object> properties = null;
     private RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
-    
+
     public RDFWriterRIOT(String jenaName) {
         this.basename = "org.apache.jena.riot.writer." + jenaName.toLowerCase(Locale.ROOT);
         this.jenaName = jenaName;
-        context.put(SysRIOT.sysRdfWriterProperties, properties);
+
     }
 
     protected RDFWriterBuilder writer() {
@@ -67,7 +67,7 @@ public class RDFWriterRIOT implements RDFWriterI
             return builder.lang(lang);
         throw new RiotException("No graph writer for '" + jenaName + "'");
     }
-    
+
     @SuppressWarnings("deprecation")
     @Override
     public void write(Model model, Writer out, String base) {
@@ -75,7 +75,7 @@ public class RDFWriterRIOT implements RDFWriterI
             base = null;
         writer().source(model).context(context).base(base).build().output(out);
     }
-    
+
     @Override
     public void write(Model model, OutputStream out, String base) {
         if ( base != null && base.equals("") )
@@ -85,11 +85,14 @@ public class RDFWriterRIOT implements RDFWriterI
 
     @Override
     public Object setProperty(String propName, Object propValue) {
+        if ( context == null ) {
+            context = RIOT.getContext().copy();
+            properties = new HashMap<>() ;
+            context.put(SysRIOT.sysRdfWriterProperties, properties);
+        }
         Symbol sym = Symbol.create(basename + "#" + propName);
-        Object oldObj = context.get(sym);
-        context.set(sym, propValue);
+        Object oldObj = properties.get(propName);
         properties.put(propName, propValue) ;
-        // These are added to any Jena RDFWriter (old-style, e.g. RDF/XML) in AdapterRDFWriter  
         return oldObj;
     }
 

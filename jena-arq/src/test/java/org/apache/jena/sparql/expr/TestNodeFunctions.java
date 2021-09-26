@@ -20,12 +20,13 @@ package org.apache.jena.sparql.expr ;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.apache.jena.JenaRuntime ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.sse.SSE;
@@ -159,10 +160,29 @@ public class TestNodeFunctions {
         assertEquals("abc", s.getString()) ;
     }
 
-    @Test(expected=ExprTypeException.class)
+    // STR(BNODE())/strict
+    @Test
     public void testStr4() {
+        boolean b = ARQ.isTrue(ARQ.strictSPARQL);
+        try {
+            ARQ.set(ARQ.strictSPARQL, true);
+            try {
+                Node n = NodeFactory.createBlankNode() ;
+                String s = NodeFunctions.str(n) ;
+                fail("NodeFunctions.str did not fail");
+            } catch (ExprEvalException ex) {}
+        } finally {
+            ARQ.set(ARQ.strictSPARQL, b);
+        }
+    }
+
+    // STR(BNODE())/notStrict
+    @Test
+    public void testStr5() {
         Node n = NodeFactory.createBlankNode() ;
         String s = NodeFunctions.str(n) ;
+        assertNotNull(s);
+        assertEquals("_:"+n.getBlankNodeLabel(), s);
     }
 
     @Test public void testDatatype1() {

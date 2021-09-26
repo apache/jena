@@ -52,7 +52,7 @@ public class ArgsConfig {
     private File tdbFile = null;
 
     //6) Load RDF file into dataset
-    @Parameter(names = {"--rdf_file", "-rf"}, description = "Comma separated list of [RDF file path#graph name>RDF format] to load into dataset. Graph name is optional and will use default graph. RDF format is optional (default: ttl) or select from one of the following: json-ld, json-rdf, nt, nq, thrift, trig, trix, ttl, ttl-pretty, xml, xml-plain, xml-pretty.", validateWith = RDFFileParameter.class, listConverter = RDFFileParameter.class, order = 5)
+    @Parameter(names = {"--rdf_file", "-rf"}, description = "Comma separated list of [RDF file path#graph name>RDF format] to load into dataset. Graph name is optional and will use default graph. RDF format is optional (default: ttl) or select from one of the following: json-ld, json-rdf, nt, nq, trig, trix, ttl, ttl-pretty, xml, xml-plain, xml-pretty.", validateWith = RDFFileParameter.class, listConverter = RDFFileParameter.class, order = 5)
     private List<FileGraphFormat> fileGraphFormats = new ArrayList<>();
 
     //7) Load tabular file into dataset
@@ -102,7 +102,7 @@ public class ArgsConfig {
     //18) TDB2
     @Parameter(names = {"--tdb2", "-t2"}, description = "Option to use TDB2, rather than TDB, for persistent storage. Default: false", order = 17)
     private boolean tdb2 = false;
-    
+
     //19) Help
     @Parameter(names = {"--help", "-h"}, description = "Application help. @path/to/file can be used to submit parameters in a file.", help = true, order = 18)
     private boolean help = false;
@@ -194,7 +194,7 @@ public class ArgsConfig {
     public boolean isTDB2() {
         return tdb2;
     }
-    
+
     public boolean isHelp() {
         return help;
     }

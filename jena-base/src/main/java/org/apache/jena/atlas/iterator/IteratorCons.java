@@ -29,7 +29,7 @@ import org.apache.jena.atlas.lib.Lib;
  * better to create an IteratorConcat explicitly and add each iterator. IteratorCons
  * is slightly better in the two iterator case.
  */
-public class IteratorCons<T> implements Iterator<T>, Iterable<T> {
+public class IteratorCons<T> implements IteratorCloseable<T> {
     // No - we don't really need IteratorCons and IteratorConcat
     // Historical - IteratorCons came first.
     // IteratorConcat is nearly as good as IteratorCons in the small and
@@ -99,16 +99,19 @@ public class IteratorCons<T> implements Iterator<T>, Iterable<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return this;
-    }
-
-    @Override
     public void remove() {
         if ( null == removeFrom )
             throw new IllegalStateException("no calls to next() since last call to remove()");
 
         removeFrom.remove();
         removeFrom = null;
+    }
+
+    @Override
+    public void close() {
+        if ( iter1 != null )
+            Iter.close(iter1);
+        if ( iter2 != null )
+            Iter.close(iter2);
     }
 }
