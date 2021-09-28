@@ -42,16 +42,17 @@ public class StreamRDF2Protobuf implements StreamRDF, AutoCloseable
     private PrefixMap pmap = PrefixMapFactory.create();
     private final boolean encodeValues;
     private final Consumer<RDF_StreamRow> rowHandler;
+    private final Runnable andFinally;
 
     public static StreamRDF createDelimited(OutputStream outputStream, boolean withValues) {
         Consumer<RDF_StreamRow> output = sr->PBufRDF.writeDelimitedTo(sr, outputStream);
-        return new StreamRDF2Protobuf(output, withValues);
+        return new StreamRDF2Protobuf(output, withValues, ()->IO.flush(outputStream));
     }
 
     public static void writeBlk(OutputStream outputStream, Consumer<StreamRDF> stream, boolean withValues) {
         RDF_Stream.Builder builder = RDF_Stream.newBuilder();
         Consumer<RDF_StreamRow> output = sr->builder.addRow(sr);
-        StreamRDF2Protobuf processor = new StreamRDF2Protobuf(output, withValues);
+        StreamRDF2Protobuf processor = new StreamRDF2Protobuf(output, withValues, ()->IO.flush(outputStream));
         stream.accept(processor);
         RDF_Stream pbStream = builder.build();
         try {
@@ -60,10 +61,11 @@ public class StreamRDF2Protobuf implements StreamRDF, AutoCloseable
     }
 
 
-    private StreamRDF2Protobuf(Consumer<RDF_StreamRow> rowHandler, boolean encodeValues) {
+    private StreamRDF2Protobuf(Consumer<RDF_StreamRow> rowHandler, boolean encodeValues, Runnable atEnd) {
         this.pmap = PrefixMapFactory.create();
         this.encodeValues = encodeValues;
         this.rowHandler = rowHandler;
+        this.andFinally = atEnd;
     }
 
     private RDF_StreamRow.Builder streamRowBuilder = RDF_StreamRow.newBuilder();
@@ -77,7 +79,9 @@ public class StreamRDF2Protobuf implements StreamRDF, AutoCloseable
     public void start() {}
 
     @Override
-    public void finish() { }
+    public void finish() {
+        andFinally.run();
+    }
 
     @Override
     public void close() {
