@@ -95,12 +95,20 @@ public class AuthEnv {
         return mod.addAuth(requestBuilder);
     }
 
-    void registerAuthModifier(String requestTarget, AuthRequestModifier digestAuthModifier) {
+    /** Register the users/password which is to be used with basic auth at the given URL */
+    public void registerBasicAuthModifier(String url, String user, String password) {
+        AuthRequestModifier basicAuthModifier = AuthLib.basicAuthModifier(user, password);
+        String serviceEndpoint = HttpLib.endpoint(url);
+        authModifiers.put(serviceEndpoint, basicAuthModifier);
+    }
+
+    void registerAuthModifier(String requestTarget, AuthRequestModifier authModifier) {
         // Without query string or fragment.
         String serviceEndpoint = HttpLib.endpoint(requestTarget);
         //AuthEnv.LOG.info("Setup authentication for "+serviceEndpoint);
-        authModifiers.put(serviceEndpoint, digestAuthModifier);
+        authModifiers.put(serviceEndpoint, authModifier);
     }
+
 
     // Development - do not provide in production systems.
 //    public void state() {

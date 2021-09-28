@@ -328,7 +328,7 @@ public class HttpLib {
     }
 
     /**
-     * Return a string (assumed ot be a URI) without query string or fragment.
+     * Return a string (assumed to be a URI) without query string or fragment.
      */
     public static String endpoint(String uriStr) {
         int idx1 = uriStr.indexOf('?');
