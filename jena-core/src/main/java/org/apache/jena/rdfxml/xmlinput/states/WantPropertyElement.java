@@ -108,7 +108,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
                 if (object != null) {
                     if (!badStateCode(nextStateCode))
                         // otherwise warning already given
-                        warning(ERR_SYNTAX_ERROR, 
+                        warning(ERR_SYNTAX_ERROR,
                                 "On a property element, only one of the attributes rdf:nodeID or rdf:resource is permitted.");
                 } else
                     object = URIReference.resolve(this, x, ap.resource);
@@ -223,25 +223,47 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         object = null;
     }
 
-    static private URIReference _rdf_n[] = new URIReference[0];
-
-    static private URIReference rdf_n(int i) {
-        if (i >= _rdf_n.length) {
-            int newLength = (i + 10) * 3 / 2;
-            URIReference new_rdf_n[] = new URIReference[newLength];
-            System.arraycopy(_rdf_n, 0, new_rdf_n, 0, _rdf_n.length);
-            for (int j = _rdf_n.length; j < newLength; j++) {
-                new_rdf_n[j] = URIReference.createNoChecks(rdfns + "_" + j);
-            }
-            _rdf_n = new_rdf_n;
+    // Allocate the first 20 rdf:_i ; calculate at run time any others.
+    static private final int RDF_N = 20;
+    static private URIReference _rdf_n_uri[] = new URIReference[RDF_N];
+    static {
+        for ( int i = 0 ; i < RDF_N; i++) {
+            _rdf_n_uri[i] = makeRDF_i(i);
         }
-        return _rdf_n[i];
     }
 
+    static private URIReference rdf_n(int i) {
+        if ( i < 0 )
+            throw new IllegalStateException("Negative rdf:_i");
+        if (i < _rdf_n_uri.length)
+            return _rdf_n_uri[i];
+        return makeRDF_i(i);
+    }
+
+    static URIReference makeRDF_i(int i) {
+        return URIReference.createNoChecks(rdfns + "_" + i);
+    }
+
+    // Not thread safe. JENA-2172
+//    static private URIReference _rdf_n[] = new URIReference[0];
+//
+//    static private URIReference rdf_n(int i) {
+//        if (i >= _rdf_n.length) {
+//            int newLength = (i + 10) * 3 / 2;
+//            URIReference new_rdf_n[] = new URIReference[newLength];
+//            System.arraycopy(_rdf_n, 0, new_rdf_n, 0, _rdf_n.length);
+//            for (int j = _rdf_n.length; j < newLength; j++) {
+//                new_rdf_n[j] = URIReference.createNoChecks(rdfns + "_" + j);
+//            }
+//            _rdf_n = new_rdf_n;
+//        }
+//        return _rdf_n[i];
+//    }
+
     /***************************************************************************
-     * 
+     *
      * ERROR HANDLING CODE
-     * 
+     *
      **************************************************************************/
 
     // Error detection
@@ -269,9 +291,9 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
     }
 
     /***************************************************************************
-     * 
+     *
      * ERROR MESSAGES
-     * 
+     *
      **************************************************************************/
    private String descriptionOfCases(AttributeLexer ap, int nextStateCode,
             String propAttrs) {
@@ -369,14 +391,14 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         if (ap.type != null && propAttrs != null) {
             if (nodeIDResource == null)
                 otherAtts += "the attribute rdf:type and the " + propAttrs;
-            else 
+            else
                 otherAtts += "the attribute rdf:type, the " + propAttrs;
         } else if (ap.type != null) {
             otherAtts += "the attribute rdf:type";
         } else {
             otherAtts = "the " + propAttrs;
         }
-        
+
         if (nodeIDResource != null)
             otherAtts += " and "+nodeIDResource;
 
