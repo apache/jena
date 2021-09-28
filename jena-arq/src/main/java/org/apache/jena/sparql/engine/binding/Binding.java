@@ -63,6 +63,11 @@ public interface Binding
     public boolean contains(Var var);
 
     /** Return the object bound to a variable, or null */
+    public default Node get(String varName) {
+        return get(Var.alloc(varName));
+    }
+
+    /** Return the object bound to a variable, or null */
     public Node get(Var var);
 
     /** Number of (var, value) pairs. */

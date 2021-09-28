@@ -56,6 +56,11 @@ public interface UpdateExecBuilder {
     /** Provide a (Var, Node) for substitution in the query when QueryExec is built. */
     public UpdateExecBuilder substitution(Var var, Node value);
 
+    /** Provide a (Var name, Node) for substitution in the query when QueryExec is built. */
+    public default UpdateExecBuilder substitution(String var, Node value) {
+        return substitution(Var.alloc(var), value);
+    }
+
     public UpdateExec build();
 
     /** Build and execute. */
