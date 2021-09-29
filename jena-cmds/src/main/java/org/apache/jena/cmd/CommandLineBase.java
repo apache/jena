@@ -23,10 +23,9 @@ import static java.util.stream.IntStream.range;
 import java.util.ArrayList ;
 import java.util.List ;
 
-/** 
+/**
  * Incoming String[] to a list of argument/values + items.
  */
-
 
 public class CommandLineBase {
     private List<String> argList    = new ArrayList<>() ;
@@ -37,10 +36,10 @@ public class CommandLineBase {
     }
 
     public CommandLineBase() {}
-    
+
     public void setArgs(String[] argv)
     { argList = processArgv(argv) ; }
-    
+
     protected List<String> getArgList() { return argList ; }
 
     protected String getArg(int i) {
@@ -50,16 +49,16 @@ public class CommandLineBase {
     }
 
     protected void apply(ArgProc a) {
-        a.startArgs() ; 
+        a.startArgs() ;
         range(0, argList.size()).forEach(i -> a.arg(argList.get(i), i));
         a.finishArgs() ;
     }
-    
+
     /** Process String[] to a list of tokens.
      *  All "=" and ":" terms are split.
      *  Make -flag/--flag consistent.
      * @param argv The words of the command line.
-     */    
+     */
     private List<String> processArgv(String[] argv) {
         // Combine with processedArgs/process?
         List<String> argList = new ArrayList<>() ;

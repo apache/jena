@@ -19,9 +19,10 @@
 package org.apache.jena.cmd;
 
 
-/** Exception used to indicate that the command should end now.
- *  Use instead of System.exit so that a wrapper can catch (else a command server
- *  will exit wrongly). */
+/**
+ * Exception used to indicate that the command should end now. Use instead of
+ * System.exit so that a wrapper can catch (else a command server will exit wrongly).
+ */
 
 public class TerminationException extends CmdException
 {

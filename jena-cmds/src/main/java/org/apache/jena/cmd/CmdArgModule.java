@@ -23,46 +23,33 @@ import java.util.List ;
 
 public abstract class CmdArgModule extends CmdMain
 {
-    List<ArgModuleGeneral> modules = new ArrayList<>() ;
-    
-    protected CmdArgModule(String[] argv)
-    {
-        super(argv) ;
+    List<ArgModuleGeneral> modules = new ArrayList<>();
+
+    protected CmdArgModule(String[] argv) {
+        super(argv);
     }
-    
-    protected void addModule(ArgModuleGeneral argModule)
-    {
-        modules.add(argModule) ;
+
+    protected void addModule(ArgModuleGeneral argModule) {
+        modules.add(argModule);
     }
 
     @Override
-    final
-    public void process()
-    {
-        super.process() ;
-        forEach(new Action(){
-            @Override
-            public void action(CmdArgModule controller, ArgModuleGeneral module)
-            { 
-                module.processArgs(controller) ;
-            }
-        } ) ;
-        processModulesAndArgs() ;
+    final public void process() {
+        super.process();
+        forEach((controller, module) -> module.processArgs(controller));
+        processModulesAndArgs();
     }
-    
-    abstract
-    protected void processModulesAndArgs() ;
-    
+
+    abstract protected void processModulesAndArgs();
+
     private void forEach(Action action)
     {
-        for ( ArgModuleGeneral am : modules )
-        {
-            action.action( this, am );
+        for ( ArgModuleGeneral am : modules ) {
+            action.action(this, am);
         }
     }
-                    
-    interface Action
-    {
+
+    interface Action {
         public void action(CmdArgModule controller, ArgModuleGeneral module) ;
     }
 }
