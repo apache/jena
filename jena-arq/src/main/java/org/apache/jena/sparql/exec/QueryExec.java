@@ -50,7 +50,7 @@ public interface QueryExec extends AutoCloseable {
     }
 
     /** Create a {@link QueryExecBuilder} for a graph. */
-    public static QueryExecBuilder dataset(Graph graph) {
+    public static QueryExecBuilder graph(Graph graph) {
         return QueryExecDatasetBuilder.create().graph(graph);
     }
 

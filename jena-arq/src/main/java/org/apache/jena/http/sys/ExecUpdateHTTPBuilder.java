@@ -109,6 +109,10 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
         return thisBuilder();
     }
 
+    public Y substitution(String var, Node value) {
+        return substitution(Var.alloc(var), value);
+    }
+
     public Y substitution(Var var, Node value) {
         this.substitutionMap.put(var, value);
         return thisBuilder();

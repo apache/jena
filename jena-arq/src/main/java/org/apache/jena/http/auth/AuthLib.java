@@ -129,6 +129,13 @@ public class AuthLib {
     }
 
     /**
+     * Create an {@link AuthRequestModifier} that applies a user/password for basic auth.
+     */
+    /*package*/ static AuthRequestModifier basicAuthModifier(String user, String password) {
+        return req->req.setHeader(HttpNames.hAuthorization, HttpLib.basicAuth(user, password));
+    }
+
+    /**
      * Create a JDK {@link Authenticator} for this (username and password).
      * The java.net.http as supplied only supports basic authentication.
      * */

@@ -49,6 +49,7 @@ import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.*;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
 import org.apache.jena.fuseki.jetty.JettyLib;
+import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.*;
@@ -107,6 +108,15 @@ import org.slf4j.Logger;
 
 public class FusekiServer {
     static { JenaSystem.init(); }
+
+    /**
+     * Construct a Fuseki server from command line arguments.
+     * The return server has not been started.
+     *
+     */
+    static public FusekiServer construct(String... args) {
+        return FusekiMain.build(args);
+    }
 
     /** Construct a Fuseki server for one dataset.
      * It only responds to localhost.
@@ -300,6 +310,10 @@ public class FusekiServer {
             Fuseki.serverLog.info("Start Fuseki (http="+httpPort+")");
         else
             Fuseki.serverLog.info("Start Fuseki");
+
+        // Any post-startup configuration here.
+        // --
+        // Done!
         return this;
     }
 
@@ -334,10 +348,12 @@ public class FusekiServer {
         Logger log = Fuseki.serverLog;
         DataAccessPointRegistry dapRegistery = getDataAccessPointRegistry();
         FusekiInfo.server(log);
-        if ( httpsPort > 0 )
-            log.info("Port = "+httpPort+"/"+httpsPort);
-        else
-            log.info("Port = "+getPort());
+        if ( httpsPort > 0 && httpPort > 0 )
+            log.info("Ports: http="+httpPort+" https="+httpsPort);
+        else if ( httpsPort <= 0 )
+            log.info("Port: http="+getHttpPort());
+        else if ( httpPort <= 0 )
+            log.info("Port: https="+getHttpsPort());
         boolean verbose = Fuseki.getVerbose(getServletContext());
         FusekiInfo.logDataAccessPointRegistry(log, dapRegistery, verbose );
         if ( staticContentDir != null )

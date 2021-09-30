@@ -60,6 +60,11 @@ public interface QueryExecBuilder extends QueryExecMod {
     /** Provide a (Var, Node) for substitution in the query when QueryExec is built. */
     public QueryExecBuilder substitution(Var var, Node value);
 
+    /** Provide a (var name, Node) for substitution in the query when QueryExec is built. */
+    public default QueryExecBuilder substitution(String var, Node value) {
+        return substitution(Var.alloc(var), value);
+    }
+
     /** Set the overall query execution timeout. */
     @Override
     public QueryExecBuilder timeout(long value, TimeUnit timeUnit);
