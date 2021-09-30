@@ -29,7 +29,7 @@ import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 /**
  * Load into one NodeTupleTable (triples, quads, other).
  * <br/>
- * This is the TDB1 tdbloader algorithm ported to TDB2.
+ * This is part of the TDB1 tdbloader algorithm ported to TDB2.
  */
 
 public class LoaderNodeTupleTable implements Closeable, Sync

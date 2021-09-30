@@ -92,7 +92,7 @@ import org.apache.jena.tdb2.sys.TDBInternal;
  * @see LoaderPlans
  */
 public class LoaderMain extends LoaderBase implements DataLoader {
-    public static final int DataTickPoint   = 500_000;
+    public static final int DataTickPoint   = 1_000_000;
     public static final int DataSuperTick   = 10;
     public static final int IndexTickPoint  = 1_000_000;
     public static final int IndexSuperTick  = 10;
@@ -135,7 +135,7 @@ public class LoaderMain extends LoaderBase implements DataLoader {
     /**
      * Create data ingestion and primary index building of a {@link LoaderPlan}.
      * In phase 1, separate threads for parsing, node table loading and primary index building,
-     * 
+     *
      * Used by {@link InputStage#MULTI}.
      */
     private static StreamRDFCounting executeData(LoaderPlan loaderPlan, DatasetGraphTDB dsgtdb, Map<String, TupleIndex> indexMap, List<BulkStartFinish> dataProcess, MonitorOutput output) {
@@ -158,7 +158,6 @@ public class LoaderMain extends LoaderBase implements DataLoader {
         // -- Phase 1.
         DataToTuples dtt = new DataToTuples(dsgtdb, functionIndexer3, functionIndexer4, output);
         DataBatcher dataBatcher = new DataBatcher(dtt.data(), prefixHandler.handler(), output);
-        StreamRDF baseInput = dataBatcher;
 
         dataProcess.add(dtt);
         dataProcess.add(dataBatcher);
@@ -169,8 +168,8 @@ public class LoaderMain extends LoaderBase implements DataLoader {
      * Create data ingestion and primary index building of a {@link LoaderPlan}.
      * One thread for parsing and node table building and one for each primary index building.
      * This version uses a thread for parse/NodeTable/Tuple and a thread for each of triple and quad index for phase one.
-     * 
-     * Used by {@link InputStage#PARSE_NODE}. 
+     *
+     * Used by {@link InputStage#PARSE_NODE}.
      */
     private static StreamRDFCounting executeDataParseId(LoaderPlan loaderPlan, DatasetGraphTDB dsgtdb, Map<String, TupleIndex> indexMap, List<BulkStartFinish> dataProcess, MonitorOutput output) {
         // One thread for parse/NodeTable.
@@ -197,8 +196,8 @@ public class LoaderMain extends LoaderBase implements DataLoader {
     /**
      * Create data ingestion and primary index building of a {@link LoaderPlan}.
      * This version uses a thread for parse/NodeTable/Tuple/Index.
-     * 
-     * Used by {@link InputStage#PARSE_NODE_INDEX}. 
+     *
+     * Used by {@link InputStage#PARSE_NODE_INDEX}.
      */
     private static StreamRDFCounting executeDataOneThread(LoaderPlan loaderPlan, DatasetGraphTDB dsgtdb, Map<String, TupleIndex> indexMap, List<BulkStartFinish> dataProcess, MonitorOutput output) {
         // One thread input stage.

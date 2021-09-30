@@ -28,7 +28,7 @@ import org.apache.jena.tdb2.TDBException;
  *  <p>
  *  Default settings are thread pool of one and at most two pending operations.
  *  When a new async operation is added, the pending queue is checked, and the
- *  call blocks until the pending queue is below the threashold.
+ *  call blocks until the pending queue is below the threshold.
  *  <p>
  *  With the default setting of a thread pool of one, operations are
  *  executed in the order submitted.
