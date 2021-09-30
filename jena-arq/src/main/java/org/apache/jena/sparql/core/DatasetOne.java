@@ -22,6 +22,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
 
 /**
  * A dataset that just hold a single model as the default graph. 
@@ -66,7 +67,17 @@ public class DatasetOne extends DatasetImpl {
     }
 
     @Override
+    public Dataset addNamedModel(Resource uri, Model model) {
+        throw new UnsupportedOperationException("Can not add a named mode to DatasetOne");
+    }
+
+    @Override
     public Dataset removeNamedModel(String uri) {
+        return this;
+    }
+
+    @Override
+    public Dataset removeNamedModel(Resource uri) {
         return this;
     }
 
@@ -74,6 +85,12 @@ public class DatasetOne extends DatasetImpl {
     public Dataset replaceNamedModel(String uri, Model model) {
         throw new UnsupportedOperationException("Can not replace a named model in DatasetOne");
     }
+
+    @Override
+    public Dataset replaceNamedModel(Resource uri, Model model) {
+        throw new UnsupportedOperationException("Can not replace a named model in DatasetOne");
+    }
+
     @Override
     public boolean containsNamedModel(String uri) {
         return false;

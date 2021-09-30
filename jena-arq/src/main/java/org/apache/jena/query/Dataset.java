@@ -21,6 +21,7 @@ package org.apache.jena.query;
 import java.util.Iterator ;
 
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.PrefixMapping;
@@ -51,8 +52,14 @@ public interface Dataset extends Transactional
     /** Get a graph by name as a Jena Model */
     public Model getNamedModel(String uri) ;
 
+    /** Get a graph by name as a Jena Model */
+    public Model getNamedModel(Resource uri) ;
+
     /** Does the dataset contain a model with the name supplied? */
     public boolean containsNamedModel(String uri) ;
+
+    /** Does the dataset contain a model with the name supplied? */
+    public boolean containsNamedModel(Resource uri) ;
 
     /**
      * Set a named graph.
@@ -64,12 +71,29 @@ public interface Dataset extends Transactional
     public Dataset addNamedModel(String uri, Model model);
 
     /**
+     * Set a named graph.
+     *
+     * @param uri the name of the graph to set
+     * @param model the graph to set
+     * @return this {@code Dataset} for continued usage
+     */
+    public Dataset addNamedModel(Resource uri, Model model);
+
+    /**
      * Remove a named graph.
      *
      * @param uri the name of the gaph to remove
      * @return this {@code Dataset} for continued usage
      */
     public Dataset removeNamedModel(String uri);
+
+    /**
+     * Remove a named graph.
+     *
+     * @param uri the name of the gaph to remove
+     * @return this {@code Dataset} for continued usage
+     */
+    public Dataset removeNamedModel(Resource uri);
 
     /**
      * Change a named graph for another using the same name
@@ -80,8 +104,20 @@ public interface Dataset extends Transactional
      */
     public Dataset replaceNamedModel(String uri, Model model);
 
+    /**
+     * Change a named graph for another using the same name
+     *
+     * @param uri the name of the graph to replace
+     * @param model the graph with which to replace it
+     * @return this {@code Dataset} for continued usage
+     */
+    public Dataset replaceNamedModel(Resource uri, Model model);
+
     /** List the names */
     public Iterator<String> listNames() ;
+
+    /** List the names */
+    public Iterator<Resource> listModelNames() ;
 
     /** Get the lock for this dataset */
     public Lock getLock() ;

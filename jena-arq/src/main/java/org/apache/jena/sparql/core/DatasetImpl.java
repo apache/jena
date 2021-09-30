@@ -28,10 +28,16 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.NodeUtils ;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.MapFilter;
+import org.apache.jena.util.iterator.MapFilterIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
 
 /** An implementation of a Dataset.
  * This is the "usual" implementation based on wrapping a DatasetGraph
@@ -172,10 +178,23 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
+    public Model getNamedModel(Resource uri) {
+        checkGraphName(uri) ;
+        return graph2model(dsg.getGraph(uri.asNode())) ;
+    }
+
+    @Override
     public Dataset addNamedModel(String uri, Model model) {
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
         dsg.addGraph(n, model.getGraph()) ;
+        return this;
+    }
+
+    @Override
+    public Dataset addNamedModel(Resource uri, Model model) {
+        checkGraphName(uri) ;
+        dsg.addGraph(uri.asNode(), model.getGraph()) ;
         return this;
     }
 
@@ -188,12 +207,28 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
+    public Dataset removeNamedModel(Resource uri) {
+        checkGraphName(uri) ;
+        dsg.removeGraph(uri.asNode()) ;
+        return this;
+    }
+
+    @Override
     public Dataset replaceNamedModel(String uri, Model model) {
         // Assumes single writer.
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
         dsg.removeGraph(n) ;
         dsg.addGraph(n, model.getGraph() ) ;
+        return this;
+    }
+
+    @Override
+    public Dataset replaceNamedModel(Resource uri, Model model) {
+        // Assumes single writer.
+        checkGraphName(uri) ;
+        dsg.removeGraph(uri.asNode()) ;
+        dsg.addGraph(uri.asNode(), model.getGraph() ) ;
         return this;
     }
 
@@ -214,8 +249,27 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
+    public boolean containsNamedModel(Resource uri) {
+        // Does not touch the cache.
+        checkGraphName(uri) ;
+        return dsg.containsGraph(uri.asNode()) ;
+    }
+
+    @Override
     public Iterator<String> listNames() {
         return NodeUtils.nodesToURIs(dsg.listGraphNodes()) ;
+    }
+
+    @Override
+    public Iterator<Resource> listModelNames() {
+        MapFilter<Node, Resource> mapper = new MapFilter<Node, Resource>() {
+            @Override
+            public Resource accept(Node x) {
+                return new ResourceImpl(x, null);
+            }
+        } ;
+        ExtendedIterator<Node> eIter = WrappedIterator.create(dsg.listGraphNodes()) ;
+        return new MapFilterIterator<>(mapper, eIter) ;
     }
 
     @Override
@@ -229,7 +283,7 @@ public class DatasetImpl implements Dataset
         return ModelFactory.createModelForGraph(graph);
     }
 
-    protected static void checkGraphName(String uri) {
+    protected static void checkGraphName(Object uri) {
         if ( uri == null )
             throw new ARQException("null for graph name");
     }
