@@ -61,7 +61,7 @@
     <ver.shiro>1.8.0</ver.shiro>
 
     <ver.protobuf>3.17.3</ver.protobuf>
-    <ver.libthrift>0.14.2</ver.libthrift>
+    <ver.libthrift>0.15.0</ver.libthrift>
 
     <!-- jsonld-java depends on depends on Jackson core
          and Jackson databind. databind has had a few CVEs
