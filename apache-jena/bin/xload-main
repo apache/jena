@@ -1,0 +1,289 @@
+#!/usr/bin/env bash
+
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+
+function printUsage() {
+  cat << EOF
+${TDB_NAME} Bulk Loader.
+
+Usage: ${TDB_CMD} --loc <Directory> [Options] <Data> ...
+
+Bulk loader for ${TDB_NAME} which manipulates the data files directly and so
+can only be used to create new databases.  This command relies on
+POSIX utilities so will only work on POSIX operating systems.
+
+If you wish to bulk load to an existing database please use tdbloader
+instead.
+
+Required options are as follows:
+
+  -l <DatabaseDirectory>
+  --loc <DatabaseDirectory>
+    Sets the location in which the database should be created.
+
+    This location must be a directory and must be empty, if a
+    non-existent path is specified it will be created as a new
+    directory.
+
+  <Data>
+    Specifies the path to one/more data files to load
+
+Common additional options are as follows:
+
+  -h
+  --help
+    Prints this help summary and exits
+
+Advanced additional options are as follows:
+
+  -d
+  --debug
+    Enable debug mode, adds extra debug output
+
+  -j <JvmArgs>
+  --jvm-args <JvmArgs>
+    Sets the arguments that should be passed to the JVM for the
+    JVM based portions of the build.
+
+    Generally it is best to not change these unless you have been
+    specifically advised to.  The scripts will use appropriate
+    defaults if this is not specified.
+
+    In particular be careful increasing the heap size since many
+    parts of ${TDB_NAME} actually use memory mapped files that live
+    outside the heap so if the heap is too large the heap may
+    conflict with the memory mapped files for memory space.
+
+  -k
+  --keep-work
+    Keeps the temporary work files around after they are no longer
+    needed.  May be useful for debugging.
+
+  -p <Phase>
+  --phase <Phase>
+    Sets the phase of the build to run, supported values are:
+
+      all      Full bulk load
+      data     Data phase only
+      index    Index phase only, requires the data phase to
+               previously have been run
+
+    When no phase is specified it defaults to all
+
+  -s <SortArgs>
+  --sort-args <SortArgs>
+    Sets the arguments that should be passed to sort for the sort
+    based portions of the build.
+
+    Generally it is best not to change these as the scripts will
+    use appropriate defaults for your system.
+
+  -t
+  --trace
+    Enable trace mode, essentially sets -x within the scripts
+
+EOF
+}
+
+TDB_NAME="${TDB_NAME:-TDB}"
+
+if [ -e "${LOADER_SCRIPTS}/xload-common" ]; then
+  # Can source common functions
+  source "${LOADER_SCRIPTS}/xload-common"
+else
+    echo "${LOADER_SCRIPTS}/xload-common"
+  echo "Unable to locate common functions script xload-common"
+  exit 1
+fi
+
+# ---- Setup
+## -> xload-common
+JVM_ARGS=${JVM_ARGS:--Xmx1024M}
+# Expand JENA_HOME but literal *
+
+if [ -z "$JENA_CP" ] ; then
+    JENA_CP="$JENA_HOME"'/lib/*'
+    if [ -n "$CPX" ]; then
+	JENA_CP="$CPX:$JENA_CP"
+    fi
+fi
+
+SOCKS=
+LOGGING="-Dlog4j.configuration=file:$JENA_HOME/jena-log4j.properties"
+
+# Platform specific fixup
+#??On CYGWIN convert path and end with a ';' 
+case "$(uname)" in
+   CYGWIN*) JENA_CP="$(cygpath -wp "$JENA_CP");";;
+esac
+
+export JENA_CP
+
+
+# Process arguments
+LOC=
+PHASE=
+KEEP_WORK=0
+DEBUG=0
+TRACE=0
+JVM_ARGS=
+
+while [ $# -gt 0 ]
+do
+  ARG=$1
+  case "$ARG" in
+    -d|--debug)
+      # Debug Mode
+      shift
+      DEBUG=1
+      ;;
+    -h|--help)
+      # Help
+      printUsage
+      exit 0
+      ;;
+    -j|--jvm-args)
+      # JVM Arguments
+      shift
+      JVM_ARGS="$1"
+      shift
+      ;;
+    -k|--keep-work)
+      # Keep work files
+      shift
+      KEEP_WORK=1
+      ;;
+    -l|--loc|-loc)
+      # Location space separated
+      shift
+      LOC="$1"
+      shift
+      ;;
+    -*loc=*)
+      # Location = separated
+      LOC=${ARG/-*loc=/}
+      shift
+      ;;
+    -p|--phase)
+      # Phase space separated
+      shift
+      PHASE="$1"
+      shift
+      ;;
+    -s|--sort-args)
+      # Sort arguments
+      shift
+      SORT_ARGS=$1
+      shift
+      ;;
+    -t|--trace)
+      # Trace mode
+      shift
+      TRACE=1
+      set -x
+      ;;
+    --)
+      # Arguments separator
+      # All further arguments are treated as data files
+      shift
+      break
+      ;;
+    -*)
+      # Looks like an option but not known
+      abort 1 "Unrecognized option $ARG, if this was meant to be a data file separate options from data files with --"
+      ;;
+    *)
+      # Once we see an unrecognized argument that doesn't look like an option treat as start of files to process
+      break
+      ;;
+  esac
+done
+
+if [ -z "$PHASE" ]; then
+  PHASE="all"
+fi
+
+# Prepare arguments to pass to children
+COMMON_ARGS=
+DATA_ARGS=
+INDEX_ARGS=
+if [ $KEEP_WORK = 1 ]; then
+  COMMON_ARGS="--keep-work"
+fi
+if [ $DEBUG = 1 ]; then
+  COMMON_ARGS="$COMMON_ARGS --debug"
+fi
+if [ $TRACE = 1 ]; then
+  COMMON_ARGS="$COMMON_ARGS --trace"
+fi
+if [ -n "$JVM_ARGS" ]; then
+  COMMON_ARGS="$COMMON_ARGS --jvm-args $JVM_ARGS"
+fi
+if [ -n "$SORT_ARGS" ]; then
+  INDEX_ARGS="--sort-args $SORT_ARGS"
+fi
+
+# ---- Start
+info "-- ${TDB_NAME} Bulk Loader Start"
+TIME1="$(date +%s)"
+
+TOOL_DIR="$LOADER_SCRIPTS"
+case "$PHASE" in
+  all)
+    # All Phases
+    # Data Phase
+    "${TOOL_DIR}/xload-data" $COMMON_ARGS $DATA_ARGS --loc "$LOC" -- "$@"
+    RET=$?
+    if [ $RET -ne 0 ]; then
+      abort $RET "Failed during data phase"
+    fi
+
+    # Index Phase
+    "${TOOL_DIR}/xload-index" $COMMON_ARGS $INDEX_ARGS --loc "$LOC"
+    RET=$?
+    if [ $RET -ne 0 ]; then
+      abort $RET "Failed during data phase"
+    fi
+    ;;
+
+  data)
+    # Data Phase
+    "${TOOL_DIR}/xload-data" $COMMON_ARGS $DATA_ARGS --loc "$LOC" -- "$@"
+    RET=$?
+    if [ $RET -ne 0 ]; then
+      abort $RET "Failed during data phase"
+    fi
+    ;;
+
+  index)
+    # Index Phase
+    "${TOOL_DIR}/xload-index" $COMMON_ARGS $INDEX_ARGS --loc "$LOC"
+    RET=$?
+    if [ $RET -ne 0 ]; then
+      abort $RET "Failed during index phase"
+    fi
+    ;;
+  *)
+    abort 1 "Unrecognized phase $PHASE"
+    ;;
+esac
+
+# ---- End
+TIME2="$(date +%s)"
+info "-- ${TDB_NAME} Bulk Loader Finish"
+ELAPSED=$(($TIME2-$TIME1))
+info "-- $ELAPSED seconds"

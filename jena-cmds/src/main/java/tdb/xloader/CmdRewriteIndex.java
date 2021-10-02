@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package tdb.bulkloader2;
+package tdb.xloader;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.store.bulkloader2.ProcRewriteIndex ;
+import org.apache.jena.tdb.store.xloader.ProcRewriteIndex;
 import org.apache.jena.tdb.sys.Names ;
 
 /** Rewrite one index */

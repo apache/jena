@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.store.bulkloader2;
+package org.apache.jena.tdb.store.xloader;
 
 import java.io.IOException ;
 import java.io.OutputStream ;

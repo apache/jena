@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package tdb.bulkloader2;
+package tdb.xloader;
 
 import java.util.Arrays ;
 import java.util.List ;
@@ -32,7 +32,7 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.DatasetBuilderStd ;
-import org.apache.jena.tdb.store.bulkloader2.ProcNodeTableBuilder ;
+import org.apache.jena.tdb.store.xloader.ProcNodeTableBuilder;
 import tdb.cmdline.CmdTDB ;
 
 /** Build node table - write triples/quads as text file */

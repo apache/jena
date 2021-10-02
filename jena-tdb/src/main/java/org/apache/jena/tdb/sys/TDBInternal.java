@@ -25,7 +25,6 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -36,15 +35,15 @@ import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 
-/** 
- * A collection of helpers to abstract away from internal details of TDB. 
+/**
+ * A collection of helpers to abstract away from internal details of TDB.
  * Use with care.
- * These are not general purpose operations. 
+ * These are not general purpose operations.
  */
 public class TDBInternal
 {
     /**
-     * Return true if this is a TDB1 backed DatasetGraph. 
+     * Return true if this is a TDB1 backed DatasetGraph.
      */
     public static boolean isTDB1(DatasetGraph dsg) {
         return ( dsg instanceof DatasetGraphTransaction );
@@ -139,12 +138,12 @@ public class TDBInternal
         return getStoreConnection(dsg).getBaseDataset() ;
     }
 
-    /** Return the TransactionManager of this DatasetGraphTransaction */ 
+    /** Return the TransactionManager of this DatasetGraphTransaction */
     public static TransactionManager getTransactionManager(DatasetGraph dsg) {
         return getStoreConnection(dsg).getTransactionManager() ;
     }
 
-    /* Use with great care */ 
+    /* Use with great care */
     public static StoreConnection getStoreConnection(DatasetGraph dsg) {
         if ( dsg instanceof DatasetGraphTransaction )
             return ((DatasetGraphTransaction)dsg).getStoreConnection() ;
@@ -153,29 +152,34 @@ public class TDBInternal
 
     /**
      * Stop managing a TDB1 {@link DatasetGraph}.
-     * This function does nothing if it is not a TDB1 database. 
-     * Use with great care. 
-     * Don't call while transactions are active. 
+     * This function does nothing if it is not a TDB1 database.
+     * Use with great care.
+     * Don't call while transactions are active.
      */
     public static synchronized void expel(DatasetGraph dsg) {
-        DatasetGraphTDB dsgtdb = Txn.calculate(dsg, ()->getDatasetGraphTDB(dsg));
-        if ( dsgtdb == null )
+        if ( dsg instanceof DatasetGraphTransaction ) {
+            DatasetGraphTDB dsgtdb = ((DatasetGraphTransaction)dsg).getBaseDatasetGraph();
+            expel(dsgtdb.getLocation());
             return;
-        expel(dsgtdb.getLocation());
+        }
+        if ( dsg instanceof DatasetGraphTDB ) {
+            expel(((DatasetGraphTDB)dsg).getLocation());
+            return;
+        }
     }
 
     /**
-     * Stop managing a TDB1 database at {@link Location}. 
-     * Use with great care. 
-     * Assumes no transactions are active. 
+     * Stop managing a TDB1 database at {@link Location}.
+     * Use with great care.
+     * Assumes no transactions are active.
      */
     public static synchronized void expel(Location location) {
         expel(location, false);
     }
 
     /**
-     * Stop managing a TDB1 database at {@link Location}. 
-     * Use with very great care. 
+     * Stop managing a TDB1 database at {@link Location}.
+     * Use with very great care.
      * Using "force" will orphan any active transactions.
      */
     public static synchronized void expel(Location location, boolean force) {
@@ -184,11 +188,11 @@ public class TDBInternal
         // No longer valid.
     }
 
-    /**     
+    /**
      * Stop managing the {@link DatasetGraphTransaction} for the location.
      * This operation does not release the {@link StoreConnection}.
-     * Use with great care. 
-     * Don't call while transactions are active. 
+     * Use with great care.
+     * Don't call while transactions are active.
      */
     public static synchronized void releaseDSG(Location location) {
         TDBMaker.uncache(location);
@@ -221,7 +225,7 @@ public class TDBInternal
             return false ;
         return true ;
     } ;
-        
+
     public synchronized static void reset() {
         StoreConnection.reset();
         TDBMaker.resetCache();

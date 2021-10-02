@@ -16,8 +16,8 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-# Not tdbloader2.
-## tdbloader2 is slightly different.
+# Not xloader
+## xloader (forerly "TDB 1 tdbloader2") is slightly different.
 ##   The main program is not a java program
 ##   It is split into several scripts that leverage a mixture of 
 ##   POSIX and java tools and should be maintained separately

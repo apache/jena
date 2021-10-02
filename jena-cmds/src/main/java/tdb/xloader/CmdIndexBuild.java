@@ -16,30 +16,38 @@
  * limitations under the License.
  */
 
-package tdb.bulkloader2;
+package tdb.xloader;
 
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.tdb.store.bulkloader2.ProcIndexCopy ;
+import org.apache.jena.tdb.store.xloader.ProcIndexBuild;
 
-public class CmdIndexCopy 
-{
+public class CmdIndexBuild {
     static {
         LogCtl.setLogging();
         JenaSystem.init();
     }
-
+    
     public static void main(String... argv) {
-        if ( argv.length != 4 ) {
-            System.err.println("Usage: Location1 Index1 Location2 Index2");
+        // DATA IN S/P/O columns but sorted by index order.
+
+        if ( argv.length != 3 ) {
+            System.err.println("Usage: Location Index dataFile");
             System.exit(1);
         }
 
-        String locationStr1 = argv[0] ;
-        String indexName1 = argv[1] ;
-        String locationStr2 = argv[2] ;
-        String indexName2 = argv[3] ;
-        ProcIndexCopy.exec(locationStr1, indexName1, locationStr2, indexName2);
+        String locationStr = argv[0];
+        String indexName = argv[1];
+        
+//        if ( ! Arrays.asList(Names.tripleIndexes).contains(indexName) &&
+//            ! Arrays.asList(Names.quadIndexes).contains(indexName) )
+//        {
+//            System.err.println("Index name not recognized: "+indexName) ;
+//            System.exit(1) ;
+//        }
+            
+        String dataFile = argv[2] ;
+        ProcIndexBuild.exec(locationStr, indexName, dataFile);
     }
 }
 
