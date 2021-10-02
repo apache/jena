@@ -21,5 +21,4 @@ package org.apache.jena.tdb2.loader.base;
 public interface BulkStartFinish {
     public void startBulk();
     public void finishBulk();
-
 }

@@ -156,6 +156,11 @@ public class LoaderMain extends LoaderBase implements DataLoader {
         // -- Phase 2 block.
 
         // -- Phase 1.
+        // This is the other way round to AsyncParser.
+        // Here, we return a StreamRDF to pump data into and the rest of the
+        // processing is on other threads. AsyncParser has the processing on the caller thread
+        // and so the current thread continues when the processing from the parser is finished.
+        
         DataToTuples dtt = new DataToTuples(dsgtdb, functionIndexer3, functionIndexer4, output);
         DataBatcher dataBatcher = new DataBatcher(dtt.data(), prefixHandler.handler(), output);
 

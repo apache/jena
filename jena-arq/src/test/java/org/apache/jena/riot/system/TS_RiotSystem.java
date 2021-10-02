@@ -47,6 +47,7 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestSerializable.class
     , TestIRIxRIOT.class
     , TestRiotLib.class
+    , TestAsyncParser.class
 })
 
 public class TS_RiotSystem
