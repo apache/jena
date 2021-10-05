@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,9 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sys;
+/**
+ * Loading additional functionality.
+ * <p>For some interface {@code MOD extends SubsystemLifecycle}:
+ * <pre>
+ * Subsystem<MOD> subsystem = new Subsystem<>(MOD.class);
+ * subsystem.initialize();
+ * </pre>
+ * @see org.apache.jena.base.module.SubsystemLifecycle
+ */
 
-import org.apache.jena.base.module.SubsystemLifecycle;
+package org.apache.jena.base.module;
 
-/** Lifecycle interface for Jena system and subsystems. */
-public interface JenaSubsystemLifecycle extends SubsystemLifecycle { }

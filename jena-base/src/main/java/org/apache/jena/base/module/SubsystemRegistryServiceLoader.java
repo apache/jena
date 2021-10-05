@@ -16,54 +16,57 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sys;
+package org.apache.jena.base.module;
 
-import java.util.ArrayList ;
-import java.util.List ;
-import java.util.ServiceLoader ;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ServiceLoader;
 
-/** Implementation of {@link JenaSubsystemRegistry} for use in the simple
- *  but common case of running Jena as a collection of jars
- *  on the classpath.
- *  <p>
- *  Uses {@link ServiceLoader} to find sub-systems.
+/**
+ * Implementation of {@link SubsystemRegistry} for use in the simple but common case
+ * of running Jena as a collection of jars on the classpath.
+ * <p>
+ * Uses {@link ServiceLoader} to find sub-systems.
  */
-public class JenaSubsystemRegistryBasic implements JenaSubsystemRegistry {
+public class SubsystemRegistryServiceLoader<T extends SubsystemLifecycle> implements SubsystemRegistry<T> {
 
-    private List<JenaSubsystemLifecycle> registry = new ArrayList<>() ;
-    private Object registryLock = new Object() ;
+    private List<T> registry = new ArrayList<>();
+    private Object registryLock = new Object();
+    private Class<T> moduleClass;
 
-    public JenaSubsystemRegistryBasic() {
+    public SubsystemRegistryServiceLoader(Class<T> moduleClass) {
+        this.moduleClass = moduleClass;
     }
 
     @Override
     public void load() {
         synchronized (registryLock) {
             // Find subsystems asking for initialization.
-            ServiceLoader<JenaSubsystemLifecycle> sl =
-                // Use this->classloader form : better for OSGi
-                ServiceLoader.load(JenaSubsystemLifecycle.class, this.getClass().getClassLoader()) ;
-            sl.forEach(this::add) ;
+            ServiceLoader<T> sl =
+                    // Use this->classloader form : better for OSGi
+                    ServiceLoader.load(moduleClass, this.getClass().getClassLoader());
+            // Must also be T
+            sl.forEach(this::add);
         }
     }
 
     @Override
-    public void add(JenaSubsystemLifecycle module) {
+    public void add(T module) {
         synchronized (registryLock) {
-            if ( ! registry.contains(module) )
+            if ( !registry.contains(module) )
                 registry.add(module);
         }
     }
 
     @Override
-    public boolean isRegistered(JenaSubsystemLifecycle module) {
+    public boolean isRegistered(T module) {
         synchronized (registryLock) {
             return registry.contains(module);
         }
     }
 
     @Override
-    public void remove(JenaSubsystemLifecycle module) {
+    public void remove(T module) {
         synchronized (registryLock) {
             registry.remove(module);
         }
@@ -84,9 +87,9 @@ public class JenaSubsystemRegistryBasic implements JenaSubsystemRegistry {
     }
 
     @Override
-    public List<JenaSubsystemLifecycle> snapshot() {
+    public List<T> snapshot() {
         synchronized (registryLock) {
-            return new ArrayList<>(registry) ;
+            return new ArrayList<>(registry);
         }
     }
 }

@@ -42,7 +42,7 @@ public class textindexer extends CmdARQ {
     private static Logger      log          = LoggerFactory.getLogger(textindexer.class) ;
 
     public static final ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
-    
+
     protected DatasetGraphText dataset      = null ;
     protected TextIndex        textIndex    = null ;
     protected EntityDefinition entityDefinition ;
@@ -68,25 +68,25 @@ public class textindexer extends CmdARQ {
         // Two forms : with and without arg.
         // Maximises similarity with other tools.
         String file ;
-        
+
         if ( ! super.contains(assemblerDescDecl) && getNumPositional() == 0 )
             throw new CmdException("No assembler description given") ;
-        
+
         if ( super.contains(assemblerDescDecl) ) {
             if ( getValues(assemblerDescDecl).size() != 1 )
                 throw new CmdException("Multiple assembler descriptions given via --desc") ;
             if ( getPositional().size() != 0 )
-                throw new CmdException("Additional assembler descriptions given") ; 
+                throw new CmdException("Additional assembler descriptions given") ;
             file = getValue(assemblerDescDecl) ;
         } else {
             if ( getNumPositional() != 1 )
                 throw new CmdException("Multiple assembler descriptions given as positional arguments") ;
             file = getPositionalArg(0) ;
         }
-        
+
         if (file == null)
             throw new CmdException("No dataset specified") ;
-        // Assumes a single test dataset description in the assembler file.
+        // Assumes a single text dataset description in the assembler file.
         Dataset ds = TextDatasetFactory.create(file) ;
         if (ds == null)
             throw new CmdException("No dataset description found") ;
@@ -100,28 +100,28 @@ public class textindexer extends CmdARQ {
 
     @Override
     protected String getSummary() {
-        return getCommandName() + " assemblerFile" ;
+        return getCommandName() + " --desc=assemblerFile" ;
     }
 
     @Override
     protected void exec() {
         try {
             // JENA-1486 Make sure to use transactions if supported
-            // The supportsTransactions() check should be strictly unecessary as we should always be using a
+            // The supportsTransactions() check should be strictly unnecessary as we should always be using a
             // DatasetGraphText which is transactional but just for future proofing we check anyway
             if (dataset.supportsTransactions()) {
                 dataset.begin(ReadWrite.READ);
             }
-            
+
             Set<Node> properties = getIndexedProperties() ;
-    
+
             // there are various strategies possible here
             // what is implemented is a first cut simple approach
             // currently - for each indexed property
             // list and index triples with that property
             // that way only process triples that will be indexed
             // but each entity may be updated several times
-    
+
             for ( Node property : properties )
             {
                 Iterator<Quad> quadIter = dataset.find( Node.ANY, Node.ANY, property, Node.ANY );
@@ -141,15 +141,15 @@ public class textindexer extends CmdARQ {
                     }
                 }
             }
-            
+
             textIndex.commit();
             textIndex.close();
-            
+
             if (dataset.supportsTransactions()) {
                 dataset.commit();
             }
             dataset.close();
-            
+
             progressMonitor.close() ;
         } finally {
             if (dataset.supportsTransactions()) {

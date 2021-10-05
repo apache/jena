@@ -16,9 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sys;
+package org.apache.jena.base.module;
 
-import org.apache.jena.base.module.SubsystemLifecycle;
+/** Lifecycle interface for modules and subsystems. */
+public interface SubsystemLifecycle {
 
-/** Lifecycle interface for Jena system and subsystems. */
-public interface JenaSubsystemLifecycle extends SubsystemLifecycle { }
+    /** start - a module should be ready to operate when this returns. */
+    public void start();
+
+    /** stop - a module should have performed any shutdown operations by the time this returns. */
+    public void stop();
+
+    /** Provide a marker as to the level to order initialization, 10,20,30,...
+     * See {@link Subsystem} for details.
+     */
+    default public int level() { return 9999; }
+}
+
