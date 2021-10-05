@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.store.bulkloader2;
+package org.apache.jena.tdb.store.xloader;
 
 import java.io.IOException ;
 import java.io.OutputStream ;
@@ -46,7 +46,7 @@ public class WriteRows
         this.idx = 0 ;
         this.rows = 0 ;
     }
-    
+
     public void write(long value)
     {
         if ( !atStartOfRow )
@@ -56,9 +56,10 @@ public class WriteRows
         }
         else
             atStartOfRow = false;
-        idx += Hex.formatUnsignedLongHex(b, idx, value, 16) ;
+        Hex.formatUnsignedLongHex(b, idx, value, 16) ;
+        idx += 16;
     }
-    
+
     public void endOfRow()
     {
         b[idx] = '\n' ;
@@ -76,7 +77,7 @@ public class WriteRows
         idx = 0 ;
         rows = 0 ;
     }
-    
+
     public void close()
     {
         flush() ;

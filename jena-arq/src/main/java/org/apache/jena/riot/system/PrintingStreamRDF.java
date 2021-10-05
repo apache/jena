@@ -21,25 +21,27 @@ package org.apache.jena.riot.system;
 import java.io.OutputStream ;
 
 import org.apache.jena.atlas.io.AWriter ;
-import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
 
 /** Primarily for debugging */
 public class PrintingStreamRDF extends WriterStreamRDFPlain //implements StreamRDF
 {
-    public PrintingStreamRDF(OutputStream out) { 
+    public PrintingStreamRDF(OutputStream out) {
         super(init(out)) ;
     }
 
     private static AWriter init(OutputStream out) {
-        return IO.wrapUTF8(out) ;
+        IndentedWriter output = new IndentedWriter(out);
+        output.setFlushOnNewline(true);
+        return output;
     }
 
     @Override
     public void base(String base) {
         out.print("BASE") ;
         out.print("    ") ;
-        nodeFmt.formatURI(out, base); 
+        nodeFmt.formatURI(out, base);
         out.println();
     }
 
@@ -52,5 +54,4 @@ public class PrintingStreamRDF extends WriterStreamRDFPlain //implements StreamR
         nodeFmt.formatURI(out, iri);
         out.println();
     }
-
 }

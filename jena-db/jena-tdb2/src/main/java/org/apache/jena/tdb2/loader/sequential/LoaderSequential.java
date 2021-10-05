@@ -34,10 +34,14 @@ import org.apache.jena.tdb2.loader.base.ProgressMonitorOutput;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
 
-/** Bulk loader. Algorithm: Parser to primary indexes, then builds secondary indexes one at a time. */
+/**
+ * Bulk loader. Algorithm: Parser to primary indexes, then builds secondary indexes one at a time.
+ * This is not the phased loader.
+ * This is the TDB1 tdbloader algorithm ported to TDB2.
+ */
 public class LoaderSequential extends LoaderBase {
 
-    public static final int DataTickPoint   = 100_000;
+    public static final int DataTickPoint   = 1_000_000;
     public static final int DataSuperTick   = 10;
     public static final int IndexTickPoint  = 1_000_000;
     public static final int IndexSuperTick  = 10;

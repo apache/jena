@@ -16,18 +16,20 @@
  * limitations under the License.
  */
 
-package tdb.bulkloader2;
+package tdb2.xloader;
 
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.tdb.store.bulkloader2.ProcIndexBuild ;
+import org.apache.jena.tdb2.DatabaseMgr;
+import org.apache.jena.tdb2.xloader.ProcIndexBuild;
 
 public class CmdIndexBuild {
     static {
         LogCtl.setLogging();
         JenaSystem.init();
     }
-    
+
     public static void main(String... argv) {
         // DATA IN S/P/O columns but sorted by index order.
 
@@ -38,16 +40,19 @@ public class CmdIndexBuild {
 
         String locationStr = argv[0];
         String indexName = argv[1];
-        
+
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(locationStr);
+        //Location location = TDBInternal.getDatasetGraphTDB(dsg).getLocation();
+
 //        if ( ! Arrays.asList(Names.tripleIndexes).contains(indexName) &&
 //            ! Arrays.asList(Names.quadIndexes).contains(indexName) )
 //        {
 //            System.err.println("Index name not recognized: "+indexName) ;
 //            System.exit(1) ;
 //        }
-            
+
         String dataFile = argv[2] ;
-        ProcIndexBuild.exec(locationStr, indexName, dataFile);
+        ProcIndexBuild.exec(dsg, indexName, dataFile);
     }
 }
 

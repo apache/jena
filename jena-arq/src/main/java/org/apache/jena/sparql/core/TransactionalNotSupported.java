@@ -22,23 +22,23 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 
 /** Implementation for "un-Transactional" interface.
- * 
+ *
  * @see TransactionalNull for a do nothing implementation of Transactions.
  * @see TransactionalNotSupportedMixin
- */ 
+ */
 public class TransactionalNotSupported implements Transactional
 {
-    /* Using as an interface mixin (trait) and "implements TransactionalNotSupportedMixin" 
+    /* Using as an interface mixin (trait) and "implements TransactionalNotSupportedMixin"
      * does not always work. This may be a Eclipse limitation.
      * The problem arises with hierarchies involving Transactional
-     * where transaction methods are also in the hierarchy. 
+     * where transaction methods are also in the hierarchy.
      */
 
     // Sometimes implementations will have to include this code
     // directly to override super class versions.
 
-    // As an included component: 
-    private static class Example implements Transactional { 
+    // As an included component:
+    private static class Example implements Transactional {
         private final Transactional txn                     = new TransactionalNotSupported() ;
         @Override public void begin()                       { txn.begin(); }
         @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
@@ -54,16 +54,16 @@ public class TransactionalNotSupported implements Transactional
 //        @Override public boolean supportsTransactions()     { return false; }
 //        @Override public boolean supportsTransactionAbort() { return false; }
     }
-    
+
     public static Transactional create() { return new TransactionalNotSupported(); }
-    
+
     @Override
     public void begin()
     { throw new UnsupportedOperationException("Transactional.begin()") ; }
 
     @Override
     public void begin(TxnType txnType)
-    { throw new UnsupportedOperationException("Transactional.begin(TxnType") ; }
+    { throw new UnsupportedOperationException("Transactional.begin(TxnType)") ; }
 
     @Override
     public void begin(ReadWrite readWrite)
@@ -83,21 +83,21 @@ public class TransactionalNotSupported implements Transactional
     @Override
     public boolean isInTransaction()
     { return false ; }
-    
+
     @Override public ReadWrite transactionMode()
     { throw new UnsupportedOperationException("Transactional.transactionMode") ; }
-    
+
     @Override public TxnType transactionType()
     { throw new UnsupportedOperationException("Transactional.transactionType") ; }
 
     @Override
     public void end()
     { throw new UnsupportedOperationException("Transactional.end") ; }
-    
+
     public boolean supportsTransactions() {
         return false ;
     }
-    
+
     public boolean supportsTransactionAbort() {
         return false;
     }

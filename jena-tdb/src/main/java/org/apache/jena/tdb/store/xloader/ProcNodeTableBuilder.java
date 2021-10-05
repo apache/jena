@@ -16,20 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.store.bulkloader2;
+package org.apache.jena.tdb.store.xloader;
 
-import java.io.FileNotFoundException ;
-import java.io.FileOutputStream ;
 import java.io.OutputStream ;
 import java.util.List ;
 
-import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.ProgressMonitor ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.RDFParser;
+import org.apache.jena.irix.IRIProvider;
+import org.apache.jena.irix.SystemIRIx;
+import org.apache.jena.riot.system.AsyncParser;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -43,14 +43,21 @@ import org.apache.jena.tdb.store.bulkloader.BulkStreamRDF ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.sys.Names ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.slf4j.Logger ;
 
 public class ProcNodeTableBuilder {
+    // See also TDB2 ProcNodeTableBuilder
     private static Logger cmdLog = TDB.logLoader ;
 
     public static void exec(Location location,
                             String dataFileTriples, String dataFileQuads,
                             List<String> datafiles, boolean collectStats) {
+        // Possible parser speed up. This has no effect if parsing in parallel
+        // because the parser isn't the slowest step in loading at scale.
+        IRIProvider provider = SystemIRIx.getProvider();
+        //SystemIRIx.setProvider(new IRIProviderAny());
+
         // This formats the location correctly.
         // But we're not really interested in it all.
         DatasetGraphTDB dsg = DatasetBuilderStd.create(location) ;
@@ -60,23 +67,30 @@ public class ProcNodeTableBuilder {
         dsg.getQuadTable().getNodeTupleTable().getTupleTable().close();
 
         ProgressMonitor monitor = ProgressMonitor.create(cmdLog, "Data", BulkLoader.DataTickPoint, BulkLoader.superTick) ;
-        OutputStream outputTriples = null ;
-        OutputStream outputQuads = null ;
+        // WriteRows does it's own buffering and has direct write-to-buffer.
+        // Do not buffer here.
+        OutputStream outputTriples = IO.openOutputFile(dataFileTriples);
+        OutputStream outputQuads = IO.openOutputFile(dataFileQuads);
 
-        try {
-            outputTriples = new FileOutputStream(dataFileTriples) ;
-            outputQuads = new FileOutputStream(dataFileQuads) ;
-        }
-        catch (FileNotFoundException e) { throw new AtlasException(e) ; }
+        build(dsg, monitor, outputTriples, outputQuads,datafiles);
 
-        NodeTableBuilder sink = new NodeTableBuilder(dsg, monitor, outputTriples, outputQuads, collectStats) ;
+        TDBInternal.expel(dsg);
+        SystemIRIx.setProvider(provider);
+    }
+
+    private static void build(DatasetGraph dsg, ProgressMonitor monitor,
+                              OutputStream outputTriples, OutputStream outputQuads,
+                              List<String> datafiles) {
+        DatasetGraphTDB dsgtdb = TDBInternal.getDatasetGraphTDB(dsg);
+        NodeTableBuilder sink = new NodeTableBuilder(dsgtdb, monitor, outputTriples, outputQuads, false) ;
         monitor.start() ;
         sink.startBulk() ;
-        for( String filename : datafiles) {
-            if ( datafiles.size() > 0 )
-                cmdLog.info("Load: "+filename+" -- "+DateTimeUtils.nowAsString()) ;
-            RDFParser.source(filename).parse(sink);
-        }
+        AsyncParser.asyncParse(datafiles, sink);
+//        for( String filename : datafiles) {
+//            if ( datafiles.size() > 0 )
+//                cmdLog.info("Load: "+filename+" -- "+DateTimeUtils.nowAsString()) ;
+//            RDFParser.source(filename).parse(sink);
+//        }
         sink.finishBulk() ;
         IO.close(outputTriples) ;
         IO.close(outputQuads) ;
@@ -84,8 +98,11 @@ public class ProcNodeTableBuilder {
         // ---- Stats
 
         // See Stats class.
-        if ( ! location.isMem() && sink.getCollector() != null )
-            Stats.write(dsg.getLocation().getPath(Names.optStats), sink.getCollector().results()) ;
+        if ( sink.getCollector() != null ) {
+            Location location = dsgtdb.getLocation();
+            if ( ! location.isMem() )
+                Stats.write(location.getPath(Names.optStats), sink.getCollector().results()) ;
+        }
 
         // ---- Monitor
         long time = monitor.finish() ;
@@ -93,7 +110,8 @@ public class ProcNodeTableBuilder {
         long total = monitor.getTicks() ;
         float elapsedSecs = time/1000F ;
         float rate = (elapsedSecs!=0) ? total/elapsedSecs : 0 ;
-        String str =  String.format("Total: %,d tuples : %,.2f seconds : %,.2f tuples/sec [%s]", total, elapsedSecs, rate, DateTimeUtils.nowAsString()) ;
+        String str =  String.format("Total: %,d tuples : %,.2f seconds : %,.2f tuples/sec [%s]",
+                                    total, elapsedSecs, rate, DateTimeUtils.nowAsString()) ;
         cmdLog.info(str) ;
     }
 
@@ -106,7 +124,9 @@ public class ProcNodeTableBuilder {
         private ProgressMonitor monitor ;
         private StatsCollectorNodeId stats ;
 
-        NodeTableBuilder(DatasetGraphTDB dsg, ProgressMonitor monitor, OutputStream outputTriples, OutputStream outputQuads, boolean collectStats)
+        NodeTableBuilder(DatasetGraphTDB dsg, ProgressMonitor monitor,
+                         OutputStream outputTriples, OutputStream outputQuads,
+                         boolean collectStats)
         {
             this.dsg = dsg ;
             this.monitor = monitor ;

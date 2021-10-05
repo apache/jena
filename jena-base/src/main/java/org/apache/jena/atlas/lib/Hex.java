@@ -25,36 +25,26 @@ import org.apache.jena.atlas.AtlasException ;
 /** Working in hex ... */
 public class Hex
 {
-    // No checking, fixed width.
-    public static int formatUnsignedLongHex(final byte[] b, final int start, final long value, final int width) {
-        // Insert from low value end to high value end.
-        int idx = start + width - 1;
-        int w = width;
-        long x = value;
-
-        while (w > 0) {
-            int d = (int)(x & 0xF) ;
-            x = x>>>4 ; // Unsigned shift.
-            byte ch = Bytes.hexDigitsUC[d] ; 
-            b[idx] = ch ;
-            w-- ;
-            idx-- ;
-
-            if ( x == 0 )
-                break ;
+    /** Format a long value into a byte array as hex digitss */
+    public static void formatUnsignedLongHex(byte[] b, int start, long value, int width) {
+        int idx = start;
+        for ( int i = 0 ; i < width ; i++) {
+            int j = 64-(i*4);
+            long x = unpack(value, j-4, j);
+            int d = (int)x;
+            byte ch = Bytes.hexDigitsUC[d] ;
+            b[idx] = ch;
+            idx++;
         }
-
-        if ( x != 0 )
-            throw new AtlasException("formatUnsignedLongHex: overflow") ;
-
-        while (w > 0) {
-            b[idx] = '0' ;
-            idx-- ;
-            w-- ;
-        }
-        return width ;
     }
-    
+
+    private static final int LongLen = Long.SIZE ;
+    private static final long unpack(long bits, int start, int finish) {
+        // BitsLong without the checking.
+        // Remove top bits by moving up.  Clear bottom bits by them moving down.
+        return (bits<<(LongLen-finish)) >>> ((LongLen-finish)+start) ;
+    }
+
     // No checking, fixed width.
     public static long getLong(byte[] arr, int idx) {
         long x = 0;
@@ -102,7 +92,7 @@ public class Hex
             char ch = s.charAt(j);
             int k = 0;
             switch (ch) {
-                case '0': k = 0 ; break ; 
+                case '0': k = 0 ; break ;
                 case '1': k = 1 ; break ;
                 case '2': k = 2 ; break ;
                 case '3': k = 3 ; break ;

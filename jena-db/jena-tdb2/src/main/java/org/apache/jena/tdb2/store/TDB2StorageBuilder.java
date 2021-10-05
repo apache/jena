@@ -306,7 +306,6 @@ public class TDB2StorageBuilder {
 
         if ( nodeTable instanceof NodeTableCache ) {
             NodeTableCache nodeTableCache = (NodeTableCache)nodeTable;
-
             listeners.add(nodeTableCache);
         }
 

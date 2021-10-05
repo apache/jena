@@ -16,7 +16,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-# The environment for this sub-script is setup by "tdbloader2"
+# The environment for this sub-script is setup by "xload-common"
 
 function resolveLink() {
   local NAME=$1
@@ -63,21 +63,21 @@ if [ -L "${JENA_HOME}" ]; then
   echo "Resolved symbolic links for JENA_HOME to $JENA_HOME"
 fi
 
-if [ -e "${JENA_HOME}/bin/tdbloader2common" ]; then
+if [ -e "${LOADER_SCRIPTS}/xload-common" ]; then
   # Can source common functions
-  source "${JENA_HOME}/bin/tdbloader2common"
+  source "${LOADER_SCRIPTS}/xload-common"
 else
-  echo "Unable to locate common functions script tdbloader2common"
+  echo "Unable to locate common functions script xload-common (data phase)"
   exit 1
 fi
 
 function printUsage() {
   cat << EOF
-tdbloader2data - TDB Bulk Loader - Data Phase
+xload-data - TDB2 Bulk Loader - Data Phase
 
-Usage tdbloader2data --loc <Directory> [Options] <Data> ...
+Usage xload-data --loc <Directory> [Options] <Data> ...
 
-Bulk Loader for TDB which generates the Node Table.  This command
+Bulk Loader for TDB2 which generates the Node Table.  This command
 relies on POSIX utilities so will only work on POSIX operating
 systems.
 
@@ -119,7 +119,7 @@ Advanced additional options are as follows:
     defaults if this is not specified.
 
     In particular be careful increasing the heap size since many
-    parts of TDB actually use memory mapped files that live
+    parts of TDB2 actually use memory mapped files that live
     outside the heap so if the heap is too large the heap may
     conflict with the memory mapped files for memory space.
 
@@ -165,7 +165,7 @@ do
     -k|--keep-work)
       # Keep work files
       # This option is actually not used by this script but may be passed in
-      # by the parent tdbloader2 script
+      # by the parent xload- script
       shift
       KEEP_WORK=1
       ;;
@@ -239,10 +239,10 @@ then
 fi
 
 # Prepare JVM Arguments
-JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+JVM_ARGS="${JVM_ARGS:--Xmx2G}"
 debug "JVM Arguments are $JVM_ARGS"
 
-# Classpath set in "tdbloader2"
+# Classpath set in "tdb2.xloader"
 if [ -z "$JENA_CP" ]; then
   abort 1 "Classpath not provided : set JENA_CP"
 fi

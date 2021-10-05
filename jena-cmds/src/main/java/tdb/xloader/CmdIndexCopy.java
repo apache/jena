@@ -16,9 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.base;
+package tdb.xloader;
 
-public interface BulkStartFinish {
-    public void startBulk();
-    public void finishBulk();
+import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.sys.JenaSystem ;
+import org.apache.jena.tdb.store.xloader.ProcIndexCopy;
+
+public class CmdIndexCopy 
+{
+    static {
+        LogCtl.setLogging();
+        JenaSystem.init();
+    }
+
+    public static void main(String... argv) {
+        if ( argv.length != 4 ) {
+            System.err.println("Usage: Location1 Index1 Location2 Index2");
+            System.exit(1);
+        }
+
+        String locationStr1 = argv[0] ;
+        String indexName1 = argv[1] ;
+        String locationStr2 = argv[2] ;
+        String indexName2 = argv[3] ;
+        ProcIndexCopy.exec(locationStr1, indexName1, locationStr2, indexName2);
+    }
 }
+

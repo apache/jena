@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.store.bulkloader2;
+package org.apache.jena.tdb.store.xloader;
 
 import java.util.Iterator ;
 
@@ -35,35 +35,35 @@ import org.slf4j.LoggerFactory ;
 public class ProcIndexCopy
 {
     private static Logger log = LoggerFactory.getLogger(ProcIndexCopy.class) ;
-    
-    static long tickQuantum = 100*1000 ;
+
+    static long tickQuantum = 100_000 ;
     static int superTick = 10 ;
-    
+
     // Ideas:
     // Copy to buffer, sort, write in sequential clumps.
     // Profile code for hotspots
 
-    // Maybe be worth opening the data file (the leaves) as a regular, 
+    // Maybe be worth opening the data file (the leaves) as a regular,
     // non-memory mapped file as we read it through once, in natural order,
     // and it may be laid out in increasing block order on-disk, e.g. repacked
     // and in increasing order with occassional oddities if SPO from the bulk loader.
 
     public static void exec(String locationStr1, String indexName1, String locationStr2, String indexName2) {
         // Argument processing
-        
+
         Location location1 = Location.create(locationStr1) ;
         Location location2 = Location.create(locationStr2) ;
-        
+
         int keyLength = SystemTDB.SizeOfNodeId * indexName1.length() ;
         int valueLength = 0 ;
-        
+
         // The name is the order.
         String primary = "SPO" ;
-        
+
         String indexOrder = indexName2 ;
         String label = indexName1+" => "+indexName2 ;
-        
-        TupleIndex index1 = Build.openTupleIndex(location1, indexName1, primary, indexName1, 10, 10, keyLength, valueLength) ;      
+
+        TupleIndex index1 = Build.openTupleIndex(location1, indexName1, primary, indexName1, 10, 10, keyLength, valueLength) ;
         TupleIndex index2 = Build.openTupleIndex(location2, indexName2, primary, indexOrder, 10, 10, keyLength, valueLength) ;
         tupleIndexCopy(index1, index2, label) ;
         index1.close() ;

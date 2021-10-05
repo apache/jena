@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.store.bulkloader2;
+package org.apache.jena.tdb2.xloader;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -27,13 +27,14 @@ import java.util.NoSuchElementException ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.Hex ;
-import org.apache.jena.tdb.base.record.Record ;
-import org.apache.jena.tdb.base.record.RecordFactory ;
-import org.apache.jena.tdb.lib.ColumnMap ;
-import org.apache.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.atlas.lib.tuple.TupleMap;
+import org.apache.jena.dboe.base.record.Record ;
+import org.apache.jena.dboe.base.record.RecordFactory ;
+import org.apache.jena.dboe.sys.SysDB;
+import org.apache.jena.tdb2.sys.SystemTDB ;
 
 final
-public class RecordsFromInput implements Iterator<Record> 
+public class RecordsFromInput implements Iterator<Record>
 {
     private final InputStream input ;
     private Record slot = null ;
@@ -45,20 +46,20 @@ public class RecordsFromInput implements Iterator<Record>
     private final int rowBlockSize ;
     private final RecordFactory recordFactory ;
     private final int itemsPerRow ;
-    private final ColumnMap colMap ;
+    private final TupleMap colMap ;
 
-    public RecordsFromInput(InputStream input, int itemsPerRow, ColumnMap colMap, int rowBlockSize)
-    { 
+    public RecordsFromInput(InputStream input, int itemsPerRow, TupleMap colMap, int rowBlockSize)
+    {
         this.input = input ;
         this.itemsPerRow = itemsPerRow ;
         this.colMap = colMap ;
         this.rowLength = itemsPerRow*16 + itemsPerRow ;   // Length in bytes of a row.
-        this.rowBlockSize = rowBlockSize ; 
+        this.rowBlockSize = rowBlockSize ;
         this.buffer = new byte[rowLength*rowBlockSize] ;
         this.idx = -1 ;
         this.recordFactory = new RecordFactory(itemsPerRow*SystemTDB.SizeOfNodeId, 0) ;
     }
-    
+
     @Override
     public boolean hasNext()
     {
@@ -78,28 +79,28 @@ public class RecordsFromInput implements Iterator<Record>
 
         // Fill one slot.
         Record record = recordFactory.create() ;
-        
+
 //        System.out.print("In:  ") ;
         for ( int i = 0 ; i < itemsPerRow ; i++ )
         {
             long x = Hex.getLong(buffer, idx) ;
             idx += 16 ;
             // Separator or end-of-line.
-            idx++ ;     
-            int j = ( colMap == null ) ? i : colMap.mapSlotIdx(i) ; 
-            int recordOffset = j*SystemTDB.SizeOfLong ;
+            idx++ ;
+            int j = ( colMap == null ) ? i : colMap.putSlotIdx(i);
+            int recordOffset = j*SysDB.SizeOfLong ;
             Bytes.setLong(x, record.getKey(), recordOffset) ;
-            
+
 //            System.out.printf("%016X ", x) ;
-            
+
         }
 //        System.out.println() ;
 //        System.out.print("Out: ") ;
 //        printRecord(System.out, record, itemsPerRow) ;
-        // Buffer all processed. 
-        if ( idx >= len ) 
+        // Buffer all processed.
+        if ( idx >= len )
             idx = -1 ;
-        
+
         slot = record ;
         return true ;
     }
@@ -108,21 +109,21 @@ public class RecordsFromInput implements Iterator<Record>
     {
         int keySubLen = r.getKey().length/keyUnitLen ;
         for ( int i = 0 ; i < keyUnitLen ; i++ )
-        {   
+        {
             if ( i != 0 )
                 out.print(" ") ;
-            
+
             // Print in chunks
             int k = i*keySubLen ;
             for ( int j = k ; j < k+keySubLen ; j++ )
                 out.printf("%02x", r.getKey()[j]) ;
-            
+
 //            long x = Bytes.getLong(r.getKey(), i*SystemTDB.SizeOfNodeId) ;
 //            System.out.printf("%016x", x) ;
         }
         out.println() ;
     }
-    
+
     private int fill()
     {
         try {
