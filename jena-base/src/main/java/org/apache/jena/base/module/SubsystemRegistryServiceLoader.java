@@ -45,7 +45,6 @@ public class SubsystemRegistryServiceLoader<T extends SubsystemLifecycle> implem
             ServiceLoader<T> sl =
                     // Use this->classloader form : better for OSGi
                     ServiceLoader.load(moduleClass, this.getClass().getClassLoader());
-            // Must also be T
             sl.forEach(this::add);
         }
     }

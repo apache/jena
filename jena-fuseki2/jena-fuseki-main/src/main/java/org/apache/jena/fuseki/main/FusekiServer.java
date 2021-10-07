@@ -50,6 +50,7 @@ import org.apache.jena.fuseki.ctl.*;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
+import org.apache.jena.fuseki.main.sys.FusekiMonitor;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.*;
@@ -273,7 +274,10 @@ public class FusekiServer {
      * To synchronise with the server stopping, call {@link #join}.
      */
     public FusekiServer start() {
-        try { server.start(); }
+        try {
+            FusekiMonitor.serverStarting(this);
+            server.start();
+        }
         catch (IOException ex) {
             if ( ex.getCause() instanceof java.security.UnrecoverableKeyException )
                 // Unbundle for clearer message.
@@ -333,8 +337,10 @@ public class FusekiServer {
     /** Stop the server. */
     public void stop() {
         Fuseki.serverLog.info("Stop Fuseki");
-        try { server.stop(); }
-        catch (Exception e) { throw new FusekiException(e); }
+        try {
+            server.stop();
+            FusekiMonitor.serverStopped(this);
+        } catch (Exception e) { throw new FusekiException(e); }
     }
 
     /** Wait for the server to exit. This call is blocking. */
@@ -372,7 +378,6 @@ public class FusekiServer {
         // DataServices provided from the caller. These are immutable.
         private Registry<String, DataService> providedDataServices = new Registry<>();
 
-
         private final OperationRegistry  operationRegistry;
         // Default values.
         private int                      serverHttpPort     = PortUnset;
@@ -389,7 +394,7 @@ public class FusekiServer {
         private boolean                  withTasks          = false;
 
         private String                   jettyServerConfig  = null;
-
+        private Model                    configModel        = null;
         private Map<String, String>      corsInitParams     = null;
 
         // Server wide authorization policy.
@@ -662,6 +667,7 @@ public class FusekiServer {
             List<DataAccessPoint> x = FusekiConfig.processServerConfiguration(model, Fuseki.getContext());
             // Can further modify the services in the configuration file.
             x.forEach(dap->addDataAccessPoint(dap));
+            configModel = model;
             return this;
         }
 
@@ -1045,6 +1051,8 @@ public class FusekiServer {
 
             DataAccessPointRegistry dapRegistry = buildStart();
 
+            FusekiMonitor.configuration(this, dapRegistry, configModel);
+
             buildSecurity(dapRegistry);
             try {
                 validate();
@@ -1070,7 +1078,10 @@ public class FusekiServer {
                 }
                 if ( networkLoopback )
                     applyLocalhost(server);
-                return new FusekiServer(httpPort, httpsPort, server, staticContentDir, handler.getServletContext());
+
+                FusekiServer fusekiServer = new FusekiServer(httpPort, httpsPort, server, staticContentDir, handler.getServletContext());
+                FusekiMonitor.server(fusekiServer);
+                return fusekiServer;
             } finally {
                 buildFinish();
             }
