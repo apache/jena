@@ -16,28 +16,33 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sys;
+package org.apache.jena.base.module;
 
 import java.util.List ;
+import java.util.ServiceLoader;
 
 /**
- * A {@code JenaSubsystemRegistry} is a set of objects implementing {@link JenaSubsystemLifecycle}.
+ * A {@code JenaSubsystemRegistry} is a set of objects implementing {@link SubsystemLifecycle}.
+ *
  */
-public interface JenaSubsystemRegistry {
-    
-    /** Load - perform some kinds of search for {@link JenaSubsystemLifecycle} implementations.
+public interface SubsystemRegistry<T extends SubsystemLifecycle> {
+
+    /** Load - perform some kinds of search for {@link SubsystemLifecycle} implementations.
      * This is called once in the initialization process.
+     * <p>
+     * The registry must load object of class T. If using the {@link ServiceLoader}, the
+     * registry implementation will need an object of {@code Class<T>}.
      */
     public void load();
-    
+
     /** Add to the collection. */
-    public void add(JenaSubsystemLifecycle module);
+    public void add(T module);
 
     /** check whether registered */
-    public boolean isRegistered(JenaSubsystemLifecycle module);
+    public boolean isRegistered(T module);
 
     /** Remove from the collection. */
-    public void remove(JenaSubsystemLifecycle module);
+    public void remove(T module);
 
     public int size();
 
@@ -47,7 +52,7 @@ public interface JenaSubsystemRegistry {
      * Return the registered items in a copied list.
      * The list is detached from the
      * registry and the caller can mutate it.
-     * There is no specific ordering requirement. 
+     * There is no specific ordering requirement.
      */
-    public List<JenaSubsystemLifecycle> snapshot();
+    public List<T> snapshot();
 }

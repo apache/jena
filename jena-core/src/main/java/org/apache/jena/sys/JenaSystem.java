@@ -18,17 +18,16 @@
 
 package org.apache.jena.sys;
 
-import java.util.Collections ;
-import java.util.Comparator ;
-import java.util.List ;
-import java.util.function.Consumer ;
+import org.apache.jena.base.module.Subsystem;
+import org.apache.jena.base.module.SubsystemRegistry;
+import org.apache.jena.base.module.SubsystemRegistryServiceLoader;
 
 /** Jena "system" - simple controls for ensuring components are loaded and initialized.
  * <p>
  * All initialization should be concurrent and thread-safe.  In particular,
  * some subsystems need initialization in some sort of order (e.g. ARQ before TDB).
  * <p>
- * This is achieved by "levels": levels less than 100 are considered "Jena system levels"
+ * This is achieved by "levels": levels less than 500 are considered "Jena system levels"
  * and are reserved.
  * <ul>
  * <li>0 - reserved
@@ -36,161 +35,36 @@ import java.util.function.Consumer ;
  * <li>20 - RIOT
  * <li>30 - ARQ
  * <li>40 - TDB
- * <li>100-500 - Fuseki initialization, including customizations
+ * <li>50-99 - Other Jena system modules.
+ * <li>100-9998 - Application
  * <li>9999 - other
  * </ul>
  * See also the <a href="http://jena.apache.org/documentation/notes/system-initialization.html">notes on Jena initialization</a>.
  */
 public class JenaSystem {
 
+    private static Subsystem<JenaSubsystemLifecycle> singleton = null;
+
+    // Don't rely on class initialization.
+    private static void setup() {
+        // Called inside synchronized
+        if ( singleton == null ) {
+            singleton = new Subsystem<>(JenaSubsystemLifecycle.class);
+            SubsystemRegistry<JenaSubsystemLifecycle> reg =
+                    new SubsystemRegistryServiceLoader<>(JenaSubsystemLifecycle.class);
+            singleton.setSubsystemRegistry(reg);
+            reg.add(new JenaInitLevel0());
+        }
+    }
+
+    public JenaSystem() { }
+
     /** Development support - flag to enable output during
      * initialization. Output to {@code System.err}, not a logger
      * to avoid the risk of recursive initialization.
      */
     public static boolean DEBUG_INIT = false ;
-
-    // A correct way to manage without synchonized using the double checked locking pattern.
-    //   http://en.wikipedia.org/wiki/Double-checked_locking
-    //   http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html
     private static volatile boolean initialized = false ;
-    private static Object initLock = new Object() ;
-
-    /** Initialize Jena.
-     * <p>
-     * This function is cheap to call when already initialized so can be called to be sure.
-     * A commonly used idiom in jena is a static initializer in key classes.
-     * <p>
-     * By default, initialization happens by using {@code ServiceLoader.load} to find
-     * {@link JenaSubsystemLifecycle} objects.
-     * See {@link #setSubsystemRegistry} to intercept that choice.
-     */
-    public static void init() {
-        // Any other thread attempting to initialize as well will
-        // first test the volatile outside the lock; if it's
-        // not INITIALIZED, the thread will attempt to grab the lock
-        // and hence wait, then see initialized as true.
-
-        // But we need to cope with recursive calls of JenaSystem.init() as well.
-        // The same thread will not stop at the lock.
-        // Set initialized to true before a recursive call is possible
-        // handles this.  The recursive call will see initialized true and
-        // and return on the first test.
-
-        // Net effect:
-        // After a top level call of JenaSystem.init() returns, tjena has
-        // finishes initialization.
-        // Recursive calls do not have this property.
-
-        if ( initialized )
-            return ;
-        synchronized(initLock) {
-            if ( initialized )  {
-                logLifecycle("JenaSystem.init - return");
-                return ;
-            }
-            // Catches recursive calls, same thread.
-            initialized = true ;
-            logLifecycle("JenaSystem.init - start");
-
-            if ( get() == null )
-                setSubsystemRegistry(new JenaSubsystemRegistryBasic()) ;
-
-            get().load() ;
-
-            // Debug : what did we find?
-            if ( JenaSystem.DEBUG_INIT ) {
-                logLifecycle("Found:") ;
-                get().snapshot().forEach(mod->
-                logLifecycle("  %-20s [%d]", mod.getClass().getSimpleName(), mod.level())) ;
-            }
-
-            get().add(new JenaInitLevel0()) ;
-
-            if ( JenaSystem.DEBUG_INIT ) {
-                logLifecycle("Initialization sequence:") ;
-                JenaSystem.forEach( module ->
-                    logLifecycle("  %-20s [%d]", module.getClass().getSimpleName(), module.level()) ) ;
-            }
-
-            JenaSystem.forEach( module -> {
-                logLifecycle("Init: %s", module.getClass().getSimpleName());
-                module.start() ;
-            }) ;
-            logLifecycle("JenaSystem.init - finish");
-        }
-    }
-
-    /** Shutdown subsystems */
-    public static void shutdown() {
-        if ( ! initialized ) {
-            logLifecycle("JenaSystem.shutdown - not initialized");
-            return ;
-        }
-        synchronized(initLock) {
-            if ( ! initialized ) {
-                logLifecycle("JenaSystem.shutdown - return");
-                return ;
-            }
-            logLifecycle("JenaSystem.shutdown - start");
-            JenaSystem.forEachReverse(module -> {
-                logLifecycle("Stop: %s", module.getClass().getSimpleName());
-                module.stop() ;
-            }) ;
-            initialized = false ;
-            logLifecycle("JenaSystem.shutdown - finish");
-        }
-    }
-
-    private static JenaSubsystemRegistry singleton = null;
-
-    /**
-     * Set the {@link JenaSubsystemRegistry}.
-     * To have any effect, this function
-     * must be called before any other Jena code,
-     * and especially before calling {@code JenaSystem.init()}.
-     */
-    public static void setSubsystemRegistry(JenaSubsystemRegistry thing) {
-        singleton = thing;
-    }
-
-    /** The current JenaSubsystemRegistry */
-    public static JenaSubsystemRegistry get() {
-        return singleton;
-    }
-
-    /**
-     * Call an action on each item in the registry. Calls are made sequentially
-     * and in increasing level order. The exact order within a level is not
-     * specified; it is not registration order.
-     *
-     * @param action
-     */
-    public static void forEach(Consumer<JenaSubsystemLifecycle> action) {
-        forEach(action, comparator);
-    }
-
-    /**
-     * Call an action on each item in the registry but in the reverse
-     * enumeration order. Calls are made sequentially and in decreasing level
-     * order. The "reverse" is opposite order to {@link #forEach}, which may not
-     * be stable within a level. It is not related to registration order.
-     *
-     * @param action
-     */
-    public static void forEachReverse(Consumer<JenaSubsystemLifecycle> action) {
-        forEach(action, reverseComparator);
-    }
-
-    // Order by level (increasing)
-    private static Comparator<JenaSubsystemLifecycle> comparator        = (obj1, obj2) -> Integer.compare(obj1.level(), obj2.level()) ;
-    // Order by level (decreasing)
-    private static Comparator<JenaSubsystemLifecycle> reverseComparator = comparator.reversed();
-
-    private synchronized static void forEach(Consumer<JenaSubsystemLifecycle> action, Comparator<JenaSubsystemLifecycle> ordering) {
-        List<JenaSubsystemLifecycle> x = get().snapshot() ;
-        Collections.sort(x, ordering);
-        x.forEach(action);
-    }
 
     /** Output a debugging message if DEBUG_INIT is set */
     public static void logLifecycle(String fmt, Object ...args) {
@@ -199,6 +73,23 @@ public class JenaSystem {
         System.err.printf(fmt, args) ;
         System.err.println() ;
     }
+
+    public static void init() {
+        if ( initialized )
+            return ;
+        synchronized(JenaSystem.class) {
+            if ( initialized )
+                return ;
+            initialized = true;
+            setup();
+            if ( DEBUG_INIT )
+                singleton.debug(DEBUG_INIT);
+            singleton.initialize();
+            singleton.debug(false);
+        }
+    }
+
+    public static void shutdown() { singleton.shutdown(); }
 
     /** The level 0 subsystem - inserted without using the Registry load function.
      *  There should be only one such level 0 handler.
