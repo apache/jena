@@ -30,15 +30,6 @@ public class BindingFactory
     private static final Binding EMPTY = binding();
     public static final Binding empty() { return EMPTY ; }
 
-    /** @deprecated use {@link BindingBuilder} */
-    @Deprecated
-    public static BindingMap create()               { return create(noParent); }
-
-    /** @deprecated use {@link BindingBuilder} */
-    @Deprecated
-    public static BindingMap create(Binding parent) { return new BindingHashMap(parent); }
-
-    // Alternative routes to Binding.builder.
     /** Create a {@link BindingBuilder} */
     public static BindingBuilder builder() { return Binding.builder(); }
 
