@@ -44,7 +44,10 @@ public class TestTokenizer {
 
     private static Tokenizer tokenizer(String string, boolean lineMode) {
         PeekReader r = PeekReader.readString(string) ;
-        Tokenizer tokenizer = TokenizerText.create().source(r).lineMode(lineMode).build();
+        Tokenizer tokenizer = TokenizerText.create()
+                .source(r)
+                .lineMode(lineMode)
+                .build();
         return tokenizer ;
     }
 
@@ -406,38 +409,35 @@ public class TestTokenizer {
         assertFalse(tokenizer.hasNext()) ;
     }
 
-    // @Test
-    // public void tokenUnit_cntrl1()
-    // {
-    // tokenizeAndTestExact("*S", TokenType.CNTRL, "S") ;
-    // }
-    //
-    // @Test
-    // public void tokenUnit_cntr2()
-    // {
-    // tokenizeAndTestExact("*SXYZ", TokenType.CNTRL, "SXYZ") ;
-    // }
-    //
-    // @Test
-    // public void tokenUnit_cntrl3()
-    // {
-    // Tokenizer tokenizer = tokenizer("*S<x>") ;
-    // assertTrue(tokenizer.hasNext()) ;
-    // Token token = tokenizer.next() ;
-    // assertNotNull(token) ;
-    // assertEquals(TokenType.CNTRL, token.getType()) ;
-    // assertEquals('S', token.getCntrlCode()) ;
-    // assertNull(token.getImage()) ;
-    // assertNull(token.getImage2()) ;
-    //
-    // assertTrue(tokenizer.hasNext()) ;
-    // Token token2 = tokenizer.next() ;
-    // assertNotNull(token2) ;
-    // assertEquals(TokenType.IRI, token2.getType()) ;
-    // assertEquals("x", token2.getImage()) ;
-    // assertNull(token2.getImage2()) ;
-    // assertFalse(tokenizer.hasNext()) ;
-    // }
+//     @Test
+//     public void tokenUnit_cntrl1() {
+//         tokenizeAndTestExact("*S", TokenType.CNTRL, "S");
+//     }
+//
+//     @Test
+//     public void tokenUnit_cntr2() {
+//         tokenizeAndTestExact("*SXYZ", TokenType.CNTRL, "SXYZ");
+//     }
+//
+//     @Test
+//     public void tokenUnit_cntrl3() {
+//         Tokenizer tokenizer = tokenizer("*S<x>");
+//         assertTrue(tokenizer.hasNext());
+//         Token token = tokenizer.next();
+//         assertNotNull(token);
+//         assertEquals(TokenType.CNTRL, token.getType());
+//         assertEquals('S', token.getCntrlCode());
+//         assertNull(token.getImage());
+//         assertNull(token.getImage2());
+//
+//         assertTrue(tokenizer.hasNext());
+//         Token token2 = tokenizer.next();
+//         assertNotNull(token2);
+//         assertEquals(TokenType.IRI, token2.getType());
+//         assertEquals("x", token2.getImage());
+//         assertNull(token2.getImage2());
+//         assertFalse(tokenizer.hasNext());
+//     }
 
     @Test
     public void tokenUnit_syntax1() {
@@ -560,7 +560,7 @@ public class TestTokenizer {
     }
 
     @Test
-    public void tokenUnit_25() {
+    public void tokenUnit_pname20() {
         Tokenizer tokenizer = tokenizeAndTestFirst("123:", TokenType.INTEGER, "123") ;
         testNextToken(tokenizer, TokenType.PREFIXED_NAME, "", "") ;
     }
@@ -935,6 +935,32 @@ public class TestTokenizer {
         Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
         // ASCII only -> bad.
         Token t = tokenizer.next() ;
+    }
+
+    @Test(expected=RiotParseException.class)
+    public void token_replacmentChar_uri_1() {
+        Tokenizer tokenizer = tokenizer("<a\uFFFDz>") ;
+        testNextToken(tokenizer, TokenType.IRI) ;
+    }
+
+    @Test(expected=RiotParseException.class)
+    public void token_replacmentChar_uri_2() {
+        Tokenizer tokenizer = tokenizer("<a\\uFFFDz>") ;
+        testNextToken(tokenizer, TokenType.IRI) ;
+    }
+
+    @Test(expected=RiotParseException.class)
+    public void token_replacmentChar_bnode_1() {
+        Tokenizer tokenizer = tokenizer("ns\uFFFD:xyz") ;
+        testNextToken(tokenizer, TokenType.PREFIXED_NAME) ;
+        //assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test(expected=RiotParseException.class)
+    public void token_replacmentChar_bnode_2() {
+        Tokenizer tokenizer = tokenizer("ns:\uFFFDabc") ;
+        testNextToken(tokenizer, TokenType.PREFIXED_NAME) ;
+        //assertFalse(tokenizer.hasNext()) ;
     }
 
     // Test for warnings

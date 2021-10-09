@@ -66,6 +66,7 @@ public final class TokenizerText implements Tokenizer
     /*package*/ static TokenizerText internal(PeekReader reader, boolean lineMode, ErrorHandler errorHandler) {
         return new TokenizerText(reader, lineMode, errorHandler);
     }
+
     private TokenizerText(PeekReader reader, boolean lineMode, ErrorHandler errorHandler) {
         this.reader = Objects.requireNonNull(reader, "PeekReader");
         this.lineMode = lineMode;
@@ -761,26 +762,20 @@ public final class TokenizerText implements Tokenizer
         // Reads terminating delimiter
 
         for (;;) {
-            //int ch = reader.readChar();
+            int ch = reader.readChar();
 
-            int ch = reader.peekChar();
+            // Raw replacement char in a string.
             if ( ch == REPLACEMENT )
                 warning("Unicode replacement character U+FFFD in string");
-            reader.readChar();
-
-            if ( ch == EOF ) {
+            else if ( ch == EOF ) {
                 // if ( endNL ) return stringBuilder.toString();
                 fatal("Broken token: " + stringBuilder.toString());
             }
-
-            if ( ch == NL )
+            else if ( ch == NL )
                 fatal("Broken token (newline): " + stringBuilder.toString());
-
-            if ( ch == endCh )
+            else if ( ch == endCh )
                 return stringBuilder.toString();
-
-
-            if ( ch == CH_RSLASH )
+            else if ( ch == CH_RSLASH )
                 // Allow escaped replacement character.
                 ch = readLiteralEscape();
 
@@ -791,23 +786,18 @@ public final class TokenizerText implements Tokenizer
     private String readLongString(int quoteChar, boolean endNL) {
         stringBuilder.setLength(0);
         for (;;) {
-            int ch = reader.peekChar();
+            int ch = reader.readChar();
             if ( ch == REPLACEMENT )
                 warning("Input has Unicode replacement character U+FFFD in string");
-            reader.readChar();
-
-            if ( ch == EOF ) {
+            else if ( ch == EOF ) {
                 if ( endNL )
                     return stringBuilder.toString();
                 fatal("Broken long string");
             }
-
-            if ( ch == quoteChar ) {
+            else if ( ch == quoteChar ) {
                 if ( threeQuotes(quoteChar) )
                     return stringBuilder.toString();
-            }
-
-            if ( ch == CH_RSLASH )
+            } else if ( ch == CH_RSLASH )
                 ch = readLiteralEscape();
             insertCodepoint(stringBuilder, ch);
         }

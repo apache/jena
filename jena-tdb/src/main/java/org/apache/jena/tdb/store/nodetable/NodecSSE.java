@@ -28,6 +28,8 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.out.NodeFmtLib;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapZero;
 import org.apache.jena.riot.tokens.Token;
@@ -130,8 +132,14 @@ public class NodecSSE implements Nodec
         }
     }
 
+    // Ignore warnings.
+    private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerExceptionOnError();
+
     private static Tokenizer createTokenizer(String string) {
-        return TokenizerText.create().fromString(string).build();
+        return TokenizerText.create()
+                    .fromString(string)
+                    .errorHandler(errorHandler)
+                    .build();
     }
 
     // Over-estimate the length of the encoding.

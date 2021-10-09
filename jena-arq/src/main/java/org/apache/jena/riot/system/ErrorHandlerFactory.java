@@ -69,11 +69,15 @@ public class ErrorHandlerFactory
     public static ErrorHandlerTracking errorHandlerTracking(Logger log, boolean failOnError, boolean failOnWarning)
     { return new ErrorHandlerTracking(log, failOnError, failOnWarning); }
 
+    /** @deprecated Use {#errorHandlerExceptionOnError} */
+    @Deprecated
+    public static ErrorHandler errorHandlerDetailed()               { return new ErrorHandlerRiotParseErrors() ; }
+
     /**
      * An error handler that throws a {@link RiotParseException}, hence it
      * exposes the details of errors.
      */
-    public static ErrorHandler errorHandlerDetailed()           { return new ErrorHandlerRiotParseErrors() ; }
+    public static ErrorHandler errorHandlerExceptionOnError()       { return new ErrorHandlerRiotParseErrors() ; }
 
     /**
      * An error handler that throws exceptions in all cases.
@@ -321,7 +325,7 @@ public class ErrorHandlerFactory
         }
     }
 
-    /** An error handler that logs messages for errors and warnings and attempt to carry on */
+    /** An error handler that logs messages for errors and warnings and attempts to carry on */
     private static class ErrorHandlerWarning extends ErrorLogger implements ErrorHandler {
         public ErrorHandlerWarning(Logger log)
         { super(log) ; }

@@ -103,8 +103,11 @@ public class TokenizeTextBuilder {
         return x;
     }
 
+    // Default - strict.
+    private static ErrorHandler errorHandlerDft = ErrorHandlerFactory.errorHandlerExceptions();
+
     public Tokenizer build() {
-        ErrorHandler errHandler = (errorHandler != null) ? errorHandler : ErrorHandlerFactory.errorHandlerExceptions();
+        ErrorHandler errHandler = (errorHandler != null) ? errorHandler : errorHandlerDft;
         int x = countNotNulls(peekReader, input, reader, string);
         if ( x > 1 )
             throw new InternalErrorException("Too many data sources");
