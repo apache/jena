@@ -151,7 +151,7 @@ public class NodeIdFactory
                 x = DoubleNode62.insertType(x);
                 return x;
             default:
-                // Bit 62 is zero - tagt is for doubles.
+                // Bit 62 is zero - tag is for doubles.
                 x = BitsLong.pack(x, nodeId.getTypeValue(), 56, 62);
                 // Set the high, value bit.
                 x = BitsLong.set(x, 63);

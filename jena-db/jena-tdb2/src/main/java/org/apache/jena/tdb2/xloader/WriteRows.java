@@ -42,7 +42,7 @@ public class WriteRows
         this.rowLength = 16 * itemsPerRow + itemsPerRow;
         this.rowBlock = rowBlock;
         // Does it's own buffering in exact rows.
-        // BufferedOutptuStream uses synchronized.
+        // BufferedOutputStream uses synchronized.
         this.b = new byte[rowLength * rowBlock];
         this.idx = 0;
         this.rows = 0;

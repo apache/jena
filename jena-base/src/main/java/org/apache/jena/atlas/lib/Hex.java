@@ -25,7 +25,7 @@ import org.apache.jena.atlas.AtlasException ;
 /** Working in hex ... */
 public class Hex
 {
-    /** Format a long value into a byte array as hex digitss */
+    /** Format a long value into a byte array as hex digits */
     public static void formatUnsignedLongHex(byte[] b, int start, long value, int width) {
         int idx = start;
         for ( int i = 0 ; i < width ; i++) {
