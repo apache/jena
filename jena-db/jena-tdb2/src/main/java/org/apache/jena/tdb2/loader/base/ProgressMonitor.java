@@ -31,6 +31,8 @@ public interface ProgressMonitor {
      */
     public void finishMessage(String message);
 
+    public String getLabel();
+
     public void setLabel(String label);
 
     /** Start and start timing. This should be paired with a call to {@link #finish()}. */

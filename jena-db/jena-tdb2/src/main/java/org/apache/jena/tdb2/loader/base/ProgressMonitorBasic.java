@@ -98,5 +98,8 @@ public class ProgressMonitorBasic implements ProgressMonitor {
     }
 
     @Override
+    public String getLabel() { return ""; }
+
+    @Override
     public void setLabel(String label) {}
 }

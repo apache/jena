@@ -221,8 +221,12 @@ public class ProgressMonitorOutput implements ProgressMonitor {
     }
 
     @Override
+    public String getLabel() {
+        return this.label;
+    }
+
+    @Override
     public void setLabel(String label) {
         this.label = label;
     }
-
 }
