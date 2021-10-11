@@ -56,6 +56,9 @@ public interface FusekiModule extends SubsystemLifecycle {
     /** Server starting - called just before server.start happens. */
     public default void serverStarting(FusekiServer server) { }
 
+    /** Server started - called just after server.start happens,before server, .start() returns to the application,. */
+    public default void serverStarted(FusekiServer server) { }
+
     /** Server stopping.
      * Do not rely on this to clear up external resources.
      * Usually there is no stop phase and the JVM just exits or is killed externally.

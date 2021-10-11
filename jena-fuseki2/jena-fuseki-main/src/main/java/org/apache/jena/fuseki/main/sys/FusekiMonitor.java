@@ -48,6 +48,13 @@ public class FusekiMonitor {
     }
 
     /**
+     * Called just after {@code server.start()} called.
+     */
+    public static void serverStarted(FusekiServer server) {
+        FusekiModules.forEachModule((n,m) -> m.serverStarting(server));
+    }
+
+    /**
      * Called just after {@code server.stop()} has happened.
      * Often, this is not called - the server, or application containing the server,
      * simply exits the JVM or is killed externally.

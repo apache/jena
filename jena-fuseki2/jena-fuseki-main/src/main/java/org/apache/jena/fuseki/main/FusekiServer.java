@@ -277,6 +277,7 @@ public class FusekiServer {
         try {
             FusekiMonitor.serverStarting(this);
             server.start();
+            FusekiMonitor.serverStarted(this);
         }
         catch (IOException ex) {
             if ( ex.getCause() instanceof java.security.UnrecoverableKeyException )
