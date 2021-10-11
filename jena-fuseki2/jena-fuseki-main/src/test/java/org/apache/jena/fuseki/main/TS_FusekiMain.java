@@ -24,9 +24,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    //17
 
   TestPlainServer.class
+
+  // This tests modules and modifies the system state.
+  , TestFusekiModules.class
   , TestEmbeddedFuseki.class
   , TestMultipleEmbedded.class
   , TestFusekiCustomOperation.class

@@ -35,8 +35,9 @@ import org.apache.jena.base.module.SubsystemRegistryServiceLoader;
  * <li>20 - RIOT
  * <li>30 - ARQ
  * <li>40 - TDB
- * <li>50-99 - Other Jena system modules.
- * <li>100-9998 - Application
+ * <li>50-100 - Other Jena system modules.
+ * <li>101 - Fuseki
+ * <li>102-9998 - Application
  * <li>9999 - other
  * </ul>
  * See also the <a href="http://jena.apache.org/documentation/notes/system-initialization.html">notes on Jena initialization</a>.
