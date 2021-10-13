@@ -59,21 +59,23 @@ public class TestFusekiModules {
         assertEquals(1, module.countStart.get());
         assertEquals(0, module.countConfiguration.get());
         assertEquals(0, module.countServer.get());
-        assertEquals(0, module.countServerStarting.get());
+        assertEquals(0, module.countServerBeforeStarting.get());
 
         FusekiServer server = builder.build();
 
         assertEquals(1, module.countStart.get());
         assertEquals(1, module.countConfiguration.get());
         assertEquals(1, module.countServer.get());
-        assertEquals(0, module.countServerStarting.get());
+        assertEquals(0, module.countServerBeforeStarting.get());
+        assertEquals(0, module.countServerAfterStarting.get());
 
         server.start();
 
         assertEquals(1, module.countStart.get());
         assertEquals(1, module.countConfiguration.get());
         assertEquals(1, module.countServer.get());
-        assertEquals(1, module.countServerStarting.get());
+        assertEquals(1, module.countServerBeforeStarting.get());
+        assertEquals(1, module.countServerAfterStarting.get());
 
         server.stop();
     }

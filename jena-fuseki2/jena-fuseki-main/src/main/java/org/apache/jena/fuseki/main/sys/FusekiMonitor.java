@@ -43,15 +43,15 @@ public class FusekiMonitor {
     /**
      * Called just before {@code server.start()} called.
      */
-    public static void serverStarting(FusekiServer server) {
-        FusekiModules.forEachModule((n,m) -> m.serverStarting(server));
+    public static void serverBeforeStarting(FusekiServer server) {
+        FusekiModules.forEachModule((n,m) -> m.serverBeforeStarting(server));
     }
 
     /**
      * Called just after {@code server.start()} called.
      */
-    public static void serverStarted(FusekiServer server) {
-        FusekiModules.forEachModule((n,m) -> m.serverStarting(server));
+    public static void serverAfterStarting(FusekiServer server) {
+        FusekiModules.forEachModule((n,m) -> m.serverAfterStarting(server));
     }
 
     /**

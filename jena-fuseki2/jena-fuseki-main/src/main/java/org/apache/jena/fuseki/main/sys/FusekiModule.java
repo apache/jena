@@ -54,10 +54,10 @@ public interface FusekiModule extends SubsystemLifecycle {
     public default void server(FusekiServer server) { }
 
     /** Server starting - called just before server.start happens. */
-    public default void serverStarting(FusekiServer server) { }
+    public default void serverBeforeStarting(FusekiServer server) { }
 
     /** Server started - called just after server.start happens,before server, .start() returns to the application,. */
-    public default void serverStarted(FusekiServer server) { }
+    public default void serverAfterStarting(FusekiServer server) { }
 
     /** Server stopping.
      * Do not rely on this to clear up external resources.
