@@ -52,17 +52,17 @@ public interface Dataset extends Transactional
     /** Get a graph by name as a Jena Model */
     public Model getNamedModel(String uri) ;
 
-    /** Get a graph by name as a Jena Model */
+    /** Get a graph by resource as a Jena Model */
     public Model getNamedModel(Resource uri) ;
 
     /** Does the dataset contain a model with the name supplied? */
     public boolean containsNamedModel(String uri) ;
 
-    /** Does the dataset contain a model with the name supplied? */
+    /** Does the dataset contain a model named by the resource supplied? */
     public boolean containsNamedModel(Resource uri) ;
 
     /**
-     * Set a named graph.
+     * Add a named graph.
      *
      * @param uri the name of the graph to set
      * @param model the graph to set
@@ -71,18 +71,18 @@ public interface Dataset extends Transactional
     public Dataset addNamedModel(String uri, Model model);
 
     /**
-     * Set a named graph.
+     * Add a named graph.
      *
-     * @param uri the name of the graph to set
+     * @param resource the name of the graph to set
      * @param model the graph to set
      * @return this {@code Dataset} for continued usage
      */
-    public Dataset addNamedModel(Resource uri, Model model);
+    public Dataset addNamedModel(Resource resource, Model model);
 
     /**
      * Remove a named graph.
      *
-     * @param uri the name of the gaph to remove
+     * @param uri the name of the graph to remove
      * @return this {@code Dataset} for continued usage
      */
     public Dataset removeNamedModel(String uri);
@@ -90,10 +90,10 @@ public interface Dataset extends Transactional
     /**
      * Remove a named graph.
      *
-     * @param uri the name of the gaph to remove
+     * @param resource the name of the graph to remove
      * @return this {@code Dataset} for continued usage
      */
-    public Dataset removeNamedModel(Resource uri);
+    public Dataset removeNamedModel(Resource resource);
 
     /**
      * Change a named graph for another using the same name
@@ -107,11 +107,11 @@ public interface Dataset extends Transactional
     /**
      * Change a named graph for another using the same name
      *
-     * @param uri the name of the graph to replace
+     * @param resource the name of the graph to replace
      * @param model the graph with which to replace it
      * @return this {@code Dataset} for continued usage
      */
-    public Dataset replaceNamedModel(Resource uri, Model model);
+    public Dataset replaceNamedModel(Resource resource, Model model);
 
     /** List the names */
     public Iterator<String> listNames() ;

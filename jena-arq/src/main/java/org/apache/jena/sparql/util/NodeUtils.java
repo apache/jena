@@ -36,8 +36,6 @@ import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.MapFilter ;
-import org.apache.jena.util.iterator.MapFilterIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
 /** Node utilities */
@@ -87,15 +85,8 @@ public class NodeUtils
 
     /** Convert IRI Nodes to strings.  Skip other kinds of Node */
     public static Iterator<String> nodesToURIs(Iterator<Node> iter) {
-        MapFilter<Node, String> mapper = new MapFilter<Node, String>() {
-            @Override
-            public String accept(Node x) {
-                return x.getURI() ;
-            }
-        } ;
-
         ExtendedIterator<Node> eIter = WrappedIterator.create(iter) ;
-        Iterator<String> conv = new MapFilterIterator<>(mapper, eIter) ;
+        Iterator<String> conv = eIter.filterKeep(Node::isURI).mapWith(Node::getURI);
         return conv ;
     }
 

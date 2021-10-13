@@ -43,29 +43,29 @@ import org.apache.jena.util.iterator.WrappedIterator;
  * This is the "usual" implementation based on wrapping a DatasetGraph
  * and providing an adapter layer from Model/Resource to Graph/Node
  * The characteristics of this class depend on the characteristics of
- * DatasetGraph.   
+ * DatasetGraph.
  */
 
-public class DatasetImpl implements Dataset 
+public class DatasetImpl implements Dataset
 {
     protected final DatasetGraph dsg;
-    // Allow for an external transactional. 
+    // Allow for an external transactional.
     private final Transactional transactional;
 
     /** Wrap an existing DatasetGraph */
     public static Dataset wrap(DatasetGraph datasetGraph) {
         return new DatasetImpl(datasetGraph) ;
     }
-    
+
     protected DatasetImpl(DatasetGraph dsg) {
-        this(dsg,  (dsg.supportsTransactions() ? dsg : new TransactionalNotSupported())) ; 
+        this(dsg,  (dsg.supportsTransactions() ? dsg : new TransactionalNotSupported())) ;
     }
 
     protected DatasetImpl(DatasetGraph dsg, Transactional transactional) {
         this.dsg = dsg;
-        this.transactional = transactional ; 
+        this.transactional = transactional ;
     }
-    
+
     /** Create a Dataset with the model as default model.
      *  Named models must be explicitly added to identify the storage to be used.
      */
@@ -75,8 +75,8 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
-    public Model getDefaultModel() { 
-        return ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ; 
+    public Model getDefaultModel() {
+        return ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class DatasetImpl implements Dataset
     public Context getContext() {
         return dsg.getContext();
     }
-    
+
     @Override
     public boolean supportsTransactions() {
         return dsg.supportsTransactions();
@@ -138,7 +138,7 @@ public class DatasetImpl implements Dataset
         return transactional.transactionType();
     }
 
-    /** Say whether a transaction is active */ 
+    /** Say whether a transaction is active */
     @Override
     public boolean isInTransaction() {
         return transactional != null && transactional.isInTransaction();
@@ -262,12 +262,7 @@ public class DatasetImpl implements Dataset
 
     @Override
     public Iterator<Resource> listModelNames() {
-        MapFilter<Node, Resource> mapper = new MapFilter<Node, Resource>() {
-            @Override
-            public Resource accept(Node x) {
-                return new ResourceImpl(x, null);
-            }
-        } ;
+        MapFilter<Node, Resource> mapper =  x -> new ResourceImpl(x, null);
         ExtendedIterator<Node> eIter = WrappedIterator.create(dsg.listGraphNodes()) ;
         return new MapFilterIterator<>(mapper, eIter) ;
     }
@@ -276,9 +271,9 @@ public class DatasetImpl implements Dataset
     public void close() {
         dsg.close() ;
     }
-    
+
     protected Model graph2model(final Graph graph) {
-        if ( graph == null ) 
+        if ( graph == null )
             return null;
         return ModelFactory.createModelForGraph(graph);
     }
