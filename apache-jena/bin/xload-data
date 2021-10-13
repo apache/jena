@@ -283,7 +283,7 @@ DATA_QUADS="$LOC/data-quads.tmp"
 debug "Triples text files is $DATA_TRIPLES"
 debug "Quads text file is $DATA_QUADS"
 
-java $JVM_ARGS -cp "$JENA_CP" "$PKG".CmdNodeTableBuilder \
+java $JVM_ARGS -cp "$JENA_CP" "$PKG".CmdNodeTableDataBuilder \
     "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" -- "${FILES[@]}"
 
 info "Data Load Phase Completed"

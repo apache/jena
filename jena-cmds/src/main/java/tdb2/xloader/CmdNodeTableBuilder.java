@@ -33,7 +33,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.apache.jena.tdb2.xloader.ProcNodeTableBuilder;
+import org.apache.jena.tdb2.xloader.ProcNodeTableDataBuilder;
 import org.apache.jena.dboe.base.file.Location ;
 import tdb2.cmdline.CmdTDB;
 
@@ -112,7 +112,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
 
     @Override
     protected void exec() {
-        ProcNodeTableBuilder.exec(dsg, dataFileTriples, dataFileQuads, datafiles, collectStats);
+        ProcNodeTableDataBuilder.exec(dsg, dataFileTriples, dataFileQuads, datafiles, collectStats);
     }
 
     @Override

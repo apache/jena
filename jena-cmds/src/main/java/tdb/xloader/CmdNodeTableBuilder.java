@@ -32,7 +32,7 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.DatasetBuilderStd ;
-import org.apache.jena.tdb.store.xloader.ProcNodeTableBuilder;
+import org.apache.jena.tdb.store.xloader.ProcNodeTableDataBuilder;
 import tdb.cmdline.CmdTDB ;
 
 /** Build node table - write triples/quads as text file */
@@ -110,7 +110,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
 
     @Override
     protected void exec() {
-        ProcNodeTableBuilder.exec(location, dataFileTriples, dataFileQuads, datafiles, collectStats);
+        ProcNodeTableDataBuilder.exec(location, dataFileTriples, dataFileQuads, datafiles, collectStats);
     }
 
     @Override
