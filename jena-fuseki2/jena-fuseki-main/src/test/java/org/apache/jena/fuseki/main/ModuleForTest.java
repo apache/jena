@@ -31,16 +31,19 @@ public class ModuleForTest implements FusekiModule {
     public AtomicInteger countStart = new AtomicInteger(0);
     public AtomicInteger countConfiguration = new AtomicInteger(0);
     public AtomicInteger countServer = new AtomicInteger(0);
-    public AtomicInteger countServerStarting = new AtomicInteger(0);
+    public AtomicInteger countServerBeforeStarting = new AtomicInteger(0);
+    public AtomicInteger countServerAfterStarting = new AtomicInteger(0);
 
     public ModuleForTest() {
         module = this;
     }
 
     public void clearLifecycle() {
+        // Not countStart.
         countConfiguration.set(0);
         countServer.set(0);
-        countServerStarting.set(0);
+        countServerBeforeStarting.set(0);
+        countServerAfterStarting.set(0);
     }
 
     @Override
@@ -59,7 +62,13 @@ public class ModuleForTest implements FusekiModule {
     }
 
     // Server starting
-    @Override public void serverStarting(FusekiServer server) {
-        countServerStarting.getAndIncrement();
+    @Override public void serverBeforeStarting(FusekiServer server) {
+        countServerBeforeStarting.getAndIncrement();
     }
+
+    // Server starting
+    @Override public void serverAfterStarting(FusekiServer server) {
+        countServerAfterStarting.getAndIncrement();
+    }
+
 }

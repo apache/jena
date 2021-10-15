@@ -43,9 +43,10 @@ import org.slf4j.LoggerFactory;
 public class BPlusTreeRewriter {
     static private Logger log         = LoggerFactory.getLogger(BPlusTreeRewriter.class);
 
-    static boolean        rebalance   = true;
-    static boolean        debug       = false;
-    static boolean        materialize = debug;
+    /** Rebalance final two blocks in a level otherwise last block may be too small. */
+    static final boolean     rebalance   = true;
+    static boolean           debug       = false;
+    static final boolean     materialize = debug;
 
     // Process:
     // 1/ Take a stream of records and create leaves.

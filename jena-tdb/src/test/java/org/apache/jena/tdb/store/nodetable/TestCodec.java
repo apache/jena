@@ -27,7 +27,7 @@ import java.util.Collection;
 import org.apache.jena.atlas.lib.ByteBufferLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.sparql.sse.SSE;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -38,26 +38,22 @@ public class TestCodec
 {
     static private final String asciiBase             = "abc";
     static private final String latinBase             = "Àéíÿ";
-    static private final String latinExtraBase        = "ỹﬁﬂ";     // fi-ligature, fl-ligature
+    static private final String latinExtraBase        = "ỹﬁﬂ";      // fi-ligature, fl-ligature
     static private final String greekBase             = "αβγ";
     static private final String hewbrewBase           = "אבג";
     static private final String arabicBase            = "ءآأ";
     static private final String symbolsBase           = "☺☻♪♫";
     static private final String chineseBase           = "孫子兵法"; // The Art of War
-    static private final String japaneseBase          = "日本";    // Japanese
+    static private final String japaneseBase          = "日本";     // Japanese
 
-    // Each Object[] becomes the arguments to the class constructor (with reflection)
-    // Reflection is not sensitive to generic parameterization (it's type erasure)
-    @Parameters public static Collection<Object[]> data()
-    {
-        return Arrays.asList(new Object[][]
-                                        { { new NodecSSE() } }
-                                        );
+    @Parameters(name="{0}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{{"NodecSSE", new NodecSSE()}});
     }
 
     private Nodec nodec;
 
-    public TestCodec(Nodec nodec) { this.nodec = nodec; }
+    public TestCodec(String name, Nodec nodec) { this.nodec = nodec; }
 
     @Test public void nodec_lit_01()    { test ("''"); }
     @Test public void nodec_lit_02()    { test ("'a'"); }
@@ -84,14 +80,16 @@ public class TestCodec
     @Test public void nodec_lit_22()    { test ("''^^<>"); }
 
     // Bad Unicode.
-    static private final String binaryStr1            = "abc\uD800xyz";    // A single surrogate, without it's pair.
-    static private final String binaryStr2            = "\uD800";          // A single surrogate, without it's pair.
-    static private final String binaryStr3            = "\u0000";          // A zero character
+    static private final String binaryStr1  = "abc\uD800xyz";    // A single surrogate, without it's pair.
+    static private final String binaryStr2  = "\uD800";          // A single surrogate, without it's pair.
+    static private final String binaryStr3  = "\u0000";          // A zero character
 
     @Test public void nodec_lit_30()    { test ("'"+binaryStr1+"'"); }
     @Test public void nodec_lit_31()    { test ("'"+binaryStr2+"'"); }
     @Test public void nodec_lit_32()    { test ("'"+binaryStr3+"'"); }
 
+    @Test public void nodec_lit_33()   { test("'\uFFFD'"); }
+    @Test public void nodec_lit_34()   { test("'''abc\\uFFFDdef'''"); }
 
     @Test public void nodec_uri_01()    { test ("<>"); }
     @Test public void nodec_uri_02()    { test ("<http://example/>"); }
@@ -110,7 +108,7 @@ public class TestCodec
     }
 
     private void test(String sseString) {
-        Node n = NodeFactoryExtra.parseNode(sseString);
+        Node n = SSE.parseNode(sseString); // Does not use TextTokenizer.
         test(n);
     }
 

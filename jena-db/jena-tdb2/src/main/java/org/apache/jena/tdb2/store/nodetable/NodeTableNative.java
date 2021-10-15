@@ -20,8 +20,9 @@ package org.apache.jena.tdb2.store.nodetable;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
-import org.apache.jena.atlas.lib.NotImplemented;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.index.Index;
@@ -47,8 +48,7 @@ public abstract class NodeTableNative implements NodeTable
 
     /** Get the Node for this NodeId, or null if none */
     @Override
-    public Node getNodeForNodeId(NodeId id)
-    {
+    public Node getNodeForNodeId(NodeId id) {
         return _retrieveNodeByNodeId(id);
     }
 
@@ -93,8 +93,7 @@ public abstract class NodeTableNative implements NodeTable
     // synchonization happens in accessIndex() and readNodeByNodeId
 
     // NodeId to Node worker.
-    private Node _retrieveNodeByNodeId(NodeId id)
-    {
+    private Node _retrieveNodeByNodeId(NodeId id) {
         if ( NodeId.isDoesNotExist(id) )
             return null;
         if ( NodeId.isAny(id) )
@@ -109,8 +108,7 @@ public abstract class NodeTableNative implements NodeTable
 
     // Node to NodeId worker
     // Find a node, possibly placing it in the node file as well
-    private NodeId _idForNode(Node node, boolean allocate)
-    {
+    private NodeId _idForNode(Node node, boolean allocate) {
         if ( node == Node.ANY )
             return NodeId.NodeIdAny;
 
@@ -119,8 +117,7 @@ public abstract class NodeTableNative implements NodeTable
         return nodeId;
     }
 
-    protected final NodeId accessIndex(Node node, boolean create)
-    {
+    protected final NodeId accessIndex(Node node, boolean create) {
         Hash hash = new Hash(nodeHashToId.getRecordFactory().keyLength());
         NodeLib.setHash(hash, node);
         byte k[] = hash.getBytes();
@@ -170,11 +167,9 @@ public abstract class NodeTableNative implements NodeTable
     // -------- NodeId<->Node
 
     @Override
-    public synchronized void close()
-    {
-        // Close once.  This may be shared (e.g. triples table and quads table).
-        if ( nodeHashToId != null )
-        {
+    public synchronized void close() {
+        // Close once. This may be shared (e.g. triples table and quads table).
+        if ( nodeHashToId != null ) {
             nodeHashToId.close();
             closeSub();
             nodeHashToId = null;
@@ -185,14 +180,19 @@ public abstract class NodeTableNative implements NodeTable
     @Override
     public Iterator<Pair<NodeId, Node>> all() { return all2(); }
 
-    private Iterator<Pair<NodeId, Node>> all2()
-    {
-        throw new NotImplemented();
+    private Iterator<Pair<NodeId, Node>> all2() {
+        Function<Record, Pair<NodeId, Node>> function = record->{
+            byte[] k = record.getKey();
+            byte[] v = record.getValue();
+            NodeId id = NodeIdFactory.get(v, 0);
+            Node node = _retrieveNodeByNodeId(id);
+            return Pair.create(id, node);
+        };
+        return Iter.map(nodeHashToId.iterator(), function);
     }
 
     @Override
-    public void sync()
-    {
+    public void sync() {
         if ( syncNeeded )
         {
             syncSub();
@@ -203,8 +203,7 @@ public abstract class NodeTableNative implements NodeTable
     }
 
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return nodeHashToId.isEmpty();
     }
 

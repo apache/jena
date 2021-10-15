@@ -19,13 +19,19 @@
 package org.apache.jena.riot.system;
 
 import org.apache.jena.iri.IRIFactory;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.irix.SetupJenaIRI;
 
 /**
  * Settings for the jena-iri used in Jena  package.
  * <p>
  * See package {@code org.apache.jena.irix}.
- * @deprecated Use {@link SetupJenaIRI}
+ * <p>
+ * Use {@link IRIs} for operations such as "resolve(string, string)", and {@link IRIx} for {@code IRI}.
+ * Use {@link SetupJenaIRI} if direct use of jena-iri setup is required.
+ *
+ * @deprecated Use {@link IRIs} and {@link IRIx}.
  */
 @Deprecated
 public final class IRIResolver

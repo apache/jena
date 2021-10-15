@@ -71,7 +71,7 @@ public class NodeId implements Comparable<NodeId>
     // Short: 64 bit:
     //   See NodeIdInline
     //   High bit 0 => PTR => 63 bits
-    //   Bit 63 = 1, bit 62 =1 => double in 62 bits.
+    //   Bit 63 = 1, bit 62 = 1 => double in 62 bits.
     //   Bit 63 = 1, bit 62 = 0 => 6 bits of type, 56 bits of value
 
     final NodeIdType type;

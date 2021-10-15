@@ -16,23 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.tokens;
+package jena;
 
-import org.apache.jena.riot.RiotParseException;
-import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.cmd.Cmds;
 
-public class ErrorHandlerTokenizer implements ErrorHandler {
-    @Override public void warning(String message, long line, long col) {
-        // Warning/continue.
-        //ErrorHandlerFactory.errorHandlerStd.warning(message, line, col);
-        throw new RiotParseException(message, line, col);
+public class fuseki {
+
+    public static void main(String... args) {
+        Cmds.exec("fuseki", args);
     }
 
-    @Override public void error(String message, long line, long col) {
-        throw new RiotParseException(message, line, col);
-    }
-
-    @Override public void fatal(String message, long line, long col) {
-        throw new RiotParseException(message, line, col);
-    }
 }

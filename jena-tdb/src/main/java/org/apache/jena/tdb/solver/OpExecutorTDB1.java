@@ -83,7 +83,7 @@ public class OpExecutorTDB1 extends OpExecutor
     protected QueryIterator exec(Op op, QueryIterator input) {
         if ( level < 0 )
             // Print only at top level (and we're called before level++)
-            Explain.explain("TDB", op, super.execCxt.getContext()) ;
+            Explain.explain("TDB1", op, super.execCxt.getContext()) ;
         return super.exec(op, input) ;
     }
 

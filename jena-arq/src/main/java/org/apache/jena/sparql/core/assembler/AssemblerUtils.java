@@ -39,6 +39,8 @@ import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.vocabulary.RDFS ;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.*;
 
+import java.util.Objects;
+
 public class AssemblerUtils
 {
     // Wrappers for reading things form a file - assumes one of the thing per file.
@@ -125,13 +127,15 @@ public class AssemblerUtils
     }
 
     public static Object build(String assemblerFile, Resource type) {
-        if ( assemblerFile == null )
-            throw new ARQException("No assembler file") ;
+        Objects.requireNonNull(assemblerFile, "No assembler file") ;
         Model spec = readAssemblerFile(assemblerFile) ;
+        return build(spec, type);
+    }
 
+    public static Object build(Model assemblerModel, Resource type) {
         Resource root = null ;
         try {
-            root = GraphUtils.findRootByType(spec, type) ;
+            root = GraphUtils.findRootByType(assemblerModel, type) ;
             if ( root == null )
                 throw new ARQException("No such type: <"+type+">");
 
@@ -139,7 +143,6 @@ public class AssemblerUtils
         { throw new ARQException("Multiple types for: "+tDataset) ; }
         return Assembler.general.open(root) ;
     }
-
     /** Look for and build context declarations.
      * e.g.
      * <pre>
