@@ -28,38 +28,44 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.NodeUtils ;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.MapFilter;
+import org.apache.jena.util.iterator.MapFilterIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
 
 /** An implementation of a Dataset.
  * This is the "usual" implementation based on wrapping a DatasetGraph
  * and providing an adapter layer from Model/Resource to Graph/Node
  * The characteristics of this class depend on the characteristics of
- * DatasetGraph.   
+ * DatasetGraph.
  */
 
-public class DatasetImpl implements Dataset 
+public class DatasetImpl implements Dataset
 {
     protected final DatasetGraph dsg;
-    // Allow for an external transactional. 
+    // Allow for an external transactional.
     private final Transactional transactional;
 
     /** Wrap an existing DatasetGraph */
     public static Dataset wrap(DatasetGraph datasetGraph) {
         return new DatasetImpl(datasetGraph) ;
     }
-    
+
     protected DatasetImpl(DatasetGraph dsg) {
-        this(dsg,  (dsg.supportsTransactions() ? dsg : new TransactionalNotSupported())) ; 
+        this(dsg,  (dsg.supportsTransactions() ? dsg : new TransactionalNotSupported())) ;
     }
 
     protected DatasetImpl(DatasetGraph dsg, Transactional transactional) {
         this.dsg = dsg;
-        this.transactional = transactional ; 
+        this.transactional = transactional ;
     }
-    
+
     /** Create a Dataset with the model as default model.
      *  Named models must be explicitly added to identify the storage to be used.
      */
@@ -69,8 +75,8 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
-    public Model getDefaultModel() { 
-        return ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ; 
+    public Model getDefaultModel() {
+        return ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ;
     }
 
     @Override
@@ -85,7 +91,7 @@ public class DatasetImpl implements Dataset
     public Context getContext() {
         return dsg.getContext();
     }
-    
+
     @Override
     public boolean supportsTransactions() {
         return dsg.supportsTransactions();
@@ -132,7 +138,7 @@ public class DatasetImpl implements Dataset
         return transactional.transactionType();
     }
 
-    /** Say whether a transaction is active */ 
+    /** Say whether a transaction is active */
     @Override
     public boolean isInTransaction() {
         return transactional != null && transactional.isInTransaction();
@@ -172,10 +178,23 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
+    public Model getNamedModel(Resource uri) {
+        checkGraphName(uri) ;
+        return graph2model(dsg.getGraph(uri.asNode())) ;
+    }
+
+    @Override
     public Dataset addNamedModel(String uri, Model model) {
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
         dsg.addGraph(n, model.getGraph()) ;
+        return this;
+    }
+
+    @Override
+    public Dataset addNamedModel(Resource uri, Model model) {
+        checkGraphName(uri) ;
+        dsg.addGraph(uri.asNode(), model.getGraph()) ;
         return this;
     }
 
@@ -188,12 +207,28 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
+    public Dataset removeNamedModel(Resource uri) {
+        checkGraphName(uri) ;
+        dsg.removeGraph(uri.asNode()) ;
+        return this;
+    }
+
+    @Override
     public Dataset replaceNamedModel(String uri, Model model) {
         // Assumes single writer.
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
         dsg.removeGraph(n) ;
         dsg.addGraph(n, model.getGraph() ) ;
+        return this;
+    }
+
+    @Override
+    public Dataset replaceNamedModel(Resource uri, Model model) {
+        // Assumes single writer.
+        checkGraphName(uri) ;
+        dsg.removeGraph(uri.asNode()) ;
+        dsg.addGraph(uri.asNode(), model.getGraph() ) ;
         return this;
     }
 
@@ -214,22 +249,36 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
+    public boolean containsNamedModel(Resource uri) {
+        // Does not touch the cache.
+        checkGraphName(uri) ;
+        return dsg.containsGraph(uri.asNode()) ;
+    }
+
+    @Override
     public Iterator<String> listNames() {
         return NodeUtils.nodesToURIs(dsg.listGraphNodes()) ;
+    }
+
+    @Override
+    public Iterator<Resource> listModelNames() {
+        MapFilter<Node, Resource> mapper =  x -> new ResourceImpl(x, null);
+        ExtendedIterator<Node> eIter = WrappedIterator.create(dsg.listGraphNodes()) ;
+        return new MapFilterIterator<>(mapper, eIter) ;
     }
 
     @Override
     public void close() {
         dsg.close() ;
     }
-    
+
     protected Model graph2model(final Graph graph) {
-        if ( graph == null ) 
+        if ( graph == null )
             return null;
         return ModelFactory.createModelForGraph(graph);
     }
 
-    protected static void checkGraphName(String uri) {
+    protected static void checkGraphName(Object uri) {
         if ( uri == null )
             throw new ARQException("null for graph name");
     }
