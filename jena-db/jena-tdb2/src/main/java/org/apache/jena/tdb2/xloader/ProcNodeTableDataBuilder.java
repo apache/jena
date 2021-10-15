@@ -68,7 +68,7 @@ public class ProcNodeTableDataBuilder {
         // This formats the location correctly.
         // But we're not really interested in it all, just setting up the node table.
 
-        ProgressMonitor monitor = ProgressMonitor.create(cmdLog, "Data", BulkLoaderX.dataTick, BulkLoaderX.superTick) ;
+        ProgressMonitor monitor = ProgressMonitor.create(cmdLog, "Data", BulkLoaderX.DataTick, BulkLoaderX.DataSuperTick);
         // WriteRows does it's own buffering and has direct write-to-buffer.
         // Do not buffer here.
         OutputStream outputTriples = IO.openOutputFile(dataFileTriples);
