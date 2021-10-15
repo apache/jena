@@ -31,28 +31,26 @@ import org.apache.jena.tdb2.store.tupletable.TupleIndexRecord;
 import org.apache.jena.tdb2.sys.SystemTDB;
 
 public class BulkLoaderX {
-
     public static int DataTick = 10_000_000;
     public static int DataSuperTick = 10;
 
-        // TDB2StorageBuiklder.makeTupleIndex
-        public static TupleIndex openTupleIndex(Location location, String indexName, String primary, String indexOrder, int keyLength, int valueLength) {
-            TupleMap cmap = TupleMap.create(primary, indexOrder);
-            RecordFactory rf = new RecordFactory(SystemTDB.SizeOfNodeId * cmap.length(), 0);
-            RangeIndex rIdx = makeRangeIndex(location, rf, indexName);
-            TupleIndex tIdx = new TupleIndexRecord(primary.length(), cmap, indexName, rf, rIdx);
-            return tIdx;
-        }
+    public static TupleIndex openTupleIndex(Location location, String indexName, String primary, String indexOrder, int keyLength, int valueLength) {
+        TupleMap cmap = TupleMap.create(primary, indexOrder);
+        RecordFactory rf = new RecordFactory(SystemTDB.SizeOfNodeId * cmap.length(), 0);
+        RangeIndex rIdx = makeRangeIndex(location, rf, indexName);
+        TupleIndex tIdx = new TupleIndexRecord(primary.length(), cmap, indexName, rf, rIdx);
+        return tIdx;
+    }
 
-        public static RangeIndex makeRangeIndex(Location location, RecordFactory recordFactory, String name) {
+    public static RangeIndex makeRangeIndex(Location location, RecordFactory recordFactory, String name) {
 //        ComponentId cid = componentIdMgr.getComponentId(name);
 //        FileSet fs = new FileSet(location, name);
 //        BPlusTree bpt = BPlusTreeFactory.createBPTree(cid, fs, recordFactory);
 //        components.add(bpt);
 //        return bpt;
-            ComponentId cid = null;
-            FileSet fs = new FileSet(location, name);
-            BPlusTree bpt = BPlusTreeFactory.createBPTree(cid, fs, recordFactory);
-            return bpt;
-        }
+        ComponentId cid = null;
+        FileSet fs = new FileSet(location, name);
+        BPlusTree bpt = BPlusTreeFactory.createBPTree(cid, fs, recordFactory);
+        return bpt;
     }
+}

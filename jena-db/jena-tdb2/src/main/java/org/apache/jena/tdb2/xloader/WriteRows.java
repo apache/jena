@@ -18,23 +18,23 @@
 
 package org.apache.jena.tdb2.xloader;
 
-import java.io.IOException ;
-import java.io.OutputStream ;
+import java.io.IOException;
+import java.io.OutputStream;
 
-import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.lib.Hex;
 
 /** Buffered writer of rows of longs, in hex. */
 public class WriteRows
 {
-    private OutputStream output ;
-    boolean atStartOfRow = true ;
-    private int itemsPerRow ;
-    private int rowBlock ;
-    private byte[] b ;
-    private int idx ;
-    private int rows ;
-    private int rowLength ;
+    private OutputStream output;
+    boolean atStartOfRow = true;
+    private int itemsPerRow;
+    private int rowBlock;
+    private byte[] b;
+    private int idx;
+    private int rows;
+    private int rowLength;
 
     WriteRows(OutputStream output, int itemsPerRow, int rowBlock) {
         this.output = output;

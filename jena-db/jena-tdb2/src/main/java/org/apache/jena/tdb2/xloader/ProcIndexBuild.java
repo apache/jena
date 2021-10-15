@@ -18,11 +18,11 @@
 
 package org.apache.jena.tdb2.xloader;
 
-import java.io.InputStream ;
-import java.util.Iterator ;
+import java.io.InputStream;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.AtlasException ;
-import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.AtlasException;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.block.BlockMgrFactory;
@@ -38,7 +38,7 @@ import org.apache.jena.dboe.trans.bplustree.rewriter.BPlusTreeRewriter;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.apache.jena.dboe.base.record.Record ;
+import org.apache.jena.dboe.base.record.Record;
 
 /** From a file of records, build a (packed) index */
 public class ProcIndexBuild
@@ -49,14 +49,14 @@ public class ProcIndexBuild
         //System.out.printf("ProcIndexBuild: location=%s index=%s\n", location, indexName);
         // Argument processing
 
-        //InputStream input = System.in ;
-        InputStream input = IO.openFile(dataFile) ;
+        //InputStream input = System.in;
+        InputStream input = IO.openFile(dataFile);
 
-        int keyLength = SystemTDB.SizeOfNodeId * indexName.length() ;
-        int valueLength = 0 ;
+        int keyLength = SystemTDB.SizeOfNodeId * indexName.length();
+        int valueLength = 0;
 
         // The name is the order.
-        String primary = indexName ;
+        String primary = indexName;
 
         // Scope for optimization:
         // Null column map => no churn.
@@ -79,7 +79,7 @@ public class ProcIndexBuild
             throw new AtlasException("Index name: " + indexName);
         }
 
-        TupleMap colMap = TupleMap.create(primaryOrder, indexName) ;
+        TupleMap colMap = TupleMap.create(primaryOrder, indexName);
 
         // -1? Write only.
         // Also flush cache every so often => block writes (but not sequential so boring).
