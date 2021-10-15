@@ -16,19 +16,35 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.base;
+package org.apache.jena.system.progress;
 
-public class ProgressMonitorFactory {
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFWrapper;
+import org.apache.jena.sparql.core.Quad;
 
-    /**
-     * Create a progress monitor that sends output via a {@link MonitorOutput}. If this is
-     * null, then return a simple {@link ProgressMonitorBasic} that provides the counts
-     * and times.
-     */
-    public static ProgressMonitor progressMonitor(String label, MonitorOutput output, int dataTickPoint, int dataSuperTick) {
-        if ( output == null )
-            return new ProgressMonitorBasic();
-        ProgressMonitor monitor = ProgressMonitorOutput.create(output, label, dataTickPoint, dataSuperTick);
-        return monitor;
+/** Send ticks to a {@link ProgressMonitor} as triples and quads
+ * are sent along the {@link StreamRDF}.
+ */
+
+public class ProgressStreamRDF extends StreamRDFWrapper {
+
+    private final ProgressMonitor monitor;
+
+    public ProgressStreamRDF(StreamRDF other, ProgressMonitor monitor) {
+        super(other);
+        this.monitor = monitor;
+    }
+
+    @Override
+    public void triple(Triple triple) {
+        super.triple(triple);
+        monitor.tick();
+    }
+
+    @Override
+    public void quad(Quad quad) {
+        super.quad(quad);
+        monitor.tick();
     }
 }

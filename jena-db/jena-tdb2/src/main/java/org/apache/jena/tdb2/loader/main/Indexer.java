@@ -34,7 +34,7 @@ import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.tdb2.loader.base.BulkStartFinish;
 import org.apache.jena.tdb2.loader.base.CoLib;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
+import org.apache.jena.system.progress.MonitorOutput;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 

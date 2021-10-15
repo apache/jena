@@ -20,7 +20,7 @@ package org.apache.jena.tdb2.loader.main;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
+import org.apache.jena.system.progress.MonitorOutput;
 
 public class LoaderPhased extends LoaderMain {
 

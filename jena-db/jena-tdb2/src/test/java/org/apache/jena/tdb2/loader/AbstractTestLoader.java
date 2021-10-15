@@ -38,10 +38,10 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
+import org.apache.jena.system.progress.MonitorOutputs;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2;
-import org.apache.jena.tdb2.loader.base.LoaderOps;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
+import org.apache.jena.system.progress.MonitorOutput;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,7 +49,7 @@ import org.junit.Test;
 public abstract class AbstractTestLoader {
     static { JenaSystem.init(); }
 
-    static MonitorOutput output = LoaderOps.nullOutput();
+    static MonitorOutput output = MonitorOutputs.nullOutput();
     private String name;
     private BiFunction<DatasetGraph, Node, DataLoader> maker;
 

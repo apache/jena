@@ -24,7 +24,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
 import org.apache.jena.tdb2.loader.basic.LoaderBasic;
 import org.apache.jena.tdb2.loader.main.LoaderMain;
 import org.apache.jena.tdb2.loader.main.LoaderParallel;
@@ -32,6 +31,7 @@ import org.apache.jena.tdb2.loader.main.LoaderPhased;
 import org.apache.jena.tdb2.loader.main.LoaderPlan;
 import org.apache.jena.tdb2.loader.main.LoaderPlans;
 import org.apache.jena.tdb2.loader.sequential.LoaderSequential;
+import org.apache.jena.system.progress.MonitorOutput;
 
 /** Obtain a {@link DataLoader}.
  * <p>

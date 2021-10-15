@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.BitsLong;
 import org.apache.jena.atlas.lib.DateTimeUtils;
-import org.apache.jena.atlas.lib.ProgressMonitor;
+import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.graph.Node;
@@ -35,6 +35,8 @@ import org.apache.jena.riot.system.AsyncParser;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.progress.ProgressMonitor;
+import org.apache.jena.system.progress.ProgressMonitorOutput;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.solver.stats.Stats;
 import org.apache.jena.tdb2.solver.stats.StatsCollectorNodeId;
@@ -68,7 +70,7 @@ public class ProcNodeTableDataBuilder {
         // This formats the location correctly.
         // But we're not really interested in it all, just setting up the node table.
 
-        ProgressMonitor monitor = ProgressMonitor.create(cmdLog, "Data", BulkLoaderX.DataTick, BulkLoaderX.DataSuperTick);
+        ProgressMonitor monitor = ProgressMonitorOutput.create(cmdLog, "Data", BulkLoaderX.DataTick, BulkLoaderX.DataSuperTick);
         // WriteRows does it's own buffering and has direct write-to-buffer.
         // Do not buffer here.
         OutputStream outputTriples = IO.openOutputFile(dataFileTriples);
@@ -86,6 +88,8 @@ public class ProcNodeTableDataBuilder {
                               List<String> datafiles) {
         DatasetGraphTDB dsgtdb = TDBInternal.getDatasetGraphTDB(dsg);
         NodeTableBuilder sink = new NodeTableBuilder(dsgtdb, monitor, outputTriples, outputQuads, false);
+        Timer timer = new Timer();
+        timer.startTimer();
         monitor.start();
         sink.startBulk();
         AsyncParser.asyncParse(datafiles, sink);
@@ -108,8 +112,8 @@ public class ProcNodeTableDataBuilder {
         }
 
         // ---- Monitor
-        long time = monitor.finish();
-
+        monitor.finish();
+        long time = timer.endTimer();
         long total = monitor.getTicks();
         float elapsedSecs = time/1000F;
         float rate = (elapsedSecs!=0) ? total/elapsedSecs : 0;

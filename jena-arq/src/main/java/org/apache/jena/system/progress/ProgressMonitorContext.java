@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.base;
+package org.apache.jena.system.progress;
 
 import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.atlas.logging.Log;

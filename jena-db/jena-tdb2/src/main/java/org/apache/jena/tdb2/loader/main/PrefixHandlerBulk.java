@@ -26,7 +26,7 @@ import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.tdb2.loader.base.BulkStartFinish;
 import org.apache.jena.tdb2.loader.base.CoLib;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
+import org.apache.jena.system.progress.MonitorOutput;
 import org.apache.jena.tdb2.store.StoragePrefixesTDB;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 
