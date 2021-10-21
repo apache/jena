@@ -89,7 +89,6 @@ public class ErrorHandlerFactory
      */
     public static ErrorHandler errorHandlerWarnOrExceptions(Logger logger) { return new ErrorHandlerWarnOrExceptions(logger) ; }
 
-
     private static ErrorHandler defaultErrorHandler = errorHandlerStd ;
     /** Get the current default error handler */
     public static ErrorHandler getDefaultErrorHandler() { return defaultErrorHandler ; }

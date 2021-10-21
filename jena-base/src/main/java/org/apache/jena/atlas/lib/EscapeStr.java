@@ -60,6 +60,7 @@ public class EscapeStr
         }
     }
 
+    /** String escape, with quote escaping, including option for multi-line 3 quote form. */
     public static void stringEsc(AWriter out, String s, char quoteChar, boolean singleLineString) {
         stringEsc(out, s, quoteChar, singleLineString, CharSpace.UTF8);
     }
@@ -92,6 +93,7 @@ public class EscapeStr
                     quotesInARow = 0 ;
                 }
             } else {
+                // Single line.
                 if ( c == quoteChar ) {
                     out.print("\\"); out.print(c) ; continue ;
                 }
@@ -104,11 +106,22 @@ public class EscapeStr
                 }
             }
 
-            if ( !ascii )
-                out.print(c);
-            else
+            if ( ascii ) {
                 writeCharAsASCII(out, c) ;
-        }
+                continue;
+            }
+
+            if ( c == '\uFFFD' ) {
+                // Unicode replacement character: write as \-u escape
+                // The text tokenizer raises warnings on raw U+FFFD. A replacement character is generated
+                // if a decoding error occurs (e.g. ISO-8859-1 passed into UTF-8); there is no literal U+FFFD
+                // in the original input. Written as a unicode escape is not treated as a warning.
+                out.print("\\uFFFD");
+                continue;
+            }
+
+            // Normal case!
+            out.print(c);        }
     }
 
     /** Write a string with Unicode to ASCII conversion using \-u escapes */

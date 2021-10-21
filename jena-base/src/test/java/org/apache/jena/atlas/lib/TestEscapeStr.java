@@ -111,6 +111,10 @@ public class TestEscapeStr {
     @Test public void escape_str_multi_4q_3()    { test_esc3("a''''", S_QUOTE, "a''\\'\\'") ; }
     @Test public void escape_str_multi_4q_4()    { test_esc3("a''''", D_QUOTE, "a''''") ; }
 
+    // Unicode replacement char U+FFFD - write in Unicode escape form.
+    @Test public void escape_str_repacementChar_1()    { test_esc1("abc\uFFFDdef", S_QUOTE, "abc\\uFFFDdef"); }
+    @Test public void escape_str_repacementChar_2()    { test_esc3("abc\uFFFDdef", D_QUOTE, "abc\\uFFFDdef"); }
+
     private static void test_esc3(String input, char quoteChar, String expected) {
         StringWriter sw = new StringWriter();
         AWriter w = IO.wrap(sw);
