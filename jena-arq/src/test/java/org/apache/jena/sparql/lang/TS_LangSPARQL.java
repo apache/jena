@@ -27,7 +27,5 @@ import org.junit.runners.Suite ;
     TestVarScope.class
 })
 
-public class TS_Lang
-{
-
-}
+public class TS_LangSPARQL
+{}

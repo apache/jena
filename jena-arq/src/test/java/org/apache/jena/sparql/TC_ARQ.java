@@ -37,7 +37,7 @@ import org.apache.jena.sparql.function.library.TS_LibraryFunctions ;
 import org.apache.jena.sparql.function.scripting.TS_FunctionScripting;
 import org.apache.jena.sparql.function.user.TS_UserFunctions ;
 import org.apache.jena.sparql.graph.TS_Graph ;
-import org.apache.jena.sparql.lang.TS_Lang ;
+import org.apache.jena.sparql.lang.TS_LangSPARQL ;
 import org.apache.jena.sparql.lib.TS_SparqlLib;
 import org.apache.jena.sparql.modify.TS_Update ;
 import org.apache.jena.sparql.negation.TS_Negation ;
@@ -59,7 +59,7 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TS_SSE.class
-    , TS_Lang.class
+    , TS_LangSPARQL.class
 
     , TS_Graph.class
     , TS_DyadicDatasetGraphs.class

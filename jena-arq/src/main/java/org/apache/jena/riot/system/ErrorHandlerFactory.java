@@ -48,7 +48,7 @@ public class ErrorHandlerFactory
     static public final ErrorHandler errorHandlerStrictNoLogging    = errorHandlerStrictSilent() ;
 
     /** Silent, strict error handler, no logging */
-    public static ErrorHandler errorHandlerStrictSilent()           { return new ErrorHandlerStrict(null) ; }
+    public static ErrorHandler errorHandlerStrictSilent()           { return new ErrorHandlerStrict(noLogger) ; }
 
     /** Strict error handler, with logging */
     public static ErrorHandler errorHandlerStrict(Logger log)       { return new ErrorHandlerStrict(log) ; }
@@ -83,6 +83,12 @@ public class ErrorHandlerFactory
      * An error handler that throws exceptions in all cases.
      */
     public static ErrorHandler errorHandlerExceptions()        { return new ErrorHandlerRiotParseException() ; }
+
+    /**
+     * An error handler that logs warnings and throws exceptions on error and fatal.
+     */
+    public static ErrorHandler errorHandlerWarnOrExceptions(Logger logger) { return new ErrorHandlerWarnOrExceptions(logger) ; }
+
 
     private static ErrorHandler defaultErrorHandler = errorHandlerStd ;
     /** Get the current default error handler */
@@ -157,6 +163,21 @@ public class ErrorHandlerFactory
             logFatal(message, line, col) ;
             throw new RiotException(fmtMessage(message, line, col)) ;
         }
+    }
+
+    /** Log warnings, throws exceptions for errors */
+    private static class ErrorHandlerWarnOrExceptions extends ErrorHandlerStd {
+        public ErrorHandlerWarnOrExceptions(Logger log) {
+            super(log);
+        }
+
+        @Override
+        public void error(String message, long line, long col)
+        { throw new RiotException(fmtMessage(message, line, col)) ; }
+
+        @Override
+        public void fatal(String message, long line, long col)
+        { throw new RiotException(fmtMessage(message, line, col)) ; }
     }
 
     /** An error handler that logs message then throws exceptions for errors but not warnings */
