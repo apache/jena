@@ -21,7 +21,6 @@ package org.apache.jena.riot.system.stream;
 import java.io.File ;
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.security.AccessControlException ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.IRILib ;
@@ -155,7 +154,7 @@ public class LocatorFile implements Locator
                     log.trace("Not found: "+filenameIRI+thisDirLogStr) ;
                 return null ;
             }
-        } catch (AccessControlException e) {
+        } catch (Exception e) {
             log.warn("Security problem testing for file", e);
             return null;
         }

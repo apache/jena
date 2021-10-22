@@ -55,7 +55,7 @@ public interface QueryExec extends AutoCloseable {
     }
 
     /** Create a {@link QueryExecBuilder} for a remote endpoint. */
-    public static QueryExecBuilder endpoint(String serviceURL) {
+    public static QueryExecBuilder service(String serviceURL) {
         return QueryExecHTTPBuilder.create().endpoint(serviceURL);
     }
 

@@ -221,6 +221,11 @@ public class HttpOp {
         httpPost(HttpEnv.getDftHttpClient(), url, contentType, body);
     }
 
+    /** POST to a URL with content=type and string. */
+    public static void httpPost(String url, String contentType, String body) {
+        httpPost(HttpEnv.getDftHttpClient(), url, contentType, BodyPublishers.ofString(body));
+    }
+
     /** POST
      * @see BodyPublishers#ofFile
      * @see BodyPublishers#ofString
@@ -259,6 +264,11 @@ public class HttpOp {
     /** POST - the application MUST close the InputStream.*/
     public static TypedInputStream httpPostStream(String url, String contentType, BodyPublisher bodyContent) {
         return httpPostStream(HttpEnv.getDftHttpClient(), url, contentType, bodyContent);
+    }
+
+    /** POST - the application MUST close the InputStream.*/
+    public static TypedInputStream httpPostStream(String url, String contentType, String bodyContent) {
+        return httpPostStream(HttpEnv.getDftHttpClient(), url, contentType, BodyPublishers.ofString(bodyContent));
     }
 
     // ---- POST content, stream response

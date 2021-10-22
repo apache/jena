@@ -74,9 +74,6 @@ public class QueryExecHTTP implements QueryExec {
 
     public static QueryExecHTTPBuilder newBuilder() { return QueryExecHTTPBuilder.create(); }
 
-    /** Create a new builder for the remote endpoint */
-    public static QueryExecHTTPBuilder service(String endpointURL) { return QueryExecHTTPBuilder.create().endpoint(endpointURL); }
-
     //public static final String QUERY_MIME_TYPE = WebContent.contentTypeSPARQLQuery;
     private final Query query;
     private final String queryString;
