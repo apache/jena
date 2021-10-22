@@ -65,9 +65,12 @@ public class IO
         return ensureBuffered(in);
     }
 
+    private static final String ext_none = "";
     private static final String ext_gz = "gz";
     private static final String ext_bz2 = "bz2";
     private static final String ext_sz = "sz";
+    // Needs external library.
+    //private static final String ext_zst = "zst";
 
     /** Open an input stream to a file; do not mask IOExceptions.
      * If the filename is null or "-", return System.in
@@ -87,9 +90,10 @@ public class IO
         InputStream in = new FileInputStream(filename);
         String ext = getExtension(filename);
         switch ( ext ) {
-            case "":        return in;
+            case ext_none:  return in;
             case ext_gz:    return new GZIPInputStream(in);
             case ext_bz2:   return new BZip2CompressorInputStream(in);
+            //case ext_zst:   return new ZstdCompressorInputStream(in);
             case ext_sz:    return new SnappyCompressorInputStream(in);
         }
         return in;
@@ -147,10 +151,11 @@ public class IO
     static public String filenameNoCompression(String filename) {
         String ext = getExtension(filename);
         switch ( ext ) {
-            case EMPTY_STRING:
+            case ext_none:
                 return filename;
             case ext_gz:
             case ext_bz2:
+            //case ext_zst:
             case ext_sz:
                 // +1 for the "."
                 return filename.substring(0, filename.length()-(ext.length()+1));
@@ -223,10 +228,11 @@ public class IO
     }
 
     /** Open an input stream to a file; do not mask IOExceptions.
-     * If the filename ends in .gz, wrap in GZIPOutputStream
+     * If the filename ends in a compression file extension(".gz", ".bz2")
+     * wrap in a decompressor.
      * @param filename
      * @throws FileNotFoundException If the output can't be opened.
-     * @throws IOException for bad gzip encoded data
+     * @throws IOException for bad encoded data
      */
     static public OutputStream openOutputFileEx(String filename) throws FileNotFoundException,IOException
     {
@@ -240,10 +246,11 @@ public class IO
         OutputStream out = new FileOutputStream(filename);
         String ext = getExtension(filename);
         switch ( ext ) {
-            case "":        return out;
-            case "gz":      return new GZIPOutputStream(out);
-            case "bz2":     return new BZip2CompressorOutputStream(out);
-            case "sz":      throw new UnsupportedOperationException("Snappy output");
+            case ext_none : return out;
+            case ext_gz:    return new GZIPOutputStream(out);
+            case ext_bz2:   return new BZip2CompressorOutputStream(out);
+            //case ext_zst:   return new ZstdCompressorOutputStream(out);
+            case ext_sz:    throw new UnsupportedOperationException("Snappy output");
         }
         return out;
     }
