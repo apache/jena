@@ -35,6 +35,7 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.tokens.TokenizeTextBuilder;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerText;
 import org.junit.AfterClass ;
@@ -175,9 +176,13 @@ abstract public class AbstractTestLangNTuples
     static protected Tokenizer tokenizer(CharSpace charSpace, String string) {
         byte b[] = StrUtils.asUTF8bytes(string);
         ByteArrayInputStream in = new ByteArrayInputStream(b);
-        Tokenizer tokenizer = charSpace == CharSpace.ASCII
-            ? TokenizerText.create().asciiOnly(true).source(in).build()
-            : TokenizerText.create().source(in).build();
+
+        TokenizeTextBuilder builder = TokenizerText.create()
+                .source(in)
+                .errorHandler(ErrorHandlerFactory.errorHandlerExceptions());
+        if ( charSpace == CharSpace.ASCII )
+            builder.asciiOnly(true);
+        Tokenizer tokenizer = builder.build();
         return tokenizer;
     }
 
@@ -185,7 +190,10 @@ abstract public class AbstractTestLangNTuples
         // UTF-8
         byte b[] = StrUtils.asUTF8bytes(string);
         ByteArrayInputStream in = new ByteArrayInputStream(b);
-        Tokenizer tokenizer = TokenizerText.create().source(in).build() ;
+        Tokenizer tokenizer = TokenizerText.create()
+                .source(in)
+                .errorHandler(ErrorHandlerFactory.errorHandlerExceptionOnError())
+                .build() ;
         return tokenizer;
     }
 

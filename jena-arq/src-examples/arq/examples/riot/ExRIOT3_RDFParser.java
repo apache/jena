@@ -29,7 +29,7 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 
 /** Example of using RIOT directly.
- * 
+ *
  * The parsers produce a stream of triples and quads so processing does not need
  * to hold everything in memory at the same time. See also {@code ExRIOT_4}
  */
@@ -42,14 +42,15 @@ public class ExRIOT3_RDFParser
 
         // --- Or create a parser and do the parsing with detailed setup.
         String baseURI = "http://example/base" ;
-        
+
         // It is always better to use an InputStream, rather than a Java Reader.
-        // The parsers will do the necessary character set conversion.  
+        // The parsers will do the necessary character set conversion.
         try (InputStream in = new FileInputStream("data.trig")) {
             RDFParser.create()
                 .source(in)
                 .lang(RDFLanguages.TRIG)
-                .errorHandler(ErrorHandlerFactory.errorHandlerStrict)
+                // Log messages on warnings, exceptions on errors.
+                .errorHandler(ErrorHandlerFactory.errorHandlerExceptions())
                 .base("http://example/base")
                 .parse(noWhere);
         }

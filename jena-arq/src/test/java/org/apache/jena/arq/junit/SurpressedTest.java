@@ -32,6 +32,6 @@ public class SurpressedTest implements Runnable
     @Override
     public void run() {
         if ( verbose )
-            System.out.print("** Surpressed: " + testEntry.getName());
+            System.out.println("** Surpressed: " + testEntry.getName());
     }
 }

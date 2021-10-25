@@ -18,6 +18,7 @@
 
 package org.apache.jena.riot.tokens ;
 
+import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerExceptions;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerSimple;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -45,6 +46,7 @@ public class TestTokenizer {
     private static Tokenizer tokenizer(String string, boolean lineMode) {
         PeekReader r = PeekReader.readString(string) ;
         Tokenizer tokenizer = TokenizerText.create()
+                .errorHandler(errorHandlerExceptions())
                 .source(r)
                 .lineMode(lineMode)
                 .build();
@@ -908,6 +910,16 @@ public class TestTokenizer {
     // These tests converts some java characters to UTF-8 and read back as
     // ASCII.
 
+    private static Tokenizer tokenizerASCII (String string) {
+        ByteArrayInputStream in = bytes(string) ;
+        Tokenizer tokenizer = TokenizerText.create()
+                    .asciiOnly(true)
+                    .errorHandler(errorHandlerExceptions())
+                    .source(in)
+                    .build() ;
+        return tokenizer;
+    }
+
     private static ByteArrayInputStream bytes(String string) {
         byte b[] = StrUtils.asUTF8bytes(string) ;
         return new ByteArrayInputStream(b) ;
@@ -915,24 +927,21 @@ public class TestTokenizer {
 
     @Test
     public void tokenizer_charset_1() {
-        ByteArrayInputStream in = bytes("'abc'") ;
-        Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
+        Tokenizer tokenizer = tokenizerASCII("'abc'") ;
         Token t = tokenizer.next() ;
         assertFalse(tokenizer.hasNext()) ;
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenizer_charset_2() {
-        ByteArrayInputStream in = bytes("'abcdé'") ;
-        Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
+        Tokenizer tokenizer = tokenizerASCII("'abcdé'") ;
         // ASCII only -> bad.
         Token t = tokenizer.next() ;
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenizer_charset_3() {
-        ByteArrayInputStream in = bytes("<http://example/abcdé>") ;
-        Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
+        Tokenizer tokenizer = tokenizerASCII("<http://example/abcdé>") ;
         // ASCII only -> bad.
         Token t = tokenizer.next() ;
     }
