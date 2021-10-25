@@ -165,7 +165,9 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame
     public void close() {    	
     	super.close();
     	if (generator != null) {
-            if(generator.interpreter != null) {
+            if (generator.interpreter != null) {
+                // If this is a table entry then we have to remove it to avoid leaving prematurely closed generator in the table
+                generator.interpreter.getEngine().removeTabledGenerator(generator);
                 generator.interpreter.close();
             }
             generator.removeConsumer(this);
