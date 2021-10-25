@@ -20,7 +20,12 @@ package org.apache.jena.base.module;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
+
+import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.atlas.logging.Log;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link SubsystemRegistry} for use in the simple but common case
@@ -42,10 +47,25 @@ public class SubsystemRegistryServiceLoader<T extends SubsystemLifecycle> implem
     public void load() {
         synchronized (registryLock) {
             // Find subsystems asking for initialization.
-            ServiceLoader<T> sl =
-                    // Use this->classloader form : better for OSGi
-                    ServiceLoader.load(moduleClass, this.getClass().getClassLoader());
-            sl.forEach(this::add);
+            ServiceLoader<T> sl;
+            try {
+                // Use this->classloader form : better for OSGi
+                sl = ServiceLoader.load(moduleClass, this.getClass().getClassLoader());
+            } catch (ServiceConfigurationError ex) {
+                Log.error(this, "Problem with service loading for "+moduleClass.getName(), ex);
+                throw ex;
+            }
+
+            sl.stream().forEach(provider->{
+                try {
+                    T module = provider.get();
+                    this.add(module);
+                } catch (ServiceConfigurationError ex) {
+                    FmtLog.error(LoggerFactory.getLogger(this.getClass()),
+                                 "Error instantiating class %s for %s", provider.type().getName(), moduleClass.getName(), ex);
+                    throw ex;
+                }
+            });
         }
     }
 
