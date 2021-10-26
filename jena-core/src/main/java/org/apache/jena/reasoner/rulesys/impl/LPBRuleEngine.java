@@ -77,11 +77,12 @@ public class LPBRuleEngine {
      *
      *  Note: Do no expose as protected/public, as this depends on
      *  the shadowed org.apache.jena.ext.com.google.common.*
+     *
+     *  Older Jena versions used weak references here.
+     *  If necessary that could be reinstated by adding .weakValues() in the build chain.
      */
     Cache<TriplePattern, Generator> tabledGoals = CacheBuilder.newBuilder()
             .maximumSize(MAX_CACHED_TABLED_GOALS).build();
-//    Cache<TriplePattern, Generator> tabledGoals = CacheBuilder.newBuilder()
-//            .maximumSize(MAX_CACHED_TABLED_GOALS).weakValues().build();
 
     /** Set of generators waiting to be run */
     protected LinkedList<LPAgendaEntry> agenda = new LinkedList<>();
