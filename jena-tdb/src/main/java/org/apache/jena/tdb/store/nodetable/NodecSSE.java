@@ -52,18 +52,17 @@ public class NodecSSE implements Nodec
     public NodecSSE() {}
 
     @Override
-    public int maxSize(Node node)
-    {
+    public int maxSize(Node node) {
         return maxLength(node);
     }
 
     private static final PrefixMap pmap0 = PrefixMapZero.empty;
     private static final boolean onlySafeBNodeLabels = false;
+
     @Override
-    public int encode(Node node, ByteBuffer bb, PrefixMapping pmap)
-    {
-        if ( ! node.isConcrete() )
-            FmtLog.warn(TDB.logInfo,"Attempt to encode non-concrete node: "+node);
+    public int encode(Node node, ByteBuffer bb, PrefixMapping pmap) {
+        if ( !node.isConcrete() )
+            FmtLog.warn(TDB.logInfo, "Attempt to encode non-concrete node: " + node);
 
         String str = null;
 
@@ -126,9 +125,8 @@ public class NodecSSE implements Nodec
             Node n = t.asNode();
             if ( n == null ) throw new TDBException("Not a node: "+str);
             return n;
-        } catch (RiotException ex)
-        {
-            throw new TDBException("Bad string for node: "+str);
+        } catch (RiotException ex) {
+            throw new TDBException("Bad string for node: " + str);
         }
     }
 
@@ -143,39 +141,41 @@ public class NodecSSE implements Nodec
     }
 
     // Over-estimate the length of the encoding.
-    private static int maxLength(Node node)
-    {
+    private static int maxLength(Node node) {
         if ( node.isBlank() )
             // "_:"
-            return 2+maxLength(node.getBlankNodeLabel());
+            return 2 + maxLength(node.getBlankNodeLabel());
         if ( node.isURI() )
             // "<>"
-            return 2+maxLength(node.getURI());
-        if ( node.isLiteral() )
-        {
-            int len = 2+maxLength(node.getLiteralLexicalForm());
+            return 2 + maxLength(node.getURI());
+        if ( node.isLiteral() ) {
+            int len = 2 + maxLength(node.getLiteralLexicalForm());
             if ( NodeUtils.isLangString(node) )
                 // Space for @ (language tag is ASCII)
                 len = len + 3 + node.getLiteralLanguage().length();
-            else if ( ! NodeUtils.isSimpleString(node) )
+            else if ( !NodeUtils.isSimpleString(node) )
                 // The quotes and also space for ^^<>
                 len = len + 4 + maxLength(node.getLiteralDatatypeURI());
             return len;
         }
         if ( node.isVariable() )
             // "?"
-            return 1+maxLength(node.getName());
+            return 1 + maxLength(node.getName());
         if ( node.isNodeTriple() ) {
             Triple t = node.getTriple();
             // Leading an trailing <<>>, 4 spaces
-            return (2+4+2)+maxLength(t.getSubject())+maxLength(t.getPredicate())+maxLength(t.getObject());
+            return (2 + 4 + 2) + maxLength(t.getSubject()) + maxLength(t.getPredicate()) + maxLength(t.getObject());
         }
 
-        throw new TDBException("Unrecognized node type: "+node);
+        throw new TDBException("Unrecognized node type: " + node);
     }
 
-    private static int maxLength(String string)
-    {
+    private static int maxLength(String string) {
+        if ( string.indexOf('\uFFFD') >= 0 ) {
+            // FFFD is special because it is written as the unicode escape sequence (6 bytes).
+            return string.length()*6;
+        }
+
         // Very worse case for UTF-8 - and then some.
         // Encoding every character as _XX or bad UTF-8 conversion (3 bytes)
         // Max 3 bytes UTF-8 for up to 10FFFF (NB Java treats above 16bites as surrogate pairs only).
