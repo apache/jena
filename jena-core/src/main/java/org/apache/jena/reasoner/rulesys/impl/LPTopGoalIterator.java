@@ -197,7 +197,6 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
 
                     // Check for any dangling generators which are complete
                     interpreter.getEngine().checkForCompletions();
-                    interpreter.close();
                     // Close this top goal
                     lookAhead = null;
                     //LogFactory.getLog( getClass() ).debug( "Nulling and closing LPTopGoalIterator " + interpreter );

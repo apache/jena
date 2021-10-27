@@ -76,9 +76,10 @@ public class TestLPBRuleEngine extends TestCase {
 		ExtendedIterator<Triple> it = infgraph.find(a, ty, C1);
 		while (it.hasNext()) {
 			it.next();
-			// FIXME: Why do I need to consume all from the iterator
-			// to avoid leaking activeInterpreters? Calling .close()
-			// below should have been enough.
+			// This was needed prior to JENA-2184 to make this test work at all.
+			// Leaving in place so that the following assert is a test that a fully
+			// generated tabled goal does remain in the table and doesn't get removed
+			// by the following close()
 		}
 		it.close();
 		// how many were cached
@@ -114,8 +115,8 @@ public class TestLPBRuleEngine extends TestCase {
 
 		ExtendedIterator<Triple> it = infgraph.find(a, ty, C1);
 		it.close();
-		// how many were cached
-		assertEquals(1, engine.tabledGoals.size());
+		// how many were cached - in current configuration this will be zero because we retract the cache entry, in other settings might be one completed goal
+        assertTrue( engine.tabledGoals.size() <= 1 );
 		// and no leaks of activeInterpreters
 		assertEquals(0, engine.activeInterpreters.size());
 
@@ -124,7 +125,7 @@ public class TestLPBRuleEngine extends TestCase {
 		it.close();
 
 		// if it was a cache hit, no change here:
-		assertEquals(1, engine.tabledGoals.size());
+        assertTrue( engine.tabledGoals.size() <= 1 );
 		assertEquals(0, engine.activeInterpreters.size());
 
 		//the cached generator should not have any consumingCP left
