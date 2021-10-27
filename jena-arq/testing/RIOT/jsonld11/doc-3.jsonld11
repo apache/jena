@@ -1,0 +1,16 @@
+{
+    "@context": [
+	{
+	    "@version": 1.1,
+	    "@vocab": "http://example.org/vocab/",
+	    "foo": "http://example.org/foo#"
+	}, {
+	    "foaf": "http://xmlns.com/foaf/0.1/"
+	}, {
+	    "term": {
+		"@context": { "id": "@id" }
+	    }
+	}
+    ],
+    "foaf:depication": "http://twitter.com/picture"
+}

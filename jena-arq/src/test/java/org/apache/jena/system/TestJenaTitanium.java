@@ -18,6 +18,7 @@
 
 package org.apache.jena.system;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -41,10 +42,32 @@ import org.junit.Test;
 public class TestJenaTitanium {
 
     @Test
-    public final void readContextVersion() {
+    public final void readContext_1() {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         RDFParser.source("testing/RIOT/jsonld11/doc-1.jsonld11").parse(dsg);
         assertFalse(dsg.isEmpty());
+        // "@vocab" : "http://example.org/vocab" -- not a prefix - does not end in "/" "#" or ":"
+        assertEquals(0, dsg.prefixes().size());
+    }
+
+    @Test
+    public final void readContextArrayPrefixes_1() {
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        RDFParser.source("testing/RIOT/jsonld11/doc-2.jsonld11").parse(dsg);
+        assertTrue(dsg.prefixes().containsPrefix("foaf"));
+        assertEquals(1, dsg.prefixes().size());
+    }
+
+    @Test
+    public final void readContextArrayPrefixes_2() {
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        RDFParser.source("testing/RIOT/jsonld11/doc-3.jsonld11").parse(dsg);
+        assertTrue(dsg.prefixes().containsPrefix("foaf"));
+        assertEquals(3, dsg.prefixes().size());
+        assertTrue(dsg.prefixes().containsPrefix("foaf"));
+        assertTrue(dsg.prefixes().containsPrefix("foo"));
+        assertTrue(dsg.prefixes().containsPrefix(""));
+        assertFalse(dsg.prefixes().containsPrefix("bar"));
     }
 
     @Test public void convertDataset() throws IOException, RdfWriterException {
