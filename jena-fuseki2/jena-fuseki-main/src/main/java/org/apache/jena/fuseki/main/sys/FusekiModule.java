@@ -18,8 +18,6 @@
 
 package org.apache.jena.fuseki.main.sys;
 
-import java.util.UUID;
-
 import org.apache.jena.base.module.SubsystemLifecycle;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
@@ -33,9 +31,15 @@ import org.apache.jena.rdf.model.Model;
 public interface FusekiModule extends SubsystemLifecycle {
     /**
      * Unique (within this server) name to identify this module.
-     * The default is to generate an UUID.
+     * This is used in the module registry.
+     *
+     * A suitable implementation is:
+     * <pre>
+     * private String modName = UUID.randomUUID().toString();
+     * {@literal @}Override public String name() { return modName; }
+     * </pre>
      */
-    public default String name() { return UUID.randomUUID().toString(); }
+    public String name();
 
     /** Module loaded */
     @Override
@@ -44,19 +48,26 @@ public interface FusekiModule extends SubsystemLifecycle {
     // ---- Build cycle
 
     /**
-     * Call at the start of "build" step.
-     * The builder has been set according to the configuration.
-     * The "configModel" parameter is set if a configuration file was used else it is null.
+     * Called at the start of "build" step. The builder has been set according to the
+     * configuration. The "configModel" parameter is set if a configuration file was
+     * used otherwise it is null.
      */
     public default void configuration(FusekiServer.Builder builder, DataAccessPointRegistry dapRegistry, Model configModel) {}
 
-    /** Built, not started, about to be returned to the builder caller. */
+    /**
+     * Built, not started, about to be returned to the builder caller.
+     */
     public default void server(FusekiServer server) { }
 
-    /** Server starting - called just before server.start happens. */
+    /**
+     * Server starting - called just before server.start happens.
+     */
     public default void serverBeforeStarting(FusekiServer server) { }
 
-    /** Server started - called just after server.start happens,before server, .start() returns to the application,. */
+    /**
+     * Server started - called just after server.start happens, and before server
+     * .start() returns to the application.
+     */
     public default void serverAfterStarting(FusekiServer server) { }
 
     /** Server stopping.

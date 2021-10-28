@@ -145,10 +145,6 @@ public class Upload {
                 if ( printfilename == null  || printfilename.equals("") )
                     printfilename = "<none>";
 
-                // Before
-                // action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s",
-                //                        action.id, printfilename,  ct.getContentType(), ct.getCharset(), lang.getName()));
-
                 // count just this step
                 StreamRDFCounting countingDest2 =  StreamRDFLib.count(countingDest);
                 try {

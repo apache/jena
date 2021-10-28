@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.main;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.fuseki.main.sys.FusekiModule;
@@ -36,6 +37,13 @@ public class ModuleForTest implements FusekiModule {
 
     public ModuleForTest() {
         module = this;
+    }
+
+    private String modName = UUID.randomUUID().toString();
+
+    @Override
+    public String name() {
+        return modName;
     }
 
     public void clearLifecycle() {
