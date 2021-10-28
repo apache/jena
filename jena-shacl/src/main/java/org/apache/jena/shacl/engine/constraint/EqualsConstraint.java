@@ -45,13 +45,13 @@ public class EqualsConstraint extends ConstraintPairwise {
                          Set<Node> pathNodes, Set<Node> compareNodes) {
         for ( Node vn : pathNodes ) {
             if ( ! compareNodes.contains(vn) ) {
-                String msg = toString()+": not disjoint: value node "+displayStr(vn)+" is not in "+compareNodes;
+                String msg = toString()+": not equal: value node "+displayStr(vn)+" is not in "+compareNodes;
                 vCxt.reportEntry(msg, shape, focusNode, path, vn, this);
             }
         }
         for ( Node v : compareNodes ) {
             if ( ! pathNodes.contains(v) ) {
-                String msg = toString()+": not disjoint: value "+displayStr(v)+" is not in "+pathNodes;
+                String msg = toString()+": not equal: value "+displayStr(v)+" is not in "+pathNodes;
                 vCxt.reportEntry(msg, shape, focusNode, path, v, this);
             }
         }
