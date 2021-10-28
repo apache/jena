@@ -35,7 +35,8 @@ import jakarta.json.JsonStructure;
 import jakarta.json.JsonValue;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType;
-import org.apache.jena.riot.*;
+import org.apache.jena.riot.ReaderRIOT;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.JenaTitanium;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.SysJSONLD11;
@@ -77,7 +78,7 @@ public class LangJSONLD11 implements ReaderRIOT {
     }
 
     /**
-     * JSONLD does not define prefixes.
+     * JSON-LD does not define prefixes.
      * <p>
      * The use of "prefix:localname" happens for any definition of "prefix" in the
      * {@literal @context} even if intended for a URI e.g a property.
@@ -89,36 +90,55 @@ public class LangJSONLD11 implements ReaderRIOT {
      * </p>
      * <p>
      * In addition, {@literal @vocab} becomes prefix "".
+     * </p>
      */
     private static void extractPrefixes(Document document, BiConsumer<String, String> action) {
         try {
             JsonStructure js = document.getJsonContent().get();
             JsonValue jv = js.asJsonObject().get(Keywords.CONTEXT);
-            JsonObject jCxt = jv.asJsonObject();
-            Set<String> keys = jCxt.keySet();
-            keys.stream().forEach(k->{
-                // "@vocab" : "uri"
-                // "shortName" : "uri"
-                JsonValue jvx = jCxt.get(k);
-                if ( JsonValue.ValueType.STRING != jvx.getValueType() )
-                    return;
-                if ( Keywords.VOCAB.equals(k) ) {
-                    action.accept("", jvx.toString());
-                    return;
-                }
-                if ( k.startsWith("@") )
-                    // Keyword, not @vocab.
-                    return;
-                // Avoid single property aliases.
-                // Pragmatic filter: URI ends in "#" or "/" or ":"
-                String uri = JsonString.class.cast(jvx).getString();
-                if ( uri.endsWith("#") || uri.endsWith("/") || uri.endsWith(":") ) {
-                    action.accept(k, uri);
-                    return;
-                }
-            });
+            extractPrefixes(jv, action);
         } catch(Throwable ex) {
-           Log.warn(LangJSONLD11.class, "Unexpected problem while extracting prefixes: "+ex.getMessage(), ex);
+            Log.warn(LangJSONLD11.class, "Unexpected problem while extracting prefixes: "+ex.getMessage(), ex);
         }
+    }
+
+    private static void extractPrefixes(JsonValue jsonValue, BiConsumer<String, String> action) {
+        // JSON-LD 1.1 section 9.4
+        switch(jsonValue.getValueType()) {
+            case ARRAY :
+                jsonValue.asJsonArray().forEach(jv -> extractPrefixes(jv, action));
+                break;
+            case OBJECT :
+                extractPrefixesCxtDefn(jsonValue.asJsonObject(), action);
+                break;
+            case NULL: break;       // We are only interested in prefixes
+            case STRING: break;     // We are only interested in prefixes
+            default :
+                break;
+        }
+    }
+
+    private static void extractPrefixesCxtDefn(JsonObject jCxt, BiConsumer<String, String> action) {
+        Set<String> keys = jCxt.keySet();
+        keys.stream().forEach(k->{
+            // "@vocab" : "uri"
+            // "shortName" : "uri"
+            // "shortName" : { "@type":"@id" , "@id": "uri" } -- presumed to be a single property aliases, not a prefix.
+            JsonValue jvx = jCxt.get(k);
+            if ( JsonValue.ValueType.STRING != jvx.getValueType() )
+                return;
+            String prefix = k;
+            if ( Keywords.VOCAB.equals(k) )
+                prefix = "";
+            else if ( k.startsWith("@") )
+                // Keyword, not @vocab.
+                return;
+            // Pragmatic filter: URI ends in "#" or "/" or ":"
+            String uri = JsonString.class.cast(jvx).getString();
+            if ( uri.endsWith("#") || uri.endsWith("/") || uri.endsWith(":") ) {
+                action.accept(prefix, uri);
+                return;
+            }
+        });
     }
 }
