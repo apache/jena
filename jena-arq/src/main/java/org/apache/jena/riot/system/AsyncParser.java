@@ -28,6 +28,8 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.sparql.core.Quad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +61,9 @@ public class AsyncParser {
         LOG.debug("Parse: "+files);
         BlockingQueue<List<EltStreamRDF>> queue = new ArrayBlockingQueue<>(queueSize);
 
+        // Async thread
         Logger LOG1 = LOG;
+        // Receiver
         Logger LOG2 = LOG;
 
         // Parser thread setup
@@ -73,16 +77,44 @@ public class AsyncParser {
         EltStreamBatcher batcher = new EltStreamBatcher(destination, chunkSize);
         StreamRDF generatorStream = new StreamToElements(batcher);
 
+        ErrorHandler errhandler = new ErrorHandler() {
+            @Override
+            public void warning(String message, long line, long col)
+            { LOG1.warn(SysRIOT.fmtMessage(message, line, col)); }
+
+            @Override
+            public void error(String message, long line, long col) {
+                throw new RiotException(SysRIOT.fmtMessage(message, line, col)) ;
+            }
+
+            @Override
+            public void fatal(String message, long line, long col) {
+                throw new RiotException(SysRIOT.fmtMessage(message, line, col)) ;
+            }
+        };
+
         // Parser thread
         Runnable task = ()->{
             batcher.startBatching();
             if ( LOG1.isDebugEnabled() )
                 LOG1.debug("Start parsing");
-            files.forEach(fn-> {
-                if ( LOG1.isDebugEnabled() )
-                    LOG1.debug("Parse "+fn);
-                RDFParser.source(fn).parse(generatorStream);
-            } );
+            try {
+                files.forEach(fn-> {
+                    if ( LOG1.isDebugEnabled() )
+                        LOG1.debug("Parse "+fn);
+                    RDFParser.source(fn).errorHandler(errhandler).parse(generatorStream);
+                } );
+            } catch (RuntimeException ex) {
+                // Parse error.
+                EltStreamRDF elt = new EltStreamRDF();
+                elt.exception = ex;
+                batcher.accept(elt);
+            } catch (Throwable cause) {
+                // Very bad!
+                EltStreamRDF elt = new EltStreamRDF();
+                elt.exception = new RuntimeException(cause);
+                batcher.accept(elt);
+            }
             batcher.finishBatching();
             if ( LOG1.isDebugEnabled() )
                 LOG1.debug("Finish parsing");
@@ -119,7 +151,7 @@ public class AsyncParser {
     }
 
     /** Capture an item of an StreamRDF */
-    static class EltStreamRDF {
+    private static class EltStreamRDF {
         // test with ==
         final static EltStreamRDF END = new EltStreamRDF();
 
@@ -127,6 +159,7 @@ public class AsyncParser {
         Quad quad = null;
         String prefix = null; // Null implies "base".
         String iri = null;
+        RuntimeException exception = null;
     }
 
     /** Convert an Stream into EltStreamRDF */
@@ -256,7 +289,10 @@ public class AsyncParser {
                     stream.prefix( elt.prefix, elt.iri);
                 else if ( elt.iri != null )
                     stream.base(elt.iri);
-                else if ( elt == EltStreamRDF.END ) {
+                else if ( elt.exception != null ) {
+                    finished = true;
+                    throw elt.exception;
+                } else if ( elt == EltStreamRDF.END ) {
                     finished = true;
                     break;
                 } else {

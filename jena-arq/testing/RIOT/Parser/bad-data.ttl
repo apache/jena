@@ -1,0 +1,7 @@
+PREFIX ex: <http://example/>
+
+_:ab ex:p "foo"@en-gb .
+ex:ab ex:p "foo"@en-GB .
+ex:ab ex:p 123 .
+# Parser error
+1 2 2 2 

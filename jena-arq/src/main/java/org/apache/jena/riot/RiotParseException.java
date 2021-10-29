@@ -31,7 +31,7 @@ public class RiotParseException extends RiotException
         this.line = line ;
         this.column = column ;
     }
-    
+
     public long getLine()   { return line ; }
     public long getCol()    { return column ; }
     public String getOriginalMessage()    { return message ; }

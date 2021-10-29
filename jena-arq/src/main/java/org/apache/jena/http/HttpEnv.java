@@ -22,6 +22,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
 import java.time.Duration;
 
+import org.apache.jena.http.sys.RegistryRequestModifier;
 import org.apache.jena.riot.RDFFormat;
 
 /**
@@ -70,5 +71,11 @@ public class HttpEnv {
                 //.proxy
                 //.authenticator
                 ;
+    }
+
+    /** Reset any Jena system state related to HTTP */
+    public static void reset() {
+        RegistryHttpClient.get().clear();
+        RegistryRequestModifier.get().clear();
     }
 }

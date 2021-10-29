@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.*;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.junit.Test;
@@ -36,13 +37,24 @@ public class TestAsyncParser {
     @Test public void async_parse_1() { test(DIR+"empty.ttl"); }
     @Test public void async_parse_2() { test(DIR+"data.ttl"); }
 
+    @Test(expected = RiotException.class)
+    public void async_parse_3() {
+        test(DIR + "bad-data.ttl");
+    }
+
+    @Test(expected = RiotNotFoundException.class)
+    public void async_parse_4() {
+        test(DIR + "no-suchfile.ttl");
+    }
+
     private static void test(String filename) {
         Graph graph1 = GraphFactory.createDefaultGraph();
         Graph graph2 = GraphFactory.createDefaultGraph();
 
-        RDFParser.source(filename).parse(graph1);
         AsyncParser.asyncParse(List.of(filename), StreamRDFLib.graph(graph2));
 
+        // Parsed, so check output.
+        RDFParser.source(filename).parse(graph1);
         assertEquals(graph1.size(), graph2.size());
         assertTrue( IsoMatcher.isomorphic(graph1, graph2));
     }
