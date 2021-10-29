@@ -203,7 +203,7 @@ public final class TokenizerText implements Tokenizer
                 //token.setImage("<<");
                 return token;
             }
-            fatal("Internal error - parsed '"+chPeek+"' after '<'");
+            fatal("Internal error - parsed '%c' after '<'", chPeek);
         }
 
         // ---- Literal
@@ -769,10 +769,10 @@ public final class TokenizerText implements Tokenizer
                 warning("Unicode replacement character U+FFFD in string");
             else if ( ch == EOF ) {
                 // if ( endNL ) return stringBuilder.toString();
-                fatal("Broken token: " + stringBuilder.toString());
+                fatal("Broken token: %s", stringBuilder.toString());
             }
             else if ( ch == NL )
-                fatal("Broken token (newline): " + stringBuilder.toString());
+                fatal("Broken token (newline): %s", stringBuilder.toString());
             else if ( ch == endCh )
                 return stringBuilder.toString();
             else if ( ch == CH_RSLASH )
@@ -888,7 +888,7 @@ public final class TokenizerText implements Tokenizer
             // Not strict
 
             if ( !RiotChars.isPNChars_U_N(ch) )
-                fatal("Blank node label does not start with alphabetic or _ :" + (char)ch);
+                fatal("Blank node label does not start with alphabetic or _ : '%c'", (char)ch);
             reader.readChar();
             if ( ch == REPLACEMENT )
                 warning("Unicode replacement character U+FFFD in blank node label");
@@ -1031,7 +1031,7 @@ public final class TokenizerText implements Tokenizer
             x++;
         }
         if ( x == 0 )
-            fatal("No hex characters after " + sb.toString());
+            fatal("No hex characters after %s", sb.toString());
     }
 
     private int readDigits(StringBuilder buffer) {
@@ -1089,7 +1089,7 @@ public final class TokenizerText implements Tokenizer
         readPossibleSign(sb);
         int x = readDigits(sb);
         if ( x == 0 )
-            fatal("Malformed double: " + sb);
+            fatal("Malformed double: %s", sb);
         return true;
     }
 
@@ -1295,7 +1295,7 @@ public final class TokenizerText implements Tokenizer
         int x = valHexChar(ch);
         if ( x != -1 )
             return x;
-        fatal("Not a hexadecimal character: " + (char)ch);
+        fatal("Not a hexadecimal character: '%c'", (char)ch);
         return -1;
     }
 
@@ -1303,12 +1303,12 @@ public final class TokenizerText implements Tokenizer
         for (int i = 0; i < str.length(); i++) {
             char want = str.charAt(i);
             if ( reader.eof() ) {
-                fatal("End of input during expected string: " + str);
+                fatal("End of input during expected string: %s", str);
                 return false;
             }
             int inChar = reader.peekChar();
             if ( inChar != want ) {
-                fatal("expected \"" + str + "\"");
+                fatal("expected \"%s\"", str);
                 return false;
             }
             reader.readChar();
