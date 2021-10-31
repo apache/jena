@@ -32,12 +32,11 @@ public abstract class IteratorSlotted<T> implements IteratorCloseable<T> {
 
     // -------- The contract with the subclasses
 
-    /** Implement this, not next() or nextBinding() */
+    /** Next element of null for "none" */
     protected abstract T moveToNext();
 
     /** Can return true here then null from moveToNext() to indicate end. */
     protected abstract boolean hasMore();
-    // alter add a flag to say if null is a legal value.
 
     /** Close the iterator. */
     protected void closeIterator() {}
@@ -48,8 +47,8 @@ public abstract class IteratorSlotted<T> implements IteratorCloseable<T> {
         return finished;
     }
 
-    @Override
-    public final boolean hasNext() {
+    @Override final
+    public boolean hasNext() {
         if ( finished )
             return false;
         if ( slotIsSet )
@@ -71,12 +70,8 @@ public abstract class IteratorSlotted<T> implements IteratorCloseable<T> {
         return true;
     }
 
-    /**
-     * final - autoclose and registration relies on it - implement
-     * moveToNextBinding()
-     */
-    @Override
-    public final T next() {
+    @Override final
+    public T next() {
         if ( !hasNext() )
             throw new NoSuchElementException(Lib.className(this));
 
