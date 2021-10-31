@@ -23,13 +23,16 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
- * Implementation of a producer class that sends Triples; must be connected to a {@code PipedRDFIterator<Triple>}. 
+ * Implementation of a producer class that sends Triples; must be connected to a {@code PipedRDFIterator<Triple>}.
+ *
+ * @deprecated To be removed
  */
+@Deprecated
 public class PipedTriplesStream extends PipedRDFStream<Triple> implements StreamRDF
 {
     /**
-     * Creates a piped triples stream connected to the specified piped 
-     * RDF iterator.  Triples written to this stream will then be 
+     * Creates a piped triples stream connected to the specified piped
+     * RDF iterator.  Triples written to this stream will then be
      * available as input from <code>sink</code>.
      *
      * @param sink The piped RDF iterator to connect to.

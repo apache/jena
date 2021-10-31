@@ -24,62 +24,62 @@ import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.assertTrue ;
 
 import java.io.ByteArrayInputStream ;
-import java.nio.charset.StandardCharsets ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Triple ;
 import org.junit.Test ;
 
-public class TestRiotReader
-{
+@SuppressWarnings("deprecation")
+public class TestRiotReader {
     @Test
-    public void testCreateIteratorTriples_01()
-    {
-        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8)), RDFLanguages.NTRIPLES, "http://example/");
-        
+    public void testCreateIteratorTriples_01() {
+        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream(new byte[0]),
+                                                               RDFLanguages.NTRIPLES, "http://example/");
         assertFalse(it.hasNext());
     }
-    
+
     @Test
-    public void testEncodedUTF8()
-    {
-        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream("<a> <b> \"\\u263A\" .".getBytes(StandardCharsets.UTF_8)), RDFLanguages.NTRIPLES, null);
-        
+    public void testEncodedUTF8() {
+        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream(Bytes.asUTF8bytes("<a> <b> \"\\u263A\" .")),
+                                                               RDFLanguages.NTRIPLES, null);
         assertTrue(it.hasNext());
         assertEquals("☺", it.next().getObject().getLiteralLexicalForm());
     }
-    
+
     @Test
-    public void testRawUTF8()
-    {
-        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream("<a> <b> \"☺\" .".getBytes(StandardCharsets.UTF_8)), RDFLanguages.NTRIPLES, null);
-        
+    public void testRawUTF8() {
+        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream(Bytes.asUTF8bytes("<a> <b> \"☺\" .")),
+                                                               RDFLanguages.NTRIPLES, null);
         assertTrue(it.hasNext());
         assertEquals("☺", it.next().getObject().getLiteralLexicalForm());
     }
-    
+
     @Test
     public void testCreateIteratorTriples_02()
     {
+        // @formatter:off
         String x = StrUtils.strjoinNL(
-                "<rdf:RDF", 
+                "<rdf:RDF",
                 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"",
                 "   xmlns:j.0=\"http://example/\">" ,
                 "  <rdf:Description rdf:about=\"http://example/s\">" ,
                 "     <j.0:p rdf:resource=\"http://example/o\"/>" ,
                 "   </rdf:Description>" ,
                 "</rdf:RDF>") ;
-        
-        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream(x.getBytes()), RDFLanguages.RDFXML, "http://example/");
-        
+        //@formatter:on
+
+        Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream(Bytes.asUTF8bytes(x)),
+                                                               RDFLanguages.RDFXML,
+                                                               "http://example/");
         assertTrue(it.hasNext());
         Triple t = it.next();
         assertNotNull(t);
         assertEquals("http://example/s", t.getSubject().getURI());
         assertEquals("http://example/p", t.getPredicate().getURI());
         assertEquals("http://example/o", t.getObject().getURI());
-        
+
         assertFalse(it.hasNext());
     }
 }

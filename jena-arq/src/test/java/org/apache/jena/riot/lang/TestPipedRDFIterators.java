@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory ;
  * Tests for the {@link PipedRDFIterator} implementation
  *
  */
+@SuppressWarnings("deprecation")
 public class TestPipedRDFIterators {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestPipedRDFIterators.class);
 

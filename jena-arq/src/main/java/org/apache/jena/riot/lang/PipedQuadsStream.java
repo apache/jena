@@ -23,13 +23,15 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
- * Implementation of a producer class that sends Quads; must be connected to a {@code PipedRDFIterator<Quad>}. 
+ * Implementation of a producer class that sends Quads; must be connected to a {@code PipedRDFIterator<Quad>}.
+ * @deprecated To be removed
  */
+@Deprecated
 public class PipedQuadsStream extends PipedRDFStream<Quad> implements StreamRDF
 {
     /**
-     * Creates a piped quads stream connected to the specified piped 
-     * RDF iterator.  Quads written to this stream will then be 
+     * Creates a piped quads stream connected to the specified piped
+     * RDF iterator.  Quads written to this stream will then be
      * available as input from <code>sink</code>.
      *
      * @param sink The piped RDF iterator to connect to.

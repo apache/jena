@@ -56,7 +56,10 @@ import org.apache.jena.riot.system.PrefixMapFactory;
  * @see PipedTriplesStream
  * @see PipedQuadsStream
  * @see PipedTuplesStream
+ *
+ * @deprecated To be removed
  */
+@Deprecated
 public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
     /**
      * Constant for default buffer size

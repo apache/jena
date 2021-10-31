@@ -32,10 +32,8 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.riot.lang.PipedQuadsStream;
-import org.apache.jena.riot.lang.PipedRDFIterator;
-import org.apache.jena.riot.lang.PipedTriplesStream;
 import org.apache.jena.riot.lang.RiotParsers;
+import org.apache.jena.riot.system.AsyncParser;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
@@ -1061,17 +1059,15 @@ public class RDFDataMgr
      * @param lang Language
      * @param baseIRI Base IRI
      * @return Iterator over the triples
+     * @deprecated Use {@link AsyncParser#asyncParseTriples} or for N-Triples, {@link RiotParsers#createIteratorNTriples}
      */
+    @Deprecated
     public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Triples, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
-            return Iter.onCloseIO(RiotParsers.createIteratorNTriples(input, null), input);
+            return Iter.onCloseIO(RiotParsers.createIteratorNTriples(input), input);
         // Otherwise, we have to spin up a thread to deal with it
-        PipedRDFIterator<Triple> it = new PipedRDFIterator<>();
-        PipedTriplesStream out = new PipedTriplesStream(it);
-        Thread t = new Thread(()->parseFromInputStream(out, input, baseIRI, lang));
-        t.start();
-        return it;
+        return AsyncParser.asyncParseTriples(input, lang, baseIRI);
     }
 
     /**
@@ -1080,18 +1076,14 @@ public class RDFDataMgr
      * @param lang Language
      * @param baseIRI Base IRI
      * @return Iterator over the quads
+     * @deprecated Use {@link AsyncParser#asyncParseQuads} or for N-Triples, {@link RiotParsers#createIteratorNQuads}
      */
+    @Deprecated
     public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Quads, because the RIOT reader has a pull interface
-        if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) ) {
-            return Iter.onCloseIO(RiotParsers.createIteratorNQuads(input, null, RiotLib.dftProfile()), input);
-        }
+        if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) )
+            return Iter.onCloseIO(RiotParsers.createIteratorNQuads(input, RiotLib.dftProfile()), input);
         // Otherwise, we have to spin up a thread to deal with it
-        final PipedRDFIterator<Quad> it = new PipedRDFIterator<>();
-        final PipedQuadsStream out = new PipedQuadsStream(it);
-
-        Thread t = new Thread(()->parseFromInputStream(out, input, baseIRI, lang));
-        t.start();
-        return it;
+        return AsyncParser.asyncParseQuads(input, lang, baseIRI);
     }
 }

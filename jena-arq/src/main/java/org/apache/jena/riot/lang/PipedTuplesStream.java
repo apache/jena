@@ -25,13 +25,16 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
- * Implementation of a producer class that sends @{code Tuple<Node>}; must be connected to a {@code PipedRDFIterator<Tuple<Node>}. 
+ * Implementation of a producer class that sends @{code Tuple<Node>}; must be connected to a {@code PipedRDFIterator<Tuple<Node>}.
+ *
+ * @deprecated To be removed
  */
+@Deprecated
 public class PipedTuplesStream extends PipedRDFStream<Tuple<Node>> implements StreamRDF
 {
     /**
-     * Creates a piped tuples stream connected to the specified piped 
-     * RDF iterator.  Tuples written to this stream will then be 
+     * Creates a piped tuples stream connected to the specified piped
+     * RDF iterator.  Tuples written to this stream will then be
      * available as input from <code>sink</code>.
      *
      * @param sink The piped RDF iterator to connect to.
