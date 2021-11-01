@@ -18,84 +18,71 @@
 
 package org.apache.jena.sparql.core.describe;
 
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.util.Context;
 
 /** Registry of DescribeHandlers. */
 
-public class DescribeHandlerRegistry
-{
-    static private DescribeHandlerRegistry globalRegistry = null ;
-    
-    private List<DescribeHandlerFactory> registry = new ArrayList<>() ;
+public class DescribeHandlerRegistry {
+    static private DescribeHandlerRegistry globalRegistry = null;
 
-    private DescribeHandlerRegistry() { }
-    
-    private static synchronized DescribeHandlerRegistry standardRegistry()
-    {
-        DescribeHandlerRegistry reg = new DescribeHandlerRegistry() ;
-        reg.add(new DescribeBNodeClosureFactory()) ;
-        return reg ;
+    private List<DescribeHandlerFactory> registry = new ArrayList<>();
+
+    private DescribeHandlerRegistry() {}
+
+    private static synchronized DescribeHandlerRegistry standardRegistry() {
+        DescribeHandlerRegistry reg = new DescribeHandlerRegistry();
+        reg.add(new DescribeBNodeClosureFactory());
+        return reg;
     }
-    
-    public static DescribeHandlerRegistry get(Context context)
-    {
+
+    public static DescribeHandlerRegistry get(Context context) {
         if ( context == null )
-            return null ;
-        return (DescribeHandlerRegistry)ARQ.getContext().get(ARQConstants.registryDescribeHandlers) ;
+            return null;
+        return (DescribeHandlerRegistry)ARQ.getContext().get(ARQConstants.registryDescribeHandlers);
     }
-    
-    public static void set(Context context, DescribeHandlerRegistry reg)
-    {
-        context.set(ARQConstants.registryDescribeHandlers, reg) ;
+
+    public static void set(Context context, DescribeHandlerRegistry reg) {
+        context.set(ARQConstants.registryDescribeHandlers, reg);
     }
-    
-    public static DescribeHandlerRegistry get()
-    {
-        // Intialize if there is no registry already set 
-        DescribeHandlerRegistry reg = get(ARQ.getContext()) ;
-        if ( reg == null )
-        {
-            reg = standardRegistry() ;
-            set(ARQ.getContext(), reg) ;
+
+    public static DescribeHandlerRegistry get() {
+        // Initialize if there is no registry already set
+        DescribeHandlerRegistry reg = get(ARQ.getContext());
+        if ( reg == null ) {
+            reg = standardRegistry();
+            set(ARQ.getContext(), reg);
         }
-        return reg ;
+        return reg;
     }
-    
-    public void add(DescribeHandlerFactory handlerFactory )
-    {
-        registry.add(0, handlerFactory) ; 
+
+    public void add(DescribeHandlerFactory handlerFactory) {
+        registry.add(0, handlerFactory);
     }
-    
-    public void remove(DescribeHandlerFactory handlerFactory)
-    {
-        registry.remove(handlerFactory) ; 
+
+    public void remove(DescribeHandlerFactory handlerFactory) {
+        registry.remove(handlerFactory);
     }
-    
-    public void clear()
-    {
-        registry.clear() ;
+
+    public void clear() {
+        registry.clear();
     }
-    
-    public List<DescribeHandler> newHandlerList()
-    {
-        List<DescribeHandler> a = new ArrayList<>(registry.size()) ;
-        for ( Iterator<DescribeHandlerFactory> iter = handlers() ; iter.hasNext() ; )
-        {
+
+    public List<DescribeHandler> newHandlerList() {
+        List<DescribeHandler> a = new ArrayList<>(registry.size());
+        for ( Iterator<DescribeHandlerFactory> iter = handlers() ; iter.hasNext() ; ) {
             DescribeHandlerFactory f = iter.next();
-            a.add(f.create()) ;
+            a.add(f.create());
         }
-        return a ;
+        return a;
     }
-    
-    
-    public Iterator<DescribeHandlerFactory> handlers()
-    {
-        return registry.iterator() ;
+
+    public Iterator<DescribeHandlerFactory> handlers() {
+        return registry.iterator();
     }
 }
