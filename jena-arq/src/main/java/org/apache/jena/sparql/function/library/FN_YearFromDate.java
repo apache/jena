@@ -24,7 +24,7 @@ import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase1;
 
-public class FN_YearsFromDate extends FunctionBase1 {
+public class FN_YearFromDate extends FunctionBase1 {
     @Override
     public NodeValue exec(NodeValue v) {
         if ( ARQ.isStrictMode() && !v.isDate() )

@@ -75,9 +75,9 @@ public class TestFnFunctionsDateTimeDuration {
     }
 
     @Test public void fromDateTime() {
-        test("fn:years-from-dateTime('2017-09-14T17:01:02'^^xsd:dateTime)",   "2017");
-        test("fn:months-from-dateTime('2017-09-14T17:01:02'^^xsd:dateTime)",  "09");
-        test("fn:days-from-dateTime('2017-09-14T17:01:02'^^xsd:dateTime)",    "14");
+        test("fn:year-from-dateTime('2017-09-14T17:01:02'^^xsd:dateTime)",   "2017");
+        test("fn:month-from-dateTime('2017-09-14T17:01:02'^^xsd:dateTime)",  "09");
+        test("fn:day-from-dateTime('2017-09-14T17:01:02'^^xsd:dateTime)",    "14");
         test("fn:hours-from-dateTime('2017-09-14T17:01:02'^^xsd:dateTime)",   "17");
         test("fn:minutes-from-dateTime('2017-09-14T17:01:02'^^xsd:dateTime)", "01");
         test("fn:seconds-from-dateTime('2017-09-14T17:01:02.5'^^xsd:dateTime)", "02.5");
@@ -85,9 +85,9 @@ public class TestFnFunctionsDateTimeDuration {
     }
 
     @Test public void fromDate() {
-        test("fn:years-from-date('2017-09-14'^^xsd:date)",   "2017");
-        test("fn:months-from-date('2017-09-14'^^xsd:date)",  "09");
-        test("fn:days-from-date('2017-09-14'^^xsd:date)",    "14");
+        test("fn:year-from-date('2017-09-14'^^xsd:date)",   "2017");
+        test("fn:month-from-date('2017-09-14'^^xsd:date)",  "09");
+        test("fn:day-from-date('2017-09-14'^^xsd:date)",    "14");
         test("fn:timezone-from-date('2017-09-14+01:00'^^xsd:date)", "'PT1H'^^xsd:dayTimeDuration");
     }
 
@@ -122,9 +122,9 @@ public class TestFnFunctionsDateTimeDuration {
         // regardless of the specific datatype.
         ARQ.getContext().set(ARQ.strictSPARQL, true);
         try {
-            testException("fn:years-from-dateTime('2017-09-14'^^xsd:date)");
-            testException("fn:months-from-date('P1Y2M3DT4H5M6.7S'^^xsd:duration)");
-            testException("fn:days-from-time('2017-09-14T17:01:02'^^xsd:dateTime)");
+            testException("fn:year-from-dateTime('2017-09-14'^^xsd:date)");
+            testException("fn:month-from-date('P1Y2M3DT4H5M6.7S'^^xsd:duration)");
+            testException("fn:day-from-time('2017-09-14T17:01:02'^^xsd:dateTime)");
         } finally {
             ARQ.getContext().set(ARQ.strictSPARQL, false);
         }

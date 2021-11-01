@@ -31,4 +31,3 @@ public class FN_YearsFromDuration extends FunctionBase1
     }
 
 }
-

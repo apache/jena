@@ -166,10 +166,10 @@ public class StandardFunctions
 
         add(registry, xfn+"encode-for-uri", FN_StrEncodeForURI.class) ;
 
-        add(registry, xfn+"years-from-date",        FN_YearsFromDate.class) ;
-        add(registry, xfn+"months-from-date",       FN_MonthsFromDate.class) ;
-        add(registry, xfn+"days-from-date",         FN_DaysFromDate.class) ;
-        add(registry, xfn+"timezone-from-date",     FN_TimezoneFromDate.class) ;
+        add(registry, xfn+"year-from-date",        FN_YearFromDate.class) ;
+        add(registry, xfn+"month-from-date",       FN_MonthFromDate.class) ;
+        add(registry, xfn+"day-from-date",         FN_DayFromDate.class) ;
+        add(registry, xfn+"timezone-from-date",    FN_TimezoneFromDate.class) ;
 
         add(registry, xfn+"hours-from-time",        FN_HoursFromTime.class) ;
         add(registry, xfn+"minutes-from-time",      FN_MinutesFromTime.class) ;
@@ -177,9 +177,9 @@ public class StandardFunctions
         add(registry, xfn+"timezone-from-time",     FN_TimezoneFromTime.class) ;
 
         add(registry, xfn+"dateTime",               FN_DateTime.class) ;
-        add(registry, xfn+"years-from-dateTime",    FN_YearsFromDateTime.class) ;
-        add(registry, xfn+"months-from-dateTime",   FN_MonthsFromDateTime.class) ;
-        add(registry, xfn+"days-from-dateTime",     FN_DaysFromDateTime.class) ;
+        add(registry, xfn+"year-from-dateTime",     FN_YearFromDateTime.class) ;
+        add(registry, xfn+"month-from-dateTime",    FN_MonthFromDateTime.class) ;
+        add(registry, xfn+"day-from-dateTime",      FN_DayFromDateTime.class) ;
         add(registry, xfn+"hours-from-dateTime",    FN_HoursFromDateTime.class) ;
         add(registry, xfn+"minutes-from-dateTime",  FN_MinutesFromDateTime.class) ;
         add(registry, xfn+"seconds-from-dateTime",  FN_SecondsFromDateTime.class) ;
@@ -191,6 +191,16 @@ public class StandardFunctions
         add(registry, xfn+"hours-from-duration",    FN_HoursFromDuration.class) ;
         add(registry, xfn+"minutes-from-duration",  FN_MinutesFromDuration.class) ;
         add(registry, xfn+"seconds-from-duration",  FN_SecondsFromDuration.class) ;
+
+        // Mis-spelt - these were added with plural form - retain for compatibility.
+        add(registry, xfn+"years-from-date",        FN_YearFromDate.class) ;
+        add(registry, xfn+"months-from-date",       FN_MonthFromDate.class) ;
+        add(registry, xfn+"days-from-date",         FN_DayFromDate.class) ;
+
+        add(registry, xfn+"years-from-dateTime",    FN_YearFromDateTime.class) ;
+        add(registry, xfn+"months-from-dateTime",   FN_MonthFromDateTime.class) ;
+        add(registry, xfn+"days-from-dateTime",     FN_DayFromDateTime.class) ;
+        // End mis-spelt
 
 //      7.3.1 fn:boolean
 //      7.3.2 fn:not
