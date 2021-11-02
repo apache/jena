@@ -657,8 +657,6 @@ public final class TokenizerText implements Tokenizer
                 reader.readChar();
                 processPLX(ch);
             } else if ( RiotChars.isPNChars_U_N(ch) ) {
-                if ( ch == REPLACEMENT )
-                    warning("Unicode replacement character U+FFFD");
                 insertCodepoint(stringBuilder, ch);
                 reader.readChar();
             } else
@@ -706,8 +704,6 @@ public final class TokenizerText implements Tokenizer
             }
 
             if ( ch != CH_DOT ) {
-                if ( ch == REPLACEMENT )
-                    warning("Unicode replacement character U+FFFD");
                 insertCodepoint(stringBuilder, ch);
             } else {
                 // DOT - delay until next loop.
@@ -764,8 +760,6 @@ public final class TokenizerText implements Tokenizer
             //int ch = reader.readChar();
 
             int ch = reader.peekChar();
-            if ( ch == REPLACEMENT )
-                warning("Unicode replacement character U+FFFD in string");
             reader.readChar();
 
             if ( ch == EOF ) {
@@ -792,8 +786,6 @@ public final class TokenizerText implements Tokenizer
         stringBuilder.setLength(0);
         for (;;) {
             int ch = reader.peekChar();
-            if ( ch == REPLACEMENT )
-                warning("Input has Unicode replacement character U+FFFD in string");
             reader.readChar();
 
             if ( ch == EOF ) {
@@ -900,8 +892,6 @@ public final class TokenizerText implements Tokenizer
             if ( !RiotChars.isPNChars_U_N(ch) )
                 fatal("Blank node label does not start with alphabetic or _ :" + (char)ch);
             reader.readChar();
-            if ( ch == REPLACEMENT )
-                warning("Unicode replacement character U+FFFD in blank node label");
             insertCodepoint(stringBuilder, ch);
         }
 
@@ -925,8 +915,6 @@ public final class TokenizerText implements Tokenizer
             }
 
             if ( ch != CH_DOT ) {
-                if ( ch == REPLACEMENT )
-                    warning("Unicode replacement character U+FFFD in blank node label");
                 insertCodepoint(stringBuilder, ch);
             } else
                 // DOT - delay until next loop.

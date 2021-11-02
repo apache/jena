@@ -922,14 +922,6 @@ public class TestTokenizer {
     }
 
     @Test(expected = RiotParseException.class)
-    public void tokenizer_charset_2() {
-        ByteArrayInputStream in = bytes("'abcdé'") ;
-        Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
-        // ASCII only -> bad.
-        Token t = tokenizer.next() ;
-    }
-
-    @Test(expected = RiotParseException.class)
     public void tokenizer_charset_3() {
         ByteArrayInputStream in = bytes("<http://example/abcdé>") ;
         Tokenizer tokenizer = TokenizerText.create().asciiOnly(true).source(in).build() ;
@@ -939,46 +931,15 @@ public class TestTokenizer {
 
     // Test for warnings
     @Test
-    public void tokenStr_replacmentChar_str_1() {
-        testExpectWarning("'\uFFFD'", TokenType.STRING, 1);
-    }
-
-    @Test
     public void tokenStr_replacmentChar_str_2() {
         // As unicode escape.
         testExpectWarning("'\\uFFFD'", TokenType.STRING, 0);
     }
 
     @Test
-    public void tokenStr_replacmentChar_str_3() {
-        testExpectWarning("'''\uFFFD'''", TokenType.STRING, 1);
-    }
-
-    @Test
     public void tokenStr_replacmentChar_str_4() {
         // As unicode escape.
         testExpectWarning("'''\\uFFFD'''", TokenType.STRING, 0);
-    }
-
-    @Test
-    public void tokenStr_replacmentChar_str_5() {
-        testExpectWarning("'abc\uFFFDdef'", TokenType.STRING, 1);
-    }
-
-    @Test
-    public void tokenStr_replacmentChar_str_6() {
-        // Illegal encoding.
-        // 0xDF is ß (lower case) in ISO-8859-1.
-        // Here it is an illegal encoding (high set, next byte should have the high bit set but does not).
-        // In Unicode it is 0xC39F.
-
-        // This is the quoted string "ß" in ISO-8859-1.
-        byte[] bytes = {(byte)0x22, (byte)0xDF, (byte)0x22};
-        Reader r = IO.asUTF8(new ByteArrayInputStream(bytes));
-        PeekReader pr = PeekReader.make(r);
-        Token t = testExpectWarning(pr, TokenType.STRING, 1);
-        int char0 = t.getImage().codePointAt(0);
-        assertEquals("Expected Unicode REPLACEMENT CHARACTER", 0xFFFD, char0);
     }
 
     @Test
@@ -992,21 +953,10 @@ public class TestTokenizer {
         testExpectWarning("<http://example/\\uFFFD>", TokenType.IRI, 1);
     }
 
-    @Test
-    public void tokenStr_replacmentChar_prefixedName_1() {
-        testExpectWarning("ex:abc\uFFFD", TokenType.PREFIXED_NAME, 1);
-    }
-
     @Test(expected=RiotException.class)
     public void tokenStr_replacmentChar_prefixedName_2() {
         // Unicode escape
         testExpectWarning("ex:abc\\uFFFD", TokenType.PREFIXED_NAME, 0);
-    }
-
-    @Test
-    public void tokenStr_replacmentChar_blankNode_1() {
-        testExpectWarning("_:b\uFFFD", TokenType.BNODE, 1);
-        // and no escaped characters for blank node labels.
     }
 
     private static Token testExpectWarning(String input, TokenType expectedTokenType, int warningCount) {
