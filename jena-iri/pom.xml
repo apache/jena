@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>4.2.0</version>
+    <version>4.2.0-tq-1</version>
     <relativePath>..</relativePath>
   </parent> 
   

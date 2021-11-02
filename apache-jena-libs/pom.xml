@@ -23,12 +23,12 @@
   <artifactId>apache-jena-libs</artifactId>
   <packaging>pom</packaging>
   <name>Apache Jena - Libraries POM</name>
-  <version>4.2.0</version>
+  <version>4.2.0-tq-1</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>4.2.0</version>
+    <version>4.2.0-tq-1</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -41,31 +41,31 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shacl</artifactId>
-      <version>4.2.0</version>
+      <version>4.2.0-tq-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shex</artifactId>
-      <version>4.2.0</version>
+      <version>4.2.0-tq-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>4.2.0</version>
+      <version>4.2.0-tq-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb2</artifactId>
-      <version>4.2.0</version>
+      <version>4.2.0-tq-1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>4.2.0</version>
+      <version>4.2.0-tq-1</version>
     </dependency>
 
   </dependencies>
