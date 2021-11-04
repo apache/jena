@@ -1054,7 +1054,9 @@ public class RDFDataMgr
     }
 
     /**
-     * Create an iterator over parsing of triples
+     * Create an iterator over parsing of triples.
+     * This function creates a thread unless the Lang is N-Triples.
+     *
      * @param input Input Stream
      * @param lang Language
      * @param baseIRI Base IRI
@@ -1071,7 +1073,9 @@ public class RDFDataMgr
     }
 
     /**
-     * Creates an iterator over parsing of quads
+     * Creates an iterator over parsing of quads.
+     * This function creates a thread unless the Lang is N-Quads.
+     *
      * @param input Input Stream
      * @param lang Language
      * @param baseIRI Base IRI

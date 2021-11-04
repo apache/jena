@@ -21,13 +21,14 @@ package org.apache.jena.riot.lang ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.riot.system.AsyncParser;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Implementation of a producer class that sends @{code Tuple<Node>}; must be connected to a {@code PipedRDFIterator<Tuple<Node>}.
  *
- * @deprecated To be removed
+ * @deprecated To be removed - use {@link AsyncParser}.
  */
 @Deprecated
 public class PipedTuplesStream extends PipedRDFStream<Tuple<Node>> implements StreamRDF

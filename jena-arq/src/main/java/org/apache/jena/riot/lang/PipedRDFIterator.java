@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.system.AsyncParser;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
 
@@ -57,7 +58,7 @@ import org.apache.jena.riot.system.PrefixMapFactory;
  * @see PipedQuadsStream
  * @see PipedTuplesStream
  *
- * @deprecated To be removed
+ * @deprecated To be removed - use {@link AsyncParser}.
  */
 @Deprecated
 public class PipedRDFIterator<T> implements Iterator<T>, Closeable {

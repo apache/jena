@@ -37,6 +37,7 @@ import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.*;
+import org.apache.jena.riot.lang.RiotParsers;
 import org.apache.jena.sparql.core.Quad;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,7 +145,11 @@ public class AsyncParser {
         return Iter.iter(source).map(elt2Triple).removeNulls();
     }
 
-    /** Pull parser - triples */
+    /**
+     * Pull parser - triples.
+     * <p>
+     * See also {@link RiotParsers#createIteratorNTriples}.
+     */
     public static Iterator<Triple> asyncParseTriples(InputStream input, Lang lang, String baseURI) {
         Iterator<EltStreamRDF> source = asyncParseIterator(inputStreamToSource(input, lang, baseURI));
         return Iter.iter(source).map(elt2Triple).removeNulls();
@@ -161,7 +166,11 @@ public class AsyncParser {
         return Iter.iter(source).map(elt2Quad).removeNulls();
     }
 
-    /** Pull parser - quads */
+    /**
+     * Pull parser - quads.
+     * <p>
+     * See also {@link RiotParsers#createIteratorNQuads}.
+     */
     public static Iterator<Quad> asyncParseQuads(InputStream input, Lang lang, String baseURI) {
         Iterator<EltStreamRDF> source = asyncParseIterator(inputStreamToSource(input, lang, baseURI));
         return Iter.iter(source).map(elt2Quad).removeNulls();

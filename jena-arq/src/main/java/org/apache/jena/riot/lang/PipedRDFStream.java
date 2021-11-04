@@ -18,6 +18,7 @@
 
 package org.apache.jena.riot.lang ;
 
+import org.apache.jena.riot.system.AsyncParser;
 import org.apache.jena.riot.system.StreamRDF ;
 
 /**
@@ -29,7 +30,7 @@ import org.apache.jena.riot.system.StreamRDF ;
  * @see PipedQuadsStream
  * @see PipedTuplesStream
  *
- * @deprecated To be removed
+ * @deprecated To be removed - use {@link AsyncParser}.
  */
 @Deprecated
 public abstract class PipedRDFStream<T> implements StreamRDF

@@ -19,12 +19,13 @@
 package org.apache.jena.riot.lang ;
 
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.riot.system.AsyncParser;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
  * Implementation of a producer class that sends Quads; must be connected to a {@code PipedRDFIterator<Quad>}.
- * @deprecated To be removed
+ * @deprecated To be removed - use {@link AsyncParser}.
  */
 @Deprecated
 public class PipedQuadsStream extends PipedRDFStream<Quad> implements StreamRDF
