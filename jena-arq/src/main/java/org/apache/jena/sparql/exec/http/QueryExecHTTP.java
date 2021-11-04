@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.exec.http;
 
 import static org.apache.jena.http.HttpLib.*;
-import java.util.Objects;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -28,14 +27,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
@@ -308,21 +305,26 @@ public class QueryExecHTTP implements QueryExec {
         return dataset;
     }
 
+    @SuppressWarnings("deprecation")
     private Iterator<Triple> execTriples(String acceptHeader) {
         Pair<InputStream, Lang> p = execRdfWorker(acceptHeader, WebContent.contentTypeRDFXML);
-        InputStream in = p.getLeft();
+        InputStream input = p.getLeft();
         Lang lang = p.getRight();
         // Base URI?
-        return RDFDataMgr.createIteratorTriples(in, lang, null);
+        // Unless N-Triples, this creates a thread.
+        Iterator<Triple> iter = RDFDataMgr.createIteratorTriples(input, lang, null);
+        return Iter.onCloseIO(iter, input);
     }
 
+    @SuppressWarnings("deprecation")
     private Iterator<Quad> execQuads() {
         checkNotClosed();
         Pair<InputStream, Lang> p = execRdfWorker(datasetAcceptHeader, WebContent.contentTypeNQuads);
-        InputStream in = p.getLeft();
+        InputStream input = p.getLeft();
         Lang lang = p.getRight();
-        // Base URI?
-        return RDFDataMgr.createIteratorQuads(in, lang, null);
+        // Unless N-Quads, this creates a thread.
+        Iterator<Quad> iter = RDFDataMgr.createIteratorQuads(input, lang, null);
+        return Iter.onCloseIO(iter, input);
     }
 
     // Any RDF data back (CONSTRUCT, DESCRIBE, QUADS)

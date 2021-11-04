@@ -18,6 +18,8 @@
 
 package org.apache.jena.atlas.lib;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.UnsupportedEncodingException ;
 import java.nio.ByteBuffer ;
 import java.nio.CharBuffer ;
@@ -33,6 +35,16 @@ import java.nio.charset.CoderResult ;
 public class Bytes
 {
     private Bytes() {}
+
+    /** String to UTF8 bytes */
+    public static byte[] asUTF8bytes(String s) {
+        return s.getBytes(UTF_8) ;
+    }
+
+    /** String from UTF8 bytes */
+    public static String fromUTF8bytes(byte[] bytes) {
+        return new String(bytes, UTF_8) ;
+    }
 
     /** Compare two byte arrays which may be of different lengths */
     public static int compare(byte[] x1, byte[] x2)

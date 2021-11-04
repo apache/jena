@@ -19,7 +19,6 @@
 package org.apache.jena.atlas.lib;
 
 import static java.lang.String.format;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.stream ;
 import static java.util.stream.Collectors.toList;
 
@@ -87,11 +86,11 @@ public class StrUtils //extends StringUtils
     }
 
     public static byte[] asUTF8bytes(String s) {
-        return s.getBytes(UTF_8) ;
+        return Bytes.asUTF8bytes(s);
     }
 
     public static String fromUTF8bytes(byte[] bytes) {
-        return new String(bytes, UTF_8) ;
+        return Bytes.fromUTF8bytes(bytes);
     }
 
     /**
