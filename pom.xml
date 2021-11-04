@@ -57,7 +57,7 @@
     <ver.log4j2>2.14.1</ver.log4j2>
     <ver.shade-plugin>3.2.4</ver.shade-plugin>
 
-    <ver.jetty>10.0.6</ver.jetty>
+    <ver.jetty>10.0.7</ver.jetty>
     <ver.shiro>1.8.0</ver.shiro>
 
     <ver.protobuf>3.17.3</ver.protobuf>
@@ -72,10 +72,10 @@
          and use that or later.
     -->
     <ver.jsonldjava>0.13.3</ver.jsonldjava>
-    <ver.jackson>2.12.5</ver.jackson>
+    <ver.jackson>2.13.0</ver.jackson>
 
     <ver.commonsio>2.11.0</ver.commonsio>
-    <ver.commonscli>1.4</ver.commonscli>
+    <ver.commonscli>1.5.0</ver.commonscli>
     <ver.commonslang3>3.12.0</ver.commonslang3>
     <ver.commonsrdf>0.5.0</ver.commonsrdf>
     <ver.commonscsv>1.9.0</ver.commonscsv>
@@ -88,12 +88,12 @@
     <ver.httpclient>4.5.13</ver.httpclient>
     <ver.httpcore>4.4.14</ver.httpcore>
     
-    <ver.lucene>8.8.0</ver.lucene>
+    <ver.lucene>8.10.1</ver.lucene>
     <ver.graalvm>21.3.0</ver.graalvm>
     <ver.jython>2.7.2</ver.jython>
     <ver.jcommander>1.81</ver.jcommander>
-    <ver.mockito>3.12.4</ver.mockito>
-    <ver.awaitility>4.1.0</ver.awaitility>
+    <ver.mockito>4.0.0</ver.mockito>
+    <ver.awaitility>4.1.1</ver.awaitility>
     <ver.contract.tests>0.2.0</ver.contract.tests>
 
     <java.version>11</java.version>
