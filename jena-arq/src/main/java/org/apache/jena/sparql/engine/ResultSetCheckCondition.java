@@ -74,6 +74,12 @@ public class ResultSetCheckCondition implements ResultSet
     }
 
     @Override
+    public void close() {
+        check() ;
+        other.close();
+    }
+
+    @Override
     public int getRowNumber() {
         check() ;
         return other.getRowNumber() ;

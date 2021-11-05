@@ -27,29 +27,66 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 import org.apache.jena.sparql.util.Context;
 
 /** A interface for a single execution of a query. */
 public interface QueryExecution extends AutoCloseable
 {
-    /** Create a local execution on a dataset */
+    // Short cuts to QueryExecutions
+
+    /** Create a local execution on a dataset for a given query */
+    public static QueryExecution create(Query query, Dataset dataset) {
+        return QueryExecution.dataset(dataset).query(query).build();
+    }
+
+    /** Create a local execution on a dataset for a given query */
+    public static QueryExecution create(String query, Model model) {
+        return QueryExecution.model(model).query(query).build();
+    }
+
+    /** Create a local execution on a dataset for a given query */
+    public static QueryExecution create(String query, Dataset dataset) {
+        return QueryExecution.dataset(dataset).query(query).build();
+    }
+
+    /** Create a local execution on a dataset for a given query */
+    public static QueryExecution create(Query query, Model model) {
+        return QueryExecution.model(model).query(query).build();
+    }
+
+    /** Create a remote execution. */
+    public static QueryExecution service(String endpointURL, Query query) {
+        return QueryExecution.service(endpointURL).query(query).build();
+    }
+
+    /** Create a remote execution. */
+    public static QueryExecutionHTTP service(String endpointURL, String queryString) {
+        return QueryExecution.service(endpointURL).query(queryString).build();
+    }
+
+
+    // Short cuts to QueryExecution builders.
+
+    /** Create a local execution builder on a dataset */
     public static QueryExecutionDatasetBuilder dataset(Dataset dataset) {
         return QueryExecutionDatasetBuilder.create().dataset(dataset);
     }
 
-    /** Create a local execution on a model */
+    /** Create a local execution builder on a model */
     public static QueryExecutionDatasetBuilder model(Model model) {
         return QueryExecutionDatasetBuilder.create().model(model);
     }
 
-    /** Create a remote execution going to an endpoint URL. */
-    public static QueryExecutionBuilder endpoint(String serviceURL) {
+    /** Create a remote execution builder going to an endpoint URL. */
+    public static QueryExecutionHTTPBuilder service(String serviceURL) {
         return QueryExecutionHTTPBuilder.create().endpoint(serviceURL);
     }
 
-    /** Create a local execution on a dataset */
+    /** Create a local execution builder */
     public static QueryExecutionDatasetBuilder create() { return QueryExecutionDatasetBuilder.create(); }
+
 
     /** Set the initial association of variables and values.
      * May not be supported by all QueryExecution implementations.

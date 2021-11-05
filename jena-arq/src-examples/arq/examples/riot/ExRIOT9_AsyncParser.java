@@ -52,7 +52,7 @@ public class ExRIOT9_AsyncParser {
 
         // For N-Triples and N-Quads only, there is a same-thread pull parser.
         try ( InputStream input = IO.openFileBuffered(filename) ) {
-            RiotParsers.createIteratorNTriples(input, stream);
+            RiotParsers.createIteratorNTriples(input);
         } catch (IOException ex) { throw IOX.exception(ex); }
     }
 }

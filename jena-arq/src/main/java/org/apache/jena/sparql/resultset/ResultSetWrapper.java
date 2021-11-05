@@ -56,6 +56,11 @@ public class ResultSetWrapper implements ResultSet {
     }
 
     @Override
+    public void close() {
+        get().close();
+    }
+
+    @Override
     public int getRowNumber() {
         return get().getRowNumber() ;
     }

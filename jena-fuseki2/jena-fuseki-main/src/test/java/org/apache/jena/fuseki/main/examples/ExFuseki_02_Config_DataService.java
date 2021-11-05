@@ -27,7 +27,6 @@ import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -99,12 +98,12 @@ public class ExFuseki_02_Config_DataService {
         try {
 
             // Try custom name - OK
-            try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(queryOperationURL, query) ) {
+            try ( QueryExecution qExec = QueryExecution.service(queryOperationURL, query) ) {
                 qExec.execAsk();
             }
 
             // Try the usual default name, which is not configured in the DataService so expect a 404.
-            try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(SERVER_URL + DATASET + "/sparql", query) ) {
+            try ( QueryExecution qExec = QueryExecution.service(SERVER_URL + DATASET + "/sparql", query) ) {
                 qExec.execAsk();
                 throw new RuntimeException("Didn't fail");
             } catch (QueryExceptionHTTP ex) {

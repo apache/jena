@@ -51,10 +51,11 @@ public class TestWebappSPARQLProtocol extends AbstractFusekiWebappTest
     @Test
     public void query_01() {
         Query query = QueryFactory.create("SELECT * { ?s ?p ?o }");
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(serviceQuery(), query);
-        ResultSet rs = qexec.execSelect();
-        int x = ResultSetFormatter.consume(rs);
-        assertTrue(x != 0);
+        try ( QueryExecution qexec = QueryExecution.service(serviceQuery(), query) ) {
+            ResultSet rs = qexec.execSelect();
+            int x = ResultSetFormatter.consume(rs);
+            assertTrue(x != 0);
+        }
     }
 
     @Test
