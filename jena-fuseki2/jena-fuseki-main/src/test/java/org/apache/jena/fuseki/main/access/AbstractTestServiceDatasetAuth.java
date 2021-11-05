@@ -29,7 +29,6 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.LibSec;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.sparql.util.QueryExecUtils;
 import org.apache.jena.web.AuthSetup;
 import org.junit.Test;
@@ -50,7 +49,7 @@ public abstract class AbstractTestServiceDatasetAuth {
     @Test public void no_auth() {
         // No user -> fails login
         expectQuery401(() -> {
-            try ( RDFConnection conn = RDFConnectionFactory.connect(server().datasetURL("/db")) ) {
+            try ( RDFConnection conn = RDFConnection.connect(server().datasetURL("/db")) ) {
                 //conn.update("INSERT DATA { <x:s> <x:p> <x:o> }");
                 try ( QueryExecution qExec = conn.query("SELECT * { ?s ?p ?o }") ) {
                     ResultSetFormatter.consume(qExec.execSelect());

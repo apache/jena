@@ -31,7 +31,6 @@ import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
@@ -108,7 +107,7 @@ public class TestDataset2Graph {
         Model model = ModelFactory.createInfModel(RDFSRuleReasonerFactory.theInstance().create(null), baseModel);
         Dataset ds1 = wrap ? DatasetFactory.wrap(model) : DatasetFactory.create(model);
 
-        try ( RDFConnection conn = RDFConnectionFactory.connect(ds1) ) {
+        try ( RDFConnection conn = RDFConnection.connect(ds1) ) {
 
             //conn.querySelect("SELECT (count(*) AS ?C) { ?s ?p ?o } HAVING (?C = 0)", (qs)-> fail("Didn't expect any query solutions"));
 

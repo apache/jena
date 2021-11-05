@@ -26,7 +26,6 @@ import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.LibSec;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.util.QueryExecUtils;
@@ -40,7 +39,7 @@ import org.junit.Test;
  * requirement to log in by no other restrictions.
  */
 public class TestPasswdOnly {
-    protected static FusekiServer server; 
+    protected static FusekiServer server;
     protected static int port;
 
     private static AuthSetup auth1 = new AuthSetup("localhost", port, "user1", "pw1", null);
@@ -65,7 +64,7 @@ public class TestPasswdOnly {
     // Bounced by Jetty.
     @Test(expected=QueryExceptionHTTP.class)
     public void passwd_no_user_A() {
-        try (RDFConnection conn = RDFConnectionFactory.connect("http://localhost:" + port + "/db")) {
+        try (RDFConnection conn = RDFConnection.queryConnect("http://localhost:" + port + "/db")) {
             try ( QueryExecution qExec = conn.query("ASK{}") ) {
                 QueryExecUtils.executeQuery(qExec);
             }
@@ -75,12 +74,12 @@ public class TestPasswdOnly {
     @Test
     public void passwd_no_user_B() {
         expectQuery401(() -> {
-            try(RDFConnection conn = RDFConnectionFactory.connect("http://localhost:" + port + "/db")) {
+            try(RDFConnection conn = RDFConnection.queryConnect("http://localhost:" + port + "/db")) {
                 conn.queryAsk("ASK{}");
             }
         });
     }
-    
+
     @Test public void passwd_user1() {
         // Works!
         AuthSetup auth1 = new AuthSetup("localhost", port, "user1", "pw1", null);

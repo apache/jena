@@ -18,7 +18,8 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.apache.jena.fuseki.test.HttpTest.*;
+import static org.apache.jena.fuseki.test.HttpTest.expect400;
+import static org.apache.jena.fuseki.test.HttpTest.expect404;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -31,7 +32,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
 import org.apache.jena.sparql.core.Var;
@@ -63,7 +63,7 @@ public class TestConfigFile {
         FusekiServer server = server(0, "basic.ttl");
         server.start();
         int port = server.getPort();
-        try ( RDFConnection conn = RDFConnectionFactory.connect("http://localhost:"+port+"/ds") ) {
+        try ( RDFConnection conn = RDFConnection.connect("http://localhost:"+port+"/ds") ) {
             assertCxtValueNotNull (conn, "CONTEXT:SERVER");
             assertCxtValue        (conn, "CONTEXT:SERVER", "server");
         } finally {
@@ -76,19 +76,19 @@ public class TestConfigFile {
         server.start();
         int port = server.getPort();
         try {
-            try ( RDFConnection conn = RDFConnectionFactory.connect("http://localhost:"+port+"/ds-server") ) {
+            try ( RDFConnection conn = RDFConnection.connect("http://localhost:"+port+"/ds-server") ) {
                 assertCxtValue     (conn, "CONTEXT:SERVER",   "server");
                 assertCxtValueNull (conn, "CONTEXT:DATASET");
                 assertCxtValueNull (conn, "CONTEXT:ENDPOINT");
                 assertCxtValue     (conn, "CONTEXT:ABC",      "server-abc");
             }
-            try ( RDFConnection conn = RDFConnectionFactory.connect("http://localhost:"+port+"/ds-dataset") ) {
+            try ( RDFConnection conn = RDFConnection.connect("http://localhost:"+port+"/ds-dataset") ) {
                 assertCxtValue     (conn, "CONTEXT:SERVER",   "server");
                 assertCxtValue     (conn, "CONTEXT:DATASET",  "dataset");
                 assertCxtValueNull (conn, "CONTEXT:ENDPOINT");
                 assertCxtValue     (conn, "CONTEXT:ABC",      "dataset-abc");
             }
-            try ( RDFConnection conn = RDFConnectionFactory.connect("http://localhost:"+port+"/ds-endpoint") ) {
+            try ( RDFConnection conn = RDFConnection.connect("http://localhost:"+port+"/ds-endpoint") ) {
                 assertCxtValue     (conn, "CONTEXT:SERVER",   "server");
                 assertCxtValue     (conn, "CONTEXT:DATASET",  "dataset");
                 assertCxtValue     (conn, "CONTEXT:ENDPOINT", "endpoint");
@@ -112,7 +112,7 @@ public class TestConfigFile {
             }
 
             // These should not work because there is a blocking dataset service (no-op).
-            try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
+            try ( RDFConnection conn =  RDFConnection.connect(serverURL) ) {
                 expect400(()->conn.update("INSERT DATA { <x:s> <x:p> 123 }"));
                 expect400(()->conn.queryAsk("ASK{}"));
                 expect400(()->conn.fetch());
@@ -146,7 +146,7 @@ public class TestConfigFile {
         String serverURL = "http://localhost:"+port+"/ds-no-ep";
 
         try {
-            try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
+            try ( RDFConnection conn =  RDFConnection.connect(serverURL) ) {
                 // 400 if on the dataset
                 expect400(()->conn.queryAsk("ASK{}"));
             }
@@ -295,7 +295,7 @@ public class TestConfigFile {
         int port = server.getPort();
         String serverURL = "http://localhost:"+port+"/ds";
         try {
-            try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL+"/sparql") ) {
+            try ( RDFConnection conn =  RDFConnection.connect(serverURL+"/sparql") ) {
                 conn.update("INSERT DATA { <x:s> <x:p> 1,2,3 }");
                 int x = countDftGraph(conn);
                 assertEquals(3, x);
@@ -311,7 +311,7 @@ public class TestConfigFile {
         int port = server.getPort();
         String serverURL = "http://localhost:"+port+"/";
         try {
-            try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
+            try ( RDFConnection conn =  RDFConnection.connect(serverURL) ) {
                 conn.update("INSERT DATA { <x:s> <x:p> 1,2,3,4 }");
                 int x = countDftGraph(conn);
                 assertEquals(4, x);
@@ -330,7 +330,7 @@ public class TestConfigFile {
         String serverURL = "http://localhost:"+port+dbName;
 
         try {
-            try ( RDFConnection conn =  RDFConnectionFactory.connect(serverURL) ) {
+            try ( RDFConnection conn =  RDFConnection.connect(serverURL) ) {
                 conn.update("INSERT DATA {"+NL+
                     "<x:s> <x:p> 'dft'"+NL+
                     "GRAPH <x:g1> { <x:s> <x:p> 'g1' }"+NL+

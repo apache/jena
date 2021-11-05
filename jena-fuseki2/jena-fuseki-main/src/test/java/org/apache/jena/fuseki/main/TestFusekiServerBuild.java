@@ -23,7 +23,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.junit.Test;
 
@@ -62,7 +61,7 @@ public class TestFusekiServerBuild {
             assertEquals(1077, server.getPort());
             String URL = "http://localhost:1077/ds";
             assertEquals(URL, server.datasetURL("ds"));
-            try ( RDFConnection conn = RDFConnectionFactory.connect(URL) ) {
+            try ( RDFConnection conn = RDFConnection.connect(URL) ) {
                 boolean b = conn.queryAsk("ASK{}");
             }
 

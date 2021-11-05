@@ -25,7 +25,6 @@ import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.http.HttpRDF;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shacl.ValidationReport;
 import org.junit.AfterClass;
@@ -58,7 +57,7 @@ public class TestFusekiShaclValidation {
 
     @Test
     public void shacl_empty_shapes() {
-        try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
+        try ( RDFConnection conn = RDFConnection.connect(serverURL+"/ds")) {
             conn.put(DIR+"data1.ttl");
             ValidationReport report = validateReport(serverURL+"/ds/shacl?graph=default", DIR+"shapes-empty.ttl");
             assertNotNull(report);
@@ -69,7 +68,7 @@ public class TestFusekiShaclValidation {
 
     @Test
     public void shacl_default_graph() {
-        try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
+        try ( RDFConnection conn = RDFConnection.connect(serverURL+"/ds")) {
             conn.put(DIR+"data1.ttl");
             ValidationReport report = validateReport(serverURL+"/ds/shacl?graph=default", DIR+"shapes1.ttl");
             assertNotNull(report);
@@ -80,7 +79,7 @@ public class TestFusekiShaclValidation {
 
     @Test
     public void shacl_no_data_graph() {
-        try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
+        try ( RDFConnection conn = RDFConnection.connect(serverURL+"/ds")) {
             conn.put(DIR+"data1.ttl");
             try {
                 FusekiTestLib.expect404(()->{
@@ -94,7 +93,7 @@ public class TestFusekiShaclValidation {
 
     @Test
     public void shacl_union_1() {
-        try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
+        try ( RDFConnection conn = RDFConnection.connect(serverURL+"/ds")) {
             conn.put(DIR+"data1.ttl");
             ValidationReport report = validateReport(serverURL+"/ds/shacl?graph=union", DIR+"shapes1.ttl");
             assertNotNull(report);
@@ -106,7 +105,7 @@ public class TestFusekiShaclValidation {
 
     @Test
     public void shacl_union_2() {
-        try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
+        try ( RDFConnection conn = RDFConnection.connect(serverURL+"/ds")) {
             conn.put("urn:abc:graph", DIR+"data1.ttl");
             ValidationReport report = validateReport(serverURL+"/ds/shacl?graph=union", DIR+"shapes1.ttl");
             assertNotNull(report);
@@ -117,7 +116,7 @@ public class TestFusekiShaclValidation {
 
     @Test
     public void shacl_named_graph() {
-        try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
+        try ( RDFConnection conn = RDFConnection.connect(serverURL+"/ds")) {
             conn.put("urn:abc:graph", DIR+"data1.ttl");
             ValidationReport report = validateReport(serverURL+"/ds/shacl?graph=urn:abc:graph", DIR+"shapes1.ttl");
             assertNotNull(report);
@@ -128,7 +127,7 @@ public class TestFusekiShaclValidation {
 
     @Test
     public void shacl_targetNode_1() {
-        try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
+        try ( RDFConnection conn = RDFConnection.connect(serverURL+"/ds")) {
             conn.put("urn:abc:graph", DIR+"data1.ttl");
             ValidationReport report = validateReport(serverURL+"/ds/shacl?graph=urn:abc:graph&target=:s1", DIR+"shapes1.ttl");
             assertNotNull(report);
@@ -139,7 +138,7 @@ public class TestFusekiShaclValidation {
 
     @Test
     public void shacl_targetNode_2() {
-        try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
+        try ( RDFConnection conn = RDFConnection.connect(serverURL+"/ds")) {
             conn.put("urn:abc:graph", DIR+"data1.ttl");
             ValidationReport report = validateReport(serverURL+"/ds/shacl?graph=urn:abc:graph&target=:s3", DIR+"shapes1.ttl");
             assertNotNull(report);
@@ -150,7 +149,7 @@ public class TestFusekiShaclValidation {
 
     @Test
     public void shacl_targetNode_3() {
-        try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/ds")) {
+        try ( RDFConnection conn = RDFConnection.connect(serverURL+"/ds")) {
             conn.put("urn:abc:graph", DIR+"data1.ttl");
             ValidationReport report = validateReport(serverURL+"/ds/shacl?graph=urn:abc:graph&target=http://nosuch/node/", DIR+"shapes1.ttl");
             assertNotNull(report);

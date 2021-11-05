@@ -20,11 +20,6 @@ package org.apache.jena.rdfconnection;
 
 import static org.apache.jena.rdfconnection.LibRDFConn.adapt;
 
-import java.net.Authenticator;
-import java.net.http.HttpClient;
-import java.util.Objects;
-
-import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdflink.RDFLinkDatasetBuilder;
 import org.apache.jena.sys.JenaSystem;
@@ -32,18 +27,42 @@ import org.apache.jena.sys.JenaSystem;
 /**
  * Factory for RDF connections, both local and remote.
  * <p>
- * For complex remote (HTTP) connections, see
- * {@link RDFConnectionRemote#newBuilder} for detailed control. This class provides only
- * some common cases.
+ * Applications should use {@code RDFConnection#connect(Dataset)} or {@code RDFConnection#connect(URL)}
+ * for most cases and {@link RDFConnectionRemote#service} for detailed setup of an HTTP connection
+ * to remote SPARQL endpoints.
  * </p>
+ * <p>
+ * For complex remote (HTTP) connections, see
+ * {@link RDFConnectionRemote#newBuilder} for detailed control.
+ * This class provides only some common cases.
+ * </p>
+ * @deprecated See individual static methods for replacements.
  */
+@Deprecated
 public class RDFConnectionFactory {
     static { JenaSystem.init(); }
 
-    /** Create a connection to a remote location by URL.
+    /**
+     * Create a connection to a remote location by URL.
      * This is the URL for the dataset.
+     * This call assumes all SPARQL operations (query, update GSP) are available at the given endpoint.
+     * <a href="http://jena.apache.org/documentation/fuseki2">Fuseki</a>
+     * supports this arrangement.
+     * <p>
+     * Use {@link RDFConnectionRemote#service} for to set different names for different operations.
      *
-     *  This call assumes the names of services as:
+     * @param destination
+     * @return RDFConnection
+     * @deprecated Use {@link RDFConnection#connect}
+     */
+    @Deprecated
+    public static RDFConnection connect(String destination) {
+        return RDFConnectionRemote.service(destination).build();
+    }
+
+    /** Create a connection specifying the URLs of the service.
+     * <p>
+     * A common setup used by Fuseki is:
      *  <ul>
      *  <li>SPARQL Query endpoint : "sparql"
      *  <li>SPARQL Update endpoint : "update"
@@ -52,21 +71,21 @@ public class RDFConnectionFactory {
      *  These are the default names in <a href="http://jena.apache.org/documentation/fuseki2">Fuseki</a>
      *  Other names can be specified using {@link #connect(String, String, String, String)}
      *
-     * @param destination
-     * @return RDFConnection
-     * @see #connect(String, String, String, String)
-     */
-    public static RDFConnection connect(String destination) {
-        return RDFConnectionRemote.service(destination).build();
-    }
-
-    /** Create a connection specifying the URLs of the service.
+     * @deprecated Use {@link RDFConnectionRemote#service} and set the endpoints.
+     * <pre>
+     * RDFConnectionRemote.newBuilder()
+     *       .queryEndpoint(queryServiceEndpoint)
+     *       .updateEndpoint(updateServiceEndpoint)
+     *       .gspEndpoint(graphStoreProtocolEndpoint)
+     *       .build();
+     * </pre>
      *
      * @param queryServiceEndpoint
      * @param updateServiceEndpoint
      * @param graphStoreProtocolEndpoint
      * @return RDFConnection
      */
+    @Deprecated
     public static RDFConnection connect(String queryServiceEndpoint,
                                         String updateServiceEndpoint,
                                         String graphStoreProtocolEndpoint) {
@@ -81,12 +100,23 @@ public class RDFConnectionFactory {
      * This is the URL for the dataset.
      * Each service is then specified by a URL which is relative to the {@code datasetURL}.
      *
+     * @deprecated Use {@link RDFConnectionRemote#service} and set the endpoints.
+     *
+     * <pre>
+     * RDFConnectionRemote.service(datasetURL)
+     *        .queryEndpoint(queryServiceEndpoint)
+     *        .updateEndpoint(updateServiceEndpoint)
+     *        .gspEndpoint(graphStoreProtocolEndpoint)
+     *        .build();
+     * </pre>
+     *
      * @param datasetURL
      * @param queryServiceEndpoint
      * @param updateServiceEndpoint
      * @param graphStoreProtocolEndpoint
      * @return RDFConnection
      */
+    @Deprecated
     public static RDFConnection connect(String datasetURL,
                                         String queryServiceEndpoint,
                                         String updateServiceEndpoint,
@@ -105,21 +135,12 @@ public class RDFConnectionFactory {
      * @param user
      * @param password
      * @return RDFConnection
+     *
+     * @deprecated Use {@link RDFConnection#connectPW}.
      */
+    @Deprecated
     public static RDFConnection connectPW(String URL, String user, String password) {
-        Objects.requireNonNull(URL);
-        Objects.requireNonNull(user);
-        Objects.requireNonNull(password);
-
-        // Authenticator to hold user and password.
-        Authenticator authenticator = LibSec.authenticator(user, password);
-        HttpClient client = HttpEnv.httpClientBuilder()
-                .authenticator(authenticator)
-                .build();
-        return RDFConnectionRemote.newBuilder()
-            .destination(URL)
-            .httpClient(client)
-            .build();
+        return RDFConnection.connectPW(URL, user, password);
     }
 
     /**
@@ -127,19 +148,22 @@ public class RDFConnectionFactory {
      * The default isolation is {@code NONE}.
      * See {@link #connect(Dataset, Isolation)} to select an isolation mode.
      *
+     * @deprecated Use {@link RDFConnection#connect(Dataset)}.
+     *
      * @param dataset
      * @return RDFConnection
      * @see RDFConnectionLocal
      */
+    @Deprecated
     public static RDFConnection connect(Dataset dataset) {
-        return adapt(RDFLinkDatasetBuilder.newBuilder().dataset(dataset.asDatasetGraph()).build());
+        return RDFConnection.connect(dataset);
     }
 
     /**
      * Connect to a local (same JVM) dataset.
      * <p>
      * Multiple levels of {@link Isolation} are provided, The default {@code COPY} level makes a local
-     * {@link RDFConnection} behave like a remote conenction.
+     * {@link RDFConnection} behave like a remote connection.
      * See <a href="https://jena.apache.org/documentation/rdfconnection/">the documentation for more details.</a>
      * <ul>
      * <li>{@code COPY} &ndash; {@code Model}s and {@code Dataset}s are copied.
@@ -152,7 +176,10 @@ public class RDFConnectionFactory {
      * @param dataset
      * @param isolation
      * @return RDFConnection
+     *
+     * @deprecated Use {@link RDFConnection#connect(Dataset, Isolation)}.
      */
+    @Deprecated
     public static RDFConnection connect(Dataset dataset, Isolation isolation) {
         return adapt(RDFLinkDatasetBuilder.newBuilder().dataset(dataset.asDatasetGraph()).isolation(isolation).build());
     }
@@ -177,7 +204,10 @@ public class RDFConnectionFactory {
      *
      * @param destination
      * @return RDFConnectionFuseki
+     *
+     * @deprecated Use {@link RDFConnectionFuseki#service}.
      */
+    @Deprecated
     public static RDFConnectionFuseki connectFuseki(String destination) {
         return (RDFConnectionFuseki)RDFConnectionFuseki.create().destination(destination).build();
     }
@@ -192,7 +222,10 @@ public class RDFConnectionFactory {
      * @param updateServiceEndpoint
      * @param graphStoreProtocolEndpoint
      * @return RDFConnectionFuseki
+     *
+     * @deprecated Use {@link RDFConnectionFuseki#service}.
      */
+    @Deprecated
     public static RDFConnectionFuseki connectFuseki(String datasetURL,
                                                     String queryServiceEndpoint,
                                                     String updateServiceEndpoint,

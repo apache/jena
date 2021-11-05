@@ -31,7 +31,6 @@ import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.servlets.FusekiFilter;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.UserStore;
@@ -63,7 +62,7 @@ public class ExFusekiMain_1_Servlet_AddFilter
 
             // And use it.
             String URL = "http://localhost:3330/ds";
-            try ( RDFConnection conn = RDFConnectionFactory.connectPW(URL, "u", "p") ) {
+            try ( RDFConnection conn = RDFConnection.connectPW(URL, "u", "p") ) {
                 boolean b = conn.queryAsk("ASK{}");
                 System.out.println("ASK="+b);
             }

@@ -18,6 +18,19 @@
 
 package org.apache.jena.rdfconnection;
 
-public enum Isolation { COPY, READONLY, NONE }
-
+/**
+ * Isolation settings for RDFConnection to a local dataset.
+ * <ul>
+ * <li>{@code COPY} &ndash; {@code Model}s and {@code Dataset}s are copied.
+ *     This is most like a remote connection.
+ * <li>{@code READONLY} &ndash; Read-only wrappers are added but changes to
+ *     the underlying model or dataset will be seen.
+ * <li>{@code NONE} (default) &ndash; Changes to the returned {@code Model}s or {@code Dataset}s act on the original object.
+ * </ul>
+ */
+public enum Isolation {
+    COPY,
+    READONLY,
+    NONE
+}
 

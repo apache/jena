@@ -29,7 +29,6 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdfconnection.AbstractTestRDFConnection;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
@@ -75,7 +74,7 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
 
     @Override
     protected RDFConnection connection() {
-        return RDFConnectionFactory.connect(server.datasetURL("/ds"));
+        return RDFConnection.connect(server.datasetURL("/ds"));
     }
 
     // Additional tests

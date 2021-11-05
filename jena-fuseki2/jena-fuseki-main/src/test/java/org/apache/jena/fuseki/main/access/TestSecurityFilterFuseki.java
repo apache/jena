@@ -38,7 +38,6 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -143,7 +142,7 @@ public class TestSecurityFilterFuseki {
 
     private Set<Node> query(String user, String password, String queryString) {
         Set<Node> results = new HashSet<>();
-        try (RDFConnection conn = RDFConnectionFactory.connectPW(baseUrl, user, password)) {
+        try (RDFConnection conn = RDFConnection.connectPW(baseUrl, user, password)) {
             conn.queryResultSet(queryString, rs->{
                 List<QuerySolution> list = Iter.toList(rs);
                 list.stream()
@@ -235,7 +234,7 @@ public class TestSecurityFilterFuseki {
 
     private Set<Node> gsp(String user, String password, String graphName) {
         Set<Node> results = new HashSet<>();
-        try (RDFConnection conn = RDFConnectionFactory.connectPW(baseUrl, user, password)) {
+        try (RDFConnection conn = RDFConnection.connectPW(baseUrl, user, password)) {
             Model model = (graphName == null) ? conn.fetch() : conn.fetch(graphName);
             // Extract subjects.
             Set<Node> seen =

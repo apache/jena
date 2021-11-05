@@ -28,7 +28,6 @@ import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
@@ -144,7 +143,7 @@ public class TestStdSetup {
                 ep = ep.substring(1);
             dest = url+ep;
         }
-        try ( RDFConnection conn = RDFConnectionFactory.connect(dest) ) {
+        try ( RDFConnection conn = RDFConnection.connect(dest) ) {
             action.accept(conn);
         }
     }

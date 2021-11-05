@@ -24,7 +24,6 @@ import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.expr.NodeValue;
@@ -80,7 +79,7 @@ public class ExFuseki_05_CustomFunction {
         try {
             String url = "http://localhost:"+PORT+"/ds";
             // Connect to the server and execute the query.
-            try ( RDFConnection conn = RDFConnectionFactory.connect(url) ) {
+            try ( RDFConnection conn = RDFConnection.connect(url) ) {
                 conn.queryResultSet(queryString, ResultSetFormatter::out);
             }
         } catch (Exception ex) {

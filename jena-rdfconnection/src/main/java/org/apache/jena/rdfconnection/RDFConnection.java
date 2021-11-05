@@ -18,10 +18,17 @@
 
 package org.apache.jena.rdfconnection;
 
+import static org.apache.jena.rdfconnection.LibRDFConn.adapt;
+
+import java.net.Authenticator;
+import java.net.http.HttpClient;
+import java.util.Objects;
 import java.util.function.Consumer;
 
+import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdflink.RDFLinkDatasetBuilder;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.Update;
@@ -69,18 +76,99 @@ public interface RDFConnection extends
         SparqlQueryConnection, SparqlUpdateConnection, RDFDatasetConnection,
         Transactional, AutoCloseable
  {
-    /** Create an RDFConnection to a local dataset. */
+    /**
+     * Connect to a local (same JVM) dataset.
+     * The default isolation is {@code NONE}.
+     * See {@link #connect(Dataset, Isolation)} to select an isolation mode.
+     *
+     * @param dataset
+     * @return RDFConnection
+     * @see RDFConnectionLocal
+     */
     public static RDFConnection connect(Dataset dataset) {
-        return RDFConnectionFactory.connect(dataset);
+        return adapt(RDFLinkDatasetBuilder.newBuilder().dataset(dataset.asDatasetGraph()).build());
     }
 
     /**
-     * Create an RDFConnection to a remote HTTP endpoint.
+     * Connect to a local (same JVM) dataset.
      * <p>
-     * See {@link RDFConnectionRemote#newBuilder} for more control over the setup.
+     * Multiple levels of {@link Isolation} are provided, The default {@code COPY} level makes a local
+     * {@link RDFConnection} behave like a remote connection.
+     * See <a href="https://jena.apache.org/documentation/rdfconnection/">the documentation for more details.</a>
+     * <ul>
+     * <li>{@code COPY} &ndash; {@code Model}s and {@code Dataset}s are copied.
+     *     This is most like a remote connection.
+     * <li>{@code READONLY} &ndash; Read-only wrappers are added but changes to
+     *     the underlying model or dataset will be seen.
+     * <li>{@code NONE} (default) &ndash; Changes to the returned {@code Model}s or {@code Dataset}s act on the original object.
+     * </ul>
+     *
+     * @param dataset
+     * @param isolation
+     * @return RDFConnection
+     */
+    public static RDFConnection connect(Dataset dataset, Isolation isolation) {
+        return adapt(RDFLinkDatasetBuilder.newBuilder().dataset(dataset.asDatasetGraph()).isolation(isolation).build());
+    }
+
+    /**
+     * Create a connection to a remote location for SPARQL query requests
+     *
+     * @param queryServiceURL
+     * @return RDFConnection
+     */
+    public static RDFConnection queryConnect(String queryServiceURL) {
+        return RDFConnectionRemote.newBuilder().queryEndpoint(queryServiceURL).queryOnly().build();
+    }
+
+    /** Create a connection to a remote location by URL.
+     * This is the URL for the dataset.
+     *
+     *  This call assumes the names of services as:
+     *  <ul>
+     *  <li>SPARQL Query endpoint : "sparql"
+     *  <li>SPARQL Update endpoint : "update"
+     *  <li>SPARQL Graph Store Protocol : "data"
+     *  </ul>
+     *  These are the default names in <a href="http://jena.apache.org/documentation/fuseki2">Fuseki</a>
+     *  Other names can be specified using {@link RDFConnectionRemote#newBuilder()} and setting the endpoint URLs.
+     *
+     * <pre>
+     * RDFConnectionRemote.newBuilder()
+     *       .queryEndpoint(queryServiceEndpoint)
+     *       .updateEndpoint(updateServiceEndpoint)
+     *       .gspEndpoint(graphStoreProtocolEndpoint)
+     *       .build();
+     * </pre>
+     *
+     * @param serviceURL
+     * @return RDFConnection
      */
     public static RDFConnection connect(String serviceURL) {
         return RDFConnectionRemote.service(serviceURL).build();
+    }
+
+    /** Make a remote RDFConnection to the URL, with user and password for the client access using basic auth.
+     *  Use with care &ndash; basic auth over plain HTTP reveals the password on the network.
+     * @param URL
+     * @param user
+     * @param password
+     * @return RDFConnection
+     */
+    public static RDFConnection connectPW(String URL, String user, String password) {
+        Objects.requireNonNull(URL);
+        Objects.requireNonNull(user);
+        Objects.requireNonNull(password);
+
+        // Authenticator to hold user and password.
+        Authenticator authenticator = LibSec.authenticator(user, password);
+        HttpClient client = HttpEnv.httpClientBuilder()
+                .authenticator(authenticator)
+                .build();
+        return RDFConnectionRemote.newBuilder()
+            .destination(URL)
+            .httpClient(client)
+            .build();
     }
 
     // Default implementations could be pushed up but then they can't be mentioned here
