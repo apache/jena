@@ -18,11 +18,9 @@
 
 package org.apache.jena.sparql.core.describe;
 
-public class DescribeBNodeClosureFactory implements DescribeHandlerFactory
-{
+public class DescribeBNodeClosureFactory implements DescribeHandlerFactory {
     @Override
-    public DescribeHandler create()
-    {
-        return new DescribeBNodeClosure() ;
+    public DescribeHandler create() {
+        return new DescribeBNodeClosure();
     }
 }

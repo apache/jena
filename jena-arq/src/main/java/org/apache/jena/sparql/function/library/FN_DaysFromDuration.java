@@ -30,4 +30,3 @@ public class FN_DaysFromDuration extends FunctionBase1
         return XSDFuncOp.durGetDays(v) ;
     }
 }
-

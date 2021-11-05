@@ -26,22 +26,22 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Closure ;
 import org.apache.jena.sparql.util.Context ;
 
-/** DescribeHandler that calculates the bNode closure.
- *  Takes all the statements of this resource, and for every object that is
- *  a bNode, it recursively includes its statements. */
+/**
+ * DescribeHandler that calculates the bNode closure. Takes all the statements of
+ * this resource, and for every object that is a bNode, it recursively includes its
+ * statements.
+ */
 
-public class DescribeBNodeClosure implements DescribeHandler
-{
-    Model acc ;
-    Dataset dataset ;
+public class DescribeBNodeClosure implements DescribeHandler {
+    Model acc;
+    Dataset dataset;
 
     public DescribeBNodeClosure() {}
 
     @Override
-    public void start(Model accumulateResultModel, Context cxt)
-    {
-        acc = accumulateResultModel ;
-        Object obj = cxt.get(ARQConstants.sysCurrentDataset) ;
+    public void start(Model accumulateResultModel, Context cxt) {
+        acc = accumulateResultModel;
+        Object obj = cxt.get(ARQConstants.sysCurrentDataset);
         if ( obj instanceof Dataset )
             this.dataset = (Dataset)obj;
         else if ( obj instanceof DatasetGraph )
@@ -49,31 +49,30 @@ public class DescribeBNodeClosure implements DescribeHandler
     }
 
     // DISTINCT - we only need each ?g once.
-    private static Query query = QueryFactory.create("SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o } }") ;
+    private static Query query = QueryFactory.create("SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o } }");
 
     // Check all named graphs
     @Override
-    public void describe(Resource r)
-    {
+    public void describe(Resource r) {
         // Default model.
-        Closure.closure(otherModel(r, dataset.getDefaultModel()), false, acc) ;
+        Closure.closure(otherModel(r, dataset.getDefaultModel()), false, acc);
 
         // Find all the named graphs in which this resource
-        // occurs as a subject.  Faster than iterating in the
+        // occurs as a subject. Faster than iterating in the
         // names of graphs in the case of very large numbers
         // of graphs, few of which contain the resource, in
         // some kind of persistent storage.
 
-        QuerySolutionMap qsm = new QuerySolutionMap() ;
-        qsm.add("s", r) ;
-        try(QueryExecution qExec = QueryExecutionFactory.create(query, dataset, qsm)) {
-            ResultSet rs = qExec.execSelect() ;
+        QuerySolutionMap qsm = new QuerySolutionMap();
+        qsm.add("s", r);
+        try (QueryExecution qExec = QueryExecutionFactory.create(query, dataset, qsm)) {
+            ResultSet rs = qExec.execSelect();
             for ( ; rs.hasNext() ; ) {
-                QuerySolution qs = rs.next() ;
-                String gName = qs.getResource("g").getURI() ;
-                Model model =  dataset.getNamedModel(gName) ;
-                Resource r2 = otherModel(r, model) ;
-                Closure.closure(r2, false, acc) ;
+                QuerySolution qs = rs.next();
+                String gName = qs.getResource("g").getURI();
+                Model model = dataset.getNamedModel(gName);
+                Resource r2 = otherModel(r, model);
+                Closure.closure(r2, false, acc);
             }
         }
 
@@ -86,20 +85,18 @@ public class DescribeBNodeClosure implements DescribeHandler
 //            Closure.closure(r2, false, acc) ;
 //        }
 
-        Closure.closure(r, false, acc) ;
+        Closure.closure(r, false, acc);
     }
 
-    private static Resource otherModel(Resource r, Model model)
-    {
+    private static Resource otherModel(Resource r, Model model) {
         if ( r.isURIResource() )
-            return model.createResource(r.getURI()) ;
+            return model.createResource(r.getURI());
         if ( r.isAnon() )
-            return model.createResource(r.getId()) ;
+            return model.createResource(r.getId());
         // Literals do not need converting.
-        return r ;
+        return r;
     }
 
     @Override
-    public void finish()
-    { }
+    public void finish() {}
 }
