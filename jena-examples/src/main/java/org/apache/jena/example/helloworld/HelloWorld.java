@@ -22,11 +22,8 @@ package org.apache.jena.example.helloworld;
 // Imports
 ///////////////
 import org.apache.jena.example.CheeseBase;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.util.FileManager;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
@@ -47,9 +44,6 @@ public class HelloWorld
     /***********************************/
     /* Static variables                */
     /***********************************/
-
-    @SuppressWarnings( value = "unused" )
-    private static final Logger log = LoggerFactory.getLogger( HelloWorld.class );
 
     /***********************************/
     /* Instance variables              */
@@ -73,12 +67,13 @@ public class HelloWorld
         new HelloWorld().setArgs( args ).run();
     }
 
+    @Override
     public void run() {
         // creates a new, empty in-memory model
         Model m = ModelFactory.createDefaultModel();
 
         // load some data into the model
-        FileManager.get().readModel( m, CHEESE_DATA_FILE );
+        RDFDataMgr.read( m, CHEESE_DATA_FILE );
 
         // generate some output
         showModelSize( m );
