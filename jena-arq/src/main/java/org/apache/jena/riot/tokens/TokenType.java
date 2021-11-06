@@ -40,7 +40,7 @@ public enum TokenType {
     // RDF-star annotation syntax {|...|}
     L_ANN, R_ANN,
 
-    VBAR, AMPHERSAND,
+    VBAR, AMPERSAND,
     LBRACE, RBRACE,         // {}
     LPAREN, RPAREN,         // ()
     LBRACKET, RBRACKET,     // []

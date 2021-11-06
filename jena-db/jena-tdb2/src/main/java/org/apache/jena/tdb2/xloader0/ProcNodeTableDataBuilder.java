@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.xloader;
+package org.apache.jena.tdb2.xloader0;
 
 import java.io.OutputStream;
 import java.util.List;
@@ -37,6 +37,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.system.progress.ProgressMonitor;
 import org.apache.jena.system.progress.ProgressMonitorOutput;
+import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.solver.stats.Stats;
 import org.apache.jena.tdb2.solver.stats.StatsCollectorNodeId;
@@ -55,7 +56,7 @@ public class ProcNodeTableDataBuilder {
     private static Logger cmdLog = TDB2.logLoader;
 
     // Node Table.
-    public static void exec(DatasetGraph dsg,
+    public static void exec(String location,
                             String dataFileTriples, String dataFileQuads,
                             List<String> datafiles, boolean collectStats) {
         // Possible parser speed up. This has no effect if parsing in parallel
@@ -63,14 +64,11 @@ public class ProcNodeTableDataBuilder {
         IRIProvider provider = SystemIRIx.getProvider();
         //SystemIRIx.setProvider(new IRIProviderAny());
 
-        // This builds via the container.
-        Location location = TDBInternal.getDatabaseContainer(dsg).getLocation();
-        //System.out.printf("ProcNodeTableBuilder: location=%s\n", location);
+        // But we're not really interested in it all.
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(location);
 
-        // This formats the location correctly.
-        // But we're not really interested in it all, just setting up the node table.
 
-        ProgressMonitor monitor = ProgressMonitorOutput.create(cmdLog, "Data", BulkLoaderX.DataTick, BulkLoaderX.DataSuperTick);
+        ProgressMonitor monitor = ProgressMonitorOutput.create(cmdLog, "Data", BulkLoaderX0.DataTick, BulkLoaderX0.DataSuperTick);
         // WriteRows does it's own buffering and has direct write-to-buffer.
         // Do not buffer here.
         OutputStream outputTriples = IO.openOutputFile(dataFileTriples);

@@ -1130,7 +1130,7 @@ public class TestTokenizer {
 
     @Test
     public void tokenizer_symbol_11() {
-        testSymbol(" & ", TokenType.AMPHERSAND);
+        testSymbol(" & ", TokenType.AMPERSAND);
     }
 
     @Test
@@ -1172,7 +1172,7 @@ public class TestTokenizer {
     public void tokenUnit_symbol_16() {
         Tokenizer tokenizer = tokenizer("|&/");
         testNextToken(tokenizer, TokenType.VBAR);
-        testNextToken(tokenizer, TokenType.AMPHERSAND);
+        testNextToken(tokenizer, TokenType.AMPERSAND);
         testNextToken(tokenizer, TokenType.SLASH);
         assertFalse(tokenizer.hasNext());
     }

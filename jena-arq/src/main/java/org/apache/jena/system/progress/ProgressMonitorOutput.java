@@ -116,14 +116,12 @@ public class ProgressMonitorOutput implements ProgressMonitor {
 
     @Override
     public void start() {
-        // XXX
         getTimer().startTimer();
         lastTime = 0;
     }
 
     @Override
     public void finish() {
-        // XXX
         getTimer().endTimer();
         timeTotalMillis = getTimer().getTimeInterval();
     }

@@ -16,13 +16,13 @@
  * limitations under the License.
  */
 
-package tdb2.xloader;
+package tdb2.xloader0;
 
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb2.DatabaseMgr;
-import org.apache.jena.tdb2.xloader.ProcIndexBuild;
+import org.apache.jena.tdb2.xloader0.ProcIndexBuild;
 
 public class CmdIndexBuild {
     static {

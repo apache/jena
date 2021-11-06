@@ -399,7 +399,7 @@ public final class TokenizerText implements Tokenizer
                 return token;
             }
 
-            case CH_AMPHERSAND: reader.readChar(); token.setType(TokenType.AMPHERSAND);/*token.setImage(CH_AMPHERSAND);*/ return token;
+            case CH_AMPHERSAND: reader.readChar(); token.setType(TokenType.AMPERSAND);/*token.setImage(CH_AMPHERSAND);*/ return token;
             // Specials (if blank node processing off)
             //case CH_COLON:      reader.readChar(); token.setType(TokenType.COLON); /*token.setImage(COLON);*/return token;
 

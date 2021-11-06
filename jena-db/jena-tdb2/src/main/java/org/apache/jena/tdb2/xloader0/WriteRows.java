@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.xloader;
+package org.apache.jena.tdb2.xloader0;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -25,7 +25,7 @@ import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.lib.Hex;
 
 /** Buffered writer of rows of longs, in hex. */
-class WriteRows
+public class WriteRows
 {
     private OutputStream output;
     boolean atStartOfRow = true;

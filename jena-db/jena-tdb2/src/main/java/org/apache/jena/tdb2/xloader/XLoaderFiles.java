@@ -16,34 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.sys;
+package org.apache.jena.tdb2.xloader;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.nio.file.Path;
+import java.util.Objects;
 
-/** Utility code that should go somewhere */
-public class Util {
+/** File setup */
+public class XLoaderFiles {
+    // Fixed file names in temporary directory
+    static final String nameTriplesFile = "triples.tmp";
+    static final String nameQuadsFile = "quads.tmp";
+    static final String nameLoadInfo = "load.txt";
 
-    /** Get the last element of a list, or throw NoSuchElementException
-     * @param list
-     * @return T
-     * @throws NoSuchElementException
-     */
-    public static <T> T getLast(List<T> list) {
-        T elt = getLastOrNull(list);
-        if ( elt == null )
-            throw new NoSuchElementException();
-        return elt;
-    }
-
-    /**
-     * Get the last element of a list, or return null.
-     * @param list
-     * @return T
-     */
-    public static <T> T getLastOrNull(List<T> list) {
-        if ( list.isEmpty() )
-            return null;
-        return list.get(list.size()-1);
+    // Names.
+    public final String TMPDIR;
+    public final String triplesFile;
+    public final String quadsFile;
+    public final String loadInfo;
+    public XLoaderFiles(String TMPDIR) {
+        this.TMPDIR = Objects.requireNonNull(TMPDIR);
+        Path loc = Path.of(TMPDIR);
+        triplesFile = loc.resolve(nameTriplesFile).toString();
+        quadsFile = loc.resolve(nameQuadsFile).toString();
+        loadInfo = loc.resolve(nameLoadInfo).toString();
     }
 }

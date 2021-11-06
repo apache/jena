@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.xloader;
+package org.apache.jena.tdb2.xloader0;
 
 import java.io.InputStream;
 import java.util.Iterator;
