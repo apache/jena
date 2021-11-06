@@ -176,6 +176,8 @@
 
         <module>jena-geosparql</module>
         <module>jena-fuseki2/jena-fuseki-geosparql</module>
+        
+        <module>jena-examples</module>
 
         <module>jena-integration-tests</module>
 
@@ -235,6 +237,8 @@
 
         <module>jena-geosparql</module>
         <module>jena-fuseki2/jena-fuseki-geosparql</module>
+        
+        <module>jena-examples</module>
 
         <!--
             Tests of artifacts that require additional 
