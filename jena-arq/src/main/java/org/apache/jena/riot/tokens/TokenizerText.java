@@ -327,6 +327,8 @@ public final class TokenizerText implements Tokenizer
             return token;
         }
 
+        //if ( ch == CH_DOLLAR ) {}
+
         switch(ch)
         {
             // DOT can start a decimal.  Check for digit.
