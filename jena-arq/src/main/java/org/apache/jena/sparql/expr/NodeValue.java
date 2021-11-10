@@ -38,7 +38,6 @@ import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.datatypes.xsd.XSDDateTime ;
 import org.apache.jena.ext.xerces.DatatypeFactoryInst;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -210,30 +209,26 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeDate(String lexicalForm)
     { return NodeValue.makeNode(lexicalForm, XSDdate) ; }
 
-    public static NodeValue makeDateTime(Calendar cal)
-    {
-        String lex = DateTimeUtils.calendarToXSDDateTimeString(cal) ;
-        return NodeValue.makeNode(lex, XSDdateTime) ;
+    public static NodeValue makeDateTime(Calendar cal) {
+        String lex = DateTimeUtils.calendarToXSDDateTimeString(cal);
+        return NodeValue.makeNode(lex, XSDdateTime);
     }
 
-    public static NodeValue makeDateTime(XMLGregorianCalendar cal)
-    {
-        String lex = cal.toXMLFormat() ;
-        Node node = org.apache.jena.graph.NodeFactory.createLiteral(lex, XSDdateTime) ;
-        return new NodeValueDateTime(lex, node) ;
+    public static NodeValue makeDateTime(XMLGregorianCalendar cal) {
+        String lex = cal.toXMLFormat();
+        Node node = NodeFactory.createLiteral(lex, XSDdateTime);
+        return NodeValueDateTime.create(lex, node);
     }
 
-    public static NodeValue makeDate(Calendar cal)
-    {
-        String lex = DateTimeUtils.calendarToXSDDateString(cal) ;
-        return NodeValue.makeNode(lex, XSDdate) ;
+    public static NodeValue makeDate(Calendar cal) {
+        String lex = DateTimeUtils.calendarToXSDDateString(cal);
+        return NodeValue.makeNode(lex, XSDdate);
     }
 
-    public static NodeValue makeDate(XMLGregorianCalendar cal)
-    {
-        String lex = cal.toXMLFormat() ;
-        Node node = org.apache.jena.graph.NodeFactory.createLiteral(lex, XSDdate) ;
-        return new NodeValueDateTime(lex, node) ;
+    public static NodeValue makeDate(XMLGregorianCalendar cal) {
+        String lex = cal.toXMLFormat();
+        Node node = NodeFactory.createLiteral(lex, XSDdate);
+        return NodeValueDateTime.create(lex, node);
     }
 
     public static NodeValue makeDuration(String lexicalForm)
@@ -1037,13 +1032,16 @@ public abstract class NodeValue extends ExprNode
 
             // Order here is promotion order integer-decimal-float-double
 
-            if ( ! datatype.equals(XSDdecimal) ) {
+            // XSD allows whitespace. Java String.trim removes too much
+            // so must test for validity on the untrimmed lexical form.
+            String lexTrimmed = lex.trim();
+
+            if ( ! datatype.equals(XSDdecimal) ) { // ! decimal is short for integers and all derived types.
                 // XSD integer and derived types
                 if ( XSDinteger.isValidLiteral(lit) )
                 {
-                    // .trim() implements the facet of whitespace collapse.
                     // BigInteger does not accept such whitespace.
-                    String s = node.getLiteralLexicalForm().trim() ;
+                    String s = lexTrimmed;
                     if ( s.startsWith("+") )
                         // BigInteger does not accept leading "+"
                         s = s.substring(1) ;
@@ -1055,7 +1053,7 @@ public abstract class NodeValue extends ExprNode
             }
 
             if ( datatype.equals(XSDdecimal) && XSDdecimal.isValidLiteral(lit) ) {
-                BigDecimal decimal = new BigDecimal(lit.getLexicalForm()) ;
+                BigDecimal decimal = new BigDecimal(lexTrimmed) ;
                 return new NodeValueDecimal(decimal, node) ;
             }
 
@@ -1071,57 +1069,54 @@ public abstract class NodeValue extends ExprNode
                 return new NodeValueDouble(d, node) ;
             }
 
+            if ( datatype.equals(XSDboolean) && XSDboolean.isValidLiteral(lit) ) {
+                boolean b = (Boolean) lit.getValue();
+                return new NodeValueBoolean(b, node) ;
+            }
+
             if ( (datatype.equals(XSDdateTime) || datatype.equals(XSDdateTimeStamp)) && XSDdateTime.isValid(lex) ) {
-                return new NodeValueDateTime(lex, node) ;
+                return NodeValueDateTime.create(lexTrimmed, node) ;
             }
 
             if ( datatype.equals(XSDdate) && XSDdate.isValidLiteral(lit) ) {
-                // Jena datatype support works on masked dataTimes.
-                //XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
-                return new NodeValueDateTime(lex, node) ;
+                return NodeValueDateTime.create(lexTrimmed, node) ;
             }
 
             if ( datatype.equals(XSDtime) && XSDtime.isValidLiteral(lit) ) {
-                return new NodeValueDateTime(lex, node) ;
+                return NodeValueDateTime.create(lexTrimmed, node) ;
             }
 
             if ( datatype.equals(XSDgYear) && XSDgYear.isValidLiteral(lit) ) {
-                return new NodeValueDateTime(lex, node) ;
+                return NodeValueDateTime.create(lexTrimmed, node) ;
             }
             if ( datatype.equals(XSDgYearMonth) && XSDgYearMonth.isValidLiteral(lit) ) {
-                return new NodeValueDateTime(lex, node) ;
+                return NodeValueDateTime.create(lexTrimmed, node) ;
             }
             if ( datatype.equals(XSDgMonth) && XSDgMonth.isValidLiteral(lit) ) {
-                XSDDateTime time = (XSDDateTime)lit.getValue() ;
-                return new NodeValueDateTime(lex, node) ;
+                return NodeValueDateTime.create(lexTrimmed, node) ;
             }
 
             if ( datatype.equals(XSDgMonthDay) && XSDgMonthDay.isValidLiteral(lit) ) {
-                XSDDateTime time = (XSDDateTime)lit.getValue() ;
-                return new NodeValueDateTime(lex, node) ;
+                return NodeValueDateTime.create(lexTrimmed, node) ;
             }
             if ( datatype.equals(XSDgDay) && XSDgDay.isValidLiteral(lit) ) {
-                XSDDateTime time = (XSDDateTime)lit.getValue() ;
-                return new NodeValueDateTime(lex, node) ;
+                return NodeValueDateTime.create(lexTrimmed, node) ;
             }
 
+            // -- Duration
+
             if ( datatype.equals(XSDduration) && XSDduration.isValid(lex) ) {
-                Duration duration = xmlDatatypeFactory.newDuration(lex) ;
+                Duration duration = xmlDatatypeFactory.newDuration(lexTrimmed) ;
                 return new NodeValueDuration(duration, node) ;
             }
 
             if ( datatype.equals(XSDyearMonthDuration) && XSDyearMonthDuration.isValid(lex) ) {
-                Duration duration = xmlDatatypeFactory.newDuration(lex) ;
+                Duration duration = xmlDatatypeFactory.newDuration(lexTrimmed) ;
                 return new NodeValueDuration(duration, node) ;
             }
             if ( datatype.equals(XSDdayTimeDuration) && XSDdayTimeDuration.isValid(lex) ) {
-                Duration duration = xmlDatatypeFactory.newDuration(lex) ;
+                Duration duration = xmlDatatypeFactory.newDuration(lexTrimmed) ;
                 return new NodeValueDuration(duration, node) ;
-            }
-
-            if ( datatype.equals(XSDboolean) && XSDboolean.isValidLiteral(lit) ) {
-                boolean b = (Boolean) lit.getValue();
-                return new NodeValueBoolean(b, node) ;
             }
 
             // If wired into the TypeMapper via RomanNumeralDatatype.enableAsFirstClassDatatype
@@ -1136,7 +1131,7 @@ public abstract class NodeValue extends ExprNode
             {
                 if ( lit.getDatatypeURI().equals(RomanNumeralDatatype.get().getURI()) )
                 {
-                    Object obj = RomanNumeralDatatype.get().parse(lit.getLexicalForm()) ;
+                    Object obj = RomanNumeralDatatype.get().parse(lexTrimmed) ;
                     if ( obj instanceof Integer )
                         return new NodeValueInteger(((Integer)obj).longValue()) ;
                     if ( obj instanceof RomanNumeral )

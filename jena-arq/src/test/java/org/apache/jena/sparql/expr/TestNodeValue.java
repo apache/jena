@@ -386,7 +386,7 @@ public class TestNodeValue
 
     @Test
     public void testNodeFloat1() {
-        // Theer is no SPARQL representation in short form of a float.
+        // There is no SPARQL representation in short form of a float.
         NodeValue v = NodeValue.makeNode("57.0", XSDDatatype.XSDfloat);
         assertTrue("Not a number: " + v, v.isNumber());
         assertTrue("Not a float: " + v, v.isFloat());
@@ -398,8 +398,22 @@ public class TestNodeValue
     }
 
     @Test
+    public void testNodeFloat2() {
+        // WhiteSpace facet
+        NodeValue v = NodeValue.makeNode(" 57.0 ", XSDDatatype.XSDfloat);
+        assertTrue("Not a number: " + v, v.isNumber());
+        assertTrue("Not a float: " + v, v.isFloat());
+        assertTrue("Not a double(float): " + v, v.isDouble());
+        assertTrue("Not a node: " + v, v.hasNode());
+        String actualStr = v.asQuotedString();
+
+        assertEquals("Print form mismatch", "\" 57.0 \"^^<" + XSDDatatype.XSDfloat.getURI() + ">", actualStr);
+    }
+
+
+    @Test
     public void testNodeDouble1() {
-        // Note input form is legal and canomical as a lexical form double
+        // Note input form is legal and canonical as a lexical form double
         NodeValue v = NodeValue.makeNode("57.0e0", XSDDatatype.XSDdouble);
         assertTrue("Not a number: " + v, v.isNumber());
         assertTrue("Not a double: " + v, v.isDouble());
@@ -444,7 +458,6 @@ public class TestNodeValue
         assertTrue("Not a node: " + v, v.hasNode());
     }
 
-
     @Test
     public void testNodeBool1() {
         NodeValue v = NodeValue.makeNode("true", XSDDatatype.XSDboolean);
@@ -477,6 +490,50 @@ public class TestNodeValue
         // assertTrue("Not a node: "+v, v.hasNode()) ;
         assertFalse("Not false: " + v, v.getBoolean());
         assertFalse("Not false: " + v, XSDFuncOp.booleanEffectiveValue(v));
+    }
+
+    @Test
+    public void testNodeDateTime1() {
+        NodeValue v = NodeValue.makeNode("2021-11-08T20:37:25+01:00", XSDDatatype.XSDdateTime);
+        assertTrue("Not a dateTime: " + v, v.isDateTime());
+    }
+
+    @Test
+    public void testNodeDateTime2() {
+        NodeValue v = NodeValue.makeNode("\t2021-11-08T20:37:26+01:00\t", XSDDatatype.XSDdateTime);
+        assertTrue("Not a dateTime: " + v, v.isDateTime());
+    }
+
+    @Test
+    public void testNodeGYear1() {
+        NodeValue v = NodeValue.makeNode("2021", XSDDatatype.XSDgYear);
+        assertTrue("Not a gYear: " + v, v.isGYear());
+    }
+
+    @Test
+    public void testNodeGYear2() {
+        NodeValue v = NodeValue.makeNode("\t2021\t", XSDDatatype.XSDgYear);
+        assertTrue("Not a gYear: " + v, v.isGYear());
+    }
+
+    @Test
+    public void testNodeDuration1() {
+        NodeValue v = NodeValue.makeNode("P1Y", XSDDatatype.XSDyearMonthDuration);
+        assertTrue("Not a yearMonthDuration: " + v, v.isYearMonthDuration());
+        assertTrue("Not a duration: " + v, v.isDuration());
+    }
+
+    @Test
+    public void testNodeDuration2() {
+        NodeValue v = NodeValue.makeNode("P1Y  ", XSDDatatype.XSDduration);
+        assertTrue("Not a yearMonthDuration: " + v, v.isDuration());
+    }
+
+    @Test
+    public void testNodeDuration3() {
+        // Internal whiespace -> invalide.
+        NodeValue v = NodeValue.makeNode("P1Y  10S", XSDDatatype.XSDduration);
+        assertFalse("Is a valid duration: " + v, v.isDuration());
     }
 
     static NodeValue make(String str) {
