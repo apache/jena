@@ -67,6 +67,11 @@ public interface Binding
         return get(Var.alloc(varName));
     }
 
+    /** Test whether a variable is bound to some object */
+    public default boolean contains(String varName) {
+        return contains(Var.alloc(varName));
+    }
+
     /** Return the object bound to a variable, or null */
     public Node get(Var var);
 
