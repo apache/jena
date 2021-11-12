@@ -43,7 +43,7 @@ class NodeValueRewriter extends AbstractRewriter<NodeValue> implements NodeValue
 
     /**
      * Constructor.
-     * 
+     *
      * @param values The values to replace.
      */
     public NodeValueRewriter(Map<Var, Node> values) {
@@ -92,7 +92,7 @@ class NodeValueRewriter extends AbstractRewriter<NodeValue> implements NodeValue
 
     @Override
     public void visit(NodeValueDateTime nv) {
-        push(new NodeValueDateTime(nv.getDateTime().toXMLFormat(), changeNode(nv.asNode())));
+        push(NodeValueDateTime.create(nv.getDateTime().toXMLFormat(), changeNode(nv.asNode())));
     }
 
     @Override
