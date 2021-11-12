@@ -52,6 +52,18 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-main</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- Require a logging implementation -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
