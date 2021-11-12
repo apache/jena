@@ -342,16 +342,7 @@ See http://yasr.yasgui.org/license.txt
 
 - - - - - - - - - - - - - - - - - - - - - - - 
 
-From Apache HttpComponents Client
-
-This project contains annotations derived from JCIP-ANNOTATIONS
-Copyright (c) 2005 Brian Goetz and Tim Peierls.
-See http://www.jcip.net and the Creative Commons Attribution License 
-(http://creativecommons.org/licenses/by/2.5)
-
-- - - - - - - - - - - - - - - - - - - - - - - 
-
-From Apache Lucene
+From Apache Lucene:
 
 Some code in core/src/java/org/apache/lucene/util/UnicodeUtil.java was
 derived from unicode conversion examples available at

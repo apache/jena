@@ -37,13 +37,6 @@ modified April 2001  by Iris Van den Broeke, Daniel Deville.
 
 - - - - - - - - - - - - - - - - - - - - - - -
 
-From Apache HttpComponents Client:
-
-This project contains annotations derived from JCIP-ANNOTATIONS
-Copyright (c) 2005 Brian Goetz and Tim Peierls. See http://www.jcip.net
-
-- - - - - - - - - - - - - - - - - - - - - - -
-
   Apache Xerces Java
    Copyright 1999-2013 The Apache Software Foundation
 
