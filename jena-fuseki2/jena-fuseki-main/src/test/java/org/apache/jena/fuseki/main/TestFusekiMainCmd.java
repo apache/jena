@@ -34,7 +34,6 @@ import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.junit.After;
 import org.junit.Test;
 
@@ -68,7 +67,7 @@ public class TestFusekiMainCmd {
     @Test public void general_01() {
         server("--general=/q", "--empty");
         String string = "SELECT * { VALUES ?x {1 2 3} }";
-        try ( RDFConnection conn = RDFConnectionFactory.connect(serverURL+"/q", null, null) ) {
+        try ( RDFConnection conn = RDFConnection.queryConnect(serverURL+"/q") ) {
             conn.queryResultSet(string, rs-> {
                 long count = ResultSetFormatter.consume(rs);
                 assertEquals(3,count);

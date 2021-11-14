@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.rdfs.RDFSFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -47,7 +46,7 @@ public class TestFusekiRDFS {
         server.start();
         int port = server.getHttpPort();
         String URL = "http://localhost:"+port+"/ds";
-        try ( RDFConnection conn = RDFConnectionFactory.connect(URL) ) {
+        try ( RDFConnection conn = RDFConnection.connect(URL) ) {
             conn.queryResultSet("PREFIX :<http://example/> SELECT ?t { :o a ?t }",
                                 rs->{
                                     assertTrue(rs.hasNext());

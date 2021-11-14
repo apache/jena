@@ -267,7 +267,7 @@ public abstract class CmdLangParse extends CmdGeneral
 
         // Should use ErrorHandlerRecorder
         ErrorHandlerTracking errHandler = ErrorHandlerFactory.errorHandlerTracking(ErrorHandlerFactory.stdLogger,
-                                                                                   modLangParse.stopOnBadTerm(),
+                                                                                   true,
                                                                                    modLangParse.stopOnWarnings());
         builder.errorHandler(errHandler);
 

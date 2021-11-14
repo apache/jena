@@ -56,6 +56,14 @@ public class RDFConnectionRemoteBuilder {
         return this;
     }
 
+    /**
+     * Query-only settings.
+     */
+    public RDFConnectionRemoteBuilder queryOnly() {
+        builder.queryOnly();
+        return this;
+    }
+
     /** Name of the SPARQL query service.
      * <p>
      * This can be a short name, relative to the destination URL,

@@ -22,9 +22,8 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 
-/* 
+/*
  * Example of a connection performing a remote query.
  * (assumes sparql.org is up and running)
  */
@@ -34,7 +33,7 @@ public class RDFConnectionExample3 {
         String queryService = "http://sparql.org/books/query";
 
         // Query service, no update, no graph store protocol.
-        try ( RDFConnection conn = RDFConnectionFactory.connect(queryService, null, null) ) {
+        try ( RDFConnection conn = RDFConnection.connect(queryService) ) {
             conn.queryResultSet(query, ResultSetFormatter::out);
         }
     }

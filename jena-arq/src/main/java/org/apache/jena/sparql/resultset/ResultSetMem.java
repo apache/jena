@@ -146,6 +146,9 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
     @Override
     public QuerySolution next() { return nextSolution() ; }
 
+    @Override
+    public void close() {}
+
     /** Reset this result set back to the beginning */
     public void rewind( ) { reset() ; }
 

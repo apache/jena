@@ -22,18 +22,17 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdfconnection.AbstractTestRDFConnection;
 import org.apache.jena.rdfconnection.Isolation;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.tdb.TDBFactory ;
 
 public class TestRDFConnectionLocalTDB extends AbstractTestRDFConnection {
-    
+
     @Override
     protected boolean supportsAbort() { return true ; }
-    
+
     @Override
     protected RDFConnection connection() {
         Dataset ds = TDBFactory.createDataset() ;
-        return RDFConnectionFactory.connect(ds, Isolation.COPY) ;
+        return RDFConnection.connect(ds, Isolation.COPY) ;
     }
 }
 

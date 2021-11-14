@@ -262,7 +262,7 @@ public class QueryExecHTTP implements QueryExec {
     @Override
     public DatasetGraph constructDataset(DatasetGraph dataset){
         checkNotClosed();
-        check(QueryType.CONSTRUCT_QUADS);
+        check(QueryType.CONSTRUCT);
         return execDataset(dataset);
     }
 

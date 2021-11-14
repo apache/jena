@@ -53,7 +53,7 @@ public class ModLangParse extends ModBase
     private boolean explicitCheck       = false;
     private boolean explicitNoCheck     = false;
 
-    private boolean stopOnBadTerm       = false;   // Checking error
+    private boolean stopOnError         = true;
     private boolean stopOnWarnings      = false;   // Checking warning
 
     private boolean bitbucket           = false;
@@ -118,7 +118,7 @@ public class ModLangParse extends ModBase
         }
 
         if ( cmdLine.contains(argStop) )
-            stopOnBadTerm = true;
+            stopOnError = true;
 
         if ( cmdLine.contains(argStopWarn) )
             stopOnWarnings = true;
@@ -164,7 +164,7 @@ public class ModLangParse extends ModBase
     }
 
     public boolean stopOnBadTerm() {
-        return stopOnBadTerm;
+        return stopOnError;
     }
 
     public boolean stopOnWarnings() {

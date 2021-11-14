@@ -29,10 +29,9 @@ import org.apache.jena.fuseki.test.FusekiTest;
 import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
-import org.apache.jena.update.*;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
+import org.apache.jena.update.UpdateExecution;
 import org.apache.jena.web.HttpSC;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -57,8 +56,7 @@ public class TestWebappServerReadOnly
     @Test
     public void query_readonly() {
         Query query = QueryFactory.create("ASK{}");
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(serviceQuery(), query);
-        qexec.execAsk();
+        QueryExecutionHTTP.service(serviceQuery(), query).execAsk();
     }
 
     @Test()

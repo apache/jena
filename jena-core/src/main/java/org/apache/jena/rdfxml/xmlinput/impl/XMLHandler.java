@@ -17,7 +17,7 @@
  */
 
 /* This file includes contributions by:
- * (c) Copyright 2003, Plugged In Software 
+ * (c) Copyright 2003, Plugged In Software
  * See end of file for BSD-style license.
  */
 
@@ -53,7 +53,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     protected int idsUsedCount = 0;
 
     public XMLHandler() {}
-    
+
     public void triple(ANode s, ANode p, ANode o) {
         StatementHandler stmt;
         boolean bad=s.isTainted() || p.isTainted() || o.isTainted();
@@ -265,7 +265,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     boolean ignoring(int eCode) {
         return options.getErrorMode(eCode) == EM_IGNORE;
     }
-    
+
     public boolean isError(int eCode) {
         return options.getErrorMode(eCode) == EM_ERROR;
     }
@@ -276,7 +276,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     private boolean allowRelativeReferences = false;
-    
+
     private AbsXMLContext initialContextWithBase(String base) throws SAXParseException {
         allowRelativeReferences = false;
             if (base == null) {
@@ -307,7 +307,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 //                        // ignore, just leave it alone.
 //                    }
 //                    System.err.println(" ==> "+base);
-//                    
+//
 //                }
                 return new XMLBaselessContext(this,
                         ERR_RESOLVING_AGAINST_RELATIVE_BASE).withBase(this,base);
@@ -355,7 +355,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 
     public void setOptionsWith(ARPOptions newOpts) {
            options = newOpts.copy();
-        
+
     }
 
     public void setHandlersWith(ARPHandlers newHh) {
@@ -364,14 +364,14 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         handlers.setExtendedHandler(newHh.getExtendedHandler());
         handlers.setNamespaceHandler(newHh.getNamespaceHandler());
         handlers.setStatementHandler(newHh.getStatementHandler());
-       
+
     }
 
     private Map<String, Object> nodeIdUserData;
 
     public void initParse(String base, String lang) throws SAXParseException {
         nodeIdUserData = new HashMap<>();
-        idsUsed = 
+        idsUsed =
         	ignoring(WARN_REDEFINITION_OF_ID)?
         			null:
         	        new HashMap<>();
@@ -387,7 +387,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     /**
      * This method must be always be called after parsing, e.g. in a finally
      * block.
-     * 
+     *
      */
     void afterParse() {
         while (frame != null) {
@@ -436,7 +436,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 //                                    + uri
 //                                    + "> is not well formed.");
 //                    return;
-//                 
+//
 //                }
                 if (!u.isAbsolute()) {
                     warning(null,
@@ -458,7 +458,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                             "Bad namespace URI: <"
                                     + u.toString()
                                     + ">. " + e.getMessage());
-              } 
+              }
 
                 if (uri.startsWith(rdfns) && !uri.equals(rdfns))
                     warning(null,WARN_BAD_RDF_NAMESPACE_URI, "Namespace URI ref <"
@@ -466,7 +466,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                 if (uri.startsWith(xmlns) && !uri.equals(xmlns))
                     warning(null,WARN_BAD_XML_NAMESPACE_URI, "Namespace URI ref <"
                             + uri + "> may not be used in RDF/XML.");
-             }   
+             }
     }
 
     public boolean allowRelativeURIs() {
@@ -481,7 +481,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     private StatementHandler badStatementHandler = nullStatementHandler;
-    
+
     public void setBadStatementHandler(StatementHandler sh) {
         badStatementHandler = sh;
     }
@@ -496,7 +496,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         }
     };
     final public static ExtendedHandler nullScopeHandler = new ExtendedHandler() {
-        
+
         @Override
         public void endBNodeScope(AResource bnode) {
         }
@@ -517,7 +517,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 }
 
 /*
- *  (c) Copyright 2003, Plugged In Software 
+ *  (c) Copyright 2003, Plugged In Software
  *
  *  All rights reserved.
  *

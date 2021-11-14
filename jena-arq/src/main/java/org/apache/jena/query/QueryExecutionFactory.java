@@ -316,38 +316,44 @@ public class QueryExecutionFactory
 
     // ---------------- Remote query execution
 
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service   URL of the remote service
+    /**
+     * Create a QueryExecution that will access a SPARQL service over HTTP
+     * @param serviceURL   URL of the remote service
      * @param query     Query string to execute
      * @return QueryExecution
+     * @deprecated Use {@code QueryExecution.service(serviceURL).query(query).build()} or {@link QueryExecutionHTTP#service}
      */
-    static public QueryExecutionHTTP sparqlService(String service, Query query) {
-        return sparqlService(service, query, null, null);
+    @Deprecated
+    static public QueryExecutionHTTP sparqlService(String serviceURL, Query query) {
+        return QueryExecution.service(serviceURL).query(query).build();
+    }
+
+    /**
+     * Create a QueryExecution that will access a SPARQL service over HTTP
+     * @param serviceURL   URL of the remote service
+     * @param query        Query string to execute
+     * @return QueryExecution
+     * @deprecated Use {@code QueryExecution.service(serviceURL).query(query).build()} or {@link QueryExecutionHTTP#service}
+     */
+    @Deprecated
+    static public QueryExecutionHTTP sparqlService(String serviceURL, String query) {
+        return QueryExecution.service(serviceURL).query(query).build();
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service   URL of the remote service
-     * @param query     Query string to execute
-     * @return QueryExecution
-     */
-    static public QueryExecutionHTTP sparqlService(String service, String query) {
-        return sparqlService(service, query, null, null);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service
+     * @param serviceURL    URL of the remote service
      * @param query         Query string to execute
      * @param defaultGraph  URI of the default graph
      * @return QueryExecution
      * @deprecate Use {QueryExecutionHTTP.create()....build()}.
      */
     @Deprecated
-    static public QueryExecution sparqlService(String service, String query, String defaultGraph) {
-        return sparqlService(service, query, List.of(defaultGraph), null);
+    static public QueryExecution sparqlService(String serviceURL, String query, String defaultGraph) {
+        return sparqlService(serviceURL, query, List.of(defaultGraph), null);
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service           URL of the remote service
+     * @param serviceURL        URL of the remote service
      * @param query             Query string to execute
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
@@ -355,12 +361,12 @@ public class QueryExecutionFactory
      * @deprecate Use {QueryExecutionHTTP.create()....build()}.
      */
     @Deprecated
-    static public QueryExecutionHTTP sparqlService(String service, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
-        return sparqlService(service, query.toString(), defaultGraphURIs, namedGraphURIs);
+    static public QueryExecutionHTTP sparqlService(String serviceURL, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
+        return sparqlService(serviceURL, query.toString(), defaultGraphURIs, namedGraphURIs);
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service           URL of the remote service
+     * @param serviceURL        URL of the remote service
      * @param query             Query string to execute
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
@@ -368,8 +374,8 @@ public class QueryExecutionFactory
      * @deprecate Use {QueryExecutionHTTP.create()....build()}.
      */
     @Deprecated
-    static public QueryExecutionHTTP sparqlService(String service, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
-        QueryExecutionHTTPBuilder builder = createExecutionHTTP(service, query);
+    static public QueryExecutionHTTP sparqlService(String serviceURL, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
+        QueryExecutionHTTPBuilder builder = createExecutionHTTP(serviceURL, query);
         if ( defaultGraphURIs != null )
             defaultGraphURIs.forEach(builder::addDefaultGraphURI);
         if ( namedGraphURIs != null )
@@ -378,15 +384,15 @@ public class QueryExecutionFactory
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param service       URL of the remote service
+     * @param serviceURL    URL of the remote service
      * @param query         Query to execute
      * @param defaultGraph  URI of the default graph
      * @return QueryExecution
      * @deprecate Use {QueryExecutionHTTP.create()....build()}.
      */
     @Deprecated
-    static public QueryExecutionHTTP sparqlService(String service, Query query, String defaultGraph) {
-        return sparqlService(service, query.toString(), List.of(defaultGraph), null);
+    static public QueryExecutionHTTP sparqlService(String serviceURL, Query query, String defaultGraph) {
+        return sparqlService(serviceURL, query.toString(), List.of(defaultGraph), null);
     }
 
     /** Create a service request for remote execution over HTTP.

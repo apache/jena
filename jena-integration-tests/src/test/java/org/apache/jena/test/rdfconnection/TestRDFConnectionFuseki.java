@@ -24,7 +24,6 @@ import org.apache.jena.fuseki.main.FusekiTestLib;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.web.HttpSC.Code;
 import org.junit.Ignore;
@@ -33,7 +32,7 @@ import org.junit.Test;
 public class TestRDFConnectionFuseki extends TestRDFConnectionRemote {
     @Override
     protected RDFConnection connection() {
-        return RDFConnectionFactory.connectFuseki(server.datasetURL("/ds"));
+        return RDFConnection.connect(server.datasetURL("/ds"));
     }
 
     @Ignore

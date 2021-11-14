@@ -32,7 +32,7 @@ import org.apache.jena.sparql.util.Symbol;
  * The dataset ({@link QueryExecutionDatasetBuilder}) and remote endpoint ({@link QueryExecutionHTTPBuilder})
  * set the target for the {@link QueryExecution} and may provide operations specific to those two cases.
  * <p>
- * Appropriate builders are available from {QueryExecution#dataset(Dataset)} and {@link QueryExecution#endpoint(String)}.
+ * Appropriate builders are available from {QueryExecution#dataset(Dataset)} and {@link QueryExecution#service(String)}.
  */
 public interface QueryExecutionBuilder {
 

@@ -32,7 +32,6 @@ import org.apache.jena.fuseki.webapp.FusekiWebapp;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.web.HttpSC;
 import org.junit.Test;
@@ -70,7 +69,7 @@ public class TestAdminAPI extends AbstractFusekiWebappTest {
 
         HttpOp.httpPostForm(admin+"datasets", params);
 
-        RDFConnection conn = RDFConnectionFactory.connect(datasetURL);
+        RDFConnection conn = RDFConnection.connect(datasetURL);
         conn.update("INSERT DATA { <x:s> <x:p> 123 }");
         int x1 = count(conn);
         assertEquals(1, x1);

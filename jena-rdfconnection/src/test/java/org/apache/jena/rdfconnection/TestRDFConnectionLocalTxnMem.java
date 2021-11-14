@@ -28,9 +28,9 @@ public class TestRDFConnectionLocalTxnMem extends AbstractTestRDFConnection {
 
     @Override
     protected RDFConnection connection() {
-        // Full transactional in-memory dataset.  
+        // Full transactional in-memory dataset.
         Dataset ds = DatasetFactory.createTxnMem();
-        return RDFConnectionFactory.connect(ds);
+        return RDFConnection.connect(ds);
     }
 }
 

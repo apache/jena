@@ -24,7 +24,9 @@ package org.apache.jena.query;
 public enum QueryType {
     UNKNOWN,
     // SPARQL 1.1
-    SELECT, CONSTRUCT, ASK, DESCRIBE,
+    SELECT, CONSTRUCT, ASK, DESCRIBE
     // ARQ special formats.
-    CONSTRUCT_JSON, CONSTRUCT_QUADS
+    ,CONSTRUCT_JSON
+    // Treated as CONSTRUCT because parser and conneg overlap.
+    //, CONSTRUCT_QUADS
 }

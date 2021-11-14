@@ -116,7 +116,7 @@ public class QueryTransformOps {
         switch(q2.queryType()) {
             case ASK : break;
             case CONSTRUCT :
-            case CONSTRUCT_QUADS :
+            //case CONSTRUCT_QUADS :
                 // Variables in CONSTRUCT template.
                 Template template = q2.getConstructTemplate();
                 QuadAcc acc = new QuadAcc();

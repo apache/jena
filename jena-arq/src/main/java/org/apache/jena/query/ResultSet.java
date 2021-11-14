@@ -97,4 +97,6 @@ public interface ResultSet extends Iterator<QuerySolution>
     public default ResultSet materialise() {
         return rewindable();
     }
+
+    public void close();
 }

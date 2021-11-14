@@ -43,7 +43,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
@@ -132,7 +131,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
                 ,"}"
                 );
             String plainUrl = server.datasetURL("/plain");
-            try(RDFConnection conn = RDFConnectionFactory.connect(plainUrl)) {
+            try(RDFConnection conn = RDFConnection.connect(plainUrl)) {
                 conn.update(data);
             }
         } else {
@@ -168,7 +167,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
 
     @Test public void query_user1() {
         user.set("user1");
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             Set<Node> visible = query(conn, "SELECT * { GRAPH ?g { ?s ?p ?o }}");
             assertSeen(visible, s1, s3);
         }
@@ -176,7 +175,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
 
     @Test public void query_userX() {
         user.set("userX"); // No such user in the registry
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             Set<Node> visible = query(conn, "SELECT * { GRAPH ?g { ?s ?p ?o }}");
             assertSeen(visible);
         }
@@ -184,7 +183,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
 
     @Test public void query_no_user() {
         user.set(null); // No user.
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             Set<Node> visible = query(conn, "SELECT * { GRAPH ?g { ?s ?p ?o }}");
             assertSeen(visible);
         }
@@ -192,7 +191,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
 
     @Test public void query_user2() {
         user.set("user2");
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             Set<Node> visible = query(conn, "SELECT * { GRAPH ?g { ?s ?p ?o }}");
             assertSeen(visible, s9);
         }
@@ -200,7 +199,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
 
     @Test public void query_userZ() {
         user.set("userZ"); // No graphs with data.
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             Set<Node> visible = query(conn, "SELECT * { GRAPH ?g { ?s ?p ?o }}");
             assertSeen(visible);
         }
@@ -209,7 +208,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
     // GSP. "http://host/graphname1"
     @Test public void gsp_dft_user1() {
         user.set("user1");
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             Set<Node> visible = gsp(conn, null);
             assertSeen(visible);
         }
@@ -217,7 +216,7 @@ public abstract class AbstractTestFusekiSecurityAssembler {
 
     @Test public void gsp_ng_user1() {
         user.set("user1");
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             Set<Node> visible = gsp(conn, "http://host/graphname1");
             assertSeen(visible, s1);
         }
@@ -225,63 +224,63 @@ public abstract class AbstractTestFusekiSecurityAssembler {
 
     @Test public void gsp_dft_user2() {
         user.set("user2");
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             gsp404(conn, null);
         }
     }
 
     @Test public void gsp_ng_user2() {
         user.set("user2");
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             gsp404(conn, "http://host/graphname1");
         }
     }
 
     @Test public void gsp_dft_userX() {
         user.set("userX");
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             gsp404(conn, null);
         }
     }
 
     @Test public void gsp_ng_userX() {
         user.set("userX");
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             gsp404(conn, "http://host/graphname1");
         }
     }
 
     @Test public void gsp_dft_user_null() {
         user.set(null);
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             gsp404(conn, null);
         }
     }
 
     @Test public void gsp_ng_user_null() {
-        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
             gsp404(conn, "http://host/graphname1");
         }
     }
 
 //        // Quads
 //        user.set("user1");
-//        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+//        try(RDFConnection conn = RDFConnection.connect(getURL())) {
 //            Set<Node> visible = dataset(conn);
 //            assertSeen(visible, s1, s3);
 //        }
 //        user.set("user2");
-//        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+//        try(RDFConnection conn = RDFConnection.connect(getURL())) {
 //            Set<Node> visible = dataset(conn);
 //            assertSeen(visible, s9);
 //        }
 //        user.set("userX");
-//        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+//        try(RDFConnection conn = RDFConnection.connect(getURL())) {
 //            Set<Node> visible = dataset(conn);
 //            assertSeen(visible);
 //        }
 //        user.set(null);
-//        try(RDFConnection conn = RDFConnectionFactory.connect(getURL())) {
+//        try(RDFConnection conn = RDFConnection.connect(getURL())) {
 //            Set<Node> visible = dataset(conn);
 //            assertSeen(visible);
 //        }

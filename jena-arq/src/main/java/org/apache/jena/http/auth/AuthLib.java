@@ -104,7 +104,7 @@ public class AuthLib {
         AuthRequestModifier digestAuthModifier;
         switch (aHeader.authScheme) {
             case BASIC :
-                digestAuthModifier = req->req.setHeader(HttpNames.hAuthorization, HttpLib.basicAuth(passwordRecord.getUsername(), passwordRecord.getPassword()));
+                digestAuthModifier = basicAuthModifier(passwordRecord.getUsername(), passwordRecord.getPassword());
                 break;
             case DIGEST : {
                 String requestTarget = HttpLib.requestTarget(request.uri());

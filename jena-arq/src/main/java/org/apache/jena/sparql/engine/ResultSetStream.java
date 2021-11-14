@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
@@ -100,11 +100,10 @@ public class ResultSetStream implements ResultSet
         }
     }
 
-    private void close()
-    {
+    @Override
+    public void close() {
         // ARQ QueryIterators are org.apache.jena.atlas.lib.Closable.
-        if ( queryExecutionIter instanceof Closeable )
-            ((Closeable)queryExecutionIter).close();
+        Iter.close(queryExecutionIter);
         queryExecutionIter = null;
     }
 

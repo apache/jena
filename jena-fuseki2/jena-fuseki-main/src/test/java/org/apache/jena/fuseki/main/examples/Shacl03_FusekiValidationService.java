@@ -27,7 +27,6 @@ import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.http.HttpRDF;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shacl.ValidationReport;
@@ -51,7 +50,7 @@ public class Shacl03_FusekiValidationService {
                 .build();
         try {
             server.start();
-            try ( RDFConnection conn = RDFConnectionFactory.connect("http://localhost:3030/ds")) {
+            try ( RDFConnection conn = RDFConnection.connect("http://localhost:3030/ds")) {
                 conn.put("fu-data.ttl");
             }
 

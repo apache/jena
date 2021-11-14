@@ -25,12 +25,12 @@ public class TestRDFConnectionLocalMRSW extends AbstractTestRDFConnection {
 
     @Override
     protected boolean supportsAbort() { return false; }
-    
+
     @Override
     protected RDFConnection connection() {
-        // General purpose, mixed storage, MRSW dataset.  
+        // General purpose, mixed storage, MRSW dataset.
         Dataset ds = DatasetFactory.create();
-        return RDFConnectionFactory.connect(ds);
+        return RDFConnection.connect(ds);
     }
 }
 

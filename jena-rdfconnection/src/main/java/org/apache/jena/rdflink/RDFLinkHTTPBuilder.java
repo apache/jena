@@ -96,6 +96,12 @@ public class RDFLinkHTTPBuilder {
         return this;
     }
 
+    public RDFLinkHTTPBuilder queryOnly() {
+        sUpdate = null;
+        sGSP = null;
+        return this;
+    }
+
     /** Name of the SPARQL query service.
      * <p>
      * This can be a short name, relative to the destination URL,

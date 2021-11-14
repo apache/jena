@@ -18,15 +18,22 @@
 
 package org.apache.jena.sparql.exec;
 
-import java.util.Iterator;
 import java.util.List;
 
+import org.apache.jena.atlas.iterator.IteratorCloseable;
+import org.apache.jena.query.QueryException;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 
-public interface RowSet extends Iterator<Binding> {
+public interface RowSet extends IteratorCloseable<Binding> {
+
+    public class Exception extends QueryException
+    {
+        public Exception(String msg) { super(msg) ; }
+        public Exception(String msg, Throwable cause) { super(msg, cause) ; }
+    }
 
     @Override public boolean hasNext() ;
 
@@ -73,5 +80,6 @@ public interface RowSet extends Iterator<Binding> {
      * cases where it does onto automatically. There is no need to close RowSets
      * normally - it is the {@link QueryExec} that should be closed.
      */
+    @Override
     public void close();
 }

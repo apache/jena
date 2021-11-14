@@ -158,7 +158,7 @@ public class Query extends Prologue implements Cloneable, Printable
             case ASK :              return QueryTypeAsk;
             case CONSTRUCT :        return QueryTypeConstruct;
             case CONSTRUCT_JSON :   return QueryTypeJson;
-            case CONSTRUCT_QUADS :  return QueryTypeConstruct;
+            //case CONSTRUCT_QUADS :  return QueryTypeConstruct;
             case DESCRIBE :         return QueryTypeDescribe;
             default :               return QueryTypeUnknown;
         }
@@ -177,8 +177,7 @@ public class Query extends Prologue implements Cloneable, Printable
     public boolean isUnknownType()              { return queryType == QueryType.UNKNOWN ; }
 
     public boolean isConstructQuad() {
-        return (isConstructType() && constructTemplate.containsRealQuad())
-            || queryType == QueryType.CONSTRUCT_QUADS;
+        return (isConstructType() && constructTemplate.containsRealQuad());
     }
 
     // It was a mistake to extend Prologue ... but what is done is done.

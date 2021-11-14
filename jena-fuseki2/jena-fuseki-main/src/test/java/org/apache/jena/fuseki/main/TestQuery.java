@@ -80,7 +80,7 @@ public class TestQuery extends AbstractFusekiTest {
     @Test
     public void query_recursive_01() {
         String query = "SELECT * WHERE { SERVICE <" + serviceQuery() + "> { ?s ?p ?o . BIND(?o AS ?x) } }";
-        try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query)) {
+        try (QueryExecution qExec = QueryExecution.service(serviceQuery(), query)) {
             ResultSet rs = qExec.execSelect();
             Var x = Var.alloc("x");
             while (rs.hasNext()) {
@@ -93,7 +93,7 @@ public class TestQuery extends AbstractFusekiTest {
     @Test
     public void query_with_params_01() {
         String query = "ASK { }";
-        try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery() + "?output=json", query)) {
+        try (QueryExecution qExec = QueryExecution.service(serviceQuery() + "?output=json", query)) {
             boolean result = qExec.execAsk();
             Assert.assertTrue(result);
         }
@@ -111,7 +111,7 @@ public class TestQuery extends AbstractFusekiTest {
     public void query_dynamic_dataset_01() {
         {
             String query = "SELECT * { ?s ?p ?o }";
-            try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery() + "?output=json", query)) {
+            try (QueryExecution qExec = QueryExecution.service(serviceQuery() + "?output=json", query)) {
                 ResultSet rs = qExec.execSelect();
                 Node o = rs.next().getLiteral("o").asNode();
                 Node n = SSE.parseNode("1");
@@ -120,7 +120,7 @@ public class TestQuery extends AbstractFusekiTest {
         }
         {
             String query = "SELECT * FROM <" + graphName1 + "> { ?s ?p ?o }";
-            try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery() + "?output=json", query)) {
+            try (QueryExecution qExec = QueryExecution.service(serviceQuery() + "?output=json", query)) {
                 ResultSet rs = qExec.execSelect();
                 Node o = rs.next().getLiteral("o").asNode();
                 Node n = SSE.parseNode("2");
@@ -134,7 +134,7 @@ public class TestQuery extends AbstractFusekiTest {
         GSP.service(serviceGSP()).graphName(gn1).PUT(graph1);
         GSP.service(serviceGSP()).graphName(gn2).PUT(graph2);
         String query = "SELECT * FROM <"+graphName1+"> FROM <"+graphName2+"> { ?s ?p ?o }";
-        try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery() + "?output=json", query)) {
+        try (QueryExecution qExec = QueryExecution.service(serviceQuery() + "?output=json", query)) {
             ResultSet rs = qExec.execSelect();
             int n = ResultSetFormatter.consume(rs);
             assertEquals(2, n);
@@ -147,7 +147,7 @@ public class TestQuery extends AbstractFusekiTest {
         String queryString = " CONSTRUCT { GRAPH <http://eg/g> {?s ?p ?oq} } WHERE {?s ?p ?oq}";
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
 
-        try ( QueryExecutionHTTP qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
+        try ( QueryExecutionHTTP qExec = QueryExecutionHTTP.service(serviceQuery(), query) ) {
             Iterator<Quad> result = qExec.execConstructQuads();
             Assert.assertTrue(result.hasNext());
             Assert.assertEquals( "http://eg/g", result.next().getGraph().getURI());
@@ -161,7 +161,7 @@ public class TestQuery extends AbstractFusekiTest {
         String queryString = " CONSTRUCT { GRAPH <http://eg/g> {?s ?p ?oq} } WHERE {?s ?p ?oq}";
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
 
-        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
+        try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
             Dataset result = qExec.execConstructDataset();
             Assert.assertTrue(result.asDatasetGraph().find().hasNext());
             Assert.assertEquals( "http://eg/g", result.asDatasetGraph().find().next().getGraph().getURI());
@@ -172,7 +172,7 @@ public class TestQuery extends AbstractFusekiTest {
     public void query_construct_01()
     {
         String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
-        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
+        try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
             Iterator<Triple> result = qExec.execConstructTriples();
             Assert.assertTrue(result.hasNext());
         }
@@ -182,7 +182,7 @@ public class TestQuery extends AbstractFusekiTest {
     public void query_construct_02()
     {
         String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
-        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
+        try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
             Model result = qExec.execConstruct();
             assertEquals(1, result.size());
         }
@@ -191,7 +191,7 @@ public class TestQuery extends AbstractFusekiTest {
     @Test
     public void query_describe_01() {
         String query = "DESCRIBE ?s WHERE {?s ?p ?o}";
-        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
+        try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
             Model result = qExec.execDescribe();
             assertFalse(result.isEmpty());
         }
@@ -200,7 +200,7 @@ public class TestQuery extends AbstractFusekiTest {
     @Test
     public void query_describe_02() {
         String query = "DESCRIBE <http://example/somethingelse> WHERE { }";
-        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
+        try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
             Model result = qExec.execDescribe();
             assertTrue(result.isEmpty());
         }
@@ -274,7 +274,7 @@ public class TestQuery extends AbstractFusekiTest {
     public void query_json_01() throws IOException {
         Query query = QueryFactory.create("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
                 + "WHERE { ?s ?p ?o }", Syntax.syntaxARQ);
-        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
+        try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
             JsonArray result = qExec.execJson();
             assertEquals(1, result.size());
         }
@@ -301,7 +301,7 @@ public class TestQuery extends AbstractFusekiTest {
     }
 
     private static void execQuery(String queryString, int exceptedRowCount) {
-        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), queryString) ) {
+        try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), queryString) ) {
             ResultSet rs = qExec.execSelect();
             int x = ResultSetFormatter.consume(rs);
             assertEquals(exceptedRowCount, x);
@@ -309,7 +309,7 @@ public class TestQuery extends AbstractFusekiTest {
     }
 
     private static void execQuery(String queryString, ResultSet expectedResultSet) {
-        try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), queryString) ) {
+        try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), queryString) ) {
             ResultSet rs = qExec.execSelect();
             boolean b = ResultSetCompare.equalsByTerm(rs, expectedResultSet);
             assertTrue("Result sets different", b);

@@ -20,7 +20,7 @@
  * Loading additional functionality.
  * <p>For some interface {@code MOD extends SubsystemLifecycle}:
  * <pre>
- * Subsystem<MOD> subsystem = new Subsystem<>(MOD.class);
+ * Subsystem&lt;MOD&gt; subsystem = new Subsystem&lt;&gt;(MOD.class);
  * subsystem.initialize();
  * </pre>
  * @see org.apache.jena.base.module.SubsystemLifecycle

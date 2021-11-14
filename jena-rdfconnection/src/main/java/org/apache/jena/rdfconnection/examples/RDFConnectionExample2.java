@@ -20,7 +20,6 @@ package org.apache.jena.rdfconnection.examples;
 
 import org.apache.jena.query.*;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.system.Txn;
@@ -33,7 +32,7 @@ public class RDFConnectionExample2 {
         Query query = QueryFactory.create("SELECT * { {?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
         Dataset dataset = DatasetFactory.createTxnMem();
 
-        try ( RDFConnection conn = RDFConnectionFactory.connect(dataset) ) {
+        try ( RDFConnection conn = RDFConnection.connect(dataset) ) {
             System.out.println("** Load a file");
             // ---- Transaction 1: load data.
             Txn.executeWrite(conn, ()->conn.load("data.ttl"));
