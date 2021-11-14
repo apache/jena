@@ -305,12 +305,12 @@ public class RiotLib {
      */
     public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap, boolean newStyle) {
         if ( prefixMap != null && !prefixMap.isEmpty() ) {
-            int maxPrefixLenght = prefixMap.getMapping().keySet().stream()
+            int maxPrefixLength = prefixMap.getMapping().keySet().stream()
                     .map(String::length)
                     .max(Comparator.naturalOrder())
                     .orElse(0);
             for (Map.Entry<String, String> e : sortPrefixes(prefixMap)) {
-                writePrefix(out, e.getKey(), e.getValue(), newStyle, maxPrefixLenght);
+                writePrefix(out, e.getKey(), e.getValue(), newStyle, maxPrefixLength);
             }
         }
     }

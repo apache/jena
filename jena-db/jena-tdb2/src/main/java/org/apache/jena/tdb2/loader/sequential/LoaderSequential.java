@@ -28,9 +28,9 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.loader.BulkLoaderException;
 import org.apache.jena.tdb2.loader.base.LoaderBase;
 import org.apache.jena.tdb2.loader.base.LoaderOps;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
-import org.apache.jena.tdb2.loader.base.ProgressMonitor;
-import org.apache.jena.tdb2.loader.base.ProgressMonitorOutput;
+import org.apache.jena.system.progress.MonitorOutput;
+import org.apache.jena.system.progress.ProgressMonitor;
+import org.apache.jena.system.progress.ProgressMonitorOutput;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
 

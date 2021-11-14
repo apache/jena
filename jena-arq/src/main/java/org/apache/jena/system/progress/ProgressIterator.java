@@ -16,19 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.main;
+package org.apache.jena.system.progress;
 
-import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.system.progress.MonitorOutput;
+import java.util.Iterator;
 
-public class LoaderParallel extends LoaderMain {
+import org.apache.jena.atlas.iterator.IteratorWrapper;
 
-    public LoaderParallel(DatasetGraph dsg, MonitorOutput output) {
-        super(LoaderPlans.loaderPlanParallel, dsg, output);
+/**
+ * Send ticks to a {@link ProgressMonitor} as an iterator moves forward.
+ */
+
+public class ProgressIterator<T> extends IteratorWrapper<T> {
+
+    private final ProgressMonitor monitor;
+
+    public ProgressIterator(Iterator<T> other, ProgressMonitor monitor) {
+        super(other);
+        this.monitor = monitor;
     }
 
-    public LoaderParallel(DatasetGraph dsg, Node graphName, MonitorOutput output) {
-        super(LoaderPlans.loaderPlanParallel, dsg, graphName, output);
+    @Override
+    public T next() {
+        T t = super.next();
+        monitor.tick();
+        return t;
     }
 }

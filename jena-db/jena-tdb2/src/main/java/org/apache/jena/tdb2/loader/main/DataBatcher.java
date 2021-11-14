@@ -27,7 +27,7 @@ import org.apache.jena.riot.lang.StreamRDFCounting;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.loader.base.BulkStartFinish;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
+import org.apache.jena.system.progress.MonitorOutput;
 
 /**
  * A {@link StreamRDF} that groups triples and quads and dispatches them in batches. This

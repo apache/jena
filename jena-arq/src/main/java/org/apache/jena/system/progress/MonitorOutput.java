@@ -16,19 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.main;
+package org.apache.jena.system.progress;
 
-import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.system.progress.MonitorOutput;
-
-public class LoaderParallel extends LoaderMain {
-
-    public LoaderParallel(DatasetGraph dsg, MonitorOutput output) {
-        super(LoaderPlans.loaderPlanParallel, dsg, output);
-    }
-
-    public LoaderParallel(DatasetGraph dsg, Node graphName, MonitorOutput output) {
-        super(LoaderPlans.loaderPlanParallel, dsg, graphName, output);
-    }
+/** Output abstraction for the {@link ProgressMonitor}. */
+@FunctionalInterface
+public interface MonitorOutput {
+    public void print(String fmt, Object... args);
 }

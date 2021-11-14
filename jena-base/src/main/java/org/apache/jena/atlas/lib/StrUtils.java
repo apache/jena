@@ -46,7 +46,7 @@ public class StrUtils //extends StringUtils
     }
 
     /**
-     * Concatentate stringified objects, using a separator.
+     * Concatenate stringified objects, using a separator.
      */
     public static <X> String strjoin(List<X> args, String sep) {
         return args.stream().map(obj->obj.toString()).collect(Collectors.joining(sep));

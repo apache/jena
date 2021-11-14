@@ -21,8 +21,10 @@ package org.apache.jena.tdb.store.xloader;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.DateTimeUtils ;
-import org.apache.jena.atlas.lib.ProgressMonitor ;
+import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.system.progress.ProgressMonitor;
+import org.apache.jena.system.progress.ProgressMonitorOutput;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.Build ;
 import org.apache.jena.tdb.store.NodeId ;
@@ -71,7 +73,9 @@ public class ProcIndexCopy
     }
 
     private static void tupleIndexCopy(TupleIndex index1, TupleIndex index2, String label) {
-        ProgressMonitor monitor = ProgressMonitor.create(log, label, tickQuantum, superTick);
+        ProgressMonitor monitor = ProgressMonitorOutput.create(log, label, tickQuantum, superTick);
+        Timer timer = new Timer();
+        timer.startTimer();
         monitor.start();
 
         Iterator<Tuple<NodeId>> iter1 = index1.all();
@@ -85,7 +89,8 @@ public class ProcIndexCopy
         }
 
         index2.sync();
-        long time = monitor.finish();
+        monitor.finish();
+        long time = timer.endTimer();
         float elapsedSecs = time / 1000F;
 
         float rate = (elapsedSecs != 0) ? counter / elapsedSecs : 0;

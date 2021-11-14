@@ -24,6 +24,8 @@ import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.system.progress.MonitorOutput;
+import org.apache.jena.system.progress.ProgressMonitor;
 import org.apache.jena.tdb2.loader.DataLoader;
 
 /**

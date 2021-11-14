@@ -24,8 +24,10 @@ import org.slf4j.Logger ;
 
 /** Progress monitor - output lines to show the progress of some long running operation.
  * This is based on "ticks", not time.
- * Once per item processed, call the {@link #tick()} operation.  
+ * Once per item processed, call the {@link #tick()} operation.
+ * @deprecated Use RIOT's {@code org.apache.system.preogress.ProgressMonitor}.
  */
+@Deprecated
 public class ProgressMonitor {
     @FunctionalInterface
     public interface Output {
@@ -43,7 +45,7 @@ public class ProgressMonitor {
 
     private long  lastTime     = 0;
 
-    /** ProgressMonitor that outputs to a {@link Logger} */ 
+    /** ProgressMonitor that outputs to a {@link Logger} */
     public static ProgressMonitor create(Logger log, String label, long tickPoint, int superTick) {
         Output outputToLog = (fmt, args)-> {
             if ( log != null && log.isInfoEnabled() ) {
@@ -53,14 +55,14 @@ public class ProgressMonitor {
         } ;
         return new ProgressMonitor(label, tickPoint, superTick, outputToLog) ;
     }
-    
+
     /**
-     * @param label      
-     *      Label added to output strings. 
+     * @param label
+     *      Label added to output strings.
      *      Usually related to the kind of things being monitored.
-     *      e.g "tuples 
+     *      e.g "tuples
      * @param tickPoint
-     *      Frequent of output messages 
+     *      Frequent of output messages
      * @param superTick
      *      Frequent of "Elapsed" additional message
      * @param output
@@ -78,7 +80,7 @@ public class ProgressMonitor {
     public void startMessage() {
         startMessage(null) ;
     }
-    
+
     /** Print a start message using a different string. */
     public void startMessage(String msg) {
         if ( msg != null )

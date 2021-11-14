@@ -72,6 +72,7 @@ public class IO
     /** Open an input stream to a file; do not mask IOExceptions.
      * If the filename is null or "-", return System.in
      * If the filename ends in .gz, wrap in GZIPInputStream
+     * If the filename ends in .bz2, wrap in BZip2CompressorInputStream
      * @param filename
      * @throws FileNotFoundException
      * @throws IOException

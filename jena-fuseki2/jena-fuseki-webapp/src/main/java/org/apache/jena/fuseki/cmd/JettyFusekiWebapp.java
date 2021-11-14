@@ -34,11 +34,7 @@ import org.apache.jena.fuseki.server.FusekiInfo;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.eclipse.jetty.security.*;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
-import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.AllowSymLinkAliasChecker;
-import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
@@ -236,9 +232,9 @@ public class JettyFusekiWebapp {
             // See http://www.eclipse.org/jetty/documentation/current/serving-aliased-files.html
             // Record what would be needed:
             // 1 - Allow all symbolic links without checking
-            webapp.addAliasCheck(new ContextHandler.ApproveAliases());
+            webapp.addAliasCheck(new AllowedResourceAliasChecker(webapp));
             // 2 - Check links are to valid resources. But default for Unix?
-            webapp.addAliasCheck(new AllowSymLinkAliasChecker());
+            webapp.addAliasCheck(new SymlinkAllowedResourceAliasChecker(webapp));
         }
         servletContext = webapp.getServletContext();
         server.setHandler(webapp);

@@ -54,43 +54,37 @@ public class ConfigTest
     }
 
     /** Get a empty directory name that has not been used before in this JVM */
-    private static final String getTestingDirUnique()
-    {
+    private static final String getTestingDirUnique() {
         init();
-    	String dn = testingDir+"/D-"+(++count);
-    	FileOps.ensureDir(dn);
-    	FileOps.clearDirectory(dn);
-    	return dn;
+        String dn = testingDir + "/D-" + (++count);
+        FileOps.ensureDir(dn);
+        FileOps.clearDirectory(dn);
+        return dn;
     }
 
-    public static final String getTestingDir()
-    {
+    public static final String getTestingDir() {
         init();
         return testingDir;
     }
 
-    public static final void deleteTestingDir()
-    {
-        if ( ! FileOps.exists(testingDir) )
+    public static final void deleteTestingDir() {
+        if ( !FileOps.exists(testingDir) )
             return;
         deleteTestingDirDB();
         FileOps.clearDirectory(testingDir);
         FileOps.deleteSilent(testingDir);
     }
 
-    public static final String getTestingDirDB()
-    {
+    public static final String getTestingDirDB() {
         init();
         FileOps.ensureDir(testingDirDB);
         return testingDirDB;
     }
 
-    public static final void deleteTestingDirDB()
-    {
-        if ( ! FileOps.exists(testingDirDB) )
+    public static final void deleteTestingDirDB() {
+        if ( !FileOps.exists(testingDirDB) )
             return;
         FileOps.clearDirectory(testingDirDB);
         FileOps.deleteSilent(testingDirDB);
     }
-
 }

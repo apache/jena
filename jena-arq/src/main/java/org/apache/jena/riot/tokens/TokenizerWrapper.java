@@ -21,6 +21,7 @@ package org.apache.jena.riot.tokens;
 public class TokenizerWrapper implements Tokenizer {
 
     private final Tokenizer other;
+    protected Tokenizer get() { return other; }
 
     public TokenizerWrapper(Tokenizer other) {
         this.other = other;
@@ -28,36 +29,36 @@ public class TokenizerWrapper implements Tokenizer {
 
     @Override
     public long getColumn() {
-        return other.getColumn();
+        return get().getColumn();
     }
 
     @Override
     public long getLine() {
-        return other.getLine();
+        return get().getLine();
     }
 
     @Override
     public boolean hasNext() {
-        return other.hasNext();
+        return get().hasNext();
     }
 
     @Override
     public boolean eof() {
-        return other.eof();
+        return get().eof();
     }
 
     @Override
     public Token next() {
-        return other.next();
+        return get().next();
     }
 
     @Override
     public Token peek() {
-        return other.peek();
+        return get().peek();
     }
 
     @Override
     public void close() {
-        other.close();
+        get().close();
     }
 }

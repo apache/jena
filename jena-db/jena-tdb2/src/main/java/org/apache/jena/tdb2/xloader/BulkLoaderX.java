@@ -18,41 +18,43 @@
 
 package org.apache.jena.tdb2.xloader;
 
-import org.apache.jena.atlas.lib.tuple.TupleMap;
-import org.apache.jena.dboe.base.file.FileSet;
-import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.dboe.base.record.RecordFactory;
-import org.apache.jena.dboe.index.RangeIndex;
-import org.apache.jena.dboe.trans.bplustree.BPlusTree;
-import org.apache.jena.dboe.trans.bplustree.BPlusTreeFactory;
-import org.apache.jena.dboe.transaction.txn.ComponentId;
-import org.apache.jena.tdb2.store.tupletable.TupleIndex;
-import org.apache.jena.tdb2.store.tupletable.TupleIndexRecord;
-import org.apache.jena.tdb2.sys.SystemTDB;
+import java.util.Objects;
 
 public class BulkLoaderX {
-
-    public static int DataTick = 10_000_000;
+    public static int DataTick = 1_000_000;
     public static int DataSuperTick = 10;
 
-        // TDB2StorageBuiklder.makeTupleIndex
-        public static TupleIndex openTupleIndex(Location location, String indexName, String primary, String indexOrder, int keyLength, int valueLength) {
-            TupleMap cmap = TupleMap.create(primary, indexOrder);
-            RecordFactory rf = new RecordFactory(SystemTDB.SizeOfNodeId * cmap.length(), 0);
-            RangeIndex rIdx = makeRangeIndex(location, rf, indexName);
-            TupleIndex tIdx = new TupleIndexRecord(primary.length(), cmap, indexName, rf, rIdx);
-            return tIdx;
-        }
-
-        public static RangeIndex makeRangeIndex(Location location, RecordFactory recordFactory, String name) {
-//        ComponentId cid = componentIdMgr.getComponentId(name);
-//        FileSet fs = new FileSet(location, name);
-//        BPlusTree bpt = BPlusTreeFactory.createBPTree(cid, fs, recordFactory);
-//        components.add(bpt);
-//        return bpt;
-            ComponentId cid = null;
-            FileSet fs = new FileSet(location, name);
-            BPlusTree bpt = BPlusTreeFactory.createBPTree(cid, fs, recordFactory);
-            return bpt;
-        }
+    public static Thread async(Runnable action, String threadName) {
+        Objects.requireNonNull(action);
+        Objects.requireNonNull(threadName);
+        Thread thread = new Thread(action, threadName);
+        thread.start();
+        return thread;
     }
+
+    public static void waitFor(Thread thread) {
+        try { thread.join(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+    }
+
+    public static String rateStr(long items, long elapsedMillis) {
+        double xSec = elapsedMillis/1000.0;
+        double rate = items/xSec;
+        return String.format("%,.0f", rate);
+    }
+
+    public static String milliToHMS(long milliSeconds) {
+        long seconds = milliSeconds/1000;
+        // Seconds to allocate
+        long z = seconds;
+
+        long h = z / 3600;
+        z = z - (3600 * h);
+
+        long m = z / 60;
+        z = z - 60 * m;
+        long s = z;
+        //long check = 3600 * h + 60 * m + s;
+        return String.format("%dh %02dm %02ds", h, m, s);
+    }
+}

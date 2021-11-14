@@ -16,10 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.base;
+package org.apache.jena.system.progress;
 
 import org.apache.jena.atlas.lib.Timer;
-import org.apache.jena.tdb2.TDBException;
 
 /** Simple {@link ProgressMonitor} that records time and ticks but does not print anything */
 public class ProgressMonitorBasic implements ProgressMonitor {
@@ -55,7 +54,7 @@ public class ProgressMonitorBasic implements ProgressMonitor {
     @Override
     public void startSection() {
         if ( inSection )
-            throw new TDBException("startSection: Already in section");
+            throw new IllegalStateException("startSection: Already in section");
         inSection = true;
         sectionCounter++;
         sectionTimer = new Timer();
@@ -66,7 +65,7 @@ public class ProgressMonitorBasic implements ProgressMonitor {
     @Override
     public void finishSection() {
         if ( ! inSection )
-            throw new TDBException("finishSection: Not in section");
+            throw new IllegalStateException("finishSection: Not in section");
         inSection = false;
         sectionTimeInMillis = sectionTimer.endTimer();
     }

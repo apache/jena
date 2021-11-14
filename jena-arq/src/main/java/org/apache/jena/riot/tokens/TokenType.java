@@ -28,7 +28,7 @@ public enum TokenType {
     LITERAL_LANG, LITERAL_DT, INTEGER, DECIMAL, DOUBLE, BOOLEAN,
 
     // Not RDF
-    KEYWORD, VAR, HEX,       // Starts with *
+    KEYWORD, VAR, HEX,
     UNDERSCORE,              // In RDF, UNDERSCORE is only visible if BNode processing is not enabled.
 
     // COLON is only visible if prefix names are not being processed.
@@ -40,7 +40,7 @@ public enum TokenType {
     // RDF-star annotation syntax {|...|}
     L_ANN, R_ANN,
 
-    VBAR, AMPHERSAND,
+    VBAR, AMPERSAND,
     LBRACE, RBRACE,         // {}
     LPAREN, RPAREN,         // ()
     LBRACKET, RBRACKET,     // []

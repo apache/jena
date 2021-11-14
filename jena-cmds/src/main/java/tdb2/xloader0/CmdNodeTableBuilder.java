@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package tdb2.xloader;
+package tdb2.xloader0;
 
 import java.util.Arrays ;
 import java.util.List ;
@@ -27,14 +27,11 @@ import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.dboe.base.file.Location ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.tdb2.DatabaseMgr;
-import org.apache.jena.tdb2.sys.TDBInternal;
-import org.apache.jena.tdb2.xloader.ProcNodeTableDataBuilder;
-import org.apache.jena.dboe.base.file.Location ;
+import org.apache.jena.tdb2.xloader0.ProcNodeTableDataBuilder;
 import tdb2.cmdline.CmdTDB;
 
 /** Build node table - write triples/quads as text file */
@@ -54,7 +51,6 @@ public class CmdNodeTableBuilder extends CmdGeneral
     private String         dataFileTriples;
     private String         dataFileQuads;
     private List<String>   datafiles;
-    private DatasetGraph dsg;
     private boolean        collectStats  = true;
 
     public static void main(String... argv) {
@@ -76,9 +72,8 @@ public class CmdNodeTableBuilder extends CmdGeneral
 //        if ( !super.contains(argTriplesOut) ) throw new CmdException("Required: --triples FILE") ;
 //        if ( !super.contains(argQuadsOut) ) throw new CmdException("Required: --quads FILE") ;
 
-        locationString   = super.getValue(argLocation) ;
-        dsg = DatabaseMgr.connectDatasetGraph(locationString);
-        Location location = TDBInternal.getDatasetGraphTDB(dsg) .getLocation();
+        locationString = super.getValue(argLocation) ;
+        Location location = Location.create(locationString);
 
         dataFileTriples  = super.getValue(argTriplesOut) ;
         if ( dataFileTriples == null )
@@ -112,7 +107,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
 
     @Override
     protected void exec() {
-        ProcNodeTableDataBuilder.exec(dsg, dataFileTriples, dataFileQuads, datafiles, collectStats);
+        ProcNodeTableDataBuilder.exec(locationString, dataFileTriples, dataFileQuads, datafiles, collectStats);
     }
 
     @Override

@@ -16,19 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.base;
+package org.apache.jena.tdb2.xloader;
 
-public class ProgressMonitorFactory {
+import java.nio.file.Path;
+import java.util.Objects;
 
-    /**
-     * Create a progress monitor that sends output via a {@link MonitorOutput}. If this is
-     * null, then return a simple {@link ProgressMonitorBasic} that provides the counts
-     * and times.
-     */
-    public static ProgressMonitor progressMonitor(String label, MonitorOutput output, int dataTickPoint, int dataSuperTick) {
-        if ( output == null )
-            return new ProgressMonitorBasic();
-        ProgressMonitor monitor = ProgressMonitorOutput.create(output, label, dataTickPoint, dataSuperTick);
-        return monitor;
+/** File setup */
+public class XLoaderFiles {
+    // Fixed file names in temporary directory
+    static final String nameTriplesFile = "triples.tmp";
+    static final String nameQuadsFile = "quads.tmp";
+    static final String nameLoadInfo = "load.txt";
+
+    // Names.
+    public final String TMPDIR;
+    public final String triplesFile;
+    public final String quadsFile;
+    public final String loadInfo;
+    public XLoaderFiles(String TMPDIR) {
+        this.TMPDIR = Objects.requireNonNull(TMPDIR);
+        Path loc = Path.of(TMPDIR);
+        triplesFile = loc.resolve(nameTriplesFile).toString();
+        quadsFile = loc.resolve(nameQuadsFile).toString();
+        loadInfo = loc.resolve(nameLoadInfo).toString();
     }
 }

@@ -16,10 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.base;
+package org.apache.jena.system.progress;
 
-/** Output abstraction for the {@link ProgressMonitor}. */
-@FunctionalInterface
-public interface MonitorOutput {
-    public void print(String fmt, Object... args);
+public class ProgressMonitorFactory {
+
+    /**
+     * Create a progress monitor that sends output via a {@link MonitorOutput}. If this is
+     * null, then return a simple {@link ProgressMonitorBasic} that provides the counts
+     * and times.
+     */
+    public static ProgressMonitor progressMonitor(String label, MonitorOutput output, int dataTickPoint, int dataSuperTick) {
+        if ( output == null )
+            return new ProgressMonitorBasic();
+        ProgressMonitor monitor = ProgressMonitorOutput.create(output, label, dataTickPoint, dataSuperTick);
+        return monitor;
+    }
 }

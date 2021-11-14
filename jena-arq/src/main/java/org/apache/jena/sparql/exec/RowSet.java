@@ -19,7 +19,9 @@
 package org.apache.jena.sparql.exec;
 
 import java.util.List;
+import java.util.stream.Stream;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.query.QueryException;
 import org.apache.jena.query.ResultSet;
@@ -33,6 +35,13 @@ public interface RowSet extends IteratorCloseable<Binding> {
     {
         public Exception(String msg) { super(msg) ; }
         public Exception(String msg, Throwable cause) { super(msg, cause) ; }
+    }
+
+    public static RowSet adapt(ResultSet resultSet) {
+        if ( resultSet instanceof ResultSetAdapter ) {
+            return ((ResultSetAdapter)resultSet).get();
+        }
+        return new RowSetAdapter(resultSet);
     }
 
     @Override public boolean hasNext() ;
@@ -60,18 +69,8 @@ public interface RowSet extends IteratorCloseable<Binding> {
     /** Return the row number. The first row is row 1. */
     public long getRowNumber();
 
-    public static RowSet adapt(ResultSet resultSet) {
-        if ( resultSet instanceof ResultSetAdapter )
-            return ((ResultSetAdapter)resultSet).get();
-        return new RowSetAdapter(resultSet);
-    }
-
-    /**
-     * Turn a {@link QueryIterator} into a RowSet.
-     * This operation does not materialize the QueryIterator.
-     */
-    public static RowSet create(QueryIterator qIter, List<Var> vars) {
-        return new RowSetStream(vars, qIter);
+    public default Stream<Binding> stream() {
+        return Iter.asStream(this);
     }
 
     /**
@@ -82,4 +81,12 @@ public interface RowSet extends IteratorCloseable<Binding> {
      */
     @Override
     public void close();
+
+    /**
+     * Turn a {@link QueryIterator} into a RowSet.
+     * This operation does not materialize the QueryIterator.
+     */
+    public static RowSet create(QueryIterator qIter, List<Var> vars) {
+        return new RowSetStream(vars, qIter);
+    }
 }

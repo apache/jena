@@ -16,14 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.base;
+package org.apache.jena.system.progress;
 
 import static org.apache.jena.atlas.lib.DateTimeUtils.nowAsString;
 
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.Timer;
-import org.apache.jena.tdb2.TDBException;
 import org.slf4j.Logger;
 
 /** Progress monitor - output lines to show the progress of some long running operation.
@@ -58,7 +57,7 @@ public class ProgressMonitorOutput implements ProgressMonitor {
     /** ProgressMonitor that outputs to a {@link Logger} */
     public static ProgressMonitorOutput create(Logger log, String label, long tickPoint, int superTick) {
         Objects.requireNonNull(log);
-        return create(LoaderOps.outputToLog(log), label, tickPoint, superTick);
+        return create(MonitorOutputs.outputToLog(log), label, tickPoint, superTick);
     }
 
     /** ProgressMonitor that outputs to on a {@link MonitorOutput} */
@@ -117,14 +116,12 @@ public class ProgressMonitorOutput implements ProgressMonitor {
 
     @Override
     public void start() {
-        // XXX
         getTimer().startTimer();
         lastTime = 0;
     }
 
     @Override
     public void finish() {
-        // XXX
         getTimer().endTimer();
         timeTotalMillis = getTimer().getTimeInterval();
     }
@@ -178,7 +175,7 @@ public class ProgressMonitorOutput implements ProgressMonitor {
     @Override
     public void startSection() {
         if ( inSection )
-            throw new TDBException("startSection: Already in section");
+            throw new IllegalStateException("startSection: Already in section");
         inSection = true;
         sectionCounter++;
         sectionTimer = new Timer();
@@ -190,7 +187,7 @@ public class ProgressMonitorOutput implements ProgressMonitor {
     @Override
     public void finishSection() {
         if ( ! inSection )
-            throw new TDBException("finishSection: Not in section");
+            throw new IllegalStateException("finishSection: Not in section");
         print("  End file: %s (triples/quads = %,d)", label, sectionTickCounter);
         inSection = false;
         sectionTimeInMillis = sectionTimer.endTimer();

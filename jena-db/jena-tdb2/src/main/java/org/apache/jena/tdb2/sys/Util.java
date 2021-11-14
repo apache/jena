@@ -29,7 +29,7 @@ public class Util {
      * @return T
      * @throws NoSuchElementException
      */
-    public static <T> T xgetLast(List<T> list) {
+    public static <T> T getLast(List<T> list) {
         T elt = getLastOrNull(list);
         if ( elt == null )
             throw new NoSuchElementException();

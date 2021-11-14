@@ -35,7 +35,6 @@ import org.apache.jena.vocabulary.XSD;
 /** SHACL Compact Syntax setup */
 public class SHACLC {
 
-
     private static final Object     initLock    = new Object();
     private static volatile boolean initialized = false;
 

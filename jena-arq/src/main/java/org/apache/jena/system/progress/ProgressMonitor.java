@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.base;
+package org.apache.jena.system.progress;
 
 /** Interface {@code ProgressMonitor} - monitor progress.*/
 public interface ProgressMonitor {
