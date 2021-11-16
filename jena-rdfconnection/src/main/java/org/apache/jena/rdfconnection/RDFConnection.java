@@ -123,16 +123,10 @@ public interface RDFConnection extends
 
     /** Create a connection to a remote location by URL.
      * This is the URL for the dataset.
-     *
-     *  This call assumes the names of services as:
-     *  <ul>
-     *  <li>SPARQL Query endpoint : "sparql"
-     *  <li>SPARQL Update endpoint : "update"
-     *  <li>SPARQL Graph Store Protocol : "data"
-     *  </ul>
-     *  These are the default names in <a href="http://jena.apache.org/documentation/fuseki2">Fuseki</a>
-     *  Other names can be specified using {@link RDFConnectionRemote#newBuilder()} and setting the endpoint URLs.
-     *
+     * <p>
+     * This is the URL for the dataset.
+     * Other names can be specified using {@link RDFConnectionRemote#newBuilder()} and setting the endpoint URLs.
+     * </p>
      * <pre>
      * RDFConnectionRemote.newBuilder()
      *       .queryEndpoint(queryServiceEndpoint)

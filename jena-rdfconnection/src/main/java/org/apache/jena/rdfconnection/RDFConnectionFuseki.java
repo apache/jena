@@ -26,9 +26,29 @@ import org.apache.jena.rdflink.RDFLinkFuseki;
 /**
  * Implementation of the {@link RDFConnection} interface for connecting to an Apache Jena Fuseki.
  * <p>
- * This adds the ability to work with blank nodes across the network.
+ * This adds the ability to work with blank nodes across the network and uses binary for query results.
  */
 public interface RDFConnectionFuseki extends RDFConnectionRemote {
+
+    /** Create a connection to a remote location by URL with the default Fuseki
+     *  configuration. This is the URL for the dataset.
+     * <p>
+     * Other names can be specified using {@link RDFConnectionRemote#newBuilder()} and setting the endpoint URLs.
+     * </p>
+     * <pre>
+     * RDFConnectionFuseki.newBuilder()
+     *       .queryEndpoint(queryServiceEndpoint)
+     *       .updateEndpoint(updateServiceEndpoint)
+     *       .gspEndpoint(graphStoreProtocolEndpoint)
+     *       .build();
+     * </pre>
+     *
+     * @param serviceURL
+     * @return RDFConnection
+     */
+    public static RDFConnection connect(String serviceURL) {
+        return RDFConnectionFuseki.service(serviceURL).build();
+    }
 
     /**
      * Create a connection builder which is initialized for the default Fuseki
