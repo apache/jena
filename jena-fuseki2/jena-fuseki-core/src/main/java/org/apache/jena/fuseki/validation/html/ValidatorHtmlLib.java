@@ -40,7 +40,7 @@ public class ValidatorHtmlLib {
 
     public static Logger       serviceLog      = Fuseki.requestLog;
 
-    public static final String cssFile         = "/fuseki.css";
+    public static final String cssFile         = "fuseki.css";
     public static final String respService     = "X-Service";
 
     private ValidatorHtmlLib() {}
