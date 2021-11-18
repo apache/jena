@@ -82,6 +82,7 @@ public class FusekiCmd {
         // This does not apply to empty in-memory setups.
         private static ArgDecl  argUpdate       = new ArgDecl(ArgDecl.NoValue,  "update", "allowUpdate");
         private static ArgDecl  argFile         = new ArgDecl(ArgDecl.HasValue, "file");
+        private static ArgDecl  argTDB1mode     = new ArgDecl(ArgDecl.NoValue,  "tdb1");
         private static ArgDecl  argTDB2mode     = new ArgDecl(ArgDecl.NoValue,  "tdb2");
         private static ArgDecl  argMemTDB       = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB", "tdbmem");
         private static ArgDecl  argTDB          = new ArgDecl(ArgDecl.HasValue, "loc", "location", "tdb");
@@ -118,7 +119,7 @@ public class FusekiCmd {
         }
 
         private final FusekiArgs cmdLine = new FusekiArgs();
-        private boolean useTDB2;
+        private boolean useTDB2 = true;
 
         public FusekiCmdInner(String... argv) {
             super(argv);
@@ -129,8 +130,10 @@ public class FusekiCmd {
                 "Create an in-memory, non-persistent dataset for the server");
             add(argFile, "--file=FILE",
                 "Create an in-memory, non-persistent dataset for the server, initialised with the contents of the file");
+            add(argTDB1mode, "--tdb1",
+                "Use TDB1 for command line persistent datasets (default is TDB2)");
             add(argTDB2mode, "--tdb2",
-                "Use TDB2 for command line persistent datasets (default is TDB1)");
+                "Use TDB2 for command line persistent datasets (default is TDB2)");
             add(argTDB, "--loc=DIR",
                 "Use an existing TDB database (or create if does not exist)");
             add(argMemTDB, "--memTDB",
@@ -239,7 +242,12 @@ public class FusekiCmd {
                 throw new CmdException("Need to define RDFS setup in the configuration file.");
 
             // Which TDB to use to create a command line TDB database.
-            useTDB2 = contains(argTDB2mode);
+            // Which TDB to use to create a command line TDB database.
+            if ( contains(argTDB1mode) )
+                useTDB2 = false;
+            if ( contains(argTDB2mode) )
+                useTDB2 = true;
+
 
             cmdLine.allowUpdate = contains(argUpdate);
 

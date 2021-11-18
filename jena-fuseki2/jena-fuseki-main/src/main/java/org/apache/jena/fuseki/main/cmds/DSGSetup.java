@@ -72,4 +72,14 @@ import org.apache.jena.tdb2.DatabaseMgr;
         serverConfig.datasetDescription = "TDB2 dataset: location="+directory;
         serverConfig.dsg = DatabaseMgr.connectDatasetGraph(directory);
     }
+
+    public static void setupMemTDB(boolean useTDB2, ServerConfig serverConfig) {
+        String tag = useTDB2 ? "TDB2" : "TDB1";
+        serverConfig.datasetDescription = tag+" dataset in-memory";
+        serverConfig.dsg = useTDB2
+            ? DatabaseMgr.createDatasetGraph()
+            : TDBFactory.createDatasetGraph();
+        serverConfig.allowUpdate = true;
+
+    }
 }

@@ -55,9 +55,7 @@ import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb.transaction.TransactionManager;
-import org.apache.jena.tdb2.DatabaseMgr;
 import org.slf4j.Logger;
 
 public class FusekiMain extends CmdARQ {
@@ -68,6 +66,7 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argUpdate       = new ArgDecl(ArgDecl.NoValue,  "update", "allowUpdate");
     private static ArgDecl  argFile         = new ArgDecl(ArgDecl.HasValue, "file");
 
+    private static ArgDecl  argTDB1mode     = new ArgDecl(ArgDecl.NoValue,  "tdb1");
     private static ArgDecl  argTDB2mode     = new ArgDecl(ArgDecl.NoValue,  "tdb2");
     private static ArgDecl  argMemTDB       = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB", "tdbmem");
     private static ArgDecl  argTDB          = new ArgDecl(ArgDecl.HasValue, "loc", "location", "tdb");
@@ -112,7 +111,8 @@ public class FusekiMain extends CmdARQ {
     private static ModDatasetAssembler modDataset      = new ModDatasetAssembler();
 
     private final ServerConfig serverConfig  = new ServerConfig();
-    private boolean useTDB2;
+    // Default
+    private boolean useTDB2 = true;
 
     /** Build, but do not start, a server based on command line syntax. */
     public static FusekiServer build(String... argv) {
@@ -280,8 +280,10 @@ public class FusekiMain extends CmdARQ {
         // Only one of these is choose from the checking above.
 
         // Which TDB to use to create a command line TDB database.
-        useTDB2 = contains(argTDB2mode);
-        String tag = useTDB2 ? "TDB2" : "TDB1";
+        if ( contains(argTDB1mode) )
+            useTDB2 = false;
+        if ( contains(argTDB2mode) )
+            useTDB2 = true;
 
         if ( allowEmpty ) {
             serverConfig.empty = true;
@@ -341,12 +343,7 @@ public class FusekiMain extends CmdARQ {
         }
 
         if ( contains(argMemTDB) ) {
-            serverConfig.datasetDescription = tag+" dataset in-memory";
-            serverConfig.dsg =
-                useTDB2
-                ? DatabaseMgr.createDatasetGraph()
-                    : TDBFactory.createDatasetGraph();
-                serverConfig.allowUpdate = true;
+            DSGSetup.setupMemTDB(useTDB2, serverConfig);
         }
 
         if ( contains(argTDB) ) {
