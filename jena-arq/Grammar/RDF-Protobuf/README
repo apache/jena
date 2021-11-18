@@ -2,5 +2,5 @@
 
 To rebuild the protobuf-generated java code:
 
-cd to jena-arq/Gramm/RDF-Protobuf
-run ./gen-protobuf
+    cd to jena-arq/Grammar/RDF-Protobuf
+    run ./gen-protobuf

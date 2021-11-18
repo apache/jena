@@ -44,6 +44,7 @@ public class FusekiModules {
 
     /** Add a code module */
     public static void add(FusekiModule module) {
+        load();
         registry.put(module.name(), module);
     }
 

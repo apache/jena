@@ -213,7 +213,7 @@ public class DataService {
     }
 
     private void ensureEnpointProcessors() {
-        // Better is to havee then set purposefully.
+        // Better is to have then set purposefully.
         forEachEndpoint(ep->{
             if ( ep.getProcessor() == null )
                 Fuseki.configLog.warn("No processor for "+ep.getName());

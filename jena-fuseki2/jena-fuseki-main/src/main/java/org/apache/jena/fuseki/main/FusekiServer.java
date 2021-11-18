@@ -493,6 +493,14 @@ public class FusekiServer {
             return this;
         }
 
+        /**
+         * Get the location (if any has been set) to serve static files from.
+         * Return null if unset.
+         */
+        public String staticFileBase() {
+            return this.staticContentDir;
+        }
+
         /** Set a Jetty SecurityHandler.
          * <p>
          *  By default, the server runs with no security.
@@ -1311,8 +1319,6 @@ public class FusekiServer {
             if ( withTasks )
                 addServlet(context, "/$/tasks/*", new ActionTasks());
 
-            // TODO Should we support registering other functionality e.g. /$/backup/*
-
             servlets.forEach(p-> addServlet(context, p.getLeft(), p.getRight()));
             filters.forEach (p-> addFilter(context, p.getLeft(), p.getRight()));
 
@@ -1321,6 +1327,7 @@ public class FusekiServer {
                 DefaultServlet staticServlet = new DefaultServlet();
                 ServletHolder staticContent = new ServletHolder(staticServlet);
                 staticContent.setInitParameter("resourceBase", staticContentDir);
+                //staticContent.setInitParameter("cacheControl", "false");
                 context.addServlet(staticContent, "/");
             } else {
                 // Backstop servlet
