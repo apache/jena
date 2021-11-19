@@ -28,7 +28,7 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
-/** A {@link SecurityContext} that allow to named graph but not the default graph. */
+/** A {@link SecurityContext} that allows access to the default graph but not named graphs. */
 public class SecurityContextAllowNamedGraphs implements SecurityContext {
 
     public SecurityContextAllowNamedGraphs() {}

@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List ;
 import java.util.Objects;
 import java.util.Set ;
+import java.util.stream.Stream;
 import java.util.zip.Adler32 ;
 import java.util.zip.CRC32 ;
 import java.util.zip.Checksum ;
@@ -32,6 +33,12 @@ import org.apache.jena.atlas.logging.Log ;
 public class Lib
 {
     private Lib() {}
+
+    /** Stream to {@link List} */
+    public static <X> List<X> toList(Stream<X> stream) {
+        // Findability.
+        return StreamOps.toList(stream);
+    }
 
     /** "ConcurrentHashSet" */
     public static final <X> Set<X> concurrentHashSet() {

@@ -34,7 +34,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class TestCodec
+public class TestNodec
 {
     static private final String asciiBase             = "abc";
     static private final String latinBase             = "Àéíÿ";
@@ -53,7 +53,7 @@ public class TestCodec
 
     private Nodec nodec;
 
-    public TestCodec(String name, Nodec nodec) { this.nodec = nodec; }
+    public TestNodec(String name, Nodec nodec) { this.nodec = nodec; }
 
     @Test public void nodec_lit_01()    { test ("''"); }
     @Test public void nodec_lit_02()    { test ("'a'"); }
@@ -88,8 +88,8 @@ public class TestCodec
     @Test public void nodec_lit_31()    { test ("'"+binaryStr2+"'"); }
     @Test public void nodec_lit_32()    { test ("'"+binaryStr3+"'"); }
 
-    @Test public void nodec_lit_33()   { test("'\uFFFD'"); }
-    @Test public void nodec_lit_34()   { test("'''abc\\uFFFDdef'''"); }
+    @Test public void nodec_lit_33()    { test("'\uFFFD'"); }
+    @Test public void nodec_lit_34()    { test("'''abc\\uFFFDdef'''"); }
 
     @Test public void nodec_uri_01()    { test ("<>"); }
     @Test public void nodec_uri_02()    { test ("<http://example/>"); }

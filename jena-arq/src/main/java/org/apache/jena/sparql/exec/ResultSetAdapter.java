@@ -37,4 +37,9 @@ public class ResultSetAdapter extends ResultSetStream /*implements ResultSet*/ {
     }
 
     public RowSet get() { return rowSet; }
+
+    @Override
+    public void close() {
+        rowSet.close();
+    }
 }

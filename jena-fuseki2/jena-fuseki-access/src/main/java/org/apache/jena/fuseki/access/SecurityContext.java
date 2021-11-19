@@ -18,9 +18,10 @@
 
 package org.apache.jena.fuseki.access;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.Collection;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node;
@@ -51,14 +52,20 @@ public interface SecurityContext {
     public static final Node allGraphsStr = NodeFactory.createLiteral("**");
 
     /**
-     * Collection of visible graph names. This method return null for null for "all" to avoid
-     * needing to calculate the current set of named graph names.
+     * Collection of visible graph names.
+     * <p>
+     * This method returns null for "all" to avoid needing to calculate the current
+     * set of named graph names. A collection of no elements means no named graphs
+     * are visible.
      */
     public Collection<Node> visibleGraphs();
 
     /**
-     * Collection of visible graph URI names. This method return null for null for "all" to avoid
-     * needing to calculate the current set of named graph names.
+     * Collection of visible graph URI names.
+     * <p>
+     * This method returns null for "all" to avoid needing to calculate the current
+     * set of named graph names. A collection of no elements means no named graphs
+     * are visible.
      */
     public default Collection<String> visibleGraphNames() {
         if ( visibleGraphs() == null )
@@ -66,7 +73,7 @@ public interface SecurityContext {
         return visibleGraphs().stream()
                 .filter(Node::isURI)
                 .map(Node::getURI)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public boolean visableDefaultGraph();
