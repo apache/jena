@@ -210,7 +210,7 @@ public class HttpAction
     }
 
     /**
-     * Return the authenticated user this {@code HttpAction}.
+     * Return the authenticated user for this {@code HttpAction}.
      * Return null for no authenticated user.
      */
     public String getUser() {
