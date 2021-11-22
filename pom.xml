@@ -174,16 +174,10 @@
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
 
-        <module>jena-geosparql</module>
-        <module>jena-fuseki2/jena-fuseki-geosparql</module>
-
-        <module>jena-extras/jena-querybuilder</module>
-        <module>jena-examples</module>
-
         <module>jena-integration-tests</module>
 
         <!-- Binary distribution -->
-        <!-- <module>apache-jena</module>         -->
+        <!-- <module>apache-jena</module> -->
 
       </modules>
 
@@ -239,8 +233,6 @@
         <module>jena-geosparql</module>
         <module>jena-fuseki2/jena-fuseki-geosparql</module>
         
-        <module>jena-examples</module>
-
         <!--
             Tests of artifacts that require additional 
             modules built later in the build process.
@@ -255,10 +247,11 @@
         <!-- Other -->
         <module>jena-permissions</module>
         <module>jena-extras</module>
+        <module>jena-examples</module>
 
         <!-- Slow building modules -->
-
         <module>jena-jdbc</module>
+
       </modules>
     </profile>
   </profiles>
