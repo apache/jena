@@ -97,10 +97,9 @@ public class TestSecurityFilterLocal {
         reg.put("user1", new SecurityContextView("http://test/g1", Quad.defaultGraphIRI.getURI()));
         reg.put("user2", new SecurityContextView("http://test/g1", "http://test/g2", "http://test/g3"));
 
-        // and graphs "**", "*"
+        // and users "*", "_"
         reg.put("*", new SecurityContextView("http://test/g1"));
         reg.put("_", new SecurityContextView("http://test/g1"));
-
 
         testdsg = DataAccessCtl.controlledDataset(dsgBase, reg);
         this.applyFilterTDB = applyFilterTDB;

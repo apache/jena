@@ -79,8 +79,6 @@ public class ValidatorHtmlLib {
                     sBuff.append("&amp;");
                     break;
                 default :
-                    // Work around Eclipe bug with StringBuffer.append(char)
-                    // try { sBuff.append(ch); } catch (Exception ex) {}
                     sBuff.append(ch);
                     break;
             }

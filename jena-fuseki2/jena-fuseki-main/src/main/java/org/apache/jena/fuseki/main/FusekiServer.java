@@ -413,8 +413,8 @@ public class FusekiServer {
         private String                   httpsKeystorePasswd    = null;
 
         // Other servlets to add. Te pathspec for servlets must be unique.
-        // Order does not matter, the rules of patspec dispatch are "exact match"
-        // before prefix match."
+        // Order does not matter, the rules of pathspec dispatch are "exact match"
+        // before "prefix match".
         private Map<String, HttpServlet> servlets           = new HashMap<>();
         // whereas several filters can share a path spec an dorder matters.
         private List<Pair<String, Filter>> filters          = new ArrayList<>();
