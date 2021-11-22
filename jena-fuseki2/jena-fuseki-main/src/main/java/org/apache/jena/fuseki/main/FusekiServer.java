@@ -76,15 +76,16 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 
 /**
- * Embedded Fuseki server. This is a Fuseki server running with a pre-configured set
- * of datasets and services. There is no admin UI and no security.
+ * Fuseki server.
+ * <p>
+ * This is a Fuseki server running with a pre-configured set
+ * of datasets and services.
  * <p>
  * To create a embedded sever, use {@link FusekiServer} ({@link #make} is a packaging
  * of a call to {@link FusekiServer} for the case of one dataset, responding to
  * localhost only).
  * <p>
- * The application should call {@link #start()} to actually start the server (it will
- * run in the background : see {@link #join}).
+ * The application calls {@link #start()} to run the server (it will run in the background : see {@link #join}).
  * <p>
  * Example:
  *
@@ -411,8 +412,11 @@ public class FusekiServer {
         private String                   httpsKeystore          = null;
         private String                   httpsKeystorePasswd    = null;
 
-        // Other servlets to add.
-        private List<Pair<String, HttpServlet>> servlets    = new ArrayList<>();
+        // Other servlets to add. Te pathspec for servlets must be unique.
+        // Order does not matter, the rules of patspec dispatch are "exact match"
+        // before prefix match."
+        private Map<String, HttpServlet> servlets           = new HashMap<>();
+        // whereas several filters can share a path spec an dorder matters.
         private List<Pair<String, Filter>> filters          = new ArrayList<>();
 
         private String                   contextPath        = "/";
@@ -880,7 +884,7 @@ public class FusekiServer {
                 servlet = (HttpServlet)processor;
             else
                 servlet = new ServletAction(processor, log);
-            servlets.add(Pair.create(pathSpec, servlet));
+            addServlet(pathSpec, servlet);
             return this;
         }
 
@@ -893,7 +897,7 @@ public class FusekiServer {
         public Builder addServlet(String pathSpec, HttpServlet servlet) {
             requireNonNull(pathSpec, "pathSpec");
             requireNonNull(servlet, "servlet");
-            servlets.add(Pair.create(pathSpec, servlet));
+            servlets.put(pathSpec, servlet);
             return this;
         }
 
@@ -1319,8 +1323,8 @@ public class FusekiServer {
             if ( withTasks )
                 addServlet(context, "/$/tasks/*", new ActionTasks());
 
-            servlets.forEach(p-> addServlet(context, p.getLeft(), p.getRight()));
-            filters.forEach (p-> addFilter(context, p.getLeft(), p.getRight()));
+            servlets.forEach((pathspecp, servlet) -> addServlet(context, pathspecp, servlet));
+            filters.forEach(pair -> addFilter(context, pair.getLeft(), pair.getRight()));
 
             // Finally, drop to state content if configured.
             if ( staticContentDir != null ) {
