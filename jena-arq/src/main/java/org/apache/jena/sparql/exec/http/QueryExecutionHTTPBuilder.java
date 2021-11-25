@@ -39,6 +39,8 @@ public class QueryExecutionHTTPBuilder
 
     public static QueryExecutionHTTPBuilder create() { return new QueryExecutionHTTPBuilder(); }
 
+    public static QueryExecutionHTTPBuilder service(String serviceURL) { return create().endpoint(serviceURL); }
+
     private QueryExecutionHTTPBuilder() {}
 
     @Override
