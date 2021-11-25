@@ -83,10 +83,15 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
 
     @Override
     protected void processModulesAndArgs() {
+        if ( ! super.hasArg(argLocation) )
+            throw new CmdException("Required: --loc=");
+
         location = super.getValue(argLocation);
         tmpdir = super.getValue(argTmpdir);
         indexName = super.getValue(argIndex);
         sortArgs = super.getValue(argSortArgs);
+
+
 
         if ( location != null )
             checkDirectory(location);
@@ -94,7 +99,6 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
             checkDirectory(tmpdir);
         else
             tmpdir = location;
-
         filenames = new ArrayList<>(super.getPositional());
 
         subCheckArgs();

@@ -27,8 +27,8 @@ import org.apache.jena.tdb2.xloader.BulkLoaderX;
  * A version of xloader/TDB2 that runs in a single JVM.
  * <p>
  * This still requires an external sort programme.
- * Normally, xload is run by script which uses one JVM per operation.
- * Exiting the JVM and startig a new one
+ * Normally, xloader is run by script which uses one JVM per operation.
+ * Exiting the JVM and starting a new one
  * <p>
  * This program does not need much RAM. Do not set the heap size large.
  * 4Gbytes is enough, usually 2Gbytes is sufficient.

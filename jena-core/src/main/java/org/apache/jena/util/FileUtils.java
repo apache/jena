@@ -269,7 +269,7 @@ public class FileUtils
      @param suffix the suffix for File.createTempFile
      @return the temporary File
      */
-    public static  File tempFileName( String prefix, String suffix )
+    public static File tempFileName( String prefix, String suffix )
     {
         File result = new File( getTempDirectory(), prefix + randomNumber() + suffix );
         if (result.exists()) return tempFileName( prefix, suffix );
