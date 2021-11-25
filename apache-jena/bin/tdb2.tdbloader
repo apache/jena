@@ -64,7 +64,12 @@ if [ -L "${JENA_HOME}" ]; then
 fi
 
 # ---- Setup
-# JVM_ARGS : don't set here but it can be set in the environment.
+# JVM_ARGS : default to 2G - enough for node table cache a bit
+# On large RAM machines, larger RAM is not faster (in fact, it's same or slower).
+# Index work is done on memory mapped files outside the heap.
+
+JVM_ARGS=${JVM_ARGS:--Xmx2G}
+
 # Expand JENA_HOME but literal *
 JENA_CP="$JENA_HOME"'/lib/*'
 LOGGING="${LOGGING:--Dlog4j.configurationFile=file:$JENA_HOME/log4j2.properties}"
