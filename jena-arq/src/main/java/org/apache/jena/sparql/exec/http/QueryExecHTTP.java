@@ -71,6 +71,10 @@ public class QueryExecHTTP implements QueryExec {
 
     public static QueryExecHTTPBuilder newBuilder() { return QueryExecHTTPBuilder.create(); }
 
+    public static QueryExecHTTPBuilder service(String serviceURL) {
+        return QueryExecHTTP.newBuilder().endpoint(serviceURL);
+    }
+
     //public static final String QUERY_MIME_TYPE = WebContent.contentTypeSPARQLQuery;
     private final Query query;
     private final String queryString;
