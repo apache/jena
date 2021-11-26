@@ -57,6 +57,7 @@ public class AbstractTestWebappAuth_JDK {
         ensureEnvironment();
 
         realmFile = File.createTempFile("realm", ".properties");
+        realmFile.deleteOnExit();
         // user: password, realm
         try ( FileWriter writer = new FileWriter(realmFile); ) {
             writer.write("allowed: password, fuseki\n");
