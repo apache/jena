@@ -64,16 +64,14 @@ public class LabelToNodeMap
     public static LabelToNodeMap createVarMap()
     { return new LabelToNodeMap(true, new VarAlloc(ARQConstants.allocParserAnonVars) ) ; }
 
-    private LabelToNodeMap(boolean genVars, VarAlloc allocator)
-    {
+    private LabelToNodeMap(boolean genVars, VarAlloc allocator) {
         generateVars = genVars ;
         this.allocator = allocator ;
     }
 
     public Set<String> getLabels()  { return bNodeLabels.keySet() ; }
 
-    public Node asNode(String label)
-    {
+    public Node asNode(String label) {
         Node n = bNodeLabels.get(label) ;
         if ( n != null )
             return n ;
@@ -82,20 +80,17 @@ public class LabelToNodeMap
         return n ;
     }
 
-    public Node allocNode()
-    {
+    public Node allocNode() {
         if ( generateVars )
             return allocAnonVariable() ;
         return NodeFactory.createBlankNode() ;
     }
 
-    private Node allocAnonVariable()
-    {
+    private Node allocAnonVariable() {
         return allocator.allocVar() ;
     }
 
-    public void clear()
-    {
-        bNodeLabels.clear() ;
+    public void clear() {
+        bNodeLabels.clear();
     }
 }

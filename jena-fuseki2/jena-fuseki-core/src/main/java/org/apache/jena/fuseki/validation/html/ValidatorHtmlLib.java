@@ -40,7 +40,8 @@ public class ValidatorHtmlLib {
 
     public static Logger       serviceLog      = Fuseki.requestLog;
 
-    public static final String cssFile         = "fuseki.css";
+    // Validator service result page is at "$/validate/data" etc so CSS is:
+    public static final String cssFile         = "../../css/fuseki.css";
     public static final String respService     = "X-Service";
 
     private ValidatorHtmlLib() {}
@@ -78,8 +79,6 @@ public class ValidatorHtmlLib {
                     sBuff.append("&amp;");
                     break;
                 default :
-                    // Work around Eclipe bug with StringBuffer.append(char)
-                    // try { sBuff.append(ch); } catch (Exception ex) {}
                     sBuff.append(ch);
                     break;
             }
@@ -106,8 +105,8 @@ public class ValidatorHtmlLib {
         outStream.println("<head>");
         outStream.println(" <title>" + title + "</title>");
         outStream.println("   <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
-        outStream.println("   <link rel=\"stylesheet\" type=\"text/css\" href=\"" + cssFile + "\" />");
-        // outStream.println();
+        if ( cssFile != null )
+            outStream.println("   <link rel=\"stylesheet\" type=\"text/css\" href=\"" + cssFile + "\" />");
         outStream.println("</head>");
     }
 }

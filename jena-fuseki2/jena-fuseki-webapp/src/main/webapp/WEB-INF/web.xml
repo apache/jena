@@ -114,48 +114,6 @@
     <dispatcher>ERROR</dispatcher>
   </filter-mapping>
 
-  <!-- Validators -->
-
-  <servlet>
-    <servlet-name>QueryValidator</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.validation.QueryValidator</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>UpdateValidator</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.validation.UpdateValidator</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>DataValidator</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.validation.DataValidator</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>IRIValidator</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.validation.IRIValidator</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>QueryValidator</servlet-name>
-    <url-pattern>/validate/query</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>UpdateValidator</servlet-name>
-    <url-pattern>/validate/update</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>IRIValidator</servlet-name>
-    <url-pattern>/validate/iri</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>DataValidator</servlet-name>
-    <url-pattern>/validate/data</url-pattern>
-  </servlet-mapping>
-
   <!-- Server controls-->
   
   <servlet>

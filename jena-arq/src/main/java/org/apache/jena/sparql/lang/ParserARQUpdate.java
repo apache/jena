@@ -42,7 +42,7 @@ public class ParserARQUpdate extends UpdateParser
             parser.UpdateUnit() ;
         }
         catch (org.apache.jena.sparql.lang.arq.ParseException ex)
-        { 
+        {
             throw new QueryParseException(ex.getMessage(),
                                           ex.currentToken.beginLine,
                                           ex.currentToken.beginColumn
@@ -67,6 +67,4 @@ public class ParserARQUpdate extends UpdateParser
             throw new QueryException(th.getMessage(), th) ;
         }
     }
-
-
 }

@@ -528,10 +528,10 @@ public class FusekiMain extends CmdARQ {
 
         if ( serverConfig.validators ) {
             // Validators.
-            builder.addServlet("/validate/query",  new QueryValidator());
-            builder.addServlet("/validate/update", new UpdateValidator());
-            builder.addServlet("/validate/iri",    new IRIValidator());
-            builder.addServlet("/validate/data",   new DataValidator());
+            builder.addServlet("/$/validate/query",  new QueryValidator());
+            builder.addServlet("/$/validate/update", new UpdateValidator());
+            builder.addServlet("/$/validate/iri",    new IRIValidator());
+            builder.addServlet("/$/validate/data",   new DataValidator());
         }
 
         if ( ! serverConfig.empty ) {

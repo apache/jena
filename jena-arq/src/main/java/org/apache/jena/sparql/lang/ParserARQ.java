@@ -35,7 +35,7 @@ import org.apache.jena.sparql.syntax.Template ;
 public class ParserARQ extends SPARQLParser
 {
     private interface Action { void exec(ARQParser parser) throws Exception ; }
-    
+
     @Override
     protected Query parse$(final Query query, String queryString)
     {
@@ -52,7 +52,7 @@ public class ParserARQ extends SPARQLParser
         perform(query, queryString, action) ;
         return query ;
     }
-    
+
     public static Element parseElement(String string)
     {
         final Query query = new Query () ;
@@ -67,7 +67,7 @@ public class ParserARQ extends SPARQLParser
         perform(query, string, action) ;
         return query.getQueryPattern() ;
     }
-    
+
     public static Template parseTemplate(String string)
     {
         final Query query = new Query () ;
@@ -82,8 +82,7 @@ public class ParserARQ extends SPARQLParser
         perform(query, string, action) ;
         return query.getConstructTemplate() ;
     }
-    
- 
+
     // All throwable handling.
     private static void perform(Query query, String string, Action action)
     {
@@ -96,7 +95,7 @@ public class ParserARQ extends SPARQLParser
             action.exec(parser) ;
         }
         catch (org.apache.jena.sparql.lang.arq.ParseException ex)
-        { 
+        {
             throw new QueryParseException(ex.getMessage(),
                                           ex.currentToken.beginLine,
                                           ex.currentToken.beginColumn
@@ -107,7 +106,7 @@ public class ParserARQ extends SPARQLParser
             int col = parser.token.endColumn ;
             int line = parser.token.endLine ;
             throw new QueryParseException(tErr.getMessage(), line, col) ; }
-        
+
         catch (QueryException ex) { throw ex ; }
         catch (JenaException ex)  { throw new QueryException(ex.getMessage(), ex) ; }
         catch (Error err)

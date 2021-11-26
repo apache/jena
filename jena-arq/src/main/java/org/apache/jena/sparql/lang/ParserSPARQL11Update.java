@@ -32,39 +32,32 @@ import org.apache.jena.update.UpdateException ;
 public class ParserSPARQL11Update extends UpdateParser
 {
     public ParserSPARQL11Update() {}
-    
+
     @Override
     protected void executeParse(UpdateSink sink, Prologue prologue, Reader r) {
         SPARQLParser11 parser = null ;
         try {
-            parser = new SPARQLParser11(r) ;
-            parser.setUpdate(prologue, sink) ;
-            parser.UpdateUnit() ;
-        }
-        catch (org.apache.jena.sparql.lang.sparql_11.ParseException ex)
-        { 
-            throw new QueryParseException(ex.getMessage(),
-                                          ex.currentToken.beginLine,
-                                          ex.currentToken.beginColumn) ;
-        }
-        catch (org.apache.jena.sparql.lang.sparql_11.TokenMgrError tErr)
-        {
-            // Last valid token : not the same as token error message - but this should not happen
-            int col = parser.token.endColumn ;
-            int line = parser.token.endLine ;
-            throw new QueryParseException(tErr.getMessage(), line, col) ; }
-
-        catch (UpdateException ex) { throw ex ; }
-        catch (JenaException ex)  { throw new QueryException(ex.getMessage(), ex) ; }
-        catch (Error err)
-        {
+            parser = new SPARQLParser11(r);
+            parser.setUpdate(prologue, sink);
+            parser.UpdateUnit();
+        } catch (org.apache.jena.sparql.lang.sparql_11.ParseException ex) {
+            throw new QueryParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
+        } catch (org.apache.jena.sparql.lang.sparql_11.TokenMgrError tErr) {
+            // Last valid token : not the same as token error message - but this
+            // should not happen
+            int col = parser.token.endColumn;
+            int line = parser.token.endLine;
+            throw new QueryParseException(tErr.getMessage(), line, col);
+        } catch (UpdateException ex) {
+            throw ex;
+        } catch (JenaException ex) {
+            throw new QueryException(ex.getMessage(), ex);
+        } catch (Error err) {
             // The token stream can throw errors.
-            throw new QueryParseException(err.getMessage(), err, -1, -1) ;
-        }
-        catch (Throwable th)
-        {
-            Log.error(this, "Unexpected throwable: ",th) ;
-            throw new QueryException(th.getMessage(), th) ;
+            throw new QueryParseException(err.getMessage(), err, -1, -1);
+        } catch (Throwable th) {
+            Log.error(this, "Unexpected throwable: ", th);
+            throw new QueryException(th.getMessage(), th);
         }
     }
 }
