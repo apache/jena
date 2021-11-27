@@ -258,6 +258,12 @@ public abstract class ExecHTTPBuilder<X, Y> {
         return thisBuilder();
     }
 
+    public Y httpHeaders(Map<String, String> headers) {
+        Objects.requireNonNull(headers);
+        this.httpHeaders.putAll(headers);
+        return thisBuilder();
+    }
+
     /**
      * Set the {@link Context}. This defaults to the global settings of
      * {@code ARQ.getContext()}. If there was a previous call of {@code context} the
