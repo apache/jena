@@ -18,15 +18,17 @@
 
 package org.apache.jena.fuseki.main.sys;
 
-import java.util.function.BiConsumer;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
-import org.apache.jena.atlas.lib.Registry;
 import org.apache.jena.base.module.Subsystem;
 
 /** Registry of modules */
 public class FusekiModules {
 
-    private static Registry<String, FusekiModule> registry = null;
+    // Modules added programmatically
+    private static Set<FusekiModule> registry = null;
 
     private static Subsystem<FusekiModule> subsystem = null;
 
@@ -36,30 +38,30 @@ public class FusekiModules {
     }
 
     public static void reload() {
-        registry = new Registry<>();
+        registry = ConcurrentHashMap.newKeySet();
         subsystem = new Subsystem<FusekiModule>(FusekiModule.class);
         subsystem.initialize();
-        subsystem.forEach(FusekiModules::add);
+        subsystem.forEach(registry::add);
     }
 
     /** Add a code module */
     public static void add(FusekiModule module) {
         load();
-        registry.put(module.name(), module);
+        registry.add(module);
     }
 
     /** Remove a code module */
     public static void remove(FusekiModule module) {
-        registry.remove(module.name());
+        registry.remove(module);
         module.stop();
     }
 
     /** Test whether a code module is registered. */
     public static boolean contains(FusekiModule module) {
-        return registry.isRegistered(module.name());
+        return registry.contains(module);
     }
 
-    /*package*/ static void forEachModule(BiConsumer<String, FusekiModule> action) {
+    /*package*/ static void forEachModule(Consumer<FusekiModule> action) {
         if ( registry == null )
             load();
         if ( registry == null || registry.isEmpty() )

@@ -26,24 +26,37 @@ import org.apache.jena.rdf.model.Model;
 /**
  * Module interface for Fuseki.
  * <p>
- * A module is additional code, usually in a separate jar, but can also be part of the application code.
+ * A module is additional code, usually in a separate jar, but it can be part of
+ * the application code. Calls are made to each module at certain points in the
+ * lifecycle of a Fuseki server.
+ * <p>
+ * <ul>
+ * <li>{@linkplain #start()} - called when the module is loaded.</li>
+ * <li>{@linkplain #configuration} -- called at the beginning of the
+ *     {@link org.apache.jena.fuseki.main.FusekiServer.Builder#build() FusekiServer.Builder build()}
+ *      step. This call can manipulate the server configuration.</li>
+ * <li>{@linkplain #server(FusekiServer)} -- called at the end of the "build" step.</li>
+ * <li>{@linkplain #serverBeforeStarting(FusekiServer)} -- called before {@code server.start} happens.</li>
+ * <li>{@linkplain #serverAfterStarting(FusekiServer)} -- called after {@code server.start} happens.</li>
+ * <li>{@linkplain #serverStopped(FusekiServer)} -- call after {@code server.stop}, but only if a clean shutdown happens.
+ *     Servers may simply exit without shutdown phase.
+ *     The JVM may exit or be killed without clean shutdown.
+ *     Modules must not rely on a call to {@code serverStopped} happening.</li>
+ * </ul>
  */
 public interface FusekiModule extends SubsystemLifecycle {
     /**
-     * Unique (within this server) name to identify this module.
-     * This is used in the module registry.
-     *
-     * A suitable implementation is:
-     * <pre>
-     * private String modName = UUID.randomUUID().toString();
-     * {@literal @}Override public String name() { return modName; }
-     * </pre>
+     * Display name id to identify this module.
+     * <p>
+     * Modules are loaded once by the service loader
+     * <p>
+     * Modules added programmatically should be added once only.
      */
     public String name();
 
     /** Module loaded */
     @Override
-    public default void start() {}
+    public default void start() { }
 
     // ---- Build cycle
 
@@ -77,7 +90,7 @@ public interface FusekiModule extends SubsystemLifecycle {
      */
     public default void serverStopped(FusekiServer server) { }
 
-    /** Module unloaded */
+    /** Module unloaded : do not rely on this happening. */
     @Override
     public default void stop() {}
 
