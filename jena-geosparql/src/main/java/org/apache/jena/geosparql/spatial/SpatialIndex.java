@@ -457,7 +457,11 @@ public class SpatialIndex {
             Resource feature = resIt.nextResource();
 
             Literal lat = feature.getRequiredProperty(SpatialExtension.GEO_LAT_PROP).getLiteral();
-            Literal lon = feature.getRequiredProperty(SpatialExtension.GEO_LON_PROP).getLiteral();
+            Literal lon = feature.getProperty(SpatialExtension.GEO_LON_PROP).getLiteral();
+            if ( lon == null ) {
+                LOGGER.warn("Geo predicates: latitude found but not longitude. " + feature);
+                continue;
+            }
 
             Literal latLonPoint = ConvertLatLon.toLiteral(lat.getFloat(), lon.getFloat());
             GeometryWrapper geometryWrapper = GeometryWrapper.extract(latLonPoint);
