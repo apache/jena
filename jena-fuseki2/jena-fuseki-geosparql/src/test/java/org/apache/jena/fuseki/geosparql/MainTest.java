@@ -17,24 +17,22 @@
  */
 package org.apache.jena.fuseki.geosparql;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import com.beust.jcommander.JCommander;
+
 import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  *
@@ -94,7 +92,7 @@ public class MainTest {
                 + "    <http://example.org/Geometry#PolygonH> geo:sfContains ?obj .\n"
                 + "}ORDER by ?obj";
         List<Resource> result = new ArrayList<>();
-        try (QueryExecution qe = QueryExecutionFactory.sparqlService(SERVER.getLocalServiceURL(), query)) {
+        try (QueryExecution qe = QueryExecution.service(SERVER.getLocalServiceURL()).query(query).build()) {
             ResultSet rs = qe.execSelect();
 
             while (rs.hasNext()) {

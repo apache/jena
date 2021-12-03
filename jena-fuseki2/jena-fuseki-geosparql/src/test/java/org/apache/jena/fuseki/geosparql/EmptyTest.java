@@ -109,7 +109,7 @@ public class EmptyTest {
                 + "    <http://example.org/Geometry#LineStringA> geo:sfCrosses ?obj .\n"
                 + "}ORDER by ?obj";
         List<Resource> result = new ArrayList<>();
-        try (QueryExecution qe = QueryExecutionFactory.sparqlService(SERVER.getLocalServiceURL(), query)) {
+        try (QueryExecution qe = QueryExecution.service(SERVER.getLocalServiceURL()).query(query).build()) {
             ResultSet rs = qe.execSelect();
 
             while (rs.hasNext()) {
