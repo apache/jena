@@ -83,6 +83,7 @@ public class ExAuth01_RDFConnectionPW {
         Authenticator authenticator = AuthLib.authenticator("u", "p");
         HttpClient httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
+                //.followRedirects -- the default is Redirect.NEVER
                 .authenticator(authenticator)
                 .build();
         try ( RDFConnection conn = RDFConnectionRemote.service(dataURL)

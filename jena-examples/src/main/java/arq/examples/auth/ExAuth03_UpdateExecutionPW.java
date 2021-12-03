@@ -67,6 +67,7 @@ public class ExAuth03_UpdateExecutionPW {
         System.out.println("HttpClient + UpdateExecutionHTTP");
         Authenticator authenticator = AuthLib.authenticator("u", "p");
         HttpClient httpClient = HttpClient.newBuilder()
+                //.followRedirect
                 .connectTimeout(Duration.ofSeconds(10))
                 .authenticator(authenticator)
                 .build();
