@@ -29,6 +29,7 @@ import org.apache.jena.dboe.base.block.FileMode;
 import org.apache.jena.dboe.base.file.ProcessFileLock;
 import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.dboe.sys.SysDB;
+import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
@@ -136,23 +137,9 @@ public class SystemTDB
     // To make the class initialize
     static public void init() {}
 
-    /** Size, in bytes, of a block */
-    public static final int BlockSize               = 8*1024; // intValue("BlockSize", 8*1024) ;
-
-    /** Size, in bytes, of a block for testing */
-    public static final int BlockSizeTest           = 1024; // intValue("BlockSizeTest", 1024) ;
-
-    /** Size, in bytes, of a block for testing */
-    public static final int BlockSizeTestMem         = 500;
-
-//    /** Size, in bytes, of a memory block */
-//    public static final int BlockSizeMem            = 32*8; //intValue("BlockSizeMem", 32*8 ) ;
-
-    /** order of an in-memory BTree or B+Tree */
-    public static final int OrderMem                = 5; // intValue("OrderMem", 5) ;
-
-    /** Size, in bytes, of a segment (used for memory mapped files) */
-    public static final int SegmentSize             = 8*1024*1024; // intValue("SegmentSize", 8*1024*1024) ;
+    // Convenience renaming. Do not change this constant; change in SystemIndex.
+    /** Default size, in bytes, of a block */
+    public static final int BlockSize               = SystemIndex.BlockSize;
 
     // ---- Cache sizes (within the JVM)
 
@@ -179,10 +166,6 @@ public class SystemTDB
 
     // ---- Misc
 
-//    /** Number of adds/deletes between calls to sync (-ve to disable) */
-//    public static final int SyncTick                = intValue("SyncTick", -1);
-
-
     /** Default BGP optimizer */
     private static ReorderTransformation defaultReorderTransform = ReorderLib.fixed();
 
@@ -198,10 +181,12 @@ public class SystemTDB
      * @see #enableInlineLiterals
      */
     private static String propertyEnableInlineLiterals1 = "org.apache.jena.tdb.store.enableInlineLiterals";
+
     /** Unsupported (for non-standard setups)
      * @see #enableInlineLiterals
      */
     private static String propertyEnableInlineLiterals2 = "tdb:store.enableInlineLiterals";
+
     /** <b>Unsupported</b> (for non-standard setups).
      * This controls whether literal values are inlined into NodeIds.
      * This is a major efficiency boost and is the default setting.
@@ -211,8 +196,9 @@ public class SystemTDB
      * Use with care. No support.
      * Default setting is {@code true}
      */
-    public static final boolean enableInlineLiterals;
-    static { // Set enableInlineLiterals from system properties.
+    public static final boolean enableInlineLiterals = setEnableInlineLiterals();
+
+    private static boolean setEnableInlineLiterals() { // Set enableInlineLiterals from system properties.
         Properties sysProperties = System.getProperties();
         String key = null;
         if ( sysProperties.containsKey(propertyEnableInlineLiterals1) )
@@ -220,17 +206,10 @@ public class SystemTDB
         else if ( sysProperties.containsKey(propertyEnableInlineLiterals2) )
             key = PropertyFileKey2;
         if ( key == null )
-            enableInlineLiterals = true;  // Normal value.
+            return true;  // Normal value.
         else
-            enableInlineLiterals = Boolean.valueOf(sysProperties.getProperty(key));
+            return Boolean.valueOf(sysProperties.getProperty(key));
     }
-
-//    public static void setNullOut(boolean nullOut)
-//    { SystemTDB.NullOut = nullOut; }
-//
-//    /** Are we nulling out unused space in bytebuffers (records, points etc) */
-//    public static boolean getNullOut()
-//    { return SystemTDB.NullOut; }
 
     /** null out (with the FillByte) freed up space in buffers */
     public static final boolean NullOut = false;
@@ -358,20 +337,4 @@ public class SystemTDB
         }
         throw new TDBException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x);
     }
-
-//    public static Dataset setNonTransactional(Dataset dataset) {
-//        if ( dataset.isInTransaction() )
-//            return dataset;    // And hope it's a write transaction.
-//        dataset.begin(ReadWrite.WRITE);
-//        //Or wrap DatasetGraphTDB?
-//        return dataset;
-//    }
-//
-//    public static DatasetGraph setNonTransactional(DatasetGraph dataset) {
-//        if ( dataset.isInTransaction() )
-//            return dataset;
-//        dataset.begin(ReadWrite.WRITE);
-//        return dataset;
-//    }
-
 }
