@@ -170,10 +170,10 @@ if [ -z "$JENA_CP" ] ; then
 fi
 
 function exec_java() {
-    "$JAVA" $JVM_ARGS -cp $JENA_CP "$@"
+    "$JAVA" $JVM_ARGS -cp "$JENA_CP" "$@"
     local RC="$?"
     if [[ $RC != 0 ]] ; then
-	error "$JAVA" $JVM_ARGS -cp $JENA_CP "$@"
+	error "$JAVA" $JVM_ARGS -cp "$JENA_CP" "$@"
 	abort 1 "Java process returned $RC"
     fi
 }
