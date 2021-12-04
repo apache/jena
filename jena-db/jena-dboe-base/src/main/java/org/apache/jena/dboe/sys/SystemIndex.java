@@ -31,20 +31,11 @@ public class SystemIndex
     // To make the class initialize
     static public void init() {}
 
-    /** Size, in bytes, of a block */
-    public static final int BlockSize               = 8*1024; // intValue("BlockSize", 8*1024) ;
+    /** Default size, in bytes, of a block */
+    public static final int BlockSize               = 8*1024;
 
-    /** Size, in bytes, of a block for testing */
-    public static final int BlockSizeTest           = 1024; // intValue("BlockSizeTest", 1024) ;
-
-    /** Size, in bytes, of a block for testing */
-    public static final int BlockSizeTestMem         = 500;
-
-//    /** Size, in bytes, of a memory block */
-//    public static final int BlockSizeMem            = 32*8; //intValue("BlockSizeMem", 32*8 ) ;
-
-    /** Order of an in-memory BTree or B+Tree */
-    public static final int OrderMem                = 5; // intValue("OrderMem", 5) ;
+    /** Size, in bytes, of a block for in-memory stores (testing) */
+    public static final int BlockSizeTest           = 1024;
 
     /** Size, in bytes, of a segment (used for memory mapped files) */
     public static final int SegmentSize             = 8*1024*1024; // intValue("SegmentSize", 8*1024*1024) ;
