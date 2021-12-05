@@ -30,28 +30,28 @@ public class FusekiMonitor {
      * The "configModel" parameter is set if a configuration file was used else it is null.
      */
     public static void configuration(FusekiServer.Builder builder, DataAccessPointRegistry dapRegistry, Model configModel) {
-        FusekiModules.forEachModule((n,m) -> m.configuration(builder, dapRegistry, configModel));
+        FusekiModules.forEachModule(module -> module.configuration(builder, dapRegistry, configModel));
     }
 
     /**
      * The outcome of the "build" step.
      */
     public static void server(FusekiServer server) {
-        FusekiModules.forEachModule((n,m) -> m.server(server));
+        FusekiModules.forEachModule(module -> module.server(server));
     }
 
     /**
      * Called just before {@code server.start()} called.
      */
     public static void serverBeforeStarting(FusekiServer server) {
-        FusekiModules.forEachModule((n,m) -> m.serverBeforeStarting(server));
+        FusekiModules.forEachModule(module -> module.serverBeforeStarting(server));
     }
 
     /**
      * Called just after {@code server.start()} called.
      */
     public static void serverAfterStarting(FusekiServer server) {
-        FusekiModules.forEachModule((n,m) -> m.serverAfterStarting(server));
+        FusekiModules.forEachModule(module -> module.serverAfterStarting(server));
     }
 
     /**
@@ -60,6 +60,6 @@ public class FusekiMonitor {
      * simply exits the JVM or is killed externally.
      */
     public static void serverStopped(FusekiServer server) {
-        FusekiModules.forEachModule((n,m) -> m.serverStopped(server));
+        FusekiModules.forEachModule(module -> module.serverStopped(server));
     }
 }

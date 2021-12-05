@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.HttpException;
@@ -451,6 +452,8 @@ public class GSP {
     final protected boolean isGraphOperation() { return defaultGraph || graphName != null; }
     final protected boolean isDatasetOperation() { return datasetGraph; }
 
+    final protected HttpClient httpClient() { return httpClient; }
+    final protected void httpHeaders(BiConsumer<String, String> action) { httpHeaders.forEach(action); }
 
     /**
      * GET dataset.

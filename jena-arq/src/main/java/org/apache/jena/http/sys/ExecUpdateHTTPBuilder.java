@@ -57,7 +57,6 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
     // Uses query rewrite to replace variables by values.
     protected Map<Var, Node> substitutionMap     = new HashMap<>();
 
-
     protected ExecUpdateHTTPBuilder() {}
 
     protected abstract Y thisBuilder();
@@ -163,6 +162,12 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
         Objects.requireNonNull(headerName);
         Objects.requireNonNull(headerValue);
         this.httpHeaders.put(headerName, headerValue);
+        return thisBuilder();
+    }
+
+    public Y httpHeaders(Map<String, String> headers) {
+        Objects.requireNonNull(headers);
+        this.httpHeaders.putAll(headers);
         return thisBuilder();
     }
 

@@ -1056,6 +1056,13 @@ public class FusekiServer {
         }
 
         /**
+         * Shortcut: build, then start the server.
+         */
+        public FusekiServer start() {
+            return build().start();
+        }
+
+        /**
          * Build a server according to the current description.
          */
         public FusekiServer build() {
