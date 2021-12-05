@@ -51,10 +51,10 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  *
  *  Depending on whether the subject/object are bound when called:
  *  <ul>
- *  <li>subject bound, object unbound => assign the local name to variable in object slot</li>
- *  <li>subject bound, object bound => check the subject has the local name given by object</li>
- *  <li>subject unbound, object bound => find all URIs in the model (s, p or o) that have that local name</li>
- *  <li>subject unbound, object unbound => generate all localname for all URI resources in the model</li>
+ *  <li>subject bound, object unbound {@literal =>} assign the local name to variable in object slot</li>
+ *  <li>subject bound, object bound {@literal =>} check the subject has the local name given by object</li>
+ *  <li>subject unbound, object bound {@literal =>} find all URIs in the model (s, p or o) that have that local name</li>
+ *  <li>subject unbound, object unbound {@literal =>} generate all localname for all URI resources in the model</li>
  *  </ul>
  *  The two searching forms (subject unbound) are expensive.
 

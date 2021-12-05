@@ -28,14 +28,15 @@ import org.apache.jena.sparql.function.FunctionBase1 ;
  *  <li>"DateTime", if it's a date time</li>
  *  <li>"unknown" otherwise</li>
  *  </ul>
- *  
+ *
  *  Usage:
  *  <pre>
- *    PREFIX ext: <java:arq.examples.ext.>
+ *    PREFIX ext: &lt;java:arq.examples.ext.&gt;
  *  </pre>
  *  <pre>
  *    FILTER ext:classify(3+?x)
- *  <pre> */ 
+ *  <pre>
+ */
 
 public class classify extends FunctionBase1
 {
@@ -43,11 +44,11 @@ public class classify extends FunctionBase1
 
     @Override
     public NodeValue exec(NodeValue v)
-    { 
+    {
         if ( v.isNumber() ) return NodeValue.makeString("number") ;
         if ( v.isDateTime() ) return NodeValue.makeString("dateTime") ;
         if ( v.isString() ) return NodeValue.makeString("string") ;
-        
+
         return NodeValue.makeString("unknown") ;
     }
 }
