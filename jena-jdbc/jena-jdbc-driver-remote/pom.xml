@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-jdbc</artifactId>
-    <version>4.3.0</version>
+    <version>4.4.0-SNAPSHOT</version>
   </parent>
   <artifactId>jena-jdbc-driver-remote</artifactId>
   <name>Apache Jena - JDBC Remote Endpoint Driver</name>
@@ -37,26 +37,26 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-jdbc-core</artifactId>
-      <version>4.3.0</version>
+      <version>4.4.0-SNAPSHOT</version>
     </dependency>
     <!-- Test Dependencies -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-jdbc-core</artifactId>
-      <version>4.3.0</version>
+      <version>4.4.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-main</artifactId>
-      <version>4.3.0</version>
+      <version>4.4.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-main</artifactId>
-      <version>4.3.0</version>
+      <version>4.4.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
