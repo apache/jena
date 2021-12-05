@@ -26,8 +26,8 @@ import org.apache.jena.sparql.pfunction.PFuncAssignToObject ;
  *  The subject must be bound, the object not bound. {@link localname} shows a
  *  property function that handles more cases of subject or object bing bound or unbound.
  *  <pre>
- *     PREFIX ext: <java:arq.examples.propertyfunction.>
- *  </pre>   
+ *     PREFIX ext: &lt;java:arq.examples.propertyfunction.&gt;
+ *  </pre>
  *  <pre>
  *     { ?string ext:uppercase ?uppercase }
  *  </pre>
@@ -42,7 +42,7 @@ public class uppercase extends PFuncAssignToObject
     @Override
     public Node calc(Node node)
     {
-        if ( ! node.isLiteral() ) 
+        if ( ! node.isLiteral() )
             return null ;
         String str = node.getLiteralLexicalForm().toUpperCase() ;
         return NodeFactory.createLiteral(str) ;
