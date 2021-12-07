@@ -36,6 +36,7 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpAsQuery ;
 import org.apache.jena.sparql.algebra.op.OpService ;
 import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.Rename;
 import org.apache.jena.sparql.engine.http.HttpParams;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
@@ -124,8 +125,23 @@ public class Service {
                 query.setQueryPattern(el);
                 query.setResultVars();
             }
-        } else
-            query = OpAsQuery.asQuery(opRemote);
+        } else {
+            // This relies on the observation that the query was originally correct,
+            // so reversing the scope renaming is safe (it merely restores the
+            // algebra expression).
+            //
+            // Any variables that reappear should be internal ones that were hidden
+            // by renaming in the first place.
+            //
+            // Any substitution is also safe because it replaces variables by
+            // values.
+            //
+            // It is safer to rename/unrename than skipping SERVICE during rename
+            // to avoid substituting hidden variables.
+
+            Op opRestored = Rename.reverseVarRename(opRemote, true);
+            query = OpAsQuery.asQuery(opRestored);
+        }
 
         // -- Setup
         //boolean withCompression = context.isTrueOrUndef(httpQueryCompression);
