@@ -436,6 +436,14 @@ public class TestService {
         }
     }
 
+    // JENA-2207
+    // The inner query involves a rename of variables ?p ?o. This should be undone by Service.exec.
+    @Test public void service_query_nested_select_1() {
+        String innerQuery = "SELECT ?s { ?s ?p ?o }";
+        String queryString = "ASK { SERVICE <"+SERVICE+ "> { "+innerQuery+" } }";
+        QueryExec.dataset(localDataset()).query(queryString).ask();
+    }
+
     private static void runWithModifier(String key, HttpRequestModifier modifier, Runnable action) {
         RegistryRequestModifier.get().add(SERVICE, modifier);
         try {
