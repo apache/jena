@@ -26,7 +26,7 @@ public class XLoaderFiles {
     // Fixed file names in temporary directory
     static final String nameTriplesFile = "triples.tmp";
     static final String nameQuadsFile = "quads.tmp";
-    static final String nameLoadInfo = "load.txt";
+    static final String nameLoadInfo = "load.json";
 
     // Names.
     public final String TMPDIR;
@@ -34,10 +34,12 @@ public class XLoaderFiles {
     public final String quadsFile;
     public final String loadInfo;
     public XLoaderFiles(String TMPDIR) {
+        String ext = BulkLoaderX.CompressDataFiles ? ".gz" : "";
+
         this.TMPDIR = Objects.requireNonNull(TMPDIR);
         Path loc = Path.of(TMPDIR);
-        triplesFile = loc.resolve(nameTriplesFile).toString();
-        quadsFile = loc.resolve(nameQuadsFile).toString();
+        triplesFile = loc.resolve(nameTriplesFile).toString()+ext;
+        quadsFile = loc.resolve(nameQuadsFile).toString()+ext;
         loadInfo = loc.resolve(nameLoadInfo).toString();
     }
 }

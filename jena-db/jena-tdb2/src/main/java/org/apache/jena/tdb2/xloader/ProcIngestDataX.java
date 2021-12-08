@@ -18,13 +18,18 @@
 
 package org.apache.jena.tdb2.xloader;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.lib.BitsLong;
 import org.apache.jena.atlas.lib.DateTimeUtils;
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.lib.Timer;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.graph.Node;
@@ -70,23 +75,41 @@ public class ProcIngestDataX {
         ProgressMonitor monitor = ProgressMonitorOutput.create(LOG, "Data", BulkLoaderX.DataTick, BulkLoaderX.DataSuperTick);
         // WriteRows does it's own buffering and has direct write-to-buffer.
         // Do not buffer here.
+        // Adds gzip processing.
         OutputStream outputTriples = IO.openOutputFile(loaderFiles.triplesFile);
         OutputStream outputQuads = IO.openOutputFile(loaderFiles.quadsFile);
 
-        dsg.executeWrite(()->build(dsg, monitor,
-                                   outputTriples, outputQuads,
-                                   datafiles));
+        OutputStream outT = outputTriples;
+        OutputStream outQ = outputQuads;
+        dsg.executeWrite(() -> {
+            Pair<Long, Long> p = build(dsg, monitor, outT, outQ, datafiles);
+            String str = DateTimeUtils.nowAsXSDDateTimeString();
+            long cTriple = p.getLeft();
+            long cQuad = p.getRight();
+            FmtLog.info(LOG, "Triples = %,d ; Quads = %,d", cTriple, cQuad);
+            JsonObject obj = JSON.buildObject(b->{
+                b.pair("ingested", str);
+                b.key("data").startArray();
+                datafiles.forEach(fn->b.value(fn));
+                b.finishArray();
+                b.pair("triples", cTriple);
+                b.pair("quads", cQuad);
+            });
+            try ( OutputStream out = IO.openOutputFile(loaderFiles.loadInfo) ) {
+                JSON.write(out, obj);
+            } catch (IOException ex) { IO.exception(ex); }
+        });
         TDBInternal.expel(dsg);
         SystemIRIx.setProvider(provider);
     }
 
-    private static void build(DatasetGraph dsg, ProgressMonitor monitor,
+    private static Pair<Long, Long> build(DatasetGraph dsg, ProgressMonitor monitor,
                               OutputStream outputTriples, OutputStream outputQuads,
                               List<String> datafiles) {
         DatasetGraphTDB dsgtdb = TDBInternal.getDatasetGraphTDB(dsg);
         outputTriples = IO.ensureBuffered(outputTriples);
         outputQuads = IO.ensureBuffered(outputQuads);
-        NodeTableBuilder sink = new NodeTableBuilder(dsgtdb, monitor, outputTriples, outputQuads, false);
+        IngestData sink = new IngestData(dsgtdb, monitor, outputTriples, outputQuads, false);
         Timer timer = new Timer();
         timer.startTimer();
         // [BULK] XXX Start monitor on first item from parser.
@@ -101,6 +124,9 @@ public class ProcIngestDataX {
         sink.finishBulk();
         IO.close(outputTriples);
         IO.close(outputQuads);
+
+        long cTriple = sink.tripleCount();
+        long cQuad = sink.quadCount();
 
         // ---- Stats
 
@@ -120,21 +146,22 @@ public class ProcIngestDataX {
         String str =  String.format("Total: %,d tuples : %,.2f seconds : %,.2f tuples/sec [%s]",
                                     total, elapsedSecs, rate, DateTimeUtils.nowAsString());
         LOG.info(str);
+        return Pair.create(cTriple, cQuad);
     }
 
-    static class NodeTableBuilder implements StreamRDF
-    {
+    static class IngestData implements StreamRDF {
         private DatasetGraphTDB dsg;
         private NodeTable nodeTable;
+        long countTriples = 0;
+        long countQuads = 0;
         private WriteRows writerTriples;
         private WriteRows writerQuads;
         private ProgressMonitor monitor;
         private StatsCollectorNodeId stats;
 
-        NodeTableBuilder(DatasetGraphTDB dsg, ProgressMonitor monitor,
-                         OutputStream outputTriples, OutputStream outputQuads,
-                         boolean collectStats)
-        {
+        IngestData(DatasetGraphTDB dsg, ProgressMonitor monitor,
+                   OutputStream outputTriples, OutputStream outputQuads,
+                   boolean collectStats) {
             this.dsg = dsg;
             this.monitor = monitor;
             NodeTupleTable ntt = dsg.getTripleTable().getNodeTupleTable();
@@ -145,62 +172,58 @@ public class ProcIngestDataX {
                 this.stats = new StatsCollectorNodeId(nodeTable);
         }
 
-        //@Override
-        public void startBulk()
-        {}
+        // @Override
+        public void startBulk() {}
 
         @Override
-        public void start()
-        {}
+        public void start() {}
 
         @Override
-        public void finish()
-        {}
+        public void finish() {}
 
-        //@Override
-        public void finishBulk()
-        {
+        // @Override
+        public void finishBulk() {
             writerTriples.flush();
             writerQuads.flush();
             nodeTable.sync();
 
-           //dsg.getStoragePrefixes().sync();
+            // dsg.getStoragePrefixes().sync();
         }
 
         @Override
-        public void triple(Triple triple)
-        {
+        public void triple(Triple triple) {
+            countTriples++;
             Node s = triple.getSubject();
             Node p = triple.getPredicate();
             Node o = triple.getObject();
-            process(Quad.tripleInQuad,s,p,o);
+            process(Quad.tripleInQuad, s, p, o);
         }
 
         @Override
-        public void quad(Quad quad)
-        {
+        public void quad(Quad quad) {
+            countQuads++;
             Node s = quad.getSubject();
             Node p = quad.getPredicate();
             Node o = quad.getObject();
             Node g = null;
             // Union graph?!
-            if ( ! quad.isTriple() && ! quad.isDefaultGraph() )
+            if ( !quad.isTriple() && !quad.isDefaultGraph() )
                 g = quad.getGraph();
-            process(g,s,p,o);
+            process(g, s, p, o);
         }
 
         // --> From NodeIdFactory
         private static long encode(NodeId nodeId) {
             long x = nodeId.getPtrLocation(); // Should be "getValue"
-            switch(nodeId.type()) {
-                case PTR:
+            switch (nodeId.type()) {
+                case PTR :
                     return x;
-                case XSD_DOUBLE:
+                case XSD_DOUBLE :
                     // XSD_DOUBLE is special.
                     // Set value bit (63) and bit 62
                     x = DoubleNode62.insertType(x);
                     return x;
-                default:
+                default :
                     // Bit 62 is zero - tag is for doubles.
                     x = BitsLong.pack(x, nodeId.getTypeValue(), 56, 62);
                     // Set the high, value bit.
@@ -239,11 +262,16 @@ public class ProcIngestDataX {
             monitor.tick();
         }
 
-        public StatsCollectorNodeId getCollector() { return stats; }
+        public StatsCollectorNodeId getCollector() {
+            return stats;
+        }
+
+        public long tripleCount() { return countTriples; }
+
+        public long quadCount()   { return countQuads; }
 
         @Override
-        public void base(String base)
-        {}
+        public void base(String base) {}
 
         @Override
         public void prefix(String prefix, String iri) {

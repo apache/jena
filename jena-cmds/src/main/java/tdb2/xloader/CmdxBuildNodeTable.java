@@ -26,6 +26,8 @@ import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.tdb2.xloader.BulkLoaderX;
 import org.apache.jena.tdb2.xloader.ProcNodeTableBuilderX;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CmdxBuildNodeTable extends AbstractCmdxLoad {
 
@@ -34,13 +36,14 @@ public class CmdxBuildNodeTable extends AbstractCmdxLoad {
     }
 
     protected CmdxBuildNodeTable(String[] argv) {
-        super("Terms", argv);
+        super("Nodes", argv);
     }
 
     @Override
     protected void setCmdArgs() {
         super.add(argLocation,  "--loc=", "Database location");
         super.add(argTmpdir,    "--tmpdir=", "Temporary directory (defaults to --loc)");
+        //super.add(argSortNodeTableArgs, "--sortNodeTableArgs=", "Specialised argument for the sort for the node table");
     }
 
     @Override
@@ -77,10 +80,12 @@ public class CmdxBuildNodeTable extends AbstractCmdxLoad {
         if ( tmpdir == null )
             tmpdir = location;
 
-        Pair<Long/*triples*/, Long/*indexed nodes*/> buildCounts = ProcNodeTableBuilderX.exec(LOG, location, loaderFiles, filenames, sortArgs);
+        Logger LOG1 = LOG;
+        Logger LOG2 = LoggerFactory.getLogger("Terms");
+
+        Pair<Long/*triples or quads*/, Long/*indexed nodes*/> buildCounts = ProcNodeTableBuilderX.exec(LOG1, LOG2, location, loaderFiles, filenames, sortNodeTableArgs);
 
         long timeMillis = timer.endTimer();
-        //FmtLog.info(LOG, "Done - NodeTable - %s seconds", Timer.timeStr(timeMillis));
 
         long items = buildCounts.getLeft();
         double xSec = timeMillis/1000.0;
@@ -88,7 +93,6 @@ public class CmdxBuildNodeTable extends AbstractCmdxLoad {
         String elapsedStr = BulkLoaderX.milliToHMS(timeMillis);
         String rateStr = BulkLoaderX.rateStr(items, timeMillis);
 
-        FmtLog.info(LOG, "NodeTable - %s seconds - %s at %s TPS", Timer.timeStr(timeMillis), elapsedStr, rateStr);
-        // XXX Write size as tmp file.
+        FmtLog.info(LOG, "NodeTable - %s seconds - %s at %s terms per second", Timer.timeStr(timeMillis), elapsedStr, rateStr);
     }
 }

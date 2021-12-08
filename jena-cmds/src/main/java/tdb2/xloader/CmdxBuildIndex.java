@@ -40,6 +40,7 @@ public class CmdxBuildIndex extends AbstractCmdxLoad {
         super.add(argLocation,  "--loc=", "Database location");
         super.add(argTmpdir,    "--tmpdir=", "Temporary directory (defaults to --loc)");
         super.add(argIndex,     "--index=", "Index name");
+        //super.add(argSortIndexArgs, "--sortIndexArgs=", "Specialised argument for the sort for the indexes");
     }
 
     @Override
@@ -85,7 +86,6 @@ public class CmdxBuildIndex extends AbstractCmdxLoad {
         long items = ProcIndexBuildX.exec(location, indexName, loaderFiles);
 
         long timeMillis = timer.endTimer();
-        //FmtLog.info(LOG, "Done - NodeTable - %s seconds", Timer.timeStr(timeMillis));
 
         double xSec = timeMillis/1000.0;
         double rate = items/xSec;
