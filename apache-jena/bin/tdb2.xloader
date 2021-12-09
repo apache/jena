@@ -74,7 +74,7 @@ $(basename $0) TDB2 Bulk Loader
 Usage: ${TDB_CMD} --loc <Directory> [--tmpdir=DIR] FILE ...
 
 Bulk loader for TDB2.
-See https://jena.apache/org/documentation/tdb/tdb-xloader.html
+See https://jena.apache.org/documentation/tdb/tdb-xloader.html
 
 Environment variables:
 
