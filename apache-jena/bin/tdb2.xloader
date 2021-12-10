@@ -16,13 +16,71 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+## External environment variables.
+##   JENA_CP
+##   JENA_HOME
+##   JVM_ARGS
+
+## Programs used:
+## jq
+## sort
+## /usr/bin/gzip
+
+## ======= Check environment
+
+function testForProgram() {
+    local CMD="$1"
+    type -p "$CMD" &> /dev/null
+    if [[ $? -ne 0 ]]; then
+	echo "Command $CMD not found"
+	return 1
+    fi
+}
+
+## Test for "sort --parallel" (though without that, it's going to be slower!
+function testSortParallel() {
+    set +e
+    sort --parallel=3 < /dev/null &>/dev/null
+    if [[ $? -ne 0 ]]; then
+        echo "No --parallel support in sort(1)" 2&>1
+	exit 9
+    fi
+    set -e
+}
+
+JAVA="${JAVA:-java}"
+
+COMPLETE="yes"
+for F in jq sort /usr/bin/gzip java
+do
+    testForProgram "$F"
+    if [[ $? -ne 0 ]] ; then
+	COMPLETE="no"
+    fi
+done
+
+if [[ $COMPLETE -ne "yes" ]] ; then
+    echo "One or more programs missing" 2&>1
+    exit 9
+fi
+
+unset COMPLETE
+
+testSortParallel
+
+## ======== Setup
+
+## Environment variable TMPDIR is ignored.
+## it is often a small-ish area unsuitable for large temp files.
+## Use the --tmpdir flag
+
+TMPDIR=
+
+## Format used in logging with date(1).
 DATE="+%H:%M:%S"
-# JENA_CP=
-# JENA_HOME=
-# TMPDIR=
 
 ## Functions.
-# log "LEVEL" "MESSAGE"
+# Usage: log "LEVEL" "MESSAGE"
 function log() {
     local LEVEL="$1"
     local MSG="$2"
@@ -92,6 +150,8 @@ JVM_ARGS
     Do not set to all available RAM.
     Increasing it does not make the loader faster.
 
+The temporary directory defaults to the datbase directory.
+
 EOF
 }
 
@@ -160,7 +220,6 @@ if [ -L "${JENA_HOME}" ]; then
   #echo "Resolved symbolic links for JENA_HOME to $JENA_HOME"
 fi
 
-
 ## Classpath JENA_CP.
 if [ -z "$JENA_CP" ] ; then
    if [ -z "$JENA_HOME" ]; then
@@ -181,6 +240,9 @@ function exec_java() {
 while [ $# -gt 0 ]
 do
     ARG=$1
+    ## --tmpdir
+    ## --loc|--location
+    ## --help
     case $ARG in
 	-d|--debug)
 	    # Debug Mode
@@ -226,8 +288,7 @@ do
     esac
 done
 	       
-if [[ $# -eq 0 ]]
-then
+if [[ $# -eq 0 ]] ; then
     abort 1 "No files to load" 1>&2
 fi
 
@@ -239,9 +300,6 @@ fi
 
 [[ -z $TMPDIR ]] && TMPDIR=$LOC
 export TMPDIR
-## --tmpdir
-## --loc|--location
-## --help
 
 ## TDB1 / TDB2
 ## @@
@@ -269,74 +327,101 @@ case "$SYSTEM" in
 	;;
 esac
 
-## Delete database!
+## Don't mess up an existing database!
 if [ -e "$LOC" ]; then
     ## @@ Better
     abort 3 "Directory $LOC already exists"
 fi
 
-JAVA="${JAVA:-java}"
-
 info "Setup:"
-info "  Data:     $DATAFILES"
 info "  Database: $LOC"
-info "  Tmpdir:   $TMPDIR"
+info "  Data:     $DATAFILES"
+info "  TMPDIR:   $TMPDIR"
 
 # Large heap not required.
 JVM_ARGS="${JVM_ARGS:--Xmx2G}"
 
-## Time points.
+## Time point.
 
 TIME_START="$(now)"
 
-## Node table loading.
+## ======== Node table loading.
 if [ "$SYSTEM" == "TDB2" ]; then
+    ## TDB2 only.
+    info
     T="$(now)"
     info "Load node table"
     exec_java $PKG.CmdxBuildNodeTable --loc $LOC --tmpdir "$TMPDIR" $DATAFILES
     TIME_NODE_TABLE=$(($(now)-$T))
 fi
 
-## Ingest data, create workfiles
+## ======== Ingest data, creates workfiles
 info
 info "Ingest data"
 T="$(now)"
 exec_java $PKG.CmdxIngestData --loc $LOC --tmpdir "$TMPDIR" --triples "$TMPDIR/triples.tmp" --quads "$TMPDIR/quads.tmp" $DATAFILES
 TIME_INGEST=$(($(now)-$T))
 
-## @@ triples.tmp quads.tmp
+## ======== Indexes
+INFO="$TMPDIR/load.json"
+
+## Bash assocative array
+declare -A TIME_IDX
 
 function index() {
     local IDX="$1"
+    info
+    info "Build $IDX"
+    local T="$(now)"
     exec_java $PKG.CmdxBuildIndex --loc $LOC --tmpdir "$TMPDIR" --index $IDX \
 	      "$TMPDIR/triples.tmp" "$TMPDIR/quads.tmp"
+    local T_IDX=$(($(now)-$T))
+    TIME_IDX[$IDX]=$T_IDX
 }
 
-info
-info "Build SPO"
-T="$(now)"
-index SPO
-TIME_IDX_SPO=$(($(now)-$T))
+## Decide which indexes to generate.
+TRIPLES_DFT="SPO POS OSP"
+QUADS_DFT="GSPO GPOS GOSP SPOG POSG OSPG"
+
+TRIPLES_IDX="${TRIPLES_IDX:-$TRIPLES_DFT}"
+QUADS_IDX="${QUADS_IDX:-$QUADS_DFT}"
+
+if [ -e "$INFO" ] ; then
+    ## Skip a phase if there are no items to index.
+    TRIPLES="$(jq .triples < $INFO)"
+    QUADS="$(jq .quads < $INFO)"
+    if [[ $TRIPLES -eq 0 ]] ; then
+	TRIPLES_IDX=""
+    fi
+    if [[ $QUADS -eq 0 ]] ; then
+	QUADS_IDX=""
+    fi
+fi
+
+## ==== Triples
+
+for IDX in $TRIPLES_IDX ; do
+    index $IDX
+done
+
+## ==== Quads
+
+for IDX in $QUADS_IDX ; do
+    index $IDX
+done
+
+## ======== Finish
+
+## Delete temp files.
+## rm -f "$TMPDIR"/triples.tmp* "$TMPDIR"/quads.tmp*
 
 info
-info "Build POS"
-T="$(now)"
-index POS
-TIME_IDX_POS=$(($(now)-$T))
-
-info
-info "Build OSP"
-T="$(now)"
-index OSP
-let TIME_IDX_OSP=$(($(now)-$T))
-
-## @@
-#rm  "$TMPDIR/triples.tmp" "$TMPDIR/quads.tmp"
-
 TIME_FINISH="$(now)"
 
+## ======== Reporting
 TIME_TOTAL=$(($TIME_FINISH-$TIME_START))
 
+## Ingest
 if [ -n "$TIME_NODE_TABLE" ]; then
     info "Load node table  = $TIME_NODE_TABLE seconds"
 fi
@@ -345,8 +430,27 @@ SECS=$TIME_TOTAL
 TIME_HMS="$(printf '%02dh %02dm %02ds\n' $((SECS/3600)) $((SECS%3600/60)) $((SECS%60)))"
 
 info "Load ingest data = $TIME_INGEST seconds"
-info "Build index SPO  = $TIME_IDX_SPO seconds"
-info "Build index POS  = $TIME_IDX_POS seconds"
-info "Build index OSP  = $TIME_IDX_OSP seconds"
+
+## Indexes
+for IDX in $TRIPLES_IDX ; do
+     info "Build index ${IDX}  = ${TIME_IDX[${IDX}]} seconds"
+done
+for IDX in $QUADS_IDX ; do
+     info "Build index ${IDX} = ${TIME_IDX[${IDX}]} seconds"
+done
+
+## Whole run
 info "Overall          $TIME_TOTAL seconds"
 info "Overall          $TIME_HMS"
+
+if [[ -e $INFO ]]
+then
+    printf -v TRIPLES_STR "%'d" "$TRIPLES"
+    printf -v QUADS_STR "%'d" "$QUADS"
+    info "Triples loaded   = $TRIPLES_STR"
+    info "Quads loaded     = $QUADS_STR"
+    TUPLES=$(($TRIPLES+$QUADS))
+    RATE=$(($TUPLES / $TIME_TOTAL))
+    printf -v RATE_STR "%'d" "$RATE"
+    info "Overall Rate     $RATE_STR tuples per second"
+fi

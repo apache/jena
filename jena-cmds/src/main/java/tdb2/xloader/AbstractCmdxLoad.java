@@ -51,12 +51,17 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
     protected static ArgDecl argTmpdir     = new ArgDecl(true, "tmpdir", "tmp");
     protected static ArgDecl argIndex      = new ArgDecl(true, "index");
 
-    protected static ArgDecl argSortArgs   = new ArgDecl(true, "sortArgs", "sortargs");
+    // If this is put back, note there are two different sorts - one for the node table and several for the indexes.
+    protected static ArgDecl argSortNodeTableArgs   = new ArgDecl(true, "sortNodeTableArgs");
+    protected static ArgDecl argSortIndexArgs   = new ArgDecl(true, "sortIndexArgs");
 
     protected String location = null;
     protected String tmpdir = null;
     protected String indexName = null;
-    protected String sortArgs = null;
+
+    protected String sortNodeTableArgs = null;
+    protected String sortIndexArgs = null;
+
     protected List<String> filenames = null;
 
     protected XLoaderFiles loaderFiles = null;
@@ -89,9 +94,9 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
         location = super.getValue(argLocation);
         tmpdir = super.getValue(argTmpdir);
         indexName = super.getValue(argIndex);
-        sortArgs = super.getValue(argSortArgs);
 
-
+        sortNodeTableArgs = super.getValue(argSortNodeTableArgs);
+        sortIndexArgs = super.getValue(argSortIndexArgs);
 
         if ( location != null )
             checkDirectory(location);
@@ -104,7 +109,6 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
         subCheckArgs();
 
         loaderFiles = new XLoaderFiles(tmpdir);
-
     }
 
     private void checkDirectory(String dirname) {

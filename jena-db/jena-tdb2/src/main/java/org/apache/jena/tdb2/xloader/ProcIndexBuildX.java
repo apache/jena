@@ -143,29 +143,46 @@ public class ProcIndexBuildX
         Process proc2;
         OutputStream toSortOutputStream; // Not used. Input is a file.
         InputStream fromSortInputStream;
+
         try {
             //LOG.info("Step : external sort : "+indexName);
             //if ( sortArgs != null ) {}
+
             List<String> sortCmdBasics = Arrays.asList(
                  "sort",
                     "--temporary-directory="+TMPDIR, "--buffer-size=50%",
                     "--parallel=2", "--unique"
                     //, "--compress-program=/usr/bin/gzip"
-                );
+            );
             List<String> sortCmd = new ArrayList<>(sortCmdBasics);
+            if ( BulkLoaderX.CompressSortIndexFiles )
+                sortCmd.add("--compress-program=/usr/bin/gzip");
             sortCmd.addAll(sortKeyArgs);
-            // Add the file to sort.
-            sortCmd.add(datafile);
+            // Add the file to sort if not compressed.
+            if ( ! BulkLoaderX.CompressDataFiles )
+                sortCmd.add(datafile);
+            // else this process will decompress and send the data.
+
             proc2 = new ProcessBuilder(sortCmd).start();
-            // To process. Not used.
+
+            // To process. Not used if uncompressed file.
             toSortOutputStream = proc2.getOutputStream();
             // From process
             fromSortInputStream = proc2.getInputStream(); // Needs buffering
-            // Debug sort process.
+//            // Debug sort process.
 //            InputStream fromSortErrortStream = proc2.getErrorStream();
 //            IOUtils.copy(fromSortErrortStream, System.err);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        }
+
+        if ( BulkLoaderX.CompressDataFiles ) {
+            // Handles .gz
+            InputStream inData = IO.openFile(datafile);
+            try {
+                inData.transferTo(toSortOutputStream);
+                toSortOutputStream.close();
+            } catch (IOException ex) { IO.exception(ex); }
         }
 
         // From sort, buffered.

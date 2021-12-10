@@ -24,6 +24,23 @@ public class BulkLoaderX {
     public static int DataTick = 1_000_000;
     public static int DataSuperTick = 10;
 
+    /**
+     * Whether to compress the triple.tmp and quads.tmp files.
+     * These are read multiple times.
+     */
+    public static boolean CompressDataFiles = true;
+
+    /**
+     * Whether to compress intermediate sort files for the node table.
+     * We'll need this amount of space for the final indexes so this isn't helpful.
+     */
+    public static boolean CompressSortNodeTableFiles = false;
+
+    /**
+     * Whether to compress intermediate sort files for the indexes.
+     */
+    public static boolean CompressSortIndexFiles = true;
+
     public static Thread async(Runnable action, String threadName) {
         Objects.requireNonNull(action);
         Objects.requireNonNull(threadName);
