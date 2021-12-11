@@ -24,13 +24,10 @@ import static org.apache.jena.tdb2.assembler.VocabTDB2.pLocation;
 import static org.apache.jena.tdb2.assembler.VocabTDB2.pUnionDefaultGraph;
 
 import org.apache.jena.assembler.Assembler;
-import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
@@ -40,17 +37,16 @@ import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2;
 
-public class DatasetAssemblerTDB extends DatasetAssembler
+public class DatasetAssemblerTDB2 extends DatasetAssembler
 {
     static { JenaSystem.init(); }
 
     @Override
-    public Dataset createDataset(Assembler a, Resource root, Mode mode) {
-        TDB2.init();
-        return make(root);
+    public DatasetGraph createDataset(Assembler a, Resource root) {
+        return make(a, root);
     }
 
-    static Dataset make(Resource root) {
+    public static DatasetGraph make(Assembler a, Resource root) {
         if ( !exactlyOneProperty(root, pLocation) )
             throw new AssemblerException(root, "No location given");
 
@@ -64,7 +60,7 @@ public class DatasetAssemblerTDB extends DatasetAssembler
             if ( nv.isBoolean() )
                 dsg.getContext().set(TDB2.symUnionDefaultGraph, nv.getBoolean());
             else
-                Log.warn(DatasetAssemblerTDB.class, "Failed to recognize value for union graph setting (ignored): " + b);
+                Log.warn(DatasetAssemblerTDB2.class, "Failed to recognize value for union graph setting (ignored): " + b);
         }
 
         /*
@@ -74,7 +70,6 @@ public class DatasetAssemblerTDB extends DatasetAssembler
             tdb:unionGraph true; # or "true"
         */
         AssemblerUtils.mergeContext(root, dsg.getContext());
-        return DatasetFactory.wrap(dsg);
+        return dsg;
     }
-
 }

@@ -29,22 +29,26 @@ import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.query.Dataset;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.tdb2.TDB2;
-import org.apache.jena.tdb2.TDB2Factory;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sys.JenaSystem;
+import org.apache.jena.tdb2.DatabaseMgr;
 
-public class TDBGraphAssembler extends AssemblerBase implements Assembler
+public class TDB2GraphAssembler extends AssemblerBase implements Assembler
 {
-    @Override
-    public Model open(Assembler a, Resource root, Mode mode)
-    {
-        // In case we go via explicit index construction,
-        // although given we got here, the assembler is wired in
-        // and that probably means TDB.init
-        TDB2.init();
+    static { JenaSystem.init(); }
 
+    @Override
+    public Model open(Assembler a, Resource root, Mode mode) {
+        Graph g = createGraph(a, root, mode);
+        return ModelFactory.createModelForGraph(g);
+    }
+
+    public Graph createGraph(Assembler a, Resource root, Mode mode) {
         // Make a model - the default model of the TDB dataset
         // [] rdf:type tdb:GraphTDB;
         //    tdb:location "dir";
@@ -73,21 +77,21 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
         if ( root.hasProperty(pIndex) )
             Log.warn(this, "Custom indexes not implemented yet - ignored");
 
-        final Dataset ds;
+        DatasetGraph dsg;
 
         if ( locationDir != null )
         {
             Location location = Location.create(locationDir);
-            ds = TDB2Factory.connectDataset(location);
+            dsg = DatabaseMgr.connectDatasetGraph(location);
         }
         else
-            ds = DatasetAssemblerTDB.make(dataset);
+            dsg = DatasetAssemblerTDB2.make(a, dataset);
 
         try {
             if ( graphName != null )
-                return ds.getNamedModel(graphName);
+                return dsg.getGraph(NodeFactory.createURI(graphName));
             else
-                return ds.getDefaultModel();
+                return dsg.getDefaultGraph();
         } catch (RuntimeException ex)
         {
             ex.printStackTrace(System.err);

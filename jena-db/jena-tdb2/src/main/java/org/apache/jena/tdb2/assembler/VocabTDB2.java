@@ -82,10 +82,10 @@ public class VocabTDB2
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         // Domain and range for properties.
         // Separated and use ja:imports
-        AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB());
-        AssemblerUtils.registerDataset(tDatasetTDB_alt, new DatasetAssemblerTDB());
-        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB, new TDBGraphAssembler(), JA.Model);
-        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB_alt, new TDBGraphAssembler(), JA.Model);
+        AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB2());
+        AssemblerUtils.registerDataset(tDatasetTDB_alt, new DatasetAssemblerTDB2());
+        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB, new TDB2GraphAssembler(), JA.Model);
+        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB_alt, new TDB2GraphAssembler(), JA.Model);
 
     }
 }

@@ -22,30 +22,21 @@ import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getResourceValue;
 
 import org.apache.jena.assembler.Assembler;
-import org.apache.jena.assembler.Mode;
-import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdfs.DatasetGraphRDFS;
 import org.apache.jena.rdfs.RDFSFactory;
 import org.apache.jena.rdfs.SetupRDFS;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.assembler.DatasetAssembler;
 
-public class DatasetRDFSAssembler extends AssemblerBase implements Assembler {
+public class DatasetRDFSAssembler extends DatasetAssembler {
 
     public static Resource getType() {
         return VocabRDFS.tDatasetRDFS;
-    }
-
-    @Override
-    public Object open(Assembler a, Resource root, Mode mode) {
-        DatasetGraph dsg = createDataset(a, root, mode) ;
-        Dataset ds = DatasetFactory.wrap(dsg);
-        return ds ;
     }
 
     /**
@@ -62,7 +53,8 @@ public class DatasetRDFSAssembler extends AssemblerBase implements Assembler {
      * </pre>
      */
 
-    public DatasetGraph createDataset(Assembler a, Resource root, Mode mode) {
+    @Override
+    public DatasetGraph createDataset(Assembler a, Resource root) {
 
         Resource dataset = getResourceValue(root, VocabRDFS.pDataset) ;
         if ( dataset == null )

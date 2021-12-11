@@ -26,8 +26,8 @@ import org.apache.jena.tdb.TDB ;
 public class VocabTDB
 {
     private static final String NS = TDB.namespace ;
-    
-    public static String getURI() { return NS ; } 
+
+    public static String getURI() { return NS ; }
 
     // Types
     public static final Resource tDatasetTDB        = Vocab.type(NS, "DatasetTDB") ;
@@ -38,12 +38,12 @@ public class VocabTDB
 
     public static final Property pLocation          = Vocab.property(NS, "location") ;
     public static final Property pUnionDefaultGraph = Vocab.property(NS, "unionDefaultGraph") ;
-    
+
     public static final Property pIndex             = Vocab.property(NS, "index") ;
     public static final Property pGraphName1        = Vocab.property(NS, "graphName") ;
     public static final Property pGraphName2        = Vocab.property(NS, "namedGraph") ;
     public static final Property pDataset           = Vocab.property(NS, "dataset") ;
-    
+
     public static final Property pNodes             = Vocab.property(NS, "nodes") ;
 
     // Indexes
@@ -53,21 +53,21 @@ public class VocabTDB
     // Nodes
     public static final Property pNodeIndex         = Vocab.property(getURI(), "nodeIndex") ;
     public static final Property pNodeData          = Vocab.property(getURI(), "nodeData") ;
-    
+
     // Setting
     public static final Property pSetting           = Vocab.property(getURI(), "setting") ;
     public static final Property pName              = Vocab.property(getURI(), "name") ;
     public static final Property pValue             = Vocab.property(getURI(), "value") ;
-    
-    private static boolean initialized = false ; 
-    
+
+    private static boolean initialized = false ;
+
     static { init() ; }
-    
+
     static synchronized public void init() {
         if ( initialized )
             return;
         initialized = true;
-        AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB());
-        AssemblerUtils.registerModel(tGraphTDB, new TDBGraphAssembler());
+        AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB1());
+        AssemblerUtils.registerModel(tGraphTDB, new TDB1GraphAssembler());
     }
 }

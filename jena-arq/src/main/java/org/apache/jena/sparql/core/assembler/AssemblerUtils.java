@@ -59,7 +59,7 @@ public class AssemblerUtils
         if ( initialized )
             return ;
         initialized = true ;
-        registerDataset(tDataset,         new DatasetAssembler());
+        registerDataset(tDataset,         new DatasetAssemblerGeneral());
         registerDataset(tDatasetOne,      new DatasetOneAssembler());
         registerDataset(tDatasetZero,     new DatasetNullAssembler(tDatasetZero));
         registerDataset(tDatasetSink,     new DatasetNullAssembler(tDatasetSink));

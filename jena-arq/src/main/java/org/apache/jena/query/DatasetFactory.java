@@ -28,8 +28,8 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.DatasetGraphOne;
 import org.apache.jena.sparql.core.DatasetImpl;
-import org.apache.jena.sparql.core.DatasetOne;
 import org.apache.jena.sparql.core.assembler.DatasetAssembler;
 import org.apache.jena.sparql.util.DatasetUtils;
 import org.apache.jena.sparql.util.graph.GraphUtils;
@@ -126,7 +126,7 @@ public class DatasetFactory {
      */
     public static Dataset wrap(Model model) {
         Objects.requireNonNull(model, "Can't wrap a null Model reference") ;
-        return DatasetOne.create(model);
+        return wrap(DatasetGraphOne.create(model.getGraph()));
     }
 
     /**
