@@ -103,6 +103,7 @@ public class ProcNodeTableBuilderX {
         // ** Step 2: The sort
         Process proc2;
         try {
+            ProcessBuilder pb2;
             //LOG.info("Step : external sort");
             List<String> sortCmdBasics = Arrays.asList(
                   "sort",
@@ -119,7 +120,9 @@ public class ProcNodeTableBuilderX {
             // See javadoc for CompressSortNodeTableFiles - usually false
             if ( BulkLoaderX.CompressSortNodeTableFiles )
                 sortCmd.add("--compress-program=/usr/bin/gzip");
-            proc2 = new ProcessBuilder(sortCmd).start();
+            pb2 = new ProcessBuilder(sortCmd);
+            pb2.environment().put("LC_ALL","C");
+            proc2 = pb2.start();
 
             // To process.
             toSortOutputStream = proc2.getOutputStream(); // Needs buffering
