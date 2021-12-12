@@ -163,7 +163,9 @@ public class ProcIndexBuildX
                 sortCmd.add(datafile);
             // else this process will decompress and send the data.
 
-            proc2 = new ProcessBuilder(sortCmd).start();
+            ProcessBuilder pb2 = new ProcessBuilder(sortCmd);
+            pb2.environment().put("LC_ALL","C");
+            proc2 = pb2.start();
 
             // To process. Not used if uncompressed file.
             toSortOutputStream = proc2.getOutputStream();

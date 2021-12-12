@@ -119,7 +119,9 @@ public class ProcNodeTableBuilderX {
             // See javadoc for CompressSortNodeTableFiles - usually false
             if ( BulkLoaderX.CompressSortNodeTableFiles )
                 sortCmd.add("--compress-program=/usr/bin/gzip");
-            proc2 = new ProcessBuilder(sortCmd).start();
+            ProcessBuilder pb2 = new ProcessBuilder(sortCmd);
+            pb2.environment().put("LC_ALL","C");
+            proc2 = pb2.start();
 
             // To process.
             toSortOutputStream = proc2.getOutputStream(); // Needs buffering
