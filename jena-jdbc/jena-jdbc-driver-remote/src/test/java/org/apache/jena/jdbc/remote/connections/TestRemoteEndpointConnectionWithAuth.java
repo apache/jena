@@ -29,9 +29,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.jena.jdbc.JdbcCompatibility ;
 import org.apache.jena.jdbc.connections.JenaConnection ;
 import org.apache.jena.jdbc.remote.FusekiTestAuth;
-import org.apache.jena.jdbc.utils.TestJdbcUtils ;
+import org.apache.jena.jdbc.remote.http.HttpOp1;
+import org.apache.jena.jdbc.remote.utils.TestJdbcRemoteUtils;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.riot.web.HttpOp1;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.system.Txn;
 import org.eclipse.jetty.security.SecurityHandler;
@@ -102,7 +102,7 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
     @Override
     protected JenaConnection getConnection(Dataset ds) throws SQLException {
         // Set up the dataset
-        TestJdbcUtils.copyToRemoteDataset(ds, FusekiTestAuth.serviceGSP(), client);
+        TestJdbcRemoteUtils.copyToRemoteDataset(ds, FusekiTestAuth.serviceGSP(), client);
         return new RemoteEndpointConnection(FusekiTestAuth.serviceQuery(), FusekiTestAuth.serviceUpdate(), null, null, null, null,
                 client, JenaConnection.DEFAULT_HOLDABILITY,
                 JdbcCompatibility.DEFAULT, null, null);

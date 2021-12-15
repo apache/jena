@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.FusekiJdbcTestServer;
-import org.apache.jena.jdbc.utils.TestJdbcUtils;
+import org.apache.jena.jdbc.remote.utils.TestJdbcRemoteUtils;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.WebContent;
 import org.junit.After;
@@ -56,7 +56,7 @@ public class TestRemoteEndpointConnectionWithResultSetTypes extends AbstractRemo
     @Override
     protected JenaConnection getConnection(Dataset ds) throws SQLException {
         // Set up the dataset
-        TestJdbcUtils.copyToRemoteDataset(ds, FusekiJdbcTestServer.serviceGSP());
+        TestJdbcRemoteUtils.copyToRemoteDataset(ds, FusekiJdbcTestServer.serviceGSP());
         return new RemoteEndpointConnection(FusekiJdbcTestServer.serviceQuery(), FusekiJdbcTestServer.serviceUpdate(), null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRDFJSON);
     }
 }

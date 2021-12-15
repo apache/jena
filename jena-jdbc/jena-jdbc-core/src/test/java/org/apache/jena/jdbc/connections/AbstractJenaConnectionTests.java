@@ -20,7 +20,6 @@ package org.apache.jena.jdbc.connections;
 import java.net.MalformedURLException ;
 import java.net.URL ;
 import java.sql.* ;
-import java.sql.ResultSet ;
 import java.util.HashMap ;
 import java.util.Properties ;
 
@@ -34,8 +33,11 @@ import org.apache.jena.jdbc.results.SelectResults ;
 import org.apache.jena.jdbc.results.TripleIteratorResults ;
 import org.apache.jena.jdbc.results.metadata.AskResultsMetadata ;
 import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata ;
-import org.apache.jena.jdbc.utils.TestJdbcUtils ;
-import org.apache.jena.query.* ;
+import org.apache.jena.jdbc.utils.TestJdbcUtils;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.update.UpdateFactory ;
@@ -46,7 +48,7 @@ import org.junit.Test ;
 
 /**
  * Abstract tests for {@link JenaConnection} implementations
- * 
+ *
  */
 @SuppressWarnings("resource")
 public abstract class AbstractJenaConnectionTests {
@@ -58,7 +60,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Method which derived test classes must implement to provide a connection
      * to an empty database for testing
-     * 
+     *
      * @return Connection
      * @throws SQLException
      */
@@ -67,7 +69,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Method which derived test classes must implement to provide a connection
      * to a database constructed from the given dataset for testing
-     * 
+     *
      * @return Connection
      * @throws SQLException
      */
@@ -81,7 +83,7 @@ public abstract class AbstractJenaConnectionTests {
      * By default assumed to be false, override if you need to make it true for
      * your connection
      * </p>
-     * 
+     *
      * @return Whether a named graph is used as the default graph
      */
     protected boolean usesNamedGraphAsDefault() {
@@ -91,7 +93,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Method which indicates whether the connection being tested supports query
      * timeouts
-     * 
+     *
      * @return True if query timeouts are supported
      */
     protected boolean supportsTimeouts() {
@@ -101,7 +103,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Method which returns the name of the default graph when a named graph is
      * being used as the default graph
-     * 
+     *
      * @return Named Graph being used as the default graph
      * @throws SQLException
      *             Thrown if this feature is not being used
@@ -113,7 +115,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Create and close a connection to an empty database
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -126,7 +128,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Create and close a connection to an explicitly provided empty database
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -139,7 +141,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Retrieve and close a statement
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -156,7 +158,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Trying to retrieve a statement from a closed connection is an error
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -172,7 +174,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Trying to use a statement from a closed connection is an error
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -191,7 +193,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Runs a SELECT query on an empty database and checks it returns empty
      * results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -223,7 +225,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Runs a SELECT query on a non-empty database and checks it returns
      * non-empty results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -267,7 +269,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Runs a SELECT query on a non-empty database and checks it returns
      * non-empty results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -312,7 +314,7 @@ public abstract class AbstractJenaConnectionTests {
      * Runs a SELECT query on a non-empty database and checks it returns
      * non-empty results. Uses high compatibility level to ensure that column
      * type detection doesn't consume the first row.
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -356,7 +358,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests use of prepared statements
-     * 
+     *
      * @throws SQLException
      * @throws MalformedURLException
      */
@@ -405,7 +407,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests use of prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -453,7 +455,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests use of prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -499,12 +501,12 @@ public abstract class AbstractJenaConnectionTests {
         Assert.assertTrue(conn.isClosed());
     }
 
-   
+
 
     /**
      * Runs a SELECT query on a non-empty database with max rows set and checks
      * that the appropriate number of rows are returned
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -548,7 +550,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Runs a SELECT query on a non-empty database with max rows set and checks
      * that the appropriate number of rows are returned
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -595,7 +597,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Runs a SELECT query on a non-empty database with max rows set and checks
      * that the appropriate number of rows are returned
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -641,7 +643,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a SELECT query on a non-empty database with timeout
-     * 
+     *
      * @throws SQLException
      * @throws InterruptedException
      */
@@ -680,7 +682,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a SELECT query on a non-empty database with timeout
-     * 
+     *
      * @throws SQLException
      * @throws InterruptedException
      */
@@ -719,7 +721,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a SELECT query on a non-empty database with timeout
-     * 
+     *
      * @throws SQLException
      * @throws InterruptedException
      */
@@ -758,7 +760,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a SELECT query on a non-empty database with timeout
-     * 
+     *
      * @throws SQLException
      * @throws InterruptedException
      */
@@ -807,7 +809,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs an ASK query on an empty database and checks it returns true
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -849,7 +851,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Runs a CONSTRUCT query on an empty database and checks it returns empty
      * results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -881,7 +883,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Runs a CONSTRUCT query on a non-empty database and checks it returns
      * non-empty results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -922,7 +924,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Runs a CONSTRUCT query on an empty database and checks it returns empty
      * results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -954,7 +956,7 @@ public abstract class AbstractJenaConnectionTests {
     /**
      * Runs a CONSTRUCT query on a non-empty database and checks it returns
      * non-empty results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1005,7 +1007,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Does a basic read transaction
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1039,7 +1041,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Does a basic write transaction
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1077,7 +1079,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Does a basic write transaction without auto-commit and then commits it
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1133,7 +1135,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Does a basic write transaction without auto-commit and then rolls it back
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1188,7 +1190,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for transactions
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1203,7 +1205,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for transactions
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1218,7 +1220,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1232,7 +1234,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1246,7 +1248,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1260,7 +1262,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1277,7 +1279,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1294,7 +1296,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1308,7 +1310,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1322,7 +1324,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1336,7 +1338,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1350,7 +1352,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1364,7 +1366,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1379,7 +1381,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1396,7 +1398,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Test error cases for creating prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1413,7 +1415,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a batch of operations and checks the results results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1458,7 +1460,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a batch of operations and checks the results results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1518,7 +1520,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a batch of operations and checks the results results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1592,7 +1594,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a batch of operations and checks the results results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1621,7 +1623,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a batch of operations and checks the results results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1667,7 +1669,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a batch of operations and checks the results results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1712,7 +1714,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a batch of operations and checks the results results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1777,7 +1779,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a batch of operations and checks the results results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1804,7 +1806,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Runs a batch of operations and checks the results results
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1836,10 +1838,10 @@ public abstract class AbstractJenaConnectionTests {
             conn.close();
         }
     }
-    
+
     /**
      * Runs a batch of operations and checks the results results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1855,25 +1857,25 @@ public abstract class AbstractJenaConnectionTests {
         stmt.close();
         conn.close();
     }
-    
+
     /**
      * Tests using batches with prepared statements
      * @throws SQLException
-     * @throws MalformedURLException 
+     * @throws MalformedURLException
      */
     @Test
     public void connection_prepared_statement_batch_01() throws SQLException, MalformedURLException {
         JenaConnection conn = this.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT * WHERE { ? ?p ?o }");
-        
+
         for (int i = 1; i <= 5; i++) {
             stmt.setURL(1, new URL("http://example/" + i));
             stmt.addBatch();
         }
-        
+
         int[] batchResults = stmt.executeBatch();
         Assert.assertEquals(5, batchResults.length);
-        
+
         // Expect all to be SELECT results
         ResultSet rset = stmt.getResultSet();
         checkSelectMetadata(rset, 2);
@@ -1881,14 +1883,14 @@ public abstract class AbstractJenaConnectionTests {
             rset = stmt.getResultSet();
             checkSelectMetadata(rset, 2);
         }
-        
+
         stmt.close();
         conn.close();
     }
 
     /**
      * Tests pre-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1913,7 +1915,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests pre-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = IndexOutOfBoundsException.class)
@@ -1937,7 +1939,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests pre-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1959,7 +1961,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests pre-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1981,7 +1983,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests pre-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2003,7 +2005,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests pre-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2026,7 +2028,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests pre-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2049,7 +2051,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests pre-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2069,10 +2071,10 @@ public abstract class AbstractJenaConnectionTests {
 
         conn.close();
     }
-    
+
     /**
      * Tests post-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2097,7 +2099,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests post-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = IndexOutOfBoundsException.class)
@@ -2121,7 +2123,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests post-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2143,7 +2145,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests post-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2165,7 +2167,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests post-processor management operations
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2187,7 +2189,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases trying to set invalid options
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2204,7 +2206,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases trying to set invalid options
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -2221,7 +2223,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases trying to set invalid options
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -2238,7 +2240,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases around savepoints which are unsupported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2254,7 +2256,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases around savepoints which are unsupported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2270,7 +2272,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases around savepoints which are unsupported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2286,7 +2288,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases around savepoints which are unsupported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2302,7 +2304,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases around type maps which are unsupported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2318,7 +2320,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases around type maps which are unsupported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2334,7 +2336,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for unsupported call functionality
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2350,7 +2352,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for unsupported call functionality
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2366,7 +2368,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for unsupported call functionality
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2382,7 +2384,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for unsupported native sql functionality
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2398,7 +2400,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests usage of client info
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2431,7 +2433,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests usage of client info
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2451,7 +2453,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Check catalog retrieval
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2465,7 +2467,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2479,7 +2481,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2497,7 +2499,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2515,7 +2517,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2533,7 +2535,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2554,7 +2556,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for unsupported wrapper features
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2570,7 +2572,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for unsupported wrapper features
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2586,7 +2588,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for unsupported create operations
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2602,7 +2604,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for unsupported create operations
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2618,7 +2620,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for unsupported create operations
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2634,7 +2636,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for unsupported create operations
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2650,7 +2652,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for unsupported create operations
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2666,7 +2668,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests error cases for unsupported create operations
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2682,7 +2684,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests connection validity
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2696,7 +2698,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests read only settings
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2711,7 +2713,7 @@ public abstract class AbstractJenaConnectionTests {
 
     /**
      * Tests read only settings
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)

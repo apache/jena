@@ -32,10 +32,10 @@ import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.FusekiTestAuth;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-import org.apache.jena.jdbc.utils.TestJdbcUtils;
+import org.apache.jena.jdbc.remote.http.HttpOp1;
+import org.apache.jena.jdbc.remote.http.UpdateProcessRemote;
+import org.apache.jena.jdbc.remote.utils.TestJdbcRemoteUtils;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.riot.web.HttpOp1;
-import org.apache.jena.sparql.modify.UpdateProcessRemote;
 import org.apache.jena.sparql.modify.request.Target ;
 import org.apache.jena.sparql.modify.request.UpdateDrop ;
 import org.apache.jena.update.Update ;
@@ -110,7 +110,7 @@ public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointRes
 
     @Override
     protected ResultSet createResults(Dataset ds, String query, int resultSetType) throws SQLException {
-        TestJdbcUtils.copyToRemoteDataset(ds, FusekiTestAuth.serviceGSP(), client);
+        TestJdbcRemoteUtils.copyToRemoteDataset(ds, FusekiTestAuth.serviceGSP(), client);
         Statement stmt = connection.createStatement(resultSetType, ResultSet.CONCUR_READ_ONLY);
         return stmt.executeQuery(query);
     }
