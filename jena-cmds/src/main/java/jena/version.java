@@ -31,7 +31,7 @@ public class version implements Jena {
     static { setLogging(); }
 
     /**
-     * Print out jena version information and exits.
+     * Print out jena version information and exit.
      */
     public static void main(String... args) throws IllegalArgumentException, IllegalAccessException {
         String x = Jena.VERSION;

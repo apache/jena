@@ -64,6 +64,7 @@ EOF
 )
 
 CMDS2=$(cat <<EOF
+jena.version
 tdb2.tdbbackup
 tdb2.tdbdump
 tdb2.tdbcompact
