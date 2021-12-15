@@ -18,22 +18,11 @@
 
 package org.apache.jena.fuseki.jetty;
 
-import java.security.GeneralSecurityException;
 import java.util.Objects;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.TrustStrategy;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.riot.WebContent;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.security.*;
@@ -165,6 +154,7 @@ public class JettyLib {
         catch (Exception ex) { throw new RuntimeException("UserStore", ex); }
         return userStore;
     }
+
     public static UserStore addUser(UserStore userStore, String user, String password) {
         return addUser(userStore, user, password, "**");
     }
@@ -177,8 +167,6 @@ public class JettyLib {
         return userStore;
 
     }
-
-
 
     /** Add or append a {@link Handler} to a Jetty {@link Server}. */
     public static void addHandler(Server server, Handler handler) {
@@ -237,20 +225,5 @@ public class JettyLib {
 //      http_config.setResponseHeaderSize(8192);
         http_config.setSendServerVersion(false);
         return http_config;
-    }
-
-    /** Create an {@link HttpClientBuilder} that trusts self-signed, localhost https connections. */
-    public static HttpClientBuilder trustLocalhostUnsigned() {
-        TrustStrategy trustStrategy = TrustSelfSignedStrategy.INSTANCE;
-        try {
-            SSLContext sslCxt = new SSLContextBuilder().loadTrustMaterial(trustStrategy).build();
-            HostnameVerifier hostNameVerifier = (hostname, session) -> hostname.equals("localhost");
-            // Example: Any host.
-            // HostnameVerifier hostNameVerifier = NoopHostnameVerifier.INSTANCE;
-            SSLConnectionSocketFactory sslfactory = new SSLConnectionSocketFactory(sslCxt, hostNameVerifier);
-            return HttpClients.custom().setSSLSocketFactory(sslfactory);
-        } catch (GeneralSecurityException ex) {
-            throw new FusekiException(ex);
-        }
     }
 }

@@ -29,10 +29,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-     TestWebappSPARQLProtocol.class
-    ,  TestWebappAuthQuery_JDK.class
-    ,  TestWebappAuthUpdate_JDK.class
-    , TestWebappAuth_AHC.class
+      TestWebappSPARQLProtocol.class
+    , TestWebappAuthQuery_JDK.class
+    , TestWebappAuthUpdate_JDK.class
     , TestWebappFileUpload.class
     , TestAdmin.class
     , TestAdminAPI.class
