@@ -36,71 +36,75 @@ import org.apache.jena.tdb2.xloader.BulkLoaderX;
  */
 public class CmdxLoader extends AbstractCmdxLoad {
 
-       public static void main(String... args) {
-           new CmdxLoader("AIO", args).mainRun();
-       }
+    public static void main(String... args) {
+        new CmdxLoader("AIO", args).mainRun();
+    }
 
-       protected CmdxLoader(String stageName, String[] argv) {
-           super(stageName, argv);
-       }
+    protected CmdxLoader(String stageName, String[] argv) {
+        super(stageName, argv);
+    }
 
-       @Override
-       protected void setCmdArgs() {
-           super.add(argLocation,  "--loc=", "Database location");
-           super.add(argTmpdir,    "--tmpdir=", "Temporary directory (defaults to --loc)");
-       }
+    @Override
+    protected void setCmdArgs() {
+        super.add(argLocation,  "--loc=", "Database location");
+        super.add(argTmpdir,    "--tmpdir=", "Temporary directory (defaults to --loc)");
+    }
 
-       @Override
-       protected String getSummary() {
-           return getCommandName()+" "+getArgsSummary();
-       }
+    @Override
+    protected String getSummary() {
+        return getCommandName()+" "+getArgsSummary();
+    }
 
-       @Override
-       protected void subCheckArgs() {}
+    @Override
+    protected void subCheckArgs() {}
 
-       @Override
-       protected String getCommandName() {
-           return "cmd-xloader";
-       }
+    @Override
+    protected String getCommandName() {
+        return "cmd-xloader";
+    }
 
-       @Override
-       protected void exec() {
-           // Java code to do all the steps.
-           String TMPDIR = super.tmpdir;
-           String DIR = super.location;
-           String datafile = super.filenames.get(0);
+    @Override
+    protected void exec() {
+        // Java code to do all the steps.
+        String TMPDIR = super.tmpdir;
+        String DIR = super.location;
+        String datafile = super.filenames.get(0);
 
-           FileOps.ensureDir(TMPDIR);
-           FileOps.clearAll(TMPDIR);
+        FileOps.ensureDir(TMPDIR);
+        FileOps.clearAll(TMPDIR);
 
-           if ( !TMPDIR.equals(DIR) ) {
-               FileOps.ensureDir(DIR);
-               FileOps.clearAll(DIR);
-           }
+        if ( !TMPDIR.equals(DIR) ) {
+            FileOps.ensureDir(DIR);
+            FileOps.clearAll(DIR);
+        }
 
-           BulkLoaderX.DataTick = 100_000;
-           BulkLoader.DataTickPoint = BulkLoaderX.DataTick;
+        BulkLoaderX.DataTick = 100_000;
+        BulkLoader.DataTickPoint = BulkLoaderX.DataTick;
 
-           long maxMemory = Runtime.getRuntime().maxMemory();
-           System.out.printf("RAM = %,d\n", maxMemory);
+        long maxMemory = Runtime.getRuntime().maxMemory();
+        System.out.printf("RAM = %,d\n", maxMemory);
 
-           System.out.println("STEP 1 - load node table");
-           CmdxBuildNodeTable.main("--loc=" + DIR, datafile);
+        System.out.println("STEP 1 - load node table");
+        step(DIR, ()->CmdxBuildNodeTable.main("--loc=" + DIR, datafile));
 
-           System.out.println("STEP 2 - ingest triples and quads");
-           CmdxIngestData.main("--loc=" + DIR, datafile);
+        System.out.println("STEP 2 - ingest triples and quads");
+        step(DIR, ()->CmdxIngestData.main("--loc=" + DIR, datafile));
 
-           System.out.println("STEP 3 - build indexes");
-           CmdxBuildIndex.main("--loc=" + DIR, "--index=SPO");
-           CmdxBuildIndex.main("--loc=" + DIR, "--index=POS");
-           CmdxBuildIndex.main("--loc=" + DIR, "--index=OSP");
+        System.out.println("STEP 3 - build indexes");
+        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=SPO"));
+        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=POS"));
+        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=OSP"));
 
-           CmdxBuildIndex.main("--loc=" + DIR, "--index=GSPO");
-           CmdxBuildIndex.main("--loc=" + DIR, "--index=GPOS");
-           CmdxBuildIndex.main("--loc=" + DIR, "--index=GOSP");
+        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=GSPO"));
+        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=GPOS"));
+        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=GOSP"));
 
-           CmdxBuildIndex.main("--loc=" + DIR, "--index=SPOG");
-           CmdxBuildIndex.main("--loc=" + DIR, "--index=POSG");
-           CmdxBuildIndex.main("--loc=" + DIR, "--index=OSPG");
-       }
-   }
+        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=SPOG"));
+        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=POSG"));
+        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=OSPG"));
+    }
+
+    private void step(String DIR, Runnable action) {
+        action.run();
+    }
+}
