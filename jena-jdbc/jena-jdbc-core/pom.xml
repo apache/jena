@@ -22,7 +22,7 @@
 	<parent>
 		<groupId>org.apache.jena</groupId>
 		<artifactId>jena-jdbc</artifactId>
-		<version>4.3.2</version>
+		<version>4.4.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>jena-jdbc-core</artifactId>
 	<name>Apache Jena - JDBC Core API</name>
@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-arq</artifactId>
-			<version>4.3.2</version>
+			<version>4.4.0-SNAPSHOT</version>
 		</dependency>
     
 		<dependency>
