@@ -51,7 +51,7 @@ function testSortParallel() {
 JAVA="${JAVA:-java}"
 
 COMPLETE="yes"
-for F in jq sort /usr/bin/gzip java
+for F in jq sort /usr/bin/gzip java blog
 do
     testForProgram "$F"
     if [[ $? -ne 0 ]] ; then
@@ -59,12 +59,13 @@ do
     fi
 done
 
-if [[ $COMPLETE -ne "yes" ]] ; then
+if [[ $COMPLETE != "yes" ]] ; then
     echo "One or more programs missing" 2&>1
     exit 9
 fi
 
 unset COMPLETE
+exit
 
 testSortParallel
 
