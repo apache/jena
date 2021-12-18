@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.tuple.TupleMap;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.block.BlockMgrFactory;
 import org.apache.jena.dboe.base.file.BufferChannel;
@@ -53,7 +54,6 @@ import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.apache.jena.tdb2.xloader0.RecordsFromInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -189,6 +189,18 @@ public class ProcIndexBuildX
         InputStream input = IO.ensureBuffered(fromSortInputStream);
         // This thread - run builder.
         long count = indexBuilder(dsg, input, indexName);
+        try {
+            int exitCode = proc2.waitFor();
+            if ( exitCode != 0 )
+                FmtLog.error(LOG, "Sort RC = %d", exitCode);
+//            else
+//                LOG.info("Sort finished");
+            System.exit(exitCode);
+            IO.close(toSortOutputStream);
+            IO.close(fromSortInputStream);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return count;
     }
 

@@ -224,11 +224,14 @@ public class ProcNodeTableBuilderX {
         Thread thread3 = async(task3, "AsyncBuild");
 
         try {
-            int x = proc2.waitFor();
-            if ( x != 0 )
-                FmtLog.error(LOG2, "Sort RC = %d", x);
+            int exitCode = proc2.waitFor();
+            if ( exitCode != 0 )
+                FmtLog.error(LOG2, "Sort RC = %d", exitCode);
             else
                 LOG2.info("Sort finished");
+            System.exit(exitCode);
+            IO.close(toSortOutputStream);
+            IO.close(fromSortInputStream);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
