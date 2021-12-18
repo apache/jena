@@ -63,7 +63,24 @@
                   <groupId>com.beust</groupId>
                   <artifactId>jcommander</artifactId>
                 </exclusion>
+
+                <exclusion>
+                  <groupId>commons-beanutils</groupId>
+                  <artifactId>commons-beanutils</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+          <!-- rdf-tables:1.0.4
+                  com.opencsv:opencsv:jar:3.9
+                       CVE-2019-10086 https://nvd.nist.gov/vuln/detail/CVE-2019-10086 
+                    commons-beanutils:commons-beanutils:jar:1.9.3
+                Needs to be 1.9.4.
+          -->
+          <groupId>commons-beanutils</groupId>
+          <artifactId>commons-beanutils</artifactId>
+          <version>1.9.4</version>
         </dependency>
 
         <dependency>
