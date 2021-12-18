@@ -158,6 +158,15 @@ public class SystemTDB
     /** Size of Node lookup miss cache. */
     public static final int NodeMissCacheSize       = 1000;
 
+    /** Size of Node to NodeId cache for prefixes. */
+    public static final int PrefixNode2NodeIdCacheSize    = intValue("PrefixNode2NodeIdCacheSize", 250);
+
+    /** Size of NodeId to Node cache. for prefixes.*/
+    public static final int PrefixNodeId2NodeCacheSize    = intValue("PrefixNodeId2NodeCacheSize", 1000 );
+
+    /** Size of Node lookup miss cache for prefixes. */
+    public static final int PrefixNodeMissCacheSize       = 100;
+
     /** Size of the delayed-write block cache (32 bit systems only). Per file. */
     public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 1000);
 

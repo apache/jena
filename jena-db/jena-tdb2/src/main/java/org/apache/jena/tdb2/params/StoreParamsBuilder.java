@@ -74,6 +74,12 @@ public class StoreParamsBuilder {
 
     private Item<Integer>            NodeMissCacheSize     = new Item<>(StoreParamsConst.NodeMissCacheSize, false);
 
+    private Item<Integer>            prefixNode2NodeIdCacheSize  = new Item<>(StoreParamsConst.Node2NodeIdCacheSize, false);
+
+    private Item<Integer>            prefixNodeId2NodeCacheSize  = new Item<>(StoreParamsConst.NodeId2NodeCacheSize, false);
+
+    private Item<Integer>            prefixNodeMissCacheSize     = new Item<>(StoreParamsConst.NodeMissCacheSize, false);
+
     /** Database layout - ignored after a database is created */
 
     private Item<Integer>            blockSize             = new Item<>(StoreParamsConst.blockSize, false);
@@ -142,9 +148,14 @@ public class StoreParamsBuilder {
         this.blockSize              = other.blockSize;
         this.blockReadCacheSize     = other.blockReadCacheSize;
         this.blockWriteCacheSize    = other.blockWriteCacheSize;
+
         this.Node2NodeIdCacheSize   = other.Node2NodeIdCacheSize;
         this.NodeId2NodeCacheSize   = other.NodeId2NodeCacheSize;
         this.NodeMissCacheSize      = other.NodeMissCacheSize;
+
+        this.prefixNode2NodeIdCacheSize   = other.prefixNode2NodeIdCacheSize;
+        this.prefixNodeId2NodeCacheSize   = other.prefixNodeId2NodeCacheSize;
+        this.prefixNodeMissCacheSize      = other.prefixNodeMissCacheSize;
 
         this.nodeTableBaseName      = other.nodeTableBaseName;
 
@@ -163,6 +174,7 @@ public class StoreParamsBuilder {
         return new StoreParams(
                  fileMode, blockSize, blockReadCacheSize, blockWriteCacheSize,
                  Node2NodeIdCacheSize, NodeId2NodeCacheSize, NodeMissCacheSize,
+                 prefixNode2NodeIdCacheSize, prefixNodeId2NodeCacheSize, prefixNodeMissCacheSize,
                  nodeTableBaseName,
                  primaryIndexTriples, tripleIndexes,
                  primaryIndexQuads, quadIndexes,
@@ -211,7 +223,7 @@ public class StoreParamsBuilder {
     }
 
    public StoreParamsBuilder node2NodeIdCacheSize(int node2NodeIdCacheSize) {
-       Node2NodeIdCacheSize = new Item<>(node2NodeIdCacheSize, true);
+       this.Node2NodeIdCacheSize = new Item<>(node2NodeIdCacheSize, true);
        return this;
    }
 
@@ -220,7 +232,7 @@ public class StoreParamsBuilder {
     }
 
    public StoreParamsBuilder nodeId2NodeCacheSize(int nodeId2NodeCacheSize) {
-       NodeId2NodeCacheSize = new Item<>(nodeId2NodeCacheSize, true);
+       this.NodeId2NodeCacheSize = new Item<>(nodeId2NodeCacheSize, true);
        return this;
    }
 
@@ -229,9 +241,38 @@ public class StoreParamsBuilder {
     }
 
    public StoreParamsBuilder nodeMissCacheSize(int nodeMissCacheSize) {
-       NodeMissCacheSize = new Item<>(nodeMissCacheSize, true);
+       this.NodeMissCacheSize = new Item<>(nodeMissCacheSize, true);
        return this;
    }
+
+   public int getPrefixNode2NodeIdCacheSize() {
+       return prefixNode2NodeIdCacheSize.value;
+   }
+
+  public StoreParamsBuilder prefixnode2NodeIdCacheSize(int prefixNode2NodeIdCacheSize) {
+      this.prefixNode2NodeIdCacheSize = new Item<>(prefixNode2NodeIdCacheSize, true);
+      return this;
+  }
+
+   public int getPrefixNodeId2NodeCacheSize() {
+       return prefixNodeId2NodeCacheSize.value;
+   }
+
+  public StoreParamsBuilder prefixnodeId2NodeCacheSize(int prefixNodeId2NodeCacheSize) {
+      this.prefixNodeId2NodeCacheSize = new Item<>(prefixNodeId2NodeCacheSize, true);
+      return this;
+  }
+
+   public int getPrefixNodeMissCacheSize() {
+       return prefixNodeMissCacheSize.value;
+   }
+
+  public StoreParamsBuilder prefixNodeMissCacheSize(int prefixNodeMissCacheSize) {
+      this.prefixNodeMissCacheSize = new Item<>(prefixNodeMissCacheSize, true);
+      return this;
+  }
+
+
 
    public String getNodeTableBaseName() {
        return nodeTableBaseName.value;

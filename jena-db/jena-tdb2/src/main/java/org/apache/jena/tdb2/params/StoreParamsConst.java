@@ -47,6 +47,15 @@ public class StoreParamsConst {
     public static final String   fNodeMissCacheSize    = "node_miss_cache_size";
     public static final int      NodeMissCacheSize     = SystemTDB.NodeMissCacheSize;
 
+    public static final String  fPrefixNode2NodeIdCacheSize  = "prefix_node2nodeid_cache_size";
+    public static final int     PrefixNode2NodeIdCacheSize   =  SystemTDB.PrefixNode2NodeIdCacheSize;
+
+    public static final String  fPrefixNodeId2NodeCacheSize  = "prefix_nodeid2node_cache_size";
+    public static final int     PrefixNodeId2NodeCacheSize   = SystemTDB.PrefixNodeId2NodeCacheSize;
+
+    public static final String  fPrefixNodeMissCacheSize  = "prefix_node_miss_cache_size";
+    public static final int     PrefixNodeMissCacheSize   = SystemTDB.PrefixNodeMissCacheSize;
+
     /** Database layout - ignored after a database is created */
     public static final String   fBlockSize            = "block_size";
     public static final int      blockSize             = SystemTDB.BlockSize;
