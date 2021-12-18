@@ -43,6 +43,8 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.system.progress.ProgressMonitor;
 import org.apache.jena.system.progress.ProgressMonitorOutput;
 import org.apache.jena.tdb2.DatabaseMgr;
+import org.apache.jena.tdb2.params.StoreParams;
+import org.apache.jena.tdb2.params.StoreParamsConst;
 import org.apache.jena.tdb2.solver.stats.Stats;
 import org.apache.jena.tdb2.solver.stats.StatsCollectorNodeId;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
