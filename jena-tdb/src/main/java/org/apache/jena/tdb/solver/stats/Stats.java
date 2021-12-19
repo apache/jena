@@ -31,8 +31,10 @@ import java.util.Map.Entry ;
 
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.engine.optimizer.StatsMatcher ;
 import org.apache.jena.sparql.graph.NodeConst ;
@@ -103,7 +105,7 @@ public class Stats
         addPair(meta.getList(), "timestamp", NodeFactoryExtra.nowAsDateTime()) ;
         addPair(meta.getList(), "run@",  DateTimeUtils.nowAsString()) ;
         if ( count >= 0 )
-            addPair(meta.getList(), StatsMatcher.COUNT, NodeFactoryExtra.intToNode((int)count)) ;
+            addPair(meta.getList(), StatsMatcher.COUNT, NodeFactory.createLiteral(String.valueOf(count), XSDDatatype.XSDlong));
         statsList.add(meta) ;
         
         for ( Entry<Node, Integer> entry : types.entrySet() )
