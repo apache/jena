@@ -47,14 +47,11 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <!-- Version number specified explicitly and not in jena-project, 
-           as it should only be used here, and further shadowing/bundle/NOTICE
-           consideration might be needed on upgrade. 
-           The shading step takes only the com.google.commons/com.google.thirdparty
-           This is important because Guava itself (at v24 at least) has tools dependencies
-           with various licenses.
+      <!-- Version number specified in parent POM but no dependency management there.
+           Some part of the system could use guava directly. The shading step takes
+           only the com.google.commons and com.google.thirdparty packages.
       -->
-      <version>30.1.1-jre</version>
+      <version>${ver.shaded-guava}</version>
       <optional>true</optional>
 
       <!-- These are also affected by the artifactSet and filters of the shade plugin. -->
