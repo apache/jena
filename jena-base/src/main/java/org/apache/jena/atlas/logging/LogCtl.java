@@ -27,13 +27,15 @@ import org.apache.jena.atlas.AtlasException;
 import org.slf4j.Logger;
 
 /**
- * Setup and control of logging - needs access to log4j2 binaries.
+ * Setup and control of logging.
  * Sources of configuration:
  * <ul>
  * <li>Standard setup (e.g. for log4j2, property {@code log4j.configurationFile}
  * <li>jena-cmds: the shell scripts set logging to "apache-jena/log4j2.properties." (uses stderr)
  * <li>Default logging for log4j2: java resource src/main/resources/log4j-jena.properties (uses stdout)
  * </ul>
+ * @implNote
+ * This needs access to log4j2 binaries including log4j-core, which is encapsulated in LogCtlLog4j2.
  */
 public class LogCtl {
     private static final boolean hasLog4j2 = hasClass("org.apache.logging.slf4j.Log4jLoggerFactory");
@@ -141,14 +143,7 @@ public class LogCtl {
             level = org.apache.logging.log4j.Level.FATAL;
         else if ( levelName.equalsIgnoreCase("OFF") )
             level = org.apache.logging.log4j.Level.OFF;
-        try {
-            if ( !logger.equals("") )
-                org.apache.logging.log4j.core.config.Configurator.setLevel(logger, level);
-            else
-                org.apache.logging.log4j.core.config.Configurator.setRootLevel(level);
-        } catch (NoClassDefFoundError ex) {
-            Log.warnOnce(LogCtl.class, "Log4j2 Configurator not found", LogCtl.class);
-        }
+        LogCtlLog4j2.setLoggerlevel(logger, level);
     }
 
     /**

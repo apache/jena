@@ -24,6 +24,7 @@ import java.io.InputStream;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -58,8 +59,19 @@ public class LogCtlLog4j2 {
             : ConfigurationFactory.getInstance();
         Configuration configuration = factory.getConfiguration(null, source);
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        // This changes exising loggers.
+        // This changes existing loggers.
         ctx.setConfiguration(configuration);
+    }
+
+    /*package*/ static void setLoggerlevel(String logger, Level level) {
+        try {
+            if ( !logger.equals("") )
+                org.apache.logging.log4j.core.config.Configurator.setLevel(logger, level);
+            else
+                org.apache.logging.log4j.core.config.Configurator.setRootLevel(level);
+        } catch (NoClassDefFoundError ex) {
+            Log.warnOnce(LogCtl.class, "Log4j2 Configurator not found", LogCtl.class);
+        }
     }
 
     // basic setup.
@@ -73,7 +85,7 @@ public class LogCtlLog4j2 {
 //        , ""
 //        , "filter.threshold.type = ThresholdFilter"
 //        , "filter.threshold.level = ALL"
-//      , ""        
+//      , ""
         , "appender.console.type = Console"
         , "appender.console.name = OUT"
         , "appender.console.target = SYSTEM_OUT"

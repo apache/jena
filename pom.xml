@@ -324,6 +324,13 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
         <version>${ver.commons-compress}</version>
+        <exclusions>
+          <exclusion>
+            <!-- This is scope=provided but interferes with log4j JENA-2137 -->
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -555,12 +562,23 @@
         <type>pom</type>
       </dependency>
 
-      <!-- JENA-2137 -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${ver.log4j2}</version>
+        <optional>true</optional>
+      </dependency>
+
+      <!-- JENA-2137
+           log4j depends on an old version of org.osgi.core (the minimum supported).
+           Other dependencies may pull in org.osgi (even if scope=provided)
+           and cause an enforcer error.
+      -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
-        <optional>true</optional>
         <version>${ver.log4j2}</version>
+        <optional>true</optional>
         <exclusions>
           <exclusion>
             <groupId>org.osgi</groupId>
