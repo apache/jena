@@ -85,25 +85,9 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
-    <!-- Logging
-         Needed to compile the FusekiLogging code
-         used by the commmand line programmes.
-         "optional" so that Fuseki used embedded
-         does not drag it in.
-    -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
       <optional>true</optional>
     </dependency>
 
