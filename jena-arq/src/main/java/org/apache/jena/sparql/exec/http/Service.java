@@ -188,8 +188,8 @@ public class Service {
             Object client = context.get(httpQueryClient);
             if ( client != null ) {
                 // Check for old HttpClient
-                if ( client instanceof org.apache.http.client.HttpClient ) {
-                    LOGGER.warn("Found Apache HttpClient for content symbol "+httpQueryClient+". Jena now uses java.net.http.HttpClient");
+                if ( client.getClass().getName().equals("org.apache.http.client.HttpClient") ) {
+                    LOGGER.warn("Found Apache HttpClient for context symbol "+httpQueryClient+". Jena now uses java.net.http.HttpClient");
                     client = null;
                 } else if ( client instanceof HttpClient ) {
                     httpClient = (HttpClient)client;

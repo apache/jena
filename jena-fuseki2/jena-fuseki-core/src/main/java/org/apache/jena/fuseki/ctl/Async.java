@@ -18,13 +18,13 @@
 
 package org.apache.jena.fuseki.ctl;
 
-import org.apache.http.HttpHeaders;
 import org.apache.jena.atlas.json.JsonBuilder;
 import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.fuseki.async.AsyncPool;
 import org.apache.jena.fuseki.async.AsyncTask;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.riot.web.HttpNames;
 
 public class Async
 {
@@ -48,7 +48,7 @@ public class Async
         if ( ! x.endsWith("/") )
             x += "/";
         x += asyncTask.getTaskId();
-        action.setResponseHeader(HttpHeaders.LOCATION, x);
+        action.setResponseHeader(HttpNames.hLocation, x);
     }
 
     public static AsyncTask execASyncTask(HttpAction action, AsyncPool asyncPool, String displayName, Runnable runnable) {

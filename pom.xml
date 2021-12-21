@@ -71,8 +71,11 @@
          POM for the correct dependency versions
          and use that or later.
     -->
-    <ver.jsonldjava>0.13.3</ver.jsonldjava>
+    <ver.jsonldjava>0.13.4</ver.jsonldjava>
+    <!-- Control the version of these that would otherwise come from jsonld-java -->
     <ver.jackson>2.13.0</ver.jackson>
+    <ver.httpclient>4.5.13</ver.httpclient>
+    <ver.httpcore>4.4.14</ver.httpcore>
 
     <ver.shaded-guava>31.0.1-jre</ver.shaded-guava>
     <ver.commonsio>2.11.0</ver.commonsio>
@@ -86,9 +89,6 @@
     <ver.dexxcollection>0.7</ver.dexxcollection>
     <ver.micrometer>1.7.5</ver.micrometer>
 
-    <ver.httpclient>4.5.13</ver.httpclient>
-    <ver.httpcore>4.4.14</ver.httpcore>
-    
     <ver.lucene>8.10.1</ver.lucene>
     <ver.graalvm>21.3.0</ver.graalvm>
     <ver.jython>2.7.2</ver.jython>
@@ -271,10 +271,9 @@
 
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient-cache</artifactId>
+        <artifactId>httpclient</artifactId>
         <version>${ver.httpclient}</version>
         <exclusions>
-          <!-- Replace with slf4j adapter -->
           <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -291,6 +290,26 @@
         </exclusions>
       </dependency>
 
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient-cache</artifactId>
+        <version>${ver.httpclient}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+          </exclusion>
+          <!-- JENA 2137: scope=provided and the enforcer plugin -->
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
@@ -431,6 +450,7 @@
         <version>${ver.dexxcollection}</version>
       </dependency>
       
+      <!-- jsonld-java for JSON-LD 1.0 -->
       <dependency>
         <groupId>com.github.jsonld-java</groupId>
         <artifactId>jsonld-java</artifactId>
@@ -463,6 +483,10 @@
           </exclusion>
           <exclusion>
             <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore-osgi</artifactId>
           </exclusion>
           <exclusion>
@@ -471,7 +495,7 @@
           </exclusion>
         </exclusions>
       </dependency>
-      
+
       <!-- JSON-LD 1.1 read support -->
       <!-- Titanium JSON-LD -->
       <dependency>
