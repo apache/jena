@@ -502,7 +502,7 @@
         <!-- Apache License -->
         <groupId>com.apicatalog</groupId>
         <artifactId>titanium-json-ld</artifactId>
-        <version>1.1.0</version>
+        <version>1.2.0</version>
       </dependency>
       <!-- Eclipse Public License 2.0 (category-B) -->
       <!--
