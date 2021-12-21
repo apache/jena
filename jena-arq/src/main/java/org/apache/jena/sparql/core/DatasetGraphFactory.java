@@ -107,8 +107,8 @@ public class DatasetGraphFactory
      * Create a DatasetGraph starting with a single graph.
      * New graphs must be explicitly added.
      */
-    public static DatasetGraph create(Graph graph) {
-        return new DatasetGraphMapLink(graph) ;
+    public static DatasetGraph create(Graph dftGraph) {
+        return new DatasetGraphMapLink(dftGraph);
     }
 
     /**

@@ -21,24 +21,30 @@ package org.apache.jena.sparql.core;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 
 /**
- * A dataset that just hold a single model as the default graph. 
+ * A dataset that just hold a single model as the default graph.
  * It is particularly appropriate for use with inference models.
- * 
+ *
  * @apiNote
  * This class makes the use of DatasetImpl with one fixed model clearer. It may
  * become useful to have a separate implementation altogether at some time.
+ *
+ * @deprecated Use {@link DatasetFactory#wrap(Model)}
  */
+@Deprecated
 public class DatasetOne extends DatasetImpl {
     public static Dataset create(Model model) {
-        return new DatasetOne(model);
+        return DatasetFactory.wrap(model);
     }
 
     private final Model defaultModel;
 
+    /** @deprecated Use {@link DatasetFactory#wrap(Model)} */
+    @Deprecated
     public DatasetOne(Model model) {
         super(DatasetGraphOne.create(model.getGraph()));
         this.defaultModel = model;
