@@ -18,9 +18,7 @@
 
 package org.apache.jena.jdbc.remote.results;
 
-import org.apache.http.client.HttpClient;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.jdbc.remote.http.HttpOp1;
 import org.apache.jena.jdbc.results.AbstractResultSetTests;
 import org.apache.jena.sys.JenaSystem ;
 import org.junit.AfterClass;
@@ -30,20 +28,13 @@ import org.junit.BeforeClass;
  * Abstract tests for remote endpoint connection result sets
  *
  */
-@SuppressWarnings("deprecation")
 public abstract class AbstractRemoteEndpointResultSetTests extends AbstractResultSetTests {
-
-    static HttpClient defaultHttpClient = HttpOp1.getDefaultHttpClient() ;
-	// Used for all tests except auth tests.
-	static HttpClient globalPoolingClient = HttpOp1.createPoolingHttpClient() ;
 
 	@BeforeClass public static void beforeClassAbstract1() {
         JenaSystem.init() ;
         Fuseki.init();
-		HttpOp1.setDefaultHttpClient(globalPoolingClient) ;
     }
 
 	@AfterClass public static void afterClassAbstract1() {
-		HttpOp1.setDefaultHttpClient(defaultHttpClient) ;
     }
 }
