@@ -35,7 +35,7 @@ import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 /**
- * Input reader associated to {@link TSVOutput}.
+ * Input reader for Tab Separated Values format.
  */
 public class TSVInput {
     private static Pattern pattern = Pattern.compile("\t");
