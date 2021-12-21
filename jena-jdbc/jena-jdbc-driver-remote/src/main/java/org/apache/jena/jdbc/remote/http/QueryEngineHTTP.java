@@ -601,9 +601,9 @@ public class QueryEngineHTTP implements QueryExecution {
         if ( query != null )
             return query;
         if ( queryString != null ) {
-            // Object not created with a Query object, may be because there is forgein
-            // syntax in the query or may be because the queystrign was available and the app
-            // didn't want the overhead of parsing it everytime.
+            // Object not created with a Query object, may be because there is foreign
+            // syntax in the query or may be because the query string was available and the app
+            // didn't want the overhead of parsing it every time.
             // Try to parse it else return null;
             try { return QueryFactory.create(queryString, Syntax.syntaxARQ); }
             catch (QueryParseException ex) {}
