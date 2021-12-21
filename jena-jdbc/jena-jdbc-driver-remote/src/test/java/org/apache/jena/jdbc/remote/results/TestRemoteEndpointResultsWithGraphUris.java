@@ -28,7 +28,7 @@ import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.FusekiJdbcTestServer;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-import org.apache.jena.jdbc.utils.TestJdbcUtils;
+import org.apache.jena.jdbc.remote.utils.TestJdbcRemoteUtils;
 import org.apache.jena.query.Dataset ;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -83,8 +83,8 @@ public class TestRemoteEndpointResultsWithGraphUris extends AbstractRemoteEndpoi
     
     @Override
     protected ResultSet createResults(Dataset ds, String query, int resultSetType) throws SQLException {
-        ds = TestJdbcUtils.renameGraph(ds, null, DEFAULT_GRAPH_URI);
-        TestJdbcUtils.copyToRemoteDataset(ds, FusekiJdbcTestServer.serviceGSP());
+        ds = TestJdbcRemoteUtils.renameGraph(ds, null, DEFAULT_GRAPH_URI);
+        TestJdbcRemoteUtils.copyToRemoteDataset(ds, FusekiJdbcTestServer.serviceGSP());
         Statement stmt = connection.createStatement(resultSetType, ResultSet.CONCUR_READ_ONLY);
         return stmt.executeQuery(query);
     }

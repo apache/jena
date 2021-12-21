@@ -24,13 +24,13 @@ import java.sql.SQLFeatureNotSupportedException;
 
 import org.apache.http.client.HttpClient;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
+import org.apache.jena.jdbc.remote.http.QueryEngineHTTP;
+import org.apache.jena.jdbc.remote.http.UpdateProcessRemote;
+import org.apache.jena.jdbc.remote.http.UpdateProcessRemoteBase;
 import org.apache.jena.jdbc.statements.JenaStatement;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecution ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
-import org.apache.jena.sparql.modify.UpdateProcessRemote;
-import org.apache.jena.sparql.modify.UpdateProcessRemoteBase ;
 import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
 

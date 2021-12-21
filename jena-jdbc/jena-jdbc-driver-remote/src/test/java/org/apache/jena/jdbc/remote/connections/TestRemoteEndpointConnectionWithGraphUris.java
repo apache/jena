@@ -26,7 +26,7 @@ import java.util.List;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.FusekiJdbcTestServer;
-import org.apache.jena.jdbc.utils.TestJdbcUtils;
+import org.apache.jena.jdbc.remote.utils.TestJdbcRemoteUtils;
 import org.apache.jena.query.Dataset ;
 import org.junit.* ;
 
@@ -77,9 +77,9 @@ public class TestRemoteEndpointConnectionWithGraphUris extends AbstractRemoteEnd
         }
 
         // Set up the dataset
-        ds = TestJdbcUtils.renameGraph(ds, null, DEFAULT_GRAPH_URI);
+        ds = TestJdbcRemoteUtils.renameGraph(ds, null, DEFAULT_GRAPH_URI);
         Assert.assertEquals(0, ds.getDefaultModel().size());
-        TestJdbcUtils.copyToRemoteDataset(ds, FusekiJdbcTestServer.serviceGSP());
+        TestJdbcRemoteUtils.copyToRemoteDataset(ds, FusekiJdbcTestServer.serviceGSP());
         return new RemoteEndpointConnection(FusekiJdbcTestServer.serviceQuery(), FusekiJdbcTestServer.serviceUpdate(), defaultGraphs, namedGraphs,
                 defaultGraphs, namedGraphs, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, null, null);
     }

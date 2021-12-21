@@ -29,7 +29,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.riot.web.HttpOp1;
+import org.apache.jena.jdbc.remote.http.HttpOp1;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.modify.request.Target;
