@@ -150,7 +150,7 @@ public class ReportEntry {
         return this;
     }
 
-    public Constraint sourceConstraintComponent() { return constraint; }
+    public Node sourceConstraintComponent() { return sourceConstraintComponent; }
 
     public ReportEntry sourceConstraintComponent(Node component) {
         this.sourceConstraintComponent = component;
