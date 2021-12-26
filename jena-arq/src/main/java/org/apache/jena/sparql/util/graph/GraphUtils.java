@@ -27,6 +27,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.sparql.util.NotUniqueException ;
 import org.apache.jena.sparql.util.PropertyRequiredException ;
 import org.apache.jena.sparql.util.QueryExecUtils;
@@ -130,6 +131,15 @@ public class GraphUtils {
             sIter.close() ;
         }
         return true ;
+    }
+
+    public static boolean getBooleanValue(Resource r, Property p) {
+        if ( !GraphUtils.atmostOneProperty(r, p) )
+            throw new NotUniqueException(r, p) ;
+        Statement s = r.getProperty(p) ;
+        if ( s == null )
+            throw new PropertyNotFoundException(p);
+        return s.getBoolean();
     }
 
     public static String getStringValue(Resource r, Property p) {

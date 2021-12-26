@@ -109,30 +109,25 @@ public class GeoSPARQLOperations {
      * @param dataset
      */
     public static final void applyDefaultGeometry(Dataset dataset) {
+        //Default Model
+        dataset.executeWrite(()->{
+            try {
+                //Default Model
+                Model defaultModel = dataset.getDefaultModel();
+                GeoSPARQLOperations.applyDefaultGeometry(defaultModel);
 
-        try {
-            LOGGER.info("Applying hasDefaultGeometry - Started");
-            //Default Model
-            dataset.begin(ReadWrite.WRITE);
-            Model defaultModel = dataset.getDefaultModel();
-            GeoSPARQLOperations.applyDefaultGeometry(defaultModel);
-
-            //Named Models
-            Iterator<String> graphNames = dataset.listNames();
-            while (graphNames.hasNext()) {
-                String graphName = graphNames.next();
-                Model namedModel = dataset.getNamedModel(graphName);
-                GeoSPARQLOperations.applyDefaultGeometry(namedModel);
+                //Named Models
+                Iterator<String> graphNames = dataset.listNames();
+                while (graphNames.hasNext()) {
+                    String graphName = graphNames.next();
+                    Model namedModel = dataset.getNamedModel(graphName);
+                    GeoSPARQLOperations.applyDefaultGeometry(namedModel);
+                }
+                LOGGER.info("Applying hasDefaultGeometry - Completed");
+            } catch (Exception ex) {
+                LOGGER.error("Write Error: {}", ex.getMessage());
             }
-
-            dataset.commit();
-            LOGGER.info("Applying hasDefaultGeometry - Completed");
-        } catch (Exception ex) {
-            LOGGER.error("Write Error: {}", ex.getMessage());
-        } finally {
-            dataset.end();
-        }
-
+        });
     }
 
     /**

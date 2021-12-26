@@ -186,10 +186,16 @@ public class GeoSPARQLConfig {
         //Set the configuration for indexing.
         IndexConfiguration.setConfig(indexOption);
 
+        loadFunctions();
+    }
+
+    public static final void loadFunctions() {
         //Only register functions once.
         if (!IS_FUNCTIONS_REGISTERED) {
+            // loading is actually idempotent.
+            IS_FUNCTIONS_REGISTERED = true;
 
-            //Setup Default Cordinate Reference Systems
+            //Setup Default Coordinate Reference Systems
             SRSRegistry.setupDefaultSRS();
 
             //Register GeometryDatatypes with the TypeMapper.
@@ -211,7 +217,6 @@ public class GeoSPARQLConfig {
             GeometryProperty.loadFilterFunctions(functionRegistry);
             Spatial.loadPropertyFunctions(propertyRegistry);
             Spatial.loadFilterFunctions(functionRegistry);
-            IS_FUNCTIONS_REGISTERED = true;
         }
     }
 

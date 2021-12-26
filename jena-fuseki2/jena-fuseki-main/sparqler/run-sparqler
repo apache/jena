@@ -45,7 +45,7 @@ export JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
 ##     exit 0
 ## fi
 
-SPARQLER_ARGS="--sparqler $SPARQLER_PAGES"
+SPARQLER_ARGS="--localhost --sparqler $SPARQLER_PAGES"
 
 set --
 
