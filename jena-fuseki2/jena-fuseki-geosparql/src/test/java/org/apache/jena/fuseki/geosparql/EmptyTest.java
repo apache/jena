@@ -80,8 +80,6 @@ public class EmptyTest {
 
         //UpdateProcessor updateProcessor = UpdateExecutionFactory.createRemote(updateRequest, SERVER.getLocalServiceURL());
         updateProcessor.execute();
-
-        System.out.println("Server: " + SERVER.getLocalServiceURL());
     }
 
     @AfterClass

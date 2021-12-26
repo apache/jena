@@ -58,7 +58,7 @@ public class TabFileParameterTest {
      */
     @Test
     public void testConvert() {
-        System.out.println("convert");
+        //System.out.println("convert");
         String value = "test.rdf#test|TAB,test2.rdf";
         TabFileParameter instance = new TabFileParameter();
         List<FileGraphDelimiter> expResult = Arrays.asList(new FileGraphDelimiter(new File("test.rdf"), "test", "TAB"), new FileGraphDelimiter(new File("test2.rdf"), "", "COMMA"));
@@ -74,7 +74,7 @@ public class TabFileParameterTest {
      */
     @Test
     public void testBuild() {
-        System.out.println("build");
+        //System.out.println("build");
         String value = "test.rdf|SPACE";
         TabFileParameter instance = new TabFileParameter();
         FileGraphDelimiter expResult = new FileGraphDelimiter(new File("test.rdf"), "", "SPACE");
@@ -90,7 +90,7 @@ public class TabFileParameterTest {
      */
     @Test(expected = ParameterException.class)
     public void testValidate() {
-        System.out.println("validate");
+        //System.out.println("validate");
         String name = "--tab_file";
         String value = "test.csv|COMMA#test";
         TabFileParameter instance = new TabFileParameter();

@@ -61,8 +61,6 @@ public class MainTest {
         //Configure server
         SERVER = new GeosparqlServer(argsConfig.getPort(), argsConfig.getDatsetName(), argsConfig.isLoopbackOnly(), dataset, argsConfig.isUpdateAllowed());
         SERVER.start();
-
-        System.out.println("Server: " + SERVER.getLocalServiceURL());
     }
 
     @AfterClass
@@ -83,8 +81,7 @@ public class MainTest {
      */
     @Test
     public void testMain() {
-        System.out.println("main");
-
+        //System.out.println("main");
         String query = "PREFIX geo: <http://www.opengis.net/ont/geosparql#>\n"
                 + "\n"
                 + "SELECT ?obj\n"

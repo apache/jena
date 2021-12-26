@@ -59,7 +59,7 @@ public class RDFFileParameterTest {
      */
     @Test
     public void testConvert() {
-        System.out.println("convert");
+        //System.out.println("convert");
         String value = "test.rdf#test>xml,test2.rdf";
         RDFFileParameter instance = new RDFFileParameter();
         List<FileGraphFormat> expResult = Arrays.asList(new FileGraphFormat(new File("test.rdf"), "test", RDFFormat.RDFXML), new FileGraphFormat(new File("test2.rdf"), "", RDFFormat.TTL));
@@ -75,7 +75,7 @@ public class RDFFileParameterTest {
      */
     @Test
     public void testBuild() {
-        System.out.println("build");
+        //System.out.println("build");
         String value = "test.rdf>xml";
         RDFFileParameter instance = new RDFFileParameter();
         FileGraphFormat expResult = new FileGraphFormat(new File("test.rdf"), "", RDFFormat.RDFXML);
@@ -91,7 +91,7 @@ public class RDFFileParameterTest {
      */
     @Test(expected = ParameterException.class)
     public void testValidate() {
-        System.out.println("validate");
+        //System.out.println("validate");
         String name = "--rdf_file";
         String value = "test.rdf>xml#test";
         RDFFileParameter instance = new RDFFileParameter();
