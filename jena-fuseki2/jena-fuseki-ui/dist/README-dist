@@ -1,0 +1,42 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+
+# Generating LICENSE and NOTICE for redistribution of the Fuseki UI.
+
+This only needs to be done if Javascript dependencies change. The places where
+the content is required are LICENSE files that are checked into git.
+
+ASF material:
+https://infra.apache.org/licensing-howto.html
+https://www.apache.org/legal/resolved.html#required-third-party-notices
+
+For jar files, the maven-shade-plugin aggregates LICENSE and NOTICE files.
+
+# UI code
+
+The script make-license generates the necessary content using yarn and places it
+in jena-fuseki-ui/target/ as LICENSE-UI and NOTICE-UI (if any).
+
+NOTICE particularly should be as short as possible.
+
+Typically, required license text goes in LICENSE. 
+Links to licenses may be used.
+
+These file are the content for the UI inclusion - they may be other content to
+include so don't simply overwrite existing LICENSE and NOTICE files without
+checking. The content is at the bottom of the file.
+
+These files are included where the bundled jena-fuseki-ui is shipped.
+
+## Fuseki Webapp
+
+* apache-jena-fuseki/dist/LICENSE
+* jena-fuseki-war/war-inclusions/META-INF/LICENSE
+
+## Fuseki Main
+
+(Future possibility)
+
+If there is a Fuseki module for the UI, then that will need a LICENSE file.
+That might be done automatically if the content is placed in a jar using
+src/main/resource files and java jar building.
