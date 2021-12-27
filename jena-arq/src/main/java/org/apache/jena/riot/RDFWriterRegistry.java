@@ -45,11 +45,11 @@ public class RDFWriterRegistry
     // Let the serializer deal with the character issues.
     // UTF-8 is universal - but UTF-8 is not the default in Java ("platform encoding" is).
 
-    static { JenaSystem.init() ; }
-
     private static Map<RDFFormat, WriterGraphRIOTFactory> registryGraph     = new HashMap<>() ;
     private static Map<RDFFormat, WriterDatasetRIOTFactory> registryDataset = new HashMap<>() ;
     private static Map<Lang, RDFFormat> langToFormat                        = new HashMap<>() ;
+
+    static { JenaSystem.init() ; }
 
     // Writing a graph
     static WriterGraphRIOTFactory wgfactory = new WriterGraphRIOTFactory() {
