@@ -1,0 +1,13 @@
+PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>
+
+PREFIX ja:        <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX geosparql: <http://jena.apache.org/geosparql#>
+
+<#geo_ds> rdf:type geosparql:geosparqlDataset ;
+    geosparql:inference true;          
+    geosparql:dataset <#baseDataset> .
+
+<#baseDataset> rdf:type ja:MemoryDataset ;
+#    ja:data <file:geosparql_test.rdf> ;               
+    .

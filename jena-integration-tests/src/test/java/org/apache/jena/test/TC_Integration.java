@@ -18,6 +18,7 @@
 
 package org.apache.jena.test;
 
+import org.apache.jena.geosparql.TS_GeoSPARQL;
 import org.apache.jena.http.TS_JenaHttp;
 import org.apache.jena.integration.TS_RDFLinkIntegration;
 import org.apache.jena.sparql.exec.http.TS_SparqlExecHttp;
@@ -42,6 +43,7 @@ import org.junit.runners.Suite;
     , TestSettings.class
     , TestRemoteEndToEnd.class
     , TS_SPARQLService.class
+    , TS_GeoSPARQL.class
 })
 
 public class TC_Integration { }
