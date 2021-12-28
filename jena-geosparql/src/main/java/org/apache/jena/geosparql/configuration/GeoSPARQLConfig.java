@@ -18,15 +18,10 @@
 package org.apache.jena.geosparql.configuration;
 
 import java.io.File;
+
 import org.apache.jena.geosparql.geof.topological.RelateFF;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
-import org.apache.jena.geosparql.implementation.function_registration.Egenhofer;
-import org.apache.jena.geosparql.implementation.function_registration.GeometryProperty;
-import org.apache.jena.geosparql.implementation.function_registration.NonTopological;
-import org.apache.jena.geosparql.implementation.function_registration.RCC8;
-import org.apache.jena.geosparql.implementation.function_registration.Relate;
-import org.apache.jena.geosparql.implementation.function_registration.SimpleFeatures;
-import org.apache.jena.geosparql.implementation.function_registration.Spatial;
+import org.apache.jena.geosparql.implementation.function_registration.*;
 import org.apache.jena.geosparql.implementation.index.IndexConfiguration;
 import org.apache.jena.geosparql.implementation.index.IndexConfiguration.IndexOption;
 import org.apache.jena.geosparql.implementation.index.QueryRewriteIndex;
@@ -194,6 +189,14 @@ public class GeoSPARQLConfig {
         if (!IS_FUNCTIONS_REGISTERED) {
             // loading is actually idempotent.
             IS_FUNCTIONS_REGISTERED = true;
+
+            /*
+             * If jul-to-slf4j SLF4JBridgeHandler has not been setup,
+             * then this can generate a warning via java.util.logging.
+             *
+             *   Dec 28, 2021 10:56:27 AM org.apache.sis.referencing.factory.sql.EPSGFactory <init>
+             *   WARNING: The “SIS_DATA” environment variable is not set.
+             */
 
             //Setup Default Coordinate Reference Systems
             SRSRegistry.setupDefaultSRS();

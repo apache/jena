@@ -572,7 +572,10 @@
         <version>${ver.slf4j}</version>
       </dependency>
 
-      <!-- java.util.logging (JUL) -->
+      <!-- 
+           java.util.logging (JUL)
+           Do not use jul-to-slf4j and slf4j-jdk14 together.
+      -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-jdk14</artifactId>

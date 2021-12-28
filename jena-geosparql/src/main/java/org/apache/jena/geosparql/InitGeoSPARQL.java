@@ -18,6 +18,7 @@
 
 package org.apache.jena.geosparql;
 
+import org.apache.jena.atlas.logging.LogCtlJUL;
 import org.apache.jena.geosparql.assembler.GeoAssembler;
 import org.apache.jena.geosparql.assembler.VocabGeoSPARQL;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
@@ -29,6 +30,9 @@ public class InitGeoSPARQL implements JenaSubsystemLifecycle {
 
     @Override
     public void start() {
+        // SIS uses JUL for logging.
+        LogCtlJUL.routeJULtoSLF4J(false);
+
         // Not RDF Tables.
         GeometryDatatype.registerDatatypes();
         GeoSPARQLConfig.loadFunctions();
@@ -40,5 +44,4 @@ public class InitGeoSPARQL implements JenaSubsystemLifecycle {
 
     @Override
     public int level() { return 100; }
-
 }
