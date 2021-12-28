@@ -172,7 +172,6 @@
           <windowtitle>Apache Jena</windowtitle>
           <doctitle>Apache Jena Core ${project.version}</doctitle>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
-<!--           <excludePackageNames>org.apache.jena.shared.*:*.impl:org.apache.jena.assembler.assemblers:*.exceptions:*.regexptrees:org.apache.jena.mem:org.apache.jena.mem.*:org.apache.jena.n3:org.apache.jena.n3.*:org.apache.jena.rdf.arp.*:org.apache.jena.util.*:jena.cmdline:jena.util</excludePackageNames> -->
           <excludePackageNames>org.apache.jena.n3:org.apache.jena.n3.*</excludePackageNames>
           <groups>
             <group>
