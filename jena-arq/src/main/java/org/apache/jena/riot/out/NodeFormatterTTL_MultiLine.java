@@ -78,27 +78,13 @@ public class NodeFormatterTTL_MultiLine extends NodeFormatterTTL {
     }
 
     @Override
-    public void formatLitDT(AWriter w, String lex, String datatype) {
-        Runnable runnable = () -> {
-            w.print("^^");
-            formatURI(w, datatype);
-        };
-        if ( !writeAsMultiLine(w, lex) ) {
-            writeLexicalSingleLine(w, lex, runnable);
-            return;
-        }
-        writeLexicalMultiLine(w, lex, runnable);
-    }
-
-    @Override
-    protected void writeLiteralLongForm(AWriter w, String lex, String datatypeURI) {
+    protected void writeLiteralWithDT(AWriter w, String lex, String datatypeURI) {
         Runnable runnable = () -> {
             w.print("^^");
             formatURI(w, datatypeURI);
         };
         if ( !writeAsMultiLine(w, lex) ) {
             writeLexicalSingleLine(w, lex, runnable);
-            super.writeLiteralOneLine(w, lex, datatypeURI);
             return;
         }
         writeLexicalMultiLine(w, lex, runnable);

@@ -244,11 +244,12 @@ public class NodeFormatterTTL extends NodeFormatterNT
     @Override
     public void formatLitDT(AWriter w, String lex, String datatypeURI) {
         boolean b = writeLiteralAbbreviated(w, lex, datatypeURI) ;
-        if ( b ) return ;
-        writeLiteralLongForm(w, lex, datatypeURI) ;
+        if ( b )
+            return ;
+        writeLiteralWithDT(w, lex, datatypeURI) ;
     }
 
-    protected void writeLiteralLongForm(AWriter w, String lex, String datatypeURI) {
+    protected void writeLiteralWithDT(AWriter w, String lex, String datatypeURI) {
         writeLiteralOneLine(w, lex, datatypeURI);
     }
 

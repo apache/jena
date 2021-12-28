@@ -203,28 +203,32 @@ public class TestNodeFmt
     private static NodeFormatter nodeFormatterTTL_ML = new NodeFormatterTTL_MultiLine(base, prefixMap) ;
 
     // Multiline formatter - single line output - xsd:string
-    @Test public void nodefmt_ttl_ML_10()  { test(nodeFormatterTTL_ML, "'A'", "\"A\""); }
-    @Test public void nodefmt_ttl_ML_11()  { test(nodeFormatterTTL_ML, "'A\\'B'", "\"A'B\""); }
-    @Test public void nodefmt_ttl_ML_12()  { test(nodeFormatterTTL_ML, "'A\"B'", "'A\"B'"); }
+    @Test public void nodefmt_ttl_ML_singleline_string_1()  { test(nodeFormatterTTL_ML, "'A'", "\"A\""); }
+    @Test public void nodefmt_ttl_ML_singleline_string_2()  { test(nodeFormatterTTL_ML, "'A\\'B'", "\"A'B\""); }
+    @Test public void nodefmt_ttl_ML_singleline_string_3()  { test(nodeFormatterTTL_ML, "'A\"B'", "'A\"B'"); }
 
     // Multiline formatter - single line output - rdf:langString
-    @Test public void nodefmt_ttl_ML_13()  { test(nodeFormatterTTL_ML, "'A'@en","\"A\"@en"); }
-    @Test public void nodefmt_ttl_ML_14()  { test(nodeFormatterTTL_ML, "'A\\'B'@en", "\"A'B\"@en"); }
-    @Test public void nodefmt_ttl_ML_15()  { test(nodeFormatterTTL_ML, "'A\"B'@en", "'A\"B'@en"); }
+    @Test public void nodefmt_ttl_ML_singleline_lang_1()  { test(nodeFormatterTTL_ML, "'A'@en","\"A\"@en"); }
+    @Test public void nodefmt_ttl_ML_singleline_lang_2()  { test(nodeFormatterTTL_ML, "'A\\'B'@en", "\"A'B\"@en"); }
+    @Test public void nodefmt_ttl_ML_singleline_lang_3()  { test(nodeFormatterTTL_ML, "'A\"B'@en", "'A\"B'@en"); }
 
     // Multiline output - xsd:string
-    @Test public void nodefmt_ttl_ML_16()  { test(nodeFormatterTTL_ML, "'A\\n\"B'", QuoteSingle3+"A\n\"B"+QuoteSingle3); }
-    @Test public void nodefmt_ttl_ML_17()  { test(nodeFormatterTTL_ML, "'A\\n\\'B'", QuoteDouble3+"A\n'B"+QuoteDouble3); }
+    @Test public void nodefmt_ttl_ML_multiline_string_1()  { test(nodeFormatterTTL_ML, "'A\\n\"B'", QuoteSingle3+"A\n\"B"+QuoteSingle3); }
+    @Test public void nodefmt_ttl_ML_multiline_string_2()  { test(nodeFormatterTTL_ML, "'A\\n\\'B'", QuoteDouble3+"A\n'B"+QuoteDouble3); }
 
     // Multiline output - rdf:langString
-    @Test public void nodefmt_ttl_ML_18()  { test(nodeFormatterTTL_ML, "'A\\nB\"c'@en", QuoteSingle3+"A\nB\"c"+QuoteSingle3+"@en"); }
-    @Test public void nodefmt_ttl_ML_19()  { test(nodeFormatterTTL_ML, "'A\\nB\\'c'@en", QuoteDouble3+"A\nB'c"+QuoteDouble3+"@en"); }
+    @Test public void nodefmt_ttl_ML_multiline_lang_1()  { test(nodeFormatterTTL_ML, "'A\\nB\"c'@en", QuoteSingle3+"A\nB\"c"+QuoteSingle3+"@en"); }
+    @Test public void nodefmt_ttl_ML_multiline_lang_2()  { test(nodeFormatterTTL_ML, "'A\\nB\\'c'@en", QuoteDouble3+"A\nB'c"+QuoteDouble3+"@en"); }
 
     // Multiline output - datatype
-    @Test public void nodefmt_ttl_ML_20()  { test(nodeFormatterTTL_ML, "'A\\nB\\''^^<ex:dt>", QuoteDouble3+"A\nB'"+QuoteDouble3+"^^<ex:dt>"); }
-    @Test public void nodefmt_ttl_ML_21()  { test(nodeFormatterTTL_ML, "'A\\nB\"c'^^<ex:dt>", QuoteSingle3+"A\nB\"c"+QuoteSingle3+"^^<ex:dt>"); }
+    @Test public void nodefmt_ttl_ML_multiline_dt_1()  { test(nodeFormatterTTL_ML, "'A\\nB\\''^^<ex:dt>", QuoteDouble3+"A\nB'"+QuoteDouble3+"^^<ex:dt>"); }
+    @Test public void nodefmt_ttl_ML_multiline_dt_2()  { test(nodeFormatterTTL_ML, "'A\\nB\"c'^^<ex:dt>", QuoteSingle3+"A\nB\"c"+QuoteSingle3+"^^<ex:dt>"); }
 
-    // With escapes of trailing quotes.
+    // Multiline formatter - With escapes of trailing quotes.
     @Test public void nodefmt_ttl_ML_esc_01()  { test(nodeFormatterTTL_ML, "'A\\'\"B\\nCD\\''", QuoteDouble3+"A'\"B\nCD'"+QuoteDouble3) ; }
     @Test public void nodefmt_ttl_ML_esc_02()  { test(nodeFormatterTTL_ML, "'A\\'\"B\\nCD\"'",  QuoteDouble3+"A'\"B\nCD\\\""+QuoteDouble3) ; }
+
+    // Multiline formatter - Check short forms used.
+    @Test public void nodefmt_ttl_ML_abbrev_01()  { test(nodeFormatterTTL_ML, "123", "123") ; }
+
 }
