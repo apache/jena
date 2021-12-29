@@ -57,7 +57,7 @@ public class Stats
         write(output, stats.getPredicates(), stats.getTypes(), stats.getCount()) ;
     }
 
-    static private void write(String filename, Map<Node, Integer> predicateStats, Map<Node, Integer> typeStats, long statsTotal)
+    static private void write(String filename, Map<Node, Long> predicateStats, Map<Node, Long> typeStats, long statsTotal)
     {
         // Write out the stats
         try (OutputStream statsOut = new BufferedOutputStream(new FileOutputStream(filename))) {
@@ -66,7 +66,7 @@ public class Stats
         { Log.warn(Stats.class, "Problem when writing stats file", ex) ; }
     }
 
-    static private void write(OutputStream output, Map<Node, Integer> predicateStats, Map<Node, Integer> typeStats, long statsTotal)
+    static private void write(OutputStream output, Map<Node, Long> predicateStats, Map<Node, Long> typeStats, long statsTotal)
     {
         Item item = format(predicateStats, typeStats, statsTotal) ;
         ItemWriter.write(output, item) ;
@@ -93,7 +93,7 @@ public class Stats
         return format(stats.getPredicates(), stats.getTypes(), stats.getCount()) ;
     }
 
-    private static Item format(Map<Node, Integer> predicates, Map<Node, Integer> types, long count)
+    private static Item format(Map<Node, Long> predicates, Map<Node, Long> types, long count)
     {
         Item stats = Item.createList() ;
         ItemList statsList = stats.getList() ;
@@ -106,13 +106,13 @@ public class Stats
             addPair(meta.getList(), StatsMatcher.COUNT, NodeFactoryExtra.intToNode(count)) ;
         statsList.add(meta) ;
 
-        for ( Entry<Node, Integer> entry : types.entrySet() )
+        for ( Entry<Node, Long> entry : types.entrySet() )
         {
             Node type = entry.getKey() ;
             addTypeTriple(statsList, type, NodeFactoryExtra.intToNode(entry.getValue()) ) ;
         }
 
-        for ( Entry<Node, Integer> entry : predicates.entrySet() )
+        for ( Entry<Node, Long> entry : predicates.entrySet() )
         {
             Node node = entry.getKey() ;
             // Skip these - they just clog things up!

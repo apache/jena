@@ -28,10 +28,10 @@ import org.apache.jena.graph.Node ;
 abstract class StatsCollectorBase<T>
 {
     private long count = 0 ;
-    private Map<T, Integer> predicates = new HashMap<>(10000) ;
-    private Map<T, Integer> types = new HashMap<>(10000) ;
+    private Map<T, Long> predicates = new HashMap<>(10000) ;
+    private Map<T, Long> types = new HashMap<>(10000) ;
     private T typeTrigger ;
-    
+
     protected StatsCollectorBase(T typeTrigger)
     {
         this.typeTrigger = typeTrigger ;
@@ -40,13 +40,13 @@ abstract class StatsCollectorBase<T>
     public void record(T g, T s, T p, T o)
     {
         count++ ;
-		predicates.put(p, predicates.getOrDefault(p, 0) + 1);
+		predicates.put(p, predicates.getOrDefault(p, 0L) + 1);
         if ( typeTrigger != null && typeTrigger.equals(p) )
-        		types.put(o, types.getOrDefault(o, 0) + 1);
+        		types.put(o, types.getOrDefault(o, 0L) + 1);
     }
 
-    protected abstract Map<Node, Integer> convert(Map<T, Integer> map) ;
-    
+    protected abstract Map<Node, Long> convert(Map<T, Long> map) ;
+
     public StatsResults results()
     {
         return new StatsResults(convert(predicates), convert(types), count) ;
