@@ -170,12 +170,14 @@
         <module>jena-shex</module>
         <module>jena-rdfconnection</module>
         <module>jena-tdb</module>
-        <module>jena-db</module> 
+        <module>jena-db</module>
+ 
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
         
         <module>jena-cmds</module>
+        <module>jena-geosparql</module>
         <module>jena-fuseki2</module>
 
         <module>jena-integration-tests</module>
@@ -271,6 +273,22 @@
 
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>${ver.httpcore}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>${ver.httpclient}</version>
         <exclusions>
@@ -307,42 +325,6 @@
           <exclusion>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>${ver.httpclient}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-          </exclusion>
-          <!-- JENA 2137: scope=provided and the enforcer plugin -->
-          <exclusion>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpcore</artifactId>
-        <version>${ver.httpcore}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -590,7 +572,10 @@
         <version>${ver.slf4j}</version>
       </dependency>
 
-      <!-- java.util.logging (JUL) -->
+      <!-- 
+           java.util.logging (JUL)
+           Do not use jul-to-slf4j and slf4j-jdk14 together.
+      -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-jdk14</artifactId>

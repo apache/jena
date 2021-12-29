@@ -111,6 +111,7 @@
     </dependency>
 
     <!--
+        And check jul to slf4j is not present.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>

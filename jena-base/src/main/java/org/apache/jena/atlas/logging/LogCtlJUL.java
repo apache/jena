@@ -24,9 +24,12 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /** java.util.logging specific code. */
 public class LogCtlJUL {
@@ -103,5 +106,30 @@ public class LogCtlJUL {
         }
     }
 
-}
+    /**
+     * Suppress messages on a specific logger for the duration of a {@code Runnable}.
+     * (jul-to-slf4j does not catch loggers created before it is active).
+     */
+    public static void noOutputJUL(Runnable action, String loggerName) {
+        try {
+            Logger logger = Logger.getLogger(loggerName);
+            Level level = logger.getLevel();
+            logger.setLevel(Level.OFF);
+            action.run();
+            logger.setLevel(level);
+        } catch (Throwable th) {}
+    }
 
+    /**
+     * Route JUL to SLF4J.
+     * Do not include org.slf4j:slf4j-jdk14.
+     */
+    public static void routeJULtoSLF4J(boolean removeExistingHandlersForRootLogger) {
+        try {
+            if ( removeExistingHandlersForRootLogger )
+                SLF4JBridgeHandler.removeHandlersForRootLogger();
+            // Route to slf4j for logger created from now on.
+            SLF4JBridgeHandler.install();
+        } catch (Throwable th) {}
+    }
+}

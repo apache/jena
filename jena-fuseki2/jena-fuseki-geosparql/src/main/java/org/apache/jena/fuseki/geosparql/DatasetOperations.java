@@ -70,6 +70,8 @@ public class DatasetOperations {
         //Convert Geo predicates to Geometry Literals.
         if (argsConfig.isConvertGeoPredicates()) //Apply validation of Geometry Literal.
         {
+            // ?? This returns a modified dataset which is discarded.
+            // So this is a No-Op??
             GeoSPARQLOperations.convertGeoPredicates(dataset, argsConfig.isRemoveGeoPredicates());
         }
 
