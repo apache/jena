@@ -113,6 +113,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
         this.query = query;
         this.queryString = queryStr;
     }
+
     public Y addDefaultGraphURI(String uri) {
         if (this.defaultGraphURIs == null)
             this.defaultGraphURIs = new ArrayList<>();

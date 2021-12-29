@@ -103,7 +103,7 @@ public class Stats
         addPair(meta.getList(), "timestamp", NodeFactoryExtra.nowAsDateTime());
         addPair(meta.getList(), "run@",  DateTimeUtils.nowAsString());
         if ( count >= 0 )
-            addPair(meta.getList(), StatsMatcher.COUNT, NodeFactoryExtra.intToNode((int)count));
+            addPair(meta.getList(), StatsMatcher.COUNT, NodeFactoryExtra.intToNode(count));
         statsList.add(meta);
 
         for ( Entry<Node, Integer> entry : types.entrySet() )

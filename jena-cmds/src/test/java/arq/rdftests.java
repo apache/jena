@@ -199,7 +199,7 @@ public class rdftests extends CmdGeneral
 
     private static String name =  "Apache Jena";
     private static String releaseVersion =  ARQ.VERSION;
-    private static String homepageStr = "http://jena.apache.org/";
+    private static String homepageStr = "https://jena.apache.org/";
     private static String systemURI = "http://jena.apache.org/#jena";  // Null for bNode.
 
     // Generate metadata into a separate model. Does not update the report.

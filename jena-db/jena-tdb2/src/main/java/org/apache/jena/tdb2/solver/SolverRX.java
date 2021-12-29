@@ -124,7 +124,6 @@ public class SolverRX {
             iterMatches = Iter.distinctAdjacent(iterMatches);
         }
         // -- DRY/StageMatchTuple
-        //Iterator<Quad> qIter = TupleLib.convertToQuads(nodeTable, iterMatches) ;
         Iterator<Quad> qIter = Iter.map(iterMatches, asQuad);
         return qIter;
     }

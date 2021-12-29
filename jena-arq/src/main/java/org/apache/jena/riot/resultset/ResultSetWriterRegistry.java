@@ -43,7 +43,7 @@ public class ResultSetWriterRegistry {
         return registry.containsKey(lang) ;
     }
 
-    /** Register a {@link ResultSetReaderFactory} for a {@link Lang} */
+    /** Register a {@link ResultSetWriterFactory} for a {@link Lang} */
     public static void register(Lang lang, ResultSetWriterFactory factory) {
         Objects.requireNonNull(lang) ;
         Objects.requireNonNull(factory) ;

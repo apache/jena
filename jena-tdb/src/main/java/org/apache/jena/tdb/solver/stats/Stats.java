@@ -50,13 +50,13 @@ public class Stats
     {
         write(filename, stats.getPredicates(), stats.getTypes(), stats.getCount()) ;
     }
-    
+
     /** Write statistics */
     static public void write(OutputStream output, StatsResults stats)
     {
         write(output, stats.getPredicates(), stats.getTypes(), stats.getCount()) ;
     }
-    
+
     static private void write(String filename, Map<Node, Integer> predicateStats, Map<Node, Integer> typeStats, long statsTotal)
     {
         // Write out the stats
@@ -65,26 +65,26 @@ public class Stats
         } catch (IOException ex)
         { Log.warn(Stats.class, "Problem when writing stats file", ex) ; }
     }
-    
+
     static private void write(OutputStream output, Map<Node, Integer> predicateStats, Map<Node, Integer> typeStats, long statsTotal)
     {
         Item item = format(predicateStats, typeStats, statsTotal) ;
         ItemWriter.write(output, item) ;
     }
-    
+
 
     /** Gather statistics, any graph */
     public static StatsCollector gather(Graph graph)
     {
         StatsCollector stats = new StatsCollector() ;
-    
+
         Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
         for ( ; iter.hasNext() ; )
         {
             Triple t = iter.next();
             stats.record(null, t.getSubject(), t.getPredicate(), t.getObject()) ;
         }
-        
+
         return stats ;
     }
 
@@ -92,7 +92,7 @@ public class Stats
     {
         return format(stats.getPredicates(), stats.getTypes(), stats.getCount()) ;
     }
-    
+
     private static Item format(Map<Node, Integer> predicates, Map<Node, Integer> types, long count)
     {
         Item stats = Item.createList() ;
@@ -103,15 +103,15 @@ public class Stats
         addPair(meta.getList(), "timestamp", NodeFactoryExtra.nowAsDateTime()) ;
         addPair(meta.getList(), "run@",  DateTimeUtils.nowAsString()) ;
         if ( count >= 0 )
-            addPair(meta.getList(), StatsMatcher.COUNT, NodeFactoryExtra.intToNode((int)count)) ;
+            addPair(meta.getList(), StatsMatcher.COUNT, NodeFactoryExtra.intToNode(count)) ;
         statsList.add(meta) ;
-        
+
         for ( Entry<Node, Integer> entry : types.entrySet() )
         {
             Node type = entry.getKey() ;
             addTypeTriple(statsList, type, NodeFactoryExtra.intToNode(entry.getValue()) ) ;
         }
-        
+
         for ( Entry<Node, Integer> entry : predicates.entrySet() )
         {
             Node node = entry.getKey() ;
@@ -120,10 +120,10 @@ public class Stats
                 continue ;
             addPair(statsList, node, NodeFactoryExtra.intToNode(entry.getValue())) ;
         }
-        
+
         // Add a default rule.
         addPair(statsList, StatsMatcher.OTHER, ZERO) ;
-        
+
         return stats ;
     }
 
