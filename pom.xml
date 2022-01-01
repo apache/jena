@@ -87,7 +87,7 @@
     <ver.commons-compress>1.21</ver.commons-compress>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.7.5</ver.micrometer>
+    <ver.micrometer>1.8.1</ver.micrometer>
 
     <ver.lucene>8.10.1</ver.lucene>
     <ver.graalvm>21.3.0</ver.graalvm>
