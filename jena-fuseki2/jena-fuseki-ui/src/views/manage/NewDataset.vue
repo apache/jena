@@ -129,13 +129,6 @@ export default {
   },
 
   methods: {
-    validateDatasetName () {
-      // no spaces
-      if (this.form.datasetName && this.form.datasetName.includes(' ')) {
-        return false
-      }
-      return null
-    },
     async onSubmit (evt) {
       evt.preventDefault()
       try {
