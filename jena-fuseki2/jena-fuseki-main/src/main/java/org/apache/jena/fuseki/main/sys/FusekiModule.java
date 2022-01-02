@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.main.sys;
 
 import org.apache.jena.base.module.SubsystemLifecycle;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
 
@@ -64,8 +65,28 @@ public interface FusekiModule extends SubsystemLifecycle {
      * Called at the start of "build" step. The builder has been set according to the
      * configuration. The "configModel" parameter is set if a configuration file was
      * used otherwise it is null.
+     * <p>
+     *
+     * <p>
+     * The default implementation is to call
+     * {@link #configDataAccessPoint(FusekiServer.Builder, DataAccessPoint, Model)}
+     * for each {@link DataAccessPoint}.
+     * <pre>
+     *   dapRegistry.accessPoints().forEach(accessPoint->configDataAccessPoint(builder, accessPoint, configModel));
+     * </pre>
+     * <p>
+     * If overriding this method, the implementation can invoke this iteration by calling
+     * {@code FusekiModule.super.configuration(builder, dapRegistry, configModel)}.
      */
-    public default void configuration(FusekiServer.Builder builder, DataAccessPointRegistry dapRegistry, Model configModel) {}
+    public default void configuration(FusekiServer.Builder builder, DataAccessPointRegistry dapRegistry, Model configModel) {
+        dapRegistry.accessPoints().forEach(accessPoint->configDataAccessPoint(builder, accessPoint, configModel));
+    }
+
+    /**
+     * This method is called for each {@link DataAccessPoint}
+     * by the default implementation of {@link #configuration}.
+     */
+    public default void configDataAccessPoint(FusekiServer.Builder builder, DataAccessPoint dap, Model configModel) {}
 
     /**
      * Built, not started, about to be returned to the builder caller.
