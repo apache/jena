@@ -58,11 +58,11 @@ public class TestRDFStarTranslation {
         // No RDF-star triple terms - no change.
         Graph g = data("(graph (:s :p :o))");
 
-        Graph g1 = RDFStar.encodeRDFStar(g);
+        Graph g1 = RDFStar.encodeAsRDF(g);
         assertTrue(isomorphic(g, g1));
         assertEquals(1, g1.size());
 
-        Graph g2 = RDFStar.encodeRDFStar(g1);
+        Graph g2 = RDFStar.encodeAsRDF(g1);
         assertTrue(isomorphic(g, g2));
         assertEquals(1, g2.size());
     }
@@ -150,9 +150,9 @@ public class TestRDFStarTranslation {
 
     private void testEncodeDecode(String str) {
         Graph graph = data(str);
-        Graph g1 = RDFStar.encodeRDFStar(graph);
+        Graph g1 = RDFStar.encodeAsRDF(graph);
         testNoTripleTerms(g1);
-        Graph g2 = RDFStar.decodeRDFStar(g1);
+        Graph g2 = RDFStar.decodeFromRDF(g1);
         // check for no triple terms.
         boolean b = isomorphic(graph, g2);
         if ( ! b ) {
@@ -173,7 +173,7 @@ public class TestRDFStarTranslation {
     }
 
     private void testEncode(Graph graph, int expectedSize, Function<Graph, Node> getReif) {
-        Graph g1 = RDFStar.encodeRDFStar(graph);
+        Graph g1 = RDFStar.encodeAsRDF(graph);
         testNoTripleTerms(g1);
         //RDFDataMgr.write(System.out, g1, RDFFormat.TURTLE_BLOCKS);
         assertEquals("Encoded", expectedSize, g1.size());
@@ -188,8 +188,8 @@ public class TestRDFStarTranslation {
     private void testInPlace(String str) {
         Graph graph = data(str);
 
-        Graph g1a = RDFStar.encodeRDFStar(graph);
-        Graph g1 = RDFStar.encodeRDFStarInPlace(graph);
+        Graph g1a = RDFStar.encodeAsRDF(graph);
+        Graph g1 = RDFStar.encodeAsRDFInPlace(graph);
 
         // Decode inplace.
 
