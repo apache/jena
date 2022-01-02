@@ -20,7 +20,7 @@
     <b-row class="mt-4">
       <b-col>
         <h1>Fuseki Documentation</h1>
-        <p><a href="http://jena.apache.org/documentation/fuseki2/">Apache Jena Fuseki</a></p>
+        <p><a href="https://jena.apache.org/documentation/fuseki2/">Apache Jena Fuseki</a></p>
         <h2>Standards</h2>
         <ul>
           <li><a href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Query</a></li>
