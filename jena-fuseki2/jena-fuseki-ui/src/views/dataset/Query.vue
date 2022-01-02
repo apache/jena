@@ -212,8 +212,8 @@ export default {
         this.onYasqeOptionsChange()
         this.syncYasqePrefixes()
         this.loading = false
-      })
-    }, 300)
+      }, 300)
+    })
   },
 
   beforeRouteLeave (to, from, next) {
