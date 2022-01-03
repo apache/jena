@@ -124,11 +124,9 @@ public class LogCtlJUL {
      * Route JUL to SLF4J.
      * Do not include org.slf4j:slf4j-jdk14.
      */
-    public static void routeJULtoSLF4J(boolean removeExistingHandlersForRootLogger) {
+    public static void routeJULtoSLF4J() {
         try {
-            if ( removeExistingHandlersForRootLogger )
-                SLF4JBridgeHandler.removeHandlersForRootLogger();
-            // Route to slf4j for logger created from now on.
+            SLF4JBridgeHandler.removeHandlersForRootLogger();
             SLF4JBridgeHandler.install();
         } catch (Throwable th) {}
     }

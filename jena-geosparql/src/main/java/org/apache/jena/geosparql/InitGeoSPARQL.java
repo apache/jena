@@ -31,10 +31,10 @@ public class InitGeoSPARQL implements JenaSubsystemLifecycle {
     @Override
     public void start() {
         // SIS uses JUL for logging.
-        LogCtlJUL.routeJULtoSLF4J(false);
+        LogCtlJUL.routeJULtoSLF4J();
 
-        // Not RDF Tables.
         GeometryDatatype.registerDatatypes();
+        // Logs "SIS_DATA is not set"
         GeoSPARQLConfig.loadFunctions();
         AssemblerUtils.registerDataset(VocabGeoSPARQL.tGeoDataset, new GeoAssembler());
     }
