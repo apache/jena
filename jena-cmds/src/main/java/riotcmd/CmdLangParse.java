@@ -31,6 +31,7 @@ import arq.cmdline.ModLangParse ;
 import arq.cmdline.ModTime ;
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
@@ -246,6 +247,10 @@ public abstract class CmdLangParse extends CmdGeneral
             filename = "stdin";
             builder.source(System.in);
         } else {
+            // Convert spaces and other characters in file names.
+            // File handling will reverse to open the file correctly 
+            // but for base name generation we want the %20 form.
+            filename = IRILib.filenameToIRI(filename);
             builder.source(filename);
         }
         return parseRIOT(builder, filename);
