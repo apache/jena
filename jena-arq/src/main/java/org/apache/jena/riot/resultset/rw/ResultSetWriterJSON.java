@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.resultset.rw;
 
-import static org.apache.jena.riot.resultset.rw.JSONResultsKW.*;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.*;
 
 import java.io.OutputStream;
 import java.io.Writer;

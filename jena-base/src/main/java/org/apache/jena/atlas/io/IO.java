@@ -569,4 +569,23 @@ public class IO
             }
         } catch (IOException ex) {}
     }
+
+    // Do nothing buffer.  Never read from this, it may be corrupt because it is shared.
+    private static int SKIP_BUFFER_LEN_R = 16*1024;
+    private static char[] SKIP_BUFFER_R = null;
+    /** Skip to the end of the Reader, discarding input. */
+    public static void skipToEnd(Reader input) {
+        if ( SKIP_BUFFER_R == null )
+            // No harm in concurrent assignment.
+            SKIP_BUFFER_R = new char[SKIP_BUFFER_LEN_R];
+        try {
+            for(;;) {
+                // Skip does not guarantee to go to end of file.
+                long rLen = input.read(SKIP_BUFFER_R, 0, SKIP_BUFFER_LEN_R);
+                if (rLen < 0) // EOF
+                    break;
+            }
+        } catch (IOException ex) {}
+    }
+
 }

@@ -27,12 +27,13 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.ReadAnything;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.resultset.ResultSetLang;
-import org.apache.jena.riot.resultset.rw.ReadAnything;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.resultset.* ;
 import org.apache.jena.sparql.sse.Item ;
@@ -311,6 +312,18 @@ public class ResultSetFactory {
         }
         return new ResultSetMem(resultSet);
     }
+
+    /**
+     * Turn a row set into a rewindable ResultSet.
+     * Uses up the result set passed in which is no longer valid as a RowSet.
+     *
+     * @param rowSet
+     * @return ResultSetRewindable
+     */
+    static public ResultSetRewindable makeRewindable(RowSet rowSet) {
+        return makeRewindable(ResultSet.adapt(rowSet));
+    }
+
 
     /**
      * Turns an existing result set into one with peeking capabilities

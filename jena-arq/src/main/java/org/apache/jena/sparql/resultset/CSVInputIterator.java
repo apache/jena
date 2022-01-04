@@ -38,7 +38,9 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 
 /**
  * Class used to do streaming parsing of actual result rows from the CSV
+ * @deprecated To be removed.
  */
+@Deprecated
 public class CSVInputIterator extends QueryIteratorBase
 {
 	private BufferedReader reader;

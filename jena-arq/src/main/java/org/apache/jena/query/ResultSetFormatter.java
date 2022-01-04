@@ -40,13 +40,13 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.rw.ResultSetWriterXML;
-import org.apache.jena.riot.resultset.rw.ResultsWriter;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.ARQNotImplemented ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.resultset.ResultsFormat;
+import org.apache.jena.sparql.resultset.ResultsWriter;
 import org.apache.jena.sys.JenaSystem;
 
 /** ResultSetFormatter - Convenience ways to call the various output formatters.

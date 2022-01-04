@@ -87,6 +87,6 @@ public interface RowSet extends IteratorCloseable<Binding> {
      * This operation does not materialize the QueryIterator.
      */
     public static RowSet create(QueryIterator qIter, List<Var> vars) {
-        return new RowSetStream(vars, qIter);
+        return RowSetStream.create(vars, qIter);
     }
 }

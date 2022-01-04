@@ -39,7 +39,9 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Class used to do streaming parsing of actual result rows from the TSV
+ * @deprecated To be removed.
  */
+@Deprecated
 public class TSVInputIterator implements Iterator<Binding>
 {
     private static Pattern pattern = Pattern.compile("\t");

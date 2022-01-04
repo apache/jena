@@ -20,12 +20,20 @@ package org.apache.jena.riot.resultset;
 
 import static org.apache.jena.riot.resultset.ResultSetLang.*;
 
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.Map ;
 import java.util.Objects ;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.resultset.rw.*;
+import org.apache.jena.riot.rowset.RowSetWriter;
+import org.apache.jena.riot.rowset.RowSetWriterFactory;
+import org.apache.jena.riot.rowset.RowSetWriterRegistry;
+import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.util.Context;
 
 /** Registry for ResultSetWriter factories. */
 public class ResultSetWriterRegistry {
@@ -55,15 +63,57 @@ public class ResultSetWriterRegistry {
         if ( initialized )
             return ;
         initialized = true ;
+        RowSetWriterRegistry.init();
 
-        register(RS_XML,    ResultSetWriterXML.factory) ;
-        register(RS_JSON,   ResultSetWriterJSON.factory) ;
-        register(RS_Thrift, ResultSetWriterThrift.factory) ;
-        register(RS_CSV,    ResultSetWriterCSV.factory) ;
-        register(RS_TSV,    ResultSetWriterTSV.factory) ;
-        // Build-in std factory (below).
-        register(RS_Text,   ResultSetWriterText.factory) ;
-        register(RS_None,   ResultSetWriterNone.factory) ;
+        ResultSetWriterFactory factory = (lang) -> new ResultSetWriterAdapter(lang);
+
+        register(RS_XML,      factory) ;
+        register(RS_JSON,     factory) ;
+        register(RS_CSV,      factory) ;
+        register(RS_TSV,      factory) ;
+        register(RS_Text,     factory) ;
+        register(RS_Thrift,   factory) ;
+        register(RS_Protobuf, factory) ;
+        register(RS_None,     factory) ;
+
+        if ( false ) {
+            // Delete this code when the resultSetWriters are removed
+            register(RS_XML,    ResultSetWriterXML.factory) ;
+            register(RS_JSON,   ResultSetWriterJSON.factory) ;
+            register(RS_Thrift, ResultSetWriterThrift.factory) ;
+            register(RS_CSV,    ResultSetWriterCSV.factory) ;
+            register(RS_TSV,    ResultSetWriterTSV.factory) ;
+            register(RS_Text,   ResultSetWriterText.factory) ;
+            register(RS_None,   ResultSetWriterNone.factory) ;
+        }
     }
+
+    private static class ResultSetWriterAdapter implements ResultSetWriter {
+
+        private final Lang lang;
+        private final RowSetWriterFactory writerFactory;
+
+        ResultSetWriterAdapter(Lang lang) {
+            this.lang = lang;
+            this.writerFactory = RowSetWriterRegistry.getFactory(lang);
+        }
+
+        private RowSetWriter writer() { return writerFactory.create(lang); }
+
+        @Override
+        public void write(OutputStream out, ResultSet resultSet, Context context) {
+            writer().write(out, RowSet.adapt(resultSet), context);
+        }
+
+        @Override
+        public void write(Writer out, ResultSet resultSet, Context context) {
+            writer().write(out, RowSet.adapt(resultSet), context);
+        }
+
+        @Override
+        public void write(OutputStream out, boolean result, Context context) {
+            writer().write(out, result, context);
+        }
+    };
 }
 

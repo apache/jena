@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.resultset.rw;
+package org.apache.jena.sparql.resultset;
 
 import java.io.InputStream;
 import java.util.Objects;
@@ -25,11 +25,15 @@ import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.resultset.ResultSetReader;
-import org.apache.jena.riot.resultset.ResultSetReaderFactory;
-import org.apache.jena.riot.resultset.ResultSetReaderRegistry;
+import org.apache.jena.riot.rowset.RowSetReader;
+import org.apache.jena.riot.rowset.RowSetReaderFactory;
+import org.apache.jena.riot.rowset.RowSetReaderRegistry;
+//import org.apache.jena.riot.resultset.ResultSetReader;
+//import org.apache.jena.riot.resultset.ResultSetReaderFactory;
+//import org.apache.jena.riot.resultset.ResultSetReaderRegistry;
 import org.apache.jena.riot.system.stream.StreamManager;
-import org.apache.jena.sparql.resultset.SPARQLResult;
+import org.apache.jena.sparql.exec.QueryExecResult;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sys.JenaSystem;
 
@@ -90,6 +94,17 @@ public class ResultsReader {
         public ResultSet read(InputStream input) {
           return build().read(input);
         }
+
+        /** Short form equivalent to {@code .build().read(url)} */
+        public RowSet readRowSet(String url) {
+          return build().readRowSet(url);
+        }
+
+        /** Short form equivalent to {@code .build().read(InputStreams)} */
+        public RowSet readRowSet(InputStream input) {
+          return build().readRowSet(input);
+        }
+
     }
 
     private final Lang hintLang;
@@ -121,7 +136,7 @@ public class ResultsReader {
         Objects.nonNull(urlOrFilename);
         try ( TypedInputStream in = StreamManager.get(context).open(urlOrFilename) ) {
             Lang lang = determinLang(in, urlOrFilename);
-            return readResultSet(in.getInputStream(), lang);
+            return readResults(in, lang).getResultSet();
         }
     }
 
@@ -131,7 +146,25 @@ public class ResultsReader {
         Lang lang = (forceLang!=null) ? forceLang : hintLang;
         if ( lang == null )
             throw new RiotException("Need a syntax to read a result set from an InputStream");
-        return readResultSet(input, lang);
+        return readResults(input, lang).getResultSet();
+    }
+
+    /** Read a result set from a URL or filename. */
+    public RowSet readRowSet(String urlOrFilename) {
+        Objects.nonNull(urlOrFilename);
+        try ( TypedInputStream in = StreamManager.get(context).open(urlOrFilename) ) {
+            Lang lang = determinLang(in, urlOrFilename);
+            return readAny(in.getInputStream(), lang).rowSet();
+        }
+    }
+
+    /** Read a result set from an {@code InputStream}. */
+    public RowSet readRowSet(InputStream input) {
+        Objects.nonNull(input);
+        Lang lang = (forceLang!=null) ? forceLang : hintLang;
+        if ( lang == null )
+            throw new RiotException("Need a syntax to read a result set from an InputStream");
+        return readAny(input, lang).rowSet();
     }
 
     /** Read a result set or boolean from a URL or filename. */
@@ -139,7 +172,7 @@ public class ResultsReader {
         Objects.nonNull(urlOrFilename);
         try ( TypedInputStream in = StreamManager.get(context).open(urlOrFilename) ) {
             Lang lang = determinLang(in, urlOrFilename);
-            return readAny(in.getInputStream(), lang);
+            return readResults(in.getInputStream(), lang);
         }
     }
 
@@ -149,22 +182,23 @@ public class ResultsReader {
         Lang lang = (forceLang!=null) ? forceLang : hintLang;
         if ( lang == null )
             throw new RiotException("Need a syntax to read a result set from an InputStream");
-        return readAny(input, lang);
+        return readResults(input, lang);
     }
 
-    private ResultSet readResultSet(InputStream input, Lang lang) {
-        return readAny(input, lang).getResultSet();
+    private SPARQLResult readResults(InputStream input, Lang lang) {
+        return SPARQLResult.adapt(readAny(input, lang));
     }
 
-    private SPARQLResult readAny(InputStream input, Lang lang) {
-        if ( ! ResultSetReaderRegistry.isRegistered(lang) )
+    private QueryExecResult readAny(InputStream input, Lang lang) {
+        // Go direct to the RowSet layer.
+        if ( ! RowSetReaderRegistry.isRegistered(lang) )
             throw new RiotException("Not registered as a SPARQL result set input syntax: "+lang);
-
-        ResultSetReaderFactory factory = ResultSetReaderRegistry.getFactory(lang);
+        RowSetReaderFactory factory = RowSetReaderRegistry.getFactory(lang);
         if ( factory == null )
             throw new RiotException("No ResultSetReaderFactory for "+lang);
-        ResultSetReader reader = factory.create(lang);
-        SPARQLResult rs = reader.readAny(input, context);
-        return rs;
+        RowSetReader reader = factory.create(lang);
+        // RowSet or boolean.
+        QueryExecResult result = reader.readAny(input, context);
+        return result;
     }
 }

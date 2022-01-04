@@ -41,6 +41,7 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.lang.LabelToNode;
+import org.apache.jena.riot.rowset.rw.XMLResults;
 import org.apache.jena.riot.system.SyntaxLabels;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.ResultBinding;

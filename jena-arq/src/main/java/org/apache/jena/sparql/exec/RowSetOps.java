@@ -26,12 +26,12 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.ResultSetMgr;
 import org.apache.jena.riot.resultset.ResultSetLang;
-import org.apache.jena.riot.resultset.rw.ResultsWriter;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.Prologue;
+import org.apache.jena.sparql.resultset.ResultsWriter;
 
 /** RowSetFormatter - Convenience ways to call the various output formatters.
  *  in various formats.

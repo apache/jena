@@ -36,24 +36,27 @@ import org.apache.jena.sparql.util.TranslationTable ;
 
 // Better ....
 //public enum ResultFormat
-//{ 
+//{
 //    // Merge with our system wide naming (WebContent?)
 //    FMT_RS_XML , FMT_RS_JSON , FMT_RS_CSV , FMT_RS_TSV , FMT_RS_SSE , FMT_RS_BIO ,
 //    FMT_NONE , FMT_TEXT , FMT_TUPLES , FMT_COUNT ,
 //    FMT_RS_RDF , FMT_RDF_XML , FMT_RDF_N3 , FMT_RDF_TTL , FMT_RDF_TURTLE , FMT_RDF_NT ,
 //    FMT_UNKNOWN ;
-    
+
 
 // Old world.
 public class ResultsFormat extends Symbol
-{ 
+{
     private ResultsFormat(String symbol) {
         super(symbol);
     }
 
     static public ResultsFormat FMT_RS_XML       = new ResultsFormat(contentTypeResultsXML) ;
     static public ResultsFormat FMT_RS_JSON      = new ResultsFormat(contentTypeResultsJSON) ;
+
     static public ResultsFormat FMT_RS_THRIFT    = new ResultsFormat(contentTypeResultsThrift) ;
+    static public ResultsFormat FMT_RS_PROTOBUF  = new ResultsFormat(contentTypeResultsProtobuf) ;
+
     static public ResultsFormat FMT_RS_CSV       = new ResultsFormat(contentTypeTextCSV) ;
     static public ResultsFormat FMT_RS_TSV       = new ResultsFormat(contentTypeTextTSV) ;
     static public ResultsFormat FMT_RS_SSE       = new ResultsFormat(contentTypeSSE) ;
@@ -71,19 +74,21 @@ public class ResultsFormat extends Symbol
     static public ResultsFormat FMT_RDF_NQ       = new ResultsFormat(contentTypeNQuads) ;
     static public ResultsFormat FMT_RDF_JSONLD   = new ResultsFormat(contentTypeJSONLD) ;
     static public ResultsFormat FMT_UNKNOWN      = new ResultsFormat("unknown") ;
-    
+
     // ---- Compatibility
-    
+
     // Common names to symbol (used by arq.rset)
     private static TranslationTable<ResultsFormat> names = new TranslationTable<>(true) ;
     static {
         names.put("srx",         FMT_RS_XML) ;
         names.put("xml",         FMT_RS_XML) ;
-        
+
         names.put("json",        FMT_RS_JSON) ;
         names.put("srj",         FMT_RS_JSON) ;
+
         names.put("srt",         FMT_RS_THRIFT) ;
-        
+        names.put("srp",         FMT_RS_PROTOBUF) ;
+
         names.put("sse",         FMT_RS_SSE) ;
         names.put("csv",         FMT_RS_CSV) ;
         names.put("tsv",         FMT_RS_TSV) ;
@@ -91,8 +96,8 @@ public class ResultsFormat extends Symbol
         names.put("count",       FMT_COUNT) ;
         names.put("tuples",      FMT_TUPLES) ;
         names.put("none",        FMT_NONE) ;
-        
-        names.put("rdf",         FMT_RDF_XML) ; 
+
+        names.put("rdf",         FMT_RDF_XML) ;
         names.put("rdf/n3",      FMT_RDF_N3) ;
         names.put("rdf/xml",     FMT_RDF_XML) ;
         names.put("n3",          FMT_RDF_N3) ;
@@ -104,7 +109,7 @@ public class ResultsFormat extends Symbol
         names.put("ntriples",    FMT_RDF_NT) ;
         names.put("jsonld",      FMT_RDF_JSONLD) ;
         names.put("json-ld",     FMT_RDF_JSONLD) ;
-        
+
         names.put("nq",          FMT_RDF_NQ) ;
         names.put("nquads",      FMT_RDF_NQ) ;
         names.put("n-quads",     FMT_RDF_NQ) ;
@@ -161,6 +166,9 @@ public class ResultsFormat extends Symbol
         // -- Thrift
         if ( url.endsWith(".srt") )
             return FMT_RS_THRIFT;
+        // -- Thrift
+        if ( url.endsWith(".srp") )
+            return FMT_RS_PROTOBUF;
 
         // -- SSE : http://jena.apache.org/documentation/notes/sse.html
         if ( url.endsWith(".sse") )
@@ -183,7 +191,7 @@ public class ResultsFormat extends Symbol
 
     /**
      * Look up a short name for a result set FMT_
-     * 
+     *
      * @param s
      *            Short name
      * @return ResultSetFormat
@@ -196,25 +204,26 @@ public class ResultsFormat extends Symbol
      * Mapping from old-style {@link ResultsFormat} to {@link ResultSetLang} or other
      * {@link Lang}. See also {@link QueryExecUtils#outputResultSet} for dispatch of some old,
      * specialized types such as results encoded in RDF.
-     */ 
+     */
     static Map<ResultsFormat, Lang> mapResultsFormatToLang = new HashMap<>() ;
     static {
-        mapResultsFormatToLang.put(ResultsFormat.FMT_NONE,      ResultSetLang.RS_None) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_CSV,    ResultSetLang.RS_CSV) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_TSV,    ResultSetLang.RS_TSV) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_XML,    ResultSetLang.RS_XML) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_JSON,   ResultSetLang.RS_JSON) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_THRIFT, ResultSetLang.RS_Thrift) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_TEXT,      ResultSetLang.RS_Text);
+        mapResultsFormatToLang.put(ResultsFormat.FMT_NONE,        ResultSetLang.RS_None) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_CSV,      ResultSetLang.RS_CSV) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_TSV,      ResultSetLang.RS_TSV) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_XML,      ResultSetLang.RS_XML) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_JSON,     ResultSetLang.RS_JSON) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_THRIFT,   ResultSetLang.RS_Thrift) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_PROTOBUF, ResultSetLang.RS_Protobuf) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_TEXT,        ResultSetLang.RS_Text);
     }
 
     public static Lang convert(ResultsFormat fmt) {
         return mapResultsFormatToLang.get(fmt) ;
     }
-    
+
     /** Write a {@link ResultSet} in various old style formats no longer recommended.
      * Return true if the format was handled else false.
-     */ 
+     */
     public static boolean oldWrite(OutputStream out, ResultsFormat outputFormat, Prologue prologue, ResultSet resultSet) {
         if ( outputFormat.equals(ResultsFormat.FMT_COUNT) ) {
             int count = ResultSetFormatter.consume(resultSet) ;
@@ -222,7 +231,7 @@ public class ResultsFormat extends Symbol
             pOut.println("Count = " + count) ;
             return true ;
         }
-        
+
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) ) {
             RDFOutput.outputAsRDF(out, "RDF/XML-ABBREV", resultSet) ;
             return true;
@@ -237,12 +246,12 @@ public class ResultsFormat extends Symbol
             RDFOutput.outputAsRDF(out, "N-TRIPLES", resultSet) ;
             return true;
         }
-        
+
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_JSONLD) ) {
             RDFOutput.outputAsRDF(out, "JSONLD", resultSet) ;
             return true;
         }
-        
+
         if ( outputFormat.equals(ResultsFormat.FMT_TUPLES) ) {
             PlainFormat pFmt = new PlainFormat(out, prologue) ;
             ResultSetApply a = new ResultSetApply(resultSet, pFmt) ;

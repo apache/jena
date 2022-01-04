@@ -292,11 +292,13 @@ public class SSE
         return BuilderRowSet.build(item);
     }
 
-    /** Build a {@link ResultSet} */
+    /**
+     * Build a {@link ResultSet}
+     * @deprecated Use {@link #parseRowSet}
+     */
     @Deprecated
     public static ResultSet parseResultSet(String string) {
-        Item item = parse(string);
-        return BuilderResultSet.build(item);
+        return ResultSet.adapt(parseRowSet(string));
     }
 
     /** Read in a file, parse, and obtain a SPARQL algebra op */

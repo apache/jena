@@ -22,6 +22,8 @@ package org.apache.jena.riot.resultset.rw;
 //Taken from:
 //From http://www.w3.org/TR/sparql11-results-json/ (Oct 2011)
 
+/** @deprecated Moved to org.apache.jena.riot.rowset.rw.JSONResultsKW */
+@Deprecated
 public class JSONResultsKW
 {
     public static String kHead          = "head" ;
