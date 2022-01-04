@@ -20,9 +20,9 @@ package org.apache.jena.sparql.resultset;
 
 import java.io.InputStream ;
 
-import org.apache.jena.query.ResultSet ;
 import org.apache.jena.riot.resultset.ResultSetLang;
-import org.apache.jena.riot.resultset.rw.ResultSetReaderCSV;
+import org.apache.jena.riot.rowset.rw.RowSetReaderCSV;
+import org.apache.jena.sparql.exec.RowSet;
 
 /** Convenient comma separated values - see also TSV (tab separated values)
  *  which outputs full RDF terms (in Turtle-style).
@@ -44,11 +44,13 @@ import org.apache.jena.riot.resultset.rw.ResultSetReaderCSV;
  *  <p>
  *  Any other value is considered an error for parsing a boolean results and anything past the first line is ignored
  *  </p>
+ *  @deprecated To be removed
  */
+@Deprecated
 public class CSVInput
 {
     // This code exists to support the SPARQL WG tests.
-    public static ResultSet fromCSV(InputStream in) {
-        return ResultSetReaderCSV.factory.create(ResultSetLang.RS_CSV).read(in, null);
+    public static RowSet fromCSV(InputStream in) {
+        return RowSetReaderCSV.factory.create(ResultSetLang.RS_CSV).read(in, null);
     }
 }

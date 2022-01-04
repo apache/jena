@@ -36,8 +36,6 @@ import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.resultset.ResultSetLang;
-import org.apache.jena.riot.resultset.rw.ResultsReader;
-import org.apache.jena.riot.resultset.rw.ResultsWriter;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
@@ -46,7 +44,6 @@ import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.sparql.util.ResultSetUtils ;
@@ -78,6 +75,9 @@ public class TestResultSet
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
         ResultSetFormatter.outputAsXML(arr, rs1) ;
         rs1.reset() ;
+
+        String x = StrUtils.fromUTF8bytes(arr.toByteArray());
+
         ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray()) ;
         ResultSet rs2 = ResultSetFactory.fromXML(ins) ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
@@ -537,13 +537,17 @@ public class TestResultSet
 
     private void isotest(String[] rs1$2, String[] rs2$2)
     {
-        ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs1$)))) ;
-        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs2$)))) ;
+        ResultSetRewindable rs1 = make(StrUtils.strjoinNL(rs1$)) ;
+        ResultSetRewindable rs2 = make(StrUtils.strjoinNL(rs2$)) ;
         assertTrue(ResultSetCompare.isomorphic(rs1, rs2)) ;
         rs1.reset() ;
         rs2.reset() ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
         assertTrue(ResultSetCompare.equalsByValue(rs1, rs2)) ;
+    }
+
+    private static ResultSetRewindable make(String x) {
+        return ResultSetFactory.makeRewindable(SSE.parseRowSet(x));
     }
 
     // -- BNode preservation
@@ -571,8 +575,7 @@ public class TestResultSet
     }
 
     private static void preserve_bnodes(Lang sparqlresultlang, Context cxt, boolean same) {
-
-        ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs1$)))) ;
+        ResultSetRewindable rs1 = make(StrUtils.strjoinNL(rs1$)) ;
         ByteArrayOutputStream x = new ByteArrayOutputStream();
 
         ResultsWriter.create().context(cxt).lang(sparqlresultlang).write(x, rs1);

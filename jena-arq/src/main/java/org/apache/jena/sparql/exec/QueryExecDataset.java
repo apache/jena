@@ -176,7 +176,7 @@ public class QueryExecDataset implements QueryExec
         startQueryIterator();
         Iterator<Binding> iter = queryIterator;
         List<Var> vars = query.getResultVars().stream().map(Var::alloc).collect(Collectors.toList());
-        return new RowSetStream(vars, iter);
+        return RowSetStream.create(vars, iter);
     }
 
     // -- Construct

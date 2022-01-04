@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.resultset.rw;
+package org.apache.jena.sparql.resultset;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,9 +27,10 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.resultset.ResultSetWriter;
-import org.apache.jena.riot.resultset.ResultSetWriterFactory;
-import org.apache.jena.riot.resultset.ResultSetWriterRegistry;
+import org.apache.jena.riot.rowset.RowSetWriter;
+import org.apache.jena.riot.rowset.RowSetWriterFactory;
+import org.apache.jena.riot.rowset.RowSetWriterRegistry;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
@@ -95,6 +96,16 @@ public class ResultsWriter {
             build().write(output, resultSet);
         }
 
+        /** Short form equivalent to {@code build().write(url, RowSet)} */
+        public void write(String url, RowSet rowSet) {
+            build().write(url, rowSet);
+        }
+
+        /** Short form equivalent to {@code build().write(OutputStream, RowSet)} */
+        public void write(OutputStream output, RowSet rowSet) {
+            build().write(output, rowSet);
+        }
+
         /** Short form equivalent to {@code build().write(url, boolValue)} */
         public void write(String url, boolean booleanResult) {
             build().write(url, booleanResult);
@@ -119,8 +130,15 @@ public class ResultsWriter {
     public void write(String filename, ResultSet resultSet) {
         Objects.requireNonNull(filename);
         Objects.requireNonNull(resultSet);
+        write(filename, RowSet.adapt(resultSet));
+    }
+
+    /** Write a result set, using the configuration of the {@code ResultsWriter}, to a file */
+    public void write(String filename, RowSet rowSet) {
+        Objects.requireNonNull(filename);
+        Objects.requireNonNull(rowSet);
         try ( OutputStream out = openURL(filename) ) {
-            write(out, resultSet);
+            write(out, rowSet);
         } catch (IOException ex) { IO.exception(ex); }
     }
 
@@ -128,7 +146,14 @@ public class ResultsWriter {
     public void write(OutputStream output, ResultSet resultSet) {
         Objects.requireNonNull(output);
         Objects.requireNonNull(resultSet);
-        write(output, resultSet, null, lang);
+        write(output, RowSet.adapt(resultSet));
+    }
+
+    /** Write a result set, using the configuration of the {@code ResultWriter}, to an {@code OutputStream}. */
+    public void write(OutputStream output, RowSet rowSet) {
+        Objects.requireNonNull(output);
+        Objects.requireNonNull(rowSet);
+        write(output, rowSet, null, lang);
     }
 
     /** Write a boolean result, using the configuration of the {@code ResultWriter}, to a file */
@@ -145,18 +170,18 @@ public class ResultsWriter {
         write(output, null, booleanResult, lang);
     }
 
-    private void write(OutputStream output, ResultSet resultSet, Boolean result, Lang lang) {
+    private void write(OutputStream output, RowSet resultSet, Boolean result, Lang lang) {
         if ( resultSet == null && result == null )
             throw new RiotException("No result set and no boolean result");
         if ( resultSet != null && result != null )
             throw new RiotException("Both result set and boolean result supplied");
-        if ( ! ResultSetWriterRegistry.isRegistered(lang) )
+        if ( ! RowSetWriterRegistry.isRegistered(lang) )
             throw new RiotException("Not registered as a SPARQL result set output syntax: "+lang);
 
-        ResultSetWriterFactory factory = ResultSetWriterRegistry.getFactory(lang);
+        RowSetWriterFactory factory = RowSetWriterRegistry.getFactory(lang);
         if ( factory == null )
             throw new RiotException("No ResultSetReaderFactory for "+lang);
-        ResultSetWriter writer = factory.create(lang);
+        RowSetWriter writer = factory.create(lang);
         if ( resultSet != null )
             writer.write(output, resultSet, context);
         else

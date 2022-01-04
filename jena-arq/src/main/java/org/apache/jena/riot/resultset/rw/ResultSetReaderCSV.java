@@ -34,6 +34,7 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.ResultSetReader;
 import org.apache.jena.riot.resultset.ResultSetReaderFactory;
+import org.apache.jena.riot.rowset.rw.RowSetReaderCSV;
 import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ResultSetStream;
@@ -45,6 +46,10 @@ import org.apache.jena.sparql.util.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @deprecated Use {@link RowSetReaderCSV}
+ */
+@Deprecated
 public class ResultSetReaderCSV implements ResultSetReader {
 
     private static Logger log = LoggerFactory.getLogger(ResultSetReaderCSV.class);

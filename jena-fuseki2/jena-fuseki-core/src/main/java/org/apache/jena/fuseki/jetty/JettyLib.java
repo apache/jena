@@ -208,6 +208,7 @@ public class JettyLib {
         mimeTypes.addMimeMapping("rsj",     WebContent.contentTypeResultsJSON);
         mimeTypes.addMimeMapping("rsx",     WebContent.contentTypeResultsXML);
         mimeTypes.addMimeMapping("srt",     WebContent.contentTypeResultsThrift);
+        mimeTypes.addMimeMapping("srt",     WebContent.contentTypeResultsProtobuf);
 
         // Other
         mimeTypes.addMimeMapping("txt",     WebContent.contentTypeTextPlain);

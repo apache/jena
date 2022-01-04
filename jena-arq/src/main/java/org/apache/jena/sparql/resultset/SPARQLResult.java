@@ -19,11 +19,15 @@
 package org.apache.jena.sparql.resultset;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sparql.exec.QueryExecResult;
 
 /**
  * The class "ResultSet" is reserved for the SELECT result format. This class
@@ -39,7 +43,21 @@ public class SPARQLResult {
     private Dataset   dataset       = null;
     private Iterator<JsonObject> jsonItems = null;
 
-    // Delayed choice of result type.
+    public static SPARQLResult adapt(QueryExecResult result) {
+        Objects.requireNonNull(result);
+        if ( result.isRowSet())
+            return new SPARQLResult(ResultSet.adapt(result.rowSet()));
+        if ( result.isBoolean())
+            return new SPARQLResult(result.booleanResult());
+        if ( result.isGraph())
+            return new SPARQLResult(ModelFactory.createModelForGraph(result.graph()));
+        if ( result.isDataset())
+            return new SPARQLResult(DatasetFactory.wrap(result.dataset()));
+        if ( result.isJson())
+            return new SPARQLResult(result.jsonItems());
+        throw new IllegalArgumentException("Can not convert to a SPARQLresult object");
+    }
+
     protected SPARQLResult() {}
 
     public SPARQLResult(Model model) {
@@ -59,7 +77,7 @@ public class SPARQLResult {
     }
 
     public SPARQLResult(Iterator<JsonObject> jsonItems) {
-        set(jsonItems); 
+        set(jsonItems);
     }
 
     public boolean isResultSet() {
@@ -164,7 +182,7 @@ public class SPARQLResult {
     }
 
     protected void set(Iterator<JsonObject> jsonItems) {
-        this.jsonItems = jsonItems; 
+        this.jsonItems = jsonItems;
         hasBeenSet = true;
     }
 

@@ -20,7 +20,8 @@ package org.apache.jena.riot.resultset.rw;
 
 import org.apache.jena.sparql.ARQConstants ;
 
-
+/** @deprecated Moved to org.apache.jena.riot.rowset.rw.XMLResults */
+@Deprecated
 public interface XMLResults
 {
     public static final int INDENT = 2 ;

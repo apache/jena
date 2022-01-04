@@ -20,7 +20,7 @@ package org.apache.jena.rdf_star;
 
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.riot.resultset.rw.ResultsReader;
+import org.apache.jena.sparql.resultset.ResultsReader;
 import org.junit.Test;
 
 /**

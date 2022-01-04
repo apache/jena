@@ -18,14 +18,16 @@
 
 package org.apache.jena.sparql.resultset;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 
-import org.junit.Assert;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.riot.ResultSetMgr;
 import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.rowset.rw.RowSetReaderTSV;
 import org.apache.jena.sparql.ARQException ;
 import org.junit.Test;
 
@@ -379,7 +381,6 @@ public class TestResultSetFormat2 {
     	byte[] b = StrUtils.asUTF8bytes(x);
     	ByteArrayInputStream in = new ByteArrayInputStream(b);
     	ResultSet rs2 = ResultSetMgr.read(in, ResultSetLang.RS_CSV);
-
     	while (rs2.hasNext()) {
     		rs2.nextBinding();
     	}
@@ -389,7 +390,6 @@ public class TestResultSetFormat2 {
         byte[] b = StrUtils.asUTF8bytes(input);
         ByteArrayInputStream in = new ByteArrayInputStream(b);
         ResultSet rs = ResultSetFactory.fromJSON(in);
-
         while (rs.hasNext()) {
             rs.nextBinding();
         }
@@ -398,8 +398,7 @@ public class TestResultSetFormat2 {
     private void parseTSVAsBoolean(String x, boolean expected) {
         byte[] b = StrUtils.asUTF8bytes(x);
         ByteArrayInputStream in = new ByteArrayInputStream(b);
-        boolean actual = TSVInput.booleanFromTSV(in);
-
-        Assert.assertEquals(expected, actual);
+        boolean actual = RowSetReaderTSV.booleanFromTSV(in);
+        assertEquals(expected, actual);
     }
 }

@@ -29,11 +29,14 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.query.ResultSetRewindable;
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.sse.Item;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.sparql.sse.builders.BuilderResultSet;
+import org.apache.jena.sparql.sse.builders.BuilderRowSet;
 import org.junit.Test;
 
 public class TestProtobufResultSet {
@@ -88,11 +91,11 @@ public class TestProtobufResultSet {
     private static ResultSetRewindable test(ResultSetRewindable resultSet) {
         resultSet.reset();
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        ProtobufRDF.writeResultSet(out, resultSet) ;
+        ResultSetFormatter.output(out, resultSet, ResultSetLang.RS_Protobuf);
         resultSet.reset();
 
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-        ResultSet rs$ = ProtobufRDF.readResultSet(in) ;
+        RowSet rs$ = ProtobufRDF.readRowSet(in) ;
         ResultSetRewindable resultSet2 = ResultSetFactory.makeRewindable(rs$) ;
         // Includes bnode labels.
         ResultSetCompare.equalsExact(resultSet, resultSet2) ;
@@ -104,7 +107,7 @@ public class TestProtobufResultSet {
     private static ResultSetRewindable make(String ... strings) {
         String s = StrUtils.strjoinNL(strings) ;
         Item item = SSE.parse(s) ;
-        ResultSetRewindable rs = ResultSetFactory.makeRewindable(BuilderResultSet.build(item)) ;
+        ResultSetRewindable rs = ResultSetFactory.makeRewindable(BuilderRowSet.build(item)) ;
         return rs ;
     }
 

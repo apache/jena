@@ -21,6 +21,8 @@ package org.apache.jena.sparql.sse.builders;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.sparql.sse.Item;
 
+/** @deprecated Use {@link BuilderRowSet} */
+@Deprecated
 public class BuilderResultSet {
 
     public static ResultSet build(Item item) {

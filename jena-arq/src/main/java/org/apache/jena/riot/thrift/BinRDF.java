@@ -26,6 +26,7 @@ import org.apache.jena.query.ResultSet ;
 import org.apache.jena.riot.protobuf.ProtobufRDF;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.thrift.wire.RDF_StreamRow ;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.thrift.protocol.TProtocol ;
 
 /** Operations on binary RDF encoding with <a href="http://thrift.apache.org/">Apache Thrift</a>.
@@ -189,11 +190,11 @@ public class BinRDF {
     }
 
     /**
-     * @deprecated Use {@link ThriftRDF#readResultSet(TProtocol)} instead
+     * @deprecated Use {@link ThriftRDF#readResultSet(InputStream)} instead
      */
     @Deprecated
     public static ResultSet readResultSet(TProtocol protocol) {
-        return ThriftRDF.readResultSet(protocol);
+        return ResultSet.adapt(ThriftRDF.readRowSet(protocol));
     }
 
     /**
@@ -213,19 +214,19 @@ public class BinRDF {
     }
 
     /**
-     * @deprecated Use {@link ThriftRDF#writeResultSet(TProtocol,ResultSet)} instead
+     * @deprecated Use {@link ThriftRDF#writeRowSet(TProtocol,RowSet)} instead
      */
     @Deprecated
     public static void writeResultSet(TProtocol protocol, ResultSet resultSet) {
-        ThriftRDF.writeResultSet(protocol, resultSet);
+        writeResultSet(protocol, resultSet, false);
     }
 
     /**
-     * @deprecated Use {@link ThriftRDF#writeResultSet(TProtocol,ResultSet,boolean)} instead
+     * @deprecated Use {@link ThriftRDF#writeRowSet(TProtocol,RowSet,boolean)} instead
      */
     @Deprecated
     public static void writeResultSet(TProtocol protocol, ResultSet resultSet, boolean encodeValues) {
-        ThriftRDF.writeResultSet(protocol, resultSet, encodeValues);
+        ThriftRDF.writeRowSet(protocol, RowSet.adapt(resultSet), encodeValues);
     }
 }
 

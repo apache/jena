@@ -18,6 +18,18 @@
 
 package org.apache.jena.sparql.exec;
 
+import java.io.InputStream;
+
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.rowset.QueryResults;
+
 public class RowSetFactory {
 
+    public static RowSet read(InputStream in, Lang lang) {
+        return QueryResults.create().lang(lang).read(in);
+    }
+
+    public static boolean readBoolean(InputStream in, Lang lang) {
+        return QueryResults.create().lang(lang).build().readAny(in).booleanResult();
+    }
 }

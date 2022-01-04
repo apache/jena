@@ -35,7 +35,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
+import org.apache.jena.sparql.sse.builders.BuilderRowSet;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
@@ -51,6 +51,7 @@ public class TestResultSetIO {
                        , RS_CSV
                        , RS_TSV
                        , RS_Thrift
+                       , RS_Protobuf
         } ;
 
         List<Object[]> x = new ArrayList<>() ;
@@ -71,7 +72,7 @@ public class TestResultSetIO {
         ,")"
         ) ;
 
-    static ResultSetRewindable test_rs = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parse(rsStr))) ;
+    static ResultSetRewindable test_rs = ResultSetFactory.makeRewindable(BuilderRowSet.build(SSE.parse(rsStr))) ;
 
     private final Lang lang ;
     @Before public void beforetest() { test_rs.reset() ; }

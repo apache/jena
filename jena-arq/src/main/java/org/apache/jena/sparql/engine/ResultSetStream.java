@@ -53,7 +53,7 @@ public class ResultSetStream implements ResultSet
 
     /** Create a {@code ResultSet} from a {@literal List<Var>} and an {@literal Iterator<Binding>}. */
     public static ResultSet create(List<Var> resultVars, Iterator<Binding> iter) {
-        return ResultSet.adapt(new RowSetStream(resultVars, iter));
+        return ResultSet.adapt(RowSetStream.create(resultVars, iter));
     }
 
     /** @deprecated Use {@link #create} */

@@ -35,6 +35,7 @@ import org.apache.jena.riot.out.NodeToLabel;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.ResultSetWriter;
 import org.apache.jena.riot.resultset.ResultSetWriterFactory;
+import org.apache.jena.riot.rowset.rw.XMLResults;
 import org.apache.jena.riot.system.SyntaxLabels;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.resultset.ResultSetApply;

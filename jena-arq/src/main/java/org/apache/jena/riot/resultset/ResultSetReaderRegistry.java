@@ -29,6 +29,11 @@ import java.util.Objects ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.resultset.rw.*;
+import org.apache.jena.riot.rowset.RowSetReader;
+import org.apache.jena.riot.rowset.RowSetReaderFactory;
+import org.apache.jena.riot.rowset.RowSetReaderRegistry;
+import org.apache.jena.sparql.exec.QueryExecResult;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context ;
 
@@ -56,21 +61,64 @@ public class ResultSetReaderRegistry {
     private static Map<Lang, ResultSetReaderFactory> registry = new HashMap<>() ;
 
     private static boolean initialized = false ;
+    @SuppressWarnings("deprecation")
     public static void init() {
         if ( initialized )
             return ;
         initialized = true ;
+        RowSetReaderRegistry.init();
 
-        register(RS_XML,    ResultSetReaderXML.factory) ;
-        register(RS_JSON,   ResultSetReaderJSON.factory) ;
-        register(RS_Thrift, ResultSetReaderThrift.factory) ;
-        register(RS_CSV,    ResultSetReaderCSV.factory) ;
-        register(RS_TSV,    ResultSetReaderTSV.factory) ;
+        ResultSetReaderFactory factory = (lang) -> new ResultSetReaderAdapter(lang);
+
+        register(RS_XML,      factory) ;
+        register(RS_JSON,     factory) ;
+        register(RS_CSV,      factory) ;
+        register(RS_TSV,      factory) ;
+        register(RS_None,     factory) ;
+        register(RS_Thrift,   factory) ;
+        register(RS_Protobuf, factory) ;
+
+        // Deprecated!
+        if ( false ) {
+            // Delete when these go away
+            register(RS_XML,    ResultSetReaderXML.factory) ;
+            register(RS_JSON,   ResultSetReaderJSON.factory) ;
+            register(RS_Thrift, ResultSetReaderThrift.factory) ;
+            register(RS_CSV,    ResultSetReaderCSV.factory) ;
+            register(RS_TSV,    ResultSetReaderTSV.factory) ;
+        }
     }
 
-    private static class ResultSetReaderNone implements ResultSetReader {
-        @Override public ResultSet read(InputStream in, Context context)       { return null ; }
-        @Override public ResultSet read(Reader in, Context context)            { return null ; }
-        @Override public SPARQLResult readAny(InputStream in, Context context) { return null ; }
-    } ;
+    private static class ResultSetReaderAdapter implements ResultSetReader {
+
+        private final Lang lang;
+        private final RowSetReaderFactory rowSetFactory;
+
+        ResultSetReaderAdapter(Lang lang) {
+            this.lang = lang;
+            this.rowSetFactory = RowSetReaderRegistry.getFactory(lang);
+        }
+
+        private RowSetReader reader() {
+            return rowSetFactory.create(lang);
+        }
+
+        @Override public ResultSet read(InputStream in, Context context) {
+            RowSet rowSet = reader().read(in, context);
+            if ( rowSet == null)
+                return null;
+            return ResultSet.adapt(rowSet);
+        }
+        @Override public ResultSet read(Reader in, Context context) {
+            RowSet rowSet = reader().read(in, context);
+            if ( rowSet == null)
+                return null;
+            return ResultSet.adapt(rowSet);
+        }
+
+        @Override
+        public SPARQLResult readAny(InputStream in, Context context) {
+            QueryExecResult result = reader().readAny(in, context);
+            return SPARQLResult.adapt(result);
+        }};
 }

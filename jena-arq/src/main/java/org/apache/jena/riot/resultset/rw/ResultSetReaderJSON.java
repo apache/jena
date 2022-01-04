@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.resultset.rw;
 
-import static org.apache.jena.riot.resultset.rw.JSONResultsKW.*;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.*;
 
 import java.io.InputStream;
 import java.util.*;
@@ -38,6 +38,7 @@ import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.ResultSetReader;
 import org.apache.jena.riot.resultset.ResultSetReaderFactory;
+import org.apache.jena.riot.rowset.rw.RowSetReaderJSON;
 import org.apache.jena.riot.system.SyntaxLabels;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ResultSetStream;
@@ -51,7 +52,9 @@ import org.apache.jena.vocabulary.RDF;
 /** Read JSON format SPARQL Results.
  * <p>
  * <a href="https://www.w3.org/TR/sparql11-results-json/">SPARQL 1.1 Query Results JSON Format</a>
+ * @deprecated Use {@link RowSetReaderJSON}
  */
+@Deprecated
 public class ResultSetReaderJSON implements ResultSetReader {
 
     public static final ResultSetReaderFactory factory = lang -> {
