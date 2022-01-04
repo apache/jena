@@ -106,9 +106,11 @@ JVM_ARGS=${JVM_ARGS:--Xmx4G}
 
 ## Logging
 # Setting log4j2 with some other file.
-if [ -z "$LOGGING" ]
+DFT_LOG_CONF="$FUSEKI_HOME/log4j2.properties"
+if [ -z "$LOGGING" -a -e "$DFT_LOG_CONF" ]
 then
-    DFT_LOG_CONF="$FUSEKI_HOME/log4j2.properties"
+    # Set if no LOGGING and the default file does exist.
+    # Otherwise, the server will default to a built-in.
     LOGGING="-Dlog4j.configurationFile=$DFT_LOG_CONF"
 fi
 
