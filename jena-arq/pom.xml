@@ -59,31 +59,20 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- For jsonld-java JSON-LD 1.0 -->
+    <!-- jsonld-java for JSON-LD 1.0 -->
     <dependency>
       <groupId>com.github.jsonld-java</groupId>
       <artifactId>jsonld-java</artifactId>
     </dependency>
-    <!-- 
-         See parent POM. Our choice of version here to keep it up-to-date.
-         scope=runtime.
-    -->
+    <!-- replace that used via jsonld-java -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-      <scope>runtime</scope>
+      <artifactId>httpclient-cache</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient-cache</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <!-- End jsonld-java JSON-LD 1.0 -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
@@ -92,6 +81,8 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
+
+    <!-- End jsonld-java -->
 
     <!-- For Titanium JSON-LD 1.1 -->
     <dependency>

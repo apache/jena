@@ -18,24 +18,19 @@
 
 package org.apache.jena.jdbc.remote.utils;
 
-import java.io.ByteArrayOutputStream;
+import java.net.http.HttpClient;
 import java.util.Iterator;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.jdbc.remote.http.HttpOp1;
+import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.sparql.exec.http.GSP;
 
 /**
  * Test utility methods - network
  */
-@SuppressWarnings("deprecation")
 public class TestJdbcRemoteUtils {
     /**
      * Copies a dataset to a remote service that provides SPARQL 1.1 Graph Store
@@ -62,25 +57,17 @@ public class TestJdbcRemoteUtils {
      *            HTTP Client
      */
     public static void copyToRemoteDataset(Dataset source, String service, HttpClient client) {
-        copyToRemoteGraph(service, source.getDefaultModel().getGraph(), null, client);
-        Iterator<String> uris = source.listNames();
-        while (uris.hasNext()) {
-            String uri = uris.next();
-            copyToRemoteGraph(service, source.getNamedModel(uri).getGraph(), uri, client);
-        }
+        if ( client == null )
+            client = HttpEnv.getDftHttpClient();
+        GSP.service(service).dataset().httpClient(client).putDataset(source.asDatasetGraph());
     }
 
     // Code extracted from DatasetGraphAccessorHTTP so Apache Http Client still works.
     private static void copyToRemoteGraph(String service, Graph data, String gn, HttpClient client) {
         RDFFormat syntax = RDFFormat.TURTLE_BLOCKS;
-        String url = ( gn == null ) ? service+"?default" : service+"?graph="+IRILib.encodeUriComponent(gn);
-        String ct = syntax.getLang().getContentType().toHeaderString();
-        ByteArrayOutputStream out = new ByteArrayOutputStream(128*1024);
-        RDFDataMgr.write(out, data, syntax);
-        IO.close(out);
-        ByteArrayEntity entity = new ByteArrayEntity(out.toByteArray());
-        entity.setContentType(ct);
-        HttpOp1.execHttpPut(url, entity, client, null) ;
+        if ( client == null )
+            client = HttpEnv.getDftHttpClient();
+        GSP.service(service).defaultGraph().contentType(syntax).httpClient(client).PUT(data);
     }
 
     /**

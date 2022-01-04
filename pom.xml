@@ -71,8 +71,7 @@
          POM for the correct dependency versions
          and use that or later.
     -->
-    <ver.jsonldjava>0.13.4</ver.jsonldjava>
-    <!-- Control the version of these that would otherwise come from jsonld-java -->
+    <ver.jsonldjava>0.13.3</ver.jsonldjava>
     <ver.jackson>2.13.0</ver.jackson>
     <ver.httpclient>4.5.13</ver.httpclient>
     <ver.httpcore>4.4.14</ver.httpcore>
@@ -85,7 +84,6 @@
     <ver.commonscsv>1.9.0</ver.commonscsv>
     <ver.commons-codec>1.15</ver.commons-codec>
     <ver.commons-compress>1.21</ver.commons-compress>
-
     <ver.dexxcollection>0.7</ver.dexxcollection>
     <ver.micrometer>1.8.1</ver.micrometer>
 
@@ -242,7 +240,7 @@
         <!--
             Tests of artifacts that require additional 
             modules built later in the build process.
-            For example, use Fuseki as a test server to
+            For example, using Fuseki as a test server to
             test remote client APIs.
         -->
         <module>jena-integration-tests</module>
@@ -486,10 +484,6 @@
           </exclusion>
           <exclusion>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore-osgi</artifactId>
           </exclusion>
           <exclusion>
@@ -498,7 +492,68 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <!-- Control version of Apache HttpClient components -->
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient-cache</artifactId>
+        <version>${ver.httpclient}</version>
+        <exclusions>
+          <!-- Replace with slf4j adapter -->
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+          </exclusion>
+          <!-- JENA 2137: scope=provided and the enforcer plugin -->
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
 
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${ver.httpclient}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+          </exclusion>
+          <!-- JENA 2137: scope=provided and the enforcer plugin -->
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>${ver.httpcore}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+
+      
       <!-- JSON-LD 1.1 read support -->
       <!-- Titanium JSON-LD -->
       <dependency>

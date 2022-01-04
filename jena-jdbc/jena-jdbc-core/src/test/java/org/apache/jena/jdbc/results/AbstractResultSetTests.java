@@ -43,7 +43,7 @@ import org.junit.* ;
  * Abstract tests for Jena JDBC {@link ResultSet} implementations, these tests
  * assume that implementations use the {@link JdbcCompatibility#HIGH}
  * compatibility level
- * 
+ *
  */
 @SuppressWarnings("resource")
 public abstract class AbstractResultSetTests {
@@ -150,7 +150,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Test ASK results with a true result
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -177,7 +177,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Test ASK results with a false result
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -205,7 +205,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests that SELECT result values are appropriately marshalled when using
      * getObject()
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -232,7 +232,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests that SELECT result values are appropriately marshalled when using
      * getObject()
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -260,7 +260,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests that SELECT result values are appropriately marshalled when using
      * getObject()
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -288,7 +288,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests that SELECT result values are appropriately marshalled when using
      * getObject()
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -315,7 +315,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests that SELECT result values are appropriately marshalled when using
      * getObject()
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -338,11 +338,11 @@ public abstract class AbstractResultSetTests {
         rset.close();
         Assert.assertTrue(rset.isClosed());
     }
-    
+
     /**
      * Tests that SELECT result values are appropriately marshalled when using
      * getObject()
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -365,11 +365,11 @@ public abstract class AbstractResultSetTests {
         rset.close();
         Assert.assertTrue(rset.isClosed());
     }
-    
+
     /**
      * Tests that SELECT result values are appropriately marshalled when using
      * getObject()
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -392,11 +392,11 @@ public abstract class AbstractResultSetTests {
         rset.close();
         Assert.assertTrue(rset.isClosed());
     }
-    
+
     /**
      * Tests that SELECT result values are appropriately marshalled when using
      * getObject()
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -419,11 +419,11 @@ public abstract class AbstractResultSetTests {
         rset.close();
         Assert.assertTrue(rset.isClosed());
     }
-    
+
     /**
      * Tests that SELECT result values are appropriately marshalled when using
      * getObject()
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -446,17 +446,17 @@ public abstract class AbstractResultSetTests {
         rset.close();
         Assert.assertTrue(rset.isClosed());
     }
-    
+
     /**
      * Tests that SELECT result values are appropriately marshalled when using
      * getObject()
-     * 
+     *
      * @throws SQLException
      */
     @Test
     public void results_select_objects_10() throws SQLException {
         Assume.assumeTrue(this.getShortTypeUri().equals(XSD.xshort.getURI()));
-        
+
         ResultSet rset = this.createResults(ds, "SELECT ?o { ?s ?p ?o . FILTER(DATATYPE(?o) = <" + this.getShortTypeUri() + ">) }");
         Assert.assertNotNull(rset);
         Assert.assertFalse(rset.isClosed());
@@ -475,17 +475,17 @@ public abstract class AbstractResultSetTests {
         rset.close();
         Assert.assertTrue(rset.isClosed());
     }
-    
+
     /**
      * Tests that SELECT result values are appropriately marshalled when using
      * getObject()
-     * 
+     *
      * @throws SQLException
      */
     @Test
     public void results_select_objects_11() throws SQLException {
         Assume.assumeTrue(this.getByteTypeUri().equals(XSD.xbyte.getURI()));
-        
+
         ResultSet rset = this.createResults(ds, "SELECT ?o { ?s ?p ?o . FILTER(DATATYPE(?o) = <" + this.getByteTypeUri() + ">) }");
         Assert.assertNotNull(rset);
         Assert.assertFalse(rset.isClosed());
@@ -507,7 +507,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to strings OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -531,7 +531,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to strings OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -555,7 +555,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to strings OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -579,7 +579,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to strings OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -603,7 +603,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to strings OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -628,7 +628,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to strings OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -653,7 +653,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to strings OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -678,7 +678,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to strings OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -703,7 +703,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to strings OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -727,7 +727,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to strings OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -751,7 +751,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to strings OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -775,7 +775,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to strings OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -799,7 +799,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to numerics OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -827,7 +827,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to numerics OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -855,7 +855,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to numerics OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -883,7 +883,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to numerics OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -911,7 +911,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to integers OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -937,7 +937,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to integers OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -963,7 +963,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to integers OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -989,7 +989,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to integers OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1015,7 +1015,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to bytes OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1041,7 +1041,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to bytes OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1067,7 +1067,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to bytes OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1094,7 +1094,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to bytes OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1121,7 +1121,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to floats OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1147,7 +1147,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to floats OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1173,7 +1173,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to floats OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1199,7 +1199,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to floats OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1225,7 +1225,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to doubles OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1251,7 +1251,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to doubles OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1277,7 +1277,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to doubles OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1303,7 +1303,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to doubles OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1329,7 +1329,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to longs OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1355,7 +1355,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to longs OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1381,7 +1381,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to longs OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1407,7 +1407,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to longs OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1433,7 +1433,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to shorts OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1459,7 +1459,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to shorts OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1485,7 +1485,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to shorts OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1511,7 +1511,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to shorts OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1537,7 +1537,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to boolean OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1567,7 +1567,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to numerics OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1597,7 +1597,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to dates OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1623,7 +1623,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to dates OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1649,7 +1649,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to dates OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1675,7 +1675,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to dates OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1701,7 +1701,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to dates OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1727,7 +1727,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that SELECT result values can be marshalled to dates OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1753,7 +1753,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to dates OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1779,7 +1779,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to dates OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1805,7 +1805,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests that CONSTRUCT result values can be marshalled to dates OK
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1831,7 +1831,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through SELECT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1856,7 +1856,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through SELECT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1891,7 +1891,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through SELECT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1916,7 +1916,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through SELECT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1938,7 +1938,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through SELECT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1967,7 +1967,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through SELECT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1998,7 +1998,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through SELECT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2050,7 +2050,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through SELECT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2076,7 +2076,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through SELECT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2103,7 +2103,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through CONSTRUCT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2128,7 +2128,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through CONSTRUCT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2163,7 +2163,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through CONSTRUCT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2188,7 +2188,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through CONSTRUCT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2210,7 +2210,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through CONSTRUCT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2239,7 +2239,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through CONSTRUCT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2270,7 +2270,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through CONSTRUCT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2322,7 +2322,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through CONSTRUCT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2348,7 +2348,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests movement through SELECT results
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2375,7 +2375,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Test error cases for creating results
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -2385,7 +2385,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Test error cases for unsupported wrapper features
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2401,7 +2401,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Test error cases for unsupported wrapper features
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2418,7 +2418,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2435,7 +2435,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2452,7 +2452,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2469,7 +2469,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2486,7 +2486,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2503,7 +2503,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2516,7 +2516,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2529,7 +2529,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2542,7 +2542,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2559,7 +2559,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2576,7 +2576,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2593,7 +2593,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2610,7 +2610,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2627,7 +2627,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2644,7 +2644,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2661,7 +2661,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2678,7 +2678,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2695,7 +2695,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2712,7 +2712,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2729,7 +2729,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2746,7 +2746,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2763,7 +2763,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2780,7 +2780,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2797,7 +2797,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2814,7 +2814,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2831,7 +2831,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2848,7 +2848,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2865,7 +2865,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2882,7 +2882,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2899,7 +2899,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2916,7 +2916,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2933,7 +2933,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2950,7 +2950,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2967,7 +2967,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -2984,7 +2984,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3001,7 +3001,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3018,7 +3018,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3035,7 +3035,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3052,7 +3052,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3069,7 +3069,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3086,7 +3086,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3103,7 +3103,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3120,7 +3120,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3137,7 +3137,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3154,7 +3154,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3171,7 +3171,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3188,7 +3188,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3205,7 +3205,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3222,7 +3222,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3239,7 +3239,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3256,7 +3256,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3273,7 +3273,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3290,7 +3290,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3307,7 +3307,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3324,7 +3324,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3341,7 +3341,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3358,7 +3358,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3375,7 +3375,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3392,7 +3392,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3409,20 +3409,20 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
     public void results_bad_updates_60() throws SQLException {
         try (ResultSet rset = this.createResults(ds, "SELECT * WHERE { ?s ?p ?o }")) {
             rset.updateNCharacterStream("s", (Reader) null);
-        } 
+        }
     }
 
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3439,7 +3439,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3456,7 +3456,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3473,7 +3473,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3490,7 +3490,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3507,7 +3507,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3524,7 +3524,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3541,7 +3541,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3558,7 +3558,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3575,7 +3575,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3592,7 +3592,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3609,7 +3609,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3626,7 +3626,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3643,7 +3643,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3660,7 +3660,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3677,7 +3677,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3694,7 +3694,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3711,7 +3711,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3728,7 +3728,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3745,7 +3745,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3762,7 +3762,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3779,7 +3779,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3796,7 +3796,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3813,7 +3813,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3830,7 +3830,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3847,7 +3847,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3864,7 +3864,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3881,7 +3881,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3898,7 +3898,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3915,7 +3915,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3932,7 +3932,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3949,7 +3949,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3966,7 +3966,7 @@ public abstract class AbstractResultSetTests {
     /**
      * Tests error cases around trying to update the result set which is not
      * supported
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3982,7 +3982,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -3998,7 +3998,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4014,7 +4014,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4030,7 +4030,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4046,7 +4046,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @SuppressWarnings("deprecation")
@@ -4063,7 +4063,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @SuppressWarnings("deprecation")
@@ -4080,7 +4080,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4096,7 +4096,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4112,7 +4112,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4128,7 +4128,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4144,7 +4144,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4160,7 +4160,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4176,7 +4176,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4192,7 +4192,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4208,7 +4208,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4224,7 +4224,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4240,7 +4240,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4256,7 +4256,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4272,7 +4272,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4288,7 +4288,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4304,7 +4304,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4320,7 +4320,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4336,7 +4336,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4352,7 +4352,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4368,7 +4368,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4384,7 +4384,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4400,7 +4400,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4416,7 +4416,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4432,7 +4432,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4448,7 +4448,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4464,7 +4464,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4480,7 +4480,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4496,7 +4496,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4512,7 +4512,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4528,7 +4528,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @SuppressWarnings("deprecation")
@@ -4545,7 +4545,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @SuppressWarnings("deprecation")
@@ -4562,7 +4562,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4578,7 +4578,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Tests error cases around unsupported getters
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -4594,7 +4594,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -4608,7 +4608,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -4626,7 +4626,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -4644,7 +4644,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -4662,7 +4662,7 @@ public abstract class AbstractResultSetTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
