@@ -261,4 +261,29 @@ export default {
 <style lang="scss">
 @import '~@triply/yasqe/build/yasqe.min.css';
 @import '~@triply/yasr/build/yasr.min.css';
+
+// N.B: these were copied from an old release of YASR due to this
+//      change: https://github.com/TriplyDB/Yasgui/commit/19521998f035e718d3f1d5cfa6073ce2e34242e7
+//      for more: https://github.com/apache/jena/pull/1153
+.yasr table.dataTable {
+  border: 1px solid rgb(217, 217, 217);
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-repeat: initial;
+  tbody {
+    tr {
+      td {
+        border-top: 1px solid #ddd;
+      }
+      &:last-of-type {
+        td {
+          border-bottom: 1px solid #ddd;
+        }
+      }
+      &:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+    }
+  }
+}
 </style>
