@@ -56,7 +56,6 @@
   </dependencySets>
 
   <files>
-    
     <file>
       <source>dist/LICENSE</source>
       <destName>LICENSE</destName>

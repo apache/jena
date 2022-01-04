@@ -1,5 +1,5 @@
 Apache Jena - module Fuseki
-Copyright 2011-2021 The Apache Software Foundation
+Copyright 2011-2022 The Apache Software Foundation
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
@@ -12,28 +12,9 @@ These have been licensed to the Apache Software Foundation under a software gran
 
 - - - - - - - - - - - - - - - - - - - - - - - 
 
-slf4j:
- Copyright (c) 2004-2011 QOS.ch
- All rights reserved.
-
-- - - - - - - - - - - - - - - - - - - - - - -
-
 (c) Copyright 2003, Plugged In Software 
 This product includes software developed by
 PluggedIn Software under a BSD license.
-
-- - - - - - - - - - - - - - - - - - - - - - -
-
- Jetty Web Container
- Copyright 1995-2012 Mort Bay Consulting Pty Ltd.
-
-under the Apache 2.0 License. 
-
-The Jetty Web Container includes:
-
-UnixCrypt.java
-Copyright 1996 Aki Yoshida,
-modified April 2001  by Iris Van den Broeke, Daniel Deville.
 
 - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -49,13 +30,6 @@ modified April 2001  by Iris Van den Broeke, Daniel Deville.
      - voluntary contributions made by Paul Eng on behalf of the 
        Apache Software Foundation that were originally developed at iClick, Inc.,
        software copyright (c) 1999.
-
-- - - - - - - - - - - - - - - - - - - - - - -
-
-This product bundles Google Protocol Buffers java runtime:
-
-Copyright 2008 Google Inc.  All rights reserved.
-https://github.com/protocolbuffers/protobuf/blob/master/LICENSE
 
 - - - - - - - - - - - - - - - - - - - - - - -
 

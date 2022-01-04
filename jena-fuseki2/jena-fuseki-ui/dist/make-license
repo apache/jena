@@ -1,0 +1,62 @@
+#!/bin/bash
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+## LICENSE and NOTICE content generator.
+## see jena-fuseki-ui/README
+## Run this script in the "jena-fuseki-ui/dist"
+## Genrated files go into ../../target/
+
+## List of licenses used.
+function runYarnLicensesList() {
+    echo "## Output of 'yarn licenses list --prod'"
+    echo
+    ## Convert to plain ASCII
+    yarn licenses list --prod \
+	| sed -e 's/├/+/g' -e 's/─/-/g' -e 's/└/\\/g' -e 's/│/|/g' \
+	| sed -e 's/Done in .*$//'
+}
+
+## All the text.
+## https://infra.apache.org/licensing-howto.html
+
+function runYarnLicensesDisclaimer() {
+    (
+	cd ..
+	echo "## Output of 'yarn licenses  generate-disclaimer --prod'"
+	echo
+	yarn licenses generate-disclaimer --prod
+    )
+}
+
+
+function makeLicense() {
+    # Apache License 2.0
+    (
+	cd ..
+	## When generating fragments, this isn't needed.
+	##curl --no-progress-meter "https://www.apache.org/licenses/LICENSE-2.0"
+	echo
+	echo "- - - - - - - - - - - - - - - - - - - - - - -"
+	echo
+	runYarnLicensesList
+    ) >> ${TARGET}/LICENSE-UI
+}
+
+function makeNotice() {
+    (
+	cd ..
+	echo "Apache Jena"
+	echo "Copyright 2011-$(date +%Y) The Apache Software Foundation"
+	echo
+	echo "- - - - - - - - - - - - - - - - - - - - - - -"
+	echo
+	runYarnLicensesDisclaimer
+    ) > ${TARGET}/NOTICE-UI
+}
+
+TARGET="../target"
+
+makeLicense
+
+## For redistributing, LICENSE is enough.
+## makeNotice
