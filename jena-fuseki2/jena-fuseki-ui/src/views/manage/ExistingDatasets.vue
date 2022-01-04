@@ -34,6 +34,13 @@
                     :is-busy="isBusy"
                   >
                     <template v-slot:cell(actions)="data">
+                      <b-button
+                        :to="`/dataset${data.item.name}/query`"
+                        variant="primary"
+                        class="mr-0 mr-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
+                        <FontAwesomeIcon icon="question-circle" />
+                        <span class="ml-1">query</span>
+                      </b-button>
                       <b-popover
                         :target="`delete-dataset-${data.index}-button`"
                         triggers="manual"
