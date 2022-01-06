@@ -22,7 +22,7 @@ import org.apache.jena.riot.system.AbstractTestPrefixMap;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.tdb.TDBFactory;
 
-public class TestPrefixMapTDB extends AbstractTestPrefixMap
+public class TestPrefixMapTDB1 extends AbstractTestPrefixMap
 {
     @Override
     protected PrefixMap getPrefixMap() {

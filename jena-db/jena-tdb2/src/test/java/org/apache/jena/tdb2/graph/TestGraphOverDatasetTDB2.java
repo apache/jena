@@ -27,7 +27,7 @@ import org.apache.jena.tdb2.junit.TL;
 import org.junit.After;
 
 /** This is the view-graph test suite run over a TDB DatasetGraph to check compatibility */
-public class TestGraphOverDatasetTDB extends AbstractTestGraphOverDatasetGraph
+public class TestGraphOverDatasetTDB2 extends AbstractTestGraphOverDatasetGraph
 {
     DatasetGraph dsg = null;
     @After public void after2() {

@@ -16,28 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.graph;
+package org.apache.jena.tdb.graph;
 
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.ReadWrite;
-import org.apache.jena.tdb2.junit.TL;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
-public class TestGraphsTDB_A extends AbstractTestGraphsTDB
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestPrefixMapTDB1.class
+    , TestPrefixMappingTDB1.class
+    , TestDatasetGraphTDB1.class
+    , TestGraphsTDBnonTxn.class
+    , TestGraphsTDBinsideTxn.class
+    , TestGraphOverDatasetTDB1.class
+})
+public class TS_GraphTDB1
 {
-    Dataset ds = TL.createTestDatasetMem();
-    @Before public void before() {
-        ds.begin(ReadWrite.WRITE);
-    }
 
-    @After public void after() {
-        ds.abort();
-        ds.end();
-        TL.expel(ds);
-    }
-    @Override
-    protected Dataset createDataset() {
-        return ds;
-    }
 }

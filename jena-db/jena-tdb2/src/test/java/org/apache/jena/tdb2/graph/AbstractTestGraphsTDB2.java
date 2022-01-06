@@ -18,35 +18,22 @@
 
 package org.apache.jena.tdb2.graph;
 
-import org.apache.jena.system.Txn;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.ReadWrite;
-import org.apache.jena.tdb2.TDB2Factory;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
+import org.apache.jena.sparql.graph.GraphsTests;
+import org.apache.jena.tdb2.sys.SystemTDB;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
-public class TestGraphsTDB_B extends AbstractTestGraphsTDB
+public abstract class AbstractTestGraphsTDB2 extends GraphsTests
 {
-    // Transactional.
-    @Before
-    public void before() {
-        getDataset().begin(ReadWrite.READ);
+    private static ReorderTransformation reorder ;
+
+    @BeforeClass public static void setupClass()
+    {
+        reorder = SystemTDB.getDefaultReorderTransform();
+        SystemTDB.setDefaultReorderTransform(ReorderLib.identity());
     }
 
-    @After
-    public void after() {
-        getDataset().end();
-    }
-
-    @Override
-    protected void fillDataset(Dataset dataset) {
-        Txn.executeWrite(dataset, ()->{
-            super.fillDataset(dataset);
-        });
-    }
-
-    @Override
-    protected Dataset createDataset() {
-        return TDB2Factory.createDataset();
-    }
+    @AfterClass public static void afterClass() {  SystemTDB.setDefaultReorderTransform(reorder); }
 }

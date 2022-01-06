@@ -22,7 +22,7 @@ import org.apache.jena.dboe.base.block.FileMode;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
 import org.apache.jena.tdb2.assembler.TS_TDBAssembler;
-import org.apache.jena.tdb2.graph.TS_Graph;
+import org.apache.jena.tdb2.graph.TS_GraphTDB2;
 import org.apache.jena.tdb2.lib.TS_LibTDB;
 import org.apache.jena.tdb2.loader.TS_Loader;
 import org.apache.jena.tdb2.setup.TS_TDBSetup;
@@ -50,7 +50,7 @@ import org.junit.runners.Suite;
     , TS_TDBSetup.class
     , TS_Store.class
     , TS_SolverTDB.class
-    , TS_Graph.class
+    , TS_GraphTDB2.class
     , TS_TDB2Factory.class
     , TS_TDBAssembler.class
     , TS_Sys.class

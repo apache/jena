@@ -205,7 +205,7 @@ public class NodeIdInline {
             long v = DoubleNode62.pack(d);
             if ( v == DoubleNode62.NO_ENCODING )
                 return null;
-            // The special encoding of XSD_DOUBLE is handling in the "toBytes" and "toByteBuffer" operations.
+            // The special byte encoding of XSD_DOUBLE is handled in NodeIdFactory.encode/.decode.
             return NodeId.createRaw(XSD_DOUBLE, v);
         }
 

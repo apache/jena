@@ -29,7 +29,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-public class TestPrefixMappingTDB extends AbstractTestPrefixMappingView
+public class TestPrefixMappingTDB2 extends AbstractTestPrefixMappingView
 {
     static DatasetGraph dsg = null;
     static PrefixMapping last = null;

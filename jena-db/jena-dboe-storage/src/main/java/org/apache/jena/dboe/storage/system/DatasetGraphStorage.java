@@ -43,18 +43,17 @@ import org.apache.jena.sparql.core.Transactional;
 
 /** Alternative: DatasetGraph over RDFStorage, using DatasetGraphBaseFind
  *  Collapses DatasetGraphTriplesQuads into this adapter class.
-<pre>
-DatasetGraph
-  DatasetGraphBase
-    DatasetGraphBaseFind
-      DatasetGraphStorageDirect
-</pre>
-/**
+ *  <pre>
+ *   DatasetGraph
+ *     DatasetGraphBase
+ *       DatasetGraphBaseFind
+ *         DatasetGraphStorage
+ *    </pre>
+ *
  * A DatasetGraph base class for triples+quads storage. The machinery is really
  * the splitting between default and named graphs. This happens in two classes,
  * {@link DatasetGraphBaseFind} (for find splitting) and
- * {@link DatasetGraphTriplesQuads} add/delete splitting (it inherits
- * {@link DatasetGraphBaseFind}).
+ * {@link DatasetGraphTriplesQuads} add/delete splitting (it inherits {@link DatasetGraphBaseFind}).
  * <p>
  * Because storage is usually decomposing quads and triples, the default
  * behaviour is to work in s/p/o and g/s/p/o.

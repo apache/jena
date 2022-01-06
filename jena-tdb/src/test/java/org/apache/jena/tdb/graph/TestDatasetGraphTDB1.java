@@ -23,7 +23,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb.TDBFactory ;
 
 // Quad tests
-public class TestDatasetGraphTDB extends AbstractDatasetGraphTests
+public class TestDatasetGraphTDB1 extends AbstractDatasetGraphTests
 {
     @Override
     protected DatasetGraph emptyDataset() { return TDBFactory.createDatasetGraph() ; }

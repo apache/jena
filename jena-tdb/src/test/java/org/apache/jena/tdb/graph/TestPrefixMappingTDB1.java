@@ -41,7 +41,7 @@ import org.apache.jena.tdb.sys.SystemTDB ;
 import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.* ;
 
-public class TestPrefixMappingTDB extends AbstractTestPrefixMappingView
+public class TestPrefixMappingTDB1 extends AbstractTestPrefixMappingView
 {
     static DatasetPrefixesTDB last = null ;
 

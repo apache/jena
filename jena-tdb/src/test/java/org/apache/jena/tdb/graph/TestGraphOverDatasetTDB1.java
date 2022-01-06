@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,31 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.graph;
+package org.apache.jena.tdb.graph;
 
-import org.apache.jena.query.ReadWrite;
-import org.apache.jena.sparql.core.AbstractDatasetGraphTests;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb2.junit.TL;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.core.AbstractTestGraphOverDatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.tdb.TDBFactory ;
 
-// Quad tests
-public class TestDatasetGraphTDB extends AbstractDatasetGraphTests
+/** This is the view-graph test suite run over a TDB DatasetGraph to check compatibility */
+public class TestGraphOverDatasetTDB1 extends AbstractTestGraphOverDatasetGraph
 {
-    DatasetGraph dsg = TL.createTestDatasetGraphMem();
-    @Before public void before() {
-        dsg.begin(ReadWrite.WRITE);
-    }
-
-    @After public void after() {
-        dsg.abort();
-        dsg.end();
-        TL.expel(dsg);
+    @Override
+    protected DatasetGraph createBaseDSG() { return TDBFactory.createDatasetGraph() ; }
+    
+    @Override
+    protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)
+    {
+        return dsg.getGraph(gn) ;
     }
 
     @Override
-    protected DatasetGraph emptyDataset() {
-        return dsg;
+    protected Graph makeDefaultGraph(DatasetGraph dsg)
+    {
+        return  dsg.getDefaultGraph() ;
     }
+
 }
+
