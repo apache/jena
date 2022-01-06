@@ -18,14 +18,20 @@
 
 package org.apache.jena.rdflink;
 
+import java.net.Authenticator;
+import java.net.http.HttpClient;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.rdfconnection.Isolation;
 import org.apache.jena.rdfconnection.JenaConnectionException;
+import org.apache.jena.rdfconnection.LibSec;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
@@ -67,18 +73,107 @@ import org.apache.jena.update.UpdateRequest;
  * Not all implementations may implement all operations.
  * See the implementation notes for details.
  *
- * @see RDFConnection
  * @see RDFLinkFactory
  * @see RDFLinkDataset
  * @see RDFLinkHTTP
  * @see LinkSparqlQuery
  * @see LinkSparqlUpdate
  * @see LinkDatasetGraph
+ * @see RDFConnection
  */
 
 public interface RDFLink extends
         LinkSparqlQuery, LinkSparqlUpdate, LinkDatasetGraph,
         Transactional, AutoCloseable {
+    /**
+     * Connect to a local (same JVM) dataset.
+     * The default isolation is {@code NONE}.
+     * See {@link #connect(DatasetGraph, Isolation)} to select an isolation mode.
+     *
+     * @param dataset
+     * @return RDFLink
+     * @see RDFLinkDataset
+     */
+    public static RDFLink connect(DatasetGraph dataset) {
+        return RDFLinkDatasetBuilder.newBuilder().dataset(dataset).build();
+    }
+
+    /**
+     * Connect to a local (same JVM) dataset.
+     * <p>
+     * Multiple levels of {@link Isolation} are provided, The default {@code COPY} level makes a local
+     * {@link RDFLink} behave like a remote connection.
+     * See <a href="https://jena.apache.org/documentation/rdfconnection/">the documentation for more details.</a>
+     * <ul>
+     * <li>{@code COPY} &ndash; {@code Model}s and {@code Dataset}s are copied.
+     *     This is most like a remote connection.
+     * <li>{@code READONLY} &ndash; Read-only wrappers are added but changes to
+     *     the underlying model or dataset will be seen.
+     * <li>{@code NONE} (default) &ndash; Changes to the returned {@code Model}s or {@code Dataset}s act on the original object.
+     * </ul>
+     *
+     * @param dataset
+     * @param isolation
+     * @return RDFConnection
+     */
+    public static RDFLink connect(DatasetGraph dataset, Isolation isolation) {
+        return RDFLinkDatasetBuilder.newBuilder().dataset(dataset).isolation(isolation).build();
+    }
+
+    /**
+     * Create a connection to a remote location for SPARQL query requests
+     *
+     * @param queryServiceURL
+     * @return RDFConnection
+     */
+    public static RDFLink queryConnect(String queryServiceURL) {
+        return RDFLinkHTTP.newBuilder().queryEndpoint(queryServiceURL).queryOnly().build();
+    }
+
+    /** Create a connection to a remote location by URL.
+     * This is the URL for the dataset.
+     * <p>
+     * This is the URL for the dataset.
+     * Other names can be specified using {@link RDFLinkHTTP#newBuilder()} and setting the endpoint URLs.
+     * </p>
+     * <pre>
+     * RDFConnectionRemote.newBuilder()
+     *       .queryEndpoint(queryServiceEndpoint)
+     *       .updateEndpoint(updateServiceEndpoint)
+     *       .gspEndpoint(graphStoreProtocolEndpoint)
+     *       .build();
+     * </pre>
+     *
+     * @param serviceURL
+     * @return RDFConnection
+     */
+    public static RDFLink connect(String serviceURL) {
+        return RDFLinkHTTP.service(serviceURL).build();
+    }
+
+    /** Make a remote RDFConnection to the URL, with user and password for the client access using basic auth.
+     *  Use with care &ndash; basic auth over plain HTTP reveals the password on the network.
+     * @param URL
+     * @param user
+     * @param password
+     * @return RDFConnection
+     */
+    public static RDFLink connectPW(String URL, String user, String password) {
+        Objects.requireNonNull(URL);
+        Objects.requireNonNull(user);
+        Objects.requireNonNull(password);
+
+        // Authenticator to hold user and password.
+        Authenticator authenticator = LibSec.authenticator(user, password);
+        HttpClient client = HttpEnv.httpClientBuilder()
+                .authenticator(authenticator)
+                .build();
+        return RDFLinkHTTP.newBuilder()
+            .destination(URL)
+            .httpClient(client)
+            .build();
+    }
+
     // Default implementations could be pushed up but then they can't be mentioned here
     // and the javadoc for RDFLink is not in one place.
     // Inheriting interfaces and re-mentioning gets the javadoc in one place.
