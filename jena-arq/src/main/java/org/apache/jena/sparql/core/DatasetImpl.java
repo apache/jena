@@ -234,9 +234,7 @@ public class DatasetImpl implements Dataset
 
     @Override
     public Dataset setDefaultModel(Model model) {
-        if ( model == null )
-            model = ModelFactory.createDefaultModel() ;
-        dsg.setDefaultGraph(model.getGraph()) ;
+        getDefaultModel().removeAll().add(model);
         return this;
     }
 

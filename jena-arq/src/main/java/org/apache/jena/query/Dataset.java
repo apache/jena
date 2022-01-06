@@ -29,10 +29,10 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.util.Context ;
 
-/** Query is over a Dataset, a collection of named graphs
- *  and a background graph (also called the default
- *  graph or unnamed graph). */
-
+/**
+ * Query is over a Dataset, a collection of named graphs
+ *  and a default graph (also called the unnamed graph).
+ */
 public interface Dataset extends Transactional
 {
     /** Get the default graph as a Jena Model */
@@ -42,7 +42,7 @@ public interface Dataset extends Transactional
     public Model getUnionModel() ;
 
     /**
-     * Set the default graph. Can be set to null for none.
+     * Set the default graph.
      *
      * @param model the default graph to set
      * @return this {@code Dataset} for continued usage

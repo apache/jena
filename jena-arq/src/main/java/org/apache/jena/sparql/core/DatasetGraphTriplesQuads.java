@@ -22,7 +22,8 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
 
-/** A DatasetGraph base class for triples+quads storage.     
+/**
+ * A DatasetGraph base class for triples+quads storage.
  */
 public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
 {
@@ -51,12 +52,12 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
         else
             deleteFromNamedGraph(g, s, p, o) ;
     }
-    
+
     protected abstract void addToDftGraph(Node s, Node p, Node o) ;
     protected abstract void addToNamedGraph(Node g, Node s, Node p, Node o) ;
     protected abstract void deleteFromDftGraph(Node s, Node p, Node o) ;
     protected abstract void deleteFromNamedGraph(Node g, Node s, Node p, Node o) ;
-    
+
 //    // Ensure we loop back here
 //    @Override
 //    public Graph getDefaultGraph() {
@@ -69,17 +70,17 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
 //    }
 
     // Default implementations - copy based.
-      
+
     @Override
-    public void setDefaultGraph(Graph graph) { 
+    public void setDefaultGraph(Graph graph) {
         GraphUtil.addInto(getDefaultGraph(), graph) ;
     }
-    
+
     @Override
     public void addGraph(Node graphName, Graph graph) {
         GraphUtil.addInto(getGraph(graphName), graph) ;
     }
-    
+
     @Override
     public void removeGraph(Node graphName) {
         deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
