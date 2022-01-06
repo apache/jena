@@ -84,6 +84,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
     @Override
     public abstract void removeGraph(Node graphName) ;
 
+    @Deprecated
     @Override
     public void setDefaultGraph(Graph g)
     { throw new UnsupportedOperationException("DatasetGraph.setDefaultGraph") ; }
@@ -190,8 +191,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
     { }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         // Using the size of the graphs would be better.
         IndentedLineBuffer out = new IndentedLineBuffer() ;
         WriterGraph.output(out, this, null) ;

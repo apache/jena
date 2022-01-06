@@ -21,6 +21,8 @@ package org.apache.jena.sparql.core;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
 
 /**
  * A DatasetGraph base class for triples+quads storage.
@@ -39,6 +41,8 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
 
     @Override
     final public void add(Node g, Node s, Node p, Node o) {
+        if ( Quad.isUnionGraph(g))
+            throw new AddDeniedException("Can't add to the union graph");
         if ( Quad.isDefaultGraph(g) )
             addToDftGraph(s, p, o) ;
         else
@@ -47,6 +51,8 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
 
     @Override
     final public void delete(Node g, Node s, Node p, Node o) {
+        if ( Quad.isUnionGraph(g))
+            throw new DeleteDeniedException("Can't remove from the union graph");
         if ( Quad.isDefaultGraph(g) )
             deleteFromDftGraph(s, p, o) ;
         else
@@ -71,8 +77,10 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
 
     // Default implementations - copy based.
 
+    @Deprecated
     @Override
     public void setDefaultGraph(Graph graph) {
+        getDefaultGraph().clear();
         GraphUtil.addInto(getDefaultGraph(), graph) ;
     }
 

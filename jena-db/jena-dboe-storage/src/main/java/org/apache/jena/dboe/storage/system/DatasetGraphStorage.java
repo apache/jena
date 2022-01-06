@@ -36,6 +36,8 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.sparql.core.DatasetGraphBaseFind;
 import org.apache.jena.sparql.core.DatasetGraphTriplesQuads;
 import org.apache.jena.sparql.core.Quad;
@@ -174,6 +176,8 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
 
     @Override
     public void add(Node g, Node s, Node p, Node o) {
+        if ( Quad.isUnionGraph(g))
+            throw new AddDeniedException("Can't add to the union graph");
         if ( g == null || Quad.isDefaultGraph(g) )
             storage.add(s,p,o);
         else
@@ -182,6 +186,8 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
 
     @Override
     public void delete(Node g, Node s, Node p, Node o) {
+        if ( Quad.isUnionGraph(g))
+            throw new DeleteDeniedException("Can't remove from the union graph");
         if ( g == null || Quad.isDefaultGraph(g) )
             storage.delete(s,p,o);
         else
