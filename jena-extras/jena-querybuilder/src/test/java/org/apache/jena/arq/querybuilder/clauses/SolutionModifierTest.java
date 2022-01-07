@@ -17,7 +17,10 @@
  */
 package org.apache.jena.arq.querybuilder.clauses;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -29,9 +32,11 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.expr.E_LessThan;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprVar;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.junit.After;
 import org.junit.Assert;
@@ -115,10 +120,24 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         Expr e = new E_Random();
         AbstractQueryBuilder<?> builder = solutionModifier.addOrderBy(e);
-        assertContainsRegex(ORDER_BY + "rand" + OPEN_PAREN + CLOSE_PAREN, builder.buildString());
-
+        
+        Query query = builder.build();
+        assertTrue( query.hasOrderBy() );
+        List<SortCondition> orderBy = query.getOrderBy();
+        assertEquals( 1, orderBy.size() );
+        assertEquals( Query.ORDER_DEFAULT, orderBy.get(0).getDirection() );
+        assertEquals( e, orderBy.get(0).getExpression());
+        
         builder = solutionModifier.addOrderBy("bar");
-        assertContainsRegex(ORDER_BY + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + var("bar"), builder.buildString());
+
+        query = builder.build();
+        assertTrue( query.hasOrderBy() );
+        orderBy = query.getOrderBy();
+        assertEquals( 2, orderBy.size() );
+        assertEquals( Query.ORDER_DEFAULT, orderBy.get(0).getDirection() );
+        assertEquals( e, orderBy.get(0).getExpression());
+        assertEquals( Query.ORDER_DEFAULT, orderBy.get(1).getDirection() );
+        assertEquals( new ExprVar("bar"), orderBy.get(1).getExpression());
     }
 
     @ContractTest
@@ -126,13 +145,24 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         Expr e = new E_Random();
         AbstractQueryBuilder<?> builder = solutionModifier.addOrderBy(e, Order.ASCENDING);
-        assertContainsRegex(ORDER_BY + "ASC" + OPEN_PAREN + "rand" + OPEN_PAREN + CLOSE_PAREN + CLOSE_PAREN,
-                builder.buildString());
+        
+        Query query = builder.build();
+        assertTrue( query.hasOrderBy() );
+        List<SortCondition> orderBy = query.getOrderBy();
+        assertEquals( 1, orderBy.size() );
+        assertEquals( Query.ORDER_ASCENDING, orderBy.get(0).getDirection() );
+        assertEquals( e, orderBy.get(0).getExpression());
 
         builder = solutionModifier.addOrderBy("bar");
-        assertContainsRegex(
-                ORDER_BY + "ASC" + OPEN_PAREN + "rand" + OPEN_PAREN + CLOSE_PAREN + CLOSE_PAREN + SPACE + var("bar"),
-                builder.buildString());
+
+        query = builder.build();
+        assertTrue( query.hasOrderBy() );
+        orderBy = query.getOrderBy();
+        assertEquals( 2, orderBy.size() );
+        assertEquals( Query.ORDER_ASCENDING, orderBy.get(0).getDirection() );
+        assertEquals( e, orderBy.get(0).getExpression());
+        assertEquals( Query.ORDER_DEFAULT, orderBy.get(1).getDirection() );
+        assertEquals( new ExprVar("bar"), orderBy.get(1).getExpression());
     }
 
     @ContractTest
@@ -140,32 +170,79 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         Expr e = new E_Random();
         AbstractQueryBuilder<?> builder = solutionModifier.addOrderBy(e, Order.DESCENDING);
-        assertContainsRegex(ORDER_BY + "DESC" + OPEN_PAREN + "rand" + OPEN_PAREN + CLOSE_PAREN + CLOSE_PAREN,
-                builder.buildString());
+        
+        
+        Query query = builder.build();
+        assertTrue( query.hasOrderBy() );
+        List<SortCondition> orderBy = query.getOrderBy();
+        assertEquals( 1, orderBy.size() );
+        assertEquals( Query.ORDER_DESCENDING, orderBy.get(0).getDirection() );
+        assertEquals( e, orderBy.get(0).getExpression());
 
         builder = solutionModifier.addOrderBy("bar");
-        assertContainsRegex(
-                ORDER_BY + "DESC" + OPEN_PAREN + "rand" + OPEN_PAREN + CLOSE_PAREN + CLOSE_PAREN + SPACE + var("bar"),
-                builder.buildString());
+        
+        query = builder.build();
+        assertTrue( query.hasOrderBy() );
+        orderBy = query.getOrderBy();
+        assertEquals( 2, orderBy.size() );
+        assertEquals( Query.ORDER_DESCENDING, orderBy.get(0).getDirection() );
+        assertEquals( e, orderBy.get(0).getExpression());
+        assertEquals( Query.ORDER_DEFAULT, orderBy.get(1).getDirection() );
+        assertEquals( new ExprVar("bar"), orderBy.get(1).getExpression());
     }
 
     @ContractTest
     public void testAddGroupByString() {
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy("foo");
-        assertContainsRegex(GROUP_BY + var("foo"), builder.buildString());
+        
+        Query query = builder.build();
+        assertTrue( query.hasGroupBy() );
+        VarExprList groupBy = query.getGroupBy();
+        assertEquals( 1, groupBy.size() );
+        List<Var> vars = groupBy.getVars();
+        assertEquals( 1, vars.size() );
+        assertEquals( Var.alloc("foo" ), vars.get(0));
+        assertNull( groupBy.getExpr( vars.get(0) ));
 
         builder = solutionModifier.addGroupBy("bar");
-        assertContainsRegex(GROUP_BY + var("foo") + SPACE + var("bar"), builder.buildString());
+
+        query = builder.build();
+        assertTrue( query.hasGroupBy() );
+        groupBy = query.getGroupBy();
+        assertEquals( 2, groupBy.size() );
+        vars = groupBy.getVars();
+        assertEquals( 2, vars.size() );
+        assertEquals( Var.alloc("foo" ), vars.get(0));
+        assertNull( groupBy.getExpr( vars.get(0) ));
+        assertEquals( Var.alloc("bar" ), vars.get(1));
+        assertNull( groupBy.getExpr( vars.get(1) ));
     }
 
     @ContractTest
     public void testAddGroupByExpr() {
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy(new E_Random());
-        assertContainsRegex(GROUP_BY + "rand" + OPEN_PAREN + CLOSE_PAREN, builder.buildString());
+        
+        Query query = builder.build();
+        assertTrue( query.hasGroupBy() );
+        VarExprList groupBy = query.getGroupBy();
+        assertEquals( 1, groupBy.size() );
+        List<Var> vars = groupBy.getVars();
+        assertEquals( 1, vars.size() );
+        assertEquals( new E_Random(), groupBy.getExpr( vars.get(0) ));
+
         builder = solutionModifier.addGroupBy("bar");
-        assertContainsRegex(GROUP_BY + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + var("bar"), builder.buildString());
+        
+        query = builder.build();
+        assertTrue( query.hasGroupBy() );
+        groupBy = query.getGroupBy();
+        assertEquals( 2, groupBy.size() );
+        vars = groupBy.getVars();
+        assertEquals( 2, vars.size() );
+        assertEquals( new E_Random(), groupBy.getExpr( vars.get(0) ));
+        assertEquals( Var.alloc("bar" ), vars.get(1));
+        assertNull( groupBy.getExpr( vars.get(1) ));
     }
 
     @ContractTest
@@ -194,61 +271,140 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
     public void testAddGroupByVarAndExpr() {
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy(Var.alloc("foo"), new E_Random());
-        assertContainsRegex(GROUP_BY + OPEN_PAREN + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + "AS" + SPACE
-                + var("foo") + CLOSE_PAREN, builder.buildString());
+        
+        Query query = builder.build();
+        assertTrue( query.hasGroupBy() );
+        VarExprList groupBy = query.getGroupBy();
+        assertEquals( 1, groupBy.size() );
+        List<Var> vars = groupBy.getVars();
+        assertEquals( 1, vars.size() );
+        assertEquals( Var.alloc("foo" ), vars.get(0));
+        assertEquals( new E_Random(), groupBy.getExpr( vars.get(0) ));
 
         builder = solutionModifier.addGroupBy("bar");
-        assertContainsRegex(GROUP_BY + OPEN_PAREN + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + "AS" + SPACE
-                + var("foo") + CLOSE_PAREN + SPACE + var("bar"), builder.buildString());
+        
+        query = builder.build();
+        assertTrue( query.hasGroupBy() );
+        groupBy = query.getGroupBy();
+        assertEquals( 2, groupBy.size() );
+        vars = groupBy.getVars();
+        assertEquals( 2, vars.size() );
+        assertEquals( Var.alloc("foo" ), vars.get(0));
+        assertEquals( new E_Random(), groupBy.getExpr( vars.get(0) ));
+        assertEquals( Var.alloc("bar" ), vars.get(1));
+        assertNull( groupBy.getExpr( vars.get(1) ));
+
     }
 
     @ContractTest
     public void testAddHavingString() throws ParseException {
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.addHaving("?foo<10");
-        assertContainsRegex(HAVING + OPEN_PAREN + var("foo") + OPT_SPACE + LT + OPT_SPACE + "10" + CLOSE_PAREN,
-                builder.buildString());
+
+        Query query = builder.build();
+        assertTrue( query.hasHaving() );
+        List<Expr> having = query.getHavingExprs();
+        assertEquals( 1, having.size() );
+        Expr exp = having.get(0);
+        assertTrue( exp.isFunction() );
+        assertTrue( exp.getFunction() instanceof E_LessThan  );
+        List<Expr> args = exp.getFunction().getArgs();
+        assertEquals( new ExprVar( "foo"), args.get(0));
+        assertEquals( new NodeValueInteger(10), args.get(1));
 
         builder = solutionModifier.addHaving("?bar < 10");
-        assertContainsRegex(
-                HAVING + OPEN_PAREN + var("foo") + OPT_SPACE + LT + OPT_SPACE + "10" + CLOSE_PAREN + OPT_SPACE
-                        + OPEN_PAREN + var("bar") + OPT_SPACE + LT + OPT_SPACE + "10" + CLOSE_PAREN,
-                builder.buildString());
+        
+        query = builder.build();
+        assertTrue( query.hasHaving() );
+        having = query.getHavingExprs();
+        assertEquals( 2, having.size() );
+        exp = having.get(0);
+        assertTrue( exp.isFunction() );
+        assertTrue( exp.getFunction() instanceof E_LessThan  );
+        args = exp.getFunction().getArgs();
+        assertEquals( new ExprVar( "foo"), args.get(0));
+        assertEquals( new NodeValueInteger(10), args.get(1));
+        
+        exp = having.get(1);
+        assertTrue( exp.isFunction() );
+        assertTrue( exp.getFunction() instanceof E_LessThan  );
+        args = exp.getFunction().getArgs();
+        assertEquals( new ExprVar( "bar"), args.get(0));
+        assertEquals( new NodeValueInteger(10), args.get(1));
     }
 
     @ContractTest
     public void testAddHavingObject() throws ParseException {
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.addHaving(Var.alloc("foo"));
-        assertContainsRegex(HAVING + var("foo"), builder.buildString());
+        
+        Query query = builder.build();
+        assertTrue( query.hasHaving() );
+        List<Expr> having = query.getHavingExprs();
+        assertEquals( 1, having.size() );
+        Expr exp = having.get(0);
+        assertTrue( exp.isVariable() );
+        assertEquals( new ExprVar( "foo"), exp.getExprVar());
 
         builder = solutionModifier.addHaving("?having2");
-        assertContainsRegex(HAVING + var("foo") + SPACE + var("having2"), builder.buildString());
+        
+        query = builder.build();
+        assertTrue( query.hasHaving() );
+        having = query.getHavingExprs();
+        assertEquals( 2, having.size() );
+        exp = having.get(0);
+        assertTrue( exp.isVariable() );
+        assertEquals( new ExprVar( "foo"), exp.getExprVar());
+        exp = having.get(1);
+        assertTrue( exp.isVariable() );
+        assertEquals( new ExprVar( "having2"), exp.getExprVar());
     }
 
     @ContractTest
     public void testAddHavingExpr() throws ParseException {
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.addHaving(new E_Random());
-        assertContainsRegex(HAVING + "rand" + OPEN_PAREN + CLOSE_PAREN, builder.buildString());
-
+        
+        Query query = builder.build();
+        assertTrue( query.hasHaving() );
+        List<Expr> having = query.getHavingExprs();
+        assertEquals( 1, having.size() );
+        Expr exp = having.get(0);
+        assertTrue( exp.isFunction() );
+        assertTrue( exp.getFunction() instanceof E_Random  );
+        
         solutionModifier.addHaving("?having2");
-        assertContainsRegex(HAVING + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + var("having2"), builder.buildString());
+        
+        query = builder.build();
+        assertTrue( query.hasHaving() );
+        having = query.getHavingExprs();
+        assertEquals( 2, having.size() );
+        exp = having.get(0);
+        assertTrue( exp.isFunction() );
+        assertTrue( exp.getFunction() instanceof E_Random  );
+        exp = having.get(1);
+        assertTrue( exp.isVariable() );
+        assertEquals( new ExprVar( "having2"), exp.getExprVar());
     }
 
     @ContractTest
     public void testSetLimit() {
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.setLimit(500);
-        assertContainsRegex("LIMIT\\s+500", builder.buildString());
+        
+        Query query = builder.build();
+        assertTrue( query.hasLimit());
+        assertEquals( 500L, query.getLimit() );
 
         builder = solutionModifier.setLimit(200);
-        String s = builder.buildString();
-        assertContainsRegex(LIMIT + "200", s);
-        assertNotContainsRegex(LIMIT + "500", s);
+        
+        query = builder.build();
+        assertTrue( query.hasLimit());
+        assertEquals( 200L, query.getLimit() );
 
         builder = solutionModifier.setLimit(0);
-        assertFalse("Should not contain LIMIT", builder.buildString().contains("LIMIT"));
+        query = builder.build();
+        assertFalse( "Should not contain LIMIT", query.hasLimit());
     }
 
     @ContractTest
@@ -256,17 +412,20 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.setOffset(500);
 
-        assertContainsRegex(OFFSET + "500", builder.buildString());
+        Query query = builder.build();
+        assertTrue( query.hasOffset());
+        assertEquals( 500, query.getOffset());
 
         builder = solutionModifier.setOffset(200);
 
-        String s = builder.buildString();
-        assertContainsRegex(OFFSET + "200", s);
-        assertNotContainsRegex(OFFSET + "500", s);
+        query = builder.build();
+        assertTrue( query.hasOffset());
+        assertEquals( 200, query.getOffset());
 
+        
         builder = solutionModifier.setOffset(0);
-
-        assertFalse("Should not contain OFFSET", builder.buildString().contains("OFFSET"));
+        query = builder.build();
+        assertFalse( "Should not contain OFFSET", query.hasOffset());        
     }
 
     @ContractTest
