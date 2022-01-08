@@ -192,19 +192,19 @@ public class OpExecutorTDB1 extends OpExecutor
                 pattern = reorder(pattern, peek, transform) ;
             }
         }
+        if ( exprs == null ) {
+            Explain.explain("Execute", pattern, execCxt.getContext());
+            Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext());
+            return PatternMatchTDB1.execute(dsgtdb, Quad.defaultGraphNodeGenerated, pattern, input, filter, execCxt);
+        }
         // -- Filter placement
 
-        Op op = null ;
-        if ( exprs != null )
-            op = TransformFilterPlacement.transform(exprs, pattern) ;
-        else
-            op = new OpBGP(pattern) ;
-
-        return plainExecute(op, input, execCxt) ;
+        Op op = TransformFilterPlacement.transform(exprs, pattern);
+        return plainExecute(op, input, execCxt);
     }
 
     /** Execute, with optimization, a quad pattern */
-    private static QueryIterator optimizeExecuteQuads(DatasetGraphTDB ds,
+    private static QueryIterator optimizeExecuteQuads(DatasetGraphTDB dsgtdb,
                                                       QueryIterator input,
                                                       Node gn, BasicPattern bgp,
                                                       ExprList exprs, ExecutionContext execCxt)
@@ -216,12 +216,12 @@ public class OpExecutorTDB1 extends OpExecutor
 
         gn = decideGraphNode(gn, execCxt) ;
         if ( gn == null )
-            return optimizeExecuteTriples(ds, input, bgp, exprs, execCxt) ;
+            return optimizeExecuteTriples(dsgtdb, input, bgp, exprs, execCxt) ;
 
         // ---- Execute quads+filters
         if ( bgp.size() >= 2 )
         {
-            ReorderTransformation transform = ds.getReorderTransform() ;
+            ReorderTransformation transform = dsgtdb.getReorderTransform() ;
 
             if ( transform != null )
             {
@@ -230,16 +230,18 @@ public class OpExecutorTDB1 extends OpExecutor
                 bgp = reorder(bgp, peek, transform) ;
             }
         }
+
+        if ( exprs == null ) {
+            // Triple-backed (but may be named as explicit default graph).
+            Explain.explain("Execute", bgp, execCxt.getContext());
+            Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext());
+            return PatternMatchTDB1.execute(dsgtdb, gn, bgp, input, filter, execCxt);
+        }
+
         // -- Filter placement
-        Op op = null ;
-        if ( exprs != null )
-            op = TransformFilterPlacement.transform(exprs, gn, bgp) ;
-        else
-            op = new OpQuadPattern(gn, bgp) ;
-
-        return plainExecute(op, input, execCxt) ;
+        Op op = TransformFilterPlacement.transform(exprs, gn, bgp);
+        return plainExecute(op, input, execCxt);
     }
-
     /** Execute without modification of the op - does <b>not</b> apply special graph name translations */
     private static QueryIterator plainExecute(Op op, QueryIterator input, ExecutionContext execCxt)
     {
