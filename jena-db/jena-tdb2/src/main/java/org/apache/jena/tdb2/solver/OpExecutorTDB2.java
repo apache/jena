@@ -422,6 +422,5 @@ public class OpExecutorTDB2 extends OpExecutor
             Log.warn(this, "Non-DatasetGraphTDB passed to OpExecutorPlainTDB");
             return super.execute(opQuadPattern, input);
         }
-
     }
 }
