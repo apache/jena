@@ -45,9 +45,9 @@ import org.apache.jena.web.HttpSC;
  *
  * Consider this service useful for small files and use GSP or quads POST for large ones.
  */
-public class SPARQL_Upload extends ActionService
+public class HTML_FileUpload extends ActionService
 {
-    public SPARQL_Upload() {
+    public HTML_FileUpload() {
         super();
     }
 
