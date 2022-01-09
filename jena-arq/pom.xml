@@ -73,6 +73,14 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
     </dependency>
+    <!--
+        Intercept any uses of Jakarta Commons Logging
+         e.g. Apache Common HTTP client (JSON-LD 1.0 support)
+    -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
@@ -112,15 +120,6 @@
     <dependency>
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
-    </dependency>
-
-    <!--
-         Intercept any uses of Jakarta Commons Logging
-         e.g. Apache Common HTTP client.
-    -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
 
     <dependency>

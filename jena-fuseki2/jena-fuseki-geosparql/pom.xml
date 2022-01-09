@@ -68,6 +68,18 @@
         -->
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
+        <exclusions>
+          <!-- Use jcl-over-slf4j -->
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
       </dependency>
 
       <dependency>

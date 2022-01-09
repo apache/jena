@@ -291,64 +291,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpcore</artifactId>
-        <version>${ver.httpcore}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>${ver.httpclient}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-          </exclusion>
-          <!-- JENA 2137: scope=provided and the enforcer plugin -->
-          <exclusion>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient-cache</artifactId>
-        <version>${ver.httpclient}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-          </exclusion>
-          <!-- JENA 2137: scope=provided and the enforcer plugin -->
-          <exclusion>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
         <version>${ver.commons-codec}</version>
@@ -492,6 +434,7 @@
           </exclusion>
         </exclusions>
       </dependency>
+
       <!-- Control version of Apache HttpClient components -->
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -551,8 +494,6 @@
           </exclusion>
         </exclusions>
       </dependency>
-
-
       
       <!-- JSON-LD 1.1 read support -->
       <!-- Titanium JSON-LD -->
@@ -760,6 +701,10 @@
           <exclusion>
             <artifactId>commons-cli</artifactId>
             <groupId>commons-cli</groupId>
+          </exclusion>
+          <exclusion>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
         </exclusions>
       </dependency>
