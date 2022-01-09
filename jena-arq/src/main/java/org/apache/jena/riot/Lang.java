@@ -153,6 +153,7 @@ public class Lang
         Lang otherLang = (Lang)other ;
         return
             this.label == otherLang.label &&
+            this.altLabels.equals(otherLang.altLabels) &&
             this.contentType.equals(otherLang.contentType) &&
             this.altContentTypes.equals(otherLang.altContentTypes) &&
             this.fileExtensions.equals(otherLang.fileExtensions) ;
