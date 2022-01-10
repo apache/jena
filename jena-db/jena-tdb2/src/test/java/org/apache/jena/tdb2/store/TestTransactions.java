@@ -18,22 +18,23 @@
 
 package org.apache.jena.tdb2.store;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.StringReader;
 import java.util.Iterator;
 
 import org.apache.jena.atlas.iterator.Iter;
-import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.transaction.txn.TransactionException;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.tdb2.sys.TDBInternal;
 import org.junit.After;
@@ -124,7 +125,7 @@ public class TestTransactions
     public void iterator_01() {
         load(data2);
 
-        dataset.begin(ReadWrite.READ);
+        dataset.begin(TxnType.READ);
         Iterator<Quad> iter = TDBInternal.getDatasetGraphTDB(dataset).find();
         Iter.consume(iter);
         dataset.end();
@@ -134,7 +135,7 @@ public class TestTransactions
     public void iterator_02() {
         load(data2);
 
-        dataset.begin(ReadWrite.READ);
+        dataset.begin(TxnType.READ);
         Iterator<Quad> iter = dataset.asDatasetGraph().find();
         dataset.end();
         Quad q = iter.next();
@@ -145,7 +146,7 @@ public class TestTransactions
     public void iterator_03() {
         load(data2);
 
-        dataset.begin(ReadWrite.READ);
+        dataset.begin(TxnType.READ);
         Iterator<Quad> iter = TDBInternal.getDatasetGraphTDB(dataset).find();
         dataset.end();
         Quad q = iter.next();
@@ -173,7 +174,7 @@ public class TestTransactions
 
         Iterator<Quad> iter = Txn.calculateRead(dataset, ()->dataset.asDatasetGraph().find());
 
-        dataset.begin(ReadWrite.READ);
+        dataset.begin(TxnType.READ);
         iter.next();
         dataset.end();
     }

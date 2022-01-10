@@ -166,9 +166,6 @@ public class DatasetGraphText extends DatasetGraphTextMonitor implements Transac
 
     @Override
     public void begin(ReadWrite readWrite) {
-        // Do not synchronized(txnLock) here. It will deadlock because if there
-        // is an writer in commit, it can't
-
         // The "super.begin" is enough.
         readWriteMode.set(readWrite);
         super.begin(readWrite) ;
