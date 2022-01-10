@@ -16,33 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.transaction;
+package org.apache.jena.tdb2.graph;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TestJournal.class
-    , TestTransIterator.class
-    , TestObjectFileTransMem.class
-    , TestObjectFileTransStorage.class
-    
-    // ObjectFileTransComplex is not used by TDB currently.
-    , TestObjectFileTransComplexMem.class
-    , TestObjectFileTransComplexStorage.class
-    
-    , TestTransMem.class
-    , TestTransDiskDirect.class
-    , TestTransDiskMapped.class
-    , TestTransRestart.class
-    , TestTransactionTDB.class
-    , TestTransactionUnionGraph.class
-    , TestTransactionMiscTDB.class
-    , TestTDBInternal.class
-    , TestTransPromoteTDB.class
-    , TestTransControl.class
-    , TestTransIsolation.class
+    TestGraphViewSwitchable.class
+    , TestPrefixMappingTDB2.class
+    , TestPrefixMappingTDBExtra.class
+    , TestDatasetGraphTDB2.class
+    , TestGraphsTDB2_A.class
+    , TestGraphsTDB2_B.class
+    , TestGraphOverDatasetTDB2.class
 })
-public class TS_TransactionTDB
-{}
+public class TS_GraphTDB2
+{
+
+}

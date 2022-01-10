@@ -87,10 +87,10 @@ public abstract class NodeTableNative implements NodeTable
     // accessIndex and readNodeFromTable
 
     // Cache around this class further out in NodeTableCache are synchronized
-    // to maintain cache validatity which indirectly sync access to the NodeTable.
+    // to maintain cache validity which indirectly sync access to the NodeTable.
     // But to be sure, we provide MRSW guarantees on this class.
     // (otherwise if no cache => disaster)
-    // synchonization happens in accessIndex() and readNodeByNodeId
+    // synchronization happens in accessIndex() and readNodeByNodeId
 
     // NodeId to Node worker.
     private Node _retrieveNodeByNodeId(NodeId id) {

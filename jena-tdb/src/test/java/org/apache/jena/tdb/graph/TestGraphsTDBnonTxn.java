@@ -21,7 +21,7 @@ package org.apache.jena.tdb.graph;
 import org.junit.After ;
 import org.junit.Before ;
 
-public class TestGraphsTDBnonTxn extends AbstractTestGraphsTDB
+public class TestGraphsTDBnonTxn extends AbstractTestGraphsTDB1
 {
     // Non-transactional.
     @Before public void before() 

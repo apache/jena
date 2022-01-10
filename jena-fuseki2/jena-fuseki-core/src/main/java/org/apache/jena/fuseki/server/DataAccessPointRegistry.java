@@ -18,9 +18,12 @@
 
 package org.apache.jena.fuseki.server;
 
-import io.micrometer.core.instrument.MeterRegistry;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletContext;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import org.apache.jena.atlas.lib.Registry;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
@@ -58,11 +61,29 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         }
     }
 
-    /** @deprecated Use {@link #register(DataAccessPoint)} */
+    /**
+     * Collection of the {@link DataAccessPoint DataAccessPoints}. This is a new list
+     * generated from the registry contents and not still connected to the registry.
+     * Registry changes will not interfere with iteration over the list.
+     * {@link DataAccessPoint DataAccessPoints} can not be registered twice under
+     * differerent names (the same dataset can be via different
+     * {@link DataAccessPoint DataAccessPoints} so the list has no duplicates.
+     * There is no defined order to the list.
+     */
+    public List<DataAccessPoint> accessPoints() {
+        List<DataAccessPoint> accessPoints = new ArrayList<>(size());
+        // Make a copy for safety.
+        forEach((_name, accessPoint) -> accessPoints.add(accessPoint));
+        return accessPoints;
+    }
+
+    /**
+     *  @deprecated Use {@link #register(DataAccessPoint)}.
+     * This method ignores the accessPointName argument.
+     */
     @Override
     @Deprecated
-    public void put(String key, DataAccessPoint dap) {
-        // Ignore presented name. Use canonical name in the DataAccessPoint. */
+    public void put(String accessPointName, DataAccessPoint dap) {
         register(dap);
     }
 

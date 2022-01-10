@@ -24,7 +24,7 @@ import org.apache.jena.tdb.assembler.TS_TDBAssembler ;
 import org.apache.jena.tdb.base.TC_Base ;
 import org.apache.jena.tdb.base.block.FileMode ;
 import org.apache.jena.tdb.base.objectfile.TS_ObjectFile ;
-import org.apache.jena.tdb.graph.TS_Graph ;
+import org.apache.jena.tdb.graph.TS_GraphTDB1 ;
 import org.apache.jena.tdb.index.TS_Index ;
 import org.apache.jena.tdb.lib.TS_LibTDB ;
 import org.apache.jena.tdb.setup.TS_TDBSetup ;
@@ -34,7 +34,7 @@ import org.apache.jena.tdb.store.nodetable.TS_NodeTable ;
 import org.apache.jena.tdb.store.tupletable.TS_TupleTable ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.apache.jena.tdb.sys.TS_Sys ;
-import org.apache.jena.tdb.transaction.TS_TransactionTDB ;
+import org.apache.jena.tdb.transaction.TS_TransactionTDB1 ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
@@ -56,16 +56,16 @@ import org.junit.runners.Suite ;
     , TS_Store.class        // The main storage implementation.  Some slow tests.
     , TS_SolverTDB.class
     , TS_Sys.class
-    , TS_Graph.class
+    , TS_GraphTDB1.class
     , TS_TDB1Factory.class
     , TS_TDBAssembler.class
-    , TS_TransactionTDB.class
+    , TS_TransactionTDB1.class
     , TS_ObjectFile.class
     , TestMiscTDB1.class
     , Scripts_TDB1.class
 } )
 
-public class TC_TDB
+public class TC_TDB1
 {
     static {
         if ( false )

@@ -93,16 +93,6 @@ public class DatasetGraphFactory
         return dsg2 ;
     }
 
-    private static void copyOver(DatasetGraph dsgDest, DatasetGraph dsgSrc)
-    {
-        dsgDest.setDefaultGraph(dsgSrc.getDefaultGraph()) ;
-        for ( final Iterator<Node> names = dsgSrc.listGraphNodes() ; names.hasNext() ; )
-        {
-            final Node gn = names.next() ;
-            dsgDest.addGraph(gn, dsgSrc.getGraph(gn)) ;
-        }
-    }
-
     /**
      * Create a DatasetGraph starting with a single graph.
      * New graphs must be explicitly added.

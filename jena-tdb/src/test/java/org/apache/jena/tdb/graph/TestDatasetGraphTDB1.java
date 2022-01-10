@@ -16,8 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.engine;
+package org.apache.jena.tdb.graph;
 
-public class Shacl {
+import org.apache.jena.sparql.core.AbstractDatasetGraphTests ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.tdb.TDBFactory ;
 
+// Quad tests
+public class TestDatasetGraphTDB1 extends AbstractDatasetGraphTests
+{
+    @Override
+    protected DatasetGraph emptyDataset() { return TDBFactory.createDatasetGraph() ; }
 }

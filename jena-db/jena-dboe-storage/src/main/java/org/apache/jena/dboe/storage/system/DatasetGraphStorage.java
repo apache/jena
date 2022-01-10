@@ -36,6 +36,8 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.sparql.core.DatasetGraphBaseFind;
 import org.apache.jena.sparql.core.DatasetGraphTriplesQuads;
 import org.apache.jena.sparql.core.Quad;
@@ -43,18 +45,17 @@ import org.apache.jena.sparql.core.Transactional;
 
 /** Alternative: DatasetGraph over RDFStorage, using DatasetGraphBaseFind
  *  Collapses DatasetGraphTriplesQuads into this adapter class.
-<pre>
-DatasetGraph
-  DatasetGraphBase
-    DatasetGraphBaseFind
-      DatasetGraphStorageDirect
-</pre>
-/**
+ *  <pre>
+ *   DatasetGraph
+ *     DatasetGraphBase
+ *       DatasetGraphBaseFind
+ *         DatasetGraphStorage
+ *    </pre>
+ *
  * A DatasetGraph base class for triples+quads storage. The machinery is really
  * the splitting between default and named graphs. This happens in two classes,
  * {@link DatasetGraphBaseFind} (for find splitting) and
- * {@link DatasetGraphTriplesQuads} add/delete splitting (it inherits
- * {@link DatasetGraphBaseFind}).
+ * {@link DatasetGraphTriplesQuads} add/delete splitting (it inherits {@link DatasetGraphBaseFind}).
  * <p>
  * Because storage is usually decomposing quads and triples, the default
  * behaviour is to work in s/p/o and g/s/p/o.
@@ -175,6 +176,8 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
 
     @Override
     public void add(Node g, Node s, Node p, Node o) {
+        if ( Quad.isUnionGraph(g))
+            throw new AddDeniedException("Can't add to the union graph");
         if ( g == null || Quad.isDefaultGraph(g) )
             storage.add(s,p,o);
         else
@@ -183,6 +186,8 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
 
     @Override
     public void delete(Node g, Node s, Node p, Node o) {
+        if ( Quad.isUnionGraph(g))
+            throw new DeleteDeniedException("Can't remove from the union graph");
         if ( g == null || Quad.isDefaultGraph(g) )
             storage.delete(s,p,o);
         else

@@ -55,7 +55,7 @@ public class ExFusekiMain_3_FusekiModule {
         //
         // The file is typically put into the jar by having
         //   src/main/resources/META-INF/services/org.apache.jena.fuseki.main.sys.FusekiModule
-        FusekiModule module = new ExampleModule();
+        FusekiModule module = new FMod_ProvidePATCH();
         FusekiModules.add(module);
 
         // Create server.
@@ -75,7 +75,7 @@ public class ExFusekiMain_3_FusekiModule {
         server.stop();
     }
 
-    static class ExampleModule implements FusekiModule {
+    static class FMod_ProvidePATCH implements FusekiModule {
 
         private String modName = UUID.randomUUID().toString();
         @Override

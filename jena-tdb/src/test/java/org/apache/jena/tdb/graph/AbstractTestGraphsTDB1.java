@@ -26,19 +26,17 @@ import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.junit.Ignore ;
-import org.junit.Test ;
 
-public class AbstractTestGraphsTDB extends GraphsTests
+public abstract class AbstractTestGraphsTDB1 extends GraphsTests
 {
     private static ReorderTransformation reorder  ;
-    
+
     @BeforeClass public static void setupClass()
     {
         reorder = SystemTDB.defaultReorderTransform ;
         SystemTDB.defaultReorderTransform = ReorderLib.identity() ;
     }
-    
+
     @AfterClass public static void afterClass() {  SystemTDB.defaultReorderTransform = reorder ; }
 
     @Override
@@ -46,14 +44,4 @@ public class AbstractTestGraphsTDB extends GraphsTests
     {
         return TDBFactory.createDataset() ;
     }
-    
-    // These don't pass ... not quite clear if the test is right.  Investigate.
-    
-    @Override
-    @Ignore @Test public void graph_count5() {} 
-    
-    @Override
-    @Ignore @Test public void graph_count6() {} 
-    
-
 }

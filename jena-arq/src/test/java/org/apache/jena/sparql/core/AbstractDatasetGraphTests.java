@@ -33,6 +33,8 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.system.Txn;
@@ -421,5 +423,15 @@ public abstract class AbstractDatasetGraphTests
         assertTrue(b);
     }
 
+    @Test(expected=AddDeniedException.class) public void updateUnionGraph_1() {
+        DatasetGraph dsg = emptyDataset();
+        Quad quad = SSE.parseQuad("(quad :g :s :p :o)") ;
+        dsg.add(Quad.unionGraph, quad.getSubject(), quad.getPredicate(), quad.getObject());
+    }
 
+    @Test(expected=DeleteDeniedException.class) public void updateUnionGraph_2() {
+        DatasetGraph dsg = emptyDataset();
+        Quad quad = SSE.parseQuad("(quad :g :s :p :o)") ;
+        dsg.delete(Quad.unionGraph, quad.getSubject(), quad.getPredicate(), quad.getObject());
+    }
 }

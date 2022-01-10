@@ -273,8 +273,13 @@ public class RDFLanguages
         if ( lang == null )
             throw new IllegalArgumentException("null for language");
         // Expel previous registration.
-        if ( isMimeTypeRegistered(lang) )
-            unregister(lang);
+        if ( isMimeTypeRegistered(lang) ) {
+            // Find previous registration (uses primary MIME type).
+            Lang prev = contentTypeToLang(lang.getContentType());
+            if ( prev == null )
+                throw new IllegalStateException("Expect to find '"+lang.getContentType()+"'");
+            unregister(prev);
+        }
 
         checkRegistration(lang);
 
@@ -319,15 +324,21 @@ public class RDFLanguages
         }
 
         // Check for clashes.
-        for (String altName : lang.getAltNames() )
-            if ( mapLabelToLang.containsKey(altName) )
-                error("Language overlap: " +lang+" and "+mapLabelToLang.get(altName)+" on name "+altName);
-        for (String ct : lang.getAltContentTypes() )
-            if ( mapContentTypeToLang.containsKey(ct) )
-                error("Language overlap: " +lang+" and "+mapContentTypeToLang.get(ct)+" on content type "+ct);
-        for (String ext : lang.getFileExtensions() )
-            if ( mapFileExtToLang.containsKey(ext) )
-                error("Language overlap: " +lang+" and "+mapFileExtToLang.get(ext)+" on file extension type "+ext);
+        for (String altName : lang.getAltNames() ) {
+            String cKey = canonicalKey(altName);
+            if ( mapLabelToLang.containsKey(cKey) )
+                error("Language overlap: " +lang+" and "+mapLabelToLang.get(cKey)+" on name "+altName);
+        }
+        for (String ct : lang.getAltContentTypes() ) {
+            String cKey = canonicalKey(ct);
+            if ( mapContentTypeToLang.containsKey(cKey) )
+                error("Language overlap: " +lang+" and "+mapContentTypeToLang.get(cKey)+" on content type "+ct);
+        }
+        for (String ext : lang.getFileExtensions() ) {
+            String cKey = canonicalKey(ext);
+            if ( mapFileExtToLang.containsKey(cKey) )
+                error("Language overlap: " +lang+" and "+mapFileExtToLang.get(cKey)+" on file extension type "+ext);
+        }
     }
 
     /**
@@ -340,6 +351,8 @@ public class RDFLanguages
         mapLabelToLang.remove(canonicalKey(lang.getLabel()));
         mapContentTypeToLang.remove(canonicalKey(lang.getContentType().getContentTypeStr()));
 
+        for ( String altName : lang.getAltNames() )
+            mapLabelToLang.remove(canonicalKey(altName));
         for ( String ct : lang.getAltContentTypes() )
             mapContentTypeToLang.remove(canonicalKey(ct));
         for ( String ext : lang.getFileExtensions() )
@@ -461,7 +474,7 @@ public class RDFLanguages
         return lang;
     }
 
-    static String canonicalKey(String x) { return x.toLowerCase(Locale.ROOT); }
+    private static String canonicalKey(String x) { return x.toLowerCase(Locale.ROOT); }
 
     public static ContentType guessContentType(String resourceName) {
         if ( resourceName == null )

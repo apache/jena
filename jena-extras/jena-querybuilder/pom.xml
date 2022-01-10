@@ -39,11 +39,29 @@
       <artifactId>apache-jena-libs</artifactId>
       <type>pom</type>
     </dependency>
+
     <dependency>
       <groupId>org.xenei</groupId>
       <artifactId>junit-contracts</artifactId> 
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-cli</artifactId>
+          <groupId>commons-cli</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
     	<groupId>org.mockito</groupId>
     	<artifactId>mockito-core</artifactId> 

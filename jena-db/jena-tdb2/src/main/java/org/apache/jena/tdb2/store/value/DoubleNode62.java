@@ -101,7 +101,7 @@ public class DoubleNode62 {
             return NO_ENCODING;
         long significand = BitsLong.unpack(x, 0, 52);
         // Do not set the value bit or double bit.
-        // This is done when outting into bytes.
+        // This is done in NodeId.toBytes and NodeId.toByteBuffer.
         long z = 0;
         z = BitsLong.pack(z, sign, 61, 62);
         z = BitsLong.pack(z, exp9, 52, 61);

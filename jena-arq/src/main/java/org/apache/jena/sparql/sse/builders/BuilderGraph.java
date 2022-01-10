@@ -38,13 +38,13 @@ public class BuilderGraph
         buildGraph(graph, item);
         return graph;
     }
-    
+
     public static Graph buildGraph(ItemList itemList) {
         Graph graph = GraphFactory.createDefaultGraph();
         buildGraph(graph, itemList);
         return graph;
     }
-    
+
     public static void buildGraph(Graph graph, Item item) {
         if ( item.isNode() )
             BuilderLib.broken(item, "Attempt to build graph from a plain node");
@@ -64,7 +64,7 @@ public class BuilderGraph
 
         BuilderLib.broken(item, "Wanted (" + Tags.tagGraph + "...) or (" + Tags.tagLoad + "...)");
     }
-    
+
     public static Graph buildGraph(Graph graph, ItemList list) {
         if ( !list.isEmpty() && list.get(0).isSymbol() ) {
             if ( list.get(0).isSymbol(Tags.tagGraph) )
@@ -78,7 +78,7 @@ public class BuilderGraph
         }
         return graph;
     }
-    
+
     /** Format:
      * (dataset
      *    (graph ...))
@@ -92,12 +92,12 @@ public class BuilderGraph
 
     public static DatasetGraph buildDataset(Item item)
     {
-        return buildDataset(DatasetGraphFactory.createTxnMem(), item) ; 
+        return buildDataset(DatasetGraphFactory.createTxnMem(), item) ;
     }
-    
+
     public static DatasetGraph buildDataset(ItemList list)
     {
-        return buildDataset(DatasetGraphFactory.createTxnMem(), list) ; 
+        return buildDataset(DatasetGraphFactory.createTxnMem(), list) ;
     }
 
     public static DatasetGraph buildDataset(DatasetGraph dsg, Item item)
@@ -117,7 +117,7 @@ public class BuilderGraph
             BuilderLib.broken(item, "Wanted ("+Tags.tagDataset+"...)" );
         return buildDataset(dsg, item.getList()) ;
     }
-    
+
     public static DatasetGraph buildDataset(DatasetGraph dsg, ItemList list) {
         BuilderLib.checkTag(list, Tags.tagDataset);
         list = list.cdr();
@@ -141,10 +141,6 @@ public class BuilderGraph
             Graph g;
             if ( name == null ) {
                 g = dsg.getDefaultGraph();
-                if ( g == null ) {
-                    g = GraphFactory.createDefaultGraph();
-                    dsg.setDefaultGraph(g);
-                }
             } else {
                 g = dsg.getGraph(name);
                 if ( g == null ) {
@@ -156,7 +152,7 @@ public class BuilderGraph
         }
         return dsg;
     }
-    
+
     private static void loadGraph(Graph graph, ItemList list) {
         BuilderLib.checkLength(2, list, Tags.tagLoad);
         Item item = list.get(1);
@@ -194,7 +190,7 @@ public class BuilderGraph
     public static Quad buildQuad(ItemList list) {
         return buildQuad(list, "Not a quad") ;
     }
-    
+
     public static Quad buildQuad(ItemList list, String errMsg) {
         if ( list.size() != 4 && list.size() != 5 )
             BuilderLib.broken(list, errMsg);

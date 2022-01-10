@@ -46,7 +46,6 @@ public class ShaclPlainValidator implements ShaclValidator {
      */
     @Override
     public boolean conforms(Shapes shapes, Graph data) {
-        // XXX Fast version of "conforms"
         return validate(shapes, data).conforms();
     }
 

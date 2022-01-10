@@ -18,20 +18,22 @@
 
 package org.apache.jena.tdb2.graph;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
+import org.apache.jena.sparql.graph.GraphsTests;
+import org.apache.jena.tdb2.sys.SystemTDB;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestGraphViewSwitchable.class
-    , TestPrefixMappingTDB.class
-    , TestPrefixMappingTDBExtra.class
-    , TestDatasetGraphTDB.class
-    , TestGraphsTDB_A.class
-    , TestGraphsTDB_B.class
-    , TestGraphOverDatasetTDB.class
-})
-public class TS_Graph
+public abstract class AbstractTestGraphsTDB2 extends GraphsTests
 {
+    private static ReorderTransformation reorder ;
 
+    @BeforeClass public static void setupClass()
+    {
+        reorder = SystemTDB.getDefaultReorderTransform();
+        SystemTDB.setDefaultReorderTransform(ReorderLib.identity());
+    }
+
+    @AfterClass public static void afterClass() {  SystemTDB.setDefaultReorderTransform(reorder); }
 }

@@ -16,15 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.graph;
+package org.apache.jena.tdb2.graph;
 
-import org.apache.jena.sparql.core.AbstractDatasetGraphTests ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.tdb2.junit.TL;
+import org.junit.After;
+import org.junit.Before;
 
-// Quad tests
-public class TestDatasetGraphTDB extends AbstractDatasetGraphTests
+public class TestGraphsTDB2_A extends AbstractTestGraphsTDB2
 {
+    Dataset ds = TL.createTestDatasetMem();
+    @Before public void before() {
+        ds.begin(ReadWrite.WRITE);
+    }
+
+    @After public void after() {
+        ds.abort();
+        ds.end();
+        TL.expel(ds);
+    }
     @Override
-    protected DatasetGraph emptyDataset() { return TDBFactory.createDatasetGraph() ; }
+    protected Dataset createDataset() {
+        return ds;
+    }
 }
