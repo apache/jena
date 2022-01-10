@@ -116,10 +116,10 @@ export default {
           item: 'mem',
           name: 'In-memory – dataset will be recreated when Fuseki restarts, but contents will be lost'
         },
-        {
-          item: 'tdb',
-          name: 'Persistent – dataset will persist across Fuseki restart'
-        },
+        // {
+        //   item: 'tdb',
+        //   name: 'Persistent – dataset will persist across Fuseki restart'
+        // },
         {
           item: 'tdb2',
           name: 'Persistent (TDB2) – dataset will persist across Fuseki restarts'

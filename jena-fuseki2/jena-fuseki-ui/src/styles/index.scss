@@ -20,6 +20,17 @@
 @import 'upload.scss';
 
 #app {
+  .navbar {
+    .navbar-brand {
+      a {
+        color: $gray-600;
+        &:hover {
+          color: $gray-800;
+          text-decoration: none;
+        }
+      }
+    }
+  }
   #status-icon {
     width: 2em;
     height: 2em;

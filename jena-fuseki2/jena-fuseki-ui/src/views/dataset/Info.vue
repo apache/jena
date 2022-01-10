@@ -29,17 +29,19 @@
               <b-row>
                 <b-col sm="12" md="6">
                   <h3 class="text-center">Available Services</h3>
-                  <b-row
+                  <div
                     :key="service['srv.type']"
                     v-for="service in this.services"
                   >
-                    <b-col cols="6" class="text-right">{{ service['srv.description'] }}</b-col>
-                    <b-col cols="6">
-                      <a :href="`/${datasetName}/${service['srv.endpoints'][0]}`">
-                        /{{ datasetName }}/{{ service['srv.endpoints'][0] }}
-                      </a>
-                    </b-col>
-                  </b-row>
+                    <b-row v-for="endpoint of service['srv.endpoints']" :key="endpoint">
+                      <b-col cols="6" class="text-right">{{ service['srv.description'] }}</b-col>
+                      <b-col cols="6">
+                        <a :href="`/${datasetName}/${endpoint}`">
+                          /{{ datasetName }}/{{ endpoint }}
+                        </a>
+                      </b-col>
+                    </b-row>
+                  </div>
                   <b-row class="my-4">
                     <b-col cols="12" align="center">
                       <h3 class="text-center">Dataset size</h3>
@@ -240,11 +242,7 @@ export default {
       // collect the stats of each endpoint
       const items = Object.keys(endpoints)
         .map(endpointName => {
-          // TODO: probably better to change in the server side as "Graph Store Protocol" is returned twice,
-          //       but one entry is already distinguished by a "(Read)" suffix.
-          const endpoint = endpoints[endpointName].description.trim() === 'SPARQL Query'
-            ? `${endpoints[endpointName].description} (${endpointName})`
-            : endpoints[endpointName].description
+          const endpoint = !endpointName.startsWith('_') ? `${endpoints[endpointName].description} (${endpointName})` : endpoints[endpointName].description
           return {
             endpoint: endpoint,
             operation: endpoints[endpointName].operation,
