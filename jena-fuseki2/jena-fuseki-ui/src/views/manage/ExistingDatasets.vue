@@ -42,13 +42,13 @@
                         <span class="ml-1">query</span>
                       </b-button>
                       <b-popover
-                        :target="`delete-dataset-${data.index}-button`"
+                        :target="`delete-dataset-${data.item.name}-button`"
                         triggers="manual"
                         placement="auto"
                       >
                         <template v-slot:title>
                           <b-button
-                            @click="hidePopover(`delete-dataset-${data.index}-button`)"
+                            @click="hidePopover(`delete-dataset-${data.item.name}-button`)"
                             class="close"
                             aria-label="Close">
                             <span class="d-inline-block" aria-hidden="true">&times;</span>
@@ -58,19 +58,19 @@
                         <div class="text-center">
                           <b-alert show variant="danger">Are you sure you want to delete dataset {{ data.item.name }}?<br/><br/>This action cannot be reversed.</b-alert>
                           <b-button
-                            @click="hidePopover(`delete-dataset-${data.index}-button`);deleteDataset(data.item.name)"
+                            @click="hidePopover(`delete-dataset-${data.item.name}-button`);deleteDataset(data.item.name)"
                             variant="primary"
                             class="mr-2"
                           >submit</b-button>
                           <b-button
-                            @click="hidePopover(`delete-dataset-${data.index}-button`)"
+                            @click="hidePopover(`delete-dataset-${data.item.name}-button`)"
                           >cancel</b-button>
                         </div>
                       </b-popover>
                       <b-button
-                        :id="`delete-dataset-${data.index}-button`"
-                        :ref="`delete-dataset-${data.index}-button`"
-                        @click="showPopover(`delete-dataset-${data.index}-button`)"
+                        :id="`delete-dataset-${data.item.name}-button`"
+                        :ref="`delete-dataset-${data.item.name}-button`"
+                        @click="showPopover(`delete-dataset-${data.item.name}-button`)"
                         variant="primary"
                         href="#"
                         class="mr-0 mr-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
@@ -78,13 +78,13 @@
                         <span class="ml-1">remove</span>
                       </b-button>
                       <b-popover
-                        :target="`backup-dataset-${data.index}-button`"
+                        :target="`backup-dataset-${data.item.name}-button`"
                         triggers="manual"
                         placement="auto"
                       >
                         <template v-slot:title>
                           <b-button
-                            @click="showPopover(`backup-dataset-${data.index}-button`)"
+                            @click="showPopover(`backup-dataset-${data.item.name}-button`)"
                             class="close"
                             aria-label="Close">
                             <span class="d-inline-block" aria-hidden="true">&times;</span>
@@ -94,19 +94,19 @@
                         <div class="text-center">
                           <b-alert show variant="warning">Are you sure you want to create a backup of dataset {{ data.item.name }}?<br/><br/>This action may take some time to complete.</b-alert>
                           <b-button
-                            @click="hidePopover(`backup-dataset-${data.index}-button`);backupDataset(data.item.name)"
+                            @click="hidePopover(`backup-dataset-${data.item.name}-button`);backupDataset(data.item.name)"
                             variant="primary"
                             class="mr-2"
                           >submit</b-button>
                           <b-button
-                            @click="hidePopover(`backup-dataset-${data.index}-button`)"
+                            @click="hidePopover(`backup-dataset-${data.item.name}-button`)"
                           >cancel</b-button>
                         </div>
                       </b-popover>
                       <b-button
-                        :id="`backup-dataset-${data.index}-button`"
-                        :ref="`backup-dataset-${data.index}-button`"
-                        @click="showPopover(`backup-dataset-${data.index}-button`)"
+                        :id="`backup-dataset-${data.item.name}-button`"
+                        :ref="`backup-dataset-${data.item.name}-button`"
+                        @click="showPopover(`backup-dataset-${data.item.name}-button`)"
                         variant="primary"
                         href="#"
                         class="mr-0 mr-md-2 mr-0 mb-2 mb-md-0 d-block d-md-inline-block">
