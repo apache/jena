@@ -30,6 +30,9 @@
       :items="items"
       :is-busy="isBusy"
     >
+      <template v-slot:empty>
+        <h4>No datasets created - <router-link to="/manage/new">add one</router-link></h4>
+      </template>
       <template v-slot:cell(actions)="data">
         <b-button
           :to="`/dataset${data.item.name}/query`"

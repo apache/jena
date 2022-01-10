@@ -20,7 +20,9 @@
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-brand>
-        <img alt="Apache Jena logo" src="../assets/logo.png">
+        <router-link to="/">
+          <img alt="Apache Jena logo" width="52px" src="../assets/logo.svg"> Apache Jena Fuseki
+        </router-link>
       </b-navbar-brand>
       <b-navbar-nav>
         <b-nav-item to="/" exact-active-class="active">

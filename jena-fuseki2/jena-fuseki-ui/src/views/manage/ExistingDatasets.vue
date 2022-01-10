@@ -33,6 +33,9 @@
                     :items="items"
                     :is-busy="isBusy"
                   >
+                    <template v-slot:empty>
+                      <h4>No datasets created - <router-link to="/manage/new">add one</router-link></h4>
+                    </template>
                     <template v-slot:cell(actions)="data">
                       <b-button
                         :to="`/dataset${data.item.name}/query`"
@@ -116,9 +119,16 @@
                       <b-button
                         :to="`/dataset${data.item.name}/upload`"
                         variant="primary"
-                        class="mr-0 mb-md-0 d-block d-md-inline-block">
+                        class="mr-0 mr-md-2 mr-0 mb-2 mb-md-0 d-block d-md-inline-block">
                         <FontAwesomeIcon icon="upload" />
                         <span class="ml-1">add data</span>
+                      </b-button>
+                      <b-button
+                        :to="`/dataset${data.item.name}/info`"
+                        variant="primary"
+                        class="mr-0 mb-md-0 d-block d-md-inline-block">
+                        <FontAwesomeIcon icon="tachometer-alt" />
+                        <span class="ml-1">info</span>
                       </b-button>
                     </template>
                   </table-listing>
