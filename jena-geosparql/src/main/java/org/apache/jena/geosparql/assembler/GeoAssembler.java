@@ -20,7 +20,6 @@ package org.apache.jena.geosparql.assembler;
 
 import static org.apache.jena.geosparql.assembler.VocabGeoSPARQL.*;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getBooleanValue;
-import static org.apache.jena.sparql.util.graph.GraphUtils.getResourceValue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,7 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.jena.assembler.Assembler;
-import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
@@ -53,21 +51,11 @@ public class GeoAssembler extends DatasetAssembler {
 
     private static Logger LOG = LoggerFactory.getLogger(GeoAssembler.class);
 
-    /** Helper for datasets that layer on top of other datasets. */
-    // TODO Replace when createBaseDataset is DatasetAssembler
-    protected static DatasetGraph createBaseDataset_X(Resource dbAssem, Property pDataset) {
-        Resource dataset = getResourceValue(dbAssem, pDataset) ;
-        if ( dataset == null )
-            throw new AssemblerException(dbAssem, "Required base dataset missing: "+dbAssem) ;
-        Dataset base = (Dataset)Assembler.general.open(dataset);
-        return base.asDatasetGraph();
-    }
-
     @Override
     public DatasetGraph createDataset(Assembler a, Resource root) {
 
         // Base dataset.
-        DatasetGraph base = /*super.*/createBaseDataset_X(root, pDataset);
+        DatasetGraph base = super.createBaseDataset(root, pDataset);
         Graph graph = root.getModel().getGraph();
         Node subj = root.asNode();
 
