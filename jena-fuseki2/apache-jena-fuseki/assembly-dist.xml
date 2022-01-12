@@ -44,15 +44,15 @@
       <outputFileNameMapping>fuseki-server.jar</outputFileNameMapping>
 
     </dependencySet>
-    <!-- WAR file -->
+    <!-- WAR file
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
       <includes>
         <include>org.apache.jena:jena-fuseki-war:war</include>
       </includes>
       <outputFileNameMapping>fuseki.war</outputFileNameMapping>
-
     </dependencySet>
+    -->
   </dependencySets>
 
   <files>
