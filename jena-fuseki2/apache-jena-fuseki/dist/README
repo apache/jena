@@ -1,23 +1,30 @@
-Apache Jena Fuseki2
-===================
+Apache Jena Fuseki
+==================
 
-Apache Jena Fuseki2 is a SPARQL server.
+Apache Jena Fuseki is a SPARQL server.
 
 Full documentation:
   http://jena.apache.org/documentation/fuseki2/
 
-This distribution contains Fuseki2 package as a WAR file ('fuseki.war'),
-to run in a webapp conatiner server such as Apache Tomcat, and also a
-self-contained jar, to run as a operation system process.
-
-The script 'fuseki' is an Linux init script to run Fuseki2 as a service.
-The file 'fuseki.service' is a systemd unit file to run Fuseki2 as a service.
-Instructions are in comments at the start of the files.
+This distribution contains Fuseki2 package as a self-contained jar, to run as an
+operating system process.
 
 The script 'fuseki-server' is a script to run the server using
-fuseki-server.jar from the command line.  Use 'fuseki-server --help' for
+'fuseki-server.jar from the command line.  Use 'fuseki-server --help' for
 details.
+
+The script 'fuseki' is a Linux init script to run Fuseki as an OS service.
+The file 'fuseki.service' is a systemd unit file to run Fuseki2 as a service.
+Instructions are in comments at the start of the files.
 
 The directory 'bin/' contains some scripts execute SPARQL Protocol and
 SPARQL Graph Store Protocol operations.
 Documentation: http://jena.apache.org/documentation/fuseki2/soh.html
+
+A WAR file to run Fuseki in a webapp container server, such as Apache
+Tomcat, can be obtained from https://downloads.apache.org/jena/binaries/
+or https://repo1.maven.org/maven2/org/apache/jena/jena-fuseki-war/.
+
+A Dockerfile which can be customized for choices of storage can be found at:
+
+https://repo1.maven.org/maven2/org/apache/jena/jena-fuseki-docker/
