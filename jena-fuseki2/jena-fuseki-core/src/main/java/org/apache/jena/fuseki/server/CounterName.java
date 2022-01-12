@@ -40,57 +40,61 @@ public class CounterName {
 
     // There are generic names - apply to all services and datasets.
     // Total request received
-    public static final CounterName Requests         = register("Requests", "requests");
+    public static final CounterName Requests         = register("Requests",       "requests");
     // .. of which some and "good" and some are "bad".
     // #"good" + #"bad" roughly equals #"requests"
     // except that the total is incremented at the start, and the outcome at the end.
     // There may also be short term consistency issues.
-    public static final CounterName RequestsGood     = register("RequestsGood", "requests.good");
-    public static final CounterName RequestsBad      = register("RequestsBad", "requests.bad");
+    public static final CounterName RequestsGood     = register("RequestsGood",   "requests.good");
+    public static final CounterName RequestsBad      = register("RequestsBad",    "requests.bad");
 
     // SPARQL Protocol - query and update - together with upload.
+    // These operation specific counters are not added to endpoints
+    // so statistics are not recorded in this style.
+    // They are in the right places in the code if re-activated by adding them to the endpoints.
 
-    // Query - standard and ...
-    public static final CounterName QueryTimeouts    = register("QueryTimeouts", "query.timeouts");
+    // Query
+    public static final CounterName QueryTimeouts    = register("QueryTimeouts",   "query.timeouts");
     public static final CounterName QueryExecErrors  = register("QueryExecErrors", "query.execerrors");
-    public static final CounterName QueryIOErrors    = register("QueryIOErrors", "query.ioerrors");
+    public static final CounterName QueryIOErrors    = register("QueryIOErrors",   "query.ioerrors");
 
-    // Update - standard and ...
+    // Update
     public static final CounterName UpdateExecErrors = register("UpdateExecErrors", "update.execerrors");
 
-    // Upload ... standard counters
+    // HTML File Upload
+    public static final CounterName UploadExecErrors = register("UploadErrors",     "upload.execerrors");
 
     // Graph Store Protocol. uses HTTP codes.
 
     // For each HTTP method
 
-    public static final CounterName HTTPget          = register("HTTPget", "http.get.requests");
-    public static final CounterName HTTPgetGood      = register("HTTPgetGood", "http.get.requests.good");
-    public static final CounterName HTTPgetBad       = register("HTTPGetBad", "http.get.requests.bad");
+    public static final CounterName HTTPget          = register("HTTPget",         "http.get.requests");
+    public static final CounterName HTTPgetGood      = register("HTTPgetGood",     "http.get.requests.good");
+    public static final CounterName HTTPgetBad       = register("HTTPGetBad",      "http.get.requests.bad");
 
-    public static final CounterName HTTPpost         = register("HTTPpost", "http.post.requests");
-    public static final CounterName HTTPpostGood     = register("HTTPpostGood", "http.post.requests.good");
-    public static final CounterName HTTPpostBad      = register("HTTPpostBad", "http.post.requests.bad");
+    public static final CounterName HTTPpost         = register("HTTPpost",        "http.post.requests");
+    public static final CounterName HTTPpostGood     = register("HTTPpostGood",    "http.post.requests.good");
+    public static final CounterName HTTPpostBad      = register("HTTPpostBad",     "http.post.requests.bad");
 
-    public static final CounterName HTTPdelete       = register("HTTPdelete", "http.delete.requests");
-    public static final CounterName HTTPdeleteGood   = register("HTTPdeleteGood", "http.delete.requests.good");
-    public static final CounterName HTTPdeleteBad    = register("HTTPdeleteBad", "http.delete.requests.bad");
+    public static final CounterName HTTPdelete       = register("HTTPdelete",      "http.delete.requests");
+    public static final CounterName HTTPdeleteGood   = register("HTTPdeleteGood",  "http.delete.requests.good");
+    public static final CounterName HTTPdeleteBad    = register("HTTPdeleteBad",   "http.delete.requests.bad");
 
-    public static final CounterName HTTPput          = register("HTTPput", "http.put.requests");
-    public static final CounterName HTTPputGood      = register("HTTPputGood", "http.put.requests.good");
-    public static final CounterName HTTPputBad       = register("HTTPputBad", "http.put.requests.bad");
+    public static final CounterName HTTPput          = register("HTTPput",         "http.put.requests");
+    public static final CounterName HTTPputGood      = register("HTTPputGood",     "http.put.requests.good");
+    public static final CounterName HTTPputBad       = register("HTTPputBad",      "http.put.requests.bad");
 
-    public static final CounterName HTTPhead         = register("HTTPhead", "http.head.requests");
-    public static final CounterName HTTPheadGood     = register("HTTPheadGood", "http.head.requests.good");
-    public static final CounterName HTTPheadBad      = register("HTTPheadBad", "http.head.requests.bad");
+    public static final CounterName HTTPhead         = register("HTTPhead",        "http.head.requests");
+    public static final CounterName HTTPheadGood     = register("HTTPheadGood",    "http.head.requests.good");
+    public static final CounterName HTTPheadBad      = register("HTTPheadBad",     "http.head.requests.bad");
 
-    public static final CounterName HTTPpatch        = register("HTTPpatch", "http.patch.requests");
-    public static final CounterName HTTPpatchGood    = register("HTTPpatchGood", "http.patch.requests.good");
-    public static final CounterName HTTPpatchBad     = register("HTTPpatchBad", "http.patch.requests.bad");
+    public static final CounterName HTTPpatch        = register("HTTPpatch",       "http.patch.requests");
+    public static final CounterName HTTPpatchGood    = register("HTTPpatchGood",   "http.patch.requests.good");
+    public static final CounterName HTTPpatchBad     = register("HTTPpatchBad",    "http.patch.requests.bad");
 
-    public static final CounterName HTTPoptions      = register("HTTPoptions", "http.options.requests");
+    public static final CounterName HTTPoptions      = register("HTTPoptions",     "http.options.requests");
     public static final CounterName HTTPoptionsGood  = register("HTTPoptionsGood", "http.options.requests.good");
-    public static final CounterName HTTPoptionsBad   = register("HTTPoptionsBad", "http.options.requests.bad");
+    public static final CounterName HTTPoptionsBad   = register("HTTPoptionsBad", " http.options.requests.bad");
 
     private CounterName(String name, String hierarchicalName) {
         this.name = name;

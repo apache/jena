@@ -18,7 +18,6 @@
     fuseki:serviceQuery                "sparql" ;
     fuseki:serviceUpdate               "" ;
     fuseki:serviceUpdate               "update" ;
-    fuseki:serviceUpload               "upload" ;
     fuseki:serviceReadWriteGraphStore  "data" ;
     # A separate read-only graph store endpoint:
     fuseki:serviceReadGraphStore       "get" ;

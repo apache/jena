@@ -19,6 +19,8 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format;
+import static org.apache.jena.fuseki.server.CounterName.UploadExecErrors;
+import static org.apache.jena.fuseki.servlets.ActionExecLib.incCounter;
 
 import java.io.PrintWriter;
 
@@ -100,7 +102,10 @@ public class HTML_FileUpload extends ActionService
             out.println("</html>");
             out.flush();
         }
-        catch (Exception ex) { ServletOps.errorOccurred(ex); }
+        catch (Exception ex) {
+            incCounter(action.getEndpoint().getCounters(), UploadExecErrors);
+            ServletOps.errorOccurred(ex);
+        }
     }
 
     // Also used by SPARQL_REST

@@ -43,6 +43,7 @@ public interface Dataset extends Transactional
 
     /**
      * Set the default graph.
+     * This operation copies the statements from the model into the default graph of the dataset.
      *
      * @param model the default graph to set
      * @return this {@code Dataset} for continued usage

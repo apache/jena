@@ -19,7 +19,6 @@ PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
     fuseki:serviceQuery                "query";
     fuseki:serviceQuery                "sparql";
     fuseki:serviceUpdate               "update";
-    fuseki:serviceUpload               "upload" ;
     fuseki:serviceReadWriteGraphStore  "data" ;
     fuseki:serviceReadGraphStore       "get" ;
     fuseki:dataset :dataset ;
