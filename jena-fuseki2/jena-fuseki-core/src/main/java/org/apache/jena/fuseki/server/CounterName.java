@@ -65,7 +65,6 @@ public class CounterName {
     public static final CounterName UploadExecErrors = register("UploadErrors",     "upload.execerrors");
 
     // Graph Store Protocol. uses HTTP codes.
-
     // For each HTTP method
 
     public static final CounterName HTTPget          = register("HTTPget",         "http.get.requests");
@@ -132,5 +131,10 @@ public class CounterName {
         } else if ( !name.equals(other.name) )
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return getFullName();
     }
 }
