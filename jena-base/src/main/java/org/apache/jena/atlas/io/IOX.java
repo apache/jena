@@ -86,7 +86,7 @@ public class IOX {
      * something went wrong (the function throws a runtime exception) and the file is not changed.
      */
     public static boolean safeWrite(Path file, IOConsumer<OutputStream> writerAction) {
-        Path tmp = createTempFile(file.getParent(), file.getFileName().toString(), ".tmp");
+        Path tmp = createTempFile(file.toAbsolutePath().getParent(), file.getFileName().toString(), ".tmp");
         return safeWrite(file, tmp, writerAction);
     }
 

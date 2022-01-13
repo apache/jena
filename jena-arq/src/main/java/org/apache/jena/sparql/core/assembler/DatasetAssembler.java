@@ -18,11 +18,15 @@
 
 package org.apache.jena.sparql.core.assembler ;
 
+import static org.apache.jena.sparql.util.graph.GraphUtils.getResourceValue;
+
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
+import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.DatasetGraph;
 
@@ -38,4 +42,13 @@ public abstract class DatasetAssembler extends AssemblerBase implements Assemble
     }
 
     public abstract DatasetGraph createDataset(Assembler a, Resource root);
+
+    /** Helper for datasets that layer on top of other datasets. */
+    protected DatasetGraph createBaseDataset(Resource dbAssem, Property pDataset) {
+        Resource dataset = getResourceValue(dbAssem, pDataset) ;
+        if ( dataset == null )
+            throw new AssemblerException(dbAssem, "Required base dataset missing: "+dbAssem) ;
+        Dataset base = (Dataset)Assembler.general.open(dataset);
+        return base.asDatasetGraph();
+    }
 }
