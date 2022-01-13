@@ -25,6 +25,17 @@ public class BulkLoaderX {
     public static int DataSuperTick = 10;
 
     /**
+     * Marker at end of each step with the log message about the statistics.
+     * Grep for this in the logs.
+     */
+    public static final String StepMarker = "==-==-==";
+
+    /**
+     * Marker at the start of a stage within a step.
+     */
+    public static final String StageMarker = "==";
+
+    /**
      * Whether to compress the triple.tmp and quads.tmp files.
      * These are read multiple times.
      */

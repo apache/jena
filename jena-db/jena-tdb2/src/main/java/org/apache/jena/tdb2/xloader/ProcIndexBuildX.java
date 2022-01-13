@@ -30,8 +30,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.block.BlockMgrFactory;
 import org.apache.jena.dboe.base.file.BufferChannel;
@@ -57,7 +59,10 @@ import org.apache.jena.tdb2.sys.TDBInternal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** From a file of records, build a (packed) index */
+/**
+ * From a file of records, build a (packed) index by sorting the input records and
+ * the writing the B+Tree bottom up.
+ */
 public class ProcIndexBuildX
 {
     // Sort and build.
@@ -81,7 +86,25 @@ public class ProcIndexBuildX
 
     private static Logger LOG = LoggerFactory.getLogger("Index");
 
-    public static long exec(String location, String indexName, XLoaderFiles loaderFiles) {
+    public static void exec(String location, String indexName, XLoaderFiles loaderFiles) {
+
+        Timer timer = new Timer();
+        timer.startTimer();
+        FmtLog.info(LOG, "Build index %s", indexName);
+        long timeMillis = timer.endTimer();
+
+        long items = ProcIndexBuildX.exec2(location, indexName, loaderFiles);
+
+        double xSec = timeMillis/1000.0;
+        double rate = items/xSec;
+        String elapsedStr = BulkLoaderX.milliToHMS(timeMillis);
+        String rateStr = BulkLoaderX.rateStr(items, timeMillis);
+
+        FmtLog.info(LOG, "%s Index %s : %s seconds - %s at %s TPS", BulkLoaderX.StepMarker, indexName, Timer.timeStr(timeMillis), elapsedStr, rateStr);
+    }
+
+
+    private static long exec2(String location, String indexName, XLoaderFiles loaderFiles) {
         DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(location);
         long x = buildIndex(dsg, indexName,  loaderFiles);
         TDBInternal.expel(dsg);
@@ -193,11 +216,15 @@ public class ProcIndexBuildX
         long count = indexBuilder(dsg, input, indexName);
         try {
             int exitCode = proc2.waitFor();
-            if ( exitCode != 0 )
-                FmtLog.error(LOG, "Sort RC = %d", exitCode);
+            if ( exitCode != 0 ) {
+                String msg = IO.readWholeFileAsUTF8(proc2.getErrorStream());
+                String logMsg = String.format("Sort RC = %d : Error: %s", exitCode, msg);
+                Log.error(LOG, logMsg);
+                // ** Exit process
+                System.exit(exitCode);
+            }
 //            else
 //                LOG.info("Sort finished");
-            System.exit(exitCode);
             IO.close(toSortOutputStream);
             IO.close(fromSortInputStream);
         } catch (InterruptedException e) {
@@ -271,6 +298,7 @@ public class ProcIndexBuildX
         BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(iter2, bptParams, recordFactory, blkState, blkMgrNodes, blkMgrRecords);
         bpt2.close();
         monitor.finish();
+        // [BULK] End stage.
         long count = monitor.getTicks();
         return count;
     }

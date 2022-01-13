@@ -73,7 +73,7 @@ public class DatabaseConnection {
         DatabaseConnection dbConn = cache.computeIfAbsent(location, (loc)->build(loc, params));
         return dbConn;
     }
-    
+
     /**
      * Create a fresh {@link DatabaseConnection}. This new object is independent of
      * any other {@link DatabaseConnection} for the same location. This function must
@@ -100,7 +100,7 @@ public class DatabaseConnection {
         }
         // c.f. StoreConnection.make
         DatasetGraph dsg = DatabaseOps.create(location, params);
-        
+
         return new DatabaseConnection(dsg, location, lock);
     }
 
@@ -180,7 +180,7 @@ public class DatabaseConnection {
     private DatabaseConnection(DatasetGraph dsg, Location location, ProcessFileLock fileLock)
     {
         this.datasetGraph = dsg;
-        this.datasetGraphSwitchable =  ( dsg instanceof DatasetGraphSwitchable ) ? (DatasetGraphSwitchable )dsg : null;
+        this.datasetGraphSwitchable = ( dsg instanceof DatasetGraphSwitchable ) ? (DatasetGraphSwitchable )dsg : null;
         this.location = location;
         this.lock = fileLock;
     }

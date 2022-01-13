@@ -31,8 +31,6 @@ import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb2.xloader.XLoaderFiles;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Base class for TDB xloaders commands for java steps in the load process.
@@ -43,8 +41,6 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
         JenaSystem.init();
         LogCtl.setLog4j2();
     }
-    protected static Logger LOG = null;
-
     // All possible arguments for xloader commands.
     // The commands themselves check whether they have the necessary arguments.
     protected static ArgDecl argLocation   = new ArgDecl(true, "loc", "location");
@@ -69,7 +65,6 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
     protected AbstractCmdxLoad(String stageName, String[] argv) {
         super(argv);
         setCmdArgs();
-        LOG = LoggerFactory.getLogger(stageName);
 
 //        super.add(argLocation,  "--loc=", "Database location");
 //        super.add(argTmpdir,    "--tmpdir=", "Temporary directory (defaults to --loc)");

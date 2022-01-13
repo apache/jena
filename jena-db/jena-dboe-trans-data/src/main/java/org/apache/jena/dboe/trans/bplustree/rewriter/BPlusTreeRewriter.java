@@ -149,7 +149,7 @@ public class BPlusTreeRewriter {
         if ( rebalance )
             iter2 = new RebalenceDataEnd(iter2, bpt);
 
-        // Testing - materialize - debug wil have done this
+        // Testing - materialize - debug will have done this
         if ( materialize && !debug )
             iter2 = Iter.toList(iter2).iterator();
 
@@ -177,7 +177,7 @@ public class BPlusTreeRewriter {
             RecordBufferPage page1 = mgr.getWrite(id1);
             RecordBufferPage page2 = mgr.getWrite(id2);
 
-            // Wrong calculatation.
+            // Wrong calculation.
             for ( int i = page2.getCount(); i < page1.getMaxSize() / 2 ; i++ ) {
                 // shiftOneup(node1, node2);
                 Record r = page1.getRecordBuffer().getHigh();

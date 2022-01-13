@@ -34,6 +34,7 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.iterator.IteratorSlotted;
 import org.apache.jena.atlas.lib.*;
 import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.file.BinaryDataFile;
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.FileFactory;
@@ -77,12 +78,47 @@ import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TTransport;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProcNodeTableBuilderX {
+/*
+ * Build the node table.
+ *
+ * <ul>
+ * <li>Step 1: Extract nodes from the input parser, writes (hash, terms in encoded RDF Thrift).
+ * <li>Step 2: Sort by hash and remove duplicates.
+ * <li>Step 2: Write node table data file and write node table index (B+tree).
+ * </ul>
+ * Outcome: complete node table.
+ */
+public class ProcBuildNodeTableX {
+    private static Logger LOG1 = LoggerFactory.getLogger("Nodes");
+    private static Logger LOG2 = LoggerFactory.getLogger("Terms");
+
+    public static void exec(String location, XLoaderFiles loaderFiles, List<String> datafiles, String sortNodeTableArgs) {
+        Timer timer = new Timer();
+        timer.startTimer();
+        FmtLog.info(LOG1, "Build node table");
+//        FmtLog.info(LOG1, "  Database   = %s", location);
+//        FmtLog.info(LOG1, "  TMPDIR     = %s", tmpdir==null?"unset":tmpdir);
+//        FmtLog.info(LOG1, "  Data files = %s", StrUtils.strjoin(datafiles, " "));
+        Pair<Long/*triples or quads*/, Long/*indexed nodes*/> buildCounts =
+                ProcBuildNodeTableX.exec2(location, loaderFiles, datafiles, sortNodeTableArgs);
+        long timeMillis = timer.endTimer();
+
+        long items = buildCounts.getLeft();
+        double xSec = timeMillis/1000.0;
+        double rate = items/xSec;
+        String elapsedStr = BulkLoaderX.milliToHMS(timeMillis);
+        String rateStr = BulkLoaderX.rateStr(items, timeMillis);
+
+        FmtLog.info(LOG2, "%s NodeTable : %s seconds - %s at %s terms per second", BulkLoaderX.StepMarker,
+                    Timer.timeStr(timeMillis), elapsedStr, rateStr);
+    }
 
     /** Pair<triples, indexed nodes> */
     // [BULK] Output, not return.
-    public static Pair<Long, Long> exec(Logger LOG1, Logger LOG2, String DB, XLoaderFiles loaderFiles, List<String> datafiles, String sortNodeTableArgs) {
+    private static Pair<Long, Long> exec2(String DB, XLoaderFiles loaderFiles, List<String> datafiles, String sortNodeTableArgs) {
+
         //Threads - 1 parser, 1 builder, 2 sort.
         // Steps:
         // 1 - parser to and pipe terms to sort
@@ -172,7 +208,9 @@ public class ProcNodeTableBuilderX {
 
             double xSec = x/1000.0;
             double rate = count/xSec;
-            FmtLog.info(LOG1, "== Parse: %s seconds : %,d triples/quads %,.0f TPS", Timer.timeStr(x), count, rate);
+            // [BULK] End stage.
+            FmtLog.info(LOG1, "%s Parse (nodes): %s seconds : %,d triples/quads %,.0f TPS", BulkLoaderX.StageMarker,
+                        Timer.timeStr(x), count, rate);
         };
 
         // [BULK] XXX AsyncParser.asyncParse(files, output)
@@ -220,18 +258,22 @@ public class ProcNodeTableBuilderX {
             long count = monitor.getTicks();
             countIndexedNodes.set(count);
             String rateStr = BulkLoaderX.rateStr(count, x);
-            FmtLog.info(LOG2, "==  Index: %s seconds : %,d indexed RDF terms : %s PerSecond", Timer.timeStr(x), count, rateStr);
+            FmtLog.info(LOG2, "%s Index terms: %s seconds : %,d indexed RDF terms : %s PerSecond", BulkLoaderX.StageMarker, Timer.timeStr(x), count, rateStr);
 
         };
         Thread thread3 = async(task3, "AsyncBuild");
 
         try {
             int exitCode = proc2.waitFor();
-            if ( exitCode != 0 )
-                FmtLog.error(LOG2, "Sort RC = %d", exitCode);
+            if ( exitCode != 0 ) {
+                String msg = IO.readWholeFileAsUTF8(proc2.getErrorStream());
+                String logMsg = String.format("Sort RC = %d : Error: %s", exitCode, msg);
+                Log.error(LOG2, logMsg);
+                // ** Exit process
+                System.exit(exitCode);
+            }
             else
                 LOG2.info("Sort finished");
-            System.exit(exitCode);
             IO.close(toSortOutputStream);
             IO.close(fromSortInputStream);
         } catch (InterruptedException e) {

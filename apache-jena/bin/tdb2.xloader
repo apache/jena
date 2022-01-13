@@ -51,7 +51,7 @@ function testSortParallel() {
 JAVA="${JAVA:-java}"
 
 COMPLETE="yes"
-for F in jq sort /usr/bin/gzip java blog
+for F in jq sort /usr/bin/gzip java
 do
     testForProgram "$F"
     if [[ $? -ne 0 ]] ; then
@@ -65,7 +65,6 @@ if [[ $COMPLETE != "yes" ]] ; then
 fi
 
 unset COMPLETE
-exit
 
 testSortParallel
 
@@ -147,9 +146,9 @@ JENA_CP
 
 JVM_ARGS
     Arguments for the JVM.
-    This defaults to "-Xmx2G"
+    This defaults to "-Xmx4G"
     Do not set to all available RAM.
-    Increasing it does not make the loader faster.
+    Increasing is only necessary for large numbers of long literals.
 
 The temporary directory defaults to the datbase directory.
 
@@ -299,7 +298,26 @@ if [[ -z $LOC ]] ; then
     abort 1 "No directory name for the database"
 fi
 
+## Don't mess up an existing database!
+if [ -e "$LOC" ]; then
+    abort 3 "Directory $LOC already exists"
+fi
+
 [[ -z $TMPDIR ]] && TMPDIR=$LOC
+
+if [[ ! -e $TMPDIR ]] ; then
+    mkdir "$TMPDIR"
+    #abort 2 echo "TMPDIR $TMPDIR does not exist"
+fi
+
+if [[ ! -d $TMPDIR ]] ; then
+    abort 2 "TMPDIR $TMPDIR is not a directory"
+fi
+
+if [[ ! -w $TMPDIR ]] ; then
+    abort 2 "TMPDIR $TMPDIR is not writable"
+fi
+
 export TMPDIR
 
 ## TDB1 / TDB2
@@ -310,9 +328,9 @@ case "$SYSTEM" in
 	## @@
 	PKG=tdb2.xloader
 	## @@
-	CMD_LOAD_TERMS=
-	CMD_INGEST_DATA=
-	CMD_BUILD_INDEX=
+## 	CMD_LOAD_TERMS=
+## 	CMD_INGEST_DATA=
+## 	CMD_BUILD_INDEX=
 	
 	;;
     "TDB1")
@@ -328,19 +346,17 @@ case "$SYSTEM" in
 	;;
 esac
 
-## Don't mess up an existing database!
-if [ -e "$LOC" ]; then
-    ## @@ Better
-    abort 3 "Directory $LOC already exists"
-fi
-
 info "Setup:"
 info "  Database: $LOC"
 info "  Data:     $DATAFILES"
 info "  TMPDIR:   $TMPDIR"
 
-# Large heap not required.
-JVM_ARGS="${JVM_ARGS:--Xmx2G}"
+## Large heap not required.
+## Max use is in the digest phase for the enlarged Node to Node id cache.
+JVM_ARGS="${JVM_ARGS:--Xmx4G}"
+
+## Unique string used to mark where steps end and where the key information is to be found.
+STEP_END_MARKER="=-=-=-=-=-=-=-="
 
 ## Time point.
 
@@ -354,6 +370,7 @@ if [ "$SYSTEM" == "TDB2" ]; then
     info "Load node table"
     exec_java $PKG.CmdxBuildNodeTable --loc $LOC --tmpdir "$TMPDIR" $DATAFILES
     TIME_NODE_TABLE=$(($(now)-$T))
+    info "$STEP_END_MARKER"
 fi
 
 ## ======== Ingest data, creates workfiles
@@ -362,6 +379,7 @@ info "Ingest data"
 T="$(now)"
 exec_java $PKG.CmdxIngestData --loc $LOC --tmpdir "$TMPDIR" --triples "$TMPDIR/triples.tmp" --quads "$TMPDIR/quads.tmp" $DATAFILES
 TIME_INGEST=$(($(now)-$T))
+info "$STEP_END_MARKER"
 
 ## ======== Indexes
 INFO="$TMPDIR/load.json"
@@ -373,9 +391,11 @@ function index() {
     local IDX="$1"
     info
     info "Build $IDX"
+    info "(Very long pause likely at this point)"
     local T="$(now)"
     exec_java $PKG.CmdxBuildIndex --loc $LOC --tmpdir "$TMPDIR" --index $IDX \
 	      "$TMPDIR/triples.tmp" "$TMPDIR/quads.tmp"
+    info "$STEP_END_MARKER"
     local T_IDX=$(($(now)-$T))
     TIME_IDX[$IDX]=$T_IDX
 }

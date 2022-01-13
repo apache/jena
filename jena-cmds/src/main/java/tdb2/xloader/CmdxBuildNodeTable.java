@@ -19,15 +19,8 @@
 package tdb2.xloader;
 
 import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.atlas.lib.Timer;
-import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.tdb2.xloader.BulkLoaderX;
-import org.apache.jena.tdb2.xloader.ProcNodeTableBuilderX;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.jena.tdb2.xloader.ProcBuildNodeTableX;
 
 public class CmdxBuildNodeTable extends AbstractCmdxLoad {
 
@@ -70,29 +63,8 @@ public class CmdxBuildNodeTable extends AbstractCmdxLoad {
         // Deletes any existing database!
         FileOps.clearAll(location);
 
-        Timer timer = new Timer();
-        timer.startTimer();
-        FmtLog.info(LOG, "Build node table");
-        FmtLog.info(LOG, "  Database   = %s", location);
-        FmtLog.info(LOG, "  TMPDIR     = %s", tmpdir==null?"unset":tmpdir);
-        FmtLog.info(LOG, "  Data files = %s", StrUtils.strjoin(filenames, " "));
-
         if ( tmpdir == null )
             tmpdir = location;
-
-        Logger LOG1 = LOG;
-        Logger LOG2 = LoggerFactory.getLogger("Terms");
-
-        Pair<Long/*triples or quads*/, Long/*indexed nodes*/> buildCounts = ProcNodeTableBuilderX.exec(LOG1, LOG2, location, loaderFiles, filenames, sortNodeTableArgs);
-
-        long timeMillis = timer.endTimer();
-
-        long items = buildCounts.getLeft();
-        double xSec = timeMillis/1000.0;
-        double rate = items/xSec;
-        String elapsedStr = BulkLoaderX.milliToHMS(timeMillis);
-        String rateStr = BulkLoaderX.rateStr(items, timeMillis);
-
-        FmtLog.info(LOG, "NodeTable - %s seconds - %s at %s terms per second", Timer.timeStr(timeMillis), elapsedStr, rateStr);
+        ProcBuildNodeTableX.exec(location, loaderFiles, filenames, sortNodeTableArgs);
     }
 }

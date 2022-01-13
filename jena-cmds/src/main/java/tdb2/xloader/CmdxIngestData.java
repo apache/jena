@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.dboe.base.file.Location;
@@ -116,7 +115,6 @@ public class CmdxIngestData extends AbstractCmdxLoad {
 
     @Override
     protected void exec() {
-        FmtLog.info(LOG, "Ingest data");
         ProcIngestDataX.exec(location, loaderFiles, filenames, collectStats);
     }
 }
