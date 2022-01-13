@@ -64,4 +64,9 @@ public class CounterSet {
             Log.warn(CounterSet.class, "No counter in counter set: " + cn);
         return c;
     }
+
+    @Override
+    public String toString() {
+        return counters.toString();
+    }
 }

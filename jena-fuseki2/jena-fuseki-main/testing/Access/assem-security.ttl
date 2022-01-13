@@ -70,7 +70,6 @@ PREFIX access:  <http://jena.apache.org/access#>
     fuseki:serviceQuery          "query";
     fuseki:serviceQuery          "sparql";
     fuseki:serviceUpdate         "update";
-    fuseki:serviceUpload         "upload" ;
     fuseki:serviceReadWriteGraphStore "data" ;
     fuseki:serviceReadGraphStore "get" ;
     fuseki:dataset <#tdb_dataset> ;

@@ -63,10 +63,12 @@ public class OperationRegistry {
         OperationRegistry stdOpReg = new OperationRegistry();
         stdOpReg.register(Operation.Query,   WebContent.contentTypeSPARQLQuery, queryServlet);
         stdOpReg.register(Operation.Update,  WebContent.contentTypeSPARQLUpdate, updateServlet);
-        stdOpReg.register(Operation.Upload,  null, uploadServlet);
         stdOpReg.register(Operation.GSP_R,   null, gspServlet_R);
         stdOpReg.register(Operation.GSP_RW,  null, gspServlet_RW);
+
         stdOpReg.register(Operation.Shacl,   null, shaclValidation);
+        stdOpReg.register(Operation.Upload,  null, uploadServlet);
+
         stdOpReg.register(Operation.NoOp,    null, noOperation);
         return stdOpReg;
     }

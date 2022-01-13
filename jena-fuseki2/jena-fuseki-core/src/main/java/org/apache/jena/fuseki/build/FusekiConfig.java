@@ -68,41 +68,33 @@ import org.slf4j.Logger;
 
 /** Functions to setup and act on the configuration of a Fuseki server */
 public class FusekiConfig {
-    static { Fuseki.init(); initStandardSetup(); }
-
     private static Logger log = Fuseki.configLog;
 
     // The default setup of a DataService.
-    private static Map<String, Operation> stdRead;
-    private static Map<String, Operation> stdWrite;
+    private static Map<String, Operation> stdRead =
+            Map.of("sparql",   Operation.Query,
+                   "query",    Operation.Query,
+                   "data",     Operation.GSP_R,
+                   "get",      Operation.GSP_R);
 
-    private static Set<Operation> stdDatasetWrite;
-    private static Set<Operation> stdDatasetRead;
+    private static Map<String, Operation> stdWrite =
+            Map.of("sparql",   Operation.Query,
+                   "query",    Operation.Query,
+                   "update",   Operation.Update,
+                   //"upload",  Operation.Upload,
+                   "data",     Operation.GSP_RW,
+                   "get",      Operation.GSP_R);
 
-    private static void initStandardSetup() {
-        stdRead = new HashMap<>();
-        stdRead.put("sparql",   Operation.Query);
-        stdRead.put("query",    Operation.Query);
-        stdRead.put("data",     Operation.GSP_R);
-        stdRead.put("get",      Operation.GSP_R);
+    private static Set<Operation> stdDatasetRead =
+            Set.of(Operation.Query,
+                   Operation.GSP_R);
 
-        stdWrite = new HashMap<>();
-        stdWrite.put("sparql",   Operation.Query);
-        stdWrite.put("query",    Operation.Query);
-        stdWrite.put("update",  Operation.Update);
-        stdWrite.put("upload",  Operation.Upload);
-        stdWrite.put("data",    Operation.GSP_RW);
-        stdWrite.put("get",     Operation.GSP_R);
+    private static Set<Operation> stdDatasetWrite =
+            Set.of(Operation.Query,
+                   Operation.Update,
+                   Operation.GSP_RW);
 
-        stdDatasetRead = new HashSet<>();
-        stdDatasetRead.add(Operation.Query);
-        stdDatasetRead.add(Operation.GSP_R);
-
-        stdDatasetWrite = new HashSet<>();
-        stdDatasetWrite.add(Operation.Query);
-        stdDatasetWrite.add(Operation.Update);
-        stdDatasetWrite.add(Operation.GSP_RW);
-    }
+    static { Fuseki.init(); }
 
     /** Convenience operation to populate a {@link DataService} with the conventional default services. */
     public static DataService.Builder populateStdServices(DataService.Builder dataServiceBuilder, boolean allowUpdate) {
@@ -447,7 +439,7 @@ public class FusekiConfig {
         //    fuseki:serviceQuery [ fuseki:name "sparql" ; fuseki:allowedUsers (..) ];
         accEndpointOldStyle(endpoints1, Operation.Query,    fusekiService,  pServiceQueryEP);
         accEndpointOldStyle(endpoints1, Operation.Update,   fusekiService,  pServiceUpdateEP);
-        accEndpointOldStyle(endpoints1, Operation.Upload,   fusekiService,  pServiceUploadEP);
+        //accEndpointOldStyle(endpoints1, Operation.Upload,   fusekiService,  pServiceUploadEP);
         accEndpointOldStyle(endpoints1, Operation.GSP_R,    fusekiService,  pServiceReadGraphStoreEP);
         accEndpointOldStyle(endpoints1, Operation.GSP_RW,   fusekiService,  pServiceReadWriteGraphStoreEP);
 
