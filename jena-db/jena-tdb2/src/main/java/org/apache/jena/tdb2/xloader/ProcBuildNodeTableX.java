@@ -94,7 +94,7 @@ public class ProcBuildNodeTableX {
     private static Logger LOG1 = LoggerFactory.getLogger("Nodes");
     private static Logger LOG2 = LoggerFactory.getLogger("Terms");
 
-    public static void exec(String location, XLoaderFiles loaderFiles, List<String> datafiles, String sortNodeTableArgs) {
+    public static void exec(String location, XLoaderFiles loaderFiles, int sortThreads, String sortNodeTableArgs, List<String> datafiles) {
         Timer timer = new Timer();
         timer.startTimer();
         FmtLog.info(LOG1, "Build node table");
@@ -102,7 +102,7 @@ public class ProcBuildNodeTableX {
 //        FmtLog.info(LOG1, "  TMPDIR     = %s", tmpdir==null?"unset":tmpdir);
 //        FmtLog.info(LOG1, "  Data files = %s", StrUtils.strjoin(datafiles, " "));
         Pair<Long/*triples or quads*/, Long/*indexed nodes*/> buildCounts =
-                ProcBuildNodeTableX.exec2(location, loaderFiles, datafiles, sortNodeTableArgs);
+                ProcBuildNodeTableX.exec2(location, loaderFiles, sortThreads, sortNodeTableArgs, datafiles);
         long timeMillis = timer.endTimer();
 
         long items = buildCounts.getLeft();
@@ -115,9 +115,10 @@ public class ProcBuildNodeTableX {
                     Timer.timeStr(timeMillis), elapsedStr, rateStr);
     }
 
-    /** Pair<triples, indexed nodes> */
+    /** Pair<triples, indexed nodes>
+     * @param sortThreads */
     // [BULK] Output, not return.
-    private static Pair<Long, Long> exec2(String DB, XLoaderFiles loaderFiles, List<String> datafiles, String sortNodeTableArgs) {
+    private static Pair<Long, Long> exec2(String DB, XLoaderFiles loaderFiles, int sortThreads, String sortNodeTableArgs, List<String> datafiles) {
 
         //Threads - 1 parser, 1 builder, 2 sort.
         // Steps:
@@ -136,25 +137,28 @@ public class ProcBuildNodeTableX {
         OutputStream toSortOutputStream;
         InputStream fromSortInputStream;
 
+        if ( sortThreads <= 0 )
+            sortThreads = 2;
+
         // ** Step 2: The sort
         Process proc2;
         try {
             //LOG.info("Step : external sort");
-            List<String> sortCmdBasics = Arrays.asList(
+            // Mutable list.
+            List<String> sortCmd = new ArrayList<>(Arrays.asList(
                   "sort",
-                    "--temporary-directory="+loaderFiles.TMPDIR, "--buffer-size=50%",
-                    "--parallel=2", "--unique",
-                    //"--compress-program=/usr/bin/gzip",
+                    "--temporary-directory="+loaderFiles.TMPDIR,
+                    "--buffer-size=50%",
+                    "--parallel="+sortThreads,
+                    "--unique",
                     "--key=1,1"
-                    );
+                    ));
 
-            List<String> sortCmd = new ArrayList<>(sortCmdBasics);
+            if ( BulkLoaderX.CompressSortNodeTableFiles )
+                sortCmd.add("--compress-program=/usr/bin/gzip");
 
             //if ( sortNodeTableArgs != null ) {}
 
-            // See javadoc for CompressSortNodeTableFiles - usually false
-            if ( BulkLoaderX.CompressSortNodeTableFiles )
-                sortCmd.add("--compress-program=/usr/bin/gzip");
             ProcessBuilder pb2 = new ProcessBuilder(sortCmd);
             pb2.environment().put("LC_ALL","C");
             proc2 = pb2.start();

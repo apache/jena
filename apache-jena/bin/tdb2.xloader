@@ -129,7 +129,7 @@ function printUsage() {
     cat <<EOF
 $(basename $0) TDB2 Bulk Loader
 
-Usage: ${TDB_CMD} --loc <Directory> [--tmpdir=DIR] FILE ...
+Usage: ${TDB_CMD} --loc <Directory> [--tmpdir=DIR] [--threads=N] FILE ...
 
 Bulk loader for TDB2.
 See https://jena.apache.org/documentation/tdb/tdb-xloader.html
@@ -237,6 +237,8 @@ function exec_java() {
     fi
 }
 
+SORT_THREADS="-1"
+
 while [ $# -gt 0 ]
 do
     ARG=$1
@@ -253,8 +255,8 @@ do
 	    printUsage
 	    exit 0
 	    ;;
+	# Database location
         --loc|-loc)
-	    # Location space separated
 	    shift
 	    LOC="$1"
 	    shift
@@ -264,14 +266,24 @@ do
 	    LOC=${ARG/-*loc=/}
 	    shift
 	    ;;
+	# Workspace directory
         -tmpdir|--tmpdir)
-	    # Workspace directory
 	    shift
 	    TMPDIR="$1"
 	    shift
 	    ;;
 	-*tmpdir=*)
 	    TMPDIR=${ARG/-*tmpdir=/}
+	    shift
+	    ;;
+	## Number of sort threads
+	--threads|-threads)
+	    shift
+	    SORT_THREADS="$1"
+	    shift
+	    ;;
+	-*threads=*)
+	    SORT_THREADS=${ARG/-*threads=/}
 	    shift
 	    ;;
 	--)
@@ -287,9 +299,14 @@ do
 	    ;;
     esac
 done
+
+## Check argument SORT_THREADS
+if [[ ! $SORT_THREADS =~ ^-?[0-9]+$ ]] ; then
+    abort 1 "Bad value for --threads : $SORT_THREADS"
+fi
 	       
 if [[ $# -eq 0 ]] ; then
-    abort 1 "No files to load" 1>&2
+    abort 1 "No files to load"
 fi
 
 DATAFILES="$@"
@@ -368,7 +385,7 @@ if [ "$SYSTEM" == "TDB2" ]; then
     info
     T="$(now)"
     info "Load node table"
-    exec_java $PKG.CmdxBuildNodeTable --loc $LOC --tmpdir "$TMPDIR" $DATAFILES
+    exec_java $PKG.CmdxBuildNodeTable --loc $LOC --tmpdir "$TMPDIR" --threads $SORT_THREADS $DATAFILES
     TIME_NODE_TABLE=$(($(now)-$T))
     info "$STEP_END_MARKER"
 fi
@@ -393,7 +410,7 @@ function index() {
     info "Build $IDX"
     info "(Very long pause likely at this point)"
     local T="$(now)"
-    exec_java $PKG.CmdxBuildIndex --loc $LOC --tmpdir "$TMPDIR" --index $IDX \
+    exec_java $PKG.CmdxBuildIndex --loc $LOC --tmpdir "$TMPDIR" --threads $SORT_THREADS --index $IDX \
 	      "$TMPDIR/triples.tmp" "$TMPDIR/quads.tmp"
     info "$STEP_END_MARKER"
     local T_IDX=$(($(now)-$T))

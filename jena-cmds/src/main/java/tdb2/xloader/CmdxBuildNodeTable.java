@@ -34,8 +34,9 @@ public class CmdxBuildNodeTable extends AbstractCmdxLoad {
 
     @Override
     protected void setCmdArgs() {
-        super.add(argLocation,  "--loc=", "Database location");
-        super.add(argTmpdir,    "--tmpdir=", "Temporary directory (defaults to --loc)");
+        super.add(argLocation,      "--loc=", "Database location");
+        super.add(argTmpdir,        "--tmpdir=", "Temporary directory (defaults to --loc)");
+        super.add(argSortThreads,   "--threads=", "Number of threads; passed as an argument to sort(1)");
         //super.add(argSortNodeTableArgs, "--sortNodeTableArgs=", "Specialised argument for the sort for the node table");
     }
 
@@ -65,6 +66,6 @@ public class CmdxBuildNodeTable extends AbstractCmdxLoad {
 
         if ( tmpdir == null )
             tmpdir = location;
-        ProcBuildNodeTableX.exec(location, loaderFiles, filenames, sortNodeTableArgs);
+        ProcBuildNodeTableX.exec(location, loaderFiles, sortThreads, sortNodeTableArgs, filenames);
     }
 }

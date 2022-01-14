@@ -20,7 +20,7 @@ package tdb2.xloader;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.tdb2.xloader.ProcIndexBuildX;
+import org.apache.jena.tdb2.xloader.ProcBuildIndexX;
 
 public class CmdxBuildIndex extends AbstractCmdxLoad {
 
@@ -34,9 +34,10 @@ public class CmdxBuildIndex extends AbstractCmdxLoad {
 
     @Override
     protected void setCmdArgs() {
-        super.add(argLocation,  "--loc=", "Database location");
-        super.add(argTmpdir,    "--tmpdir=", "Temporary directory (defaults to --loc)");
-        super.add(argIndex,     "--index=", "Index name");
+        super.add(argLocation,      "--loc=", "Database location");
+        super.add(argTmpdir,        "--tmpdir=", "Temporary directory (defaults to --loc)");
+        super.add(argIndex,         "--index=", "Index name");
+        super.add(argSortThreads,   "--threads=", "Number of threads; passed as an argument to sort(1)");
         //super.add(argSortIndexArgs, "--sortIndexArgs=", "Specialised argument for the sort for the indexes");
     }
 
@@ -76,6 +77,6 @@ public class CmdxBuildIndex extends AbstractCmdxLoad {
 
         if ( tmpdir == null )
             tmpdir = location;
-        ProcIndexBuildX.exec(location, indexName, loaderFiles);
+        ProcBuildIndexX.exec(location, indexName, sortThreads, sortIndexArgs, loaderFiles);
     }
 }
