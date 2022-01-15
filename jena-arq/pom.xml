@@ -258,7 +258,6 @@
           <encoding>UTF-8</encoding>
           <windowtitle>Apache Jena ARQ</windowtitle>
           <doctitle>Apache Jena ARQ ${project.version}</doctitle>
-          <excludePackageNames>arq:arq.*:riotcmd:riotcmd.*</excludePackageNames>
           <groups>
             <group>
               <title>SPARQL Query and Update</title>

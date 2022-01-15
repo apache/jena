@@ -71,15 +71,17 @@ public class NodeTableCache implements NodeTable, TransactionListener {
     private final Object        lock          = new Object();
     private volatile Thread     writingThread;
 
+    /** Build a node table cache, based on the node/nodeIds setting in params. */
     public static NodeTable create(NodeTable nodeTable, StoreParams params) {
-        int nodeToIdCacheSize = params.getNode2NodeIdCacheSize();
-        int idToNodeCacheSize = params.getNodeId2NodeCacheSize();
-        if ( nodeToIdCacheSize <= 0 && idToNodeCacheSize <= 0 )
-            return nodeTable;
-        return create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, params.getNodeMissCacheSize());
+        boolean isData = true;
+        int nodeToIdCacheSize   = isData ? params.getNode2NodeIdCacheSize() : params.getPrefixNode2NodeIdCacheSize();
+        int idToNodeCacheSize   = isData ? params.getNodeId2NodeCacheSize() : params.getPrefixNodeId2NodeCacheSize();
+        int missCacheSize       = isData ? params.getNodeMissCacheSize()    : params.getPrefixNodeMissCacheSize();
+        return create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, missCacheSize);
     }
 
-    private static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize) {
+    /** Build a node table cache. */
+    public static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize) {
         if ( nodeToIdCacheSize <= 0 && idToNodeCacheSize <= 0 )
             return nodeTable;
         return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissesCacheSize);

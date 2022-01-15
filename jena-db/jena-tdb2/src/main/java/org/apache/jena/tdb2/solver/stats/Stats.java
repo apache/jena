@@ -46,41 +46,35 @@ public class Stats
     static Item ZERO = Item.createNode(NodeFactoryExtra.intToNode(0));
 
     /** Write statistics */
-    static public void write(String filename, StatsResults stats)
-    {
+    static public void write(String filename, StatsResults stats) {
         write(filename, stats.getPredicates(), stats.getTypes(), stats.getCount());
     }
 
     /** Write statistics */
-    static public void write(OutputStream output, StatsResults stats)
-    {
+    static public void write(OutputStream output, StatsResults stats) {
         write(output, stats.getPredicates(), stats.getTypes(), stats.getCount());
     }
 
-    static private void write(String filename, Map<Node, Integer> predicateStats, Map<Node, Integer> typeStats, long statsTotal)
-    {
+    static private void write(String filename, Map<Node, Long> predicateStats, Map<Node, Long> typeStats, long statsTotal) {
         // Write out the stats
         try (OutputStream statsOut = new BufferedOutputStream(new FileOutputStream(filename))) {
             write(statsOut, predicateStats, typeStats, statsTotal);
-        } catch (IOException ex)
-        { Log.warn(Stats.class, "Problem when writing stats file", ex); }
+        } catch (IOException ex) {
+            Log.warn(Stats.class, "Problem when writing stats file", ex);
+        }
     }
 
-    static private void write(OutputStream output, Map<Node, Integer> predicateStats, Map<Node, Integer> typeStats, long statsTotal)
-    {
+    static private void write(OutputStream output, Map<Node, Long> predicateStats, Map<Node, Long> typeStats, long statsTotal) {
         Item item = format(predicateStats, typeStats, statsTotal);
         ItemWriter.write(output, item);
     }
 
-
     /** Gather statistics, any graph */
-    public static StatsCollector gather(Graph graph)
-    {
+    public static StatsCollector gather(Graph graph) {
         StatsCollector stats = new StatsCollector();
 
         Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY);
-        for (; iter.hasNext() ; )
-        {
+        for ( ; iter.hasNext() ; ) {
             Triple t = iter.next();
             stats.record(null, t.getSubject(), t.getPredicate(), t.getObject());
         }
@@ -88,32 +82,28 @@ public class Stats
         return stats;
     }
 
-    public static Item format(StatsResults stats)
-    {
+    public static Item format(StatsResults stats) {
         return format(stats.getPredicates(), stats.getTypes(), stats.getCount());
     }
 
-    private static Item format(Map<Node, Integer> predicates, Map<Node, Integer> types, long count)
-    {
+    private static Item format(Map<Node, Long> predicates, Map<Node, Long> types, long count) {
         Item stats = Item.createList();
         ItemList statsList = stats.getList();
         statsList.add("stats");
 
         Item meta = createTagged(StatsMatcher.META);
         addPair(meta.getList(), "timestamp", NodeFactoryExtra.nowAsDateTime());
-        addPair(meta.getList(), "run@",  DateTimeUtils.nowAsString());
+        addPair(meta.getList(), "run@", DateTimeUtils.nowAsString());
         if ( count >= 0 )
             addPair(meta.getList(), StatsMatcher.COUNT, NodeFactoryExtra.intToNode(count));
         statsList.add(meta);
 
-        for ( Entry<Node, Integer> entry : types.entrySet() )
-        {
+        for ( Entry<Node, Long> entry : types.entrySet() ) {
             Node type = entry.getKey();
-            addTypeTriple(statsList, type, NodeFactoryExtra.intToNode(entry.getValue()) );
+            addTypeTriple(statsList, type, NodeFactoryExtra.intToNode(entry.getValue()));
         }
 
-        for ( Entry<Node, Integer> entry : predicates.entrySet() )
-        {
+        for ( Entry<Node, Long> entry : predicates.entrySet() ) {
             Node node = entry.getKey();
             // Skip these - they just clog things up!
             if ( node.getURI().startsWith("http://www.w3.org/1999/02/22-rdf-syntax-ns#_") )
@@ -127,8 +117,7 @@ public class Stats
         return stats;
     }
 
-    private static void addTypeTriple(ItemList statsList, Node type, Node intCount)
-    {
+    private static void addTypeTriple(ItemList statsList, Node type, Node intCount) {
         ItemList triple = new ItemList();
         triple.add("VAR");
         triple.add(NodeConst.nodeRDFType);

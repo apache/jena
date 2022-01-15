@@ -50,5 +50,17 @@ public interface StoreParamsDynamic {
     /** Node cache for recording known misses */
     public Integer getNodeMissCacheSize();
     public boolean isSetNodeMissCacheSize();
-}
 
+    // Same for prefix table.
+    /** Node cache for Node{@literal ->}NodeId. */
+    public Integer getPrefixNode2NodeIdCacheSize();
+    public boolean isSetPrefixNode2NodeIdCacheSize();
+
+    /** Node cache for NodeId{@literal ->}Node. Important for SPARQL results. */
+    public Integer getPrefixNodeId2NodeCacheSize();
+    public boolean isSetPrefixNodeId2NodeCacheSize();
+
+    /** Node cache for recording known misses */
+    public Integer getPrefixNodeMissCacheSize();
+    public boolean isSetPrefixNodeMissCacheSize();
+}

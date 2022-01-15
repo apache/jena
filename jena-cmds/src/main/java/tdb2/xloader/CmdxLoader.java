@@ -18,8 +18,16 @@
 
 package tdb2.xloader;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb.store.bulkloader.BulkLoader;
+import org.apache.jena.tdb2.DatabaseMgr;
+import org.apache.jena.tdb2.sys.TDBInternal;
 import org.apache.jena.tdb2.xloader.BulkLoaderX;
 
 
@@ -46,8 +54,9 @@ public class CmdxLoader extends AbstractCmdxLoad {
 
     @Override
     protected void setCmdArgs() {
-        super.add(argLocation,  "--loc=", "Database location");
-        super.add(argTmpdir,    "--tmpdir=", "Temporary directory (defaults to --loc)");
+        super.add(argLocation,      "--loc=", "Database location");
+        super.add(argTmpdir,        "--tmpdir=", "Temporary directory (defaults to --loc)");
+        super.add(argSortThreads,   "--threads=", "Number of threads; passed as an argument to sort(1)");
     }
 
     @Override
@@ -63,12 +72,15 @@ public class CmdxLoader extends AbstractCmdxLoad {
         return "cmd-xloader";
     }
 
+    private String TMPDIR;
+    private String DIR;
+    private String datafile;
+
     @Override
     protected void exec() {
-        // Java code to do all the steps.
-        String TMPDIR = super.tmpdir;
-        String DIR = super.location;
-        String datafile = super.filenames.get(0);
+        TMPDIR = super.tmpdir;
+        DIR = super.location;
+        datafile = super.filenames.get(0);
 
         FileOps.ensureDir(TMPDIR);
         FileOps.clearAll(TMPDIR);
@@ -82,29 +94,52 @@ public class CmdxLoader extends AbstractCmdxLoad {
         BulkLoader.DataTickPoint = BulkLoaderX.DataTick;
 
         long maxMemory = Runtime.getRuntime().maxMemory();
+        // Java code to do all the steps.
         System.out.printf("RAM = %,d\n", maxMemory);
 
         System.out.println("STEP 1 - load node table");
-        step(DIR, ()->CmdxBuildNodeTable.main("--loc=" + DIR, datafile));
+        step(()->CmdxBuildNodeTable.main("--loc=" + DIR, "--threads="+super.sortThreads, datafile));
 
         System.out.println("STEP 2 - ingest triples and quads");
-        step(DIR, ()->CmdxIngestData.main("--loc=" + DIR, datafile));
+        step(()->CmdxIngestData.main("--loc=" + DIR, datafile));
 
         System.out.println("STEP 3 - build indexes");
-        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=SPO"));
-        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=POS"));
-        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=OSP"));
 
-        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=GSPO"));
-        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=GPOS"));
-        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=GOSP"));
+        if ( ! isEmptyFile(loaderFiles.triplesFile) ) {
+            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=SPO"));
+            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=POS"));
+            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=OSP"));
+        }
 
-        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=SPOG"));
-        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=POSG"));
-        step(DIR, ()->CmdxBuildIndex.main("--loc=" + DIR, "--index=OSPG"));
+        if ( ! isEmptyFile(loaderFiles.quadsFile) ) {
+            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=GSPO"));
+            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=GPOS"));
+            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=GOSP"));
+
+            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=SPOG"));
+            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=POSG"));
+            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=OSPG"));
+        }
     }
 
-    private void step(String DIR, Runnable action) {
+    // Compression - empty file != zero size
+    private boolean isEmptyFile(String filename) {
+        try ( InputStream in = IO.openFile(filename) ) {
+            int b = in.read();
+            return (b == -1);
+        }
+        catch (IOException ex) {
+            throw IOX.exception(ex);
+        }
+    }
+
+    private void step(Runnable action) {
+        //expel();
         action.run();
+    }
+
+    private void expel() {
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(DIR);
+        TDBInternal.expel(dsg);
     }
 }

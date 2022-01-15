@@ -19,11 +19,8 @@
 package tdb2.xloader;
 
 import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.atlas.lib.Timer;
-import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.tdb2.xloader.BulkLoaderX;
-import org.apache.jena.tdb2.xloader.ProcIndexBuildX;
+import org.apache.jena.tdb2.xloader.ProcBuildIndexX;
 
 public class CmdxBuildIndex extends AbstractCmdxLoad {
 
@@ -37,9 +34,10 @@ public class CmdxBuildIndex extends AbstractCmdxLoad {
 
     @Override
     protected void setCmdArgs() {
-        super.add(argLocation,  "--loc=", "Database location");
-        super.add(argTmpdir,    "--tmpdir=", "Temporary directory (defaults to --loc)");
-        super.add(argIndex,     "--index=", "Index name");
+        super.add(argLocation,      "--loc=", "Database location");
+        super.add(argTmpdir,        "--tmpdir=", "Temporary directory (defaults to --loc)");
+        super.add(argIndex,         "--index=", "Index name");
+        super.add(argSortThreads,   "--threads=", "Number of threads; passed as an argument to sort(1)");
         //super.add(argSortIndexArgs, "--sortIndexArgs=", "Specialised argument for the sort for the indexes");
     }
 
@@ -71,9 +69,6 @@ public class CmdxBuildIndex extends AbstractCmdxLoad {
 
         FileOps.ensureDir(location);
 
-        Timer timer = new Timer();
-        timer.startTimer();
-        FmtLog.info(LOG, "Build index %s", indexName);
 //        FmtLog.info(LOG, "  Database = %s", location);
 //        FmtLog.info(LOG, "  TMPDIR   = %s", tmpdir==null?"unset":tmpdir);
 //        FmtLog.info(LOG, "  DATAFILE = %s", filenames);
@@ -82,16 +77,6 @@ public class CmdxBuildIndex extends AbstractCmdxLoad {
 
         if ( tmpdir == null )
             tmpdir = location;
-
-        long items = ProcIndexBuildX.exec(location, indexName, loaderFiles);
-
-        long timeMillis = timer.endTimer();
-
-        double xSec = timeMillis/1000.0;
-        double rate = items/xSec;
-        String elapsedStr = BulkLoaderX.milliToHMS(timeMillis);
-        String rateStr = BulkLoaderX.rateStr(items, timeMillis);
-
-        FmtLog.info(LOG, "Index - %s seconds - %s at %s TPS", Timer.timeStr(timeMillis), elapsedStr, rateStr);
+        ProcBuildIndexX.exec(location, indexName, sortThreads, sortIndexArgs, loaderFiles);
     }
 }

@@ -204,7 +204,7 @@ public class TDB2StorageBuilder {
 //    private Collection<TransactionalComponent> getComponents() { return components; }
 
     private StorageTDB buildStorage() {
-        NodeTable nodeTable = buildNodeTable(params.getNodeTableBaseName());
+        NodeTable nodeTable = buildNodeTable(params.getNodeTableBaseName(), true);
         TripleTable tripleTable = buildTripleTable(nodeTable);
         QuadTable quadTable = buildQuadTable(nodeTable);
         StorageTDB dsg = new StorageTDB(txnSystem, tripleTable, quadTable);
@@ -212,7 +212,7 @@ public class TDB2StorageBuilder {
     }
 
     private StoragePrefixes buildPrefixes() {
-        NodeTable nodeTablePrefixes = buildNodeTable(params.getPrefixTableBaseName());
+        NodeTable nodeTablePrefixes = buildNodeTable(params.getPrefixTableBaseName(), false);
         StoragePrefixesTDB prefixes = buildPrefixTable(nodeTablePrefixes);
         return prefixes;
     }
@@ -299,10 +299,10 @@ public class TDB2StorageBuilder {
         return bpt;
     }
 
-    private NodeTable buildNodeTable(String name) {
+    private NodeTable buildNodeTable(String name, boolean isData) {
         NodeTable nodeTable = buildBaseNodeTable(name);
 
-        nodeTable = NodeTableCache.create(nodeTable, params);
+        nodeTable = addNodeTableCache(nodeTable, params, isData);
 
         if ( nodeTable instanceof NodeTableCache ) {
             NodeTableCache nodeTableCache = (NodeTableCache)nodeTable;
@@ -310,6 +310,14 @@ public class TDB2StorageBuilder {
         }
 
         nodeTable = NodeTableInline.create(nodeTable);
+        return nodeTable;
+    }
+
+    private static NodeTable addNodeTableCache(NodeTable nodeTable, StoreParams params, boolean isData) {
+        int nodeToIdCacheSize   = isData ? params.getNode2NodeIdCacheSize() : params.getPrefixNode2NodeIdCacheSize();
+        int idToNodeCacheSize   = isData ? params.getNodeId2NodeCacheSize() : params.getPrefixNodeId2NodeCacheSize();
+        int missCacheSize       = isData ? params.getNodeMissCacheSize()    : params.getPrefixNodeMissCacheSize();
+        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, missCacheSize);
         return nodeTable;
     }
 

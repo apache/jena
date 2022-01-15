@@ -31,8 +31,6 @@ import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb2.xloader.XLoaderFiles;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Base class for TDB xloaders commands for java steps in the load process.
@@ -43,22 +41,24 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
         JenaSystem.init();
         LogCtl.setLog4j2();
     }
-    protected static Logger LOG = null;
-
     // All possible arguments for xloader commands.
     // The commands themselves check whether they have the necessary arguments.
-    protected static ArgDecl argLocation   = new ArgDecl(true, "loc", "location");
-    protected static ArgDecl argTmpdir     = new ArgDecl(true, "tmpdir", "tmp");
-    protected static ArgDecl argIndex      = new ArgDecl(true, "index");
+    protected static ArgDecl argLocation     = new ArgDecl(true, "location", "loc");
+    protected static ArgDecl argTmpdir       = new ArgDecl(true, "tmpdir", "tmp");
+    protected static ArgDecl argIndex        = new ArgDecl(true, "index");
+    protected static ArgDecl argSortThreads  = new ArgDecl(true, "threads",  "thread", "sortThreads", "sortthreads");
 
-    // If this is put back, note there are two different sorts - one for the node table and several for the indexes.
-    protected static ArgDecl argSortNodeTableArgs   = new ArgDecl(true, "sortNodeTableArgs");
-    protected static ArgDecl argSortIndexArgs   = new ArgDecl(true, "sortIndexArgs");
+//    // If this is put back, note there are two different sorts - one for the node table and several for the indexes.
+//    protected static ArgDecl argSortNodeTableArgs   = new ArgDecl(true, "sortNodeTableArgs");
+//    protected static ArgDecl argSortIndexArgs   = new ArgDecl(true, "sortIndexArgs");
 
     protected String location = null;
     protected String tmpdir = null;
     protected String indexName = null;
 
+    protected int sortThreads = -1;
+
+    // If we add support for arguments to sort(1)
     protected String sortNodeTableArgs = null;
     protected String sortIndexArgs = null;
 
@@ -69,12 +69,12 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
     protected AbstractCmdxLoad(String stageName, String[] argv) {
         super(argv);
         setCmdArgs();
-        LOG = LoggerFactory.getLogger(stageName);
 
-//        super.add(argLocation,  "--loc=", "Database location");
-//        super.add(argTmpdir,    "--tmpdir=", "Temporary directory (defaults to --loc)");
-//        super.add(argIndex,     "--index=", "Index name");
-//        super.add(argSortArgs, "--sortArgs=", "Arguments to sort(1)");
+//        super.add(argLocation,     "--loc=", "Database location");
+//        super.add(argTmpdir,       "--tmpdir=", "Temporary directory (defaults to --loc)");
+//        super.add(argIndex,        "--index=", "Index name");
+//        super.add(argSortThreads,  "--threads=", "Number of threads; passed as an argument to sort(1)");
+//        super.add(argSortArgs,     "--sortArgs=", "Arguments to sort(1)");
     }
 
     protected abstract void setCmdArgs();
@@ -95,8 +95,8 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
         tmpdir = super.getValue(argTmpdir);
         indexName = super.getValue(argIndex);
 
-        sortNodeTableArgs = super.getValue(argSortNodeTableArgs);
-        sortIndexArgs = super.getValue(argSortIndexArgs);
+//        sortNodeTableArgs = super.getValue(argSortNodeTableArgs);
+//        sortIndexArgs = super.getValue(argSortIndexArgs);
 
         if ( location != null )
             checkDirectory(location);
@@ -105,6 +105,15 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
         else
             tmpdir = location;
         filenames = new ArrayList<>(super.getPositional());
+
+        if ( super.contains(argSortThreads) ) {
+            String str = super.getValue(argSortThreads);
+            try {
+                sortThreads = Integer.parseInt(str);
+            } catch (NumberFormatException ex) {
+                throw new CmdException("--threads :: Failed to parse '"+str+"' as an integer");
+            }
+        }
 
         subCheckArgs();
 

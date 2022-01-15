@@ -43,9 +43,9 @@ public class StatsCollectorNodeId extends StatsCollectorBase<NodeId>
     }
 
     @Override
-    protected Map<Node, Integer> convert(Map<NodeId, Integer> stats)
+    protected Map<Node, Long> convert(Map<NodeId, Long> stats)
     {
-        Map<Node, Integer> statsNodes = new HashMap<>(1000) ;
+        Map<Node, Long> statsNodes = new HashMap<>(1000) ;
         for ( NodeId p : stats.keySet() )
         {
             Node n = nodeTable.getNodeForNodeId(p) ;

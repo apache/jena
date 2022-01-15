@@ -34,6 +34,7 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.iterator.IteratorSlotted;
 import org.apache.jena.atlas.lib.*;
 import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.file.BinaryDataFile;
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.FileFactory;
@@ -77,12 +78,48 @@ import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TTransport;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProcNodeTableBuilderX {
+/*
+ * Build the node table.
+ *
+ * <ul>
+ * <li>Step 1: Extract nodes from the input parser, writes (hash, terms in encoded RDF Thrift).
+ * <li>Step 2: Sort by hash and remove duplicates.
+ * <li>Step 2: Write node table data file and write node table index (B+tree).
+ * </ul>
+ * Outcome: complete node table.
+ */
+public class ProcBuildNodeTableX {
+    private static Logger LOG1 = LoggerFactory.getLogger("Nodes");
+    private static Logger LOG2 = LoggerFactory.getLogger("Terms");
 
-    /** Pair<triples, indexed nodes> */
+    public static void exec(String location, XLoaderFiles loaderFiles, int sortThreads, String sortNodeTableArgs, List<String> datafiles) {
+        Timer timer = new Timer();
+        timer.startTimer();
+        FmtLog.info(LOG1, "Build node table");
+//        FmtLog.info(LOG1, "  Database   = %s", location);
+//        FmtLog.info(LOG1, "  TMPDIR     = %s", tmpdir==null?"unset":tmpdir);
+//        FmtLog.info(LOG1, "  Data files = %s", StrUtils.strjoin(datafiles, " "));
+        Pair<Long/*triples or quads*/, Long/*indexed nodes*/> buildCounts =
+                ProcBuildNodeTableX.exec2(location, loaderFiles, sortThreads, sortNodeTableArgs, datafiles);
+        long timeMillis = timer.endTimer();
+
+        long items = buildCounts.getLeft();
+        double xSec = timeMillis/1000.0;
+        double rate = items/xSec;
+        String elapsedStr = BulkLoaderX.milliToHMS(timeMillis);
+        String rateStr = BulkLoaderX.rateStr(items, timeMillis);
+
+        FmtLog.info(LOG2, "%s NodeTable : %s seconds - %s at %s terms per second", BulkLoaderX.StepMarker,
+                    Timer.timeStr(timeMillis), elapsedStr, rateStr);
+    }
+
+    /** Pair<triples, indexed nodes>
+     * @param sortThreads */
     // [BULK] Output, not return.
-    public static Pair<Long, Long> exec(Logger LOG1, Logger LOG2, String DB, XLoaderFiles loaderFiles, List<String> datafiles, String sortNodeTableArgs) {
+    private static Pair<Long, Long> exec2(String DB, XLoaderFiles loaderFiles, int sortThreads, String sortNodeTableArgs, List<String> datafiles) {
+
         //Threads - 1 parser, 1 builder, 2 sort.
         // Steps:
         // 1 - parser to and pipe terms to sort
@@ -100,26 +137,31 @@ public class ProcNodeTableBuilderX {
         OutputStream toSortOutputStream;
         InputStream fromSortInputStream;
 
+        if ( sortThreads <= 0 )
+            sortThreads = 2;
+
         // ** Step 2: The sort
         Process proc2;
         try {
             //LOG.info("Step : external sort");
-            List<String> sortCmdBasics = Arrays.asList(
+            // Mutable list.
+            List<String> sortCmd = new ArrayList<>(Arrays.asList(
                   "sort",
-                    "--temporary-directory="+loaderFiles.TMPDIR, "--buffer-size=50%",
-                    "--parallel=2", "--unique",
-                    //"--compress-program=/usr/bin/gzip",
+                    "--temporary-directory="+loaderFiles.TMPDIR,
+                    "--buffer-size=50%",
+                    "--parallel="+sortThreads,
+                    "--unique",
                     "--key=1,1"
-                    );
+                    ));
 
-            List<String> sortCmd = new ArrayList<>(sortCmdBasics);
+            if ( BulkLoaderX.CompressSortNodeTableFiles )
+                sortCmd.add("--compress-program="+BulkLoaderX.gzipProgram());
 
             //if ( sortNodeTableArgs != null ) {}
 
-            // See javadoc for CompressSortNodeTableFiles - usually false
-            if ( BulkLoaderX.CompressSortNodeTableFiles )
-                sortCmd.add("--compress-program=/usr/bin/gzip");
-            proc2 = new ProcessBuilder(sortCmd).start();
+            ProcessBuilder pb2 = new ProcessBuilder(sortCmd);
+            pb2.environment().put("LC_ALL","C");
+            proc2 = pb2.start();
 
             // To process.
             toSortOutputStream = proc2.getOutputStream(); // Needs buffering
@@ -170,7 +212,9 @@ public class ProcNodeTableBuilderX {
 
             double xSec = x/1000.0;
             double rate = count/xSec;
-            FmtLog.info(LOG1, "== Parse: %s seconds : %,d triples/quads %,.0f TPS", Timer.timeStr(x), count, rate);
+            // [BULK] End stage.
+            FmtLog.info(LOG1, "%s Parse (nodes): %s seconds : %,d triples/quads %,.0f TPS", BulkLoaderX.StageMarker,
+                        Timer.timeStr(x), count, rate);
         };
 
         // [BULK] XXX AsyncParser.asyncParse(files, output)
@@ -218,19 +262,28 @@ public class ProcNodeTableBuilderX {
             long count = monitor.getTicks();
             countIndexedNodes.set(count);
             String rateStr = BulkLoaderX.rateStr(count, x);
-            FmtLog.info(LOG2, "==  Index: %s seconds : %,d indexed RDF terms : %s PerSecond", Timer.timeStr(x), count, rateStr);
+            FmtLog.info(LOG2, "%s Index terms: %s seconds : %,d indexed RDF terms : %s PerSecond", BulkLoaderX.StageMarker, Timer.timeStr(x), count, rateStr);
 
         };
         Thread thread3 = async(task3, "AsyncBuild");
 
         try {
-            int x = proc2.waitFor();
-            if ( x != 0 )
-                FmtLog.error(LOG2, "Sort RC = %d", x);
+            int exitCode = proc2.waitFor();
+            if ( exitCode != 0 ) {
+                String msg = IO.readWholeFileAsUTF8(proc2.getErrorStream());
+                String logMsg = String.format("Sort RC = %d : Error: %s", exitCode, msg);
+                Log.error(LOG2, logMsg);
+                // ** Exit process
+                System.exit(exitCode);
+            }
             else
                 LOG2.info("Sort finished");
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG1.error("Failed to cleanly wait-for the subprocess");
+            throw new RuntimeException(e);
+        } finally {
+            IO.close(toSortOutputStream);
+            IO.close(fromSortInputStream);
         }
 
         BulkLoaderX.waitFor(thread1);

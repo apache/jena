@@ -50,8 +50,12 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
     /*package*/ final Item<Integer>            Node2NodeIdCacheSize;
     /*package*/ final Item<Integer>            NodeId2NodeCacheSize;
     /*package*/ final Item<Integer>            NodeMissCacheSize;
+    /*package*/ final Item<Integer>            prefixNode2NodeIdCacheSize;
+    /*package*/ final Item<Integer>            prefixNodeId2NodeCacheSize;
+    /*package*/ final Item<Integer>            prefixNodeMissCacheSize;
 
-    /* These are items affect database layout and
+    /* 
+     * These are items affect database layout and
      * only can be applied when a database is created.
      * They do not affect existing databases.
      * If you want to, say, change the index structure,
@@ -84,8 +88,13 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
 
     /*package*/ StoreParams(Item<FileMode> fileMode, Item<Integer> blockSize,
                             Item<Integer> blockReadCacheSize, Item<Integer> blockWriteCacheSize,
+
+
                             Item<Integer> node2NodeIdCacheSize, Item<Integer> nodeId2NodeCacheSize,
                             Item<Integer> nodeMissCacheSize,
+
+                            Item<Integer> prefixNode2NodeIdCacheSize, Item<Integer> prefixNodeId2NodeCacheSize,
+                            Item<Integer> prefixNodeMissCacheSize,
 
                             Item<String> nodeTableBaseName,
                             Item<String> primaryIndexTriples, Item<String[]> tripleIndexes,
@@ -97,9 +106,14 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         this.blockSize              = blockSize;
         this.blockReadCacheSize     = blockReadCacheSize;
         this.blockWriteCacheSize    = blockWriteCacheSize;
+
         this.Node2NodeIdCacheSize   = node2NodeIdCacheSize;
         this.NodeId2NodeCacheSize   = nodeId2NodeCacheSize;
         this.NodeMissCacheSize      = nodeMissCacheSize;
+
+        this.prefixNode2NodeIdCacheSize   = prefixNode2NodeIdCacheSize;
+        this.prefixNodeId2NodeCacheSize   = prefixNodeId2NodeCacheSize;
+        this.prefixNodeMissCacheSize      = prefixNodeMissCacheSize;
 
         this.nodeTableBaseName      = nodeTableBaseName;
 
@@ -110,7 +124,7 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         this.primaryIndexPrefix     = primaryIndexPrefix;
         this.prefixIndexes          = prefixIndexes;
 
-        this.prefixTableBaseName         = prefixTableBasename;
+        this.prefixTableBaseName    = prefixTableBasename;
     }
 
     /** The system default settings. This is the normal set to use.
@@ -195,6 +209,36 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
 
     @Override
     public boolean isSetNodeMissCacheSize() {
+        return NodeMissCacheSize.isSet;
+    }
+
+    @Override
+    public Integer getPrefixNode2NodeIdCacheSize() {
+        return prefixNode2NodeIdCacheSize.value;
+    }
+
+    @Override
+    public boolean isSetPrefixNodeId2NodeCacheSize() {
+        return NodeId2NodeCacheSize.isSet;
+    }
+
+    @Override
+    public boolean isSetPrefixNode2NodeIdCacheSize() {
+        return Node2NodeIdCacheSize.isSet;
+    }
+
+    @Override
+    public Integer getPrefixNodeId2NodeCacheSize() {
+        return NodeId2NodeCacheSize.value;
+    }
+
+    @Override
+    public Integer getPrefixNodeMissCacheSize() {
+        return NodeMissCacheSize.value;
+    }
+
+    @Override
+    public boolean isSetPrefixNodeMissCacheSize() {
         return NodeMissCacheSize.isSet;
     }
 

@@ -26,8 +26,9 @@ import java.util.function.Consumer;
 
 import org.apache.jena.atlas.logging.Log ;
 
-/* Builder pattern for JSON.
- * The JsonValue built can be an array or object at the outmost leve, but not a atomic value.  
+/**
+ * Builder pattern for JSON.
+ * The JsonValue built can be an array or object at the outmost level, but not an atomic value.
  */
 public class JsonBuilder {
 
@@ -43,11 +44,11 @@ public class JsonBuilder {
     }
     private Deque<State>  stack = new ArrayDeque<>() ;
 
-    // The depth of this stack is the object depth. key: { key: ... } 
+    // The depth of this stack is the object depth. key: { key: ... }
     private Deque<String> keys  = new ArrayDeque<>() ;
 
     public static JsonBuilder create() { return new JsonBuilder() ; }
-    
+
     /** Create a builder from a {@link JsonValue}.
      *  <p>If the argument is an object or array, use it to initialize the builder.
      *  <p>If the argument is a JSON primitive (string, number, boolean or null),
@@ -60,7 +61,7 @@ public class JsonBuilder {
             builder.startObject() ;
             obj.forEach((k,v) -> builder.key(k).value(copy(v))) ;
             builder.finishObject() ;
-            return builder ; 
+            return builder ;
         }
         if ( arg.isArray() ) {
             JsonArray array = arg.getAsArray() ;
@@ -68,26 +69,26 @@ public class JsonBuilder {
             builder.startArray() ;
             array.forEach((a)->builder.value(copy(a))) ;
             builder.finishArray() ;
-            return builder ; 
+            return builder ;
         }
         throw new IllegalArgumentException("Not a JSON object or JSON array; "+arg);
     }
-    
-    
+
+
     /** Create a safe copy of a {@link JsonValue}.
      *  <p>
      *  If the JsonValue is a structure (object or array), copy the structure recursively.
      *  <p>
      *  If the JsonValue is a primitive (string, number, boolean or null),
-     *  it is immutable so return the same object.  
+     *  it is immutable so return the same object.
      */
     public static JsonValue copy(JsonValue arg) {
         if ( ! arg.isArray() && ! arg.isObject() )
             return arg;
         return createFrom(arg).build();
     }
-    
-    // An unlikely-to-be-used label to help check object alignment 
+
+    // An unlikely-to-be-used label to help check object alignment
     private static String LABEL = "%|%object%|%" ;
 
     /** Build a JsonObject.  The outer object is created and then the {@code setup} function called to fill in the contents.
@@ -96,7 +97,7 @@ public class JsonBuilder {
      *     builder.pair("key", 1234);
      * });
      * </pre>
-     * 
+     *
      * @param setup
      * @return JsonObject
      */
@@ -105,7 +106,7 @@ public class JsonBuilder {
         setup.accept(b);
         return b.finishObject(LABEL).build().getAsObject() ;
     }
-    
+
     public JsonBuilder() {
     }
 
@@ -117,19 +118,19 @@ public class JsonBuilder {
         }
         return builtValue ;
     }
-    
+
     public void reset() {
         builtValue = null ;
         stack.clear() ;
         objects.clear() ;
         keys.clear();
-        arrays.clear(); 
+        arrays.clear();
     }
 
     public JsonBuilder startObject() { return startObject(NoMarker) ; }
-    
+
     public JsonBuilder startObject(String startMarker) {
-        markers.push(startMarker); 
+        markers.push(startMarker);
         objects.push(new JsonObject()) ;
         stack.push(State.OBJECT) ;
         return this ;
@@ -139,7 +140,7 @@ public class JsonBuilder {
 
     public JsonBuilder finishObject(String finishMarker) {
         if ( stack.isEmpty() )
-            throw new JsonException("Alignment error : already built outer-most object or array") ; 
+            throw new JsonException("Alignment error : already built outer-most object or array") ;
         State state = stack.pop() ;
         if ( state != State.OBJECT )
             throw new JsonException("JSON build error : not in an object") ;
@@ -147,7 +148,7 @@ public class JsonBuilder {
         maybeObjectOrArray(value) ;
         if ( stack.isEmpty() )
             builtValue = value ;
-        String startMarker = markers.pop(); 
+        String startMarker = markers.pop();
         if ( ! Objects.equals(startMarker, finishMarker) )
             throw new JsonException("JSON build error : start/finish alignment error: start="+startMarker+"  finish="+finishMarker) ;
         return this ;
@@ -161,7 +162,7 @@ public class JsonBuilder {
 
     public JsonBuilder finishArray() {
         if ( stack.isEmpty() )
-            throw new JsonException("Alignment error : already built outer-most object or array") ; 
+            throw new JsonException("Alignment error : already built outer-most object or array") ;
 
         State state = stack.pop() ;
         if ( state != State.ARRAY )
@@ -218,6 +219,14 @@ public class JsonBuilder {
         return this ;
     }
 
+    public JsonBuilder remove(String key) {
+        State state = stack.peek() ;
+        if ( state != State.OBJECT )
+            throw new JsonException("JSON build error : not in an object") ;
+        objects.peek().remove(key);
+        return this ;
+    }
+
     private void maybeObjectOrArray(JsonValue value) {
         if ( stack.size() == 0 )
             // Error.
@@ -243,7 +252,7 @@ public class JsonBuilder {
         maybeObjectOrArray(v) ;
         return this ;
     }
-    
+
     public JsonBuilder value(boolean b) {
         JsonValue value = new JsonBoolean(b) ;
         maybeObjectOrArray(value) ;
