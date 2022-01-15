@@ -60,9 +60,11 @@ import org.slf4j.LoggerFactory;
 /**
  * Load the triples and quads to temporary files.
  * <p>
- * If the node table has been created ({@link ProcBuildNodeTableX}),
+ * If the node table has been created ({@link ProcBuildNodeTableX}), this step uses
+ * it to map Nodes to NodeIds (lookup).
  * <p>
- * If the node table was created, this step creates the node table.
+ * If the node table was not created, this step creates the node table and sets the
+ * mapping Nodes to NodeIds.
  */
 public class ProcIngestDataX {
 

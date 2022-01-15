@@ -323,7 +323,7 @@ fi
 [[ -z $TMPDIR ]] && TMPDIR=$LOC
 
 if [[ ! -e $TMPDIR ]] ; then
-    mkdir "$TMPDIR"
+    mkdir -p "$TMPDIR"
     #abort 2 echo "TMPDIR $TMPDIR does not exist"
 fi
 

@@ -18,7 +18,11 @@
 
 package org.apache.jena.tdb2.xloader;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
+
+import org.apache.jena.tdb2.TDBException;
 
 public class BulkLoaderX {
     public static int DataTick = 1_000_000;
@@ -51,6 +55,26 @@ public class BulkLoaderX {
      * Whether to compress intermediate sort files for the indexes.
      */
     public static boolean CompressSortIndexFiles = true;
+
+    // Ubuntu: it now (21.04) is at /usr/bin/gzip.
+    //   /bin has become a symbolic link to /usr/bin.
+    //   New installs of 20.04 have it at /usr/bin, upgrades have it at /bin.
+    /*package*/ static String gzipProgram() {
+        if ( programInstalledAt("/usr/bin/gzip") )
+            return "/usr/bin/gzip";
+        if ( programInstalledAt("/bin/gzip") )
+            return "/bin/gzip";
+        throw new TDBException("Can't find gzip program");
+    }
+
+    private static boolean programInstalledAt(String pathname) {
+        Path path = Path.of(pathname);
+        if ( ! Files.exists(path) )
+            return false;
+        if ( ! Files.isExecutable(path) )
+            throw new TDBException(pathname+" is not executable by this process");
+        return false;
+    }
 
     public static Thread async(Runnable action, String threadName) {
         Objects.requireNonNull(action);

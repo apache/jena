@@ -155,7 +155,7 @@ public class ProcBuildNodeTableX {
                     ));
 
             if ( BulkLoaderX.CompressSortNodeTableFiles )
-                sortCmd.add("--compress-program=/usr/bin/gzip");
+                sortCmd.add("--compress-program="+BulkLoaderX.gzipProgram());
 
             //if ( sortNodeTableArgs != null ) {}
 
@@ -278,10 +278,12 @@ public class ProcBuildNodeTableX {
             }
             else
                 LOG2.info("Sort finished");
+        } catch (InterruptedException e) {
+            LOG1.error("Failed to cleanly wait-for the subprocess");
+            throw new RuntimeException(e);
+        } finally {
             IO.close(toSortOutputStream);
             IO.close(fromSortInputStream);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
         BulkLoaderX.waitFor(thread1);

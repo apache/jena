@@ -67,7 +67,6 @@ public class ProcBuildIndexX
 {
     // Sort and build.
 
-
     // K1="-k 1,1"
     // K2="-k 2,2"
     // K3="-k 3,3"
@@ -82,7 +81,6 @@ public class ProcBuildIndexX
     // generate_index "$K2 $K3 $K4 $K1" "$DATA_QUADS" SPOG
     // generate_index "$K3 $K4 $K2 $K1" "$DATA_QUADS" POSG
     // generate_index "$K4 $K2 $K3 $K1" "$DATA_QUADS" OSPG
-
 
     private static Logger LOG = LoggerFactory.getLogger("Index");
 
@@ -102,7 +100,6 @@ public class ProcBuildIndexX
 
         FmtLog.info(LOG, "%s Index %s : %s seconds - %s at %s TPS", BulkLoaderX.StepMarker, indexName, Timer.timeStr(timeMillis), elapsedStr, rateStr);
     }
-
 
     private static long exec2(String location, String indexName, int sortThreads, String sortIndexArgs, XLoaderFiles loaderFiles) {
         DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(location);
@@ -183,7 +180,7 @@ public class ProcBuildIndexX
             ));
 
             if ( BulkLoaderX.CompressSortIndexFiles )
-                sortCmd.add("--compress-program=/usr/bin/gzip");
+                sortCmd.add("--compress-program="+BulkLoaderX.gzipProgram());
 
             // Sort order
             sortCmd.addAll(sortKeyArgs);
@@ -234,10 +231,12 @@ public class ProcBuildIndexX
             }
 //            else
 //                LOG.info("Sort finished");
+        } catch (InterruptedException e) {
+            LOG.error("Failed to cleanly wait-for the subprocess");
+            throw new RuntimeException(e);
+        } finally {
             IO.close(toSortOutputStream);
             IO.close(fromSortInputStream);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
         return count;
     }

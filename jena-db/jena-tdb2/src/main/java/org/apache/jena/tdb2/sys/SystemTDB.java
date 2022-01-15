@@ -161,7 +161,7 @@ public class SystemTDB
     /** Size of Node to NodeId cache for prefixes. */
     public static final int PrefixNode2NodeIdCacheSize    = intValue("PrefixNode2NodeIdCacheSize", 250);
 
-    /** Size of NodeId to Node cache. for prefixes.*/
+    /** Size of NodeId to Node cache for prefixes. */
     public static final int PrefixNodeId2NodeCacheSize    = intValue("PrefixNodeId2NodeCacheSize", 1000 );
 
     /** Size of Node lookup miss cache for prefixes. */

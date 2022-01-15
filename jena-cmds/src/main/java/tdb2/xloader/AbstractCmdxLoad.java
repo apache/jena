@@ -109,7 +109,7 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
         if ( super.contains(argSortThreads) ) {
             String str = super.getValue(argSortThreads);
             try {
-            sortThreads = Integer.parseInt(str);
+                sortThreads = Integer.parseInt(str);
             } catch (NumberFormatException ex) {
                 throw new CmdException("--threads :: Failed to parse '"+str+"' as an integer");
             }

@@ -71,7 +71,7 @@ public class NodeTableCache implements NodeTable, TransactionListener {
     private final Object        lock          = new Object();
     private volatile Thread     writingThread;
 
-    /** Build a node table cache, based on the node/nodIs setting in params. */
+    /** Build a node table cache, based on the node/nodeIds setting in params. */
     public static NodeTable create(NodeTable nodeTable, StoreParams params) {
         boolean isData = true;
         int nodeToIdCacheSize   = isData ? params.getNode2NodeIdCacheSize() : params.getPrefixNode2NodeIdCacheSize();
