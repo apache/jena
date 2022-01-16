@@ -277,7 +277,7 @@ public class HttpLib {
         if (SKIP_BYTE_BUFFER == null) {
             SKIP_BYTE_BUFFER = new byte[SKIP_BUFFER_SIZE];
         }
-        int bytesRead = 0; // Informational
+        long bytesRead = 0; // Informational
         try {
             for(;;) {
                 // See https://issues.apache.org/jira/browse/IO-203 for why we use read() rather than delegating to skip()
