@@ -91,4 +91,15 @@ public class JenaXMLInput {
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         return factory;
     }
+
+    // For reference : jdom:
+//    // ---- SAXBuilder
+//    public static SAXBuilder newSAXBuilder() throws ParserConfigurationException {
+//        SAXBuilder builder = new SAXBuilder();
+//        builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+//        builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
+//        builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+//        builder.setExpandEntities(false);
+//        return builder;
+//    }
 }
