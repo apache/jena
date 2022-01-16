@@ -18,7 +18,6 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import FusekiService from '@/services/fuseki.service'
 
@@ -32,6 +31,5 @@ Vue.prototype.$fusekiService = fusekiService
 
 new Vue({
   router,
-  store,
   render: h => h(App)
 }).$mount('#app')

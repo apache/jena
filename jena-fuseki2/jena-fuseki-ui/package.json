@@ -1,16 +1,17 @@
 {
   "name": "apache-jena-fuseki",
-  "description": "Apache Jena Fuseki UI",
   "version": "1.0.0",
   "private": false,
+  "description": "Apache Jena Fuseki UI",
   "author": "Apache Jena Team",
   "license": "Apache-2.0",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
+    "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
-    "test:unit": "vue-cli-service test:unit"
+    "coverage:unit": "nyc vue-cli-service test:unit",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -24,18 +25,20 @@
     "core-js": "^3.20.2",
     "vue": "^2.6.14",
     "vue-router": "^3.5.3",
-    "vue-upload-component": "^2.8.22",
-    "vuex": "^3.6.2"
+    "vue-upload-component": "^2.8.22"
   },
   "devDependencies": {
+    "@babel/register": "^7.16.9",
+    "@istanbuljs/nyc-config-babel": "^3.0.0",
     "@vue/cli-plugin-babel": "^4.5.15",
     "@vue/cli-plugin-e2e-cypress": "^4.5.15",
     "@vue/cli-plugin-eslint": "^4.5.15",
-    "@vue/cli-plugin-unit-mocha": "^4.5.15",
+    "@vue/cli-plugin-unit-mocha": "~4.5.0",
     "@vue/cli-service": "^4.5.15",
     "@vue/eslint-config-standard": "^6.1.0",
     "@vue/test-utils": "^1.3.0",
     "babel-eslint": "^10.1.0",
+    "babel-plugin-istanbul": "^6.1.1",
     "chai": "^4.3.4",
     "eslint": "^7.22.0",
     "eslint-plugin-import": "^2.25.3",
@@ -43,8 +46,11 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^4.1.0",
     "eslint-plugin-vue": "^8.2.0",
+    "istanbul-instrumenter-loader": "^3.0.1",
+    "nyc": "^15.1.0",
     "sass": "^1.45.2",
     "sass-loader": "^10.1.1",
+    "sinon": "^12.0.1",
     "vue-template-compiler": "^2.6.14"
   },
   "resolutions": {

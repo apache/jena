@@ -68,6 +68,7 @@ export default {
 
   beforeDestroy () {
     clearInterval(this.interval)
+    this.interval = null
   }
 }
 </script>

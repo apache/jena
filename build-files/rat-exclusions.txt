@@ -106,4 +106,6 @@ jena-fuseki2/jena-fuseki-ui/yarn.lock
 jena-fuseki2/jena-fuseki-ui/.browserslistrc
 jena-fuseki2/jena-fuseki-ui/.editorconfig
 jena-fuseki2/jena-fuseki-ui/yarn-error.log
-
+jena-fuseki2/jena-fuseki-ui/.nycrc
+jena-fuseki2/jena-fuseki-ui/tests/.eslintrc.js
+jena-fuseki2/jena-fuseki-ui/coverage/**/*
