@@ -62,6 +62,11 @@ public class QueryExecUtils {
     }
     protected static Prologue      dftPrologue     = new Prologue(globalPrefixMap) ;
 
+    public static void exec(Query query, DatasetGraph dsg) {
+        QueryExec qExec = QueryExec.dataset(dsg).query(query).build();
+        exec(qExec);
+    }
+
     public static void exec(QueryExec queryExec) {
         exec(queryExec.getQuery(), queryExec) ;
     }

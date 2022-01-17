@@ -124,7 +124,7 @@ public class FusekiLib {
      * Any other operations are replaced with "access denied".
      */
     public static void modifyForAccessCtl(Endpoint endpoint, Function<HttpAction, String> determineUser) {
-        endpoint.setProcessor( controlledProc(endpoint.getOperation(), determineUser));
+        endpoint.setProcessor( controlledProc(endpoint.getOperation(), determineUser) );
     }
 
     private static ActionService controlledProc(Operation op, Function<HttpAction, String> determineUser) {

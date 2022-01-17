@@ -115,7 +115,9 @@ public interface Transactional
     public void begin(TxnType type);
 
     /** Start either a READ or WRITE transaction. */
-    public void begin(ReadWrite readWrite) ;
+    public default void begin(ReadWrite readWrite) {
+        begin(TxnType.convert(readWrite));
+    }
 
     /**
      * Attempt to promote a transaction from "read" to "write" when the transaction

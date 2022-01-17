@@ -19,7 +19,6 @@
 package org.apache.jena.rdfs.assembler;
 
 import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue;
-import static org.apache.jena.sparql.util.graph.GraphUtils.getResourceValue;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
@@ -55,11 +54,9 @@ public class DatasetRDFSAssembler extends DatasetAssembler {
     @Override
     public DatasetGraph createDataset(Assembler a, Resource root) {
 
-        Resource dataset = getResourceValue(root, VocabRDFS.pDataset) ;
-        if ( dataset == null )
+        DatasetGraph base = super.createBaseDataset(root, VocabRDFS.pDataset);
+        if ( base == null )
             throw new AssemblerException(root, "Required base dataset missing: "+VocabRDFS.pDataset) ;
-
-        DatasetGraph base = createBaseDataset(root, VocabRDFS.pDataset);
 
         String schemaFile = getAsStringValue(root, VocabRDFS.pRdfsSchemaFile);
         if ( schemaFile == null )

@@ -50,7 +50,7 @@ import org.apache.jena.fuseki.ctl.*;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
-import org.apache.jena.fuseki.main.sys.FusekiMonitor;
+import org.apache.jena.fuseki.main.sys.FusekiModuleStep;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.*;
@@ -276,9 +276,9 @@ public class FusekiServer {
      */
     public FusekiServer start() {
         try {
-            FusekiMonitor.serverBeforeStarting(this);
+            FusekiModuleStep.serverBeforeStarting(this);
             server.start();
-            FusekiMonitor.serverAfterStarting(this);
+            FusekiModuleStep.serverAfterStarting(this);
         }
         catch (IOException ex) {
             if ( ex.getCause() instanceof java.security.UnrecoverableKeyException )
@@ -341,7 +341,7 @@ public class FusekiServer {
         Fuseki.serverLog.info("Stop Fuseki");
         try {
             server.stop();
-            FusekiMonitor.serverStopped(this);
+            FusekiModuleStep.serverStopped(this);
         } catch (Exception e) { throw new FusekiException(e); }
     }
 
@@ -444,7 +444,7 @@ public class FusekiServer {
         }
 
         // Builder with provided operation-action mapping.
-        Builder(OperationRegistry  operationRegistry) {
+        Builder(OperationRegistry operationRegistry) {
             // Isolate.
             this.operationRegistry = OperationRegistry.createEmpty();
             OperationRegistry.copyConfig(operationRegistry, this.operationRegistry);
@@ -1000,8 +1000,6 @@ public class FusekiServer {
             return this;
         }
 
-        Map<String, DataService.Builder> builders;
-
 
         private void serviceEndpointOperation(String datasetName, String endpointName, Operation operation, AuthPolicy authPolicy) {
             String name = DataAccessPoint.canonical(datasetName);
@@ -1069,16 +1067,21 @@ public class FusekiServer {
             if ( serverHttpPort < 0 && serverHttpsPort < 0 )
                 serverHttpPort = DefaultServerPort;
 
+            // Internally built - does not need to be copied.
             DataAccessPointRegistry dapRegistry = buildStart();
 
-            FusekiMonitor.configuration(this, dapRegistry, configModel);
+            // Freeze operation registry (builder may be reused).
+            OperationRegistry operationReg = new OperationRegistry(operationRegistry);
+
+            // FusekiModule call.
+            FusekiModuleStep.configuration(this, dapRegistry, configModel);
 
             buildSecurity(dapRegistry);
             try {
                 validate();
                 if ( securityHandler == null && passwordFile != null )
                     securityHandler = buildSecurityHandler();
-                ServletContextHandler handler = buildFusekiContext(dapRegistry);
+                ServletContextHandler handler = buildFusekiContext(dapRegistry, operationReg);
 
                 if ( jettyServerConfig != null ) {
                     Server server = jettyServer(handler, jettyServerConfig);
@@ -1100,7 +1103,7 @@ public class FusekiServer {
                     applyLocalhost(server);
 
                 FusekiServer fusekiServer = new FusekiServer(httpPort, httpsPort, server, staticContentDir, handler.getServletContext());
-                FusekiMonitor.server(fusekiServer);
+                FusekiModuleStep.server(fusekiServer);
                 return fusekiServer;
             } finally {
                 buildFinish();
@@ -1136,6 +1139,7 @@ public class FusekiServer {
         private boolean hasAuthenticationHandler = false;
 
         // Whether there is any per-graph access control.
+        // Used for checking.
         private boolean hasDataAccessControl     = false;
 
         // Do we need to authenticate the user?
@@ -1206,34 +1210,40 @@ public class FusekiServer {
             }
         }
 
-        /** Build one configured Fuseki processor (ServletContext), same dispatch ContextPath
-         * @param dapRegistry */
-        private ServletContextHandler buildFusekiContext(DataAccessPointRegistry dapRegistry) {
+        /**
+         * Build one configured Fuseki processor (ServletContext), same dispatch ContextPath
+         * @param dapRegistry
+         */
+        private ServletContextHandler buildFusekiContext(DataAccessPointRegistry dapRegistry, OperationRegistry operationReg) {
             ServletContextHandler handler = buildServletContext(contextPath);
             ServletContext cxt = handler.getServletContext();
             Fuseki.setVerbose(cxt, verbose);
             servletAttr.forEach((n,v)->cxt.setAttribute(n, v));
 
-            OperationRegistry operationReg = new OperationRegistry(operationRegistry);
             OperationRegistry.set(cxt, operationReg);
+            // DataAccessPointRegistry was created by buildStart so does not need copying.
             DataAccessPointRegistry.set(cxt, dapRegistry);
+
             JettyLib.setMimeTypes(handler);
             servletsAndFilters(handler);
             buildAccessControl(handler);
 
             dapRegistry.forEach((name, dap) -> {
-                // Custom processors (endpoint specific,fuseki:implementation) will have already
-                // been set; all others need setting from the OperationRegistry in scope.
-                dap.getDataService().setEndpointProcessors(operationReg);
-                dap.getDataService().forEachEndpoint(ep->{
-                    // Override for graph-level access control.
-                    if ( DataAccessCtl.isAccessControlled(dap.getDataService().getDataset()) )
-                        FusekiLib.modifyForAccessCtl(ep, DataAccessCtl.requestUserServlet);
-                });
+                // Override for graph-level access control.
+                if ( DataAccessCtl.isAccessControlled(dap.getDataService().getDataset()) ) {
+                    dap.getDataService().forEachEndpoint(ep->
+                        FusekiLib.modifyForAccessCtl(ep, DataAccessCtl.requestUserServlet));
+                }
             });
 
             // Start services.
-            dapRegistry.forEach((name, dap)->dap.getDataService().goActive());
+            dapRegistry.forEach((name, dap)-> {
+                // Custom processors (endpoint specific,fuseki:implementation)
+                // will have already been set. Normal defaults need setting
+                // from the OperationRegistry in scope.
+                dap.getDataService().setEndpointProcessors(operationReg);
+                dap.getDataService().goActive();
+            });
             return handler;
         }
 

@@ -18,13 +18,8 @@
 
 package org.apache.jena.fuseki.access;
 
-import java.util.concurrent.ConcurrentHashMap;
-
-/**
- * A {@link AuthorizationService} implemented with a {@link ConcurrentHashMap}.
- */
 public interface AuthorizationService {
 
-    /** Return the security context  for a geiven actor (user) */
+    /** Return the security context for a given actor (user) */
     public SecurityContext get(String actor);
 }

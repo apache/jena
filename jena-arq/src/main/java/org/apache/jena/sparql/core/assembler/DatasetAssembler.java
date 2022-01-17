@@ -43,7 +43,10 @@ public abstract class DatasetAssembler extends AssemblerBase implements Assemble
 
     public abstract DatasetGraph createDataset(Assembler a, Resource root);
 
-    /** Helper for datasets that layer on top of other datasets. */
+    /**
+     * Helper for datasets that layer on top of other datasets.
+     * Assembler a DatasetGraph from description referred to by resource-property.
+     */
     protected DatasetGraph createBaseDataset(Resource dbAssem, Property pDataset) {
         Resource dataset = getResourceValue(dbAssem, pDataset) ;
         if ( dataset == null )

@@ -203,7 +203,7 @@ public class DataService {
         state = OFFLINE;
     }
 
-    /** Set any {@link ActionService} processors is currently unset. */
+    /** Set any {@link ActionService} processors that are currently unset. */
     public void setEndpointProcessors(OperationRegistry operationRegistry) {
         // Make sure the processor is set for each endpoint.
         forEachEndpoint(ep->{
@@ -213,7 +213,6 @@ public class DataService {
     }
 
     private void ensureEnpointProcessors() {
-        // Better is to have then set purposefully.
         forEachEndpoint(ep->{
             if ( ep.getProcessor() == null )
                 Fuseki.configLog.warn("No processor for "+ep.getName());

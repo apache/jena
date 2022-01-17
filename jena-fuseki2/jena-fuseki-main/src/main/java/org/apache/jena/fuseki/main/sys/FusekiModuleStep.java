@@ -22,8 +22,8 @@ import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
 
-public class FusekiMonitor {
-
+/** Call points for FusekiModule extensions */
+public class FusekiModuleStep {
     /**
      * Call at the start of "build" step.
      * The builder has been set according to the configuration.

@@ -21,9 +21,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.SRSInfo;
@@ -698,13 +700,21 @@ public class GMLReader implements ParserReader {
             gmlText = EMPTY_GML_TEXT;
         }
 
-        SAXBuilder jdomBuilder = new SAXBuilder();
-        InputStream stream = new ByteArrayInputStream(gmlText.getBytes("UTF-8"));
+        SAXBuilder jdomBuilder = newSAXBuilder();
+        InputStream stream = new ByteArrayInputStream(gmlText.getBytes(StandardCharsets.UTF_8));
         Document xmlDoc = jdomBuilder.build(stream);
-
         Element gmlElement = xmlDoc.getRootElement();
-
         return new GMLReader(gmlElement);
+    }
+
+    // ---- XXE safe SAXBuilder
+    private static SAXBuilder newSAXBuilder() {
+        SAXBuilder builder = new SAXBuilder();
+        builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+        builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        builder.setExpandEntities(false);
+        return builder;
     }
 
     @Override

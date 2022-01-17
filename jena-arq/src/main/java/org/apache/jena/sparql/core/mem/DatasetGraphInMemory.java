@@ -141,11 +141,6 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public boolean supportsTransactionAbort()   { return true; }
 
     @Override
-    public void begin(final ReadWrite readWrite) {
-        begin(TxnType.convert(readWrite));
-    }
-
-    @Override
     public void begin(TxnType txnType) {
         if (isInTransaction())
             throw new JenaTransactionException("Transactions cannot be nested!");
