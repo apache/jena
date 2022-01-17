@@ -63,7 +63,7 @@ public class NodeUtils
         return true ;
     }
 
-    /** Get lexical for of anything that looks like a string literal.
+    /** Get lexical form of anything that looks like a string literal.
      * Returns the string value of plain literal (simple literal
      * or lang string) or XSD string.
      */
@@ -81,6 +81,10 @@ public class NodeUtils
             return literal.getLiteralLexicalForm() ;
 
         return null ;
+    }
+
+    public static Node nullToAny(Node n) {
+        return n == null ? Node.ANY : n;
     }
 
     /** Convert IRI Nodes to strings.  Skip other kinds of Node */
