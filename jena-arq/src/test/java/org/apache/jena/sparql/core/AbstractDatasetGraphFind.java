@@ -21,7 +21,6 @@ package org.apache.jena.sparql.core;
 import static org.apache.jena.atlas.iterator.Iter.asStream ;
 import static org.apache.jena.atlas.iterator.Iter.toList;
 import static org.apache.jena.atlas.iterator.Iter.toSet;
-import static org.apache.jena.atlas.junit.AssertExtra.assertEqualsUnordered;
 import static org.apache.jena.atlas.lib.StreamOps.toList;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertFalse ;
@@ -33,12 +32,14 @@ import java.util.*;
 import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.sse.SSE ;
+import org.junit.Assert;
 import org.junit.Assume ;
 import org.junit.Before ;
 import org.junit.Test ;
@@ -297,6 +298,17 @@ public abstract class AbstractDatasetGraphFind {
         assertFalse(x.contains(q2)) ;
         assertFalse(x.contains(q4)) ;
         assertTrue(x.contains(q5)) ;
+    }
+
+    public static <T> void assertEqualsUnordered(List<T> list1, List<T> list2) {
+        if ( ! ListUtils.equalsUnordered(list1, list2) )
+            Assert.fail(msg(null, list1, list2)) ;
+    }
+
+    private static <T> String msg(String msg, List<T> list1, List<T> list2) {
+        String x = ( msg == null ) ? "" : msg+": " ;
+        x = x +"Expected: " + list1 + " : Actual: " + list2 ;
+        return x ;
     }
 
     static List<Triple> quadsToDistinctTriples(Iterator<Quad> iter) {
