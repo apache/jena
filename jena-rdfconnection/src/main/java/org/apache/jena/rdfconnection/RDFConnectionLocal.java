@@ -83,14 +83,14 @@ public class RDFConnectionLocal implements RDFConnection {
     }
 
     @Override
-    public UpdateExecutionBuilder newUpdate() {
-        return UpdateExecution.create().dataset(dataset);
-    }
-
-    @Override
     public void update(UpdateRequest update) {
         checkOpen();
         Txn.executeWrite(dataset, ()->UpdateExecutionFactory.create(update, dataset).execute() );
+    }
+
+    @Override
+    public UpdateExecutionBuilder newUpdate() {
+        return UpdateExecution.create().dataset(dataset);
     }
 
     @Override

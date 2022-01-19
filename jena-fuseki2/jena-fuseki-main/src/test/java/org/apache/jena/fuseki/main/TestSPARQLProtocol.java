@@ -84,7 +84,7 @@ public class TestSPARQLProtocol extends AbstractFusekiTest
     @Test
     public void update_02() {
         UpdateRequest update = UpdateFactory.create("INSERT DATA {}");
-        UpdateProcessor proc = UpdateExecutionFactory.createRemoteForm(update, serviceUpdate());
+        UpdateExecution proc = UpdateExecutionFactory.createRemoteForm(update, serviceUpdate());
         proc.execute();
     }
 }

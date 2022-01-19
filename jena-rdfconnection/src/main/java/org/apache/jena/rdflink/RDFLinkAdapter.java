@@ -18,7 +18,6 @@
 
 package org.apache.jena.rdflink;
 
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.DatasetFactory;
@@ -95,14 +94,19 @@ public class RDFLinkAdapter implements RDFLink {
 
     @Override
     public UpdateExecBuilder newUpdate() {
+        // No adapting a previous wrapped RDFLink via RDFConnectionAdapter
         throw new UnsupportedOperationException("RDFLinkAdapter.newUpdate");
     }
 
     @Override
-    public void update(UpdateRequest update) { throw new NotImplemented("Impleemntation needed");}// UpdateProcessorAdapter.adapt(conn.update(update)); }
+    public void update(UpdateRequest update) {
+        conn.update(update);
+    }
 
     @Override
-    public void update(String update) { throw new NotImplemented("Impleemntation needed");} //return UpdateProcessorAdapter.adapt(conn.update(update)); }
+    public void update(String update) {
+        conn.update(update);
+    }
 
     @Override
     public Graph get() {

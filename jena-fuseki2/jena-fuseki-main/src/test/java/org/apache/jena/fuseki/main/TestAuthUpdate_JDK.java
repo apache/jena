@@ -25,7 +25,7 @@ import java.net.URI;
 import org.apache.jena.http.auth.AuthEnv;
 import org.apache.jena.sparql.exec.http.UpdateExecutionHTTP;
 import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateProcessor;
+import org.apache.jena.update.UpdateExecution;
 import org.apache.jena.update.UpdateRequest;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
     @Test
     public void update_jdk_auth_01() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessor ue = UpdateExecutionHTTP.create()
+        UpdateExecution ue = UpdateExecutionHTTP.create()
                                     .endpoint(databaseURL())
                                     .update(updates)
                                     .build();
@@ -47,7 +47,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
     @Test
     public void update_jdk_auth_02() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessor ue = withAuthJDK(UpdateExecutionHTTP.create()
+        UpdateExecution ue = withAuthJDK(UpdateExecutionHTTP.create()
                                                .endpoint(databaseURL())
                                                .update(updates),
                                            "allowed", "bad-password");
@@ -57,7 +57,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
     @Test
     public void update_jdk_auth_03() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessor ue = withAuthJDK(UpdateExecutionHTTP.create()
+        UpdateExecution ue = withAuthJDK(UpdateExecutionHTTP.create()
                                                .endpoint(databaseURL())
                                                .update(updates),
                                            "allowed", "password");
@@ -67,7 +67,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
     @Test
     public void update_with_auth_04() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessor ue = withAuthJDK(UpdateExecutionHTTP.create()
+        UpdateExecution ue = withAuthJDK(UpdateExecutionHTTP.create()
                                                .endpoint(databaseURL())
                                                .update(updates),
                                            "allowed", "password");
@@ -78,7 +78,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
     public void update_authenv_01_good() {
         // Auth credentials for valid user with correct password
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessor ue = UpdateExecutionHTTP.create().endpoint(databaseURL()).update(updates).build();
+        UpdateExecution ue = UpdateExecutionHTTP.create().endpoint(databaseURL()).update(updates).build();
         String dsURL = databaseURL();
         URI uri = URI.create(dsURL);
         AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");

@@ -216,7 +216,7 @@ public class Test_SPARQL_TDB
     private void update(Dataset dataset, String string)
     {
         UpdateRequest req = UpdateFactory.create(string);
-        UpdateProcessor proc = UpdateExecutionFactory.create(req, dataset);
+        UpdateExecution proc = UpdateExecutionFactory.create(req, dataset);
         proc.execute();
     }
 }

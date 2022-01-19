@@ -39,6 +39,8 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.system.Txn;
+import org.apache.jena.update.UpdateExecution;
+import org.apache.jena.update.UpdateExecutionBuilder;
 import org.apache.jena.update.UpdateRequest;
 import org.junit.Assume;
 import org.junit.Test;
@@ -402,6 +404,17 @@ public abstract class AbstractTestRDFConnection {
             Txn.executeWrite(conn, ()->conn.update(update));
         }
     }
+
+    @Test public void update_05() {
+        UpdateRequest update = new UpdateRequest();
+        update.add("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
+        try ( RDFConnection conn = connection() ) {
+            UpdateExecutionBuilder updateBuilder = conn.newUpdate();
+            UpdateExecution uExec = updateBuilder.update(update).build();
+            Txn.executeWrite(conn, ()->uExec.execute());
+        }
+    }
+
     // Not all Transactional support abort.
     @Test public void transaction_commit_read_01() {
         try ( RDFConnection conn = connection() ) {
