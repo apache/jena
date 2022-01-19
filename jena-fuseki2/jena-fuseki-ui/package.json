@@ -46,5 +46,9 @@
     "sass": "^1.45.2",
     "sass-loader": "^10.1.1",
     "vue-template-compiler": "^2.6.14"
+  },
+  "resolutions": {
+    "node-forge": "^1.0.0",
+    "follow-redirects": "^1.14.7"
   }
 }
