@@ -19,6 +19,7 @@
 package org.apache.jena.rdflink;
 
 import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.sparql.exec.UpdateExecBuilder;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateRequest;
 
@@ -45,6 +46,15 @@ public interface LinkSparqlUpdate extends Transactional, AutoCloseable
      * @param updateString
      */
     public void update(String updateString);
+
+    /**
+     * Return a {@link UpdateExecBuilder} that is initially configured for this link
+     * setup and type. The update built will be set to go to the same dataset/remote
+     * endpoint as the other RDFLink operations.
+     *
+     * @return UpdateExecBuilder
+     */
+    public UpdateExecBuilder newUpdate();
 
     /** Close this connection. */
     @Override public void close();

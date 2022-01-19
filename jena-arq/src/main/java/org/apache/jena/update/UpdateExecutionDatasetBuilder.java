@@ -28,7 +28,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.exec.UpdateExecDatasetBuilder;
-import org.apache.jena.sparql.exec.UpdateProcessorAdapter;
+import org.apache.jena.sparql.exec.UpdateExecutionAdapter;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
@@ -126,7 +126,7 @@ public class UpdateExecutionDatasetBuilder implements UpdateExecutionBuilder {
     @Override
     public UpdateExecution build() {
         UpdateExec exec = builder.build();
-        return UpdateProcessorAdapter.adapt(exec);
+        return UpdateExecutionAdapter.adapt(exec);
     }
 
     // Abbreviated forms

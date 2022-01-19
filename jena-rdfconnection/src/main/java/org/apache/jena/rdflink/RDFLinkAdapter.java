@@ -32,6 +32,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecBuilder;
+import org.apache.jena.sparql.exec.UpdateExecBuilder;
 import org.apache.jena.update.UpdateRequest;
 
 public class RDFLinkAdapter implements RDFLink {
@@ -90,6 +91,11 @@ public class RDFLinkAdapter implements RDFLink {
     public QueryExecBuilder newQuery() {
         // No adapting a previous wrapped RDFLink via RDFConnectionAdapter
         throw new UnsupportedOperationException("RDFLinkAdapter.newQuery");
+    }
+
+    @Override
+    public UpdateExecBuilder newUpdate() {
+        throw new UnsupportedOperationException("RDFLinkAdapter.newUpdate");
     }
 
     @Override

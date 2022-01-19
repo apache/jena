@@ -25,8 +25,12 @@ import org.apache.jena.sparql.exec.http.UpdateExecutionHTTPBuilder;
 /** An instance of a execution of an UpdateRequest */
 public interface UpdateExecution extends UpdateProcessor
 {
+    public static UpdateExecutionDatasetBuilder create() {
+        return UpdateExecutionDatasetBuilder.create();
+    }
+
     public static UpdateExecutionDatasetBuilder dataset(Dataset dataset) {
-        return UpdateExecutionDatasetBuilder.create().dataset(dataset);
+        return create().dataset(dataset);
     }
 
     public static UpdateExecutionHTTPBuilder service(String serviceURL) {
@@ -36,4 +40,5 @@ public interface UpdateExecution extends UpdateProcessor
     /** Execute */
     @Override
     public void execute() ;
+
 }

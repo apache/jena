@@ -40,6 +40,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.UpdateExecBuilder;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateFactory;
@@ -384,6 +385,16 @@ public interface RDFLink extends
      */
     @Override
     public QueryExecBuilder newQuery();
+
+    /**
+     * Return a {@link UpdateExecBuilder} that is initially configured for this link
+     * setup and type. The update built will be set to go to the same dataset/remote
+     * endpoint as the other RDFLink operations.
+     *
+     * @return UpdateExecBuilder
+     */
+    @Override
+    public UpdateExecBuilder newUpdate();
 
     // ---- SparqlUpdateConnection
 
