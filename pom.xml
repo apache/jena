@@ -827,7 +827,6 @@
             <goals>
               <goal>enforce</goal>
             </goals>
-
             <configuration combine.self="override">
               <rules>
                 <dependencyConvergence />
@@ -840,6 +839,9 @@
                   <message>No SNAPSHOT dependencies are allowed!</message>
                   <onlyWhenRelease>true</onlyWhenRelease>
                 </requireReleaseDeps>
+                <requireMavenVersion>
+                  <version>3.8.1</version>
+                </requireMavenVersion>
               </rules>
               <fail>true</fail>
               <failFast>false</failFast>
@@ -898,7 +900,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.9.0</version>
           <configuration>
             <release>${java.version}</release>
           </configuration>
@@ -1076,7 +1078,7 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>5.1.2</version>
+          <version>5.1.4</version>
           <extensions>true</extensions>
         </plugin>
 
