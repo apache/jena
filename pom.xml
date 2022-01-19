@@ -96,7 +96,7 @@
     <ver.contract.tests>0.2.0</ver.contract.tests>
 
     <!--- GeoSPARQL related -->
-    <ver.sis>1.0</ver.sis>
+    <ver.sis>1.1</ver.sis>
     
     <java.version>11</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

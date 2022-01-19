@@ -99,7 +99,11 @@ public class SRSInfoTest {
         CoordinateReferenceSystem crs = CRS.forCode(srsURI);
         Boolean isAxisXY = SRSInfo.checkAxisXY(crs);
 
-        Envelope expResult = new Envelope(-118397.00138845091, 751441.7790901454, -16627.734375018626, 1272149.3463499574);
+        // SIS 1.0
+        //Envelope expResult = new Envelope(-118397.00138845091, 751441.7790901454, -16627.734375018626, 1272149.3463499574);
+        // SIS 1.1
+        Envelope expResult = new Envelope(-104009.35713717458, 688806.0073395987, -16627.734528041445, 1256558.4455361878);
+
         Envelope result = SRSInfo.buildDomainEnvelope(crs, isAxisXY);
         assertEquals(expResult, result);
     }
