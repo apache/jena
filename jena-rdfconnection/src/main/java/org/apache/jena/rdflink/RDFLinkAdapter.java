@@ -88,13 +88,13 @@ public class RDFLinkAdapter implements RDFLink {
 
     @Override
     public QueryExecBuilder newQuery() {
-        // No adapting a previous wrapped RDFLink via RDFConnectionAdapter
+        // Can't adapt a previously wrapped RDFLink via RDFConnectionAdapter
         throw new UnsupportedOperationException("RDFLinkAdapter.newQuery");
     }
 
     @Override
     public UpdateExecBuilder newUpdate() {
-        // No adapting a previous wrapped RDFLink via RDFConnectionAdapter
+        // Can't adapt a previously wrapped RDFLink via RDFConnectionAdapter
         throw new UnsupportedOperationException("RDFLinkAdapter.newUpdate");
     }
 

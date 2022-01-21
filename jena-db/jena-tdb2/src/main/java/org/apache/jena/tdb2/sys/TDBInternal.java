@@ -160,7 +160,6 @@ public class TDBInternal {
         return null;
     }
 
-
     /** Stop managing a DatasetGraph. Use with great care. */
     public static synchronized void expel(DatasetGraph dsg) {
         Location locContainer = null;
