@@ -101,7 +101,6 @@ public class UpdateExecHTTP implements UpdateExec {
                 thisParams.add(HttpNames.paramUsingNamedGraphURI, uri);
         }
 
-        // Same as QueryExecutionHTTP
         modifyByService(service, context, thisParams, httpHeaders);
 
         switch(sendMode) {
@@ -113,8 +112,6 @@ public class UpdateExecHTTP implements UpdateExec {
     }
 
     private void executePostBody(Params thisParams) {
-        //String str = (updateString != null) ? updateString : update.toString();
-        // Can't be null.
         String str = updateString;
         String requestURL = service;
         if ( thisParams.count() > 0 ) {

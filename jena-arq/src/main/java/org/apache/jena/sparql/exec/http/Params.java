@@ -114,7 +114,9 @@ public class Params
 
     /** URL query string, without leading "?" */
     public String httpString() {
-        return format(new StringBuilder(), paramList).toString();
+        if ( paramList.isEmpty() )
+            return "";
+        return formatEncodeHTTP(new StringBuilder(), paramList).toString();
     }
 
 //    /** URL query string, without leading "?" */
@@ -131,7 +133,7 @@ public class Params
     /**
      * Return a string that is suitable for HTTP use.
      */
-    private static StringBuilder format(StringBuilder result, List <Param> parameters) {
+    private static StringBuilder formatEncodeHTTP(StringBuilder result, List <Param> parameters) {
         parameters.forEach(param->{
             String encodedName = encode(param.getName());
             String encodedValue = encode(param.getValue());
