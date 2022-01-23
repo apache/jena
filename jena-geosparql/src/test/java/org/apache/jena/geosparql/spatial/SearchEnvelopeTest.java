@@ -61,10 +61,16 @@ public class SearchEnvelopeTest {
     public static final double Y1 = -90;
     public static final double Y2 = 90;
 
-    public static final double OS_X1 = -118397.00138845091;
-    public static final double OS_X2 = 751441.7790901454;
-    public static final double OS_Y1 = -16627.734375018626;
-    public static final double OS_Y2 = 1272149.3463499574;
+    // SIS 1.0
+    //public static final double OS_X1 = -118397.00138845091;
+    //public static final double OS_X2 = 751441.7790901454;
+    //public static final double OS_Y1 = -16627.734375018626;
+    //public static final double OS_Y2 = 1272149.3463499574;
+    // SIS 1.1
+    public static final double OS_X1 = -104009.35713717458;
+    public static final double OS_X2 = 688806.0073395987;
+    public static final double OS_Y1 = -16627.734528041445;
+    public static final double OS_Y2 = 1256558.4455361878;
 
     /**
      * Test of build method, of class SearchEnvelope.
