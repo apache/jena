@@ -400,7 +400,7 @@ public class HttpLib {
         if ( queryString == null || queryString.isEmpty() )
             // Empty string. Don't add "?"
             return url;
-        String sep =  url.contains("?") ? "&" : "?";
+        String sep = url.contains("?") ? "&" : "?";
         String requestURL = url+sep+queryString;
         return requestURL;
     }
