@@ -23,7 +23,6 @@ import static org.junit.Assert.*;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
@@ -256,6 +255,19 @@ public class TestSSE_Basic
     @Test public void testTripleTerm_12()  { parseBad("<< :s :p >>"); }
     @Test public void testTripleTerm_13()  { parseBad("<< <<:s :p :o >> :q >> "); }
 
+    @Test public void testQuotedTriple_1()  { testNode("(qtriple :s :p :o)"); }
+    @Test public void testQuotedTriple_2()  { testNode("(qtriple :s :p :o)"); }
+    @Test public void testQuotedTriple_3()  { testNode("(qtriple ?s ?p ?o)"); }
+    @Test public void testQuotedTriple_4()  { testNode("(qtriple (qtriple :s :p :o ) :q (qtriple :s :p :o))"); }
+    @Test public void testQuotedTriple_5()  { testNode("(qtriple << :s :p :o >> :q << :s :p :o >>)"); }
+
+    // Legal as  structure, can't be lifted.
+    @Test public void testQuotedTriple_11()  { parseBadNoLift("(qtriple :s)"); }
+    @Test public void testQuotedTriple_12()  { parseBadNoLift("(qtriple :s :p)"); }
+    @Test public void testQuotedTriple_13()  { parseBadNoLift("(qtriple (qtriple :s :p :o) :q "); }
+    @Test public void testQuotedTriple_14()  { parseBadNoLift("(qtriple <<:s :p :o >> :q "); }
+
+
     @Test public void testTaggedList_1()
     {
         Item x = Item.createTagged("TAG") ;
@@ -381,7 +393,17 @@ public class TestSSE_Basic
             //System.out.println(str+" => "+item) ;
             fail("Did not get a parse failure") ;
         }
-        catch (ARQException ex) {}
+        catch (ItemException | SSE_ParseException ex) {}
+    }
+
+    private void parseBadNoLift(String str)
+    {
+        try {
+            Node node = SSE.parseNode(str) ;
+            //System.out.println(str+" => "+item) ;
+            fail("Did not get a parse failure") ;
+        }
+        catch (ItemException | SSE_ParseException ex) {}
     }
 
     private void parseBadNode(String str)
@@ -392,8 +414,7 @@ public class TestSSE_Basic
             //System.out.println(str+" => "+item) ;
             fail("Did not get a parse failure") ;
         }
-        //catch (RiotException ex) {}
-        catch (ARQException ex) {}
+        catch (ItemException | SSE_ParseException ex) {}
     }
 
 }

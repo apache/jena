@@ -18,45 +18,38 @@
 
 package org.apache.jena.sparql.sse.lang;
 
-import java.io.Reader ;
+import java.io.Reader;
 
-import org.apache.jena.sparql.sse.SSEParseException ;
-import org.apache.jena.sparql.sse.lang.parser.ParseException ;
-import org.apache.jena.sparql.sse.lang.parser.SSE_ParserCore ;
-import org.apache.jena.sparql.sse.lang.parser.TokenMgrError ;
+import org.apache.jena.sparql.sse.SSE_ParseException;
+import org.apache.jena.sparql.sse.lang.parser.ParseException;
+import org.apache.jena.sparql.sse.lang.parser.SSE_ParserCore;
+import org.apache.jena.sparql.sse.lang.parser.TokenMgrError;
 
 /** Public interface to the SSE parser */
-
 public class SSE_Parser
 {
     @FunctionalInterface
     private interface ParserEntry { void entry(SSE_ParserCore parser) throws ParseException; }
-
-    public static void term(Reader reader, ParseHandler handler) {
-        parse$(reader, handler, SSE_ParserCore::term);
-    }
 
     public static void parse(Reader reader, ParseHandler handler) {
         parse$(reader, handler, SSE_ParserCore::parse);
     }
 
     private static void parse$(Reader reader, ParseHandler handler, ParserEntry parserStep) {
-        SSE_ParserCore p = new SSE_ParserCore(reader) ;
-        p.setHandler(handler) ;
+        SSE_ParserCore p = new SSE_ParserCore(reader);
+        p.setHandler(handler);
         try {
             parserStep.entry(p);
-//        Token tok = p.token_source.getNextToken();
-//        if ( tok.kind != 0 )
-//            throw new SSEParseException("Trailing characters at "+tok, tok.beginLine, tok.beginColumn) ;
+            // EOF checking done within the parser.
         }
         catch (ParseException ex)
-        { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
+        { throw new SSE_ParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn); }
         catch (TokenMgrError tErr)
         {
             // Last valid token : not the same as token error message - but this should not happen
-            int col = p.token.endColumn ;
-            int line = p.token.endLine ;
-            throw new SSEParseException(tErr.getMessage(), line, col) ;
+            int col = p.token.endColumn;
+            int line = p.token.endLine;
+            throw new SSE_ParseException(tErr.getMessage(), line, col);
         }
     }
 

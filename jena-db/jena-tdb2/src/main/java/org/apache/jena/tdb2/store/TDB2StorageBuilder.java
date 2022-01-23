@@ -42,7 +42,7 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
-import org.apache.jena.sparql.sse.SSEParseException;
+import org.apache.jena.sparql.sse.SSE_ParseException;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.params.StoreParamsCodec;
@@ -352,7 +352,7 @@ public class TDB2StorageBuilder {
                 reorder = ReorderLib.weighted(location.getPath(Names.optStats)) ;
                 log.debug("Statistics-based BGP optimizer") ;
             }
-            catch (SSEParseException ex) {
+            catch (SSE_ParseException ex) {
                 log.warn("Error in stats file: " + ex.getMessage()) ;
                 reorder = null ;
             }

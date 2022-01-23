@@ -16,27 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.expr;
+package org.apache.jena.sparql.sse.builders;
 
-import org.apache.jena.sparql.function.library.triple.EmbeddedTripleFunctions;
-import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.sse.ItemException;
 
-public class E_TripleTerm extends ExprFunction3 {
-
-    private static final String symbol = Tags.tagFnTriple;
-
-    public E_TripleTerm(Expr expr1, Expr expr2, Expr expr3) {
-        // SPARQL keyword, symbol for SSE.
-        super(expr1, expr2, expr3, symbol);
+public class SSE_BuildException extends ItemException
+{
+//        public BuildException(Throwable cause) { super(cause); }
+//        public BuildException() { super(); }
+        public SSE_BuildException (String msg) { super(msg); }
+        public SSE_BuildException (String msg, Throwable cause) { super(msg, cause); }
     }
-
-    @Override
-    public NodeValue eval(NodeValue s, NodeValue p, NodeValue o) {
-        return EmbeddedTripleFunctions.fnTriple(s, p, o);
-    }
-
-    @Override
-    public Expr copy(Expr arg1, Expr arg2, Expr arg3) {
-        return new E_TripleTerm(arg1, arg2, arg3);
-    }
-}

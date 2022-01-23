@@ -18,113 +18,104 @@
 
 package org.apache.jena.sparql.sse.lang;
 
-import org.apache.jena.sparql.sse.Item ;
-
+import org.apache.jena.sparql.sse.Item;
 
 /** Tracing parser handler - logs what the core parse sees */
 
 public class ParseHandlerDebug implements ParseHandler
 {
-    int count = 0 ;
+    int count = 0;
 
-    private void indent()
-    {
-        for ( int i = 0 ; i < count ; i++ ) System.out.print("  ") ;
+    private void indent() {
+        for ( int i = 0 ; i < count ; i++ )
+            System.out.print("  ");
     }
 
-    private void line(int line, int column)
-    {
-        System.out.print("["+line+", "+column+"]  ") ;
-        indent() ;
-    }
-
-    @Override
-    public Item getItem()       { return null ; }
-
-    @Override
-    public void parseStart()
-    { System.out.println("<<<<") ; }
-
-    @Override
-    public void parseFinish()
-    { System.out.println(">>>>") ; }
-
-    @Override
-    public void listStart(int line, int column)
-    {
-        line(line, column) ;
-        count++ ;
-        System.out.println("(") ;
+    private void line(int line, int column) {
+        System.out.print("[" + line + ", " + column + "]  ");
+        indent();
     }
 
     @Override
-    public void listFinish(int line, int column)
-    {
-        count-- ;
-        line(line, column) ;
-        System.out.println(")") ;
-    }
-
-
-
-    @Override
-    public void emitBNode(int line, int column, String label)
-    {
-        line(line, column) ;
-        System.out.println("BNode: "+label) ;
-    }
-
-
-    @Override
-    public void emitIRI(int line, int column, String iriStr)
-    {
-        line(line, column) ;
-        System.out.println("IRI: "+iriStr) ;
+    public Item getItem() {
+        return null;
     }
 
     @Override
-    public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn)
-    {
-        line(line, column) ;
+    public void parseStart() {
+        System.out.println("<<<<");
+    }
+
+    @Override
+    public void parseFinish() {
+        System.out.println(">>>>");
+    }
+
+    @Override
+    public void listStart(int line, int column) {
+        line(line, column);
+        count++;
+        System.out.println("(");
+    }
+
+    @Override
+    public void listFinish(int line, int column) {
+        count--;
+        line(line, column);
+        System.out.println(")");
+    }
+
+    @Override
+    public void emitBNode(int line, int column, String label) {
+        line(line, column);
+        System.out.println("BNode: " + label);
+    }
+
+    @Override
+    public void emitIRI(int line, int column, String iriStr) {
+        line(line, column);
+        System.out.println("IRI: " + iriStr);
+    }
+
+    @Override
+    public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn) {
+        line(line, column);
         if ( lang != null )
-            System.out.println("Literal: "+lex+" @"+lang) ;
+            System.out.println("Literal: " + lex + " @" + lang);
         else if ( datatype_iri != null )
-            System.out.println("Literal: "+lex+" ^^"+datatype_iri) ;
+            System.out.println("Literal: " + lex + " ^^" + datatype_iri);
         else if ( datatype_pn != null )
-            System.out.println("Literal: "+lex+" ^^"+datatype_pn) ;
+            System.out.println("Literal: " + lex + " ^^" + datatype_pn);
     }
 
     @Override
-    public void emitPName(int line, int column, String pname)
-    {
-        line(line, column) ;
-        System.out.println("PName: "+pname) ;
+    public void emitPName(int line, int column, String pname) {
+        line(line, column);
+        System.out.println("PName: " + pname);
     }
 
     @Override
-    public void emitSymbol(int line, int column, String symbol)
-    {
-        line(line, column) ;
-        System.out.println("Symbol: "+symbol) ;
+    public void emitSymbol(int line, int column, String symbol) {
+        line(line, column);
+        System.out.println("Symbol: " + symbol);
     }
 
     @Override
-    public void emitVar(int line, int column, String varName)
-    {
-        line(line, column) ;
-        System.out.println("Var: "+varName) ;
+    public void emitVar(int line, int column, String varName) {
+        line(line, column);
+        System.out.println("Var: " + varName);
     }
 
     @Override
     public void tripleTermStart(int line, int column) {
-        line(line, column) ;
-        System.out.println("<<") ;
+        line(line, column);
+        System.out.println("<<");
     }
 
     @Override
     public void tripleTermFinish(int line, int column) {
-        line(line, column) ;
-        System.out.println(">>") ;
+        line(line, column);
+        System.out.println(">>");
     }
 
 }

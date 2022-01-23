@@ -18,12 +18,12 @@
 
 package org.apache.jena.sparql.sse.lang;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.ItemList ;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.ItemList;
 
 public class ParseHandlerLink extends ParseHandlerResolver
 {
@@ -31,69 +31,63 @@ public class ParseHandlerLink extends ParseHandlerResolver
     // Implements (link@ LABEL) and (@name LABEL expression) to give non-trees.
     // Caveat: other things assume tree walking.
 
-    static final String tagLink = "link@" ;
-    static final String tagName = "@name" ;
+    static final String tagLink = "link@";
+    static final String tagName = "@name";
 
     public ParseHandlerLink(String baseStr, PrefixMapping prefixMapping) {
         super(baseStr, prefixMapping);
     }
 
-    String currentName = null ;
-    Map<String, Item> namedItems = new HashMap<>() ;    // Item => Item
+    String currentName = null;
+    Map<String, Item> namedItems = new HashMap<>();    // Item => Item
 
     // ----
 
     @Override
-    public void parseFinish()
-    {
+    public void parseFinish() {
         // Check links.
-        super.parseFinish() ;
+        super.parseFinish();
     }
 
     // ----
 
     @Override
-    protected void declItem(ItemList list, Item item)
-    {
-        if ( list.getFirst().isSymbol(tagLink) )
-        {
-            super.declItem(list, item) ;
-            return ;
+    protected void declItem(ItemList list, Item item) {
+        if ( list.getFirst().isSymbol(tagLink) ) {
+            super.declItem(list, item);
+            return;
         }
 
-        if ( list.getFirst().isSymbol(tagName) )
-        {
-            if ( ! item.isSymbol() )
-                throwException("Must be a symbol for a named item: "+item.shortString(), item) ;
+        if ( list.getFirst().isSymbol(tagName) ) {
+            if ( !item.isSymbol() )
+                throwException("Must be a symbol for a named item: " + item.shortString(), item);
 
             if ( namedItems.containsKey(item.getSymbol()) )
-                throwException("Name already defined: "+item, item) ;
-            currentName = item.getSymbol() ;
-            // Add it anyway.  Removed in form processing.
-            super.declItem(list, item) ;
-            return ;
+                throwException("Name already defined: " + item, item);
+            currentName = item.getSymbol();
+            // Add it anyway. Removed in form processing.
+            super.declItem(list, item);
+            return;
         }
 
-        super.declItem(list, item) ;
+        super.declItem(list, item);
     }
 
     @Override
-    protected boolean endOfDecl(ItemList list, Item item)
-    {
-        // XXX No.  This does not allow for nested "@names"
-        super.setFormResult(item) ;
+    protected boolean endOfDecl(ItemList list, Item item) {
+        // XXX No. This does not allow for nested "@names"
+        super.setFormResult(item);
         if ( namedItems.containsKey(currentName) )
-            throwException("Name already defined: "+currentName, item) ;
-        namedItems.put(currentName, item) ;
-        currentName = null ;
-        return super.endOfDecl(list, item) ;
+            throwException("Name already defined: " + currentName, item);
+        namedItems.put(currentName, item);
+        currentName = null;
+        return super.endOfDecl(list, item);
     }
 
     @Override
-    protected boolean isForm(Item tag)
-    {
+    protected boolean isForm(Item tag) {
         if ( tag.isSymbol(tagLink) || tag.isSymbol(tagName) )
-            return true ;
-        return super.isForm(tag) ;
+            return true;
+        return super.isForm(tag);
     }
 }

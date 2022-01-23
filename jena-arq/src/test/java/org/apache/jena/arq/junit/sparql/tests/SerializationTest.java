@@ -23,7 +23,7 @@ import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.sse.SSEParseException ;
+import org.apache.jena.sparql.sse.SSE_ParseException ;
 import org.apache.jena.sparql.util.QueryUtils ;
 
 public class SerializationTest implements Runnable
@@ -74,7 +74,7 @@ public class SerializationTest implements Runnable
 
         try {
             QueryUtils.checkOp(query, true) ;
-        } catch (SSEParseException ex)
+        } catch (SSE_ParseException ex)
         {
             System.err.println("**** Test: "+testEntry.getName()) ;
             System.err.println("** Algebra error: "+ex.getMessage()) ;

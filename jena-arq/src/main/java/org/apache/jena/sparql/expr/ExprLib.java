@@ -239,6 +239,6 @@ public class ExprLib
         Expr e1 = nodeToExpr(t.getSubject());
         Expr e2 = nodeToExpr(t.getPredicate());
         Expr e3 = nodeToExpr(t.getObject());
-        return new E_TripleTerm(e1, e2, e3);
+        return new E_TripleFn(e1, e2, e3);
     }
 }

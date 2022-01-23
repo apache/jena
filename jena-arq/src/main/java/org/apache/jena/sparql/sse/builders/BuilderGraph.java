@@ -18,21 +18,21 @@
 
 package org.apache.jena.sparql.sse.builders;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.graph.GraphFactory ;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.ItemList ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeUtils ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.ItemList;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeUtils;
 
-public class BuilderGraph
-{
+public class BuilderGraph {
+
     public static Graph buildGraph(Item item) {
         Graph graph = GraphFactory.createDefaultGraph();
         buildGraph(graph, item);
@@ -79,43 +79,35 @@ public class BuilderGraph
         return graph;
     }
 
-    /** Format:
-     * (dataset
-     *    (graph ...))
-     *    (quad ...)
-     *    (g s p o)
-     *    (graph IRIa ...))
-     *    (graph IRIb ...))
-     *    )
-     * (graph ...) is an abbreviation for a dataset with a default graph and no named graphs.
+    /**
+     * Format: (dataset (graph ...)) (quad ...) (g s p o) (graph IRIa ...)) (graph
+     * IRIb ...)) ) (graph ...) is an abbreviation for a dataset with a default graph
+     * and no named graphs.
      */
 
-    public static DatasetGraph buildDataset(Item item)
-    {
-        return buildDataset(DatasetGraphFactory.createTxnMem(), item) ;
+    public static DatasetGraph buildDataset(Item item) {
+        return buildDataset(DatasetGraphFactory.createTxnMem(), item);
     }
 
-    public static DatasetGraph buildDataset(ItemList list)
-    {
-        return buildDataset(DatasetGraphFactory.createTxnMem(), list) ;
+    public static DatasetGraph buildDataset(ItemList list) {
+        return buildDataset(DatasetGraphFactory.createTxnMem(), list);
     }
 
-    public static DatasetGraph buildDataset(DatasetGraph dsg, Item item)
-    {
-        if (item.isNode() )
-            BuilderLib.broken(item, "Attempt to build dataset from a plain node") ;
+    public static DatasetGraph buildDataset(DatasetGraph dsg, Item item) {
+        if ( item.isNode() )
+            BuilderLib.broken(item, "Attempt to build dataset from a plain node");
 
-        if (item.isSymbol() )
-            BuilderLib.broken(item, "Attempt to build dataset from a bare symbol") ;
+        if ( item.isSymbol() )
+            BuilderLib.broken(item, "Attempt to build dataset from a bare symbol");
 
         if ( item.isTagged(Tags.tagGraph) ) {
             Graph g = BuilderGraph.buildGraph(item.getList());
             return DatasetGraphFactory.create(g);
         }
 
-        if ( ! item.isTagged(Tags.tagDataset) )
-            BuilderLib.broken(item, "Wanted ("+Tags.tagDataset+"...)" );
-        return buildDataset(dsg, item.getList()) ;
+        if ( !item.isTagged(Tags.tagDataset) )
+            BuilderLib.broken(item, "Wanted (" + Tags.tagDataset + "...)");
+        return buildDataset(dsg, item.getList());
     }
 
     public static DatasetGraph buildDataset(DatasetGraph dsg, ItemList list) {
@@ -157,10 +149,10 @@ public class BuilderGraph
         BuilderLib.checkLength(2, list, Tags.tagLoad);
         Item item = list.get(1);
         if ( !item.isNode() )
-            BuilderLib.broken(item, "Expected: ("+Tags.tagLoad+" 'filename')");
+            BuilderLib.broken(item, "Expected: (" + Tags.tagLoad + " 'filename')");
         String s = NodeUtils.stringLiteral(item.getNode());
         if ( s == null )
-            BuilderLib.broken(item, "Expected: ("+Tags.tagLoad+" 'filename')");
+            BuilderLib.broken(item, "Expected: (" + Tags.tagLoad + " 'filename')");
         RDFDataMgr.read(graph, s);
     }
 
@@ -188,7 +180,7 @@ public class BuilderGraph
     }
 
     public static Quad buildQuad(ItemList list) {
-        return buildQuad(list, "Not a quad") ;
+        return buildQuad(list, "Not a quad");
     }
 
     public static Quad buildQuad(ItemList list, String errMsg) {

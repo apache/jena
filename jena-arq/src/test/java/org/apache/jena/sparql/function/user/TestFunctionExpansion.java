@@ -27,7 +27,7 @@ import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueBoolean ;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueDouble ;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger ;
-import org.apache.jena.sparql.sse.builders.ExprBuildException ;
+import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -344,7 +344,7 @@ public class TestFunctionExpansion {
         Assert.assertEquals(8, NodeFactoryExtra.nodeToInt(result.asNode()));
     }
 
-    @Test(expected=ExprBuildException.class)
+    @Test(expected=SSE_ExprBuildException.class)
     public void test_function_expansion_bad_01() {
         List<Var> args = new ArrayList<>();
         args.add(Var.alloc("x"));
@@ -355,7 +355,7 @@ public class TestFunctionExpansion {
         UserDefinedFunctionFactory.getFactory().add("http://example/add", add, new ArrayList<Var>());
     }
 
-    @Test(expected=ExprBuildException.class)
+    @Test(expected=SSE_ExprBuildException.class)
     public void test_function_expansion_bad_02() {
         Expr single = new ExprVar("x");
         UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<>(single.getVarsMentioned()));

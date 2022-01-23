@@ -30,54 +30,47 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
 /** Algebra operation for a single quad.
  * @see OpTriple
- */ 
+ */
 public class OpQuad extends Op0
 {
     private final Quad quad ;
     private OpQuadPattern opQuadPattern = null ;
-    
-    public OpQuad(Quad quad)
-    {
-        this.quad = quad ;
-    }
-    
-    public final Quad getQuad() { return quad ; }
-    
 
-    public OpQuadPattern asQuadPattern()
-    {
-        if ( opQuadPattern == null )
-        {
-            BasicPattern bp = new BasicPattern() ;
-            bp.add(getQuad().asTriple()) ;
-            opQuadPattern = new OpQuadPattern(quad.getGraph(),bp) ;
-        }
-        return opQuadPattern ;
+    public OpQuad(Quad quad) {
+        this.quad = quad;
     }
-    
+
+    public final Quad getQuad() { return quad ; }
+
+    public OpQuadPattern asQuadPattern() {
+        if ( opQuadPattern == null ) {
+            BasicPattern bp = new BasicPattern();
+            bp.add(getQuad().asTriple());
+            opQuadPattern = new OpQuadPattern(quad.getGraph(), bp);
+        }
+        return opQuadPattern;
+    }
+
     @Override
     public Op apply(Transform transform)
     { return transform.transform(this) ; }
 
     @Override
-    public Op0 copy()
-    {
-        return new OpQuad(quad) ;
+    public Op0 copy() {
+        return new OpQuad(quad);
     }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! (other instanceof OpQuad) )
-            return false ;
-        OpQuad opQuad = (OpQuad)other ;
-        return Iso.quadIso(getQuad(), opQuad.getQuad(), labelMap) ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpQuad) )
+            return false;
+        OpQuad opQuad = (OpQuad)other;
+        return Iso.quadIso(getQuad(), opQuad.getQuad(), labelMap);
     }
 
     @Override
-    public int hashCode()
-    {
-        return OpBase.HashTriple ^ quad.hashCode() ;
+    public int hashCode() {
+        return OpBase.HashTriple ^ quad.hashCode();
     }
 
     @Override
@@ -85,16 +78,15 @@ public class OpQuad extends Op0
     { opVisitor.visit(this) ; }
 
     @Override
-    public String getName()
-    {
-        return Tags.tagTriple ;
+    public String getName() {
+        return Tags.tagOpQuad;
     }
 
-    public boolean equivalent(OpQuadPattern opQuads)
-    {
-        QuadPattern quads = opQuads.getPattern() ;
-        if ( quads.size() != 1 ) return false ;
-        Quad q = quads.get(0) ;
-        return quad.equals(q) ;  
+    public boolean equivalent(OpQuadPattern opQuads) {
+        QuadPattern quads = opQuads.getPattern();
+        if ( quads.size() != 1 )
+            return false;
+        Quad q = quads.get(0);
+        return quad.equals(q);
     }
 }

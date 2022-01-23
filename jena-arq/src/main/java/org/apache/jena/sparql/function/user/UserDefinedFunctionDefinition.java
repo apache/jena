@@ -25,7 +25,7 @@ import java.util.Set;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.function.Function ;
-import org.apache.jena.sparql.sse.builders.ExprBuildException ;
+import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,10 +60,10 @@ public class UserDefinedFunctionDefinition {
         //Verify that all mentioned variables are in the arguments list
         Set<Var> mentioned = this.expr.getVarsMentioned();
         for (Var v : mentioned) {
-        	if (!argList.contains(v)) throw new ExprBuildException("Cannot use the variable " + v.toString() + " in the expression since it is not included in the argList argument.  All variables must be arguments to the function"); 
+        	if (!argList.contains(v)) throw new SSE_ExprBuildException("Cannot use the variable " + v.toString() + " in the expression since it is not included in the argList argument.  All variables must be arguments to the function"); 
         }        
         //If used variables is greater than argument variables this is an error
-        if (mentioned.size() > this.argList.size()) throw new ExprBuildException("Mismatch between variables used in expression and number of variables in argument list, expected " + this.argList.size() + " but found " + mentioned.size());
+        if (mentioned.size() > this.argList.size()) throw new SSE_ExprBuildException("Mismatch between variables used in expression and number of variables in argument list, expected " + this.argList.size() + " but found " + mentioned.size());
         //May have more arguments than used, however this only gives warning(s)
         if (mentioned.size() < this.argList.size()) {
         	for (Var v : this.argList) {

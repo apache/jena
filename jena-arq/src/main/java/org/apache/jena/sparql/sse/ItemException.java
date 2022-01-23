@@ -20,6 +20,6 @@ package org.apache.jena.sparql.sse;
 
 public class ItemException extends RuntimeException
 {
-    public ItemException(String msg) { super(msg); } 
+    public ItemException(String msg) { super(msg); }
     public ItemException(String msg, Throwable t) { super(msg, t); }
 }

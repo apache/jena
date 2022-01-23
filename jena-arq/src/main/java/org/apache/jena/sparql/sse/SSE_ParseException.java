@@ -18,31 +18,29 @@
 
 package org.apache.jena.sparql.sse;
 
-import org.apache.jena.sparql.ARQException ;
-
-public class SSEParseException extends ARQException
+public class SSE_ParseException extends SSE_Exception
 {
-    private int line = -1 ;
-    private int column = -1 ;
-    
-    public SSEParseException(int line, int column)
-    { super() ; set(line, column) ; }
-    
-    public SSEParseException(Throwable cause, int line, int column)
-    { super(cause) ; set(line, column) ; }
-    
-    public SSEParseException(String msg, int line, int column)
-    { super(msg) ; set(line, column) ; }
-    
-    public SSEParseException(String msg, Throwable cause,int line, int column)
-    { super(msg, cause) ; set(line, column) ; }
-    
+    private int line = -1;
+    private int column = -1;
+
+    public SSE_ParseException(int line, int column)
+    { super(); set(line, column); }
+
+    public SSE_ParseException(Throwable cause, int line, int column)
+    { super(cause); set(line, column); }
+
+    public SSE_ParseException(String msg, int line, int column)
+    { super(msg); set(line, column); }
+
+    public SSE_ParseException(String msg, Throwable cause,int line, int column)
+    { super(msg, cause); set(line, column); }
+
     private void set(int line, int column)
-    { this.line = line ; this.column = column ; }
+    { this.line = line; this.column = column; }
 
     /** Column number where the parse exception occurred. */
-    public int getColumn() { return column ; }
+    public int getColumn() { return column; }
 
     /** Line number where the parse exception occurred. */
-    public int getLine()   { return line ; }
+    public int getLine()   { return line; }
 }

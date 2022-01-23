@@ -66,8 +66,6 @@ public interface FusekiModule extends SubsystemLifecycle {
      * configuration. The "configModel" parameter is set if a configuration file was
      * used otherwise it is null.
      * <p>
-     *
-     * <p>
      * The default implementation is to call
      * {@link #configDataAccessPoint(FusekiServer.Builder, DataAccessPoint, Model)}
      * for each {@link DataAccessPoint}.

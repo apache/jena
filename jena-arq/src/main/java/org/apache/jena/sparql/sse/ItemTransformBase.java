@@ -18,26 +18,62 @@
 
 package org.apache.jena.sparql.sse;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 
 public class ItemTransformBase implements ItemTransform
 {
-    @Override
-    public Item transform(Item item, ItemList list)
-    {
-        return Item.createList(list, item.getLine(), item.getColumn()) ;
+    public static final boolean COPY_ALWAYS = true;
+    public static final boolean COPY_ONLY_ON_CHANGE = false;
+    private boolean alwaysCopy = false;
+
+    public ItemTransformBase() {
+        this(COPY_ONLY_ON_CHANGE);
+    }
+
+    public ItemTransformBase(boolean alwaysDuplicate) {
+        this.alwaysCopy = alwaysDuplicate;
     }
 
     @Override
-    public Item transform(Item item, Node node)
-    {
-        return Item.createNode(node, item.getLine(), item.getColumn()) ;
+    public Item transform(Item item, ItemList itemList) {
+        return xform(item, itemList);
     }
-    
+
     @Override
-    public Item transform(Item item, String symbol)
-    {
-        return Item.createSymbol(symbol, item.getLine(), item.getColumn()) ;
+    public Item transform(Item item, Node node) {
+        return xform(item, node);
+    }
+
+    @Override
+    public Item transform(Item item, String symbol) {
+        return xform(item, symbol);
+    }
+
+    @Override
+    public Item transformNil(Item item) {
+        return xformNil(item);
+    }
+
+    private Item xform(Item item, ItemList itemList) {
+        if ( !alwaysCopy && item.getList() == itemList )
+            return item;
+        return Item.createList(itemList, item.getLine(), item.getColumn());
+    }
+
+    private Item xform(Item item, Node node) {
+        if ( !alwaysCopy && item.getNode().equals(node) )
+            return item;
+        return Item.createNode(node, item.getLine(), item.getColumn());
+    }
+
+    private Item xform(Item item, String symbol) {
+        if ( !alwaysCopy && item.getSymbol().equals(symbol) )
+            return item;
+        return Item.createSymbol(symbol, item.getLine(), item.getColumn());
+    }
+
+    private Item xformNil(Item item) {
+        return item;
     }
 
 }

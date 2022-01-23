@@ -27,7 +27,7 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
-import org.apache.jena.sparql.sse.SSEParseException ;
+import org.apache.jena.sparql.sse.SSE_ParseException ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
@@ -396,7 +396,7 @@ public class DatasetBuilderStd {
             try {
                 reorder = ReorderLib.weighted(location.getPath(Names.optStats)) ;
             }
-            catch (SSEParseException ex) {
+            catch (SSE_ParseException ex) {
                 log.warn("Error in stats file: " + ex.getMessage()) ;
                 reorder = null ;
             }
