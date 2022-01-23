@@ -224,6 +224,13 @@
             <goals>
               <goal>test-jar-no-fork</goal>
             </goals>
+            <configuration>
+              <archive>
+                <manifestEntries>
+                  <Automatic-Module-Name>${automatic.module.name}.test</Automatic-Module-Name>
+                </manifestEntries>
+              </archive>
+            </configuration>
           </execution>
         </executions>
 

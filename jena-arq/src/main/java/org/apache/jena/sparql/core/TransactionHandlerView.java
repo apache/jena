@@ -18,10 +18,13 @@
 
 package org.apache.jena.sparql.core;
 
+import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.impl.TransactionHandlerBase;
 import org.apache.jena.query.TxnType;
 
-/** A graph TransactionHandler that for a graph view of a {@link DatasetGraph}*/
+/**
+ * A graph {@link TransactionHandler} for a graph view of a {@link DatasetGraph}
+ */
 public class TransactionHandlerView extends TransactionHandlerBase
 {
     private final DatasetGraph dsg;

@@ -34,6 +34,8 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.DatasetGraphReadOnly;
 import org.apache.jena.sparql.graph.GraphReadOnly;
 import org.apache.jena.system.Txn;
+import org.apache.jena.update.UpdateExecution;
+import org.apache.jena.update.UpdateExecutionBuilder;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateRequest;
 
@@ -50,7 +52,7 @@ import org.apache.jena.update.UpdateRequest;
  *     the underlying model or dataset will be seen.
  * <li>{@code NONE} (default) &ndash; Changes to the returned {@code Model}s or {@code Dataset}s act on the original object.
  * </ul>
- * @deprecated Use {@link RDFConnectionFactory}.
+ * @deprecated Use {@link RDFConnection#connect(Dataset)}.
  */
 @Deprecated
 public class RDFConnectionLocal implements RDFConnection {
@@ -84,6 +86,11 @@ public class RDFConnectionLocal implements RDFConnection {
     public void update(UpdateRequest update) {
         checkOpen();
         Txn.executeWrite(dataset, ()->UpdateExecutionFactory.create(update, dataset).execute() );
+    }
+
+    @Override
+    public UpdateExecutionBuilder newUpdate() {
+        return UpdateExecution.create().dataset(dataset);
     }
 
     @Override

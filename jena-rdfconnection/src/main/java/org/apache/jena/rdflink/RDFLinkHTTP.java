@@ -34,13 +34,10 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.sparql.exec.QueryExecApp;
-import org.apache.jena.sparql.exec.QueryExecBuilder;
-import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.*;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecHTTPBuilder;
-import org.apache.jena.sparql.exec.http.UpdateExecHTTP;
+import org.apache.jena.sparql.exec.http.UpdateExecHTTPBuilder;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
@@ -246,6 +243,8 @@ public class RDFLinkHTTP implements RDFLink {
         return createQExecBuilder();
     }
 
+    // Create the QExec
+
     private QueryExec queryExec(Query query, String queryString, QueryType queryType) {
         checkQuery();
         if ( query == null && queryString == null )
@@ -265,16 +264,11 @@ public class RDFLinkHTTP implements RDFLink {
 
     /** Create a builder, configured with the link setup. */
     private QueryExecHTTPBuilder createQExecBuilder() {
-        return QueryExecHTTPBuilder.create()
-                    .endpoint(svcQuery)
-                    .httpClient(httpClient);
+        return QueryExecHTTPBuilder.create().endpoint(svcQuery).httpClient(httpClient);
     }
 
     private QueryExec createQExec(Query query, String queryStringToSend, QueryType queryType) {
-        // [QExec] NO QUERY - delya parse?
         QueryExecHTTPBuilder builder = createQExecBuilder().queryString(queryStringToSend);
-
-        // [QExec] Can this go in QueryExecHTTP at he point the query type is known?
         QueryType qt = queryType;
         if ( query != null && qt == null )
             qt = query.queryType();
@@ -327,6 +321,24 @@ public class RDFLinkHTTP implements RDFLink {
         sBuff.append(acceptString);
     }
 
+
+    /**
+     * Return a {@link UpdateExecBuilder} that is initially configured for this link
+     * setup and type. The update built will be set to go to the same dataset/remote
+     * endpoint as the other RDFLink operations.
+     *
+     * @return UpdateExecBuilder
+     */
+    @Override
+    public UpdateExecBuilder newUpdate() {
+        return createUExecBuilder();
+    }
+
+    /** Create a builder, configured with the link setup. */
+    private UpdateExecHTTPBuilder createUExecBuilder() {
+        return UpdateExecHTTPBuilder.create().endpoint(svcUpdate).httpClient(httpClient);
+    }
+
     @Override
     public void update(String updateString) {
         Objects.requireNonNull(updateString);
@@ -350,9 +362,7 @@ public class RDFLinkHTTP implements RDFLink {
         }
         // Use the update string as provided if possible, otherwise serialize the update.
         String updateStringToSend = ( updateString != null ) ? updateString  : update.toString();
-        UpdateExecHTTP.newBuilder()
-            .endpoint(svcUpdate)
-            .httpClient(httpClient)
+        createUExecBuilder()
             .updateString(updateStringToSend)
             .build()
             .execute();

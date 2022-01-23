@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.exec.http;
 
-import org.apache.jena.sparql.exec.UpdateProcessorAdapter;
+import org.apache.jena.sparql.exec.UpdateExecutionAdapter;
 
-public class UpdateExecutionHTTP extends UpdateProcessorAdapter {
+public class UpdateExecutionHTTP extends UpdateExecutionAdapter {
 
     public static UpdateExecutionHTTPBuilder create() {
         return UpdateExecutionHTTPBuilder.create();

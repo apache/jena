@@ -24,11 +24,11 @@ import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateProcessor;
+import org.apache.jena.update.UpdateExecution;
 import org.apache.jena.update.UpdateRequest;
 
 /**
- * Example of a WRITE transaction. 
+ * Example of a WRITE transaction.
  * See {@link Txn#executeRead}.
  */
 public class ExTDB_Txn2 {
@@ -44,7 +44,7 @@ public class ExTDB_Txn2 {
         // transactions concurrently. If another write transaction
         // starts, the call of dataset.begin(WRITE) blocks until
         // existing writer finishes.
-        
+
         // A WRITE transaction is
         // dataset.begin(ReadWrite.READ);
         // try {
@@ -66,7 +66,7 @@ public class ExTDB_Txn2 {
 
     public static void execUpdate(String sparqlUpdateString, Dataset dataset) {
         UpdateRequest request = UpdateFactory.create(sparqlUpdateString);
-        UpdateProcessor proc = UpdateExecutionFactory.create(request, dataset);
+        UpdateExecution proc = UpdateExecutionFactory.create(request, dataset);
         proc.execute();
     }
 

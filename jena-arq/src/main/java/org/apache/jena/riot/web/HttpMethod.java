@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,30 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.riot.web;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
+import java.util.Locale;
 
-/** Test using a view-generating dataset */  
-public class TestGraphOverDatasetMem extends AbstractTestGraphOverDatasetGraph
-{
-    @Override
-    protected DatasetGraph createBaseDSG()
-    { 
-        DatasetGraph dsg = DatasetGraphFactory.create() ;
-        return new DatasetGraphViewGraphs(dsg) ;
+public enum HttpMethod {
+    // METHOD_ only for transition/rename.
+    METHOD_DELETE("DELETE"),
+    METHOD_HEAD("HEAD"),
+    METHOD_GET("GET"),
+    METHOD_QUERY("QUERY"),
+    METHOD_OPTIONS("OPTIONS"),
+    METHOD_PATCH("PATCH"),
+    METHOD_POST("POST"),
+    METHOD_PUT("PUT"),
+    METHOD_TRACE("TRACE")
+    ;
+
+    private final String method;
+
+    private HttpMethod(String name) {
+        this.method = name;
     }
-    
-    @Override
-    protected Graph makeDefaultGraph(DatasetGraph dsg)
-    {
-        return dsg.getDefaultGraph() ;
-    }
 
-    @Override
-    protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)
-    {
-        return dsg.getGraph(gn) ;
+    public String method() { return method; }
+
+    public static HttpMethod fromString(String name) {
+        try {
+            return HttpMethod.valueOf(name.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
     }
 }

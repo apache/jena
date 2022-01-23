@@ -44,7 +44,6 @@ import org.apache.jena.system.progress.ProgressMonitor;
 import org.apache.jena.system.progress.ProgressMonitorOutput;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.params.StoreParams;
-import org.apache.jena.tdb2.params.StoreParamsConst;
 import org.apache.jena.tdb2.solver.stats.Stats;
 import org.apache.jena.tdb2.solver.stats.StatsCollectorNodeId;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
@@ -123,35 +122,23 @@ public class ProcIngestDataX {
         DatasetGraph dsg0 = DatabaseMgr.connectDatasetGraph(location);
         TDBInternal.expel(dsg0);
 
-        StoreParams dftStoreParams = StoreParams.getDftStoreParams();
-        StoreParams storeParams = dftStoreParams;
-
+        StoreParams storeParams = StoreParams.getDftStoreParams();
         if ( true ) {
-            storeParams = StoreParams.builder(StoreParams.getDftStoreParams())
+            storeParams = StoreParams.builder(storeParams)
                     .node2NodeIdCacheSize(10_000_000)
                     .build();
         }
 
         DatasetGraph dsg = DatabaseConnection.connectCreate(loc, storeParams).getDatasetGraph();
         StoreParams storeParamsActual = TDBInternal.getDatasetGraphTDB(dsg).getStoreParams();
-
-        FmtLog.info(LOG, "Node to NodeId cache size: %,d", storeParamsActual.getNode2NodeIdCacheSize());
-        FmtLog.info(LOG, "NodeId to Node cache size: %,d", storeParamsActual.getNodeId2NodeCacheSize());
-
+//        FmtLog.info(LOG, "Node to NodeId cache size: %,d", storeParamsActual.getNode2NodeIdCacheSize());
+//        FmtLog.info(LOG, "NodeId to Node cache size: %,d", storeParamsActual.getNodeId2NodeCacheSize());
         return dsg;
     }
 
     private static Pair<Long, Long> build(DatasetGraph dsg, ProgressMonitor monitor,
                               OutputStream outputTriples, OutputStream outputQuads,
                               List<String> datafiles) {
-
-        int node2NodeIdCacheSize = StoreParamsConst.Node2NodeIdCacheSize; // 200k
-        node2NodeIdCacheSize = 1_000_000_000;// 1B!
-
-        StoreParams storeParmas =
-                StoreParams.builder().node2NodeIdCacheSize(node2NodeIdCacheSize)
-                .build();
-
         DatasetGraphTDB dsgtdb = TDBInternal.getDatasetGraphTDB(dsg);
         outputTriples = IO.ensureBuffered(outputTriples);
         outputQuads = IO.ensureBuffered(outputQuads);

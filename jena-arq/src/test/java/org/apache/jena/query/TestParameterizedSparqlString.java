@@ -31,7 +31,7 @@ import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.ElementGroup ;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock ;
 import org.apache.jena.update.UpdateExecutionFactory ;
-import org.apache.jena.update.UpdateProcessor ;
+import org.apache.jena.update.UpdateExecution ;
 import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.vocabulary.OWL ;
 import org.apache.jena.vocabulary.RDF ;
@@ -260,7 +260,7 @@ public class TestParameterizedSparqlString {
         s.setCommandText("INSERT { ?o ?p ?s } WHERE { ?s ?p ?o }");
         s.setIri("s", "_:" + bnode.getId());
         UpdateRequest query = s.asUpdate();
-        UpdateProcessor proc = UpdateExecutionFactory.create(query, ds);
+        UpdateExecution proc = UpdateExecutionFactory.create(query, ds);
         proc.execute();
 
         // This should be true because this was present in the intial model set

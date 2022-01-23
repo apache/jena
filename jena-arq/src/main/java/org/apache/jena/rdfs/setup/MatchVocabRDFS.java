@@ -23,6 +23,7 @@ import static org.apache.jena.rdfs.engine.ConstRDFS.rdfsDomain;
 import static org.apache.jena.rdfs.engine.ConstRDFS.rdfsRange;
 import static org.apache.jena.rdfs.engine.ConstRDFS.rdfsSubClassOf;
 import static org.apache.jena.rdfs.engine.ConstRDFS.rdfsSubPropertyOf;
+import static org.apache.jena.sparql.util.NodeUtils.nullToAny;
 
 import java.util.Map;
 import java.util.Set;
@@ -43,18 +44,15 @@ public class MatchVocabRDFS implements Match<Node, Triple>{
         this.setup = setup;
     }
 
-    private static Node nullToAny(Node n) { return (n == null) ? Node.ANY : n; }
-
     @Override
     public Stream<Triple> match(Node s, Node p , Node o) {
         Node sx = nullToAny(s);
         Node px = nullToAny(p);
         Node ox = nullToAny(o);
-        return match2(nullToAny(s), nullToAny(p), nullToAny(o));
+        return match2(sx, px, ox);
     }
 
     private Stream<Triple> match2(Node s, Node p , Node o) {
-
         if ( p == Node.ANY ) {
             // (?? ANY ??)
             Stream<Triple> stream = match(s,rdfsSubClassOf,o);

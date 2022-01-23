@@ -33,39 +33,39 @@ import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateProcessor;
+import org.apache.jena.update.UpdateExecution;
 import org.apache.jena.update.UpdateRequest;
 
 /*
  * This abstract class defines a collection of test methods for testing
- * test searches.  Its subclasses create a dataset using the index to 
+ * test searches.  Its subclasses create a dataset using the index to
  * to be tested and then call the test methods in this class to run
  * the actual tests.
  */
 public abstract class AbstractTestDatasetWithTextIndexBase {
     protected static final String RESOURCE_BASE = "http://example.org/data/resource/";
-    protected static final String QUERY_PROLOG = 
+    protected static final String QUERY_PROLOG =
             StrUtils.strjoinNL(
                 "PREFIX text: <http://jena.apache.org/text#>",
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
                 );
-    
-    protected static final String TURTLE_PROLOG = 
+
+    protected static final String TURTLE_PROLOG =
                 StrUtils.strjoinNL(
                         "@prefix text: <http://jena.apache.org/text#> .",
                         "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ."
                         );
-    
+
     protected Dataset dataset;
-    
+
     protected void doTestSearch(String turtle, String queryString, Set<String> expectedEntityURIs) {
         doTestSearch("", turtle, queryString, expectedEntityURIs);
     }
-    
+
     protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs) {
         doTestSearch(label, turtle, queryString, expectedEntityURIs, expectedEntityURIs.size());
     }
-    
+
     protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
         loadData(turtle);
         doTestQuery(dataset, label, queryString, expectedEntityURIs, expectedNumResults);
@@ -99,8 +99,8 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
         try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
             ResultSet rs = qexec.execSelect() ;
             ResultSetRewindable results = rs.rewindable();
-//            ResultSetFormatter.out(results); 
-//            results.reset(); 
+//            ResultSetFormatter.out(results);
+//            results.reset();
             assertEquals(label, expectedNumResults > 0, results.hasNext());
             int count;
             for (count=0; results.hasNext(); count++) {
@@ -111,9 +111,9 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
         }
         finally {
             dataset.end() ;
-        }        
+        }
     }
-    
+
     protected Map<String,Float> doTestQueryWithScores(String queryString, Set<String> expectedEntityURIs) {
         Map<String,Float> scores = new HashMap<>();
 
@@ -121,7 +121,7 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
         dataset.begin(ReadWrite.READ);
         try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
             ResultSet results = qexec.execSelect() ;
-            
+
             assertEquals(expectedEntityURIs.size() > 0, results.hasNext());
             int count;
             for (count=0; results.hasNext(); count++) {
@@ -154,7 +154,7 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
     protected void doUpdate(String updateString) {
         dataset.begin(ReadWrite.WRITE);
         UpdateRequest request = UpdateFactory.create(updateString);
-        UpdateProcessor proc = UpdateExecutionFactory.create(request, dataset);
+        UpdateExecution proc = UpdateExecutionFactory.create(request, dataset);
         proc.execute();
         dataset.commit();
     }

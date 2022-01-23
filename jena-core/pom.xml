@@ -224,7 +224,14 @@
           <execution>
             <goals>
               <goal>test-jar</goal>
-            </goals>
+            </goals> 
+            <configuration>
+              <archive>
+                <manifestEntries>
+                  <Automatic-Module-Name>${automatic.module.name}.test</Automatic-Module-Name>
+                </manifestEntries>
+              </archive>
+            </configuration>
           </execution>
         </executions>
       </plugin>

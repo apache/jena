@@ -37,10 +37,7 @@ import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.DatasetGraphReadOnly;
-import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.sparql.exec.QueryExecApp;
-import org.apache.jena.sparql.exec.QueryExecBuilder;
-import org.apache.jena.sparql.exec.UpdateExecDatasetBuilder;
+import org.apache.jena.sparql.exec.*;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.graph.GraphReadOnly;
 import org.apache.jena.system.Txn;
@@ -90,6 +87,18 @@ public class RDFLinkDataset implements RDFLink {
     @Override
     public QueryExecBuilder newQuery() {
         return QueryExec.dataset(dataset);
+    }
+
+    /**
+     * Return a {@link UpdateExecBuilder} that is initially configured for this link
+     * setup and type. The update built will be set to go to the same dataset/remote
+     * endpoint as the other RDFLink operations.
+     *
+     * @return UpdateExecBuilder
+     */
+    @Override
+    public UpdateExecBuilder newUpdate() {
+        return UpdateExec.dataset(dataset);
     }
 
     @Override

@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.core;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -107,20 +106,6 @@ public abstract class AbstractTestGraphOverDatasetGraph
         while(iter.hasNext())
             iter.next() ;
         assertEquals(2, g.size()) ;
-    }
-
-    // ---- contains
-
-    @Test public void graphDSG_contains_1()
-    {
-        boolean b = new DatasetGraphViewGraphs(baseDSG).containsGraph(gn1) ;
-        assertTrue(b) ;
-    }
-
-    @Test public void graphDSG_contains_2()
-    {
-        boolean b = new DatasetGraphViewGraphs(baseDSG).containsGraph(gnNotSuchGraph) ;
-        assertFalse(b) ;
     }
 
     // ---- prefixes

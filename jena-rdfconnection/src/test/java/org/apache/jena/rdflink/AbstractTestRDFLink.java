@@ -41,6 +41,8 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.UpdateExec;
+import org.apache.jena.sparql.exec.UpdateExecBuilder;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.system.Txn;
@@ -460,6 +462,17 @@ public abstract class AbstractTestRDFLink {
             Txn.executeWrite(link, ()->link.update(update));
         }
     }
+
+    @Test public void update_05() {
+        UpdateRequest update = new UpdateRequest();
+        update.add("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
+        try ( RDFLink link = link() ) {
+            UpdateExecBuilder updateBuilder = link.newUpdate();
+            UpdateExec uExec = updateBuilder.update(update).build();
+            Txn.executeWrite(link, ()->uExec.execute());
+        }
+    }
+
     // Not all Transactional support abort.
     @Test public void transaction_commit_read_01() {
         String testDataFile = DIR+"data.trig";

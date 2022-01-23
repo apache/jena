@@ -25,8 +25,8 @@ public class UpdateExecAdapter implements UpdateExec {
     private final UpdateExecution updateProc;
 
     public static UpdateExec adapt(UpdateExecution updateExec) {
-        if ( updateExec instanceof UpdateProcessorAdapter ) {
-            return ((UpdateProcessorAdapter)updateExec).get();
+        if ( updateExec instanceof UpdateExecutionAdapter ) {
+            return ((UpdateExecutionAdapter)updateExec).get();
         }
         return new UpdateExecAdapter(updateExec);
     }

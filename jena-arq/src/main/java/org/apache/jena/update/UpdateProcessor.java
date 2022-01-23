@@ -23,8 +23,10 @@ import org.apache.jena.sparql.exec.UpdateExecDatasetBuilder;
 import org.apache.jena.sparql.exec.http.UpdateExecHTTPBuilder;
 import org.apache.jena.sparql.util.Context ;
 
-/** An instance of a execution of an UpdateRequest.
- * Applies to UpdateExec (GPI) and UpdateExecution (API) */
+/**
+ * An instance of a execution of an UpdateRequest.
+ * Applies to UpdateExec (GPI) and UpdateExecution (API).
+ */
 public interface UpdateProcessor
 {
     /**

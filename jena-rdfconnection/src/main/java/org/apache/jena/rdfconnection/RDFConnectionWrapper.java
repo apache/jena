@@ -20,6 +20,7 @@ package org.apache.jena.rdfconnection;
 
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.update.UpdateExecutionBuilder;
 import org.apache.jena.update.UpdateRequest;
 
 /** Wrapper for an {@link RDFConnection}. */
@@ -51,6 +52,11 @@ public class RDFConnectionWrapper implements RDFConnection {
     @Override
     public QueryExecutionBuilder newQuery() {
         return get().newQuery();
+    }
+
+    @Override
+    public UpdateExecutionBuilder newUpdate() {
+        return get().newUpdate();
     }
 
     @Override

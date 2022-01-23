@@ -20,6 +20,7 @@ package org.apache.jena.shex.parser;
 
 import static org.apache.jena.shex.parser.ParserShExC.Inline.INLINE;
 import static org.apache.jena.shex.parser.ParserShExC.Inline.NOT_INLINE;
+import static org.apache.jena.sparql.util.NodeUtils.nullToAny;
 
 import java.util.*;
 import java.util.function.Function;
@@ -846,6 +847,4 @@ public class ParserShExC extends LangParserBase {
             throw new ShexParseException("No node nor triple in shape association");
         associations.add(assoc);
     }
-
-    private static Node nullToAny( Node n ) { return n == null ? Node.ANY : n; }
 }

@@ -28,36 +28,36 @@ public class UpdateEngineRegistry
 {
     List<UpdateEngineFactory> factories = new ArrayList<>() ;
     static { init() ; }
-    
+
     // Singleton
     static UpdateEngineRegistry registry = null ;
     static public UpdateEngineRegistry get()
-    { 
+    {
         if ( registry == null )
             init() ;
         return registry;
     }
-    
+
     private UpdateEngineRegistry() { }
-    
+
     private static synchronized void init()
     {
         registry = new UpdateEngineRegistry() ;
         registry.add(UpdateEngineMain.getFactory()) ;
     }
-    
+
     /** Locate a suitable factory for this dataset from the default registry
-     * 
+     *
      * @param graphStore The graph store
      * @return A QueryExecutionFactory or null if none accept the request
      */
     public static UpdateEngineFactory findFactory(DatasetGraph graphStore, Context context)
     { return get().find(graphStore, context) ; }
-    
+
     /** Locate a suitable factory for this dataset
-     * 
+     *
      * @param graphStore    A GraphStore
-     * @return A UpdateProcessorFactory or null if none accept the request
+     * @return A UpdateEngineFactory or null if none accept the request
      */
     public UpdateEngineFactory find(DatasetGraph graphStore, Context context)
     {
@@ -68,23 +68,23 @@ public class UpdateEngineRegistry
         }
         return null ;
     }
-    
+
     /** Add a QueryExecutionFactory to the default registry */
     public static void addFactory(UpdateEngineFactory f) { get().add(f) ; }
-    
+
     /** Add a QueryExecutionFactory */
     public void add(UpdateEngineFactory f)
     {
         // Add to low end so that newer factories are tried first
-        factories.add(0, f) ; 
+        factories.add(0, f) ;
     }
-    
+
     /** Remove a QueryExecutionFactory */
     public static void removeFactory(UpdateEngineFactory f)  { get().remove(f) ; }
-    
+
     /** Remove a QueryExecutionFactory */
     public void remove(UpdateEngineFactory f)  { factories.remove(f) ; }
-    
+
     /** Allow <b>careful</b> manipulation of the factories list */
     public List<UpdateEngineFactory> factories() { return factories ; }
 

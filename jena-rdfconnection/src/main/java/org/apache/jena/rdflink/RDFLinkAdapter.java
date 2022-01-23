@@ -18,7 +18,6 @@
 
 package org.apache.jena.rdflink;
 
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.DatasetFactory;
@@ -32,6 +31,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecBuilder;
+import org.apache.jena.sparql.exec.UpdateExecBuilder;
 import org.apache.jena.update.UpdateRequest;
 
 public class RDFLinkAdapter implements RDFLink {
@@ -88,15 +88,25 @@ public class RDFLinkAdapter implements RDFLink {
 
     @Override
     public QueryExecBuilder newQuery() {
-        // No adapting a previous wrapped RDFLink via RDFConnectionAdapter
+        // Can't adapt a previously wrapped RDFLink via RDFConnectionAdapter
         throw new UnsupportedOperationException("RDFLinkAdapter.newQuery");
     }
 
     @Override
-    public void update(UpdateRequest update) { throw new NotImplemented("Impleemntation needed");}// UpdateProcessorAdapter.adapt(conn.update(update)); }
+    public UpdateExecBuilder newUpdate() {
+        // Can't adapt a previously wrapped RDFLink via RDFConnectionAdapter
+        throw new UnsupportedOperationException("RDFLinkAdapter.newUpdate");
+    }
 
     @Override
-    public void update(String update) { throw new NotImplemented("Impleemntation needed");} //return UpdateProcessorAdapter.adapt(conn.update(update)); }
+    public void update(UpdateRequest update) {
+        conn.update(update);
+    }
+
+    @Override
+    public void update(String update) {
+        conn.update(update);
+    }
 
     @Override
     public Graph get() {

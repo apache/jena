@@ -32,6 +32,7 @@ import org.apache.jena.rdflink.RDFLinkDatasetBuilder;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.Update;
+import org.apache.jena.update.UpdateExecutionBuilder;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
@@ -373,6 +374,16 @@ public interface RDFConnection extends
     }
 
     // ---- RDFDatasetConnection
+
+    /**
+     * Return a {@link UpdateExecutionBuilder} that is initially configured for this link
+     * setup and type. The update built will be set to go to the same dataset/remote
+     * endpoint as the other RDFLink operations.
+     *
+     * @return UpdateExecBuilder
+     */
+    @Override
+    public UpdateExecutionBuilder newUpdate();
 
     /** Fetch a named graph.
      * This is SPARQL Graph Store Protocol HTTP GET or equivalent.
