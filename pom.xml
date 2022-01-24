@@ -258,26 +258,6 @@
 
       </modules>
     </profile>
-    
-    <profile>
-      <!-- https://bugs.openjdk.java.net/browse/JDK-8215291 -->
-      <id>java11-javadoc</id>
-      <activation>
-        <jdk>11</jdk>
-      </activation>      
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <!-- Java 11 only, removed at Java13 -->
-              <additionalOptions>--no-module-directories</additionalOptions>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
 
   </profiles>
 
