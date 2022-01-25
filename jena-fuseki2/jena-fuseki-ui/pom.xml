@@ -31,7 +31,7 @@
 
     <properties>
         <node.version>v16.13.1</node.version>
-        <yarn.version>v0.16.1</yarn.version>
+        <yarn.version>v1.22.17</yarn.version>
     </properties>
 
     <build>
