@@ -57,7 +57,7 @@
                             <goal>yarn</goal>
                         </goals>
                         <configuration>
-                            <arguments>install</arguments>
+                            <arguments>install --frozen-lockfile</arguments>
                         </configuration>
                     </execution>
                     <execution>
