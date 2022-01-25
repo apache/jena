@@ -20,27 +20,27 @@ package org.apache.jena.sparql.sse;
 
 public class ItemLocation
 {
-    static final int noLine = -1 ;
-    static final int noColumn = -1 ;
-    int line = noLine ;
-    int column = noColumn ;
-    
-    String appearance ;
-    
+    static final int noLine = -1;
+    static final int noColumn = -1;
+    int line = noLine;
+    int column = noColumn;
+
+    String appearance;
+
     protected ItemLocation(int line, int column)
     {
-        this.line = line ;
-        this.column = column ;
+        this.line = line;
+        this.column = column;
     }
 
     public boolean hasLocation()
-    { return line != noLine && column != noColumn ; }
-    
-    public int getColumn()              { return column ; }
-    public int getLine()                { return line ; }
+    { return line != noLine && column != noColumn; }
 
-    public String location() { return "["+getLine()+","+getColumn()+"]" ; }
-    
+    public int getColumn()              { return column; }
+    public int getLine()                { return line; }
+
+    public String location() { return "["+getLine()+","+getColumn()+"]"; }
+
     @Override
-    public String toString() { return location() ; }
+    public String toString() { return location(); }
 }

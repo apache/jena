@@ -16,16 +16,27 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.sse.builders;
+package org.apache.jena.sparql.expr;
 
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.function.library.triple.EmbeddedTripleFunctions;
+import org.apache.jena.sparql.sse.Tags;
 
-/** @deprecated Use {@link BuilderRowSet} */
-@Deprecated
-public class BuilderResultSet {
+public class E_TripleFn extends ExprFunction3 {
 
-    public static ResultSet build(Item item) {
-        return ResultSet.adapt(BuilderRowSet.build(item));
+    private static final String symbol = Tags.tagFnTriple;
+
+    public E_TripleFn(Expr expr1, Expr expr2, Expr expr3) {
+        // SPARQL keyword, symbol for SSE.
+        super(expr1, expr2, expr3, symbol);
+    }
+
+    @Override
+    public NodeValue eval(NodeValue s, NodeValue p, NodeValue o) {
+        return EmbeddedTripleFunctions.fnTriple(s, p, o);
+    }
+
+    @Override
+    public Expr copy(Expr arg1, Expr arg2, Expr arg3) {
+        return new E_TripleFn(arg1, arg2, arg3);
     }
 }

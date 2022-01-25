@@ -18,57 +18,53 @@
 
 package org.apache.jena.sparql.sse.builders;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.ItemList ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.ItemList;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.FmtUtils;
 
-public class BuilderBinding
-{
-    public static Binding build(Item item)
-    {
-        BuilderLib.checkList(item, "Attempt to build a binding from non-list: "+item) ;
-        return buildBinding(item.getList()) ;
+public class BuilderBinding {
+    public static Binding build(Item item) {
+        BuilderLib.checkList(item, "Attempt to build a binding from non-list: " + item);
+        return buildBinding(item.getList());
     }
 
-    private static Binding buildBinding(ItemList list)
-    {
+    private static Binding buildBinding(ItemList list) {
         // (row or (binding
         if ( list.size() == 0 )
-            BuilderLib.broken(list, "Empty list") ;
+            BuilderLib.broken(list, "Empty list");
 
-        Item head = list.get(0) ;
+        Item head = list.get(0);
 
-        if ( ! head.isSymbolIgnoreCase(Tags.tagRow) && ! head.isSymbolIgnoreCase(Tags.tagBinding) )
-            BuilderLib.broken(list, "Does not start ("+Tags.tagRow+" ...) or ("+Tags.tagBinding+" ...)", head) ;
+        if ( !head.isSymbolIgnoreCase(Tags.tagRow) && !head.isSymbolIgnoreCase(Tags.tagBinding) )
+            BuilderLib.broken(list, "Does not start (" + Tags.tagRow + " ...) or (" + Tags.tagBinding + " ...)", head);
 
-        BindingBuilder builder = Binding.builder() ;
-        for ( int i = 1 ; i < list.size() ; i++ )
-        {
-            Item item = list.get(i) ;
-            BuilderLib.checkList(item, "Attempt to build a binding pair from non-list: "+item) ;
-            ItemList pair = item.getList() ;
-            BuilderLib.checkLength(2, pair, "Need a pair for a binding") ;
+        BindingBuilder builder = Binding.builder();
+        for ( int i = 1 ; i < list.size() ; i++ ) {
+            Item item = list.get(i);
+            BuilderLib.checkList(item, "Attempt to build a binding pair from non-list: " + item);
+            ItemList pair = item.getList();
+            BuilderLib.checkLength(2, pair, "Need a pair for a binding");
 
-            Var v = BuilderNode.buildVar(pair.get(0)) ;
-            Item cdr = pair.get(1) ;
+            Var v = BuilderNode.buildVar(pair.get(0));
+            Item cdr = pair.get(1);
             // undef
             if ( cdr.isSymbolIgnoreCase(Tags.tagUndef) || cdr.isSymbolIgnoreCase(Tags.tagNull) )
-                continue ;
+                continue;
 
-            Node node = BuilderNode.buildNode(item.getList().get(1)) ;
+            Node node = BuilderNode.buildNode(item.getList().get(1));
             if ( node == null )
-                BuilderLib.broken(item.getList().get(1), "Null node from "+item.getList().get(1)) ;
+                BuilderLib.broken(item.getList().get(1), "Null node from " + item.getList().get(1));
             if ( node.isVariable() )
-                BuilderLib.broken(item.getList().get(1), "No variables as table values: "+FmtUtils.stringForNode(node)) ;
+                BuilderLib.broken(item.getList().get(1), "No variables as table values: " + FmtUtils.stringForNode(node));
             if ( !node.isConcrete() )
-                BuilderLib.broken(item.getList().get(1), "Only concrete nodes as table values: "+FmtUtils.stringForNode(node)) ;
-            builder.add(v, node) ;
+                BuilderLib.broken(item.getList().get(1), "Only concrete nodes as table values: " + FmtUtils.stringForNode(node));
+            builder.add(v, node);
         }
-        return builder.build() ;
+        return builder.build();
     }
 }

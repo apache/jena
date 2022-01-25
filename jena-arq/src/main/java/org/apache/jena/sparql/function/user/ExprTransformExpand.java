@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.* ;
-import org.apache.jena.sparql.sse.builders.ExprBuildException ;
+import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
 
 /**
  * An expression transformer that will expand user defined function expressions
@@ -70,7 +70,7 @@ public class ExprTransformExpand extends ExprTransformCopy {
                     //Variable args must be checked to ensure they are within the number of
                     //arguments of the invoked function
                     //We then use the arg as-is to substitute
-                    if (i > defArgs.size()) throw new ExprBuildException("Unable to expand function dependency, the function <" + def.getUri() + "> is called but uses an argument ?" + var + " which is not an argument to the outer function");
+                    if (i > defArgs.size()) throw new SSE_ExprBuildException("Unable to expand function dependency, the function <" + def.getUri() + "> is called but uses an argument ?" + var + " which is not an argument to the outer function");
                     subArgs.add(arg);
                 }
             }

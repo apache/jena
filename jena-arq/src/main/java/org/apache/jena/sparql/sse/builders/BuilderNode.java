@@ -18,167 +18,154 @@
 
 package org.apache.jena.sparql.sse.builders;
 
-import java.math.BigInteger ;
-import java.util.ArrayList ;
-import java.util.List ;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.graph.NodeConst ;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.ItemList ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.graph.NodeConst;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.ItemLift;
+import org.apache.jena.sparql.sse.ItemList;
+import org.apache.jena.sparql.sse.Tags;
 
-public class BuilderNode
-{
-    public static Node buildNode(Item item)
-    {
-        if ( item.isSymbol("true") )
-            return NodeConst.nodeTrue ;
-        if ( item.isSymbol("false") )
-            return NodeConst.nodeFalse ;
-        if ( item.isSymbolIgnoreCase("ANY") || item.isSymbol("_") )
+public class BuilderNode {
+    /**
+     * Build a node from an Item - it is assumed the item has been lifted for
+     * compound node items. This function does not convert compound node (qtriple
+     * etc).
+     *
+     * @see ItemLift#liftCompound
+     */
+    public static Node buildNode(Item item) {
+        if ( item.isSymbol(Tags.tagTrue) )
+            return NodeConst.nodeTrue;
+        if ( item.isSymbol(Tags.tagFalse) )
+            return NodeConst.nodeFalse;
+        if ( item.isSymbolIgnoreCase(Tags.tagANY) )
+            return Node.ANY;
+        // Default for nodes.
+        if ( item.isDefault() )
             return Node.ANY;
         if ( !item.isNode() )
-            BuilderLib.broken(item, "Not a node", item) ;
-        return item.getNode() ;
-    }
-    
-    public static List<Node> buildNodeList(Item item)
-    {
-        BuilderLib.checkList(item) ;
-        ItemList list = item.getList() ;
-        return buildNodeList(list) ;
-    }
-    
-    public static List<Node> buildNodeList(ItemList list)
-    {
-        List<Node> nodes = new ArrayList<>() ;
-        for (Item item : list)
-        {
-            Node v = buildNode(item) ;
-            nodes.add(v) ;
-        }
-        return nodes ;
-    }
-    
-    public static Var buildVar(Item item)
-    {
-        if ( ! item.isNode() || !Var.isVar(item.getNode()) )
-            BuilderLib.broken(item, "Not a variable", item) ;
-//        if ( ! Var.isNamedVar(item.getNode()) )
-//            BuilderBase.broken(item, "Not a named variable", item) ;
-        return Var.alloc(item.getNode()) ;
-    }
-    
-    public static List<Var> buildVarList(Item item)
-    {
-        BuilderLib.checkList(item) ;
-        ItemList list = item.getList() ;
-        return buildVarList(list) ;
-    }
-        
-    public static List<Var> buildVarList(ItemList list)
-    {
-        if ( list.size() > 0 && list.getFirst().isSymbol(Tags.tagVars) )
-            list = list.cdr() ;
-        
-        List<Var> vars = new ArrayList<>() ;
-        for (Item x : list)
-        {
-            Var v = buildVar(x) ;
-            vars.add(v) ;
-        }
-        
-        return vars ;
+            BuilderLib.broken(item, "Not a node", item);
+        return item.getNode();
     }
 
-    public static String buildSymbol(Item item)
-    {
-        if ( !item.isSymbol() )
-            BuilderLib.broken(item, "Not a symbol", item) ;
-        return item.getSymbol() ;
+    public static List<Node> buildNodeList(Item item) {
+        BuilderLib.checkList(item);
+        ItemList list = item.getList();
+        return buildNodeList(list);
     }
-    
-    public static List<Var> buildVars(ItemList list)
-    {
-        list = BuilderLib.skipTag(list, Tags.tagVars) ;
-        
-        List<Var> x = new ArrayList<>() ;
-        for ( int i = 0 ; i < list.size() ; i++ )
-        {
-            Item item = list.get(i) ;
-            Var var = BuilderNode.buildVar(item) ;
+
+    public static List<Node> buildNodeList(ItemList list) {
+        List<Node> nodes = new ArrayList<>();
+        for ( Item item : list ) {
+            Node v = buildNode(item);
+            nodes.add(v);
+        }
+        return nodes;
+    }
+
+    public static Var buildVar(Item item) {
+        if ( !item.isNode() || !Var.isVar(item.getNode()) )
+            BuilderLib.broken(item, "Not a variable", item);
+        return Var.alloc(item.getNode());
+    }
+
+    public static List<Var> buildVarList(Item item) {
+        BuilderLib.checkList(item);
+        ItemList list = item.getList();
+        return buildVarList(list);
+    }
+
+    public static List<Var> buildVarList(ItemList list) {
+        if ( list.size() > 0 && list.getFirst().isSymbol(Tags.tagVars) )
+            list = list.cdr();
+
+        List<Var> vars = new ArrayList<>();
+        for ( Item x : list ) {
+            Var v = buildVar(x);
+            vars.add(v);
+        }
+
+        return vars;
+    }
+
+    public static String buildSymbol(Item item) {
+        if ( !item.isSymbol() )
+            BuilderLib.broken(item, "Not a symbol", item);
+        return item.getSymbol();
+    }
+
+    public static List<Var> buildVars(ItemList list) {
+        list = BuilderLib.skipTag(list, Tags.tagVars);
+
+        List<Var> x = new ArrayList<>();
+        for ( int i = 0 ; i < list.size() ; i++ ) {
+            Item item = list.get(i);
+            Var var = BuilderNode.buildVar(item);
             x.add(Var.alloc(item.getNode()));
         }
-        return x ;
+        return x;
     }
 
-    private static BigInteger buildInteger(Item item, boolean allowDefault)
-    {
-        //Item item = list.get(idx) ;
-        
+    private static BigInteger buildInteger(Item item, boolean allowDefault) {
+        // Item item = list.get(idx);
+
         if ( allowDefault && item.equals(Item.defaultItem) )
-            return null ;
-        
+            return null;
         if ( !item.isNode() )
-            BuilderLib.broken(item, "Not an integer: "+item) ;
-        Node node = item.getNode() ;
-        if ( ! node.isLiteral() )
-            BuilderLib.broken(item, "Not an integer: "+item) ;
+            BuilderLib.broken(item, "Not an integer: " + item);
+        Node node = item.getNode();
+        if ( !node.isLiteral() )
+            BuilderLib.broken(item, "Not an integer: " + item);
 
-        NodeValue nv = NodeValue.makeNode(node) ;
-        if ( ! nv.isInteger() )
-            BuilderLib.broken(item, "Not an integer: "+item) ;
-        return nv.getInteger() ;
+        NodeValue nv = NodeValue.makeNode(node);
+        if ( !nv.isInteger() )
+            BuilderLib.broken(item, "Not an integer: " + item);
+        return nv.getInteger();
     }
 
-    public static long buildLong(Item item)
-    { 
-        BigInteger i = buildInteger(item, false) ;
-        return i.longValue() ;
+    public static long buildLong(Item item) {
+        BigInteger i = buildInteger(item, false);
+        return i.longValue();
     }
 
-    public static long buildLong(Item item, int dft)
-    { 
-        BigInteger i = buildInteger(item, true) ;
+    public static long buildLong(Item item, int dft) {
+        BigInteger i = buildInteger(item, true);
         if ( i == null )
-            return dft ;
-        return i.longValue() ;
+            return dft;
+        return i.longValue();
     }
 
-    public static long buildLong(ItemList list, int idx)
-    {
-        return buildLong(list.get(idx)) ;
-    }
-    
-    public static long buildLong(ItemList list, int idx, int dft)
-    { 
-        return buildLong(list.get(idx), dft) ;
-    }
-    
-    public static int buildInt(Item item)
-    { 
-        BigInteger i = buildInteger(item, false) ;
-        return i.intValue() ;
+    public static long buildLong(ItemList list, int idx) {
+        return buildLong(list.get(idx));
     }
 
-    public static int buildInt(Item item, int dft)
-    { 
-        BigInteger i = buildInteger(item, true) ;
+    public static long buildLong(ItemList list, int idx, int dft) {
+        return buildLong(list.get(idx), dft);
+    }
+
+    public static int buildInt(Item item) {
+        BigInteger i = buildInteger(item, false);
+        return i.intValue();
+    }
+
+    public static int buildInt(Item item, int dft) {
+        BigInteger i = buildInteger(item, true);
         if ( i == null )
-            return dft ;
-        return i.intValue() ;
+            return dft;
+        return i.intValue();
     }
 
-    public static int buildInt(ItemList list, int idx)
-    {
-        return buildInt(list.get(idx)) ;
+    public static int buildInt(ItemList list, int idx) {
+        return buildInt(list.get(idx));
     }
-    
-    public static int buildInt(ItemList list, int idx, int dft)
-    { 
-        return buildInt(list.get(idx), dft) ;
+
+    public static int buildInt(ItemList list, int idx, int dft) {
+        return buildInt(list.get(idx), dft);
     }
 }

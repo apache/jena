@@ -5621,7 +5621,7 @@ a.add(expr) ;
       jj_consume_token(COMMA);
       expr3 = Expression();
       jj_consume_token(RPAREN);
-{if ("" != null) return new E_TripleTerm(expr1, expr2, expr3) ;}
+{if ("" != null) return new E_TripleFn(expr1, expr2, expr3) ;}
       break;
       }
     case SUBJECT:{

@@ -18,113 +18,101 @@
 
 package org.apache.jena.sparql.sse.lang;
 
-import org.apache.jena.sparql.sse.Item ;
+import org.apache.jena.sparql.sse.Item;
 
-/** Splitter for parser handlers.
- *  Calls both, first one first.
+/**
+ * Splitter for parser handlers. Calls both, first one first.
  */
 
 public class ParseHandler2 implements ParseHandler
 {
-    private ParseHandler handler1 ;
-    private ParseHandler handler2 ;
+    private ParseHandler handler1;
+    private ParseHandler handler2;
 
-    public ParseHandler2(ParseHandler handler1, ParseHandler handler2)
-    {
-        this.handler1 = handler1 ;
-        this.handler2 = handler2 ;
+    public ParseHandler2(ParseHandler handler1, ParseHandler handler2) {
+        this.handler1 = handler1;
+        this.handler2 = handler2;
     }
 
     @Override
-    public Item getItem()
-    {
-        Item item = handler1.getItem() ;
+    public Item getItem() {
+        Item item = handler1.getItem();
         if ( item == null )
-            item = handler2.getItem() ;
-        return item ;
+            item = handler2.getItem();
+        return item;
     }
 
     @Override
-    public void parseStart()
-    {
-        handler1.parseStart() ;
-        handler2.parseStart() ;
-
-    }
-
-    @Override
-    public void parseFinish()
-    {
-        handler1.parseFinish() ;
-        handler2.parseFinish() ;
-    }
-
-    @Override
-    public void listStart(int line, int column)
-    {
-        handler1.listStart(line, column) ;
-        handler2.listStart(line, column) ;
+    public void parseStart() {
+        handler1.parseStart();
+        handler2.parseStart();
 
     }
 
     @Override
-    public void listFinish(int line, int column)
-    {
-        handler1.listFinish(line, column) ;
-        handler2.listFinish(line, column) ;
+    public void parseFinish() {
+        handler1.parseFinish();
+        handler2.parseFinish();
     }
 
     @Override
-    public void emitBNode(int line, int column, String label)
-    {
-        handler1.emitBNode(line, column, label) ;
-        handler2.emitBNode(line, column, label) ;
+    public void listStart(int line, int column) {
+        handler1.listStart(line, column);
+        handler2.listStart(line, column);
+
     }
 
     @Override
-    public void emitIRI(int line, int column, String iriStr)
-    {
-        handler1.emitIRI(line, column, iriStr) ;
-        handler2.emitIRI(line, column, iriStr) ;
+    public void listFinish(int line, int column) {
+        handler1.listFinish(line, column);
+        handler2.listFinish(line, column);
     }
 
     @Override
-    public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn)
-    {
-        handler1.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
-        handler2.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
+    public void emitBNode(int line, int column, String label) {
+        handler1.emitBNode(line, column, label);
+        handler2.emitBNode(line, column, label);
     }
 
     @Override
-    public void emitPName(int line, int column, String pname)
-    {
-        handler1.emitPName(line, column, pname) ;
-        handler2.emitPName(line, column, pname) ;
+    public void emitIRI(int line, int column, String iriStr) {
+        handler1.emitIRI(line, column, iriStr);
+        handler2.emitIRI(line, column, iriStr);
     }
 
     @Override
-    public void emitSymbol(int line, int column, String symbol)
-    {
-        handler1.emitSymbol(line, column, symbol) ;
-        handler2.emitSymbol(line, column, symbol) ;
+    public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn) {
+        handler1.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn);
+        handler2.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn);
     }
 
     @Override
-    public void emitVar(int line, int column, String varName)
-    {
-        handler1.emitVar(line, column, varName) ;
-        handler2.emitVar(line, column, varName) ;
+    public void emitPName(int line, int column, String pname) {
+        handler1.emitPName(line, column, pname);
+        handler2.emitPName(line, column, pname);
+    }
+
+    @Override
+    public void emitSymbol(int line, int column, String symbol) {
+        handler1.emitSymbol(line, column, symbol);
+        handler2.emitSymbol(line, column, symbol);
+    }
+
+    @Override
+    public void emitVar(int line, int column, String varName) {
+        handler1.emitVar(line, column, varName);
+        handler2.emitVar(line, column, varName);
     }
 
     @Override
     public void tripleTermStart(int line, int column) {
-        handler1.tripleTermStart(line, column) ;
-        handler2.tripleTermStart(line, column) ;
+        handler1.tripleTermStart(line, column);
+        handler2.tripleTermStart(line, column);
     }
 
     @Override
     public void tripleTermFinish(int line, int column) {
-        handler1.tripleTermFinish(line, column) ;
-        handler2.tripleTermFinish(line, column) ;
+        handler1.tripleTermFinish(line, column);
+        handler2.tripleTermFinish(line, column);
     }
 }

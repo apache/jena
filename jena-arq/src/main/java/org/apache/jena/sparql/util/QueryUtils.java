@@ -27,9 +27,9 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.QueryCheckException ;
 import org.apache.jena.sparql.lang.SPARQLParserRegistry ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.SSEParseException ;
+import org.apache.jena.sparql.sse.SSE_ParseException ;
 import org.apache.jena.sparql.sse.WriterSSE ;
-import org.apache.jena.sparql.sse.builders.BuildException ;
+import org.apache.jena.sparql.sse.builders.SSE_BuildException ;
 
 public class QueryUtils
 {
@@ -62,7 +62,7 @@ public class QueryUtils
                 dump(op, op2) ;
                 throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
             }
-        } catch (SSEParseException | BuildException ex)
+        } catch (SSE_ParseException | SSE_BuildException ex)
         { 
             throw ex ; 
         }

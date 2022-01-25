@@ -18,12 +18,8 @@
 
 package org.apache.jena.sparql.sse.builders;
 
-import org.apache.jena.sparql.sse.ItemException ;
-
-public class BuildException extends ItemException
+public class SSE_ExprBuildException extends SSE_BuildException
 {
-//        public BuildException(Throwable cause) { super(cause) ; }
-//        public BuildException() { super() ; }
-        public BuildException (String msg) { super(msg) ; }
-        public BuildException (String msg, Throwable cause) { super(msg, cause) ; }
-    }
+    public SSE_ExprBuildException (String msg) { super(msg); }
+    public SSE_ExprBuildException (String msg, Throwable cause) { super(msg, cause); }
+}

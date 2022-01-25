@@ -18,73 +18,65 @@
 
 package org.apache.jena.sparql.sse.lang;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.sparql.sse.SSEParseException ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.sparql.sse.SSE_ParseException;
 
 public class ParserSSEBase
 {
-    private ParseHandler handler = null ;
+    private ParseHandler handler = null;
 
-    public void setHandler(ParseHandler handler) { this.handler = handler ; }
+    public void setHandler(ParseHandler handler) { this.handler = handler; }
 
     protected void parseStart()
-    { handler.parseStart() ; }
+    { handler.parseStart(); }
 
     protected void parseFinish()
-    { handler.parseFinish() ; }
+    { handler.parseFinish(); }
 
     protected void listStart(int line, int column)
-    { handler.listStart(line, column) ; }
+    { handler.listStart(line, column); }
 
     protected void listFinish(int line, int column)
-    { handler.listFinish(line, column) ; }
+    { handler.listFinish(line, column); }
 
     protected void emitBNode(int line, int column, String label)
-    { handler.emitBNode(line, column, label) ; }
+    { handler.emitBNode(line, column, label); }
 
     protected void emitIRI(int line, int column, String iriStr)
-    { handler.emitIRI(line, column, iriStr) ; }
+    { handler.emitIRI(line, column, iriStr); }
 
     protected void emitPName(int line, int column, String pname)
-    { handler.emitPName(line, column, pname) ; }
+    { handler.emitPName(line, column, pname); }
 
-    protected void emitSymbol(int line, int column, String pname)
-    {
-        // XXX Fix escapes
-        handler.emitSymbol(line, column, pname) ;
+    protected void emitSymbol(int line, int column, String pname) {
+        // XXX Fix escapes?
+        handler.emitSymbol(line, column, pname);
     }
 
     protected void emitVar(int line, int column, String varName)
-    { handler.emitVar(line, column, varName) ; }
+    { handler.emitVar(line, column, varName); }
 
-    protected void emitLiteral(int currLine, int currColumn, String lex, String lang, String dt_iri, String dt_pname)
-    {
-        if ( lang != null )
-        {
+    protected void emitLiteral(int currLine, int currColumn, String lex, String lang, String dt_iri, String dt_pname) {
+        if ( lang != null ) {
             if ( dt_iri != null || dt_pname != null )
-                throwParseException("Internal error (lang and datatype)", currLine, currColumn) ;
-        }
-        else
-        {
+                throwParseException("Internal error (lang and datatype)", currLine, currColumn);
+        } else {
             if ( dt_iri != null && dt_pname != null )
-                throwParseException("Internal error (datatype from IRI and pname)", currLine, currColumn) ;
+                throwParseException("Internal error (datatype from IRI and pname)", currLine, currColumn);
         }
-        handler.emitLiteral(currLine, currColumn, lex, lang, dt_iri, dt_pname) ;
+        handler.emitLiteral(currLine, currColumn, lex, lang, dt_iri, dt_pname);
     }
 
-    protected void emitLiteralInteger(int beginLine, int beginColumn, String image)
-    {
-        emitLiteral(beginLine, beginColumn, image, null, XSDDatatype.XSDinteger.getURI(), null) ;
+    protected void emitLiteralInteger(int beginLine, int beginColumn, String image) {
+        emitLiteral(beginLine, beginColumn, image, null, XSDDatatype.XSDinteger.getURI(), null);
     }
 
-    protected void emitLiteralDecimal(int beginLine, int beginColumn, String image)
-    {
-        emitLiteral(beginLine, beginColumn, image, null, XSDDatatype.XSDdecimal.getURI(), null) ;
+    protected void emitLiteralDecimal(int beginLine, int beginColumn, String image) {
+        emitLiteral(beginLine, beginColumn, image, null, XSDDatatype.XSDdecimal.getURI(), null);
     }
 
-    protected void emitLiteralDouble(int beginLine, int beginColumn, String image)
-    {
-        emitLiteral(beginLine, beginColumn, image, null, XSDDatatype.XSDdouble.getURI(), null) ;
+    protected void emitLiteralDouble(int beginLine, int beginColumn, String image) {
+        emitLiteral(beginLine, beginColumn, image, null, XSDDatatype.XSDdouble.getURI(), null);
     }
 
     protected void tripleTermStart(int line, int column) {
@@ -95,9 +87,7 @@ public class ParserSSEBase
         handler.tripleTermFinish(line, column);
     }
 
-    public static void throwParseException(String msg, int line, int column)
-    {
-        throw new SSEParseException("Line " + line + ", column " + column + ": " + msg,
-                                    line, column) ;
+    public static void throwParseException(String msg, int line, int column) {
+        throw new SSE_ParseException("Line " + line + ", column " + column + ": " + msg, line, column);
     }
 }

@@ -39,8 +39,8 @@ import org.apache.jena.sparql.lang.arq.* ;
 import org.apache.jena.sparql.serializer.FmtExprSPARQL ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.SSEParseException ;
-import org.apache.jena.sparql.sse.builders.ExprBuildException ;
+import org.apache.jena.sparql.sse.SSE_ParseException ;
+import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
 import org.apache.jena.sys.JenaSystem ;
 
 
@@ -188,7 +188,7 @@ public class ExprUtils
         } catch (ExprEvalException ex) {
             System.out.println("Exception: " + ex.getMessage());
             return;
-        } catch (ExprBuildException ex) {
+        } catch (SSE_ExprBuildException ex) {
             System.err.println("Build exception: " + ex.getMessage());
             return;
         }
@@ -210,7 +210,7 @@ public class ExprUtils
         try {
             Expr expr = SSE.parseExpr(string);
             evalPrint(expr, binding);
-        } catch (SSEParseException ex) {
+        } catch (SSE_ParseException ex) {
             System.err.println("Parse error: " + ex.getMessage());
             return;
         }

@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.function;
 
-import org.apache.jena.sparql.sse.builders.ExprBuildException ;
+import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
 
 /**
  *  Interface for function factories. 
@@ -29,7 +29,7 @@ public interface FunctionFactory
      * Create a function with the given URI
      * @param uri URI
      * @return Function
-     * @throws ExprBuildException May be thrown if there is a problem creating a function
+     * @throws SSE_ExprBuildException May be thrown if there is a problem creating a function
      */
     public Function create(String uri) ;
 }

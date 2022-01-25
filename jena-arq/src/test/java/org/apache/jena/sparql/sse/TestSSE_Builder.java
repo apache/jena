@@ -35,7 +35,7 @@ import org.apache.jena.sparql.expr.E_SameTerm ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.sse.builders.BuilderNode ;
-import org.apache.jena.sparql.sse.builders.ExprBuildException;
+import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException;
 import org.apache.jena.vocabulary.XSD;
 import org.junit.Test ;
 
@@ -275,13 +275,13 @@ public class TestSSE_Builder
         SSE.parseOp("(table (vars ?x) (row (?x _:test)))");
     }
 
-    @Test(expected = ExprBuildException.class)
+    @Test(expected = SSE_ExprBuildException.class)
     public void testBuildTableBad_01() {
         SSE.parseOp("(table (vars ?x) (row (?x (table unit))))");
 
     }
 
-    @Test(expected = ExprBuildException.class)
+    @Test(expected = SSE_ExprBuildException.class)
     public void testBuildTableBad_02() {
         SSE.parseOp("(table (vars ?x) (row (?x _)))");
     }

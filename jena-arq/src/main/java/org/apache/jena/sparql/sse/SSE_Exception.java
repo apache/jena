@@ -16,14 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.sse.builders;
+package org.apache.jena.sparql.sse;
 
+import org.apache.jena.sparql.ARQException;
 
-class OpBuildException extends BuildException
-    {
-
-//        public OpBuildException(Throwable cause) { super(cause) ; }
-//        public OpBuildException() { super() ; }
-        public OpBuildException (String msg) { super(msg) ; }
-//        public OpBuildException (String msg, Throwable cause) { super(msg, cause) ; }
-    }
+public class SSE_Exception extends ARQException {
+    public SSE_Exception(String msg, Throwable cause)    { super(msg, cause) ; }
+    public SSE_Exception(String msg)                     { super(msg) ; }
+    public SSE_Exception(Throwable cause)                { super(cause) ; }
+    public SSE_Exception()                               { super() ; }
+}

@@ -163,6 +163,10 @@ public class BuilderExpr
     private final static Map<String, Build> dispatch;
 
     public static Expr buildExpr(Item item) {
+        // Before testing for a list because of RDF terms that are lists: (qtriple).
+        if ( item.isNode() )
+            return ExprLib.nodeToExpr(item.getNode());
+
         Expr expr = null;
 
         if ( item.isList() ) {
@@ -191,9 +195,6 @@ public class BuilderExpr
             }
             throw new ARQInternalErrorException();
         }
-
-        if ( item.isNode() )
-            return ExprLib.nodeToExpr(item.getNode());
 
         if ( item.isSymbolIgnoreCase(Tags.tagTrue) )
             return NodeValue.TRUE;
@@ -747,19 +748,18 @@ public class BuilderExpr
         return new E_TriplePredicate(expr);
     };
 
-
     private static Build buildObject = (ItemList list) -> {
         BuilderLib.checkLength(2, list, "object: wanted 1 argument: got: "+numArgs(list));
         Expr expr = buildExpr(list.get(1));
         return new E_TripleObject(expr);
     };
 
-    private static Build buildFnTriple = (ItemList list) -> {
+    private static Build buildTripleFn = (ItemList list) -> {
         BuilderLib.checkLength(4, list, "triple: wanted 3 arguments: got: "+numArgs(list));
         Expr expr1 = buildExpr(list.get(1));
         Expr expr2 = buildExpr(list.get(2));
         Expr expr3 = buildExpr(list.get(3));
-        return new E_TripleTerm(expr1, expr2, expr3);
+        return new E_TripleFn(expr1, expr2, expr3);
     };
 
     private static Build buildIsTriple = (ItemList list) -> {
@@ -1022,7 +1022,7 @@ public class BuilderExpr
         dispatch.put(Tags.tagSubject, buildSubject);
         dispatch.put(Tags.tagPredicate, buildPredicate);
         dispatch.put(Tags.tagObject, buildObject);
-        dispatch.put(Tags.tagFnTriple, buildFnTriple);
+        dispatch.put(Tags.tagFnTriple, buildTripleFn);
         dispatch.put(Tags.tagIsTriple, buildIsTriple);
 
         dispatch.put(Tags.tagCall, buildCall);

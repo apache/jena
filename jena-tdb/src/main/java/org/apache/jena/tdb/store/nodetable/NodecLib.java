@@ -25,7 +25,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.SSEParseException ;
+import org.apache.jena.sparql.sse.SSE_ParseException ;
 import org.apache.jena.tdb.lib.NodeLib ;
 
 /** Utilities for encoding/decoding nodes as strings.
@@ -85,7 +85,7 @@ public class NodecLib
             // Use for literals only.
             Node n = SSE.parseNode(s, pmap) ;
             return n ;
-        } catch (SSEParseException ex)
+        } catch (SSE_ParseException ex)
         {
             Log.error(NodeLib.class, "decode: Failed to parse: "+s) ;
             throw ex ;

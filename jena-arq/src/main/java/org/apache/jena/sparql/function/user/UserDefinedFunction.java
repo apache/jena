@@ -27,7 +27,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.function.Function ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.builders.ExprBuildException ;
+import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
 
 /**
  * Represents a user defined function
@@ -57,13 +57,13 @@ public class UserDefinedFunction extends UserDefinedFunctionDefinition implement
 
     /**
      * Builds the expression substituting the arguments given into the base expression to yield the actual expression to evaluate
-     * @throws ExprBuildException Thrown if an expression cannot be generated
+     * @throws SSE_ExprBuildException Thrown if an expression cannot be generated
      */
     @Override
     public void build(String uri, ExprList args) {
         //Substitutes the arguments into the base expression to give the actual expression to evaluate
-        if (uri == null || !uri.equals(this.getUri())) throw new ExprBuildException("Incorrect URI passed to build() call, expected <" + this.getUri() + "> but got <" + uri + ">");
-        if (this.getArgList().size() != args.size()) throw new ExprBuildException("Incorrect number of arguments for user defined <" + this.getUri() + "> function");
+        if (uri == null || !uri.equals(this.getUri())) throw new SSE_ExprBuildException("Incorrect URI passed to build() call, expected <" + this.getUri() + "> but got <" + uri + ">");
+        if (this.getArgList().size() != args.size()) throw new SSE_ExprBuildException("Incorrect number of arguments for user defined <" + this.getUri() + "> function");
         
         Map<String, Expr> substitutions = new HashMap<>();
         for (int i = 0; i < this.getArgList().size(); i++) {
