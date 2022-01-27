@@ -63,6 +63,14 @@ public class DataAccessPoint {
         return datasetPath;
     }
 
+    /**
+     * Is the name canonical? (starts with "/").
+     * It is the name within the Fuseki server, not the servlet context path.
+     */
+    public static boolean isCanonical(String datasetPath) {
+        return datasetPath != null && datasetPath.startsWith("/");
+    }
+
     public DataService getDataService() {
         return dataService;
     }
