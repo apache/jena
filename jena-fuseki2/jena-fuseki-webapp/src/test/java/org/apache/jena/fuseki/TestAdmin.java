@@ -32,6 +32,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -63,7 +64,7 @@ public class TestAdmin extends AbstractFusekiWebappTest {
 
     // There are two Fuseki-TDB2 tests: add_delete_dataset_6() and compact_01().
     //
-    // On certain build systems (GH action/Linux underload, ASF Jenkins sometimes),
+    // On certain build systems (GH action/Linux under load, ASF Jenkins sometimes),
     // add_delete_dataset_6 fails (transactions active), or compact_01 (gets a 404),
     // if the two databases are the same.
     static String dsTestTdb2a = "test-tdb2a";
@@ -216,7 +217,7 @@ public class TestAdmin extends AbstractFusekiWebappTest {
 
         checkNotThere(testDB);
 
-        addTestDatasetTdb2();
+        addTestDatasetTDB2(testDB);
 
         // Check exists.
         checkExists(testDB);
@@ -335,7 +336,7 @@ public class TestAdmin extends AbstractFusekiWebappTest {
         String testDB = dsTestTdb2b;
         try {
             checkNotThere(testDB);
-            addTestDatasetTdb2();
+            addTestDatasetTDB2(testDB);
             checkExists(testDB);
 
             String id = null;
@@ -549,8 +550,17 @@ public class TestAdmin extends AbstractFusekiWebappTest {
         addTestDataset(fileBase+"config-ds-inf.ttl");
     }
 
-    private static void addTestDatasetTdb2() {
-        addTestDataset(fileBase+"config-tdb2.ttl");
+    private static void addTestDatasetTDB2(String DBname) {
+        Objects.nonNull(DBname);
+        if ( DBname.equals(dsTestTdb2a) ) {
+            addTestDataset(fileBase+"config-tdb2a.ttl");
+            return;
+        }
+        if ( DBname.equals(dsTestTdb2b) ) {
+            addTestDataset(fileBase+"config-tdb2b.ttl");
+            return;
+        }
+        throw new IllegalArgumentException("No configuration for "+DBname);
     }
 
     private static void addTestDataset(String filename) {
