@@ -626,7 +626,10 @@ public class FusekiConfig {
                 Resource r = (Resource)ep;
                 try {
                     // [ fuseki:name ""; fuseki:allowedUsers ( "" "" ) ]
-                    endpointName = r.getProperty(FusekiVocab.pEndpointName).getString();
+                    Statement stmt = r.getProperty(FusekiVocab.pEndpointName);
+                    if ( stmt == null )
+                        throw new FusekiConfigException("Expected property <"+FusekiVocab.pEndpointName+"> with <"+property.getURI()+"> for <"+svc+">");
+                    endpointName = stmt.getString();
                     List<RDFNode> x = GraphUtils.multiValue(r, FusekiVocab.pAllowedUsers);
                     if ( x.size() > 1 )
                         throw new FusekiConfigException("Multiple fuseki:"+FusekiVocab.pAllowedUsers.getLocalName()+" for "+r);
