@@ -642,7 +642,6 @@ public class FusekiServer {
             if ( isRegistered(name) )
                 throw new FusekiConfigException("Data service name already registered: "+name);
             providedDataServices.put(name, dataService);
-
             return this;
         }
 
@@ -660,7 +659,6 @@ public class FusekiServer {
             Model model = AssemblerUtils.readAssemblerFile(filename);
             parseConfig(model);
             return this;
-
         }
 
         /**
@@ -684,7 +682,7 @@ public class FusekiServer {
             return this;
         }
 
-        /** Add a {@link DataAccessPoint}. */
+        /** Add a {@link DataAccessPoint} as a builder. */
         private Builder addDataAccessPoint(DataAccessPoint dap) {
             if ( isRegistered(dap.getName()) )
                 throw new FusekiConfigException("Data service name already registered: "+dap.getName());
@@ -999,7 +997,6 @@ public class FusekiServer {
             serviceEndpointOperation(datasetName, null, operation, authPolicy);
             return this;
         }
-
 
         private void serviceEndpointOperation(String datasetName, String endpointName, Operation operation, AuthPolicy authPolicy) {
             String name = DataAccessPoint.canonical(datasetName);

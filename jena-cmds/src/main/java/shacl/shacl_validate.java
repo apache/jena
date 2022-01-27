@@ -49,7 +49,7 @@ public class shacl_validate extends CmdGeneral {
     //private ArgDecl argOutputRDF   = new ArgDecl(false, "--rdf");
     private ArgDecl argData        = new ArgDecl(true, "--data", "--datafile", "-d");
     private ArgDecl argShapes      = new ArgDecl(true, "--shapes", "--shapesfile", "--shapefile", "-s");
-    private ArgDecl argTargetNode  = new ArgDecl(true, "--target", "--node", "-n");
+    private ArgDecl argTargetNode  = new ArgDecl(true, "--target", "--node", "-n", "-t");
 
     private String  datafile = null;
     private String  shapesfile = null;

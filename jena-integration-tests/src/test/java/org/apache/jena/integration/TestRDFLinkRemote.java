@@ -52,7 +52,6 @@ public class TestRDFLinkRemote extends AbstractTestRDFLink {
         LogCtl.setLevel(Fuseki.actionLogName,  "WARN");
         LogCtl.setLevel(Fuseki.requestLogName, "WARN");
         LogCtl.setLevel(Fuseki.adminLogName,   "WARN");
-        LogCtl.setLevel(Fuseki.adminLogName,   "WARN");
         LogCtl.setLevel("org.eclipse.jetty",   "WARN");
         server.start() ;
         PORT = server.getPort();
