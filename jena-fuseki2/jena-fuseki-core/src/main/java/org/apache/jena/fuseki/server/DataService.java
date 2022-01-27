@@ -303,7 +303,7 @@ public class DataService {
         boolean isTDB1 = isTDB1(base);
         boolean isTDB2 = isTDB2(base);
 
-        if ( ( isTDB1 || isTDB2 ) ) {
+        if ( isTDB1 || isTDB2 ) {
             // JENA-1586: Remove database from the process.
             if ( isTDB1 )
                 org.apache.jena.tdb.sys.TDBInternal.expel(base);

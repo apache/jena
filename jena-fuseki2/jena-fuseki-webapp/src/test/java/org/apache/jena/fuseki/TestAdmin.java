@@ -60,7 +60,14 @@ public class TestAdmin extends AbstractFusekiWebappTest {
     // Name of the dataset in the assembler file.
     static String dsTest      = "test-ds1";
     static String dsTestInf   = "test-ds4";
-    static String dsTestTdb2  = "test-tdb2";
+
+    // There are two Fuseki-TDB2 tests: add_delete_dataset_6() and compact_01().
+    //
+    // On certain build systems (GH action/Linux underload, ASF Jenkins sometimes),
+    // add_delete_dataset_6 fails (transactions active), or compact_01 (gets a 404),
+    // if the two databases are the same.
+    static String dsTestTdb2a = "test-tdb2a";
+    static String dsTestTdb2b = "test-tdb2b";
     static String fileBase    = "testing/";
 
     @Before public void setLogging() {
@@ -204,18 +211,19 @@ public class TestAdmin extends AbstractFusekiWebappTest {
     }
 
     @Test public void add_delete_dataset_6() {
+        String testDB = dsTestTdb2a;
         assumeNotWindows();
 
-        checkNotThere(dsTestTdb2);
+        checkNotThere(testDB);
 
         addTestDatasetTdb2();
 
         // Check exists.
-        checkExists(dsTestTdb2);
+        checkExists(testDB);
 
         // Remove it.
-        deleteDataset(dsTestTdb2);
-        checkNotThere(dsTestTdb2);
+        deleteDataset(testDB);
+        checkNotThere(testDB);
     }
 
     @Test public void add_error_1() {
@@ -323,14 +331,16 @@ public class TestAdmin extends AbstractFusekiWebappTest {
 
     @Test public void compact_01() {
         assumeNotWindows();
+
+        String testDB = dsTestTdb2b;
         try {
-            checkNotThere(dsTestTdb2);
+            checkNotThere(testDB);
             addTestDatasetTdb2();
-            checkExists(dsTestTdb2);
+            checkExists(testDB);
 
             String id = null;
             try {
-                JsonValue v = httpPostRtnJSON(ServerCtl.urlRoot() + "$/" + opCompact + "/" + dsTestTdb2);
+                JsonValue v = httpPostRtnJSON(ServerCtl.urlRoot() + "$/" + opCompact + "/" + testDB);
                 id = v.getAsObject().getString(JsonConstCtl.taskId);
             } finally {
                 waitForTasksToFinish(1000, 500, 20_000);
@@ -353,7 +363,7 @@ public class TestAdmin extends AbstractFusekiWebappTest {
             // Check task success
             Assert.assertTrue("Expected task to be marked as successful", task.getAsObject().getBoolean(JsonConstCtl.success));
         } finally {
-            deleteDataset(dsTestTdb2);
+            deleteDataset(testDB);
         }
     }
 
