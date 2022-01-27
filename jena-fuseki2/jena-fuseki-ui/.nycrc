@@ -1,0 +1,23 @@
+{
+  "all": true,
+  "cache": false,
+  "check-coverage": false,
+  "include": ["src/**/*.js", "src/**/*.vue"],
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/tests/**",
+    "**/*.spec.js",
+    "**/*.mock.*.js",
+    "src/assets/**/*.*",
+    "src/events/**/*.*",
+    "src/router/**/*.*",
+    "src/styles/**/*.*",
+    "src/main.js"
+  ],
+  "excludeNodeModules": true,
+  "extension": [".js", ".ts", ".vue"],
+  "instrument": true,
+  "reporter": ["html", "lcov", "text-summary"],
+  "sourceMap": false
+}

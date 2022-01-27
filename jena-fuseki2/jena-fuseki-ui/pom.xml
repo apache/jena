@@ -69,7 +69,6 @@
                             <arguments>run build</arguments>
                         </configuration>
                     </execution>
-                    <!--
                     <execution>
                         <id>yarn run test:unit</id>
                         <goals>
@@ -80,6 +79,7 @@
                             <arguments>run test:unit</arguments>
                         </configuration>
                     </execution>
+                    <!--
                     <execution>
                         <id>yarn run test:e2e</id>
                         <goals>
@@ -90,7 +90,7 @@
                             <arguments>run test:e2e</arguments>
                         </configuration>
                     </execution>
-                     -->
+                    -->
                 </executions>
             </plugin>
         </plugins>
