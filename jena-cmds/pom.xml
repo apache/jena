@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>4.4.0</version>
+    <version>4.5.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>4.4.0</version>
+      <version>4.5.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 
@@ -63,28 +63,28 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>4.4.0</version>
+      <version>4.5.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <optional>true</optional>
     </dependency>     
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>4.4.0</version>
+      <version>4.5.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>4.4.0</version>
+      <version>4.5.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shacl</artifactId>
-      <version>4.4.0</version>
+      <version>4.5.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <optional>true</optional>
     </dependency>
