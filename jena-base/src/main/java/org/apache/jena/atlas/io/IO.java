@@ -562,7 +562,8 @@ public class IO
             SKIP_BUFFER = new byte[SKIP_BUFFER_LEN];
         try {
             for(;;) {
-                // Skip does not guarantee to go to end of file.
+                // InputStream.skip does not guarantee to go to end of file.
+                // Actually read it to be sure.
                 long rLen = input.read(SKIP_BUFFER, 0, SKIP_BUFFER_LEN);
                 if (rLen < 0) // EOF
                     break;
@@ -587,5 +588,4 @@ public class IO
             }
         } catch (IOException ex) {}
     }
-
 }
