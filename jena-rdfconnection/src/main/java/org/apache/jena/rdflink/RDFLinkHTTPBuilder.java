@@ -306,10 +306,10 @@ public class RDFLinkHTTPBuilder {
 
     protected RDFLinkHTTP buildConnection() {
         return new RDFLinkHTTP(txnLifecycle, httpClient,
-                                 destination, queryURL, updateURL, gspURL,
-                                 outputQuads, outputTriples,
-                                 acceptDataset, acceptGraph,
-                                 acceptSparqlResults, acceptSelectResult, acceptAskResult,
-                                 parseCheckQueries, parseCheckUpdates);
+                               destination, queryURL, updateURL, gspURL,
+                               outputQuads, outputTriples,
+                               acceptDataset, acceptGraph,
+                               acceptSparqlResults, acceptSelectResult, acceptAskResult,
+                               parseCheckQueries, parseCheckUpdates);
     }
 }

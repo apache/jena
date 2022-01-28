@@ -101,8 +101,6 @@ public class QualifiedValueShape implements Constraint {
          *
          * The constraint component for sh:qualifiedMinCount is sh:QualifiedMinCountConstraintComponent.
          */
-
-        // XXX Siblings be calculated at parse time?
         Collection<Node> sibs = siblings(vCxt.getShapesGraph(), shape);
         Set<Node> valueNodes2;
         if ( qDisjoint ) {

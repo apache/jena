@@ -236,7 +236,7 @@ public class RDFConnectionRemoteBuilder {
     }
 
     protected RDFLink buildLink() {
-        return  builder.build();
+        return builder.build();
     }
 
     protected RDFConnection adaptLink(RDFLink rdfLink) {

@@ -121,7 +121,12 @@ public class GeoAssembler extends DatasetAssembler {
 
         Dataset dataset = DatasetFactory.wrap(base);
 
-        // GeoSPARQLOperations.convertGeoPredicates returns the changed dataset but that is ignored so this is a no-op.
+        // Conversion of data. Startup-only.
+        // needed for w3c:geo/wgs84_pos#lat/log.
+        // (names = {"--convert_geo", "-c"}
+        // "Convert Geo predicates in the data to Geometry with WKT WGS84 Point Geometry Literal."
+
+        // GeoSPARQLOperations.convertGeoPredicates returns the different (in-memory) dataset but which is ignored.
 //        //Convert Geo predicates to Geometry Literals.
 //        if ( convertGeoPredicates ) //Apply validation of Geometry Literal.
 //            GeoSPARQLOperations.convertGeoPredicates(dataset, removeGeoPredicates);
