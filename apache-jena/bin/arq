@@ -63,6 +63,26 @@ if [ -L "${JENA_HOME}" ]; then
   export JENA_HOME
 fi
 
+if [ -z "$JAVA" ]
+then
+    if [ -z "$JAVA_HOME" ]
+    then
+	JAVA="$(which java)"
+    else
+        JAVA="$JAVA_HOME/bin/java"
+    fi
+fi
+
+if [ -z "$JAVA" ]
+then
+    (
+	echo "Cannot find a Java JDK."
+	echo "Please set either set JAVA or JAVA_HOME and put java (>=1.8) in your PATH."
+    ) 1>&2
+  exit 1
+fi
+
+
 # ---- Setup
 # JVM_ARGS : don't set here but it can be set in the environment.
 # Expand JENA_HOME but literal *
@@ -85,4 +105,4 @@ then
     JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=\"$TMP\""
 fi
 
-java $JVM_ARGS $LOGGING -cp "$JENA_CP" arq.arq "$@" 
+"$JAVA" $JVM_ARGS $LOGGING -cp "$JENA_CP" arq.arq "$@" 

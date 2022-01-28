@@ -91,7 +91,7 @@ if [ -z "$JAVA" ]
 then
     (
 	echo "Cannot find a Java JDK."
-	echo "Please set either set JAVA or JAVA_HOME and put java (>=1.8) in your PATH."
+	echo "Please set either set JAVA or JAVA_HOME and put java in your PATH."
     ) 1>&2
   exit 1
 fi
@@ -114,7 +114,7 @@ then
     LOGGING="-Dlog4j.configurationFile=$DFT_LOG_CONF"
 fi
 
-exec $JAVA $JVM_ARGS $LOGGING -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+exec "$JAVA" $JVM_ARGS $LOGGING -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
 
 ## Adding custom code to the Fuseki server:
 ##
