@@ -20,7 +20,6 @@ package org.apache.jena.test;
 
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
-import org.apache.jena.assembler.test.TestAssemblerPackage ;
 
 /**
  * All developers should edit this file to add their tests.
@@ -41,11 +40,12 @@ public class TestPackage extends TestCase {
         addTest(ts,  "Mem", org.apache.jena.mem.test.TestMemPackage.suite() );
         addTest(ts,  "Mem2", org.apache.jena.mem.test.TestGraphMemPackage.suite() );
         addTest(ts,  "Model", org.apache.jena.rdf.model.test.TestPackage.suite());
+        addTest(ts,  "StandardModels", org.apache.jena.rdf.model.test.TestStandardModels.suite() );
         addTest(ts,  "Turtle", org.apache.jena.ttl.turtle.TurtleTestSuite.suite()) ;
         addTest(ts,  "XML Output", org.apache.jena.rdfxml.xmloutput.TestPackage.suite());
         addTest(ts,  "Util", org.apache.jena.util.TestPackage.suite());
         addTest(ts,  "Jena iterator", org.apache.jena.util.iterator.test.TestPackage.suite() );
-        addTest(ts,  "Assembler", TestAssemblerPackage.suite() );
+        addTest(ts,  "Assembler", org.apache.jena.assembler.test.TestAssemblerPackage.suite() );
         addTest(ts,  "ARP", org.apache.jena.rdfxml.xmlinput.TestPackage.suite());
         addTest(ts,  "Vocabularies", org.apache.jena.vocabulary.test.TestVocabularies.suite() );
         addTest(ts,  "Shared", org.apache.jena.shared.TestSharedPackage.suite() );
