@@ -111,7 +111,9 @@ public class TestAdmin extends AbstractFusekiWebappTest {
     // --- List all datasets
 
     @Test public void list_datasets_1() {
-        try ( TypedInputStream in = httpGet(ServerCtl.urlRoot()+"$/"+opDatasets); ) { }
+        try ( TypedInputStream in = httpGet(ServerCtl.urlRoot()+"$/"+opDatasets); ) {
+            IO.skipToEnd(in);
+        }
     }
 
     @Test public void list_datasets_2() {
@@ -682,16 +684,18 @@ public class TestAdmin extends AbstractFusekiWebappTest {
        return taskObj.hasKey("started") &&  ! taskObj.hasKey("finished");
    }
 
-    // Auxilary
-
     private static void askPing(String name) {
         if ( name.startsWith("/") )
             name = name.substring(1);
-        try ( TypedInputStream in = httpGet(ServerCtl.urlRoot()+name+"/sparql?query=ASK%7B%7D") ) {}
+        try ( TypedInputStream in = httpGet(ServerCtl.urlRoot()+name+"/sparql?query=ASK%7B%7D") ) {
+            IO.skipToEnd(in);
+        }
     }
 
     private static void adminPing(String name) {
-        try ( TypedInputStream in = httpGet(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+name) ) {}
+        try ( TypedInputStream in = httpGet(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+name) ) {
+            IO.skipToEnd(in);
+        }
     }
 
     private static void checkExists(String name)  {
