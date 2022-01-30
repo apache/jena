@@ -17,6 +17,7 @@
 const path = require('path')
 
 module.exports = {
+  publicPath: '',
   chainWebpack: config => {
     config
       .plugin('html')

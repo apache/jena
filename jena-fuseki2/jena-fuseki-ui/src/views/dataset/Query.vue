@@ -201,7 +201,7 @@ export default {
             showQueryButton: true,
             resizeable: false,
             requestConfig: {
-              endpoint: `/${vm.datasetName}/sparql`
+              endpoint: this.$fusekiService.getFusekiUrl(`/${vm.datasetName}/sparql`)
             }
           }
         )
