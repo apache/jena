@@ -30,7 +30,7 @@ import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.apache.jena.shared.PrefixMapping ;
 
 public class TestPackage extends TestCase {
-    
+
     public static TestSuite suite() {
     	TestSuite result = new TestSuite();
 
@@ -41,13 +41,13 @@ public class TestPackage extends TestCase {
 			{
 				return new Intersection(Factory.createGraphMem(), Factory.createGraphMem());
 			}};
-			
+
     	AbstractTestPackage atp = new AbstractTestPackage( "Intersection",  gmf ){};
     	for (int i=0;i<atp.testCount();i++)
     	{
     		result.addTest( atp.testAt(i) );
     	}
-    	
+
     	gmf = new GraphModelFactory(){
 
 			@Override
@@ -55,13 +55,13 @@ public class TestPackage extends TestCase {
 			{
 				return new Difference(Factory.createGraphMem(), Factory.createGraphMem());
 			}};
-			
+
     	atp = new AbstractTestPackage( "Difference",  gmf ){};
     	for (int i=0;i<atp.testCount();i++)
     	{
     		result.addTest( atp.testAt(i) );
     	}
-    	
+
     	gmf = new GraphModelFactory(){
 
 			@Override
@@ -69,7 +69,7 @@ public class TestPackage extends TestCase {
 			{
 				return new Union(Factory.createGraphMem(), Factory.createGraphMem());
 			}};
-			
+
     	atp = new AbstractTestPackage( "Union",  gmf ){};
     	for (int i=0;i<atp.testCount();i++)
     	{
@@ -90,7 +90,7 @@ public class TestPackage extends TestCase {
     private static abstract class GraphModelFactory implements TestingModelFactory
 	{
     	abstract Graph getGraph();
-    	
+
 		@Override
 		public Model createModel()
 		{

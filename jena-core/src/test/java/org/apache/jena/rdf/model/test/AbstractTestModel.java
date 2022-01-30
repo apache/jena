@@ -38,43 +38,43 @@ public abstract class AbstractTestModel extends ModelTestBase
         { super(name); }
 
     public abstract Model getModel();
-    
+
     private Model model;
-    
+
     @Override
     public void setUp()
         { model = getModel(); }
-        
+
     @Override
     public void tearDown()
-        { model.close(); } 
-       
+        { model.close(); }
+
     public void testTransactions() {
         if ( model.supportsTransactions() )
             model.executeInTxn(() -> {}) ;
     }
-        
+
     public void testCreateResourceFromNode()
         {
-        RDFNode S = model.getRDFNode( NodeCreateUtils.create( "spoo:S" ) ); 
+        RDFNode S = model.getRDFNode( NodeCreateUtils.create( "spoo:S" ) );
         assertInstanceOf( Resource.class, S );
         assertEquals( "spoo:S", ((Resource) S).getURI() );
         }
-        
+
     public void testCreateLiteralFromNode()
         {
-        RDFNode S = model.getRDFNode( NodeCreateUtils.create( "42" ) ); 
+        RDFNode S = model.getRDFNode( NodeCreateUtils.create( "42" ) );
         assertInstanceOf( Literal.class, S );
         assertEquals( "42", ((Literal) S).getLexicalForm() );
-        }    
-            
+        }
+
    public void testCreateBlankFromNode()
         {
-        RDFNode S = model.getRDFNode( NodeCreateUtils.create( "_Blank" ) ); 
+        RDFNode S = model.getRDFNode( NodeCreateUtils.create( "_Blank" ) );
         assertInstanceOf( Resource.class, S );
         assertEquals( new AnonId( "_Blank" ), ((Resource) S).getId() );
         }
-        
+
     public void testIsEmpty()
         {
         Statement S1 = statement( model, "model rdf:type nonEmpty" );
@@ -89,7 +89,7 @@ public abstract class AbstractTestModel extends ModelTestBase
         model.remove( S2 );
         assertTrue( model.isEmpty() );
         }
-        
+
     public void testContainsResource()
         {
         modelAdd( model, "x R y; _a P _b" );
@@ -102,7 +102,7 @@ public abstract class AbstractTestModel extends ModelTestBase
         assertFalse( model.containsResource( resource( model, "i" ) ) );
         assertFalse( model.containsResource( resource( model, "_j" ) ) );
         }
-        
+
     /**
         Test the new version of getProperty(), which delivers null for not-found
         properties.
@@ -123,16 +123,16 @@ public abstract class AbstractTestModel extends ModelTestBase
      */
     public void testGetPropertyWithLanguage()
         {
-        model.createStatement(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "P"), "a", "pt");
-        model.createStatement(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "P"), "b", "en");
-        model.createStatement(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "P"), "c", "es");
-        model.createStatement(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "R"), "d", "fr");
-        model.createStatement(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "R"), "e", "de");
+        model.add(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "P"), "a", "pt");
+        model.add(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "P"), "b", "en");
+        model.add(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "P"), "c", "es");
+        model.add(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "R"), "d", "fr");
+        model.add(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "R"), "e", "de");
 
         {//Tests {@link Resource#getProperty(Property, String)}
         final Resource x = resource( model, "x" );
-        assertEquals("a", x.getProperty( property( model, "P" ), "pt") );
-        assertEquals("b", x.getProperty( property( model, "P" ), "en") );
+        assertEquals("a", x.getProperty( property( model, "P" ), "pt").getString() );
+        assertEquals("b", x.getProperty( property( model, "P" ), "en").getString() );
         assertNull(x.getProperty( property( model, "P" ), "ja") );
         final Literal l = x.getProperty( property(model, "R") ).getLiteral();
         assertTrue( "d".equals( l.getString() ) || "e".equals( l.getString() ) );
@@ -140,8 +140,8 @@ public abstract class AbstractTestModel extends ModelTestBase
 
         {//Tests {@link Resource#getRequiredProperty(Property, String)}
         final Resource x = resource( model, "x" );
-        assertEquals("a", x.getRequiredProperty( property( model, "P" ), "pt") );
-        assertEquals("b", x.getRequiredProperty( property( model, "P" ), "en") );
+        assertEquals("a", x.getRequiredProperty( property( model, "P" ), "pt").getString() );
+        assertEquals("b", x.getRequiredProperty( property( model, "P" ), "en").getString() );
         try {
             x.getRequiredProperty( property( model, "P" ), "ja");
             fail("Must thrown PropertyNotFoundException.");
@@ -160,7 +160,7 @@ public abstract class AbstractTestModel extends ModelTestBase
         assertEquals( node( "P" ), s.getPredicate().asNode() );
         assertEquals( node( "b" ), s.getObject().asNode() );
         }
-    
+
     public void testAsRDF()
         {
         testPresentAsRDFNode( node( "a" ), Resource.class );
@@ -174,17 +174,17 @@ public abstract class AbstractTestModel extends ModelTestBase
         assertSame( n, r.asNode() );
         assertInstanceOf( nodeClass, r );
         }
-        
+
     public void testURINodeAsResource()
         {
         Node n = node( "a" );
         Resource r = model.wrapAsResource( n );
         assertSame( n, r.asNode() );
         }
-        
+
     public void testLiteralNodeAsResourceFails()
         {
-        try 
+        try
             {
             model.wrapAsResource( node( "17" ) );
             fail( "should fail to convert literal to Resource" );
@@ -192,7 +192,7 @@ public abstract class AbstractTestModel extends ModelTestBase
         catch (UnsupportedOperationException e)
             { pass(); }
         }
-    
+
     public void testRemoveAll()
         {
         testRemoveAll( "" );
@@ -200,14 +200,14 @@ public abstract class AbstractTestModel extends ModelTestBase
         testRemoveAll( "x P y; a Q b; c R 17; _d S 'e'" );
         testRemoveAll( "subject Predicate 'object'; http://nowhere/x scheme:cunning not:plan" );
         }
-    
+
     protected void testRemoveAll( String statements )
         {
         modelAdd( model, statements );
         assertSame( model, model.removeAll() );
         assertEquals( "model should have size 0 following removeAll(): ", 0, model.size() );
         }
-    
+
     /**
  		Test cases for RemoveSPO(); each entry is a triple (add, remove, result).
 	 	<ul>
@@ -222,12 +222,12 @@ public abstract class AbstractTestModel extends ModelTestBase
 	            { "x R y; a P b", "x R y", "a P b" },
 	            { "x R y; a P b", "?? R y", "a P b" },
 	            { "x R y; a P b", "x R ??", "a P b" },
-	            { "x R y; a P b", "x ?? y", "a P b" },      
-	            { "x R y; a P b", "?? ?? ??", "" },       
-	            { "x R y; a P b; c P d", "?? P ??", "x R y" },       
-	            { "x R y; a P b; x S y", "x ?? ??", "a P b" },                 
+	            { "x R y; a P b", "x ?? y", "a P b" },
+	            { "x R y; a P b", "?? ?? ??", "" },
+	            { "x R y; a P b; c P d", "?? P ??", "x R y" },
+	            { "x R y; a P b; x S y", "x ?? ??", "a P b" },
 		};
-    
+
     /**
  	Test that remove(s, p, o) works, in the presence of inferencing graphs that
  	mean emptyness isn't available. This is why we go round the houses and
@@ -255,7 +255,7 @@ public abstract class AbstractTestModel extends ModelTestBase
                 }
             }
 	    }
-	
+
     public void testIsClosedDelegatedToGraph()
         {
         Model m = getModel();
@@ -263,7 +263,7 @@ public abstract class AbstractTestModel extends ModelTestBase
         m.close();
         assertTrue( m.isClosed() );
         }
-    
+
 	protected Model copy( Model m )
 	    {
 	    return ModelFactory.createDefaultModel().add( m );
