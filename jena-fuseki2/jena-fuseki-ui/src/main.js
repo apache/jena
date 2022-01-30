@@ -26,7 +26,7 @@ Vue.use(IconsPlugin)
 
 Vue.config.productionTip = false
 
-const fusekiService = new FusekiService()
+const fusekiService = new FusekiService(window.location)
 Vue.prototype.$fusekiService = fusekiService
 
 new Vue({

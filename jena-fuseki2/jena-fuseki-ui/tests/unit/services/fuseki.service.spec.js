@@ -26,7 +26,9 @@ describe('FusekiService', () => {
   let fusekiService
   let clock
   beforeEach(async () => {
-    fusekiService = new FusekiService()
+    fusekiService = new FusekiService({
+      pathname: ''
+    })
     // Let's freeze time! So we always get responses with `0ms` in the message.
     clock = sinon.useFakeTimers(new Date().getTime())
   })

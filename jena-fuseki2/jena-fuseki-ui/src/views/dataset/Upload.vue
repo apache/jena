@@ -270,7 +270,7 @@ export default {
     },
     postActionUrl () {
       const params = (this.form.datasetGraphName && this.form.datasetGraphName !== '') ? `?graph=${this.form.datasetGraphName}` : ''
-      return `/${this.datasetName}/data${params}`
+      return this.$fusekiService.getFusekiUrl(`/${this.datasetName}/data${params}`)
     }
   },
 

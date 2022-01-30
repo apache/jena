@@ -27,19 +27,40 @@ const DATASET_COUNT_GRAPH_QUERY_1 = 'select (count(*) as ?count) {?s ?p ?o}'
 const DATASET_COUNT_GRAPH_QUERY_2 = 'select ?g (count(*) as ?count) {graph ?g {?s ?p ?o}} group by ?g'
 
 class FusekiService {
-  constructor () {
+  /**
+   * @param {Location} location
+   */
+  constructor (location) {
     this.isOffline = true
+    this.pathname = location.pathname
+  }
+
+  /**
+   * Gets the Fuseki URL, only the pathname onward. The protocol, server, port, etc,
+   * are left to the browser/JS engine & Vue to choose. Previously we were passing
+   * strings such as `/#/ping$`. But this did not work when the application was
+   * deployed on a Tomcat server, for example, where the base URL could be something
+   * like `http://localhost:8080/jena-fuseki/#/`.
+   *
+   * See RC1 vote thread for 4.4.0 for more: https://lists.apache.org/thread/z3gb5w95oc7c4v0g1jpk9jkxm0l4b7lh
+   *
+   * @param {string} url - Vue route URL
+   * @return {string} a new route URL that includes any pathname in the URL
+   */
+  getFusekiUrl (url) {
+    // modified version from: https://stackoverflow.com/a/24381515
+    return `${this.pathname}/${url}`.replace(/(\/)\/+/g, '$1')
   }
 
   async getServerData () {
-    const response = await axios.get('/$/server')
+    const response = await axios.get(this.getFusekiUrl('/$/server'))
     return response.data
   }
 
   async getServerStatus () {
     const startTime = new Date().getTime()
     try {
-      await axios.get('/$/ping')
+      await axios.get(this.getFusekiUrl('/$/ping'))
       // connection reset?
       if (this.isOffline) {
         BUS.$emit('connection:reset')
@@ -57,19 +78,19 @@ class FusekiService {
   }
 
   async getDatasetStats (datasetName) {
-    const response = await axios.get(`/$/stats/${datasetName}`)
+    const response = await axios.get(this.getFusekiUrl(`/$/stats/${datasetName}`))
     return response.data
   }
 
   async getDatasetSize (datasetName) {
     const promisesResult = await Promise.all([
       axios
-        .get(`/${datasetName}/sparql`, {
+        .get(this.getFusekiUrl(`/${datasetName}/sparql`), {
           params: {
             query: DATASET_SIZE_QUERY_1
           }
         }),
-      axios.get(`/${datasetName}/sparql`, {
+      axios.get(this.getFusekiUrl(`/${datasetName}/sparql`), {
         params: {
           query: DATASET_SIZE_QUERY_2
         }
@@ -86,7 +107,7 @@ class FusekiService {
   }
 
   async deleteDataset (datasetName) {
-    await axios.delete(`/$/datasets${datasetName}`)
+    await axios.delete(this.getFusekiUrl(`/$/datasets${datasetName}`))
   }
 
   /**
@@ -99,7 +120,7 @@ class FusekiService {
    * }>}
    */
   async backupDataset (datasetName) {
-    return await axios.post(`/$/backup${datasetName}`)
+    return await axios.post(this.getFusekiUrl(`/$/backup${datasetName}`))
   }
 
   async createDataset (datasetName, datasetType) {
@@ -114,7 +135,7 @@ class FusekiService {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
     try {
-      await axios.post('/$/datasets', data, {
+      await axios.post(this.getFusekiUrl('/$/datasets'), data, {
         headers
       })
     } catch (error) {
@@ -131,18 +152,18 @@ class FusekiService {
   }
 
   async getTasks () {
-    return axios.get('/$/tasks')
+    return axios.get(this.getFusekiUrl('/$/tasks'))
   }
 
   async countGraphsTriples (datasetName) {
     const promisesResult = await Promise.all([
       axios
-        .get(`/${datasetName}/sparql`, {
+        .get(this.getFusekiUrl(`/${datasetName}/sparql`), {
           params: {
             query: DATASET_COUNT_GRAPH_QUERY_1
           }
         }),
-      axios.get(`/${datasetName}/sparql`, {
+      axios.get(this.getFusekiUrl(`/${datasetName}/sparql`), {
         params: {
           query: DATASET_COUNT_GRAPH_QUERY_2
         }
@@ -160,7 +181,7 @@ class FusekiService {
 
   async fetchGraph (datasetName, graphName) {
     return await axios
-      .get(`/${datasetName}`, {
+      .get(this.getFusekiUrl(`/${datasetName}`), {
         params: {
           graph: graphName
         },
@@ -172,7 +193,7 @@ class FusekiService {
 
   async saveGraph (datasetName, graphName, code) {
     return await axios
-      .put(`/${datasetName}`, code, {
+      .put(this.getFusekiUrl(`/${datasetName}`), code, {
         params: {
           graph: graphName
         },
