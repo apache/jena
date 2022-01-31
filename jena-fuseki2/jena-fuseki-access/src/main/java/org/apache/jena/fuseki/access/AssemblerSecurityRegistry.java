@@ -98,7 +98,7 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
             throw new AssemblerException(root, "Found access:entry with an empty list");
         Node userNode = members.get(0);
         if ( !  Util.isSimpleString(userNode) )
-            throw new AssemblerException(root, "User name is not a string: "+NodeFmtLib.str(userNode));
+            throw new AssemblerException(root, "User name is not a string: "+NodeFmtLib.strTTL(userNode));
         String user = userNode.getLiteralLexicalForm();
         List<Node> graphs = members.subList(1, members.size());
         accessEntries(root, map, user, graphs);

@@ -39,7 +39,7 @@ public class NodeTableLib {
                     return ;
                 NodeId nid = pair.getLeft();
                 Node n = pair.getRight();
-                System.out.printf("%s %s\n", nid, NodeFmtLib.str(n));
+                System.out.printf("%s %s\n", nid, NodeFmtLib.strNT(n));
             }
 //            long x = Iter.count(nodeTable.all());
             System.out.println("Node table length: "+x);

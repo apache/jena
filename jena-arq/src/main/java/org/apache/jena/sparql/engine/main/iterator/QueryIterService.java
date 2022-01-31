@@ -88,7 +88,7 @@ public class QueryIterService extends QueryIterRepeatApply
             return new QueryIterCommonParent(qIter, outerBinding, getExecContext());
         } catch (RuntimeException ex) {
             if ( silent ) {
-                Log.warn(this, "SERVICE " + NodeFmtLib.str(substitutedOp.getService()) + " : " + ex.getMessage());
+                Log.warn(this, "SERVICE " + NodeFmtLib.strTTL(substitutedOp.getService()) + " : " + ex.getMessage());
                 // Return the input
                 return QueryIterSingleton.create(outerBinding, getExecContext());
 

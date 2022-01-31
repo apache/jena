@@ -636,11 +636,11 @@ public class G {
     }
 
     private static String matchStr(Node subject, Node predicate, Node object) {
-        return "("+NodeFmtLib.strNodes(subject, predicate, object)+")";
+        return "("+NodeFmtLib.strNodesTTL(subject, predicate, object)+")";
     }
 
     private static String matchStr(Node graph, Node subject, Node predicate, Node object) {
-        return "("+NodeFmtLib.strNodes(graph, subject, predicate, object)+")";
+        return "("+NodeFmtLib.strNodesTTL(graph, subject, predicate, object)+")";
     }
 
     private static Triple first(ExtendedIterator<Triple> iter) {

@@ -37,43 +37,43 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
     { return new NodeToLabel(new SingleScopePolicy(), new AllocatorIncLabel()) ; }
 
 //    /** Allocation scoped by graph and label. */
-//    public static NodeToLabel createScopeByGraph() 
+//    public static NodeToLabel createScopeByGraph()
 //    { return new NodeToLabel(new GraphScopePolicy(), new AllocatorIncLabel()) ; }
 
     /** Allocation as per internal label, with an encoded safe label. */
-    public static NodeToLabel createBNodeByLabelEncoded() 
+    public static NodeToLabel createBNodeByLabelEncoded()
     { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternalSafe()) ; }
 
     /** Allocation as per internal label */
-    public static NodeToLabel createBNodeByLabelAsGiven() 
+    public static NodeToLabel createBNodeByLabelAsGiven()
     { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternalRaw()) ; }
 
     /** Allocation as per internal label */
-    public static NodeToLabel createBNodeByIRI() 
+    public static NodeToLabel createBNodeByIRI()
     { return new NodeToLabel(new SingleScopePolicy(), new AllocatorBNodeAsIRI()) ; }
 
     private static final NodeToLabel _internal = createBNodeByLabelEncoded() ;
-    public static NodeToLabel labelByInternal() { return _internal ; }  
+    public static NodeToLabel labelByInternal() { return _internal ; }
 
     private NodeToLabel(ScopePolicy<Node, String, Node> scopePolicy, Allocator<Node, String, Node> allocator)
     {
         super(scopePolicy, allocator) ;
     }
     // ======== Scope Policies
-    
+
     /** Single scope */
     private static class SingleScopePolicy implements ScopePolicy<Node, String, Node>
-    { 
+    {
         private Map<Node, String> map = new HashMap<>() ;
         @Override
         public Map<Node, String> getScope(Node scope) { return map ; }
         @Override
         public void clear() { map.clear(); }
     }
-    
+
     /** One scope for labels per graph */
     private static class GraphScopePolicy implements ScopePolicy<Node, String, Node>
-    { 
+    {
         private Map<Node, String> dftMap = new HashMap<>() ;
         private Map<Node, Map<Node, String>> map = new HashMap<>() ;
         @Override
@@ -81,7 +81,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
         {
             if ( scope == null )
                 return dftMap ;
-            
+
             Map<Node, String> x = map.get(scope) ;
             if ( x == null )
             {
@@ -93,95 +93,88 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
         @Override
         public void clear() { map.clear(); }
     }
-    
-    // ======== Allocators 
+
+    // ======== Allocators
 
     /** Allocator and some default policies. */
-    private abstract static class AllocatorBase implements Allocator<Node, String, Node>
-    {
+    private abstract static class AllocatorBase implements Allocator<Node, String, Node> {
         // abstract to make you think about the policy!
-        private long counter = 0 ;
-        
+        private long counter = 0;
+
         @Override
-        public final String alloc(Node scope, Node node)
-        {
-            if ( node.isURI() )         return labelForURI(node) ;
-            if ( node.isLiteral() )     return labelForLiteral(node) ;
-            if ( node.isBlank() )       return labelForBlank(node) ;
-            if ( node.isVariable() )    return labelForVar(node) ;
-            throw new InternalErrorException("Node type not supported: "+node) ; 
+        public final String alloc(Node scope, Node node) {
+            if ( node.isURI() )
+                return labelForURI(node);
+            if ( node.isLiteral() )
+                return labelForLiteral(node);
+            if ( node.isBlank() )
+                return labelForBlank(node);
+            if ( node.isVariable() )
+                return labelForVar(node);
+            throw new InternalErrorException("Node type not supported: " + node);
         }
-        
+
         @Override
-        public final String create()    { return labelCreate() ; }
+        public final String create() {
+            return labelCreate();
+        }
 
         // Just return a fresh label.
-        protected String labelCreate()
-        {
-            return Long.toString(counter++) ;
+        protected String labelCreate() {
+            return Long.toString(counter++);
         }
 
-        protected String labelForURI(Node node)
-        {
-            return "<"+node.getURI()+">" ;
+        protected String labelForURI(Node node) {
+            return "<" + node.getURI() + ">";
         }
 
-        protected abstract String labelForBlank(Node node) ;
+        protected abstract String labelForBlank(Node node);
 
-        protected String labelForLiteral(Node node)
-        {
-            return NodeFmtLib.str(node) ;
+        protected String labelForLiteral(Node node) {
+            return NodeFmtLib.strTTL(node);
         }
 
-        protected String labelForVar(Node node)
-        {
-            return "?"+node.getName() ;
+        protected String labelForVar(Node node) {
+            return "?" + node.getName();
         }
+
         @Override
-        public void reset()     {}
+        public void reset() {}
     }
-    
-    private static class AllocatorInternalRaw extends AllocatorBase
-    {
+
+    private static class AllocatorInternalRaw extends AllocatorBase {
         @Override
-        protected String labelForBlank(Node node)
-        {
-            return "_:"+node.getBlankNodeLabel() ;
+        protected String labelForBlank(Node node) {
+            return "_:" + node.getBlankNodeLabel();
         }
     }
-    
-    private static class AllocatorInternalSafe extends AllocatorBase
-    {
+
+    private static class AllocatorInternalSafe extends AllocatorBase {
         @Override
-        protected String labelForBlank(Node node)
-        {
+        protected String labelForBlank(Node node) {
             // NodeFmtLib.safeBNodeLabel adds a "B"
-            return "_:"+NodeFmtLib.encodeBNodeLabel(node.getBlankNodeLabel()) ;
+            return "_:" + NodeFmtLib.encodeBNodeLabel(node.getBlankNodeLabel());
         }
     }
-    
-    private static class AllocatorIncLabel extends AllocatorBase
-    {
-        private int X = 0 ;
-        
+
+    private static class AllocatorIncLabel extends AllocatorBase {
+        private int X = 0;
+
         AllocatorIncLabel() {}
 
         @Override
-        protected String labelForBlank(Node node)
-        {
-            return "_:b"+Integer.toString(X++) ;
+        protected String labelForBlank(Node node) {
+            return "_:b" + Integer.toString(X++);
         }
     }
-    
-    private static class AllocatorBNodeAsIRI extends AllocatorBase
-    {
+
+    private static class AllocatorBNodeAsIRI extends AllocatorBase {
         @Override
-        protected String labelForBlank(Node node)
-        {
+        protected String labelForBlank(Node node) {
             // Needs to be safe?
-            //String str = NodeFmtLib.safeBNodeLabel(node.getBlankNodeLabel()) ;
-            String str = node.getBlankNodeLabel() ;
-            return "<_:"+str+">" ;
+            // String str = NodeFmtLib.safeBNodeLabel(node.getBlankNodeLabel()) ;
+            String str = node.getBlankNodeLabel();
+            return "<_:" + str + ">";
         }
     }
 

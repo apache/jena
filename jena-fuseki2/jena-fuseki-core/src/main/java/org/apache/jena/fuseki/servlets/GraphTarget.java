@@ -226,7 +226,7 @@ public class GraphTarget {
             return "default";
         if ( isUnion )
             return "union";
-        return NodeFmtLib.str(graphName);
+        return NodeFmtLib.strTTL(graphName);
     }
 
     @Override

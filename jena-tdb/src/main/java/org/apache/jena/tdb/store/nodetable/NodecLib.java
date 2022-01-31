@@ -36,13 +36,13 @@ public class NodecLib
 {
     // STATUS UNCLEAR.
     // privateize the operations until checked.
-    
+
     // Better sharing with NodecSSE
-    
+
     // Characters in IRIs that are illegal and cause SSE problems, but we wish to keep.
     final private static char MarkerChar = '_' ;
-    final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
-    
+    final private static char[] invalidIRIChars = { MarkerChar , ' ' } ;
+
     private /*public*/ static String encode(Node node) { return encode(node, null) ; }
 
     private /*public*/ static String encode(Node node, PrefixMapping pmap)
@@ -50,23 +50,23 @@ public class NodecLib
         if ( node.isBlank() )
             // Raw label.
             return "_:"+node.getBlankNodeLabel() ;
-        if ( node.isURI() ) 
+        if ( node.isURI() )
         {
             // Pesky spaces
             //throw new TDBException("Space found in URI: "+node) ;
             String x = StrUtils.encodeHex(node.getURI(), '_', invalidIRIChars) ;
             if ( x != node.getURI() )
-                node = NodeFactory.createURI(x) ; 
+                node = NodeFactory.createURI(x) ;
         }
-        
-        return NodeFmtLib.str(node) ;
+
+        return NodeFmtLib.strNT(node) ;
     }
 
     private /*public*/ static Node decode(String s)     { return decode(s, null) ; }
-    
+
     private /*public*/ static Node decode(String s, PrefixMapping pmap)
     {
-        if ( s.startsWith("_:") )   
+        if ( s.startsWith("_:") )
         {
             s = s.substring(2) ;
             return NodeFactory.createBlankNode(s) ;
@@ -78,7 +78,7 @@ public class NodecLib
             s = StrUtils.decodeHex(s, MarkerChar) ;
             return NodeFactory.createURI(s) ;
         }
-        
+
         try {
             // SSE invocation is expensive (??).
             // Try TokenizerText?

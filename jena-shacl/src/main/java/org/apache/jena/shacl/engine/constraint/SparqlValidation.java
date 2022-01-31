@@ -202,9 +202,9 @@ import org.apache.jena.sparql.util.ModelUtils;
 
     /** regex-safe string */
     private static String strQuoted(Node node) {
-        String x =
-        node.isLiteral() ?node.getLiteralLexicalForm()
-        : NodeFmtLib.str(node);
+        String x = node.isLiteral()
+                ? node.getLiteralLexicalForm()
+                : NodeFmtLib.strTTL(node);
         x = Matcher.quoteReplacement(x);
         return x;
     }

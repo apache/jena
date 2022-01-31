@@ -29,7 +29,6 @@ import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.graph.*;
 import org.apache.jena.riot.other.G;
-import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.Quad;
@@ -391,7 +390,6 @@ public class RDFStar {
     private static void decode(Graph graph, Triple pReifTriple, List<Triple> deletes, List<Triple> inserts) {
         // Get all triples?
         Node reif = pReifTriple.getSubject();
-        System.out.println("    reif = "+NodeFmtLib.str(reif));
 
         Triple sReifTriple = G.getOne(graph, reif, rdfSubject, null);
         Triple oReifTriple = G.getOne(graph, reif, rdfObject, null);
