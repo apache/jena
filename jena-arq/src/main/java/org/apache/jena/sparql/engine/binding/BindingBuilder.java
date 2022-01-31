@@ -456,7 +456,7 @@ public class BindingBuilder
             // If pure isolation. The contract in the javadoc makes this unnecessary.
 //            if ( !isFinal )
 //                // Snapshot - need to be a safe copy.
-//                m = new HashMap<>(map);
+//                m = Map.copyOf(map);
             return new BindingOverMap(parent, m);
         }
         if ( var4 != null )

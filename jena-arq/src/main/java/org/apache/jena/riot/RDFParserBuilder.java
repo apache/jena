@@ -676,7 +676,7 @@ public class RDFParserBuilder {
         builder.stringToParse =     this.stringToParse;
         builder.inputStream =       this.inputStream;
         builder.javaReader =        this.javaReader;
-        builder.httpHeaders =       new HashMap<>(this.httpHeaders);
+        builder.httpHeaders =       Map.copyOf(this.httpHeaders);
         builder.httpClient =        this.httpClient;
         builder.hintLang =          this.hintLang;
         builder.forceLang =         this.forceLang;

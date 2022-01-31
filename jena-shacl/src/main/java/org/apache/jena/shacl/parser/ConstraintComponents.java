@@ -116,7 +116,7 @@ public class ConstraintComponents {
                 List<Node> required = scc.getRequiredParameters();
 
                 // Check not seen.
-                Set<Node> x = new HashSet<>(required);
+                Set<Node> x = Set.copyOf(required);
                 if ( seen.contains(x) ) {
                     return;
                 }

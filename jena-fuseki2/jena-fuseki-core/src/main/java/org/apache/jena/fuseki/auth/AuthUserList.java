@@ -29,7 +29,7 @@ class AuthUserList implements AuthPolicy {
     private final Set<String>  allowedUsers;
 
     /*package*/ AuthUserList(Collection<String> allowed) {
-        this.allowedUsers = (allowed == null) ? Collections.emptySet() : new HashSet<>(allowed);
+        this.allowedUsers = (allowed == null) ? Collections.emptySet() : Set.copyOf(allowed);
     }
 
     @Override
@@ -57,7 +57,7 @@ class AuthUserList implements AuthPolicy {
             return false;
         return collection.contains(obj);
     }
-    
+
     @Override
     public String toString() {
         StringJoiner sj = new StringJoiner(", ", "Users:(",")");

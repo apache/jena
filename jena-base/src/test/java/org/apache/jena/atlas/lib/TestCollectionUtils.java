@@ -18,8 +18,12 @@
 
 package org.apache.jena.atlas.lib;
 
-import static org.apache.jena.atlas.lib.CollectionUtils.* ;
-import static org.junit.Assert.* ;
+import static org.apache.jena.atlas.lib.CollectionUtils.oneElt;
+import static org.apache.jena.atlas.lib.CollectionUtils.sameElts;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays ;
 import java.util.HashSet ;
@@ -35,7 +39,7 @@ public class TestCollectionUtils {
         List<String> x2 = Arrays.asList("a", "c", "b") ;
         assertTrue(sameElts(x1, x2)) ;
     }
-    
+
     @Test
     public void sameElts_02() {
         List<String> x1 = Arrays.asList("a", "b", "c", "a") ;
@@ -47,7 +51,7 @@ public class TestCollectionUtils {
     public void sameElts_03() {
         List<String> x1 = Arrays.asList("a", "b", "c") ;
         List<String> x2 = Arrays.asList("a", "c", "b") ;
-        Set<String>  z1 = new HashSet<>(x2) ;
+        Set<String>  z1 = Set.copyOf(x2) ;
         assertTrue(sameElts(x1, z1)) ;
     }
 

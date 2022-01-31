@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.authz;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -55,12 +55,12 @@ public class LocalhostFilter extends AuthorizationFilter403 {
     private static String LOCALHOST_IpV6_b = "0:0:0:0:0:0:0:1";
     // This is what appears in the Chrome developer tools client-side.
     // "[0:0:0:0:0:0:0:1]" by the time it arrives here, It is not clear which
-    // software component is responsible for that.     
-    // To be safe we add "[::1]". 
+    // software component is responsible for that.
+    // To be safe we add "[::1]".
     private static String LOCALHOST_IpV6_c = "[::1]";
     private static String LOCALHOST_IpV4   = "127.0.0.1";   // Strictly, 127.*.*.*
 
-    private static final Collection<String> localhosts = new HashSet<>(
+    private static final Collection<String> localhosts = Set.copyOf(
         Arrays.asList(LOCALHOST_IpV4, LOCALHOST_IpV6_a, LOCALHOST_IpV6_b, LOCALHOST_IpV6_c));
 
     @Override

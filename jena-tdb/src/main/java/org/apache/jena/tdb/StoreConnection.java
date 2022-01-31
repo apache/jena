@@ -19,7 +19,6 @@
 package org.apache.jena.tdb ;
 
 import java.util.HashMap ;
-import java.util.HashSet ;
 import java.util.Map ;
 import java.util.Set ;
 
@@ -53,13 +52,13 @@ public class StoreConnection
         transactionManager = new TransactionManager(baseDSG);
     }
 
-    public boolean isValid() { return isValid ; } 
-    
+    public boolean isValid() { return isValid ; }
+
     private void checkValid() {
-        if (!isValid) 
+        if (!isValid)
             throw new TDBTransactionException("StoreConnection inValid (issued before a StoreConnection.release?)") ;
     }
-    
+
     // Ensure that a dataset used non-transactionally has been flushed to disk
     private void checkTransactional() {
         // Access to booleans is atomic.
@@ -78,7 +77,7 @@ public class StoreConnection
     }
 
     public boolean haveUsedInTransaction() { return haveUsedInTransaction ; }
-    
+
     public Location getLocation() {
         checkValid();
         return baseDSG.getLocation();
@@ -92,7 +91,7 @@ public class StoreConnection
 
     /**
      * Begin a transaction. Terminate a write transaction with
-     * {@link Transaction#commit()} or {@link Transaction#abort()}. 
+     * {@link Transaction#commit()} or {@link Transaction#abort()}.
      * Terminate a write transaction with {@link Transaction#close()}.
      */
     public DatasetGraphTxn begin(TxnType mode) {
@@ -120,23 +119,23 @@ public class StoreConnection
         checkValid();
         return baseDSG;
     }
-    
-    /** For internal use only */ 
+
+    /** For internal use only */
     public TransactionManager getTransactionManager() {
-        return transactionManager ; 
+        return transactionManager ;
     }
-    
+
     /** Flush the delayed write queue to the base storage.
      *  This can only be done if there are no active transactions.
-     *  If there are active transactions, nothing is done but this is safe to call. 
-     */ 
+     *  If there are active transactions, nothing is done but this is safe to call.
+     */
     public void flush() {
         if ( !haveUsedInTransaction() )
             return;
         checkValid();
         transactionManager.flush();
     }
-    
+
     /** Indicate whether there are any active transactions.
      *  @see #getTransMgrState
      */
@@ -144,8 +143,8 @@ public class StoreConnection
         checkValid();
         return transactionManager.activeTransactions();
     }
-    
-    /** Flush the journal regardless - use with great case - do not use when transactions may be active. */ 
+
+    /** Flush the journal regardless - use with great case - do not use when transactions may be active. */
     public void forceRecoverFromJournal() {
         JournalControl.recoverFromJournal(getBaseDataset().getConfig(), transactionManager.getJournal());
     }
@@ -154,7 +153,7 @@ public class StoreConnection
     public void printJournal() {
         JournalControl.print(transactionManager.getJournal());
     }
-    
+
     private static Map<Location, StoreConnection> cache = new HashMap<>() ;
 
     // ---- statics managing the cache.
@@ -169,16 +168,16 @@ public class StoreConnection
      */
     public static synchronized void reset() {
         // Copy to avoid potential CME.
-        Set<Location> x = new HashSet<>(cache.keySet()) ;
+        Set<Location> x = Set.copyOf(cache.keySet()) ;
         for (Location loc : x)
             expel(loc, true) ;
         cache.clear() ;
-        // Compatibility: so that StoreConnecion.reset is all of TDBInternal.reset(); 
+        // Compatibility: so that StoreConnecion.reset is all of TDBInternal.reset();
         TDBMaker.resetCache();
     }
 
-    /** 
-     * Stop managing a location. There should be no transactions running. 
+    /**
+     * Stop managing a location. There should be no transactions running.
      * Use via {@link TDBInternal#expel} wherever possible.
      */
     public static synchronized void release(Location location) {
@@ -190,12 +189,12 @@ public class StoreConnection
      * Use via {@link TDBInternal#expel} wherever possible.
      */
     public static synchronized void expel(Location location, boolean force) {
-        // Evict from TBDMaker cache otherwise that wil retain a reference to this StoreConnection. 
+        // Evict from TBDMaker cache otherwise that wil retain a reference to this StoreConnection.
         StoreConnection sConn = cache.get(location) ;
         if (sConn == null)
             return ;
         TDBInternal.releaseDSG(location);
-        if (!force && sConn.transactionManager.activeTransactions()) 
+        if (!force && sConn.transactionManager.activeTransactions())
             throw new TDBTransactionException("Can't expel: Active transactions for location: " + location) ;
 
         // No transactions at this point (or we don't care and are clearing up forcefully.)
@@ -204,7 +203,7 @@ public class StoreConnection
         sConn.isValid = false ;
         cache.remove(location) ;
         ChannelManager.release(sConn.transactionManager.getJournal().getFilename()) ;
-        
+
         // Release the lock
         if (SystemTDB.DiskLocationMultiJvmUsagePrevention) {
             if (location.getLock().isOwned()) {
@@ -221,13 +220,13 @@ public class StoreConnection
      */
     public static synchronized StoreConnection make(Location location, StoreParams params) {
         StoreConnection sConn = cache.get(location) ;
-        if (sConn != null) 
+        if (sConn != null)
             return sConn ;
         DatasetGraphTDB dsg = build(location, params) ;
         sConn = _makeAndCache(dsg) ;
         return sConn ;
     }
-    
+
     /**
      * Build storage {@link DatasetGraphTDB}.
      * This operation is the primitive that creates the storage-level DatasetGraphTDB.
@@ -255,7 +254,7 @@ public class StoreConnection
         if (sConn == null)
         {
             sConn = new StoreConnection(dsg) ;
-            
+
             if ( SystemTDB.DiskLocationMultiJvmUsagePrevention ) {
                 // Obtain the lock ASAP
                 LocationLock lock = location.getLock();
@@ -277,9 +276,9 @@ public class StoreConnection
                     }
                 }
             }
-            
+
             sConn.forceRecoverFromJournal() ;
-            
+
             if (!location.isMemUnique())
                 // Don't cache use-once in-memory datasets.
                 cache.put(location, sConn) ;

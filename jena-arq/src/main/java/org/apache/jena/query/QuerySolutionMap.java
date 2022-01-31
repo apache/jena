@@ -27,58 +27,58 @@ import org.apache.jena.sparql.core.QuerySolutionBase ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.util.FmtUtils ;
 
-/** Implementation of QuerySolution that is backed by an in-memory map. */ 
+/** Implementation of QuerySolution that is backed by an in-memory map. */
 
 public class QuerySolutionMap extends QuerySolutionBase
 {
     private Map<String, RDFNode> map = new HashMap<>() ;
-    
-    public QuerySolutionMap() { } 
+
+    public QuerySolutionMap() { }
 
     public void add(String name, RDFNode node)
     { map.put(Var.canonical(name), node) ; }
 
     @Override
-    protected RDFNode _get(String varName)          { return map.get(varName) ; } 
+    protected RDFNode _get(String varName)          { return map.get(varName) ; }
 
     @Override
-    protected boolean _contains(String varName)     { return map.containsKey(varName) ; } 
+    protected boolean _contains(String varName)     { return map.containsKey(varName) ; }
 
     @Override
     public Iterator<String> varNames()                   { return map.keySet().iterator() ; }
-    
+
     /** Add all of the solutions from one QuerySolutionMap into this QuerySolutionMap */
     public void addAll(QuerySolutionMap other)
-    { 
+    {
         map.putAll(other.map);
     }
 
     /** Return a <code>Map&lt;String, RDFNode&gt;</code> representing the current
      * state of this <code>QuerySolutionMap</code>. The map is not connected
      * to the <code>QuerySolutionMap</code> and later changes to either <code>Map</code>
-     * or <code>QuerySolutionMap</code> will not reflected in the other.  
-     * 
+     * or <code>QuerySolutionMap</code> will not reflected in the other.
+     *
      * @return {@literal Map<String, RDFNode>}
      */
-    public Map<String, RDFNode> asMap() { 
-        return new HashMap<>(map) ;
+    public Map<String, RDFNode> asMap() {
+        return Map.copyOf(map) ;
     }
-    
+
     /** Add all of the solutions from one QuerySolution into this QuerySolutionMap */
     public void addAll(QuerySolution other)
-    { 
+    {
         Iterator<String> iter = other.varNames() ;
         for ( ; iter.hasNext(); )
         {
             String vName = iter.next() ;
-            RDFNode rdfNode = other.get(vName) ; 
+            RDFNode rdfNode = other.get(vName) ;
             map.put(vName, rdfNode);
         }
     }
 
     /** Clear this QuerySolutionMap */
     public void clear() { map.clear(); }
-    
+
     @Override
     public String toString()
     {

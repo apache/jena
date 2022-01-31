@@ -39,18 +39,18 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         preferred kind.
     */
     abstract protected PrefixMapping getMapping();
-        
+
     static final String crispURI = "http://crisp.nosuch.net/";
     static final String ropeURI = "scheme:rope/string#";
     static final String butterURI = "ftp://ftp.nowhere.at.all/cream#";
-        
+
     /**
         The empty prefix is specifically allowed [for the default namespace].
     */
     public void testEmptyPrefix()
         {
         PrefixMapping pm = getMapping();
-        pm.setNsPrefix( "", crispURI );    
+        pm.setNsPrefix( "", crispURI );
         assertEquals( crispURI, pm.getNsPrefixURI( "" ) );
         }
 
@@ -61,10 +61,10 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         "with a space",
         "-argument"
         };
-    
+
     /**
         Test that various illegal names are trapped.
-    */    
+    */
     public void testCheckNames()
         {
         PrefixMapping ns = getMapping();
@@ -81,7 +81,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
                 }
             }
         }
-    
+
     public void testNullURITrapped()
         {
         try
@@ -92,7 +92,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         catch (NullPointerException e)
             { pass(); }
         }
-                 
+
     /**
         test that a PrefixMapping maps names to URIs. The names and URIs are
         all fully distinct - overlapping names/uris are dealt with in other tests.
@@ -116,8 +116,8 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( "crisp should be set", crispURI, ns.getNsPrefixURI( "crisp" ) );
         assertEquals( "toast should be set", toast, ns.getNsPrefixURI( "toast" ) );
         assertEquals( "butter should still be unset", null, ns.getNsPrefixURI( "butter" ) );
-        } 
-        
+        }
+
     /**
         Test that we can run the prefix mapping in reverse - from URIs to prefixes.
         uriB is a prefix of uriA to try and ensure that the ordering of the map doesn't matter.
@@ -133,7 +133,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( prefixA, ns.getNsURIPrefix( uriA ) );
         assertEquals( prefixB, ns.getNsURIPrefix( uriB ) );
         }
-    
+
     /**
        test that we can extract a proper Map from a PrefixMapping
     */
@@ -145,7 +145,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( crispURI, map.get( "crisp" ) );
         assertEquals( "scheme:rope/string#", map.get( "rope" ) );
         }
-    
+
     /**
        test that the Map returned by getNsPrefixMap does not alias (parts of)
        the secret internal map of the PrefixMapping
@@ -154,28 +154,31 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         {
         PrefixMapping ns = getCrispyRope();
         Map<String, String> map = ns.getNsPrefixMap();
-    /* */
-        map.put( "crisp", "with/onions" );
-        map.put( "sandwich", "with/cheese" );
+        // The map may be unmodifiable in which case put throws UnsupportedOperationException
+        try {
+            map.put( "crisp", "with/onions" );
+            map.put( "sandwich", "with/cheese" );
+        } catch (UnsupportedOperationException ex) {}
+
         assertEquals( crispURI, ns.getNsPrefixURI( "crisp" ) );
         assertEquals( ropeURI, ns.getNsPrefixURI( "rope" ) );
         assertEquals( null, ns.getNsPrefixURI( "sandwich" ) );
         }
-        
+
     private PrefixMapping getCrispyRope()
         {
         PrefixMapping ns = getMapping();
         ns.setNsPrefix( "crisp", crispURI);
-        ns.setNsPrefix( "rope", ropeURI );        
+        ns.setNsPrefix( "rope", ropeURI );
         return ns;
         }
-    
+
     /**
        these are strings that should not change when they are prefix-expanded
        with crisp and rope as legal prefixes.
    */
-   static final String [] dontChange = 
-       { 
+   static final String [] dontChange =
+       {
        "",
        "http://www.somedomain.something/whatever#",
        "crispy:cabbage",
@@ -183,11 +186,11 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
        "rop:tangled/web",
        "roped:abseiling"
        };
-    
+
     /**
        these are the required mappings which the test cases below should
        satisfy: an array of 2-arrays, where element 0 is the string to expand
-       and element 1 is the string it should expand to. 
+       and element 1 is the string it should expand to.
    */
    static final String [][] expansions =
        {
@@ -195,7 +198,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
            { "rope:partPath", ropeURI + "partPath" },
            { "crisp:path:part", crispURI + "path:part" },
        };
-       
+
    public void testExpandPrefix()
        {
        PrefixMapping ns = getMapping();
@@ -212,18 +215,18 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
                assertEquals( "should expand correctly", expansion[1], ns.expandPrefix( expansion[0] ) );
            }
        }
-    
+
     public void testUseEasyPrefix()
        {
        testUseEasyPrefix( "prefix mapping impl", getMapping() );
        testShortForm( "prefix mapping impl", getMapping() );
        }
-    
+
     public static void testUseEasyPrefix( String title, PrefixMapping ns )
         {
         testShortForm( title, ns );
         }
-            
+
     public static void testShortForm( String title, PrefixMapping ns )
         {
         ns.setNsPrefix( "crisp", crispURI );
@@ -233,7 +236,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( title, "crisp:tail", ns.shortForm( crispURI + "tail" ) );
         assertEquals( title, "butter:here:we:are", ns.shortForm( butterURI + "here:we:are" ) );
         }
-    
+
     public void testEasyQName()
         {
         PrefixMapping ns = getMapping();
@@ -241,7 +244,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         ns.setNsPrefix( "alpha", alphaURI );
         assertEquals( "alpha:rowboat", ns.qnameFor( alphaURI + "rowboat" ) );
         }
-    
+
     public void testNoQNameNoPrefix()
         {
         PrefixMapping ns = getMapping();
@@ -249,7 +252,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         ns.setNsPrefix( "alpha", alphaURI );
         assertEquals( null, ns.qnameFor( "eg:rowboat" ) );
         }
-    
+
     public void testNoQNameBadLocal()
         {
         PrefixMapping ns = getMapping();
@@ -257,7 +260,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         ns.setNsPrefix( "alpha", alphaURI );
         assertEquals( null, ns.qnameFor( alphaURI + "12345" ) );
         }
-    
+
     /**
         The tests implied by the email where Chris suggested adding qnameFor;
         shortForm generates illegal qnames but qnameFor does not.
@@ -271,7 +274,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( null, ns.qnameFor( uri + "non/fiction" ) );
         }
 
-        
+
     /**
         test that we can add the maplets from another PrefixMapping without
         losing our own.
@@ -289,14 +292,14 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         b.setNsPrefixes( a );
         checkContainsMapping( b );
         }
-        
+
     private void checkContainsMapping( PrefixMapping b )
         {
         assertEquals( crispURI, b.getNsPrefixURI( "crisp") );
         assertEquals( ropeURI, b.getNsPrefixURI( "rope") );
         assertEquals( butterURI, b.getNsPrefixURI( "butter") );
         }
-        
+
     /**
         as for testAddOtherPrefixMapping, except that it's a plain Map
         we're adding.
@@ -311,7 +314,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         b.setNsPrefixes( map );
         checkContainsMapping( b );
         }
-    
+
     public void testAddDefaultMap()
         {
         PrefixMapping pm = getMapping();
@@ -327,8 +330,8 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( "bPrefix:", pm.getNsPrefixURI( "b" ) );
         assertEquals( "cootle:", pm.getNsPrefixURI( "c" ) );
         }
-    
-    
+
+
     public void testSecondPrefixRetainsExistingMap()
         {
         PrefixMapping A = getMapping();
@@ -337,7 +340,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( crispURI, A.getNsPrefixURI( "a" ) );
         assertEquals( crispURI, A.getNsPrefixURI( "b" ) );
         }
-    
+
     public void testSecondPrefixReplacesReverseMap()
         {
         PrefixMapping A = getMapping();
@@ -345,7 +348,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         A.setNsPrefix( "b", crispURI );
         assertEquals( "b", A.getNsURIPrefix( crispURI ) );
         }
-    
+
     public void testSecondPrefixDeletedUncoversPreviousMap()
         {
         PrefixMapping A = getMapping();
@@ -354,20 +357,20 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         A.removeNsPrefix( "y" );
         assertEquals( "x", A.getNsURIPrefix( crispURI ) );
         }
-        
+
     /**
         Test that the empty prefix does not wipe an existing prefix for the same URI.
-    */    
+    */
     public void testEmptyDoesNotWipeURI()
         {
         PrefixMapping pm = getMapping();
         pm.setNsPrefix( "frodo", ropeURI );
         pm.setNsPrefix( "", ropeURI );
-        assertEquals( ropeURI, pm.getNsPrefixURI( "frodo" ) );    
-        }   
-                
+        assertEquals( ropeURI, pm.getNsPrefixURI( "frodo" ) );
+        }
+
     /**
-        Test that adding a new prefix mapping for U does not throw away a default 
+        Test that adding a new prefix mapping for U does not throw away a default
         mapping for U.
     */
     public void testSameURIKeepsDefault()
@@ -377,7 +380,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         A.setNsPrefix( "crisp", crispURI );
         assertEquals( crispURI, A.getNsPrefixURI( "" ) );
         }
-        
+
     public void testReturnsSelf()
         {
         PrefixMapping A = getMapping();
@@ -386,7 +389,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertSame( A, A.setNsPrefixes( new HashMap<String, String>() ) );
         assertSame( A, A.removeNsPrefix( "rhubarb" ) );
         }
-    
+
     public void testRemovePrefix()
         {
         String hURI = "http://test.remove.prefixes/prefix#";
@@ -398,7 +401,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( null, A.getNsPrefixURI( "hr" ) );
         assertEquals( bURI, A.getNsPrefixURI( "br" ) );
         }
-    
+
     public void testClear()
     {
         String hURI = "http://test.remove.prefixes/prefix#";
@@ -407,10 +410,10 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         A.setNsPrefix( "hr", hURI );
         A.setNsPrefix( "br", bURI );
         A.clearNsPrefixMap() ;
-        
+
         assertEquals( null, A.getNsPrefixURI( "hr" ) );
         assertEquals( null, A.getNsPrefixURI( "br" ) );
-        
+
         assertEquals( null, A.getNsURIPrefix(hURI) ) ;
         assertEquals( null, A.getNsURIPrefix(bURI) ) ;
     }
@@ -422,7 +425,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         A.setNsPrefix( "hr", hURI );
         assertFalse(A.hasNoMappings()) ;
     }
-    
+
     public void testNumPrefixes() {
         String hURI = "http://test.prefixes/prefix#";
         PrefixMapping A = getMapping();
@@ -440,16 +443,16 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         testEquals( "x=a y=b", "y=b x=a", true );
         testEquals( "x=a x=b", "x=b x=a", false );
         }
-    
+
     protected void testEquals( String S )
         { testEquals( S, S, true ); }
-    
+
     protected void testEquals( String S, String T, boolean expected )
         {
         testEqualsBase( S, T, expected );
         testEqualsBase( T, S, expected );
         }
-    
+
     public void testEqualsBase( String S, String T, boolean expected )
         {
         testEquals( S, T, expected, getMapping(), getMapping() );
@@ -464,7 +467,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( title, expected, A.samePrefixMappingAs( B ) );
         assertEquals( title, expected, B.samePrefixMappingAs( A ) );
         }
-    
+
     protected void fill( PrefixMapping pm, String settings )
         {
         List<String> L = listOfStrings( settings );
@@ -474,20 +477,20 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
                 pm.setNsPrefix( setting.substring( 0, eq ), setting.substring( eq + 1 ) );
             }
         }
-    
+
     public void testAllowNastyNamespace()
         { // we now allow namespaces to end with non-punctuational characters
-        getMapping().setNsPrefix( "abc", "def" ); 
+        getMapping().setNsPrefix( "abc", "def" );
         }
-        
+
     public void testLock()
         {
         PrefixMapping A = getMapping();
         assertSame( A, A.lock() );
-    /* */    
+    /* */
         try { A.setNsPrefix( "crisp", crispURI ); fail( "mapping should be frozen" ); }
         catch (PrefixMapping.JenaLockedException e) { pass(); }
-    /* */    
+    /* */
         try { A.setNsPrefixes( A ); fail( "mapping should be frozen" ); }
         catch (PrefixMapping.JenaLockedException e) { pass(); }
     /* */
