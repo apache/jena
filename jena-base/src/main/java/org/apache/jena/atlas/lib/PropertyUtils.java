@@ -131,7 +131,7 @@ public class PropertyUtils {
     public void checkMetadata(Properties properties, String key, String expected) {
         String value = properties.getProperty(key) ;
 
-        if ( !Objects.equals(value, value) )
+        if ( !Objects.equals(value, expected) )
             inconsistent(properties, key, value, expected) ;
     }
 
