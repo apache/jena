@@ -287,9 +287,10 @@ public class GeoSPARQLOperations {
             dataset.commit();
             LOGGER.info("Applying GeoSPARQL Schema - Completed");
         } catch (Exception ex) {
+            try { dataset.abort(); } catch (Throwable th) {}
             LOGGER.error("Inferencing Error: {}", ex.getMessage());
         } finally {
-            dataset.end();
+            try { dataset.end(); } catch (Throwable th) {}
         }
     }
 
