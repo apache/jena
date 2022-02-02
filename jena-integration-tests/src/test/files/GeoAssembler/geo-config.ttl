@@ -12,6 +12,7 @@ PREFIX geosparql: <http://jena.apache.org/geosparql#>
     fuseki:endpoint [ fuseki:operation fuseki:query; ] ;
     fuseki:dataset <#geo_ds> .
 
+## Alt spelling
 <#geo_ds> rdf:type geosparql:geosparqlDataset ;
     geosparql:inference true;
     geosparql:spatialIndexFile    "target/GeoSPARQL/DB/spatial.index";

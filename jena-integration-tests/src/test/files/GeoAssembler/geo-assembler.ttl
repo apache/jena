@@ -4,7 +4,7 @@ PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ja:        <http://jena.hpl.hp.com/2005/11/Assembler#>
 PREFIX geosparql: <http://jena.apache.org/geosparql#>
 
-<#geo_ds> rdf:type geosparql:geosparqlDataset ;
+<#geo_ds> rdf:type geosparql:GeosparqlDataset ;
     geosparql:inference true;          
     geosparql:dataset <#baseDataset> .
 
