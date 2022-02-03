@@ -68,6 +68,7 @@ public class TestGSP {
 
     private String url(String path) { return env.datasetPath(path); }
 
+    // Test GSP against the /data endpoint (including dataset operations).
     static String gspServiceURL()   { return env.datasetPath("/data"); }
 
     static String defaultGraphURL() { return gspServiceURL()+"?default"; }
@@ -179,6 +180,7 @@ public class TestGSP {
 
     // ----------------------------------------
 
+    @SuppressWarnings("deprecation")
     @Test public void gsp_ds_put_get_01() {
         GSP.service(gspServiceURL()).putDataset(dataset);
         DatasetGraph dsg = GSP.service(gspServiceURL()).getDataset();
@@ -186,6 +188,7 @@ public class TestGSP {
         assertTrue(IsoMatcher.isomorphic(dataset, dsg));
     }
 
+    @SuppressWarnings("deprecation")
     @Test public void gsp_ds_post_get_02() {
         GSP.service(gspServiceURL()).postDataset(dataset);
         DatasetGraph dsg = GSP.service(gspServiceURL()).getDataset();
@@ -193,61 +196,38 @@ public class TestGSP {
         assertTrue(IsoMatcher.isomorphic(dataset, dsg));
     }
 
-    @Test(expected=HttpException.class)
-    public void gsp_ds_err_01() {
-        GSP.service(gspServiceURL()).defaultGraph().putDataset(dataset);
-    }
-
-    @Test
-    public void gsp_head_01() {
-        // HEAD on the GSP endpoint would be the default graph.
-        // DELETE on the dataset endpoint is not supported by Fuseki - this does "CLER ALL"
-        GSP.service(env.datasetURL()).clearDataset();
-    }
-
-    /*
     @Test public void gspHead_dataset_1() {
         // Base URL, default content type => N-Quads (dump format)
-        HttpOp.execHttpHead(URL, null, (base, response)->{
-            String h = response.getFirstHeader(HttpNames.hContentType).getValue();
-            assertNotNull(h);
-            assertEquals(Lang.NQUADS.getHeaderString(), h);
-        });
+        String h = HttpOp.httpHead(gspServiceURL(), null);
+        assertNotNull(h);
+        assertEquals(Lang.NQUADS.getHeaderString(), h);
     }
 
 
     @Test public void gspHead_dataset_2() {
         String ct = Lang.TRIG.getHeaderString();
-        HttpOp.execHttpHead(URL, ct, (base, response)->{
-            String h = response.getFirstHeader(HttpNames.hContentType).getValue();
-            assertNotNull(h);
-            assertEquals(ct, h);
-        });
+        String h = HttpOp.httpHead(gspServiceURL(), ct);
+        assertNotNull(h);
+        assertEquals(ct, h);
     }
 
     @Test public void gspHead_graph_1() {
-        String target = URL+"?default";
-        HttpOp.execHttpHead(target, null, (base, response)->{
-            String h = response.getFirstHeader(HttpNames.hContentType).getValue();
-            assertNotNull(h);
-            // "Traditional default".
-            assertEquals(Lang.RDFXML.getHeaderString(), h);
-        });
+        String target = defaultGraphURL();
+        String h = HttpOp.httpHead(target, null);
+        assertNotNull(h);
+        // "Traditional default".
+        assertEquals(Lang.RDFXML.getHeaderString(), h);
     }
 
     @Test public void gspHead_graph_2() {
-        String target = URL+"?default";
+        String target = defaultGraphURL();
         String ct = Lang.TTL.getHeaderString();
-        HttpOp.execHttpHead(target, ct, (base, response)->{
-            String h = response.getFirstHeader(HttpNames.hContentType).getValue();
-            assertNotNull(h);
-            assertEquals(ct, h);
-        });
+        String h = HttpOp.httpHead(target, ct);
+        assertNotNull(h);
+        assertEquals(ct, h);
     }
 
-     */
-
-
+    @SuppressWarnings("deprecation")
     @Test
     public void gsp_ds_clear_01() {
         // DELETE on the GSP endpoint would be the default graph.
@@ -255,6 +235,7 @@ public class TestGSP {
         GSP.service(env.datasetURL()).clearDataset();
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void gsp_ds_clear_02() {
         GSP.service(gspServiceURL()).postDataset(dataset);
@@ -264,12 +245,13 @@ public class TestGSP {
     }
 
 
-//    @Test public void gsp_ds_put_delete_01() {
-//        GSP.request(gspServiceURL()).putDataset(dataset);
-//        GSP.request(gspServiceURL()).clearDataset();
-//        DatasetGraph dsg = GSP.request(gspServiceURL()).getDataset();
-//        assertTrue(dsg.isEmpty());
-//    }
+    @SuppressWarnings("deprecation")
+    @Test public void gsp_ds_put_delete_01() {
+        GSP.service(gspServiceURL()).putDataset(dataset);
+        GSP.service(gspServiceURL()).clearDataset();
+        DatasetGraph dsg = GSP.service(gspServiceURL()).getDataset();
+        assertTrue(dsg.isEmpty());
+    }
 
     @Test public void gsp_union_get() {
         Node gn1 = NodeFactory.createURI("http://example/graph1");
@@ -294,7 +276,7 @@ public class TestGSP {
 
     // 404
 
-    @Test public void gsp_404_01() {
+    @Test public void gsp_404_put_delete_get() {
         String graphName = "http://example/graph2";
         Node gn = NodeFactory.createURI("http://example/graph2");
         GSP.service(gspServiceURL())
@@ -307,7 +289,6 @@ public class TestGSP {
         GSP.service(gspServiceURL())
             .graphName(gn)
             .DELETE();
-
         expect404(()->
             GSP.service(gspServiceURL())
                 .graphName(graphName)
@@ -315,14 +296,15 @@ public class TestGSP {
         );
     }
 
-    @Test public void gsp_404_1() {
+    @Test public void gsp_404_graph() {
         String graphName = "http://example/graph404";
         expect404(
             ()->GSP.service(gspServiceURL()).graphName(graphName).GET()
         );
     }
 
-    @Test public void gsp_404_2() {
+    @SuppressWarnings("deprecation")
+    @Test public void gsp_404_dataset() {
         expect404(
             ()->GSP.service(gspServiceURL()+"junk").getDataset()
         );

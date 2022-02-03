@@ -26,6 +26,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.exec.http.DSP;
 import org.apache.jena.sparql.exec.http.GSP;
 
 /**
@@ -101,13 +102,22 @@ public class ModelStore {
 
     /** Send request for the default graph (that is, {@code ?default}) */
     public ModelStore defaultModel() {
+        return defaultGraph();
+    }
+
+    /** Send request for the default graph (that is, {@code ?default}) */
+    public ModelStore defaultGraph() {
         gsp().defaultGraph();
         return this;
     }
 
-    /** Send request for the dataset. This is "no GSP naming". */
+    /**
+     * Send request for the dataset. This is "no GSP naming".
+     * @deprecated This call is a no-op.
+     */
+    @Deprecated
     public ModelStore dataset() {
-        gsp().dataset();
+        //gsp().dataset();
         return this;
     }
 
@@ -125,7 +135,7 @@ public class ModelStore {
 
     /**
      * Set the Content-type for a POST, PUT request of a file
-     * or serialization of a graph opf dataset is necessary.
+     * or serialization of a graph of dataset is necessary.
      * Optional; if not set, the file extension is used or the
      * system default RDF syntax encoding.
      */
@@ -136,7 +146,7 @@ public class ModelStore {
 
     /**
      * Set the Content-type for a POST, PUT request of a file
-     * or serialization of a graph opf dataset is necessary.
+     * or serialization of a graph of dataset is necessary.
      * Optional; if not set, the file extension is used or the
      * system default RDF syntax encoding.
      */
@@ -144,6 +154,8 @@ public class ModelStore {
         gsp().contentType(rdfFormat);
         return this;
     }
+
+    // -- Model Operations
 
     /** Get a graph */
     public Model GET() {
@@ -251,6 +263,7 @@ public class ModelStore {
         gsp().DELETE();
     }
 
+    // -- Dataset Operations
 
     /**
      * GET dataset.
@@ -259,8 +272,12 @@ public class ModelStore {
      * graph data in the default graph of the dataset.
      */
     public Dataset getDataset() {
-        DatasetGraph dsg = gsp().getDataset();
+        DatasetGraph dsg = dsp().GET();
         return DatasetFactory.wrap(dsg);
+    }
+
+    private DSP dsp() {
+        return DSP.request().copySetup(gsp);
     }
 
     /**
@@ -270,12 +287,12 @@ public class ModelStore {
      * This operation does not parse the file.
      */
     public void postDataset(String file) {
-        gsp().postDataset(file);
+        dsp().POST(file);
     }
 
     /** POST a dataset */
     public void postDataset(Dataset dataset) {
-        gsp().postDataset(dataset.asDatasetGraph());
+        dsp().POST(dataset.asDatasetGraph());
     }
 
     /**
@@ -285,16 +302,16 @@ public class ModelStore {
      * This operation does not parse the file.
      */
     public void putDataset(String file) {
-        gsp().putDataset(file);
+        dsp().PUT(file);
     }
 
     /** PUT a dataset */
     public void putDataset(Dataset dataset) {
-        gsp().putDataset(dataset.asDatasetGraph());
+        dsp().PUT(dataset.asDatasetGraph());
     }
 
     /** Clear - delete named graphs, empty the default graph - SPARQL "CLEAR ALL" */
     public void clearDataset() {
-        gsp().clearDataset();
+        dsp().clear();
     }
 }

@@ -18,33 +18,25 @@
 
 package org.apache.jena.sparql.exec.http;
 
-import java.io.FileNotFoundException;
 import java.net.http.HttpClient;
-import java.net.http.HttpRequest.BodyPublisher;
-import java.net.http.HttpRequest.BodyPublishers;
-import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
-import org.apache.jena.atlas.web.ContentType;
-import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.http.HttpRDF;
 import org.apache.jena.http.Push;
-import org.apache.jena.riot.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDFLib;
-import org.apache.jena.riot.system.StreamRDFWriter;
 import org.apache.jena.riot.web.HttpNames;
-import org.apache.jena.shared.NotFoundException;
 import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
 
 /**
@@ -67,33 +59,36 @@ import org.apache.jena.sparql.graph.GraphFactory;
  *   Graph myData = ...;
  *   GSP.service("http://example/dataset").namedGraph("http://my/graph").POST(myData);
  * </pre>
+ * <p>
+ * See {@link DSP} for operations on datasets.
  */
-public class GSP {
-    private String              serviceEndpoint = null;
-    // Need to keep this separately from contentType because it affects the choice of writer.
-    private RDFFormat           rdfFormat       = null;
-    private HttpClient          httpClient      = null;
-    private Map<String, String> httpHeaders     = new HashMap<>();
+public class GSP extends StoreProtocol<GSP> {
 
-    // One, and only one of these three, must be set at the point the terminating operation is called.
+    // One, and only one of these two, must be set at the point the terminating operation is called.
     // 1 - Graph operation, GSP naming, default graph
     private boolean             defaultGraph    = false;
     // 2 - Graph operation, GSP naming, graph name.
     private String              graphName       = null;
+
+    // Legacy, deprecated.
     // 3 - Dataset operation without ?default or ?graph=
     private boolean             datasetGraph    = false;
 
-    /** Create a request to the remote service (without GSP naming).
-     *  Call {@link #defaultGraph()} or {@link #graphName(String)} to select the target graph.
+    /**
+     * Create a request to the remote serviceURL (without a URL query string).
+     * Call {@link #defaultGraph()} or {@link #graphName(String)} to select the target graph.
+     * See {@link DSP} for dataset operations.
      * @param service
      */
     public static GSP service(String service) {
         return new GSP().endpoint(service);
     }
 
-    /** Create a request to the remote service (without GSP naming).
-     *  Call {@link #endpoint} to set the target.
-     *  Call {@link #defaultGraph()} or {@link #graphName(String)} to select the target graph.
+    /**
+     * Create a request to the remote service (without GSP naming).
+     * Call {@link #endpoint} to set the target.
+     * Call {@link #defaultGraph()} or {@link #graphName(String)} to select the target graph.
+     * See {@link DSP} for dataset operations.
      */
     public static GSP request() {
         return new GSP();
@@ -101,42 +96,8 @@ public class GSP {
 
     protected GSP() {}
 
-    /**
-     * Set the URL of the query endpoint. This replaces any value set in the
-     * {@link #service(String)} call.
-     */
-    public GSP endpoint(String serviceURL) {
-        this.serviceEndpoint = Objects.requireNonNull(serviceURL);
-        return this;
-    }
-
-    public GSP httpClient(HttpClient httpClient) {
-        Objects.requireNonNull(httpClient, "HttpClient");
-        this.httpClient = httpClient;
-        return this;
-    }
-
-    /**
-     * Set an HTTP header that is added to the request.
-     * See {@link #accept}, {@link #acceptHeader} and {@link #contentType(RDFFormat)}.
-     * for specific handling of {@code Accept:} and {@code Content-Type}.
-     */
-    public GSP httpHeader(String headerName, String headerValue) {
-        Objects.requireNonNull(headerName);
-        Objects.requireNonNull(headerValue);
-        if ( httpHeaders == null )
-            httpHeaders = new HashMap<>();
-        httpHeaders.put(headerName, headerValue);
-        return this;
-    }
-
-    // Private - no getters.
-    private String httpHeader(String header) {
-        Objects.requireNonNull(header);
-        if ( httpHeaders == null )
-            return null;
-        return httpHeaders.get(header);
-    }
+    @Override
+    protected GSP thisBuilder() { return this; }
 
     /** Send request for a named graph (that is, {@code ?graph=}) */
     public GSP graphName(String graphName) {
@@ -155,7 +116,6 @@ public class GSP {
         Node gn = RiotLib.blankNodeToIri(graphName);
         this.graphName = gn.getURI();
         this.defaultGraph = false;
-        this.datasetGraph = false;
         return this;
     }
 
@@ -166,110 +126,25 @@ public class GSP {
         return this;
     }
 
-    /** Send request for the dataset. This is "no GSP naming". */
+    /**
+     * Send request for the dataset. This is "no GSP naming".
+     * @deprecated Use {@link DSP}.
+     */
+    @Deprecated
     public GSP dataset() {
         clearOperation();
-        this.datasetGraph = true;
         return this;
     }
 
     private void clearOperation() {
         this.defaultGraph = false;
-        this.datasetGraph = false;
         this.graphName = null;
-    }
-
-    /** Set the accept header on GET requests. Optional; if not set, a system default is used. */
-    public GSP acceptHeader(String acceptHeader) {
-        httpHeader(HttpNames.hAccept, acceptHeader);
-        return this;
-    }
-
-    // No getters.
-    private String acceptHeader() {
-        return httpHeader(HttpNames.hAccept);
-    }
-
-    /** Set the accept header on GET requests. Optional; if not set, a system default is used. */
-    public GSP accept(Lang lang) {
-        String acceptHeader = (lang != null ) ? lang.getContentType().getContentTypeStr() : null;
-        httpHeader(HttpNames.hAccept, acceptHeader);
-        return this;
-    }
-
-    /**
-     * Set the Content-type for a POST, PUT request of a file
-     * or serialization of a graph opf dataset is necessary.
-     * Optional; if not set, the file extension is used or the
-     * system default RDF syntax encoding.
-     */
-    public GSP contentTypeHeader(String contentType) {
-        httpHeader(HttpNames.hContentType, contentType);
-        return this;
-    }
-
-    // No getters.
-    private String contentType() {
-        return httpHeader(HttpNames.hContentType);
-    }
-
-    /**
-     * Set the Content-type for a POST, PUT request of a file
-     * or serialization of a graph opf dataset is necessary.
-     * Optional; if not set, the file extension is used or the
-     * system default RDF syntax encoding.
-     */
-    public GSP contentType(RDFFormat rdfFormat) {
-        this.rdfFormat = rdfFormat;
-        String contentType = rdfFormat.getLang().getContentType().getContentTypeStr();
-        httpHeader(HttpNames.hContentType, contentType);
-        return this;
     }
 
     final protected void validateGraphOperation() {
         Objects.requireNonNull(serviceEndpoint);
         if ( ! defaultGraph && graphName == null )
             throw exception("Need either default graph or a graph name");
-        if ( datasetGraph )
-            throw exception("Dataset request specified for graph operation");
-    }
-
-    final protected void internalDataset() {
-        // Set as dataset request.
-        // Checking is done by validateDatasetOperation.
-        // The dataset operations have "Dataset" in the name, so less point having
-        // required dataset(). We can't use GET() because the return type
-        // would be "Graph or DatasetGraph"
-        // Reconsider if graph synonyms provided.
-        this.datasetGraph = true;
-    }
-
-    final protected void validateDatasetOperation() {
-        Objects.requireNonNull(serviceEndpoint);
-        if ( defaultGraph )
-            throw exception("Default graph specified for dataset operation");
-        if ( graphName != null )
-            throw exception("A graph name specified for dataset operation");
-        if ( ! datasetGraph )
-            throw exception("Dataset request not specified for dataset operation");
-    }
-
-    /**
-     * Choose the HttpClient to use.
-     * The requestURL includes the query string (for graph GSP operations).
-     * If explicit set with {@link #httpClient(HttpClient)}, use that;
-     * other use the system registry and default {@code HttpClient} settings
-     * in {@link HttpEnv}.
-     */
-    private HttpClient requestHttpClient(String serviceURL, String requestURL) {
-        if ( httpClient != null )
-            return httpClient;
-        return HttpEnv.getHttpClient(serviceURL, httpClient);
-    }
-
-    // Setup problems.
-    private static RuntimeException exception(String msg) {
-        return new HttpException(msg);
     }
 
     // Synonyms mirror the dataset names, so getGraph/getDataset
@@ -413,10 +288,6 @@ public class GSP {
 //        DELETE();
 //    }
 
-    private String graphRequestURL() {
-        return HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
-    }
-
     /**
      * Return the query string for a graph using the
      * <a href="https://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store Protocol</a>.
@@ -445,92 +316,101 @@ public class GSP {
     // Expose access for subclasses. "final" to ensure that this class controls constraints and expectations.
     // Only valid when the request has correctly been setup.
 
-    final protected String graphName() { return graphName; }
-    final protected String service() { return serviceEndpoint; }
+    final protected String graphName()           { return graphName; }
+    final protected boolean isDefaultGraph()     { return graphName == null; }
+    final protected boolean isGraphOperation()   { return defaultGraph || graphName != null; }
 
-    final protected boolean isDefaultGraph() { return graphName == null; }
-    final protected boolean isGraphOperation() { return defaultGraph || graphName != null; }
-    final protected boolean isDatasetOperation() { return datasetGraph; }
+    
 
-    final protected HttpClient httpClient() { return httpClient; }
-    final protected void httpHeaders(BiConsumer<String, String> action) { httpHeaders.forEach(action); }
+    
 
-    /**
-     * GET dataset.
-     * <p>
-     * If the remote end is a graph, the result is a dataset with that
-     * graph data in the default graph of the dataset.
-     */
+    //    /**
+    //     * Delete a graph.
+    //     * <p>
+    //     * Synonym for {@link #DELETE()}.
+    //     */
+    //    public void deleteGraph() {
+    //        // Synonym
+    //        DELETE();
+    //    }
+    
+        private String graphRequestURL() {
+            return HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
+        }
+
+    final protected void internalDataset() {
+            // Set as dataset request.
+            // Checking is done by validateDatasetOperation.
+            // The dataset operations have "Dataset" in the name, so less point having
+            // required dataset(). We can't use GET() because the return type
+            // would be "Graph or DatasetGraph"
+            // Reconsider if graph synonyms provided.
+            this.datasetGraph = true;
+        }
+
+    final protected void validateDatasetOperation() {
+            Objects.requireNonNull(serviceEndpoint);
+            if ( defaultGraph )
+                throw exception("Default graph specified for dataset operation");
+            if ( graphName != null )
+                throw exception("A graph name specified for dataset operation");
+            if ( ! datasetGraph )
+                throw exception("Dataset request not specified for dataset operation");
+        }
+
+    // Redirect
+    /** @deprecated Use {@link DSP#GET()} */
+    @Deprecated
     public DatasetGraph getDataset() {
         internalDataset();
         validateDatasetOperation();
-        ensureAcceptHeader(WebContent.defaultRDFAcceptHeader);
-        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
-        HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
-        HttpRDF.httpGetToStream(hc, serviceEndpoint, httpHeaders, StreamRDFLib.dataset(dsg));
-        return dsg;
+        return newDSP().GET();
     }
 
-    private void ensureAcceptHeader(String dftAcceptheader) {
-        String requestAccept = header(acceptHeader(), WebContent.defaultRDFAcceptHeader);
-        acceptHeader(requestAccept);
-    }
-
-    /**
-     * POST the contents of a file using the filename extension to determine the
-     * Content-Type to use if not already set.
-     * <p>
-     * This operation does not parse the file.
-     */
+    /** @deprecated Use {@link DSP#POST(String)} */
+    @Deprecated
     public void postDataset(String file) {
         internalDataset();
         validateDatasetOperation();
-        String fileExtContentType = contentTypeFromFilename(file);
-        HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
-        uploadQuads(hc, serviceEndpoint, file, fileExtContentType, httpHeaders, Push.POST);
+        newDSP().POST(file);
     }
 
-    /** POST a dataset */
+    /** @deprecated Use {@link DSP#POST(DatasetGraph)} */
+    @Deprecated
     public void postDataset(DatasetGraph dataset) {
         internalDataset();
         validateDatasetOperation();
-        RDFFormat requestFmt = rdfFormat(HttpEnv.defaultQuadsFormat);
-        HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
-        HttpRDF.httpPostDataset(hc, serviceEndpoint, dataset, requestFmt, httpHeaders);
+        newDSP().POST(dataset);
     }
 
-    /**
-     * PUT the contents of a file using the filename extension to determine the
-     * Content-Type to use if not already set.
-     * <p>
-     * This operation does not parse the file.
-     */
+    /** @deprecated Use {@link DSP#PUT(String)} */
+    @Deprecated
     public void putDataset(String file) {
         internalDataset();
         validateDatasetOperation();
-        String fileExtContentType = contentTypeFromFilename(file);
-        HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
-        uploadQuads(hc, serviceEndpoint, file, fileExtContentType, httpHeaders, Push.PUT);
+        newDSP().PUT(file);
     }
 
-    /** PUT a dataset */
+    /** @deprecated Use {@link DSP#PUT(DatasetGraph)} */
+    @Deprecated
     public void putDataset(DatasetGraph dataset) {
         internalDataset();
         validateDatasetOperation();
-        RDFFormat requestFmt = rdfFormat(HttpEnv.defaultQuadsFormat);
-        HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
-        HttpRDF.httpPutDataset(hc, serviceEndpoint, dataset, requestFmt, httpHeaders);
+        newDSP().PUT(dataset);
     }
 
-    /** Clear - delete named graphs, empty the default graph - SPARQL "CLEAR ALL" */
+    /** @deprecated Use {@link DSP#clear()} */
+    @Deprecated
     public void clearDataset() {
         internalDataset();
         validateDatasetOperation();
-        // DELETE on a dataset URL is not supported in Fuseki.
-        // HTTP DELETE means "remove resource", not "clear resource".
-//        String url = serviceEndpoint;
-//        HttpOp.httpDelete(url);
-        UpdateExecHTTP.service(serviceEndpoint).update("CLEAR ALL").execute();
+        newDSP().clear();
+    }
+
+    private DSP newDSP() {
+        DSP dsp = new DSP();
+        dsp.copySetup(this);
+        return dsp;
     }
 
     /** Send a file of triples to a URL. */
@@ -544,67 +424,5 @@ public class GSP {
         if ( ! RDFLanguages.isTriples(lang) )
             throw new ARQException("Not an RDF format: "+file+" (lang="+lang+")");
         pushFile(httpClient, gspUrl, file, fileExtContentType, headers, mode);
-    }
-
-    /**
-     * Send a file of quads to a URL. The Content-Type is inferred from the file
-     * extension.
-     */
-    private static void uploadQuads(HttpClient httpClient, String endpoint, String file, String fileExtContentType, Map<String, String> headers, Push mode) {
-        Lang lang = RDFLanguages.contentTypeToLang(fileExtContentType);
-        if ( !RDFLanguages.isQuads(lang) && !RDFLanguages.isTriples(lang) )
-            throw new ARQException("Not an RDF format: " + file + " (lang=" + lang + ")");
-        pushFile(httpClient, endpoint, file, fileExtContentType, headers, mode);
-    }
-
-    /** Header string or default value. */
-    private static String header(String choice, String dftString) {
-        return choice != null ? choice : dftString;
-    }
-
-    /** Choose the format to write in.
-     * <ol>
-     * <li> {@code rdfFormat}
-     * <li> {@code contentType} setting, choosing streaming
-     * <li> {@code contentType} setting, choosing pretty
-     * <li> HttpEnv.dftTriplesFormat / HttpEnv.dftQuadsFormat /
-     * </ol>
-     */
-    private RDFFormat rdfFormat(RDFFormat dftFormat) {
-        if ( rdfFormat != null )
-            return rdfFormat;
-
-        if ( contentType() == null )
-            return dftFormat;
-
-        Lang lang = RDFLanguages.contentTypeToLang(contentType());
-        RDFFormat streamFormat = StreamRDFWriter.defaultSerialization(null);
-        if ( streamFormat != null )
-            return streamFormat;
-        return RDFWriterRegistry.defaultSerialization(lang);
-    }
-
-    /** Choose the Content-Type header for sending a file unless overridden. */
-    private String contentTypeFromFilename(String filename) {
-        String ctx = contentType();
-        if ( ctx != null )
-            return ctx;
-        ContentType ct = RDFLanguages.guessContentType(filename);
-        return ct == null ? null : ct.getContentTypeStr();
-    }
-
-    /** Send a file. fileContentType takes precedence over this.contentType.*/
-    protected static void pushFile(HttpClient httpClient, String endpoint, String file, String fileContentType,
-                                   Map<String, String> httpHeaders, Push style) {
-        try {
-            Path path = Path.of(file);
-            if ( fileContentType != null )
-            //if ( ! httpHeaders.containsKey(HttpNames.hContentType) )
-                httpHeaders.put(HttpNames.hContentType, fileContentType);
-            BodyPublisher body = BodyPublishers.ofFile(path);
-            HttpLib.httpPushData(httpClient, style, endpoint, HttpLib.setHeaders(httpHeaders), body);
-        } catch (FileNotFoundException ex) {
-            throw new NotFoundException(file);
-        }
     }
 }
