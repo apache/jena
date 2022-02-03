@@ -389,7 +389,7 @@ public class DataService {
             return this;
         }
 
-        private void xremoveEndpoint$(Endpoint endpoint) {
+        private void removeEndpoint$(Endpoint endpoint) {
             EndpointSet eps = endpoints.get(endpoint.getName());
             if ( eps == null )
                 return;

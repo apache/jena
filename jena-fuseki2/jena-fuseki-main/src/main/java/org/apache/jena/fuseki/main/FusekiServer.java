@@ -628,7 +628,8 @@ public class FusekiServer {
 
         // ---- Pre-built DataServices
 
-        /** Add a data service that includes dataset and service names.
+        /**
+         * Add a data service that includes dataset and service names.
          * A {@link DataService} allows for choices of the various endpoint names.
          */
         public Builder add(String name, DataService dataService) {
@@ -1064,14 +1065,18 @@ public class FusekiServer {
             if ( serverHttpPort < 0 && serverHttpsPort < 0 )
                 serverHttpPort = DefaultServerPort;
 
-            // Internally built - does not need to be copied.
-            DataAccessPointRegistry dapRegistry = buildStart();
+            // FusekiModule call - final preparations.
+            Set<String> datasetNames = Set.copyOf(dataServices.keys());
+            FusekiModuleStep.prepare(this, datasetNames, configModel);
 
             // Freeze operation registry (builder may be reused).
             OperationRegistry operationReg = new OperationRegistry(operationRegistry);
 
-            // FusekiModule call.
-            FusekiModuleStep.configuration(this, dapRegistry, configModel);
+            // Internally built - does not need to be copied.
+            DataAccessPointRegistry dapRegistry = buildStart();
+
+            // FusekiModule call - inspect the DataAccessPointRegistry.
+            FusekiModuleStep.configured(dapRegistry, configModel);
 
             buildSecurity(dapRegistry);
             try {
@@ -1108,9 +1113,8 @@ public class FusekiServer {
         }
 
         private DataAccessPointRegistry buildStart() {
-            // buildStart
             DataAccessPointRegistry dapRegistry = new DataAccessPointRegistry( MetricsProviderRegistry.get().getMeterRegistry() );
-            dataServices.forEach((name,builder)->{
+            dataServices.forEach((name, builder)->{
                 DataService dSrv = builder.build();
                 DataAccessPoint dap = new DataAccessPoint(name, dSrv);
                 dapRegistry.register(dap);

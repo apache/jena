@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.main.sys;
 
+import java.util.Set;
+
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
@@ -29,8 +31,16 @@ public class FusekiModuleStep {
      * The builder has been set according to the configuration.
      * The "configModel" parameter is set if a configuration file was used else it is null.
      */
-    public static void configuration(FusekiServer.Builder builder, DataAccessPointRegistry dapRegistry, Model configModel) {
-        FusekiModules.forEachModule(module -> module.configuration(builder, dapRegistry, configModel));
+    public static void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
+        FusekiModules.forEachModule(module -> module.prepare(serverBuilder, datasetNames, configModel));
+    }
+
+    /**
+     * The DataAccessPointRegistry that will be used to build the server.
+     *
+     */
+    public static void configured(DataAccessPointRegistry dapRegistry, Model configModel) {
+        FusekiModules.forEachModule(module -> module.configured(dapRegistry, configModel));
     }
 
     /**

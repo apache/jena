@@ -18,8 +18,11 @@
 
 package org.apache.jena.fuseki.main.sys;
 
+import java.util.Set;
+
 import org.apache.jena.base.module.SubsystemLifecycle;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.FusekiServer.Builder;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
@@ -33,10 +36,12 @@ import org.apache.jena.rdf.model.Model;
  * <p>
  *  A module must provide a no-argument constructor if it is to be loaded automatically.
  * <ul>
- * <li>{@linkplain #start()} - called when the module is loaded.</li>
- * <li>{@linkplain #configuration} -- called at the beginning of the
+ * <li>{@linkplain #start()} -- called when the module is loaded.</li>
+ * <li>{@linkplain #prepare}
+ *      -- called at the beginning of the
  *     {@link org.apache.jena.fuseki.main.FusekiServer.Builder#build() FusekiServer.Builder build()}
- *      step. This call can manipulate the server configuration.</li>
+ *      step. This call can manipulate the server configuration. This is the usual operation for customizing a server.</li>
+ * <li>{@linkplain #configured} -- called after the DataAccessPoint registry has been built..</li>
  * <li>{@linkplain #server(FusekiServer)} -- called at the end of the "build" step.</li>
  * <li>{@linkplain #serverBeforeStarting(FusekiServer)} -- called before {@code server.start} happens.</li>
  * <li>{@linkplain #serverAfterStarting(FusekiServer)} -- called after {@code server.start} happens.</li>
@@ -44,13 +49,14 @@ import org.apache.jena.rdf.model.Model;
  *     Servers may simply exit without shutdown phase.
  *     The JVM may exit or be killed without clean shutdown.
  *     Modules must not rely on a call to {@code serverStopped} happening.</li>
+ * <li>{@linkplain #stop} -- modules finishes. Unlikely to be called in practice. There is no guarantee of a clean shutdown.
  * </ul>
  */
 public interface FusekiModule extends SubsystemLifecycle {
     /**
      * Display name id to identify this module.
      * <p>
-     * Modules are loaded once by the service loader
+     * Modules are loaded once by the service loader.
      * <p>
      * Modules added programmatically should be added once only.
      */
@@ -64,28 +70,41 @@ public interface FusekiModule extends SubsystemLifecycle {
 
     /**
      * Called at the start of "build" step. The builder has been set according to the
-     * configuration. The "configModel" parameter is set if a configuration file was
-     * used otherwise it is null.
+     * configuration of API calls and paring configuration files. No build actions have been carried out yet.
+     * The module can make further FusekiServer.{@link Builder} calls.
+     * The "configModel" parameter is set if a configuration file was used otherwise it is null.
      * <p>
-     * The default implementation is to call
-     * {@link #configDataAccessPoint(FusekiServer.Builder, DataAccessPoint, Model)}
-     * for each {@link DataAccessPoint}.
-     * <pre>
-     *   dapRegistry.accessPoints().forEach(accessPoint->configDataAccessPoint(builder, accessPoint, configModel));
-     * </pre>
+     * This is the main point for customization of server.
      * <p>
-     * If overriding this method, the implementation can invoke this iteration by calling
-     * {@code FusekiModule.super.configuration(builder, dapRegistry, configModel)}.
+     * It can add and modify data services, add servlet and servlet filters.
+     * <p>
+     * @param serverBuilder
+     *      The FusekiServer.Builder
+     * @param datasetNames
+     *      The names of DataServices configured by API calls and configuration file.
+     * @param configModel
      */
-    public default void configuration(FusekiServer.Builder builder, DataAccessPointRegistry dapRegistry, Model configModel) {
-        dapRegistry.accessPoints().forEach(accessPoint->configDataAccessPoint(builder, accessPoint, configModel));
+    public default void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) { }
+
+     /**
+      * Called after the DataAccessPointRegistry has been built.
+      * <p>
+      * The default implementation is to call {@link #configDataAccessPoint(DataAccessPoint, Model)}
+      * for each {@link DataAccessPoint}.
+      * <pre>
+      *    dapRegistry.accessPoints().forEach(accessPoint->configDataAccessPoint(accessPoint, configModel));
+      * </pre>
+      */
+    public default void configured(DataAccessPointRegistry dapRegistry, Model configModel) {
+        dapRegistry.accessPoints().forEach(accessPoint->configDataAccessPoint( accessPoint, configModel));
     }
 
     /**
-     * This method is called for each {@link DataAccessPoint}
-     * by the default implementation of {@link #configuration}.
+     * This method is called for each {@link DataAccessPoint} by the default
+     * implementation of {@link #configured} after the new servers
+     * DataAccessPointRegistry has been built.
      */
-    public default void configDataAccessPoint(FusekiServer.Builder builder, DataAccessPoint dap, Model configModel) {}
+    public default void configDataAccessPoint(DataAccessPoint dap, Model configModel) {}
 
     /**
      * Built, not started, about to be returned to the builder caller.
