@@ -184,7 +184,7 @@ public class RDFLanguages
 
     // For testing mainly.
     public static Collection<Lang> getRegisteredLanguages() {
-        return new HashSet<>(mapLabelToLang.values());
+        return Set.copyOf(mapLabelToLang.values());
     }
 
     /** Mapping of content type (main and alternatives) to language */

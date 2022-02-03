@@ -883,17 +883,6 @@
           <configuration>
             <release>${java.version}</release>
           </configuration>
-          <!-- Java8 compiler for Java8 output : retain temporarily 2021-01
-          <configuration>
-            <showDeprecation>false</showDeprecation>
-            <encoding>UTF-8</encoding>
-            <debug>true</debug>
-            <debuglevel>source,lines,vars</debuglevel>
-            <optimize>true</optimize>
-            <source>${java.version}</source>
-            <target>${java.version}</target>
-          </configuration>
-          -->
         </plugin>
 
         <plugin>

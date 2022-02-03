@@ -42,6 +42,11 @@ public class NodeFormatterTTL extends NodeFormatterNT
     private final String      baseStrIRI;
     private final IRIx        baseIRI;
 
+    // Turtle: abbreviations for literals but no use of prefixes or base.
+    public NodeFormatterTTL() {
+        this(null, null, NodeToLabel.createBNodeByLabelEncoded()) ;
+    }
+
     public NodeFormatterTTL(String baseIRI, PrefixMap prefixMap) {
         this(baseIRI, prefixMap, NodeToLabel.createBNodeByLabelEncoded()) ;
     }

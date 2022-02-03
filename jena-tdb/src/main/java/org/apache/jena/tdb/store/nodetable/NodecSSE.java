@@ -81,12 +81,12 @@ public class NodecSSE implements Nodec
             str = "_:"+node.getBlankNodeLabel();
         } else if ( node.isNodeTriple() ) {
             // See comments in DecodeSSE.
-            str = NodeFmtLib.str(node);
+            str = NodeFmtLib.strNT(node);
         }
 
         // Catch-all: Node->String
         if ( str == null )
-            str = NodeFmtLib.str(node);
+            str = NodeFmtLib.strNT(node);
         // String -> bytes;
         BlockUTF8.fromChars(str, bb);
         bb.flip();

@@ -20,7 +20,6 @@ package org.apache.jena.tdb2.sys;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -161,7 +160,7 @@ public class DatabaseConnection {
      */
     public static synchronized void internalReset() {
         // Copy to avoid potential CME.
-        Set<Location> x = new HashSet<>(cache.keySet());
+        Set<Location> x = Set.copyOf(cache.keySet());
         for (Location loc : x)
             internalExpel(loc, true);
         if ( ! cache.isEmpty() )

@@ -249,8 +249,8 @@ public class ResultSetCompare
             return false;
         if ( rs2 == null )
             return false;
-        Set<Var> names1 = new HashSet<>(rs1.getResultVars());
-        Set<Var> names2 = new HashSet<>(rs2.getResultVars());
+        Set<Var> names1 = Set.copyOf(rs1.getResultVars());
+        Set<Var> names2 = Set.copyOf(rs2.getResultVars());
         return names1.equals(names2);
     }
 

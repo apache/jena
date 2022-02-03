@@ -21,7 +21,6 @@ package org.apache.jena.fuseki.main.access;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.jena.atlas.lib.StrUtils;
@@ -63,7 +62,7 @@ public class AccessTestLib {
     }
 
     public static void assertSeen(Set<Node> visible, Node ... expected) {
-        Set<Node> expectedNodes = new HashSet<>(Arrays.asList(expected));
+        Set<Node> expectedNodes = Set.copyOf(Arrays.asList(expected));
         assertEquals(expectedNodes, visible);
     }
 }

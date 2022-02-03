@@ -79,7 +79,7 @@ public class DataService {
     /** Create a {@code DataService} for the given dataset. */
     private DataService(DatasetGraph dataset, Map<String, EndpointSet> endpoints, ListMultimap<Operation, Endpoint> operationsMap, AuthPolicy authPolicy) {
         this.dataset = dataset;
-        this.endpoints = new HashMap<>(endpoints);
+        this.endpoints = Map.copyOf(endpoints);
         this.operationsMap = ArrayListMultimap.create(operationsMap);
         this.authPolicy = authPolicy;
         counters.add(CounterName.Requests);

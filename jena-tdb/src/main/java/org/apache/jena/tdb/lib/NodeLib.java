@@ -45,7 +45,7 @@ import org.apache.jena.tdb.store.nodetable.NodecSSE ;
 public class NodeLib
 {
     private static Nodec nodec = new NodecSSE() ;
-    
+
     /**
      * Encode and write a {@link Node} to the {@link ObjectFile}. Returns the location,
      * suitable for use with {@link #fetchDecode}.
@@ -53,16 +53,16 @@ public class NodeLib
     public static long encodeStore(Node node, ObjectFile file) {
         return encodeStore(node, file, null);
     }
-    
+
     /**
-     * Encode and write a {@link Node} to the {@link ObjectFile}. 
+     * Encode and write a {@link Node} to the {@link ObjectFile}.
      * Uses the given {@link ByteBuffer} for encoding space if possible.
      * Returns the location, suitable for use with {@link #fetchDecode}.
      */
     public static long encodeStore(Node node, ObjectFile file, ByteBuffer bb) {
         int maxSize = nodec.maxSize(node);
         if ( bb == null )
-            return allocEncodeWrite(node, file, maxSize);  
+            return allocEncodeWrite(node, file, maxSize);
         if ( bb.capacity() < maxSize )
             // Buffer may not be big enough.
             return allocEncodeWrite(node, file, maxSize);
@@ -76,7 +76,7 @@ public class NodeLib
         ByteBuffer bb = ByteBuffer.allocate(maxSize);
         return encodeWrite(node, file, bb);
     }
-    
+
     /** Encode and write, using the space provided which is assumed to be large enough. */
     private static long encodeWrite(Node node, ObjectFile file, ByteBuffer bb) {
         int len = nodec.encode(node, bb, null);
@@ -94,7 +94,7 @@ public class NodeLib
             return null;
         return decode(bb);
     }
-    
+
     /**
      * Encode a node - it is better to use encodeStore which may avoid an additional copy
      * in getting the node into the ObjectFile and may avoid short-term byte buffer
@@ -124,7 +124,7 @@ public class NodeLib
         setHash(h, n);
         return h;
     }
-    
+
     public static void setHash(Hash h, Node n) {
         NodeType nt = NodeType.lookup(n);
         switch (nt) {
@@ -145,7 +145,7 @@ public class NodeLib
                 hash(h, n.getLiteralLexicalForm(), n.getLiteralLanguage(), dt, nt);
                 return;
             case TRIPLETERM: {
-                String lex = NodeFmtLib.str(n);
+                String lex = NodeFmtLib.strNT(n);
                 hash(h, lex, null, null, nt);
                 return;
             }
@@ -154,7 +154,7 @@ public class NodeLib
         }
         throw new TDBException("NodeType broken: " + n);
     }
-    
+
     private static int                 InitialPoolSize = 5;
     private static Pool<MessageDigest> digesters       = PoolSync.create(new PoolBase<MessageDigest>());
     static {
@@ -166,7 +166,7 @@ public class NodeLib
             e.printStackTrace();
         }
     }
-    
+
     private static MessageDigest allocDigest() {
         try {
             MessageDigest disgest = digesters.get();
@@ -183,8 +183,8 @@ public class NodeLib
     private static void deallocDigest(MessageDigest digest) {
         digest.reset();
         digesters.put(digest);
-    }    
-    
+    }
+
     private static void hash(Hash h, String lex, String lang, String datatype, NodeType nodeType) {
         if ( datatype == null )
             datatype = "";
@@ -200,7 +200,7 @@ public class NodeLib
                 digest.digest(h.getBytes(), 0, 16);
             else {
                 byte b[] = digest.digest(); // 16 bytes.
-                // Avoid the copy if length is 16? 
+                // Avoid the copy if length is 16?
                 // digest.digest(bytes, 0, length) needs 16 bytes
                 System.arraycopy(b, 0, h.getBytes(), 0, h.getLen());
             }

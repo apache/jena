@@ -37,7 +37,7 @@ class JCR_Term implements JenaNode {
     }
 
     public String ntriplesString() {
-        return NodeFmtLib.str(node);
+        return NodeFmtLib.strNT(node);
     }
 
     @Override

@@ -20,6 +20,7 @@ package org.apache.jena.riot.out;
 
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -28,27 +29,32 @@ import org.apache.jena.atlas.lib.Chars;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.riot.system.RiotChars;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.Quad;
 
 /** Presentation utilities for Nodes, Triples, Quads and more.
  * <p>
- * Methods <tt>str</tt> generate a reparsable string.
+ * Methods <tt>str</tt> generate a re-parseable string.
  * <p>
- * Methods <tt>displayStr</tt> do not guarantee a reparsable string
+ * Methods <tt>displayStr</tt> do not guarantee a re-parsable string
  * e.g. may use abbreviations or common prefixes.
  */
 public class NodeFmtLib
 {
     // Replaces FmtUtils
-    // See OutputLangUtils.
     // See and use EscapeStr
 
-    private static final NodeFormatter plainFormatter = new NodeFormatterNT();
+    // Turtle formatter, no prefix map or base. Does literal abbreviations.
+    private static final NodeFormatter ttlFormatter = new NodeFormatterTTL();
+    // N-triples formatter, no prefix map or base. Does literal abbreviations.
+    private static final NodeFormatter ntFormatter = new NodeFormatterNT();
     private static final String nullStr = "<null>";
 
+    // Used for displayStr.
     private static PrefixMap dftPrefixMap = PrefixMapFactory.create();
     static {
         PrefixMapping pm = ARQConstants.getGlobalPrefixMap();
@@ -57,22 +63,69 @@ public class NodeFmtLib
             dftPrefixMap.add(e.getKey(), e.getValue() );
     }
 
+    /** Format a triple, using Tutle literal abbreviations. */
     public static String str(Triple t) {
-        return strNodes(t.getSubject(), t.getPredicate(), t.getObject());
+        return strNodesTTL(t.getSubject(), t.getPredicate(), t.getObject());
     }
 
+    /** Format a quad, using Turtle literal abbreviations. */
     public static String str(Quad q) {
-        return strNodes(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
+        return strNodesTTL(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
     }
 
-    public static String str(Node n) {
+    /** @deprecated Use {@link #strNT}. */
+    @Deprecated
+    public static String str(Node node) {
+        return strNT(node);
+    }
+
+    /** With Turtle abbreviation for literals, no prefixes of base URI */
+    public static String strTTL(Node node) {
+        return strNode(node, ttlFormatter);
+    }
+
+    /** Format in N-triples style. */
+    public static String strNT(Node node) {
+        return strNode(node, ttlFormatter);
+    }
+
+    /** Format in N-triples style. */
+    private static void strNT(IndentedWriter w, Node node) {
+        formatNode(w, node, ntFormatter);
+    }
+
+    /** Format in Turtle style. */
+    private static void strTTL(IndentedWriter w, Node node) {
+        formatNode(w, node, ttlFormatter);
+    }
+
+    /** Format in Turtle style, using the prefix map. */
+    public static String str(Node node, PrefixMap prefixMap) {
+        return str(node, null, prefixMap);
+    }
+
+    /** Format in Turtle style, using the base URI and prefix map. */
+    public static String str(Node node, String base, PrefixMap prefixMap) {
         IndentedLineBuffer sw = new IndentedLineBuffer();
-        str(sw, n);
+        formatNode(sw, node, base, prefixMap);
         return sw.toString();
     }
 
-    // Worker
+    /** Use {@link #strNodesNT} or {@link #strNodesTTL} */
+    @Deprecated
     public static String strNodes(Node...nodes) {
+        return strNodesNT(nodes);
+    }
+
+    public static String strNodesNT(Node...nodes) {
+        return strNodes(NodeFmtLib::strNT, nodes);
+    }
+
+    public static String strNodesTTL(Node...nodes) {
+        return strNodes(NodeFmtLib::strTTL, nodes);
+    }
+
+    private static String strNodes(BiConsumer<IndentedWriter, Node> output, Node...nodes) {
         IndentedLineBuffer sw = new IndentedLineBuffer();
         boolean first = true;
         for ( Node n : nodes ) {
@@ -83,8 +136,33 @@ public class NodeFmtLib
                 sw.append("null");
                 continue;
             }
-            str(sw, n);
+            output.accept(sw, n);
         }
+        return sw.toString();
+    }
+
+    /** @deprecated To be removed. */
+    @Deprecated
+    public static void serialize(IndentedWriter w, Node node, String base, PrefixMap prefixMap) {
+        formatNode(w, node, base, prefixMap);
+    }
+
+    private static void formatNode(IndentedWriter w, Node node, NodeFormatter formatter) {
+        formatter.format(w, node);
+    }
+
+    private static void formatNode(IndentedWriter w, Node node, String base, PrefixMap prefixMap) {
+        NodeFormatter formatter;
+        if ( base == null && prefixMap == null )
+            formatter = ntFormatter;
+        else
+            formatter = new NodeFormatterTTL(base, prefixMap);
+        formatter.format(w, node);
+    }
+
+    private static String strNode(Node node, NodeFormatter formatter) {
+        IndentedLineBuffer sw = new IndentedLineBuffer();
+        formatter.format(sw, node);
         return sw.toString();
     }
 
@@ -101,10 +179,10 @@ public class NodeFmtLib
         return displayStrNodes(t.getSubject(), t.getPredicate(), t.getObject());
     }
 
-    public static String displayStr(Node n) {
-        if ( n == null )
+    public static String displayStr(Node node) {
+        if ( node == null )
             return nullStr;
-        return str(n, null, dftPrefixMap);
+        return str(node, null, dftPrefixMap);
     }
 
     private static String displayStrNodes(Node...nodes) {
@@ -114,28 +192,7 @@ public class NodeFmtLib
         return sj.toString();
     }
 
-    public static void str(IndentedWriter w, Node n) {
-        serialize(w, n, null, null);
-    }
 
-    public static String str(Node n, PrefixMap prefixMap) {
-        return str(n, null, prefixMap);
-    }
-
-    public static String str(Node n, String base, PrefixMap prefixMap) {
-        IndentedLineBuffer sw = new IndentedLineBuffer();
-        serialize(sw, n, base, prefixMap);
-        return sw.toString();
-    }
-
-    public static void serialize(IndentedWriter w, Node n, String base, PrefixMap prefixMap) {
-        NodeFormatter formatter;
-        if ( base == null && prefixMap == null )
-            formatter = plainFormatter;
-        else
-            formatter = new NodeFormatterTTL(base, prefixMap);
-        formatter.format(w, n);
-    }
 
     // ---- Blank node labels.
 

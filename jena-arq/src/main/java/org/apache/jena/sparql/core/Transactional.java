@@ -254,7 +254,7 @@ public interface Transactional
     public default <X> X calculateRead(Supplier<X> r) { return Txn.calculateRead(this, r); }
 
     /** Execute the Runnable in a write transaction */
-    public default <T extends Transactional> void executeWrite(Runnable r) { Txn.executeWrite(this, r); }
+    public default void executeWrite(Runnable r) { Txn.executeWrite(this, r); }
 
     /** Execute and return a value in a write transaction. */
     public default <X> X calculateWrite(Supplier<X> r) { return Txn.calculateWrite(this, r); }

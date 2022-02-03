@@ -63,12 +63,11 @@ import org.apache.jena.sparql.core.Var ;
  * optimization is applied in preference to either this or
  * {@link TransformOrderByDistinctApplication}.
  * </p>
- * 
  */
 public class TransformDistinctToReduced extends TransformCopy {
 
     public TransformDistinctToReduced() {}
-    
+
     // Best is this is after TransformTopN but they are order independent
     // TopN of "reduced or distinct of order" is handled.
     //@Override
@@ -77,7 +76,7 @@ public class TransformDistinctToReduced extends TransformCopy {
             OpProject opProject = (OpProject) subOp;
             if (opProject.getSubOp() instanceof OpOrder) {
                 OpOrder opOrder = (OpOrder) opProject.getSubOp();
-                Set<Var> projectVars = new HashSet<>(opProject.getVars()) ;
+                Set<Var> projectVars = Set.copyOf(opProject.getVars()) ;
                 if (isSafe(projectVars, opOrder)) {
                     return OpReduced.create(subOp);
                 }
@@ -85,17 +84,16 @@ public class TransformDistinctToReduced extends TransformCopy {
         }
         return super.transform(opDistinct, subOp);
     }
-    
-    
+
     @Override
     public Op transform(OpDistinct opDistinct, Op subOp) {
-        
+
         OpOrder opOrder = null ;
         Set<Var> projectVars = null ;
         /*   SELECT DISTINCT * {} ORDER BY
-         * giving an alegbra expression of the form:  
+         * giving an alegbra expression of the form:
          *   (distinct
-         *     (order 
+         *     (order
          */
         if (subOp instanceof OpOrder) {
             opOrder = (OpOrder) subOp;
@@ -106,14 +104,14 @@ public class TransformDistinctToReduced extends TransformCopy {
                 projectVars = new HashSet<>(opProject.getVars()) ;
                 opOrder = (OpOrder) opProject.getSubOp();
             }
-        } 
+        }
 
         if ( projectVars == null )
             return super.transform(opDistinct, subOp) ;
-            
+
         if (isSafe(projectVars, opOrder))
             return OpReduced.create(subOp);
-        
+
         return super.transform(opDistinct, subOp);
     }
 
@@ -141,7 +139,7 @@ public class TransformDistinctToReduced extends TransformCopy {
 
     /**
      * Determines whether a sort condition is valid in terms of this optimizer
-     * 
+     *
      * @param cond
      *            Sort Condition
      * @param projectVars

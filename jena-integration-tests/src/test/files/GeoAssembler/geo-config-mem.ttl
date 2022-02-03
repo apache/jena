@@ -12,7 +12,7 @@ PREFIX geosparql: <http://jena.apache.org/geosparql#>
 
 # In-memory data and index.
 
-<#geo_ds> rdf:type geosparql:geosparqlDataset ;
+<#geo_ds> rdf:type geosparql:GeosparqlDataset ;
     geosparql:dataset <#baseDataset> .
 
 <#baseDataset> rdf:type ja:MemoryDataset ;

@@ -30,7 +30,8 @@ public class VocabGeoSPARQL {
     }
 
     // The class of geosparql datasets
-    public static final Resource tGeoDataset = ResourceFactory.createResource(NS+"geosparqlDataset");
+    public static final Resource tGeoDataset    = ResourceFactory.createResource(NS+"GeosparqlDataset");
+    public static final Resource tGeoDatasetAlt = ResourceFactory.createResource(NS+"geosparqlDataset");
 
     // CLI: names = {"--inference", "-i"}
     // "Enable GeoSPARQL RDFS schema and inferencing (class and property hierarchy). Inferences will be applied to the dataset. Updates to dataset may require server restart."

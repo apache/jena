@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.graph;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -110,7 +109,7 @@ public class PrefixMappingMem extends PrefixMappingBase {
 
     @Override
     protected Map<String, String> asMapCopy() {
-        return new HashMap<>(prefixToUri);
+        return Map.copyOf(prefixToUri);
     }
 
     @Override

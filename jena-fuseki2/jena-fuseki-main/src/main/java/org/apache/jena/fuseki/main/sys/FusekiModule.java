@@ -31,6 +31,7 @@ import org.apache.jena.rdf.model.Model;
  * the application code. Calls are made to each module at certain points in the
  * lifecycle of a Fuseki server.
  * <p>
+ *  A module must provide a no-argument constructor if it is to be loaded automatically.
  * <ul>
  * <li>{@linkplain #start()} - called when the module is loaded.</li>
  * <li>{@linkplain #configuration} -- called at the beginning of the

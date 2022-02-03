@@ -67,8 +67,8 @@ public class NodeLib {
                 dt = null;
             }
             hash(h, n.getLiteralLexicalForm(), n.getLiteralLanguage(), dt, LITERAL);
-        } else if ( n.isNodeTriple() ) { 
-            String lex = NodeFmtLib.str(n);
+        } else if ( n.isNodeTriple() ) {
+            String lex = NodeFmtLib.strNT(n);
             hash(h, lex, null, null, TRIPLE_TERM);
             return;
         } else

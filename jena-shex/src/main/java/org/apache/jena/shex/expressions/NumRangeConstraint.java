@@ -68,7 +68,7 @@ public class NumRangeConstraint extends NodeConstraint {
             default :
                 break;
         }
-        String msg = format("Expected %s %s : got = %s", rangeKind.label(), NodeFmtLib.str(nv.getNode()), NodeFmtLib.str(n));
+        String msg = format("Expected %s %s : got = %s", rangeKind.label(), NodeFmtLib.strTTL(nv.getNode()), NodeFmtLib.strTTL(n));
         return new ReportItem(msg, n);
     }
 
