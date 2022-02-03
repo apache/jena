@@ -64,8 +64,6 @@ public class ExFuseki_02_Config_DataService {
         // Make a DataService with custom named for endpoints.
         // In this example, "q" for SPARQL query and "x" for our custom extension and no others.
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
-        // This would add the usual defaults.
-        //FusekiBuilder.populateStdServices(dataService, true);
         DataService dataService = DataService.newBuilder(dsg)
                 .addEndpoint(myOperation, customEndpoint)
                 .addEndpoint(Operation.Query, queryEndpoint)
@@ -93,7 +91,6 @@ public class ExFuseki_02_Config_DataService {
         String queryOperationURL = SERVER_URL + DATASET + "/" + queryEndpoint;
 
         Query query = QueryFactory.create("ASK{}");
-
 
         try {
 

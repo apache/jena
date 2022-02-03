@@ -348,6 +348,7 @@ public class DataService {
         }
 
         public Builder dataset(DatasetGraph dsg) { this.dataset = dsg; return this; }
+        public DatasetGraph dataset()            { return this.dataset; }
 
         public Builder withStdServices(boolean withUpdate) {
             FusekiConfig.populateStdServices(this, withUpdate);

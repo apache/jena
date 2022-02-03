@@ -76,7 +76,7 @@ public interface FusekiModule extends SubsystemLifecycle {
      * <p>
      * This is the main point for customization of server.
      * <p>
-     * It can add and modify data services, add servlet and servlet filters.
+     * It can add and modify the data services being built, and also add servlets and servlet filters.
      * <p>
      * @param serverBuilder
      *      The FusekiServer.Builder
