@@ -36,6 +36,7 @@ import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 
@@ -214,8 +215,10 @@ public class DataService {
 
     private void ensureEnpointProcessors() {
         forEachEndpoint(ep->{
-            if ( ep.getProcessor() == null )
-                Fuseki.configLog.warn("No processor for "+ep.getName());
+            if ( ep.getProcessor() == null ) {
+                String x = NodeFmtLib.strNT(ep.getOperation().getId());
+                Fuseki.configLog.warn("No processor for operation "+x);
+            }
         });
     }
 

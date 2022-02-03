@@ -21,31 +21,49 @@ package org.apache.jena.fuseki.servlets;
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.server.CounterName.UploadExecErrors;
 import static org.apache.jena.fuseki.servlets.ActionExecLib.incCounter;
+import static org.apache.jena.riot.WebContent.matchContentType;
 
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.Streams;
+import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.system.FusekiNetLib;
-import org.apache.jena.fuseki.system.Upload;
 import org.apache.jena.fuseki.system.UploadDetailsWithName;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIx;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RiotParseException;
+import org.apache.jena.riot.WebContent;
+import org.apache.jena.riot.lang.StreamRDFCounting;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.OperationDeniedException;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.web.HttpSC;
 
 /**
  * Upload data into a graph within a dataset. This is {@code fuseki:serviceUpload}.
- *
- * It is better to use GSP or quads POST with the body being the content.
- *
+ * <p>
+ * It is better to use GSP or quads POST, or the {@link Upload} service with the body being the content.
+ * <p>
  * This class works with general HTML form file upload where the name is somewhere in the form and that may be
  * after the data.
- *
+ * <p>
  * Consider this service useful for small files and use GSP or quads POST for large ones.
+ * <p>
+ * <i>Legacy</i>.
  */
 public class HTML_FileUpload extends ActionService
 {
@@ -71,9 +89,10 @@ public class HTML_FileUpload extends ActionService
 
     @Override
     public void execute(HttpAction action) {
-
         // Only allows one file in the upload.
-        boolean isMultipart = ServletFileUpload.isMultipartContent(action.getRequest());
+        boolean isMultipart = matchContentType(WebContent.ctMultipartFormData,
+                                               ActionLib.getContentType(action));
+
         if ( ! isMultipart )
             ServletOps.error(HttpSC.BAD_REQUEST_400 , "Not a file upload");
 
@@ -109,7 +128,7 @@ public class HTML_FileUpload extends ActionService
     }
 
     // Also used by SPARQL_REST
-    static public long upload(HttpAction action, String base) {
+    private static long upload(HttpAction action, String base) {
         if ( action.isTransactional() )
             return uploadTxn(action, base);
         else
@@ -121,7 +140,7 @@ public class HTML_FileUpload extends ActionService
      * are caught before inserting any data.
      */
     private static long uploadNonTxn(HttpAction action, String base) {
-        UploadDetailsWithName upload = Upload.multipartUploadWorker(action, base);
+        UploadDetailsWithName upload = multipartUploadWorker(action, base);
         String graphName = upload.graphName;
         DatasetGraph dataTmp = upload.data;
         long count = upload.count;
@@ -167,4 +186,96 @@ public class HTML_FileUpload extends ActionService
         return uploadNonTxn(action, base);
     }
 
+    /**
+     * Process an HTTP file upload of RDF using the name field for the graph name destination.
+     */
+    private static UploadDetailsWithName multipartUploadWorker(HttpAction action, String base) {
+        DatasetGraph dsgTmp = DatasetGraphFactory.create();
+        ServletFileUpload upload = new ServletFileUpload();
+        String graphName = null;
+        boolean isQuads = false;
+        long count = -1;
+
+        String name = null;
+        ContentType ct = null;
+        Lang lang = null;
+
+        try {
+            FileItemIterator iter = upload.getItemIterator(action.getRequest());
+            while (iter.hasNext()) {
+                FileItemStream item = iter.next();
+                String fieldName = item.getFieldName();
+                InputStream input = item.openStream();
+                if ( item.isFormField() ) {
+                    // Graph name.
+                    String value = Streams.asString(input, "UTF-8");
+                    if ( fieldName.equals(HttpNames.paramGraph) ) {
+                        graphName = value;
+                        if ( graphName != null && !graphName.equals("") && !graphName.equals(HttpNames.graphTargetDefault) ) {
+                            // -- Check IRI with additional checks.
+                            try {
+                                IRIx iri = IRIx.create(value);
+                                if ( ! iri.isReference() )
+                                    ServletOps.errorBadRequest("IRI not suitable: " + graphName);
+                            } catch (IRIException ex) {
+                                ServletOps.errorBadRequest("Bad IRI: " + graphName);
+                            }
+                            // End check IRI
+                        }
+                    } else if ( fieldName.equals(HttpNames.paramDefaultGraphURI) )
+                        graphName = null;
+                    else
+                        // Add file type?
+                        action.log.info(format("[%d] Upload: Field=%s ignored", action.id, fieldName));
+                } else {
+                    // Process the input stream
+                    name = item.getName();
+                    if ( name == null || name.equals("") || name.equals("UNSET FILE NAME") )
+                        ServletOps.errorBadRequest("No name for content - can't determine RDF syntax");
+
+                    String contentTypeHeader = item.getContentType();
+                    ct = ContentType.create(contentTypeHeader);
+
+                    lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
+                    if ( lang == null ) {
+                        lang = RDFLanguages.pathnameToLang(name);
+
+                        // JENA-600 filenameToLang() strips off certain
+                        // extensions such as .gz and
+                        // we need to ensure that if there was a .gz extension
+                        // present we wrap the stream accordingly
+                        if ( name.endsWith(".gz") )
+                            input = new GZIPInputStream(input);
+                    }
+
+                    if ( lang == null )
+                        // Desperate.
+                        lang = RDFLanguages.RDFXML;
+
+                    isQuads = RDFLanguages.isQuads(lang);
+
+                    action.log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", action.id, name,
+                                           ct.getContentTypeStr(), ct.getCharset(), lang.getName()));
+
+                    StreamRDF x = StreamRDFLib.dataset(dsgTmp);
+                    StreamRDFCounting dest = StreamRDFLib.count(x);
+                    try {
+                        ActionLib.parse(action, dest, input, lang, base);
+                    } catch (RiotParseException ex) {
+                        ActionLib.consumeBody(action);
+                        ServletOps.errorParseError(ex);
+                    }
+                    count = dest.count();
+                }
+            }
+
+            if ( graphName == null || graphName.equals("") )
+                graphName = HttpNames.graphTargetDefault;
+            if ( isQuads )
+                graphName = null;
+            return new UploadDetailsWithName(graphName, dsgTmp, count);
+        }
+        catch (ActionErrorException ex) { throw ex; }
+        catch (Exception ex)            { ServletOps.errorOccurred(ex); return null; }
+    }
 }
