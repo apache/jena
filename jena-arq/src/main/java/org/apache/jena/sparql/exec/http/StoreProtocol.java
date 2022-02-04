@@ -142,15 +142,17 @@ public abstract class StoreProtocol<X extends StoreProtocol<X>> {
 
     protected RDFFormat rdfFormat() { return rdfFormat; }
 
-    /** Copy the state (endpoint, HttpClient, HTTP headers, RDFFormat) of one StoreProtocol into this one.
-     * Any old setup on tghis object is lost.
-     * */
+    /**
+     * Copy the state (endpoint, HttpClient, HTTP headers, RDFFormat) of one StoreProtocol into this one.
+     * Any old setup on this object is lost.
+     */
     public X copySetup(StoreProtocol<?> other) {
         clearSetup();
         other.httpHeaders(this::httpHeader);
-        this.endpoint(other.endpoint());
+        if ( other.endpoint() != null )
+            this.endpoint(other.endpoint());
         if (other.httpClient() != null )
-            this.httpClient(httpClient());
+            this.httpClient(other.httpClient());
         if ( other.rdfFormat() != null )
             this.rdfFormat(other.rdfFormat());
         return thisBuilder();
