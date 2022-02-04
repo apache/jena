@@ -30,7 +30,7 @@ import org.junit.runners.Suite ;
     // Addition tests added here.
     TestRDFLinkLocalTDB.class,
     TestRDFLinkLocalTDB2.class,
-    TestRDFLinkRemote.class,
+    TestRDFLinkHTTP.class,
     TestRDFLinkFuseki.class,
     TestRDFLinkFusekiBinary.class
 })

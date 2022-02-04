@@ -37,7 +37,7 @@ import org.junit.Before ;
 import org.junit.BeforeClass ;
 import org.junit.Test;
 
-public class TestRDFLinkRemote extends AbstractTestRDFLink {
+public class TestRDFLinkHTTP extends AbstractTestRDFLink {
     private static FusekiServer server ;
     private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem() ;
     protected static int PORT = 0;
@@ -109,6 +109,4 @@ public class TestRDFLinkRemote extends AbstractTestRDFLink {
             }
         }
     }
-
 }
-

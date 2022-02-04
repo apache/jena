@@ -281,13 +281,15 @@ public abstract class StoreProtocol<X extends StoreProtocol<X>> {
         return RDFWriterRegistry.defaultSerialization(lang);
     }
 
-    /** Choose the Content-Type header for sending a file unless overridden. */
+    /** Choose the Content-Type header for sending a file, fallin gback to the StoreProtocol setting. */
     protected String contentTypeFromFilename(String filename) {
+        ContentType ct = RDFLanguages.guessContentType(filename);
+        if ( ct != null )
+            return ct.getContentTypeStr();
         String ctx = contentType();
         if ( ctx != null )
             return ctx;
-        ContentType ct = RDFLanguages.guessContentType(filename);
-        return ct == null ? null : ct.getContentTypeStr();
+        return null;
     }
 
     /** Send a file. fileContentType takes precedence over this.contentType.*/
@@ -296,7 +298,6 @@ public abstract class StoreProtocol<X extends StoreProtocol<X>> {
         try {
             Path path = Path.of(file);
             if ( fileContentType != null )
-            //if ( ! httpHeaders.containsKey(HttpNames.hContentType) )
                 httpHeaders.put(HttpNames.hContentType, fileContentType);
             BodyPublisher body = BodyPublishers.ofFile(path);
             HttpLib.httpPushData(httpClient, style, endpoint, HttpLib.setHeaders(httpHeaders), body);

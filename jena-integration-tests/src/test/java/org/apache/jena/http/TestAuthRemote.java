@@ -248,6 +248,8 @@ public class TestAuthRemote {
             link.update("INSERT DATA { <x:s> <x:p> <x:o> }");
             Graph graph = link.get();
             assertNotNull(graph);
+            DatasetGraph dsg = link.getDataset();
+            assertNotNull(dsg);
         }
     }
 
@@ -507,4 +509,3 @@ public class TestAuthRemote {
         assertTrue(graph.isIsomorphicWith(graph2));
     }
 }
-
