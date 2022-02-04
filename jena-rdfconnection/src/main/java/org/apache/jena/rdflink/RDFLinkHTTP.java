@@ -35,6 +35,7 @@ import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.*;
+import org.apache.jena.sparql.exec.http.DSP;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecHTTPBuilder;
 import org.apache.jena.sparql.exec.http.UpdateExecHTTPBuilder;
@@ -470,6 +471,10 @@ public class RDFLinkHTTP implements RDFLink {
         return GSP.service(svcGraphStore).httpClient(httpClient);
     }
 
+    private DSP dspRequest() {
+        return DSP.service(svcGraphStore).httpClient(httpClient);
+    }
+
     @Override
     public void delete(Node graphName) {
         checkGSP();
@@ -485,31 +490,31 @@ public class RDFLinkHTTP implements RDFLink {
     @Override
     public DatasetGraph getDataset() {
         checkDataset();
-        return gspRequest().dataset().acceptHeader(acceptDataset).getDataset();
+        return dspRequest().acceptHeader(acceptDataset).GET();
     }
 
     @Override
     public void loadDataset(String file) {
         checkDataset();
-        gspRequest().dataset().postDataset(file);
+        dspRequest().POST(file);
     }
 
     @Override
     public void loadDataset(DatasetGraph dataset) {
         checkDataset();
-        gspRequest().dataset().postDataset(dataset);
+        dspRequest().POST(dataset);
     }
 
     @Override
     public void putDataset(String file) {
         checkDataset();
-        gspRequest().dataset().putDataset(file);
+        dspRequest().PUT(file);
     }
 
     @Override
     public void putDataset(DatasetGraph dataset) {
         checkDataset();
-        gspRequest().dataset().putDataset(dataset);
+        dspRequest().PUT(dataset);
     }
 
     // -- Internal.
