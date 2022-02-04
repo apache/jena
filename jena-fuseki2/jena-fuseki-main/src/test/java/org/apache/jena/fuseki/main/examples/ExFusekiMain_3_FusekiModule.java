@@ -24,6 +24,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -35,7 +36,6 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
-import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.rdf.model.Model;
@@ -83,7 +83,7 @@ public class ExFusekiMain_3_FusekiModule {
             return modName;
         }
 
-        @Override public void configuration(FusekiServer.Builder builder, DataAccessPointRegistry dapRegistry, Model configModel) {
+        @Override public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
             System.out.println("Module adds servlet");
             HttpServlet servlet = new HttpServlet() {
                 @Override public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {

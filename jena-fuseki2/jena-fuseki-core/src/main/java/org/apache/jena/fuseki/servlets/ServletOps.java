@@ -199,6 +199,8 @@ public class ServletOps {
     public static void errorOccurred(String message, Throwable ex) {
         if ( message == null )
             System.err.println();
+        if ( ex instanceof ActionErrorException )
+            throw (ActionErrorException)ex;
         throw new ActionErrorException(HttpSC.INTERNAL_SERVER_ERROR_500, message, ex);
     }
 

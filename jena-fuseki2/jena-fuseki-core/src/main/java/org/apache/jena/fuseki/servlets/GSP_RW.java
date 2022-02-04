@@ -310,7 +310,7 @@ public class GSP_RW extends GSP_R {
             StreamRDF dest = StreamRDFLib.dataset(dsg);
             details = Upload.incomingData(action, dest);
             action.commit();
-            ServletOps.success(action);
+            ServletOps.uploadResponse(action, details);
         } catch (RiotException ex) {
             // Parse error
             abortSilent(action);
@@ -328,7 +328,6 @@ public class GSP_RW extends GSP_R {
         } finally {
             action.end();
         }
-        ServletOps.uploadResponse(action, details);
     }
 
     /**
@@ -356,7 +355,6 @@ public class GSP_RW extends GSP_R {
                 dsg.clear();
             FusekiNetLib.addDataInto(dsgTmp, dsg);
             action.commit();
-            ServletOps.success(action);
         } catch (OperationDeniedException ex) {
             abortSilent(action);
             throw ex;

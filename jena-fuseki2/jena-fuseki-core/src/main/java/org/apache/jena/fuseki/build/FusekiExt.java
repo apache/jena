@@ -25,17 +25,22 @@ import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.server.OperationRegistry;
 import org.apache.jena.fuseki.servlets.ActionService;
 
-/** Operations to extend Fuseki with external code. */ 
+/**
+ * Operations to extend Fuseki with external code.
+ * <p>
+ */
 public class FusekiExt {
 
     // Additional operations provided by extension, added via Jena init / typically ServiceLoader
     static Map<String, Operation> extraOperationServicesRead;
     static Map<String, Operation> extraOperationServicesWrite;
 
-    /** 
+    /**
      * Add a new operation, which will be included in a default configuration.
      * The operation must have been added with {@link #registerOperation} first.
+     * @deprecated Use {@code FusekiModules} with FusekiMain.
      */
+    @Deprecated
     public static void addDefaultEndpoint(Operation op, String serviceName) {
         // Include in both sets.
         addDefaultEndpoint(op, serviceName, false);
@@ -47,7 +52,9 @@ public class FusekiExt {
      * depending on whether it is for general inclusion or for inclusion for update
      * only configuration.
      * The operation must have been added with {@link #registerOperation} first.
+     * @deprecated Use {@code FusekiModules} with FusekiMain.
      */
+    @Deprecated
     public static void addDefaultEndpoint(Operation op, String serviceName, boolean forUpdate) {
         // Due to class loading and ServiceLoader interaction, it is not reliable to
         // set extraOperationServices as it is declared.
@@ -55,7 +62,7 @@ public class FusekiExt {
             extraOperationServicesRead = new HashMap<>();
         if ( extraOperationServicesWrite == null )
             extraOperationServicesWrite = new HashMap<>();
-        
+
         if ( forUpdate )
             extraOperationServicesWrite.put(serviceName, op);
         else
@@ -64,10 +71,10 @@ public class FusekiExt {
 
     /** Make a new operation available. */
     public static void registerOperation(Operation op, ActionService handler) {
-        // No Content-type registration 
+        // No Content-type registration
         OperationRegistry.get().register(op, null, handler);
     }
-    
+
     /** Remove an operation. */
     public static void unregisterOperation(Operation op, ActionService handler) {
         OperationRegistry.get().unregister(op);

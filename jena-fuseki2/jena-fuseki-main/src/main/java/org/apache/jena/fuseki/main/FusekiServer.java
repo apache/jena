@@ -575,6 +575,45 @@ public class FusekiServer {
         }
 
         /**
+         * Get the DatasetGraph, if any, being built for a service in this builder.
+         * <p>
+         * Returns the DatasetGraph or null.
+         * <p>
+         * This operation does not return the builder.
+         */
+        public DatasetGraph getDataset(String name) {
+            requireNonNull(name, "name");
+            name = DataAccessPoint.canonical(name);
+            DataService.Builder b = dataServices.get(name);
+            if ( b == null )
+                return null;
+            return b.dataset();
+        }
+
+        /**
+         * Remove the dataset from being built.
+         * <p>
+         * Returns the DatasetGraph or null.
+         * <p>
+         * This operation does not return the builder.
+         */
+        public DatasetGraph remove(String name) {
+            requireNonNull(name, "name");
+            name = DataAccessPoint.canonical(name);
+            DataService.Builder dSrvBuilder = dataServices.get(name);
+            if ( dSrvBuilder != null ) {
+                dataServices.remove(name);
+                return dSrvBuilder.dataset();
+            }
+            DataService provided = providedDataServices.get(name);
+            if ( provided != null ) {
+                providedDataServices.remove(name);
+                return provided.getDataset();
+            }
+            return null;
+        }
+
+        /**
          * Add the dataset with given name and a default set of services including update.
          * This is equivalent to {@code add(name, dataset, true)}.
          */
@@ -610,9 +649,9 @@ public class FusekiServer {
          * update if allowUpdate=true.
          */
         public Builder add(String name, DatasetGraph dataset, boolean allowUpdate) {
-            name = DataAccessPoint.canonical(name);
             requireNonNull(name, "name");
             requireNonNull(dataset, "dataset");
+            name = DataAccessPoint.canonical(name);
             if ( isRegistered(name) )
                 throw new FusekiConfigException("Data service name already registered: "+name);
             DataService.Builder dataServiceBuilder = DataService.newBuilder(dataset).withStdServices(allowUpdate);
@@ -620,24 +659,52 @@ public class FusekiServer {
             return this;
         }
 
+        /**
+         * Add a dataset, do not configure it in this call. Subsequent calls of
+         * {@code addEndpoint} and {@:code addOperation} will be needed to give this
+         * dataset some functionality.
+         * <p>
+         * This operation replaces any previous dataset and configuration with the same canonical name.
+         * <p>
+         * {@link org.apache.jena.fuseki.server.DataService.Builder DataService.Builder}.
+         * for building the DataService separately.
+         */
+        public Builder addDataset(String name, DatasetGraph dataset) {
+            requireNonNull(name, "name");
+            requireNonNull(dataset, "dataset");
+            DataService.Builder dataServiceBuilder = DataService.newBuilder(dataset);
+            return addNamedDataService$(name, dataServiceBuilder);
+        }
+
+        public Builder add(String name, DataService.Builder dataServiceBuilder) {
+            requireNonNull(name, "name");
+            requireNonNull(dataServiceBuilder, "dataServiceBuilderr");
+            addNamedDataService$(name, dataServiceBuilder);
+            return this;
+        }
+
         /** Add name and DataService-in-progress (the builder). */
         private Builder addNamedDataService$(String name, DataService.Builder builder) {
+            name = DataAccessPoint.canonical(name);
             dataServices.put(name, builder);
             return this;
         }
 
         // ---- Pre-built DataServices
 
-        /** Add a data service that includes dataset and service names.
+        /**
+         * Add a data service that includes dataset and service names.
          * A {@link DataService} allows for choices of the various endpoint names.
+         * A DataService added with this operation cannot be modified further
+         * with other builder calls.
          */
         public Builder add(String name, DataService dataService) {
             requireNonNull(name, "name");
             requireNonNull(dataService, "dataService");
-            return add$(name, dataService);
+            return addDefinedDataService$(name, dataService);
         }
 
-        private Builder add$(String name, DataService dataService) {
+        private Builder addDefinedDataService$(String name, DataService dataService) {
             name = DataAccessPoint.canonical(name);
             if ( isRegistered(name) )
                 throw new FusekiConfigException("Data service name already registered: "+name);
@@ -1064,14 +1131,18 @@ public class FusekiServer {
             if ( serverHttpPort < 0 && serverHttpsPort < 0 )
                 serverHttpPort = DefaultServerPort;
 
-            // Internally built - does not need to be copied.
-            DataAccessPointRegistry dapRegistry = buildStart();
+            // FusekiModule call - final preparations.
+            Set<String> datasetNames = Set.copyOf(dataServices.keys());
+            FusekiModuleStep.prepare(this, datasetNames, configModel);
 
             // Freeze operation registry (builder may be reused).
             OperationRegistry operationReg = new OperationRegistry(operationRegistry);
 
-            // FusekiModule call.
-            FusekiModuleStep.configuration(this, dapRegistry, configModel);
+            // Internally built - does not need to be copied.
+            DataAccessPointRegistry dapRegistry = buildStart();
+
+            // FusekiModule call - inspect the DataAccessPointRegistry.
+            FusekiModuleStep.configured(dapRegistry, configModel);
 
             buildSecurity(dapRegistry);
             try {
@@ -1108,9 +1179,8 @@ public class FusekiServer {
         }
 
         private DataAccessPointRegistry buildStart() {
-            // buildStart
             DataAccessPointRegistry dapRegistry = new DataAccessPointRegistry( MetricsProviderRegistry.get().getMeterRegistry() );
-            dataServices.forEach((name,builder)->{
+            dataServices.forEach((name, builder)->{
                 DataService dSrv = builder.build();
                 DataAccessPoint dap = new DataAccessPoint(name, dSrv);
                 dapRegistry.register(dap);

@@ -18,11 +18,11 @@
 
 package org.apache.jena.fuseki.main;
 
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.fuseki.main.sys.FusekiModule;
-import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
 
 public class ModuleForTest implements FusekiModule {
@@ -60,7 +60,7 @@ public class ModuleForTest implements FusekiModule {
     }
 
     @Override
-    public void configuration(FusekiServer.Builder builder, DataAccessPointRegistry dapRegistry, Model configModel) {
+    public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
         countConfiguration.getAndIncrement();
     }
 
