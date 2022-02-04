@@ -37,13 +37,13 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
  * <p>
  * Supports:
  * <ul>
- * <li>HTTP body + content type(c.f GSP- write to a dataset)
+ * <li>HTTP body + content type (c.f. GSP-RW write to a dataset)
  * <li>HTML file input upload (multipart/form-data)
  * </ul>
- * Using GSP style (Content-type + data in the HTTP body) is preferred.
+ * Using HTTP body + content type is preferred.
  * @see DataUploader
  */
-public class Upload extends ActionREST {
+public class UploadRDF extends ActionREST {
 
     // Only support PUT and POST
     @Override protected void doGet(HttpAction action)       { unsupported(action); }
@@ -83,14 +83,12 @@ public class Upload extends ActionREST {
         if ( !action.getDataService().allowUpdate() )
             ServletOps.errorMethodNotAllowed(action.getMethod());
 
-        // "multipart/form-data" is supported.
-//        if ( matchContentType(ctMultipartFormData, ct) )
-//            ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/form-data not supported");
-
+        UploadDetails details;
         if ( action.isTransactional() )
-            quadsPutPostTxn(action, replaceOperation);
+            details = quadsPutPostTxn(action, replaceOperation);
         else
-            quadsPutPostNonTxn(action, replaceOperation);
+            details = quadsPutPostNonTxn(action, replaceOperation);
+        ServletOps.uploadResponse(action, details);
     }
 
 
@@ -99,8 +97,8 @@ public class Upload extends ActionREST {
      * Load data using a transaction into the dataset of an action. if the data is bad,
      * abort the transaction.
      */
-    public static void quadsPutPostTxn(HttpAction action, boolean replaceOperation) {
-        quadsPutPostTxn(action, a->a.getDataset(), replaceOperation);
+    public static UploadDetails quadsPutPostTxn(HttpAction action, boolean replaceOperation) {
+        return quadsPutPostTxn(action, a->a.getDataset(), replaceOperation);
     }
 
     /**
@@ -109,7 +107,7 @@ public class Upload extends ActionREST {
      * <p>
      * Delayed choice of dataset via a function so that the decision is made inside the transaction.
      */
-    public static void quadsPutPostTxn(HttpAction action, Function<HttpAction, DatasetGraph> decideDataset, boolean replaceOperation) {
+    public static UploadDetails quadsPutPostTxn(HttpAction action, Function<HttpAction, DatasetGraph> decideDataset, boolean replaceOperation) {
         UploadDetails details = null;
         action.beginWrite();
         try {
@@ -119,7 +117,6 @@ public class Upload extends ActionREST {
             StreamRDF dest = StreamRDFLib.dataset(dsg);
             details = DataUploader.incomingData(action, dest);
             action.commit();
-            ServletOps.uploadResponse(action, details);
         } catch (RiotException ex) {
             // Parse error
             action.abortSilent();
@@ -137,6 +134,7 @@ public class Upload extends ActionREST {
         } finally {
             action.end();
         }
+        return details;
     }
 
     // ---- Library : non-transactional
@@ -147,8 +145,8 @@ public class Upload extends ActionREST {
      * it into the finally destination.
      */
 
-    public static void quadsPutPostNonTxn(HttpAction action, boolean replaceOperation) {
-        quadsPutPostNonTxn(action, a->a.getDataset(), replaceOperation);
+    public static UploadDetails quadsPutPostNonTxn(HttpAction action, boolean replaceOperation) {
+        return quadsPutPostNonTxn(action, a->a.getDataset(), replaceOperation);
     }
 
     /**
@@ -159,7 +157,7 @@ public class Upload extends ActionREST {
      * <p>
      * Delayed choice of dataset via a function so that the decision is made inside the transaction updating the data.
      */
-    public static void quadsPutPostNonTxn(HttpAction action, Function<HttpAction, DatasetGraph> decideDataset, boolean replaceOperation) {
+    public static UploadDetails quadsPutPostNonTxn(HttpAction action, Function<HttpAction, DatasetGraph> decideDataset, boolean replaceOperation) {
         DatasetGraph dsgTmp = DatasetGraphFactory.create();
         StreamRDF dest = StreamRDFLib.dataset(dsgTmp);
 
@@ -168,7 +166,7 @@ public class Upload extends ActionREST {
             details = DataUploader.incomingData(action, dest);
         } catch (RiotException ex) {
             ServletOps.errorBadRequest(ex.getMessage());
-            return;
+            return null;
         }
         // Now insert into dataset
         action.beginWrite();
@@ -190,7 +188,7 @@ public class Upload extends ActionREST {
         } finally {
             action.end();
         }
-        ServletOps.uploadResponse(action, details);
+        return details;
     }
 
 }

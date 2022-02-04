@@ -19,8 +19,6 @@
 package org.apache.jena.fuseki.servlets;
 
 import static org.apache.jena.fuseki.servlets.GraphTarget.determineTargetGSP;
-import static org.apache.jena.riot.WebContent.ctMultipartMixed;
-import static org.apache.jena.riot.WebContent.matchContentType;
 
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.FusekiConfigException;
@@ -37,7 +35,6 @@ import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.OperationDeniedException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.graph.GraphFactory;
-import org.apache.jena.web.HttpSC;
 
 public class GSP_RW extends GSP_R {
 
@@ -143,14 +140,12 @@ public class GSP_RW extends GSP_R {
         if ( !action.getDataService().allowUpdate() )
             ServletOps.errorMethodNotAllowed(action.getMethod());
 
-        // "multipart/form-data" is supported.
-//        if ( matchContentType(ctMultipartFormData, ct) )
-//            ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/form-data not supported");
-
+        UploadDetails details;
         if ( action.isTransactional() )
-            Upload.quadsPutPostTxn(action, a->decideDataset(a), replaceOperation);
+            details = UploadRDF.quadsPutPostTxn(action, a->decideDataset(a), replaceOperation);
         else
-            Upload.quadsPutPostNonTxn(action, a->decideDataset(a), replaceOperation);
+            details = UploadRDF.quadsPutPostNonTxn(action, a->decideDataset(a), replaceOperation);
+        ServletOps.uploadResponse(action, details);
     }
 
     // ---- Triples to target graph
@@ -160,19 +155,11 @@ public class GSP_RW extends GSP_R {
         if ( ct == null )
             ServletOps.errorBadRequest("No Content-Type:");
 
-        if ( matchContentType(ctMultipartMixed, ct) )
-            ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/mixed not supported");
-
-        // "multipart/form-data" is supported.
-//      if ( matchContentType(ctMultipartFormData, ct) )
-//          ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/form-data not supported");
-
         UploadDetails details;
         if ( action.isTransactional() )
             details = triplesPutPostTxn(action, overwrite);
         else
             details = triplesPutPostNonTxn(action, overwrite);
-
         ServletOps.uploadResponse(action, details);
     }
 

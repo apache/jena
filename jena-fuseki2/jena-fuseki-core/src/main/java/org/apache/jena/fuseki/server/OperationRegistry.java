@@ -43,7 +43,7 @@ public class OperationRegistry {
     // Standard, non-graph-level access control versions.
     private static final ActionService queryServlet    = new SPARQL_QueryDataset();
     private static final ActionService updateServlet   = new SPARQL_Update();
-    private static final ActionService uploadServlet   = new HTML_FileUpload();
+    private static final ActionService uploadServlet   = new UploadRDF();
     private static final ActionService gspServlet_R    = new GSP_R();
     private static final ActionService gspServlet_RW   = new GSP_RW();
     private static final ActionService noOperation     = new NoOpActionService();
