@@ -32,6 +32,7 @@ import org.junit.runners.Suite;
     , TestServiceFunctions.class
     , TestService.class
     , TestServiceAuth.class
+    , TestSetupHTTP.class
 })
 
 public class TS_SparqlExecHttp { }

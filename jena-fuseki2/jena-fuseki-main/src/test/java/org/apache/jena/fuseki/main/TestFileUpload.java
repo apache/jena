@@ -30,6 +30,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.exec.http.DSP;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.web.FileSender;
@@ -89,7 +90,7 @@ public class TestFileUpload  extends AbstractFusekiTest {
         int sc = x.send("POST");
         assertEquals(HttpSC.OK_200, sc);
 
-        DatasetGraph dsg = GSP.service(databaseURL()).getDataset();
+        DatasetGraph dsg = DSP.service(databaseURL()).GET();
         long c = Iter.count(dsg.find());
         assertEquals(3, c);
     }
@@ -102,7 +103,7 @@ public class TestFileUpload  extends AbstractFusekiTest {
         int sc = x.send("POST");
         assertEquals(HttpSC.OK_200, sc);
 
-        DatasetGraph dsg = GSP.service(databaseURL()).getDataset();
+        DatasetGraph dsg = DSP.service(databaseURL()).GET();
         assertEquals(1, dsg.getDefaultGraph().size());
         assertEquals(2, dsg.getUnionGraph().size());
     }

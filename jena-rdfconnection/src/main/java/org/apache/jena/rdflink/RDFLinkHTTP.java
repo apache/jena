@@ -468,11 +468,25 @@ public class RDFLinkHTTP implements RDFLink {
     }
 
     private GSP gspRequest() {
-        return GSP.service(svcGraphStore).httpClient(httpClient);
+        GSP gsp = GSP.service(svcGraphStore);
+        if ( httpClient != null )
+            gsp.httpClient(httpClient);
+        if ( outputTriples != null )
+            gsp.contentType(outputTriples);
+        if ( acceptGraph != null )
+            gsp.acceptHeader(acceptGraph);
+        return gsp;
     }
 
     private DSP dspRequest() {
-        return DSP.service(svcGraphStore).httpClient(httpClient);
+        DSP dsp = DSP.service(svcGraphStore);
+        if ( httpClient != null )
+            dsp.httpClient(httpClient);
+        if ( outputQuads != null )
+            dsp.contentType(outputQuads);
+        if ( acceptDataset != null )
+            dsp.acceptHeader(acceptDataset);
+        return dsp;
     }
 
     @Override

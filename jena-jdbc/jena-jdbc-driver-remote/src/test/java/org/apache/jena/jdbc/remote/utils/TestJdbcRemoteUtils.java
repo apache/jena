@@ -26,6 +26,7 @@ import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.sparql.exec.http.DSP;
 import org.apache.jena.sparql.exec.http.GSP;
 
 /**
@@ -59,7 +60,7 @@ public class TestJdbcRemoteUtils {
     public static void copyToRemoteDataset(Dataset source, String service, HttpClient client) {
         if ( client == null )
             client = HttpEnv.getDftHttpClient();
-        GSP.service(service).dataset().httpClient(client).putDataset(source.asDatasetGraph());
+        DSP.service(service).httpClient(client).PUT(source.asDatasetGraph());
     }
 
     // Code extracted from DatasetGraphAccessorHTTP so Apache Http Client still works.

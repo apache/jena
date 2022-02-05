@@ -22,7 +22,7 @@ import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkFactory;
 import org.apache.jena.rdflink.RDFLinkFuseki;
 
-public class TestRDFLinkFuseki extends TestRDFLinkRemote {
+public class TestRDFLinkFuseki extends TestRDFLinkHTTP {
     @Override
     protected RDFLink link() {
         return RDFLinkFactory.connectFuseki("http://localhost:"+PORT+"/ds");

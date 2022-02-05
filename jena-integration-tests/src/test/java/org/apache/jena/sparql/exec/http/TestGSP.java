@@ -63,6 +63,11 @@ public class TestGSP {
         EnvTest.stop(env);
     }
 
+    // TESTS:
+    // Change RDFFormat.
+    // Chnage httpClient
+    // And DSP.
+
     private static Graph graph1 = SSE.parseGraph("(graph (:s :p :x) (:s :p 1))");
     private static Graph graph2 = SSE.parseGraph("(graph (:s :p :x) (:s :p 2))");
 

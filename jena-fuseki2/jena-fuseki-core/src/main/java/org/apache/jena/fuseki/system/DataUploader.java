@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.system;
 
 import static java.lang.String.format;
 import static org.apache.jena.riot.WebContent.ctMultipartFormData;
+import static org.apache.jena.riot.WebContent.ctMultipartMixed;
 import static org.apache.jena.riot.WebContent.ctTextPlain;
 import static org.apache.jena.riot.WebContent.matchContentType;
 
@@ -31,28 +32,36 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.jena.atlas.web.ContentType;
-import org.apache.jena.fuseki.server.Operation;
-import org.apache.jena.fuseki.servlets.ActionErrorException;
-import org.apache.jena.fuseki.servlets.ActionLib;
-import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.irix.IRIException;
-import org.apache.jena.irix.IRIx;
+import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.lang.StreamRDFCounting;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
-import org.apache.jena.riot.web.HttpNames;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
 
-public class Upload {
+/**
+ * Functions to load data to a StreamRDF.
+ * <p>
+ * This is used for {@link GSP_RW Graph Store Protocol PUT/POST},
+ * including the extension to dataset (quads) loads
+ * and also {@link UploadRDF} the direct upload service.
+ * @see UploadRDF
+ */
+public class DataUploader {
 
-    /** Parse the body contents to the {@link StreamRDF}.
-     *  This function is used by GSP_RW.
-     *  @throws RiotParseException
+    /**
+     * Parse the body contents to the {@link StreamRDF}.
+     * <p>
+     * This function is used by {@link GSP_RW} and {@link UploadRDF}.
+     * <p>
+     * This function assumes it is inside a transaction.
+     * <p>
+     * Supports Content-Type, with data in the body, as well as
+     * {@code multipart/mixed} (<a href="https://tools.ietf.org/html/rfc204">RFC 2046</a>) and
+     * {@code multipart/form-data} (<a href="https://tools.ietf.org/html/rfc1867">RFC 1867</a>)
+     * with a file part.
+     * @throws RiotParseException
      */
     public static UploadDetails incomingData(HttpAction action, StreamRDF dest) {
         ContentType ct = ActionLib.getContentType(action);
@@ -62,11 +71,12 @@ public class Upload {
             return null;
         }
 
-        if ( matchContentType(ctMultipartFormData, ct) ) {
-            return fileUploadWorker(action, dest);
+        if ( matchContentType(ctMultipartFormData, ct) || matchContentType(ctMultipartMixed, ct) ) {
+            // multipart
+            return fileUploadMultipart(action, dest);
         }
-        // Single graph (or quads) in body.
 
+        // Single graph or quads in body.
         String base = ActionLib.wholeRequestURL(action.getRequest());
         Lang lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
         if ( lang == null ) {
@@ -93,12 +103,16 @@ public class Upload {
     }
 
     /**
-     * Process an HTTP upload of RDF files (triples or quads) in an HTML multipart
-     * form (Content-type "multipart/form-data"). Stream straight into the
-     * destination graph or dataset.
+     * Process an HTTP upload of RDF files (triples or quads) with content type
+     * "multipart/form-data" or "multipart/mixed".
+     * <p>
+     * Form data (content-disposition: form-data; name="...") is rejected.
+     * <p>
+     * Data is streamed straight into the destination graph or dataset.
+     * <p>
+     * This function assumes it is inside a transaction.
      */
-
-    public static UploadDetails fileUploadWorker(HttpAction action, StreamRDF dest) {
+    private static UploadDetails fileUploadMultipart(HttpAction action, StreamRDF dest) {
         String base = ActionLib.wholeRequestURL(action.getRequest());
         ServletFileUpload upload = new ServletFileUpload();
         StreamRDFCounting countingDest =  StreamRDFLib.count(dest);
@@ -108,28 +122,28 @@ public class Upload {
             while (iter.hasNext()) {
                 FileItemStream fileStream = iter.next();
                 if (fileStream.isFormField()) {
-                    // Ignore?
+                    // Form field - this code only supports multipart file upload.
                     String fieldName = fileStream.getFieldName();
                     InputStream stream = fileStream.openStream();
                     String value = Streams.asString(stream, "UTF-8");
                     // This code is currently used to put multiple files into a single destination.
                     // Additional field/values do not make sense.
-                    ServletOps.errorBadRequest(format("Only files accepted in multipart file upload (got %s=%s)",fieldName, value));
+                    ServletOps.errorBadRequest(format("Only files accepted in multipart file upload (got %s=%s)", fieldName, value));
                     // errorBadRequest does not return.
                     return null;
                 }
-                //Ignore the field name.
-                //String fieldName = fileStream.getFieldName();
 
                 InputStream input = fileStream.openStream();
-                // Process the input stream
+                // Content-Type:
                 String contentTypeHeader = fileStream.getContentType();
                 ContentType ct = ContentType.create(contentTypeHeader);
+
                 Lang lang = null;
                 if ( ! matchContentType(ctTextPlain, ct) )
                     lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
 
                 if ( lang == null ) {
+                    // Not a recognized Content-Type. Look at file extension.
                     String name = fileStream.getName();
                     if ( name == null || name.equals("") )
                         ServletOps.errorBadRequest("No name for content - can't determine RDF syntax");
@@ -151,11 +165,11 @@ public class Upload {
                     ActionLib.parse(action, countingDest2, input, lang, base);
                     UploadDetails details1 = new UploadDetails(countingDest2.count(), countingDest2.countTriples(),countingDest2.countQuads());
                     action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %s",
-                                           action.id, printfilename,  ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
+                                           action.id, printfilename, ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
                                            details1.detailsStr()));
                 } catch (RiotParseException ex) {
                     action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %s",
-                                           action.id, printfilename,  ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
+                                           action.id, printfilename, ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
                                            ex.getMessage()));
                     ActionLib.consumeBody(action);
                     throw ex;
@@ -167,106 +181,6 @@ public class Upload {
         // Overall results.
         UploadDetails details = new UploadDetails(countingDest.count(), countingDest.countTriples(),countingDest.countQuads());
         return details;
-    }
-
-    // TODO Merge/replace with Upload.fileUploadWorker
-    // This code sets the StreamRDF destination during processing and can handle multiple
-    // files to multiple destinations for example, graphs within a dataset.
-    // The only functional difference is the single destination (fileUploadWorker) and
-    // switching on graph name (multipartUploadWorker).
-
-    /**
-     * Process an HTTP file upload of RDF using the name field for the graph name destination.
-     * This function is used by SPARQL_Upload for {@link Operation#Upload}.
-     */
-    public static UploadDetailsWithName multipartUploadWorker(HttpAction action, String base) {
-        DatasetGraph dsgTmp = DatasetGraphFactory.create();
-        ServletFileUpload upload = new ServletFileUpload();
-        String graphName = null;
-        boolean isQuads = false;
-        long count = -1;
-
-        String name = null;
-        ContentType ct = null;
-        Lang lang = null;
-
-        try {
-            FileItemIterator iter = upload.getItemIterator(action.getRequest());
-            while (iter.hasNext()) {
-                FileItemStream item = iter.next();
-                String fieldName = item.getFieldName();
-                InputStream input = item.openStream();
-                if ( item.isFormField() ) {
-                    // Graph name.
-                    String value = Streams.asString(input, "UTF-8");
-                    if ( fieldName.equals(HttpNames.paramGraph) ) {
-                        graphName = value;
-                        if ( graphName != null && !graphName.equals("") && !graphName.equals(HttpNames.graphTargetDefault) ) {
-                            // -- Check IRI with additional checks.
-                            try {
-                                IRIx iri = IRIx.create(value);
-                                if ( ! iri.isReference() )
-                                    ServletOps.errorBadRequest("IRI not suitable: " + graphName);
-                            } catch (IRIException ex) {
-                                ServletOps.errorBadRequest("Bad IRI: " + graphName);
-                            }
-                            // End check IRI
-                        }
-                    } else if ( fieldName.equals(HttpNames.paramDefaultGraphURI) )
-                        graphName = null;
-                    else
-                        // Add file type?
-                        action.log.info(format("[%d] Upload: Field=%s ignored", action.id, fieldName));
-                } else {
-                    // Process the input stream
-                    name = item.getName();
-                    if ( name == null || name.equals("") || name.equals("UNSET FILE NAME") )
-                        ServletOps.errorBadRequest("No name for content - can't determine RDF syntax");
-
-                    String contentTypeHeader = item.getContentType();
-                    ct = ContentType.create(contentTypeHeader);
-
-                    lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
-                    if ( lang == null ) {
-                        lang = RDFLanguages.pathnameToLang(name);
-
-                        // JENA-600 filenameToLang() strips off certain
-                        // extensions such as .gz and
-                        // we need to ensure that if there was a .gz extension
-                        // present we wrap the stream accordingly
-                        if ( name.endsWith(".gz") )
-                            input = new GZIPInputStream(input);
-                    }
-
-                    if ( lang == null )
-                        // Desperate.
-                        lang = RDFLanguages.RDFXML;
-
-                    isQuads = RDFLanguages.isQuads(lang);
-
-                    action.log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", action.id, name,
-                                           ct.getContentTypeStr(), ct.getCharset(), lang.getName()));
-
-                    StreamRDF x = StreamRDFLib.dataset(dsgTmp);
-                    StreamRDFCounting dest = StreamRDFLib.count(x);
-                    try {
-                        ActionLib.parse(action, dest, input, lang, base);
-                    } catch (RiotParseException ex) {
-                        ActionLib.consumeBody(action);
-                        ServletOps.errorParseError(ex);
-                    }
-                    count = dest.count();
-                }
-            }
-
-            if ( graphName == null || graphName.equals("") )
-                graphName = HttpNames.graphTargetDefault;
-            if ( isQuads )
-                graphName = null;
-            return new UploadDetailsWithName(graphName, dsgTmp, count);
-        }
-        catch (ActionErrorException ex) { throw ex; }
-        catch (Exception ex)            { ServletOps.errorOccurred(ex); return null; }
     }
 }
 
