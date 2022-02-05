@@ -59,7 +59,9 @@ public class ResultSetWriterTSV implements ResultSetWriter {
     }
 
     @Override
-    public void write(OutputStream out, boolean result, Context context) {}
+    public void write(OutputStream out, boolean result, Context context) {
+        output(IO.wrapUTF8(out), result);
+    }
 
     private static void output(AWriter out, boolean booleanResult) {
             out.write(headerBytes);
