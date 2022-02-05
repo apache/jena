@@ -48,8 +48,13 @@ class FusekiService {
    * @return {string} a new route URL that includes any pathname in the URL
    */
   getFusekiUrl (url) {
-    // modified version from: https://stackoverflow.com/a/24381515
-    return `${this.pathname}/${url}`.replace(/(\/)\/+/g, '$1')
+    // remove leading `/`'s
+    let normalizedUrl = url
+    while (normalizedUrl.startsWith('/') && normalizedUrl.length > 0) {
+      normalizedUrl = normalizedUrl.slice(1)
+    }
+    const pathname = this.pathname.endsWith('/') ? this.pathname : `${this.pathname}/`
+    return `${pathname}${normalizedUrl}`
   }
 
   async getServerData () {

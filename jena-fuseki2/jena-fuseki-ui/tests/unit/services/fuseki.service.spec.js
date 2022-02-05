@@ -314,4 +314,48 @@ describe('FusekiService', () => {
     expect(stub.called).to.equal(true)
     stub.restore()
   })
+  it('creates a valid URL when using a URL graph name', () => {
+    // pathname is managed by the browser, we don't need to test if it has
+    // multiple `/`'s... in case it does, the only way to call this code
+    // is if the server accepted the URL like that, so it should be OK to
+    // keep using it as it is.
+    const tests = [
+      {
+        pathname: '/',
+        url: '/ds/data?graph=http://example.com',
+        expected: '/ds/data?graph=http://example.com'
+      },
+      {
+        pathname: '/',
+        url: '//ds/data?graph=http://example.com',
+        expected: '/ds/data?graph=http://example.com'
+      },
+      {
+        pathname: '',
+        url: '//ds/data?graph=http://example.com',
+        expected: '/ds/data?graph=http://example.com'
+      },
+      {
+        pathname: '',
+        url: '',
+        expected: '/'
+      },
+      {
+        pathname: '/',
+        url: '/ds/data?graph=',
+        expected: '/ds/data?graph='
+      },
+      {
+        pathname: '/',
+        url: '/ds/data?graph=default',
+        expected: '/ds/data?graph=default'
+      }
+    ]
+    const originalPathname = fusekiService.pathname
+    for (const test of tests) {
+      fusekiService.pathname = test.pathname
+      expect(fusekiService.getFusekiUrl(test.url)).to.equal(test.expected)
+    }
+    fusekiService.pathname = originalPathname
+  })
 })
