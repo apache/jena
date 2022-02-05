@@ -35,11 +35,17 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.Context;
 
-/** Core engine for output of triples / quads that is streaming.
- *  Handles prefixes and base, together with the environment for processing.
- *  If fed quads, the output is valid TriG.
- *  If fed only triples, the output is valid Turtle.
- *  Not for N-Quads and N-triples.
+/**
+ * Core engine for output of triples / quads that is streaming. It covers Turtle and
+ * TriG "{@link WriterStreamRDFFlat flat}" and "{@link WriterStreamRDFBlocks blocks}"
+ * variants.
+ * <p>
+ * It handles prefixes and base and node formats which is controlled by a {@link NodeFormatterTTL}.
+ * <p>
+ * The output is valid TriG.<br/>
+ * If fed only triples, the output is valid Turtle.
+ * <p>
+ * For N-Quads and N-triples use {@link WriterStreamRDFPlain}.
  */
 
 public abstract class WriterStreamRDFBase implements StreamRDF
@@ -56,33 +62,43 @@ public abstract class WriterStreamRDFBase implements StreamRDF
     protected NodeFormatterTTL fmt ;
     protected final IndentedWriter out ;
     protected final DirectiveStyle prefixStyle;
+    // Allows for ability to write RDF without writing the base URI.
     protected final boolean printBase;
     // Is there an active prefix mapping for the RDF namespace.
     protected int countPrefixesForRDF = 0;
 
-    public WriterStreamRDFBase(OutputStream output, Context context) {
+    protected WriterStreamRDFBase(OutputStream output, Context context) {
         this(new IndentedWriter(output), context) ;
     }
 
-    public WriterStreamRDFBase(Writer output, Context context) {
+    protected WriterStreamRDFBase(Writer output, Context context) {
         this(wrap(output), context);
     }
 
-    public WriterStreamRDFBase(IndentedWriter output, Context context) {
-        out = output ;
-        pMap = PrefixMapFactory.create() ;
-        nodeToLabel = NodeToLabel.createScopeByDocument() ;
+    protected WriterStreamRDFBase(IndentedWriter output, Context context) {
+        this(output,
+             NodeToLabel.createScopeByDocument(),
+             WriterLib.directiveStyle(context),
+             context.isFalseOrUndef(RIOT.symTurtleOmitBase));
+    }
 
+    protected WriterStreamRDFBase(IndentedWriter output,
+                                  NodeToLabel nodeToLabel,
+                                  DirectiveStyle prefixStyle,
+                                  boolean printBase) {
         // Stream writing does not take an external base URI from the API "write"
         // call. The base URI is output if StreamRDF.base() called, which means BASE
         // was in the data stream.
-        baseURI = null ;
-        prefixStyle = WriterLib.directiveStyle(context);
-        printBase =
-            ( context == null ) ? true : context.isFalseOrUndef(RIOT.symTurtleOmitBase);
+        this.out = output ;
+        this.baseURI = null ;
+        this.pMap = PrefixMapFactory.create() ;
+        this.nodeToLabel = nodeToLabel ;
+        this.prefixStyle = prefixStyle;
+        this.printBase = printBase;
         setFormatter() ;
     }
 
+    // Set and reset the formatter. It needs resetting if BASE is encountered.
     private void setFormatter() {
         fmt = new NodeFormatterTTL(baseURI, pMap, nodeToLabel);
     }

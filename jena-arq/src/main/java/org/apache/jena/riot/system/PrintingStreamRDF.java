@@ -20,29 +20,43 @@ package org.apache.jena.riot.system;
 
 import java.io.OutputStream ;
 
-import org.apache.jena.atlas.io.AWriter ;
-import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.riot.out.NodeFormatterTTL;
+import org.apache.jena.riot.writer.WriterStreamRDFPlain;
 
-/** Primarily for debugging */
-public class PrintingStreamRDF extends WriterStreamRDFPlain //implements StreamRDF
+/**
+ * A StreamRDF which displays the items sent to the stream. It is primarily for
+ * development purposes.
+ * <p>
+ * The output is not a legal syntax. Do not consider this
+ * format to be stable. It is "N-Quads with abbreviations".
+ * <p>
+ * Use via
+ * <pre>
+ * StreamRDFLib.print(System.out);
+ * </pre>
+ */
+public class PrintingStreamRDF extends WriterStreamRDFPlain
 {
+    private PrefixMap prefixMap = PrefixMapFactory.create();
+    private NodeFormatter pretty =  new NodeFormatterTTL(null, prefixMap);
+
     public PrintingStreamRDF(OutputStream out) {
-        super(init(out)) ;
+        super(IO.wrapUTF8(out));
     }
 
-    private static AWriter init(OutputStream out) {
-        IndentedWriter output = new IndentedWriter(out);
-        output.setFlushOnNewline(true);
-        return output;
-    }
+    @Override
+    protected NodeFormatter getFmt() { return pretty; }
 
     @Override
     public void base(String base) {
         out.print("BASE") ;
         out.print("    ") ;
-        nodeFmt.formatURI(out, base);
+        getFmt().formatURI(out, base);
         out.println();
+        // Reset the formatter because of the new base URI.
+        pretty = new NodeFormatterTTL(base, prefixMap);
     }
 
     @Override
@@ -51,7 +65,8 @@ public class PrintingStreamRDF extends WriterStreamRDFPlain //implements StreamR
         out.print("  ") ;
         out.print(prefix) ;
         out.print(":  ") ;
-        nodeFmt.formatURI(out, iri);
+        getFmt().formatURI(out, iri);
         out.println();
+        prefixMap.add(prefix, iri);
     }
 }

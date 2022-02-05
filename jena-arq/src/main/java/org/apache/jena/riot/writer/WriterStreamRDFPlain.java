@@ -38,7 +38,7 @@ public class WriterStreamRDFPlain implements StreamRDF {
     // appearance of the Nodes themselves.
 
     protected final AWriter       out ;
-    protected final NodeFormatter nodeFmt ;
+    private final NodeFormatter   nodeFmt ;
 
     /**
      * Output tuples, using UTF8 output See {@link StreamRDFLib#writer} for
@@ -49,13 +49,22 @@ public class WriterStreamRDFPlain implements StreamRDF {
     }
 
     /**
-     * Output tuples, choosing ASCII or UTF8 See
-     * {@link StreamRDFLib#writer} for ways to create a AWriter object.
+     * Output tuples, choosing ASCII or UTF8.
+     * See {@link StreamRDFLib#writer} for ways to create a AWriter object.
      */
     public WriterStreamRDFPlain(AWriter w, CharSpace charSpace) {
-        out = w ;
-        nodeFmt = new NodeFormatterNT(charSpace) ;
+        this(w, new NodeFormatterNT(charSpace)) ;
     }
+
+    /**
+     * Output tuples using a specific {@link NodeFormatter}.
+     */
+    public WriterStreamRDFPlain(AWriter w, NodeFormatter nodeFmt) {
+        this.out = w;
+        this.nodeFmt = nodeFmt;
+    }
+
+    protected NodeFormatter getFmt() { return nodeFmt; }
 
     @Override
     public void start() {}
@@ -99,8 +108,8 @@ public class WriterStreamRDFPlain implements StreamRDF {
         out.print(" .\n") ;
     }
 
-    private void format(Node n) {
-        nodeFmt.format(out, n) ;
+    protected void format(Node n) {
+        getFmt().format(out, n) ;
     }
 
     @Override
