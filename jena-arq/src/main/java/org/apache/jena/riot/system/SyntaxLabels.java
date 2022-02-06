@@ -21,13 +21,15 @@ package org.apache.jena.riot.system;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.out.NodeToLabel ;
 
-/** Factory for default policies for syntax labels to and from nodes
+/**
+ * Factory for default policies for syntax labels to and from nodes.
  * For label to node (parsing) we use a scalable hashing scheme (MD5 of a seed and the label)
  * <p>
  * For node to label (pretty labels output), we use a unique tracking scheme.
  * Fully scalable writers use different polices and don't have short, pretty bNode labels.
  * <p>
- * These should be used pairs:<pre>
+ * These should be used pairs:
+ * <pre>
  *     createNodeToLabel , createLabelToNode
  *     createNodeToLabelRT , createLabelToNodeRT
  *     createNodeToLabelAsGiven , createLabelToNodeAsGiven

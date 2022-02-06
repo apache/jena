@@ -23,18 +23,23 @@ import org.apache.jena.graph.Node;
 /** Interface to allocators for blank nodes. */
 public interface BlankNodeAllocator
 {
-    /** Allocate based on a non-null label.
-     * Calling this twice, with the same label will generate equivalent nodes
-     * but they may not be identical (i.e they are .equals but may not be ==) 
+    /**
+     * Allocate based on a non-null label. Calling this twice, with the same label
+     * will generate equivalent nodes but they may not be identical (i.e they are
+     * .equals but may not be ==)
      */
     public Node alloc(String label);
-    
-    /** Create a fresh blank node, different from anything generated so far.
-     *  Will not clash with a node allocated by {@link #alloc}
+
+    /**
+     * Create a fresh blank node, different from anything generated so far. Will not
+     * clash with a node allocated by {@link #alloc}
      */
     public Node create();
-    
-    /** Reset allocation state - calls to {@link #alloc} or {@link #create} */    
+
+    /**
+     * Reset allocation state - calls to {@link #alloc} will return a different blank node
+     * for a label than the one returned before the reset.
+     */
     public void reset();
 }
 

@@ -192,8 +192,6 @@ public class NodeFmtLib
         return sj.toString();
     }
 
-
-
     // ---- Blank node labels.
 
     // Strict N-triples only allows [A-Za-z][A-Za-z0-9]
