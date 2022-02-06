@@ -27,19 +27,20 @@ import java.io.ByteArrayOutputStream;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.resultset.ResultSetWriter;
+import org.apache.jena.riot.resultset.ResultSetWriterRegistry;
 import org.junit.Test;
 
 public class TestResultSetWriterTSV {
 
     @Test
     public void testFactory() {
-        ResultSetWriter writer = ResultSetWriterTSV.factory.create(Lang.TSV);
+        ResultSetWriter writer = ResultSetWriterRegistry.getFactory(Lang.TSV).create(Lang.TSV);
         assertNotNull(writer);
     }
 
     @Test
     public void testWriteBoolean() {
-        ResultSetWriter writer = ResultSetWriterTSV.factory.create(Lang.TSV);
+        ResultSetWriter writer = ResultSetWriterRegistry.getFactory(Lang.TSV).create(Lang.TSV);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writer.write(out, true, null);
         String output = out.toString(UTF_8);

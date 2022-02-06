@@ -27,19 +27,20 @@ import java.io.ByteArrayOutputStream;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.resultset.ResultSetWriter;
+import org.apache.jena.riot.resultset.ResultSetWriterRegistry;
 import org.junit.Test;
 
 public class TestResultSetWriterCSV {
 
     @Test
     public void testFactory() {
-        ResultSetWriter writer = ResultSetWriterCSV.factory.create(Lang.CSV);
+        ResultSetWriter writer = ResultSetWriterRegistry.getFactory(Lang.CSV).create(Lang.CSV);
         assertNotNull(writer);
     }
 
     @Test
     public void testWriteBoolean() {
-        ResultSetWriter writer = ResultSetWriterCSV.factory.create(Lang.CSV);
+        ResultSetWriter writer = ResultSetWriterRegistry.getFactory(Lang.CSV).create(Lang.CSV);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writer.write(out, true, null);
         String output = out.toString(UTF_8);

@@ -28,7 +28,6 @@ import java.util.Objects ;
 
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.resultset.rw.*;
 import org.apache.jena.riot.rowset.RowSetReader;
 import org.apache.jena.riot.rowset.RowSetReaderFactory;
 import org.apache.jena.riot.rowset.RowSetReaderRegistry;
@@ -61,7 +60,7 @@ public class ResultSetReaderRegistry {
     private static Map<Lang, ResultSetReaderFactory> registry = new HashMap<>() ;
 
     private static boolean initialized = false ;
-    @SuppressWarnings("deprecation")
+
     public static void init() {
         if ( initialized )
             return ;
@@ -77,16 +76,6 @@ public class ResultSetReaderRegistry {
         register(RS_None,     factory) ;
         register(RS_Thrift,   factory) ;
         register(RS_Protobuf, factory) ;
-
-        // Deprecated!
-        if ( false ) {
-            // Delete when these go away
-            register(RS_XML,    ResultSetReaderXML.factory) ;
-            register(RS_JSON,   ResultSetReaderJSON.factory) ;
-            register(RS_Thrift, ResultSetReaderThrift.factory) ;
-            register(RS_CSV,    ResultSetReaderCSV.factory) ;
-            register(RS_TSV,    ResultSetReaderTSV.factory) ;
-        }
     }
 
     private static class ResultSetReaderAdapter implements ResultSetReader {

@@ -39,7 +39,7 @@ import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.resultset.ResultSetLang;
-import org.apache.jena.riot.resultset.rw.ResultSetWriterXML;
+import org.apache.jena.riot.rowset.rw.RowSetWriterXML;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.ARQException ;
@@ -379,7 +379,7 @@ public class ResultSetFormatter {
     static public void outputAsXML(OutputStream outStream, ResultSet qresults, String stylesheet) {
         ResultsWriter.Builder b = ResultsWriter.create().lang(ResultSetLang.RS_XML);
         if ( stylesheet != null )
-            b.set(ResultSetWriterXML.xmlStylesheet, stylesheet);
+            b.set(RowSetWriterXML.xmlStylesheet, stylesheet);
         b.write(outStream, qresults);
     }
 
@@ -420,7 +420,7 @@ public class ResultSetFormatter {
     public static void outputAsXML(OutputStream outStream, boolean booleanResult, String stylesheet) {
         ResultsWriter.Builder b = ResultsWriter.create().lang(ResultSetLang.RS_XML);
         if ( stylesheet != null )
-            b.set(ResultSetWriterXML.xmlStylesheet, stylesheet);
+            b.set(RowSetWriterXML.xmlStylesheet, stylesheet);
         b.write(outStream, booleanResult);
     }
 
