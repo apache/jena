@@ -63,12 +63,16 @@ public class ResultSetWriterCSV implements ResultSetWriter {
     }
 
     private static void output(AWriter out, boolean booleanResult) {
-        out.write(headerBytes);
-        if ( booleanResult )
-            out.write(yesBytes);
-        else
-            out.write(noBytes);
-        out.write(NL);
+        try {
+            out.write(headerBytes);
+            if ( booleanResult )
+                out.write(yesBytes);
+            else
+                out.write(noBytes);
+            out.write(NL);
+        } finally {
+            out.flush();
+        }
     }
 
     private static void output(AWriter out, ResultSet resultSet) {
