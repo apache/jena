@@ -18,25 +18,29 @@
 
 package org.apache.jena.riot.lang;
 
+import static java.lang.String.format;
+
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.out.NodeToLabel;
 
-/** Allocate blank nodes according to the label given.
- *  The reverse operation is {@link NodeToLabel#createBNodeByLabelAsGiven()}
- *  but it is unsafe in general.
- *
- *  Use {@link BlankNodeAllocatorLabelEncoded} and {@link NodeToLabel#createBNodeByLabelEncoded()}
- *  for round-tripping output-input.
+/**
+ * Allocate blank nodes according a counter.
+ * <p>
+ * This can be used to track blank nodes by encounter order in a parser.
+ * <p>
+ * Use {@link NodeToLabel#createBNodeByLabelEncoded()} to recover the increment.
+ * <p>
+ * Use {@link BlankNodeAllocatorLabelEncoded} and {@link NodeToLabel#createBNodeByLabelEncoded()}
+ * for round-trip of labels used in the original data input.
  */
-
-public class BlankNodeAllocatorLabel implements BlankNodeAllocator
+public class BlankNodeAllocatorCounter implements BlankNodeAllocator
 {
     private AtomicLong counter = new AtomicLong(0);
 
-    public BlankNodeAllocatorLabel()  {}
+    public BlankNodeAllocatorCounter()  {}
 
     @Override
     public void reset()         { counter = new AtomicLong(0); }
@@ -47,7 +51,7 @@ public class BlankNodeAllocatorLabel implements BlankNodeAllocator
     @Override
     public Node create() {
         long x = counter.getAndIncrement();
-        Node n = create("@" + x);
+        Node n = create(format("%04d", x));
         return n;
     }
 

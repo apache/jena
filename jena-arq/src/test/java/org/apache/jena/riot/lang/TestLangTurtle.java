@@ -74,7 +74,6 @@ public class TestLangTurtle
         assertEquals(1, m.size()) ;
     }
 
-
     @Test public void updatePrefixMapping1()
     {
         Model model = ModelFactory.createDefaultModel() ;
