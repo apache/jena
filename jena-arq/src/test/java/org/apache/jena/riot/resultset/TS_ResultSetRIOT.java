@@ -18,12 +18,16 @@
 
 package org.apache.jena.riot.resultset;
 
+import org.apache.jena.riot.resultset.rw.TestResultSetWriterCSV;
+import org.apache.jena.riot.resultset.rw.TestResultSetWriterTSV;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestResultSetIO.class
+    , TestResultSetWriterCSV.class
+    , TestResultSetWriterTSV.class
 })
 
 public class TS_ResultSetRIOT { }
