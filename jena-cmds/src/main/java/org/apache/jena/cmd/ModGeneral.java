@@ -20,8 +20,7 @@ package org.apache.jena.cmd;
 
 public class ModGeneral extends ModBase
 {
-    private Runnable helpFunction = null ;
-
+    private Runnable helpFunction = null;
     public ModGeneral(Runnable helpFunction) { this.helpFunction = helpFunction ; }
     
     // Could be turned into a module but these are convenient as inherited flags 
@@ -30,28 +29,27 @@ public class ModGeneral extends ModBase
     private final ArgDecl argDeclQuiet       = new ArgDecl(false, "q", "quiet");
     private final ArgDecl argDeclDebug       = new ArgDecl(false, "debug");
 
-    protected boolean verbose = false ;
-    protected boolean quiet = false ;
-    public boolean debug = false ;
-    protected boolean help = false ;
-    
+    protected boolean verbose = false;
+    protected boolean quiet = false;
+    public boolean debug = false;
+    protected boolean help = false;
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
-        cmdLine.getUsage().startCategory("General") ;
-        cmdLine.add(argDeclVerbose, "-v   --verbose", "Verbose") ;
-        cmdLine.add(argDeclQuiet, "-q   --quiet", "Run with minimal output") ;
-        cmdLine.add(argDeclDebug, "--debug", "Output information for debugging") ;
-        cmdLine.add(argDeclHelp, "--help", null) ;
+        cmdLine.getUsage().startCategory("General");
+        cmdLine.add(argDeclVerbose, "-v   --verbose", "Verbose");
+        cmdLine.add(argDeclQuiet, "-q   --quiet", "Run with minimal output");
+        cmdLine.add(argDeclDebug, "--debug", "Output information for debugging");
+        cmdLine.add(argDeclHelp, "--help", null);
     }
 
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
-        verbose = cmdLine.contains(argDeclVerbose) || cmdLine.contains(argDeclDebug) ;
-        quiet   = cmdLine.contains(argDeclQuiet) ;
-        help = cmdLine.contains(argDeclHelp) ;
+        verbose = cmdLine.contains(argDeclVerbose) || cmdLine.contains(argDeclDebug);
+        quiet   = cmdLine.contains(argDeclQuiet);
+        help = cmdLine.contains(argDeclHelp);
         if ( help )
-            helpFunction.run() ;
+            helpFunction.run();
     }
 }

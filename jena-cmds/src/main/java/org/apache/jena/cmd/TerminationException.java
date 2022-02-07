@@ -26,7 +26,7 @@ package org.apache.jena.cmd;
 
 public class TerminationException extends CmdException
 {
-    public int returnCode ;
+    public int returnCode;
     public TerminationException(int rc) { super() ; this.returnCode = rc ; }
     public int getCode() { return returnCode ; }
 }

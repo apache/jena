@@ -19,19 +19,16 @@
 package org.apache.jena.cmd;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.lib.Version ;
-
+import org.apache.jena.atlas.lib.Version;
 public class ModVersion extends ModBase
 {
-    protected final ArgDecl versionDecl = new ArgDecl(ArgDecl.NoValue, "version") ;
-    protected boolean version = false ;
-    protected boolean printAndExit = false ;
-    
-    private Version versionMgr = new Version() ; 
-    
+    protected final ArgDecl versionDecl = new ArgDecl(ArgDecl.NoValue, "version");
+    protected boolean version = false;
+    protected boolean printAndExit = false;
+    private Version versionMgr = new Version();
     public ModVersion(boolean printAndExit)
     {
-        this.printAndExit = printAndExit ;
+        this.printAndExit = printAndExit;
     }
     
     public void addClass(Class<?> c) { versionMgr.addClass(c) ; }
@@ -39,17 +36,17 @@ public class ModVersion extends ModBase
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
-        cmdLine.add(versionDecl, "--version", "Version information") ;
+        cmdLine.add(versionDecl, "--version", "Version information");
     }
 
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(versionDecl) )
-            version = true ;
+            version = true;
         // The --version flag causes us to print and exit. 
         if ( version && printAndExit )
-            printVersionAndExit() ;
+            printVersionAndExit();
     }
 
     public boolean getVersionFlag() { return version ; }
@@ -61,7 +58,7 @@ public class ModVersion extends ModBase
      
     public void printVersionAndExit()
     {
-        printVersion() ;
-        System.exit(0) ;
+        printVersion();
+        System.exit(0);
     }
 }

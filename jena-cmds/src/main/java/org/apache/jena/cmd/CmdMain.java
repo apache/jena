@@ -18,10 +18,9 @@
 
 package org.apache.jena.cmd;
 
-import org.apache.jena.atlas.logging.LogCtl ;
-
+import org.apache.jena.atlas.logging.LogCtl;
 /** Adds main()-like methods
- * 
+ *
  * Usage:
  *    new YourCommand(args).mainAndExit()
  *  which never returns and routes thing to System.exit.
@@ -34,24 +33,23 @@ public abstract class CmdMain extends CmdLineArgs
     // Do this very early so it happens before anything else
     // gets a chance to create a logger.
     static { LogCtl.setLogging() ; }
-    
-    public CmdMain(String[] args)
-    {
-        super(args) ;
+
+    public CmdMain(String[] args) {
+        super(args);
     }
 
     /** Run command - exit on failure */
     public void mainRun()
     { mainRun(false, true) ; }
-    
+
     /** Run command - choose whether to exit on failure */
     public void mainRun(boolean exitOnFailure)
     { mainRun(exitOnFailure, true) ; }
-    
+
     /** Run command - exit on success or failure */
     public void mainAndExit()
     { mainRun(true, true) ; }
-     
+
     /** Run command */
     public int mainRun(boolean exitOnSuccess, boolean exitOnFailure)
     {
@@ -59,49 +57,43 @@ public abstract class CmdMain extends CmdLineArgs
         catch (TerminationException ex) { System.exit(ex.getCode()) ; }
         catch (IllegalArgumentException ex)
         {
-            ex.printStackTrace(System.err) ;
-            if ( exitOnFailure ) System.exit(1) ;
-            return 1 ; 
+            ex.printStackTrace(System.err);
+            if ( exitOnFailure ) System.exit(1);
+            return 1;
         }
         catch (CmdException ex)
         {
             if ( ex.getMessage() != null && ex.getMessage().length() > 0 )
-                System.err.println(ex.getMessage()) ;
-            //ex.printStackTrace() ;
-            
+                System.err.println(ex.getMessage());
+            //ex.printStackTrace();
             if ( ex.getCause() != null )
-                ex.getCause().printStackTrace(System.err) ;
-            
-            if ( exitOnFailure ) System.exit(1) ;
-            return 1 ;
+                ex.getCause().printStackTrace(System.err);
+            if ( exitOnFailure ) System.exit(1);
+            return 1;
         }
         catch (Exception ex)
         {
-            ex.printStackTrace(System.err) ;
-            if ( exitOnFailure ) System.exit(2) ;
-            return 2 ;
+            ex.printStackTrace(System.err);
+            if ( exitOnFailure ) System.exit(2);
+            return 2;
         }
-        if ( exitOnSuccess ) 
-            System.exit(0) ;
-        return 0 ;
+        if ( exitOnSuccess )
+            System.exit(0);
+        return 0;
     }
 
-    protected final void mainMethod()
-    {
-        process() ;
-        exec() ;
+    protected final void mainMethod() {
+        process();
+        exec();
     }
-    
-    protected abstract void exec() ;
-    
-    protected abstract String getCommandName() ;
-    
+
+    protected abstract void exec();
+    protected abstract String getCommandName();
     public void cmdError(String msg) { cmdError(msg, true) ;}
-    
-    public void cmdError(String msg, boolean exit)
-    {
-        System.err.println(msg) ;
+
+    public void cmdError(String msg, boolean exit) {
+        System.err.println(msg);
         if ( exit )
-            throw new TerminationException(5) ;
+            throw new TerminationException(5);
     }
 }
