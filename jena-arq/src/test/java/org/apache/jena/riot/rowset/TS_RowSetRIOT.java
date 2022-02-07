@@ -16,15 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.resultset.rw;
+package org.apache.jena.riot.rowset;
 
+import org.apache.jena.riot.rowset.rw.TestRowSetWriterCSV;
+import org.apache.jena.riot.rowset.rw.TestRowSetWriterTSV;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestResultSetWriterCSV.class,
-    TestResultSetWriterTSV.class
+    TestRowSetWriterCSV.class,
+    TestRowSetWriterTSV.class
 })
 
-public class TS_ResultSetRIOT_RW { }
+public class TS_RowSetRIOT { }

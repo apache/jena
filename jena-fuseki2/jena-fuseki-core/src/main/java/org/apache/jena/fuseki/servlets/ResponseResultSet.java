@@ -42,7 +42,7 @@ import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.resultset.ResultSetWriterRegistry;
-import org.apache.jena.riot.resultset.rw.ResultSetWriterXML;
+import org.apache.jena.riot.rowset.rw.RowSetWriterXML;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.resultset.ResultsWriter;
 import org.apache.jena.sparql.util.Context;
@@ -162,7 +162,7 @@ public class ResponseResultSet
         if ( Objects.equals(serializationType, contentTypeResultsXML) ) {
             charset = null;
             if ( stylesheetURL != null )
-                cxt.set(ResultSetWriterXML.xmlStylesheet, stylesheetURL);
+                cxt.set(RowSetWriterXML.xmlStylesheet, stylesheetURL);
         }
         if ( Objects.equals(serializationType, contentTypeResultsJSON) ) {
             jsonCallback = ResponseOps.paramCallback(action.getRequest());

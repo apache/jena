@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.resultset.rw.*;
 import org.apache.jena.riot.rowset.RowSetWriter;
 import org.apache.jena.riot.rowset.RowSetWriterFactory;
 import org.apache.jena.riot.rowset.RowSetWriterRegistry;
@@ -75,17 +74,6 @@ public class ResultSetWriterRegistry {
         register(RS_Thrift,   factory) ;
         register(RS_Protobuf, factory) ;
         register(RS_None,     factory) ;
-
-        if ( false ) {
-            // Delete this code when the resultSetWriters are removed
-            register(RS_XML,    ResultSetWriterXML.factory) ;
-            register(RS_JSON,   ResultSetWriterJSON.factory) ;
-            register(RS_Thrift, ResultSetWriterThrift.factory) ;
-            register(RS_CSV,    ResultSetWriterCSV.factory) ;
-            register(RS_TSV,    ResultSetWriterTSV.factory) ;
-            register(RS_Text,   ResultSetWriterText.factory) ;
-            register(RS_None,   ResultSetWriterNone.factory) ;
-        }
     }
 
     private static class ResultSetWriterAdapter implements ResultSetWriter {
