@@ -83,12 +83,6 @@ public class CommandLineBase {
                 continue;
             }
 
-            // Starts with a "-"
-            // Do not canonicalize positional arguments.
-            if ( !argStr.startsWith("--") ) {
-                argStr = "-" + argStr;
-            }
-
             if ( !splitTerms ) {
                 argList.add(argStr);
                 continue;
