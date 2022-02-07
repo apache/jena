@@ -20,12 +20,10 @@ package org.apache.jena.riot.other;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphUtil;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.*;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
@@ -791,4 +789,29 @@ public class G {
     public static Iter<Quad> triples2quadsDftGraph(Iterator<Triple> iter) {
         return triples2quads(Quad.defaultGraphIRI, iter);
     }
+
+    /**
+     * Execute a graph transaction if the graph supports transactions else apply
+     * without a transaction wrapper.
+     */
+    public static void execTxn(Graph graph, Runnable action) {
+        TransactionHandler th = graph.getTransactionHandler();
+        if ( th.transactionsSupported() )
+            th.execute(action);
+        else
+            action.run();
+    }
+
+    /**
+     * Execute a graph transaction and result result if the graph supports
+     * transactions else execute and return without a transaction wrapper.
+     */
+    public static <X> X calcTxn(Graph graph, Supplier<X> action) {
+        TransactionHandler th = graph.getTransactionHandler();
+        if ( th.transactionsSupported() )
+            return th.calculate(action);
+        else
+            return action.get();
+    }
+
 }
