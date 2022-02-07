@@ -575,16 +575,28 @@ public class FusekiServer {
         }
 
         /**
+         * Get the DataService.Builder, if any, in this builder for the given service name.
+         * <p>
+         * Returns the {@link org.apache.jena.fuseki.server.DataService.Builder DataService.Builder} or null.
+         * <p>
+         * This operation does not return the FusekiServer builder.
+         */
+        public DataService.Builder getDataServiceBuilder(String name) {
+            requireNonNull(name, "name");
+            name = DataAccessPoint.canonical(name);
+            return dataServices.get(name);
+        }
+
+        /**
          * Get the DatasetGraph, if any, being built for a service in this builder.
          * <p>
          * Returns the DatasetGraph or null.
          * <p>
-         * This operation does not return the builder.
+         * This operation does not return the FusekiServer builder.
          */
         public DatasetGraph getDataset(String name) {
             requireNonNull(name, "name");
-            name = DataAccessPoint.canonical(name);
-            DataService.Builder b = dataServices.get(name);
+            DataService.Builder b = getDataServiceBuilder(name);
             if ( b == null )
                 return null;
             return b.dataset();
