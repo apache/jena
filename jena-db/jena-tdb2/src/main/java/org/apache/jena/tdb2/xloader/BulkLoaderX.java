@@ -73,7 +73,7 @@ public class BulkLoaderX {
             return false;
         if ( ! Files.isExecutable(path) )
             throw new TDBException(pathname+" is not executable by this process");
-        return false;
+        return true;
     }
 
     public static Thread async(Runnable action, String threadName) {
