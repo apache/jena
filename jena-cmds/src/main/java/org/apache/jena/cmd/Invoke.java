@@ -18,9 +18,8 @@
 
 package org.apache.jena.cmd;
 
-import java.lang.reflect.InvocationTargetException ;
-import java.lang.reflect.Method ;
-
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 /** Helper code to invoke a main method buy reflection
  *  This means command can be invoked from this module even
  *  if their implementation resides in a module later

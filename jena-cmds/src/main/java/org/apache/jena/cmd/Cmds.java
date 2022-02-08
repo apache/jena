@@ -60,7 +60,7 @@ public class Cmds {
         Consumer<String[]> main = findCmd(cmdName);
         if ( main == null ) {
             System.err.println("Command "+cmdName+" not found");
-            return ;
+            return;
         }
         main.accept(args);
     }

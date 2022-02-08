@@ -20,74 +20,70 @@ package org.apache.jena.cmd;
 
 import static java.util.Arrays.asList;
 
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /** A command line argument specification. */
 public class ArgDecl
 {
-    boolean takesValue ;
-    
-    List<String> names = new ArrayList<>() ;
-	
-    public static final boolean HasValue = true ;
-    public static final boolean NoValue = false ;
+    boolean takesValue;
 
-   /** Create a declaration for a command argument.
-    *
-    * @param hasValue  Does it take a value or not?
-    */
-   public ArgDecl(boolean hasValue)
-   {
-       takesValue = hasValue ;
-   }
+    List<String> names = new ArrayList<>();
 
-   /** Create a declaration for a command argument.
-    *
-    * @param hasValue  Does it take a value or not?
-    * @param names     Names of arguments
-    */
-   public ArgDecl(boolean hasValue, String... names)
-   {
-       this(hasValue) ;
-       asList(names).forEach(this::addName);
-   }
-   
-    public void addName(String name)
-    {
-        name = canonicalForm(name) ;
-        if ( ! names.contains(name))
-            names.add(name) ;
+    public static final boolean HasValue = true;
+    public static final boolean NoValue = false;
+
+    /**
+     * Create a declaration for a command argument.
+     *
+     * @param hasValue Does it take a value or not?
+     */
+    public ArgDecl(boolean hasValue) {
+        takesValue = hasValue;
     }
-    
-    public String getKeyName() { return names.get(0) ; }
-    
-    public List<String> getNames() { return names ; }
-    public Iterator<String> names() { return names.iterator() ; }
-    
-    public boolean takesValue() { return takesValue ; }
-    
-    public boolean matches(Arg a)
-    {
-    	 	String name = a.getName();
-    		return names.stream().anyMatch(name::equals);
+
+    /**
+     * Create a declaration for a command argument.
+     *
+     * @param hasValue Does it take a value or not?
+     * @param names Names of arguments
+     */
+    public ArgDecl(boolean hasValue, String...names) {
+        this(hasValue);
+        asList(names).forEach(this::addName);
     }
-    
-    public boolean matches(String arg)
-    {
-        arg = canonicalForm(arg) ;
-        return names.contains(arg) ;
+
+    public void addName(String name) {
+        name = canonicalForm(name);
+        if ( !names.contains(name) )
+            names.add(name);
     }
-    
-    public static String canonicalForm(String str)
-    {
+
+    public String getKeyName() { return names.get(0); }
+
+    public List<String> getNames() { return names; }
+    public Iterator<String> names() { return names.iterator(); }
+
+    public boolean takesValue() { return takesValue; }
+
+    public boolean matches(Arg a) {
+        String name = a.getName();
+        return names.stream().anyMatch(name::equals);
+    }
+
+    public boolean matches(String arg) {
+        arg = canonicalForm(arg);
+        return names.contains(arg);
+    }
+
+    public static String canonicalForm(String str) {
         if ( str.startsWith("--") )
-            return str.substring(2) ;
-        
+            return str.substring(2);
+
         if ( str.startsWith("-") )
-            return str.substring(1) ;
-        
-        return str ;
+            return str.substring(1);
+
+        return str;
     }
 }

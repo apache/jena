@@ -21,6 +21,6 @@ package org.apache.jena.cmd;
 public interface ArgModule
 {
     // Argument processing phase
-    public void processArgs(CmdArgModule cmdLine) ;
+    public void processArgs(CmdArgModule cmdLine);
 }
 

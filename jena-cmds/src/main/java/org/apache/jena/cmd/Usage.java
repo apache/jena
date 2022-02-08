@@ -18,59 +18,55 @@
 
 package org.apache.jena.cmd;
 
-import java.io.PrintStream ;
-import java.util.ArrayList ;
-import java.util.Collections ;
-import java.util.List ;
-
-import org.apache.jena.atlas.io.IndentedWriter ;
-
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.apache.jena.atlas.io.IndentedWriter;
 public class Usage
 {
     class Category
     {
-        String desc ;
-        List<Entry> entries = new ArrayList<>() ;
+        String desc;
+        List<Entry> entries = new ArrayList<>();
         Category(String desc) { this.desc = desc ; }
     }
     
    class Entry
-   { String arg; String msg ;
+   { String arg; String msg;
      Entry(String arg, String msg) { this.arg = arg ; this.msg = msg ; }
    }
    
-   List<Category> categories = new ArrayList<>() ;
+   List<Category> categories = new ArrayList<>();
    public Usage()
    {
        // Start with an unnamed category
-       startCategory(null) ; 
+       startCategory(null);
    }
    
    public void startCategory(String desc) 
    {
-       categories.add(new Category(desc)) ;
+       categories.add(new Category(desc));
    }
    
    public void addUsage(String argName, String msg)
    {
-       current().entries.add(new Entry(argName, msg)) ;
+       current().entries.add(new Entry(argName, msg));
    }
    
    
    public void output(PrintStream out)
    {
-       output(new IndentedWriter(out)) ;
+       output(new IndentedWriter(out));
    }
    
    public void output(IndentedWriter out)
    {
-       int INDENT1 = 2 ;
-       int INDENT2 = 4 ;
-       out.incIndent(INDENT1) ;
-   
-       List<Category> categories2 = new ArrayList<>(categories) ;
-       Collections.reverse(categories2) ;
-
+       int INDENT1 = 2;
+       int INDENT2 = 4;
+       out.incIndent(INDENT1);
+       List<Category> categories2 = new ArrayList<>(categories);
+       Collections.reverse(categories2);
        for ( Category c : categories2 )
        {
            if ( c.desc != null )
@@ -91,12 +87,12 @@ public class Usage
            }
            out.decIndent( INDENT2 );
        }
-       out.decIndent(INDENT1) ;
-       out.flush() ;
+       out.decIndent(INDENT1);
+       out.flush();
    }
    
    private Category current()
    {
-       return categories.get(categories.size()-1) ;
+       return categories.get(categories.size()-1);
    }
 }

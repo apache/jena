@@ -20,116 +20,103 @@ package org.apache.jena.cmd;
 
 import static java.util.stream.IntStream.range;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Incoming String[] to a list of argument/values + items.
  */
 
 public class CommandLineBase {
-    private List<String> argList    = new ArrayList<>() ;
-    boolean              splitTerms = true ;
+    private List<String> argList = new ArrayList<>();
+    boolean splitTerms = true;
 
     public CommandLineBase(String[] args) {
-        setArgs(args) ;
+        setArgs(args);
     }
 
     public CommandLineBase() {}
 
-    public void setArgs(String[] argv)
-    { argList = processArgv(argv) ; }
+    public void setArgs(String[] argv) {
+        argList = processArgv(argv);
+    }
 
-    protected List<String> getArgList() { return argList ; }
+    protected List<String> getArgList() {
+        return argList;
+    }
 
     protected String getArg(int i) {
         if ( i < 0 || i >= argList.size() )
-            return null ;
-        return argList.get(i) ;
+            return null;
+        return argList.get(i);
     }
 
     protected void apply(ArgProc a) {
-        a.startArgs() ;
+        a.startArgs();
         range(0, argList.size()).forEach(i -> a.arg(argList.get(i), i));
-        a.finishArgs() ;
+        a.finishArgs();
     }
 
-    /** Process String[] to a list of tokens.
-     *  All "=" and ":" terms are split.
-     *  Make -flag/--flag consistent.
+    /**
+     * Process String[] to a list of tokens. All "=" and ":" terms are split. Make
+     * -flag/--flag consistent.
+     *
      * @param argv The words of the command line.
      */
     private List<String> processArgv(String[] argv) {
         // Combine with processedArgs/process?
-        List<String> argList = new ArrayList<>() ;
+        List<String> argList = new ArrayList<>();
 
-        boolean positional = false ;
+        boolean positional = false;
 
-        for ( String anArgv : argv )
-        {
+        for ( String anArgv : argv ) {
             String argStr = anArgv;
 
-            if ( positional || !argStr.startsWith( "-" ) )
-            {
-                argList.add( argStr );
+            if ( positional || !argStr.startsWith("-") ) {
+                argList.add(argStr);
                 continue;
             }
 
-            if ( argStr.equals( "-" ) || argStr.equals( "--" ) )
-            {
+            if ( argStr.equals("-") || argStr.equals("--") ) {
                 positional = true;
-                argList.add( "--" );
+                argList.add("--");
                 continue;
             }
 
-            // Starts with a "-"
-            // Do not canonicalize positional arguments.
-            if ( !argStr.startsWith( "--" ) )
-            {
-                argStr = "-" + argStr;
-            }
-
-            if ( !splitTerms )
-            {
-                argList.add( argStr );
+            if ( !splitTerms ) {
+                argList.add(argStr);
                 continue;
             }
 
             // If the flag has a "=" or :, it is long form --arg=value.
             // Split and insert the arg
-            int j1 = argStr.indexOf( '=' );
-            int j2 = argStr.indexOf( ':' );
+            int j1 = argStr.indexOf('=');
+            int j2 = argStr.indexOf(':');
             int j = -1;
 
-            if ( j1 > 0 && j2 > 0 )
-            {
-                j = Math.min( j1, j2 );
-            }
-            else
-            {
-                if ( j1 > 0 )
-                {
+            if ( j1 > 0 && j2 > 0 ) {
+                j = Math.min(j1, j2);
+            } else {
+                if ( j1 > 0 ) {
                     j = j1;
                 }
-                if ( j2 > 0 )
-                {
+                if ( j2 > 0 ) {
                     j = j2;
                 }
             }
 
-            if ( j < 0 )
-            {
-                argList.add( argStr );
+            if ( j < 0 ) {
+                argList.add(argStr);
                 continue;
             }
 
             // Split it.
-            String argStr1 = argStr.substring( 0, j );
-            String argStr2 = argStr.substring( j + 1 );
+            String argStr1 = argStr.substring(0, j);
+            String argStr2 = argStr.substring(j + 1);
 
-            argList.add( argStr1 );
-            argList.add( argStr2 );
+            argList.add(argStr1);
+            argList.add(argStr2);
         }
-        return argList ;
+        return argList;
     }
 }

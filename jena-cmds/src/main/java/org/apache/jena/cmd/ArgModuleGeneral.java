@@ -21,5 +21,5 @@ package org.apache.jena.cmd;
 public interface ArgModuleGeneral extends ArgModule
 {
     // Registration phase for usage messages
-    public abstract void registerWith(CmdGeneral cmdLine) ;
+    public abstract void registerWith(CmdGeneral cmdLine);
 }
