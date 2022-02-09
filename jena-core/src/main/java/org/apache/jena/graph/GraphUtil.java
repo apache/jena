@@ -30,7 +30,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
 
 /**
-    An ad-hoc collection of useful code for graphs
+ *   An ad-hoc collection of useful code for graphs
  */
 public class GraphUtil
 {
@@ -42,21 +42,21 @@ public class GraphUtil
 
     /** Return an iterator over the unique subjects with predicate p and object o.
      * p and o can be wildcards (Node.ANY)
-     * @param g Graph  
+     * @param g Graph
      * @param p Predicate - may be Node.ANY
      * @param o Object  - may be Node.ANY
      * @return  ExtendedIterator
      */
-    public static ExtendedIterator<Node> listSubjects(Graph g, Node p, Node o) { 
+    public static ExtendedIterator<Node> listSubjects(Graph g, Node p, Node o) {
         // Restore a minimal QueryHandler?
         ExtendedIterator<Triple> iter = g.find(Node.ANY, p, o) ;
         Set<Node> nodes = iter.mapWith(t -> t.getSubject()).toSet() ;
         return WrappedIterator.createNoRemove(nodes.iterator()) ;
     }
-    
+
     /** Return an iterator over the unique predicate between s and o.
      * s and o can be wildcards (Node.ANY)
-     * @param g Graph  
+     * @param g Graph
      * @param s Subject - may be Node.ANY
      * @param o Object  - may be Node.ANY
      * @return  ExtendedIterator
@@ -66,10 +66,10 @@ public class GraphUtil
         Set<Node> nodes = iter.mapWith(t -> t.getPredicate()).toSet() ;
         return WrappedIterator.createNoRemove(nodes.iterator()) ;
     }
-    
+
     /** Return an iterator over the unique objects with a given subject and object.
      * s and p can be wildcards (Node.ANY)
-     * @param g Graph  
+     * @param g Graph
      * @param s Subject - may be Node.ANY
      * @param p Predicate  - may be Node.ANY
      * @return  ExtendedIterator
@@ -79,7 +79,7 @@ public class GraphUtil
         Set<Node> nodes = iter.mapWith(t -> t.getObject()).toSet() ;
         return WrappedIterator.createNoRemove(nodes.iterator()) ;
     }
-    
+
     /** Does the graph use the node anywhere as a subject, predicate or object? */
     public static boolean containsNode(Graph graph, Node node) {
         return
@@ -87,13 +87,13 @@ public class GraphUtil
             graph.contains(Node.ANY, Node.ANY, node) ||
             graph.contains(Node.ANY, node, Node.ANY) ;
     }
-    
+
     /* Control how events are dealt with in bulk */
-    private static final boolean OldStyle = true ; 
-    
+    private static final boolean OldStyle = true ;
+
     /**
      * Answer an iterator covering all the triples in the specified graph.
-     * 
+     *
      * @param g
      *            the graph from which to extract triples
      * @return an iterator over all the graph's triples
@@ -101,7 +101,7 @@ public class GraphUtil
     public static ExtendedIterator<Triple> findAll(Graph g) {
         return g.find() ;
     }
-    
+
     public static void add(Graph graph, Triple[] triples) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             GraphWithPerform g = (GraphWithPerform)graph ;
@@ -110,24 +110,24 @@ public class GraphUtil
             graph.getEventManager().notifyAddArray(graph, triples) ;
         } else {
             for (Triple t : triples )
-                graph.add(t) ; 
+                graph.add(t) ;
         }
     }
-        
+
     public static void add(Graph graph, List<Triple> triples) {
         addIteratorWorkerDirect(graph, triples.iterator()) ;
         if ( OldStyle && graph instanceof GraphWithPerform )
             graph.getEventManager().notifyAddList(graph, triples) ;
     }
-        
+
     public static void add(Graph graph, Iterator<Triple> it) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             // Materialize for the notify.
             List<Triple> s = IteratorCollection.iteratorToList(it) ;
             addIteratorWorkerDirect(graph, s.iterator());
             graph.getEventManager().notifyAddIterator(graph, s) ;
-        } 
-        else 
+        }
+        else
             addIteratorWorker(graph, it);
     }
     
@@ -157,7 +157,7 @@ public class GraphUtil
     private static boolean requireEvents(Graph graph) {
         return graph.getEventManager().listening() ;
     }
-    
+
     public static void delete(Graph graph, Triple[] triples) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             GraphWithPerform g = (GraphWithPerform)graph ;
@@ -169,13 +169,13 @@ public class GraphUtil
                 graph.delete(t) ;
         }
     }
-    
+
     public static void delete(Graph graph, List<Triple> triples) {
         deleteIteratorWorkerDirect(graph, triples.iterator());
         if ( OldStyle && graph instanceof GraphWithPerform )
             graph.getEventManager().notifyDeleteList(graph, triples) ;
     }
-    
+
     public static void delete(Graph graph, Iterator<Triple> it) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             // Materialize for the notify.
@@ -185,29 +185,29 @@ public class GraphUtil
         } else
             deleteIteratorWorker(graph, it);
     }
-    
+
     private static final int sliceSize = 1000 ;
 
     /** A safe and cautious remove() function that converts the remove to
-     *  a number of {@link Graph#delete(Triple)} operations. 
+     *  a number of {@link Graph#delete(Triple)} operations.
      *  <p>
      *  To avoid any possible ConcurrentModificationExceptions,
      *  it finds batches of triples, deletes them and tries again until
-     *  no more triples matching the input can be found. 
+     *  no more triples matching the input can be found.
      */
     public static void remove(Graph g, Node s, Node p, Node o) {
         // Beware of ConcurrentModificationExceptions.
         // Delete in batches.
         // That way, there is no active iterator when a delete
         // from the indexes happens.
-    
+
         Triple[] array = new Triple[sliceSize] ;
-    
+
         while (true) {
             // Convert/cache s,p,o?
             // The Node Cache will catch these so don't worry unduely.
             ExtendedIterator<Triple> iter = g.find(s, p, o) ;
-    
+
             // Get a slice
             int len = 0 ;
             for ( ; len < sliceSize ; len++ ) {
@@ -215,7 +215,7 @@ public class GraphUtil
                     break ;
                 array[len] = iter.next() ;
             }
-    
+
             // Delete them.
             for ( int i = 0 ; i < len ; i++ ) {
                 g.delete(array[i]) ;
@@ -230,25 +230,25 @@ public class GraphUtil
     /**
      * Delete triples in {@code srcGraph} from {@code dstGraph}
      * by looping on {@code srcGraph}.
-     * 
+     *
      */
     public static void deleteLoopSrc(Graph dstGraph, Graph srcGraph) {
         deleteIteratorWorker(dstGraph, findAll(srcGraph)) ;
         dstGraph.getEventManager().notifyDeleteGraph(dstGraph, srcGraph) ;
     }
 
-    /** 
+    /**
      * Delete the triple in {@code srcGraph} from {@code dstGraph}
      * by checking the contents of {@code dsgGraph} against the {@code srcGraph}.
-     * This involves calling {@code srcGraph.contains}. 
+     * This involves calling {@code srcGraph.contains}.
      * @implNote
-     * {@code dstGraph.size()} is used by this method. 
+     * {@code dstGraph.size()} is used by this method.
      */
     public static void deleteLoopDst(Graph dstGraph, Graph srcGraph) {
         // Size the list to avoid reallocation on growth.
         int dstSize = dstGraph.size();
         List<Triple> toBeDeleted = new ArrayList<>(dstSize);
-        
+
         Iterator<Triple> iter = findAll(dstGraph);
         for( ; iter.hasNext() ; ) {
            Triple t = iter.next();
@@ -283,7 +283,7 @@ public class GraphUtil
     }
 
     private static int MIN_SRC_SIZE   = 1000 ;
-    // If source and destination are large, limit the search for the best way round to "deleteFrom" 
+    // If source and destination are large, limit the search for the best way round to "deleteFrom"
     private static int MAX_SRC_SIZE   = 1000*1000 ;
     private static int DST_SRC_RATIO  = 2 ;
 
@@ -294,28 +294,28 @@ public class GraphUtil
      *  This is designed for the case of {@code dstGraph} being comparable or much larger than
      *  {@code srcGraph} or {@code srcGraph} having a lot of triples to actually be
      *  deleted from {@code dstGraph}. This includes the case of large, persistent {@code dstGraph}.
-     *  <p>  
-     *  It is not designed for a large {@code srcGraph} and large {@code dstGraph} 
+     *  <p>
+     *  It is not designed for a large {@code srcGraph} and large {@code dstGraph}
      *  with only a few triples in common to delete from {@code dstGraph}. It is better to
-     *  calculate the difference in some way, and copy into a small graph to use as the {@code srcGraph}.  
+     *  calculate the difference in some way, and copy into a small graph to use as the {@code srcGraph}.
      *  <p>
      *  To force delete by looping on {@code srcGraph}, use {@link #deleteLoopSrc(Graph, Graph)}.
      *  <p>
      *  For large {@code srcGraph} and small {@code dstGraph}, use {@link #deleteLoopDst}.
-     *  
-     * See discussion on <a href="https://github.com/apache/jena/pull/212">jena/pull/212</a>, 
+     *
+     * See discussion on <a href="https://github.com/apache/jena/pull/212">jena/pull/212</a>,
      * (archived at <a href="https://issues.apache.org/jira/browse/JENA-1284">JENA-1284</a>).
      */
     public static void deleteFrom(Graph dstGraph, Graph srcGraph) {
         boolean events = requireEvents(dstGraph);
-        
+
         if ( dstGraph == srcGraph && ! events ) {
             dstGraph.clear();
             return;
         }
-        
+
         boolean loopOnSrc = decideHowtoExecute(dstGraph, srcGraph);
-        
+
         if ( loopOnSrc ) {
             // Normal path.
             deleteLoopSrc(dstGraph, srcGraph);
@@ -325,11 +325,11 @@ public class GraphUtil
         // Loop on dstGraph, not srcGraph, but need to use srcGraph.contains on this code path.
         deleteLoopDst(dstGraph, srcGraph);
     }
-    
+
     private static final int CMP_GREATER = 1;
     private static final int CMP_EQUAL   = 0;
     private static final int CMP_LESS    = -1;
-    
+
     /**
      * Decide whether to loop on dstGraph or srcGraph.
      * @param dstGraph
@@ -342,7 +342,7 @@ public class GraphUtil
         // Avoid calling dstGraph.size()
         return decideHowtoExecuteBySizeStep(dstGraph, srcGraph);
     }
-    
+
     /**
      * Decide using dstGraph.size() and srcGraph.size()
      */
@@ -352,19 +352,19 @@ public class GraphUtil
         //     size(src)*DST_SRC_RATIO <= size(dst)
         // dstGraph is "much" larger than src where "much" is given by DST_SRC_RATIO
         //     Assumes dstGraph.size is efficient.
-        
+
         int srcSize = srcGraph.size();
         if ( srcSize <= MIN_SRC_SIZE )
             return true ;
         int dstSize = dstGraph.size();
-        
+
         boolean loopOnSrc = (srcSize <= MIN_SRC_SIZE || dstSize > DST_SRC_RATIO*srcSize) ;
         return loopOnSrc;
     }
 
     /**
-     *  Avoid dstGraph.size(). Instead step through {@codedstGraph.find} to compare to {@code srcGraph.size()} 
-     *  
+     *  Avoid dstGraph.size(). Instead step through {@codedstGraph.find} to compare to {@code srcGraph.size()}
+     *
      */
     private static boolean decideHowtoExecuteBySizeStep(Graph dstGraph, Graph srcGraph) {
         // loopOnSrc if:
@@ -380,7 +380,7 @@ public class GraphUtil
     /** Compare the size of a graph to {@code size}, without calling Graph.size
      *  by iterating on {@code graph.find()} as necessary.
      *  <p>
-     *  Return -1 , 0, 1 for the comparison.  
+     *  Return -1 , 0, 1 for the comparison.
      */
     /*package*/ static int compareSizeTo(Graph graph, int size) {
         ExtendedIterator<Triple> it = graph.find();
@@ -390,7 +390,7 @@ public class GraphUtil
                 // Iterator ran out.
                 return CMP_LESS;
             if ( !it.hasNext())
-                // Finsiehd at the same timne. 
+                // Finsiehd at the same time.
                 return CMP_EQUAL;
             // Still more to go
             return CMP_GREATER;
