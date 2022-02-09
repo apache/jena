@@ -88,8 +88,8 @@ function log() {
 }
 
 function debug() {
- if [ $DEBUG = 1 ]; then
-   log "DEBUG" "$@"
+  if [[ $DEBUG = 1 ]]; then
+    log "DEBUG" "$@"
  fi
 }
 
@@ -229,6 +229,8 @@ if [ -z "$JENA_CP" ] ; then
 fi
 
 function exec_java() {
+    local ARGS="$@"
+    debug "Exec: $ARGS"
     "$JAVA" $JVM_ARGS -cp "$JENA_CP" "$@"
     local RC="$?"
     if [[ $RC != 0 ]] ; then
@@ -237,7 +239,8 @@ function exec_java() {
     fi
 }
 
-SORT_THREADS="-1"
+# Default value
+SORT_THREADS="2"
 
 while [ $# -gt 0 ]
 do
@@ -301,8 +304,10 @@ do
 done
 
 ## Check argument SORT_THREADS
-if [[ ! $SORT_THREADS =~ ^-?[0-9]+$ ]] ; then
-    abort 1 "Bad value for --threads : $SORT_THREADS"
+if [[ $SORT_THREADS != "-1" ]] ; then
+    if [[ ! $SORT_THREADS =~ ^[-+]?[0-9]+$ ]] ; then
+	abort 1 "Bad value for --threads : $SORT_THREADS"
+    fi
 fi
 	       
 if [[ $# -eq 0 ]] ; then
