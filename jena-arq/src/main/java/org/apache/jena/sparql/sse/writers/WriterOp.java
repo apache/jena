@@ -336,6 +336,7 @@ public class WriterOp
             if ( opService.getSilent() )
                 out.println("silent ");
             WriterNode.output(out, opService.getService(), sContext);
+            out.println();
             opService.getSubOp().visit(this);
             finish(opService);
         }

@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.graph.Node ;
@@ -443,6 +444,22 @@ public class TestService {
         String queryString = "ASK { SERVICE <"+SERVICE+ "> { "+innerQuery+" } }";
         QueryExec.dataset(localDataset()).query(queryString).ask();
     }
+
+    // JENA-2280
+    // ?value is scped as ?/value and this needs dealing with in SERVCE results.
+    @Test public void service_scope_service_1() {
+
+        String queryString = StrUtils.strjoinNL
+                ("SELECT ?temp {"
+                ,"  SELECT (?value as ?temp) {"
+                ,"    SERVICE <http://localhost:3030/test/query> { VALUES ?value { 'test' }  }"
+                ,"  }"
+                ,"}");
+        RowSet rs = QueryExec.dataset(localDataset()).query(queryString).select().materialize();
+        Binding row = rs.next();
+        assertTrue(row.contains("temp"));
+    }
+
 
     private static void runWithModifier(String key, HttpRequestModifier modifier, Runnable action) {
         RegistryRequestModifier.get().add(SERVICE, modifier);
