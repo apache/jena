@@ -51,10 +51,22 @@
   </scm>
 
    <properties>
+     <!-- Build -->
+    <java.version>11</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.outputTimestamp>2022-01-30T15:02:59Z</project.build.outputTimestamp>
+
+    <!-- Testing -->
     <ver.junit>4.13.2</ver.junit>  
+    <ver.mockito>4.2.0</ver.mockito>
+    <ver.awaitility>4.1.1</ver.awaitility>
+    <ver.contract.tests>0.2.0</ver.contract.tests>
+
+    <!-- Dependencies -->
     <ver.slf4j>1.7.35</ver.slf4j>
     <ver.log4j2>2.17.1</ver.log4j2>
-    <ver.shade-plugin>3.2.4</ver.shade-plugin>
+
+    <ver.lucene>8.11.1</ver.lucene>
 
     <ver.jetty>10.0.7</ver.jetty>
     <ver.shiro>1.8.0</ver.shiro>
@@ -62,6 +74,11 @@
     <ver.protobuf>3.19.3</ver.protobuf>
     <ver.libthrift>0.15.0</ver.libthrift>
 
+    <!-- JSON-LD 1.1 -->
+    <ver.titanium-json-ld>1.2.0</ver.titanium-json-ld>
+    <ver.jakarta.json>2.0.1</ver.jakarta.json>
+
+    <!-- JSON-LD 1.0 -->
     <!-- jsonld-java depends on depends on Jackson core
          and Jackson databind. databind has had a few CVEs
          so we exclude from jsonldjava and select the version
@@ -86,21 +103,13 @@
     <ver.dexxcollection>0.7</ver.dexxcollection>
     <ver.micrometer>1.8.2</ver.micrometer>
 
-    <ver.lucene>8.11.1</ver.lucene>
+    <!-- For testing, not shipped -->
     <ver.graalvm>21.3.1</ver.graalvm>
     <ver.jython>2.7.2</ver.jython>
-    <ver.jcommander>1.82</ver.jcommander>
-    <ver.mockito>4.2.0</ver.mockito>
-    <ver.awaitility>4.1.1</ver.awaitility>
-    <ver.contract.tests>0.2.0</ver.contract.tests>
 
     <!--- GeoSPARQL related -->
+    <ver.jcommander>1.82</ver.jcommander>
     <ver.sis>1.1</ver.sis>
-    
-    <java.version>11</java.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.outputTimestamp>2022-01-30T15:02:59Z</project.build.outputTimestamp>
-
 
   </properties>
 
@@ -480,7 +489,7 @@
         <!-- Apache License -->
         <groupId>com.apicatalog</groupId>
         <artifactId>titanium-json-ld</artifactId>
-        <version>1.2.0</version>
+        <version>${ver.titanium-json-ld}</version>
       </dependency>
       <!-- Eclipse Public License 2.0 (category-B) -->
       <!--
@@ -491,14 +500,14 @@
       <dependency>
         <groupId>jakarta.json</groupId>
         <artifactId>jakarta.json-api</artifactId>
-        <version>2.0.1</version>
+        <version>${ver.jakarta.json}</version>
       </dependency>
 
       <!-- Eclipse Public License 2.0 (category-B) -->
       <dependency>
         <groupId>org.glassfish</groupId>
         <artifactId>jakarta.json</artifactId>
-        <version>2.0.1</version>
+        <version>${ver.jakarta.json}</version>
       </dependency>
       <!-- End JSON-LD 1.1 read support -->
 
@@ -1053,7 +1062,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>${ver.shade-plugin}</version>
+          <version>3.2.4</version>
         </plugin>
 
         <plugin>
