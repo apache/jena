@@ -59,45 +59,23 @@ import org.apache.jena.web.HttpSC;
 /** Operations related to servlets */
 
 public class ActionLib {
-    /**
-     * Get the datasets from an {@link HttpAction}
-     * that assumes the form /dataset/service.
-     * @param action the request
-     * @return the dataset
-     */
-    public static String mapRequestToDataset(HttpAction action) {
-         String uri = action.getActionURI();
-         return mapRequestToDataset(uri);
-     }
-
-    /** Map request to uri in the registry.
-     *  A possible implementation for mapRequestToDataset(String)
-     *  that assumes the form /dataset/service
-     *  Returning null means no mapping found.
-     *  The URI must be the action URI (no contact path)
-     */
-
-    public static String mapRequestToDataset(String uri) {
-        // Chop off trailing part - the service selector
-        // e.g. /dataset/sparql => /dataset
-        int i = uri.lastIndexOf('/');
-        if ( i == -1 )
-            return null;
-        if ( i == 0 ) {
-            // started with '/' - leave.
-            return uri;
-        }
-        return uri.substring(0, i);
-    }
 
     /** Calculate the operation, given action and data access point */
-    public static String mapRequestToEndpointName(HttpAction action, DataAccessPoint dsRef) {
-        if ( dsRef == null )
-            return "";
+    public static String mapRequestToEndpointName(HttpAction action, DataAccessPoint dataAccessPoint) {
         String uri = action.getActionURI();
-        String name = dsRef.getName();
+        return mapRequestToEndpointName(uri, dataAccessPoint);
+    }
+
+    /** Calculate the operation, given request URI and data access point */
+    public static String mapRequestToEndpointName(String uri, DataAccessPoint dataAccessPoint) {
+        if ( dataAccessPoint == null )
+            return "";
+        String name = dataAccessPoint.getName();
         if ( name.length() >= uri.length() )
             return "";
+        if ( name.equals("/") )
+            // Case "/" and uri "/service"
+            return uri.substring(1);
         return uri.substring(name.length()+1);   // Skip the separating "/"
     }
 
@@ -105,7 +83,7 @@ public class ActionLib {
      * Implementation of mapRequestToDataset(String) that looks for the longest match
      * in the registry. This includes use in direct naming GSP.
      */
-    public static String mapRequestToDatasetLongest$(String uri, DataAccessPointRegistry registry) {
+    public static String unused_mapRequestToDatasetLongest(String uri, DataAccessPointRegistry registry) {
         if ( uri == null )
             return null;
 
@@ -167,16 +145,17 @@ public class ActionLib {
 //      ServletContext cxt = this.getServletContext();
 //      Log.info(this, "ServletContext path     = '"+cxt.getContextPath()+"'");
 
+        String uri = request.getRequestURI();
         ServletContext servletCxt = request.getServletContext();
         if ( servletCxt == null )
             return request.getRequestURI();
 
         String contextPath = servletCxt.getContextPath();
-        String uri = request.getRequestURI();
         if ( contextPath == null )
             return uri;
         if ( contextPath.isEmpty())
             return uri;
+
         String x = uri;
         if ( uri.startsWith(contextPath) )
             x = uri.substring(contextPath.length());

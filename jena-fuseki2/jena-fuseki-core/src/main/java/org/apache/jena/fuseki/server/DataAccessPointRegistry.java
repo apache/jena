@@ -36,7 +36,11 @@ import org.apache.jena.fuseki.metrics.FusekiRequestsMetrics;
  */
 public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
 {
-    private MeterRegistry meterRegistry;
+    private final MeterRegistry meterRegistry;
+
+    public DataAccessPointRegistry() {
+        this.meterRegistry = null;
+    }
 
     public DataAccessPointRegistry(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
