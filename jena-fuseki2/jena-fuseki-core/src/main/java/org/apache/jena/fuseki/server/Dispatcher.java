@@ -73,27 +73,73 @@ public class Dispatcher {
      * This function does not throw exceptions.
      */
     public static boolean dispatch(HttpServletRequest request, HttpServletResponse response) {
+        DataAccessPointRegistry registry = DataAccessPointRegistry.get(request.getServletContext());
+        DataAccessPoint dap = locateDataAccessPoint(request, registry);
+        if ( dap == null ) {
+            if ( LogDispatch )
+                LOG.debug("No dispatch for '"+request.getRequestURI()+"'");
+            return false;
+        }
+        return process(dap, request, response);
+    }
+
+    /**
+     * The request may be /path/dataset/sparql or /path/dataset, or even /.
+     * <p>
+     * If the servlet context path is the "/path", then that was removed in ActionLib.actionURI.
+     * But the dataset name may have a path within the servlet context.
+     * <p>
+     * The second form looks like dataset="path" and service="dataset"
+     * We don't know the service until we find the DataAccessPoint.
+     * For /dataset/sparql or /dataset, there is not problem. The latter is too short to be a named service.
+     * <p>
+     * This function chooses the DataAccessPoint.
+     * There may not be an endpoint and operation to handle the request.
+     */
+    private static DataAccessPoint locateDataAccessPoint(HttpServletRequest request, DataAccessPointRegistry registry) {
         // Path component of the URI, without context path
         String uri = ActionLib.actionURI(request);
-        String datasetUri = ActionLib.mapRequestToDataset(uri);
-
         if ( LogDispatch ) {
             LOG.info("Filter: Request URI = " + request.getRequestURI());
             LOG.info("Filter: Action URI  = " + uri);
-            LOG.info("Filter: Dataset URI = " + datasetUri);
         }
+        DataAccessPoint dap = locateDataAccessPoint(uri, registry);
+        // At this point, we are going to dispatch to the DataAccessPoint.
+        // It still may not have a handler for the service on this dataset.
+        // See #chooseProcessor(HttpAction) for locating the endpoint.
+        return dap;
+    }
 
+    /*package:testing*/ static DataAccessPoint locateDataAccessPoint(String uri, DataAccessPointRegistry registry) {
+        // Direct match.
+        if ( registry.isRegistered(uri) )
+            // Cases: /, /dataset and /path/dataset where /path is not the servlet context path.
+            return registry.get(uri);
+
+        // Remove possible service endpoint name.
+        String datasetUri = removeFinalComponent(uri);
+
+        // Requests should at least have "/".
         if ( datasetUri == null )
-            return false;
+            return null;
 
-        DataAccessPointRegistry registry = DataAccessPointRegistry.get(request.getServletContext());
-        if ( !registry.isRegistered(datasetUri) ) {
-            if ( LogDispatch )
-                LOG.debug("No dispatch for '"+datasetUri+"'");
-            return false;
+        if ( registry.isRegistered(datasetUri) )
+            // Cases: /dataset/sparql and /path/dataset/sparql
+            return registry.get(datasetUri);
+
+        return null;
+    }
+
+    /** Remove the final component of a path - return a valid URI path. */
+    private static String removeFinalComponent(String uri) {
+        int i = uri.lastIndexOf('/');
+        if ( i == -1 )
+            return null;
+        if ( i == 0 ) {
+            // /pathComponent - return a valid URI path.
+            return "/";
         }
-        DataAccessPoint dap = registry.get(datasetUri);
-        return process(dap, request, response);
+        return uri.substring(0, i);
     }
 
     /**
@@ -121,7 +167,7 @@ public class Dispatcher {
     /**
      * Find the ActionProcessor or return null if there can't determine one.
      *
-     * This function sends the appropriate HTTP error response.
+     * This function sends the appropriate HTTP error response on failure to choose an endpoint.
      *
      * Returning null indicates an HTTP error response, and the HTTP response has been done.
      *

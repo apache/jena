@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import static java.lang.String.format;
+
 import java.util.function.Function;
 
 import org.apache.jena.atlas.web.ContentType;
@@ -120,12 +122,20 @@ public class UploadRDF extends ActionREST {
         } catch (RiotException ex) {
             // Parse error
             action.abortSilent();
+            if ( ex.getMessage() != null )
+                action.log.info(format("[%d] Data error: %s", action.id, ex.getMessage()));
+            else
+                action.log.info(format("[%d] Data error", action.id), ex);
             ServletOps.errorBadRequest(ex.getMessage());
         } catch (OperationDeniedException ex) {
             action.abortSilent();
             throw ex;
         } catch (ActionErrorException ex) {
             action.abortSilent();
+            if ( ex.getMessage() != null )
+                action.log.info(format("[%d] Upload error: %s", action.id, ex.getMessage()));
+            else
+                action.log.info(format("[%d] Upload error", action.id), ex);
             throw ex;
         } catch (Exception ex) {
             // Something else went wrong. Backout.
