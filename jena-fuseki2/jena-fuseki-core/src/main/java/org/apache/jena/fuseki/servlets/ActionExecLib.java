@@ -239,14 +239,16 @@ public class ActionExecLib {
             FmtLog.info(action.log, "[%d] %s %s", action.id, method, url);
         if ( action.verbose ) {
             Enumeration<String> en = action.getRequestHeaderNames();
-            for (; en.hasMoreElements();) {
-                String h = en.nextElement();
-                Enumeration<String> vals = action.getRequestHeaders(h);
-                if ( !vals.hasMoreElements() )
-                    FmtLog.info(action.log, "[%d]   => %s", action.id, h+":");
-                else {
-                    for (; vals.hasMoreElements();)
-                        FmtLog.info(action.log, "[%d]   => %-20s %s", action.id, h+":", vals.nextElement());
+            if ( en != null ) {
+                for (; en.hasMoreElements();) {
+                    String h = en.nextElement();
+                    Enumeration<String> vals = action.getRequestHeaders(h);
+                    if ( !vals.hasMoreElements() )
+                        FmtLog.info(action.log, "[%d]   => %s", action.id, h+":");
+                    else {
+                        for (; vals.hasMoreElements();)
+                            FmtLog.info(action.log, "[%d]   => %-20s %s", action.id, h+":", vals.nextElement());
+                    }
                 }
             }
         }
