@@ -25,36 +25,41 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.shared.JenaException;
 
 public interface FileManager {
-    
-    public static final boolean logAllLookups = true ; 
+
+    public static final boolean logAllLookups = true ;
     public static final String PATH_DELIMITER = ";";
     public static final String filePathSeparator = java.io.File.separator ;
 
     /** For use within Jena libraries only. */
     public static FileManager getInternal() { return FileManagerImpl.get(); }
-    
-    /** @deprecated Use {@code RDFDataMgr} to read RDF files. Use {@code StreamManager} if needed.  */   
+
+    /** For use within Jena libraries only. */
+    public static FileManager getInternalNoInit() {
+        return FileManagerImpl.fmInstance;
+    }
+
+    /** @deprecated Use {@code RDFDataMgr} to read RDF files. Use {@code StreamManager} if needed.  */
     @Deprecated
     public static FileManager get() { return getInternal(); }
-    
-    /** @deprecated Use {@code StreamManager.setGlobal} */   
+
+    /** @deprecated Use {@code StreamManager.setGlobal} */
     @Deprecated
     public static void setGlobalFileManager(FileManager fm) { FileManagerImpl.setGlobalFileManager(fm); }
-    
-    /** @deprecated Use {@code StreamManager} */   
+
+    /** @deprecated Use {@code StreamManager} */
     @Deprecated
     public static FileManager create() { return new FileManagerImpl(); }
-    
-    /** @deprecated Use {@code StreamManager} */   
+
+    /** @deprecated Use {@code StreamManager} */
     @Deprecated
     public static FileManager createStd() { return FileManagerImpl.makeStd(); }
-    
-    /** @deprecated Use {@code StreamManager.} */   
+
+    /** @deprecated Use {@code StreamManager.} */
     @Deprecated
     public static FileManager create(LocationMapper locMap) { return new FileManagerImpl(locMap); }
-    
+
     FileManager clone();
-    
+
     /** Set the location mapping */
     void setLocationMapper(LocationMapper _mapper);
 
@@ -121,15 +126,15 @@ public interface FileManager {
     default Model loadModel(String filenameOrURI) {
         return loadModelInternal(filenameOrURI);
     }
-    
+
     /** For use within Jena libraries only. */
     Model loadModelInternal(String filenameOrURI);
 
     /** Load a model from a file (local or remote).
      *  URI is the base for reading the model.
-     * 
+     *
      *  @param filenameOrURI The filename or a URI (file:, http:)
-     *  @param rdfSyntax  RDF Serialization syntax. 
+     *  @param rdfSyntax  RDF Serialization syntax.
      *  @return a new model
      *  @exception JenaException if there is syntax error in file.
      *  @deprecated Use {@code RDFDataMgr}
@@ -138,10 +143,10 @@ public interface FileManager {
     Model loadModel(String filenameOrURI, String rdfSyntax);
 
     /** Load a model from a file (local or remote).
-     * 
+     *
      *  @param filenameOrURI The filename or a URI (file:, http:)
      *  @param baseURI  Base URI for loading the RDF model.
-     *  @param rdfSyntax  RDF Serialization syntax. 
+     *  @param rdfSyntax  RDF Serialization syntax.
      *  @return a new model
      *  @exception JenaException if there is syntax error in file.
      *  @deprecated Use {@code RDFDataMgr}
@@ -150,7 +155,7 @@ public interface FileManager {
     Model loadModel(String filenameOrURI, String baseURI, String rdfSyntax);
 
     /**
-     * Read a file of RDF into a model.  Guesses the syntax of the file based on filename extension, 
+     * Read a file of RDF into a model.  Guesses the syntax of the file based on filename extension,
      *  defaulting to RDF/XML.
      * @param model
      * @param filenameOrURI
@@ -162,7 +167,7 @@ public interface FileManager {
     default Model readModel(Model model, String filenameOrURI) {
         return readModelInternal(model, filenameOrURI);
     }
-    
+
     /** For use within Jena libraries only. */
     Model readModelInternal(Model model, String filenameOrURI);
 
@@ -205,11 +210,11 @@ public interface FileManager {
     @Deprecated
     String readWholeFileAsUTF8(String filename);
 
-    /** Open a file using the locators of this FileManager 
+    /** Open a file using the locators of this FileManager
      *  but without location mapping */
     InputStream openNoMap(String filenameOrURI);
 
-    /** Open a file using the locators of this FileManager 
+    /** Open a file using the locators of this FileManager
      *  but without location mapping.
      *  Return null if not found
      */

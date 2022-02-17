@@ -77,7 +77,7 @@ public class FileManagerImpl implements FileManager
 
     /** Delimiter between path entries : because URI scheme names use : we only allow ; */
 
-    static FileManager fmInstance = null ;
+    /*package*/ static FileManager fmInstance = null ;
 
     protected List<Locator> fmHandlers = new ArrayList<>() ;
     protected LocationMapper fmMapper = null ;
