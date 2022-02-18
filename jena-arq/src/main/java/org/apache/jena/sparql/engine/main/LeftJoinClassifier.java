@@ -32,20 +32,20 @@ import org.apache.jena.sparql.core.Var ;
 public class LeftJoinClassifier
 {
     static /*final*/ public boolean print = false ;
-    
+
     // Test for the "well-formed" criterion of left joins whereby they can
     // be executed against a current set of bindings.  If not, the left join
     // has to be done by execution of the left, executing the right without
     // the left (so no substitution/additional indexing), then
     // left-join-ed.  AND that can be expensive - luckily, it only occurs
-    // in OPTIONALs with a pattern depth of 2 or more. 
+    // in OPTIONALs with a pattern depth of 2 or more.
 
-    // This amounts to testing whether there are any optional variables in the 
+    // This amounts to testing whether there are any optional variables in the
     // RHS pattern (hence they are nested in someway) that also occur in the LHS
     // of the LeftJoin being considered.
-    
+
     // Need also worry about filters in the right (not in the LJ condition)
-    // which use vars from the left. 
+    // which use vars from the left.
 
     static public boolean isLinear(OpLeftJoin op) {
         return isLinear(op.getLeft(), op.getRight()) ;
@@ -54,12 +54,12 @@ public class LeftJoinClassifier
     static public boolean isLinear(Op left, Op right) {
         left = effectiveOp(left) ;
         right = effectiveOp(right) ;
-        
+
         // Subquery with modifier.  Substitution does not apply.
         // With SELECT *, it's as if the subquery were just the pattern.
         if ( right instanceof OpModifier )
             return false ;
-        
+
         Set<Var> leftVars = OpVars.visibleVars(left) ;
         if ( print ) {
             System.err.println("Left") ;
@@ -84,48 +84,53 @@ public class LeftJoinClassifier
             System.err.println("Right") ;
             vf.print(System.err) ;
         }
-        
+
         // Case 1 : If there are any variables in the LHS that are
         // filter-only or filter-before define, we can't do anything.
         if ( ! vf.getFilterOnly().isEmpty() ) {
             // A tigher condition is to see of any of the getFilterOnly are possible from the
-            // left.  If not, then we can still use a sequence. 
+            // left.  If not, then we can still use a sequence.
             // But an outer sequence may push arbitrary here so play safe on the argument
             // this is a relative uncommon case.
-            if (print) System.err.println("Case 1 - " + false);
+            if (print) System.err.println("LJ: Case 1 (true=ok) - " + false);
             return false ;
         }
-        
-        if (print) System.err.println("Case 1 - " + true);
+
+        if (print) System.err.println("LJ: Case 1 (true=ok)  - " + true);
         Set<Var> optRight = vf.getOpt() ;
         Set<Var> fixedRight = vf.getFixed() ;
-        Set<Var> filterVarsRight = vf.getFilter() ; 
+        Set<Var> filterVarsRight = vf.getFilter() ;
         Set<Var> assignVarsRight = vf.getAssign() ;
         // Case 2
         // A variable is nested in an optional on the RHS and on the LHS
         // Cannot linearize as we must preserve scope
         boolean b2 = SetUtils.intersectionP(leftVars, optRight) ;
-        if (print) System.err.println("Case 2 - " + b2);
-        
+        if (print) System.err.println("LJ: Case 2 (false=ok) - " + b2);
+
         // Case 3
         // A variable mentioned in a filter within the RHS already exists on the LHS
         // Cannot linearize as would change filter evaluation
         boolean b3 = SetUtils.intersectionP(leftVars, filterVarsRight) ;
-        if (print) System.err.println("Case 3 - " + b3);
-        
+        if (print) System.err.println("LJ: Case 3 (false=ok) - " + b3);
+
         // Case 4
         // A variable mentioned in the assign is not introduced on the RHS
         // Cannot linearize as would change bind evaluation
         Set<Var> unsafeAssign = new HashSet<>(assignVarsRight);
         unsafeAssign.removeAll(fixedRight);
         boolean b4 = unsafeAssign.size() > 0 ;
-        if (print) System.err.println("Case 4 - " + b4);
+        if (print) System.err.println("LJ: Case 4 (false=ok) - " + b4);
+
+        if (print) {
+            boolean b9 = ! b2 && ! b3 && ! b4 ;
+            System.err.println("LJ: Case !2&!3&!4  (true=ok) - " + b9);
+        }
 
         // Linear if all conditions are false
         return ! b2 && ! b3 && ! b4 ;
     }
-    
-    static public Set<Var> nonLinearVars(OpLeftJoin op) { 
+
+    static public Set<Var> nonLinearVars(OpLeftJoin op) {
         Op left = effectiveOp(op.getLeft()) ;
         Op right = effectiveOp(op.getRight()) ;
         Set<Var> leftVars = OpVars.visibleVars(left) ;
@@ -133,7 +138,7 @@ public class LeftJoinClassifier
 
         return SetUtils.intersection(leftVars, optRight) ;
     }
-    
+
     private static Op effectiveOp(Op op) {
         if (op instanceof OpExt)
             op = ((OpExt) op).effectiveOp() ;
