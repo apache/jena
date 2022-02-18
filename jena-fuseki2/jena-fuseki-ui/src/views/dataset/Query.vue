@@ -59,7 +59,18 @@
                 </b-col>
               </b-row>
               <b-row>
-                <b-col sm="12" md="6">
+                <b-col sm="12" md="4">
+                  <b-form-group
+                    label="SPARQL Endpoint"
+                    label-cols="6"
+                  >
+                    <b-form-input
+                      :value="`${datasetName}/sparql`"
+                      v-model="datasetUrl"
+                    ></b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col sm="12" md="4">
                   <b-form-group
                     label="Content Type (SELECT)"
                     label-cols="6"
@@ -67,11 +78,10 @@
                     <b-form-select
                       :options="contentTypeSelectOptions"
                       v-model="contentTypeSelect"
-                      @change="onYasqeOptionsChange"
                     ></b-form-select>
                   </b-form-group>
                 </b-col>
-                <b-col sm="12" md="6">
+                <b-col sm="12" md="4">
                   <b-form-group
                     label="Content Type (GRAPH)"
                     label-cols="6"
@@ -79,7 +89,6 @@
                     <b-form-select
                       :options="contentTypeGraphOptions"
                       v-model="contentTypeGraph"
-                      @change="onYasqeOptionsChange"
                     ></b-form-select>
                   </b-form-group>
                 </b-col>
@@ -146,6 +155,7 @@ export default {
       loading: true,
       yasqe: null,
       yasr: null,
+      datasetUrl: `/${this.datasetName}/sparql`,
       contentTypeSelect: 'application/sparql-results+json',
       contentTypeSelectOptions: [
         { value: 'application/sparql-results+json', text: 'JSON' },
@@ -209,11 +219,22 @@ export default {
           vm.yasqe.saveQuery()
           vm.yasr.setResponse(response, duration)
         })
-        this.onYasqeOptionsChange()
         this.syncYasqePrefixes()
         this.loading = false
       }, 300)
     })
+  },
+
+  watch: {
+    datasetUrl: function (val, oldVal) {
+      this.yasqe.options.requestConfig.endpoint = this.$fusekiService.getFusekiUrl(this.datasetUrl)
+    },
+    contentTypeSelect: function (val, oldVal) {
+      this.yasqe.options.requestConfig.acceptHeaderSelect = this.contentTypeSelect
+    },
+    contentTypeGraph: function (val, oldVal) {
+      this.yasqe.options.requestConfig.acceptHeaderGraph = this.contentTypeGraph
+    }
   },
 
   beforeRouteLeave (to, from, next) {
@@ -221,10 +242,6 @@ export default {
   },
 
   methods: {
-    onYasqeOptionsChange () {
-      this.yasqe.options.requestConfig.acceptHeaderSelect = this.contentTypeSelect
-      this.yasqe.options.requestConfig.acceptHeaderGraph = this.contentTypeGraph
-    },
     setQuery (query) {
       this.yasqe.setValue(query)
       this.syncYasqePrefixes()
