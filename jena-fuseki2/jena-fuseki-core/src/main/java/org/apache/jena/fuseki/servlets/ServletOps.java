@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.servlets;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletOutputStream;
@@ -28,7 +29,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonBuilder;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.json.JsonValue;
+import org.apache.jena.atlas.web.AcceptList;
+import org.apache.jena.atlas.web.MediaType;
+import org.apache.jena.fuseki.system.ConNeg;
 import org.apache.jena.fuseki.system.UploadDetails;
 import org.apache.jena.fuseki.system.UploadDetails.PreState;
 import org.apache.jena.riot.RiotParseException;
@@ -109,7 +115,72 @@ public class ServletOps {
         action.setResponseStatus(httpStatusCode);
     }
 
+    private static MediaType mtTextHTML = MediaType.create("text/html");
+    private static AcceptList successReponseAccept = AcceptList.create("text/html", WebContent.contentTypeTextPlain, WebContent.contentTypeJSON);
+
     public static void successPage(HttpAction action, String message) {
+        String x = action.getRequestHeader(HttpNames.hAccept);
+        MediaType mt = null ;
+        if ( x != null && x.equals("*/*") ) {
+            if ( action.getRequestContentType().equals(WebContent.contentTypeHTMLForm))
+                mt = mtTextHTML;
+        }
+
+        if ( mt == null && x != null )
+            mt = ConNeg.chooseContentType(action.getRequest(), successReponseAccept, MediaType.create("text/plain"));
+
+        if ( mt == null )
+            mt = mtTextHTML;
+
+        if ( WebContent.ctTextPlain.agreesWith(mt) ) {
+            successPageText(action, message);
+            return ;
+        }
+        if ( WebContent.ctJSON.agreesWith(mt) ) {
+            successPageJson(action, message);
+            return ;
+        }
+        // Default.
+        successPageHtml(action, message);
+    }
+
+    private static void successPageJson(HttpAction action, String message) {
+        try {
+            action.setResponseContentType(WebContent.contentTypeJSON);
+            action.setResponseCharacterEncoding(WebContent.charsetUTF8);
+            action.setResponseStatus(HttpSC.OK_200);
+            OutputStream out = action.getResponseOutputStream();
+            JsonObject obj = JsonBuilder.buildObject(builder->{
+                builder.pair("statusCode", 200);
+                if ( message != null )
+                    builder.pair("message", message);
+            });
+            JSON.write(out, obj);
+            return;
+        } catch (IOException ex) {
+            errorOccurred(ex);
+            return;
+        }
+    }
+
+    private static void successPageText(HttpAction action, String message) {
+        if ( message == null )
+            message = HttpSC.getMessage(HttpSC.OK_200);
+        try {
+            action.setResponseContentType("text/plain");
+            action.setResponseCharacterEncoding(WebContent.charsetUTF8);
+            action.setResponseStatus(HttpSC.OK_200);
+            PrintWriter out = action.getResponseWriter();
+            if ( message != null )
+                out.println(message);
+            return;
+        } catch (IOException ex) {
+            errorOccurred(ex);
+            return;
+        }
+    }
+
+    private static void successPageHtml(HttpAction action, String message) {
         try {
             action.setResponseContentType("text/html");
             action.setResponseCharacterEncoding(WebContent.charsetUTF8);

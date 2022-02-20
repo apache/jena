@@ -18,81 +18,92 @@
 
 package org.apache.jena.atlas.web ;
 
-/** A restricted view of MediaType */
-public class ContentType
-{
-    private MediaType           mediaType ;
-    private static final String charsetParamName = "charset" ;
+import static org.apache.jena.atlas.lib.Lib.equalsIgnoreCase;
+
+import org.apache.jena.riot.web.HttpNames;
+
+/** A restricted view of MediaType: type, subtype and charset. */
+public class ContentType {
+    private MediaType mediaType;
 
     public static ContentType create(String string) {
         if ( string == null )
-            return null ;
-        ContentType ct = new ContentType(MediaType.create(string)) ;
-        return ct ;
+            return null;
+        ContentType ct = new ContentType(MediaType.create(string));
+        return ct;
     }
 
     public static ContentType create(String ctString, String charset) {
-        MediaType.ParsedMediaType x = MediaType.parse(ctString) ;
-        x.params.put(charsetParamName, charset) ;
-        return new ContentType(new MediaType(x)) ;
+        MediaType.ParsedMediaType x = MediaType.parse(ctString);
+        x.params.put(HttpNames.charset, charset); // Ignore params.
+        return new ContentType(new MediaType(x));
     }
 
     private ContentType(MediaType m) {
-        mediaType = m ;
+        mediaType = m;
     }
 
     /**
      * Get the type/subtype as a string.
+     *
      * @see #toHeaderString toHeaderString for use in HTTP headers.
      */
 
     public String getContentTypeStr() {
-        return mediaType.getContentTypeStr() ;
+        return mediaType.getContentTypeStr();
     }
 
     public String getCharset() {
-        return mediaType.getCharset() ;
+        return mediaType.getCharset();
     }
 
     public String getType() {
-        return mediaType.getType() ;
+        return mediaType.getType();
     }
 
     public String getSubType() {
-        return mediaType.getSubType() ;
+        return mediaType.getSubType();
+    }
+
+    /**
+     * Return true if the media type has same type and subtype.
+     */
+    public boolean agreesWith(MediaType mt) {
+        return equalsIgnoreCase(mediaType.getType(), mt.getType()) &&
+               equalsIgnoreCase(mediaType.getSubType(), mt.getSubType());
     }
 
     public String toHeaderString() {
-        return mediaType.toHeaderString() ;
+        return mediaType.toHeaderString();
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31 ;
-        int result = 1 ;
-        result = prime * result + ((mediaType == null) ? 0 : mediaType.hashCode()) ;
-        return result ;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((mediaType == null) ? 0 : mediaType.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
         if ( this == obj )
-            return true ;
+            return true;
         if ( obj == null )
-            return false ;
+            return false;
         if ( getClass() != obj.getClass() )
-            return false ;
-        ContentType other = (ContentType)obj ;
+            return false;
+        ContentType other = (ContentType)obj;
         if ( mediaType == null ) {
             if ( other.mediaType != null )
-                return false ;
+                return false;
         } else if ( !mediaType.equals(other.mediaType) )
-            return false ;
-        return true ;
+            return false;
+        return true;
     }
 
     @Override
     public String toString() {
-        return mediaType.toString() ;
+        return mediaType.toString();
     }
 }
