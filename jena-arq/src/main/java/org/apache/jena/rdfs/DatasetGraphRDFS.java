@@ -111,6 +111,11 @@ public class DatasetGraphRDFS extends DatasetGraphWrapper implements DatasetGrap
     { return contains(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()); }
 
     @Override
-    public boolean contains(Node g, Node s, Node p, Node o)
-    { return getR().contains(g, s, p, o); }
+    public boolean contains(Node g, Node s, Node p, Node o) {
+        // Go through inference machinery.
+        Iterator<Quad> iter = find(g, s, p, o);
+        try {
+            return iter.hasNext();
+        } finally { Iter.close(iter); }
+    }
 }
