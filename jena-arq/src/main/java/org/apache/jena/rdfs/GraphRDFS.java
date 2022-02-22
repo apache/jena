@@ -61,6 +61,20 @@ public class GraphRDFS extends GraphWrapper {
     }
 
     @Override
+    public boolean contains(Node s, Node p, Node o) {
+        // Must go via find()-like functionality.
+        ExtendedIterator<Triple> iter = find(s, p, o);
+        try {
+            return iter.hasNext();
+        } finally { iter.close(); }
+    }
+
+    @Override
+    public boolean contains(Triple t) {
+        return contains(t.getSubject(), t.getPredicate(), t.getObject());
+    }
+
+    @Override
     public int size() {
         // Report the size of the underlying graph.
         // Even better, don't ask.

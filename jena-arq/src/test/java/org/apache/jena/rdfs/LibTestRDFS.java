@@ -63,6 +63,10 @@ public class LibTestRDFS {
         return graph.find(s,p,o).toList();
     }
 
+    static boolean containsInGraph(Graph graph, Node s, Node p, Node o) {
+        return graph.contains(s,p,o);
+    }
+
     static <X> void printDiff(PrintStream out, List<X> expected, List<X> actual) {
         if ( actual.size() < 10 ) {
             out.println("Actual:");
