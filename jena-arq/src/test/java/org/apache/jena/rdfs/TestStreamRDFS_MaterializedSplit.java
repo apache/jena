@@ -28,10 +28,12 @@ import org.junit.BeforeClass;
 /**
  * Test of RDFS.
  * Expanded graph (by stream), split vocab and data.
+ * Materialized version of normal use.
  */
 public class TestStreamRDFS_MaterializedSplit extends AbstractTestGraphRDFS {
 
     private static Graph testGraphMaterialized;
+
     @BeforeClass public static void setupHere() {
         testGraphMaterialized = GraphFactory.createDefaultGraph();
         SetupRDFS setup = RDFSFactory.setupRDFS(vocab);
