@@ -52,7 +52,6 @@ import org.apache.jena.irix.SystemIRIx;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.thrift.RiotThriftException;
-import org.apache.jena.riot.thrift.TRDF;
 import org.apache.jena.riot.thrift.ThriftConvert;
 import org.apache.jena.riot.thrift.wire.RDF_Term;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -61,7 +60,6 @@ import org.apache.jena.system.progress.ProgressIterator;
 import org.apache.jena.system.progress.ProgressMonitorOutput;
 import org.apache.jena.system.progress.ProgressStreamRDF;
 import org.apache.jena.tdb2.DatabaseMgr;
-import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.lib.NodeLib;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.Hash;
@@ -69,14 +67,11 @@ import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.NodeIdFactory;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetable.NodeTableTRDF;
-import org.apache.jena.tdb2.store.nodetable.TReadAppendFileTransport;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TCompactProtocol;
-import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.TTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,7 +136,7 @@ public class ProcBuildNodeTableX {
             sortThreads = 2;
 
         // ** Step 2: The sort
-        Process proc2;
+        Process procSort;
         try {
             //LOG.info("Step : external sort");
             // Mutable list.
@@ -161,12 +156,14 @@ public class ProcBuildNodeTableX {
 
             ProcessBuilder pb2 = new ProcessBuilder(sortCmd);
             pb2.environment().put("LC_ALL","C");
-            proc2 = pb2.start();
+            procSort = pb2.start();
 
             // To process.
-            toSortOutputStream = proc2.getOutputStream(); // Needs buffering
-            // From process
-            fromSortInputStream = proc2.getInputStream(); // Needs buffering
+            // Let the writer close it.
+            toSortOutputStream = procSort.getOutputStream();
+            // From process to the tree builder.
+            // Let the reader side close it.
+            fromSortInputStream = procSort.getInputStream();
 //            // Debug sort process.
 //            InputStream fromSortErrortStream = proc2.getErrorStream();
 //            IOUtils.copy(fromSortErrortStream, System.err);
@@ -182,7 +179,6 @@ public class ProcBuildNodeTableX {
         long tickPoint = BulkLoaderX.DataTick;
         int superTick = BulkLoaderX.DataSuperTick;
 
-        //LOG.info("Step : parse & send to external sort");
         Runnable task1 = ()->{
             ProgressMonitorOutput monitor = ProgressMonitorOutput.create(LOG1, "Nodes", tickPoint, superTick);
             OutputStream output = IO.ensureBuffered(toSortOutputStream);
@@ -212,7 +208,7 @@ public class ProcBuildNodeTableX {
 
             double xSec = x/1000.0;
             double rate = count/xSec;
-            // [BULK] End stage.
+
             FmtLog.info(LOG1, "%s Parse (nodes): %s seconds : %,d triples/quads %,.0f TPS", BulkLoaderX.StageMarker,
                         Timer.timeStr(x), count, rate);
         };
@@ -224,6 +220,8 @@ public class ProcBuildNodeTableX {
         Runnable task3 = ()->{
             Timer timer = new Timer();
             // Don't start timer until sort send something
+
+            // Process stream are already buffered.
             InputStream input = IO.ensureBuffered(fromSortInputStream);
 
             FileSet fileSet = new FileSet(dsgtdb.getLocation(), Names.nodeTableBaseName);
@@ -263,27 +261,25 @@ public class ProcBuildNodeTableX {
             countIndexedNodes.set(count);
             String rateStr = BulkLoaderX.rateStr(count, x);
             FmtLog.info(LOG2, "%s Index terms: %s seconds : %,d indexed RDF terms : %s PerSecond", BulkLoaderX.StageMarker, Timer.timeStr(x), count, rateStr);
-
         };
         Thread thread3 = async(task3, "AsyncBuild");
 
         try {
-            int exitCode = proc2.waitFor();
+            int exitCode = procSort.waitFor();
             if ( exitCode != 0 ) {
-                String msg = IO.readWholeFileAsUTF8(proc2.getErrorStream());
+                String msg = IO.readWholeFileAsUTF8(procSort.getErrorStream());
                 String logMsg = String.format("Sort RC = %d : Error: %s", exitCode, msg);
                 Log.error(LOG2, logMsg);
                 // ** Exit process
                 System.exit(exitCode);
-            }
-            else
+            } else {
                 LOG2.info("Sort finished");
+            }
+            // I/O Stream toSortOutputStream and fromSortInputStream closed by
+            // their users - step 1 and step 3.
         } catch (InterruptedException e) {
             LOG1.error("Failed to cleanly wait-for the subprocess");
             throw new RuntimeException(e);
-        } finally {
-            IO.close(toSortOutputStream);
-            IO.close(fromSortInputStream);
         }
 
         BulkLoaderX.waitFor(thread1);
@@ -292,73 +288,72 @@ public class ProcBuildNodeTableX {
         return Pair.create(countParseTicks.get(), countIndexedNodes.get());
     }
 
-    // [BULK] XXX Make this a separate class.
-    static Iterator<Record> records(Logger LOG, InputStream input, BinaryDataFile objectFile) {
-        RecordFactory factory = new RecordFactory(SystemTDB.LenNodeHash,  NodeId.SIZE);
-        byte[] bHash = new byte[SystemTDB.LenNodeHash];
-        byte[] bbNodeId = new byte[NodeId.SIZE];
-        RDF_Term term = new RDF_Term();
-        // Better?
-        TProtocol protocol;
-        try {
-            TTransport transport = new TReadAppendFileTransport(objectFile);
-            if ( ! transport.isOpen() )
-                transport.open();
-            protocol = TRDF.protocol(transport);
+    private static Iterator<Record> records(Logger logger, InputStream input, BinaryDataFile objectFile) {
+        return new IteratorNodeTableRecords(logger, input, objectFile);
+    }
+
+    private static class IteratorNodeTableRecords extends IteratorSlotted<Record> {
+        private final static RecordFactory factory = new RecordFactory(SystemTDB.LenNodeHash,  NodeId.SIZE);
+        private final byte[] bHash = new byte[SystemTDB.LenNodeHash];
+        private final byte[] bbNodeId = new byte[NodeId.SIZE];
+        private final RDF_Term term = new RDF_Term();
+        private final Logger logger;
+        private final InputStream input;
+        private final BinaryDataFile objectFile;
+
+        IteratorNodeTableRecords(Logger logger, InputStream input, BinaryDataFile objectFile) {
+            this.logger = logger;
+            this.input = input;
+            this.objectFile = objectFile;
         }
-        catch (Exception ex) {
-            throw new TDBException("NodeTableTRDF", ex);
+
+        long count = 0;
+        @Override
+        protected Record moveToNext() {
+            return calc();
         }
 
-        return new IteratorSlotted<Record>() {
-            long count = 0;
-            @Override
-            protected Record moveToNext() {
-                return calc();
-            }
+        @Override
+        protected boolean hasMore() {
+            return true;
+        }
 
-            @Override
-            protected boolean hasMore() {
-                return true;
-            }
+        // One line of file encoded data to record.
+        private Record calc() {
+            count++;
+            try {
+                // read hash.
+                for ( int i = 0 ; i < 16 ; i++ ) {
+                    int x = hexRead(input);
+                    if ( x < 0 )
+                        return null;
+                    bHash[i] = (byte)(x&0xFF);
+                }
+                char ch0 = (char)input.read(); // space.
+                byte[] key = bHash;
 
-            // One line of file encoded data to record.
-            private Record calc() {
-                count++;
-                try {
-                  // read hash.
-                  for ( int i = 0 ; i < 16 ; i++ ) {
-                      int x = hexRead(input);
-                      if ( x < 0 )
-                          return null;
-                      bHash[i] = (byte)(x&0xFF);
-                  }
-                  char ch0 = (char)input.read(); // space.
-                  byte[] key = bHash;
-
-                  ByteArrayOutputStream bout = new ByteArrayOutputStream();
-                  // Read de-hexer
-                  for(;;) {
-                      int v = hexRead(input);
-                      if ( v < 0 )
-                          break;
-                      bout.write(v);
-                  }
-                  byte[] thrift = bout.toByteArray();
-                  ThriftConvert.termFromBytes(term, thrift);
-                  // write to nodes.dat -> NodeId
-                  long x = objectFile.length();
-                  NodeId nodeId = NodeIdFactory.createPtr(x);
-                  objectFile.write(thrift);
-                  Bytes.setLong(nodeId.getPtrLocation(), bbNodeId);
-                  Record r = factory.create(key, bbNodeId);
-                  return r;
-              } catch (Exception ex) {
-                  ex.printStackTrace();
-                  return null;
-              }
+                ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                // Read de-hexer
+                for(;;) {
+                    int v = hexRead(input);
+                    if ( v < 0 )
+                        break;
+                    bout.write(v);
+                }
+                byte[] thrift = bout.toByteArray();
+                ThriftConvert.termFromBytes(term, thrift);
+                // write to nodes.dat -> NodeId
+                long x = objectFile.length();
+                NodeId nodeId = NodeIdFactory.createPtr(x);
+                objectFile.write(thrift);
+                Bytes.setLong(nodeId.getPtrLocation(), bbNodeId);
+                Record r = factory.create(key, bbNodeId);
+                return r;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return null;
             }
-        };
+        }
     }
 
     public static int hexRead(InputStream input) throws IOException {
@@ -373,7 +368,6 @@ public class ProcBuildNodeTableX {
         int b = (b1<<4)|b2;
         return b;
     }
-
 
     public static void hexWrite(OutputStream output, int bits8) throws IOException {
         int x1 = (bits8>>4) & 0xF;
