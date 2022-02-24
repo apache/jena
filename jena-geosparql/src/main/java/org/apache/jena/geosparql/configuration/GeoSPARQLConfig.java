@@ -272,6 +272,19 @@ public class GeoSPARQLConfig {
     }
 
     /**
+     * Setup the precomputed Spatial Index using Dataset Dataset.<br>
+     * We assume that the spatial index was computed before and written to the given file.
+     *
+     * @param dataset the dataset
+     * @param spatialIndexFile the file containing the serialized spatial index
+     * @throws SpatialIndexException
+     */
+    public static final void setupPrecomputedSpatialIndex(Dataset dataset, File spatialIndexFile) throws SpatialIndexException {
+        SpatialIndex si = SpatialIndex.load(spatialIndexFile);
+        SpatialIndex.setSpatialIndex(dataset, si);
+    }
+
+    /**
      * Setup Spatial Index using Dataset and most frequent SRS URI in
      * Dataset.<br>
      * Spatial Index written to file once created.
