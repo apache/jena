@@ -51,13 +51,22 @@ function testSortParallel() {
 JAVA="${JAVA:-java}"
 
 COMPLETE="yes"
-for F in jq sort /usr/bin/gzip java
+for F in jq sort gzip java
 do
     testForProgram "$F"
     if [[ $? -ne 0 ]] ; then
 	COMPLETE="no"
     fi
 done
+
+## gzip must be /bin/gzip or /usr/bin/gzip
+
+testForProgram /bin/gzip || testForProgram /usr/bin/gzip
+if [[ $? -ne 0 ]]
+then
+    echo "gzip not installed in /bin/gzip or /usr/bin/gzip"
+    COMPLETE="no"
+fi
 
 if [[ $COMPLETE != "yes" ]] ; then
     echo "One or more programs missing" 2&>1
