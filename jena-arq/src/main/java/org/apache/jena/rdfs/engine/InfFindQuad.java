@@ -29,15 +29,22 @@ import org.apache.jena.sparql.core.Quad;
 
 /**
  * Find in one graph of a dataset.
+ * <p>
+ * Unused.
+ * <p>
+ * The problem is that quads create by dstCreate have to reflect the graph name where
+ * the triple that caused it to be inferred was found.
  */
 public class InfFindQuad extends MatchRDFS<Node, Quad> {
 
     private final DatasetGraph dsg;
     private Node graph;
 
-    public InfFindQuad(ConfigRDFS<Node> setup, Node g, DatasetGraph dsg) {
+    private InfFindQuad(int dummy, ConfigRDFS<Node> setup, Node g, DatasetGraph dsg) {
         super(setup, Mappers.mapperQuad(g));
-        this.graph = g ;
+        if ( g == null || ! g.isConcrete() )
+            throw new IllegalArgumentException("Quad/MatchRDFS must have a concrete graph name");
+        this.graph = g;
         this.dsg = dsg;
     }
 
@@ -55,6 +62,7 @@ public class InfFindQuad extends MatchRDFS<Node, Quad> {
 
     @Override
     protected Quad dstCreate(Node s, Node p, Node o) {
+        // Must be concrete for this quad creation.
         return Quad.create(graph, s, p, o);
     }
 }

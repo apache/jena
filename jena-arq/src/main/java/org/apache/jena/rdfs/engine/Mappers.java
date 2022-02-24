@@ -44,9 +44,9 @@ public class Mappers {
         @Override public Node object(Triple triple)     { return triple.getObject(); }
     }
 
-    public static class MapperQuad implements MapperX<Node, Quad> {
+    private static class MapperQuad implements MapperX<Node, Quad> {
         private final Node graph;
-        MapperQuad(Node g)  { this.graph = g; }
+        private MapperQuad(Node g)                  { this.graph = g; }
         @Override public Node fromNode(Node n)      { return n; }
         @Override public Node toNode(Node x)        { return x; }
         @Override public Node subject(Quad quad)    { return quad.getSubject(); }

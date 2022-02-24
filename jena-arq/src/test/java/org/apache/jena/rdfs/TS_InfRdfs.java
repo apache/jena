@@ -43,6 +43,9 @@ import org.junit.runners.Suite;
     // ---- Other
     , TestMiscRDFS.class
 
+    // DatasetGraph API usage.
+    , TestDatasetGraphRDFS.class
+
     // DatasetGraphRDFS and SPARQL.
     , TestInfSPARQL.class
 

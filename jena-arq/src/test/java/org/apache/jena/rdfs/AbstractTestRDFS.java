@@ -41,7 +41,8 @@ import org.junit.runners.MethodSorters;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class AbstractTestRDFS {
-    private static PrintStream      out = System.err;
+    private static PrintStream out = System.err;
+
     @Test public void test_rdfs_01()        { test(node("a"), rdfType, null) ; }
     @Test public void test_rdfs_02()        { test(node("a"), rdfType, node("T2")) ; }
     @Test public void test_rdfs_03()        { test(null, rdfType, node("T2")) ; }

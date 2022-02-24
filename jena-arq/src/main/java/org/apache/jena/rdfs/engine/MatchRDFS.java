@@ -40,12 +40,7 @@ import org.apache.jena.rdfs.setup.ConfigRDFS;
  * <li>rdfs:range</li>
  * </ul>
  *
- * {@code X} is the RDF term representation (e.g. Node, NodeId) and
- * {@code T} is the tuple (triple, quad, tuple) representation.
- *
  * @see ApplyRDFS ApplyRDFS for the matching algorithm.
- *
- *
  */
 public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T> {
     // [RDFS] Marks places for possible improvements.
@@ -56,12 +51,12 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
 
     // ----
 
-    // Function from a T (a 3-tuples, e.g. a Triple) to all
+    // Function from a T (a 3-tuple, e.g. a Triple) to all
     // the inferences from the T.
     // Includes the input tuple.
     private final Function<T,Stream<T>> applyInf;
 
-    protected MatchRDFS(ConfigRDFS<X> setup, MapperX<X,T> mapper) {
+    public MatchRDFS(ConfigRDFS<X> setup, MapperX<X,T> mapper) {
         super(setup, mapper);
         this.applyInf = t-> {
             // Revisit use of applyInf.
@@ -81,14 +76,19 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
     @Override
     public final Stream<T> match(X s, X p, X o) { return matchWithInf(s, p ,o); }
 
+    /*
+     * An alternative design is to in work quads in MatchRDFS, not triples, for
+     * sourceFind, sourceFind, sourceContains and dstCreate.
+     */
+
     // Access data.
     protected abstract boolean sourceContains(X s, X p, X o);
     protected abstract Stream<T> sourceFind(X s, X p, X o);
     protected abstract T dstCreate(X s, X p, X o);
 
-    protected final X subject(T term)        { return mapper.subject(term); }
-    protected final X predicate(T term)      { return mapper.predicate(term); }
-    protected final X object(T term)         { return mapper.object(term); }
+    protected final X subject(T tuple)        { return mapper.subject(tuple); }
+    protected final X predicate(T tuple)      { return mapper.predicate(tuple); }
+    protected final X object(T tuple)         { return mapper.object(tuple); }
 
     /**
      * Break the dispatch match request to different cases so each case can be written clearly.
@@ -99,10 +99,6 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
         X object = any(_object);
 
         // find_??_rdf:type_??
-        // Naming for find_*
-        //   X,Y  - concrete terms
-        //   T    - concrete type
-        //   ANY  - wildcard
         if ( rdfType.equals(predicate) ) {
             if ( isTerm(subject) ) {
                 if ( isTerm(object) )
