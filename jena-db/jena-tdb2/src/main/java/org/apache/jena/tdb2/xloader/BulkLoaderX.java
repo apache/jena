@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 import org.apache.jena.tdb2.TDBException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BulkLoaderX {
     public static int DataTick = 1_000_000;
@@ -109,4 +111,11 @@ public class BulkLoaderX {
         //long check = 3600 * h + 60 * m + s;
         return String.format("%dh %02dm %02ds", h, m, s);
     }
+
+    // Loggers
+
+    public static Logger LOG_Data  = LoggerFactory.getLogger("Data");
+    public static Logger LOG_Nodes = LoggerFactory.getLogger("Nodes");
+    public static Logger LOG_Terms = LoggerFactory.getLogger("Terms");
+    public static Logger LOG_Index = LoggerFactory.getLogger("Index");
 }

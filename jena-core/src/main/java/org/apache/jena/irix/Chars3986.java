@@ -25,7 +25,6 @@ public class Chars3986 {
     /** End of file/string marker - this is not a valid Unicode codepoint. */
     public static final char EOF = 0xFFFF;
 
-    // RFC 3986:
     //  pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
     //  pct-encoded   = "%" HEXDIG HEXDIG
     //
@@ -35,14 +34,13 @@ public class Chars3986 {
     //  gen-delims    = ":" / "/" / "?" / "#" / "[" / "]" / "@"
     //  sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
     //                / "*" / "+" / "," / ";" / "="
+    //  ipchar        = iunreserved / pct-encoded / sub-delims / ":" / "@"
+    //                = ipchar / ucschar
 
     /** RFC3986 pchar */
     public static boolean isPChar(char ch, String str, int posn) {
         return unreserved(ch) || isPctEncoded(ch, str, posn) || subDelims(ch) || ch == ':' || ch == '@';
     }
-
-    // ipchar   = iunreserved / pct-encoded / sub-delims / ":" / "@"
-    //          = ipchar / ucschar
 
     /** RFC3987 ipchar */
     public static boolean isIPChar(char ch, String str, int posn) {
@@ -51,7 +49,7 @@ public class Chars3986 {
 
     /**
      * Test whether the character at location 'x' is percent-encoded. This operation
-     * needs to looks at next two characters if, and only if, the character is '%'
+     * needs to look at next two characters if and only if ch is '%'.
      * <p>
      * This function looks ahead 2 characters which will be parsed but likely they
      * are in the L1 or L2 cache and the alternative is more complex logic (return
@@ -74,40 +72,42 @@ public class Chars3986 {
         return isAlpha(ch) || isUcsChar(ch);
     }
 
+    // RFC 3987
     //  ucschar        = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
-    //  / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD
-    //  / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD
-    //  / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD
-    //  / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD
-    //  / %xD0000-DFFFD / %xE1000-EFFFD
+    //                 / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD
+    //                 / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD
+    //                 / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD
+    //                 / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD
+    //                 / %xD0000-DFFFD / %xE1000-EFFFD
 
     // Surrogates are "hi-lo" : DC000-DFFF and D800-DFFF
-    // We assume the java string is valid and surrogates are correctly in high-low
-    // pairs so we can just test for surrogates, not tthat they are in pairs.
-
-    public static boolean isDigit(char ch) {
-        return range(ch, '0', '9');
-    }
-
-    /**
-     * <tt>HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"</tt>
-     * but also lower case (non-normalized form). See RFC 3986 sec 6.2.2.1
-     */
-    public static boolean isHexDigit(char ch) {
-        return range(ch, '0', '9' ) || range(ch, 'A', 'F' ) || range(ch, 'a', 'f' )  ;
-    }
+    // We assume the java string is valid and surrogates are correctly in high-low pairs.
 
     public static boolean isUcsChar(char ch) {
             return range(ch, 0xA0, 0xD7FF)  || range(ch, 0xF900, 0xFDCF)  || range(ch, 0xFDF0, 0xFFEF)
+                    // Allow surrogates.
                     || Character.isSurrogate(ch);
+                // Java is 16 bits chars.
+    //            || range(ch, 0x10000, 0x1FFFD) || range(ch, 0x20000, 0x2FFFD) || range(ch, 0x30000, 0x3FFFD)
+    //            || range(ch, 0x40000, 0x4FFFD) || range(ch, 0x50000, 0x5FFFD) || range(ch, 0x60000, 0x6FFFD)
+    //            || range(ch, 0x70000, 0x7FFFD) || range(ch, 0x80000, 0x8FFFD) || range(ch, 0x90000, 0x9FFFD)
+    //            || range(ch, 0xA0000, 0xAFFFD) || range(ch, 0xB0000, 0xBFFFD) || range(ch, 0xC0000, 0xCFFFD)
+    //            || range(ch, 0xD0000, 0xDFFFD) || range(ch, 0xE1000, 0xEFFFD)
         }
 
     // int version - includes support for beyond 16 bit chars.
     public static boolean int_isUcsChar(int ch) {
+        // RFC 3987
+        // ucschar    = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
+        //            / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD
+        //            / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD
+        //            / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD
+        //            / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD
+        //            / %xD0000-DFFFD / %xE1000-EFFFD
         boolean b = range(ch, 0xA0, 0xD7FF)  || range(ch, 0xF900, 0xFDCF)  || range(ch, 0xFDF0, 0xFFEF);
         if ( b )
             return true;
-        if ( ch < 0x1000 )
+        if ( ch < 0x10000 )
             return false;
         // 32 bit checks.
         return
@@ -118,11 +118,10 @@ public class Chars3986 {
             range(ch, 0xD0000, 0xDFFFD) || range(ch, 0xE1000, 0xEFFFD);
     }
 
-    // iprivate       = %xE000-F8FF / %xF0000-FFFFD / %x100000-10FFFD
-
-    /** Java charcater part of iprivate */
+    //iprivate       = %xE000-F8FF / %xF0000-FFFFD / %x100000-10FFFD
     public static boolean isIPrivate(char ch) {
-        return range(ch, 0xE000, 0xF8FF) ; // Java is 16 bits chars.
+        // Java is 16 bits chars.
+        return range(ch, 0xE000, 0xF8FF) ;
     }
 
     public static boolean int_isIPrivate(int ch) {
@@ -149,11 +148,6 @@ public class Chars3986 {
             case '-': case '.': case '_': case '~': return true;
         }
         return false;
-    }
-
-    /** RFC 3986 : reservered */
-    public static boolean reservered(char ch) {
-        return genDelims(ch) || subDelims(ch);
     }
 
     /** RFC 3986 : sub-delims */
@@ -190,7 +184,7 @@ public class Chars3986 {
     }
 
     /** String.charAt except with an EOF character, not an exception. */
-    /*public*/ static char charAt(CharSequence str, int x) {
+    public static char charAt(CharSequence str, int x) {
         if ( x >= str.length() )
             return EOF;
         return str.charAt(x);
@@ -201,7 +195,18 @@ public class Chars3986 {
         return ch >= start && ch <= finish;
     }
 
-    /** Return the value of a hex digit, upper or lower case */
+    public static boolean isDigit(char ch) {
+        return range(ch, '0', '9');
+    }
+
+    /**
+     * <tt>HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"</tt>
+     * but also lower case (non-normalized form). See RFC 3986 sec 6.2.2.1
+     */
+    public static boolean isHexDigit(char ch) {
+        return range(ch, '0', '9' ) || range(ch, 'A', 'F' ) || range(ch, 'a', 'f' )  ;
+    }
+
     public static int hexValue(char ch) {
         if ( range(ch, '0', '9' ) ) return ch-'0';
         if ( range(ch, 'A', 'F' ) ) return ch-'A'+10;

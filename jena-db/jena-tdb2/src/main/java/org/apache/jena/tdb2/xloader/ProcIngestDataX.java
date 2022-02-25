@@ -53,8 +53,6 @@ import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 import org.apache.jena.tdb2.store.value.DoubleNode62;
 import org.apache.jena.tdb2.sys.DatabaseConnection;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Load the triples and quads to temporary files.
@@ -67,13 +65,11 @@ import org.slf4j.LoggerFactory;
  */
 public class ProcIngestDataX {
 
-    private static Logger LOG = LoggerFactory.getLogger("Data");
-
     // Node Table.
     public static void exec(String location,
                             XLoaderFiles loaderFiles,
                             List<String> datafiles, boolean collectStats) {
-        FmtLog.info(LOG, "Ingest data");
+        FmtLog.info(BulkLoaderX.LOG_Data, "Ingest data");
         // Possible parser speed up. This has no effect if parsing in parallel
         // because the parser isn't the slowest step when loading at scale.
         IRIProvider provider = SystemIRIx.getProvider();
@@ -84,7 +80,7 @@ public class ProcIngestDataX {
 
         DatasetGraph dsg = getDatasetGraph(location);
 
-        ProgressMonitor monitor = ProgressMonitorOutput.create(LOG, "Data", BulkLoaderX.DataTick, BulkLoaderX.DataSuperTick);
+        ProgressMonitor monitor = ProgressMonitorOutput.create(BulkLoaderX.LOG_Data, "Data", BulkLoaderX.DataTick, BulkLoaderX.DataSuperTick);
         // WriteRows does it's own buffering and has direct write-to-buffer.
         // Do not buffer here.
         // Adds gzip processing if required.
@@ -99,7 +95,7 @@ public class ProcIngestDataX {
             String str = DateTimeUtils.nowAsXSDDateTimeString();
             long cTriple = p.getLeft();
             long cQuad = p.getRight();
-            FmtLog.info(LOG, "Triples = %,d ; Quads = %,d", cTriple, cQuad);
+            FmtLog.info(BulkLoaderX.LOG_Data, "Triples = %,d ; Quads = %,d", cTriple, cQuad);
             JsonObject obj = JSON.buildObject(b->{
                 b.pair("ingested", str);
                 b.key("data").startArray();
@@ -180,7 +176,7 @@ public class ProcIngestDataX {
         String str =  String.format("%s Total: %,d tuples : %,.2f seconds : %,.2f tuples/sec [%s]",
                                     BulkLoaderX.StepMarker,
                                     total, elapsedSecs, rate, DateTimeUtils.nowAsString());
-        LOG.info(str);
+        BulkLoaderX.LOG_Data.info(str);
         return Pair.create(cTriple, cQuad);
     }
 

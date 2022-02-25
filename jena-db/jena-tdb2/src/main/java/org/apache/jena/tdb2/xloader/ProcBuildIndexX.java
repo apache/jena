@@ -57,7 +57,6 @@ import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * From a file of records, build a (packed) index by sorting the input records and
@@ -82,13 +81,11 @@ public class ProcBuildIndexX
     // generate_index "$K3 $K4 $K2 $K1" "$DATA_QUADS" POSG
     // generate_index "$K4 $K2 $K3 $K1" "$DATA_QUADS" OSPG
 
-    private static Logger LOG = LoggerFactory.getLogger("Index");
-
     public static void exec(String location, String indexName, int sortThreads, /*unused*/String sortIndexArgs, XLoaderFiles loaderFiles) {
 
         Timer timer = new Timer();
         timer.startTimer();
-        FmtLog.info(LOG, "Build index %s", indexName);
+        FmtLog.info(BulkLoaderX.LOG_Index, "Build index %s", indexName);
         long timeMillis = timer.endTimer();
 
         long items = ProcBuildIndexX.exec2(location, indexName, sortThreads, sortIndexArgs, loaderFiles);
@@ -98,7 +95,7 @@ public class ProcBuildIndexX
         String elapsedStr = BulkLoaderX.milliToHMS(timeMillis);
         String rateStr = BulkLoaderX.rateStr(items, timeMillis);
 
-        FmtLog.info(LOG, "%s Index %s : %s seconds - %s at %s TPS", BulkLoaderX.StepMarker, indexName, Timer.timeStr(timeMillis), elapsedStr, rateStr);
+        FmtLog.info(BulkLoaderX.LOG_Index, "%s Index %s : %s seconds - %s at %s TPS", BulkLoaderX.StepMarker, indexName, Timer.timeStr(timeMillis), elapsedStr, rateStr);
     }
 
     private static long exec2(String location, String indexName, int sortThreads, String sortIndexArgs, XLoaderFiles loaderFiles) {
@@ -118,23 +115,23 @@ public class ProcBuildIndexX
 
         switch (indexName) {
             case "SPO" :
-                return sort_build_index(LOG, loaderFiles.triplesFile, dsg, "SPO", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K1, K2, K3));
+                return sort_build_index(BulkLoaderX.LOG_Index, loaderFiles.triplesFile, dsg, "SPO", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K1, K2, K3));
             case "POS" :
-                return sort_build_index(LOG, loaderFiles.triplesFile, dsg, "POS", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K2, K3, K1));
+                return sort_build_index(BulkLoaderX.LOG_Index, loaderFiles.triplesFile, dsg, "POS", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K2, K3, K1));
             case "OSP" :
-                return sort_build_index(LOG, loaderFiles.triplesFile, dsg, "OSP", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K3, K1, K2));
+                return sort_build_index(BulkLoaderX.LOG_Index, loaderFiles.triplesFile, dsg, "OSP", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K3, K1, K2));
             case "GSPO" :
-                return sort_build_index(LOG, loaderFiles.quadsFile, dsg, "GSPO", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K1, K2, K3, K4));
+                return sort_build_index(BulkLoaderX.LOG_Index, loaderFiles.quadsFile, dsg, "GSPO", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K1, K2, K3, K4));
             case "GPOS" :
-                return sort_build_index(LOG, loaderFiles.quadsFile, dsg, "GPOS", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K1, K3, K4, K2));
+                return sort_build_index(BulkLoaderX.LOG_Index, loaderFiles.quadsFile, dsg, "GPOS", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K1, K3, K4, K2));
             case "GOSP" :
-                return sort_build_index(LOG, loaderFiles.quadsFile, dsg, "GOSP", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K1, K4, K2, K3));
+                return sort_build_index(BulkLoaderX.LOG_Index, loaderFiles.quadsFile, dsg, "GOSP", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K1, K4, K2, K3));
             case "SPOG" :
-                return sort_build_index(LOG, loaderFiles.quadsFile, dsg, "SPOG", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K2, K3, K4, K1));
+                return sort_build_index(BulkLoaderX.LOG_Index, loaderFiles.quadsFile, dsg, "SPOG", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K2, K3, K4, K1));
             case "POSG" :
-                return sort_build_index(LOG, loaderFiles.quadsFile, dsg, "POSG", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K3, K4, K2, K1));
+                return sort_build_index(BulkLoaderX.LOG_Index, loaderFiles.quadsFile, dsg, "POSG", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K3, K4, K2, K1));
             case "OSPG" :
-                return sort_build_index(LOG, loaderFiles.quadsFile, dsg, "OSPG", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K4, K2, K3, K1));
+                return sort_build_index(BulkLoaderX.LOG_Index, loaderFiles.quadsFile, dsg, "OSPG", sortThreads, sortIndexArgs, tickPoint, superTick, loaderFiles.TMPDIR, List.of(K4, K2, K3, K1));
             default :
                 throw new TDBException("Index name '" + indexName + "' not recognized");
         }
@@ -300,7 +297,7 @@ public class ProcBuildIndexX
         int rowBlock = 1000;
         Iterator<Record> iter = new RecordsFromInput(input, tupleLength, colMap, rowBlock);
         // ProgressMonitor.
-        ProgressMonitor monitor = ProgressMonitorOutput.create(LOG, indexName, tickPoint, superTick);
+        ProgressMonitor monitor = ProgressMonitorOutput.create(BulkLoaderX.LOG_Index, indexName, tickPoint, superTick);
         ProgressIterator<Record> iter2 = new ProgressIterator<>(iter, monitor);
         monitor.start();
         BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(iter2, bptParams, recordFactory, blkState, blkMgrNodes, blkMgrRecords);

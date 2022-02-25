@@ -73,7 +73,6 @@ import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /*
  * Build the node table.
@@ -86,13 +85,10 @@ import org.slf4j.LoggerFactory;
  * Outcome: complete node table.
  */
 public class ProcBuildNodeTableX {
-    private static Logger LOG1 = LoggerFactory.getLogger("Nodes");
-    private static Logger LOG2 = LoggerFactory.getLogger("Terms");
-
     public static void exec(String location, XLoaderFiles loaderFiles, int sortThreads, String sortNodeTableArgs, List<String> datafiles) {
         Timer timer = new Timer();
         timer.startTimer();
-        FmtLog.info(LOG1, "Build node table");
+        FmtLog.info(BulkLoaderX.LOG_Nodes, "Build node table");
 //        FmtLog.info(LOG1, "  Database   = %s", location);
 //        FmtLog.info(LOG1, "  TMPDIR     = %s", tmpdir==null?"unset":tmpdir);
 //        FmtLog.info(LOG1, "  Data files = %s", StrUtils.strjoin(datafiles, " "));
@@ -106,7 +102,7 @@ public class ProcBuildNodeTableX {
         String elapsedStr = BulkLoaderX.milliToHMS(timeMillis);
         String rateStr = BulkLoaderX.rateStr(items, timeMillis);
 
-        FmtLog.info(LOG2, "%s NodeTable : %s seconds - %s at %s terms per second", BulkLoaderX.StepMarker,
+        FmtLog.info(BulkLoaderX.LOG_Terms, "%s NodeTable : %s seconds - %s at %s terms per second", BulkLoaderX.StepMarker,
                     Timer.timeStr(timeMillis), elapsedStr, rateStr);
     }
 
@@ -180,7 +176,7 @@ public class ProcBuildNodeTableX {
         int superTick = BulkLoaderX.DataSuperTick;
 
         Runnable task1 = ()->{
-            ProgressMonitorOutput monitor = ProgressMonitorOutput.create(LOG1, "Nodes", tickPoint, superTick);
+            ProgressMonitorOutput monitor = ProgressMonitorOutput.create(BulkLoaderX.LOG_Nodes, "Nodes", tickPoint, superTick);
             OutputStream output = IO.ensureBuffered(toSortOutputStream);
             // Counting.
             StreamRDF worker = new NodeHashTmpStream(output);
@@ -208,8 +204,7 @@ public class ProcBuildNodeTableX {
 
             double xSec = x/1000.0;
             double rate = count/xSec;
-
-            FmtLog.info(LOG1, "%s Parse (nodes): %s seconds : %,d triples/quads %,.0f TPS", BulkLoaderX.StageMarker,
+            FmtLog.info(BulkLoaderX.LOG_Nodes, "%s Parse (nodes): %s seconds : %,d triples/quads %,.0f TPS", BulkLoaderX.StageMarker,
                         Timer.timeStr(x), count, rate);
         };
 
@@ -228,12 +223,12 @@ public class ProcBuildNodeTableX {
             BufferChannel blkState = FileFactory.createBufferChannel(fileSet, Names.extBptState);
             long idxTickPoint = BulkLoaderX.DataTick;
             int idxSuperTick = BulkLoaderX.DataSuperTick;
-            ProgressMonitorOutput monitor = ProgressMonitorOutput.create(LOG2, "Index", idxTickPoint, idxSuperTick);
+            ProgressMonitorOutput monitor = ProgressMonitorOutput.create(BulkLoaderX.LOG_Terms, "Index", idxTickPoint, idxSuperTick);
 
             // Library of tools!
             dsg.executeWrite(()->{
                 BinaryDataFile objectFile = nodeTable.getData();
-                Iterator<Record> rIter = records(LOG2, input, objectFile);
+                Iterator<Record> rIter = records(BulkLoaderX.LOG_Terms, input, objectFile);
                 rIter = new ProgressIterator<>(rIter, monitor);
                 // Record of (hash, nodeId)
                 BPlusTree bpt1 = (BPlusTree)(nodeTable.getIndex());
@@ -260,7 +255,7 @@ public class ProcBuildNodeTableX {
             long count = monitor.getTicks();
             countIndexedNodes.set(count);
             String rateStr = BulkLoaderX.rateStr(count, x);
-            FmtLog.info(LOG2, "%s Index terms: %s seconds : %,d indexed RDF terms : %s PerSecond", BulkLoaderX.StageMarker, Timer.timeStr(x), count, rateStr);
+            FmtLog.info(BulkLoaderX.LOG_Terms, "%s Index terms: %s seconds : %,d indexed RDF terms : %s PerSecond", BulkLoaderX.StageMarker, Timer.timeStr(x), count, rateStr);
         };
         Thread thread3 = async(task3, "AsyncBuild");
 
@@ -269,16 +264,16 @@ public class ProcBuildNodeTableX {
             if ( exitCode != 0 ) {
                 String msg = IO.readWholeFileAsUTF8(procSort.getErrorStream());
                 String logMsg = String.format("Sort RC = %d : Error: %s", exitCode, msg);
-                Log.error(LOG2, logMsg);
+                Log.error(BulkLoaderX.LOG_Terms, logMsg);
                 // ** Exit process
                 System.exit(exitCode);
-            } else {
-                LOG2.info("Sort finished");
-            }
+            } else
+                BulkLoaderX.LOG_Terms.info("Sort finished");
+
             // I/O Stream toSortOutputStream and fromSortInputStream closed by
             // their users - step 1 and step 3.
         } catch (InterruptedException e) {
-            LOG1.error("Failed to cleanly wait-for the subprocess");
+            BulkLoaderX.LOG_Nodes.error("Failed to cleanly wait-for the subprocess");
             throw new RuntimeException(e);
         }
 
