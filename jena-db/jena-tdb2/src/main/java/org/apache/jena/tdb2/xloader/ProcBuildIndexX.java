@@ -84,11 +84,11 @@ public class ProcBuildIndexX
     public static void exec(String location, String indexName, int sortThreads, /*unused*/String sortIndexArgs, XLoaderFiles loaderFiles) {
 
         Timer timer = new Timer();
-        timer.startTimer();
         FmtLog.info(BulkLoaderX.LOG_Index, "Build index %s", indexName);
-        long timeMillis = timer.endTimer();
 
+        timer.startTimer();
         long items = ProcBuildIndexX.exec2(location, indexName, sortThreads, sortIndexArgs, loaderFiles);
+        long timeMillis = timer.endTimer();
 
         double xSec = timeMillis/1000.0;
         double rate = items/xSec;
