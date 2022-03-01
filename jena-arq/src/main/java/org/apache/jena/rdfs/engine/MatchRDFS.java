@@ -51,7 +51,7 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
 
     // ----
 
-    // Function from a T (a 3-tuples, e.g. a Triple) to all
+    // Function from a T (a 3-tuple, e.g. a Triple) to all
     // the inferences from the T.
     // Includes the input tuple.
     private final Function<T,Stream<T>> applyInf;
@@ -75,6 +75,11 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
 
     @Override
     public final Stream<T> match(X s, X p, X o) { return matchWithInf(s, p ,o); }
+
+    /*
+     * An alternative design is to in work quads in MatchRDFS, not triples, for
+     * sourceFind, sourceFind, sourceContains and dstCreate.
+     */
 
     // Access data.
     protected abstract boolean sourceContains(X s, X p, X o);

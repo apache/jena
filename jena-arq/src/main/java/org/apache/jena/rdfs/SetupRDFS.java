@@ -24,9 +24,12 @@ import org.apache.jena.rdfs.setup.BaseSetupRDFS;
 /** RDFS setup in Node space */
 public class SetupRDFS extends BaseSetupRDFS<Node> {
 
-    /** {@code incDerivedDataRDFS} causes the engine to look for RDFS relationships in the data
+    /**
+     * {@code incDerivedDataRDFS} causes the engine to look for RDFS relationships in the data
      * as if TBox (rules) and ABox (ground data) are one unit.
+     * <p>
      * Set true if abox == tbox.
+     * <p>
      * Can choose false or true if abox != tbox.
      */
     public SetupRDFS(Graph vocab) {

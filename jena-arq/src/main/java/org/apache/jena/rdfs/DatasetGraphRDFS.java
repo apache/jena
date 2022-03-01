@@ -18,14 +18,13 @@
 
 package org.apache.jena.rdfs;
 
+import static org.apache.jena.atlas.iterator.Iter.iter;
+
 import java.util.Iterator;
-import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.rdfs.engine.InfFindQuad;
-import org.apache.jena.rdfs.engine.MatchRDFS;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.sparql.core.DatasetGraphWrapperView;
@@ -76,34 +75,61 @@ public class DatasetGraphRDFS extends DatasetGraphWrapper implements DatasetGrap
 
     @Override
     public Iterator<Quad> find(Node g, Node s, Node p, Node o) {
-        if ( g == null )
-            g = Quad.defaultGraphIRI;
-
         Iterator<Quad> iter = findInf(g, s, p, o);
         if ( iter == null )
             return Iter.nullIterator();
         return iter;
     }
 
+//    private Iterator<Quad> findInf(Node g, Node s, Node p, Node o) {
+//        // Puts in the graph name for the quad base don g even if g is ANY or null.
+//        MatchRDFS<Node, Quad> infMatcher = new InfFindQuad(setup, g, getR());
+//        Stream<Quad> quads = infMatcher.match(s, p, o);
+//        Iterator<Quad> iter = quads.iterator();
+//        iter = Iter.onClose(iter, ()->quads.close());
+//        return iter;
+//    }
+
+    /**
+     * Find, graph by graph.
+     */
     private Iterator<Quad> findInf(Node g, Node s, Node p, Node o) {
-        MatchRDFS<Node, Quad> infMatcher = new InfFindQuad(setup, g, getR());
-        Stream<Quad> quads = infMatcher.match(s, p, o);
-        Iterator<Quad> iter = quads.iterator();
-        iter = Iter.onClose(iter, ()->quads.close());
-        return iter;
+        if ( g != null && g.isConcrete() ) {
+            // Includes the union graph case.
+            return findOneGraphInf(g, s, p, o);
+        }
+        // Wildcard. Do each graph in-term.
+        // This ensures the graph node of the quad corresponds to where the inference came from.
+        Iter<Quad> iter1 = findOneGraphInf(Quad.defaultGraphIRI, s, p, o);
+        Iterator<Quad> iter2 = findAllNamedGraphInf(s, p, o);
+        return iter1.append(iter2);
+    }
+
+    // All named graphs, with inference. Quads refer to the name graph they were caused by.
+    private Iterator<Quad> findAllNamedGraphInf(Node s, Node p, Node o) {
+        return Iter.flatMap(listGraphNodes(), gn -> findOneGraphInf(gn, s, p, o));
+    }
+
+    // Single graph (inc. union graph). Quads refer to the name graph they were caused by.
+    private Iter<Quad> findOneGraphInf(Node g, Node s, Node p, Node o) {
+        if ( ! g.isConcrete()  )
+            throw new IllegalStateException();
+        // f ( Quad.isUnionGraph(g) ) {}
+        // Specific named graph.
+        return iter(getGraph(g).find(s,p,o)).map(t->Quad.create(g, t));
     }
 
     @Override
     public Iterator<Quad> findNG(Node g, Node s, Node p, Node o) {
         if ( Quad.isDefaultGraph(g) )
-            throw new IllegalArgumentException("Default graph is findNG call");
+            throw new IllegalArgumentException("Default graph in findNG call");
         if ( g == null )
             g = Node.ANY;
-        Iterator<Quad> iter = findInf(g, s, p, o);
         if ( g == Node.ANY )
-            // Exclude default graph by filter
-            iter = Iter.filter(findInf(g, s, p, o), q-> ! q.isDefaultGraph());
-        return iter;
+            return findAllNamedGraphInf(s, p, o);
+        // Same as specific named graph - we return quads in the union graph.
+//        if ( Quad.isUnionGraph(g) ) {}
+        return findOneGraphInf(g, s, p, o);
     }
 
     @Override
@@ -111,6 +137,11 @@ public class DatasetGraphRDFS extends DatasetGraphWrapper implements DatasetGrap
     { return contains(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()); }
 
     @Override
-    public boolean contains(Node g, Node s, Node p, Node o)
-    { return getR().contains(g, s, p, o); }
+    public boolean contains(Node g, Node s, Node p, Node o) {
+        // Go through the inference machinery.
+        Iterator<Quad> iter = find(g, s, p, o);
+        try {
+            return iter.hasNext();
+        } finally { Iter.close(iter); }
+    }
 }
