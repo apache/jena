@@ -118,6 +118,8 @@
 import Menu from '@/components/dataset/Menu'
 import Yasqe from '@triply/yasqe'
 import Yasr from '@triply/yasr'
+import queryString from 'query-string'
+import Vue from 'vue'
 
 const SELECT_TRIPLES_QUERY = `SELECT ?subject ?predicate ?object
 WHERE {
@@ -212,6 +214,27 @@ export default {
             resizeable: false,
             requestConfig: {
               endpoint: this.$fusekiService.getFusekiUrl(`/${vm.datasetName}/sparql`)
+            },
+            /**
+             * Based on YASGUI code, but modified to avoid parsing the Vue Route query
+             * hash. Note that we cannot use `document.location.hash` since it could
+             * contain the ?query=... too. Instead, we must use Vue Route path value.
+             *
+             * @param {Yasqe} yasqe
+             */
+            createShareableLink: function (yasqe) {
+              return (
+                document.location.protocol +
+                '//' +
+                document.location.host +
+                document.location.pathname +
+                document.location.search +
+                '#' +
+                vm.$route.path +
+                '?query=' +
+                // Same as YASGUI does, good idea to avoid security problems...
+                queryString.stringify(queryString.parse(yasqe.getValue()))
+              )
             }
           }
         )
@@ -219,10 +242,24 @@ export default {
           vm.yasqe.saveQuery()
           vm.yasr.setResponse(response, duration)
         })
+        if (this.$route.query.query !== undefined) {
+          vm.setQuery(this.$route.query.query)
+        }
         this.syncYasqePrefixes()
         this.loading = false
       }, 300)
     })
+  },
+
+  beforeRouteUpdate (from, to, next) {
+    Vue.nextTick(() => {
+      if (this.$route.query.query !== undefined) {
+        // N.B: a blank value, like query=, will clear the query editor. Not sure if
+        //      desirable, but this can be easily modified later if necessary.
+        this.setQuery(this.$route.query.query)
+      }
+    })
+    next()
   },
 
   watch: {
@@ -243,6 +280,11 @@ export default {
 
   methods: {
     setQuery (query) {
+      // Passing this query value through queryString.stringify(.parse) creates an
+      // invalid query. Tested some XSS values with Chrome and FFox, and couldn't
+      // trigger a popup/alert by modifying the query passed, looks like YASQE does
+      // the query cleaning before displaying it.
+      // See: https://github.com/payloadbox/xss-payload-list
       this.yasqe.setValue(query)
       this.syncYasqePrefixes()
     },
