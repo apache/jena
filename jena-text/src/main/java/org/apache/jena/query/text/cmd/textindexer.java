@@ -212,7 +212,7 @@ public class textindexer extends CmdARQ {
             long progressThisInterval = progressCount - progressAtStartOfInterval ;
             long intervalDuration = now - intervalStartTime ;
             long overallDuration = now - startTime ;
-            String message = progressCount + " (" + progressThisInterval / (intervalDuration / 1000) + " per second)"
+            String message = progressCount + " (" + progressThisInterval / (intervalDuration / 1000) + " per second) "
                              + progressMessage + " (" + progressCount / Math.max(overallDuration / 1000, 1)
                              + " per second overall)" ;
             log.info(message) ;

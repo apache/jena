@@ -482,7 +482,7 @@ public final class BPTreeNode extends BPTreePage
 
     /*
      * Traverse this page, ensuring the node below is not full before
-     * decending. Therefore there is always space to do the actual insert.
+     * descending. Therefore there is always space to do the actual insert.
      */
 
     @Override

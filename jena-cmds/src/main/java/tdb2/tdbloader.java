@@ -162,6 +162,8 @@ public class tdbloader extends CmdTDBGraph {
                 .map(Path::toString)
                 );
         if ( ! problemFiles.isEmpty() ) {
+            if ( problemFiles.size() == 1 )
+                throw new CmdException("Can't read file : "+problemFiles.get(0));
             String str = String.join(", ", problemFiles);
             throw new CmdException("Can't read files : "+str);
         }

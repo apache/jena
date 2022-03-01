@@ -200,8 +200,8 @@ public class JoinClassifier
             System.err.println("J: Case 3 (false=ok) = " + bad3) ;
         if ( bad3 )
             return false;
-
-        System.err.println("J: Result: OK");
+        if ( print )
+            System.err.println("J: Result: OK");
         return true;
     }
 

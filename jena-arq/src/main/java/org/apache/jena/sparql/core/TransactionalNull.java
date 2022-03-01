@@ -26,22 +26,24 @@ import org.apache.jena.sparql.JenaTransactionException;
  * A null action {@link Transactional}.
  * Does not protect anything but does track the transaction status.
  * It does provide "abort".
+ *
+ * c.f. {@link TransactionalNotSupported} which throws exceptions rather than have "do nothing" operations.
  */
 public class TransactionalNull implements Transactional {
 
     // Usage example:
     private static class Example implements Transactional {
-        private final Transactional txn                     = new TransactionalNotSupported() ;
-        @Override public void begin()                       { txn.begin(); }
-        @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
-        @Override public void commit()                      { txn.commit(); }
-        @Override public void abort()                       { txn.abort(); }
-        @Override public boolean promote(Promote mode)      { return txn.promote(mode) ; }
-        @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
-        @Override public void end()                         { txn.end(); }
-        @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
-        @Override public TxnType transactionType()          { return txn.transactionType(); }
-
+        private final Transactional txn                     = new TransactionalNull() ;
+        private final Transactional txn()                   { return txn; }
+        @Override public void begin()                       { txn().begin(); }
+        @Override public void begin(TxnType txnType)        { txn().begin(txnType); }
+        @Override public boolean promote(Promote txnType)   { return txn().promote(txnType); }
+        @Override public void commit()                      { txn().commit(); }
+        @Override public void abort()                       { txn().abort(); }
+        @Override public boolean isInTransaction()          { return txn().isInTransaction(); }
+        @Override public void end()                         { txn().end(); }
+        @Override public ReadWrite transactionMode()        { return txn().transactionMode(); }
+        @Override public TxnType transactionType()          { return txn().transactionType(); }
 //        For DatasetGraphs:
 //        @Override public boolean supportsTransactions()     { return true; }
 //        @Override public boolean supportsTransactionAbort() { return false; }

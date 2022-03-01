@@ -65,7 +65,9 @@ public class FusekiLogging
         "log4j2.properties"
     };
 
-    private static final boolean LogLogging     = System.getenv("FUSEKI_LOGLOGGING") != null || System.getProperty("fuseki.loglogging") != null;
+    private static final boolean LogLogging =
+            System.getenv("FUSEKI_LOGLOGGING") != null ||
+            System.getProperty("fuseki.loglogging") != null;
 
     private static boolean loggingInitialized   = false;
 
