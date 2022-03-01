@@ -283,18 +283,35 @@ public class LogCtl {
 
     private static final String[] log4j2files = {"log4j2.properties", "log4j2.xml"};
 
+    private static final boolean LogLogging =
+            System.getenv("JENA_LOGLOGGING") != null ||
+            System.getProperty("jena.loglogging") != null;
+
+    private static void logLogging(String fmt, Object ... args) {
+        if ( LogLogging ) {
+            System.err.print("Fuseki Logging: ");
+            System.err.printf(fmt, args);
+            System.err.println();
+        }
+    }
+
     /**
      * Setup log4j2, including looking for a file "log4j2.properties" or "log4j2.xml"
      * in the current working directory.
      * @see #setLogging()
      */
     public static void setLog4j2() {
+        logLogging("Ensure Log4j2 setup");
         if ( ! isSetLog4j2property() ) {
             setLog4j2property();
-            if ( isSetLog4j2property() )
+            if ( isSetLog4j2property() ) {
                 return;
+            }
             // Nothing found - built-in default.
+            logLogging("Log4j2: built-in default");
             LogCtlLog4j2.resetLogging(LogCtlLog4j2.log4j2setup);
+        } else {
+            logLogging("Ready set: "+log4j2ConfigProperty+"="+System.getProperty(log4j2ConfigProperty));
         }
     }
 
@@ -323,8 +340,12 @@ public class LogCtl {
      * Setup java.util.logging if it has not been set before; otherwise do nothing.
      */
     public static void setJavaLogging() {
-        if ( System.getProperty(JUL_PROPERTY) != null )
+        logLogging("Ensure java.util.logging setup");
+        if ( System.getProperty(JUL_PROPERTY) != null ) {
+            logLogging(JUL_PROPERTY+"="+System.getProperty(JUL_PROPERTY));
             return;
+        }
+        logLogging("java.util.logging reset logging");
         LogCtlJUL.resetJavaLogging();
     }
 
