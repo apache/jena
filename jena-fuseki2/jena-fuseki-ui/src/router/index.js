@@ -29,7 +29,9 @@ const routes = [
     component: Home
   },
   {
-    path: '/dataset/:datasetName/query',
+    // JENA-2295: we expand the pattern of this path with an `*` to allow for the YASGUI
+    //            query parameter, e.g. /#/dataset/abc/query?query=SELECT...
+    path: '/dataset/:datasetName/query*',
     name: 'DatasetQuery',
     component: () => import(/* webpackChunkName: "datasetQuery" */ '../views/dataset/Query'),
     props: true
