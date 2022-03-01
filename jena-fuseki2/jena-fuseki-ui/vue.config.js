@@ -62,7 +62,9 @@ module.exports = {
         ws: true,
         changeOrigin: true
       }
-    }
+    },
+    client: false,
+    webSocketServer: false
   },
   // Change build paths to make them Maven compatible
   // see https://cli.vuejs.org/config/
