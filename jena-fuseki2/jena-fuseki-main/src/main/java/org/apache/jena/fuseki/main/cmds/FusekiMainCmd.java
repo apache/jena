@@ -28,7 +28,7 @@ import org.apache.jena.fuseki.system.FusekiLogging;
  */
 
 public class FusekiMainCmd {
-    // This class wraps FusekiBasicMain so that it can take control of logging setup.
+    // This class wraps FusekiMain so that it can take control of logging setup.
     // This class does not depend via inheritance on any Jena code
     // and does not trigger Jena initialization.
     // FusekiLogging runs before any Jena code can trigger logging setup.
