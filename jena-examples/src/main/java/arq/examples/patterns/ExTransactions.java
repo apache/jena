@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,30 +16,40 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package arq.examples.patterns;
 
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.sparql.core.TransactionalTrait;
 
-/** Implementation for "un-Transactional" interface.
- *
- * @see TransactionalNull for a do-nothing implementation of Transactions.
- * @see TransactionalNotSupportedMixin
- */
-public class TransactionalNotSupported implements TransactionalNotSupportedMixin
-{
-    /* Using as an interface mixin (trait) and "implements TransactionalNotSupportedMixin"
-     * does not always work. This may be a Eclipse limitation.
-     * The problem arises with hierarchies involving Transactional
-     * where transaction methods are also in the hierarchy.
-     */
+public class ExTransactions {
 
-    // Sometimes implementations will have to include this code
-    // directly to override super class versions.
+    // Usage example: these can't be code.
+    private static class Example1 implements TransactionalTrait {
 
-    // As an included component:
-    private static class Example implements Transactional {
-        private final Transactional txn                     = new TransactionalNotSupported() ;
+        private Transactional theOther;
+        Example1(Transactional transactional) {
+            this.theOther = transactional;
+        }
+
+        private final Transactional txn                     = theOther ;
+        @Override
+        public final Transactional getTxn()                 { return txn; }
+//        For DatasetGraphs:
+        @Override public boolean supportsTransactions()     { return true; }
+        @Override public boolean supportsTransactionAbort() { return false; }
+    }
+
+    // Without public getTxn
+    private static class Example2 implements Transactional {
+
+        private Transactional theOther;
+        Example2(Transactional transactional) {
+            this.theOther = transactional;
+        }
+
+        private final Transactional txn                     = theOther ;
         private final Transactional txn()                   { return txn; }
         @Override public void begin()                       { txn().begin(); }
         @Override public void begin(TxnType txnType)        { txn().begin(txnType); }
@@ -50,21 +60,8 @@ public class TransactionalNotSupported implements TransactionalNotSupportedMixin
         @Override public void end()                         { txn().end(); }
         @Override public ReadWrite transactionMode()        { return txn().transactionMode(); }
         @Override public TxnType transactionType()          { return txn().transactionType(); }
-        // For Datasets: add:
-//        @Override public boolean supportsTransactions()     { return false; }
-//        @Override public boolean supportsTransactionAbort() { return false; }
-    }
-
-    public static Transactional create() { return new TransactionalNotSupported(); }
-
-    @Override
-    public boolean supportsTransactions() {
-        return false ;
-    }
-
-    @Override
-    public boolean supportsTransactionAbort() {
-        return false;
+//        For DatasetGraphs:
+        /*@Override*/ public boolean supportsTransactions()     { return true; }
+        /*@Override*/ public boolean supportsTransactionAbort() { return false; }
     }
 }
-
