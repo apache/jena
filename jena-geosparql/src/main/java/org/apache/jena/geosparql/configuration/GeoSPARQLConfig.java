@@ -60,7 +60,7 @@ public class GeoSPARQLConfig {
     /**
      * Option to dynamically transform GeometryLiteral SRS in calculations.
     */
-    public static boolean ALLOW_GEOMETRY_SRS_TRANSFORMATION = false;
+    public static boolean ALLOW_GEOMETRY_SRS_TRANSFORMATION = true;
     
     /**
      * Option to dynamically transform GeometryLiteral SRS to match requested units in calculations.
