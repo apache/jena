@@ -218,7 +218,6 @@ public class StandardFunctions
 //        9.8.2 fn:format-date
 //        9.8.3 fn:format-time
 
-
 //        15.6 fn:implicit-timezone -> xsd:dayTimeDuration
         add(registry, xfn+"implicit-timezone",  FN_Timezone.class) ;
         // Also available as afn:timezone.
