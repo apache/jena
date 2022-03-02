@@ -83,4 +83,71 @@ public class DistanceFFTest {
         assertEquals(expResult, result, 0.0001);
     }
 
+    /**
+     * Test of exec method, of class DistanceFF.
+     */
+    @Test
+    public void testExec_CRS84_radians() {
+
+        NodeValue v1 = NodeValue.makeNode("Point(11.416666666667 53.633333333333)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("Point(11.575 48.1375)", WKTDatatype.INSTANCE);
+        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.RADIAN_URL));
+        DistanceFF instance = new DistanceFF();
+        double expResult = 7.2822E-6;
+        double result = instance.exec(v1, v2, v3).getDouble();
+        System.out.println("Exp Result: " + expResult);
+        System.out.println("Result: " + result);
+        assertEquals(expResult, result, 0.0001);
+    }
+    
+    /**
+     * Test of exec method, of class DistanceFF.
+     */
+    @Test
+    public void testExec_CRS84_radians2() {
+
+        NodeValue v1 = NodeValue.makeNode("Point(11.575 48.1375)", WKTDatatype.INSTANCE);        
+        NodeValue v2 = NodeValue.makeNode("Point(11.416666666667 53.633333333333)", WKTDatatype.INSTANCE);
+        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.RADIAN_URL));
+        DistanceFF instance = new DistanceFF();
+        double expResult = 7.2822E-6;
+        double result = instance.exec(v1, v2, v3).getDouble();
+        System.out.println("Exp Result: " + expResult);
+        System.out.println("Result: " + result);
+        assertEquals(expResult, result, 0.0001);
+    }
+    
+    /**
+     * Test of exec method, of class DistanceFF.
+     */
+    @Test
+    public void testExec_CRS84_metres() {
+
+        NodeValue v1 = NodeValue.makeNode("Point(11.416666666667 53.633333333333)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("Point(11.575 48.1375)", WKTDatatype.INSTANCE); 
+        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETRE_URN));
+        DistanceFF instance = new DistanceFF();
+        double expResult = 7.2822E-6;
+        double result = instance.exec(v1, v2, v3).getDouble();
+        System.out.println("Exp Result: " + expResult);
+        System.out.println("Result: " + result);
+        assertEquals(expResult, result, 0.0001);
+    }
+    
+    /**
+     * Test of exec method, of class DistanceFF.
+     */
+    @Test
+    public void testExec_CRS84_metres2() {
+
+        NodeValue v1 = NodeValue.makeNode("Point(11.575 48.1375)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("Point(11.416666666667 53.633333333333)", WKTDatatype.INSTANCE);
+        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETRE_URN));
+        DistanceFF instance = new DistanceFF();
+        double expResult = 7.2822E-6;
+        double result = instance.exec(v1, v2, v3).getDouble();
+        System.out.println("Exp Result: " + expResult);
+        System.out.println("Result: " + result);
+        assertEquals(expResult, result, 0.0001);
+    }
 }

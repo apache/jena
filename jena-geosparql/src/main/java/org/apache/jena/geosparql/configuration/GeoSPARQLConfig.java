@@ -58,6 +58,16 @@ public class GeoSPARQLConfig {
     public static int PRECISION_MODEL_SCALE_FACTOR = 1000000;
 
     /**
+     * Option to dynamically transform GeometryLiteral SRS in calculations.
+    */
+    public static boolean ALLOW_GEOMETRY_SRS_TRANSFORMATION = false;
+    
+    /**
+     * Option to dynamically transform GeometryLiteral SRS to match requested units in calculations.
+    */
+    public static boolean ALLOW_UNITS_SRS_TRANSFORMATION = false;
+     
+    /**
      * Initialise all GeoSPARQL property and filter functions with memory
      * indexing.
      * <br>Use this for in-memory indexing GeoSPARQL setup. Query re-write
@@ -318,4 +328,20 @@ public class GeoSPARQLConfig {
         PRECISION_MODEL_SCALE_FACTOR = scaleFactor;
     }
 
+    /**
+     * Sets whether transformation for mismatching Geometry SRS is allowed.
+     * @param allowTransformation 
+     */
+    public static final void allowGeoemtrySRSTransformation(boolean allowTransformation){
+        ALLOW_GEOMETRY_SRS_TRANSFORMATION = allowTransformation;
+    }
+    
+    /**
+     * Sets whether transformation of Geometry SRS according to Units in distance calculation is allowed.
+     * @param allowTransformation 
+     */
+    public static final void allowUnitsSRSTransformation(boolean allowTransformation){
+        ALLOW_UNITS_SRS_TRANSFORMATION = allowTransformation;
+    }
+    
 }
