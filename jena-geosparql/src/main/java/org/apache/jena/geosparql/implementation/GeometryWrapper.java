@@ -18,6 +18,7 @@
 package org.apache.jena.geosparql.implementation;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
@@ -56,6 +57,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.FactoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -63,6 +66,9 @@ import org.opengis.util.FactoryException;
  */
 public class GeometryWrapper implements Serializable {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static boolean BUFFER_WARNING = false;
+    
     private final DimensionInfo dimensionInfo;
     private final SRSInfo srsInfo;
     private final Geometry xyGeometry;
@@ -424,6 +430,13 @@ public class GeometryWrapper implements Serializable {
             
             if (isTargetUnitsLinear) {
                 //Source geometry is not linear but targets are so convert to linear SRS.
+                
+                //Issue one-time warning about error being introduced.
+                if(!BUFFER_WARNING){
+                    BUFFER_WARNING = true;
+                    LOGGER.warn("Applying buffer to non-linear GeometryLiteral using linear Units will increase error.");
+                }
+                
                 String sourceUtmURI = getUTMZoneURI();
                 transformedGeometryWrapper = transform(sourceUtmURI);
                 isTransformNeeded = true;
