@@ -33,7 +33,7 @@ public class TestRDFWriter {
     private static Graph graph = SSE.parseGraph("(graph (:s :p :o))");
 
     @Test public void rdfwriter_1() {
-        RDFWriter.create(graph).build();
+        RDFWriter.source(graph).build();
     }
 
     @Test(expected=RiotException.class)

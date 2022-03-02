@@ -1036,21 +1036,21 @@ public class RDFDataMgr
     }
 
     private static void write$(OutputStream out, Graph graph, RDFFormat serialization) {
-        RDFWriter.create(graph).format(serialization).output(out);
+        RDFWriter.source(graph).format(serialization).output(out);
     }
 
     @SuppressWarnings("deprecation")
     private static void write$(Writer out, Graph graph, RDFFormat serialization) {
-        RDFWriter.create(graph).format(serialization).build().output(out);
+        RDFWriter.source(graph).format(serialization).build().output(out);
     }
 
     private static void write$(OutputStream out, DatasetGraph dataset, RDFFormat serialization) {
-        RDFWriter.create(dataset).format(serialization).output(out);
+        RDFWriter.source(dataset).format(serialization).output(out);
     }
 
     @SuppressWarnings("deprecation")
     private static void write$(Writer out, DatasetGraph dataset, RDFFormat serialization) {
-        RDFWriter.create(dataset).format(serialization).build().output(out);
+        RDFWriter.source(dataset).format(serialization).build().output(out);
     }
 
     /**
