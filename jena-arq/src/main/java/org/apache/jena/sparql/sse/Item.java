@@ -259,20 +259,26 @@ public class Item extends ItemLocation {
         return ((Number)(getNode().getLiteralValue())).intValue();
     }
 
-    public int getLong() {
+    public long getLong() {
         if ( !isNode() )
             throw new ItemException("Not a node, can't be an integer: " + this);
         if ( !getNode().isLiteral() )
             throw new ItemException("Not a literal, can't be a integer: " + this);
-        return ((Number)(getNode().getLiteralValue())).intValue();
+        return ((Number)(getNode().getLiteralValue())).longValue();
+    }
+
+    /** @deprecated Use {@link #asLong} */
+    @Deprecated
+    public long asInteger() {
+        return asLong();
     }
 
     // Get an integer-like value, ignoring typing
-    public long asInteger() {
+    public long asLong() {
         if ( isNode() ) {
             if ( getNode().isLiteral() )
                 // Ignore typing.
-                return Integer.parseInt(getNode().getLiteralLexicalForm());
+                return Long.parseLong(getNode().getLiteralLexicalForm());
         }
         if ( isSymbol() )
             return Integer.parseInt(getSymbol());
