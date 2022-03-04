@@ -95,7 +95,7 @@ public class UpdateWriterVisitor implements UpdateVisitor {
         out.ensureStartOfLine();
         out.print("LOAD");
         out.print(" ");
-        if ( update.getSilent() )
+        if ( update.isSilent() )
             out.print("SILENT ");
 
         outputStringAsURI(update.getSource());
@@ -126,7 +126,7 @@ public class UpdateWriterVisitor implements UpdateVisitor {
 
     protected void printUpdate2(UpdateBinaryOp update, String name) {
         out.print(name);
-        if ( update.getSilent() )
+        if ( update.isSilent() )
             out.print(" SILENT");
         out.print(" ");
         printTargetUpdate2(update.getSrc());

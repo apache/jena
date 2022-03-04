@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,24 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.modify;
+package org.apache.jena.sparql.modify ;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphFactory ;
 
-@RunWith(Suite.class)
-@SuiteClasses( {
-    TestUpdateGraphMem.class
-    , TestUpdateGraphMgtTxnMem.class
-    , TestUpdateGraphMgtGeneralMem.class
-    , TestUpdateOperations.class
-    , TestUpdateSilent.class
-    , TestUpdateCompare.class
-    , TestUpdateWriter.class
-    , TestUpdateBuild.class
-})
-public class TS_Update
-{
+public class TestUpdateGraphMgtGeneralMem extends AbstractTestUpdateGraphMgt {
+    @Override
+    protected DatasetGraph getEmptyDatasetGraph() {
+        return DatasetGraphFactory.create() ;
+    }
 }
-
