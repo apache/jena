@@ -399,13 +399,6 @@ public class UpdateEngineWorker implements UpdateVisitor
         return DynamicDatasets.dynamicDataset(update.getUsing(), update.getUsingNamed(), datasetGraph, false);
     }
 
-    private Graph graphOrDummy(DatasetGraph dsg, Node gn) {
-        Graph g = graphOrThrow(datasetGraph, gn);
-        if ( g == null )
-            g = GraphFactory.createGraphMem();
-        return g;
-    }
-
     protected Element elementFromQuads(List<Quad> quads) {
         ElementGroup el = new ElementGroup();
         ElementTriplesBlock x = new ElementTriplesBlock();
