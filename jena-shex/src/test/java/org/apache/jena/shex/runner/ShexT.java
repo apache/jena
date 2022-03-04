@@ -22,7 +22,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 
-/** Shex test vocabualry. */
+/** Shex test vocabulary. */
 public class ShexT {
     /*
 --------------------

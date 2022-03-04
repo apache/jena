@@ -80,7 +80,7 @@ public abstract class CmdLangParse extends CmdGeneral
 
     @Override
     protected String getSummary() {
-        return getCommandName()+" [--help] [--time] [--base=IRI] [-syntax=FORMAT] [--out=FORMAT] [--count] file ..." ;
+        return getCommandName()+" [--help] [--time] [--base=IRI] [--syntax=FORMAT] [--out=FORMAT] [--count] file ..." ;
     }
 
     protected List<ParseRecord> outcomes = new ArrayList<>();
@@ -248,7 +248,7 @@ public abstract class CmdLangParse extends CmdGeneral
             builder.source(System.in);
         } else {
             // Convert spaces and other characters in file names.
-            // File handling will reverse to open the file correctly 
+            // File handling will reverse to open the file correctly
             // but for base name generation we want the %20 form.
             filename = IRILib.filenameToIRI(filename);
             builder.source(filename);

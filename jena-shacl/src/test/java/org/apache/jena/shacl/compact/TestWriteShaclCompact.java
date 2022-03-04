@@ -87,8 +87,8 @@ public class TestWriteShaclCompact extends AbstractTestShaclCompact {
             System.err.println("graph(jena) = "+graphGot.size());
             System.err.println("graph(ref)  = "+graphOther.size());
             if ( true ) {
-                RDFWriter.create(graphGot).format(RDFFormat.TURTLE_PRETTY).context(cxt).output(System.err);
-                RDFWriter.create(graphOther).format(RDFFormat.TURTLE_PRETTY).context(cxt).output(System.err);
+                RDFWriter.source(graphGot).format(RDFFormat.TURTLE_PRETTY).context(cxt).output(System.err);
+                RDFWriter.source(graphOther).format(RDFFormat.TURTLE_PRETTY).context(cxt).output(System.err);
             }
         }
         assertTrue("test: "+fileBaseName, isomorphic);

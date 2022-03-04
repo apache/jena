@@ -77,7 +77,7 @@ public class RDFWriter {
      * @param graph     A {@link Graph}.
      * @return RDFWriterBuilder
      */
-    public static RDFWriterBuilder create(Graph graph) {
+    public static RDFWriterBuilder source(Graph graph) {
         return create().source(graph);
     }
 
@@ -85,7 +85,7 @@ public class RDFWriter {
      * @param model     A {@link Model}.
      * @return RDFWriterBuilder
      */
-    public static RDFWriterBuilder create(Model model) {
+    public static RDFWriterBuilder source(Model model) {
         return create().source(model);
     }
 
@@ -93,7 +93,7 @@ public class RDFWriter {
      * @param dataset     A {@link DatasetGraph}.
      * @return RDFWriterBuilder
      */
-    public static RDFWriterBuilder create(DatasetGraph dataset) {
+    public static RDFWriterBuilder source(DatasetGraph dataset) {
         return create().source(dataset);
     }
 
@@ -101,6 +101,46 @@ public class RDFWriter {
      * @param dataset     A {@link Dataset}.
      * @return RDFWriterBuilder
      */
+    public static RDFWriterBuilder source(Dataset dataset) {
+        return create().source(dataset);
+    }
+
+    /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
+     * @param graph     A {@link Graph}.
+     * @return RDFWriterBuilder
+     * @deprecated Use {@link #source(Graph)}
+     */
+    @Deprecated
+    public static RDFWriterBuilder create(Graph graph) {
+        return create().source(graph);
+    }
+
+    /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
+     * @param model     A {@link Model}.
+     * @return RDFWriterBuilder
+     * @deprecated Use {@link #source(Model)}
+     */
+    @Deprecated
+    public static RDFWriterBuilder create(Model model) {
+        return create().source(model);
+    }
+
+    /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
+     * @param dataset     A {@link DatasetGraph}.
+     * @return RDFWriterBuilder
+     * @deprecated Use {@link #source(DatasetGraph)}
+     */
+    @Deprecated
+    public static RDFWriterBuilder create(DatasetGraph dataset) {
+        return create().source(dataset);
+    }
+
+    /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
+     * @param dataset     A {@link Dataset}.
+     * @return RDFWriterBuilder
+     * @deprecated Use {@link #source(Dataset)}
+     */
+    @Deprecated
     public static RDFWriterBuilder create(Dataset dataset) {
         return create().source(dataset);
     }
@@ -157,6 +197,14 @@ public class RDFWriter {
         output(javaWriter, format);
     }
 
+    /** Write the source to a Java {@link StringWriter}.
+     * <p>
+     * The {@code Lang} or {@code RDFFormat} must have been set.
+     * @param javaWriter
+     */
+    public void output(StringWriter javaWriter) {
+        output(javaWriter, format);
+    }
 
     /** Write the source to the file.
      * <p>
