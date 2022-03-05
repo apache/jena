@@ -34,7 +34,10 @@ public class RiotTests
     public static String assumedRootURIex = "http://example/base/" ;
 
     // Depends on origin of the tests.
-    //public static String assumedRootURITurtle = "http://w3c.github.io/rdf-tests/turtle/";
+
+//    public static String assumedRootURITurtle = "http://w3c.github.io/rdf-tests/turtle/";
+//    public static String assumedRootURITriG = "http://w3c.github.io/rdf-tests/trig/";
+
     public static String assumedRootURITurtle = "http://www.w3.org/2013/TurtleTests/" ;
     public static String assumedRootURITriG = "http://www.w3.org/2013/TriGTests/" ;
 
@@ -61,26 +64,39 @@ public class RiotTests
             Resource input = action ;
             Resource output = result ;
 
-            if ( testType.equals(VocabLangRDF.TestPositiveSyntaxTTL) )
-                return new RiotSyntaxTest(entry, RDFLanguages.TURTLE, true) ;
+            // Some tests assume a certain base URI.
+
+            // == Syntax tests.
+
+            // TTL
+            if ( testType.equals(VocabLangRDF.TestPositiveSyntaxTTL) ) {
+                String base = rebase(input, assumedRootURITurtle);
+                return new RiotSyntaxTest(entry, base, RDFLanguages.TURTLE, true) ;
+            }
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxTTL) )
                 return new RiotSyntaxTest(entry, RDFLanguages.TURTLE, false) ;
 
-            if ( testType.equals(VocabLangRDF.TestPositiveSyntaxTriG) )
-                return new RiotSyntaxTest(entry, RDFLanguages.TRIG, true) ;
+            // TRIG
+            if ( testType.equals(VocabLangRDF.TestPositiveSyntaxTriG) ) {
+                    String base = rebase(input, assumedRootURITriG);
+                    return new RiotSyntaxTest(entry, base, RDFLanguages.TRIG, true) ;
+                }
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxTriG) )
                 return new RiotSyntaxTest(entry, RDFLanguages.TRIG, false) ;
 
+            // NT
             if ( testType.equals(VocabLangRDF.TestPositiveSyntaxNT) )
                 return new RiotSyntaxTest(entry, RDFLanguages.NTRIPLES, true) ;
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxNT) )
                 return new RiotSyntaxTest(entry, RDFLanguages.NTRIPLES, false) ;
 
+            // NQ
             if ( testType.equals(VocabLangRDF.TestPositiveSyntaxNQ) )
                 return new RiotSyntaxTest(entry, RDFLanguages.NQUADS, true) ;
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxNQ) )
                 return new RiotSyntaxTest(entry, RDFLanguages.NQUADS, false) ;
 
+            // Other
             if ( testType.equals(VocabLangRDF.TestPositiveSyntaxRJ) )
                 return new RiotSyntaxTest(entry, RDFLanguages.RDFJSON, true) ;
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxRJ) )
@@ -89,7 +105,7 @@ public class RiotTests
             if ( testType.equals(VocabLangRDF.TestSurpressed ))
                 return new SurpressedTest(entry) ;
 
-            // Eval.
+            // == Eval tests
 
             if ( testType.equals(VocabLangRDF.TestEvalTTL) ) {
                 String base = rebase(input, assumedRootURITurtle);
@@ -145,6 +161,7 @@ public class RiotTests
 
     static Set<String> allowWarningSet = new HashSet<>();
     static {
+        // example:
         //allowWarningSet.add("#turtle-eval-bad-01");
     }
 
