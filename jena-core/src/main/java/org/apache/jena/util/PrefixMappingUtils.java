@@ -42,7 +42,7 @@ public class PrefixMappingUtils {
      * Later changes to the prefix mapping of the original graph are not reflected in the returned graph.
      * Modifications to the triples contained in the underlying graph are reflected.
      */
-    public static Graph graphxInUsePrefixMapping(Graph graph) {
+    public static Graph graphInUsePrefixMapping(Graph graph) {
         final PrefixMapping prefixMapping = calcInUsePrefixMapping(graph) ;
         prefixMapping.lock() ;
         Graph graph2 = new WrappedGraph(graph) {
