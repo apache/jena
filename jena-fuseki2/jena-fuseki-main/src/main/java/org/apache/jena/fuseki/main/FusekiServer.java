@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.lib.Registry;
 import org.apache.jena.atlas.logging.FmtLog;
@@ -868,6 +869,8 @@ public class FusekiServer {
          * <a href="https://www.eclipse.org/jetty/documentation/current/configuring-security.html#hash-login-service">Eclipse jetty password file</a>.
          */
         public Builder passwordFile(String passwordFile) {
+            if ( passwordFile.startsWith("file:") )
+                passwordFile = IRILib.IRIToFilename(passwordFile);
             this.passwordFile = passwordFile;
             return this;
         }
