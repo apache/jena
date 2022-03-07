@@ -97,7 +97,6 @@ public class RDFConnectionAdapter implements RDFConnection {
 
     @Override
     public QueryExecution query(Query query) {
-        QueryExec queryExec = get().query(query);
         return adapt(get().query(query));
     }
 
