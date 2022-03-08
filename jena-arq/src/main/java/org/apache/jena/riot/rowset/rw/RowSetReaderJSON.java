@@ -21,7 +21,13 @@ package org.apache.jena.riot.rowset.rw;
 import static org.apache.jena.riot.rowset.rw.JSONResultsKW.*;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
@@ -43,6 +49,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.exec.QueryExecResult;
 import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.RowSetBuffered;
 import org.apache.jena.sparql.exec.RowSetStream;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.util.Context;

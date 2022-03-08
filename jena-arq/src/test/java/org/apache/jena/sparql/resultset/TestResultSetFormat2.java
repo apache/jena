@@ -303,16 +303,16 @@ public class TestResultSetFormat2 {
 
     @Test
     public void resultset_csv_01() {
-    	// Normal header
-    	String x = "x,y\n";
-    	parseCSV(x);
+        // Normal header
+        String x = "x,y\n";
+        parseCSV(x);
     }
 
     @Test
     public void resultset_csv_02() {
-    	// Header with variable names using CSV field encoding i.e. surrounded by quotes
-    	String x = "\"x\",\"y\"\n";
-    	parseCSV(x);
+        // Header with variable names using CSV field encoding i.e. surrounded by quotes
+        String x = "\"x\",\"y\"\n";
+        parseCSV(x);
     }
 
     @Test
@@ -367,6 +367,22 @@ public class TestResultSetFormat2 {
         parseJSON(input);
     }
 
+    // A simple head-after-results test
+    @Test
+    public void resultset_json_05() {
+        //@formatter:off
+        String input = StrUtils.strjoinNL("{",
+                                          "     \"results\": {",
+                                          "      \"bindings\":[",
+                                          "       {\"s\":{\"type\":\"uri\",\"value\":\"http://rdf.myexperiment.org/ontologies/snarm/Policy\"}}",
+                                          "      ]",
+                                          "     },",
+                                          "     \"head\":{\"vars\":[\"s\"]}",
+                                          "}");
+        //@formatter:on
+        parseJSON(input);
+    }
+
     private void parseTSV(String x) {
         byte[] b = StrUtils.asUTF8bytes(x);
         ByteArrayInputStream in = new ByteArrayInputStream(b);
@@ -378,12 +394,12 @@ public class TestResultSetFormat2 {
     }
 
     private void parseCSV(String x) {
-    	byte[] b = StrUtils.asUTF8bytes(x);
-    	ByteArrayInputStream in = new ByteArrayInputStream(b);
-    	ResultSet rs2 = ResultSetMgr.read(in, ResultSetLang.RS_CSV);
-    	while (rs2.hasNext()) {
-    		rs2.nextBinding();
-    	}
+        byte[] b = StrUtils.asUTF8bytes(x);
+        ByteArrayInputStream in = new ByteArrayInputStream(b);
+        ResultSet rs2 = ResultSetMgr.read(in, ResultSetLang.RS_CSV);
+        while (rs2.hasNext()) {
+            rs2.nextBinding();
+        }
     }
 
     private void parseJSON(String input) {

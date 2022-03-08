@@ -381,6 +381,13 @@
         <version>${ver.dexxcollection}</version>
       </dependency>
       
+      <!-- For RowSetJSONStreaming -->
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.9.0</version>
+      </dependency>    
+      
       <!-- jsonld-java for JSON-LD 1.0 -->
       <dependency>
         <groupId>com.github.jsonld-java</groupId>

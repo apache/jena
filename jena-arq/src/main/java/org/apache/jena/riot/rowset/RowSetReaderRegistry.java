@@ -57,7 +57,8 @@ public class RowSetReaderRegistry {
         initialized = true;
 
         register(RS_XML,        RowSetReaderXML.factory);
-        register(RS_JSON,       RowSetReaderJSON.factory);
+        // register(RS_JSON,       RowSetReaderJSON.factory);
+        register(RS_JSON,       RowSetReaderJSONStreaming.factory); // Experimental! JENA-2302
 
         register(RS_CSV,        RowSetReaderCSV.factory);
         register(RS_TSV,        RowSetReaderTSV.factory);

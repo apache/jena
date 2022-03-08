@@ -24,37 +24,37 @@ package org.apache.jena.riot.rowset.rw;
 
 public class JSONResultsKW
 {
-    public static String kHead          = "head" ;
-    public static String kVars          = "vars" ;
-    public static String kLink          = "link" ;
-    public static String kResults       = "results" ;
-    public static String kBindings      = "bindings" ;
-    public static String kType          = "type" ;
-    public static String kUri           = "uri"  ;
+    public static final String kHead          = "head" ;
+    public static final String kVars          = "vars" ;
+    public static final String kLink          = "link" ;
+    public static final String kResults       = "results" ;
+    public static final String kBindings      = "bindings" ;
+    public static final String kType          = "type" ;
+    public static final String kUri           = "uri"  ;
 
-    public static String kValue         = "value" ;
-    public static String kLiteral       = "literal" ;
-    public static String kUnbound       = "undef" ;
+    public static final String kValue         = "value" ;
+    public static final String kLiteral       = "literal" ;
+    public static final String kUnbound       = "undef" ;
 
     // Legacy: kTypedLiteral
-    public static String kTypedLiteral  = "typed-literal" ;
-    public static String kXmlLang       = "xml:lang" ;
-    public static String kDatatype      = "datatype" ;
-    public static String kBnode         = "bnode" ;
-    public static String kBoolean       = "boolean" ;
+    public static final String kTypedLiteral  = "typed-literal" ;
+    public static final String kXmlLang       = "xml:lang" ;
+    public static final String kDatatype      = "datatype" ;
+    public static final String kBnode         = "bnode" ;
+    public static final String kBoolean       = "boolean" ;
 
     // RDF-star Triple terms
-    public static String kTriple        = "triple" ;
+    public static final String kTriple        = "triple" ;
     // Alternative type for RDF-star triple terms.
-    public static String kStatement     = "statement" ;
-    public static String kSubject       = "subject" ;
-    public static String kPredicate     = "predicate" ;
-    public static String kProperty      = "property" ;
-    public static String kObject        = "object" ;
+    public static final String kStatement     = "statement" ;
+    public static final String kSubject       = "subject" ;
+    public static final String kPredicate     = "predicate" ;
+    public static final String kProperty      = "property" ;
+    public static final String kObject        = "object" ;
     // RDF-star Triple terms - alternative keywords
-    public static String kSubjectAlt    = "s" ;
-    public static String kPredicateAlt  = "p" ;
-    public static String kObjectAlt     = "o" ;
+    public static final String kSubjectAlt    = "s" ;
+    public static final String kPredicateAlt  = "p" ;
+    public static final String kObjectAlt     = "o" ;
 
 }
 

@@ -65,6 +65,13 @@
       <artifactId>jsonld-java</artifactId>
     </dependency>
     <!-- replace that used via jsonld-java -->
+
+    <!-- For RowSetJSONStreaming -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>    
+
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient-cache</artifactId>
