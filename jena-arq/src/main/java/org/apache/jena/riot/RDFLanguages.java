@@ -207,7 +207,7 @@ public class RDFLanguages
         Lang.TURTLE     = RDFLanguages.TURTLE;
         Lang.TTL        = RDFLanguages.TTL;
         Lang.JSONLD     = RDFLanguages.JSONLD;
-        //Lang.JSONLD10   = RDFLanguages.JSONLD10;
+        Lang.JSONLD10   = RDFLanguages.JSONLD10;
         Lang.JSONLD11   = RDFLanguages.JSONLD11;
         Lang.RDFJSON    = RDFLanguages.RDFJSON;
         Lang.NQUADS     = RDFLanguages.NQUADS;

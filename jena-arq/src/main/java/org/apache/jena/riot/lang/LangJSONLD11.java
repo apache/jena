@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 import com.apicatalog.jsonld.JsonLd;
+import com.apicatalog.jsonld.JsonLdError;
 import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.document.JsonDocument;
 import com.apicatalog.jsonld.lang.Keywords;
@@ -33,48 +34,82 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
 import jakarta.json.JsonStructure;
 import jakarta.json.JsonValue;
+import jakarta.json.stream.JsonLocation;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ReaderRIOT;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.JenaTitanium;
+import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.system.SysJSONLD11;
 import org.apache.jena.sparql.util.Context;
 
 /**
  * JSON-LD 1.1 {@link ReaderRIOT}.
  */
 public class LangJSONLD11 implements ReaderRIOT {
-    public LangJSONLD11() {}
+    private final ErrorHandler errorHandler;
+    private final ParserProfile profile;
+
+    public LangJSONLD11(Lang language, ParserProfile profile, ErrorHandler errorHandler) {
+        this.profile = profile;
+        this.errorHandler = errorHandler;
+    }
 
     @Override
     public void read(InputStream input, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        SysJSONLD11.checkForTitanium();
         try {
             Document document = JsonDocument.of(input);
             read(document, output, context);
+        } catch (JsonLdError ex) {
+            handleJsonLdError(ex);
         } catch (Exception ex) {
+            errorHandler.error(ex.getMessage(), -1, -1);
             throw new RiotException(ex);
         }
+    }
+
+    private void handleJsonLdError(JsonLdError ex) {
+        if ( ex.getCause() instanceof jakarta.json.stream.JsonParsingException) {
+            jakarta.json.stream.JsonParsingException exp = (jakarta.json.stream.JsonParsingException)(ex.getCause());
+            JsonLocation loc = exp.getLocation();
+            errorHandler.error(ex.getMessage(), loc.getLineNumber(), loc.getColumnNumber());
+        } else {
+            errorHandler.error(ex.getMessage(), -1, -1);
+        }
+        throw new RiotException(ex);
     }
 
     @Override
     public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        SysJSONLD11.checkForTitanium();
         try {
             Document document = JsonDocument.of(in);
             read(document, output, context);
+        } catch (JsonLdError ex) {
+            ex.printStackTrace();
+            handleJsonLdError(ex);
         } catch (Exception ex) {
+            errorHandler.error(ex.getMessage(), -1, -1);
             throw new RiotException(ex);
         }
     }
 
-    private void read(Document document, StreamRDF output, Context context) throws Exception {
+    private void read(Document document, StreamRDF output, Context context) throws JsonLdError {
         // JSON-LD to RDF
         RdfDataset dataset = JsonLd.toRdf(document).get();
         extractPrefixes(document, output::prefix);
         JenaTitanium.convert(dataset, output);
+
+//        try {
+//
+//        } catch (RuntimeException ex) {
+//    }
+//    catch (IOException e) {
+//        errorHandler.error(e.getMessage(), -1, -1);
+//        IO.exception(e) ;
+//    }
     }
 
     /**
@@ -95,14 +130,25 @@ public class LangJSONLD11 implements ReaderRIOT {
     private static void extractPrefixes(Document document, BiConsumer<String, String> action) {
         try {
             JsonStructure js = document.getJsonContent().get();
-            JsonValue jv = js.asJsonObject().get(Keywords.CONTEXT);
-            extractPrefixes(jv, action);
+            switch(js.getValueType()) {
+                case ARRAY :
+                    extractPrefixes(js, action);
+                    break;
+                case OBJECT :
+                    JsonValue jv = js.asJsonObject().get(Keywords.CONTEXT);
+                    extractPrefixes(jv, action);
+                    break;
+                default :
+                    break;
+            }
         } catch(Throwable ex) {
             Log.warn(LangJSONLD11.class, "Unexpected problem while extracting prefixes: "+ex.getMessage(), ex);
         }
     }
 
     private static void extractPrefixes(JsonValue jsonValue, BiConsumer<String, String> action) {
+        if ( jsonValue == null )
+            return ;
         // JSON-LD 1.1 section 9.4
         switch(jsonValue.getValueType()) {
             case ARRAY :

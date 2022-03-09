@@ -87,7 +87,7 @@ import org.apache.jena.vocabulary.RDF ;
  * Note that this class also provides a static method to convert jena RDF data to the corresponding object in JsonLD API:
  * {@link #toJsonLDJavaAPI(org.apache.jena.riot.RDFFormat.JSONLDVariant, DatasetGraph, PrefixMap, String, Context)}
  */
-public class JsonLDWriter extends WriterDatasetRIOTBase
+public class JsonLD10Writer extends WriterDatasetRIOTBase
 {
     private static final String SYMBOLS_NS = "http://jena.apache.org/riot/jsonld#" ;
     private static Symbol createSymbol(String localName) {
@@ -121,7 +121,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 
     private final RDFFormat format ;
 
-    public JsonLDWriter(RDFFormat syntaxForm) {
+    public JsonLD10Writer(RDFFormat syntaxForm) {
         format = syntaxForm ;
     }
 

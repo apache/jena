@@ -55,11 +55,17 @@ public class Lang
     /** Alternative constant for {@link #NTRIPLES} */
     public static Lang NT ;
 
-    /** <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
+    /**
+     * <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>.
+     * <p>
+     * This is the system default.
+     */
     public static Lang JSONLD ;
 
-    //public static Lang JSONLD10 ;
+    /** JSONLD 1.0 */
+    public static Lang JSONLD10 ;
 
+    /** JSONLD 1.1 */
     public static Lang JSONLD11 ;
 
     /**

@@ -21,7 +21,7 @@ package org.apache.jena.riot;
 import java.io.OutputStream;
 
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.writer.JsonLDWriter;
+import org.apache.jena.riot.writer.JsonLD10Writer;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
 
@@ -33,7 +33,7 @@ import com.github.jsonldjava.core.JsonLdOptions;
  * This class provides setters to define a "Context" suitable to be passed as
  * last argument to  {@link org.apache.jena.riot.WriterDatasetRIOT#write(OutputStream, DatasetGraph, PrefixMap, String, Context)}
  * when the WriterDatasetRIOT has been created with one of the JSON-LD RDFFormat variants (that is, when it is
- * an instance of {@link org.apache.jena.riot.writer.JsonLDWriter})
+ * an instance of {@link org.apache.jena.riot.writer.JsonLD10Writer})
  *
  * Parameters that are actually useful depend on the JSON-LD output variant.
  *
@@ -51,7 +51,7 @@ public class JsonLDWriteContext extends Context {
      * @param opts the options as defined by the JSON-LD java API
      */
     public void setOptions(JsonLdOptions opts) {
-        set(JsonLDWriter.JSONLD_OPTIONS, opts);
+        set(JsonLD10Writer.JSONLD_OPTIONS, opts);
     }
 
     /**
@@ -66,7 +66,7 @@ public class JsonLDWriteContext extends Context {
      * @see #setJsonLDContext(Object)
      */
     public void setJsonLDContext(String jsonLdContext) {
-        set(JsonLDWriter.JSONLD_CONTEXT, jsonLdContext);
+        set(JsonLD10Writer.JSONLD_CONTEXT, jsonLdContext);
     }
 
     /**
@@ -81,7 +81,7 @@ public class JsonLDWriteContext extends Context {
      * @see #setJsonLDContext(String)
      */
     public void setJsonLDContext(Object jsonLdContext) {
-        set(JsonLDWriter.JSONLD_CONTEXT, jsonLdContext);
+        set(JsonLD10Writer.JSONLD_CONTEXT, jsonLdContext);
     }
 
     /**
@@ -97,7 +97,7 @@ public class JsonLDWriteContext extends Context {
      * @param jsonLdContext the value of the "@context" node. Note the string is supposed to be a JSON Value: if passing an URI, the String must be quoted.
      */
     public void setJsonLDContextSubstitution(String jsonLdContext) {
-        set(JsonLDWriter.JSONLD_CONTEXT_SUBSTITUTION, jsonLdContext);
+        set(JsonLD10Writer.JSONLD_CONTEXT_SUBSTITUTION, jsonLdContext);
     }
 
     /**
@@ -105,7 +105,7 @@ public class JsonLDWriteContext extends Context {
      * @param frame the Json Object used as frame for the "frame" output
      */
     public void setFrame(String frame) {
-        set(JsonLDWriter.JSONLD_FRAME, frame);
+        set(JsonLD10Writer.JSONLD_FRAME, frame);
     }
 
     /**
@@ -113,7 +113,7 @@ public class JsonLDWriteContext extends Context {
      * @param frame the frame Object expected by the JSON-LD java API
      */
     public void setFrame(Object frame) {
-        set(JsonLDWriter.JSONLD_FRAME, frame);
+        set(JsonLD10Writer.JSONLD_FRAME, frame);
     }
 
 }
