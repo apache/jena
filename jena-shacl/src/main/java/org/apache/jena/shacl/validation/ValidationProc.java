@@ -80,7 +80,6 @@ public class ValidationProc {
         try {
             ValidationContext vCxt = ValidationContext.create(shapes, data);
             return plainValidation(vCxt, shapes, data);
-        //} catch (ShaclParseException ex) {
         } finally { out.setAbsoluteIndent(x); }
     }
 
@@ -152,7 +151,7 @@ public class ValidationProc {
         }
     }
 
-    // Make ValidationContext carry the ShaclVAlidator to recurse on.
+    // Make ValidationContext carry the ShaclValidator to recurse on.
     // Recursion for shapes of shapes. "shape-expecting constraint parameters"
     public static void execValidateShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
         VLib.validateShape(vCxt, data, shape, focusNode);

@@ -26,6 +26,7 @@ import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -38,10 +39,6 @@ import org.apache.jena.update.UpdateRequest;
 public class update extends CmdUpdate {
     static final ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "update", "file");
     static final ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "dump");       // Write
-                                                                               // the
-                                                                               // result
-                                                                               // to
-                                                                               // stdout.
 
     List<String> requestFiles = null;
     boolean dump = false;
@@ -99,11 +96,15 @@ public class update extends CmdUpdate {
 
     protected void execOneFile(String filename, DatasetGraph store) {
         UpdateRequest req = UpdateFactory.read(filename, updateSyntax);
+        PrefixMap pmap = store.prefixes();
+        pmap.putAll(req.getPrefixMapping());
         UpdateExec.newBuilder().update(req).dataset(store).execute();;
     }
 
     protected void execOne(String requestString, DatasetGraph store) {
         UpdateRequest req = UpdateFactory.create(requestString, updateSyntax);
+        PrefixMap pmap = store.prefixes();
+        pmap.putAll(req.getPrefixMapping());
         UpdateExec.newBuilder().update(req).dataset(store).execute();
     }
 

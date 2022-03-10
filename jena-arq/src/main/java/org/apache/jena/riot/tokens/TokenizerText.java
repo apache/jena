@@ -33,7 +33,10 @@ import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.RiotChars;
 import org.apache.jena.sparql.ARQInternalErrorException;
 
-/** Tokenizer for all sorts of things RDF-ish */
+/**
+ * Tokenizer for the Turtle family of syntaxes.
+ * Supports addition tokens.
+ */
 public final class TokenizerText implements Tokenizer
 {
     // Drop through to final general symbol/keyword reader, including <=, !=
@@ -54,7 +57,7 @@ public final class TokenizerText implements Tokenizer
     // Whether whitespace between tokens includes newlines (in various forms).
     private final boolean lineMode;
     private boolean finished = false;
-    private TokenChecker checker = null;
+    private final TokenChecker checker = null;
 
     // The code assumes that errors throw exception and so stop parsing.
     private final ErrorHandler errorHandler;
@@ -249,7 +252,7 @@ public final class TokenizerText implements Tokenizer
             if ( reader.peekChar() == CH_AT ) {
                 reader.readChar();
                 // White space is not legal here.
-                // The Turtle spec terminal is "LANGTAG" which includes the '@'.
+                // The spec terminal is "LANGTAG" which includes the '@'.
                 Token mainToken = new Token(token);
                 mainToken.setType(TokenType.LITERAL_LANG);
                 mainToken.setSubToken1(token);
@@ -295,7 +298,6 @@ public final class TokenizerText implements Tokenizer
             int ch2 = reader.peekChar();
             if ( ch2 == CH_COLON ) {
                 reader.readChar();
-                // Blank node :label must be at least one char
                 token.setImage(readBlankNodeLabel());
                 token.setType(TokenType.BNODE);
                 if ( Checking ) checkBlankNode(token.getImage());
@@ -355,7 +357,7 @@ public final class TokenizerText implements Tokenizer
                     return token;
                 }
                 token.setType(TokenType.GT);
-                //token.setImage(">>");
+                //token.setImage(">");
                 return token;
             }
 
@@ -400,9 +402,8 @@ public final class TokenizerText implements Tokenizer
             }
 
             case CH_AMPHERSAND: reader.readChar(); token.setType(TokenType.AMPERSAND);/*token.setImage(CH_AMPHERSAND);*/ return token;
-            // Specials (if blank node processing off)
+            // Specials (if prefix names processing is off)
             //case CH_COLON:      reader.readChar(); token.setType(TokenType.COLON); /*token.setImage(COLON);*/return token;
-
             // Done above with blank nodes.
             //case CH_UNDERSCORE: reader.readChar(); token.setType(TokenType.UNDERSCORE);/*token.setImage(CH_UNDERSCORE);*/ return token;
             case CH_LT:         reader.readChar(); token.setType(TokenType.LT);        /*token.setImage(CH_LT);*/ return token;
@@ -430,7 +431,7 @@ public final class TokenizerText implements Tokenizer
 
         */
 
-        // TODO readNumberNoSign
+        // TODO extract readNumberNoSign
 
         int signCh = 0;
 
@@ -886,9 +887,6 @@ public final class TokenizerText implements Tokenizer
                 fatal("Blank node label missing (EOF found)");
             if ( isWhitespace(ch) )
                 fatal("Blank node label missing");
-            // if ( ! isAlpha(ch) && ch != '_' )
-            // Not strict
-
             if ( !RiotChars.isPNChars_U_N(ch) )
                 fatal("Blank node label does not start with alphabetic or _ : '%c'", (char)ch);
             reader.readChar();
@@ -1057,7 +1055,7 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-    // Assume have read the first quote char.
+    // Assume we have read the first quote char.
     // On return:
     //   If false, have moved over no more characters (due to pushbacks)
     //   If true, at end of 3 quotes
@@ -1249,8 +1247,7 @@ public final class TokenizerText implements Tokenizer
 
     private final int readCharEscape() {
         // PN_LOCAL_ESC ::= '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'"
-        // | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' |
-        // '%' )
+        //                | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
 
         int c = reader.readChar();
         if ( c == EOF )
@@ -1324,7 +1321,8 @@ public final class TokenizerText implements Tokenizer
         errorHandler.warning(msg, reader.getLineNum(), reader.getColNum());
     }
 
-    /** Error - at the tokenizer level, it can continue (with some junk) but it is a serious error and the
+    /**
+     * Error - at the tokenizer level, it can continue (with some junk) but it is a serious error and the
      * caller probably should treat as an error and stop.
      * @param message
      * @param args
