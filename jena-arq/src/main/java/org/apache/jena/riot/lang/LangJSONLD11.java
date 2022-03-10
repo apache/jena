@@ -101,15 +101,6 @@ public class LangJSONLD11 implements ReaderRIOT {
         RdfDataset dataset = JsonLd.toRdf(document).get();
         extractPrefixes(document, output::prefix);
         JenaTitanium.convert(dataset, output);
-
-//        try {
-//
-//        } catch (RuntimeException ex) {
-//    }
-//    catch (IOException e) {
-//        errorHandler.error(e.getMessage(), -1, -1);
-//        IO.exception(e) ;
-//    }
     }
 
     /**
