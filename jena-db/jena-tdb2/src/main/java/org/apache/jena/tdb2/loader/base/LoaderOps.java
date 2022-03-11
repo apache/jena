@@ -18,6 +18,7 @@
 
 package org.apache.jena.tdb2.loader.base;
 
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -30,6 +31,7 @@ import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.dboe.trans.data.TransBinaryDataFile;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFWrapper;
@@ -99,11 +101,23 @@ public class LoaderOps {
      * "no output".
      */
     public static void inputFile(StreamRDF sink, String source, ProgressMonitor monitor) {
-        if ( monitor != null ) {
+        if ( monitor != null )
             sink = new ProgressStreamRDF(sink, monitor);
-        }
         sink.start();
         RDFParser.source(source).parse(sink);
+        sink.finish();
+    }
+
+    /**
+     * Parse one file, with an optional progress monitor. Pass null to {@code monitor} for
+     * "no output".
+     * @param syntax
+     */
+    public static void inputStream(StreamRDF sink, InputStream input, Lang syntax, ProgressMonitor monitor) {
+        if ( monitor != null )
+            sink = new ProgressStreamRDF(sink, monitor);
+        sink.start();
+        RDFParser.source(input).lang(syntax).parse(sink);
         sink.finish();
     }
 

@@ -18,11 +18,13 @@
 
 package org.apache.jena.tdb2.loader.base;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.system.progress.MonitorOutput;
 import org.apache.jena.system.progress.ProgressMonitor;
@@ -114,6 +116,16 @@ public abstract class LoaderBase implements DataLoader {
             finishException(ex);
             throw ex;
         }
+    }
+
+    @Override
+    public void loadFromInputStream(String label, InputStream input, Lang syntax) {
+        ProgressMonitor monitor = createProgressMonitor(output);
+        monitor.startMessage("Start: "+label);
+        monitor.start();
+        LoaderOps.inputStream(stream(), input, syntax, monitor);
+        monitor.finish();
+        monitor.finishMessage("Finished: "+label);
     }
 
     protected abstract ProgressMonitor createProgressMonitor(MonitorOutput output);
