@@ -33,9 +33,7 @@ import org.apache.jena.riot.lang.*;
 import org.apache.jena.riot.lang.extra.TurtleJCC;
 import org.apache.jena.riot.protobuf.ProtobufRDF;
 import org.apache.jena.riot.protobuf.RiotProtobufException;
-import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.thrift.RiotThriftException;
 import org.apache.jena.riot.thrift.ThriftRDF;
 import org.apache.jena.sparql.util.Context;
@@ -76,7 +74,8 @@ public class RDFParserRegistry
         ReaderRIOTFactory parserFactory          = ReaderRIOTLang.factory;
         // Others
         ReaderRIOTFactory parserFactoryRDFXML    = ReaderRIOTRDFXML.factory;
-        ReaderRIOTFactory parserFactoryJsonLD    = new ReaderRIOTFactoryJSONLD();
+        ReaderRIOTFactory parserFactoryJsonLD10  = new ReaderRIOTFactoryJSONLD10();
+        ReaderRIOTFactory parserFactoryJsonLD11  = new ReaderRIOTFactoryJSONLD11();
         ReaderRIOTFactory parserFactoryProtobuf  = ReaderRDFProtobuf.factory;
         ReaderRIOTFactory parserFactoryThrift    = ReaderRDFThrift.factory;
         ReaderRIOTFactory parserFactoryTriX      = ReaderTriX.factory;
@@ -87,13 +86,17 @@ public class RDFParserRegistry
         registerLangTriples(TURTLE,     parserFactory);
         registerLangTriples(RDFJSON,    parserFactory);
         registerLangTriples(RDFXML,     parserFactoryRDFXML);
-        registerLangTriples(JSONLD,     parserFactoryJsonLD);
         registerLangTriples(RDFPROTO,   parserFactoryProtobuf);
         registerLangTriples(RDFTHRIFT,  parserFactoryTriX);
         registerLangTriples(TRIX,       parserFactoryTriX);
         registerLangTriples(RDFNULL,    parserFactoryRDFNULL);
 
-        registerLangQuads(JSONLD,       parserFactoryJsonLD);
+        // Register default JSON-LD here.
+        registerLangTriples(JSONLD,     parserFactoryJsonLD10);
+
+        registerLangTriples(JSONLD10,   parserFactoryJsonLD10);
+        registerLangTriples(JSONLD11,   parserFactoryJsonLD11);
+
         registerLangQuads(NQUADS,       parserFactory);
         registerLangQuads(TRIG,         parserFactory);
         registerLangQuads(RDFPROTO,     parserFactoryProtobuf);
@@ -101,13 +104,14 @@ public class RDFParserRegistry
         registerLangQuads(TRIX,         parserFactoryTriX);
         registerLangQuads(RDFNULL,      parserFactoryRDFNULL);
 
+        // Register default JSON-LD here.
+        registerLangQuads(JSONLD,       parserFactoryJsonLD10);
+
+        registerLangQuads(JSONLD10,     parserFactoryJsonLD10);
+        registerLangQuads(JSONLD11,     parserFactoryJsonLD11);
+
         // Javacc based Turtle parser, different language name.
         TurtleJCC.register();
-
-        // Currently done in currently done in SysJSONLD11.init.
-        //registerLangTriples(Lang.JSONLD11, jsonld11ReaderFactory);
-        //registerLangQuads(Lang.JSONLD11, jsonld11ReaderFactory);
-
     }
 
     /**
@@ -198,14 +202,26 @@ public class RDFParserRegistry
         }
     }
 
-    private static class ReaderRIOTFactoryJSONLD implements ReaderRIOTFactory {
+    private static class ReaderRIOTFactoryJSONLD10 implements ReaderRIOTFactory {
         @Override
         public ReaderRIOT create(Lang language, ParserProfile profile) {
-            if ( !Lang.JSONLD.equals(language) )
-                throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD");
-            return new JsonLDReader(language, profile, profile.getErrorHandler());
+            if ( !Lang.JSONLD.equals(language) && !Lang.JSONLD10.equals(language) )
+                throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD 1.0");
+            // jsonld-java is JSON-LD 1.0
+            return new LangJSONLD10(language, profile, profile.getErrorHandler());
         }
     }
+
+    private static class ReaderRIOTFactoryJSONLD11 implements ReaderRIOTFactory {
+        @Override
+        public ReaderRIOT create(Lang language, ParserProfile profile) {
+            if ( !Lang.JSONLD.equals(language) && !Lang.JSONLD11.equals(language) )
+                throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD 1.1");
+            // Titanium json-ld
+            return new LangJSONLD11(language, profile, profile.getErrorHandler());
+        }
+    }
+
 
     private static class ReaderRDFProtobuf implements ReaderRIOT {
         static ReaderRIOTFactory factory = (Lang language, ParserProfile profile) -> new ReaderRDFProtobuf(profile);

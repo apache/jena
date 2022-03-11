@@ -225,7 +225,7 @@ public class TestJsonLDWriter {
 
         // the context used in this case, as it would automatically be created as none is set
         // it includes one prefix
-        Object ctx = JsonLDWriter.createJsonldContext(m.getGraph());
+        Object ctx = JsonLD10Writer.createJsonldContext(m.getGraph());
 
         // remove the prefix from m
         m.removeNsPrefix("ex");
@@ -235,7 +235,7 @@ public class TestJsonLDWriter {
 
         // the model wo prefix, output as jsonld using a context that defines the prefix
         Context jenaCtx = new Context();
-        jenaCtx.set(JsonLDWriter.JSONLD_CONTEXT, ctx);
+        jenaCtx.set(JsonLD10Writer.JSONLD_CONTEXT, ctx);
         String s3 = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
 
         assertTrue(s3.length() == s1.length());
@@ -325,7 +325,7 @@ public class TestJsonLDWriter {
         // only output the persons using a frame
 
         frame.put("@type", ns +"Person");
-        jenaCtx.set(JsonLDWriter.JSONLD_FRAME, frame.toString());
+        jenaCtx.set(JsonLD10Writer.JSONLD_FRAME, frame.toString());
         String jsonld = toString(m, RDFFormat.JSONLD_FRAME_PRETTY, jenaCtx);
 
         Model m2 = parse(jsonld);
@@ -340,7 +340,7 @@ public class TestJsonLDWriter {
 
         frame = new JsonObject();
         frame.put("http://schema.org/jobTitle", new JsonObject());
-        jenaCtx.set(JsonLDWriter.JSONLD_FRAME, JsonUtils.fromString(frame.toString()));
+        jenaCtx.set(JsonLD10Writer.JSONLD_FRAME, JsonUtils.fromString(frame.toString()));
         jsonld = toString(m, RDFFormat.JSONLD_FRAME_FLAT, jenaCtx);
         m2 = parse(jsonld);
         // 1 subject with a type in m2
@@ -488,7 +488,7 @@ public class TestJsonLDWriter {
         Context jenaContext = null;
 
         // the JSON-LD API object. It's a map
-        Map<String, Object> map = (Map<String, Object>) JsonLDWriter.toJsonLDJavaAPI((RDFFormat.JSONLDVariant)RDFFormat.JSONLD.getVariant()
+        Map<String, Object> map = (Map<String, Object>) JsonLD10Writer.toJsonLDJavaAPI((RDFFormat.JSONLDVariant)RDFFormat.JSONLD.getVariant()
                 , g, pm, base, jenaContext);
 
         // get the @context:

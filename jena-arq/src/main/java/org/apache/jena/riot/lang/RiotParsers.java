@@ -83,6 +83,8 @@ public class RiotParsers {
         return null;
     }
 
+    // Package access for tests.
+
     /*package*/ static LangNTriples createParserNTriples(Tokenizer tokenizer, StreamRDF dest, ParserProfile profile) {
         LangNTriples parser = new LangNTriples(tokenizer, profile, dest);
         return parser;

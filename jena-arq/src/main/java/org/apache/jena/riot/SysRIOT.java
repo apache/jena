@@ -18,7 +18,10 @@
 
 package org.apache.jena.riot;
 
+import java.util.Objects;
+
 import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.rdf.model.RDFReaderI;
 import org.apache.jena.sparql.util.Context;
@@ -112,5 +115,60 @@ public class SysRIOT
             return "http://localhost/stdin/";
         String x = IRILib.filenameToIRI(filename);
         return x;
+    }
+
+
+    private static Boolean isJSONLD11 = null;
+    private static ReaderRIOTFactory readerFactoryDft = null;
+    private static ReaderRIOTFactory readerFactoryJSON10;
+    private static ReaderRIOTFactory readerFactoryJSON11;
+
+    /**
+     * <p>
+     * Flip between JSON-LD 1.0 and JSON-LD 1.1 as the default parser for JSON-LD
+     * ({@code Lang.JSONLD}). Both are available as {@code Lang.JSONLD10} and
+     * {@code Lang.JSONLD11} respectively.
+     * This function control the setting of content type
+     * "application/ld+json" and {@code Lang.JSONLD} for input (parsing).
+     * </p><p>
+     * <em>This function is not a permanent API.</em>
+     * </p><p>
+     * The default output is currently fixed as JSON-LD 1.0. A specific version can be obtained by choosing the versioned language name.
+     * </p><p>
+     * Apache Jena uses
+     * <a href="https://github.com/jsonld-java/jsonld-java">jsonld-java</a> for
+     * JSON-LD 1.0 and <a href="https://github.com/filip26/titanium-json-ld">Titanium</a>
+     * for JSON-LD 1.1.
+     * </p><p>We are grateful to each of communities for the work in implementing and maintaining these projects.
+     * </p>
+     * Contribute to <a href="https://issues.apache.org/jira/browse/JENA-2153">JENA-2153<a/> to
+     * improve the JSON-LD 1.1 output.
+     * <p>
+     * @param version   A string that is either "1.1" or "1.0" or "" (reset to system installation default)
+     */
+    public static void setDefaultJSONLD(String version) {
+        Objects.requireNonNull(version, "Argument 'version' must be \"1.1\", \"1.0\" or \"\" (empty string)");
+
+        if ( readerFactoryDft == null ) {
+            readerFactoryDft = RDFParserRegistry.getFactory(Lang.JSONLD);
+            readerFactoryJSON10 = RDFParserRegistry.getFactory(Lang.JSONLD10);
+            readerFactoryJSON11 = RDFParserRegistry.getFactory(Lang.JSONLD11);
+        }
+        switch (version) {
+            case "":
+                RDFParserRegistry.registerLangTriples(Lang.JSONLD, readerFactoryDft);
+                RDFParserRegistry.registerLangQuads(Lang.JSONLD, readerFactoryDft);
+                return;
+            case "1.1":
+                RDFParserRegistry.registerLangTriples(Lang.JSONLD, readerFactoryJSON11);
+                RDFParserRegistry.registerLangQuads(Lang.JSONLD, readerFactoryJSON11);
+                return;
+            case "1.0":
+                RDFParserRegistry.registerLangTriples(Lang.JSONLD, readerFactoryJSON10);
+                RDFParserRegistry.registerLangQuads(Lang.JSONLD, readerFactoryJSON10);
+                return;
+            default:
+                Log.warn(SysRIOT.class, "Version string not recognized: '"+version+"'");
+        }
     }
 }
