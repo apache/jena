@@ -1,0 +1,47 @@
+{
+  "version" : "4.5.0-SNAPSHOT" ,
+  "built" : "2022-03-11T09:03:24Z" ,
+  "startDateTime" : "2022-03-11T09:03:31.834+00:00" ,
+  "uptime" : 4506 ,
+  "datasets" : [
+    {
+      "ds.name" : "/ds1" ,
+      "ds.state" : true ,
+      "ds.services" : [
+        {
+          "srv.type" : "update" ,
+          "srv.description" : "SPARQL Update" ,
+          "srv.endpoints" : [
+            "" ,
+            "update"
+          ]
+        } ,
+        {
+          "srv.type" : "gsp-r" ,
+          "srv.description" : "Graph Store Protocol (Read)" ,
+          "srv.endpoints" : [
+            "" ,
+            "get"
+          ]
+        } ,
+        {
+          "srv.type" : "gsp-rw" ,
+          "srv.description" : "Graph Store Protocol" ,
+          "srv.endpoints" : [
+            "" ,
+            "data"
+          ]
+        } ,
+        {
+          "srv.type" : "query" ,
+          "srv.description" : "SPARQL Query" ,
+          "srv.endpoints" : [
+            "" ,
+            "sparql" ,
+            "query"
+          ]
+        }
+      ]
+    }
+  ]
+}

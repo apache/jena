@@ -1,0 +1,74 @@
+{
+  "datasets" : {
+    "/ds1" : {
+      "Requests" : 0 ,
+      "RequestsGood" : 0 ,
+      "RequestsBad" : 0 ,
+      "endpoints" : {
+        "_1" : {
+          "RequestsBad" : 0 ,
+          "Requests" : 0 ,
+          "RequestsGood" : 0 ,
+          "operation" : "update" ,
+          "description" : "SPARQL Update"
+        } ,
+        "update" : {
+          "RequestsBad" : 0 ,
+          "Requests" : 0 ,
+          "RequestsGood" : 0 ,
+          "operation" : "update" ,
+          "description" : "SPARQL Update"
+        } ,
+        "_2" : {
+          "RequestsBad" : 0 ,
+          "Requests" : 0 ,
+          "RequestsGood" : 0 ,
+          "operation" : "gsp-r" ,
+          "description" : "Graph Store Protocol (Read)"
+        } ,
+        "get" : {
+          "RequestsBad" : 0 ,
+          "Requests" : 0 ,
+          "RequestsGood" : 0 ,
+          "operation" : "gsp-r" ,
+          "description" : "Graph Store Protocol (Read)"
+        } ,
+        "_3" : {
+          "RequestsBad" : 0 ,
+          "Requests" : 0 ,
+          "RequestsGood" : 0 ,
+          "operation" : "gsp-rw" ,
+          "description" : "Graph Store Protocol"
+        } ,
+        "data" : {
+          "RequestsBad" : 0 ,
+          "Requests" : 0 ,
+          "RequestsGood" : 0 ,
+          "operation" : "gsp-rw" ,
+          "description" : "Graph Store Protocol"
+        } ,
+        "_4" : {
+          "RequestsBad" : 0 ,
+          "Requests" : 0 ,
+          "RequestsGood" : 0 ,
+          "operation" : "query" ,
+          "description" : "SPARQL Query"
+        } ,
+        "sparql" : {
+          "RequestsBad" : 0 ,
+          "Requests" : 0 ,
+          "RequestsGood" : 0 ,
+          "operation" : "query" ,
+          "description" : "SPARQL Query"
+        } ,
+        "query" : {
+          "RequestsBad" : 0 ,
+          "Requests" : 0 ,
+          "RequestsGood" : 0 ,
+          "operation" : "query" ,
+          "description" : "SPARQL Query"
+        }
+      }
+    }
+  }
+}

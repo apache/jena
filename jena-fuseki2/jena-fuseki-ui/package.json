@@ -6,12 +6,17 @@
   "author": "Apache Jena Team",
   "license": "Apache-2.0",
   "scripts": {
-    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e",
+    "build:report": "vue-cli-service build --report",
+    "build:watch": "vue-cli-service build --watch --mode development",
     "coverage:unit": "nyc vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "serve": "vue-cli-service serve",
+    "serve:offline": "concurrently --names 'SERVER,CLIENT' --prefix-colors 'yellow,blue' --success \"first\" --kill-others 'yarn run serve:backend' 'yarn run serve:ui'",
+    "serve:backend": "nodemon src/services/mock/json-server.js",
+    "serve:ui": "vue-cli-service serve --mode offline",
+    "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.3.0",
@@ -41,6 +46,7 @@
     "babel-eslint": "^10.1.0",
     "babel-plugin-istanbul": "^6.1.1",
     "chai": "^4.3.6",
+    "concurrently": "^7.0.0",
     "eslint": "^7.22.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-node": "^11.1.0",
@@ -48,6 +54,8 @@
     "eslint-plugin-standard": "^4.1.0",
     "eslint-plugin-vue": "^8.4.0",
     "istanbul-instrumenter-loader": "^3.0.1",
+    "json-server": "^0.17.0",
+    "nodemon": "^2.0.15",
     "nyc": "^15.1.0",
     "sass": "^1.49.8",
     "sass-loader": "^10.1.1",
