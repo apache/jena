@@ -208,7 +208,7 @@ public class RDFParserRegistry
             if ( !Lang.JSONLD.equals(language) && !Lang.JSONLD10.equals(language) )
                 throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD 1.0");
             // jsonld-java is JSON-LD 1.0
-            return new JsonLDReader(language, profile, profile.getErrorHandler());
+            return new LangJSONLD10(language, profile, profile.getErrorHandler());
         }
     }
 
