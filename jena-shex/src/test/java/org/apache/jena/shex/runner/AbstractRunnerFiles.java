@@ -79,7 +79,6 @@ public abstract class AbstractRunnerFiles extends ParentRunner<Runner> {
             System.err.println("  exclusions    = "+excludes.size());
             System.err.println();
         }
-
     }
 
     protected final List<String> getFiles(String directory, Set<String> includes, Set<String> excludes) {
@@ -103,7 +102,6 @@ public abstract class AbstractRunnerFiles extends ParentRunner<Runner> {
         }
         return files;
     }
-
 
     // Print all manifests, top level and included.
     private static boolean PrintManifests = false;

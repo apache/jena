@@ -141,7 +141,7 @@ public class ProcIngestDataX {
         IngestData sink = new IngestData(dsgtdb, monitor, outputTriples, outputQuads, false);
         Timer timer = new Timer();
         timer.startTimer();
-        // [BULK] XXX Start monitor on first item from parser.
+        // [BULK] XXX Better :: Start monitor on first item from parser.
         monitor.start();
         sink.startBulk();
         AsyncParser.asyncParse(datafiles, sink);

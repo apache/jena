@@ -92,15 +92,20 @@ public class TestRiotWriterGraph extends AbstractWriterTest
     @Test public void writer07() { test("writer-rt-07.ttl"); }
     @Test public void writer08() { test("writer-rt-08.ttl"); }
 
+    private static boolean isJsonLDJava(RDFFormat format) {
+        return Lang.JSONLD.equals(format.getLang()) ||
+               Lang.JSONLD10.equals(format.getLang());
+    }
+
     @Test public void writer09() {
-        if ( format.getLang() != Lang.JSONLD )
-            // Fails in jsonld-java
+        // Bad list
+        if ( ! isJsonLDJava(format) )
             test("writer-rt-09.ttl");
-        }
+    }
 
     @Test public void writer10() {
-        if ( format.getLang() != Lang.JSONLD )
-            // Fails in jsonld-java
+        // Bad list
+        if ( ! isJsonLDJava(format) )
             test("writer-rt-10.ttl");
     }
 

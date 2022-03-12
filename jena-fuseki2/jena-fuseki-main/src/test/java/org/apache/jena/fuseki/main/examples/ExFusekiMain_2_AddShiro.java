@@ -39,7 +39,7 @@ import org.eclipse.jetty.servlet.ServletHandler;
 
 public class ExFusekiMain_2_AddShiro {
     // From Barry Nouwt : https://lists.apache.org/thread.html/r1e3fa952ff9f4a9108e16f07f1edf78c67e08c9b081497c627e3b833%40%3Cusers.jena.apache.org%3E
-
+    // https://lists.apache.org/thread/q37s6kb3vy0ff6qbbrqy44qvbx8lojkq
     public static void addShiroFilter(FusekiServer fusekiServer) {
         Server jettyServer = fusekiServer.getJettyServer();
 
@@ -51,8 +51,8 @@ public class ExFusekiMain_2_AddShiro {
         servletContextHandler.addEventListener(ell);
 
         // Copies
-        List<FilterMapping> mappings = new ArrayList<FilterMapping>(Arrays.asList(servletHandler.getFilterMappings()));
-        List<FilterHolder> holders = new ArrayList<FilterHolder>(Arrays.asList(servletHandler.getFilters()));
+        List<FilterMapping> mappings = new ArrayList<>(Arrays.asList(servletHandler.getFilterMappings()));
+        List<FilterHolder> holders = new ArrayList<>(Arrays.asList(servletHandler.getFilters()));
 
         {
             //add Shiro Filter and mapping

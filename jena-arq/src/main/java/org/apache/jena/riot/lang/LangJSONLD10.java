@@ -67,10 +67,10 @@ import org.apache.jena.sparql.util.Symbol;
  * The {@link JsonLDReadContext} is a convenience class that extends Context and
  * provides methods to set the values of these different Symbols that are used in controlling the writing of JSON-LD.
  * Note: it is possible to override jsonld's "@context" value by providing one,
- * using a {@link org.apache.jena.sparql.util.Context}, and setting the {@link JsonLDReader#JSONLD_CONTEXT} Symbol's value
+ * using a {@link org.apache.jena.sparql.util.Context}, and setting the {@link LangJSONLD10#JSONLD_CONTEXT} Symbol's value
  * to the data expected by JSON-LD java API (a {@link Map}).
  */
-public class JsonLDReader implements ReaderRIOT
+public class LangJSONLD10 implements ReaderRIOT
 {
     private static final String SYMBOLS_NS = "http://jena.apache.org/riot/jsonld#" ;
     private static Symbol createSymbol(String localName) {
@@ -87,7 +87,7 @@ public class JsonLDReader implements ReaderRIOT
     private /*final*/ ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
     private /*final*/ ParserProfile profile;
     
-    public JsonLDReader(Lang lang, ParserProfile profile, ErrorHandler errorHandler) {
+    public LangJSONLD10(Lang lang, ParserProfile profile, ErrorHandler errorHandler) {
         this.profile = profile;
         this.errorHandler = errorHandler;
     }

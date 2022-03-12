@@ -93,7 +93,6 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
                         .build();
             }
 
-
             if ( writeThis == null ) {
                 // Basic array (expanded) form.
                 writeThis = array;

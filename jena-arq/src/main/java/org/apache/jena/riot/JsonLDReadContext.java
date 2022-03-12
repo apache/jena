@@ -20,7 +20,7 @@ package org.apache.jena.riot;
 
 import com.github.jsonldjava.core.JsonLdOptions;
 import org.apache.jena.atlas.web.ContentType;
-import org.apache.jena.riot.lang.JsonLDReader;
+import org.apache.jena.riot.lang.LangJSONLD10;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.Context;
 
@@ -32,7 +32,7 @@ import java.io.InputStream;
  * This class provides setters to define a "Context" suitable to be passed as 
  * last argument to  {@link ReaderRIOT#read(InputStream, String, ContentType, StreamRDF, Context)}
  * when the ReaderRIOT has been created with one of the JSON-LD RDFFormat variants (that is, when it is
- * an instance of {@link JsonLDReader})
+ * an instance of {@link LangJSONLD10})
  *
  * Parameters that are actually useful are ''documentLoader'' and ''produceGeneralizedRdf''.
  *
@@ -46,7 +46,7 @@ public class JsonLDReadContext extends Context {
      * @see #setJsonLDContext(Object)
      */
     public void setJsonLDContext(String jsonLdContext) {
-        set(JsonLDReader.JSONLD_CONTEXT, jsonLdContext);
+        set(LangJSONLD10.JSONLD_CONTEXT, jsonLdContext);
     }
 
     /**
@@ -59,7 +59,7 @@ public class JsonLDReadContext extends Context {
      * @see #setJsonLDContext(String)
      */
     public void setJsonLDContext(Object jsonLdContext) {
-        set(JsonLDReader.JSONLD_CONTEXT, jsonLdContext);
+        set(LangJSONLD10.JSONLD_CONTEXT, jsonLdContext);
     }
     /**
      * Set the JSON-LD java API's options
@@ -69,6 +69,6 @@ public class JsonLDReadContext extends Context {
      * @param opts the options as defined by the JSON-LD java API
      */
     public void setOptions(JsonLdOptions opts) {
-        set(JsonLDReader.JSONLD_OPTIONS, opts);
+        set(LangJSONLD10.JSONLD_OPTIONS, opts);
     }
 }

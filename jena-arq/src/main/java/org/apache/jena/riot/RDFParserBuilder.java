@@ -598,6 +598,38 @@ public class RDFParserBuilder {
         build().parse(dataset);
     }
 
+    /**
+     * Parse the source in to a fresh {@link Graph} and return the graph.
+     * <p>
+     * The source must be for triples; any quads are discarded.
+     */
+    public Graph toGraph() {
+        return build().toGraph();
+    }
+
+    /**
+     * Parse the source in to a fresh {@link Model} and return the model.
+     * <p>
+     * The source must be for triples; any quads are discarded.
+     */
+    public Model toModel() {
+        return build().toModel();
+    }
+
+    /**
+     * Parse the source in to a fresh {@link Dataset} and return the dataset.
+     */
+    public Dataset toDataset() {
+        return build().toDataset();
+    }
+
+    /**
+     * Parse the source in to a fresh {@link DatasetGraph} and return the DatasetGraph.
+     */
+    public DatasetGraph toDatasetGraph() {
+        return build().toDatasetGraph();
+    }
+
     /** Build an {@link RDFParser}. The parser takes it's configuration from this builder and can not then be changed.
      * The source must be set.
      * When a parser is used, it is takes the source and sends output to an {@link StreamRDF}.
