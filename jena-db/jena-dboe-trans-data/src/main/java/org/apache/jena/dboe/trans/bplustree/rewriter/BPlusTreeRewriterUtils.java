@@ -37,11 +37,11 @@ class BPlusTreeRewriterUtils {
     static Iterator<Pair<Integer, Record>> summarizeDataBlocks(Iterator<Pair<Integer, Record>> iter, RecordBufferPageMgr recordPageMgr) {
         divider();
         List<Pair<Integer, Record>> pairs = Iter.toList(iter);
-        System.out.println("summarizeDataBlocks: " + pairs);
+//        System.out.println("summarizeDataBlocks: " + pairs);
         for ( Pair<Integer, Record> pair : pairs ) {
             RecordBufferPage rbp = recordPageMgr.getRead(pair.car());
-            System.out.printf("%s -- RecordBufferPage[id=%d,link=%d] (%d) -> [%s]\n", pair, rbp.getId(), rbp.getLink(), rbp.getCount(),
-                              rbp.getRecordBuffer().getHigh());
+            System.out.printf("%s -- RecordBufferPage[id=%d,link=%d] (%d) -> [%s,%s]\n", pair, rbp.getId(), rbp.getLink(), rbp.getCount(),
+                              rbp.getRecordBuffer().getLow(), rbp.getRecordBuffer().getHigh());
             recordPageMgr.release(rbp);
         }
         return pairs.iterator();

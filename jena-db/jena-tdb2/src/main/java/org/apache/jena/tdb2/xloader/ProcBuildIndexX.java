@@ -299,6 +299,7 @@ public class ProcBuildIndexX
         // ProgressMonitor.
         ProgressMonitor monitor = ProgressMonitorOutput.create(BulkLoaderX.LOG_Index, indexName, tickPoint, superTick);
         ProgressIterator<Record> iter2 = new ProgressIterator<>(iter, monitor);
+
         monitor.start();
         BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(iter2, bptParams, recordFactory, blkState, blkMgrNodes, blkMgrRecords);
         bpt2.close();

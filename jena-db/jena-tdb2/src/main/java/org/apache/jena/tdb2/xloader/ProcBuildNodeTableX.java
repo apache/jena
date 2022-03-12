@@ -249,7 +249,8 @@ public class ProcBuildNodeTableX {
                 objectFile.sync();
                 monitor.finish();
             });
-            blkState.sync();
+            // [BULK]
+            //blkState.sync();
             IO.close(input);
             long x = timer.endTimer();
             long count = monitor.getTicks();

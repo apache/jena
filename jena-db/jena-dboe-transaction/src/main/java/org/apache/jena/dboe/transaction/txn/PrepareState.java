@@ -25,8 +25,8 @@ public class PrepareState {
     private final ComponentId component;
     private final ByteBuffer data;
 
-    public /*For testing*/ PrepareState(ComponentId compoent, ByteBuffer data) {
-        this.component = compoent;
+    PrepareState(ComponentId component, ByteBuffer data) {
+        this.component = component;
         this.data = data;
     }
 

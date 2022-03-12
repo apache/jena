@@ -275,9 +275,19 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     public Record insertAndReturnOld(Record record) {
         startUpdateBlkMgr();
         BPTreeNode root = getRootWrite();
+        //System.out.println("INSERT: "+record);
         Record r = BPTreeNode.insert(root, record);
         releaseRootWrite(root);
         finishUpdateBlkMgr();
+        if ( false ) {
+            // check, and if an error found, dump tree
+            try { check(); }
+            catch (BPTreeException ex) {
+                ex.printStackTrace();
+                dump();
+                throw ex;
+            }
+        }
         return r;
     }
 
@@ -472,7 +482,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
             case MUTABLE :
                 nonTxnState = new BptTxnState(BPlusTreeParams.RootId, 0, 0);
                 break;
-                
             case IMMUTABLE :
                 nonTxnState = new BptTxnState(BPlusTreeParams.RootId,
                                               nodeManager.allocLimit(),

@@ -116,9 +116,9 @@ public class ProcIngestDataX {
         Location loc = Location.create(location);
         // Ensure reset
         DatasetGraph dsg0 = DatabaseMgr.connectDatasetGraph(location);
+        StoreParams storeParams = TDBInternal.getDatasetGraphTDB(dsg0).getStoreParams();
         TDBInternal.expel(dsg0);
 
-        StoreParams storeParams = StoreParams.getDftStoreParams();
         if ( true ) {
             storeParams = StoreParams.builder(storeParams)
                     .node2NodeIdCacheSize(10_000_000)

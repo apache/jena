@@ -205,8 +205,8 @@ public final class BPTreeRecords extends BPTreePage {
     public BPTreePage split() {
         BPTreeRecords other = insertNewPage();
         int splitIdx = rBuff.size() / 2 - 1;
-        Record r = rBuff.get(splitIdx); // Only need key for checking later.
-        int moveLen = rBuff.size() - (splitIdx + 1); // Number to move.
+        Record r = CheckingNode ? rBuff.get(splitIdx) : null;   // Only need key for checking later.
+        int moveLen = rBuff.size() - (splitIdx + 1);            // Number to move.
         // Copy high end to new.
         rBuff.copy(splitIdx + 1, other.getRecordBufferPage().getRecordBuffer(), 0, moveLen);
         rBuff.clear(splitIdx + 1, moveLen);
@@ -214,7 +214,8 @@ public final class BPTreeRecords extends BPTreePage {
 
         if ( CheckingNode ) {
             if ( !Record.keyEQ(r, maxRecord()) ) {
-                error("BPTreeRecords.split: Not returning expected record");
+                error("id=%d : BPTreeRecords.split: Not returning expected record (actual=%s expected=%s)",
+                      this.getId(), r, maxRecord());
             }
         }
         return other;
@@ -340,7 +341,12 @@ public final class BPTreeRecords extends BPTreePage {
 
     @Override
     public String toString() {
-        return String.format("BPTreeRecords[id=%d, link=%d]: %s", getId(), getLink(), rBuff.toString());
+        if ( BPT.CheckingNode )
+            this.checkNode();
+        // return String.format("BPTreeRecords[id=%d, link=%d]: %s", getId(), getLink(), rBuff.toString( ));
+        Record min = rBuff.getLow();
+        Record max = rBuff.getHigh();
+        return String.format("BPTreeRecords[id=%d, count=%d, link=%d]: %s ... %s", getId(), rBuff.getSize(), getLink(), min, max);
     }
 
     @Override
@@ -353,7 +359,7 @@ public final class BPTreeRecords extends BPTreePage {
         if ( !CheckingNode )
             return;
         if ( rBuff.size() < 0 || rBuff.size() > rBuff.maxSize() )
-            error("Misized: %s", this);
+            error("Mis-sized: %s", this);
 
         for ( int i = 1; i < getCount() ; i++ ) {
             Record r1 = rBuff.get(i - 1);

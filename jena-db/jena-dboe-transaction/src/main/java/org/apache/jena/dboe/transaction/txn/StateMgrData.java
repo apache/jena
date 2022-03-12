@@ -30,7 +30,7 @@ import org.apache.jena.dboe.base.file.BufferChannel;
 public class StateMgrData extends StateMgrBase {
     private final long[] data;
 
-    public StateMgrData(BufferChannel storage, long... initialData) {
+    protected StateMgrData(BufferChannel storage, long... initialData) {
         super(storage, numBytes(initialData));
         data = copy(initialData);
         super.init();

@@ -19,8 +19,8 @@
 package org.apache.jena.dboe.trans.bplustree.rewriter;
 
 import static org.apache.jena.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils.divider;
-import static org.apache.jena.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils.printIndexBlocks;
 import static org.apache.jena.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils.summarizeDataBlocks;
+import static org.apache.jena.dboe.trans.bplustree.rewriter.BPlusTreeRewriterUtils.summarizeIndexBlocks;
 
 import java.util.Iterator;
 import java.util.List;
@@ -44,9 +44,9 @@ public class BPlusTreeRewriter {
     static private Logger log         = LoggerFactory.getLogger(BPlusTreeRewriter.class);
 
     /** Rebalance final two blocks in a level otherwise last block may be too small. */
-    static final boolean     rebalance   = true;
-    static boolean           debug       = false;
-    static final boolean     materialize = debug;
+    public static final boolean   rebalance   = true;
+    public static final boolean   debug       = false;
+    private static final boolean  materialize = debug;
 
     // Process:
     // 1/ Take a stream of records and create leaves.
@@ -111,10 +111,11 @@ public class BPlusTreeRewriter {
             return null;
         }
         fixupRoot(root, pair, bpt2);
-        // ****** Finish the tree.
-        //bpt2.getStateManager().
-        blkMgrNodes.sync();
-        blkMgrRecords.sync();
+        // ****** Finish the tree, sync to disk.
+
+        // Block managers.
+        bpt2.sync();
+
         return bpt2;
     }
 
@@ -142,22 +143,20 @@ public class BPlusTreeRewriter {
             if ( rebalance )
                 System.out.println("Before rebalance (data)");
             iter2 = summarizeDataBlocks(iter2, bpt.getRecordsMgr().getRecordBufferPageMgr());
-            // iter2 = printDataBlocks(iter2,
-            // bpt.getRecordsMgr().getRecordBufferPageMgr());
+            // iter2 = printDataBlocks(iter2, bpt.getRecordsMgr().getRecordBufferPageMgr());
         }
 
         if ( rebalance )
             iter2 = new RebalenceDataEnd(iter2, bpt);
 
-        // Testing - materialize - debug will have done this
-        if ( materialize && !debug )
+        // Testing - materialize
+        if ( materialize )
             iter2 = Iter.toList(iter2).iterator();
 
         if ( debug && rebalance ) {
             System.out.println("After rebalance (data)");
             iter2 = summarizeDataBlocks(iter2, bpt.getRecordsMgr().getRecordBufferPageMgr());
-            // iter2 = printDataBlocks(iter2,
-            // bpt.getRecordsMgr().getRecordBufferPageMgr());
+            // iter2 = printDataBlocks(iter2, bpt.getRecordsMgr().getRecordBufferPageMgr());
         }
         return iter2;
     }
@@ -177,12 +176,16 @@ public class BPlusTreeRewriter {
             RecordBufferPage page1 = mgr.getWrite(id1);
             RecordBufferPage page2 = mgr.getWrite(id2);
 
-            // Wrong calculation.
+            // Wrong calculation??
+            int x1 = page2.getCount();
+            int x2 = page1.getMaxSize() / 2;
+
+            if ( debug ) {
+                System.out.printf("Rebalance Data [%s, %s] %d %d\n", id1, id2, x1, x2);
+            }
             for ( int i = page2.getCount(); i < page1.getMaxSize() / 2 ; i++ ) {
-                // shiftOneup(node1, node2);
                 Record r = page1.getRecordBuffer().getHigh();
                 page1.getRecordBuffer().removeTop();
-
                 page2.getRecordBuffer().add(0, r);
             }
 
@@ -232,8 +235,8 @@ public class BPlusTreeRewriter {
         if ( debug ) {
             if ( rebalance )
                 System.out.println("Before rebalance (index)");
-            // iter2 = summarizeIndexBlocks(iter2, bpt.getNodeManager());
-            iter2 = printIndexBlocks(iter2, bpt.getNodeManager());
+            iter2 = summarizeIndexBlocks(iter2, bpt.getNodeManager());
+            //iter2 = printIndexBlocks(iter2, bpt.getNodeManager());
         }
 
         if ( rebalance )
@@ -244,8 +247,8 @@ public class BPlusTreeRewriter {
 
         if ( debug && rebalance ) {
             System.out.println("After rebalance (index)");
-            // iter2 = summarizeIndexBlocks(iter2, bpt.getNodeManager());
-            iter2 = printIndexBlocks(iter2, bpt.getNodeManager());
+            iter2 = summarizeIndexBlocks(iter2, bpt.getNodeManager());
+            //iter2 = printIndexBlocks(iter2, bpt.getNodeManager());
         }
         return iter2;
     }

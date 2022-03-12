@@ -53,7 +53,8 @@ public class BPTStateMgr extends StateMgrData {
         super(storage, 0L, 0L, 0L);
     }
 
-    /*package*/ void setState(int rootIdx, long nodeBlkLimit, long recordsBlkLimit) {
+    /** Set the state - does not write it to disk. */
+    public void setState(int rootIdx, long nodeBlkLimit, long recordsBlkLimit) {
         currentRoot(rootIdx);
         nodeBlocksLimit(nodeBlkLimit);
         recordsBlocksLimit(recordsBlkLimit);
@@ -61,6 +62,7 @@ public class BPTStateMgr extends StateMgrData {
         setDirtyFlag();
         // But don't write it.
     }
+
     @Override
     protected void writeStateEvent() {
         log("Write");

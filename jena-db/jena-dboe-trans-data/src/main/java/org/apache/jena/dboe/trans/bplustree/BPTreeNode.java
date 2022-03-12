@@ -593,7 +593,7 @@ public final class BPTreeNode extends BPTreePage
         this.write();
         if ( BPT.CheckingNode ) {
             if ( Record.keyNE(splitKey, y.maxRecord()) )
-                BPT.error("Split key %d but max subtree %s", splitKey, y.maxRecord());
+                BPT.error("Split key %s but max subtree %s", splitKey, y.maxRecord());
             internalCheckNodeDeep();
         }
     }
@@ -1221,14 +1221,31 @@ public final class BPTreeNode extends BPTreePage
         if ( isLeaf )
             labelStr = labelStr + "/leaf";
 
-        b.append(String.format("%d [%s] (size %d) -- ", getId(), labelStr, count));
-        for ( int i = 0; i < maxRecords() ; i++ ) {
-            b.append(childStr(i));
-            b.append(" (");
-            b.append(recstr(records, i));
-            b.append(") ");
+        b.append(String.format("%d [%s] (size %d/%d) -- ", getId(), labelStr, count, getMaxSize()));
+        b.append("\n");
+        b.append(String.format("    Range [%s .. %s]", minRecord(), maxRecord()));
+
+        if ( getCount() == 0) {
+            b .append("Empty");
+            return b.toString();
         }
-        b.append(childStr(params.HighPtr));
+
+        // All -- int N = maxRecords();
+        // in-use
+        int N = count;
+
+        for ( int i = 0; i < N ; i++ ) {
+            b.append("\n    ");
+            b.append(childStr(i));
+            b.append(" max=(");
+            b.append(recstr(records, i));
+            b.append(")");
+        }
+        b.append("\n    ");
+        b.append(childStr(N));
+        b.append(" top=[");
+        b.append(maxRecord().toString());
+        b.append("]");
         return b.toString();
     }
 
@@ -1251,8 +1268,13 @@ public final class BPTreeNode extends BPTreePage
     public void dump() {
         boolean b = BPT.Logging;
         BPT.Logging = false;
-        try { dump(IndentedWriter.stdout); }
-        finally { BPT.Logging = b; }
+        try {
+            dump(IndentedWriter.stdout);
+            IndentedWriter.stdout.flush();
+            System.out.flush();
+        } finally {
+            BPT.Logging = b;
+        }
     }
 
     public void dump(IndentedWriter out) {
@@ -1298,7 +1320,7 @@ public final class BPTreeNode extends BPTreePage
     }
 
     private final void internalCheckNodeDeep() {
-        // This distrubes trackign operations and blocks.
+        // This disturbes tracking operations and blocks.
         // Hooks left but switch off.
         if ( false )
             checkNodeDeep();
@@ -1415,9 +1437,8 @@ public final class BPTreeNode extends BPTreePage
             BPTreePage n = get(i);
 
             if ( i != count ) {
-                Record keySubTree = n.getHighRecord(); // high key in immediate
-                                                        // child
-                Record keyHere = records.get(i); // key in this
+                Record keySubTree = n.getHighRecord(); // high key in immediate child
+                Record keyHere = records.get(i);       // key in this node
 
                 if ( keySubTree == null )
                     BPT.error("Node: %d: Can't get high record from %d", id, n.getId());
