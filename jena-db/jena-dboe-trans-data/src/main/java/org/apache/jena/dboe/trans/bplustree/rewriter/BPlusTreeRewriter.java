@@ -61,7 +61,7 @@ public class BPlusTreeRewriter {
     /**
      * Given a stream of records and details of the B+Tree to build, go and
      * build it.
-     *
+
      * @return A newly built BPlusTree
      */
     public static BPlusTree packIntoBPlusTree(Iterator<Record> iterRecords, BPlusTreeParams bptParams, RecordFactory recordFactory,
@@ -111,10 +111,20 @@ public class BPlusTreeRewriter {
             return null;
         }
         fixupRoot(root, pair, bpt2);
-        // ****** Finish the tree, sync to disk.
 
-        // Block managers.
+        // ****** Finish the tree, sync to disk.
+        // Sync block managers.
         bpt2.sync();
+
+        // Update and write state.
+        BPTStateMgr stateManager = bpt2.getStateManager();
+        BlockMgr nodeBlkMgr = bpt2.getNodeManager().getBlockMgr();
+        BlockMgr recordsBlkMgr = bpt2.getRecordsMgr().getBlockMgr();
+        long nodeAllocLimit = nodeBlkMgr.allocLimit();
+        long recordAllocLimit = recordsBlkMgr.allocLimit();
+        stateManager.setState(bpt2.getRootId(), nodeAllocLimit, recordAllocLimit);
+        stateManager.writeState();
+        stateManager.sync();
 
         return bpt2;
     }

@@ -28,7 +28,10 @@ import org.apache.jena.dboe.base.buffer.RecordBuffer;
 import org.apache.jena.dboe.base.recordbuffer.RecordBufferPage;
 import org.apache.jena.dboe.base.recordbuffer.RecordBufferPageMgr;
 
-/** Tools for working with B+Trees and datastructures associated with them, rather directly */
+/**
+ * Tools for working with B+Trees and datastructures associated with them, rather directly.
+ * Development support, not for use in released code.
+ */
 class BPlusTreeTools {
     /*public*/private static void binDump(String filename) {
         try(RandomAccessFile fh = new RandomAccessFile(filename, "r")) {
@@ -46,26 +49,6 @@ class BPlusTreeTools {
             ex.printStackTrace();
         }
     }
-
-//    /** Scan/dump a file of RecordBuffers */
-//    /*public*/private static void bpt_scan_record_buffer(String filename, boolean verbose)
-//    {
-//        BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, SystemIndex.BlockSize);
-//        bpt_scan_record_buffer(blkMgr, verbose);
-//        blkMgr.close();
-//    }
-//
-//    /*public*/private static void bpt_scan_record_buffer(BPlusTree bpt, boolean verbose)
-//    {
-//        bpt_scan_record_buffer(bpt.getRecordsMgr().getBlockMgr(), verbose);
-//    }
-//
-//    /*public*/private static void bpt_scan_record_buffer(BlockMgr blkMgr, boolean verbose)
-//    {
-//        RecordFactory f = SystemIndex.indexRecordTripleFactory;
-//        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(f, blkMgr);
-//        bpt_scan_record_buffer(recordPageMgr,verbose);
-//    }
 
     /*public*/private static void bpt_scan_record_buffer(RecordBufferPageMgr recordPageMgr, boolean verbose) {
         System.out.print("[Scan Records] start\n");
@@ -93,15 +76,6 @@ class BPlusTreeTools {
 
         System.out.printf("[Scan Records] Count = %d in %d blocks (avg: %.2f)\n", total, n, ((float)total)/n);
     }
-
-//    /*public*/private static void bpt_scan_nodes(String filename, boolean verbose)
-//    {
-//        RecordFactory f = FactoryGraphTDB.indexRecordTripleFactory;
-//        BPlusTree.
-//        BlockMgr blkMgr = BlockMgrFactory.createStdFileNoCache(filename, SystemIndex.BlockSize);
-//        bpt_scan_nodes(bpt, blkMgr, verbose);
-//        blkMgr.close();
-//    }
 
     /*public*/private static void bpt_scan_nodes(BPlusTree bpt, boolean verbose) {
         System.out.print("[Scan Nodes] start\n");

@@ -106,9 +106,7 @@ public class ProcBuildNodeTableX {
                     Timer.timeStr(timeMillis), elapsedStr, rateStr);
     }
 
-    /** Pair<triples, indexed nodes>
-     * @param sortThreads */
-    // [BULK] Output, not return.
+    /** @return Pair<triples, indexed nodes> */
     private static Pair<Long, Long> exec2(String DB, XLoaderFiles loaderFiles, int sortThreads, String sortNodeTableArgs, List<String> datafiles) {
 
         //Threads - 1 parser, 1 builder, 2 sort.
@@ -198,7 +196,6 @@ public class ProcBuildNodeTableX {
 
             long x = monitor.getTime();
 
-//            long x = timer.endTimer();
             long count = monitor.getTicks();
             countParseTicks.set(count);
 
@@ -231,6 +228,7 @@ public class ProcBuildNodeTableX {
                 Iterator<Record> rIter = records(BulkLoaderX.LOG_Terms, input, objectFile);
                 rIter = new ProgressIterator<>(rIter, monitor);
                 // Record of (hash, nodeId)
+                // [BULK]
                 BPlusTree bpt1 = (BPlusTree)(nodeTable.getIndex());
                 BPlusTreeParams bptParams = bpt1.getParams();
                 RecordFactory factory = new RecordFactory(SystemTDB.LenNodeHash,  NodeId.SIZE);
@@ -245,7 +243,7 @@ public class ProcBuildNodeTableX {
                                                                      bpt1.getNodeManager().getBlockMgr(),
                                                                      bpt1.getRecordsMgr().getBlockMgr());
                 bpt2.sync();
-                bpt1.sync();
+                //bpt1.sync();
                 objectFile.sync();
                 monitor.finish();
             });

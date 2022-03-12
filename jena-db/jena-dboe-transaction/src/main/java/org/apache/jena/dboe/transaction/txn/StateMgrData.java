@@ -54,7 +54,9 @@ public class StateMgrData extends StateMgrBase {
     protected void setData(long... newData) {
         if ( newData.length != data.length )
             throw new IllegalArgumentException();
-        System.arraycopy(newData, 0, data, 0, data.length);
+        for ( int i = 0 ; i < data.length ; i++ )
+            data[i] = newData[i];
+        setDirtyFlag();
     }
 
     protected long get(int i) {
@@ -77,6 +79,7 @@ public class StateMgrData extends StateMgrBase {
     protected void deserialize(ByteBuffer bytes) {
         for ( int i = 0; i < data.length ; i++ )
             data[i] = bytes.getLong();
+        super.clearDirtyFlag();
     }
 
     @Override

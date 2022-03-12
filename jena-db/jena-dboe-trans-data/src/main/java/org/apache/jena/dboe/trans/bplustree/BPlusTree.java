@@ -192,11 +192,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
             rootIdx = newRoot.getId();
     }
 
-//    // Very, very dangerous operation.
-//    public void $testForce$(int rootIdx) {
-//        this.rootIdx = rootIdx;
-//    }
-
     public int getRootId() {
         if ( super.isActiveTxn() )
             return super.getDataState().getRoot();
@@ -345,8 +340,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         // No pages are active at this point.
         return RecordRangeIterator.iterator(id, fromRec, toRec, pageMgr, mapper);
     }
-
-     */
+    */
 
     @Override
     public <X> Iterator<X> iterator(Record minRec, Record maxRec, RecordMapper<X> mapper) {
@@ -429,10 +423,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         recordsMgr.close();
         stateManager.close();
     }
-
-//    public void closeIterator(Iterator<Record> iter)
-//    {
-//    }
 
     @Override
     public long size() {
@@ -528,7 +518,6 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     /* The persistent transactional state of a B+Tree is new root and the
      * allocation limits of both block managers.
      */
-
     @Override
     protected BptTxnState _promote(TxnId txnId, BptTxnState oldState) {
         BptTxnState newState = createState();
@@ -556,8 +545,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     }
 
     @Override
-    protected void _commitEnd(TxnId txnId, BptTxnState state) {
-    }
+    protected void _commitEnd(TxnId txnId, BptTxnState state) {}
 
     @Override
     protected void _abort(TxnId txnId, BptTxnState state) {
@@ -572,9 +560,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     }
 
     @Override
-    protected void _complete(TxnId txnId, BptTxnState state) {
-
-    }
+    protected void _complete(TxnId txnId, BptTxnState state) {}
 
     @Override
     protected void _shutdown() {}

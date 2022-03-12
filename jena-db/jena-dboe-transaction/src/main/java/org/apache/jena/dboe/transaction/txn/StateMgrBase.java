@@ -134,7 +134,7 @@ public abstract class StateMgrBase implements Sync, Closeable {
     public void setState(ByteBuffer buff) {
         buff.rewind();
         deserialize(buff);
-        dirty = true;
+        setDirtyFlag();
     }
 
     //public BufferChannel getChannel() { return storage; }
@@ -150,7 +150,7 @@ public abstract class StateMgrBase implements Sync, Closeable {
         bb.rewind();
         int len = storage.write(bb, 0);
         storage.sync();
-        dirty = false;
+        clearDirtyFlag();
         writeStateEvent();
     }
 
@@ -161,12 +161,15 @@ public abstract class StateMgrBase implements Sync, Closeable {
         bb.rewind();
         deserialize(bb);
         readStateEvent();
+        clearDirtyFlag();
     }
 
     @Override
     public void sync() {
-        if ( dirty )
+        if ( dirty ) {
             writeState();
+            clearDirtyFlag();
+        }
     }
 
     @Override

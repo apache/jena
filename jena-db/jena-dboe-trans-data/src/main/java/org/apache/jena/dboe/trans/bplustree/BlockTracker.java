@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 // In MVCC, there are many read blocks that are forgotten.
 // Promotion does not release them (should it?).
 
-// In the B+Tree iteraor, pages are get()'ed but pages
+// In the B+Tree iterator, pages are get()'ed but pages
 // don't expose a "get for iterator" and always use getRead.
 // But iterators don't release and don't always finish.
 

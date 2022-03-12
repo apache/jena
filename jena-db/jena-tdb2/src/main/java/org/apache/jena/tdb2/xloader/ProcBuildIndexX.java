@@ -35,10 +35,7 @@ import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.block.BlockMgr;
-import org.apache.jena.dboe.base.block.BlockMgrFactory;
 import org.apache.jena.dboe.base.file.BufferChannel;
-import org.apache.jena.dboe.base.file.FileFactory;
-import org.apache.jena.dboe.base.file.FileSet;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.base.record.RecordFactory;
@@ -52,8 +49,10 @@ import org.apache.jena.system.progress.ProgressMonitor;
 import org.apache.jena.system.progress.ProgressMonitorOutput;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDBException;
+import org.apache.jena.tdb2.loader.base.CoLib;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
+import org.apache.jena.tdb2.store.tupletable.TupleIndexRecord;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
 import org.slf4j.Logger;
@@ -239,6 +238,7 @@ public class ProcBuildIndexX
     }
 
     private static long indexBuilder(DatasetGraph dsg, InputStream input, String indexName) {
+        // This code does not use the setup of the DatasetGraph - it creates the BPTrees and the state file.
         long tickPoint = BulkLoaderX.DataTick;
         int superTick = BulkLoaderX.DataSuperTick;
 
@@ -289,11 +289,13 @@ public class ProcBuildIndexX
         int blockSizeNodes = blockSize;
         int blockSizeRecords = blockSize;
 
-        FileSet destination = new FileSet(location, indexName);
-        BufferChannel blkState = FileFactory.createBufferChannel(destination, Names.extBptState);
-        BlockMgr blkMgrNodes = BlockMgrFactory.create(destination, Names.extBptTree, blockSizeNodes, readCacheSize, writeCacheSize);
-        BlockMgr blkMgrRecords = BlockMgrFactory.create(destination, Names.extBptRecords, blockSizeRecords, readCacheSize, writeCacheSize);
-
+        // Extract from index.
+        TupleIndexRecord tIdxRec = (TupleIndexRecord)index;
+        BPlusTree bpt = (BPlusTree)(tIdxRec.getRangeIndex());
+        BlockMgr blkMgrNodes = bpt.getNodeManager().getBlockMgr();
+        BlockMgr blkMgrRecords = bpt.getRecordsMgr().getBlockMgr();
+        BufferChannel blkState = bpt.getStateManager().getBufferChannel();
+        // ----
         int rowBlock = 1000;
         Iterator<Record> iter = new RecordsFromInput(input, tupleLength, colMap, rowBlock);
         // ProgressMonitor.
@@ -301,10 +303,13 @@ public class ProcBuildIndexX
         ProgressIterator<Record> iter2 = new ProgressIterator<>(iter, monitor);
 
         monitor.start();
-        BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(iter2, bptParams, recordFactory, blkState, blkMgrNodes, blkMgrRecords);
-        bpt2.close();
+
+        // Independent transaction on just this BPlusTree, not the dataset.
+        CoLib.executeWrite(index, ()->{
+            BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(iter2, bptParams, recordFactory, blkState, blkMgrNodes, blkMgrRecords);
+        });
         monitor.finish();
-        // [BULK] End stage.
+
         long count = monitor.getTicks();
         return count;
     }
