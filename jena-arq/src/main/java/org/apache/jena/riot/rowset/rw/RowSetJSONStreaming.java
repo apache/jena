@@ -18,29 +18,50 @@
 
 package org.apache.jena.riot.rowset.rw;
 
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.*;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kBindings;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kBnode;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kBoolean;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kDatatype;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kHead;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kLiteral;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kObject;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kObjectAlt;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kPredicate;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kPredicateAlt;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kProperty;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kResults;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kStatement;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kSubject;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kSubjectAlt;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kTriple;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kType;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kTypedLiteral;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kUri;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kValue;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kVars;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kXmlLang;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.apache.jena.atlas.data.BagFactory;
 import org.apache.jena.atlas.data.DataBag;
-import org.apache.jena.atlas.data.ThresholdPolicy;
-import org.apache.jena.atlas.data.ThresholdPolicyFactory;
 import org.apache.jena.atlas.iterator.IteratorSlotted;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.SyntaxLabels;
+import org.apache.jena.riot.system.ErrorHandlerEvent;
+import org.apache.jena.riot.system.ErrorHandlers;
+import org.apache.jena.riot.system.Severity;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
@@ -48,8 +69,6 @@ import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.RowSetBuffered;
 import org.apache.jena.sparql.resultset.ResultSetException;
-import org.apache.jena.sparql.system.SerializationFactoryFinder;
-import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.vocabulary.RDF;
 
@@ -58,7 +77,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.MalformedJsonException;
 
 
 /**
@@ -66,19 +84,23 @@ import com.google.gson.stream.MalformedJsonException;
  * The {@link #getResultVars()} will return null as long as the header has not
  * been consumed from the underlying stream.
  *
- * Use {@link BufferedRowSet} to modify the behavior such that {@link #getResultVars()}
+ * Use {@link RowSetBuffered} to modify the behavior such that {@link #getResultVars()}
  * immediately consumes the underlying stream until the header is read,
  * thereby buffering any encountered bindings for replay.
- *
- * Use {@link #createBuffered(InputStream, Context)} to create a buffered row set
- * with appropriate configuration w.r.t. ARQ.inputGraphBNodeLabels and ThresholdPolicyFactory.
- *
  */
 public class RowSetJSONStreaming
     extends IteratorSlotted<Binding>
     implements RowSet
 {
-    public static RowSetBuffered<RowSetJSONStreaming> createBuffered(InputStream in, Context context) {
+    public static RowSetBuffered<RowSetJSONStreaming> createBuffered(
+            InputStream in, LabelToNode labelMap,
+            Supplier<DataBag<Binding>> bufferFactory, ValidationSettings validationSettings,
+            ErrorHandler errorHandler) {
+        return new RowSetBuffered<>(createUnbuffered(in, labelMap, validationSettings, errorHandler), bufferFactory);
+    }
+
+    public static RowSetJSONStreaming createUnbuffered(InputStream in, LabelToNode labelMap, ValidationSettings validationSettings,
+            ErrorHandler errorHandler) {
 //        try {
 //            byte[] buf = IOUtils.toByteArray(in);
 //            System.out.println(new String(buf));
@@ -87,38 +109,15 @@ public class RowSetJSONStreaming
 //            // TODO Auto-generated catch block
 //            e.printStackTrace();
 //        }
-        Context cxt = context == null ? ARQ.getContext() : context;
 
-        boolean inputGraphBNodeLabels = cxt.isTrue(ARQ.inputGraphBNodeLabels);
-        LabelToNode labelMap = inputGraphBNodeLabels
-            ? SyntaxLabels.createLabelToNodeAsGiven()
-            : SyntaxLabels.createLabelToNode();
-
-        Supplier<DataBag<Binding>> bufferFactory = () -> {
-            ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(cxt);
-            DataBag<Binding> r = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory());
-            return r;
-        };
-
-        return createBuffered(in, labelMap, bufferFactory, true);
-    }
-
-
-    public static RowSetBuffered<RowSetJSONStreaming> createBuffered(
-            InputStream in, LabelToNode labelMap,
-            Supplier<DataBag<Binding>> bufferFactory, boolean enableValidation) {
-        return new RowSetBuffered<>(createUnbuffered(in, labelMap, enableValidation), bufferFactory);
-    }
-
-    public static RowSetJSONStreaming createUnbuffered(InputStream in, LabelToNode labelMap, boolean enableValidation) {
         Gson gson = new Gson();
         JsonReader reader = gson.newJsonReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-        RowSetJSONStreaming result = new RowSetJSONStreaming(gson, reader, LabelToNode.createUseLabelAsGiven(), enableValidation);
+        RowSetJSONStreaming result = new RowSetJSONStreaming(gson, reader, 0l, labelMap, null, validationSettings, errorHandler);
         return result;
     }
 
     /** Parsing state; i.e. where we are in the json document */
-    public enum State {
+    public enum ParserState {
         INIT,
         ROOT,
         RESULTS,
@@ -126,79 +125,130 @@ public class RowSetJSONStreaming
         DONE
     }
 
+    /**
+     * Internal helper class that can hold tentative values and make them final.
+     * Once a value is final then further updates are rejected.
+     * This is used to iterate over sequences of repeated json keys ('head', 'boolean')
+     * and only have the last value take effect.
+     *
+     * We don't want to validate for oddities in the json document - we just want to catch
+     * the cases when our optimistic reports turned out to be wrong.
+     * So even if there are e.g. repeated boolean fields then as long as we are sure that
+     * we report the last of those we are fine.
+     */
+    protected static class TentativeValue<T> {
+        T value;
+        boolean isValueFinal = false;
+        boolean isTentative = false;
+
+        // Return true if update is valid
+        // As long as makeFinal is not called the value can be updated
+        boolean updateValue(T arg) {
+            boolean result;
+            if (!isValueFinal) {
+                value = arg;
+                isTentative = true;
+                result = true;
+            } else {
+                result = Objects.equals(value, arg);
+            }
+            return result;
+        }
+
+        // Finalize a tentative value - otherwise do nothing
+        void makeFinal() {
+            if (isTentative) {
+                isValueFinal = true;
+            }
+        }
+
+        T getValue() {
+            return value;
+        }
+
+        /** Whether updateValue was called at all */
+        boolean hasValue() {
+            return isTentative;
+        }
+
+        /** Whether the value has been finalized */
+        boolean isValueFinal() {
+            return isValueFinal;
+        }
+
+        @Override
+        public String toString() {
+            return "Holder [value=" + value + ", isValueSet=" + isValueFinal + "]";
+        }
+    }
+
     protected Gson gson;
     protected JsonReader reader;
 
-    protected List<Var> resultVars = null;
     protected long rowNumber;
-
-    protected Boolean askResult = null;
-
+    protected TentativeValue<List<Var>> resultVars = null;
+    protected TentativeValue<Boolean> askResult = null;
 
     protected LabelToNode labelMap;
 
-    // Hold the context for reference?
-    // protected Context context;
-
-    protected Function<JsonObject, Node> onUnknownRdfTermType = null;
+    protected ValidationSettings validationSettings;
+    protected Function<JsonObject, Node> unknownRdfTermTypeHandler;
     protected ErrorHandler errorHandler;
 
-    protected boolean enableValidation;
-
+    /* Informative statistics */
     protected int kHeadCount = 0;
     protected int kResultsCount = 0;
     protected int kBooleanCount = 0;
+    protected long unexpectedItemCount = 0;
 
-    protected State state;
+    protected ParserState parserState;
 
-
-    public RowSetJSONStreaming(Gson gson, JsonReader reader, LabelToNode labelMap, boolean enableValidation) {
-        this(gson, reader, labelMap, null, 0, enableValidation);
-    }
-
-    public RowSetJSONStreaming(Gson gson, JsonReader reader, LabelToNode labelMap, List<Var> resultVars, long rowNumber, boolean enableValidation) {
+    public RowSetJSONStreaming(Gson gson, JsonReader reader, long rowNumber, LabelToNode labelMap,
+    		Function<JsonObject, Node> unknownRdfTermTypeHandler,
+            ValidationSettings validationSettings, ErrorHandler errorHandler) {
         super();
         this.gson = gson;
         this.reader = reader;
         this.labelMap = labelMap;
 
-        this.resultVars = resultVars;
+        this.resultVars = new TentativeValue<>();
+        this.askResult = new TentativeValue<>();
         this.rowNumber = rowNumber;
 
-        this.enableValidation = enableValidation;
+        this.validationSettings = validationSettings;
+        this.errorHandler = errorHandler;
 
-        this.state = State.INIT;
-    }
-
-    @Override
-    public List<Var> getResultVars() {
-        return resultVars;
+        this.parserState = ParserState.INIT;
     }
 
     @Override
     protected Binding moveToNext() {
         try {
-            return computeNextActual();
-        } catch (Exception | IOException e) {
+            Binding result = computeNextActual();
+            return result;
+        } catch (Throwable e) {
+        	// Rewrap any exception
             throw new ResultSetException(e.getMessage(), e);
         }
     }
 
     protected void onUnexpectedJsonElement() throws IOException {
-        if (errorHandler != null) {
-            errorHandler.warning("Encountered unexpected json element at path " + reader.getPath(), -1, -1);
-        }
+        ++unexpectedItemCount;
+
+        ErrorHandlers.relay(errorHandler, validationSettings.unexpectedJsonElementSeverity, () ->
+                new ErrorHandlerEvent("Encountered unexpected json element at path " + reader.getPath(), -1, -1));
+
         reader.skipValue();
     }
 
-
     protected Binding computeNextActual() throws IOException {
+        boolean updateAccepted;
         Binding result;
         outer: while (true) {
-            switch (state) {
+            switch (parserState) {
             case INIT:
                 reader.beginObject();
-                state = State.ROOT;
+                parserState = ParserState.ROOT;
                 continue outer;
 
             case ROOT:
@@ -207,16 +257,33 @@ public class RowSetJSONStreaming
                     switch (topLevelName) {
                     case kHead:
                         ++kHeadCount;
-                        resultVars = parseHead();
+                        resultVars.makeFinal(); // Finalize a prior tentative value if it exists
+                        List<Var> rsv = parseHead();
+                        updateAccepted = resultVars.updateValue(rsv);
+                        if (!updateAccepted) {
+                            ErrorHandlers.relay(errorHandler, validationSettings.getInvalidatedHeadSeverity(),
+                                    new ErrorHandlerEvent(String.format(
+                                        ". Expected %s but got %s", resultVars.getValue(), rsv)));
+                        }
+                        validate(this, errorHandler, validationSettings);
                         break;
                     case kResults:
                         ++kResultsCount;
+                        validate(this, errorHandler, validationSettings);
                         reader.beginObject();
-                        state = State.RESULTS;
+                        parserState = ParserState.RESULTS;
                         continue outer;
                     case kBoolean:
                         ++kBooleanCount;
-                        askResult = reader.nextBoolean();
+                        askResult.makeFinal();
+                        Boolean b = reader.nextBoolean();
+                        updateAccepted = askResult.updateValue(b);
+                        if (!updateAccepted) {
+                            ErrorHandlers.relay(errorHandler, validationSettings.getInvalidatedHeadSeverity(),
+                                    new ErrorHandlerEvent(String.format(
+                                        ". Expected %s but got %s", askResult.getValue(), b)));
+                        }
+                        validate(this, errorHandler, validationSettings);
                         continue outer;
                     default:
                         onUnexpectedJsonElement();
@@ -224,7 +291,7 @@ public class RowSetJSONStreaming
                     }
                 }
                 reader.endObject();
-                state = State.DONE;
+                parserState = ParserState.DONE;
                 continue outer;
 
             case RESULTS:
@@ -233,39 +300,37 @@ public class RowSetJSONStreaming
                     switch (elt) {
                     case kBindings:
                         reader.beginArray();
-                        state = State.BINDINGS;
+                        parserState = ParserState.BINDINGS;
                         continue outer;
+
+                    // Legacy distinct / ordered keys could be caught here too
+                    // in order to assess use of legacy features in validation
+
                     default:
                         onUnexpectedJsonElement();
                         break;
                     }
                 }
                 reader.endObject();
-                state = State.ROOT;
+                parserState = ParserState.ROOT;
                 break;
 
             case BINDINGS:
                 while (reader.hasNext()) {
-                    result = parseBinding(gson, reader, labelMap, onUnknownRdfTermType);
                     ++rowNumber;
+                    result = parseBinding(gson, reader, labelMap, unknownRdfTermTypeHandler);
                     break outer;
                 }
                 reader.endArray();
-                state = State.RESULTS;
+                parserState = ParserState.RESULTS;
                 break;
 
             case DONE:
                 result = null; // endOfData();
-                if (enableValidation) {
-                    validateCompleted(this);
-                }
+                validateCompleted(this, errorHandler, validationSettings);
 
                 break outer;
             }
-        }
-
-        if (enableValidation) {
-            validate(this);
         }
 
         return result;
@@ -291,13 +356,26 @@ public class RowSetJSONStreaming
         return result;
     }
 
-    public Boolean getAskResult() {
-        return askResult;
-    }
-
     @Override
     public long getRowNumber() {
         return rowNumber;
+    }
+
+    boolean hasResultVars() {
+        return resultVars.hasValue();
+    }
+
+    @Override
+    public List<Var> getResultVars() {
+        return resultVars.getValue();
+    }
+
+    public boolean hasAskResult() {
+        return askResult.hasValue();
+    }
+
+    public Boolean getAskResult() {
+        return askResult.getValue();
     }
 
     public int getKHeadCount() {
@@ -312,22 +390,36 @@ public class RowSetJSONStreaming
         return kResultsCount;
     }
 
-    /** Check the current state of a streaming json row set for inconsistencies */
-    public static void validate(RowSetJSONStreaming rs) {
-        if (rs.getKBooleanCount() > 0 && rs.getKResultsCount() > 0) {
-            throw new ResultSetException("Encountered bindings as well as boolean result");
+    public long getUnexpectedItemCount() {
+        return unexpectedItemCount;
+    }
+
+    /** Runtime validation of the current state of a streaming json row set */
+    public static void validate(RowSetJSONStreaming rs, ErrorHandler errorHandler, ValidationSettings settings) {
+        if (rs.hasAskResult() && rs.getKResultsCount() > 0) {
+            ErrorHandlers.relay(errorHandler, settings.getMixedResultsSeverity(), () ->
+                new ErrorHandlerEvent("Encountered bindings as well as boolean result"));
+        }
+
+        if (rs.getKResultsCount() > 1) {
+            ErrorHandlers.relay(errorHandler, settings.getInvalidatedResultsSeverity(), () ->
+                new ErrorHandlerEvent("Multiple 'results' keys encountered"));
         }
     }
 
     /** Check a completed streaming json row set for inconsistencies.
-     *  Specifically checks for whether there was a header attribute. */
-    public static void validateCompleted(RowSetJSONStreaming rs) {
-        if (rs.getKHeadCount() == 0) {
-            throw new ResultSetException(String.format("Mandory key '%s' not seen", kHead));
+     *  Specifically checks for missing result value and missing head */
+    public static void validateCompleted(RowSetJSONStreaming rs, ErrorHandler errorHandler, ValidationSettings settings) {
+        // Missing result (neither 'results' nor 'boolean' seen)
+    	if (rs.getKResultsCount() == 0 && rs.getKBooleanCount() == 0) {
+            ErrorHandlers.relay(errorHandler, settings.getEmptyJsonSeverity(),
+                new ErrorHandlerEvent(String.format("Either '%s' or '%s' is mandatory; neither seen", kResults, kBoolean)));
         }
 
-        if (rs.getKResultsCount() == 0 && rs.getKBooleanCount() == 0) {
-            throw new ResultSetException(String.format("Either '%s' or '%s' is mandatory; neither seen", kResults, kBoolean));
+        // Missing head
+        if (rs.getKHeadCount() == 0) {
+            ErrorHandlers.relay(errorHandler, settings.getMissingHeadSeverity(),
+                new ErrorHandlerEvent(String.format("Mandory key '%s' not seen", kHead)));
         }
     }
 
@@ -344,7 +436,6 @@ public class RowSetJSONStreaming
     protected boolean hasMore() {
         return true;
     }
-
 
     public static Node parseOneTerm(JsonElement jsonElt, LabelToNode labelMap, Function<JsonObject, Node> onUnknownRdfTermType) {
 
@@ -428,7 +519,6 @@ public class RowSetJSONStreaming
         return v;
     }
 
-
     public static JsonElement expectOneKey(JsonObject json, String ...keys) {
         JsonElement result = null;
 
@@ -467,6 +557,96 @@ public class RowSetJSONStreaming
         }
 
         return bb.build();
+    }
+
+    /** Validation settings */
+    public static class ValidationSettings implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * What to do if the JSON is effectively 'empty', i.e. if neither
+         * the head nor the results key were present.
+         * Unexpected elements are captured by onUnexpectedJsonElement.
+         * e.g. returned older version of virtuoso open source
+         * Mitigation is to assume an empty set of bindings.
+         */
+        protected Severity emptyJsonSeverity = Severity.ERROR;
+
+        /** What to do if no head was encountered. We may have already
+         * optimistically streamed all the bindings in anticipation of an
+         * eventual head. */
+        protected Severity missingHeadSeverity = Severity.ERROR;
+
+        /** What to do if there is a repeated 'results' key
+         * At this stage we have already optimisticaly streamed results which
+         * under JSON semantics would have been superseded by this newly
+         * encountered key. */
+        protected Severity invalidatedResultsSeverity = Severity.ERROR;
+
+        /** What to do if there is a repeated 'head' <b>whole value does not match the
+         * prior value</b>. Repeated heads with the same value are valid.
+         * Any possibly prior reported head would have been superseded by this newly
+         * encountered key.
+         * Should parsing continue then only the first encountered value will remain active.
+         */
+        protected Severity invalidatedHeadSeverity = Severity.FATAL;
+
+        /**
+         * What to do if the JSON contains both a boolean result and bindings
+         * Mitigation is to assume bindings and ignore the boolean result
+         */
+        protected Severity mixedResultsSeverity = Severity.FATAL;
+
+        /** What to do if we encounter an unexpected JSON key */
+        protected Severity unexpectedJsonElementSeverity = Severity.IGNORE;
+
+        public Severity getEmptyJsonSeverity() {
+            return emptyJsonSeverity;
+        }
+
+        public void setEmptyJsonSeverity(Severity severity) {
+            this.emptyJsonSeverity = severity;
+        }
+
+        public Severity getInvalidatedHeadSeverity() {
+            return invalidatedHeadSeverity;
+        }
+
+        public void setInvalidatedHeadSeverity(Severity severity) {
+            this.invalidatedHeadSeverity = severity;
+        }
+
+        public Severity getInvalidatedResultsSeverity() {
+            return invalidatedResultsSeverity;
+        }
+
+        public void setInvalidatedResultsSeverity(Severity severity) {
+            this.invalidatedResultsSeverity = severity;
+        }
+
+        public Severity getMissingHeadSeverity() {
+            return missingHeadSeverity;
+        }
+
+        public void setMissingHeadSeverity(Severity severity) {
+            this.missingHeadSeverity = severity;
+        }
+
+        public Severity getMixedResultsSeverity() {
+            return mixedResultsSeverity;
+        }
+
+        public void setMixedResultsSeverity(Severity severity) {
+            this.mixedResultsSeverity = severity;
+        }
+
+        public Severity getUnexpectedJsonElementSeverity() {
+            return unexpectedJsonElementSeverity;
+        }
+
+        public void setUnexpectedJsonElementSeverity(Severity severity) {
+            this.unexpectedJsonElementSeverity = severity;
+        }
     }
 
 }
