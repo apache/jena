@@ -205,7 +205,7 @@ public class ProcBuildNodeTableX {
                         Timer.timeStr(x), count, rate);
         };
 
-        // [BULK] XXX AsyncParser.asyncParse(files, output)
+        // AsyncParser.asyncParse(files, output) but with logging.
         Thread thread1 = async(task1, "AsyncParser");
 
         // Step3: build node table.
@@ -222,13 +222,10 @@ public class ProcBuildNodeTableX {
             int idxSuperTick = BulkLoaderX.DataSuperTick;
             ProgressMonitorOutput monitor = ProgressMonitorOutput.create(BulkLoaderX.LOG_Terms, "Index", idxTickPoint, idxSuperTick);
 
-            // Library of tools!
             dsg.executeWrite(()->{
                 BinaryDataFile objectFile = nodeTable.getData();
                 Iterator<Record> rIter = records(BulkLoaderX.LOG_Terms, input, objectFile);
                 rIter = new ProgressIterator<>(rIter, monitor);
-                // Record of (hash, nodeId)
-                // [BULK]
                 BPlusTree bpt1 = (BPlusTree)(nodeTable.getIndex());
                 BPlusTreeParams bptParams = bpt1.getParams();
                 RecordFactory factory = new RecordFactory(SystemTDB.LenNodeHash,  NodeId.SIZE);
@@ -247,8 +244,6 @@ public class ProcBuildNodeTableX {
                 objectFile.sync();
                 monitor.finish();
             });
-            // [BULK]
-            //blkState.sync();
             IO.close(input);
             long x = timer.endTimer();
             long count = monitor.getTicks();
@@ -278,7 +273,6 @@ public class ProcBuildNodeTableX {
 
         BulkLoaderX.waitFor(thread1);
         BulkLoaderX.waitFor(thread3);
-
         return Pair.create(countParseTicks.get(), countIndexedNodes.get());
     }
 

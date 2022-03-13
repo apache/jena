@@ -238,6 +238,66 @@ public class ProcBuildIndexX
     }
 
     private static long indexBuilder(DatasetGraph dsg, InputStream input, String indexName) {
+        long tickPoint = BulkLoaderX.DataTick;
+        int superTick = BulkLoaderX.DataSuperTick;
+
+        // Location of storage, not the DB.
+        DatasetGraphTDB dsgtdb = TDBInternal.getDatasetGraphTDB(dsg);
+
+        int keyLength = SystemTDB.SizeOfNodeId * indexName.length();
+        int valueLength = 0;
+
+        // The name is the order. Input is already in the right order.
+
+        int tupleLength = indexName.length();
+
+        TupleIndex index = TDBInternal.findIndex(dsg, indexName);
+        if ( index == null )
+            throw new TDBException("Can not find index: " + indexName);
+
+        String primaryOrder;
+        if ( tupleLength == 3 ) {
+            primaryOrder = Names.primaryIndexTriples;
+        } else if ( tupleLength == 4 ) {
+            primaryOrder = Names.primaryIndexQuads;
+        } else {
+            throw new TDBException("Index name: " + indexName);
+        }
+        TupleMap colMap = TupleMap.create(primaryOrder, indexName);
+
+        int blockSize = SystemTDB.BlockSize;
+        RecordFactory recordFactory = ((TupleIndexRecord)index).getRangeIndex().getRecordFactory();
+
+        int order = BPlusTreeParams.calcOrder(blockSize, recordFactory);
+        BPlusTreeParams bptParams = new BPlusTreeParams(order, recordFactory);
+
+        // Extract from index.
+        TupleIndexRecord tIdxRec = (TupleIndexRecord)index;
+        BPlusTree bpt = (BPlusTree)(tIdxRec.getRangeIndex());
+        BlockMgr blkMgrNodes = bpt.getNodeManager().getBlockMgr();
+        BlockMgr blkMgrRecords = bpt.getRecordsMgr().getBlockMgr();
+        BufferChannel blkState = bpt.getStateManager().getBufferChannel();
+        // ----
+        int rowBlock = 1000;
+        Iterator<Record> iter = new RecordsFromInput(input, tupleLength, colMap, rowBlock);
+        // ProgressMonitor.
+        ProgressMonitor monitor = ProgressMonitorOutput.create(BulkLoaderX.LOG_Index, indexName, tickPoint, superTick);
+        ProgressIterator<Record> iter2 = new ProgressIterator<>(iter, monitor);
+
+        monitor.start();
+
+        // Independent transaction on just this BPlusTree, not the dataset.
+        CoLib.executeWrite(index, ()->{
+            BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(iter2, bptParams, recordFactory, blkState, blkMgrNodes, blkMgrRecords);
+        });
+        monitor.finish();
+
+        long count = monitor.getTicks();
+        return count;
+    }
+
+    // No longer used. Fixed for JENA-2294. Delete eventually.
+    private static long indexBuilder0(DatasetGraph dsg, InputStream input, String indexName) {
         // This code does not use the setup of the DatasetGraph - it creates the BPTrees and the state file.
         long tickPoint = BulkLoaderX.DataTick;
         int superTick = BulkLoaderX.DataSuperTick;
@@ -250,7 +310,7 @@ public class ProcBuildIndexX
         int valueLength = 0;
 
         // The name is the order.
-        String primary = indexName;
+        //String primary = indexName;
 
         String primaryOrder;
         int dftKeyLength;
@@ -263,13 +323,13 @@ public class ProcBuildIndexX
             dftKeyLength = SystemTDB.LenIndexTripleRecord;
             dftValueLength = 0;
             // Find index.
-            index = findIndex(dsgtdb.getTripleTable().getNodeTupleTable().getTupleTable().getIndexes()
+            index = findIndex0(dsgtdb.getTripleTable().getNodeTupleTable().getTupleTable().getIndexes()
                              , indexName);
         } else if ( tupleLength == 4 ) {
             primaryOrder = Names.primaryIndexQuads;
             dftKeyLength = SystemTDB.LenIndexQuadRecord;
             dftValueLength = 0;
-            index = findIndex(dsgtdb.getQuadTable().getNodeTupleTable().getTupleTable().getIndexes()
+            index = findIndex0(dsgtdb.getQuadTable().getNodeTupleTable().getTupleTable().getIndexes()
                              , indexName);
         } else {
             throw new TDBException("Index name: " + indexName);
@@ -314,7 +374,7 @@ public class ProcBuildIndexX
         return count;
     }
 
-    private static TupleIndex findIndex(TupleIndex[] indexes, String indexName) {
+    private static TupleIndex findIndex0(TupleIndex[] indexes, String indexName) {
         for ( TupleIndex idx : indexes ) {
             if ( indexName.equals(idx.getName()) )
                 return idx;
