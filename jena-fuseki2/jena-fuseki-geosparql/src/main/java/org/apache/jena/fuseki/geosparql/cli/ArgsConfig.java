@@ -103,7 +103,11 @@ public class ArgsConfig {
     @Parameter(names = {"--tdb2", "-t2"}, description = "Option to use TDB2, rather than TDB, for persistent storage. Default: false", order = 17)
     private boolean tdb2 = false;
 
-    //19) Help
+    //19) Geometry Transformation
+    @Parameter(names = {"--transform_geometry", "-tg"}, description = "Option to disable transformation of mismatching Geometry SRS. Default: true", arity = 1, order = 18)
+    private boolean transformGeometry = true;
+
+    //20) Help
     @Parameter(names = {"--help", "-h"}, description = "Application help. @path/to/file can be used to submit parameters in a file.", help = true, order = 18)
     private boolean help = false;
 
@@ -195,12 +199,16 @@ public class ArgsConfig {
         return tdb2;
     }
 
+    public boolean isTransformGeometry() {
+        return transformGeometry;
+    }
+
     public boolean isHelp() {
         return help;
     }
 
     public String getSummary() {
-        return "port=" + port + ", datsetName=" + datsetName + ", loopbackOnly=" + loopbackOnly + ", updateAllowed=" + updateAllowed + ", inference=" + inference + ", applyDefaultGeometry=" + applyDefaultGeometry + ", validateGeometryLiteral=" + validateGeometryLiteral + ", convertGeoPredicates=" + convertGeoPredicates + ", removeGeoPredicates=" + removeGeoPredicates + ", queryRewrite=" + queryRewrite + ", tdbFile=" + tdbFile + ", fileGraphFormats=" + fileGraphFormats + ", fileGraphDelimiters=" + fileGraphDelimiters + ", indexEnabled=" + indexEnabled + ", indexSizes=" + indexSizes + ", indexExpiries=" + indexExpiries + ", spatialIndexFile=" + spatialIndexFile + ", tdb2=" + tdb2 + ", help=" + help;
+        return "port=" + port + ", datsetName=" + datsetName + ", loopbackOnly=" + loopbackOnly + ", updateAllowed=" + updateAllowed + ", inference=" + inference + ", applyDefaultGeometry=" + applyDefaultGeometry + ", validateGeometryLiteral=" + validateGeometryLiteral + ", convertGeoPredicates=" + convertGeoPredicates + ", removeGeoPredicates=" + removeGeoPredicates + ", queryRewrite=" + queryRewrite + ", tdbFile=" + tdbFile + ", fileGraphFormats=" + fileGraphFormats + ", fileGraphDelimiters=" + fileGraphDelimiters + ", indexEnabled=" + indexEnabled + ", indexSizes=" + indexSizes + ", indexExpiries=" + indexExpiries + ", spatialIndexFile=" + spatialIndexFile + ", tdb2=" + tdb2 + ", transformGeometry=" + transformGeometry + ", help=" + help;
     }
 
     @Override
