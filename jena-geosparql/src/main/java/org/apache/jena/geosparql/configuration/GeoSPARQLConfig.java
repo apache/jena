@@ -18,7 +18,6 @@
 package org.apache.jena.geosparql.configuration;
 
 import java.io.File;
-
 import org.apache.jena.geosparql.geof.topological.RelateFF;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.function_registration.*;
@@ -59,14 +58,9 @@ public class GeoSPARQLConfig {
 
     /**
      * Option to dynamically transform GeometryLiteral SRS in calculations.
-    */
+     */
     public static boolean ALLOW_GEOMETRY_SRS_TRANSFORMATION = true;
-    
-    /**
-     * Option to dynamically transform GeometryLiteral SRS to match requested units in calculations.
-    */
-    public static boolean ALLOW_UNITS_SRS_TRANSFORMATION = false;
-     
+
     /**
      * Initialise all GeoSPARQL property and filter functions with memory
      * indexing.
@@ -207,7 +201,6 @@ public class GeoSPARQLConfig {
              *   Dec 28, 2021 10:56:27 AM org.apache.sis.referencing.factory.sql.EPSGFactory <init>
              *   WARNING: The “SIS_DATA” environment variable is not set.
              */
-
             //Setup Default Coordinate Reference Systems
             SRSRegistry.setupDefaultSRS();
 
@@ -330,18 +323,11 @@ public class GeoSPARQLConfig {
 
     /**
      * Sets whether transformation for mismatching Geometry SRS is allowed.
-     * @param allowTransformation 
+     *
+     * @param allowTransformation
      */
-    public static final void allowGeoemtrySRSTransformation(boolean allowTransformation){
+    public static final void allowGeometrySRSTransformation(boolean allowTransformation) {
         ALLOW_GEOMETRY_SRS_TRANSFORMATION = allowTransformation;
     }
-    
-    /**
-     * Sets whether transformation of Geometry SRS according to Units in distance calculation is allowed.
-     * @param allowTransformation 
-     */
-    public static final void allowUnitsSRSTransformation(boolean allowTransformation){
-        ALLOW_UNITS_SRS_TRANSFORMATION = allowTransformation;
-    }
-    
+
 }
