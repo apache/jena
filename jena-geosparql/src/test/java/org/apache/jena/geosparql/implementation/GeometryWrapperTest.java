@@ -17,6 +17,7 @@
  */
 package org.apache.jena.geosparql.implementation;
 
+import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
@@ -204,10 +205,11 @@ public class GeometryWrapperTest {
     /**
      * Test of distanceEuclidean same SRS_URI method, of class GeometryWrapper.
      *
-     * @throws java.lang.Exception
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
      */
     @Test
-    public void testDistanceSameSRSSameUnit() throws Exception {
+    public void testDistanceSameSRSSameUnit() throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(2.0, 1.0));
         String targetSRSURI = SRS_URI.OSGB36_CRS;
@@ -228,11 +230,13 @@ public class GeometryWrapperTest {
     /**
      * Test of distanceEuclidean same SRS_URI method, of class GeometryWrapper.
      *
-     * @throws java.lang.Exception
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
      */
     @Test
-    public void testDistanceSameSRSDifferentUnit() throws Exception {
+    public void testDistanceSameSRSDifferentUnit() throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
+        GeoSPARQLConfig.allowUnitsSRSTransformation(true);  // Modify default config for test.
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(385458, 156785)); //LatLon - 51.31, -2.21
         String targetSRSURI = SRS_URI.OSGB36_CRS;
         GeometryWrapper targetGeometry = new GeometryWrapper(targetGeo, targetSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -246,17 +250,42 @@ public class GeometryWrapperTest {
 
         double expResult = 0.025656; //Degree: 1.47
         double result = instance.distanceEuclidean(targetGeometry, distanceUnitsURL);
+        GeoSPARQLConfig.allowUnitsSRSTransformation(false);
         assertEquals(expResult, result, 0.001);
+    }
+
+    /**
+     * Test of distanceEuclidean same SRS_URI method, of class GeometryWrapper.
+     *
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
+     */
+    @Test(expected = UnitsConversionException.class)
+    public void testDistanceSameSRSDifferentUnit_exception() throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
+
+        Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(385458, 156785)); //LatLon - 51.31, -2.21
+        String targetSRSURI = SRS_URI.OSGB36_CRS;
+        GeometryWrapper targetGeometry = new GeometryWrapper(targetGeo, targetSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
+
+        Geometry instanceGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(487920, 157518)); //LatLon: 51.31, -0.74
+        String instanceSRSURI = SRS_URI.OSGB36_CRS;
+        GeometryWrapper instance = new GeometryWrapper(instanceGeo, instanceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
+
+        //SRS is in metres.
+        String distanceUnitsURL = Unit_URI.RADIAN_URL;
+
+        double result = instance.distanceEuclidean(targetGeometry, distanceUnitsURL);
     }
 
     /**
      * Test of distanceEuclidean different SRS_URI method, of class
      * GeometryWrapper.
      *
-     * @throws java.lang.Exception
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
      */
     @Test
-    public void testDistanceDifferentSRSSameUnit() throws Exception {
+    public void testDistanceDifferentSRSSameUnit() throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(2.0, 1.0));
         String targetSRSURI = SRS_URI.WGS84_CRS;
@@ -278,11 +307,13 @@ public class GeometryWrapperTest {
      * Test of distanceEuclidean different SRS_URI method, of class
      * GeometryWrapper.
      *
-     * @throws java.lang.Exception
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
      */
     @Test
-    public void testDistanceDifferentSRSDifferentUnit() throws Exception {
+    public void testDistanceDifferentSRSDifferentUnit() throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
+        GeoSPARQLConfig.allowUnitsSRSTransformation(true);  // Modify default config for test.
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(0.0, 1.0));
         String targetSRSURI = SRS_URI.WGS84_CRS;
         GeometryWrapper targetGeometry = new GeometryWrapper(targetGeo, targetSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
@@ -296,7 +327,32 @@ public class GeometryWrapperTest {
 
         double expResult = 111320; //1.0 degree of longigtude at the equator is approx 111.32km.
         double result = instance.distanceEuclidean(targetGeometry, distanceUnitsURL);
+        GeoSPARQLConfig.allowUnitsSRSTransformation(false);
         assertEquals(expResult, result, 1);
+    }
+
+    /**
+     * Test of distanceEuclidean different SRS_URI method, of class
+     * GeometryWrapper.
+     *
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
+     */
+    @Test(expected = UnitsConversionException.class)
+    public void testDistanceDifferentSRSDifferentUnit_exception() throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
+
+        Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(0.0, 1.0));
+        String targetSRSURI = SRS_URI.WGS84_CRS;
+        GeometryWrapper targetGeometry = new GeometryWrapper(targetGeo, targetSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
+
+        Geometry instanceGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(2.0, 0.0));
+        String instanceSRSURI = SRS_URI.DEFAULT_WKT_CRS84;
+        GeometryWrapper instance = new GeometryWrapper(instanceGeo, instanceSRSURI, WKTDatatype.URI, DimensionInfo.XY_POINT);
+
+        //SRS is in degrees.
+        String distanceUnitsURL = Unit_URI.METRE_URL;
+
+        double result = instance.distanceEuclidean(targetGeometry, distanceUnitsURL);
     }
 
     /**

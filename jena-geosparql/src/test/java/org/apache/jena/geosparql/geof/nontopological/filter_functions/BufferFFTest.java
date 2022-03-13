@@ -17,11 +17,13 @@
  */
 package org.apache.jena.geosparql.geof.nontopological.filter_functions;
 
+import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -79,14 +81,28 @@ public class BufferFFTest {
      */
     @Test
     public void testExec_Projection_NonLinear() {
-
+        GeoSPARQLConfig.allowUnitsSRSTransformation(true);  // Modify default config for test.
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(60 60)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeDecimal(0.0002);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.DEGREE_URL));
         BufferFF instance = new BufferFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((74.40146 58.902956, 73.79184 54.591588, 72.686764 50.428725, 71.039028 46.753001, 68.992545 43.553727, 66.627526 40.936656, 64.024179 39.007539, 61.199008 37.98857, 58.359636 37.752618, 55.586275 38.405436, 52.942632 39.830584, 50.652834 42.123122, 48.700379 45.06086, 47.148974 48.527356, 46.062326 52.406168, 45.584349 56.686608, 45.61833 61.040732, 46.227974 65.352098, 47.33307 69.514956, 48.980819 73.190674, 51.027306 76.38994, 53.392322 79.007004, 55.995657 80.936115, 58.820809 81.955081, 61.660158 82.191031, 64.433497 81.538215, 67.07712 80.113072, 69.366904 77.82054, 71.319354 74.882809, 72.870762 71.416321, 73.957423 67.537515, 74.435419 63.257079, 74.40146 58.902956))", WKTDatatype.INSTANCE);
         NodeValue result = instance.exec(v1, v2, v3);
+        GeoSPARQLConfig.allowUnitsSRSTransformation(false);
         assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of exec method, of class BufferFF.
+     */
+    @Test(expected = ExprEvalException.class)
+    public void testExec_Projection_NonLinear_exception() {
+
+        NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(60 60)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeDecimal(0.0002);
+        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.DEGREE_URL));
+        BufferFF instance = new BufferFF();
+        NodeValue result = instance.exec(v1, v2, v3);
     }
 
     /**
@@ -94,14 +110,28 @@ public class BufferFFTest {
      */
     @Test
     public void testExec_Geographic_Linear() {
-
+        GeoSPARQLConfig.allowUnitsSRSTransformation(true);  // Modify default config for test.
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((49.9 -7.5, 50.0 -7.5, 50.0 -7.4, 49.9 -7.4, 49.9 -7.5))", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeDecimal(20);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.METRE_URL));
         BufferFF instance = new BufferFF();
         NodeValue expResult = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((49.89982 -7.5, 49.899824 -7.500054, 49.899834 -7.500106, 49.89985 -7.500155, 49.899873 -7.500197, 49.8999 -7.500231, 49.899931 -7.500257, 49.899965 -7.500273, 49.9 -7.500278, 50 -7.500279, 50.000035 -7.500274, 50.000069 -7.500258, 50.0001 -7.500232, 50.000127 -7.500197, 50.00015 -7.500155, 50.000166 -7.500107, 50.000176 -7.500055, 50.00018 -7.5, 50.00018 -7.4, 50.000176 -7.399945, 50.000166 -7.399893, 50.000149 -7.399845, 50.000127 -7.399803, 50.0001 -7.399768, 50.000069 -7.399742, 50.000035 -7.399726, 50 -7.399721, 49.9 -7.399722, 49.899965 -7.399727, 49.899931 -7.399743, 49.8999 -7.399769, 49.899873 -7.399803, 49.89985 -7.399845, 49.899834 -7.399894, 49.899824 -7.399946, 49.89982 -7.4, 49.89982 -7.5))", WKTDatatype.INSTANCE);
         NodeValue result = instance.exec(v1, v2, v3);
+        GeoSPARQLConfig.allowUnitsSRSTransformation(false);
         assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of exec method, of class BufferFF.
+     */
+    @Test(expected = ExprEvalException.class)
+    public void testExec_Geographic_Linear_Exception() {
+
+        NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((49.9 -7.5, 50.0 -7.5, 50.0 -7.4, 49.9 -7.4, 49.9 -7.5))", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeDecimal(20);
+        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.METRE_URL));
+        BufferFF instance = new BufferFF();
+        NodeValue result = instance.exec(v1, v2, v3);
     }
 
     /**
@@ -112,7 +142,7 @@ public class BufferFFTest {
      */
     @Test
     public void testExec_Geographic_Linear2() throws MismatchedDimensionException, TransformException, FactoryException {
-
+        GeoSPARQLConfig.allowUnitsSRSTransformation(true);  // Modify default config for test.
         //Test that buffering with Geographic geometry and Linear distance yields similar results to Projected geometry and Linear distance.
         GeometryWrapper originalGeometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((0.0 0.0, 0.0 100.0, 100.0 100.0, 100.0 0.0, 0.0 0.0))", WKTDatatype.URI);
 
@@ -154,6 +184,7 @@ public class BufferFFTest {
             expResults[j] = Double.parseDouble(res[1]);
             j++;
         }
+        GeoSPARQLConfig.allowUnitsSRSTransformation(false);
 
         //Test accuracy of buffering to within 0.12m. Some error from coordinate and unit transformations.
         Assert.assertArrayEquals(expResults, results, 0.12);

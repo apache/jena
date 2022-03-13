@@ -17,9 +17,11 @@
  */
 package org.apache.jena.geosparql.geof.nontopological.filter_functions;
 
+import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -57,7 +59,7 @@ public class DistanceFFTest {
      * Test of exec method, of class DistanceFF.
      */
     @Test
-    public void testExec_metres() {
+    public void testExec_projected_metres() {
 
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(60 60)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)", WKTDatatype.INSTANCE);
@@ -72,14 +74,16 @@ public class DistanceFFTest {
      * Test of exec method, of class DistanceFF.
      */
     @Test
-    public void testExec_radians() {
+    public void testExec_projected_radians() {
 
+        GeoSPARQLConfig.allowUnitsSRSTransformation(true);  // Modify default config for test.
         NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(60 60)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.RADIAN_URL));
         DistanceFF instance = new DistanceFF();
         double expResult = 7.2822E-6;
         double result = instance.exec(v1, v2, v3).getDouble();
+        GeoSPARQLConfig.allowUnitsSRSTransformation(false);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -87,67 +91,111 @@ public class DistanceFFTest {
      * Test of exec method, of class DistanceFF.
      */
     @Test
-    public void testExec_CRS84_radians() {
+    public void testExec_projected_radians_consistency() {
 
-        NodeValue v1 = NodeValue.makeNode("Point(11.416666666667 53.633333333333)", WKTDatatype.INSTANCE);
-        NodeValue v2 = NodeValue.makeNode("Point(11.575 48.1375)", WKTDatatype.INSTANCE);
+        GeoSPARQLConfig.allowUnitsSRSTransformation(true);  // Modify default config for test.
+        NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(60 60)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.RADIAN_URL));
         DistanceFF instance = new DistanceFF();
-        double expResult = 7.2822E-6;
-        double result = instance.exec(v1, v2, v3).getDouble();
-        System.out.println("Exp Result: " + expResult);
-        System.out.println("Result: " + result);
-        assertEquals(expResult, result, 0.0001);
+
+        double aResult = instance.exec(v1, v2, v3).getDouble();
+        double bResult = instance.exec(v2, v1, v3).getDouble();
+        GeoSPARQLConfig.allowUnitsSRSTransformation(false);
+        assertEquals(bResult, aResult, 0.0001);
     }
-    
+
     /**
      * Test of exec method, of class DistanceFF.
      */
-    @Test
-    public void testExec_CRS84_radians2() {
+    @Test(expected = ExprEvalException.class)
+    public void testExec_projected_radians_exception() {
 
-        NodeValue v1 = NodeValue.makeNode("Point(11.575 48.1375)", WKTDatatype.INSTANCE);        
-        NodeValue v2 = NodeValue.makeNode("Point(11.416666666667 53.633333333333)", WKTDatatype.INSTANCE);
+        NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(60 60)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.RADIAN_URL));
         DistanceFF instance = new DistanceFF();
-        double expResult = 7.2822E-6;
         double result = instance.exec(v1, v2, v3).getDouble();
-        System.out.println("Exp Result: " + expResult);
-        System.out.println("Result: " + result);
-        assertEquals(expResult, result, 0.0001);
     }
-    
+
     /**
      * Test of exec method, of class DistanceFF.
      */
     @Test
-    public void testExec_CRS84_metres() {
+    public void testExec_geographic_radians() {
 
-        NodeValue v1 = NodeValue.makeNode("Point(11.416666666667 53.633333333333)", WKTDatatype.INSTANCE);
-        NodeValue v2 = NodeValue.makeNode("Point(11.575 48.1375)", WKTDatatype.INSTANCE); 
-        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETRE_URN));
+        NodeValue v1 = NodeValue.makeNode("Point(11.41 53.63)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("Point(11.57 48.13)", WKTDatatype.INSTANCE);
+        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.RADIAN_URL));
         DistanceFF instance = new DistanceFF();
-        double expResult = 7.2822E-6;
+        double expResult = 0.096034;
         double result = instance.exec(v1, v2, v3).getDouble();
-        System.out.println("Exp Result: " + expResult);
-        System.out.println("Result: " + result);
         assertEquals(expResult, result, 0.0001);
     }
-    
+
     /**
      * Test of exec method, of class DistanceFF.
      */
     @Test
-    public void testExec_CRS84_metres2() {
+    public void testExec_geographic_metres() {
 
-        NodeValue v1 = NodeValue.makeNode("Point(11.575 48.1375)", WKTDatatype.INSTANCE);
-        NodeValue v2 = NodeValue.makeNode("Point(11.416666666667 53.633333333333)", WKTDatatype.INSTANCE);
+        GeoSPARQLConfig.allowUnitsSRSTransformation(true);  // Modify default config for test.
+        NodeValue v1 = NodeValue.makeNode("Point(11.41 53.63)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("Point(11.57 48.13)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETRE_URN));
         DistanceFF instance = new DistanceFF();
-        double expResult = 7.2822E-6;
+        double expResult = 363.221811;
         double result = instance.exec(v1, v2, v3).getDouble();
-        System.out.println("Exp Result: " + expResult);
-        System.out.println("Result: " + result);
+        GeoSPARQLConfig.allowUnitsSRSTransformation(false);
         assertEquals(expResult, result, 0.0001);
+    }
+
+    /**
+     * Test of exec method, of class DistanceFF.
+     */
+    @Test(expected = ExprEvalException.class)
+    public void testExec_geographic_metres_exception() {
+
+        NodeValue v1 = NodeValue.makeNode("Point(11.41 53.63)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("Point(11.57 48.13)", WKTDatatype.INSTANCE);
+        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETRE_URN));
+        DistanceFF instance = new DistanceFF();
+        double result = instance.exec(v1, v2, v3).getDouble();
+    }
+
+    /**
+     * Test of exec method, of class DistanceFF.
+     */
+    @Test
+    public void testExec_geographic_metres_consistency() {
+        GeoSPARQLConfig.allowUnitsSRSTransformation(true);  // Modify default config for test.
+        NodeValue v1 = NodeValue.makeNode("Point(11.57 48.13)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("Point(11.41 53.63)", WKTDatatype.INSTANCE);
+        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETRE_URN));
+        DistanceFF instance = new DistanceFF();
+        double aResult = instance.exec(v1, v2, v3).getDouble();
+        double bResult = instance.exec(v2, v1, v3).getDouble();
+
+        GeoSPARQLConfig.allowUnitsSRSTransformation(false);
+        assertEquals(bResult, aResult, 0.0001);
+    }
+
+    /**
+     * Test of exec method, of class DistanceFF.
+     */
+    @Test(expected = ExprEvalException.class)
+    public void testExec_geographic_metres_rejection() {
+        GeoSPARQLConfig.allowUnitsSRSTransformation(true);  // Modify default config for test.
+        NodeValue v1 = NodeValue.makeNode("Point(11.57 48.13)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("Point(111.41 53.63)", WKTDatatype.INSTANCE);
+        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETRE_URN));
+        DistanceFF instance = new DistanceFF();
+        try {
+            double aResult = instance.exec(v1, v2, v3).getDouble();
+        } catch (ExprEvalException ex) {
+            throw ex;
+        } finally {
+            GeoSPARQLConfig.allowUnitsSRSTransformation(false);
+        }
     }
 }
