@@ -104,7 +104,7 @@ public class UnitsOfMeasure implements Serializable {
         Boolean isTargetUnitsLinear = targetUnits.isLinearUnits();
 
         if (!isSourceUnitsLinear.equals(isTargetUnitsLinear)) {
-            throw new UnitsConversionException("Conversion between linear and non-linear units not supported (convertBetween method): " + sourceUnits.unitURI + " and " + targetUnits.unitURI);
+            throw new UnitsConversionException("Conversion between linear and non-linear units not supported: " + sourceUnits.unitURI + " and " + targetUnits.unitURI);
         }
 
         //Source and Target are the same units, so return the source distance.
@@ -121,30 +121,6 @@ public class UnitsOfMeasure implements Serializable {
 
         double convertedDistance = cleanUpPrecision(targetDistance.getValue().doubleValue());
         return convertedDistance;
-    }
-
-    /**
-     * Convert between linear and non-linear units and vice versa.<br>
-     * Will convert linear/linear and non-linear/non-linear units.
-     *
-     * @param distance
-     * @param unitsURI
-     * @param targetDistanceUnitsURI
-     * @param isTargetUnitsLinear
-     * @param latitude
-     * @return Distance in target units.
-     */
-    public static final double convertBetween(double distance, String unitsURI, String targetDistanceUnitsURI, boolean isTargetUnitsLinear, double latitude) {
-        double targetDistance;
-        if (isTargetUnitsLinear) {
-            double metresDistance = UnitsOfMeasure.convertToMetres(distance, unitsURI, latitude);
-            targetDistance = UnitsOfMeasure.conversion(metresDistance, Unit_URI.METRE_URL, targetDistanceUnitsURI);
-        } else {
-            double degreesDistance = UnitsOfMeasure.convertToDegrees(distance, unitsURI, latitude);
-            targetDistance = UnitsOfMeasure.conversion(degreesDistance, Unit_URI.DEGREE_URL, targetDistanceUnitsURI);
-        }
-
-        return targetDistance;
     }
 
     /**

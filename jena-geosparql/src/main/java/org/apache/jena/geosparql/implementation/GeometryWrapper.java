@@ -68,7 +68,7 @@ public class GeometryWrapper implements Serializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static boolean BUFFER_WARNING = false;
-    
+
     private final DimensionInfo dimensionInfo;
     private final SRSInfo srsInfo;
     private final Geometry xyGeometry;
@@ -210,10 +210,10 @@ public class GeometryWrapper implements Serializable {
         if (srsURI.equals(targetGeometryWrapper.srsInfo.getSrsURI())) {
             transformedGeometryWrapper = targetGeometryWrapper;
         } else {
-            if(!GeoSPARQLConfig.ALLOW_GEOMETRY_SRS_TRANSFORMATION){
+            if (!GeoSPARQLConfig.ALLOW_GEOMETRY_SRS_TRANSFORMATION) {
                 throw new TransformException("GeometryLiteral SRS transformation is disabled, see GeoSPARQLConfig.allowGeometrySRSTransformation(...).");
             }
-            
+
             transformedGeometryWrapper = targetGeometryWrapper.transform(srsURI);
         }
 
@@ -416,53 +416,20 @@ public class GeometryWrapper implements Serializable {
 
         //Check whether the source geometry is linear units for cartesian calculation. If not then transform to relevant UTM SRS GeometryWrapper.
         Boolean isTargetUnitsLinear = UnitsRegistry.isLinearUnits(targetDistanceUnitsURI);
-        GeometryWrapper transformedGeometryWrapper;
-        Boolean isTransformNeeded;
 
-        if (srsInfo.getUnitsOfMeasure().isLinearUnits() == isTargetUnitsLinear) {
-            //Source geometry and target units are both the same.
-            transformedGeometryWrapper = this;
-            isTransformNeeded = false;
-        } else {
-            if(!GeoSPARQLConfig.ALLOW_UNITS_SRS_TRANSFORMATION){
-                throw new UnitsConversionException("Buffer calculation conversion of GeometryLiteral SRS according to requested Units SRS is disabled, see GeoSPARQLConfig.allowUnitsSRSTransformation(...).");
-            }
-            
-            if (isTargetUnitsLinear) {
-                //Source geometry is not linear but targets are so convert to linear SRS.
-                
-                //Issue one-time warning about error being introduced.
-                if(!BUFFER_WARNING){
-                    BUFFER_WARNING = true;
-                    LOGGER.warn("Applying buffer to non-linear GeometryLiteral using linear Units will increase error.");
-                }
-                
-                String sourceUtmURI = getUTMZoneURI();
-                transformedGeometryWrapper = transform(sourceUtmURI);
-                isTransformNeeded = true;
-            } else {
-                //Source geometry is linear but targets are not so convert to nonlinear SRS.
-                transformedGeometryWrapper = transform(SRS_URI.DEFAULT_WKT_CRS84);
-                isTransformNeeded = true;
-            }
+        if (srsInfo.getUnitsOfMeasure().isLinearUnits() != isTargetUnitsLinear) {
+            //Source geometry and target units are not the same.
+            throw new UnitsConversionException("Buffer does not support conversion between linear and non-linear units.");
         }
 
-        //Check whether the units of the distance need converting.
-        double transformedDistance = UnitsOfMeasure.conversion(distance, targetDistanceUnitsURI, transformedGeometryWrapper.srsInfo.getUnitsOfMeasure().getUnitURI());
+        //Transform distance into current units.
+        double transformedDistance = UnitsOfMeasure.conversion(distance, targetDistanceUnitsURI, this.srsInfo.getUnitsOfMeasure().getUnitURI());
 
-        //Buffer the transformed geometry
-        Geometry xyGeo = transformedGeometryWrapper.xyGeometry.buffer(transformedDistance);
+        //Buffer the geometry by the transformed distance.
+        Geometry xyGeo = this.xyGeometry.buffer(transformedDistance);
         DimensionInfo bufferedDimensionInfo = new DimensionInfo(dimensionInfo.getCoordinate(), dimensionInfo.getSpatial(), xyGeo.getDimension());
-        Geometry parsingGeo = GeometryReverse.check(xyGeo, transformedGeometryWrapper.srsInfo);
-        GeometryWrapper bufferedGeometryWrapper = new GeometryWrapper(parsingGeo, xyGeo, transformedGeometryWrapper.srsInfo.getSrsURI(), transformedGeometryWrapper.geometryDatatypeURI, bufferedDimensionInfo);
-
-        //Check whether need to transform back to the original srsURI.
-        if (isTransformNeeded) {
-            //Don't store the buffered geometry as it is dependent upon the target distance and so likely to vary beween calls.
-            return bufferedGeometryWrapper.transform(srsInfo.getSrsURI(), false);
-        } else {
-            return bufferedGeometryWrapper;
-        }
+        Geometry parsingGeo = GeometryReverse.check(xyGeo, this.srsInfo);
+        return new GeometryWrapper(parsingGeo, xyGeo, this.srsInfo.getSrsURI(), this.geometryDatatypeURI, bufferedDimensionInfo);
     }
 
     /**
@@ -562,27 +529,11 @@ public class GeometryWrapper implements Serializable {
      */
     public double distanceEuclidean(GeometryWrapper targetGeometry, String targetDistanceUnitsURI) throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
-        Boolean isUnitsLinear = srsInfo.getUnitsOfMeasure().isLinearUnits();
-        Boolean isTargetUnitsLinear = UnitsRegistry.isLinearUnits(targetDistanceUnitsURI);
-
-        if(!isUnitsLinear.equals(isTargetUnitsLinear) && !GeoSPARQLConfig.ALLOW_UNITS_SRS_TRANSFORMATION){
-            throw new UnitsConversionException("Distance calculation conversion of GeometryLiteral SRS according to requested Units SRS is disabled, see GeoSPARQLConfig.allowUnitsSRSTransformation(...).");
-        }
-        
         GeometryWrapper transformedTargetGeometry = checkTransformSRS(targetGeometry);
 
         double distance = xyGeometry.distance(transformedTargetGeometry.xyGeometry);
         String unitsURI = srsInfo.getUnitsOfMeasure().getUnitURI();
-
-        double targetDistance;
-        if (isUnitsLinear.equals(isTargetUnitsLinear)) {
-            //Units are same so straight conversion.
-            targetDistance = UnitsOfMeasure.conversion(distance, unitsURI, targetDistanceUnitsURI);
-        } else {
-            targetDistance = UnitsOfMeasure.convertBetween(distance, unitsURI, targetDistanceUnitsURI, isTargetUnitsLinear, getLatitude());
-        }
-
-        return targetDistance;
+        return UnitsOfMeasure.conversion(distance, unitsURI, targetDistanceUnitsURI);
     }
 
     /**
@@ -625,13 +576,19 @@ public class GeometryWrapper implements Serializable {
     public double distanceGreatCircle(GeometryWrapper targetGeometry, String targetDistanceUnitsURI) throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
         GeometryWrapper transformedSourceGeometry;
+
+        //Check the conversion of Great Circle distance from metres into the requested units.
+        if (!UnitsRegistry.isLinearUnits(targetDistanceUnitsURI)) {
+            throw new UnitsConversionException("Great Circle distance units are metres and only linear conversion supported.");
+        }
+
         if (srsInfo.isGeographic()) {
             //Already a geographic SRS.
             transformedSourceGeometry = this;
         } else {
-            //Use WGS84 and not CRS84 as assuming WGS8 is more prevalent.
-            if(!GeoSPARQLConfig.ALLOW_UNITS_SRS_TRANSFORMATION){
-                throw new UnitsConversionException("Great Circle distance calculation conversion of GeometryLiteral SRS according to requested Units SRS is disabled, see GeoSPARQLConfig.allowUnitsSRSTransformation(...).");
+            //Use WGS84 and not CRS84 as assuming WGS84 is more prevalent.
+            if (!GeoSPARQLConfig.ALLOW_GEOMETRY_SRS_TRANSFORMATION) {
+                throw new TransformException("GeometryLiteral SRS transformation is disabled, see GeoSPARQLConfig.allowGeometrySRSTransformation(...).");
             }
             transformedSourceGeometry = this.transform(SRS_URI.WGS84_CRS);
         }
@@ -654,19 +611,7 @@ public class GeometryWrapper implements Serializable {
         double distance = GreatCircleDistance.haversineFormula(coord1.getY(), coord1.getX(), coord2.getY(), coord2.getX());
 
         //Convert the Great Circle distance from metres into the requested units.
-        Boolean isTargetUnitsLinear = UnitsRegistry.isLinearUnits(targetDistanceUnitsURI);
-        double targetDistance;
-        if (isTargetUnitsLinear) {
-            //Target units are linear so straight conversion. Distance is in metres already.
-            targetDistance = UnitsOfMeasure.conversion(distance, Unit_URI.METRE_URL, targetDistanceUnitsURI);
-        } else {
-            if(!GeoSPARQLConfig.ALLOW_UNITS_SRS_TRANSFORMATION){
-                throw new UnitsConversionException("Great Circle distance calculation conversion of GeometryLiteral SRS according to requested Units SRS is disabled, see GeoSPARQLConfig.allowUnitsSRSTransformation(...).");
-            }
-            targetDistance = UnitsOfMeasure.convertBetween(distance, Unit_URI.METRE_URL, targetDistanceUnitsURI, isTargetUnitsLinear, transformedSourceGeometry.getLatitude());
-        }
-
-        return targetDistance;
+        return UnitsOfMeasure.conversion(distance, Unit_URI.METRE_URL, targetDistanceUnitsURI);
     }
 
     /**
@@ -1225,6 +1170,7 @@ public class GeometryWrapper implements Serializable {
      * Builds a WKT Point of Geometry Wrapper.<br>
      * This method does not use the GeometryLiteralIndex and so is best used for
      * one of Geometry Wrappers.
+     *
      * @param x
      * @param y
      * @param srsURI

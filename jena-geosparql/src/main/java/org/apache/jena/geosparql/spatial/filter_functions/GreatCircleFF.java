@@ -72,8 +72,11 @@ public class GreatCircleFF extends FunctionBase5 {
             double distanceMetres = GreatCircleDistance.haversineFormula(lat1, lon1, lat2, lon2);
 
             //Convert the Great Circle distance from metres into the requested units.
-            Boolean isUnitsLinear = UnitsRegistry.isLinearUnits(unitsURI);
-            double distance = UnitsOfMeasure.convertBetween(distanceMetres, Unit_URI.METRE_URL, unitsURI, isUnitsLinear, lat1);
+            if (!UnitsRegistry.isLinearUnits(unitsURI)) {
+                throw new ExprEvalException("Great Circle distance units are metres and only linear conversion supported.");
+            }
+
+            double distance = UnitsOfMeasure.conversion(distanceMetres, Unit_URI.METRE_URL, unitsURI);
 
             return NodeValue.makeDouble(distance);
         } catch (DatatypeFormatException | UnitsConversionException ex) {

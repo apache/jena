@@ -161,6 +161,19 @@ public class GreatCircleGeomFFTest {
     /**
      * Test of exec method, of class GreatCircleGeomFF.
      */
+    @Test(expected = ExprEvalException.class)
+    public void testExec_units_exception() {
+
+        NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0001)", WKTDatatype.INSTANCE);
+        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.RADIAN_URL));
+        GreatCircleGeomFF instance = new GreatCircleGeomFF();
+        NodeValue result = instance.exec(v1, v2, v3);
+    }
+
+    /**
+     * Test of exec method, of class GreatCircleGeomFF.
+     */
     @Test
     public void testExec_query() {
 
