@@ -34,8 +34,6 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.RDFParser;
-import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.system.Txn;
 import org.apache.jena.system.progress.MonitorOutput;
@@ -148,7 +146,10 @@ public class tdbloader extends CmdTDBGraph {
             }
         }
 
-        loadTriples(graphName, urls);
+        if ( urls.size() == 0 )
+            loadTriplesStdin();
+        else
+            loadTriples(graphName, urls);
     }
 
     // Check files exists before starting.
@@ -169,27 +170,13 @@ public class tdbloader extends CmdTDBGraph {
         }
     }
 
-    private void loadTriples(String graphName, List<String> urls) {
-        execBulkLoad(super.getDatasetGraph(), graphName, urls, showProgress);
-    }
-
     private void loadQuads(List<String> urls) {
         // generateStats
         execBulkLoad(super.getDatasetGraph(), null, urls, showProgress);
     }
 
-    private void loadQuadsStdin() {
-        DataLoader loader = chooseLoader(super.getDatasetGraph(), graphName);
-        StreamRDF dest = loader.stream();
-        if ( lang == null )
-            lang = Lang.NQUADS;
-        RDFParser parser = RDFParser.create().lang(lang).source(System.in).build();
-        long elapsed = Timer.time(()->{
-                    loader.startBulk();
-                    parser.parse(dest);
-                    loader.finishBulk();
-        });
-        //return elapsed;
+    private void loadTriples(String graphName, List<String> urls) {
+        execBulkLoad(super.getDatasetGraph(), graphName, urls, showProgress);
     }
 
     private long execBulkLoad(DatasetGraph dsg, String graphName, List<String> urls, boolean showProgress) {
@@ -197,6 +184,28 @@ public class tdbloader extends CmdTDBGraph {
         long elapsed = Timer.time(()->{
                     loader.startBulk();
                     loader.load(urls);
+                    loader.finishBulk();
+        });
+        return elapsed;
+    }
+
+    private long loadQuadsStdin() {
+        Lang parseLang = ( lang != null ) ? lang : Lang.NQUADS;
+        long elapsed = execBulkLoadStdin(super.getDatasetGraph(), null, parseLang, showProgress);
+        return elapsed;
+    }
+
+    private long loadTriplesStdin() {
+        Lang parseLang = ( lang != null ) ? lang : Lang.NTRIPLES;
+        long elapsed = execBulkLoadStdin(super.getDatasetGraph(), graphName, parseLang, showProgress);
+        return elapsed;
+    }
+
+    private long execBulkLoadStdin(DatasetGraph dsg, String graphName, Lang syntax, boolean showProgress) {
+        DataLoader loader = chooseLoader(dsg, graphName);
+        long elapsed = Timer.time(()->{
+                    loader.startBulk();
+                    loader.loadFromInputStream("(stdin)", System.in, syntax);
                     loader.finishBulk();
         });
         return elapsed;
