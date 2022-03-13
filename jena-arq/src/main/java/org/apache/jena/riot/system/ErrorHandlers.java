@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 public class ErrorHandlers {
 
     /** Relay an error handler event to an error handler w.r.t. a severity level */
-    public static void relay(ErrorHandler errorHandler, Severity severity, ErrorHandlerEvent evt) {
+    public static void relay(ErrorHandler errorHandler, Severity severity, ErrorEvent evt) {
         switch (severity) {
         case IGNORE: break;
         case WARNING:
@@ -40,8 +40,8 @@ public class ErrorHandlers {
 
     /** Relay an error handler event to an error handler w.r.t. a severity level.
      * Lambda version that does not build messages if serverity level is IGNORE  */
-    public static void relay(ErrorHandler errorHandler, Severity severity, Supplier<ErrorHandlerEvent> evtSupplier) {
-        ErrorHandlerEvent evt;
+    public static void relay(ErrorHandler errorHandler, Severity severity, Supplier<ErrorEvent> evtSupplier) {
+        ErrorEvent evt;
         switch (severity) {
         case IGNORE: break;
         case WARNING:

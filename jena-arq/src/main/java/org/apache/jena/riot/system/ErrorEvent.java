@@ -19,16 +19,16 @@
 package org.apache.jena.riot.system;
 
 /** Immutable class capturing the parameters used by @{link {@link ErrorHandler} */
-public class ErrorHandlerEvent {
+public class ErrorEvent {
     protected final String message;
     protected final long line;
     protected final long col;
 
-    public ErrorHandlerEvent(String message) {
+    public ErrorEvent(String message) {
         this(message, -1, -1);
     }
 
-    public ErrorHandlerEvent(String message, long line, long col) {
+    public ErrorEvent(String message, long line, long col) {
         super();
         this.message = message;
         this.line = line;

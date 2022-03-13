@@ -93,9 +93,11 @@ public class RowSetBuffered<T extends RowSet>
                 // finishes then ether resultVars are non-null or the stream
                 // is exhausted - in any case we will never come here again
                 buffer = bufferFactory.get();
-                while (((resultVars = getDelegate().getResultVars()) == null) && getDelegate().hasNext()) {
-                    Binding b = getDelegate().next();
-                    buffer.add(b);
+                while (((resultVars = getDelegate().getResultVars()) == null)) {
+                    if (getDelegate().hasNext()) {
+                        Binding b = getDelegate().next();
+                        buffer.add(b);
+                    }
 
                     // Log a warning if we read a lot of data here?
                 }

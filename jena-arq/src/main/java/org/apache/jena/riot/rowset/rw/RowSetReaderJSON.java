@@ -18,38 +18,10 @@
 
 package org.apache.jena.riot.rowset.rw;
 
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kBindings;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kBnode;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kBoolean;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kDatatype;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kHead;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kLink;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kLiteral;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kObject;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kObjectAlt;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kPredicate;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kPredicateAlt;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kProperty;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kResults;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kStatement;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kSubject;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kSubjectAlt;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kTriple;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kType;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kTypedLiteral;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kUri;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kValue;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kVars;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kXmlLang;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.*;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
