@@ -67,7 +67,6 @@ import org.slf4j.LoggerFactory;
 public class GeometryWrapper implements Serializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static boolean BUFFER_WARNING = false;
 
     private final DimensionInfo dimensionInfo;
     private final SRSInfo srsInfo;
