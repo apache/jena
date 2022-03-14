@@ -326,6 +326,7 @@ public class WriterOp
         public void visit(OpGraph opGraph) {
             start(opGraph, NoNL);
             WriterNode.output(out, opGraph.getNode(), sContext);
+            out.println();
             opGraph.getSubOp().visit(this);
             finish(opGraph);
         }
