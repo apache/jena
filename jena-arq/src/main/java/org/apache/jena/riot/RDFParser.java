@@ -102,13 +102,13 @@ public class RDFParser {
     private final boolean             strict;
     private final boolean             resolveURIs;
     private final IRIxResolver        resolver;
+    private final PrefixMap           prefixMap;
     private final boolean             canonicalLexicalValues;
     private final LangTagForm         langTagForm;
     private final Optional<Boolean>   checking;
     private final FactoryRDF          factory;
     private final ErrorHandler        errorHandler;
     private final Context             context;
-
     // Some cases the parser is reusable (read a file), some are not (input streams).
     private boolean                 canUseThisParser = true;
 
@@ -187,8 +187,8 @@ public class RDFParser {
                             HttpClient httpClient, Lang hintLang, Lang forceLang,
                             String parserBaseURI, boolean strict, Optional<Boolean> checking,
                             boolean canonicalLexicalValues, LangTagForm langTagForm,
-                            boolean resolveURIs, IRIxResolver resolver, FactoryRDF factory,
-                            ErrorHandler errorHandler, Context context) {
+                            boolean resolveURIs, IRIxResolver resolver, PrefixMap prefixMap,
+                            FactoryRDF factory, ErrorHandler errorHandler, Context context) {
         int x = countNonNull(uri, path, content, inputStream, javaReader);
         if ( x >= 2 )
             throw new IllegalArgumentException("Only one source allowed: one of uri, path, content, inputStream and javaReader must be set");
@@ -213,6 +213,7 @@ public class RDFParser {
         this.strict = strict;
         this.resolveURIs = resolveURIs;
         this.resolver = resolver;
+        this.prefixMap = prefixMap;
         this.canonicalLexicalValues = canonicalLexicalValues;
         this.langTagForm = langTagForm;
         this.checking = checking;
@@ -516,9 +517,9 @@ public class RDFParser {
         IRIxResolver parserResolver = (resolver != null)
                 ? resolver
                 : IRIxResolver.create().base(baseStr).resolve(resolve).allowRelative(allowRelative).build();
-        PrefixMap prefixMap = PrefixMapFactory.create();
+        PrefixMap pmap = ( this.prefixMap != null ) ? this.prefixMap : PrefixMapFactory.create();
         ParserProfileStd parserFactory = new ParserProfileStd(factory, errorHandler,
-                                                              parserResolver, prefixMap,
+                                                              parserResolver, pmap,
                                                               context, checking$, strict);
         return parserFactory;
     }

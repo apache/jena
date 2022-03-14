@@ -19,6 +19,7 @@
 package org.apache.jena.riot;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -28,12 +29,16 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Map;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.FactoryRDFStd;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.riot.system.stream.LocatorFile;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.graph.GraphFactory;
@@ -236,6 +241,22 @@ public class TestRDFParser {
 
     @Test public void canonical_langTag_3() {
         testNormalization("'abc'@En-gB", "'abc'@en-GB", builder().langTagCanonical());
+    }
+
+    @Test
+    public void parser_fragment() {
+        PrefixMap pmap = PrefixMapFactory.create(Map.of("", "http://example/"));
+        Graph g = RDFParser.fromString("<s> :p :o .")
+                .lang(Lang.TTL)
+                .prefixes(pmap)
+                .base("http://base/")
+                .toGraph();
+        assertFalse(g.isEmpty());
+        Graph g2 = GraphFactory.createDefaultGraph();
+        g2.add(NodeFactory.createURI("http://base/s"),
+               NodeFactory.createURI("http://example/p"),
+               NodeFactory.createURI("http://example/o"));
+        assertTrue(g2.isIsomorphicWith(g));
     }
 
     private static String PREFIX = "PREFIX : <http://example/>\n ";
