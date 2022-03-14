@@ -98,6 +98,7 @@ public class RDFParserBuilder {
     private boolean strict = SysRIOT.isStrictMode();
     private boolean resolveURIs = true;
     private IRIxResolver resolver = null;
+    private PrefixMap prefixMap = null;
     // ----
 
     // Construction for the StreamRDF
@@ -306,6 +307,21 @@ public class RDFParserBuilder {
      * RDF syntax to be parsed.
      */
     public RDFParserBuilder resolver(IRIxResolver resolver) { this.resolver = resolver ; return this; }
+
+    /**
+     * Set an initial prefix map for parsing.
+     * <p>
+     * Using this, and {@link #base}, mean that Turtle and TriG fragments can be parsed.
+     * <p>
+     * The caller is responsible for setting any prefixes that are undeclared in the fragment.
+     * <p>
+     * Changes made to the prefix map argument after this call will not be seen by the parser.
+     * Passing null clears any previous setting.
+     */
+    public RDFParserBuilder prefixes(PrefixMap prefixMap) {
+        this.prefixMap = prefixMap == null ? null : PrefixMapFactory.create(prefixMap);
+        return this;
+    }
 
     /**
      * Convert the lexical form of literals to a canonical form.
@@ -682,7 +698,8 @@ public class RDFParserBuilder {
                              hintLang, forceLang,
                              parserBaseURI, strict, checking,
                              canonicalValues, langTagForm,
-                             resolveURIs, resolver, factory$, errorHandler$, context);
+                             resolveURIs, resolver, prefixMap,
+                             factory$, errorHandler$, context);
     }
 
     private FactoryRDF buildFactoryRDF() {

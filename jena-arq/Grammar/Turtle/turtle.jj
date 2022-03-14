@@ -89,7 +89,7 @@ void Statement() : {}
 void Directive() : { Token t ; String iri ; }
 {
     <PREFIX> t = <PNAME_NS> iri = IRIREF()
-    { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
+    { String s = canonicalPrefix(t.image, t.beginLine, t.beginColumn) ;
       setPrefix(s, iri, t.beginLine, t.beginColumn) ; }
  |
     t = <BASE> iri = IRIREF()
@@ -99,7 +99,7 @@ void Directive() : { Token t ; String iri ; }
 void DirectiveOld() : { Token t ; String iri ; }
 {
     <PREFIX_OLD> t = <PNAME_NS> iri = IRIREF() <DOT>
-    { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
+    { String s = canonicalPrefix(t.image, t.beginLine, t.beginColumn) ;
       setPrefix(s, iri, t.beginLine, t.beginColumn) ; }
  |
     t = <BASE_OLD> iri = IRIREF() <DOT>
@@ -158,7 +158,7 @@ Node Verb() : { Node p ; }
 Node Subject() : { Node s; String iri ; }
 {
   (
-    iri = iri() { s = createNode(iri, token.beginLine, token.beginColumn) ; }
+    iri = iri() { s = createURI(iri, token.beginLine, token.beginColumn) ; }
   |
     s = BlankNode()
   |
@@ -174,13 +174,13 @@ Node Subject() : { Node s; String iri ; }
 Node Predicate() : { String iri;}
 {
   iri = iri()
-  { return createNode(iri, token.beginLine, token.beginColumn); }
+  { return createURI(iri, token.beginLine, token.beginColumn); }
 }
 
 // Turtle [12] object
 Node Object(): { Node o ; String iri; }
 {
-  ( iri = iri() { o = createNode(iri, token.beginLine, token.beginColumn) ; }
+  ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
   | o = BlankNode()
   | o = Collection()
   | o = BlankNodePropertyList()
@@ -192,7 +192,7 @@ Node Object(): { Node o ; String iri; }
 
 Node EmbSubject(): { Node o ; String iri; }
 {
-  ( iri = iri() { o = createNode(iri, token.beginLine, token.beginColumn) ; }
+  ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
   | o = BlankNode()
   | o = EmbTriple()
   )
@@ -201,7 +201,7 @@ Node EmbSubject(): { Node o ; String iri; }
 
 Node EmbObject(): { Node o ; String iri; }
 {
-  ( iri = iri() { o = createNode(iri, token.beginLine, token.beginColumn) ; }
+  ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
   | o = BlankNode()
   | o = Literal()
   | o = EmbTriple()

@@ -123,7 +123,7 @@ rBase(iri) ;
     jj_consume_token(PREFIX);
     t = jj_consume_token(PNAME_NS);
     iri = IRIREF();
-String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
+String s = canonicalPrefix(t.image, t.beginLine, t.beginColumn) ;
       rPrefix(s, iri);
   }
 

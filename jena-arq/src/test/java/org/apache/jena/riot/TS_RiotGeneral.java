@@ -35,6 +35,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestRDFParser.class
     , TestParserRegistry.class
     , TestRDFWriter.class
+    , TestRDFParser.class
     , TestParseURISchemeBases.class
 
     , TestTurtleWriter.class
