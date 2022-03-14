@@ -96,7 +96,7 @@ void baseDecl() : { String iri ; }
 void prefixDecl() : { Token t ; String iri ; }
 {
     <PREFIX> t = <PNAME_NS> iri = IRIREF()
-    { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
+    { String s = canonicalPrefix(t.image, t.beginLine, t.beginColumn) ;
       rPrefix(s, iri);
     }
 }
@@ -383,7 +383,7 @@ Path pathPrimary() : { String str ; Path p ; Node n ; }
 {
   ( 
     str = iri()
-     { n = createNode(str, token.beginLine, token.beginColumn) ; p = PathFactory.pathLink(n) ; }
+     { n = createURI(str, token.beginLine, token.beginColumn) ; p = PathFactory.pathLink(n) ; }
   | <LPAREN> p = path() <RPAREN>
   )
  { return p ; }
@@ -418,7 +418,7 @@ List<Node> array() : { List<Node> x = new ArrayList<Node>(); Node n = null; }
 Node iriOrLiteral() : { Node n; String uriStr; }
 {
   (
-    uriStr = iri() { n = createNode(uriStr, token.beginLine, token.beginColumn); }
+    uriStr = iri() { n = createURI(uriStr, token.beginLine, token.beginColumn); }
   | n = literal()
   )
   { return n ; }

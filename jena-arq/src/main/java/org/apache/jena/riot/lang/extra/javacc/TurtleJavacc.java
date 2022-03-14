@@ -107,7 +107,7 @@ public class TurtleJavacc extends LangParserBase implements TurtleJavaccConstant
       jj_consume_token(PREFIX);
       t = jj_consume_token(PNAME_NS);
       iri = IRIREF();
-String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
+String s = canonicalPrefix(t.image, t.beginLine, t.beginColumn) ;
       setPrefix(s, iri, t.beginLine, t.beginColumn) ;
       break;
       }
@@ -131,7 +131,7 @@ setBase(iri, t.beginLine, t.beginColumn) ;
       t = jj_consume_token(PNAME_NS);
       iri = IRIREF();
       jj_consume_token(DOT);
-String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
+String s = canonicalPrefix(t.image, t.beginLine, t.beginColumn) ;
       setPrefix(s, iri, t.beginLine, t.beginColumn) ;
       break;
       }
