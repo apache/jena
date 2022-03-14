@@ -129,12 +129,12 @@ public abstract class StateMgrBase implements Sync, Closeable {
 
     /** Set the in-memory state from a ByteBuffer, for example, from journal recovery.
      * This method does not perform an external I/O.
-     * Call "writeState" to put the n-memory state as the disk state.
+     * Call "writeState" to put the memory state as the disk state.
      */
     public void setState(ByteBuffer buff) {
         buff.rewind();
         deserialize(buff);
-        dirty = true;
+        setDirtyFlag();
     }
 
     //public BufferChannel getChannel() { return storage; }
@@ -150,7 +150,7 @@ public abstract class StateMgrBase implements Sync, Closeable {
         bb.rewind();
         int len = storage.write(bb, 0);
         storage.sync();
-        dirty = false;
+        clearDirtyFlag();
         writeStateEvent();
     }
 
@@ -161,12 +161,15 @@ public abstract class StateMgrBase implements Sync, Closeable {
         bb.rewind();
         deserialize(bb);
         readStateEvent();
+        clearDirtyFlag();
     }
 
     @Override
     public void sync() {
-        if ( dirty )
+        if ( dirty ) {
             writeState();
+            clearDirtyFlag();
+        }
     }
 
     @Override

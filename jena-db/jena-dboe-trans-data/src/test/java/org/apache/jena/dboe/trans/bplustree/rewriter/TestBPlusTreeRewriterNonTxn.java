@@ -71,7 +71,7 @@ public class TestBPlusTreeRewriterNonTxn extends Assert
 
     public static void runOneTest(int order, int N, RecordFactory recordFactory, boolean debug) {
         BPlusTreeParams bptParams = new BPlusTreeParams(order, recordFactory);
-        BPlusTreeRewriter.debug = debug;
+        //BPlusTreeRewriter.debug = debug;
 
         // ---- Test data
         List<Record> originaldata = TestBPlusTreeRewriterNonTxn.createData(N, recordFactory);

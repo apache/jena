@@ -58,11 +58,12 @@ class RecordBufferPageLinker implements Iterator<RecordBufferPage> {
         }
 
         slot = peekIter.next();
-        RecordBufferPage nextSlot = peekIter.peek();
-        // If null, no slot ahead so no linkage field to set.
-        if ( nextSlot != null )
-            // Set the slot to the id of the next one
-            slot.setLink(nextSlot.getId());
+//        RecordBufferPage nextSlot = peekIter.peek();
+//        // Can't be maintained - MVCC
+//        // If null, no slot ahead so no linkage field to set.
+//        if ( nextSlot != null )
+//            // Set the slot to the id of the next one
+//            slot.setLink(nextSlot.getId());
         return true;
     }
 

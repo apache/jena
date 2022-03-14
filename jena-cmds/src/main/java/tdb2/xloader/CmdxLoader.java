@@ -120,6 +120,7 @@ public class CmdxLoader extends AbstractCmdxLoad {
             step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=POSG"));
             step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=OSPG"));
         }
+        expel();
     }
 
     // Compression - empty file != zero size

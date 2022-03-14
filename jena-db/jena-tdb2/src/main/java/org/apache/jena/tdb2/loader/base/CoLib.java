@@ -19,8 +19,10 @@
 package org.apache.jena.tdb2.loader.base;
 
 import org.apache.jena.dboe.base.file.Location;
+import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
@@ -40,6 +42,22 @@ public class CoLib {
     public static void add(TransactionCoordinator coordinator, TupleIndex... indexes) {
         for ( TupleIndex pIdx : indexes ) {
             coordinator.add(LoaderOps.idxBTree(pIdx));
+        }
+    }
+
+    public static void executeWrite(TupleIndex index, Runnable action) {
+        TransactionCoordinator txnCoord = CoLib.newCoordinator();
+        CoLib.add(txnCoord, index);
+        CoLib.start(txnCoord);
+        Transaction txn = txnCoord.begin(TxnType.WRITE);
+        try {
+            action.run();
+            txn.commit();
+            txn.end();
+        } catch (RuntimeException ex) {
+            txn.abort();
+            txn.end();
+            throw ex;
         }
     }
 

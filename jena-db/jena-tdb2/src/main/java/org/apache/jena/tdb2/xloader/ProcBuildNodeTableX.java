@@ -106,9 +106,7 @@ public class ProcBuildNodeTableX {
                     Timer.timeStr(timeMillis), elapsedStr, rateStr);
     }
 
-    /** Pair<triples, indexed nodes>
-     * @param sortThreads */
-    // [BULK] Output, not return.
+    /** @return Pair<triples, indexed nodes> */
     private static Pair<Long, Long> exec2(String DB, XLoaderFiles loaderFiles, int sortThreads, String sortNodeTableArgs, List<String> datafiles) {
 
         //Threads - 1 parser, 1 builder, 2 sort.
@@ -198,7 +196,6 @@ public class ProcBuildNodeTableX {
 
             long x = monitor.getTime();
 
-//            long x = timer.endTimer();
             long count = monitor.getTicks();
             countParseTicks.set(count);
 
@@ -208,7 +205,7 @@ public class ProcBuildNodeTableX {
                         Timer.timeStr(x), count, rate);
         };
 
-        // [BULK] XXX AsyncParser.asyncParse(files, output)
+        // AsyncParser.asyncParse(files, output) but with logging.
         Thread thread1 = async(task1, "AsyncParser");
 
         // Step3: build node table.
@@ -225,12 +222,10 @@ public class ProcBuildNodeTableX {
             int idxSuperTick = BulkLoaderX.DataSuperTick;
             ProgressMonitorOutput monitor = ProgressMonitorOutput.create(BulkLoaderX.LOG_Terms, "Index", idxTickPoint, idxSuperTick);
 
-            // Library of tools!
             dsg.executeWrite(()->{
                 BinaryDataFile objectFile = nodeTable.getData();
                 Iterator<Record> rIter = records(BulkLoaderX.LOG_Terms, input, objectFile);
                 rIter = new ProgressIterator<>(rIter, monitor);
-                // Record of (hash, nodeId)
                 BPlusTree bpt1 = (BPlusTree)(nodeTable.getIndex());
                 BPlusTreeParams bptParams = bpt1.getParams();
                 RecordFactory factory = new RecordFactory(SystemTDB.LenNodeHash,  NodeId.SIZE);
@@ -245,11 +240,10 @@ public class ProcBuildNodeTableX {
                                                                      bpt1.getNodeManager().getBlockMgr(),
                                                                      bpt1.getRecordsMgr().getBlockMgr());
                 bpt2.sync();
-                bpt1.sync();
+                //bpt1.sync();
                 objectFile.sync();
                 monitor.finish();
             });
-            blkState.sync();
             IO.close(input);
             long x = timer.endTimer();
             long count = monitor.getTicks();
@@ -279,7 +273,6 @@ public class ProcBuildNodeTableX {
 
         BulkLoaderX.waitFor(thread1);
         BulkLoaderX.waitFor(thread3);
-
         return Pair.create(countParseTicks.get(), countIndexedNodes.get());
     }
 

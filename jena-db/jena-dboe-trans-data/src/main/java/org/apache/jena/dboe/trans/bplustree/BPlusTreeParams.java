@@ -43,6 +43,7 @@ final public class BPlusTreeParams
      */
     private static final int Gap            = 0;
 
+    // Initial root index.
     public static final int RootId          = 0;
     public static final int RootParent      = -2;
     public static final int NoParent        = -99;

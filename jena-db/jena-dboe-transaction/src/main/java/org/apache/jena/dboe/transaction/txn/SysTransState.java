@@ -32,5 +32,5 @@ public class SysTransState {
 
     public TransactionalComponent getComponent()    { return elt; }
     public Transaction getTransaction()             { return transaction; }
-    public Object getState()                         { return state; }
+    public Object getState()                        { return state; }
 }
