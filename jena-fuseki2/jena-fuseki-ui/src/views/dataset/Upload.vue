@@ -25,7 +25,10 @@
             <Menu :dataset-name="datasetName" />
           </b-card-header>
           <b-card-body>
-            <div>
+            <div v-if="!this.services['gsp-rw'] || this.services['gsp-rw'].length === 0">
+              <b-alert show variant="warning">No service for Graph Store Protocol configured</b-alert>
+            </div>
+            <div v-else>
               <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active">
                 <h3>Drop files to upload</h3>
               </div>
@@ -172,6 +175,7 @@ import FileUpload from 'vue-upload-component'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPlus, faUpload, faTimesCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import currentDatasetMixin from '@/mixins/current-dataset'
 
 library.add(faPlus, faUpload, faTimesCircle, faMinusCircle)
 
@@ -184,12 +188,9 @@ export default {
     FileUpload
   },
 
-  props: {
-    datasetName: {
-      type: String,
-      required: true
-    }
-  },
+  mixins: [
+    currentDatasetMixin
+  ],
 
   data () {
     return {
@@ -211,8 +212,7 @@ export default {
         name: 'file',
         headers: { // e.g. CSRF headers
         },
-        data: {
-        },
+        data: {},
         autoCompress: 1024 * 1024,
         uploadAuto: false,
         isOption: false
@@ -269,8 +269,12 @@ export default {
         })
     },
     postActionUrl () {
+      if (!this.services['gsp-rw'] || this.services['gsp-rw'].length === 0) {
+        return ''
+      }
       const params = (this.form.datasetGraphName && this.form.datasetGraphName !== '') ? `?graph=${this.form.datasetGraphName}` : ''
-      return this.$fusekiService.getFusekiUrl(`/${this.datasetName}/data${params}`)
+      const dataEndpoint = this.services['gsp-rw']['srv.endpoints'].find(endpoint => endpoint !== '') || ''
+      return this.$fusekiService.getFusekiUrl(`/${this.datasetName}/${dataEndpoint}${params}`)
     }
   },
 
