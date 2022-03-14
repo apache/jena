@@ -120,6 +120,7 @@ import Yasqe from '@triply/yasqe'
 import Yasr from '@triply/yasr'
 import queryString from 'query-string'
 import Vue from 'vue'
+import currentDatasetMixin from '@/mixins/current-dataset'
 
 const SELECT_TRIPLES_QUERY = `SELECT ?subject ?predicate ?object
 WHERE {
@@ -145,19 +146,15 @@ export default {
     Menu
   },
 
-  props: {
-    datasetName: {
-      type: String,
-      required: true
-    }
-  },
+  mixins: [
+    currentDatasetMixin
+  ],
 
   data () {
     return {
       loading: true,
       yasqe: null,
       yasr: null,
-      datasetUrl: `/${this.datasetName}/sparql`,
       contentTypeSelect: 'application/sparql-results+json',
       contentTypeSelectOptions: [
         { value: 'application/sparql-results+json', text: 'JSON' },
@@ -192,6 +189,15 @@ export default {
     }
   },
 
+  computed: {
+    datasetUrl () {
+      if (!this.datasetName || !this.services.query || !this.services.query['srv.endpoints'] || this.services.query['srv.endpoints'].length === 0) {
+        return ''
+      }
+      return `/${this.datasetName}/${this.services.query['srv.endpoints'][0]}`
+    }
+  },
+
   created () {
     this.$nextTick(() => {
       setTimeout(() => {
@@ -213,7 +219,7 @@ export default {
             showQueryButton: true,
             resizeable: false,
             requestConfig: {
-              endpoint: this.$fusekiService.getFusekiUrl(`/${vm.datasetName}/sparql`)
+              endpoint: this.$fusekiService.getFusekiUrl(this.datasetUrl)
             },
             /**
              * Based on YASGUI code, but modified to avoid parsing the Vue Route query
@@ -264,13 +270,19 @@ export default {
 
   watch: {
     datasetUrl: function (val, oldVal) {
-      this.yasqe.options.requestConfig.endpoint = this.$fusekiService.getFusekiUrl(this.datasetUrl)
+      if (this.yasqe) {
+        this.yasqe.options.requestConfig.endpoint = this.$fusekiService.getFusekiUrl(this.datasetUrl)
+      }
     },
     contentTypeSelect: function (val, oldVal) {
-      this.yasqe.options.requestConfig.acceptHeaderSelect = this.contentTypeSelect
+      if (this.yasqe) {
+        this.yasqe.options.requestConfig.acceptHeaderSelect = this.contentTypeSelect
+      }
     },
     contentTypeGraph: function (val, oldVal) {
-      this.yasqe.options.requestConfig.acceptHeaderGraph = this.contentTypeGraph
+      if (this.yasqe) {
+        this.yasqe.options.requestConfig.acceptHeaderGraph = this.contentTypeGraph
+      }
     }
   },
 

@@ -149,7 +149,8 @@
 
 <script>
 import Menu from '@/components/dataset/Menu'
-import { BUS } from '@/events'
+import { displayError } from '@/utils'
+import currentDatasetMixin from '@/mixins/current-dataset'
 
 export default {
   name: 'DatasetInfo',
@@ -158,24 +159,15 @@ export default {
     Menu
   },
 
-  props: {
-    datasetName: {
-      type: String,
-      required: true
-    }
-  },
+  mixins: [
+    currentDatasetMixin
+  ],
 
   data () {
     return {
-      serverData: {
-        datasets: []
-      },
-      datasetStats: {
-
-      },
+      datasetStats: {},
       datasetSize: null,
       isDatasetSizeLoading: false,
-      isDatasetStatsLoading: true,
       popoverShow: false,
       statsFields: [
         {
@@ -219,17 +211,6 @@ export default {
   },
 
   computed: {
-    currentDataset () {
-      return this.serverData.datasets.find(dataset => dataset['ds.name'] === `/${this.datasetName}`)
-    },
-    services () {
-      if (!this.currentDataset || !this.currentDataset['ds.services']) {
-        return []
-      }
-      return this.currentDataset['ds.services'].slice().sort((left, right) => {
-        return left['srv.type'].localeCompare(right['srv.type'])
-      })
-    },
     statsItems () {
       if (!this.datasetStats || !this.datasetStats.datasets) {
         return []
@@ -284,46 +265,29 @@ export default {
 
   beforeRouteEnter (from, to, next) {
     next(async vm => {
-      BUS.$on('connection:reset', vm.initializeData)
-      vm.initializeData()
+      vm.datasetSize = null
     })
   },
 
   async beforeRouteUpdate (from, to, next) {
-    this.initializeData()
-    next()
-  },
-
-  beforeRouteLeave (from, to, next) {
-    BUS.$off('connection:reset')
+    this.datasetSize = null
     next()
   },
 
   methods: {
     async countTriplesInGraphs () {
       this.popoverShow = false
-      this.isDatasetStatsLoading = true
       this.isDatasetSizeLoading = true
-      this.datasetSize = await this.$fusekiService.getDatasetSize(this.datasetName)
-      this.isDatasetSizeLoading = false
-      this.$refs['count-triples-button'].disabled = this.isDatasetSizeLoading
-      this.datasetStats = await this.$fusekiService.getDatasetStats(this.datasetName)
-      this.isDatasetStatsLoading = false
-    },
-    initializeData () {
-      this.isDatasetStatsLoading = true
-      this.$fusekiService
-        .getServerData()
-        .then(serverData => {
-          this.serverData = serverData
-        })
-      this.$fusekiService
-        .getDatasetStats(this.datasetName)
-        .then(datasetStats => {
-          this.datasetStats = datasetStats
-        })
-      this.isDatasetStatsLoading = false
-      this.datasetSize = null
+      try {
+        this.datasetSize = await this.$fusekiService.getDatasetSize(this.currentDataset['ds.name'], this.services.query['srv.endpoints'][0])
+        this.$refs['count-triples-button'].disabled = this.isDatasetSizeLoading
+        this.datasetStats = await this.$fusekiService.getDatasetStats(this.datasetName)
+      } catch (error) {
+        displayError(this, error)
+      } finally {
+        this.isDatasetSizeLoading = false
+        this.$refs['count-triples-button'].disabled = this.isDatasetSizeLoading
+      }
     }
   }
 }

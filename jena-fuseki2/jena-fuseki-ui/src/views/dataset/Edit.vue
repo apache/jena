@@ -118,6 +118,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
+import currentDatasetMixin from '@/mixins/current-dataset'
+import { displayError } from '@/utils'
 
 library.add(faTimes, faCheck)
 
@@ -132,12 +134,9 @@ export default {
     FontAwesomeIcon
   },
 
-  props: {
-    datasetName: {
-      type: String,
-      required: true
-    }
-  },
+  mixins: [
+    currentDatasetMixin
+  ],
 
   data () {
     return {
@@ -218,13 +217,9 @@ export default {
       this.code = ''
       this.selectedGraph = ''
       try {
-        this.graphs = await this.$fusekiService.countGraphsTriples(this.datasetName)
+        this.graphs = await this.$fusekiService.countGraphsTriples(this.datasetName, this.services.query['srv.endpoints'][0])
       } catch (error) {
-        this.$bvToast.toast(`${error}`, {
-          title: 'Error',
-          noAutoHide: true,
-          appendToast: false
-        })
+        displayError(this, error)
       } finally {
         this.loadingGraphs = false
         this.loadingGraph = false
@@ -243,6 +238,7 @@ export default {
         const result = await this.$fusekiService.fetchGraph(this.datasetName, graphName)
         this.code = result.data
       } catch (error) {
+        console.error(error)
         this.$bvToast.toast(`${error}`, {
           title: 'Error',
           noAutoHide: true,

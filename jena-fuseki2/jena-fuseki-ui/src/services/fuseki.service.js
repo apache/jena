@@ -87,15 +87,15 @@ class FusekiService {
     return response.data
   }
 
-  async getDatasetSize (datasetName) {
+  async getDatasetSize (datasetName, endpoint) {
     const promisesResult = await Promise.all([
       axios
-        .get(this.getFusekiUrl(`/${datasetName}/sparql`), {
+        .get(this.getFusekiUrl(`/${datasetName}/${endpoint}`), {
           params: {
             query: DATASET_SIZE_QUERY_1
           }
         }),
-      axios.get(this.getFusekiUrl(`/${datasetName}/sparql`), {
+      axios.get(this.getFusekiUrl(`/${datasetName}/${endpoint}`), {
         params: {
           query: DATASET_SIZE_QUERY_2
         }
@@ -160,15 +160,15 @@ class FusekiService {
     return axios.get(this.getFusekiUrl('/$/tasks'))
   }
 
-  async countGraphsTriples (datasetName) {
+  async countGraphsTriples (datasetName, endpoint) {
     const promisesResult = await Promise.all([
       axios
-        .get(this.getFusekiUrl(`/${datasetName}/sparql`), {
+        .get(this.getFusekiUrl(`/${datasetName}/${endpoint}`), {
           params: {
             query: DATASET_COUNT_GRAPH_QUERY_1
           }
         }),
-      axios.get(this.getFusekiUrl(`/${datasetName}/sparql`), {
+      axios.get(this.getFusekiUrl(`/${datasetName}/${endpoint}`), {
         params: {
           query: DATASET_COUNT_GRAPH_QUERY_2
         }
