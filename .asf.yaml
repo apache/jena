@@ -4,7 +4,7 @@
 
 notifications:
     commits:       commits@jena.apache.org
-    issues:        pr@jena.apache.org
+    issues:        issues@jena.apache.org
     pullrequests:  pr@jena.apache.org
     jira_options:  link label
 
@@ -13,6 +13,8 @@ github:
   homepage: https://jena.apache.org/
   protected_branches:
     main
+  features:
+    issues: true
   labels:
     - apache
     - jena
