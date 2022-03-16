@@ -77,7 +77,7 @@ if [ -z "$JAVA" ]
 then
     (
 	echo "Cannot find a Java JDK."
-	echo "Please set either set JAVA or JAVA_HOME and put java (>=1.8) in your PATH."
+	echo "Please set either set JAVA or JAVA_HOME and put java (>=Java 11) in your PATH."
     ) 1>&2
   exit 1
 fi
