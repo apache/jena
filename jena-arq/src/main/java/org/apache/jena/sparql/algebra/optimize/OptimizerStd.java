@@ -133,11 +133,22 @@ public class OptimizerStd implements Rewrite
         if ( context.isTrueOrUndef(ARQ.optIndexJoinStrategy) )
             op = transformJoinStrategy(op) ;
 
-        // Place filters close to where their dependency variables are defined.
+        // Do a basic reordering so that triples with more defined terms go first.
+        if ( context.isTrueOrUndef(ARQ.optReorderBGP) )
+            op = transformReorder(op) ;
+
+        // Place filters close to where their input variables are defined.
         // This prunes the output of that step as early as possible.
+        //
+        // This is done after BGP reordering because inserting the filters breaks up BGPs,
+        // and would make transformReorder complicated, and also because a two-term triple pattern
+        // is (probably) more specific than many filters.
+        //
+        // Filters in involving equality are done separately.
+
         // If done before TransformJoinStrategy, you can get two applications
-        // of a filter in a (sequence) from each half of a (join).  This is harmless,
-        // because filters are generally cheap, but it looks a bit bad.
+        // of a filter in a (sequence) from each half of a (join).
+        // This is harmless but it looks a bit odd.
         if ( context.isTrueOrUndef(ARQ.optFilterPlacement) )
             op = transformFilterPlacement(op) ;
 
@@ -161,10 +172,6 @@ public class OptimizerStd implements Rewrite
         // Merge adjacent BGPs
         if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
             op = transformMergeBGPs(op) ;
-
-        // Normally, leave to the specific engines.
-        if ( context.isTrue(ARQ.optReorderBGP) )
-            op = transformReorder(op) ;
 
         // Merge (extend) and (assign) stacks
         if ( context.isTrueOrUndef(ARQ.optMergeExtends) )

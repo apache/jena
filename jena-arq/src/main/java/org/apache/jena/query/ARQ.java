@@ -358,7 +358,7 @@ public class ARQ
 
     /**
      *  Context key controlling whether to do filter placement within BGP and quad blocks.
-     *  Modies the effect of optFilterPlacement.
+     *  Modifies the effect of optFilterPlacement.
      *  Default is "true" - filter placement is pushed into BGPs.
      */
     public static final Symbol optFilterPlacementBGP = SystemARQ.allocSymbol("optFilterPlacementBGP") ;
@@ -497,10 +497,11 @@ public class ARQ
     /**
      * Context key controlling whether the standard optimizer applies the optimization
      * to reorder basic graph patterns.
-     * <p>By default, this transformation is NOT applied.
-     * It is left to the specific engines to decide.
+     * This is an algebra optimizer step. Because it interacts with filter placement,
+     * it is worth doing even though there are later reorderings.
      */
-    // However, StageGeneratorGeneric does reorder based on partial results.
+    // StageGeneratorGeneric does reorder based on partial results.
+    // TDB reorders based on stats when the input binding is known.
     public static final Symbol optReorderBGP = SystemARQ.allocSymbol("optReorderBGP");
 
     /**

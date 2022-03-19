@@ -242,23 +242,42 @@ public class TestOptimizer extends AbstractTestTransform
              ,"      (triple ?var2 :p2 ?var3)"
              ,"    ))") ;
 
-        String out = StrUtils.strjoinNL
+        // Answer when  reorder BGPs before general filter placements.
+        String expected = StrUtils.strjoinNL
             ("(filter (!= ?VAR 123)"
-             ," (disjunction"
-             ,"  (assign ((?var3 'ABC'))"
-             ,"    (sequence"
-             ,"      (filter (regex ?var4 'pat1')"
-             ,"        (bgp (triple ?var2 :p1 ?var4)))"
-             ,"      (bgp (triple ?var2 :p2 'ABC'))))"
-             ,"  (assign ((?var3 'XYZ'))"
-             ,"    (sequence"
-             ,"      (filter (regex ?var4 'pat1')"
-             ,"        (bgp (triple ?var2 :p1 ?var4)))"
-             ,"      (bgp (triple ?var2 :p2 'XYZ'))))))"
-             ) ;
-        checkAlgebra(in, out) ;
-    }
+            ,"  (disjunction"
+            ,"      (assign ((?var3 'ABC'))"
+            ,"        (filter (regex ?var4 'pat1')"
+            ,"          (bgp"
+            ,"            (triple ?var2 <http://example/p2> 'ABC')"
+            ,"            (triple ?var2 <http://example/p1> ?var4)"
+            ,"          )))"
+            ,"      (assign ((?var3 'XYZ'))"
+            ,"        (filter (regex ?var4 'pat1')"
+            ,"          (bgp"
+            ,"           (triple ?var2 <http://example/p2> 'XYZ')"
+            ,"            (triple ?var2 <http://example/p1> ?var4)"
+            ,"         )))))"
+            );
 
+        checkAlgebra(in, expected) ;
+
+        // Before JENA-2317 when BGP reordering was done in the algebra optimization phase.
+//        String out = StrUtils.strjoinNL
+//                ("(filter (!= ?VAR 123)"
+//                 ," (disjunction"
+//                 ,"   (assign ((?var3 'ABC'))"
+//                 ,"     (sequence"
+//                 ,"       (filter (regex ?var4 'pat1')"
+//                 ,"         (bgp (triple ?var2 :p1 ?var4)))"
+//                 ,"       (bgp (triple ?var2 :p2 'ABC'))))"
+//                 ,"   (assign ((?var3 'XYZ'))"
+//                 ,"     (sequence"
+//                 ,"       (filter (regex ?var4 'pat1')"
+//                 ,"         (bgp (triple ?var2 :p1 ?var4)))"
+//                 ,"       (bgp (triple ?var2 :p2 'XYZ'))))))"
+//                 ) ;
+    }
 
     @Test public void combine_extend_01()
     {

@@ -52,7 +52,7 @@ public class TestReorderBGP extends AbstractTestTransform {
         testOp("(bgp (?s rdf:type :T) (?s :p 123) )", t_reorder, "(bgp  (?s :p 123) (?s rdf:type :T))") ;
     }
 
-    private static String expected3 = "(bgp  (?s :p 123)  (?s rdf:type :T) (?s :p ?o) )" ;
+    private static String expected3 = "(bgp  (?s :p 123) (?s rdf:type :T) (?s :p ?o) )" ;
 
     @Test public void reorderbgp_3_1() {
         testOp("(bgp (?s rdf:type :T) (?s :p ?o) (?s :p 123) )",
