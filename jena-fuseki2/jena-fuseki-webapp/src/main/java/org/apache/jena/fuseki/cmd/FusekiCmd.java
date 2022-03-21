@@ -266,6 +266,8 @@ public class FusekiCmd {
                 // Directly populate the dataset.
                 cmdLine.reset();
                 cmdLine.dsg = DatasetGraphFactory.createTxnMem();
+                // Update is not enabled by default for --file
+                cmdLine.allowUpdate = contains(argUpdate);
                 cmdLine.datasetDescription = "in-memory, with files loaded";
                 for ( String filename : filenames ) {
                     String pathname = filename;
