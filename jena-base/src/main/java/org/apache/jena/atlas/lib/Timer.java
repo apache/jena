@@ -16,66 +16,67 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib ;
+package org.apache.jena.atlas.lib;
 
-import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.AtlasException;
 
-/** A Timer of operations */ 
+/** A Timer of operations */
 public class Timer {
 
-    protected long    timeFinish = -1 ;
-    protected boolean inTimer    = false ;
-    protected long    timeStart  = 0 ;
+    protected long timeFinish = -1;
+    protected boolean inTimer = false;
+    protected long timeStart = 0;
 
     public Timer() {}
 
     public void startTimer() {
         if ( inTimer )
-            throw new AtlasException("Already in timer") ;
-        timeStart = System.currentTimeMillis() ;
-        timeFinish = -1 ;
-        inTimer = true ;
+            throw new AtlasException("Already in timer");
+        timeStart = System.currentTimeMillis();
+        timeFinish = -1;
+        inTimer = true;
     }
 
     /** Stop timing and return the elapsed time in milliseconds */
     public long endTimer() {
         if ( !inTimer )
-            throw new AtlasException("Not in timer") ;
-        timeFinish = System.currentTimeMillis() ;
-        inTimer = false ;
-        return getTimeInterval() ;
+            throw new AtlasException("Not in timer");
+        timeFinish = System.currentTimeMillis();
+        inTimer = false;
+        return getTimeInterval();
     }
 
-    /** Read the timer - either the instantanious value (if running) or elapsed time (if finished). */  
+    /**
+     * Read the timer - either the instantaneous value (if running) or elapsed time
+     * (if finished).
+     */
     public long read() {
-        return inTimer
-            ? System.currentTimeMillis() - timeStart
-            : timeFinish - timeStart;
+        return inTimer ? System.currentTimeMillis() - timeStart : timeFinish - timeStart;
     }
-    
+
     /** Read a running timer */
     public long readTimer() {
         if ( !inTimer )
-            throw new AtlasException("Not in timer") ;
-        return read() ;
+            throw new AtlasException("Not in timer");
+        return read();
     }
 
     /** Read an elapsed timer */
     public long getTimeInterval() {
         if ( inTimer )
-            throw new AtlasException("Still timing") ;
+            throw new AtlasException("Still timing");
         if ( timeFinish == -1 )
-            throw new AtlasException("No valid interval") ;
-        return read() ;
+            throw new AtlasException("No valid interval");
+        return read();
     }
 
     /** Helper function to format milliseconds as "%.3f" seconds */
     static public String timeStr(long timeInterval) {
-        return String.format("%.3f", timeInterval / 1000.0) ;
+        return String.format("%.3f", timeInterval / 1000.0);
     }
 
     protected String timeStr(long timePoint, long startTimePoint) {
-        return timeStr(timePoint - startTimePoint) ;
+        return timeStr(timePoint - startTimePoint);
     }
 
     /** Time an operation. Return the elapsed time in milliseconds. */
