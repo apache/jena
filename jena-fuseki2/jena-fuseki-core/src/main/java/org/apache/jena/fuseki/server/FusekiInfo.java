@@ -56,16 +56,15 @@ public class FusekiInfo {
     public static void logServerSetup(Logger log, boolean verbose,
                                       DataAccessPointRegistry dapRegistry,
                                       String datasetPath, String datasetDescription, String serverConfigFile, String staticFiles) {
-        if ( datasetPath != null ) {
-            FmtLog.info(log,  "Database: %s", datasetDescription);
-        }
+        if ( datasetPath != null )
+            FmtLog.info(log, "Database: %s", datasetDescription);
         if ( serverConfigFile != null )
-            FmtLog.info(log,  "Configuration file: %s", serverConfigFile);
+            FmtLog.info(log, "Configuration file: %s", serverConfigFile);
 
         FusekiInfo.logDataAccessPointRegistry(log, dapRegistry, verbose);
 
         if ( staticFiles != null )
-            FmtLog.info(log,  "Static files: %s", staticFiles);
+            FmtLog.info(log, "Static files: %s", staticFiles);
 
         FmtLog.info(log,"System");
         if ( verbose )

@@ -318,6 +318,8 @@ public class FusekiMain extends CmdARQ {
         if ( contains(argFile) ) {
             List<String> filenames = getValues(argFile);
             serverConfig.datasetDescription = "in-memory, with files loaded";
+            // Update is not enabled by default for --file
+            serverConfig.allowUpdate = contains(argUpdate);
             serverConfig.dsg = DatasetGraphFactory.createTxnMem();
 
             for(String filename : filenames ) {
@@ -450,12 +452,6 @@ public class FusekiMain extends CmdARQ {
         serverConfig.withStats = contains(argWithStats);
         serverConfig.withMetrics = contains(argWithMetrics);
         serverConfig.withCompact = contains(argWithCompact);
-
-//            if ( contains(argGZip) ) {
-//                if ( !hasValueOfTrue(argGZip) && !hasValueOfFalse(argGZip) )
-//                    throw new CmdException(argGZip.getNames().get(0) + ": Not understood: " + getValue(argGZip));
-//                jettyServerConfig.enableCompression = super.hasValueOfTrue(argGZip);
-//            }
     }
 
     private int portNumber(ArgDecl arg) {
