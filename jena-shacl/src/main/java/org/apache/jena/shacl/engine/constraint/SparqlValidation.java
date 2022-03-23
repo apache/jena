@@ -204,7 +204,7 @@ import org.apache.jena.sparql.util.ModelUtils;
     private static String strQuoted(Node node) {
         String x = node.isLiteral()
                 ? node.getLiteralLexicalForm()
-                : NodeFmtLib.strTTL(node);
+                : ShLib.displayStr(node);
         x = Matcher.quoteReplacement(x);
         return x;
     }
