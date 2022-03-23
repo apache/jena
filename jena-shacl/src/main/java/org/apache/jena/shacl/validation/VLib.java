@@ -185,8 +185,7 @@ public class VLib {
             case targetSubjectsOf:
                 return data.contains(node, targetObject, null);
             case targetExtension:
-                // Ouch
-                focusNodes(data, target).contains(node);
+                return focusNodes(data, target).contains(node);
             default:
                 return false;
         }
