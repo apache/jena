@@ -73,23 +73,23 @@ public class ReorderFixed extends ReorderTransformationSubstitution {
     static { init() ; }
 
     private static void init() {
-        // Set constant late.
-
         // rdf:type can be a bad choice e.g rdf:type rdf:Resource
         // with inference enabled.
+        // Use two weighing matchers, one for rdf:type and done for otherwise.
         // Weight use of rdf:type worse then the general pattern
         // that would also match by using two matchers.
 
-        // Numbers chosen as an approximation ratios for a graph of 100 triples
-
-        // 1 : TERM type TERM is builtin (SPO).
+        // Weight 1 / TERM type TERM is builtin because it must be one.
         // matcherRdfType.addPattern(new Pattern(1, TERM, TERM, TERM)) ;
+
+        // matcher for rdf:type.
         matcherRdfType.addPattern(new Pattern(5, VAR, rdfType, TERM)) ;
         matcherRdfType.addPattern(new Pattern(50, VAR, rdfType, VAR)) ;
 
         // SPO - built-in - not needed as a rule
         // matcher.addPattern(new Pattern(1, TERM, TERM, TERM)) ;
 
+        // matcher for P != rdf:type
         matcher.addPattern(new Pattern(2, TERM, TERM, VAR)) ;                   // SP?
         matcher.addPattern(new Pattern(3, VAR, TERM, TERM)) ;                   // ?PO
         matcher.addPattern(new Pattern(2, TERM, VAR, TERM)) ;                   // S?O

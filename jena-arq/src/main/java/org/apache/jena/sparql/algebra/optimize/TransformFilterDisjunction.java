@@ -32,156 +32,131 @@ import org.apache.jena.sparql.expr.E_LogicalOr ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 
-/**Filter disjunction.
- * Merge with TransformFilterImprove
+/**
+ * Filter disjunction. This covers the case of
+ * <pre>
+ *  (filter (|| expr1 expr2) pattern)</pre>
+ * where either or both of {@code expr1} and {@code expr2} are equalities that help
+ * ground the pattern. This includes {@code ?x IN (....)} so this optimization can a
+ * significant improvement.
  */
 
-public class TransformFilterDisjunction extends TransformCopy
-{
+public class TransformFilterDisjunction extends TransformCopy {
     public TransformFilterDisjunction() {}
-    
+
     @Override
-    public Op transform(OpFilter opFilter, final Op subOp)
-    {
-        ExprList exprList = opFilter.getExprs() ;
-        
+    public Op transform(OpFilter opFilter, final Op subOp) {
+        ExprList exprList = opFilter.getExprs();
+
         // First pass - any disjunctions at all?
-        boolean processDisjunction = false ;
-        for ( Expr expr : exprList )
-        {
-            if ( isDisjunction(expr) )
-            {
-                processDisjunction = true ;
-                break ;
+        boolean processDisjunction = false;
+        for ( Expr expr : exprList ) {
+            if ( isDisjunction(expr) ) {
+                processDisjunction = true;
+                break;
             }
         }
-        
-        // Still may be a disjunction in a form we don't optimize. 
-        if ( ! processDisjunction )
-            return super.transform(opFilter, subOp) ;
-        
-        ExprList exprList2 = new ExprList() ;
-        Op newOp = subOp ;
-        // remember what's been seen so that FILTER(?x = <x> || ?x = <x> ) does not result in two transforms. 
-        Set<Expr> doneSoFar = new HashSet<>() ;
-        
-        for ( Expr expr : exprList )
-        {
-            if ( ! isDisjunction(expr) )
-            {
-                // Assignment there?
-                exprList2.add(expr) ;
-                continue ;
+
+        // Still may be a disjunction in a form we don't optimize.
+        if ( !processDisjunction )
+            return super.transform(opFilter, subOp);
+
+        ExprList exprList2 = new ExprList();
+        Op newOp = subOp;
+        // remember what's been seen so that FILTER(?x = <x> || ?x = <x> ) does not
+        // result in two transforms.
+        Set<Expr> doneSoFar = new HashSet<>();
+
+        for ( Expr expr : exprList ) {
+            if ( !isDisjunction(expr) ) {
+                // not for this transform.
+                exprList2.add(expr);
+                continue;
             }
-            
+
 //            // Relies on expression equality.
 //            if ( doneSoFar.contains(expr) )
 //                continue ;
 //            // Must be canonical: ?x = <x> is the same as <x> = ?x
 //            doneSoFar.add(expr) ;
-            
-            Op op2 = expandDisjunction(expr, newOp) ;
-            
+
+            Op op2 = expandDisjunction(expr, newOp);
             if ( op2 != null )
-                newOp = op2 ;
+                newOp = op2;
         }
 
         if ( exprList2.isEmpty() )
-            return newOp ;
+            return newOp;
 
         // There should have been at least on disjunction.
         if ( newOp == subOp ) {
-            Log.warn(this, "FilterDisjunction assumption failure: didn't find a disjunction after all") ;
-            return super.transform(opFilter, subOp) ;
+            Log.warn(this, "FilterDisjunction assumption failure: didn't find a disjunction after all");
+            return super.transform(opFilter, subOp);
         }
-            
 
-        // Failed.  These a was one or more expressions we couldn't handle.
-        // So the full pattern is going to be executed anyway. 
-        //return super.transform(super.transform(opFilter, subOp)) ;
-        
-        
-        // Put the non-disjunctions outside the disjunction and the pattern rewrite. 
-        Op opOther = OpFilter.filterBy(exprList2, newOp) ;
-        if ( opOther instanceof OpFilter) {
-            return opOther ;
+        // Put the non-disjunctions outside the disjunction and the pattern rewrite.
+        Op opOther = OpFilter.filterBy(exprList2, newOp);
+        if ( opOther instanceof OpFilter ) {
+            return opOther;
         }
-            
-        // opOther is not a filter any more - should not happen but to isolate from future changes ...
-        Log.warn(this, "FilterDisjunction assumption failure: not a filter after processing disjunction/other mix") ;
-        return super.transform(opFilter, subOp) ;
-    }
-    
-    private boolean isDisjunction(Expr expr)
-    {
-        return ( expr instanceof E_LogicalOr ) ; 
+
+        // opOther is not a filter any more - should not happen but to isolate from
+        // future changes ...
+        Log.warn(this, "FilterDisjunction assumption failure: not a filter after processing disjunction/other mix");
+        return super.transform(opFilter, subOp);
     }
 
-    // Todo:
-    // 1 - convert TransformEqualityFilter to use ExprLib for testing.
-    // 2 - Scan for safe equality filters in disjunction.
-    
-    public static Op expandDisjunction(Expr expr, Op subOp)
-    {
-//        if ( !( expr instanceof E_LogicalOr ) )
-//            return null ;
+    private boolean isDisjunction(Expr expr) {
+        return (expr instanceof E_LogicalOr);
+    }
 
-        List<Expr> exprList = explodeDisjunction(new ArrayList<Expr>(), expr) ;
-        
-        // All disjunctions - some can be done efficiently via assignments, some can not.
-        // Really should only do if every disjunction can turned into a assign-grounded pattern
-        // otherwise the full is done anyway. 
-        
-        List<Expr> exprList2 = null ;
-        Op op = null ;
-        for ( Expr e : exprList )
-        {
-            Op op2 = TransformFilterEquality.processFilter(e, subOp) ;
-            if ( op2 == null )
-            {
+    public static Op expandDisjunction(Expr expr, Op subOp) {
+        List<Expr> exprList = explodeDisjunction(new ArrayList<Expr>(), expr);
+
+        // All disjunctions - some can be done efficiently via assignments,
+        // some can not (value tests).
+        List<Expr> exprList2 = null;
+        Op op = null;
+        for ( Expr e : exprList ) {
+            Op op2 = TransformFilterEquality.processFilter(e, subOp);
+            if ( op2 == null ) {
                 // Not done.
                 if ( exprList2 == null )
-                    exprList2 = new ArrayList<>() ;
-                exprList2.add(e) ;
-                //continue ;
-                // Can't do one so don't do any as the original pattern is still executed. 
+                    exprList2 = new ArrayList<>();
+                exprList2.add(e);
             }
 
-            op = OpDisjunction.create(op, op2) ;
+            op = OpDisjunction.create(op, op2);
         }
-        
-        if ( exprList2 != null && !exprList2.isEmpty() )
-        {
+
+        if ( exprList2 != null && !exprList2.isEmpty() ) {
             // These are left as disjunctions.
-            Expr eOther = null ;
-            for ( Expr e : exprList2 )
-            {
+            Expr eOther = null;
+            for ( Expr e : exprList2 ) {
                 if ( eOther == null )
-                    eOther = e ;
+                    eOther = e;
                 else
-                    eOther = new E_LogicalOr(eOther, e) ;
+                    eOther = new E_LogicalOr(eOther, e);
             }
-            Op opOther = OpFilter.filter(eOther, subOp) ;
-            op = OpDisjunction.create(op, opOther) ;
+            Op opOther = OpFilter.filter(eOther, subOp);
+            op = OpDisjunction.create(op, opOther);
         }
-        
-        return op ;
+
+        return op;
     }
 
-    /** Explode a expr into a list of disjunctions */
-    private static List<Expr> explodeDisjunction(List<Expr> exprList, Expr expr)
-    {
-        if ( !( expr instanceof E_LogicalOr ) )
-        {
-            exprList.add(expr) ;
-            return exprList ;
+    /** Explode an expr into a list of disjunctions */
+    private static List<Expr> explodeDisjunction(List<Expr> exprList, Expr expr) {
+        if ( !(expr instanceof E_LogicalOr) ) {
+            exprList.add(expr);
+            return exprList;
         }
-        
-        E_LogicalOr exprOr = (E_LogicalOr)expr ;
-        Expr e1 =  exprOr.getArg1() ;
-        Expr e2 =  exprOr.getArg2() ;
-        explodeDisjunction(exprList, e1) ; 
-        explodeDisjunction(exprList, e2) ;
-        return exprList ;
+
+        E_LogicalOr exprOr = (E_LogicalOr)expr;
+        Expr e1 = exprOr.getArg1();
+        Expr e2 = exprOr.getArg2();
+        explodeDisjunction(exprList, e1);
+        explodeDisjunction(exprList, e2);
+        return exprList;
     }
 }
