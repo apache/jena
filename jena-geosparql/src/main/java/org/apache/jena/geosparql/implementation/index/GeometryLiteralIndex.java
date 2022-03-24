@@ -60,17 +60,15 @@ public class GeometryLiteralIndex {
 
         if (INDEX_ACTIVE) {
 
-            if (index.containsKey(geometryLiteral)) {
-                geometryWrapper = index.get(geometryLiteral);
-            } else {
-                if (otherIndex.containsKey(geometryLiteral)) {
-                    geometryWrapper = otherIndex.get(geometryLiteral);
-                } else {
+            geometryWrapper = index.get(geometryLiteral);
+            if (geometryWrapper == null) {
+                geometryWrapper = otherIndex.get(geometryLiteral);
+                if (geometryWrapper == null) {
                     geometryWrapper = geometryDatatype.read(geometryLiteral);
                 }
                 index.put(geometryLiteral, geometryWrapper);
             }
-
+         
             return geometryWrapper;
         }
 
