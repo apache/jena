@@ -494,4 +494,34 @@ public class GeometryWrapperTest {
         assertEquals(expResult, result, 0.0001);
     }
 
+    /**
+     * Test of testGetUTMZoneURI_wgs84 method, of class GeometryWrapper.
+     *
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
+     */
+    @Test
+    public void testGetUTMZoneURI_wgs84() throws FactoryException, MismatchedDimensionException, TransformException {
+
+        GeometryWrapper instance = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(52.28 -1.58)", WKTDatatype.URI);      //Warwick Castle 
+        String expResult = "http://www.opengis.net/def/crs/EPSG/0/32630";
+        String result = instance.getUTMZoneURI();
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of testGetUTMZoneURI_crs84 method, of class GeometryWrapper.
+     *
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
+     */
+    @Test
+    public void testGetUTMZoneURI_crs84() throws FactoryException, MismatchedDimensionException, TransformException {
+
+        GeometryWrapper instance = GeometryWrapper.extract("POINT(-1.58 52.28)", WKTDatatype.URI);      //Warwick Castle 
+        String expResult = "http://www.opengis.net/def/crs/EPSG/0/32630";
+        String result = instance.getUTMZoneURI();
+        assertEquals(expResult, result);
+    }
+    
 }

@@ -449,9 +449,9 @@ public class GeometryWrapper implements Serializable {
             //Convert to WGS84. Use WGS84 and not CRS84 as assuming WGS8 is more prevalent.
             CoordinateReferenceSystem wgs84CRS = SRSRegistry.getCRS(SRS_URI.WGS84_CRS);
             MathTransform transform = MathTransformRegistry.getMathTransform(srsInfo.getCrs(), wgs84CRS);
-
+            
             DirectPosition wgs84Point = transform.transform(point, null);
-
+            
             //Find the UTM zone.
             utmURI = SRSRegistry.findUTMZoneURIFromWGS84(wgs84Point.getOrdinate(0), wgs84Point.getOrdinate(1));
 
