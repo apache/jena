@@ -110,7 +110,7 @@ public class AuthLib {
                 String requestTarget = HttpLib.requestTarget(request.uri());
                 digestAuthModifier = DigestLib.buildDigest(aHeader,
                                                            passwordRecord.getUsername(), passwordRecord.getPassword(),
-                                                           requestTarget, request.method());
+                                                           request.method(), requestTarget);
                 break;
             }
             default:
