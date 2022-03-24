@@ -598,7 +598,7 @@ public class GeometryWrapper implements Serializable {
         //These are then used for Great Circle distance.
         CoordinatePair coordinatePair = CoordinatePair.findNearestPair(transformedSourceGeometry, transformedTargetGeometry);
 
-        //Check whether the nearest pair are the same, i.e. the overlap or within each other.
+        //Check whether the nearest pair are the same, i.e. they overlap or are within each other.
         if (coordinatePair.isEqual()) {
             //Exit early as the distance is zero.
             return 0.0;
