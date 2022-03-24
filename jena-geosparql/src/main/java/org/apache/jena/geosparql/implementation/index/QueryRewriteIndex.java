@@ -83,14 +83,7 @@ public class QueryRewriteIndex {
         if (indexActive) {
             String key = subjectGeometryLiteral.getLiteralLexicalForm() + KEY_SEPARATOR + predicate.getURI() + KEY_SEPARATOR + objectGeometryLiteral.getLiteralLexicalForm();
             try {
-                Boolean result;
-                if (index.containsKey(key)) {
-                    result = index.get(key);
-                } else {
-                    result = propertyFunction.testFilterFunction(subjectGeometryLiteral, objectGeometryLiteral);
-                    index.put(key, result);
-                }
-                return result;
+                return index.computeIfAbsent(key, k -> propertyFunction.testFilterFunction(subjectGeometryLiteral, objectGeometryLiteral));                
             } catch (NullPointerException ex) {
                 //Catch NullPointerException and fall through to default action.
             }
