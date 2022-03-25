@@ -21,6 +21,7 @@ import io.github.galbiston.expiring_map.ExpiringMap;
 import static io.github.galbiston.expiring_map.MapDefaultValues.MAP_EXPIRY_INTERVAL;
 import static io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_MAP;
 import java.util.Map.Entry;
+import java.util.Objects;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.geo.topological.GenericPropertyFunction;
 import org.apache.jena.graph.Node;
@@ -42,12 +43,11 @@ public class QueryRewriteIndex {
 
     private boolean indexActive;
     private final String queryRewriteLabel;
-    private ExpiringMap<String, Boolean> index;
+    private ExpiringMap<IndexKey, Boolean> index;
     private static String LABEL_DEFAULT = "Query Rewrite";
     private static int MAP_SIZE_DEFAULT = UNLIMITED_MAP;
     private static long MAP_EXPIRY_INTERVAL_DEFAULT = MAP_EXPIRY_INTERVAL;
-    private static final String KEY_SEPARATOR = "@";
-
+    
     public static final Symbol QUERY_REWRITE_INDEX_SYMBOL = Symbol.create("http://jena.apache.org/spatial#query-index");
 
     public QueryRewriteIndex() {
@@ -81,7 +81,7 @@ public class QueryRewriteIndex {
         }
 
         if (indexActive) {
-            String key = subjectGeometryLiteral.getLiteralLexicalForm() + KEY_SEPARATOR + predicate.getURI() + KEY_SEPARATOR + objectGeometryLiteral.getLiteralLexicalForm();
+            IndexKey key = new IndexKey(subjectGeometryLiteral.getLiteralLexicalForm(), predicate.getURI(), objectGeometryLiteral.getLiteralLexicalForm());            
             try {
                 return index.computeIfAbsent(key, k -> propertyFunction.testFilterFunction(subjectGeometryLiteral, objectGeometryLiteral));                
             } catch (NullPointerException ex) {
@@ -134,13 +134,13 @@ public class QueryRewriteIndex {
      */
     public Model toModel() {
         Model model = ModelFactory.createDefaultModel();
-        for (Entry<String, Boolean> entry : index.entrySet()) {
+        for (Entry<IndexKey, Boolean> entry : index.entrySet()) {
             Boolean value = entry.getValue();
             if (value) {
-                String[] parts = entry.getKey().split(KEY_SEPARATOR);
-                Resource subject = ResourceFactory.createResource(parts[0]);
-                Property property = ResourceFactory.createProperty(parts[1]);
-                Resource object = ResourceFactory.createResource(parts[2]);
+                IndexKey key = entry.getKey();
+                Resource subject = ResourceFactory.createResource(key.subject);
+                Property property = ResourceFactory.createProperty(key.predicate);
+                Resource object = ResourceFactory.createResource(key.object);
                 model.add(subject, property, object);
             }
         }
@@ -290,5 +290,48 @@ public class QueryRewriteIndex {
         prepare(dataset);
 
         return dataset;
+    }
+    
+    private class IndexKey {
+        
+        private final String subject;
+        private final String predicate;
+        private final String object;
+        
+        public IndexKey(String subject, String predicate, String object){
+            this.subject = subject;
+            this.predicate = predicate;
+            this.object = object;
+        }
+        
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 71 * hash + Objects.hashCode(this.subject);
+            hash = 71 * hash + Objects.hashCode(this.predicate);
+            hash = 71 * hash + Objects.hashCode(this.object);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final IndexKey other = (IndexKey) obj;
+            if (!Objects.equals(this.predicate, other.predicate)) {
+                return false;
+            }
+            if (!Objects.equals(this.subject, other.subject)) {
+                return false;
+            }
+            return Objects.equals(this.object, other.object);
+        }
     }
 }
