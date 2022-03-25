@@ -176,14 +176,21 @@ public class GeoAssembler extends DatasetAssembler {
             return;
 
         try {
+            // no file given, i.e. in-memory index only
             if ( spatialIndex == null ) {
                 GeoSPARQLConfig.setupSpatialIndex(dataset);
                 return;
             }
 
+            // file given but empty -> compute and serialize index
             Path spatialIndexPath = Path.of(spatialIndex);
-            if ( ! Files.exists(spatialIndexPath) || Files.size(spatialIndexPath) == 0 )
+            if ( ! Files.exists(spatialIndexPath) || Files.size(spatialIndexPath) == 0 ) {
                 GeoSPARQLConfig.setupSpatialIndex(dataset, spatialIndexPath.toFile());
+                return;
+            }
+
+            // load and setup the precomputed index
+            GeoSPARQLConfig.setupPrecomputedSpatialIndex(dataset, spatialIndexPath.toFile());
         }
         catch (SrsException ex) {
             // Data but no spatial data.
