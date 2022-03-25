@@ -20,6 +20,7 @@ package org.apache.jena.geosparql.implementation.index;
 import io.github.galbiston.expiring_map.ExpiringMap;
 import static io.github.galbiston.expiring_map.MapDefaultValues.MAP_EXPIRY_INTERVAL;
 import static io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_MAP;
+import java.util.Objects;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.jts.GeometryTransformation;
@@ -40,7 +41,7 @@ public class GeometryTransformIndex {
 
     private static boolean INDEX_ACTIVE = false;
     private static final String GEOMETRY_TRANSFORM_LABEL = "Geometry Transform";
-    private static ExpiringMap<String, GeometryWrapper> GEOMETRY_TRANSFORM_INDEX = new ExpiringMap<>(GEOMETRY_TRANSFORM_LABEL, UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
+    private static ExpiringMap<IndexKey, GeometryWrapper> GEOMETRY_TRANSFORM_INDEX = new ExpiringMap<>(GEOMETRY_TRANSFORM_LABEL, UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
 
     /**
      *
@@ -54,7 +55,7 @@ public class GeometryTransformIndex {
     public static final GeometryWrapper transform(GeometryWrapper sourceGeometryWrapper, String srsURI, Boolean storeSRSTransform) throws TransformException, FactoryException {
 
         GeometryWrapper transformedGeometryWrapper;
-        String key = sourceGeometryWrapper.getLexicalForm() + "@" + srsURI;
+        IndexKey key = new IndexKey(sourceGeometryWrapper.getLexicalForm(), srsURI);
 
         if (INDEX_ACTIVE && storeSRSTransform) {
             
@@ -151,5 +152,43 @@ public class GeometryTransformIndex {
      */
     public static void reset(int maxSize, long expiryInterval) {
         GEOMETRY_TRANSFORM_INDEX = new ExpiringMap<>(GEOMETRY_TRANSFORM_LABEL, maxSize, expiryInterval);
+    }
+    
+    private static class IndexKey {
+        
+         private final String sourceGeometryLiteral;
+         private final String srsURI;
+
+        public IndexKey(String sourceGeometryLiteral, String srsURI) {
+            this.sourceGeometryLiteral = sourceGeometryLiteral;
+            this.srsURI = srsURI;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 47 * hash + Objects.hashCode(this.sourceGeometryLiteral);
+            hash = 47 * hash + Objects.hashCode(this.srsURI);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final IndexKey other = (IndexKey) obj;
+            if (!Objects.equals(this.sourceGeometryLiteral, other.sourceGeometryLiteral)) {
+                return false;
+            }
+            return Objects.equals(this.srsURI, other.srsURI);
+        }
+         
     }
 }
