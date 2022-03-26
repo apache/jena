@@ -55,7 +55,6 @@
     "vue-template-compiler": "^2.6.14"
   },
   "resolutions": {
-    "node-forge": "^1.0.0",
     "follow-redirects": "^1.14.7",
     "nanoid": "^3.3.1"
   }
