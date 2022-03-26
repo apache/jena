@@ -104,6 +104,20 @@ public class IOX {
         } catch(IOException ex) { throw IOX.exception(ex); }
     }
 
+    /** Write a file safely, but allow system to use copy-delete if the chnage can not be done atomically.
+     *  Prefer {@link #safeWrite} which requires an atomic move.
+     */
+    public static boolean safeWriteOrCopy(Path file, Path tmpFile, IOConsumer<OutputStream> writerAction) {
+        try {
+            try(OutputStream out = new BufferedOutputStream(Files.newOutputStream(tmpFile)) ) {
+                writerAction.actionEx(out);
+            }
+            moveAllowCopy(tmpFile, file);
+            return true;
+        } catch(IOException ex) { throw IOX.exception(ex); }
+    }
+
+
     /** Delete a file. */
     public static void delete(Path path) {
         try { Files.delete(path); }
@@ -121,6 +135,16 @@ public class IOX {
             throw IOX.exception(ex);
         }
     }
+
+    /** Move a file, allowing the system to copy-delete it if it can not be moved atomically. */
+    public static void moveAllowCopy(Path src, Path dst) {
+        try { Files.move(src, dst); }
+        catch (IOException ex) {
+            FmtLog.error(IOX.class, ex, "IOException moving %s to %s", src, dst);
+            throw IOX.exception(ex);
+        }
+    }
+
 
     public static void deleteAll(String start) {
         deleteAll(Paths.get(start));
