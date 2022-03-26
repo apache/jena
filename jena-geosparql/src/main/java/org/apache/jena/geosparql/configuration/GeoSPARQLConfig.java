@@ -18,7 +18,6 @@
 package org.apache.jena.geosparql.configuration;
 
 import java.io.File;
-
 import org.apache.jena.geosparql.geof.topological.RelateFF;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.function_registration.*;
@@ -56,6 +55,11 @@ public class GeoSPARQLConfig {
      * JTS geometry calculations, e.g. buffer.
      */
     public static int PRECISION_MODEL_SCALE_FACTOR = 1000000;
+
+    /**
+     * Option to dynamically transform GeometryLiteral SRS in calculations.
+     */
+    public static boolean ALLOW_GEOMETRY_SRS_TRANSFORMATION = true;
 
     /**
      * Initialise all GeoSPARQL property and filter functions with memory
@@ -197,7 +201,6 @@ public class GeoSPARQLConfig {
              *   Dec 28, 2021 10:56:27 AM org.apache.sis.referencing.factory.sql.EPSGFactory <init>
              *   WARNING: The “SIS_DATA” environment variable is not set.
              */
-
             //Setup Default Coordinate Reference Systems
             SRSRegistry.setupDefaultSRS();
 
@@ -329,6 +332,15 @@ public class GeoSPARQLConfig {
      */
     public static final void setPrecisionModelScaleFactor(int scaleFactor) {
         PRECISION_MODEL_SCALE_FACTOR = scaleFactor;
+    }
+
+    /**
+     * Sets whether transformation for mismatching Geometry SRS is allowed.
+     *
+     * @param allowTransformation
+     */
+    public static final void allowGeometrySRSTransformation(boolean allowTransformation) {
+        ALLOW_GEOMETRY_SRS_TRANSFORMATION = allowTransformation;
     }
 
 }

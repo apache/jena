@@ -204,10 +204,11 @@ public class GeometryWrapperTest {
     /**
      * Test of distanceEuclidean same SRS_URI method, of class GeometryWrapper.
      *
-     * @throws java.lang.Exception
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
      */
     @Test
-    public void testDistanceSameSRSSameUnit() throws Exception {
+    public void testDistanceSameSRSSameUnit() throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(2.0, 1.0));
         String targetSRSURI = SRS_URI.OSGB36_CRS;
@@ -228,10 +229,11 @@ public class GeometryWrapperTest {
     /**
      * Test of distanceEuclidean same SRS_URI method, of class GeometryWrapper.
      *
-     * @throws java.lang.Exception
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
      */
-    @Test
-    public void testDistanceSameSRSDifferentUnit() throws Exception {
+    @Test(expected = UnitsConversionException.class)
+    public void testDistanceSameSRSDifferentUnit_exception() throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(385458, 156785)); //LatLon - 51.31, -2.21
         String targetSRSURI = SRS_URI.OSGB36_CRS;
@@ -244,19 +246,18 @@ public class GeometryWrapperTest {
         //SRS is in metres.
         String distanceUnitsURL = Unit_URI.RADIAN_URL;
 
-        double expResult = 0.025656; //Degree: 1.47
         double result = instance.distanceEuclidean(targetGeometry, distanceUnitsURL);
-        assertEquals(expResult, result, 0.001);
     }
 
     /**
      * Test of distanceEuclidean different SRS_URI method, of class
      * GeometryWrapper.
      *
-     * @throws java.lang.Exception
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
      */
     @Test
-    public void testDistanceDifferentSRSSameUnit() throws Exception {
+    public void testDistanceDifferentSRSSameUnit() throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(2.0, 1.0));
         String targetSRSURI = SRS_URI.WGS84_CRS;
@@ -278,10 +279,11 @@ public class GeometryWrapperTest {
      * Test of distanceEuclidean different SRS_URI method, of class
      * GeometryWrapper.
      *
-     * @throws java.lang.Exception
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
      */
-    @Test
-    public void testDistanceDifferentSRSDifferentUnit() throws Exception {
+    @Test(expected = UnitsConversionException.class)
+    public void testDistanceDifferentSRSDifferentUnit_exception() throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
         Geometry targetGeo = GEOMETRY_FACTORY.createPoint(new Coordinate(0.0, 1.0));
         String targetSRSURI = SRS_URI.WGS84_CRS;
@@ -294,9 +296,7 @@ public class GeometryWrapperTest {
         //SRS is in degrees.
         String distanceUnitsURL = Unit_URI.METRE_URL;
 
-        double expResult = 111320; //1.0 degree of longigtude at the equator is approx 111.32km.
         double result = instance.distanceEuclidean(targetGeometry, distanceUnitsURL);
-        assertEquals(expResult, result, 1);
     }
 
     /**
@@ -494,4 +494,34 @@ public class GeometryWrapperTest {
         assertEquals(expResult, result, 0.0001);
     }
 
+    /**
+     * Test of testGetUTMZoneURI_wgs84 method, of class GeometryWrapper.
+     *
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
+     */
+    @Test
+    public void testGetUTMZoneURI_wgs84() throws FactoryException, MismatchedDimensionException, TransformException {
+
+        GeometryWrapper instance = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(52.28 -1.58)", WKTDatatype.URI);      //Warwick Castle 
+        String expResult = "http://www.opengis.net/def/crs/EPSG/0/32630";
+        String result = instance.getUTMZoneURI();
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of testGetUTMZoneURI_crs84 method, of class GeometryWrapper.
+     *
+     * @throws org.opengis.util.FactoryException
+     * @throws org.opengis.referencing.operation.TransformException
+     */
+    @Test
+    public void testGetUTMZoneURI_crs84() throws FactoryException, MismatchedDimensionException, TransformException {
+
+        GeometryWrapper instance = GeometryWrapper.extract("POINT(-1.58 52.28)", WKTDatatype.URI);      //Warwick Castle 
+        String expResult = "http://www.opengis.net/def/crs/EPSG/0/32630";
+        String result = instance.getUTMZoneURI();
+        assertEquals(expResult, result);
+    }
+    
 }

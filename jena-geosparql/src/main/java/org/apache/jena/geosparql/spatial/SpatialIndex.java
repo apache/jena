@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
 import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.SRSInfo;
@@ -458,7 +459,7 @@ public class SpatialIndex {
 
             Literal lat = feature.getRequiredProperty(SpatialExtension.GEO_LAT_PROP).getLiteral();
             Literal lon = feature.getProperty(SpatialExtension.GEO_LON_PROP).getLiteral();
-            if ( lon == null ) {
+            if (lon == null) {
                 LOGGER.warn("Geo predicates: latitude found but not longitude. " + feature);
                 continue;
             }
@@ -533,11 +534,18 @@ public class SpatialIndex {
         if (spatialIndexFile != null) {
             LOGGER.info("Saving Spatial Index - Started: {}", spatialIndexFile.getAbsolutePath());
             SpatialIndexStorage storage = new SpatialIndexStorage(spatialIndexItems, srsURI);
-            try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(spatialIndexFile))) {
-                out.writeObject(storage);
-                LOGGER.info("Saving Spatial Index - Completed: {}", spatialIndexFile.getAbsolutePath());
-            } catch (Exception ex) {
+            File file;
+            try {
+                file = File.createTempFile("spatial_index", null);
+                file.deleteOnExit();
+                try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
+                    out.writeObject(storage);
+                    FileUtils.copyFile(file, spatialIndexFile);
+                }
+            } catch (IOException ex) {
                 throw new SpatialIndexException("Save Exception: " + ex.getMessage());
+            } finally {
+                LOGGER.info("Saving Spatial Index - Completed: {}", spatialIndexFile.getAbsolutePath());
             }
         }
     }

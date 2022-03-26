@@ -130,9 +130,7 @@ public class GreatCircleFFTest {
         NodeValue v4 = NodeValue.makeDouble(20.0001);
         NodeValue v5 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETER_URL));
         GreatCircleFF instance = new GreatCircleFF();
-        NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3, v4, v5);
-        assertEquals(expResult, result);
     }
 
     /**
@@ -147,9 +145,7 @@ public class GreatCircleFFTest {
         NodeValue v4 = NodeValue.makeDouble(20.0001);
         NodeValue v5 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETER_URL));
         GreatCircleFF instance = new GreatCircleFF();
-        NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3, v4, v5);
-        assertEquals(expResult, result);
     }
 
     /**
@@ -164,9 +160,7 @@ public class GreatCircleFFTest {
         NodeValue v4 = NodeValue.makeDouble(20.0001);
         NodeValue v5 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETER_URL));
         GreatCircleFF instance = new GreatCircleFF();
-        NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3, v4, v5);
-        assertEquals(expResult, result);
     }
 
     /**
@@ -181,9 +175,7 @@ public class GreatCircleFFTest {
         NodeValue v4 = NodeValue.makeString("20.0001");
         NodeValue v5 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETER_URL));
         GreatCircleFF instance = new GreatCircleFF();
-        NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3, v4, v5);
-        assertEquals(expResult, result);
     }
 
     /**
@@ -198,9 +190,22 @@ public class GreatCircleFFTest {
         NodeValue v4 = NodeValue.makeDouble(20.0001);
         NodeValue v5 = NodeValue.makeInteger(20);
         GreatCircleFF instance = new GreatCircleFF();
-        NodeValue expResult = NodeValue.makeDouble(20);
         NodeValue result = instance.exec(v1, v2, v3, v4, v5);
-        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of exec method, of class GreatCircleFF.
+     */
+    @Test(expected = ExprEvalException.class)
+    public void testExec_units_exception() {
+
+        NodeValue v1 = NodeValue.makeDouble(10.0);
+        NodeValue v2 = NodeValue.makeDouble(20.0);
+        NodeValue v3 = NodeValue.makeDouble(10.0);
+        NodeValue v4 = NodeValue.makeDouble(20.0001);
+        NodeValue v5 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.RADIAN_URL));
+        GreatCircleFF instance = new GreatCircleFF();
+        NodeValue result = instance.exec(v1, v2, v3, v4, v5);
     }
 
     /**
@@ -230,8 +235,6 @@ public class GreatCircleFFTest {
 
         List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("344.266423e0", XSDDatatype.XSDdouble));
 
-        //
-        //
         assertEquals(expResults, results);
     }
 

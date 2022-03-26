@@ -18,8 +18,10 @@
 package org.apache.jena.geosparql.implementation;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
@@ -55,12 +57,16 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.FactoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  *
  */
 public class GeometryWrapper implements Serializable {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final DimensionInfo dimensionInfo;
     private final SRSInfo srsInfo;
@@ -203,6 +209,10 @@ public class GeometryWrapper implements Serializable {
         if (srsURI.equals(targetGeometryWrapper.srsInfo.getSrsURI())) {
             transformedGeometryWrapper = targetGeometryWrapper;
         } else {
+            if (!GeoSPARQLConfig.ALLOW_GEOMETRY_SRS_TRANSFORMATION) {
+                throw new TransformException("GeometryLiteral SRS transformation is disabled, see GeoSPARQLConfig.allowGeometrySRSTransformation(...).");
+            }
+
             transformedGeometryWrapper = targetGeometryWrapper.transform(srsURI);
         }
 
@@ -399,45 +409,26 @@ public class GeometryWrapper implements Serializable {
      * @throws FactoryException
      * @throws MismatchedDimensionException
      * @throws TransformException
+     * @throws UnitsConversionException
      */
-    public GeometryWrapper buffer(double distance, String targetDistanceUnitsURI) throws FactoryException, MismatchedDimensionException, TransformException {
+    public GeometryWrapper buffer(double distance, String targetDistanceUnitsURI) throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
         //Check whether the source geometry is linear units for cartesian calculation. If not then transform to relevant UTM SRS GeometryWrapper.
         Boolean isTargetUnitsLinear = UnitsRegistry.isLinearUnits(targetDistanceUnitsURI);
-        GeometryWrapper transformedGeometryWrapper;
-        Boolean isTransformNeeded;
 
-        if (srsInfo.getUnitsOfMeasure().isLinearUnits() == isTargetUnitsLinear) {
-            //Source geometry and target units are both the same.
-            transformedGeometryWrapper = this;
-            isTransformNeeded = false;
-        } else if (isTargetUnitsLinear) {
-            //Source geometry is not linear but targets are so convert to linear SRS.
-            String sourceUtmURI = getUTMZoneURI();
-            transformedGeometryWrapper = transform(sourceUtmURI);
-            isTransformNeeded = true;
-        } else {
-            //Source geometry is linear but targets are not so convert to nonlinear SRS.
-            transformedGeometryWrapper = transform(SRS_URI.DEFAULT_WKT_CRS84);
-            isTransformNeeded = true;
+        if (srsInfo.getUnitsOfMeasure().isLinearUnits() != isTargetUnitsLinear) {
+            //Source geometry and target units are not the same.
+            throw new UnitsConversionException("Buffer does not support conversion between linear and non-linear units.");
         }
 
-        //Check whether the units of the distance need converting.
-        double transformedDistance = UnitsOfMeasure.conversion(distance, targetDistanceUnitsURI, transformedGeometryWrapper.srsInfo.getUnitsOfMeasure().getUnitURI());
+        //Transform distance into current units.
+        double transformedDistance = UnitsOfMeasure.conversion(distance, targetDistanceUnitsURI, this.srsInfo.getUnitsOfMeasure().getUnitURI());
 
-        //Buffer the transformed geometry
-        Geometry xyGeo = transformedGeometryWrapper.xyGeometry.buffer(transformedDistance);
+        //Buffer the geometry by the transformed distance.
+        Geometry xyGeo = this.xyGeometry.buffer(transformedDistance);
         DimensionInfo bufferedDimensionInfo = new DimensionInfo(dimensionInfo.getCoordinate(), dimensionInfo.getSpatial(), xyGeo.getDimension());
-        Geometry parsingGeo = GeometryReverse.check(xyGeo, transformedGeometryWrapper.srsInfo);
-        GeometryWrapper bufferedGeometryWrapper = new GeometryWrapper(parsingGeo, xyGeo, transformedGeometryWrapper.srsInfo.getSrsURI(), transformedGeometryWrapper.geometryDatatypeURI, bufferedDimensionInfo);
-
-        //Check whether need to transform back to the original srsURI.
-        if (isTransformNeeded) {
-            //Don't store the buffered geometry as it is dependent upon the target distance and so likely to vary beween calls.
-            return bufferedGeometryWrapper.transform(srsInfo.getSrsURI(), false);
-        } else {
-            return bufferedGeometryWrapper;
-        }
+        Geometry parsingGeo = GeometryReverse.check(xyGeo, this.srsInfo);
+        return new GeometryWrapper(parsingGeo, xyGeo, this.srsInfo.getSrsURI(), this.geometryDatatypeURI, bufferedDimensionInfo);
     }
 
     /**
@@ -458,9 +449,9 @@ public class GeometryWrapper implements Serializable {
             //Convert to WGS84. Use WGS84 and not CRS84 as assuming WGS8 is more prevalent.
             CoordinateReferenceSystem wgs84CRS = SRSRegistry.getCRS(SRS_URI.WGS84_CRS);
             MathTransform transform = MathTransformRegistry.getMathTransform(srsInfo.getCrs(), wgs84CRS);
-
+            
             DirectPosition wgs84Point = transform.transform(point, null);
-
+            
             //Find the UTM zone.
             utmURI = SRSRegistry.findUTMZoneURIFromWGS84(wgs84Point.getOrdinate(0), wgs84Point.getOrdinate(1));
 
@@ -505,8 +496,9 @@ public class GeometryWrapper implements Serializable {
      * @return Distance
      * @throws org.opengis.util.FactoryException
      * @throws org.opengis.referencing.operation.TransformException
+     * @throws UnitsConversionException
      */
-    public double distanceEuclidean(GeometryWrapper targetGeometry) throws FactoryException, MismatchedDimensionException, TransformException {
+    public double distanceEuclidean(GeometryWrapper targetGeometry) throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
         return distanceEuclidean(targetGeometry, Unit_URI.METRE_URL);
     }
 
@@ -518,8 +510,9 @@ public class GeometryWrapper implements Serializable {
      * @return Distance
      * @throws org.opengis.util.FactoryException
      * @throws org.opengis.referencing.operation.TransformException
+     * @throws UnitsConversionException
      */
-    public double distanceEuclidean(GeometryWrapper targetGeometry, UnitsOfMeasure unitsOfMeasure) throws FactoryException, MismatchedDimensionException, TransformException {
+    public double distanceEuclidean(GeometryWrapper targetGeometry, UnitsOfMeasure unitsOfMeasure) throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
         return distanceEuclidean(targetGeometry, unitsOfMeasure.getUnitURI());
     }
 
@@ -531,26 +524,15 @@ public class GeometryWrapper implements Serializable {
      * @return Distance
      * @throws org.opengis.util.FactoryException
      * @throws org.opengis.referencing.operation.TransformException
+     * @throws UnitsConversionException
      */
-    public double distanceEuclidean(GeometryWrapper targetGeometry, String targetDistanceUnitsURI) throws FactoryException, MismatchedDimensionException, TransformException {
-
-        Boolean isUnitsLinear = srsInfo.getUnitsOfMeasure().isLinearUnits();
-        Boolean isTargetUnitsLinear = UnitsRegistry.isLinearUnits(targetDistanceUnitsURI);
+    public double distanceEuclidean(GeometryWrapper targetGeometry, String targetDistanceUnitsURI) throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
         GeometryWrapper transformedTargetGeometry = checkTransformSRS(targetGeometry);
 
         double distance = xyGeometry.distance(transformedTargetGeometry.xyGeometry);
         String unitsURI = srsInfo.getUnitsOfMeasure().getUnitURI();
-
-        double targetDistance;
-        if (isUnitsLinear.equals(isTargetUnitsLinear)) {
-            //Units are same so straight conversion.
-            targetDistance = UnitsOfMeasure.conversion(distance, unitsURI, targetDistanceUnitsURI);
-        } else {
-            targetDistance = UnitsOfMeasure.convertBetween(distance, unitsURI, targetDistanceUnitsURI, isTargetUnitsLinear, getLatitude());
-        }
-
-        return targetDistance;
+        return UnitsOfMeasure.conversion(distance, unitsURI, targetDistanceUnitsURI);
     }
 
     /**
@@ -560,8 +542,9 @@ public class GeometryWrapper implements Serializable {
      * @return Distance
      * @throws org.opengis.util.FactoryException
      * @throws org.opengis.referencing.operation.TransformException
+     * @throws UnitsConversionException
      */
-    public double distanceGreatCircle(GeometryWrapper targetGeometry) throws FactoryException, MismatchedDimensionException, TransformException {
+    public double distanceGreatCircle(GeometryWrapper targetGeometry) throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
         return distanceGreatCircle(targetGeometry, Unit_URI.METRE_URL);
     }
 
@@ -573,8 +556,9 @@ public class GeometryWrapper implements Serializable {
      * @return Distance
      * @throws org.opengis.util.FactoryException
      * @throws org.opengis.referencing.operation.TransformException
+     * @throws UnitsConversionException
      */
-    public double distanceGreatCircle(GeometryWrapper targetGeometry, UnitsOfMeasure unitsOfMeasure) throws FactoryException, MismatchedDimensionException, TransformException {
+    public double distanceGreatCircle(GeometryWrapper targetGeometry, UnitsOfMeasure unitsOfMeasure) throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
         return distanceGreatCircle(targetGeometry, unitsOfMeasure.getUnitURI());
     }
 
@@ -586,15 +570,25 @@ public class GeometryWrapper implements Serializable {
      * @return Distance
      * @throws org.opengis.util.FactoryException
      * @throws org.opengis.referencing.operation.TransformException
+     * @throws UnitsConversionException
      */
-    public double distanceGreatCircle(GeometryWrapper targetGeometry, String targetDistanceUnitsURI) throws FactoryException, MismatchedDimensionException, TransformException {
+    public double distanceGreatCircle(GeometryWrapper targetGeometry, String targetDistanceUnitsURI) throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
         GeometryWrapper transformedSourceGeometry;
+
+        //Check the conversion of Great Circle distance from metres into the requested units.
+        if (!UnitsRegistry.isLinearUnits(targetDistanceUnitsURI)) {
+            throw new UnitsConversionException("Great Circle distance units are metres and only linear conversion supported.");
+        }
+
         if (srsInfo.isGeographic()) {
             //Already a geographic SRS.
             transformedSourceGeometry = this;
         } else {
-            //Use WGS84 and not CRS84 as assuming WGS8 is more prevalent.
+            //Use WGS84 and not CRS84 as assuming WGS84 is more prevalent.
+            if (!GeoSPARQLConfig.ALLOW_GEOMETRY_SRS_TRANSFORMATION) {
+                throw new TransformException("GeometryLiteral SRS transformation is disabled, see GeoSPARQLConfig.allowGeometrySRSTransformation(...).");
+            }
             transformedSourceGeometry = this.transform(SRS_URI.WGS84_CRS);
         }
 
@@ -604,7 +598,7 @@ public class GeometryWrapper implements Serializable {
         //These are then used for Great Circle distance.
         CoordinatePair coordinatePair = CoordinatePair.findNearestPair(transformedSourceGeometry, transformedTargetGeometry);
 
-        //Check whether the nearest pair are the same, i.e. the overlap or within each other.
+        //Check whether the nearest pair are the same, i.e. they overlap or are within each other.
         if (coordinatePair.isEqual()) {
             //Exit early as the distance is zero.
             return 0.0;
@@ -616,16 +610,7 @@ public class GeometryWrapper implements Serializable {
         double distance = GreatCircleDistance.haversineFormula(coord1.getY(), coord1.getX(), coord2.getY(), coord2.getX());
 
         //Convert the Great Circle distance from metres into the requested units.
-        Boolean isTargetUnitsLinear = UnitsRegistry.isLinearUnits(targetDistanceUnitsURI);
-        double targetDistance;
-        if (isTargetUnitsLinear) {
-            //Target units are linear so straight conversion. Distance is in metres already.
-            targetDistance = UnitsOfMeasure.conversion(distance, Unit_URI.METRE_URL, targetDistanceUnitsURI);
-        } else {
-            targetDistance = UnitsOfMeasure.convertBetween(distance, Unit_URI.METRE_URL, targetDistanceUnitsURI, isTargetUnitsLinear, transformedSourceGeometry.getLatitude());
-        }
-
-        return targetDistance;
+        return UnitsOfMeasure.conversion(distance, Unit_URI.METRE_URL, targetDistanceUnitsURI);
     }
 
     /**
@@ -636,8 +621,9 @@ public class GeometryWrapper implements Serializable {
      * @return Distance
      * @throws org.opengis.util.FactoryException
      * @throws org.opengis.referencing.operation.TransformException
+     * @throws UnitsConversionException
      */
-    public double distance(GeometryWrapper targetGeometry) throws FactoryException, MismatchedDimensionException, TransformException {
+    public double distance(GeometryWrapper targetGeometry) throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
         return distance(targetGeometry, Unit_URI.METRE_URL);
     }
 
@@ -650,8 +636,9 @@ public class GeometryWrapper implements Serializable {
      * @return Distance
      * @throws org.opengis.util.FactoryException
      * @throws org.opengis.referencing.operation.TransformException
+     * @throws UnitsConversionException
      */
-    public double distance(GeometryWrapper targetGeometry, UnitsOfMeasure unitsOfMeasure) throws FactoryException, MismatchedDimensionException, TransformException {
+    public double distance(GeometryWrapper targetGeometry, UnitsOfMeasure unitsOfMeasure) throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
         return distance(targetGeometry, unitsOfMeasure.getUnitURI());
     }
 
@@ -664,8 +651,9 @@ public class GeometryWrapper implements Serializable {
      * @return Distance
      * @throws org.opengis.util.FactoryException
      * @throws org.opengis.referencing.operation.TransformException
+     * @throws UnitsConversionException
      */
-    public double distance(GeometryWrapper targetGeometry, String targetDistanceUnitsURI) throws FactoryException, MismatchedDimensionException, TransformException {
+    public double distance(GeometryWrapper targetGeometry, String targetDistanceUnitsURI) throws FactoryException, MismatchedDimensionException, TransformException, UnitsConversionException {
 
         double targetDistance;
         if (srsInfo.isGeographic()) {
@@ -1181,6 +1169,10 @@ public class GeometryWrapper implements Serializable {
      * Builds a WKT Point of Geometry Wrapper.<br>
      * This method does not use the GeometryLiteralIndex and so is best used for
      * one of Geometry Wrappers.
+     *
+     * @param x
+     * @param y
+     * @param srsURI
      *
      * @return Geometry Wrapper of WKT Point.
      */
