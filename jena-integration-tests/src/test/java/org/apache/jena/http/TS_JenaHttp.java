@@ -28,6 +28,7 @@ import org.junit.runners.Suite;
     , TestHttpRDF.class
     , TestAsyncHttpRDF.class
     , TestAuthRemote.class
+    , TestAuthDigestRemote.class
 })
 
 public class TS_JenaHttp { }
