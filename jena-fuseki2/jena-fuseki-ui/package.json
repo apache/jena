@@ -55,6 +55,7 @@
     "vue-template-compiler": "^2.6.14"
   },
   "resolutions": {
+    "ansi-regex": "^4.1.1",
     "follow-redirects": "^1.14.7",
     "nanoid": "^3.3.1"
   }
