@@ -38,3 +38,6 @@ hs_err_*
 *~
 .#*
 \#*
+
+# Fuseki file area
+run/
