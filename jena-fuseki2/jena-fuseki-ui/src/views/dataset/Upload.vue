@@ -24,144 +24,142 @@
           <b-card-header header-tag="nav">
             <Menu :dataset-name="datasetName" />
           </b-card-header>
-          <b-card-body>
-            <div v-if="!this.services['gsp-rw'] || this.services['gsp-rw'].length === 0">
-              <b-alert show variant="warning">No service for Graph Store Protocol configured</b-alert>
+          <b-card-body v-if="!this.services['gsp-rw'] || this.services['gsp-rw'].length === 0">
+            <b-alert show variant="warning">No service for adding data available. The Graph Store Protocol service should be configured to allow adding data.</b-alert>
+          </b-card-body>
+          <b-card-body v-else>
+            <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active">
+              <h3>Drop files to upload</h3>
             </div>
-            <div v-else>
-              <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active">
-                <h3>Drop files to upload</h3>
-              </div>
-              <b-row>
-                <b-col sm="12">
-                  <h3>Upload files</h3>
-                  <p>Load data into the default graph of the currently selected dataset, or the given named graph.
-                    You may upload any RDF format, such as Turtle, RDF/XML or TRiG.</p>
-                  <b-form>
-                    <b-form-group
-                      id="dataset-graph-name-group"
-                      label="Dataset graph name"
-                      label-for="dataset-graph-name"
-                      label-cols="12"
-                      label-cols-sm="4"
-                      label-cols-md="4"
-                      label-cols-lg="2"
-                      label-size="sm"
-                    >
-                      <b-form-input
-                        pattern="[^\s]+"
-                        oninvalid="this.setCustomValidity('Enter a valid dataset graph name')"
-                        oninput="this.setCustomValidity('')"
-                        id="dataset-graph-name"
-                        v-model="form.datasetGraphName"
-                        type="text"
-                        placeholder="Leave blank for default graph"
-                        trim
-                      ></b-form-input>
-                    </b-form-group>
-                    <b-form-group
-                      id="dataset-files"
-                      label="Files to upload"
-                      label-for="add-files-action-dropdown"
-                      label-cols="12"
-                      label-cols-sm="4"
-                      label-cols-md="4"
-                      label-cols-lg="2"
-                      label-size="sm"
-                    >
-                      <file-upload
-                        ref="upload"
-                        v-model="upload.files"
-                        :post-action="postActionUrl"
-                        :extensions="upload.extensions"
-                        :accept="upload.accept"
-                        :multiple="upload.multiple"
-                        :directory="upload.directory"
-                        :size="upload.size || 0"
-                        :thread="upload.thread < 1 ? 1 : (upload.thread > 5 ? 5 : upload.thread)"
-                        :headers="upload.headers"
-                        :data="upload.data"
-                        :drop="upload.drop"
-                        :drop-directory="upload.dropDirectory"
-                        :add-index="upload.addIndex"
-                        class="btn btn-success"
-                      >
-                        <FontAwesomeIcon icon="plus" />
-                        <span class="ml-2">select files</span>
-                      </file-upload>
-                      <b-button
-                        v-if="!$refs.upload || !$refs.upload.active"
-                        @click.prevent="$refs.upload.active = true"
-                        variant="primary"
-                        class="ml-2 d-inline">
-                        <FontAwesomeIcon icon="upload" />
-                        <span class="ml-2">upload all</span>
-                      </b-button>
-                      <b-button
-                        v-else
-                        @click.prevent="$refs.upload.active = false"
-                        variant="primary"
-                        class="ml-2 d-inline">
-                        <FontAwesomeIcon icon="times-circle" />
-                        <span class="ml-2">stop upload</span>
-                      </b-button>
-                    </b-form-group>
-                  </b-form>
-                </b-col>
-              </b-row>
-              <b-row>
-                <b-col>
-                  <b-table
-                    :fields="datasetTableFields"
-                    :items="datasetTableItems"
-                    stacked="lg"
-                    empty-text="No files selected"
-                    bordered
-                    fixed
-                    hover
-                    show-empty
+            <b-row>
+              <b-col sm="12">
+                <h3>Upload files</h3>
+                <p>Load data into the default graph of the currently selected dataset, or the given named graph.
+                  You may upload any RDF format, such as Turtle, RDF/XML or TRiG.</p>
+                <b-form>
+                  <b-form-group
+                    id="dataset-graph-name-group"
+                    label="Dataset graph name"
+                    label-for="dataset-graph-name"
+                    label-cols="12"
+                    label-cols-sm="4"
+                    label-cols-md="4"
+                    label-cols-lg="2"
+                    label-size="sm"
                   >
-                    <template v-slot:cell(size)="data">
-                      {{ readableFileSize(data.item.size) }}
-                    </template>
-                    <template v-slot:cell(speed)="data">
-                      {{ readableFileSize(data.item.speed) }}/s
-                    </template>
-                    <template v-slot:cell(status)="data">
-                      <b-progress
-                        :variant="getFileStatus(data.item)"
-                        :value="data.item.progress"
-                        :max="100"
-                        :precision="2"
-                        show-progress></b-progress>
-                      <span class="small">Triples uploaded:&nbsp;</span>
-                      <span v-if="data.item.response.tripleCount" class="small">
-                        {{ data.item.response.tripleCount }}
-                      </span>
-                      <span v-else class="small">0</span>
-                    </template>
-                    <template v-slot:cell(actions)="data">
-                      <b-button
-                        @click.prevent="data.item.success || data.item.error === 'compressing' ? false : $refs.upload.update(data.item, {active: true})"
-                        variant="outline-primary"
-                        class="mr-0 mb-2 d-block"
-                      >
-                        <FontAwesomeIcon icon="upload" />
-                        <span class="ml-2">upload now</span>
-                      </b-button>
-                      <b-button
-                        @click.prevent="remove(data.item)"
-                        variant="outline-primary"
-                        class="mr-0 mb-md-0 d-block d-md-inline-block"
-                      >
-                        <FontAwesomeIcon icon="minus-circle" />
-                        <span class="ml-2">remove</span>
-                      </b-button>
-                    </template>
-                  </b-table>
-                </b-col>
-              </b-row>
-            </div>
+                    <b-form-input
+                      pattern="[^\s]+"
+                      oninvalid="this.setCustomValidity('Enter a valid dataset graph name')"
+                      oninput="this.setCustomValidity('')"
+                      id="dataset-graph-name"
+                      v-model="form.datasetGraphName"
+                      type="text"
+                      placeholder="Leave blank for default graph"
+                      trim
+                    ></b-form-input>
+                  </b-form-group>
+                  <b-form-group
+                    id="dataset-files"
+                    label="Files to upload"
+                    label-for="add-files-action-dropdown"
+                    label-cols="12"
+                    label-cols-sm="4"
+                    label-cols-md="4"
+                    label-cols-lg="2"
+                    label-size="sm"
+                  >
+                    <file-upload
+                      ref="upload"
+                      v-model="upload.files"
+                      :post-action="postActionUrl"
+                      :extensions="upload.extensions"
+                      :accept="upload.accept"
+                      :multiple="upload.multiple"
+                      :directory="upload.directory"
+                      :size="upload.size || 0"
+                      :thread="upload.thread < 1 ? 1 : (upload.thread > 5 ? 5 : upload.thread)"
+                      :headers="upload.headers"
+                      :data="upload.data"
+                      :drop="upload.drop"
+                      :drop-directory="upload.dropDirectory"
+                      :add-index="upload.addIndex"
+                      class="btn btn-success"
+                    >
+                      <FontAwesomeIcon icon="plus" />
+                      <span class="ml-2">select files</span>
+                    </file-upload>
+                    <b-button
+                      v-if="!$refs.upload || !$refs.upload.active"
+                      @click.prevent="$refs.upload.active = true"
+                      variant="primary"
+                      class="ml-2 d-inline">
+                      <FontAwesomeIcon icon="upload" />
+                      <span class="ml-2">upload all</span>
+                    </b-button>
+                    <b-button
+                      v-else
+                      @click.prevent="$refs.upload.active = false"
+                      variant="primary"
+                      class="ml-2 d-inline">
+                      <FontAwesomeIcon icon="times-circle" />
+                      <span class="ml-2">stop upload</span>
+                    </b-button>
+                  </b-form-group>
+                </b-form>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col>
+                <b-table
+                  :fields="datasetTableFields"
+                  :items="datasetTableItems"
+                  stacked="lg"
+                  empty-text="No files selected"
+                  bordered
+                  fixed
+                  hover
+                  show-empty
+                >
+                  <template v-slot:cell(size)="data">
+                    {{ readableFileSize(data.item.size) }}
+                  </template>
+                  <template v-slot:cell(speed)="data">
+                    {{ readableFileSize(data.item.speed) }}/s
+                  </template>
+                  <template v-slot:cell(status)="data">
+                    <b-progress
+                      :variant="getFileStatus(data.item)"
+                      :value="data.item.progress"
+                      :max="100"
+                      :precision="2"
+                      show-progress></b-progress>
+                    <span class="small">Triples uploaded:&nbsp;</span>
+                    <span v-if="data.item.response.tripleCount" class="small">
+                      {{ data.item.response.tripleCount }}
+                    </span>
+                    <span v-else class="small">0</span>
+                  </template>
+                  <template v-slot:cell(actions)="data">
+                    <b-button
+                      @click.prevent="data.item.success || data.item.error === 'compressing' ? false : $refs.upload.update(data.item, {active: true})"
+                      variant="outline-primary"
+                      class="mr-0 mb-2 d-block"
+                    >
+                      <FontAwesomeIcon icon="upload" />
+                      <span class="ml-2">upload now</span>
+                    </b-button>
+                    <b-button
+                      @click.prevent="remove(data.item)"
+                      variant="outline-primary"
+                      class="mr-0 mb-md-0 d-block d-md-inline-block"
+                    >
+                      <FontAwesomeIcon icon="minus-circle" />
+                      <span class="ml-2">remove</span>
+                    </b-button>
+                  </template>
+                </b-table>
+              </b-col>
+            </b-row>
           </b-card-body>
         </b-card>
       </b-col>
