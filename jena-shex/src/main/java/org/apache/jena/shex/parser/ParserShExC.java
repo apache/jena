@@ -44,9 +44,13 @@ import org.apache.jena.shex.sys.SysShex;
 public class ParserShExC extends LangParserBase {
 
     private IndentedWriter out;
-    public static boolean DEBUG = false;
+    /** Print the call nesting */
     public static boolean DEBUG_PARSE = false;
+    /** Print the stack operations */
     public static boolean DEBUG_STACK = false;
+
+    /** Print various unexpected situations */
+    public static boolean DEBUG_DEV = false;
 
     static enum Inline { INLINE, NOT_INLINE }
 
@@ -76,7 +80,7 @@ public class ParserShExC extends LangParserBase {
     private TripleExpression currentTripleExpression() { return peek(tripleExprStack); }
 
     private void printState() {
-        if ( DEBUG ) {
+        if ( DEBUG_DEV ) {
             printStack("shapeExprStack", shapeExprStack);
             printStack("tripleExprStack", tripleExprStack);
         }
@@ -195,7 +199,7 @@ public class ParserShExC extends LangParserBase {
     private void startShapeExpressionTop() {
         start("startShapeExpressionTop");
         // Stack is empty.
-        if ( DEBUG ) {
+        if ( DEBUG_DEV ) {
             if ( ! shapeExprStack.isEmpty() )
                 debug("startShapeExpressionTop: Stack not empty");
         }
@@ -206,7 +210,7 @@ public class ParserShExC extends LangParserBase {
             return ShapeExprNone.get();
 
         ShapeExpression sExpr = pop(shapeExprStack);
-        if ( DEBUG ) {
+        if ( DEBUG_DEV ) {
             if ( ! shapeExprStack.isEmpty() )
                 debug("finishShapeExpressionTop: Stack not empty");
         }
@@ -363,7 +367,6 @@ public class ParserShExC extends LangParserBase {
     }
 
     protected void shapeReference(Node ref) {
-        debug("shapeReference");
         push(shapeExprStack, new ShapeExprRef(ref));
     }
 
@@ -660,7 +663,6 @@ public class ParserShExC extends LangParserBase {
     }
 
     protected void ampTripleExprLabel(Node ref) {
-        debug("& TripleExprLabel");
         push(tripleExprStack, new TripleExprRef(ref));
     }
 
@@ -769,14 +771,14 @@ public class ParserShExC extends LangParserBase {
     }
 
     private void debug(String fmt, Object...args) {
-        if ( DEBUG ) {
+        if ( DEBUG_DEV ) {
             out.print(String.format(fmt, args));
             out.println();
         }
     }
 
     private void debugNoIndent(String fmt, Object...args) {
-        if ( DEBUG ) {
+        if ( DEBUG_DEV ) {
             int x = out.getAbsoluteIndent();
             out.setAbsoluteIndent(0);
             out.print(String.format(fmt, args));
