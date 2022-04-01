@@ -18,11 +18,21 @@
 
 package org.apache.jena.shex.expressions;
 
-public interface TripleExprVisitor {
-    public default void visit(TripleExprCardinality tripleExpr) {}
-    public default void visit(TripleExprEachOf tripleExpr) {}
-    public default void visit(TripleExprOneOf tripleExpr) {}
-    public default void visit(TripleExprNone tripleExpr) {}
-    public default void visit(TripleExprRef tripleExpr) {}
-    public default void visit(TripleConstraint tripleExpr) {}
+/** Visotr for NodeConstainComponents. */
+public interface NodeConstraintVisitor {
+
+    public default void visit(NodeConstraintDOT constraint) {}
+
+    public default void visit(NodeKindConstraint constraint) {}
+
+    public default void visit(DatatypeConstraint constraint) {}
+
+    public default void visit(NumLengthConstraint constraint) {}
+    public default void visit(NumRangeConstraint constraint) {}
+
+    public default void visit(StrRegexConstraint constraint) {}
+    public default void visit(StrLengthConstraint constraint) {}
+
+    public default void visit(ValueConstraint constraint) {}
+
 }

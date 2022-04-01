@@ -142,7 +142,7 @@ public class ShexSchema {
                 mergeOne(importedSchema, mergedShapes, mergedShapeMap, mergedTripleRefs);
             }
             // Does not include the start shape.
-            // The "get" operation of a ShexSchem know about "start"
+            // The "get" operation of a ShexScheme knows about "start"
 //            if ( this.startShape != null )
 //                mergedShapeMap.put(SysShex.startNode, startShape);
             shapesWithImports = new ShexSchema(sourceURI, baseURI, prefixes,

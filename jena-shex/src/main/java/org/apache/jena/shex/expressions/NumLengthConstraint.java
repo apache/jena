@@ -29,7 +29,7 @@ import org.apache.jena.shex.sys.ReportItem;
 import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.shex.sys.ValidationContext;
 
-public class NumLengthConstraint extends NodeConstraint {
+public class NumLengthConstraint extends NodeConstraintComponent {
 
     private final NumLengthKind lengthType;
     private final int length;
@@ -38,6 +38,14 @@ public class NumLengthConstraint extends NodeConstraint {
         Objects.requireNonNull(lengthType);
         this.lengthType = lengthType;
         this.length = len;
+    }
+
+    public NumLengthKind getLengthType() {
+        return lengthType;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     @Override
@@ -120,7 +128,7 @@ public class NumLengthConstraint extends NodeConstraint {
     }
 
     @Override
-    public void visit(ShapeExprVisitor visitor) {
+    public void visit(NodeConstraintVisitor visitor) {
         visitor.visit(this);
     }
 

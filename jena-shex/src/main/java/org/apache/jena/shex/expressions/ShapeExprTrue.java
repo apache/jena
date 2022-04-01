@@ -44,7 +44,7 @@ public class ShapeExprTrue extends ShapeExpression {
     }
 
     @Override
-    public String toString() { return "ShapeExprNoOp"; }
+    public String toString() { return "ShapeExprTrue"; }
 
     @Override
     public int hashCode() {

@@ -654,7 +654,7 @@ idx = startLiteralNodeConstraint(token.beginLine, token.beginColumn);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case LITERAL:{
       t = jj_consume_token(LITERAL);
-cNodeKind(t.image, t.beginLine, t.beginColumn);
+constraintNodeKind(t.image, t.beginLine, t.beginColumn);
       label_8:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -683,7 +683,7 @@ cNodeKind(t.image, t.beginLine, t.beginColumn);
     case PNAME_NS:
     case PNAME_LN:{
       str = datatype();
-cDatatype(str, token.beginLine, token.beginColumn);
+constraintDatatype(str, token.beginLine, token.beginColumn);
       label_9:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -844,7 +844,7 @@ finishNonLiteralNodeConstraint(idx, token.beginLine, token.beginColumn);
       jj_consume_token(-1);
       throw new ParseException();
     }
-cNodeKind(t.image, t.beginLine, t.beginColumn);
+constraintNodeKind(t.image, t.beginLine, t.beginColumn);
   }
 
   final public void xsFacet() throws ParseException {
@@ -991,8 +991,7 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
   }
 
 // "{ ... }"
-  final public void shapeDefinition() throws ParseException {boolean closed = false ;
-  TripleExpression tripleExpr = null;
+  final public void shapeDefinition() throws ParseException {boolean closed = false; TripleExpression tripleExpr = null;
   List<Node> extras = new ArrayList<Node>();
 startShapeDefinition();
     label_14:

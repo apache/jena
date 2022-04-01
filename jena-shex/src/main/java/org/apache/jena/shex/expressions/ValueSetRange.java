@@ -20,6 +20,7 @@ package org.apache.jena.shex.expressions;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
@@ -41,6 +42,10 @@ public class ValueSetRange {
         return "unknown";
     }
 
+    public ValueSetItem item() {
+        return item;
+    }
+
     public boolean included(Node data) {
         return contains(item, data);
     }
@@ -51,6 +56,14 @@ public class ValueSetRange {
                 return true;
         }
         return false;
+    }
+
+    public int numExclusions() {
+        return exclusions.size();
+    }
+
+    public void exclusions(Consumer<ValueSetItem> action) {
+        exclusions.forEach(action);
     }
 
     @Override

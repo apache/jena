@@ -40,7 +40,7 @@ import org.apache.jena.sparql.core.Quad;
  * <p>
  * Methods <tt>str</tt> generate a re-parseable string.
  * <p>
- * Methods <tt>displayStr</tt> do not guarantee a re-parsable string
+ * Methods <tt>displayStr</tt> do not guarantee a re-parseable string
  * e.g. may use abbreviations or common prefixes.
  */
 public class NodeFmtLib
@@ -63,7 +63,7 @@ public class NodeFmtLib
             dftPrefixMap.add(e.getKey(), e.getValue() );
     }
 
-    /** Format a triple, using Tutle literal abbreviations. */
+    /** Format a triple, using Turtle literal abbreviations. */
     public static String str(Triple t) {
         return strNodesTTL(t.getSubject(), t.getPredicate(), t.getObject());
     }

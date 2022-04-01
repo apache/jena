@@ -36,7 +36,10 @@ import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.lang.extra.LangParserBase;
 import org.apache.jena.riot.lang.extra.LangParserLib;
-import org.apache.jena.shex.*;
+import org.apache.jena.shex.ShexMap;
+import org.apache.jena.shex.ShexRecord;
+import org.apache.jena.shex.ShexSchema;
+import org.apache.jena.shex.ShexShape;
 import org.apache.jena.shex.expressions.*;
 import org.apache.jena.shex.sys.SysShex;
 
@@ -83,6 +86,7 @@ public class ParserShExC extends LangParserBase {
         if ( DEBUG_DEV ) {
             printStack("shapeExprStack", shapeExprStack);
             printStack("tripleExprStack", tripleExprStack);
+            //printStack("nodeConstraintStack", nodeConstraintStack);
         }
     }
 
@@ -340,7 +344,7 @@ public class ParserShExC extends LangParserBase {
 
     protected void finishShapeNot(Inline inline, int idx, boolean negate) {
         int x = front(shapeExprStack) - idx ;
-        if ( x > 1)
+        if ( x > 1 )
             throw new InternalErrorException("Shape NOT - multiple items on the stack");
         if ( negate && ! shapeExprStack.isEmpty() ) {
             ShapeExpression shExpr = pop(shapeExprStack);
@@ -355,12 +359,17 @@ public class ParserShExC extends LangParserBase {
         return startShapeOp();
     }
 
+//    protected void finishShapeAtom(Inline inline, int idx) {
+//        // The ShapeAtom for the NodeConstraint of ShapeExpression is made in each parser rule.
+//        finish(inline, "ShapeAtom");
+//    }
+
     protected void finishShapeAtom(Inline inline, int idx) {
         //Gather NodeConstraints parts, Kind, datatype and facets, together.
         finishShapeOp(idx, ShapeExprAND::create);
-        //finishShapeOpNoAction("ShapeAtom", idx);
         finish(inline, "ShapeAtom");
     }
+
 
     protected void shapeAtomDOT() {
         push(shapeExprStack, new ShapeExprTrue());
@@ -376,7 +385,9 @@ public class ParserShExC extends LangParserBase {
 
     protected void finishShapeDefinition(TripleExpression tripleExpr, List<Node> extras, boolean closed) {
         if ( tripleExpr == null )
-            tripleExpr = TripleExprNone.get();
+            return;
+            // XXX [NodeConstraint]
+            // tripleExpr = TripleExprNone.get();
         ShapeExprTripleExpr shape = ShapeExprTripleExpr.newBuilder()
                 //.label(???)
                 .closed(closed)
@@ -457,38 +468,63 @@ public class ParserShExC extends LangParserBase {
     }
 
     // ---- Node Constraints.
+    // XXX [ NodeConstraint] Do we need the different constraints here?
 
     protected int startLiteralNodeConstraint(int line, int column) {
+        startNodeConstraint();
         start("LiteralNodeConstraint");
         return startShapeOp();
     }
 
     protected void finishLiteralNodeConstraint(int idx, int line, int column) {
         finishShapeOpNoAction("LiteralNodeConstraint", idx);
+        finishNodeConstraint();
         finish("LiteralNodeConstraint");
     }
 
     protected int startNonLiteralNodeConstraint(int line, int column) {
+        startNodeConstraint();
         start("NonLiteralNodeConstraint");
         return startShapeOp();
     }
 
     protected void finishNonLiteralNodeConstraint(int idx, int line, int column) {
         finishShapeOpNoAction("NonLiteralNodeConstraint", idx);
+        finishNodeConstraint();
         finish("NonLiteralNodeConstraint");
     }
 
-    private void addNodeConstraint(NodeConstraint constraint) {
-        stack("NodeConstraint: %s", constraint);
-        push(shapeExprStack, constraint);
+    private List<NodeConstraintComponent> accumulator = new ArrayList<>();
+
+    private void startNodeConstraint() { }
+
+    private void finishNodeConstraint() {
+        NodeConstraint nodeConstraint = new NodeConstraint(accumulator);
+        accumulator.clear();
+        ShapeExpression shExpr = new ShapeNodeConstraint(nodeConstraint);
+        push(shapeExprStack, shExpr);
     }
 
-    protected void cDatatype(String str, int line, int column) {
+    //
+    // shapeAtom      ::= nonLitNodeConstraint shapeOrRef?
+    //                  | litNodeConstraint
+    //                  | shapeOrRef nonLitNodeConstraint?
+    //                  | '(' shapeExpression ')'
+    //                  | '.'
+
+
+    private void addNodeConstraint(NodeConstraintComponent constraint) {
+        stack("NodeConstraint: %s", constraint);
+        //push(nodeConstraintStack, constraint);
+        accumulator.add(constraint);
+    }
+
+    protected void constraintDatatype(String str, int line, int column) {
         DatatypeConstraint dt = new DatatypeConstraint(str);
         addNodeConstraint(dt);
     }
 
-    protected void cNodeKind(String nodeKindStr, int line, int column) {
+    protected void constraintNodeKind(String nodeKindStr, int line, int column) {
         NodeKind nodeKind = NodeKind.create(nodeKindStr);
         NodeKindConstraint nk = new NodeKindConstraint(nodeKind);
         addNodeConstraint(nk);
@@ -513,7 +549,7 @@ public class ParserShExC extends LangParserBase {
         List<ValueSetRange> x = valueSetRanges;
         valueSetRanges = new ArrayList<>();
         ValueConstraint vc = new ValueConstraint(x);
-        push(shapeExprStack, vc);
+        addNodeConstraint(vc);
         finish("ValueSet");
     }
 
@@ -611,13 +647,13 @@ public class ParserShExC extends LangParserBase {
 
     protected void numericFacetRange(String range, Node num, int line, int column) {
         NumRangeKind kind = NumRangeKind.create(range);
-        NodeConstraint numLength = new NumRangeConstraint(kind, num);
+        NodeConstraintComponent numLength = new NumRangeConstraint(kind, num);
         addNodeConstraint(numLength);
     }
 
     protected void numericFacetLength(String facetKind, int length, int line, int column) {
         NumLengthKind kind = NumLengthKind.create(facetKind);
-        NodeConstraint numLength = new NumLengthConstraint(kind, length);
+        NodeConstraintComponent numLength = new NumLengthConstraint(kind, length);
         addNodeConstraint(numLength);
     }
 
@@ -633,13 +669,13 @@ public class ParserShExC extends LangParserBase {
 
         String flags = regexStr.substring(idx+1);
         pattern = ShexParserLib.unescapeShexRegex(pattern, '\\', false);
-        NodeConstraint regex = new StrRegexConstraint(pattern, flags);
+        NodeConstraintComponent regex = new StrRegexConstraint(pattern, flags);
         addNodeConstraint(regex);
     }
 
     protected void stringFacetLength(String str, int len) {
         StrLengthKind lengthType = StrLengthKind.create(str);
-        NodeConstraint nodeConstraint = StrLengthConstraint.create(lengthType, len);
+        NodeConstraintComponent nodeConstraint = StrLengthConstraint.create(lengthType, len);
         addNodeConstraint(nodeConstraint);
     }
 

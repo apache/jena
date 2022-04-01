@@ -18,11 +18,11 @@
 
 package org.apache.jena.shex.expressions;
 
-public interface TripleExprVisitor {
-    public default void visit(TripleExprCardinality tripleExpr) {}
-    public default void visit(TripleExprEachOf tripleExpr) {}
-    public default void visit(TripleExprOneOf tripleExpr) {}
-    public default void visit(TripleExprNone tripleExpr) {}
-    public default void visit(TripleExprRef tripleExpr) {}
-    public default void visit(TripleConstraint tripleExpr) {}
+import org.apache.jena.graph.Node;
+import org.apache.jena.shex.sys.ValidationContext;
+
+/** The "satisfies" realtionship. */
+public interface Satisfies {
+    /** The "satisfies" function. Return true for OK, false for not OK. */
+    public boolean satisfies(ValidationContext vCxt, Node data);
 }

@@ -258,10 +258,10 @@ void litNodeConstraint() : { String str; Token t; int idx; } {
   { idx = startLiteralNodeConstraint(token.beginLine, token.beginColumn); }
   (
     t = <LITERAL>
-    { cNodeKind(t.image, t.beginLine, t.beginColumn); }
+    { constraintNodeKind(t.image, t.beginLine, t.beginColumn); }
     (xsFacet())*
   | str = datatype()
-    { cDatatype(str, token.beginLine, token.beginColumn); }
+    { constraintDatatype(str, token.beginLine, token.beginColumn); }
     (xsFacet())*
   | valueSet()
     (xsFacet())*
@@ -283,7 +283,7 @@ void nonLitNodeConstraint() : { int idx; } {
 void nonLiteralKind() : { Token t; }
 {
     ( t = <IRI> | t = <BNODE> | t = <NONLITERAL> )
-    { cNodeKind(t.image, t.beginLine, t.beginColumn); }
+    { constraintNodeKind(t.image, t.beginLine, t.beginColumn); }
 }
 
 void xsFacet() : { }
@@ -334,8 +334,7 @@ String numericLength() : { Token t; }
 
 // "{ ... }"
 void shapeDefinition() :
-{ boolean closed = false ;
-  TripleExpression tripleExpr = null;
+{ boolean closed = false; TripleExpression tripleExpr = null;
   List<Node> extras = new ArrayList<Node>();
 }
 {

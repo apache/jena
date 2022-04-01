@@ -42,10 +42,9 @@ public class ValueSetItem {
     }
 
     public void print(IndentedWriter out, NodeFormatter nFmt) {
-        if ( iriStr != null ) out.printf("<%s>", iriStr);
+        if ( iriStr != null ) nFmt.formatURI(out, iriStr);
         else if ( langStr != null ) out.printf("@%s", langStr);
         else if ( literal != null ) nFmt.format(out, literal);
-
         if ( isStem )
             out.print("~");
     }
@@ -56,7 +55,6 @@ public class ValueSetItem {
         if ( iriStr != null ) str = "<"+iriStr+">";
         else if ( langStr != null ) str = "@"+langStr;
         else if ( literal != null ) str = ShexLib.strDatatype(literal);
-
         if ( isStem )
             str = str+"~";
         return str;

@@ -23,33 +23,42 @@ import java.util.Objects;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import org.apache.jena.shex.ShexShape;
-import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.shex.sys.ValidationContext;
 
-/** Shape expression that redirects. */
-public class ShapeExprRef extends ShapeExpression {
-    private final Node ref;
+/** A node constraint (nonLitNodeConstraint or litNodeConstraint) in a shape atom.
+<pre>
+ShapeAtom := ( nonLitNodeConstraint ( inlineShapeOrRef )?
+             | litNodeConstraint
+             | inlineShapeOrRef ( nonLitNodeConstraint )?
+             | <LPAREN> shapeExpression <RPAREN> | <DOT>
+             )
+</pre>
+*/
+public class ShapeNodeConstraint extends ShapeExpression {
 
-    public ShapeExprRef(Node ref) { this.ref = ref; }
+    private final NodeConstraint nodeConstraint;
 
-    public Node getRef() { return ref; }
+    public ShapeNodeConstraint(NodeConstraint nodeConstraint) {
+        this(null, Objects.requireNonNull(nodeConstraint, "NodeConstraint"));
+    }
 
-    @Override
-    public boolean satisfies(ValidationContext vCxt, Node data) {
-        ShexShape shape = vCxt.getShape(ref);
-        if ( shape == null )
-            return false;
-        if ( vCxt.cycle(shape, data) )
-            return true;
-        return shape.satisfies(vCxt, data);
+    private ShapeNodeConstraint(ShapeExpression shapeExpression, NodeConstraint nodeConstraint) {
+        this.nodeConstraint = nodeConstraint;
+
+    }
+
+    public NodeConstraint getNodeConstraint() {
+        return nodeConstraint;
     }
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.print("ShapeRef: ");
-        out.print(ShexLib.displayStr(ref));
-        out.println();
+        out.println(toString());
+    }
+
+    @Override
+    public boolean satisfies(ValidationContext vCxt, Node data) {
+        return nodeConstraint.satisfies(vCxt, data);
     }
 
     @Override
@@ -58,13 +67,8 @@ public class ShapeExprRef extends ShapeExpression {
     }
 
     @Override
-    public String toString() {
-        return "ShapeExprRef [ref="+ref+"]";
-    }
-
-    @Override
     public int hashCode() {
-        return Objects.hash(ref);
+        return 1+Objects.hash(nodeConstraint);
     }
 
     @Override
@@ -75,7 +79,14 @@ public class ShapeExprRef extends ShapeExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        ShapeExprRef other = (ShapeExprRef)obj;
-        return Objects.equals(ref, other.ref);
+        ShapeNodeConstraint other = (ShapeNodeConstraint)obj;
+        return Objects.equals(nodeConstraint, other.nodeConstraint);
+    }
+
+    @Override
+    public String toString() {
+        if ( nodeConstraint != null )
+            return "ShapeExprAtom [nodeConstraint=" + nodeConstraint+"]";
+        return "ShapeExprAtom []";
     }
 }

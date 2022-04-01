@@ -22,7 +22,6 @@ import static java.lang.String.format;
 
 import java.io.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.jena.atlas.io.IO;
@@ -206,26 +205,20 @@ public class ShExC {
     private static void validatePhase2(ShexSchema shapes, ShexShape shape) {
         ShapeExpression shExpr = shape.getShapeExpression();
         ShapeExprVisitor checker = new CheckFacets();
-        TripleExprVisitor tExprVisitor = new TripleExprVisitor() {
-            @Override public void visit(TripleConstraint object) {
-                // One level call of visitor.
-                //object.getPredicate();
-                ShapeExpression theShapeExpression = object.getShapeExpression();
-                if ( theShapeExpression != null )
-                    theShapeExpression.visit(checker);
-            }
-        };
-        ShexLib.walk(shExpr, checker, null);
+        ShexLib.walk(shExpr, checker, null, null);
     }
 
     private static class CheckFacets implements ShapeExprVisitor {
-        // Inside TripleConstraint
         @Override
-        public void visit(ShapeExprAND shape) {
-            List<ShapeExpression> elements = shape.expressions();
-            Set<StrLengthKind> x = new HashSet<>(3);
+        public void visit(ShapeNodeConstraint shape) {
+            NodeConstraint nc = shape.getNodeConstraint();
+            if ( nc == null )
+                return;
+            // XXX [NodeConstraint]
             DatatypeConstraint dtConstraint = null;
-            for ( ShapeExpression expr : elements ) {
+            Set<StrLengthKind> x = new HashSet<>(3);
+            for ( NodeConstraintComponent expr: nc.components() ) {
+                // Visitor!
                 if ( expr instanceof StrLengthConstraint ) {
                     StrLengthConstraint constraint = (StrLengthConstraint)expr;
                     StrLengthKind lenType = constraint.getLengthType();
@@ -256,7 +249,9 @@ public class ShExC {
                         }
                     }
                 }
+
             }
+
         }
     }
 

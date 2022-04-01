@@ -18,40 +18,45 @@
 
 package org.apache.jena.shex.expressions;
 
-import java.util.Locale;
+import org.apache.jena.graph.Node;
+import org.apache.jena.shex.sys.ReportItem;
+import org.apache.jena.shex.sys.ValidationContext;
 
-import org.apache.jena.shex.ShexException;
+public class NodeConstraintDOT extends NodeConstraintComponent
+{
+    //See ShapeExprTrue
 
-public enum NodeKind {
-    IRI("IRI"), BNODE("BNode"), NONLITERAL("NonLiteral"), LITERAL("Literal"), TRIPLE("Triple");
+    public NodeConstraintDOT() {}
 
-    private final String label;
-    private final String ucLabel;
-
-    NodeKind(String string) {
-        this.label = string;
-        this.ucLabel = string.toUpperCase(Locale.ROOT);
+    @Override
+    public int hashCode() {
+        // Fixed random number.
+        return 634032653;
     }
 
-    public static NodeKind create(String nodeKind) {
-        switch(nodeKind.toLowerCase()) {
-            case "iri":         return IRI;
-            case "bnode":       return BNODE;
-            case "literal":     return LITERAL;
-            case "nonliteral":  return NONLITERAL;
-            case "triple":      return TRIPLE;
-            default:
-                throw new ShexException("NodeKind not recognized: '"+nodeKind+"'");
-        }
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        return true;
     }
 
-    public String label() {
-        // Print label.
-        return ucLabel;
+    @Override
+    public ReportItem nodeSatisfies(ValidationContext vCxt, Node data) {
+        return null;
     }
 
     @Override
     public String toString() {
-        return label;
+        return ".";
+    }
+
+    @Override
+    public void visit(NodeConstraintVisitor visitor) {
+        visitor.visit(this);
     }
 }
