@@ -33,10 +33,7 @@ import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.query.text.analyzer.IndexingMultilingualAnalyzer;
-import org.apache.jena.query.text.analyzer.MultilingualAnalyzer;
-import org.apache.jena.query.text.analyzer.QueryMultilingualAnalyzer;
-import org.apache.jena.query.text.analyzer.Util;
+import org.apache.jena.query.text.analyzer.*;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.Var;
@@ -438,8 +435,14 @@ public class TextIndexLucene implements TextIndex {
             qp = new QueryParser(docDef.getPrimaryField(), analyzer);
         }
         qp.setAllowLeadingWildcard(true);
-        query = qp.parse(queryString);
-        return query ;
+
+        // Some analyzers are not thread safe, at least when used via ConfigurableAnalyzer
+        // Could be more selective here about when to synchronize but the suspect analyzer
+        // can appear at several places in the wrapped nest of analyzers so being conservative
+        synchronized (this) {
+            query = qp.parse(queryString);
+            return query;
+        }
     }
 
     private List<Map<String, Node>> get$(IndexReader indexReader, String uri) throws ParseException, IOException {
