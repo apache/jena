@@ -23,28 +23,34 @@ Contributions should include:
 * Tests
 * Documentation as needed
 
-Documentation is kept and published with Apache's svnpubsub system:
+Documentation is kept and published via a git repository:
 
-   https://svn.apache.org/repos/asf/jena/site/trunk
+   https://github.com/apache/jena-site/
 
 ## Workflow
 
-### JIRA
+### JIRA and Github issues
 
-The project uses a JIRA instance to track work.  Please create a JIRA so
-that we can track a contribution.
+The project uses a JIRA and also githb issues to track work.  Please create one
+of a JIRA issue or a github issue so that we can track a contribution.
 
-   https://issues.apache.org/jira/browse/JENA
+JIRA:
+
+    https://issues.apache.org/jira/browse/JENA
+
+Github issue:
+
+    https://github.com/apache/jena/issues
 
 ### Github
 
-It is useful to create a JIRA then use the JIRA number (e.g. JENA-9999)
+It is useful to create a JIRA then use the JIRA number (e.g. JENA-9999 or GH-9999)
 in the Pull Request title. This activates the automated mirroring of
 discussions onto the project developers mailing list.
 
 To make a contribution:
 
-* On github, fork http://github.com/apache/jena into you github account.
+* On github, fork https://github.com/apache/jena into you github account.
 * Create a branch in your fork for the contribution.
 * Make your changes. Include the Apache source header at the top of each file.
 * Generate a pull request via github. Further changes to your branch will automatically
@@ -62,7 +68,7 @@ github.
 
 The committer review guide:
 
-https://jena.apache.org/getting_involved/reviewing_contributions.html
+    https://jena.apache.org/getting_involved/reviewing_contributions.html
 
 ### Patches
 
@@ -99,10 +105,14 @@ to review.
 
 ### Legal
 
-All contributions are understood to be made as contributions to the
-Apache Software Foundation by the person making the pull request. These
-are then incorporated into the project codebase and licensed under the
-Apache License 2.0.
+When you contribute, you affirm that the contribution is your original work and
+that you license the work to the Apache Software Foundation under the
+a [Contributor's Agreement](https://www.apache.org/licenses/contributor-agreements.html).
+
+Whether or not you state this explicitly, by submitting any copyrighted
+material via pull request, email, or other means you agree to license the
+material under the project's open source license and warrant that you have the
+legal authority to do so.
 
 You, as an individual, must be entitled to make the contribution to the
 project. If the contribution is part of your employment, please arrange
