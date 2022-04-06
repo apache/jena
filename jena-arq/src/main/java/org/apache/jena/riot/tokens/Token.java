@@ -355,11 +355,16 @@ public final class Token
         return asNode(null);
     }
 
-    /** Token to Node, with a prefix map
-     *  Turtle and N-triples need to process the token and not call this:
-     *  1/ Use bNode label as given
-     *  2/ No prefix or URI resolution.
-     *  3/ No checking.
+    /**
+     * Token to Node, with a prefix map.
+     * <p>
+     * Languages may need to process the token (.e.g test for end of file) and need
+     * more control than calling this method.
+     * <ul>
+     * <li>Use bNode label as given
+     * <li>No prefix or URI resolution.
+     * <li>No checking.
+     * </ul>
      */
     public Node asNode(PrefixMap pmap) {
         switch (tokenType) {

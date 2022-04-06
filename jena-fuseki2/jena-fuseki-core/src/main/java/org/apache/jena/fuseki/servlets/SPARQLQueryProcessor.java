@@ -185,7 +185,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
             for (; en.hasMoreElements();) {
                 String name = en.nextElement();
                 if ( !params.contains(name) )
-                    ServletOps.warning(action, "SPARQL Query: Unrecognize request parameter (ignored): " + name);
+                    ServletOps.warning(action, "SPARQL Query: Unrecognized request parameter (ignored): " + name);
             }
         }
     }

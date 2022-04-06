@@ -93,7 +93,6 @@ public class UploadRDF extends ActionREST {
         ServletOps.uploadResponse(action, details);
     }
 
-
     // ---- Library : transactional
     /**
      * Load data using a transaction into the dataset of an action. if the data is bad,
