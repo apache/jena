@@ -31,6 +31,7 @@ public class ValueSetItem {
     String langStr;
     Node literal;
     boolean isStem;
+
     public ValueSetItem(String iriStr, String lang, Node literal, boolean isStem) {
         this.iriStr = iriStr;
         // [shex] In ValueSetRange :: ( item.langStr.isEmpty() ) ? "*" : item.langStr;
@@ -39,6 +40,14 @@ public class ValueSetItem {
         this.isStem = isStem;
         if ( literal != null && ! literal.isLiteral() )
             throw new ShexException("Not literal: "+ShexLib.displayStr(literal));
+    }
+
+    public boolean isStem() {
+        return isStem;
+    }
+
+    public boolean isEmpty() {
+        return iriStr == null && langStr == null && literal == null;
     }
 
     public void print(IndentedWriter out, NodeFormatter nFmt) {

@@ -18,10 +18,8 @@
 
 package org.apache.jena.shex.expressions;
 
-/** Visotr for NodeConstainComponents. */
+/** Visitor for NodeConstainComponents. */
 public interface NodeConstraintVisitor {
-
-    public default void visit(NodeConstraintDOT constraint) {}
 
     public default void visit(NodeKindConstraint constraint) {}
 

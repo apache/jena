@@ -25,32 +25,16 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shex.sys.ValidationContext;
 
-/** A node constraint (nonLitNodeConstraint or litNodeConstraint) in a shape atom.
-<pre>
-ShapeAtom := ( nonLitNodeConstraint ( inlineShapeOrRef )?
-             | litNodeConstraint
-             | inlineShapeOrRef ( nonLitNodeConstraint )?
-             | <LPAREN> shapeExpression <RPAREN>
-             | <DOT>
-             )
-</pre>
-*/
-public class ShapeNodeConstraint extends ShapeExpression {
+/** ShapeAtom - element of the ShEx abstract syntax. */
+public class ShapeExprAtom extends ShapeExpression {
 
-    private final NodeConstraint nodeConstraint;
+    private final ShapeExpression other;
 
-    public ShapeNodeConstraint(NodeConstraint nodeConstraint) {
-        this(null, Objects.requireNonNull(nodeConstraint, "NodeConstraint"));
+    public ShapeExprAtom(ShapeExpression other) {
+        this.other = other;
     }
 
-    private ShapeNodeConstraint(ShapeExpression shapeExpression, NodeConstraint nodeConstraint) {
-        this.nodeConstraint = nodeConstraint;
-
-    }
-
-    public NodeConstraint getNodeConstraint() {
-        return nodeConstraint;
-    }
+    public ShapeExpression getShape() { return other; }
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {
@@ -59,7 +43,7 @@ public class ShapeNodeConstraint extends ShapeExpression {
 
     @Override
     public boolean satisfies(ValidationContext vCxt, Node data) {
-        return nodeConstraint.satisfies(vCxt, data);
+        return true;
     }
 
     @Override
@@ -69,7 +53,7 @@ public class ShapeNodeConstraint extends ShapeExpression {
 
     @Override
     public int hashCode() {
-        return 1+Objects.hash(nodeConstraint);
+        return Objects.hash(other);
     }
 
     @Override
@@ -80,14 +64,10 @@ public class ShapeNodeConstraint extends ShapeExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        ShapeNodeConstraint other = (ShapeNodeConstraint)obj;
-        return Objects.equals(nodeConstraint, other.nodeConstraint);
+        ShapeExprAtom other = (ShapeExprAtom)obj;
+        return Objects.equals(this.other, other.other);
     }
 
     @Override
-    public String toString() {
-        if ( nodeConstraint != null )
-            return "ShapeNodeConstraint [ "+nodeConstraint+" ]";
-        return "ShapeNodeConstraint []";
-    }
+    public String toString() { return "ShapeExprAtom[ "+other+" ]"; }
 }

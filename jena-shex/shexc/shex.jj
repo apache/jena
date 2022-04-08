@@ -412,17 +412,10 @@ TripleExpression tripleExpression() : { int idx; }
 
 void tripleExpressionClause() : { int idx; } {
    { idx = startTripleExpressionClause(); }
+   // One of the rules below.
    tripleExpressionClause_1()
    { finishTripleExpressionClause(idx); }
 }
-
-// // Can end in single ";"
-// void tripleExpressionClause_0() : {}
-// {
-//     unaryTripleExpr()
-// // Allows ";;;"
-//     (<SEMI_COLON> ( unaryTripleExpr() )?)*
-// }
 
 // Iterative, but needs LOOKAHEAD(2)
 void tripleExpressionClause_1() : { }

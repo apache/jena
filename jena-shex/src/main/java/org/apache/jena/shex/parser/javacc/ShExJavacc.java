@@ -1198,14 +1198,6 @@ idx = startTripleExpressionClause();
 finishTripleExpressionClause(idx);
   }
 
-// // Can end in single ";"
-// void tripleExpressionClause_0() : {}
-// {
-//     unaryTripleExpr()
-// // Allows ";;;"
-//     (<SEMI_COLON> ( unaryTripleExpr() )?)*
-// }
-
 // Iterative, but needs LOOKAHEAD(2)
   final public void tripleExpressionClause_1() throws ParseException {
     unaryTripleExpr();
@@ -2444,6 +2436,15 @@ o = focusNode;
     finally { jj_save(0, xla); }
   }
 
+  private boolean jj_3R_38()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_40()) jj_scanpos = xsp;
+    if (jj_3R_41()) return true;
+    return false;
+  }
+
   private boolean jj_3R_48()
  {
     if (jj_scan_token(IRIref)) return true;
@@ -2474,15 +2475,15 @@ o = focusNode;
     return false;
   }
 
-  private boolean jj_3R_39()
- {
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
   private boolean jj_3R_43()
  {
     if (jj_3R_45()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_39()
+ {
+    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
@@ -2595,15 +2596,6 @@ o = focusNode;
   private boolean jj_3R_40()
  {
     if (jj_3R_42()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_38()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_40()) jj_scanpos = xsp;
-    if (jj_3R_41()) return true;
     return false;
   }
 

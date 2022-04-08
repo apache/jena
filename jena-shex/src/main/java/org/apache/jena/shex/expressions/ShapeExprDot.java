@@ -18,20 +18,37 @@
 
 package org.apache.jena.shex.expressions;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
-import org.apache.jena.shex.sys.ReportItem;
+import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shex.sys.ValidationContext;
 
-public class NodeConstraintDOT extends NodeConstraintComponent
-{
-    //See ShapeExprTrue
+/** A DOT expression -- "{ . }"  */
+public class ShapeExprDot extends ShapeExpression {
 
-    public NodeConstraintDOT() {}
+    public ShapeExprDot() {}
+
+    @Override
+    public void print(IndentedWriter out, NodeFormatter nFmt) {
+        out.println(" .");
+    }
+
+    @Override
+    public boolean satisfies(ValidationContext vCxt, Node data) {
+        return true;
+    }
+
+    @Override
+    public void visit(ShapeExprVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    @Override
+    public String toString() { return "ShapeExprDot"; }
 
     @Override
     public int hashCode() {
-        // Fixed random number.
-        return 634032653;
+        return ShexConst.hashShExprDot;
     }
 
     @Override
@@ -43,20 +60,5 @@ public class NodeConstraintDOT extends NodeConstraintComponent
         if ( getClass() != obj.getClass() )
             return false;
         return true;
-    }
-
-    @Override
-    public ReportItem nodeSatisfies(ValidationContext vCxt, Node data) {
-        return null;
-    }
-
-    @Override
-    public String toString() {
-        return ".";
-    }
-
-    @Override
-    public void visit(NodeConstraintVisitor visitor) {
-        visitor.visit(this);
     }
 }

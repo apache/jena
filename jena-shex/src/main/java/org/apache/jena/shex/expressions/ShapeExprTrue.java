@@ -23,10 +23,13 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shex.sys.ValidationContext;
 
-/** A shape expression that is always true. For example "{ . }"  */
+/**
+ *  A shape expression that is always true.
+ *  This is not a syntax element (see ShapeExprDOT).
+ */
 public class ShapeExprTrue extends ShapeExpression {
 
-    public ShapeExprTrue() {}
+    public ShapeExprTrue(int x) {}
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {

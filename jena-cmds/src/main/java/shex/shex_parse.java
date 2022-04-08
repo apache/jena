@@ -18,12 +18,14 @@
 
 package shex;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -34,6 +36,7 @@ import org.apache.jena.riot.RiotException;
 import org.apache.jena.shex.Shex;
 import org.apache.jena.shex.ShexSchema;
 import org.apache.jena.shex.parser.ShexParseException;
+import org.apache.jena.shex.writer.WriterShExC;
 import org.apache.jena.sys.JenaSystem;
 
 /** ShEx parsing.
@@ -67,7 +70,7 @@ public class shex_parse extends CmdGeneral {
 
     @Override
     protected String getSummary() {
-        return "Usage: "+getCommandName()+" --out=FMT[,FMT] FILE";
+        return "Usage: "+getCommandName()+" --output=FMT[,FMT] FILE";
     }
 
     @Override
@@ -168,28 +171,8 @@ public class shex_parse extends CmdGeneral {
         }
     }
 
-    private boolean printText(PrintStream out, PrintStream err, ShexSchema shapes) {
+    private boolean printText(OutputStream out, PrintStream err, ShexSchema shapes) {
         Shex.printSchema(shapes);
-//        IndentedWriter iOut  = new IndentedWriter(out);
-//        ShLib.printShapes(iOut, shapes);
-//        iOut.ensureStartOfLine();
-//        iOut.flush();
-//        int numShapes = shapes.numShapes();
-//        int numRootShapes = shapes.numRootShapes();
-//        if ( isVerbose() ) {
-//            System.out.println();
-//            System.out.println("Target shapes: ");
-//            shapes.getShapeMap().forEach((n,shape)->{
-//                if ( shape.hasTarget() )
-//                    System.out.println("  "+ShLib.displayStr(shape.getShapeNode()));
-//            });
-//
-//            System.out.println("Other Shapes: ");
-//            shapes.getShapeMap().forEach((n,shape)->{
-//                if ( ! shape.hasTarget() )
-//                    System.out.println("  "+ShLib.displayStr(shape.getShapeNode()));
-//            });
-//        }
         return true;
     }
 
@@ -200,12 +183,14 @@ public class shex_parse extends CmdGeneral {
     }
 
     private boolean printCompact(PrintStream out, PrintStream err, ShexSchema shapes) {
-//        try {
-//            ShaclcWriter.print(out, shapes);
-//        } catch (ShaclException ex) {
-//            err.println(ex.getMessage());
-//        }
-//        return ! shapes.getGraph().isEmpty() && ! shapes.getGraph().getPrefixMapping().hasNoMappings();
-        return false;
+        IndentedWriter iOut = new IndentedWriter(out);
+        int row = iOut.getRow();
+        int col = iOut.getCol();
+        WriterShExC.print(iOut, shapes);
+        iOut.flush();
+        // Do not close the underlying stream.
+        // All the components of printing.
+        return shapes.getShapes().isEmpty() && shapes.getImports().isEmpty() &&
+               shapes.getBase() == null && shapes.getPrefixMap().isEmpty();
     }
 }

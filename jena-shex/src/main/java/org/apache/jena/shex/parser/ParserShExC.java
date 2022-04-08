@@ -254,28 +254,6 @@ public class ParserShExC extends LangParserBase {
 
     // ---- TripleExpression
 
-//    private void startTripleExpressionTop() {
-//        start("startTripleExpressionTop");
-//        // Stack is empty.
-//        if ( DEBUG ) {
-//            if ( ! tripleExprStack.isEmpty() )
-//                debug("startTripleExpressionTop: Stack not empty");
-//        }
-//    }
-//
-//    private TripleExpression finishTripleExpressionTop() {
-//        if ( tripleExprStack.isEmpty() )
-//            return TripleExpressionNone.get();
-//
-//        TripleExpression tExpr = pop(tripleExprStack);
-//        if ( DEBUG ) {
-//            if ( ! tripleExprStack.isEmpty() )
-//                debug("finishShapeExpressionTop: Stack not empty");
-//        }
-//        finish("finishShapeExpressionTop");
-//        return tExpr;
-//    }
-
     private int startTripleOp() {
         return front(tripleExprStack);
     }
@@ -303,7 +281,6 @@ public class ParserShExC extends LangParserBase {
                 push(tripleExprStack, tExpr);
         }
     }
-
 
     // -- Shape Structure
 
@@ -370,9 +347,8 @@ public class ParserShExC extends LangParserBase {
         finish(inline, "ShapeAtom");
     }
 
-
     protected void shapeAtomDOT() {
-        push(shapeExprStack, new ShapeExprTrue());
+        push(shapeExprStack, new ShapeExprDot());
     }
 
     protected void shapeReference(Node ref) {
@@ -386,8 +362,8 @@ public class ParserShExC extends LangParserBase {
     protected void finishShapeDefinition(TripleExpression tripleExpr, List<Node> extras, boolean closed) {
         if ( tripleExpr == null )
             return;
-            // XXX [NodeConstraint]
-            // tripleExpr = TripleExprNone.get();
+            // XXX [Print] Below causes "{ ; }"
+            //tripleExpr = TripleExprNone.get();
         ShapeExprTripleExpr shape = ShapeExprTripleExpr.newBuilder()
                 //.label(???)
                 .closed(closed)
@@ -397,7 +373,6 @@ public class ParserShExC extends LangParserBase {
         finish("ShapeDefinition");
     }
 
-    // ?? Top of TripleExpression
     protected int startTripleExpression() {
         start("TripleExpression");
         return startTripleOp();
