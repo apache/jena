@@ -32,10 +32,10 @@ import org.apache.jena.util.Metadata;
 public class TextQuery
 {
     private static volatile boolean initialized = false ;
-    private static Object lock = new Object() ;
-    public static String NS = "http://jena.apache.org/text#" ;
-    public static String IRI = "http://jena.apache.org/#text" ;
-    public static final Symbol textIndex = Symbol.create(NS+"index") ;
+    private static Object lock              = new Object() ;
+    public static String NS                 = "http://jena.apache.org/text#" ;
+    public static String IRI                = "http://jena.apache.org/#text" ;
+    public static final Symbol textIndex    = Symbol.create(NS+"index") ;
     public static final String PATH         = "org.apache.jena.query.text";
 
     static private String metadataLocation  = "org/apache/jena/query/text/properties.xml" ;
