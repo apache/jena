@@ -37,6 +37,7 @@ import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.rowset.RowSetReader;
 import org.apache.jena.riot.rowset.RowSetReaderFactory;
+import org.apache.jena.riot.rowset.RowSetReaderRegistry;
 import org.apache.jena.riot.system.SyntaxLabels;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -51,16 +52,25 @@ import org.apache.jena.vocabulary.RDF;
 /** Read JSON format SPARQL Results.
  * <p>
  * <a href="https://www.w3.org/TR/sparql11-results-json/">SPARQL 1.1 Query Results JSON Format</a>
+ * <p>
+ * This was the ResultSet/RowSet reader for JSON up to and including Jena 4.4.0.
+ * Jena 4.5.0 introduced {@link RowSetReaderJSONStreaming}.
+ * <p>
+ * To switch back, call {@link RowSetReaderJSON_V1#install}.
  */
-public class RowSetReaderJSON implements RowSetReader {
+public class RowSetReaderJSON_V1 implements RowSetReader {
+
+    public static void install() {
+        RowSetReaderRegistry.register(ResultSetLang.RS_JSON, factory);
+    }
 
     public static final RowSetReaderFactory factory = lang -> {
         if (!Objects.equals(lang, ResultSetLang.RS_JSON ) )
             throw new ResultSetException("RowSet for JSON asked for a "+lang);
-        return new RowSetReaderJSON();
+        return new RowSetReaderJSON_V1();
     };
 
-    private RowSetReaderJSON() {}
+    private RowSetReaderJSON_V1() {}
 
     @Override
     public QueryExecResult readAny(InputStream in, Context context) {

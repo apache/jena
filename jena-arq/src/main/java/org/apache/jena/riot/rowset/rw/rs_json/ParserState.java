@@ -16,19 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
+package org.apache.jena.riot.rowset.rw.rs_json;
 
-/** The severity controls how to relay error events to an error handler */
-public enum Severity {
-    /** Silently drop messages of this severity */
-    IGNORE,
-
-    /** Relay to ErrorHandler.warning */
-    WARNING,
-
-    /** Relay to ErrorHandler.error */
-    ERROR,
-
-    /** Relay to ErrorHandler.fatal */
-    FATAL
+/** Parsing state; i.e. where we are in the json document */
+enum ParserState {
+    INIT,
+    ROOT,
+    RESULTS,
+    BINDINGS,
+    DONE
 }

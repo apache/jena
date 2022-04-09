@@ -31,7 +31,7 @@ import org.apache.jena.riot.ResultSetMgr;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.rowset.rw.RowSetReaderJSONStreaming;
 import org.apache.jena.riot.rowset.rw.RowSetReaderTSV;
-import org.apache.jena.riot.system.Severity;
+import org.apache.jena.riot.rowset.rw.rs_json.Severity;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;

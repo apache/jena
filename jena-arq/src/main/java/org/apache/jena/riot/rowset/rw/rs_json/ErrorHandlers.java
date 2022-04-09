@@ -16,14 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
+package org.apache.jena.riot.rowset.rw.rs_json;
 
 import java.util.function.Supplier;
 
-public class ErrorHandlers {
+import org.apache.jena.riot.system.ErrorHandler;
+
+class ErrorHandlers {
 
     /** Relay an error handler event to an error handler w.r.t. a severity level */
-    public static void relay(ErrorHandler errorHandler, Severity severity, ErrorEvent evt) {
+    static void relay(ErrorHandler errorHandler, Severity severity, ErrorEvent evt) {
         switch (severity) {
         case IGNORE: break;
         case WARNING:
@@ -38,9 +40,11 @@ public class ErrorHandlers {
         }
     }
 
-    /** Relay an error handler event to an error handler w.r.t. a severity level.
-     * Lambda version that does not build messages if serverity level is IGNORE  */
-    public static void relay(ErrorHandler errorHandler, Severity severity, Supplier<ErrorEvent> evtSupplier) {
+    /**
+     * Relay an error handler event to an error handler w.r.t. a severity level.
+     * Lambda version that does not build messages if severity level is IGNORE
+     */
+    static void relay(ErrorHandler errorHandler, Severity severity, Supplier<ErrorEvent> evtSupplier) {
         ErrorEvent evt;
         switch (severity) {
         case IGNORE: break;

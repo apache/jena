@@ -16,39 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
+package org.apache.jena.riot.rowset.rw.rs_json;
 
-/** Immutable class capturing the parameters used by @{link {@link ErrorHandler} */
-public class ErrorEvent {
-    protected final String message;
-    protected final long line;
-    protected final long col;
+/** The severity controls how to relay error events to an error handler */
+public enum Severity {
+    /** Silently drop messages of this severity */
+    IGNORE,
 
-    public ErrorEvent(String message) {
-        this(message, -1, -1);
-    }
+    /** Relay to ErrorHandler.warning */
+    WARNING,
 
-    public ErrorEvent(String message, long line, long col) {
-        super();
-        this.message = message;
-        this.line = line;
-        this.col = col;
-    }
+    /** Relay to ErrorHandler.error */
+    ERROR,
 
-    public String getMessage() {
-        return message;
-    }
-
-    public long getLine() {
-        return line;
-    }
-
-    public long getCol() {
-        return col;
-    }
-
-    @Override
-    public String toString() {
-        return message + ", line=" + line + ", col=" + col;
-    }
+    /** Relay to ErrorHandler.fatal */
+    FATAL
 }

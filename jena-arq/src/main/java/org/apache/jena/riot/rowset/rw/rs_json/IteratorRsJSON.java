@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.rowset.rw;
+package org.apache.jena.riot.rowset.rw.rs_json;
 
 import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kBindings;
 import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kBoolean;
@@ -43,38 +43,7 @@ import com.google.gson.stream.JsonReader;
  *
  * @param <E> The type of elements to yield by this iterator
  */
-public class IteratorRsJSON<E>
-    extends IteratorSlotted<E>
-{
-    /**
-     * Bridge between gson json elements and domain element objects
-     * (which are free to (not) abstract from gson)
-     *
-     * The most basic implementation could turn each event into a gson JsonElement
-     * by parameterizing E with JsonElement and having each method
-     * return gson.fromJson(reader).
-     *
-     * @param <E> The uniform element type to create from the raw events
-     */
-    public interface RsJsonEltEncoder<E> {
-        E newHeadElt   (Gson gson, JsonReader reader) throws IOException;
-        E newBooleanElt(Gson gson, JsonReader reader) throws IOException;
-        E newResultsElt(Gson gson, JsonReader reader) throws IOException;
-        E newBindingElt(Gson gson, JsonReader reader) throws IOException;
-
-        // May just invoke reader.skipValue() and return null
-        E newUnknownElt(Gson gson, JsonReader reader)  throws IOException;
-    }
-
-    /** Parsing state; i.e. where we are in the json document */
-    public enum ParserState {
-        INIT,
-        ROOT,
-        RESULTS,
-        BINDINGS,
-        DONE
-    }
-
+public class IteratorRsJSON<E> extends IteratorSlotted<E> {
     protected ParserState parserState;
     protected RsJsonEltEncoder<E> eltEncoder;
 

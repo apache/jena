@@ -16,34 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.rowset.rw;
+package org.apache.jena.riot.rowset.rw.rs_json;
 
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kBnode;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kBoolean;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kDatatype;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kHead;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kLiteral;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kObject;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kObjectAlt;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kPredicate;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kPredicateAlt;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kProperty;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kResults;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kStatement;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kSubject;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kSubjectAlt;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kTriple;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kType;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kTypedLiteral;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kUri;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kValue;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kVars;
-import static org.apache.jena.riot.rowset.rw.JSONResultsKW.kXmlLang;
+import static org.apache.jena.riot.rowset.rw.JSONResultsKW.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -59,17 +38,12 @@ import org.apache.jena.atlas.iterator.IteratorSlotted;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.lang.LabelToNode;
-import org.apache.jena.riot.rowset.rw.IteratorRsJSON.RsJsonEltEncoder;
-import org.apache.jena.riot.system.ErrorEvent;
 import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.ErrorHandlers;
-import org.apache.jena.riot.system.Severity;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.exec.RowSet;
-import org.apache.jena.sparql.exec.RowSetBuffered;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.vocabulary.RDF;
@@ -89,10 +63,7 @@ import com.google.gson.stream.JsonReader;
  * immediately consumes the underlying stream until the header is read,
  * thereby buffering any encountered bindings for replay.
  */
-public class RowSetJSONStreaming<E>
-    extends IteratorSlotted<Binding>
-    implements RowSet
-{
+public class RowSetJSONStreaming<E> extends IteratorSlotted<Binding> implements RowSet {
     /* Construction -------------------------------------------------------- */
 
     public static RowSetBuffered<RowSetJSONStreaming<?>> createBuffered(
@@ -130,7 +101,7 @@ public class RowSetJSONStreaming<E>
 
     /* Domain adapter / bridge for IteratorRsJson  ------------------------- */
 
-    public enum RsJsonEltType {
+    private enum RsJsonEltType {
         UNKNOWN,
         HEAD,
         BOOLEAN,
@@ -138,7 +109,7 @@ public class RowSetJSONStreaming<E>
         BINDING
     }
 
-    public static class RsJsonEltDft {
+    private static class RsJsonEltDft {
         protected RsJsonEltType type;
         protected List<Var> head;
         protected Boolean askResult;
@@ -215,7 +186,7 @@ public class RowSetJSONStreaming<E>
     protected int kBooleanCount = 0;
     protected int unknownJsonCount = 0;
 
-    public RowSetJSONStreaming(
+    private RowSetJSONStreaming(
             IteratorCloseable<E> rsJsonIterator,
             RsJsonEltDecoder<? super E> eltDecoder,
             long rowNumber,
@@ -263,7 +234,7 @@ public class RowSetJSONStreaming<E>
                 if (!updateAccepted) {
                     ErrorHandlers.relay(errorHandler, validationSettings.getInvalidatedHeadSeverity(),
                             new ErrorEvent(String.format(
-                                ". Prior value for headVars was %s but got superseded with %s", resultVars.getValue(), rsv)));
+                                "Prior value for headVars was %s but got superseded with %s", resultVars.getValue(), rsv)));
                 }
                 validate(this, errorHandler, validationSettings);
                 continue;
@@ -361,7 +332,7 @@ public class RowSetJSONStreaming<E>
     /* Parsing (gson-based) ------------------------------------------------ */
 
     /** Parse the vars element from head - may return null */
-    public static List<Var> parseHeadVars(Gson gson, JsonReader reader) throws IOException {
+    static List<Var> parseHeadVars(Gson gson, JsonReader reader) throws IOException {
         List<Var> result = null;
         Type stringListType = new TypeToken<List<String>>() {}.getType();
         JsonObject headJson = gson.fromJson(reader, JsonObject.class);
@@ -373,7 +344,7 @@ public class RowSetJSONStreaming<E>
         return result;
     }
 
-    public static Binding parseBinding(
+    static Binding parseBinding(
             Gson gson, JsonReader reader, LabelToNode labelMap,
             Function<JsonObject, Node> onUnknownRdfTermType) throws IOException {
         JsonObject obj = gson.fromJson(reader, JsonObject.class);
@@ -391,7 +362,7 @@ public class RowSetJSONStreaming<E>
         return bb.build();
     }
 
-    public static Node parseOneTerm(JsonElement jsonElt, LabelToNode labelMap, Function<JsonObject, Node> onUnknownRdfTermType) {
+    static Node parseOneTerm(JsonElement jsonElt, LabelToNode labelMap, Function<JsonObject, Node> onUnknownRdfTermType) {
 
         if (jsonElt == null) {
             throw new ResultSetException("Expected a json object for an RDF term but got null");
@@ -465,7 +436,7 @@ public class RowSetJSONStreaming<E>
         return result;
     }
 
-    public static JsonElement expectNonNull(JsonObject json, String key) {
+    static JsonElement expectNonNull(JsonObject json, String key) {
         JsonElement v = json.get(key);
         if ( v == null )
             throw new ResultSetException("Unexpected null value for key: " + key);
@@ -473,7 +444,7 @@ public class RowSetJSONStreaming<E>
         return v;
     }
 
-    public static JsonElement expectOneKey(JsonObject json, String ...keys) {
+    static JsonElement expectOneKey(JsonObject json, String ...keys) {
         JsonElement result = null;
 
         for (String key : keys) {
@@ -498,7 +469,7 @@ public class RowSetJSONStreaming<E>
     /* Validation ---------------------------------------------------------- */
 
     /** Runtime validation of the current state of a streaming json row set */
-    public static void validate(RowSetJSONStreaming<?> rs, ErrorHandler errorHandler, ValidationSettings settings) {
+    static void validate(RowSetJSONStreaming<?> rs, ErrorHandler errorHandler, ValidationSettings settings) {
         if (rs.hasAskResult() && rs.getKResultsCount() > 0) {
             ErrorHandlers.relay(errorHandler, settings.getMixedResultsSeverity(), () ->
                 new ErrorEvent("Encountered bindings as well as boolean result"));
@@ -510,9 +481,11 @@ public class RowSetJSONStreaming<E>
         }
     }
 
-    /** Check a completed streaming json row set for inconsistencies.
-     *  Specifically checks for missing result value and missing head */
-    public static void validateCompleted(RowSetJSONStreaming<?> rs, ErrorHandler errorHandler, ValidationSettings settings) {
+    /**
+     * Check a completed streaming json row set for inconsistencies. Specifically
+     * checks for missing result value and missing head
+     */
+    private static void validateCompleted(RowSetJSONStreaming<?> rs, ErrorHandler errorHandler, ValidationSettings settings) {
         // Missing result (neither 'results' nor 'boolean' seen)
         if (rs.getKResultsCount() == 0 && rs.getKBooleanCount() == 0) {
             ErrorHandlers.relay(errorHandler, settings.getEmptyJsonSeverity(),
@@ -522,115 +495,28 @@ public class RowSetJSONStreaming<E>
         // Missing head
         if (rs.getKHeadCount() == 0) {
             ErrorHandlers.relay(errorHandler, settings.getMissingHeadSeverity(),
-                new ErrorEvent(String.format("Mandory key '%s' not seen", kHead)));
-        }
-    }
-
-    /** Validation settings class */
-    public static class ValidationSettings implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * What to do if the JSON is effectively 'empty', i.e. if neither
-         * the head nor the results key were present.
-         * Unexpected elements are captured by onUnexpectedJsonElement.
-         * e.g. returned older version of virtuoso open source
-         * Mitigation is to assume an empty set of bindings.
-         */
-        protected Severity emptyJsonSeverity = Severity.ERROR;
-
-        /** What to do if no head was encountered. We may have already
-         * optimistically streamed all the bindings in anticipation of an
-         * eventual head. */
-        protected Severity missingHeadSeverity = Severity.ERROR;
-
-        /** What to do if there is a repeated 'results' key
-         * At this stage we have already optimisticaly streamed results which
-         * under JSON semantics would have been superseded by this newly
-         * encountered key. */
-        protected Severity invalidatedResultsSeverity = Severity.ERROR;
-
-        /** What to do if there is a repeated 'head' <b>whole value does not match the
-         * prior value</b>. Repeated heads with the same value are valid.
-         * Any possibly prior reported head would have been superseded by this newly
-         * encountered key.
-         * Should parsing continue then only the first encountered value will remain active.
-         */
-        protected Severity invalidatedHeadSeverity = Severity.FATAL;
-
-        /**
-         * What to do if the JSON contains both a boolean result and bindings
-         * Mitigation is to assume bindings and ignore the boolean result
-         */
-        protected Severity mixedResultsSeverity = Severity.FATAL;
-
-        /** What to do if we encounter an unexpected JSON key */
-        protected Severity unexpectedJsonElementSeverity = Severity.IGNORE;
-
-        public Severity getEmptyJsonSeverity() {
-            return emptyJsonSeverity;
-        }
-
-        public void setEmptyJsonSeverity(Severity severity) {
-            this.emptyJsonSeverity = severity;
-        }
-
-        public Severity getInvalidatedHeadSeverity() {
-            return invalidatedHeadSeverity;
-        }
-
-        public void setInvalidatedHeadSeverity(Severity severity) {
-            this.invalidatedHeadSeverity = severity;
-        }
-
-        public Severity getInvalidatedResultsSeverity() {
-            return invalidatedResultsSeverity;
-        }
-
-        public void setInvalidatedResultsSeverity(Severity severity) {
-            this.invalidatedResultsSeverity = severity;
-        }
-
-        public Severity getMissingHeadSeverity() {
-            return missingHeadSeverity;
-        }
-
-        public void setMissingHeadSeverity(Severity severity) {
-            this.missingHeadSeverity = severity;
-        }
-
-        public Severity getMixedResultsSeverity() {
-            return mixedResultsSeverity;
-        }
-
-        public void setMixedResultsSeverity(Severity severity) {
-            this.mixedResultsSeverity = severity;
-        }
-
-        public Severity getUnexpectedJsonElementSeverity() {
-            return unexpectedJsonElementSeverity;
-        }
-
-        public void setUnexpectedJsonElementSeverity(Severity severity) {
-            this.unexpectedJsonElementSeverity = severity;
+                                new ErrorEvent(String.format("Mandatory key '%s' not seen", kHead)));
         }
     }
 
     /* Internal / Utility -------------------------------------------------- */
 
-    /** Interface for optionally emitting the json elements
+    /**
+     * Interface for optionally emitting the json elements
      * Typically this only calls jsonReader.skipValue() as to not spend
-     * efforts on parsing */
+     * efforts on parsing
+     */
     @FunctionalInterface
-    public interface UnexpectedJsonEltHandler {
+    interface UnexpectedJsonEltHandler {
         JsonElement apply(Gson gson, JsonReader reader) throws IOException;
     }
 
-    /** A decoder can extract an instance of E's {@link RsJsonEltType}
-     *  an provides methods to extract the corresponding value.
-     *  It decouples {@link RowSetJSONStreaming} from gson.
+    /**
+     * A decoder can extract an instance of E's {@link RsJsonEltType} an provides
+     * methods to extract the corresponding value. It decouples
+     * {@link RowSetJSONStreaming} from gson.
      */
-    public static interface RsJsonEltDecoder<E> {
+    private interface RsJsonEltDecoder<E> {
         RsJsonEltType getType(E elt);
         Binding getAsBinding(E elt);
         List<Var> getAsHead(E elt);
@@ -638,10 +524,10 @@ public class RowSetJSONStreaming<E>
     }
 
     /** Decoder for extraction of rs-json domain objects from {@link RsJsonEltDft} */
-    public static class RsJsonEltDecoderDft
-        implements RsJsonEltDecoder<RsJsonEltDft> {
+    private static class RsJsonEltDecoderDft implements RsJsonEltDecoder<RsJsonEltDft> {
+        static final RsJsonEltDecoderDft INSTANCE = new RsJsonEltDecoderDft();
 
-        public static final RsJsonEltDecoderDft INSTANCE = new RsJsonEltDecoderDft();
+        private RsJsonEltDecoderDft() {}
 
         @Override public RsJsonEltType getType(RsJsonEltDft elt) { return elt.getType(); }
         @Override public Binding getAsBinding(RsJsonEltDft elt)  { return elt.getBinding(); }
@@ -652,7 +538,7 @@ public class RowSetJSONStreaming<E>
     /**
      * Json encoder that wraps each message uniformly as a {@link RsJsonEltDft}.
      */
-    public static class RsJsonEltEncoderDft
+    private static class RsJsonEltEncoderDft
         implements RsJsonEltEncoder<RsJsonEltDft> {
 
         protected LabelToNode labelMap;
@@ -701,7 +587,7 @@ public class RowSetJSONStreaming<E>
     }
 
     /**
-     * Internal helper class used for valiaditon.
+     * Internal helper class used for validation.
      * It can hold tentative values and make them final.
      * Once a value is final then further updates are rejected.
      * This is used to iterate over sequences of repeated json keys ('head', 'boolean')
@@ -712,7 +598,7 @@ public class RowSetJSONStreaming<E>
      * So even if there are e.g. repeated boolean fields then as long as we are sure that
      * we report the last of those we are fine.
      */
-    protected static class TentativeValue<T> {
+    private static class TentativeValue<T> {
         T value;
         boolean isValueFinal = false;
         boolean isTentative = false;

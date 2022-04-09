@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.exec;
+package org.apache.jena.riot.rowset.rw.rs_json;
 
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +27,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorSlotted;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.RowSet;
 
 /**
  * A buffering RowSet wrapper for stream-backed RowSets whose
@@ -90,7 +91,7 @@ public class RowSetBuffered<T extends RowSet>
             if (resultVars == null && getDelegate().hasNext()) {
                 // Buffering needed
                 // The buffer can only be null here because when the loop below
-                // finishes then ether resultVars are non-null or the stream
+                // finishes then either resultVars are non-null or the stream
                 // is exhausted - in any case we will never come here again
                 buffer = bufferFactory.get();
                 while (((resultVars = getDelegate().getResultVars()) == null)) {
@@ -166,5 +167,4 @@ public class RowSetBuffered<T extends RowSet>
             : null; // endOfData();
         return result;
     }
-
 }
