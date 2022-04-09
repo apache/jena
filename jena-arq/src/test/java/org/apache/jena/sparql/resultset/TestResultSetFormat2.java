@@ -21,14 +21,21 @@ package org.apache.jena.sparql.resultset;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.riot.ResultSetMgr;
 import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.rowset.rw.RowSetReaderJSONStreaming;
 import org.apache.jena.riot.rowset.rw.RowSetReaderTSV;
+import org.apache.jena.riot.rowset.rw.rs_json.Severity;
 import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.util.Context;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestResultSetFormat2 {
@@ -303,16 +310,16 @@ public class TestResultSetFormat2 {
 
     @Test
     public void resultset_csv_01() {
-    	// Normal header
-    	String x = "x,y\n";
-    	parseCSV(x);
+        // Normal header
+        String x = "x,y\n";
+        parseCSV(x);
     }
 
     @Test
     public void resultset_csv_02() {
-    	// Header with variable names using CSV field encoding i.e. surrounded by quotes
-    	String x = "\"x\",\"y\"\n";
-    	parseCSV(x);
+        // Header with variable names using CSV field encoding i.e. surrounded by quotes
+        String x = "\"x\",\"y\"\n";
+        parseCSV(x);
     }
 
     @Test
@@ -367,6 +374,123 @@ public class TestResultSetFormat2 {
         parseJSON(input);
     }
 
+    @Test
+    public void resultset_json_05_head_after_json() {
+        //@formatter:off
+        String input = StrUtils.strjoinNL("{",
+                                          "  \"results\": {",
+                                          "    \"bindings\":[",
+                                          "      {\"s\":{\"type\":\"uri\",\"value\":\"http://rdf.myexperiment.org/ontologies/snarm/Policy\"}}",
+                                          "    ]",
+                                          "   },",
+                                          "  \"head\":{\"vars\":[\"s\"]}",
+                                          "}");
+        //@formatter:on
+        parseJSON(input);
+    }
+
+    @Test
+    public void resultset_json_06_repeated_head() {
+        //@formatter:off
+        String input = StrUtils.strjoinNL("{",
+                                          "  \"results\": {",
+                                          "    \"bindings\":[",
+                                          "      {\"c\":{\"type\":\"uri\",\"value\":\"http://rdf.myexperiment.org/ontologies/snarm/Foobar\"}},",
+                                          "      {\"c\":{\"type\":\"uri\",\"value\":\"http://rdf.myexperiment.org/ontologies/snarm/Policy\"}}",
+                                          "    ]",
+                                          "   },",
+                                          "  \"head\":{\"vars\":[\"a\"]},",
+                                          "  \"head\":{\"vars\":[\"b\"]},",
+                                          "  \"head\":{\"vars\":[\"c\"]}",
+                                          "}");
+        //@formatter:on
+        ResultSet rs = resultSetFromJSON(input, null);
+        Assert.assertEquals(Arrays.asList("c"), rs.getResultVars());
+    }
+
+    public static ResultSet resultset_json_07_data(Context cxt) {
+        //@formatter:off
+        String input = StrUtils.strjoinNL("{",
+                                          "  \"results\": {",
+                                          "    \"bindings\":[",
+                                          "      {\"s\":{\"type\":\"uri\",\"value\":\"http://rdf.myexperiment.org/ontologies/snarm/Policy\"}},",
+                                          "      {\"s\":{\"type\":\"uri\",\"value\":\"http://rdf.myexperiment.org/ontologies/snarm/Policy\"}}",
+                                          "    ]",
+                                          "   },",
+                                          "  \"head\":{\"vars\":[\"a\"]},",
+                                          "  \"head\":{\"vars\":[\"b\"]},",
+                                          "  \"results\": {",
+                                          "    \"bindings\":[",
+                                          "      {\"s\":{\"type\":\"uri\",\"value\":\"http://rdf.myexperiment.org/ontologies/snarm/Policy\"}},",
+                                          "      {\"s\":{\"type\":\"uri\",\"value\":\"http://rdf.myexperiment.org/ontologies/snarm/Policy\"}},",
+                                          "      {\"s\":{\"type\":\"uri\",\"value\":\"http://rdf.myexperiment.org/ontologies/snarm/Policy\"}}",
+                                          "    ]",
+                                          "   }",
+                                          "}");
+        //@formatter:on
+        return resultSetFromJSON(input, cxt);
+    }
+
+    @Test(expected = ResultSetException.class)
+    public void resultset_json_07a_repeated_results() {
+        ResultSet rs = resultset_json_07_data(null);
+
+        // Fail upon trying to access the 'head' which encounters the repeated
+        // 'results' key.
+        // The following line is there for documentation/robustness.
+        // Actually the involved ResultSet.adapt() already invokes
+        // RowSet.getResultVars() eagerly
+        rs.getResultVars();
+    }
+
+    @Test
+    public void resultset_json_07b_repeated_results() {
+        Context cxt = new Context();
+        cxt.set(RowSetReaderJSONStreaming.rsJsonSeverityInvalidatedResults, Severity.IGNORE);
+        ResultSet rs = resultset_json_07_data(cxt);
+        // In contrast to 07a retrieving the header should work
+        Assert.assertEquals(Arrays.asList("b"), rs.getResultVars());
+        // Ignoring the error should give 5 bindings and not log a warning during testing
+        Assert.assertEquals(5, ResultSetFormatter.consume(rs));
+    }
+
+    public static ResultSet resultset_json_08_data(Context cxt) {
+        //@formatter:off
+        String input = StrUtils.strjoinNL("{",
+                                          "  \"head\":{\"vars\":[\"a\"]},",
+                                          "  \"head\":{\"vars\":[\"b\"]},",
+                                          "  \"results\": {",
+                                          "    \"bindings\":[",
+                                          "      {\"s\":{\"type\":\"uri\",\"value\":\"http://rdf.myexperiment.org/ontologies/snarm/Policy\"}},",
+                                          "      {\"s\":{\"type\":\"uri\",\"value\":\"http://rdf.myexperiment.org/ontologies/snarm/Policy\"}},",
+                                          "      {\"s\":{\"type\":\"uri\",\"value\":\"http://rdf.myexperiment.org/ontologies/snarm/Policy\"}}",
+                                          "    ]",
+                                          "   },",
+                                          "  \"head\":{\"vars\":[\"c\"]}",
+                                          "}");
+        //@formatter:on
+        return resultSetFromJSON(input, cxt);
+    }
+
+    @Test(expected = ResultSetException.class)
+    public void resultset_json_08a_repeated_results() {
+        ResultSet rs = resultset_json_08_data(null);
+        // Scanning for the first head should work
+        Assert.assertEquals(Arrays.asList("b"), rs.getResultVars());
+        // Expected to fail on last 'head' because it invalidates the seen head
+        ResultSetFormatter.consume(rs);
+    }
+
+    @Test
+    public void resultset_json_08b_repeated_results() {
+        Context cxt = new Context();
+        cxt.set(RowSetReaderJSONStreaming.rsJsonSeverityInvalidatedHead, Severity.IGNORE);
+        ResultSet rs = resultset_json_08_data(cxt);
+        Assert.assertEquals(Arrays.asList("b"), rs.getResultVars());
+        // Ignoring the error should give 3 bindings and not log a warning during testing
+        Assert.assertEquals(3, ResultSetFormatter.consume(rs));
+    }
+
     private void parseTSV(String x) {
         byte[] b = StrUtils.asUTF8bytes(x);
         ByteArrayInputStream in = new ByteArrayInputStream(b);
@@ -378,12 +502,12 @@ public class TestResultSetFormat2 {
     }
 
     private void parseCSV(String x) {
-    	byte[] b = StrUtils.asUTF8bytes(x);
-    	ByteArrayInputStream in = new ByteArrayInputStream(b);
-    	ResultSet rs2 = ResultSetMgr.read(in, ResultSetLang.RS_CSV);
-    	while (rs2.hasNext()) {
-    		rs2.nextBinding();
-    	}
+        byte[] b = StrUtils.asUTF8bytes(x);
+        ByteArrayInputStream in = new ByteArrayInputStream(b);
+        ResultSet rs2 = ResultSetMgr.read(in, ResultSetLang.RS_CSV);
+        while (rs2.hasNext()) {
+            rs2.nextBinding();
+        }
     }
 
     private void parseJSON(String input) {
@@ -393,6 +517,14 @@ public class TestResultSetFormat2 {
         while (rs.hasNext()) {
             rs.nextBinding();
         }
+    }
+
+    private static ResultSet resultSetFromJSON(String input, Context cxt) {
+        byte[] b = StrUtils.asUTF8bytes(input);
+        ByteArrayInputStream in = new ByteArrayInputStream(b);
+        RowSet rowSet = RowSetReaderJSONStreaming.factory.create(ResultSetLang.RS_JSON).read(in, cxt);
+        ResultSet rs = ResultSet.adapt(rowSet);
+        return rs;
     }
 
     private void parseTSVAsBoolean(String x, boolean expected) {
