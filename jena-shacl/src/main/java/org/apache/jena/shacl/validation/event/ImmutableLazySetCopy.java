@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl;
+package org.apache.jena.shacl.validation.event;
 
-import org.apache.jena.shacl.compact.TS_Compact;
-import org.apache.jena.shacl.tests.TestImports;
-import org.apache.jena.shacl.tests.TestValidationReport;
-import org.apache.jena.shacl.tests.ValidationListenerTests;
-import org.apache.jena.shacl.tests.jena_shacl.TS_JenaShacl;
-import org.apache.jena.shacl.tests.std.TS_StdSHACL;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestValidationReport.class
-    , TS_StdSHACL.class
-    , TS_JenaShacl.class
-    , TS_Compact.class
-    , TestImports.class
-    , ValidationListenerTests.class
-} )
+public class ImmutableLazySetCopy<T> {
+    private final Set<T> original;
+    private final AtomicReference<Set<T>> copy = new AtomicReference<>();
 
-public class TC_SHACL { }
+    ImmutableLazySetCopy(Set<T> original){
+        this.original = original;
+    }
+
+    public Set<T> get(){
+        return copy.updateAndGet(existingCopy ->  existingCopy == null ? Set.copyOf(original) : existingCopy );
+    }
+
+    public String toString(){
+        return Optional.ofNullable(copy.get()).orElse(original).toString();
+    }
+}

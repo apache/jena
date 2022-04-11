@@ -30,8 +30,16 @@ import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.parser.Shape;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnPathNodesWithCompareNodesEvent;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnSinglePathNodeWithCompareNodesEvent;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.path.Path;
+
+import java.util.Objects;
+import java.util.Set;
+
+import static org.apache.jena.shacl.compact.writer.CompactOut.compactArrayNodes;
+import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 /** sh:disjoint */
 public class DisjointConstraint extends ConstraintPairwise {
@@ -43,11 +51,25 @@ public class DisjointConstraint extends ConstraintPairwise {
     @Override
     public void validate(ValidationContext vCxt, Shape shape, Node focusNode, Path path,
                          Set<Node> pathNodes, Set<Node> compareNodes) {
+        boolean allPassed = true;
         for ( Node vn : pathNodes ) {
+            boolean passed = true;
             if ( compareNodes.contains(vn) ) {
                 String msg = toString()+": not disjoint: "+displayStr(vn)+" is in "+compareNodes;
+                passed = false;
+                allPassed = false;
                 vCxt.reportEntry(msg, shape, focusNode, path, vn, this);
             }
+            if (!passed) {
+                vCxt.notifyValidationListener(() -> makeEventSinglePathNode(
+                                                vCxt, shape, focusNode, path, vn,
+                                                compareNodes, false));
+            }
+        }
+        if (allPassed){
+            vCxt.notifyValidationListener(() -> makeEvent(
+                                            vCxt, shape, focusNode, path, pathNodes,
+                                            compareNodes, true));
         }
     }
 

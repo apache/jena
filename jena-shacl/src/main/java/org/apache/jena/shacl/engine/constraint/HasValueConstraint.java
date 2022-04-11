@@ -32,6 +32,7 @@ import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnFocusNodeEvent;
 import org.apache.jena.shacl.vocabulary.SHACL;
 
 /** sh:hasValue */
@@ -56,10 +57,15 @@ public class HasValueConstraint extends ConstraintEntity {
     // NodeShape usage.
     @Override
     public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
+        boolean passed = true;
         if ( ! focusNode.equals(value) ) {
+            passed = false;
             String errMsg = toString()+" : No value "+displayStr(value);
             vCxt.reportEntry(errMsg, shape, focusNode, null, null, this);
         }
+        final boolean finalPassed = passed;
+        vCxt.notifyValidationListener(() -> 
+                        new ConstraintEvaluatedOnFocusNodeEvent(vCxt, shape, focusNode,  this,   finalPassed));
     }
 
     // PropertyShape usage.

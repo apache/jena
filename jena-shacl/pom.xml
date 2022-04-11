@@ -133,7 +133,7 @@
           <encoding>UTF-8</encoding>
           <windowtitle>Apache Jena TDB</windowtitle>
           <doctitle>Apache Jena - SHACL ${project.version}</doctitle>
-          <excludePackageNames>org.apache.jena.shacl.*</excludePackageNames>
+          <excludePackageNames>*.compact:*.compact.*:*.engine:*.engine.*:*.lib:*.parser:*.sys:*.vocabulary</excludePackageNames>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
       </plugin>
