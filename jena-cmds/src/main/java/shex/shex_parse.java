@@ -74,8 +74,7 @@ public class shex_parse extends CmdGeneral {
     protected void processModulesAndArgs() {
          super.processModulesAndArgs();
          if ( super.positionals.size() == 0 ) {
-             System.err.println(getSummary());
-             System.exit(0);
+             throw new CmdException(getSummary());
          }
 
          if ( super.hasArg(argOutput) ) {
@@ -133,8 +132,7 @@ public class shex_parse extends CmdGeneral {
         PrintStream err = System.err;
 
         if ( ! FileOps.exists(fn) ) {
-            err.println(fn+" : File not found");
-            return;
+            throw new CmdException(fn+" : File not found");
         }
 
         try {
@@ -142,10 +140,11 @@ public class shex_parse extends CmdGeneral {
         }
         catch ( RiotException ex ) { /*ErrorHandler logged this */ return; }
         catch (ShexParseException ex) {
+            StringBuilder sb = new StringBuilder();
             if ( multipleFiles )
-                err.println(fn+" : ");
-            err.println(ex.getMessage());
-            return;
+                sb.append(fn+" : ");
+            sb.append(ex.getMessage());
+            throw new CmdException(sb.toString());
         }
 
         boolean outputByPrev = false;
