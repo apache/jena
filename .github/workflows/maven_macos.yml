@@ -3,6 +3,9 @@
 name: Apache Jena CI (MacOS)
 on: workflow_dispatch
 
+permissions:
+  contents: read
+
 jobs:
   build:
 
