@@ -23,9 +23,7 @@ import java.util.Collections;
 import java.util.function.Predicate;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphSink;
 import org.apache.jena.sparql.core.Quad;
@@ -42,11 +40,6 @@ public class SecurityContextAllowNone implements SecurityContext {
 
     @Override
     public boolean visableDefaultGraph() { return false; }
-
-    @Override
-    public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
-        return QueryExecutionFactory.create(query, DatasetGraphSink.create());
-    }
 
     @Override
     public Predicate<Quad> predicateQuad() { return q -> false; }

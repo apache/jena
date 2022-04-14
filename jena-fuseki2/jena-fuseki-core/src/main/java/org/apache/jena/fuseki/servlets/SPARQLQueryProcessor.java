@@ -319,7 +319,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
      * Set the timeouts. The context timeout, which is the system settings, provides
      * an upper bound to setting by protocol ?timeout.
      */
-    private static void setTimeouts(QueryExecDatasetBuilder builder, HttpAction action) {
+    public static void setTimeouts(QueryExecDatasetBuilder builder, HttpAction action) {
         // Protocol settings.
         long protocolInitialTimeout = -1;
         long protocolOverallTimeout = -1;

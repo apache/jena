@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Predicate;
 
+import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
@@ -31,6 +32,9 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
+import org.apache.jena.sparql.exec.QueryExecutionAdapter;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.NodeUtils;
 import org.apache.jena.tdb.TDBFactory;
@@ -87,20 +91,20 @@ public class SecurityContextView implements SecurityContext {
     }
 
     @Override
-    public QueryExecution createQueryExecution(String queryString, DatasetGraph dsg) {
-        return createQueryExecution(QueryFactory.create(queryString), dsg);
+    public QueryExecution createQueryExecution(HttpAction action, String queryString, DatasetGraph dsg) {
+        return createQueryExecution(action, QueryFactory.create(queryString), dsg);
     }
 
     @Override
-    public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
+    public QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph dsg) {
         if ( isAccessControlledTDB(dsg) ) {
-            QueryExecution qExec = QueryExecutionFactory.create(query, dsg);
+            QueryExecution qExec = SecurityContext.super.createQueryExecution(action, query, dsg);
             filterTDB(dsg, qExec);
             return qExec;
         }
         // Not TDB - do by selecting graphs.
         DatasetGraph dsgA = DataAccessCtl.filteredDataset(dsg, this);
-        return QueryExecutionFactory.create(query, dsgA);
+        return SecurityContext.super.createQueryExecution(action, query, dsgA);
     }
 
     /**
