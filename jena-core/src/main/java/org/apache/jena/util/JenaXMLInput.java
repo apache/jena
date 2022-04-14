@@ -36,44 +36,73 @@ import org.xml.sax.XMLReader;
 
 /**
  * Create XML input methods.
- * External DTD processing is disabled and will be silently ignored to prevent
+ * <p>
+ * External DTD and entity processing is disabled to prevent
  * <a href="https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing">XXE Processing</a>
  * problems.
+ * <p>
+ * DTDs are, by default, not processed. These may be enabled with {@link #allowLocalDTDs}.
  */
 public class JenaXMLInput {
+
     // ---- SAX
     // RDFXMLParser
     private static SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+
+    /**
+     * Whether to allow DTD processing. This applies to reading RDF/XML
+     * and SPARQL XML Results - these formats do not need DTD processing
+     * to be read into Jena.
+     * <p>
+     * External DTDs are always prohibited.
+     * <p>
+     * The default configuration is to not process DTDs.
+     * An application may enable local DTD processing if necessary.
+     *
+     * @deprecated The ability to enable local DTDs processing will be removed.
+     */
+    @Deprecated
+    public static boolean allowLocalDTDs = true;
 
     public static XMLReader createXMLReader() throws ParserConfigurationException, SAXException {
             SAXParser saxParser = saxParserFactory.newSAXParser();
             XMLReader xmlreader = saxParser.getXMLReader();
 
-            // XXE : either disable all DTD processing ...
-//            // EFFECT: RIOT Error if DTD.
-//            xmlreader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-//            // This may not be strictly required as DTDs shouldn't be allowed at all, per previous line.
-//            xmlreader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-
-            // ... just ignore external DTDs (silently ignore)
+            if ( !allowLocalDTDs ) {
+                // XXE : disable all DTD processing.
+                // Effect: RiotException if a DTD is found.
+                xmlreader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            }
+            // Always disable remote DTDs (silently ignore if DTDs are allowed at all)
+            xmlreader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            // and ignore external entities (silently ignore)
             xmlreader.setFeature("http://xml.org/sax/features/external-general-entities", false);
             xmlreader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             return xmlreader;
     }
 
     // ---- StAX
-    // TriX and results.
-    private static XMLInputFactory xf = XMLInputFactory.newInstance() ;
-    static {
+    // TriX and SPARQL XML Results.
+    /**
+     * Initialize an XMLInputFactory to jena settings.
+     */
+    public static void initXMLInputFactory(XMLInputFactory xf) {
         try {
-    //      // This disables DTDs entirely for that factory
-    //      xf.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-          // disable external entities (silently ignore)
-          xf.setProperty("javax.xml.stream.isSupportingExternalEntities", false);
-      } catch(IllegalArgumentException ex){
-          Log.error(JenaXMLInput.class, "Problem setting StAX property", ex);
-      }
+            // This disables DTDs entirely for the factory.
+            // All DTDs are silently ignored; takes precedence over ACCESS_EXTERNAL_DTD
+            xf.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+
+            // Disable external DTDs (files and HTTP) - errors unless SUPPORT_DTD is false.
+            xf.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            // disable external entities (silently ignore)
+            xf.setProperty("javax.xml.stream.isSupportingExternalEntities", false);
+        } catch(IllegalArgumentException ex){
+            Log.error(JenaXMLInput.class, "Problem setting StAX property", ex);
+        }
     }
+
+    private static XMLInputFactory xf = XMLInputFactory.newInstance() ;
+    static { initXMLInputFactory(xf); }
 
     public static XMLStreamReader newXMLStreamReader(InputStream in) throws XMLStreamException {
         return xf.createXMLStreamReader(in) ;
@@ -84,7 +113,7 @@ public class JenaXMLInput {
     }
 
     // ---- DocumentBuilder
-    // For reference - not used in Jena src/main, but is in src/test DOM2RDFTest and MoreDOM2RDFTest
+    // For reference - not used in Jena src/main, but is used in src/test DOM2RDFTest and MoreDOM2RDFTest
     public static DocumentBuilderFactory newDocumentBuilderFactory() throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         // Causes SAXParseException if there is an external entity.
@@ -92,11 +121,12 @@ public class JenaXMLInput {
         return factory;
     }
 
-    // For reference : jdom:
+//    // For reference : jdom:
 //    // ---- SAXBuilder
 //    public static SAXBuilder newSAXBuilder() throws ParserConfigurationException {
 //        SAXBuilder builder = new SAXBuilder();
 //        builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+//        builder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false;)
 //        builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
 //        builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 //        builder.setExpandEntities(false);
