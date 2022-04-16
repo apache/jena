@@ -120,7 +120,7 @@ public class TextQueryPF extends PropertyFunctionBase {
      * into the execution context. This is the normal route because
      * {@link TextDatasetFactory} sets the text index in the dataset context.
      * Asking the dataset directly is only needed for the case of no context set,
-     * just in case of a unusually, progammatically constructed
+     * just in case of a unusually, programmatically constructed
      * {@code DatasetGraphText} is being used (a bug, or old code, probably).
      */
     private static TextIndex chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg) {

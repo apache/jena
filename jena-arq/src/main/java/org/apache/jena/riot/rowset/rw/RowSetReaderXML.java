@@ -37,6 +37,7 @@ import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.rowset.RowSetReader;
@@ -160,7 +161,9 @@ public class RowSetReaderXML implements RowSetReader {
                 }
 
             } catch (XMLStreamException ex) {
-                Log.warn(this, "XMLStreamException: " + ex.getMessage(), ex) ;
+                String msg = ex.getMessage();
+                msg = msg.replace("\n", " : ");
+                throw new RiotException("XMLStreamException: " + msg, ex);
             }
         }
 
