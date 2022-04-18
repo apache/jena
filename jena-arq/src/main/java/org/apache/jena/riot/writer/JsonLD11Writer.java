@@ -25,9 +25,14 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.apicatalog.jsonld.JsonLd;
+import com.apicatalog.jsonld.JsonLdError;
+import com.apicatalog.jsonld.JsonLdOptions;
+import com.apicatalog.jsonld.api.CompactionApi;
 import com.apicatalog.jsonld.document.Document;
+import com.apicatalog.jsonld.document.JsonDocument;
 import com.apicatalog.jsonld.document.RdfDocument;
 import com.apicatalog.jsonld.lang.Keywords;
+import com.apicatalog.jsonld.processor.FromRdfProcessor;
 import com.apicatalog.rdf.RdfDataset;
 
 import jakarta.json.*;
@@ -75,28 +80,13 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
     }
 
     private void write$(OutputStream output, Writer writer, DatasetGraph dsg) {
+        boolean applyPretty = true;
         try {
+            // Context, including prefixes.
             RdfDataset ds = JenaTitanium.convert(dsg);
             Document doc = RdfDocument.of(ds);
-            JsonArray array = JsonLd.fromRdf(doc).get();
-            JsonStructure writeThis = null;
 
-            // XXX Prefixes.
-
-            // Nest array as object.
-            if ( true ) {
-                // "Fast compact" but @context first.
-                writeThis = Json.createObjectBuilder()
-                        // Order influences output order.
-                        .add(Keywords.CONTEXT, Json.createObjectBuilder().add(Keywords.VERSION, 1.1))
-                        .add(Keywords.GRAPH, array)
-                        .build();
-            }
-
-            if ( writeThis == null ) {
-                // Basic array (expanded) form.
-                writeThis = array;
-            }
+            JsonStructure writeThis = applyPretty ? writePretty(doc, dsg) : writePlain(doc);
 
             JsonWriter jsonWriter = startWrite(output, writer);
             jsonWriter.write(writeThis);
@@ -106,6 +96,42 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
             e.printStackTrace();
             return ;
         }
+    }
+
+    private JsonStructure writePlain(Document doc) throws JsonLdError {
+        return JsonLd.fromRdf(doc).get();
+    }
+
+    private JsonStructure writePretty(Document doc, DatasetGraph dsg) throws JsonLdError {
+        JsonLdOptions options = new JsonLdOptions();
+
+        // Native types.
+        options.setUseNativeTypes(true);
+        JsonArray array = FromRdfProcessor.fromRdf(doc, options);
+
+        // Build context
+        JsonObjectBuilder cxt = Json.createObjectBuilder().add(Keywords.VERSION, "1.1");
+        dsg.prefixes().forEach((k, v) -> {
+            if ( ! k.isEmpty() )
+                cxt.add(k, v);
+        });
+        JsonObject context = cxt.build();
+
+        // Object to write.
+        JsonObject writeRdf = Json.createObjectBuilder()
+                .add(Keywords.CONTEXT, context)
+                .add(Keywords.GRAPH, array)
+                .build();
+        Document contextDoc = JsonDocument.of(context);
+
+        // Setup compaction.
+        CompactionApi api =JsonLd.compact(JsonDocument.of(writeRdf), contextDoc);
+        api.rdfStar();
+//                // Non-absolute URIs.
+//                if ( dsg.prefixes().containsPrefix("") )
+//                    api.base(dsg.prefixes().get(""));
+        // Object to output.
+        return api.get();
     }
 
     private JsonWriter startWrite(OutputStream output, Writer writer) {
