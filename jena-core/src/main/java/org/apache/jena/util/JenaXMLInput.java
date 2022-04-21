@@ -40,8 +40,6 @@ import org.xml.sax.XMLReader;
  * External DTD and entity processing is disabled to prevent
  * <a href="https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing">XXE Processing</a>
  * problems.
- * <p>
- * DTDs are, by default, not processed. These may be enabled with {@link #allowLocalDTDs}.
  */
 public class JenaXMLInput {
 
@@ -49,30 +47,17 @@ public class JenaXMLInput {
     // RDFXMLParser
     private static SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 
-    /**
-     * Whether to allow DTD processing. This applies to reading RDF/XML
-     * and SPARQL XML Results - these formats do not need DTD processing
-     * to be read into Jena.
-     * <p>
-     * External DTDs are always prohibited.
-     * <p>
-     * The default configuration is to not process DTDs.
-     * An application may enable local DTD processing if necessary.
-     *
-     * @deprecated The ability to enable local DTDs processing will be removed.
-     */
-    @Deprecated
-    public static boolean allowLocalDTDs = true;
-
     public static XMLReader createXMLReader() throws ParserConfigurationException, SAXException {
             SAXParser saxParser = saxParserFactory.newSAXParser();
             XMLReader xmlreader = saxParser.getXMLReader();
 
-            if ( !allowLocalDTDs ) {
-                // XXE : disable all DTD processing.
-                // Effect: RiotException if a DTD is found.
-                xmlreader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            }
+            // XXE : disable all DTD processing.
+            // Effect: RiotException if a DTD is found.
+            // However, OWL WG test files, and others, have internal entity
+            // declarations in internal DTD subset ("the "[ ]"in a DOCTYPE).
+            // xmlreader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            // instead, silently ignore external DTDs.
+
             // Always disable remote DTDs (silently ignore if DTDs are allowed at all)
             xmlreader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             // and ignore external entities (silently ignore)
@@ -125,7 +110,7 @@ public class JenaXMLInput {
 //    // ---- SAXBuilder
 //    public static SAXBuilder newSAXBuilder() throws ParserConfigurationException {
 //        SAXBuilder builder = new SAXBuilder();
-//        builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+//        //builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
 //        builder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false;)
 //        builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
 //        builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
