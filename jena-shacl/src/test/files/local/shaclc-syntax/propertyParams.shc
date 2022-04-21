@@ -3,6 +3,7 @@ PREFIX ex:      <http://example.org/test#>
 PREFIX sh:      <http://www.w3.org/ns/shacl#>
 
 shapeClass ex:TestPropertyParams {
+   # Overlap with node params.
    :prop1  nodeKind=sh:IRI .
    :prop2  datatype=xsd:double .
    :prop3  pattern="^.*$" .
@@ -14,4 +15,9 @@ shapeClass ex:TestPropertyParams {
    ## Short forms
    :propA  BlankNode .
    :propB  xsd:integer .
+   # Unique to property params.
+   :q1 equals=:q99 .
+   :q2 lessThanOrEquals=:q99 .
+   :q3 ! lessThan=:q98 .
+   :q4 disjoint=:q97 .
 }

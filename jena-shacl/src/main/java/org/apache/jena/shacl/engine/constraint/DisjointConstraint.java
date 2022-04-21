@@ -18,7 +18,7 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import static org.apache.jena.shacl.compact.writer.CompactOut.compactArrayNodes;
+import static org.apache.jena.shacl.compact.writer.CompactOut.compact;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 import java.util.Objects;
@@ -58,7 +58,7 @@ public class DisjointConstraint extends ConstraintPairwise {
 
     @Override
     public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
-        compactArrayNodes(out, nodeFmt, null, null);
+        compact(out, nodeFmt, "disjoint", value);
     }
 
     @Override
