@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE foo SYSTEM "http://localhost:70000/no-such">
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="x"/>
+  </head>
+  <results>
+    <result>
+      <binding name="x">
+        <literal>ABC</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>
