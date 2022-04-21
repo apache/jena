@@ -1,0 +1,8 @@
+# Test file used to check @import redirection
+@prefix p1: <http://jena.hpl.hp.com/newprefix#>
+
+-> (p1:A p1:p p1:foo).
+
+@include <file:testing/reasoners/includeAlt.rules>.
+
+ 
