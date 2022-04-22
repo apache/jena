@@ -47,7 +47,6 @@ public class ShexShape {
     public boolean satisfies(ValidationContext vCxt, Node data) {
         vCxt.startValidate(this, data);
         try {
-            // [shex] ShexShape.validate?
             return shExpression.satisfies(vCxt, data);
         } finally {
             vCxt.finishValidate(this, data);
@@ -66,6 +65,37 @@ public class ShexShape {
         // Consolidate adjacent TripleConstraints.
         getShapeExpression().print(iOut, nFmt);
         iOut.decIndent();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((label == null) ? 0 : label.hashCode());
+        result = prime * result + ((shExpression == null) ? 0 : shExpression.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        ShexShape other = (ShexShape)obj;
+        if ( label == null ) {
+            if ( other.label != null )
+                return false;
+        } else if ( !label.equals(other.label) )
+            return false;
+        if ( shExpression == null ) {
+            if ( other.shExpression != null )
+                return false;
+        } else if ( !shExpression.equals(other.shExpression) )
+            return false;
+        return true;
     }
 
     @Override

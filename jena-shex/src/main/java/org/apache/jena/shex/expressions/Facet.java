@@ -16,31 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shex;
+package org.apache.jena.shex.expressions;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+public interface Facet {
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestShexSyntax.class,
-    TestShexSyntaxBad.class,
-    TestShexValidation.class,
-    TestShexShapeMapSyntax.class,
-    TestShexPrintShexC.class
-})
-
-public class TS_Shex {
-
-    // Too later the runners have setup by now.
-//    private static boolean oldValue = false;
-//
-//    @BeforeClass public static void beforeAll() {
-//        oldValue = SysShex.STRICT;
-//        SysShex.STRICT = true;
-//    }
-//
-//    @AfterClass public static void afterAll() {
-//        SysShex.STRICT = oldValue;
-//    }
 }

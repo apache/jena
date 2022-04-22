@@ -18,29 +18,15 @@
 
 package org.apache.jena.shex;
 
+import org.apache.jena.arq.junit.runners.Directories;
+import org.apache.jena.arq.junit.runners.Label;
+import org.apache.jena.shex.runner.RunnerShexSyntax;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestShexSyntax.class,
-    TestShexSyntaxBad.class,
-    TestShexValidation.class,
-    TestShexShapeMapSyntax.class,
-    TestShexPrintShexC.class
+@RunWith(RunnerShexSyntax.class)
+@Label("Shex Syntax")
+@Directories({
+    "src/test/files/spec/syntax"
 })
 
-public class TS_Shex {
-
-    // Too later the runners have setup by now.
-//    private static boolean oldValue = false;
-//
-//    @BeforeClass public static void beforeAll() {
-//        oldValue = SysShex.STRICT;
-//        SysShex.STRICT = true;
-//    }
-//
-//    @AfterClass public static void afterAll() {
-//        SysShex.STRICT = oldValue;
-//    }
-}
+public class TestShexPrintShexC {}

@@ -33,7 +33,7 @@ import org.junit.runners.model.InitializationError;
 public class RunnerShexSyntax extends AbstractRunnerFiles {
 
     public RunnerShexSyntax(Class<? > klass) throws InitializationError {
-        super(klass, RunnerShexSyntax::makeShexBadSyntaxTest, includes(), excludes());
+        super(klass, RunnerShexSyntax::makeShexSyntaxTest, includes(), excludes());
     }
 
     private static Set<String> includes() {
@@ -52,11 +52,11 @@ public class RunnerShexSyntax extends AbstractRunnerFiles {
         return excludes;
     }
 
-    public static Runnable makeShexBadSyntaxTest(String filename) {
-        return ()->shapesFromFileBadSyntax(filename);
+    public static Runnable makeShexSyntaxTest(String filename) {
+        return ()->shapesFromFileSyntax(filename);
     }
 
-    public static ShexSchema shapesFromFileBadSyntax(String filename) {
+    public static ShexSchema shapesFromFileSyntax(String filename) {
         String str = IO.readWholeFileAsUTF8(filename);
         InputStream input = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
         try {

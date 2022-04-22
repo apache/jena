@@ -32,7 +32,7 @@ import org.apache.jena.shex.sys.ValidationContext;
 // ----
 import org.apache.jena.vocabulary.XSD;
 
-public class DatatypeConstraint extends NodeConstraint {
+public class DatatypeConstraint extends NodeConstraintComponent {
     private final Node datatype;
     private final String dtURI;
     private final RDFDatatype rdfDatatype;
@@ -97,7 +97,7 @@ public class DatatypeConstraint extends NodeConstraint {
     }
 
     @Override
-    public void visit(ShapeExprVisitor visitor) {
+    public void visit(NodeConstraintVisitor visitor) {
         visitor.visit(this);
     }
 

@@ -24,6 +24,7 @@ class ShexConst {
     static final int hashShExprFalse    = 61;
     static final int hashShExprNone     = 62;
     static final int hashShExprExternal = 63;
+    static final int hashShExprDot      = 64;
 
     static final int hashTripleExprNone     = 60;
 }

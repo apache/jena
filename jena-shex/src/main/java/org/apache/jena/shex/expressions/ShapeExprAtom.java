@@ -23,33 +23,27 @@ import java.util.Objects;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import org.apache.jena.shex.ShexShape;
-import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.shex.sys.ValidationContext;
 
-/** Shape expression that redirects. */
-public class ShapeExprRef extends ShapeExpression {
-    private final Node ref;
+/** ShapeAtom - element of the ShEx abstract syntax. */
+public class ShapeExprAtom extends ShapeExpression {
 
-    public ShapeExprRef(Node ref) { this.ref = ref; }
+    private final ShapeExpression other;
 
-    public Node getRef() { return ref; }
-
-    @Override
-    public boolean satisfies(ValidationContext vCxt, Node data) {
-        ShexShape shape = vCxt.getShape(ref);
-        if ( shape == null )
-            return false;
-        if ( vCxt.cycle(shape, data) )
-            return true;
-        return shape.satisfies(vCxt, data);
+    public ShapeExprAtom(ShapeExpression other) {
+        this.other = other;
     }
+
+    public ShapeExpression getShape() { return other; }
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.print("ShapeRef: ");
-        out.print(ShexLib.displayStr(ref));
-        out.println();
+        out.println(toString());
+    }
+
+    @Override
+    public boolean satisfies(ValidationContext vCxt, Node data) {
+        return true;
     }
 
     @Override
@@ -58,13 +52,8 @@ public class ShapeExprRef extends ShapeExpression {
     }
 
     @Override
-    public String toString() {
-        return "ShapeExprRef [ref="+ref+"]";
-    }
-
-    @Override
     public int hashCode() {
-        return Objects.hash(ref);
+        return Objects.hash(other);
     }
 
     @Override
@@ -75,7 +64,10 @@ public class ShapeExprRef extends ShapeExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        ShapeExprRef other = (ShapeExprRef)obj;
-        return Objects.equals(ref, other.ref);
+        ShapeExprAtom other = (ShapeExprAtom)obj;
+        return Objects.equals(this.other, other.other);
     }
+
+    @Override
+    public String toString() { return "ShapeExprAtom[ "+other+" ]"; }
 }

@@ -654,7 +654,7 @@ idx = startLiteralNodeConstraint(token.beginLine, token.beginColumn);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case LITERAL:{
       t = jj_consume_token(LITERAL);
-cNodeKind(t.image, t.beginLine, t.beginColumn);
+constraintNodeKind(t.image, t.beginLine, t.beginColumn);
       label_8:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -683,7 +683,7 @@ cNodeKind(t.image, t.beginLine, t.beginColumn);
     case PNAME_NS:
     case PNAME_LN:{
       str = datatype();
-cDatatype(str, token.beginLine, token.beginColumn);
+constraintDatatype(str, token.beginLine, token.beginColumn);
       label_9:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -844,7 +844,7 @@ finishNonLiteralNodeConstraint(idx, token.beginLine, token.beginColumn);
       jj_consume_token(-1);
       throw new ParseException();
     }
-cNodeKind(t.image, t.beginLine, t.beginColumn);
+constraintNodeKind(t.image, t.beginLine, t.beginColumn);
   }
 
   final public void xsFacet() throws ParseException {
@@ -991,8 +991,7 @@ int num = integer(t.image, t.beginLine, t.beginColumn);
   }
 
 // "{ ... }"
-  final public void shapeDefinition() throws ParseException {boolean closed = false ;
-  TripleExpression tripleExpr = null;
+  final public void shapeDefinition() throws ParseException {boolean closed = false; TripleExpression tripleExpr = null;
   List<Node> extras = new ArrayList<Node>();
 startShapeDefinition();
     label_14:
@@ -1198,14 +1197,6 @@ idx = startTripleExpressionClause();
     tripleExpressionClause_1();
 finishTripleExpressionClause(idx);
   }
-
-// // Can end in single ";"
-// void tripleExpressionClause_0() : {}
-// {
-//     unaryTripleExpr()
-// // Allows ";;;"
-//     (<SEMI_COLON> ( unaryTripleExpr() )?)*
-// }
 
 // Iterative, but needs LOOKAHEAD(2)
   final public void tripleExpressionClause_1() throws ParseException {
@@ -2445,6 +2436,15 @@ o = focusNode;
     finally { jj_save(0, xla); }
   }
 
+  private boolean jj_3R_38()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_40()) jj_scanpos = xsp;
+    if (jj_3R_41()) return true;
+    return false;
+  }
+
   private boolean jj_3R_48()
  {
     if (jj_scan_token(IRIref)) return true;
@@ -2475,15 +2475,15 @@ o = focusNode;
     return false;
   }
 
-  private boolean jj_3R_39()
- {
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
   private boolean jj_3R_43()
  {
     if (jj_3R_45()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_39()
+ {
+    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
@@ -2596,15 +2596,6 @@ o = focusNode;
   private boolean jj_3R_40()
  {
     if (jj_3R_42()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_38()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_40()) jj_scanpos = xsp;
-    if (jj_3R_41()) return true;
     return false;
   }
 
@@ -2827,7 +2818,7 @@ o = focusNode;
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[107];
+    boolean[] la1tokens = new boolean[108];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -2850,7 +2841,7 @@ o = focusNode;
         }
       }
     }
-    for (int i = 0; i < 107; i++) {
+    for (int i = 0; i < 108; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

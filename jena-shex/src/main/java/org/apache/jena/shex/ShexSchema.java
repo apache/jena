@@ -48,10 +48,10 @@ public class ShexSchema {
         shapes = new ArrayList<>(shapes);
         Map<Node, ShexShape> shapeMap = new LinkedHashMap<>();
         for ( ShexShape shape:  shapes) {
-        if ( shape.getLabel() == null )
-            System.err.println("No shape label");
-        else
-            shapeMap.put(shape.getLabel(), shape);
+            if ( shape.getLabel() == null )
+                System.err.println("No shape label");
+            else
+                shapeMap.put(shape.getLabel(), shape);
         }
 
         tripleRefs = new LinkedHashMap<>(tripleRefs);
@@ -142,7 +142,7 @@ public class ShexSchema {
                 mergeOne(importedSchema, mergedShapes, mergedShapeMap, mergedTripleRefs);
             }
             // Does not include the start shape.
-            // The "get" operation of a ShexSchem know about "start"
+            // The "get" operation of a ShexScheme knows about "start"
 //            if ( this.startShape != null )
 //                mergedShapeMap.put(SysShex.startNode, startShape);
             shapesWithImports = new ShexSchema(sourceURI, baseURI, prefixes,
@@ -152,7 +152,8 @@ public class ShexSchema {
         }
     }
 
-    /** Merge a schema into the accumulators.
+    /**
+     * Merge a schema into the accumulators.
      * Any start node is skipped.
      */
     private static void mergeOne(ShexSchema schema,
@@ -192,4 +193,22 @@ public class ShexSchema {
     }
 
     public PrefixMap getPrefixMap() { return prefixes; }
+
+
+    // .equals on imports, shapMap, shapes, and startShape.
+    /**
+     * Equivalence: same shapes (.equals), same imports, same label to shapes map.
+     */
+    public boolean sameAs(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        ShexSchema other = (ShexSchema)obj;
+        return Objects.equals(imports, other.imports) &&
+               Objects.equals(shapeMap, other.shapeMap) &&
+               Objects.equals(startShape, other.startShape);
+    }
 }

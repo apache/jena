@@ -18,38 +18,24 @@
 
 package org.apache.jena.shex.expressions;
 
-import java.util.Objects;
-
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
-import org.apache.jena.shex.ShexShape;
-import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.shex.sys.ValidationContext;
 
-/** Shape expression that redirects. */
-public class ShapeExprRef extends ShapeExpression {
-    private final Node ref;
+/** A DOT expression -- "{ . }"  */
+public class ShapeExprDot extends ShapeExpression {
 
-    public ShapeExprRef(Node ref) { this.ref = ref; }
-
-    public Node getRef() { return ref; }
-
-    @Override
-    public boolean satisfies(ValidationContext vCxt, Node data) {
-        ShexShape shape = vCxt.getShape(ref);
-        if ( shape == null )
-            return false;
-        if ( vCxt.cycle(shape, data) )
-            return true;
-        return shape.satisfies(vCxt, data);
-    }
+    public ShapeExprDot() {}
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.print("ShapeRef: ");
-        out.print(ShexLib.displayStr(ref));
-        out.println();
+        out.println(" .");
+    }
+
+    @Override
+    public boolean satisfies(ValidationContext vCxt, Node data) {
+        return true;
     }
 
     @Override
@@ -58,13 +44,11 @@ public class ShapeExprRef extends ShapeExpression {
     }
 
     @Override
-    public String toString() {
-        return "ShapeExprRef [ref="+ref+"]";
-    }
+    public String toString() { return "ShapeExprDot"; }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ref);
+        return ShexConst.hashShExprDot;
     }
 
     @Override
@@ -75,7 +59,6 @@ public class ShapeExprRef extends ShapeExpression {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        ShapeExprRef other = (ShapeExprRef)obj;
-        return Objects.equals(ref, other.ref);
+        return true;
     }
 }

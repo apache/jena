@@ -18,41 +18,84 @@
 
 package org.apache.jena.shex.expressions;
 
-import org.apache.jena.atlas.io.IndentedWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.jena.graph.Node;
-import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shex.sys.ReportItem;
 import org.apache.jena.shex.sys.ValidationContext;
 
-public abstract class NodeConstraint extends ShapeExpression {
+public class NodeConstraint
+//extends ShapeExpression
+implements Satisfies, ShexPrintable
+{
 
-    protected NodeConstraint() {}
+    /*
+    NodeConstraint  {
+        id:shapeExprLabel?
+        nodeKind:("iri" | "bnode" | "nonliteral" | "literal")?
+        datatype:IRIREF?
+        xsFacet*
+        values:[valueSetValue+]?
+    }
+     */
+
+
+    private List<NodeConstraintComponent> constraints = new ArrayList<>();
+
+    public NodeConstraint(List<NodeConstraintComponent> constraints) {
+        this.constraints = List.copyOf(constraints);
+    }
+
+    public List<NodeConstraintComponent> components() { return constraints; }
+
+    static class NodeConstraintBuilder {
+        NodeKindConstraint nodeKind;
+        DatatypeConstraint datatype = null;
+        List<NodeConstraint> facets = new ArrayList<>();
+        ValueConstraint values;
+    }
+
 
     @Override
     public boolean satisfies(ValidationContext vCxt, Node data) {
-        ReportItem item = nodeSatisfies(vCxt, data);
-        if ( item != null ) {
-            vCxt.reportEntry(item);
-            return false;
+        for ( NodeConstraintComponent ncc : constraints ) {
+            ReportItem item = ncc.nodeSatisfies(vCxt, data);
+            if ( item != null ) {
+                vCxt.reportEntry(item);
+                return false;
+            }
         }
         return true;
     }
 
-    /** The function "nodeSatisfies" == satisfies2(n, nc)*/
-    public abstract ReportItem nodeSatisfies(ValidationContext vCxt, Node data);
-
-
     @Override
-    public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.println(toString());
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((constraints == null) ? 0 : constraints.hashCode());
+        return result;
     }
 
     @Override
-    public abstract int hashCode();
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        NodeConstraint other = (NodeConstraint)obj;
+        if ( constraints == null ) {
+            if ( other.constraints != null )
+                return false;
+        } else if ( !constraints.equals(other.constraints) )
+            return false;
+        return true;
+    }
 
     @Override
-    public abstract boolean equals(Object other);
-
-    @Override
-    public abstract String toString();
+    public String toString() {
+        return "NodeConstraint [constraints=" + constraints + "]";
+    }
 }

@@ -47,8 +47,8 @@ public abstract class AbstractRunnerFiles extends ParentRunner<Runner> {
     private List<Runner> children = new ArrayList<>();
 
     // Includes and excludes are filenames with a directory.
-    public AbstractRunnerFiles(Class<? > klass, Function <String, Runnable> maker,
-                               Set<String> includes, Set<String> excludes) throws InitializationError {
+    protected AbstractRunnerFiles(Class<? > klass, Function <String, Runnable> maker,
+                                  Set<String> includes, Set<String> excludes) throws InitializationError {
         super(klass);
         String label = ShexTests.getLabel(klass);
         if ( label == null )

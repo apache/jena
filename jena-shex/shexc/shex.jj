@@ -258,10 +258,10 @@ void litNodeConstraint() : { String str; Token t; int idx; } {
   { idx = startLiteralNodeConstraint(token.beginLine, token.beginColumn); }
   (
     t = <LITERAL>
-    { cNodeKind(t.image, t.beginLine, t.beginColumn); }
+    { constraintNodeKind(t.image, t.beginLine, t.beginColumn); }
     (xsFacet())*
   | str = datatype()
-    { cDatatype(str, token.beginLine, token.beginColumn); }
+    { constraintDatatype(str, token.beginLine, token.beginColumn); }
     (xsFacet())*
   | valueSet()
     (xsFacet())*
@@ -283,7 +283,7 @@ void nonLitNodeConstraint() : { int idx; } {
 void nonLiteralKind() : { Token t; }
 {
     ( t = <IRI> | t = <BNODE> | t = <NONLITERAL> )
-    { cNodeKind(t.image, t.beginLine, t.beginColumn); }
+    { constraintNodeKind(t.image, t.beginLine, t.beginColumn); }
 }
 
 void xsFacet() : { }
@@ -334,8 +334,7 @@ String numericLength() : { Token t; }
 
 // "{ ... }"
 void shapeDefinition() :
-{ boolean closed = false ;
-  TripleExpression tripleExpr = null;
+{ boolean closed = false; TripleExpression tripleExpr = null;
   List<Node> extras = new ArrayList<Node>();
 }
 {
@@ -413,17 +412,10 @@ TripleExpression tripleExpression() : { int idx; }
 
 void tripleExpressionClause() : { int idx; } {
    { idx = startTripleExpressionClause(); }
+   // One of the rules below.
    tripleExpressionClause_1()
    { finishTripleExpressionClause(idx); }
 }
-
-// // Can end in single ";"
-// void tripleExpressionClause_0() : {}
-// {
-//     unaryTripleExpr()
-// // Allows ";;;"
-//     (<SEMI_COLON> ( unaryTripleExpr() )?)*
-// }
 
 // Iterative, but needs LOOKAHEAD(2)
 void tripleExpressionClause_1() : { }
@@ -1054,14 +1046,16 @@ TOKEN [IGNORE_CASE] :
 | <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
 | <#A2Z: ["a"-"z","A"-"Z"]>
 | <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
+| <#SURROGATE_PAIR: ["\uD800"-"\uDBFF"] ["\uDC00"-"\uDFFF"] >
 | <#PN_CHARS_BASE:
           ["A"-"Z"] | ["a"-"z"] |
           ["\u00C0"-"\u00D6"] | ["\u00D8"-"\u00F6"] | ["\u00F8"-"\u02FF"] |
           ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
           ["\u200C"-"\u200D"] | ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
           ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"] 
-          >
           // [#x10000-#xEFFFF]
+          | <SURROGATE_PAIR>
+          >
 |
   // With underscore
   <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >

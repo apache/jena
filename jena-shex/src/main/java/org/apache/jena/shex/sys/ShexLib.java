@@ -32,10 +32,7 @@ import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shex.ShexRecord;
 import org.apache.jena.shex.ShexReport;
 import org.apache.jena.shex.ShexStatus;
-import org.apache.jena.shex.expressions.ShapeExprVisitor;
-import org.apache.jena.shex.expressions.ShapeExprWalker;
-import org.apache.jena.shex.expressions.ShapeExpression;
-import org.apache.jena.shex.expressions.TripleExprVisitor;
+import org.apache.jena.shex.expressions.*;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -50,19 +47,54 @@ public class ShexLib {
         return uri.substring(idx);
     }
 
-    public static void walk(ShapeExpression shExpr, ShapeExprVisitor beforeVisitor, ShapeExprVisitor afterVisitor) {
-        ShapeExprWalker walker = new ShapeExprWalker(beforeVisitor, afterVisitor, null, null);
+//    public static void walk(ShapeExpression shExpr, ShapeExprVisitor beforeVisitor, ShapeExprVisitor afterVisitor) {
+//        TripleExprVisitor tExprVisitor = new TripleExprVisitor() {
+//            @Override public void visit(TripleConstraint object) {
+//                // One level call of visitor.
+//                //object.getPredicate();
+//                ShapeExpression theShapeExpression = object.getShapeExpression();
+//                if ( theShapeExpression != null )
+//                    theShapeExpression.visit(beforeVisitor);
+//            }
+//        };
+//
+//        ShapeExprWalker walker = new ShapeExprWalker(beforeVisitor, afterVisitor, tExprVisitor, null, null);
+//        shExpr.visit(walker);
+//    }
+
+    public static void walk(ShapeExpression shExpr,
+                             ShapeExprVisitor shapeVisitor,
+                             TripleExprVisitor tripleExpressionVisitor,
+                             NodeConstraintVisitor nodeConstraintVisitor
+                            ) {
+        TripleExprVisitor tExprVisitor = new TripleExprVisitor() {
+            @Override public void visit(TripleConstraint object) {
+                // One level call of visitor.
+                //object.getPredicate();
+                ShapeExpression theShapeExpression = object.getShapeExpression();
+                if ( theShapeExpression != null )
+                    theShapeExpression.visit(shapeVisitor);
+            }
+        };
+        ShapeExprWalker walker = new ShapeExprWalker(shapeVisitor, null,
+                                                     tripleExpressionVisitor, null,
+                                                     nodeConstraintVisitor);
         shExpr.visit(walker);
     }
 
-    public static void walk(ShapeExpression shExpr,
-                            ShapeExprVisitor beforeVisitor, ShapeExprVisitor afterVisitor,
-                            TripleExprVisitor beforeTripleExpressionVisitor, TripleExprVisitor afterTripleExpressionVisitor
-                            ) {
-        ShapeExprWalker walker = new ShapeExprWalker(beforeVisitor, afterVisitor,
-                                                     beforeTripleExpressionVisitor, afterTripleExpressionVisitor);
-        shExpr.visit(walker);
-    }
+
+    // XXX Does this make sense?
+//    private static void walk(ShapeExpression shExpr,
+//                             ShapeExprVisitor beforeVisitor, ShapeExprVisitor afterVisitor,
+//                             //TripleExprVisitor beforeTripleExpressionVisitor, TripleExprVisitor afterTripleExpressionVisitor,
+//                             //NodeConstraint beforeNodeConstraintVisitor, NodeConstraint afterNodeConstraintVisitor
+//                             NodeConstraintVisitor beforeNodeConstraintVisitor, NodeConstraint afterNodeConstraintVisitor
+//                            ) {
+//        ShapeExprWalker walker = new ShapeExprWalker(beforeVisitor, afterVisitor,
+//                                                     beforeTripleExpressionVisitor, afterTripleExpressionVisitor,
+//                                                     beforeNodeConstraintVisitor, afterNodeConstraintVisitor);
+//        shExpr.visit(walker);
+//    }
 
     private static PrefixMap displayPrefixMap = PrefixMapFactory.createForOutput();
     private static NodeFormatter nodeFmtAbbrev = new NodeFormatterTTL(null, displayPrefixMap);

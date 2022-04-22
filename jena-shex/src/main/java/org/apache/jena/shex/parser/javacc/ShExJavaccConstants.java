@@ -199,25 +199,27 @@ public interface ShExJavaccConstants {
   /** RegularExpression Id. */
   int A2ZN = 96;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 97;
+  int SURROGATE_PAIR = 97;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 98;
+  int PN_CHARS_BASE = 98;
   /** RegularExpression Id. */
-  int PN_CHARS = 99;
+  int PN_CHARS_U = 99;
   /** RegularExpression Id. */
-  int PN_PREFIX = 100;
+  int PN_CHARS = 100;
   /** RegularExpression Id. */
-  int PN_LOCAL = 101;
+  int PN_PREFIX = 101;
   /** RegularExpression Id. */
-  int VARNAME = 102;
+  int PN_LOCAL = 102;
   /** RegularExpression Id. */
-  int PN_LOCAL_ESC = 103;
+  int VARNAME = 103;
   /** RegularExpression Id. */
-  int PLX = 104;
+  int PN_LOCAL_ESC = 104;
   /** RegularExpression Id. */
-  int PERCENT = 105;
+  int PLX = 105;
   /** RegularExpression Id. */
-  int UNKNOWN = 106;
+  int PERCENT = 106;
+  /** RegularExpression Id. */
+  int UNKNOWN = 107;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -323,6 +325,7 @@ public interface ShExJavaccConstants {
     "<LANGTAG>",
     "<A2Z>",
     "<A2ZN>",
+    "<SURROGATE_PAIR>",
     "<PN_CHARS_BASE>",
     "<PN_CHARS_U>",
     "<PN_CHARS>",

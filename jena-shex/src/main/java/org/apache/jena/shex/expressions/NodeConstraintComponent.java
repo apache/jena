@@ -21,15 +21,36 @@ package org.apache.jena.shex.expressions;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.shex.sys.ReportItem;
 import org.apache.jena.shex.sys.ValidationContext;
 
-/**
- *  A shape expression that is always true.
- *  This is not a syntax element (see ShapeExprDOT).
+/** The elements making up
+    <pre>
+    NodeConstraint  {
+        id:shapeExprLabel?
+        nodeKind:("iri" | "bnode" | "nonliteral" | "literal")?
+        datatype:IRIREF?
+        xsFacet*
+        values:[valueSetValue+]?
+    }
+    </pre>
  */
-public class ShapeExprTrue extends ShapeExpression {
+public abstract class NodeConstraintComponent implements Satisfies, ShexPrintable {
 
-    public ShapeExprTrue(int x) {}
+    @Override
+    public boolean satisfies(ValidationContext vCxt, Node data) {
+        ReportItem item = nodeSatisfies(vCxt, data);
+        if ( item != null ) {
+            vCxt.reportEntry(item);
+            return false;
+        }
+        return true;
+    }
+
+    /** The function "nodeSatisfies" == satisfies2(n, nc)*/
+    public abstract ReportItem nodeSatisfies(ValidationContext vCxt, Node data);
+
+    public abstract void visit(NodeConstraintVisitor visitor);
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {
@@ -37,31 +58,11 @@ public class ShapeExprTrue extends ShapeExpression {
     }
 
     @Override
-    public boolean satisfies(ValidationContext vCxt, Node data) {
-        return true;
-    }
+    public abstract int hashCode();
 
     @Override
-    public void visit(ShapeExprVisitor visitor) {
-        visitor.visit(this);
-    }
+    public abstract boolean equals(Object other);
 
     @Override
-    public String toString() { return "ShapeExprTrue"; }
-
-    @Override
-    public int hashCode() {
-        return ShexConst.hashShExprTrue;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if ( this == obj )
-            return true;
-        if ( obj == null )
-            return false;
-        if ( getClass() != obj.getClass() )
-            return false;
-        return true;
-    }
+    public abstract String toString();
 }
