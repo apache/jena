@@ -18,6 +18,13 @@
 
 package org.apache.jena.query.text;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.ext.com.google.common.collect.Sets;
 import org.apache.jena.query.ReadWrite;
@@ -26,11 +33,6 @@ import org.apache.jena.vocabulary.RDFS;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class TestDatasetConcurrencyWithConfigurableAnalyzer extends AbstractTestDatasetWithAnalyzer {
     @Override
@@ -71,13 +73,13 @@ public class TestDatasetConcurrencyWithConfigurableAnalyzer extends AbstractTest
         ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
         try {
             for (int i = 0; i < 20; i++) {
-                Future<Boolean>[] results = (Future<Boolean>[]) new Future<?>[parallelism];
+                List<Future<Boolean>> results = new ArrayList<>(parallelism);
                 for (int j = 0; j < parallelism; j++) {
                     final int probe = i;
-                    results[j] = executorService.submit(() -> testOneQuery(probe));
+                    results.add(executorService.submit(() -> testOneQuery(probe)));;
                 }
                 for (int j = 0; j < parallelism; j++) {
-                    Assert.assertTrue("Probe " + i + " failed", results[j].get());
+                    Assert.assertTrue("Probe " + i + " failed", results.get(j).get());
                 }
             }
         } catch (InterruptedException e) {

@@ -320,8 +320,14 @@ public class Dispatcher {
             return Update;
 
         // ---- Content-type
-        // This does not have the ";charset="
         String ct = request.getContentType();
+        // Without ";charset="
+        if ( ct != null ) {
+            int idx = ct.indexOf(';');
+            if ( idx > 0 )
+                ct = ct.substring(0, idx);
+        }
+        // -- Any registration?
         if ( ct != null ) {
             Operation operation = action.getOperationRegistry().findByContentType(ct);
             if ( operation != null )

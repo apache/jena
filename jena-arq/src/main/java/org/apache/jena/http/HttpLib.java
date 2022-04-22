@@ -392,7 +392,9 @@ public class HttpLib {
     public static String urlEncodeQueryString(String str) {
         // java.net.URLEncoder is excessive - it encodes / and : which
         // is not necessary in a query string or fragment.
-        return IRILib.encodeUriQueryFrag(str);
+        String x1 = IRILib.encodeUriQueryFrag(str);
+        String x2 = IRILib.encodeNonASCII(x1);
+        return x2;
     }
 
     /** Query string is assumed to already be encoded. */

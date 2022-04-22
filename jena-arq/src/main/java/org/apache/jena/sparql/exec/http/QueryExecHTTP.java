@@ -75,7 +75,11 @@ public class QueryExecHTTP implements QueryExec {
         return QueryExecHTTP.newBuilder().endpoint(serviceURL);
     }
 
-    //public static final String QUERY_MIME_TYPE = WebContent.contentTypeSPARQLQuery;
+    // Blazegraph has a bug : it impacts wikidata.
+    // Unless the charset is set, wikidata interprets a POST as ISO-8859-??? (c.f. POST as form).
+    // https://github.com/blazegraph/database/issues/224
+    // Only applies to SendMode.asPost of a SPARQL query.
+    public static final String QUERY_MIME_TYPE = WebContent.contentTypeSPARQLQuery+";charset="+WebContent.charsetUTF8;
     private final Query query;
     private final String queryString;
     private final String service;
@@ -558,7 +562,7 @@ public class QueryExecHTTP implements QueryExec {
         // Use thisParams (for default-graph-uri etc)
         String requestURL = requestURL(service, thisParams.httpString());
         HttpRequest.Builder builder = HttpLib.requestBuilder(requestURL, httpHeaders, readTimeout, readTimeoutUnit);
-        contentTypeHeader(builder, WebContent.contentTypeSPARQLQuery);
+        contentTypeHeader(builder, QUERY_MIME_TYPE);
         acceptHeader(builder, acceptHeader);
         return builder.POST(BodyPublishers.ofString(queryString));
     }
