@@ -30,6 +30,7 @@ import org.junit.runners.Suite ;
     , TestTxn.class
     , TestTxnThread.class
     , TestJenaTitanium.class
+    , TestReadXML.class
     , TestRDFStarTranslation.class
 })
 
