@@ -92,7 +92,6 @@ public class ShapesParser {
      * Applications should call functions in {@link Shapes} rather than call the parser directly.
      */
     public static ParserResult parseProcess(Graph shapesGraph, Collection<Node> declaredNodes) {
-
         Targets targets = ShapesParser.targets(shapesGraph);
         ConstraintComponents sparqlConstraintComponents = ConstraintComponents.parseSparqlConstraintComponents(shapesGraph);
         TargetExtensions targetExtensions = TargetExtensions.parseSPARQLTargetType(shapesGraph);
@@ -141,7 +140,6 @@ public class ShapesParser {
         return x;
     }
 
-
     private static Map<Node, Shape> parseShapes(Graph shapesGraph, Targets targets, ConstraintComponents sparqlConstraintComponents, TargetExtensions targetExtensions) {
         Map<Node, Shape> shapesMap = new HashMap<>();
 
@@ -184,8 +182,13 @@ public class ShapesParser {
         }
 
         if ( DEBUG )
-            OUT.println("ConstraintComponents");
+            OUT.println("sh:target");
+        for ( Node shapeNode : targets.targetExtension ) {
+            parseShapeAcc(acc, shapesMap, shapesGraph, shapeNode);
+        }
 
+        if ( DEBUG )
+            OUT.println("ConstraintComponents");
         // Elsewhere? Keep the parser simply parsing?
         // Same for targets? Currently done at eval time.
         if ( sparqlConstraintComponents != null && ! sparqlConstraintComponents.hasParameters() ) {
@@ -198,16 +201,8 @@ public class ShapesParser {
                 }
             });
         }
-
-        if ( DEBUG )
-            OUT.println("sh:target");
-        for ( Node shapeNode : targets.targetExtension ) {
-            parseShapeAcc(acc, shapesMap, shapesGraph, shapeNode);
-        }
-
         // Syntax rules for well-formed shapes.
         //   https://www.w3.org/TR/shacl/#syntax-rules
-
         return shapesMap;
     }
 
