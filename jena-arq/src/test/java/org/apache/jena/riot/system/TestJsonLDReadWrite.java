@@ -152,7 +152,7 @@ public class TestJsonLDReadWrite
 
         for ( String prefix : namespaces.keySet() ) {
             if ( !prefix.isEmpty() )
-                Assert.assertEquals("Model does contain expected namespace " + prefix + ": <" + namespaces.get(prefix) + ">",
+                Assert.assertEquals("Model does not contain expected namespace " + prefix + ": <" + namespaces.get(prefix) + ">",
                                     namespaces.get(prefix), m.getNsPrefixURI(prefix));
         }
     }

@@ -21,7 +21,6 @@ package arq.examples.riot;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringReader;
 
 import com.github.jsonldjava.core.DocumentLoader;
 import com.github.jsonldjava.core.JsonLdOptions;
@@ -30,16 +29,16 @@ import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.JsonLDWriteContext;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.RDFWriter;
+import org.apache.jena.riot.*;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
-/** Example writing as JSON-LD */
+/**
+ * Example writing as JSON-LD using jsonlkd-java (JSON-LD 1.0)
+ * sNote the use of "JSONLD10"
+  */
 public class Ex_WriteJsonLD
 {
     public static void main(String[] args) {
@@ -63,18 +62,18 @@ public class Ex_WriteJsonLD
 
         // to get a default output: just do like for any other lang
         System.out.println("--- DEFAULT ---");
-        m.write(System.out, "JSON-LD");
+        RDFWriter.source(m).lang(Lang.JSONLD10).output(System.out);
 
-        // same thing, using the more modern RDFDataMgr, and specifying the RDFFormat
+        // same thing, using RDFDataMgr, and specifying the RDFFormat
         System.out.println("\n--- DEFAULT ---");
-        RDFDataMgr.write(System.out, m, RDFFormat.JSONLD);
+        RDFDataMgr.write(System.out, m, RDFFormat.JSONLD10);
 
         // output can be pretty (with line breaks), or not
         System.out.println("\n--- DEFAULT, PRETTY (same as above, BTW) ---");
-        RDFDataMgr.write(System.out, m, RDFFormat.JSONLD_PRETTY);
+        RDFDataMgr.write(System.out, m, RDFFormat.JSONLD10_PRETTY);
 
         System.out.println("\n--- DEFAULT, FLAT ---");
-        RDFDataMgr.write(System.out, m, RDFFormat.JSONLD_FLAT);
+        RDFDataMgr.write(System.out, m, RDFFormat.JSONLD10_FLAT);
 
         // all these default outputs use the JsonLD "Compact" format
         // (note the "@context" node in the output)
@@ -86,21 +85,21 @@ public class Ex_WriteJsonLD
         m.setNsPrefix("ex", "http://www.ex.com/");
         m.setNsPrefix("sh", "https://schema.org/");
         System.out.println("\n--- DEFAULT, model including prefix mappings ---");
-        RDFDataMgr.write(System.out, m, RDFFormat.JSONLD_PRETTY);
+        RDFDataMgr.write(System.out, m, RDFFormat.JSONLD10_PRETTY);
 
         // Besides "Compact", JSON-LD defines the following kinds of outputs: expanded, flattened, and framed
         // For each of them, there is a dedicated RDFFormat -- actually, 2 of them (one pretty, one flat)
-        // As previously seen, RDFFormat.JSONLD is just an alias of RDFFormat.JSONLD_COMPACT_PRETYY
+        // As previously seen, RDFFormat.JSONLD is just an alias of RDFFormat.JSONLD10_COMPACT_PRETYY
         // Let's try the other ones:
 
         // Expand is the fastest one
         // no @context in it
         System.out.println("\n--- EXPAND ---");
-        RDFDataMgr.write(System.out, m, RDFFormat.JSONLD_EXPAND_PRETTY);
+        RDFDataMgr.write(System.out, m, RDFFormat.JSONLD10_EXPAND_PRETTY);
 
         // flatten has an @context node
         System.out.println("\n--- FLATTEN ---");
-        RDFDataMgr.write(System.out, m, RDFFormat.JSONLD_FLATTEN_PRETTY);
+        RDFDataMgr.write(System.out, m, RDFFormat.JSONLD10_FLATTEN_PRETTY);
 
         // framed requires some more parameters to run, we'll get back to it later
     }
@@ -129,7 +128,7 @@ public class Ex_WriteJsonLD
         // (remember, "Context" here is not to be confused with "@context" in JSON-LD,
         // see {@link #write(DatasetGraph, RDFFormat, Context)})
         System.out.println("\n--- COMPACT with a null Context: same result as default ---");
-        write(g, RDFFormat.JSONLD_COMPACT_PRETTY, null);
+        write(g, RDFFormat.JSONLD10_COMPACT_PRETTY, null);
 
         // A Context is just a way to pass implementation-specific parameters as named values
         // to a given general interface (the WriterDatasetRIOT, in this case).
@@ -140,7 +139,7 @@ public class Ex_WriteJsonLD
         // so, the way to proceed is:
         // JsonLDWriteContext ctx = new JsonLDWriteContext();
         // ctx.setSomething(...)
-        // write(g, RDFFormat.JSONLD_COMPACT_PRETTY, ctx);
+        // write(g, RDFFormat.JSONLD10_COMPACT_PRETTY, ctx);
 
         // let's see now what can be customized with the JsonLDWriteContext object
 
@@ -183,7 +182,7 @@ public class Ex_WriteJsonLD
         String atContextAsJson = "{\"@vocab\":\"http://schema.org/\"}";
         ctx.setJsonLDContext(atContextAsJson);
         System.out.println("\n--- COMPACT using a Context that defines @vocab ---");
-        write(g, RDFFormat.JSONLD_COMPACT_PRETTY, ctx);
+        write(g, RDFFormat.JSONLD10_COMPACT_PRETTY, ctx);
     }
 
     /**
@@ -201,17 +200,17 @@ public class Ex_WriteJsonLD
         DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
         JsonLDWriteContext ctx = new JsonLDWriteContext();
 
-        // The following works with Uris returning JSON-LD or Uris returning an Alternate document location that is JSON-LD
-        // https://www.w3.org/TR/json-ld11/#alternate-document-location
-        // NOTE: This example will download the "@context" from the passed URL before processing the output, which can be slow.
+//        // The following works with Uris returning JSON-LD or Uris returning an Alternate document location that is JSON-LD
+//        // https://www.w3.org/TR/json-ld11/#alternate-document-location
+//        // NOTE: This example will download the "@context" from the passed URL before processing the output, which can be slow.
         ctx.setJsonLDContext("\"http://schema.org/\"");
         System.out.println("\n--- Setting the context to a URI, WRONG WAY: it's slow, and the output is not JSON-LD. Sorry about that. ---");
-        write(g, RDFFormat.JSONLD_COMPACT_PRETTY, ctx);
+        write(g, RDFFormat.JSONLD10_COMPACT_PRETTY, ctx);
 
         // Alternatively, if we know beforehand the resolved context, we can use the DocumentLoader as follows (much more performant):
         DocumentLoader dl = new DocumentLoader();
-        String resolvedContext = "\"@context\": {\"name\":{\"@id\":\"http://schema.org/name\"},\"Person\": {\"@id\": \"http://schema.org/Person\"}}";
-        dl.addInjectedDoc("http://schema.org", resolvedContext);
+        String resolvedContext = "{\"@context\": {\"name\":{\"@id\":\"http://schema.org/name\"},\"Person\": {\"@id\": \"http://schema.org/Person\"}}}";
+        dl.addInjectedDoc("https://schema.org/", resolvedContext);
         JsonLdOptions options = new JsonLdOptions();
         options.setDocumentLoader(dl);
         ctx.setOptions(options);
@@ -219,14 +218,14 @@ public class Ex_WriteJsonLD
         // Alternatively, we could just pass "null" as context and let jena compute it (as the model only uses schema.org vocab)
         // After that, we can substitute the output "@context" from Jena by whatever we want, in this case the URL http://schema.org/
         ctx.setJsonLDContext(null);
-        ctx.setJsonLDContextSubstitution("\"http://schema.org/\"");
+        ctx.setJsonLDContextSubstitution("\"https://schema.org/\"");
 
         // To summarize:
         // - ctx.setJsonLDContext allows to define the @context used to produce the output in compacted/frame/flatten algorithms
         // - ctx.setOptions allows to define the Json-LD options and override the remote context URI resolutions (using DocumentLoader)
         // - ctx.setJsonLDContextSubstitution allows to override the output value of the "@context" after the compaction/frame/flattening algorithms have already been executed
         System.out.println("\n--- COMPACT with @context replaced by schema.org URI ---");
-        write(g, RDFFormat.JSONLD_COMPACT_PRETTY, ctx);
+        write(g, RDFFormat.JSONLD10_COMPACT_PRETTY, ctx);
 
         // Final note: BEWARE when replacing the context:
         // if you let some things undefined, the output will be json, not jsonld
@@ -265,7 +264,7 @@ public class Ex_WriteJsonLD
         String frame = "{\"@type\" : \"http://schema.org/Person\"}";
         ctx.setFrame(frame);
         System.out.println("\n--- Using frame to select resources to be output: only output persons ---");
-        write(g, RDFFormat.JSONLD_FRAME_PRETTY, ctx);
+        write(g, RDFFormat.JSONLD10_FRAME_PRETTY, ctx);
     }
 
     /**
@@ -282,7 +281,7 @@ public class Ex_WriteJsonLD
         ctx.setOptions(opts);
         opts.setCompactArrays(false); // default is true
         System.out.println("\n--- COMPACT with CompactArrays false: there is an @graph node");
-        write(g, RDFFormat.JSONLD_COMPACT_PRETTY, ctx);
+        write(g, RDFFormat.JSONLD10_COMPACT_PRETTY, ctx);
     }
 
     /**
@@ -295,7 +294,7 @@ public class Ex_WriteJsonLD
      * and we pass a "Context" object (not to be confused with the "@context" in JSON-LD) as argument to its write method
      *
      * @param out
-     * @param f RDFFormat of the output, eg. RDFFormat.JSONLD_COMPACT_PRETTY
+     * @param f RDFFormat of the output, eg. RDFFormat.JSONLD10_COMPACT_PRETTY
      * @param g the data that we want to output as JSON-LD
      * @param ctx the object that allows to control the writing process (a set of parameters)
      */
@@ -317,7 +316,7 @@ public class Ex_WriteJsonLD
     // following 2 methods: if you want to test
     // that everything is OK in a roundtrip: model -> jsonld -> model
     // something like:
-    // String jsonld = write2String(g, RDFFormat.JSONLD_COMPACT_PRETTY, ctx);
+    // String jsonld = write2String(g, RDFFormat.JSONLD10_COMPACT_PRETTY, ctx);
     // Model m2 = parse(jsonld);
     // System.out.println("ISO : " + m.isIsomorphicWith(m2));
 
@@ -331,10 +330,9 @@ public class Ex_WriteJsonLD
     }
 
     /** Parse a jsonld string into a Model */
-    private Model parse(String jsonld) {
+    private Model parse(String jsonldStr) {
         Model m = ModelFactory.createDefaultModel();
-        StringReader reader = new StringReader(jsonld);
-        m.read(reader, null, "JSON-LD");
+        RDFParser.fromString(jsonldStr).lang(Lang.JSONLD10).parse(m);
         return m;
     }
 
