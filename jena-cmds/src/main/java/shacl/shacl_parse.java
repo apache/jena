@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -73,7 +74,7 @@ public class shacl_parse extends CmdGeneral {
 
     public shacl_parse(String[] argv) {
         super(argv) ;
-        super.add(argOutput,  "--output=",      "Output formats: RDF, compact, text (default, terse)");
+        super.add(argOutput,  "--output=",      "Output formats: RDF, compact, text (default, text)");
         super.add(argSyntax,  "--syntax=NAME",  "Set syntax (otherwise syntax guessed from file extension)");
         super.add(argBase,    "--base=URI",     "Set the base URI (does not apply to N-triples and N-Quads)");
     }
@@ -103,14 +104,14 @@ public class shacl_parse extends CmdGeneral {
                      );
              printText = values.remove("text") || values.remove("t");
              printCompact = values.remove("compact") || values.remove("c");
-             printRDF = values.remove("rdf") || values.remove("r");
+             printRDF = values.remove("rdf") || values.remove("r") || values.remove("ttl");
              if ( values.remove("all") || values.remove("a") ) {
                  printCompact = true;
                  printRDF = true;
                  printText = true;
              }
              if ( ! values.isEmpty() )
-                 throw new CmdException("Formats not recognized: "+values+" : Formats are 'text', 'compact', 'rdf' and 'all'");
+                 throw new CmdException("Formats not recognized: "+values+" : Formats are 'text', 'compact', 'rdf','ttl' and 'all'");
 
          } else {
              printCompact = false;
@@ -149,6 +150,17 @@ public class shacl_parse extends CmdGeneral {
 
     @Override
     protected void exec() {
+        boolean filesOK = true;
+        for ( String fn : positionals ) {
+            if ( ! "-".equals(fn) ) {
+                if ( ! IO.exists(fn) ) {
+                    System.err.println("File not found: "+fn);
+                    filesOK = false;
+                }
+            }
+        }
+        if ( ! filesOK )
+            throw new CmdException("File(s) not found");
         boolean multipleFiles = (positionals.size() > 1) ;
         positionals.forEach(fn->{
             exec(fn, multipleFiles);
@@ -163,16 +175,14 @@ public class shacl_parse extends CmdGeneral {
         try {
             Graph g = parseFile(fn);
             shapes = Shapes.parse(g);
-        }
-        catch ( RiotException ex ) { /*ErrorHandler logged this */ return; }
-        catch (ShaclParseException | ShaclcParseException /*| RiotException*/ ex) {
+        } catch (ShaclParseException | ShaclcParseException | RiotNotFoundException ex) {
             // Errors parsing the RDF.
             // Errors parsing SHACL Compact Syntax.
             if ( multipleFiles )
                 err.println(fn+" : ");
             err.println(ex.getMessage());
             return;
-        }
+        } catch ( RiotException ex ) { /*ErrorHandler logged this */ return; }
 
         boolean outputByPrev = false;
 

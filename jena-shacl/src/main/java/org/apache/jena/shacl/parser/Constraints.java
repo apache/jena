@@ -92,7 +92,7 @@ public class Constraints {
 
         dispatch.put( SHACL.minLength,         (g, s, p, o) -> new StrMinLengthConstraint(intValue(o)) );
         dispatch.put( SHACL.maxLength,         (g, s, p, o) -> new StrMaxLengthConstraint(intValue(o)) );
-        // in parseConstraint
+        // Below
         //dispatch.put( SHACL.pattern,           (g, p, o) -> notImplemented(p) );
         dispatch.put( SHACL.languageIn,        (g, s, p, o) -> new StrLanguageIn(listString(g, o)) );
         dispatch.put( SHACL.uniqueLang,        (g, s, p, o) -> new UniqueLangConstraint(booleanValueStrict(o)) );
@@ -101,10 +101,10 @@ public class Constraints {
         dispatch.put( SHACL.in,                (g, s, p, o) -> new InConstraint(list(g,o)) );
         dispatch.put( SHACL.closed,            (g, s, p, o) -> new ClosedConstraint(g,s,booleanValue(o)) );
 
-        dispatch.put( SHACL.equals,            (g, s, p, o) -> new EqualsConstraint(o) );
-        dispatch.put( SHACL.disjoint,          (g, s, p, o) -> new DisjointConstraint(o) );
-        dispatch.put( SHACL.lessThan,          (g, s, p, o) -> new LessThanConstraint(o) );
-        dispatch.put( SHACL.lessThanOrEquals,  (g, s, p, o) -> new LessThanOrEqualsConstraint(o) );
+        dispatch.put( SHACL.equals,            (g, s, p, o) -> new EqualsConstraint( checkObjectIRI(g, s, p, o)) );
+        dispatch.put( SHACL.disjoint,          (g, s, p, o) -> new DisjointConstraint( checkObjectIRI(g, s, p, o)) );
+        dispatch.put( SHACL.lessThan,          (g, s, p, o) -> new LessThanConstraint( checkObjectIRI(g, s, p, o)) );
+        dispatch.put( SHACL.lessThanOrEquals,  (g, s, p, o) -> new LessThanOrEqualsConstraint( checkObjectIRI(g, s, p, o)) );
 
         // Below
         //dispatch.put( SHACL.not,                (g, s, p, o) -> notImplemented(p) );
@@ -263,6 +263,12 @@ public class Constraints {
 
     private static Constraint notImplemented(Node p) {
         throw new NotImplemented(ShLib.displayStr(p));
+    }
+
+    static Node checkObjectIRI(Graph g, Node shape, Node p, Node o) {
+        if ( ! o.isURI() )
+            throw new ShaclParseException("IRI required: "+displayStr(o) + " at "+shape+" "+displayStr(p));
+        return o;
     }
 
     static int intValue(Node n) {

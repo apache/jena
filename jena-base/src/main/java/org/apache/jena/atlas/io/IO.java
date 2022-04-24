@@ -272,8 +272,8 @@ public class IO
         catch (IOException ex) { IO.exception(ex); return false; }
     }
 
-    public static boolean exists(String directory) {
-        Path path = Path.of(directory);
+    public static boolean exists(String fsname) {
+        Path path = Path.of(fsname);
         return Files.exists(path);
     }
 

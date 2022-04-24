@@ -267,7 +267,7 @@ void shapeRef(boolean inPropertyShape) : { Token t; String iriStr; }
 
 void propertyValue() : { String s; Node n; List<Node> x; }
 {
-  s = nodeParam()
+  s = propertyParam()
   <EQUALS>
   //value = iriOrLiteralOrArray()
   (
