@@ -158,7 +158,7 @@ public class ConstraintComponents {
         return parameterValues;
     }
 
-    /** This handles all ConstraintComponents; only SPARQL ones ar currently supported. */
+    /** This handles all ConstraintComponents; only SPARQL ones are currently supported. */
     private static SparqlComponent sparqlConstraintComponent(Graph shapesGraph, Node constraintComponentNode) {
         if ( SHACL.JSConstraintComponent.equals(constraintComponentNode) )
             return null;

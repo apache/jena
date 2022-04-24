@@ -32,6 +32,7 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.other.G;
+import org.apache.jena.riot.other.RDFDataException;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.PrefixMap;
@@ -271,9 +272,14 @@ public class ShLib {
     public static String extractSPARQLQueryString(Graph shapesGraph, Node sparqlNode) {
         // XXX Optimize prefixes acquisition in case of use from more than one place.
         String prefixes = prefixes(shapesGraph, sparqlNode);
-        Node selectNode = G.getOneSP(shapesGraph, sparqlNode, SHACL.select);
+        Node selectNode;
+        try {
+            selectNode = G.getOneSP(shapesGraph, sparqlNode, SHACL.select);
+        } catch (RDFDataException ex) {
+            throw new ShaclParseException("required - one sh:select at : "+sparqlNode);
+        }
         if ( ! Util.isSimpleString(selectNode) )
-            throw new ShaclParseException("Not a string for sh:select: "+ShLib.displayStr(selectNode));
+            throw new ShaclParseException("Not a string for sh:select at : "+ShLib.displayStr(selectNode));
         String selectQuery = selectNode.getLiteralLexicalForm();
         String qs = prefixes+"\n"+selectQuery;
         return qs;

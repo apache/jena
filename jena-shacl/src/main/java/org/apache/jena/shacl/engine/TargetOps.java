@@ -154,12 +154,20 @@ public class TargetOps {
         return G.allSP(data, null, target.getObject());
     }
 
+    /** Process target extensions.
+     * Supported:
+     * <ul>
+     * <li>SPARQL-based target -- {@code sh:target [ sh:select ]}
+     * <li>SPARQL-based target type -- {@code sh:target [ rdf:type ?T] } and {@code ?T rdf:type  sh:SPARQLTargetType}.
+     * </ul>
+     */
     public static Collection<Node> focusTargetExt(Graph data, Target target) {
         Graph shapesGraph = Objects.requireNonNull(target.getShapesGraph());
         Node targetArg = target.getObject();
 
+        // One step extensions.
+        // Is it a SPARQL-based target -- sh:target [ sh:select ] (regardless of rdf:type)
         if ( G.hasOneSP(shapesGraph, targetArg, SHACL.select) ) {
-            // SPARQL-based target -- sh:target [ sh:select ]
             Query query = ShLib.extractSPARQLQuery(shapesGraph, targetArg);
             if ( ! query.isSelectType() )
                 throw new ShaclException("Not a SELECT query");
@@ -168,29 +176,36 @@ public class TargetOps {
             return EvalSparql.evalSparqlOneVar(qExec);
         }
 
-        if ( G.isOfType(shapesGraph, targetArg, SHACL.Target) ) {
-            // Now find the type.
-            Node type;
-            List<Node> types = G.typesOfNodeAsList(shapesGraph, targetArg);
-            if ( types.size() == 1 )
-                // It passed the G.isOfType test.
-                type = CollectionUtils.oneElt(types);
-            else {
-                Set<Node> allClasses = G.subClasses(shapesGraph, SHACL.Target);
-                // Find any(first) in allClasses
-                Optional<Node> x = types.stream().filter(t->allClasses.contains(t)).findFirst();
-                type = x.orElseThrow();
-            }
+        // Two step extensions by rdf:type
+        // Is it a SPARQL-based target type -- sh:target [ rdf:type ?T ] and ?T rdf:type  sh:SPARQLTargetType.
 
-            try {
-                // This is also available via the Shapes object.
-                // Maybe attach to the target as it is created.
-                // But this is at the point of deciding focus nodes so called
-                // one (per target shape) not every validation of a focus node.
-                SparqlComponent sparqlComponent = TargetExtensions.sparqlTargetType(shapesGraph, type);
-                return EvalSparql.evalSparqlComponent(data, target.getObject(), sparqlComponent);
-            } catch(Exception ex) {
-                ex.printStackTrace();
+        // Declared type.
+        List<Node> targetExt = G.typesOfNodeAsList(shapesGraph, targetArg);
+        for ( Node ext : targetExt ) {
+            if ( G.isOfType(shapesGraph, ext, SHACL.SPARQLTargetType) ) {
+                // Now find the type.
+                Node type;
+                List<Node> types = G.typesOfNodeAsList(shapesGraph, targetArg);
+                if ( types.size() == 1 )
+                    // It passed the G.isOfType test.
+                    type = CollectionUtils.oneElt(types);
+                else {
+                    Set<Node> allClasses = G.subClasses(shapesGraph, SHACL.Target);
+                    // Find any(first) in allClasses
+                    Optional<Node> x = types.stream().filter(t->allClasses.contains(t)).findFirst();
+                    type = x.orElseThrow();
+                }
+
+                try {
+                    // This is also available via the Shapes object.
+                    // Maybe attach to the target as it is created.
+                    // But this is at the point of deciding focus nodes so called
+                    // one (per target shape) not every validation of a focus node.
+                    SparqlComponent sparqlComponent = TargetExtensions.sparqlTargetType(shapesGraph, type);
+                    return EvalSparql.evalSparqlComponent(data, target.getObject(), sparqlComponent);
+                } catch(Exception ex) {
+                    throw ex;
+                }
             }
         }
         throw new ShaclException("Unknown target extension");
