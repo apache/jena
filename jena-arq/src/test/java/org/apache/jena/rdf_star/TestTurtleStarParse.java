@@ -70,7 +70,7 @@ public class TestTurtleStarParse {
         string = "PREFIX : <http://example/>\n"+string;
 
         Lang lang1 = Lang.TURTLE;
-        Lang lang2 = TurtleJCC.lang;
+        Lang lang2 = TurtleJCC.TTLJCC;
         Lang lang = lang1;
 
         RDFParser.fromString(string).lang(lang).errorHandler(silent).parse(sink);

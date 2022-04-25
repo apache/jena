@@ -33,7 +33,7 @@ import com.github.jsonldjava.core.JsonLdError ;
 import com.github.jsonldjava.core.RDFDataset ;
 
 /** Convert from JSON-LD syntax to JSON-LD internal representation of a dataset, using Jena Quads/Nodes etc */
-class JenaRDF2JSONLD implements com.github.jsonldjava.core.RDFParser {
+class JenaRDF2JSONLD10 implements com.github.jsonldjava.core.RDFParser {
     NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
 
     @Override
@@ -87,7 +87,7 @@ class JenaRDF2JSONLD implements com.github.jsonldjava.core.RDFParser {
             }
         }                
         else
-            Log.warn(JenaRDF2JSONLD.class, "unknown") ;
+            Log.warn(JenaRDF2JSONLD10.class, "unknown") ;
         return result ;
     }
 

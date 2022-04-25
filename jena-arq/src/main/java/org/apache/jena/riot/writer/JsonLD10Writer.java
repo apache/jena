@@ -197,7 +197,7 @@ public class JsonLD10Writer extends WriterDatasetRIOTBase
 
         // with this, we cannot call the json-ld fromRDF method that assumes no duplicates in RDFDataset
         // Object obj = JsonLdProcessor.fromRDF(dataset, opts, new JenaRDF2JSONLD()) ;
-        final RDFDataset jsonldDataset = (new JenaRDF2JSONLD()).parse(dataset);
+        final RDFDataset jsonldDataset = (new JenaRDF2JSONLD10()).parse(dataset);
         Object obj = (new JsonLdApi(opts)).fromRDF(jsonldDataset, true); // true because we know that we don't have any duplicate in jsonldDataset
 
         if (variant.isExpand()) {

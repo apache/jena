@@ -39,7 +39,7 @@ import org.junit.Test;
 
 public class TestJsonLDReader {
 
-    // These tests fail under java11 (but not java17)
+    // These tests fail under some java11 (but not java17)
     // for RIOT default JSON-LD 1.1 because Titanium contacts schema.org
     // with java.net.http/HTTP2 (default version setting)
     // which fails.
@@ -47,7 +47,7 @@ public class TestJsonLDReader {
     @Test
     public final void simpleReadTest() throws IOException {
         String jsonld = someSchemaDotOrgJsonld();
-        Dataset ds = jsonld2dataset(jsonld, null);
+        Dataset ds = jsonld2dataset(jsonld, null, Lang.JSONLD);
         assertJohnDoeIsOK(ds.getDefaultModel());
     }
 
@@ -64,7 +64,7 @@ public class TestJsonLDReader {
         jenaCtx.setJsonLDContext(schemaOrgResolvedContext());
 
         // read the jsonld, replacing its "@context"
-        Dataset ds = jsonld2dataset(jsonld, jenaCtx);
+        Dataset ds = jsonld2dataset(jsonld, jenaCtx, Lang.JSONLD);
 
         // check ds is correct
         assertJohnDoeIsOK(ds.getDefaultModel());
@@ -85,7 +85,8 @@ public class TestJsonLDReader {
         jenaCtx.setOptions(options);
 
         // read the jsonld, replacing its "@context"
-        Dataset ds = jsonld2dataset(jsonld, jenaCtx);
+        // Uses JsonLdOptions which is specific to jsonld-java (1.0).
+        Dataset ds = jsonld2dataset(jsonld, jenaCtx, Lang.JSONLD10);
 
         // check ds is correct
         assertJohnDoeIsOK(ds.getDefaultModel());
@@ -96,12 +97,12 @@ public class TestJsonLDReader {
      * @return a new Dataset
      * @throws IOException
      */
-    private Dataset jsonld2dataset(String jsonld, Context jenaCtx) throws IOException {
+    private Dataset jsonld2dataset(String jsonld, Context jenaCtx, Lang lang) throws IOException {
         Dataset ds = DatasetFactory.create();
         RDFParser.create()
             .fromString(jsonld)
             .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
-            .lang(Lang.JSONLD)
+            .lang(lang)
             .context(jenaCtx)
             .parse(ds.asDatasetGraph());
         return ds;
