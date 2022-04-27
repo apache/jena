@@ -30,9 +30,7 @@ import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -323,8 +321,7 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
         }
 
         //Check the QueryRewriteIndex for the result.
-        Property predicateProp = ResourceFactory.createProperty(predicate.getURI());
-        Boolean isPositive = queryRewriteIndex.test(subjectSpatialLiteral.getGeometryLiteral(), predicateProp, objectSpatialLiteral.getGeometryLiteral(), this);
+        Boolean isPositive = queryRewriteIndex.test(subjectSpatialLiteral.getGeometryLiteral(), predicate, objectSpatialLiteral.getGeometryLiteral(), this);
         return isPositive;
     }
 

@@ -20,19 +20,17 @@ package org.apache.jena.geosparql.implementation.index;
 import io.github.galbiston.expiring_map.ExpiringMap;
 import static io.github.galbiston.expiring_map.MapDefaultValues.MAP_EXPIRY_INTERVAL;
 import static io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_MAP;
-import java.util.Map.Entry;
-import java.util.Objects;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.geo.topological.GenericPropertyFunction;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
@@ -43,7 +41,7 @@ public class QueryRewriteIndex {
 
     private boolean indexActive;
     private final String queryRewriteLabel;
-    private ExpiringMap<IndexKey, Boolean> index;
+    private ExpiringMap<Triple, Boolean> index;
     private static String LABEL_DEFAULT = "Query Rewrite";
     private static int MAP_SIZE_DEFAULT = UNLIMITED_MAP;
     private static long MAP_EXPIRY_INTERVAL_DEFAULT = MAP_EXPIRY_INTERVAL;
@@ -74,14 +72,14 @@ public class QueryRewriteIndex {
      * @param propertyFunction
      * @return Result of relation between subject and object.
      */
-    public final Boolean test(Node subjectGeometryLiteral, Property predicate, Node objectGeometryLiteral, GenericPropertyFunction propertyFunction) {
+    public final Boolean test(Node subjectGeometryLiteral, Node predicate, Node objectGeometryLiteral, GenericPropertyFunction propertyFunction) {
 
         if (!subjectGeometryLiteral.isLiteral() || !objectGeometryLiteral.isLiteral()) {
             return false;
         }
 
         if (indexActive) {
-            IndexKey key = new IndexKey(subjectGeometryLiteral.getLiteralLexicalForm(), predicate.getURI(), objectGeometryLiteral.getLiteralLexicalForm());            
+            Triple key = new Triple(subjectGeometryLiteral, predicate, objectGeometryLiteral);            
             try {
                 return index.computeIfAbsent(key, k -> propertyFunction.testFilterFunction(subjectGeometryLiteral, objectGeometryLiteral));                
             } catch (NullPointerException ex) {
@@ -133,19 +131,14 @@ public class QueryRewriteIndex {
      * @return Model containing all true assertions.
      */
     public Model toModel() {
-        Model model = ModelFactory.createDefaultModel();
-        for (Entry<IndexKey, Boolean> entry : index.entrySet()) {
-            Boolean value = entry.getValue();
-            if (value) {
-                IndexKey key = entry.getKey();
-                Resource subject = ResourceFactory.createResource(key.subject);
-                Property property = ResourceFactory.createProperty(key.predicate);
-                Resource object = ResourceFactory.createResource(key.object);
-                model.add(subject, property, object);
+        Graph graph = GraphFactory.createDefaultGraph();
+        index.entrySet().forEach((entry) -> {            
+            if (entry.getValue()) {
+                graph.add(entry.getKey());
             }
-        }
+        });
 
-        return model;
+        return ModelFactory.createModelForGraph(graph);
     }
 
     /**
@@ -290,48 +283,5 @@ public class QueryRewriteIndex {
         prepare(dataset);
 
         return dataset;
-    }
-    
-    private class IndexKey {
-        
-        private final String subject;
-        private final String predicate;
-        private final String object;
-        
-        public IndexKey(String subject, String predicate, String object){
-            this.subject = subject;
-            this.predicate = predicate;
-            this.object = object;
-        }
-        
-        @Override
-        public int hashCode() {
-            int hash = 5;
-            hash = 71 * hash + Objects.hashCode(this.subject);
-            hash = 71 * hash + Objects.hashCode(this.predicate);
-            hash = 71 * hash + Objects.hashCode(this.object);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final IndexKey other = (IndexKey) obj;
-            if (!Objects.equals(this.predicate, other.predicate)) {
-                return false;
-            }
-            if (!Objects.equals(this.subject, other.subject)) {
-                return false;
-            }
-            return Objects.equals(this.object, other.object);
-        }
     }
 }
