@@ -674,7 +674,7 @@ public class FusekiServer {
 
         /**
          * Add a dataset, do not configure it in this call. Subsequent calls of
-         * {@code addEndpoint} and {@:code addOperation} will be needed to give this
+         * {@code addEndpoint} and {@code addOperation} will be needed to give this
          * dataset some functionality.
          * <p>
          * This operation replaces any previous dataset and configuration with the same canonical name.
