@@ -141,7 +141,9 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
         JsonArray array = FromRdfProcessor.fromRdf(doc, options);
 
         // Build context
-        JsonObjectBuilder cxt = Json.createObjectBuilder().add(Keywords.VERSION, "1.1");
+        JsonObjectBuilder cxt = Json.createObjectBuilder();
+        // Do not add @version. JSON-LD 1.0 processors would reject any input even if it is OK for JSON-LD 1.0.
+        //cxt.add(Keywords.VERSION, "1.1");
         dsg.prefixes().forEach((k, v) -> {
             if ( ! k.isEmpty() )
                 cxt.add(k, v);
