@@ -18,23 +18,60 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import org.apache.jena.reasoner.rulesys.Rule ;
-import org.apache.jena.shared.RulesetNotFoundException ;
-import org.apache.jena.shared.WrappedIOException ;
+import org.apache.jena.reasoner.rulesys.BuiltinRegistry;
+import org.apache.jena.reasoner.rulesys.MapBuiltinRegistry;
+import org.apache.jena.reasoner.rulesys.Rule;
+import org.apache.jena.reasoner.rulesys.builtins.BaseBuiltin;
+import org.apache.jena.shared.RulesetNotFoundException;
+import org.apache.jena.shared.WrappedIOException;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 /**
  * Tests for the rule loader
  */
 public class TestRuleLoader  {
-    
+
+    private static BuiltinRegistry createBuiltinRegistry() {
+        BuiltinRegistry br = new MapBuiltinRegistry();
+        br.register(new BaseBuiltin() {
+            @Override
+            public String getName() {
+                return "customBuiltin";
+            }
+        });
+        return br;
+    }
+
     @Test(expected=RulesetNotFoundException.class)
     public void load_from_file_uri_non_existent() {
         Rule.rulesFromURL("file:///no-such-file.txt");
     }
-    
+
+    @Test
+    public void load_from_file_with_include_uri_non_existent() {
+        RulesetNotFoundException e = assertThrows(RulesetNotFoundException.class,
+                () -> Rule.rulesFromURL("testing/reasoners/rules/include-test-not-found.rules"));
+        assertEquals("file:testing/reasoners/includeAlt.rules", e.getURI());
+    }
+
     @Test(expected=WrappedIOException.class)
     public void load_from_file_bad_encoding() {
         Rule.rulesFromURL("testing/reasoners/bugs/bad-encoding.rules");
+    }
+
+    /**
+     * Test that {@link Rule#rulesFromURL(String, BuiltinRegistry)} uses the builtin registry argument given.
+     */
+    @Test
+    public void load_from_file_with_custom_builtins() {
+        BuiltinRegistry br = createBuiltinRegistry();
+        List<Rule> rules = Rule.rulesFromURL("testing/reasoners/bugs/custom-builtins.rules", br);
+        assertEquals(List.of("ruleWithBuiltin"), rules.stream().map(Rule::getName).collect(Collectors.toList()));
     }
 }

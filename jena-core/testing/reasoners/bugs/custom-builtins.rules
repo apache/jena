@@ -1,0 +1,4 @@
+@prefix ex: <https://example.com/>
+
+# rule uses a custom builtin
+ruleWithBuiltin: (?s ?p ?o) -> customBuiltin(?s, ?p, ?o) .

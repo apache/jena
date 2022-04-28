@@ -510,7 +510,7 @@ public class Rule implements ClauseEntry {
             InputStream in = FileManager.getInternal().open(uri);
             if (in == null) throw new RulesetNotFoundException( uri );
             br = FileUtils.asBufferedUTF8( in );
-            return parseRules( Rule.rulesParserFromReader( br ) );
+            return parseRules( Rule.rulesParserFromReader( br, registry ) );
         } finally {
             if (br != null) try { br.close(); } catch (IOException e2) {}
         }
