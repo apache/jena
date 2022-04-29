@@ -92,7 +92,7 @@ public interface FusekiModule extends SubsystemLifecycle {
       * The default implementation is to call {@link #configDataAccessPoint(DataAccessPoint, Model)}
       * for each {@link DataAccessPoint}.
       * <pre>
-      *    dapRegistry.accessPoints().forEach(accessPoint->configDataAccessPoint(accessPoint, configModel));
+      *    dapRegistry.accessPoints().forEach(accessPoint{@literal ->}configDataAccessPoint(accessPoint, configModel));
       * </pre>
       */
     public default void configured(DataAccessPointRegistry dapRegistry, Model configModel) {
