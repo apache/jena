@@ -28,6 +28,7 @@ import org.apache.jena.util.iterator.NullIterator ;
 
 */
 
+@SuppressWarnings("deprecation")
 public class Factory
     {
     private Factory()
@@ -42,6 +43,8 @@ public class Factory
     public static Graph createGraphMem()
         { return new GraphMem(); }
 
+    /** @deprecated To be removed */
+    @Deprecated
     public static Graph createGraphMemWithTransactionHandler( final TransactionHandler th )
         {
         Graph g = new GraphMem()
@@ -53,8 +56,7 @@ public class Factory
         return g;
         }
 
-    private static Graph emptyGraph = new GraphBase() {
-
+    private final static Graph emptyGraph = new GraphBase() {
         @Override
         protected ExtendedIterator<Triple> graphBaseFind(Triple triplePattern) {
             return NullIterator.instance() ;
