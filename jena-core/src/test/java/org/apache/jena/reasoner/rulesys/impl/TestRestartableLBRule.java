@@ -18,14 +18,16 @@
 
 package org.apache.jena.reasoner.rulesys.impl;
 
+import java.util.Iterator;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.apache.jena.graph.Factory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.graph.impl.TransactionHandlerBase;
-import org.apache.jena.mem.GraphMem;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
 import org.apache.jena.reasoner.rulesys.Rule;
@@ -34,8 +36,6 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
-
-import java.util.Iterator;
 
 public class TestRestartableLBRule extends TestCase {
 
@@ -107,7 +107,7 @@ public class TestRestartableLBRule extends TestCase {
 
     class DummyTxnGraph extends GraphBase implements Graph {
         TransactionHandler th = new DummyTxnHandler();
-        Graph base = new GraphMem();
+        Graph base = Factory.createGraphMem();
 
         @Override
         public void performAdd( Triple t ) { base.add(t); }

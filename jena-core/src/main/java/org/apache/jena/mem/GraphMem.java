@@ -22,6 +22,11 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.graph.impl.TripleStore ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
+/** @deprecated This implementation of GraphMem will be replaced by a new implementation at Jena 4.6.0.
+ *   Application should be using {@link Factory#createDefaultGraph()} for a general purpose graph or {@link Factory#createGraphMem()}
+ *   to specific this style of implementation.
+*/
+@Deprecated
 public class GraphMem extends GraphMemBase
 {
     public GraphMem()
