@@ -35,7 +35,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>4.5.0-SNAPSHOT</version>
+    <version>4.5.0</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -58,13 +58,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>4.5.0-SNAPSHOT</version>
+      <version>4.5.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>4.5.0-SNAPSHOT</version>
+      <version>4.5.0</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -72,13 +72,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>4.5.0-SNAPSHOT</version>
+      <version>4.5.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>4.5.0-SNAPSHOT</version>
+      <version>4.5.0</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -86,13 +86,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>4.5.0-SNAPSHOT</version>
+      <version>4.5.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>4.5.0-SNAPSHOT</version>
+      <version>4.5.0</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -100,13 +100,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shacl</artifactId>
-      <version>4.5.0-SNAPSHOT</version>
+      <version>4.5.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shacl</artifactId>
-      <version>4.5.0-SNAPSHOT</version>
+      <version>4.5.0</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -114,13 +114,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shex</artifactId>
-      <version>4.5.0-SNAPSHOT</version>
+      <version>4.5.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shex</artifactId>
-      <version>4.5.0-SNAPSHOT</version>
+      <version>4.5.0</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -128,7 +128,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>4.5.0-SNAPSHOT</version>
+      <version>4.5.0</version>
     </dependency>
 
     <!-- Require a logging implementation for command line tools --> 
@@ -141,7 +141,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>4.5.0-SNAPSHOT</version>
+      <version>4.5.0</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
