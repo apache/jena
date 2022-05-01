@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>4.5.0</version>
+    <version>4.6.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent> 
 
@@ -43,13 +43,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>4.5.0</version>
+      <version>4.6.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-access</artifactId>
-      <version>4.5.0</version>
+      <version>4.6.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -136,9 +136,4 @@
     </plugins>
 
   </build>
-  
-
-  <scm>
-    <tag>jena-4.5.0</tag>
-  </scm>
 </project>
