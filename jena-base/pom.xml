@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>4.6.0-SNAPSHOT</version>
+    <version>4.5.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>jena-base</artifactId>
@@ -45,7 +45,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shaded-guava</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>4.5.0-SNAPSHOT</version>
     </dependency>
     
     <!-- For compiling the log4j2 helper code. -->
