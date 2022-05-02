@@ -33,8 +33,8 @@ public abstract class ActionService extends ActionBase {
     @Override
     protected void executeLifecycle(HttpAction action) {
         // And also HTTP counter
-        
-        CounterSet csService = 
+
+        CounterSet csService =
             (action.getDataService() == null) ? null : action.getDataService().getCounters();
         CounterSet csOperation = null;
         if ( action.getEndpoint() != null )

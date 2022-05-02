@@ -96,9 +96,9 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
      *  delegated call.  Changes to the wrapped object can be
      *  made based on that contract.
      */
-    protected DatasetGraph get() { return dsg; }
+    protected DatasetGraph get()  { return dsg; }
 
-    protected Context getCxt()   { return context; }
+    protected Context getCxt()    { return context; }
 
     /** For operations that only read the DatasetGraph. */
     protected DatasetGraph getR() { return get(); }
