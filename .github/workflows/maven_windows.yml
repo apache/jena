@@ -19,7 +19,7 @@ jobs:
     # "windows" takes up a lot of diskspace due a longstanding JDK issue
     # Running on c: seems to work.
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up JDK 11
       uses: actions/setup-java@v1
