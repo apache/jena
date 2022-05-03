@@ -25,7 +25,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '11'
-	distribution: 'temurin'
+        distribution: 'temurin'
 
     - name: copy checked out dir to /c/jena for windows-latest
       run: bash -c "cp -r /d/a/jena/jena /c/jena"
