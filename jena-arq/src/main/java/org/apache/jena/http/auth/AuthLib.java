@@ -62,14 +62,15 @@ public class AuthLib {
         List<String> headers = httpResponse.headers().allValues("WWW-Authenticate");
         if ( headers.size() == 0 )
             return null;
-        // Choose first digest or first basic.
+        // Choose first digest or first basic. Prefer digest to basic.
         AuthChallenge aHeader = null;
         String result = null;
         for ( String headerValue : headers ) {
             AuthChallenge aHeader2 = AuthChallenge.parse(headerValue);
-            if ( aHeader2 == null )
+            if ( aHeader2 == null ) {
                 AuthEnv.LOG.warn("Bad authentication response - ignored: "+headerValue);
-            // Prefer Digest
+                return null;
+            }
             switch(aHeader2.authScheme) {
                 case  DIGEST :
                     return aHeader2;
@@ -78,6 +79,8 @@ public class AuthLib {
                         // Choose first Basic auth for now - there may also be a Digest.
                         aHeader = aHeader2;
                     break;
+                case BEARER:
+                case UNKNOWN:
                 default:
                     AuthEnv.LOG.warn("Unrecogized authentication response - ignored: "+headerValue);
             }
