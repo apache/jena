@@ -18,10 +18,10 @@
 
 package org.apache.jena.http.auth;
 
-import static org.apache.jena.http.auth.RFC2617.A1_MD5;
-import static org.apache.jena.http.auth.RFC2617.A2_auth;
-import static org.apache.jena.http.auth.RFC2617.H;
-import static org.apache.jena.http.auth.RFC2617.KD;
+import static org.apache.jena.http.auth.AuthHttp.A1_MD5;
+import static org.apache.jena.http.auth.AuthHttp.A2_auth;
+import static org.apache.jena.http.auth.AuthHttp.H;
+import static org.apache.jena.http.auth.AuthHttp.KD;
 
 import java.net.Authenticator;
 import java.net.Authenticator.RequestorType;
@@ -37,7 +37,7 @@ import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.riot.web.HttpNames;
 
-public class DigestLib {
+class DigestLib {
 
     /** From the challenge, username and password, calculate the response.field. */
     public static String calcDigestChallengeResponse(AuthChallenge auth,

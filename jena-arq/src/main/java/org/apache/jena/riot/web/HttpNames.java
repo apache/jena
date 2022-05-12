@@ -29,6 +29,7 @@ public class HttpNames
 
     public static final String hAllow               = "Allow" ;
     public static final String hAuthorization       = "Authorization";
+    public static final String hWWWAuthenticate     = "WWW-Authenticate";
     public static final String hContentEncoding     = "Content-Encoding" ;
     public static final String hContentLength       = "Content-Length" ;
     public static final String hContentLocation     = "Content-Location" ;

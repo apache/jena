@@ -616,7 +616,7 @@ public class HttpLib {
     }
 
     /**
-     * Allow setting additional/optional query parameters on a per remote service (including for SERVICE).
+     * Allow setting additional/optional HTTP headers and query parameters on a per remote service (including for SERVICE) basis.
      * <ul>
      * <li>ARQ.httpRequestModifer - the specific modifier</li>
      * <li>ARQ.httpRegistryRequestModifer - the registry, keyed by service URL.</li>

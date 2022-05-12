@@ -29,58 +29,84 @@ public class AuthChallenge {
      * Map key name used to record the authentication scheme (entries in the header
      * are lower case and never clash with this name).
      */
-    public static String SCHEME = "SCHEME";
-
     public final AuthScheme authScheme;
     public final String realm;
     public final String nonce;
     public final String opaque;
     public final String qop;
-    public final Map<String, String> parsed;
+    // May be null;
+    public final Map<String, String> authParams;
 
     /** Parse "WWW-Authenticate:" challenge message */
     static public AuthChallenge parse(String authHeaderStr) {
-        Map<String, String> authHeader = null;
+        AuthHeaderParser auth;
         try {
-            authHeader = AuthStringTokenizer.parse(authHeaderStr);
+            auth = AuthHeaderParser.parse(authHeaderStr);
+            if ( auth == null )
+                return null;
+            if ( auth.getAuthScheme() == null )
+                return null;
         } catch (Throwable ex) {
             return null;
         }
         try {
-            if ( ! authHeader.containsKey(SCHEME) )
-                return null;
-            AuthScheme authScheme = AuthScheme.scheme(authHeader.get(SCHEME));
+            //Checking.
+            AuthScheme authScheme = auth.getAuthScheme();
             switch(authScheme) {
                 case DIGEST :
-                    nonNull(RFC2617.strNonce, authHeader.get(RFC2617.strNonce));
-                    nonNull(RFC2617.strRealm, authHeader.get(RFC2617.strRealm));
+                    nonNull(auth, AuthHttp.strNonce);
+                    nonNull(auth, AuthHttp.strRealm);
                     break;
                 case BASIC :
-                    nonNull(RFC2617.strRealm, authHeader.get(RFC2617.strRealm));
+                    // This is the challenge so realm is required.
+                    nonNull(auth, AuthHttp.strRealm);
+                    break;
+                case BEARER:
+                    // RFC 6750
+                    break;
+                case UNKNOWN :
+                    break;
+                default :
                     break;
             }
 
             return new AuthChallenge(authScheme,
-                                     authHeader.get(RFC2617.strRealm),
-                                     authHeader.get(RFC2617.strNonce), // Required for digest, not for basic.
-                                     authHeader.get(RFC2617.strOpaque),
-                                     authHeader.get(RFC2617.strQop),
-                                     authHeader);
+                                     get(auth, AuthHttp.strRealm),
+                                     get(auth, AuthHttp.strNonce), // Required for digest, not for basic.
+                                     get(auth, AuthHttp.strOpaque),
+                                     get(auth, AuthHttp.strQop),
+                                     auth.getAuthParams());
         } catch (NullPointerException ex) {
             return null;
         }
     }
 
-    private AuthChallenge(AuthScheme authScheme, String realm, String nonce, String opaque, String qop, Map<String, String> parsed) {
+    private AuthChallenge(AuthScheme authScheme, String realm, String nonce, String opaque, String qop, Map<String, String> authParams) {
         this.authScheme = authScheme;
         this.realm = realm;
         this.nonce = nonce;
         this.opaque = opaque;
         this.qop = qop;
-        this.parsed = parsed;
+        this.authParams = authParams;
     }
 
-    private static String nonNull(String field, String s) {
-        return Objects.requireNonNull(s, "Field="+field);
+    public String getRealm() {
+        if ( authParams == null )
+            return null;
+        return authParams.get(AuthHttp.strRealm);
+    }
+
+    private static String get(AuthHeaderParser auth, String s) {
+        Map<String, String> map = auth.getAuthParams();
+        if ( map == null )
+            return null;
+        return map.get(s);
+    }
+
+    private static String nonNull(AuthHeaderParser auth, String s) {
+        Map<String, String> map = auth.getAuthParams();
+        if ( map == null )
+            throw new NullPointerException("No auth params");
+        return Objects.requireNonNull(map.get(s), "Field="+auth);
     }
 }

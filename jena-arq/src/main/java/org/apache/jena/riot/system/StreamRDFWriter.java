@@ -218,7 +218,7 @@ public class StreamRDFWriter {
     public static StreamRDF getWriterStream(OutputStream output, RDFFormat format, Context context) {
         StreamRDFWriterFactory x = registry.get(format) ;
         if ( x == null )
-            throw new RiotException("Failed to find a writer factory for "+format) ;
+            return null;
         if ( context == null )
             context = RIOT.getContext().copy();
         StreamRDF stream = x.create(output, format, context) ;

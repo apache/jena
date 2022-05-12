@@ -21,27 +21,34 @@ package org.apache.jena.atlas.web;
 /** Authorization scheme */
 public enum AuthScheme {
     BASIC,
-    DIGEST ;
+    DIGEST,
+    BEARER,
+    UNKNOWN;
+
+    public static String basicStr  = "Basic";
+    public static String digestStr = "Digest";
+    public static String bearerStr = "Bearer";
 
     public static AuthScheme scheme(String name) {
         if ( name == null )
             return null;
         name = name.toLowerCase();
         switch(name) {
-            case "basic": return BASIC;
-            case "digest": return DIGEST;
-            default:
-                throw new IllegalArgumentException("not recognized as an authorization scheme: "+name);
+            case "basic":   return BASIC;
+            case "digest":  return DIGEST;
+            case "bearer":  return BEARER;
+            default:        return UNKNOWN;
         }
     }
 
     @Override
     public String toString() {
         switch(this) {
-            case BASIC : return "Basic";
-            case DIGEST : return "Digest";
-            default:
-                return null;
+            case BASIC :    return basicStr;
+            case DIGEST :   return digestStr;
+            case BEARER :   return bearerStr;
+            case UNKNOWN :  return "Unknown";
+            default:        return null;
         }
     }
 }
