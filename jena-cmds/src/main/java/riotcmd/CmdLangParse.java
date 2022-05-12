@@ -37,6 +37,7 @@ import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.rdfs.RDFSFactory;
 import org.apache.jena.rdfs.SetupRDFS;
 import org.apache.jena.riot.* ;
@@ -247,10 +248,12 @@ public abstract class CmdLangParse extends CmdGeneral
             filename = "stdin";
             builder.source(System.in);
         } else {
-            // Convert spaces and other characters in file names.
-            // File handling will reverse to open the file correctly
-            // but for base name generation we want the %20 form.
-            filename = IRILib.filenameToIRI(filename);
+            String scheme = IRIs.scheme(filename);
+            if ( scheme == null || scheme.equalsIgnoreCase("file") )
+                // Convert spaces and other characters in file names.
+                // File handling will reverse the transformation to open
+                // the file correctly but for base name generation we want the %20 form.
+                filename = IRILib.filenameToIRI(filename);
             builder.source(filename);
         }
         return parseRIOT(builder, filename);
