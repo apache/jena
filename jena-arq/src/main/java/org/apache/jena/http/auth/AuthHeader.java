@@ -29,11 +29,11 @@ import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.riot.system.RiotChars;
 
 /**
- * Parser for authentication header strings.
+ * Parser for authentication header strings for both challenge and credentials.
  * <ul>
- * <li>This parser is scheme-specific. e/.g. digest credentials can not be token68.
+ * <li>This parser is scheme-specific. e.g. digest credentials can not be token68.
  * <li>This parser does not check auth-params names.
- * <li>auth-params have lower case key.
+ * <li>The auth-params map has lower case keys.
  * <ul>
  * Covers:
  * <ul>
@@ -43,17 +43,15 @@ import org.apache.jena.riot.system.RiotChars;
  * <li>"Unknown"
  * <ul>
  */
-class AuthHeaderParser {
+public class AuthHeader {
     /* RFC 7235 header:
      *    WWW-Authenticate:
      *    Authorization:
      *    Proxy-Authenticate:
      *    Proxy-Authorization:
      *
-     *
      * Appendix C. Collected ABNF
      *    # is a comma-separate list
-     *
      *
      * BWS = <BWS, see [RFC7230], Section 3.2.3>
      *
@@ -97,32 +95,34 @@ class AuthHeaderParser {
      *                                        optional whitespace only for historical reasons.
      */
 
-
     private final String string;
     private final int N;
     private int idx;
 
     // Scheme as written
     private String authSchemeStr = null;
+    private String authSchemeArgs = null;
     private AuthScheme authScheme = null;
     private Map<String, String> authParams = null;
-    // Schemes
+
     private String basicUserPassword = null;
     private String bearerToken = null;
     private String unknown = null;
 
-    public static AuthHeaderParser parse(String string) {
+    public static AuthHeader parse(String string) {
         string = string.strip();
-        AuthHeaderParser obj = new AuthHeaderParser(string);
+        AuthHeader obj = new AuthHeader(string);
         try {
             obj.parse$(string);
             return obj;
-        } catch (AuthStringException ex) {
+        } catch (AuthParseException ex) {
             return null;
         }
     }
 
-    private AuthHeaderParser(String string) {
+    private static class AuthParseException extends RuntimeException {}
+
+    private AuthHeader(String string) {
         this.string =string;
         this.N = string.length();
         this.idx = 0;
@@ -133,6 +133,9 @@ class AuthHeaderParser {
 
     /** Get the auth scheme as written in the authentication header value. */
     public String getAuthSchemeStr() { return authSchemeStr; }
+
+    /** Get the string after the auth scheme as written in the authentication header value. */
+    public String getAuthArgs() { return authSchemeArgs; }
 
     /** Any auth scheme value that has a=b auth-params, else null. */
     public Map<String, String> getAuthParams() { return authParams; }
@@ -193,6 +196,7 @@ class AuthHeaderParser {
         skipWhitespace();
         if ( idx >= N )
             return;
+        this.authSchemeArgs = string.substring(idx);
 
         switch(authScheme) {
             case BASIC :   parseBasic(); break;
@@ -254,11 +258,15 @@ class AuthHeaderParser {
      *   credentials = "Bearer" 1*SP b64token
      */
     private void parseBearer() {
+        int startIdx = idx;
         if ( isChallenge() )
             authParams = mapAuthParams();
-        else
+        else {
             bearerToken = b64token();
-        // XXX ERROR
+            if ( bearerToken == null ) {
+                unknown = string.substring(startIdx).trim();
+            }
+        }
     }
 
     /*
@@ -427,10 +435,10 @@ class AuthHeaderParser {
         return ch == '+' || ch == '/';
     }
 
-    private static IntPredicate test_base64       = AuthHeaderParser::is_base64;
-    private static IntPredicate test_tok68        = AuthHeaderParser::is_tok68;
+    private static IntPredicate test_base64       = AuthHeader::is_base64;
+    private static IntPredicate test_tok68        = AuthHeader::is_tok68;
     private static IntPredicate test_base64_pad   = ch -> ch == '=';
-    private static IntPredicate test_tchar        = AuthHeaderParser::is_tchar;
+    private static IntPredicate test_tchar        = AuthHeader::is_tchar;
     private static IntPredicate testNWS           = ch -> ( ch != ' ' && ch != '\t' );
     private static IntPredicate testWS            = ch -> ( ch == ' ' || ch == '\t' );
     private static IntPredicate testWSC           = ch -> ( ch == ' ' || ch == '\t' || ch == ',' );

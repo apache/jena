@@ -18,12 +18,14 @@
 
 package org.apache.jena.http.auth;
 
-public class AuthStringException extends RuntimeException {
-    public AuthStringException() {
+import org.apache.jena.shared.JenaException;
+
+public class AuthException extends JenaException {
+    public AuthException() {
         super();
     }
 
-    public AuthStringException(String msg) {
+    public AuthException(String msg) {
         super(msg);
     }
 }

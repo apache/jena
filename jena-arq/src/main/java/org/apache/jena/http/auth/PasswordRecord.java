@@ -24,6 +24,7 @@ import java.util.Objects;
 public class PasswordRecord {
     private String username;
     private String password;
+
     public PasswordRecord(String username, String password) {
         super();
         this.username = username;

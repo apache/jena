@@ -172,7 +172,7 @@ public class FusekiMain extends CmdARQ {
         add(argGeneralQuerySvc, "--general=PATH",
             "Add a general SPARQL endpoint (without a dataset) at /PATH");
 
-        add(argAuth, "--auth=[basic|Digest]",
+        add(argAuth, "--auth=[basic|digest]",
             "Run the server using basic or digest authentication (dft: digest).");
         add(argHttps, "--https=CONF",
             "https certificate access details. JSON file { \"cert\":FILE , \"passwd\"; SECRET } ");

@@ -21,8 +21,10 @@ package org.apache.jena.http.auth;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
 
 import org.apache.jena.http.HttpLib;
+import org.apache.jena.riot.web.HttpNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +34,8 @@ public class AuthEnv {
     private AuthCredentials passwordRegistry = new AuthCredentials();
     // Challenge setups that are active.
     private Map<String, AuthRequestModifier> authModifiers = new ConcurrentHashMap<>();
+    // Token fetcher for bearer authentication
+    private BiFunction<URI, AuthChallenge, String> tokenSupplier = null;
 
     private static AuthEnv singleton = new AuthEnv();
     public static AuthEnv get() { return singleton; }
@@ -40,19 +44,19 @@ public class AuthEnv {
 
     /** Register (username, password) information for a URI endpoint. */
     public void registerUsernamePassword(URI uri, String user, String password) {
-        AuthDomain domain = new AuthDomain(uri, null);
+        AuthDomain domain = new AuthDomain(uri);
         passwordRegistry.put(domain, new PasswordRecord(user, password));
     }
 
     /** Check whether there is a registration. */
     public boolean hasRegistation(URI uri) {
-        AuthDomain location = new AuthDomain(uri, null);
+        AuthDomain location = new AuthDomain(uri);
         return passwordRegistry.contains(location);
     }
 
     /** Register (username, password) information for a URI endpoint. */
     public void unregisterUsernamePassword(URI uri) {
-        AuthDomain location = new AuthDomain(uri, null);
+        AuthDomain location = new AuthDomain(uri);
         passwordRegistry.remove(location);
         // and remove any active modifiers.
         authModifiers.remove(uri.toString());
@@ -65,7 +69,7 @@ public class AuthEnv {
      * longest prefix entry is returned.
      */
     public PasswordRecord getUsernamePassword(URI uri) {
-        AuthDomain domain = new AuthDomain(uri, null);
+        AuthDomain domain = new AuthDomain(uri);
         return passwordRegistry.get(domain);
     }
 
@@ -101,13 +105,66 @@ public class AuthEnv {
         authModifiers.put(serviceEndpoint, basicAuthModifier);
     }
 
-    void registerAuthModifier(String requestTarget, AuthRequestModifier authModifier) {
+    /** Register an AuthRequestModifier for a specific request target */
+    public void registerAuthModifier(String requestTarget, AuthRequestModifier authModifier) {
         // Without query string or fragment.
         String serviceEndpoint = HttpLib.endpoint(requestTarget);
         //AuthEnv.LOG.info("Setup authentication for "+serviceEndpoint);
         authModifiers.put(serviceEndpoint, authModifier);
     }
 
+    /** Remove any AuthRequestModifier for a specific request target */
+    public void unregisterAuthModifier(String requestTarget) {
+        String endpointURL = HttpLib.endpoint(requestTarget);
+        AuthRequestModifier oldMod = authModifiers.remove(endpointURL);
+    }
+
+    /**
+     * Set the creator of tokens for bearer authentication. The function must return
+     * null (reject a 401 challenge) or a valid token including encoding (e.g.
+     * Base64). It must not contain spaces. Requests will fail when the token becomes
+     * out-of-date and the application will need to set a new token.
+     * <p>
+     * The string supplied will be used as-is with no further processing. Supply a
+     * null argument to clear any previous token supplier.
+     */
+    public void setBearerTokenProvider(BiFunction<URI, AuthChallenge, String> tokenSupplier) {
+        this.tokenSupplier = tokenSupplier;
+    }
+
+    /**
+     * Set the tokens for bearer authentication at an specific endpoint. This is
+     * added to all requests sent to this same request target. Requests will fail
+     * when the token becomes out-of-date and the application will need to set a new
+     * token.
+     * <p>
+     * The string supplied will be used as-is with no further processing. Supply a
+     * null argument to clear any previous token supplier.
+     */
+    public void setBearerToken(String requestTarget, String token) {
+        if ( token == null ) {
+            unregisterAuthModifier(requestTarget);
+            return;
+        }
+        String endpointURL = HttpLib.endpoint(requestTarget);
+        AuthRequestModifier authModifier = builder->builder.setHeader(HttpNames.hAuthorization, "Bearer "+token);
+        registerAuthModifier(requestTarget, authModifier);
+    }
+
+    /**
+     * Return a bearer auth token to use when responding to a 401 challenge.
+     * The token must be in the form required for the "Authorization" header,
+     * including encoding (e.g. Base64). The string supplied is used as-is
+     * with no further processing.
+     * <p>
+     * Return null for "no token" in which case a 401 response is passed back to the
+     * application.
+     */
+    public String getBearerToken(URI uri, AuthChallenge aHeader) {
+        if ( tokenSupplier == null )
+            return null;
+        return tokenSupplier.apply(uri, aHeader);
+    }
 
     // Development - do not provide in production systems.
 //    public void state() {

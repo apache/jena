@@ -38,7 +38,7 @@ public class AuthCredentials {
 
     public void put(AuthDomain location, PasswordRecord pwRecord) {
         // Checks.
-        URI uri = location.uri;
+        URI uri = location.getURI();
         if ( uri.getRawQuery() != null || uri.getRawFragment() != null )
             throw new HttpException("Endpoint URI must not have query string or fragment: "+uri);
         authRegistry.put(location, pwRecord);
@@ -46,7 +46,7 @@ public class AuthCredentials {
     }
 
     public boolean contains(AuthDomain location) {
-        return prefixes.contains(location.uri.toString());
+        return prefixes.contains(location.getURI().toString());
     }
 
     public List<AuthDomain> registered() {
@@ -58,9 +58,9 @@ public class AuthCredentials {
         if ( pwRecord != null )
             return pwRecord;
 
-        prefixes.partialSearch(location.uri.toString());
+        prefixes.partialSearch(location.getURI().toString());
 
-        AuthDomain match = prefixes.longestMatch(location.uri.toString());
+        AuthDomain match = prefixes.longestMatch(location.getURI().toString());
         if ( match == null )
             return null;
         if ( match.getRealm() != null ) {
@@ -71,7 +71,7 @@ public class AuthCredentials {
     }
 
     public void remove(AuthDomain location) {
-        prefixes.remove(location.uri.toString());
+        prefixes.remove(location.getURI().toString());
         authRegistry.remove(location);
     }
 
