@@ -25,9 +25,13 @@ import static org.junit.Assert.fail;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.modify.request.Target;
+import org.apache.jena.sparql.modify.request.UpdateAdd;
 import org.apache.jena.sparql.modify.request.UpdateCreate;
 import org.apache.jena.sparql.modify.request.UpdateDrop;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateException;
@@ -104,5 +108,20 @@ public abstract class AbstractTestUpdateGraphMgt extends AbstractTestUpdateBase
         gStore.addGraph(graphIRI, GraphFactory.createDefaultGraph());
         script(gStore, "drop-1.ru");
         assertFalse(gStore.containsGraph(graphIRI));
+    }
+
+    @Test
+    public void testAdd() {
+        DatasetGraph gStore = DatasetGraphFactory.create();
+        Node g1 = SSE.parseNode(":g1");
+        Node g2 = SSE.parseNode(":g2");
+        gStore.add(SSE.parseQuad("( :g1 :s :p :o )"));
+        // ADD GRAPH :g1 TO GRAPH :g2, not SILENT
+        Update add = new UpdateAdd(Target.create(g1), Target.create(g2), false);
+        assertFalse(gStore.containsGraph(g2));
+
+        UpdateAction.execute(add, gStore);
+
+        assertTrue(gStore.containsGraph(g2));
     }
 }
