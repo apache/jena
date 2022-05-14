@@ -251,6 +251,7 @@ public class UpdateEngineWorker implements UpdateVisitor
             Node gn = update.getSrc().getGraph();
             if ( !datasetGraph.containsGraph(gn) )
                 throw errorEx("No such graph: " + gn);
+            return;
         }
         throw errorEx("Invalid source target for operation; " + update.getSrc());
     }
