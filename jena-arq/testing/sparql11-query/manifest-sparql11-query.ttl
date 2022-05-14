@@ -1,0 +1,22 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<> a mf:Manifest ;
+	rdfs:label "SPARQL 1.1 Query Language" ;
+	mf:include (
+		<aggregates/manifest.ttl>
+		<bind/manifest.ttl>
+		<bindings/manifest.ttl>
+		<cast/manifest.ttl>
+		<construct/manifest.ttl>
+		<exists/manifest.ttl>
+		<functions/manifest.ttl>
+		<grouping/manifest.ttl>
+		<negation/manifest.ttl>
+		<project-expression/manifest.ttl>
+		<property-path/manifest.ttl>
+		<subquery/manifest.ttl>
+		<syntax-query/manifest.ttl>
+	) .

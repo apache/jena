@@ -26,7 +26,7 @@ import org.apache.jena.update.UpdateException;
 import org.junit.Test;
 
 /**
- * Tests of SILENT. The tests are written to work aginst {@link DatasetGraphOne}
+ * Tests of SILENT. The tests are written to work against {@link DatasetGraphOne}
  * which has the characteristic that it does not support named graphs.
  * <p>
  * Normally, datasets behave as if all named graphs exists for adding/copying/moving

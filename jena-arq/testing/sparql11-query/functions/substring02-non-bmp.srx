@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+    <variable name="s"/>
+    <variable name="str"/>
+    <variable name="substr"/>
+</head>
+<results>
+        <result>
+            <binding name="s"><uri>http://example.org/s8</uri></binding>
+            <binding name="str"><literal>👪</literal></binding>
+            <binding name="substr"><literal></literal></binding>
+        </result>
+        <result>
+            <binding name="s"><uri>http://example.org/s9</uri></binding>
+            <binding name="str"><literal>👨‍👩‍👧‍👦</literal></binding>
+            <binding name="substr"><literal>‍👩‍👧‍👦</literal></binding>
+        </result>
+</results>
+</sparql>

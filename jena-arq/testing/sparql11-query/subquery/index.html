@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang='en' prefix='dawgt:   http://www.w3.org/2001/sw/DataAccess/tests/test-dawg# mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest# mfx:    http://jena.hpl.hp.com/2005/05/test-manifest-extra# qt:     http://www.w3.org/2001/sw/DataAccess/tests/test-query# sd:      http://www.w3.org/ns/sparql-service-description# ut:     http://www.w3.org/2009/sparql/tests/test-update#'>
+  <head>
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href='https://www.w3.org/StyleSheets/TR/base' rel='stylesheet' type='text/css'>
+    <style>
+      body: {bacground-image: none;}
+      dl.editor>dd {
+        margin: 0 0 0 40px;
+      }
+      dl.test-detail {
+        padding: 0.5em;
+      }
+      dl.test-detail>dt {
+        float: left;
+        clear: left;
+        text-align: right;
+        font-weight: bold;
+        color: green;
+      }
+      dl.test-detail>dt:after {content: ": "}
+      dl.test-detail>dd {
+        margin: 0 0 0 110px;
+        padding: 0 0 0.5em 0;
+      }
+      dl.test-description>dt {margin-top: 2em;}
+      dd {margin-left: 0;}
+      dd code {display: inline;}
+      footer {text-align: center;}
+    </style>
+    <title>
+      Sub query
+    </title>
+    <style>
+      em.rfc2119 { 
+        text-transform: lowercase;
+        font-variant:   small-caps;
+        font-style:     normal;
+        color:          #900;
+      }
+      a.testlink {
+        color: inherit;
+        text-decoration: none;
+      }
+      a.testlink:hover {
+        text-decoration: underline;
+      }
+      .warning {color: orange;}
+      .error {color: red;}
+    </style>
+  </head>
+  <body resource='' typeof='mf:Manifest'>
+    <p>
+      <a href='http://www.w3.org/'>
+        <img alt='W3C' height='48' src='http://www.w3.org/Icons/w3c_home' width='72'>
+      </a>
+    </p>
+    <h1 property='rdfs:label'>Sub query</h1>
+    <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2010 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>, <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>, and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    <hr title='Separator for header'>
+    <div>
+      <h2 id='abstract'>Abstract</h2>
+      <p property='rdfs:comment'>
+        
+      </p>
+      <p>This page describes W3C SPARQL Working Group&#39;s SPARQL1.0 test suite.</p>
+      
+      <h3>Contributing Tests</h3>
+      
+      <p>The test manifests and entries are built automatically from <a href="manifest.ttl">manifest.ttl</a> using a Rake task. Tests may be contributed via pull request to <a href="https://github.com/w3c/rdf-tests">https://github.com/w3c/rdf-tests</a> with suitable changes to the <a href="manifest.ttl">manifest.ttl</a> and referenced files.</p>
+      
+      <h3>Distribution</h3>
+      
+      <p>Distributed under both the <a href="http://www.w3.org/Consortium/Legal/2008/04-testsuite-license">W3C Test Suite License</a> and the <a href="http://www.w3.org/Consortium/Legal/2008/03-bsd-license">W3C 3-clause BSD License</a>. To contribute to a W3C Test Suite, see the <a href="http://www.w3.org/2004/10/27-testcases">policies and contribution forms</a>.</p>
+      
+      <h3>Disclaimer</h3>
+      
+      <p>UNDER BOTH MUTUALLY EXCLUSIVE LICENSES, THIS DOCUMENT AND ALL DOCUMENTS, TESTS AND SOFTWARE THAT LINK THIS STATEMENT ARE PROVIDED &quot;AS IS,&quot; AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THE DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+        COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE DOCUMENT OR THE PERFORMANCE OR IMPLEMENTATION OF THE CONTENTS THEREOF.</p>
+    </div>
+    <div>
+      <h2>
+        Test Descriptions
+      </h2>
+      <dl class='test-description'>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery01'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery01'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery01:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery01' property='mf:name'>sq01 - Subquery within graph pattern</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery01' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-07-13#resolution_2' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-07-13#resolution_2</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b11'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq01.rq' property='qt:query'>sq01.rq</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq01.srx' property='mf:result'>sq01.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery02'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery02'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery02:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery02' property='mf:name'>sq02 - Subquery within graph pattern, graph variable is bound</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery02' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-07-13#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-07-13#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b10'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq02.rq' property='qt:query'>sq02.rq</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq02.srx' property='mf:result'>sq02.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery03'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery03'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery03:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery03' property='mf:name'>sq03 - Subquery within graph pattern, graph variable is not bound</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery03' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-07-13#resolution_4' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-07-13#resolution_4</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b9'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq03.rq' property='qt:query'>sq03.rq</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq03.srx' property='mf:result'>sq03.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery04'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery04'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery04:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery04' property='mf:name'>sq04 - Subquery within graph pattern, default graph does not apply</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery04' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-07-13#resolution_5' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-07-13#resolution_5</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b8'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq04.rq' property='qt:query'>sq04.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='sq04.rdf' property='qt:data'>sq04.rdf</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq04.srx' property='mf:result'>sq04.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery05'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery05'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery05:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery05' property='mf:name'>sq05 - Subquery within graph pattern, from named applies</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery05' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b7'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq05.rq' property='qt:query'>sq05.rq</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq05.srx' property='mf:result'>sq05.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery06'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery06'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery06:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery06' property='mf:name'>sq06 - Subquery with graph pattern, from named applies</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery06' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b6'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq06.rq' property='qt:query'>sq06.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='sq05.rdf' property='qt:data'>sq05.rdf</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq06.srx' property='mf:result'>sq06.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery07'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery07'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery07:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery07' property='mf:name'>sq07 - Subquery with from</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery07' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b5'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq07.rq' property='qt:query'>sq07.rq</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq07.srx' property='mf:result'>sq07.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery08'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery08'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery08:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery08' property='mf:name'>sq08 - Subquery with aggregate</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery08' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b4'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq08.rq' property='qt:query'>sq08.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='sq08.rdf' property='qt:data'>sq08.rdf</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq08.srx' property='mf:result'>sq08.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery09'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery09'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery09:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery09' property='mf:name'>sq09 - Nested Subqueries</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery09' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b3'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq09.rq' property='qt:query'>sq09.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='sq09.rdf' property='qt:data'>sq09.rdf</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq09.srx' property='mf:result'>sq09.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery10'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery10'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery10:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery10' property='mf:name'>sq10 - Subquery with exists</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery10' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-07-20#resolution_2</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b2'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq10.rq' property='qt:query'>sq10.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='sq10.rdf' property='qt:data'>sq10.rdf</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq10.srx' property='mf:result'>sq10.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery11'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery11'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery11:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery11' property='mf:name'>sq11 - Subquery limit per resource</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery11' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>This query limits results per number of orders, rather than by number of rows</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b1'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq11.rq' property='qt:query'>sq11.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='sq11.ttl' property='qt:data'>sq11.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq11.srx' property='mf:result'>sq11.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery12'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery12'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery12:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery12' property='mf:name'>sq12 - Subquery in CONSTRUCT with built-ins</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery12' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>This query constructs full names from first and last names</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b0'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq12.rq' property='qt:query'>sq12.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='sq12.ttl' property='qt:data'>sq12.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq12_out.ttl' property='mf:result'>sq12_out.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery13'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery13'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery13:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery13' property='mf:name'>sq13 - Subqueries don't inject bindings</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery13' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>The result of this subquery is a Kartesian product of all orders, rather than paris of orders sharing products, since subqueries are evaluated independent from bindings from outside the subquery</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b12'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq11.rq' property='qt:query'>sq11.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='sq11.ttl' property='qt:data'>sq11.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq11.srx' property='mf:result'>sq11.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery14'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery14'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery14:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery14' property='mf:name'>sq14 - limit by resource</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery14' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b13'>
+                <dt>query</dt>
+                <dd>
+                  <a href='sq14.rq' property='qt:query'>sq14.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='sq14.ttl' property='qt:data'>sq14.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='sq14-out.ttl' property='mf:result'>sq14-out.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
+    </div>
+    <footer>
+      <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright ©</a> 2015 <a href="http://www.w3.org/">W3C</a>® (<a href="http://www.csail.mit.edu/">MIT</a>, <a href="http://www.ercim.org/">ERCIM</a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C® <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang='en' prefix='dawgt:   http://www.w3.org/2001/sw/DataAccess/tests/test-dawg# mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest# mfx:    http://jena.hpl.hp.com/2005/05/test-manifest-extra# qt:     http://www.w3.org/2001/sw/DataAccess/tests/test-query# sd:      http://www.w3.org/ns/sparql-service-description# ut:     http://www.w3.org/2009/sparql/tests/test-update#'>
+  <head>
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href='https://www.w3.org/StyleSheets/TR/base' rel='stylesheet' type='text/css'>
+    <style>
+      body: {bacground-image: none;}
+      dl.editor>dd {
+        margin: 0 0 0 40px;
+      }
+      dl.test-detail {
+        padding: 0.5em;
+      }
+      dl.test-detail>dt {
+        float: left;
+        clear: left;
+        text-align: right;
+        font-weight: bold;
+        color: green;
+      }
+      dl.test-detail>dt:after {content: ": "}
+      dl.test-detail>dd {
+        margin: 0 0 0 110px;
+        padding: 0 0 0.5em 0;
+      }
+      dl.test-description>dt {margin-top: 2em;}
+      dd {margin-left: 0;}
+      dd code {display: inline;}
+      footer {text-align: center;}
+    </style>
+    <title>
+      Project Expression
+    </title>
+    <style>
+      em.rfc2119 { 
+        text-transform: lowercase;
+        font-variant:   small-caps;
+        font-style:     normal;
+        color:          #900;
+      }
+      a.testlink {
+        color: inherit;
+        text-decoration: none;
+      }
+      a.testlink:hover {
+        text-decoration: underline;
+      }
+      .warning {color: orange;}
+      .error {color: red;}
+    </style>
+  </head>
+  <body resource='' typeof='mf:Manifest'>
+    <p>
+      <a href='http://www.w3.org/'>
+        <img alt='W3C' height='48' src='http://www.w3.org/Icons/w3c_home' width='72'>
+      </a>
+    </p>
+    <h1 property='rdfs:label'>Project Expression</h1>
+    <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2010 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>, <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>, and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    <hr title='Separator for header'>
+    <div>
+      <h2 id='abstract'>Abstract</h2>
+      <p property='rdfs:comment'>
+        
+      </p>
+      <p>This page describes W3C SPARQL Working Group&#39;s SPARQL1.0 test suite.</p>
+      
+      <h3>Contributing Tests</h3>
+      
+      <p>The test manifests and entries are built automatically from <a href="manifest.ttl">manifest.ttl</a> using a Rake task. Tests may be contributed via pull request to <a href="https://github.com/w3c/rdf-tests">https://github.com/w3c/rdf-tests</a> with suitable changes to the <a href="manifest.ttl">manifest.ttl</a> and referenced files.</p>
+      
+      <h3>Distribution</h3>
+      
+      <p>Distributed under both the <a href="http://www.w3.org/Consortium/Legal/2008/04-testsuite-license">W3C Test Suite License</a> and the <a href="http://www.w3.org/Consortium/Legal/2008/03-bsd-license">W3C 3-clause BSD License</a>. To contribute to a W3C Test Suite, see the <a href="http://www.w3.org/2004/10/27-testcases">policies and contribution forms</a>.</p>
+      
+      <h3>Disclaimer</h3>
+      
+      <p>UNDER BOTH MUTUALLY EXCLUSIVE LICENSES, THIS DOCUMENT AND ALL DOCUMENTS, TESTS AND SOFTWARE THAT LINK THIS STATEMENT ARE PROVIDED &quot;AS IS,&quot; AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THE DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+        COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE DOCUMENT OR THE PERFORMANCE OR IMPLEMENTATION OF THE CONTENTS THEREOF.</p>
+    </div>
+    <div>
+      <h2>
+        Test Descriptions
+      </h2>
+      <dl class='test-description'>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp01'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp01'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp01:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp01' property='mf:name'>Expression is equality</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp01' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b1'>
+                <dt>query</dt>
+                <dd>
+                  <a href='projexp01.rq' property='qt:query'>projexp01.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='projexp01.ttl' property='qt:data'>projexp01.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='projexp01.srx' property='mf:result'>projexp01.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp02'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp02'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp02:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp02' property='mf:name'>Expression raise an error</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp02' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b0'>
+                <dt>query</dt>
+                <dd>
+                  <a href='projexp02.rq' property='qt:query'>projexp02.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='projexp02.ttl' property='qt:data'>projexp02.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='projexp02.srx' property='mf:result'>projexp02.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp03'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp03'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp03:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp03' property='mf:name'>Reuse a project expression variable in select</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp03' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b5'>
+                <dt>query</dt>
+                <dd>
+                  <a href='projexp03.rq' property='qt:query'>projexp03.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='projexp03.ttl' property='qt:data'>projexp03.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='projexp03.srx' property='mf:result'>projexp03.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp04'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp04'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp04:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp04' property='mf:name'>Reuse a project expression variable in order by</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp04' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b4'>
+                <dt>query</dt>
+                <dd>
+                  <a href='projexp04.rq' property='qt:query'>projexp04.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='projexp04.ttl' property='qt:data'>projexp04.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='projexp04.srx' property='mf:result'>projexp04.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp05'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp05'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp05:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp05' property='mf:name'>Expression may return no value</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp05' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b3'>
+                <dt>query</dt>
+                <dd>
+                  <a href='projexp05.rq' property='qt:query'>projexp05.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='projexp05.ttl' property='qt:data'>projexp05.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='projexp05.srx' property='mf:result'>projexp05.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp06'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp06'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp06:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp06' property='mf:name'>Expression has undefined variable</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp06' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b2'>
+                <dt>query</dt>
+                <dd>
+                  <a href='projexp06.rq' property='qt:query'>projexp06.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='projexp06.ttl' property='qt:data'>projexp06.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='projexp06.srx' property='mf:result'>projexp06.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp07'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp07'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp07:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp07' property='mf:name'>Expression has variable that may be unbound</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp07' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b6'>
+                <dt>query</dt>
+                <dd>
+                  <a href='projexp07.rq' property='qt:query'>projexp07.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='projexp07.ttl' property='qt:data'>projexp07.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='projexp07.srx' property='mf:result'>projexp07.srx</a>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
+    </div>
+    <footer>
+      <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright ©</a> 2015 <a href="http://www.w3.org/">W3C</a>® (<a href="http://www.csail.mit.edu/">MIT</a>, <a href="http://www.ercim.org/">ERCIM</a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C® <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    </footer>
+  </body>
+</html>

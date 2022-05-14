@@ -18,13 +18,32 @@
 
 package org.apache.jena.sparql;
 
+import org.apache.jena.arq.junit.manifest.Manifests;
+import org.apache.jena.arq.junit.runners.Label;
+import org.apache.jena.arq.junit.runners.RunnerSPARQL;
+import org.junit.runner.RunWith;
+
 /**
- * The test suite for all SPARQL (the second SPARQL working group) approved tests.
- * These are actually covered by Scripts_ARQ
+ * The test suite for SPARQL 1.1 (the second SPARQL working group) approved tests, as
+ * maintained by the "rdf-tests" community group.
+ * <p>
+ * Query tests modified to work in ARQ in default mode.
+ * <ul>
+ * <li>("+" can be used for string concatenation
+ * <li>; the parser tokenizer is modified to be compatible with unicode surrogate
+ * pairs for Java. Broken surrogate pairs are illegal.
+ * <li>Supports expression without AS in SELECT clause
+ * </ul>
+ * <p>
+ * Functionality for query is also covered by Scripts_ARQ (many tests were developed
+ * there and contributed to the W3C working group).
+ * <p>
  */
-//@RunWith(RunnerSPARQL.class)
-//@Label("ARQ")
-//@Manifests({
-//});
+@RunWith(RunnerSPARQL.class)
+@Label("SPARQL 1.1")
+@Manifests({
+    "testing/sparql11-query/manifest-sparql11-query.ttl"
+    ,"testing/sparql11-update/manifest-sparql11-update.ttl"
+})
 public class Scripts_SPARQL11 {}
 
