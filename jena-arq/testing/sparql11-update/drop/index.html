@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang='en' prefix='dawgt:   http://www.w3.org/2001/sw/DataAccess/tests/test-dawg# mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest# mfx:    http://jena.hpl.hp.com/2005/05/test-manifest-extra# qt:     http://www.w3.org/2001/sw/DataAccess/tests/test-query# sd:      http://www.w3.org/ns/sparql-service-description# ut:     http://www.w3.org/2009/sparql/tests/test-update#'>
+  <head>
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href='https://www.w3.org/StyleSheets/TR/base' rel='stylesheet' type='text/css'>
+    <style>
+      body: {bacground-image: none;}
+      dl.editor>dd {
+        margin: 0 0 0 40px;
+      }
+      dl.test-detail {
+        padding: 0.5em;
+      }
+      dl.test-detail>dt {
+        float: left;
+        clear: left;
+        text-align: right;
+        font-weight: bold;
+        color: green;
+      }
+      dl.test-detail>dt:after {content: ": "}
+      dl.test-detail>dd {
+        margin: 0 0 0 110px;
+        padding: 0 0 0.5em 0;
+      }
+      dl.test-description>dt {margin-top: 2em;}
+      dd {margin-left: 0;}
+      dd code {display: inline;}
+      footer {text-align: center;}
+    </style>
+    <title>
+      DROP
+    </title>
+    <style>
+      em.rfc2119 { 
+        text-transform: lowercase;
+        font-variant:   small-caps;
+        font-style:     normal;
+        color:          #900;
+      }
+      a.testlink {
+        color: inherit;
+        text-decoration: none;
+      }
+      a.testlink:hover {
+        text-decoration: underline;
+      }
+      .warning {color: orange;}
+      .error {color: red;}
+    </style>
+  </head>
+  <body resource='' typeof='mf:Manifest'>
+    <p>
+      <a href='http://www.w3.org/'>
+        <img alt='W3C' height='48' src='http://www.w3.org/Icons/w3c_home' width='72'>
+      </a>
+    </p>
+    <h1 property='rdfs:label'>DROP</h1>
+    <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2010 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>, <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>, and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    <hr title='Separator for header'>
+    <div>
+      <h2 id='abstract'>Abstract</h2>
+      <p property='rdfs:comment'>
+        Tests for SPARQL UPDATE
+      </p>
+      <p>This page describes W3C SPARQL Working Group&#39;s SPARQL1.0 test suite.</p>
+      
+      <h3>Contributing Tests</h3>
+      
+      <p>The test manifests and entries are built automatically from <a href="manifest.ttl">manifest.ttl</a> using a Rake task. Tests may be contributed via pull request to <a href="https://github.com/w3c/rdf-tests">https://github.com/w3c/rdf-tests</a> with suitable changes to the <a href="manifest.ttl">manifest.ttl</a> and referenced files.</p>
+      
+      <h3>Distribution</h3>
+      
+      <p>Distributed under both the <a href="http://www.w3.org/Consortium/Legal/2008/04-testsuite-license">W3C Test Suite License</a> and the <a href="http://www.w3.org/Consortium/Legal/2008/03-bsd-license">W3C 3-clause BSD License</a>. To contribute to a W3C Test Suite, see the <a href="http://www.w3.org/2004/10/27-testcases">policies and contribution forms</a>.</p>
+      
+      <h3>Disclaimer</h3>
+      
+      <p>UNDER BOTH MUTUALLY EXCLUSIVE LICENSES, THIS DOCUMENT AND ALL DOCUMENTS, TESTS AND SOFTWARE THAT LINK THIS STATEMENT ARE PROVIDED &quot;AS IS,&quot; AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THE DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+        COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE DOCUMENT OR THE PERFORMANCE OR IMPLEMENTATION OF THE CONTENTS THEREOF.</p>
+    </div>
+    <div>
+      <h2>
+        Test Descriptions
+      </h2>
+      <dl class='test-description'>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-default-01'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-default-01'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-default-01:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-default-01' property='mf:name'>DROP DEFAULT</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-default-01' typeof='mf:UpdateEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>This is a DROP of the default graph</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:UpdateEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b8'>
+                <dt>data</dt>
+                <dd>
+                  <a href='drop-default.ttl' property='ut:data'>drop-default.ttl</a>
+                </dd>
+                <dt>graphData</dt>
+                <dd>
+                  <table class='test-detail'>
+                    <tr property='ut:graphData' resource='_:b7'>
+                      <td property='rdfs:label'>http://example.org/g1</td>
+                      <td>
+                        <a href='drop-g1.ttl' property='ut:graph'>drop-g1.ttl</a>
+                      </td>
+                    </tr>
+                    <tr property='ut:graphData' resource='_:b4'>
+                      <td property='rdfs:label'>http://example.org/g2</td>
+                      <td>
+                        <a href='drop-g2.ttl' property='ut:graph'>drop-g2.ttl</a>
+                      </td>
+                    </tr>
+                  </table>
+                </dd>
+                <dt>request</dt>
+                <dd>
+                  <a href='drop-default-01.ru' property='ut:request'>drop-default-01.ru</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <dl class='test-detail' property='mf:result' resource='_:b6'>
+                <dt>graphData</dt>
+                <dd>
+                  <table class='test-detail'>
+                    <tr property='ut:graphData' resource='_:b5'>
+                      <td property='rdfs:label'>http://example.org/g1</td>
+                      <td>
+                        <a href='drop-g1.ttl' property='ut:graph'>drop-g1.ttl</a>
+                      </td>
+                    </tr>
+                    <tr property='ut:graphData' resource='_:b3'>
+                      <td property='rdfs:label'>http://example.org/g2</td>
+                      <td>
+                        <a href='drop-g2.ttl' property='ut:graph'>drop-g2.ttl</a>
+                      </td>
+                    </tr>
+                  </table>
+                </dd>
+              </dl>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-graph-01'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-graph-01'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-graph-01:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-graph-01' property='mf:name'>DROP GRAPH</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-graph-01' typeof='mf:UpdateEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>This is a DROP of an existing named graph</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:UpdateEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b0'>
+                <dt>data</dt>
+                <dd>
+                  <a href='drop-default.ttl' property='ut:data'>drop-default.ttl</a>
+                </dd>
+                <dt>graphData</dt>
+                <dd>
+                  <table class='test-detail'>
+                    <tr property='ut:graphData' resource='_:b1'>
+                      <td property='rdfs:label'>http://example.org/g1</td>
+                      <td>
+                        <a href='drop-g1.ttl' property='ut:graph'>drop-g1.ttl</a>
+                      </td>
+                    </tr>
+                    <tr property='ut:graphData' resource='_:b2'>
+                      <td property='rdfs:label'>http://example.org/g2</td>
+                      <td>
+                        <a href='drop-g2.ttl' property='ut:graph'>drop-g2.ttl</a>
+                      </td>
+                    </tr>
+                  </table>
+                </dd>
+                <dt>request</dt>
+                <dd>
+                  <a href='drop-graph-01.ru' property='ut:request'>drop-graph-01.ru</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <dl class='test-detail' property='mf:result' resource='_:b17'>
+                <dt>data</dt>
+                <dd>
+                  <a href='drop-default.ttl' property='ut:data'>drop-default.ttl</a>
+                </dd>
+                <dt>graphData</dt>
+                <dd>
+                  <table class='test-detail'>
+                    <tr property='ut:graphData' resource='_:b13'>
+                      <td property='rdfs:label'>http://example.org/g2</td>
+                      <td>
+                        <a href='drop-g2.ttl' property='ut:graph'>drop-g2.ttl</a>
+                      </td>
+                    </tr>
+                  </table>
+                </dd>
+              </dl>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-named-01'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-named-01'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-named-01:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-named-01' property='mf:name'>DROP NAMED</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-named-01' typeof='mf:UpdateEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>This is a DROP of all the named graphs</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:UpdateEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b12'>
+                <dt>data</dt>
+                <dd>
+                  <a href='drop-default.ttl' property='ut:data'>drop-default.ttl</a>
+                </dd>
+                <dt>graphData</dt>
+                <dd>
+                  <table class='test-detail'>
+                    <tr property='ut:graphData' resource='_:b11'>
+                      <td property='rdfs:label'>http://example.org/g1</td>
+                      <td>
+                        <a href='drop-g1.ttl' property='ut:graph'>drop-g1.ttl</a>
+                      </td>
+                    </tr>
+                    <tr property='ut:graphData' resource='_:b10'>
+                      <td property='rdfs:label'>http://example.org/g2</td>
+                      <td>
+                        <a href='drop-g2.ttl' property='ut:graph'>drop-g2.ttl</a>
+                      </td>
+                    </tr>
+                  </table>
+                </dd>
+                <dt>request</dt>
+                <dd>
+                  <a href='drop-named-01.ru' property='ut:request'>drop-named-01.ru</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <dl class='test-detail' property='mf:result' resource='_:b9'>
+                <dt>data</dt>
+                <dd>
+                  <a href='drop-default.ttl' property='ut:data'>drop-default.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-all-01'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-all-01'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-all-01:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-all-01' property='mf:name'>DROP ALL</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-all-01' typeof='mf:UpdateEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>This is a DROP of all graphs (default and named)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:UpdateEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-02-07#resolution_3</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail' property='mf:action' resource='_:b16'>
+                <dt>data</dt>
+                <dd>
+                  <a href='drop-default.ttl' property='ut:data'>drop-default.ttl</a>
+                </dd>
+                <dt>graphData</dt>
+                <dd>
+                  <table class='test-detail'>
+                    <tr property='ut:graphData' resource='_:b15'>
+                      <td property='rdfs:label'>http://example.org/g1</td>
+                      <td>
+                        <a href='drop-g1.ttl' property='ut:graph'>drop-g1.ttl</a>
+                      </td>
+                    </tr>
+                    <tr property='ut:graphData' resource='_:b14'>
+                      <td property='rdfs:label'>http://example.org/g2</td>
+                      <td>
+                        <a href='drop-g2.ttl' property='ut:graph'>drop-g2.ttl</a>
+                      </td>
+                    </tr>
+                  </table>
+                </dd>
+                <dt>request</dt>
+                <dd>
+                  <a href='drop-all-01.ru' property='ut:request'>drop-all-01.ru</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='_:b18' property='mf:result'>_:b18</a>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
+    </div>
+    <footer>
+      <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright ©</a> 2015 <a href="http://www.w3.org/">W3C</a>® (<a href="http://www.csail.mit.edu/">MIT</a>, <a href="http://www.ercim.org/">ERCIM</a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C® <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    </footer>
+  </body>
+</html>

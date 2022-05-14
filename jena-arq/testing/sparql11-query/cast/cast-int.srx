@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<sparql
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.w3.org/2005/sparql-results#" >
+  <head>
+    <variable name="a"/>
+    <variable name="v"/>
+    <variable name="integer"/>
+  </head>
+  <results>
+    <result>
+      <binding name="a"><uri>http://example.org/s01</uri></binding>
+      <binding name="v"><uri>http://example.org/z</uri></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s02</uri></binding>
+      <binding name="v"><literal>string</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s03</uri></binding>
+      <binding name="v"><literal>-10.2E3</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s04</uri></binding>
+      <binding name="v"><literal>+33.3300</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s05</uri></binding>
+      <binding name="v"><literal>0.0</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s06</uri></binding>
+      <binding name="v"><literal>0</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s07</uri></binding>
+      <binding name="v"><literal>0E1</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s08</uri></binding>
+      <binding name="v"><literal>1.5</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s09</uri></binding>
+      <binding name="v"><literal>1</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s10</uri></binding>
+      <binding name="v"><literal>1E0</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s11</uri></binding>
+      <binding name="v"><literal>13</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">13</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s12</uri></binding>
+      <binding name="v"><literal>2002-10-10T17:00:00Z</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s13</uri></binding>
+      <binding name="v"><literal>false</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/s14</uri></binding>
+      <binding name="v"><literal>true</literal></binding>
+    </result>
+
+    <result>
+      <binding name="a"><uri>http://example.org/b01</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#boolean">true</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/b02</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#boolean">false</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/b03</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#boolean">0</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal></binding>
+    </result>
+
+    <result>
+      <binding name="a"><uri>http://example.org/n01</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n02</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n03</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-1</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-1</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n04</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">0.0</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n05</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">1.0</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n06</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">-1.0</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-1</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n07</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#double">0E1</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n08</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#double">1E0</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n09</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#float">0E1</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n10</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#float">1E0</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n11</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#float">1.25</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n12</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#float">-7.875</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-7</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n13</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">2.5</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal></binding>
+    </result>
+    <result>
+      <binding name="a"><uri>http://example.org/n14</uri></binding>
+      <binding name="v"><literal datatype="http://www.w3.org/2001/XMLSchema#decimal">-2.5</literal></binding>
+      <binding name="integer"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">-2</literal></binding>
+    </result>
+  </results>
+</sparql>

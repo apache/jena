@@ -1,0 +1,14 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.org/> .
+
+# string data with characters outside the basic multilingual plane
+
+# U+1F46A FAMILY
+:s8 :str "\U0001F46A" .
+
+# single emoji grapheme containing 7 codepoints:
+# U+1F468 MAN, U+200D ZERO WIDTH JOINER,
+# U+1F469 WOMAN, U+200D ZERO WIDTH JOINER,
+# U+1F467 GIRL, U+200D ZERO WIDTH JOINER,
+# U+1F466 BOY
+:s9 :str "\U0001F468\u200D\U0001F469\u200D\U0001F467\u200D\U0001F466" .

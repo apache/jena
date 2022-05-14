@@ -1,0 +1,5 @@
+PREFIX  : <http://example/>
+SELECT  ?x ?y ( ?x + ?y AS ?sum)
+WHERE
+    { ?s :p ?x ; :q ?y . 
+    }
