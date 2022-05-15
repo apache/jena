@@ -16,15 +16,15 @@
 -->
 
 <template>
-  <b-container fluid>
-    <b-row class="mt-2">
-      <b-col cols="12">
+  <div class="container-fluid">
+    <div class="row mt-4">
+      <div class="col-12">
         <h2 class="text-center">Apache Jena Fuseki</h2>
         <div class="text-center">
-          <b-badge>{{ headerString }}</b-badge>
+          <span class="badge text-bg-secondary">{{ headerString }}</span>
         </div>
-      </b-col>
-    </b-row>
+      </div>
+    </div>
     <table-listing
       :fields="fields"
       :items="items"
@@ -34,37 +34,37 @@
         <h4>No datasets created - <router-link to="/manage/new">add one</router-link></h4>
       </template>
       <template v-slot:cell(actions)="data">
-        <b-button
-          :to="`/dataset${data.item.name}/query`"
-          variant="primary"
-          class="mr-0 mr-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
+        <button
+          @click="$router.push(`/dataset${data.item.name}/query`)"
+          type="button"
+          class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
           <FontAwesomeIcon icon="question-circle" />
-          <span class="ml-1">query</span>
-        </b-button>
-        <b-button
-          :to="`/dataset${data.item.name}/upload`"
-          variant="primary"
-          class="mr-0 mr-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
+          <span class="ms-1">query</span>
+        </button>
+        <button
+          @click="$router.push(`/dataset${data.item.name}/upload`)"
+          type="button"
+          class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
           <FontAwesomeIcon icon="upload" />
-          <span class="ml-1">add data</span>
-        </b-button>
-        <b-button
-          :to="`/dataset${data.item.name}/edit`"
-          variant="primary"
-          class="mr-0 mr-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
+          <span class="ms-1">add data</span>
+        </button>
+        <button
+          @click="$router.push(`/dataset${data.item.name}/edit`)"
+          type="button"
+          class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
           <FontAwesomeIcon icon="edit" />
-          <span class="ml-1">edit</span>
-        </b-button>
-        <b-button
-          :to="`/dataset${data.item.name}/info`"
-          variant="primary"
-          class="mr-0 mb-md-0 d-block d-md-inline-block">
+          <span class="ms-1">edit</span>
+        </button>
+        <button
+          @click="$router.push(`/dataset${data.item.name}/info`)"
+          type="button"
+          class="btn btn-primary me-0 mb-md-0 d-block d-md-inline-block">
           <FontAwesomeIcon icon="tachometer-alt" />
-          <span class="ml-1">info</span>
-        </b-button>
+          <span class="ms-1">info</span>
+        </button>
       </template>
     </table-listing>
-  </b-container>
+  </div>
 </template>
 
 <script>

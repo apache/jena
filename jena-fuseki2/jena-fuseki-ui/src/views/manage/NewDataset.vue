@@ -16,77 +16,87 @@
 -->
 
 <template>
-  <b-container fluid>
-    <b-row class="mt-4">
-      <b-col cols="12">
+  <div class="container-fluid">
+    <div class="row mt-4">
+      <div class="col-12">
         <h2>New dataset</h2>
-        <b-card no-body>
-          <b-card-header header-tag="nav">
+        <div class="card">
+          <nav class="card-header">
             <Menu />
-          </b-card-header>
-          <b-card-body>
-            <b-container fluid>
-              <b-row>
-                <b-col cols="12">
-                  <b-form
+          </nav>
+          <div class="card-body">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-12">
+                  <form
                     @submit="onSubmit"
                     ref="form"
                   >
-                    <b-form-group
-                      id="dataset-name-group"
-                      label="Dataset name"
-                      label-for="dataset-name"
-                      label-cols="4"
-                      label-cols-lg="2"
-                      label-size="sm"
-                    >
-                      <b-form-input
-                        pattern="[^\s]+"
-                        oninvalid="this.setCustomValidity('Enter a valid dataset name, without spaces')"
-                        oninput="this.setCustomValidity('')"
-                        id="dataset-name"
-                        v-model="form.datasetName"
-                        type="text"
-                        placeholder="dataset name"
-                        required
-                        trim
-                      ></b-form-input>
-                    </b-form-group>
-                    <b-form-group
-                      id="dataset-type-group"
-                      label="Dataset type"
-                      label-for="dataset-type"
-                      label-cols="4"
-                      label-cols-lg="2"
-                      label-size="sm"
-                    >
-                      <b-form-radio-group
-                        :options="datasetTypes"
-                        value-field="item"
-                        text-field="name"
-                        v-model="form.datasetType"
-                        name="dataset-type"
-                        required
-                        stacked
-                      >
-                      </b-form-radio-group>
-                    </b-form-group>
-                    <b-button
+                    <div class="row input-group has-validation align-items-center">
+                      <label for="dataset-name" class="col-4 col-lg-2 form-label col-form-label-sm">Dataset name</label>
+                      <div class="col g-0">
+                        <input
+                          v-model="form.datasetName"
+                          type="text"
+                          id="dataset-name"
+                          ref="dataset-name"
+                          class="form-control"
+                          placeholder="dataset name"
+                          required
+                        />
+                      </div>
+                      <div class="invalid-feedback">
+                        Please choose a dataset name.
+                      </div>
+                    </div>
+                    <div class="row input-group has-validation align-items-center">
+                      <label class="col-4 col-lg-2 form-label col-form-label-sm">Dataset type</label>
+                      <div class="col">
+                        <div class="row">
+                          <div
+                            v-for="datasetType of datasetTypes"
+                            :key="datasetType.item"
+                            class="form-check"
+                          >
+                            <input
+                              :id="`data-set-type-${datasetType.item}`"
+                              :value="datasetType.item"
+                              v-model="form.datasetType"
+                              class="form-check-input"
+                              type="radio"
+                              name="dataset-type"
+                              required
+                            >
+                            <label
+                              :for="`data-set-type-${datasetType.item}`"
+                              :key="`data-set-type-${datasetType.item}`"
+                              class="form-check-label"
+                            >
+                              {{ datasetType.name }}
+                            </label>
+                          </div>
+                          <div class="invalid-feedback">
+                            Please choose a dataset type.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button
                       type="submit"
-                      variant="primary"
+                      class="btn btn-primary"
                     >
                       <FontAwesomeIcon icon="check" />
-                      <span class="ml-1">create dataset</span>
-                    </b-button>
-                  </b-form>
-                </b-col>
-              </b-row>
-           </b-container>
-          </b-card-body>
-        </b-card>
-      </b-col>
-    </b-row>
-  </b-container>
+                      <span class="ms-1">create dataset</span>
+                    </button>
+                  </form>
+                </div>
+              </div>
+           </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -94,6 +104,7 @@ import Menu from '@/components/manage/Menu'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { displayError, displayNotification } from '@/utils'
 
 library.add(faCheck)
 
@@ -134,17 +145,9 @@ export default {
       try {
         await this.$fusekiService.createDataset(this.form.datasetName, this.form.datasetType)
         await this.$router.push('/manage')
-        this.$bvToast.toast(`Dataset "${this.form.datasetName}" created`, {
-          title: 'Notification',
-          autoHideDelay: 5000,
-          appendToast: false
-        })
+        displayNotification(this, `Dataset "${this.form.datasetName}" created`)
       } catch (error) {
-        this.$bvToast.toast(`${error}`, {
-          title: 'Error',
-          noAutoHide: true,
-          appendToast: false
-        })
+        displayError(this, error)
       }
     }
   }

@@ -15,11 +15,35 @@
  * limitations under the License.
  */
 
-export function displayError (vm, error) {
-  console.error(error)
-  vm.$toast.error(error)
+/*
+ * A plug-in to replace Bootstrap Vue's Toasts.
+ */
+import { BUS } from '@/events'
+import Toast from '@/components/Toast'
+
+const ToastPlugin = {
+  install (vm) {
+    // Add the global $toast object.
+    vm.prototype.$toast = {
+      error (message, options = {}) {
+        this.send(message, 'danger', options)
+      },
+      notification (message, options = {}) {
+        this.send(message, 'primary', options)
+      },
+      send (message, type, options) {
+        BUS.$emit('toast', {
+          message,
+          type,
+          options
+        })
+      }
+    }
+    // Register the component for Toasts.
+    vm.component('Toast', Toast)
+  }
 }
 
-export function displayNotification (vm, message) {
-  vm.$toast.notification(message)
+export {
+  ToastPlugin
 }

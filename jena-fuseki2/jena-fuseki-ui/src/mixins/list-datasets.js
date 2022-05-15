@@ -80,7 +80,7 @@ export default {
   methods: {
     initializeData () {
       const vm = this
-      vm.$fusekiService
+      return vm.$fusekiService
         .getServerData()
         .then(serverData => {
           vm.serverData = serverData

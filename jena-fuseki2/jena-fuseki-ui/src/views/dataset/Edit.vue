@@ -16,31 +16,32 @@
 -->
 
 <template>
-  <b-container fluid>
-    <b-row class="mt-4">
-      <b-col cols="12">
+  <div class="container-fluid">
+    <div class="row mt-4">
+      <div class="col-12">
         <h2>/{{ this.datasetName }}</h2>
-        <b-card no-body>
-          <b-card-header header-tag="nav">
+        <div class="card">
+          <nav class="card-header">
             <Menu :dataset-name="datasetName" />
-          </b-card-header>
-          <b-card-body v-if="!this.services['gsp-rw'] || this.services['gsp-rw'].length === 0">
-            <b-alert show variant="warning">No service for adding data available. The Graph Store Protocol service should be configured to allow adding data.</b-alert>
-          </b-card-body>
-          <b-card-body v-else>
-            <b-card-title>Available Graphs</b-card-title>
+          </nav>
+          <div class="card-body" v-if="!this.services['gsp-rw'] || this.services['gsp-rw'].length === 0">
+            <div class="alert alert-warning">No service for adding data available. The Graph Store Protocol service should be configured to allow adding data.</div>
+          </div>
+          <div class="card-body" v-else>
+            <h3>Available Graphs</h3>
             <div>
-              <b-row class="mb-2">
-                <b-col sm="12" md="4">
+              <div class="row mb-2">
+                <div class="col-sm-12 col-md-4">
                   <div class="mb-2">
-                    <b-button
+                    <button
+                      :disabled="loadingGraphs"
                       @click="listCurrentGraphs()"
-                      :disabled="!!loadingGraphs"
-                      variant="primary"
-                    >list current graphs</b-button>
+                      type="button"
+                      class="btn btn-primary"
+                    >list current graphs</button>
                   </div>
-                  <b-list-group>
-                    <b-list-group-item
+                  <ul class="list-group">
+                    <li class="list-group-item"
                       v-if="!loadingGraphs"
                     >
                       <span v-if="this.graphs.length === 0">Click to list current graphs</span>
@@ -57,58 +58,65 @@
                           </a>
                         </template>
                       </table-listing>
-                    </b-list-group-item>
-                    <b-list-group-item
+                    </li>
+                    <li
+                      class="list-group-item placeholder-glow"
                       v-else
                     >
-                      <b-skeleton animation="wave" width="85%"></b-skeleton>
-                      <b-skeleton animation="wave" width="55%"></b-skeleton>
-                      <b-skeleton animation="wave" width="70%"></b-skeleton>
-                    </b-list-group-item>
-                  </b-list-group>
-                </b-col>
-                <b-col>
-                  <b-overlay :show="loadingGraph">
-                    <b-input-group prepend="graph" class="mb-2">
-                      <b-form-input
+                      <span class="placeholder col-10"></span>
+                      <span class="placeholder col-5"></span>
+                      <span class="placeholder col-8"></span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col">
+                  <div class="spinner-border" role="status" v-if="loadingGraph">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <div v-else>
+                      <span class="input-group-text">graph</span>
+                      <input
                         :placeholder="selectedGraph !== '' ? selectedGraph : 'choose a graph from the list'"
+                        type="text"
+                        class="form-control"
+                        aria-label="graph name"
                         disabled
-                      ></b-form-input>
-                    </b-input-group>
-                    <b-textarea
+                      />
+                    </div>
+                    <textarea
                       ref="graph-editor"
                       v-model="content"
-                    >
-                    </b-textarea>
+                      class="form-control"
+                    ></textarea>
                     <div class="mt-2 text-right">
-                      <b-button
-                        class="mr-2"
-                        variant="secondary"
+                      <button
                         @click="discardChanges()"
+                        type="button"
+                        class="btn btn-secondary me-2"
                       >
                         <FontAwesomeIcon icon="times" />
-                        <span class="ml-1">discard changes</span>
-                      </b-button>
-                      <b-button
-                        :disabled="selectedGraph === '' || loadingGraph || loadingGraphs"
-                        variant="info"
+                        <span class="ms-1">discard changes</span>
+                      </button>
+                      <button
+                        :disabled="saveGraphDisabled"
                         @click="saveGraph()"
+                        type="button"
+                        class="btn btn-info"
                       >
                         <FontAwesomeIcon icon="check" />
                         <span
-                          class="ml-1"
+                          class="ms-1"
                         >save</span>
-                      </b-button>
+                      </button>
                     </div>
-                  </b-overlay>
-                </b-col>
-              </b-row>
+                  </div>
+                </div>
+              </div>
             </div>
-          </b-card-body>
-        </b-card>
-      </b-col>
-    </b-row>
-  </b-container>
+          </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -123,7 +131,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import currentDatasetMixin from '@/mixins/current-dataset'
-import { displayError } from '@/utils'
+import { displayError, displayNotification } from '@/utils'
 
 library.add(faTimes, faCheck)
 
@@ -185,23 +193,25 @@ export default {
             count: graph[1]
           }
         })
+    },
+    saveGraphDisabled () {
+      return this.selectedGraph === '' || this.loadingGraph || this.loadingGraphs
     }
   },
 
   watch: {
     code (newVal) {
       this.codeChanged(newVal)
+    },
+    services (newVal) {
+      if (newVal && newVal['gsp-rw'] && newVal['gsp-rw'].length > 0) {
+        const element = this.$refs['graph-editor']
+        this.codemirrorEditor = CodeMirror.fromTextArea(element.$el, this.cmOptions)
+        this.codemirrorEditor.on('change', cm => {
+          this.content = cm.getValue()
+        })
+      }
     }
-  },
-
-  created () {
-    this.$nextTick(() => {
-      const element = this.$refs['graph-editor']
-      this.codemirrorEditor = CodeMirror.fromTextArea(element.$el, this.cmOptions)
-      this.codemirrorEditor.on('change', cm => {
-        this.content = cm.getValue()
-      })
-    })
   },
 
   beforeRouteLeave (to, from, next) {
@@ -242,12 +252,7 @@ export default {
         const result = await this.$fusekiService.fetchGraph(this.datasetName, graphName)
         this.code = result.data
       } catch (error) {
-        console.error(error)
-        this.$bvToast.toast(`${error}`, {
-          title: 'Error',
-          noAutoHide: true,
-          appendToast: false
-        })
+        displayError(this, error)
       } finally {
         this.loadingGraph = false
       }
@@ -257,22 +262,21 @@ export default {
       this.code = ''
     },
     saveGraph: async function () {
-      this.loadingGraph = true
-      try {
-        await this.$fusekiService.saveGraph(this.datasetName, this.selectedGraph, this.content)
-        this.$bvToast.toast(`Graph updated for dataset "${this.datasetName}"`, {
-          title: 'Notification',
-          autoHideDelay: 5000,
-          appendToast: false
-        })
-      } catch (error) {
-        this.$bvToast.toast(`${error}`, {
-          title: 'Error',
-          noAutoHide: true,
-          appendToast: false
-        })
-      } finally {
-        this.loadingGraph = false
+      if (!this.saveGraphDisabled) {
+        this.loadingGraph = true
+        try {
+          await this.$fusekiService.saveGraph(this.datasetName, this.selectedGraph, this.content)
+          this.$bvToast.toast(`Graph updated for dataset "${this.datasetName}"`, {
+            title: 'Notification',
+            autoHideDelay: 5000,
+            appendToast: false
+          })
+          displayNotification(this, `Graph updated for dataset "${this.datasetName}"`)
+        } catch (error) {
+          displayError(this, error)
+        } finally {
+          this.loadingGraph = false
+        }
       }
     }
   }
