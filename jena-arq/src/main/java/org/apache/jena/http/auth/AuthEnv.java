@@ -19,7 +19,6 @@
 package org.apache.jena.http.auth;
 
 import java.net.URI;
-import java.net.http.HttpRequest.Builder;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -84,7 +83,7 @@ public class AuthEnv {
      * Add authentication, if in the authModifiers registry. That is, add the right
      * headers, and for digest, calculate the new digest string.
      */
-    public Builder addAuth(Builder requestBuilder, String uri) {
+    public java.net.http.HttpRequest.Builder addAuth(java.net.http.HttpRequest.Builder requestBuilder, String uri) {
         if ( authModifiers.isEmpty() )
             return requestBuilder;
         // Convert to the key for authentication handlers.
@@ -95,7 +94,7 @@ public class AuthEnv {
         return mod.addAuth(requestBuilder);
     }
 
-    /** Register the users/password which is to be used with basic auth at the given URL */
+    /** Register the user/password which is to be used with basic auth at the given URL */
     public void registerBasicAuthModifier(String url, String user, String password) {
         AuthRequestModifier basicAuthModifier = AuthLib.basicAuthModifier(user, password);
         String serviceEndpoint = HttpLib.endpoint(url);

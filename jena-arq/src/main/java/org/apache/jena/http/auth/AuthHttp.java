@@ -22,9 +22,8 @@ import java.util.Objects ;
 
 import org.apache.commons.codec.digest.DigestUtils ;
 
-/** Constants and operations from RFC 2617, using MD5 (the default) */
-public class RFC2617 {
-
+/** Constants and operations from RFC 2617 (digest, now RFC 7616; basic, now RFC 7617), using MD5 (the default) */
+class AuthHttp {
     public static String strUsername = "username";
     public static String strRealm    = "realm";
     public static String strNonce    = "nonce";
@@ -34,7 +33,6 @@ public class RFC2617 {
     public static String strResponse = "response";
     public static String strOpaque   = "opaque";
     public static String strUri      = "uri";
-
 
     public static String KD(String data) {
         return H(data) ;

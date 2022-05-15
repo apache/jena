@@ -91,7 +91,7 @@ public class DatabaseConnection {
         }
         ProcessFileLock lock = null;
         if (SystemTDB.DiskLocationMultiJvmUsagePrevention && ! location.isMem() ) {
-            // Take the lock for the swithable.
+            // Take the lock for the switchable.
             // StoreConnection will take a lock for the storage.
             lock = lockForLocation(location);
             // Take the lock.  This is atomic and non-reentrant.

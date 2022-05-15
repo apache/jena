@@ -807,8 +807,18 @@ public class FusekiServer {
                 realm(realmStr);
 
             String authStr = GraphUtils.getAsStringValue(server, FusekiVocab.pAuth);
-            if ( authStr != null )
-                auth(AuthScheme.scheme(authStr));
+            if ( authStr != null ) {
+                AuthScheme authScheme = AuthScheme.scheme(authStr);
+                switch (authScheme) {
+                    case BASIC: case DIGEST:
+                        break;
+                    case BEARER:
+                        throw new FusekiConfigException("Authentication scheme not support: \""+authStr+"\"");
+                    case UNKNOWN: default:
+                        throw new FusekiConfigException("Authentication scheme not recognized: \""+authStr+"\"");
+                    }
+                auth(authScheme);
+            }
             serverAuth = FusekiConfig.allowedUsers(server);
         }
 
