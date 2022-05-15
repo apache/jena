@@ -547,12 +547,10 @@ group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
 
       <dt><a name="ref-file">[file]</a>
 
-      RFC 1738
+      RFC 8089
       </dt>
-      <dd><a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.10">
-      Host-specific file names
-        (section 3.10)
-      </a>
+      <dd><a href="http://www.ietf.org/rfc/rfc8089.txt">
+      Host-specific file names</a>
       </dd>
 
       <dd>
@@ -562,27 +560,24 @@ group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
 
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
+      <a href="http://www.ietf.org/rfc/rfc8089.txt">here<a>
       </dt>
       <dd>
 
      <pre>
-fileurl = "file://" [ host | "localhost" ] "/" fpath
-</pre>
+      file-URI       = file-scheme ":" file-hier-part
 
+      file-scheme    = "file"
 
-     <pre>
-fpath = fsegment *[ "/" fsegment ]
-fsegment = *[ uchar | "?" | ":" | "@" | "&amp;" | "=" ]
-</pre>
+      file-hier-part = ( "//" auth-path )
+                     / local-path
 
+      auth-path      = [ file-auth ] path-absolute
 
-     <pre>
-safe = "$" | "-" | "_" | "." | "+"
-extra = "!" | "*" | "'" | "(" | ")" | ","
-escape = "%" hex hex
-unreserved = alpha | digit | safe | extra
-uchar = unreserved | escape
+      local-path     = path-absolute
+
+      file-auth      = "localhost"
+                     / host
 </pre>
 
 
@@ -606,18 +601,6 @@ uchar = unreserved | escape
 
       The AUTHORITY component is required.<br />
 
-      The PATHQUERY component:
-      <ul>
-      <li>
-      is required to match the regular expression: [^;~]*
-      </li>
-      <li>
-      may use ~; as sub-delimiters, and care must
-      be taken when percent escaping or unescaping these delimiters to not disrupt
-      the scheme specific syntax.
-      </li>
-      </ul>
-
              <br/>
              The following are examples of well-formed IRIs using this scheme:
              <ul>
@@ -639,10 +622,6 @@ uchar = unreserved | escape
      <li>&lt;<code>file:/foo/bar</code>&gt;</li>
 
      <li>&lt;<code>file://example.org</code>&gt;</li>
-
-     <li>&lt;<code>file://foo/bar;t</code>&gt;</li>
-
-     <li>&lt;<code>file://foo/~jjc</code>&gt;</li>
 
              </ul>
 
@@ -733,40 +712,21 @@ uchar = unreserved | escape
 
       </dd>
 
-      <dt>
-       See
-      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.3.2">section 2.3.2<a>
-      </dt>
-      <dd>
-RFC 1630 [2] reserves the characters "/", "?", and "#" for particular purposes.
-The URN-WG has not yet debated the applicability and precise semantics of those
-purposes as applied to URNs. Therefore, these characters are RESERVED for future
-developments. Namespace developers SHOULD NOT use these characters in unencoded form,
-but rather use the appropriate %-encoding for each character.
-
-      </dd>
-
       </dl>
       </dd>
 
       <dd>
       The AUTHORITY component must be omitted.<br />
 
-      The QUERY component must be omitted.<br />
-
       The PATH component is required.<br />
 
-      The PATH component:
-      <ul>
-      <li>
-      is required to match the regular expression: (?![uU][rR][nN]:)[a-zA-Z0-9][-a-zA-Z0-9]{1,31}:.*
-      </li>
-      <li>
-      may use /~ as sub-delimiters, and care must
-      be taken when percent escaping or unescaping these delimiters to not disrupt
-      the scheme specific syntax.
-      </li>
-      </ul>
+      The PATH component
+      is required to match the regular expression: (?![uU][rR][nN]:)[a-zA-Z0-9][-a-zA-Z0-9]{1,31}:.+
+      <br/>
+
+      The QUERY component
+      is required to match the regular expression: [+=].*
+      <br/>
     <br/>TODO: case of NIS<br/>TODO:
            registry of URNs, implement something of the NSS with Namespace specific rules.
            <br/>TODO:
@@ -780,6 +740,8 @@ In addition, octet 0 (0 hex) should NEVER be used, in either unencoded or %-enco
 
      <li>&lt;<code>urn:x-hp:foo\u00E9</code>&gt;</li>
 
+     <li>&lt;<code>urn:nss:a/b/c</code>&gt;</li>
+
      <li>&lt;<code>urn:urn-1:foo</code>&gt;</li>
 
              </ul>
@@ -788,15 +750,11 @@ In addition, octet 0 (0 hex) should NEVER be used, in either unencoded or %-enco
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
 
-     <li>&lt;<code>urn:x-hp:foo/bar</code>&gt;</li>
-
      <li>&lt;<code>urn:urn:foo</code>&gt;</li>
 
      <li>&lt;<code>urn://foo</code>&gt;</li>
 
      <li>&lt;<code>urn:foo:bar?query</code>&gt;</li>
-
-     <li>&lt;<code>urn:foo:ff~</code>&gt;</li>
 
              </ul>
 
@@ -1775,18 +1733,14 @@ This class is not part of the API.
             );
 
 
-     // Updated for RFC 8089
      spec =
        new SchemeSpecification(
                 "file",
-//                "1738",
-//                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.10",
-//                "Host-specific file names",
-//                "3.10",
                 "8089",
-                "https://tools.ietf.org/html/rfc8089",
-                "The \"file\" URI Scheme",
+                "http://www.ietf.org/rfc/rfc8089.txt",
+                "Host-specific file names",
                 "",
+
                 new String[]{
 
       "file://user@example.org/foo/bar",
@@ -1796,10 +1750,6 @@ This class is not part of the API.
       "file:/foo/bar",
 
       "file://example.org",
-
-//      "file://foo/bar;t",
-//
-//      "file://foo/~jjc",
 
                 },
 
@@ -1815,42 +1765,41 @@ This class is not part of the API.
 
         spec
         .addDefinition(
-                "https://tools.ietf.org/html/rfc8089", "", "");
-//                //"http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
-//                ""+
-//  "\n"+
-//    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
-//    ""+
-//  "\n"+
-//    "fpath = fsegment *[ \"/\" fsegment ]\n"+
-//    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&amp;\" | \"=\" ]\n"+
-//    ""+
-//  "\n"+
-//    "safe = \"$\" | \"-\" | \"_\" | \".\" | \"+\"\n"+
-//    "extra = \"!\" | \"*\" | \"'\" | \"(\" | \")\" | \",\"\n"+
-//    "escape = \"%\" hex hex\n"+
-//    "unreserved = alpha | digit | safe | extra\n"+
-//    "uchar = unreserved | escape\n"+
-//    "",
-//                ""+
-//     "</p><pre>\n"+
-//    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
-//    "</pre>"+
-//     "<p>"+
-//     "</p><pre>\n"+
-//    "fpath = fsegment *[ \"/\" fsegment ]\n"+
-//    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&amp;\" | \"=\" ]\n"+
-//    "</pre>"+
-//     "<p>"+
-//     "</p><pre>\n"+
-//    "safe = \"$\" | \"-\" | \"_\" | \".\" | \"+\"\n"+
-//    "extra = \"!\" | \"*\" | \"'\" | \"(\" | \")\" | \",\"\n"+
-//    "escape = \"%\" hex hex\n"+
-//    "unreserved = alpha | digit | safe | extra\n"+
-//    "uchar = unreserved | escape\n"+
-//    "</pre>"+
-//     "<p>"
-//        );
+                "http://www.ietf.org/rfc/rfc8089.txt",
+                ""+
+  "\n"+
+    "      file-URI       = file-scheme \":\" file-hier-part\n"+
+    "\n"+
+    "      file-scheme    = \"file\"\n"+
+    "\n"+
+    "      file-hier-part = ( \"//\" auth-path )\n"+
+    "                     / local-path\n"+
+    "\n"+
+    "      auth-path      = [ file-auth ] path-absolute\n"+
+    "\n"+
+    "      local-path     = path-absolute\n"+
+    "\n"+
+    "      file-auth      = \"localhost\"\n"+
+    "                     / host\n"+
+    "",
+                ""+
+     "</p><pre>\n"+
+    "      file-URI       = file-scheme \":\" file-hier-part\n"+
+    "\n"+
+    "      file-scheme    = \"file\"\n"+
+    "\n"+
+    "      file-hier-part = ( \"//\" auth-path )\n"+
+    "                     / local-path\n"+
+    "\n"+
+    "      auth-path      = [ file-auth ] path-absolute\n"+
+    "\n"+
+    "      local-path     = path-absolute\n"+
+    "\n"+
+    "      file-auth      = \"localhost\"\n"+
+    "                     / host\n"+
+    "</pre>"+
+     "<p>"
+        );
 
         spec.setDNS(true);
 
@@ -1869,10 +1818,6 @@ This class is not part of the API.
         spec.require(
               IRIComponents.AUTHORITY
         );
-
-        spec.setPattern(PATHQUERY, "[^;~]*" );
-
-        spec.setReserved(PATHQUERY,"~;");
 
      spec =
        new SchemeSpecification(
@@ -2342,7 +2287,6 @@ This class is not part of the API.
             );
 
 
-     // See also https://tools.ietf.org/html/rfc8141
      spec =
        new SchemeSpecification(
                 "urn",
@@ -2353,16 +2297,11 @@ This class is not part of the API.
 
                 new String[]{
 
-//  Legal by 8141
-//      "urn:x-hp:foo/bar",
-
       "urn:urn:foo",
 
       "urn://foo",
 
       "urn:foo:bar?query",
-// Legal by 8141
-//      "urn:foo:ff~",
 
                 },
 
@@ -2370,10 +2309,9 @@ This class is not part of the API.
 
       "urn:x-hp:foo\u00E9",
 
+      "urn:nss:a/b/c",
+
       "urn:urn-1:foo",
-
-      "urn:urn-1:a/b/c"
-
 
                 }
             );
@@ -2445,37 +2383,19 @@ This class is not part of the API.
      "<p>"
         );
 
-        spec
-        .addDefinition(
-                "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.3.2",
-                "RFC 1630 [2] reserves the characters \"/\", \"?\", and \"#\" for particular purposes. The URN-WG has not yet debated the applicability and precise semantics of those purposes as applied to URNs. Therefore, these characters are RESERVED for future developments. Namespace developers SHOULD NOT use these characters in unencoded form, but rather use the appropriate %-encoding for each character.",
-                "RFC 1630 [2] reserves the characters \"/\", \"?\", and \"#\" for particular purposes. The URN-WG has not yet debated the applicability and precise semantics of those purposes as applied to URNs. Therefore, these characters are RESERVED for future developments. Namespace developers SHOULD NOT use these characters in unencoded form, but rather use the appropriate %-encoding for each character."
-        );
-
         spec.prohibit(
               IRIComponents.AUTHORITY
         );
-
-        // As of RFC 8141 revision of 2141, query, in the form of ?q+ and ?q= are allowed.
-        // See the pattern below.
-//        spec.prohibit(
-//              IRIComponents.QUERY
-//        );
 
         spec.require(
               IRIComponents.PATH
         );
 
-        spec.setPattern(QUERY, "[+=].*");
-
         spec.setPattern(PATH,
-                // RFC 2141 -
-                //"(?![uU][rR][nN]:)[a-zA-Z0-9][-a-zA-Z0-9]{1,31}:[^/~]+"
-                // RFC 8141 revision of 2141 - JENA-1647
-                "(?![uU][rR][nN]:)[a-zA-Z0-9][-a-zA-Z0-9]{0,30}[a-zA-Z0-9]:.+"
-                );
+                "(?![uU][rR][nN]:)[a-zA-Z0-9][-a-zA-Z0-9]{1,31}:.+" );
 
-        spec.setReserved(PATH,"/~");
+        spec.setPattern(QUERY,
+                "[+=].*" );
 
      spec =
        new SchemeSpecification(
@@ -3041,8 +2961,7 @@ This class is not part of the API.
 
       "http://example.org/fo<o",
 
-      // & before ? (so in the PATH) is acceptable by RFC 3986 (general URI) and RFC 7230 (http URI scheme)
-//      "http://example.org/fo&gt;o",
+      "http://example.org/fo>o",
 
       "http://example.org/fo\"o",
 
@@ -4572,9 +4491,7 @@ This class is not part of the API.
 
       "http://xn--andr--ep-.example.org/",
 
-	  // Was longer, but breaks at Java19.
-	  // Still way over the DNS name limits (255 bytes, 63 bytes a label).
-      "http://xn.example.\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333/",
+      "http://xn.example.\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333/",
 
                 },
 
@@ -5303,31 +5220,13 @@ This class is not part of the API.
        new FromSpec_scheme(
                 "file",
                 PATH,
-                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
-                ""+
-  "\n"+
-    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
-    "",
-                "<p>"+
-     "</p><pre>\n"+
-    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
-    "</pre>"+
-     "<p></p>"
+                "http://www.ietf.org/rfc/rfc8089.txt"
             ),
 
        new FromSpec_scheme(
                 "file",
                 AUTHORITY,
-                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
-                ""+
-  "\n"+
-    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
-    "",
-                "<p>"+
-     "</p><pre>\n"+
-    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
-    "</pre>"+
-     "<p></p>"
+                "http://www.ietf.org/rfc/rfc8089.txt"
             ),
 
        new FromSpec_scheme(
@@ -5446,31 +5345,13 @@ This class is not part of the API.
        new FromSpec_scheme(
                 "file",
                 USER,
-                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
-                ""+
-  "\n"+
-    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
-    "",
-                "<p>"+
-     "</p><pre>\n"+
-    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
-    "</pre>"+
-     "<p></p>"
+                "http://www.ietf.org/rfc/rfc8089.txt"
             ),
 
        new FromSpec_scheme(
                 "file",
                 PORT,
-                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
-                ""+
-  "\n"+
-    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
-    "",
-                "<p>"+
-     "</p><pre>\n"+
-    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
-    "</pre>"+
-     "<p></p>"
+                "http://www.ietf.org/rfc/rfc8089.txt"
             ),
 
        new FromSpec_scheme(
@@ -5501,12 +5382,6 @@ This class is not part of the API.
     "&lt;NID&gt;         ::= &lt;let-num&gt; [ 1,31&lt;let-num-hyp&gt; ]\n"+
     "</pre>"+
      "<p></p>"
-            ),
-
-       new FromSpec_scheme(
-                "urn",
-                QUERY,
-                "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.3.2"
             ),
 
                 },
@@ -5808,7 +5683,7 @@ This class is not part of the API.
 
      <li>&lt;<code>http://example.org/fo&lt;o</code>&gt;</li>
 
-     <li>&lt;<code>http://example.org/fo&gt;o</code>&gt;</li>
+     <li>&lt;<code>http://example.org/fo>o</code>&gt;</li>
 
      <li>&lt;<code>http://example.org/fo"o</code>&gt;</li>
 
@@ -7066,7 +6941,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
 
      <li>&lt;<code>http://xn--andr--ep-.example.org/</code>&gt;</li>
 
-     <li>&lt;<code>http://xn.example.\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333/</code>&gt;</li>
+     <li>&lt;<code>http://xn.example.\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333/</code>&gt;</li>
 
         </ul>
 
@@ -7525,8 +7400,6 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
 
 
 /**The character code is not assigned in the version of Unicode implemented here.
-      Check validity of code, consider updating your copy of icu4j.jar.
-
           <p>This violates the following specifications:
           <a href="#ref-Unicode">[Unicode]</a>, <a href="#ref-IRI">[IRI]</a>.
           </p>
