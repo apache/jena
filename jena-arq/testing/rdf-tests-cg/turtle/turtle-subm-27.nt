@@ -1,0 +1,5 @@
+<http://w3c.github.io/rdf-tests/turtle/a1> <http://w3c.github.io/rdf-tests/turtle/b1> <http://w3c.github.io/rdf-tests/turtle/c1> .
+<http://example.org/ns/a2> <http://example.org/ns/b2> <http://example.org/ns/c2> .
+<http://example.org/ns/foo/a3> <http://example.org/ns/foo/b3> <http://example.org/ns/foo/c3> .
+<http://example.org/ns/foo/bar#a4> <http://example.org/ns/foo/bar#b4> <http://example.org/ns/foo/bar#c4> .
+<http://example.org/ns2#a5> <http://example.org/ns2#b5> <http://example.org/ns2#c5> .
