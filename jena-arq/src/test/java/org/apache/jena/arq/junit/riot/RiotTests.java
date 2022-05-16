@@ -165,13 +165,18 @@ public class RiotTests
         //allowWarningSet.add("#turtle-eval-bad-01");
     }
 
+    /** Tune tests for warnings. */
     // Some tests have U+FFFD which, in Jena, generates a helpful warning.
+    // Some tests have <http:g> which RIOT warns about but passes.
     /*package*/ static boolean allowWarnings(ManifestEntry testEntry) {
       String fragment = fragment(testEntry.getURI());
       if ( fragment == null )
           return false;
       if ( fragment.endsWith("UTF8_boundaries") || fragment.endsWith("character_boundaries") )
           // Boundaries of the Unicode allowed character blocks.
+          return true;
+      if ( fragment.contains("IRI-resolution") )
+
           return true;
       return false;
     }

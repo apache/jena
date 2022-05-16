@@ -29,7 +29,6 @@ import org.junit.runner.RunWith ;
 @Label("RIOT")
 @Manifests({
     "testing/RIOT/Lang/manifest-all.ttl"
-    // RDF-star tests also in Scripts_ARQ which runs the entire suite of community tests.
 })
 
 public class Scripts_LangSuite

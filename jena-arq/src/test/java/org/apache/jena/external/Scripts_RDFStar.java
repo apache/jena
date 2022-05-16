@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,30 +20,16 @@ package org.apache.jena.external;
 
 import org.apache.jena.arq.junit.manifest.Manifests;
 import org.apache.jena.arq.junit.runners.Label;
-import org.apache.jena.arq.junit.runners.RunnerSPARQL;
-import org.junit.runner.RunWith;
+import org.apache.jena.arq.junit.runners.RunnerRIOT;
+import org.junit.runner.RunWith ;
 
-/**
- * The test suite for SPARQL 1.1 (the second SPARQL working group) approved tests, as
- * maintained by the "rdf-tests" community group.
- * <p>
- * Query tests modified to work in ARQ in default mode.
- * <ul>
- * <li>("+" can be used for string concatenation
- * <li>; the parser tokenizer is modified to be compatible with unicode surrogate
- * pairs for Java. Broken surrogate pairs are illegal.
- * <li>Supports expression without AS in SELECT clause
- * </ul>
- * <p>
- * Functionality for query is also covered by Scripts_ARQ (many tests were developed
- * there and contributed to the W3C working group).
- * <p>
- */
-@RunWith(RunnerSPARQL.class)
-@Label("rdf-tests CG - SPARQL 1.1")
+/** rdf-star CG tests. */
+@RunWith(RunnerRIOT.class)
+@Label("RDF star")
 @Manifests({
-    "testing/rdf-tests-cg/sparql11-query/manifest-sparql11-query.ttl"
-    ,"testing/rdf-tests-cg/sparql11-update/manifest-sparql11-update.ttl"
+    "testing/rdf-star-cg/manifest.ttl"
 })
-public class Scripts_SPARQL11 {}
+
+public class Scripts_RDFStar
+{}
 
