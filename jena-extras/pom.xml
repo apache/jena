@@ -37,6 +37,7 @@
   <modules>
     <module>jena-querybuilder</module>
     <module>jena-commonsrdf</module>
+    <module>jena-serviceenhancer</module>
   </modules>
 
   <properties>
