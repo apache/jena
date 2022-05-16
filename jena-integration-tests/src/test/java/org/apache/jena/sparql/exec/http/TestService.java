@@ -46,7 +46,7 @@ import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.sparql.engine.main.iterator.QueryIterService;
+import org.apache.jena.sparql.service.ServiceExecutorRegistry;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.sse.SSE;
@@ -108,7 +108,7 @@ public class TestService {
     }
 
     // Remember the initial settings.
-    static String logLevelQueryIterService = LogCtl.getLevel(QueryIterService.class);
+    static String logLevelQueryIterService = LogCtl.getLevel(ServiceExecutorRegistry.class);
     static String logLevelFuseki = LogCtl.getLevel(Fuseki.class);
 
     @BeforeClass public static void beforeClass() {
@@ -185,7 +185,7 @@ public class TestService {
     }
 
     @Test public void service_query_silent_no_service() {
-        logOnlyErrors(QueryIterService.class, ()->{
+        logOnlyErrors(ServiceExecutorRegistry.class, ()->{
             DatasetGraph dsg = env.dsg();
             String queryString = "SELECT * { SERVICE SILENT <"+SERVICE+"JUNK> { VALUES ?X { 1 2 } }} ";
             try ( RDFLink link = RDFLinkFactory.connect(localDataset()) ) {
@@ -201,7 +201,7 @@ public class TestService {
     }
 
     @Test public void service_query_silent_nosite() {
-        logOnlyErrors(QueryIterService.class, ()->{
+        logOnlyErrors(ServiceExecutorRegistry.class, ()->{
             DatasetGraph dsg = env.dsg();
             String queryString = "SELECT * { SERVICE SILENT <http://nosuchsite/> { VALUES ?X { 1 2 } }} ";
             try ( RDFLink link = RDFLinkFactory.connect(localDataset()) ) {

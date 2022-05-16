@@ -16,27 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.service;
+package org.apache.jena.sparql.service.bulk;
 
 import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.service.single.ChainingServiceExecutor;
-import org.apache.jena.sparql.service.single.ServiceExecutor;
 
-/** Compatibility interface. Consider migrating legacy code to {@link ChainingServiceExecutor} or {@link ServiceExecutor} */
-@Deprecated(since = "4.6.0")
-@FunctionalInterface
-public interface ServiceExecutorFactory
-    extends ServiceExecutor
-{
-    @Override
-    default QueryIterator createExecution(OpService opExecute, OpService original, Binding binding, ExecutionContext execCxt) {
-        ServiceExecution svcExec = createExecutor(opExecute, original, binding, execCxt);
-        QueryIterator result = svcExec == null ? null : svcExec.exec();
-        return result;
-    }
-
-    ServiceExecution createExecutor(OpService opExecute, OpService original, Binding binding, ExecutionContext execCxt);
+/** Interface for custom service execution extensions that handle
+ *  the iterator over the input bindings themselves */
+public interface ChainingServiceExecutorBulk {
+    /**
+     * If this executor cannot handle the createExecution request then it should delegate
+     * to the chain's @{code createExecution} method and return its result.
+     * In any case, a {@link QueryIterator} needs to be returned.
+     *
+     * @return A non-null {@link QueryIterator} for the execution of the given OpService expression.
+     */
+    public QueryIterator createExecution(OpService opService, QueryIterator input, ExecutionContext execCxt, ServiceExecutorBulk chain);
 }
