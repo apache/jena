@@ -1,5 +1,0 @@
-PREFIX : <http://example.com/ns#>
-
-SELECT * {
-  ?X :p? {| ?p ?o |} 
-}
