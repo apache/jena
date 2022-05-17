@@ -20,6 +20,7 @@ package org.apache.jena.system;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
@@ -68,9 +69,16 @@ public class TestReadXML {
     @Test public void stax_setup() {
         XMLInputFactory xf = XMLInputFactory.newInstance() ;
         JenaXMLInput.initXMLInputFactory(xf);
-        assertEquals(Boolean.FALSE, xf.getProperty(XMLInputFactory.SUPPORT_DTD));
-        assertEquals(null, xf.getProperty(XMLConstants.ACCESS_EXTERNAL_DTD));
-        assertEquals(Boolean.FALSE,xf.getProperty("javax.xml.stream.isSupportingExternalEntities"));
+        assertEquals("XMLInputFactory.SUPPORT_DTD",
+                     Boolean.FALSE, xf.getProperty(XMLInputFactory.SUPPORT_DTD));
+
+        // Java19. Setting ACCESS_EXTERNAL_DTD to "" now returns "" whereas it was returning null.
+        Object obj = xf.getProperty(XMLConstants.ACCESS_EXTERNAL_DTD);
+        boolean noAccessExternalDTD = ( (obj == null) || ((obj instanceof String) && ((String)obj).isEmpty()) );
+        assertTrue("XMLConstants.ACCESS_EXTERNAL_DTD", noAccessExternalDTD);
+
+        assertEquals("javax.xml.stream.isSupportingExternalEntities",
+                     Boolean.FALSE,xf.getProperty("javax.xml.stream.isSupportingExternalEntities"));
     }
 
     @Test public void srx_dtd_http() {
