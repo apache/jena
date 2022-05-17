@@ -50,9 +50,7 @@ import org.junit.runners.Suite ;
     , TS_RDFProtobuf.class
     , TS_RDFThrift.class
     , TS_RowSetRIOT.class
-
-    , Scripts_LangSuite.class
-    , Scripts_AltTurtle.class
+    // And scripted tests.
 })
 
 public class TC_Riot

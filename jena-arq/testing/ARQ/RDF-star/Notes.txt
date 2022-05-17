@@ -1,0 +1,12 @@
+==== RDF Star tests
+
+cg/ -- community group tests
+  nt/, turtle/, trig/, sparql/
+
+Copy of tests from 
+https://github.com/w3c/rdf-star/tree/main/tests
+
+Removed:
+  **/manifest.jsonld
+  **/index.html
+  **/manifest.htm

@@ -35,9 +35,10 @@ import org.junit.runner.RunWith ;
 @Manifests({
     "testing/RIOT/Lang/TurtleStd/manifest.ttl",
     "testing/RIOT/Lang/Turtle2/manifest.ttl",
-    "testing/RIOT/Lang/TurtleSubm/manifest.ttl",
-    "testing/ARQ/RDF-star/cg/turtle/syntax/manifest.ttl",
-    "testing/ARQ/RDF-star/cg/turtle/eval/manifest.ttl"
+
+    "testing/rdf-tests-cg/turtle/manifest.ttl",
+    "testing/rdf-star-cg/turtle/syntax/manifest.ttl",
+    "testing/rdf-star-cg/turtle/eval/manifest.ttl"
 })
 
 public class Scripts_AltTurtle

@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-arq</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Jena - ARQ (SPARQL 1.1 Query Engine)</name>
+  <name>Apache Jena - ARQ</name>
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
@@ -28,7 +28,7 @@
     <relativePath>..</relativePath>
   </parent>
 
-  <description>ARQ is a SPARQL 1.1 query engine for Apache Jena</description>
+  <description>SPARQL 1.1 query engine and RDF parsers for Apache Jena</description>
 
   <properties>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>

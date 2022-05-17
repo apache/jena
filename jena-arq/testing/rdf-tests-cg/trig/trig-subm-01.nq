@@ -1,0 +1,2 @@
+_:genid1 <http://w3c.github.io/rdf-tests/trig/trig-subm-01.trig#x> <http://w3c.github.io/rdf-tests/trig/trig-subm-01.trig#y> .
+_:genid2 <http://w3c.github.io/rdf-tests/trig/trig-subm-01.trig#x> <http://w3c.github.io/rdf-tests/trig/trig-subm-01.trig#y> <http://example/graph> .

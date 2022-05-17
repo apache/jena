@@ -33,8 +33,7 @@ import org.junit.runner.RunWith;
 @Manifests({
     "testing/ARQ/Syntax/manifest-syntax.ttl" ,
     "testing/ARQ/manifest-arq.ttl" ,
-    "testing/ARQ/Serialization/manifest.ttl" ,
-    "testing/ARQ/RDF-star/cg/manifest.ttl"
+    "testing/ARQ/Serialization/manifest.ttl"
 })
 public class Scripts_ARQ
 {
