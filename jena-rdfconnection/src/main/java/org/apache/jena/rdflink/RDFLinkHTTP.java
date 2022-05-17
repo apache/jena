@@ -97,11 +97,11 @@ public class RDFLinkHTTP implements RDFLink {
 
     // Used by the builder.
     protected RDFLinkHTTP(Transactional txnLifecycle, HttpClient httpClient, String destination,
-                            String queryURL, String updateURL, String gspURL, RDFFormat outputQuads, RDFFormat outputTriples,
-                            String acceptDataset, String acceptGraph,
-                            String acceptSparqlResults,
-                            String acceptSelectResult, String acceptAskResult,
-                            boolean parseCheckQueries, boolean parseCheckUpdates) {
+                          String queryURL, String updateURL, String gspURL, RDFFormat outputQuads, RDFFormat outputTriples,
+                          String acceptDataset, String acceptGraph,
+                          String acceptSparqlResults,
+                          String acceptSelectResult, String acceptAskResult,
+                          boolean parseCheckQueries, boolean parseCheckUpdates) {
         // Any defaults.
         HttpClient hc =  httpClient!=null ? httpClient : HttpEnv.getDftHttpClient();
         if ( txnLifecycle == null )
