@@ -153,7 +153,6 @@ public class RDFWriterRegistry
         register(Lang.RDFTHRIFT,   RDFFormat.RDF_THRIFT) ;
 
         register(Lang.TRIX,        RDFFormat.TRIX) ;
-        register(Lang.SHACLC,      RDFFormat.SHACLC);
 
         // Writer factories - graph.
 
