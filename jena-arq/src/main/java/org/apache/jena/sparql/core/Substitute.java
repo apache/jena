@@ -33,7 +33,14 @@ import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.pfunction.PropFuncArg;
+import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
+import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps;
 
+/**
+ * Substitution in SPARQL algebra.
+ * <p>
+ * See also {@link QueryTransformOps} and {@link UpdateTransformOps} which operate on SPARQL syntax.
+ */
 public class Substitute {
     public static Op substitute(Op op, Binding binding) {
         // Want to avoid cost if the binding is empty

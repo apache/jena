@@ -65,10 +65,6 @@ public class HttpAction
     public final ActionCategory category;
     public final Logger log;
 
-    // ----
-    // Worth subclassing? Given this is allocated in the general lifecycle
-    // it would mean there are downcasts to the specific type.
-
     // -- Valid only for operational actions (e.g. SPARQL).
 
     public  Endpoint        endpoint        = null;

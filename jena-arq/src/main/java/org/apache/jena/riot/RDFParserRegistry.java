@@ -48,8 +48,7 @@ import org.apache.jena.sparql.util.Context;
 
 public class RDFParserRegistry
 {
-    // System defaults for JSON-LD writing in init$().
-
+    // System defaults for JSON-LD writing in init().
 
     /** map language to a parser factory */
     private static Map<Lang, ReaderRIOTFactory> langToParserFactory    = new HashMap<>();

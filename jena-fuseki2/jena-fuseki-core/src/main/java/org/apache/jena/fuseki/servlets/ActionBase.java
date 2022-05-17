@@ -22,24 +22,23 @@ import org.apache.jena.fuseki.server.Dispatcher;
 
 /**
  * Base of all implementations of service {@link HttpAction}. This class provides the
- * two steps execution of "validate" and "perform". 
- * 
+ * two steps execution of "validate" and "perform".
+ *
  * Subclasses choose which HTTP
  * methods they handle by implementing "execGet(HttpAction)" etc. These often call
  * {@link #executeLifecycle} for their normal {@code HttpAction} lifecycle, for example,
  * when GET and POST do the same steps so common "validate" and "execute".
- * 
+ *
  * See {@link ActionExecLib#execAction} for the common ActionProcessor execution with logging and error handling.
  * This is used by {@link Dispatcher#dispatchAction(HttpAction)}.
- * 
+ *
  * See {@link ActionService} which overrides {@link #executeLifecycle} to add statistics counters.
- * 
- * Some operations like OPTIONS will implement differently.    
- * 
+ *
+ * Some operations like OPTIONS will implement differently.
+ *
  * <pre>
  * public void execGet(HttpAction action) { super.executeLifecycle(action); }
- * </pre>  
- * 
+ * </pre>
  */
 public abstract class ActionBase implements ActionProcessor, ActionLifecycle {
     protected ActionBase() { }
