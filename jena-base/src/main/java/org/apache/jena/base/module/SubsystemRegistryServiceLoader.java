@@ -61,8 +61,8 @@ public class SubsystemRegistryServiceLoader<T extends SubsystemLifecycle> implem
                     T module = provider.get();
                     this.add(module);
                 } catch (ServiceConfigurationError ex) {
-                    FmtLog.error(LoggerFactory.getLogger(this.getClass()),
-                                 "Error instantiating class %s for %s", provider.type().getName(), moduleClass.getName(), ex);
+                    FmtLog.error(this.getClass(), ex,
+                                 "Error instantiating class %s for %s", provider.type().getName(), moduleClass.getName());
                     throw ex;
                 }
             });
