@@ -20,6 +20,8 @@ package org.apache.jena.geosparql.spatial.property_functions;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.stream.Stream;
+
 import org.apache.commons.collections4.iterators.IteratorChain;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
@@ -38,8 +40,9 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.iterator.QueryIterConcat;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator;
+import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.pfunction.PFuncSimpleAndList;
@@ -175,7 +178,6 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
 
     private QueryIterator checkUnbound(Binding binding, ExecutionContext execCxt, Node subject, int limit) {
 
-        QueryIterConcat queryIterConcat = new QueryIterConcat(execCxt);
         if (limit < 0) {
             limit = Integer.MAX_VALUE;
         }
@@ -185,29 +187,15 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
         HashSet<Resource> features = searchEnvelope.check(spatialIndex);
 
         Var subjectVar = Var.alloc(subject.getName());
-        int count = 0;
-        for (Resource feature : features) {
 
-            boolean isMatched;
-
-            if (requireSecondFilter()) {
-                //Check all the GeometryLiterals of the Feature in a fine-grained test.
-                isMatched = checkBound(execCxt, feature.asNode());
-            } else {
-                //Second filter is not required so accept the case.
-                isMatched = true;
-            }
-
-            if (isMatched) {
-                count++; //Exit on limit of zero.
-                if (count > limit) {
-                    break;
-                }
-                QueryIterator queryIter = QueryIterSingleton.create(binding, subjectVar, feature.asNode(), execCxt);
-                queryIterConcat.add(queryIter);
-            }
+        Stream<Resource> stream = features.stream();
+        if (requireSecondFilter()) {
+            stream = stream.filter(feature -> checkBound(execCxt, feature.asNode()));
         }
-        return queryIterConcat;
+        Iterator<Binding> iterator = stream.map(feature -> BindingFactory.binding(binding, subjectVar, feature.asNode()))
+                .limit(limit)
+                .iterator();
+        return QueryIterPlainWrapper.create(iterator, execCxt);
     }
 
 }
