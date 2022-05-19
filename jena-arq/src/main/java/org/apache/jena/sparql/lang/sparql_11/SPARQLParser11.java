@@ -21,7 +21,7 @@ startQuery() ;
     Query();
     jj_consume_token(0);
 finishQuery() ;
-  }
+}
 
   final public void Query() throws ParseException {
     Prologue();
@@ -48,7 +48,7 @@ finishQuery() ;
       throw new ParseException();
     }
     ValuesClause();
-  }
+}
 
   final public void UpdateUnit() throws ParseException {
     ByteOrderMark();
@@ -56,7 +56,7 @@ startUpdateRequest() ;
     Update();
     jj_consume_token(0);
 finishUpdateRequest() ;
-  }
+}
 
   final public void ByteOrderMark() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -68,7 +68,7 @@ finishUpdateRequest() ;
       jj_la1[1] = jj_gen;
       ;
     }
-  }
+}
 
   final public void Prologue() throws ParseException {
     label_1:
@@ -98,13 +98,13 @@ finishUpdateRequest() ;
         throw new ParseException();
       }
     }
-  }
+}
 
   final public void BaseDecl() throws ParseException {Token t ; String iri ;
     t = jj_consume_token(BASE);
     iri = IRIREF();
 setBase(iri, t.beginLine, t.beginColumn ) ;
-  }
+}
 
   final public void PrefixDecl() throws ParseException {Token t ; String iri ;
     jj_consume_token(PREFIX);
@@ -112,7 +112,7 @@ setBase(iri, t.beginLine, t.beginColumn ) ;
     iri = IRIREF();
 String s = fixupPrefix(t.image, t.beginLine, t.beginColumn);
       setPrefix(s, iri, t.beginLine, t.beginColumn) ;
-  }
+}
 
   final public void SelectQuery() throws ParseException {
     SelectClause();
@@ -131,14 +131,14 @@ String s = fixupPrefix(t.image, t.beginLine, t.beginColumn);
     }
     WhereClause();
     SolutionModifier();
-  }
+}
 
   final public void SubSelect() throws ParseException {
     SelectClause();
     WhereClause();
     SolutionModifier();
     ValuesClause();
-  }
+}
 
   final public void SelectClause() throws ParseException {Var v ; Expr expr ; Node n ;
     jj_consume_token(SELECT);
@@ -223,7 +223,7 @@ getQuery().setQueryResultStar(true) ;
       throw new ParseException();
     }
 setAllowAggregatesInExpressions(false) ;
-  }
+}
 
   final public void ConstructQuery() throws ParseException {Template t ;
                           TripleCollectorBGP acc = new TripleCollectorBGP() ;
@@ -315,7 +315,7 @@ t = new Template(acc.getBGP()) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void DescribeQuery() throws ParseException {Node n ;
     jj_consume_token(DESCRIBE);
@@ -381,7 +381,7 @@ getQuery().setQueryResultStar(true) ;
       ;
     }
     SolutionModifier();
-  }
+}
 
   final public void AskQuery() throws ParseException {
     jj_consume_token(ASK);
@@ -401,7 +401,7 @@ getQuery().setQueryAskType() ;
     }
     WhereClause();
     SolutionModifier();
-  }
+}
 
   final public void DatasetClause() throws ParseException {
     jj_consume_token(FROM);
@@ -421,24 +421,24 @@ getQuery().setQueryAskType() ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void DefaultGraphClause() throws ParseException {String iri ;
     iri = SourceSelector();
 getQuery().addGraphURI(iri) ;
-  }
+}
 
   final public void NamedGraphClause() throws ParseException {String iri ;
     jj_consume_token(NAMED);
     iri = SourceSelector();
 getQuery().addNamedGraphURI(iri) ;
-  }
+}
 
   final public String SourceSelector() throws ParseException {String iri ;
     iri = iri();
 {if ("" != null) return iri ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public void WhereClause() throws ParseException {Element el ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -454,7 +454,7 @@ startWherePattern() ;
     el = GroupGraphPattern();
 getQuery().setQueryPattern(el) ;
 finishWherePattern() ;
-  }
+}
 
   final public void SolutionModifier() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -494,7 +494,7 @@ finishWherePattern() ;
       jj_la1[24] = jj_gen;
       ;
     }
-  }
+}
 
   final public void GroupClause() throws ParseException {
     jj_consume_token(GROUP);
@@ -578,7 +578,7 @@ finishWherePattern() ;
         break label_9;
       }
     }
-  }
+}
 
   final public void GroupCondition() throws ParseException {Var v = null ; Expr expr = null ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -682,7 +682,7 @@ getQuery().addGroupBy(v) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void HavingClause() throws ParseException {
 setAllowAggregatesInExpressions(true) ;
@@ -765,12 +765,12 @@ setAllowAggregatesInExpressions(true) ;
       }
     }
 setAllowAggregatesInExpressions(false) ;
-  }
+}
 
   final public void HavingCondition() throws ParseException {Expr c ;
     c = Constraint();
 getQuery().addHavingCondition(c) ;
-  }
+}
 
   final public void OrderClause() throws ParseException {
 setAllowAggregatesInExpressions(true) ;
@@ -858,7 +858,7 @@ setAllowAggregatesInExpressions(true) ;
       }
     }
 setAllowAggregatesInExpressions(false) ;
-  }
+}
 
   final public void OrderCondition() throws ParseException {int direction = 0 ; Expr expr = null ; Node v = null ;
 direction = Query.ORDER_DEFAULT ;
@@ -1041,7 +1041,7 @@ if ( v == null )
           getQuery().addOrderBy(expr, direction) ;
       else
           getQuery().addOrderBy(v, direction) ;
-  }
+}
 
   final public void LimitOffsetClauses() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1076,19 +1076,19 @@ if ( v == null )
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void LimitClause() throws ParseException {Token t ;
     jj_consume_token(LIMIT);
     t = jj_consume_token(INTEGER);
 getQuery().setLimit(integerValue(t.image)) ;
-  }
+}
 
   final public void OffsetClause() throws ParseException {Token t ;
     jj_consume_token(OFFSET);
     t = jj_consume_token(INTEGER);
 getQuery().setOffset(integerValue(t.image)) ;
-  }
+}
 
   final public void ValuesClause() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1103,7 +1103,7 @@ finishValuesClause(t.beginLine, t.beginColumn) ;
       jj_la1[36] = jj_gen;
       ;
     }
-  }
+}
 
   final public void Update() throws ParseException {
     Prologue();
@@ -1138,7 +1138,7 @@ finishValuesClause(t.beginLine, t.beginColumn) ;
       jj_la1[38] = jj_gen;
       ;
     }
-  }
+}
 
   final public void Update1() throws ParseException {Update up = null ;
 startUpdateOperation() ;
@@ -1196,7 +1196,7 @@ startUpdateOperation() ;
     }
 if (null != up) emitUpdate(up) ;
     finishUpdateOperation() ;
-  }
+}
 
   final public Update Load() throws ParseException {String url ; Node dest = null ; boolean silent = false ;
     jj_consume_token(LOAD);
@@ -1223,7 +1223,7 @@ silent = true ;
     }
 {if ("" != null) return new UpdateLoad(url, dest, silent) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Update Clear() throws ParseException {boolean silent = false ; Target target ;
     jj_consume_token(CLEAR);
@@ -1240,7 +1240,7 @@ silent = true ;
     target = GraphRefAll();
 {if ("" != null) return new UpdateClear(target, silent) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Update Drop() throws ParseException {boolean silent = false ; Target target ;
     jj_consume_token(DROP);
@@ -1257,7 +1257,7 @@ silent = true ;
     target = GraphRefAll();
 {if ("" != null) return new UpdateDrop(target, silent) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Update Create() throws ParseException {Node iri ; boolean silent = false ;
     jj_consume_token(CREATE);
@@ -1274,7 +1274,7 @@ silent=true ;
     iri = GraphRef();
 {if ("" != null) return new UpdateCreate(iri, silent) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Update Add() throws ParseException {Target src ; Target dest ; boolean silent = false ;
     jj_consume_token(ADD);
@@ -1293,7 +1293,7 @@ silent=true ;
     dest = GraphOrDefault();
 {if ("" != null) return new UpdateAdd(src, dest, silent) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Update Move() throws ParseException {Target src ; Target dest ; boolean silent = false ;
     jj_consume_token(MOVE);
@@ -1312,7 +1312,7 @@ silent=true ;
     dest = GraphOrDefault();
 {if ("" != null) return new UpdateMove(src, dest, silent) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Update Copy() throws ParseException {Target src ; Target dest ; boolean silent = false ;
     jj_consume_token(COPY);
@@ -1331,7 +1331,7 @@ silent=true ;
     dest = GraphOrDefault();
 {if ("" != null) return new UpdateCopy(src, dest, silent) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public void InsertData() throws ParseException {QuadDataAccSink qd = createInsertDataSink() ; Token t ;
     t = jj_consume_token(INSERT_DATA);
@@ -1340,7 +1340,7 @@ startDataInsert(qd, beginLine, beginColumn) ;
     QuadData(qd);
 finishDataInsert(qd, beginLine, beginColumn) ;
     qd.close() ;
-  }
+}
 
   final public void DeleteData() throws ParseException {QuadDataAccSink qd = createDeleteDataSink() ; Token t ;
     t = jj_consume_token(DELETE_DATA);
@@ -1349,7 +1349,7 @@ startDataDelete(qd, beginLine, beginColumn) ;
     QuadData(qd);
 finishDataDelete(qd, beginLine, beginColumn) ;
     qd.close() ;
-  }
+}
 
   final public Update DeleteWhere() throws ParseException {QuadAcc qp = new QuadAcc() ; Token t ;
     t = jj_consume_token(DELETE_WHERE);
@@ -1359,7 +1359,7 @@ startDeleteTemplate(qp, beginLine, beginColumn) ;
 finishDeleteTemplate(qp, beginLine, beginColumn) ;
 {if ("" != null) return new UpdateDeleteWhere(qp) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Update Modify() throws ParseException {Element el ; String iri = null ;
                     UpdateModify up = new UpdateModify() ;
@@ -1419,7 +1419,7 @@ finishWherePattern() ;
 finishModifyUpdate() ;
 {if ("" != null) return up ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public void DeleteClause(UpdateModify up) throws ParseException {QuadAcc qp = up.getDeleteAcc() ; Token t ;
     t = jj_consume_token(DELETE);
@@ -1428,7 +1428,7 @@ startDeleteTemplate(qp, beginLine, beginColumn) ;
     QuadPattern(qp);
 finishDeleteTemplate(qp, beginLine, beginColumn) ;
 up.setHasDeleteClause(true) ;
-  }
+}
 
   final public void InsertClause(UpdateModify up) throws ParseException {QuadAcc qp = up.getInsertAcc() ; Token t ;
     t = jj_consume_token(INSERT);
@@ -1437,7 +1437,7 @@ startInsertTemplate(qp, beginLine, beginColumn) ;
     QuadPattern(qp);
 finishInsertTemplate(qp, beginLine, beginColumn) ;
 up.setHasInsertClause(true) ;
-  }
+}
 
   final public void UsingClause(UpdateWithUsing update) throws ParseException {String iri ; Node n ;
     jj_consume_token(USING);
@@ -1460,7 +1460,7 @@ n = createNode(iri) ; update.addUsingNamed(n) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public Target GraphOrDefault() throws ParseException {String iri ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1492,14 +1492,14 @@ n = createNode(iri) ; update.addUsingNamed(n) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node GraphRef() throws ParseException {String iri ;
     jj_consume_token(GRAPH);
     iri = iri();
 {if ("" != null) return createNode(iri) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Target GraphRefAll() throws ParseException {Node iri ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1529,19 +1529,19 @@ n = createNode(iri) ; update.addUsingNamed(n) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public void QuadPattern(QuadAcc acc) throws ParseException {
     jj_consume_token(LBRACE);
     Quads(acc);
     jj_consume_token(RBRACE);
-  }
+}
 
   final public void QuadData(QuadDataAccSink acc) throws ParseException {
     jj_consume_token(LBRACE);
     Quads(acc);
     jj_consume_token(RBRACE);
-  }
+}
 
   final public void Quads(QuadAccSink acc) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1632,7 +1632,7 @@ n = createNode(iri) ; update.addUsingNamed(n) ;
         ;
       }
     }
-  }
+}
 
   final public void QuadsNotTriples(QuadAccSink acc) throws ParseException {Node gn ; Node prev = acc.getGraph() ;
     jj_consume_token(GRAPH);
@@ -1674,7 +1674,7 @@ setAccGraph(acc, gn) ;
     }
     jj_consume_token(RBRACE);
 setAccGraph(acc, prev) ;
-  }
+}
 
   final public void TriplesTemplate(TripleCollector acc) throws ParseException {
     TriplesSameSubject(acc);
@@ -1720,7 +1720,7 @@ setAccGraph(acc, prev) ;
       jj_la1[62] = jj_gen;
       ;
     }
-  }
+}
 
   final public Element GroupGraphPattern() throws ParseException {Element el = null ; Token t ;
     t = jj_consume_token(LBRACE);
@@ -1740,7 +1740,7 @@ Query q = endSubSelect(beginLine, beginColumn) ;
     jj_consume_token(RBRACE);
 {if ("" != null) return el ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Element GroupGraphPatternSub() throws ParseException {Element el = null ;
 ElementGroup elg = new ElementGroup() ;
@@ -1850,7 +1850,7 @@ endTriplesBlock() ;
 endGroup(elg) ;
 {if ("" != null) return elg ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Element TriplesBlock(ElementPathBlock acc) throws ParseException {
 if ( acc == null )
@@ -1900,7 +1900,7 @@ if ( acc == null )
     }
 {if ("" != null) return acc ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Element GraphPatternNotTriples() throws ParseException {Element el = null ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1943,14 +1943,14 @@ if ( acc == null )
     }
 {if ("" != null) return el ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Element OptionalGraphPattern() throws ParseException {Element el ;
     jj_consume_token(OPTIONAL);
     el = GroupGraphPattern();
 {if ("" != null) return new ElementOptional(el) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Element GraphGraphPattern() throws ParseException {Element el ; Node n ;
     jj_consume_token(GRAPH);
@@ -1958,7 +1958,7 @@ if ( acc == null )
     el = GroupGraphPattern();
 {if ("" != null) return new ElementNamedGraph(n, el) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Element ServiceGraphPattern() throws ParseException {Element el ; Node n ; boolean silent = false ;
     jj_consume_token(SERVICE);
@@ -1976,7 +1976,7 @@ silent=true;
     el = GroupGraphPattern();
 {if ("" != null) return new ElementService(n, el, silent) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Element Bind() throws ParseException {Var v ; Expr expr ;
     jj_consume_token(BIND);
@@ -1987,7 +1987,7 @@ silent=true;
     jj_consume_token(RPAREN);
 {if ("" != null) return new ElementBind(v, expr) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Element InlineData() throws ParseException {ElementData el ; Token t ;
     t = jj_consume_token(VALUES);
@@ -1998,7 +1998,7 @@ el = new ElementData() ;
 finishInlineData(beginLine, beginColumn) ;
     {if ("" != null) return el ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public void DataBlock() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2017,7 +2017,7 @@ finishInlineData(beginLine, beginColumn) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void InlineDataOneVar() throws ParseException {Var v ; Node n ; Token t ; ; int beginLine; int beginColumn;
     v = Var();
@@ -2059,7 +2059,7 @@ startDataBlockValueRow(beginLine, beginColumn) ;
       finishDataBlockValueRow(beginLine, beginColumn) ;
     }
     t = jj_consume_token(RBRACE);
-  }
+}
 
   final public void InlineDataFull() throws ParseException {Var v ; Node n ; Token t ; int beginLine; int beginColumn;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2161,7 +2161,7 @@ finishDataBlockValueRow(beginLine, beginColumn) ;
       }
     }
     jj_consume_token(RBRACE);
-  }
+}
 
   final public Node DataBlockValue() throws ParseException {Node n ; String iri ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2210,14 +2210,14 @@ finishDataBlockValueRow(beginLine, beginColumn) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Element MinusGraphPattern() throws ParseException {Element el ;
     jj_consume_token(MINUS_P);
     el = GroupGraphPattern();
 {if ("" != null) return new ElementMinus(el) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Element GroupOrUnionGraphPattern() throws ParseException {Element el = null ; ElementUnion el2 = null ;
     el = GroupGraphPattern();
@@ -2243,14 +2243,14 @@ el2.addElement(el) ;
     }
 {if ("" != null) return (el2==null)? el : el2 ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Element Filter() throws ParseException {Expr c ;
     jj_consume_token(FILTER);
     c = Constraint();
 {if ("" != null) return new ElementFilter(c) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr Constraint() throws ParseException {Expr c ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2335,7 +2335,7 @@ el2.addElement(el) ;
     }
 {if ("" != null) return c ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr FunctionCall() throws ParseException {String fname ; Args a ;
     fname = iri();
@@ -2349,7 +2349,7 @@ if ( AggregateRegistry.isRegistered(fname) ) {
      }
      {if ("" != null) return new E_Function(fname, a) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Args ArgList() throws ParseException {Expr expr ; Args args = new Args() ; Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2400,7 +2400,7 @@ args.add(expr) ;
     }
 {if ("" != null) return args ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public ExprList ExpressionList() throws ParseException {Expr expr = null ; ExprList exprList = new ExprList() ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2437,7 +2437,7 @@ exprList.add(expr) ;
     }
 {if ("" != null) return exprList ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Template ConstructTemplate() throws ParseException {TripleCollectorBGP acc = new TripleCollectorBGP();
                                  Template t = new Template(acc.getBGP()) ;
@@ -2480,7 +2480,7 @@ setInConstructTemplate(true) ;
 setInConstructTemplate(false) ;
       {if ("" != null) return t ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public void ConstructTriples(TripleCollector acc) throws ParseException {
     TriplesSameSubject(acc);
@@ -2526,7 +2526,7 @@ setInConstructTemplate(false) ;
       jj_la1[89] = jj_gen;
       ;
     }
-  }
+}
 
   final public void TriplesSameSubject(TripleCollector acc) throws ParseException {Node s ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2570,7 +2570,7 @@ insert(acc, tempAcc) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void PropertyList(Node s, TripleCollector acc) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2587,7 +2587,7 @@ insert(acc, tempAcc) ;
       jj_la1[91] = jj_gen;
       ;
     }
-  }
+}
 
   final public void PropertyListNotEmpty(Node s, TripleCollector acc) throws ParseException {Node p = null ;
     p = Verb();
@@ -2620,7 +2620,7 @@ insert(acc, tempAcc) ;
         ;
       }
     }
-  }
+}
 
   final public Node Verb() throws ParseException {Node p ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2644,7 +2644,7 @@ p = nRDFtype ;
     }
 {if ("" != null) return p ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public void ObjectList(Node s, Node p, Path path, TripleCollector acc) throws ParseException {Node o ;
     Object(s, p, path, acc);
@@ -2662,13 +2662,13 @@ p = nRDFtype ;
       jj_consume_token(COMMA);
       Object(s, p, path, acc);
     }
-  }
+}
 
   final public void Object(Node s, Node p, Path path, TripleCollector acc) throws ParseException {Node o ;
 ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ;
     o = GraphNode(tempAcc);
 insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ;
-  }
+}
 
   final public void TriplesSameSubjectPath(TripleCollector acc) throws ParseException {Node s ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2712,7 +2712,7 @@ insert(acc, tempAcc) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void PropertyListPath(Node s, TripleCollector acc) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2732,7 +2732,7 @@ insert(acc, tempAcc) ;
       jj_la1[97] = jj_gen;
       ;
     }
-  }
+}
 
   final public void PropertyListPathNotEmpty(Node s, TripleCollector acc) throws ParseException {Path path = null ; Node p = null ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2809,19 +2809,19 @@ path = null ; p = null ;
         ;
       }
     }
-  }
+}
 
   final public Path VerbPath() throws ParseException {Node p ; Path path ;
     path = Path();
 {if ("" != null) return path ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node VerbSimple() throws ParseException {Node p ;
     p = Var();
 {if ("" != null) return p ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public void ObjectListPath(Node s, Node p, Path path, TripleCollector acc) throws ParseException {Node o ;
     ObjectPath(s, p, path, acc);
@@ -2839,19 +2839,19 @@ path = null ; p = null ;
       jj_consume_token(COMMA);
       ObjectPath(s, p, path, acc);
     }
-  }
+}
 
   final public void ObjectPath(Node s, Node p, Path path, TripleCollector acc) throws ParseException {Node o ;
 ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ;
     o = GraphNodePath(tempAcc);
 insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ;
-  }
+}
 
   final public Path Path() throws ParseException {Path p ;
     p = PathAlternative();
 {if ("" != null) return p ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Path PathAlternative() throws ParseException {Path p1 , p2 ;
     p1 = PathSequence();
@@ -2872,7 +2872,7 @@ p1 = PathFactory.pathAlt(p1, p2) ;
     }
 {if ("" != null) return p1 ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Path PathSequence() throws ParseException {Path p1 , p2 ;
     p1 = PathEltOrInverse();
@@ -2893,7 +2893,7 @@ p1 = PathFactory.pathSeq(p1, p2) ;
     }
 {if ("" != null) return p1;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Path PathElt() throws ParseException {String str ; Node n ; Path p ;
     p = PathPrimary();
@@ -2910,7 +2910,7 @@ p1 = PathFactory.pathSeq(p1, p2) ;
     }
 {if ("" != null) return p ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Path PathEltOrInverse() throws ParseException {String str ; Node n ; Path p ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2936,7 +2936,7 @@ p = PathFactory.pathInverse(p) ;
     }
 {if ("" != null) return p ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Path PathMod(Path p) throws ParseException {long i1 ; long i2 ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2961,7 +2961,7 @@ p = PathFactory.pathInverse(p) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Path PathPrimary() throws ParseException {String str ; Path p ; Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2995,7 +2995,7 @@ p = PathFactory.pathLink(nRDFtype) ;
     }
 {if ("" != null) return p ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Path PathNegatedPropertySet() throws ParseException {P_Path0 p ; P_NegPropSet pNegSet ;
 pNegSet = new P_NegPropSet() ;
@@ -3050,7 +3050,7 @@ pNegSet.add(p) ;
     }
 {if ("" != null) return pNegSet ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public P_Path0 PathOneInPropertySet() throws ParseException {String str ; Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3094,13 +3094,13 @@ n = createNode(str) ; {if ("" != null) return new P_ReverseLink(n) ;}
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public long Integer() throws ParseException {Token t ;
     t = jj_consume_token(INTEGER);
 {if ("" != null) return integerValue(t.image) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node TriplesNode(TripleCollectorMark acc) throws ParseException {Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3120,7 +3120,7 @@ n = createNode(str) ; {if ("" != null) return new P_ReverseLink(n) ;}
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node BlankNodePropertyList(TripleCollector acc) throws ParseException {Token t ;
     t = jj_consume_token(LBRACKET);
@@ -3129,7 +3129,7 @@ Node n = createBNode( t.beginLine, t.beginColumn) ;
     jj_consume_token(RBRACKET);
 {if ("" != null) return n ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node TriplesNodePath(TripleCollectorMark acc) throws ParseException {Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3149,7 +3149,7 @@ Node n = createBNode( t.beginLine, t.beginColumn) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node BlankNodePropertyListPath(TripleCollector acc) throws ParseException {Token t ;
     t = jj_consume_token(LBRACKET);
@@ -3158,7 +3158,7 @@ Node n = createBNode( t.beginLine, t.beginColumn) ;
     jj_consume_token(RBRACKET);
 {if ("" != null) return n ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node Collection(TripleCollectorMark acc) throws ParseException {Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
@@ -3213,7 +3213,7 @@ if ( lastCell != null )
        insert(acc, lastCell, nRDFrest, nRDFnil) ;
      {if ("" != null) return listHead ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node CollectionPath(TripleCollectorMark acc) throws ParseException {Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
@@ -3268,7 +3268,7 @@ if ( lastCell != null )
        insert(acc, lastCell, nRDFrest, nRDFnil) ;
      {if ("" != null) return listHead ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node GraphNode(TripleCollectorMark acc) throws ParseException {Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3311,7 +3311,7 @@ if ( lastCell != null )
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node GraphNodePath(TripleCollectorMark acc) throws ParseException {Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3354,7 +3354,7 @@ if ( lastCell != null )
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node VarOrTerm() throws ParseException {Node n = null ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3394,7 +3394,7 @@ if ( lastCell != null )
     }
 {if ("" != null) return n ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node VarOrIri() throws ParseException {Node n = null ; String iri ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3417,7 +3417,7 @@ n = createNode(iri) ;
     }
 {if ("" != null) return n ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node VarOrBlankNodeOrIri() throws ParseException {Node n = null ; String iri ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3445,7 +3445,7 @@ n = createNode(iri) ;
     }
 {if ("" != null) return n ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Var Var() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3464,7 +3464,7 @@ n = createNode(iri) ;
     }
 {if ("" != null) return createVariable(t.image, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node GraphTerm() throws ParseException {Node n ; String iri ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3519,13 +3519,13 @@ n = createNode(iri) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr Expression() throws ParseException {Expr expr ;
     expr = ConditionalOrExpression();
 {if ("" != null) return expr ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr ConditionalOrExpression() throws ParseException {Expr expr1, expr2 ;
     expr1 = ConditionalAndExpression();
@@ -3546,7 +3546,7 @@ expr1 = new E_LogicalOr(expr1, expr2) ;
     }
 {if ("" != null) return expr1 ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr ConditionalAndExpression() throws ParseException {Expr expr1, expr2 ;
     expr1 = ValueLogical();
@@ -3567,13 +3567,13 @@ expr1 = new E_LogicalAnd(expr1, expr2) ;
     }
 {if ("" != null) return expr1 ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr ValueLogical() throws ParseException {Expr expr ;
     expr = RelationalExpression();
 {if ("" != null) return expr ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr RelationalExpression() throws ParseException {Expr expr1, expr2 ; ExprList a ;
     expr1 = NumericExpression();
@@ -3649,13 +3649,13 @@ expr1 = new E_NotOneOf(expr1, a) ;
     }
 {if ("" != null) return expr1 ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr NumericExpression() throws ParseException {Expr expr ;
     expr = AdditiveExpression();
 {if ("" != null) return expr ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr AdditiveExpression() throws ParseException {Expr expr1, expr2, expr3 ; boolean addition ; Node n ;
     expr1 = MultiplicativeExpression();
@@ -3765,7 +3765,7 @@ if ( addition )
     }
 {if ("" != null) return expr1 ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr MultiplicativeExpression() throws ParseException {Expr expr1, expr2 ;
     expr1 = UnaryExpression();
@@ -3802,7 +3802,7 @@ expr1 = new E_Divide(expr1, expr2) ;
     }
 {if ("" != null) return expr1 ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr UnaryExpression() throws ParseException {Expr expr ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3916,7 +3916,7 @@ expr1 = new E_Divide(expr1, expr2) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr PrimaryExpression() throws ParseException {Expr expr ; Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -4036,7 +4036,7 @@ expr1 = new E_Divide(expr1, expr2) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr BrackettedExpression() throws ParseException {Expr expr ;
     jj_consume_token(LPAREN);
@@ -4044,7 +4044,7 @@ expr1 = new E_Divide(expr1, expr2) ;
     jj_consume_token(RPAREN);
 {if ("" != null) return expr ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr BuiltInCall() throws ParseException {Expr expr ;
                        Expr expr1 = null ; Expr expr2 = null ; Expr expr3 = null ;
@@ -4508,7 +4508,7 @@ expr1 = new E_Divide(expr1, expr2) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr RegexExpression() throws ParseException {Expr expr ; Expr patExpr = null ; Expr flagsExpr = null ;
     jj_consume_token(REGEX);
@@ -4529,7 +4529,7 @@ expr1 = new E_Divide(expr1, expr2) ;
     jj_consume_token(RPAREN);
 {if ("" != null) return new E_Regex(expr, patExpr, flagsExpr) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr SubstringExpression() throws ParseException {Expr expr1 ; Expr expr2 = null ; Expr expr3 = null ;
     jj_consume_token(SUBSTR);
@@ -4550,7 +4550,7 @@ expr1 = new E_Divide(expr1, expr2) ;
     jj_consume_token(RPAREN);
 {if ("" != null) return new E_StrSubstring(expr1, expr2, expr3) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr StrReplaceExpression() throws ParseException {Expr expr1 ; Expr expr2 = null ; Expr expr3 = null ; Expr expr4 = null ;
     jj_consume_token(REPLACE);
@@ -4573,14 +4573,14 @@ expr1 = new E_Divide(expr1, expr2) ;
     jj_consume_token(RPAREN);
 {if ("" != null) return new E_StrReplace(expr1,expr2,expr3,expr4) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr ExistsFunc() throws ParseException {Element el ;
     jj_consume_token(EXISTS);
     el = GroupGraphPattern();
 {if ("" != null) return createExprExists(el) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr NotExistsFunc() throws ParseException {Element el ;
     jj_consume_token(NOT);
@@ -4588,7 +4588,7 @@ expr1 = new E_Divide(expr1, expr2) ;
     el = GroupGraphPattern();
 {if ("" != null) return createExprNotExists(el) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr Aggregate() throws ParseException {Aggregator agg = null ; String sep = null ;
                      Expr expr = null ; Expr expr2 = null ;
@@ -4846,7 +4846,7 @@ Expr exprAgg = getQuery().allocAggregate(agg) ;
     finishAggregate();
     {if ("" != null) return exprAgg ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Expr iriOrFunction() throws ParseException {String iri ; Args a = null ;
     iri = iri();
@@ -4871,7 +4871,7 @@ if ( a == null )
       }
     {if ("" != null) return new E_Function(iri, a) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node RDFLiteral() throws ParseException {Token t ; String lex = null ;
     lex = String();
@@ -4903,7 +4903,7 @@ lang = stripChars(t.image, 1) ;
     }
 {if ("" != null) return createLiteral(lex, lang, uri) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node NumericLiteral() throws ParseException {Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -4932,7 +4932,7 @@ lang = stripChars(t.image, 1) ;
     }
 {if ("" != null) return n ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node NumericLiteralUnsigned() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -4957,7 +4957,7 @@ lang = stripChars(t.image, 1) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node NumericLiteralPositive() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -4982,7 +4982,7 @@ lang = stripChars(t.image, 1) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node NumericLiteralNegative() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -5007,7 +5007,7 @@ lang = stripChars(t.image, 1) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node BooleanLiteral() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -5027,7 +5027,7 @@ lang = stripChars(t.image, 1) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public String String() throws ParseException {Token t ; String lex ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -5060,7 +5060,7 @@ checkString(lex, t.beginLine, t.beginColumn) ;
       lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
       {if ("" != null) return lex ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public String iri() throws ParseException {String iri ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -5081,7 +5081,7 @@ checkString(lex, t.beginLine, t.beginColumn) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public String PrefixedName() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -5101,7 +5101,7 @@ checkString(lex, t.beginLine, t.beginColumn) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node BlankNode() throws ParseException {Token t = null ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -5121,13 +5121,13 @@ checkString(lex, t.beginLine, t.beginColumn) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public String IRIREF() throws ParseException {Token t ;
     t = jj_consume_token(IRIref);
 {if ("" != null) return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   /** Generated Token Manager. */
   public SPARQLParser11TokenManager token_source;
@@ -5147,141 +5147,149 @@ checkString(lex, t.beginLine, t.beginColumn) ;
   static private int[] jj_la1_5;
   static private int[] jj_la1_6;
   static {
-      jj_la1_init_0();
-      jj_la1_init_1();
-      jj_la1_init_2();
-      jj_la1_init_3();
-      jj_la1_init_4();
-      jj_la1_init_5();
-      jj_la1_init_6();
-   }
-   private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0xe400000,0x200,0x300000,0x300000,0x0,0x1800000,0x1800000,0xc000,0xc000,0xc000,0x0,0x0,0xfc00,0x0,0xdc00,0xdc00,0x0,0x0,0x0,0x1c00,0x0,0x0,0x0,0x40000000,0x30000000,0xdc00,0x0,0xdc00,0x1c00,0xdc00,0x0,0xdc00,0xdc00,0x20000000,0x10000000,0x30000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1c00,0x0,0x1c00,0x0,0xfc00,0x0,0x0,0xfc00,0xfc00,0xfc00,0x0,0x400000,0xfc00,0x0,0x0,0xfc00,0xfc00,0x0,0x0,0x0,0xc000,0x1c00,0xc000,0x0,0x0,0x1c00,0x0,0x1c00,0x0,0x1c00,0x800000,0x0,0x0,0x0,0x0,0xfc00,0xfc00,0x0,0xfc00,0x8dc00,0x0,0x8dc00,0x8dc00,0x0,0xfc00,0x8dc00,0x8dc00,0x0,0x8dc00,0x8dc00,0x0,0x0,0x0,0x0,0x81c00,0x0,0x81c00,0x0,0x81c00,0x81c00,0x81c00,0x81c00,0x0,0x0,0xfc00,0xfc00,0xfc00,0xfc00,0xfc00,0xdc00,0xfc00,0xc000,0x3c00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xdc00,0xdc00,0x0,0x0,0x0,0x0,0x0,0x800000,0xdc00,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x0,0x0,0x0,0x10000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x1c00,0x1800,0x2000,};
-   }
-   private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x20,0x0,0x0,0x0,0x0,0x0,0x20,0x20,0x0,0x60,0x0,0x0,0x20,0x40,0x20,0x10,0x40,0x20000,0x40000,0x0,0x0,0x3e0c000,0x10000,0x3e0c000,0x3e0c000,0x3e0c00c,0xc,0x3e0c000,0x3e0c00c,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x100,0x100,0x110,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3b01,0x0,0x0,0x0,0x0,0x3b01,0x0,0x0,0x2,0x0,0x0,0x0,0x2,0x0,0x2,0x400,0x3e0c000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8000,0x8000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3e0c000,0x3e0c000,0x0,0x3e0c000,0x0,0x0,0x0,0x0,0x3e0c000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3e00000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
-   }
-   private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffdb,0x0,0xffffffdb,0xffffffdb,0xffffffdb,0x0,0xffffffdb,0xffffffdb,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffdb,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x20,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffdb,0xffffffdb,0x0,0xffffffdb,0x0,0x0,0x0,0x0,0xffffffdb,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
-   }
-   private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1dfffff,0x0,0x1dfffff,0x1dfffff,0x1dfffff,0x0,0x1dfffff,0x1dfffff,0x0,0x0,0x0,0x0,0x0,0xf0000000,0xf0000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000000,0x30000000,0x0,0x0,0x0,0x0,0x0,0x6000000,0x0,0x0,0x6000000,0x6000000,0x6000000,0x0,0x0,0x6000000,0x0,0x0,0x6000000,0x6000000,0x0,0x0,0x0,0x0,0x6000000,0x0,0x0,0x0,0x6000000,0x0,0x6000000,0x0,0x1dfffff,0x0,0x0,0x0,0x0,0x0,0x6000000,0x6000000,0x0,0x6000000,0x0,0x0,0x0,0x0,0x0,0x6000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6000000,0x6000000,0x6000000,0x6000000,0x6000000,0x0,0x0,0x0,0x6000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7dfffff,0x7dfffff,0x0,0x1dfffff,0x0,0x0,0x0,0x0,0x7dfffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6000000,0x0,0x0,0x0,0x0,};
-   }
-   private static void jj_la1_init_4() {
-      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x427f,0x427f,0x100,0x400,0x100,0x100,0x100,0x100,0x100,0x100,0x4000,0x0,0x0,0x8000,0x0,0x0,0x1000,0x3000,0x3fe0000,0x0,0x0,0x3fe0000,0x3fe0000,0x3fe0000,0x0,0x0,0x3fe0000,0x0,0x0,0x3fe0000,0x3fe0000,0x0,0x0,0x100,0x0,0x3fe0000,0x0,0x0,0x0,0x3fe0000,0x0,0x3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0x3fe0000,0x0,0x3fe0000,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0x3fe0000,0x3fe0000,0x3fe0000,0x3fe0000,0x0,0x0,0x0,0x3fe0000,0x0,0x0,0x0,0x0,0x3f00000,0x3f00000,0x0,0x0,0x3f00000,0x0,0x0,0x3fe0000,0x3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0xe0000,0x700000,0x3800000,0x0,0x0,0x0,0x0,0x0,};
-   }
-   private static void jj_la1_init_5() {
-      jj_la1_5 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x20,0x20000020,0x0,0x0,0x14be,0x100,0x0,0x20000000,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x0,0x20,0x20,0x20,0x0,0x20,0x20,0x0,0x0,0x0,0x0,0x2000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x14be,0x0,0x8000,0x14be,0x14be,0x14be,0x8000,0x0,0x14be,0x100,0x8000,0x14be,0x14be,0x8000,0x100,0x0,0xa0,0x1e,0x0,0xa0,0xa0,0x1e,0xa0,0x1e,0x0,0x20,0x0,0x4000,0xa0,0x4000,0xa0,0x14be,0x14be,0x8000,0x14be,0x0,0x2000,0x0,0x0,0x4000,0x14be,0x400020,0x400020,0x2000,0x400020,0x400020,0x4000,0x0,0x40000000,0x28000000,0x400020,0x28000000,0x400020,0x0,0x0,0x20,0x0,0x0,0x420,0x420,0x14be,0x14be,0x14be,0x14be,0x109e,0x0,0x1000,0x0,0x109e,0x2000000,0x4000000,0x3f0000,0x3f0000,0x18000000,0x0,0x60000000,0x60000000,0x18000000,0x60000000,0x60000000,0x1840003e,0x3e,0xa0,0x0,0x4000,0x4000,0x4000,0x0,0x3840003e,0x0,0x0,0x0,0x0,0x0,0x0,0x2000,0x0,0xa0,0x80000000,0x80000000,0x0,0x0,0x0,0x0,0x0,0x1e,0x0,0x0,0x1000,};
-   }
-   private static void jj_la1_init_6() {
-      jj_la1_6 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4,0x4,0x0,0x4,0x4,0x0,0x2,0x0,0x20,0x4,0x20,0x0,0x2,0x4,0x4,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
-   }
+	   jj_la1_init_0();
+	   jj_la1_init_1();
+	   jj_la1_init_2();
+	   jj_la1_init_3();
+	   jj_la1_init_4();
+	   jj_la1_init_5();
+	   jj_la1_init_6();
+	}
+	private static void jj_la1_init_0() {
+	   jj_la1_0 = new int[] {0xe400000,0x200,0x300000,0x300000,0x0,0x1800000,0x1800000,0xc000,0xc000,0xc000,0x0,0x0,0xfc00,0x0,0xdc00,0xdc00,0x0,0x0,0x0,0x1c00,0x0,0x0,0x0,0x40000000,0x30000000,0xdc00,0x0,0xdc00,0x1c00,0xdc00,0x0,0xdc00,0xdc00,0x20000000,0x10000000,0x30000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1c00,0x0,0x1c00,0x0,0xfc00,0x0,0x0,0xfc00,0xfc00,0xfc00,0x0,0x400000,0xfc00,0x0,0x0,0xfc00,0xfc00,0x0,0x0,0x0,0xc000,0x1c00,0xc000,0x0,0x0,0x1c00,0x0,0x1c00,0x0,0x1c00,0x800000,0x0,0x0,0x0,0x0,0xfc00,0xfc00,0x0,0xfc00,0x8dc00,0x0,0x8dc00,0x8dc00,0x0,0xfc00,0x8dc00,0x8dc00,0x0,0x8dc00,0x8dc00,0x0,0x0,0x0,0x0,0x81c00,0x0,0x81c00,0x0,0x81c00,0x81c00,0x81c00,0x81c00,0x0,0x0,0xfc00,0xfc00,0xfc00,0xfc00,0xfc00,0xdc00,0xfc00,0xc000,0x3c00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xdc00,0xdc00,0x0,0x0,0x0,0x0,0x0,0x800000,0xdc00,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x0,0x0,0x0,0x10000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x1c00,0x1800,0x2000,};
+	}
+	private static void jj_la1_init_1() {
+	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x20,0x0,0x0,0x0,0x0,0x0,0x20,0x20,0x0,0x60,0x0,0x0,0x20,0x40,0x20,0x10,0x40,0x20000,0x40000,0x0,0x0,0x3e0c000,0x10000,0x3e0c000,0x3e0c000,0x3e0c00c,0xc,0x3e0c000,0x3e0c00c,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x100,0x100,0x110,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3b01,0x0,0x0,0x0,0x0,0x3b01,0x0,0x0,0x2,0x0,0x0,0x0,0x2,0x0,0x2,0x400,0x3e0c000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8000,0x8000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3e0c000,0x3e0c000,0x0,0x3e0c000,0x0,0x0,0x0,0x0,0x3e0c000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3e00000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+	}
+	private static void jj_la1_init_2() {
+	   jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffdb,0x0,0xffffffdb,0xffffffdb,0xffffffdb,0x0,0xffffffdb,0xffffffdb,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffdb,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x20,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffdb,0xffffffdb,0x0,0xffffffdb,0x0,0x0,0x0,0x0,0xffffffdb,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+	}
+	private static void jj_la1_init_3() {
+	   jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1dfffff,0x0,0x1dfffff,0x1dfffff,0x1dfffff,0x0,0x1dfffff,0x1dfffff,0x0,0x0,0x0,0x0,0x0,0xf0000000,0xf0000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000000,0x30000000,0x0,0x0,0x0,0x0,0x0,0x6000000,0x0,0x0,0x6000000,0x6000000,0x6000000,0x0,0x0,0x6000000,0x0,0x0,0x6000000,0x6000000,0x0,0x0,0x0,0x0,0x6000000,0x0,0x0,0x0,0x6000000,0x0,0x6000000,0x0,0x1dfffff,0x0,0x0,0x0,0x0,0x0,0x6000000,0x6000000,0x0,0x6000000,0x0,0x0,0x0,0x0,0x0,0x6000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6000000,0x6000000,0x6000000,0x6000000,0x6000000,0x0,0x0,0x0,0x6000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7dfffff,0x7dfffff,0x0,0x1dfffff,0x0,0x0,0x0,0x0,0x7dfffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6000000,0x0,0x0,0x0,0x0,};
+	}
+	private static void jj_la1_init_4() {
+	   jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x427f,0x427f,0x100,0x400,0x100,0x100,0x100,0x100,0x100,0x100,0x4000,0x0,0x0,0x8000,0x0,0x0,0x1000,0x3000,0x3fe0000,0x0,0x0,0x3fe0000,0x3fe0000,0x3fe0000,0x0,0x0,0x3fe0000,0x0,0x0,0x3fe0000,0x3fe0000,0x0,0x0,0x100,0x0,0x3fe0000,0x0,0x0,0x0,0x3fe0000,0x0,0x3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0x3fe0000,0x0,0x3fe0000,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0x3fe0000,0x3fe0000,0x3fe0000,0x3fe0000,0x0,0x0,0x0,0x3fe0000,0x0,0x0,0x0,0x0,0x3f00000,0x3f00000,0x0,0x0,0x3f00000,0x0,0x0,0x3fe0000,0x3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0xe0000,0x700000,0x3800000,0x0,0x0,0x0,0x0,0x0,};
+	}
+	private static void jj_la1_init_5() {
+	   jj_la1_5 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x20,0x20000020,0x0,0x0,0x14be,0x100,0x0,0x20000000,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x0,0x20,0x20,0x20,0x0,0x20,0x20,0x0,0x0,0x0,0x0,0x2000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x14be,0x0,0x8000,0x14be,0x14be,0x14be,0x8000,0x0,0x14be,0x100,0x8000,0x14be,0x14be,0x8000,0x100,0x0,0xa0,0x1e,0x0,0xa0,0xa0,0x1e,0xa0,0x1e,0x0,0x20,0x0,0x4000,0xa0,0x4000,0xa0,0x14be,0x14be,0x8000,0x14be,0x0,0x2000,0x0,0x0,0x4000,0x14be,0x400020,0x400020,0x2000,0x400020,0x400020,0x4000,0x0,0x40000000,0x28000000,0x400020,0x28000000,0x400020,0x0,0x0,0x20,0x0,0x0,0x420,0x420,0x14be,0x14be,0x14be,0x14be,0x109e,0x0,0x1000,0x0,0x109e,0x2000000,0x4000000,0x3f0000,0x3f0000,0x18000000,0x0,0x60000000,0x60000000,0x18000000,0x60000000,0x60000000,0x1840003e,0x3e,0xa0,0x0,0x4000,0x4000,0x4000,0x0,0x3840003e,0x0,0x0,0x0,0x0,0x0,0x0,0x2000,0x0,0xa0,0x80000000,0x80000000,0x0,0x0,0x0,0x0,0x0,0x1e,0x0,0x0,0x1000,};
+	}
+	private static void jj_la1_init_6() {
+	   jj_la1_6 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4,0x4,0x0,0x4,0x4,0x0,0x2,0x0,0x20,0x4,0x20,0x0,0x2,0x4,0x4,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+	}
 
   /** Constructor with InputStream. */
   public SPARQLParser11(java.io.InputStream stream) {
-     this(stream, null);
+	  this(stream, null);
   }
   /** Constructor with InputStream and supplied encoding */
   public SPARQLParser11(java.io.InputStream stream, String encoding) {
-    try { jj_input_stream = new JavaCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
-    token_source = new SPARQLParser11TokenManager(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 165; i++) jj_la1[i] = -1;
+	 try { jj_input_stream = new JavaCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
+	 token_source = new SPARQLParser11TokenManager(jj_input_stream);
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 165; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
   public void ReInit(java.io.InputStream stream) {
-     ReInit(stream, null);
+	  ReInit(stream, null);
   }
   /** Reinitialise. */
   public void ReInit(java.io.InputStream stream, String encoding) {
-    try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
-    token_source.ReInit(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 165; i++) jj_la1[i] = -1;
+	 try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
+	 token_source.ReInit(jj_input_stream);
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 165; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
   public SPARQLParser11(java.io.Reader stream) {
-    jj_input_stream = new JavaCharStream(stream, 1, 1);
-    token_source = new SPARQLParser11TokenManager(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 165; i++) jj_la1[i] = -1;
+	 jj_input_stream = new JavaCharStream(stream, 1, 1);
+	 token_source = new SPARQLParser11TokenManager(jj_input_stream);
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 165; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
   public void ReInit(java.io.Reader stream) {
-    jj_input_stream.ReInit(stream, 1, 1);
-    token_source.ReInit(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 165; i++) jj_la1[i] = -1;
+	if (jj_input_stream == null) {
+	   jj_input_stream = new JavaCharStream(stream, 1, 1);
+	} else {
+	   jj_input_stream.ReInit(stream, 1, 1);
+	}
+	if (token_source == null) {
+ token_source = new SPARQLParser11TokenManager(jj_input_stream);
+	}
+
+	 token_source.ReInit(jj_input_stream);
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 165; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
   public SPARQLParser11(SPARQLParser11TokenManager tm) {
-    token_source = tm;
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 165; i++) jj_la1[i] = -1;
+	 token_source = tm;
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 165; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
   public void ReInit(SPARQLParser11TokenManager tm) {
-    token_source = tm;
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 165; i++) jj_la1[i] = -1;
+	 token_source = tm;
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 165; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
-    Token oldToken;
-    if ((oldToken = token).next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
-    jj_ntk = -1;
-    if (token.kind == kind) {
-      jj_gen++;
-      return token;
-    }
-    token = oldToken;
-    jj_kind = kind;
-    throw generateParseException();
+	 Token oldToken;
+	 if ((oldToken = token).next != null) token = token.next;
+	 else token = token.next = token_source.getNextToken();
+	 jj_ntk = -1;
+	 if (token.kind == kind) {
+	   jj_gen++;
+	   return token;
+	 }
+	 token = oldToken;
+	 jj_kind = kind;
+	 throw generateParseException();
   }
 
 
 /** Get the next Token. */
   final public Token getNextToken() {
-    if (token.next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
-    jj_ntk = -1;
-    jj_gen++;
-    return token;
+	 if (token.next != null) token = token.next;
+	 else token = token.next = token_source.getNextToken();
+	 jj_ntk = -1;
+	 jj_gen++;
+	 return token;
   }
 
 /** Get the specific Token. */
   final public Token getToken(int index) {
-    Token t = token;
-    for (int i = 0; i < index; i++) {
-      if (t.next != null) t = t.next;
-      else t = t.next = token_source.getNextToken();
-    }
-    return t;
+	 Token t = token;
+	 for (int i = 0; i < index; i++) {
+	   if (t.next != null) t = t.next;
+	   else t = t.next = token_source.getNextToken();
+	 }
+	 return t;
   }
 
   private int jj_ntk_f() {
-    if ((jj_nt=token.next) == null)
-      return (jj_ntk = (token.next=token_source.getNextToken()).kind);
-    else
-      return (jj_ntk = jj_nt.kind);
+	 if ((jj_nt=token.next) == null)
+	   return (jj_ntk = (token.next=token_source.getNextToken()).kind);
+	 else
+	   return (jj_ntk = jj_nt.kind);
   }
 
   private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
@@ -5290,51 +5298,58 @@ checkString(lex, t.beginLine, t.beginColumn) ;
 
   /** Generate ParseException. */
   public ParseException generateParseException() {
-    jj_expentries.clear();
-    boolean[] la1tokens = new boolean[209];
-    if (jj_kind >= 0) {
-      la1tokens[jj_kind] = true;
-      jj_kind = -1;
-    }
-    for (int i = 0; i < 165; i++) {
-      if (jj_la1[i] == jj_gen) {
-        for (int j = 0; j < 32; j++) {
-          if ((jj_la1_0[i] & (1<<j)) != 0) {
-            la1tokens[j] = true;
-          }
-          if ((jj_la1_1[i] & (1<<j)) != 0) {
-            la1tokens[32+j] = true;
-          }
-          if ((jj_la1_2[i] & (1<<j)) != 0) {
-            la1tokens[64+j] = true;
-          }
-          if ((jj_la1_3[i] & (1<<j)) != 0) {
-            la1tokens[96+j] = true;
-          }
-          if ((jj_la1_4[i] & (1<<j)) != 0) {
-            la1tokens[128+j] = true;
-          }
-          if ((jj_la1_5[i] & (1<<j)) != 0) {
-            la1tokens[160+j] = true;
-          }
-          if ((jj_la1_6[i] & (1<<j)) != 0) {
-            la1tokens[192+j] = true;
-          }
-        }
-      }
-    }
-    for (int i = 0; i < 209; i++) {
-      if (la1tokens[i]) {
-        jj_expentry = new int[1];
-        jj_expentry[0] = i;
-        jj_expentries.add(jj_expentry);
-      }
-    }
-    int[][] exptokseq = new int[jj_expentries.size()][];
-    for (int i = 0; i < jj_expentries.size(); i++) {
-      exptokseq[i] = jj_expentries.get(i);
-    }
-    return new ParseException(token, exptokseq, tokenImage);
+	 jj_expentries.clear();
+	 boolean[] la1tokens = new boolean[209];
+	 if (jj_kind >= 0) {
+	   la1tokens[jj_kind] = true;
+	   jj_kind = -1;
+	 }
+	 for (int i = 0; i < 165; i++) {
+	   if (jj_la1[i] == jj_gen) {
+		 for (int j = 0; j < 32; j++) {
+		   if ((jj_la1_0[i] & (1<<j)) != 0) {
+			 la1tokens[j] = true;
+		   }
+		   if ((jj_la1_1[i] & (1<<j)) != 0) {
+			 la1tokens[32+j] = true;
+		   }
+		   if ((jj_la1_2[i] & (1<<j)) != 0) {
+			 la1tokens[64+j] = true;
+		   }
+		   if ((jj_la1_3[i] & (1<<j)) != 0) {
+			 la1tokens[96+j] = true;
+		   }
+		   if ((jj_la1_4[i] & (1<<j)) != 0) {
+			 la1tokens[128+j] = true;
+		   }
+		   if ((jj_la1_5[i] & (1<<j)) != 0) {
+			 la1tokens[160+j] = true;
+		   }
+		   if ((jj_la1_6[i] & (1<<j)) != 0) {
+			 la1tokens[192+j] = true;
+		   }
+		 }
+	   }
+	 }
+	 for (int i = 0; i < 209; i++) {
+	   if (la1tokens[i]) {
+		 jj_expentry = new int[1];
+		 jj_expentry[0] = i;
+		 jj_expentries.add(jj_expentry);
+	   }
+	 }
+	 int[][] exptokseq = new int[jj_expentries.size()][];
+	 for (int i = 0; i < jj_expentries.size(); i++) {
+	   exptokseq[i] = jj_expentries.get(i);
+	 }
+	 return new ParseException(token, exptokseq, tokenImage);
+  }
+
+  private boolean trace_enabled;
+
+/** Trace enabled. */
+  final public boolean trace_enabled() {
+	 return trace_enabled;
   }
 
   /** Enable tracing. */
