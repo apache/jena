@@ -27,7 +27,8 @@ import org.apache.jena.shacl.compact.reader.*;
 import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 
 /** Token Manager. */
-@SuppressWarnings("unused")public class ShaclCompactParserJJTokenManager implements ShaclCompactParserJJConstants {
+@SuppressWarnings ("unused")
+public class ShaclCompactParserJJTokenManager implements ShaclCompactParserJJConstants {
 
   /** Debug output. */
   public  java.io.PrintStream debugStream = System.out;
@@ -2829,6 +2830,57 @@ private int jjMoveNfa_0(int startState, int curPos)
 
    return toRet;
 }
+
+/** Token literal values. */
+public static final String[] jjstrLiteralImages = {
+"", "\55\76", "\56\56", "\102\154\141\156\153\116\157\144\145", 
+"\111\122\111", "\114\151\164\145\162\141\154", 
+"\102\154\141\156\153\116\157\144\145\117\162\111\122\111", "\102\154\141\156\153\116\157\144\145\117\162\114\151\164\145\162\141\154", 
+"\111\122\111\117\162\114\151\164\145\162\141\154", "\164\141\162\147\145\164\116\157\144\145", 
+"\164\141\162\147\145\164\117\142\152\145\143\164\163\117\146", "\164\141\162\147\145\164\123\165\142\152\145\143\164\163\117\146", 
+"\164\141\162\147\145\164\103\154\141\163\163", "\144\145\141\143\164\151\166\141\164\145\144", 
+"\163\145\166\145\162\151\164\171", "\155\145\163\163\141\147\145", "\143\154\141\163\163", 
+"\144\141\164\141\164\171\160\145", "\156\157\144\145\113\151\156\144", 
+"\155\151\156\105\170\143\154\165\163\151\166\145", "\155\151\156\111\156\143\154\165\163\151\166\145", 
+"\155\141\170\105\170\143\154\165\163\151\166\145", "\155\141\170\111\156\143\154\165\163\151\166\145", 
+"\155\151\156\114\145\156\147\164\150", "\155\141\170\114\145\156\147\164\150", "\160\141\164\164\145\162\156", 
+"\146\154\141\147\163", "\154\141\156\147\165\141\147\145\111\156", "\145\161\165\141\154\163", 
+"\144\151\163\152\157\151\156\164", "\143\154\157\163\145\144", 
+"\151\147\156\157\162\145\144\120\162\157\160\145\162\164\151\145\163", "\150\141\163\126\141\154\165\145", "\151\156", 
+"\165\156\151\161\165\145\114\141\156\147", "\154\145\163\163\124\150\141\156", 
+"\154\145\163\163\124\150\141\156\117\162\105\161\165\141\154\163", 
+"\161\165\141\154\151\146\151\145\144\126\141\154\165\145\123\150\141\160\145", "\161\165\141\154\151\146\151\145\144\115\151\156\103\157\165\156\164", 
+"\161\165\141\154\151\146\151\145\144\115\141\170\103\157\165\156\164", 
+"\161\165\141\154\151\146\151\145\144\126\141\154\165\145\123\150\141\160\145\163\104\151\163\152\157\151\156\164", "\147\162\157\165\160", "\157\162\144\145\162", "\156\141\155\145", 
+"\144\145\163\143\162\151\160\164\151\157\156", "\144\145\146\141\165\154\164\126\141\154\165\145", "\136\136", null, null, 
+null, null, null, null, "\ufeff", null, null, null, null, null, null, null, null, 
+"\53", "\55", "\174", "\100", "\136", "\56", "\41", "\77", "\57", "\52", "\75", 
+"\50", "\51", "\173", "\175", "\133", "\135", null, null, null, null, null, null, 
+null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
+null, null, null, null, null, null, null, null, null, null, null, null, null, null, };
+protected Token jjFillToken()
+{
+   final Token t;
+   final String curTokenImage;
+   final int beginLine;
+   final int endLine;
+   final int beginColumn;
+   final int endColumn;
+   String im = jjstrLiteralImages[jjmatchedKind];
+   curTokenImage = (im == null) ? input_stream.GetImage() : im;
+   beginLine = input_stream.getBeginLine();
+   beginColumn = input_stream.getBeginColumn();
+   endLine = input_stream.getEndLine();
+   endColumn = input_stream.getEndColumn();
+   t = Token.newToken(jjmatchedKind, curTokenImage);
+
+   t.beginLine = beginLine;
+   t.endLine = endLine;
+   t.beginColumn = beginColumn;
+   t.endColumn = endColumn;
+
+   return t;
+}
 static final int[] jjnextStates = {
    188, 189, 190, 198, 199, 204, 205, 188, 189, 190, 192, 197, 116, 130, 132, 135, 
    6, 7, 8, 1, 2, 4, 41, 42, 43, 23, 24, 25, 59, 60, 61, 63, 
@@ -3191,57 +3243,6 @@ private static final boolean jjCanMove_31(int hiByte, int i1, int i2, long l1, l
    }
 }
 
-/** Token literal values. */
-public static final String[] jjstrLiteralImages = {
-"", "\55\76", "\56\56", "\102\154\141\156\153\116\157\144\145", 
-"\111\122\111", "\114\151\164\145\162\141\154", 
-"\102\154\141\156\153\116\157\144\145\117\162\111\122\111", "\102\154\141\156\153\116\157\144\145\117\162\114\151\164\145\162\141\154", 
-"\111\122\111\117\162\114\151\164\145\162\141\154", "\164\141\162\147\145\164\116\157\144\145", 
-"\164\141\162\147\145\164\117\142\152\145\143\164\163\117\146", "\164\141\162\147\145\164\123\165\142\152\145\143\164\163\117\146", 
-"\164\141\162\147\145\164\103\154\141\163\163", "\144\145\141\143\164\151\166\141\164\145\144", 
-"\163\145\166\145\162\151\164\171", "\155\145\163\163\141\147\145", "\143\154\141\163\163", 
-"\144\141\164\141\164\171\160\145", "\156\157\144\145\113\151\156\144", 
-"\155\151\156\105\170\143\154\165\163\151\166\145", "\155\151\156\111\156\143\154\165\163\151\166\145", 
-"\155\141\170\105\170\143\154\165\163\151\166\145", "\155\141\170\111\156\143\154\165\163\151\166\145", 
-"\155\151\156\114\145\156\147\164\150", "\155\141\170\114\145\156\147\164\150", "\160\141\164\164\145\162\156", 
-"\146\154\141\147\163", "\154\141\156\147\165\141\147\145\111\156", "\145\161\165\141\154\163", 
-"\144\151\163\152\157\151\156\164", "\143\154\157\163\145\144", 
-"\151\147\156\157\162\145\144\120\162\157\160\145\162\164\151\145\163", "\150\141\163\126\141\154\165\145", "\151\156", 
-"\165\156\151\161\165\145\114\141\156\147", "\154\145\163\163\124\150\141\156", 
-"\154\145\163\163\124\150\141\156\117\162\105\161\165\141\154\163", 
-"\161\165\141\154\151\146\151\145\144\126\141\154\165\145\123\150\141\160\145", "\161\165\141\154\151\146\151\145\144\115\151\156\103\157\165\156\164", 
-"\161\165\141\154\151\146\151\145\144\115\141\170\103\157\165\156\164", 
-"\161\165\141\154\151\146\151\145\144\126\141\154\165\145\123\150\141\160\145\163\104\151\163\152\157\151\156\164", "\147\162\157\165\160", "\157\162\144\145\162", "\156\141\155\145", 
-"\144\145\163\143\162\151\160\164\151\157\156", "\144\145\146\141\165\154\164\126\141\154\165\145", "\136\136", null, null, 
-null, null, null, null, "\ufeff", null, null, null, null, null, null, null, null, 
-"\53", "\55", "\174", "\100", "\136", "\56", "\41", "\77", "\57", "\52", "\75", 
-"\50", "\51", "\173", "\175", "\133", "\135", null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, };
-protected Token jjFillToken()
-{
-   final Token t;
-   final String curTokenImage;
-   final int beginLine;
-   final int endLine;
-   final int beginColumn;
-   final int endColumn;
-   String im = jjstrLiteralImages[jjmatchedKind];
-   curTokenImage = (im == null) ? input_stream.GetImage() : im;
-   beginLine = input_stream.getBeginLine();
-   beginColumn = input_stream.getBeginColumn();
-   endLine = input_stream.getEndLine();
-   endColumn = input_stream.getEndColumn();
-   t = Token.newToken(jjmatchedKind, curTokenImage);
-
-   t.beginLine = beginLine;
-   t.endLine = endLine;
-   t.beginColumn = beginColumn;
-   t.endColumn = endColumn;
-
-   return t;
-}
-
 int curLexState = 0;
 int defaultLexState = 0;
 int jjnewStateCnt;
@@ -3263,7 +3264,7 @@ public Token getNextToken()
    {
       curChar = input_stream.BeginToken();
    }
-   catch(java.io.IOException e)
+   catch(Exception e)
    {
       jjmatchedKind = 0;
       jjmatchedPos = -1;
@@ -3324,6 +3325,31 @@ public Token getNextToken()
   }
 }
 
+void SkipLexicalActions(Token matchedToken)
+{
+   switch(jjmatchedKind)
+   {
+      default :
+         break;
+   }
+}
+void MoreLexicalActions()
+{
+   jjimageLen += (lengthOfMatch = jjmatchedPos + 1);
+   switch(jjmatchedKind)
+   {
+      default :
+         break;
+   }
+}
+void TokenLexicalActions(Token matchedToken)
+{
+   switch(jjmatchedKind)
+   {
+      default :
+         break;
+   }
+}
 private void jjCheckNAdd(int state)
 {
    if (jjrounds[state] != jjround)
@@ -3367,9 +3393,14 @@ private void jjCheckNAddStates(int start, int end)
   }
 
   /** Reinitialise parser. */
+  
   public void ReInit(SimpleCharStream stream)
   {
-    jjmatchedPos = jjnewStateCnt = 0;
+
+
+    jjmatchedPos =
+    jjnewStateCnt =
+    0;
     curLexState = defaultLexState;
     input_stream = stream;
     ReInitRounds();
@@ -3385,6 +3416,7 @@ private void jjCheckNAddStates(int start, int end)
 
   /** Reinitialise parser. */
   public void ReInit(SimpleCharStream stream, int lexState)
+  
   {
     ReInit(stream);
     SwitchTo(lexState);
@@ -3399,9 +3431,19 @@ private void jjCheckNAddStates(int start, int end)
       curLexState = lexState;
   }
 
+
 /** Lexer state names. */
 public static final String[] lexStateNames = {
    "DEFAULT",
+};
+
+/** Lex State array. */
+public static final int[] jjnewLexState = {
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
 };
 static final long[] jjtoToken = {
    0xdfe07fffffffffffL, 0xbbc0fffffL, 
@@ -3412,11 +3454,16 @@ static final long[] jjtoSkip = {
 static final long[] jjtoSpecial = {
    0x10000000000000L, 0x0L, 
 };
+static final long[] jjtoMore = {
+   0x0L, 0x0L, 
+};
     protected SimpleCharStream  input_stream;
 
     private final int[] jjrounds = new int[210];
     private final int[] jjstateSet = new int[2 * 210];
-
-    
-    protected char curChar;
+    private final StringBuilder jjimage = new StringBuilder();
+    private StringBuilder image = jjimage;
+    private int jjimageLen;
+    private int lengthOfMatch;
+    protected int curChar;
 }

@@ -33,7 +33,7 @@ public class ShaclCompactParserJJ extends ShaclCompactParser implements ShaclCom
     ByteOrderMark();
     shaclDoc();
     jj_consume_token(0);
-  }
+}
 
   final public void ByteOrderMark() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -45,7 +45,7 @@ public class ShaclCompactParserJJ extends ShaclCompactParser implements ShaclCom
       jj_la1[0] = jj_gen;
       ;
     }
-  }
+}
 
   final public void shaclDoc() throws ParseException {
     label_1:
@@ -90,7 +90,7 @@ public class ShaclCompactParserJJ extends ShaclCompactParser implements ShaclCom
         throw new ParseException();
       }
     }
-  }
+}
 
   final public void directive() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -111,13 +111,13 @@ public class ShaclCompactParserJJ extends ShaclCompactParser implements ShaclCom
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void baseDecl() throws ParseException {String iri ;
     jj_consume_token(BASE);
     iri = IRIREF();
 rBase(iri) ;
-  }
+}
 
   final public void prefixDecl() throws ParseException {Token t ; String iri ;
     jj_consume_token(PREFIX);
@@ -125,13 +125,13 @@ rBase(iri) ;
     iri = IRIREF();
 String s = canonicalPrefix(t.image, t.beginLine, t.beginColumn) ;
       rPrefix(s, iri);
-  }
+}
 
   final public void importDecl() throws ParseException {String iri ;
     jj_consume_token(IMPORTS);
     iri = iri();
 rImports(iri);
-  }
+}
 
   final public void nodeShape() throws ParseException {String iri;
 startNodeShape();
@@ -149,7 +149,7 @@ rNodeShape(iri);
     }
     nodeShapeBody();
 finishNodeShape();
-  }
+}
 
   final public void shapeClass() throws ParseException {String iri;
 startShapeClass();
@@ -158,7 +158,7 @@ startShapeClass();
 rShapeClass(iri);
     nodeShapeBody();
 finishShapeClass();
-  }
+}
 
   final public void targetClass() throws ParseException {String iri;
     jj_consume_token(1);
@@ -178,7 +178,7 @@ rTargetClass(iri);
         break label_3;
       }
     }
-  }
+}
 
   final public void nodeShapeBody() throws ParseException {
 startNodeShapeBody() ;
@@ -231,7 +231,7 @@ startNodeShapeBody() ;
     }
     jj_consume_token(RBRACE);
 finishNodeShapeBody() ;
-  }
+}
 
   final public void constraint() throws ParseException {
 startConstraint();
@@ -323,7 +323,7 @@ startConstraint();
     }
 finishConstraint() ;
     jj_consume_token(DOT);
-  }
+}
 
   final public void nodeOr() throws ParseException {
 startNodeOr();
@@ -347,7 +347,7 @@ rNodeOr_pre();
 rNodeOr_post();
     }
 finishNodeOr();
-  }
+}
 
   final public void nodeNot() throws ParseException {boolean b = false;
 startNodeNot();
@@ -364,11 +364,11 @@ b = true;
 beginNodeNot(b);
     nodeValue();
 finishNodeNot(b);
-  }
+}
 
   final public void negation() throws ParseException {
     jj_consume_token(BANG);
-  }
+}
 
   final public void nodeValue() throws ParseException {String s; Node n; List<Node> x;
     s = nodeParam();
@@ -400,7 +400,7 @@ rNodeValue(s, x);
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void propertyShape() throws ParseException {Path p ;
 startPropertyShape();
@@ -526,7 +526,7 @@ rPropertyShape(p);
       }
     }
 finishPropertyShape();
-  }
+}
 
   final public void propertyOr() throws ParseException {
 startPropertyOr();
@@ -550,7 +550,7 @@ rPropertyOr_pre();
 rPropertyOr_post();
     }
 finishPropertyOr();
-  }
+}
 
   final public void propertyNot() throws ParseException {boolean b = false;
 startPropertyNot();
@@ -567,7 +567,7 @@ b = true;
 beginPropertyNot(b);
     propertyAtom();
 finishPropertyNot(b);
-  }
+}
 
   final public void propertyAtom() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -639,7 +639,7 @@ finishNestedPropertyAtom();
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void propertyCount() throws ParseException {String s1, s2;
     jj_consume_token(LBRACKET);
@@ -648,13 +648,13 @@ finishNestedPropertyAtom();
     s2 = propertyMaxCount();
     jj_consume_token(RBRACKET);
 rPropertyCount(s1, s2);
-  }
+}
 
   final public String propertyMinCount() throws ParseException {Token t;
     t = jj_consume_token(INTEGER);
 {if ("" != null) return t.image;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public String propertyMaxCount() throws ParseException {Token t;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -673,12 +673,12 @@ rPropertyCount(s1, s2);
     }
 {if ("" != null) return t.image;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public void propertyType() throws ParseException {String iriStr;
     iriStr = iri();
 rPropertyType(iriStr);
-  }
+}
 
   final public void nodeKind() throws ParseException {Token t;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -712,7 +712,7 @@ rPropertyType(iriStr);
       throw new ParseException();
     }
 rNodeKind(t.image);
-  }
+}
 
   final public void shapeRef(boolean inPropertyShape) throws ParseException {Token t; String iriStr;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -737,7 +737,7 @@ iriStr = resolvePName(t.image.substring(1), t.beginLine, t.beginColumn) ;
       throw new ParseException();
     }
 rShapeRef(inPropertyShape, iriStr);
-  }
+}
 
   final public void propertyValue() throws ParseException {String s; Node n; List<Node> x;
     s = propertyParam();
@@ -769,7 +769,7 @@ rParamValue(s, x);
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
 // Assemble items to build with from hereon down.
 // Return Java objects.
@@ -886,7 +886,7 @@ String nodeParam() throws ParseException {Token t ;
     }
 {if ("" != null) return t.image ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public String propertyParam() throws ParseException {Token t;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1029,7 +1029,7 @@ String nodeParam() throws ParseException {Token t ;
     }
 {if ("" != null) return t.image;}
     throw new Error("Missing return statement in function");
-  }
+}
 
 // Paths - subset of SPARQL Paths - no negation, no path property sets.
   final public 
@@ -1039,14 +1039,14 @@ Path PathUnit() throws ParseException {Path p ;
     jj_consume_token(0);
 {if ("" != null) return p ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
 // Weakest outermost
   final public Path path() throws ParseException {Path p ;
     p = pathAlternative();
 {if ("" != null) return p ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Path pathAlternative() throws ParseException {Path p1 , p2 ;
     p1 = pathSequence();
@@ -1067,7 +1067,7 @@ p1 = PathFactory.pathAlt(p1, p2) ;
     }
 {if ("" != null) return p1 ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Path pathSequence() throws ParseException {Path p1 , p2 ;
     p1 = pathEltOrInverse();
@@ -1088,7 +1088,7 @@ p1 = PathFactory.pathSeq(p1, p2) ;
     }
 {if ("" != null) return p1;}
     throw new Error("Missing return statement in function");
-  }
+}
 
 // Path unit element, no inverse
   final public Path pathElt() throws ParseException {String str ; Node n ; Path p ;
@@ -1106,7 +1106,7 @@ p1 = PathFactory.pathSeq(p1, p2) ;
     }
 {if ("" != null) return p ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
 // Path unit element, including inverse.
   final public Path pathEltOrInverse() throws ParseException {String str ; Node n ; Path p ;
@@ -1131,7 +1131,7 @@ p = PathFactory.pathInverse(p) ;
     }
 {if ("" != null) return p ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Path pathMod(Path p) throws ParseException {long i1 ; long i2 ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1156,7 +1156,7 @@ p = PathFactory.pathInverse(p) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Path pathPrimary() throws ParseException {String str ; Path p ; Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1180,7 +1180,7 @@ n = createURI(str, token.beginLine, token.beginColumn) ; p = PathFactory.pathLin
     }
 {if ("" != null) return p ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
 // To preserve types, use ( iriOrLiteral() | array() ) directly
 // void iriOrLiteralOrArray() : {}
@@ -1226,7 +1226,7 @@ x.add(n);
     jj_consume_token(RBRACKET);
 {if ("" != null) return x;}
     throw new Error("Missing return statement in function");
-  }
+}
 
 // Term generation
   final public 
@@ -1258,7 +1258,7 @@ n = createURI(uriStr, token.beginLine, token.beginColumn);
     }
 {if ("" != null) return n ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node literal() throws ParseException {Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1287,7 +1287,7 @@ n = createURI(uriStr, token.beginLine, token.beginColumn);
     }
 {if ("" != null) return n;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node booleanLiteral() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1307,7 +1307,7 @@ n = createURI(uriStr, token.beginLine, token.beginColumn);
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node numericLiteral() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1332,7 +1332,7 @@ n = createURI(uriStr, token.beginLine, token.beginColumn);
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public Node rdfLiteral() throws ParseException {Token t ; Token tLang; String lex = null ;
     lex = string();
@@ -1365,13 +1365,13 @@ lang = stripChars(tLang.image, 1) ;
     }
 {if ("" != null) return createLiteral(lex, lang, dt, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public String datatype() throws ParseException {String s;
     s = iri();
 {if ("" != null) return s;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public String string() throws ParseException {Token t ; String lex ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1403,7 +1403,7 @@ lex = stripQuotes3(t.image) ;
 lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       {if ("" != null) return lex ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public String iri() throws ParseException {String iri = null;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1424,7 +1424,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public String PrefixedName() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1444,13 +1444,13 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
-  }
+}
 
   final public String IRIREF() throws ParseException {Token t ;
     t = jj_consume_token(IRIref);
 {if ("" != null) return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
-  }
+}
 
   /** Generated Token Manager. */
   public ShaclCompactParserJJTokenManager token_source;
@@ -1467,129 +1467,137 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
   static private int[] jj_la1_2;
   static private int[] jj_la1_3;
   static {
-      jj_la1_init_0();
-      jj_la1_init_1();
-      jj_la1_init_2();
-      jj_la1_init_3();
-   }
-   private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x2,0x0,0xfffffe00,0xfffffe00,0xfffffe00,0x0,0x0,0x0,0xffffe1f8,0xffffe1f8,0x0,0x0,0xffffe1f8,0x0,0x1f8,0x0,0x0,0xfffffe00,0xffffe000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
-   }
-   private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x200000,0x1c00000,0x6000000,0x6000000,0x1c00000,0x0,0x0,0x3,0x3,0x3,0x0,0x0,0x18000000,0x3fff,0x3fff,0x0,0x0,0x3fff,0x0,0x0,0x0,0x18000000,0x3,0x3fff,0x0,0x0,0x40000000,0x0,0x40000000,0x0,0x18000000,0x18000000,0x18000000,0x18000000,0x0,0x4000,0x4000,0x0,0x0,0x0,};
-   }
-   private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x38000,0xf8216,0x10,0xf8216,0x1,0x10,0xbc03a000,0xfa812,0xfa812,0x1,0x10,0xf8802,0x80000080,0x0,0xc0002,0xbc03a000,0x0,0x0,0x1,0x40,0xa0,0x38204,0xa0,0x38200,0xbc038000,0xbc038000,0xbc000000,0x0,0x80000000,0x0,0x0,0x3c000000,0x38000,0x30000,};
-   }
-   private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x3,0x3,0x0,0x3,0x8,0x8,0x0,0x0,0x0,};
-   }
+	   jj_la1_init_0();
+	   jj_la1_init_1();
+	   jj_la1_init_2();
+	   jj_la1_init_3();
+	}
+	private static void jj_la1_init_0() {
+	   jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x2,0x0,0xfffffe00,0xfffffe00,0xfffffe00,0x0,0x0,0x0,0xffffe1f8,0xffffe1f8,0x0,0x0,0xffffe1f8,0x0,0x1f8,0x0,0x0,0xfffffe00,0xffffe000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+	}
+	private static void jj_la1_init_1() {
+	   jj_la1_1 = new int[] {0x200000,0x1c00000,0x6000000,0x6000000,0x1c00000,0x0,0x0,0x3,0x3,0x3,0x0,0x0,0x18000000,0x3fff,0x3fff,0x0,0x0,0x3fff,0x0,0x0,0x0,0x18000000,0x3,0x3fff,0x0,0x0,0x40000000,0x0,0x40000000,0x0,0x18000000,0x18000000,0x18000000,0x18000000,0x0,0x4000,0x4000,0x0,0x0,0x0,};
+	}
+	private static void jj_la1_init_2() {
+	   jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x38000,0xf8216,0x10,0xf8216,0x1,0x10,0xbc03a000,0xfa812,0xfa812,0x1,0x10,0xf8802,0x80000080,0x0,0xc0002,0xbc03a000,0x0,0x0,0x1,0x40,0xa0,0x38204,0xa0,0x38200,0xbc038000,0xbc038000,0xbc000000,0x0,0x80000000,0x0,0x0,0x3c000000,0x38000,0x30000,};
+	}
+	private static void jj_la1_init_3() {
+	   jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x3,0x3,0x0,0x3,0x8,0x8,0x0,0x0,0x0,};
+	}
 
   /** Constructor with InputStream. */
   public ShaclCompactParserJJ(java.io.InputStream stream) {
-     this(stream, null);
+	  this(stream, null);
   }
   /** Constructor with InputStream and supplied encoding */
   public ShaclCompactParserJJ(java.io.InputStream stream, String encoding) {
-    try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
-    token_source = new ShaclCompactParserJJTokenManager(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+	 try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
+	 token_source = new ShaclCompactParserJJTokenManager(jj_input_stream);
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
   public void ReInit(java.io.InputStream stream) {
-     ReInit(stream, null);
+	  ReInit(stream, null);
   }
   /** Reinitialise. */
   public void ReInit(java.io.InputStream stream, String encoding) {
-    try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
-    token_source.ReInit(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+	 try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
+	 token_source.ReInit(jj_input_stream);
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
   public ShaclCompactParserJJ(java.io.Reader stream) {
-    jj_input_stream = new SimpleCharStream(stream, 1, 1);
-    token_source = new ShaclCompactParserJJTokenManager(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+	 jj_input_stream = new SimpleCharStream(stream, 1, 1);
+	 token_source = new ShaclCompactParserJJTokenManager(jj_input_stream);
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
   public void ReInit(java.io.Reader stream) {
-    jj_input_stream.ReInit(stream, 1, 1);
-    token_source.ReInit(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+	if (jj_input_stream == null) {
+	   jj_input_stream = new SimpleCharStream(stream, 1, 1);
+	} else {
+	   jj_input_stream.ReInit(stream, 1, 1);
+	}
+	if (token_source == null) {
+ token_source = new ShaclCompactParserJJTokenManager(jj_input_stream);
+	}
+
+	 token_source.ReInit(jj_input_stream);
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
   public ShaclCompactParserJJ(ShaclCompactParserJJTokenManager tm) {
-    token_source = tm;
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+	 token_source = tm;
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
   public void ReInit(ShaclCompactParserJJTokenManager tm) {
-    token_source = tm;
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+	 token_source = tm;
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
-    Token oldToken;
-    if ((oldToken = token).next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
-    jj_ntk = -1;
-    if (token.kind == kind) {
-      jj_gen++;
-      return token;
-    }
-    token = oldToken;
-    jj_kind = kind;
-    throw generateParseException();
+	 Token oldToken;
+	 if ((oldToken = token).next != null) token = token.next;
+	 else token = token.next = token_source.getNextToken();
+	 jj_ntk = -1;
+	 if (token.kind == kind) {
+	   jj_gen++;
+	   return token;
+	 }
+	 token = oldToken;
+	 jj_kind = kind;
+	 throw generateParseException();
   }
 
 
 /** Get the next Token. */
   final public Token getNextToken() {
-    if (token.next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
-    jj_ntk = -1;
-    jj_gen++;
-    return token;
+	 if (token.next != null) token = token.next;
+	 else token = token.next = token_source.getNextToken();
+	 jj_ntk = -1;
+	 jj_gen++;
+	 return token;
   }
 
 /** Get the specific Token. */
   final public Token getToken(int index) {
-    Token t = token;
-    for (int i = 0; i < index; i++) {
-      if (t.next != null) t = t.next;
-      else t = t.next = token_source.getNextToken();
-    }
-    return t;
+	 Token t = token;
+	 for (int i = 0; i < index; i++) {
+	   if (t.next != null) t = t.next;
+	   else t = t.next = token_source.getNextToken();
+	 }
+	 return t;
   }
 
   private int jj_ntk_f() {
-    if ((jj_nt=token.next) == null)
-      return (jj_ntk = (token.next=token_source.getNextToken()).kind);
-    else
-      return (jj_ntk = jj_nt.kind);
+	 if ((jj_nt=token.next) == null)
+	   return (jj_ntk = (token.next=token_source.getNextToken()).kind);
+	 else
+	   return (jj_ntk = jj_nt.kind);
   }
 
   private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
@@ -1598,42 +1606,49 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
 
   /** Generate ParseException. */
   public ParseException generateParseException() {
-    jj_expentries.clear();
-    boolean[] la1tokens = new boolean[113];
-    if (jj_kind >= 0) {
-      la1tokens[jj_kind] = true;
-      jj_kind = -1;
-    }
-    for (int i = 0; i < 40; i++) {
-      if (jj_la1[i] == jj_gen) {
-        for (int j = 0; j < 32; j++) {
-          if ((jj_la1_0[i] & (1<<j)) != 0) {
-            la1tokens[j] = true;
-          }
-          if ((jj_la1_1[i] & (1<<j)) != 0) {
-            la1tokens[32+j] = true;
-          }
-          if ((jj_la1_2[i] & (1<<j)) != 0) {
-            la1tokens[64+j] = true;
-          }
-          if ((jj_la1_3[i] & (1<<j)) != 0) {
-            la1tokens[96+j] = true;
-          }
-        }
-      }
-    }
-    for (int i = 0; i < 113; i++) {
-      if (la1tokens[i]) {
-        jj_expentry = new int[1];
-        jj_expentry[0] = i;
-        jj_expentries.add(jj_expentry);
-      }
-    }
-    int[][] exptokseq = new int[jj_expentries.size()][];
-    for (int i = 0; i < jj_expentries.size(); i++) {
-      exptokseq[i] = jj_expentries.get(i);
-    }
-    return new ParseException(token, exptokseq, tokenImage);
+	 jj_expentries.clear();
+	 boolean[] la1tokens = new boolean[113];
+	 if (jj_kind >= 0) {
+	   la1tokens[jj_kind] = true;
+	   jj_kind = -1;
+	 }
+	 for (int i = 0; i < 40; i++) {
+	   if (jj_la1[i] == jj_gen) {
+		 for (int j = 0; j < 32; j++) {
+		   if ((jj_la1_0[i] & (1<<j)) != 0) {
+			 la1tokens[j] = true;
+		   }
+		   if ((jj_la1_1[i] & (1<<j)) != 0) {
+			 la1tokens[32+j] = true;
+		   }
+		   if ((jj_la1_2[i] & (1<<j)) != 0) {
+			 la1tokens[64+j] = true;
+		   }
+		   if ((jj_la1_3[i] & (1<<j)) != 0) {
+			 la1tokens[96+j] = true;
+		   }
+		 }
+	   }
+	 }
+	 for (int i = 0; i < 113; i++) {
+	   if (la1tokens[i]) {
+		 jj_expentry = new int[1];
+		 jj_expentry[0] = i;
+		 jj_expentries.add(jj_expentry);
+	   }
+	 }
+	 int[][] exptokseq = new int[jj_expentries.size()][];
+	 for (int i = 0; i < jj_expentries.size(); i++) {
+	   exptokseq[i] = jj_expentries.get(i);
+	 }
+	 return new ParseException(token, exptokseq, tokenImage);
+  }
+
+  private boolean trace_enabled;
+
+/** Trace enabled. */
+  final public boolean trace_enabled() {
+	 return trace_enabled;
   }
 
   /** Enable tracing. */
