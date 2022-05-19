@@ -18,6 +18,7 @@
 package org.apache.jena.geosparql.geo.topological;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import org.apache.jena.geosparql.geof.topological.GenericFilterFunction;
@@ -64,10 +65,12 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
 
     @Override
     public QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt) {
-        if (object.isLiteral()) {
-            //These Property Functions do not accept literals as objects so exit quickly.
-            return QueryIterNullIterator.create(execCxt);
-        }
+        // optionally accept bound literals for simpler usage
+
+//        if (object.isLiteral()) {
+//            //These Property Functions do not accept literals as objects so exit quickly.
+//            return QueryIterNullIterator.create(execCxt);
+//        }
 
         if (subject.isConcrete() && object.isConcrete()) {
             //Both are bound.
@@ -148,7 +151,7 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
             isSubjectBound = false;
         }
 
-        if (!(graph.contains(boundNode, RDF.type.asNode(), Geo.SPATIAL_OBJECT_NODE) || graph.contains(boundNode, RDF.type.asNode(), Geo.FEATURE_NODE) || graph.contains(boundNode, RDF.type.asNode(), Geo.GEOMETRY_NODE))) {
+        if (!(boundNode.isLiteral() || graph.contains(boundNode, RDF.type.asNode(), Geo.SPATIAL_OBJECT_NODE) || graph.contains(boundNode, RDF.type.asNode(), Geo.FEATURE_NODE) || graph.contains(boundNode, RDF.type.asNode(), Geo.GEOMETRY_NODE))) {
             if (!graph.contains(boundNode, SpatialExtension.GEO_LAT_NODE, null)) {
                 //Bound node is not a Feature or a Geometry or has Geo predicates so exit.
                 return QueryIterNullIterator.create(execCxt);
@@ -211,7 +214,7 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
             QueryIterConcat queryIterConcat = new QueryIterConcat(execCxt);
 
             //Find the asserted triples.
-            List<Node> assertedNodes = findAsserted(graph, boundNode, isSubjectBound, predicate);
+            List<Node> assertedNodes = !isSubjectBound || !boundNode.isLiteral() ? findAsserted(graph, boundNode, isSubjectBound, predicate) : Collections.emptyList();
             for (Node node : assertedNodes) {
                 Binding newBind = BindingFactory.binding(binding, unboundVar, node);
                 QueryIterator queryIter = QueryIterSingleton.create(newBind, execCxt);
