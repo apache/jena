@@ -218,7 +218,7 @@ public class AsyncParser {
             try {
                 queue.put(batch);
             } catch (InterruptedException ex) {
-                FmtLog.error(LOG, "Error: %s", ex.getMessage(), ex);
+                FmtLog.error(LOG, ex, "Error: %s", ex.getMessage());
             }
         };
         EltStreamBatcher batcher = new EltStreamBatcher(destination, chunkSize);
@@ -305,7 +305,7 @@ public class AsyncParser {
                     FmtLog.debug(LOG2, "Receive: Batch : %,d (%,d)", batch.size(), count);
                 dispatch(batch, output);
             } catch (InterruptedException e) {
-                FmtLog.error(LOG2, "Interrupted", e);
+                FmtLog.error(LOG2, e, "Interrupted");
             }
         }
     }
