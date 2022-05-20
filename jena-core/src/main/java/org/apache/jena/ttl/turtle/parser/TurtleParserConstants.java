@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ttl.turtle.parser ;
+package org.apache.jena.ttl.turtle.parser;
 
 
 /**
