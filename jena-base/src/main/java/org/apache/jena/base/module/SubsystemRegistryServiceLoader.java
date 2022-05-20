@@ -25,7 +25,6 @@ import java.util.ServiceLoader;
 
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link SubsystemRegistry} for use in the simple but common case
