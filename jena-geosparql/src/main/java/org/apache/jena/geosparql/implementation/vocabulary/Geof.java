@@ -79,4 +79,7 @@ public interface Geof {
     public static final String IS_EMPTY = GEOF_URI + "isEmpty";
     public static final String IS_SIMPLE = GEOF_URI + "isSimple";
     public static final String IS_VALID = GEOF_URI + "isValid";
+
+    //upcoming GeoSPARQL 1.1 Datatype transformation functions:
+    public static final String AS_GEOJSON = GEOF_URI + "asGeoJSON";
 }

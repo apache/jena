@@ -171,4 +171,5 @@ public interface Geo {
     //Geometry Literal Datatypes
     public static final String WKT = GEO_URI + "wktLiteral";
     public static final String GML = GEO_URI + "gmlLiteral";
+    public static final String GEO_JSON = GEO_URI + "geoJSONLiteral";
 }
