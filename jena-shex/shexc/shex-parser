@@ -28,50 +28,19 @@ javacc -OUTPUT_DIRECTORY=$DIR -JDK_VERSION=1.8 "$FILE"
 RC=$?
 [ "$RC" = 0 ] || exit $RC
 
-# Fix unnecessary imports
 
-## echo "---- Fixing Java warnings in ${CLASS}TokenManager ..."
-## F="$DIR/${CLASS}TokenManager.java"
-## 
-## sed -e 's/import .*//' -e 's/MatchLoop: do/do/' \
-##     -e 's/int hiByte = (int)(curChar/int hiByte = (curChar/' \
-##     -e 's/@SuppressWarnings("unused")//' \
-##     < $F > F
-## mv F $F
-
-## echo "---- Fixing Java warnings in ParseException ..."
-## #Override:
-## #   public String getMessage()
-## F="$DIR/ParseException.java"
-## sed -e 's/@Override //' \
-##     -e 's/public String getMessage/@Override public String getMessage/' < $F > F
-## mv F $F
-
-echo "---- Fixing Java warnings in Token ..."
-F="$DIR/Token.java"
-sed -e 's/@Override //' \
-    -e 's/public String toString/@Override public String toString/' < $F > F
-mv F $F
-
-echo "---- Fixing Java warnings in TokenMgrError ..."
-# Override:
-#   public String getMessage()
+echo "---- Fixing Java warnings in TokenMgrError"
 F="$DIR/TokenMgrError.java"
-sed -e 's/@Override //' \
-    -e 's/public String getMessage/@Override public String getMessage/' < $F > F
-mv F $F
-
-## echo "---- Fixing Java warnings in ${CLASS} ..."
-## F="$DIR/${CLASS}.java"
-## sed -e 's/for (java.util.Iterator/for (java.util.Iterator<int[]>/' \
-##     -e 's/(int\[\])//' \
-##     -e 's/^\s*;\s*$//' \
-##     < $F > F
-## mv F $F
-
+if [ -e "$F" ]
+then
+    sed -e 's/public class TokenMgrError/\n@SuppressWarnings("all")\npublic class TokenMgrError/' < $F > F 
+    mv F $F
+fi
+    
 echo "---- Fixing Java warnings in ${CLASS} ..."
 F="$DIR/${CLASS}.java"
 sed -e 's/@SuppressWarnings("serial")//' \
     < $F > F
 mv F $F
+
 echo "---- Done"

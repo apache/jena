@@ -1496,7 +1496,7 @@ Expr BuiltInCall() : { Expr expr ;
   | <IS_TRIPLE> <LPAREN> expr = Expression() <RPAREN>
     { return new E_IsTriple(expr) ; }
   | <TRIPLE> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <COMMA> expr3 = Expression() <RPAREN>
-    { return new E_TripleTerm(expr1, expr2, expr3) ; }
+    { return new E_TripleFn(expr1, expr2, expr3) ; }
   | <SUBJECT> <LPAREN> expr = Expression() <RPAREN>
     { return new E_TripleSubject(expr) ; }
   | <PREDICATE> <LPAREN> expr = Expression() <RPAREN>

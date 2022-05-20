@@ -3,8 +3,6 @@
 package org.apache.jena.sparql.sse.lang.parser ;
 import org.apache.jena.sparql.sse.lang.ParserSSEBase ;
 import static org.apache.jena.riot.lang.extra.LangParserLib.*;
-
-@SuppressWarnings("all")
 public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConstants {
 
   final public void parse() throws ParseException {
@@ -34,14 +32,14 @@ parseStart() ;
     TermOrList();
     jj_consume_token(0);
 parseFinish() ;
-  }
+}
 
   final public void atom() throws ParseException {
 parseStart() ;
     TermAtom();
     jj_consume_token(0);
 parseFinish() ;
-  }
+}
 
   final public void TermOrList() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -85,7 +83,7 @@ parseFinish() ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void List() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -162,7 +160,7 @@ listFinish(t.beginLine, t.beginColumn) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void BareList() throws ParseException {
     label_7:
@@ -193,7 +191,7 @@ listFinish(t.beginLine, t.beginColumn) ;
       }
       TermOrList();
     }
-  }
+}
 
   final public void TermAtom() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -222,7 +220,7 @@ listFinish(t.beginLine, t.beginColumn) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void RDFTermAtom() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -262,12 +260,12 @@ listFinish(t.beginLine, t.beginColumn) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void Symbol() throws ParseException {Token t ;
     t = jj_consume_token(SYMBOL);
 emitSymbol(t.beginLine, t.beginColumn, t.image) ;
-  }
+}
 
   final public void IRIref() throws ParseException {Token t ; String s ;
     t = jj_consume_token(IRIref);
@@ -275,12 +273,12 @@ s = t.image ;
       s = stripQuotes(s) ;
       s = unescapeStr(s, t.beginLine, t.beginColumn) ;
       emitIRI(t.beginLine, t.beginColumn, s) ;
-  }
+}
 
   final public void PrefixedName() throws ParseException {Token t ;
     t = jj_consume_token(PNAME);
 emitPName(t.beginLine, t.beginColumn, t.image) ;
-  }
+}
 
   final public void Var() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -298,7 +296,7 @@ emitPName(t.beginLine, t.beginColumn, t.image) ;
       throw new ParseException();
     }
 emitVar(t.beginLine, t.beginColumn, stripChars(t.image, 1)) ;
-  }
+}
 
   final public void Literal() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -320,12 +318,12 @@ emitVar(t.beginLine, t.beginColumn, stripChars(t.image, 1)) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   final public void BlankNode() throws ParseException {Token t ;
     t = jj_consume_token(BLANK_NODE_LABEL);
 emitBNode(t.beginLine, t.beginColumn, stripChars(t.image, 2)) ;
-  }
+}
 
   final public void TripleTerm() throws ParseException {Token t1 = null ; Token t2 = null ;
     t1 = jj_consume_token(LT2);
@@ -387,7 +385,7 @@ tripleTermStart(t1.beginLine, t1.beginColumn);
     }
     t2 = jj_consume_token(GT2);
 tripleTermFinish(t2.beginLine, t2.beginColumn);
-  }
+}
 
   final public void RDFLiteral() throws ParseException {Token t = null ; int currLine ; int currColumn ;
                       String lex ; String lang = null ;
@@ -461,7 +459,7 @@ dt_pn = t.image ;
       ;
     }
 emitLiteral(currLine, currColumn, lex, lang, dt_iri, dt_pn) ;
-  }
+}
 
   final public void NumericLiteral() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -485,7 +483,7 @@ emitLiteralDouble(t.beginLine, t.beginColumn, t.image) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
+}
 
   /** Generated Token Manager. */
   public SSE_ParserCoreTokenManager token_source;
@@ -500,121 +498,129 @@ emitLiteralDouble(t.beginLine, t.beginColumn, t.image) ;
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
-      jj_la1_init_0();
-      jj_la1_init_1();
-   }
-   private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x200,0x2,0x2,0xa3e039f0,0x2,0x2,0x2,0x2,0x22000000,0xa3e039f0,0x81e039f0,0x81e039f0,0x180,0x1e03800,0x2,0x2,0x2,0x2,0x1e00000,0x30,0x0,0x0,0x3800,};
-   }
-   private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x80000,0x0,0x0,0x0,0x0,0x0,0x80000,0x80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6,0x6,0x0,};
-   }
+	   jj_la1_init_0();
+	   jj_la1_init_1();
+	}
+	private static void jj_la1_init_0() {
+	   jj_la1_0 = new int[] {0x200,0x2,0x2,0xa3e039f0,0x2,0x2,0x2,0x2,0x22000000,0xa3e039f0,0x81e039f0,0x81e039f0,0x180,0x1e03800,0x2,0x2,0x2,0x2,0x1e00000,0x30,0x0,0x0,0x3800,};
+	}
+	private static void jj_la1_init_1() {
+	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x80000,0x0,0x0,0x0,0x0,0x0,0x80000,0x80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6,0x6,0x0,};
+	}
 
   /** Constructor with InputStream. */
   public SSE_ParserCore(java.io.InputStream stream) {
-     this(stream, null);
+	  this(stream, null);
   }
   /** Constructor with InputStream and supplied encoding */
   public SSE_ParserCore(java.io.InputStream stream, String encoding) {
-    try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
-    token_source = new SSE_ParserCoreTokenManager(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+	 try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
+	 token_source = new SSE_ParserCoreTokenManager(jj_input_stream);
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 23; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
   public void ReInit(java.io.InputStream stream) {
-     ReInit(stream, null);
+	  ReInit(stream, null);
   }
   /** Reinitialise. */
   public void ReInit(java.io.InputStream stream, String encoding) {
-    try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
-    token_source.ReInit(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+	 try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
+	 token_source.ReInit(jj_input_stream);
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 23; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
   public SSE_ParserCore(java.io.Reader stream) {
-    jj_input_stream = new SimpleCharStream(stream, 1, 1);
-    token_source = new SSE_ParserCoreTokenManager(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+	 jj_input_stream = new SimpleCharStream(stream, 1, 1);
+	 token_source = new SSE_ParserCoreTokenManager(jj_input_stream);
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 23; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
   public void ReInit(java.io.Reader stream) {
-    jj_input_stream.ReInit(stream, 1, 1);
-    token_source.ReInit(jj_input_stream);
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+	if (jj_input_stream == null) {
+	   jj_input_stream = new SimpleCharStream(stream, 1, 1);
+	} else {
+	   jj_input_stream.ReInit(stream, 1, 1);
+	}
+	if (token_source == null) {
+ token_source = new SSE_ParserCoreTokenManager(jj_input_stream);
+	}
+
+	 token_source.ReInit(jj_input_stream);
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 23; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
   public SSE_ParserCore(SSE_ParserCoreTokenManager tm) {
-    token_source = tm;
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+	 token_source = tm;
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 23; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
   public void ReInit(SSE_ParserCoreTokenManager tm) {
-    token_source = tm;
-    token = new Token();
-    jj_ntk = -1;
-    jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+	 token_source = tm;
+	 token = new Token();
+	 jj_ntk = -1;
+	 jj_gen = 0;
+	 for (int i = 0; i < 23; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
-    Token oldToken;
-    if ((oldToken = token).next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
-    jj_ntk = -1;
-    if (token.kind == kind) {
-      jj_gen++;
-      return token;
-    }
-    token = oldToken;
-    jj_kind = kind;
-    throw generateParseException();
+	 Token oldToken;
+	 if ((oldToken = token).next != null) token = token.next;
+	 else token = token.next = token_source.getNextToken();
+	 jj_ntk = -1;
+	 if (token.kind == kind) {
+	   jj_gen++;
+	   return token;
+	 }
+	 token = oldToken;
+	 jj_kind = kind;
+	 throw generateParseException();
   }
 
 
 /** Get the next Token. */
   final public Token getNextToken() {
-    if (token.next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
-    jj_ntk = -1;
-    jj_gen++;
-    return token;
+	 if (token.next != null) token = token.next;
+	 else token = token.next = token_source.getNextToken();
+	 jj_ntk = -1;
+	 jj_gen++;
+	 return token;
   }
 
 /** Get the specific Token. */
   final public Token getToken(int index) {
-    Token t = token;
-    for (int i = 0; i < index; i++) {
-      if (t.next != null) t = t.next;
-      else t = t.next = token_source.getNextToken();
-    }
-    return t;
+	 Token t = token;
+	 for (int i = 0; i < index; i++) {
+	   if (t.next != null) t = t.next;
+	   else t = t.next = token_source.getNextToken();
+	 }
+	 return t;
   }
 
   private int jj_ntk_f() {
-    if ((jj_nt=token.next) == null)
-      return (jj_ntk = (token.next=token_source.getNextToken()).kind);
-    else
-      return (jj_ntk = jj_nt.kind);
+	 if ((jj_nt=token.next) == null)
+	   return (jj_ntk = (token.next=token_source.getNextToken()).kind);
+	 else
+	   return (jj_ntk = jj_nt.kind);
   }
 
   private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
@@ -623,36 +629,43 @@ emitLiteralDouble(t.beginLine, t.beginColumn, t.image) ;
 
   /** Generate ParseException. */
   public ParseException generateParseException() {
-    jj_expentries.clear();
-    boolean[] la1tokens = new boolean[53];
-    if (jj_kind >= 0) {
-      la1tokens[jj_kind] = true;
-      jj_kind = -1;
-    }
-    for (int i = 0; i < 23; i++) {
-      if (jj_la1[i] == jj_gen) {
-        for (int j = 0; j < 32; j++) {
-          if ((jj_la1_0[i] & (1<<j)) != 0) {
-            la1tokens[j] = true;
-          }
-          if ((jj_la1_1[i] & (1<<j)) != 0) {
-            la1tokens[32+j] = true;
-          }
-        }
-      }
-    }
-    for (int i = 0; i < 53; i++) {
-      if (la1tokens[i]) {
-        jj_expentry = new int[1];
-        jj_expentry[0] = i;
-        jj_expentries.add(jj_expentry);
-      }
-    }
-    int[][] exptokseq = new int[jj_expentries.size()][];
-    for (int i = 0; i < jj_expentries.size(); i++) {
-      exptokseq[i] = jj_expentries.get(i);
-    }
-    return new ParseException(token, exptokseq, tokenImage);
+	 jj_expentries.clear();
+	 boolean[] la1tokens = new boolean[53];
+	 if (jj_kind >= 0) {
+	   la1tokens[jj_kind] = true;
+	   jj_kind = -1;
+	 }
+	 for (int i = 0; i < 23; i++) {
+	   if (jj_la1[i] == jj_gen) {
+		 for (int j = 0; j < 32; j++) {
+		   if ((jj_la1_0[i] & (1<<j)) != 0) {
+			 la1tokens[j] = true;
+		   }
+		   if ((jj_la1_1[i] & (1<<j)) != 0) {
+			 la1tokens[32+j] = true;
+		   }
+		 }
+	   }
+	 }
+	 for (int i = 0; i < 53; i++) {
+	   if (la1tokens[i]) {
+		 jj_expentry = new int[1];
+		 jj_expentry[0] = i;
+		 jj_expentries.add(jj_expentry);
+	   }
+	 }
+	 int[][] exptokseq = new int[jj_expentries.size()][];
+	 for (int i = 0; i < jj_expentries.size(); i++) {
+	   exptokseq[i] = jj_expentries.get(i);
+	 }
+	 return new ParseException(token, exptokseq, tokenImage);
+  }
+
+  private boolean trace_enabled;
+
+/** Trace enabled. */
+  final public boolean trace_enabled() {
+	 return trace_enabled;
   }
 
   /** Enable tracing. */
