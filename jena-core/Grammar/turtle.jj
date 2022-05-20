@@ -54,12 +54,12 @@ PARSER_BEGIN(TurtleParser)
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.n3.turtle.parser ;
+package org.apache.jena.ttl.turtle.parser;
 
-import com.hp.hpl.jena.n3.turtle.ParserBase ;
-import com.hp.hpl.jena.graph.* ;
+import org.apache.jena.ttl.turtle.*;
+import org.apache.jena.graph.* ;
 
-public class TurtleParser extends ParserBase
+public class TurtleParser extends TurtleParserBase
 {
 }
 PARSER_END(TurtleParser)

@@ -1,0 +1,6 @@
+This is a Turtle parser used in support of jena-core tests.
+
+It is not compliant with RDF 1.1 Turtle.
+
+It is added to the jena-core RDFReaderFImpl so it is available in jena-core.
+It will be replaced if jena-arq is on the classpath by RIOT initialization.
