@@ -204,8 +204,17 @@ public class ARQConstants
 
     /** Context key for the query for the current query execution
      * (may be null if was not created from a query string )
+     *
+     * No longer used; use sysCurrentStatement instead.
      */
+    @Deprecated
     public static final Symbol sysCurrentQuery          = Symbol.create(systemVarNS+"query") ;
+
+    /** Context key for the current statement execution (Query or UpdateRequest)
+     * Prologue is the common base class
+     */
+    public static final Symbol sysCurrentStatement      = Symbol.create(systemVarNS+"statement") ;
+
 
     /** Context key for the OpExecutor to be used */
     public static final Symbol sysOpExecutorFactory     = Symbol.create(systemVarNS+"opExecutorFactory") ;

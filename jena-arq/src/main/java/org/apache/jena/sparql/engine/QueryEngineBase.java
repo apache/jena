@@ -29,6 +29,7 @@ import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DynamicDatasets;
+import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingRoot;
@@ -166,7 +167,12 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         queryEngineInfo.incQueryCount();
         queryEngineInfo.setLastQueryExecAt();
         //queryEngineInfo.setLastQueryExecTime(-1);
-        queryEngineInfo.setLastQueryString((Query)context.get(ARQConstants.sysCurrentQuery));
+
+        // Only set the last query string if the current statement is a Query (rather than an UpdateRequest)
+        Prologue stmt = (Prologue)context.get(ARQConstants.sysCurrentStatement);
+        Query query = stmt instanceof Query ? (Query)stmt : null;
+        queryEngineInfo.setLastQueryString(query);
+
         queryEngineInfo.setLastOp(op);
         return eval(op, dsg, binding, context);
     }

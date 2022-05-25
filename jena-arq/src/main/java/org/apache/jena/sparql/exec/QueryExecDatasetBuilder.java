@@ -239,8 +239,6 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
 
         if ( dataset != null )
             cxt.set(ARQConstants.sysCurrentDataset, DatasetFactory.wrap(dataset));
-        if ( queryActual != null )
-            cxt.set(ARQConstants.sysCurrentQuery, queryActual);
 
         QueryExec qExec = new QueryExecDataset(queryActual, queryStringActual, dataset, cxt, qeFactory,
                                                initialTimeout, initialTimeoutUnit,

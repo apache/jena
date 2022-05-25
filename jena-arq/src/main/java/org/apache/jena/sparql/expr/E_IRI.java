@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.sse.Tags ;
@@ -38,21 +38,21 @@ public class E_IRI extends ExprFunction1
     {
         super(expr, altSymbol) ;
     }
-    
+
     // Use the hook to get the env.
     @Override
     public NodeValue eval(NodeValue v, FunctionEnv env)
-    { 
+    {
         String baseIRI = null ;
         if ( env.getContext() != null )
         {
-            Query query = (Query)env.getContext().get(ARQConstants.sysCurrentQuery) ;
-            if ( query != null )
-                baseIRI = query.getBaseURI() ;
+            Prologue stmt = (Prologue)env.getContext().get(ARQConstants.sysCurrentStatement) ;
+            if ( stmt != null )
+                baseIRI = stmt.getBaseURI() ;
         }
         return NodeFunctions.iri(v, baseIRI) ;
     }
-    
+
     @Override
     public Expr copy(Expr expr) { return new E_IRI(expr) ; }
 
@@ -60,5 +60,5 @@ public class E_IRI extends ExprFunction1
     public NodeValue eval(NodeValue v)
     {
         throw new ARQInternalErrorException("Should not be called") ;
-    } 
+    }
 }

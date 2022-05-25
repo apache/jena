@@ -170,6 +170,13 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
     }
 
     private void add(UpdateRequest request) {
+        // Limitation: Only the prologue of the first request that gets added takes effect
+        // For details see https://github.com/apache/jena/issues/1272
+        if (updateRequest.getOperations().isEmpty()) {
+            updateRequest.setBase(request.getBase());
+            updateRequest.setPrefixMapping(request.getPrefixMapping());
+        }
+
         request.getOperations().forEach(this::add);
     }
 

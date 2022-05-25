@@ -21,11 +21,13 @@ package org.apache.jena.sparql.modify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFNode ;
@@ -54,20 +56,20 @@ public class TestUpdateOperations
     private static final String DIR = "testing/Update" ;
     private DatasetGraph graphStore() { return DatasetGraphFactory.create() ; }
     private Node gName = SSE.parseNode("<http://example/g>") ;
-    
+
     private static ErrorHandler eh;
-    
+
     // Silence parser output.
     @BeforeClass public static void beforeClass() {
         eh = ErrorHandlerFactory.getDefaultErrorHandler();
         ErrorHandler silent = ErrorHandlerFactory.errorHandlerStrictSilent();
         ErrorHandlerFactory.setDefaultErrorHandler(silent);
     }
-    
+
     @AfterClass public static void afterClass() {
         ErrorHandlerFactory.setDefaultErrorHandler(eh);
     }
-    
+
     @Test public void load1() {
         DatasetGraph gs = graphStore() ;
         UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nt>") ;
@@ -81,7 +83,7 @@ public class TestUpdateOperations
         UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nt> INTO GRAPH <"+gName.getURI()+">") ;
         UpdateAction.execute(req, gs) ;
     }
-     
+
     // Quad loading
 
     @Test public void load3() {
@@ -107,7 +109,7 @@ public class TestUpdateOperations
         UpdateAction.execute(req, gs) ;
         assertEquals(0, Iter.count(gs.find())) ;
     }
-    
+
     @Test(expected=UpdateException.class)
     public void load6() {
         DatasetGraph gs = graphStore() ;
@@ -115,14 +117,14 @@ public class TestUpdateOperations
         UpdateAction.execute(req, gs) ;
         assertEquals(0, Iter.count(gs.find())) ;
     }
-    
+
     @Test public void load7() {
         DatasetGraph gs = graphStore() ;
         UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-bad.nq>") ;
         UpdateAction.execute(req, gs) ;
         assertEquals(0, Iter.count(gs.find())) ;
     }
-    
+
     @Test(expected=UpdateException.class)
     public void load8() {
         DatasetGraph gs = graphStore() ;
@@ -130,14 +132,14 @@ public class TestUpdateOperations
         UpdateAction.execute(req, gs) ;
         assertEquals(0, Iter.count(gs.find())) ;
     }
-    
+
     @Test public void load9() {
         DatasetGraph gs = graphStore() ;
         UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-bad.nt> INTO GRAPH <"+gName.getURI()+">") ;
         UpdateAction.execute(req, gs) ;
         assertEquals(0, Iter.count(gs.find())) ;
     }
-    
+
     @Test(expected=UpdateException.class)
     public void load10() {
         DatasetGraph gs = graphStore() ;
@@ -145,15 +147,15 @@ public class TestUpdateOperations
         UpdateAction.execute(req, gs) ;
         assertEquals(0, Iter.count(gs.find())) ;
     }
-    
+
     @Test public void load11() {
         DatasetGraph gs = graphStore() ;
         UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-quads.nt> INTO GRAPH <"+gName.getURI()+">") ;
         UpdateAction.execute(req, gs) ;
         assertEquals(0, Iter.count(gs.find())) ;
     }
-    
-    @Test(expected=UpdateException.class) 
+
+    @Test(expected=UpdateException.class)
     public void load12() {
         DatasetGraph gs = graphStore() ;
         UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-not-found.nt>") ;
@@ -182,33 +184,33 @@ public class TestUpdateOperations
         UpdateAction.execute(req, gs) ;
         assertEquals(0, Iter.count(gs.find())) ;
     }
-    
+
     @Test public void insert_where_01() {
         Model m = ModelFactory.createDefaultModel();
         Resource anon = m.createResource();
         anon.addProperty(RDF.type, OWL.Thing);
         assertEquals(1, m.size());
-        
+
         UpdateRequest req = UpdateFactory.create("INSERT { ?s ?p ?o } WHERE { ?o ?p ?s }");
         UpdateAction.execute(req, m);
-        
+
         assertEquals(2, m.size());
         assertEquals(1, m.listStatements(anon, null, (RDFNode)null).toList().size());
         assertEquals(1, m.listStatements(null, null, anon).toList().size());
     }
-    
-    // Check constant and template quads 
+
+    // Check constant and template quads
     @Test public void delete_insert_where_01() {
         DatasetGraph dsg0 = DatasetGraphFactory.create() ;
         UpdateRequest req = UpdateFactory.create("INSERT DATA { <x> <p> 2 . <z> <q> 2 . <z> <q> 3 . }") ;
         UpdateAction.execute(req, dsg0);
         assertEquals(3, dsg0.getDefaultGraph().size()) ;
-        
+
         AtomicLong counterIns = new AtomicLong(0) ;
         AtomicLong counterDel = new AtomicLong(0) ;
         DatasetGraph dsg = new DatasetGraphWrapper(dsg0) {
             @Override
-            public void add(Quad quad) { 
+            public void add(Quad quad) {
                 counterIns.incrementAndGet() ;
                 super.add(quad) ;
             }
@@ -216,10 +218,10 @@ public class TestUpdateOperations
             @Override
             public void delete(Quad quad) {
                 counterDel.incrementAndGet() ;
-                super.delete(quad) ; 
+                super.delete(quad) ;
             }
         } ;
-        
+
         // WHERE clause doubles the effect.
         String s = "DELETE { ?x <p> 2 . <z> <q> 2 } INSERT { ?x <p> 1 . <x> <q> 1  } WHERE { ?x <p> ?o {} UNION {} }" ;
         req = UpdateFactory.create(s) ;
@@ -229,5 +231,14 @@ public class TestUpdateOperations
         assertEquals(3, dsg.getDefaultGraph().size()) ;
     }
 
-}
+    // Ensure that the IRI function in UpdateRequests considers the BASE IRI - https://github.com/apache/jena/issues/1272
+    @Test public void insert_with_iri_function_resolution_against_base_01() {
+        Model m = ModelFactory.createDefaultModel();
+        UpdateRequest req = UpdateFactory.create("BASE <http://www.example.org/> INSERT { ?s ?s ?s } WHERE { BIND(iri('s') AS ?s) }");
+        UpdateAction.execute(req, m);
 
+        Node s = NodeFactory.createURI("http://www.example.org/s");
+        Triple expected = new Triple(s, s, s);
+        assertEquals(Collections.singletonList(expected), m.getGraph().find(s, s, s).toList());
+    }
+}

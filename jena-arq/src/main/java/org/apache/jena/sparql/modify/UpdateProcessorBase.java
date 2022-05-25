@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.modify;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.util.Context ;
@@ -36,10 +37,10 @@ public class UpdateProcessorBase implements UpdateProcessor
     protected final UpdateEngineFactory factory ;
     protected final Context context ;
 
-    public UpdateProcessorBase(UpdateRequest request, 
-                               DatasetGraph datasetGraph, 
+    public UpdateProcessorBase(UpdateRequest request,
+                               DatasetGraph datasetGraph,
                                Binding inputBinding,
-                               Context context, 
+                               Context context,
                                UpdateEngineFactory factory)
     {
         this.request = request ;
@@ -48,13 +49,14 @@ public class UpdateProcessorBase implements UpdateProcessor
         this.context = context;
         Context.setCurrentDateTime(this.context) ;
         this.factory = factory ;
+        this.context.set(ARQConstants.sysCurrentStatement, request);
     }
 
     @Override
     public void execute() {
         UpdateEngine uProc = factory.create(datasetGraph, inputBinding, context);
         uProc.startRequest();
-        
+
         try {
             UpdateSink sink = uProc.getUpdateSink();
             Iter.sendToSink(request.iterator(), sink);     // Will call close on sink if there are no exceptions
