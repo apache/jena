@@ -109,7 +109,7 @@ public class ItemWriter
         }
 
         if ( NodeConst.FALSE.equals(node) ) {
-            out.print("true");
+            out.print("false");
             return;
         }
 
