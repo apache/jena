@@ -21,18 +21,21 @@ package org.apache.jena.http.auth;
 import java.net.URI;
 import java.util.Objects;
 
-/** URI and optional realm, as a value-equality pair. */
+/** URI, and optional realm, as a value-equality pair. */
 public class AuthDomain {
-    URI uri;
-    // May be null;
+    private URI uri;
     private String realm;
+    public static final String noRealm = "";
 
     public AuthDomain(URI uri) {
         this(uri, null);
     }
 
-    public AuthDomain(URI uri, String realm) {
+    private AuthDomain(URI uri, String realm) {
+        Objects.requireNonNull(uri);
         this.uri = uri;
+        if ( realm == null )
+            realm = noRealm;
         this.realm = realm;
     }
 

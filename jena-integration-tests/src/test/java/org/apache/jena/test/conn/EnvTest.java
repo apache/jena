@@ -120,7 +120,6 @@ public class EnvTest {
             .port(0)
             .verbose(verbose)
             .enablePing(true)
-            .auth(AuthScheme.BASIC)
             .addServlet(data, holder)
             .add(dsName, dsg);
         if ( user != null ) {

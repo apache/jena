@@ -30,6 +30,7 @@ public class AuthChallenge {
      * are lower case and never clash with this name).
      */
     public final AuthScheme authScheme;
+    public final AuthHeader authHeader;
     public final String realm;
     public final String nonce;
     public final String opaque;
@@ -39,9 +40,9 @@ public class AuthChallenge {
 
     /** Parse "WWW-Authenticate:" challenge message */
     static public AuthChallenge parse(String authHeaderStr) {
-        AuthHeaderParser auth;
+        AuthHeader auth;
         try {
-            auth = AuthHeaderParser.parse(authHeaderStr);
+            auth = AuthHeader.parse(authHeaderStr);
             if ( auth == null )
                 return null;
             if ( auth.getAuthScheme() == null )
@@ -71,6 +72,7 @@ public class AuthChallenge {
             }
 
             return new AuthChallenge(authScheme,
+                                     auth,
                                      get(auth, AuthHttp.strRealm),
                                      get(auth, AuthHttp.strNonce), // Required for digest, not for basic.
                                      get(auth, AuthHttp.strOpaque),
@@ -81,8 +83,11 @@ public class AuthChallenge {
         }
     }
 
-    private AuthChallenge(AuthScheme authScheme, String realm, String nonce, String opaque, String qop, Map<String, String> authParams) {
+    private AuthChallenge(AuthScheme authScheme, AuthHeader authHeader, String realm, String nonce, String opaque, String qop, Map<String, String> authParams) {
+        Objects.requireNonNull(authScheme);
+        Objects.requireNonNull(authHeader);
         this.authScheme = authScheme;
+        this.authHeader = authHeader;
         this.realm = realm;
         this.nonce = nonce;
         this.opaque = opaque;
@@ -96,14 +101,20 @@ public class AuthChallenge {
         return authParams.get(AuthHttp.strRealm);
     }
 
-    private static String get(AuthHeaderParser auth, String s) {
+    public String getToken() {
+        if ( ! Objects.equals(authHeader.getAuthScheme(), AuthScheme.BEARER) )
+            return null;
+        return authHeader.getBearerToken();
+    }
+
+    private static String get(AuthHeader auth, String s) {
         Map<String, String> map = auth.getAuthParams();
         if ( map == null )
             return null;
         return map.get(s);
     }
 
-    private static String nonNull(AuthHeaderParser auth, String s) {
+    private static String nonNull(AuthHeader auth, String s) {
         Map<String, String> map = auth.getAuthParams();
         if ( map == null )
             throw new NullPointerException("No auth params");

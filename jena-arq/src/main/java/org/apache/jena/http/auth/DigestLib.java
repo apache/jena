@@ -93,16 +93,15 @@ class DigestLib {
      * Function to modify a {@link java.net.http.HttpRequest.Builder} for digest authentication.
      * One instance of this function is used for each digest session.
      */
-    public static AuthRequestModifier buildDigest(AuthChallenge aHeader, String user, String password, String method, String requestTarget) {
+    public static AuthRequestModifier digestAuthModifier(AuthChallenge aHeader, String user, String password, String method, String requestTarget) {
         String clientNonce = DigestLib.generateNonce();
         AtomicLong ncCounter = new AtomicLong(0);
-        return req->{
+        return request->{
             // Bump nc
             String nc = String.format("%08X", ncCounter.getAndIncrement());
-            String responseField =
-                    DigestLib.calcDigestChallengeResponse(aHeader, user, password,
-                                                          method, requestTarget,
-                                                          clientNonce, nc, "auth");
+            String responseField = calcDigestChallengeResponse(aHeader, user, password,
+                                                               method, requestTarget,
+                                                               clientNonce, nc, "auth");
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("Digest ");
             field(stringBuilder, true, "username", user, true);
@@ -116,8 +115,8 @@ class DigestLib {
             field(stringBuilder, false, "opaque", aHeader.opaque, true);
             String x = stringBuilder.toString();
             // setHeader - replace previous
-            req.setHeader(HttpNames.hAuthorization , x);
-            return req;
+            request.setHeader(HttpNames.hAuthorization , x);
+            return request;
         };
     }
 

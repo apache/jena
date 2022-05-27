@@ -35,13 +35,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-/**
- * Digest authentication.
- * Digest auth is not provided by java.net.http,
- * so {@code Authenticator} on the {@code HttpClient} does not work.
- * Jena has to implement it itself (in AuthLib).
- */
-public class TestAuthDigestRemote extends AbstractTestAuthRemote {
+public class TestAuthBasicRemote extends AbstractTestAuthRemote {
     private static String user = "user";
     private static String password = "password";
 
@@ -79,11 +73,12 @@ public class TestAuthDigestRemote extends AbstractTestAuthRemote {
         FusekiServer.Builder builder = FusekiServer.create()
             .port(0)
             .enablePing(true)
-            .auth(AuthScheme.DIGEST)
+            .auth(AuthScheme.BASIC)
             .add(dsName, dsg);
+        // Instead of a password file.
         if ( user != null ) {
             UserStore userStore = JettyLib.makeUserStore(user, password);
-            SecurityHandler sh = JettyLib.makeSecurityHandler("TripleStore",  userStore, AuthScheme.DIGEST);
+            SecurityHandler sh = JettyLib.makeSecurityHandler("TripleStore",  userStore, AuthScheme.BASIC);
             builder.securityHandler(sh)
                    .serverAuthPolicy(Auth.policyAllowSpecific(user));
         }

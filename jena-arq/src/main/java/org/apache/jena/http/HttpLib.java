@@ -95,6 +95,18 @@ public class HttpLib {
     }
 
     /**
+     * Calculate bearer auth header value.
+     * The token supplied is expected to already be in base 64.
+     * Use with header "Authorization" (constant {@link HttpNames#hAuthorization}).
+     */
+    public static String bearerAuth(String tokenBase64) {
+        Objects.requireNonNull(tokenBase64);
+        if ( tokenBase64.indexOf(' ') >= 0 )
+            throw new IllegalArgumentException("Base64 token contains a space");
+        return "Bearer " + tokenBase64;
+    }
+
+    /**
      * Get the InputStream from an HttpResponse, handling possible compression settings.
      * The application must consume or close the {@code InputStream} (see {@link #finish(InputStream)}).
      * Closing the InputStream may close the HTTP connection.
@@ -308,13 +320,8 @@ public class HttpLib {
 
     // Terminology:
     // RFC 2616:   Request-Line   = Method SP Request-URI SP HTTP-Version CRLF
-
     // RFC 7320:   request-line   = method SP request-target SP HTTP-version CRLF
     // https://datatracker.ietf.org/doc/html/rfc7230#section-3.1.1
-
-    // request-target:
-    // https://datatracker.ietf.org/doc/html/rfc7230#section-5.3
-    // When it is for the origin server ==> absolute-path [ "?" query ]
 
     // EndpointURI: URL for a service, no query string.
 
@@ -328,7 +335,7 @@ public class HttpLib {
     }
 
     /**
-     * Return a string (assumed to be a URI) without query string or fragment.
+     * Return a string (assumed to be an absolute URI) without query string or fragment.
      */
     public static String endpoint(String uriStr) {
         int idx1 = uriStr.indexOf('?');

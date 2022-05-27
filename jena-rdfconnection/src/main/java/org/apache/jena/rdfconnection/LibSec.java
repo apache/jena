@@ -49,7 +49,7 @@ public class LibSec {
         // Prefix
         URI urix = URI.create(urlStr);
         //String requestTarget = HttpLib.requestTarget(urix);
-        AuthDomain domain = new AuthDomain(urix, null);
+        AuthDomain domain = new AuthDomain(urix);
         try {
             AuthEnv.get().registerUsernamePassword(urix, auth.user, auth.password);
             try ( RDFConnection conn = RDFConnectionRemote.newBuilder().destination(urlStr).build() ) {

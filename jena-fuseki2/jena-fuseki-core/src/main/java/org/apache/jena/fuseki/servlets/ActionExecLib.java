@@ -56,7 +56,6 @@ public class ActionExecLib {
         // Need a way to set verbose logging on a per servlet and per request basis.
         HttpAction action = new HttpAction(id, log, category, request, response);
         if ( dap != null ) {
-            // TODO remove setRequest?
             DataService dataService = dap.getDataService();
             action.setRequest(dap, dataService);
         }
