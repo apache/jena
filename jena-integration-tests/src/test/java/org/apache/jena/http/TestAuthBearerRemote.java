@@ -92,8 +92,7 @@ public class TestAuthBearerRemote {
         FusekiServer server = FusekiServer.create()
             .port(0)
             .enablePing(true)
-            //.auth(AuthScheme.BEARER)
-            .addFilter("/*", new AuthBearerFilter(verifiedUser))
+            .bearerTokenVerifier(verifiedUser)
             .add(dsName, dsg)
             .build();
         server.start();

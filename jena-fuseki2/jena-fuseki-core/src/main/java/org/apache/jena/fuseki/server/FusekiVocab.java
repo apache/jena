@@ -43,6 +43,9 @@ public class FusekiVocab
     public static final Property pPasswordFile              = property("passwd");
     public static final Property pRealm                     = property("realm");
     public static final Property pAuth                      = property("auth");
+    public static final Property pJwks                      = property("jwks");
+    public static final Property pJwtSubjectClaim           = property("jwtSubjectClaim");
+
     public static final Property pEndpoint                  = property("endpoint");
     public static final Property pOperation                 = property("operation");
     public static final Property pAllowedUsers              = property("allowedUsers");

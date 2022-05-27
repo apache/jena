@@ -51,6 +51,7 @@ import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.*;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
 import org.apache.jena.fuseki.jetty.JettyLib;
+import org.apache.jena.fuseki.main.auth.AuthBearerFilter;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.main.sys.FusekiModuleStep;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
@@ -824,7 +825,13 @@ public class FusekiServer {
                     case BASIC: case DIGEST:
                         break;
                     case BEARER:
-                        throw new FusekiConfigException("Authentication scheme not supported in config file: \""+authStr+"\"");
+                        // For Bearer Auth we support JWKS location and Username Claim in configuration file
+                        // All we do with them is store them in servlet attributes, we assume other code picks these
+                        // up later and configures token verification accordingly
+                        addServletAttribute(FusekiVocab.pJwks.getURI(),
+                                            GraphUtils.getAsStringValue(server, FusekiVocab.pJwks));
+                        addServletAttribute(FusekiVocab.pJwtSubjectClaim.getURI(),
+                                            GraphUtils.getAsStringValue(server, FusekiVocab.pJwtSubjectClaim));
                     case UNKNOWN: default:
                         throw new FusekiConfigException("Authentication scheme not recognized: \""+authStr+"\"");
                 }
@@ -851,16 +858,30 @@ public class FusekiServer {
          * Choose the HTTP authentication scheme.
          */
         public Builder auth(AuthScheme authScheme) {
-            if ( authScheme == AuthScheme.BEARER )
-                throw new FusekiConfigException("Bearer authentication not currently supported in the server builder.");
             this.authScheme = authScheme;
+            return this;
+        }
+
+        /**
+         * Sets the Bearer token verification function.  Setting this also sets {@link #auth(AuthScheme)} to
+         * {@value AuthScheme#bearerStr}
+         * <p>
+         * This is a function that takes in a Bearer token and returns the username for valid tokens and {@code null}
+         * otherwise
+         * </p>
+         * @param tokenVerifier Token verifier function
+         * @return Builder
+         */
+        public Builder bearerTokenVerifier(Function<String, String> tokenVerifier) {
+            this.auth(AuthScheme.BEARER);
+            this.bearerVerifiedUser = tokenVerifier;
             return this;
         }
 
         /**
          * Set the server-wide server authorization {@link AuthPolicy}.
          * Defaults to "logged in users" if a password file provided but no other policy.
-         * To allow any one to access the server, use {@link Auth#ANY_ANON}.
+         * To allow anyone to access the server, use {@link Auth#ANY_ANON}.
          */
         public Builder serverAuthPolicy(AuthPolicy authPolicy) {
             this.serverAuth = authPolicy;
@@ -874,16 +895,6 @@ public class FusekiServer {
             this.realm = realm;
             return this;
         }
-
-//        /**
-//         * Set the verifier for bearer tokens when auth scheme is {@link AuthScheme#BEARER}.
-//         * The auth scheme is set to "Bearer" by this method.
-//         */
-//        public Builder bearerAuthVerifier(Function<String, String> verifiedUser) {
-//            this.auth(AuthScheme.BEARER);
-//            this.bearerVerifiedUser = verifiedUser;
-//            return this;
-//        }
 
         /**
          * Set the password file. This will be used to build a {@link #securityHandler
@@ -1342,7 +1353,7 @@ public class FusekiServer {
                         break;
                     case BEARER:
                         if ( bearerVerifiedUser == null )
-                            throw new FusekiConfigException("Bearer authenication set but no function to get the verified user");
+                            throw new FusekiConfigException("Bearer authentication set but no bearer token verification function provided.  You may need to add a FusekiModule to fully enable this functionality.");
                         break;
                     case UNKNOWN:
                         throw new FusekiConfigException("Unknown authentication scheme");
@@ -1449,6 +1460,12 @@ public class FusekiServer {
         /** Add servlets and servlet filters, including the {@link FusekiFilter} */
         private void servletsAndFilters(ServletContextHandler context) {
             // First in chain. Authentication.
+            // AuthBearerFilter has to happen first if configured as otherwise we won't have a user for the subsequent
+            // AuthFilter to consider
+            if (authScheme == AuthScheme.BEARER) {
+                AuthBearerFilter bearerAuthFilter = new AuthBearerFilter(bearerVerifiedUser);
+                addFilter(context, "/*", bearerAuthFilter);
+            }
             if ( hasServerWideAuth() ) {
                 Predicate<String> auth = serverAuth::isAllowed;
                 AuthFilter authFilter = new AuthFilter(auth);

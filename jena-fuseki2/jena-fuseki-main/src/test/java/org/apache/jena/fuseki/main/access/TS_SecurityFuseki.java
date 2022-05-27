@@ -18,12 +18,14 @@
 
 package org.apache.jena.fuseki.main.access;
 
+import org.apache.jena.fuseki.main.TestAuthBearerFilter;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestAuthorized.class
+    , TestAuthBearerFilter.class
     , TestSecurityFilterFuseki.class
     , TestFusekiSecurityAssemblerSeparate.class
     , TestFusekiSecurityAssemblerShared.class

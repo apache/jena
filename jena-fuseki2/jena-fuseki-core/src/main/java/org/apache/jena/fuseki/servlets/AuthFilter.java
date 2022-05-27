@@ -29,7 +29,7 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.web.HttpSC;
 
 /**
- * Servlet filter that applies a predicate to incoming requests and rejects with with 403
+ * Servlet filter that applies a predicate to incoming requests and rejects with 403
  * "Forbidden" if the predicate returns false, otherwise it passes the request down the
  * filter chain.
  * <p>

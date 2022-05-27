@@ -70,7 +70,7 @@ public interface FusekiModule extends SubsystemLifecycle {
 
     /**
      * Called at the start of "build" step. The builder has been set according to the
-     * configuration of API calls and paring configuration files. No build actions have been carried out yet.
+     * configuration of API calls and parsing configuration files. No build actions have been carried out yet.
      * The module can make further FusekiServer.{@link Builder} calls.
      * The "configModel" parameter is set if a configuration file was used otherwise it is null.
      * <p>
@@ -83,6 +83,7 @@ public interface FusekiModule extends SubsystemLifecycle {
      * @param datasetNames
      *      The names of DataServices configured by API calls and configuration file.
      * @param configModel
+     *      The parsed configuration file (if any)
      */
     public default void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) { }
 
