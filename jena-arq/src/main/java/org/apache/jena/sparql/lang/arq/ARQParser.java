@@ -5159,7 +5159,7 @@ n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn);
       jj_consume_token(LPAREN);
       expr = Expression();
       jj_consume_token(RPAREN);
-{if ("" != null) return new E_IRI(expr) ;}
+{if ("" != null) return makeFunction_IRI(expr) ;}
       break;
       }
     case URI:{
@@ -5167,7 +5167,7 @@ n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn);
       jj_consume_token(LPAREN);
       expr = Expression();
       jj_consume_token(RPAREN);
-{if ("" != null) return new E_URI(expr) ;}
+{if ("" != null) return makeFunction_URI(expr) ;}
       break;
       }
     case BNODE:{

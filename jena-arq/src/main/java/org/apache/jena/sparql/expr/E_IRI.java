@@ -18,31 +18,43 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.query.Query ;
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.query.Query;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_IRI extends ExprFunction1
-{
-    private static final String symbol = Tags.tagIri ;
+/**
+ * IRI(expr). The function URI(expr) is the same, but under a different name as a
+ * subclass.
+ */
+public class E_IRI extends ExprFunction1 {
+    private static final String symbol = Tags.tagIri;
+    // The BASE in force when the function was created.
+    // Used for relative IRIs. Maybe null (unset, unknown).
+    protected final String base;
 
-    public E_IRI(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_IRI(Expr expr) {
+        super(expr, symbol);
+        base = null;
     }
 
-    public E_IRI(Expr expr, String altSymbol)
-    {
-        super(expr, altSymbol) ;
+    protected E_IRI(Expr expr, String altSymbol) {
+        super(expr, altSymbol);
+        base = null;
     }
-    
-    // Use the hook to get the env.
+
+    public E_IRI(String baseURI, Expr expr) {
+        super(expr, symbol);
+        base = baseURI;
+    }
+
     @Override
-    public NodeValue eval(NodeValue v, FunctionEnv env)
-    { 
+    public NodeValue eval(NodeValue v, FunctionEnv env) {
+        if ( base != null )
+            return NodeFunctions.iri(v, base);
+        // Legacy, mainly for old SSE which does not have the base.
         String baseIRI = null ;
         if ( env.getContext() != null )
         {
@@ -52,13 +64,14 @@ public class E_IRI extends ExprFunction1
         }
         return NodeFunctions.iri(v, baseIRI) ;
     }
-    
-    @Override
-    public Expr copy(Expr expr) { return new E_IRI(expr) ; }
 
     @Override
-    public NodeValue eval(NodeValue v)
-    {
-        throw new ARQInternalErrorException("Should not be called") ;
-    } 
+    public Expr copy(Expr expr) {
+        return new E_IRI(base, expr);
+    }
+
+    @Override
+    public NodeValue eval(NodeValue v) {
+        throw new ARQInternalErrorException("Should not be called");
+    }
 }

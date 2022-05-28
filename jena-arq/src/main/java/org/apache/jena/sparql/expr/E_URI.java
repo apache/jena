@@ -18,26 +18,25 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.sse.Tags;
 
+public class E_URI extends E_IRI {
+    private static final String symbol = Tags.tagUri;
 
-public class E_URI extends E_IRI
-{
-    private static final String symbol = Tags.tagUri ;
-
-    public E_URI(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_URI(Expr expr) {
+        super(expr, symbol);
     }
 
-    public E_URI(Expr expr, String altSymbol)
-    {
-        super(expr, altSymbol) ;
+    // Same as E_IRI
+    // @Override
+    // public NodeValue eval(NodeValue v) { return super.eval(v) ; }
+
+    public E_URI(String baseURI, Expr expr) {
+        super(baseURI, expr);
     }
-    
-//    @Override
-//    public NodeValue eval(NodeValue v) { return super.eval(v) ; }
-    
+
     @Override
-    public Expr copy(Expr expr) { return new E_URI(expr) ; } 
+    public Expr copy(Expr expr) {
+        return new E_URI(base, expr);
+    }
 }

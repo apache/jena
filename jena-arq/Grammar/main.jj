@@ -1946,10 +1946,10 @@ Expr BuiltInCall() : { Expr expr ;
     { return new E_Bound(new ExprVar(gn)) ; }
 
   | <IRI> <LPAREN> expr = Expression() <RPAREN>
-    { return new E_IRI(expr) ; }
+    { return makeFunction_IRI(expr) ; }
 
   | <URI> <LPAREN> expr = Expression() <RPAREN>
-    { return new E_URI(expr) ; }
+    { return makeFunction_URI(expr) ; }
 
   | <BNODE> 
     ( <LPAREN> expr1 = Expression() <RPAREN>
