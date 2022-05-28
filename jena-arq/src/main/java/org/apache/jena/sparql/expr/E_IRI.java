@@ -21,6 +21,7 @@ package org.apache.jena.sparql.expr;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.sse.Tags;
@@ -31,43 +32,86 @@ import org.apache.jena.sparql.sse.Tags;
  */
 public class E_IRI extends ExprFunction1 {
     private static final String symbol = Tags.tagIri;
-    // The BASE in force when the function was created.
-    // Used for relative IRIs. Maybe null (unset, unknown).
-    protected final String base;
 
-    public E_IRI(Expr expr) {
-        super(expr, symbol);
-        base = null;
+    // The base in force when the function was created.
+    // Kept separate from baseExpr so we can see whether it was the one argument or two argument form.
+    protected final String parserBase;
+
+    // ARQ extension: "IRI(base, relative)"
+    protected final Expr baseExpr;
+    protected final Expr relExpr;
+
+    public E_IRI(Expr relExpr) {
+        this(null, null, relExpr);
     }
 
-    protected E_IRI(Expr expr, String altSymbol) {
-        super(expr, altSymbol);
-        base = null;
+    public E_IRI(String parserBaseURI, Expr relExpr) {
+        this(null, parserBaseURI, relExpr);
     }
 
-    public E_IRI(String baseURI, Expr expr) {
-        super(expr, symbol);
-        base = baseURI;
+    public E_IRI(Expr baseExpr, Expr relExpr) {
+        this(baseExpr, null, relExpr);
+    }
+
+    public E_IRI(Expr baseExpr, String parserBaseURI, Expr relExpr) {
+        this(baseExpr, parserBaseURI, relExpr, symbol);
+    }
+
+    protected E_IRI(Expr baseExpr, String baseStr, Expr relExpr, String altSymbol) {
+        super(relExpr, symbol);
+        this.parserBase = baseStr;
+        this.baseExpr = baseExpr;
+        this.relExpr = relExpr;
+    }
+
+    // Evaluation of a "one argument or two" function.
+    @Override
+    protected NodeValue evalSpecial(Binding binding, FunctionEnv env) {
+        // IRI(<base>, relative) or IRI(relative);
+        // relative can be a string or an IRI.
+        // <base> can be relative (becomes IRI(IRI(<base>), rel)).
+
+        String baseIRI = null;
+        if ( baseExpr != null ) {
+            NodeValue baseValue = baseExpr.eval(binding, env);
+            // Check: IRI.
+            NodeValue baseValueResolved = evalOneArg(baseValue, parserBase, env);
+            // Check for errors.
+            baseIRI = baseValueResolved.getNode().getURI();
+        } else {
+            baseIRI = parserBase;
+        }
+
+        NodeValue nvRel = relExpr.eval(binding, env);
+        return evalOneArg(nvRel, baseIRI, env);
+    }
+
+    private NodeValue evalOneArg(NodeValue relative, String baseIRI, FunctionEnv env) {
+        if ( baseIRI == null ) {
+            // Legacy
+            if ( env.getContext() != null ) {
+                Query query = (Query)env.getContext().get(ARQConstants.sysCurrentQuery);
+                if ( query != null )
+                    baseIRI = query.getBaseURI();
+            }
+        }
+        // XXX Need fix for relative already a URI
+        if ( NodeFunctions.isIRI(relative.asNode()) ) {
+            relative = NodeValue.makeString(relative.asString());
+        }
+
+        return NodeFunctions.iri(relative, baseIRI);
     }
 
     @Override
     public NodeValue eval(NodeValue v, FunctionEnv env) {
-        if ( base != null )
-            return NodeFunctions.iri(v, base);
-        // Legacy, mainly for old SSE which does not have the base.
-        String baseIRI = null ;
-        if ( env.getContext() != null )
-        {
-            Query query = (Query)env.getContext().get(ARQConstants.sysCurrentQuery) ;
-            if ( query != null )
-                baseIRI = query.getBaseURI() ;
-        }
-        return NodeFunctions.iri(v, baseIRI) ;
+        // Shouldn't be called. Legacy only. Does not support baseExpr!=null
+        return evalOneArg(v, parserBase, env);
     }
 
     @Override
     public Expr copy(Expr expr) {
-        return new E_IRI(base, expr);
+        return new E_IRI(baseExpr, parserBase, expr);
     }
 
     @Override

@@ -478,6 +478,18 @@ public class QueryParserBase
         return new E_URI(prologue.getBaseURI(), expr);
     }
 
+    // IRI(rel) or IRI(base, rel)
+    protected Expr makeFunction_IRI(Expr expr1, Expr expr2) {
+        if ( expr2 == null )
+            return new E_IRI(prologue.getBaseURI(), expr1);
+        return new E_IRI(expr1, prologue.getBaseURI(), expr2);
+    }
+
+    protected Expr makeFunction_URI(Expr expr1, Expr expr2) {
+        if ( expr2 == null )
+            return new E_URI(prologue.getBaseURI(), expr1);
+        return new E_URI(expr1, prologue.getBaseURI(), expr2);
+    }
 
     // Utilities to remove escapes in strings.
 

@@ -269,4 +269,32 @@ public class TestUpdateOperations
         assertTrue(triples.contains(expected2));
         assertEquals(2, triples.size());
     }
+
+    //. ARQ extension. IRI(base, relative)
+    private static void test2Arg(String updateStr, String expectedURI) {
+        Model m = ModelFactory.createDefaultModel();
+        // ARQ extension form.
+        UpdateRequest req = UpdateFactory.create(updateStr);
+        UpdateAction.execute(req, m);
+        List<Triple> triples = m.getGraph().find(null,null,null).toList();
+        Node x = NodeFactory.createURI(expectedURI);
+        Triple expected = new Triple(x, x, x);
+        assertTrue(triples.contains(expected));
+        assertEquals(1, triples.size());
+    }
+
+    @Test public void insert_with_iri_function_resolution_against_base_03() {
+        test2Arg("BASE <http://www.example.org/> INSERT { ?s ?s ?s } WHERE { BIND(iri('http://example/', 's') AS ?s) }",
+                 "http://example/s");
+    }
+
+    @Test public void insert_with_iri_function_resolution_against_base_04() {
+        test2Arg("BASE <http://www.example.org/> INSERT { ?s ?s ?s } WHERE { BIND(iri(<http://example/>, 's') AS ?s) }",
+                 "http://example/s");
+    }
+
+    @Test public void insert_with_iri_function_resolution_against_base_05() {
+        test2Arg("BASE <http://www.example.org/> INSERT { ?s ?s ?s } WHERE { BIND(iri(<x1/x2/x3>, 's') AS ?s) }",
+                  "http://www.example.org/x1/x2/s");
+    }
 }

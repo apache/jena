@@ -23,20 +23,25 @@ import org.apache.jena.sparql.sse.Tags;
 public class E_URI extends E_IRI {
     private static final String symbol = Tags.tagUri;
 
-    public E_URI(Expr expr) {
-        super(expr, symbol);
+    public E_URI(Expr relExpr) {
+        this(null, null, relExpr);
     }
 
-    // Same as E_IRI
-    // @Override
-    // public NodeValue eval(NodeValue v) { return super.eval(v) ; }
-
-    public E_URI(String baseURI, Expr expr) {
-        super(baseURI, expr);
+    public E_URI(String baseURI, Expr relExpr) {
+        this(null, baseURI, relExpr);
     }
+
+    public E_URI(Expr baseExpr, Expr relExpr) {
+        this(baseExpr, null, relExpr);
+    }
+
+    public E_URI(Expr baseExpr, String baseStr, Expr relExpr) {
+        super(baseExpr, baseStr, relExpr, symbol);
+    }
+
 
     @Override
     public Expr copy(Expr expr) {
-        return new E_URI(base, expr);
+        return new E_URI(baseExpr, parserBase, expr);
     }
 }
