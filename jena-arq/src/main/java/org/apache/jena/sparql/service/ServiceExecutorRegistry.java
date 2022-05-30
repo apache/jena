@@ -76,6 +76,12 @@ public class ServiceExecutorRegistry
     public ServiceExecutorRegistry()
     {}
 
+    /** Create an independent copy of the registry */
+    public ServiceExecutorRegistry copy() {
+    	ServiceExecutorRegistry result = new ServiceExecutorRegistry();
+    	result.getFactories().addAll(getFactories());
+    	return result;
+    }
 
     /** Insert a service executor factory. Must not be null. */
     public ServiceExecutorRegistry add(ServiceExecutorFactory f) {
