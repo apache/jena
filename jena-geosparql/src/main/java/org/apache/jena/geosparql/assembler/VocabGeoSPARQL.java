@@ -73,6 +73,9 @@ public class VocabGeoSPARQL {
     // "File to load or store the spatial index. Default to " + SPATIAL_INDEX_FILE + " in TDB folder if using TDB and not set. Otherwise spatial index is not stored.
     public static final Property pSpatialIndexFile = property("spatialIndexFile");
 
+    // Whether to load/generate the spatial index at all (defaults to True). With this off, the value of spatialIndexFile will be ignored.
+    public static final Property pSpatialIndexEnabled = property("spatialIndexEnabled");
+
     // Dataset
     public static final Property pDataset = property("dataset");
 }
