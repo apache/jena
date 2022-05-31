@@ -31,6 +31,7 @@ import org.junit.runners.Suite;
     , TestAuthBasicRemote.class
     , TestAuthDigestRemote.class
     , TestAuthBearerRemote.class
+    , TestAuthBearerServer.class
 })
 
 public class TS_JenaHttp { }

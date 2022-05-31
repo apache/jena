@@ -43,8 +43,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Bearer authentication is different - it is a framework. We test here with some
- * functionality that checks the JWT "sub" locally.
+ * Bearer authentication is different - it is a framework.
+ * <p>
+ * We test here with some client-side functionality that checks the JWT "sub" locally.
  */
 public class TestAuthBearerRemote {
 
@@ -68,7 +69,7 @@ public class TestAuthBearerRemote {
 
     // Client-side challenge callback.
     private void setBearerAuthProvider(String username) {
-        BiFunction<URI, AuthChallenge, String> testTokenSupplier = (uri, authHeader) -> AuthBearerTestLib.generateTestToken(username);
+        BiFunction<String, AuthChallenge, String> testTokenSupplier = (uri, authHeader) -> AuthBearerTestLib.generateTestToken(username);
         AuthEnv.get().setBearerTokenProvider(testTokenSupplier);
     }
 
@@ -120,7 +121,6 @@ public class TestAuthBearerRemote {
         AuthEnv.get().setBearerTokenProvider(null);
         AuthEnv.get().clearActiveAuthentication();
     }
-
 
 
     // ---- QueryExecHTTP
