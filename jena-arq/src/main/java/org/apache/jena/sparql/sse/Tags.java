@@ -222,12 +222,15 @@ public class Tags
     public static final String tagBNode           = "bnode";
     public static final String tagIri             = "iri";
     public static final String tagUri             = "uri";
+    // The two argument ARQ extension.
+    public static final String tagIri2            = "iri2";
+    public static final String tagUri2            = "uri2";
 
     public static final String tagIsTriple        = "isTriple";
     public static final String tagSubject         = "subject";
     public static final String tagPredicate       = "predicate";
     public static final String tagObject          = "object";
-    // This the SPARQL function for RDF-start TRIPLE(expr_s, expr_p,expr_o)
+    // This the SPARQL function for RDF-star: TRIPLE(expr_s, expr_p, expr_o)
     public static final String tagFnTriple        = Tags.tagTriple;
 
     public static final String tagIn              = "in";

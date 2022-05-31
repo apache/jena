@@ -18,28 +18,31 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_LogicalNot extends ExprFunction1
-{
-    // See logicalOR for truth table.
+/**
+ * This class is an alternative name for {@linkplain E_IRI}.
+ * See the javadoc for {@linkplain E_IRI}.
+ */
+public class E_URI2 extends E_IRI2 {
+    private static final String sparqlPrintName = "URI";
+    private static final String sseFunctionName = Tags.tagUri2;
 
-    // Errors propagate as normal.
-    private static final String functionName = Tags.tagNot ;
-    private static final String symbol = Tags.symNot ;
+    public E_URI2(String baseURI, Expr relExpr) {
+        this(null, baseURI, relExpr);
+    }
 
-    public E_LogicalNot(Expr expr)
-    {
-        super(expr, functionName, symbol) ;
+    public E_URI2(Expr baseExpr, String baseStr, Expr relExpr) {
+        super(baseExpr, baseStr, relExpr, sparqlPrintName, sseFunctionName);
     }
 
     @Override
-    public NodeValue eval(NodeValue v)
-    {
-        return XSDFuncOp.not(v) ;
-    }
+    public String getFunctionPrintName(SerializationContext cxt)
+    { return sparqlPrintName ; }
 
     @Override
-    public Expr copy(Expr expr) { return new E_LogicalNot(expr) ; }
+    public Expr copy(Expr expr1, Expr expr2) {
+        return new E_URI2(expr1, parserBase, expr2);
+    }
 }

@@ -18,30 +18,31 @@
 
 package org.apache.jena.sparql.expr;
 
+import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.Tags;
 
+/**
+ * This class is an alternative name for {@linkplain E_IRI}.
+ * See the javadoc for {@linkplain E_IRI}.
+ */
 public class E_URI extends E_IRI {
-    private static final String symbol = Tags.tagUri;
+    private static final String sparqlPrintName = "URI";
+    private static final String sseFunctionName = Tags.tagUri;
 
     public E_URI(Expr relExpr) {
-        this(null, null, relExpr);
+        this(null, relExpr);
     }
 
-    public E_URI(String baseURI, Expr relExpr) {
-        this(null, baseURI, relExpr);
+    public E_URI(String baseStr, Expr relExpr) {
+        super(baseStr, relExpr, sparqlPrintName, sseFunctionName);
     }
 
-    public E_URI(Expr baseExpr, Expr relExpr) {
-        this(baseExpr, null, relExpr);
-    }
-
-    public E_URI(Expr baseExpr, String baseStr, Expr relExpr) {
-        super(baseExpr, baseStr, relExpr, symbol);
-    }
-
+    @Override
+    public String getFunctionPrintName(SerializationContext cxt)
+    { return sparqlPrintName ; }
 
     @Override
     public Expr copy(Expr expr) {
-        return new E_URI(baseExpr, parserBase, expr);
+        return new E_URI(parserBase, expr);
     }
 }

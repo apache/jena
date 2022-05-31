@@ -1949,7 +1949,6 @@ Expr BuiltInCall() : { Expr expr ;
     // ARQ extension
     // IRI(expr rel:String or IRI)
     // IRI(expr base:IRI, expr rel:String or IRI)
-    // 
   | <IRI> <LPAREN> expr1 = Expression() (<COMMA> expr2 = Expression())? <RPAREN>
     { return makeFunction_IRI(expr1, expr2) ; }
 

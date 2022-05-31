@@ -270,7 +270,7 @@ public class TestUpdateOperations
         assertEquals(2, triples.size());
     }
 
-    //. ARQ extension. IRI(base, relative)
+    // ARQ extension. IRI(base, relative)
     private static void test2Arg(String updateStr, String expectedURI) {
         Model m = ModelFactory.createDefaultModel();
         // ARQ extension form.

@@ -470,6 +470,7 @@ public class QueryParserBase
 
     // Makers of functions that need more than just a simple "new E_...".
 
+    // IRI(rel)
     protected Expr makeFunction_IRI(Expr expr) {
         return new E_IRI(prologue.getBaseURI(), expr);
     }
@@ -478,17 +479,17 @@ public class QueryParserBase
         return new E_URI(prologue.getBaseURI(), expr);
     }
 
-    // IRI(rel) or IRI(base, rel)
+    // IRI(base, rel) or IRI(rel, null)
     protected Expr makeFunction_IRI(Expr expr1, Expr expr2) {
         if ( expr2 == null )
-            return new E_IRI(prologue.getBaseURI(), expr1);
-        return new E_IRI(expr1, prologue.getBaseURI(), expr2);
+            return makeFunction_IRI(expr1);
+        return new E_IRI2(expr1, prologue.getBaseURI(), expr2);
     }
 
     protected Expr makeFunction_URI(Expr expr1, Expr expr2) {
         if ( expr2 == null )
-            return new E_URI(prologue.getBaseURI(), expr1);
-        return new E_URI(expr1, prologue.getBaseURI(), expr2);
+            return makeFunction_URI(expr1);
+        return new E_URI2(expr1, prologue.getBaseURI(), expr2);
     }
 
     // Utilities to remove escapes in strings.

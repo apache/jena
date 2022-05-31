@@ -63,8 +63,8 @@ public class FormatterElement extends FormatterBase implements ElementVisitor {
     public static final boolean FMT_LISTS                = true;
 
     /** Control pretty printing of free standing RDF lists */
-    // Do *not* set "true" - argument of property paths can be lists and these spane
-    // PathBlocks and Basic Graph Patterns and this is not handled prop.
+    // Do *not* set "true" - argument of property paths can be lists and these span
+    // PathBlocks and Basic Graph Patterns and this is not handled properly.
     public static final boolean FMT_FREE_STANDING_LISTS  = false;
 
     /**
