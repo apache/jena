@@ -67,6 +67,15 @@ public class ExprUtils
         return parse(query, s, true);
     }
 
+    public static Expr parse(String s, PrefixMapping pmap, String baseURI) {
+        Query query = QueryFactory.make();
+        if ( pmap != null )
+            query.setPrefixMapping(pmap);
+        if ( baseURI != null )
+            query.setBaseURI(baseURI);
+        return parse(query, s, true);
+    }
+
     public static Expr parse(Query query, String s, boolean checkAllUsed) {
         try {
             Reader in = new StringReader(s);

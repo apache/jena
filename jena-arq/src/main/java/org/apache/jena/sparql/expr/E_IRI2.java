@@ -20,6 +20,8 @@ package org.apache.jena.sparql.expr;
 
 import static org.apache.jena.sparql.expr.E_IRI.resolve;
 
+import java.util.Objects;
+
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.function.FunctionEnv;
@@ -126,5 +128,25 @@ public class E_IRI2 extends ExprFunction2 {
      */
     public Expr getBaseExpr() {
         return baseExpr;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(parserBase);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Expr obj, boolean bySyntax) {
+        if ( this == obj )
+            return true;
+        if ( getClass() != obj.getClass() )
+            return false;
+        E_IRI2 other = (E_IRI2)obj;
+        return Objects.equals(parserBase, other.parserBase) &&
+               Objects.equals(baseExpr, other.baseExpr) &&
+               Objects.equals(relExpr, other.relExpr);
     }
 }
