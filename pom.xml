@@ -875,11 +875,6 @@
           <excludesFile>build-files/rat-exclusions.txt</excludesFile>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
     </plugins>
 
     <!-- Plugin version list: https://maven.apache.org/plugins/index.html -->
@@ -1057,13 +1052,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
           <version>3.0.0</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <version>5.1.6</version>
-          <extensions>true</extensions>
         </plugin>
 
         <plugin>
