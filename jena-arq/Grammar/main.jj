@@ -1945,11 +1945,24 @@ Expr BuiltInCall() : { Expr expr ;
   | <BOUND> <LPAREN> gn = Var() <RPAREN>
     { return new E_Bound(new ExprVar(gn)) ; }
 
+#if ARQ
+    // ARQ extension
+    // IRI(expr rel:String or IRI)
+    // IRI(expr base:IRI, expr rel:String or IRI)
+  | <IRI> <LPAREN> expr1 = Expression() (<COMMA> expr2 = Expression())? <RPAREN>
+    { return makeFunction_IRI(expr1, expr2) ; }
+
+  | <URI> <LPAREN> expr1 = Expression() (<COMMA> expr2 = Expression())? <RPAREN>
+    { return makeFunction_URI(expr1, expr2) ; }
+#else
+    // Single argument only for in SPARQL 1.1
   | <IRI> <LPAREN> expr = Expression() <RPAREN>
-    { return new E_IRI(expr) ; }
+    { return makeFunction_IRI(expr) ; }
 
   | <URI> <LPAREN> expr = Expression() <RPAREN>
-    { return new E_URI(expr) ; }
+    { return makeFunction_URI(expr) ; }
+#endif
+
 
   | <BNODE> 
     ( <LPAREN> expr1 = Expression() <RPAREN>

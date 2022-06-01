@@ -706,18 +706,63 @@ public class BuilderExpr
         return new E_BNode(expr);
     };
 
+
+    private static String asString(Item item) {
+        Node n = item.getNode();
+        if ( ! NodeUtils.isSimpleString(n) )
+            BuilderLib.broken(item, "Need string: "+item);
+        return n.getLiteralLexicalForm();
+    }
+
+    // BASE hidden argument.
     private static Build buildIri = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "iri: wanted 1 argument: got: "+numArgs(list));
-        Expr expr = buildExpr(list.get(1));
-        return new E_IRI(expr);
+        BuilderLib.checkLength(2, 3, list, "iri: wanted 1 or 2 arguments: got: "+numArgs(list));
+        if ( numArgs(list) == 1 ) {
+            Expr expr = buildExpr(list.get(1));
+            return new E_IRI(null, expr);
+        }
+        String str = asString(list.get(1));
+        Expr expr2 = buildExpr(list.get(2));
+        return new E_IRI(str, expr2);
     };
 
     private static Build buildUri = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "uri: wanted 1 argument: got: "+numArgs(list));
-        Expr expr = buildExpr(list.get(1));
-        return new E_URI(expr);
+        BuilderLib.checkLength(2, 3, list, "uri: wanted 1 or 2 arguments: got: "+numArgs(list));
+        if ( numArgs(list) == 1 ) {
+            Expr expr = buildExpr(list.get(1));
+            return new E_URI(null, expr);
+        }
+        String str = asString(list.get(1));
+        Expr expr2 = buildExpr(list.get(2));
+        return new E_URI(str, expr2);
     };
 
+    // IRI extension - IRI(base, rel)
+    private static Build buildIri2 = (ItemList list) -> {
+        BuilderLib.checkLength(3, 4, list, "iri2: wanted 2 or 3 arguments: got: "+numArgs(list));
+        if ( numArgs(list) == 2 ) {
+            Expr expr1 = buildExpr(list.get(1));
+            Expr expr2 = buildExpr(list.get(2));
+            return new E_IRI2(expr1, null, expr2);
+        }
+        String baseStr = asString(list.get(1));
+        Expr expr1 = buildExpr(list.get(2));
+        Expr expr2 = buildExpr(list.get(3));
+        return new E_IRI2(expr1, baseStr, expr2);
+    };
+
+    private static Build buildUri2 = (ItemList list) -> {
+        BuilderLib.checkLength(3, 4, list, "iri2: wanted 2 or 3 arguments: got: "+numArgs(list));
+        if ( numArgs(list) == 2 ) {
+            Expr expr1 = buildExpr(list.get(1));
+            Expr expr2 = buildExpr(list.get(2));
+            return new E_URI2(expr1, null, expr2);
+        }
+        String baseStr = asString(list.get(1));
+        Expr expr1 = buildExpr(list.get(2));
+        Expr expr2 = buildExpr(list.get(3));
+        return new E_URI2(expr1, baseStr, expr2);
+    };
 
 
     private static Build buildIn = (ItemList list) -> {
@@ -788,7 +833,6 @@ public class BuilderExpr
         return false;
     }
 
-    // All the one expression cases
     private static abstract class BuildAggCommon implements Build {
         @Override
         public Expr make(ItemList list) {
@@ -870,7 +914,7 @@ public class BuilderExpr
             x = x.cdr();
 
         // Complex syntax:
-        // (groupConcat (separator "string) expr )
+        // (groupConcat (separator "string") expr )
         if ( x.size() == 0 )
             BuilderLib.broken(list, "Broken syntax: "+list.shortString());
         String separator = null;
@@ -1015,6 +1059,8 @@ public class BuilderExpr
         dispatch.put(Tags.tagBNode, buildBNode);
         dispatch.put(Tags.tagIri, buildIri);
         dispatch.put(Tags.tagUri, buildUri);
+        dispatch.put(Tags.tagIri2, buildIri2);
+        dispatch.put(Tags.tagUri2, buildUri2);
 
         dispatch.put(Tags.tagIn, buildIn);
         dispatch.put(Tags.tagNotIn, buildNotIn);

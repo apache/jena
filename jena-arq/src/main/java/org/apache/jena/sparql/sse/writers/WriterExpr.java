@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.sse.writers;
 
+import static org.apache.jena.sparql.util.FmtUtils.stringForString;
+
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.sparql.algebra.Op;
@@ -103,6 +105,23 @@ public class WriterExpr
                 n = func.getFunctionName(context);
 
             out.print(n);
+            // Hidden state.
+            if ( func instanceof E_IRI ) {
+                E_IRI iriExpr = (E_IRI)func;
+                String parserBase = iriExpr.getParserBase();
+                if ( parserBase != null ) {
+                    out.print(' ');
+                    out.print(stringForString(parserBase));
+                }
+            }
+            if ( func instanceof E_IRI2 ) {
+                E_IRI2 iriExpr = (E_IRI2)func;
+                String parserBase = iriExpr.getParserBase();
+                if ( parserBase != null ) {
+                    out.print(' ');
+                    out.print(stringForString(parserBase));
+                }
+            }
 
             out.incIndent();
             for ( int i = 1;; i++ ) {

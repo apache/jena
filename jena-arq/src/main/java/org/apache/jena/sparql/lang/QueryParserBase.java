@@ -42,10 +42,7 @@ import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.core.TriplePath ;
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.E_Exists ;
-import org.apache.jena.sparql.expr.E_NotExists ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprLib;
+import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.modify.request.QuadAccSink ;
 import org.apache.jena.sparql.path.P_Link;
@@ -469,6 +466,30 @@ public class QueryParserBase
         String dtURI = n.getLiteralDatatypeURI() ;
         n = createLiteral(lex, lang, dtURI) ;
         return ExprLib.nodeToExpr(n) ;
+    }
+
+    // Makers of functions that need more than just a simple "new E_...".
+
+    // IRI(rel)
+    protected Expr makeFunction_IRI(Expr expr) {
+        return new E_IRI(prologue.getBaseURI(), expr);
+    }
+
+    protected Expr makeFunction_URI(Expr expr) {
+        return new E_URI(prologue.getBaseURI(), expr);
+    }
+
+    // IRI(base, rel) or IRI(rel, null)
+    protected Expr makeFunction_IRI(Expr expr1, Expr expr2) {
+        if ( expr2 == null )
+            return makeFunction_IRI(expr1);
+        return new E_IRI2(expr1, prologue.getBaseURI(), expr2);
+    }
+
+    protected Expr makeFunction_URI(Expr expr1, Expr expr2) {
+        if ( expr2 == null )
+            return makeFunction_URI(expr1);
+        return new E_URI2(expr1, prologue.getBaseURI(), expr2);
     }
 
     // Utilities to remove escapes in strings.

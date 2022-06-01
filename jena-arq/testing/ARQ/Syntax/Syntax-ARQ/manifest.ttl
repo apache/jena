@@ -70,6 +70,10 @@
 :test_42
 :test_43
 :test_44
+
+:test_50
+:test_51
+:test_52
 ) .
 
 :test_1 rdf:type   mfx:PositiveSyntaxTestARQ ;
@@ -292,4 +296,19 @@
    mf:name    "syntax-quad-construct-bad-01.arq" ;
    mf:action  <syntax-quad-construct-bad-01.arq> ;.
 
+## IRI(base,rel)
+:test_50  rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-iri-base-1.arq" ;
+   mf:action  <syntax-iri-base-1.arq> ;.
+
+:test_51  rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-iri-base-2.arq" ;
+   mf:action  <syntax-iri-base-2.arq> ;.
+
+:test_52  rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-iri-base-3.arq" ;
+   mf:action  <syntax-iri-base-3.arq> ;.
 

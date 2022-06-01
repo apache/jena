@@ -356,7 +356,7 @@ public class RiotLib {
     /**
      * Write prefixes, using {@code @prefix}
      */
-    public static void writePrefixOldStyle(IndentedWriter out, String prefix, String uri, int intent) {
+    private static void writePrefixOldStyle(IndentedWriter out, String prefix, String uri, int intent) {
         out.print("@prefix ");
         out.print(prefix);
         out.print(": ");

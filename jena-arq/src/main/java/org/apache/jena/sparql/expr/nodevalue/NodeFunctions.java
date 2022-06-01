@@ -431,11 +431,12 @@ public class NodeFunctions {
         return NodeFactory.createURI(iri) ;
     }
 
-    //
     private static String resolveCheckIRI(String baseIRI, String iriStr) {
         try {
             IRIx iri = IRIx.create(iriStr);
             IRIx base = ( baseIRI != null ) ? IRIx.create(baseIRI) : IRIs.getSystemBase();
+            if ( base.isRelative() )
+                throw new ExprEvalException("Relative IRI for base: " + iriStr) ;
             IRIx result = base.resolve(iri);
             if ( ! result.isReference() )
                 throw new IRIException("Not suitable: "+result.str());
