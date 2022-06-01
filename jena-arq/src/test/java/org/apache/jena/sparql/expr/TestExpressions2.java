@@ -20,8 +20,13 @@ package org.apache.jena.sparql.expr;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.QueryParseException ;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import org.apache.jena.sparql.function.FunctionEnvBase;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.junit.Test ;
 
@@ -93,7 +98,80 @@ public class TestExpressions2
     // BNODE -> IRI (<_:....>) => string => IRI
     @Test public void term_constructor_iri_06()     { eval("isIRI(IRI(str(IRI(BNODE()))))", true); }
 
-    @Test  public void term_constructor_bnode_01()  { eval("isBlank(BNODE())", true) ; }
+    @Test public void iri_base_01() {
+        parseEqualsTest("http://example/",  "IRI('x')",   "http://base/",     "IRI('x')",   false);
+    }
+    @Test public void iri_base_02() {
+        parseEqualsTest("http://example/",  "IRI('x')",   "http://example/",  "IRI('x')",   true);
+    }
+    @Test public void iri_base_03() {
+        parseEqualsTest("http://example/",  "IRI('x1')",  "http://example/",  "IRI('x2')",  false);
+    }
+    @Test public void iri_base_04() {
+        parseEqualsTest("http://example/",  "IRI('x')",   "http://example/",  "URI('x')",   false);
+    }
+    @Test public void iri_base_05() {
+        parseEqualsTest("http://example/",  "IRI(<base>, 'x')",   "http://base/",     "IRI(<base>, 'x')",   false);
+    }
+    @Test public void iri_base_06() {
+        parseEqualsTest("http://example/",  "IRI(<base>, 'x')",   "http://example/",  "IRI(<base>, 'x')",   true);
+    }
+    @Test public void iri_base_07() {
+        parseEqualsTest("http://example/",  "IRI(<base>, 'x1')",  "http://example/",  "IRI(<base>, 'x2')",  false);
+    }
+    @Test public void iri_base_08() {
+        parseEqualsTest("http://example/",  "IRI(<base>, 'x')",   "http://example/",  "URI(<base>, 'x')",   false);
+    }
+    @Test public void iri_base_09() {
+        parseEqualsTest("http://example/",  "IRI(<base1>, 'x')",  "http://example/",  "IRI(<base2>, 'x')",  false);
+    }
+    @Test public void iri_base_10() {
+        parseEqualsTest("http://example/",  "IRI(<a/b/c>, 'x')",   "http://example/",  "IRI(<a/b/c>, <x>)",   false);
+    }
+    // One arg form.
+    @Test public void iri_base_20() {
+        evalTest("http://example/", "IRI('x')", "<http://example/x>");
+    }
+    @Test public void iri_base_21() {
+        evalTest("http://example/", "IRI(<x>)", "<http://example/x>");
+    }
+    @Test public void iri_base_22() {
+        evalTest("http://example/", "IRI(<http://host/x>)", "<http://host/x>");
+    }
+    // 2 arg foirm.
+    @Test public void iri_base_30() {
+        evalTest("http://example/", "IRI(<base>, 'x')",         "<http://example/x>");
+    }
+    @Test public void iri_base_31() {
+        evalTest("http://example/", "IRI(<http://base/>, 'x')", "<http://base/x>");
+    }
+    @Test public void iri_base_32() {
+        evalTest("http://example/", "IRI(<a/b/c>, 'x')",        "<http://example/a/b/x>");
+    }
+
+    private static void evalTest(String parserBase, String exprStr, String result) {
+        Node expected = SSE.parseNode(result);
+        Expr expr = expr(parserBase, exprStr);
+        NodeValue nv = expr.eval(BindingFactory.binding(), new FunctionEnvBase());
+        Node actual = nv.asNode();
+        assertEquals(expected, actual);
+    }
+
+    private static void parseEqualsTest(String parserBase1, String exprStr1,
+                                        String parserBase2, String exprStr2,
+                                        boolean expected) {
+        Expr expr1 = expr(parserBase1, exprStr1);
+        Expr expr2 = expr(parserBase2, exprStr2);
+        boolean b = expr1.equals(expr2);
+        assertEquals(exprStr1+" equals "+exprStr2, expected, b);
+    }
+
+    private static Expr expr(String parserBase, String exprStr) {
+        return ExprUtils.parse(exprStr, (PrefixMapping)null, parserBase);
+    }
+    // end IRI and base
+
+    @Test public void term_constructor_bnode_01()   { eval("isBlank(BNODE())", true) ; }
     @Test public void term_constructor_bnode_02()   { eval("isBlank(BNODE('abc'))", true) ; }
     @Test public void term_constructor_bnode_03()   { eval("isBlank(BNODE('abc'))", true) ; }
     @Test public void term_constructor_bnode_04()   { eval("BNODE('abc') = BNODE('abc')", true) ; }

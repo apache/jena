@@ -45,4 +45,18 @@ public class E_URI extends E_IRI {
     public Expr copy(Expr expr) {
         return new E_URI(parserBase, expr);
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode()+1;
+    }
+
+    @Override
+    public boolean equals(Expr obj, boolean bySyntax) {
+        if ( this == obj )
+            return true;
+        if ( getClass() != obj.getClass() )
+            return false;
+        return super.equals(obj, bySyntax);
+    }
 }
