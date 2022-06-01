@@ -30,6 +30,8 @@ import org.apache.jena.util.iterator.NullIterator ;
 /**
  * An extension to a standard map that supports one-to-many mappings: that is, there
  * may be zero, one or many values corresponding to a given key.
+ * <p>
+ * Legacy. old code retained for existing internal use only.
  */
 public class OneToManyMap<From, To> implements Map<From, To>
 {
@@ -56,8 +58,8 @@ public class OneToManyMap<From, To> implements Map<From, To>
      */
     public OneToManyMap() {
     }
-    
-    
+
+
     /**
      * <p>Construct a new one-to-many map whose contents are
      * initialised from the existing map.</p>
@@ -136,8 +138,8 @@ public class OneToManyMap<From, To> implements Map<From, To>
         }
         return false;
     }
-    
-    
+
+
     /**
      * Answer a set of the mappings in this map.  Each member of the set will
      * be a Map.Entry value.
@@ -281,7 +283,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
 
 
     /**
-     * <p>Put all entries from one map into this map. Tests for m being a 
+     * <p>Put all entries from one map into this map. Tests for m being a
      * OneToManyMap, and, if so, copies all of the entries for each key.</p>
      * @param m The map whose contents are to be copied into this map
      */
@@ -337,7 +339,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      *
      * @param key The key object
      * @param value The value object
-     * @return {@code true} if an entry was removed. 
+     * @return {@code true} if an entry was removed.
      */
     @Override
     public boolean remove( Object key, Object value ) {
@@ -346,7 +348,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
 
         if (entries != null) {
             entries.remove( value );
-            
+
             if (entries.isEmpty()) {
                 m_table.remove( key );
                 return true;
@@ -417,12 +419,12 @@ public class OneToManyMap<From, To> implements Map<From, To>
 
     // Internal implementation methods
     //////////////////////////////////////
-    
-    
-    // Inner classes 
+
+
+    // Inner classes
     //////////////////////////////////////
-    
-    
+
+
     //////////////////////////////////
 
 

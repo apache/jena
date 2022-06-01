@@ -19,8 +19,9 @@
 package org.apache.jena.http;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Objects;
+
+import org.apache.commons.codec.binary.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -36,8 +37,6 @@ import org.slf4j.Logger;
 public class AuthBearerTestLib {
 
     private static Logger log = Fuseki.serverLog;
-    private static java.util.Base64.Encoder encoder = Base64.getUrlEncoder();
-    private static java.util.Base64.Decoder decoder = Base64.getUrlDecoder();
 
     /**
      * Extract the "sub" field from an encoded JWT, or return null.
@@ -50,7 +49,7 @@ public class AuthBearerTestLib {
                 log.warn("Bad token: '"+token+"'");
                 return null;
             }
-            byte[] jsonBytes = decoder.decode(parts[1]);
+            byte[] jsonBytes = Base64.decodeBase64(parts[1]);
             String jsonStr = new String(jsonBytes, StandardCharsets.UTF_8);
             JsonObject obj = new Gson().fromJson(jsonStr, JsonObject.class);
             JsonElement field = obj.get("sub");
@@ -74,15 +73,16 @@ public class AuthBearerTestLib {
     public static String generateTestToken(String user) {
         Objects.requireNonNull(user);
         String header = "{\"alg\":\"HS256\",\"typ\":\"JWT\"}".trim();
-        String body = "{ \"iss\": \"SELF\", \"exp\": \"never\", \"sub\": \"SUBJECT\" }".trim().replace("SUBJECT", user);
+        String body = "{ \"iss\": \"SELF\", \"exp\": \"never\", \"sub\": \"SUBJECT\" }".replace("SUBJECT", user);
         String token = enc64(header)+"."+enc64(body)+"."+enc64("HASH");
         return token;
     }
 
     private static String enc64(String x) {
         byte[] bytes = x.getBytes(StandardCharsets.UTF_8);
-        byte[] encoded = encoder.encode(bytes);
-        return new String(encoded, StandardCharsets.UTF_8);
+        // URL encoding, no padding, no chunking line breaks.
+        String s = org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString(bytes);
+        return s;
     }
 
     public static void addAuthModifierBearerToken(String endpoint, String token) {

@@ -22,7 +22,6 @@ import static org.apache.jena.http.auth.DigestLib.digestAuthModifier;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
-import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -80,20 +79,24 @@ public class AuthLib {
                 throw new HttpException(HttpSC.UNAUTHORIZED_401);
         }
 
-        String requestTargetURL = HttpLib.requestTarget(request.uri());
+        // Request target - no query string.
         AuthRequestModifier authRequestModifier;
         switch (aHeader.authScheme) {
             case BASIC :
                 authRequestModifier = basicAuthModifier(passwordRecord.getUsername(), passwordRecord.getPassword());
                 break;
-            case DIGEST :
+            case DIGEST : {
+                String requestTarget = HttpLib.requestTargetServer(request.uri());
                 authRequestModifier = digestAuthModifier(aHeader, passwordRecord.getUsername(), passwordRecord.getPassword(),
-                                                         request.method(), requestTargetURL);
+                                                         request.method(), requestTarget);
                 break;
-            case BEARER :
+            }
+            case BEARER : {
                 // Challenge
-                authRequestModifier = bearerAuthModifier(request.uri(), aHeader);
+                String requestTarget = HttpLib.requestTargetClient(request.uri());
+                authRequestModifier = bearerAuthModifier(requestTarget, aHeader);
                 break;
+            }
             case UNKNOWN :
                 // Not handled. Pass back the 401.
                 return httpResponse401;
@@ -106,7 +109,7 @@ public class AuthLib {
             return httpResponse401;
 
         // ---- Register for next time the app calls this URI.
-        AuthEnv.get().registerAuthModifier(requestTargetURL, authRequestModifier);
+        AuthEnv.get().registerAuthModifier(request.uri().toString(), authRequestModifier);
 
         // ---- Call with modified request
         HttpRequest.Builder request2builder = HttpLib.createBuilder(request);
@@ -168,8 +171,8 @@ public class AuthLib {
      * Create an {@link AuthRequestModifier} that supplies the token bearer auth.
      * Return null for reject challenge (401 returned to application).
      */
-    private static AuthRequestModifier bearerAuthModifier(URI uri, AuthChallenge aHeader) {
-        String token = AuthEnv.get().getBearerToken(uri, aHeader);
+    private static AuthRequestModifier bearerAuthModifier(String remoteService, AuthChallenge aHeader) {
+        String token = AuthEnv.get().getBearerToken(remoteService, aHeader);
         if ( token == null )
             return null;
         if ( token.contains(" ") ) {

@@ -37,9 +37,14 @@ import org.apache.jena.riot.system.RiotChars;
  * <ul>
  * Covers:
  * <ul>
- * <li>RFC 7617 - was RFC 2617 - basic authentication
- * <li>RFC 7616 - was RFC 2617 - digest authentication
- * <li>RFC 6750 - Bearer authentication
+ * <li><a href="https://www.rfc-editor.org/rfc/rfc7617.html">RFC 7617</a> - was
+ * <a href="https://www.rfc-editor.org/rfc/rfc7617.html">RFC 617</a> - basic
+ * authentication
+ * <li><a href="https://www.rfc-editor.org/rfc/rfc7616.html">RFC 7616</a> - was
+ * <a href="https://www.rfc-editor.org/rfc/rfc7617.html">RFC 617</a> - digest
+ * authentication
+ * <li><a href="https://www.rfc-editor.org/rfc/rfc6750.html">RFC 6750</a> - Bearer
+ * authentication
  * <li>"Unknown"
  * <ul>
  */
@@ -262,11 +267,24 @@ public class AuthHeader {
         if ( isChallenge() )
             authParams = mapAuthParams();
         else {
-            bearerToken = b64token();
-            if ( bearerToken == null ) {
+            String token = b64token();
+            if ( token == null )
                 unknown = string.substring(startIdx).trim();
-            }
+            else
+                bearerToken = stripPadding(token);
         }
+    }
+
+    // Remove trailing padding characters.
+    private String stripPadding(String token) {
+        int idx = token.length();
+        for (; idx > 0; idx--) {
+            if ( token.charAt(idx-1) != '=' )
+                break;
+        }
+        if ( idx == token.length() )
+            return token;
+        return token.substring(0,idx);
     }
 
     /*
@@ -395,7 +413,7 @@ public class AuthHeader {
     // Bearer "base 64" URL encoding is given as
     // b64token    = 1*( ALPHA / DIGIT /
     //                  "-" / "." / "_" / "~" / "+" / "/" ) *"="
-    // which is token68.
+    // which is token68 with trailing "=".
 
     private String b64token() { return token68(); }
 

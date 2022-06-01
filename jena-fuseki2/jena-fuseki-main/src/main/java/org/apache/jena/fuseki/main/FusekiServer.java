@@ -851,8 +851,6 @@ public class FusekiServer {
          * Choose the HTTP authentication scheme.
          */
         public Builder auth(AuthScheme authScheme) {
-            if ( authScheme == AuthScheme.BEARER )
-                throw new FusekiConfigException("Bearer authentication not currently supported in the server builder.");
             this.authScheme = authScheme;
             return this;
         }
@@ -1325,7 +1323,7 @@ public class FusekiServer {
 
         /** Do some checking to make sure setup is consistent. */
         private void validate() {
-            if ( ! hasAuthenticationHandler ) {
+            if ( ! hasAuthenticationHandler && authScheme != AuthScheme.BEARER ) {
                 if ( authenticateUser )
                     Fuseki.configLog.warn("Authentication of users required (e.g. 'allowedUsers' is set) but there is no authentication setup (e.g. password file)");
                 if ( hasDataAccessControl )
@@ -1341,8 +1339,8 @@ public class FusekiServer {
                             throw new FusekiConfigException("Authentication scheme set but no password file");
                         break;
                     case BEARER:
-                        if ( bearerVerifiedUser == null )
-                            throw new FusekiConfigException("Bearer authenication set but no function to get the verified user");
+//                        if ( bearerVerifiedUser == null )
+//                            throw new FusekiConfigException("Bearer authentication set but no function to get the verified user");
                         break;
                     case UNKNOWN:
                         throw new FusekiConfigException("Unknown authentication scheme");

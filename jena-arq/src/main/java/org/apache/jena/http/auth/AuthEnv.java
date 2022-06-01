@@ -35,7 +35,7 @@ public class AuthEnv {
     // Challenge setups that are active.
     private Map<String, AuthRequestModifier> authModifiers = new ConcurrentHashMap<>();
     // Token fetcher for bearer authentication
-    private BiFunction<URI, AuthChallenge, String> tokenSupplier = null;
+    private BiFunction<String, AuthChallenge, String> tokenSupplier = null;
 
     private static AuthEnv singleton = new AuthEnv();
     public static AuthEnv get() { return singleton; }
@@ -125,10 +125,12 @@ public class AuthEnv {
      * Base64). It must not contain spaces. Requests will fail when the token becomes
      * out-of-date and the application will need to set a new token.
      * <p>
-     * The string supplied will be used as-is with no further processing. Supply a
-     * null argument to clear any previous token supplier.
+     * The string supplied will be used as-is with no further processing.
+     * <p>
+     * Supply a null argument for the tokenSupplier to clear any previous token
+     * supplier.
      */
-    public void setBearerTokenProvider(BiFunction<URI, AuthChallenge, String> tokenSupplier) {
+    public void setBearerTokenProvider(BiFunction<String, AuthChallenge, String> tokenSupplier) {
         this.tokenSupplier = tokenSupplier;
     }
 
@@ -152,33 +154,17 @@ public class AuthEnv {
     }
 
     /**
-     * Return a bearer auth token to use when responding to a 401 challenge.
-     * The token must be in the form required for the "Authorization" header,
-     * including encoding (e.g. Base64). The string supplied is used as-is
-     * with no further processing.
+     * Return a bearer auth token to use when responding to a 401 challenge. The
+     * token must be in the form required for the "Authorization" header, including
+     * encoding (typically base64 URL encoding with no padding). The string supplied is used
+     * as-is with no further processing.
      * <p>
      * Return null for "no token" in which case a 401 response is passed back to the
      * application.
      */
-    public String getBearerToken(URI uri, AuthChallenge aHeader) {
+    public String getBearerToken(String uri, AuthChallenge aHeader) {
         if ( tokenSupplier == null )
             return null;
         return tokenSupplier.apply(uri, aHeader);
     }
-
-    // Development - do not provide in production systems.
-//    public void state() {
-//        org.apache.jena.atlas.io.IndentedWriter out = org.apache.jena.atlas.io.IndentedWriter.stdout.clone();
-//        out.setFlushOnNewline(true);
-//
-//        out.println("Password Registry");
-//        out.incIndent();
-//        passwordRegistry.registered().forEach(ad->out.println(ad.uri));
-//        out.decIndent();
-//
-//        out.println("Auth Modifiers");
-//        out.incIndent();
-//        authModifiers.forEach((String uriStr, AuthRequestModifier m)->{out.println(uriStr);});
-//        out.decIndent();
-//    }
 }

@@ -359,10 +359,10 @@ public class HttpLib {
      * Unclear whether the query string is/isn't included but for SPARQL, while the query
      * may change, the resource is the query service, not a resource named by the
      * uri+query string.
-     *
-     * This makes query-by-GET and query-by-POST work.
+     * <p>
+     * This makes query-by-GET and query-by-POST work the same way.
      */
-    public static String requestTarget(URI uri) {
+    public static String requestTargetServer(URI uri) {
         // RFC7616 -> 7230 5.5
         //   If the request-target is in authority-form or asterisk-form, the
         //   effective request URI's combined path and query component is
@@ -377,6 +377,31 @@ public class HttpLib {
 //        if ( qs == null || qs.isEmpty() )
 //            return path;
 //        return path+"?"+qs;
+    }
+
+    /** Client-side request target - no query string or fragment. */
+    public static String requestTargetClient(URI uri) {
+        // Like endpointURI but string based.
+        String s = uri.toString();
+        if ( uri.getRawQuery() == null && uri.getRawFragment() == null )
+            return s;
+        if ( uri.getRawQuery() != null ) {
+            int idx1 = s.indexOf('?');
+            if ( idx1 > 0 ) {
+                // Normal path.
+                // (this also chops off any fragment, not that there should be one).
+                return s.substring(0, idx1);
+            }
+            // Should not happen. No '?' but getRawQuery != null.
+        }
+        // Shouldn't have a fragment (it is a HTTP request URI but check anyway.
+        if ( uri.getRawFragment() != null ) {
+
+            int idx2 = s.indexOf('#');
+            if ( idx2 > 0 )
+                s = s.substring(0, idx2);
+        }
+        return s;
     }
 
     /** URI, without query string and fragment. */
