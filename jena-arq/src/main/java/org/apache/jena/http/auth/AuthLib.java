@@ -93,7 +93,7 @@ public class AuthLib {
             }
             case BEARER : {
                 // Challenge
-                String requestTarget = HttpLib.requestTargetClient(request.uri());
+                String requestTarget = HttpLib.endpoint(request.uri().toString());
                 authRequestModifier = bearerAuthModifier(requestTarget, aHeader);
                 break;
             }

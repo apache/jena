@@ -339,7 +339,9 @@ public class HttpLib {
      */
     public static String endpoint(String uriStr) {
         int idx1 = uriStr.indexOf('?');
-        int idx2 = uriStr.indexOf('#');
+        // Assuming a well-formed URI string, it is path-query-fragment
+        // so if there is a query string, don't need to look for a fragment.
+        int idx2 = (idx1<0) ? uriStr.indexOf('#') : -1;
 
         if ( idx1 < 0 && idx2 < 0 )
             return uriStr;
@@ -354,66 +356,38 @@ public class HttpLib {
         return uriStr.substring(0, idx);
     }
 
-    /**
-     * RFC7616, section 3.4 The Effective Request URI (Section 5.5 of [RFC7230]).
-     * Unclear whether the query string is/isn't included but for SPARQL, while the query
-     * may change, the resource is the query service, not a resource named by the
-     * uri+query string.
-     * <p>
-     * This makes query-by-GET and query-by-POST work the same way.
-     */
-    public static String requestTargetServer(URI uri) {
-        // RFC7616 -> 7230 5.5
-        //   If the request-target is in authority-form or asterisk-form, the
-        //   effective request URI's combined path and query component is
-        //   empty.
-
-        String path = uri.getRawPath();
-        if ( path == null || path.isEmpty() )
-            path = "/";
-        return path;
-//        // This would include the query string in encoded form.
-//        String qs = uri.getRawQuery();
-//        if ( qs == null || qs.isEmpty() )
-//            return path;
-//        return path+"?"+qs;
-    }
-
-    /** Client-side request target - no query string or fragment. */
-    public static String requestTargetClient(URI uri) {
-        // Like endpointURI but string based.
-        String s = uri.toString();
-        if ( uri.getRawQuery() == null && uri.getRawFragment() == null )
-            return s;
-        if ( uri.getRawQuery() != null ) {
-            int idx1 = s.indexOf('?');
-            if ( idx1 > 0 ) {
-                // Normal path.
-                // (this also chops off any fragment, not that there should be one).
-                return s.substring(0, idx1);
-            }
-            // Should not happen. No '?' but getRawQuery != null.
-        }
-        // Shouldn't have a fragment (it is a HTTP request URI but check anyway.
-        if ( uri.getRawFragment() != null ) {
-
-            int idx2 = s.indexOf('#');
-            if ( idx2 > 0 )
-                s = s.substring(0, idx2);
-        }
-        return s;
-    }
-
     /** URI, without query string and fragment. */
     public static URI endpointURI(URI uri) {
         if ( uri.getRawQuery() == null && uri.getRawFragment() == null )
             return uri;
         try {
-            // Same URI except without query string and fragment.
+            // Same URI components except without query string and fragment.
             return new URI(uri.getScheme(), uri.getRawAuthority(), uri.getRawPath(), null, null);
         } catch (URISyntaxException x) {
             throw new IllegalArgumentException(x.getMessage(), x);
         }
+    }
+
+    /**
+     * The "request target" for digest auth. The server-side name of a resource - no
+     * authority (the host part).
+     * <p>
+     * RFC 7616 (digest auth), section 3.4 The Effective Request URI (Section 5.5 of RFC7230).
+     * <p>
+     * For SPARQL, the target is the service, not a resource
+     * named by the uri+query string.
+     * <p>
+     * This makes query-by-GET and query-by-POST work the same way.
+     */
+    public static String requestTargetServer(URI uri) {
+        // RFC 7230 5.5
+        //   If the request-target is in authority-form or asterisk-form, the
+        //   effective request URI's combined path and query component is
+        //   empty.
+        String path = uri.getRawPath();
+        if ( path == null || path.isEmpty() )
+            path = "/";
+        return path;
     }
 
     /** Return a HttpRequest */
@@ -559,7 +533,6 @@ public class HttpLib {
      * @param bodyHandler
      * @return HttpResponse
      */
-    public
     /*package*/ static <X> HttpResponse<X> execute(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<X> bodyHandler) {
         // To run with no jena-supplied authentication handling.
         if ( false )
@@ -572,9 +545,10 @@ public class HttpLib {
         if ( uri.getUserInfo() != null ) {
             String[] userpasswd = uri.getUserInfo().split(":");
             if ( userpasswd.length == 2 ) {
+                // User info in the URI is not a good idea.
                 // Only if "user:password@host", not "user@host"
                 key = HttpLib.endpointURI(uri);
-                // The auth key will be with u:p making it specific.
+                // The auth key will include user:password making it specific.
                 authEnv.registerUsernamePassword(key, userpasswd[0], userpasswd[1]);
             }
         }
@@ -582,6 +556,9 @@ public class HttpLib {
             return AuthLib.authExecute(httpClient, httpRequest, bodyHandler);
         } finally {
             if ( key != null )
+                // The AuthEnv is "per tenant".
+                // Temporary registration within the AuthEnv of the
+                // user:password is acceptable.
                 authEnv.unregisterUsernamePassword(key);
         }
     }

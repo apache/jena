@@ -127,7 +127,6 @@ public class TDB2 {
                 System.err.println("TDB2.init - start");
 
             SystemTDB.init();
-            ARQ.init();
             ReaderRIOTRDFXML.RiotUniformCompatibility = true;
             EnvTDB.processGlobalSystemProperties();
 
