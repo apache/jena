@@ -72,17 +72,26 @@ public class JenaXMLInput {
      * Initialize an XMLInputFactory to jena settings.
      */
     public static void initXMLInputFactory(XMLInputFactory xf) {
-        try {
-            // This disables DTDs entirely for the factory.
-            // All DTDs are silently ignored; takes precedence over ACCESS_EXTERNAL_DTD
-            xf.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+        // This disables DTDs entirely for the factory.
+        // All DTDs are silently ignored; takes precedence over ACCESS_EXTERNAL_DTD
+    	setXMLInputFactoryProperty(xf, XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
 
-            // Disable external DTDs (files and HTTP) - errors unless SUPPORT_DTD is false.
-            xf.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            // disable external entities (silently ignore)
-            xf.setProperty("javax.xml.stream.isSupportingExternalEntities", false);
-        } catch(IllegalArgumentException ex){
-            Log.error(JenaXMLInput.class, "Problem setting StAX property", ex);
+        // disable external entities (silently ignore)
+        setXMLInputFactoryProperty(xf, XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+
+        // Disable external DTDs (files and HTTP) - errors unless SUPPORT_DTD is false.
+        setXMLInputFactoryProperty(xf, XMLConstants.ACCESS_EXTERNAL_DTD, "");
+    }
+
+    /**
+     * Catch any {@link IllegalArgumentException}, log it, and continue.
+     */
+    private static void setXMLInputFactoryProperty(XMLInputFactory xf, String name, Object value) {
+        try {
+            xf.setProperty(name, value);
+        } catch(IllegalArgumentException ex) {
+            Log.error(JenaXMLInput.class, "Problem setting StAX property - name: \"" +
+            		name + "\" - value: \"" + value + "\" - error: " + ex.getMessage());
         }
     }
 
