@@ -777,7 +777,7 @@
       <dependency>
         <groupId>io.github.galbiston</groupId>
         <artifactId>rdf-tables</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
         <exclusions>
           <exclusion>
             <groupId>org.apache.jena</groupId>
