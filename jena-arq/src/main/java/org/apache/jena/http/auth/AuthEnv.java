@@ -19,6 +19,7 @@
 package org.apache.jena.http.auth;
 
 import java.net.URI;
+import java.net.http.HttpRequest;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
@@ -87,7 +88,7 @@ public class AuthEnv {
      * Add authentication, if in the authModifiers registry. That is, add the right
      * headers, and for digest, calculate the new digest string.
      */
-    public java.net.http.HttpRequest.Builder addAuth(java.net.http.HttpRequest.Builder requestBuilder, String uri) {
+    public HttpRequest.Builder addAuth(HttpRequest.Builder requestBuilder, String uri) {
         if ( authModifiers.isEmpty() )
             return requestBuilder;
         // Convert to the key for authentication handlers.
@@ -167,4 +168,20 @@ public class AuthEnv {
             return null;
         return tokenSupplier.apply(uri, aHeader);
     }
+
+ // Development - do not provide in production systems.
+//  public void state() {
+//      org.apache.jena.atlas.io.IndentedWriter out = org.apache.jena.atlas.io.IndentedWriter.stdout.clone();
+//      out.setFlushOnNewline(true);
+//
+//      out.println("Password Registry");
+//      out.incIndent();
+//      passwordRegistry.registered().forEach(ad->out.println(ad.uri));
+//      out.decIndent();
+//
+//      out.println("Auth Modifiers");
+//      out.incIndent();
+//      authModifiers.forEach((String uriStr, AuthRequestModifier m)->{out.println(uriStr);});
+//      out.decIndent();
+//  }
 }

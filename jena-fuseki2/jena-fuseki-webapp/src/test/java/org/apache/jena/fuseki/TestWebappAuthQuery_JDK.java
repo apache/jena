@@ -64,14 +64,12 @@ public class TestWebappAuthQuery_JDK extends AbstractTestWebappAuth_JDK {
             Assert.assertTrue(qe.execAsk());
         } finally {
             AuthEnv.get().unregisterUsernamePassword(uri);
-            //AuthEnv.get().clearAuthRequestModifiers();
         }
     }
 
     @Test
     public void query_authenv_02_prefix_good() {
         QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(authServiceQuery).query("ASK { }").build();
-        // Dataset URL.
         String dsURL = "http://localhost:"+authPort+authDatasetPath;
         URI uri = URI.create(dsURL);
         AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
@@ -79,6 +77,8 @@ public class TestWebappAuthQuery_JDK extends AbstractTestWebappAuth_JDK {
             Assert.assertTrue(qe.execAsk());
         } finally {
             AuthEnv.get().unregisterUsernamePassword(uri);
+            // Currently necessary because it is a prefix registration of the password.
+            AuthEnv.get().clearAuthEnv();
         }
     }
 
