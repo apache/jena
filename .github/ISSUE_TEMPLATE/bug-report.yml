@@ -1,0 +1,56 @@
+name: "Bug Report"
+description: "File a bug report"
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to fill out this bug report.
+  - type: input
+    id: jena_version
+    attributes:
+      label: Version
+      description: Which version of Apache Jena are you running?
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what happened.
+    validations:
+      required: true
+  - type: checkboxes
+    id: operating-systems
+    attributes:
+      label: Which environment is running?
+      options:
+        - label: macOS
+        - label: Windows
+        - label: Linux
+        - label: other
+  - type: textarea
+    id: output
+    attributes:
+      label: Relevant output and stacktrace
+      description: Please copy and paste any relevant output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+  - type: dropdown
+    id: contributor
+    attributes:
+      label: Are you interested in making a pull request?
+      description: We welcome pull requests. As an open source project, we have limited resources and a suggested fix is very helpful.
+      options:
+        - 'Yes'
+        - 'Maybe'
+        - 'No'
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ----
+        ### Code of Conduct
+        [Apache Software Foundation Code of Conduct](https://github.com/apache/.github/blob/main/.github/CODE_OF_CONDUCT.md)
