@@ -78,10 +78,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
         try {
             Assert.assertTrue(qe.execAsk());
         } finally {
-            // Does not clear authModifier because it is by prefix.
             AuthEnv.get().unregisterUsernamePassword(uri);
-            // ... so do a complete clear.
-            AuthEnv.get().clearAuthEnv();
         }
     }
 

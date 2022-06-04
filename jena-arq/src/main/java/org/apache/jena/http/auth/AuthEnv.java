@@ -20,7 +20,10 @@ package org.apache.jena.http.auth;
 
 import java.net.URI;
 import java.net.http.HttpRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 
@@ -29,6 +32,11 @@ import org.apache.jena.riot.web.HttpNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An authentication environment. Multiple {@code AuthEnv} would exists for a
+ * multi-tenant environment. This is not currently supported but the use of
+ * an object, obtained with {@link #get}, allows for that in teh future,
+ */
 public class AuthEnv {
     public static Logger LOG =  LoggerFactory.getLogger(AuthEnv.class);
 
@@ -39,6 +47,10 @@ public class AuthEnv {
     private BiFunction<String, AuthChallenge, String> tokenSupplier = null;
 
     private static AuthEnv singleton = new AuthEnv();
+
+    /**
+     * Get the AuthEnv appropriate to the caller.
+     */
     public static AuthEnv get() { return singleton; }
 
     private AuthEnv() { }
@@ -55,12 +67,24 @@ public class AuthEnv {
         return passwordRegistry.contains(location);
     }
 
-    /** Register (username, password) information for a URI endpoint. */
+    /**
+     * Remove the registration for a URI endpoint.
+     */
     public void unregisterUsernamePassword(URI uri) {
         AuthDomain location = new AuthDomain(uri);
         passwordRegistry.remove(location);
-        // and remove any active modifiers.
-        authModifiers.remove(uri.toString());
+        // ... and remove any active modifiers.
+        // This must clear any potential AuthRequestModifier setup because the uri is
+        // being used as a prefix for multiple endpoints.
+
+        String uristr = uri.toString();
+        List<String> removes = new ArrayList<>();
+        for ( Entry<String, AuthRequestModifier> e : authModifiers.entrySet() ) {
+            String key = e.getKey();
+            if ( key.startsWith(uristr) )
+                removes.add(key);
+        }
+        removes.forEach(k->authModifiers.remove(k));
     }
 
     /**
@@ -169,19 +193,19 @@ public class AuthEnv {
         return tokenSupplier.apply(uri, aHeader);
     }
 
- // Development - do not provide in production systems.
-//  public void state() {
-//      org.apache.jena.atlas.io.IndentedWriter out = org.apache.jena.atlas.io.IndentedWriter.stdout.clone();
-//      out.setFlushOnNewline(true);
-//
-//      out.println("Password Registry");
-//      out.incIndent();
-//      passwordRegistry.registered().forEach(ad->out.println(ad.uri));
-//      out.decIndent();
-//
-//      out.println("Auth Modifiers");
-//      out.incIndent();
-//      authModifiers.forEach((String uriStr, AuthRequestModifier m)->{out.println(uriStr);});
-//      out.decIndent();
-//  }
+    // Development - do not provide in production systems.
+  public void state() {
+      org.apache.jena.atlas.io.IndentedWriter out = org.apache.jena.atlas.io.IndentedWriter.stdout.clone();
+      out.setFlushOnNewline(true);
+
+      out.println("Password Registry");
+      out.incIndent();
+      passwordRegistry.registered().forEach(ad->out.println(ad.getURI()));
+      out.decIndent();
+
+      out.println("Auth Modifiers");
+      out.incIndent();
+      authModifiers.forEach((String uriStr, AuthRequestModifier m)->{out.println(uriStr);});
+      out.decIndent();
+  }
 }

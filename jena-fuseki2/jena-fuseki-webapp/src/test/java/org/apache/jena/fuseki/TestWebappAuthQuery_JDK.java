@@ -77,8 +77,6 @@ public class TestWebappAuthQuery_JDK extends AbstractTestWebappAuth_JDK {
             Assert.assertTrue(qe.execAsk());
         } finally {
             AuthEnv.get().unregisterUsernamePassword(uri);
-            // Currently necessary because it is a prefix registration of the password.
-            AuthEnv.get().clearAuthEnv();
         }
     }
 
