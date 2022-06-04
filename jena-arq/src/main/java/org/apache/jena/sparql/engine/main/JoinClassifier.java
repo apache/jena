@@ -212,9 +212,12 @@ public class JoinClassifier
                 op = ((OpExt)op).effectiveOp() ;
             else if (safeModifier(op))
                 op = ((OpModifier)op).getSubOp() ;
-            // JENA-1813, temporary fix.
+            // JENA-1813
             else if (op instanceof OpGraph )
                 op = ((OpGraph)op).getSubOp() ;
+            // JENA-2332
+            else if (op instanceof OpService )
+                op = ((OpService)op).getSubOp() ;
             else
                 return op;
         }
