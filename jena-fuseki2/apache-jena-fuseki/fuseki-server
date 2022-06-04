@@ -114,6 +114,13 @@ then
     LOGGING="-Dlog4j.configurationFile=$DFT_LOG_CONF"
 fi
 
+if [ -n "$LOGGING" ]
+then
+    exec "$JAVA" $JVM_ARGS "$LOGGING" -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+else
+    exec "$JAVA" $JVM_ARGS -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+fi
+
 exec "$JAVA" $JVM_ARGS $LOGGING -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
 
 ## Adding custom code to the Fuseki server:
@@ -127,6 +134,3 @@ exec "$JAVA" $JVM_ARGS $LOGGING -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "
 ##   CP="${CP}:MyCode.jar
 ## 
 ## "exec" is optional - it simply frees up an OS process.
-## In this way, you can add custom java to the classpath:
-## 
-
