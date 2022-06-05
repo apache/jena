@@ -110,7 +110,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1 {
     @Override
     protected void requestSubCancel() {
         if ( currentStage != null )
-            currentStage.cancel(); // [CANCEL]
+            currentStage.cancel();
         cancelRequested = true;
     }
 }

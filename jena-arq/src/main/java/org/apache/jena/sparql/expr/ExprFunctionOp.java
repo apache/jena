@@ -74,7 +74,6 @@ public abstract class ExprFunctionOp extends ExprFunction
 //                opRun = Optimize.apply("Property Functions", new TransformPropertyFunction(env.getContext()), opRun) ;
 //        }
 
-        // [CANCEL]
         ExecutionContext execCxt = new ExecutionContext(env.getContext(),
                                                         env.getActiveGraph(),
                                                         env.getDataset(),

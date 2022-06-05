@@ -21,9 +21,12 @@ package org.apache.jena.sparql.engine;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.engine.main.OpExecutor;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory;
@@ -33,32 +36,32 @@ import org.apache.jena.sparql.util.Context;
 
 public class ExecutionContext implements FunctionEnv
 {
-    private static boolean TrackAllIterators = false;
+    private static final boolean TrackAllIterators = false;
 
     private Context context       = null;
     private DatasetGraph dataset  = null;
 
     // Iterator tracking
-    private Collection<QueryIterator> openIterators    = null;
+    private final Collection<QueryIterator> openIterators;
     // Tracking all iterators leads to a build up of state,
     private Collection<QueryIterator> allIterators     = null;
     private Graph activeGraph           = null;
     private OpExecutorFactory executor  = null;
+    private final AtomicBoolean cancelSignal;
 
     /** Clone */
-    public ExecutionContext(ExecutionContext other)
-    {
+    public ExecutionContext(ExecutionContext other) {
         this.context = other.context;
         this.dataset = other.dataset;
         this.openIterators = other.openIterators;
         this.allIterators = other.allIterators;
         this.activeGraph = other.activeGraph;
         this.executor = other.executor;
+        this.cancelSignal = other.cancelSignal;
     }
 
     /** Clone and change active graph - shares tracking */
-    public ExecutionContext(ExecutionContext other, Graph activeGraph)
-    {
+    public ExecutionContext(ExecutionContext other, Graph activeGraph) {
         this(other);
         this.activeGraph = activeGraph;
     }
@@ -74,6 +77,21 @@ public class ExecutionContext implements FunctionEnv
     }
 
     public ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory) {
+        this(params, activeGraph, dataset, factory, cancellationSignal(params));
+    }
+
+    private static AtomicBoolean cancellationSignal(Context cxt) {
+        if ( cxt == null )
+            return null;
+        try {
+            return cxt.get(ARQConstants.symCancelQuery);
+        } catch (ClassCastException ex) {
+            Log.error(ExecutionContext.class, "Class cast exception: Expected AtomicBoolean for cancel control: "+ex.getMessage());
+            return null;
+        }
+    }
+
+    private ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory, AtomicBoolean cancelSignal) {
         this.context = params;
         this.dataset = dataset;
         this.openIterators = new ArrayList<>();
@@ -81,10 +99,13 @@ public class ExecutionContext implements FunctionEnv
             this.allIterators  = new ArrayList<>();
         this.activeGraph = activeGraph;
         this.executor = factory;
+        this.cancelSignal = cancelSignal;
     }
 
     @Override
     public Context getContext()       { return context; }
+
+    public AtomicBoolean getCancelSignal()       { return cancelSignal; }
 
     public void openIterator(QueryIterator qIter) {
         openIterators.add(qIter);
