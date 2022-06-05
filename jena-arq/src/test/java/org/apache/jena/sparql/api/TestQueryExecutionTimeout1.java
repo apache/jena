@@ -42,7 +42,7 @@ import org.junit.Test ;
 
 public class TestQueryExecutionTimeout1
 {
-    static Graph                g   = makeGraph(100) ;
+    static Graph                g   = makeGraph(1000) ;
     static DatasetGraph         dsg = DatasetGraphFactory.wrap(g) ;
     static Dataset              ds  = DatasetFactory.wrap(dsg) ;
 
@@ -92,13 +92,11 @@ public class TestQueryExecutionTimeout1
     public void timeout_01() {
         // Test unstable on loaded Jenkins CI
         String qs = prefix + "SELECT * { ?s ?p ?o }";
-        QueryExecution qExec = QueryExecution.dataset(ds)
-                .query(qs)
-
+        QueryExecution qExec = QueryExecution.dataset(ds).query(qs)
                 .timeout(50, TimeUnit.MILLISECONDS)
                 .build();
         ResultSet rs = qExec.execSelect();
-        exceptionExpected(rs, 10, 100, 1000); // 100 then every 100 upto 1000
+        exceptionExpected(rs, 10, 100, 1000); // 10 then every 100 upto 1000
     }
 
     @Test

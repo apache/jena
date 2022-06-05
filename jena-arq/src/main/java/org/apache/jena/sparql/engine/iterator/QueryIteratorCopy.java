@@ -18,73 +18,65 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.ArrayList ;
-import java.util.Collections ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.serializer.SerializationContext;
 
-/** A QueryIterator that copies an iterator.
- *  @see QueryIter#materialize
- */  
+/**
+ * A QueryIterator that copies an iterator.
+ * 
+ * @see QueryIter#materialize
+ */
 
-class QueryIteratorCopy extends QueryIteratorBase
-{
+class QueryIteratorCopy extends QueryIteratorBase {
     // Not tracked.
-    List<Binding> elements = new ArrayList<>() ;
-    QueryIterator iterator ;
-    
-    QueryIterator original ;        // Keep for debugging - This is closed as it is copied.
-    
-    public QueryIteratorCopy(QueryIterator qIter)
-    {
+    List<Binding> elements = new ArrayList<>();
+    QueryIterator iterator;
+
+    public QueryIteratorCopy(QueryIterator qIter) {
         for ( ; qIter.hasNext() ; )
-            elements.add(qIter.nextBinding()) ;
-        qIter.close() ;
-        iterator = copy() ;
-        original = qIter ;
+            elements.add(qIter.nextBinding());
+        qIter.close();
+        iterator = copy();
     }
 
     @Override
-    protected Binding moveToNextBinding()
-    {
-        return iterator.nextBinding() ;
+    protected Binding moveToNextBinding() {
+        return iterator.nextBinding();
     }
 
     @Override
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    {
-        out.print("QueryIteratorCopy") ;
-        out.incIndent() ;
-        original.output(out, sCxt) ;
-        out.decIndent() ;
+    public void output(IndentedWriter out, SerializationContext sCxt) {
+        out.print("QueryIteratorCopy");
+        out.incIndent();
+        out.decIndent();
     }
-    
-    
-    public List<Binding> elements()
-    {
-        return Collections.unmodifiableList(elements) ;
+
+    public List<Binding> elements() {
+        return Collections.unmodifiableList(elements);
     }
-    
-    public QueryIterator copy()
-    {
-        return QueryIterPlainWrapper.create(elements.iterator()) ;
+
+    public QueryIterator copy() {
+        return QueryIterPlainWrapper.create(elements.iterator());
     }
 
     @Override
-    protected void closeIterator()
-    { iterator.close() ; }
-    
-    @Override
-    protected void requestCancel()
-    { iterator.cancel() ; }
+    protected void closeIterator() {
+        iterator.close();
+    }
 
     @Override
-    protected boolean hasNextBinding()
-    {
-        return iterator.hasNext() ;
+    protected void requestCancel() {
+        iterator.cancel();
+    }
+
+    @Override
+    protected boolean hasNextBinding() {
+        return iterator.hasNext();
     }
 }

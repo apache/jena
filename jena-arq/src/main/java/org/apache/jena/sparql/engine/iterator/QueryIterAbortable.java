@@ -25,7 +25,7 @@ import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 
-/** QueryIterator that calls a lts of abort actions when a cancel happens. */
+/** QueryIterator that calls a list of abort actions when a cancel happens. */
 public class QueryIterAbortable extends QueryIterPlainWrapper
 {
     final private QueryIterator originalInput ;

@@ -32,76 +32,64 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 public class QueryIteratorCheck extends QueryIteratorWrapper
 {
     private ExecutionContext execCxt ;
-    
-    private QueryIteratorCheck(QueryIterator qIter, ExecutionContext execCxt)
-    {
-        super(qIter) ;
+
+    private QueryIteratorCheck(QueryIterator qIter, ExecutionContext execCxt) {
+        super(qIter);
         if ( qIter instanceof QueryIteratorCheck )
-            Log.warn(this, "Checking checked iterator") ;
-        
-        this.execCxt = execCxt ;
-        
+            Log.warn(this, "Checking checked iterator");
+
+        this.execCxt = execCxt;
     }
+
     @Override
-    public void close()
-    {
-        super.close() ;
-        checkForOpenIterators(execCxt) ;
+    public void close() {
+        super.close();
+        checkForOpenIterators(execCxt);
     }
-    
+
     // Be silent about ourselves.
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     { iterator.output(out, sCxt) ; }
-    
+
     public static void checkForOpenIterators(ExecutionContext execContext)
     { dump(execContext, false); }
-    
-    public static QueryIteratorCheck check(QueryIterator qIter, ExecutionContext execCxt)
-    {
+
+    public static QueryIteratorCheck check(QueryIterator qIter, ExecutionContext execCxt) {
         if ( qIter instanceof QueryIteratorCheck )
-            return (QueryIteratorCheck)qIter ;
-        return new QueryIteratorCheck(qIter, execCxt) ;
+            return (QueryIteratorCheck)qIter;
+        return new QueryIteratorCheck(qIter, execCxt);
     }
-    
-    private static void dump(ExecutionContext execContext, boolean includeAll)
-    {
-        if ( includeAll )
-        {
-            Iterator<QueryIterator> iterAll = execContext.listAllIterators() ;
+
+    private static void dump(ExecutionContext execContext, boolean includeAll) {
+        if ( includeAll ) {
+            Iterator<QueryIterator> iterAll = execContext.listAllIterators();
 
             if ( iterAll != null )
-                while(iterAll.hasNext())
-                {
-                    QueryIterator qIter = iterAll.next() ;
-                    warn(qIter, "Iterator: ") ;
+                while (iterAll.hasNext()) {
+                    QueryIterator qIter = iterAll.next();
+                    warn(qIter, "Iterator: ");
                 }
         }
 
-        Iterator<QueryIterator> iterOpen = execContext.listOpenIterators() ;
-        while(iterOpen.hasNext())
-        {
-            QueryIterator qIterOpen = iterOpen.next() ;
-            warn(qIterOpen, "Open iterator: ") ;
-            iterOpen.remove() ;
+        Iterator<QueryIterator> iterOpen = execContext.listOpenIterators();
+        while (iterOpen.hasNext()) {
+            QueryIterator qIterOpen = iterOpen.next();
+            warn(qIterOpen, "Open iterator: ");
+            iterOpen.remove();
         }
     }
 
-    private static void warn(QueryIterator qIter, String str)
-    {
-        str = str + Lib.className(qIter) ;
+    private static void warn(QueryIterator qIter, String str) {
+        str = str + Lib.className(qIter);
 
-        if ( qIter instanceof QueryIteratorBase )
-        {
-            QueryIteratorBase qIterBase = (QueryIteratorBase)qIter ;
+        if ( qIter instanceof QueryIteratorBase ) {
+            QueryIteratorBase qIterBase = (QueryIteratorBase)qIter;
             {
-                QueryIter qIterLN = (QueryIter)qIter ;
-                str = str+"/"+qIterLN.getIteratorNumber() ;
+                QueryIter qIterLN = (QueryIter)qIter;
+                str = str + "/" + qIterLN.getIteratorNumber();
             }
-            String x = qIterBase.debug() ;
-            if ( x.length() > 0 )
-                str = str+" : "+x ;
         }
-        Log.warn(QueryIteratorCheck.class, str) ;
+        Log.warn(QueryIteratorCheck.class, str);
     }
 }
