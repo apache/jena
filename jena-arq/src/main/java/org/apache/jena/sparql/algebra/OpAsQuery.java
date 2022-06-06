@@ -253,12 +253,13 @@ public class OpAsQuery {
             } ;
 
             // The assignments will become part of the project.
-            Map<Var, Expr> assignments = new HashMap<>() ;
+            // Using VarExprList to preserve order; https://github.com/apache/jena/issues/1369
+            VarExprList assignments = new VarExprList();
             if ( level.opExtends != null ) {
                 processExtends(level.opExtends, (var,expr)->{
                     // Internal rename.
                     expr = rewrite(expr, varToExpr) ;
-                    assignments.put(var, expr) ;
+                    assignments.add(var, expr) ;
                 }) ;
 
             }
@@ -286,17 +287,70 @@ public class OpAsQuery {
                 // No project, Make BINDs
                 //processQueryPattern(op, assignments) ;
 
-
             } else {
-                level.opProject.getVars().forEach(v -> {
-                    if ( assignments.containsKey(v) ) {
-                        query.addResultVar(v, assignments.get(v)) ;
-                    } else
-                        query.getProjectVars().add(v) ;
+                // Where assignments and projections align the assignments will become part of the projection
+                // otherwise the assignments will become BINDs; https://github.com/apache/jena/issues/1369
+                List<Var> projectVars = level.opProject.getVars();
 
-                }) ;
+                List<Var> assignVars = assignments.getVars();
+                int assignVarsSize = assignVars.size();
+                int projectOffset = assignVarsSize; // Start at end and search backwards
+                int idxThreshold = Integer.MAX_VALUE; // Prevent adding later mentioned expressions earlier to the projection list
+
+                // Find an offset in the assignments from which on
+                // *all remaining* variables appears in the same order as in the projection
+                while (projectOffset-- > 0) {
+                    Var assignVar = assignVars.get(projectOffset);
+
+                    // Ensure that the projection does not shuffle the given order of expressions
+                    // A later assignment must also appear later in the built projection
+                    int idx = projectVars.indexOf(assignVar);
+                    if (idx < 0 || idx > idxThreshold) {
+                        break;
+                    }
+                    idxThreshold = idx;
+                }
+
+                // Assignments with index <= projectOffset become BINDs
+                // Note that a projectOffset of -1 means there won't be any BINDs
+                if (projectOffset >= 0) {
+                    Element activeElement = query.getQueryPattern();
+
+                    ElementGroup activeGroup;
+                    if (activeElement instanceof ElementGroup) {
+                        activeGroup = (ElementGroup)activeElement;
+                    } else {
+                        // Not sure whether it's possible here for BINDs to exist with the
+                        // activeElement NOT being a group pattern - but better safe than sorry
+                        activeGroup = new ElementGroup();
+                        activeGroup.addElement(activeElement);
+                        query.setQueryPattern(activeGroup);
+                    }
+
+                    for (int i = 0; i <= projectOffset; ++i) {
+                        Var v = assignVars.get(i);
+                        Expr e = assignments.getExpr(v);
+                        activeGroup.addElement(new ElementBind(v, e));
+                    }
+                }
+
+                // For each projected variable determine whether a possible expression was already
+                // added as a BIND or whether it needs to be projected
+                for (Var v : projectVars) {
+                    Expr e = assignments.getExpr(v);
+
+                    int offset = assignVars.indexOf(v);
+                    if (offset > projectOffset) {
+                        // Note that 'query.addResultVar' handles the case where e is null
+                        query.addResultVar(v, e) ;
+                    }
+                    else {
+                        // Either the variable did not map to an expression or
+                        // the expression was added as BIND - in any case just project the variable
+                        query.addResultVar(v, null) ;
+                    }
+                }
             }
-
 
             if ( level.opDistinct != null )
                 query.setDistinct(true) ;
@@ -314,7 +368,7 @@ public class OpAsQuery {
         /**
          * Collect the OpExtend in a stack of OpExtend into a list for later
          * processing. (Processing only uses opExtend in the list, not inner one
-         * which wil also be in the list.)
+         * which will also be in the list.)
          */
         private static Op processExtend(Op op, List<OpExtend> assignments) {
             while ( op instanceof OpExtend ) {
