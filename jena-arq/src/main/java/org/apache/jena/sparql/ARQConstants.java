@@ -276,8 +276,6 @@ public class ARQConstants
     /** Context key for making all SELECT queries have DISTINCT applied, whether stated or not */
     public static final Symbol autoDistinct             = SystemARQ.allocSymbol("autoDistinct") ;
 
-    // Context keys : some here, some in ARQ - sort out
-
     /** The property function registry key */
     public static final Symbol registryPropertyFunctions =
         SystemARQ.allocSymbol("registryPropertyFunctions") ;

@@ -30,13 +30,13 @@ import org.apache.jena.sparql.syntax.Element ;
 
 
 /** A "function" that executes over a pattern */
- 
+
 public abstract class ExprFunctionOp extends ExprFunction
 {
     private final Op op ;
     private Op opRun = null ;
     private final Element element ;
-    
+
     protected ExprFunctionOp(String fName, Element el, Op op)
     {
         super(fName) ;
@@ -49,19 +49,19 @@ public abstract class ExprFunctionOp extends ExprFunction
     {
         return null ;
     }
-    
+
     @Override
     public boolean isGraphPattern()     { return true ; }
     @Override
     public Op getGraphPattern()         { return op ; }
 
     public Element getElement()         { return element ; }
-    
+
     @Override
     public int numArgs() { return 0 ; }
-    
+
     // ---- Evaluation
-    
+
     @Override
     public final NodeValue eval(Binding binding, FunctionEnv env)
     {
@@ -73,7 +73,7 @@ public abstract class ExprFunctionOp extends ExprFunction
 //            if ( env.getContext().isTrueOrUndef(ARQ.propertyFunctions) )
 //                opRun = Optimize.apply("Property Functions", new TransformPropertyFunction(env.getContext()), opRun) ;
 //        }
-        
+
         ExecutionContext execCxt = new ExecutionContext(env.getContext(),
                                                         env.getActiveGraph(),
                                                         env.getDataset(),
@@ -84,13 +84,13 @@ public abstract class ExprFunctionOp extends ExprFunction
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;
         // Call the per-operation functionality.
-        try { 
+        try {
             return eval(binding, qIter, env) ;
         } finally { qIter.close() ; }
     }
-    
-    protected abstract NodeValue eval(Binding binding, QueryIterator iter, FunctionEnv env); 
-    
+
+    protected abstract NodeValue eval(Binding binding, QueryIterator iter, FunctionEnv env);
+
     public abstract ExprFunctionOp copy(ExprList args, Op x) ;
     public abstract ExprFunctionOp copy(ExprList args, Element elPattern) ;
     @Override
