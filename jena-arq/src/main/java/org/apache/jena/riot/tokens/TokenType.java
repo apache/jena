@@ -44,8 +44,8 @@ public enum TokenType {
     LBRACE, RBRACE,         // {}
     LPAREN, RPAREN,         // ()
     LBRACKET, RBRACKET,     // []
-    // = == + - * / \
-    EQUALS, EQUIVALENT, PLUS, MINUS, STAR, SLASH, RSLASH,
+    // = == + - * / \ ! ?
+    EQUALS, EQUIVALENT, PLUS, MINUS, STAR, SLASH, RSLASH, EMARK, QMARK,
     // Whitespace, any comment, (one line comment, multiline comment)
     NL, WS, COMMENT, COMMENT1, COMMENT2, EOF;
 }

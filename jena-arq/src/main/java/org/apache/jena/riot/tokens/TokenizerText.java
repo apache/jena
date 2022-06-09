@@ -408,6 +408,10 @@ public final class TokenizerText implements Tokenizer
             //case CH_UNDERSCORE: reader.readChar(); token.setType(TokenType.UNDERSCORE);/*token.setImage(CH_UNDERSCORE);*/ return token;
             case CH_LT:         reader.readChar(); token.setType(TokenType.LT);        /*token.setImage(CH_LT);*/ return token;
             case CH_STAR:       reader.readChar(); token.setType(TokenType.STAR);      /*token.setImage(CH_STAR);*/ return token;
+            case CH_EMARK:      reader.readChar(); token.setType(TokenType.EMARK);     /*token.setImage(CH_EMARK);*/ return token;
+
+            // VAR overrides
+            //case CH_QMARK:      reader.readChar(); token.setType(TokenType.QMARK);      /*token.setImage(CH_EMARK);*/ return token;
 
             // XXX Multi-character symbols
             // Two character tokens && || GE >= , LE <=

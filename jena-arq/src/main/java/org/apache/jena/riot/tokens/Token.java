@@ -104,7 +104,7 @@ public final class Token
             throw new RiotException("No token") ;
         Token t = tt.next() ;
         if ( tt.hasNext() )
-            throw new RiotException("Extraneous charcaters") ;
+            throw new RiotException("Extraneous characters") ;
         return t ;
     }
 

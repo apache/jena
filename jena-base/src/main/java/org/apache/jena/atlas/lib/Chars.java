@@ -224,6 +224,7 @@ public class Chars
     public static final char CH_AMPHERSAND   = '&' ;
     public static final char CH_AT           = '@' ;
     public static final char CH_QMARK        = '?' ;
+    public static final char CH_EMARK        = '!' ;
     public static final char CH_DOLLAR       = '$' ;
     public static final char CH_HASH         = '#' ;
     public static final char CH_PLUS         = '+' ;
