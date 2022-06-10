@@ -90,7 +90,7 @@ public class IO
         switch ( ext ) {
             case "":        return in;
             case ext_gz:    return new GZIPInputStream(in);
-            case ext_bz2:   return new BZip2CompressorInputStream(in);
+            case ext_bz2:   return new BZip2CompressorInputStream(in, true);
             case ext_sz:    return new SnappyCompressorInputStream(in);
         }
         return in;
