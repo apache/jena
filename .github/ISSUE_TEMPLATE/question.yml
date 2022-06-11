@@ -1,3 +1,5 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
 name: Question
 description: "Ask a question"
 labels: ["question"]
