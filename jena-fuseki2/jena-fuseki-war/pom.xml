@@ -41,11 +41,13 @@
     </dependency>
 
     <!-- frontend assets (HTML, JS, CSS, images, etc.) -->
+    <!-- Currently done by unpacking in jena-fuseki-webapp
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-ui</artifactId>
       <version>${project.version}</version>
     </dependency>
+    -->
 
     <!-- Require a logging implementation -->
     <dependency>

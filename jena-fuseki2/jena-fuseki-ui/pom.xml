@@ -93,6 +93,23 @@
                     -->
                 </executions>
             </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <configuration>
+                <classesDirectory>${project.build.directory}</classesDirectory>
+                <includes>
+                  <include>webapp/**</include>
+                </includes>
+              </configuration>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>test-jar</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
