@@ -1,0 +1,36 @@
+name: Feature suggestion
+description: Feature suggestion
+labels: ["enhancement"]
+body:
+  - type: input
+    id: jena_version
+    attributes:
+      label: Version
+      description: Which version of Apache Jena do you run?
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggestion
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what happened.
+    validations:
+      required: true
+  - type: dropdown
+    id: contributor
+    attributes:
+      label: Are you interested in contributing a solution yourself?
+      description: We welcome your feature request. Let us know if you would like to get involved in actually contributing a fix yourself. We'd be happy to help you get started.
+      options:
+        - 'Yes'
+        - 'No'
+        - 'Perhaps?'
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ----
+        ### Code of Conduct
+        [Apache Software Foundation Code of Conduct](https://github.com/apache/.github/blob/main/.github/CODE_OF_CONDUCT.md)

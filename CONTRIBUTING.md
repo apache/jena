@@ -106,13 +106,9 @@ to review.
 ### Legal
 
 When you contribute, you affirm that the contribution is your original work and
-that you license the work to the Apache Software Foundation under the
-a [Contributor's Agreement](https://www.apache.org/licenses/contributor-agreements.html).
-
-Whether or not you state this explicitly, by submitting any copyrighted
-material via pull request, email, or other means you agree to license the
-material under the project's open source license and warrant that you have the
-legal authority to do so.
+that you license the work to the Apache Software Foundation. You agree to license the
+material under the terms and conditions of the 
+[Contributor's Agreement](https://www.apache.org/licenses/contributor-agreements.html).
 
 You, as an individual, must be entitled to make the contribution to the
 project. If the contribution is part of your employment, please arrange
