@@ -42,7 +42,7 @@ public class AuthChallenge {
     static public AuthChallenge parse(String authHeaderStr) {
         AuthHeader auth;
         try {
-            auth = AuthHeader.parse(authHeaderStr);
+            auth = AuthHeader.parseChallenge(authHeaderStr);
             if ( auth == null )
                 return null;
             if ( auth.getAuthScheme() == null )
