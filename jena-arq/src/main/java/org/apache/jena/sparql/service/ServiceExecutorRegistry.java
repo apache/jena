@@ -115,6 +115,20 @@ public class ServiceExecutorRegistry
         context.set(ARQConstants.registryServiceExecutors, reg) ;
     }
 
+    /**
+     * Copies the origin registry into a new one, or makes a fresh instance if the specified registry is {@code null).
+     * @param from {@link ServiceExecutorRegistry} or {@code null}
+     * @return {@link ServiceExecutorRegistry} a new instance
+     */
+    public static ServiceExecutorRegistry createFrom(ServiceExecutorRegistry from) {
+        ServiceExecutorRegistry res = new ServiceExecutorRegistry();
+        if (from != null) {
+            res.bulkChain.addAll(from.bulkChain);
+            res.singleChain.addAll(from.singleChain);
+        }
+        return res;
+    }
+
     public ServiceExecutorRegistry()
     {}
 

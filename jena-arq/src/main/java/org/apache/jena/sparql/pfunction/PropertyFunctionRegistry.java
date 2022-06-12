@@ -74,6 +74,19 @@ public class PropertyFunctionRegistry
         return reg;
     }
 
+    /**
+     * Copies the origin registry into a new one, or makes a fresh instance if the specified registry is {@code null).
+     * @param from {@link PropertyFunctionRegistry} or {@code null}
+     * @return {@link PropertyFunctionRegistry} a new instance
+     */
+    public static PropertyFunctionRegistry createFrom(PropertyFunctionRegistry from) {
+        PropertyFunctionRegistry res = new PropertyFunctionRegistry();
+        if (from != null) {
+            res.registry.putAll(from.registry);
+        }
+        return res;
+    }
+
     /** Insert an PropertyFunction class.
      *  Re-inserting with the same URI overwrites the old entry.
      *  New instance created on retrieval (auto-factory)
