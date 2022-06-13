@@ -37,6 +37,7 @@ public class TestAuthBearerServer {
                 .port(0)
                 .auth(AuthScheme.BEARER)
                 .parseConfigFile("src/test/files/Fuseki/config-bearer.ttl")
+                // Default is AuthBearerFilter.BearerMode.REQUIRED
                 .addFilter("/*", new AuthBearerFilter(AuthBearerTestLib::subjectFromEncodedJWT))
                 .start();
         String baseURL = "http://localhost:"+server.getHttpPort()+"/";
@@ -75,7 +76,7 @@ public class TestAuthBearerServer {
                 .port(0)
                 .auth(AuthScheme.BEARER)
                 .parseConfigFile("src/test/files/Fuseki/config-bearer.ttl")
-                .addFilter("/*", new AuthBearerFilter(AuthBearerTestLib::subjectFromEncodedJWT, false))
+                .addFilter("/*", new AuthBearerFilter(AuthBearerTestLib::subjectFromEncodedJWT, AuthBearerFilter.BearerMode.OPTIONAL))
                 .start();
         try {
             String baseURL = "http://localhost:"+server.getHttpPort()+"/";

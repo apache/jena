@@ -29,17 +29,22 @@ import org.junit.Test;
 
 public class TestAuthHeaderParser {
 
-    private static AuthHeader parse(String input) {
-        return AuthHeader.parse(input);
+    private static AuthHeader parseAuth(String input) {
+        return AuthHeader.parseAuth(input);
     }
 
+    private static AuthHeader parseChallenge(String input) {
+        return AuthHeader.parseChallenge(input);
+    }
+
+
     @Test public void parse_empty() {
-        AuthHeader auth = parse("");
+        AuthHeader auth = parseAuth("");
         assertNull(auth.getAuthScheme());
     }
 
     @Test public void parse_basic_01() {
-        AuthHeader auth = parse("Basic       BASE64");
+        AuthHeader auth = parseAuth("Basic       BASE64");
         assertEquals(AuthScheme.BASIC, auth.getAuthScheme());
         assertTrue(auth.isBasicAuth());
         assertFalse(auth.isDigestAuth());
@@ -49,7 +54,7 @@ public class TestAuthHeaderParser {
     }
 
     @Test public void parse_basic_02() {
-        AuthHeader auth = parse("Basic dGVzdDoxMjPCow==");
+        AuthHeader auth = parseAuth("Basic dGVzdDoxMjPCow==");
         assertEquals(AuthScheme.BASIC, auth.getAuthScheme());
         assertTrue(auth.isBasicAuth());
         assertFalse(auth.isDigestAuth());
@@ -63,29 +68,9 @@ public class TestAuthHeaderParser {
         assertEquals(x, "test:123£");
     }
 
-    @Test public void parse_basic_03() {
-        AuthHeader auth = parse("Basic realm = hades");
-        assertTrue(auth.isBasicAuth());
-        assertFalse(auth.isDigestAuth());
-        Map<String, String> map = auth.getAuthParams();
-        assertNotNull(map);
-        assertEquals(1, map.size());
-        assertEquals("hades", map.get("realm"));
-    }
-
-    @Test public void parse_basic_04() {
-        AuthHeader auth = parse("Basic realm=hades");
-        assertTrue(auth.isBasicAuth());
-        assertFalse(auth.isDigestAuth());
-        Map<String, String> map = auth.getAuthParams();
-        assertNotNull(map);
-        assertEquals(1, map.size());
-        assertEquals("hades", map.get("realm"));
-    }
-
     // fn5+fjp/f38K is "~~~~:\x7F\x7F\x7F"
-    @Test public void parse_basic_05() {
-        AuthHeader auth = parse("Basic fn5+fjp/f38K");
+    @Test public void parse_basic_03() {
+        AuthHeader auth = parseAuth("Basic fn5+fjp/f38K");
         assertTrue(auth.isBasicAuth());
         assertFalse(auth.isDigestAuth());
         Map<String, String> map = auth.getAuthParams();
@@ -94,7 +79,7 @@ public class TestAuthHeaderParser {
     }
 
     @Test public void parse_basic_bad_01() {
-        AuthHeader auth = parse("Basic {}ABCD");  // Not base64
+        AuthHeader auth = parseAuth("Basic {}ABCD");  // Not base64
         assertTrue(auth.isBasicAuth());
         Map<String, String> map = auth.getAuthParams();
         assertNull(map);
@@ -102,21 +87,21 @@ public class TestAuthHeaderParser {
     }
 
     @Test public void parse_bad_01() {
-        AuthHeader auth = parse("Basic realm =");
+        AuthHeader auth = parseAuth("Basic realm =");
         assertTrue(auth.isBasicAuth());
         assertNull(auth.getAuthParams());
         assertNull(auth.getBasicUserPassword());
     }
 
     @Test public void parse_bad_02() {
-        AuthHeader auth = parse("Basic ");
+        AuthHeader auth = parseAuth("Basic ");
         assertTrue(auth.isBasicAuth());
         assertNull(auth.getAuthParams());
         assertNull(auth.getBasicUserPassword());
     }
 
     @Test public void parse_digest_01() {
-        AuthHeader auth = parse("Digest realm = hades");
+        AuthHeader auth = parseAuth("Digest realm = hades");
         assertTrue(auth.isDigestAuth());
         assertFalse(auth.isBasicAuth());
         assertEquals(AuthScheme.DIGEST, auth.getAuthScheme());
@@ -128,7 +113,7 @@ public class TestAuthHeaderParser {
     }
 
     @Test public void parse_digest_02() {
-        AuthHeader auth = parse("Digest a=b C=\"def\", xyz=\"rst uvw\"");
+        AuthHeader auth = parseAuth("Digest a=b C=\"def\", xyz=\"rst uvw\"");
         assertTrue(auth.isDigestAuth());
         assertFalse(auth.isBasicAuth());
         assertEquals(AuthScheme.DIGEST, auth.getAuthScheme());
@@ -143,7 +128,7 @@ public class TestAuthHeaderParser {
     }
 
     @Test public void parse_digest_bad_01() {
-        AuthHeader auth = parse("Digest a=b c=");
+        AuthHeader auth = parseAuth("Digest a=b c=");
         assertTrue(auth.isDigestAuth());
         assertFalse(auth.isBasicAuth());
         assertEquals(AuthScheme.DIGEST, auth.getAuthScheme());
@@ -153,7 +138,7 @@ public class TestAuthHeaderParser {
     }
 
     @Test public void parse_digest_bad_02() {
-        AuthHeader auth = parse("Digest c=\"");
+        AuthHeader auth = parseAuth("Digest c=\"");
         assertTrue(auth.isDigestAuth());
         assertFalse(auth.isBasicAuth());
         assertEquals(AuthScheme.DIGEST, auth.getAuthScheme());
@@ -164,7 +149,7 @@ public class TestAuthHeaderParser {
 
     @Test public void parse_bearer_01() {
         // Credentials
-        AuthHeader auth = parse("Bearer AAAA");
+        AuthHeader auth = parseAuth("Bearer AAAA");
         assertTrue(auth.isBearerAuth());
         assertFalse(auth.isDigestAuth());
         assertFalse(auth.isBasicAuth());
@@ -173,26 +158,9 @@ public class TestAuthHeaderParser {
         assertNull(map);
     }
 
-    @Test public void parse_bearer_02() {
-        // Challenge
-        AuthHeader auth = parse("Bearer realm = hades");
-        assertNull(auth.getBearerToken());
-        Map<String, String> map = auth.getAuthParams();
-        assertNotNull(map);
-        assertEquals("hades", map.get("realm"));
-    }
-
-    @Test public void parse_bearer_03() {
-        // Challenge
-        AuthHeader auth = parse("Bearer realm=hades");
-        assertNull(auth.getBearerToken());
-        Map<String, String> map = auth.getAuthParams();
-        assertNotNull(map);
-        assertEquals("hades", map.get("realm"));
-    }
 
     @Test public void parse_bearer_bad_01() {
-        AuthHeader auth = parse("Bearer ");
+        AuthHeader auth = parseAuth("Bearer ");
         assertTrue(auth.isBearerAuth());
         assertNull(auth.getBearerToken());
         Map<String, String> map = auth.getAuthParams();
@@ -200,22 +168,69 @@ public class TestAuthHeaderParser {
     }
 
     @Test public void parse_bearer_bad_03() {
-        AuthHeader auth = parse("Bearer abcd()"); // Not base64
+        AuthHeader auth = parseAuth("Bearer abcd()"); // Not base64
         assertTrue(auth.isBearerAuth());
         assertNull(auth.getBearerToken());
     }
 
     @Test public void parse_unknown_01() {
         // scheme, param
-        AuthHeader auth = parse("Unknown abcd");
+        AuthHeader auth = parseAuth("Unknown abcd");
         assertEquals(AuthScheme.UNKNOWN, auth.getAuthScheme());
         assertEquals("abcd", auth.getUnknown());
     }
 
     @Test public void parse_unknown_02() {
-        AuthHeader auth = parse("UnKnOwN a=b");
+        AuthHeader auth = parseAuth("UnKnOwN a=b");
         assertEquals(AuthScheme.UNKNOWN, auth.getAuthScheme());
-        assertEquals("UnKnOwN", auth.getAuthSchemeStr());
+        assertEquals("UnKnOwN", auth.getAuthSchemeName());
         assertEquals("a=b", auth.getUnknown());
     }
+
+
+
+    @Test public void parse_challenge_01() {
+        AuthHeader auth = parseChallenge("Bearer realm=\"somewhere\"");
+        assertEquals(AuthScheme.BEARER, auth.getAuthScheme());
+        assertEquals("somewhere", auth.getAuthParams().get("realm"));
+    }
+
+    @Test public void parse_challenge_basic_01() {
+        AuthHeader auth = parseChallenge("Basic realm = hades");
+        assertTrue(auth.isBasicAuth());
+        assertFalse(auth.isDigestAuth());
+        Map<String, String> map = auth.getAuthParams();
+        assertNotNull(map);
+        assertEquals(1, map.size());
+        assertEquals("hades", map.get("realm"));
+    }
+
+    @Test public void parse_challenge_basic_02() {
+        AuthHeader auth = parseChallenge("Basic realm=hades");
+        assertTrue(auth.isBasicAuth());
+        assertFalse(auth.isDigestAuth());
+        Map<String, String> map = auth.getAuthParams();
+        assertNotNull(map);
+        assertEquals(1, map.size());
+        assertEquals("hades", map.get("realm"));
+    }
+
+    @Test public void parse_challenge_bearer_01() {
+        // Challenge
+        AuthHeader auth = parseChallenge("Bearer realm = hades");
+        assertNull(auth.getBearerToken());
+        Map<String, String> map = auth.getAuthParams();
+        assertNotNull(map);
+        assertEquals("hades", map.get("realm"));
+    }
+
+    @Test public void parse_challenge_bearer_02() {
+        // Challenge
+        AuthHeader auth = parseChallenge("Bearer realm=hades");
+        assertNull(auth.getBearerToken());
+        Map<String, String> map = auth.getAuthParams();
+        assertNotNull(map);
+        assertEquals("hades", map.get("realm"));
+    }
+
 }
