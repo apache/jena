@@ -23,17 +23,17 @@ public class TokenCheckerLib
 {
     public boolean checkPrefixedName_CURIE()
     {
-        return false ;
+        return false;
     }
 
     public boolean checkPrefixedName_XML()
     {
-        return false ;
+        return false;
     }
 
     public boolean checkPrefixedName_Turtle() 
     {
-        return false ;  
+        return false;  
     }
 
 }
