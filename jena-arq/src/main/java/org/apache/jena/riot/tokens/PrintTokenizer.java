@@ -18,36 +18,36 @@
 
 package org.apache.jena.riot.tokens;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Print a logging message on every token */
 public class PrintTokenizer extends TokenizerWrapper
 {
-    static private int counter = 0 ;
-    static private Logger log = LoggerFactory.getLogger("Token") ;
-    private String label ;
+    static private int counter = 0;
+    static private Logger log = LoggerFactory.getLogger("Token");
+    private String label;
     
 //    public PrintTokenizer(Tokenizer other)
 //    {
-//        this(Integer.toString(++counter), other) ;
+//        this(Integer.toString(++counter), other);
 //    }
 //    
     public PrintTokenizer(String label, Tokenizer other)
     {
-        super(other) ;
-        this.label = label ;
+        super(other);
+        this.label = label;
     }
 
     @Override
     public Token next()
     {
-        Token t = super.next() ;
+        Token t = super.next();
         if ( label != null )
-            log.info(label+": "+t.toString()) ;
+            log.info(label+": "+t.toString());
         else
-            log.info(t.toString()) ;
-        return t ;
+            log.info(t.toString());
+        return t;
     }
     
 }

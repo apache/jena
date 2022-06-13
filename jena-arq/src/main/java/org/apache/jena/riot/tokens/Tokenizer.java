@@ -18,26 +18,26 @@
 
 package org.apache.jena.riot.tokens;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Closeable;
 
 public interface Tokenizer extends Iterator<Token>, Closeable
 {
     /** Is there another token? */
     @Override
-    public boolean hasNext() ;
+    public boolean hasNext();
 
     /** Move to next token */
     @Override
-    public Token next() ;
+    public Token next();
     
     /** Peek next token : null for no token. */
-    public Token peek() ;
+    public Token peek();
     
     /** End of tokens? */
-    public boolean eof() ;
+    public boolean eof();
 
-    public long getLine() ;
-    public long getColumn() ;
+    public long getLine();
+    public long getColumn();
 }
