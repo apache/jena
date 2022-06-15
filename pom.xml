@@ -818,6 +818,7 @@
   </dependencyManagement>
 
   <build>
+    <defaultGoal>clean test install</defaultGoal>
     <!-- Run the enforcer plugin automatically at compile time -->
     <plugins>
       <plugin>
