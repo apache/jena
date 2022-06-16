@@ -73,11 +73,13 @@
     </dependency>
 
     <!-- frontend assets (HTML, JS, CSS, images, etc.) -->
+    <!-- Currently done by unpacking.
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-ui</artifactId>
       <version>${project.version}</version>
     </dependency>
+    -->
 
     <!-- Logging  -->  
     <dependency>
@@ -142,17 +144,6 @@
         <filtering>false</filtering>
         <directory>src/main/webapp/</directory>
         <targetPath>${project.build.directory}/webapp/</targetPath>
-        <excludes>
-          <exclude>index.html</exclude>
-        </excludes>
-      </resource>
-      <resource>
-        <filtering>false</filtering>
-        <directory>../jena-fuseki-ui/target/dist/</directory>
-        <targetPath>${project.build.directory}/webapp/</targetPath>
-        <includes>
-          <include>**/*.*</include>
-        </includes>
       </resource>
     </resources>
 
@@ -189,6 +180,28 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.jena</groupId>
+                  <artifactId>jena-fuseki-ui</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <includes>webapp/**/*.*</includes>
+                </artifactItem> 
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+
         <configuration>
           <overWriteReleases>false</overWriteReleases>
           <overWriteIfNewer>true</overWriteIfNewer>
