@@ -26,12 +26,14 @@ import java.util.stream.Stream;
 public class JsonObject extends JsonValue
 {
     private final Map<String, JsonValue> map = new LinkedHashMap<>() ;
-    
+
+    public JsonObject() {}
+
     @Override
     public boolean isObject()       { return true ; }
     @Override
     public JsonObject getAsObject() { return this ; }
-    
+
     @Override
     public void visit(JsonVisitor visitor)
     { visitor.visit(this) ; }
@@ -47,14 +49,14 @@ public class JsonObject extends JsonValue
             return false ;
         return map.equals(((JsonObject)other).map) ;
     }
-    
+
     public void clear()
     { map.clear() ; }
-    
+
     public boolean hasKey(Object key) {
         return map.containsKey(key) ;
     }
-    
+
     public Set<String> keys() {
         return map.keySet() ;
     }

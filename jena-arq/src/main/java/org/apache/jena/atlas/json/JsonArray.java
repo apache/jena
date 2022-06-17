@@ -27,10 +27,12 @@ import java.util.ListIterator ;
 public class JsonArray extends JsonValue implements List<JsonValue>
 {
     private List<JsonValue> array = new ArrayList<>() ;
-    
+
+    public JsonArray() {}
+
     @Override
     public boolean isArray()        { return true ; }
-    
+
     @Override
     public JsonArray getAsArray()   { return this ; }
 
