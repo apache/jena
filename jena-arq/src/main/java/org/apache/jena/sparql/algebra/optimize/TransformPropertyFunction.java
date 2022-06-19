@@ -27,93 +27,72 @@ import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import org.apache.jena.sparql.util.Context ;
 
 /** Rewrite to replace a property function property with the call to the property function implementation */
-public class TransformPropertyFunction extends TransformCopy
-{
-    private final Context context ;
-    private final boolean doingMagicProperties ;
-    private final PropertyFunctionRegistry registry ;
-    
-    /** Apply the property function transformation. 
-     *  <p>
-     *  The {@code context} provide the place to find the property function registry.
-     *  A custom one canbe supplied using 
-     *  {@link ARQConstants#registryPropertyFunctions}
-     *  <p>
-     *  See {@link PropertyFunctionRegistry#chooseRegistry} for the full decision process.
-     *  <p>
-     *  In addition, {@link ARQ#enablePropertyFunctions} must be true (this is the default). 
+public class TransformPropertyFunction extends TransformCopy {
+    private final Context context;
+    private final boolean doingPropertyFunctions;
+    private final PropertyFunctionRegistry registry;
+
+    /**
+     * Apply the property function transformation.
+     * <p>
+     * The {@code context} provides the place to find the property function registry.
+     * A custom one can be supplied using
+     * {@link ARQConstants#registryPropertyFunctions}
+     * <p>
+     * See {@link PropertyFunctionRegistry#chooseRegistry} for the full decision
+     * process.
+     * <p>
+     * If {@link ARQ#enablePropertyFunctions} is false, then property functions are
+     * not enabled and remain as plain triples. For example, this is set false by "strict mode"
      */
     public static Op transform(Op op, Context context) {
-        Transform t = new TransformPropertyFunction(context) ;
-        return Transformer.transform(t, op) ; 
+        Transform t = new TransformPropertyFunction(context);
+        return Transformer.transform(t, op);
     }
-    
-    public TransformPropertyFunction(Context context)
-    {
-        this.context = context ;  
-        doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
-        registry = PropertyFunctionRegistry.chooseRegistry(context) ;
+
+    public TransformPropertyFunction(Context context) {
+        this.context = context;
+        registry = PropertyFunctionRegistry.chooseRegistry(context);
+        doingPropertyFunctions = ( registry != null ) && context.isTrueOrUndef(ARQ.enablePropertyFunctions);
     }
-    
+
     @Override
-    public Op transform(OpTriple opTriple)
-    {
-        if ( ! doingMagicProperties )
-            return opTriple ;
-        
-        Op x =  transform(opTriple.asBGP()) ;
-        if ( ! ( x instanceof OpBGP ) )
-            return x ;
+    public Op transform(OpTriple opTriple) {
+        if ( !doingPropertyFunctions )
+            return opTriple;
+
+        Op x = transform(opTriple.asBGP());
+        if ( !(x instanceof OpBGP) )
+            return x;
 
         if ( opTriple.equivalent((OpBGP)x) )
-            return opTriple ;
-        return x ;
-        
+            return opTriple;
+        return x;
     }
-    
-    @Override
-    public Op transform(OpBGP opBGP)
-    {
-        if ( ! doingMagicProperties )
-            return opBGP ;
-        
-        return PropertyFunctionGenerator.buildPropertyFunctions(registry, opBGP, context) ;
-    }
-    
-    // Normally, property functionprocessing is done before quad conversion
-    // we could convert back to OpGraph and so handle quads 
-    
-    // For the moment, leave in old mode.
-    
-//    @Override
-//    public Op transform(OpQuad opQuad)
-//    {
-//        if ( ! doingMagicProperties )
-//            return super.transform(opQuad) ; ;
-//        check(opQuad.getQuad().getPredicate()) ;
-//        return super.transform(opQuad) ;
-//    }
-//    
-//    private void check(Node p)
-//    {
-//        if ( p.isURI() )
-//        {
-//            if ( registry.manages(p.getURI()) )
-//                Log.warn(this,  "Property function in quad: "+p) ;
-//        }
-//    }
-//    
-//    @Override
-//    public Op transform(OpQuadPattern opQuadPattern)
-//    {
-//        if ( ! doingMagicProperties )
-//            return super.transform(opQuadPattern) ; ;
-//        
-//        for ( Triple t : opQuadPattern.getBasicPattern().getList() )
-//            check(t.getPredicate()) ;
-//        
-//        return super.transform(opQuadPattern) ;
-//    }
 
+    @Override
+    public Op transform(OpBGP opBGP) {
+        if ( !doingPropertyFunctions )
+            return opBGP;
+        return PropertyFunctionGenerator.buildPropertyFunctions(registry, opBGP, context);
+    }
+
+    // Property function processing is done before quad conversion
+    // To change that, implement:
+
+//    @Override
+//    public Op transform(OpQuad opQuad) {
+//        if ( ! doingPropertyFunctions )
+//            return super.transform(opQuad);
+//        ...
+//
+//    }
+//
+//    @Override
+//    public Op transform(OpQuadPattern opQuadPattern) {
+//        if ( ! doingPropertyFunctions )
+//            return super.transform(opQuadPattern);
+//        ...
+//    }
 }
 

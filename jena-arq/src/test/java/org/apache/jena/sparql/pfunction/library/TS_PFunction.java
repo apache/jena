@@ -24,6 +24,7 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestStrSplit.class
+    , TestCustomPropertyFunction.class
 })
 
 public class TS_PFunction {
