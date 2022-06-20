@@ -20,6 +20,7 @@ package org.apache.jena.rdflink;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecutionBuilder;
@@ -82,7 +83,10 @@ public class RDFLinkAdapter implements RDFLink {
     public boolean isInTransaction() { return conn.isInTransaction(); }
 
     @Override
-    public DatasetGraph getDataset() { return conn.fetchDataset().asDatasetGraph(); }
+    public DatasetGraph getDataset() {
+        Dataset ds = conn.fetchDataset();
+        return ds == null ? null : ds.asDatasetGraph();
+    }
 
     @Override
     public QueryExec query(Query query) { return QueryExec.adapt(conn.query(query)); }

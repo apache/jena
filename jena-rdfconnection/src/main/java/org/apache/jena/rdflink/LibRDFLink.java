@@ -59,19 +59,19 @@ class LibRDFLink {
     }
 
     /*package*/ static Model graph2model(Graph graph) {
-        return ModelFactory.createModelForGraph(graph);
+        return graph == null ? null : ModelFactory.createModelForGraph(graph);
     }
 
     /*package*/ static Graph model2graph(Model model) {
-        return model.getGraph();
+        return model == null ? null : model.getGraph();
     }
 
     /*package*/ static Dataset asDataset(DatasetGraph dsg) {
-        return DatasetFactory.wrap(dsg);
+        return dsg == null ? null : DatasetFactory.wrap(dsg);
     }
 
     /*package*/ static DatasetGraph asDatasetGraph(Dataset dataset) {
-        return dataset.asDatasetGraph();
+        return dataset == null ? null : dataset.asDatasetGraph();
     }
 
     /*package*/ static Node name(String graphName) {
