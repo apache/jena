@@ -55,7 +55,10 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
     }
 
     @Override
-    protected QueryExec get() { return qExecHere; }
+    protected QueryExec get() {
+        execution();
+        return qExecHere;
+    }
 
     private void execution() {
         // Delay until used so setTimeout,setInitialBindings work.
