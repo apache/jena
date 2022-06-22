@@ -18,6 +18,10 @@
 
 package org.apache.jena.sparql.exec;
 
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestExecEnvironment {
@@ -29,4 +33,14 @@ public class TestExecEnvironment {
     // RegisterHttpClkient
 
     // RegistryRequestModifier
+
+
+    // https://github.com/apache/jena/issues/1393
+    @Test
+    public void testQueryExecAdapter() {
+        try (QueryExecution qExec = QueryExecutionFactory.create("SELECT * { ?s ?p ?o }", DatasetFactory.empty())) {
+            QueryExec qe  = QueryExecAdapter.adapt(qExec);
+            Assert.assertNotNull(qe);
+        }
+    }
 }
