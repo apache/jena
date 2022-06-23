@@ -1198,7 +1198,7 @@ public class FusekiServer {
             DataAccessPointRegistry dapRegistry = buildStart();
 
             // FusekiModule call - inspect the DataAccessPointRegistry.
-            FusekiModuleStep.configured(dapRegistry, configModel);
+            FusekiModuleStep.configured(this, dapRegistry, configModel);
 
             buildSecurity(dapRegistry);
             try {
