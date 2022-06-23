@@ -14,7 +14,7 @@ body:
   - type: textarea
     id: suggestion
     attributes:
-      label: Suggestion
+      label: Feature
       placeholder: Tell us about the suggestion.
     validations:
       required: true
