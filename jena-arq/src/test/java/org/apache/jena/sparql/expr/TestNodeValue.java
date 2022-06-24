@@ -1102,6 +1102,26 @@ public class TestNodeValue
         assertFalse(nv1.equals(nv2));
     }
 
+    //Compare value first and then language tag  
+    @Test
+    public void testLangCompareAlways1() {
+        Node n1 = org.apache.jena.graph.NodeFactory.createLiteral("abc", "en");
+        NodeValue nv1 = NodeValue.makeNode(n1);
+        Node n2 = org.apache.jena.graph.NodeFactory.createLiteral("bcd", "ar");
+        NodeValue nv2 = NodeValue.makeNode(n2);
+        assertTrue(NodeValue.compareAlways(nv1, nv2) == -1);
+    }
+    
+    //Language tag comparison ignore case first, then case sensitive 
+    @Test
+    public void testLangCompareAlways2() {
+        Node n1 = org.apache.jena.graph.NodeFactory.createLiteral("abc", "en");
+        NodeValue nv1 = NodeValue.makeNode(n1);
+        Node n2 = org.apache.jena.graph.NodeFactory.createLiteral("abc", "FR");
+        NodeValue nv2 = NodeValue.makeNode(n2);
+        assertTrue(NodeValue.compareAlways(nv1, nv2) == -1);
+    }
+    
     @Test
     public void testEquals1() {
         NodeValue nv1 = NodeValue.makeInteger(1);

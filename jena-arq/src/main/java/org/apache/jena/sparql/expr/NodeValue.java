@@ -734,10 +734,8 @@ public abstract class NodeValue extends ExprNode
                 // Two literals, both with language tags.
                 Node node1 = nv1.asNode() ;
                 Node node2 = nv2.asNode() ;
-                int x = StrUtils.strCompareIgnoreCase(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
-
-                if ( x != Expr.CMP_EQUAL )
-                {
+                int x = StrUtils.strCompare(node1.getLiteralLexicalForm(), node2.getLiteralLexicalForm()) ;
+                if ( x != Expr.CMP_EQUAL ) {
                     // Different lang tags
                     if ( ! sortOrderingCompare )
                         raise(new ExprNotComparableException("Can't compare (different languages) "+nv1+" and "+nv2)) ;
@@ -745,11 +743,14 @@ public abstract class NodeValue extends ExprNode
                     return x ;
                 }
 
-                // same lang tag (case insensitive)
-                x = StrUtils.strCompare(node1.getLiteralLexicalForm(), node2.getLiteralLexicalForm()) ;
-                if ( x != Expr.CMP_EQUAL )
+                x = StrUtils.strCompareIgnoreCase(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
+                if ( x != Expr.CMP_EQUAL ) {
+                    // Different lang tags
+                    if ( ! sortOrderingCompare )
+                        raise(new ExprNotComparableException("Can't compare (different languages) "+nv1+" and "+nv2)) ;
+                    // Different lang tags - sorting
                     return x ;
-                // Same lexical forms, same lang tag by value
+                }
                 // Try to split by syntactic lang tags.
                 x = StrUtils.strCompare(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
                 // Maybe they are the same after all!
