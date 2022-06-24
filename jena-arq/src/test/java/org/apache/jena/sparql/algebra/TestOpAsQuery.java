@@ -73,6 +73,10 @@ public class TestOpAsQuery {
     @Test public void testBind12() { test_roundTripQuery("SELECT ?w ('y' AS ?y) ?x { BIND('w' AS ?w) ?s ?p ?o BIND ('x' AS ?x) }"); }
     @Test public void testBind13() { test_roundTripQuery("SELECT ('x' AS ?x) (str(?x) AS ?y) (str(?x) AS ?z) {}"); }
 
+    // https://github.com/apache/jena/issues/1397
+    @Test public void testBind14() { test_roundTripQuery("SELECT * { GRAPH ?g { BIND('x' AS ?x) } }"); }
+    @Test public void testBind15() { test_roundTripQuery("SELECT * { GRAPH ?g { BIND('x' AS ?x) BIND('y' AS ?y) } }"); }
+
     @Test public void testOptional01()
     { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?q ?z FILTER (?foo) } }") ; }
 
