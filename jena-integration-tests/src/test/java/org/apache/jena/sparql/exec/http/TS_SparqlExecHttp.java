@@ -31,6 +31,7 @@ import org.junit.runners.Suite;
     , TestUpdateExecHTTP.class
     , TestServiceFunctions.class
     , TestService.class
+    , TestService2.class
     , TestServiceAuth.class
     , TestSetupHTTP.class
 })

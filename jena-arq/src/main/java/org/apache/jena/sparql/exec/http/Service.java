@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.http.HttpEnv;
@@ -235,10 +236,48 @@ public class Service {
         return httpClient;
     }
 
+    /**
+     * Choose the QuerySendMode for execution.
+     * Normally, this is the system default.
+     * <p>
+     * Also allow it to be set specifically for SERVICE execution by setting httpServiceSendMode
+     * ("arq:httpServiceSendMode" in a Fuseki configuration file).
+     * <p>
+     * Acceptable values are
+     * <ul>
+     * <li>"POST or "GET"</li>
+     * <li> a {@link QuerySendMode} object</li>
+     * <li> a string with the same name as a {@link QuerySendMode}</li>
+     * <ul>
+     */
     private static QuerySendMode chooseQuerySendMode(String serviceURL, Context context, QuerySendMode dftValue) {
         if ( context == null )
             return dftValue;
-        return context.get(httpServiceSendMode, dftValue);
+        Object querySendMode = context.get(httpServiceSendMode, dftValue);
+        if ( querySendMode == null )
+            return dftValue;
+
+        if (querySendMode instanceof QuerySendMode)
+            // handle enum type from Java API
+            return (QuerySendMode) querySendMode;
+
+        if (querySendMode instanceof String) {
+            String str = (String) querySendMode;
+            // Specials.
+            if ( "POST".equalsIgnoreCase(str) )
+                return QuerySendMode.asPost;
+            if ( "GET".equalsIgnoreCase(str) )
+                return QuerySendMode.asGetAlways;
+            try {
+                // "asGetWithLimitForm", "asGetWithLimitBody", "asGetAlways", "asPostForm", "asPost"
+                return QuerySendMode.valueOf((String) querySendMode);
+            } catch (IllegalArgumentException ex) {
+                throw new QueryExecException("Failed to interpret '"+querySendMode+"' as a query send mode");
+            }
+        }
+        FmtLog.warn(Service.class,
+                    "Unrecognized object type '%s' as a query send mode - ignored", querySendMode.getClass().getSimpleName());
+        return dftValue;
     }
 
     // Timeout for connection is part of HttpClient (our default is 10s).
