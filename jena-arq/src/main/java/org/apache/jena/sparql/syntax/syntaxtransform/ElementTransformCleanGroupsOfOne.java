@@ -32,7 +32,7 @@ import org.apache.jena.sparql.syntax.* ;
  */
 public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
     // Improvements: scan group elements to work out for non-reduceable adjacents.
-    // These ones may clash with an adjeact one in the group above.
+    // These ones may clash with an adjacent one in the group above.
     // ElementTransformCleanGroupsOfOne -> ElementTransformCleanGroups
 
     public ElementTransformCleanGroupsOfOne() {}
@@ -45,7 +45,11 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
         if ( ( elt instanceof ElementTriplesBlock ) ||
              ( elt instanceof ElementPathBlock ) ||
              ( elt instanceof ElementFilter ) ||
-             ( elt instanceof ElementBind ) )
+             ( elt instanceof ElementBind ) ||
+             ( elt instanceof ElementAssign ) ||
+             ( elt instanceof ElementMinus ) ||
+             ( elt instanceof ElementOptional )
+           )
             return super.transform(eltGroup, elts) ;    // No transformation.
         return elt ;
     }
@@ -127,6 +131,4 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
         ElementGroup eltGroup2 = (ElementGroup)el ;
         return unwrap(eltGroup2) ;
     }
-
 }
-
