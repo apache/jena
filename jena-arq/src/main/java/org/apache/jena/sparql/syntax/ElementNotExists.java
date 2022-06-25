@@ -24,24 +24,30 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
 public class ElementNotExists extends Element1
 {
-    public ElementNotExists(Element el) { super(el) ; }
-    
-    @Override
-    public int hashCode() { return getElement().hashCode() ^ Element.HashNotExists ; }
-
-    @Override
-    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
-    {
-        if ( el2 == null ) return false ;
-
-        if ( ! ( el2 instanceof ElementNotExists ) )
-            return false ;
-        ElementNotExists unsaid2 = (ElementNotExists)el2 ;
-        if ( ! this.getElement().equalTo(unsaid2.getElement(), isoMap) )
-            return false ;
-        return true ;
+    public ElementNotExists(Element el) {
+        super(el);
     }
-    
+
     @Override
-    public void visit(ElementVisitor v) { v.visit(this) ; }
+    public int hashCode() {
+        return getElement().hashCode() ^ Element.HashNotExists;
+    }
+
+    @Override
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
+        if ( el2 == null )
+            return false;
+
+        if ( !(el2 instanceof ElementNotExists) )
+            return false;
+        ElementNotExists eltNotExists = (ElementNotExists)el2;
+        if ( !this.getElement().equalTo(eltNotExists.getElement(), isoMap) )
+            return false;
+        return true;
+    }
+
+    @Override
+    public void visit(ElementVisitor v) {
+        v.visit(this);
+    }
 }

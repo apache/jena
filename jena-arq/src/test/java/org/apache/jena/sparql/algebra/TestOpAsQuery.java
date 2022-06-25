@@ -453,6 +453,54 @@ public class TestOpAsQuery {
 
     @Test public void testMinus05() { test_roundTripQuery("SELECT * { GRAPH ?g { MINUS { ?s ?p ?o } ?x ?y ?z } }"); }
 
+    // ARQ extension: EXISTS and NOT EXISTS as graph pattern (becomes a filter).
+    // Base case for EXISTS (NOTEXISTS)
+    @Test public void testExists01() { test_roundTripQuery("SELECT * { ?x ?y ?z EXISTS { ?s ?p ?o } }",
+                                                           "SELECT * { ?x ?y ?z FILTER EXISTS { ?s ?p ?o } }",
+                                                           syntaxARQ); }
+    @Test public void testExists02() { test_roundTripQuery("SELECT * { EXISTS { ?s ?p ?o } }",
+                                                           "SELECT * { {} FILTER EXISTS { ?s ?p ?o } }",
+                                                           syntaxARQ); }
+
+    @Test public void testExists03() { test_roundTripQuery("SELECT * { GRAPH ?g { FILTER (EXISTS { ?s ?p ?o }) } }",
+                                                           "SELECT * { GRAPH ?g { {} FILTER (EXISTS { ?s ?p ?o }) } }"
+                                                           ); }
+
+    @Test public void testExists04() { test_roundTripQuery("SELECT * { GRAPH ?g { EXISTS { ?s ?p ?o } } }",
+                                                           "SELECT * { GRAPH ?g { {} FILTER (EXISTS { ?s ?p ?o }) } }",
+                                                           syntaxARQ); }
+
+    @Test public void testExists05() { test_roundTripQuery("SELECT * { GRAPH ?g { ?s ?p ?o EXISTS { ?s ?p ?o } } }",
+                                                              "SELECT * { GRAPH ?g { ?s ?p ?o FILTER(EXISTS { ?s ?p ?o }) } }",syntaxARQ); }
+
+    // Extra nesting.
+    @Test public void testExists06() { test_roundTripQuery("SELECT * { GRAPH ?g { ?x ?y ?z EXISTS { ?s ?p ?o } ?x ?y ?z } }",
+                                                           "SELECT * { GRAPH ?g { { ?x ?y ?z FILTER(EXISTS { ?s ?p ?o }) } ?x ?y ?z } }",
+                                                              syntaxARQ); }
+
+    @Test public void testNotExists01() { test_roundTripQuery("SELECT * { ?x ?y ?z NOT EXISTS { ?s ?p ?o } }",
+                                                           "SELECT * { ?x ?y ?z FILTER NOT EXISTS { ?s ?p ?o } }",
+                                                           syntaxARQ); }
+    @Test public void testNotExists02() { test_roundTripQuery("SELECT * { NOT EXISTS { ?s ?p ?o } }",
+                                                           "SELECT * { {} FILTER NOT EXISTS { ?s ?p ?o } }",
+                                                           syntaxARQ); }
+    @Test public void testNotExists03() { test_roundTripQuery("SELECT * { GRAPH ?g { FILTER (NOT EXISTS { ?s ?p ?o }) } }",
+                                                           "SELECT * { GRAPH ?g { {} FILTER (NOT EXISTS { ?s ?p ?o }) } }"
+                                                           ); }
+    @Test public void testNotExists04() { test_roundTripQuery("SELECT * { GRAPH ?g { NOT EXISTS { ?s ?p ?o } } }",
+                                                           "SELECT * { GRAPH ?g { {} FILTER (NOT EXISTS { ?s ?p ?o }) } }",
+                                                           syntaxARQ); }
+
+    @Test public void testNotExists05() { test_roundTripQuery("SELECT * { GRAPH ?g { ?s ?p ?o NOT EXISTS { ?s ?p ?o } } }",
+                                                              "SELECT * { GRAPH ?g { ?s ?p ?o FILTER(NOT EXISTS { ?s ?p ?o }) } }",syntaxARQ); }
+
+    // Extra nesting.
+    @Test public void testNotExists06() { test_roundTripQuery("SELECT * { GRAPH ?g { ?x ?y ?z NOT EXISTS { ?s ?p ?o } ?x ?y ?z } }",
+                                                           "SELECT * { GRAPH ?g { { ?x ?y ?z FILTER(NOT EXISTS { ?s ?p ?o }) } ?x ?y ?z } }",
+                                                              syntaxARQ); }
+
+
+
     @Test
     public void testTable1() {
         String query = "SELECT * WHERE { ?x ?p ?z . VALUES ?y { } }" ;
