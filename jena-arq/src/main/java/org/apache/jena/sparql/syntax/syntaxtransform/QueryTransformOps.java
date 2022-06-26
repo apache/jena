@@ -320,6 +320,7 @@ public class QueryTransformOps {
         public void visitSelectResultForm(Query query) {
             newQuery.setQuerySelectType();
             newQuery.setDistinct(query.isDistinct());
+            newQuery.setReduced(query.isReduced());
             copyProjection(query);
         }
 
