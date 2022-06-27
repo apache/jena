@@ -32,6 +32,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.util.NodeCmp;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -237,11 +238,16 @@ public class TestNodeValue
         assertEquals("Not Calendar.equals: ", v0.getDateTime(), v1.getDateTime());
     }
 
+    private static NodeValue parse(String nodeString) {
+        Node n = SSE.parseNode(nodeString);
+        NodeValue nv = NodeValue.makeNode(n);
+        return nv;
+    }
+
     @Test
     public void testDateTimeStamp1() {
         // xsd:dateTimeStamp is a derived datatype of xsd:dateTime.
-        Node n = SSE.parseNode("'2000-01-01T00:00:00+00:00'^^xsd:dateTimeStamp");
-        NodeValue nv = NodeValue.makeNode(n);
+        NodeValue nv = parse("'2000-01-01T00:00:00+00:00'^^xsd:dateTimeStamp");
         assertTrue(nv.isDateTime());
         assertFalse(nv.isDate());
     }
@@ -976,9 +982,6 @@ public class TestNodeValue
         assertArrayEquals(ordered, result.toArray(new String[0]));
     }
 
-    // TODO testSameValueDecimal tests
-    // TODO sameValueAs mixed tests
-
     @Test
     public void testSameValue1() {
         NodeValue nv1 = NodeValue.makeInteger(5);
@@ -1094,13 +1097,40 @@ public class TestNodeValue
 
     @Test
     public void testLang4() {
-        Node n1 = org.apache.jena.graph.NodeFactory.createLiteral("xyz", "en");
-        NodeValue nv1 = NodeValue.makeNode(n1);
-        Node n2 = org.apache.jena.graph.NodeFactory.createLiteral("xyz", "EN");
-        NodeValue nv2 = NodeValue.makeNode(n2);
+        NodeValue nv1 = parse("'xyz'@en");
+        NodeValue nv2 = parse("'xyz'@EN");
         assertFalse(NodeValue.notSameAs(nv1, nv2));
         assertFalse(nv1.equals(nv2));
     }
+
+    //Compare value first and then language tag
+    @Test
+    public void testLangCompareAlways1() {
+        // @de before @en => "'abc'@en" > "'bcd'@de" => +1
+        NodeValue nv1 = parse("'abc'@en");
+        NodeValue nv2 = parse("'bcd'@de");
+        assertEquals(Expr.CMP_GREATER, NodeCmp.compareRDFTerms(nv1.getNode(), nv2.getNode()));
+        assertEquals(Expr.CMP_GREATER, NodeValue.compareAlways(nv1, nv2));
+    }
+
+    //Language tag comparison ignore case first, then case sensitive
+    @Test
+    public void testLangCompareAlways2() {
+        // @FR before @it. => "'abc'@it" > "'abc'@FR" => +1
+        NodeValue nv1 = parse("'abc'@it");
+        NodeValue nv2 = parse("'abc'@FR");
+        assertEquals(Expr.CMP_GREATER, NodeCmp.compareRDFTerms(nv1.getNode(), nv2.getNode()));
+        assertEquals(Expr.CMP_GREATER, NodeValue.compareAlways(nv1, nv2));
+    }
+
+    public void testLangCompareAlways3() {
+        // @FR after @en. => "'abc'@en" < "'abc'@FR" => -1
+        NodeValue nv1 = parse("'abc'@en");
+        NodeValue nv2 = parse("'abc'@FR");
+        assertEquals(Expr.CMP_LESS, NodeCmp.compareRDFTerms(nv1.getNode(), nv2.getNode()));
+        assertEquals(Expr.CMP_LESS, NodeValue.compareAlways(nv1, nv2));
+    }
+
 
     @Test
     public void testEquals1() {
@@ -1174,12 +1204,13 @@ public class TestNodeValue
 
     @Test
     public void testTripleTerms3() {
+        // Jena 4.6.0 :: 'abc' < before 123
         Node n1 = SSE.parseNode("<<:s :p 123>>");
         Node n2 = SSE.parseNode("<<:s :p 'abc'>>");
         NodeValue nv1 = NodeValue.makeNode(n1);
         NodeValue nv2 = NodeValue.makeNode(n2);
         int x = NodeValue.compareAlways(nv1, nv2);
-        assertEquals(Expr.CMP_LESS, x);
+        assertEquals(Expr.CMP_GREATER, x);
     }
 
 }

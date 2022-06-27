@@ -587,7 +587,7 @@ public abstract class NodeValue extends ExprNode
                 return x ;
         } catch (ExprNotComparableException ex)
         { /* Drop through */ }
-        return NodeUtils.compareRDFTerms(nv1.asNode(), nv2.asNode()) ;
+        return NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode()) ;
     }
 
     /** Compare by value (and only value) if possible.
@@ -734,15 +734,14 @@ public abstract class NodeValue extends ExprNode
                 // Two literals, both with language tags.
                 Node node1 = nv1.asNode() ;
                 Node node2 = nv2.asNode() ;
-                int x = StrUtils.strCompareIgnoreCase(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
 
-                if ( x != Expr.CMP_EQUAL )
-                {
+                int x = StrUtils.strCompareIgnoreCase(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
+                if ( x != Expr.CMP_EQUAL ) {
                     // Different lang tags
-                    if ( ! sortOrderingCompare )
-                        raise(new ExprNotComparableException("Can't compare (different languages) "+nv1+" and "+nv2)) ;
+                    if ( !sortOrderingCompare )
+                        raise(new ExprNotComparableException("Can't compare (different languages) " + nv1 + " and " + nv2));
                     // Different lang tags - sorting
-                    return x ;
+                    return x;
                 }
 
                 // same lang tag (case insensitive)
@@ -774,7 +773,7 @@ public abstract class NodeValue extends ExprNode
             case VSPACE_NODE:
                 // Two non-literals don't compare except for sorting.
                 if ( sortOrderingCompare )
-                    return NodeUtils.compareRDFTerms(nv1.asNode(), nv2.asNode()) ;
+                    return NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode()) ;
                 else
                 {
                     raise(new ExprNotComparableException("Can't compare (nodes) "+nv1+" and "+nv2)) ;
@@ -791,7 +790,7 @@ public abstract class NodeValue extends ExprNode
                     return Expr.CMP_EQUAL ;
 
                 if ( sortOrderingCompare )
-                    return NodeUtils.compareRDFTerms(node1, node2) ;
+                    return NodeCmp.compareRDFTerms(node1, node2) ;
 
                 raise(new ExprNotComparableException("Can't compare "+nv1+" and "+nv2)) ;
                 throw new ARQInternalErrorException("NodeValue.raise returned") ;
@@ -800,7 +799,7 @@ public abstract class NodeValue extends ExprNode
             case VSPACE_DIFFERENT:
                 // Two literals, from different known value spaces
                 if ( sortOrderingCompare )
-                    return NodeUtils.compareRDFTerms(nv1.asNode(), nv2.asNode()) ;
+                    return NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode()) ;
 
                 raise(new ExprNotComparableException("Can't compare (incompatible value spaces)"+nv1+" and "+nv2)) ;
                 throw new ARQInternalErrorException("NodeValue.raise returned") ;
