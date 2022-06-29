@@ -59,6 +59,10 @@ TDB, command line tools and Fuseki2.
 Once the whole of Jena has been built once, individual modules can be incrementally
 built using maven in their module directory.
 
+To build the whole project, quickly and dirtily, i.e, skipping tests (but building them because that's required) and skipping javadoc generation (because it might fail):
+
+    mvn -DskipTests -Dmaven.javadoc.skip=true clean install
+
 ## Build Notes
 
 The TDB tests on Microsoft Windows use a large amount of temporary disk space.
