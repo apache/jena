@@ -63,6 +63,17 @@ To build the whole project, quickly and dirtily, i.e, skipping tests (but buildi
 
     mvn -DskipTests -Dmaven.javadoc.skip=true clean install
 
+Build only a specific module (e.g. `jena-arq`) and its dependencies
+
+    mvn -pl :jena-arq -am install
+
+Also useful:
+
+`-Denforcer.skip` If the maven version is too old (e.g. server deployment), skipping the enforcer may still result in a successful build
+
+`-Drat.skip` Skips checking for license headers; useful during development.
+
+
 ## Build Notes
 
 The TDB tests on Microsoft Windows use a large amount of temporary disk space.
