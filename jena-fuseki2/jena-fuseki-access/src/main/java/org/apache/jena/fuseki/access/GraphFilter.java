@@ -34,7 +34,7 @@ import org.apache.jena.sparql.util.Symbol;
  * {@link #test(Tuple)} if the tuple graph slot is in the collection of graph names or
  * matchDefaultGraph is true. It can be used as an "allow" filter; it can be negated to
  * become a "deny" filter.
- * 
+ *
  * @see GraphFilterTDB1#graphFilter
  * @see GraphFilterTDB2#graphFilter
  */
@@ -43,29 +43,29 @@ public abstract class GraphFilter<X> implements Predicate<Tuple<X>> {
     private final boolean matchDefaultGraph;
 //    // This makes the GraphFilter stateful.
 //    private X slot = null;
-    
+
     protected GraphFilter(Collection<X> matches, boolean matchDefaultGraph) {
         this.graphs = new HashSet<X>(matches);
         this.matchDefaultGraph = matchDefaultGraph;
     }
-    
+
     public static Symbol getContextKey(DatasetGraph dsg) {
         dsg = DatasetGraphAccessControl.removeWrapper(dsg);
-        
+
         if ( org.apache.jena.tdb.sys.TDBInternal.isTDB1(dsg) )
             return org.apache.jena.tdb.sys.SystemTDB.symTupleFilter;
         if ( org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) )
             return org.apache.jena.tdb2.sys.SystemTDB.symTupleFilter;
         throw new IllegalArgumentException("Not a TDB database");
     }
-    
+
     public abstract Symbol getContextKey();
-    
+
     @Override
     public boolean test(Tuple<X> t) {
         if ( t.len() == 3 ) {
             // Default graph.
-            return matchDefaultGraph; 
+            return matchDefaultGraph;
         }
         X g = t.get(0);
         boolean b = perGraphTest(g);
@@ -75,13 +75,5 @@ public abstract class GraphFilter<X> implements Predicate<Tuple<X>> {
     // The per graph test.
     private boolean perGraphTest(X g) {
         return graphs.contains(g);
-//        if ( g == slot ) {
-//            System.err.println("Slot hit");
-//            return true;
-//        }
-//        boolean b = matches.contains(g);
-//        if ( b )
-//            slot = g ;
-//        return b;
     }
 }

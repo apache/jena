@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.util;
 
-import org.apache.jena.atlas.lib.TestDateTimeUtils ;
-import org.apache.jena.sparql.util.compose.TS_DatasetCollectors;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -28,10 +26,8 @@ import org.junit.runners.Suite.SuiteClasses ;
 @SuiteClasses( {
     TestDateTimeParsing.class ,
     TestList.class ,
-    TestDateTimeUtils.class ,
     TestFmtUtils.class,
-    TS_DyadicDatasetGraphs.class,
-    TS_DatasetCollectors.class
+    TestVersion.class
 })
 public class TS_Util
 { }

@@ -64,7 +64,7 @@ public class GraphContainerUtils
                 if ( index == NOT_FOUND )
                     continue ;
                 // Insert 
-                triples.put(new Integer(index), t.getObject()) ;
+                triples.put(Integer.valueOf(index), t.getObject()) ;
             }
         } finally { iter.close() ; }
         return triples.values() ;

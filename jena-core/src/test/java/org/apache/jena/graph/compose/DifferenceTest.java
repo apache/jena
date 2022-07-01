@@ -30,7 +30,6 @@ import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.ContractSuite;
 import org.xenei.junit.contract.ContractTest;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.compose.Difference;
 import org.apache.jena.testing_framework.AbstractGraphProducer;
 import org.xenei.junit.contract.IProducer;
 

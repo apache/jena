@@ -27,7 +27,7 @@ import org.apache.jena.atlas.io.StringWriterI ;
 public class EscapeStr
 {
     /*
-     * Escape characters in a string according to Turtle rules. 
+     * Escape characters in a string according to Turtle rules.
      */
     public static String stringEsc(String s) {
         AWriter w = new StringWriterI() ;
@@ -47,23 +47,24 @@ public class EscapeStr
                 continue ;
             }
             switch(c) {
-                case '\n':  out.print("\\n"); continue; 
-                case '\t':  out.print("\\t"); continue; 
-                case '\r':  out.print("\\r"); continue; 
-                case '\f':  out.print("\\f"); continue; 
+                case '\n':  out.print("\\n"); continue;
+                case '\t':  out.print("\\t"); continue;
+                case '\r':  out.print("\\r"); continue;
+                case '\f':  out.print("\\f"); continue;
                 default:    // Drop through
             }
             if ( !asciiOnly )
                 out.print(c);
-            else 
+            else
                 writeCharAsASCII(out, c) ;
         }
     }
-    
+
+    /** String escape, with quote escaping, including option for multi-line 3 quote form. */
     public static void stringEsc(AWriter out, String s, char quoteChar, boolean singleLineString) {
         stringEsc(out, s, quoteChar, singleLineString, CharSpace.UTF8);
     }
-    
+
     public static void stringEsc(AWriter out, String s, char quoteChar, boolean singleLineString, CharSpace charSpace) {
         boolean ascii = ( CharSpace.ASCII == charSpace ) ;
         int len = s.length() ;
@@ -80,36 +81,50 @@ public class EscapeStr
                 // Multiline string.
                 if ( c == quoteChar ) {
                     quotesInARow++ ;
-                    if ( quotesInARow == 3 ) {
+                    if ( (quotesInARow == 3) || (!singleLineString && (i == len - 1)) ) {
+                        // Always quote the final character for multiline use
+                        // otherwise it will run into the wrapping 3 quotes.
                         out.print("\\");
                         out.print(quoteChar);
-                        quotesInARow = 0; 
+                        quotesInARow = 0;
                         continue;
                     }
                 } else {
                     quotesInARow = 0 ;
                 }
             } else {
+                // Single line.
                 if ( c == quoteChar ) {
                     out.print("\\"); out.print(c) ; continue ;
                 }
                 switch(c) {
-                    case '\n':  out.print("\\n"); continue; 
-                    case '\t':  out.print("\\t"); continue; 
-                    case '\r':  out.print("\\r"); continue; 
-                    case '\f':  out.print("\\f"); continue; 
+                    case '\n':  out.print("\\n"); continue;
+                    case '\t':  out.print("\\t"); continue;
+                    case '\r':  out.print("\\r"); continue;
+                    case '\f':  out.print("\\f"); continue;
                     default:    // Drop through
                 }
             }
 
-            if ( !ascii )
-                out.print(c);
-            else 
+            if ( ascii ) {
                 writeCharAsASCII(out, c) ;
-        }
+                continue;
+            }
+
+            if ( c == '\uFFFD' ) {
+                // Unicode replacement character: write as \-u escape
+                // The text tokenizer raises warnings on raw U+FFFD. A replacement character is generated
+                // if a decoding error occurs (e.g. ISO-8859-1 passed into UTF-8); there is no literal U+FFFD
+                // in the original input. Written as a unicode escape is not treated as a warning.
+                out.print("\\uFFFD");
+                continue;
+            }
+
+            // Normal case!
+            out.print(c);        }
     }
 
-    /** Write a string with Unicode to ASCII conversion using \-u escapes */  
+    /** Write a string with Unicode to ASCII conversion using \-u escapes */
     public static void writeASCII(AWriter out, String s) {
         int len = s.length() ;
         for (int i = 0; i < len; i++) {
@@ -137,21 +152,27 @@ public class EscapeStr
     /** Replace \ escapes (\\u, \t, \n etc) in a string */
     public static String unescapeStr(String s)
     { return unescapeStr(s, '\\') ; }
-    
+
     /** Replace \ escapes (\\u, \t, \n etc) in a string */
     public static String unescapeStr(String s, char escapeChar)
     { return unescape(s, escapeChar, false) ; }
 
+
+    /** Unicode escapes  \-u and \-U only */
+    public static String unescapeUnicode(String s) {
+        return unescape(s, '\\', true) ;
+    }
+
     // Main worker function for unescaping strings.
     public static String unescape(String s, char escape, boolean pointCodeOnly) {
         int i = s.indexOf(escape) ;
-        
+
         if ( i == -1 )
             return s ;
-        
+
         // Dump the initial part straight into the string buffer
         StringBuilder sb = new StringBuilder(s.substring(0,i)) ;
-        
+
         for ( ; i < s.length() ; i++ )
         {
             char ch = s.charAt(i) ;
@@ -161,54 +182,62 @@ public class EscapeStr
                 sb.append(ch) ;
                 continue ;
             }
-                
+
             // Escape
             if ( i >= s.length()-1 )
                 throw new AtlasException("Illegal escape at end of string") ;
             char ch2 = s.charAt(i+1) ;
             i = i + 1 ;
-            
+
             // \\u and \\U
             if ( ch2 == 'u' )
             {
-                // i points to the \ so i+6 is next character
                 if ( i+4 >= s.length() )
                     throw new AtlasException("\\u escape too short") ;
-                int x = Hex.hexStringToInt(s, i+1, 4) ;
-                sb.append((char)x) ;
+                int x4 = Hex.hexStringToInt(s, i+1, 4) ;
+                sb.append((char)x4) ;
                 // Jump 1 2 3 4 -- already skipped \ and u
                 i = i+4 ;
                 continue ;
             }
             if ( ch2 == 'U' )
             {
-                // i points to the \ so i+6 is next character
                 if ( i+8 >= s.length() )
                     throw new AtlasException("\\U escape too short") ;
-                int x = Hex.hexStringToInt(s, i+1, 8) ;
-                // Convert to UTF-16 codepoint pair.
-                sb.append((char)x) ;
+                int ch8 = Hex.hexStringToInt(s, i+1, 8) ;
+                if ( Character.charCount(ch8) == 1 )
+                    sb.append((char)ch8);
+                else {
+                    // See also TokenerText.insertCodepoint and TokenerText.readUnicodeEscape
+                    // Convert to UTF-16. Note that the rest of any system this is used
+                    // in must also respect codepoints and surrogate pairs.
+                    if ( !Character.isDefined(ch8) && !Character.isSupplementaryCodePoint(ch8) )
+                        throw new AtlasException(String.format("Illegal codepoint: 0x%04X", ch8));
+                    if ( ch8 > Character.MAX_CODE_POINT )
+                        throw new AtlasException(String.format("Illegal code point in \\U sequence value: 0x%08X", ch8));
+                    char[] chars = Character.toChars(ch8);
+                    sb.append(chars);
+                }
                 // Jump 1 2 3 4 5 6 7 8 -- already skipped \ and u
                 i = i+8 ;
                 continue ;
             }
-            
+
             // Are we doing just point code escapes?
-            // If so, \X-anything else is legal as a literal "\" and "X" 
-            
+            // If so, \X-anything else is legal as a literal "\" and "X"
+
             if ( pointCodeOnly )
             {
                 sb.append('\\') ;
                 sb.append(ch2) ;
-                i = i + 1 ;
                 continue ;
             }
-            
+
             // Not just codepoints.  Must be a legal escape.
             char ch3 = 0 ;
             switch (ch2)
             {
-                case 'n': ch3 = '\n' ;  break ; 
+                case 'n': ch3 = '\n' ;  break ;
                 case 't': ch3 = '\t' ;  break ;
                 case 'r': ch3 = '\r' ;  break ;
                 case 'b': ch3 = '\b' ;  break ;

@@ -22,7 +22,8 @@ import static org.apache.jena.sparql.util.StringUtils.printAbbrev ;
 
 import java.util.ArrayList ;
 import java.util.List ;
-import org.apache.jena.atlas.iterator.AccString ;
+import java.util.stream.Collectors;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Node ;
@@ -34,20 +35,22 @@ import org.apache.jena.sparql.sse.Item ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/** Machinary.
+/** Machinery.
  * This code implements the connectiveness assumed by execution based on substitution (index joins).
  * i.e. if <code>{ ?x :p ?v . ?x :q ?w }</code> then <code>?x</code> is <code>TERM</code>
- * at the second triple. 
+ * at the second triple.
  */
 public abstract class ReorderTransformationSubstitution implements ReorderTransformation
 {
     static public final Logger log = LoggerFactory.getLogger(ReorderTransformationSubstitution.class) ;
-    static private final boolean DEBUG = false ;  
-    
+    static private final boolean DEBUG = false ;
+
     public ReorderTransformationSubstitution() {}
-    
+
     @Override
-    public BasicPattern reorder(BasicPattern pattern) {
+    public  final BasicPattern reorder(BasicPattern pattern) {
+        if ( pattern.size() <= 1 )
+            return pattern;
         return reorderIndexes(pattern).reorder(pattern) ;
     }
 
@@ -74,22 +77,17 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
         return components ;
     }
 
-    private AccString<PatternTriple> formatter() { 
-        return new AccString<PatternTriple>() { 
-            @Override
-            protected String toString(PatternTriple pt) {
-                return "(" + printAbbrev(pt.toString()) + ")" ;
-            }
-        } ;
+    private String formatted(List<PatternTriple> components) {
+        return components.stream().map(c->"(" + printAbbrev(c.toString()) + ")").collect(Collectors.joining(" "));
     }
-    
+
     protected ReorderProc reorder(List<Triple> triples, List<PatternTriple> components) {
         int N = components.size() ;
         int numReorder = N ;        // Maybe choose 4, say, and copy over the rest.
         int indexes[] = new int[N] ;
 
         if ( DEBUG )
-            log.debug("Reorder: " + Iter.asString(components, formatter())) ;
+            log.debug("Reorder: " + formatted(components));
 
         int idx = 0 ;
         for ( ; idx < numReorder ; idx++ ) {
@@ -114,8 +112,8 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
         ReorderProc proc = new ReorderProcIndexes(indexes) ;
 
         return proc ;
-    }    
-    
+    }
+
     /** Return index of next pattern triple */
     protected int chooseNext(List<PatternTriple> pTriples) {
         if ( DEBUG ) {
@@ -175,7 +173,7 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
                             x = 0.01 ;
                             break ;
                         case LAST :
-                            // Default action : 
+                            // Default action :
                             break ;
                         case ZERO :
                             x = 0 ;
@@ -185,7 +183,7 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
                             break ;
                     }
                 }
-                
+
                 // Not found. No default action.
                 // Make sure something is returned but otherwise ignore this pattern (goes
                 // last).
@@ -218,18 +216,18 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
 
     /** Return the weight of the pattern, or -1 if no knowledge for it */
     protected abstract double weight(PatternTriple pt) ;
-    
+
     protected enum DefaultChoice { ZERO, LAST, FIRST , NUMERIC ; }
     /** What to do if the {@link weight} comes back as "not found".
      * Choices are:
-     *    ZERO      Assume the weight is zero (the rules were complete over the data so this is a pattern that will not match the data. 
+     *    ZERO      Assume the weight is zero (the rules were complete over the data so this is a pattern that will not match the data.
      *    LAST      Place after all explicitly weighted triple patterns
      *    FIRST     Place before all explicitly weighted triple patterns
      *    NUMERIC   Use value returned by {@link defaultWeight}
-     * The default, default choice is LAST.   
+     * The default, default choice is LAST.
      */
     protected DefaultChoice defaultChoice(PatternTriple pt) { return null ; } // return DefaultChoice.LAST ; }
-    
+
     protected double defaultWeight(PatternTriple pt) { return -1 ; }
 
     /** Update components to note any variables from triple */
@@ -255,7 +253,7 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
                 elt.object = PatternElements.TERM ;
         }
     }
-    
+
     /** Update based on a variable/value (c.f. Substitute.substitute) */
     protected static void update(Var var, Node value, List<PatternTriple> components) {
         for ( PatternTriple elt : components )

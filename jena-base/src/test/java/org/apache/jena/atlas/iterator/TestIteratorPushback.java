@@ -18,15 +18,15 @@
 
 package org.apache.jena.atlas.iterator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.PushbackIterator ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestIteratorPushback extends BaseTest
+public class TestIteratorPushback
 {
 
     static List<String> data = new ArrayList<>() ;

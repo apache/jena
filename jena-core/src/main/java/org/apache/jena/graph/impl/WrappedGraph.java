@@ -29,11 +29,11 @@ public class WrappedGraph implements GraphWithPerform
 {
     protected final Graph base;
     public Graph getWrapped() { return base ; }
-    
+
     protected GraphEventManager gem;
-    
+
     public WrappedGraph( Graph base )
-    { this.base = base; } 
+    { this.base = base; }
 
     @Override
     public boolean dependsOn( Graph other )
@@ -44,17 +44,13 @@ public class WrappedGraph implements GraphWithPerform
     { return base.getTransactionHandler(); }
 
     @Override
-    public GraphStatisticsHandler getStatisticsHandler()
-    { return base.getStatisticsHandler(); }
-
-    @Override
     public Capabilities getCapabilities()
     { return base.getCapabilities(); }
 
     @Override
     public GraphEventManager getEventManager()
     {
-        if (gem == null) gem = new SimpleEventManager( ); 
+        if (gem == null) gem = new SimpleEventManager( );
         return gem;
     }
 
@@ -80,7 +76,7 @@ public class WrappedGraph implements GraphWithPerform
     public void clear()
     {
         base.clear() ;
-        getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;   
+        getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;
     }
 
     @Override

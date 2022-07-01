@@ -30,8 +30,10 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/** This class provides the Jena Graph interface to a remote SPARQL endpoint.
- *  Efficiency not guaranteed. */
+/**
+ * This class provides the Jena Graph interface to a remote SPARQL endpoint.
+ * Efficiency not guaranteed.
+ */
 
 public class GraphSPARQLService extends GraphBase implements Graph
 {
@@ -39,30 +41,30 @@ public class GraphSPARQLService extends GraphBase implements Graph
 
     private String serviceURI ;
     private String graphIRI = null ;
-    
+
     // Remote default graph
     public GraphSPARQLService(String serviceURI)
-    {  
+    {
         this.serviceURI = serviceURI ;
         this.graphIRI = null ;
     }
-    
+
     // Remote named graph
     public GraphSPARQLService(String serviceURI, String graphIRI)
-    {  
+    {
         this.serviceURI = serviceURI ;
         this.graphIRI = graphIRI ;
     }
 
 //    @Override
 //    public Capabilities getCapabilities()
-//    { 
+//    {
 //    	if (capabilities == null)
 //            capabilities = new AllCapabilities()
 //        	  { @Override public boolean handlesLiteralTyping() { return false; } };
 //        return capabilities;
 //    }
-    
+
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple m)
     {
@@ -73,7 +75,7 @@ public class GraphSPARQLService extends GraphBase implements Graph
             sVar = Var.alloc("s") ;
             s = sVar ;
         }
-        
+
         Node p = m.getMatchPredicate() ;
         Var pVar = null ;
         if ( p == null )
@@ -81,7 +83,7 @@ public class GraphSPARQLService extends GraphBase implements Graph
             pVar = Var.alloc("p") ;
             p = pVar ;
         }
-        
+
         Node o = m.getMatchObject() ;
         Var oVar = null ;
         if ( o == null )
@@ -89,22 +91,21 @@ public class GraphSPARQLService extends GraphBase implements Graph
             oVar = Var.alloc("o") ;
             o = oVar ;
         }
-        
+
         Triple triple = new Triple(s, p ,o) ;
-        
+
         // Evaluate as an algebra expression
         BasicPattern pattern = new BasicPattern() ;
         pattern.add(triple) ;
         Op op = new OpBGP(pattern) ;
-        
-//        // Make remote execution object. 
+
+//        // Make remote execution object.
 //        System.err.println("GraphSPARQLService.graphBaseFind: Unimplemented : remote service execution") ;
 //        //Plan plan = factory.create(op, getDataset(), BindingRoot.create(), null) ;
 //
 //        QueryIterator qIter = plan.iterator() ;
 //        List<Triple> triples = new ArrayList<Triple>() ;
-//        
-//        
+//
 //        for (; qIter.hasNext() ; )
 //        {
 //            Binding b = qIter.nextBinding() ;

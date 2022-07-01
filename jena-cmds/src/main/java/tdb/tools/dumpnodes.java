@@ -47,7 +47,7 @@ public class dumpnodes extends CmdARQ {
     ModLocation modLocation = new ModLocation() ;
 
     static public void main(String... argv) {
-        LogCtl.setLog4j() ;
+        LogCtl.setLogging();
         new dumpnodes(argv).mainRun() ;
     }
 

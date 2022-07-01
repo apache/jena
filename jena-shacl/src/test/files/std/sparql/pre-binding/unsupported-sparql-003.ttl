@@ -1,0 +1,36 @@
+@prefix ex: <http://datashapes.org/sh/tests/sparql/pre-binding/unsupported-sparql-003.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<>
+	rdf:type mf:Manifest ;
+	mf:entries ( <unsupported-sparql-003> ) .
+    
+<unsupported-sparql-003>
+	rdf:type sht:Validate ;
+	rdfs:label "Test of unsupported SERVICE" ;
+	mf:action [
+		sht:dataGraph <> ;
+		sht:shapesGraph <> ;
+	] ;
+	mf:result sht:Failure ;
+	mf:status sht:approved .
+
+ex:TestShape
+	a sh:NodeShape ;
+	sh:targetNode ex:InvalidResource ;
+	sh:sparql [
+		sh:select """
+			SELECT $this
+			WHERE {
+				$this ?x ?any .
+				SERVICE <http://aldi.de> {
+					?a ?b ?c .
+				}
+			}""" ;
+	] .

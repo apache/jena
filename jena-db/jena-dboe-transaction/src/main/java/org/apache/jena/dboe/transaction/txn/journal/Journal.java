@@ -18,17 +18,17 @@
 
 package org.apache.jena.dboe.transaction.txn.journal;
 
-import static org.apache.jena.dboe.sys.Sys.SizeOfInt;
+import static org.apache.jena.dboe.sys.SysDB.SizeOfInt;
 
-import java.nio.ByteBuffer ;
-import java.util.Iterator ;
-import java.util.zip.Adler32 ;
+import java.nio.ByteBuffer;
+import java.util.Iterator;
+import java.util.zip.Adler32;
 
-import org.apache.jena.atlas.iterator.IteratorSlotted ;
-import org.apache.jena.atlas.lib.ByteBufferLib ;
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Sync ;
+import org.apache.jena.atlas.iterator.IteratorSlotted;
+import org.apache.jena.atlas.lib.ByteBufferLib;
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.lib.Sync;
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.BufferChannelFile;
 import org.apache.jena.dboe.base.file.BufferChannelMem;
@@ -37,8 +37,8 @@ import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.PrepareState;
 import org.apache.jena.dboe.transaction.txn.TransactionException;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** A transaction journal.
 * The journal is append-only for writes, with truncation of the file
@@ -51,22 +51,25 @@ import org.slf4j.LoggerFactory ;
 public final
 class Journal implements Sync, Closeable
 {
-    private static final boolean LOGGING = false ;
-    private static Logger log = LoggerFactory.getLogger(Journal.class) ;
-    
+    private static final boolean LOGGING = false;
+    private static Logger log = LoggerFactory.getLogger(Journal.class);
+
     private static boolean logging() {
-        return LOGGING && log.isInfoEnabled() ;
+        return LOGGING && log.isInfoEnabled();
     }
-    
+
     private static void log(String fmt, Object...args) {
         if ( ! logging() )
-            return ;
+            return;
         log.info(String.format(fmt, args));
     }
-    
-    private BufferChannel channel ;
-    private long position ;
-    
+
+    private BufferChannel channel;
+    private long position;
+    private final Location location;
+    private long journalWriteStart = -1;
+    private boolean journalWriteEnded = false;
+
     // Header: fixed, inc CRC
     //   length of data             4 bytes
     //   CRC of whole entry.        4 bytes
@@ -74,197 +77,267 @@ class Journal implements Sync, Closeable
     //   component                  16 bytes (fixed??)
     // Data area : variable
     //   Bytes
-    
-    private static final int posnLength     = 0 ;
-    private static final int posnCRC        = posnLength + SizeOfInt ;
-    private static final int posnEntry      = posnCRC    + SizeOfInt ;
-    private static final int posnComponent  = posnEntry  + SizeOfInt ;
-    // Start of the component data area.
-    private static final int posnData       = posnComponent  + ComponentId.SIZE ;
-    
-    // Currently, the header is fixed size so this is the size.
-    private static int HeaderLen            = posnData-posnLength ;
-    
-    private ByteBuffer header    = ByteBuffer.allocate(HeaderLen) ;
-    
-    public static boolean exists(Location location) {
-        if ( location.isMem() )
-            return false ;
-        return FileOps.exists(journalFilename(location)) ;
-    }
 
-    public static Journal create(Location location) {
-        BufferChannel chan ;
-        String channelName = journalFilename(location) ;
+    private static final int posnLength     = 0;
+    private static final int posnCRC        = posnLength + SizeOfInt;
+    private static final int posnEntry      = posnCRC    + SizeOfInt;
+    private static final int posnComponent  = posnEntry  + SizeOfInt;
+    // Start of the component data area.
+    private static final int posnData       = posnComponent  + ComponentId.SIZE;
+
+    // Currently, the header is fixed size so this is the size.
+    private static int HeaderLen            = posnData-posnLength;
+
+    private ByteBuffer header    = ByteBuffer.allocate(HeaderLen);
+
+    public static boolean exists(Location location) {
+        if ( location.isMemUnique() )
+            return false;
         if ( location.isMem() )
-            chan = BufferChannelMem.create(channelName) ;
-        else
-            chan = BufferChannelFile.create(channelName) ;
-        return create(chan) ;
+            return location.exists(Names.journalFile);
+        return FileOps.exists(journalFilename(location));
     }
 
     public static Journal create(BufferChannel chan) {
-        return new Journal(chan) ;
+        return new Journal(chan, null);
+    }
+
+    public static Journal create(Location location) {
+        return new Journal(location);
     }
 
     private static String journalFilename(Location location) {
-        return location.absolute(Names.journalFile) ;
+        return location.absolute(Names.journalFile);
     }
 
-    private Journal(BufferChannel channel) {
-        this.channel = channel ;
-        position = 0 ;
+    private Journal(Location location) {
+        this(openFromLocation(location), location);
+    }
+
+    private Journal(BufferChannel chan, Location location) {
+        this.channel = chan;
+        this.position = 0;
+        this.location = location;
+    }
+
+    /**
+     * Forced reopen - Thread.interrupt causes java to close file.
+     * Attempt to close, open, and position.
+     */
+    public void reopen() {
+        if ( location == null )
+            // Can't reopen.
+            return;
+        if ( channel != null ) {
+            try { channel.close(); }
+            catch (Exception ex) { /*ignore*/ }
+        }
+        channel = openFromLocation(location);
+        long posn = writeStartPosn();
+        if ( posn >= 0 ) {
+            truncate(posn);
+            position = posn;
+            sync();
+        } else {
+            position = channel.size();
+        }
+        writeReset();
+    }
+
+    private static BufferChannel openFromLocation(Location location) {
+        String channelName = journalFilename(location);
+        if ( location.isMem() )
+            return BufferChannelMem.create(channelName);
+        else
+            return BufferChannelFile.create(channelName);
     }
 
     // synchronized : excessive?
     // Given the calling context, we know it's thread safe.
-    
+
     synchronized public long writeJournal(JournalEntry entry) {
-        long posn = write(entry.getType(), entry.getComponentId(), entry.getByteBuffer()) ;
+        long posn = write(entry.getType(), entry.getComponentId(), entry.getByteBuffer());
 
         if ( entry.getPosition() < 0 ) {
-            entry.setPosition(posn) ;
-            entry.setEndPosition(position) ;
+            entry.setPosition(posn);
+            entry.setEndPosition(position);
         }
-        return posn ;
+        return posn;
     }
 
 //    /** Write an entry and return its location in the journal */
 //    synchronized public void write(List<PrepareState> prepareStates) {
-//        prepareStates.forEach(this::write) ;
+//        prepareStates.forEach(this::write);
 //    }
 
     public long write(PrepareState prepareState) {
-        return write(JournalEntryType.REDO, prepareState.getComponent(), prepareState.getData()) ;
+        return write(JournalEntryType.REDO, prepareState.getComponent(), prepareState.getData());
     }
-    
+
     /** Write an entry and return it's location in the journal */
     synchronized public long write(JournalEntryType type, ComponentId componentId, ByteBuffer buffer) {
         // Check buffer set right.
         if ( LOGGING ) {
             log("write@%-3d >> %s %s %s", position, type.name(),
                 componentId == null ? "<null>" : componentId.label(),
-                buffer == null ? "<null>" : ByteBufferLib.details(buffer)) ;
+                buffer == null ? "<null>" : ByteBufferLib.details(buffer));
         }
 
-        long posn = position ;
-        int len = -1 ;
-        int bufferLimit = -1 ;
-        int bufferPosition = -1 ;
+        long posn = position;
+        int len = -1;
+        int bufferLimit = -1;
+        int bufferPosition = -1;
         if ( buffer != null ) {
-            bufferLimit = buffer.limit() ;
-            bufferPosition = buffer.position() ;
-            buffer.rewind() ;
-            len = buffer.remaining() ;
+            bufferLimit = buffer.limit();
+            bufferPosition = buffer.position();
+            buffer.rewind();
+            len = buffer.remaining();
         }
 
         // Header: (length/4, crc/4, entry/4, component/16)
 
-        header.clear() ;
-        header.putInt(len) ;
-        header.putInt(0) ; // Set CRC to zero
-        header.putInt(type.id) ;
-        header.put(componentId.getBytes()) ;
-        header.flip() ;
+        header.clear();
+        header.putInt(len);
+        header.putInt(0); // Set CRC to zero
+        header.putInt(type.id);
+        header.put(componentId.getBytes());
+        header.flip();
         // Need to put CRC in before writing.
 
-        Adler32 adler = new Adler32() ;
-        adler.update(header.array()) ;
+        Adler32 adler = new Adler32();
+        adler.update(header.array());
 
         if ( len > 0 ) {
-            adler.update(buffer) ;
-            buffer.rewind() ;
+            adler.update(buffer);
+            buffer.rewind();
         }
 
-        int crc = (int)adler.getValue() ;
-        header.putInt(posnCRC, crc) ;
+        int crc = (int)adler.getValue();
+        header.putInt(posnCRC, crc);
         if ( LOGGING )
-            log("write@    -- crc = %s", Integer.toHexString(crc) ) ;
-        channel.write(header) ;
+            log("write@    -- crc = %s", Integer.toHexString(crc) );
+        channel.write(header);
         if ( len > 0 ) {
-            channel.write(buffer) ;
-            buffer.position(bufferPosition) ;
-            buffer.limit(bufferLimit) ;
+            channel.write(buffer);
+            buffer.position(bufferPosition);
+            buffer.limit(bufferLimit);
         }
-        position += HeaderLen + len ;
+        position += HeaderLen + len;
         if ( LOGGING )
-            log("write@%-3d << %s", position, componentId.label()) ;
-        
+            log("write@%-3d << %s", position, componentId.label());
+
         if ( len > 0 ) {
-            buffer.position(bufferPosition) ;
-            buffer.limit(bufferLimit) ;
+            buffer.position(bufferPosition);
+            buffer.limit(bufferLimit);
         }
-        
-        return posn ;
+
+        return posn;
     }
 
     synchronized public JournalEntry readJournal(long id) {
-        return _readJournal(id) ;
+        return _readJournal(id);
     }
 
     private JournalEntry _readJournal(long id) {
-        long x = channel.position() ;
+        long x = channel.position();
         if ( x != id )
-            channel.position(id) ;
-        JournalEntry entry = _read() ;
-        long x2 = channel.position() ;
-        entry.setPosition(id) ;
-        entry.setEndPosition(x2) ;
+            channel.position(id);
+        JournalEntry entry = _read();
+        long x2 = channel.position();
+        entry.setPosition(id);
+        entry.setEndPosition(x2);
         if ( x != id )
-            channel.position(x) ;
-        return entry ;
+            channel.position(x);
+        return entry;
     }
+
+    // -- Journal write cycle used during Transaction.writerPrepareCommit.
+
+    public void startWrite() {
+        journalWriteStart = this.position;
+        journalWriteEnded = false;
+    }
+
+    public long writeStartPosn() { return journalWriteStart; }
+
+    public void commitWrite() {
+        journalWriteStart = -1;
+        journalWriteEnded = true;
+        channel.sync();
+    }
+
+    // Idempotent. Safe to call multiple times and after commit (when it has no effect).
+    public void abortWrite() {
+        if ( !journalWriteEnded && journalWriteStart > 0 ) {
+            truncate(journalWriteStart);
+            sync();
+        }
+        journalWriteEnded = true;
+    }
+
+    public void endWrite() {
+        if ( ! journalWriteEnded )
+            abortWrite();
+        writeReset();
+    }
+
+    private void writeReset() {
+        journalWriteStart = -1;
+        journalWriteEnded = false;
+    }
+    // -- Journal write cycle.
+
 
     // read one entry at the channel position.
     // Move position to end of read.
     private JournalEntry _read() {
         if ( LOGGING ) {
-            log("read@%-3d >>", channel.position()) ;   
+            log("read@%-3d >>", channel.position());
         }
-        
-        header.clear() ;
-        int lenRead = channel.read(header) ;
+
+        header.clear();
+        int lenRead = channel.read(header);
         if ( lenRead == -1 ) {
             // probably broken file.
-            throw new TransactionException("Read off the end of a journal file") ;
-            // return null ;
+            throw new TransactionException("Read off the end of a journal file");
+            // return null;
         }
         if ( lenRead != header.capacity() )
-            throw new TransactionException("Partial read of journal file") ;
-            
-        header.rewind() ;
+            throw new TransactionException("Partial read of journal file");
+
+        header.rewind();
         // Header: (length/4, crc/4, entry/4, component/16)
-        int len = header.getInt() ;
-        int checksum = header.getInt() ;
-        header.putInt(posnCRC, 0) ;
-        int entryType = header.getInt() ;
-        byte[] bytes = new byte[ComponentId.SIZE] ;
-        header.get(bytes) ;
-        ComponentId component = ComponentId.create(null, bytes) ;
+        int len = header.getInt();
+        int checksum = header.getInt();
+        header.putInt(posnCRC, 0);
+        int entryType = header.getInt();
+        byte[] bytes = new byte[ComponentId.SIZE];
+        header.get(bytes);
+        ComponentId component = ComponentId.create(null, bytes);
 
-        Adler32 adler = new Adler32() ;
-        adler.update(header.array()) ;
+        Adler32 adler = new Adler32();
+        adler.update(header.array());
 
-        ByteBuffer bb = null ;
+        ByteBuffer bb = null;
         if ( len > 0 ) {
-            bb = ByteBuffer.allocate(len) ;
-            lenRead = channel.read(bb) ;
+            bb = ByteBuffer.allocate(len);
+            lenRead = channel.read(bb);
             if ( lenRead != len )
-                throw new TransactionException("Failed to read the journal entry data: wanted " + len + " bytes, got " + lenRead) ;
-            bb.rewind() ;
-            adler.update(bb) ;
-            bb.rewind() ;
+                throw new TransactionException("Failed to read the journal entry data: wanted " + len + " bytes, got " + lenRead);
+            bb.rewind();
+            adler.update(bb);
+            bb.rewind();
         }
 
-        int crc = (int)adler.getValue() ;
+        int crc = (int)adler.getValue();
         if ( checksum != crc )
-            throw new TransactionException("Checksum error reading from the Journal. "+Integer.toHexString(checksum)+" / "+Integer.toHexString(crc)) ;
+            throw new TransactionException("Checksum error reading from the Journal. "+Integer.toHexString(checksum)+" / "+Integer.toHexString(crc));
 
-        JournalEntryType type = JournalEntryType.type(entryType) ;
-        JournalEntry entry = new JournalEntry(type, component, bb) ;
+        JournalEntryType type = JournalEntryType.type(entryType);
+        JournalEntry entry = new JournalEntry(type, component, bb);
         if ( LOGGING )
-            log("read@%-3d >> %s", channel.position(), entry) ;   
-        return entry ;
+            log("read@%-3d >> %s", channel.position(), entry);
+        return entry;
     }
 
     /**
@@ -272,13 +345,13 @@ class Journal implements Sync, Closeable
      * JournalEntry aligned at start.
      */
     private class IteratorEntries extends IteratorSlotted<JournalEntry> {
-        JournalEntry slot = null ;
-        final long   endPoint ;
-        long         iterPosn ;
+        JournalEntry slot = null;
+        final long   endPoint;
+        long         iterPosn;
 
         public IteratorEntries(long startPosition) {
-            iterPosn = startPosition ;
-            endPoint = channel.size() ;
+            iterPosn = startPosition;
+            endPoint = channel.size();
         }
 
         @Override
@@ -286,49 +359,50 @@ class Journal implements Sync, Closeable
             // synchronized necessary? Outer policy is single thread?
             synchronized (Journal.this) {
                 if ( iterPosn >= endPoint )
-                    return null ;
-                JournalEntry e = _readJournal(iterPosn) ;
-                iterPosn = e.getEndPosition() ;
-                return e ;
+                    return null;
+                JournalEntry e = _readJournal(iterPosn);
+                iterPosn = e.getEndPosition();
+                return e;
             }
         }
 
         @Override
         protected boolean hasMore() {
-            return iterPosn < endPoint ;
+            return iterPosn < endPoint;
         }
     }
 
     public Iterator<JournalEntry> entries() {
-        return new IteratorEntries(0) ;
+        return new IteratorEntries(0);
     }
 
     synchronized public Iterator<JournalEntry> entries(long startPosition) {
-        return new IteratorEntries(startPosition) ;
+        return new IteratorEntries(startPosition);
     }
 
     @Override
-    public void sync()  { channel.sync() ; }
+    public void sync()  { channel.sync(); }
 
     @Override
-    public void close() { channel.close() ; }
+    public void close() { channel.close(); }
 
-    public long size()  { return channel.size() ; }
-    
-    public boolean isEmpty()  { return channel.size() == 0 ; }
+    public long size()  { return channel.size(); }
 
-    public void truncate(long size) { channel.truncate(size) ; }
-    
-    public void reset() { 
-        truncate(0) ;
-        sync() ;
+    public boolean isEmpty()  { return channel.size() == 0; }
+
+    public void truncate(long size) { channel.truncate(size); }
+
+    public void reset() {
+        truncate(0);
+        sync();
     }
-    
-//    public void append()    { position(size()) ; }
-    
-     public long position() { return channel.position() ; }  
-    
-//    public void position(long posn) { channel.position(posn) ; }
-    
-    public String getFilename() { return channel.getFilename() ; }
+
+    public long position() { return channel.position(); }
+
+//    public void position(long posn) { channel.position(posn); }
+//    public void append()    { position(size()); }
+
+    public Location getLocation() { return location; }
+
+    public String getFilename() { return channel.getFilename(); }
 }

@@ -23,12 +23,12 @@ import java.io.InputStream ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.riot.thrift.BinRDF ;
+import org.apache.jena.riot.thrift.ThriftRDF;
 import org.apache.jena.sys.JenaSystem ;
 
 /** Dump an rdf-thrift file to show structure */ 
 public class dumpthrift {
-    static { LogCtl.setCmdLogging(); }
+    static { LogCtl.setLogging(); }
     static { JenaSystem.init() ; }
     
     public static void main(String... args) {
@@ -44,7 +44,7 @@ public class dumpthrift {
         // Leave a general loop ...
         for ( String fn : args ) {
             InputStream in = IO.openFile(fn) ; 
-            BinRDF.dump(System.out, in) ;
+            ThriftRDF.dump(System.out, in) ;
         }
     }
 }    

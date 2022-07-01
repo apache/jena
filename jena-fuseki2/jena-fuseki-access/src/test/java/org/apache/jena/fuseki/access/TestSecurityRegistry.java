@@ -26,7 +26,7 @@ import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sys.JenaSystem;
 import org.junit.Test;
 
-/** Test parsing of assemblers with security aspects */ 
+/** Test parsing of assemblers with security aspects */
 public class TestSecurityRegistry {
     static { JenaSystem.init(); }
     static final String DIR = "testing/SecurityRegistry/";
@@ -38,10 +38,10 @@ public class TestSecurityRegistry {
         assertEquals(4, sReg.keys().size());
         assertEquals(3, sReg.get("user1").visibleGraphs().size());
     }
-    
+
     @Test public void assemblerFile_2() {
         // WIP
-        //   user1, all named graphs                     
+        //   user1, all named graphs
         //   user2, all graphs
         //   user3, all named graphs +dft == all graphs
         //   any user, graph1
@@ -54,26 +54,26 @@ public class TestSecurityRegistry {
             Node x = sCxt.visibleGraphs().stream().findFirst().get();
             assertEquals(SecurityContext.allNamedGraphs, x);
         }
-        
+
         {
             SecurityContext sCxt = authService.get("user2");
             assertEquals(1, sCxt.visibleGraphs().size());
             Node x = sCxt.visibleGraphs().stream().findFirst().get();
             assertEquals(SecurityContext.allGraphs, x);
         }
-        
+
         {
             SecurityContext sCxt = authService.get("user3");
             assertEquals(1, sCxt.visibleGraphs().size());
             Node x = sCxt.visibleGraphs().stream().findFirst().get();
             assertEquals(SecurityContext.allGraphs, x);
         }
-        
+
         {
             SecurityContext sCxt = authService.get("*");
             assertEquals(1, sCxt.visibleGraphs().size());
             String x = sCxt.visibleGraphNames().stream().findFirst().get();
             assertEquals("http://host/graphname1", x);
-        }            
+        }
     }
 }

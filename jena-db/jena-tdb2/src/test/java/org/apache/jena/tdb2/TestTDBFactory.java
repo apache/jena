@@ -19,18 +19,17 @@
 package org.apache.jena.tdb2;
 
 import static org.junit.Assert.*;
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.system.Txn;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.rdf.model.Literal ;
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.ResourceFactory ;
-import org.apache.jena.tdb2.TDB2Factory;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.Test ;
+import org.junit.Test;
 
 /** Test of TDB2Factory - the Dataset level API to TDB2 **/
 public class TestTDBFactory
@@ -40,39 +39,39 @@ public class TestTDBFactory
     static Property p  =  ResourceFactory.createProperty("http://example/ns#", "p");
     static Literal  o1 =  ResourceFactory.createPlainLiteral("object");
     static Literal  o2 =  ResourceFactory.createTypedLiteral("1", XSDDatatype.XSDinteger);
-    
+
     @Test
     public void testTDBFactory1() {
-        TDBInternal.reset() ;
-        Dataset ds = TDB2Factory.connectDataset(Location.mem()) ;
+        TDBInternal.reset();
+        Dataset ds = TDB2Factory.connectDataset(Location.mem());
         test(ds);
     }
-    
+
     @Test
     public void testTDBFactory2() {
-        TDBInternal.reset() ;
-        Dataset ds = TDB2Factory.connectDataset(Location.mem("MEMORY")) ;
+        TDBInternal.reset();
+        Dataset ds = TDB2Factory.connectDataset(Location.mem("MEMORY"));
         test(ds);
     }
-    
+
     @Test
     public void testTDBFactory3() {
-        TDBInternal.reset() ;
+        TDBInternal.reset();
         // Only do disk things for tests that need them (disk takes time!).
-        String DIRx = ConfigTest.getCleanDir() ;
+        String DIRx = ConfigTest.getCleanDir();
         Location DIR = Location.create(DIRx);
-        try { 
-            FileOps.clearDirectory(DIRx) ;
-            Dataset ds = TDB2Factory.connectDataset(DIR) ;
+        try {
+            FileOps.clearDirectory(DIRx);
+            Dataset ds = TDB2Factory.connectDataset(DIR);
             test(ds);
-        } finally { FileOps.clearDirectory(DIRx) ; }
+        } finally { FileOps.clearDirectory(DIRx); }
     }
-    
+
     @Test
     public void testTDBFactory2DS_1() {
-        TDBInternal.reset() ;
-        Dataset ds1 = TDB2Factory.connectDataset(Location.mem("FOO")) ;
-        Dataset ds2 = TDB2Factory.connectDataset(Location.mem("FOO")) ;
+        TDBInternal.reset();
+        Dataset ds1 = TDB2Factory.connectDataset(Location.mem("FOO"));
+        Dataset ds2 = TDB2Factory.connectDataset(Location.mem("FOO"));
         Txn.executeWrite(ds1, ()->{
             ds1.getDefaultModel().add(s1, p, o1);
         });
@@ -80,13 +79,13 @@ public class TestTDBFactory
             assertTrue(ds2.getDefaultModel().contains(s1, p, o1));
         });
     }
-    
+
     @Test
     public void testTDBFactory2DS_2() {
-        TDBInternal.reset() ;
+        TDBInternal.reset();
         // The unnamed location is unique each time.
-        Dataset ds1 = TDB2Factory.connectDataset(Location.mem()) ;
-        Dataset ds2 = TDB2Factory.connectDataset(Location.mem()) ;
+        Dataset ds1 = TDB2Factory.connectDataset(Location.mem());
+        Dataset ds2 = TDB2Factory.connectDataset(Location.mem());
         Txn.executeWrite(ds1, ()->{
             ds1.getDefaultModel().add(s1, p, o1);
         });
@@ -94,23 +93,23 @@ public class TestTDBFactory
             assertFalse(ds2.getDefaultModel().contains(s1, p, o1));
         });
     }
-    
+
     @Test
     public void testTDBFactory2DS_3() {
-        TDBInternal.reset() ;
-        TDBInternal.reset() ;
-        String DIRx = ConfigTest.getCleanDir() ;
+        TDBInternal.reset();
+        TDBInternal.reset();
+        String DIRx = ConfigTest.getCleanDir();
         Location DIR = Location.create(DIRx);
         try {
-            Dataset ds1 = TDB2Factory.connectDataset(DIR) ;
-            Dataset ds2 = TDB2Factory.connectDataset(DIR) ;
+            Dataset ds1 = TDB2Factory.connectDataset(DIR);
+            Dataset ds2 = TDB2Factory.connectDataset(DIR);
             Txn.executeWrite(ds1, ()->{
                 ds1.getDefaultModel().add(s1, p, o1);
             });
             Txn.executeRead(ds2, ()->{
                 assertTrue(ds2.getDefaultModel().contains(s1, p, o1));
             });
-        } finally { FileOps.clearDirectory(DIRx) ; }
+        } finally { FileOps.clearDirectory(DIRx); }
     }
 
     private static void test(Dataset ds) {

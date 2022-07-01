@@ -25,20 +25,24 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.ContextAccumulator;
+import org.apache.jena.sparql.util.Symbol;
 
 public class RDFWriterBuilder {
     private DatasetGraph dataset = null;
     private Graph        graph   = null;
-    private Context      context = null;
     private Lang         lang    = null;
     private RDFFormat    format  = null;
     private String       baseURI = null;
-    
+    private ContextAccumulator contextAcc = ContextAccumulator.newBuilder(()->RIOT.getContext());
+
     /** A new {@code RDFWriterBuilder}.
      * <p>
-     * See also {@link RDFWriter#create()} 
+     * See also {@link RDFWriter#create()}
      */
-    RDFWriterBuilder () {}
+    private RDFWriterBuilder () {}
+
+    public static RDFWriterBuilder create() { return new RDFWriterBuilder() ; }
 
     /** Set the source of writing to the graph argument.
      * <p>
@@ -57,7 +61,7 @@ public class RDFWriterBuilder {
      * Any previous source setting is cleared.
      * <p>
      * Equivalent to {@code source(model.getGraph()(s)}
-     * 
+     *
      * @param model A {@link Model}.
      * @return this
      */
@@ -82,7 +86,7 @@ public class RDFWriterBuilder {
      * Any previous source setting is cleared.
      * <p>
      * Equivalent to {@code source(dataset.asDatasetGraph())}
-     * 
+     *
      * @param dataset A {@link DatasetGraph}.
      * @return this
      */
@@ -90,34 +94,58 @@ public class RDFWriterBuilder {
         return source(dataset.asDatasetGraph());
     }
 
-
 //    // Not implemented
 //    public RDFWriterBuilder labels(NodeToLabel nodeToLabel) { return this; }
-//    
+//
 //    // Not implemented
 //    public RDFWriterBuilder formatter(NodeFormatter nodeFormatter) { return this; }
 
-    /** Set the context for the writer when built.
-     *  
+    /**
+     * Set the context for the writer when built.
+     *
      * @param context
      * @return this
+     * @see Context
      */
-    public RDFWriterBuilder context(Context context) { 
-        if ( context != null )
-            context = context.copy();
-        this.context = context;
-        return this; 
+    public RDFWriterBuilder context(Context context) {
+        contextAcc.context(context);
+        return this;
     }
-    
+
     /**
-     * Set the output language to a {@link Lang}; this will set the format. 
+     * Add a setting to the context for the writer when built.
+     * @param symbol
+     * @param value
+     * @return this
+     * @see Context
+     */
+    public RDFWriterBuilder set(Symbol symbol, boolean value) {
+        contextAcc.set(symbol, value);
+        return this;
+    }
+
+    /**
+     * Added a setting to the context for the writer when built.
+     * A value of "null" removes a previous setting.
+     * @param symbol
+     * @param value
+     * @return this
+     * @see Context
+     */
+    public RDFWriterBuilder set(Symbol symbol, Object value) {
+        contextAcc.set(symbol, value);
+        return this;
+    }
+
+    /**
+     * Set the output language to a {@link Lang}; this will set the format.
      * <p>
      * If {@code Lang} and {@code RDFFormat} are not set, an attempt is made to guess it from file name or URI on output.
      * <p>
      * If output is to an {@code OutputStream}, {@code Lang} or {@code RDFFormat} must be set.
      * <p>
      * Any previous setting of {@code Lang} or {@code RDFFormat} is cleared.
-     * 
+     *
      * @param lang
      * @return this
      */
@@ -128,7 +156,7 @@ public class RDFWriterBuilder {
     }
 
     /**
-     * Set the output format to a {@link RDFFormat}. 
+     * Set the output format to a {@link RDFFormat}.
      * <p>
      * If {@code Lang} and {@code RDFFormat} are not set, an attempt is made to guess it from file name or URI on output.
      * <p>
@@ -143,50 +171,49 @@ public class RDFWriterBuilder {
         this.format = format;
         return this;
     }
-    
+
     public RDFWriterBuilder base(String baseURI) {
         this.baseURI = baseURI;
         return this;
     }
-    
+
     @Override
     public RDFWriterBuilder clone() {
         RDFWriterBuilder clone = new RDFWriterBuilder();
-        clone.dataset   = this.dataset;
-        clone.graph     = this.graph;
-        clone.context   = this.context;
-        clone.lang      = this.lang;
-        clone.format    = this.format;
-        clone.baseURI   = this.baseURI;
+        clone.dataset       = this.dataset;
+        clone.graph         = this.graph;
+        clone.contextAcc    = this.contextAcc.clone();
+        clone.lang          = this.lang;
+        clone.format        = this.format;
+        clone.baseURI       = this.baseURI;
         return clone;
     }
-    
-    public RDFWriter build() { 
-        if ( context == null )
-            context = RIOT.getContext().copy();
+
+    public RDFWriter build() {
+        Context context = contextAcc.context();
         if ( dataset == null && graph == null )
             throw new RiotException("No source to be written");
         return new RDFWriter(dataset, graph, format, lang, baseURI, context);
     }
-    
-    
+
+
     /** Short form for {@code build().output(outputStream)}.
-     * 
+     *
      * @param outputStream
      */
     public void output(OutputStream outputStream) {
         build().output(outputStream);
     }
-        
-    /** Short form for {@code build().output(v)}.
-     * 
+
+    /** Short form for {@code build().output(filename)}.
+     *
      * @param filename
      */
     public void output(String filename) {
         build().output(filename);
     }
-    
-    /** Short form for {@code build().output(v)}.
+
+    /** Short form for {@code build().asString()}.
      */
     public String asString() {
         return build().asString();

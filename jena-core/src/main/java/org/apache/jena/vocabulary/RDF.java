@@ -21,6 +21,7 @@ package org.apache.jena.vocabulary;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.impl.RDFLangString ;
 import org.apache.jena.datatypes.xsd.impl.RDFhtml ;
+import org.apache.jena.datatypes.xsd.impl.RDFjson;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Property ;
@@ -82,23 +83,41 @@ public class RDF{
     public static final RDFDatatype dtLangString = Init.dtLangString();
     public static final RDFDatatype dtXMLLiteral = Init.dtXMLLiteral();
 
+    // Added to the RDF namespace December 2019
+    // https://lists.w3.org/Archives/Public/semantic-web/2019Dec/0027.html
+
+    // rdfs:comment "The datatype of RDF literals storing JSON content."
+    public static final RDFDatatype dtRDFJSON    = Init.dtRDFJSON();
+    public static final Resource JSON            = Init.JSON();
+
+    // rdfs:comment "A class representing a compound literal."
+    public static final Resource CompoundLiteral = Init.CompoundLiteral();
+
+    // rdfs:comment "The language component of a CompoundLiteral."
+    public static final Property language        = Init.language();
+
+    // rdfs:comment "The base direction component of a CompoundLiteral."
+    public static final Property direction       = Init.direction();
+
+
     /** RDF constants are used during Jena initialization.
      * <p>
      * If that initialization is triggered by touching the RDF class,
      * then the constants are null.
      * <p>
-     * So for these cases, call this helper class: Init.function()   
+     * So for these cases, call this helper class: Init.function()
      */
     public static class Init {
+
         // JENA-1294
-        // Version that calculate the constant when called. 
+        // Version that calculates the constant when called.
         public static Resource Alt()              { return resource( "Alt" ); }
         public static Resource Bag()              { return resource( "Bag" ); }
         // Java8 bug : https://bugzilla.redhat.com/show_bug.cgi?id=1423421
-        // Can't have a methdo called Property() - it crashes the javadoc generation.
+        // Can't have a method called Property() - it crashes the javadoc generation.
         //  https://bugzilla.redhat.com/show_bug.cgi?id=1423421 ==>
         //  https://bugs.openjdk.java.net/browse/JDK-8061305
-        public static Resource _Property()         { return resource( "Property" ); }
+        public static Resource _Property()        { return resource( "Property" ); }
         public static Resource Seq()              { return resource( "Seq" ); }
         public static Resource Statement()        { return resource( "Statement" ); }
         public static Resource List()             { return resource( "List" ); }
@@ -110,21 +129,28 @@ public class RDF{
         public static Property object()           { return property( "object" ); }
         public static Property type()             { return property( "type" ); }
         public static Property value()            { return property( "value" ); }
-        
-        public static Resource langString()       { return ResourceFactory.createResource(dtLangString().getURI()) ; }
-        public static Resource HTML()             { return ResourceFactory.createResource(dtRDFHTML().getURI()) ; }
-        public static Resource xmlLiteral()       { return ResourceFactory.createResource(dtXMLLiteral().getURI()) ; }
-        
+
+        public static Resource langString()       { return ResourceFactory.createResource(dtLangString().getURI()); }
+        public static Resource HTML()             { return ResourceFactory.createResource(dtRDFHTML().getURI()); }
+        public static Resource xmlLiteral()       { return ResourceFactory.createResource(dtXMLLiteral().getURI()); }
+        public static Resource JSON()             { return ResourceFactory.createResource(dtRDFJSON().getURI()) ; }
+
+        public static Resource CompoundLiteral()  { return resource( "CompoundLiteral" ); }
+        public static Property language()         { return property( "language" ); }
+        public static Property direction()        { return property( "direction" ); }
+
         public static RDFDatatype dtRDFHTML()     { return RDFhtml.rdfHTML; }
         public static RDFDatatype dtLangString()  { return RDFLangString.rdfLangString; }
         public static RDFDatatype dtXMLLiteral()  { return XMLLiteralType.theXMLLiteralType; }
+        public static RDFDatatype dtRDFJSON()     { return RDFjson.rdfJSON; }
+
     }
-    
+
     /**
         The same items of vocabulary, but at the Node level, parked inside a
         nested class so that there's a simple way to refer to them.
     */
-    @SuppressWarnings("hiding") 
+    @SuppressWarnings("hiding")
     public static final class Nodes
     {
         public static final Node Alt        = Init.Alt().asNode();
@@ -144,5 +170,11 @@ public class RDF{
         public static final Node langString = Init.langString().asNode();
         public static final Node HTML       = Init.HTML().asNode();
         public static final Node xmlLiteral = Init.xmlLiteral().asNode();
+        // Added to the RDF namespace December 2019
+        // https://lists.w3.org/Archives/Public/semantic-web/2019Dec/0027.html
+        public static final Node JSON       = Init.JSON().asNode();
+        public static final Node CompoundLiteral = Init.CompoundLiteral().asNode();
+        public static final Node language   = Init.language().asNode();
+        public static final Node direction  = Init.direction().asNode();
     }
 }

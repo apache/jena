@@ -1,0 +1,24 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+
+[] rdf:type fuseki:Server .
+
+<#service1> rdf:type fuseki:Service ;
+    fuseki:name         "ds-named" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query;  fuseki:name "sparql"  ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:query;  fuseki:name "query"   ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update; fuseki:name "update"  ] ;
+    ## fuseki:endpoint [ fuseki:operation fuseki:upload; fuseki:name "upload"  ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp_r;  fuseki:name "get"     ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp_rw; fuseki:name "data"    ] ;
+
+    fuseki:dataset      <#emptyDataset> ;
+    .
+
+<#emptyDataset> rdf:type ja:RDFDataset .

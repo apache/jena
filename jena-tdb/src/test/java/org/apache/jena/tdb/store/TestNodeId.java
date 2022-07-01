@@ -18,16 +18,19 @@
 
 package org.apache.jena.tdb.store;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.tdb.store.NodeId ;
 import org.junit.Test ;
 
-public class TestNodeId extends BaseTest
+public class TestNodeId
 {
 //    @BeforeClass public static void beforeClass() {
 //        // If running just this test suite, then this happenes before SystemTDB initialization.    

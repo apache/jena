@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+<head>
+    <variable name="str"/>
+    <variable name="len"/>
+</head>
+<results>
+        <result>
+            <binding name="str"><literal>👪</literal></binding>
+            <binding name="len"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal></binding>
+        </result>
+        <result>
+            <binding name="str"><literal>👨‍👩‍👧‍👦</literal></binding>
+            <binding name="len"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">7</literal></binding>
+        </result>
+</results>
+</sparql>

@@ -25,7 +25,7 @@ import org.apache.jena.sparql.core.Var ;
 
 /** Get the variables potentially bound by an element.
  *  All mentioned variables except those in MINUS and FILTER (and hence NOT EXISTS)
- *  The work is done by PatternVarsVisitor.  
+ *  The work is done by PatternVarsVisitor.
  */
 public class PatternVars
 {
@@ -37,13 +37,13 @@ public class PatternVars
         vars(element, v) ;
         return s ;
     }
-    
+
     public static void vars(Element element, PatternVarsVisitor visitor)
     {
         ElementWalker.EltWalker walker = new WalkerSkipMinus(visitor) ;
         ElementWalker.walk$(element, walker) ;
     }
-    
+
     public static class WalkerSkipMinus extends ElementWalker.EltWalker
     {
         protected WalkerSkipMinus(ElementVisitor visitor)

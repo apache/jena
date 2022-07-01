@@ -18,19 +18,37 @@
 
 package org.apache.jena.rdfconnection;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.protocol.HttpContext;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.resultset.ResultSetLang;
-import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.rdflink.RDFConnectionAdapter;
+import org.apache.jena.rdflink.RDFLink;
+import org.apache.jena.rdflink.RDFLinkFuseki;
 
-/** 
+/**
  * Implementation of the {@link RDFConnection} interface for connecting to an Apache Jena Fuseki.
  * <p>
- * This adds the ability to work with blank nodes across the network.
+ * This adds the ability to work with blank nodes across the network and uses binary for query results.
  */
-public class RDFConnectionFuseki extends RDFConnectionRemote {
+public interface RDFConnectionFuseki extends RDFConnectionRemote {
+
+    /** Create a connection to a remote location by URL with the default Fuseki
+     *  configuration. This is the URL for the dataset.
+     * <p>
+     * Other names can be specified using {@link RDFConnectionRemote#newBuilder()} and setting the endpoint URLs.
+     * </p>
+     * <pre>
+     * RDFConnectionFuseki.newBuilder()
+     *       .queryEndpoint(queryServiceEndpoint)
+     *       .updateEndpoint(updateServiceEndpoint)
+     *       .gspEndpoint(graphStoreProtocolEndpoint)
+     *       .build();
+     * </pre>
+     *
+     * @param serviceURL
+     * @return RDFConnection
+     */
+    public static RDFConnection connect(String serviceURL) {
+        return RDFConnectionFuseki.service(serviceURL).build();
+    }
 
     /**
      * Create a connection builder which is initialized for the default Fuseki
@@ -40,99 +58,42 @@ public class RDFConnectionFuseki extends RDFConnectionRemote {
      * @return RDFConnectionRemoteBuilder
      */
     public static RDFConnectionRemoteBuilder create() {
-        return setupForFuseki(RDFConnectionRemote.create());
+        return new RDFConnectionFusekiBuilder();
     }
 
-    /** 
-     * Create a connection builder which is initialized from an existing {@code RDFConnectionFuseki}.
-     * @param other The RDFConnectionFuseki to clone.
-     * @return RDFConnectionRemoteBuilder
-     */
-    public static RDFConnectionRemoteBuilder create(RDFConnectionFuseki other) {
-        return setupCreator(RDFConnectionRemote.create(other));
-    }
-    
-    /** Fuseki settings */
-    private static RDFConnectionRemoteBuilder setupForFuseki(RDFConnectionRemoteBuilder builder) {
-        String ctRDFThrift = Lang.RDFTHRIFT.getContentType().getContentType();
-        String acceptHeaderSPARQL = String.join("," 
-                            , ResultSetLang.SPARQLResultSetThrift.getHeaderString()
-                            , ResultSetLang.SPARQLResultSetJSON.getHeaderString()+";q=0.9"
-                            , Lang.RDFTHRIFT.getHeaderString());
-        return 
-            builder
-                .quadsFormat(RDFFormat.RDF_THRIFT)
-                .triplesFormat(RDFFormat.RDF_THRIFT)
-                .acceptHeaderGraph(ctRDFThrift)
-                .acceptHeaderDataset(ctRDFThrift)
-                .acceptHeaderSelectQuery(ResultSetLang.SPARQLResultSetThrift.getHeaderString())
-                .acceptHeaderAskQuery(ResultSetLang.SPARQLResultSetJSON.getHeaderString())
-                .acceptHeaderQuery(acceptHeaderSPARQL)
-                .parseCheckSPARQL(false)
-                // Create object of this class.
-                .creator((b)->fusekiMaker(b));
-    }
-    
-    private static RDFConnectionRemoteBuilder setupCreator(RDFConnectionRemoteBuilder builder) {
-        return builder.creator((b)->fusekiMaker(b));
-    }
-    
-    static RDFConnectionFuseki fusekiMaker(RDFConnectionRemoteBuilder builder) {
-        return new RDFConnectionFuseki(builder);
+    public static RDFConnectionRemoteBuilder newBuilder() {
+        return new RDFConnectionFusekiBuilder();
     }
 
-    protected RDFConnectionFuseki(RDFConnectionRemoteBuilder base) {
-        this(base.txnLifecycle, base.httpClient, base.httpContext, 
-            base.destination, base.queryURL, base.updateURL, base.gspURL,
-            base.outputQuads, base.outputTriples,
-            base.acceptDataset, base.acceptGraph,
-            base.acceptSparqlResults, base.acceptSelectResult, base.acceptAskResult,
-            base.parseCheckQueries, base.parseCheckUpdates);
+    /** Create a {@link RDFConnectionFuseki} for a remote destination. */
+    public static RDFConnectionRemoteBuilder service(String destinationURL) {
+        return newBuilder().destination(destinationURL);
     }
-    
-    protected RDFConnectionFuseki(Transactional txnLifecycle, HttpClient httpClient, HttpContext httpContext, String destination,
-                                  String queryURL, String updateURL, String gspURL, RDFFormat outputQuads, RDFFormat outputTriples,
-                                  String acceptDataset, String acceptGraph, 
-                                  String acceptSparqlResults, String acceptSelectResult, String acceptAskResult,
-                                  boolean parseCheckQueries, boolean parseCheckUpdates) {
-        super(txnLifecycle, httpClient, httpContext, 
-              destination, queryURL, updateURL, gspURL,
-              outputQuads, outputTriples, 
-              acceptDataset, acceptGraph,
-              acceptSparqlResults, acceptSelectResult, acceptAskResult, parseCheckQueries, parseCheckUpdates);
-    }
-    
-    // Fuseki specific operations.
-    
-//    /**
-//     * Return a {@link Model} that is proxy for a remote model in a Fuseki server. This
-//     * support the model operations of accessing statements and changing the model.
-//     * <p>
-//     * This provide low level access to the remote data. The application will be working
-//     * with and manipulating the remote model directly which may involve a significant
-//     * overhead for every {@code Model} API operation.
-//     * <p>
-//     * <b><em>Warning</em>:</b> This is <b>not</b> performant for bulk changes. 
-//     * <p>
-//     * Getting the model, using {@link #fetch()}, which copies the whole model into a local
-//     * {@code Model} object, maniupulating it and putting it back with {@link #put(Model)}
-//     * provides another way to work with remote data.
-//     * 
-//     * @return Model
-//     */
-//    public Model getModelProxy() { return null; }
-//    public Model getModelProxy(String graphName) { return null; }
-//    
-//    public Graph getGraphProxy() { return null; }
-//    public Graph getGraphProxy(String graphName) { return null; }
-//
-//    public Dataset getDatasetProxy() { return null; }
-//    public DatasetGraph getDatasetGraphProxy() { return null; }
-//
-//    // Or remote RDFStorage?
-//    public Stream<Triple> findStream(Node s, Node p , Node o) { return null; }
-//    public Stream<Quad> findStream(Node g, Node s, Node p , Node o) { return null; }
 
-    // Send Patch 
+    static class RDFConnectionFusekiBuilder extends RDFConnectionRemoteBuilder {
+        protected RDFConnectionFusekiBuilder() {
+            super(RDFLinkFuseki.newBuilder());
+        }
+
+        @Override
+        protected RDFLink buildLink() {
+            return  builder.build();
+        }
+
+        @Override
+        protected RDFConnection adaptLink(RDFLink rdfLink) {
+            try {
+                return new RDFConnectionFusekiImpl((RDFLinkFuseki)rdfLink);
+            } catch (ClassCastException ex) {
+                throw new InternalErrorException("Attempt to build a RDFConnectionFuseki from class "+rdfLink.getClass().getSimpleName());
+            }
+        }
+    }
+
+    static class RDFConnectionFusekiImpl extends RDFConnectionAdapter implements RDFConnectionFuseki {
+        private RDFConnectionFusekiImpl(RDFLinkFuseki linkFuseki) {
+            super(linkFuseki);
+        }
+    }
 }
 

@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.io.PrintUtils;
 import org.apache.jena.atlas.io.Printable;
 import org.apache.jena.query.Syntax ;
 import org.apache.jena.sparql.core.Prologue ;
@@ -72,15 +72,16 @@ public class UpdateRequest extends Prologue implements Printable, Iterable<Updat
 
     @Override
     public String toString() {
-        return PrintUtils.toString(this);
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        output(buff) ;
+        return buff.toString() ;
     }
 
     @Override
     public void output(IndentedWriter out) {
         // Try to use a serializer factory if available
-        UpdateSerializerFactory factory = SerializerRegistry.get().getUpdateSerializerFactory(
-                Syntax.defaultUpdateSyntax);
-        if (factory != null) {
+        UpdateSerializerFactory factory = SerializerRegistry.get().getUpdateSerializerFactory(Syntax.defaultUpdateSyntax);
+        if ( factory != null) {
             UpdateSerializer serializer = factory.create(Syntax.defaultUpdateSyntax, this, out);
             serializer.open();
             serializer.update(this);

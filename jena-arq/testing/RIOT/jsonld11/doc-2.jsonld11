@@ -1,0 +1,12 @@
+{
+    "@context": [
+	{
+	    "pic": {
+		"@id": "http://example/picture",
+		"@type": "@id"
+	    },
+	    "foaf": "http://xmlns.com/foaf/0.1/"
+	}
+    ],
+    "foaf:depication": "http://twitter.com/"
+}

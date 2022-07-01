@@ -1,0 +1,6 @@
+<http://a.example/S1> {
+   <http://a.example/p1> .
+     %<http://shex.io/extensions/Test/>{ print(s) %}
+     %<http://shex.io/extensions/Test/>{ print(p) %}
+     %<http://shex.io/extensions/Test/>{ print(o) %}
+}

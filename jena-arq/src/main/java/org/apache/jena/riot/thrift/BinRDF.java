@@ -18,110 +18,110 @@
 
 package org.apache.jena.riot.thrift;
 
-import java.io.BufferedOutputStream ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
-import java.util.List ;
 import java.util.function.Consumer;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.query.ResultSet ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.PrefixMapFactory ;
+import org.apache.jena.riot.protobuf.ProtobufRDF;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.thrift.wire.RDF_StreamRow ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.ResultSetStream ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.thrift.TException ;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.thrift.protocol.TProtocol ;
-import org.apache.thrift.transport.TTransportException ;
 
-/** Operations on binary RDF (which uses <a href="http://thrift.apache.org/">Apache Thrift</a>).
+/** Operations on binary RDF encoding with <a href="http://thrift.apache.org/">Apache Thrift</a>.
  * See also {@link ThriftConvert}, for specific functions on binary RDF.
- * @see ThriftConvert 
+ * <p>
+ * Encoding use Protobuf is available in {@link ProtobufRDF}.
+ *
+ * @deprecated Use {@link ThriftRDF}
  */
+@Deprecated
 public class BinRDF {
-    
-    private static int BUFSIZE_IN   = 128*1024 ;
-    private static int BUFSIZE_OUT  = 128*1024 ;
 
-    /** 
+    /**
      * Create an {@link StreamRDF} for output.  A filename ending {@code .gz} will have
      * a gzip compressor added to the output path. A filename of "-" is {@code System.out}.
-     * The file is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
+     * The file is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.
      * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
-     * 
+     *
      * @param filename The file
      * @return StreamRDF A stream to send to.
+     * @deprecated Use {@link ThriftRDF#streamToFile(String)} instead
      */
-    
+    @Deprecated
     public static StreamRDF streamToFile(String filename) {
-        return streamToFile(filename, false) ;
+        return ThriftRDF.streamToFile(filename);
     }
-    
-    /** 
+
+    /**
      * Create an {@link StreamRDF} for output.  A filenames ending {@code .gz} or {@code .bz2} will have
      * the respective compressor added to the output path. A filename of "-" is {@code System.out}.
-     * The file is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
+     * The file is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.
      * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
-     * 
+     *
      * @param filename The file
      * @param withValues - whether to encode numeric values as values.
      * @return StreamRDF A stream to send to.
+     * @deprecated Use {@link ThriftRDF#streamToFile(String,boolean)} instead
      */
+    @Deprecated
     public static StreamRDF streamToFile(String filename, boolean withValues) {
-        OutputStream out = IO.openOutputFile(filename) ;
-        BufferedOutputStream bout = new BufferedOutputStream(out, BUFSIZE_OUT) ;
-        TProtocol protocol = TRDF.protocol(bout) ;
-        return new StreamRDF2Thrift(protocol, withValues) ;
+        return ThriftRDF.streamToFile(filename, withValues);
     }
-    
-    /** 
+
+    /**
      * Create an {@link StreamRDF} for output.
-     * The {@code OutputStream} is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
+     * The {@code OutputStream} is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.
      * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
      * @param out OutputStream
-     * @return StreamRDF A stream to send to. 
+     * @return StreamRDF A stream to send to.
+     * @deprecated Use {@link ThriftRDF#streamToOutputStream(OutputStream)} instead
      */
+    @Deprecated
     public static StreamRDF streamToOutputStream(OutputStream out) {
-        return streamToOutputStream(out, false) ;
+        return ThriftRDF.streamToOutputStream(out);
     }
-    
-    /** 
+
+    /**
      * Create an {@link StreamRDF} for output.
-     * The {@code OutputStream} is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
+     * The {@code OutputStream} is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.
      * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
      * @param out OutputStream
      * @param withValues - whether to encode numeric values as values.
-     * @return StreamRDF A stream to send to. 
+     * @return StreamRDF A stream to send to.
+     * @deprecated Use {@link ThriftRDF#streamToOutputStream(OutputStream,boolean)} instead
      */
+    @Deprecated
     public static StreamRDF streamToOutputStream(OutputStream out, boolean withValues) {
-        return new StreamRDF2Thrift(out, withValues) ;
+        return ThriftRDF.streamToOutputStream(out, withValues);
     }
 
-    /** 
+    /**
      * Create an {@link StreamRDF} for output.
-     * The {@code OutputStream} is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
+     * The {@code OutputStream} is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.
      * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
      * @param protocol Output and encoding.
-     * @return StreamRDF A stream to send to. 
+     * @return StreamRDF A stream to send to.
+     * @deprecated Use {@link ThriftRDF#streamToTProtocol(TProtocol)} instead
      */
+    @Deprecated
     public static StreamRDF streamToTProtocol(TProtocol protocol) {
-        return streamToTProtocol(protocol, false) ;
+        return ThriftRDF.streamToTProtocol(protocol);
     }
 
-    /** 
+    /**
      * Create an {@link StreamRDF} for output.
-     * The {@code OutputStream} is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
+     * The {@code OutputStream} is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.
      * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
      * @param protocol Output and encoding.
      * @param withValues - whether to encode numeric values as values.
-     * @return StreamRDF A stream to send to. 
+     * @return StreamRDF A stream to send to.
+     * @deprecated Use {@link ThriftRDF#streamToTProtocol(TProtocol,boolean)} instead
      */
+    @Deprecated
     public static StreamRDF streamToTProtocol(TProtocol protocol, boolean withValues) {
-        return new StreamRDF2Thrift(protocol, withValues) ;
+        return ThriftRDF.streamToTProtocol(protocol, withValues);
     }
 
     /**
@@ -130,116 +130,103 @@ public class BinRDF {
      * A filename of "-" is {@code System.in}.
      * @param filename The file.
      * @param dest Sink
+     * @deprecated Use {@link ThriftRDF#fileToStream(String,StreamRDF)} instead
      */
+    @Deprecated
     public static void fileToStream(String filename, StreamRDF dest) {
-        InputStream in = IO.openFile(filename) ;
-        TProtocol protocol = TRDF.protocol(in) ;
-        protocolToStream(protocol, dest) ;
+        ThriftRDF.fileToStream(filename, dest);
     }
-        
+
     /**
      * Decode the contents of the input stream and send to the {@link StreamRDF}.
      * @param in InputStream
      * @param dest StreamRDF
+     * @deprecated Use {@link ThriftRDF#inputStreamToStream(InputStream,StreamRDF)} instead
      */
+    @Deprecated
     public static void inputStreamToStream(InputStream in, StreamRDF dest) {
-        TProtocol protocol = TRDF.protocol(in) ;
-        protocolToStream(protocol, dest) ;
+        ThriftRDF.inputStreamToStream(in, dest);
     }
 
     /**
      * Decode the contents of the TProtocol and send to the {@link StreamRDF}.
      * @param protocol TProtocol
      * @param dest Sink
+     * @deprecated Use {@link ThriftRDF#protocolToStream(TProtocol,StreamRDF)} instead
      */
+    @Deprecated
     public static void protocolToStream(TProtocol protocol, StreamRDF dest) {
-        PrefixMap pmap = PrefixMapFactory.create() ;
-        final Thrift2StreamRDF s = new Thrift2StreamRDF(pmap, dest) ;
-        dest.start() ;
-        // ** Java8
-        //apply(protocol, z -> TRDF.visit(z, s)) ;
-        
-        applyVisitor(protocol, s)  ;
-        
-        dest.finish() ;
-        // No need to flush - we read from the protocol ; 
+        ThriftRDF.protocolToStream(protocol, dest);
     }
 
-    // ** Java7 support
-    public static void applyVisitor(TProtocol protocol, final VisitorStreamRowTRDF visitor) {
-        apply(protocol, z -> TRDF.visit(z, visitor)) ;
-    }
-    
     /**
-     * Send the contents of a RDF-encoded Thrift file to an "action" 
+     * Send the contents of a RDF-encoded Thrift file to an "action"
      * @param protocol TProtocol
      * @param action   Code to act on the row.
+     * @deprecated Use {@link ThriftRDF#apply(TProtocol,Consumer)} instead
      */
+    @Deprecated
     public static void apply(TProtocol protocol, Consumer<RDF_StreamRow> action) {
-        RDF_StreamRow row = new RDF_StreamRow() ;
-        while(protocol.getTransport().isOpen()) {
-            try { row.read(protocol) ; }
-            catch (TTransportException e) {
-                if ( e.getType() == TTransportException.END_OF_FILE )
-                    break ;
-            }
-            catch (TException ex) { TRDF.exception(ex) ; }
-            action.accept(row) ;
-            row.clear() ;
-        }
+        ThriftRDF.apply(protocol, action);
     }
-    
+
     /** Debug help - print details of a Thrift stream.
-     * Destructive on the InputStream. 
-     * @param out OutputStream 
+     * Destructive on the InputStream.
+     * @param out OutputStream
      * @param in InputStream
+     * @deprecated Use {@link ThriftRDF#dump(OutputStream,InputStream)} instead
      */
+    @Deprecated
     public static void dump(OutputStream out, InputStream in) {
-        IndentedWriter iOut = new IndentedWriter(out) ;
-        StreamRowTRDFPrinter printer = new StreamRowTRDFPrinter(iOut) ;
-        TProtocol protocol = TRDF.protocol(in) ;
-        BinRDF.applyVisitor(protocol, printer) ;
-        iOut.flush() ;
+        ThriftRDF.dump(out, in);
     }
 
-
+    /**
+     * @deprecated Use {@link ThriftRDF#readResultSet(InputStream)} instead
+     */
+    @Deprecated
     public static ResultSet readResultSet(InputStream in) {
-        return readResultSet(TRDF.protocol(in)) ;
-    }
-    
-    public static ResultSet readResultSet(TProtocol protocol) {
-        Thift2Binding t2b = new Thift2Binding(protocol) ;
-        List<String> varsNames = Var.varNames(t2b.getVars()) ;
-        return new ResultSetStream(varsNames, null, t2b) ;
+        return ThriftRDF.readResultSet(in);
     }
 
+    /**
+     * @deprecated Use {@link ThriftRDF#readResultSet(InputStream)} instead
+     */
+    @Deprecated
+    public static ResultSet readResultSet(TProtocol protocol) {
+        return ResultSet.adapt(ThriftRDF.readRowSet(protocol));
+    }
+
+    /**
+     * @deprecated Use {@link ThriftRDF#writeResultSet(OutputStream,ResultSet)} instead
+     */
+    @Deprecated
     public static void writeResultSet(OutputStream out, ResultSet resultSet) {
-        writeResultSet(out, resultSet, false) ;
+        ThriftRDF.writeResultSet(out, resultSet);
     }
-    
+
+    /**
+     * @deprecated Use {@link ThriftRDF#writeResultSet(OutputStream,ResultSet,boolean)} instead
+     */
+    @Deprecated
     public static void writeResultSet(OutputStream out, ResultSet resultSet, boolean withValues) {
-        BufferedOutputStream bout = 
-            ( out instanceof BufferedOutputStream ) 
-            ? (BufferedOutputStream)out 
-            : new BufferedOutputStream(out, TRDF.OutputBufferSize) ;
-        writeResultSet(TRDF.protocol(bout), resultSet, withValues) ;
-        IO.flush(out) ;
+        ThriftRDF.writeResultSet(out, resultSet, withValues);
     }
-    
+
+    /**
+     * @deprecated Use {@link ThriftRDF#writeRowSet(TProtocol,RowSet)} instead
+     */
+    @Deprecated
     public static void writeResultSet(TProtocol protocol, ResultSet resultSet) {
-        writeResultSet(protocol, resultSet, false) ;
+        writeResultSet(protocol, resultSet, false);
     }
-    
+
+    /**
+     * @deprecated Use {@link ThriftRDF#writeRowSet(TProtocol,RowSet,boolean)} instead
+     */
+    @Deprecated
     public static void writeResultSet(TProtocol protocol, ResultSet resultSet, boolean encodeValues) {
-        List<Var> vars = Var.varList(resultSet.getResultVars()) ;
-        try ( Binding2Thrift b2t = new Binding2Thrift(protocol, vars, encodeValues) ) {
-            for ( ; resultSet.hasNext() ; ) {
-                Binding b = resultSet.nextBinding() ;
-                b2t.output(b) ;
-            }
-        }
-        //Done by Binding2Thrift.close() -- LibThriftRDF.flush(protocol) ;
+        ThriftRDF.writeRowSet(protocol, RowSet.adapt(resultSet), encodeValues);
     }
-    
 }
 

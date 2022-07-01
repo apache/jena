@@ -25,17 +25,11 @@ import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
 import org.apache.jena.iri.* ;
-/*
-import com.vgrs.xcode.idna.Idna;
-import com.vgrs.xcode.idna.Nameprep;
-import com.vgrs.xcode.idna.Punycode;
-import com.vgrs.xcode.util.XcodeException;
-*/
-abstract public class AbsIRIImpl extends  IRI implements 
+
+abstract public class AbsIRIImpl extends  IRI implements
         ViolationCodes, IRIComponents {
 
-    private static final int defaultRelative = ABSOLUTE | SAMEDOCUMENT | CHILD
-            | PARENT | GRANDPARENT;
+    private static final int defaultRelative = ABSOLUTE | SAMEDOCUMENT | CHILD | PARENT | GRANDPARENT;
 
     static String removeDotSegments(String path) {
         // 5.2.4 step 1.
@@ -112,7 +106,7 @@ abstract public class AbsIRIImpl extends  IRI implements
 
     abstract SchemeSpecificPart getSchemeSpec();
     abstract Exception getIDNAException();
-    
+
     // void throwExceptions(IRIFactoryImpl f, boolean includeRelative) {
     // long mask = f.exceptions;
     // if (!includeRelative)
@@ -158,23 +152,18 @@ abstract public class AbsIRIImpl extends  IRI implements
 
     Iterator<Violation> exceptionsMask(final long mask) {
         createExceptions(mask);
-        return foundExceptions == null ? nullIterator : 
+        return foundExceptions == null ? nullIterator :
             new Iterator<Violation>() {
                private Iterator<Violation> underlying = foundExceptions.iterator();
-  
-                private Violation next;
-                @Override
-                public void remove() {
-                    throw new UnsupportedOperationException();
-                }
 
+                private Violation next;
                 @Override
                 public boolean hasNext() {
                     if (next==null) {
                         while (underlying.hasNext()) {
                             next = underlying.next();
-                            if (((1l << (next).getViolationCode()) 
-                                    & mask) != 0) 
+                            if (((1l << (next).getViolationCode())
+                                    & mask) != 0)
                                 return true;
                         }
                         next = null;
@@ -192,7 +181,7 @@ abstract public class AbsIRIImpl extends  IRI implements
                     }
                     throw new NoSuchElementException();
                 }
-            
+
         };
     }
 
@@ -231,9 +220,9 @@ abstract public class AbsIRIImpl extends  IRI implements
 
     /*
      * public boolean isRDFURIReference() { return !hasException(RDF); }
-     * 
+     *
      * public boolean isIRI() { return !hasException(IRI); }
-     * 
+     *
      * public boolean isURIinASCII() { return !hasException(URI); }
      */
     // public boolean isVeryBad() {
@@ -272,12 +261,12 @@ abstract public class AbsIRIImpl extends  IRI implements
         try {
             String x = createASCIIString() ;
             return new URI(x) ;
-        } catch (MalformedIDNException ex) 
+        } catch (MalformedIDNException ex)
         { throw new URISyntaxException(toDisplayString(), ex.getMessage()) ; }
     }
 
     // TODO ToAsciiMask
-    static long ToAsciiMask = 
+    static long ToAsciiMask =
         ~0l;
         /*
         (1l << LTR_CHAR) | (1l << ILLEGAL_CHAR)
@@ -338,10 +327,10 @@ abstract public class AbsIRIImpl extends  IRI implements
         try {
             return IDNP.toASCII(host, IDN.USE_STD3_ASCII_RULES|IDN.ALLOW_UNASSIGNED);
             // IDNP (patched IDN) throws IlleaglArgimentException
-            
+
         } catch (IllegalArgumentException ex) {
             // IDNP (patched IDN) throws IlleaglArgumentException
-            throw new MalformedIDNException(ex) ; 
+            throw new MalformedIDNException(ex) ;
         }
         /*
         int u[] = new int[host.length()];
@@ -370,10 +359,10 @@ abstract public class AbsIRIImpl extends  IRI implements
         /*
          * Step 2. For each character in 'ucschar' or 'iprivate', apply steps
          * 2.1 through 2.3 below.
-         * 
+         *
          * We interpret this as any charcater above 127, below 32 and the unwise
          * chars
-         * 
+         *
          * Systems accepting IRIs MAY also deal with the printable characters in
          * US-ASCII that are not allowed in URIs, namely "<", ">", '"', space,
          * "{", "}", "|", "\", "^", and "`", in step 2 above.
@@ -404,20 +393,20 @@ abstract public class AbsIRIImpl extends  IRI implements
 
 /*
  * Subroutine for relativize.
- * 
+ *
  * Relativizing path components is somewhat tricky.
  * The code is in the method PathRelative.check
  * which is invoked from relativizePaths
- * 
- * There are only three static stateless objects of this class, 
+ *
+ * There are only three static stateless objects of this class,
  * each of which checks for a particular rule.
- * 
- * The child object behaves slightly differently, 
+ *
+ * The child object behaves slightly differently,
  * with a helper method overridden, and one line of
  * code specific to that object only.
- * 
+ *
  */
-    
+
     static private final PathRelativize
         child = new PathRelativize(CHILD, CHILD | PARENT | GRANDPARENT,
         		"."){
@@ -432,7 +421,7 @@ abstract public class AbsIRIImpl extends  IRI implements
                 		"../..");
 
     /**
-     * 
+     *
      * @param in     The path from this IRI
      * @param out    If successful, out[0] contains the answer
      * @param flags  Currently applicable rules
@@ -440,9 +429,9 @@ abstract public class AbsIRIImpl extends  IRI implements
      * @return True if the paths were relativized.
      */
     private boolean relativizePaths(String in, String[] out, int flags, String rel) {
-		if (child.check(in, out, flags, rel)) 
+		if (child.check(in, out, flags, rel))
 			return true;
-		if (parent.check(out[0], out, flags, rel)) 
+		if (parent.check(out[0], out, flags, rel))
 			return true;
 		return grandparent.check(out[0], out, flags, rel);
 	}
@@ -452,7 +441,7 @@ abstract public class AbsIRIImpl extends  IRI implements
     	final private int allFlags;
     	final private String replacement;
     	/**
-    	 * 
+    	 *
     	 * @param flag      If this flag is not present then this rule does not apply.
     	 * @param allFlags  If none of these flags are present then this rule and subsequence rules do not apply.
     	 * @param replacement     If there is a match, then use this as the relative path
@@ -497,13 +486,13 @@ abstract public class AbsIRIImpl extends  IRI implements
     		out[0] = descendentMatch(rel.substring(ix+1));
     		return true;
     	}
-    	
+
     	String descendentMatch(String descendent) {
     		return replacement + "/" + descendent;
     	}
-    	
+
     }
-    
+
 
     @Override
     public IRI relativize(String abs, int flags) {
@@ -529,7 +518,7 @@ abstract public class AbsIRIImpl extends  IRI implements
         return rslt == null ? abs : getFactory().create(rslt);
     }
     /**
-     * 
+     *
      * @param r
      * @param def
      *            Default result if can't make this relative.
@@ -577,7 +566,7 @@ abstract public class AbsIRIImpl extends  IRI implements
                     return rslt;
                 }
         	}
-        } else 
+        } else
         	rslt = r.getRawPath() + rslt;
         if (net && (flags & NETWORK) != 0) {
             return "//"
@@ -757,7 +746,7 @@ abstract public class AbsIRIImpl extends  IRI implements
      * they were in a left-to-right embedding; i.e., as if they were preceded by
      * U+202A, LEFT-TO-RIGHT EMBEDDING (LRE), and followed by U+202C, POP
      * DIRECTIONAL FORMATTING (PDF).
-     * 
+     *
      */
     @Override
     public String toDisplayString() {

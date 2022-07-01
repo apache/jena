@@ -18,12 +18,11 @@
 
 package org.apache.jena.graph.impl;
 
-import org.apache.jena.graph.Capabilities ;
+import org.apache.jena.graph.Capabilities;
 
-@SuppressWarnings("deprecation")
 public class WrappedCapabilities implements Capabilities {
 
-    protected final Capabilities other ;
+    protected final Capabilities other;
 
     public WrappedCapabilities(Capabilities other) {
         this.other = other;
@@ -31,47 +30,21 @@ public class WrappedCapabilities implements Capabilities {
 
     @Override
     public boolean sizeAccurate() {
-        return other.sizeAccurate() ;
+        return other.sizeAccurate();
     }
 
     @Override
     public boolean addAllowed() {
-        return other.addAllowed() ;
+        return other.addAllowed();
     }
 
     @Override
     public boolean deleteAllowed() {
-        return other.deleteAllowed() ;
-    }
-
-    @Override
-    public boolean addAllowed(boolean everyTriple) {
-        return other.addAllowed(everyTriple) ;
-    }
-
-    @Override
-    public boolean deleteAllowed(boolean everyTriple) {
-        return other.deleteAllowed(everyTriple) ;
-    }
-
-    @Override
-    public boolean iteratorRemoveAllowed() {
-        return other.iteratorRemoveAllowed() ;
-    }
-
-    @Override
-    public boolean canBeEmpty() {
-        return other.canBeEmpty() ;
-    }
-
-    @Override
-    public boolean findContractSafe() {
-        return other.findContractSafe() ;
+        return other.deleteAllowed();
     }
 
     @Override
     public boolean handlesLiteralTyping() {
-        return other.handlesLiteralTyping() ;
+        return other.handlesLiteralTyping();
     }
-
 }

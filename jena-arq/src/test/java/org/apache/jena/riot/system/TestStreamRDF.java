@@ -18,14 +18,15 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
-public class TestStreamRDF extends BaseTest {
+public class TestStreamRDF {
     private static Triple triple1 = SSE.parseTriple("(<s> <p> <o>)") ;
     private static Quad quad1 = SSE.parseQuad("(<g> <s> <p> <o>)") ;
     

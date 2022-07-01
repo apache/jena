@@ -18,20 +18,23 @@
 
 package org.apache.jena.rdf.model.impl;
 
+import java.io.*;
+import java.net.URL;
+import java.util.Hashtable;
+
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.GraphEvents ;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.* ;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.SyntaxError;
+import org.apache.jena.shared.UnknownPropertyException;
 import org.apache.jena.util.FileUtils ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
-import java.io.*;
-import java.util.*;
-
 /** N-Triple Reader
  */
-public class NTripleReader extends Object implements RDFReader {
+public class NTripleReader extends Object implements RDFReaderI {
     static final Logger log = LoggerFactory.getLogger(NTripleReader.class);
 
     private Model model = null;
@@ -49,7 +52,7 @@ public class NTripleReader extends Object implements RDFReader {
      */
     private String base;
 
-    NTripleReader() {
+    public NTripleReader() {
     }
     @Override
     public void read(Model model, InputStream in, String base)
@@ -173,7 +176,7 @@ public class NTripleReader extends Object implements RDFReader {
         char inChar = in.readChar();
         if (badEOF())
         {
-            System.err.println("**** Bad EOF") ;
+            Log.error(this, "**** Bad EOF") ;
             return null;
         }
 
@@ -386,7 +389,6 @@ public class NTripleReader extends Object implements RDFReader {
             char inChar = in.readChar();
 
             if (inChar != want) {
-                //System.err.println("N-triple reader error");
                 syntaxError("expected \"" + str + "\"");
                 return false;
             }

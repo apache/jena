@@ -18,9 +18,10 @@
 
 package org.apache.jena.riot.adapters;
 
+import static org.junit.Assert.*;
+
 import java.io.InputStream ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.ontology.Individual ;
 import org.apache.jena.ontology.OntModel ;
 import org.apache.jena.ontology.OntModelSpec ;
@@ -35,7 +36,8 @@ import org.junit.Test ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-public class TestFileManager extends BaseTest
+@SuppressWarnings("deprecation")
+public class TestFileManager
 {
     static Logger log = LoggerFactory.getLogger(TestFileManager.class) ;
     public static final String testingDir = "testing/RIOT/FileManager" ;
@@ -45,7 +47,7 @@ public class TestFileManager extends BaseTest
     static final String zipname = testingDir+"/fmgr-test.zip" ;
     
     @Test public void testFileManagerFileLocator() {
-        FileManager fileManager = new FileManager() ;
+        FileManager fileManager = FileManager.create();
         fileManager.addLocatorFile() ;
         InputStream in = fileManager.open(testingDir+"/"+filename) ;
         assertNotNull(in) ;
@@ -53,7 +55,7 @@ public class TestFileManager extends BaseTest
     }
 
     @Test public void testFileManagerFileLocatorWithDir() {
-        FileManager fileManager = new FileManager() ;
+        FileManager fileManager = FileManager.create() ;
         fileManager.addLocatorFile(testingDir) ;
         InputStream in = fileManager.open(filename) ;
         assertNotNull(in) ;
@@ -61,7 +63,7 @@ public class TestFileManager extends BaseTest
     }
 
     @Test public void testFileManagerNoFile() {
-        FileManager fileManager = new FileManager() ;
+        FileManager fileManager = FileManager.create() ;
         fileManager.addLocatorFile() ;
         try {
             // Tests either way round - exception or a null return.
@@ -73,20 +75,20 @@ public class TestFileManager extends BaseTest
     
     @Test(expected = NotFoundException.class)
     public void testFileManagerNoFile2() {
-        FileManager fileManager = new FileManager() ;
+        FileManager fileManager = FileManager.create() ;
         fileManager.addLocatorFile() ;
-        fileManager.readModel(ModelFactory.createDefaultModel(), filenameNonExistent);
+        fileManager.readModelInternal(ModelFactory.createDefaultModel(), filenameNonExistent);
     }
     
     @Test(expected = NotFoundException.class)
     public void testFileManagerNoFile3() {
         FileManager fileManager = new AdapterFileManager(new StreamManager(), new org.apache.jena.riot.system.stream.LocationMapper()) ;
         fileManager.addLocatorFile() ;
-        fileManager.readModel(ModelFactory.createDefaultModel(), filenameNonExistent);
+        fileManager.readModelInternal(ModelFactory.createDefaultModel(), filenameNonExistent);
     }
     
     @Test public void testFileManagerLocatorClassLoader() {
-        FileManager fileManager = new FileManager() ;
+        FileManager fileManager = FileManager.create() ;
         fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
         InputStream in = fileManager.open("java/lang/String.class") ;
         assertNotNull(in) ;
@@ -94,7 +96,7 @@ public class TestFileManager extends BaseTest
     }
 
     @Test public void testFileManagerLocatorClassLoaderNotFound() {
-        FileManager fileManager = new FileManager() ;
+        FileManager fileManager = FileManager.create() ;
         fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
         try {
             InputStream in = fileManager.open("not/java/lang/String.class") ;
@@ -104,7 +106,7 @@ public class TestFileManager extends BaseTest
     }
 
     @Test public void testFileManagerLocatorZip() {
-        FileManager fileManager = new FileManager() ;
+        FileManager fileManager = FileManager.create() ;
         try {
             fileManager.addLocatorZip(zipname) ;
         } catch (Exception ex)
@@ -117,7 +119,7 @@ public class TestFileManager extends BaseTest
     }
 
     @Test public void testFileManagerLocatorZipNonFound() {
-        FileManager fileManager = new FileManager() ;
+        FileManager fileManager = FileManager.create() ;
         try {
             fileManager.addLocatorZip(zipname) ;
         } catch (Exception ex)
@@ -130,7 +132,7 @@ public class TestFileManager extends BaseTest
     }
     
     @Test public void testFileManagerClone() {
-        FileManager fileManager1 = new FileManager() ;
+        FileManager fileManager1 = FileManager.create() ;
         FileManager fileManager2 = fileManager1.clone() ;
         
         // Should not affect fileManager2
@@ -150,7 +152,7 @@ public class TestFileManager extends BaseTest
     
     @Test public void testFileManagerReadOntModel() {
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) ;
-        FileManager.get().readModel(model, testingDir+"/data.ttl") ;
+        FileManager.getInternal().readModelInternal(model, testingDir+"/data.ttl") ;
         // Check
         Individual ind = model.getIndividual("http://example.com/individual") ;
         String t = ind.getOntClass().getURI() ;
@@ -166,7 +168,7 @@ public class TestFileManager extends BaseTest
     
     @Test public void testLocationMappingURLtoFileOpen() {
         LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping) ;
-        FileManager fileManager = new FileManager(locMap) ;
+        FileManager fileManager = FileManager.create(locMap) ;
         fileManager.addLocatorFile() ;
         InputStream in = fileManager.open("http://example.org/file") ;
         assertNotNull(in) ;
@@ -175,7 +177,7 @@ public class TestFileManager extends BaseTest
 
     @Test public void testLocationMappingURLtoFileOpenNotFound() {
         LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping) ;
-        FileManager fileManager = new FileManager(locMap) ;
+        FileManager fileManager = FileManager.create(locMap) ;
         fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
         try {
             InputStream in = fileManager.open("http://example.org/file") ;
@@ -185,39 +187,39 @@ public class TestFileManager extends BaseTest
     }
 
     @Test public void testCache1() {
-        FileManager fileManager = new FileManager() ;
+        FileManager fileManager = FileManager.create() ;
         fileManager.addLocatorFile(testingDir) ;
-        Model m1 = fileManager.loadModel(fileModel) ;
-        Model m2 = fileManager.loadModel(fileModel) ;
+        Model m1 = fileManager.loadModelInternal(fileModel) ;
+        Model m2 = fileManager.loadModelInternal(fileModel) ;
         assertNotSame(m1, m2) ;
     }
     
     @Test public void testCache2() {
         FileManager.setGlobalFileManager(AdapterFileManager.get()) ;
         
-        FileManager fileManager = FileManager.get() ;
+        FileManager fileManager = FileManager.getInternal() ;
         fileManager.addLocatorFile(testingDir) ;
         fileManager.setModelCaching(true) ;
-        Model m1 = fileManager.loadModel(fileModel) ;
-        Model m2 = fileManager.loadModel(fileModel) ;
+        Model m1 = fileManager.loadModelInternal(fileModel) ;
+        Model m2 = fileManager.loadModelInternal(fileModel) ;
         assertSame(m1, m2) ;
     }
     
     @Test public void testCache3() {
-        FileManager fileManager = FileManager.get() ;
+        FileManager fileManager = FileManager.getInternal() ;
         fileManager.addLocatorFile(testingDir) ;
         fileManager.setModelCaching(true) ;
-        Model m1 = fileManager.loadModel(fileModel) ;
-        Model m2 = fileManager.loadModel(fileModel) ;
+        Model m1 = fileManager.loadModelInternal(fileModel) ;
+        Model m2 = fileManager.loadModelInternal(fileModel) ;
         assertSame(m1, m2) ;
         
         fileManager.removeCacheModel(fileModel) ;
-        Model m3 = fileManager.loadModel(fileModel) ;
+        Model m3 = fileManager.loadModelInternal(fileModel) ;
         assertNotSame(m1, m3) ;
         
         fileManager.resetCache() ;
-        Model m4 = fileManager.loadModel(fileModel) ;
-        Model m5 = fileManager.loadModel(fileModel) ;
+        Model m4 = fileManager.loadModelInternal(fileModel) ;
+        Model m5 = fileManager.loadModelInternal(fileModel) ;
 
         assertSame(m4, m5) ;
         assertNotSame(m1, m4) ;

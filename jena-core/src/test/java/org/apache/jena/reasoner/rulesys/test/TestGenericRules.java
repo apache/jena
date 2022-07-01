@@ -377,7 +377,7 @@ public class TestGenericRules extends TestCase {
      */
     public void testIncludeRedirect() {
         assertFalse( checkIncludeFound("file:testing/reasoners/importTest.rules") );
-        LocationMapper lm = FileManager.get().getLocationMapper();
+        LocationMapper lm = FileManager.getInternal().getLocationMapper();
         lm.addAltEntry("file:testing/reasoners/includeAlt.rules", 
                      "file:testing/reasoners/include.rules");
         assertTrue( checkIncludeFound("file:testing/reasoners/importTest.rules") );

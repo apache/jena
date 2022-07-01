@@ -86,7 +86,7 @@ public class DumpOps
         if ( true )
         {
             System.out.print("## Prefix Table\n") ;  
-            DatasetPrefixesTDB prefixes = dsg.getPrefixes() ;
+            DatasetPrefixesTDB prefixes = dsg.getStoragePrefixes() ;
 
             NodeTupleTable pntt = prefixes.getNodeTupleTable() ;
             if ( ! dumpedNodeTables.contains(pntt.getNodeTable()))
@@ -123,7 +123,7 @@ public class DumpOps
 
     public static void dumpTupleIndex(TupleIndex tIdx)
     {
-        System.out.print("## "+tIdx.getMapping()+"\n") ;
+        System.out.print("## "+tIdx.getMappingStr()+"\n") ;
         Iterator<Tuple<NodeId>> iter = tIdx.all() ; 
         for ( ; iter.hasNext() ; )
         {

@@ -1,0 +1,8 @@
+# Missing ex: prefix
+# source: turtle-syntax-bad-prefix-02.ttl
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+<http://a.example/IssueShape> {
+   rdf:type . ;
+   ex:p1 .
+}

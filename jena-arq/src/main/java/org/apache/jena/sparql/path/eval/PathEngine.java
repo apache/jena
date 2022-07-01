@@ -49,7 +49,7 @@ abstract public class PathEngine
     private final boolean doingListMember ;
     private final Graph   graph ;
     private final Context context ;
-    private final PropertyFunctionRegistry registry ; 
+    private final PropertyFunctionRegistry registry ;
 
     protected PathEngine(Graph graph, Context context) {
         boolean doingRDFSmember$ = false ;
@@ -63,14 +63,14 @@ abstract public class PathEngine
                 doingListMember$ = ( registry$.get(ListMember.getURI()) != null ) ;
             }
         }
-        
+
         this.registry = registry$ ;
         this.doingRDFSmember = doingRDFSmember$ ;
         this.doingListMember = doingListMember$ ;
         this.graph = graph ;
         this.context = context ;
     }
-    
+
     protected final Iter<Node> eval(Path path, Node node) {
         return PathEval.eval$(graph, node, path, this) ;
     }
@@ -171,10 +171,10 @@ abstract public class PathEngine
         return graphFind(graph, s, p, o, context) ;
     }
 
-    private static Binding binding = BindingFactory.binding() ;
+    private static Binding binding = BindingFactory.empty() ;
     private static Node RDFSmember = RDFS.Nodes.member ;
     private static Node ListMember = ListPFunction.nListMember ;
-    
+
     private /*static*/ Iterator<Triple> graphFind(Graph graph, Node s, Node p, Node o, Context context) {
         // This is the only place this is called.
         // It means we can add property functions here.
@@ -189,12 +189,12 @@ abstract public class PathEngine
         return graphFind2(graph, s, p, o, context) ;
     }
 
-    /* As general as possible property function inclusion */ 
+    /* As general as possible property function inclusion */
     private Iterator<Triple> graphFind2(Graph graph, Node s, Node p, Node o, Context context) {
         // Not all property functions make sense in property path
         // For example, ones taking list arguments only make sense at
         // the start or finish, and then only in simple paths
-        // (e.g. ?x .../propertyFunction ?z) 
+        // (e.g. ?x .../propertyFunction ?z)
         // which would have been packaged by the optimizer.
         if ( p != null && p.isURI() && registry != null ) {
             PropertyFunctionFactory f = registry.get(p.getURI()) ;
@@ -221,12 +221,12 @@ abstract public class PathEngine
             Node ot = value(ov, b) ;
             array.add(Triple.create(st, p, ot)) ;
         }
-        // Materialise so the inner QueryIterators are used up. 
-        return array.iterator() ; 
+        // Materialise so the inner QueryIterators are used up.
+        return array.iterator() ;
     }
 
     private static PropFuncArg arg(Node x, String name) {
-        if ( x == null || Node.ANY.equals(x) ) 
+        if ( x == null || Node.ANY.equals(x) )
         { return new PropFuncArg(Var.alloc(name)) ; }
         return new PropFuncArg(x) ;
     }

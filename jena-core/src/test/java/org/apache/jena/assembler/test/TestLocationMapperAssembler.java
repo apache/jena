@@ -51,8 +51,9 @@ public class TestLocationMapperAssembler extends AssemblerTestBase
         assertInstanceOf( LocationMapper.class, x );
         }
     
+    @SuppressWarnings("deprecation")
     public void testCreatesWithCorrectContent()
-        { // TODO should really have some mroe of these
+        {
         Resource root = resourceInModel( "r rdf:type ja:LocationMapper; r lm:mapping _m; _m lm:name 'alpha'; _m lm:altName 'beta'" );
         Assembler a = new LocationMapperAssembler();
         Object x = a.open( root );

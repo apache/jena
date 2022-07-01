@@ -1,0 +1,7 @@
+BASE <http://example.org/path-inverse>
+
+PREFIX ex: <http://example.org/test#>
+
+shape ex:TestShape {
+	^ex:property .
+}

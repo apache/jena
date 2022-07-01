@@ -1,0 +1,57 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/targets/targetNode-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:InvalidResource1
+  rdf:type rdfs:Resource ;
+  rdfs:label "Invalid resource 1" ;
+.
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  rdfs:label "Test shape" ;
+  sh:property ex:TestShape-label ;
+  sh:targetNode ex:InvalidResource1 ;
+  sh:targetNode ex:ValidResource1 ;
+.
+ex:TestShape-label
+  sh:path rdfs:label ;
+  rdfs:label "label" ;
+  sh:datatype xsd:string ;
+  sh:maxCount 0 ;
+.
+ex:ValidResource1
+  rdf:type rdfs:Resource ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <targetNode-001>
+    ) ;
+.
+<targetNode-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:targetNode 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath rdfs:label ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:MaxCountConstraintComponent ;
+          sh:sourceShape ex:TestShape-label ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

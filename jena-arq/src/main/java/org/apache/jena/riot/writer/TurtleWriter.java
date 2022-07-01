@@ -24,24 +24,24 @@ import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.sparql.util.Context ;
 
 public class TurtleWriter extends TurtleWriterBase {
-    
+
     @Override
     protected void output(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        TurtleWriter$ w = new TurtleWriter$(iOut, prefixMap, baseURI, context) ;
-        w.write(graph) ;
+        TurtleWriter$ w = new TurtleWriter$(iOut, prefixMap, baseURI, context);
+        w.write(graph);
     }
 
     private static class TurtleWriter$ extends TurtleShell {
         public TurtleWriter$(IndentedWriter out, PrefixMap prefixMap, String baseURI, Context context) {
-            super(out, prefixMap, baseURI, context) ;
+            super(out, prefixMap, baseURI, context);
         }
 
         private void write(Graph graph) {
-            writeBase(baseURI) ;
-            writePrefixes(prefixMap) ;
+            writeBase(baseURI);
+            writePrefixes(prefixMap);
             if ( !prefixMap.isEmpty() && !graph.isEmpty() )
-                out.println() ;
-            writeGraphTTL(graph) ;
+                out.println();
+            writeGraphTTL(graph);
         }
     }
 }

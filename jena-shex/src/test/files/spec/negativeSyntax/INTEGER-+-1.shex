@@ -1,0 +1,5 @@
+# bad INTEGER +-1
+# source: turtle-syntax-bad-num-05.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/p1> [+-1]
+}

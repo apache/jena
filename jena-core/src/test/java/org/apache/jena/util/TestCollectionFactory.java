@@ -22,7 +22,6 @@ import java.util.*;
 
 import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.util.CollectionFactory ;
 
 /**
  	TestHashUtils - test that the hash utility returns a map.

@@ -80,6 +80,11 @@ public class TestResourceFactory extends TestCase
 		}
 
 		@Override
+        public Resource createStmtResource(Statement statement) {
+            return null;
+        }
+
+        @Override
 		public Statement createStatement( final Resource subject,
 				final Property predicate, final RDFNode object )
 		{
@@ -98,7 +103,6 @@ public class TestResourceFactory extends TestCase
 		{
 			return null;
 		}
-
 	}
 
 	static final String uri1 = "http://example.org/example#a1";
@@ -146,6 +150,19 @@ public class TestResourceFactory extends TestCase
 		Assert.assertTrue(r1.getURI().equals(TestResourceFactory.uri1));
 	}
 
+	public void testCreateStmtTerm() {
+	    Resource s = ResourceFactory.createResource();
+	    Property p = ResourceFactory.createProperty(TestResourceFactory.uri2);
+	    Resource o = ResourceFactory.createResource();
+	    Statement stmt = ResourceFactory.createStatement(s, p, o);
+
+	    Resource r = ResourceFactory.createStmtResource(stmt);
+	    Assert.assertTrue(r.isResource());
+	    Assert.assertFalse(r.isURIResource());
+	    Assert.assertFalse(r.isAnon());
+	    Assert.assertTrue(r.isStmtResource());
+	}
+
 	public void testCreateStatement()
 	{
 		final Resource s = ResourceFactory.createResource();
@@ -165,9 +182,7 @@ public class TestResourceFactory extends TestCase
 		Assert.assertTrue(l.getLexicalForm().equals("22"));
 		Assert.assertTrue(l.getLanguage().equals(""));
 		Assert.assertTrue(l.getDatatype() == XSDDatatype.XSDinteger);
-		Assert.assertTrue(l.getDatatypeURI().equals(
-				XSDDatatype.XSDinteger.getURI()));
-
+		Assert.assertTrue(l.getDatatypeURI().equals(XSDDatatype.XSDinteger.getURI()));
 	}
 
 	public void testCreateTypedLiteralObject()

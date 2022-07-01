@@ -20,128 +20,120 @@ package org.apache.jena.riot;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
-import com.github.jsonldjava.utils.JsonUtils;
+import com.github.jsonldjava.core.DocumentLoader;
+import com.github.jsonldjava.core.JsonLdOptions;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 
 public class TestJsonLDReader {
 
-    @Test public final void simpleReadTest() {
-        try {
-            String jsonld = someSchemaDorOrgJsonld();
-            Model m = ModelFactory.createDefaultModel();
-            try (StringReader reader = new StringReader(jsonld)) {
-                m.read(reader, null, "JSON-LD");              
-            }
-            assertJohnDoeIsOK(m);
-        } catch (RiotException e) {
-            // cf. org.apache.jena.riot.RiotException: loading remote context failed: http://schema.org/
-            // There's a line printed anyway
-            // e.printStackTrace();
-        }
+    // These tests fail under some java11 (but not java17)
+    // for RIOT default JSON-LD 1.1 because Titanium contacts schema.org
+    // with java.net.http/HTTP2 (default version setting)
+    // which fails.
+
+    @Test
+    public final void simpleReadTest() throws IOException {
+        String jsonld = someSchemaDotOrgJsonld();
+        Dataset ds = jsonld2dataset(jsonld, null, Lang.JSONLD);
+        assertJohnDoeIsOK(ds.getDefaultModel());
     }
 
-    /** Test using the jena Context mechanism to pass the jsonld "@context" */
-    @Test public final void overrideAtContextTest() throws JsonGenerationException, IOException {
+    /**
+     * Test using the jena Context mechanism to pass the jsonld "@context"
+     */
+    @Test
+    public final void overrideAtContextTest() throws JsonGenerationException, IOException {
         // some jsonld using schema.org's URI as "@context"
-        String jsonld = someSchemaDorOrgJsonld();
-
-        // a subset of schema.org that can be used as @context for jsonld
-        String jsonldContext = "{\"name\":{\"@id\":\"http://schema.org/name\"},\"Person\": {\"@id\": \"http://schema.org/Person\"}}";
+        String jsonld = someSchemaDotOrgJsonld();
 
         // pass the jsonldContext to the read using a jena Context
-        Context jenaCtx = new Context();
-        Object jsonldContextAsMap = JsonUtils.fromInputStream(new ByteArrayInputStream(jsonldContext.getBytes(StandardCharsets.UTF_8)));
-        jenaCtx.set(RIOT.JSONLD_CONTEXT, jsonldContextAsMap);
+        JsonLDReadContext jenaCtx = new JsonLDReadContext();
+        jenaCtx.setJsonLDContext(schemaOrgResolvedContext());
 
         // read the jsonld, replacing its "@context"
-        Dataset ds = jsonld2dataset(jsonld, jenaCtx);
+        Dataset ds = jsonld2dataset(jsonld, jenaCtx, Lang.JSONLD);
 
         // check ds is correct
         assertJohnDoeIsOK(ds.getDefaultModel());
     }
 
-    /** Not really useful, but one can replace the @context by a URI: in this case, this URI is used when expanding the json
-     * (letting JSON-LD java API taking care of downloading the context. */
-    // well, as of this writing, it doesn't work, as we get a "loading remote context failed"
-    // But it is about the replacing URI, not the replaced one, showing that the mechanism does work
-    @Test public final void overrideAtContextByURITest() throws JsonGenerationException, IOException {
-        // some jsonld using a (fake) pseudo.schema.org's URI as "@context"
-        String jsonld = "{\"@id\":\"_:b0\",\"@type\":\"Person\",\"name\":\"John Doe\",\"@context\":\"http://pseudo.schema.org/\"}";
+    @Test
+    public final void overrideJsonLdOptions() throws JsonGenerationException, IOException {
+        // some jsonld using a (fake) http://pseudo.schema.org's URI as "@context"
+        String jsonld = "{\"@id\":\"_:b0\",\"@type\":\"Person\",\"name\":\"John Doe\",\"@context\":\"http://pseudo.schema.org\"}";
 
-        // a subset of schema.org that can be used as @context for jsonld
-        String jsonldContext = "\"http://schema.org\"";
+        JsonLdOptions options = new JsonLdOptions();
+        DocumentLoader dl = new DocumentLoader();
+        dl.addInjectedDoc("http://pseudo.schema.org", String.format("{ \"@context\": %s }", schemaOrgResolvedContext()));
+        options.setDocumentLoader(dl);
 
-        // pass the jsonldContext to the read using a jena Context
-        Context jenaCtx = new Context();
-        Object jsonldContextAsObject = JsonUtils.fromInputStream(new ByteArrayInputStream(jsonldContext.getBytes(StandardCharsets.UTF_8)));
-        jenaCtx.set(RIOT.JSONLD_CONTEXT, jsonldContextAsObject);
+        // pass the jsonldContext and JsonLdOptions to the read using a jena Context
+        JsonLDReadContext jenaCtx = new JsonLDReadContext();
+        jenaCtx.setOptions(options);
 
-        try {
-            // read the jsonld, replacing its "@context"
-            Dataset ds = jsonld2dataset(jsonld, jenaCtx);
+        // read the jsonld, replacing its "@context"
+        // Uses JsonLdOptions which is specific to jsonld-java (1.0).
+        Dataset ds = jsonld2dataset(jsonld, jenaCtx, Lang.JSONLD10);
 
-            // check ds is correct
-            assertJohnDoeIsOK(ds.getDefaultModel());
-        } catch (RiotException e) {
-            // cf. org.apache.jena.riot.RiotException: loading remote context failed: http://schema.org/
-            // There's a line printed anyway
-            // e.printStackTrace();
-        }
+        // check ds is correct
+        assertJohnDoeIsOK(ds.getDefaultModel());
     }
-
-    //
-    //
-    //
 
     /**
      * Reading some jsonld String, using a Context
      * @return a new Dataset
      * @throws IOException
      */
-    private Dataset jsonld2dataset(String jsonld, Context jenaCtx) throws IOException {
+    private Dataset jsonld2dataset(String jsonld, Context jenaCtx, Lang lang) throws IOException {
         Dataset ds = DatasetFactory.create();
-
-        // this is works too
-        //        ReaderRIOT reader = RDFDataMgr.createReader(Lang.JSONLD);
-        //        try (InputStream in = new ByteArrayInputStream(jsonld.getBytes(StandardCharsets.UTF_8))) {
-        //            reader.read(in, null, null, StreamRDFLib.dataset(ds.asDatasetGraph()), jenaCtx);
-        //        }
-
-        try (InputStream in = new ByteArrayInputStream(jsonld.getBytes(StandardCharsets.UTF_8))) {
-            RDFParser.create()
-                .source(in)
-                .lang(Lang.JSONLD)
-                .context(jenaCtx)
-                .parse(ds.asDatasetGraph());
-        }
-
+        RDFParser.create()
+            .fromString(jsonld)
+            .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
+            .lang(lang)
+            .context(jenaCtx)
+            .parse(ds.asDatasetGraph());
         return ds;
     }
 
-    /** Example data */
-    private String someSchemaDorOrgJsonld() {
-        return "{\"@id\":\"_:b0\",\"@type\":\"Person\",\"name\":\"John Doe\",\"@context\":\"http://schema.org/\"}";
+    /**
+     * Example data
+     */
+    private String someSchemaDotOrgJsonld() {
+        return String.format("{\"@id\": \"_:b0\", \"@type\": \"Person\", \"name\": \"John Doe\", %s }", schemaOrgContext());
     }
 
-    /** Checking that the data loaded from someSchemaDorOrgJsonld into a model, is OK */
+    private String schemaOrgContext() {
+        return "\"@context\": \"https://schema.org/\"";
+    }
+
+    // a subset of schema.org that can be used as @context for jsonld
+    private String schemaOrgResolvedContext() {
+        return "{\"name\":{\"@id\":\"https://schema.org/name\"},\"Person\": {\"@id\": \"http://schema.org/Person\"}}";
+    }
+
+    private static Resource person1 = ResourceFactory.createResource("http://schema.org/Person");
+    private static Resource person2 = ResourceFactory.createResource("https://schema.org/Person");
+    private static Property name1 = ResourceFactory.createProperty("http://schema.org/name");
+    private static Property name2 = ResourceFactory.createProperty("https://schema.org/name");
+
+    /**
+     * Checking that the data loaded from someSchemaDorOrgJsonld into a model, is OK
+     */
     private void assertJohnDoeIsOK(Model m) {
-        assertTrue(m.contains(null, RDF.type, m.createResource("http://schema.org/Person")));
-        assertTrue(m.contains(null, m.createProperty("http://schema.org/name"), "John Doe"));       
+        assertTrue(m.contains(null, RDF.type, person1) || m.contains(null, RDF.type, person2));
+        assertTrue(m.contains(null, name1, "John Doe") || m.contains(null, name2, "John Doe"));
     }
-
-
 }

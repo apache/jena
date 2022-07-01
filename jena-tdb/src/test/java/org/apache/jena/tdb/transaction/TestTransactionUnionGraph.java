@@ -20,8 +20,8 @@ package org.apache.jena.tdb.transaction;
 
 import static org.apache.jena.query.ReadWrite.READ ;
 import static org.apache.jena.query.ReadWrite.WRITE ;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.Quad ;
@@ -32,116 +32,116 @@ import org.apache.jena.update.* ;
 import org.junit.* ;
 
 /** Tests of transactions and the TDB union graph */
-public class TestTransactionUnionGraph extends BaseTest
+public class TestTransactionUnionGraph
 {
     private Dataset ds ;
-    
+
     @Before
     public void before()
     {
         ds = TDBFactory.createDataset() ;
         ds.asDatasetGraph().add(SSE.parseQuad("(<g> <s> <p> 1)")) ;
     }
-    
-    @After public void after() { } 
-    
+
+    @After public void after() { }
+
     @Test public void uniontxn_global_r()
     {
         ARQ.getContext().setTrue(TDB.symUnionDefaultGraph) ;
         test(ReadWrite.READ) ;
         ARQ.getContext().unset(TDB.symUnionDefaultGraph) ;
     }
-    
+
     @Test public void uniontxn_global_w()
     {
         ARQ.getContext().setTrue(TDB.symUnionDefaultGraph) ;
         test(ReadWrite.WRITE) ;
         ARQ.getContext().unset(TDB.symUnionDefaultGraph) ;
     }
-    
+
     @Test public void uniontxn_ds_r_1()
     {
         ds.getContext().setTrue(TDB.symUnionDefaultGraph) ;
         test(ReadWrite.READ) ;
         ds.getContext().unset(TDB.symUnionDefaultGraph) ;
     }
-    
+
     @Test public void uniontxn_ds_w_1()
     {
         ds.getContext().setTrue(TDB.symUnionDefaultGraph) ;
         test(ReadWrite.WRITE) ;
         ds.getContext().unset(TDB.symUnionDefaultGraph) ;
     }
-    
+
     // Set after a transaction.
     @Test public void uniontxn_ds_rr()
     {
         ds.begin(READ) ;
-        ds.commit(); 
+        ds.commit();
         ds.end() ;
-        
+
         ds.getContext().setTrue(TDB.symUnionDefaultGraph) ;
         test(ReadWrite.READ) ;
         //ds.getContext().unset(TDB.symUnionDefaultGraph) ;
     }
-    
+
     @Test public void uniontxn_ds_wr()
     {
         ds.begin(WRITE) ;
-        ds.commit(); 
+        ds.commit();
         ds.end() ;
-        
+
         ds.getContext().setTrue(TDB.symUnionDefaultGraph) ;
         test(ReadWrite.READ) ;
         //ds.getContext().unset(TDB.symUnionDefaultGraph) ;
     }
-    
+
     @Test public void uniontxn_ds_ww()
     {
         ds.begin(WRITE) ;
-        ds.commit(); 
+        ds.commit();
         ds.end() ;
-        
+
         ds.getContext().setTrue(TDB.symUnionDefaultGraph) ;
         test(ReadWrite.WRITE) ;
         //ds.getContext().unset(TDB.symUnionDefaultGraph) ;
     }
-    
+
     @Test public void uniontxn_ds_rw()
     {
         ds.begin(READ) ;
-        ds.commit(); 
+        ds.commit();
         ds.end() ;
-        
+
         ds.getContext().setTrue(TDB.symUnionDefaultGraph) ;
         test(ReadWrite.WRITE) ;
         //ds.getContext().unset(TDB.symUnionDefaultGraph) ;
     }
-    
+
     @Test public void uniontxn_update()
     {
         String x = StrUtils.strjoinNL("BASE <http://example/>",
-                                      "CLEAR ALL ; ", 
-                                      "INSERT DATA { GRAPH <urn:g> { <s> <p> 1}} ; ",
-                                      "INSERT { GRAPH <urn:g99> { ?s ?p 99} } WHERE  { ?s ?p 1 }"
+                                      "CLEAR ALL ; ",
+                                      "INSERT DATA { GRAPH <urn:ex:g> { <s> <p> 1}} ; ",
+                                      "INSERT { GRAPH <urn:ex:g99> { ?s ?p 99} } WHERE  { ?s ?p 1 }"
                                       ) ;
-        Dataset ds = TDBFactory.createDataset() ; 
+        Dataset ds = TDBFactory.createDataset() ;
         ds.getContext().setTrue(TDB.symUnionDefaultGraph) ;
-        
+
         ds.begin(WRITE) ;
         UpdateRequest req = UpdateFactory.create(x) ;
         UpdateAction.execute(req, ds) ;
         ds.commit() ;
         ds.end() ;
-        
+
         ds.begin(READ) ;
-        assertEquals(1, ds.getNamedModel("urn:g99").size()) ;
-        assertEquals(1, ds.getNamedModel("urn:g").size()) ;
+        assertEquals(1, ds.getNamedModel("urn:ex:g99").size()) ;
+        assertEquals(1, ds.getNamedModel("urn:ex:g").size()) ;
         assertEquals(2, ds.getNamedModel(Quad.unionGraph.getURI()).size()) ;
         ds.end() ;
     }
 
-    
+
     private void test(ReadWrite mode)
     {
         ds.begin(mode) ;
@@ -152,18 +152,18 @@ public class TestTransactionUnionGraph extends BaseTest
         ds.end() ;
         assertEquals(2, count) ;
     }
-    
+
     @Test public void uniontxn05()
     {
         test2(READ) ;
     }
-    
+
     @Test public void uniontxn06()
     {
         test2(WRITE) ;
     }
-    
-    // Sets the context of the execution  
+
+    // Sets the context of the execution
     private void test2(ReadWrite mode)
     {
         ds.begin(mode) ;

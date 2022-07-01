@@ -1,0 +1,17 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+# Documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 10
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule: 
+      interval: monthly
+    open-pull-requests-limit: 10

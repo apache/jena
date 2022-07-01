@@ -22,17 +22,21 @@ import java.util.List ;
 
 import org.apache.jena.sparql.syntax.* ;
 
-/** Unwrap groups of one where they do not matter.
- * <p>
- *  They do matter for <code>OPTIONAL { { ?s ?p ?o FILTER(?foo) } }</code>.
+/**
+ * Clean a SPARQL and ARQ syntax. This applies after using OpAsQuery.
+ * <ul>
+ * <li>Unwrap groups of one where they do not matter.
+ * <li>Merge adjacent ElementPathBlock</li>
+ * </ul>
+ * Groups of one do matter for <code>OPTIONAL { { ?s ?p ?o FILTER(?foo) } }</code>.
  */
 public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
     // Improvements: scan group elements to work out for non-reduceable adjacents.
-    // These ones may clash with an adjeact one in the group above.
+    // These ones may clash with an adjacent one in the group above.
     // ElementTransformCleanGroupsOfOne -> ElementTransformCleanGroups
-    
+
     public ElementTransformCleanGroupsOfOne() {}
-    
+
     @Override
     public Element transform(ElementGroup eltGroup, List<Element> elts) {
         if ( elts.size() != 1 )
@@ -40,7 +44,12 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
         Element elt = elts.get(0) ;
         if ( ( elt instanceof ElementTriplesBlock ) ||
              ( elt instanceof ElementPathBlock ) ||
-             ( elt instanceof ElementFilter ) )
+             ( elt instanceof ElementFilter ) ||
+             ( elt instanceof ElementBind ) ||
+             ( elt instanceof ElementAssign ) ||
+             ( elt instanceof ElementMinus ) ||
+             ( elt instanceof ElementOptional )
+           )
             return super.transform(eltGroup, elts) ;    // No transformation.
         return elt ;
     }
@@ -59,11 +68,11 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
                 elg.addElement(el);
                 el = elg ;
             }
-            el2.addElement(el); 
+            el2.addElement(el);
         }
         return el2 ;
     }
-    
+
     // Special case: If Optional, and the original had a {{}} protected filter, keep {{}}
     // transform/ElementGroup has already run so undo if necessary.
     @Override
@@ -75,16 +84,16 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
             protectedElt.addElement(transformedElt);
             transformedElt = protectedElt ;
         }
-        
-        // Step 1 : does the original eltOptional has a {{}} RHS? 
+
+        // Step 1 : does the original eltOptional has a {{}} RHS?
         Element x = eltOptional.getOptionalElement() ;
-        
+
         if ( ! ( x instanceof ElementGroup ) )
-            // No. But it is not possible in written query syntax to have a nongroup as the RHS. 
+            // No. But it is not possible in written query syntax to have a nongroup as the RHS.
             return super.transform(eltOptional, transformedElt) ;
         // So far - {}-RHS.
         ElementGroup eGroup = (ElementGroup)x ;
-        
+
         // Is it {{}}?
         //ElementGroup inner = getGroupInGroup(x) ;
         if ( eGroup.size() != 1 )
@@ -97,21 +106,21 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
         // Unbundle multiple levels.
         innerGroup = unwrap(innerGroup) ;
         boolean mustProtect = containsFilter(innerGroup) ;
-        
+
         if ( mustProtect ) {
             // No need to check for {{}} in elt1 as the transform(ElementGroup) will have processed it.
             ElementGroup protectedElt = new ElementGroup() ;
             protectedElt.addElement(transformedElt);
             return new ElementOptional(protectedElt) ;
-        } 
+        }
         // No need to protect - process as usual.
         return super.transform(eltOptional, transformedElt) ;
     }
-    
+
     private boolean containsFilter(ElementGroup eltGroup) {
         return eltGroup.getElements().stream().anyMatch(el2 ->( el2 instanceof ElementFilter ) ) ;
     }
-    
+
     // Removed layers of groups of one.  Return inner most group.
     private ElementGroup unwrap(ElementGroup eltGroup) {
         if ( eltGroup.size() != 1 )
@@ -120,8 +129,6 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
         if ( ! ( el instanceof ElementGroup ) )
             return eltGroup ;
         ElementGroup eltGroup2 = (ElementGroup)el ;
-        return unwrap(eltGroup2) ; 
+        return unwrap(eltGroup2) ;
     }
-
 }
-

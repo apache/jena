@@ -19,41 +19,40 @@
 package org.apache.jena.dboe.trans.data;
 
 import org.apache.jena.dboe.base.file.*;
-import org.apache.jena.dboe.trans.data.TransBinaryDataFile;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.TransactionalFactory;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite;
 
 public class TestTransBinaryDataFileGeneral extends AbstractTestBinaryDataFile {
-    private Journal journal ;
-    private BinaryDataFile baseBinData ;
-    private TransBinaryDataFile transBinData ;
-    private Transactional transactional ;
+    private Journal journal;
+    private BinaryDataFile baseBinData;
+    private TransBinaryDataFile transBinData;
+    private Transactional transactional;
 
     @Override
     protected BinaryDataFile createBinaryDataFile() {
         // XXX Builder.
-        journal = Journal.create(Location.mem()) ;
-        baseBinData = new BinaryDataFileMem() ;
-        BufferChannel chan = FileFactory.createBufferChannelMem() ;
-        ComponentId cid = ComponentId.allocLocal() ;
-        transBinData = new TransBinaryDataFile(baseBinData, cid, chan) ;
+        journal = Journal.create(Location.mem());
+        baseBinData = new BinaryDataFileMem();
+        BufferChannel chan = FileFactory.createBufferChannelMem();
+        ComponentId cid = ComponentId.allocLocal();
+        transBinData = new TransBinaryDataFile(baseBinData, cid, chan);
         transBinData.open();
-        transactional = TransactionalFactory.createTransactional(journal, transBinData) ;
-        //Non-transactional usage of a disposed file. 
-        transactional.begin(ReadWrite.WRITE) ;
-        return transBinData ; 
-        
+        transactional = TransactionalFactory.createTransactional(journal, transBinData);
+        //Non-transactional usage of a disposed file.
+        transactional.begin(ReadWrite.WRITE);
+        return transBinData;
+
     }
-    
+
     @Override
     protected void releaseBinaryDataFile(BinaryDataFile file) {
         if ( file.isOpen() ) {
-            transactional.commit() ;
-            transactional.end() ;
-            baseBinData.close() ;
+            transactional.commit();
+            transactional.end();
+            baseBinData.close();
         }
     }
 }

@@ -1,0 +1,53 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+
+## Server-wide timeout (all datasets).
+
+[] rdf:type fuseki:Server ;
+    # Format 1: "10000" -- 10 second timeout
+    # Format 2: "10000,60000" -- 10s timeout to first result,
+    #   then 60s timeout to for rest of query.
+    # See javadoc for ARQ.queryTimeout
+    ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
+    fuseki:services (
+       :service
+    ) .
+
+:service rdf:type fuseki:Service ;
+    fuseki:name "dataset" ;
+    fuseki:endpoint [ 
+        fuseki:operation fuseki:query ;
+        fuseki:name "sparql" 
+    ];
+    fuseki:endpoint [
+        fuseki:operation fuseki:query ;
+        fuseki:name "query" 
+    ] ;
+    fuseki:endpoint [
+        fuseki:operation fuseki:update ;
+        fuseki:name "update"
+    ] ;
+    fuseki:endpoint [
+        fuseki:operation fuseki:gsp-r ;
+        fuseki:name "get"
+    ] ;
+    fuseki:endpoint [ 
+        fuseki:operation fuseki:gsp-rw ; 
+        fuseki:name "data"
+    ] ; 
+    fuseki:endpoint [ 
+        fuseki:operation fuseki:upload ;
+        fuseki:name "upload"
+    ] ; 
+    fuseki:dataset :dataset_tdb2 ;
+    .
+
+:dataset_tdb2 rdf:type  tdb2:DatasetTDB2 ;
+    tdb2:location "DB2"
+    .

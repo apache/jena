@@ -18,21 +18,20 @@
 
 package org.apache.jena.dboe.base.file;
 
-import java.nio.ByteBuffer ;
-import java.nio.channels.FileChannel ;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.Sync ;
-
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.lib.Sync;
 
 /**
  * Interface to storage : a simplified version of FileChannel. Read and write
  * bytes, passed via ByteBuffers, addressed by file location. This interface is
  * not suitable for memory mapped I/O - there is no ability to use slices of a
- * memory mapped file. This interface does not insert size of ByteBuffer - size
+ * memory mapped file. This interface does not insert size of ByteBuffer, the size
  * of ByteBuffer passed to read controls the number of bytes read. Having our
  * own abstraction enables us to implement memory-backed versions.
- * 
+ *
  * @see BlockAccess
  * @see java.nio.channels.FileChannel
  */
@@ -43,52 +42,52 @@ public interface BufferChannel extends Sync, Closeable
     //   Runtime exceptions.
     // This is a simple, low level "file = array of bytes" interface"
     // This interface does not support slicing - so it's not suitable for memory mapped I/O
-    
+
     /** Return another channel to the same storage but with independent position.
      * Chaos may result due to concurrent use.
      */
-    public BufferChannel duplicate() ;
-    
+    public BufferChannel duplicate();
+
     /** return the position */
-    public long position() ;
-    
+    public long position();
+
     /** set the position */
-    public void position(long pos) ;
+    public void position(long pos);
 
     /** Read into a ByteBuffer. Returns the number of bytes read. -1 for end of file.
      */
-    public int read(ByteBuffer buffer) ;
-    
+    public int read(ByteBuffer buffer);
+
     /** Read into a ByteBuffer, starting at position loc. Return the number of bytes read.
      * loc must be within the file.
      */
-    public int read(ByteBuffer buffer, long loc) ;
+    public int read(ByteBuffer buffer, long loc);
 
-    /** Write from ByteBuffer, starting at the current position.  
+    /** Write from ByteBuffer, starting at the current position.
      * Return the number of bytes written
      */
-    public int write(ByteBuffer buffer) ;
-    
-    /** Write from ByteBuffer, starting at position loc.  
+    public int write(ByteBuffer buffer);
+
+    /** Write from ByteBuffer, starting at position loc.
      * Return the number of bytes written.
      * loc must be within 0 to length - writing at length is append */
-    public int write(ByteBuffer buffer, long loc) ;
-    
+    public int write(ByteBuffer buffer, long loc);
+
     /** Truncate the file.
      * @see FileChannel#truncate(long)
      */
-    public void truncate(long size) ;
-    
-    /** Length of storage, in bytes.*/
-    public long size() ;
-    
-    /** Is it empty? */
-    public boolean isEmpty() ;
+    public void truncate(long size);
 
-    /** useful display string */ 
-    public String getLabel() ; 
-    
-    /** Filename for this BufferChannel (maybe null) */ 
-    public String getFilename() ; 
-    
+    /** Length of storage, in bytes.*/
+    public long size();
+
+    /** Is it empty? */
+    public boolean isEmpty();
+
+    /** useful display string */
+    public String getLabel();
+
+    /** Filename for this BufferChannel (maybe null) */
+    public String getFilename();
+
 }

@@ -18,60 +18,56 @@
 
 package org.apache.jena.dboe;
 
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.dboe.sys.Sys;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.dboe.sys.SysDB;
 
 public class ConfigTestDBOE
 {
-    private static String testingDataRoot = "testing" ;
+    private static String testingDataRoot = "testing";
     // Place under target
-    private static final String testingDir = "target/dboe-testing" ;
-    static boolean nonDeleteableMMapFiles = Sys.isWindows ;
-    
-    static boolean initialized = false ; 
-    
-    private static void init()
-    {
-        FileOps.ensureDir("target") ;
-        FileOps.ensureDir(testingDir) ;
-        initialized = true ;
-    }
-    
-    private static int count = 0 ;
+    private static final String testingDir = "target/dboe-testing";
+    static boolean nonDeleteableMMapFiles = SysDB.isWindows;
 
-    public static void setTestingDataRoot(String dir) { testingDataRoot = dir ; }
-    public static String getTestingDataRoot() { return testingDataRoot ; }
-    
-    /** return a directory */ 
+    static boolean initialized = false;
+
+    private static void init() {
+        FileOps.ensureDir("target");
+        FileOps.ensureDir(testingDir);
+        initialized = true;
+    }
+
+    private static int count = 0;
+
+    public static void setTestingDataRoot(String dir) { testingDataRoot = dir; }
+    public static String getTestingDataRoot() { return testingDataRoot; }
+
+    /** return a directory */
     public static final String getCleanDir() {
-        init() ;
-        String dir = nonDeleteableMMapFiles ? getTestingDirUnique() : getTestingDir() ;
-        FileOps.ensureDir(dir); 
-        FileOps.clearDirectory(dir) ;
-        return dir ;
+        init();
+        String dir = nonDeleteableMMapFiles ? getTestingDirUnique() : getTestingDir();
+        FileOps.ensureDir(dir);
+        FileOps.clearDirectory(dir);
+        return dir;
     }
     /** Get a empty directory name that has not been used before in this JVM */
-    
-    private static final String getTestingDirUnique()
-    {
-        init() ;
-    	String dn = testingDir+"/D-"+(++count) ;
-    	FileOps.ensureDir(dn) ;
-    	FileOps.clearDirectory(dn) ;
-    	return dn ; 
+
+    private static final String getTestingDirUnique() {
+        init();
+    	String dn = testingDir+"/D-"+(++count);
+    	FileOps.ensureDir(dn);
+    	FileOps.clearDirectory(dn);
+    	return dn;
     }
-    
-    public static final String getTestingDir()
-    {
-        init() ;
-        return testingDir ;
+
+    public static final String getTestingDir() {
+        init();
+        return testingDir;
     }
-    
-    public static final void deleteTestingDir()
-    {
+
+    public static final void deleteTestingDir() {
         if ( ! FileOps.exists(testingDir) )
-            return ;
-        FileOps.clearDirectory(testingDir) ;
-        FileOps.deleteSilent(testingDir) ;
+            return;
+        FileOps.clearDirectory(testingDir);
+        FileOps.deleteSilent(testingDir);
     }
 }

@@ -16,119 +16,117 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.block ;
+package org.apache.jena.dboe.base.block;
 
-import java.nio.ByteBuffer ;
+import java.nio.ByteBuffer;
 
-import static org.apache.jena.atlas.lib.ByteBufferLib.fill ;
-import org.junit.Assert ;
-import org.apache.jena.dboe.base.block.Block;
-import org.apache.jena.dboe.base.block.BlockMgr;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import static org.apache.jena.atlas.lib.ByteBufferLib.fill;
+import org.junit.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public abstract class AbstractTestBlockMgr extends Assert {
-    static final public int BlkSize  = 256 ;
+    static final public int BlkSize  = 256;
 
-    protected BlockMgr      blockMgr = null ;
+    protected BlockMgr      blockMgr = null;
 
     @Before
     public void before() {
-        blockMgr = make() ;
-        blockMgr.beginUpdate() ;
+        blockMgr = make();
+        blockMgr.beginUpdate();
     }
 
     @After
     public void after() {
         if ( blockMgr != null ) {
-            blockMgr.endUpdate() ;
-            blockMgr.close() ;
+            blockMgr.endUpdate();
+            blockMgr.close();
         }
     }
 
     @Test
     public void file01() {
-        long x = blockMgr.allocLimit() ;
-        assertTrue("First allocLimit : " + x, x >= 0) ;
+        long x = blockMgr.allocLimit();
+        assertTrue("First allocLimit : " + x, x >= 0);
         // Assume no recycling.
-        Block block = blockMgr.allocate(BlkSize) ;
-        assertTrue("Block inside allocate boundary", block.getId() >= x) ;
-        ByteBuffer bb = block.getByteBuffer() ;
-        fill(bb, (byte)1) ;
-        blockMgr.write(block) ;
-        blockMgr.release(block) ;
+        Block block = blockMgr.allocate(BlkSize);
+        assertTrue("Block inside allocate boundary", block.getId() >= x);
+        ByteBuffer bb = block.getByteBuffer();
+        fill(bb, (byte)1);
+        blockMgr.write(block);
+        blockMgr.release(block);
     }
 
     @Test
     public void file02() {
-        Block block = blockMgr.allocate(BlkSize) ;
-        ByteBuffer bb = block.getByteBuffer() ;
-        fill(bb, (byte)1) ;
-        long id = block.getId() ;
-        blockMgr.write(block) ;
-        blockMgr.release(block) ;
+        Block block = blockMgr.allocate(BlkSize);
+        ByteBuffer bb = block.getByteBuffer();
+        fill(bb, (byte)1);
+        long id = block.getId();
+        blockMgr.write(block);
+        blockMgr.release(block);
 
-        Block block2 = blockMgr.getRead(id) ;
-        ByteBuffer bb2 = block2.getByteBuffer() ;
-        assertEquals(bb2.capacity(), BlkSize) ;
-        assertEquals(bb2.get(0), (byte)1) ;
-        assertEquals(bb2.get(BlkSize - 1), (byte)1) ;
-        blockMgr.release(block2) ;
+        Block block2 = blockMgr.getRead(id);
+        ByteBuffer bb2 = block2.getByteBuffer();
+        assertEquals(bb2.capacity(), BlkSize);
+        assertEquals(bb2.get(0), (byte)1);
+        assertEquals(bb2.get(BlkSize - 1), (byte)1);
+        blockMgr.release(block2);
     }
 
     @Test
     public void file03() {
-        Block block = blockMgr.allocate(BlkSize) ;
-        ByteBuffer bb = block.getByteBuffer() ;
-        fill(bb, (byte)2) ;
-        long id = block.getId() ;
-        blockMgr.write(block) ;
-        blockMgr.release(block) ;
+        Block block = blockMgr.allocate(BlkSize);
+        ByteBuffer bb = block.getByteBuffer();
+        fill(bb, (byte)2);
+        long id = block.getId();
+        blockMgr.write(block);
+        blockMgr.release(block);
 
-        Block block2 = blockMgr.getRead(id) ;
-        ByteBuffer bb2 = block2.getByteBuffer() ;
-        assertEquals(bb2.capacity(), BlkSize) ;
-        assertEquals(bb2.get(0), (byte)2) ;
-        assertEquals(bb2.get(BlkSize - 1), (byte)2) ;
-        blockMgr.release(block2) ;
+        Block block2 = blockMgr.getRead(id);
+        ByteBuffer bb2 = block2.getByteBuffer();
+        assertEquals(bb2.capacity(), BlkSize);
+        assertEquals(bb2.get(0), (byte)2);
+        assertEquals(bb2.get(BlkSize - 1), (byte)2);
+        blockMgr.release(block2);
     }
 
     @Test
     public void multiAccess01() {
-        Block block1 = blockMgr.allocate(BlkSize) ;
-        Block block2 = blockMgr.allocate(BlkSize) ;
-        long id1 = block1.getId() ;
-        long id2 = block2.getId() ;
+        Block block1 = blockMgr.allocate(BlkSize);
+        Block block2 = blockMgr.allocate(BlkSize);
+        long id1 = block1.getId();
+        long id2 = block2.getId();
 
-        ByteBuffer bb1 = block1.getByteBuffer() ;
-        ByteBuffer bb2 = block2.getByteBuffer() ;
+        ByteBuffer bb1 = block1.getByteBuffer();
+        ByteBuffer bb2 = block2.getByteBuffer();
 
-        fill(bb1, (byte)1) ;
-        fill(bb2, (byte)2) ;
+        fill(bb1, (byte)1);
+        fill(bb2, (byte)2);
 
-        blockMgr.write(block1) ;
-        blockMgr.write(block2) ;
-        blockMgr.release(block1) ;
-        blockMgr.release(block2) ;
+        blockMgr.write(block1);
+        blockMgr.write(block2);
+        blockMgr.release(block1);
+        blockMgr.release(block2);
 
-        Block block3 = blockMgr.getRead(id1) ;
-        Block block4 = blockMgr.getRead(id2) ;
+        Block block3 = blockMgr.getRead(id1);
+        Block block4 = blockMgr.getRead(id2);
 
-        ByteBuffer bb_1 = block3.getByteBuffer() ;
-        ByteBuffer bb_2 = block4.getByteBuffer() ;
+        ByteBuffer bb_1 = block3.getByteBuffer();
+        ByteBuffer bb_2 = block4.getByteBuffer();
 
-        contains(bb_1, (byte)1) ;
-        contains(bb_2, (byte)2) ;
+        contains(bb_1, (byte)1);
+        contains(bb_2, (byte)2);
 
-        blockMgr.release(block3) ;
-        blockMgr.release(block4) ;
+        blockMgr.release(block3);
+        blockMgr.release(block4);
     }
 
-    protected abstract BlockMgr make() ;
+    protected abstract BlockMgr make();
 
     protected static void contains(ByteBuffer bb, byte fillValue) {
-        for ( int i = 0 ; i < bb.limit() ; i++ )
-            assertEquals("Index: " + i, bb.get(i), fillValue) ;
+        for ( int i = 0; i < bb.limit() ; i++ )
+            assertEquals("Index: " + i, bb.get(i), fillValue);
     }
 }

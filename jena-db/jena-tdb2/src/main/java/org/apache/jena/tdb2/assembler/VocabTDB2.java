@@ -19,73 +19,73 @@
 package org.apache.jena.tdb2.assembler;
 
 
-import org.apache.jena.assembler.Assembler ;
-import org.apache.jena.assembler.ConstAssembler ;
-import org.apache.jena.assembler.JA ;
-import org.apache.jena.assembler.assemblers.AssemblerGroup ;
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.assembler.Assembler;
+import org.apache.jena.assembler.ConstAssembler;
+import org.apache.jena.assembler.JA;
+import org.apache.jena.assembler.assemblers.AssemblerGroup;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.tdb2.TDB2;
 
 public class VocabTDB2
 {
-    private static final String NS = TDB2.namespace ;
-    
-    public static String getURI() { return NS ; } 
+    private static final String NS = TDB2.namespace;
+
+    public static String getURI() { return NS; }
 
     // Types
-    public static final Resource tDatasetTDB        = Vocab.type(NS, "DatasetTDB2") ;
-    public static final Resource tDatasetTDB_alt    = Vocab.type(NS, "DatasetTDB") ;
-    public static final Resource tGraphTDB          = Vocab.type(NS, "GraphTDB2") ;
-    public static final Resource tGraphTDB_alt      = Vocab.type(NS, "GraphTDB") ;
-//    public static final Resource tTupleIndex        = Vocab.type(NS, "TupleIndex") ;
-    public static final Resource tNodeTable         = Vocab.type(NS, "NodeTable") ;
+    public static final Resource tDatasetTDB        = Vocab.type(NS, "DatasetTDB2");
+    public static final Resource tDatasetTDB_alt    = Vocab.type(NS, "DatasetTDB");
+    public static final Resource tGraphTDB          = Vocab.type(NS, "GraphTDB2");
+    public static final Resource tGraphTDB_alt      = Vocab.type(NS, "GraphTDB");
+//    public static final Resource tTupleIndex        = Vocab.type(NS, "TupleIndex");
+    public static final Resource tNodeTable         = Vocab.type(NS, "NodeTable");
 
-    public static final Property pLocation          = Vocab.property(NS, "location") ;
-    public static final Property pUnionDefaultGraph = Vocab.property(NS, "unionDefaultGraph") ;
-    
-    public static final Property pIndex             = Vocab.property(NS, "index") ;
-    public static final Property pGraphName1        = Vocab.property(NS, "graphName") ;
-    public static final Property pGraphName2        = Vocab.property(NS, "namedGraph") ;
-    public static final Property pDataset           = Vocab.property(NS, "dataset") ;
-    
-    public static final Property pNodes             = Vocab.property(NS, "nodes") ;
+    public static final Property pLocation          = Vocab.property(NS, "location");
+    public static final Property pUnionDefaultGraph = Vocab.property(NS, "unionDefaultGraph");
+
+    public static final Property pIndex             = Vocab.property(NS, "index");
+    public static final Property pGraphName1        = Vocab.property(NS, "graphName");
+    public static final Property pGraphName2        = Vocab.property(NS, "namedGraph");
+    public static final Property pDataset           = Vocab.property(NS, "dataset");
+
+    public static final Property pNodes             = Vocab.property(NS, "nodes");
 
     // Indexes
-    public static final Property pDescription       = Vocab.property(getURI(), "description") ;
-    public static final Property pFile              = Vocab.property(getURI(), "file") ;
+    public static final Property pDescription       = Vocab.property(getURI(), "description");
+    public static final Property pFile              = Vocab.property(getURI(), "file");
 
     // Nodes
-    public static final Property pNodeIndex         = Vocab.property(getURI(), "nodeIndex") ;
-    public static final Property pNodeData          = Vocab.property(getURI(), "nodeData") ;
-    
+    public static final Property pNodeIndex         = Vocab.property(getURI(), "nodeIndex");
+    public static final Property pNodeData          = Vocab.property(getURI(), "nodeData");
+
     // Setting
-    public static final Property pSetting           = Vocab.property(getURI(), "setting") ;
-    public static final Property pName              = Vocab.property(getURI(), "name") ;
-    public static final Property pValue             = Vocab.property(getURI(), "value") ;
-    
-    private static boolean initialized = false ; 
-    
-    static { init() ; }
-    
-    static synchronized public void init()
+    public static final Property pSetting           = Vocab.property(getURI(), "setting");
+    public static final Property pName              = Vocab.property(getURI(), "name");
+    public static final Property pValue             = Vocab.property(getURI(), "value");
+
+    private static boolean initialized = false;
+
+    static { init(); }
+
+    static public synchronized void init()
     {
         if ( initialized )
-            return ;
-        registerWith(Assembler.general) ;
-        initialized = true ;
+            return;
+        registerWith(Assembler.general);
+        initialized = true;
     }
-    
+
     static void registerWith(AssemblerGroup g)
     {
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         // Domain and range for properties.
         // Separated and use ja:imports
-        AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB());
-        AssemblerUtils.registerDataset(tDatasetTDB_alt, new DatasetAssemblerTDB());
-        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB, new TDBGraphAssembler(), JA.Model);
-        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB_alt, new TDBGraphAssembler(), JA.Model);
+        AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB2());
+        AssemblerUtils.registerDataset(tDatasetTDB_alt, new DatasetAssemblerTDB2());
+        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB, new TDB2GraphAssembler(), JA.Model);
+        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB_alt, new TDB2GraphAssembler(), JA.Model);
 
     }
 }

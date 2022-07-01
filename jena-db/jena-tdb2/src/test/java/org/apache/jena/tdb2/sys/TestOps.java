@@ -19,14 +19,13 @@
 package org.apache.jena.tdb2.sys;
 
 import org.apache.jena.dboe.base.block.FileMode;
-import org.apache.jena.tdb2.sys.SystemTDB;
 
 public class TestOps
 {
     public static void setFileMode(FileMode mode)
     {
-        SystemTDB.internalSetFileMode(mode) ;
+        SystemTDB.internalSetFileMode(mode);
     }
-    
+
 }
 

@@ -18,13 +18,12 @@
 
 package org.apache.jena.tdb2.loader.base;
 
-import java.io.PrintStream;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.tuple.Tuple;
-import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.dboe.base.file.BinaryDataFile;
 import org.apache.jena.dboe.index.Index;
 import org.apache.jena.dboe.index.RangeIndex;
@@ -32,10 +31,12 @@ import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.dboe.trans.data.TransBinaryDataFile;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFWrapper;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.progress.*;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
@@ -49,7 +50,7 @@ import org.slf4j.Logger;
  * considered to be in the public API.
  */
 public class LoaderOps {
-    /** Get the node storage for a {@Link NodeTable} */ 
+    /** Get the node storage for a {@Link NodeTable} */
     public static TransBinaryDataFile ntDataFile(NodeTable nt) {
         NodeTableTRDF ntt = (NodeTableTRDF)(nt.baseNodeTable());
         BinaryDataFile bdf = ntt.getData();
@@ -57,14 +58,14 @@ public class LoaderOps {
         return tbdf;
     }
 
-    /** Get the BPlusTree index for a {@Link NodeTable} */ 
+    /** Get the BPlusTree index for a {@Link NodeTable} */
     public static BPlusTree ntBPTree(NodeTable nt) {
         NodeTableTRDF ntt = (NodeTableTRDF)(nt.baseNodeTable());
         Index idx = ntt.getIndex();
         return (BPlusTree)idx;
     }
 
-    /** Get the BPlusTree index for a {@Link TupleIndex} */ 
+    /** Get the BPlusTree index for a {@Link TupleIndex} */
     public static BPlusTree idxBTree(TupleIndex idx) {
         TupleIndexRecord idxr = (TupleIndexRecord)idx;
         RangeIndex rIndex = idxr.getRangeIndex();
@@ -100,23 +101,30 @@ public class LoaderOps {
      * "no output".
      */
     public static void inputFile(StreamRDF sink, String source, ProgressMonitor monitor) {
-        if ( monitor != null ) {
+        if ( monitor != null )
             sink = new ProgressStreamRDF(sink, monitor);
-            //monitor.start();
-        }
         sink.start();
-        RDFDataMgr.parse(sink, source);
+        RDFParser.source(source).parse(sink);
         sink.finish();
-        if ( monitor != null ) {
-            //monitor.finish();
-            //monitor.finishMessage("Data");
-        }
+    }
+
+    /**
+     * Parse one file, with an optional progress monitor. Pass null to {@code monitor} for
+     * "no output".
+     * @param syntax
+     */
+    public static void inputStream(StreamRDF sink, InputStream input, Lang syntax, ProgressMonitor monitor) {
+        if ( monitor != null )
+            sink = new ProgressStreamRDF(sink, monitor);
+        sink.start();
+        RDFParser.source(input).lang(syntax).parse(sink);
+        sink.finish();
     }
 
     /** Copy a stream to several indexes (sequential version) */
     public static void copyIndex(Iterator<Tuple<NodeId>> srcIter, TupleIndex[] destIndexes, ProgressMonitor monitor) {
         long counter = 0;
-        for ( ; srcIter.hasNext() ; ) {
+        for (; srcIter.hasNext() ; ) {
             counter++;
             Tuple<NodeId> tuple = srcIter.next();
             monitor.tick();
@@ -151,33 +159,8 @@ public class LoaderOps {
 
     private static Logger LOG = TDB2.logLoader;
 
-    /** Output to the nothing. */
-    public static MonitorOutput nullOutput() {
-        return (x, y) -> {};
-    }
-
     /** Output to the loader logger. */
     public static MonitorOutput outputToLog() {
-        return LoaderOps.outputToLog(LOG);
-    }
-
-    /** {@link MonitorOutput} to a logger. */
-    public static MonitorOutput outputToLog(Logger logger) {
-        Objects.requireNonNull(logger);
-        return (fmt, args) -> {
-            if ( logger.isInfoEnabled() )
-                FmtLog.info(logger, fmt, args);
-        };
-    }
-
-    /** {@link MonitorOutput} to a PrintStream. */
-    public static MonitorOutput outputTo(PrintStream output) {
-        Objects.requireNonNull(output);
-        return (fmt, args) -> {
-            if ( fmt.endsWith("\n") || fmt.endsWith("\r") )
-                output.print(String.format(fmt, args));
-            else
-                output.println(String.format(fmt, args));
-        };
+        return MonitorOutputs.outputToLog(LOG);
     }
 }

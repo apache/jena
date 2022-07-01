@@ -18,280 +18,38 @@
 
 package org.apache.jena.dboe.transaction.txn.journal;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
 import org.apache.jena.dboe.base.file.BufferChannelFile;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
-
-public class JournalControl
-{
-    private static Logger log = LoggerFactory.getLogger(JournalControl.class) ;
-
-    // In TransactionCoordinator
-//    // Interface
-//    public static void recovery(TransactionCoordinator txnCoord)
-//    {
-//        txnCoord.getJournal() ;
-//        
-//    }
-//    
-//    public static void replay(Transaction transaction)
-//    {}
-    
-    /** Dump a journal - debug support function - opens the journal specially - inconsistent views possible */
+public class JournalControl {
+    /**
+     * Dump a journal - debug support function - opens the journal specially -
+     * inconsistent views possible
+     */
     public static void print(String filename) {
-        BufferChannelFile chan = BufferChannelFile.createUnmanaged(filename, "r") ;
-        Journal journal = Journal.create(chan) ;
-        JournalControl.print(journal) ;
-        chan.close() ;
-    }
-    
-    public static void print(Journal journal) {
-        System.out.println("Size: "+journal.size()) ;
-        Iterator<JournalEntry> iter = journal.entries() ; 
-        
-        for (  ; iter.hasNext() ; )
-        {
-            JournalEntry e = iter.next() ;
-            //System.out.println("Posn: "+journal.position()+" : ("+(journal.size()-journal.position())+")") ;
-            System.out.println(JournalEntry.format(e)) ;
+        BufferChannelFile chan = BufferChannelFile.createUnmanaged(filename, "r");
+        Journal journal = Journal.create(chan);
+        try {
+            print(journal);
+        }
+        finally {
+            journal.close();
         }
     }
 
-//    /** Recover a base storage DatasetGraph */
-//    public static void recovery(Location location)
-//    {
-//        if ( location.isMem() )
-//            return ;
-//        
-//        // Do we need to recover?
-//        Journal journal = findJournal(location) ;
-//        if ( journal == null || journal.isEmpty() )
-//            return ;
-//        
-//        for ( FileRef fileRef : dsg.getConfig().nodeTables.keySet() )
-//            recoverNodeDat(dsg, fileRef) ;
-//        recoverFromJournal(dsg.getConfig(), journal) ;
-//        
-//        journal.close() ;
-//        // Recovery complete.  Tidy up.  Node journal files have already been handled.
-//        if ( journal.getFilename() != null )
-//        {
-//            if ( FileOps.exists(journal.getFilename()) )
-//                FileOps.delete(journal.getFilename()) ;
-//        }
-//    }
-//    
-//    private static Journal findJournal(Location location)
-//    {
-//        String journalFilename = location.absolute(Names.journalFile) ;
-//        File f = new File(journalFilename) ;
-//        //if ( FileOps.exists(journalFilename)
-//        
-//        if ( f.exists() && f.isFile() && f.length() > 0 )
-//            return Journal.create(location) ;
-//        else
-//            return null ;
-//    }
-//
-//    /** Recovery from a journal.
-//     *  Find if there is a commit record; if so, replay the journal to that point.
-//     *  Try to see if there is another commit record ...
-//     *  Return true if a recovery was attempted; return false if we decided no work needed.
-//     */
-//    public static boolean recoverFromJournal(StorageConfig sConf, Journal jrnl)
-//    {
-//        if ( jrnl.isEmpty() )
-//            return false ;
-//
-//        long posn = 0 ;
-//        for ( ;; )
-//        {
-//            // Any errors indicate a partially written journal.
-//            // A commit was not written properly in the prepare phase.
-//            // e.g. JVM died half-way though writing the prepare phase data.
-//            // The valid journal ends at this point. Exit loop and clean up.  
-//
-//            long x ;
-//            try { x = scanForCommit(jrnl, posn) ; }
-//            catch (TDBException ex) { x = -1 ; }
-//            
-//            if ( x == -1 ) break ;
-//            recoverSegment(jrnl, posn, x, sConf) ;
-//            posn = x ;
-//        }
-//
-//        // We have replayed the journals - clean up.
-//        jrnl.truncate(0) ;
-//        jrnl.sync() ;
-//        syncAll(sConf) ;
-//        return true ;
-//    }
-//
-//    /** Scan to a commit entry, starting at a given position in the journal.
-//     * Return address of entry after commit if found, else -1.
-//     */
-//    private static long scanForCommit(Journal jrnl, long startPosn)
-//    {
-//        Iterator<JournalEntry> iter = jrnl.entries(startPosn) ;
-//        try {
-//            for ( ; iter.hasNext() ; )
-//            {
-//                JournalEntry e = iter.next() ;
-//                if ( e.getType() == JournalEntryType.Commit )
-//                    return e.getEndPosition() ;
-//            }
-//            return -1 ;
-//        } finally { Iter.close(iter) ; }
-//    }
-//    
-//    /** Recover one transaction from the start position given.
-//     *  Scan to see if theer is a commit; if found, play the
-//     *  journal from the start point to the commit.
-//     *  Return true is a commit was found.
-//     *  Leave journal positioned just after commit or at end if none found.
-//     */
-//    private static void recoverSegment(Journal jrnl, long startPosn, long endPosn, StorageConfig sConf)
-//    {
-//        Iterator<JournalEntry> iter = jrnl.entries(startPosn) ;
-//        iter = jrnl.entries(startPosn) ;
-//        try {
-//            for ( ; iter.hasNext() ; )
-//            {
-//                JournalEntry e = iter.next() ;
-//                if ( e.getType() == JournalEntryType.Commit )
-//                {
-//                    if ( e.getEndPosition() != endPosn )
-//                        log.warn(format("Inconsistent: end at %d; expected %d", e.getEndPosition(), endPosn)) ;
-//                    return ;
-//                }
-//                replay(e, sConf) ;
-//            }
-//        } finally { Iter.close(iter) ; }
-//    }
-//    
-//    /** Recover a node data file (".dat").
-//     *  Node data files are append-only so recovering, then not using the data is safe.
-//     *  Node data file is a precursor for full recovery that works from the master journal.
-//     */
-//    private static void recoverNodeDat(DatasetGraphTDB dsg, FileRef fileRef)
-//    {
-//        // See DatasetBuilderTxn - same name generation code.
-//        // [TxTDB:TODO]
-//        
-//        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-//        NodeTable baseNodeTable = dsg.getConfig().nodeTables.get(fileRef) ;
-//        String objFilename = fileRef.getFilename()+"-"+Names.extJournal ;
-//        objFilename = dsg.getLocation().absolute(objFilename) ;
-//        File jrnlFile = new File(objFilename) ;
-//        if ( jrnlFile.exists() && jrnlFile.length() > 0 )
-//        {
-//            syslog.info("Recovering node data: "+fileRef.getFilename()) ;
-//            ObjectFile dataJrnl = FileFactory.createObjectFileDisk(objFilename) ;
-//            NodeTableTrans ntt = new NodeTableTrans(null, objFilename, baseNodeTable, new IndexMap(recordFactory), dataJrnl) ;
-//            ntt.append() ;
-//            ntt.close() ;
-//            dataJrnl.close() ;
-//            baseNodeTable.sync() ;
-//        }
-//        if ( jrnlFile.exists() )
-//            FileOps.delete(objFilename) ;
-//    }
-//    
-//    public static void replay(Transaction transaction)
-//    {
-//        if ( syslog.isDebugEnabled())
-//            syslog.debug("Replay "+transaction.getLabel()) ;
-//        Journal journal = transaction.getJournal() ;
-//        DatasetGraphTDB dsg = transaction.getBaseDataset() ;
-//        // Currently, we (crudely) replay the whole journal.
-//        replay(journal, dsg.getConfig()) ;
-//    }
-//    
-//    /** Replay a journal onto a dataset */
-//    public static void replay(Journal journal, DatasetGraphTDB dsg)
-//    {
-//        replay(journal, dsg.getConfig()) ;
-//    }
-//    
-//    /** Replay a journal onto a store configuration (the file resources) */
-//    private static void replay(Journal journal, StorageConfig sConf)
-//    {
-//        if ( journal.size() == 0 )
-//            return ;
-//        
-//        journal.position(0) ;
-//        try {
-//            Iterator<JournalEntry> iter = journal.entries() ; 
-//
-//            for (  ; iter.hasNext() ; )
-//            {
-//                JournalEntry e = iter.next() ;
-//                replay(e, sConf) ;
-//
-//                // There is no point sync here.  
-//                // No writes via the DSG have been done. 
-//                // so all internal flags "syncNeeded" are false.
-//                //dsg.sync() ;
-//            }
-//        } 
-//        catch (RuntimeException ex)
-//        { 
-//            // Bad news travels fast.
-//            syslog.error("Exception during journal replay", ex) ;
-//            throw ex ;
-//        }
-//        
-//        Collection<BlockMgr> x = sConf.blockMgrs.values() ;
-//        for ( BlockMgr blkMgr : x )
-//            blkMgr.syncForce() ;
-//        // Must do a hard sync before this.
-//        journal.truncate(0) ;
-//    }
-//
-//    /** return true for "go on" */
-//    private static boolean replay(JournalEntry e, StorageConfig sConf)
-//    {
-//        switch (e.getType())
-//        {
-//            case Block:
-//            {
-//                BlockMgr blkMgr = sConf.blockMgrs.get(e.getFileRef()) ;
-//                Block blk = e.getBlock() ;
-//                log.debug("Replay: {} {}",e.getFileRef(), blk) ;
-//                blk.setModified(true) ;
-//                blkMgr.overwrite(blk) ; 
-//                return true ;
-//            }   
-//            case Buffer:
-//            {
-//                BufferChannel chan = sConf.bufferChannels.get(e.getFileRef()) ;
-//                ByteBuffer bb = e.getByteBuffer() ;
-//                log.debug("Replay: {} {}",e.getFileRef(), bb) ;
-//                chan.write(bb, 0) ; // YUK!
-//                return true ;
-//            }
-//                
-//            case Commit:
-//                return false ;
-//            case Abort:
-//            case Object:
-//            case Checkpoint:
-//                errlog.warn("Unexpected block type: "+e.getType()) ;
-//        }
-//        return false ;
-//    }
-//
-//    private static void syncAll(StorageConfig sConf)
-//    {
-//        Collection<BlockMgr> x = sConf.blockMgrs.values() ;
-//        for ( BlockMgr blkMgr : x )
-//            blkMgr.syncForce() ;
-//        Collection<BufferChannel> y = sConf.bufferChannels.values() ;
-//        for ( BufferChannel bChan : y )
-//            bChan.sync() ;
-//        //sConf.nodeTables ;
-//    }
+    /**
+     * Dump a journal - debug support function.
+     */
+    public static void print(Journal journal) {
+        System.out.println("Size: " + journal.size());
+        Iterator<JournalEntry> iter = journal.entries();
+
+        for (; iter.hasNext() ; ) {
+            JournalEntry e = iter.next();
+            // System.out.println("Posn: "+journal.position()+" :
+            // ("+(journal.size()-journal.position())+")");
+            System.out.println(JournalEntry.format(e));
+        }
+    }
 }

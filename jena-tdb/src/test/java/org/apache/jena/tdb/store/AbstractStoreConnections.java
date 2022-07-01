@@ -18,8 +18,11 @@
 
 package org.apache.jena.tdb.store;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.rdf.model.Model ;
@@ -31,13 +34,14 @@ import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
 import org.apache.jena.tdb.transaction.TDBTransactionException ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public abstract class AbstractStoreConnections extends BaseTest
+public abstract class AbstractStoreConnections
 {
     // Subclass to give direct and mapped versions.
     
@@ -55,7 +59,7 @@ public abstract class AbstractStoreConnections extends BaseTest
 
     @Before public void before()
     {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
         DIR = ConfigTest.getCleanDir() ;
     }
 
@@ -81,12 +85,10 @@ public abstract class AbstractStoreConnections extends BaseTest
     public void store_1() {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
-        DatasetGraphTxn dsgR1 = sConn.begin(TxnType.READ) ;
         DatasetGraphTxn dsgW1 = sConn.begin(TxnType.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
         dsgW1.end() ;
-        dsgR1.end() ;
 
         assertTrue(sConn.isValid());
         StoreConnection.release(sConn.getLocation()) ;
@@ -116,12 +118,10 @@ public abstract class AbstractStoreConnections extends BaseTest
     @Test
     public void store_4() {
         StoreConnection sConn = getStoreConnection() ;
-        DatasetGraphTxn dsgR1 = sConn.begin(TxnType.READ) ;
         DatasetGraphTxn dsgW1 = sConn.begin(TxnType.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
         dsgW1.end() ;
-        dsgR1.end() ;
 
         StoreConnection.release(sConn.getLocation()) ;
         sConn = null ;

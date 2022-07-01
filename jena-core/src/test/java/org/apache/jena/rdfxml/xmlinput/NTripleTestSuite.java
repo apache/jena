@@ -25,10 +25,6 @@ import junit.framework.TestSuite ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdfxml.xmlinput.ALiteral ;
-import org.apache.jena.rdfxml.xmlinput.ARPEventHandler ;
-import org.apache.jena.rdfxml.xmlinput.AResource ;
-import org.apache.jena.rdfxml.xmlinput.NTriple ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPResource ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 import org.apache.jena.shared.wg.InputStreamFactoryTests ;
@@ -251,7 +247,6 @@ class NTripleTestSuite extends WGTestSuite {
 		return loadRDFx(in, eh, base, true, 0);
 	}
 	
-    @SuppressWarnings("resource")
     static Model loadRDFx(
 		InFactoryX in,
 		RDFErrorHandler eh,

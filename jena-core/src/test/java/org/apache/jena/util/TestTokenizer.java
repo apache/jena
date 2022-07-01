@@ -20,7 +20,6 @@ package org.apache.jena.util;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.util.Tokenizer ;
 
 /**
  * Test for the trivial tokenizer utility.

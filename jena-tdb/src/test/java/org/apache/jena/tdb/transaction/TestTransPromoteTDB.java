@@ -24,7 +24,6 @@ import org.apache.jena.sparql.transaction.AbstractTestTransPromote ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-import org.apache.log4j.Logger ;
 
 /** Tests for transactions that start read and then promote to write -- TDB */
 public class TestTransPromoteTDB extends AbstractTestTransPromote {
@@ -37,10 +36,10 @@ public class TestTransPromoteTDB extends AbstractTestTransPromote {
         return TDBFactory.createDatasetGraph() ;
     }
 
-    private static Logger[] getLoggers() {
-        return new Logger[]{
-            Logger.getLogger(SystemTDB.errlog.getName()),
-            Logger.getLogger(TDB.logInfoName)
+    private static String[] getLoggers() {
+        return new String[]{
+            SystemTDB.errlog.getName(),
+            TDB.logInfoName
         } ;
     }
 

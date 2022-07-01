@@ -146,7 +146,7 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
     private static ReasonerFactory createInstance( Resource root, Class<?> c )
         { 
         try
-            { return (ReasonerFactory) c.newInstance(); }
+            { return (ReasonerFactory) c.getConstructor().newInstance(); }
         catch (Exception e)
             { throw new AssemblerException( root, "could not create instance of " + c.getName(), e ); }
         }

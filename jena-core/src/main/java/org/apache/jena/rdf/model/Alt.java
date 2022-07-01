@@ -180,18 +180,6 @@ public interface Alt extends Container {
      */
     public String getDefaultLanguage();
     
-    /** Return the default value for this resource.
-     *
-     * <p>The factory class f is used to create the object which is returned.
-     * </p>
-     * @return the default value for this resource interpreted as the return
-     * type.
-     * @param f A factory class which will be used to create the
-     * object returned.
-     
-     */
-    @Deprecated public Resource getDefaultResource(ResourceF f);
-    
     /** Return the default value for this resource. 
      * @return the default value for this resource interpreted as the return
      *         type.

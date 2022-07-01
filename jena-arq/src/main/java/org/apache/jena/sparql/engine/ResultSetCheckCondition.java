@@ -28,7 +28,7 @@ import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 
 /** ResultSet wrapper that check whether some condition is true
- * (e.g. the QueryExecution has not been closed). 
+ * (e.g. the QueryExecution has not been closed).
  */
 public class ResultSetCheckCondition implements ResultSet
 {
@@ -46,7 +46,7 @@ public class ResultSetCheckCondition implements ResultSet
     }
 
     private static Condition checkQExec(final QueryExecution qExec) {
-        return ()-> ! qExec.isClosed() ;  
+        return ()-> ! qExec.isClosed() ;
     }
 
     @Override
@@ -62,12 +62,6 @@ public class ResultSetCheckCondition implements ResultSet
     }
 
     @Override
-    public void remove() {
-        check() ;
-        other.remove() ;
-    }
-
-    @Override
     public QuerySolution nextSolution() {
         check() ;
         return other.nextSolution() ;
@@ -77,6 +71,12 @@ public class ResultSetCheckCondition implements ResultSet
     public Binding nextBinding() {
         check() ;
         return other.nextBinding() ;
+    }
+
+    @Override
+    public void close() {
+        check() ;
+        other.close();
     }
 
     @Override
@@ -96,10 +96,10 @@ public class ResultSetCheckCondition implements ResultSet
         check() ;
         return other.getResourceModel() ;
     }
-    
+
     private final void check() {
         if ( ! condition.check()  ) {
-            throw new ARQException("ResultSet no longer valid (QueryExecution has been closed)") ;    
+            throw new ARQException("ResultSet no longer valid (QueryExecution has been closed)") ;
         }
     }
 

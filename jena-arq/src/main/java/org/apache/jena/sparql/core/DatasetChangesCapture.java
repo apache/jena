@@ -25,7 +25,10 @@ import java.util.List ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Node ;
 
-/** Capture a record of quad actions */
+/** Capture a record of quad actions
+ * @deprecated Do not use. This class is not transaction-aware.
+ */
+@Deprecated
 public class DatasetChangesCapture implements DatasetChanges {
     // ArrayLists have an annoying issue that they grow by copying the internal
     // []-array.
@@ -47,7 +50,7 @@ public class DatasetChangesCapture implements DatasetChanges {
 
     /**
      * Capture quad actions, either including or excluding the "no ops"
-     * 
+     *
      * @param recordNoOps
      *            Whether to record {@link QuadAction#NO_ADD} and
      *            {@link QuadAction#NO_DELETE}
@@ -66,7 +69,7 @@ public class DatasetChangesCapture implements DatasetChanges {
     }
 
     /** The actions recorded.
-     *  Only valid until the next {@code start} call.   
+     *  Only valid until the next {@code start} call.
      */
     public List<Pair<QuadAction, Quad>> getActions() {
         return Collections.unmodifiableList(actions) ;

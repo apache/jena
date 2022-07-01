@@ -18,19 +18,18 @@
 
 package org.apache.jena.sparql.algebra;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays ;
 import java.util.Collection ;
 import java.util.HashSet ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVars ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
-public class TestOpVars extends BaseTest
+public class TestOpVars
 {
     @Test public void opvars_01() { visible("(bgp (?s :p ?o))", "s", "o") ; }
     @Test public void opvars_02() { visible("(leftjoin (bgp (?s :p ?o)) (bgp (?s1 :p ?o1)) )", "s1", "o1", "s", "o") ; }

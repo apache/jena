@@ -20,8 +20,6 @@ package org.apache.jena.tdb.base.file;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.base.file.BufferChannel ;
-import org.apache.jena.tdb.base.file.BufferChannelFile ;
 import org.junit.AfterClass ;
 
 public class TestChannelFile extends AbstractTestChannel

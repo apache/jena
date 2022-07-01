@@ -17,99 +17,96 @@
  */
 package org.apache.jena.permissions.query;
 
-import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.graph.SecuredGraph;
-import org.apache.jena.query.Query ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.engine.Plan ;
-import org.apache.jena.sparql.engine.QueryEngineFactory ;
-import org.apache.jena.sparql.engine.QueryEngineRegistry ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.query.Query;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.engine.Plan;
+import org.apache.jena.sparql.engine.QueryEngineFactory;
+import org.apache.jena.sparql.engine.QueryEngineRegistry;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.util.Context;
 
-public class SecuredQueryEngineFactory implements QueryEngineFactory
-{
-	private boolean silentService = true;
-	private SecuredQueryEngineConfig cfgResource;
-	private SecurityEvaluator securityEvaluator;
+public class SecuredQueryEngineFactory implements QueryEngineFactory {
+    private boolean silentService = true;
+    private SecuredQueryEngineConfig cfgResource;
+    private SecurityEvaluator securityEvaluator;
 
-	private static SecuredQueryEngineFactory factory = new SecuredQueryEngineFactory();
+    private static SecuredQueryEngineFactory factory = new SecuredQueryEngineFactory();
 
-	static public SecuredQueryEngineFactory getFactory() {
-		return factory;
-	}
+    static public SecuredQueryEngineFactory getFactory() {
+        return factory;
+    }
 
-	static public void register() {
-		QueryEngineRegistry.addFactory(factory);
-	}
+    static public void register() {
+        QueryEngineRegistry.addFactory(factory);
+    }
 
-	static public void unregister() {
-		QueryEngineRegistry.removeFactory(factory);
-	}
+    static public void unregister() {
+        QueryEngineRegistry.removeFactory(factory);
+    }
 
-	public SecurityEvaluator getSecurityEvaluator() {
-		return securityEvaluator;
-	}
+    public SecurityEvaluator getSecurityEvaluator() {
+        return securityEvaluator;
+    }
 
-	public void setSecurityEvaluator(SecurityEvaluator securityEvaluator) {
-		this.securityEvaluator = securityEvaluator;
-	}
-	
-	public boolean isSilentService() {
-		return silentService;
-	}
+    public void setSecurityEvaluator(SecurityEvaluator securityEvaluator) {
+        this.securityEvaluator = securityEvaluator;
+    }
 
-	public void setSilentService(boolean silentService) {
-		this.silentService = silentService;
-	}
+    public boolean isSilentService() {
+        return silentService;
+    }
 
-	public void setSecuredQueryEngineConfig(SecuredQueryEngineConfig cfgResource) {
-		this.cfgResource = cfgResource;
+    public void setSilentService(boolean silentService) {
+        this.silentService = silentService;
+    }
 
-	}
+    public void setSecuredQueryEngineConfig(SecuredQueryEngineConfig cfgResource) {
+        this.cfgResource = cfgResource;
 
-	/**
-	 * Only accept a secured dataset
-	 */
-	@Override
-	public boolean accept(Query query, DatasetGraph dataset, Context context) {
-		Graph g = dataset.getDefaultGraph();
-		return g instanceof SecuredGraph;
-	}
+    }
 
-	@Override
-	public Plan create(Query query, DatasetGraph dataset, Binding initial,
-			Context context) {
-		// set up the context
-		if (cfgResource != null) {
-			cfgResource.initializeContext( context );
-		}
+    /**
+     * Only accept a secured dataset
+     */
+    @Override
+    public boolean accept(Query query, DatasetGraph dataset, Context context) {
+        Graph g = dataset.getDefaultGraph();
+        return g instanceof SecuredGraph;
+    }
 
-		// Create a query engine instance.
-		SecuredQueryEngine engine = new SecuredQueryEngine(query, dataset,
-				initial, context);
-		return engine.getPlan();
-	}
+    @Override
+    public Plan create(Query query, DatasetGraph dataset, Binding initial, Context context) {
+        // set up the context
+        if (cfgResource != null) {
+            cfgResource.initializeContext(context);
+        }
 
-	@Override
-	public boolean accept(Op op, DatasetGraph dataset, Context context) { // Refuse
-																			// to
-																			// accept
-																			// algebra
-																			// expressions
-																			// directly.
-		return false;
-	}
+        // Create a query engine instance.
+        SecuredQueryEngine engine = new SecuredQueryEngine(query, dataset, initial, context);
+        return engine.getPlan();
+    }
 
-	@Override
-	public Plan create(Op op, DatasetGraph dataset, Binding inputBinding,
-			Context context) { // Should not be called because acceept/Op is
-								// false
-		throw new ARQInternalErrorException(this.getClass().getSimpleName()
-				+ ": factory called directly with an algebra expression");
-	}
+    @Override
+    public boolean accept(Op op, DatasetGraph dataset, Context context) { // Refuse
+                                                                          // to
+                                                                          // accept
+                                                                          // algebra
+                                                                          // expressions
+                                                                          // directly.
+        return false;
+    }
+
+    @Override
+    public Plan create(Op op, DatasetGraph dataset, Binding inputBinding, Context context) { // Should not be called
+                                                                                             // because acceept/Op is
+                                                                                             // false
+        throw new ARQInternalErrorException(
+                this.getClass().getSimpleName() + ": factory called directly with an algebra expression");
+    }
 
 }

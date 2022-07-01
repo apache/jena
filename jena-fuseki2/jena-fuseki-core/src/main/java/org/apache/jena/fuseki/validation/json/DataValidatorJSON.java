@@ -18,77 +18,78 @@
 
 package org.apache.jena.fuseki.validation.json;
 
-import java.io.StringReader ;
+import java.io.StringReader;
 
-import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.riot.* ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.atlas.json.JsonBuilder;
+import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.riot.*;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
 import static org.apache.jena.fuseki.validation.json.ValidatorJsonLib.*;
 
+/** Validate data - report in JSON */
 public class DataValidatorJSON {
 
     public DataValidatorJSON() { }
-  
-    static final String jInput           = "input" ;
 
-    static final String paramFormat           = "outputFormat" ;
-    static final String paramIndirection      = "url" ;
-    static final String paramData             = "data" ;
-    static final String paramSyntax           = "languageSyntax" ;
-    
+    static final String jInput           = "input";
+
+    static final String paramFormat           = "outputFormat";
+    static final String paramIndirection      = "url";
+    static final String paramData             = "data";
+    static final String paramSyntax           = "languageSyntax";
+
     public static JsonObject execute(ValidationAction action) {
-        JsonBuilder obj = new JsonBuilder() ;
-        obj.startObject() ;
-        
-        String syntax = getArgOrNull(action, paramSyntax) ;
-        if ( syntax == null || syntax.equals("") )
-            syntax = RDFLanguages.NQUADS.getName() ;
+        JsonBuilder obj = new JsonBuilder();
+        obj.startObject();
 
-        Lang language = RDFLanguages.shortnameToLang(syntax) ;
+        String syntax = getArgOrNull(action, paramSyntax);
+        if ( syntax == null || syntax.equals("") )
+            syntax = RDFLanguages.NQUADS.getName();
+
+        Lang language = RDFLanguages.shortnameToLang(syntax);
         if ( language == null ) {
-            ServletOps.errorBadRequest("Unknown syntax: " + syntax) ;
-            return null ;
+            ServletOps.errorBadRequest("Unknown syntax: " + syntax);
+            return null;
         }
 
-        String string = getArg(action, paramData) ;
-        StringReader sr = new StringReader(string) ;
-        obj.key(jInput).value(string) ;
-        StreamRDF dest = StreamRDFLib.sinkNull() ;
-        
+        String string = getArg(action, paramData);
+        StringReader sr = new StringReader(string);
+        obj.key(jInput).value(string);
+        StreamRDF dest = StreamRDFLib.sinkNull();
+
         try {
             RDFParser.create().source(sr).lang(language).parse(dest);
         } catch (RiotParseException ex) {
-            obj.key(jErrors) ;
+            obj.key(jErrors);
 
-            obj.startArray() ;      // Errors array
-            obj.startObject() ;
-            obj.key(jParseError).value(ex.getMessage()) ;
-            obj.key(jParseErrorLine).value(ex.getLine()) ;
-            obj.key(jParseErrorCol).value(ex.getCol()) ;
-            obj.finishObject() ;
-            obj.finishArray() ;
-            
-            obj.finishObject() ; // Outer object
-            return obj.build().getAsObject() ;
+            obj.startArray();      // Errors array
+            obj.startObject();
+            obj.key(jParseError).value(ex.getMessage());
+            obj.key(jParseErrorLine).value(ex.getLine());
+            obj.key(jParseErrorCol).value(ex.getCol());
+            obj.finishObject();
+            obj.finishArray();
+
+            obj.finishObject(); // Outer object
+            return obj.build().getAsObject();
         } catch (RiotException ex) {
-            obj.key(jErrors) ;
+            obj.key(jErrors);
 
-            obj.startArray() ;      // Errors array
-            obj.startObject() ;
-            obj.key(jParseError).value(ex.getMessage()) ;
-            obj.finishObject() ;
-            obj.finishArray() ;
-            
-            obj.finishObject() ; // Outer object
-            return obj.build().getAsObject() ;
+            obj.startArray();      // Errors array
+            obj.startObject();
+            obj.key(jParseError).value(ex.getMessage());
+            obj.finishObject();
+            obj.finishArray();
+
+            obj.finishObject(); // Outer object
+            return obj.build().getAsObject();
         }
 
-        
-        obj.finishObject() ;
-        return obj.build().getAsObject() ;
+
+        obj.finishObject();
+        return obj.build().getAsObject();
     }
 }
 

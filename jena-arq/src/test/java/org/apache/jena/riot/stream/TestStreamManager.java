@@ -18,10 +18,12 @@
 
 package org.apache.jena.riot.stream;
 
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -36,47 +38,47 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestStreamManager extends BaseTest
+public class TestStreamManager
 {
     private static final String directory = "testing/RIOT/StreamManager" ;
     private static final String absDirectory = new File(directory).getAbsolutePath() ;
-    
+
     private static StreamManager streamMgrDir ;
     private static StreamManager streamMgrHere ;
     private static StreamManager streamMgrNull ;
     private static StreamManager streamMgrStd ;
-    
+
     @BeforeClass static public void beforeClass()
-    { 
+    {
         streamMgrStd = StreamManager.get() ;
         streamMgrDir = new StreamManager() ;
         // Not current directory.
         streamMgrDir.addLocator(new LocatorFile(directory)) ;
         streamMgrDir.addLocator(new LocatorHTTP()) ;
-        
+
         streamMgrHere = new StreamManager() ;
         // Not current directory.
         streamMgrHere.addLocator(new LocatorFile()) ;
         streamMgrHere.addLocator(new LocatorHTTP()) ;
-        
+
         streamMgrNull = new StreamManager() ;
     }
-    
+
     @AfterClass static public void afterClass()
-    { 
+    {
         StreamManager.setGlobal(streamMgrStd) ;
     }
-    
+
     private static Context context(StreamManager streamMgr)
     {
         Context context = new Context() ;
         context.put(SysRIOT.sysStreamManager, streamMgr) ;
         return context ;
     }
-    
+
     @Test public void fm_open_01()  { open(streamMgrNull, directory+"/D.ttl", context(streamMgrHere)) ; }
     @Test public void fm_open_02()  { open(streamMgrHere, directory+"/D.ttl", null) ; }
-    
+
     @Test public void fm_open_03()  { open(streamMgrNull,  "D.ttl", context(streamMgrDir)) ; }
     @Test public void fm_open_04()  { open(streamMgrDir, "D.ttl", null) ; }
 
@@ -85,17 +87,17 @@ public class TestStreamManager extends BaseTest
 
     @Test public void fm_open_07()  { open(streamMgrHere, "file:D.ttl", context(streamMgrDir)) ; }
     @Test public void fm_open_08()  { open(streamMgrDir, "file:D.ttl", null) ; }
-    
+
     @Test public void fm_open_09()  { open(streamMgrHere, absDirectory+"/D.ttl", null) ; }
     @Test public void fm_open_10()  { open(streamMgrDir,  absDirectory+"/D.ttl", null) ; }
     @Test public void fm_open_11()  { open(streamMgrDir,  "file://"+absDirectory+"/D.ttl", null) ; }
     @Test public void fm_open_12()  { open(streamMgrHere, "file://"+absDirectory+"/D.ttl", null) ; }
-    
+
     @Test (expected=RiotNotFoundException.class)
     public void fm_open_20()        { open(null, "nosuchfile", context(streamMgrDir)) ; }
     @Test (expected=RiotNotFoundException.class)
     public void fm_open_21()        { open(streamMgrHere, "nosuchfile", null) ; }
-    
+
     @Test public void fm_read_01()  { read("D.nt") ; }
     @Test public void fm_read_02()  { read("D.ttl") ; }
     @Test public void fm_read_03()  { read("D.rdf") ; }
@@ -107,24 +109,22 @@ public class TestStreamManager extends BaseTest
     @Test public void fm_read_13()  { read("file:D.rdf") ; }
     @Test public void fm_read_14()  { read("file:D.rj") ; }
     @Test public void fm_read_15()  { read("file:D.jsonld") ; }
-    
+
     // TriG
     // NQuads
-    
+
     private static void open(StreamManager streamMgr, String dataName, Context context)
     {
         StreamManager.setGlobal(streamMgr) ;
         try {
-            TypedInputStream in = ( context != null ) 
-                ? RDFDataMgr.open(dataName, context)
-                : RDFDataMgr.open(dataName) ;
+            TypedInputStream in = RDFDataMgr.open(dataName, StreamManager.get(context));
             assertNotNull(in) ;
             IO.close(in) ;
         } finally {
             StreamManager.setGlobal(streamMgrStd) ;
         }
     }
-    
+
     private static void read(String dataName)
     {
         try {

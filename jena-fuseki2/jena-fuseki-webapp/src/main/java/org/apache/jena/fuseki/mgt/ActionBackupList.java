@@ -18,25 +18,22 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
 
-import java.io.File ;
-import java.io.IOException ;
-import java.nio.file.DirectoryStream ;
-import java.nio.file.Files ;
-import java.nio.file.Path ;
-import java.util.ArrayList ;
-import java.util.List ;
-import java.util.stream.Collectors ;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
-
-import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.atlas.json.JsonValue ;
+import org.apache.jena.atlas.json.JsonBuilder;
+import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.fuseki.ctl.ActionCtl;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;
 
 /**
@@ -45,51 +42,54 @@ import org.apache.jena.fuseki.webapp.FusekiWebapp;
 public class ActionBackupList extends ActionCtl {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        doCommon(req, resp);
+    public void execGet(HttpAction action) {
+        executeLifecycle(action);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        doCommon(req, resp);
+    public void execPost(HttpAction action) {
+        executeLifecycle(action);
     }
 
     @Override
-    protected void perform(HttpAction action) {
-        JsonValue result = description(action) ;
-        ServletOps.setNoCache(action.response) ;
+    public void validate(HttpAction action) {}
+
+    @Override
+    public void execute(HttpAction action) {
+        JsonValue result = description(action);
+        ServletOps.setNoCache(action);
         ServletOps.sendJsonReponse(action, result);
     }
-        
+
     private static DirectoryStream.Filter<Path> filterVisibleFiles = (entry) -> {
-        File f = entry.toFile() ;
-        return f.isFile() && !f.isHidden() ;
-    } ;
+        File f = entry.toFile();
+        return f.isFile() && !f.isHidden();
+    };
 
     private JsonValue description(HttpAction action) {
         if ( ! Files.isDirectory(FusekiWebapp.dirBackups) )
-            ServletOps.errorOccurred(format("[%d] Backup area '%s' is not a directory", action.id, FusekiWebapp.dirBackups)) ;
-        
-        List<Path> paths = new ArrayList<>() ;
+            ServletOps.errorOccurred(format("[%d] Backup area '%s' is not a directory", action.id, FusekiWebapp.dirBackups));
+
+        List<Path> paths = new ArrayList<>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiWebapp.dirBackups, filterVisibleFiles)) {
-            stream.forEach(paths::add) ;
+            stream.forEach(paths::add);
         } catch (IOException ex) {
-            action.log.error(format("[%d] Backup file list :: IOException :: %s", action.id, ex.getMessage())) ;
+            action.log.error(format("[%d] Backup file list :: IOException :: %s", action.id, ex.getMessage()));
             ServletOps.errorOccurred(ex);
         }
 
-        List<String> fileNames = paths.stream().map((p)->p.getFileName().toString()).sorted().collect(Collectors.toList()) ;
+        List<String> fileNames = paths.stream().map((p)->p.getFileName().toString()).sorted().collect(Collectors.toList());
 
-        JsonBuilder builder = new JsonBuilder() ;
-        builder.startObject("top") ;
-        builder.key("backups") ;
+        JsonBuilder builder = new JsonBuilder();
+        builder.startObject("top");
+        builder.key("backups");
 
-        builder.startArray() ;
-        fileNames.forEach(builder::value) ;
-        builder.finishArray() ;
+        builder.startArray();
+        fileNames.forEach(builder::value);
+        builder.finishArray();
 
-        builder.finishObject("top") ;
-        return builder.build() ; 
-        
+        builder.finishObject("top");
+        return builder.build();
+
     }
 }

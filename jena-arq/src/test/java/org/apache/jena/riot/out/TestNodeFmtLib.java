@@ -18,20 +18,23 @@
 
 package org.apache.jena.riot.out;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Test ;
 
-public class TestNodeFmtLib extends BaseTest
+public class TestNodeFmtLib
 {
-    // : is 3A 
+    static { JenaSystem.init(); }
+
+    // : is 3A
     // - is 2D
-    
+
     // BNode labels.
-    
+
     @Test public void encode_01() { testenc("abc", "Babc") ; }
     @Test public void encode_02() { testenc("-", "BX2D") ; }
     @Test public void encode_03() { testenc("abc:def-ghi", "BabcX3AdefX2Dghi") ; }
@@ -45,13 +48,13 @@ public class TestNodeFmtLib extends BaseTest
     @Test public void rt_05() {  testencdec("-000") ; }
     @Test public void rt_06() {  testencdec("X-") ; }
     @Test public void rt_07() {  testencdec("-123:456:xyz") ; }
-    
+
     private void testenc(String input, String expected)
     {
         String x = NodeFmtLib.encodeBNodeLabel(input) ;
         assertEquals(expected, x) ;
     }
-    
+
     private void testencdec(String input)
     {
         String x = NodeFmtLib.encodeBNodeLabel(input) ;
@@ -59,28 +62,41 @@ public class TestNodeFmtLib extends BaseTest
         assertEquals(input, y) ;
     }
 
-    @Test public void fmtNode_01() { test ("<a>", "<a>") ; }
-    
-    @Test public void fmtNode_02() { test ("<"+RDF.getURI()+"type>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>") ; }
-    @Test public void fmtNode_03() { test ("'123'^^xsd:integer", "\"123\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
-    @Test public void fmtNode_04() { test ("'abc'^^xsd:integer", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
+    @Test public void fmtNode_00() { testNT ("<a>", "<a>") ; }
 
-    @Test public void fmtNode_05() { testDisplay ("<"+RDF.getURI()+"type>", "rdf:type") ; }
-    @Test public void fmtNode_06() { testDisplay ("'123'^^xsd:integer", "123") ; }
-    @Test public void fmtNode_07() { testDisplay ("'abc'^^xsd:integer", "\"abc\"^^xsd:integer") ; }
-    
-    private static void test(String node, String output)
-    { test(NodeFactoryExtra.parseNode(node) , output) ; }
-    
-    private static void test(Node node, String output)
-    {
-        String x = NodeFmtLib.str(node) ;
-        assertEquals(output, x) ;
+    @Test public void fmtNode_11() { testNT ("<"+RDF.getURI()+"type>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>") ; }
+    @Test public void fmtNode_12() { testNT ("'123'^^xsd:integer", "123") ; }
+    @Test public void fmtNode_13() { testNT ("'abc'^^xsd:integer", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
+
+    // NB - Not 'a' which is position sensitive.
+    @Test public void fmtNode_21() { testTTL ("<"+RDF.getURI()+"type>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>") ; }
+    @Test public void fmtNode_22() { testTTL ("'123'^^xsd:integer", "123") ; }
+    @Test public void fmtNode_23() { testTTL ("'abc'^^xsd:integer", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
+
+    @Test public void fmtNode_31() { testDisplay ("<"+RDF.getURI()+"type>", "rdf:type") ; }
+    @Test public void fmtNode_32() { testDisplay ("'123'^^xsd:integer", "123") ; }
+    @Test public void fmtNode_33() { testDisplay ("'abc'^^xsd:integer", "\"abc\"^^xsd:integer") ; }
+
+    private static void testNT(String node, String output)
+    { testNT(NodeFactoryExtra.parseNode(node) , output) ; }
+
+    private static void testTTL(String node, String output)
+    { testTTL(NodeFactoryExtra.parseNode(node) , output) ; }
+
+
+    private static void testNT(Node node, String output) {
+        String x = NodeFmtLib.strNT(node);
+        assertEquals(output, x);
     }
-    
+
+    private static void testTTL(Node node, String output) {
+        String x = NodeFmtLib.strTTL(node);
+        assertEquals(output, x);
+    }
+
     private static void testDisplay(String node, String output)
     { testDisplay(NodeFactoryExtra.parseNode(node) , output) ; }
-    
+
     private static void testDisplay(Node node, String output)
     {
         String x = NodeFmtLib.displayStr(node) ;

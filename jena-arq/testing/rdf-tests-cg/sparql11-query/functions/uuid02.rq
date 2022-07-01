@@ -1,0 +1,7 @@
+PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+ASK {
+	BIND(UUID() AS ?u1)
+	BIND(UUID() AS ?u2)
+	FILTER(?u1 != ?u2)
+}

@@ -20,8 +20,6 @@ package org.apache.jena.atlas.io;
 
 import java.io.StringReader ;
 
-import org.apache.jena.atlas.io.PeekReader ;
-
 public class TestPeekReaderSource extends AbstractTestPeekReader
 {
     @Override

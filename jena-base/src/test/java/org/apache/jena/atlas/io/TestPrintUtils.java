@@ -18,16 +18,16 @@
 
 package org.apache.jena.atlas.io;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayOutputStream ;
 import java.io.IOException ;
 import java.io.OutputStreamWriter ;
 import java.io.Writer ;
 
-import org.apache.jena.atlas.io.OutputUtils ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestPrintUtils extends BaseTest
+public class TestPrintUtils
 {
     @Test public void hex1()
     {

@@ -34,7 +34,7 @@ import org.apache.jena.tdb.base.objectfile.ObjectFile ;
  * 
  * To flush, it writes the journal to the base file.
  * 
- * It is relatively untested. Thisis not the normal implementation of a transactional
+ * It is relatively untested. This is not the normal implementation of a transactional
  * ObjectFile.
  * 
  * @see ObjectFileTrans
@@ -55,8 +55,6 @@ public class ObjectFileTransComplex implements ObjectFile, TransactionLifecycle
         this.base = base ;
         this.transObjects = other ;
         inTransaction = false ;
-
-        //  [TxTDB:PATCH-UP] Begin is not being called.
         this.otherAllocOffset = base.length() ;
         //Log.info(this, getLabel()+": otherAllocOffset = "+otherAllocOffset) ;
     }

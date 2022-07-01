@@ -94,7 +94,7 @@ public class TestContentAssembler extends AssemblerTestBase
         String source = Testing + "/schema.n3";
         Resource root = resourceInModel( "x rdf:type ja:Content; x rdf:type ja:ExternalContent; x ja:externalContent file:" + source );
         Content c = (Content) a.open( root );
-        assertIsoModels( FileManager.get().loadModel( "file:" + source ), c.fill( model( "" ) ) );
+        assertIsoModels( FileManager.getInternal().loadModelInternal( "file:" + source ), c.fill( model( "" ) ) );
         }    
     
     public void testMultipleExternalContent()
@@ -106,7 +106,7 @@ public class TestContentAssembler extends AssemblerTestBase
             ( "x rdf:type ja:Content; x rdf:type ja:ExternalContent"
             + "; x ja:externalContent file:" + sourceA + "; x ja:externalContent file:" + sourceB );
         Content c = (Content) a.open( root );
-        Model wanted = FileManager.get().loadModel( "file:" + sourceA ).add( FileManager.get().loadModel( "file:" + sourceB ) );
+        Model wanted = FileManager.getInternal().loadModelInternal( "file:" + sourceA ).add( FileManager.getInternal().loadModelInternal( "file:" + sourceB ) );
         assertIsoModels( wanted, c.fill( model( "" ) ) );
         }
     
@@ -168,7 +168,7 @@ public class TestContentAssembler extends AssemblerTestBase
             + "; x ja:literalContent '<eh:/eggs>\\srdf:type\\srdf:Property.'"
             + "; x ja:externalContent file:" + source );
         Content c = (Content) a.open( root );
-        Model wanted = FileManager.get().loadModel( "file:" + source ).add( model( "eggs rdf:type rdf:Property" ) );
+        Model wanted = FileManager.getInternal().loadModelInternal( "file:" + source ).add( model( "eggs rdf:type rdf:Property" ) );
         assertIsoModels( wanted, c.fill( model( "" ) ) );
         }
     
@@ -224,27 +224,28 @@ public class TestContentAssembler extends AssemblerTestBase
     
     public void testContentAssemblerHasSuppliedFileManager()
         {
-        FileManager fm = new FileManager();
+        @SuppressWarnings("deprecation")
+        FileManager fm = FileManager.create();
         assertSame( fm, new ContentAssembler( fm ).getFileManager() );
         }
     
     public void testUsesSuppliedFileManager()
         {
         final boolean [] used = {false};
-        FileManager fm = new FileManager()
+        FileManager fm = new FileManagerImpl()
             {
             @Override
-            public Model loadModel( String filenameOrURI )
+            public Model loadModelInternal( String filenameOrURI )
                 {
                 used[0] = true;
-                return FileManager.get().loadModel( filenameOrURI );
+                return FileManager.getInternal().loadModelInternal( filenameOrURI );
                 }
             };
         Assembler a = new ContentAssembler( fm );
         String source = Testing + "/schema.n3";
         Resource root = resourceInModel( "x rdf:type ja:Content; x rdf:type ja:ExternalContent; x ja:externalContent file:" + source );
         Content c = (Content) a.open( root );
-        assertIsoModels( FileManager.get().loadModel( "file:" + source ), c.fill( model( "" ) ) );
+        assertIsoModels( FileManager.getInternal().loadModelInternal( "file:" + source ), c.fill( model( "" ) ) );
         assertTrue( "the supplied file manager must have been used", used[0] );
         }
     
@@ -264,7 +265,7 @@ public class TestContentAssembler extends AssemblerTestBase
         assertIsoModels( expected, c.fill( model() ) );
         }    
     
-    private final class FixedFileManager extends FileManager
+    private final class FixedFileManager extends FileManagerImpl
         {
         private final Model expected;
         private final String fileName;
@@ -274,7 +275,7 @@ public class TestContentAssembler extends AssemblerTestBase
             { this.expected = expected; this.fileName = fileName; }
 
         @Override
-        public Model loadModel( String filenameOrURI )
+        public Model loadModelInternal( String filenameOrURI )
             {
             used = true;
             assertEquals( fileName, filenameOrURI );

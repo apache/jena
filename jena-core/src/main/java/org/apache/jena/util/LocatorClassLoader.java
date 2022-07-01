@@ -22,8 +22,10 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
+/**
+ *  @deprecated Use {@code StreamManager} and {@code LocatorClassLoader} from {@code org.apache.jena.riot.system.stream}.
+ */
+@Deprecated
 public class LocatorClassLoader  implements Locator
 {
     static Logger log = LoggerFactory.getLogger(LocatorClassLoader.class) ;
@@ -53,14 +55,8 @@ public class LocatorClassLoader  implements Locator
             return null ;
             
         String fn = filenameOrURI ;
-//        String fn = FileUtils.toFilename(filenameOrURI) ;
-//        if ( fn == null )
-//        {
-//            if ( FileManager.logAllLookups && log.isTraceEnabled() )
-//                log.trace("Not found: "+filenameOrURI) ; 
-//            return null ;
-//        }
-        InputStream in = classLoader.getResourceAsStream(fn) ;
+        InputStream in = null;
+        try { in = classLoader.getResourceAsStream(fn) ; } catch (Exception ex) {}
         if ( in == null )
         {
             if ( FileManager.logAllLookups && log.isTraceEnabled() )

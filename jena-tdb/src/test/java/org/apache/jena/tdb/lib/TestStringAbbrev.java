@@ -18,11 +18,11 @@
 
 package org.apache.jena.tdb.lib;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.tdb.lib.StringAbbrev ;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-public class TestStringAbbrev extends BaseTest
+public class TestStringAbbrev
 {
     @Test public void abbrev_01()
     {

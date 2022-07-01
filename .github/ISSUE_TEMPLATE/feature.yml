@@ -1,0 +1,37 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+name: Feature suggestion
+description: Suggestion for a new or changed feature 
+labels: ["enhancement"]
+body:
+  - type: input
+    id: jena_version
+    attributes:
+      label: Version
+      description: Which version of Apache Jena do you run?
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Feature
+      placeholder: Tell us about the suggestion.
+    validations:
+      required: true
+  - type: dropdown
+    id: contributor
+    attributes:
+      label: Are you interested in contributing a solution yourself?
+      description: We welcome your feature request. Let us know if you would like to get involved in contributing a pull request yourself.
+      options:
+        - 'Yes'
+        - 'No'
+        - 'Perhaps?'
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ----
+        ### Code of Conduct
+        [Apache Software Foundation Code of Conduct](https://github.com/apache/.github/blob/main/.github/CODE_OF_CONDUCT.md)

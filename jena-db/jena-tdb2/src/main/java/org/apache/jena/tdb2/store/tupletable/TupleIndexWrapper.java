@@ -18,37 +18,37 @@
 
 package org.apache.jena.tdb2.store.tupletable;
 
-import java.util.Collection ;
-import java.util.Iterator ;
+import java.util.Collection;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.atlas.lib.tuple.TupleMap ;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.tdb2.store.NodeId;
 
 public class TupleIndexWrapper implements TupleIndex
 {
-    protected final TupleIndex index ;
+    protected final TupleIndex index;
 
-    public TupleIndexWrapper(TupleIndex index) { this.index = index ; }
-    
+    public TupleIndexWrapper(TupleIndex index) { this.index = index; }
+
     @Override
     public final TupleIndex wrapped() {
-        return index ;
+        return index;
     }
 
     @Override
     public void add(Tuple<NodeId> tuple) {
-        index.add(tuple) ;
+        index.add(tuple);
     }
 
     @Override
     public void addAll(Collection<Tuple<NodeId>> tuples) {
-        index.addAll(tuples) ;
+        index.addAll(tuples);
     }
 
     @Override
     public void delete(Tuple<NodeId> tuple) {
-        index.delete(tuple) ;
+        index.delete(tuple);
     }
 
     @Override
@@ -58,61 +58,61 @@ public class TupleIndexWrapper implements TupleIndex
 
     @Override
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern) {
-        return index.find(pattern) ;
+        return index.find(pattern);
     }
 
     @Override
     public Iterator<Tuple<NodeId>> all() {
-        return index.all() ;
+        return index.all();
     }
 
     @Override
     public int getTupleLength() {
-        return index.getTupleLength() ;
+        return index.getTupleLength();
     }
 
     @Override
     public String getMappingStr() {
-        return index.getMappingStr() ;
+        return index.getMappingStr();
     }
 
     @Override
     public TupleMap getMapping() {
-        return index.getMapping() ;
+        return index.getMapping();
     }
 
     @Override
     public String getName() {
-        return index.getName() ;
+        return index.getName();
     }
 
     @Override
     public int weight(Tuple<NodeId> pattern) {
-        return index.weight(pattern) ;
+        return index.weight(pattern);
     }
 
     @Override
     public long size() {
-        return index.size() ;
+        return index.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return index.isEmpty() ;
+        return index.isEmpty();
     }
 
     @Override
     public void clear() {
-        index.clear() ;
+        index.clear();
     }
 
     @Override
     public void sync() {
-        index.sync() ;
+        index.sync();
     }
 
     @Override
     public void close() {
-        index.close() ;
+        index.close();
     }
 }

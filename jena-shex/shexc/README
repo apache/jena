@@ -1,0 +1,19 @@
+== ShExC parser
+
+The ShExC parser produces the java object ShEx tree.
+
+To make the parser:
+
+Run the script
+
+    shex-parser
+
+which runs javacc to create the parser in 
+
+../src/main/java/org/apache/jena/shex/parser/javacc
+
+and cleans up the output files to remove or surpress Java warnings.
+
+The generated javacc java is checked into git so you don't need to install
+javacc to build this module unless you want to change the parser.
+ 

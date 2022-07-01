@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract Jena JDBC implementation of a statement that only permits read
  * operations
- * 
+ *
  */
 public abstract class JenaStatement implements Statement {
 
@@ -62,6 +62,8 @@ public abstract class JenaStatement implements Statement {
     protected static final int NO_LIMIT = 0;
     protected static final int DEFAULT_TYPE = ResultSet.TYPE_FORWARD_ONLY;
     protected static final int USE_CONNECTION_COMPATIBILITY = Integer.MIN_VALUE;
+    protected static final int UNKNOWN_UPDATE_COUNT = 0;
+    protected static final int NOT_AN_UPDATE = -1;
 
     private List<String> commands = new ArrayList<>();
     private SQLWarning warnings = null;
@@ -74,18 +76,17 @@ public abstract class JenaStatement implements Statement {
     private int fetchDirection = DEFAULT_FETCH_DIRECTION;
     private int fetchSize = DEFAULT_FETCH_SIZE;
     private int holdability = DEFAULT_HOLDABILITY;
-    private int updateCount = 0;
+    private int updateCount = NOT_AN_UPDATE;
     private boolean autoCommit = DEFAULT_AUTO_COMMIT;
     private int transactionLevel = DEFAULT_TRANSACTION_LEVEL;
     private int maxRows = NO_LIMIT;
-    @SuppressWarnings("unused")
     private boolean escapeProcessing = false;
     private int timeout = NO_LIMIT;
     private int compatibilityLevel = USE_CONNECTION_COMPATIBILITY;
 
     /**
      * Creates a new statement
-     * 
+     *
      * @param connection
      *            Connection
      * @throws SQLException
@@ -98,7 +99,7 @@ public abstract class JenaStatement implements Statement {
 
     /**
      * Creates a new statement
-     * 
+     *
      * @param connection
      *            Connection
      * @param type
@@ -115,7 +116,7 @@ public abstract class JenaStatement implements Statement {
      *            Transaction level
      * @throws SQLException
      *             Thrown if there is an error with the statement parameters
-     * 
+     *
      */
     public JenaStatement(JenaConnection connection, int type, int fetchDir, int fetchSize, int holdability, boolean autoCommit,
             int transactionLevel) throws SQLException {
@@ -136,7 +137,7 @@ public abstract class JenaStatement implements Statement {
      * Gets the underlying {@link JenaConnection} implementation, useful for
      * accessing Jena JDBC specific information such as desired JDBC
      * compatibility level
-     * 
+     *
      * @return Underlying Jena Connection
      */
     public JenaConnection getJenaConnection() {
@@ -152,7 +153,7 @@ public abstract class JenaStatement implements Statement {
      * level for this statement. This allows you to change the compatibility
      * level on a per-query basis if so desired.
      * </p>
-     * 
+     *
      * @return Compatibility level
      */
     public int getJdbcCompatibilityLevel() {
@@ -174,7 +175,7 @@ public abstract class JenaStatement implements Statement {
      * Changing the level may not effect existing open objects, behaviour in
      * this case will be implementation specific.
      * </p>
-     * 
+     *
      * @param level
      *            Compatibility level
      */
@@ -234,9 +235,8 @@ public abstract class JenaStatement implements Statement {
             // Queue results i.e. stuff resulting from a query that produced
             // multiple result sets or executeBatch() calls
             while (!this.results.isEmpty()) {
-                ResultSet rset = this.results.poll();
-                if (rset != null)
-                    rset.close();
+                // Null is safe.
+                try(ResultSet rset = this.results.poll()) {}
             }
             // Close open result sets i.e. stuff left around depending on
             // statement correction
@@ -288,7 +288,9 @@ public abstract class JenaStatement implements Statement {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private boolean executeQuery(Query q) throws SQLException {
+        updateCount = NOT_AN_UPDATE;
         if (this.isClosed())
             throw new SQLException("The Statement is closed");
 
@@ -413,7 +415,7 @@ public abstract class JenaStatement implements Statement {
     /**
      * Helper method which derived classes must implement to provide a query
      * execution
-     * 
+     *
      * @param q
      *            Query
      * @return Query Execution
@@ -423,6 +425,7 @@ public abstract class JenaStatement implements Statement {
     protected abstract QueryExecution createQueryExecution(Query q) throws SQLException;
 
     private int executeUpdate(UpdateRequest u) throws SQLException {
+        updateCount = UNKNOWN_UPDATE_COUNT;
         if (this.isClosed())
             throw new SQLException("The Statement is closed");
         if (this.connection.isReadOnly())
@@ -482,7 +485,7 @@ public abstract class JenaStatement implements Statement {
     /**
      * Helper method which derived classes must implement to provide an update
      * processor
-     * 
+     *
      * @param u
      *            Update
      * @return Update Processor
@@ -655,6 +658,7 @@ public abstract class JenaStatement implements Statement {
         }
         if (!this.results.isEmpty()) {
             this.currResults = this.results.poll();
+            this.updateCount = this.currResults == null ? UNKNOWN_UPDATE_COUNT : NOT_AN_UPDATE;
             return true;
         } else {
             return false;
@@ -702,7 +706,7 @@ public abstract class JenaStatement implements Statement {
     /**
      * Helper method for use in execute() method implementations to set the
      * current results
-     * 
+     *
      * @param results
      *            Results
      * @throws SQLException
@@ -750,7 +754,7 @@ public abstract class JenaStatement implements Statement {
 
     /**
      * Helper method which derived classes may use to set the update count
-     * 
+     *
      * @param count
      *            Update Count
      */
@@ -765,7 +769,7 @@ public abstract class JenaStatement implements Statement {
 
     /**
      * Helper method that derived classes may use to set warnings
-     * 
+     *
      * @param warning
      *            Warning
      */
@@ -782,7 +786,7 @@ public abstract class JenaStatement implements Statement {
 
     /**
      * Helper method that derived classes may use to set warnings
-     * 
+     *
      * @param warning
      *            Warning
      */
@@ -792,7 +796,7 @@ public abstract class JenaStatement implements Statement {
 
     /**
      * Helper method that derived classes may use to set warnings
-     * 
+     *
      * @param warning
      *            Warning
      * @param cause
@@ -831,7 +835,7 @@ public abstract class JenaStatement implements Statement {
     /**
      * Helper method which checks whether a given fetch direction is valid
      * throwing an error if it is not
-     * 
+     *
      * @param dir
      *            Fetch Direction
      * @throws SQLException
@@ -881,17 +885,15 @@ public abstract class JenaStatement implements Statement {
         }
     }
 
-    // Java 6/7 compatibility
-    @SuppressWarnings("javadoc")
+    @Override
     public boolean isCloseOnCompletion() {
         // Statements do not automatically close
         return false;
     }
 
-    @SuppressWarnings("javadoc")
+    @Override
     public void closeOnCompletion() throws SQLException {
-        // We don't support the JDBC 4.1 feature of closing statements
-        // automatically
+        // We don't support the JDBC 4.1 feature of closing statements automatically
         throw new SQLFeatureNotSupportedException();
     }
 }

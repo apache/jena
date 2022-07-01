@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.sparql.core.Var ;
@@ -32,72 +33,75 @@ public abstract class QueryIter extends QueryIteratorBase
 {
     // Volatile just to make it safe to concurrent updates
     // It does not matter too much if it is wrong - it's used as a label.
-    volatile static int iteratorCounter = 0 ;
+    private volatile static int iteratorCounter = 0 ;
     private int iteratorNumber = (iteratorCounter++) ;
-    
+
     private ExecutionContext tracker ;
-    
-    public QueryIter(ExecutionContext execCxt)
-    { 
+
+    public QueryIter(ExecutionContext execCxt) {
+        super(cancelSignal(execCxt));
         tracker = execCxt ;
         register() ;
     }
 
-    public static QueryIter makeTracked(QueryIterator qIter, ExecutionContext execCxt)
-    {
+    private static AtomicBoolean cancelSignal(ExecutionContext execCxt) {
+        if ( execCxt == null )
+            return null;
+        return execCxt.getCancelSignal();
+    }
+
+    public static QueryIter makeTracked(QueryIterator qIter, ExecutionContext execCxt) {
         if ( qIter instanceof QueryIter )
-            return (QueryIter)qIter ;
-        return new QueryIterTracked(qIter, execCxt) ; 
+            return (QueryIter)qIter;
+        return new QueryIterTracked(qIter, execCxt);
     }
 
-    public static QueryIter materialize(QueryIterator qIter, ExecutionContext execCxt)
-    {
-        return makeTracked(materialize(qIter), execCxt) ;
+    public static QueryIter materialize(QueryIterator qIter, ExecutionContext execCxt) {
+        return makeTracked(materialize(qIter), execCxt);
     }
 
-    public static QueryIterator materialize(QueryIterator qIter)
-    {
-        return new QueryIteratorCopy(qIter) ;
+    public static QueryIterator materialize(QueryIterator qIter) {
+        return new QueryIteratorCopy(qIter);
     }
-    
-    public static QueryIterator map(QueryIterator qIter, Map<Var, Var> varMapping)
-    {
+
+    public static QueryIterator map(QueryIterator qIter, Map<Var, Var> varMapping) {
         return new QueryIteratorMapped(qIter, varMapping);
     }
-    
+
     @Override
-    public final void close()
-    {
-        super.close() ;
-        deregister() ;
+    public final void close() {
+        super.close();
+        deregister();
     }
-    
-    public ExecutionContext getExecContext() { return tracker ; }
-    
-    public int getIteratorNumber() { return iteratorNumber ; }
-    
-    @Override
-    public void output(IndentedWriter out)
-    {
-        output(out, null) ;
-//        out.print(Plan.startMarker) ;
-//        out.print(Utils.className(this)) ;
-//        out.print(Plan.finishMarker) ;
+
+    public ExecutionContext getExecContext() {
+        return tracker;
     }
-    
+
+    public int getIteratorNumber() {
+        return iteratorNumber;
+    }
+
     @Override
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    { out.println(getIteratorNumber()+"/"+debug()) ; }
-    
-    private void register()
-    {
+    public void output(IndentedWriter out) {
+        output(out, null);
+        // out.print(Plan.startMarker) ;
+        // out.print(Utils.className(this)) ;
+        // out.print(Plan.finishMarker) ;
+    }
+
+    @Override
+    public void output(IndentedWriter out, SerializationContext sCxt) {
+        out.println(getIteratorNumber());
+    }
+
+    private void register() {
         if ( tracker != null )
-            tracker.openIterator(this) ;
+            tracker.openIterator(this);
     }
-    
-    private void deregister()
-    {
+
+    private void deregister() {
         if ( tracker != null )
-            tracker.closedIterator(this) ;
+            tracker.closedIterator(this);
     }
 }

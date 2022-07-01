@@ -1,0 +1,14 @@
+{
+   "@context": "http://www.w3.org/ns/shex.jsonld",
+   "shapes": [
+      {
+         "id": "http://a.example/Sext",
+         "expression": {
+            "predicate": "http://a.example/p2",
+            "type": "TripleConstraint"
+         },
+         "type": "Shape"
+      }
+   ],
+   "type": "Schema"
+}

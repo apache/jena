@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 /** Writes out an XML serialization of a model.
  */
-public class NTripleWriter extends Object implements RDFWriter {
+public class NTripleWriter extends Object implements RDFWriterI {
 
     RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
 

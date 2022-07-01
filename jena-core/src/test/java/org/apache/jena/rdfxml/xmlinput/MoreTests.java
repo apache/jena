@@ -28,7 +28,7 @@ import org.apache.jena.ontology.OntDocumentManager ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Assert ;
 import org.slf4j.Logger ;
@@ -189,7 +189,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 //	            ,Normalizer.NFC,0);
 	    
 	    Model m = createMemModel();
-	    RDFReader rdr = m.getReader();
+	    RDFReaderI rdr = m.getReader();
 	    try(FileInputStream r = new FileInputStream("testing/arp/i18n/icubug.rdf")){
 	        rdr.setErrorHandler(this);
 	        expected = new int[] { WARN_STRING_COMPOSING_CHAR  };
@@ -204,7 +204,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 //		            ,Normalizer.NFC,0);
 
 	    Model m = createMemModel();
-	    RDFReader rdr = m.getReader();
+	    RDFReaderI rdr = m.getReader();
 	    try(FileInputStream r = new FileInputStream("testing/arp/i18n/icubugtwo.rdf")) {
 	        rdr.setErrorHandler(this);
 	        expected = new int[] { WARN_STRING_NOT_NORMAL_FORM_C };
@@ -290,7 +290,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	public void testNullBaseParamOK() throws IOException {
 		Model m = createMemModel();
 		Model m1 = createMemModel();
-		RDFReader rdr = m.getReader();
+		RDFReaderI rdr = m.getReader();
 		try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf") ) {
 		    rdr.setErrorHandler(this);
 		    expected = new int[] {};
@@ -316,7 +316,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 
 	public void testNullBaseParamError() throws IOException {
 		Model m = createMemModel();
-		RDFReader rdr = m.getReader();
+		RDFReaderI rdr = m.getReader();
 		try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
 			rdr.setErrorHandler(this);
 			expected = new int[] { ERR_RESOLVING_URI_AGAINST_NULL_BASE, WARN_RELATIVE_URI};
@@ -328,7 +328,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	public void testEmptyBaseParamOK() throws IOException {
 	    Model m = createMemModel();
 	    Model m1 = createMemModel();
-	    RDFReader rdr = m.getReader();
+	    RDFReaderI rdr = m.getReader();
 	    try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")){
 	        rdr.setErrorHandler(this);
 	        expected = new int[] {};
@@ -344,7 +344,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 
 	public void testEmptyBaseParamError() throws IOException {
 		Model m = createMemModel();
-		RDFReader rdr = m.getReader();
+		RDFReaderI rdr = m.getReader();
 		try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
 		    rdr.setErrorHandler(this);
 		    expected = new int[] { WARN_RESOLVING_URI_AGAINST_EMPTY_BASE};
@@ -359,7 +359,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 
     public void testBadBaseParamError() throws IOException {
         Model m = createMemModel();
-        RDFReader rdr = m.getReader();
+        RDFReaderI rdr = m.getReader();
         try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
             rdr.setErrorHandler(this);
             expected = new int[] { WARN_MALFORMED_URI, 
@@ -377,7 +377,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     public void testBadBaseParamOK() throws IOException {
         Model m = createMemModel();
         Model m1 = createMemModel();
-        RDFReader rdr = m.getReader();
+        RDFReaderI rdr = m.getReader();
         try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
 
             rdr.setErrorHandler(this);
@@ -393,7 +393,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     }
     public void testRelativeBaseParamError() throws IOException {
         Model m = createMemModel();
-        RDFReader rdr = m.getReader();
+        RDFReaderI rdr = m.getReader();
         try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
             rdr.setErrorHandler(this);
             expected = new int[] { WARN_RELATIVE_URI, WARN_RELATIVE_URI,  ERR_RESOLVING_AGAINST_RELATIVE_BASE, };
@@ -410,7 +410,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     public void testRelativeBaseParamOK() throws IOException {
         Model m = createMemModel();
         Model m1 = createMemModel();
-        RDFReader rdr = m.getReader();
+        RDFReaderI rdr = m.getReader();
         try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
             rdr.setErrorHandler(this);
             expected = new int[] { WARN_RELATIVE_URI };
@@ -428,7 +428,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     public void testBaseTruncation() throws IOException {
         Model m = createMemModel();
         Model m1 = createMemModel();
-        RDFReader rdr = m.getReader();
+        RDFReaderI rdr = m.getReader();
         try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
             rdr.setErrorHandler(this);
             expected = new int[] { WARN_MALFORMED_URI, WARN_RELATIVE_URI };
@@ -502,7 +502,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	    IRIFactory f = ARPOptions.getIRIFactoryGlobal() ;
 	    try {
 	        ARPOptions.setIRIFactoryGlobal(IRIFactory.iriImplementation()) ;
-	        RDFReader r =  model.getReader("RDF/XML") ;
+	        RDFReaderI r =  model.getReader("RDF/XML") ;
             expected = new int[] { WARN_MALFORMED_URI , WARN_MALFORMED_URI };
 	        r.setErrorHandler(this);
 	        r.read(model, new StringReader(RDF_TEXT), "http://example/") ;
@@ -513,7 +513,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     public void testIRIRules_2a()
     {
         Model model = ModelFactory.createDefaultModel() ;
-        RDFReader r =  model.getReader("RDF/XML") ;
+        RDFReaderI r =  model.getReader("RDF/XML") ;
         r.setErrorHandler(this);
         expected = new int[] { };
         model.read(new StringReader(RDF_TEXT), "http://example/") ;
@@ -523,7 +523,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     public void testIRIRules_3()
     {
         Model model = ModelFactory.createDefaultModel() ;
-        RDFReader r =  model.getReader("RDF/XML") ;
+        RDFReaderI r =  model.getReader("RDF/XML") ;
         r.setErrorHandler(this);
         expected = new int[] { WARN_MALFORMED_URI , WARN_MALFORMED_URI };
         r.setProperty("iri-rules", "strict") ;
@@ -534,7 +534,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     public void testIRIRules_4()
     {
         Model model = ModelFactory.createDefaultModel() ;
-        RDFReader r =  model.getReader("RDF/XML") ;
+        RDFReaderI r =  model.getReader("RDF/XML") ;
         r.setProperty("iri-rules", "strict") ;
         r.setProperty( "WARN_MALFORMED_URI", ARPErrorNumbers.EM_ERROR) ;
         r.setErrorHandler(this);

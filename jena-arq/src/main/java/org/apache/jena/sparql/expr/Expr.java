@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.Collection ;
 import java.util.Set ;
 
 import javax.xml.datatype.DatatypeConstants ;
@@ -54,12 +53,6 @@ public interface Expr
      * @see ExprVars#getNonOpVarNamesMentioned
      */
     public Set<Var>  getVarsMentioned() ;
-    /** 
-     * Variables used by this expression.
-     * @deprecated Use {@link ExprVars#varNamesMentioned} or {@link ExprVars#varNamesMentioned}
-     */
-    @Deprecated
-    public void varsMentioned(Collection<Var> acc) ;
     
     /** 
      * Evaluate this expression against the binding

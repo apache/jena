@@ -98,7 +98,6 @@ public class BMPattern {
         if (plength == 0)  return start;
         int index = start+plength;
         while (index <= limit) {
-            //System.err.println("Starts at "+index);
             int pindex = plength;
             int nindex = index+1;
             char ch;

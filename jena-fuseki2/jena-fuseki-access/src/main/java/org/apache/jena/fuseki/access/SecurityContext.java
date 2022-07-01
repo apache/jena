@@ -18,9 +18,10 @@
 
 package org.apache.jena.fuseki.access;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.Collection;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node;
@@ -32,14 +33,14 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 
-/** A {@link SecurityContext} is the things actor (user, role) is allowed to do. 
+/** A {@link SecurityContext} is the things actor (user, role) is allowed to do.
  * Currently version: the set of graphs, by graph name, they can access.
  * It can be inverted into a "deny" policy with {@link Predicate#negate()}.
- */ 
+ */
 public interface SecurityContext {
     public static final SecurityContext NONE = new SecurityContextAllowNone();
     public static final SecurityContext ALL = new SecurityContextAllowAll();
-    public static SecurityContext ALL_NG(DatasetGraph dsg) { 
+    public static SecurityContext ALL_NG(DatasetGraph dsg) {
         Collection<Node> names = Iter.toList(dsg.listGraphNodes());
         //return new SecurityContextAllowNamedGraphs(dsg);
         return new SecurityContextView(names);
@@ -49,16 +50,22 @@ public interface SecurityContext {
     public static final Node allNamedGraphs = NodeFactory.createURI("urn:jena:accessAllNamedGraphs");
     public static final Node allNamedGraphsStr = NodeFactory.createLiteral("*");
     public static final Node allGraphsStr = NodeFactory.createLiteral("**");
-    
+
     /**
-     * Collection of visible graph names. This method return null for null for "all" to avoid
-     * needing to calculate the current set of named graph names.
+     * Collection of visible graph names.
+     * <p>
+     * This method returns null for "all" to avoid needing to calculate the current
+     * set of named graph names. A collection of no elements means no named graphs
+     * are visible.
      */
     public Collection<Node> visibleGraphs();
-    
+
     /**
-     * Collection of visible graph URI names. This method return null for null for "all" to avoid
-     * needing to calculate the current set of named graph names.
+     * Collection of visible graph URI names.
+     * <p>
+     * This method returns null for "all" to avoid needing to calculate the current
+     * set of named graph names. A collection of no elements means no named graphs
+     * are visible.
      */
     public default Collection<String> visibleGraphNames() {
         if ( visibleGraphs() == null )
@@ -66,15 +73,15 @@ public interface SecurityContext {
         return visibleGraphs().stream()
                 .filter(Node::isURI)
                 .map(Node::getURI)
-                .collect(Collectors.toList()) ;
+                .collect(toList());
     }
-    
+
     public boolean visableDefaultGraph();
 
     public default QueryExecution createQueryExecution(String queryString, DatasetGraph dsg) {
         return createQueryExecution(QueryFactory.create(queryString), dsg);
     }
-    
+
     public QueryExecution createQueryExecution(Query query, DatasetGraph dsg);
 
     /**
@@ -83,7 +90,7 @@ public interface SecurityContext {
      * efficient.
      */
     public Predicate<Quad> predicateQuad();
-    
+
     /**
      * Apply a filter suitable for the TDB-backed {@link DatasetGraph}, to the {@link Context} of the
      * {@link QueryExecution}. This does not modify the {@link DatasetGraph}.

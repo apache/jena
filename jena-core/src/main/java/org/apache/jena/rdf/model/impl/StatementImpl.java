@@ -24,7 +24,7 @@ import org.apache.jena.rdf.model.* ;
 
 /** An implementation of Statement.
  */
-public class StatementImpl  extends StatementBase implements Statement {
+public class StatementImpl extends StatementBase implements Statement {
     
     protected Resource subject;
     protected Property predicate;
@@ -40,7 +40,6 @@ public class StatementImpl  extends StatementBase implements Statement {
 		this.object = object.inModel( model );
 		}
     
-    // TODO fix this hack
     protected static ModelCom empty = (ModelCom) ModelFactory.createDefaultModel();
     
 	public StatementImpl(Resource subject, Property predicate, RDFNode object)

@@ -18,30 +18,30 @@
 
 package org.apache.jena.util.iterator;
 
-import java.util.Iterator;
+import org.apache.jena.atlas.iterator.IteratorCloseable;
 
-/** 
-    An iterator which should be closed after use. Some iterators take up resources which 
+/**
+    An iterator which should be closed after use. Some iterators take up resources which
     should be free'd as soon as possible, eg large structures which can be discarded
     early, or external resources such as database cursors.
 <p>
-    Users of ClosableIterators (and thus of ExtendedIterator) should close the 
-    iterator if they are done with it before it is exhausted (ie hasNext() is still
-     true).If they do not, resources may leak or be reclaimed unpredictably or 
-     much later than convenient. It is unnecessary but harmless to close the
-     iterator once it has become exhausted. [<b>note</b>: previous versions
-     of this documentation specified a close regardless of exhaustion, but this
-     was never the contract applied internally.]
+    Users of ClosableIterators (and thus of ExtendedIterator) should close the
+    iterator if they are done with it before it is exhausted (i.e. hasNext() is still
+    true). If they do not, resources may leak, be reclaimed unpredictably or
+    much later than convenient. It is harmless to close the
+    iterator once it has become exhausted and to call close multiple times.
 <p>
     Implementors are encouraged to dispose of resources as soon as is convenient.
  */
 
-public interface ClosableIterator<T> extends Iterator<T> 
+public interface ClosableIterator<T> extends IteratorCloseable<T>
     {
-    /** 
-        Close the iterator. Other operations on this iterator may now throw an exception. 
+    // Original name for model API existing code.
+    /**
+        Close the iterator. Other operations on this iterator may now throw an exception.
         A ClosableIterator may be closed as many times as desired - the subsequent
         calls do nothing.
     */
+    @Override
     public void close();
     }

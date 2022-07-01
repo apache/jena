@@ -18,18 +18,26 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.List ;
+import java.util.List;
 
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.core.TriplePath ;
-import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.TriplePath;
+import org.apache.jena.sparql.core.Var;
 
-/** Isomorphism utilities */
+/**
+ * Isomorphism utilities, based in order lists. See {@link IsoMatcher} for
+ * isomorphism for un-ordered collections. In this class, "isomorphism" is based on the
+ * policy in {@link NodeIsomorphismMap}, which is blank node isomorphism unless
+ * {@link NodeIsomorphismMap#makeIsomorphic} is overridden.
+ */
 public class Iso {
-    // See also IsoMatcher
-    
+
+    /* 
+     * Are lists of triples isomorphic? 
+     * The mapping policy {@link NodeIsomorphismMap} is mutated. 
+     */
     public static boolean isomorphicTriples(List<Triple> triples1, List<Triple> triples2, NodeIsomorphismMap isoMap) {
         if ( triples1.size() != triples2.size() )
             return false ;
@@ -42,6 +50,10 @@ public class Iso {
         return true ;
     }
     
+    /* 
+     * Are lists of quads isomorphic? 
+     * The mapping policy {@link NodeIsomorphismMap} is mutated. 
+     */
     public static boolean isomorphicQuads(List<Quad> quads1, List<Quad> quads2, NodeIsomorphismMap isoMap) {
         if ( quads1.size() != quads2.size() )
             return false ;
@@ -54,6 +66,10 @@ public class Iso {
         return true ;
     }
 
+    /* 
+     * Are lists of nodes isomorphic? 
+     * The mapping policy {@link NodeIsomorphismMap} is mutated. 
+     */
     public static boolean isomorphicNodes(List<Node> nodes1, List<Node> nodes2, NodeIsomorphismMap isoMap) {
         if ( nodes1.size() != nodes2.size() )
             return false ;
@@ -66,6 +82,10 @@ public class Iso {
         return true ;
     }
 
+    /* 
+     * Are two triple paths isomorphic? 
+     * The mapping policy {@link NodeIsomorphismMap} is mutated. 
+     */
     public static boolean triplePathIso(TriplePath tp1, TriplePath tp2, NodeIsomorphismMap isoMap)
     {
         if ( tp1.isTriple() ^ tp2.isTriple() ) 
@@ -79,6 +99,10 @@ public class Iso {
                    tp1.getPath().equalTo(tp2.getPath(), isoMap) ;
     }
 
+    /* 
+     * Are two triples isomorphic? 
+     * The mapping policy {@link NodeIsomorphismMap} is mutated. 
+     */
     public static boolean tripleIso(Triple t1, Triple t2, NodeIsomorphismMap labelMap)
     {
         Node s1 = t1.getSubject() ;
@@ -99,6 +123,10 @@ public class Iso {
         return true ;
     }
 
+    /* 
+     * Are two quads isomorphic? 
+     * The mapping policy {@link NodeIsomorphismMap} is mutated. 
+     */
     public static boolean quadIso(Quad t1, Quad t2, NodeIsomorphismMap labelMap)
     {
         Node g1 = t1.getGraph() ;
@@ -123,6 +151,10 @@ public class Iso {
         return true ;
     }
 
+    /* 
+     * Are two nodes isomorphic? 
+     * The mapping policy {@link NodeIsomorphismMap} is mutated. 
+     */
     public static boolean nodeIso(Node n1, Node n2, NodeIsomorphismMap isoMap)
     {
         if ( isoMap != null ) { 
@@ -133,5 +165,34 @@ public class Iso {
     }
         return n1.equals(n2) ;
     }
+
+    /** Interface for choosing the pairs of node that can be map[ped for isomorphism. */ 
+    public interface Mappable {
+        boolean isMappable(Node n);
+        boolean mappable(Node n1, Node n2);
+    }
+
+    /** Blank nodes are mappable in {@link IsoAlg} */
+    public static Iso.Mappable mappableBlankNodes = new Mappable() {
+        @Override public boolean isMappable(Node n) { return n.isBlank(); } 
+        @Override public boolean mappable(Node n1, Node n2) { return n1.isBlank() && n2.isBlank(); }   
+    };
+
+    /** Blank nodes and variables are mappable in {@link IsoAlg} */
+    public static Iso.Mappable mappableVariables = new Mappable() {
+        @Override public boolean isMappable(Node n) { return n.isVariable(); } 
+        @Override public boolean mappable(Node n1, Node n2) { return n1.isVariable() && n2.isVariable(); }   
+    };
+
+    
+    /** Blank nodes and variables are mappable in {@link IsoAlg} */
+    public static Iso.Mappable mappableBlankNodesVariables = new Mappable() {
+        @Override public boolean isMappable(Node n) { return n.isBlank()|| n.isVariable() ; } 
+        @Override public boolean mappable(Node n1, Node n2) { 
+            if ( n1.isBlank() && n2.isBlank() ) return true;
+            if ( n1.isVariable() && n2.isVariable() ) return true;
+            return false;
+        }
+    };
 }
 

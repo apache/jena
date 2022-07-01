@@ -22,82 +22,47 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 
 /** Implementation for "un-Transactional" interface.
- * 
- * @see TransactionalNull for a do nothing implementation of Transactions.
+ *
+ * @see TransactionalNull for a do-nothing implementation of Transactions.
  * @see TransactionalNotSupportedMixin
- */ 
-public class TransactionalNotSupported implements Transactional
+ */
+public class TransactionalNotSupported implements TransactionalNotSupportedMixin
 {
-    /* Using as an interface mixin (trait) and "implements TransactionalNotSupportedMixin" 
+    /* Using as an interface mixin (trait) and "implements TransactionalNotSupportedMixin"
      * does not always work. This may be a Eclipse limitation.
      * The problem arises with hierarchies involving Transactional
-     * where transaction methods are also in the hierarchy. 
+     * where transaction methods are also in the hierarchy.
      */
 
     // Sometimes implementations will have to include this code
     // directly to override super class versions.
 
-    // As an included component: 
-    private static class Example implements Transactional { 
+    // As an included component:
+    private static class Example implements Transactional {
         private final Transactional txn                     = new TransactionalNotSupported() ;
-        @Override public void begin()                       { txn.begin(); }
-        @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
-        @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
-        @Override public void commit()                      { txn.commit(); }
-        @Override public void abort()                       { txn.abort(); }
-        @Override public boolean promote(Promote mode)      { return txn.promote(mode) ; }
-        @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
-        @Override public void end()                         { txn.end(); }
-        @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
-        @Override public TxnType transactionType()          { return txn.transactionType(); }
-//        // For Datasets: add:
+        private final Transactional txn()                   { return txn; }
+        @Override public void begin()                       { txn().begin(); }
+        @Override public void begin(TxnType txnType)        { txn().begin(txnType); }
+        @Override public boolean promote(Promote txnType)   { return txn().promote(txnType); }
+        @Override public void commit()                      { txn().commit(); }
+        @Override public void abort()                       { txn().abort(); }
+        @Override public boolean isInTransaction()          { return txn().isInTransaction(); }
+        @Override public void end()                         { txn().end(); }
+        @Override public ReadWrite transactionMode()        { return txn().transactionMode(); }
+        @Override public TxnType transactionType()          { return txn().transactionType(); }
+        // For Datasets: add:
 //        @Override public boolean supportsTransactions()     { return false; }
 //        @Override public boolean supportsTransactionAbort() { return false; }
     }
-    
+
     public static Transactional create() { return new TransactionalNotSupported(); }
-    
-    @Override
-    public void begin()
-    { throw new UnsupportedOperationException("Transactional.begin()") ; }
 
     @Override
-    public void begin(TxnType txnType)
-    { throw new UnsupportedOperationException("Transactional.begin(TxnType") ; }
-
-    @Override
-    public void begin(ReadWrite readWrite)
-    { throw new UnsupportedOperationException("Transactional.begin(ReadWrite)") ; }
-
-    @Override public boolean promote(Promote txnType)
-    { throw new UnsupportedOperationException("Transactional.promote") ; }
-
-    @Override
-    public void commit()
-    { throw new UnsupportedOperationException("Transactional.commit") ; }
-
-    @Override
-    public void abort()
-    { throw new UnsupportedOperationException("Transactional.abort") ; }
-
-    @Override
-    public boolean isInTransaction()
-    { return false ; }
-    
-    @Override public ReadWrite transactionMode()
-    { throw new UnsupportedOperationException("Transactional.transactionMode") ; }
-    
-    @Override public TxnType transactionType()
-    { throw new UnsupportedOperationException("Transactional.transactionType") ; }
-
-    @Override
-    public void end()
-    { throw new UnsupportedOperationException("Transactional.end") ; }
-    
     public boolean supportsTransactions() {
         return false ;
     }
-    
+
+    @Override
     public boolean supportsTransactionAbort() {
         return false;
     }

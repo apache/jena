@@ -42,15 +42,15 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
         }
         return new RecordRangeIterator(pageId, fromRec, toRec, pageMgr) ;
     }
-    
+
     private RecordBufferPage currentPage ;      // Set null when finished.
     private int currentIdx ;
     private Record slot = null ;
-    
+
     private final RecordBufferPageMgr pageMgr ;
     private final Record maxRec ;
     private final Record minRec ;
-    
+
     private long countRecords = 0 ;
     private long countBlocks = 0 ;
 
@@ -60,7 +60,7 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
         this.pageMgr = pageMgr;
         this.minRec = fromRec ;
         this.maxRec = toRec ;
-        
+
         if ( toRec != null && fromRec != null && Record.keyLE(toRec, fromRec) )
         {
             currentPage = null ;
@@ -75,7 +75,7 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
             close() ;
             return ;
         }
-            
+
         if ( fromRec != null )
         {
             currentIdx = currentPage.getRecordBuffer().find(fromRec) ;
@@ -101,12 +101,12 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
                 close() ;
                 return false ;
             }
-            
+
             if ( currentPage != null )
                 pageMgr.release(currentPage) ;
-            
+
             RecordBufferPage nextPage = pageMgr.getReadIterator(link) ;
-            // Check currentPage -> nextPage is strictly increasing keys. 
+            // Check currentPage -> nextPage is strictly increasing keys.
             Record r1 = currentPage.getRecordBuffer().getHigh() ;
             Record r2 = nextPage.getRecordBuffer().getLow() ;
             if ( Record.keyGE(r1, r2) )
@@ -115,7 +115,7 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
             countBlocks++ ;
             currentIdx = 0 ;
         }
-            
+
         slot = currentPage.getRecordBuffer().get(currentIdx) ;
         currentIdx++ ;
         if ( maxRec != null && Record.keyGE(slot, maxRec) )
@@ -123,7 +123,7 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
             close() ;
             return false ;
         }
-        
+
         if ( slot == null )
         {
             close() ;
@@ -149,15 +149,11 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
     {
         if ( ! hasNext() )
             throw new NoSuchElementException() ;
-        
+
         Record x = slot ;
         slot = null ;
         return x ;
     }
-
-    @Override
-    public void remove()
-    { throw new UnsupportedOperationException("remove") ; }
 
     final public long getCountRecords()     { return countRecords ; }
 

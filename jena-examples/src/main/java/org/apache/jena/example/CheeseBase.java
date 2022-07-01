@@ -18,12 +18,6 @@
 
 package org.apache.jena.example;
 
-
-// Imports
-///////////////
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * <p>Base class for cheese-ontology based examples. Declares
  * common namespaces and provides some basic utilities.</p>
@@ -43,9 +37,6 @@ public abstract class CheeseBase extends Base
     /***********************************/
     /* Static variables                */
     /***********************************/
-
-    @SuppressWarnings( value = "unused" )
-    private static final Logger log = LoggerFactory.getLogger( CheeseBase.class );
 
     /***********************************/
     /* Instance variables              */

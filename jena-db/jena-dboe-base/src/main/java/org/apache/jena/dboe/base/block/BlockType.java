@@ -18,51 +18,49 @@
 
 package org.apache.jena.dboe.base.block;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.io.Printable ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.io.Printable;
 import org.apache.jena.dboe.DBOpEnvException;
-import org.apache.jena.sparql.util.Named ;
+import org.apache.jena.sparql.util.Named;
 
 public enum BlockType implements Printable, Named
 {
     // The id should fit into an unsigned byte.
-    FREE(-1, "Free"), 
+    FREE(-1, "Free"),
     BTREE_NODE(5, "BTreeNode") ,
     BPTREE_BRANCH(6, "BPlusTreeBranch") ,
     BPTREE_LEAF(7, "BPlusTreeLeaf") ,
     DICTIONARY(10, "Dictionary") ,
     RECORD_BLOCK(99, "RecordBlock"),
     UNDEF(255, "UndefinedBlockType")
-    ;
+   ;
 
-    private final int id ;
-    private final String name ;
+    private final int id;
+    private final String name;
 
-    BlockType(int id, String name)
-    {
-        this.id = id ;
-        this.name = name ;
-        
+    BlockType(int id, String name) {
+        this.id = id;
+        this.name = name;
+
     }
-    
+
     @Override
     public void output(IndentedWriter out)
-    { out.print(getName()) ; }
+    { out.print(getName()); }
 
-    final public int id() { return id ; }
-    
+    final public int id() { return id; }
+
     @Override
-    final public String getName() { return name ; }
-    
-    @Override public String toString() { return getName() ; }
-    
-    public static BlockType extract(int x)
-    {
-        if ( x == BTREE_NODE.id() )         return BTREE_NODE ;
-        if ( x == BPTREE_BRANCH.id() )      return BPTREE_BRANCH ;
-        if ( x == BPTREE_LEAF.id() )        return BPTREE_LEAF ;
-        if ( x == RECORD_BLOCK.id() )       return RECORD_BLOCK ;
-        if ( x == DICTIONARY.id() )         return DICTIONARY ;
-        throw new DBOpEnvException("No known block type for "+x) ;
+    final public String getName() { return name; }
+
+    @Override public String toString() { return getName(); }
+
+    public static BlockType extract(int x) {
+        if ( x == BTREE_NODE.id() )         return BTREE_NODE;
+        if ( x == BPTREE_BRANCH.id() )      return BPTREE_BRANCH;
+        if ( x == BPTREE_LEAF.id() )        return BPTREE_LEAF;
+        if ( x == RECORD_BLOCK.id() )       return RECORD_BLOCK;
+        if ( x == DICTIONARY.id() )         return DICTIONARY;
+        throw new DBOpEnvException("No known block type for "+x);
     }
 }

@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.algebra.optimize;
 
 import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.Transformer;
 import org.apache.jena.sparql.util.Context;
 
 /** The minimal optimizer.
@@ -41,6 +42,9 @@ public class OptimizerMinimal implements Rewrite {
         // so all variables can be treated globally.
         // Must always do this for QueryEngineMain.
         op = TransformScopeRename.transform(op) ;
+
+        // test/functions/bnode01.rq 
+        op = Transformer.transform(new TransformExtendCombine(), op) ;
         return op;
     }
 }

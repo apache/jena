@@ -18,14 +18,10 @@
 
 package org.apache.jena.dboe.base.block;
 
-import org.apache.jena.dboe.base.block.BlockMgr;
-import org.apache.jena.dboe.base.block.BlockMgrFactory;
-
-
 public class TestBlockMgrMem extends AbstractTestBlockMgr
 {
     @Override
     protected BlockMgr make()
-    { return BlockMgrFactory.createMem("mem", BlkSize) ; } 
-    
+    { return BlockMgrFactory.createMem("mem", BlkSize); }
+
 }

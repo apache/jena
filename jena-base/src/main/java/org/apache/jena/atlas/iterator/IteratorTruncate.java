@@ -21,10 +21,7 @@ package org.apache.jena.atlas.iterator;
 import java.util.Iterator ;
 import java.util.function.Predicate ;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.IteratorSlotted ;
-
-/** Iterate while a condition is true, then stop. 
+/** Iterate while a condition is true, then stop.
  *  This iterator does not touch any elements after the first
  *  where the predicate is false.
  */
@@ -46,7 +43,6 @@ public class IteratorTruncate<T> extends IteratorSlotted<T> {
 
     @Override
     protected T moveToNext() {
-        // Add IteratorSlotted.inspect(element).
         if ( ! iter.hasNext() )
             return null ;
         T item = iter.next() ;

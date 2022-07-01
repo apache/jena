@@ -1,0 +1,6 @@
+<http://all.example/S1> {
+  $<http://all.example/S2e> <http://all.example/p1> @<http://all.example/S2>?
+}
+<http://all.example/S2> {
+  &<http://all.example/S2e>
+}

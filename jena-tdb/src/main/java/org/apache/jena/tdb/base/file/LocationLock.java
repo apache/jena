@@ -23,14 +23,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.TDBException;
 import org.apache.jena.tdb.sys.ProcessUtils;
 import org.apache.jena.tdb.sys.SystemTDB;
 
 /**
  * Represents a lock on a TDB location
- * 
+ *
  */
 public class LocationLock {
     private static final int NO_OWNER = 0;
@@ -48,7 +50,7 @@ public class LocationLock {
      * Gets whether the location is lockable i.e. is it an on-disk location
      * where we can use a lock file to prevent multi-process access and the
      * potential data corruption that ensues
-     * 
+     *
      * @return True if the location is lockable
      */
     public boolean canLock() {
@@ -57,7 +59,7 @@ public class LocationLock {
 
     /**
      * Gets whether the location is currently locked
-     * 
+     *
      * @return boolean
      */
     public boolean isLocked() {
@@ -70,7 +72,7 @@ public class LocationLock {
 
     /**
      * Gets whether the lock is owned by the current process
-     * 
+     *
      * @return True if the location is locked and owned by the process, false
      *         otherwise
      */
@@ -88,7 +90,7 @@ public class LocationLock {
 
     /**
      * Gets the current owner of this locations lock.
-     * 
+     *
      * @return Process ID of owner if locked, zero if the location cannot be
      *         locked or not currently locked
      */
@@ -105,15 +107,17 @@ public class LocationLock {
                 String rawLockInfo = IO.readWholeFileAsUTF8(lockFile.getAbsolutePath());
                 if (rawLockInfo.endsWith("\n")) {
                     // This is most likely down to trying to open a TDB2 database with TDB1
-                    throw new FileException("Unable to check TDB lock owner, the lock file contents appear to be for a TDB2 database.  Please try loading this location as a TDB2 database.");
+                    throw new FileException("Unable to check TDB lock owner, the lock file contents appear to be for a TDB2 database.  " +
+                            "Please try loading this location as a TDB2 database. " +
+                            TDB.tdbFaqsLink);
                 }
-                
+
                 int owner = Integer.parseInt(rawLockInfo);
                 return owner;
-            } catch (IOException e) {
-                throw new FileException("Unable to check TDB lock owner due to an IO error reading the lock file", e);
+            } catch (RuntimeIOException e) {
+                throw new FileException("Unable to check TDB lock owner due to an IO error reading the lock file. " + TDB.tdbFaqsLink, e);
             } catch (NumberFormatException e) {
-                throw new FileException("Unable to check TDB lock owner as the lock file contains invalid data", e);
+                throw new FileException("Unable to check TDB lock owner as the lock file contains invalid data. " + TDB.tdbFaqsLink, e);
             }
         } else {
             // No lock file so nobody owns the lock currently
@@ -123,7 +127,7 @@ public class LocationLock {
 
     /**
      * Gets whether the current JVM can obtain the lock
-     * 
+     *
      * @return True if the lock can be obtained (or is already held), false
      *         otherwise
      */
@@ -169,7 +173,8 @@ public class LocationLock {
                 // In the case where we cannot obtain our PID then we cannot obtain a lock
                 SystemTDB.errlog.warn("Location " + location.getDirectoryPath()
                         + " cannot be locked as unable to obtain PID of current process."
-                        + " If another JVM accessed this location while this process is accessing it then data corruption may occur");
+                        + " If another JVM accessed this location while this process is accessing it then data corruption may occur. "
+                        + TDB.tdbFaqsLink);
                 return;
             }
 
@@ -182,7 +187,8 @@ public class LocationLock {
             if (ProcessUtils.isAlive(owner)) {
                 throw new TDBException("Location " + location.getDirectoryPath() + " is currently locked by PID "
                         + owner + "(this process is PID "+pid+")"
-                        + ".  TDB databases do not permit concurrent usage across JVMs so in order to prevent possible data corruption you cannot open this location from the JVM that does not own the lock for the dataset");
+                        + ".  TDB databases do not permit concurrent usage across JVMs so in order to prevent possible data corruption you cannot open this location from the JVM that does not own the lock for the dataset. "
+                        + TDB.tdbFaqsLink);
             }
 
             // Otherwise the previous owner is dead so we can take the lock
@@ -198,7 +204,8 @@ public class LocationLock {
             writer.write(Integer.toString(pid));
             writer.close();
         } catch (IOException e) {
-            throw new TDBException("Failed to obtain a lock on the location " + location.getDirectoryPath(), e);
+            throw new TDBException("Failed to obtain a lock on the location " + location.getDirectoryPath()
+                                   + TDB.tdbFaqsLink, e);
         }
 
         // Mark lock for deletion on JVM exit
@@ -225,7 +232,8 @@ public class LocationLock {
         // Some other process owns the lock so we can't release it
         if (owner != ProcessUtils.getPid(NO_OWNER))
             throw new TDBException("Cannot release the lock on location " + location.getDirectoryPath()
-                    + " since this process does not own the lock");
+                    + " since this process does not own the lock."
+                    + TDB.tdbFaqsLink);
 
         File lockFile = getLockFile();
 
@@ -236,13 +244,14 @@ public class LocationLock {
         // Try and delete the lock file thereby releasing the lock
         if (!lockFile.delete())
             throw new TDBException("Failed to release the lock on location " + location.getDirectoryPath()
-                    + ", it may be necessary to manually remove the lock file");
+                    + ", it may be necessary to manually remove the lock file. "
+                    + TDB.tdbFaqsLink);
 
     }
 
     /**
      * Gets the lock file
-     * 
+     *
      * @return Lock file
      */
     private File getLockFile() {
@@ -251,7 +260,7 @@ public class LocationLock {
 
     /**
      * Checks if a lock file is valid throwing an exception if it is not
-     * 
+     *
      * @param lockFile
      *            Lock file
      * @exception FileException
@@ -265,13 +274,14 @@ public class LocationLock {
             // Unable to read lock owner because it isn't a file or we don't
             // have read permission
             throw new FileException(
-                    "Unable to check TDB lock owner for this location since the expected lock file is not a file/not readable");
+                    "Unable to check TDB lock owner for this location since the expected lock file is not a file/not readable. "
+                    + TDB.tdbFaqsLink);
         }
     }
 
     /**
      * Checks if a lock file is valid throwing an exception if it is not
-     * 
+     *
      * @param lockFile
      *            Lock file
      * @exception FileException
@@ -285,7 +295,8 @@ public class LocationLock {
             // Unable to read lock owner because it isn't a file or we don't
             // have read permission
             throw new FileException(
-                    "Unable to check TDB lock owner for this location since the expected lock file is not a file/not writable");
+                    "Unable to check TDB lock owner for this location since the expected lock file is not a file/not writable. "
+                    + TDB.tdbFaqsLink);
         }
     }
 }

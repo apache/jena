@@ -27,6 +27,7 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryExecException ;
+import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.ARQNotImplemented ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVars ;
@@ -47,11 +48,11 @@ import org.apache.jena.sparql.procedure.Procedure ;
 
 /**
  * Turn an Op expression into an execution of QueryIterators.
- * 
+ *
  * Does not consider optimizing the algebra expression (that should happen
  * elsewhere). BGPs are still subject to StageBuilding during iterator
  * execution.
- * 
+ *
  * During execution, when a substitution into an algebra expression
  * happens (in other words, a streaming operation, index-join-like), there is a
  * call into the executor each time so it does not just happen once before a
@@ -106,11 +107,11 @@ public class OpExecutor
         this.stageGenerator = StageBuilder.chooseStageGenerator(execCxt.getContext()) ;
     }
 
-    // Public interface 
+    // Public interface
     public QueryIterator executeOp(Op op, QueryIterator input) {
         return exec(op, input) ;
     }
-    
+
     // ---- The recursive step.
     protected QueryIterator exec(Op op, QueryIterator input) {
         level++ ;
@@ -173,7 +174,7 @@ public class OpExecutor
         OpGraph op = new OpGraph(quadPattern.getGraphNode(), opBGP) ;
         return execute(op, input) ;
     }
-    
+
     protected QueryIterator execute(OpQuadBlock quadBlock, QueryIterator input) {
         Op op = quadBlock.convertOp() ;
         return exec(op, input) ;
@@ -205,8 +206,8 @@ public class OpExecutor
         if (false) {
             // If needed, applies to OpDiff and OpLeftJoin as well.
             List<Binding> a = all(input) ;
-            QueryIterator qIter1 = new QueryIterPlainWrapper(a.iterator(), execCxt) ;
-            QueryIterator qIter2 = new QueryIterPlainWrapper(a.iterator(), execCxt) ;
+            QueryIterator qIter1 = QueryIterPlainWrapper.create(a.iterator(), execCxt) ;
+            QueryIterator qIter2 = QueryIterPlainWrapper.create(a.iterator(), execCxt) ;
 
             QueryIterator left = exec(opJoin.getLeft(), qIter1) ;
             QueryIterator right = exec(opJoin.getRight(), qIter2) ;
@@ -409,7 +410,18 @@ public class OpExecutor
 
     protected QueryIterator execute(OpDistinct opDistinct, QueryIterator input) {
         QueryIterator qIter = exec(opDistinct.getSubOp(), input) ;
-        qIter = new QueryIterDistinct(qIter, execCxt) ;
+        List<SortCondition> conditions = null;
+        if ( opDistinct.getSubOp() instanceof OpOrder ) {
+            // For DISTINCT-ORDER, and if DISTINCT spills
+            // then we need to take account of the ORDER.
+            // The normal (non-spill case) already preserves the input order,
+            // passing through the first occurence. It is only if a spill happens that
+            // we need to ensure the spill buckets respect sort order.
+            OpOrder subOrder = (OpOrder)opDistinct.getSubOp();
+            conditions = subOrder.getConditions();
+        }
+
+        qIter = new QueryIterDistinct(qIter, conditions, execCxt) ;
         return qIter ;
     }
 
@@ -453,7 +465,7 @@ public class OpExecutor
             System.out.println(b) ;
         }
 
-        return new QueryIterPlainWrapper(x.iterator(), execCxt) ;
+        return QueryIterPlainWrapper.create(x.iterator(), execCxt) ;
     }
 
     private static List<Binding> all(QueryIterator input) {

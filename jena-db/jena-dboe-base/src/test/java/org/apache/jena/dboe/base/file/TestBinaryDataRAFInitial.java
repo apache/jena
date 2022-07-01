@@ -18,42 +18,40 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.apache.jena.atlas.RuntimeIOException ;
-import org.apache.jena.dboe.base.file.BinaryDataFileRandomAccess;
-import org.junit.Test ;
+import org.apache.jena.atlas.RuntimeIOException;
+import org.junit.Test;
 
-import static org.junit.Assert.* ;
+import static org.junit.Assert.*;
 
 // Additional tests that do not want the @Before/@After of AbstractTestBinaryDataFile
 public class TestBinaryDataRAFInitial  {
-    public static String FILE = TS_File.FILE ;
-    private BinaryDataFileRandomAccess file ;
+    public static String FILE = TS_File.FILE;
+    private BinaryDataFileRandomAccess file;
 
-    @Test public void open_01() { 
-        file = new BinaryDataFileRandomAccess(FILE) ;
-        assertFalse(file.isOpen()) ;
+    @Test public void open_01() {
+        file = new BinaryDataFileRandomAccess(FILE);
+        assertFalse(file.isOpen());
         file.open();
-        assertTrue(file.isOpen()) ;
-        file.close() ;
-        assertFalse(file.isOpen()) ;
-    }
-    
-    @Test (expected=RuntimeIOException.class)
-    public void open_02() { 
-        file = new BinaryDataFileRandomAccess(FILE) ;
-        file.open();
-        file.close() ;
-        file.sync(); 
-    }
-    
-    @Test (expected=RuntimeIOException.class)
-    public void open_03() { 
-        file = new BinaryDataFileRandomAccess(FILE) ;
-        file.open();
-        file.close() ;
-        file.truncate(0); 
+        assertTrue(file.isOpen());
+        file.close();
+        assertFalse(file.isOpen());
     }
 
-    
+    @Test (expected=RuntimeIOException.class)
+    public void open_02() {
+        file = new BinaryDataFileRandomAccess(FILE);
+        file.open();
+        file.close();
+        file.sync();
+    }
+
+    @Test (expected=RuntimeIOException.class)
+    public void open_03() {
+        file = new BinaryDataFileRandomAccess(FILE);
+        file.open();
+        file.close();
+        file.truncate(0);
+    }
+
 }
 

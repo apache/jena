@@ -22,6 +22,7 @@ package org.apache.jena.graph.test;
 import junit.framework.TestSuite ;
 
 import org.apache.jena.JenaRuntime ;
+import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -475,6 +476,10 @@ public class TestNode extends GraphTestBase
             public Object visitURI( Node_URI it, String uri ) { return it; }
             @Override
             public Object visitVariable( Node_Variable it, String name ) { return it; }
+            @Override
+            public Object visitTriple(Node_Triple it, Triple triple) { return it; }
+            @Override
+            public Object visitGraph(Node_Graph it, Graph graph) { return it; }
         };
         testVisitorPatternNode( "sortOfURI", returnNode );
         testVisitorPatternNode( "?variable", returnNode );
@@ -496,6 +501,16 @@ public class TestNode extends GraphTestBase
         node( "_anon" ).visitWith( nv );        
         node( "11" ).visitWith( nv );        
         node( "??" ).visitWith( nv );
+        // ---
+        Node s = node( "uri1" );
+        Node p = node( "uri2" );
+        Node o = node( "uri1" );
+        Node_Triple nt = new Node_Triple(s, p, o);
+        nt.visitWith(nv);
+        // ---
+        Graph g = Factory.empty();
+        Node_Graph ng = new Node_Graph(g);
+        ng.visitWith(nv);
     }
 
     public void testVisitorPatternValue()
@@ -517,6 +532,12 @@ public class TestNode extends GraphTestBase
             @Override
             public Object visitVariable( Node_Variable it, String name ) 
             { assertEquals( it.getName(), name ); return null; }
+            @Override
+            public Object visitTriple(Node_Triple it, Triple triple)
+            { assertEquals( it.getTriple(), triple ); return null; }
+            @Override
+            public Object visitGraph(Node_Graph it, Graph graph)
+            { assertEquals( it.getGraph(), graph ); return null; }
         };
         visitExamples( checkValue );
     }
@@ -545,10 +566,17 @@ public class TestNode extends GraphTestBase
             @Override
             public Object visitVariable( Node_Variable it, String name ) 
             { strings[0] += " variable"; return null; }
+            @Override
+            public Object visitTriple(Node_Triple it, Triple triple)
+            { strings[0] += " termTriple"; return null; }
+            @Override
+            public Object visitGraph(Node_Graph it, Graph graph)
+            { strings[0] += " termGraph"; return null; }
+
         };
-        String desired = " uri variable blank literal any";        
+        String desired = " uri variable blank literal any termTriple termGraph";        
         visitExamples( checkCalled );
-        assertEquals( "all vists must have been made", desired, strings[0] );
+        assertEquals( "all visits must have been made", desired, strings[0] );
     }
 
     public void testSimpleMatches()
@@ -571,8 +599,8 @@ public class TestNode extends GraphTestBase
     public void testDataMatches()
     {
         TypeMapper tm = TypeMapper.getInstance();
-        RDFDatatype dt1 = tm.getTypeByValue( new Integer( 10 ) );
-        RDFDatatype dt2 = tm.getTypeByValue( new Short( (short) 10 ) );
+        RDFDatatype dt1 = tm.getTypeByValue( Integer.valueOf( 10 ) );
+        RDFDatatype dt2 = tm.getTypeByValue( Short.valueOf( (short) 10 ) );
         Node a = NodeFactory.createLiteral( "10", dt1 );
         Node b = NodeFactory.createLiteral( "10", dt2 );
         assertDiffer( "types must make a difference", a, b );
@@ -583,7 +611,7 @@ public class TestNode extends GraphTestBase
     public void testLiteralToString()
     {
         TypeMapper tm = TypeMapper.getInstance();
-        RDFDatatype dtInt = tm.getTypeByValue( new Integer( 10 ) );
+        RDFDatatype dtInt = tm.getTypeByValue( Integer.valueOf( 10 ) );
         Node plain = NodeFactory.createLiteral( "rhubarb", "");    
         Node english = NodeFactory.createLiteral( "eccentric", "en_UK");
         Node typed = NodeFactory.createLiteral( "10", dtInt );
@@ -606,17 +634,40 @@ public class TestNode extends GraphTestBase
     }
 
     public void testGetIndexingValuePlainString()
-    { testIndexingValueLiteral( NodeCreateUtils.create( "'literally'" ) ); }
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "'literally'" ) ); }
 
     public void testGetIndexingValueLanguagedString()
-    { testIndexingValueLiteral( NodeCreateUtils.create( "'chat'fr" ) ); }
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "'chat'fr" ) ); }
 
     public void testGetIndexingValueXSDString()
-    { testIndexingValueLiteral( NodeCreateUtils.create( "'string'xsd:string" ) ); }
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "'string'xsd:string" ) ); }
 
-    private void testIndexingValueLiteral( Node s )
-    { assertEquals( s.getLiteral().getIndexingValue(), s.getIndexingValue() ); }
+    // JENA-1936
+    public void testGetIndexingValueHexBinary1()
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "''xsd:hexBinary" ) ); }
 
+    public void testGetIndexingValueHexBinary2()
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "'ABCD'xsd:hexBinary" ) ); }
+
+    public void testGetIndexingValueBase64Binary1()
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "''xsd:base64Binary" ) ); }
+
+    // "sure." encodes to "c3VyZS4=" 
+    public void testGetIndexingValueBase64Binary2()
+    { testIndexingValueLiteral( ()->NodeCreateUtils.create( "'c3VyZS4='xsd:base64Binary" ) ); }
+    
+    private void testIndexingValueLiteral( Creator<Node> creator) {
+        Node n1 = creator.create();
+        Node n2 = creator.create();
+        testIndexingValueLiteral(n1,n2);
+    }
+    
+    private void testIndexingValueLiteral(Node n1, Node n2) {
+        assertNotSame(n1, n2); // Test the test.
+        assertEquals(n1.getLiteral().getIndexingValue(), n2.getIndexingValue());
+        assertEquals(n1.getLiteral().getIndexingValue().hashCode(), n2.getIndexingValue().hashCode());
+    }
+    
     public void  testGetLiteralValuePlainString()
     {
         Node s = NodeCreateUtils.create( "'aString'" );

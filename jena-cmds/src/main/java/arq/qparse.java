@@ -20,21 +20,22 @@ package arq;
 
 import java.io.PrintStream ;
 import java.util.Iterator ;
+import java.util.Locale;
 
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModEngine ;
 import arq.cmdline.ModQueryIn ;
 import arq.cmdline.ModQueryOut ;
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
 import org.apache.jena.query.* ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.QueryCheckException ;
 import org.apache.jena.sparql.expr.E_Function ;
-import org.apache.jena.sparql.lang.ParserBase ;
+import org.apache.jena.sparql.lang.QueryParserBase ;
 import org.apache.jena.sparql.resultset.ResultSetException ;
 import org.apache.jena.sparql.util.QueryOutputUtils ;
 import org.apache.jena.sparql.util.QueryUtils ;
@@ -43,7 +44,7 @@ import org.apache.jena.sparql.util.QueryUtils ;
 
 public class qparse extends CmdARQ
 {
-    protected ModQueryIn    modQuery        = new ModQueryIn(Syntax.syntaxSPARQL_11) ;
+    protected ModQueryIn    modQuery        = new ModQueryIn(Syntax.syntaxARQ) ;
     protected ModQueryOut   modOutput       = new ModQueryOut() ; 
     protected ModEngine     modEngine       = new ModEngine() ;
     protected final ArgDecl argDeclPrint    = new ArgDecl(ArgDecl.HasValue, "print") ;
@@ -71,7 +72,7 @@ public class qparse extends CmdARQ
         super.addModule(modOutput) ;
         super.addModule(modEngine) ;
         super.getUsage().startCategory(null) ;
-        super.add(argDeclPrint, "--print", "Print in various forms [query, op, quad, plan]") ;
+        super.add(argDeclPrint, "--print", "Print in various forms [query, op, quad, optquad, plan]") ;
         super.add(argDeclExplain, "--explain", "Print with algebra-level optimization") ;
         super.add(argDeclOpt, "--opt", "[deprecated]") ;
         super.add(argDeclFixup, "--fixup", "Convert undeclared prefix names to URIs") ;
@@ -99,48 +100,30 @@ public class qparse extends CmdARQ
 
         for ( String arg : getValues( argDeclPrint ) )
         {
-            if ( arg.equalsIgnoreCase( "query" ) )
-            {
-                printQuery = true;
-            }
-            else if ( arg.equalsIgnoreCase( "op" ) ||
-                arg.equalsIgnoreCase( "alg" ) ||
-                arg.equalsIgnoreCase( "algebra" ) )
-            {
-                printOp = true;
-            }
-            else if ( arg.equalsIgnoreCase( "quad" ) )
-            {
-                printQuad = true;
-            }
-            else if ( arg.equalsIgnoreCase( "quads" ) )
-            {
-                printQuad = true;
-            }
-            else if ( arg.equalsIgnoreCase( "plan" ) )
-            {
-                printPlan = true;
-            }
-            else if ( arg.equalsIgnoreCase( "opt" ) )
-            {
-                printOpt = true;
-            }
-            else if ( arg.equalsIgnoreCase( "optquad" ) )
-            {
-                printQuadOpt = true;
-            }
-            else if ( arg.equalsIgnoreCase( "quadopt" ) )
-            {
-                printQuadOpt = true;
-            }
-            else if ( arg.equalsIgnoreCase( "none" ) )
-            {
-                printNone = true;
-            }
-            else
-            {
-                throw new CmdException(
-                    "Not a recognized print form: " + arg + " : Choices are: query, op, quad, opt, optquad" );
+            switch(arg.toLowerCase(Locale.ROOT)) {
+                case "query":
+                    printQuery = true;
+                    break;
+                case "op": case "alg": case "algebra":
+                    printOp = true;
+                    break;
+                case "quad": case "quads":
+                    printQuad = true;
+                    break;
+                case "plan":
+                    printPlan = true;
+                    break;
+                case "opt": 
+                    printOpt = true;
+                    break;
+                case "optquad": case "quadopt":
+                    printQuadOpt = true;
+                    break;
+                case "none": 
+                    printNone = true;
+                    break;
+                default:
+                    throw new CmdException("Not a recognized print form: " + arg + " : Choices are: query, op, quad, opt, optquad, plan" );
             }
         }
         
@@ -171,7 +154,7 @@ public class qparse extends CmdARQ
         try{
             Query query = modQuery.getQuery() ;
             try {
-                LogCtl.disable(ParserBase.ParserLoggerName) ;
+                LogCtl.disable(QueryParserBase.ParserLoggerName) ;
                 QueryUtils.checkQuery(query, true) ;
             } catch (QueryCheckException ex)
             {
@@ -180,7 +163,7 @@ public class qparse extends CmdARQ
                 if ( ex.getCause() != null )
                     ex.getCause().printStackTrace(System.err) ;
             }
-            finally { LogCtl.setLevel(ParserBase.ParserLoggerName, "INFO") ; }
+            finally { LogCtl.setLevel(QueryParserBase.ParserLoggerName, "INFO") ; }
 
             
             // Print the query out in some syntax

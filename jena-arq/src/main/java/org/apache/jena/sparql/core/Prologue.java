@@ -21,10 +21,11 @@ package org.apache.jena.sparql.core;
 import java.util.Objects;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIx;
+import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.sparql.util.PrefixMapping2 ;
 
 /** Prologue - combines with PrefixMapping (the RIOT Prologue uses PrefixMap) */
 public class Prologue
@@ -33,72 +34,32 @@ public class Prologue
 //    protected String baseURI = null ;
 
     protected PrefixMapping prefixMap = null ;
-    protected IRIResolver resolver = null ;
-    
-    public Prologue() { prefixMap = new PrefixMappingImpl() ; }
-    
-    public Prologue(PrefixMapping pmap)
-    { 
-        this.prefixMap = pmap ; 
-        this.resolver = null ;
-    }
-    
-    public Prologue(PrefixMapping pmap, String base)
-    { 
-        this.prefixMap = pmap ;
-        setBaseURI(base) ;
-    }
-    
-    public Prologue(PrefixMapping pmap, IRIResolver resolver)
-    {
-        this.prefixMap = pmap ; 
-        this.resolver = resolver ;
-    }
-    
-    public Prologue(Prologue other)
-    {
-        this.prefixMap = other.prefixMap ; 
-        this.resolver = other.resolver ;
+    protected IRIxResolver resolver = null ;
+
+    public Prologue() { this(new PrefixMappingImpl(), (IRIxResolver)null) ; }
+
+    public Prologue(PrefixMapping pmap) {
+        this(pmap, (IRIxResolver)null);
     }
 
-    public Prologue copy()
-    {
-        PrefixMapping prefixMap = new PrefixMappingImpl() ;
-        prefixMap.setNsPrefixes(this.prefixMap) ;
-        String baseURI = null ;
-        if ( resolver != null)
-            baseURI = resolver.getBaseIRIasString() ;
-        
-        return new Prologue(prefixMap, baseURI) ;
+    public Prologue(PrefixMapping pmap, IRIxResolver resolver) {
+        this.prefixMap = pmap;
+        this.resolver = resolver;
     }
-    
-    // Reverse of sub()
-    public void usePrologueFrom(Prologue other)
-    {
-        prefixMap = new PrefixMapping2(other.prefixMap) ;
-        seenBaseURI = false ;
-        if ( other.resolver != null )
-            resolver = IRIResolver.create(getBaseURI()) ;
+
+//    public Prologue(PrefixMapping pmap, String base) {
+//        this.prefixMap = pmap;
+//        setBaseURI(base);
+//    }
+
+    public Prologue copy() {
+        PrefixMapping prefixMap = new PrefixMappingImpl();
+        prefixMap.setNsPrefixes(this.prefixMap);
+        return new Prologue(prefixMap, resolver);
     }
-    
-    public Prologue sub(PrefixMapping newMappings) { return sub(newMappings, null) ; }
-    public Prologue sub(String base) { return sub(null, base) ; }
-    
-    public Prologue sub(PrefixMapping newMappings, String base)
-    {
-        // New prefix mappings
-        PrefixMapping ext = getPrefixMapping() ;
-        if ( newMappings != null )
-            ext = new PrefixMapping2(ext, newMappings) ;
-        // New base.
-        IRIResolver r = resolver ;
-        if ( base != null )
-            r = IRIResolver.create(base) ;
-        return new Prologue(ext, r) ;
-    }
-    
+
     /**
-     * @return True if the query has an explicitly set base URI. 
+     * @return True if the query has an explicitly set base URI.
      */
     public boolean explicitlySetBaseURI() { return seenBaseURI ; }
 
@@ -109,8 +70,29 @@ public class Prologue
     {
         if ( resolver == null )
             return null ;
-        return resolver.getBaseIRIasString();
+        return resolver.getBaseURI();
     }
+
+    public IRIx getBase() {
+        if ( resolver == null )
+            return null;
+        return resolver.getBase();
+    }
+
+    public void setBase(IRIx base) {
+        if ( base == null ) {
+            this.resolver = null;
+            return;
+        }
+        if ( resolver == null )
+            this.resolver = IRIs.stdResolver();
+        this.resolver = resolver.resetBase(base);
+    }
+
+    public IRIxResolver getResolver() {
+        return resolver;
+    }
+
     /**
      * @param baseURI The baseURI to set.
      */
@@ -122,63 +104,42 @@ public class Prologue
             return ;
         }
         this.seenBaseURI = true ;
-        this.resolver = IRIResolver.create(baseURI) ; 
+        this.resolver = IRIxResolver.create(baseURI).build();
     }
-    
-    /**
-     * @param resolver IRI resolver
-     */
-    public void setBaseURI(IRIResolver resolver)
-    {
-        if ( resolver == null ) {
-            this.seenBaseURI = false ;
-            this.resolver = null ;
-            return ;
-        }
-        this.seenBaseURI = true ;
-        this.resolver = resolver ; 
-    }
-    
+
     // ---- Query prefixes
-    
+
     /** Set a prefix for this query */
     public void setPrefix(String prefix, String expansion)
     {
         try {
             // Removal may involve regeneration of the reverse mapping
-            // so only do if needed.   
+            // so only do if needed.
             String oldExpansion = prefixMap.getNsPrefixURI(prefix) ;
             if ( Objects.equals(oldExpansion, expansion) )
                 return ;
             if ( oldExpansion != null )
                 prefixMap.removeNsPrefix(prefix) ;
-            
+
             prefixMap.setNsPrefix(prefix, expansion) ;
         } catch (PrefixMapping.IllegalPrefixException ex)
         {
             Log.warn(this, "Illegal prefix mapping(ignored): "+prefix+"=>"+expansion) ;
         }
-    }   
+    }
 
-    /** Return the prefix map from the parsed query */ 
+    /** Return the prefix map from the parsed query */
     public PrefixMapping getPrefixMapping() { return prefixMap ; }
     /** Set the mapping */
     public void setPrefixMapping(PrefixMapping pmap ) { prefixMap = pmap ; }
 
     /** Lookup a prefix for this query, including the default prefixes */
-    public String getPrefix(String prefix)
-    {
-        return prefixMap.getNsPrefixURI(prefix) ;
+    public String getPrefix(String prefix) {
+        return prefixMap.getNsPrefixURI(prefix);
     }
 
-    /** Get the IRI resolver */
-    public IRIResolver getResolver() { return resolver ; }
-    
-    /** Set the IRI resolver */
-    public void setResolver(IRIResolver resolver) { this.resolver = resolver; }
-    
-    /** Expand prefixed name 
-     * 
+    /** Expand prefixed name
+     *
      * @param prefixed  The prefixed name to be expanded
      * @return URI, or null if not expanded.
      */
@@ -187,7 +148,7 @@ public class Prologue
     {
         //From PrefixMappingImpl.expandPrefix( String prefixed )
         int colon = prefixed.indexOf( ':' );
-        if (colon < 0) 
+        if (colon < 0)
             return null ;
         else {
             String prefix = prefixed.substring( 0, colon ) ;
@@ -197,35 +158,35 @@ public class Prologue
             return uri + prefixed.substring( colon + 1 );
         }
     }
-    
+
     /** Use the prefix map to turn a URI into a qname, or return the original URI */
-    
+
     public String shortForm(String uri)
     {
         return prefixMap.shortForm(uri) ;
     }
-    
+
     /** Test whether a Prologue will perform the same as this one. */
     public boolean samePrologue(Prologue other) {
         // Prologue are mutable and superclasses so .equals is left as the default.
         String base1 = explicitlySetBaseURI() ? getBaseURI() : null ;
-        String base2 = other.explicitlySetBaseURI() ? other.getBaseURI() : null ;        
+        String base2 = other.explicitlySetBaseURI() ? other.getBaseURI() : null ;
         if (! Objects.equals(base1,  base2) )
             return false ;
         if ( getPrefixMapping() == null && other.getPrefixMapping() == null )
             return true ;
         if ( getPrefixMapping() == null )
             return false ;
-        return getPrefixMapping().samePrefixMappingAs(other.getPrefixMapping()) ;    
+        return getPrefixMapping().samePrefixMappingAs(other.getPrefixMapping()) ;
     }
 
     // Caution.
     // Prologues are inherited (historical).
     // This is support code.
-    
+
     public static int hash(Prologue prologue) {
         final int prime = 31 ;
-        int x = 1 ; 
+        int x = 1 ;
         if ( prologue.seenBaseURI )
             x = prime * x + prologue.getBaseURI().hashCode() ;
         else

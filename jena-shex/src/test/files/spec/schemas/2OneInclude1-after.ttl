@@ -1,0 +1,19 @@
+PREFIX ex: <http://a.example>
+PREFIX sx: <http://www.w3.org/ns/shex#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+[] a sx:Schema ;
+    sx:shapes (<http://a.example/S1>
+        <http://a.example/S2>) .
+
+<http://a.example/S1> a sx:Shape ;
+    sx:expression [ a sx:OneOf ;
+            sx:expressions ( [ a sx:TripleConstraint ;
+                        sx:predicate <http://a.example/p1> ] <http://a.example/S2e> ) ] .
+
+<http://a.example/S2> a sx:Shape ;
+    sx:expression <http://a.example/S2e> .
+
+<http://a.example/S2e> a sx:TripleConstraint ;
+    sx:predicate <http://a.example/p2> .
+

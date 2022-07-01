@@ -29,21 +29,20 @@ import org.junit.runners.Suite ;
     , TestDatasetGeneral.class
     , TestDynamicDatasetMem.class
     , TestDatasetGraphsRegular.class
+    , TestDatasetGraphLink.class
     , TestDatasetGraphCopyAdd.class
-    , TestGraphOverDatasetMem.class
     , TestDatasetGraphViewGraphs.class
     , TestGraphView.class
-    , TestDatasetMonitor.class
-    
-    , TestDatasetGraphBaseFind_General.class
+
     , TestDatasetGraphBaseFind_General.class
     , TestDatasetGraphBaseFind_Mem.class
     , TestDatasetGraphBaseFindPattern_General.class
     , TestDatasetGraphBaseFindPattern_Mem.class
     , TestSpecialGraphNames.class
-    
+
     , TestDatasetGraphFilteredView.class
     , TestSpecials.class
+    , TestDatasetMisc.class
 })
 
 public class TS_Core

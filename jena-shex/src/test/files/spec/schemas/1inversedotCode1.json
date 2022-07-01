@@ -1,0 +1,22 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/S1",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "inverse": true,
+        "predicate": "http://a.example/p1",
+        "semActs": [
+          {
+            "type": "SemAct",
+            "name": "http://shex.io/extensions/Test/",
+            "code": " print(o) "
+          }
+        ]
+      }
+    }
+  ]
+}

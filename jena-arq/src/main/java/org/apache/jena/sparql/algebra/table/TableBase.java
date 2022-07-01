@@ -18,15 +18,16 @@
 
 package org.apache.jena.sparql.algebra.table ;
 
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFactory ;
+import java.util.Iterator;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingBase ;
-import org.apache.jena.sparql.engine.binding.BindingUtils ;
+import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.engine.ref.Evaluator ;
+import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.RowSetStream;
 
 public abstract class TableBase implements Table {
     protected TableBase() {}
@@ -53,7 +54,7 @@ public abstract class TableBase implements Table {
         try {
             for (; qIter.hasNext();) {
                 Binding b2 = qIter.nextBinding() ;
-                if ( BindingUtils.equals(b, b2) )
+                if ( BindingLib.equals(b, b2) )
                     return true ;
             }
             return false ;
@@ -63,19 +64,15 @@ public abstract class TableBase implements Table {
     }
 
     @Override
+    public RowSet toRowSet() {
+        return RowSetStream.create(getVars(), rows());
+    }
+
+    @Override
     public abstract int size() ;
 
     @Override
     public abstract boolean isEmpty() ;
-
-    @Override
-    public ResultSet toResultSet() {
-        QueryIterator qIter = iterator(null) ;
-        ResultSet rs = new ResultSetStream(getVarNames(), null, qIter) ;
-        rs = ResultSetFactory.makeRewindable(rs) ;
-        qIter.close() ;
-        return rs ;
-    }
 
     @Override
     public String toString() {
@@ -85,16 +82,14 @@ public abstract class TableBase implements Table {
     @Override
     public int hashCode() {
         int hash = 0 ;
-        QueryIterator qIter = iterator(null) ;
+        Iterator<Binding> iter = rows();
         try {
-            for (; qIter.hasNext();) {
-                Binding binding = qIter.nextBinding() ;
+            for (  ; iter.hasNext();) {
+                Binding binding = iter.next() ;
                 hash ^= binding.hashCode() ;
             }
             return hash ;
-        } finally {
-            qIter.close() ;
-        }
+        } finally { Iter.close(iter);}
     }
 
     @Override
@@ -108,20 +103,19 @@ public abstract class TableBase implements Table {
             return false ;
         if ( !table.getVars().equals(getVars()) )
             return false ;
-        QueryIterator qIter1 = iterator(null) ;
-        QueryIterator qIter2 = table.iterator(null) ;
+        Iterator<Binding> iter1 = rows();
+        Iterator<Binding> iter2 = table.rows();
         try {
-            for (; qIter1.hasNext();) {
-                Binding bind1 = qIter1.nextBinding() ;
-                Binding bind2 = qIter2.nextBinding() ;
-                if ( !BindingBase.equals(bind1, bind2) )
+            for (; iter1.hasNext();) {
+                Binding bind1 = iter1.next() ;
+                Binding bind2 = iter2.next() ;
+                if ( !BindingLib.equals(bind1, bind2) )
                     return false ;
             }
             return true ;
         } finally {
-            qIter1.close() ;
-            qIter2.close() ;
+            Iter.close(iter1);
+            Iter.close(iter2);
         }
     }
-
 }

@@ -27,9 +27,9 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.QueryCheckException ;
 import org.apache.jena.sparql.lang.SPARQLParserRegistry ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.SSEParseException ;
+import org.apache.jena.sparql.sse.SSE_ParseException ;
 import org.apache.jena.sparql.sse.WriterSSE ;
-import org.apache.jena.sparql.sse.builders.BuildException ;
+import org.apache.jena.sparql.sse.builders.SSE_BuildException ;
 
 public class QueryUtils
 {
@@ -62,12 +62,10 @@ public class QueryUtils
                 dump(op, op2) ;
                 throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
             }
-        } catch (SSEParseException | BuildException ex)
+        } catch (SSE_ParseException | SSE_BuildException ex)
         { 
-            System.err.println(str);
             throw ex ; 
-        }      // Breakpoint
-
+        }
     }
     
     private static void dump(Op op, Op op2)
@@ -113,7 +111,12 @@ public class QueryUtils
         if ( query.hashCode() != query2.hashCode() )
             throw new QueryCheckException("reparsed query hashCode does not equal parsed input query \nQuery (hashCode: " + query.hashCode() + ")=\n" + query + "\n\nQuery2 (hashCode: " + query2.hashCode() + ")=\n" + query2) ;
         
-        if ( ! query.equals(query2) ) 
+        if ( ! query.equals(query2) ) {
+            if ( false ) {
+                System.err.println(query);
+                System.err.println(query2);
+            }
             throw new QueryCheckException("reparsed output does not equal parsed input") ;
+        }
     }
 }

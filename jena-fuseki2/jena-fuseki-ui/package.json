@@ -1,0 +1,62 @@
+{
+  "name": "apache-jena-fuseki",
+  "version": "1.0.0",
+  "private": false,
+  "description": "Apache Jena Fuseki UI",
+  "author": "Apache Jena Team",
+  "license": "Apache-2.0",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "vue-cli-service test:e2e",
+    "coverage:unit": "nyc vue-cli-service test:unit",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@fortawesome/vue-fontawesome": "^2.0.6",
+    "@triply/yasqe": "^4.2.23",
+    "@triply/yasr": "^4.2.23",
+    "axios": "^0.26.1",
+    "bootstrap": "^5.1.3",
+    "bootstrap-vue": "^2.21.2",
+    "core-js": "^3.21.1",
+    "follow-redirects": "^1.14.9",
+    "vue": "^2.6.14",
+    "vue-router": "^3.5.3",
+    "vue-upload-component": "^2.8.22"
+  },
+  "devDependencies": {
+    "@babel/register": "^7.17.0",
+    "@istanbuljs/nyc-config-babel": "^3.0.0",
+    "@vue/cli-plugin-babel": "^5.0.1",
+    "@vue/cli-plugin-e2e-cypress": "^5.0.1",
+    "@vue/cli-plugin-eslint": "^5.0.1",
+    "@vue/cli-plugin-unit-mocha": "~5.0.1",
+    "@vue/cli-service": "^5.0.1",
+    "@vue/eslint-config-standard": "^6.1.0",
+    "@vue/test-utils": "^1.3.0",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-istanbul": "^6.1.1",
+    "chai": "^4.3.6",
+    "eslint": "^7.22.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-standard": "^4.1.0",
+    "eslint-plugin-vue": "^8.4.0",
+    "istanbul-instrumenter-loader": "^3.0.1",
+    "nyc": "^15.1.0",
+    "sass": "^1.49.8",
+    "sass-loader": "^10.1.1",
+    "sinon": "^13.0.1",
+    "vue-template-compiler": "^2.6.14"
+  },
+  "resolutions": {
+    "ansi-regex": "^4.1.1",
+    "follow-redirects": "^1.14.7",
+    "nanoid": "^3.3.1"
+  }
+}

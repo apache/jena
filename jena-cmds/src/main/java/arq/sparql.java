@@ -27,11 +27,11 @@ public class sparql extends query
     public static void main(String... argv) {
         new sparql(argv).mainRun() ;
     }
-    
+
     public sparql(String[] argv) {
-        super(argv) ; 
+        super(argv) ;
     }
 
     @Override
-    protected Syntax getDefaultSyntax()     { return Syntax.syntaxSPARQL_11 ; } 
+    protected Syntax getDefaultSyntax()     { return Syntax.syntaxARQ ; }
 }

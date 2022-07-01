@@ -29,20 +29,19 @@ import static org.junit.Assert.*;
 
 public class CachedSecurityEvaluatorTest {
 
-	private StaticSecurityEvaluator securityEvaluator;
-	private SecurityEvaluator cachedEvaluator;
-	
-	public CachedSecurityEvaluatorTest() {
-		securityEvaluator = new StaticSecurityEvaluator( "bob" );
-		cachedEvaluator = new CachedSecurityEvaluator( securityEvaluator, NodeFactory.createURI("urn:ted") );
-		
-	}
-	
-	@Test
-	public void testGetPrincipal()
-	{
-		assertEquals( "urn:bob", securityEvaluator.getPrincipal().getURI());
-		assertEquals( "urn:ted", ((Node)cachedEvaluator.getPrincipal()).getURI());
-	}
+    private StaticSecurityEvaluator securityEvaluator;
+    private SecurityEvaluator cachedEvaluator;
+
+    public CachedSecurityEvaluatorTest() {
+        securityEvaluator = new StaticSecurityEvaluator("bob");
+        cachedEvaluator = new CachedSecurityEvaluator(securityEvaluator, NodeFactory.createURI("urn:ted"));
+
+    }
+
+    @Test
+    public void testGetPrincipal() {
+        assertEquals("urn:bob", securityEvaluator.getPrincipal().getURI());
+        assertEquals("urn:ted", ((Node) cachedEvaluator.getPrincipal()).getURI());
+    }
 
 }

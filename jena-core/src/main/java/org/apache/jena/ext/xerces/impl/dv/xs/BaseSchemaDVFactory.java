@@ -40,6 +40,8 @@ import org.apache.jena.ext.xerces.xs.XSObjectList;
 public abstract class BaseSchemaDVFactory extends SchemaDVFactory {
 
     static final String URI_SCHEMAFORSCHEMA = "http://www.w3.org/2001/XMLSchema";
+    static final String DATETIME = "dateTime";
+    static final String DURATION = "duration";
 
     protected XSDeclarationPool fDeclPool = null;
 
@@ -52,11 +54,9 @@ public abstract class BaseSchemaDVFactory extends SchemaDVFactory {
         final String BOOLEAN           = "boolean";
         final String BYTE              = "byte";
         final String DATE              = "date";
-        final String DATETIME          = "dateTime";
         final String DAY               = "gDay";
         final String DECIMAL           = "decimal";
         final String DOUBLE            = "double";
-        final String DURATION          = "duration";
         final String ENTITY            = "ENTITY";
         final String ENTITIES          = "ENTITIES";
         final String FLOAT             = "float";

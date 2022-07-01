@@ -38,7 +38,6 @@
       </includes>
       <excludes>
         <exclude>org.apache.jena:jena-*:*:sources</exclude>
-        <exclude>org.apache.jena:jena-*:*:javadoc</exclude>
       </excludes>
       <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
@@ -54,43 +53,6 @@
       <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
     </dependencySet>
-
-    <!-- All the javadoc is quite large yet one use of the binary download
-         is for people with limited or unreliable connectivity.
-         **javadoc**
-    <dependencySet>
-      <useProjectArtifact>false</useProjectArtifact>
-      <outputDirectory>javadoc-core</outputDirectory>
-      <unpack>true</unpack>
-      <includes>
-        <include>org.apache.jena:jena-core:*:javadoc</include>
-      </includes>
-      <fileMode>0644</fileMode>
-      <directoryMode>0755</directoryMode>
-    </dependencySet>
-
-    <dependencySet>
-      <useProjectArtifact>false</useProjectArtifact>
-      <outputDirectory>javadoc-arq</outputDirectory>
-      <unpack>true</unpack>
-      <includes>
-        <include>org.apache.jena:jena-arq:*:javadoc</include>
-      </includes>
-      <fileMode>0644</fileMode>
-      <directoryMode>0755</directoryMode>
-    </dependencySet>
-
-    <dependencySet>
-      <useProjectArtifact>false</useProjectArtifact>
-      <outputDirectory>javadoc-tdb</outputDirectory>
-      <unpack>true</unpack>
-      <includes>
-        <include>org.apache.jena:jena-tdb:*:javadoc</include>
-      </includes>
-      <fileMode>0644</fileMode>
-      <directoryMode>0755</directoryMode>
-    </dependencySet>
-    **javadoc** -->
 
   </dependencySets>
 
@@ -126,7 +88,7 @@
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>jena-log4j.properties</include>
+        <include>log4j2.properties</include>
       </includes> 
       <fileMode>0644</fileMode>
     </fileSet>

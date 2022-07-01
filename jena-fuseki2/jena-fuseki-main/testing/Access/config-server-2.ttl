@@ -47,7 +47,7 @@ PREFIX access:  <http://jena.apache.org/access#>
     .
 
 ## Dataset 2
-## No service
+## No users allowed (no fuseki:allowedUsers)
 <#service_plain> rdf:type fuseki:Service ;
     fuseki:name                  "database2";
     fuseki:serviceQuery          "query";
@@ -55,8 +55,7 @@ PREFIX access:  <http://jena.apache.org/access#>
     fuseki:serviceReadGraphStore "get" ;
     fuseki:dataset <#tdb_dataset> ;
     .
-    
+
 <#tdb_dataset> rdf:type      tdb2:DatasetTDB2 ;
     tdb2:location "--mem--" ;
     .
-    

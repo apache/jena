@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory ;
 /**
  * Block manager that keeps temporary copies of updated blocks, then writes them
  * to a journal when commitPrepare happens. No work is done in commitEnact
- * because the {@link TransactionManager} is responsible to writing 
+ * because the {@link TransactionManager} is responsible to writing
  * the blocks to the main storage.
  */
 public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
@@ -53,16 +53,16 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     private BlockMgr blockMgr ; // read-only except during journal checkpoint.
     private Transaction transaction ;
     private FileRef fileRef ;
-    
+
     private final BufferAllocator writeBlockBufferAllocator ;
-    
+
     private final Set<Long> readBlocks = new HashSet<>() ;
     private final Set<Long> iteratorBlocks = new HashSet<>() ;
     private final Map<Long, Block> writeBlocks = new HashMap<>() ;
     private final Map<Long, Block> freedBlocks = new HashMap<>() ;
     private boolean closed  = false ;
     private boolean active  = false ;   // In the transaction, from begin to commitPrepare.
-    
+
     public BlockMgrJournal(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr)
     {
         Context context = txn.getBaseDataset().getContext() ;
@@ -73,10 +73,10 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
             writeBlockBufferAllocator = new BufferAllocatorMapped(SystemTDB.BlockSize) ;
         else
             writeBlockBufferAllocator = new BufferAllocatorMem() ;
-        
+
         reset(txn, fileRef, underlyingBlockMgr) ;
         if ( txn.getTxnMode() == ReadWrite.READ &&  underlyingBlockMgr instanceof BlockMgrJournal )
-            System.err.println("Two level BlockMgrJournal") ;
+            log.error("Two level BlockMgrJournal") ;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     {
         reset(txn, fileRef, blockMgr) ;
     }
-    
+
     @Override
     public void commitPrepare(Transaction txn)
     {
@@ -93,14 +93,14 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
             writeJournalEntry(blk) ;
         this.active = false ;
     }
-    
+
     @Override
     public void committed(Transaction txn)
     {}
 
     @Override
     public void enactCommitted(Transaction txn) {
-        // No-op : this is done by playing the master journal.
+        // No-op : this is done by playing the journal.
     }
 
     @Override
@@ -112,11 +112,11 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     @Override
     public void abort(Transaction txn)
     {
-        checkActive() ;
+        // Ignore checkActive. abort() may be called in rollback.
         this.active = false ;
-        // Do clearup of in-memory structures in clearup().
+        clear(txn);
     }
-    
+
     /** Set, or reset, this BlockMgr.
      */
     private void reset(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr)
@@ -126,7 +126,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         this.active = true ;
         clear(txn) ;
     }
-    
+
     private void clear(Transaction txn)
     {
         this.transaction = txn ;
@@ -136,16 +136,16 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         this.freedBlocks.clear() ;
         this.writeBlockBufferAllocator.clear() ;
     }
-    
+
     @Override
     public Block allocate(int blockSize)
     {
         checkIfClosed() ;
-        // Might as well allocate now. 
+        // Might as well allocate now.
         // This allocates the id.
         Block block = blockMgr.allocate(blockSize) ;
         // But we "copy" it by allocating ByteBuffer space.
-        if ( active ) 
+        if ( active )
         {
             block = replicate(block) ;
             writeBlocks.put(block.getId(), block) ;
@@ -161,7 +161,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         if ( block != null )
             return block ;
         block = blockMgr.getRead(id) ;
-        if ( active ) 
+        if ( active )
             readBlocks.add(block.getId()) ;
         return block ;
     }
@@ -176,7 +176,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
             block = blockMgr.getReadIterator(id) ;
         if ( block == null )
             throw new BlockException("No such block: "+getLabel()+" "+id) ;
-        if ( active ) 
+        if ( active )
             iteratorBlocks.add(block.getId()) ;
         return block ;
     }
@@ -185,13 +185,13 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     public Block getWrite(long id)
     {
         // NB: If we are in a stack of BlockMgrs, after a transaction has committed,
-        // we would be called via getRead and the upper Blockgr does the promotion. 
+        // we would be called via getRead and the upper Blockgr does the promotion.
         checkActive() ;
         checkIfClosed() ;
         Block block = localBlock(id) ;
         if ( block != null )
             return block ;
-        
+
         // Get-as-read.
         block = blockMgr.getRead(id) ;
         // If most blocks get modified, then a copy is needed
@@ -205,7 +205,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         checkIfClosed() ;
         return writeBlocks.get(id) ;
     }
-    
+
     @Override
     public Block promote(Block block)
     {
@@ -217,7 +217,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
 
     private Block _promote(Block block)
     {
-        checkActive() ; 
+        checkActive() ;
         block = replicate(block) ;
         writeBlocks.put(block.getId(), block) ;
         return block ;
@@ -239,7 +239,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         checkIfClosed() ;
         if ( ! block.isModified() )
             Log.warn(this, "Page for block "+fileRef+"/"+block.getId()+" not modified") ;
-        
+
         if ( ! writeBlocks.containsKey(block.getId()) )
         {
             Log.warn(this, "Block not recognized: "+block.getId()) ;
@@ -249,7 +249,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
             writeBlocks.put(block.getId(), block) ;
         }
     }
-    
+
     @Override
     public void overwrite(Block block)
     {
@@ -277,7 +277,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         checkIfClosed() ;
         if ( writeBlocks.containsKey(Long.valueOf(id)))
             return true ;
-        return blockMgr.valid(id) ; 
+        return blockMgr.valid(id) ;
     }
 
     @Override
@@ -292,7 +292,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     {
         return closed ;
     }
-    
+
     private void checkIfClosed()
     {
         if ( closed )
@@ -303,7 +303,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     {
         if ( ! active )
             Log.error(this, "Not active: "+transaction.getTxnId()) ;
-        TxnState state = transaction.getState() ; 
+        TxnState state = transaction.getState() ;
         if ( state != TxnState.ACTIVE && state != TxnState.PREPARING )
             Log.error(this, "**** Not active: "+transaction.getTxnId()) ;
     }
@@ -314,14 +314,14 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     {
         checkIfClosed() ;
     }
-    
+
     @Override
     public void syncForce()
     {
         blockMgr.syncForce() ;
     }
 
-    // we only use the underlying blockMgr in read-mode - we don't write back blocks.  
+    // we only use the underlying blockMgr in read-mode - we don't write back blocks.
     @Override
     public void beginUpdate()           { checkIfClosed() ; blockMgr.beginRead() ; }
 
@@ -337,7 +337,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         blk.getByteBuffer().rewind() ;
         transaction.getJournal().write(JournalEntryType.Block, fileRef, blk) ;
     }
-    
+
     private void logState()
     {
         Log.info(this, "state: "+getLabel()) ;
@@ -346,7 +346,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         Log.info(this, "  iteratorBlocks:  "+iteratorBlocks) ;
         Log.info(this, "  freedBlocks:     "+freedBlocks) ;
     }
-    
+
     @Override
     public void beginRead()             { checkIfClosed() ; blockMgr.beginRead() ; }
 
@@ -356,18 +356,18 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     @Override
     public void beginIterator(Iterator<?> iterator)
     {
-        checkIfClosed() ; 
+        checkIfClosed() ;
         transaction.addIterator(iterator) ;
-        // Don't pass down the beginIterator call - we track and manage here, not lower down.  
+        // Don't pass down the beginIterator call - we track and manage here, not lower down.
         //blockMgr.beginIterator(iterator) ;
     }
 
     @Override
     public void endIterator(Iterator<?> iterator)
     {
-        checkIfClosed() ; 
+        checkIfClosed() ;
         transaction.removeIterator(iterator) ;
-        // Don't pass down the beginIterator call - we track and manage here, not lower down.  
+        // Don't pass down the beginIterator call - we track and manage here, not lower down.
         //blockMgr.endIterator(iterator) ;
     }
 
@@ -376,7 +376,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
 
     @Override
     public String getLabel() { return fileRef.getFilename() ; }
-    
+
     // Our own replicate method that gets the destination ByteBuffer from our allocator instead of always the heap
     private Block replicate(Block srcBlock)
     {

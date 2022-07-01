@@ -18,31 +18,30 @@
 
 package org.apache.jena.tdb2.store.nodetable;
 
-import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.junit.BuildTestLib;
-import org.apache.jena.tdb2.setup.StoreParams;
-import org.apache.jena.tdb2.setup.StoreParamsBuilder;
-import org.apache.jena.tdb2.store.nodetable.NodeTable;
+import org.apache.jena.tdb2.params.StoreParams;
+import org.apache.jena.tdb2.params.StoreParamsBuilder;
 
 
 public class TestNodeTableStoredBase extends AbstractTestNodeTable
 {
-    
-    static String base = ConfigTest.getTestingDir() ;
-    static Location location = Location.create(base+"/nodetable-test") ;
-    
+
+    static String base = ConfigTest.getTestingDir();
+    static Location location = Location.create(base+"/nodetable-test");
+
     @Override
     protected NodeTable createEmptyNodeTable()
     {
         FileOps.ensureDir(location.getDirectoryPath());
         FileOps.clearDirectory(location.getDirectoryPath());
-        StoreParams params = 
+        StoreParams params =
             StoreParamsBuilder.create()
                 .nodeId2NodeCacheSize(-1)
                 .node2NodeIdCacheSize(-1)
-                .nodeMissCacheSize(-1).build() ;
-        return BuildTestLib.makeNodeTableBase(location, "test", params) ;
+                .nodeMissCacheSize(-1).build();
+        return BuildTestLib.makeNodeTableBase(location, "test", params);
     }
 }

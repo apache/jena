@@ -18,13 +18,12 @@
 
 package org.apache.jena.sparql.lang;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryException ;
 import org.apache.jena.query.QueryFactory ;
 import org.junit.Test ;
 
-public class TestVarScope extends BaseTest
+public class TestVarScope
 {
     private static void scope(String queryStr)
     {

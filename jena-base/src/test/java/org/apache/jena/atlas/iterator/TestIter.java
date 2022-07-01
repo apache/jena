@@ -23,73 +23,70 @@ import static org.junit.Assert.assertFalse ;
 import static org.junit.Assert.assertTrue ;
 
 import java.util.* ;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.Test ;
 
 public class TestIter
 {
-    List<String> data0 = new ArrayList<>() ;
-    List<String> data1 = Arrays.asList("a") ;
-    List<String> data2 = Arrays.asList("x","y","z") ;
-    List<String> data3 = Arrays.asList(null, "x", null, null, null, "y", "z", null);
- 
+    private List<String> data0 = new ArrayList<>() ;
+    private List<String> data1 = Arrays.asList("a") ;
+    private List<String> data2 = Arrays.asList("x","y","z") ;
+    private List<String> data3 = Arrays.asList(null, "x", null, null, null, "y", "z", null);
+
     @Test
     public void append_1() {
         Iterator<String> iter = Iter.append(data1.iterator(), data0.iterator());
         test(iter, "a");
     }
-       
+
     @Test
     public void append_2() {
         Iterator<String> iter = Iter.append(data0.iterator(), data1.iterator());
         test(iter, "a");
     }
-        
+
     @Test
     public void append_3() {
         Iterator<String> iter = Iter.append(data1.iterator(), data2.iterator());
         test(iter, "a", "x", "y", "z");
     }
 
+    private static List<String> mutableList(String...strings) {
+        List<String> list = new ArrayList<>();
+        for ( String s : strings )
+            list.add(s);
+        return list;
+    }
+
     @Test
     public void append_4() {
-        List<String> L = new ArrayList<>(3);
-        L.add("a");
-        L.add("b");
-        L.add("c");
-        List<String> R = new ArrayList<>(3);
-        R.add("d");
-        R.add("e");
-        R.add("f");
+        List<String> L = mutableList("a", "b", "c");
+        List<String> R = mutableList("d", "e", "f");
 
         Iterator<String> LR = Iter.append(L.iterator(), R.iterator());
 
         while (LR.hasNext()) {
             String s = LR.next();
-
             if ( "c".equals(s) ) {
                 LR.hasNext();  // test for JENA-60
                 LR.remove();
             }
         }
 
-        assertEquals("ab", Iter.asString(L, ""));
-        assertEquals("def", Iter.asString(R, ""));
+        assertEquals(2, L.size());
+        assertEquals(Arrays.asList("a", "b"), L);
+        assertEquals(Arrays.asList("d", "e", "f"), R);
     }
 
     @Test
     public void append_5() {
-        List<String> L = new ArrayList<>(3);
-        L.add("a");
-        L.add("b");
-        L.add("c");
-        List<String> R = new ArrayList<>(3);
-        R.add("d");
-        R.add("e");
-        R.add("f");
+        List<String> L = mutableList("a", "b", "c");
+        List<String> R = mutableList("d", "e", "f");
 
         Iterator<String> LR = Iter.append(L.iterator(), R.iterator());
 
@@ -102,20 +99,14 @@ public class TestIter
             }
         }
 
-        assertEquals("abc", Iter.asString(L, ""));
-        assertEquals("ef", Iter.asString(R, ""));
+        assertEquals(3, L.size());
+        assertEquals(Arrays.asList("e", "f"), R);
     }
 
     @Test
     public void append_6() {
-        List<String> L = new ArrayList<>(3);
-        L.add("a");
-        L.add("b");
-        L.add("c");
-        List<String> R = new ArrayList<>(3);
-        R.add("d");
-        R.add("e");
-        R.add("f");
+        List<String> L = mutableList("a", "b", "c");
+        List<String> R = mutableList("d", "e", "f");
 
         Iterator<String> LR = Iter.append(L.iterator(), R.iterator());
 
@@ -124,32 +115,9 @@ public class TestIter
         }
         LR.remove();
 
-        assertEquals("abc", Iter.asString(L, ""));
-        assertEquals("de", Iter.asString(R, ""));
-    }
-
-    @Test
-    public void asString_1() {
-        String x = Iter.asString(data0, "");
-        assertEquals("", x);
-    }
-
-    @Test
-    public void asString_2() {
-        String x = Iter.asString(data1, "");
-        assertEquals("a", x);
-    }
-
-    @Test
-    public void asString_3() {
-        String x = Iter.asString(data1, "/");
-        assertEquals("a", x);
-    }
-
-    @Test
-    public void asString_4() {
-        String x = Iter.asString(data2, "/");
-        assertEquals("x/y/z", x);
+        assertEquals(3, L.size());
+        assertEquals(Arrays.asList("a", "b", "c"), L);
+        assertEquals(Arrays.asList("d", "e"), R);
     }
 
     private static void test(Iterator<? > iter, Object...items) {
@@ -159,34 +127,34 @@ public class TestIter
         }
         assertFalse(iter.hasNext());
     }
-    
+
     static Iter.Folder<String, String> f1 = (acc, arg)->acc + arg ;
-    
+
     @Test
     public void fold_01() {
         String[] x = {"a", "b", "c"};
-        String z = Iter.foldLeft(Arrays.asList(x), f1, "X");
+        String z = Iter.foldLeft(Arrays.asList(x).iterator(), "X", f1);
         assertEquals("Xabc", z);
     }
 
     @Test
     public void fold_02() {
         String[] x = {"a", "b", "c"};
-        String z = Iter.foldRight(Arrays.asList(x), f1, "X");
+        String z = Iter.foldRight(Arrays.asList(x).iterator(), "X", f1);
         assertEquals("Xcba", z);
     }
 
     @Test
     public void fold_03() {
         String[] x = {};
-        String z = Iter.foldLeft(Arrays.asList(x), f1, "X");
+        String z = Iter.foldLeft(Arrays.asList(x).iterator(), "X", f1);
         assertEquals("X", z);
     }
 
     @Test
     public void fold_04() {
         String[] x = {};
-        String z = Iter.foldRight(Arrays.asList(x), f1, "X");
+        String z = Iter.foldRight(Arrays.asList(x).iterator(), "X", f1);
         assertEquals("X", z);
     }
 
@@ -195,13 +163,13 @@ public class TestIter
         Iterator<String> it = Iter.map(data2.iterator(), item -> item + item);
         test(it, "xx", "yy", "zz");
     }
-	
+
     @Test
     public void flatmap_01() {
         Iterator<String> it = Iter.flatMap(data2.iterator(), item -> Arrays.asList(item+item, item).iterator());
         test(it, "xx", "x", "yy", "y", "zz", "z");
     }
-    
+
     @Test
     public void flatmap_02() {
         List<Integer> data = Arrays.asList(1,2,3);
@@ -220,34 +188,20 @@ public class TestIter
                     case 1: return Iter.nullIterator();
                     case 2: return Arrays.asList("two").iterator();
                     case 3: return Iter.nullIterator();
-                    default: throw new IllegalArgumentException(); 
+                    default: throw new IllegalArgumentException();
                 }
             };
-            
+
         Iter<String> it = Iter.iter(data.iterator()).flatMap(mapper);
         test(it, "two");
     }
 
     private Predicate<String> filter = item -> item.length() == 1;
-   
+
     @Test
     public void first_01() {
         Iter<String> iter = Iter.nullIter();
         assertEquals(null, Iter.first(iter, filter));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void first_02() {
-        List<String> data = Arrays.asList("11", "A", "B", "C");
-        assertEquals("A", Iter.first(data, filter));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void first_03() {
-        List<String> data = Arrays.asList("11", "AA", "BB", "CC");
-        assertEquals(null, Iter.first(data, filter));
     }
 
     @Test
@@ -256,54 +210,18 @@ public class TestIter
         assertEquals(-1, Iter.firstIndex(iter, filter));
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    public void first_05() {
-        List<String> data = Arrays.asList("11", "A", "B", "C");
-        assertEquals(1, Iter.firstIndex(data, filter));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void first_06() {
-        List<String> data = Arrays.asList("11", "AA", "BB", "CC");
-        assertEquals(-1, Iter.firstIndex(data, filter));
-    }
-
     @Test
     public void last_01() {
         Iter<String> iter = Iter.nullIter();
         assertEquals(null, Iter.last(iter, filter));
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    public void last_02() {
-        List<String> data = Arrays.asList("11", "A", "B", "C");
-        assertEquals("C", Iter.last(data, filter));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void last_03() {
-        List<String> data = Arrays.asList("11", "AA", "BB", "CC");
-        assertEquals(null, Iter.last(data, filter));
-    }
-
-    @Test
-    public void last_04() {
-        Iter<String> iter = Iter.nullIter();
-        assertEquals(-1, Iter.lastIndex(iter, filter));
-    }
-
-    @SuppressWarnings("deprecation")
     @Test
     public void last_05() {
         List<String> data = Arrays.asList("11", "A", "B", "C");
         assertEquals(3, Iter.lastIndex(data, filter));
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void last_06() {
         List<String> data = Arrays.asList("11", "AA", "BB", "CC");
@@ -356,6 +274,139 @@ public class TestIter
         assertEquals(5, x);
     }
 
+    @SafeVarargs
+    private static <X> Iterator<X> data(X ... items) {
+        List<X> a = new ArrayList<>(items.length);
+        for (X x : items )
+            a.add(x);
+        return a.iterator();
+    }
+
+    @Test public void anyMatch1() {
+        boolean b = Iter.anyMatch(data("2"), x->x.equals("2"));
+        assertTrue(b);
+    }
+
+    @Test public void anyMatch2() {
+        boolean b = Iter.anyMatch(data("2","3"), x->x.equals("2"));
+        assertTrue(b);
+    }
+
+    @Test public void anyMatch3() {
+        boolean b = Iter.anyMatch(data("2","3"), x->x.equals("1"));
+        assertFalse(b);
+    }
+
+    @Test public void allMatch1() {
+        boolean b = Iter.allMatch(data("2", "2"), x->x.equals("2"));
+        assertTrue(b);
+    }
+
+    @Test public void allMatch2() {
+        boolean b = Iter.allMatch(data("1", "2"), x->x.equals("2"));
+        assertFalse(b);
+    }
+
+
+    @Test public void noneMatch1() {
+        boolean b = Iter.noneMatch(data("1", "2", "3"), x->x.equals("A"));
+        assertTrue(b);
+    }
+
+    @Test public void noneMatch2() {
+        boolean b = Iter.noneMatch(data("A", "2", "3"), x->x.equals("A"));
+        assertFalse(b);
+    }
+
+    @Test public void findFirst1() {
+        Optional<String> r = Iter.findFirst(data("A", "2", "3"), x->x.equals("A"));
+        assertTrue(r.isPresent());
+        assertEquals("A", r.get());
+    }
+
+    @Test public void findFirst2() {
+        Optional<String> r = Iter.findFirst(data("A", "2", "3"), x->x.equals("Z"));
+        assertFalse(r.isPresent());
+    }
+
+    @Test public void findAny1() {
+        Optional<String> r = Iter.findAny(data("A", "2", "3"), x->x.equals("A"));
+        assertTrue(r.isPresent());
+        assertEquals("A", r.get());
+    }
+
+    @Test public void reduce1() {
+        Optional<String> r = Iter.reduce(data("A", "2", "3"), String::concat);
+        assertEquals(Optional.of("A23"), r);
+    }
+
+    @Test public void reduce2() {
+        Optional<String> r = Iter.reduce(data("A"), String::concat);
+        assertEquals(Optional.of("A"), r);
+    }
+
+    @Test public void reduce3() {
+        Optional<String> r = Iter.reduce(data(), String::concat);
+        assertFalse(r.isPresent());
+    }
+
+    @Test public void min1() {
+        Optional<String> x = Iter.min(data(), String::compareTo);
+        assertFalse(x.isPresent());
+    }
+
+    @Test public void min2() {
+        Optional<String> x = Iter.min(data("2"), String::compareTo);
+        assertTrue(x.isPresent());
+        assertEquals("2", x.get());
+    }
+
+    @Test public void min3() {
+        Optional<String> x = Iter.min(data("1", "2", "3"), String::compareTo);
+        assertTrue(x.isPresent());
+        assertEquals("1", x.get());
+    }
+
+    @Test public void min4() {
+        Optional<String> x = Iter.min(data("3", "1", "2"), String::compareTo);
+        assertTrue(x.isPresent());
+        assertEquals("1", x.get());
+    }
+
+    @Test public void max1() {
+        Optional<String> x = Iter.max(data(), String::compareTo);
+        assertFalse(x.isPresent());
+    }
+
+    @Test public void max2() {
+        Optional<String> x = Iter.max(data("2"), String::compareTo);
+        assertTrue(x.isPresent());
+        assertEquals("2", x.get());
+    }
+
+    @Test public void max3() {
+        Optional<String> x = Iter.max(data("1", "2", "3"), String::compareTo);
+        assertTrue(x.isPresent());
+        assertEquals("3", x.get());
+    }
+
+    @Test public void max4() {
+        Optional<String> x = Iter.max(data("3", "1", "2"), String::compareTo);
+        assertTrue(x.isPresent());
+        assertEquals("3", x.get());
+    }
+
+    @Test public void collect3() {
+        List<String> x = Iter.collect(data("A", "B", "C"), Collectors.toList());
+        assertEquals(3, x.size());
+        assertEquals(Arrays.asList("A", "B", "C"), x);
+    }
+
+    @Test public void collect1() {
+        List<String> x = Iter.collect(data("A", "B", "C"), ArrayList::new, ArrayList::add);
+        assertEquals(Arrays.asList("A", "B", "C"), x);
+    }
+
     @Test
     public void take_01() {
         List<String> data = Arrays.asList("1", "A", "B", "CC");
@@ -363,6 +414,22 @@ public class TestIter
         assertEquals(2, data2.size());
         assertEquals("1", data2.get(0));
         assertEquals("A", data2.get(1));
+    }
+
+    @Test
+    public void forEach_1() {
+        List<String> data = Arrays.asList("1", "A", "B", "CC");
+        AtomicInteger counter = new AtomicInteger(0);
+        Iter.forEach(data.iterator(), x->counter.incrementAndGet());
+        assertEquals(4, counter.get());
+    }
+
+    @Test
+    public void forEach_2() {
+        List<String> data = Collections.emptyList();
+        AtomicInteger counter = new AtomicInteger(0);
+        Iter.forEach(data.iterator(), x->counter.incrementAndGet());
+        assertEquals(0, counter.get());
     }
 
     @Test
@@ -473,30 +540,5 @@ public class TestIter
         List<String> x = Arrays.asList("a", "a", "b", "b", "b", "a", "a");
         Iterator<String> iter = Iter.distinctAdjacent(x.iterator());
         test(iter, "a", "b", "a");
-    }
-
-    private static class AlwaysAcceptFilterStack extends FilterStack<Object> {
-        public AlwaysAcceptFilterStack(Predicate<Object> f) {
-            super(f);
-        }
-
-        @Override
-        public boolean acceptAdditional(Object o) {
-            return true;
-        }
-    }
-
-    @Test
-    public void testFilterStack_01() {
-        Predicate<Object> filter = x -> true;
-        FilterStack<Object> filterStack = new AlwaysAcceptFilterStack(filter);
-        assertTrue(filterStack.test(new Object()));
-    }
-
-    @Test
-    public void testFilterStack_02() {
-        Predicate<Object> filter = x -> false;
-        FilterStack<Object> filterStack = new AlwaysAcceptFilterStack(filter);
-        assertFalse(filterStack.test(new Object()));
     }
 }

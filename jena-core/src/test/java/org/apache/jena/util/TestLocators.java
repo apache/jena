@@ -19,11 +19,8 @@
 package org.apache.jena.util;
 
 import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.util.Locator ;
-import org.apache.jena.util.LocatorClassLoader ;
-import org.apache.jena.util.LocatorFile ;
-import org.apache.jena.util.LocatorURL ;
 
+@SuppressWarnings("deprecation")
 public class TestLocators extends ModelTestBase
     {
     private static final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();

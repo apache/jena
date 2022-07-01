@@ -67,16 +67,16 @@ void Prologue() : {}
 {
   ( BaseDecl() | PrefixDecl() )*
 }
-void BaseDecl() : { String iri ; }
+void BaseDecl() : { Token t ; String iri ; }
 {
-  <BASE> iri = IRIREF()
-  { getPrologue().setBaseURI(iri) ; }
+  t = <BASE> iri = IRIREF()
+  { setBase(iri, t.beginLine, t.beginColumn ) ; }
 }
 void PrefixDecl() : { Token t ; String iri ; }
 {
     <PREFIX> t = <PNAME_NS> iri = IRIREF()
-      { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getPrologue().setPrefix(s, iri) ; }
+    { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn);
+      setPrefix(s, iri, t.beginLine, t.beginColumn) ; }
 }
 void SelectQuery() : { }
 {
@@ -595,16 +595,17 @@ void DataBlock() : { }
 {
   ( InlineDataOneVar() | InlineDataFull() )
 }
-void InlineDataOneVar() : { Var v ; Node n ; Token t ; }
+void InlineDataOneVar() : { Var v ; Node n ; Token t ; ; int beginLine; int beginColumn; }
 {
   v = Var()
   { emitDataBlockVariable(v) ; }
   t = <LBRACE>
+  { beginLine = t.beginLine; beginColumn = t.beginColumn; t = null; }
   (
     n = DataBlockValue()
-    { startDataBlockValueRow(-1, -1) ;
-      emitDataBlockValue(n, -1, -1) ;
-      finishDataBlockValueRow(-1, -1) ;
+    { startDataBlockValueRow(beginLine, beginColumn) ;
+      emitDataBlockValue(n, beginLine, beginColumn) ;
+      finishDataBlockValueRow(beginLine, beginColumn) ;
     }
   )*
   t = <RBRACE>
@@ -1143,22 +1144,23 @@ Expr UnaryExpression() : { Expr expr ; }
   | <MINUS> expr = PrimaryExpression() { return new E_UnaryMinus(expr) ; }
   | expr = PrimaryExpression() { return expr ; }
 }
-Expr PrimaryExpression() : { Expr expr ; Node gn ; }
+Expr PrimaryExpression() : { Expr expr ; Node n ; }
 {
   ( expr = BrackettedExpression() { return expr ; }
   | expr = BuiltInCall() { return expr ; }
   | expr = iriOrFunction() { return expr ; }
-  | gn = RDFLiteral() { return asExpr(gn) ; }
-  | gn = NumericLiteral() { return asExpr(gn) ; }
-  | gn = BooleanLiteral() { return asExpr(gn) ; }
-  | gn = Var() { return asExpr(gn) ; }
+  | n = RDFLiteral() { return asExpr(n) ; }
+  | n = NumericLiteral() { return asExpr(n) ; }
+  | n = BooleanLiteral() { return asExpr(n) ; }
+  | n = Var() { return asExpr(n) ; }
   )
 }
 Expr BrackettedExpression() : { Expr expr ; }
 {
     <LPAREN> expr = Expression() <RPAREN> { return expr ; }
 }
-Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
+Expr BuiltInCall() : { Expr expr ;
+                       Expr expr1 = null ; Expr expr2 = null ; Expr expr3 = null ;
                        Node gn ; ExprList a ; }
 {
     expr = Aggregate() { return expr ; }
@@ -1175,9 +1177,9 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <BOUND> <LPAREN> gn = Var() <RPAREN>
     { return new E_Bound(new ExprVar(gn)) ; }
   | <IRI> <LPAREN> expr = Expression() <RPAREN>
-    { return new E_IRI(expr) ; }
+    { return makeFunction_IRI(expr) ; }
   | <URI> <LPAREN> expr = Expression() <RPAREN>
-    { return new E_URI(expr) ; }
+    { return makeFunction_URI(expr) ; }
   | <BNODE>
     ( <LPAREN> expr1 = Expression() <RPAREN>
       { return new E_BNode(expr1) ; }
@@ -1303,6 +1305,7 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
                      ExprList ordered = new ExprList() ;
                      Token t ; }
 {
+  { startAggregate(); }
   ( t = <COUNT> <LPAREN>
     ( <DISTINCT> { distinct = true ; } )?
     ( <STAR> | expr = Expression() )
@@ -1330,10 +1333,12 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
   )
   {
     if ( ! getAllowAggregatesInExpressions() )
-           throwParseException("Aggregate expression not legal at this point",
-                                t.beginLine, t.beginColumn) ;
+        throwParseException("Aggregate expression not legal at this point", t.beginLine, t.beginColumn) ;
+    if ( getAggregateDepth() > 1 )
+        throwParseException("Nested aggregate in expression not legal", t.beginLine, t.beginColumn) ;
   }
   { Expr exprAgg = getQuery().allocAggregate(agg) ;
+    finishAggregate();
     return exprAgg ; }
 }
 Expr iriOrFunction() : { String iri ; Args a = null ; }
@@ -1403,7 +1408,7 @@ String String() : { Token t ; String lex ; }
   | t = <STRING_LITERAL_LONG1> { lex = stripQuotes3(t.image) ; }
   | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
   )
-    {
+    { checkString(lex, t.beginLine, t.beginColumn) ;
       lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
       return lex ;
     }
@@ -1447,8 +1452,11 @@ TOKEN: {
 }
 TOKEN:
 {
-   <IRIref: "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`",
-                      "\u0000"-"\u0020"])* ">" >
+   <IRIref: "<"
+                ( ~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`", "\u0000"-"\u0020"]
+                | <UCHAR>
+                )*
+              ">" >
 | <PNAME_NS: (<PN_PREFIX>)? ":" >
 | <PNAME_LN: <PNAME_NS> <PN_LOCAL> >
 | <BLANK_NODE_LABEL: "_:" (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)? >
@@ -1611,17 +1619,20 @@ TOKEN :
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
 | <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+| < #UCHAR: <UCHAR8> >
+| < #UCHAR4: "\\" "u" <HEX> <HEX> <HEX> <HEX> >
+| < #UCHAR8: "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> >
 | < STRING_LITERAL1:
-      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" >
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "'" >
 | < STRING_LITERAL2:
-      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> )* "\"" >
+      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "\"" >
 | < STRING_LITERAL_LONG1:
      <QUOTE_3S>
-      ( ("'" | "''")? (~["'","\\"] | <ECHAR> ))*
+      ( ("'" | "''")? (~["'","\\"] | <ECHAR> | <UCHAR> ))*
      <QUOTE_3S> >
 | < STRING_LITERAL_LONG2:
      <QUOTE_3D>
-      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> ))*
+      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> | <UCHAR> ))*
      <QUOTE_3D> >
 }
 TOKEN :

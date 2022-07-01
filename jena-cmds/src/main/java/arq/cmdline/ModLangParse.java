@@ -18,173 +18,172 @@
 
 package arq.cmdline;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdArgModule;
-import jena.cmd.CmdException;
-import jena.cmd.CmdGeneral;
-import jena.cmd.ModBase;
-
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.IRIResolver ;
-import org.apache.jena.util.FileManager ;
+import org.apache.jena.cmd.*;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIx;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RiotException;
 
 public class ModLangParse extends ModBase
 {
-    private ArgDecl argCheck    = new ArgDecl(ArgDecl.NoValue, "check") ;
-    private ArgDecl argNoCheck  = new ArgDecl(ArgDecl.NoValue, "nocheck", "noCheck") ;
-    private ArgDecl argSink     = new ArgDecl(ArgDecl.NoValue, "sink", "null") ;
+    private ArgDecl argCheck    = new ArgDecl(ArgDecl.NoValue, "check");
+    private ArgDecl argNoCheck  = new ArgDecl(ArgDecl.NoValue, "nocheck", "noCheck");
+    private ArgDecl argSink     = new ArgDecl(ArgDecl.NoValue, "sink", "null");
+    private ArgDecl argCount    = new ArgDecl(ArgDecl.NoValue, "count");
 
-    private ArgDecl argStrict   = new ArgDecl(ArgDecl.NoValue, "strict") ;
-    private ArgDecl argValidate = new ArgDecl(ArgDecl.NoValue, "validate") ;
-    
-    private ArgDecl argSkip     = new ArgDecl(ArgDecl.NoValue, "skip") ;
-    private ArgDecl argNoSkip   = new ArgDecl(ArgDecl.NoValue, "noSkip") ;
-    private ArgDecl argStop     = new ArgDecl(ArgDecl.NoValue, "stopOnError", "stoponerror", "stop") ;
-    private ArgDecl argStopWarn = new ArgDecl(ArgDecl.NoValue, "stopOnWarning", "stoponwarning", "stop-warnings") ;
-    
-    private ArgDecl argBase     = new ArgDecl(ArgDecl.HasValue, "base") ;
-    
-    private ArgDecl argRDFS     = new ArgDecl(ArgDecl.HasValue, "rdfs") ;
-    
-    private ArgDecl argSyntax     = new ArgDecl(ArgDecl.HasValue, "syntax") ;
+    private ArgDecl argStrict   = new ArgDecl(ArgDecl.NoValue, "strict");
+    private ArgDecl argValidate = new ArgDecl(ArgDecl.NoValue, "validate");
 
-    private  String rdfsVocabFilename   = null ;
-    private  Model  rdfsVocab           = null ;
-    private  String baseIRI             = null ;
-    private boolean explicitCheck       = false ;
-    private boolean explicitNoCheck     = false ;
-    private boolean skipOnBadTerm       = false ;
-    private boolean stopOnBadTerm       = false ;
-    private boolean stopOnWarnings      = false ;
-    private boolean bitbucket           = false ; 
-    private boolean strict              = false ;
-    private boolean validate            = false ;
-    private Lang lang                   = null ;
-    
+    private ArgDecl argStop     = new ArgDecl(ArgDecl.NoValue, "stopOnError", "stoponerror", "stop");
+    private ArgDecl argStopWarn = new ArgDecl(ArgDecl.NoValue, "stopOnWarning", "stoponwarning", "stop-warnings");
+
+    private ArgDecl argBase     = new ArgDecl(ArgDecl.HasValue, "base");
+
+    private ArgDecl argRDFS     = new ArgDecl(ArgDecl.HasValue, "rdfs");
+
+    private ArgDecl argSyntax   = new ArgDecl(ArgDecl.HasValue, "syntax");
+
+    private String rdfsVocabFilename    = null;
+    private Model  rdfsVocab            = null;
+    private String baseIRI              = null;
+    private boolean explicitCheck       = false;
+    private boolean explicitNoCheck     = false;
+
+    private boolean stopOnError         = true;
+    private boolean stopOnWarnings      = false;   // Checking warning
+
+    private boolean bitbucket           = false;
+    private boolean strict              = false;
+    private boolean validate            = false;
+    private boolean outputCount         = false;
+    private Lang lang                   = null;
+
     @Override
     public void registerWith(CmdGeneral cmdLine) {
-        cmdLine.getUsage().startCategory("Parser control") ;
-        cmdLine.add(argSink,    "--sink",           "Parse but throw away output") ;
-        cmdLine.add(argSyntax,  "--syntax=NAME",    "Set syntax (otherwise syntax guessed from file extension)") ;
-        cmdLine.add(argBase,    "--base=URI",       "Set the base URI (does not apply to N-triples and N-Quads)") ;
-        cmdLine.add(argCheck,   "--check",          "Addition checking of RDF terms") ; // (default: off for N-triples, N-Quads, on for Turtle and TriG)") ;
-        cmdLine.add(argStrict,  "--strict",         "Run with in strict mode") ;
-        cmdLine.add(argValidate,"--validate",       "Same as --sink --check --strict") ;
-        cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file") ;
-        
-        cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
-//        cmdLine.add(argSkip,    "--noSkip",         "Skip (do not output) triples failing the RDF term tests") ;
-//        cmdLine.add(argNoSkip,  "--skip",           "Include triples failing the RDF term tests (not recommended)") ;
-        cmdLine.add(argStop,    "--stop",           "Stop parsing on encountering a bad RDF term") ;
-        cmdLine.add(argStopWarn,"--stop-warnings",  "Stop parsing on encountering a warning") ;
+        cmdLine.getUsage().startCategory("Parser control");
+        cmdLine.add(argSink,    "--sink",           "Parse but throw away output");
+        cmdLine.add(argSyntax,  "--syntax=NAME",    "Set syntax (otherwise syntax guessed from file extension)");
+        cmdLine.add(argBase,    "--base=URI",       "Set the base URI (does not apply to N-triples and N-Quads)");
+        cmdLine.add(argCheck,   "--check",          "Additional checking of RDF terms");
+        cmdLine.add(argStrict,  "--strict",         "Run with in strict mode");
+        cmdLine.add(argValidate,"--validate",       "Same as --sink --check --strict");
+        cmdLine.add(argCount,   "--count",          "Count triples/quads parsed, not output them");
+        cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file");
+
+        cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms");
+
+//        cmdLine.add(argStop,    "--stop",           "Stop parsing on encountering a bad RDF term");
+//        cmdLine.add(argStopWarn,"--stop-warnings",  "Stop parsing on encountering a warning");
     }
 
     @Override
     public void processArgs(CmdArgModule cmdLine) {
         if ( cmdLine.contains(argValidate) ) {
-            validate = true ;
-            strict = true ;
-            explicitCheck = true ;
-            bitbucket = true ;
+            validate = true;
+            strict = true;
+            explicitCheck = true;
+            bitbucket = true;
         }
 
         if ( cmdLine.contains(argSyntax) ) {
-            String syntax = cmdLine.getValue(argSyntax) ;
-            Lang lang$ = RDFLanguages.nameToLang(syntax) ;
+            String syntax = cmdLine.getValue(argSyntax);
+            Lang lang$ = RDFLanguages.nameToLang(syntax);
             if ( lang$ == null )
-                throw new CmdException("Can not detemine the syntax from '" + syntax + "'") ;
-            this.lang = lang$ ;
+                throw new CmdException("Can not detemine the syntax from '" + syntax + "'");
+            this.lang = lang$;
         }
 
         if ( cmdLine.contains(argCheck) )
-            explicitCheck = true ;
+            explicitCheck = true;
 
         if ( cmdLine.contains(argNoCheck) )
-            explicitNoCheck = true ;
+            explicitNoCheck = true;
 
         if ( cmdLine.contains(argStrict) )
-            strict = true ;
-
-        if ( cmdLine.contains(argSkip) )
-            skipOnBadTerm = true ;
-        if ( cmdLine.contains(argNoSkip) )
-            skipOnBadTerm = false ;
+            strict = true;
 
         if ( cmdLine.contains(argBase) ) {
-            baseIRI = cmdLine.getValue(argBase) ;
-            IRI iri = IRIResolver.resolveIRI(baseIRI) ;
-            if ( iri.hasViolation(false) )
-                throw new CmdException("Bad base IRI: " + baseIRI) ;
-            if ( !iri.isAbsolute() )
-                throw new CmdException("Base IRI must be an absolute IRI: " + baseIRI) ;
+            baseIRI = cmdLine.getValue(argBase);
+            try {
+                IRIx iri = IRIs.reference(baseIRI);
+                if ( !iri.isAbsolute() )
+                    throw new CmdException("Base IRI not suitable for use as a base for RDF: " + baseIRI);
+            } catch (IRIException ex) {
+                throw new CmdException("Bad base IRI: " + baseIRI);
+            }
         }
 
         if ( cmdLine.contains(argStop) )
-            stopOnBadTerm = true ;
-        
+            stopOnError = true;
+
         if ( cmdLine.contains(argStopWarn) )
             stopOnWarnings = true;
 
         if ( cmdLine.contains(argSink) )
-            bitbucket = true ;
+            bitbucket = true;
+
+        if ( cmdLine.contains(argCount) ) {
+            bitbucket = true;
+            outputCount = true;
+        }
 
         if ( cmdLine.contains(argRDFS) ) {
             try {
-                rdfsVocabFilename = cmdLine.getArg(argRDFS).getValue() ;
-                rdfsVocab = FileManager.get().loadModel(rdfsVocabFilename) ;
+                rdfsVocabFilename = cmdLine.getArg(argRDFS).getValue();
+                rdfsVocab = RDFDataMgr.loadModel(rdfsVocabFilename);
             } catch (RiotException ex) {
-                throw new CmdException("Error in RDFS vocabulary: " + rdfsVocabFilename) ;
+                throw new CmdException("Error in RDFS vocabulary: " + rdfsVocabFilename);
             } catch (Exception ex) {
-                throw new CmdException("Error: " + ex.getMessage()) ;
+                throw new CmdException("Error: " + ex.getMessage());
             }
         }
     }
 
     public boolean explicitChecking() {
-        return explicitCheck ;
+        return explicitCheck;
     }
 
     public boolean explicitNoChecking() {
-        return explicitNoCheck ;
+        return explicitNoCheck;
     }
 
     public boolean strictMode() {
-        return strict ;
+        return strict;
     }
 
     public boolean validate() {
-        return validate ;
+        return validate;
     }
 
-    public boolean skipOnBadTerm() {
-        return skipOnBadTerm ;
+    public boolean outputCount() {
+        return outputCount;
     }
 
     public boolean stopOnBadTerm() {
-        return stopOnBadTerm ;
+        return stopOnError;
     }
-    
+
     public boolean stopOnWarnings() {
-        return stopOnWarnings ;
+        return stopOnWarnings;
     }
 
     public boolean toBitBucket() {
-        return bitbucket ;
+        return bitbucket;
     }
 
     public String getBaseIRI() {
-        return baseIRI ;
+        return baseIRI;
     }
 
     public Model getRDFSVocab() {
-        return rdfsVocab ;
+        return rdfsVocab;
     }
 
     public Lang getLang() {
-        return lang ;
+        return lang;
     }
 }

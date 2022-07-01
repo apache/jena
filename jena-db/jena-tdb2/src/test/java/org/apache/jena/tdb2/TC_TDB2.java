@@ -19,10 +19,10 @@
 package org.apache.jena.tdb2;
 
 import org.apache.jena.dboe.base.block.FileMode;
-import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
 import org.apache.jena.tdb2.assembler.TS_TDBAssembler;
-import org.apache.jena.tdb2.graph.TS_Graph;
+import org.apache.jena.tdb2.graph.TS_GraphTDB2;
 import org.apache.jena.tdb2.lib.TS_LibTDB;
 import org.apache.jena.tdb2.loader.TS_Loader;
 import org.apache.jena.tdb2.setup.TS_TDBSetup;
@@ -32,12 +32,10 @@ import org.apache.jena.tdb2.store.nodetable.TS_NodeTable;
 import org.apache.jena.tdb2.store.tupletable.TS_TupleTable;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TS_Sys;
-import org.apache.log4j.Level ;
-import org.apache.log4j.Logger ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 // Naming conventions.
 // TS_* - Test sets: collections of testing files (Often Test*)
@@ -52,32 +50,31 @@ import org.junit.runners.Suite ;
     , TS_TDBSetup.class
     , TS_Store.class
     , TS_SolverTDB.class
-    , TS_Graph.class
-    , TS_Factory.class
+    , TS_GraphTDB2.class
+    , TS_TDB2Factory.class
     , TS_TDBAssembler.class
     , TS_Sys.class
     , TS_Loader.class
+    , TestMiscTDB2.class
+    , Scripts_TDB2.class
 } )
 
 public class TC_TDB2
 {
     static {
         if ( false )
-            SystemTDB.setFileMode(FileMode.direct) ;
+            SystemTDB.setFileMode(FileMode.direct);
     }
-    static ReorderTransformation dftReorder = null ; 
-        
-    @BeforeClass static public void beforeClass()   
-    {
-        //org.apache.log4j.LogManager.resetConfiguration() ;
-        //org.apache.log4j.PropertyConfigurator.configure("log4j.properties") ;
-        Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.WARN) ;
-        //Logger.getLogger("org.apache.jena.tdb.exec").setLevel(Level.WARN) ;
-        dftReorder = SystemTDB.defaultReorderTransform ;
-        SystemTDB.defaultReorderTransform = ReorderLib.identity() ;
+    static ReorderTransformation dftReorder = null;
+
+    @BeforeClass
+    static public void beforeClass() {
+        dftReorder = SystemTDB.getDefaultReorderTransform();
+        SystemTDB.setDefaultReorderTransform(ReorderLib.identity());
     }
-    
-    @AfterClass static public void afterClass() {
-        SystemTDB.defaultReorderTransform = dftReorder ;
+
+    @AfterClass
+    static public void afterClass() {
+        SystemTDB.setDefaultReorderTransform(dftReorder);
     }
 }

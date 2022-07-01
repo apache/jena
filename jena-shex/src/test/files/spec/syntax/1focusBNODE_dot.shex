@@ -1,0 +1,3 @@
+<http://a.example/S1> BNODE {
+   <http://a.example/p1> .
+}

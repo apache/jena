@@ -18,15 +18,15 @@
 
 package org.apache.jena.atlas.lib;
 
+import static org.junit.Assert.assertEquals;
+
 import java.nio.ByteBuffer ;
 import java.nio.ByteOrder ;
 import java.nio.IntBuffer ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Alg ;
 import org.junit.Test ;
 
-public class TestAlg extends BaseTest
+public class TestAlg
 {
     // Linear search is really there to test binary search.
     @Test public void linear1() 

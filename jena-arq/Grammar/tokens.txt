@@ -77,6 +77,8 @@
 [<MAX>]        ::= 'MAX'
 [<SUM>]        ::= 'SUM'
 [<AVG>]        ::= 'AVG'
+[<MEDIAN>]     ::= 'MEDIAN'
+[<MODE>]       ::= 'MODE'
 [<SAMPLE>]     ::= 'SAMPLE'
 [<GROUP_CONCAT>]     ::= 'GROUP_CONCAT'
 
@@ -95,6 +97,7 @@
 [<UNSAID>]     ::=    'UNSAID'
 [<LET>]        ::=    'LET'
 [<BIND>]       ::=    'BIND'
+[<FIND>]       ::=    'FIND'
 
 [<FILTER>]     ::= 'FILTER'
 [<REGEXP>]     ::= 'REGEXP'
@@ -122,6 +125,9 @@
 [<CEIL>]        ::= 'CEIL'
 [<FLOOR>]       ::= 'FLOOR'
 [<ROUND>]       ::= 'ROUND'
+[<IDIV>]        ::= 'IDIV'
+[<MOD>]         ::= 'MOD'
+
 [<CONCAT>]      ::= 'CONCAT'
 [<SUBSTR>]      ::= 'SUBSTR'
 [<STRLEN>]      ::= 'STRLEN'
@@ -171,6 +177,12 @@
 [<TRUE>]       ::= 'true'
 [<FALSE>]      ::= 'false'
 
+[<TRIPLE>]     ::= 'TRIPLE'
+[<IS_TRIPLE>]  ::= 'isTRIPLE'
+[<SUBJECT>]    ::= 'SUBJECT'
+[<PREDICATE>]  ::= 'PREDICATE'
+[<OBJECT>]     ::= 'OBJECT'
+
 [<MODIFY>]       ::= 'MODIFY'
 [<INSERT>]       ::= 'INSERT'
 [<DELETE>]       ::= 'DELETE'
@@ -216,17 +228,18 @@
 [<BLK1_L>]     ::= '(|'
 [<BLK1_R>]     ::= '|)'
 
-[<BLK2_L>]     ::= '{|'
-[<BLK2_R>]     ::= '|}'
-
 //[<ANON>]       ::= '[' ']'
-<ANON>       ::= '['  <WS>* ']'
+<ANON>         ::= '['  <WS>* ']'
 
 [<SEMICOLON>]  ::= ';'
 [<COMMA>]      ::= ','
 [<DOT>]        ::= '.'
 [<GT>]         ::= '>'
 [<LT>]         ::= '<'
+[<GT2>]        ::= '>>'
+[<LT2>]        ::= '<<'
+[<L_ANN>]      ::= '{|'
+[<R_ANN>]      ::= '|}'
 [<BANG>]       ::= '!'
 [<HOOK>]       ::= '?'
 [<COLON>]      ::= ':'

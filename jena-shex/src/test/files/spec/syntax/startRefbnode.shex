@@ -1,0 +1,5 @@
+start=@_:S1
+
+_:S1 {
+   <http://a.example/p1> .
+}

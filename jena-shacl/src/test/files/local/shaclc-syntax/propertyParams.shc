@@ -1,0 +1,23 @@
+PREFIX : <http://example/>
+PREFIX ex:      <http://example.org/test#>
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
+
+shapeClass ex:TestPropertyParams {
+   # Overlap with node params.
+   :prop1  nodeKind=sh:IRI .
+   :prop2  datatype=xsd:double .
+   :prop3  pattern="^.*$" .
+   :prop4  languageIn=["en" "fr"] .
+   :prop5  minLength=3 . 
+   :prop6  maxLength=5 .
+   :prop7  minExclusive="fred" .
+   :prop8  in=[2 4 6] .
+   ## Short forms
+   :propA  BlankNode .
+   :propB  xsd:integer .
+   # Unique to property params.
+   :q1 equals=:q99 .
+   :q2 lessThanOrEquals=:q99 .
+   :q3 ! lessThan=:q98 .
+   :q4 disjoint=:q97 .
+}

@@ -18,68 +18,81 @@
 
 package org.apache.jena.fuseki.ctl;
 
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.server.DataAccessPoint ;
-import org.apache.jena.fuseki.servlets.ActionBase ;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.server.DataAccessPoint;
+import org.apache.jena.fuseki.servlets.ActionLifecycle;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletProcessor;
+import org.apache.jena.fuseki.system.ActionCategory;
+import org.apache.jena.sparql.core.DatasetGraph;
 
-/** Control/admin request lifecycle */
-public abstract class ActionCtl extends ActionBase {
+/**
+ * Base class for control actions. These are servlets and do not go through Fuseki
+ * dynamic dispatch. No statistics.
+ */
+public abstract class ActionCtl extends ServletProcessor implements ActionLifecycle {
+    protected ActionCtl() {
+        super(Fuseki.adminLog, ActionCategory.ADMIN);
+    }
 
-    protected ActionCtl() { super(Fuseki.adminLog) ; }
-    
     @Override
-    final
-    protected void execCommonWorker(HttpAction action) {
-        DataAccessPoint dataAccessPoint ;
-        
-        String datasetUri = mapRequestToDatasetName(action) ;
-        if ( datasetUri != null ) {
-            dataAccessPoint = action.getDataAccessPointRegistry().get(datasetUri) ;
-            if ( dataAccessPoint == null ) {
-                ServletOps.errorNotFound("Not found: "+datasetUri) ;
-                return ;
-            }
-        }
-        else {
-            // This is a placeholder when creating new DatasetRefs
-            // and also if addressing a container, not a dataset
-            dataAccessPoint = null ;
-        }
-        
-        action.setControlRequest(dataAccessPoint, datasetUri) ;
-        action.setEndpoint(null) ;   // No operation or service name.
-        executeAction(action) ;
+    final public void process(HttpAction action) {
+        executeLifecycle(action);
     }
 
-    protected String mapRequestToDatasetName(HttpAction action) {
-        return extractItemName(action) ;
-    }
-
-    // Possible intercept point 
-    protected void executeAction(HttpAction action) {
-        executeLifecycle(action) ;
-    }
-    
-    // This is the service request lifecycle.
-    final
+    /**
+     * Simple execution lifecycle for a SPARQL Request. No statistics.
+     *
+     * @param action
+     */
     protected void executeLifecycle(HttpAction action) {
-        perform(action) ;
+        validate(action);
+        execute(action);
     }
-    
-    final
-    protected boolean isContainerAction(HttpAction action) {
-        return (action.getDataAccessPoint() == null ) ;
-    }
-    
-    protected abstract void perform(HttpAction action) ;
 
-//    /** Map request to uri in the registry.
-//     *  null means no mapping done (passthrough). 
-//     */
-//    protected String mapRequestToDataset(HttpAction action) 
-//    {
-//        return ActionLib.mapRequestToDataset(action.request.getRequestURI()) ;
-//    }
+    /** Get the item name - the part after the URI for the servlet (which is the container). */
+    public static String getItemName(HttpAction action) {
+        return action.getRequestPathInfo();
+    }
+
+    /**
+     * Get the item name - the part after the URI for the servlet (which is
+     * the container) - treated as a dataset name.
+     */
+    public static String getItemDatasetName(HttpAction action) {
+        String x = getItemName(action);
+        if ( x == null )
+            return null;
+        while ( x.startsWith("//") )
+            x = x.substring(1);
+        return DataAccessPoint.canonical(x);
+    }
+
+    /**
+     * Get the DataAccessPoint corresponding to the item name, or null.
+     * @see #getItemDatasetName
+     */
+    public static DataAccessPoint getItemDataAccessPoint(HttpAction action) {
+        String name = getItemDatasetName(action);
+        return getItemDataAccessPoint(action, name);
+    }
+
+    /**
+     * Get the DatasetGraph corresponding to the item name, or null.
+     * @see #getItemDatasetName
+     */
+    public static DatasetGraph getItemDataset(HttpAction action) {
+        DataAccessPoint dap = getItemDataAccessPoint(action);
+        if ( dap == null )
+            return null;
+        return dap.getDataService().getDataset();
+    }
+
+    /**
+     * Get the DataAccessPoint corresponding to the item name, or null.
+     * @see #getItemDatasetName
+     */
+    public static DataAccessPoint getItemDataAccessPoint(HttpAction action, String name) {
+        return action.getDataAccessPointRegistry().get(name);
+    }
 }

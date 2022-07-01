@@ -18,100 +18,89 @@
 
 package org.apache.jena.atlas.iterator;
 
-import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.lib.Lib ;
 
-/** An Iterator with a one slot lookahead. */  
-public abstract class IteratorSlotted<T> implements Iterator<T>
-{
-    private boolean finished = false ;
-    private boolean slotIsSet = false ;
-    private T slot = null ; 
+/** An Iterator with a one slot lookahead. */
+public abstract class IteratorSlotted<T> implements IteratorCloseable<T> {
+    private boolean finished = false;
+    private boolean slotIsSet = false;
+    private T slot = null;
 
-    protected IteratorSlotted() { }
+    protected IteratorSlotted() {}
 
-    // -------- The contract with the subclasses 
-    
-    /** Implement this, not next() or nextBinding() */
-    protected abstract T moveToNext() ;
-    
-    /** Can return true here then null from moveToNext() to indicate end. */ 
-    protected abstract boolean hasMore() ;
-    // alter add a flag to say if null is a legal value.
-    
+    // -------- The contract with the subclasses
+
+    /** Next element of null for "none" */
+    protected abstract T moveToNext();
+
+    /** Can return true here then null from moveToNext() to indicate end. */
+    protected abstract boolean hasMore();
+
     /** Close the iterator. */
-    protected void closeIterator() { }
-   
-    // -------- The contract with the subclasses 
+    protected void closeIterator() {}
 
-    protected boolean isFinished() { return finished ; }
+    // -------- The contract with the subclasses
 
-    @Override
-    public final boolean hasNext()
-    {
-        if ( finished )
-            return false ;
-        if ( slotIsSet )
-            return true ;
-
-        boolean r = hasMore() ;
-        if ( ! r )
-        {
-            close() ;
-            return false ;
-        }
-        
-        slot = moveToNext() ;
-        if ( slot == null ) {
-            close() ;
-            return false ;
-        }
-            
-        slotIsSet = true ;
-        return true ;
+    protected boolean isFinished() {
+        return finished;
     }
-    
-    /** final - autoclose and registration relies on it - implement moveToNextBinding() */
-    @Override
-    public final T next()
-    {
-        if ( ! hasNext() ) throw new NoSuchElementException(Lib.className(this)) ;
-        
-        T obj = slot ;
-        slot = null ;
-        slotIsSet = false ;
-        return obj ;
+
+    @Override final
+    public boolean hasNext() {
+        if ( finished )
+            return false;
+        if ( slotIsSet )
+            return true;
+
+        boolean r = hasMore();
+        if ( !r ) {
+            close();
+            return false;
+        }
+
+        slot = moveToNext();
+        if ( slot == null ) {
+            close();
+            return false;
+        }
+
+        slotIsSet = true;
+        return true;
+    }
+
+    @Override final
+    public T next() {
+        if ( !hasNext() )
+            throw new NoSuchElementException(Lib.className(this));
+
+        T obj = slot;
+        slot = null;
+        slotIsSet = false;
+        return obj;
     }
 
     /** Look at the next element - returns null when there is no element */
-    public final T peek()
-    {
-        return peek(null) ;
+    public final T peek() {
+        return peek(null);
     }
-    
+
     /** Look at the next element - returns dft when there is no element */
-    public final T peek(T dft)
-    {
-        hasNext() ;
-        if ( ! slotIsSet ) return dft ;
-        return slot ;
+    public final T peek(T dft) {
+        hasNext();
+        if ( !slotIsSet )
+            return dft;
+        return slot;
     }
-    
+
     @Override
-    public final void remove()
-    {
-        throw new UnsupportedOperationException(Lib.className(this)+".remove") ;
-    }
-    
-    public final void close()
-    {
+    public final void close() {
         if ( finished )
-            return ;
-        closeIterator() ;
-        slotIsSet = false ;
-        slot = null ;
-        finished = true ;
+            return;
+        closeIterator();
+        slotIsSet = false;
+        slot = null;
+        finished = true;
     }
 }

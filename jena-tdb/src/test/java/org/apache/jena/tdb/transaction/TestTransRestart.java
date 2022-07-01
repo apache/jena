@@ -18,10 +18,12 @@
 
 package org.apache.jena.tdb.transaction ;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.query.TxnType;
@@ -37,12 +39,13 @@ import org.apache.jena.tdb.setup.DatasetBuilderStd;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
 /** Test of re-attaching to a pre-existing database */  
-public class TestTransRestart extends BaseTest {
+public class TestTransRestart {
     static { 
         // Only if run directly, not in test suite.
         if ( false )
@@ -57,6 +60,7 @@ public class TestTransRestart extends BaseTest {
     private static Quad quad2 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'bar')") ;
     
     @Before public void setup() {
+        TDBInternal.reset();
         path = ConfigTest.getCleanDir() ; 
         location = Location.create (path) ;
         if ( useTransactionsSetup )
@@ -93,6 +97,7 @@ public class TestTransRestart extends BaseTest {
     }
         
     private void cleanup() {
+        TDBInternal.reset();
         if ( FileOps.exists(path)) {
             FileOps.clearDirectory(path) ;
             FileOps.deleteSilent(path) ;

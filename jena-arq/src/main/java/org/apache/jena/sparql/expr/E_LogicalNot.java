@@ -25,7 +25,7 @@ public class E_LogicalNot extends ExprFunction1
 {
     // See logicalOR for truth table.
 
-    // Errors propage as normal.
+    // Errors propagate as normal.
     private static final String functionName = Tags.tagNot ;
     private static final String symbol = Tags.symNot ;
 
@@ -39,7 +39,7 @@ public class E_LogicalNot extends ExprFunction1
     {
         return XSDFuncOp.not(v) ;
     }
- 
+
     @Override
-    public Expr copy(Expr expr) { return new E_LogicalNot(expr) ; } 
+    public Expr copy(Expr expr) { return new E_LogicalNot(expr) ; }
 }

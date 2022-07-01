@@ -19,8 +19,8 @@
 package org.apache.jena.sparql.core.mem;
 
 import static java.lang.System.err ;
+import static org.apache.jena.atlas.iterator.Iter.anyMatch ;
 import static org.apache.jena.atlas.iterator.Iter.iter ;
-import static org.apache.jena.atlas.iterator.Iter.some ;
 import static org.apache.jena.graph.Node.ANY ;
 import static org.apache.jena.graph.NodeFactory.createBlankNode ;
 import static org.apache.jena.graph.NodeFactory.createURI ;
@@ -58,7 +58,7 @@ public class TestDatasetGraphInMemoryBasic extends AbstractDatasetGraphTests {
         final Triple triple = parseTriple("(:s :p :o)");
 		dsg.getDefaultGraph().add(triple);
         final Iterator<Triple> iter = dsg.getDefaultGraph().find(null, p, null) ;
-        assertTrue(some(iter, triple::equals));
+        assertTrue(anyMatch(iter, triple::equals));
 
 
         final Node p1 = parseNode(":p1") ;
@@ -67,7 +67,7 @@ public class TestDatasetGraphInMemoryBasic extends AbstractDatasetGraphTests {
 
         final Iterator<Quad> iter2 = dsg.find(null, null, p1, null) ;
 
-        assertTrue(some(iter2, quad::equals));
+        assertTrue(anyMatch(iter2, quad::equals));
         Iter.print(err,iter2);
 	}
 
@@ -97,11 +97,11 @@ public class TestDatasetGraphInMemoryBasic extends AbstractDatasetGraphTests {
 		dsg.add(q);
 		// Expected in the union graph
 		Quad q2 = Quad.create(unionGraph, q.asTriple());
-		assertTrue(iter(dsg.find(unionGraph, ANY, ANY, ANY)).some(q2::equals));
+		assertTrue(iter(dsg.find(unionGraph, ANY, ANY, ANY)).anyMatch(q2::equals));
 		// no triples from default graph should appear in union
 		Triple t = Triple.create(createBlankNode(), createBlankNode(), createBlankNode());
 		dsg.getDefaultGraph().add(t);
-		assertFalse(iter(dsg.find(unionGraph, ANY, ANY, ANY)).some(Quad::isDefaultGraph));
+		assertFalse(iter(dsg.find(unionGraph, ANY, ANY, ANY)).anyMatch(Quad::isDefaultGraph));
 	}
 
     @Test
@@ -119,6 +119,24 @@ public class TestDatasetGraphInMemoryBasic extends AbstractDatasetGraphTests {
         dsg.delete(g, s, p, o);
         graphNodes = dsg.listGraphNodes();
         assertFalse("Too many named graphs!", graphNodes.hasNext());
+    }
+
+    @Test
+    public void datasetSize() {
+        // JENA-1857
+        final DatasetGraph dsg = emptyDataset();
+        final Quad qDft = parseQuad("(_ :s :p 0)");
+        final Quad q1 = parseQuad("(:g :s :p 1)");
+        final Quad q2 = parseQuad("(:g :s :p 1)");
+        assertEquals(0, dsg.size());
+        dsg.add(qDft);
+        assertEquals(0, dsg.size());
+        dsg.add(q1);
+        dsg.add(q2);
+        assertEquals(1, dsg.size());
+        dsg.delete(q1);
+        dsg.delete(q2);
+        assertEquals(0, dsg.size());
     }
 
 	@Override

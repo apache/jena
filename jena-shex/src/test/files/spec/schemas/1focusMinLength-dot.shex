@@ -1,0 +1,3 @@
+<http://a.example/S1> MINLENGTH 19 {
+   <http://a.example/p1> .
+}

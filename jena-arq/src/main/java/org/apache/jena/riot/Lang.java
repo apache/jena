@@ -28,65 +28,78 @@ import org.apache.jena.atlas.web.ContentType ;
  *  A language has a name, some alternative names,
  *  a content type,  some alternative content types,
  *  and a list of associated file extensions.
- *  Names, content types and file extensions must be unique to one language. 
- *  To create a Lang constant, use {@link LangBuilder} and 
+ *  Names, content types and file extensions must be unique to one language.
+ *  To create a Lang constant, use {@link LangBuilder} and
  *  register with {@link RDFLanguages}.
  */
-public class Lang 
+public class Lang
 {
-    //  public static final Lang RDFXML = RDFLanguages.RDFXML ; 
-    //  public static final Lang NTRIPLES = RDFLanguages.NTriples ; 
-    //  public static final Lang N3 = RDFLanguages.N3 ; 
-    //  public static final Lang TURTLE = RDFLanguages.Turtle ; 
-    //  public static final Lang RDFJSON = RDFLanguages.RDFJSON ; 
-    //  public static final Lang NQUADS = RDFLanguages.NQuads ; 
-    //  public static final Lang TRIG = RDFLanguages.TriG ; 
-
     // To avoid an initialization circularity, these are set by RDFLanguages.
     static { RDFLanguages.init() ; }
 
     /** <a href="http://www.w3.org/TR/REC-rdf-syntax/">RDF/XML</a> */
     public static Lang RDFXML ;
-    
+
     /** <a href="http://www.w3.org/TR/turtle/">Turtle</a>*/
     public static Lang TURTLE ;
-    
+
     /** Alternative constant for {@link #TURTLE} */
     public static Lang TTL ;
-    
+
     /** N3 (treat as Turtle) */
     public static Lang N3 ;
-    
+
     /** <a href="http://www.w3.org/TR/n-triples/">N-Triples</a>*/
     public static Lang NTRIPLES ;
-    
+
     /** Alternative constant for {@link #NTRIPLES} */
     public static Lang NT ;
 
-    /** <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
+    /**
+     * <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>.
+     * <p>
+     * This is the system default.
+     */
     public static Lang JSONLD ;
-    
-    /** <a href="http://www.w3.org/TR/rdf-json/">RDF/JSON</a>.  This is not <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
+
+    /** JSONLD 1.0 */
+    public static Lang JSONLD10 ;
+
+    /** JSONLD 1.1 */
+    public static Lang JSONLD11 ;
+
+    /**
+     * <a href="http://www.w3.org/TR/rdf-json/">RDF/JSON</a>.
+     *  This is not <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>.
+     *
+     *  @see #JSONLD
+     */
     public static Lang RDFJSON ;
-    
+
     /** <a href="http://www.w3.org/TR/trig/">TriG</a> */
     public static Lang TRIG ;
-    
+
     /** <a href="http://www.w3.org/TR/n-quads">N-Quads</a> */
     public static Lang NQUADS ;
-    
+
     /** Alternative constant {@link #NQUADS} */
     public static Lang NQ ;
 
-    //** The RDF syntax "RDF Thrift" : see http://jena.apache.org/documentation/io */ 
+    /** The RDF syntax <a href="https://jena.apache.org/documentation/io/rdf-binary.html">RDF Thrift</a> */
+    public static Lang RDFPROTO ;
+
+    /** The RDF syntax <a href="https://jena.apache.org/documentation/io/rdf-binary.html">RDF Thrift</a> */
     public static Lang RDFTHRIFT ;
-    
+
+    /** <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a> (2020-07-01) */
+    public static Lang SHACLC;
+
     /** "CSV" - Used in various ways. */
     public static Lang CSV ;
 
     /** "TSV" - Used in various ways. */
     public static Lang TSV ;
-    
+
     /** <a href="http://www.hpl.hp.com/techreports/2004/HPL-2004-56.html">TriX</a> */
     public static Lang TRIX ;
 
@@ -126,15 +139,15 @@ public class Lang
         List<String> _fileExtensions = copy(fileExt) ;
         fileExtensions = Collections.unmodifiableList(_fileExtensions) ;
     }
-    
+
     static <T> List<T> copy(List<T> original) {
         List<T> x = new ArrayList<>() ;
         x.addAll(original) ;
         return x ;
     }
-    
+
     @Override
-    public int hashCode() { return label.hashCode() ; } 
+    public int hashCode() { return label.hashCode() ; }
 
     @Override
     public boolean equals(Object other) {
@@ -144,19 +157,18 @@ public class Lang
             return false ;
 
         Lang otherLang = (Lang)other ;
-        // Just label should be enough.
-        return 
+        return
             this.label == otherLang.label &&
+            this.altLabels.equals(otherLang.altLabels) &&
             this.contentType.equals(otherLang.contentType) &&
             this.altContentTypes.equals(otherLang.altContentTypes) &&
             this.fileExtensions.equals(otherLang.fileExtensions) ;
-        // File extensions and alt 
     }
 
     public String getName()                     { return label ; }
     public ContentType getContentType()         { return contentType ; }
-    
-    /** As an HTTP Content-Type field value */ 
+
+    /** As an HTTP Content-Type field value */
     public String getHeaderString()             { return contentType.toHeaderString() ; }
     public String getLabel()                    { return label ; }
     public List<String> getAltNames()           { return altLabels ; }
@@ -165,8 +177,8 @@ public class Lang
 
     @Override
     public String toString()  { return "Lang:"+label ; }
-    
-    public String toLongString() { 
+
+    public String toLongString() {
         String x = "Lang:" + label + " " + getContentType() ;
         if (getAltNames().size() > 0)
             x = x + " " + getAltNames() ;

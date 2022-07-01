@@ -39,34 +39,38 @@ import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.vocabulary.RDFS ;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.*;
 
+import java.util.Objects;
+
 public class AssemblerUtils
 {
-    // Wrappers for reading things form a file - assumes one of the thing per file. 
+    // Wrappers for reading things form a file - assumes one of the thing per file.
     public static PrefixMapping readPrefixMapping(String file)
     {
         PrefixMapping pm = (PrefixMapping)AssemblerUtils.build(file, JA.PrefixMapping) ;
         return pm ;
     }
-    
-    private static boolean initialized = false ; 
-    
-    static { JenaSystem.init() ; } 
-    
+
+    private static boolean initialized = false ;
+
+    static { JenaSystem.init() ; }
+
     static public void init()
     {
         if ( initialized )
             return ;
         initialized = true ;
-        registerDataset(tDataset,         new DatasetAssembler()) ;
-        registerDataset(tDatasetOne,      new DatasetOneAssembler()) ;
-        registerDataset(tDatasetZero,     new DatasetNullAssembler(tDatasetZero)) ;
-        registerDataset(tDatasetSink,     new DatasetNullAssembler(tDatasetSink)) ;
-        registerDataset(tMemoryDataset,   new InMemDatasetAssembler()) ;
-        registerDataset(tDatasetTxnMem,   new InMemDatasetAssembler()) ;
+        registerDataset(tDataset,         new DatasetAssemblerGeneral());
+        registerDataset(tDatasetOne,      new DatasetOneAssembler());
+        registerDataset(tDatasetZero,     new DatasetNullAssembler(tDatasetZero));
+        registerDataset(tDatasetSink,     new DatasetNullAssembler(tDatasetSink));
+        registerDataset(tMemoryDataset,   new InMemDatasetAssembler());
+        registerDataset(tDatasetTxnMem,   new InMemDatasetAssembler());
+
+        registerModel(tViewGraph,          new ViewGraphAssembler());
     }
-    
+
     private static Model modelExtras = ModelFactory.createDefaultModel() ;
-    
+
     /** Register an assembler that creates a dataset */
     static public void registerDataset(Resource r, Assembler a) {
         register(ConstAssembler.general(), r, a, DatasetAssembler.getType()) ;
@@ -77,7 +81,7 @@ public class AssemblerUtils
         register(ConstAssembler.general(), r, a, JA.Model) ;
     }
 
-    /** Register an addition assembler */  
+    /** Register an additional assembler */
     static public void register(AssemblerGroup g, Resource r, Assembler a, Resource superType) {
         registerAssembler(g, r, a) ;
         if ( superType != null && ! superType.equals(r) ) {
@@ -86,8 +90,8 @@ public class AssemblerUtils
            modelExtras.add(r, RDFS.Init.subClassOf(), superType) ;
         }
     }
-    
-    /** register */ 
+
+    /** register */
     public static void registerAssembler(AssemblerGroup group, Resource r, Assembler a) {
         if ( group == null )
             group = ConstAssembler.general();
@@ -101,43 +105,75 @@ public class AssemblerUtils
             spec = RDFDataMgr.loadModel(assemblerFile) ;
         } catch (Exception ex)
         { throw new ARQException("Failed reading assembler description: "+ex.getMessage()) ; }
-        spec.add(modelExtras) ;
+        addRegistered(spec);
         return spec ;
     }
-    
+
+    /** Add any extra information to the model.
+     * Such information includes registration of datasets (e.g. TDB1, TDB2)
+     * done by {@link #register} ({@link #registerDataset}, {@link #registerModel}.
+     * It avoids directly modifying {@link Assembler#general}.
+     * @param model
+     * @return Model The same model after modification.
+     */
+    public static Model addRegistered(Model model) {
+        model.add(modelExtras) ;
+        return model ;
+    }
+
     public static Object build(String assemblerFile, String typeURI) {
         Resource type = ResourceFactory.createResource(typeURI) ;
-        return build(assemblerFile, type) ; 
+        return build(assemblerFile, type) ;
     }
-    
+
     public static Object build(String assemblerFile, Resource type) {
-        if ( assemblerFile == null )
-            throw new ARQException("No assembler file") ;
+        Objects.requireNonNull(assemblerFile, "No assembler file") ;
         Model spec = readAssemblerFile(assemblerFile) ;
-        
+        return build(spec, type);
+    }
+
+    public static Object build(Model assemblerModel, Resource type) {
         Resource root = null ;
         try {
-            root = GraphUtils.findRootByType(spec, type) ;
+            root = GraphUtils.findRootByType(assemblerModel, type) ;
             if ( root == null )
                 throw new ARQException("No such type: <"+type+">");
-            
+
         } catch (TypeNotUniqueException ex)
         { throw new ARQException("Multiple types for: "+tDataset) ; }
         return Assembler.general.open(root) ;
     }
-    
-    /** Look for and set context declarations. 
+    /** Look for and build context declarations.
      * e.g.
      * <pre>
      * root ... ;
      *   ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
      *   ...
      * </pre>
-     * Short name forms of context parameters can be used.  
+     * Short name forms of context parameters can be used.
+     * Setting as string "undef" will remove the context setting.
+     * Returns null when there is no {@link JA#context} on the resource.
+     */
+    public static Context parseContext(Resource r)
+    {
+        if ( ! r.hasProperty(JA.context ) )
+            return null;
+        Context context = new Context();
+        mergeContext(r, context);
+        return context;
+    }
+
+    /** Look for and merge in context declarations.
+     * e.g.
+     * <pre>
+     * root ... ;
+     *   ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
+     *   ...
+     * </pre>
+     * Short name forms of context parameters can be used.
      * Setting as string "undef" will remove the context setting.
      */
-    public static void setContext(Resource r, Context context)
-    {
+    public static void mergeContext(Resource r, Context context) {
         String qs = "PREFIX ja: <"+JA.getURI()+">\nSELECT * { ?x ja:context [ ja:cxtName ?name ; ja:cxtValue ?value ] }" ;
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("x", r) ;

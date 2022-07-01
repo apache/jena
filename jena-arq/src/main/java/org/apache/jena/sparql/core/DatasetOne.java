@@ -21,25 +21,30 @@ package org.apache.jena.sparql.core;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.sparql.core.DatasetGraphOne;
-import org.apache.jena.sparql.core.DatasetImpl;
+import org.apache.jena.rdf.model.Resource;
 
 /**
- * A dataset that just hold a single model as the default graph. 
+ * A dataset that just hold a single model as the default graph.
  * It is particularly appropriate for use with inference models.
- * 
+ *
  * @apiNote
  * This class makes the use of DatasetImpl with one fixed model clearer. It may
  * become useful to have a separate implementation altogether at some time.
+ *
+ * @deprecated Use {@link DatasetFactory#wrap(Model)}
  */
+@Deprecated
 public class DatasetOne extends DatasetImpl {
     public static Dataset create(Model model) {
-        return new DatasetOne(model);
+        return DatasetFactory.wrap(model);
     }
 
     private final Model defaultModel;
 
+    /** @deprecated Use {@link DatasetFactory#wrap(Model)} */
+    @Deprecated
     public DatasetOne(Model model) {
         super(DatasetGraphOne.create(model.getGraph()));
         this.defaultModel = model;
@@ -68,7 +73,17 @@ public class DatasetOne extends DatasetImpl {
     }
 
     @Override
+    public Dataset addNamedModel(Resource uri, Model model) {
+        throw new UnsupportedOperationException("Can not add a named mode to DatasetOne");
+    }
+
+    @Override
     public Dataset removeNamedModel(String uri) {
+        return this;
+    }
+
+    @Override
+    public Dataset removeNamedModel(Resource uri) {
         return this;
     }
 
@@ -76,6 +91,12 @@ public class DatasetOne extends DatasetImpl {
     public Dataset replaceNamedModel(String uri, Model model) {
         throw new UnsupportedOperationException("Can not replace a named model in DatasetOne");
     }
+
+    @Override
+    public Dataset replaceNamedModel(Resource uri, Model model) {
+        throw new UnsupportedOperationException("Can not replace a named model in DatasetOne");
+    }
+
     @Override
     public boolean containsNamedModel(String uri) {
         return false;

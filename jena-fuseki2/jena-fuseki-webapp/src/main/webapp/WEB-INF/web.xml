@@ -24,7 +24,7 @@
   <display-name>Apache Jena Fuseki Server</display-name>
 
   <listener>
-    <!-- Basic server initialiation, including logging -->
+    <!-- Basic server initialization, including logging -->
     <listener-class>org.apache.jena.fuseki.webapp.FusekiServerEnvironmentInit</listener-class>
   </listener>
 
@@ -93,8 +93,13 @@
     -->
     <param-value>shiro.ini</param-value>
   </context-param>
+
+  <context-param>
+    <param-name>log4jConfiguration</param-name>
+    <param-value>log4j2.properties</param-value>
+  </context-param>
   
-  <!-- Fuseki datatset serviced calls -->
+  <!-- Fuseki dataset serviced calls -->
   <filter>
     <filter-name>Fuseki</filter-name>
     <filter-class>org.apache.jena.fuseki.servlets.FusekiFilter</filter-class>
@@ -108,48 +113,6 @@
     <dispatcher>INCLUDE</dispatcher>
     <dispatcher>ERROR</dispatcher>
   </filter-mapping>
-
-  <!-- Validators -->
-
-  <servlet>
-    <servlet-name>QueryValidator</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.validation.QueryValidator</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>UpdateValidator</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.validation.UpdateValidator</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>DataValidator</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.validation.DataValidator</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>IRIValidator</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.validation.IRIValidator</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>QueryValidator</servlet-name>
-    <url-pattern>/validate/query</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>UpdateValidator</servlet-name>
-    <url-pattern>/validate/update</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>IRIValidator</servlet-name>
-    <url-pattern>/validate/iri</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>DataValidator</servlet-name>
-    <url-pattern>/validate/data</url-pattern>
-  </servlet-mapping>
 
   <!-- Server controls-->
   
@@ -174,6 +137,16 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>ActionMetrics</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.ctl.ActionMetrics</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ActionMetrics</servlet-name>
+    <url-pattern>/$/metrics</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>ActionTasks</servlet-name>
     <servlet-class>org.apache.jena.fuseki.ctl.ActionTasks</servlet-class>
   </servlet>
@@ -191,6 +164,11 @@
   <servlet>
     <servlet-name>BackupListServlet</servlet-name>
     <servlet-class>org.apache.jena.fuseki.mgt.ActionBackupList</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>ActionCompact</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.ctl.ActionCompact</servlet-class>
   </servlet>
 
   <!-- An action that only creates a background task that sleeps. -->
@@ -217,6 +195,11 @@
   <servlet-mapping>
     <servlet-name>BackupListServlet</servlet-name>
     <url-pattern>/$/backups-list</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>ActionCompact</servlet-name>
+    <url-pattern>/$/compact/*</url-pattern>
   </servlet-mapping>
 
   <!-- Admin controls-->

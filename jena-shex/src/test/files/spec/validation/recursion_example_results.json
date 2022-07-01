@@ -1,0 +1,5 @@
+{
+  "http://inst.example/Issue1": [{"shape": "http://schema.example/IssueShape", "result": true}],
+  "http://inst.example/Issue2": [{"shape": "http://schema.example/IssueShape", "result": true}],
+  "http://inst.example/Issue3": [{"shape": "http://schema.example/IssueShape", "result": true}]
+}

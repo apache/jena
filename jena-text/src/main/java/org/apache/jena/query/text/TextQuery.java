@@ -18,6 +18,7 @@
 
 package org.apache.jena.query.text;
 
+import org.apache.jena.query.text.cmd.InitTextCmds;
 import org.apache.jena.query.text.assembler.TextAssembler ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
@@ -31,37 +32,37 @@ import org.apache.jena.util.Metadata;
 public class TextQuery
 {
     private static volatile boolean initialized = false ;
-    private static Object lock = new Object() ;
-    public static String NS = "http://jena.apache.org/text#" ;
-    public static String IRI = "http://jena.apache.org/#text" ;
-    public static final Symbol textIndex = Symbol.create(NS+"index") ;
+    private static Object lock              = new Object() ;
+    public static String NS                 = "http://jena.apache.org/text#" ;
+    public static String IRI                = "http://jena.apache.org/#text" ;
+    public static final Symbol textIndex    = Symbol.create(NS+"index") ;
     public static final String PATH         = "org.apache.jena.query.text";
-    
+
     static private String metadataLocation  = "org/apache/jena/query/text/properties.xml" ;
     static private Metadata metadata        = new Metadata(metadataLocation) ;
     public static final String NAME         = "ARQ Text Query";
-   
+
     public static final String VERSION      = metadata.get(PATH+".version", "unknown") ;
     public static final String BUILD_DATE   = metadata.get(PATH+".build.datetime", "unset") ;
-    
+
     static { JenaSystem.init(); }
-    
-    public static void init() 
+
+    public static void init()
     {
-        if ( initialized ) 
+        if ( initialized )
             return ;
         synchronized(lock) {
             if ( initialized ) {
                 JenaSystem.logLifecycle("TextQuery.init - skip") ;
-                return ; 
+                return ;
             }
             initialized = true ;
             JenaSystem.logLifecycle("TextQuery.init - start") ;
             TextAssembler.init() ;
-            
+
             SystemInfo sysInfo = new SystemInfo(IRI, PATH, VERSION, BUILD_DATE) ;
             SystemARQ.registerSubSystem(sysInfo) ;
-            
+
             PropertyFunctionRegistry.get().put("http://jena.apache.org/text#query", new PropertyFunctionFactory() {
                 @Override
                 public PropertyFunction create(String uri) {
@@ -69,6 +70,8 @@ public class TextQuery
                 }
             });
             JenaSystem.logLifecycle("TextQuery.init - finish") ;
+            // Register indirections.
+            InitTextCmds.cmds();
         }
     }
 }

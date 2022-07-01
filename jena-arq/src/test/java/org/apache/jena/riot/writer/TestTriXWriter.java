@@ -18,11 +18,12 @@
 
 package org.apache.jena.riot.writer;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.Arrays ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -35,25 +36,27 @@ import org.junit.runners.Parameterized.Parameter ;
 import org.junit.runners.Parameterized.Parameters ;
 
 @RunWith(Parameterized.class)
-public class TestTriXWriter extends BaseTest {
+public class TestTriXWriter {
 
     static String DIR = "testing/RIOT/Lang/TriX" ;
 
     @Parameters(name="{0}")
     public static Iterable<Object[]> data() {
-        return Arrays.asList(new Object[][] { 
+        return Arrays.asList(new Object[][] {
             { DIR+"/trix-01.trix", DIR+"/trix-01.nq" } ,
             { DIR+"/trix-02.trix", DIR+"/trix-02.nq" } ,
             { DIR+"/trix-03.trix", DIR+"/trix-03.nq" } ,
             { DIR+"/trix-04.trix", DIR+"/trix-04.nq" } ,
             { DIR+"/trix-05.trix", DIR+"/trix-05.nq" } ,
             { DIR+"/trix-06.trix", DIR+"/trix-06.nq" } ,
-            { DIR+"/trix-10.trix", DIR+"/trix-10.nq" } ,        
-            { DIR+"/trix-11.trix", DIR+"/trix-11.nq" } ,        
-            { DIR+"/trix-12.trix", DIR+"/trix-12.nq" } ,        
-            { DIR+"/trix-13.trix", DIR+"/trix-13.nq" } ,        
-            { DIR+"/trix-14.trix", DIR+"/trix-14.nq" } , 
-            { DIR+"/trix-15.trix", DIR+"/trix-15.nq" }  
+            { DIR+"/trix-10.trix", DIR+"/trix-10.nq" } ,
+            { DIR+"/trix-11.trix", DIR+"/trix-11.nq" } ,
+            { DIR+"/trix-12.trix", DIR+"/trix-12.nq" } ,
+            { DIR+"/trix-13.trix", DIR+"/trix-13.nq" } ,
+            { DIR+"/trix-14.trix", DIR+"/trix-14.nq" } ,
+            { DIR+"/trix-15.trix", DIR+"/trix-15.nq" } ,
+            { DIR+"/trix-star-1.trix", DIR+"/trix-star-1.nq" } ,
+            { DIR+"/trix-star-2.trix", DIR+"/trix-star-2.nq" }
         });
     }
     @Parameter(0)
@@ -61,7 +64,7 @@ public class TestTriXWriter extends BaseTest {
 
     @Parameter(1)
     public String fNQuads ;
-    
+
     @Test
     public void trix_writer() {
         DatasetGraph dsg = RDFDataMgr.loadDatasetGraph(fNQuads) ;
@@ -74,4 +77,3 @@ public class TestTriXWriter extends BaseTest {
         assertTrue("Not isomorphic", b) ;
     }
 }
-

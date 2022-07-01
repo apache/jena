@@ -18,21 +18,20 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.iri.IRIFactory ;
+import static org.junit.Assert.*;
+
+import org.apache.jena.atlas.lib.Pair;
 import org.junit.Test ;
 
 /**
  * Abstract tests for {@link PrefixMap} implementations
- * 
+ *
  */
-public abstract class AbstractTestPrefixMap extends BaseTest {
-    protected IRIFactory factory = IRIResolver.iriFactory();
-
+public abstract class AbstractTestPrefixMap {
     /**
      * Gets the prefix map implementation to test, each call should result in a
      * fresh instance
-     * 
+     *
      * @return Prefix Map
      */
     protected abstract PrefixMap getPrefixMap();
@@ -45,9 +44,8 @@ public abstract class AbstractTestPrefixMap extends BaseTest {
         assertEquals(0, pmap.size()) ;
         assertTrue(pmap.getMapping().isEmpty()) ;
         assertTrue(pmap.getMappingCopy().isEmpty()) ;
-        assertTrue(pmap.getMappingCopyStr().isEmpty()) ;
     }
-    
+
     @Test
     public void prefixMap_basic_02()
     {
@@ -55,10 +53,9 @@ public abstract class AbstractTestPrefixMap extends BaseTest {
         pmap.add("", "http://example/") ;
         assertFalse(pmap.isEmpty()) ;
         assertEquals(1, pmap.size()) ;
-        assertTrue(pmap.contains("")) ;
+        assertTrue(pmap.containsPrefix("")) ;
         assertTrue(pmap.getMapping().containsKey("")) ;
         assertTrue(pmap.getMappingCopy().containsKey("")) ;
-        assertTrue(pmap.getMappingCopyStr().containsKey("")) ;
     }
 
     @Test
@@ -67,12 +64,12 @@ public abstract class AbstractTestPrefixMap extends BaseTest {
         PrefixMap pmap = getPrefixMap();
         pmap.add("", "http://example/") ;
         pmap.add("org", "http://example.org/") ;
-        assertTrue(pmap.contains("")) ;
-        assertTrue(pmap.contains("org")) ;
+        assertTrue(pmap.containsPrefix("")) ;
+        assertTrue(pmap.containsPrefix("org")) ;
         assertFalse(pmap.isEmpty()) ;
         assertEquals(2, pmap.size()) ;
     }
-    
+
     @Test
     public void prefixMap_basic_04()
     {
@@ -82,13 +79,13 @@ public abstract class AbstractTestPrefixMap extends BaseTest {
         PrefixMap pmap2 = getPrefixMap();
         pmap2.putAll(pmap1) ;
 
-        assertTrue(pmap2.contains("")) ;
-        assertTrue(pmap2.contains("org")) ;
+        assertTrue(pmap2.containsPrefix("")) ;
+        assertTrue(pmap2.containsPrefix("org")) ;
         assertFalse(pmap2.isEmpty()) ;
         assertEquals(2, pmap2.size()) ;
     }
-    
-    
+
+
 
     /**
      * Simple expand test
@@ -292,34 +289,76 @@ public abstract class AbstractTestPrefixMap extends BaseTest {
         pmTest("http://example/a", "q1:");
     }
 
-    public void pmTest(String iriStr, String... expected) {
+    @Test
+    public void prefixMap_abbrev_19() {
+        pmTest("http://example/z");
+    }
+
+    @Test
+    public void prefixMap_abbrev_20() {
+        PrefixMap pmap = PrefixMapFactory.create();
+        pmap.add("ex", "http://example/");
+        pmap.delete("ex");
+        String x = pmap.abbreviate("http://example/s");
+        assertNull(x);
+    }
+
+    private void pmTest(String iriStr, String...expected) {
         PrefixMap pm = create();
-        String x = pm.abbreviate(iriStr);
-        if ( expected.length == 0 )
-        {
-            assertNull("expected no abbreviation for "+iriStr, x) ;
-            return ;
+        pmTestAbbreviate(pm, iriStr, expected);
+        pmTestAbbrev(pm, iriStr, expected);
+    }
+
+    private void pmTestAbbrev(PrefixMap pm, String iriStr, String...expected) {
+        Pair<String, String> p = pm.abbrev(iriStr);
+        if ( expected.length == 0 ) {
+            assertNull("expected no abbrev for " + iriStr, p);
+            return;
         }
-        
-        for (String possible : expected) {
-            if (possible.equals(x))
+        assertNotNull(p);
+        String ns = p.getLeft();
+        String nsIRI = pm.get(ns);
+        String ln = p.getRight();
+        String iriStr2 = nsIRI+p.getRight();
+        assertEquals(iriStr, iriStr2);
+
+        // Agree with abbreviate? (due to multiple choices, this isn't guaranteed).
+        String x1 = pm.abbreviate(iriStr);
+        String abbrevString = ns+":"+ln;
+        assertEquals(x1, abbrevString);
+
+        for ( String possible : expected ) {
+            if ( possible.equals(abbrevString) ) {
+                assertTrue(iriStr.startsWith(nsIRI));
+                return;
+            }
+        }
+        fail("abbrev: Expected one of [" + String.join(" , ", expected) + "] but got " + abbrevString);
+    }
+
+    private void pmTestAbbreviate(PrefixMap pm, String iriStr, String...expected) {
+        String x = pm.abbreviate(iriStr);
+        if ( expected.length == 0 ) {
+            assertNull("expected no abbreviation for " + iriStr, x);
+            return;
+        }
+        assertNotNull(x);
+
+        for ( String possible : expected ) {
+            if ( possible.equals(x) )
                 return;
         }
-        fail("Expected one of " + String.join(" , ", expected) + " but got " + x);
+        fail("abbreviate: Expected one of [" + String.join(" , ", expected) + "] but got " + x);
     }
 
     /**
      * Helper method for adding a namespace mapping
-     * 
-     * @param pmap
-     *            Prefix Map
-     * @param prefix
-     *            Prefix
-     * @param uri
-     *            URI
+     *
+     * @param pmap Prefix Map
+     * @param prefix Prefix
+     * @param uri URI
      */
     protected void add(PrefixMap pmap, String prefix, String uri) {
-        pmap.add(prefix, factory.create(uri));
+        pmap.add(prefix, uri);
     }
-
 }

@@ -28,7 +28,6 @@ import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.graph.SecuredGraph;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,86 +40,78 @@ import org.junit.runner.RunWith;
  */
 @RunWith(value = SecurityEvaluatorParameters.class)
 public class GraphEventManagerTest {
-	private final GraphEventManager manager;
-	private final Graph g;
-	private final SecuredGraph sg;
-	private final SecurityEvaluator securityEvaluator;
-	private Triple[] tripleArray;
+    private final GraphEventManager manager;
+    private final Graph g;
+    private final SecuredGraph sg;
+    private final SecurityEvaluator securityEvaluator;
+    private Triple[] tripleArray;
 
-	private final RecordingGraphListener listener;
+    private final RecordingGraphListener listener;
 
-	public GraphEventManagerTest(final MockSecurityEvaluator securityEvaluator) {
-		this.securityEvaluator = securityEvaluator;
-		g = GraphFactory.createDefaultGraph();
+    public GraphEventManagerTest(final MockSecurityEvaluator securityEvaluator) {
+        this.securityEvaluator = securityEvaluator;
+        g = GraphFactory.createDefaultGraph();
 
-		sg = Factory.getInstance(securityEvaluator,
-				"http://example.com/testGraph", g);
-		manager = sg.getEventManager();
-		listener = new RecordingGraphListener();
-		manager.register(listener);
+        sg = Factory.getInstance(securityEvaluator, "http://example.com/testGraph", g);
+        manager = sg.getEventManager();
+        listener = new RecordingGraphListener();
+        manager.register(listener);
 
-	}
+    }
 
-	@Test
-	public void notifyAddTest() {
-		Object principal = securityEvaluator.getPrincipal();
-		final Set<Action> ADD = SecurityEvaluator.Util.asSet(new Action[] {
-				Action.Create, Action.Read });
-		g.add(tripleArray[0]);
-		if (securityEvaluator.evaluateAny(principal, ADD, sg.getModelNode())) {
-			Assert.assertTrue("Should recorded add", listener.isAdd());
-		} else {
-			Assert.assertFalse("Should not have recorded add", listener.isAdd());
-		}
-		g.delete(Triple.ANY);
-		listener.reset();
-	}
+    @Test
+    public void notifyAddTest() {
+        Object principal = securityEvaluator.getPrincipal();
+        final Set<Action> ADD = SecurityEvaluator.Util.asSet(new Action[] { Action.Create, Action.Read });
+        g.add(tripleArray[0]);
+        if (securityEvaluator.evaluateAny(principal, ADD, sg.getModelNode())) {
+            Assert.assertTrue("Should recorded add", listener.isAdd());
+        } else {
+            Assert.assertFalse("Should not have recorded add", listener.isAdd());
+        }
+        g.delete(Triple.ANY);
+        listener.reset();
+    }
 
-	@Test
-	public void notifyDeleteTest() {
-		Object principal = securityEvaluator.getPrincipal();
-		final Set<Action> DELETE = SecurityEvaluator.Util.asSet(new Action[] {
-				Action.Delete, Action.Read });
-		g.delete(tripleArray[0]);
-		if (securityEvaluator.evaluateAny(principal, DELETE, sg.getModelNode())) {
-			Assert.assertTrue("Should have recorded delete",
-					listener.isDelete());
-		} else {
-			Assert.assertFalse("Should not have recorded delete",
-					listener.isDelete());
-		}
+    @Test
+    public void notifyDeleteTest() {
+        Object principal = securityEvaluator.getPrincipal();
+        final Set<Action> DELETE = SecurityEvaluator.Util.asSet(new Action[] { Action.Delete, Action.Read });
+        g.delete(tripleArray[0]);
+        if (securityEvaluator.evaluateAny(principal, DELETE, sg.getModelNode())) {
+            Assert.assertTrue("Should have recorded delete", listener.isDelete());
+        } else {
+            Assert.assertFalse("Should not have recorded delete", listener.isDelete());
+        }
 
-		listener.reset();
+        listener.reset();
 
-	}
+    }
 
-	@Test
-	public void notifyEventTest() {
-		g.getEventManager().notifyEvent(g, "Foo");
-		Assert.assertTrue("Should recorded delete", listener.isEvent());
-		listener.reset();
-		// final RecordingGraphListener listener2 = new
-		// RecordingGraphListener();
-		// g.getEventManager().register(listener2);
-		sg.getEventManager().notifyEvent(sg, "Foo");
-		Assert.assertTrue("Should recorded delete", listener.isEvent());
-		// Assert.assertTrue("Should recorded delete", listener2.isEvent());
-		listener.reset();
+    @Test
+    public void notifyEventTest() {
+        g.getEventManager().notifyEvent(g, "Foo");
+        Assert.assertTrue("Should recorded delete", listener.isEvent());
+        listener.reset();
+        // final RecordingGraphListener listener2 = new
+        // RecordingGraphListener();
+        // g.getEventManager().register(listener2);
+        sg.getEventManager().notifyEvent(sg, "Foo");
+        Assert.assertTrue("Should recorded delete", listener.isEvent());
+        // Assert.assertTrue("Should recorded delete", listener2.isEvent());
+        listener.reset();
 
-	}
+    }
 
-	@Before
-	public void setup() {
-		tripleArray = new Triple[] {
-				new Triple(NodeFactory.createURI("http://example.com/1"),
-						NodeFactory.createURI("http://example.com/v"),
-						NodeFactory.createBlankNode()),
-				new Triple(NodeFactory.createURI("http://example.com/2"),
-						NodeFactory.createURI("http://example.com/v"),
-						NodeFactory.createBlankNode()),
-				new Triple(NodeFactory.createURI("http://example.com/3"),
-						NodeFactory.createURI("http://example.com/v"),
-						NodeFactory.createBlankNode()) };
+    @Before
+    public void setup() {
+        tripleArray = new Triple[] {
+                new Triple(NodeFactory.createURI("http://example.com/1"), NodeFactory.createURI("http://example.com/v"),
+                        NodeFactory.createBlankNode()),
+                new Triple(NodeFactory.createURI("http://example.com/2"), NodeFactory.createURI("http://example.com/v"),
+                        NodeFactory.createBlankNode()),
+                new Triple(NodeFactory.createURI("http://example.com/3"), NodeFactory.createURI("http://example.com/v"),
+                        NodeFactory.createBlankNode()) };
 
-	}
+    }
 }

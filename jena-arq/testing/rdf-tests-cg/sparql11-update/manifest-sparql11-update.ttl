@@ -1,0 +1,22 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<> a mf:Manifest ;
+	rdfs:label "SPARQL 1.1 Update" ;
+	mf:include (
+		<add/manifest.ttl>
+		<basic-update/manifest.ttl>
+		<clear/manifest.ttl>
+		<copy/manifest.ttl>
+		<delete-data/manifest.ttl>
+		<delete-insert/manifest.ttl>
+		<delete-where/manifest.ttl>
+		<delete/manifest.ttl>
+		<drop/manifest.ttl>
+		<move/manifest.ttl>
+		<syntax-update-1/manifest.ttl>
+		<syntax-update-2/manifest.ttl>
+		<update-silent/manifest.ttl>
+	) .

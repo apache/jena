@@ -45,7 +45,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
     /** version count */
     protected volatile int version = 0;
-    
+
     /**
          Inference graphs share the prefix-mapping of their underlying raw graph.
      	@see org.apache.jena.graph.Graph#getPrefixMapping()
@@ -79,67 +79,22 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     }
 
     /**
-        An InfCapabilities notes that size may not be accurate, and some
-        triples may be irremovable.
-
-        TODO accomodate the properties of the base graph, too.
+        An InfCapabilities notes that size may not be accurate.
     */
-    public static class InfCapabilities extends AllCapabilities
-        {
+    public static class InfCapabilities extends AllCapabilities {
         @Override
-        public boolean sizeAccurate() { return false; }
-        @Override
-        public boolean deleteAllowed( boolean every ) { return !every; }
-        @Override
-        public boolean iteratorRemoveAllowed() { return false; }
-        @Override
-        public boolean findContractSafe() { return false; }
+        public boolean sizeAccurate() {
+            return false;
         }
+    }
 
     /**
-        An InfCapabilities notes that size may not be accurate, and some
-        triples may be irremovable.
-
-        TODO accomodate the properties of the base graph, too.
+        An InfCapabilities notes that size may not be accurate.
     */
-    public static class InfFindSafeCapabilities extends InfCapabilities
-        {
-        @Override
-        public boolean findContractSafe() { return true; }
-        }
+    public static class InfFindSafeCapabilities extends InfCapabilities {
+        // Leave as a marker interface.
+    }
 
-//    /**
-//        InfBulkUpdateHandler - a bulk update handler specialised for inference
-//        graphs by code for <code>removeAll()</code>.
-//    */
-//    static class InfBulkUpdateHandler extends SimpleBulkUpdateHandler
-//    	{
-//        public InfBulkUpdateHandler( BaseInfGraph  graph )
-//            { super(graph); }
-//
-//        @Override
-//        @Deprecated
-//        public void remove( Node s, Node p, Node o )
-//            {
-//            BaseInfGraph g = (BaseInfGraph) graph;
-//            g.getRawGraph().remove( s, p, o );
-//            g.discardState();
-//            g.rebind();
-//            manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) );
-//            }
-//
-//        @Override
-//        @Deprecated
-//        public void removeAll()
-//            {
-//            BaseInfGraph g = (BaseInfGraph) graph;
-//            g.getRawGraph().clear();
-//            g.discardState();
-//            g.rebind();
-//            g.getEventManager().notifyEvent( g, GraphEvents.removeAll );
-//            }
-//    	}
-    
     @Override
     public void remove( Node s, Node p, Node o )
     {
@@ -148,7 +103,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         rebind();
         getEventManager().notifyEvent( this, GraphEvents.remove( s, p, o ) );
     }
-    
+
     @Override
     public void clear()
     {
@@ -158,7 +113,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         getEventManager().notifyEvent( this, GraphEvents.removeAll );
     }
 
-    
+
     @Override
     public TransactionHandler getTransactionHandler()
         { return new InfTransactionHandler( this ); }
@@ -455,7 +410,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     public int getVersion() {
         return version;
     }
-    
+
     /**
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
@@ -503,7 +458,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
                 Graph rschema = ischema.getRawGraph();
                 if (rschema != null) union.addGraph( rschema );
             }
-            
+
         }
         return getReasoner().bind(union);
     }
@@ -522,7 +477,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     protected synchronized void setPreparedState(boolean state) {
         this.isPrepared = state;
     }
-    
+
     /**
      * Checks whether the graph is prepared and calls {@link #prepare()} if it is not
      */

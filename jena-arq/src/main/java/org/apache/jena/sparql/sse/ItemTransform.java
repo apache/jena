@@ -18,12 +18,13 @@
 
 package org.apache.jena.sparql.sse;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 
 public interface ItemTransform
 {
     // Transformations keep the list structure
-    public Item transform(Item item, ItemList list) ;
-    public Item transform(Item item, Node node) ;
-    public Item transform(Item item, String symbol) ;
+    public Item transform(Item item, ItemList list);
+    public Item transform(Item item, Node node);
+    public Item transform(Item item, String symbol);
+    public Item transformNil(Item item);
 }

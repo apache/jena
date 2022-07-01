@@ -45,7 +45,8 @@ public class UpdateProcessorBase implements UpdateProcessor
         this.request = request ;
         this.datasetGraph = datasetGraph ;
         this.inputBinding = inputBinding;
-        this.context = Context.setupContextExec(context, datasetGraph) ;
+        this.context = context;
+        Context.setCurrentDateTime(this.context) ;
         this.factory = factory ;
     }
 
@@ -56,7 +57,7 @@ public class UpdateProcessorBase implements UpdateProcessor
         
         try {
             UpdateSink sink = uProc.getUpdateSink();
-            Iter.sendToSink(request, sink);     // Will call close on sink if there are no exceptions
+            Iter.sendToSink(request.iterator(), sink);     // Will call close on sink if there are no exceptions
         } finally {
             uProc.finishRequest() ;
         }

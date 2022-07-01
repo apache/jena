@@ -18,120 +18,134 @@
 
 package org.apache.jena.tdb2.store;
 
-import java.util.Iterator ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
+import java.util.Iterator;
 
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.tdb2.setup.TDBBuilder;
-import org.apache.jena.tdb2.store.DatasetGraphTDB;
-import org.apache.jena.tdb2.store.DatasetGraphTxn;
-import org.apache.jena.tdb2.store.TripleTable;
-import org.apache.log4j.Level ;
-import org.apache.log4j.Logger ;
-import org.junit.Test ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
+/**
+ * Basic test of triple table to see if the NodeTupletable is working.
+ * Most testing happens elsewhere
+ */
 public class TestTripleTable
 {
-    static {
-        Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.WARN) ;
-        Logger.getLogger("org.apache.jena.tdb.exec").setLevel(Level.WARN) ;
+    private static String levelInfo;  
+    private static String levelExec;  
+    
+    @BeforeClass public static void beforeClass() {
+        levelInfo = LogCtl.getLevel("org.apache.jena.tdb.info");
+        levelExec = LogCtl.getLevel("org.apache.jena.tdb.exec");
+        
+        LogCtl.setLevel("org.apache.jena.tdb.info", "WARN");
+        LogCtl.setLevel("org.apache.jena.tdb.exec", "WARN");
+        
+    }
+    @AfterClass public static void afterClass() {
+        LogCtl.setLevel("org.apache.jena.tdb.info", levelInfo);
+        LogCtl.setLevel("org.apache.jena.tdb.exec", levelExec);
     }
 
     private static void add(TripleTable table, Node s, Node p, Node o)
     {
-        table.add(new Triple(s,p,o)) ;
+        table.add(new Triple(s,p,o));
     }
 
     private static void notMatch(TripleTable table, Node s, Node p, Node o)
     {
-        Iterator<Triple> iter = table.find(s, p, o) ;
-        assertNotNull(iter) ;
-        assertFalse(iter.hasNext()) ;
+        Iterator<Triple> iter = table.find(s, p, o);
+        assertNotNull(iter);
+        assertFalse(iter.hasNext());
     }
 
     private static void match(TripleTable table, Node s, Node p, Node o)
     {
-        Iterator<Triple> iter = table.find(s, p, o) ;
-        assertNotNull(iter) ;
-        assertTrue(iter.hasNext()) ;
+        Iterator<Triple> iter = table.find(s, p, o);
+        assertNotNull(iter);
+        assertTrue(iter.hasNext());
     }
-    
-    
+
+
     private static void contains(TripleTable table, Node s, Node p, Node o)
     {
-        Iterator<Triple> iter = table.find(s, p, o) ;
-        assertNotNull(iter) ;
-        assertTrue(iter.hasNext()) ;
-        assertEquals(new Triple(s, p, o), iter.next()) ;
-        assertFalse(iter.hasNext()) ;
+        Iterator<Triple> iter = table.find(s, p, o);
+        assertNotNull(iter);
+        assertTrue(iter.hasNext());
+        assertEquals(new Triple(s, p, o), iter.next());
+        assertFalse(iter.hasNext());
     }
-    
-    static Node n1 = NodeFactoryExtra.parseNode("<http://example/n1>") ;
-    static Node n2 = NodeFactoryExtra.parseNode("<http://example/n2>") ;
-    static Node n3 = NodeFactoryExtra.parseNode("<http://example/n3>") ;
-    static Node n4 = NodeFactoryExtra.parseNode("<http://example/n4>") ;
-    static Node n5 = NodeFactoryExtra.parseNode("<http://example/n5>") ;
-    static Node n6 = NodeFactoryExtra.parseNode("<http://example/n6>") ;
-    
+
+    static Node n1 = NodeFactoryExtra.parseNode("<http://example/n1>");
+    static Node n2 = NodeFactoryExtra.parseNode("<http://example/n2>");
+    static Node n3 = NodeFactoryExtra.parseNode("<http://example/n3>");
+    static Node n4 = NodeFactoryExtra.parseNode("<http://example/n4>");
+    static Node n5 = NodeFactoryExtra.parseNode("<http://example/n5>");
+    static Node n6 = NodeFactoryExtra.parseNode("<http://example/n6>");
+
     @Test public void createTripleTable1()
-    { 
-        TripleTable table = createTripleTableMem() ; 
-        notMatch(table, n1, n2, n3) ;
+    {
+        TripleTable table = createTripleTableMem();
+        notMatch(table, n1, n2, n3);
     }
-    
+
     @Test public void add1()
-    { 
-        TripleTable table = createTripleTableMem() ;
-        table.add(new Triple(n1,n2,n3)) ;
+    {
+        TripleTable table = createTripleTableMem();
+        table.add(new Triple(n1,n2,n3));
     }
-    
+
     @Test public void find1()
-    { 
-        TripleTable table = createTripleTableMem() ;
-        add(table, n1, n2, n3) ;
-        contains(table, n1, n2, n3) ;
-        notMatch(table, n1, n2, n4) ;
+    {
+        TripleTable table = createTripleTableMem();
+        add(table, n1, n2, n3);
+        contains(table, n1, n2, n3);
+        notMatch(table, n1, n2, n4);
     }
 
     @Test public void find2()
-    { 
-        TripleTable table = createTripleTableMem() ;
-        add(table, n1, n2, n3) ;
-        add(table, n1, n2, n4) ;
-        contains(table, n1, n2, n3) ;
-        contains(table, n1, n2, n4) ;
+    {
+        TripleTable table = createTripleTableMem();
+        add(table, n1, n2, n3);
+        add(table, n1, n2, n4);
+        contains(table, n1, n2, n3);
+        contains(table, n1, n2, n4);
     }
 
     @Test public void find3()
-    { 
-        TripleTable table = createTripleTableMem() ;
-        add(table, n1, n2, n3) ;
-        add(table, n4, n5, n6) ;
-        contains(table, n1, n2, n3) ;
-        contains(table, n4, n5, n6) ;
-        notMatch(table, n1, n2, n4) ;
+    {
+        TripleTable table = createTripleTableMem();
+        add(table, n1, n2, n3);
+        add(table, n4, n5, n6);
+        contains(table, n1, n2, n3);
+        contains(table, n4, n5, n6);
+        notMatch(table, n1, n2, n4);
     }
 
     @Test public void find4()
-    { 
-        TripleTable table = createTripleTableMem() ;
-        add(table, n1, n2, n3) ;
-        add(table, n4, n5, n6) ;
-        match(table, Node.ANY, n2, n3) ;
-        match(table, null, n2, n3) ;
-        match(table, null, null, null) ;
+    {
+        TripleTable table = createTripleTableMem();
+        add(table, n1, n2, n3);
+        add(table, n4, n5, n6);
+        match(table, Node.ANY, n2, n3);
+        match(table, null, n2, n3);
+        match(table, null, null, null);
     }
-    
+
     private TripleTable createTripleTableMem()
     {
-        DatasetGraphTxn dsx = TDBBuilder.build(Location.mem()) ;
-        dsx.begin(ReadWrite.WRITE);
-        DatasetGraphTDB ds = (DatasetGraphTDB)dsx ;
-        return ds.getTripleTable() ;
+        DatasetGraphTDB dsg = TDB2StorageBuilder.build(Location.mem());
+        dsg.begin(ReadWrite.WRITE);
+        return dsg.getTripleTable();
     }
 }

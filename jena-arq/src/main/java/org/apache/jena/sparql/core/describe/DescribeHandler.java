@@ -18,34 +18,37 @@
 
 package org.apache.jena.sparql.core.describe;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.util.Context;
 
-/** A DescribeHandler provides the description of a resource.
- *  DESCRIBE queries return RDF that describes the resource found, either
- *  from the query pattern or explicitly named in the DESCRIBE clause.
- *  For each resource, any handlers are called to builds the RDF model
- *  that is to be the result of the query. */
+/**
+ * A DescribeHandler provides the description of a resource. DESCRIBE queries return
+ * RDF that describes the resource found, either from the query pattern or explicitly
+ * named in the DESCRIBE clause. For each resource, any handlers are called to builds
+ * the RDF model that is to be the result of the query.
+ */
 
-public interface DescribeHandler
-{
+public interface DescribeHandler {
     /**
      * Start the describe process, passing in the result model.
+     *
      * @param accumulateResultModel
      * @param qContext Query execution context
      */
-    public void start(Model accumulateResultModel, Context qContext) ;
-    
-    /** Called on everything resource found by a query.
-     *  Can add more RDF to the model provided.  May choose to add nothing.
-     * 
-     * @param resource               resource to describe
-     */
-    
-    public void describe(Resource resource) ;
+    public void start(Model accumulateResultModel, Context qContext);
 
-    /** Finish the description process for this query execution
+    /**
+     * Called on everything resource found by a query. Can add more RDF to the model
+     * provided. May choose to add nothing.
+     *
+     * @param resource resource to describe
      */
-    public void finish() ;
+
+    public void describe(Resource resource);
+
+    /**
+     * Finish the description process for this query execution
+     */
+    public void finish();
 }

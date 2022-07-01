@@ -33,12 +33,12 @@ import org.apache.jena.sparql.expr.ExprList ;
  */
 public interface OpVisitorByTypeAndExpr extends OpVisitor
 {
-    public void visit0(Op0 op) ;    
-    
+    public void visit0(Op0 op) ;
+
     public void visit1(Op1 op) ;
-    
+
     public void visit2(Op2 op) ;
-    
+
     public void visitN(OpN op) ;
 
     public default void visitExt(OpExt op) {
@@ -48,7 +48,7 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
     public void visitExpr(ExprList exprs) ;
     public void visitVarExpr(VarExprList exprs) ;
     public default void visitAssignVar(Var var) {}
-    
+
     // Currently, we assume these are handled by the visitor/transformer.
     public default void visitSortConditions(List<SortCondition> list)       {}
     public default void visitAggregators(List<ExprAggregator> aggregators)  {}
@@ -197,7 +197,7 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
         visitSortConditions(opTop.getConditions()) ;
         visit1(opTop);
     }
-    
+
     @Override
     public default void visit(OpAssign opAssign) {
         visitVarExpr(opAssign.getVarExprList()) ;

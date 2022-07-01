@@ -20,33 +20,33 @@ package org.apache.jena.sparql.algebra;
 
 import org.apache.jena.sparql.algebra.op.* ;
 
-/** A visitor helper that maps all visits to a few general ones */ 
+/** A visitor helper that maps all visits to a few general ones */
 public abstract class OpVisitorByType implements OpVisitor
 {
     protected abstract void visitN(OpN op) ;
 
     protected abstract void visit2(Op2 op) ;
-    
+
     protected abstract void visit1(Op1 op) ;
-    
-    protected abstract void visit0(Op0 op) ;    
-    
+
+    protected abstract void visit0(Op0 op) ;
+
     protected void visitExt(OpExt op) {
         if ( op.effectiveOp() != null )
-            op.effectiveOp().visit(this); 
-    }     
+            op.effectiveOp().visit(this);
+    }
 
     protected abstract void visitFilter(OpFilter op) ;
-    
+
     protected abstract void visitLeftJoin(OpLeftJoin op) ;
-    
+
     protected void visitModifer(OpModifier opMod)
     { visit1(opMod) ; }
 
     @Override
     public void visit(OpBGP opBGP)
     { visit0(opBGP) ; }
-    
+
     @Override
     public void visit(OpQuadPattern quadPattern)
     { visit0(quadPattern) ; }
@@ -58,7 +58,7 @@ public abstract class OpVisitorByType implements OpVisitor
     @Override
     public void visit(OpTriple opTriple)
     { visit0(opTriple) ; }
-    
+
     @Override
     public void visit(OpQuad opQuad)
     { visit0(opQuad) ; }
@@ -66,7 +66,7 @@ public abstract class OpVisitorByType implements OpVisitor
     @Override
     public void visit(OpPath opPath)
     { visit0(opPath) ; }
-    
+
     @Override
     public void visit(OpProcedure opProcedure)
     { visit1(opProcedure) ; }
@@ -82,11 +82,11 @@ public abstract class OpVisitorByType implements OpVisitor
     @Override
     public void visit(OpSequence opSequence)
     { visitN(opSequence) ; }
-    
+
     @Override
     public void visit(OpDisjunction opDisjunction)
     { visitN(opDisjunction) ; }
-    
+
     @Override
     public void visit(OpLeftJoin opLeftJoin)
     { visitLeftJoin(opLeftJoin) ; }
@@ -102,7 +102,7 @@ public abstract class OpVisitorByType implements OpVisitor
     @Override
     public void visit(OpUnion opUnion)
     { visit2(opUnion) ; }
-    
+
     @Override
     public void visit(OpConditional opCond)
     { visit2(opCond) ; }

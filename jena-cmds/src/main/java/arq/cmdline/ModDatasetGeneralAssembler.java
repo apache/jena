@@ -18,9 +18,8 @@
 
 package arq.cmdline;
 
-import jena.cmd.CmdArgModule;
-import jena.cmd.CmdGeneral;
-
+import org.apache.jena.cmd.CmdArgModule;
+import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.query.Dataset ;
 
 /** Add assembler to a general dataset description */

@@ -16,55 +16,57 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server ;
+package org.apache.jena.fuseki.server;
 
-import java.util.Collection ;
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.atlas.logging.Log;
 
 /** A collection of counters */
 public class CounterSet {
-    private static Logger             log      = LoggerFactory.getLogger(CounterSet.class) ;
-
-    private Map<CounterName, Counter> counters = new HashMap<>() ;
+    private Map<CounterName, Counter> counters = new HashMap<>();
 
     public CounterSet() {}
 
     public Collection<CounterName> counters() {
-        return counters.keySet() ;
+        return counters.keySet();
     }
 
     public void inc(CounterName c) {
-        get(c).inc() ;
+        get(c).inc();
     }
 
     public void dec(CounterName c) {
-        get(c).dec() ;
+        get(c).dec();
     }
 
     public long value(CounterName c) {
-        return get(c).value() ;
+        return get(c).value();
     }
 
     public void add(CounterName counterName) {
         if ( counters.containsKey(counterName) ) {
-            log.warn("Duplicate counter in counter set: " + counterName) ;
-            return ;
+            Log.warn(CounterSet.class, "Duplicate counter in counter set: " + counterName);
+            return;
         }
-        counters.put(counterName, new Counter()) ;
+        counters.put(counterName, new Counter());
     }
 
     public boolean contains(CounterName cn) {
-        return counters.containsKey(cn) ;
+        return counters.containsKey(cn);
     }
 
     public Counter get(CounterName cn) {
-        Counter c = counters.get(cn) ;
+        Counter c = counters.get(cn);
         if ( c == null )
-            log.warn("No counter in counter set: " + cn) ;
-        return c ;
+            Log.warn(CounterSet.class, "No counter in counter set: " + cn);
+        return c;
+    }
+
+    @Override
+    public String toString() {
+        return counters.toString();
     }
 }

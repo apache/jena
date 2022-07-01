@@ -33,32 +33,33 @@ import org.apache.jena.vocabulary.RDF ;
  *  <li>rdfs:domain</li>
  *  <li>rdfs:range</li>
  *  </ul>
- *  
+ *
  *  Usage: call process(Node, Node, Node), outputs to derive(Node, Node, Node).
+ *  @deprecated Use package <tt>org.apache.jena.rdfs</tt>.
  */
-
+@Deprecated
 abstract class InferenceProcessorRDFS
 {
     // Calculates hierarchies (subclass, subproperty) from a model.
     // Assumes that model has no metavocabulary (use an inferencer on the model first if necessary).
-    
-    // Todo:
-    //   rdfs:member
-    //   list:member ???
-    
-    // Todo:
-    //   rdfs:member
-    //   list:member ???
-    
-    // Work in NodeID space?  But Node id caching solves most of the problems.
-    
-    // Expanded hierarchy:
-    // If C < C1 < C2 then C2 is in the list for C 
 
-    
+    // Todo:
+    //   rdfs:member
+    //   list:member ???
+
+    // Todo:
+    //   rdfs:member
+    //   list:member ???
+
+    // Work in NodeID space?  But Node id caching solves most of the problems.
+
+    // Expanded hierarchy:
+    // If C < C1 < C2 then C2 is in the list for C
+
+
     static final Node rdfType = RDF.type.asNode() ;
     private final InferenceSetupRDFS state ;
-    
+
     public InferenceProcessorRDFS(InferenceSetupRDFS state)
     {
         this.state = state ;
@@ -69,7 +70,7 @@ abstract class InferenceProcessorRDFS
         subClass(s,p,o) ;
         subProperty(s,p,o) ;
 
-        // domain() and range() also go through subClass processing. 
+        // domain() and range() also go through subClass processing.
         domain(s,p,o) ;
         range(s,p,o) ;
     }
@@ -77,8 +78,8 @@ abstract class InferenceProcessorRDFS
     public abstract void derive(Node s, Node p, Node o) ;
 
     /*
-     * [rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
-     * [rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)] 
+     * [rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]
+     * [rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]
      */
     final private void subClass(Node s, Node p, Node o)
     {
@@ -91,11 +92,11 @@ abstract class InferenceProcessorRDFS
         }
     }
 
-    // Rule extracts from Jena's RDFS rules etc/rdfs.rules 
-    
+    // Rule extracts from Jena's RDFS rules etc/rdfs.rules
+
     /*
-     * [rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
-     * [rdfs6:  (?a ?p ?b), (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)] 
+     * [rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)]
+     * [rdfs6:  (?a ?p ?b), (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)]
      */
     private void subProperty(Node s, Node p, Node o)
     {
@@ -109,7 +110,7 @@ abstract class InferenceProcessorRDFS
 
     /*
      * [rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ]
-     * [rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]  
+     * [rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]
      */
     final private void domain(Node s, Node p, Node o)
     {
@@ -126,8 +127,8 @@ abstract class InferenceProcessorRDFS
 
     /*
      * [rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ]
-     * [rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]  
-     */ 
+     * [rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]
+     */
     final private void range(Node s, Node p, Node o)
     {
         // Mask out literal subjects

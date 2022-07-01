@@ -18,12 +18,13 @@
 
 package org.apache.jena.atlas.data;
 
-import org.apache.jena.atlas.data.ThresholdPolicyCount ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test ;
 
 
-public class TestThresholdPolicyCount extends BaseTest
+public class TestThresholdPolicyCount
 {
     
     @Test

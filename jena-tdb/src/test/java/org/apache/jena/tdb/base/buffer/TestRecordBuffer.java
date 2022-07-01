@@ -20,13 +20,12 @@ package org.apache.jena.tdb.base.buffer;
 
 import static org.apache.jena.tdb.base.record.RecordLib.intToRecord ;
 import static org.apache.jena.tdb.base.record.RecordLib.r ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.tdb.base.buffer.BufferException ;
-import org.apache.jena.tdb.base.buffer.RecordBuffer ;
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
 import org.apache.jena.tdb.base.record.RecordLib ;
@@ -35,7 +34,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestRecordBuffer extends BaseTest
+public class TestRecordBuffer
 {
     static RecordFactory recordFactory = new RecordFactory(RecordLib.TestRecordLength, 0) ;
     

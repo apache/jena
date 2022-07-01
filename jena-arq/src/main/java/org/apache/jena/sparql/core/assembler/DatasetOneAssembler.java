@@ -21,14 +21,13 @@ package org.apache.jena.sparql.core.assembler;
 import java.util.List;
 
 import org.apache.jena.assembler.Assembler;
-import org.apache.jena.assembler.Mode;
-import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.assembler.exceptions.AssemblerException;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.graph.GraphUtils;
 
@@ -39,29 +38,30 @@ import org.apache.jena.sparql.util.graph.GraphUtils;
  * <p>
  * General datasets and SPARQL Update can create graphs by inserting a quad.
  * The dataset returned by this assembler does not support that.
- * 
+ *
  * @see DatasetAssembler {@code DatasetAssembler}, for a general dataset.
  * @see InMemDatasetAssembler {@code InMemDatasetAssembler}, for a fully transactional, in-memory dataset.
  */
-public class DatasetOneAssembler extends AssemblerBase {
+public class DatasetOneAssembler extends DatasetAssembler  {
     public static Resource getType() {
         return DatasetAssemblerVocab.tDatasetOne;
     }
 
     @Override
-    public Object open(Assembler a, Resource root, Mode mode) {
-        Dataset ds = createDataset(a, root, mode);
-        return ds;
-    }
-
-    public Dataset createDataset(Assembler a, Resource root, Mode mode) {
+    public DatasetGraph createDataset(Assembler a, Resource root) {
         // Can use ja:graph or ja:defaultGraph but not both.
         Resource dftGraphDesc1 = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pDefaultGraph);
         Resource dftGraphDesc2 = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pGraph);
-        
+
         if ( dftGraphDesc1 != null && dftGraphDesc2 != null )
-            throw new AssemblerException(root, "Found both ja:graph and ja:defaultGraph"); 
-        
+            throw new AssemblerException(root, "Found both ja:graph and ja:defaultGraph");
+
+        List<RDFNode> nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph);
+        if ( ! nodes.isEmpty() ) {
+            String x = DatasetAssemblerVocab.tDatasetOne.getLocalName();
+            throw new AssemblerException(root, "A "+x+" dataset can only hold a default graph, and no named graphs");
+        }
+
         Resource graphDesc = ( dftGraphDesc1 != null) ? dftGraphDesc1 : dftGraphDesc2 ;
         Model model;
         if ( graphDesc != null )
@@ -69,14 +69,9 @@ public class DatasetOneAssembler extends AssemblerBase {
         else
             // Assembler description did not define one.
             model = GraphFactory.makeDefaultModel();
-        Dataset ds = DatasetFactory.wrap(model);
-        
-        List<RDFNode> nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph);
-        if ( ! nodes.isEmpty() ) {
-            String x = DatasetAssemblerVocab.tDatasetOne.getLocalName();
-            throw new AssemblerException(root, "A "+x+" dataset can only hold a default graph, and no named graphs");
-        }
-        AssemblerUtils.setContext(root, ds.getContext());
-        return ds;
+        Graph dftGraph = model.getGraph();
+        DatasetGraph dsg = DatasetGraphFactory.wrap(dftGraph);
+        AssemblerUtils.mergeContext(root, dsg.getContext());
+        return dsg;
     }
 }

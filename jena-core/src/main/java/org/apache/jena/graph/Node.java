@@ -30,65 +30,83 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sys.Serializer;
 
 /**
-    A Node has five subtypes: Node_Blank, Node_Anon, Node_URI,  
+    A Node has five subtypes: Node_Blank, Node_Anon, Node_URI,
     Node_Variable, and Node_ANY.
     Nodes are only constructed by the node factory methods, and they will
     attempt to re-use existing nodes with the same label if they are recent
-    enough.    
+    enough.
 */
 
 public abstract class Node implements Serializable {
 
     final protected Object label;
     static final int THRESHOLD = 10000;
-    
+
     /**
         The canonical instance of Node_ANY. No other instances are required.
-    */       
+    */
     public static final Node ANY = new Node_ANY();
-       
+
     static final String RDFprefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-            
+
     /**
-        Visit a Node and dispatch on it to the appropriate method from the 
+        Visit a Node and dispatch on it to the appropriate method from the
         NodeVisitor <code>v</code>.
-        
+
     	@param v the visitor to apply to the node
     	@return the value returned by the applied method
      */
     public abstract Object visitWith( NodeVisitor v );
-     
+
     /**
         Answer true iff this node is concrete, ie not variable, ie URI, blank, or literal.
-    */                     
+    */
     public abstract boolean isConcrete();
-        
-    /** 
+
+    /**
          Answer true iff this node is a literal node [subclasses override]
     */
-    public boolean isLiteral() 
+    public boolean isLiteral()
         { return false; }
-    
-    /** 
+
+    /**
         Answer true iff this node is a blank node [subclasses override]
     */
     public boolean isBlank()
         { return false; }
-    
-    /** 
+
+    /**
          Answer true iff this node is a URI node [subclasses override]
     */
     public boolean isURI()
         { return false; }
-        
-    /** 
+
+    /**
         Answer true iff this node is a variable node - subclasses override
     */
     public boolean isVariable()
         { return false; }
 
-    /** get the blank node id if the node is blank, otherwise die horribly */    
-    public BlankNodeId getBlankNodeId() 
+    /**
+        Answer true iff this node is an "triple node" (RDF-star)
+     */
+    public boolean isNodeTriple()
+        { return false; }
+
+    /**
+        Answer true iff this node is an "graph node" (N3 formula).
+        This is not related to named graphs.
+     */
+    public boolean isNodeGraph()
+        { return false; }
+
+    /** Extension node. Typically used in data structures based on triples.*/
+    public boolean isExt() {
+        return false;
+    }
+
+    /** get the blank node id if the node is blank, otherwise die horribly */
+    public BlankNodeId getBlankNodeId()
         { throw new UnsupportedOperationException( this + " is not a blank node" ); }
 
     /**
@@ -96,55 +114,55 @@ public abstract class Node implements Serializable {
         if it's not blank.
     */
     public String getBlankNodeLabel()
-        { return getBlankNodeId().getLabelString(); }    
-    
-    /** 
+        { return getBlankNodeId().getLabelString(); }
+
+    /**
          Answer the literal value of a literal node, or throw an UnsupportedOperationException
-         if it's not a literal node 
+         if it's not a literal node
      */
     public LiteralLabel getLiteral()
         { throw new UnsupportedOperationException( this + " is not a literal node" ); }
 
     /**
         Answer the value of this node's literal value, if it is a literal;
-        otherwise die horribly. 
+        otherwise die horribly.
     */
     public Object getLiteralValue()
         { throw new NotLiteral( this ); }
-    
+
     /**
         Answer the lexical form of this node's literal value, if it is a literal;
         otherwise die horribly.
     */
     public String getLiteralLexicalForm()
         { throw new NotLiteral( this ); }
-    
+
     /**
         Answer the language of this node's literal value, if it is a literal;
-        otherwise die horribly. 
+        otherwise die horribly.
     */
     public String getLiteralLanguage()
         { throw new NotLiteral( this ); }
-    
+
     /**
-        Answer the data-type URI of this node's literal value, if it is a 
-        literal; otherwise die horribly. 
+        Answer the data-type URI of this node's literal value, if it is a
+        literal; otherwise die horribly.
     */
     public String getLiteralDatatypeURI()
         { throw new NotLiteral( this ); }
-    
+
     /**
-        Answer the RDF datatype object of this node's literal value, if it is 
-        a literal; otherwise die horribly. 
+        Answer the RDF datatype object of this node's literal value, if it is
+        a literal; otherwise die horribly.
     */
     public RDFDatatype getLiteralDatatype()
         { throw new NotLiteral( this ); }
-    
+
     public boolean getLiteralIsXML()
         { throw new NotLiteral( this ); }
-    
+
     /**
-        Exception thrown if a literal-access operation is attemted on a
+        Exception thrown if a literal-access operation is attempted on a
         non-literal node.
     */
     public static class NotLiteral extends JenaException
@@ -152,7 +170,7 @@ public abstract class Node implements Serializable {
         public NotLiteral( Node it )
             { super( it + " is not a literal node" ); }
         }
-    
+
     /**
         Answer the object which is the index value for this Node. The default
         is this Node itself; overridden in Node_Literal for literal indexing
@@ -160,15 +178,15 @@ public abstract class Node implements Serializable {
     */
     public Object getIndexingValue()
         { return this; }
-    
+
     /** get the URI of this node if it has one, else die horribly */
     public String getURI()
         { throw new UnsupportedOperationException( this + " is not a URI node" ); }
-    
+
     /** get the namespace part of this node if it's a URI node, else die horribly */
     public String getNameSpace()
         { throw new UnsupportedOperationException( this + " is not a URI node" ); }
-    
+
     /** get the localname part of this node if it's a URI node, else die horribly */
     public String getLocalName()
         { throw new UnsupportedOperationException( this + " is not a URI node" ); }
@@ -176,63 +194,28 @@ public abstract class Node implements Serializable {
     /** get a variable nodes name, otherwise die horribly */
     public String getName()
         { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a variable node" ); }
-    
+
+    /** Get the triple for a triple term (embedded triple), otherwise die horribly */
+    public Triple getTriple()
+        { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a embedded triple node" ); }
+
+    /** Get the graph for a graph term (N3 formula), otherwise die horribly */
+    public Graph getGraph()
+        { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a graph-valued node" ); }
+
     /** answer true iff this node is a URI node with the given URI */
     public boolean hasURI( String uri )
         { return false; }
-        
-    // DEPRECATED
-    /** an abstraction to allow code sharing */
-    static abstract class NodeMaker { abstract Node construct( Object x ); }
 
-    @Deprecated
-    static final NodeMaker makeAnon = new NodeMaker() {
-        @Override Node construct( Object x ) { return new Node_Blank( x ); } 
-    };
-        
-   @Deprecated
-   static final NodeMaker makeLiteral = new NodeMaker() {
-        @Override Node construct( Object x ) { return new Node_Literal( x ); }
-   };
-        
-   @Deprecated
-    static final NodeMaker makeURI = new NodeMaker() {
-        @Override Node construct( Object x ) { return new Node_URI( x ); }
-   };
-        
-   @Deprecated
-   static final NodeMaker makeVariable = new NodeMaker() {
-       @Override Node construct( Object x ) { return new Node_Variable( x ); }
-   };
-        
-    /**
-        The canonical NULL. It appears here so that revised definitions [eg as a bnode]
-        that require the cache-and-maker system will work; the NodeMaker constants
-        should be non-null at this point.
-    */       
-    @Deprecated
-    public static final Node NULL = new Node_NULL(); 
-    
-    /* package visibility only */ Node( Object label ) 
+    /* package visibility only */ Node( Object label )
         { this.label = label; }
-        
-    /**
-        We object strongly to null labels: for example, they make .equals flaky.
-        @deprecated Use specific {@link NodeFactory} functions.
-    */
-    @Deprecated
-    public static Node create( NodeMaker maker, Object label )
-        {
-        if (label == null) throw new JenaException( "Node.make: null label" );
-        return maker.construct( label ) ;
-        }
 
     /**
 		Nodes only equal other Nodes that have equal labels.
-	*/	
+	*/
     @Override
     public abstract boolean equals(Object o);
-    
+
     /**
      * Test that two nodes are semantically equivalent.
      * In some cases this may be the same as equals, in others
@@ -242,18 +225,18 @@ public abstract class Node implements Serializable {
      * <p>Default implementation is to use equals, subclasses should
      * override this.</p>
      */
-    public boolean sameValueAs(Object o) 
+    public boolean sameValueAs(Object o)
         { return equals( o ); }
 
     @Override
-    public int hashCode() 
+    public int hashCode()
         { return label.hashCode() * 31; }
-    
+
     /**
         Answer true iff this node accepts the other one as a match.
         The default is an equality test; it is over-ridden in subclasses to
         provide the appropriate semantics for literals, ANY, and variables.
-        
+
         @param other a node to test for matching
         @return true iff this node accepts the other as a match
     */
@@ -270,36 +253,36 @@ public abstract class Node implements Serializable {
     }
     // Any attempt to serialize without replacement is an error.
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-        throw new IllegalStateException(); 
+        throw new IllegalStateException();
     }
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
         throw new IllegalStateException();
     }
     // ---- Serializable
-    
-    /** 
-        Answer a human-readable representation of this Node. It will not compress URIs, 
-        nor quote literals (because at the moment too many places use toString() for 
+
+    /**
+        Answer a human-readable representation of this Node. It will not compress URIs,
+        nor quote literals (because at the moment too many places use toString() for
         something machine-oriented).
-    */   
+    */
     @Override
     public String toString()
     	{ return toString( null ); }
-    
+
     /**
          Answer a human-readable representation of this Node where literals are
          quoted according to <code>quoting</code> but URIs are not compressed.
     */
     public String toString( boolean quoting )
         { return toString( null, quoting ); }
-    
+
     /**
         Answer a human-readable representation of the Node, quoting literals and
         compressing URIs.
     */
     public String toString( PrefixMapping pm )
         { return toString( pm, true ); }
-        
+
     /**
         Answer a human readable representation of this Node, quoting literals if specified,
         and compressing URIs using the prefix mapping supplied.

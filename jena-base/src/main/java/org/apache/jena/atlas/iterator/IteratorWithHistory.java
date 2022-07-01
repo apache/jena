@@ -23,19 +23,23 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.NoSuchElementException ;
 
-/** Remembers the last N yields.
+/**
+ * Remembers the last N yields.
  * See also {@link IteratorWithBuffer}, for an iterator that looks ahead to what it will yield.
+ * History is retained at the end of iterator.
+ * "Close" releases the history.
+ *
  * @see IteratorWithBuffer
  * @see PeekIterator
  * @see PushbackIterator
  */
-public class IteratorWithHistory<T> implements Iterator<T>
+public class IteratorWithHistory<T> implements IteratorCloseable<T>
 {
     private List<T> history ;
     private Iterator<T> iter ;
     private int capacity ;
     private boolean hasEnded = false ;
-    
+
     public IteratorWithHistory(Iterator<T> iter, int N) {
         this.iter = iter ;
         this.history = new ArrayList<>(N) ;
@@ -66,14 +70,10 @@ public class IteratorWithHistory<T> implements Iterator<T>
         return item ;
     }
 
-    @Override
-    public void remove()
-    { throw new UnsupportedOperationException("remove") ; }
-
     /**
      * return the previous i'th element returned by next(). 0 means last call of
      * next. History is retained after the end of iteration.
-     * 
+     *
      * @return Element or null for no such element (that is for haven't yielded
      *         that many elements).
      * @throws IndexOutOfBoundsException
@@ -103,7 +103,13 @@ public class IteratorWithHistory<T> implements Iterator<T>
             endReached() ;
         }
     }
-    
-    /** Called, once, at the end */ 
+
+    /** Called, once, at the end */
     protected void endReached() { }
+
+    @Override
+    public void close() {
+        Iter.close(iter);
+        history.clear();
+    }
 }

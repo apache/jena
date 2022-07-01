@@ -48,6 +48,7 @@ import org.apache.jena.tdb.solver.StageGeneratorDirectTDB ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.EnvTDB ;
 import org.apache.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.util.Metadata;
 import org.slf4j.Logger ;
@@ -56,22 +57,22 @@ import org.slf4j.LoggerFactory ;
 public class TDB {
 
     private TDB() {}
-    
+
     // Initialization statics must be first in the class to avoid
     // problems with recursive initialization.  Specifcally,
     // initLock being null because elsewhere started the initialization
-    // and is calling into the TDB class. 
+    // and is calling into the TDB class.
     // The best order is:
     //    Initialization controls
     //    All calculated constants
     //    static { JenaSystem.init() ; }
     private static final Object initLock = new Object() ;
     private static volatile boolean initialized = false ;
-    
+
     /** IRI for TDB */
     public static final String  tdbIRI                           = "http://jena.hpl.hp.com/#tdb" ;
 
-    
+
     /** Root of TDB-defined parameter names */
     public static final String  tdbParamNS                       = SystemTDB.symbolNamespace;
 
@@ -94,8 +95,7 @@ public class TDB {
     // /** Logger for execution information */
     // public static final String logExecName = "org.apache.jena.tdb.exec" ;
     // /** Logger for execution information */
-    // public static final Logger logExec = LoggerFactory.getLogger(logExecName)
-    // ;
+    // public static final Logger logExec = LoggerFactory.getLogger(logExecName) ;
 
     public final static String  namespace                        = "http://jena.hpl.hp.com/2008/tdb#" ;
 
@@ -112,6 +112,8 @@ public class TDB {
      */
     public static final Symbol  transactionJournalWriteBlockMode = SystemTDB.allocSymbol("transactionJournalWriteBlockMode") ;
 
+    public static final String  tdbFaqsLink                      = "See https://jena.apache.org/documentation/tdb/faqs.html for more information.";
+
     public static Context getContext() {
         return ARQ.getContext() ;
     }
@@ -121,7 +123,7 @@ public class TDB {
      * release datasets or graphs held by client code.
      */
     public static void closedown() {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
     }
 
     /**
@@ -174,7 +176,7 @@ public class TDB {
     public static void sync(DatasetGraph dataset) {
         if ( dataset == null )
             return ;
-        
+
         // Should be: SystemARQ.sync(dataset) ;
         if ( dataset instanceof DatasetGraphTDB ) {
             syncObject(dataset) ;
@@ -215,14 +217,14 @@ public class TDB {
 
     // ---- Static constants read by modVersion
     // ---- Must be after initialization.
-    
+
     static private String      metadataLocation = "org/apache/jena/tdb/tdb-properties.xml" ;
     static private Metadata    metadata         = new Metadata(metadataLocation) ;
     /** The root package name for TDB */
     public static final String PATH             = "org.apache.jena.tdb" ;
     // The names known to ModVersion : "NAME", "VERSION", "BUILD_DATE"
-    
-    public static final String NAME             = "TDB" ;
+
+    public static final String NAME             = "TDB1" ;
     /** The full name of the current TDB version */
     public static final String VERSION          = metadata.get(PATH + ".version", "DEV") ;
     /** The date and time at which this release was built */
@@ -240,31 +242,32 @@ public class TDB {
         if ( initialized ) {
             return ;
         }
-        
+
         synchronized(initLock) {
             if ( initialized ) {
-                JenaSystem.logLifecycle("TDB.init - return") ;
+                JenaSystem.logLifecycle("TDB1.init - return") ;
                 return ;
             }
             initialized = true ;
-            JenaSystem.logLifecycle("TDB.init - start") ;
+            JenaSystem.logLifecycle("TDB1.init - start") ;
             ReaderRIOTRDFXML.RiotUniformCompatibility = true ;
             EnvTDB.processGlobalSystemProperties() ;
-            
-            MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
+
+            MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix,  SystemTDB.symbolNamespace) ;
+            MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix1, SystemTDB.symbolNamespace) ;
             AssemblerTDB.init() ;
             QueryEngineTDB.register() ;
             UpdateEngineTDB.register() ;
 
             wireIntoExecution() ;
-            JenaSystem.logLifecycle("TDB.init - finish") ;
+            JenaSystem.logLifecycle("TDB1.init - finish") ;
         }
     }
 
     private static void wireIntoExecution() {
         // Globally change the stage generator to intercept BGP on TDB
         Context cxt = ARQ.getContext() ;
-        StageGenerator orig = StageBuilder.chooseStageGenerator(cxt) ; 
+        StageGenerator orig = StageBuilder.chooseStageGenerator(cxt) ;
 
         // Wire in the TDB stage generator which will make TDB work whether
         // or not the TDB executor is used. This means that datasets of mixed
@@ -276,7 +279,7 @@ public class TDB {
     // ---- Static constants read by modVersion
     // ---- Must be after initialization.
 
-    
+
 
     // The names known to ModVersion : "NAME", "VERSION", "BUILD_DATE"
 

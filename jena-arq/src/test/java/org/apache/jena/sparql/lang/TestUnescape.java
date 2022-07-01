@@ -18,12 +18,13 @@
 
 package org.apache.jena.sparql.lang;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.sparql.lang.ParserBase ;
 import org.junit.Test ;
 
-public class TestUnescape extends BaseTest
+public class TestUnescape
 {
     @Test public void testEsc01() { execTest("x\\uabcd", "x\uabcd") ; }
     @Test public void testEsc02() { execTest("\\uabcdx", "\uabcdx") ; }
@@ -53,7 +54,7 @@ public class TestUnescape extends BaseTest
     
     private void execTestFail(String input) {
         try {
-            String s = ParserBase.unescapeStr(input);
+            String s = QueryParserBase.unescapeStr(input);
             fail("Unescaping succeeded on " + input + " producing <<"+s+">>");
         }
         catch (QueryParseException ex) {
@@ -62,7 +63,7 @@ public class TestUnescape extends BaseTest
     }
 
     private void execTest(String input, String outcome) {
-        String result = ParserBase.unescapeStr(input);
+        String result = QueryParserBase.unescapeStr(input);
         assertEquals("Unescaped string does not match (" + input + ")", outcome, result);
     }
 }

@@ -25,12 +25,11 @@ import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.AbstractJenaConnectionTests;
 import org.apache.jena.jdbc.connections.DatasetConnection;
 import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.jena.jdbc.tdb.connections.TDBConnection;
-import org.apache.jena.jdbc.utils.TestUtils;
+import org.apache.jena.jdbc.utils.TestJdbcUtils;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.After;
 
 /**
@@ -45,7 +44,7 @@ public class TestTdbMemConnection extends AbstractJenaConnectionTests {
      */
     @After
     public void cleanupTest() {
-        StoreConnection.expel(Location.mem(), true);
+        TDBInternal.expel(Location.mem(), true);
     }
 
     @Override
@@ -57,7 +56,7 @@ public class TestTdbMemConnection extends AbstractJenaConnectionTests {
     @Override
     protected JenaConnection getConnection(Dataset ds) throws SQLException {
         Dataset tdb = TDBFactory.createDataset();
-        TestUtils.copyDataset(ds, tdb, true);
+        TestJdbcUtils.copyDataset(ds, tdb, true);
         return new TDBConnection(tdb, ResultSet.HOLD_CURSORS_OVER_COMMIT, JenaConnection.DEFAULT_AUTO_COMMIT,
                 JdbcCompatibility.DEFAULT);
     }

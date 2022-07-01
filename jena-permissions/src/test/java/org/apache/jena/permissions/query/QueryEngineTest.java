@@ -21,7 +21,6 @@ import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.model.SecuredModel;
-import org.apache.jena.permissions.query.SecuredQueryEngineFactory;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryExecution;
@@ -41,183 +40,157 @@ import org.junit.Test;
 
 public class QueryEngineTest {
 
-	@BeforeClass
-	public static void setupFactory() {
-		SecuredQueryEngineFactory.register();
-	}
+    @BeforeClass
+    public static void setupFactory() {
+        SecuredQueryEngineFactory.register();
+    }
 
-	@AfterClass
-	public static void teardownFactory() {
-		SecuredQueryEngineFactory.unregister();
-	}
+    @AfterClass
+    public static void teardownFactory() {
+        SecuredQueryEngineFactory.unregister();
+    }
 
-	Model baseModel;
+    Model baseModel;
 
-	public QueryEngineTest() {
+    public QueryEngineTest() {
 
-	}
+    }
 
-	public static Model populateModel(Model baseModel) {
+    public static Model populateModel(Model baseModel) {
 
-		Resource r = ResourceFactory
-				.createResource("http://example.com/resource/1");
-		final Resource o = ResourceFactory
-				.createResource("http://example.com/class");
-		baseModel.add(r, RDF.type, o);
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_1"),
-				ResourceFactory.createTypedLiteral(1));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_2"),
-				ResourceFactory.createTypedLiteral("foo"));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_3"),
-				ResourceFactory.createTypedLiteral(3.14));
-		r = ResourceFactory.createResource("http://example.com/resource/2");
-		baseModel.add(r, RDF.type, o);
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_1"),
-				ResourceFactory.createTypedLiteral(2));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_2"),
-				ResourceFactory.createTypedLiteral("bar"));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_3"),
-				ResourceFactory.createTypedLiteral(6.28));
+        Resource r = ResourceFactory.createResource("http://example.com/resource/1");
+        final Resource o = ResourceFactory.createResource("http://example.com/class");
+        baseModel.add(r, RDF.type, o);
+        baseModel.add(r, ResourceFactory.createProperty("http://example.com/property/_1"),
+                ResourceFactory.createTypedLiteral(1));
+        baseModel.add(r, ResourceFactory.createProperty("http://example.com/property/_2"),
+                ResourceFactory.createTypedLiteral("foo"));
+        baseModel.add(r, ResourceFactory.createProperty("http://example.com/property/_3"),
+                ResourceFactory.createTypedLiteral(3.14));
+        r = ResourceFactory.createResource("http://example.com/resource/2");
+        baseModel.add(r, RDF.type, o);
+        baseModel.add(r, ResourceFactory.createProperty("http://example.com/property/_1"),
+                ResourceFactory.createTypedLiteral(2));
+        baseModel.add(r, ResourceFactory.createProperty("http://example.com/property/_2"),
+                ResourceFactory.createTypedLiteral("bar"));
+        baseModel.add(r, ResourceFactory.createProperty("http://example.com/property/_3"),
+                ResourceFactory.createTypedLiteral(6.28));
 
-		r = ResourceFactory.createResource("http://example.com/resource/3");
-		baseModel.add(r, RDF.type, ResourceFactory
-				.createResource("http://example.com/anotherClass"));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_1"),
-				ResourceFactory.createTypedLiteral(3));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_2"),
-				ResourceFactory.createTypedLiteral("baz"));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_3"),
-				ResourceFactory.createTypedLiteral(9.42));
-		return baseModel;
-	}
+        r = ResourceFactory.createResource("http://example.com/resource/3");
+        baseModel.add(r, RDF.type, ResourceFactory.createResource("http://example.com/anotherClass"));
+        baseModel.add(r, ResourceFactory.createProperty("http://example.com/property/_1"),
+                ResourceFactory.createTypedLiteral(3));
+        baseModel.add(r, ResourceFactory.createProperty("http://example.com/property/_2"),
+                ResourceFactory.createTypedLiteral("baz"));
+        baseModel.add(r, ResourceFactory.createProperty("http://example.com/property/_3"),
+                ResourceFactory.createTypedLiteral(9.42));
+        return baseModel;
+    }
 
-	@Before
-	public void setUp() {
-		baseModel = populateModel(ModelFactory.createDefaultModel());
-	}
+    @Before
+    public void setUp() {
+        baseModel = populateModel(ModelFactory.createDefaultModel());
+    }
 
-	@After
-	public void tearDown() {
-		baseModel.close();
-	}
+    @After
+    public void tearDown() {
+        baseModel.close();
+    }
 
-	@Test
-	public void testOpenQueryType() {
-		final SecurityEvaluator eval = new MockSecurityEvaluator(true, true,
-				true, true, true, true);
-		final SecuredModel model = Factory.getInstance(eval,
-				"http://example.com/securedModel", baseModel);
-		try {
-			final String query = "prefix fn: <http://www.w3.org/2005/xpath-functions#>  "
-					+ " SELECT ?foo ?bar WHERE "
-					+ " { ?foo a <http://example.com/class> ; "
-					+ "?bar [] ."
-					+ "  } ";
-			try ( QueryExecution qexec = QueryExecutionFactory.create(query, model) ) {
-				final ResultSet results = qexec.execSelect();
-				int count = 0;
-				for (; results.hasNext();) {
-					count++;
-					results.nextSolution();
-				}
-				Assert.assertEquals(8, count);
-			}
-		} finally {
-			model.close();
-		}
-	}
+    @Test
+    public void testOpenQueryType() {
+        final SecurityEvaluator eval = new MockSecurityEvaluator(true, true, true, true, true, true, true);
+        final SecuredModel model = Factory.getInstance(eval, "http://example.com/securedModel", baseModel);
+        try {
+            final String query = "prefix fn: <http://www.w3.org/2005/xpath-functions#>  " + " SELECT ?foo ?bar WHERE "
+                    + " { ?foo a <http://example.com/class> ; " + "?bar [] ." + "  } ";
+            try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+                final ResultSet results = qexec.execSelect();
+                int count = 0;
+                for (; results.hasNext();) {
+                    count++;
+                    results.nextSolution();
+                }
+                Assert.assertEquals(8, count);
+            }
+        } finally {
+            model.close();
+        }
+    }
 
-	@Test
-	public void testRestrictedQueryType() {
-		final SecurityEvaluator eval = new MockSecurityEvaluator(true, true,
-				true, true, true, true) {
+    @Test
+    public void testRestrictedQueryType() {
+        final SecurityEvaluator eval = new MockSecurityEvaluator(true, true, true, true, true, true, true) {
 
-			@Override
-			public boolean evaluate(final Object principal,
-					final Action action, final Node graphIRI,
-					final Triple triple) {
-				if (triple.getSubject().isURI() && triple.getSubject().getURI().equals(
-						 "http://example.com/resource/1")) {
-					return false;
-				}
-				return super.evaluate(principal, action, graphIRI, triple);
-			}
-		};
-		final SecuredModel model = Factory.getInstance(eval,
-				"http://example.com/securedModel", baseModel);
-		try {
-			final String query = "prefix fn: <http://www.w3.org/2005/xpath-functions#>  "
-					+ " SELECT ?foo ?bar WHERE "
-					+ " { ?foo a <http://example.com/class> ; "
-					+ "?bar [] ."
-					+ "  } ";
-			try ( QueryExecution qexec = QueryExecutionFactory.create(query, model) ) {
-				final ResultSet results = qexec.execSelect();
-				int count = 0;
-				for (; results.hasNext();) {
-					count++;
-					results.nextSolution();
-				}
-				Assert.assertEquals(4, count);
-			}
-		} finally {
-			model.close();
-		}
-	}
+            @Override
+            public boolean evaluate(final Object principal, final Action action, final Node graphIRI,
+                    final Triple triple) {
+                if (triple.getSubject().isURI()
+                        && triple.getSubject().getURI().equals("http://example.com/resource/1")) {
+                    return false;
+                }
+                return super.evaluate(principal, action, graphIRI, triple);
+            }
+        };
+        final SecuredModel model = Factory.getInstance(eval, "http://example.com/securedModel", baseModel);
+        try {
+            final String query = "prefix fn: <http://www.w3.org/2005/xpath-functions#>  " + " SELECT ?foo ?bar WHERE "
+                    + " { ?foo a <http://example.com/class> ; " + "?bar [] ." + "  } ";
+            try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+                final ResultSet results = qexec.execSelect();
+                int count = 0;
+                for (; results.hasNext();) {
+                    count++;
+                    results.nextSolution();
+                }
+                Assert.assertEquals(4, count);
+            }
+        } finally {
+            model.close();
+        }
+    }
 
-	@Test
-	public void testSelectAllType() {
-		final SecurityEvaluator eval = new MockSecurityEvaluator(true, true,
-				true, true, true, true) {
+    @Test
+    public void testSelectAllType() {
+        final SecurityEvaluator eval = new MockSecurityEvaluator(true, true, true, true, true, true, true) {
 
-			@Override
-			public boolean evaluate(Object principal, final Action action,
-					final Node graphIRI, final Triple triple) {
-				if (triple.getSubject().isURI() && triple.getSubject().getURI().equals(
-						 "http://example.com/resource/1")) {
-					return false;
-				}
-				return super.evaluate(principal, action, graphIRI, triple);
-			}
-		};
-		final SecuredModel model = Factory.getInstance(eval,
-				"http://example.com/securedModel", baseModel);
-		try {
-			String query = "SELECT ?s ?p ?o WHERE " + " { ?s ?p ?o } ";
-			try ( QueryExecution qexec = QueryExecutionFactory.create(query, model) ) {
-				final ResultSet results = qexec.execSelect();
-				int count = 0;
-				for (; results.hasNext();) {
-					count++;
-					results.nextSolution();
-				}
-				// 2x 3 values + type triple
-				Assert.assertEquals(8, count);
-			}
+            @Override
+            public boolean evaluate(Object principal, final Action action, final Node graphIRI, final Triple triple) {
+                if (triple.getSubject().isURI()
+                        && triple.getSubject().getURI().equals("http://example.com/resource/1")) {
+                    return false;
+                }
+                return super.evaluate(principal, action, graphIRI, triple);
+            }
+        };
+        final SecuredModel model = Factory.getInstance(eval, "http://example.com/securedModel", baseModel);
+        try {
+            String query = "SELECT ?s ?p ?o WHERE " + " { ?s ?p ?o } ";
+            try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+                final ResultSet results = qexec.execSelect();
+                int count = 0;
+                for (; results.hasNext();) {
+                    count++;
+                    results.nextSolution();
+                }
+                // 2x 3 values + type triple
+                Assert.assertEquals(8, count);
+            }
 
-			query = "SELECT ?s ?p ?o WHERE " + " { GRAPH ?g {?s ?p ?o } }";
-			try ( QueryExecution qexec = QueryExecutionFactory.create(query, model) ) {
-				final ResultSet results = qexec.execSelect();
-				int count = 0;
-				for (; results.hasNext();) {
-					count++;
-					results.nextSolution();
-				}
-				// 2x 3 values + type triple
-				// no named graphs so no results.
-				Assert.assertEquals(0, count);
-			}
-		} finally {
-			model.close();
-		}
-	}
+            query = "SELECT ?s ?p ?o WHERE " + " { GRAPH ?g {?s ?p ?o } }";
+            try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
+                final ResultSet results = qexec.execSelect();
+                int count = 0;
+                for (; results.hasNext();) {
+                    count++;
+                    results.nextSolution();
+                }
+                // 2x 3 values + type triple
+                // no named graphs so no results.
+                Assert.assertEquals(0, count);
+            }
+        } finally {
+            model.close();
+        }
+    }
 }

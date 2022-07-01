@@ -1,0 +1,3 @@
+# Used to test inclusion of multiple rule sets
+
+rule2: -> (eg:a rdf:type eg:D) .

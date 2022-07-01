@@ -18,26 +18,25 @@
 
 package org.apache.jena.fuseki.main;
 
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.FusekiConfigException;
+import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
+import org.apache.jena.fuseki.server.OperationRegistry;
 import org.apache.jena.fuseki.servlets.ActionBase;
-import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.http.HttpMethod;
@@ -53,15 +52,23 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.util.thread.ThreadPool;
+import org.eclipse.jetty.xml.XmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
+import static org.apache.jena.fuseki.Fuseki.serverLog;
 
 /**
  * Jetty server for servlets, including being able to run Fuseki {@link ActionBase} derived servlets.
  * Static RDF types by file extension can be enabled.
  */
 public class JettyServer {
-    // Possibility: Use this for the super class of FusekiServer or within FusekiServer.jettyServer 
+    // Possibility: Use this for the super class of FusekiServer or within FusekiServer.jettyServer
     // as implementation inheritance.
     // Caution : there are small differences e.g. in building where order matters.
 
@@ -139,46 +146,65 @@ public class JettyServer {
         public PlainErrorHandler() {}
 
         @Override
-        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
-        {
+        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
             String method = request.getMethod();
 
             if ( !method.equals(HttpMethod.GET.asString())
                  && !method.equals(HttpMethod.POST.asString())
                  && !method.equals(HttpMethod.HEAD.asString()) )
-                return ;
+                return;
 
-            response.setContentType(MimeTypes.Type.TEXT_PLAIN_UTF_8.asString()) ;
+            response.setContentType(MimeTypes.Type.TEXT_PLAIN_UTF_8.asString());
             response.setHeader(HttpNames.hCacheControl, "must-revalidate,no-cache,no-store");
             response.setHeader(HttpNames.hPragma, "no-cache");
-            int code = response.getStatus() ;
-            String message=(response instanceof Response)?((Response)response).getReason(): HttpSC.getMessage(code) ;
-            response.getOutputStream().print(format("Error %d: %s\n", code, message)) ;
+            int code = response.getStatus();
+            String message=(response instanceof Response)?((Response)response).getReason(): HttpSC.getMessage(code);
+            response.getOutputStream().print(format("Error %d: %s\n", code, message));
         }
     }
 
-    public static class Builder {
-        private int                      port               = -1;
-        private boolean                  loopback           = false;
-        protected boolean                verbose            = false;
-        // Other servlets to add.
-        private List<Pair<String, HttpServlet>> servlets    = new ArrayList<>();
-        private List<Pair<String, Filter>> filters          = new ArrayList<>();
+    public static class JettyConfigException extends FusekiConfigException {
+        public JettyConfigException(String msg) { super(msg); }
+    }
 
-        private String                   contextPath        = "/";
-        private String                   servletContextName = "Jetty";
-        private String                   staticContentDir   = null;
-        private SecurityHandler          securityHandler    = null;
-        private ErrorHandler             errorHandler       = new PlainErrorHandler();
-        private Map<String, Object>      servletAttr        = new HashMap<>();
+    public static class Builder {
+        private int                     port               = -1;
+        private int                     minThreads         = -1;
+        private int                     maxThreads         = -1;
+        private boolean                 loopback           = false;
+        private String                  jettyServerConfig  = null;
+        protected boolean               verbose            = false;
+        // Other servlets to add.
+        private List<Pair<String, HttpServlet>> servlets   = new ArrayList<>();
+        private List<Pair<String, Filter>> filters         = new ArrayList<>();
+
+        private String                  contextPath        = "/";
+        private String                  servletContextName = "Jetty";
+        private String                  staticContentDir   = null;
+        private SecurityHandler         securityHandler    = null;
+        private ErrorHandler            errorHandler       = new PlainErrorHandler();
+        private Map<String, Object>     servletAttr        = new HashMap<>();
 
         public Builder() {}
-        
+
         /** Set the port to run on. */
         public Builder port(int port) {
             if ( port < 0 )
                 throw new IllegalArgumentException("Illegal port="+port+" : Port must be greater than or equal to zero.");
             this.port = port;
+            return this;
+        }
+
+        /**
+         * Build the server using a Jetty configuration file.
+         * See <a href="https://wiki.eclipse.org/Jetty/Reference/jetty.xml_syntax">Jetty/Reference/jetty.xml_syntax</a>
+         * This is instead of any other server settings such as port or https.
+         */
+        public Builder jettyServerConfig(String filename) {
+            requireNonNull(filename, "filename");
+            if ( ! FileOps.exists(filename) )
+                throw new JettyConfigException("File not found: "+filename);
+            this.jettyServerConfig = filename;
             return this;
         }
 
@@ -246,6 +272,46 @@ public class JettyServer {
         }
 
         /**
+         * Set the number threads used by Jetty. This uses a {@code org.eclipse.jetty.util.thread.QueuedThreadPool} provided by Jetty.
+         * <p>
+         * Argument order is (minThreads, maxThreads).
+         * <p>
+         * <ul>
+         * <li>Use (-1,-1) for Jetty "default". The Jetty 9.4 defaults are (min=8,max=200).
+         * <li>If (min != -1, max is -1) then the default max is 20.
+         * <li>If (min is -1, max != -1) then the default min is 2.
+         * </ul>
+         */
+        public Builder numServerThreads(int minThreads, int maxThreads) {
+            if ( minThreads >= 0 && maxThreads > 0 ) {
+                if ( minThreads > maxThreads )
+                    throw new JettyConfigException(String.format("Bad thread setting: (min=%d, max=%d)", minThreads, maxThreads));
+            }
+            this.minThreads = minThreads;
+            this.maxThreads = maxThreads;
+            return this;
+        }
+
+        /** @deprecated Renamed as {@link #maxServerThreads} */
+        @Deprecated
+        public Builder maxServerNumThreads(int maxThreads) {
+            return maxServerThreads(maxThreads);
+        }
+
+        /**
+         * Set the maximum number threads used by Jetty.
+         * This is equivalent to {@code numServerThreads(-1, maxThreads)}
+         * and overrides any previous setting of the maximum number of threads.
+         * In development or in embedded use, limiting the maximum threads can be useful.
+         */
+        public Builder maxServerThreads(int maxThreads) {
+            if ( minThreads > maxThreads )
+                throw new JettyConfigException(String.format("Bad thread setting: (min=%d, max=%d)", minThreads, maxThreads));
+            numServerThreads(minThreads, maxThreads);
+            return this;
+        }
+
+        /**
          * Add the given servlet with the pathSpec. These are added so that they are
          * before the static content handler (which is the last servlet)
          * used for {@link #staticFileBase(String)}.
@@ -286,7 +352,10 @@ public class JettyServer {
         public JettyServer build() {
             ServletContextHandler handler = buildServletContext();
             // Use HandlerCollection for several ServletContextHandlers and thus several ServletContext.
-            Server server = jettyServer(port, loopback);
+            Server server = jettyServerConfig != null
+                    ? jettyServer(jettyServerConfig)
+                    : jettyServer(minThreads, maxThreads);
+            serverAddConnectors(server, port, loopback);
             server.setHandler(handler);
             return new JettyServer(port, server);
         }
@@ -307,8 +376,8 @@ public class JettyServer {
             // plain Jetty server, e.g. to use Fuseki logging.
             try {
                 Fuseki.setVerbose(cxt, verbose);
-                ServiceDispatchRegistry.set(cxt, new ServiceDispatchRegistry(false));
-                DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry());
+                OperationRegistry.set(cxt, OperationRegistry.createEmpty());
+                DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(MetricsProviderRegistry.get().getMeterRegistry()));
             } catch (NoClassDefFoundError err) {
                 LOG.info("Fuseki classes not found");
             }
@@ -352,21 +421,48 @@ public class JettyServer {
             FilterHolder h = new FilterHolder(filter);
             context.addFilter(h, pathspec, null);
         }
+    }
 
-        /** Jetty server */
-        private static Server jettyServer(int port, boolean loopback) {
+    // Jetty Server
+
+    public static Server jettyServer(String jettyConfig) {
+        try {
             Server server = new Server();
-            HttpConnectionFactory f1 = new HttpConnectionFactory();
-
-            //f1.getHttpConfiguration().setRequestHeaderSize(512 * 1024);
-            //f1.getHttpConfiguration().setOutputBufferSize(1024 * 1024);
-            f1.getHttpConfiguration().setSendServerVersion(false);
-            ServerConnector connector = new ServerConnector(server, f1);
-            connector.setPort(port);
-            server.addConnector(connector);
-            if ( loopback )
-                connector.setHost("localhost");
+            Resource configXml = Resource.newResource(jettyConfig);
+            XmlConfiguration configuration = new XmlConfiguration(configXml);
+            configuration.configure(server);
             return server;
+        } catch (Exception ex) {
+            serverLog.error("JettyServer: Failed to configure server: " + ex.getMessage(), ex);
+            throw new JettyConfigException("Failed to configure a server using configuration file '" + jettyConfig + "'");
         }
     }
+
+    public static Server jettyServer(int minThreads, int maxThreads) {
+        ThreadPool threadPool = null;
+        // Jetty 9.4 : the Jetty default is 200,8
+        if ( minThreads < 0 )
+            minThreads = 2;
+        if ( maxThreads < 0 )
+            maxThreads = 20;
+        maxThreads = Math.max(minThreads, maxThreads);
+        // Args reversed:Jetty uses (max,min)
+        threadPool = new QueuedThreadPool(maxThreads, minThreads);
+        Server server = new Server(threadPool);
+        return server;
+    }
+
+    private static void serverAddConnectors(Server server, int port,  boolean loopback) {
+        HttpConnectionFactory f1 = new HttpConnectionFactory();
+
+        //f1.getHttpConfiguration().setRequestHeaderSize(512 * 1024);
+        //f1.getHttpConfiguration().setOutputBufferSize(1024 * 1024);
+        f1.getHttpConfiguration().setSendServerVersion(false);
+        ServerConnector connector = new ServerConnector(server, f1);
+        connector.setPort(port);
+        server.addConnector(connector);
+        if ( loopback )
+            connector.setHost("localhost");
+    }
+
 }

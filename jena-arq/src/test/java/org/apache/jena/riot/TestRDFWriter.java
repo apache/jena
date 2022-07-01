@@ -26,26 +26,23 @@ import java.io.Writer;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFWriter;
-import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.sse.SSE;
 import org.junit.Test;
 
 public class TestRDFWriter {
     private static Graph graph = SSE.parseGraph("(graph (:s :p :o))");
-    
+
     @Test public void rdfwriter_1() {
-        RDFWriter.create().source(graph).build();
+        RDFWriter.source(graph).build();
     }
-    
+
     @Test(expected=RiotException.class)
     public void rdfwriter_2() {
         RDFWriter.create().build();
     }
 
     @Test public void rdfwriter_3() {
-        String s = 
+        String s =
             RDFWriter.create()
                 .source(graph)
                 .lang(Lang.NT)
@@ -55,13 +52,13 @@ public class TestRDFWriter {
 
     @Test(expected=RiotException.class)
     public void rdfwriter_4() {
-        String s = 
+        String s =
             RDFWriter.create()
                 // No syntax
                 .source(graph)
                 .asString();
     }
-    
+
     @Test public void rdfwriter_5() {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         RDFWriter.create()
@@ -71,7 +68,7 @@ public class TestRDFWriter {
         String s = StrUtils.fromUTF8bytes(bout.toByteArray());
         assertTrue(s.contains("example/s"));
     }
-    
+
     @SuppressWarnings("deprecation")
     @Test public void rdfwriter_6() {
         Writer w = new CharArrayWriter();
@@ -83,6 +80,4 @@ public class TestRDFWriter {
         String s = w.toString();
         assertTrue(s.contains("example/s"));
     }
-    
-   
 }

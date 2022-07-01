@@ -19,11 +19,12 @@
 package org.apache.jena.atlas.lib;
 
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Hex ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import org.junit.Test ;
 
-public class TestHex extends BaseTest
+public class TestHex
 {
     @Test
     public void hex_01() {
@@ -63,8 +64,7 @@ public class TestHex extends BaseTest
     }
 
     private static void test(long value, int idx, byte[] b, int width) {
-        int x = Hex.formatUnsignedLongHex(b, idx, value, width);
-        assertEquals(width, x);
+        Hex.formatUnsignedLongHex(b, idx, value, width);
         for ( int i = 0 ; i < width ; i++ ) {
             int v = b[i];
             if ( v >= '0' && v <= '9' )
@@ -79,19 +79,19 @@ public class TestHex extends BaseTest
         long v = Hex.getLong(b, idx);
         assertEquals(value, v);
     }
-    
+
     private static void testStr2Val(String str, int expected) {
         testStr2Val(str, 0, str.length(), expected) ;
     }
-    
+
     private static void testStr2Val(String str, int start, int length, int expected) {
         /* int i = */ Hex.hexStringToInt(str, start, length) ;
     }
-    
+
     @Test public void hexValue_01()     { testStr2Val("A", 10); }
     @Test public void hexValue_02()     { testStr2Val("0A", 10); }
     @Test public void hexValue_03()     { testStr2Val("AA", 16*10+10); }
     @Test public void hexValue_04()     { testStr2Val("FF", 255); }
     @Test public void hexValue_05()     { testStr2Val("00FF00", 2, 2, 255); }
-    
+
 }

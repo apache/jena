@@ -32,21 +32,17 @@ import org.apache.jena.atlas.iterator.IteratorSlotted ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.LangEngine ;
 import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.riot.system.* ;
-import org.apache.jena.riot.tokens.Token ;
-import org.apache.jena.riot.tokens.TokenType ;
-import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.*;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.graph.NodeConst ;
 
 /** Language for reading in a stream of bindings.
  * See <a href="https://cwiki.apache.org/confluence/display/JENA/BindingIO">BindingIO</a>
- * 
+ *
  * <p>Summary:</p>
  * <ul>
  * <li>Directives:
@@ -54,7 +50,7 @@ import org.apache.jena.sparql.graph.NodeConst ;
  *     <li>VARS - list of variables.</li>
  *     <li>PREFIX</li>
  *   </ul>
- *  </li> 
+ *  </li>
  * <li>Lines of RDF terms (Turtle, no triple-quoted strings)</li>
  * <li>Items on line align with last VARS declaration</li>
  * <li>* for "same as last row"</li>
@@ -64,35 +60,34 @@ import org.apache.jena.sparql.graph.NodeConst ;
 public class BindingInputStream extends LangEngine implements Iterator<Binding>, Closeable
 {
     // In effect, multiple Inheritance.
-    // We implementation-inherit from LangEngine(no public methods) 
-    // and also IteratorTuples (redirecting calls to be object) 
+    // We implementation-inherit from LangEngine(no public methods)
+    // and also IteratorTuples (redirecting calls to be object)
     private final IteratorTuples iter ;
-    
+
     public BindingInputStream(InputStream in)
     {
-        this(TokenizerFactory.makeTokenizerUTF8(in)) ;
+        this(TokenizerText.create().source(in).build()) ;
     }
-    
+
     public BindingInputStream(Tokenizer tokenizer)
     {
         this(tokenizer,  profile()) ;
     }
-    
+
     static ParserProfile profile()
     {
         // Don't do anything with IRIs or blank nodes.
-        Prologue prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.createNoResolve()) ;
         ErrorHandler handler = ErrorHandlerFactory.getDefaultErrorHandler() ;
         FactoryRDF factory = RiotLib.factoryRDF(LabelToNode.createUseLabelAsGiven()) ;
         ParserProfile profile = RiotLib.createParserProfile(factory, handler, false);
         return profile ;
     }
-    
+
     /** Create an RDF Tuples parser.
-     *  No need to pass in a buffered InputStream; the code 
+     *  No need to pass in a buffered InputStream; the code
      *  will do its own buffering.
      */
-    
+
     private BindingInputStream(Tokenizer tokenizer, ParserProfile profile)
     {
         super(tokenizer, profile, profile.getErrorHandler()) ;
@@ -114,7 +109,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     @Override
     public void remove()
     { iter.remove() ; }
-    
+
     public List<Var> vars()
     { return Collections.unmodifiableList(iter.vars) ; }
 
@@ -128,7 +123,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
         {
             directives() ;
         }
-        
+
         private void directives()
         {
             while ( lookingAt(TokenType.KEYWORD) )
@@ -150,7 +145,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
                 break;
             }
         }
-        
+
         protected final static String  KW_TRUE        = "true" ;
         protected final static String  KW_FALSE       = "false" ;
 
@@ -159,17 +154,17 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
         {
             directives() ;
 
-            BindingMap binding = BindingFactory.create() ;
+            BindingBuilder builder = Binding.builder() ;
 
             int i = 0 ;
-            
+
             while( ! lookingAt(TokenType.DOT) )
             {
                 if ( i >= vars.size() )
                     exception(peekToken(), "Too many items in a line.  Expected "+vars.size()) ;
-                
+
                 Var v = vars.get(i) ;
-                
+
                 Token token = nextToken() ;
                 if ( ! token.hasType(TokenType.MINUS ) )
                 {
@@ -193,20 +188,21 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
                     } else {
                         n = profile.create(null, token) ;
                     }
-                    binding.add(v, n) ;
+                    builder.add(v, n) ;
                 }
                 i++ ;
             }
             if ( eof() )
                 exception(peekToken(), "Line does not end with a DOT") ;
-            
+
             Token dot = nextToken() ;
-            
+
             if ( i != vars.size() )
             {
                 Var v = vars.get(vars.size()-1) ;
                 exception(dot, "Too many items in a line.  Expected "+vars.size()) ;
             }
+            Binding binding = builder.build();
             lastLine = binding ;
             return binding ;
         }
@@ -216,7 +212,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
         {
             return moreTokens() ;
         }
-     
+
         private void directiveVars()
         {
             vars.clear() ;
@@ -242,7 +238,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
             if ( ! lookingAt(IRI) )
                 exception(peekToken(), "@prefix requires an IRI (found '"+peekToken()+"')") ;
             String iriStr = peekToken().getImage() ;
-            IRI iri = profile.makeIRI(iriStr, currLine, currCol) ;
+            String iri = profile.resolveIRI(iriStr, currLine, currCol) ;
             profile.getPrefixMap().add(prefix, iri) ;
             nextToken() ;
             expect("PREFIX directive not terminated by a dot", DOT) ;

@@ -17,35 +17,30 @@
  */
 package org.apache.jena.permissions.contract.graph;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.test.MetaTestGraph ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.test.MetaTestGraph;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb.TDBFactory;
 
-public class SecuredTDBGraphContractTests extends MetaTestGraph
-{
+public class SecuredTDBGraphContractTests extends MetaTestGraph {
 
-	private final SecurityEvaluator eval;
+    private final SecurityEvaluator eval;
 
-	public SecuredTDBGraphContractTests( final Class<? extends Graph> graphClass,
-			final String name )
-	{
-		super(graphClass, name);
-		eval = new MockSecurityEvaluator(true, true, true, true, true, true);
-	}
+    public SecuredTDBGraphContractTests(final Class<? extends Graph> graphClass, final String name) {
+        super(graphClass, name);
+        eval = new MockSecurityEvaluator(true, true, true, true, true, true, true);
+    }
 
-	public SecuredTDBGraphContractTests( final String name )
-	{
-		super(name);
-		eval = new MockSecurityEvaluator(true, true, true, true, true, true);
-	}
+    public SecuredTDBGraphContractTests(final String name) {
+        super(name);
+        eval = new MockSecurityEvaluator(true, true, true, true, true, true, true);
+    }
 
-	@Override
-	public Graph getGraph()
-	{
-		return org.apache.jena.permissions.Factory.getInstance(eval, getName(),
-				TDBFactory.createDatasetGraph().getDefaultGraph());
-	}
+    @Override
+    public Graph getGraph() {
+        return org.apache.jena.permissions.Factory.getInstance(eval, getName(),
+                TDBFactory.createDatasetGraph().getDefaultGraph());
+    }
 
 }

@@ -20,19 +20,21 @@ package org.apache.jena.sparql.expr;
 
 public enum ValueSpaceClassification {
     VSPACE_NODE,
-    VSPACE_NUM, 
-    VSPACE_DATETIME, 
+    VSPACE_TRIPLE_TERM,
+
+    VSPACE_NUM,
+    VSPACE_DATETIME,
     VSPACE_DATE,
     VSPACE_TIME,
     VSPACE_DURATION,
-    
+
     // Collapse to VSPACE_DATETIME?
     VSPACE_G_YEAR,
     VSPACE_G_YEARMONTH,
     VSPACE_G_MONTHDAY,
-    VSPACE_G_MONTH,    
+    VSPACE_G_MONTH,
     VSPACE_G_DAY,
-    
+
     VSPACE_STRING, VSPACE_LANG, VSPACE_SORTKEY,
     VSPACE_BOOLEAN,
     VSPACE_UNKNOWN,

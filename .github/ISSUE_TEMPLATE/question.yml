@@ -1,0 +1,30 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+name: Question
+description: "Ask a question"
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For general RDF, SPARQL and Semantic Web questions, please consider using the
+        [Jena discussions area](https://github.com/apache/jena/discussions).
+  - type: input
+    id: jena-version
+    attributes:
+      label: Version
+      description: Which version of Apache Jena are you running?
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ----
+        #### Code of Conduct
+        [Apache Software Foundation Code of Conduct](https://github.com/apache/.github/blob/main/.github/CODE_OF_CONDUCT.md)

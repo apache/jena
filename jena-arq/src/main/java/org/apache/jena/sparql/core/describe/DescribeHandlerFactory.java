@@ -18,10 +18,8 @@
 
 package org.apache.jena.sparql.core.describe;
 
-
 /** Factory for describe handlers */
 
-public interface DescribeHandlerFactory
-{
-    public DescribeHandler create() ;
+public interface DescribeHandlerFactory {
+    public DescribeHandler create();
 }

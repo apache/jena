@@ -22,9 +22,6 @@ import static java.lang.ThreadLocal.withInitial;
 import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.query.ReadWrite.WRITE;
 import static org.apache.jena.sparql.core.Quad.isUnionGraph;
-import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
-import static org.apache.jena.system.Txn.calculateRead;
-import static org.apache.jena.system.Txn.executeWrite;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Iterator;
@@ -34,13 +31,19 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.graph.*;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.other.G;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapStd;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.shared.LockMRPlusSW;
 import org.apache.jena.sparql.JenaTransactionException;
-import org.apache.jena.sparql.core.* ;
+import org.apache.jena.sparql.core.*;
+import org.apache.jena.system.Txn;
 import org.slf4j.Logger;
 
 /**
@@ -51,7 +54,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 
     private static final Logger log = getLogger(DatasetGraphInMemory.class);
 
-    private final DatasetPrefixStorage prefixes = new DatasetPrefixStorageInMemory();
+    private final PrefixMap prefixes = new PrefixMapStd();
 
     /** This lock imposes the multiple-reader and single-writer policy of transactions */
     private final Lock transactionLock = new LockMRPlusSW();
@@ -60,11 +63,11 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
      * Transaction lifecycle operations must be atomic, especially
      * {@link Transactional#begin} and {@link Transactional#commit}.
      * <p>
-     * There are changes to be made to several datastructures and this 
+     * There are changes to be made to several datastructures and this
      * insures that they are made consistently.
      */
     private final ReentrantLock systemLock = new ReentrantLock(true);
-    
+
     /**
      * Dataset version.
      * A write transaction increments this in commit.
@@ -91,10 +94,10 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
      * @return the current mode of the transaction in progress
      */
     @Override
-    public ReadWrite transactionMode() { 
+    public ReadWrite transactionMode() {
         return transactionMode.get();
     }
-    
+
     @Override
     public TxnType transactionType() {
         return transactionType.get();
@@ -131,25 +134,20 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         this.quadsIndex = i;
         this.defaultGraph = t;
     }
-    
+
     @Override
     public boolean supportsTransactions()       { return true; }
     @Override
     public boolean supportsTransactionAbort()   { return true; }
 
     @Override
-    public void begin(final ReadWrite readWrite) {
-        begin(TxnType.convert(readWrite));
-    }
-
-    @Override
     public void begin(TxnType txnType) {
-        if (isInTransaction()) 
+        if (isInTransaction())
             throw new JenaTransactionException("Transactions cannot be nested!");
         transactionType.set(txnType);
         _begin(txnType, TxnType.initial(txnType));
     }
-    
+
     private void _begin(TxnType txnType, ReadWrite readWrite) {
         // Takes transactionLock
         startTransaction(txnType, readWrite);
@@ -159,8 +157,8 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             version.set(generation.get());
         }) ;
     }
-    
-    /** Called transaction start code at most once per transaction. */ 
+
+    /** Called transaction start code at most once per transaction. */
     private void startTransaction(TxnType txnType, ReadWrite mode) {
         transactionLock.enterCriticalSection(mode.equals(ReadWrite.READ)); // get the dataset write lock, if needed.
         transactionType.set(txnType);
@@ -168,7 +166,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         isInTransaction(true);
     }
 
-    /** Called transaction ending code at most once per transaction. */ 
+    /** Called transaction ending code at most once per transaction. */
     private void finishTransaction() {
         isInTransaction.remove();
         transactionType.remove();
@@ -183,12 +181,12 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             throw new JenaTransactionException("Tried to promote outside a transaction!");
         if ( transactionMode().equals(ReadWrite.WRITE) )
             return true;
-        
+
         if ( transactionType() == TxnType.READ )
             return false;
-        
+
         boolean readCommitted = (promoteMode == Promote.READ_COMMITTED);
-        
+
         try {
             _promote(readCommitted);
             return true;
@@ -196,7 +194,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             return false ;
         }
     }
-    
+
     private void _promote(boolean readCommited) {
         // Outside lock.
         if ( ! readCommited && version.get() != generation.get() )  {
@@ -206,10 +204,10 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             // The final test is after we obtain the transactionLock.
             throw new JenaTransactionException("Dataset changed - can't promote") ;
         }
-    
+
         // Blocking on other writers.
         transactionLock.enterCriticalSection(Lock.WRITE);
-        // Check again now we are inside the lock. 
+        // Check again now we are inside the lock.
         if ( ! readCommited && version.get() != generation.get() )  {
                 // Can't promote - release the lock.
                 transactionLock.leaveCriticalSection();
@@ -243,10 +241,10 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             }
         } ) ;
     }
-    
+
     @Override
     public void abort() {
-        if (!isInTransaction()) 
+        if (!isInTransaction())
             throw new JenaTransactionException("Tried to abort outside a transaction!");
         if (transactionMode().equals(WRITE))
             _abort();
@@ -261,7 +259,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             defaultGraph().end();
         } ) ;
     }
-    
+
     @Override
     public void close() {
         if (isInTransaction())
@@ -273,7 +271,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         if (isInTransaction()) {
             if (transactionMode().equals(WRITE)) {
                 String msg = "end() called for WRITE transaction without commit or abort having been called. This causes a forced abort.";
-                // _abort does _end actions inside the lock. 
+                // _abort does _end actions inside the lock.
                 _abort() ;
                 finishTransaction();
                 throw new JenaTransactionException(msg);
@@ -283,14 +281,14 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             finishTransaction();
         }
     }
-    
+
     private void _end() {
         withLock(systemLock, () -> {
             quadsIndex().end();
             defaultGraph().end();
         } ) ;
     }
-    
+
     private static void withLock(java.util.concurrent.locks.Lock lock, Runnable action) {
         lock.lock();
         try { action.run(); }
@@ -298,9 +296,9 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             lock.unlock();
         }
     }
-    
-    private <T> Iterator<T> access(final Supplier<Iterator<T>> source) {
-        return isInTransaction() ? source.get() : calculateRead(this, source::get);
+
+    private <T> T access(final Supplier<T> source) {
+        return isInTransaction() ? source.get() : Txn.calculateRead(this, source::get);
     }
 
     @Override
@@ -322,7 +320,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
 
     private Iterator<Quad> triplesFinder(final Node s, final Node p, final Node o) {
-        return triples2quadsDftGraph(defaultGraph().find(s, p, o).iterator());
+        return G.triples2quadsDftGraph(defaultGraph().find(s, p, o).iterator());
     }
 
     @Override
@@ -335,19 +333,19 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 
     @Override
     public Graph getGraph(final Node graphNode) {
-        return new GraphInMemory(this, graphNode);
+        return GraphView.createNamedGraph(this, graphNode);
     }
 
     @Override
     public Graph getDefaultGraph() {
-        return getGraph(Quad.defaultGraphNodeGenerated);
+        return GraphView.createDefaultGraph(this);
     }
 
     @Override
     public Graph getUnionGraph() {
-        return getGraph(Quad.unionGraph);
+        return GraphView.createUnionGraph(this);
     }
-    
+
     private Consumer<Graph> addGraph(final Node name) {
         return g -> g.find().mapWith(t -> new Quad(name, t)).forEachRemaining(this::add);
     }
@@ -362,7 +360,6 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     @Override
     public void removeGraph(final Node graphName) {
         mutate(removeGraph, getGraph(graphName));
-        prefixes().removeAllFromPrefixMap(graphName.getURI()) ;
     }
 
     /**
@@ -388,19 +385,20 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
                 }
             }
             mutator.accept(payload);
-        } else executeWrite(this, () -> mutator.accept(payload));
+        } else Txn.executeWrite(this, () -> mutator.accept(payload));
     }
 
     /**
      * @return the prefixes in use in this dataset
      */
-    public DatasetPrefixStorage prefixes() {
+    @Override
+    public PrefixMap prefixes() {
         return prefixes;
     }
 
     @Override
     public long size() {
-        return quadsIndex().listGraphNodes().count() ;
+        return access(() -> quadsIndex().listGraphNodes().count());
     }
 
     @Override

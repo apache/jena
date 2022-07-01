@@ -21,7 +21,6 @@ package org.apache.jena.riot;
 import java.io.OutputStream ;
 import java.io.Writer ;
 
-import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
@@ -36,7 +35,7 @@ public interface WriterDatasetRIOT
     /**
      * @param out           OutputStream
      * @param datasetGraph  DatasetGraph to be written
-     * @param prefixMap     PrefixMap - maybe null (default should be to use the prefixmapping from the Graph)
+     * @param prefixMap     PrefixMap - maybe null (default should be to use the prefix mapping from the Graph)
      * @param baseURI       base URI - may be null for "none"
      * @param context       Context (see specific implementation for details) 
      */
@@ -45,7 +44,7 @@ public interface WriterDatasetRIOT
     /** Use of Writer is discouraged - let the serializer manage character sets in accordance with the format
      * @param out           Writer
      * @param datasetGraph  DatasetGraph to be written
-     * @param prefixMap     PrefixMap - maybe null (default should be to use the prefixmapping from the Graph)
+     * @param prefixMap     PrefixMap - maybe null (default should be to use the prefix mapping from the Graph)
      * @param baseURI       base URI - may be null for "none"
      * @param context       Context (see specific implementation for details) 
      */

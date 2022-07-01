@@ -53,7 +53,7 @@ public abstract class CmdTDB extends CmdARQ
             return ;
         // attempt once.
         initialized = true ;
-        LogCtl.setCmdLogging() ;
+        LogCtl.setLogging() ;
     }
 
     @Override

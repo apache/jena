@@ -19,9 +19,9 @@
 package org.apache.jena.riot.system;
 
 import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.iri.IRI;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.sparql.core.Quad;
 
@@ -29,11 +29,11 @@ public class ParserProfileWrapper implements ParserProfile
 {
     private final ParserProfile other;
     protected ParserProfile get() { return other; }
-    
+
     public ParserProfileWrapper(ParserProfile other) {
         this.other = other;
     }
-    
+
     @Override
     public FactoryRDF getFactorRDF() {
         return get().getFactorRDF();
@@ -55,12 +55,7 @@ public class ParserProfileWrapper implements ParserProfile
     }
 
     @Override
-    public IRI makeIRI(String uriStr, long line, long col) {
-        return get().makeIRI(uriStr, line, col);
-    }
-
-    @Override
-    public void setIRIResolver(IRIResolver resolver) { get().setIRIResolver(resolver); }
+    public void setBaseIRI(String baseIRI) { get().setBaseIRI(baseIRI); }
 
     @Override
     public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) {
@@ -100,6 +95,21 @@ public class ParserProfileWrapper implements ParserProfile
     @Override
     public Node createBlankNode(Node scope, long line, long col) {
         return get().createBlankNode(scope, line, col);
+    }
+
+    @Override
+    public Node createTripleNode(Node subject, Node predicate, Node object, long line, long col) {
+        return get().createTripleNode(subject, predicate, object, line, col);
+    }
+
+    @Override
+    public Node createTripleNode(Triple triple, long line, long col) {
+        return get().createTripleNode(triple, line, col);
+    }
+
+    @Override
+    public Node createGraphNode(Graph graph, long line, long col) {
+        return get().createGraphNode(graph, line, col);
     }
 
     @Override

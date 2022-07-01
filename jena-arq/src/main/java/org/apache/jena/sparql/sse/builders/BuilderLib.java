@@ -114,7 +114,7 @@ public class BuilderLib {
     }
 
     public static void exception(String msg) {
-        throw new ExprBuildException(msg);
+        throw new SSE_ExprBuildException(msg);
     }
 
     public static void broken(ItemLocation location, String msg, Item item) {

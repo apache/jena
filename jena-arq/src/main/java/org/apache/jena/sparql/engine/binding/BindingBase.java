@@ -18,53 +18,60 @@
 
 package org.apache.jena.sparql.engine.binding;
 
-import java.util.Iterator ;
-import java.util.Objects;
+import java.util.Iterator;
+import java.util.function.BiConsumer;
 
-import org.apache.jena.atlas.iterator.IteratorConcat ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.ARQInternalErrorException;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.atlas.iterator.IteratorConcat;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.util.FmtUtils;
 
 
-/** Machinary encapsulating a mapping from a name to a value.
+/** Machinery encapsulating a mapping from a name to a value.
  *  The "parent" is a shared, immutable, common set of bindings.
  *  An association of var/node must not override a setting in the parent.
- *  
- *  @see BindingFactory
- *  @see BindingMap for mutable bindings.
  */
-
 
 abstract public class BindingBase implements Binding
 {
-    static final boolean CHECKING = true ;
-    /*package*/ static final boolean UNIQUE_NAMES_CHECK = false ;
-    
     // This is a set of bindings, each binding being one pair (var, value).
-    protected final Binding parent ;
+    protected Binding parent;
 
     protected BindingBase(Binding _parent) {
         parent = _parent;
     }
 
-    public Binding getParent() {
-        return parent;
-    }
-    
-    /** Iterate over all the names of variables. */
+//    @Override
+//    public Binding getParent() { return parent; }
+
     @Override
-    final public Iterator<Var> vars() {
-        // Hidesight - replace with accumulator style vars1(accumulator)
+    final public Iterator<Var> vars()
+    {
         Iterator<Var> iter = vars1();
         if ( parent != null )
             iter = IteratorConcat.concat(parent.vars(), iter);
         return iter;
     }
 
+    /** Operate on each entry. */
+    @Override
+    public void forEach(BiConsumer<Var, Node> action) {
+        forEach1(action);
+        if ( parent != null )
+            parent.forEach(action);
+    }
+
+    protected void forEach1(BiConsumer<Var, Node> action) {
+        Iterator<Var> vIter = vars1();
+        while(vIter.hasNext() ) {
+            Var v = vIter.next();
+            Node n = get(v);
+            action.accept(v, n);
+        }
+    }
+
     protected abstract Iterator<Var> vars1();
-    
+
     @Override
     final public int size() {
         int x = size1();
@@ -85,17 +92,17 @@ abstract public class BindingBase implements Binding
     }
 
     protected abstract boolean isEmpty1();
-    
+
     /** Test whether a name is bound to some object */
     @Override
-    public boolean contains(Var var) {
+    final public boolean contains(Var var) {
         if ( contains1(var) )
             return true;
         if ( parent == null )
             return false;
         return parent.contains(var);
     }
-    
+
     protected abstract boolean contains1(Var var);
 
     /** Return the object bound to a name, or null */
@@ -115,15 +122,6 @@ abstract public class BindingBase implements Binding
 
     protected abstract Node get1(Var var);
 
-    protected static void checkPair(Var var, Node node) {
-        if ( !BindingBase.CHECKING )
-            return;
-        if ( var == null )
-            throw new ARQInternalErrorException("check(" + var + ", " + node + "): null var");
-        if ( node == null )
-            throw new ARQInternalErrorException("check(" + var + ", " + node + "): null node value");
-    }
-
     @Override
     public String toString() {
         StringBuffer sbuff = new StringBuffer();
@@ -141,6 +139,11 @@ abstract public class BindingBase implements Binding
 
     // Do one level of binding
     public void format1(StringBuffer sbuff) {
+        if ( isEmpty() ) {
+            sbuff.append("()");
+            return;
+        }
+
         String sep = "";
         for ( Iterator<Var> iter = vars1() ; iter.hasNext() ; ) {
             Object obj = iter.next();
@@ -148,11 +151,11 @@ abstract public class BindingBase implements Binding
 
             sbuff.append(sep);
             sep = " ";
-            format(sbuff, var);
+            fmtVar(sbuff, var);
         }
     }
 
-    protected void format(StringBuffer sbuff, Var var) {
+    protected void fmtVar(StringBuffer sbuff, Var var) {
         Node node = get(var);
         String tmp = FmtUtils.stringForObject(node);
         sbuff.append("( ?" + var.getVarName() + " = " + tmp + " )");
@@ -177,7 +180,7 @@ abstract public class BindingBase implements Binding
         if ( !(other instanceof Binding) )
             return false;
         Binding binding = (Binding)other;
-        return equals(this, binding);
+        return BindingLib.equals(this, binding);
     }
 
     // Not everything derives from BindingBase.
@@ -190,26 +193,5 @@ abstract public class BindingBase implements Binding
             hash ^= node.hashCode();
         }
         return hash;
-    }
-
-    public static boolean equals(Binding bind1, Binding bind2) {
-        if ( bind1 == bind2 )
-            return true;
-
-        // Same variables?
-
-        if ( bind1.size() != bind2.size() )
-            return false;
-
-        for ( Iterator<Var> iter1 = bind1.vars() ; iter1.hasNext() ; ) {
-            Var var = iter1.next();
-            Node node1 = bind1.get(var);
-            Node node2 = bind2.get(var);
-            if ( !Objects.equals(node1, node2) )
-                return false;
-        }
-
-        // No need to check the other way round as the sizes matched.
-        return true;
     }
 }

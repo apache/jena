@@ -1,9 +1,19 @@
+==
+Changes for 8089 (file URL)
+violations.xml 
+==
+Changes for 8141 (URN)
+violations.xml 
+
 ===
 Changes for RFC 1123 sec 2.1
 violations.xml: comment out IP_V4_HAS_FOUR_COMPONENTS
 PattenCompiler: remove entry using IP_V4_HAS_FOUR_COMPONENTS in for ipV4Address[]
 
 === JFlex
+
+See src-dev to project.
+Add JFlex.jar: /home/afs/sys/jflex-1.4.3/lib/JFlex.jar
 
 Build:
 See dev.buildlexer.MainGenerateLexers which does step 1-3

@@ -26,23 +26,23 @@ public class QueryParseException extends QueryException
 {
     private int line ;
     private int column ;
-    
+
     public QueryParseException(int line, int column)
     { this(null, null, line, column) ; }
-    
+
     public QueryParseException(Throwable cause, int line, int column)
     { this(null, cause, line, column) ; }
-    
+
     public QueryParseException(String msg, int line, int column)
     { this(msg, null, line, column) ; }
-    
+
     public QueryParseException(String msg, Throwable cause, int line, int column)
     {
         //super(formatMessage(msg, line, column), cause) ;
         super(msg, cause) ;
         set(line, column) ;
     }
-    
+
     private void set(int line, int column)
     { this.line = line ; this.column = column ; }
 
@@ -51,10 +51,11 @@ public class QueryParseException extends QueryException
 
     /** Line number where the parse exception occurred. */
     public int getLine()   { return line ; }
-    
+
     public static String formatMessage(String msg, int line, int column)
-    { 
+    {
         if ( line == -1 || column == -1 )
-            return msg ; 
-        return String.format("[line: %d, col: %d] "+msg, line, column) ; }
+            return msg ;
+        return String.format("[line: %d, col: %d] "+msg, line, column) ;
+    }
 }

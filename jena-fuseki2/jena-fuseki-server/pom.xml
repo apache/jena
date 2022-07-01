@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent> 
 
@@ -42,8 +42,14 @@
 
     <dependency>
       <groupId>org.apache.jena</groupId>
+      <artifactId>jena-text</artifactId>
+      <version>4.6.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-access</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -53,14 +59,22 @@
     </dependency>
     
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
     </dependency>
+
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <scope>runtime</scope>
     </dependency>
-    
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -71,9 +85,22 @@
         <artifactId>maven-shade-plugin</artifactId>
         <configuration>
           <shadedArtifactAttached>false</shadedArtifactAttached>
+
+          <!-- 
+            https://issues.apache.org/jira/browse/LOG4J2-954
+            Multiple Log4j2Plugins.dat
+            jena-fuseki-server only pick up one Log4j2Plugins.dat (from log4j-core)
+            No need to run the transformer to merge them.
+            If it becomes necessary, see: https://github.com/edwgiz/maven-shaded-log4j-transformer
+          -->
+
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
               <mainClass>org.apache.jena.fuseki.main.cmds.FusekiMainCmd</mainClass>
+              <!-- https://issues.apache.org/jira/browse/LOG4J2-2537 -->
+              <manifestEntries>
+                <Multi-Release>true</Multi-Release>
+              </manifestEntries>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
             <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
@@ -81,13 +108,13 @@
               <addHeader>false</addHeader>
             </transformer>
           </transformers>
+
           <filters>
             <filter>
               <artifact>*:*</artifact>
               <excludes>
-                <!-- Some jars are signed but shading breaks that.
-                     Don't include signing files.
-                -->
+                <!-- Some jars are signed but shading breaks that. Don't 
+                  include signing files. -->
                 <exclude>META-INF/*.SF</exclude>
                 <exclude>META-INF/*.DSA</exclude>
                 <exclude>META-INF/*.RSA</exclude>
@@ -109,5 +136,4 @@
     </plugins>
 
   </build>
-  
 </project>

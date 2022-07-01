@@ -19,13 +19,14 @@
 package org.apache.jena.riot.system;
 
 import static org.apache.jena.riot.RDFLanguages.JSONLD ;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.Iterator ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.rdf.model.Model ;
@@ -37,10 +38,10 @@ import org.junit.Assert ;
 import org.junit.Test ;
 
 /** tests : JSONLD->RDF ; JSONLD->RDF->JSONLD */
-public class TestJsonLDReadWrite extends BaseTest
+public class TestJsonLDReadWrite
 {
-    private static String DIR = "testing/RIOT/jsonld/" ; 
-    
+    private static String DIR = "testing/RIOT/jsonld/" ;
+
     @Test public void read_g01() { graphJ2R("graph1.jsonld", "graph1.ttl") ; }
 
     @Test public void read_g02() { graphJ2R("graph2.jsonld", "graph2.ttl") ; }
@@ -80,79 +81,80 @@ public class TestJsonLDReadWrite extends BaseTest
         filename = DIR+filename ;
         // Read in
         Model model = RDFDataMgr.loadModel(filename) ;
-        
+
         // Write a JSON-LD
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         RDFDataMgr.write(out, model, JSONLD) ;
         ByteArrayInputStream r = new ByteArrayInputStream(out.toByteArray()) ;
-        
+
 //        System.out.println();
 //        System.out.println(new String(out.toByteArray()));
 //        System.out.println();
-        
-        // Read as JSON-LD 
+
+        // Read as JSON-LD
         Model model2 = ModelFactory.createDefaultModel() ;
         RDFDataMgr.read(model2, r, null, JSONLD) ;
-        
+
         // Compare
-        if ( ! model.isIsomorphicWith(model2) ) 
+        if ( ! model.isIsomorphicWith(model2) )
             System.out.println("## ---- DIFFERENT") ;
-        
+
         assertTrue(model.isIsomorphicWith(model2));
-        
+
         // Check namespaces in parsed graph match the original data
         checkNamespaces(model2, model.getNsPrefixMap());
     }
-    
+
     static void rtRJRds(String filename)
     {
+        //Creator<Dataset> creator = ()->DatasetFactory.createTxnMem();
+        Creator<Dataset> creator = ()->DatasetFactory.createGeneral();
+
         filename = DIR+filename ;
-        Dataset ds1 = RDFDataMgr.loadDataset(filename) ;
-        
+        Dataset ds1 = creator.create();
+        RDFDataMgr.read(ds1, filename) ;
+
         // Write a JSON-LD
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         RDFDataMgr.write(out, ds1, JSONLD) ;
         ByteArrayInputStream r = new ByteArrayInputStream(out.toByteArray()) ;
-        
-//        System.out.println();
-//        System.out.println(new String(out.toByteArray()));
-//        System.out.println();
-        
-        // Read as JSON-LD 
-        @SuppressWarnings("deprecation")
-        Dataset ds2 = DatasetFactory.createMem() ;
+
+        // Read as JSON-LD
+        // This must be the same kind of dataset as ds1 due to treatment of prefixes
+        // on individual graphs for legacy.
+        Dataset ds2 = creator.create();
         RDFDataMgr.read(ds2, r, null, JSONLD) ;
-        
+
         if ( ! isIsomorphic(ds1, ds2) )
         {
             SSE.write(ds1) ;
             SSE.write(ds2) ;
         }
-        
-        assertTrue(isIsomorphic(ds1, ds2) ) ; 
-        
+
+        assertTrue(isIsomorphic(ds1, ds2) ) ;
+
         // Check namespaces in the parsed dataset match those in the original data
-    	checkNamespaces(ds2.getDefaultModel(), ds1.getDefaultModel().getNsPrefixMap());
-    	Iterator<String> graphNames = ds2.listNames();
-    	while (graphNames.hasNext()) {
-    		String gn = graphNames.next();
-    		checkNamespaces(ds2.getNamedModel(gn), ds1.getNamedModel(gn).getNsPrefixMap());
-    	}
+        checkNamespaces(ds2.getDefaultModel(), ds1.getDefaultModel().getNsPrefixMap());
+        Iterator<String> graphNames = ds2.listNames();
+        while (graphNames.hasNext()) {
+            String gn = graphNames.next();
+            checkNamespaces(ds2.getNamedModel(gn), ds1.getNamedModel(gn).getNsPrefixMap());
+        }
     }
 
-    private static boolean isIsomorphic(Dataset ds1, Dataset ds2)
-    {
-        return IsoMatcher.isomorphic(ds1.asDatasetGraph(), ds2.asDatasetGraph()) ;
+    private static boolean isIsomorphic(Dataset ds1, Dataset ds2) {
+        return IsoMatcher.isomorphic(ds1.asDatasetGraph(), ds2.asDatasetGraph());
     }
-    
+
     private static void checkNamespaces(Model m, Map<String, String> namespaces) {
-    	if (namespaces == null) return;
-    	
-    	for (String prefix : namespaces.keySet()) {
-    	    if ( ! prefix.isEmpty() )
-    		Assert.assertEquals("Model does contain expected namespace " + prefix + ": <" + namespaces.get(prefix) + ">", namespaces.get(prefix), m.getNsPrefixURI(prefix));
-    	}
+        if ( namespaces == null )
+            return;
+
+        for ( String prefix : namespaces.keySet() ) {
+            if ( !prefix.isEmpty() )
+                Assert.assertEquals("Model does not contain expected namespace " + prefix + ": <" + namespaces.get(prefix) + ">",
+                                    namespaces.get(prefix), m.getNsPrefixURI(prefix));
+        }
     }
 }
-
 

@@ -32,223 +32,212 @@ import org.apache.jena.sparql.core.Var;
 import org.junit.Test;
 
 public class CollectionQuadHolderTest {
-	
-	private CollectionQuadHolder holder;
-	
-	@Test
-	public void namedGraphTest_List()
-	{
-		Node g = NodeFactory.createURI( "g" );
-		
-		List<Triple> tLst = new ArrayList<Triple>();
-		Node s = NodeFactory.createURI( "s" );
-		Node p = NodeFactory.createURI( "p" );
-		Node o = NodeFactory.createURI( "o" );
-		tLst.add( new Triple( s, p, o ) );
-		
-		Node s2 = NodeFactory.createURI( "s2" );
-		Node p2 = NodeFactory.createURI( "p2" );
-		Node o2 = NodeFactory.createURI( "o2" );
-		tLst.add( new Triple( s2, p2, o2 ) );
 
-		holder = new CollectionQuadHolder( g, tLst );
+    private CollectionQuadHolder holder;
 
-		List<Quad> lst = holder.getQuads().toList();
-		assertEquals( 2, lst.size() );
-		assertEquals( new Quad( g, tLst.get(0)), lst.get(0));
-		assertEquals( new Quad( g, tLst.get(1)), lst.get(1));
-	}
-	
-	@Test
-	public void namedGraphTest_List_Var()
-	{
-		Node g = NodeFactory.createURI( "g" );
-		
-		List<Triple> tLst = new ArrayList<Triple>();
-		Node s = NodeFactory.createURI( "s" );
-		Node p = NodeFactory.createVariable( "p" );
-		Node o = NodeFactory.createURI( "o" );
-		tLst.add( new Triple( s, p, o ) );
-		
-		Node s2 = NodeFactory.createURI( "s2" );
-		Node p2 = NodeFactory.createURI( "p2" );
-		Node o2 = NodeFactory.createURI( "o2" );
-		tLst.add( new Triple( s2, p, o2 ) );
+    @Test
+    public void namedGraphTest_List() {
+        Node g = NodeFactory.createURI("g");
 
-		holder = new CollectionQuadHolder( g, tLst );
-		Map<Var,Node> map = new HashMap<>();
-		map.put( Var.alloc(p), p2);
-		holder.setValues( map );
-		
-		List<Triple> aLst = new ArrayList<Triple>();
-		aLst.add( new Triple( s, p2, o ) );
-		aLst.add( new Triple( s2, p2, o2 ) );
-		
-		List<Quad> lst = holder.getQuads().toList();
-		assertEquals( 2, lst.size() );
-		assertEquals( new Quad( g, aLst.get(0)), lst.get(0));
-		assertEquals( new Quad( g, aLst.get(1)), lst.get(1));
-	}
+        List<Triple> tLst = new ArrayList<Triple>();
+        Node s = NodeFactory.createURI("s");
+        Node p = NodeFactory.createURI("p");
+        Node o = NodeFactory.createURI("o");
+        tLst.add(new Triple(s, p, o));
 
-	@Test
-	public void namedGraphTest_Iterator()
-	{
-		Node g = NodeFactory.createURI( "g" );
-		
-		List<Triple> tLst = new ArrayList<Triple>();
-		Node s = NodeFactory.createURI( "s" );
-		Node p = NodeFactory.createURI( "p" );
-		Node o = NodeFactory.createURI( "o" );
-		tLst.add( new Triple( s, p, o ) );
-		
-		Node s2 = NodeFactory.createURI( "s2" );
-		Node p2 = NodeFactory.createURI( "p2" );
-		Node o2 = NodeFactory.createURI( "o2" );
-		tLst.add( new Triple( s2, p2, o2 ) );
+        Node s2 = NodeFactory.createURI("s2");
+        Node p2 = NodeFactory.createURI("p2");
+        Node o2 = NodeFactory.createURI("o2");
+        tLst.add(new Triple(s2, p2, o2));
 
-		holder = new CollectionQuadHolder( g, tLst.iterator() );
+        holder = new CollectionQuadHolder(g, tLst);
 
-		List<Quad> lst = holder.getQuads().toList();
-		assertEquals( 2, lst.size() );
-		assertEquals( new Quad( g, tLst.get(0)), lst.get(0));
-		assertEquals( new Quad( g, tLst.get(1)), lst.get(1));
-	}
-	
-	@Test
-	public void namedGraphTest_Iterator_Var()
-	{
-		Node g = NodeFactory.createURI( "g" );
-		
-		List<Triple> tLst = new ArrayList<Triple>();
-		Node s = NodeFactory.createURI( "s" );
-		Node p = NodeFactory.createVariable( "p" );
-		Node o = NodeFactory.createURI( "o" );
-		tLst.add( new Triple( s, p, o ) );
-		
-		Node s2 = NodeFactory.createURI( "s2" );
-		Node p2 = NodeFactory.createURI( "p2" );
-		Node o2 = NodeFactory.createURI( "o2" );
-		tLst.add( new Triple( s2, p, o2 ) );
+        List<Quad> lst = holder.getQuads().toList();
+        assertEquals(2, lst.size());
+        assertEquals(new Quad(g, tLst.get(0)), lst.get(0));
+        assertEquals(new Quad(g, tLst.get(1)), lst.get(1));
+    }
 
-		holder = new CollectionQuadHolder( g, tLst.iterator() );
-		Map<Var,Node> map = new HashMap<>();
-		map.put( Var.alloc(p), p2);
-		holder.setValues( map );
-		
-		List<Triple> aLst = new ArrayList<Triple>();
-		aLst.add( new Triple( s, p2, o ) );
-		aLst.add( new Triple( s2, p2, o2 ) );
-		
-		List<Quad> lst = holder.getQuads().toList();
-		assertEquals( 2, lst.size() );
-		assertEquals( new Quad( g, aLst.get(0)), lst.get(0));
-		assertEquals( new Quad( g, aLst.get(1)), lst.get(1));
-	}
+    @Test
+    public void namedGraphTest_List_Var() {
+        Node g = NodeFactory.createURI("g");
 
+        List<Triple> tLst = new ArrayList<Triple>();
+        Node s = NodeFactory.createURI("s");
+        Node p = NodeFactory.createVariable("p");
+        Node o = NodeFactory.createURI("o");
+        tLst.add(new Triple(s, p, o));
 
+        Node s2 = NodeFactory.createURI("s2");
+        Node p2 = NodeFactory.createURI("p2");
+        Node o2 = NodeFactory.createURI("o2");
+        tLst.add(new Triple(s2, p, o2));
 
-	@Test
-	public void anonymousGraphTest_List()
-	{
-		
-		List<Triple> tLst = new ArrayList<Triple>();
-		Node s = NodeFactory.createURI( "s" );
-		Node p = NodeFactory.createURI( "p" );
-		Node o = NodeFactory.createURI( "o" );
-		tLst.add( new Triple( s, p, o ) );
-		
-		Node s2 = NodeFactory.createURI( "s2" );
-		Node p2 = NodeFactory.createURI( "p2" );
-		Node o2 = NodeFactory.createURI( "o2" );
-		tLst.add( new Triple( s2, p2, o2 ) );
+        holder = new CollectionQuadHolder(g, tLst);
+        Map<Var, Node> map = new HashMap<>();
+        map.put(Var.alloc(p), p2);
+        holder.setValues(map);
 
-		holder = new CollectionQuadHolder( tLst );
+        List<Triple> aLst = new ArrayList<Triple>();
+        aLst.add(new Triple(s, p2, o));
+        aLst.add(new Triple(s2, p2, o2));
 
-		List<Quad> lst = holder.getQuads().toList();
-		assertEquals( 2, lst.size() );
-		assertEquals( new Quad( Quad.defaultGraphNodeGenerated, tLst.get(0)), lst.get(0));
-		assertEquals( new Quad( Quad.defaultGraphNodeGenerated, tLst.get(1)), lst.get(1));
-	}
-	
-	@Test
-	public void anonymousGraphTest_List_Var()
-	{		
-		List<Triple> tLst = new ArrayList<Triple>();
-		Node s = NodeFactory.createURI( "s" );
-		Node p = NodeFactory.createVariable( "p" );
-		Node o = NodeFactory.createURI( "o" );
-		tLst.add( new Triple( s, p, o ) );
-		
-		Node s2 = NodeFactory.createURI( "s2" );
-		Node p2 = NodeFactory.createURI( "p2" );
-		Node o2 = NodeFactory.createURI( "o2" );
-		tLst.add( new Triple( s2, p, o2 ) );
+        List<Quad> lst = holder.getQuads().toList();
+        assertEquals(2, lst.size());
+        assertEquals(new Quad(g, aLst.get(0)), lst.get(0));
+        assertEquals(new Quad(g, aLst.get(1)), lst.get(1));
+    }
 
-		holder = new CollectionQuadHolder( tLst );
-		Map<Var,Node> map = new HashMap<>();
-		map.put( Var.alloc(p), p2);
-		holder.setValues( map );
-		
-		List<Triple> aLst = new ArrayList<Triple>();
-		aLst.add( new Triple( s, p2, o ) );
-		aLst.add( new Triple( s2, p2, o2 ) );
-		
-		List<Quad> lst = holder.getQuads().toList();
-		assertEquals( 2, lst.size() );
-		assertEquals( new Quad( Quad.defaultGraphNodeGenerated, aLst.get(0)), lst.get(0));
-		assertEquals( new Quad( Quad.defaultGraphNodeGenerated, aLst.get(1)), lst.get(1));
-	}
+    @Test
+    public void namedGraphTest_Iterator() {
+        Node g = NodeFactory.createURI("g");
 
-	
-	@Test
-	public void anonymousGraphTest_Iterator()
-	{
-		
-		List<Triple> tLst = new ArrayList<Triple>();
-		Node s = NodeFactory.createURI( "s" );
-		Node p = NodeFactory.createURI( "p" );
-		Node o = NodeFactory.createURI( "o" );
-		tLst.add( new Triple( s, p, o ) );
-		
-		Node s2 = NodeFactory.createURI( "s2" );
-		Node p2 = NodeFactory.createURI( "p2" );
-		Node o2 = NodeFactory.createURI( "o2" );
-		tLst.add( new Triple( s2, p2, o2 ) );
+        List<Triple> tLst = new ArrayList<Triple>();
+        Node s = NodeFactory.createURI("s");
+        Node p = NodeFactory.createURI("p");
+        Node o = NodeFactory.createURI("o");
+        tLst.add(new Triple(s, p, o));
 
-		holder = new CollectionQuadHolder( tLst.iterator() );
+        Node s2 = NodeFactory.createURI("s2");
+        Node p2 = NodeFactory.createURI("p2");
+        Node o2 = NodeFactory.createURI("o2");
+        tLst.add(new Triple(s2, p2, o2));
 
-		List<Quad> lst = holder.getQuads().toList();
-		assertEquals( 2, lst.size() );
-		assertEquals( new Quad( Quad.defaultGraphNodeGenerated, tLst.get(0)), lst.get(0));
-		assertEquals( new Quad( Quad.defaultGraphNodeGenerated, tLst.get(1)), lst.get(1));
-	}
+        holder = new CollectionQuadHolder(g, tLst.iterator());
 
-	@Test
-	public void anonymousGraphTest_Iterator_Var()
-	{
-		List<Triple> tLst = new ArrayList<Triple>();
-		Node s = NodeFactory.createURI( "s" );
-		Node p = NodeFactory.createVariable( "p" );
-		Node o = NodeFactory.createURI( "o" );
-		tLst.add( new Triple( s, p, o ) );
-		
-		Node s2 = NodeFactory.createURI( "s2" );
-		Node p2 = NodeFactory.createURI( "p2" );
-		Node o2 = NodeFactory.createURI( "o2" );
-		tLst.add( new Triple( s2, p, o2 ) );
+        List<Quad> lst = holder.getQuads().toList();
+        assertEquals(2, lst.size());
+        assertEquals(new Quad(g, tLst.get(0)), lst.get(0));
+        assertEquals(new Quad(g, tLst.get(1)), lst.get(1));
+    }
 
-		holder = new CollectionQuadHolder( tLst.iterator() );
-		Map<Var,Node> map = new HashMap<>();
-		map.put( Var.alloc(p), p2);
-		holder.setValues( map );
-		
-		List<Triple> aLst = new ArrayList<Triple>();
-		aLst.add( new Triple( s, p2, o ) );
-		aLst.add( new Triple( s2, p2, o2 ) );
-		
-		List<Quad> lst = holder.getQuads().toList();
-		assertEquals( 2, lst.size() );
-		assertEquals( new Quad( Quad.defaultGraphNodeGenerated, aLst.get(0)), lst.get(0));
-		assertEquals( new Quad( Quad.defaultGraphNodeGenerated, aLst.get(1)), lst.get(1));
-	}
+    @Test
+    public void namedGraphTest_Iterator_Var() {
+        Node g = NodeFactory.createURI("g");
+
+        List<Triple> tLst = new ArrayList<Triple>();
+        Node s = NodeFactory.createURI("s");
+        Node p = NodeFactory.createVariable("p");
+        Node o = NodeFactory.createURI("o");
+        tLst.add(new Triple(s, p, o));
+
+        Node s2 = NodeFactory.createURI("s2");
+        Node p2 = NodeFactory.createURI("p2");
+        Node o2 = NodeFactory.createURI("o2");
+        tLst.add(new Triple(s2, p, o2));
+
+        holder = new CollectionQuadHolder(g, tLst.iterator());
+        Map<Var, Node> map = new HashMap<>();
+        map.put(Var.alloc(p), p2);
+        holder.setValues(map);
+
+        List<Triple> aLst = new ArrayList<Triple>();
+        aLst.add(new Triple(s, p2, o));
+        aLst.add(new Triple(s2, p2, o2));
+
+        List<Quad> lst = holder.getQuads().toList();
+        assertEquals(2, lst.size());
+        assertEquals(new Quad(g, aLst.get(0)), lst.get(0));
+        assertEquals(new Quad(g, aLst.get(1)), lst.get(1));
+    }
+
+    @Test
+    public void anonymousGraphTest_List() {
+
+        List<Triple> tLst = new ArrayList<Triple>();
+        Node s = NodeFactory.createURI("s");
+        Node p = NodeFactory.createURI("p");
+        Node o = NodeFactory.createURI("o");
+        tLst.add(new Triple(s, p, o));
+
+        Node s2 = NodeFactory.createURI("s2");
+        Node p2 = NodeFactory.createURI("p2");
+        Node o2 = NodeFactory.createURI("o2");
+        tLst.add(new Triple(s2, p2, o2));
+
+        holder = new CollectionQuadHolder(tLst);
+
+        List<Quad> lst = holder.getQuads().toList();
+        assertEquals(2, lst.size());
+        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, tLst.get(0)), lst.get(0));
+        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, tLst.get(1)), lst.get(1));
+    }
+
+    @Test
+    public void anonymousGraphTest_List_Var() {
+        List<Triple> tLst = new ArrayList<Triple>();
+        Node s = NodeFactory.createURI("s");
+        Node p = NodeFactory.createVariable("p");
+        Node o = NodeFactory.createURI("o");
+        tLst.add(new Triple(s, p, o));
+
+        Node s2 = NodeFactory.createURI("s2");
+        Node p2 = NodeFactory.createURI("p2");
+        Node o2 = NodeFactory.createURI("o2");
+        tLst.add(new Triple(s2, p, o2));
+
+        holder = new CollectionQuadHolder(tLst);
+        Map<Var, Node> map = new HashMap<>();
+        map.put(Var.alloc(p), p2);
+        holder.setValues(map);
+
+        List<Triple> aLst = new ArrayList<Triple>();
+        aLst.add(new Triple(s, p2, o));
+        aLst.add(new Triple(s2, p2, o2));
+
+        List<Quad> lst = holder.getQuads().toList();
+        assertEquals(2, lst.size());
+        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, aLst.get(0)), lst.get(0));
+        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, aLst.get(1)), lst.get(1));
+    }
+
+    @Test
+    public void anonymousGraphTest_Iterator() {
+
+        List<Triple> tLst = new ArrayList<Triple>();
+        Node s = NodeFactory.createURI("s");
+        Node p = NodeFactory.createURI("p");
+        Node o = NodeFactory.createURI("o");
+        tLst.add(new Triple(s, p, o));
+
+        Node s2 = NodeFactory.createURI("s2");
+        Node p2 = NodeFactory.createURI("p2");
+        Node o2 = NodeFactory.createURI("o2");
+        tLst.add(new Triple(s2, p2, o2));
+
+        holder = new CollectionQuadHolder(tLst.iterator());
+
+        List<Quad> lst = holder.getQuads().toList();
+        assertEquals(2, lst.size());
+        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, tLst.get(0)), lst.get(0));
+        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, tLst.get(1)), lst.get(1));
+    }
+
+    @Test
+    public void anonymousGraphTest_Iterator_Var() {
+        List<Triple> tLst = new ArrayList<Triple>();
+        Node s = NodeFactory.createURI("s");
+        Node p = NodeFactory.createVariable("p");
+        Node o = NodeFactory.createURI("o");
+        tLst.add(new Triple(s, p, o));
+
+        Node s2 = NodeFactory.createURI("s2");
+        Node p2 = NodeFactory.createURI("p2");
+        Node o2 = NodeFactory.createURI("o2");
+        tLst.add(new Triple(s2, p, o2));
+
+        holder = new CollectionQuadHolder(tLst.iterator());
+        Map<Var, Node> map = new HashMap<>();
+        map.put(Var.alloc(p), p2);
+        holder.setValues(map);
+
+        List<Triple> aLst = new ArrayList<Triple>();
+        aLst.add(new Triple(s, p2, o));
+        aLst.add(new Triple(s2, p2, o2));
+
+        List<Quad> lst = holder.getQuads().toList();
+        assertEquals(2, lst.size());
+        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, aLst.get(0)), lst.get(0));
+        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, aLst.get(1)), lst.get(1));
+    }
 }

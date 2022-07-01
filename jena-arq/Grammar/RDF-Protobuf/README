@@ -1,0 +1,6 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+To rebuild the protobuf-generated java code:
+
+    cd to jena-arq/Grammar/RDF-Protobuf
+    run ./gen-protobuf

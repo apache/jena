@@ -20,14 +20,14 @@ package org.apache.jena.tdb2.loader.main;
 
 import org.apache.jena.tdb2.store.NodeId;
 
-/** 
+/**
  * A {@code LoaderPlan}
  * <p>
- * For triples and for quads there is a first phase to parse the input, 
+ * For triples and for quads there is a first phase to parse the input,
  * convert to tuples of {@link NodeId NodeIds}, including allocating the ids,
  * and do at least one tuple index for each of triples quads to capture the input.
- * <p>   
- * After that, a number of phases builds the other indexes. 
+ * <p>
+ * After that, a number of phases builds the other indexes.
  * <p>
  * The {@code mulithreadedInput} flag indicates whether the first phase is
  * done in parallel (threads for parer, node table building and primary indexes)
@@ -39,7 +39,7 @@ public class LoaderPlan {
     private final String[] loadGroup4;
     private final String[][] secondaryGroups3;
     private final String[][] secondaryGroups4;
-    
+
     public LoaderPlan(InputStage dataInput,
                       String[] loadGroup3, String[] loadGroup4,
                       String[][] secondaryGroups3, String[][] secondaryGroups4) {

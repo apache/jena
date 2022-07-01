@@ -30,30 +30,27 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.query.SortCondition ;
-import org.apache.jena.riot.system.SerializationFactoryFinder ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingComparator ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.*;
 import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.sparql.system.SerializationFactoryFinder;
 import org.junit.Test ;
 
 public class TestSortedDataBag
 {
     private static final String LETTERS = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
     private Random random;
-    
-    @Test public void testSorting() 
+
+    @Test public void testSorting()
     {
         testSorting(500, 10);
     }
-    
+
     private void testSorting(int numBindings, int threshold)
     {
         List<Binding> unsorted = randomBindings(numBindings);
-        
+
         List<SortCondition> conditions = new ArrayList<>();
         conditions.add(new SortCondition(new ExprVar("8"), Query.ORDER_ASCENDING));
         conditions.add(new SortCondition(new ExprVar("1"), Query.ORDER_ASCENDING));
@@ -61,7 +58,7 @@ public class TestSortedDataBag
         BindingComparator comparator = new BindingComparator(conditions);
 
         List<Binding> sorted = new ArrayList<>();
-        
+
         SortedDataBag<Binding> db = new SortedDataBag<>(
                 new ThresholdPolicyCount<Binding>(threshold),
                 SerializationFactoryFinder.bindingSerializationFactory(),
@@ -69,7 +66,7 @@ public class TestSortedDataBag
         try
         {
             db.addAll(unsorted);
-            Iterator<Binding> iter = db.iterator(); 
+            Iterator<Binding> iter = db.iterator();
             while (iter.hasNext())
             {
                 sorted.add(iter.next());
@@ -80,12 +77,12 @@ public class TestSortedDataBag
         {
             db.close();
         }
-        
+
         Collections.sort(unsorted, comparator);
         assertEquals(unsorted, sorted);
     }
-    
-    @Test public void testSortingWithPreMerge() 
+
+    @Test public void testSortingWithPreMerge()
     {
         // Save the original value...
         int origMaxSpillFiles = SortedDataBag.MAX_SPILL_FILES;
@@ -108,26 +105,26 @@ public class TestSortedDataBag
             SortedDataBag.MAX_SPILL_FILES = origMaxSpillFiles;
         }
     }
-    
+
     @Test public void testTemporaryFilesAreCleanedUpAfterCompletion()
     {
         List<Binding> unsorted = randomBindings(500);
-        
+
         List<SortCondition> conditions = new ArrayList<>();
         conditions.add(new SortCondition(new ExprVar("8"), Query.ORDER_ASCENDING));
         BindingComparator comparator = new BindingComparator(conditions);
-        
+
         SortedDataBag<Binding> db = new SortedDataBag<>(
                 new ThresholdPolicyCount<Binding>(10),
                 SerializationFactoryFinder.bindingSerializationFactory(),
                 comparator);
-        
+
         List<File> spillFiles = new ArrayList<>();
         try
         {
             db.addAll(unsorted);
             spillFiles.addAll(db.getSpillFiles());
-            
+
             int count = 0;
             for (File file : spillFiles)
             {
@@ -138,7 +135,7 @@ public class TestSortedDataBag
             }
             // 500 bindings divided into 50 chunks (49 in files, and 1 in memory)
             assertEquals(49, count);
-            
+
             Iterator<Binding> iter = db.iterator();
             while (iter.hasNext())
             {
@@ -150,7 +147,7 @@ public class TestSortedDataBag
         {
             db.close();
         }
-        
+
         int count = 0;
         for (File file : spillFiles)
         {
@@ -161,8 +158,8 @@ public class TestSortedDataBag
         }
         assertEquals(0, count);
     }
-    
-    private List<Binding> randomBindings(int numBindings) 
+
+    private List<Binding> randomBindings(int numBindings)
     {
         random = new Random();
         Var[] vars = new Var[]{
@@ -174,31 +171,31 @@ public class TestSortedDataBag
         for(int i = 0; i < numBindings; i++){
             toReturn.add(randomBinding(vars));
         }
-        
+
         return toReturn;
     }
-    
+
     private Binding randomBinding(Var[] vars)
     {
-        BindingMap binding = BindingFactory.create();
-        binding.add(vars[0], NodeFactory.createBlankNode());
-        binding.add(vars[1], NodeFactory.createURI(randomURI()));
-        binding.add(vars[2], NodeFactory.createURI(randomURI()));
-        binding.add(vars[3], NodeFactory.createLiteral(randomString(20)));
-        binding.add(vars[4], NodeFactory.createBlankNode());
-        binding.add(vars[5], NodeFactory.createURI(randomURI()));
-        binding.add(vars[6], NodeFactory.createURI(randomURI()));
-        binding.add(vars[7], NodeFactory.createLiteral(randomString(5)));
-        binding.add(vars[8], NodeFactory.createLiteral("" + random.nextInt(), XSDDatatype.XSDinteger));
-        binding.add(vars[9], NodeFactory.createBlankNode());
-        return binding;
+        BindingBuilder builder = Binding.builder();
+        builder.add(vars[0], NodeFactory.createBlankNode());
+        builder.add(vars[1], NodeFactory.createURI(randomURI()));
+        builder.add(vars[2], NodeFactory.createURI(randomURI()));
+        builder.add(vars[3], NodeFactory.createLiteral(randomString(20)));
+        builder.add(vars[4], NodeFactory.createBlankNode());
+        builder.add(vars[5], NodeFactory.createURI(randomURI()));
+        builder.add(vars[6], NodeFactory.createURI(randomURI()));
+        builder.add(vars[7], NodeFactory.createLiteral(randomString(5)));
+        builder.add(vars[8], NodeFactory.createLiteral("" + random.nextInt(), XSDDatatype.XSDinteger));
+        builder.add(vars[9], NodeFactory.createBlankNode());
+        return builder.build();
     }
 
-    private String randomURI() 
+    private String randomURI()
     {
         return String.format("http://%s.example.com/%s", randomString(10), randomString(10));
     }
-    
+
     private String randomString(int length)
     {
         StringBuilder builder = new StringBuilder();
@@ -207,8 +204,8 @@ public class TestSortedDataBag
         }
         return builder.toString();
     }
-    
-    private void getNextAndExpectException(QueryIterator iter) 
+
+    private void getNextAndExpectException(QueryIterator iter)
     {
         try{
             iter.hasNext();

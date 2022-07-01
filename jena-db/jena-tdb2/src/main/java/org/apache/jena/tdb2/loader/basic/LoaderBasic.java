@@ -26,18 +26,18 @@ import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.loader.base.LoaderBase;
 import org.apache.jena.tdb2.loader.base.LoaderOps;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
-import org.apache.jena.tdb2.loader.base.ProgressMonitor;
-import org.apache.jena.tdb2.loader.base.ProgressMonitorOutput;
+import org.apache.jena.system.progress.MonitorOutput;
+import org.apache.jena.system.progress.ProgressMonitor;
+import org.apache.jena.system.progress.ProgressMonitorOutput;
 
-/** Simple bulk loader. Algorithm: Parser to dataset. */ 
+/** Simple bulk loader. Algorithm: Parser to dataset. */
 public class LoaderBasic extends LoaderBase {
     private static int DataTickPoint = 100_000;
     private static int DataSuperTick = 10;
     // The destination for loading data.
     private final StreamRDFCounting dest;
     private final StreamRDF baseDest;
-    
+
     public LoaderBasic(DatasetGraph dsg, Node graphName, MonitorOutput output) {
         super(dsg, graphName, output);
         baseDest = LoaderOps.toNamedGraph(StreamRDFLib.dataset(dsg), graphName);

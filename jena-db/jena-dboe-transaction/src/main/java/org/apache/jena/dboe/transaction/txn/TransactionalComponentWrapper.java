@@ -16,93 +16,93 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.transaction.txn ;
+package org.apache.jena.dboe.transaction.txn;
 
-import java.nio.ByteBuffer ;
+import java.nio.ByteBuffer;
 
 public class TransactionalComponentWrapper implements TransactionalComponent {
-    protected final TransactionalComponent other ;
+    protected final TransactionalComponent other;
 
     public TransactionalComponentWrapper(TransactionalComponent other) {
-        this.other = other ;
+        this.other = other;
     }
 
     @Override
     public void startRecovery() {
-        other.startRecovery() ;
+        other.startRecovery();
     }
 
     @Override
     public void recover(ByteBuffer ref) {
-        other.recover(ref) ;
+        other.recover(ref);
     }
 
     @Override
     public void finishRecovery() {
-        other.finishRecovery() ;
+        other.finishRecovery();
     }
-    
+
     @Override
     public void cleanStart() {
-        other.cleanStart() ;
+        other.cleanStart();
     }
 
     @Override
     public ComponentId getComponentId() {
-        return other.getComponentId() ;
+        return other.getComponentId();
     }
 
     @Override
     public void begin(Transaction transaction) {
-        other.begin(transaction) ;
+        other.begin(transaction);
     }
 
     @Override
     public boolean promote(Transaction transaction) {
-        return other.promote(transaction) ;
+        return other.promote(transaction);
     }
 
     @Override
     public ByteBuffer commitPrepare(Transaction transaction) {
-        return other.commitPrepare(transaction) ;
+        return other.commitPrepare(transaction);
     }
 
     @Override
     public void commit(Transaction transaction) {
-        other.commit(transaction) ;
+        other.commit(transaction);
     }
 
     @Override
     public void commitEnd(Transaction transaction) {
-        other.commitEnd(transaction) ;
+        other.commitEnd(transaction);
     }
 
     @Override
     public void abort(Transaction transaction) {
-        other.abort(transaction) ;
+        other.abort(transaction);
     }
 
     @Override
     public void complete(Transaction transaction) {
-        other.complete(transaction) ;
+        other.complete(transaction);
     }
 
     @Override
     public SysTransState detach() {
-        return other.detach() ;
+        return other.detach();
     }
 
     @Override
     public void attach(SysTransState systemState) {
-        other.attach(systemState) ;
+        other.attach(systemState);
     }
 
     @Override
     public void shutdown() {
-        other.shutdown() ;
+        other.shutdown();
     }
 
-    @Override 
-    public String toString() { return "W:"+other.toString() ; }
+    @Override
+    public String toString() { return "W:"+other.toString(); }
 }
 

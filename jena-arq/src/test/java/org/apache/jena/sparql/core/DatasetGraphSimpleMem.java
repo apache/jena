@@ -24,18 +24,21 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphBase ;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapStd;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
-/** Very simple, non-scalable DatasetGraph implementation 
+/** Very simple, non-scalable DatasetGraph implementation
  * of a triples+quads style for testing the {@link DatasetGraphTriplesQuads}
- * style implementation framework. 
+ * style implementation framework.
  */
 public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements TransactionalNotSupportedMixin
 {
     private MiniSet<Triple> triples = new MiniSet<>() ;
     private MiniSet<Quad> quads = new MiniSet<>() ;
-    
+    private PrefixMap prefixes = new PrefixMapStd();
+
     /** Simple abstraction of a Set */
     private static class MiniSet<T> implements Iterable<T> {
         final Collection<T> store;
@@ -70,7 +73,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
             return store.size();
         }
     }
-    
+
     public DatasetGraphSimpleMem() {}
 
     @Override
@@ -109,7 +112,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
 
     /** Convert null to Node.ANY */
     public static Node nullAsAny(Node x) { return nullAsDft(x, Node.ANY) ; }
-    
+
     /** Convert null to some default Node */
     public static Node nullAsDft(Node x, Node dft) { return x==null ? dft : x ; }
 
@@ -219,6 +222,11 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
     @Override
     public Iterator<Node> listGraphNodes() {
         return graphNodes().iterator();
+    }
+
+    @Override
+    public PrefixMap prefixes() {
+        return prefixes;
     }
 
     private Set<Node> graphNodes() {

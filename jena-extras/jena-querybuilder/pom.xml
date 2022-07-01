@@ -26,8 +26,12 @@
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-extras</artifactId>
     <relativePath>..</relativePath>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
   </parent>
+
+  <properties>
+    <automatic.module.name>org.apache.jena.querybuilder</automatic.module.name>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -35,14 +39,76 @@
       <artifactId>apache-jena-libs</artifactId>
       <type>pom</type>
     </dependency>
+
     <dependency>
       <groupId>org.xenei</groupId>
-      <artifactId>junit-contracts</artifactId>
+      <artifactId>junit-contracts</artifactId> 
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-cli</artifactId>
+          <groupId>commons-cli</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
     	<groupId>org.mockito</groupId>
-    	<artifactId>mockito-all</artifactId>
+    	<artifactId>mockito-core</artifactId> 
+      <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <!-- <phase>package</phase> package is the default -->
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

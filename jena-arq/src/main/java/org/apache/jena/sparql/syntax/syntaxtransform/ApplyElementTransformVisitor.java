@@ -95,7 +95,7 @@ class ApplyElementTransformVisitor implements ElementVisitor {
         Var v1 = TransformElementLib.applyVar(v, exprTransform) ;
         Expr expr = el.getExpr() ;
         Expr expr1 = ExprTransformer.transform(exprTransform, expr) ;
-        Element el2 = transform.transform(el, v1, expr1 ) ;
+        Element el2 = transform.transform(el, v1, expr1) ;
         push(el2) ;
     }
 
@@ -151,7 +151,7 @@ class ApplyElementTransformVisitor implements ElementVisitor {
         Node n = el.getGraphNameNode() ;
         Node n1 = transformNode(n) ;
         Element elt1 = pop() ;
-        Element el2 = transform.transform(el, n1, elt1) ; 
+        Element el2 = transform.transform(el, n1, elt1) ;
         push(el2) ;
     }
 
@@ -171,7 +171,7 @@ class ApplyElementTransformVisitor implements ElementVisitor {
         push(el2) ;
     }
 
-    // When you need to force the walking of the tree ... 
+    // When you need to force the walking of the tree ...
     // EXISTS / NOT EXISTS
     private Element subElement(Element elt) {
         ElementWalker.walk(elt, this) ;

@@ -22,7 +22,6 @@ import java.sql.SQLException;
 
 import org.apache.jena.jdbc.connections.DatasetConnection;
 import org.apache.jena.query.* ;
-import org.apache.jena.update.GraphStoreFactory ;
 import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
@@ -95,7 +94,7 @@ public class DatasetPreparedStatement extends JenaPreparedStatement {
      */
     @Override
     protected UpdateProcessor createUpdateProcessor(UpdateRequest u) {
-        return UpdateExecutionFactory.create(u, GraphStoreFactory.create(this.dsConn.getJenaDataset()));
+        return UpdateExecutionFactory.create(u, this.dsConn.getJenaDataset());
     }
 
     @Override

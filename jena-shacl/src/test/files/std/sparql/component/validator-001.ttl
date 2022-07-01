@@ -1,0 +1,81 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/sparql/component/validator-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://datashapes.org/sh/tests/sparql/component/validator-001.test>
+  owl:imports <http://datashapes.org/dash> ;
+.
+ex:ConstraintComponent
+  rdf:type rdfs:Class ;
+  rdfs:label "Constraint component" ;
+  rdfs:subClassOf sh:ConstraintComponent ;
+.
+ex:SPARQLAskValidator
+  rdfs:subClassOf sh:SPARQLAskValidator ;
+.
+ex:TestConstraintComponent
+  rdf:type ex:ConstraintComponent ;
+  rdfs:comment """A simple test component with two parameters, which flags all values as invalid unless they are the concatenation of the two parameters.
+
+Part of this test is to also use various subclasses of the system classes.""" ;
+  rdfs:label "Test constraint component" ;
+  sh:parameter ex:TestParameter1 ;
+  sh:parameter ex:TestParameter2 ;
+  sh:validator [
+      rdf:type ex:SPARQLAskValidator ;
+      sh:ask """
+ASK { FILTER (?value = CONCAT($test1, $test2)) }
+     """ ;
+    ] ;
+.
+ex:TestParameter1
+  rdf:type sh:Parameter ;
+  sh:path ex:test1 ;
+  sh:datatype xsd:string ;
+.
+ex:TestParameter2
+  rdf:type sh:Parameter ;
+  sh:path ex:test2 ;
+  sh:datatype xsd:string ;
+.
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  ex:test1 "Hello " ;
+  ex:test2 "World" ;
+  rdfs:label "Test shape" ;
+  sh:targetNode "Hallo Welt" ;
+  sh:targetNode "Hello World" ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <validator-001>
+    ) ;
+.
+<validator-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:validator 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode "Hallo Welt" ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent ex:TestConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value "Hallo Welt" ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

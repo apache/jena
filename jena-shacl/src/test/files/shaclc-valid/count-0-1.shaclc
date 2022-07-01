@@ -1,0 +1,7 @@
+BASE <http://example.org/count-0-1>
+
+PREFIX ex: <http://example.org/test#>
+
+shape ex:TestShape {
+	ex:property [0..1] .
+}

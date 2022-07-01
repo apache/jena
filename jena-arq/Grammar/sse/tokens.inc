@@ -37,7 +37,12 @@ SPECIAL_TOKEN :
 
 TOKEN:
 {
-   <IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
+   <IRIref:  "<"
+               ( ~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`","\u0000"-"\u0020"]
+               | <UCHAR>
+               )*
+             ">" >
+
 |  <PNAME: (<PN_PREFIX>)? ":" (<PN_LOCAL>)? >
 |  <BLANK_NODE_LABEL: "_:" (<PN_LOCAL>)? >  // Allows no label
 
@@ -57,7 +62,8 @@ TOKEN:
 
 TOKEN :
 {
-  < #DIGITS: (["0"-"9"])+>
+  < BOM:     "\uFEFF">
+| < #DIGITS: (["0"-"9"])+>
 | < INTEGER: (["+","-"])? <DIGITS> >
 | < DECIMAL: (["+","-"])? ( <DIGITS> "." (<DIGITS>)* | "." <DIGITS> ) >
 | < DOUBLE:   // Required exponent.
@@ -70,21 +76,25 @@ TOKEN :
 | < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
-| < ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+
+| < #ECHAR:      "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+| < #UCHAR:      <UCHAR4> | <UCHAR8> >
+| < #UCHAR4:     "\\" "u" <HEX> <HEX> <HEX> <HEX> >
+| < #UCHAR8:     "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> >
+
 | < STRING_LITERAL1: 
       // Single quoted string
-      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" >
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "'" >
 | < STRING_LITERAL2:
     // Double quoted string
-      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> )* "\"" >
+      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "\"" >
 | < STRING_LITERAL_LONG1:
      <QUOTE_3S> 
-      ( ("'" | "''")? (~["'","\\"] | <ECHAR> ))*
+      ( ("'" | "''")? (~["'","\\"] | <ECHAR> | <UCHAR> ))*
      <QUOTE_3S> >
-
 | < STRING_LITERAL_LONG2: 
      <QUOTE_3D> 
-      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> ))*
+      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> | <UCHAR> ))*
      <QUOTE_3D> >
 }
 
@@ -93,12 +103,15 @@ TOKEN :
   < LPAREN:    "(" >
 | < RPAREN:    ")" >
 
-
 | < LBRACE:    "{" >
 | < RBRACE:    "}" >
 
 | < LBRACKET:  "[" >
 | < RBRACKET:  "]" >
+
+// RDF-start quoted triple. written with <<>>.,not (qtriple...)
+| < LT2 : "<<" >
+| < GT2 : ">>" >
 }
 
 // Specials for literals trailing parts
@@ -114,48 +127,62 @@ TOKEN :
 
 TOKEN:
 {
-  // XML 1.1 NCNameStartChar without "_"
   <#PN_CHARS_BASE:
           ["A"-"Z"] | ["a"-"z"] |
           ["\u00C0"-"\u00D6"] | ["\u00D8"-"\u00F6"] | ["\u00F8"-"\u02FF"] |
           ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
           ["\u200C"-"\u200D"] | ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
-          ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"] 
+          ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"]
+          // | [#x10000-#xEFFFF]
           >
-          // [#x10000-#xEFFFF]
 |
+  // With underscore
   <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >
 |
-// No DOT
   <#PN_CHARS: (<PN_CHARS_U> | "-" | ["0"-"9"] | "\u00B7" |
               ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] ) >
 |
   // No leading "_", no trailing ".", can have dot inside prefix name.
   <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)?  >
 |
-  // With a leading "_", no dot at end of local name.
-  <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)?  >
+  // Local part.
+  <#PN_LOCAL: (<PN_CHARS_U> | ":" | ["0"-"9"] | <PLX> ) 
+              ( (<PN_CHARS> | "." |":" | <PLX> )* 
+                (<PN_CHARS> | ":" | <PLX>) )?  >
 |
-  // NCNAME without "-" and ".", allowing leading digits.
   <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
              ( <PN_CHARS_U> | ["0"-"9"] | "\u00B7" |
                ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
-
+|
+  < #PN_LOCAL_ESC: "\\" 
+          ( "_" | 
+            "~" | "." | "-" | "!" | "$" | "&" | "'" | 
+           "(" | ")" | "*" | "+" | "," | ";" | "=" | 
+           "/" | "?" | "#" | "@" | "%" ) >
+|
+  <#PLX:  <PERCENT> | <PN_LOCAL_ESC> >
+|
+  < #HEX: ["0"-"9"] | ["A"-"F"] | ["a"-"f"] >
+|
+  < #PERCENT: "%" <HEX> <HEX> >
 
 }
 
 TOKEN:
 {
   // Anything left that isn't structural
-  // LPAREN and RPAREN / LBRACKET/RBRACKET
-  // Quotes
-  <#SYM:  (~["(", ")", "[", "]", "'", "\"", " ", "\t","\n","\r","\f" ])>
+  // Excludes:
+  //   LPAREN and RPAREN / LBRACKET/RBRACKET / LBRACE/RBRACE
+  //   Quotes, Whitespace
+  <#SYM:  (~["<", ">", "(", ")", "[", "]", "{", "}", "'", "\"", " ", "\t","\n","\r","\f" ])>
 |
-  <#SYM1: (~["^", "@", 
-             "(", ")", "[", "]", "'", "\"", " ", "\t","\n","\r","\f" ])>
+  <#SYM1: (~["^", "@",
+             "(", ")", "[", "]", "{", "}", "'", "\"", " ", "\t","\n","\r","\f" ])>
 | <#SYM_ESC: "\\" ( " " | "'" | "\"" ) >
 |
-  <SYMBOL: <SYM1> (<SYM>)*>
+  <SYMBOL: ( "<" | ">" 
+           | (<SYM1> (<SYM>)*)
+           ) >
 }
 
 // Catch-all tokens.  Must be last.  

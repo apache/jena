@@ -18,81 +18,85 @@
 
 package org.apache.jena.tdb2.store.nodetupletable;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.graph.Node ;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.graph.Node;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.tupletable.TupleTable;
 
 public class NodeTupleTableWrapper implements NodeTupleTable
 {
-    protected NodeTupleTable nodeTupleTable ;
+    protected NodeTupleTable nodeTupleTable;
 
-    public NodeTupleTableWrapper(NodeTupleTable ntt) { 
-        setNodeTupleTable(ntt) ;
+    public NodeTupleTableWrapper(NodeTupleTable ntt) {
+        setNodeTupleTable(ntt);
     }
-    
+
     protected NodeTupleTable setNodeTupleTable(NodeTupleTable ntt) {
-        NodeTupleTable old = nodeTupleTable ;
-        nodeTupleTable = ntt ;
-        return old ;
+        NodeTupleTable old = nodeTupleTable;
+        nodeTupleTable = ntt;
+        return old;
     }
-     
+
     @Override
     public void addRow(Node... nodes)
-    { nodeTupleTable.addRow(nodes) ; }
+    { nodeTupleTable.addRow(nodes); }
 
     @Override
     public void deleteRow(Node... nodes)
-    { nodeTupleTable.deleteRow(nodes) ; }
+    { nodeTupleTable.deleteRow(nodes); }
+
+    @Override
+    public int getTupleLen()
+    { return nodeTupleTable.getTupleLen(); }
 
     @Override
     public Iterator<Tuple<Node>> find(Node... nodes)
-    { return nodeTupleTable.find(nodes) ; }
-    
+    { return nodeTupleTable.find(nodes); }
+
     @Override
     public Iterator<Tuple<NodeId>> find(NodeId... ids)
-    { return nodeTupleTable.find(ids) ; }
-    
+    { return nodeTupleTable.find(ids); }
+
     @Override
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple)
-    { return nodeTupleTable.find(tuple) ; }
-    
+    { return nodeTupleTable.find(tuple); }
+
     @Override
     public Iterator<Tuple<NodeId>> findAsNodeIds(Node... nodes)
-    { return nodeTupleTable.findAsNodeIds(nodes) ; }
+    { return nodeTupleTable.findAsNodeIds(nodes); }
 
     @Override
     public Iterator<Tuple<NodeId>> findAll()
-    { return nodeTupleTable.findAll() ; }
+    { return nodeTupleTable.findAll(); }
 
     @Override
     public NodeTable getNodeTable()
-    { return nodeTupleTable.getNodeTable() ; }
+    { return nodeTupleTable.getNodeTable(); }
 
     @Override
     public TupleTable getTupleTable()
-    { return nodeTupleTable.getTupleTable() ; }
+    { return nodeTupleTable.getTupleTable(); }
 
     @Override
     public boolean isEmpty()
-    { return nodeTupleTable.isEmpty() ; }
-    
+    { return nodeTupleTable.isEmpty(); }
+
     @Override
     public void clear()
     { nodeTupleTable.clear(); }
 
     @Override
     public long size()
-    { return nodeTupleTable.size() ; }
+    { return nodeTupleTable.size(); }
 
     @Override
     public void sync()
-    { nodeTupleTable.sync() ; }
+    { nodeTupleTable.sync(); }
 
     @Override
     public void close()
-    { nodeTupleTable.close() ; }
+    { nodeTupleTable.close(); }
 }

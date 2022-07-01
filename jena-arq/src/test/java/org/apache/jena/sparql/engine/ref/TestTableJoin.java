@@ -18,10 +18,11 @@
 
 package org.apache.jena.sparql.engine.ref;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashSet ;
 import java.util.Set ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
@@ -31,14 +32,13 @@ import org.apache.jena.sparql.algebra.table.TableN ;
 import org.apache.jena.sparql.algebra.table.TableUnit ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.ref.TableJoin ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
 /** Tests on tables and the simple nest loop join (TableJoin) used by the reference query engine */ 
-public class TestTableJoin extends BaseTest
+public class TestTableJoin
 {
     Table unit = new TableUnit() ; 
     Table zero = new TableEmpty() ;

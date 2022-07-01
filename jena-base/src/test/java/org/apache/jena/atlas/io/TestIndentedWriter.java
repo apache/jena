@@ -18,7 +18,6 @@
 
 package org.apache.jena.atlas.io ;
 
-import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.junit.Test ;
 import static org.junit.Assert.* ;
 

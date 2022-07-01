@@ -1,5 +1,5 @@
 Apache Jena
-Copyright 2011-2019 The Apache Software Foundation
+Copyright 2011-2022 The Apache Software Foundation
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
@@ -12,13 +12,6 @@ Portions of this software were originally based on the following:
   - Copyright 2010, 2011 Epimorphics Ltd.
   - Copyright 2010, 2011 Talis Systems Ltd.
 These have been licensed to the Apache Software Foundation under a software grant.
-
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-From Apache HttpComponents Client:
-
-This project contains annotations derived from JCIP-ANNOTATIONS
-Copyright (c) 2005 Brian Goetz and Tim Peierls. See http://www.jcip.net
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -56,5 +49,12 @@ Copyright (c) 2002-2014 EPFL
 Copyright (c) 2011-2014 Typesafe, Inc.
 Licensed under BSD-style license (see licenses/LICENSE_Scala.txt)
 ----------
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+This product bundles Google Protocol Buffers java runtime:
+
+Copyright 2008 Google Inc.  All rights reserved.
+https://github.com/protocolbuffers/protobuf/blob/master/LICENSE
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

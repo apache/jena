@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.graph;
 
+import static org.apache.jena.atlas.lib.Lib.unsupportedMethod;
+
 import org.apache.jena.shared.PrefixMapping;
 
 /** Immutable empty {@link PrefixMapping}. */
@@ -25,14 +27,14 @@ public class PrefixMappingZero extends PrefixMappingSink {
 
     @Override
     protected void add(String prefix, String uri) {
-        throw new UnsupportedOperationException("add prefix");
+        throw unsupportedMethod(this, "add") ;
     }
 
     @Override
     protected void remove(String prefix) {
-        throw new UnsupportedOperationException("remove prefix");
+        throw unsupportedMethod(this, "remove") ;
     }
-    
+
     @Override
     public String toString() {
         return "pm:Zero";

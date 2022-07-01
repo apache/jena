@@ -18,10 +18,10 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.algebra.optimize.TransformDistinctToReduced ;
-import org.apache.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
 import org.junit.Test ;
 
 public class TestOptDistinctReduced extends AbstractTestTransform
@@ -217,20 +217,38 @@ public class TestOptDistinctReduced extends AbstractTestTransform
             "      (bgp (triple ?s ?p ?o)))))" ;
         testQuery(queryString, tOrderByDistinctApplication, opExpectedString) ;
     }
-    
-    @Test public void distinct_order_by_application_03()
+
+    // JENA-1774
+    @Test public void distinct_order_by_application_02()
     {
-        // Evaluation reordering optimization doesn't apply if it's a SELECT *
-        // Also per JENA-587 DISTINCT -> REDUCED transformation cannot apply either
-        assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication)) ;
+        // Evaluation reordering optimization can be done if it's a SELECT *
+        // because the DISTINCT covers the ORDER BY variables as if "SELECT *"
+        // is written out with all variables.
+        // Before JENA-1774, the (order) and (distinct) would not be swapped.
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication));
         String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p";
         String opExpectedString =
-            "  (distinct\n" +
-            "    (order (?p)\n" +
+            "  (order (?p)" +
+            "    (distinct" +
             "      (bgp (triple ?s ?p ?o))))" ;
         testQuery(queryString, tOrderByDistinctApplication, opExpectedString) ;
     }
-    
+
+    // JENA-1774
+    @Test public void distinct_order_by_application_03()
+    {
+        // Evaluation reordering optimization can be done if it's a SELECT *
+        // because the DISTINCT covers the ORDER BY variables as if "SELECT *"
+        // is written out with all variables. 
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication));
+        String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY LCASE(STR(?p))";
+        String opExpectedString =
+            "  (order ((lcase (str (?p))))\n" +
+            "    (distinct" +
+            "      (bgp (triple ?s ?p ?o))))" ;
+        testQuery(queryString, tOrderByDistinctApplication, opExpectedString) ;
+    }
+
     @Test public void distinct_order_by_application_04()
     {
         // The optimization still applies when order conditions are not simple variables

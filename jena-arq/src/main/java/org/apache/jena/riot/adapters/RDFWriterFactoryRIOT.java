@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.adapters;
 
-import org.apache.jena.rdf.model.RDFWriter;
+import org.apache.jena.rdf.model.RDFWriterI;
 import org.apache.jena.rdf.model.RDFWriterF;
 
 /** Adapter to old style Jena writer factory */
@@ -26,28 +26,12 @@ public class RDFWriterFactoryRIOT implements RDFWriterF {
     public RDFWriterFactoryRIOT() {}
 
     @Override
-    public RDFWriter getWriter() {
+    public RDFWriterI getWriter() {
         return getWriter(null);
     }
 
     @Override
-    public RDFWriter getWriter(String langname) {
+    public RDFWriterI getWriter(String langname) {
         return new RDFWriterRIOT(langname);
-    }
-
-    @Override
-    public String setWriterClassName(String lang, String className) {
-        return null;
-    }
-
-    @Override
-    public void resetRDFWriterF() {
-        // does nothing as the reader can not be modified.
-
-    }
-
-    @Override
-    public String removeWriter(String lang) {
-        return null;
     }
 }

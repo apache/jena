@@ -22,26 +22,28 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
 /** The syntax element for "Exists" in a pattern. */
 
-public class ElementExists extends Element1
-{
-    public ElementExists(Element el) { super(el) ; }
-    
-    @Override
-    public int hashCode() { return getElement().hashCode() ^ Element.HashNotExists ; }
-
-    @Override
-    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
-    {
-        if ( el2 == null ) return false ;
-
-        if ( ! ( el2 instanceof ElementExists ) )
-            return false ;
-        ElementExists unsaid2 = (ElementExists)el2 ;
-        if ( ! this.getElement().equalTo(unsaid2.getElement(), isoMap) )
-            return false ;
-        return true ;
+public class ElementExists extends Element1 {
+    public ElementExists(Element el) {
+        super(el);
     }
-    
+
     @Override
-    public void visit(ElementVisitor v) { v.visit(this) ; }
+    public int hashCode() {
+        return getElement().hashCode() ^ Element.HashNotExists;
+    }
+
+    @Override
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
+        if ( el2 == null ) return false;
+
+        if ( !(el2 instanceof ElementExists) )
+            return false;
+        ElementExists eltExists = (ElementExists)el2;
+        if ( !this.getElement().equalTo(eltExists.getElement(), isoMap) )
+            return false;
+        return true;
+    }
+
+    @Override
+    public void visit(ElementVisitor v) { v.visit(this); }
 }

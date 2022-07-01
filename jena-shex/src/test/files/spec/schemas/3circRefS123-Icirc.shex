@@ -1,0 +1,11 @@
+IMPORT <3circRefS123-Icirc>
+<http://a.example/S1> {
+   <http://a.example/p1> .;
+   <http://a.example/p2> @<http://a.example/S2>?
+}
+<http://a.example/S2> {
+   <http://a.example/p3> @<http://a.example/S3>
+}
+<http://a.example/S3> {
+   <http://a.example/p4> @<http://a.example/S1>
+}

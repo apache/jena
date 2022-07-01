@@ -312,7 +312,7 @@ public class RETEEngine implements FRuleEngineI {
                         int varIndex = ( (Node_RuleVariable) iv.next() ).getIndex();
                         if ( seenVar[varIndex] )
                         {
-                            matchIndices.add( new Byte( (byte) varIndex ) );
+                            matchIndices.add( Byte.valueOf( (byte) varIndex ) );
                         }
                         seenVar[varIndex] = true;
                     }

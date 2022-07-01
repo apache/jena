@@ -23,7 +23,6 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 
 public class TupleIndexWrapper implements TupleIndex
 {
@@ -57,8 +56,8 @@ public class TupleIndexWrapper implements TupleIndex
     }
 
     @Override
-    public String getMapping() {
-        return index.getMapping() ;
+    public String getMappingStr() {
+        return index.getMappingStr() ;
     }
 
     @Override

@@ -20,7 +20,6 @@ package org.apache.jena.tdb.store.nodetable;
 
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.Build ;
-import org.apache.jena.tdb.store.nodetable.NodeTable ;
 
 
 public class TestNodeTableStored extends AbstractTestNodeTable

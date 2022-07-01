@@ -1,0 +1,5 @@
+# literal shape label
+# source: turtle-syntax-bad-struct-04.ttl
+"IssueShape" {
+   <http://a.example/p1> .
+}

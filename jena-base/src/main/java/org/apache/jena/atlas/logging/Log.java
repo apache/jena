@@ -23,127 +23,57 @@ import org.apache.jena.atlas.lib.CacheSet ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/* Simple wrappers and operations for convenient, non-time critical logging.
+/**
+ * Simple wrappers and operations for convenient, non-time critical logging. These
+ * operations find/create the logger by name, or by the class of some object, or an
+ * org.slf4j.Logger object.
+ *
+ * @see LogCtl
+ * @see FmtLog
  */
 public class Log {
     private Log() {}
 
-    static public void info(String caller, String msg) {
-        log(caller).info(msg) ;
+    public static void info(Object object, String msg) {
+        log(object).info(msg) ;
     }
 
-    static public void info(Object caller, String msg) {
-        log(caller.getClass()).info(msg) ;
+    public static void info(Object object, String msg, Throwable th) {
+        log(object).info(msg, th) ;
     }
 
-    static public void info(Class<? > cls, String msg) {
-        log(cls).info(msg) ;
+    public static void debug(Object object, String msg) {
+        log(object).debug(msg) ;
     }
 
-    static public void info(Object caller, String msg, Throwable th) {
-        log(caller.getClass()).info(msg, th) ;
+    public static void debug(Object object, String msg, Throwable th) {
+        log(object).debug(msg, th) ;
     }
 
-    static public void info(Class<? > cls, String msg, Throwable th) {
-        log(cls).info(msg, th) ;
+    public static void warn(Object object, String msg) {
+        log(object).warn(msg) ;
     }
 
-    static public void debug(String caller, String msg) {
-        log(caller).debug(msg) ;
+    public static void warn(Object object, String msg, Throwable th) {
+        log(object).warn(msg, th) ;
     }
 
-    static public void debug(Object caller, String msg) {
-        log(caller.getClass()).debug(msg) ;
+    public static void error(Object object, String msg) {
+        log(object).error(msg) ;
     }
 
-    static public void debug(Class<? > cls, String msg) {
-        log(cls).debug(msg) ;
+    public static void error(Object object, String msg, Throwable th) {
+        log(object).error(msg, th) ;
     }
 
-    static public void debug(Object caller, String msg, Throwable th) {
-        log(caller.getClass()).debug(msg, th) ;
-    }
-
-    static public void debug(Class<? > cls, String msg, Throwable th) {
-        log(cls).debug(msg, th) ;
-    }
-
-    static public void warn(String caller, String msg) {
-        log(caller).warn(msg) ;
-    }
-
-    static public void warn(Object caller, String msg) {
-        warn(caller.getClass(), msg) ;
-    }
-
-    static public void warn(Class<? > cls, String msg) {
-        log(cls).warn(msg) ;
-    }
-
-    static public void warn(Object caller, String msg, Throwable th) {
-        warn(caller.getClass(), msg, th) ;
-    }
-
-    static public void warn(Class<? > cls, String msg, Throwable th) {
-        log(cls).warn(msg, th) ;
-    }
-
-    static public void error(Object caller, String msg) {
-        error(caller.getClass(), msg) ;
-    }
-
-    static public void error(Class<? > cls, String msg) {
-        log(cls).error(msg) ;
-    }
-
-    static public void error(Object caller, String msg, Throwable th) {
-        error(caller.getClass(), msg, th) ;
-    }
-
-    static public void error(Class<? > cls, String msg, Throwable th) {
-        log(cls).error(msg, th) ;
-    }
-
-    static public void error(String caller, String msg) {
-        log(caller).error(msg) ;
-    }
-
-    /** @deprecated Use {@code error}. */
-    @Deprecated
-    static public void fatal(Object caller, String msg) {
-        fatal(caller.getClass(), msg) ;
-    }
-
-    /** @deprecated Use {@code error}. */
-    @Deprecated
-    static public void fatal(Class<? > cls, String msg) {
-        log(cls).error(msg) ;
-    }
-
-    /** @deprecated Use {@code error}. */
-    @Deprecated
-    static public void fatal(Object caller, String msg, Throwable th) {
-        fatal(caller.getClass(), msg, th) ;
-    }
-
-    /** @deprecated Use {@code error}. */
-    @Deprecated
-    static public void fatal(Class<? > cls, String msg, Throwable th) {
-        log(cls).error(msg, th) ;
-    }
-
-    /** @deprecated Use {@code error}. */
-    @Deprecated
-    static public void fatal(String caller, String msg) {
-        log(caller).error(msg) ;
-    }
-
-    static private Logger log(Class<? > cls) {
-        return LoggerFactory.getLogger(cls) ;
-    }
-
-    static private Logger log(String loggerName) {
-        return LoggerFactory.getLogger(loggerName) ;
+    private static Logger log(Object object) {
+        if ( object instanceof String )
+            return LoggerFactory.getLogger((String)object);
+        if ( object instanceof Logger )
+            return (Logger)object;
+        if ( object instanceof Class<?> )
+            return LoggerFactory.getLogger((Class<?>)object);
+        return LoggerFactory.getLogger(object.getClass());
     }
 
     private static CacheSet<Object> warningsDone = CacheFactory.createCacheSet(100) ;
@@ -151,7 +81,16 @@ public class Log {
     public static void warnOnce(Class<?> cls, String message, Object key) {
         if ( ! warningsDone.contains(key) ) {
             Log.warn(cls, message) ;
-            warningsDone.add(key); 
+            warningsDone.add(key);
         }
     }
+
+    /** Generate a warning, once(ish) */
+    public static void warnOnce(Logger logger, String message, Object key) {
+        if ( ! warningsDone.contains(key) ) {
+            logger.warn(message) ;
+            warningsDone.add(key);
+        }
+    }
+
 }

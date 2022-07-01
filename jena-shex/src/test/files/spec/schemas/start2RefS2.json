@@ -1,0 +1,6 @@
+{ "@context": "http://www.w3.org/ns/shex.jsonld", "type": "Schema",
+  "start": "http://a.example/S2",
+  "shapes": [
+    { "id": "http://a.example/S2", "type": "Shape", "expression": {
+        "type": "TripleConstraint", "predicate": "http://a.example/p1" } }
+  ] }

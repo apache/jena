@@ -18,13 +18,15 @@
 
 package org.apache.jena.assembler.assemblers;
 
-import java.util.*;
+import java.util.List;
 import java.util.function.Function;
 
-import org.apache.jena.assembler.* ;
-import org.apache.jena.assembler.exceptions.* ;
+import org.apache.jena.assembler.Assembler;
+import org.apache.jena.assembler.Content;
+import org.apache.jena.assembler.JA;
+import org.apache.jena.assembler.Mode;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.* ;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.vocabulary.RDF ;
 
 public abstract class ModelAssembler extends AssemblerBase implements Assembler
@@ -41,19 +43,15 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
     /** Execute an action in a transaction if the model supports transactions.*/
     private static void exec(Model m, Resource root, Runnable action) {
         boolean b = m.supportsTransactions();
+        // No m.executeInTxn because of test MockModel. 
         if ( b ) m.begin();
         try {
             action.run();
             if ( b ) m.commit();
         }
         catch (Throwable t) {
-            // Compatibility ... 
-            if ( b ) {
-                m.abort();
-                throw new TransactionAbortedException(root, t);
-            }
-            else
-                throw t;
+            if ( b ) m.abort();
+            throw t;
         }
     }
     

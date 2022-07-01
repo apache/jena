@@ -1,0 +1,6 @@
+# capital A keyword
+# source: turtle-syntax-bad-kw-01.ttl
+<http://a.example/IssueShape> {
+   A .
+}
+

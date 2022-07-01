@@ -18,6 +18,9 @@
 
 package org.apache.jena.atlas.io;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.io.IOException ;
@@ -27,13 +30,10 @@ import java.nio.charset.Charset ;
 import java.nio.charset.CharsetDecoder ;
 import java.nio.charset.CharsetEncoder ;
 
-import org.apache.jena.atlas.io.InStreamUTF8 ;
-import org.apache.jena.atlas.io.OutStreamUTF8 ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Chars ;
 import org.junit.Test ;
 
-public class TestStreamUTF8 extends BaseTest
+public class TestStreamUTF8
     {
         static Charset utf8 = Chars.charsetUTF8 ;
         static CharsetDecoder dec = utf8.newDecoder() ;

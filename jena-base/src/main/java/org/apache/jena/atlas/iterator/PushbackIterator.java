@@ -22,8 +22,9 @@ import java.util.ArrayDeque ;
 import java.util.Deque ;
 import java.util.Iterator ;
 
-/** An iterator where you can push items backinto the iterator, to be yielded (LIFO) next time.
- *  @see PeekIterator
+/**
+ * An iterator where you can push items back into the iterator, to be yielded (LIFO) next time.
+ * @see PeekIterator
  */
 public class PushbackIterator<T> implements Iterator<T> {
     private Deque<T>    items = new ArrayDeque<>() ;
@@ -52,11 +53,4 @@ public class PushbackIterator<T> implements Iterator<T> {
             return items.pop() ;
         return iter.next() ;
     }
-
-    @Override
-    public void remove() {
-        // Need to track if last next() was from the stack or not.
-        throw new UnsupportedOperationException() ;
-    }
-
 }

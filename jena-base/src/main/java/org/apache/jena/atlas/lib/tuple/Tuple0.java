@@ -18,6 +18,8 @@
 
 package org.apache.jena.atlas.lib.tuple;
 
+import java.util.function.Function;
+
 /**
  * A tuple of 0 items.
  */
@@ -33,5 +35,13 @@ public class Tuple0<X> extends TupleBase<X> {
     @Override
     public final int len() {
         return 0 ;
+    }
+
+    @Override
+    public <Y> Tuple<Y> map(Function<X,Y> function) { return new Tuple0<>() ;}
+
+    @Override
+    public boolean contains(X item) {
+        return false;
     }
 }

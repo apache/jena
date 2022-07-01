@@ -18,11 +18,14 @@
 
 package org.apache.jena.sparql.core;
 
+import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.impl.TransactionHandlerBase;
 import org.apache.jena.query.TxnType;
 
-/** A graph TransactionHandler that for a graph view of a {@link DatasetGraph}*/  
-public class TransactionHandlerView extends TransactionHandlerBase 
+/**
+ * A graph {@link TransactionHandler} for a graph view of a {@link DatasetGraph}
+ */
+public class TransactionHandlerView extends TransactionHandlerBase
 {
     private final DatasetGraph dsg;
 
@@ -30,17 +33,17 @@ public class TransactionHandlerView extends TransactionHandlerBase
         this.dsg = dsg;
     }
 
-    protected DatasetGraph getDSG() { return dsg; }    
+    protected DatasetGraph getDSG() { return dsg; }
+
+    @Override
+    public void begin() {
+        getDSG().begin(TxnType.READ_PROMOTE);
+    }
 
     @Override
     public void abort() {
         getDSG().abort();
         getDSG().end();
-    }
-
-    @Override
-    public void begin() {
-        getDSG().begin(TxnType.READ_PROMOTE);
     }
 
     @Override

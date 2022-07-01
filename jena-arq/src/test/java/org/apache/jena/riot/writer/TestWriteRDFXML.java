@@ -23,7 +23,7 @@ import java.io.StringWriter ;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFWriter ;
+import org.apache.jena.rdf.model.RDFWriterI ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.junit.Assert ;
@@ -45,7 +45,7 @@ public class TestWriteRDFXML {
         String x0 = w.toString() ;
 
         // Write with setting properties
-        RDFWriter rdfWriter = model.getWriter(name);
+        RDFWriterI rdfWriter = model.getWriter(name);
         rdfWriter.setProperty("showXmlDeclaration", "true");
         rdfWriter.setProperty("showDoctypeDeclaration", "true");
         StringWriter w2 = new StringWriter() ;

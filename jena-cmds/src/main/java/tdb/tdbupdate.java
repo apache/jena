@@ -19,7 +19,7 @@
 package tdb;
 
 import arq.cmdline.ModDataset ;
-import jena.cmd.CmdException ;
+import org.apache.jena.cmd.CmdException;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
@@ -29,8 +29,7 @@ import tdb.cmdline.ModTDBDataset ;
 public class tdbupdate extends arq.update
 {
     // Inherits from arq.update so is not a CmdTDB.  Mixins for Java!
-    public static void main(String...argv)
- {
+    public static void main(String...argv) {
         CmdTDB.init();
         // Do everything with flushing transactions.
         TransactionManager.QueueBatchSize = 0;

@@ -18,23 +18,22 @@
 
 package org.apache.jena.riot.system;
 
-import java.util.Map ;
+import java.util.Map;
 
-import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.shared.PrefixMapping;
 
 /**
  * Factory which provides prefix maps
- * 
+ *
  */
 public class PrefixMapFactory {
-
     /**
      * Creates a new prefix map.
      * <p>
      * Will use whatever the version of ARQ you are using considers the default
      * implementation, this may change from release to release.
      * </p>
-     * 
+     *
      * @return Prefix Map
      */
     public static PrefixMap create() {
@@ -48,10 +47,10 @@ public class PrefixMapFactory {
      * Will use whatever the version of ARQ you are using considers the default
      * implementation, this may change from release to release.
      * </p>
-     * 
+     *
      * @param pmap
      *            Prefix Map to copy
-     * 
+     *
      * @return Prefix Map
      */
     public static PrefixMap create(PrefixMap pmap) {
@@ -65,10 +64,10 @@ public class PrefixMapFactory {
      * Will use whatever the version of ARQ you are using considers the default
      * implementation, this may change from release to release.
      * </p>
-     * 
+     *
      * @param pmap
      *            PrefixMapping to copy
-     * 
+     *
      * @return Prefix Map
      */
     public static PrefixMap create(PrefixMapping pmap) {
@@ -83,7 +82,7 @@ public class PrefixMapFactory {
      * Will use whatever the version of ARQ you are using considers the default
      * implementation, this may change from release to release.
      * </p>
-     * 
+     *
      * @param pmap Mapping from prefix to IRI string
      * @return Prefix Map
      */
@@ -94,73 +93,16 @@ public class PrefixMapFactory {
     }
 
     /**
-     * Creates a new prefix map which is intended for use in input.
-     * 
-     * @return Prefix map
-     */
-    public static PrefixMap createForInput() {
-        return new PrefixMapStd();
-    }
-
-    /**
-     * Creates a new prefix map which is intended for use in input which starts
-     * with a copy of an existing map
-     * <p>
-     * Will use whatever the version of ARQ you are using considers the best
-     * implementation for input, this may change from release to release.
-     * </p>
-     * 
-     * @param pmap
-     *            Prefix Map to copy
-     * @return Prefix Map
-     */
-    public static PrefixMap createForInput(PrefixMap pmap) {
-        return new PrefixMapStd(pmap);
-    }
-
-    /**
-     * Creates a new prefix map which is intended for use in iput which starts
-     * with a copy of an existing map
-     * <p>
-     * Will use whatever the version of ARQ you are using considers the best
-     * implementation for input, this may change from release to release.
-     * </p>
-     * 
-     * @param pmap
-     *            Prefix Map to copy
-     * 
-     * @return Prefix Map
-     */
-    public static PrefixMap createForInput(PrefixMapping pmap) {
-        PrefixMap created = createForInput();
-        created.putAll(pmap);
-        return created;
-    }
-
-    /**
-     * Creates a new prefix map, initialized from a Map of prefix to IRI string.
-     * 
-     * @param pmap Mapping from prefix to IRI string
-     * @return Prefix Map
-     */
-    public static PrefixMap createForInput(Map<String, String> pmap) {
-        PrefixMap created = createForInput();
-        created.putAll(pmap);
-        return created;
-    }
-
-    
-    /**
      * Creates a new prefix map which is intended for use in output
      * <p>
      * Will use whatever the version of ARQ you are using considers the best
      * implementation for output, this may change from release to release.
      * </p>
-     * 
+     *
      * @return Prefix Map
      */
     public static PrefixMap createForOutput() {
-        return new FastAbbreviatingPrefixMap();
+        return new PrefixMapStd();
     }
 
     /**
@@ -170,38 +112,38 @@ public class PrefixMapFactory {
      * Will use whatever the version of ARQ you are using considers the best
      * implementation for output, this may change from release to release.
      * </p>
-     * 
+     *
      * @param pmap
      *            Prefix Map to copy
-     * 
+     *
      * @return Prefix Map
      */
     public static PrefixMap createForOutput(PrefixMap pmap) {
-        return new FastAbbreviatingPrefixMap(pmap);
+        return new PrefixMapStd(pmap);
     }
 
     /**
      * Creates a new prefix map which is intended for use in output which starts
-     * with a copy of an existing map
+     * with a copy of an existing map.
      * <p>
      * Will use whatever the version of ARQ you are using considers the best
      * implementation for output, this may change from release to release.
      * </p>
-     * 
-     * @param pmap
+     *
+     * @param prefixMapping
      *            Prefix Map to copy
-     * 
+     *
      * @return Prefix Map
      */
-    public static PrefixMap createForOutput(PrefixMapping pmap) {
+    public static PrefixMap createForOutput(PrefixMapping prefixMapping) {
         PrefixMap created = createForOutput();
-        created.putAll(pmap);
+        created.putAll(prefixMapping);
         return created;
     }
 
     /**
      * Creates a new prefix map, initialized from a Map of prefix to IRI string.
-     * 
+     *
      * @param pmap Mapping from prefix to IRI string
      * @return Prefix Map
      */
@@ -211,25 +153,8 @@ public class PrefixMapFactory {
         return created;
     }
 
-    /**
-     * Creates a new prefix map which is an extension of an existing prefix map
-     * <p>
-     * This differs from using one of the various {@code create} methods since
-     * it does not copy the existing prefix map, rather it maintains both a
-     * local map and the existing map. All operations favour the local map but
-     * defer to the existing map if the local map cannot fulfil a request.
-     * </p>
-     * 
-     * @param pmap
-     *            Prefix Map to extend
-     * @return Prefix Map
-     */
-    public static PrefixMap extend(PrefixMap pmap) {
-        return new PrefixMapExtended(pmap);
-    }
-    
     /** Return an immutable view of the prefix map.
-     * Throws {@link UnsupportedOperationException} on 
+     * Throws {@link UnsupportedOperationException} on
      * attempts to update it.  Reflects changes made to the underlying map.
      * @param pmap  PrefixMap
      * @return Prefix Map
@@ -238,13 +163,13 @@ public class PrefixMapFactory {
     {
         return new PrefixMapUnmodifiable(pmap) ;
     }
-    
-    /** Return an always-empty and immutable prefix map 
+
+    /** Return an always-empty and immutable prefix map
      * @return Prefix Map
-     */ 
+     */
     public static PrefixMap emptyPrefixMap()
     {
-        return PrefixMapNull.empty ;
+        return PrefixMapZero.empty ;
     }
-    
+
 }

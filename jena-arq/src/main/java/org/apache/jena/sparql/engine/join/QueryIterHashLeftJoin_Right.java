@@ -23,7 +23,6 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
-import org.apache.jena.sparql.engine.join.JoinKey ;
 import org.apache.jena.sparql.expr.ExprList ;
 
 /**

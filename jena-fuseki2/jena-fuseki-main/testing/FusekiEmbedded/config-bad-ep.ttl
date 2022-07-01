@@ -1,0 +1,27 @@
+PREFIX fuseki: <http://jena.apache.org/fuseki#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tdb: <http://jena.hpl.hp.com/2008/tdb#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX sdb: <http://jena.hpl.hp.com/2007/sdb#>
+
+[] rdf:type fuseki:Server ;
+##    fuseki:passwd "passwd";
+##    fuseki:auth   "basic" ;
+## #   fuseki:allowedUsers "*";
+   .
+
+<#tdb> rdf:type fuseki:Service ;
+    fuseki:name "/ds";
+
+    fuseki:endpoint
+    [
+      fuseki:operation fuseki:query ;
+      fuseki:name "illegal endpoint name"
+    ] ;
+    fuseki:dataset <#dataset> ;
+    .
+
+<#dataset> rdf:type ja:MemoryDataset ;
+    .

@@ -18,10 +18,13 @@
 
 package org.apache.jena.riot.system;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.* ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
@@ -30,7 +33,7 @@ import org.junit.runners.Parameterized.Parameters ;
 
 
 @RunWith(Parameterized.class)
-public class TestLangRegistration extends BaseTest
+public class TestLangRegistration
 {
     @Parameters(name = "{0} -- {1} {2} {3}")
     public static Iterable<Object[]> data() {
@@ -48,10 +51,11 @@ public class TestLangRegistration extends BaseTest
         add("NQ",       x, Lang.NQ,         false, true) ;
         add("TRIG",     x, Lang.TRIG,       false, true) ;
         add("TRIX",     x, Lang.TRIX,       true, true) ;
+        add("PB RDF",   x, Lang.RDFPROTO,   true, true) ;
         add("TRDF",     x, Lang.RDFTHRIFT,  true, true) ;
         return x ;
     }
-    
+
     private static void add(String name, List<Object[]> x, Lang lang, boolean istriples, boolean isquads) {
         x.add(new Object[] {name, lang, istriples , isquads }) ;
     }
@@ -70,7 +74,7 @@ public class TestLangRegistration extends BaseTest
 
     @Test public void jenaSystem_read_1() {
         assertTrue(RDFLanguages.isRegistered(lang)) ;
-        if ( istriples ) 
+        if ( istriples )
             assertTrue(RDFLanguages.isTriples(lang)) ;
         else
             assertFalse(RDFLanguages.isTriples(lang)) ;
@@ -79,15 +83,14 @@ public class TestLangRegistration extends BaseTest
         else
             assertFalse(RDFLanguages.isQuads(lang)) ;
     }
-    
-    @SuppressWarnings("deprecation")
+
     @Test public void jenaSystem_read_2() {
         if ( ! Lang.RDFNULL.equals(lang) ) {
             assertTrue(RDFParserRegistry.isRegistered(lang));
             assertNotNull(RDFParserRegistry.getFactory(lang)) ;
         }
     }
-    
+
     @Test public void jenaSystem_write_1() {
         assertTrue(RDFWriterRegistry.contains(lang)) ;
     }
@@ -97,11 +100,11 @@ public class TestLangRegistration extends BaseTest
         if ( isquads )   assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(lang)) ;
         assertNotNull(RDFWriterRegistry.defaultSerialization(lang)) ;
     }
-    
+
 //    @Test public void jenaSystem_write_3() {
-//        
+//
 //        assertEquals(jsonldFmt1, RDFWriterRegistry.defaultSerialization(JSONLD)) ;
-//        
+//
 //        assertNotNull(RDFWriterRegistry.getWriterGraphFactory(jsonldFmt1)) ;
 //        assertNotNull(RDFWriterRegistry.getWriterGraphFactory(jsonldFmt2)) ;
 //
@@ -110,11 +113,11 @@ public class TestLangRegistration extends BaseTest
 //
 //        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(jsonldFmt1)) ;
 //        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(jsonldFmt2)) ;
-//        
+//
 //        assertTrue(RDFWriterRegistry.registeredDatasetFormats().contains(jsonldFmt1)) ;
 //        assertTrue(RDFWriterRegistry.registeredDatasetFormats().contains(jsonldFmt2)) ;
 //    }
-//    
+//
 //    @Test public void jenaSystem_write_4() {
 //        assertNotNull(RDFDataMgr.createGraphWriter(jsonldFmt1)) ;
 //        assertNotNull(RDFDataMgr.createGraphWriter(jsonldFmt2)) ;

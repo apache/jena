@@ -30,7 +30,7 @@ import org.apache.jena.sparql.graph.GraphFactory ;
 
 /** Helper code for RIOT language parsing tests. */
 class ParserTestBaseLib {
-    
+
     /** Parse for a language - convert errors.wranigns to ErrorHandlerEx */
     static Graph parseGraph(Lang lang, String ...strings) {
         Graph graph = GraphFactory.createDefaultGraph() ;
@@ -47,7 +47,7 @@ class ParserTestBaseLib {
         return dsg ;
     }
 
-    /** Parse strings to destination (checking on, URI resolution off) - convert errors and warning to ErrorHandlerEx */ 
+    /** Parse strings to destination (checking on, URI resolution off) - convert errors and warning to ErrorHandlerEx */
     static void parse(Lang lang, StreamRDF dest, String... strings) {
         String string = String.join("\n", strings) ;
         String baseIRI = "http://base/" ;

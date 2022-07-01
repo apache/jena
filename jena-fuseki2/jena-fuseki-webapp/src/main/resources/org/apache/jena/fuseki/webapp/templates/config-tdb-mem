@@ -12,16 +12,15 @@
 
 <#service_tdb_all> rdf:type fuseki:Service ;
     rdfs:label                      "TDB {NAME}" ;
-    fuseki:name                     "{NAME}" ;
-    fuseki:serviceQuery             "query" ;
-    fuseki:serviceQuery             "sparql" ;
-    fuseki:serviceUpdate            "update" ;
-    fuseki:serviceUpload            "upload" ;
-    fuseki:serviceReadWriteGraphStore      "data" ;
-    # A separate read-only graph store endpoint:
+    fuseki:name                        "{NAME}" ;
+    fuseki:serviceQuery                "" ;
+    fuseki:serviceQuery                "sparql" ;
+    fuseki:serviceQuery                "query" ;
+    fuseki:serviceUpdate               "" ;
+    fuseki:serviceUpdate               "update" ;
+    fuseki:serviceReadWriteGraphStore  "data" ;     
     fuseki:serviceReadGraphStore       "get" ;
-    fuseki:dataset           <#tdb_dataset_readwrite> ;
-    
+    fuseki:dataset                     <#tdb_dataset_readwrite> ;
     .
 
 <#tdb_dataset_readwrite> rdf:type      tdb:DatasetTDB ;

@@ -29,47 +29,46 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.pfunction.PropFuncArgType ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionEval ;
 
-/** Access the subsystem version registry and yield URI/version for each entry */ 
+/** Access the subsystem version registry and yield URI/version for each entry */
 public class version extends PropertyFunctionEval
 {
     public version()
     { super(PropFuncArgType.PF_ARG_SINGLE, PropFuncArgType.PF_ARG_SINGLE) ; }
-    
+
     @Override
     public QueryIterator execEvaluated(Binding binding, PropFuncArg subject, Node predicate, PropFuncArg object, ExecutionContext execCxt)
     {
-        
+
         List<Binding> results = new ArrayList<>() ;
         Node subj = subject.getArg() ;
         Node obj = object.getArg() ;
-        
+
         Iterator<SystemInfo> iter = SystemARQ.registeredSubsystems() ;
-        
+
         for ( ; iter.hasNext() ; )
         {
             SystemInfo info = iter.next();
             if ( ! isSameOrVar(subj, info.getIRI()) )
                 continue ;
             Node version = NodeFactory.createLiteral(info.getVersion()) ;
-            if ( ! isSameOrVar(obj, version) ) 
+            if ( ! isSameOrVar(obj, version) )
                 continue ;
-            
-            BindingMap b = BindingFactory.create(binding) ;
+
+            BindingBuilder builder = Binding.builder(binding) ;
             if ( subj.isVariable() )
-                b.add(Var.alloc(subj), info.getIRI()) ;
+                builder.add(Var.alloc(subj), info.getIRI()) ;
             if ( subj.isVariable() )
-                b.add(Var.alloc(obj), version) ;
-            results.add(b) ;
+                builder.add(Var.alloc(obj), version) ;
+            results.add(builder.build()) ;
         }
-        return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
+        return QueryIterPlainWrapper.create(results.iterator(), execCxt) ;
     }
 
     private boolean isSameOrVar(Node var, Node value)

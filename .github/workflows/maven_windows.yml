@@ -1,0 +1,35 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+name: Apache Jena CI (MS Windows)
+on: workflow_dispatch
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+
+    # "windows" takes up a lot of diskspace due a longstanding JDK issue
+    # Running on c: seems to work.
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: copy checked out dir to /c/jena for windows-latest
+      run: bash -c "cp -r /d/a/jena/jena /c/jena"
+
+    - name: Build with Maven for windows-latest
+      run: bash -c "mvn -B verify -Pdev --file pom.xml"
+      working-directory: c:\jena

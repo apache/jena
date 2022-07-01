@@ -18,11 +18,14 @@
 
 package org.apache.jena.atlas.lib.tuple;
 
+import java.util.Objects;
+import java.util.function.Function;
+
 /**
  * A tuple of 3 items.
  */
 public class Tuple3<X> extends TupleBase<X> {
-    protected final X x1 ; 
+    protected final X x1 ;
     protected final X x2 ;
     protected final X x3 ;
 
@@ -45,5 +48,22 @@ public class Tuple3<X> extends TupleBase<X> {
     @Override
     public final int len() {
         return 3 ;
+    }
+
+    @Override
+    public <Y> Tuple<Y> map(Function<X, Y> function) {
+        return new Tuple3<>(
+                function.apply(x1),
+                function.apply(x2),
+                function.apply(x3)
+                );
+    }
+
+    @Override
+    public boolean contains(X item) {
+        if ( Objects.equals(x1, item) ) return true;
+        if ( Objects.equals(x2, item) ) return true;
+        if ( Objects.equals(x3, item) ) return true;
+        return false;
     }
 }

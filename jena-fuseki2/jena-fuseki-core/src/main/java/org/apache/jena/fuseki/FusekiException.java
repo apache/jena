@@ -18,12 +18,12 @@
 
 package org.apache.jena.fuseki;
 
-import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.sparql.ARQException;
 
 public class FusekiException extends ARQException
 {
-    public FusekiException(String msg, Throwable cause)    { super(msg, cause) ; }
-    public FusekiException(String msg)                     { super(msg) ; }
-    public FusekiException(Throwable cause)                { super(cause) ; }
-    public FusekiException()                               { super() ; }
+    public FusekiException(String msg, Throwable cause)    { super(msg, cause); }
+    public FusekiException(String msg)                     { super(msg); }
+    public FusekiException(Throwable cause)                { super(cause); }
+    public FusekiException()                               { super(); }
 }

@@ -18,27 +18,34 @@
 
 package org.apache.jena.riot.out ;
 
-import java.net.MalformedURLException ;
+import static org.apache.jena.riot.system.RiotChars.isDigit;
+import static org.apache.jena.riot.system.RiotChars.isPNChars;
+import static org.apache.jena.riot.system.RiotChars.isPNCharsBase;
+import static org.apache.jena.riot.system.RiotChars.isPNChars_U;
 
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIRelativize ;
-import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
-import static org.apache.jena.riot.system.RiotChars.* ;
 
-/** Node formatter for Turtle using single line strings */ 
+/** Node formatter for Turtle using single line strings */
 public class NodeFormatterTTL extends NodeFormatterNT
 {
-    private final NodeToLabel nodeToLabel ;
-    private final PrefixMap   prefixMap ;
-    private final String      baseIRI ;
-    private final IRI         iriResolver ;
+    private final NodeToLabel nodeToLabel;
+    private final PrefixMap   prefixMap;
+    private final String      baseStrIRI;
+    private final IRIx        baseIRI;
+
+    // Turtle: abbreviations for literals but no use of prefixes or base.
+    public NodeFormatterTTL() {
+        this(null, null, NodeToLabel.createBNodeByLabelEncoded()) ;
+    }
 
     public NodeFormatterTTL(String baseIRI, PrefixMap prefixMap) {
         this(baseIRI, prefixMap, NodeToLabel.createBNodeByLabelEncoded()) ;
@@ -50,9 +57,13 @@ public class NodeFormatterTTL extends NodeFormatterNT
         if ( prefixMap == null )
             prefixMap = PrefixMapFactory.create() ;
         this.prefixMap = prefixMap ;
-        this.baseIRI = baseIRI ;
-        this.iriResolver = 
-            baseIRI != null ? IRIResolver.iriFactory().construct(baseIRI) : null ;
+        this.baseStrIRI = baseIRI ;
+        if ( baseIRI != null ) {
+            this.baseIRI = IRIs.resolveIRI(baseIRI);
+            if ( ! this.baseIRI.isReference() )
+                throw new IRIException("Not suitable for a base IRI: '"+baseIRI+"'");
+        } else
+            this.baseIRI = null;
     }
 
     @Override
@@ -64,7 +75,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
             // The splitter in "abbrev" only has a weak rule.
             String prefix = pName.getLeft() ;
             String localname = pName.getRight() ;
-            
+
             if ( safePrefixName(prefix, localname) ) {
                 w.print(prefix) ;
                 w.print(':') ;
@@ -74,7 +85,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
         }
 
         // Attempt base abbreviation.
-        if ( iriResolver != null ) {
+        if ( baseIRI != null ) {
             String x = abbrevByBase(uriStr) ;
             if ( x != null ) {
                 w.print('<') ;
@@ -88,18 +99,12 @@ public class NodeFormatterTTL extends NodeFormatterNT
         super.formatURI(w, uriStr) ;
     }
 
-    static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
-
-    /** Abbreviate the URI */
-    private String abbrevByBase(String uri) {
-        IRI rel = iriResolver.relativize(uri, relFlags) ;
-        String r = null ;
-        try {
-            r = rel.toASCIIString() ;
-        } catch (MalformedURLException ex) {
-            r = rel.toString() ;
-        }
-        return r ;
+    private String abbrevByBase(String uriStr) {
+        if ( baseIRI == null )
+            return null;
+        IRIx relInput = IRIx.create(uriStr);
+        IRIx relativized = baseIRI.relativize(relInput);
+        return (relativized==null) ? null : relativized.toString();
     }
 
     @Override
@@ -109,7 +114,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
     }
 
     // From NodeFormatterNT:
-    
+
     // @Override
     // public void formatVar(WriterI w, String name)
 
@@ -120,24 +125,24 @@ public class NodeFormatterTTL extends NodeFormatterNT
     // public void formatLitLang(WriterI w, String lex, String langTag)
 
     static boolean safePrefixName(String prefix, String localname) {
-        return safeForPrefix(prefix) && safeForPrefixLocalname(localname) ;    
+        return safeForPrefix(prefix) && safeForPrefixLocalname(localname) ;
     }
-    
+
     // [139s]  PNAME_NS        ::=     PN_PREFIX? ':'
     // [140s]  PNAME_LN        ::=     PNAME_NS PN_LOCAL
-    
+
     // [167s]  PN_PREFIX       ::=     PN_CHARS_BASE ((PN_CHARS | '.')* PN_CHARS)?
     // [168s]  PN_LOCAL        ::=     (PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
 
     // [163s]  PN_CHARS_BASE   ::=     [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
     // [164s]  PN_CHARS_U      ::=     PN_CHARS_BASE | '_'
     // [166s]  PN_CHARS        ::=     PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
-    
+
     // [169s]  PLX             ::=     PERCENT | PN_LOCAL_ESC
     // [170s]  PERCENT         ::=     '%' HEX HEX
     // [171s]  HEX             ::=     [0-9] | [A-F] | [a-f]
     // [172s]  PN_LOCAL_ESC    ::=     '\' ('_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%')
-    
+
     /* private-testing */
     static boolean safeForPrefix(String str) {
         // PN_PREFIX ::= PN_CHARS_BASE ((PN_CHARS | '.')* PN_CHARS)?
@@ -179,7 +184,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
     }
 
     // ---- Prefix name : prefix part
-    
+
     private static int skip1_PN_CHARS_BASE(String str, int idx) {
         char ch = str.charAt(idx) ;
         if ( isPNCharsBase(ch) )
@@ -215,7 +220,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
             return idx + 1 ;
         return -1 ;
     }
-    
+
     private static int skipAny_PN_CHARS_or_DOT_or_COLON(String str, int idx, int max) {
         for (int i = idx; i < max; i++) {
             char ch = str.charAt(i) ;
@@ -234,8 +239,8 @@ public class NodeFormatterTTL extends NodeFormatterNT
         return -1 ;
     }
 
-    // ---- 
-    
+    // ----
+
     private static final String dtDecimal = XSDDatatype.XSDdecimal.getURI() ;
     private static final String dtInteger = XSDDatatype.XSDinteger.getURI() ;
     private static final String dtDouble  = XSDDatatype.XSDdouble.getURI() ;
@@ -244,11 +249,12 @@ public class NodeFormatterTTL extends NodeFormatterNT
     @Override
     public void formatLitDT(AWriter w, String lex, String datatypeURI) {
         boolean b = writeLiteralAbbreviated(w, lex, datatypeURI) ;
-        if ( b ) return ;
-        writeLiteralLongForm(w, lex, datatypeURI) ;
+        if ( b )
+            return ;
+        writeLiteralWithDT(w, lex, datatypeURI) ;
     }
-    
-    protected void writeLiteralLongForm(AWriter w, String lex, String datatypeURI) {
+
+    protected void writeLiteralWithDT(AWriter w, String lex, String datatypeURI) {
         writeLiteralOneLine(w, lex, datatypeURI);
     }
 
@@ -257,7 +263,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
     }
 
     /** Write in a short form, e.g. integer.
-     * @return True if a short form was output else false. 
+     * @return True if a short form was output else false.
      */
     protected boolean writeLiteralAbbreviated(AWriter w, String lex, String datatypeURI) {
         if ( dtDecimal.equals(datatypeURI) ) {
@@ -276,7 +282,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
                 return true ;
             }
         } else if ( dtBoolean.equals(datatypeURI) ) {
-            // We leave "0" and "1" as-is assumign that if written like that,
+            // We leave "0" and "1" as-is assuming that if written like that,
             // there was a reason.
             if ( lex.equals("true") || lex.equals("false") ) {
                 w.print(lex) ;
@@ -285,7 +291,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
         }
         return false ;
     }
-    
+
     private static boolean validInteger(String lex) {
         int N = lex.length() ;
         if ( N == 0 )

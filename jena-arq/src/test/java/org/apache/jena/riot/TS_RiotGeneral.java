@@ -18,13 +18,14 @@
 
 package org.apache.jena.riot;
 
+import org.apache.jena.riot.writer.TestJsonLD10Writer;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses(
-{ 
+{
     TestSysRIOT.class
     , TestLangRIOT.class
     , TestSyntaxDetermination.class
@@ -34,7 +35,14 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestRDFParser.class
     , TestParserRegistry.class
     , TestRDFWriter.class
+    , TestRDFParser.class
     , TestParseURISchemeBases.class
+
+    , TestTurtleWriter.class
+    , TestTurtleWriterPretty.class
+
+    , TestJsonLDReader.class
+    , TestJsonLD10Writer.class
 })
 
 public class TS_RiotGeneral

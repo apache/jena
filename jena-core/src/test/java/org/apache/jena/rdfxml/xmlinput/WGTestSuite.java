@@ -38,9 +38,6 @@ import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.PropertyImpl ;
 import org.apache.jena.rdf.model.impl.ResourceImpl ;
-import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
-import org.apache.jena.rdfxml.xmlinput.JenaReader ;
-import org.apache.jena.rdfxml.xmlinput.ParseException ;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory ;
 import org.apache.jena.reasoner.test.WGReasonerTester ;
 import org.apache.jena.shared.BrokenException ;
@@ -134,7 +131,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 		@Override
         public void runTest()  throws IOException {
 			if (logging) {	    
-			    RDFWriter w = testResults.getWriter("RDF/XML-ABBREV");
+			    RDFWriterI w = testResults.getWriter("RDF/XML-ABBREV");
 			    w.setProperty("xmlbase",BASE_RESULTS_URI );
 			    try ( OutputStream out = new FileOutputStream("/tmp/rdf-results.rdf") ) {
 			        w.write(testResults,out,BASE_RESULTS_URI);
@@ -620,7 +617,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 while (si.hasNext()) {
                     String uri = si.nextStatement().getResource().getURI();
                     String fieldName = uri.substring(uri.lastIndexOf('#') + 1);
-                    expected.add(new Integer(ParseException.errorCode(fieldName)));
+                    expected.add(Integer.valueOf(ParseException.errorCode(fieldName)));
                 }
             }
         }
@@ -703,7 +700,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
         @Override
         void onError(int level, int id) {
-            Integer err = new Integer(id);
+            Integer err = Integer.valueOf(id);
             found.add(err);
             errorCnt[level]++;
             if (expected != null) {
@@ -909,7 +906,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             for ( int err : errs )
             {
 
-                expected.add( new Integer( err ) );
+                expected.add( Integer.valueOf( err ) );
             }
         }
         @Override
@@ -990,7 +987,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
         @Override
         void onError(int level, int id) {
-            Integer err = new Integer(id);
+            Integer err = Integer.valueOf(id);
             found.add(err);
             errorCnt[level]++;
             if (expected != null) {

@@ -18,23 +18,23 @@
 
 package org.apache.jena.sparql.graph;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.graph.GraphUnionRead;
 import org.apache.jena.sparql.sse.Item;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.sse.builders.BuilderGraph;
 import org.junit.Test;
 
-public class TestGraphUnionRead extends BaseTest
+public class TestGraphUnionRead
 {
     private static String dataStr = StrUtils.strjoinNL(
       "(dataset" ,

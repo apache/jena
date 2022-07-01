@@ -25,7 +25,7 @@ import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionBase ;
 
-/** Function that prints the system time to stderr the point of execution.
+/** Function that prints the system time to stderr at the point of execution.
  *  Returns true.
  *  This is a debugging aid only.
  */

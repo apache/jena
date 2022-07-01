@@ -24,34 +24,30 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.jena.arq.AbstractRegexpBasedTest;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
-import org.apache.jena.query.Query ;
+import org.apache.jena.query.Query;
 
-public abstract class AbstractClauseTest extends AbstractRegexpBasedTest {
+public abstract class AbstractClauseTest { 
 
-	protected final static String[] byLine(AbstractQueryBuilder<?> builder) {
-		return builder.buildString().split("\n");
-	}
+    protected final static String[] byLine(AbstractQueryBuilder<?> builder) {
+        return builder.buildString().split("\n");
+    }
 
-	protected final static Query getQuery(AbstractQueryBuilder<?> builder)
-			throws NoSuchFieldException, SecurityException,
-			IllegalArgumentException, IllegalAccessException {
-		Field f = AbstractQueryBuilder.class.getDeclaredField("query");
-		f.setAccessible(true);
-		return (Query) f.get(builder);
-	}
+    protected final static Query getQuery(AbstractQueryBuilder<?> builder)
+            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        Field f = AbstractQueryBuilder.class.getDeclaredField("query");
+        f.setAccessible(true);
+        return (Query) f.get(builder);
+    }
 
-	protected final static void assertContains(String expected, String[] lst) {
-		List<String> s = Arrays.asList(lst);
-		assertTrue(String.format("%s not found in %s", expected, s),
-				s.contains(expected));
-	}
+    protected final static void assertContains(String expected, String[] lst) {
+        List<String> s = Arrays.asList(lst);
+        assertTrue(String.format("%s not found in %s", expected, s), s.contains(expected));
+    }
 
-	protected final static void assertNotContains(String expected, String[] lst) {
-		List<String> s = Arrays.asList(lst);
-		assertFalse(String.format("%s found in %s", expected, s),
-				s.contains(expected));
-	}
+    protected final static void assertNotContains(String expected, String[] lst) {
+        List<String> s = Arrays.asList(lst);
+        assertFalse(String.format("%s found in %s", expected, s), s.contains(expected));
+    }
 
 }

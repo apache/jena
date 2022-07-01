@@ -22,11 +22,11 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>jena-shaded-guava</artifactId>
-  <version>3.11.0-SNAPSHOT</version>
+  <version>4.6.0-SNAPSHOT</version>
   <name>Apache Jena - Shadowed external libraries</name>
 
   <description>
@@ -39,29 +39,34 @@
     org.apache.jena.ext.com.google....
   </description>
 
-  <dependencies>
+  <properties>
+   <automatic.module.name>org.apache.jena.ext.com.google</automatic.module.name>
+  </properties>
 
+  <dependencies>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <!-- Version number specified explicitly and not in jena-project, 
-           as it should only be used here, and further shadowing/bundle/NOTICE
-           consideration might be needed on upgrade. 
-           The shading step takes only the com.google.commons/com.google.thirdparty
-           This is important because Guava itself (at v24 at least) has tools dependencies
-           with various licenses.
+      <!-- Version number specified in parent POM but no dependency management there.
+           Some part of the system could use guava directly. The shading step takes
+           only the com.google.commons and com.google.thirdparty packages.
       -->
-      <version>24.1-jre</version>
+      <version>${ver.shaded-guava}</version>
       <optional>true</optional>
-      <!-- These make the excluded parts clean for dependency:tree in the module directory -->
+
+      <!-- These are also affected by the artifactSet and filters of the shade plugin. -->
       <exclusions>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.checkerframework</groupId>
           <artifactId>checker-qual</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.checkerframework</groupId>
-          <artifactId>checker-compat-qual</artifactId>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
         </exclusion>
         <exclusion>
           <groupId>com.google.errorprone</groupId>
@@ -71,22 +76,10 @@
           <groupId>com.google.j2objc</groupId>
           <artifactId>j2objc-annotations</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>com.google.code.findbugs</groupId>
-          <artifactId>jsr305</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>animal-sniffer-annotations</artifactId>
-        </exclusion>
       </exclusions>
-
     </dependency>
-
   </dependencies>
-  <properties>
-   <automatic.module.name>org.apache.jena.ext.com.google</automatic.module.name>
-  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -111,15 +104,13 @@
           <createSourcesJar>true</createSourcesJar>
           <artifactSet>
             <includes>
-              <artifact>com.google.guava:guava</artifact>
+              <artifact>com.google.guava:*</artifact>
             </includes>
           </artifactSet>
 
           <filters>
             <filter>
-              <!-- Modify the below patterns if a later guava 
-                   contains other packages 
-              -->
+              <!-- Modify the below patterns if a later guava contains other packages -->
               <artifact>com.google.guava:guava</artifact>
               <includes>
                 <include>com/google/common/**</include>
@@ -137,15 +128,9 @@
                depending on Jena.
           -->
           <relocations>
-            <!-- Modify the below patterns if a later guava contains other
-                 packages -->
             <relocation>
-              <pattern>com.google.common</pattern>
-              <shadedPattern>org.apache.jena.ext.com.google.common</shadedPattern>
-            </relocation>
-            <relocation>
-              <pattern>com.google.thirdparty</pattern>
-              <shadedPattern>org.apache.jena.ext.com.google.thirdparty</shadedPattern>
+              <pattern>com.google</pattern>
+              <shadedPattern>org.apache.jena.ext.com.google</shadedPattern>
             </relocation>
           </relocations>
         </configuration>

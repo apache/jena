@@ -27,7 +27,9 @@ import org.apache.jena.graph.Node ;
 /**
  * Collect a stream of DatasetChanges into batches. A batch is adjacent quads
  * changes with (same graph, same subject, same action).
+ * @deprecated Do not use. This class does not have a clear contract when used with transactions.
  */
+@Deprecated
 public abstract class DatasetChangesBatched implements DatasetChanges {
     private QuadAction currentAction   = null ;
     private Node       currentSubject  = null ;

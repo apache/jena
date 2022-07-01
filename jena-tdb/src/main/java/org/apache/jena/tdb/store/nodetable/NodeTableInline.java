@@ -21,7 +21,6 @@ package org.apache.jena.tdb.store.nodetable;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.nodetable.NodeTable ;
 
 /** NodeTable wrapper to handle inline node ids.
  * If a node can be made inline, then the underlying table never sees it.

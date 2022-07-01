@@ -18,25 +18,38 @@
 
 package org.apache.jena.riot.tokens ;
 
-import java.io.ByteArrayInputStream ;
+import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerExceptions;
+import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerSimple;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream ;
+import java.io.Reader;
+
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.PeekReader ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.RiotParseException ;
+import org.apache.jena.riot.system.ErrorHandlerFactory.ErrorHandlerRecorder;
 import org.apache.jena.sparql.ARQConstants ;
 import org.junit.Test ;
 
-public class TestTokenizer extends BaseTest {
-    // WORKERS
+public class TestTokenizer {
+
     private static Tokenizer tokenizer(String string) {
         return tokenizer(string, false) ;
     }
 
     private static Tokenizer tokenizer(String string, boolean lineMode) {
         PeekReader r = PeekReader.readString(string) ;
-        Tokenizer tokenizer = new TokenizerText(r, lineMode) ;
+        Tokenizer tokenizer = TokenizerText.create()
+                .errorHandler(errorHandlerExceptions())
+                .source(r)
+                .lineMode(lineMode)
+                .build();
         return tokenizer ;
     }
 
@@ -62,7 +75,7 @@ public class TestTokenizer extends BaseTest {
 
     private static Token tokenizeAndTestExact(String input, StringType stringType, String tokenImage) {
         Token token = tokenizeAndTestExact(input, TokenType.STRING, tokenImage, null) ;
-        assertEquals(stringType, token.getStringType()); 
+        assertEquals(stringType, token.getStringType());
         return token;
     }
 
@@ -185,17 +198,17 @@ public class TestTokenizer extends BaseTest {
     public void tokenUnit_iri12() {
         tokenFirst("<abc{def>") ;
     }
-    
+
     @Test(expected=RiotException.class)
     public void tokenUnit_iri13() {
         tokenFirst("<abc}def>") ;
     }
-    
+
     @Test(expected=RiotException.class)
     public void tokenUnit_iri14() {
         tokenFirst("<abc|def>") ;
     }
-    
+
     @Test(expected=RiotException.class)
     public void tokenUnit_iri15() {
         tokenFirst("<abc^def>") ;
@@ -205,7 +218,7 @@ public class TestTokenizer extends BaseTest {
     public void tokenUnit_iri16() {
         tokenFirst("<abc`def>") ;
     }
-    
+
     @Test(expected=RiotException.class)
     public void tokenUnit_iri17() {
         tokenFirst("<abc\tdef>") ;          // Java escae - real tab
@@ -213,17 +226,17 @@ public class TestTokenizer extends BaseTest {
 
     @Test(expected=RiotException.class)
     public void tokenUnit_iri18() {
-        tokenFirst("<abc\u0007def>") ;      // Java escape - codepoint 7 
+        tokenFirst("<abc\u0007def>") ;      // Java escape - codepoint 7
     }
 
     @Test(expected=RiotException.class)
     public void tokenUnit_iri19() {
-        tokenFirst("<abc\\>") ;          
+        tokenFirst("<abc\\>") ;
     }
 
     @Test(expected=RiotException.class)
     public void tokenUnit_iri20() {
-        tokenFirst("<abc\\def>") ;          
+        tokenFirst("<abc\\def>") ;
     }
 
     @Test(expected=RiotException.class)
@@ -398,38 +411,35 @@ public class TestTokenizer extends BaseTest {
         assertFalse(tokenizer.hasNext()) ;
     }
 
-    // @Test
-    // public void tokenUnit_cntrl1()
-    // {
-    // tokenizeAndTestExact("*S", TokenType.CNTRL, "S") ;
-    // }
-    //
-    // @Test
-    // public void tokenUnit_cntr2()
-    // {
-    // tokenizeAndTestExact("*SXYZ", TokenType.CNTRL, "SXYZ") ;
-    // }
-    //
-    // @Test
-    // public void tokenUnit_cntrl3()
-    // {
-    // Tokenizer tokenizer = tokenizer("*S<x>") ;
-    // assertTrue(tokenizer.hasNext()) ;
-    // Token token = tokenizer.next() ;
-    // assertNotNull(token) ;
-    // assertEquals(TokenType.CNTRL, token.getType()) ;
-    // assertEquals('S', token.getCntrlCode()) ;
-    // assertNull(token.getImage()) ;
-    // assertNull(token.getImage2()) ;
-    //
-    // assertTrue(tokenizer.hasNext()) ;
-    // Token token2 = tokenizer.next() ;
-    // assertNotNull(token2) ;
-    // assertEquals(TokenType.IRI, token2.getType()) ;
-    // assertEquals("x", token2.getImage()) ;
-    // assertNull(token2.getImage2()) ;
-    // assertFalse(tokenizer.hasNext()) ;
-    // }
+//     @Test
+//     public void tokenUnit_cntrl1() {
+//         tokenizeAndTestExact("*S", TokenType.CNTRL, "S");
+//     }
+//
+//     @Test
+//     public void tokenUnit_cntr2() {
+//         tokenizeAndTestExact("*SXYZ", TokenType.CNTRL, "SXYZ");
+//     }
+//
+//     @Test
+//     public void tokenUnit_cntrl3() {
+//         Tokenizer tokenizer = tokenizer("*S<x>");
+//         assertTrue(tokenizer.hasNext());
+//         Token token = tokenizer.next();
+//         assertNotNull(token);
+//         assertEquals(TokenType.CNTRL, token.getType());
+//         assertEquals('S', token.getCntrlCode());
+//         assertNull(token.getImage());
+//         assertNull(token.getImage2());
+//
+//         assertTrue(tokenizer.hasNext());
+//         Token token2 = tokenizer.next();
+//         assertNotNull(token2);
+//         assertEquals(TokenType.IRI, token2.getType());
+//         assertEquals("x", token2.getImage());
+//         assertNull(token2.getImage2());
+//         assertFalse(tokenizer.hasNext());
+//     }
 
     @Test
     public void tokenUnit_syntax1() {
@@ -552,7 +562,7 @@ public class TestTokenizer extends BaseTest {
     }
 
     @Test
-    public void tokenUnit_25() {
+    public void tokenUnit_pname20() {
         Tokenizer tokenizer = tokenizeAndTestFirst("123:", TokenType.INTEGER, "123") ;
         testNextToken(tokenizer, TokenType.PREFIXED_NAME, "", "") ;
     }
@@ -666,7 +676,7 @@ public class TestTokenizer extends BaseTest {
 
     @Test
     public void tokenUnit_var9() {
-        tokenizeAndTestExact("?" + ARQConstants.allocVarBNodeToVar + "ABC", TokenType.VAR, ARQConstants.allocVarBNodeToVar + "ABC") ;
+        tokenizeAndTestExact("?" + ARQConstants.allocVarTripleTerm + "9", TokenType.VAR, ARQConstants.allocVarTripleTerm + "9") ;
     }
 
     @Test
@@ -758,7 +768,7 @@ public class TestTokenizer extends BaseTest {
     public void tokenLiteralDT_4() {
         tokenizeAndTestLiteralDT("'123'  ^^<xyz>", StringType.STRING1, "123", TokenType.IRI, "xyz", null) ;
     }
-    
+
     public void tokenLiteralDT_5() {
         tokenizeAndTestLiteralDT("'123'^^  <xyz>", StringType.STRING1, "123", TokenType.IRI, "xyz", null) ;
     }
@@ -900,6 +910,16 @@ public class TestTokenizer extends BaseTest {
     // These tests converts some java characters to UTF-8 and read back as
     // ASCII.
 
+    private static Tokenizer tokenizerASCII (String string) {
+        ByteArrayInputStream in = bytes(string) ;
+        Tokenizer tokenizer = TokenizerText.create()
+                    .asciiOnly(true)
+                    .errorHandler(errorHandlerExceptions())
+                    .source(in)
+                    .build() ;
+        return tokenizer;
+    }
+
     private static ByteArrayInputStream bytes(String string) {
         byte b[] = StrUtils.asUTF8bytes(string) ;
         return new ByteArrayInputStream(b) ;
@@ -907,33 +927,147 @@ public class TestTokenizer extends BaseTest {
 
     @Test
     public void tokenizer_charset_1() {
-        ByteArrayInputStream in = bytes("'abc'") ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
+        Tokenizer tokenizer = tokenizerASCII("'abc'") ;
         Token t = tokenizer.next() ;
         assertFalse(tokenizer.hasNext()) ;
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenizer_charset_2() {
-        ByteArrayInputStream in = bytes("'abcdé'") ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
+        Tokenizer tokenizer = tokenizerASCII("'abcdé'") ;
+        // ASCII only -> bad.
         Token t = tokenizer.next() ;
-        assertFalse(tokenizer.hasNext()) ;
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenizer_charset_3() {
-        ByteArrayInputStream in = bytes("<http://example/abcdé>") ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
+        Tokenizer tokenizer = tokenizerASCII("<http://example/abcdé>") ;
+        // ASCII only -> bad.
         Token t = tokenizer.next() ;
-        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test(expected=RiotParseException.class)
+    public void token_replacmentChar_uri_1() {
+        Tokenizer tokenizer = tokenizer("<a\uFFFDz>") ;
+        testNextToken(tokenizer, TokenType.IRI) ;
+    }
+
+    @Test(expected=RiotParseException.class)
+    public void token_replacmentChar_uri_2() {
+        Tokenizer tokenizer = tokenizer("<a\\uFFFDz>") ;
+        testNextToken(tokenizer, TokenType.IRI) ;
+    }
+
+    @Test(expected=RiotParseException.class)
+    public void token_replacmentChar_bnode_1() {
+        Tokenizer tokenizer = tokenizer("ns\uFFFD:xyz") ;
+        testNextToken(tokenizer, TokenType.PREFIXED_NAME) ;
+        //assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test(expected=RiotParseException.class)
+    public void token_replacmentChar_bnode_2() {
+        Tokenizer tokenizer = tokenizer("ns:\uFFFDabc") ;
+        testNextToken(tokenizer, TokenType.PREFIXED_NAME) ;
+        //assertFalse(tokenizer.hasNext()) ;
+    }
+
+    // Test for warnings
+    @Test
+    public void tokenStr_replacmentChar_str_1() {
+        testExpectWarning("'\uFFFD'", TokenType.STRING, 1);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_str_2() {
+        // As unicode escape.
+        testExpectWarning("'\\uFFFD'", TokenType.STRING, 0);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_str_3() {
+        testExpectWarning("'''\uFFFD'''", TokenType.STRING, 1);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_str_4() {
+        // As unicode escape.
+        testExpectWarning("'''\\uFFFD'''", TokenType.STRING, 0);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_str_5() {
+        testExpectWarning("'abc\uFFFDdef'", TokenType.STRING, 1);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_str_6() {
+        // Illegal encoding.
+        // 0xDF is ß (lower case) in ISO-8859-1.
+        // Here it is an illegal encoding (high set, next byte should have the high bit set but does not).
+        // In Unicode it is 0xC39F.
+
+        // This is the quoted string "ß" in ISO-8859-1.
+        byte[] bytes = {(byte)0x22, (byte)0xDF, (byte)0x22};
+        Reader r = IO.asUTF8(new ByteArrayInputStream(bytes));
+        PeekReader pr = PeekReader.make(r);
+        Token t = testExpectWarning(pr, TokenType.STRING, 1);
+        int char0 = t.getImage().codePointAt(0);
+        assertEquals("Expected Unicode REPLACEMENT CHARACTER", 0xFFFD, char0);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_IRI_1() {
+        testExpectWarning("<http://example/\uFFFD>", TokenType.IRI, 1);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_IRI_2() {
+        // As unicode escape. Still bad (it is not a ucschar so not an IRI character)
+        testExpectWarning("<http://example/\\uFFFD>", TokenType.IRI, 1);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_prefixedName_1() {
+        testExpectWarning("ex:abc\uFFFD", TokenType.PREFIXED_NAME, 1);
+    }
+
+    @Test(expected=RiotException.class)
+    public void tokenStr_replacmentChar_prefixedName_2() {
+        // Unicode escape
+        testExpectWarning("ex:abc\\uFFFD", TokenType.PREFIXED_NAME, 0);
+    }
+
+    @Test
+    public void tokenStr_replacmentChar_blankNode_1() {
+        testExpectWarning("_:b\uFFFD", TokenType.BNODE, 1);
+        // and no escaped characters for blank node labels.
+    }
+
+    private static Token testExpectWarning(String input, TokenType expectedTokenType, int warningCount) {
+        PeekReader r = PeekReader.readString(input);
+        return testExpectWarning(r, expectedTokenType, warningCount);
+    }
+
+    private static Token testExpectWarning(PeekReader r, TokenType expectedTokenType, int warningCount) {
+        ErrorHandlerRecorder errHandler = new ErrorHandlerRecorder(errorHandlerSimple());
+        Tokenizer tokenizer = TokenizerText.create().source(r).errorHandler(errHandler).build();
+        assertTrue(tokenizer.hasNext()) ;
+        Token token = tokenizer.next() ;
+        if ( expectedTokenType != null )
+            assertEquals(expectedTokenType, token.getType());
+        assertFalse("Expected one token", tokenizer.hasNext());
+        assertEquals("Warnings: ", warningCount, errHandler.getWarningCount());
+        assertEquals("Errors: ", 0, errHandler.getErrorCount());
+        assertEquals("Fatal: ", 0, errHandler.getFatalCount());
+        return token;
     }
 
     @Test
     public void tokenizer_BOM_1() {
         // BOM
         ByteArrayInputStream in = bytes("\uFEFF'abc'") ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
+        Tokenizer tokenizer = TokenizerText.create().source(in).build() ;
         assertTrue(tokenizer.hasNext()) ;
         Token token = tokenizer.next() ;
         assertNotNull(token) ;
@@ -996,7 +1130,7 @@ public class TestTokenizer extends BaseTest {
 
     @Test
     public void tokenizer_symbol_11() {
-        testSymbol(" & ", TokenType.AMPHERSAND);
+        testSymbol(" & ", TokenType.AMPERSAND);
     }
 
     @Test
@@ -1007,7 +1141,7 @@ public class TestTokenizer extends BaseTest {
     @Test
     public void tokenUnit_symbol_11() {
         Tokenizer tokenizer = tokenizeAndTestFirst("+A", TokenType.PLUS, null) ;
-        
+
     }
 
     @Test
@@ -1038,7 +1172,7 @@ public class TestTokenizer extends BaseTest {
     public void tokenUnit_symbol_16() {
         Tokenizer tokenizer = tokenizer("|&/");
         testNextToken(tokenizer, TokenType.VBAR);
-        testNextToken(tokenizer, TokenType.AMPHERSAND);
+        testNextToken(tokenizer, TokenType.AMPERSAND);
         testNextToken(tokenizer, TokenType.SLASH);
         assertFalse(tokenizer.hasNext());
     }
@@ -1087,6 +1221,7 @@ public class TestTokenizer extends BaseTest {
         assertFalse(tokenizer.hasNext()) ;
     }
 
+    @Test
     public void token_newlines_5() {
         Tokenizer tokenizer = tokenizer("abc\n\n", true) ;
         testNextToken(tokenizer, TokenType.KEYWORD, "abc") ;
@@ -1094,10 +1229,49 @@ public class TestTokenizer extends BaseTest {
         assertFalse(tokenizer.hasNext()) ;
     }
 
+    @Test
     public void token_newlines_6() {
         Tokenizer tokenizer = tokenizer("\n \n", true) ;
         testNextToken(tokenizer, TokenType.NL) ;
         testNextToken(tokenizer, TokenType.NL) ;
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test
+    public void token_rdf_star_1() {
+        Tokenizer tokenizer = tokenizer("<<>>") ;
+        testNextToken(tokenizer, TokenType.LT2) ;
+        testNextToken(tokenizer, TokenType.GT2) ;
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test
+    public void token_rdf_star_2() {
+        Tokenizer tokenizer = tokenizer("<< >>") ;
+        testNextToken(tokenizer, TokenType.LT2) ;
+        testNextToken(tokenizer, TokenType.GT2) ;
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test
+    public void token_rdf_star_3() {
+        Tokenizer tokenizer = tokenizer("<<:s x:p 123>> :q ") ;
+        testNextToken(tokenizer, TokenType.LT2) ;
+        testNextToken(tokenizer, TokenType.PREFIXED_NAME, "", "s") ;
+        testNextToken(tokenizer, TokenType.PREFIXED_NAME, "x", "p") ;
+        testNextToken(tokenizer, TokenType.INTEGER, "123", null);
+        testNextToken(tokenizer, TokenType.GT2) ;
+        testNextToken(tokenizer, TokenType.PREFIXED_NAME, "", "q") ;
+        assertFalse(tokenizer.hasNext()) ;
+    }
+
+    @Test
+    public void token_rdf_star_4() {
+        Tokenizer tokenizer = tokenizer("<<<>>>") ;
+        testNextToken(tokenizer, TokenType.LT2) ;
+        Token t = testNextToken(tokenizer, TokenType.IRI) ;
+        assertEquals("", t.getImage());
+        testNextToken(tokenizer, TokenType.GT2) ;
         assertFalse(tokenizer.hasNext()) ;
     }
 }

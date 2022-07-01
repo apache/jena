@@ -32,13 +32,14 @@ import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.SetupJenaIRI;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput.* ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.checker.CheckerLiterals ;
+import org.apache.jena.riot.system.Checker;
 import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.Context;
@@ -51,18 +52,15 @@ import org.xml.sax.SAXParseException ;
  */
 public class ReaderRIOTRDFXML implements ReaderRIOT
 {
-    public static class Factory implements ReaderRIOTFactory {
-        @Override
-        public ReaderRIOT create(Lang language, ParserProfile parserProfile) {
+    public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) ->
             // Ignore the provided ParserProfile
-            // ARP predates RIOT and does many things internall already.
-            // Thisincludes IRI resolution.
-            return new ReaderRIOTRDFXML(parserProfile.getErrorHandler()) ;
-        }
-    }
-    
+            // ARP predates RIOT and does many things internally already.
+            // This includes IRI resolution.
+            new ReaderRIOTRDFXML(parserProfile.getErrorHandler())
+            ;
+
     private ARP arp = new ARP() ;
-    
+
     private InputStream input = null ;
     private Reader reader = null ;
     private String xmlBase ;
@@ -70,12 +68,12 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
     private StreamRDF sink ;
     private ErrorHandler errorHandler;
 
-    private Context context; 
-    
+    private Context context;
+
     public ReaderRIOTRDFXML(ErrorHandler errorHandler) {
-        this.errorHandler = errorHandler; 
+        this.errorHandler = errorHandler;
     }
-    
+
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
         this.input = in ;
@@ -95,7 +93,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
         this.context = context;
         parse();
     }
-    
+
     // RDF 1.1 is based on URIs/IRIs, where space are not allowed.
     // RDF 1.0 (and RDF/XML) was based on "RDF URI References" which did allow spaces.
 
@@ -106,7 +104,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
     // syntactically valid.
     private static int[] additionalErrors = new int[] {
         ARPErrorNumbers.WARN_MALFORMED_XMLLANG
-        //, ARPErrorNumbers.WARN_MALFORMED_URI 
+        //, ARPErrorNumbers.WARN_MALFORMED_URI
         //, ARPErrorNumbers.WARN_STRING_NOT_NORMAL_FORM_C
     } ;
 
@@ -115,7 +113,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
     // which causes a WARN (from ARP, with line+column numbers) then a ERROR from RIOT.
     // It's a pragmatic compromise.
     private static boolean errorForSpaceInURI = true;
-    
+
     // Extracted from org.apache.jena.rdfxml.xmlinput.JenaReader
     private void oneProperty(ARPOptions options, String pName, Object value) {
         if (! pName.startsWith("ERR_") && ! pName.startsWith("IGN_") && ! pName.startsWith("WARN_"))
@@ -146,7 +144,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
         }
         options.setErrorMode(cond, val);
     }
-    
+
     public void parse() {
         // Hacked out of ARP because of all the "private" methods
         // JenaReader has reset the options since new ARP() was called.
@@ -163,13 +161,13 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
             for ( int code : additionalErrors )
                 arpOptions.setErrorMode(code, ARPErrorNumbers.EM_ERROR) ;
         }
-        
+
         if ( JenaRuntime.isRDF11 )
-            arp.getOptions().setIRIFactory(IRIResolver.iriFactory());
+            arp.getOptions().setIRIFactory(SetupJenaIRI.iriFactory_RDFXML());
 
         if ( context != null ) {
             Map<String, Object> properties = null;
-            try { 
+            try {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> p = (Map<String, Object>)(context.get(SysRIOT.sysRdfReaderProperties)) ;
                 properties = p;
@@ -180,7 +178,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
                 properties.forEach((k,v) -> oneProperty(arpOptions, k, v)) ;
         }
         arp.setOptionsWith(arpOptions) ;
-        
+
         try {
             if ( reader != null )
                 arp.load(reader, xmlBase) ;
@@ -198,28 +196,25 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
         }
         sink.finish() ;
     }
-    
+
     /** Sort out the base URI for RDF/XML parsing. */
     private static String baseURI_RDFXML(String baseIRI) {
         if ( baseIRI == null )
-            return SysRIOT.chooseBaseIRI() ;
+            return IRIs.getBaseStr();
         else
-            // This normalizes the URI.
-            return SysRIOT.chooseBaseIRI(baseIRI) ;
+            return IRIs.toBase(baseIRI) ;
     }
-    
+
     private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler {
         private StreamRDF       output ;
         private ErrorHandler    riotErrorHandler ;
-        private CheckerLiterals checker ;
 
         HandlerSink(StreamRDF output, ErrorHandler errHandler) {
             super(new ErrorHandlerBridge(errHandler)) ;
             this.output = output ;
             this.riotErrorHandler = errHandler ;
-            this.checker = new CheckerLiterals(errHandler) ;
         }
-        
+
         @Override
         public void statement(AResource subj, AResource pred, AResource obj)
         { output.triple(convert(subj, pred, obj)); }
@@ -259,7 +254,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
                 }
                 return NodeFactory.createURI(uriStr);
             }
-            
+
             // String id = r.getAnonymousID();
             Node rr = (Node) r.getUserData();
             if (rr == null) {
@@ -274,9 +269,9 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
         }
 
         private Triple convert(AResource s, AResource p, ALiteral o) {
-            Node object = convert(o) ;
-            checker.check(object, -1, -1) ;
-            return Triple.create(convert(s), convert(p), object) ;
+            Node literal = convert(o) ;
+            Checker.checkLiteral(literal, riotErrorHandler, -1, -1);
+            return Triple.create(convert(s), convert(p), literal) ;
         }
 
         @Override

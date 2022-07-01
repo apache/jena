@@ -21,7 +21,7 @@
 package jena;
 
 
-import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
 import java.io.ByteArrayOutputStream ;
 import java.io.File ;
@@ -39,8 +39,8 @@ import org.apache.jena.ontology.Individual ;
 import org.apache.jena.ontology.OntModel ;
 import org.apache.jena.ontology.OntModelSpec ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shared.JenaException ;
-import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 import org.apache.jena.vocabulary.OWL ;
@@ -59,7 +59,7 @@ import org.apache.jena.vocabulary.XSD ;
  */
 public class schemagen {
     
-    static { setCmdLogging(); }
+    static { setLogging(); }
 
     // Constants
     //////////////////////////////////
@@ -264,7 +264,7 @@ public class schemagen {
         String syntax = m_options.getEncodingOption();
 
         try {
-            FileManager.get().readModel( m_source, input, syntax );
+            m_source.read( input, syntax );
         }
         catch (JenaException e) {
             abort( "Failed to read input source " + input, e );
@@ -631,7 +631,7 @@ public class schemagen {
         if (includeSource()) {
             // first save a copy of the source in compact form into a buffer
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            RDFWriter rw = m_source.getWriter( "Turtle" );
+            RDFWriterI rw = m_source.getWriter( "Turtle" );
             rw.setProperty( "objectLists", Boolean.FALSE.toString() );
             rw.write( m_source, bos, null );
             String output = bos.toString();
@@ -860,8 +860,8 @@ public class schemagen {
             String ns = r.getNameSpace();
 
             // increment the count for this namespace
-            Integer count = nsCount.containsKey( ns ) ? (Integer) nsCount.get( ns ) : new Integer( 0 );
-            Integer count1 = new Integer( count.intValue() + 1 );
+            Integer count = nsCount.containsKey( ns ) ? (Integer) nsCount.get( ns ) : Integer.valueOf( 0 );
+            Integer count1 = Integer.valueOf( count.intValue() + 1 );
 
             nsCount.put( ns, count1 );
         }
@@ -1685,7 +1685,7 @@ public class schemagen {
 
             // try to read the config URI
             try {
-                FileManager.get().readModel( m_config, configURL );
+                RDFDataMgr.read( m_config, configURL );
             }
             catch (Exception e) {
                 // if the user left the default config URI in place, it's not an error to fail to read it

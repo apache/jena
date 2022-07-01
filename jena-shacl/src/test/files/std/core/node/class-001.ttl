@@ -1,0 +1,70 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/node/class-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:John
+  rdf:type ex:MalePerson ;
+.
+ex:MalePerson
+  rdf:type rdfs:Class ;
+  rdfs:subClassOf ex:Person ;
+.
+ex:Person
+  rdf:type rdfs:Class ;
+  rdfs:subClassOf rdfs:Resource ;
+.
+ex:Quokki
+  rdf:type ex:Animal ;
+.
+ex:Someone
+  rdf:type ex:Person ;
+.
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  sh:class ex:Person ;
+  sh:targetNode ex:John ;
+  sh:targetNode ex:Quokki ;
+  sh:targetNode ex:Someone ;
+  sh:targetNode ex:Typeless ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <class-001>
+    ) ;
+.
+<class-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:class at node shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:Quokki ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value ex:Quokki ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:Typeless ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:ClassConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value ex:Typeless ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

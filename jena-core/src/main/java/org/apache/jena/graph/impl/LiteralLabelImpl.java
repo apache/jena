@@ -18,6 +18,7 @@
 
 package org.apache.jena.graph.impl;
 
+import java.util.Arrays;
 import java.util.Locale ;
 import java.util.Objects ;
 
@@ -77,10 +78,10 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	private boolean wellformed = true;
 	
 	/**
-	 * keeps the message provided by the DatatypeFormatException
-	 * if parsing failed for delayed exception thrown in getValue()
+	 * keeps the DatatypeFormatException if parsing failed for delayed
+	 * exception thrown in getValue()
 	 */
-	private String exceptionMsg = null; // Suggested by Andreas Langegger
+	private Throwable exception = null;
 	
 	//=======================================================================
 	// Constructors
@@ -222,7 +223,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 				throw e;
 			} else {
 				wellformed = false;
-				exceptionMsg  = e.getMessage();
+				exception  = e;
 			}
 		}
 	}
@@ -303,20 +304,64 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 		return lexicalForm;
 	}
     
-    /** 
-     	Answer the value used to index this literal
-        TODO Consider pushing indexing decisions down to the datatype
-    */
+    /**
+     * Answer an object used to index this literal. This object must provide
+     * {@link Object#equals} and {@link Object#hashCode} based on values, not object
+     * instance identity.
+     */
     @Override
     public Object getIndexingValue() {
-        return
-            isXML() ? this
-            : !lang.equals( "" ) ? getLexicalForm() + "@" + lang.toLowerCase(Locale.ROOT)
-            : wellformed ? getValue()
-            : getLexicalForm() 
-            ;
+        if ( isXML() )
+            return this;
+        if ( !lang.equals("") )
+            return getLexicalForm() + "@" + lang.toLowerCase(Locale.ROOT);
+        if ( wellformed ) {
+            Object value = getValue();
+            // JENA-1936
+            // byte[] does not provide hashCode/equals based on the contents of the array.
+            if ( value instanceof byte[] )
+                return new ByteArray((byte[])value);
+            return value;
+        }
+        return getLexicalForm();
     }
 
+    /**
+     * {@code byte[]} wrapper that provides {@code hashCode} and {@code equals} based
+     * on the value of the array. This assumes the {@code byte[]} is not changed
+     * (which is the case for literals with binary value).
+     */
+    static class ByteArray {
+        private int hashCode = 0 ;
+        
+        private final byte[] bytes;
+        /*package*/ ByteArray(byte[] bytes) {
+            this.bytes = bytes;
+        }
+
+        @Override
+        public int hashCode() {
+            if ( hashCode == 0 ) {
+                final int prime = 31;
+                int result = 1;
+                hashCode = prime * result + Arrays.hashCode(bytes);
+            }
+            return hashCode;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj )
+                return true;
+            if ( obj == null )
+                return false;
+            if ( getClass() != obj.getClass() )
+                return false;
+            ByteArray other = (ByteArray)obj;
+            return Arrays.equals(bytes, other.bytes);
+        }
+    }
+    
 	/** 
      	Answer the language associated with this literal (the empty string if
         there's no language).
@@ -338,7 +383,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 			throw new DatatypeFormatException(
 				lexicalForm,
 				dtype,
-				exceptionMsg);
+				exception);
 		}
 	}
 
@@ -455,6 +500,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
     
     /** Return true if the literal label is a language string. (RDF 1.0 and RDF 1.1) */
     public static boolean isLangString(LiteralLabel lit) {
+        // Duplicated by Util.isLangString except for the consistency check.
         String lang = lit.language() ;
         if ( lang == null )
             return false ;

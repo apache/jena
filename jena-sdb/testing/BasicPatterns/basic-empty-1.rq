@@ -1,5 +1,0 @@
-# single triple pattern
-PREFIX : <http://example/>
-
-SELECT * WHERE {}
-

@@ -49,7 +49,7 @@ import org.apache.jena.sparql.expr.ExprVars;
 
 /**
  * A visitor which tracks variable usage
- * 
+ *
  */
 public abstract class VariableUsageVisitor extends OpVisitorBase {
 
@@ -202,5 +202,4 @@ public abstract class VariableUsageVisitor extends OpVisitorBase {
         }
         action(vars);
     }
-
 }

@@ -22,12 +22,11 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.RandomLib ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
-import org.apache.jena.tdb.index.bplustree.BPlusTreeRewriter ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 
 public class CmdTestBPlusTreeRewriter
 {
-    static { LogCtl.setLog4j() ; }
+    static { LogCtl.setLogging(); }
     
     public static void main(String...argv)
     {

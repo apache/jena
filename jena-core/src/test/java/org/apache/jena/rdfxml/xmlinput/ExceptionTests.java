@@ -23,9 +23,8 @@ import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
-import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
 import org.apache.jena.shared.JenaException ;
 
 public class ExceptionTests
@@ -102,7 +101,7 @@ public class ExceptionTests
 		RDFDefaultErrorHandler.silent = true;
 		try {
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReader rdr = m.getReader();
+		  RDFReaderI rdr = m.getReader();
 		  rdr.setProperty("ERR_SAX_FATAL_ERROR","EM_ERROR");
 		  rdr.read(m,"file:testing/arp/error-msgs/test06.rdf");
 		}
@@ -121,7 +120,7 @@ public class ExceptionTests
 		RDFDefaultErrorHandler.silent = true;
 		try {
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReader rdr = m.getReader();
+		  RDFReaderI rdr = m.getReader();
 		  rdr.setProperty("ERR_BAD_RDF_ATTRIBUTE","EM_FATAL");
 		  rdr.read(m,"file:testing/wg/rdfms-abouteach/error002.rdf");
 
@@ -142,7 +141,7 @@ public class ExceptionTests
 		try {
 
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReader rdr = m.getReader();
+		  RDFReaderI rdr = m.getReader();
 		  rdr.setProperty("WARN_BAD_NAME","EM_FATAL");
 		  rdr.read(m,"file:testing/arp/qname-in-ID/bug74_0.rdf");
 
@@ -159,7 +158,7 @@ public class ExceptionTests
 
 		try {
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReader rdr = m.getReader();
+		  RDFReaderI rdr = m.getReader();
 		  rdr.setErrorHandler(this);
 		  rdr.read(m,"file:testing/arp/error-msgs/test06.rdf");
 		}
@@ -172,7 +171,7 @@ public class ExceptionTests
 	public void testExceptionError() {
 		try {
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReader rdr = m.getReader();
+		  RDFReaderI rdr = m.getReader();
 		  rdr.setErrorHandler(this);
 		  rdr.read(m,"file:testing/wg/rdfms-abouteach/error002.rdf");
 
@@ -186,7 +185,7 @@ public class ExceptionTests
 		try {
 
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReader rdr = m.getReader();
+		  RDFReaderI rdr = m.getReader();
 		  rdr.setErrorHandler(this);
 		  rdr.read(m,"file:testing/arp/qname-in-ID/bug74_0.rdf");
 

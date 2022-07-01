@@ -20,7 +20,7 @@ package org.apache.jena.sparql.mgt ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.irix.IRIs;
 
 public class SystemInfo implements SystemInfoMBean {
     private final String name ;
@@ -39,7 +39,7 @@ public class SystemInfo implements SystemInfoMBean {
 
     private static Node createIRI(String iriStr) {
         try {
-            return NodeFactory.createURI(IRIResolver.resolveString(iriStr)) ;
+            return NodeFactory.createURI(IRIs.resolve(iriStr));
         } catch (RuntimeException ex) {
             return null ;
         }

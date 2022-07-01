@@ -1,0 +1,74 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/node/and-002.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:AndShape
+  rdf:type sh:NodeShape ;
+  sh:and (
+      ex:SuperShape
+      [
+        sh:property [
+            sh:path ex:property ;
+            sh:maxCount 1 ;
+          ] ;
+      ]
+    ) ;
+  sh:targetNode ex:InvalidInstance1 ;
+  sh:targetNode ex:InvalidInstance2 ;
+  sh:targetNode ex:ValidInstance1 ;
+.
+ex:InvalidInstance2
+  ex:property "One" ;
+  ex:property "Two" ;
+.
+ex:SuperShape
+  rdf:type sh:NodeShape ;
+  sh:property [
+      sh:path ex:property ;
+      sh:minCount 1 ;
+    ] ;
+.
+ex:ValidInstance1
+  ex:property "One" ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <and-002>
+    ) ;
+.
+<and-002>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:and at node shape 002" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidInstance1 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:AndConstraintComponent ;
+          sh:sourceShape ex:AndShape ;
+          sh:value ex:InvalidInstance1 ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidInstance2 ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:AndConstraintComponent ;
+          sh:sourceShape ex:AndShape ;
+          sh:value ex:InvalidInstance2 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

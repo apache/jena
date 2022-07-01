@@ -28,40 +28,42 @@ import org.apache.jena.util.iterator.NullIterator ;
 
 */
 
+@SuppressWarnings("deprecation")
 public class Factory
     {
     private Factory()
         { super(); }
-    
+
     /**
         Answer a memory-based Graph.
     */
     public static Graph createDefaultGraph()
         { return Factory.createGraphMem( ); }
-              
+
     public static Graph createGraphMem()
         { return new GraphMem(); }
 
+    /** @deprecated To be removed */
+    @Deprecated
     public static Graph createGraphMemWithTransactionHandler( final TransactionHandler th )
         {
-        Graph g = new GraphMem() 
+        Graph g = new GraphMem()
             {
             @Override
-            public TransactionHandler getTransactionHandler() 
+            public TransactionHandler getTransactionHandler()
                 {  return th; }
             };
         return g;
         }
 
-    private static Graph emptyGraph = new GraphBase() {
-
+    private final static Graph emptyGraph = new GraphBase() {
         @Override
         protected ExtendedIterator<Triple> graphBaseFind(Triple triplePattern) {
             return NullIterator.instance() ;
         }
     } ;
- 
-    /** Immutable graph with no triples */ 
+
+    /** Immutable graph with no triples */
     public static Graph empty() { return emptyGraph ; }
 
     }

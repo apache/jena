@@ -166,7 +166,7 @@ public class LPInterpreter {
         isComplete = true;
         if (cpFrame != null) cpFrame.close();
         engine.detach(this);
-        
+        if (topTMFrame != null) topTMFrame.close();
     }
     
     /**

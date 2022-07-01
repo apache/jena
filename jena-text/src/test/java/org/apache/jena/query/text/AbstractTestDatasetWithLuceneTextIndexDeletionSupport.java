@@ -22,7 +22,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.store.ByteBuffersDirectory;
 import org.junit.After;
 import org.junit.Before;
 
@@ -35,7 +35,7 @@ public class AbstractTestDatasetWithLuceneTextIndexDeletionSupport extends Abstr
     @Before
     public void init() {
         Dataset ds1 = TDBFactory.createDataset() ;
-        Directory dir = new RAMDirectory() ;
+        Directory dir = new ByteBuffersDirectory() ;
         EntityDefinition eDef = new EntityDefinition("iri", "text");
         eDef.setPrimaryPredicate(RDFS.label);
         eDef.set("comment", RDFS.comment.asNode()) ; // some tests require indexing rdfs:comment

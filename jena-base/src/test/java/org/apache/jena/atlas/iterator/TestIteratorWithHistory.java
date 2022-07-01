@@ -18,14 +18,14 @@
 
 package org.apache.jena.atlas.iterator;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays ;
 import java.util.List ;
 
-import org.apache.jena.atlas.iterator.IteratorWithHistory ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestIteratorWithHistory extends BaseTest
+public class TestIteratorWithHistory
 {
     @Test public void iterHistory_01()
     {

@@ -18,12 +18,14 @@
 
 package org.apache.jena.sparql.engine.binding;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -31,7 +33,7 @@ import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
@@ -44,35 +46,35 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 
-public class TestBindingStreams extends BaseTest
+public class TestBindingStreams
 {
-    @BeforeClass public static void beforeClass()
-    { 
-        BaseTest2.setTestLogging() ;
+    @BeforeClass
+    public static void beforeClass() {
+        BaseTest2.setTestLogging();
     }
 
-    @AfterClass public static void afterClass()
-    { 
-        BaseTest2.unsetTestLogging() ;
+    @AfterClass
+    public static void afterClass() {
+        BaseTest2.unsetTestLogging();
     }
-    
+
     static Binding b12 = build("(?a 1) (?b 2)") ;
     static Binding b19 = build("(?a 1) (?b 9)") ;
     static Binding b02 = build("(?b 2)") ;
     static Binding b10 = build("(?a 1)") ;
     static Binding b0  = build("") ;
     static Binding bb1 = build("(?a _:XYZ) (?b 1)");
-    
+
     static Binding bb2 = build("(?a 'a\"b\"c') (?b 1)");
     static Binding bb3 = build("(?a 'aΩc') (?b 1)");
-    
+
     static PrefixMap pmap = PrefixMapFactory.create() ;
     static {
         pmap.add(":", "http://example/") ;
     }
-    
+
     static Binding x10 = build("(?x <http://example/abc>)") ;
-    
+
     @Test public void bindingStream_01()        { testRead("VARS ?a ?b . 1 2 .", b12) ; }
     @Test public void bindingStream_02()        { testRead("VARS ?a ?b . - 2 .", b02) ; }
     @Test public void bindingStream_03()        { testRead("VARS ?a ?b . - 2 . 1 - . ", b02, b10) ; }
@@ -80,81 +82,81 @@ public class TestBindingStreams extends BaseTest
 
     @Test(expected=RiotException.class)
     public void bindingStream_05()              { testRead("VARS ?a ?b . 99 . ") ; }
-    @Test(expected=RiotException.class)         
+    @Test(expected=RiotException.class)
     public void bindingStream_06()              { testRead("VARS ?a ?b . 99 11 22 . ") ; }
-    
+
     @Test public void bindingStream_10()        { testRead("VARS ?a ?b . 1 2 . * 9 .", b12, b19) ; }
     @Test public void bindingStream_11()        { testRead("VARS ?a ?b ?c . 1 2 - . * 9 - .", b12, b19) ; }
-    
+
     @Test
     public void bindingStream_12() {
-        BindingMap b = BindingFactory.create();
-        b.add(Var.alloc("a"), NodeConst.nodeTrue);
-        b.add(Var.alloc("c"), NodeConst.nodeFalse);
+        BindingBuilder builder = Binding.builder();
+        builder.add(Var.alloc("a"), NodeConst.nodeTrue);
+        builder.add(Var.alloc("c"), NodeConst.nodeFalse);
+        Binding b = builder.build();
         testRead("VARS ?a ?b ?c . true - false . ", b);
     }
-    
+
     @Test public void bindingStream_20()        { testRead("PREFIX : <http://example/> . VARS ?x .\n:abc  .\n- .", x10, b0) ; }
-    
+
     @Test public void bindingStream_50()        { testWriteRead(b12) ; }
     @Test public void bindingStream_51()        { testWriteRead(b0) ; }
     @Test public void bindingStream_52()        { testWriteRead(pmap, b12,x10,b19) ; }
-    
+
     @Test public void bindingStream_60()              { testWriteRead(bb1) ; }
-    
+
     @Test
     public void bindingStream_61()
     {
-        BindingMap b = BindingFactory.create() ;
         Node bn = NodeFactory.createBlankNode("unusual") ;
-        b.add(Var.alloc("v"), bn) ;
+        Binding b = BindingFactory.binding(Var.alloc("v"), bn) ;
         testWriteRead(b) ;
     }
-    
+
     @Test public void bindingStream_62()              { testWriteRead(bb2) ; }
 
     @Test public void bindingStream_63()              { testWriteRead(bb3) ; }
 
-    
+
     static void testRead(String x, Binding ... bindings)
     {
-        Tokenizer t = TokenizerFactory.makeTokenizerString(x) ;
+        Tokenizer t = TokenizerText.create().fromString(x).build(); ;
         BindingInputStream inStream = new BindingInputStream(t) ;
-        
+
         if ( bindings.length == 0 )
         {
             for ( ; inStream.hasNext() ; )
                 inStream.next() ;
-            return ; 
+            return ;
         }
-        
+
         int i ;
         for ( i = 0 ; inStream.hasNext() ; i++ )
         {
             Binding b = inStream.next() ;
             assertTrue("Bindings do not match: expected="+bindings[i]+" got="+b, equalBindings(bindings[i], b)) ;
         }
-        
+
         assertEquals("Wrong length: expect= "+bindings.length+" got="+i,bindings.length, i) ;
     }
-    
+
     static void testWriteRead(Binding ... bindings) { testWriteRead(null, bindings) ; }
-    
+
     static void testWriteRead(PrefixMap prefixMap, Binding ... bindings)
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         BindingOutputStream output = new BindingOutputStream(out, prefixMap) ;
-        
+
         for ( Binding b : bindings )
             output.write(b) ;
         output.flush() ;
-     
+
         // When the going gets tough, the tough put in trace statements:
         //System.out.println("T: \n"+out.toString()) ;
-        
+
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
         BindingInputStream input = new BindingInputStream(in) ;
-        
+
         List<Binding> results = new ArrayList<>() ;
         for ( ; input.hasNext() ; )
         {
@@ -168,12 +170,12 @@ public class TestBindingStreams extends BaseTest
             assertTrue("Bindings do not match: expected="+b1+" got="+b2, equalBindings(b1, b2)) ;
         }
     }
-    
+
 
     private static boolean equalBindings(Binding binding1, Binding binding2)
     {
         // Need to have the exact same terms coming back (therefore we can't use BNodeIso to compare values)
-        return ResultSetCompare.equal(binding1, binding2, NodeUtils.sameTerm) ;
+        return ResultSetCompare.equal(binding1, binding2, NodeUtils.sameNode) ;
     }
 
 

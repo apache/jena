@@ -22,7 +22,6 @@ package org.apache.jena.util.junit;
  *  not a failure of the test itself (e.g. manifest problems)
  */
 
-
 public class TestException extends RuntimeException
 {
     public TestException() { super() ; }

@@ -19,20 +19,22 @@
 package org.apache.jena.tdb2;
 
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.sys.DatabaseConnection;
 import org.apache.jena.tdb2.sys.DatabaseOps;
 import org.apache.jena.tdb2.sys.TDBInternal;
 
-/** Operations for TDBS DatasetGraph, including admin operations 
+/** Operations for TDBS DatasetGraph, including admin operations
  * See {@link TDB2Factory} for creating API-level {@link Dataset Datasets}.
- * 
+ *
  * @see TDB2Factory
  */
 public class DatabaseMgr {
+
+    private DatabaseMgr() {}
 
     // All creation of DatasetGraph for TDB2 goes through this method.
     private static DatasetGraph DB_ConnectCreate(Location location) {
@@ -41,23 +43,41 @@ public class DatabaseMgr {
 
     /** Create or connect to a TDB2-backed dataset */
     public static DatasetGraph connectDatasetGraph(Location location) {
-        return DB_ConnectCreate(location); 
+        return DB_ConnectCreate(location);
     }
 
     /** Create or connect to a TDB2-backed dataset */
     public static DatasetGraph connectDatasetGraph(String location) {
-        return connectDatasetGraph(Location.create(location)) ;
+        return connectDatasetGraph(Location.create(location));
     }
-    
+
     /**
      * Compact a datasets which must be a switchable TDB database.
      * This is the normal dataset type for on-disk TDB2 databases.
-     *  
+     *
+     * Deletes old database after successful compaction if `shouldDeleteOld` is `true`.
+     *
      * @param container
+     *
+     * @deprecated Use `compact(container, false)` instead.
      */
+    @Deprecated
     public static void compact(DatasetGraph container) {
+        compact(container, false);
+    }
+
+    /**
+     * Compact a datasets which must be a switchable TDB database.
+     * This is the normal dataset type for on-disk TDB2 databases.
+     *
+     * Deletes old database after successful compaction if `shouldDeleteOld` is `true`.
+     *
+     * @param container
+     * @param shouldDeleteOld
+     */
+    public static void compact(DatasetGraph container, boolean shouldDeleteOld) {
         DatasetGraphSwitchable dsg = requireSwitchable(container);
-        DatabaseOps.compact(dsg);
+        DatabaseOps.compact(dsg, shouldDeleteOld);
     }
 
     /**
@@ -68,7 +88,7 @@ public class DatabaseMgr {
      * <p>
      * Backup creates a consistent copy og the database. It is performed as a read-transaction
      * and does not lock out other use of the dataset.
-     * 
+     *
      * @param container
      * @return File name of the backup.
      */
@@ -79,16 +99,7 @@ public class DatabaseMgr {
 
     /** Create an in-memory TDB2-backed dataset (for testing) */
     public static DatasetGraph createDatasetGraph() {
-        return connectDatasetGraph(Location.mem()) ;
-    }
-
-    /** Return whether a {@code DatasetGraph} is TDB2.
-     * @deprecated Use {@link #isTDB2}.
-     */
-    @Deprecated
-    // Wrong name
-    public static boolean isBackedByTDB(DatasetGraph datasetGraph) {
-        return TDBInternal.isTDB2(datasetGraph);
+        return connectDatasetGraph(Location.mem());
     }
 
     /** Return whether a {@code DatasetGraph} is a TDB2 database. */
@@ -100,7 +111,7 @@ public class DatabaseMgr {
     public static Location location(DatasetGraph datasetGraph) {
         DatasetGraphSwitchable dsg = requireSwitchable(datasetGraph);
         if ( dsg == null )
-            return null ;
+            return null;
         return dsg.getLocation();
     }
 

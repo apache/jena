@@ -18,26 +18,26 @@
 
 package org.apache.jena.jdbc.remote.statements;
 
+import java.net.http.HttpClient;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 
-import org.apache.http.client.HttpClient;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.statements.JenaPreparedStatement;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecution ;
-import org.apache.jena.query.QueryExecutionFactory ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
-import org.apache.jena.sparql.modify.UpdateProcessRemoteBase ;
-import org.apache.jena.update.UpdateExecutionFactory ;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
+import org.apache.jena.sparql.exec.http.UpdateExecutionHTTP;
+import org.apache.jena.sparql.exec.http.UpdateExecutionHTTPBuilder;
 import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
 
 /**
  * A Jena JDBC statement against a remote endpoint
- * 
+ *
  */
 public class RemoteEndpointPreparedStatement extends JenaPreparedStatement {
 
@@ -46,7 +46,7 @@ public class RemoteEndpointPreparedStatement extends JenaPreparedStatement {
 
     /**
      * Creates a new statement
-     * 
+     *
      * @param sparql
      *            SPARQL command
      * @param connection
@@ -60,7 +60,7 @@ public class RemoteEndpointPreparedStatement extends JenaPreparedStatement {
 
     /**
      * Creates a new statement
-     * 
+     *
      * @param sparql
      *            SPARQL command
      * @param connection
@@ -77,7 +77,7 @@ public class RemoteEndpointPreparedStatement extends JenaPreparedStatement {
      *            Result Set holdability
      * @throws SQLException
      *             Thrown if there is an error with the statement parameters
-     * 
+     *
      */
     public RemoteEndpointPreparedStatement(String sparql, RemoteEndpointConnection connection, HttpClient client,
             int type, int fetchDir, int fetchSize, int holdability) throws SQLException {
@@ -92,52 +92,51 @@ public class RemoteEndpointPreparedStatement extends JenaPreparedStatement {
             throw new SQLException("This statement is backed by a write-only connection, read operations are not supported");
 
         // Create basic execution
-        QueryEngineHTTP exec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(this.remoteConn.getQueryEndpoint(), q);
+        QueryExecutionHTTPBuilder exec = QueryExecutionHTTP.service(this.remoteConn.getQueryEndpoint()).query(q);
 
         // Apply HTTP settings
         if (this.client != null) {
-            exec.setClient(this.client);
+            exec.httpClient(client);
         }
 
         // Apply default and named graphs if appropriate
         if (this.remoteConn.getDefaultGraphURIs() != null) {
-            exec.setDefaultGraphURIs(this.remoteConn.getDefaultGraphURIs());
+            this.remoteConn.getDefaultGraphURIs().forEach(exec::addDefaultGraphURI);
         }
         if (this.remoteConn.getNamedGraphURIs() != null) {
-            exec.setNamedGraphURIs(this.remoteConn.getNamedGraphURIs());
+            this.remoteConn.getNamedGraphURIs().forEach(exec::addNamedGraphURI);
         }
 
         // Set result types
         if (this.remoteConn.getSelectResultsType() != null) {
-            exec.setSelectContentType(this.remoteConn.getSelectResultsType());
+            exec.acceptHeader(this.remoteConn.getSelectResultsType());
         }
         if (this.remoteConn.getModelResultsType() != null) {
-            exec.setModelContentType(this.remoteConn.getModelResultsType());
+            exec.acceptHeader(this.remoteConn.getModelResultsType());
         }
 
         // Return execution
-        return exec;
+        return exec.build();
     }
 
     @Override
     protected UpdateProcessor createUpdateProcessor(UpdateRequest u) {
-        UpdateProcessRemoteBase proc = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(u,
-                this.remoteConn.getUpdateEndpoint());
+        UpdateExecutionHTTPBuilder proc = UpdateExecutionHTTP.service(this.remoteConn.getUpdateEndpoint()).update(u);
 
         // Apply HTTP settings
         if (this.client != null) {
-            proc.setClient(this.client);
+            proc.httpClient(this.client);
         }
 
         // Apply default and named graphs if appropriate
         if (this.remoteConn.getUsingGraphURIs() != null) {
-            proc.setDefaultGraphs(this.remoteConn.getUsingGraphURIs());
+            this.remoteConn.getUsingGraphURIs().forEach(proc::addUsingGraphURI);
         }
         if (this.remoteConn.getNamedGraphURIs() != null) {
-            proc.setNamedGraphs(this.remoteConn.getUsingNamedGraphURIs());
+            this.remoteConn.getNamedGraphURIs().forEach(proc::addUsingNamedGraphURI);
         }
 
-        return proc;
+        return proc.build();
     }
 
     @Override

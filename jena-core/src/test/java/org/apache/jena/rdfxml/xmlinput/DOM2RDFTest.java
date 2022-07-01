@@ -26,8 +26,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdfxml.xmlinput.DOM2Model ;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.util.JenaXMLInput;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -41,34 +41,32 @@ class DOM2RDFTest extends SAX2RDFTest {
 	public DOM2RDFTest(String dir, String base0, String file) {
 		super(dir, base0, file);
 	}
-	
-	static private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    // DOM must have namespace information inside it!
-	static { factory.setNamespaceAware(true);}
+
 	static private DocumentBuilder domParser;
-	
+
 	static {
 		try {
-		domParser = factory.newDocumentBuilder();
+		    DocumentBuilderFactory factory = JenaXMLInput.newDocumentBuilderFactory();
+		    factory.setNamespaceAware(true);
+		    domParser = factory.newDocumentBuilder();
 		}
 		catch (ParserConfigurationException rte){
 			throw new JenaException(rte);
 		}
 	}
-	
 
 	@Override
     void loadXMLModel(Model m2, InputStream in, RDFEHArray eh2) throws SAXException, IOException {
-		
+
 		Document document = domParser
 				.parse(in,base);
-			
+
 		// Make DOM into transformer input
 //		Source input = new DOMSource(document);
-        DOM2Model d2m = DOM2Model.createD2M(base,m2);	
+        DOM2Model d2m = DOM2Model.createD2M(base,m2);
 
 		d2m.setErrorHandler(eh2);
-		
+
 //		try {
 			try {
 		        d2m.load(document);
@@ -78,7 +76,7 @@ class DOM2RDFTest extends SAX2RDFTest {
 //		} catch (SAXParseException e) {
 //			// already reported, leave it be.
 //		}
-		
+
 
 	}
 

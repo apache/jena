@@ -1,0 +1,5 @@
+# STRING_LITERAL_LONG1 ending with APOSTROPHE4
+# source: turtle-syntax-bad-string-07.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/p1> ['''abc''''@en]
+}

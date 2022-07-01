@@ -18,51 +18,31 @@
 
 package org.apache.jena.sparql.lang;
 
-import java.io.FileReader ;
 import java.io.Reader ;
-import java.io.StringReader ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.QueryException ;
 import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.lang.arq.ARQParser ;
 import org.apache.jena.sparql.modify.UpdateSink ;
-import org.slf4j.LoggerFactory ;
 
 public class ParserARQUpdate extends UpdateParser
 {
-    @Override
-    protected void parse$(UpdateSink sink, String queryString)
-    {
-        Reader r = new StringReader(queryString) ;
-        _parse(sink, r) ;
-    }
-    
-    @Override
-    protected void parse$(UpdateSink sink, Reader r)
-    {
-        _parse(sink, r) ;
-    }
+    public ParserARQUpdate() {}
 
-    /** Use with care - Reader must be UTF-8 */ 
-    public void parse(UpdateSink sink, Reader r)
-    {
-        if ( r instanceof FileReader )
-            LoggerFactory.getLogger(this.getClass()).warn("FileReader passed to ParserSPARQLUpdate.parse - use a FileInputStream") ;
-        _parse(sink, r) ;
-    }
-    
-    private void _parse(UpdateSink sink, Reader r)
+    @Override
+    protected void executeParse(UpdateSink sink, Prologue prologue, Reader r)
     {
         ARQParser parser = null ;
         try {
             parser = new ARQParser(r) ;
-            parser.setUpdateSink(sink) ;
+            parser.setUpdate(prologue, sink) ;
             parser.UpdateUnit() ;
         }
         catch (org.apache.jena.sparql.lang.arq.ParseException ex)
-        { 
+        {
             throw new QueryParseException(ex.getMessage(),
                                           ex.currentToken.beginLine,
                                           ex.currentToken.beginColumn
@@ -87,6 +67,4 @@ public class ParserARQUpdate extends UpdateParser
             throw new QueryException(th.getMessage(), th) ;
         }
     }
-
-
 }

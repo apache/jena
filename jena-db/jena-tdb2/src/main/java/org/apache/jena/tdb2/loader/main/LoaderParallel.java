@@ -20,14 +20,14 @@ package org.apache.jena.tdb2.loader.main;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
+import org.apache.jena.system.progress.MonitorOutput;
 
 public class LoaderParallel extends LoaderMain {
-    
+
     public LoaderParallel(DatasetGraph dsg, MonitorOutput output) {
         super(LoaderPlans.loaderPlanParallel, dsg, output);
     }
-    
+
     public LoaderParallel(DatasetGraph dsg, Node graphName, MonitorOutput output) {
         super(LoaderPlans.loaderPlanParallel, dsg, graphName, output);
     }

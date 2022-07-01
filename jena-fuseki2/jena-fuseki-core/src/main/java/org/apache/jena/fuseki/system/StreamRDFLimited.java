@@ -16,47 +16,47 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.system ;
+package org.apache.jena.fuseki.system;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFWrapper ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFWrapper;
+import org.apache.jena.sparql.core.Quad;
 
 /**
  * Limit triples/quads and stop passing through after a limit is reached.
  */
 public class StreamRDFLimited extends StreamRDFWrapper {
-    private long       count = 0 ;
-    private final long limit ;
+    private long       count = 0;
+    private final long limit;
 
     public StreamRDFLimited(StreamRDF output, long limit) {
-        super(output) ;
-        this.limit = limit ;
+        super(output);
+        this.limit = limit;
     }
 
     @Override
     public void triple(Triple triple) {
-        count++ ;
+        count++;
         if ( count > limit )
-            throw new RiotException("Limit ("+limit+") reached") ; 
-        super.triple(triple) ;
+            throw new RiotException("Limit ("+limit+") reached");
+        super.triple(triple);
     }
 
     @Override
     public void quad(Quad quad) {
-        count++ ;
+        count++;
         if ( count > limit )
-            throw new RiotException("Limit ("+limit+") reached") ; 
-        super.quad(quad) ;
+            throw new RiotException("Limit ("+limit+") reached");
+        super.quad(quad);
     }
 
     public long getCount() {
-        return count ;
+        return count;
     }
 
     public long getLimit() {
-        return limit ;
+        return limit;
     }
 }

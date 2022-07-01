@@ -26,7 +26,10 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFormatter ;
 import org.apache.jena.query.SortCondition ;
-import org.apache.jena.sparql.algebra.* ;
+import org.apache.jena.sparql.algebra.Algebra;
+import org.apache.jena.sparql.algebra.JoinType;
+import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.algebra.TableFactory;
 import org.apache.jena.sparql.algebra.table.TableN ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.TriplePath ;
@@ -70,8 +73,8 @@ public class EvaluatorSimple implements Evaluator
     @Override
     public Table pathPattern(TriplePath triplePath)
     {
-        // Shudder - this may well be expensive, but this is the simple evaluator, written for correctness. 
-        QueryIterator qIter = new QueryIterPath(triplePath, 
+        // Shudder - this may well be expensive, but this is the simple evaluator, written for correctness.
+        QueryIterator qIter = new QueryIterPath(triplePath,
                                                 QueryIterRoot.create(execCxt),
                                                 execCxt) ;
         return TableFactory.create(qIter) ;
@@ -84,7 +87,7 @@ public class EvaluatorSimple implements Evaluator
         QueryIterator qIter = ProcEval.eval(table.iterator(execCxt), proc, execCxt) ;
         return TableFactory.create(qIter) ;
     }
-    
+
     @Override
     public Table propertyFunction(Table table, Node procId, PropFuncArg subjArgs, PropFuncArg objArgs)
     {
@@ -141,7 +144,7 @@ public class EvaluatorSimple implements Evaluator
             dump(tableLeft) ;
             dump(tableRight) ;
         }
-        
+
         return minusWorker(tableLeft, tableRight) ;
     }
 
@@ -162,7 +165,7 @@ public class EvaluatorSimple implements Evaluator
             if ( expressions.isSatisfied(b, execCxt) )
                 output.add(b) ;
         }
-        return new TableN(new QueryIterPlainWrapper(output.iterator(), execCxt)) ;
+        return new TableN(QueryIterPlainWrapper.create(output.iterator(), execCxt)) ;
     }
 
 
@@ -195,7 +198,7 @@ public class EvaluatorSimple implements Evaluator
     }
 
     @Override
-    public Table list(Table table) { return table ; } 
+    public Table list(Table table) { return table ; }
 
     @Override
     public Table order(Table table, List<SortCondition> conditions)
@@ -212,7 +215,7 @@ public class EvaluatorSimple implements Evaluator
         qIter = new QueryIterGroup(qIter, groupVars, aggregators, getExecContext()) ;
         return new TableN(qIter) ;
     }
-    
+
     @Override
     public Table project(Table table, List<Var> projectVars)
     {
@@ -233,7 +236,8 @@ public class EvaluatorSimple implements Evaluator
     public Table distinct(Table table)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
-        qIter = new QueryIterDistinct(qIter, getExecContext()) ;
+        // Use the simple-and-clear implementation of DISTINCT.
+        qIter = new QueryIterDistinctMem(qIter, getExecContext()) ;
         return new TableN(qIter) ;
     }
 
@@ -274,10 +278,10 @@ public class EvaluatorSimple implements Evaluator
         QueryIterator qIter = TableJoin.joinWorker(left, tableRight, joinType, conditions, execCxt) ;
         tableLeft.close() ;
         tableRight.close() ;
-        // qIter and left should be properly closed by use or called code. 
+        // qIter and left should be properly closed by use or called code.
         return new TableN(qIter) ;
     }
-    
+
     // @@ Abstract compatibility
     private Table diffWorker(Table tableLeft, Table tableRight)
     {
@@ -293,11 +297,11 @@ public class EvaluatorSimple implements Evaluator
         tableRight.close() ;
         return r ;
     }
-    
+
     private Table minusWorker(Table tableLeft, Table tableRight)
     {
         // Minus(Ω1, Ω2) = { μ | μ in Ω1 such that for all μ' in Ω2, either μ and μ' are not compatible or dom(μ) and dom(μ') are disjoint }
-        
+
         TableN results = new TableN() ;
         QueryIterator iterLeft = tableLeft.iterator(execCxt) ;
         for ( ; iterLeft.hasNext() ; )
@@ -306,7 +310,7 @@ public class EvaluatorSimple implements Evaluator
             boolean includeThisRow = true ;
             // Find a reason not to include the row.
             // That's is not disjoint and not compatible.
-            
+
             QueryIterator iterRight = tableRight.iterator(execCxt) ;
             for ( ; iterRight.hasNext() ; )
             {
@@ -314,19 +318,19 @@ public class EvaluatorSimple implements Evaluator
                 if ( Algebra.disjoint(bindingLeft, bindingRight) )
                     // Disjoint - not a reason to exclude
                     continue ;
-                
+
                 if ( ! Algebra.compatible(bindingLeft, bindingRight) )
                     // Compatible - not a reason to exclude.
                     continue ;
-                
+
                 includeThisRow = false ;
                 break ;
-                
+
             }
             iterRight.close();
             if ( includeThisRow )
                 results.addBinding(bindingLeft) ;
-        } 
+        }
 
         iterLeft.close();
         return results ;
@@ -336,7 +340,7 @@ public class EvaluatorSimple implements Evaluator
     {
         System.out.println("Table: "+Lib.className(table)) ;
         QueryIterator qIter = table.iterator(null) ;
-        ResultSet rs = new ResultSetStream(table.getVarNames(), null, table.iterator(null)) ;
+        ResultSet rs = ResultSetStream.create(table.getVarNames(), null, table.iterator(null)) ;
         ResultSetFormatter.out(rs) ;
     }
 }

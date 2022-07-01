@@ -22,8 +22,10 @@ package org.apache.jena.reasoner.rulesys.test;
 import junit.framework.JUnit4TestAdapter;
 import junit.framework.TestSuite ;
 import org.apache.jena.reasoner.rulesys.TestRuleUtil;
+import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleCloseBug;
 import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngine;
 import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngineLeak;
+import org.apache.jena.reasoner.rulesys.impl.TestRestartableLBRule;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -55,6 +57,7 @@ public class TestPackage extends TestSuite {
 
         addTest( "TestLPDerivation", TestLPDerivation.suite() );
         addTest( "TestLPBRuleEngine", TestLPBRuleEngine.suite() );
+        addTest( "TestRestartableLBRule", TestRestartableLBRule.suite() );
         addTest( "TestFBRules", TestFBRules.suite() );
         addTest( "TestGenericRules", TestGenericRules.suite() );
         addTest( "TestRETE", TestRETE.suite() );
@@ -64,6 +67,7 @@ public class TestPackage extends TestSuite {
         addTest( "TestBugs", TestBugs.suite() );
         addTest( "TestOWLMisc", TestOWLMisc.suite() );
         addTest( "FRuleEngineIFactoryTest", FRuleEngineIFactoryTest.suite() );
+        addTest( "TestLPBRuleCloseBug", TestLPBRuleCloseBug.suite() );
         
         //addTest ("TestRuleLoader", TestRuleLoader.suite() );
 

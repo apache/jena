@@ -25,7 +25,7 @@ import java.util.Map ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFWriter ;
+import org.apache.jena.rdf.model.RDFWriterI ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.WriterGraphRIOT ;
@@ -35,23 +35,23 @@ import org.apache.jena.sparql.util.Context ;
 
 /**
  * Adapter providing RIOT interface {@link WriterGraphRIOT} over an old-style
- * Jena {@link RDFWriter}. Subclasses of this class are used for RDF/XML
+ * Jena {@link RDFWriterI}. Subclasses of this class are used for RDF/XML
  * (basic and abbreviated) in RIOT.
  * <p>
  * See {@link RDFWriterRIOT} for the class plugged into RIOT that provides the
- * {@link RDFWriter} interface to Jena core operations. It is {@link RDFWriter} over
+ * {@link RDFWriterI} interface to Jena core operations. It is {@link RDFWriterI} over
  * a {@link WriterGraphRIOT}.
  */
 public abstract class AdapterRDFWriter extends WriterGraphRIOTBase
 {
-    protected abstract RDFWriter create() ;
+    protected abstract RDFWriterI create() ;
     
     @Override public abstract Lang getLang() ;
 
     @Override
     public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
     {
-        RDFWriter w = create() ;
+        RDFWriterI w = create() ;
         setProperties(w, context) ;
         w.write(ModelFactory.createModelForGraph(graph), out, baseURI) ;
     }
@@ -59,12 +59,12 @@ public abstract class AdapterRDFWriter extends WriterGraphRIOTBase
     @Override
     public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
     {
-        RDFWriter w = create() ;
+        RDFWriterI w = create() ;
         setProperties(w, context) ;
         w.write(ModelFactory.createModelForGraph(graph), out, baseURI) ;
     }
     
-    private void setProperties(RDFWriter w, Context context) {
+    private void setProperties(RDFWriterI w, Context context) {
         if ( context == null )
             return;
         Map<String, Object> properties = null;

@@ -236,7 +236,7 @@ public class XSDDatatype extends BaseDatatype {
      * @param typeName the name of the XSD type to be instantiated, this is
      * used to lookup a type definition from the Xerces schema factory.
      * @param javaClass the java class for which this xsd type is to be
-     * treated as the cannonical representation
+     * treated as the canonical representation
      */
     public XSDDatatype(String typeName, Class<?> javaClass) {
         this(typeName);
@@ -428,7 +428,7 @@ public class XSDDatatype extends BaseDatatype {
             case XSConstants.DECIMAL_DT:
                 Object xsdValue = validatedInfo.actualValue;
                 if (decimalDV.getTotalDigits(xsdValue) == 0) {
-                    return new Integer(0);
+                    return Integer.valueOf(0);
                 }
                 if (decimalDV.getFractionDigits(xsdValue) >= 1) {
                     BigDecimal value =  new BigDecimal(trimPlus(validatedInfo.normalizedValue));
@@ -468,9 +468,9 @@ public class XSDDatatype extends BaseDatatype {
     protected static Number suitableInteger( long number )
         {
         if (number > Integer.MAX_VALUE || number < Integer.MIN_VALUE)
-            return new Long( number );
+            return Long.valueOf( number );
         else
-            return new Integer( (int) number );
+            return Integer.valueOf( (int) number );
         }
 
     /**

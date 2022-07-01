@@ -18,28 +18,20 @@
 
 package org.apache.jena.sparql.expr;
 
+import static org.junit.Assert.*;
+
 import java.math.BigDecimal ;
-import java.util.Calendar ;
-import java.util.Comparator;
-import java.util.GregorianCalendar ;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TimeZone ;
+import java.util.*;
 
 import org.apache.jena.JenaRuntime ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -50,16 +42,16 @@ import org.junit.Test ;
  * @see TestExprLib
  * @see TestNodeValue
  */
-public class TestNodeValue extends BaseTest
+public class TestNodeValue
 {
     static final double doubleAccuracy = 0.00000001d ;
-    static boolean warningSetting ; 
-    
+    static boolean warningSetting ;
+
     @BeforeClass public static void beforeClass() {
         warningSetting = NodeValue.VerboseWarnings ;
         NodeValue.VerboseWarnings = false ;
     }
-    
+
     @AfterClass public static void afterClass() {
         NodeValue.VerboseWarnings = warningSetting ;
     }
@@ -181,7 +173,7 @@ public class TestNodeValue extends BaseTest
         assertFalse("A date: " + v, v.isDate());
         assertTrue("Not a node: " + v, v.hasNode());
     }
-    
+
     @Test
     public void testDateTime3() {
         NodeValue v1 = NodeValue.makeDateTime("2005-02-18T20:39:10Z");
@@ -243,6 +235,15 @@ public class TestNodeValue extends BaseTest
         NodeValue v0 = NodeValue.makeDateTime("2005-02-18T20:39:10-05:00");
         NodeValue v1 = NodeValue.makeDateTime("2005-02-18T17:39:10.000-08:00");
         assertEquals("Not Calendar.equals: ", v0.getDateTime(), v1.getDateTime());
+    }
+
+    @Test
+    public void testDateTimeStamp1() {
+        // xsd:dateTimeStamp is a derived datatype of xsd:dateTime.
+        Node n = SSE.parseNode("'2000-01-01T00:00:00+00:00'^^xsd:dateTimeStamp");
+        NodeValue nv = NodeValue.makeNode(n);
+        assertTrue(nv.isDateTime());
+        assertFalse(nv.isDate());
     }
 
     @Test
@@ -382,10 +383,10 @@ public class TestNodeValue extends BaseTest
         assertTrue("Not a node: " + v, v.hasNode());
     }
 
-    
+
     @Test
     public void testNodeFloat1() {
-        // Theer is no SPARQL representation in short form of a float.
+        // There is no SPARQL representation in short form of a float.
         NodeValue v = NodeValue.makeNode("57.0", XSDDatatype.XSDfloat);
         assertTrue("Not a number: " + v, v.isNumber());
         assertTrue("Not a float: " + v, v.isFloat());
@@ -397,8 +398,22 @@ public class TestNodeValue extends BaseTest
     }
 
     @Test
+    public void testNodeFloat2() {
+        // WhiteSpace facet
+        NodeValue v = NodeValue.makeNode(" 57.0 ", XSDDatatype.XSDfloat);
+        assertTrue("Not a number: " + v, v.isNumber());
+        assertTrue("Not a float: " + v, v.isFloat());
+        assertTrue("Not a double(float): " + v, v.isDouble());
+        assertTrue("Not a node: " + v, v.hasNode());
+        String actualStr = v.asQuotedString();
+
+        assertEquals("Print form mismatch", "\" 57.0 \"^^<" + XSDDatatype.XSDfloat.getURI() + ">", actualStr);
+    }
+
+
+    @Test
     public void testNodeDouble1() {
-        // Note input form is legal and canomical as a lexical form double
+        // Note input form is legal and canonical as a lexical form double
         NodeValue v = NodeValue.makeNode("57.0e0", XSDDatatype.XSDdouble);
         assertTrue("Not a number: " + v, v.isNumber());
         assertTrue("Not a double: " + v, v.isDouble());
@@ -406,7 +421,7 @@ public class TestNodeValue extends BaseTest
         String actualStr = v.asQuotedString();
 
         assertEquals("Print form mismatch", "57.0e0", actualStr) ;
-//                     "\"57\"^^<"+XSDDatatype.XSDdouble.getURI()+">", 
+//                     "\"57\"^^<"+XSDDatatype.XSDdouble.getURI()+">",
 //                     actualStr);
     }
 
@@ -433,7 +448,7 @@ public class TestNodeValue extends BaseTest
 
         assertEquals("Print form mismatch", "057.0e0", actualStr);
     }
-    
+
     @Test
     public void testNodeDouble4() {
         // Leading/trail whitespace.
@@ -442,7 +457,6 @@ public class TestNodeValue extends BaseTest
         assertTrue("Not a double: " + v, v.isDouble());
         assertTrue("Not a node: " + v, v.hasNode());
     }
-
 
     @Test
     public void testNodeBool1() {
@@ -478,64 +492,108 @@ public class TestNodeValue extends BaseTest
         assertFalse("Not false: " + v, XSDFuncOp.booleanEffectiveValue(v));
     }
 
+    @Test
+    public void testNodeDateTime1() {
+        NodeValue v = NodeValue.makeNode("2021-11-08T20:37:25+01:00", XSDDatatype.XSDdateTime);
+        assertTrue("Not a dateTime: " + v, v.isDateTime());
+    }
+
+    @Test
+    public void testNodeDateTime2() {
+        NodeValue v = NodeValue.makeNode("\t2021-11-08T20:37:26+01:00\t", XSDDatatype.XSDdateTime);
+        assertTrue("Not a dateTime: " + v, v.isDateTime());
+    }
+
+    @Test
+    public void testNodeGYear1() {
+        NodeValue v = NodeValue.makeNode("2021", XSDDatatype.XSDgYear);
+        assertTrue("Not a gYear: " + v, v.isGYear());
+    }
+
+    @Test
+    public void testNodeGYear2() {
+        NodeValue v = NodeValue.makeNode("\t2021\t", XSDDatatype.XSDgYear);
+        assertTrue("Not a gYear: " + v, v.isGYear());
+    }
+
+    @Test
+    public void testNodeDuration1() {
+        NodeValue v = NodeValue.makeNode("P1Y", XSDDatatype.XSDyearMonthDuration);
+        assertTrue("Not a yearMonthDuration: " + v, v.isYearMonthDuration());
+        assertTrue("Not a duration: " + v, v.isDuration());
+    }
+
+    @Test
+    public void testNodeDuration2() {
+        NodeValue v = NodeValue.makeNode("P1Y  ", XSDDatatype.XSDduration);
+        assertTrue("Not a yearMonthDuration: " + v, v.isDuration());
+    }
+
+    @Test
+    public void testNodeDuration3() {
+        // Internal whiespace -> invalide.
+        NodeValue v = NodeValue.makeNode("P1Y  10S", XSDDatatype.XSDduration);
+        assertFalse("Is a valid duration: " + v, v.isDuration());
+    }
+
     static NodeValue make(String str) {
         Node n = NodeFactoryExtra.parseNode(str);
         NodeValue nv = NodeValue.makeNode(n);
         return nv;
     }
 
-    @Test public void gregorian_01() { 
+    @Test public void gregorian_01() {
         NodeValue nv = make("'1999'^^xsd:gYear") ;
 
-        assertTrue(nv.isGYear()) ; 
-        assertFalse(nv.isGYearMonth()) ; 
-        assertFalse(nv.isGMonth()) ; 
-        assertFalse(nv.isGMonthDay()) ; 
-        assertFalse(nv.isGDay()) ; 
+        assertTrue(nv.isGYear()) ;
+        assertFalse(nv.isGYearMonth()) ;
+        assertFalse(nv.isGMonth()) ;
+        assertFalse(nv.isGMonthDay()) ;
+        assertFalse(nv.isGDay()) ;
     }
-    
-    @Test public void gregorian_02() { 
+
+    @Test public void gregorian_02() {
         NodeValue nv = make("'1999-01'^^xsd:gYearMonth") ;
 
-        assertFalse(nv.isGYear()) ; 
-        assertTrue(nv.isGYearMonth()) ; 
-        assertFalse(nv.isGMonth()) ; 
-        assertFalse(nv.isGMonthDay()) ; 
-        assertFalse(nv.isGDay()) ; 
+        assertFalse(nv.isGYear()) ;
+        assertTrue(nv.isGYearMonth()) ;
+        assertFalse(nv.isGMonth()) ;
+        assertFalse(nv.isGMonthDay()) ;
+        assertFalse(nv.isGDay()) ;
     }
 
-    @Test public void gregorian_03() { 
+    @Test public void gregorian_03() {
         NodeValue nv = make("'--01'^^xsd:gMonth") ;
 
-        assertFalse(nv.isGYear()) ; 
-        assertFalse(nv.isGYearMonth()) ; 
-        assertTrue(nv.isGMonth()) ; 
-        assertFalse(nv.isGMonthDay()) ; 
-        assertFalse(nv.isGDay()) ; 
+        assertFalse(nv.isGYear()) ;
+        assertFalse(nv.isGYearMonth()) ;
+        assertTrue(nv.isGMonth()) ;
+        assertFalse(nv.isGMonthDay()) ;
+        assertFalse(nv.isGDay()) ;
     }
-    
-    @Test public void gregorian_04() { 
+
+    @Test public void gregorian_04() {
         NodeValue nv = make("'--01-30'^^xsd:gMonthDay") ;
 
-        assertFalse(nv.isGYear()) ; 
-        assertFalse(nv.isGYearMonth()) ; 
-        assertFalse(nv.isGMonth()) ; 
-        assertTrue(nv.isGMonthDay()) ; 
-        assertFalse(nv.isGDay()) ; 
+        assertFalse(nv.isGYear()) ;
+        assertFalse(nv.isGYearMonth()) ;
+        assertFalse(nv.isGMonth()) ;
+        assertTrue(nv.isGMonthDay()) ;
+        assertFalse(nv.isGDay()) ;
     }
-    
-    @Test public void gregorian_05() { 
+
+    @Test public void gregorian_05() {
         NodeValue nv = make("'---30'^^xsd:gDay") ;
 
-        assertFalse(nv.isGYear()) ; 
-        assertFalse(nv.isGYearMonth()) ; 
-        assertFalse(nv.isGMonth()) ; 
-        assertFalse(nv.isGMonthDay()) ; 
-        assertTrue(nv.isGDay()) ; 
+        assertFalse(nv.isGYear()) ;
+        assertFalse(nv.isGYearMonth()) ;
+        assertFalse(nv.isGMonth()) ;
+        assertFalse(nv.isGMonthDay()) ;
+        assertTrue(nv.isGDay()) ;
     }
-    
+
     @Test public void langString_01() {
- 
+
         NodeValue nv = make("''@en") ;
         assertFalse(nv.isString()) ;
         assertTrue(nv.isLangString()) ;
@@ -691,6 +749,54 @@ public class TestNodeValue extends BaseTest
         assertTrue("Not EBV true: " + v, XSDFuncOp.booleanEffectiveValue(v));
     }
 
+    static boolean ebvDouble(double d) {
+        return XSDFuncOp.booleanEffectiveValue(NodeValue.makeDouble(d));
+    }
+
+    @Test
+    public void testEBV9() {
+        assertTrue ( ebvDouble(0.01d) );
+        assertFalse( ebvDouble(0.0d) );
+        assertFalse( ebvDouble(-0.0d) );
+
+        assertFalse( ebvDouble(Double.NaN) );
+
+        assertTrue ( ebvDouble(Double.MIN_NORMAL) );
+        assertTrue ( ebvDouble(Double.MIN_VALUE) );
+        assertTrue ( ebvDouble(Double.MAX_VALUE) );
+
+        assertTrue ( ebvDouble(Double.POSITIVE_INFINITY) );
+        assertTrue ( ebvDouble(Double.NEGATIVE_INFINITY) );
+
+        Node x = NodeFactory.createLiteral("NaN", XSDDatatype.XSDdouble);
+        NodeValue v = NodeValue.makeNode(x);
+        assertFalse(XSDFuncOp.booleanEffectiveValue(v));
+    }
+
+    static boolean ebvFloat(float f) {
+        return XSDFuncOp.booleanEffectiveValue(NodeValue.makeFloat(f));
+    }
+
+    @Test
+    public void testEBV10() {
+        assertTrue ( ebvFloat(0.01f) );
+        assertFalse( ebvFloat(0.0f) );
+        assertFalse( ebvFloat(-0.0f) );
+
+        assertFalse( ebvFloat(Float.NaN) );
+
+        assertTrue ( ebvFloat(Float.MIN_NORMAL) );
+        assertTrue ( ebvFloat(Float.MIN_VALUE) );
+        assertTrue ( ebvFloat(Float.MAX_VALUE) );
+
+        assertTrue ( ebvFloat(Float.POSITIVE_INFINITY) );
+        assertTrue ( ebvFloat(Float.NEGATIVE_INFINITY) );
+
+        Node x = NodeFactory.createLiteral("NaN", XSDDatatype.XSDfloat);
+        NodeValue v = NodeValue.makeNode(x);
+        assertFalse(XSDFuncOp.booleanEffectiveValue(v));
+    }
+
     private static boolean filterEBV(NodeValue nv) {
         try {
             return XSDFuncOp.booleanEffectiveValue(nv);
@@ -771,7 +877,7 @@ public class TestNodeValue extends BaseTest
         final String[] unordered =
                 {"Broager", "Åkirkeby", "Børkop", "Ærøskøbing", "Brædstrup", "Wandsbek"};
         final String[] ordered =
-                {"'Broager'", "'Brædstrup'", "'Børkop'", "'Wandsbek'", "'Ærøskøbing'", "'Åkirkeby'"};
+                {"Broager", "Brædstrup", "Børkop", "Wandsbek", "Ærøskøbing", "Åkirkeby"};
         // tests collation sort order for Danish
         final String collation = "da";
         List<NodeValue> nodeValues = new LinkedList<>();
@@ -786,7 +892,7 @@ public class TestNodeValue extends BaseTest
         });
         List<String> result = new LinkedList<>();
         for (NodeValue nv : nodeValues) {
-            String s = nv.toString();
+            String s = nv.getNode().getLiteralLexicalForm();
             result.add(s);
         }
         assertArrayEquals(ordered, result.toArray(new String[0]));
@@ -797,7 +903,7 @@ public class TestNodeValue extends BaseTest
         final String[] unordered = new String[]
                 {"Broager", "Åkirkeby", "Børkop", "Ærøskøbing", "Brædstrup", "Wandsbek"};
         final String[] ordered = new String[]
-                {"'Ærøskøbing'", "'Åkirkeby'", "'Brædstrup'", "'Broager'", "'Børkop'", "'Wandsbek'"};
+                {"Ærøskøbing", "Åkirkeby", "Brædstrup", "Broager", "Børkop", "Wandsbek"};
         // tests collation sort order with Danish words, but New Zealand English collation rules
         final String collation = "en-NZ";
         List<NodeValue> nodeValues = new LinkedList<>();
@@ -812,7 +918,7 @@ public class TestNodeValue extends BaseTest
         });
         List<String> result = new LinkedList<>();
         for (NodeValue nv : nodeValues) {
-            String s = nv.toString();
+            String s = nv.getNode().getLiteralLexicalForm();
             result.add(s);
         }
         assertArrayEquals(ordered, result.toArray(new String[0]));
@@ -1019,8 +1125,8 @@ public class TestNodeValue extends BaseTest
 
     @Test
     public void testEquals4() {
-        NodeValue nv1 = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createURI("http://example"));
-        NodeValue nv2 = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createURI("http://example"));
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createURI("http://example"));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("http://example"));
         assertEquals("Not NodeValue.equals()", nv1, nv2);
     }
 
@@ -1044,4 +1150,36 @@ public class TestNodeValue extends BaseTest
         NodeValue nv2 = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createLiteral("http://example"));
         assertFalse("NodeValue.equals()", nv1.equals(nv2));
     }
+
+    @Test
+    public void testTripleTerms1() {
+        Node n1 = SSE.parseNode("<<:s :p 123>>");
+        Node n2 = SSE.parseNode("<<:s :p 456>>");
+        NodeValue nv1 = NodeValue.makeNode(n1);
+        NodeValue nv2 = NodeValue.makeNode(n2);
+        int xa = NodeValue.compare(nv1, nv2);
+        assertEquals(Expr.CMP_LESS, xa);
+        int xb = NodeValue.compare(nv2, nv1);
+        assertEquals(Expr.CMP_GREATER, xb);
+    }
+
+    @Test(expected=ExprNotComparableException.class)
+    public void testTripleTerms2() {
+        Node n1 = SSE.parseNode("<<:s :p 123>>");
+        Node n2 = SSE.parseNode("<<:s :p 'abc'>>");
+        NodeValue nv1 = NodeValue.makeNode(n1);
+        NodeValue nv2 = NodeValue.makeNode(n2);
+        NodeValue.compare(nv1, nv2);
+    }
+
+    @Test
+    public void testTripleTerms3() {
+        Node n1 = SSE.parseNode("<<:s :p 123>>");
+        Node n2 = SSE.parseNode("<<:s :p 'abc'>>");
+        NodeValue nv1 = NodeValue.makeNode(n1);
+        NodeValue nv2 = NodeValue.makeNode(n2);
+        int x = NodeValue.compareAlways(nv1, nv2);
+        assertEquals(Expr.CMP_LESS, x);
+    }
+
 }

@@ -31,11 +31,11 @@ import org.apache.jena.sparql.algebra.op.OpSequence ;
 import org.apache.jena.sparql.algebra.op.OpTable ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprLib;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.sparql.util.ExprUtils ;
 import org.apache.jena.sparql.util.graph.GNode ;
 import org.apache.jena.sparql.util.graph.GraphList ;
 
@@ -138,14 +138,14 @@ public class PropertyFunctionGenerator
             if ( pfArg.isNode() )
             {
                 Node n = pfArg.getArg() ;
-                Expr expr = ExprUtils.nodeToExpr(n) ;
+                Expr expr = ExprLib.nodeToExpr(n) ;
                 exprList.add(expr) ;
                 return ;
             }
             
             for (  Node n : pfArg.getArgList() )
             {
-                Expr expr = ExprUtils.nodeToExpr(n) ;
+                Expr expr = ExprLib.nodeToExpr(n) ;
                 exprList.add(expr) ;
             }
         }

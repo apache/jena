@@ -18,13 +18,16 @@
 
 package org.apache.jena.sparql.core ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.junit.Test ;
 
-public class TestContext extends BaseTest {
+public class TestContext {
     static Symbol p1 = Symbol.create("p1") ;
     static Symbol p2 = Symbol.create("p2") ;
 

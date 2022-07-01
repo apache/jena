@@ -26,11 +26,7 @@ import java.nio.ByteBuffer;
 import org.apache.jena.atlas.lib.BitsLong;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
-import org.apache.jena.tdb2.store.NodeId;
-import org.apache.jena.tdb2.store.NodeIdFactory;
-import org.apache.jena.tdb2.store.NodeIdInline;
-import org.apache.jena.tdb2.store.NodeIdType;
-import org.junit.Test ;
+import org.junit.Test;
 
 public class TestNodeId
 {
@@ -43,7 +39,7 @@ public class TestNodeId
         assertEquals(37L, nodeId.getValue2());
         assertEquals(17, nodeId.getValue1());
     }
-    
+
     @Test public void nodeId_ptr_02() {
         NodeId nodeId = NodeIdFactory.createPtr(37);
         assertEquals(NodeIdType.PTR, nodeId.type());
@@ -60,29 +56,29 @@ public class TestNodeId
         assertEquals(0, t);
         assertEquals(NodeIdType.PTR.type(), t);
     }
-    
+
     // Specials.
     @Test public void nodeId_special_01() {
         assertFalse(NodeId.isConcrete(NodeId.NodeDoesNotExist));
         assertEquals(NodeIdType.SPECIAL, NodeId.NodeDoesNotExist.type());
     }
-    
+
     @Test public void nodeId_special_02() {
         assertFalse(NodeId.isConcrete(NodeId.NodeIdAny));
         assertEquals(NodeIdType.SPECIAL, NodeId.NodeIdAny.type());
     }
-    
+
     // Storage
-    
+
     @Test public void nodeId_codec_01() { testCodecArray(NodeIdFactory.createPtr(37)); }
-    
+
     @Test public void nodeId_codec_02() { testCodecArray(NodeId.createRaw(NodeIdType.XSD_INTEGER, 1)); }
-    
+
     // 56 bit -1.
     @Test public void nodeId_codec_03() { testCodecArray(NodeId.createRaw(NodeIdType.XSD_INTEGER, BitsLong.clear(-1L, 56,64))); }
 
     @Test public void nodeId_codec_04() { testCodecArray("12.34"); }
-    
+
     @Test public void nodeId_codec_05() { testCodecArray("'2.2'^^xsd:float"); }
 
     private static void testCodecArray(String str) {
@@ -94,22 +90,22 @@ public class TestNodeId
     private static void testCodecArray(NodeId nid) {
         testCodecArray(nid, nid);
     }
-    
+
     private static void testCodecArray(NodeId testNid,NodeId expected) {
         byte[] b = new byte[8];
         NodeIdFactory.set(testNid, b);
         NodeId nid1 = NodeIdFactory.get(b);
         assertEquals(expected, nid1);
     }
-    
+
     @Test public void nodeId_codec_11() { testCodecBuffer(NodeIdFactory.createPtr(37)); }
-    
+
     @Test public void nodeId_codec_12() { testCodecBuffer(NodeId.createRaw(NodeIdType.XSD_INTEGER, 1)); }
-    
+
     @Test public void nodeId_codec_13() { testCodecBuffer(NodeId.createRaw(NodeIdType.XSD_INTEGER, BitsLong.clear(-1L, 56,64))); }
 
     @Test public void nodeId_codec_14() { testCodecBuffer("12.34"); }
-    
+
     @Test public void nodeId_codec_15() { testCodecBuffer("'2.2'^^xsd:float"); }
 
     private static void testCodecBuffer(String str) {
@@ -121,7 +117,7 @@ public class TestNodeId
     private static void testCodecBuffer(NodeId nid) {
         testCodecArray(nid, nid);
     }
-    
+
     private static void testCodecBuffer(NodeId testNid,NodeId expected) {
         ByteBuffer b = ByteBuffer.allocate(8);
         NodeIdFactory.set(testNid, b);

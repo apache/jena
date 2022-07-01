@@ -18,6 +18,7 @@
 
 package org.apache.jena.riot.lang;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -42,8 +43,7 @@ public class BlankNodeAllocatorFixedSeedHash extends BlankNodeAllocatorHash {
      */
     public BlankNodeAllocatorFixedSeedHash(UUID seed) {
         super();
-        if (seed == null)
-            throw new NullPointerException("seed cannot be null");
+        Objects.requireNonNull(seed, "seed cannot be null");
         this.seed = seed;
         this.reset();
     }

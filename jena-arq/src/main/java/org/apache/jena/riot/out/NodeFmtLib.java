@@ -18,212 +18,247 @@
 
 package org.apache.jena.riot.out;
 
-import java.net.MalformedURLException ;
-import java.util.Map ;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.function.BiConsumer;
 
-import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Bytes ;
-import org.apache.jena.atlas.lib.Chars ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIRelativize ;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.riot.system.* ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Bytes;
+import org.apache.jena.atlas.lib.Chars;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.riot.system.RiotChars;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.core.Quad;
 
 /** Presentation utilities for Nodes, Triples, Quads and more.
  * <p>
- * Methods <tt>str</tt> generate a reparsable string.
+ * Methods <tt>str</tt> generate a re-parseable string.
  * <p>
- * Methods <tt>displayStr</tt> do not guarantee a reparsable string 
- * e.g. may use abbreviations or common prefixes.   
+ * Methods <tt>displayStr</tt> do not guarantee a re-parseable string
+ * e.g. may use abbreviations or common prefixes.
  */
 public class NodeFmtLib
 {
     // Replaces FmtUtils
-    // See OutputLangUtils.
     // See and use EscapeStr
-    
-    private static final NodeFormatter plainFormatter = new NodeFormatterNT() ;
-    
-    private static PrefixMap dftPrefixMap = PrefixMapFactory.create() ;
+
+    // Turtle formatter, no prefix map or base. Does literal abbreviations.
+    private static final NodeFormatter ttlFormatter = new NodeFormatterTTL();
+    // N-triples formatter, no prefix map or base. Does literal abbreviations.
+    private static final NodeFormatter ntFormatter = new NodeFormatterNT();
+    private static final String nullStr = "<null>";
+
+    // Used for displayStr.
+    private static PrefixMap dftPrefixMap = PrefixMapFactory.create();
     static {
-        PrefixMapping pm = ARQConstants.getGlobalPrefixMap() ;
-        Map<String, String> map = pm.getNsPrefixMap() ;
+        PrefixMapping pm = ARQConstants.getGlobalPrefixMap();
+        Map<String, String> map = pm.getNsPrefixMap();
         for ( Map.Entry<String, String> e : map.entrySet() )
-            dftPrefixMap.add(e.getKey(), e.getValue() ) ;
+            dftPrefixMap.add(e.getKey(), e.getValue() );
     }
 
-    public static String str(Triple t)
-    {
-        return strNodes(t.getSubject(), t.getPredicate(),t.getObject()) ;
+    /** Format a triple, using Turtle literal abbreviations. */
+    public static String str(Triple t) {
+        return strNodesTTL(t.getSubject(), t.getPredicate(), t.getObject());
     }
 
-    public static String str(Quad q)
-    {
-        return strNodes(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject()) ;
+    /** Format a quad, using Turtle literal abbreviations. */
+    public static String str(Quad q) {
+        return strNodesTTL(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
     }
 
-    public static String str(Node n)
-    {
-        IndentedLineBuffer sw = new IndentedLineBuffer() ;
-        str(sw, n) ;
-        return sw.toString() ; 
+    /** @deprecated Use {@link #strNT}. */
+    @Deprecated
+    public static String str(Node node) {
+        return strNT(node);
+    }
+
+    /** With Turtle abbreviation for literals, no prefixes of base URI */
+    public static String strTTL(Node node) {
+        return strNode(node, ttlFormatter);
+    }
+
+    /** Format in N-triples style. */
+    public static String strNT(Node node) {
+        return strNode(node, ttlFormatter);
+    }
+
+    /** Format in N-triples style. */
+    private static void strNT(IndentedWriter w, Node node) {
+        formatNode(w, node, ntFormatter);
+    }
+
+    /** Format in Turtle style. */
+    private static void strTTL(IndentedWriter w, Node node) {
+        formatNode(w, node, ttlFormatter);
+    }
+
+    /** Format in Turtle style, using the prefix map. */
+    public static String str(Node node, PrefixMap prefixMap) {
+        return str(node, null, prefixMap);
+    }
+
+    /** Format in Turtle style, using the base URI and prefix map. */
+    public static String str(Node node, String base, PrefixMap prefixMap) {
+        IndentedLineBuffer sw = new IndentedLineBuffer();
+        formatNode(sw, node, base, prefixMap);
+        return sw.toString();
+    }
+
+    /** Use {@link #strNodesNT} or {@link #strNodesTTL} */
+    @Deprecated
+    public static String strNodes(Node...nodes) {
+        return strNodesNT(nodes);
+    }
+
+    public static String strNodesNT(Node...nodes) {
+        return strNodes(NodeFmtLib::strNT, nodes);
+    }
+
+    public static String strNodesTTL(Node...nodes) {
+        return strNodes(NodeFmtLib::strTTL, nodes);
+    }
+
+    private static String strNodes(BiConsumer<IndentedWriter, Node> output, Node...nodes) {
+        IndentedLineBuffer sw = new IndentedLineBuffer();
+        boolean first = true;
+        for ( Node n : nodes ) {
+            if ( !first )
+                sw.append(" ");
+            first = false;
+            if ( n == null ) {
+                sw.append("null");
+                continue;
+            }
+            output.accept(sw, n);
+        }
+        return sw.toString();
+    }
+
+    /** @deprecated To be removed. */
+    @Deprecated
+    public static void serialize(IndentedWriter w, Node node, String base, PrefixMap prefixMap) {
+        formatNode(w, node, base, prefixMap);
+    }
+
+    private static void formatNode(IndentedWriter w, Node node, NodeFormatter formatter) {
+        formatter.format(w, node);
+    }
+
+    private static void formatNode(IndentedWriter w, Node node, String base, PrefixMap prefixMap) {
+        NodeFormatter formatter;
+        if ( base == null && prefixMap == null )
+            formatter = ntFormatter;
+        else
+            formatter = new NodeFormatterTTL(base, prefixMap);
+        formatter.format(w, node);
+    }
+
+    private static String strNode(Node node, NodeFormatter formatter) {
+        IndentedLineBuffer sw = new IndentedLineBuffer();
+        formatter.format(sw, node);
+        return sw.toString();
     }
 
     /** A displayable string for an RDFNode. Includes common abbreviations */
-    public static String displayStr(RDFNode obj)
-    {
-        return displayStr(obj.asNode()) ;
-    }
-    
-    public static String displayStr(Node n)
-    { 
-        return str(n, null, dftPrefixMap) ;
+    public static String displayStr(RDFNode obj) {
+        if ( obj == null )
+            return nullStr;
+        return displayStr(obj.asNode());
     }
 
-    
-    // Worker
-    public static String strNodes(Node ... nodes)
-    {
-        IndentedLineBuffer sw = new IndentedLineBuffer() ;
-        boolean first = true ;
-        for ( Node n : nodes ) 
-        {
-            if ( ! first )
-                sw.append(" ") ;
-            first = false ;
-            str(sw, n) ;
-        }
-        return sw.toString() ; 
+    public static String displayStr(Triple t) {
+        if ( t == null )
+            return nullStr;
+        return displayStrNodes(t.getSubject(), t.getPredicate(), t.getObject());
     }
 
-    //public static String displayStr(Node n) { return serialize(n) ; }
-
-    public static void str(IndentedWriter w, Node n)
-    { serialize(w, n, null, null) ; }
-
-    public static String str(Node n, Prologue prologue)
-    {
-        return str(n, prologue.getBaseURI(), prologue.getPrefixMap()) ;
+    public static String displayStr(Node node) {
+        if ( node == null )
+            return nullStr;
+        return str(node, null, dftPrefixMap);
     }
 
-    public static String str(Node n, String base, PrefixMap prefixMap)
-    {
-        IndentedLineBuffer sw = new IndentedLineBuffer() ;
-        serialize(sw, n, base, prefixMap) ;
-        return sw.toString() ;
+    private static String displayStrNodes(Node...nodes) {
+        StringJoiner sj = new StringJoiner(" ");
+        for ( Node n : nodes )
+            sj.add(displayStr(n));
+        return sj.toString();
     }
 
-    public static void serialize(IndentedWriter w, Node n, Prologue prologue)
-    { serialize(w, n, prologue.getBaseURI(), prologue.getPrefixMap()) ; }
-    
-    public static void serialize(IndentedWriter w, Node n, String base, PrefixMap prefixMap)
-    {
-        NodeFormatter formatter ;
-        if ( base == null && prefixMap == null )
-            formatter = plainFormatter ;
-        else 
-            formatter = new NodeFormatterTTL(base, prefixMap) ;
-        formatter.format(w, n) ;
-    }
-    
     // ---- Blank node labels.
-    
-    // Strict N-triples only allows [A-Za-z][A-Za-z0-9]
-    static char encodeMarkerChar = 'X' ;
 
-    // These two form a pair to convert bNode labels to a safe (i.e. legal N-triples form) and back agains. 
-    
+    // Strict N-triples only allows [A-Za-z][A-Za-z0-9]
+    static char encodeMarkerChar = 'X';
+
+    // These two form a pair to convert bNode labels to a safe (i.e. legal N-triples form) and back agains.
+
     // Encoding is:
-    // 1 - Add a Letter 
+    // 1 - Add a Letter
     // 2 - Hexify, as Xnn, anything outside ASCII A-Za-z0-9
     // 3 - X is encoded as XX
-    
-    private static char LabelLeadingLetter = 'B' ; 
-    
-    public static String encodeBNodeLabel(String label)
-    {
-        StringBuilder buff = new StringBuilder() ;
+
+    private static char LabelLeadingLetter = 'B';
+
+    public static String encodeBNodeLabel(String label) {
+        StringBuilder buff = new StringBuilder();
         // Must be at least one char and not a digit.
-        buff.append(LabelLeadingLetter) ;
-        
-        for ( int i = 0 ; i < label.length() ; i++ )
-        {
-            char ch = label.charAt(i) ;
-            if ( ch == encodeMarkerChar )
-            {
-                buff.append(ch) ;
-                buff.append(ch) ;
-            }
-            else if ( RiotChars.isA2ZN(ch) )
-                buff.append(ch) ;
+        buff.append(LabelLeadingLetter);
+
+        for ( int i = 0 ; i < label.length() ; i++ ) {
+            char ch = label.charAt(i);
+            if ( ch == encodeMarkerChar ) {
+                buff.append(ch);
+                buff.append(ch);
+            } else if ( RiotChars.isA2ZN(ch) )
+                buff.append(ch);
             else
-                Chars.encodeAsHex(buff, encodeMarkerChar, ch) ;
+                Chars.encodeAsHex(buff, encodeMarkerChar, ch);
         }
-        return buff.toString() ;
+        return buff.toString();
     }
 
     // Assumes that blank nodes only have characters in the range of 0-255
-    public static String decodeBNodeLabel(String label)
-    {
-        StringBuilder buffer = new StringBuilder() ;
+    public static String decodeBNodeLabel(String label) {
+        StringBuilder buffer = new StringBuilder();
 
         if ( label.charAt(0) != LabelLeadingLetter )
-            return label ;
-        
-        // Skip first.
-        for ( int i = 1; i < label.length(); i++ )
-        {
-            char ch = label.charAt(i) ;
-            
-            if ( ch != encodeMarkerChar )
-            {
-                buffer.append(ch) ;
-            }
-            else
-            {
-                // Maybe XX or Xnn.
-                char ch2 = label.charAt(i+1) ;
-                if ( ch2 == encodeMarkerChar )
-                {
-                    i++ ;
-                    buffer.append(ch) ;
-                    continue ;
-                }
-                
-                // Xnn
-                i++ ;
-                char hiC = label.charAt(i) ;
-                int hi = Bytes.hexCharToInt(hiC) ;
-                i++ ;
-                char loC = label.charAt(i) ;
-                int lo = Bytes.hexCharToInt(loC) ;
+            return label;
 
-                int combined = ((hi << 4) | lo) ;
-                buffer.append((char) combined) ;
+        // Skip first.
+        for ( int i = 1 ; i < label.length() ; i++ ) {
+            char ch = label.charAt(i);
+
+            if ( ch != encodeMarkerChar ) {
+                buffer.append(ch);
+            } else {
+                // Maybe XX or Xnn.
+                char ch2 = label.charAt(i + 1);
+                if ( ch2 == encodeMarkerChar ) {
+                    i++;
+                    buffer.append(ch);
+                    continue;
+                }
+
+                // Xnn
+                i++;
+                char hiC = label.charAt(i);
+                int hi = Bytes.hexCharToInt(hiC);
+                i++;
+                char loC = label.charAt(i);
+                int lo = Bytes.hexCharToInt(loC);
+
+                int combined = ((hi << 4) | lo);
+                buffer.append((char)combined);
             }
         }
 
-        return buffer.toString() ;
-    }
-    
-    // ---- Relative URIs.
-    
-    static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
-    static public String abbrevByBase(String uri, String base)
-    {
-        if ( base == null )
-            return null ;
-        IRI baseIRI = IRIResolver.iriFactory().construct(base) ;
-        IRI rel = baseIRI.relativize(uri, relFlags) ;
-        String r = null ;
-        try { r = rel.toASCIIString() ; }
-        catch (MalformedURLException  ex) { r = rel.toString() ; }
-        return r ;
+        return buffer.toString();
     }
 }

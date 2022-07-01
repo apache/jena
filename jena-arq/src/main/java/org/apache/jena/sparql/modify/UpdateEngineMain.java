@@ -18,16 +18,25 @@
 
 package org.apache.jena.sparql.modify;
 
+import java.util.function.Consumer;
+
+import org.apache.jena.atlas.lib.Sink;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.modify.request.UpdateVisitor ;
 import org.apache.jena.sparql.util.Context ;
 
 /**
- * Default implementation of an update engine
+ * Default implementation of an update engine based on stream updates to a worker
+ * function. In addition, it applies INSERT DATA and DELETE DATA driven off the updates,
+ * which may be directly from the parser.
  * <p>
- * Developers who only want to change/extend the processing of individual updates can easily 
+ * Developers who only want to change/extend the processing of individual updates can
+ * easily
  * </p>
+ * <p>
+ * See {@link UpdateEngineNonStreaming} for a subclass that accumulates updates, including  during
+ * parsing then executes the operation.
  */
 public class UpdateEngineMain extends UpdateEngineBase 
 {
@@ -50,16 +59,20 @@ public class UpdateEngineMain extends UpdateEngineBase
     
     private UpdateSink updateSink = null ;
     
-    /**
-     * Returns the {@link UpdateSink}.  In this implementation, this is done by
-     * with an {@link UpdateVisitor} which will visit each update operation
-     * and send the operation to the associated {@link UpdateEngineWorker}.
+    /*
+     * Returns the {@link UpdateSink}. In this implementation, this is done by with
+     * an {@link UpdateVisitor} which will visit each update operation and send the
+     * operation to the associated {@link UpdateEngineWorker}. The quads in INSERT
+     * DATA and DELETE DATA will be passed to the respective sink handlers so they may
+     * act immediately and not accumulate during parsing, and then be acted upon. See
      */
     @Override
     public UpdateSink getUpdateSink()
     {
         if ( updateSink == null )
-            updateSink = new UpdateVisitorSink(this.prepareWorker());
+            updateSink = new UpdateVisitorSink(this.prepareWorker(),
+                                               sink(q->datasetGraph.add(q)), 
+                                               sink(q->datasetGraph.delete(q)));
         return updateSink ;
     }
     
@@ -69,6 +82,18 @@ public class UpdateEngineMain extends UpdateEngineBase
      */
     protected UpdateVisitor prepareWorker() {
         return new UpdateEngineWorker(datasetGraph, inputBinding, context) ;
+    }
+
+    /** Direct a sink to a Consumer. */ 
+    private <X> Sink<X> sink(Consumer<X> action) {
+        return new Sink<X>() {
+            @Override
+            public void send(X item) { action.accept(item); }
+
+            @Override public void close() {} 
+
+            @Override public void flush() {}
+        }; 
     }
     
     private static UpdateEngineFactory factory = new UpdateEngineFactory()

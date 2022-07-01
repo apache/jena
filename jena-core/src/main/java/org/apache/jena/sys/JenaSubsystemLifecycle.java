@@ -18,18 +18,7 @@
 
 package org.apache.jena.sys;
 
-/** Lifecycle interface for jena modules and subsystems. */ 
-public interface JenaSubsystemLifecycle {
-    
-    /** start - a module should be ready to operate when this returns */  
-    public void start() ;
-    
-    /** stop - a module should have preformed any shutdown operations by the time this returns */   
-    public void stop() ;
-    
-    /** Provide a marker as to the level to order initialization, 10,20,30,... 
-     * See {@link JenaSystem} for details.
-     */
-    default public int level() { return 9999 ; }
-}
+import org.apache.jena.base.module.SubsystemLifecycle;
 
+/** Lifecycle interface for Jena system and subsystems. */
+public interface JenaSubsystemLifecycle extends SubsystemLifecycle { }

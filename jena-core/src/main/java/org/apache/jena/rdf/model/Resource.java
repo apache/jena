@@ -65,7 +65,7 @@ public interface Resource extends RDFNode {
     public AnonId getId();
     
     /**
-        Override RDFNode.inModel() to produce a staticly-typed Resource
+        Override RDFNode.inModel() to produce a statically-typed Resource
         in the given Model.
     */
     @Override
@@ -77,18 +77,37 @@ public interface Resource extends RDFNode {
     */
     public boolean hasURI( String uri );
 
-    /** Return the URI of the resource, or null if it's a bnode.
-     * @return The URI of the resource, or null if it's a bnode.
+    /** Return the URI of the resource, or null if it's a bnode or statement.
+     * @return The URI of the resource, or null if it's a bnode or statement.
      */
     public String getURI();
+    
+    /**
+     * Return the statement of this resource, or null if it is not an RDF-star triple term.
+     * This is not a resource for a reified statement.   
+     * @return The statement of this resource,or null if it is not an RDF-star triple term.
+     */
+    public Statement getStmtTerm();
 
-    /** Returns the namespace associated with this resource.
-     * @return The namespace for this property.
+    /** Returns the namespace associated with this resource if it is a URI, else return null. 
+     * <p> 
+     * The namespace is suitable for use with localname in in RDF/XML.
+     * XML does not allow QNames to start with a digit and this method
+     * reflects that restriction in the values for namespace and localname.
+     * <p>
+     * See functions in {@code SplitIRI} for other split algorithms.
+     *  
+     * @return The namespace for this resource or null.
      */
     public String getNameSpace();
 
-    /** Returns the name of this resource within its namespace.
-     * @return The name of this property within its namespace.
+    /** Returns the localname of this resource within its namespace if it is a URI else null.
+     * <p>
+     * Note: XML requires QNames to start with a letter, not a digit,
+     * and this method reflects that restriction.
+     * <p>
+     * See functions in {@code SplitIRI} for other split algorithms.
+     * @return The localname of this property within its namespace.
      */
     public String getLocalName();
 

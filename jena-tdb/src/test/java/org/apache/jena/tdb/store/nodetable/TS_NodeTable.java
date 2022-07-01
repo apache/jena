@@ -23,7 +23,7 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestCodec.class
+    TestNodec.class
     , TestNodeTableStored.class
     , TestNodeTable.class
 })

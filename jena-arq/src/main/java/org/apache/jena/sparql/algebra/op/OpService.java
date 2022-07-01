@@ -29,9 +29,9 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 public class OpService extends Op1
 {
     private final Node serviceNode ;
-    private final ElementService serviceElement ;  
+    private final ElementService serviceElement ;
     private final boolean silent ;
-    
+
     public OpService(Node serviceNode, Op subOp, boolean silent)
     {
         this(serviceNode, subOp, null, silent) ;
@@ -44,24 +44,24 @@ public class OpService extends Op1
         this.serviceElement = elt ;
         this.silent = silent ;
     }
-    
+
     @Override
     public Op apply(Transform transform, Op subOp)  { return transform.transform(this, subOp) ; }
 
     @Override
-    public Op1 copy(Op newOp)                    { return new OpService(serviceNode, newOp, silent) ; }
+    public Op1 copy(Op newOp)                   { return new OpService(serviceNode, newOp, silent) ; }
     @Override
     public String getName()                     { return Tags.tagService ; }
     @Override
     public void visit(OpVisitor opVisitor)      { opVisitor.visit(this) ; }
     public Node getService()                    { return serviceNode ;  }
     public ElementService getServiceElement()   { return serviceElement ;  }
-    public boolean getSilent()                  { return silent ; } 
+    public boolean getSilent()                  { return silent ; }
 
     @Override
     public int hashCode()
     { return serviceNode.hashCode() ^ getSubOp().hashCode() ; }
-    
+
     @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {

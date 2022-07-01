@@ -18,17 +18,19 @@
 
 package org.apache.jena.reasoner.rulesys;
 
-import org.apache.jena.datatypes.* ;
-import org.apache.jena.graph.* ;
+import java.util.List;
+import java.util.function.Predicate;
+
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_ANY;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.util.PrintUtil ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.function.Predicate;
-
 /**
- * A functor comprises a functor name and a list of 
+ * A functor comprises a functor name and a list of
  * arguments. The arguments are Nodes of any type except functor nodes
  * (there is no functor nesting).  Functors play three roles in rules -
  * in heads they represent actions (procedural attachment); in bodies they
@@ -39,24 +41,24 @@ import java.util.function.Predicate;
 public class Functor implements ClauseEntry {
     /** Functor's name */
     protected String name;
-    
+
     /** Argument list - an array of nodes */
     protected Node[] args;
-    
+
     /** A built in that implements the functor */
     protected Builtin implementor;
-    
+
     /** A static Predicate instance that detects triples with Functor objects */
     public static final Predicate<Triple> acceptFilter = t ->  {
                     if (t.getSubject().isLiteral()) return true;
                     Node n = t.getObject();
                     return n.isLiteral() && n.getLiteralDatatype() == FunctorDatatype.theFunctorDatatype;
             };
-    
+
     protected static Logger logger = LoggerFactory.getLogger(Functor.class);
 
     /**
-     * Constructor. 
+     * Constructor.
      * @param name the name of the functor
      * @param args an array of nodes defining the arguments, this will not be copied so beware of
      * accidental structure sharing
@@ -65,7 +67,7 @@ public class Functor implements ClauseEntry {
         this.name = name;
         this.args = args;
     }
-    
+
     /**
      * Constructor
      * @param name the name of the functor
@@ -113,28 +115,28 @@ public class Functor implements ClauseEntry {
         this.args = args;
         this.implementor = impl;
     }
-    
+
     /**
      * Return the functor name
      */
     public String getName() {
         return name;
     }
-    
+
     /**
      * Return the functor arguments as an array of nodes
      */
     public Node[] getArgs() {
         return args;
     }
-    
+
     /**
      * Return the length of the functor argument array.
      */
     public int getArgLength() {
         return args.length;
     }
-    
+
     /**
      * Returns true if the functor is fully ground, no variables
      */
@@ -148,7 +150,7 @@ public class Functor implements ClauseEntry {
         }
         return true;
     }
-    
+
     /**
      * Returns true if the functor is fully ground in the given environment
      */
@@ -162,7 +164,7 @@ public class Functor implements ClauseEntry {
         }
         return true;
     }
-    
+
     /**
      * Execute the given built in as a body clause.
      * @param context an execution context giving access to other relevant data
@@ -175,7 +177,7 @@ public class Functor implements ClauseEntry {
         }
         return implementor.bodyCall(getBoundArgs(context.getEnv()), args.length, context);
     }
-    
+
     /**
      * Execute the given built in as a body clause, only if it is side-effect-free.
      * @param context an execution context giving access to other relevant data
@@ -192,7 +194,7 @@ public class Functor implements ClauseEntry {
             return false;
         }
     }
-    
+
     /**
      * Return a new Node array containing the bound versions of this Functor's arguments
      */
@@ -203,7 +205,7 @@ public class Functor implements ClauseEntry {
         }
         return boundargs;
     }
-    
+
     /**
      * Return the Builtin that implements this functor
      * @return the Builtin or null if there isn't one
@@ -214,14 +216,14 @@ public class Functor implements ClauseEntry {
         }
         return implementor;
     }
-    
+
     /**
      * Set the Builtin that implements this functor.
      */
     public void setImplementor(Builtin implementor) {
         this.implementor = implementor;
     }
-    
+
     /**
      * Printable string describing the functor
      */
@@ -246,7 +248,7 @@ public class Functor implements ClauseEntry {
         if (n == null) return false;
         return n.isLiteral() && n.getLiteralDatatype() == FunctorDatatype.theFunctorDatatype;
     }
-    
+
     /**
      * Equality is based on structural comparison
      */
@@ -263,13 +265,13 @@ public class Functor implements ClauseEntry {
         }
         return false;
     }
-    
+
     /** hash function override */
     @Override
     public int hashCode() {
         return (name.hashCode()) ^ (args.length << 2);
     }
-    
+
     /**
      * Compare Functors, taking into account variable indices.
      * The equality function ignores differences between variables.
@@ -305,18 +307,4 @@ public class Functor implements ClauseEntry {
     public static Node makeFunctorNode(Functor f) {
         return NodeFactory.createLiteralByValue(f, FunctorDatatype.theFunctorDatatype);
     }
-    
-   /**
-    * Inner class. Dummy datatype definition for 
-    * functor-valued literals.
-    */
-   public static class FunctorDatatype extends BaseDatatype {
-    
-        public FunctorDatatype() {
-            super("urn:x-hp-jena:Functor");
-        }
-        
-        public static final RDFDatatype theFunctorDatatype = new FunctorDatatype();
-   }
-
 }

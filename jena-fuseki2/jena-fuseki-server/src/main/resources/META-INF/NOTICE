@@ -1,0 +1,50 @@
+- - - - - - - - - - - - - - - - - - - - - - -
+
+This product bundles "Simple Logging Facade for Java (SLF4J)", which is available under an
+MIT license (MIT).  See https://www.slf4j.org/license.html
+
+- - - - - - - - - - - - - - - - - - - - - - -
+
+This product bundles Google Protocol Buffers java runtime:
+
+Copyright 2008 Google Inc.  All rights reserved.
+https://github.com/protocolbuffers/protobuf/blob/master/LICENSE
+
+- - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - -
+
+This product bundles "LatencyUtils"
+which is available under a "BSD 2-Clause License" (BSD-2-Clause).
+See https://github.com/LatencyUtils/LatencyUtils/blob/master/LICENSE
+
+This product bundles "HdrHistogram"
+which is available under a "BSD 2-Clause License" (BSD-2-Clause).
+See https://github.com/HdrHistogram/HdrHistogram/blob/master/LICENSE.txt
+
+- - - - - - - - - - - - - - - - - - - - - - -
+
+This product bundles "jsonld-java", which is available under a
+BSD license (BSD-3-Clause). See 
+https://github.com/jsonld-java/jsonld-java/blob/master/LICENCE
+
+- - - - - - - - - - - - - - - - - - - - - - -
+
+This product bundles "Dexx Collections", which is available under an
+MIT license (MIT).  See https://github.com/andrewoma/dexx/blob/master/LICENSE.txt
+  
+"Dexx Collections" includes following NOTICE
+----------
+Portions based on code from the Scala standard library.
+Copyright (c) 2002-2014 EPFL
+Copyright (c) 2011-2014 Typesafe, Inc.
+Licensed under BSD-style license (see licenses/LICENSE_Scala.txt)
+----------
+
+------
+Assorted
+
+The UnixCrypt.java code implements the one way cryptography used by
+Unix systems for simple password protection.  Copyright 1996 Aki Yoshida,
+modified April 2001  by Iris Van den Broeke, Daniel Deville.
+Permission to use, copy, modify and distribute UnixCrypt
+for non-commercial or commercial purposes and without fee is
+granted provided that the copyright notice appears in all copies.

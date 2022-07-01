@@ -1,0 +1,182 @@
+PREFIX ex: <http://a.example>
+PREFIX sx: <http://www.w3.org/ns/shex#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX prefix1: <http://all.example/>
+PREFIX : <http://all.example/>
+PREFIX a: <http://all.example/>
+
+[] a sx:Schema ;
+  sx:start <http://all.example/S3> ;
+  sx:startActs ([
+    a sx:SemAct;
+    sx:code " START1 ";
+    sx:name <http://all.example/act1>
+  ] [
+    a sx:SemAct;
+    sx:code " START2 ";
+    sx:name <http://all.example/act2>
+  ]);
+  sx:shapes (
+    <http://all.example/IRI>
+    <http://all.example/S1>
+    <http://all.example/S2>
+    <http://all.example/S3>
+    <http://all.example/S5>
+    <http://all.example/vs1>
+    _:a·̀ͯ‿.⁀
+    _:AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀󯿽) .
+
+<http://all.example/IRI> a sx:NodeConstraint ; sx:nodeKind sx:iri .
+
+<http://all.example/S1> a sx:Shape ;
+  sx:extra <http://all.example/p1>, <http://all.example/p2>, <http://all.example/p3> ;
+  sx:expression <http://all.example/S1e> .
+<http://all.example/S1e> a sx:EachOf ;
+    sx:expressions (
+      [ a sx:TripleConstraint ; sx:predicate <http://all.example/p1> ]
+      [ a sx:TripleConstraint ; sx:predicate <http://all.example/p2> ]
+      [ a sx:TripleConstraint ; sx:predicate <http://all.example/p3> ] ) .
+
+<http://all.example/S2> a sx:Shape ;
+  sx:extra <http://all.example/p1>, <http://all.example/p2>, <http://all.example/p3> ;
+  sx:expression prefix1:S2e .
+prefix1:S2e a sx:EachOf ;
+    sx:expressions (
+      [ a sx:TripleConstraint ; sx:predicate <http://all.example/p1-> ]
+      [ a sx:TripleConstraint ; sx:predicate <http://all.example/p2> ]
+      [ a sx:TripleConstraint ; sx:predicate <http://all.example/p3> ] ) .
+
+<http://all.example/S3> a sx:Shape ;
+  sx:extra <http://all.example/a>, <http://all.example/prefix>, <http://all.example/base> ;
+  sx:expression [ a sx:EachOf ;
+    sx:expressions (
+      a:S1e
+      [ a sx:TripleConstraint ; sx:predicate <http://all.example/a> ]
+      [ a sx:TripleConstraint ; sx:max 1 ; sx:min 0 ; sx:predicate <http://all.example/prefix> ;
+        sx:valueExpr [ a sx:NodeConstraint ;
+          sx:datatype <http://all.example/dt> ;
+          sx:length 2 ] ]
+      [ a sx:OneOf ; sx:expressions (
+         [ a sx:EachOf ; sx:expressions (
+          [ a sx:TripleConstraint ; sx:max -1 ; sx:min 0 ; sx:predicate <http://all.example/base> ;
+            sx:valueExpr [ a sx:NodeConstraint ; sx:nodeKind sx:iri ] ]
+          [ a sx:TripleConstraint ; sx:max -1 ; sx:min 1 ; sx:predicate <http://all.example/PREFIX> ;
+            sx:valueExpr [ a sx:NodeConstraint ;
+              sx:length 5 ;
+              sx:nodeKind sx:iri ;
+              sx:pattern "^http://" ] ]
+          [ a sx:TripleConstraint ; sx:max 2 ; sx:min 2 ; sx:predicate <http://all.example/BaSe> ;
+            sx:valueExpr <http://all.example/S5> ] ) ]
+        [ a sx:TripleConstraint ; sx:max -1 ; sx:min 2 ; sx:predicate <http://all.example/virtual> ;
+          sx:valueExpr [ a sx:ShapeAnd ; sx:shapeExprs (
+            [ a sx:NodeConstraint ; sx:nodeKind sx:nonliteral ]
+            <http://all.example/S5> ) ] ]
+        [ a sx:TripleConstraint ; sx:max -1 ; sx:min 2 ; sx:predicate <http://all.example/closed> ;
+          sx:valueExpr [ a sx:ShapeOr ; sx:shapeExprs (
+            [ a sx:ShapeAnd ; sx:shapeExprs (
+              [ a sx:NodeConstraint ; sx:nodeKind sx:bnode ]
+              <http://all.example/S5> ) ]
+            [ a sx:ShapeAnd ; sx:shapeExprs (
+              [ a sx:NodeConstraint ; sx:maxlength 4 ; sx:minlength 2 ]
+              <http://all.example/S5> ) ] ) ] ]
+
+        [ a sx:EachOf ; sx:expressions (
+          [ a sx:OneOf ; sx:expressions (
+            [ a sx:EachOf ; sx:expressions (
+              [ a sx:TripleConstraint ; sx:inverse true ; sx:max 3 ; sx:min 2 ; sx:predicate <http://all.example/extra> ;
+                sx:semActs ([
+                  a sx:SemAct;
+                  sx:code " code1 ";
+                  sx:name <http://all.example/act1>
+                ]);
+                sx:valueExpr [ a sx:Shape ; sx:expression [ a sx:TripleConstraint ;
+                  sx:predicate <http://all.example/p1> ;
+                  sx:valueExpr [ a sx:NodeConstraint ; sx:values (
+              "STRING_LITERAL2" "STRING_LITERAL2"@en-UK : prefix1:val1#comment
+	      prefix1:#comment
+	      <scheme:!$%25&amp;'()*+,-./0123456789:/@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~?#>
+	      <http://a.example/p\u0031>
+	      0.0 0e0 0E0 false 0 "ab"^^<http://all.example/bloodType> "o+"^^prefix1:bloodType
+	      ' !"#$%&():;<=>?@[]^_`{|}~'
+	      '	&([]' # Eliding \u0000 because it confuses UTF-8 detectors.
+	      '߿ࠀ࿿က쿿퀀퟿�𐀀𿿽񀀀󿿽􀀀􏿽'
+	      "\"\\"
+	      "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡" # outside of BMP
+	      """STRING_LITERAL_LONG2"""@en-UK
+                                                                    ) ] ] ] ]
+              [ a sx:TripleConstraint ;
+                sx:annotation (
+                  [ a sx:Annotation ; sx:predicate <http://a.example/annot1> ; sx:object <http://a.example/IRIREF> ]
+                  [ a sx:Annotation ; sx:object "STRING_LITERAL2" ; sx:predicate <http://a.example/annot2> ]
+                  [ a sx:Annotation ; sx:object 3 ; sx:predicate <http://a.example/annot3> ]) ;
+                sx:max -1 ; sx:min 1 ; sx:predicate <http://all.example/iri> ;
+                sx:semActs ([
+                  a sx:SemAct;
+                  sx:code " %{printf(\"品川\\n\");%} ";
+                  sx:name <http://all.example/act1>
+                ]);
+                sx:valueExpr [ a sx:NodeConstraint ; sx:nodeKind sx:literal ] ]
+            ) ]
+            [ a sx:EachOf ; sx:expressions (
+              [ a sx:TripleConstraint ; sx:inverse true ; sx:max -1 ; sx:min 1 ; sx:predicate <http://all.example/bnode> ;
+                sx:semActs ([
+                  a sx:SemAct;
+                  sx:code " code1 ";
+                  sx:name <http://all.example/act1>
+                ])]
+              [ a sx:TripleConstraint ; sx:inverse true ; sx:max -1 ; sx:min 1 ; sx:predicate <http://all.example/literal> ;
+                sx:semActs ([
+                  a sx:SemAct;
+                  sx:code " code1 ";
+                  sx:name <http://all.example/act1>
+                ])] ) ]
+          ) ]
+          [ a sx:TripleConstraint ; sx:predicate <http://all.example/nonliteral> ;
+            sx:valueExpr [ a sx:NodeConstraint ;
+              sx:datatype xsd:integer ;
+              sx:fractiondigits 1 ;
+              sx:maxinclusive 5 ;
+              sx:mininclusive 5 ;
+              sx:totaldigits 1 ] ]
+        ) ]
+      ) ]
+
+      [ a sx:TripleConstraint ; sx:predicate <http://all.example/or> ;
+        sx:valueExpr <http://all.example/vs1> ]
+      [ a sx:TripleConstraint ; sx:predicate <http://all.example/pattern> ;
+        sx:semActs ([
+          a sx:SemAct;
+          sx:code " code1 ";
+          sx:name <http://all.example/act1>
+        ] [
+          a sx:SemAct;
+          sx:code " code2 ";
+          sx:name <http://all.example/act2>
+        ]);
+        sx:valueExpr [ a sx:NodeConstraint ; sx:values (
+          [ a sx:IriStemRange ; sx:stem [ a sx:Wildcard ] ; sx:exclusion
+              ([ a sx:IriStem ; sx:stem "http://all.example/a" ]
+              <http://all.example/b>) ] ) ] ]
+    ) ] .
+
+<http://all.example/S5> a sx:NodeConstraint ; sx:nodeKind sx:iri .
+
+<http://all.example/vs1> a sx:ShapeAnd ;
+  sx:shapeExprs (
+    [ a sx:NodeConstraint ; sx:values (
+      <http://a.example/a1>
+      [ a sx:IriStemRange ; sx:stem "http://all.example/" ; sx:exclusion
+        ([ a sx:IriStem ; sx:stem "http://all.example/a" ]
+        <http://all.example/b>) ] ) ]
+    [ a sx:NodeConstraint ; sx:datatype <http://all.example/IRI> ] ) .
+
+_:a·̀ͯ‿.⁀ a sx:Shape ; sx:closed true ;
+  sx:expression _:a·̀ͯ‿.⁀e .
+_:a·̀ͯ‿.⁀e a sx:EachOf ;
+    sx:expressions (
+      a:S1e
+      <http://all.example/S2e> ) .
+
+_:AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀󯿽 a sx:Shape ;
+  sx:expression _:a·̀ͯ‿.⁀e .
+

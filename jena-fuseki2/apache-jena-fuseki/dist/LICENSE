@@ -202,57 +202,18 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - -
 
-http://www.slf4j.org/license.html
+## Bundled Dependencies ##
 
- Copyright (c) 2004-2011 QOS.ch
- All rights reserved.
+Jakarta JSON Processing (JSON-P)
+https://eclipse-ee4j.github.io/jsonp/
+is licensed under the Eclipse Public License 2.0.
+http://www.eclipse.org/legal/epl-2.0
 
- Permission is hereby granted, free  of charge, to any person obtaining
- a  copy  of this  software  and  associated  documentation files  (the
- "Software"), to  deal in  the Software without  restriction, including
- without limitation  the rights to  use, copy, modify,  merge, publish,
- distribute,  sublicense, and/or sell  copies of  the Software,  and to
- permit persons to whom the Software  is furnished to do so, subject to
- the following conditions:
- 
- The  above  copyright  notice  and  this permission  notice  shall  be
- included in all copies or substantial portions of the Software.
- 
- THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
- EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
- MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM, OUT OF OR IN CONNECTION
- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-- - - - - - - - - - - - - - - - - - - - - - - 
-
-==============================================================
- Jetty Web Container
- Copyright 1995-2012 Mort Bay Consulting Pty Ltd.
-==============================================================
-
-The Jetty Web Container is Copyright Mort Bay Consulting Pty Ltd
-unless otherwise noted.
-
-Jetty is dual licensed under both
-
-  * The Apache 2.0 License
-    http://www.apache.org/licenses/LICENSE-2.0.html
-
-      and
-
-  * The Eclipse Public 1.0 License
-    http://www.eclipse.org/legal/epl-v10.html
-
-Jetty may be distributed under either license.
-
-The javax.servlet package used was sourced from the Apache
-Software Foundation and is distributed under the apache 2.0
-license.
+org.glassfish:jakarta.json
+is licensed under the Eclipse Public License 2.0.
+http://www.eclipse.org/legal/epl-2.0
 
 The UnixCrypt.java code implements the one way cryptography used by
 Unix systems for simple password protection.  Copyright 1996 Aki Yoshida,
@@ -263,85 +224,7 @@ granted provided that the copyright notice appears in all copies.
 
 - - - - - - - - - - - - - - - - - - - - - - - 
 
-This product bundles "Bootstrap", which is available under an
-MIT license.  See: https://github.com/twbs/bootstrap/blob/master/LICENSE
-
-This product bundles "codemirror", which is available under an
-MIT license.  See http://codemirror.net/LICENSE
-
-This product bundles "jquery", which is available under an
-MIT license.  See https://jquery.org/license/
-
-This product bundles "jquery.form", which is available under an
-MIT license.  See http://malsup.github.io/mit-license.txt
-
-This product bundles "jquery.xdomainrequest", which is available under an
-MIT license.  See https://github.com/MoonScript/jQuery-ajaxTransport-XDomainRequest/blob/master/LICENSE.txt
-
-This product bundles "backbone.js", which is available under an
-MIT license.  See https://github.com/jashkenas/backbone/blob/master/LICENSE
-
-This product bundles "backbone.marionette", which is available under an
-MIT license. See http://mutedsolutions.mit-license.org/
-   "backbone.marionette" includes "Backbone.BabySitter" and 
-   "Backbone.Wreqr" also available under the same MIT license.
-
-This product bundles "html5shiv", which is available under an
-MIT license.  See https://code.google.com/p/html5shiv/
-
-This product bundles "RequireJS", which is available under an
-MIT license. 
-https://github.com/jrburke/requirejs/blob/master/LICENSE
-  "RequireJS" is also available with a "30clause BSD license"
-
-This product bundles "Respond", which is available under an
-MIT license. See https://github.com/scottjehl/Respond/blob/master/LICENSE-MIT
-
-This product bundles "sprintf.js", which is available under a
-"3 clause BSD" license. 
-  https://github.com/alexei/sprintf.js/blob/master/LICENSE
-
-This product bundles "underscore", which is available under an
-MIT license.  See https://github.com/jashkenas/underscore/blob/master/LICENSE
-
-This product bundles "FontAwesome"
-  "Font Awesome by Dave Gandy - http://fontawesome.io"
-The font is available under an  SIL Open Font License 1.1
-and the CSS files under an MIT License.
-See http://fontawesome.io/license/
-
-This product bundles "jQuery File Upload Plugin" 
-which is available under an MIT License.
-See https://github.com/blueimp/jQuery-File-Upload
-
-This product bundles "Bootstrap-select"
-which is available under an MIT License.
-See https://github.com/silviomoreto/bootstrap-select/blob/master/LICENSE
-
-This product bundles "pivot.js"
-which is available under a BSD 3-clause style license.
-https://github.com/rwjblue/pivot.js/blob/master/LICENSE
-
-This product bundles "YASEQE - Yet Another Sparql Query Editor"
-which is available under an MIT License.
-See http://yasqe.yasgui.org/license.txt
-
-This product bundles "YASR - Yet Another Sparql Resultset GUI"
-which is available under an MIT License.
-See http://yasr.yasgui.org/license.txt
-
-- - - - - - - - - - - - - - - - - - - - - - - 
-
-From Apache HttpComponents Client
-
-This project contains annotations derived from JCIP-ANNOTATIONS
-Copyright (c) 2005 Brian Goetz and Tim Peierls.
-See http://www.jcip.net and the Creative Commons Attribution License 
-(http://creativecommons.org/licenses/by/2.5)
-
-- - - - - - - - - - - - - - - - - - - - - - - 
-
-From Apache Lucene
+From Apache Lucene:
 
 Some code in core/src/java/org/apache/lucene/util/UnicodeUtil.java was
 derived from unicode conversion examples available at
@@ -614,4 +497,275 @@ WHETHER IN  CONTRACT, STRICT LIABILITY, OR  TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+- - - - - - - - - - - - - - - - - - - - - - -
+
+## Output of 'yarn licenses list --prod'
+
+yarn licenses v1.22.15
++- (CC-BY-4.0 AND MIT)
+|  +- @fortawesome/free-solid-svg-icons@5.14.0
+|  |  +- URL: https://github.com/FortAwesome/Font-Awesome
+|  |  +- VendorName: Dave Gandy
+|  |  \- VendorUrl: https://fontawesome.com/
+|  \- @fortawesome/free-solid-svg-icons@5.15.3
+|     +- URL: https://github.com/FortAwesome/Font-Awesome
+|     +- VendorName: Dave Gandy
+|     \- VendorUrl: https://fontawesome.com/
++- Apache-2.0
+|  \- vue-upload-component@2.8.22
+|     +- URL: git+https://github.com/lian-yue/vue-upload-component.git
+|     +- VendorName: LianYue
+|     \- VendorUrl: https://github.com/lian-yue/vue-upload-component#readme
++- BSD-3-Clause
+|  +- column-resizer@1.3.5
+|  |  +- URL: https://github.com/MonsantoCo/column-resizer.git
+|  |  \- VendorName: John Glynn
+|  \- qs@6.9.4
+|     +- URL: https://github.com/ljharb/qs.git
+|     \- VendorUrl: https://github.com/ljharb/qs
++- CC0-1.0
+|  \- string-hash@1.1.3
+|     +- URL: git://github.com/darkskyapp/string-hash.git
+|     \- VendorName: The Dark Sky Company
++- ISC
+|  +- inherits@2.0.4
+|  |  \- URL: git://github.com/isaacs/inherits
+|  \- semver@7.3.2
+|     \- URL: https://github.com/npm/node-semver
++- MIT
+|  +- @fortawesome/fontawesome-common-types@0.2.30
+|  |  +- URL: https://github.com/FortAwesome/Font-Awesome
+|  |  +- VendorName: Dave Gandy
+|  |  \- VendorUrl: https://fontawesome.com/
+|  +- @fortawesome/fontawesome-common-types@0.2.35
+|  |  +- URL: https://github.com/FortAwesome/Font-Awesome
+|  |  +- VendorName: Dave Gandy
+|  |  \- VendorUrl: https://fontawesome.com/
+|  +- @fortawesome/fontawesome-svg-core@1.2.35
+|  |  +- URL: https://github.com/FortAwesome/Font-Awesome
+|  |  +- VendorName: Dave Gandy
+|  |  \- VendorUrl: https://fontawesome.com/
+|  +- @fortawesome/vue-fontawesome@2.0.2
+|  |  +- URL: https://github.com/FortAwesome/vue-fontawesome.git
+|  |  \- VendorUrl: https://github.com/FortAwesome/vue-fontawesome
+|  +- @nuxt/opencollective@0.3.2
+|  |  \- URL: https://github.com/nuxt-contrib/opencollective.git
+|  +- @triply/yasgui-utils@4.2.4
+|  |  +- URL: https://github.com/TriplyDB/yasgui.git
+|  |  +- VendorName: Triply
+|  |  \- VendorUrl: https://github.com/TriplyDB/yasgui
+|  +- @triply/yasqe@4.2.7
+|  |  +- URL: https://github.com/TriplyDB/yasgui.git
+|  |  +- VendorName: Triply
+|  |  \- VendorUrl: https://github.com/TriplyDB/yasgui
+|  +- @triply/yasr@4.2.8
+|  |  +- URL: https://github.com/TriplyDB/yasgui.git
+|  |  +- VendorName: Triply
+|  |  \- VendorUrl: https://github.com/TriplyDB/yasgui
+|  +- @types/color-name@1.1.1
+|  |  \- URL: https://github.com/DefinitelyTyped/DefinitelyTyped.git
+|  +- @types/lodash-es@4.17.3
+|  |  \- URL: https://github.com/DefinitelyTyped/DefinitelyTyped.git
+|  +- @types/lodash@4.14.159
+|  |  \- URL: https://github.com/DefinitelyTyped/DefinitelyTyped.git
+|  +- @types/node@14.0.23
+|  |  \- URL: https://github.com/DefinitelyTyped/DefinitelyTyped.git
+|  +- ansi-styles@4.2.1
+|  |  +- URL: https://github.com/chalk/ansi-styles.git
+|  |  +- VendorName: Sindre Sorhus
+|  |  \- VendorUrl: sindresorhus.com
+|  +- asynckit@0.4.0
+|  |  +- URL: git+https://github.com/alexindigo/asynckit.git
+|  |  +- VendorName: Alex Indigo
+|  |  \- VendorUrl: https://github.com/alexindigo/asynckit#readme
+|  +- axios@0.21.1
+|  |  +- URL: https://github.com/axios/axios.git
+|  |  +- VendorName: Matt Zabriskie
+|  |  \- VendorUrl: https://github.com/axios/axios
+|  +- bootstrap-vue@2.21.2
+|  |  +- URL: https://github.com/bootstrap-vue/bootstrap-vue.git
+|  |  \- VendorUrl: https://bootstrap-vue.org/
+|  +- bootstrap@4.6.0
+|  |  +- URL: git+https://github.com/twbs/bootstrap.git
+|  |  +- VendorName: The Bootstrap Authors
+|  |  \- VendorUrl: https://getbootstrap.com/
+|  +- chalk@4.1.0
+|  |  \- URL: https://github.com/chalk/chalk.git
+|  +- codemirror@5.56.0
+|  |  +- URL: https://github.com/codemirror/CodeMirror.git
+|  |  +- VendorName: Marijn Haverbeke
+|  |  \- VendorUrl: https://codemirror.net/
+|  +- color-convert@2.0.1
+|  |  +- URL: https://github.com/Qix-/color-convert.git
+|  |  \- VendorName: Heather Arthur
+|  +- color-name@1.1.4
+|  |  +- URL: git@github.com:colorjs/color-name.git
+|  |  +- VendorName: DY
+|  |  \- VendorUrl: https://github.com/colorjs/color-name
+|  +- colors@1.4.0
+|  |  +- URL: http://github.com/Marak/colors.js.git
+|  |  +- VendorName: Marak Squires
+|  |  \- VendorUrl: https://github.com/Marak/colors.js
+|  +- combined-stream@1.0.8
+|  |  +- URL: git://github.com/felixge/node-combined-stream.git
+|  |  +- VendorName: Felix Geisendörfer
+|  |  \- VendorUrl: https://github.com/felixge/node-combined-stream
+|  +- commander@5.1.0
+|  |  +- URL: https://github.com/tj/commander.js.git
+|  |  \- VendorName: TJ Holowaychuk
+|  +- component-emitter@1.3.0
+|  |  \- URL: https://github.com/component/emitter.git
+|  +- consola@2.15.3
+|  |  \- URL: https://github.com/nuxt/consola.git
+|  +- cookiejar@2.1.2
+|  |  +- URL: https://github.com/bmeck/node-cookiejar.git
+|  |  \- VendorName: bradleymeck
+|  +- core-js@3.9.1
+|  |  \- URL: https://github.com/zloirock/core-js.git
+|  +- datatables.net-dt@1.10.21
+|  |  +- URL: https://github.com/DataTables/Dist-DataTables-DataTables.git
+|  |  +- VendorName: SpryMedia Ltd
+|  |  \- VendorUrl: https://datatables.net/
+|  +- datatables.net@1.10.21
+|  |  +- URL: https://github.com/DataTables/Dist-DataTables.git
+|  |  +- VendorName: SpryMedia Ltd
+|  |  \- VendorUrl: https://datatables.net/
+|  +- debug@4.1.1
+|  |  +- URL: git://github.com/visionmedia/debug.git
+|  |  \- VendorName: TJ Holowaychuk
+|  +- decode-uri-component@0.2.0
+|  |  +- URL: https://github.com/SamVerschueren/decode-uri-component.git
+|  |  +- VendorName: Sam Verschueren
+|  |  \- VendorUrl: github.com/SamVerschueren
+|  +- delayed-stream@1.0.0
+|  |  +- URL: git://github.com/felixge/node-delayed-stream.git
+|  |  +- VendorName: Felix Geisendörfer
+|  |  \- VendorUrl: https://github.com/felixge/node-delayed-stream
+|  +- fast-safe-stringify@2.0.7
+|  |  +- URL: git+https://github.com/davidmarkclements/fast-safe-stringify.git
+|  |  +- VendorName: David Mark Clements
+|  |  \- VendorUrl: https://github.com/davidmarkclements/fast-safe-stringify#readme
+|  +- follow-redirects@1.13.0
+|  |  +- URL: git@github.com:follow-redirects/follow-redirects.git
+|  |  +- VendorName: Ruben Verborgh
+|  |  \- VendorUrl: https://github.com/follow-redirects/follow-redirects
+|  +- form-data@3.0.0
+|  |  +- URL: git://github.com/form-data/form-data.git
+|  |  +- VendorName: Felix Geisendörfer
+|  |  \- VendorUrl: http://debuggable.com/
+|  +- formidable@1.2.2
+|  |  +- URL: https://github.com/node-formidable/formidable.git
+|  |  \- VendorUrl: https://github.com/node-formidable/formidable
+|  +- has-flag@4.0.0
+|  |  +- URL: https://github.com/sindresorhus/has-flag.git
+|  |  +- VendorName: Sindre Sorhus
+|  |  \- VendorUrl: sindresorhus.com
+|  +- jquery@3.5.1
+|  |  +- URL: https://github.com/jquery/jquery.git
+|  |  +- VendorName: JS Foundation and other contributors
+|  |  \- VendorUrl: https://jquery.com/
+|  +- json2csv@5.0.1
+|  |  +- URL: https://github.com/zemirco/json2csv
+|  |  +- VendorName: Mirco Zeiss
+|  |  \- VendorUrl: http://zemirco.github.io/json2csv
+|  +- jsonparse@1.3.1
+|  |  +- URL: http://github.com/creationix/jsonparse.git
+|  |  \- VendorName: Tim Caswell
+|  +- lodash-es@4.17.15
+|  |  +- URL: https://github.com/lodash/lodash.git
+|  |  +- VendorName: John-David Dalton
+|  |  \- VendorUrl: https://lodash.com/custom-builds
+|  +- lodash.get@4.4.2
+|  |  +- URL: https://github.com/lodash/lodash.git
+|  |  +- VendorName: John-David Dalton
+|  |  \- VendorUrl: https://lodash.com/
+|  +- methods@1.1.2
+|  |  \- URL: https://github.com/jshttp/methods.git
+|  +- mime-db@1.44.0
+|  |  \- URL: https://github.com/jshttp/mime-db.git
+|  +- mime-types@2.1.27
+|  |  \- URL: https://github.com/jshttp/mime-types.git
+|  +- mime@2.4.6
+|  |  +- URL: https://github.com/broofa/mime
+|  |  +- VendorName: Robert Kieffer
+|  |  \- VendorUrl: http://github.com/broofa
+|  +- ms@2.1.2
+|  |  \- URL: https://github.com/zeit/ms.git
+|  +- n3@1.6.2
+|  |  +- URL: https://github.com/rdfjs/N3.js.git
+|  |  \- VendorName: Ruben Verborgh
+|  +- node-fetch@2.6.1
+|  |  +- URL: https://github.com/bitinn/node-fetch.git
+|  |  +- VendorName: David Frank
+|  |  \- VendorUrl: https://github.com/bitinn/node-fetch
+|  +- popper.js@1.16.1
+|  |  +- URL: git+https://github.com/FezVrasta/popper.js.git
+|  |  +- VendorName: Federico Zivolo
+|  |  \- VendorUrl: https://popper.js.org/
+|  +- portal-vue@2.1.7
+|  |  +- URL: https://github.com/LinusBorg/portal-vue
+|  |  +- VendorName: Thorsten Lünborg
+|  |  \- VendorUrl: htps://github.com/LinusBorg/
+|  +- query-string@6.13.1
+|  |  +- URL: https://github.com/sindresorhus/query-string.git
+|  |  +- VendorName: Sindre Sorhus
+|  |  \- VendorUrl: https://sindresorhus.com
+|  +- queue-microtask@1.1.4
+|  |  +- URL: git://github.com/feross/queue-microtask.git
+|  |  +- VendorName: Feross Aboukhadijeh
+|  |  \- VendorUrl: https://github.com/feross/queue-microtask
+|  +- readable-stream@3.6.0
+|  |  \- URL: git://github.com/nodejs/readable-stream
+|  +- safe-buffer@5.2.1
+|  |  +- URL: git://github.com/feross/safe-buffer.git
+|  |  +- VendorName: Feross Aboukhadijeh
+|  |  \- VendorUrl: https://github.com/feross/safe-buffer
+|  +- split-on-first@1.1.0
+|  |  +- URL: https://github.com/sindresorhus/split-on-first.git
+|  |  +- VendorName: Sindre Sorhus
+|  |  \- VendorUrl: sindresorhus.com
+|  +- store@2.0.12
+|  |  +- URL: git://github.com/marcuswestin/store.js.git
+|  |  +- VendorName: Marcus Westin
+|  |  \- VendorUrl: https://github.com/marcuswestin/store.js#readme
+|  +- strict-uri-encode@2.0.0
+|  |  +- URL: https://github.com/kevva/strict-uri-encode.git
+|  |  +- VendorName: Kevin Mårtensson
+|  |  \- VendorUrl: github.com/kevva
+|  +- string_decoder@1.3.0
+|  |  +- URL: git://github.com/nodejs/string_decoder.git
+|  |  \- VendorUrl: https://github.com/nodejs/string_decoder
+|  +- superagent@5.3.1
+|  |  +- URL: git://github.com/visionmedia/superagent.git
+|  |  +- VendorName: TJ Holowaychuk
+|  |  \- VendorUrl: https://github.com/visionmedia/superagent
+|  +- supports-color@7.1.0
+|  |  +- URL: https://github.com/chalk/supports-color.git
+|  |  +- VendorName: Sindre Sorhus
+|  |  \- VendorUrl: sindresorhus.com
+|  +- util-deprecate@1.0.2
+|  |  +- URL: git://github.com/TooTallNate/util-deprecate.git
+|  |  +- VendorName: Nathan Rajlich
+|  |  \- VendorUrl: https://github.com/TooTallNate/util-deprecate
+|  +- vue-functional-data-merge@3.1.0
+|  |  +- URL: git+https://github.com/alexsasharegan/vue-functional-data-merge.git
+|  |  +- VendorName: Alex Regan
+|  |  \- VendorUrl: https://github.com/alexsasharegan/vue-functional-data-merge#readme
+|  +- vue-router@3.5.1
+|  |  +- URL: https://github.com/vuejs/vue-router.git
+|  |  +- VendorName: Evan You
+|  |  \- VendorUrl: https://github.com/vuejs/vue-router#readme
+|  +- vue@2.6.12
+|  |  +- URL: git+https://github.com/vuejs/vue.git
+|  |  +- VendorName: Evan You
+|  |  \- VendorUrl: https://github.com/vuejs/vue#readme
+|  \- vuex@3.6.2
+|     +- URL: git+https://github.com/vuejs/vuex.git
+|     +- VendorName: Evan You
+|     \- VendorUrl: https://github.com/vuejs/vuex#readme
+\- MPL-2.0 OR Apache-2.0
+   \- dompurify@2.0.12
+      +- URL: git://github.com/cure53/DOMPurify.git
+      +- VendorName: Mario Heiderich
+      \- VendorUrl: https://github.com/cure53/DOMPurify
 

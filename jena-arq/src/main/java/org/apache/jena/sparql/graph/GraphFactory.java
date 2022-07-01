@@ -18,77 +18,74 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.atlas.data.ThresholdPolicy ;
-import org.apache.jena.graph.Factory ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.GraphPlain ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sys.JenaSystem ;
+import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.impl.GraphPlain;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sparql.SystemARQ;
+import org.apache.jena.sys.JenaSystem;
 
 /** Ways to make graphs and models */
-public class GraphFactory
-{
-    static { JenaSystem.init(); }
-    
-    /** Create a graph that is a Jena memory graph 
+public class GraphFactory {
+    static {
+        JenaSystem.init();
+    }
+
+    /**
+     * Create a graph that is a Jena memory graph
+     *
      * @see #createDefaultGraph
      */
-    public static Graph createGraphMem()
-    {
-        return Factory.createGraphMem() ;
+    public static Graph createGraphMem() {
+        return Factory.createGraphMem();
+    }
+
+    /**
+     * Create an in-memory, transactional graph.
+     * <p>
+     * This fully supports transactions, including abort to roll-back changes. It
+     * provides "autocommit" if operations are performed outside a transaction. The
+     * implementation adds a begin/commit around each add or delete so overheads can
+     * accumulate).
+     */
+    public static GraphTxn createTxnGraph() {
+        return new GraphTxn();
     }
 
     /** Create a graph - ARQ-wide default type */
-    public static Graph createDefaultGraph()
-    {
-        // Normal usage is SystemARQ.UsePlainGraph = false and use createJenaDefaultGraph
-        return SystemARQ.UsePlainGraph ? createPlainGraph() : createJenaDefaultGraph() ;
+    public static Graph createDefaultGraph() {
+        // Normal usage is SystemARQ.UsePlainGraph = false and use
+        // createJenaDefaultGraph
+        return SystemARQ.UsePlainGraph ? createPlainGraph() : createJenaDefaultGraph();
     }
 
     /** Create a graph - always the Jena default graph type */
-    public static Graph createJenaDefaultGraph()
-    {
-        return Factory.createDefaultGraph() ;
-    }
-    
-    /** Graph that uses same-term for find() and contains(). */
-    public static Graph createPlainGraph()
-    {
-        return GraphPlain.plain() ;
+    public static Graph createJenaDefaultGraph() {
+        return Factory.createDefaultGraph();
     }
 
-    public static Graph sinkGraph()
-    {
-        return new GraphSink() ;
+    /** Graph that uses same-term for find() and contains(). */
+    public static Graph createPlainGraph() {
+        return GraphPlain.plain();
     }
-    
-    /** A graph backed by a DistinctDataBag&lt;Triple&gt;. */
-    public static Graph createDataBagGraph(ThresholdPolicy<Triple> thresholdPolicy)
-    {
-        return new GraphDistinctDataBag(thresholdPolicy) ;
+
+    public static Graph sinkGraph() {
+        return new GraphSink();
     }
 
     /** Guaranteed call-through to Jena's ModelFactory operation */
-    public static Model makeJenaDefaultModel() { return ModelFactory.createDefaultModel() ; }
-    
-    /** Create a model over a default graph (ARQ-wide for default graph type) */ 
-    public static Model makeDefaultModel()
-    {
-        return ModelFactory.createModelForGraph(createDefaultGraph()) ;
+    public static Model makeJenaDefaultModel() {
+        return ModelFactory.createDefaultModel();
     }
 
-    /** Create a model over a plain graph (small-scale use only) */ 
-    public static Model makePlainModel()
-    {
-        return ModelFactory.createModelForGraph(createPlainGraph()) ;
+    /** Create a model over a default graph (ARQ-wide for default graph type) */
+    public static Model makeDefaultModel() {
+        return ModelFactory.createModelForGraph(createDefaultGraph());
     }
-    
-    /** Create a model over a DataBag graph (will spill to disk when it get large) */
-    public static Model makeDataBagModel(ThresholdPolicy<Triple> thresholdPolicy)
-    {
-        return ModelFactory.createModelForGraph(createDataBagGraph(thresholdPolicy)) ;
+
+    /** Create a model over a plain graph (small-scale use only) */
+    public static Model makePlainModel() {
+        return ModelFactory.createModelForGraph(createPlainGraph());
     }
 }

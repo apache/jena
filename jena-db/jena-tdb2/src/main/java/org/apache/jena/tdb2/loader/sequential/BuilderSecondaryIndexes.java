@@ -19,9 +19,9 @@
 package org.apache.jena.tdb2.loader.sequential;
 
 import org.apache.jena.tdb2.loader.base.LoaderOps;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
-import org.apache.jena.tdb2.loader.base.ProgressMonitor;
-import org.apache.jena.tdb2.loader.base.ProgressMonitorOutput;
+import org.apache.jena.system.progress.MonitorOutput;
+import org.apache.jena.system.progress.ProgressMonitor;
+import org.apache.jena.system.progress.ProgressMonitorOutput;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
 /**
@@ -35,17 +35,17 @@ public class BuilderSecondaryIndexes
         for ( TupleIndex index : secondaryIndexes ) {
             String msg = primaryIndex.getName()+"->"+index.getName();
             if ( index != null ) {
-                ProgressMonitor monitor = ProgressMonitorOutput.create(output, msg, 
+                ProgressMonitor monitor = ProgressMonitorOutput.create(output, msg,
                                                                        LoaderSequential.IndexTickPoint,
                                                                        LoaderSequential.IndexSuperTick);
                 monitor.startMessage(msg);
                 monitor.start();
 
-                LoaderOps.copyIndex(primaryIndex.all(), new TupleIndex[]{index}, monitor) ;
-                
+                LoaderOps.copyIndex(primaryIndex.all(), new TupleIndex[]{index}, monitor);
+
                 monitor.finish();
                 monitor.finishMessage(index.getName()+" indexing: ");
-            }  
-        }   
+            }
+        }
     }
 }

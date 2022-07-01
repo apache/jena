@@ -18,72 +18,45 @@
 
 package org.apache.jena.fuseki.jetty;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
 
-import java.io.* ;
+import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.web.HttpSC ;
-import org.eclipse.jetty.http.HttpMethod ;
-import org.eclipse.jetty.http.MimeTypes ;
-import org.eclipse.jetty.server.Request ;
-import org.eclipse.jetty.server.Response ;
-import org.eclipse.jetty.server.handler.ErrorHandler ;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.web.HttpSC;
+import org.eclipse.jetty.http.HttpMethod;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.server.handler.ErrorHandler;
 
-/** The usual Fuseki error handler.
- *  Outputs a plain text message.
+/**
+ * Fuseki error handler (used with ServletAPI HttpServletResponse.sendError).
+ * Typically ServletOps.responseSendError is used which directly send the error and a message. 
  */
-
 public class FusekiErrorHandler extends ErrorHandler
 {
+    // Only used if ServletOps.responseSendError calls Servlet API response.sendError
+    // or a non-Fuseki error occurs.
     public FusekiErrorHandler() {}
-    
+
     @Override
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
-    {
+    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String method = request.getMethod();
-     
-        if ( !method.equals(HttpMethod.GET.asString())
-             && !method.equals(HttpMethod.POST.asString())
-             && !method.equals(HttpMethod.HEAD.asString()) )
-            return ;
+
+        if ( !method.equals(HttpMethod.GET.asString()) 
+            && !method.equals(HttpMethod.POST.asString()) 
+            && !method.equals(HttpMethod.HEAD.asString()) )
+            return;
         
-        response.setContentType(MimeTypes.Type.TEXT_PLAIN_UTF_8.asString()) ;
-        ServletOps.setNoCache(response) ;
-        
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024) ;
-        try ( Writer writer = IO.asUTF8(bytes) ) {
-            String reason = (response instanceof Response) ? ((Response)response).getReason() : null;
-            handleErrorPage(request, writer, response.getStatus(), reason) ;
-            writer.flush();
-            response.setContentLength(bytes.size()) ;
-            response.getOutputStream().write(bytes.toByteArray()) ;
-        }
-    }
-    
-    @Override
-    protected void handleErrorPage(HttpServletRequest request, Writer writer, int code, String message)
-        throws IOException
-    {
+        ServletOps.setNoCache(response);
+        int code = response.getStatus();
+        String message = (response instanceof Response) ? ((Response)response).getReason() : HttpSC.getMessage(code);
         if ( message == null )
-            message = HttpSC.getMessage(code) ;
-        writer.write(format("Error %d: %s\n", code, message)) ;
-        
-        Throwable th = (Throwable)request.getAttribute("javax.servlet.error.exception");
-        while(th!=null)
-        {
-            writer.write("\n");
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            th.printStackTrace(pw);
-            pw.flush();
-            writer.write(sw.getBuffer().toString());
-            writer.write("\n");
-            th = th.getCause();
-        }
+            message = HttpSC.getMessage(code);
+        String msg = format("Error %d: %s\n", code, message);
+        ServletOps.writeMessagePlainTextError(response, msg);
     }
 }

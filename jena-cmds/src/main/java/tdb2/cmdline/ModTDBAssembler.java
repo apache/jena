@@ -20,11 +20,10 @@ package tdb2.cmdline;
 
 import java.io.File;
 
-import jena.cmd.CmdArgModule;
-import jena.cmd.CmdException;
-import jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.CmdArgModule;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.dboe.base.file.Location;
-import tdb2.cmdline.ModLocation;
 import arq.cmdline.ModAssembler;
 
 /**  Extends ModAssembler to include --tdb.

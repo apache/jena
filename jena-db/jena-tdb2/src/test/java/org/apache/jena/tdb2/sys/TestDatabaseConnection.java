@@ -18,52 +18,50 @@
 
 package org.apache.jena.tdb2.sys;
 
-import static org.junit.Assert.assertNotSame ;
-import static org.junit.Assert.assertSame ;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
-import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.ConfigTest;
-import org.apache.jena.tdb2.sys.DatabaseConnection;
-import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.Test ;
+import org.junit.Test;
 
 public class TestDatabaseConnection {
-    
+
     @Test
     public void testStoreConnectionTxn1() {
-        TDBInternal.reset() ;
+        TDBInternal.reset();
         // Only do disk things for test that need them (disk takes time!).
-        String DIRx = ConfigTest.getCleanDir() ;
+        String DIRx = ConfigTest.getCleanDir();
         Location DIR = Location.create(DIRx);
-        FileOps.clearDirectory(DIRx) ;
+        FileOps.clearDirectory(DIRx);
         try {
-            DatasetGraph dg1 = DatabaseConnection.connectCreate(DIR).getDatasetGraph() ;
-            DatasetGraph dg2 = DatabaseConnection.connectCreate(DIR).getDatasetGraph() ;
-            assertSame(dg1, dg2) ;
+            DatasetGraph dg1 = DatabaseConnection.connectCreate(DIR).getDatasetGraph();
+            DatasetGraph dg2 = DatabaseConnection.connectCreate(DIR).getDatasetGraph();
+            assertSame(dg1, dg2);
         }
         finally {
-            FileOps.clearDirectory(DIRx) ;
+            FileOps.clearDirectory(DIRx);
         }
     }
-    
+
     @Test
     public void testStoreConnectionTxn2() {
         // Named memory locations
-        TDBInternal.reset() ;
-        DatasetGraph dg1 = DatabaseConnection.connectCreate(Location.mem("FOO")).getDatasetGraph() ;
-        DatasetGraph dg2 = DatabaseConnection.connectCreate(Location.mem("FOO")).getDatasetGraph() ;
-        assertSame(dg1, dg2) ;
+        TDBInternal.reset();
+        DatasetGraph dg1 = DatabaseConnection.connectCreate(Location.mem("FOO")).getDatasetGraph();
+        DatasetGraph dg2 = DatabaseConnection.connectCreate(Location.mem("FOO")).getDatasetGraph();
+        assertSame(dg1, dg2);
     }
-    
+
     @Test
     public void testStoreConnectionTxn3() {
         // Un-named memory locations
-        TDBInternal.reset() ;
-        DatasetGraph dg1 = DatabaseConnection.connectCreate(Location.mem()).getDatasetGraph() ;
-        DatasetGraph dg2 = DatabaseConnection.connectCreate(Location.mem()).getDatasetGraph() ;
-        assertNotSame(dg1, dg2) ;
+        TDBInternal.reset();
+        DatasetGraph dg1 = DatabaseConnection.connectCreate(Location.mem()).getDatasetGraph();
+        DatasetGraph dg2 = DatabaseConnection.connectCreate(Location.mem()).getDatasetGraph();
+        assertNotSame(dg1, dg2);
     }
 
 

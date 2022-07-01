@@ -1,0 +1,2 @@
+PREFIX : <http://example/>
+SELECT ?Z {} ORDER BY COUNT(AVG(?x))

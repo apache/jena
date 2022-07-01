@@ -18,17 +18,20 @@
 
 package org.apache.jena.tdb.base.file;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.base.file.MetaFile ;
 import org.apache.jena.tdb.sys.Names ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public class TestMetaFile extends BaseTest
+public class TestMetaFile
 {
     String testfile = null ;
     String testfileMeta = null ;

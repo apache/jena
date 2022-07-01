@@ -35,6 +35,7 @@ public abstract class OpBase extends PrintSerializableBase implements Op
     @Override
     final public boolean equals(Object other)
     { 
+        if ( other == null ) return false;
         if ( this == other ) return true ;
 
         if ( ! ( other instanceof Op ) )
@@ -57,8 +58,8 @@ public abstract class OpBase extends PrintSerializableBase implements Op
             out.ensureStartOfLine() ;
     }
 
-    // Constants used in hashing to stop an element and it's subelement
-    // (if just one) having the same hash.  That isn't usualy any problem but
+    // Constants used in hashing to stop an element and it's sub-element
+    // (if just one) having the same hash.  That isn't usually any problem but
     // it's easy to avoid so we do.
     
     static final int HashBasicGraphPattern      = 0xB1 ;

@@ -18,24 +18,20 @@
 
 package org.apache.jena.query;
 
-import java.util.ArrayList;
-import java.util.Calendar ;
-import java.util.HashMap;
-import java.util.Iterator ;
-import java.util.List;
-import java.util.TimeZone ;
+import java.util.*;
+
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.ElementGroup ;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock ;
 import org.apache.jena.update.UpdateExecutionFactory ;
-import org.apache.jena.update.UpdateProcessor ;
+import org.apache.jena.update.UpdateExecution ;
 import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.vocabulary.OWL ;
 import org.apache.jena.vocabulary.RDF ;
@@ -45,7 +41,7 @@ import org.junit.Test ;
 
 /**
  * Tests for the {@link ParameterizedSparqlString}
- * 
+ *
  */
 public class TestParameterizedSparqlString {
 
@@ -264,7 +260,7 @@ public class TestParameterizedSparqlString {
         s.setCommandText("INSERT { ?o ?p ?s } WHERE { ?s ?p ?o }");
         s.setIri("s", "_:" + bnode.getId());
         UpdateRequest query = s.asUpdate();
-        UpdateProcessor proc = UpdateExecutionFactory.create(query, ds);
+        UpdateExecution proc = UpdateExecutionFactory.create(query, ds);
         proc.execute();
 
         // This should be true because this was present in the intial model set
@@ -1131,7 +1127,7 @@ public class TestParameterizedSparqlString {
         query.append("SELECT *");
         query.append('\n');
         query.append("WHERE { ?s ");
-        query.appendIri(IRIResolver.iriFactory().construct("http://example.org"));
+        query.appendIri(IRIx.create("http://example.org"));
         query.append(" ?o }");
 
         test(query, new String[] { "SELECT", "*", "\n", "WHERE", "?s", "<http://example.org>", "?o" }, new String[] {});
@@ -1593,7 +1589,7 @@ public class TestParameterizedSparqlString {
         pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
-    
+
     @Test
     public void test_param_string_non_injection_01() {
         // This test checks that a legitimate injection of a literal to a
@@ -1605,7 +1601,7 @@ public class TestParameterizedSparqlString {
 
         pss.toString();
     }
-    
+
     @Test
     public void test_param_string_non_injection_02() {
         String prefixes="PREFIX : <http://purl.bdrc.io/ontology/core/>\n" +
@@ -1613,7 +1609,7 @@ public class TestParameterizedSparqlString {
                 " PREFIX text: <http://jena.apache.org/text#>" ;
         HashMap<String,String> map=new HashMap<>();
         map.put("L_name", "\"rgyud bla ma\"");
-        map.put("LG_name", "bo-x-ewts");        
+        map.put("LG_name", "bo-x-ewts");
         String test1=prefixes+ "select ?comment (GROUP_CONCAT(DISTINCT ?comment_type;  SEPARATOR=\" <>" +
                 "\") AS ?comment_types)  ?root_name\n" +
                 "where {\n" +
@@ -1622,13 +1618,13 @@ public class TestParameterizedSparqlString {
                 "             :workGenre ?g .\n" +
                 "    ?g skos:prefLabel ?comment_type .\n" +
                 "}\n"+
-                "group by ?comment ?root_name";              
+                "group by ?comment ?root_name";
         ParameterizedSparqlString queryStr = new ParameterizedSparqlString(test1);
-        queryStr.setLiteral("L_name", map.get("L_name"),map.get("LG_name"));        
+        queryStr.setLiteral("L_name", map.get("L_name"),map.get("LG_name"));
         queryStr.asQuery();
     }
-    
-    
+
+
     @Test
     public void test_param_string_non_injection_03() {
         String prefixes="PREFIX : <http://purl.bdrc.io/ontology/core/>\n" +
@@ -1926,7 +1922,7 @@ public class TestParameterizedSparqlString {
 
         pss.toString();
     }
-    
+
     @Test
     public void test_set_values_item() {
         // Tests a single value being added - always adding parenthesis.

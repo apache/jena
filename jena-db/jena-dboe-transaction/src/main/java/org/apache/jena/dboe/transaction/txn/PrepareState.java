@@ -18,24 +18,24 @@
 
 package org.apache.jena.dboe.transaction.txn;
 
-import java.nio.ByteBuffer ;
+import java.nio.ByteBuffer;
 
 final
 public class PrepareState {
-    private final ComponentId component ;
-    private final ByteBuffer data ;
-    
-    public /*For testing*/ PrepareState(ComponentId compoent, ByteBuffer data) {
-        this.component = compoent ;
-        this.data = data ;
+    private final ComponentId component;
+    private final ByteBuffer data;
+
+    PrepareState(ComponentId component, ByteBuffer data) {
+        this.component = component;
+        this.data = data;
     }
 
     public ComponentId getComponent() {
-        return component ;
+        return component;
     }
 
     public ByteBuffer getData() {
-        return data ;
+        return data;
     }
 }
 

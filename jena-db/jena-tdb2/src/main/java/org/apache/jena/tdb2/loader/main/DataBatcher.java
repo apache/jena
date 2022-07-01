@@ -1,5 +1,5 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
+s * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -20,7 +20,6 @@ package org.apache.jena.tdb2.loader.main;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.apache.jena.graph.Triple;
@@ -28,37 +27,36 @@ import org.apache.jena.riot.lang.StreamRDFCounting;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.loader.base.BulkStartFinish;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
+import org.apache.jena.system.progress.MonitorOutput;
 
 /**
  * A {@link StreamRDF} that groups triples and quads and dispatches them in batches. This
  * class is a {@link StreamRDF} and runs on the calling thread; it does not create any
  * threads.
- */   
+ */
 public class DataBatcher implements StreamRDFCounting, BulkStartFinish {
-    
+
     private List<Triple> triples = null;
     private List<Quad> quads = null;
     private long countTriples;
     private long countQuads;
     private final MonitorOutput output;
-    private  BiConsumer<String, String> prefixHandler;
+    private final PrefixHandler prefixHandler;
     private Consumer<DataBlock> batchDestination;
-    
+
     public DataBatcher(Consumer<DataBlock> batchDestination,
-                       BiConsumer<String, String> prefixHandler,
+                       PrefixHandler prefixHandler,
                        MonitorOutput output) {
         this(batchDestination, prefixHandler, LoaderParallel.DataTickPoint, LoaderParallel.DataSuperTick, output);
     }
-    
-    public DataBatcher(Consumer<DataBlock> batchDestination,
-                       BiConsumer<String, String> prefixHandler, 
+
+    public DataBatcher(Consumer<DataBlock> batchDestination, PrefixHandler prefixHandler,
                        int tickPoint, int superTick, MonitorOutput output) {
         this.batchDestination = batchDestination;
         this.output = output;
         this.prefixHandler = prefixHandler;
     }
-    
+
     @Override
     public void startBulk() {}
 
@@ -73,11 +71,11 @@ public class DataBatcher implements StreamRDFCounting, BulkStartFinish {
         }
         dispatch(DataBlock.END);
     }
-    
+
     private <X> boolean isEmpty(List<X> list) {
-        return list == null || list.isEmpty() ;
+        return list == null || list.isEmpty();
     }
-    
+
     @Override public void start() {}
 
     @Override public void finish() {}
@@ -87,7 +85,7 @@ public class DataBatcher implements StreamRDFCounting, BulkStartFinish {
     @Override public long countTriples()    { return countTriples; }
 
     @Override public long countQuads()      { return countQuads; }
-    
+
     @Override
     public void triple(Triple triple) {
         if ( triples == null )
@@ -118,9 +116,9 @@ public class DataBatcher implements StreamRDFCounting, BulkStartFinish {
         if ( quads != null )
             x += quads.size();
         if ( x <= LoaderConst.ChunkSize )
-            return ;
-        
-        DataBlock block = new DataBlock(triples, quads) ;
+            return;
+
+        DataBlock block = new DataBlock(triples, quads);
         // Dispatch.
         dispatch(block);
         triples = null;
@@ -131,14 +129,14 @@ public class DataBatcher implements StreamRDFCounting, BulkStartFinish {
         batchDestination.accept(datablock);
     }
 
-    
+
 //    private void maybeDispatch3() {
 //        if ( triples.size() >= LoaderConst.ChunkSize ) {
 //            dispatchTriples(triples);
 //            triples = null;
 //        }
 //    }
-//    
+//
 //    private void maybeDispatch4() {
 //        if ( quads.size() >= LoaderConst.ChunkSize ) {
 //            dispatchQuads(quads);
@@ -164,11 +162,11 @@ public class DataBatcher implements StreamRDFCounting, BulkStartFinish {
     }
 
     private List<Triple>  allocChunkTriples() {
-        return new ArrayList<>(LoaderConst.ChunkSize); 
-    } 
+        return new ArrayList<>(LoaderConst.ChunkSize);
+    }
 
     private List<Quad>  allocChunkQuads() {
-        return new ArrayList<>(LoaderConst.ChunkSize); 
+        return new ArrayList<>(LoaderConst.ChunkSize);
     }
 
 }

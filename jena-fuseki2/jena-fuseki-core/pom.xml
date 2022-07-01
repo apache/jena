@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -37,15 +37,32 @@
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>apache-jena-libs</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
-      <type>pom</type>
+      <artifactId>jena-shacl</artifactId>
+      <version>4.6.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-text</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <artifactId>jena-shex</artifactId>
+      <version>4.6.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>4.6.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb2</artifactId>
+      <version>4.6.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-rdfconnection</artifactId>
+      <version>4.6.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -56,31 +73,21 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
-      <version>${ver.jetty}</version>
     </dependency>
 
-    <!-- Jetty's useful servlets, inc compression -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>
-      <version>${ver.jetty}</version>
     </dependency>
 
-    <!-- Logging :  Needed because the Fuseki command line manages logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
       <optional>true</optional>
     </dependency>
 
@@ -88,6 +95,17 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <!-- micrometer -->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
     </dependency>
 
   </dependencies>
@@ -127,16 +145,13 @@
               <goal>jar-no-fork</goal>
             </goals>
           </execution>
+          <execution>
+            <id>attach-sources-test</id>
+            <goals>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
         </executions>
-      </plugin>
-
-      <!-- Testing is done in jena-fuseki-webapp and jena-fuseki-main -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
       </plugin>
 
       <plugin>
@@ -148,7 +163,14 @@
               <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
             </manifestEntries>
           </archive>
-        </configuration>
+        </configuration> 
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       
       <plugin>
@@ -171,5 +193,4 @@
     </plugins>
 
   </build>
-
 </project>

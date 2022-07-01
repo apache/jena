@@ -1,0 +1,5 @@
+PREFIX ex: <http://a.example/>
+
+ex:S1 {
+   ex:p1 .
+}

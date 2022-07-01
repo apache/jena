@@ -87,7 +87,6 @@ public class MappedLoader {
                 return e;
             }
         }
-
         return null;
     }
 

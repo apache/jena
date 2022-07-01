@@ -72,7 +72,7 @@ public class StringUtils
     /** Abbreviate, crudely, URI in strings, leaving only their last component. */ 
     public static <T> String printAbbrevList(List<T> objs)
     {
-        String x = Iter.asString(objs, "\n") ;
+        String x = Iter.asString(objs.iterator(), "\n") ;
         return printAbbrev(x) ;
     }
 }

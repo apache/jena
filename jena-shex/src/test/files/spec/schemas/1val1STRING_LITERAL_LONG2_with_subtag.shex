@@ -1,0 +1,5 @@
+# Test long literal with lang tag
+# source: langtagged_LONG_with_subtag.ttl
+<http://a.example/S1> {
+   <http://a.example/p1> ["""STRING_LITERAL_LONG2"""@en-UK]
+}

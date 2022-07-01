@@ -279,7 +279,7 @@ public class WebOntTestHarness {
 //        harness.runTest("http://www.w3.org/2002/03owlt/Thing/Manifest003#test");
 //        harness.runTest("http://www.w3.org/2002/03owlt/Thing/Manifest004#test");
 //        harness.runTest("http://www.w3.org/2002/03owlt/Thing/Manifest005#test");
-        RDFWriter writer = harness.testResults.getWriter("RDF/XML-ABBREV");
+        RDFWriterI writer = harness.testResults.getWriter("RDF/XML-ABBREV");
         OutputStream stream = new FileOutputStream(resultFile);
         writer.setProperty("showXmlDeclaration", "true");
         harness.testResults.setNsPrefix("", "http://www.w3.org/1999/xhtml");

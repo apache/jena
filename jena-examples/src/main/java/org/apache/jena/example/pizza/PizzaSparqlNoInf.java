@@ -22,15 +22,12 @@ package org.apache.jena.example.pizza;
 // Imports
 ///////////////
 import org.apache.jena.example.Base;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.util.FileManager;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDFS;
 
@@ -53,9 +50,6 @@ public class PizzaSparqlNoInf extends Base
     /* Static variables                */
     /***********************************/
 
-    @SuppressWarnings( value = "unused" )
-    private static final Logger log = LoggerFactory.getLogger( PizzaSparqlNoInf.class );
-
     /***********************************/
     /* Instance variables              */
     /***********************************/
@@ -75,6 +69,7 @@ public class PizzaSparqlNoInf extends Base
         new PizzaSparqlNoInf().setArgs( args ).run();
     }
 
+    @Override
     public void run() {
         OntModel m = getModel();
         loadData( m );
@@ -97,18 +92,14 @@ public class PizzaSparqlNoInf extends Base
     }
 
     protected void loadData( Model m ) {
-        FileManager.get().readModel( m, SOURCE + "pizza.owl.rdf" );
+        RDFDataMgr.read(m, SOURCE + "pizza.owl.rdf" );
     }
 
     protected void showQuery( Model m, String q ) {
         Query query = QueryFactory.create( q );
-        QueryExecution qexec = QueryExecutionFactory.create( query, m );
-        try {
+        try ( QueryExecution qexec = QueryExecutionFactory.create( query, m ) ) {
             ResultSet results = qexec.execSelect();
             ResultSetFormatter.out( results, m );
-        }
-        finally {
-            qexec.close();
         }
 
     }

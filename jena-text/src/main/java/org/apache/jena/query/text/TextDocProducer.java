@@ -18,7 +18,7 @@
 
 package org.apache.jena.query.text;
 
-import org.apache.jena.sparql.core.DatasetChanges ;
+import org.apache.jena.query.text.changes.TextDatasetChanges;
 
 /**
  * Responsible for monitoring changes on a dataset and updating the TextIndex appropriately.
@@ -26,7 +26,7 @@ import org.apache.jena.sparql.core.DatasetChanges ;
  * <strong>Note:</strong> If implementation is to be instantiated dynamically via an Assembler, it must
  * contain a constructor that accepts a single parameter of type {@link org.apache.jena.query.text.TextIndex}
  */
-public interface TextDocProducer extends DatasetChanges
+public interface TextDocProducer extends TextDatasetChanges
 {
 
 }

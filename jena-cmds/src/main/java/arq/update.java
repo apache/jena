@@ -21,31 +21,32 @@ package arq;
 import java.util.List;
 
 import arq.cmdline.CmdUpdate;
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
 import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.system.Txn;
-import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
-public class update extends CmdUpdate
-{
+public class update extends CmdUpdate {
     static final ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "update", "file");
-    static final ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "dump");       // Write the result to stdout.
-    
+    static final ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "dump");       // Write
+
     List<String> requestFiles = null;
     boolean dump = false;
-    
-    public static void main (String... argv)
-    { new update(argv).mainRun(); }
-    
+
+    public static void main(String...argv) {
+        new update(argv).mainRun();
+    }
+
     protected update(String[] argv) {
         super(argv);
         super.add(updateArg, "--update=FILE", "Update commands to execute");
@@ -60,10 +61,14 @@ public class update extends CmdUpdate
     }
 
     @Override
-    protected String getCommandName() { return Lib.className(this); }
-    
+    protected String getCommandName() {
+        return Lib.className(this);
+    }
+
     @Override
-    protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>"; }
+    protected String getSummary() {
+        return getCommandName() + " --desc=assembler [--dump] --update=<request file>";
+    }
 
     // Subclass for specialised commands making common updates more convenient
     @Override
@@ -72,35 +77,39 @@ public class update extends CmdUpdate
             throw new CmdException("Nothing to do");
 
         Transactional transactional = graphStore;
-        
+
         for ( String filename : requestFiles )
-            Txn.executeWrite(transactional, ()->execOneFile(filename, graphStore));
+            Txn.executeWrite(transactional, () -> execOneFile(filename, graphStore));
 
         for ( String requestString : super.getPositional() ) {
             String requestString2 = indirect(requestString);
-            Txn.executeWrite(transactional, ()->execOne(requestString2, graphStore));
+            Txn.executeWrite(transactional, () -> execOne(requestString2, graphStore));
         }
-        
-        if ( ! ( transactional instanceof DatasetGraph ) )
+
+        if ( !(transactional instanceof DatasetGraph) )
             // Unlikely/impossible in Jena 3.7.0 onwards.
             SystemARQ.sync(graphStore);
 
         if ( dump )
-            RDFDataMgr.write(System.out, graphStore, Lang.NQUADS);
+            Txn.executeRead(transactional, () -> RDFDataMgr.write(System.out, graphStore, Lang.TRIG));
     }
 
     protected void execOneFile(String filename, DatasetGraph store) {
         UpdateRequest req = UpdateFactory.read(filename, updateSyntax);
-        UpdateExecutionFactory.create(req, store).execute();
+        PrefixMap pmap = store.prefixes();
+        pmap.putAll(req.getPrefixMapping());
+        UpdateExec.newBuilder().update(req).dataset(store).execute();;
     }
 
     protected void execOne(String requestString, DatasetGraph store) {
         UpdateRequest req = UpdateFactory.create(requestString, updateSyntax);
-        UpdateExecutionFactory.create(req, store).execute();
+        PrefixMap pmap = store.prefixes();
+        pmap.putAll(req.getPrefixMapping());
+        UpdateExec.newBuilder().update(req).dataset(store).execute();
     }
 
     @Override
     protected DatasetGraph dealWithNoDataset() {
-        return DatasetGraphFactory.create();
+        return DatasetGraphFactory.createGeneral();
     }
 }

@@ -19,15 +19,18 @@
 package org.apache.jena.sparql.engine.binding;
 
 /** Special purpose binding for the root of all bindings. */
-public class BindingRoot extends Binding0
-{
-    public static Binding create() { return new BindingRoot() ; } 
-    private BindingRoot() { super(null) ; }
+
+public class BindingRoot extends Binding0 {
+    public static Binding create() {
+        return new BindingRoot();
+    }
+
+    private BindingRoot() {
+        super(null);
+    }
 
     @Override
-    public void format1(StringBuffer sBuff)
-    {
-        sBuff.append("[Root]") ;
+    public void format1(StringBuffer sBuff) {
+        sBuff.append("[Root]");
     }
-    
 }

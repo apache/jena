@@ -19,13 +19,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <name>Apache Jena - Fuseki Server</name>
+  <name>Apache Jena - Fuseki Server Main</name>
   <artifactId>jena-fuseki-main</artifactId>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
   </parent> 
 
   <packaging>jar</packaging>
@@ -33,110 +33,74 @@
   <properties>
     <automatic.module.name>org.apache.jena.fuseki.main</automatic.module.name>
   </properties>
-  
+
   <dependencies> 
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <!-- <artifactId>jena-fuseki-core</artifactId>-->
-      <!-- Depends on jena-fuseki-core -->
+      <artifactId>jena-fuseki-core</artifactId>
+      <version>4.6.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-core</artifactId>
+      <version>4.6.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-access</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
-      <exclusions>
-        
-        <!-- Parts of Jena not needed but picked up via jena-fuseki-core.
-             The application can put back any of these if it wants to use
-             them, e.g. a text-indexed dataset, providing the version is compatible.
-	      -->
+      <version>4.6.0-SNAPSHOT</version>
+    </dependency>
 
-        <exclusion>
-          <groupId>org.apache.jena</groupId>
-          <artifactId>jena-text</artifactId>
-        </exclusion>
-
-        <!-- Jena uses SLF4J as its API. Exclude any logging bindings picked up via Jena.
-          For example, jena-fuseki-core has logging output and so some logging provider.
-          For embedded use, it is the enclosing application that chooses the kind of
-          logging system.    
-        --> 
-        <!--
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-jdk14</artifactId>
-        </exclusion>
-        -->
-      </exclusions>
-      
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-cmds</artifactId>
+      <version>4.6.0-SNAPSHOT</version>
     </dependency>
 
     <!-- For parsing Jetty configuration files -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-xml</artifactId>
-      <version>${ver.jetty}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-cmds</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
       <optional>true</optional>
+      <scope>compile</scope>
     </dependency>
+
+    <!-- Include Shiro - for the example in src/test/java/ -->
+
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId> 
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+      <scope>test</scope>
       <optional>true</optional>
     </dependency>
-    
+
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+      <scope>test</scope>
+      <optional>true</optional>
+    </dependency>
+
   </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <!--<version>0.12</version>-->
-        <executions>
-          <execution>
-            <id>rat-checks</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludes>
-            <exclude>**/.project</exclude>
-            <exclude>**/.settings/**</exclude>
-            <exclude>**/.classpath</exclude>
-            <exclude>**/README.*</exclude>
-            <exclude>**/META-INF/services/*</exclude>
-            <exclude>**/dependency-reduced-pom.xml</exclude>
-
-            <exclude>fuseki.classpath</exclude>
-            <exclude>testing/**/*.ttl</exclude>
-            <exclude>testing/**/*.txt</exclude>
-            <exclude>sparqler/data/empty.nt</exclude>
-            <exclude>sparqler/pages/robots.txt</exclude>
-            <exclude>sparqler/pages/crossdomain.xml</exclude>
-
-          </excludes>
-        </configuration>
-      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -195,5 +159,4 @@
     </plugins>
 
   </build>
-
 </project>

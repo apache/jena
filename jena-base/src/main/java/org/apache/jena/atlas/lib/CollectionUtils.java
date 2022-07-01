@@ -19,18 +19,35 @@
 package org.apache.jena.atlas.lib;
 
 import java.util.Collection ;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.iterator.Iter;
 
 public class CollectionUtils
-{   
-    /** Test for same elements, regardless of cardinality */ 
+{
+    /** Test for same elements, regardless of cardinality */
     public static <T> boolean sameElts(Collection<T> left, Collection<T> right) {
         return right.containsAll(left) && left.containsAll(right) ;
     }
 
-    /** Return an element from a collection. */ 
+    /** Return an element from a collection. */
     public static <T> T oneElt(Collection<T> collection) {
+        if ( collection == null || collection.isEmpty() )
+            return null;
+        if ( collection instanceof List<?> )
+            return ((List<T>)collection).get(0);
         return Iter.first(collection.iterator());
+    }
+
+    /**
+     * Run an action on every member of a MultiMap
+     * (when not using Google Guava multimaps).
+     */
+    public static <X,V> void forEach(Map<X, ? extends Collection<V>> map, BiConsumer<X,V> action) {
+        map.forEach((k,c)->{
+            c.forEach(v->action.accept(k, v));
+        });
     }
 }

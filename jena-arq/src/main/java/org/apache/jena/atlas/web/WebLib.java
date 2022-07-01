@@ -24,7 +24,7 @@ import java.net.ServerSocket;
 public class WebLib
 {
     /** Split a string, removing whitespace around the split string.
-     * e.g. Use in splitting HTTP accept/content-type headers.  
+     * e.g. Use in splitting HTTP accept/content-type headers.
      */
     public static String[] split(String s, String splitStr)
     {
@@ -36,7 +36,11 @@ public class WebLib
         return x ;
     }
 
-    /** Choose an unused port for a server to listen on */
+    /**
+     * Choose an unused port for a server to listen on.
+     * Note: Fuseki main will start of "port 0", and then return the port actually allocated.
+     * This is atomic whereas "choosePort" does not reserve the port.
+     */
     public static int choosePort() {
         try (ServerSocket s = new ServerSocket(0)) {
             return s.getLocalPort();

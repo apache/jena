@@ -18,28 +18,32 @@
 
 package org.apache.jena.tdb.store ;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ARQ ;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBLoader ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.DatasetBuilderStd;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestLoader extends BaseTest {
+public class TestLoader {
     private static String DIR = null ;
     private static final Node   g   = NodeFactory.createURI("g") ;
     private static final Node   s   = NodeFactory.createURI("s") ;
@@ -57,6 +61,7 @@ public class TestLoader extends BaseTest {
     static public void afterClass() {
         LogCtl.enable(ARQ.logExecName) ;
         LogCtl.enable(TDB.logLoaderName) ;
+        TDBInternal.reset();
     }
 
     static DatasetGraphTDB fresh() {
@@ -75,7 +80,7 @@ public class TestLoader extends BaseTest {
     public void load_dataset_02() {
         DatasetGraphTDB dsg = fresh() ;
         InputStream in = IO.openFile(DIR + "data-1.nq") ;
-        TDBLoader.load(dsg, in, false) ;
+        TDBLoader.load(dsg, in, Lang.NQUADS, false, false) ;
         assertTrue(dsg.getDefaultGraph().isEmpty()) ;
         assertEquals(1, dsg.getGraph(g).size()) ;
     }
@@ -87,7 +92,6 @@ public class TestLoader extends BaseTest {
         String uri = dsg.getDefaultGraph().getPrefixMapping().getNsPrefixURI("") ;
         assertEquals("http://example/", uri) ;
     }
-    
 
     @Test
     public void load_graph_01() {
@@ -151,7 +155,7 @@ public class TestLoader extends BaseTest {
         String uri = dsg.getDefaultGraph().getPrefixMapping().getNsPrefixURI("") ;
         assertEquals("http://example/", uri) ;
     }
-    
+
     @Test
     public void load_graph_06() {
         DatasetGraphTDB dsg = fresh() ;
@@ -160,6 +164,7 @@ public class TestLoader extends BaseTest {
         String uri1 = dsg.getGraph(g).getPrefixMapping().getNsPrefixURI("") ;
         assertEquals("http://example/", uri1) ;
         String uri2 = dsg.getDefaultGraph().getPrefixMapping().getNsPrefixURI("") ;
-        assertNull(uri2) ;
+        // Shared prefixes.
+        assertEquals("http://example/", uri2) ;
     }
 }

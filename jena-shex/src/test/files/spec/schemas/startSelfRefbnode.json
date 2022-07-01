@@ -1,0 +1,18 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "start": "_:S1",
+  "shapes": [
+    {
+      "id": "_:S1",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p1",
+        "min": 0,
+        "max": -1,
+        "valueExpr": "_:S1"
+      }
+    }
+  ]
+}

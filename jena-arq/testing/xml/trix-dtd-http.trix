@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE foo SYSTEM "http://localhost:70000/no-such">
+<trix xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+</trix>

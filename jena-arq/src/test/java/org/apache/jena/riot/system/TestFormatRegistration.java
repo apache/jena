@@ -19,11 +19,14 @@
 
 package org.apache.jena.riot.system;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.riot.* ;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.RDFWriterRegistry;
 import org.junit.Test ;
 // Test system integration / registration
 import org.junit.runner.RunWith ;
@@ -32,7 +35,7 @@ import org.junit.runners.Parameterized.Parameters ;
 
 
 @RunWith(Parameterized.class)
-public class TestFormatRegistration extends BaseTest
+public class TestFormatRegistration
 {
     @Parameters(name = "{0} -- {1} {2} {3}")
     public static Iterable<Object[]> data() {
@@ -53,11 +56,15 @@ public class TestFormatRegistration extends BaseTest
         add("NQ",       x, RDFFormat.NQ,         true, true) ;
         add("TRIG",     x, RDFFormat.TRIG,       true, true) ;
         add("TRIX",     x, RDFFormat.TRIX,       true, true) ;
+
+        add("PB RDF",   x, RDFFormat.RDF_PROTO, true, true) ;
+        add("PB RDF",   x, RDFFormat.RDF_PROTO_VALUES, true, true) ;
+
         add("TRDF",     x, RDFFormat.RDF_THRIFT, true, true) ;
         add("TRDF",     x, RDFFormat.RDF_THRIFT_VALUES, true, true) ;
         return x ;
     }
-    
+
     private static void add(String name, List<Object[]> x, RDFFormat format, boolean istriples, boolean isquads) {
         x.add(new Object[] {name, format, istriples , isquads }) ;
     }
@@ -83,10 +90,10 @@ public class TestFormatRegistration extends BaseTest
         if ( istriples ) assertNotNull(RDFWriterRegistry.getWriterGraphFactory(format)) ;
         if ( isquads )   assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(format)) ;
     }
-    
+
   @Test public void xjenaSystem_write_3() {
       RDFWriterRegistry.contains(format);
-      if ( istriples ) 
+      if ( istriples )
           assertTrue(RDFWriterRegistry.registeredGraphFormats().contains(format));
       if ( isquads )
           assertTrue(RDFWriterRegistry.registeredDatasetFormats().contains(format));

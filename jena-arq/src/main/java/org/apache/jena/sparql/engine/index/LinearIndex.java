@@ -28,14 +28,14 @@ import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingHashMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 
 /**
  * A slow "index" that looks for data by searching linearly through a set.
  * Only used when the indexed data contains fewer bound variables than expected.
  * Note that this class is only used for a MINUS operation that is removing data
  * with potentially unbound values, and is therefore rarely used.
- * 
+ *
  * TODO: If this index starts to be used more often then consider various options for
  *       indexing on the known bound variables.
  *       One possibility is for each variable (found in commonVars) to take
@@ -99,16 +99,16 @@ public class LinearIndex implements IndexTable {
 	static Binding toBinding(HashIndexTable.Key key, Map<Var,Integer> mappings)
 	{
 		Node[] values = key.getNodes() ;
-		BindingHashMap b = new BindingHashMap() ;
+		BindingBuilder b = Binding.builder();
 		for (Map.Entry<Var,Integer> mapping: mappings.entrySet())
 		{
 			Node value = values[mapping.getValue()] ;
 			if ( value != null )
 				b.add(mapping.getKey(), value) ;
 		}
-		return b ;
+		return b.build() ;
 	}
-	
+
 	@Override
 	public String toString() {
 	    return "LinearIndex: "+commonVars+" "+table;

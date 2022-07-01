@@ -16,8 +16,26 @@
 # limitations under the License.
 
 # Run fuseki as a standalone server
+# Determine where this script resides. Start by assuming it was the path invoked.
+THIS_SCRIPT="$0"
 
-export FUSEKI_HOME="${FUSEKI_HOME:-$PWD}"
+# Handle resolving symlinks to this script on BSD or GNU systems by avoiding readlink.
+while [ -h "$THIS_SCRIPT" ] ; do
+  ls=`ls -ld "$THIS_SCRIPT"`
+  # Drop everything prior to ->
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    THIS_SCRIPT="$link"
+  else
+    THIS_SCRIPT=`dirname "$THIS_SCRIPT"`/"$link"
+  fi
+done
+
+# Get path to the scripts directory.
+SCRIPT_DIR=$(dirname "${THIS_SCRIPT}")
+
+# Unless FUSEKI_HOME is set, assume it is the dir the script is in.
+export FUSEKI_HOME="${FUSEKI_HOME:-$SCRIPT_DIR}"
 
 if [ ! -e "$FUSEKI_HOME" ]
 then
@@ -73,23 +91,46 @@ if [ -z "$JAVA" ]
 then
     (
 	echo "Cannot find a Java JDK."
-	echo "Please set either set JAVA or JAVA_HOME and put java (>=1.8) in your PATH."
+	echo "Please set either set JAVA or JAVA_HOME and put java in your PATH."
     ) 1>&2
   exit 1
 fi
 
-JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+CP=$JAR
+if [ -d "$FUSEKI_BASE/extra" ]
+then
+   CP="${CP}:${FUSEKI_BASE}/extra/*" 
+fi
 
-exec $JAVA $JVM_ARGS -jar "$JAR" "$@"
+JVM_ARGS=${JVM_ARGS:--Xmx4G}
+
+## Logging
+# Setting log4j2 with some other file.
+DFT_LOG_CONF="$FUSEKI_HOME/log4j2.properties"
+if [ -z "$LOGGING" -a -e "$DFT_LOG_CONF" ]
+then
+    # Set if no LOGGING and the default file does exist.
+    # Otherwise, the server will default to a built-in.
+    LOGGING="-Dlog4j.configurationFile=$DFT_LOG_CONF"
+fi
+
+if [ -n "$LOGGING" ]
+then
+    exec "$JAVA" $JVM_ARGS "$LOGGING" -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+else
+    exec "$JAVA" $JVM_ARGS -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+fi
+
+exec "$JAVA" $JVM_ARGS $LOGGING -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
 
 ## Adding custom code to the Fuseki server:
 ##
-## It is also possible to launch Fuseki using 
-##   java $JVM_ARGS -cp "$JAR" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+## The recommended way to add custom jars to the Fuseki server is to create an
+## "extra" directory under FUSEKI_BASE and place any jars in there. 
 ##
-## "exec" is optional - it simply frees up an OS process.
-## In this way, you can add custom java to the classpath:
+## It is also possible to add more jars to the CP environment variable before 
+## the exec call:
+##
+##   CP="${CP}:MyCode.jar
 ## 
-##   APPJAR=MyCode.jar
-##   java $JVM_ARGS -cp "$JAR:$APPJAR" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
-
+## "exec" is optional - it simply frees up an OS process.

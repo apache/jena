@@ -27,7 +27,7 @@ import org.apache.jena.sparql.core.Var;
 
 /**
  * Tracker for variable usage
- * 
+ *
  */
 public class VariableUsageTracker {
 

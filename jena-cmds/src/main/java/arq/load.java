@@ -18,103 +18,99 @@
 
 package arq;
 
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.Iterator;
+import java.util.List;
 
-import arq.cmdline.CmdUpdate ;
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.modify.request.UpdateLoad ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.util.graph.GraphLoadMonitor ;
-import org.apache.jena.update.UpdateExecutionFactory ;
-import org.apache.jena.update.UpdateRequest ;
+import arq.cmdline.CmdUpdate;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.exec.UpdateExec;
+import org.apache.jena.sparql.modify.request.UpdateLoad;
+import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.util.graph.GraphLoadMonitor;
+import org.apache.jena.update.UpdateRequest;
 
-public class load extends CmdUpdate
-{
-    static private final ArgDecl graphNameArg = new ArgDecl(ArgDecl.HasValue, "--graph") ;
-    static private final ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "--dump") ;
-    
-    String graphName = null ;
-    List<String> loadFiles = null ;
-    boolean dump = false ;
-    
-    public static void main (String... argv)
-    { new load(argv).mainRun() ; }
-    
-    protected load(String[] argv)
-    {
-        super(argv) ;
-        super.add(graphNameArg, "--graph=IRI", "Graph IRI (loads default graph if absent)") ;
-        super.add(dumpArg, "--dump", "Dump the resulting graph store") ;
+public class load extends CmdUpdate {
+    static private final ArgDecl graphNameArg = new ArgDecl(ArgDecl.HasValue, "--graph");
+    static private final ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "--dump");
+
+    String graphName = null;
+    List<String> loadFiles = null;
+    boolean dump = false;
+
+    public static void main(String...argv) {
+        new load(argv).mainRun();
+    }
+
+    protected load(String[] argv) {
+        super(argv);
+        super.add(graphNameArg, "--graph=IRI", "Graph IRI (loads default graph if absent)");
+        super.add(dumpArg, "--dump", "Dump the resulting graph store");
     }
 
     @Override
-    protected void processModulesAndArgs()
-    {
+    protected void processModulesAndArgs() {
         if ( containsMultiple(graphNameArg) )
-            throw new CmdException("At most one --graph allowed") ;
-        
-        graphName = getValue(graphNameArg) ;
-        loadFiles = super.getPositional() ;
-        dump = contains(dumpArg) ;
-        super.processModulesAndArgs() ;
+            throw new CmdException("At most one --graph allowed");
+
+        graphName = getValue(graphNameArg);
+        loadFiles = super.getPositional();
+        dump = contains(dumpArg);
+        super.processModulesAndArgs();
     }
-    
-    @Override
-    protected String getCommandName() { return Lib.className(this) ; }
-    
-    @Override
-    protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>" ; }
 
     @Override
-    protected void execUpdate(DatasetGraph graphStore)
-    {
+    protected String getCommandName() {
+        return Lib.className(this);
+    }
+
+    @Override
+    protected String getSummary() {
+        return getCommandName() + " --desc=assembler [--dump] --update=<request file>";
+    }
+
+    @Override
+    protected void execUpdate(DatasetGraph dataset) {
         if ( loadFiles.size() == 0 )
-            throw new CmdException("Nothing to do") ;
-        
-        UpdateRequest req = new UpdateRequest() ;
-        for ( String filename : loadFiles )
-        {
-            UpdateLoad loadReq = new UpdateLoad( filename, graphName );
-            req.add( loadReq );
+            throw new CmdException("Nothing to do");
+
+        UpdateRequest req = new UpdateRequest();
+        for ( String filename : loadFiles ) {
+            UpdateLoad loadReq = new UpdateLoad(filename, graphName);
+            req.add(loadReq);
         }
-        
-        if ( true )
-        {
+
+        if ( true ) {
             // Need a better way
-            monitor(graphStore.getDefaultGraph()) ;
-            for ( Iterator<Node> iter = graphStore.listGraphNodes() ; iter.hasNext() ; )
-            {
-                Graph g = graphStore.getGraph(iter.next()) ;
-                monitor(g) ;
+            monitor(dataset.getDefaultGraph());
+            for ( Iterator<Node> iter = dataset.listGraphNodes() ; iter.hasNext() ; ) {
+                Graph g = dataset.getGraph(iter.next());
+                monitor(g);
             }
         }
-        
-        UpdateExecutionFactory.create(req, graphStore).execute() ;
-        
-        if ( dump )
-        {
-            IndentedWriter out = IndentedWriter.stdout ;
-            SSE.write(graphStore) ;
+
+        UpdateExec.newBuilder().update(req).dataset(dataset).execute();
+
+        if ( dump ) {
+            IndentedWriter out = IndentedWriter.stdout;
+            SSE.write(dataset);
             out.flush();
         }
     }
 
-    private void monitor(Graph graph)
-    {
-        GraphLoadMonitor m = new GraphLoadMonitor(20000,false) ;
-        //m.setSummaryLabel(getCommandName()) ;
-        graph.getEventManager().register(m)  ;
+    private void monitor(Graph graph) {
+        GraphLoadMonitor m = new GraphLoadMonitor(20000, false);
+        // m.setSummaryLabel(getCommandName()) ;
+        graph.getEventManager().register(m);
     }
-    
+
     @Override
     protected DatasetGraph dealWithNoDataset() {
-        throw new CmdException("No dataset provided") ;
+        throw new CmdException("No dataset provided");
     }
 }

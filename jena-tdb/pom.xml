@@ -21,19 +21,17 @@
   <artifactId>jena-tdb</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - TDB1 (Native Triple Store)</name>
-  <version>3.11.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
-  <description>TDB is a storage subsystem for Jena and ARQ, it is a native triple store providing persisent disk based storage of triples/quads.</description>
+  <description>TDB is a storage subsystem for Jena and ARQ, it is a native triple store providing persistent storage of triples/quads.</description>
 
   <properties>
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
     <automatic.module.name>org.apache.jena.tdb</automatic.module.name>
   </properties>
@@ -43,14 +41,14 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
       <classifier>tests</classifier>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -58,7 +56,7 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <classifier>tests</classifier>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -66,7 +64,19 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
       <classifier>tests</classifier>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -102,6 +112,7 @@
         <configuration>
           <includes>
             <include>**/TS_*.java</include>
+            <include>**/Scripts_*.java</include>
           </includes>
         </configuration>
       </plugin>

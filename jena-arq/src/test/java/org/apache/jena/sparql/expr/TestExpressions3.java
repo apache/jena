@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.sse.Item ;
@@ -27,14 +28,14 @@ import org.apache.jena.sparql.sse.builders.BuilderBinding ;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.junit.Test ;
 
-/** Expression evaluation involving bindings. 
+/** Expression evaluation involving bindings.
 * @see TestExpressions
 * @see TestExpressions2
 * @see TestExpressions3
 * @see TestExprLib
 * @see TestNodeValue
 */
-public class TestExpressions3 extends BaseTest
+public class TestExpressions3
 {
     @Test public void bound_01()       { eval("BOUND(?x)", "(?x 1)", true) ; }
     @Test public void bound_02()       { eval("BOUND(?x)", "(?y 1)", false) ; }
@@ -47,13 +48,13 @@ public class TestExpressions3 extends BaseTest
 
     // From SPARQL syntax
     private static void eval(String string, String bindingStr, boolean expected) {
-        Binding binding = binding(bindingStr) ; 
+        Binding binding = binding(bindingStr) ;
         Expr expr = ExprUtils.parse(string) ;
         NodeValue nv = expr.eval(binding, LibTestExpr.createTest()) ;
         boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;
         assertEquals(string, expected, b) ;
     }
-    
+
     // From algebra/SSE
     private static void evalExpr(String exprString, String bindingStr, boolean expected) {
         Binding binding = binding(bindingStr) ;
@@ -68,6 +69,6 @@ public class TestExpressions3 extends BaseTest
             return null ;
         Item item = SSE.parse("(binding "+bindingStr+")") ;
         Binding binding = BuilderBinding.build(item) ;
-        return binding ;   
+        return binding ;
     }
 }

@@ -28,6 +28,7 @@ import org.apache.jena.util.* ;
 */
 public class LocationMapperAssembler extends AssemblerBase
     {
+    @SuppressWarnings("deprecation")
     @Override
     public Object open( Assembler a, Resource root, Mode irrelevant )
         {

@@ -18,7 +18,7 @@
 
 package jena;
 
-import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
 import org.apache.jena.Jena ;
 
@@ -28,10 +28,10 @@ import org.apache.jena.Jena ;
  */
 public class version implements Jena {
 
-    static { setCmdLogging(); }
+    static { setLogging(); }
 
     /**
-     * Print out jena version information and exits.
+     * Print out jena version information and exit.
      */
     public static void main(String... args) throws IllegalArgumentException, IllegalAccessException {
         String x = Jena.VERSION;

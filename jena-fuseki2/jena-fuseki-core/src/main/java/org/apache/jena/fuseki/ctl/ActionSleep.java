@@ -18,75 +18,93 @@
 
 package org.apache.jena.fuseki.ctl;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
 
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
-
-import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.fuseki.async.AsyncPool ;
-import org.apache.jena.fuseki.async.AsyncTask ;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.slf4j.Logger ;
+import org.apache.jena.atlas.json.JsonValue;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.fuseki.async.AsyncPool;
+import org.apache.jena.fuseki.async.AsyncTask;
+import org.apache.jena.fuseki.servlets.ActionLib;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.slf4j.Logger;
 
 /** A task that kicks off a asynchronous operation that simply waits and exits.  For testing. */
 public class ActionSleep extends ActionCtl /* Not ActionAsyncTask - that is a container-item based. */
 {
-    public ActionSleep() { super() ; }
-    
-    // And only POST
+    public static final int MaxSleepMillis = 20*1000;
+
+    public ActionSleep() { super(); }
+
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response);
+    public void execOptions(HttpAction action) {
+        ActionLib.doOptionsPost(action);
+        ServletOps.success(action);
     }
 
     @Override
-    protected void perform(HttpAction action) {
-        Runnable task = createRunnable(action) ;
-        AsyncTask aTask = Async.execASyncTask(action, AsyncPool.get(), "sleep", task) ;
-        JsonValue v = Async.asJson(aTask) ;
-        Async.setLocationHeader(action, aTask);
+    public void execPost(HttpAction action) {
+        super.executeLifecycle(action);
+    }
+
+    @Override
+    public void validate(HttpAction action) {}
+
+    @Override
+    public void execute(HttpAction action) {
+        SleepTask task = createRunnable(action);
+        AsyncTask aTask = Async.execASyncTask(action, AsyncPool.get(), "sleep", task);
+        action.log.info(format("[%d] Sleep %d ms.", action.id, task.sleepMilli));
+        JsonValue v = Async.asJson(aTask);
         ServletOps.sendJsonReponse(action, v);
     }
 
-    protected Runnable createRunnable(HttpAction action) {
-        String name = action.getDatasetName() ;
-        if ( name == null )
-            name = "''" ;
-        
-        String interval = action.request.getParameter("interval") ;
-        int sleepMilli = 5000 ;
-        if ( interval != null )
+    protected SleepTask createRunnable(HttpAction action) {
+        String interval = action.getRequestParameter("interval");
+        int sleepMilli = 5000;
+        if ( interval != null ) {
             try {
-                sleepMilli = Integer.parseInt(interval) ;
+                sleepMilli = Integer.parseInt(interval);
             } catch (NumberFormatException ex) {
-                action.log.error(format("[%d] NumberFormatException: %s", action.id, interval)) ; 
+                ServletOps.errorBadRequest("Bad value for 'interval': integer required");
+                return null;
             }
-        action.log.info(format("[%d] Sleep %s %d ms", action.id, name, sleepMilli)) ;
-        return new SleepTask(action, sleepMilli) ;
+        }
+        if ( sleepMilli < 0 ) {
+            ServletOps.errorBadRequest("Bad value for 'interval': negative sleep interval");
+            return null;
+        }
+        if ( sleepMilli > MaxSleepMillis ) {
+            ServletOps.errorBadRequest("Bad value for 'interval': sleep internal greater than maximum allowed");
+            return null;
+        }
+        return new SleepTask(action, sleepMilli, AsyncPool.get());
     }
 
     static class SleepTask implements Runnable {
-        private final Logger log ;
-        private final long actionId ;
-        private final int sleepMilli ;
-        
-        public SleepTask(HttpAction action, int sleepMilli ) {
-            this.log = action.log ;
-            this.actionId = action.id ;
-            this.sleepMilli = sleepMilli ;
+        private final Logger log;
+        private final long actionId;
+        public  final int sleepMilli;
+        private final AsyncPool asyncPool;
+
+        public SleepTask(HttpAction action, int sleepMilli, AsyncPool asyncPool ) {
+            this.log = action.log;
+            this.actionId = action.id;
+            this.sleepMilli = sleepMilli;
+            this.asyncPool = asyncPool;
         }
 
         @Override
         public void run() {
             try {
-                log.info(format("[%d] >> Sleep start", actionId)) ;
-                Lib.sleep(sleepMilli) ;
-                log.info(format("[%d] << Sleep finish", actionId)) ;
+                log.info(format("[Task %d] >> Sleep start", actionId));
+                Lib.sleep(sleepMilli);
+                log.info(format("[Task %d] << Sleep finish", actionId));
             } catch (Exception ex) {
-                log.info(format("[%d] **** Exception", actionId), ex) ;
+                log.info(format("[Task %d] **** Exception", actionId), ex);
+                // Must also throw the error upwards so that the async task tracking infrastucture can set the
+                // success flag correctly
+                throw ex;
             }
         }
     }

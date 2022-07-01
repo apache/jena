@@ -18,16 +18,16 @@
 
 package org.apache.jena.riot.system;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Test suite for RIOT system
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ 
+@SuiteClasses({
     TestChecker.class
     , TestStreamRDF.class
     , TestFactoryRDF.class
@@ -35,22 +35,19 @@ import org.junit.runners.Suite.SuiteClasses ;
 
     // Prefix Map implementations
     , TestPrefixMap.class
+    , TestPrefixMapOverPrefixMapping.class
     , TestPrefixMapWrapper.class
     , TestPrefixMapOther.class
-    , TestFastAbbreviatingPrefixMap.class
-    , TestPrefixMapExtended1.class
-    , TestPrefixMapExtended2.class
-    
+
     , TestIO_JenaReaders.class
     , TestIO_JenaWriters.class
     , TestLangRegistration.class
     , TestFormatRegistration.class
     , TestJsonLDReadWrite.class         // Some simple testing of the jsonld-java engine.
     , TestSerializable.class
-    
-    // May be subject to performance vagaries, with the improvements made
-    // to the fast implementation this should be fairly safe
-    //, TestAbbreviationPerformance.class
+    , TestIRIxRIOT.class
+    , TestRiotLib.class
+    , TestAsyncParser.class
 })
 
 public class TS_RiotSystem

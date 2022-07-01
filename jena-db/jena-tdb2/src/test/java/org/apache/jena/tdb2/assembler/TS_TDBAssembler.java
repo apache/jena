@@ -18,16 +18,13 @@
 
 package org.apache.jena.tdb2.assembler;
 
-import org.apache.jena.tdb2.junit.Base_TS;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
      TestTDBAssembler.class
 })
 
-public class TS_TDBAssembler extends Base_TS
-{
-
-}
+public class TS_TDBAssembler
+{}

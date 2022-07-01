@@ -18,125 +18,115 @@
 
 package org.apache.jena.dboe.base.block;
 
-import java.nio.ByteBuffer ;
+import java.nio.ByteBuffer;
 
-import org.junit.AfterClass ;
-import org.junit.Assert ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class TestBlockMgrTracked extends Assert
 {
     // Mainly testing the tracking
 
-    static boolean b ;
+    static boolean b;
 
     @BeforeClass
-    static public void beforeClass()
-    {
-        b = BlockMgrTracker.verbose ;
-        BlockMgrTracker.verbose = false ;
+    static public void beforeClass() {
+        b = BlockMgrTracker.verbose;
+        BlockMgrTracker.verbose = false;
     }
 
     @AfterClass
-    static public void afterClass()
-    {
-        BlockMgrTracker.verbose = b ;
-    }    
-    
-    @Test public void track_01()
-    {
-        BlockMgr mgr = BlockMgrFactory.createMem("BPTRecord", 4) ;
-        mgr = BlockMgrFactory.tracker(mgr) ;
-        mgr.beginUpdate() ;
-        Block block = mgr.allocate(4) ;
-        ByteBuffer bb = block.getByteBuffer() ;
-        bb.putInt(0,1234) ;
-        mgr.write(block) ;
-        mgr.release(block) ;
+    static public void afterClass() {
+        BlockMgrTracker.verbose = b;
+    }
+
+    @Test public void track_01() {
+        BlockMgr mgr = BlockMgrFactory.createMem("BPTRecord", 4);
+        mgr = BlockMgrFactory.tracker(mgr);
+        mgr.beginUpdate();
+        Block block = mgr.allocate(4);
+        ByteBuffer bb = block.getByteBuffer();
+        bb.putInt(0,1234);
+        mgr.write(block);
+        mgr.release(block);
         // -----
-        Block block2 = mgr.getRead(block.getId()) ;
-        ByteBuffer bb2 = block2.getByteBuffer() ;
-        assertArrayEquals(bb.array(), bb2.array()) ;
-        mgr.release(block2) ;
-        mgr.endUpdate() ;
+        Block block2 = mgr.getRead(block.getId());
+        ByteBuffer bb2 = block2.getByteBuffer();
+        assertArrayEquals(bb.array(), bb2.array());
+        mgr.release(block2);
+        mgr.endUpdate();
     }
 
     // Multiple overlapping read operations.
-    static BlockMgr setup()
-    {
-        BlockMgr mgr = BlockMgrFactory.createMem("BPTRecord", 4) ;
-        mgr = BlockMgrFactory.tracker(mgr) ;
-        return mgr ;
+    static BlockMgr setup() {
+        BlockMgr mgr = BlockMgrFactory.createMem("BPTRecord", 4);
+        mgr = BlockMgrFactory.tracker(mgr);
+        return mgr;
     }
-    
-    static void write(BlockMgr mgr, int value)
-    {
-        mgr.beginUpdate() ;
-        Block block = mgr.allocate(4) ;
-        ByteBuffer bb = block.getByteBuffer() ;
-        bb.putInt(0,value) ;
-        mgr.write(block) ;
-        mgr.release(block) ;
-        mgr.endUpdate() ;
+
+    static void write(BlockMgr mgr, int value) {
+        mgr.beginUpdate();
+        Block block = mgr.allocate(4);
+        ByteBuffer bb = block.getByteBuffer();
+        bb.putInt(0,value);
+        mgr.write(block);
+        mgr.release(block);
+        mgr.endUpdate();
     }
-    
-    @Test public void track_02()
-    {
-        BlockMgr mgr = setup() ;
-        write(mgr, 1234) ;
-        write(mgr, 5678) ;
 
-        mgr.beginRead() ;
-        mgr.beginRead() ;
+    @Test public void track_02() {
+        BlockMgr mgr = setup();
+        write(mgr, 1234);
+        write(mgr, 5678);
 
-        Block b0 = mgr.getRead(0) ;
-        Block b1 = mgr.getRead(1) ;
-        
-        mgr.release(b1) ;
-        mgr.release(b0) ;
-        
-        mgr.endRead() ;
-        mgr.endRead() ;
-    }
-    
-    @Test(expected=BlockException.class)
-    public void track_03()
-    {
-        BlockMgr mgr = setup() ;
-        write(mgr, 1234) ;
-        write(mgr, 5678) ;
+        mgr.beginRead();
+        mgr.beginRead();
 
-        mgr.beginRead() ;
-        Block b0 = mgr.getWrite(0) ;
-        mgr.endRead() ;
+        Block b0 = mgr.getRead(0);
+        Block b1 = mgr.getRead(1);
+
+        mgr.release(b1);
+        mgr.release(b0);
+
+        mgr.endRead();
+        mgr.endRead();
     }
 
     @Test(expected=BlockException.class)
-    public void track_04()
-    {
-        BlockMgr mgr = setup() ;
-        write(mgr, 1234) ;
-        mgr.beginRead() ;
-        Block b0 = mgr.getRead(0) ;
-        mgr.promote(b0) ;
-        mgr.endRead() ;
+    public void track_03() {
+        BlockMgr mgr = setup();
+        write(mgr, 1234);
+        write(mgr, 5678);
+
+        mgr.beginRead();
+        Block b0 = mgr.getWrite(0);
+        mgr.endRead();
     }
 
     @Test(expected=BlockException.class)
-    public void track_05()
-    {
-        BlockMgr mgr = setup() ;
-        mgr.beginRead() ;
-        mgr.endUpdate() ;
+    public void track_04() {
+        BlockMgr mgr = setup();
+        write(mgr, 1234);
+        mgr.beginRead();
+        Block b0 = mgr.getRead(0);
+        mgr.promote(b0);
+        mgr.endRead();
     }
 
     @Test(expected=BlockException.class)
-    public void track_06()
-    {
-        BlockMgr mgr = setup() ;
-        mgr.beginUpdate() ;
-        mgr.endRead() ;
+    public void track_05() {
+        BlockMgr mgr = setup();
+        mgr.beginRead();
+        mgr.endUpdate();
+    }
+
+    @Test(expected=BlockException.class)
+    public void track_06() {
+        BlockMgr mgr = setup();
+        mgr.beginUpdate();
+        mgr.endRead();
     }
 
 }

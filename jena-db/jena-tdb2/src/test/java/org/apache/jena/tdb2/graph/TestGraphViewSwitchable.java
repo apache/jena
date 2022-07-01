@@ -30,39 +30,39 @@ import org.junit.Test;
 
 public class TestGraphViewSwitchable {
     private DatasetGraph dsg = DatabaseMgr.createDatasetGraph();
-    
-    
+
+
     @Test public void graph_txn_1() {
         Graph g = dsg.getDefaultGraph();
         Triple t = SSE.parseTriple("(:S :P :O)");
-        
+
         g.getTransactionHandler().execute(()->g.add(t));
-        
+
         g.getTransactionHandler().execute(()->
             Assert.assertTrue(g.contains(t))
             );
     }
-    
+
     @Test public void graph_txn_2() {
         Graph g = dsg.getDefaultGraph();
         Triple t = SSE.parseTriple("(:S :P :O)");
-        
+
         g.getTransactionHandler().execute(()->g.add(t));
-        
+
         Graph g2 = dsg.getDefaultGraph();
         g2.getTransactionHandler().execute(()->
             Assert.assertTrue(g.contains(t))
             );
-    }    
+    }
 
     @Test public void graph_txn_3() {
         Node gn = SSE.parseNode(":gn");
         Graph g = dsg.getGraph(gn);
         Triple t = SSE.parseTriple("(:S :P :O)");
         Quad q = Quad.create(gn, t);
-        
+
         g.getTransactionHandler().execute(()->g.add(t));
-        
+
         g.getTransactionHandler().execute(()->{
             Assert.assertTrue(g.contains(t));
             dsg.contains(q);

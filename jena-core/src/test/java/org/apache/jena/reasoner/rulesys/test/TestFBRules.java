@@ -193,7 +193,7 @@ public class TestFBRules extends TestCase {
 //        assertEquals(D.getNode(), func.getArgs()[1]);
         
         Literal one = (Literal)foo.getRequiredProperty(propbar).getObject();
-        assertEquals(new Integer(1), one.getValue());
+        assertEquals(Integer.valueOf(1), one.getValue());
     }
     
     /**
@@ -989,7 +989,7 @@ public class TestFBRules extends TestCase {
         boolean prior = JenaParameters.enableFilteringOfHiddenInfNodes;
         try {
             JenaParameters.enableFilteringOfHiddenInfNodes = false;
-            Model premisesM = FileManager.get().loadModel("file:testing/wg/equivalentClass/premises004.rdf");
+            Model premisesM = FileManager.getInternal().loadModelInternal("file:testing/wg/equivalentClass/premises004.rdf");
             Graph data = premisesM.getGraph();
             Reasoner reasoner =  new OWLFBRuleReasoner(OWLFBRuleReasonerFactory.theInstance());
             InfGraph infgraph = reasoner.bind(data);

@@ -33,84 +33,84 @@ final public class BPTreeRecordsMgr extends PageBlockMgr<BPTreeRecords>
     // Only "public" for external very low level tools in development to access this class.
     // Assume package access.
 
-    private final RecordBufferPageMgr rBuffPageMgr ;
-    private final BPlusTree bpTree ;
-    
+    private final RecordBufferPageMgr rBuffPageMgr;
+    private final BPlusTree bpTree;
+
     BPTreeRecordsMgr(BPlusTree bpTree, RecordFactory recordFactory, RecordBufferPageMgr rBuffPageMgr) {
-        super(null , rBuffPageMgr.getBlockMgr()) ;
-        this.bpTree = bpTree ;
-        super.setConverter(new Block2BPTreeRecords(this, recordFactory)) ;
+        super(null , rBuffPageMgr.getBlockMgr());
+        this.bpTree = bpTree;
+        super.setConverter(new Block2BPTreeRecords(this, recordFactory));
         // bpt is uninitialized at this point.
         // so record rBuffPageMgr
-        this.rBuffPageMgr = rBuffPageMgr ;
+        this.rBuffPageMgr = rBuffPageMgr;
     }
-    
-    /** Converter BPTreeRecords -- make a RecordBufferPage and wraps it.*/ 
+
+    /** Converter BPTreeRecords -- make a RecordBufferPage and wraps it.*/
     static class Block2BPTreeRecords implements BlockConverter<BPTreeRecords> {
-        private Block2RecordBufferPage recordBufferConverter ;
-        private BPTreeRecordsMgr       recordsMgr ;
+        private Block2RecordBufferPage recordBufferConverter;
+        private BPTreeRecordsMgr       recordsMgr;
 
         Block2BPTreeRecords(BPTreeRecordsMgr mgr, RecordFactory recordFactory) {
-            this.recordsMgr = mgr ;
-            this.recordBufferConverter = new RecordBufferPageMgr.Block2RecordBufferPage(recordFactory) ;
+            this.recordsMgr = mgr;
+            this.recordBufferConverter = new RecordBufferPageMgr.Block2RecordBufferPage(recordFactory);
         }
 
         @Override
         public BPTreeRecords fromBlock(Block block) {
-            RecordBufferPage rbp = recordBufferConverter.fromBlock(block) ;
-            return new BPTreeRecords(recordsMgr, rbp) ;
+            RecordBufferPage rbp = recordBufferConverter.fromBlock(block);
+            return new BPTreeRecords(recordsMgr, rbp);
         }
 
         @Override
         public Block toBlock(BPTreeRecords t) {
-            return recordBufferConverter.toBlock(t.getRecordBufferPage()) ;
+            return recordBufferConverter.toBlock(t.getRecordBufferPage());
         }
 
         @Override
         public BPTreeRecords createFromBlock(Block block, BlockType bType) {
-            RecordBufferPage rbp = recordBufferConverter.createFromBlock(block, bType) ;
-            return new BPTreeRecords(recordsMgr, rbp) ;
+            RecordBufferPage rbp = recordBufferConverter.createFromBlock(block, bType);
+            return new BPTreeRecords(recordsMgr, rbp);
         }
     }
-    
+
     public BPTreeRecords create() {
-        return super.create(BlockType.RECORD_BLOCK) ;
-//        
-//        RecordBufferPage rbp = rBuffPageMgr.create() ;
-//        BPTreeRecords bRec = new BPTreeRecords(bpTree, rbp) ;
-//        return bRec ;
+        return super.create(BlockType.RECORD_BLOCK);
+//
+//        RecordBufferPage rbp = rBuffPageMgr.create();
+//        BPTreeRecords bRec = new BPTreeRecords(bpTree, rbp);
+//        return bRec;
     }
-    
-    public RecordBufferPageMgr getRecordBufferPageMgr() { return rBuffPageMgr ; }
-    public BPlusTree getBPTree()                        { return bpTree ; }
+
+    public RecordBufferPageMgr getRecordBufferPageMgr() { return rBuffPageMgr; }
+    public BPlusTree getBPTree()                        { return bpTree; }
 
     boolean isWritable(int id) {
-        //System.err.println("BPTreeRecordsMgr.isWritable") ;
-        return false ;
+        //System.err.println("BPTreeRecordsMgr.isWritable");
+        return false;
     }
 
     @Override
     public void startRead() {
-        rBuffPageMgr.startRead() ;
+        rBuffPageMgr.startRead();
     }
 
     @Override
     public void finishRead() {
-        rBuffPageMgr.finishRead() ;
+        rBuffPageMgr.finishRead();
     }
 
     @Override
     public void startUpdate() {
-        rBuffPageMgr.startUpdate() ;
+        rBuffPageMgr.startUpdate();
     }
 
     @Override
     public void finishUpdate() {
-        rBuffPageMgr.finishUpdate() ;
+        rBuffPageMgr.finishUpdate();
     }
-    
+
     @Override
     public void close() {
-        rBuffPageMgr.close() ;
+        rBuffPageMgr.close();
     }
 }

@@ -1,0 +1,107 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/sparql/component/propertyValidator-select-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:Country
+  rdf:type rdfs:Class ;
+  rdfs:label "Country" ;
+.
+ex:InvalidCountry1
+  rdf:type ex:Country ;
+  ex:englishLabel "Munich" ;
+  ex:germanLabel "Muenchen" ;
+  rdfs:label "Invalid country1" ;
+.
+ex:LanguageConstraintComponentUsingSELECT
+  rdf:type sh:ConstraintComponent ;
+  rdfs:label "Language constraint component" ;
+  sh:labelTemplate "Values are literals with language \"{$lang}\"" ;
+  sh:parameter [
+      sh:path ex:lang ;
+      sh:datatype xsd:string ;
+      sh:description "The language tag, e.g. \"de\"." ;
+      sh:minLength 2 ;
+      sh:name "language" ;
+    ] ;
+  sh:propertyValidator [
+      rdf:type sh:SPARQLSelectValidator ;
+      sh:message "Values are literals with language \"{?lang}\"" ;
+      sh:prefixes <http://datashapes.org/sh/tests/sparql/component/LanguageConstraintComponentUsingSELECT.test> ;
+      sh:select """
+			SELECT DISTINCT $this ?value
+			WHERE {
+				$this $PATH ?value .
+				FILTER (!isLiteral(?value) || !langMatches(lang(?value), $lang))
+			}
+			""" ;
+    ] ;
+.
+ex:LanguageExampleShape
+  rdf:type sh:NodeShape ;
+  sh:property _:b56647 ;
+  sh:property _:b71712 ;
+  sh:targetClass ex:Country ;
+.
+ex:ValidCountry1
+  rdf:type ex:Country ;
+  ex:englishLabel "Beijing"@en ;
+  ex:germanLabel "Peking"@de ;
+  rdfs:label "Valid country1" ;
+.
+ex:englishLabel
+  rdfs:domain ex:Country ;
+.
+ex:germanLabel
+  rdfs:domain ex:Country ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <propertyValidator-select-001>
+    ) ;
+.
+<propertyValidator-select-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:propertyValidator with SELECT 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidCountry1 ;
+          sh:resultPath ex:englishLabel ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent ex:LanguageConstraintComponentUsingSELECT ;
+          sh:sourceShape _:b56647 ;
+          sh:value "Munich" ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidCountry1 ;
+          sh:resultPath ex:germanLabel ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent ex:LanguageConstraintComponentUsingSELECT ;
+          sh:sourceShape _:b71712 ;
+          sh:value "Muenchen" ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.
+_:b56647
+  sh:path ex:englishLabel ;
+  ex:lang "en" ;
+.
+_:b71712
+  sh:path ex:germanLabel ;
+  ex:lang "de" ;
+.

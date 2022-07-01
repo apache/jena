@@ -23,6 +23,9 @@ import java.util.List ;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.exec.ResultSetAdapter;
+import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.RowSetAdapter;
 
 /** Results from a query in a table-like manner for SELECT queries.
  *  Each row corresponds to a set of bindings which fulfil the conditions
@@ -35,15 +38,18 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 
 public interface ResultSet extends Iterator<QuerySolution>
 {
-    // Could have a ResultSetBase that does all the Node=>Resource (= ResultBinding)  
-    /**
-     * Is there another result?
-     */
+    public static ResultSet adapt(RowSet rowSet) {
+        if ( rowSet instanceof RowSetAdapter ) {
+            return ((RowSetAdapter)rowSet).get();
+        }
+        return new ResultSetAdapter(rowSet);
+    }
+
+    /** Is there another result? */
     @Override
     public boolean hasNext() ;
 
     /** Moves onto the next result. */
-    
     @Override
     public QuerySolution next() ;
 
@@ -52,15 +58,45 @@ public interface ResultSet extends Iterator<QuerySolution>
 
     /** Move to the next binding (low level) */
     public Binding nextBinding() ;
-    
+
     /** Return the "row" number for the current iterator item */
     public int getRowNumber() ;
-    
-    /** Get the variable names for the projection. Not all query
-     *  solutions from a result have every variable defined. 
+
+    /**
+     * Get the variable names for the projection. Not all query
+     * solutions from a result have every variable defined.
      */
     public List<String> getResultVars() ;
 
     /** Get the model that resources are created against - may be null */
     public Model getResourceModel() ;
+
+    /**
+     * Convert this result set to a {@link ResultSetRewindable}.
+     * <p>
+     * Warning: this is likely a copy:
+     * <ul>
+     * <li>"this" result set is consumed and not reusable.
+     * <li>the copy is in-memory
+     * </ul>
+     * Use the returned object, not "this" result set after calling this method.
+     * <p>
+     * Example of use:
+     * <pre>
+     *   ResultSetRewindable rs = queryExecution.execSelect().rewindable();
+     * </pre>
+     */
+    public default ResultSetRewindable rewindable() {
+        return ResultSetFactory.makeRewindable(this);
+    }
+
+    /**
+     * Return a {@code ResultSet} that is not connected to the original source.
+     * This consumes this ResultSet and produces another one.
+     */
+    public default ResultSet materialise() {
+        return rewindable();
+    }
+
+    public void close();
 }

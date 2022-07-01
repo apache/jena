@@ -30,24 +30,22 @@ import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.StreamRowRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** Testing/development convenience.
  *  Iterator of StreamRowRDF (always a tuple) for an input stream of tokenized RDF terms.
- */  
-public class IteratorStreamRDFText extends IteratorStreamRDF implements Iterator<StreamRowRDF> {
+ */
+public class IteratorStreamRDFText extends IteratorStreamRowRDF implements Iterator<StreamRowRDF> {
     private final TokenInputStream in ;
     private Node[] previousTuple = null ;
 
     private /*public*/ IteratorStreamRDFText(InputStream input) {
-        Tokenizer t = TokenizerFactory.makeTokenizerUTF8(input) ;
-        in = new TokenInputStream(null, t) ;
+        Tokenizer tokenizer = TokenizerText.create().source(input).build();
+        in = new TokenInputStream(null, tokenizer) ;
     }
 
     @Override
@@ -57,7 +55,7 @@ public class IteratorStreamRDFText extends IteratorStreamRDF implements Iterator
 
     @Override
     protected StreamRowRDF moveToNext() {
-        if ( ! in.hasNext() ) return null ; 
+        if ( ! in.hasNext() ) return null ;
         List<Token> line = in.next() ;
         StreamRowRDF row = line2row(line) ;
         return row ;
@@ -65,21 +63,21 @@ public class IteratorStreamRDFText extends IteratorStreamRDF implements Iterator
 
     private StreamRowRDF line2row(List<Token> line) {
         if ( line.size() != 3 && line.size() != 4 )
-            throw new RiotException("Input line is not 3 or 4 items long") ; 
-        
+            throw new RiotException("Input line is not 3 or 4 items long") ;
+
         Node[] tuple = new Node[line.size()] ;
         int idx = 0 ;
         for ( Token token : line ) {
             Node n = null ;
-            if ( ( token.isWord() && token.getImage().equals("R") ) 
+            if ( ( token.isWord() && token.getImage().equals("R") )
                  //|| ( token.isCtlCode() && token.getCntrlCode() == -1 )     // *
                 ) {
                 if ( previousTuple == null )
-                    throw new RiotException("Repeat without previous data row") ; 
+                    throw new RiotException("Repeat without previous data row") ;
                 if ( idx >= previousTuple.length)
                     throw new RiotException("Repeat position beyond previous data row") ;
                 n = previousTuple[idx] ;
-            } else if ( token.isNode() ) { 
+            } else if ( token.isNode() ) {
                 n = asNode(token) ;
             }
             if ( n == null )
@@ -91,10 +89,10 @@ public class IteratorStreamRDFText extends IteratorStreamRDF implements Iterator
 
         // Needs rethink.
         throw new NotImplemented() ;
-        
+
 //        if ( line.size() == 3 )
-//            return new StreamRowRDFBase(Triple.create(tuple[0], tuple[1], tuple[2])) ;  
-//        else 
+//            return new StreamRowRDFBase(Triple.create(tuple[0], tuple[1], tuple[2])) ;
+//        else
 //            return new StreamRowRDFBase(Quad.create(tuple[0], tuple[1], tuple[2], tuple[3])) ;
 //        return new StreamRowRDFBase(Tuple.create(tuple)) ;
     }
@@ -105,7 +103,7 @@ public class IteratorStreamRDFText extends IteratorStreamRDF implements Iterator
             return RiotLib.createIRIorBNode(t.getImage()) ;
         return t.asNode() ;
     }
-    
+
     /** Tokenizer that sorts out prefixes and groups into sequences of token */
     private static class TokenInputStream implements Iterator<List<Token>>, Iterable<List<Token>>, Closeable {
         private static Logger       log      = LoggerFactory.getLogger(TokenInputStream.class) ;
@@ -225,11 +223,6 @@ public class IteratorStreamRDFText extends IteratorStreamRDF implements Iterator
         }
 
         @Override
-        public void remove() {
-            throw new UnsupportedOperationException() ;
-        }
-
-        @Override
         public Iterator<List<Token>> iterator() {
             return this ;
         }
@@ -237,6 +230,5 @@ public class IteratorStreamRDFText extends IteratorStreamRDF implements Iterator
         @Override
         public void close() {}
     }
-
 }
 

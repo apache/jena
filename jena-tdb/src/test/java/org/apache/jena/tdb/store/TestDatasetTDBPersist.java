@@ -18,11 +18,14 @@
 
 package org.apache.jena.tdb.store;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -30,17 +33,16 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.junit.GraphLocation ;
-import org.apache.jena.tdb.store.GraphTDB ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.After ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.Test ;
 
 /** Testing persistence  */ 
-public class TestDatasetTDBPersist extends BaseTest
+public class TestDatasetTDBPersist
 {
     static Node n0 = NodeFactoryExtra.parseNode("<http://example/n0>") ; 
     static Node n1 = NodeFactoryExtra.parseNode("<http://example/n1>") ;
@@ -54,8 +56,8 @@ public class TestDatasetTDBPersist extends BaseTest
     
     @Before public void before()
     {   
+        TDBInternal.reset() ;
     	String dirname = ConfigTest.getCleanDir() ;
-    	StoreConnection.reset() ;
 		graphLocation = new GraphLocation(Location.create(dirname)) ;
         graphLocation.createDataset() ;
     }
@@ -67,7 +69,7 @@ public class TestDatasetTDBPersist extends BaseTest
     	graphLocation.clearDirectory() ;	// Does not have the desired effect on Windows.
     }
     
-    @AfterClass public static void afterClass() { StoreConnection.reset() ; }
+    @AfterClass public static void afterClass() { TDBInternal.reset() ; }
 
     @Test public void dataset1()
     {

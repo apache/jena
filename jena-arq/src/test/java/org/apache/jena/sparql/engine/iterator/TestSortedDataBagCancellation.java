@@ -40,7 +40,6 @@ import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingComparator;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.binding.BindingMap;
 import org.apache.jena.sparql.engine.main.OpExecutor;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory;
 import org.apache.jena.sparql.serializer.SerializationContext;
@@ -49,25 +48,18 @@ import org.junit.Test;
 /*
 	Test that a SortedDataBag used inside a QueryIterSort
 	does indeed cut off when cancelled.
-	
+
 	This is horribly clunky because of the effort of
 	setting up. Maybe we should instead be content to
 	test the SortedDataBag correctly?
- 
+
 */
 public class TestSortedDataBagCancellation {
 
-    static final BindingMap b1 = BindingFactory.create();
-    static final BindingMap b2 = BindingFactory.create();
-    static final BindingMap b3 = BindingFactory.create();
-    static final BindingMap b4 = BindingFactory.create();
-
-    static {
-        b1.add(Var.alloc("v1"), NodeFactory.createLiteral("alpha"));
-        b2.add(Var.alloc("v2"), NodeFactory.createLiteral("beta"));
-        b3.add(Var.alloc("v3"), NodeFactory.createLiteral("gamma"));
-        b4.add(Var.alloc("v4"), NodeFactory.createLiteral("delta"));
-    }
+    static final Binding b1 = BindingFactory.binding(Var.alloc("v1"), NodeFactory.createLiteral("alpha"));
+    static final Binding b2 = BindingFactory.binding(Var.alloc("v2"), NodeFactory.createLiteral("beta"));
+    static final Binding b3 = BindingFactory.binding(Var.alloc("v3"), NodeFactory.createLiteral("gamma"));
+    static final Binding b4 = BindingFactory.binding(Var.alloc("v4"), NodeFactory.createLiteral("delta"));
 
     final Context params = new Context();
 

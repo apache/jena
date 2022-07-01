@@ -22,24 +22,24 @@ import org.apache.jena.atlas.lib.ArrayUtils;
 import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.atlas.lib.Sync;
 import org.apache.jena.graph.Node;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
+import org.apache.jena.system.progress.MonitorOutput;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
-/** 
+/**
  * Load into one NodeTupleTable (triples, quads, other).
  * <br/>
- * This is the TDB1 tdbloader algorithm ported to TDB2. 
+ * This is part of the TDB1 tdbloader algorithm ported to TDB2.
  */
 
 public class LoaderNodeTupleTable implements Closeable, Sync
 {
-    private int          numIndexes; 
+    private int          numIndexes;
     private TupleIndex   primaryIndex;
     private TupleIndex[] secondaryIndexes;
-    
+
     private NodeTupleTable nodeTupleTable;
-    
+
     private boolean dropAndRebuildIndexes;
     //private Timer timer;
     private long count = 0;
@@ -47,9 +47,9 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     private long countQuads = 0;
     private String itemsName;
     private final MonitorOutput output;
-    
+
     private static Object lock = new Object();
-        
+
     public LoaderNodeTupleTable(NodeTupleTable nodeTupleTable, MonitorOutput output, String itemsName)
     {
         this.nodeTupleTable = nodeTupleTable;
@@ -58,7 +58,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     }
 
     // -- LoaderFramework
-    
+
     protected void loadPrepare() {
         dropAndRebuildIndexes = nodeTupleTable.isEmpty();
 
@@ -70,7 +70,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
             output.print("** Load into %s table with existing data", itemsName);
         }
     }
-        
+
     protected void loadSecondaryIndexes() {
         if ( count > 0 ) {
             if ( dropAndRebuildIndexes )
@@ -85,13 +85,13 @@ public class LoaderNodeTupleTable implements Closeable, Sync
 
     public void loadFinish() {
     }
-    
+
     /** Notify start of loading process */
     public void loadDataStart() {
         loadPrepare();
     }
-    
-    /** Notify End of data to load - this operation may 
+
+    /** Notify End of data to load - this operation may
      * undertake a significant amount of work.
      */
     public void loadDataFinish()
@@ -103,7 +103,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         // Always do this - it reattaches the secondary indexes.
         loadSecondaryIndexes();
     }
-    
+
     /** Stream in items to load ... */
     public void load(Node...nodes) {
         if ( nodes.length == 3 )
@@ -115,12 +115,12 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     }
 
     public void sync(boolean force) {}
-    
+
     @Override
     public void sync() {}
-    
+
     // --------
-    
+
     @Override
     public void close()
     { sync(); }
@@ -130,23 +130,23 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         primaryIndex = nodeTupleTable.getTupleTable().getIndex(0);
 
         secondaryIndexes = ArrayUtils.alloc(TupleIndex.class, numIndexes-1);
-        System.arraycopy(nodeTupleTable.getTupleTable().getIndexes(), 1, 
+        System.arraycopy(nodeTupleTable.getTupleTable().getIndexes(), 1,
                          secondaryIndexes, 0,
                          numIndexes-1);
         // Set non-primary indexes to null.
         for ( int i = 1; i < numIndexes; i++ )
             nodeTupleTable.getTupleTable().setTupleIndex(i, null);
     }
-    
-//    private void createSecondaryIndexes() {        
+
+//    private void createSecondaryIndexes() {
 //        BuilderSecondaryIndexes.createSecondaryIndexes(output, primaryIndex, secondaryIndexes);
 //    }
-    
+
     private void attachSecondaryIndexes() {
         for ( int i = 1; i < numIndexes; i++ )
             nodeTupleTable.getTupleTable().setTupleIndex(i, secondaryIndexes[i-1]);
     }
-    
+
     static private void sync(TupleIndex[] indexes) {
         for ( TupleIndex idx : indexes ) {
             if ( idx != null )

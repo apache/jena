@@ -18,14 +18,13 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static org.apache.jena.riot.WebContent.* ;
+import static org.apache.jena.riot.WebContent.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.fuseki.DEF;
@@ -33,112 +32,106 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.system.ConNeg;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.WebContent;
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.web.HttpSC;
 
 public class ResponseDataset
 {
     // Short names for "output="
-    private static final String contentOutputJSONLD        = "json-ld" ;
-    private static final String contentOutputJSONRDF       = "json-rdf" ;
-    private static final String contentOutputJSON          = "json" ;
-    private static final String contentOutputXML           = "xml" ;
-    private static final String contentOutputText          = "text" ;
-    private static final String contentOutputTTL           = "ttl" ;
-    private static final String contentOutputNT            = "nt" ;
-    private static final String contentOutputTriG          = "trig" ;
-    private static final String contentOutputNQuads        = "n-quads" ;
+    private static final String contentOutputJSONLD        = "json-ld";
+    private static final String contentOutputJSONRDF       = "json-rdf";
+    private static final String contentOutputJSON          = "json";
+    private static final String contentOutputXML           = "xml";
+    private static final String contentOutputText          = "text";
+    private static final String contentOutputTTL           = "ttl";
+    private static final String contentOutputTurtle        = "turtle";
+    private static final String contentOutputNT            = "nt";
+    private static final String contentOutputTriG          = "trig";
+    private static final String contentOutputNQuads        = "n-quads";
 
-    public static Map<String,String> shortNamesModel = new HashMap<>() ;
+    public static Map<String,String> shortNamesModel = new HashMap<>();
     static {
         // Some short names.  keys are lowercase.
-        ResponseOps.put(shortNamesModel, contentOutputJSONLD,   contentTypeJSONLD) ;
-        ResponseOps.put(shortNamesModel, contentOutputJSONRDF,  contentTypeRDFJSON) ;
-        ResponseOps.put(shortNamesModel, contentOutputJSON,     contentTypeJSONLD) ;
-        ResponseOps.put(shortNamesModel, contentOutputXML,      contentTypeRDFXML) ;
-        ResponseOps.put(shortNamesModel, contentOutputText,     contentTypeTurtle) ;
-        ResponseOps.put(shortNamesModel, contentOutputTTL,      contentTypeTurtle) ;
-        ResponseOps.put(shortNamesModel, contentOutputNT,       contentTypeNTriples) ;
-        ResponseOps.put(shortNamesModel, contentOutputNQuads,  WebContent.contentTypeNQuads) ;
-        ResponseOps.put(shortNamesModel, contentOutputTriG,     WebContent.contentTypeTriG) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSONLD,   contentTypeJSONLD);
+        ResponseOps.put(shortNamesModel, contentOutputJSONRDF,  contentTypeRDFJSON);
+        ResponseOps.put(shortNamesModel, contentOutputJSON,     contentTypeJSONLD);
+        ResponseOps.put(shortNamesModel, contentOutputXML,      contentTypeRDFXML);
+        ResponseOps.put(shortNamesModel, contentOutputText,     contentTypeTurtle);
+        ResponseOps.put(shortNamesModel, contentOutputTTL,      contentTypeTurtle);
+        ResponseOps.put(shortNamesModel, contentOutputTurtle,   contentTypeTurtle);
+        ResponseOps.put(shortNamesModel, contentOutputNT,       contentTypeNTriples);
+        ResponseOps.put(shortNamesModel, contentOutputNQuads,   contentTypeNQuads);
+        ResponseOps.put(shortNamesModel, contentOutputTriG,     contentTypeTriG);
     }
 
     public static void doResponseModel(HttpAction action, Model model) {
-        Dataset ds = DatasetFactory.create(model) ;
+        Dataset ds = DatasetFactory.wrap(model);
         ResponseDataset.doResponseDataset(action, ds);
     }
 
     public static void doResponseDataset(HttpAction action, Dataset dataset) {
-        HttpServletRequest request = action.request ;
-        HttpServletResponse response = action.response ;
+        HttpServletRequest request = action.getRequest();
 
-        String mimeType = null ;        // Header request type
+        String mimeType = null;        // Header request type
 
-        MediaType i = ConNeg.chooseContentType(request, DEF.constructOffer, DEF.acceptTurtle) ;
+        MediaType i = ConNeg.chooseContentType(request, DEF.constructOffer, DEF.acceptTurtle);
         if ( i != null )
-            mimeType = i.getContentType() ;
+            mimeType = i.getContentTypeStr();
 
-        String outputField = ResponseOps.paramOutput(request, shortNamesModel) ;
+        String outputField = ResponseOps.paramOutput(request, shortNamesModel);
         if ( outputField != null )
-            mimeType = outputField ;
+            mimeType = outputField;
 
-        String writerMimeType = mimeType ;
+        String writerMimeType = mimeType;
 
-        if ( mimeType == null )
-        {
-            Fuseki.actionLog.warn("Can't find MIME type for response") ;
-            String x = FusekiNetLib.getAccept(request) ;
-            String msg ;
+        if ( mimeType == null ) {
+            Fuseki.actionLog.warn("Can't find MIME type for response");
+            String x = FusekiNetLib.getAccept(request);
+            String msg;
             if ( x == null )
-                msg = "No Accept: header" ;
+                msg = "No Accept: header";
             else
-                msg = "Accept: "+x+" : Not understood" ;
-            ServletOps.error(HttpSC.NOT_ACCEPTABLE_406, msg) ;
+                msg = "Accept: " + x + " : Not understood";
+            ServletOps.error(HttpSC.NOT_ACCEPTABLE_406, msg);
         }
 
-        String contentType = mimeType ;
-        String charset =     charsetUTF8 ;
+        String contentType = mimeType;
+        String charset = charsetUTF8;
 
-        String forceAccept = ResponseOps.paramForceAccept(request) ;
-        if ( forceAccept != null )
-        {
-            contentType = forceAccept ;
-            charset = charsetUTF8 ;
+        String forceAccept = ResponseOps.paramForceAccept(request);
+        if ( forceAccept != null ) {
+            contentType = forceAccept;
+            charset = charsetUTF8;
         }
 
-        Lang lang = RDFLanguages.contentTypeToLang(contentType) ;
+        Lang lang = RDFLanguages.contentTypeToLang(contentType);
         if ( lang == null )
-            ServletOps.errorBadRequest("Can't determine output content type: "+contentType) ;
+            ServletOps.errorBadRequest("Can't determine output content type: "+contentType);
+        RDFFormat format = ActionLib.getNetworkFormatForLang(lang);
 
         try {
-            ResponseOps.setHttpResponse(action, contentType, charset) ;
-            response.setStatus(HttpSC.OK_200) ;
-            ServletOutputStream out = response.getOutputStream() ;
+            ServletOps.success(action);
+            ServletOutputStream out = action.getResponseOutputStream();
             try {
+                // Use the Content-Type from the content negotiation.
                 if ( RDFLanguages.isQuads(lang) )
-                    RDFDataMgr.write(out, dataset, lang) ;
+                    ActionLib.datasetResponse(action, dataset.asDatasetGraph(), format, contentType);
                 else
-                    RDFDataMgr.write(out, dataset.getDefaultModel(), lang) ;
-                out.flush() ;
-            } catch (JenaException ex) { 
-                // Some RDF/XML data is unwritable. All we can do is pretend it's a bad
-                // request (inappropriate content type).
-                if ( lang.equals(Lang.RDFXML) )
-                    ServletOps.errorBadRequest("Failed to write output in RDF/XML: "+ex.getMessage()) ;
-                else
-                    ServletOps.errorOccurred("Failed to write output: "+ex.getMessage(), ex) ;
+                    ActionLib.graphResponse(action, dataset.getDefaultModel().getGraph(), format, contentType);
+                out.flush();
+            } catch (JenaException ex) {
+                ServletOps.errorOccurred("Failed to write output: "+ex.getMessage(), ex);
             }
         }
-        catch (ActionErrorException ex) { throw ex ; }
+        catch (ActionErrorException ex) { throw ex; }
         catch (Exception ex) {
-            action.log.info("Exception while writing the response model: "+ex.getMessage(), ex) ;
-            ServletOps.errorOccurred("Exception while writing the response model: "+ex.getMessage(), ex) ;
+            action.log.info("Exception while writing the response model: "+ex.getMessage(), ex);
+            ServletOps.errorOccurred("Exception while writing the response model: "+ex.getMessage(), ex);
         }
     }
 }

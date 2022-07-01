@@ -18,14 +18,13 @@
 
 package arq.cmdline;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdArgModule;
-import jena.cmd.CmdGeneral;
-import jena.cmd.ModBase;
-
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdArgModule;
+import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.ModBase;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.util.FileManager ;
 
 public class ModAlgebra extends ModBase
 {
@@ -34,7 +33,7 @@ public class ModAlgebra extends ModBase
     private String queryFilename   = null ;
     private String queryString = null ;
     private Op op = null ;
-    
+
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -50,26 +49,26 @@ public class ModAlgebra extends ModBase
         if ( cmdLine.contains(queryFileDecl) )
         {
             queryFilename = cmdLine.getValue(queryFileDecl) ;
-            queryString = FileManager.get().readWholeFileAsUTF8(queryFilename) ;
+            queryString = IO.readWholeFileAsUTF8(queryFilename) ;
         }
-    
+
         if ( cmdLine.getNumPositional() == 0 && queryFilename == null )
             cmdLine.cmdError("No query string or query file") ;
 
         if ( cmdLine.getNumPositional() > 1 )
             cmdLine.cmdError("Only one query string allowed") ;
-    
+
         if ( cmdLine.getNumPositional() == 1 && queryFilename != null )
             cmdLine.cmdError("Either query string or query file - not both") ;
 
-        
+
         if ( queryFilename == null )
         {
             String qs = cmdLine.getPositionalArg(0) ;
             queryString = cmdLine.indirect(qs) ;
         }
     }
-    
+
     public Op getOp()
     {
         if ( op != null )

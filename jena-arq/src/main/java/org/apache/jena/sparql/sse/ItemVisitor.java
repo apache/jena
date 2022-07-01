@@ -18,12 +18,12 @@
 
 package org.apache.jena.sparql.sse;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 
 public interface ItemVisitor
 {
-    public void visit(Item item, ItemList list) ;
-    public void visit(Item item, Node node) ;
-    public void visit(Item item, String symbol) ;
-    public void visitNil() ;              // Nil
+    public void visit(Item item, ItemList list);
+    public void visit(Item item, Node node);
+    public void visit(Item item, String symbol);
+    public void visitNil(Item item);
 }

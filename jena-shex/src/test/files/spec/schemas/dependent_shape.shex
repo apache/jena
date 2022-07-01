@@ -1,0 +1,7 @@
+PREFIX ex: <http://schema.example/>
+ex:IssueShape {
+  ex:reproducedBy @ex:TesterShape
+}
+ex:TesterShape {
+  ex:role [ex:testingRole]
+}

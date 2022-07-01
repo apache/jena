@@ -24,7 +24,7 @@ import java.io.IOException ;
 import java.io.InputStream ;
 
 /** InputStream optimizing for one byte at a time operation.
- *  BufferedInputStream operations have synchronization making 
+ *  java.io.BufferedInputStream operations have synchronization making 
  *  reading one byte at a time expensive.
  *  
  *  @see java.io.InputStream

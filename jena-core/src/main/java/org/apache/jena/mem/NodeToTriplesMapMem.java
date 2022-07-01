@@ -86,7 +86,6 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
     */
     @Override public Iterator<Triple> iterator( Object o, HashCommon.NotifyEmpty container ) 
        {
-       // System.err.println( ">> BOINK" ); // if (true) throw new JenaException( "BOINK" );
        TripleBunch s = bunchMap.get( o );
        return s == null ? NullIterator.<Triple>instance() : s.iterator( container );
        }

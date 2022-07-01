@@ -37,29 +37,29 @@ import org.junit.runners.Suite ;
     , TestDatasetGraphTDBFind.class
     , TestDatasetGraphTDBFindPattern.class
     , TestLoader.class
-    // The script suite
-    , TestSuiteGraphTDB.class
     , Test_SPARQL_TDB.class
     , TestConcurrentAccess.class
     , TestDynamicDatasetTDB.class
     , TestStoreConnectionsDirect.class
     , TestStoreConnectionsMapped.class
     , TestLocationLockStoreConnection.class
+    , TestGraphTDB_Prefixes.class
+    , TestQuadFilter.class
 } )
 public class TS_Store
-{ 
-    static FileMode mode ; 
-    
+{
+    static FileMode mode ;
+
     @BeforeClass
     public static void beforeClass()
     {
         mode = SystemTDB.fileMode() ;
     }
-    
+
     @AfterClass
     public static void afterClass()
     {
         if ( ! SystemTDB.fileMode().equals(mode) )
-            TestOps.setFileMode(mode) ;    
+            TestOps.setFileMode(mode) ;
     }
 }

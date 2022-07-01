@@ -18,33 +18,40 @@
 
 package org.apache.jena.rdfconnection;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.ReadWrite;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdfconnection.RDFConnection;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.system.Txn;
+import org.apache.jena.update.UpdateExecution;
+import org.apache.jena.update.UpdateExecutionBuilder;
 import org.apache.jena.update.UpdateRequest;
 import org.junit.Assume;
 import org.junit.Test;
 
-public abstract class AbstractTestRDFConnection extends BaseTest {
+public abstract class AbstractTestRDFConnection {
     // Testing data.
-    static String DIR = "testing/RDFConnection/";
-    
+    protected static String DIR = "testing/RDFConnection/";
+
     protected abstract RDFConnection connection();
     // Not all connection types support abort.
-    protected abstract boolean supportsAbort(); 
+    protected abstract boolean supportsAbort();
 
     // ---- Data
     static String dsgdata = StrUtils.strjoinNL
@@ -54,7 +61,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
         ,"  (graph :g2 (:s :p :o) (:s2 :p2 :o))"
         ,")"
         );
-    
+
     static String dsgdata2 = StrUtils.strjoinNL
         ("(dataset"
         ,"  (graph (:x :y :z))"
@@ -62,7 +69,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
         ,")"
         );
 
-    
+
     static String graph1 = StrUtils.strjoinNL
         ("(graph (:s :p :o) (:s1 :p1 :o))"
         );
@@ -70,16 +77,16 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
     static String graph2 = StrUtils.strjoinNL
         ("(graph (:s :p :o) (:s2 :p2 :o))"
         );
-    
-    static DatasetGraph dsg        = SSE.parseDatasetGraph(dsgdata);
-    static Dataset      dataset    = DatasetFactory.wrap(dsg);
-    static DatasetGraph dsg2       = SSE.parseDatasetGraph(dsgdata2);
-    static Dataset      dataset2   = DatasetFactory.wrap(dsg2);
 
-    static String       graphName  = "http://test/graph";
-    static String       graphName2 = "http://test/graph2";
-    static Model        model1     = ModelFactory.createModelForGraph(SSE.parseGraph(graph1));
-    static Model        model2     = ModelFactory.createModelForGraph(SSE.parseGraph(graph2));
+    static DatasetGraph dsgTest1       = SSE.parseDatasetGraph(dsgdata);
+    static Dataset      datasetTest1   = DatasetFactory.wrap(dsgTest1);
+    static DatasetGraph dsgTest2       = SSE.parseDatasetGraph(dsgdata2);
+    static Dataset      datasetTest2   = DatasetFactory.wrap(dsgTest2);
+
+    static String       graphName      = "http://test/graph";
+    static String       graphName2     = "http://test/graph2";
+    static Model        model1         = ModelFactory.createModelForGraph(SSE.parseGraph(graph1));
+    static Model        model2         = ModelFactory.createModelForGraph(SSE.parseGraph(graph2));
     // ---- Data
 
     @Test public void connect_01() {
@@ -91,9 +98,9 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
         // Allow multiple close()
         conn.close();
     }
-    
+
     @Test public void dataset_load_1() {
-        String testDataFile = DIR+"data.trig"; 
+        String testDataFile = DIR+"data.trig";
         try ( RDFConnection conn = connection() ) {
             conn.loadDataset(testDataFile);
             Dataset ds0 = RDFDataMgr.loadDataset(testDataFile);
@@ -104,45 +111,45 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void dataset_put_1() {
         try ( RDFConnection conn = connection() ) {
-            conn.putDataset(dataset); 
+            conn.putDataset(datasetTest1);
             Dataset ds1 = conn.fetchDataset();
-            assertTrue("Datasets not isomorphic", isomorphic(dataset, ds1));
+            assertTrue("Datasets not isomorphic", isomorphic(datasetTest1, ds1));
         }
     }
 
     @Test public void dataset_put_2() {
         try ( RDFConnection conn = connection() ) {
-            conn.putDataset(dataset); 
-            conn.putDataset(dataset2);
+            conn.putDataset(datasetTest1);
+            conn.putDataset(datasetTest2);
             Dataset ds1 = conn.fetchDataset();
-            assertTrue("Datasets not isomorphic", isomorphic(dataset2, ds1));
+            assertTrue("Datasets not isomorphic", isomorphic(datasetTest2, ds1));
         }
     }
 
     @Test public void dataset_post_1() {
         try ( RDFConnection conn = connection() ) {
-            conn.loadDataset(dataset);
+            conn.loadDataset(datasetTest1);
             Dataset ds1 = conn.fetchDataset();
-            assertTrue("Datasets not isomorphic", isomorphic(dataset, ds1));
+            assertTrue("Datasets not isomorphic", isomorphic(datasetTest1, ds1));
         }
     }
-    
+
     @Test public void dataset_post_2() {
         try ( RDFConnection conn = connection() ) {
-            conn.loadDataset(dataset);
-            conn.loadDataset(dataset2);
+            conn.loadDataset(datasetTest1);
+            conn.loadDataset(datasetTest2);
             Dataset ds1 = conn.fetchDataset();
             long x = Iter.count(ds1.listNames());
             assertEquals("NG count", 3, x);
-            assertFalse("Datasets are isomorphic", isomorphic(dataset, ds1));
-            assertFalse("Datasets are isomorphic", isomorphic(dataset2, ds1));
+            assertFalse("Datasets are isomorphic", isomorphic(datasetTest1, ds1));
+            assertFalse("Datasets are isomorphic", isomorphic(datasetTest2, ds1));
         }
     }
 
     // Default graph
-    
+
     @Test public void graph_load_1() {
-        String testDataFile = DIR+"data.ttl"; 
+        String testDataFile = DIR+"data.ttl";
         Model m0 = RDFDataMgr.loadModel(testDataFile);
         try ( RDFConnection conn = connection() ) {
             conn.load(testDataFile);
@@ -153,7 +160,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void graph_put_1() {
         try ( RDFConnection conn = connection() ) {
-            conn.put(model1); 
+            conn.put(model1);
             Dataset ds1 = conn.fetchDataset();
             Model m0 = conn.fetch();
             assertTrue("Models not isomorphic", isomorphic(model1, ds1.getDefaultModel()));
@@ -164,7 +171,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void graph_put_2() {
         try ( RDFConnection conn = connection() ) {
-            conn.put(model1); 
+            conn.put(model1);
             conn.put(model2);
             Model m = conn.fetch();
             assertTrue("Models not isomorphic", isomorphic(m, model2));
@@ -179,7 +186,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
             assertTrue("Models not isomorphic", isomorphic(m, model1));
         }
     }
-    
+
     @Test public void graph_post_2() {
         try ( RDFConnection conn = connection() ) {
             conn.load(model1);
@@ -191,11 +198,11 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
     }
 
     // DELETE
-    
+
     // Named graphs
-    
+
     @Test public void named_graph_load_1() {
-        String testDataFile = DIR+"data.ttl"; 
+        String testDataFile = DIR+"data.ttl";
         Model m0 = RDFDataMgr.loadModel(testDataFile);
         try ( RDFConnection conn = connection() ) {
             conn.load(graphName, testDataFile);
@@ -208,7 +215,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void named_graph_put_1() {
         try ( RDFConnection conn = connection() ) {
-            conn.put(graphName, model1); 
+            conn.put(graphName, model1);
             Dataset ds1 = conn.fetchDataset();
             Model m0 = conn.fetch(graphName);
             assertTrue("Models not isomorphic", isomorphic(model1, ds1.getNamedModel(graphName)));
@@ -219,7 +226,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void named_graph_put_2() {
         try ( RDFConnection conn = connection() ) {
-            conn.put(graphName, model1); 
+            conn.put(graphName, model1);
             conn.put(graphName, model2);
             Model m = conn.fetch(graphName);
             assertTrue("Models not isomorphic", isomorphic(m, model2));
@@ -229,7 +236,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void named_graph_put_2_different() {
         try ( RDFConnection conn = connection() ) {
-            conn.put(graphName, model1); 
+            conn.put(graphName, model1);
             conn.put(graphName2, model2);
             Model m1 = conn.fetch(graphName);
             Model m2 = conn.fetch(graphName2);
@@ -245,7 +252,7 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
             assertTrue("Models not isomorphic", isomorphic(m, model1));
         }
     }
-    
+
     @Test public void named_graph_post_2() {
         try ( RDFConnection conn = connection() ) {
             conn.load(graphName, model1);
@@ -257,18 +264,39 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
     }
 
     // DELETE
-    
-    // Remote connections don't support transactions fully.  
-    //@Test public void transaction_01() 
+
+    // Remote connections don't support transactions fully.
+    //@Test public void transaction_01()
 
     private static boolean isomorphic(Dataset ds1, Dataset ds2) {
         return IsoMatcher.isomorphic(ds1.asDatasetGraph(), ds2.asDatasetGraph());
     }
-    
+
     private static boolean isomorphic(Model model1, Model model2) {
         return model1.isIsomorphicWith(model2);
     }
-    
+
+    @Test public void query_01() {
+        try ( RDFConnection conn = connection() ) {
+            Txn.executeRead(conn, ()->{
+                try ( QueryExecution qExec = conn.query("SELECT ?x {}") ) {
+                    ResultSet rs = qExec.execSelect();
+                    ResultSetFormatter.consume(rs);
+                }
+            });
+        }
+    }
+
+    @Test public void query_02() {
+        try ( RDFConnection conn = connection() ) {
+            Txn.executeRead(conn, ()->{
+                try ( QueryExecution qExec = conn.query("ASK{}") ) {
+                    boolean b = qExec.execAsk();
+                    assertTrue(b);
+                }
+            });
+        }
+    }
 
     @Test public void query_ask_01() {
         try ( RDFConnection conn = connection() ) {
@@ -322,22 +350,48 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
             assertEquals(2, m.size());
         }
     }
-    
+
+    @Test public void query_build_01() {
+        try ( RDFConnection conn = connection() ) {
+            Txn.executeRead(conn, ()->{
+                ResultSet rs = conn.newQuery().query("SELECT * { ?s ?p ?o}").select();
+                assertNotNull(rs);
+            });
+        }
+    }
+
+    @Test public void query_build_02() {
+        try ( RDFConnection conn = connection() ) {
+            Txn.executeRead(conn, ()->{
+                QuerySolutionMap qsm = new QuerySolutionMap();
+                qsm.add("X", ResourceFactory.createTypedLiteral("123", XSDDatatype.XSDinteger));
+                QueryExecution qExec = conn.newQuery().query("SELECT ?X { }")
+                        .substitution(qsm)
+                        .build();
+                String s = qExec.getQueryString();
+                assertTrue(s.contains("123"));
+                ResultSet rs = qExec.execSelect();
+                RDFNode x = rs.next().get("X");
+                assertNotNull(x);
+            });
+        }
+    }
+
     @Test public void update_01() {
         try ( RDFConnection conn = connection() ) {
-            conn.update("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
+            conn.update("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
         }
     }
 
     @Test public void update_02() {
         try ( RDFConnection conn = connection() ) {
-            Txn.executeWrite(conn, ()->conn.update("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}"));
+            Txn.executeWrite(conn, ()->conn.update("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}"));
         }
     }
 
     @Test public void update_03() {
     	UpdateRequest update = new UpdateRequest();
-    	update.add("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
+    	update.add("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
         try ( RDFConnection conn = connection() ) {
             conn.update(update);
         }
@@ -345,39 +399,49 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
 
     @Test public void update_04() {
     	UpdateRequest update = new UpdateRequest();
-    	update.add("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
+    	update.add("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
         try ( RDFConnection conn = connection() ) {
             Txn.executeWrite(conn, ()->conn.update(update));
         }
     }
+
+    @Test public void update_05() {
+        UpdateRequest update = new UpdateRequest();
+        update.add("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
+        try ( RDFConnection conn = connection() ) {
+            UpdateExecutionBuilder updateBuilder = conn.newUpdate();
+            UpdateExecution uExec = updateBuilder.update(update).build();
+            Txn.executeWrite(conn, ()->uExec.execute());
+        }
+    }
+
     // Not all Transactional support abort.
     @Test public void transaction_commit_read_01() {
-        String testDataFile = DIR+"data.trig"; 
         try ( RDFConnection conn = connection() ) {
 
             conn.begin(ReadWrite.WRITE);
-            conn.loadDataset(dataset);
+            conn.loadDataset(datasetTest1);
             conn.commit();
             conn.end();
-            
+
             conn.begin(ReadWrite.READ);
             Model m = conn.fetch();
-            assertTrue(isomorphic(m, dataset.getDefaultModel()));
+            assertTrue(isomorphic(m, datasetTest1.getDefaultModel()));
             conn.end();
         }
     }
-    
+
     // Not all RDFConnections support abort.
     @Test public void transaction_abort_read02() {
         Assume.assumeTrue(supportsAbort());
-        
-        String testDataFile = DIR+"data.trig"; 
+
+        String testDataFile = DIR+"data.trig";
         try ( RDFConnection conn = connection() ) {
             conn.begin(ReadWrite.WRITE);
             conn.loadDataset(testDataFile);
             conn.abort();
             conn.end();
-            
+
             conn.begin(ReadWrite.READ);
             Model m = conn.fetch();
             assertTrue(m.isEmpty());
@@ -385,12 +449,21 @@ public abstract class AbstractTestRDFConnection extends BaseTest {
         }
     }
 
-    //@Test(expected=JenaTransactionException.class)
+    @Test(expected=JenaTransactionException.class)
     public void transaction_bad_01() {
         try ( RDFConnection conn = connection() ) {
             conn.begin(ReadWrite.WRITE);
             // Should have conn.commit();
             conn.end();
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test public void setTimeout() {
+        try ( RDFConnection rdfConnection = connection() ) {
+            QueryExecution queryExecution = rdfConnection.query("ASK{}");
+            queryExecution.setTimeout(1000);
+            queryExecution.execAsk();
         }
     }
 }

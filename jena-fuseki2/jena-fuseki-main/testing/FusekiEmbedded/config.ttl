@@ -10,9 +10,8 @@ PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#>
     fuseki:name "FuTest";
     fuseki:serviceQuery "query";
     fuseki:serviceUpdate "update";
-    fuseki:serviceUpload "upload" ;
     fuseki:dataset <#dataset> ;
 .
 
-<#dataset> rdf:type ja:RDFDataset;
+<#dataset> rdf:type ja:MemoryDataset ;
 .

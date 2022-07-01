@@ -26,8 +26,6 @@ import java.util.function.Predicate;
 
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sys.Serializer;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.NullIterator ;
 
 /**
     Triples are the basis for RDF statements; they have a subject, predicate, and
@@ -39,22 +37,14 @@ public class Triple implements Serializable
 
 	private final Node subj, pred, obj;
  
-	public Triple( Node s, Node p, Node o ) 
-        {
-        if (s == null) throw new UnsupportedOperationException( "subject cannot be null" );
-        if (p == null) throw new UnsupportedOperationException( "predicate cannot be null" );
-        if (o == null) throw new UnsupportedOperationException( "object cannot be null" );
-		subj = s;
-		pred = p;
-		obj = o;
-        }
-	
-	/**
-	    A triple-iterator with no elements.
-	    @deprecated Use {@link NullIterator#instance()}
-	*/
-	@Deprecated
-	public static final ExtendedIterator<Triple> None = NullIterator.instance() ;
+	public Triple( Node s, Node p, Node o ) {
+	    if (s == null) throw new UnsupportedOperationException( "subject cannot be null" );
+	    if (p == null) throw new UnsupportedOperationException( "predicate cannot be null" );
+	    if (o == null) throw new UnsupportedOperationException( "object cannot be null" );
+	    subj = s;
+	    pred = p;
+	    obj = o;
+	}
 	
     /**
         return a human-readable string "subject @predicate object" describing the triple

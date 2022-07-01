@@ -25,81 +25,88 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Transactional;
 
 /** SPARQL Query Operations on a connection.
- * 
+ *
  * @see RDFConnection
  * @see RDFConnectionFactory
- */  
+ */
 public interface SparqlQueryConnection extends Transactional, AutoCloseable
 {
     /**
-     * Execute a SELECT query and process the ResultSet with the handler code.  
+     * Execute a SELECT query and process the ResultSet with the handler code.
      * @param query
      * @param resultSetAction
      */
     public void queryResultSet(String query, Consumer<ResultSet> resultSetAction);
-    
+
     /**
-     * Execute a SELECT query and process the ResultSet with the handler code.  
+     * Execute a SELECT query and process the ResultSet with the handler code.
      * @param query
      * @param resultSetAction
      */
-    public void queryResultSet(Query query, Consumer<ResultSet> resultSetAction); 
+    public void queryResultSet(Query query, Consumer<ResultSet> resultSetAction);
 
     /**
-     * Execute a SELECT query and process the rows of the results with the handler code.  
+     * Execute a SELECT query and process the rows of the results with the handler code.
      * @param query
      * @param rowAction
      */
     public void querySelect(String query, Consumer<QuerySolution> rowAction);
-    
+
     /**
-     * Execute a SELECT query and process the rows of the results with the handler code.  
+     * Execute a SELECT query and process the rows of the results with the handler code.
      * @param query
      * @param rowAction
      */
-    public void querySelect(Query query, Consumer<QuerySolution> rowAction); 
+    public void querySelect(Query query, Consumer<QuerySolution> rowAction);
 
     /** Execute a CONSTRUCT query and return as a Model */
     public Model queryConstruct(String query);
-    
+
     /** Execute a CONSTRUCT query and return as a Model */
     public Model queryConstruct(Query query);
 
     /** Execute a DESCRIBE query and return as a Model */
     public Model queryDescribe(String query);
-    
+
     /** Execute a DESCRIBE query and return as a Model */
     public Model queryDescribe(Query query);
-    
+
     /** Execute a ASK query and return a boolean */
     public boolean queryAsk(String query);
 
     /** Execute a ASK query and return a boolean */
     public boolean queryAsk(Query query);
-    
+
     /** Setup a SPARQL query execution.
-     * 
-     *  See also {@link #querySelect(Query, Consumer)}, {@link #queryConstruct(Query)}, 
+     *
+     *  See also {@link #querySelect(Query, Consumer)}, {@link #queryConstruct(Query)},
      *  {@link #queryDescribe(Query)}, {@link #queryAsk(Query)}
      *  for ways to execute queries for of a specific form.
-     * 
+     *
      * @param query
      * @return QueryExecution
      */
     public QueryExecution query(Query query);
 
     /** Setup a SPARQL query execution.
-     * 
-     *  See also {@link #querySelect(String, Consumer)}, {@link #queryConstruct(String)}, 
+     *
+     *  See also {@link #querySelect(String, Consumer)}, {@link #queryConstruct(String)},
      *  {@link #queryDescribe(String)}, {@link #queryAsk(String)}
      *  for ways to execute queries for of a specific form.
-     * 
-     * @param queryString 
+     *
+     * @param queryString
      * @return QueryExecution
      */
     public QueryExecution query(String queryString);
-    
-    /** Close this connection.  Use with try-resource. */ 
+
+    /**
+     * Return an execution builder initialized with the RDFConnection setup.
+     *
+     * @return QueryExecutionBuilderCommon
+     */
+    public QueryExecutionBuilder newQuery();
+
+    /** Close this connection.  Use with try-resource. */
     @Override public void close();
 }
 

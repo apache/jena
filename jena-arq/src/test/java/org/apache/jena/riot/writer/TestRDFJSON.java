@@ -18,12 +18,13 @@
 
 package org.apache.jena.riot.writer;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -35,23 +36,23 @@ import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
-public class TestRDFJSON extends BaseTest
+public class TestRDFJSON
 {
     @Test public void rdfjson_00()
     {
         // Empty graph
         test ("(base <http://example/> (graph))") ;
     }
-    
+
     @Test public void rdfjson_01()
     {
-    	test ("(base <http://example/> (graph (<s> <p> 1)))") ;
+        test ("(base <http://example/> (graph (<s> <p> 1)))") ;
     }
 
     @Test public void rdfjson_02()
     {
         // Different subjects
-    	test ("(base <http://example/> (graph (<s1> <p> 1)(<s> <p> 2)))") ;
+        test ("(base <http://example/> (graph (<s1> <p> 1)(<s> <p> 2)))") ;
     }
 
     @Test public void rdfjson_03()
@@ -85,7 +86,7 @@ public class TestRDFJSON extends BaseTest
               "(_:b <p> 3)" ,
               "))") ;
     }
-    
+
     @Test public void rdfjson_07()
     {
         // Shared blank node objects
@@ -95,7 +96,7 @@ public class TestRDFJSON extends BaseTest
               "(<s1> <p> _:abc)" ,
               "))") ;
     }
-    
+
     @Test public void rdfjson_08()
     {
         // Shared IRI objects
@@ -105,8 +106,8 @@ public class TestRDFJSON extends BaseTest
               "(<s1> <p> <http://example.org/abc>)" ,
               "))") ;
     }
-    
-    
+
+
     @Test public void rdfjson_09()
     {
         // Shared ...
@@ -115,7 +116,7 @@ public class TestRDFJSON extends BaseTest
               "(<http://example.org/abc> <p> _:s)" ,
               "))") ;
     }
-    
+
     @Test public void rdfjson_literals()
     {
         // Literals, various
@@ -128,43 +129,43 @@ public class TestRDFJSON extends BaseTest
              ,"   (<s> <p> '1e+100'^^xsd:double)"
              ,"   (<s> <p> '1.05'^^xsd:decimal)"
              ,"))") ;
-    }    
-    
-    @Test public void rdfjson_escapes()
-    {
-    	Graph g = GraphFactory.createGraphMem();
-    	Node s = NodeFactory.createBlankNode();
-    	Node p = NodeFactory.createURI("http://predicate");
-    	g.add(new Triple(s, p, NodeFactory.createLiteral("quote \" character")));
-    	g.add(new Triple(s, p, NodeFactory.createLiteral("new \n\r lines")));
-    	g.add(new Triple(s, p, NodeFactory.createLiteral("tab \t character")));
-    	test(g);
     }
 
-    private void test (String... strings) 
+    @Test public void rdfjson_escapes()
+    {
+        Graph g = GraphFactory.createGraphMem();
+        Node s = NodeFactory.createBlankNode();
+        Node p = NodeFactory.createURI("http://host");
+        g.add(new Triple(s, p, NodeFactory.createLiteral("quote \" character")));
+        g.add(new Triple(s, p, NodeFactory.createLiteral("new \n\r lines")));
+        g.add(new Triple(s, p, NodeFactory.createLiteral("tab \t character")));
+        test(g);
+    }
+
+    private void test (String... strings)
     {
         String str = StrUtils.strjoinNL(strings) ;
         Graph g = SSE.parseGraph(str) ;
         test(g);
     }
-    
+
     private void test (Graph g)
     {
         ByteArrayOutputStream bout = serializeAsJSON(g) ;
         parseAsJSON(bout) ; // make sure valid JSON
-        Graph g2 = parseAsRDFJSON(bout) ; 
+        Graph g2 = parseAsRDFJSON(bout) ;
 
-        assertTrue(g.isIsomorphicWith(g2)) ;  
+        assertTrue(g.isIsomorphicWith(g2)) ;
     }
 
-    private ByteArrayOutputStream serializeAsJSON (Graph graph) 
+    private ByteArrayOutputStream serializeAsJSON (Graph graph)
     {
         ByteArrayOutputStream bout = new ByteArrayOutputStream() ;
         RDFDataMgr.write(bout, graph, Lang.RDFJSON) ;
         return bout ;
     }
 
-    private Graph parseAsRDFJSON (ByteArrayOutputStream bout) 
+    private Graph parseAsRDFJSON (ByteArrayOutputStream bout)
     {
         ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray()) ;
         Graph graph = GraphFactory.createGraphMem() ;
@@ -172,9 +173,9 @@ public class TestRDFJSON extends BaseTest
         return graph ;
     }
 
-    private JsonObject parseAsJSON (ByteArrayOutputStream bout) 
+    private JsonObject parseAsJSON (ByteArrayOutputStream bout)
     {
-    	return JSON.parse(new ByteArrayInputStream(bout.toByteArray())) ;
+        return JSON.parse(new ByteArrayInputStream(bout.toByteArray())) ;
     }
 
 }

@@ -25,7 +25,6 @@ import org.apache.jena.tdb.base.file.PlainFileMem ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
 import org.apache.jena.tdb.index.AbstractTestIndex ;
 import org.apache.jena.tdb.index.Index ;
-import org.apache.jena.tdb.index.ext.ExtHash ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

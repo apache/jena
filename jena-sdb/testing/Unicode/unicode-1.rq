@@ -1,5 +1,0 @@
-
-SELECT *
-{  ?s ?p "Left arrow:\u2190" .
-   ?s ?p "Left arrow:←"
-}

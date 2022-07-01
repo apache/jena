@@ -18,80 +18,150 @@
 
 package org.apache.jena.fuseki.server;
 
-import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIx;
+import org.apache.jena.rdf.model.Resource;
 
 /**
- * Operations are symbol to look up in the {@link ServiceDispatchRegistry#operationToHandler} map. The name
+ * Operations are symbol to look up in the {@link OperationRegistry#operationToHandler} map. The name
  * of an {@code Operation} is not related to the service name used to invoke the operation
  * which is determined by the {@link Endpoint}.
  */
 public class Operation {
-    
-    // Create intern'ed symbols. 
-    static private NameMgr<Operation> mgr = new NameMgr<>(); 
-    static public Operation register(String name, String description) {
-        return mgr.register(name, (x)->new Operation(x, description));
-    }
-    
-    public static final Operation Query          = register("Query", "SPARQL Query");
-    public static final Operation Update         = register("Update", "SPARQL Update");
-    public static final Operation Upload         = register("Upload", "File Upload");
-    public static final Operation GSP_R          = register("GSP_R", "Graph Store Protocol (Read)");
-    public static final Operation GSP_RW         = register("GSP_RW", "Graph Store Protocol");
-    public static final Operation Quads_R        = register("Quads_R", "HTTP Quads (Read)");
-    public static final Operation Quads_RW       = register("Quads_RW", "HTTP Quads");
-    
-    // Plain REST operations on the dataset URL 
-    public static final Operation DatasetRequest_R  = Quads_R;
-    public static final Operation DatasetRequest_RW = Quads_RW;
-    
-    private final String description ;
-    private final String name ;
 
-    private Operation(String name, String description) {
+    private static String NS = FusekiVocab.NS;
+
+    /** Create/intern. Maps short name to operation. */
+    static private Map<Node, Operation> mgr = new HashMap<>();
+
+    static public Operation get(Node node) { return mgr.get(node); }
+
+    /**
+     * Create an Operation - this operation interns operations so there is only
+     * one object for each operation. It is an extensible enum.
+     */
+    static public Operation alloc(String iriStr, String name, String description) {
+        try {
+            IRIx iri = IRIx.create(iriStr);
+            if ( !iri.isReference() )
+                Log.warn(Operation.class, "Poor Operation name: "+iriStr+" : Relative IRI");
+        } catch (IRIException ex) {
+            Log.error(Operation.class, "Poor Operation name: "+iriStr+" : Not an IRI");
+        }
+        Node node = NodeFactory.createURI(iriStr);
+        return alloc(node, name, description);
+    }
+
+    /**
+     * Create an Operation - this operation interns operations so there is only
+     * object for each operation. It is an extensible enum.
+     */
+    static public Operation alloc(Node op, String name, String description) {
+        return mgr.computeIfAbsent(op, (x)->create(x, name, description));
+    }
+
+    /** Create; not registered */
+    static private Operation create(Node id, String shortName, String description) {
+        // Currently, (3.13.0) the JS name is the short display name in lower
+        // case. Just in case it diverges in the future, leave provision for
+        // a different setting.
+        return new Operation(id, shortName, shortName.toLowerCase(Locale.ROOT), description);
+    }
+
+    public static final Operation Query    = alloc(FusekiVocab.opQuery.asNode(),  "query",  "SPARQL Query");
+    public static final Operation Update   = alloc(FusekiVocab.opUpdate.asNode(), "update", "SPARQL Update");
+    public static final Operation GSP_R    = alloc(FusekiVocab.opGSP_r.asNode(),  "gsp-r",  "Graph Store Protocol (Read)");
+    public static final Operation GSP_RW   = alloc(FusekiVocab.opGSP_rw.asNode(), "gsp-rw", "Graph Store Protocol");
+
+    public static final Operation Shacl    = alloc(FusekiVocab.opShacl.asNode(),  "SHACL",  "SHACL Validation");
+    public static final Operation Upload   = alloc(FusekiVocab.opUpload.asNode(), "upload", "File Upload");
+
+    public static final Operation NoOp     = alloc(FusekiVocab.opNoOp.asNode(),   "no-op",  "No Op");
+    static {
+        // Not everyone will remember "_" vs "-" so ...
+        altName(FusekiVocab.opNoOp_alt,   FusekiVocab.opNoOp);
+        altName(FusekiVocab.opGSP_r_alt,  FusekiVocab.opGSP_r);
+        altName(FusekiVocab.opGSP_rw_alt, FusekiVocab.opGSP_rw);
+    }
+
+    // -- Object
+    private final Node id;
+    private final String name;
+    // Name used in JSON in the "server" description and "stats" details.
+    // This name is know to the JS code (e.g. dataset.js).
+    private final String jsName;
+
+    private final String description;
+
+    private Operation(Node fullName, String name, String jsName, String description) {
+        this.id = fullName;
         this.name = name;
+        // Currently, this
+        this.jsName = jsName;
         this.description = description;
     }
-    
+
+    public Node getId() {
+        return id;
+    }
+
+    /** Return the display name for this operation. */
     public String getName() {
         return name;
     }
 
+    /**
+     * Name used in JSON in the "server" description and "stats" details.
+     * Highlighted by JENA-1766.
+     * This name is know to the JS code.
+     */
+    public String getJsonName() {
+        return jsName;
+    }
+
+    /** Return the description for this operation. */
     public String getDescription() {
         return description;
     }
-    
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
+        return Objects.hash(id);
     }
-    
+
     // Could be this == obj
     // because we intern'ed the object
-    
+
     @Override
     public boolean equals(Object obj) {
         if ( this == obj )
             return true;
-        if ( obj == null )
-            return false;
-        if ( getClass() != obj.getClass() )
+        if ( !(obj instanceof Operation) )
             return false;
         Operation other = (Operation)obj;
-        if ( name == null ) {
-            if ( other.name != null )
-                return false;
-        } else if ( !name.equals(other.name) )
-            return false;
-        return true;
+        return Objects.equals(id, other.id);
     }
- 
+
     @Override
     public String toString() {
         return name;
+    }
+
+    private static void altName(Resource altName, Resource properName) {
+        altName(altName.asNode(), properName.asNode());
+    }
+
+    private static void altName(Node altName, Node properName) {
+        Operation op = mgr.get(properName);
+        mgr.put(altName, op);
     }
 }
 

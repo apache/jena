@@ -53,14 +53,19 @@ public class utf8
                     int ch = utf8.read() ;
                     if ( ch == -1 )
                         break ;
+                    //System.out.printf("Char = %04X\n", ch);
                     charCount++ ;
                     if ( ch == '\n' ) {
                         lineNum++ ;
                         colNum = INIT_COL ;
                     } else
                         colNum++ ;
-                    if ( !Character.isDefined(ch) )
-                        throw new AtlasException(String.format("No such codepoint: 0x%04X", ch)) ;
+                    if ( ! Character.isBmpCodePoint(ch) ) {
+
+                        char[] utf16 = Character.toChars(ch);
+                        if ( utf16.length > 1 )
+                            System.out.printf("Codepoint: 0x%04X hi:0x%04X lo:0x%04X\n", ch, (int)utf16[0], (int)utf16[1]);
+                    }
                 }
                 System.out.printf("%s: chars = %d , lines = %d\n", fn, charCount, lineNum) ;
             }

@@ -18,43 +18,39 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import static org.apache.jena.riot.WebContent.charsetUTF8 ;
-import static org.apache.jena.riot.WebContent.contentTypeTextPlain ;
+import static org.apache.jena.riot.WebContent.charsetUTF8;
+import static org.apache.jena.riot.WebContent.contentTypeTextPlain;
 
-import java.io.IOException ;
+import java.io.IOException;
 
-import javax.servlet.ServletOutputStream ;
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
+import javax.servlet.ServletOutputStream;
 
 import org.apache.jena.fuseki.ctl.ActionCtl;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
 
 public class ActionLogs extends ActionCtl
 {
-    public ActionLogs() { super() ; } 
-    
+    public ActionLogs() { super(); }
+
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        doCommon(req, resp); 
-    }
-    
+    public void validate(HttpAction action) {}
+
     @Override
-    protected void perform(HttpAction action) {
-        execGet(action) ;
+    public void execGet(HttpAction action) {
+        executeLifecycle(action);
     }
 
-    protected void execGet(HttpAction action) {
+    @Override
+    public void execute(HttpAction action) {
         try {
-            HttpServletResponse response = action.response ;
-            ServletOutputStream out = response.getOutputStream() ;
-            response.setContentType(contentTypeTextPlain) ;
-            response.setCharacterEncoding(charsetUTF8) ;
-            out.println("Not implemented yet") ;
-            out.println() ; 
-            out.flush() ;
+            ServletOutputStream out = action.getResponseOutputStream();
+            action.setResponseContentType(contentTypeTextPlain);
+            action.setResponseCharacterEncoding(charsetUTF8);
+            out.println("Not implemented yet");
+            out.println();
+            out.flush();
             ServletOps.success(action);
-        } catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
+        } catch (IOException ex) { ServletOps.errorOccurred(ex); }
     }
 }

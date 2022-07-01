@@ -17,109 +17,107 @@
  */
 
 package org.apache.jena.fuseki.ctl;
-import static java.lang.String.format ;
+import static java.lang.String.format;
+import static org.apache.jena.riot.web.HttpNames.METHOD_GET;
+import static org.apache.jena.riot.web.HttpNames.METHOD_POST;
 
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
+import org.apache.jena.atlas.json.JsonBuilder;
+import org.apache.jena.atlas.json.JsonValue;
+import org.apache.jena.fuseki.async.AsyncPool;
+import org.apache.jena.fuseki.async.AsyncTask;
+import org.apache.jena.fuseki.servlets.ActionLib;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.web.HttpSC;
 
-import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.async.AsyncPool ;
-import org.apache.jena.fuseki.async.AsyncTask ;
-import org.apache.jena.fuseki.servlets.ActionBase ;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.web.HttpSC ;
-
-public class ActionTasks extends ActionBase //ActionContainerItem
+public class ActionTasks extends ActionCtl
 {
-    private static AsyncPool[] pools = { AsyncPool.get() } ; 
-    
-    public ActionTasks() { super(Fuseki.serverLog) ; }
-    
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response);
-    }
+    private static AsyncPool[] pools = { AsyncPool.get() };
+
+    public ActionTasks() { super(); }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        doCommon(request, response);
+    public void execOptions(HttpAction action) {
+        ActionLib.doOptionsGetPost(action);
+        ServletOps.success(action);
     }
 
-    private static String prefix = "/" ;
-    
+    private static String prefix = "/";
+
     @Override
-    protected void execCommonWorker(HttpAction action) {
-        String name = extractItemName(action) ;
+    public void validate(HttpAction action) { }
+
+    @Override
+    public void execute(HttpAction action) {
+        String name = ActionCtl.getItemName(action);
         if ( name != null ) {
             if ( name.startsWith(prefix))
-                name = name.substring(prefix.length()) ; 
+                name = name.substring(prefix.length());
             else
-                log.warn("Unexpected task name : "+name) ;
+                action.log.warn("Unexpected task name : "+name);
         }
-        
-        String method = action.request.getMethod() ;
+
+        String method = action.getRequestMethod();
         if ( method.equals(METHOD_GET) )
-            execGet(action, name) ;
+            execGet(action, name);
         else if ( method.equals(METHOD_POST) )
-            execPost(action, name) ;
+            execPost(action, name);
         else
-            ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405) ;
+            ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405);
     }
 
     private void execGet(HttpAction action, String name) {
         if ( name == null )
-            log.info(format("[%d] Tasks", action.id));
+            action.log.info(format("[%d] Tasks", action.id));
         else
-            log.info(format("[%d] Task %s", action.id, name));
+            action.log.info(format("[%d] Task %s", action.id, name));
 
-        JsonValue responseBody = null ;
-        
+        JsonValue responseBody = null;
+
         if ( name == null ) {
-            JsonBuilder builder = new JsonBuilder() ;
-            builder.startArray() ;
-            
+            JsonBuilder builder = new JsonBuilder();
+            builder.startArray();
+
             for ( AsyncPool pool : pools ) {
                 for ( AsyncTask aTask : pool.tasks() ) {
-                    //builder.value(aTask.getTaskId()) ;
-                    descOneTask(builder, aTask) ;
+                    descOneTask(builder, aTask);
                 }
             }
-            builder.finishArray() ;
-            responseBody = builder.build(); 
+            builder.finishArray();
+            responseBody = builder.build();
         } else {
             for ( AsyncPool pool : pools ) {
                 // Assumes first is only.
-                AsyncTask aTask = pool.getTask(name) ;
+                AsyncTask aTask = pool.getTask(name);
                 if ( aTask != null ) {
-                    JsonBuilder builder = new JsonBuilder() ;
+                    JsonBuilder builder = new JsonBuilder();
                     descOneTask(builder, aTask);
-                    responseBody = builder.build() ;
+                    responseBody = builder.build();
                 }
             }
         }
-        
+
         if ( responseBody == null )
-            ServletOps.errorNotFound("Task '"+name+"' not found") ;
-        ServletOps.setNoCache(action) ; 
-        ServletOps.sendJsonReponse(action, responseBody); 
+            ServletOps.errorNotFound("Task '"+name+"' not found");
+        ServletOps.setNoCache(action);
+        ServletOps.sendJsonReponse(action, responseBody);
     }
 
     private void execPost(HttpAction action, String name) {
-        
+
     }
-    
+
     private static void descOneTask(JsonBuilder builder, AsyncTask aTask) {
-        builder.startObject("SingleTask") ;
-        builder.key(JsonConstCtl.task).value(aTask.displayName()) ;
-        builder.key(JsonConstCtl.taskId).value(aTask.getTaskId()) ;
+        builder.startObject("SingleTask");
+        builder.key(JsonConstCtl.task).value(aTask.displayName());
+        builder.key(JsonConstCtl.taskId).value(aTask.getTaskId());
         if ( aTask.getStartPoint() != null )
-            builder.key(JsonConstCtl.started).value(aTask.getStartPoint()) ;
+            builder.key(JsonConstCtl.started).value(aTask.getStartPoint());
         if ( aTask.getFinishPoint() != null )
-            builder.key(JsonConstCtl.finished).value(aTask.getFinishPoint()) ;
-        builder.finishObject("SingleTask") ;
+            builder.key(JsonConstCtl.finished).value(aTask.getFinishPoint());
+        if ( aTask.wasSuccessful() != null )
+            builder.key(JsonConstCtl.success).value(aTask.wasSuccessful());
+        builder.finishObject("SingleTask");
     }
 }
 

@@ -27,17 +27,17 @@ import java.util.Objects;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.other.GLib ;
-import org.apache.jena.riot.system.RiotLib ;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Context;
 
-/** An output of triples / quads that print batches of same subject / same graph, same subject. 
+/** An output of triples / quads that print batches of same subject / same graph, same subject.
  *  It writes something that is easier to read than
  *  N-triples, N-quads but it's not full pretty printing
  *  which usually requires analysing the data before any output.
- *  
- *  If fed only quads, the output is valid TriG. 
- *  If fed only triples, the output is valid Turtle. 
+ *
+ *  If fed quads and triples, the output is valid TriG.
+ *  If fed only triples, the output is valid Turtle.
  */
 
 public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
@@ -52,36 +52,38 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
     protected static final int MIN_PREDICATE        = 6 ; //WriterConst.MIN_PREDICATE ;
     protected static final int LONG_PREDICATE       = WriterConst.LONG_PREDICATE ;
     protected static final int LONG_SUBJECT         = WriterConst.LONG_SUBJECT ;
-    
+
     protected static final int INDENT_MIN_S         = 6 ;         // Range of subject indent
     protected static final int INDENT_MAX_S         = 14 ;
-    protected static final int GAP_S_P              = 2 ;         
-    protected static final int GAP_P_O              = 2 ;         
-    
+    protected static final int GAP_S_P              = 2 ;
+    protected static final int GAP_P_O              = 2 ;
+
     protected static final int INDENT_GDFT          = 2 ;           // Default graph indent
     protected static final int INDENT_GNMD          = 4 ;           // Named graph indent
-    
+
     // Quad output
     protected Node lastGraph            = null ;
     protected Node lastSubject          = null ;
     protected int currentGraphIndent    = 0;
+    // Set true if we see a prefix setting for the RDF namespace.
+    protected boolean hasRDFprefix      = false;
 
-    public WriterStreamRDFBlocks(OutputStream output) {
-        super(output) ;
+    public WriterStreamRDFBlocks(OutputStream output, Context context) {
+        super(output, context) ;
     }
 
-    public WriterStreamRDFBlocks(Writer output) {
-        super(output) ;
+    public WriterStreamRDFBlocks(Writer output, Context context) {
+        super(output, context) ;
     }
 
-    public WriterStreamRDFBlocks(IndentedWriter output) {
-        super(output) ;
+    public WriterStreamRDFBlocks(IndentedWriter output, Context context) {
+        super(output, context) ;
     }
 
     @Override
     protected void printBatchQuads(Node g, Node s, List<Quad> quads) {
         if ( g == null )
-            // print as Triples has currentGraph == null. 
+            // print as Triples has currentGraph == null.
             g = Quad.defaultGraphNodeGenerated ;
         if ( Objects.equals(g, lastGraph) ) {
             // Same graph, different subject.
@@ -92,7 +94,7 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
             startGraph(g) ;
             lastGraph = g ;
         }
-        List<Triple> triples = GLib.quads2triples(quads.iterator()).toList() ;
+        List<Triple> triples = G.quads2triples(quads.iterator()).toList() ;
         printBatch(s, triples) ;
         // No trailing "." has been printed.
         lastSubject = s ;
@@ -110,6 +112,15 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
     }
 
     @Override
+    public void prefixSetup(String prefix, String iri) {
+        // Newline between blocks.
+        // After flush, before writing PREFIX
+        boolean addNL = ( activeTripleData || activeQuadData );
+        if ( addNL )
+            out.println();
+    }
+
+    @Override
     protected void printBatchTriples(Node s, List<Triple> triples) {
         startBatch();
         printBatch(s, triples) ;
@@ -117,7 +128,7 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
         out.println(" .") ;
         lastGraph = null;
     }
-        
+
     private void printBatch(Node s, List<Triple> triples) {
         outputNode(s) ;
         if ( out.getCol() > LONG_SUBJECT )
@@ -129,10 +140,12 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
         writePredicateObjectList(triples) ;
         out.decIndent(INDENT_PREDICATE) ;
     }
-        
+
     private void writePredicateObjectList(Collection<Triple> triples) {
         // Find width
-        int predicateMaxWidth = RiotLib.calcWidthTriples(pMap, baseURI, triples, MIN_PREDICATE, LONG_PREDICATE) ;
+        // We may have a prefix for RDF otherwise we use the 'a' abbreviation for rdf:type.
+        boolean writeKeyWordType = countPrefixesForRDF <= 0 ;
+        int predicateMaxWidth = Widths.calcWidthTriples(pMap, baseURI, triples, MIN_PREDICATE, LONG_PREDICATE, writeKeyWordType) ;
         boolean first = true ;
         for ( Triple triple : triples ) {
             if ( !first )
@@ -141,7 +154,7 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
                 first = false ;
 
             Node p = triple.getPredicate() ;
-            outputNode(p) ;
+            printProperty(p);
             out.pad(predicateMaxWidth) ;
             out.print(' ', GAP_P_O) ;
             Node o = triple.getObject() ;
@@ -164,7 +177,7 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
         // Start graph
         if ( lastGraph == null ) {
             boolean NL_START = (dftGraph(g) ? NL_GDFT_START : NL_GNMD_START) ;
-            
+
             lastSubject = null ;
             if ( !dftGraph(g) ) {
                 outputNode(g) ;

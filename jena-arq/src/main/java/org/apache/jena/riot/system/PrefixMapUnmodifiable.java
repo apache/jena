@@ -21,39 +21,34 @@ package org.apache.jena.riot.system;
 import java.util.Collections ;
 import java.util.Map ;
 
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.shared.PrefixMapping ;
 
-/** A PrefixMap that traps update operations on a wrapped prefix map */ 
+/** A PrefixMap that traps update operations on a wrapped prefix map */
 public class PrefixMapUnmodifiable extends PrefixMapWrapper
 {
     public PrefixMapUnmodifiable(PrefixMap other) { super(other) ; }
 
     @Override
-    public Map<String, IRI> getMapping()
-    { return Collections.unmodifiableMap(get().getMapping()) ; }
+    public Map<String, String> getMapping()
+    { return Collections.unmodifiableMap(getR().getMapping()) ; }
 
     @Override
     public void add(String prefix, String iriString)
-    { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }  
-
-    @Override
-    public void add(String prefix, IRI iri)
-    { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }  
+    { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }
 
     @Override
     public void putAll(PrefixMap pmap)
-    { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }  
+    { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }
 
     @Override
     public void putAll(PrefixMapping pmap)
-    { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }  
+    { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }
 
     @Override
     public void putAll(Map<String, String> mapping)
-    { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }  
+    { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }
 
     @Override
     public void delete(String prefix)
-    { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }  
+    { throw new UnsupportedOperationException("Unmodifiable PrefixMap") ; }
 }

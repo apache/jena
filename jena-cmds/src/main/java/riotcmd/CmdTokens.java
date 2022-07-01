@@ -24,7 +24,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 
 public class CmdTokens
 {
@@ -47,18 +47,18 @@ public class CmdTokens
         for ( String filename : args )
         {
             InputStream in = IO.openFile(filename) ;
-            Tokenizer tokenize = TokenizerFactory.makeTokenizerUTF8(in) ;
+            Tokenizer tokenizer = TokenizerText.create().source(in).build() ;
             Timer timer = new Timer() ;
             long count = 0 ; 
             timer.startTimer() ;
-            for ( ; tokenize.hasNext() ; )
+            for ( ; tokenizer.hasNext() ; )
             {
-                Token t = tokenize.next() ;
+                Token t = tokenizer.next() ;
                 if ( print )
                     System.out.println(t) ;
                 count++ ;
             }
-            tokenize.close();
+            tokenizer.close();
             long millis = timer.endTimer() ;
             if ( timing )
             {

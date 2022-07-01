@@ -1331,7 +1331,7 @@ public interface OntModel
      *
      * @param withImports If true, each sub-model returned by this method
      * will also include its import models. So if model A imports D, and D
-     * imports D, when called with <code>withImports</code> set to true, the
+     * imports E, when called with <code>withImports</code> set to true, the
      * return value for <code>modelA.listSubModels(true)</code> will be an
      * iterator, whose only value is a model for D, and that model will contain
      * a sub-model representing the import of E. If <code>withImports</code>
@@ -1682,7 +1682,7 @@ public interface OntModel
      * @return This model
      */
     public Model writeAll( OutputStream out, String lang, String base );
-    
+
     /**
      * <p>Write a serialized representation of all of the contents of the model,
      * including inferred statements and statements imported from other

@@ -1,0 +1,27 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+
+[] rdf:type fuseki:Server ;
+   fuseki:services   ( <#service1> ) ;
+   fuseki:compactEP  true ;
+.
+
+<#service1> rdf:type fuseki:Service ;
+    fuseki:name         "ds" ;
+    fuseki:endpoint     [
+       fuseki:operation  fuseki:query;
+       fuseki:name       "" ;
+    ] ;
+    fuseki:dataset      <#emptyDataset> ;
+.
+
+<#emptyDataset> rdf:type tdb2:DatasetTDB ;
+    tdb2:location "target/Databases/DB-serverTDB2_compact0" ;
+.

@@ -40,7 +40,7 @@ public class EnhGraph
     // 1000 seems to be a "about the right size" by experimentation.
     protected Cache<Node, RDFNode> enhNodes = CacheFactory.createCache(1000);
     
-    /** The unique personality that is bound to this polymorphic instace */
+    /** The unique personality that is bound to this polymorphic instance */
     private Personality<RDFNode> personality;
 
     // Constructors
@@ -50,7 +50,7 @@ public class EnhGraph
      * 
      * @param g The underlying plain graph, may be null to defer binding to a given 
      *      graph until later.
-     * @param p The personality factory, that maps types to realisations
+     * @param p The personality factory, that maps types to realizations
      */
     public EnhGraph( Graph g, Personality<RDFNode> p ) {
         super();

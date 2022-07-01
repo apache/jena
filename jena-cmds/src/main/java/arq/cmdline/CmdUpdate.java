@@ -19,13 +19,12 @@
 package arq.cmdline;
 
 import org.apache.jena.query.Syntax ;
-import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 
 public abstract class CmdUpdate extends CmdARQ
 {
     protected ModDataset modDataset = null ;
-    protected Syntax updateSyntax = Syntax.defaultUpdateSyntax ;
+    protected Syntax updateSyntax = Syntax.syntaxARQ ;
 
     protected CmdUpdate(String[] argv)
     {
@@ -33,15 +32,9 @@ public abstract class CmdUpdate extends CmdARQ
         modDataset = setModDataset() ;
         addModule(modDataset) ;
     }
-    
+
     protected ModDataset setModDataset() {
         return new ModDatasetGeneralAssembler() ;
-    }
-
-    /** @deprecated Use {@link setModDataset} */ 
-    @Deprecated
-    protected ModDataset setModeDataset() {
-        return setModDataset();
     }
 
     @Override
@@ -51,15 +44,12 @@ public abstract class CmdUpdate extends CmdARQ
         if ( super.cmdStrictMode )
             updateSyntax = Syntax.syntaxSPARQL_11 ;
     }
-    
+
     @Override
     protected final void exec() {
         DatasetGraph dataset = modDataset.getDatasetGraph() ;
         if ( dataset == null )
             dataset = dealWithNoDataset() ;
-        
-        if ( dataset.getDefaultGraph() == null )
-            dataset.setDefaultGraph(ModelFactory.createDefaultModel().getGraph()) ;
         execUpdate(dataset) ;
     }
 

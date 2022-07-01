@@ -20,7 +20,7 @@ package org.apache.jena.rdfconnection;
 
 import org.apache.jena.shared.JenaException ;
 
-/** Exceptions related to {@link RDFConnection} */ 
+/** Exceptions related to {@link RDFConnection} */
 public class JenaConnectionException extends JenaException {
     public JenaConnectionException()                                  { super(); }
     public JenaConnectionException(String message)                    { super(message); }

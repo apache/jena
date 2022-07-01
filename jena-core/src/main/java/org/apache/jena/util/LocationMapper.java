@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
  * 
  * @see FileManager
  */
-
 public class LocationMapper
 {
     static Logger log = LoggerFactory.getLogger(LocationMapper.class)  ;
@@ -60,8 +59,8 @@ public class LocationMapper
     
     static LocationMapper theMapper = null ;
     
-    /** Get the global LocationMapper */
-    public static LocationMapper get()
+    /** For use within Jena libraries only. */
+    public static LocationMapper getInternal()
     {
         if ( theMapper == null )
         {
@@ -72,7 +71,16 @@ public class LocationMapper
         return theMapper ;
     }
     
-    /** Set the global location mapper. (as returned by get())
+    
+    /**
+     * Get the global LocationMapper.
+     * @deprecated Use {@code StreamManager} and {@code LocationMapper} from {@code org.apache.jena.riot.system.stream}.
+     */
+    @Deprecated
+    public static LocationMapper get() { return getInternal(); }
+
+    
+    /** Set the global location mapper. (as returned by {@link #get()})
      * If called before any call to get(), then the usual default global location mapper is not created 
      * @param globalLocationMapper
      */
@@ -90,11 +98,19 @@ public class LocationMapper
         return lMap ;
     }
     
-    /** Create a LocationMapper with no mapping yet */
+    /**
+     * Create a LocationMapper with no mapping yet
+     * @deprecated Use {@code StreamManager} and {@code LocationMapper} from {@code org.apache.jena.riot.system.stream}.
+     */
+    @Deprecated
     public LocationMapper() { }
     
-    /** Create a LocationMapper made like another one
-     * This is a deep copy of the location and prefix maps..*/
+    /**
+     * Create a LocationMapper made like another one
+     * This is a deep copy of the location and prefix maps.   
+     * @deprecated Use {@code StreamManager} and {@code LocationMapper} from {@code org.apache.jena.riot.system.stream}.
+     */
+    @Deprecated
     public LocationMapper(LocationMapper locMapper)
     {
         altLocations.putAll(locMapper.altLocations) ;
@@ -103,13 +119,19 @@ public class LocationMapper
     
     /** Create a LocationMapper from an existing model
      * @see org.apache.jena.vocabulary.LocationMappingVocab
+     * @deprecated Use {@code StreamManager} and {@code LocationMapper} from {@code org.apache.jena.riot.system.stream}.
      */
+    @Deprecated
     public LocationMapper(Model model)
     {
         processConfig(model) ;
     }
     
-    /** Create a LocationMapper from a config file */
+    /**
+     * Create a LocationMapper from a config file 
+     * @deprecated Use {@code StreamManager} and {@code LocationMapper} from {@code org.apache.jena.riot.system.stream}.
+     */
+    @Deprecated
     public LocationMapper(String config)
     {
         initFromPath(config, true) ;
@@ -124,7 +146,7 @@ public class LocationMapper
         }
         
         // Make a file manager to look for the location mapping file
-        FileManager fm = new FileManager() ;
+        FileManager fm = new FileManagerImpl() ;
         fm.addLocatorFile() ;
         fm.addLocatorClassLoader(fm.getClass().getClassLoader()) ;
         

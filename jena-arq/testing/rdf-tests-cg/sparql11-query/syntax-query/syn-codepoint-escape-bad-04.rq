@@ -1,0 +1,7 @@
+SELECT * WHERE {
+    ?s ?p \u005cU00000031 .
+}
+
+# the first escape here produces '\' REVERSE SOLIDUS (U+5C)
+# its unescaping must not lead to a subsequent unescaping of "\U00000031" escape.
+# This should cause a syntax error as "?s ?p \U00000031" and NOT a valid query as "?s ?p 1"

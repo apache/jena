@@ -18,19 +18,16 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.dboe.base.file.BinaryDataFile;
-import org.apache.jena.dboe.base.file.BinaryDataFileRandomAccess;
-import org.apache.jena.dboe.base.file.BinaryDataFileWriteBuffered;
+import org.apache.jena.atlas.lib.FileOps;
 
 public class TestBinaryDataFileWriteBufferedFile extends AbstractTestBinaryDataFile {
-    public static String FILE = TS_File.FILE ;
+    public static String FILE = TS_File.FILE;
 
     @Override
     protected BinaryDataFile createBinaryDataFile() {
         FileOps.delete(FILE);
-        BinaryDataFileRandomAccess file = new BinaryDataFileRandomAccess(FILE) ;
-        return new BinaryDataFileWriteBuffered(file) ;
+        BinaryDataFileRandomAccess file = new BinaryDataFileRandomAccess(FILE);
+        return new BinaryDataFileWriteBuffered(file);
     }
 }
 

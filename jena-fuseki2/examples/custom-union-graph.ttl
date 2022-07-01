@@ -1,0 +1,69 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+## Assemble a default graph from a specific set of graphs in a TDB2 database.
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+
+[] rdf:type fuseki:Server ;
+   fuseki:services (
+     :service
+   ) .
+
+:service rdf:type fuseki:Service ;
+    fuseki:name "dataset" ;
+    fuseki:endpoint [ 
+        fuseki:operation fuseki:query ;
+    ];
+    fuseki:endpoint [
+        fuseki:operation fuseki:gsp-r ;
+    ] ;
+    fuseki:dataset :dataset ;
+    .
+
+:dataset rdf:type      ja:RDFDataset ;
+    ja:defaultGraph :graphMyUnion ;
+    . 
+
+## Union
+
+:graphMyUnion rdf:type ja:UnionModel ;
+    ja:rootModel [
+        rdf:type tdb2:GraphTDB2 ;
+        tdb2:dataset :dataset_tdb2 ;
+    ] ;
+    ja:subModel :graph1 ;
+    ja:subModel :graph2 ;
+    ja:subModel :graph3 ;
+    .
+## Graphs out of DB2.
+
+## Union of all named graphs
+## :graph rdf:type tdb2:GraphTDB2 ;
+##     tdb2:graphName "urn:x-arq:UnionGraph" ;
+##     tdb2:dataset :dataset_tdb2 ;
+##     .
+
+:graph1  rdf:type tdb2:GraphTDB2 ;
+    tdb2:graphName "http://example/ng1" ;
+    tdb2:dataset :dataset_tdb2 ;
+    .
+:graph2  rdf:type tdb2:GraphTDB2 ;
+    tdb2:graphName "http://example/ng2" ;
+    tdb2:dataset :dataset_tdb2 ;
+    .
+
+:graph3  rdf:type tdb2:GraphTDB2 ;
+    tdb2:graphName "http://example/ng3" ;
+    tdb2:dataset :dataset_tdb2 ;
+    .
+
+## The database
+
+:dataset_tdb2  rdf:type tdb2:DatasetTDB2 ;
+    tdb2:location "DB2" ;
+    .

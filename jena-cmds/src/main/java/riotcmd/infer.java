@@ -20,26 +20,22 @@ package riotcmd;
 
 import java.util.List ;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
-import jena.cmd.CmdGeneral;
-
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.rdfs.RDFSFactory;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.process.inf.InfFactory ;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
-import org.apache.jena.util.FileManager ;
 
 /*
- * TDB Infer
+ * Infer
  *   RDFS
- *   owl:sameAs (in T-Box, not A-Box)
- *   owl:equivalentClass, owl:equivalentProperty
- *   owl:TransitiveProperty, owl:SymmetricProperty
  *
  * OWLprime - Oracle
 - rdfs:domain
@@ -60,7 +56,7 @@ import org.apache.jena.util.FileManager ;
     * equivalentClass
     * equivalentProperty
     * sameAs
-    * differentFrom (and allDifferent) 
+    * differentFrom (and allDifferent)
 
 # Property Characteristics:
 
@@ -71,7 +67,7 @@ import org.apache.jena.util.FileManager ;
     * InverseFunctionalProperty
     * ObjectProperty
     * DatatypeProperty
-    * disjointWith 
+    * disjointWith
 
 AllegroGraph RDFS++
     * rdf:type
@@ -85,26 +81,18 @@ AllegroGraph RDFS++
 public class infer extends CmdGeneral
 {
     static final ArgDecl argRDFS = new ArgDecl(ArgDecl.HasValue, "rdfs") ;
-    private Model vocab ;
-    
+    private Graph vocab ;
+
     public static void main(String... argv)
     {
         new infer(argv).mainRun() ;
-    }        
+    }
 
     protected infer(String[] argv)
     {
         super(argv) ;
         super.add(argRDFS) ;
     }
-
-//    public static void expand(String filename, Model vocab)
-//    {
-//        Sink<Triple> sink = new SinkTripleOutput(System.out) ;
-//        sink = new InferenceExpanderRDFS(sink, vocab) ;
-//        RiotReader.parseTriples(filename, sink) ;
-//        IO.flush(System.out); 
-//    }
 
     @Override
     protected String getSummary()
@@ -118,22 +106,22 @@ public class infer extends CmdGeneral
         if ( ! contains(argRDFS) )
             throw new CmdException("Required argument missing: --"+argRDFS.getKeyName()) ;
         String fn = getValue(argRDFS) ;
-        vocab = FileManager.get().loadModel(fn) ;
+        vocab = RDFDataMgr.loadGraph(fn) ;
     }
 
     @Override
     protected void exec()
     {
         StreamRDF sink = StreamRDFLib.writer(System.out) ;
-        sink = InfFactory.inf(sink, vocab) ;
-        
+        sink = RDFSFactory.streamRDFS(sink, vocab) ;
+
         List<String> files = getPositionalOrStdin() ;
         if ( files.isEmpty() )
             files.add("-") ;
-            
+
         for ( String fn : files )
             processFile(fn, sink) ;
-        IO.flush(System.out); 
+        IO.flush(System.out);
     }
 
     private void processFile(String filename, StreamRDF sink)
@@ -141,9 +129,9 @@ public class infer extends CmdGeneral
         Lang lang = filename.equals("-") ? RDFLanguages.NQUADS : RDFLanguages.filenameToLang(filename, RDFLanguages.NQUADS) ;
 
         if ( filename.equals("-") )
-            RDFDataMgr.parse(sink, System.in, null, RDFLanguages.NQUADS) ;
+            RDFParser.source(System.in).lang(RDFLanguages.NQUADS).parse(sink);
         else
-            RDFDataMgr.parse(sink, filename) ;
+            RDFParser.source(filename).parse(sink);
     }
 
     @Override

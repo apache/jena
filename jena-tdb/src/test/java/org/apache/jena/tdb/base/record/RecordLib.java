@@ -25,8 +25,6 @@ import java.util.List;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Bytes ;
-import org.apache.jena.tdb.base.record.Record ;
-import org.apache.jena.tdb.base.record.RecordFactory ;
 
 
 

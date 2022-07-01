@@ -1,0 +1,51 @@
+# syntax-only tests:
+# sparql -d validation/manifest.ttl -d schemas/meta.ttl -e '
+#    PREFIX sht: <http://www.w3.org/ns/shacl/test-suite#>
+#    PREFIX mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+#    SELECT ?t { { ?x1 sht:sameAbstractSyntaxAs ?x0 }
+#                UNION
+#                { ?x1 sht:similarAbstractSyntaxAs ?x0 }
+#                { ?t mf:action [ sht:schema ?x1 ] } }
+# '
+
+
+PREFIX sht:     <http://www.w3.org/ns/shacl/test-suite#>
+
+                                           <1dotComma.shex> sht:sameAbstractSyntaxAs                             <1dot.shex> .
+                                            <1dotLNex.shex> sht:sameAbstractSyntaxAs                             <1dot.shex> .
+                                             <1dotNS2.shex> sht:sameAbstractSyntaxAs                             <1dot.shex> .
+                                      <1dotNS2Comment.shex> sht:sameAbstractSyntaxAs                             <1dot.shex> .
+                                     <1dotLNexComment.shex> sht:sameAbstractSyntaxAs                             <1dot.shex> .
+                                       <1dotLNdefault.shex> sht:sameAbstractSyntaxAs                             <1dot.shex> .
+                                       <1dotNSdefault.shex> sht:sameAbstractSyntaxAs                             <1dot.shex> .
+                                  <1inversenegateddot.shex> sht:sameAbstractSyntaxAs               <1negatedinversedot.shex> .
+                                          <2dotCommas.shex> sht:sameAbstractSyntaxAs                       <2dotCommas.shex> .
+                                       <open2dotclose.shex> sht:sameAbstractSyntaxAs                       <2dotCommas.shex> .
+                                 <open2dotcommasclose.shex> sht:sameAbstractSyntaxAs                       <2dotCommas.shex> .
+                                  <open3groupdotclose.shex> sht:sameAbstractSyntaxAs                        <3groupdot.shex> .
+                                 <open1dotOr1dotclose.shex> sht:sameAbstractSyntaxAs             <1dotCommaOr1dotComma.shex> .
+                  <open1dotCommaOr1dotCommacloseComma.shex> sht:sameAbstractSyntaxAs             <1dotCommaOr1dotComma.shex> .
+                                <2dotCommaOr1dotComma.shex> sht:sameAbstractSyntaxAs                       <2dotOr1dot.shex> .
+                                 <open2dotOr1dotclose.shex> sht:sameAbstractSyntaxAs                       <2dotOr1dot.shex> .
+                      <open2dotCommasOr1dotCommaclose.shex> sht:sameAbstractSyntaxAs                       <2dotOr1dot.shex> .
+                        <openopen2dotcloseOr1dotclose.shex> sht:sameAbstractSyntaxAs                       <2dotOr1dot.shex> .
+             <openopen2dotCommascloseOr1dotCommaclose.shex> sht:sameAbstractSyntaxAs                       <2dotOr1dot.shex> .
+<open1dotopen1dotCommaOr1dotCommacloseCommacloseComma.shex> sht:sameAbstractSyntaxAs <open1dotopen1dotOr1dotcloseclose.shex> .
+                                         <1card2blank.shex> sht:sameAbstractSyntaxAs                       <1card2Star.shex> .
+                                <1val1DOUBLElowercase.shex> sht:sameAbstractSyntaxAs                      <1val1DOUBLE.shex> .
+                                    <1dotRefSpaceLNex.shex> sht:sameAbstractSyntaxAs                      <1dotRefLNex.shex> .
+                                     <1dotRefSpaceNS1.shex> sht:sameAbstractSyntaxAs                       <1dotRefNS1.shex> .
+                        <open1dotOropen2dotcloseclose.shex> sht:sameAbstractSyntaxAs                       <1dotOr2dot.shex> .
+                               <1dotCommaOr2dotCommas.shex> sht:sameAbstractSyntaxAs                       <1dotOr2dot.shex> .
+                      <open1dotCommaOr2dotcommasclose.shex> sht:sameAbstractSyntaxAs                       <1dotOr2dot.shex> .
+             <open1dotCommaOropen2dotCommascloseclose.shex> sht:sameAbstractSyntaxAs                       <1dotOr2dot.shex> .
+                                 <open1dotOr2dotclose.shex> sht:sameAbstractSyntaxAs                       <1dotOr2dot.shex> .
+<openopen1dotCommaOr1dotCommaclose1dotCommacloseComma.shex> sht:sameAbstractSyntaxAs <openopen1dotOr1dotclose1dotclose.shex> .
+                                     <3groupdot3Extra.shex> sht:sameAbstractSyntaxAs                  <3groupdotExtra3.shex> .
+                                 <3groupdotExtra3NLex.shex> sht:sameAbstractSyntaxAs                  <3groupdotExtra3.shex> .
+                               <startEqualSpaceInline.shex> sht:sameAbstractSyntaxAs                      <startInline.shex> .
+                               <startSpaceEqualInline.shex> sht:sameAbstractSyntaxAs                      <startInline.shex> .
+                                        <1dot3Inherit.shex> sht:sameAbstractSyntaxAs                     <1dotInherit3.shex> .
+#                                <3groupdotExtra3NLex.shex> sht:sameAbstractSyntaxAs              <3groupdotExtra3NLex.shex> .
+                               <1dotLNex-HYPHEN_MINUS.shex> sht:spellingDifferentFrom                            <1dot.shex> .
+                                         <1dotRefLNex.shex> sht:sameStructureAs                              <1dotRef1.shex> .

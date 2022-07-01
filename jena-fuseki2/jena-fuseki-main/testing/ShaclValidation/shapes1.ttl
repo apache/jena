@@ -1,0 +1,19 @@
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+#PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX sh: 	    <http://www.w3.org/ns/shacl#>
+
+PREFIX :        <urn:sh:ex:>
+PREFIX ex:      <http://example/>
+PREFIX ns:      <http://example/ns#>
+
+## Better reporting that targetObjectsOf
+:nodeShape2 a sh:NodeShape ;
+    sh:targetSubjectsOf ns:p ;
+    sh:property [
+       sh:path ns:p;
+       sh:datatype xsd:string;
+       sh:maxCount 1 ;
+       sh:minCount 1 ;
+    ] .

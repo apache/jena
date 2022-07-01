@@ -41,10 +41,7 @@ import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.expr.aggregate.Aggregator ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.syntax.* ;
-import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransform ;
-import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransformCleanGroupsOfOne ;
-import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransformer ;
-import org.apache.jena.sparql.syntax.syntaxtransform.ExprTransformApplyElementTransform ;
+import org.apache.jena.sparql.syntax.syntaxtransform.*;
 import org.apache.jena.sparql.util.graph.GraphList ;
 import org.apache.jena.vocabulary.RDF ;
 
@@ -55,28 +52,32 @@ import org.apache.jena.vocabulary.RDF ;
  * The contract is to return an "equivalent query" - generates the same answers -
  * to the original query that generated the algebra.
  * That may be the same query (the code aims for this, assuming the original query
- * didn't have additonal, unnecessary {}), 
+ * didn't have additional, unnecessary {}),
  * different queries with the same alegra forms,
  * or different equivalent queries - same answers, different algebra -
  * usually where extra {} are added in and not easiely cleaned out.
  * <p>
- * Some attempt is made to handle algrebra expressions with operators from the optimizer.
+ * Some attempt is made to handle algebra expressions with operators from the optimizer.
  * <p>
  * It is possible to build algrebra expressions directly for which there is no SPARQL query
  * that generates that algebra.  This code may produce an equivalent query but that is
- * not gauranteed.
+ * not guaranteed.
  */
 public class OpAsQuery {
-    // Query cleaning is done in fixupGroupsOfOne by applying an ElementTransform. 
-    
-    // Some thigns that can be done further:
-    
+    // Some things that can be done further:
+
     // TODO Optimization formats like OpTopN (which is an optimizer additional algebra operator).
-    // TODO More group flattening.
-    // OPTIONAL (LeftJoin) unbundles the LHS to avoid { { P OPTIONAL{} } OPTIONAL{} }
-    // This is actually a general situation.
-    // Adding onto the end of a group when the item added can not merge into the existing last element.  
+    // TODO More group flattening. This is better presentation, not chanage in algebra.
+    //    OPTIONAL (LeftJoin) unbundles the LHS to avoid { { P OPTIONAL{} } OPTIONAL{} }
+    //    {   { ... } BIND } -- the inner { } is not necessary
+    //       This is actually a general situation.
+    //   Adding onto the end of a group when the item added can not merge into the existing last element.
     // e.g. BIND, VALUES.
+
+    public static Query asQuery(Op op) {
+        Converter converter = new Converter(op) ;
+        return converter.convert() ;
+    }
 
     static class /* struct */ QueryLevelDetails {
         // The stack of processing in a query is:
@@ -90,12 +91,12 @@ public class OpAsQuery {
         OpFilter       opHaving   = null ;
         List<OpExtend> opExtends  = new ArrayList<>() ;
         OpGroup        opGroup    = null ;
-        // End of the modifiers. 
+        // End of the modifiers.
         // The pattern of the group or query itself if not grouped.
         Op             pattern    = null ;
-        
+
         private QueryLevelDetails() {}
-        
+
         // Debugging help.
         void info() {
             if ( opSlice != null )
@@ -123,6 +124,8 @@ public class OpAsQuery {
         }
 
         static QueryLevelDetails analyse(Op operation) {
+            // Walk inwards, collecting the query level information.
+            // slice-distinct/reduce-project-order-filter[having]-extend*[AS and aggregate naming]-group-pattern
             QueryLevelDetails details = new QueryLevelDetails() ;
 
             Op op = operation ;
@@ -149,10 +152,16 @@ public class OpAsQuery {
             }
 
             // Lookahead to see if an opGroup can be found.
+            // If no group, leave and process as in WHERE clause.
             details.opGroup = getGroup(op) ;
             if ( details.opGroup == null ) {
-                op = processExtend(op, details.opExtends) ; 
-                details.pattern = op ;
+                // If project, deal with as AS.
+                // Else as regular WHERE
+                if ( details.opProject != null ) {
+                    op = processExtend(op, details.opExtends) ;
+                    details.pattern = op ;
+                } else
+                    details.pattern = op ;
                 return details ;
             }
             // (group) found.
@@ -163,51 +172,16 @@ public class OpAsQuery {
             }
             // Can't tell if it's an "aggregation" except by looking at the
             // assignment variables.
-            
+
             // AS and aggregate renames.
             op = processExtend(op, details.opExtends) ;
-            
+
             if ( !(op instanceof OpGroup) ) {
                 System.out.println("Expected (group), got " + op.getName()) ;
             }
 
             return details ;
         }
-    }
-    
-    public static Op processExtend(Op op, List<OpExtend> assignments) {
-        while ( op instanceof OpExtend ) {
-            OpExtend opExtend = (OpExtend)op ;
-            assignments.add(opExtend) ;
-            op = opExtend.getSubOp() ;
-        }
-        return op ;
-    }
-    /**
-     * Allows multiple filters and any number of extend
-     */
-    private static OpGroup getGroup(Op op) {
-        // Unwind tail recursion to protected against extreme queries.
-        for ( ; ; ) {
-            if ( op instanceof OpGroup )
-                return (OpGroup)op ;
-            if ( op instanceof OpFilter ) {
-                OpFilter opFilter = (OpFilter)op ;
-                op = opFilter.getSubOp() ;
-                continue ;
-            }
-            if ( op instanceof OpExtend ) { // AS or Aggregate naming
-                OpExtend opExtend = (OpExtend)op ;
-                op = opExtend.getSubOp() ;
-                continue ;
-            }
-            return null ;
-        }
-    }
-
-    public static Query asQuery(Op op) {
-        Converter converter = new Converter(op) ;
-        return converter.convert() ;
     }
 
     public static class Converter implements OpVisitor {
@@ -244,10 +218,10 @@ public class OpAsQuery {
                 Op op = processExtend(queryOp, assignments) ;
                 processQueryPattern(op, assignments) ;
                 query.setQueryResultStar(true) ;
-                query.setResultVars(); 
+                query.resetResultVars();
                 return query ;
             }
-            
+
             // There is a projection.
             QueryLevelDetails level = QueryLevelDetails.analyse(queryOp) ;
             processQueryPattern(level) ;
@@ -268,7 +242,7 @@ public class OpAsQuery {
                 }) ;
                 query.getAggregators().addAll(level.opGroup.getAggregators()) ;
             }
-            
+
             ExprTransform varToExpr = new ExprTransformCopy() {
                 @Override
                 public Expr transform(ExprVar nv) {
@@ -278,16 +252,18 @@ public class OpAsQuery {
                 }
             } ;
 
-            // The assignments will become part of the project. 
-            Map<Var, Expr> assignments = new HashMap<>() ;
+            // The assignments will become part of the project.
+            // Using VarExprList to preserve order; https://github.com/apache/jena/issues/1369
+            VarExprList assignments = new VarExprList();
             if ( level.opExtends != null ) {
                 processExtends(level.opExtends, (var,expr)->{
                     // Internal rename.
                     expr = rewrite(expr, varToExpr) ;
-                    assignments.put(var, expr) ;
+                    assignments.add(var, expr) ;
                 }) ;
+
             }
-            
+
             if ( level.opHaving != null ) {
                 level.opHaving.getExprs().getList().forEach(expr -> {
                     expr = rewrite(expr, varToExpr) ;
@@ -305,17 +281,76 @@ public class OpAsQuery {
                         query.addOrderBy(new SortCondition(expr, sc.getDirection())) ;
                 }) ;
             }
-            
-            if ( level.opProject != null ) {
-                level.opProject.getVars().forEach(v -> {
-                    if ( assignments.containsKey(v) ) {
-                        query.addResultVar(v, assignments.get(v)) ;
-                    } else
-                        query.getProjectVars().add(v) ;
-                    
-                }) ;
-            } else
+
+            if ( level.opProject == null ) {
                 query.setQueryResultStar(true) ;
+                // No project, Make BINDs
+                //processQueryPattern(op, assignments) ;
+
+            } else {
+                // Where assignments and projections align the assignments will become part of the projection
+                // otherwise the assignments will become BINDs; https://github.com/apache/jena/issues/1369
+                List<Var> projectVars = level.opProject.getVars();
+
+                List<Var> assignVars = assignments.getVars();
+                int assignVarsSize = assignVars.size();
+                int projectOffset = assignVarsSize; // Start at end and search backwards
+                int idxThreshold = Integer.MAX_VALUE; // Prevent adding later mentioned expressions earlier to the projection list
+
+                // Find an offset in the assignments from which on
+                // *all remaining* variables appears in the same order as in the projection
+                while (projectOffset-- > 0) {
+                    Var assignVar = assignVars.get(projectOffset);
+
+                    // Ensure that the projection does not shuffle the given order of expressions
+                    // A later assignment must also appear later in the built projection
+                    int idx = projectVars.indexOf(assignVar);
+                    if (idx < 0 || idx > idxThreshold) {
+                        break;
+                    }
+                    idxThreshold = idx;
+                }
+
+                // Assignments with index <= projectOffset become BINDs
+                // Note that a projectOffset of -1 means there won't be any BINDs
+                if (projectOffset >= 0) {
+                    Element activeElement = query.getQueryPattern();
+
+                    ElementGroup activeGroup;
+                    if (activeElement instanceof ElementGroup) {
+                        activeGroup = (ElementGroup)activeElement;
+                    } else {
+                        // Not sure whether it's possible here for BINDs to exist with the
+                        // activeElement NOT being a group pattern - but better safe than sorry
+                        activeGroup = new ElementGroup();
+                        activeGroup.addElement(activeElement);
+                        query.setQueryPattern(activeGroup);
+                    }
+
+                    for (int i = 0; i <= projectOffset; ++i) {
+                        Var v = assignVars.get(i);
+                        Expr e = assignments.getExpr(v);
+                        activeGroup.addElement(new ElementBind(v, e));
+                    }
+                }
+
+                // For each projected variable determine whether a possible expression was already
+                // added as a BIND or whether it needs to be projected
+                for (Var v : projectVars) {
+                    Expr e = assignments.getExpr(v);
+
+                    int offset = assignVars.indexOf(v);
+                    if (offset > projectOffset) {
+                        // Note that 'query.addResultVar' handles the case where e is null
+                        query.addResultVar(v, e) ;
+                    }
+                    else {
+                        // Either the variable did not map to an expression or
+                        // the expression was added as BIND - in any case just project the variable
+                        query.addResultVar(v, null) ;
+                    }
+                }
+            }
 
             if ( level.opDistinct != null )
                 query.setDistinct(true) ;
@@ -326,16 +361,31 @@ public class OpAsQuery {
                 query.setOffset(level.opSlice.getStart()) ;
                 query.setLimit(level.opSlice.getLength()) ;
             }
-            query.setResultVars() ;
+            query.resetResultVars() ;
             return query ;
+        }
+
+        /**
+         * Collect the OpExtend in a stack of OpExtend into a list for later
+         * processing. (Processing only uses opExtend in the list, not inner one
+         * which will also be in the list.)
+         */
+        private static Op processExtend(Op op, List<OpExtend> assignments) {
+            while ( op instanceof OpExtend ) {
+                OpExtend opExtend = (OpExtend)op ;
+                // JENA-1843
+                assignments.add(0, opExtend) ;
+                op = opExtend.getSubOp() ;
+            }
+            return op ;
         }
 
         private static void processExtends(List<OpExtend> ext, BiConsumer<Var, Expr> action) {
             ext.forEach(extend->{
-                extend.getVarExprList().forEachExpr(action) ;
+                extend.getVarExprList().forEachVarExpr(action) ;
             });
         }
-        
+
         private static void processAssigns(List<OpAssign> assigns, BiConsumer<Var, Expr> action) {
             assigns.forEach(assign->{
                 assign.getVarExprList().forEachExpr(action) ;
@@ -345,12 +395,11 @@ public class OpAsQuery {
         private static Expr rewrite(Expr expr, ExprTransform transform) {
             return ExprTransformer.transform(transform, expr) ;
         }
-        
+
         /**
          * Process for a single pattern below the modifiers.
          * Cleans up the ElementGroup produced.
          */
-        
         private void processQueryPattern(QueryLevelDetails level) {
             Op op = level.pattern ;
             op.visit(this) ;
@@ -359,20 +408,26 @@ public class OpAsQuery {
             query.setQueryPattern(e) ;
             query.setQuerySelectType() ;
         }
-        
+
         // Can't distinguish
-        //    SELECT * { ... BIND ( ?v AS ...) } 
-        // from 
+        //    SELECT * { ... BIND ( ?v AS ...) }
+        // from
         //    SELECT ( ?v AS ...) { ... }.
-        // They have the same algebra. 
-        // This code chooses to use the second form. 
+        // They have the same algebra.
+        // This code chooses to use the second form.
         private void processQueryPattern(Op op, List<OpExtend> assignments) {
             op.visit(this) ;
             ElementGroup eg = this.currentGroup ;
             processExtends(assignments,(v,e)->eg.addElement(new ElementBind(v, e)) ) ;
-            Element e = fixupGroupsOfOne(eg) ;
+            Element e = cleanupGroup(eg) ;
             query.setQueryPattern(e) ;
             query.setQuerySelectType() ;
+        }
+
+        private Element cleanupGroup(ElementGroup eg) {
+            Element el = fixupGroupsOfOne(eg);
+            // Other cleanups.
+            return el;
         }
 
         private Element fixupGroupsOfOne(ElementGroup eg) {
@@ -387,7 +442,7 @@ public class OpAsQuery {
             }
             return el2 ;
         }
-        
+
         private Element asElement(Op op) {
             ElementGroup g = asElementGroup(op) ;
             if ( g.size() == 1 )
@@ -461,7 +516,7 @@ public class OpAsQuery {
                 Element e = asElement(op) ;
                 insertIntoGroup(g, e) ;
             }
-            
+
             if ( nestGroup )
                 endSubGroup() ;
             return ;
@@ -545,10 +600,10 @@ public class OpAsQuery {
             ElementGroup eRightGroup = asElementGroup(opJoin.getRight()) ;
             Element eRight = eRightGroup ;
             // Very special case. If the RHS is not something that risks
-            // reparsing into a combined element of a group, strip the group-of-one. 
+            // reparsing into a combined element of a group, strip the group-of-one.
             // See also ElementTransformCleanGroupsOfOne
             if ( eRightGroup.size() == 1 ) {
-                // This always was a {} around it but it's unnecessary in a group of one. 
+                // This always was a {} around it but it's unnecessary in a group of one.
                 if ( eRightGroup.get(0) instanceof ElementSubQuery )
                     eRight = eRightGroup.get(0) ;
             }
@@ -563,14 +618,14 @@ public class OpAsQuery {
         public void visit(OpLeftJoin opLeftJoin) {
             Element eLeft = asElement(opLeftJoin.getLeft()) ;
             ElementGroup eRight = asElementGroup(opLeftJoin.getRight()) ;
-            
+
             // If the RHS is (filter) we need to protect it from becoming
             // part of the expr for the LeftJoin.
             // OPTIONAL {{ ?s ?p ?o FILTER (?o>34) }} is not the same as
             // OPTIONAL { ?s ?p ?o FILTER (?o>34) }
-            
+
             boolean mustProtect = eRight.getElements().stream().anyMatch(el -> el instanceof ElementFilter ) ;
-                
+
             if ( mustProtect ) {
                 ElementGroup eRight2 = new ElementGroup() ;
                 eRight2.addElement(eRight);
@@ -590,7 +645,7 @@ public class OpAsQuery {
                 else
                     g.addElement(eLeft) ;
             }
-                
+
             ElementOptional opt = new ElementOptional(eRight) ;
             g.addElement(opt) ;
         }
@@ -732,7 +787,7 @@ public class OpAsQuery {
                 currentGroup().addElement(new ElementAssign(var,expr)) ;
             }) ;
         }
-        
+
         @Override
         public void visit(OpExtend opExtend) {
             Element e = asElement(opExtend.getSubOp()) ;
@@ -749,8 +804,8 @@ public class OpAsQuery {
         }
 
         // When some modifers (e.g. OpDistinct) are met in a pattern, they signal
-        // a new query level (new innser SELECT), where we switch back to
-        // looking for the level start in 
+        // a new query level (new inner SELECT), where we switch back to
+        // looking for the level start in
 
         private void newLevel(Op op) {
             convertAsSubQuery(op) ;
@@ -823,10 +878,10 @@ public class OpAsQuery {
                 eg.addElement(e);
                 return ;
             }
-            
+
             Element eltTop = eg.getLast() ;
             if ( ! ( eltTop instanceof ElementPathBlock ) ) {
-                // Not working on a ElementPathBlock - no need to group-of-one 
+                // Not working on a ElementPathBlock - no need to group-of-one
                 // when inserting ElementPathBlock.
                 e = unwrapGroupOfOnePathBlock(e) ;
                 eg.addElement(e);
@@ -856,10 +911,10 @@ public class OpAsQuery {
             }
             return null ;
         }
-        
+
         private Element lastElement() {
             ElementGroup g = currentGroup ;
-            return g.getLast() ; 
+            return g.getLast() ;
         }
 
         private void startSubGroup() {
@@ -894,5 +949,41 @@ public class OpAsQuery {
         private void push(ElementGroup el) {
             stack.push(el) ;
         }
+    }
+
+
+    /**
+     * Allows multiple filters and any number of extend
+     */
+    private static OpGroup getGroup(Op op) {
+        // Unwind tail recursion to protected against extreme queries.
+        for ( ; ; ) {
+            if ( op instanceof OpGroup )
+                return (OpGroup)op ;
+            if ( op instanceof OpFilter ) {
+                OpFilter opFilter = (OpFilter)op ;
+                op = opFilter.getSubOp() ;
+                continue ;
+            }
+            if ( op instanceof OpExtend ) { // AS or Aggregate naming
+                OpExtend opExtend = (OpExtend)op ;
+                op = opExtend.getSubOp() ;
+                continue ;
+            }
+            return null ;
+        }
+    }
+
+    private static Op processExtend(Op op, List<OpExtend> assignments) {
+        while (op instanceof OpExtend) {
+            OpExtend opExtend = (OpExtend)op;
+            assignments.add(opExtend);
+            op = opExtend.getSubOp();
+        }
+        // JENA-1843
+        if ( assignments.size() > 1 )
+            Collections.reverse(assignments);
+
+        return op;
     }
 }

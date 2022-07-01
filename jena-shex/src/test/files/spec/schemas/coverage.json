@@ -1,0 +1,78 @@
+{
+  ".README": {
+    "fields": {
+      "rq": "rq query to be substituted into \"jq '.[] | select($rq) | .filename\" corpus.json'\", e.g. \"jq '.[] | select(.json.prefixes) | .filename' corpus.json\"",
+      "expect": "at least these files should match the rq query"
+    }
+  },
+  "prefix": {
+    "rq": ".json.prefixes",
+    "expect": [
+      "1dotLNdefault",
+      "1dotLNex-HYPHEN_MINUS",
+      "1dotLNex",
+      "1dotLNexComment",
+      "1dotNS2",
+      "1dotNS2Comment",
+      "1dotNSdefault",
+      "1dotRefLNex1",
+      "1dotRefNS1",
+      "1dotRefSpaceLNex1",
+      "1dotRefSpaceNS1",
+      "1val1LNDatatype",
+      "3groupdotExtra3NLex",
+      "_all",
+      "kitchenSink"
+    ]
+  },
+  "empty shape": {
+    "rq": "..|select((.type==\"Shape\") and (.expression | not))?",
+    "expect": [
+      "0"
+    ]
+  },
+  "NC AND Shape": {
+    "rq": "..|select(.type==\"ShapeAnd\"? and (.shapeExprs[].type==\"ShapeRef\") and (.shapeExprs[].nodeKind==\"bnode\"))",
+    "expect": [
+      "1bnodeRef1",
+      "1bnodeRefORRefMinlength",
+      "_all",
+      "kitchenSink"
+    ]
+  },
+  "NC with 0 constraints": {
+    "rq": "..|select(.type==\"NodeConstraint\")? | length == 1",
+    "expect": 0
+  },
+  "NC with 1 constraints": {
+    "rq": "..|select(.type==\"NodeConstraint\")? | length == 2",
+    "expect": 96
+  },
+  "NC with 2 constraints": {
+    "rq": "..|select(.type==\"NodeConstraint\")? | length == 3",
+    "expect": 151
+  },
+  "NC with 3 constraints": {
+    "rq": "..|select(.type==\"NodeConstraint\")? | length == 4",
+    "expect": 1
+  },
+  "NC with 4 constraints": {
+    "rq": "..|select(.type==\"NodeConstraint\")? | length == 5",
+    "expect": 0
+  },
+  ".junk": [
+    "datatype",
+    "fractiondigits",
+    "length",
+    "maxexclusive",
+    "maxinclusive",
+    "maxlength",
+    "minexclusive",
+    "mininclusive",
+    "minlength",
+    "nodeKind",
+    "pattern",
+    "totaldigits",
+    "values"
+  ]
+}

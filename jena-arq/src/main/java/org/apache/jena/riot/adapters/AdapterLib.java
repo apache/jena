@@ -37,6 +37,7 @@ class AdapterLib {
         return lmap2;
     }
 
+    @SuppressWarnings("deprecation")
     public static Locator convert(org.apache.jena.util.Locator oldloc) {
         if ( oldloc instanceof org.apache.jena.util.LocatorFile ) {
             org.apache.jena.util.LocatorFile lFile = (org.apache.jena.util.LocatorFile)oldloc;

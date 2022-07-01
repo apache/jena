@@ -1,0 +1,32 @@
+@prefix mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sht:     <http://www.w3.org/ns/shacl-test#> .
+
+<>
+	a mf:Manifest ;
+	rdfs:label "Tests for pre-binding" ;
+	mf:include <pre-binding-001.ttl> ;
+	mf:include <pre-binding-002.ttl> ;
+	mf:include <pre-binding-003.ttl> ;
+	mf:include <pre-binding-004.ttl> ;
+	mf:include <pre-binding-005.ttl> ;
+    # Prebinding $this inside nested SELECT
+## 	mf:include <pre-binding-006.ttl> ;
+	mf:include <pre-binding-007.ttl> ;
+    
+    # $shapesGraph not supported.
+## 	mf:include <shapesGraph-001.ttl> ;
+
+    # MINUS
+## 	mf:include <unsupported-sparql-001.ttl> ;
+    # VALUES
+## 	mf:include <unsupported-sparql-002.ttl> ;
+    # SERVICE
+## 	mf:include <unsupported-sparql-003.ttl> ;
+    # SELECT
+## 	mf:include <unsupported-sparql-004.ttl> ;
+    # BIND assign to $this
+## 	mf:include <unsupported-sparql-005.ttl> ;
+    # ASK validator reassign ?value
+## 	mf:include <unsupported-sparql-006.ttl> ;
+ .

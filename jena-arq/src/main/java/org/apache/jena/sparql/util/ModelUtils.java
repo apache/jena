@@ -21,8 +21,6 @@ package org.apache.jena.sparql.util;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
-import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.QueryException ;
@@ -37,16 +35,15 @@ import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.util.ModelCollector;
 import org.apache.jena.util.iterator.ClosableIterator ;
 
-
 public class ModelUtils
 {
     /** Convert a {@link Node} (graph SPI) to an RDFNode (model API), anchored to the model if possible.
-     *  
+     *
      * @param node
      * @param model (may be null)
      * @return RDFNode
      */
-  
+
     public static RDFNode convertGraphNodeToRDFNode(Node node, Model model) {
         if ( node.isVariable() )
             throw new QueryException("Variable: "+node) ;
@@ -54,39 +51,42 @@ public class ModelUtils
         // Best way.
         if ( model != null )
              return model.asRDFNode(node) ;
-        
+
         if ( node.isLiteral() )
             return new LiteralImpl(node, null) ;
-                
+
         if ( node.isURI() || node.isBlank() )
             return new ResourceImpl(node, null) ;
-        
+
+        if ( node.isNodeTriple() )
+            return new ResourceImpl(node, null) ;
+
         throw new ARQInternalErrorException("Unknown node type for node: "+node) ;
     }
 
     /** Convert a {@link Node} (graph SPI) to an RDFNode (model API)
-     * 
+     *
      * @param node
      * @return RDFNode
      */
     public static RDFNode convertGraphNodeToRDFNode(Node node) {
         return convertGraphNodeToRDFNode(node, null);
     }
- 
+
     public static Statement tripleToStatement(Model model, Triple t)
     {
         if ( model == null )
             throw new ARQInternalErrorException("Attempt to create statement with null model") ;
-        
+
         Node sNode = t.getSubject() ;
         Node pNode = t.getPredicate() ;
         Node oNode = t.getObject() ;
-        
+
         if (!isValidAsStatement(sNode, pNode, oNode)) return null;
-        
-        return model.asStatement(t) ; 
+
+        return model.asStatement(t) ;
     }
-    
+
     /**
      * Determines whether a valid Statement can be formed from the given Subject, Predicate and Object
      * <p>
@@ -102,31 +102,24 @@ public class ModelUtils
     {
         if ( s.isLiteral() || s.isVariable() )
             return false ;
-        
+
         if ( ! p.isURI() )  // Not variable, literal or blank.
             return false ;
 
         if ( o.isVariable() )
             return false ;
-        
+
         return true;
     }
-    
-    
-    public static StmtIterator triplesToStatements(final Iterator<Triple> it, final Model refModel)
-    {
-        return new StmtIteratorImpl(Iter.map(it, refModel::asStatement))
-        {
+
+    public static StmtIterator triplesToStatements(final Iterator<Triple> it, final Model refModel) {
+        return new StmtIteratorImpl(Iter.map(it, refModel::asStatement)) {
             // Make sure to close the incoming iterator
             @Override
-            public void close()
-            {
-                if (it instanceof ClosableIterator<?>)
-                {
-                    ((ClosableIterator<?>)it).close();
-                }
-                else
-                {
+            public void close() {
+                if ( it instanceof ClosableIterator<? > ) {
+                    ((ClosableIterator<? >)it).close();
+                } else {
                     Iter.close(it);
                 }
             }
@@ -141,24 +134,7 @@ public class ModelUtils
         return new ModelCollector.UnionModelCollector();
     }
 
-    public static Iterator<Triple> statementsToTriples(final Iterator<Statement> it)
-    {
-        return new IteratorResourceClosing<>(Iter.map(it, Statement::asTriple),
-        new Closeable()
-        {
-            @Override
-            public void close()
-            {
-                if (it instanceof ClosableIterator<?>)
-                {
-                    ((ClosableIterator<?>)it).close();
-                }
-                else
-                {
-                    Iter.close(it);
-                }
-            }
-        });
+    public static Iterator<Triple> statementsToTriples(final Iterator<Statement> it) {
+        return Iter.onClose(Iter.map(it, Statement::asTriple), ()->Iter.close(it));
     }
- 
 }

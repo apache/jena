@@ -18,17 +18,21 @@
 
 package org.apache.jena.riot.lang ;
 
+import org.apache.jena.riot.system.AsyncParser;
 import org.apache.jena.riot.system.StreamRDF ;
 
 /**
  * Abstract implementation of a producer class that implements {@code StreamRDF};
  * use one of the concrete implementations that match the RDF primitive you are using.
  * @param <T> Type corresponding to a supported RDF primitive
- * 
+ *
  * @see PipedTriplesStream
  * @see PipedQuadsStream
  * @see PipedTuplesStream
+ *
+ * @deprecated To be removed - use {@link AsyncParser}.
  */
+@Deprecated
 public abstract class PipedRDFStream<T> implements StreamRDF
 {
     private final PipedRDFIterator<T> sink ;

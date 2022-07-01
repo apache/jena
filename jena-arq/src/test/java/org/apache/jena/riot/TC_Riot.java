@@ -20,10 +20,11 @@ package org.apache.jena.riot;
 
 import org.apache.jena.riot.adapters.TS_RIOTAdapters ;
 import org.apache.jena.riot.lang.TS_Lang ;
-import org.apache.jena.riot.lang.extra.TS_LangExtra;
 import org.apache.jena.riot.out.TS_Out ;
 import org.apache.jena.riot.process.TS_Process ;
+import org.apache.jena.riot.protobuf.TS_RDFProtobuf;
 import org.apache.jena.riot.resultset.TS_ResultSetRIOT ;
+import org.apache.jena.riot.rowset.TS_RowSetRIOT;
 import org.apache.jena.riot.stream.TS_IO2 ;
 import org.apache.jena.riot.system.TS_RiotSystem ;
 import org.apache.jena.riot.thrift.TS_RDFThrift ;
@@ -38,8 +39,6 @@ import org.junit.runners.Suite ;
     TS_Tokens.class
     , TS_Out.class
     , TS_Lang.class
-    , TS_LangSuite.class
-    , TS_LangExtra.class
     , TS_RiotGeneral.class
     , TS_IO2.class
     , TS_RIOTAdapters.class
@@ -48,9 +47,11 @@ import org.junit.runners.Suite ;
     , TS_RiotSystem.class
     , TS_RiotWeb.class
     , TS_ResultSetRIOT.class
+    , TS_RDFProtobuf.class
     , TS_RDFThrift.class
+    , TS_RowSetRIOT.class
+    // And scripted tests.
 })
-
 
 public class TC_Riot
 { }

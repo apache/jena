@@ -18,18 +18,17 @@
 
 package org.apache.jena.sparql.algebra;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
 import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.algebra.AlgebraGenerator ;
-import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
 /** Test translation of syntax to algebra - no otpimization */ 
-public class TestAlgebraTranslate extends BaseTest 
+public class TestAlgebraTranslate 
 {    
     @Test public void translate_01() { test("?s ?p ?o", "(bgp (triple ?s ?p ?o))") ; }
     

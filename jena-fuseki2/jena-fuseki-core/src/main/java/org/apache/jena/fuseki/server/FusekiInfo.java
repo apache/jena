@@ -18,143 +18,123 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.util.ArrayList ;
-import java.util.LinkedHashMap ;
-import java.util.List ;
-import java.util.Map ;
-import java.util.function.Function;
+import static java.lang.String.format;
 
+import java.util.*;
+
+import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
 import org.slf4j.Logger;
 
+/** Information about the server */
 public class FusekiInfo {
-    
-    public static void info(FusekiInitialConfig serverConfig, DataAccessPointRegistry registry) {
-        if ( ! serverConfig.verbose )
-            return;
-        if ( serverConfig.quiet )
-            return;
 
-        Logger log = Fuseki.serverLog;
-        FmtLog.info(log,  "Apache Jena Fuseki");
-        
-        // Dataset -> Endpoints
-        Map<String, List<String>> z = description(registry);
-        
-//        if ( serverConfig.empty ) {
-//            FmtLog.info(log, "No SPARQL datasets services"); 
-//        } else {
-//            if ( serverConfig.datasetPath == null && serverConfig.serverConfig == null )
-//                log.error("No dataset path nor server configuration file");
-//        }
-        
-        if ( serverConfig.datasetPath != null ) {
-            if ( z.size() != 1 )
-                log.error("Expected only one dataset");
-            List<String> endpoints = z.get(serverConfig.datasetPath); 
-            FmtLog.info(log,  "Dataset Type = %s", serverConfig.datasetDescription);
-            FmtLog.info(log,  "Path = %s; Services = %s", serverConfig.datasetPath, endpoints);
-        }
-        if ( serverConfig.fusekiServerConfigFile != null ) {
-            // May be many datasets and services.
-            FmtLog.info(log,  "Configuration file %s", serverConfig.fusekiServerConfigFile);
-            z.forEach((name, endpoints)->{
-                FmtLog.info(log,  "Path = %s; Services = %s", name, endpoints);
-            });
-        }
-        FusekiInfo.logDetails(log);
+    public static void server(Logger log) {
+        String version = Fuseki.VERSION;
+        String buildDate = Fuseki.BUILD_DATE;
+        logServer(log, Fuseki.NAME, version, buildDate);
     }
-    
-    private static Map<String, List<String>> description(DataAccessPointRegistry reg) {
-        Map<String, List<String>> desc = new LinkedHashMap<>();
-        reg.forEach((ds,dap)->{
-            List<String> endpoints = new ArrayList<>();
-            desc.put(ds, endpoints);
-            DataService dSrv = dap.getDataService();
-            dSrv.getOperations().forEach((op)->{
-                dSrv.getEndpoints(op).forEach(ep-> {
-                    String x = ep.getName();
-                    if ( x.isEmpty() )
-                        x = "quads";
-                    endpoints.add(x);   
-                });
-            });
+
+    public static void logServer(Logger log, String serverName, String version, String buildDate) {
+        if ( version != null && version.equals("${project.version}") )
+            version = null;
+        if ( buildDate != null && buildDate.equals("${build.time.xsd}") )
+            buildDate = DateTimeUtils.nowAsXSDDateTimeString();
+
+        String fusekiName = serverName;
+        //serverName = serverName +" (basic server)";
+
+        if ( version != null ) {
+            if ( Fuseki.developmentMode && buildDate != null )
+                FmtLog.info(log, "%s %s %s", fusekiName, version, buildDate);
+            else
+                FmtLog.info(log, "%s %s", fusekiName, version);
+        }
+    }
+
+    public static void logServerSetup(Logger log, boolean verbose,
+                                      DataAccessPointRegistry dapRegistry,
+                                      String datasetPath, String datasetDescription, String serverConfigFile, String staticFiles) {
+        if ( datasetPath != null )
+            FmtLog.info(log, "Database: %s", datasetDescription);
+        if ( serverConfigFile != null )
+            FmtLog.info(log, "Configuration file: %s", serverConfigFile);
+
+        FusekiInfo.logDataAccessPointRegistry(log, dapRegistry, verbose);
+
+        if ( staticFiles != null )
+            FmtLog.info(log, "Static files: %s", staticFiles);
+
+        FmtLog.info(log,"System");
+        if ( verbose )
+            PlatformInfo.logDetailsVerbose(log);
+        else
+            PlatformInfo.logDetails(log);
+    }
+
+    /** Log a {@link DataAccessPointRegistry} */
+    public static void logDataAccessPointRegistry(Logger log, DataAccessPointRegistry dapRegistry, boolean verbose) {
+        dapRegistry.forEach((name, dap)->{
+            FmtLog.info(log,  "Path = %s", name);
+            if ( verbose )
+                FusekiInfo.logDataAccessPointDetails(log, dapRegistry, name);
         });
-        return desc;
-    }
-    
-    public static void logDetails(Logger log) {
-        long maxMem = Runtime.getRuntime().maxMemory();
-        long totalMem = Runtime.getRuntime().totalMemory();
-        long freeMem = Runtime.getRuntime().freeMemory();
-        long usedMem = totalMem - freeMem;
-        Function<Long, String> f = FusekiInfo::strNum2;
-        //FmtLog.info(log, "Apache Jena %s", Jena.VERSION);
-        FmtLog.info(log, "  Fuseki: %s", Fuseki.VERSION);
-        FmtLog.info(log, "  Java:   %s", System.getProperty("java.version"));
-        //FmtLog.info(log, "Memory: max=%s  total=%s  used=%s  free=%s", f.apply(maxMem), f.apply(totalMem), f.apply(usedMem), f.apply(freeMem));
-        FmtLog.info(log, "  Memory: max=%s", f.apply(maxMem));
-        FmtLog.info(log, "  OS:     %s %s %s", System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"));
-    }
-    
-    public static void logDetailsVerbose(Logger log) {
-        logDetails(log);
-        logOne(log, "java.vendor");
-        logOne(log, "java.home");
-        logOne(log, "java.runtime.version");
-        logOne(log, "java.runtime.name");
-        //logOne(log, "java.endorsed.dirs");
-        logOne(log, "user.language");
-        logOne(log, "user.timezone");
-        logOne(log, "user.country");
-        logOne(log, "user.dir");
-        //logOne(log, "file.encoding");
-    }
-    
-    private static void logOne(Logger log, String property) {
-        FmtLog.info(log, "    %-20s = %s", property, System.getProperty(property));
     }
 
-    /** Create a human-friendly string for a number based on Kilo/Mega/Giga/Tera (powers of 2) */
-    public static String strNumMixed(long x) {
-        // https://en.wikipedia.org/wiki/Kibibyte
-        if ( x < 1024 )
-            return Long.toString(x);
-        if ( x < 1024*1024 )
-            return String.format("%.1fK", x/1024.0);
-        if ( x < 1024*1024*1024 )
-            return String.format("%.1fM", x/(1024.0*1024));
-        if ( x < 1024L*1024*1024*1024 )
-            return String.format("%.1fG", x/(1024.0*1024*1024));
-        return String.format("%.1fT", x/(1024.0*1024*1024*1024));
-    }
-    
+    /** Log a {@link DataAccessPoint} in detail */
+    public static void logDataAccessPointDetails(Logger log, DataAccessPointRegistry dapRegistry, String datasetPath) {
+        DataAccessPoint dap = dapRegistry.get(datasetPath);
+        operations(dap.getDataService()).forEach(operation->{
+            StringBuilder sb = new StringBuilder();
+            sb.append(format("  Operation = %-6s", operation.getName()));
+            sb.append("  Endpoints = ");
+            StringJoiner sj = new StringJoiner(", ", "[ ", " ]");
+            dap.getDataService().getEndpoints(operation).stream()
+                .map(ep->"\""+ep.getName()+"\"")
+                .sorted()
+                .forEach(sj::add);
+            sb.append(sj.toString());
 
-    /** Create a human-friendly string for a number based on Kilo/Mega/Giga/Tera (powers of 10) */
-    public static String strNum10(long x) {
-        if ( x < 1_000 )
-            return Long.toString(x);
-        if ( x < 1_000_000 )
-            return String.format("%.1fK", x/1000.0);
-        if ( x < 1_000_000_000 )
-            return String.format("%.1fM", x/(1000.0*1000));
-        if ( x < 1_000_000_000_000L )
-            return String.format("%.1fG", x/(1000.0*1000*1000));
-        return String.format("%.1fT", x/(1000.0*1000*1000*1000));
+            // Don't print access!
+//            sb.append("  Access = ");
+//            StringJoiner sj2 = new StringJoiner(", ", "[ ", " ]");
+//            dap.getDataService().getEndpoints(operation).stream()
+//                .map(Endpoint::getAuthPolicy)
+//                .map(auth-> auth==null?"*":auth.toString())
+//                .sorted()
+//                .forEach(sj2::add);
+//            sb.append(sj2.toString());
+            FmtLog.info(log,sb.toString());
+        });
     }
-    
-    /** Create a human-friendly string for a number based on Kibi/Mebi/Gibi/Tebi (powers of 2) */
-    public static String strNum2(long x) {
-        // https://en.wikipedia.org/wiki/Kibibyte
-        if ( x < 1024 )
-            return Long.toString(x);
-        if ( x < 1024*1024 )
-            return String.format("%.1f KiB", x/1024.0);
-        if ( x < 1024*1024*1024 )
-            return String.format("%.1f MiB", x/(1024.0*1024));
-        if ( x < 1024L*1024*1024*1024 )
-            return String.format("%.1f GiB", x/(1024.0*1024*1024));
-        return String.format("%.1fTiB", x/(1024.0*1024*1024*1024));
+
+    // Canonical order.
+    static List<Operation> stdOperations = Arrays.asList(
+        Operation.Query,
+        Operation.Update,
+        Operation.GSP_RW,
+        Operation.GSP_R
+        );
+
+    /** Operations, in a canonical order for logging */
+    private static List<Operation> operations(DataService dataService) {
+        Collection<Operation> registered = dataService.getOperations();
+        List<Operation> nice  = new ArrayList<>();
+        for ( Operation op : stdOperations ) {
+            if ( registered.contains(op) )
+                nice.add(op);
+        }
+        List<Operation> others = new ArrayList<>();
+        for ( Operation op : registered ) {
+            if ( ! nice.contains(op) )
+                others.add(op);
+        }
+
+        Comparator<Operation> order = (Operation o1, Operation o2)->
+                o1.getName().compareTo(o2.getName());
+        others.stream().sorted(order).forEach(nice::add);
+        return nice;
     }
+
 }

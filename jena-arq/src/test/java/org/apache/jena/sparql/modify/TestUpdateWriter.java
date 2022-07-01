@@ -18,14 +18,15 @@
 
 package org.apache.jena.sparql.modify;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.sparql.modify.request.UpdateWriter ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
 import org.junit.Test ;
 
-public class TestUpdateWriter extends BaseTest {
+public class TestUpdateWriter {
     @Test public void updateWrite01()   { test("INSERT DATA {}") ; }
     @Test public void updateWrite02()   { test("PREFIX : <http://example/> INSERT DATA { <s> :p 123 }") ; }
     @Test public void updateWrite03()   { test("PREFIX : <http://example/> INSERT DATA { _:a :p 123 , 456 }") ; }

@@ -31,24 +31,15 @@ import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.sparql.graph.NodeConst ;
 
-/** Adds some caching of created nodes - the caching is tuned to RIOT parser usage */ 
+/** Adds some caching of created nodes - the caching is tuned to RIOT parser usage */
 public class FactoryRDFCaching extends FactoryRDFStd {
-    public static final int DftNodeCacheSize = 5000 ; 
+    public static final int DftNodeCacheSize = 5000 ;
 
     // Control the setup - for one thread; start size = 50% of full size, no stats
     private final Cache<String, Node> cache ;
 
     public FactoryRDFCaching() {
-        this(DftNodeCacheSize) ;
-    }
-    
-    public FactoryRDFCaching(int cacheSize) {
-        super() ;
-        cache = setCache(cacheSize) ;
-    }
-
-    public FactoryRDFCaching(LabelToNode labelMapping) {
-        this(DftNodeCacheSize, labelMapping) ;
+        this(DftNodeCacheSize, SyntaxLabels.createLabelToNode());
     }
 
     public FactoryRDFCaching(int cacheSize, LabelToNode labelMapping) {
@@ -76,12 +67,12 @@ public class FactoryRDFCaching extends FactoryRDFStd {
     }
 
     // A few constants
-    
+
     @Override
     public Node createTypedLiteral(String lexical, RDFDatatype datatype) {
         if ( XSDDatatype.XSDinteger.equals(datatype) ) {
             switch(lexical) {
-                case "0" : return NodeConst.nodeZero ; 
+                case "0" : return NodeConst.nodeZero ;
                 case "1" : return NodeConst.nodeOne ;
                 case "2" : return NodeConst.nodeTwo ;
                 case "-1" : return NodeConst.nodeMinusOne ;
@@ -89,7 +80,7 @@ public class FactoryRDFCaching extends FactoryRDFStd {
             // fallthrough.
         } else if ( XSDDatatype.XSDboolean.equals(datatype) ) {
             switch(lexical) {
-                case "true" : return NodeConst.nodeTrue ; 
+                case "true" : return NodeConst.nodeTrue ;
                 case "false" : return NodeConst.nodeFalse ;
             }
             // fallthrough.
@@ -109,7 +100,7 @@ public class FactoryRDFCaching extends FactoryRDFStd {
 //    public void reset() {
 //        super.reset();
 //    }
-    
+
     public CacheInfo stats() {
         CacheStats stats = cache.stats() ;
         if ( stats.missCount() == 0 && stats.hitCount() == 0 )

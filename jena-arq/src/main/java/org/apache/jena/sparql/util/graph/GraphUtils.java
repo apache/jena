@@ -27,7 +27,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.sparql.util.NotUniqueException ;
 import org.apache.jena.sparql.util.PropertyRequiredException ;
 import org.apache.jena.sparql.util.QueryExecUtils;
@@ -38,19 +38,6 @@ import org.apache.jena.vocabulary.RDF ;
 /** Graph utilities. See also GraphFactory. */
 
 public class GraphUtils {
-    /**
-     * Convert an iterator of triples into quads for the default graph. This is
-     * {@link Quad#defaultGraphIRI}, not {@link Quad#defaultGraphNodeGenerated}, which is
-     * for quads outside a dataset, usually the output of parsers.
-     */
-    public static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter) {
-        return triples2quads(Quad.defaultGraphIRI, iter) ;
-    }
-
-    /** Convert an iterator of triples into quads for the specified graph name. */
-    public static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter) {
-        return Iter.iter(iter).map(t -> new Quad(graphNode, t)) ;
-    }
 
     public static List<String> multiValueString(Resource r, Property p) {
         List<RDFNode> nodes = multiValue(r, p) ;
@@ -63,7 +50,7 @@ public class GraphUtils {
         }
         return values ;
     }
-    
+
     /** Get a list of the URIs (as strings) and strings
      *  @see #getAsStringValue
      */
@@ -146,24 +133,42 @@ public class GraphUtils {
         return true ;
     }
 
-    public static String getStringValue(Resource r, Property p) {
-        if ( !atmostOneProperty(r, p) )
+    public static boolean getBooleanValue(Resource r, Property p) {
+        if ( !GraphUtils.atmostOneProperty(r, p) )
             throw new NotUniqueException(r, p) ;
         Statement s = r.getProperty(p) ;
         if ( s == null )
-            return null ;
-        return s.getString() ;
+            throw new PropertyNotFoundException(p);
+        return s.getBoolean();
     }
 
+    /** Get a string literal. */
+    public static String getStringValue(Resource r, Property p) {
+        RDFNode obj = getAsRDFNode(r, p);
+        if ( obj == null )
+            return null;
+        return obj.asLiteral().getString();
+    }
+
+    /** Get a string literal or a URI as a string. */
     public static String getAsStringValue(Resource r, Property p) {
+        RDFNode obj = getAsRDFNode(r, p);
+        if ( obj == null )
+            return null;
+        if ( obj.isResource() )
+            return obj.asResource().getURI() ;
+        if ( obj.isLiteral() )
+            return obj.asLiteral().getString();
+        throw new UnsupportedOperationException("Not a URI or a string");
+    }
+
+    public static RDFNode getAsRDFNode(Resource r, Property p) {
         if ( !atmostOneProperty(r, p) )
             throw new NotUniqueException(r, p) ;
         Statement s = r.getProperty(p) ;
         if ( s == null )
             return null ;
-        if ( s.getObject().isResource() )
-            return s.getResource().getURI() ;
-        return s.getString() ;
+        return s.getObject();
     }
 
     public static Resource getResourceValue(Resource r, Property p) {
@@ -174,7 +179,7 @@ public class GraphUtils {
             return null ;
         return s.getResource() ;
     }
-    
+
     public static List<Resource> listResourcesByType(Model model, Resource type) {
         return Iter.toList(model.listSubjectsWithProperty(RDF.type, type)) ;
     }
@@ -190,7 +195,7 @@ public class GraphUtils {
     }
 
     public static Resource findRootByType(Model model, Resource atype) {
-        String s = String.join("\n", 
+        String s = String.join("\n",
             "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
             "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
@@ -198,26 +203,26 @@ public class GraphUtils {
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("ATYPE", atype) ;
 
-        try(QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm)) {
+        try(QueryExecution qExec = QueryExecution.model(model).query(q).initialBinding(qsm).build() ) {
             return (Resource)QueryExecUtils.getAtMostOne(qExec, "root") ;
         }
     }
 
     public static List<Resource> findRootsByType(Model model, Resource atype) {
-        String s = String.join("\n", 
+        String s = String.join("\n",
             "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
             "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
         Query q = QueryFactory.create(s) ;
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("ATYPE", atype) ;
-        try(QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm)) {
+        try(QueryExecution qExec = QueryExecution.model(model).query(q).initialBinding(qsm).build() ) {
             return ListUtils.toList(
                     QueryExecUtils.getAll(qExec, "root").stream().map(r->(Resource)r));
-            
+
         }
     }
-    
+
     public static String fmtURI(Resource r) {
         return r.getModel().shortForm(r.getURI()) ;
     }

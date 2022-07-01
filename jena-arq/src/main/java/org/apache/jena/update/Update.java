@@ -18,42 +18,13 @@
 
 package org.apache.jena.update;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.io.PrintUtils ;
-import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.modify.request.UpdateVisitor ;
-import org.apache.jena.sparql.modify.request.UpdateWriter ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
-import org.apache.jena.sparql.util.PrintSerializable ;
-import org.apache.jena.sparql.util.QueryOutputUtils ;
 
-public abstract class Update implements PrintSerializable
+public abstract class Update
 {
-    public abstract void visit(UpdateVisitor visitor) ; 
-    
-    @Override
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    {
-        UpdateWriter.output(this, out, sCxt) ;
-    }
+    public abstract void visit(UpdateVisitor visitor) ;
 
-    @Override
-    public void output(IndentedWriter out)
-    {
-        UpdateWriter.output(this, out, null) ;
-    }
-
-    @Override
-    public String toString(PrefixMapping pmap)
-    { return QueryOutputUtils.toString(this, pmap) ; } 
-    
-    @Override
-    public String toString()
-    { return PrintUtils.toString(this) ; }
-    
-    /** Compare by isomorphism - if the isomorphism map is null, compare nodes by .equals */ 
+    /** Compare by isomorphism - if the isomorphism map is null, compare nodes by .equals */
     public abstract boolean equalTo(Update other, NodeIsomorphismMap isoMap) ;
-
-    // Update equality should not be structural isomorphism.
 }

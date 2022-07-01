@@ -18,12 +18,7 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.atlas.lib.SetUtils;
@@ -32,6 +27,7 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -40,30 +36,22 @@ import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.MapFilter ;
-import org.apache.jena.util.iterator.MapFilterIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
-/** Node utilities */ 
+/** Node utilities */
 public class NodeUtils
 {
-    public interface EqualityTest {
-        default boolean equal(Node n1, Node n2) {
-			return Objects.equals(n1, n2) ;
-		}
-    }
-
-    /** IRI to Node */ 
+    /** IRI to Node */
     public static Node asNode(IRI iri) {
         return NodeFactory.createURI(iri.toString()) ;
     }
 
-    /** IRI string to Node */ 
+    /** IRI string to Node */
     public static Node asNode(String iri) {
         return NodeFactory.createURI(iri) ;
     }
 
-    /** Return true if the node is a literal and has a language tag */ 
+    /** Return true if the node is a literal and has a language tag */
     public static boolean hasLang(Node node) {
         if ( !node.isLiteral() )
             return false ;
@@ -75,7 +63,7 @@ public class NodeUtils
         return true ;
     }
 
-    /** Get lexical for of anything that looks like a string literal.
+    /** Get lexical form of anything that looks like a string literal.
      * Returns the string value of plain literal (simple literal
      * or lang string) or XSD string.
      */
@@ -95,28 +83,18 @@ public class NodeUtils
         return null ;
     }
 
-    /** Convert IRI Nodes to strings.  Skip other kinds of Node */  
-    public static Iterator<String> nodesToURIs(Iterator<Node> iter) {
-        MapFilter<Node, String> mapper = new MapFilter<Node, String>() {
-            @Override
-            public String accept(Node x) {
-                return x.getURI() ;
-            }
-        } ;
+    public static Node nullToAny(Node n) {
+        return n == null ? Node.ANY : n;
+    }
 
+    /** Convert IRI Nodes to strings.  Skip other kinds of Node */
+    public static Iterator<String> nodesToURIs(Iterator<Node> iter) {
         ExtendedIterator<Node> eIter = WrappedIterator.create(iter) ;
-        Iterator<String> conv = new MapFilterIterator<>(mapper, eIter) ;
+        Iterator<String> conv = eIter.filterKeep(Node::isURI).mapWith(Node::getURI);
         return conv ;
     }
 
-     
-    /** @deprecated Use {@link #convertToSetNodes} */
-    @Deprecated
-    public static Set<Node> convertToNodes(Collection<String> namedGraphs) {
-        return convertToSetNodes(namedGraphs);
-    }
-    
-    /** Convert a collection of strings to a set of {@link Node Nodes}. */ 
+    /** Convert a collection of strings to a set of {@link Node Nodes}. */
     public static Set<Node> convertToSetNodes(Collection<String> namedGraphs) {
         Set<Node> nodes = SetUtils.toSet(
             namedGraphs.stream().map(NodeFactory::createURI)
@@ -124,24 +102,24 @@ public class NodeUtils
         return nodes;
     }
 
-    /** Convert a collection of strings to a set of {@link Node Nodes}. */ 
+    /** Convert a collection of strings to a set of {@link Node Nodes}. */
     public static Set<Node> convertToSetNodes(String... namedGraphs) {
         return convertToSetNodes(Arrays.asList(namedGraphs));
     }
 
-    /** Convert strings to a List of {@link Node Nodes}. */ 
+    /** Convert strings to a List of {@link Node Nodes}. */
     public static List<Node> convertToListNodes(String... namedGraphs) {
         return convertToListNodes(Arrays.asList(namedGraphs));
     }
 
-    /** Convert strings to a List of {@link Node Nodes}. */ 
+    /** Convert strings to a List of {@link Node Nodes}. */
     public static List<Node> convertToListNodes(List<String> namedGraphs) {
         List<Node> nodes = ListUtils.toList(
             namedGraphs.stream().map(NodeFactory::createURI)
             );
         return nodes;
     }
-    
+
     /** Compare two Nodes, based on their RDF terms forms, not value */
     public static int compareRDFTerms(Node node1, Node node2) {
         if ( node1 == null ) {
@@ -158,8 +136,9 @@ public class NodeUtils
             return compareLiteralsBySyntax(node1, node2) ;
 
         // One or both not literals
-        // Variables < Blank nodes < URIs < Literals
+        // Variables < Blank nodes < URIs < Literals < Triple Terms
 
+        //-- Variables
         if ( node1.isVariable() ) {
             if ( node2.isVariable() ) {
                 return StrUtils.strCompare(node1.getName(), node2.getName()) ;
@@ -173,6 +152,7 @@ public class NodeUtils
             return Expr.CMP_GREATER ;
         }
 
+        //-- Blank nodes
         if ( node1.isBlank() ) {
             if ( node2.isBlank() ) {
                 String s1 = node1.getBlankNodeId().getLabelString() ;
@@ -189,6 +169,7 @@ public class NodeUtils
 
         // Not blanks. 2 URI or one URI and one literal
 
+        //-- URIs
         if ( node1.isURI() ) {
             if ( node2.isURI() ) {
                 String s1 = node1.getURI() ;
@@ -201,8 +182,36 @@ public class NodeUtils
         if ( node2.isURI() )
             return Expr.CMP_GREATER ;
 
-        // No URIs, no blanks nodes by this point
-        // And a pair of literals was filterd out first.
+        // -- Two literals already done just leaving ...
+        if ( node2.isLiteral() )
+            return Expr.CMP_GREATER;
+
+        // Because triple terms are after literals ...
+        if ( node1.isLiteral() )
+            return Expr.CMP_LESS;
+
+        // -- Triple nodes.
+        if ( node1.isNodeTriple() ) {
+            if ( node2.isNodeTriple() ) {
+                Triple t1 = node1.getTriple();
+                Triple t2 = node2.getTriple();
+                int x1 = compareRDFTerms(t1.getSubject(), t2.getSubject());
+                if ( x1 != Expr.CMP_EQUAL )
+                    return x1;
+                int x2 = compareRDFTerms(t1.getPredicate(), t2.getPredicate());
+                if ( x2 != Expr.CMP_EQUAL )
+                    return x2;
+                int x3 = compareRDFTerms(t1.getObject(), t2.getObject());
+                if ( x3 != Expr.CMP_EQUAL )
+                    return x3;
+                return Expr.CMP_EQUAL;
+            }
+        }
+
+        if ( node2.isNodeTriple() )
+            return Expr.CMP_GREATER;
+
+        // No URIs, no blanks, no literals, no triple terms nodes by this point
 
         // Should not happen.
         throw new ARQInternalErrorException("Compare: " + node1 + "  " + node2) ;
@@ -210,12 +219,12 @@ public class NodeUtils
 
     /** Compare literals by kind - not by value.
      *  Gives a deterministic, stable, arbitrary ordering between unrelated literals.
-     * 
+     *
      * Ordering:
-     *  <ol> 
+     *  <ol>
      *  <li>By lexical form</li>
      *  <li> For same lexical form:
-     *       <ul> 
+     *       <ul>
      *       <li>  RDF 1.0 : simple literal < literal by lang < literal with type
      *       <li>  RDF 1.1 : xsd:string < rdf:langString < other dataypes.<br/>
      *             This is the closest to SPARQL 1.1: treat xsd:string as a simple literal</ul></li>
@@ -273,40 +282,75 @@ public class NodeUtils
     }
 
     /**
-     * A Node is a simple string if: 
+     * A Node is a simple string if:
      * <li>(RDF 1.0) No datatype and no language tag
      * <li>(RDF 1.1) xsd:string
      */
     public static boolean isSimpleString(Node n) { return Util.isSimpleString(n) ; }
 
     /**
-     * A Node is a language string if it has a language tag. 
+     * A Node is a language string if it has a language tag.
      * (RDF 1.0 and RDF 1.1)
      */
     public static boolean isLangString(Node n) { return Util.isLangString(n) ; }
 
-    // This is term comparison.
-    public static EqualityTest sameTerm = new EqualityTest() {
-        @Override
-        public boolean equal(Node n1, Node n2)
+
+    // --- Equality tests.
+
+    /** Both null or same node : {@code Node.equals} */
+    public static EqualityTest sameNode  = (n1,n2) -> Objects.equals(n1, n2);
+
+    /**
+     * Term comparison. Node.equals or lang tags are case insensitive
+     */
+    public static EqualityTest sameRdfTerm  = (n1,n2) -> NodeFunctions.sameTerm(n1,n2);
+
+    /** sameValue by SPARQL rules */
+    public static EqualityTest sameValue = (n1,n2) -> {
+        if ( Objects.equals(n1, n2) )
+            return true;
+        if ( ! n1.isLiteral() || ! n2.isLiteral() )
+            return false;
+        // 2 literals.
+        NodeValue nv1 = NodeValue.makeNode(n1);
+        NodeValue nv2 = NodeValue.makeNode(n2);
+        try { return NodeValue.sameAs(nv1, nv2); }
+        catch(ExprEvalException ex)
         {
-            return NodeFunctions.sameTerm(n1, n2) ;
+            // Incomparable as values - must be different for our purposes.
+            return false;
         }
-    } ;
-    // This is value comparison
-    public static EqualityTest sameValue = new EqualityTest() {
-        @Override
-        public boolean equal(Node n1, Node n2)
-        {
-            NodeValue nv1 = NodeValue.makeNode(n1) ;
-            NodeValue nv2 = NodeValue.makeNode(n2) ;
-            try {
-                return NodeValue.sameAs(nv1, nv2) ;
-            } catch(ExprEvalException ex)
-            {
-                // Incomparible as values - must be different for our purposes.
-                return false ; 
-            }
-        }
-    } ;
+    };
+
+    static Set<RDFDatatype> numericDatatypes = new HashSet<>();
+    static {
+        numericDatatypes.add(XSDDatatype.XSDdecimal) ;
+        numericDatatypes.add(XSDDatatype.XSDinteger) ;
+
+        numericDatatypes.add(XSDDatatype.XSDlong) ;
+        numericDatatypes.add(XSDDatatype.XSDint) ;
+        numericDatatypes.add(XSDDatatype.XSDshort) ;
+        numericDatatypes.add(XSDDatatype.XSDbyte) ;
+
+        numericDatatypes.add(XSDDatatype.XSDnonPositiveInteger) ;
+        numericDatatypes.add(XSDDatatype.XSDnegativeInteger) ;
+
+        numericDatatypes.add(XSDDatatype.XSDnonNegativeInteger) ;
+        numericDatatypes.add(XSDDatatype.XSDpositiveInteger) ;
+        numericDatatypes.add(XSDDatatype.XSDunsignedLong) ;
+        numericDatatypes.add(XSDDatatype.XSDunsignedInt) ;
+        numericDatatypes.add(XSDDatatype.XSDunsignedShort) ;
+
+        numericDatatypes.add(XSDDatatype.XSDdouble) ;
+        numericDatatypes.add(XSDDatatype.XSDfloat) ;
+    }
+
+    /**
+     * Return true if the node is a literal and has an XSD numeric datatype.
+     */
+    public static boolean isXSDNumeric(Node node) {
+        if ( ! node.isLiteral() )
+            return false;
+        return numericDatatypes.contains(node.getLiteralDatatype());
+    }
 }

@@ -19,7 +19,9 @@
 package org.apache.jena.util;
 
 import static java.util.Collections.singleton;
-import static java.util.stream.Collector.Characteristics.*;
+import static java.util.stream.Collector.Characteristics.CONCURRENT;
+import static java.util.stream.Collector.Characteristics.IDENTITY_FINISH;
+import static java.util.stream.Collector.Characteristics.UNORDERED;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Stream.generate;
 import static java.util.stream.Stream.iterate;
@@ -27,27 +29,32 @@ import static org.apache.jena.ext.com.google.common.collect.Lists.newArrayList;
 import static org.apache.jena.graph.NodeFactory.createLiteralByValue;
 import static org.apache.jena.rdf.model.ModelFactory.createDefaultModel;
 import static org.apache.jena.rdf.model.ModelFactory.createModelForGraph;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.stream.Collector.Characteristics;
 import java.util.stream.Stream;
 
-import org.apache.jena.atlas.junit.BaseTest;
+import junit.framework.JUnit4TestAdapter;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.ext.com.google.common.collect.ImmutableSet;
-import org.apache.jena.graph.*;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.CollectionGraph;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.util.ModelCollector.*;
+import org.apache.jena.util.ModelCollector.ConcurrentModelCollector;
+import org.apache.jena.util.ModelCollector.IntersectionModelCollector;
+import org.apache.jena.util.ModelCollector.UnionModelCollector;
 import org.junit.Test;
 
-import junit.framework.JUnit4TestAdapter;
-
-public class TestModelCollector extends BaseTest {
+public class TestModelCollector {
     
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(TestModelCollector.class) ;

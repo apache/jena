@@ -18,29 +18,33 @@
 
 package tdb ;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List ;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
+import org.apache.jena.atlas.lib.ListUtils;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBLoader ;
 import org.apache.jena.tdb.store.GraphTDB;
+import org.apache.jena.util.FileUtils;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
 
 public class tdbloader extends CmdTDBGraph {
-    // private static final ArgDecl argParallel = new ArgDecl(ArgDecl.NoValue, "parallel") ;
-    // private static final ArgDecl argIncremental = new ArgDecl(ArgDecl.NoValue, "incr", "incremental") ;
     private static final ArgDecl argNoStats = new ArgDecl(ArgDecl.NoValue, "nostats") ;
     private static final ArgDecl argStats = new ArgDecl(ArgDecl.HasValue,  "stats") ;
+    private static final ArgDecl argSyntax  = new ArgDecl(ArgDecl.HasValue, "syntax") ;
 
-    private boolean showProgress  = true ;
+
+    private boolean showProgress   = true ;
     private boolean generateStats  = true ;
-    // private boolean doInParallel = false ;
-    // private boolean doIncremental = false ;
+    private Lang    lang           = null;
 
     static public void main(String... argv) {
         CmdTDB.init() ;
@@ -51,22 +55,21 @@ public class tdbloader extends CmdTDBGraph {
     protected tdbloader(String[] argv) {
         super(argv) ;
 //        super.getUsage().startCategory("Stats") ;
-        super.add(argNoStats, "--nostats", "Switch off statistics gathering") ;
+        super.add(argNoStats, "--nostats",     "Switch off statistics gathering") ;
+        super.add(argSyntax,  "--syntax=LANG", "Syntax of data from stdin");
         super.add(argStats) ;   // Hidden argument
-        // super.add(argParallel, "--parallel",
-        // "Do rebuilding of secondary indexes in a parallel") ;
-        // super.add(argIncremental, "--incremental",
-        // "Do an incremental load (keep indexes during data load)") ;
-        // super.add(argStats, "--stats",
-        // "Generate statistics while loading (new graph only)") ;
-        // addModule(modRDFS) ;
     }
 
     @Override
     protected void processModulesAndArgs() {
         super.processModulesAndArgs() ;
-        // doInParallel = super.contains(argParallel) ;
-        // doIncremental = super.contains(argIncremental) ;
+        if ( super.contains(argSyntax) ) {
+            String syntax = super.getValue(argSyntax) ;
+            Lang lang$ = RDFLanguages.nameToLang(syntax) ;
+            if ( lang$ == null )
+                throw new CmdException("Can not detemine the syntax from '" + syntax + "'") ;
+            this.lang = lang$ ;
+        }
     }
 
     @Override
@@ -93,30 +96,50 @@ public class tdbloader extends CmdTDBGraph {
         if ( super.contains(argNoStats))
             generateStats = false ;
         
-        List<String> urls = getPositional() ;
-        if ( urls.size() == 0 )
-            urls.add("-") ;
+        List<String> urls = getPositional();
+        if ( urls.size() != 0 )
+            checkFiles(urls);
 
         if ( graphName == null ) {
-            loadQuads(urls) ;
-            return ;
+            if ( urls.size() == 0 ) {
+                checkFiles(urls);
+                loadQuadsStdin();
+            } else {
+                loadQuads(urls);
+            }
+            return;
         }
         
         // There's a --graph.
         // Check/warn that there are no quads formats mentioned
-        // (RIOT will take the default graph from quads).  
         
         for ( String url : urls ) {
-            Lang lang = RDFLanguages.filenameToLang(url) ;
+            Lang lang = RDFLanguages.filenameToLang(url);
             if ( lang != null && RDFLanguages.isQuads(lang) ) {
-                System.err.println("Warning: Quads format given - only the default graph is loaded into the graph for --graph") ;
-                break ;
+                throw new CmdException("Warning: Quads format given - only the default graph is loaded into the graph for --graph");
             }
         }
         
         loadNamedGraph(urls) ;
     }
 
+    // Check files exists before starting.
+    private void checkFiles(List<String> urls) {
+        List<String> problemFiles = 
+            ListUtils.toList(
+                urls.stream()
+                .filter(u->FileUtils.isFile(u))
+                // Only check local files.
+                .map(Paths::get)
+                .filter(p-> !Files.exists(p) || !Files.isRegularFile(p /*follow links*/) || !Files.isReadable(p) )
+                .map(Path::toString)
+                );
+        if ( ! problemFiles.isEmpty() ) {
+            String str = String.join(", ", problemFiles);
+            throw new CmdException("Can't read files : "+str); 
+        }
+    }
+    
 //    void loadDefaultGraph(List<String> urls) {
 //        GraphTDB graph = getGraph() ;
 //        TDBLoader.load(graph, urls, showProgress) ;
@@ -132,5 +155,9 @@ public class tdbloader extends CmdTDBGraph {
     void loadQuads(List<String> urls) {
         TDBLoader.load(getDatasetGraphTDB(), urls, showProgress, generateStats) ;
         return ;
+    }
+
+    private void loadQuadsStdin() {
+        TDBLoader.load(getDatasetGraphTDB(), System.in, lang, showProgress, generateStats) ;
     }
 }

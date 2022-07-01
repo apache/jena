@@ -26,17 +26,12 @@ import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleFactory ;
-import org.apache.jena.graph.GraphEvents ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.other.GLib ;
-import org.apache.jena.riot.system.RiotLib;
-import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction;
@@ -52,75 +47,30 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
         super(dataset, graphName) ;
     }
 
-    private String graphNameStr() {
-        if ( getGraphName() == null )   return DatasetPrefixesTDB.unnamedGraphURI;
-        if ( getGraphName().isURI() )   return getGraphName().getURI();
-        if ( getGraphName().isBlank() ) return RiotLib.blankNodeToIri(getGraphName()).getURI();
-        throw new TDBException("Bad node for graph name: "+getGraphName());
-    }
-    
     /** Return the associated DatasetGraphTDB.
      * For non-transactional, that's the base storage.
      * For transactional, it is the current transaction wrapper {@link DatasetGraphTDB}.
      * <p>
      * Immediate validity only.
-     * Not valid across transaction boundaries, nor non-transactional to transactional. 
+     * Not valid across transaction boundaries, nor non-transactional to transactional.
      */
     public abstract DatasetGraphTDB getDatasetGraphTDB() ;
-    
+
     /** Return the {@link DatasetGraphTransaction}.
-     * If this wrapping a base {@link DatasetGraphTDB}, return null.  
+     * If this wrapping a base {@link DatasetGraphTDB}, return null.
      */
     public abstract DatasetGraphTransaction getDatasetGraphTransaction() ;
 
-    /** Return the associated base DatasetGraphTDB storage, not the transactional level. 
+    /** Return the associated base DatasetGraphTDB storage, not the transactional level.
      * <em>Internal use only. Use with great care.</em>
      * <p>
      * Immediate validity only.
      */
     protected abstract DatasetGraphTDB getBaseDatasetGraphTDB() ;
-    
-    protected DatasetPrefixStorage getPrefixStorage() {
-        return getDatasetGraphTDB().getPrefixes() ;
-    }
 
     /** The NodeTupleTable for this graph - valid only inside the transaction or non-transactional. */
     public NodeTupleTable getNodeTupleTable() {
         return getDatasetGraphTDB().chooseNodeTupleTable(getGraphName()) ;
-    }
-    
-    // JENA-1527. Don't let GraphBase cache.
-    // Normally, GraphBase calls createPrefixMapping once and reuses that object.
-    // This causes it to be passed across transaction boundaries.
-    // in the case of fetching, then not using for update in a W transaction,
-    // errors occur.
-    //
-    // In TDB1, prefix mapping are limited in usage scope to the transaction.
-    // The issue of the DatasetPrefixStorage.
-    // (Could improve with PrefixMapping that gets the underlying PrefixeMapping each time).
-    
-    @Override
-    public PrefixMapping getPrefixMapping() {
-        return createPrefixMapping();
-    }
-
-    @Override
-    protected PrefixMapping createPrefixMapping() {
-        boolean txnMode = getDatasetGraphTransaction() != null && getDatasetGraphTransaction().getStoreConnection().haveUsedInTransaction() ;
-        if ( ! txnMode )
-            return createPrefixMapping$();
-        return 
-            Txn.calculateRead(getDataset(),()-> createPrefixMapping$()); 
-    }
-    
-    private PrefixMapping createPrefixMapping$() {
-        DatasetPrefixStorage dsgPrefixes = getDatasetGraphTDB().getPrefixes() ;
-        if ( isDefaultGraph() )
-            return dsgPrefixes.getPrefixMapping() ;
-        if ( isUnionGraph() )
-            return dsgPrefixes.getPrefixMapping() ;
-        return dsgPrefixes.getPrefixMapping(getGraphName().getURI()) ;
-        
     }
 
     @Override
@@ -138,7 +88,7 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
     @Override
     protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o) {
         Iterator<Quad> iterQuads = getDatasetGraphTDB().find(Quad.unionGraph, s, p, o) ;
-        Iterator<Triple> iter = GLib.quads2triples(iterQuads) ;
+        Iterator<Triple> iter = G.quads2triples(iterQuads) ;
         // Suppress duplicates after projecting to triples.
         // TDB guarantees that duplicates are adjacent.
         // See SolverLib.
@@ -168,15 +118,6 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
 			throw new TDBException("Expected a Tuple of 4, got: " + item);
 		return TupleFactory.tuple(item.get(1), item.get(2), item.get(3));
 	};
-
-    @Override
-    public void clear() {
-        // Logically, this is "super.clear()" except the default implementation
-        // is a loop that materializes nodes. We want to call the dataset directly 
-        // so that nodes don't get materialized, just deleted from indexes.
-        getDataset().deleteAny(getGraphName(), Node.ANY, Node.ANY, Node.ANY) ;
-        getEventManager().notifyEvent(this, GraphEvents.removeAll) ;
-    }
 
     @Override
     public void remove(Node s, Node p, Node o) {

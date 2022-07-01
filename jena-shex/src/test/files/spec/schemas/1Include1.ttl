@@ -1,0 +1,14 @@
+BASE <http://all.example/>
+PREFIX sx: <http://www.w3.org/ns/shex#>
+
+[] a sx:Schema ;
+  sx:shapes (<S1> <S2>) .
+
+<S1> a sx:Shape ;
+  sx:expression <S2e> .
+
+<S2> a sx:Shape ;
+  sx:expression <S2e> .
+
+<S2e> a sx:TripleConstraint ; sx:predicate <p1> ; sx:min 0 ; sx:max 1 ;
+  sx:valueExpr <S2> .

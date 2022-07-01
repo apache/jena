@@ -20,7 +20,7 @@ package org.apache.jena.sparql.expr.aggregate.lib;
 
 import org.apache.jena.sparql.expr.Expr ;
 
-/** Aggregate - statistical standard deviation - sample (i.e. N-1) */ 
+/** Aggregate - statistical standard deviation - sample (i.e. N-1) */
 public class AccStatStdDevSample extends AccStatVarSample {
 
     public AccStatStdDevSample(Expr expr, boolean distinct) {

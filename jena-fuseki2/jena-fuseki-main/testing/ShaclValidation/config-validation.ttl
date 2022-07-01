@@ -1,0 +1,21 @@
+PREFIX fuseki: <http://jena.apache.org/fuseki#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tdb: <http://jena.hpl.hp.com/2008/tdb#>
+PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
+
+
+[] rdf:type fuseki:Server ;
+   .
+
+<#shacl> rdf:type fuseki:Service ;
+    fuseki:name "ds" ;
+    fuseki:serviceQuery                "sparql" ;
+    fuseki:serviceUpdate               "update" ;
+    fuseki:serviceReadWriteGraphStore  "data" ;
+    #fuseki:endpoint required
+    fuseki:endpoint [ fuseki:operation fuseki:shacl ; fuseki:name "shacl" ] ;
+    fuseki:dataset <#dataset> ;
+.
+
+<#dataset> rdf:type ja:MemoryDataset .

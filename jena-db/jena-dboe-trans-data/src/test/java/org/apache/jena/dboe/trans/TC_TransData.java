@@ -21,13 +21,13 @@ package org.apache.jena.dboe.trans;
 import org.apache.jena.dboe.trans.bplustree.TS_TxnBPTree;
 import org.apache.jena.dboe.trans.data.TS_TransData;
 import org.apache.jena.dboe.trans.recovery.TestRecovery;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TS_TransData.class
-    , TS_TxnBPTree.class 
+    , TS_TxnBPTree.class
     , TestRecovery.class
 })
 public class TC_TransData {}

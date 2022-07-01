@@ -1,0 +1,7 @@
+BASE <http://example.org/array-in>
+
+PREFIX ex: <http://example.org/test#>
+
+shape ex:TestShape {
+	ex:property in=[ex:Instance1 true "string" 42] .
+}

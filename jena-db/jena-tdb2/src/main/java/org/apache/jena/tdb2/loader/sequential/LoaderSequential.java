@@ -28,31 +28,35 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.loader.BulkLoaderException;
 import org.apache.jena.tdb2.loader.base.LoaderBase;
 import org.apache.jena.tdb2.loader.base.LoaderOps;
-import org.apache.jena.tdb2.loader.base.MonitorOutput;
-import org.apache.jena.tdb2.loader.base.ProgressMonitor;
-import org.apache.jena.tdb2.loader.base.ProgressMonitorOutput;
+import org.apache.jena.system.progress.MonitorOutput;
+import org.apache.jena.system.progress.ProgressMonitor;
+import org.apache.jena.system.progress.ProgressMonitorOutput;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
 
-/** Bulk loader. Algorithm: Parser to primary indexes, then builds secondary indexes one at a time. */ 
+/**
+ * Bulk loader. Algorithm: Parser to primary indexes, then builds secondary indexes one at a time.
+ * This is not the phased loader.
+ * This is the TDB1 tdbloader algorithm ported to TDB2.
+ */
 public class LoaderSequential extends LoaderBase {
-    
-    public static final int DataTickPoint   = 100_000;
+
+    public static final int DataTickPoint   = 1_000_000;
     public static final int DataSuperTick   = 10;
     public static final int IndexTickPoint  = 1_000_000;
     public static final int IndexSuperTick  = 10;
-    
+
     private final LoaderNodeTupleTable triplesLoader;
     private final LoaderNodeTupleTable quadsLoader;
     private final DatasetGraphTDB dsgtdb;
-    
+
     private long countQuads;
     private long countTriples;
     private StreamRDF stream;
-    
+
     public LoaderSequential(DatasetGraph dsg, Node graphName, MonitorOutput output) {
         super(dsg, graphName, output);
-        
+
         if ( ! TDBInternal.isBackedByTDB(dsg) )
             throw new BulkLoaderException("Not a TDB2 database");
 
@@ -72,10 +76,10 @@ public class LoaderSequential extends LoaderBase {
                 quadsLoader.load(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
                 countQuads++;
             }
-        };    
+        };
         this.stream = LoaderOps.toNamedGraph(s, graphName);
     }
-    
+
     @Override
     public void startBulk() {
         //Not in a transaction.
@@ -108,12 +112,12 @@ public class LoaderSequential extends LoaderBase {
     protected ProgressMonitor createProgressMonitor(MonitorOutput output) {
         return ProgressMonitorOutput.create(output, "<unset>", DataTickPoint, DataSuperTick);
     }
-    
+
     @Override
     public boolean bulkUseTransaction() {
         return true;
     }
-    
+
     @Override
     public long countTriples() {
         return countTriples;

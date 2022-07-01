@@ -18,36 +18,39 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
-import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
-import org.apache.jena.sparql.graph.GraphUnionRead ;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.Prefixes;
+import org.apache.jena.sparql.SystemARQ;
+import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker;
+import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.graph.GraphZero;
 
 /** Implementation of a DatasetGraph as an extensible set of graphs where graphs are held by reference.
  *  Care is needed when manipulating their contents
  *  especially if they are also in another {@code DatasetGraph}.
- *  <p> 
+ *  <p>
  *  See {@link DatasetGraphMap} for an implementation that copies graphs
  *  and so providing better isolation.
  *  <p>
- *  This class is best used for creating views  
- *  
+ *  This class is best used for creating views
+ *
  *  @see DatasetGraphMap
  */
 public class DatasetGraphMapLink extends DatasetGraphCollection
 {
-    private final GraphMaker graphMaker ;
-    private final Map<Node, Graph> graphs = new HashMap<>() ;
+    private final GraphMaker graphMaker;
+    private final Map<Node, Graph> graphs = new HashMap<>();
 
-    private Graph defaultGraph ;
+    private Graph defaultGraph;
+    private PrefixMap prefixes;
     private final Transactional txn;
     private final TxnDataset2Graph txnDsg2Graph;
     private static GraphMaker dftGraphMaker = DatasetGraphFactory.graphMakerMem;
@@ -55,12 +58,12 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
     /**
      * Create a new {@code DatasetGraph} that copies the dataset structure of default
      * graph and named graph and links to the graphs of the original {@code DatasetGraph}.
-     * Any new graphs needed are separate from the original dataset and created in-memory. 
+     * Any new graphs needed are separate from the original dataset and created in-memory.
      */
     public static DatasetGraph cloneStructure(DatasetGraph dsg) {
         return cloneStructure(dsg, dftGraphMaker);
     }
-    
+
     /**
      * Create a new {@code DatasetGraph} that copies the dataset structure of default
      * graph and named graph and links to the graphs of the original {@code DatasetGraph}
@@ -74,10 +77,10 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
     }
 
     private static void linkGraphs(DatasetGraph srcDsg, DatasetGraphMapLink dstDsg) {
-        dstDsg.defaultGraph = srcDsg.getDefaultGraph();
-        for ( Iterator<Node> names = srcDsg.listGraphNodes() ; names.hasNext() ; ) {
-            Node gn = names.next() ;
-            dstDsg.addGraph(gn, srcDsg.getGraph(gn)) ;
+        dstDsg.setDefaultGraph(srcDsg.getDefaultGraph());
+        for ( Iterator<Node> names = srcDsg.listGraphNodes(); names.hasNext(); ) {
+            Node gn = names.next();
+            dstDsg.addGraph(gn, srcDsg.getGraph(gn));
         }
     }
 
@@ -88,37 +91,32 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
         this(dftGraph, dftGraphMaker);
     }
 
-    // This is the root constructor. 
-    @SuppressWarnings("deprecation")
+    // This is the root constructor.
     /*package*/DatasetGraphMapLink(Graph dftGraph, GraphMaker graphMaker) {
         this.graphMaker = graphMaker;
-        this.defaultGraph = dftGraph;
-        if ( TxnDataset2Graph.TXN_DSG_GRAPH ) {
-            txnDsg2Graph = new TxnDataset2Graph(dftGraph);
-            txn = txnDsg2Graph;
-        } else {
-            txnDsg2Graph = null;
-            txn = TransactionalLock.createMRSW();
-        }
+        this.setDefaultGraph(dftGraph);
+        txnDsg2Graph = new TxnDataset2Graph(dftGraph);
+        txn = txnDsg2Graph;
     }
 
     @Override
     public void commit() {
         if ( txnDsg2Graph == null )
             SystemARQ.sync(this);
-        txn.commit() ;
+        txn().commit();
     }
 
-    @Override public void begin()                       { txn.begin(); }
-    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
-    @Override public boolean promote(Promote txnType)   { return txn.promote(txnType); }
-    //Above: commit()
-    @Override public void abort()                       { txn.abort(); }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
-    @Override public void end()                         { txn.end(); }
-    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
-    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    // ----
+    private final Transactional txn()                   { return txn; }
+    @Override public void begin()                       { txn().begin(); }
+    @Override public void begin(TxnType txnType)        { txn().begin(txnType); }
+    @Override public boolean promote(Promote txnType)   { return txn().promote(txnType); }
+    //@Override public void commit()                      { txn().commit(); }
+    @Override public void abort()                       { txn().abort(); }
+    @Override public boolean isInTransaction()          { return txn().isInTransaction(); }
+    @Override public void end()                         { txn().end(); }
+    @Override public ReadWrite transactionMode()        { return txn().transactionMode(); }
+    @Override public TxnType transactionType()          { return txn().transactionType(); }
     @Override public boolean supportsTransactions()     { return true; }
     @Override public boolean supportsTransactionAbort() { return false; }
     // ----
@@ -138,10 +136,10 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
     @Override
     public Graph getGraph(Node graphNode) {
         // Same as DatasetGraphMap.getGraph but we inherit differently.
-        if ( Quad.isUnionGraph(graphNode) ) 
-            return new GraphUnionRead(this) ;
+        if ( Quad.isUnionGraph(graphNode) )
+            return GraphOps.unionGraph(this);
         if ( Quad.isDefaultGraph(graphNode))
-            return getDefaultGraph() ;
+            return getDefaultGraph();
         // Not a special case.
         Graph g = graphs.get(graphNode);
         if ( g == null ) {
@@ -157,7 +155,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
      * Return null for "nothing created as a graph"
      */
     protected Graph getGraphCreate(Node graphNode) {
-        return graphMaker.create(graphNode) ;
+        return graphMaker.create(graphNode);
     }
 
     @Override
@@ -182,11 +180,17 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
         if ( txnDsg2Graph != null )
             txnDsg2Graph.addGraph(g);
         defaultGraph = g;
+        prefixes = Prefixes.adapt(g.getPrefixMapping());
     }
 
     @Override
     public Iterator<Node> listGraphNodes() {
         return graphs.keySet().iterator();
+    }
+
+    @Override
+    public PrefixMap prefixes() {
+        return prefixes;
     }
 
     @Override

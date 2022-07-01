@@ -18,6 +18,7 @@
 
 package org.apache.jena.jdbc.remote.connections;
 
+import java.net.http.HttpClient;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -25,7 +26,6 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.List;
 
-import org.apache.http.client.HttpClient;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.metadata.RemoteEndpointMetadata;
@@ -36,7 +36,7 @@ import org.apache.jena.jdbc.statements.JenaStatement;
 
 /**
  * Represents a connection to a remote endpoint
- * 
+ *
  */
 public class RemoteEndpointConnection extends JenaConnection {
 
@@ -53,7 +53,7 @@ public class RemoteEndpointConnection extends JenaConnection {
 
     /**
      * Creates a new remote connection
-     * 
+     *
      * @param queryEndpoint
      *            SPARQL Query Endpoint
      * @param updateEndpoint
@@ -72,7 +72,7 @@ public class RemoteEndpointConnection extends JenaConnection {
 
     /**
      * Creates a new remote connection
-     * 
+     *
      * @param queryEndpoint
      *            SPARQL Query Endpoint
      * @param updateEndpoint
@@ -122,7 +122,7 @@ public class RemoteEndpointConnection extends JenaConnection {
 
     /**
      * Gets the SPARQL query endpoint that is in use
-     * 
+     *
      * @return Endpoint URI or null for write only connections
      */
     public String getQueryEndpoint() {
@@ -131,7 +131,7 @@ public class RemoteEndpointConnection extends JenaConnection {
 
     /**
      * Gets the SPARQL update endpoint that is in use
-     * 
+     *
      * @return Endpoint URI or null for read-only connections
      */
     public String getUpdateEndpoint() {
@@ -140,7 +140,7 @@ public class RemoteEndpointConnection extends JenaConnection {
 
     /**
      * Gets the default graphs for SPARQL queries (may be null if none were set)
-     * 
+     *
      * @return Default graphs
      */
     public List<String> getDefaultGraphURIs() {
@@ -149,7 +149,7 @@ public class RemoteEndpointConnection extends JenaConnection {
 
     /**
      * Gets the named graphs for SPARQL queries (may be null if none were set)
-     * 
+     *
      * @return Named graphs
      */
     public List<String> getNamedGraphURIs() {
@@ -158,7 +158,7 @@ public class RemoteEndpointConnection extends JenaConnection {
 
     /**
      * Gets the default graphs for SPARQL updates (may be null if none were set)
-     * 
+     *
      * @return Default graphs
      */
     public List<String> getUsingGraphURIs() {
@@ -167,7 +167,7 @@ public class RemoteEndpointConnection extends JenaConnection {
 
     /**
      * Gets the named graphs for SPARQL updates (may be null if none were set)
-     * 
+     *
      * @return Named graphs
      */
     public List<String> getUsingNamedGraphURIs() {
@@ -177,7 +177,7 @@ public class RemoteEndpointConnection extends JenaConnection {
     /**
      * Gets the results type that will be requested from the remote endpoint for
      * {@code SELECT} queries
-     * 
+     *
      * @return Select results type if set, otherwise null which indicates that
      *         the ARQ default will be used
      */
@@ -188,7 +188,7 @@ public class RemoteEndpointConnection extends JenaConnection {
     /**
      * Gets the results type that will be requested from the remote endpoint for
      * {@code CONSTRUCT} and {@code DESCRIBE} queries.
-     * 
+     *
      * @return Model results type if set, otherwise null which indicates that
      *         the ARQ default will be used
      */

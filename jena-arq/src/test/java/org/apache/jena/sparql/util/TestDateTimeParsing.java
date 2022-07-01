@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.util;
 
-import org.apache.jena.sparql.util.DateTimeStruct ;
 import org.junit.Test ;
 import static org.junit.Assert.*;
 

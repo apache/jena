@@ -18,17 +18,21 @@
 
 package org.apache.jena.riot.adapters;
 
-import java.io.InputStream ;
+import java.io.File;
+import java.io.InputStream;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.system.stream.* ;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NotFoundException;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.FileUtils ;
@@ -37,30 +41,30 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** FileManager
- * 
+ *
  * A FileManager provides access to named file-like resources by opening
  * InputStreams to things in the filing system, by URL (http: and file:) and
  * found by the classloader.  It can also load RDF data from such a system
  * resource into an existing model or create a new (Memory-based) model.
  * There is a global FileManager which provide uniform access to system
  * resources: applications may also create specialised FileManagers.
- * 
+ *
  * A FileManager contains a list of location functions to try: the global
  * FileManger has one {@link LocatorFile}, one {@link LocatorClassLoader} and
  * one {@link LocatorURL}
- * 
+ *
  * Main operations:
  * <ul>
  * <li>loadModel, readModel : URI to model</li>
  * <li>open, openNoMap : URI to input stream</li>
- * <li>mapURI : map URI to another by {@link LocationMapper}</li> 
+ * <li>mapURI : map URI to another by {@link LocationMapper}</li>
  * </ul>
- * 
+ *
  * Utilities:
  * <ul>
  * <li>readWholeFileAsUTF8</li>
  * </ul>
- * 
+ *
  * A FileManager works in conjunction with a LocationMapper.
  * A {@link LocationMapper} is a set of alternative locations for system
  * resources and a set of alternative prefix locations.  For example, a local
@@ -68,33 +72,33 @@ import org.slf4j.LoggerFactory ;
  * the application.
  *
  * The {@link LocatorFile} also supports the idea of "current directory".
- * 
+ *
  * @see StreamManager
  * @see LocationMapper
  * @see FileUtils
  */
- 
-public class AdapterFileManager extends org.apache.jena.util.FileManager
+
+public class AdapterFileManager implements org.apache.jena.util.FileManager
 {
-    // This is a legacy class - it provides  FileManager calls onto the RIOT equivalents.  
-    // The different aspects are now split out 
-    // and this class maintains the old interface. 
+    // This is a legacy class - it provides  FileManager calls onto the RIOT equivalents.
+    // The different aspects are now split out
+    // and this class maintains the old interface.
     // Aspects: StreamManager, LocationMapper, Model cache.
     // and this class exists to maintain the old interfaces and the
     // combination of stream and model reading.
-    
+
     // RIOT reader uses StreamManager.
     // Each FileManager has a StreamManager.
-    
+
     /** Delimiter between path entries : because URI scheme names use : we only allow ; */
     //public static final String PATH_DELIMITER = ";";
     //public static final String filePathSeparator = java.io.File.separator ;
-    
+
     private static Logger log = LoggerFactory.getLogger(AdapterFileManager.class) ;
 
     private static AdapterFileManager instance = null ;
     private final StreamManager streamManager ;
-    
+
     // -------- Cache operations
     // See also loadModelWorker which uses the cache.
     // These are in the FileManager for legacy reasons.
@@ -102,7 +106,7 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
 
     /**
      * Get the global file manager.
-     * 
+     *
      * @return the global file manager
      */
     public static AdapterFileManager get() {
@@ -114,14 +118,14 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
     /**
      * Set the global file manager (as returned by get()) If called before any
      * call to get(), then the usual default filemanager is not created
-     * 
+     *
      * @param globalFileManager
      */
     public static void setGlobalFileManager(AdapterFileManager globalFileManager) {
         instance = globalFileManager ;
     }
 
-    /** Create an uninitialized FileManager */
+    /** Create an uninitialized StreamManager */
     private AdapterFileManager() {
         streamManager = new StreamManager() ;
     }
@@ -208,6 +212,11 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
         streamManager.addLocator(cLoc) ;
     }
 
+    @Override
+    public void addLocatorURL() {
+        addLocatorHTTP();
+    }
+
     public void addLocatorHTTP() {
         Locator loc = new LocatorHTTP() ;
         streamManager.addLocator(loc) ;
@@ -268,7 +277,6 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
 
     // -------- Cache operations (end)
 
-    @Override
     protected Model readModelWorker(Model model, String filenameOrURI, String baseURI, String syntax) {
         // Doesn't call open() - we want to make the syntax guess
         // based on the mapped URI.
@@ -277,15 +285,15 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
         if ( log.isDebugEnabled() && !mappedURI.equals(filenameOrURI) )
             log.debug("Map: " + filenameOrURI + " => " + mappedURI) ;
 
-        Lang lang = 
+        Lang lang =
             (syntax != null)
             ? RDFLanguages.nameToLang(syntax)
             : RDFLanguages.resourceNameToLang(mappedURI, Lang.RDFXML) ;
 
         // Not : RDFDataMgr.read(model, mappedURI, baseURI, lang);
-        // Allow model.read to be overridden e.g. by OntModel which does import processing.   
+        // Allow model.read to be overridden e.g. by OntModel which does import processing.
         if ( baseURI == null )
-            baseURI = SysRIOT.chooseBaseIRI(filenameOrURI) ;
+            baseURI = IRIs.toBase(filenameOrURI) ;
         try(TypedInputStream in = streamManager.openNoMapOrNull(mappedURI)) {
             if ( in == null )
             {
@@ -330,5 +338,170 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
     @Override
     public TypedStream openNoMapOrNull(String filenameOrURI) {
         return AdapterLib.convert(streamManager.openNoMapOrNull(filenameOrURI)) ;
+    }
+
+    // -------- Cache operations (end)
+
+    // LEGACY
+
+    @Override
+    public Model loadModelInternal(String filenameOrURI)
+    {
+        if ( log.isDebugEnabled() )
+            log.debug("loadModel("+filenameOrURI+")") ;
+
+        return loadModelWorker(filenameOrURI, null, null) ;
+    }
+
+    /** Load a model from a file (local or remote).
+     *  URI is the base for reading the model.
+     *
+     *  @param filenameOrURI The filename or a URI (file:, http:)
+     *  @param rdfSyntax  RDF Serialization syntax.
+     *  @return a new model
+     *  @exception JenaException if there is syntax error in file.
+     */
+    @Deprecated
+    @Override
+    public Model loadModel(String filenameOrURI, String rdfSyntax)
+    {
+        if ( log.isDebugEnabled() )
+            log.debug("loadModel("+filenameOrURI+", "+rdfSyntax+")") ;
+        return loadModelWorker(filenameOrURI, null, rdfSyntax) ;
+    }
+
+    /** Load a model from a file (local or remote).
+     *
+     *  @param filenameOrURI The filename or a URI (file:, http:)
+     *  @param baseURI  Base URI for loading the RDF model.
+     *  @param rdfSyntax  RDF Serialization syntax.
+     *  @return a new model
+     *  @exception JenaException if there is syntax error in file.
+    */
+    @Deprecated
+    @Override
+    public Model loadModel(String filenameOrURI, String baseURI, String rdfSyntax)
+    {
+        if ( log.isDebugEnabled() )
+            log.debug("loadModel("+filenameOrURI+", "+baseURI+", "+rdfSyntax+")") ;
+
+        return loadModelWorker(filenameOrURI, baseURI, rdfSyntax) ;
+    }
+
+    private Model loadModelWorker(String filenameOrURI, String baseURI, String rdfSyntax)
+    {
+        if ( hasCachedModel(filenameOrURI) )
+        {
+            if ( log.isDebugEnabled() )
+                log.debug("Model cache hit: "+filenameOrURI) ;
+            return getFromCache(filenameOrURI) ;
+        }
+
+        Model m = ModelFactory.createDefaultModel() ;
+        readModelWorker(m, filenameOrURI, baseURI, rdfSyntax) ;
+
+        if ( isCachingModels() )
+            addCacheModel(filenameOrURI, m) ;
+        return m ;
+    }
+
+    @Override
+    public Model readModelInternal(Model model, String filenameOrURI)
+    {
+        if ( log.isDebugEnabled() )
+            log.debug("readModel(model,"+filenameOrURI+")") ;
+        return readModel(model, filenameOrURI, null);
+    }
+
+    /**
+     * Read a file of RDF into a model.
+     * @param model
+     * @param filenameOrURI
+     * @param rdfSyntax RDF Serialization syntax.
+     * @return The model or null, if there was an error.
+     *  @exception JenaException if there is syntax error in file.
+     */
+    @Deprecated
+    @Override
+    public Model readModel(Model model, String filenameOrURI, String rdfSyntax)
+    {
+        if ( log.isDebugEnabled() )
+            log.debug("readModel(model,"+filenameOrURI+", "+rdfSyntax+")") ;
+        return readModelWorker(model, filenameOrURI, null, rdfSyntax);
+    }
+
+    /**
+     * Read a file of RDF into a model.
+     * @param model
+     * @param filenameOrURI
+     * @param baseURI
+     * @param syntax
+     * @return The model
+     *  @exception JenaException if there is syntax error in file.
+     */
+    @Deprecated
+    @Override
+    public Model readModel(Model model, String filenameOrURI, String baseURI, String syntax)
+    {
+
+        if ( log.isDebugEnabled() )
+            log.debug("readModel(model,"+filenameOrURI+", "+baseURI+", "+syntax+")") ;
+        return readModelWorker(model, filenameOrURI, baseURI, syntax) ;
+    }
+
+    private static String chooseBaseURI(String baseURI)
+    {
+        String scheme = IRIs.scheme(baseURI) ;
+
+        if ( scheme != null )
+        {
+            if ( scheme.equals("file") )
+            {
+                if ( ! baseURI.startsWith("file:///") )
+                {
+                    try {
+                        // Fix up file URIs.  Yuk.
+                        String tmp = baseURI.substring("file:".length()) ;
+                        File f = new File(tmp) ;
+                        baseURI = "file:///"+f.getCanonicalPath() ;
+                        baseURI = baseURI.replace('\\','/') ;
+
+//                        baseURI = baseURI.replace(" ","%20");
+//                        baseURI = baseURI.replace("~","%7E");
+                        // Convert to URI.  Except that it removes ///
+                        // Could do that and fix up (again)
+                        //java.net.URL u = new java.net.URL(baseURI) ;
+                        //baseURI = u.toExternalForm() ;
+                    } catch (Exception ex) {}
+                }
+            }
+            return baseURI ;
+        }
+
+        if ( baseURI.startsWith("/") )
+            return "file://"+baseURI ;
+        return "file:"+baseURI ;
+    }
+
+    /**
+     * @deprecated Use {@link IO#readWholeFileAsUTF8(InputStream)}
+     */
+    @Override
+    @Deprecated
+    public String readWholeFileAsUTF8(InputStream in) {
+        return IO.readWholeFileAsUTF8(in);
+    }
+
+    /**
+     * @deprecated Use {@link IO#readWholeFileAsUTF8(String)}
+     */
+    @Deprecated
+    @Override
+    public String readWholeFileAsUTF8(String filename)
+    {
+        InputStream in = open(filename) ;
+        if ( in == null )
+            throw new NotFoundException("File not found: "+filename) ;
+        return readWholeFileAsUTF8(in) ;
     }
 }

@@ -18,18 +18,16 @@
 
 package org.apache.jena.sparql.algebra;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.Transformer ;
 import org.apache.jena.sparql.algebra.optimize.TransformPattern2Join ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
-public class TestPattern2Join extends BaseTest
+public class TestPattern2Join
 {
     
     @Test public void bgp2join_01() { test3("{}", 

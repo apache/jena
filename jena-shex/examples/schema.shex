@@ -1,0 +1,15 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+BASE <http://example/shapes>
+
+PREFIX : <http://example/>
+
+<#shape1> {
+    :p IRI + ;
+}
+
+START = @<#shape2>
+
+<#shape2> IRI {
+   :property [123 456] ;
+   }

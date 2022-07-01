@@ -1,0 +1,143 @@
+# kitchenSink.shex - Issue schema using most ShEx features.
+
+BASE <http://ex.example/>
+PREFIX e: <http://ex.example/>
+PREFIX ex: <http://ex.example/#>
+PREFIX UserShape: <http://ex.example/#UserShape>
+PREFIX : <http://ex.example/#>
+PREFIX foaf: <http://xmlns.com/foaf/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schem#>
+@prefix sx:  <http://www.w3.org/ns/shex#> .
+
+[] a sx:Schema ;
+  sx:startActs (
+    [ a sx:SemAct ; sx:name ex:foo ; sx:code " initializer for ignored extension " ]
+  ) ;
+  sx:start <S1> ;
+  sx:shapes (
+      <S1> 
+      UserShape: 
+      :EmployeeShape 
+      _:IDshape 
+      ex:FooID) .
+
+<S1> a sx:Shape ;
+  sx:expression [ a sx:EachOf ; sx:expressions (
+    [ a sx:TripleConstraint ; sx:predicate rdf:type ;
+      sx:max 1 ; sx:min 0 ;
+      sx:valueExpr [ a sx:NodeConstraint ; sx:values ( ex:Issue ) ] ]
+    [ a sx:TripleConstraint ; sx:predicate ex:state ;
+      sx:valueExpr [ a sx:NodeConstraint ; sx:values (
+        [ a sx:IriStemRange ; sx:stem "http://ex.example/#state" ;
+          sx:exclusion (ex:state_resolved) ] ) ] ;
+      sx:annotation (
+        [ a sx:Annotation ; sx:object "State" ; sx:predicate rdfs:label ]
+        [ a sx:Annotation ; sx:object "the sit" ; sx:predicate rdfs:description ]) ;
+    ]
+    [ a sx:TripleConstraint ; sx:predicate ex:reportedBy ;
+      sx:valueExpr [ a sx:ShapeAnd ; sx:shapeExprs (
+        [ a sx:NodeConstraint ; sx:nodeKind sx:iri ]
+        ex:UserShape
+      ) ] ]
+    [ a sx:TripleConstraint ; sx:predicate ex:reportedOn ;
+      sx:valueExpr [ a sx:NodeConstraint ; sx:datatype xsd:dateTime ] ]
+    [ a sx:EachOf ; sx:max 1 ; sx:min 0 ; sx:expressions (
+      [ a sx:TripleConstraint ; sx:predicate ex:reproducedBy ;
+        sx:valueExpr [ a sx:ShapeAnd ; sx:shapeExprs (
+          [ a sx:NodeConstraint ; sx:nodeKind sx:nonliteral ]
+          ex:EmployeeShape
+        ) ] ]
+      [ a sx:TripleConstraint ; sx:predicate ex:reproducedOn ;
+        sx:valueExpr [ a sx:NodeConstraint ; sx:datatype xsd:dateTime ] ]
+    ) ; sx:semActs (
+      [ a sx:SemAct ; sx:name ex:foo ; sx:code " asdfasdf " ]
+    ) ]
+    [ a sx:TripleConstraint ; sx:predicate ex:related ;
+      sx:max -1 ; sx:min 0 ;
+      sx:valueExpr <S1> ]
+  ) ] .
+
+ex:UserShape a sx:Shape ;
+  sx:expression [ a sx:EachOf ; sx:expressions (
+    [ a sx:OneOf ; sx:expressions (
+      [ a sx:TripleConstraint ; sx:predicate foaf:name ;
+        sx:valueExpr [ a sx:NodeConstraint ; sx:datatype xsd:string ] ]
+      [ a sx:EachOf ; sx:expressions (
+        [ a sx:TripleConstraint ; sx:predicate foaf:givenName ;
+          sx:max -1 ; sx:min 1 ;
+          sx:valueExpr [ a sx:NodeConstraint ; sx:datatype xsd:string ] ]
+        [ a sx:TripleConstraint ; sx:predicate foaf:familyName ;
+          sx:valueExpr [ a sx:NodeConstraint ; sx:datatype xsd:string ] ]
+      ) ]
+    ) ]
+    [ a sx:TripleConstraint ; sx:predicate foaf:mbox ;
+      sx:valueExpr [ a sx:NodeConstraint ; sx:nodeKind sx:iri ; sx:pattern "^mailto:" ] ]
+    [ a sx:TripleConstraint ; sx:predicate ex:id ;
+      sx:valueExpr [ a sx:ShapeAnd ; sx:shapeExprs (
+        [ a sx:NodeConstraint ; sx:nodeKind sx:bnode ]
+        _:IDshape
+    ) ] ]
+  ) ] .
+
+ex:EmployeeShape a sx:Shape ;
+  sx:expression [ a sx:EachOf ; sx:expressions (
+    [ a sx:TripleConstraint ; sx:predicate foaf:givenName ;
+      sx:max -1 ; sx:min 1 ;
+      sx:valueExpr [ a sx:NodeConstraint ; sx:datatype xsd:string ] ]
+    [ a sx:TripleConstraint ; sx:predicate foaf:familyName ;
+      sx:valueExpr [ a sx:NodeConstraint ; sx:datatype xsd:string ] ]
+    [ a sx:TripleConstraint ; sx:predicate foaf:phone ;
+      sx:max -1 ; sx:min 0 ;
+      sx:valueExpr [ a sx:NodeConstraint ; sx:nodeKind sx:iri ] ]
+    [ a sx:TripleConstraint ; sx:predicate foaf:mbox ;
+      sx:max 1 ; sx:min 0 ;
+      sx:valueExpr [ a sx:NodeConstraint ; sx:nodeKind sx:iri ] ]
+  ) ] .
+
+_:IDshape a sx:Shape ;
+    sx:expression _:IDshapeE .
+
+_:IDshapeE a sx:OneOf ; sx:expressions (
+      [ a sx:EachOf ; sx:expressions (
+        [ a sx:TripleConstraint ; sx:predicate ex:code ;
+          sx:valueExpr [ a sx:NodeConstraint ; sx:nodeKind sx:literal ] ]
+        [ a sx:TripleConstraint ; sx:predicate ex:system ;
+          sx:valueExpr [ a sx:NodeConstraint ; sx:nodeKind sx:iri ] ]
+        [ a sx:TripleConstraint ; sx:predicate ex:literal ;
+          sx:max 3 ; sx:min 2 ;
+          sx:valueExpr [ a sx:NodeConstraint ; sx:values (
+            "a" "b"^^ex:c "c"@en "d"@en-fr
+          ) ] ]
+        [ a sx:TripleConstraint ; sx:predicate ex:misc ;
+          sx:valueExpr [ a sx:NodeConstraint ; sx:nodeKind sx:bnode ] ;
+          sx:semActs (
+                [ a sx:SemAct ; sx:name ex:foo ; sx:code " ignored " ]
+                [ a sx:SemAct ; sx:name ex:bar ; sx:code " also ignored " ]
+        ) ]
+      ) ]
+      [ a sx:EachOf ; sx:expressions (
+        [ a sx:EachOf ; sx:expressions (
+          [ a sx:TripleConstraint ; sx:predicate ex:ref ;
+            sx:inverse true ;
+            sx:valueExpr [ a sx:NodeConstraint ; sx:values ( true false ) ] ]
+          [ a sx:TripleConstraint ; sx:predicate ex:miscRef ;
+            sx:inverse true ]
+        ) ]
+        [ a sx:TripleConstraint ; sx:predicate ex:issues ;
+          sx:min 0 ; sx:max -1 ;
+          sx:valueExpr <S1> ]
+        [ a sx:TripleConstraint ; sx:predicate ex:seeAlso ;
+          sx:min 0 ; sx:max -1 ;
+          sx:valueExpr <S1> ]
+        [ a sx:TripleConstraint ; sx:predicate ex:says ;
+          sx:min 0 ; sx:max -1 ;
+          sx:valueExpr ex:EmployeeShape ]
+      ) ]
+    ) .
+
+ex:FooID a sx:Shape ; sx:closed true ;
+  sx:extra ex:code, ex:system ;
+  sx:expression _:IDshapeE .
+

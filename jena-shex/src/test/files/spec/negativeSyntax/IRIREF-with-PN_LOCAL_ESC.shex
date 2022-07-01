@@ -1,0 +1,5 @@
+# IRIREF with PN_LOCAL_ESC
+# source: turtle-syntax-bad-uri-05.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/p1\/> .
+}

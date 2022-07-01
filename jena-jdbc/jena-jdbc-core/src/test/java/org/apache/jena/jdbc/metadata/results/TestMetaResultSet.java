@@ -24,19 +24,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Time;
 
-import org.apache.jena.jdbc.metadata.results.MetaResultSet;
-import org.apache.jena.jdbc.results.metadata.columns.BooleanColumn;
-import org.apache.jena.jdbc.results.metadata.columns.ByteColumn;
-import org.apache.jena.jdbc.results.metadata.columns.ColumnInfo;
-import org.apache.jena.jdbc.results.metadata.columns.DateColumn;
-import org.apache.jena.jdbc.results.metadata.columns.DecimalColumn;
-import org.apache.jena.jdbc.results.metadata.columns.DoubleColumn;
-import org.apache.jena.jdbc.results.metadata.columns.FloatColumn;
-import org.apache.jena.jdbc.results.metadata.columns.IntegerColumn;
-import org.apache.jena.jdbc.results.metadata.columns.LongIntegerColumn;
-import org.apache.jena.jdbc.results.metadata.columns.ShortIntegerColumn;
-import org.apache.jena.jdbc.results.metadata.columns.StringColumn;
-import org.apache.jena.jdbc.results.metadata.columns.TimeColumn;
+import org.apache.jena.jdbc.results.metadata.columns.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,6 +32,7 @@ import org.junit.Test;
  * Tests for the {@link MetaResultSet}
  * 
  */
+@SuppressWarnings("resource")
 public class TestMetaResultSet {
 
     /**

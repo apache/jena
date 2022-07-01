@@ -30,15 +30,15 @@ import org.apache.jena.sparql.core.Quad ;
 public class FactoryRDFStd implements FactoryRDF {
     // Needs reset?
     private final LabelToNode labelMapping ;
-    
+
     public FactoryRDFStd() {
         this(SyntaxLabels.createLabelToNode()) ;
     }
-    
+
     public FactoryRDFStd(LabelToNode labelMapping) {
-        this.labelMapping = labelMapping ; 
+        this.labelMapping = labelMapping ;
     }
-    
+
     @Override
     public Triple createTriple(Node subject, Node predicate, Node object) {
         return Triple.create(subject, predicate, object);
@@ -75,12 +75,12 @@ public class FactoryRDFStd implements FactoryRDF {
         if ( false ) {
             //int version = (int)BitsLong.unpack(mostSigBits, 12,16) ;
             int variant = (int)BitsLong.unpack(leastSigBits, 62, 64) ;
-            if ( variant != 2 ) 
+            if ( variant != 2 )
                 Log.warn(this, "Bad variant "+variant+" for blank node") ;
         }
-        
+
         // XXX Style: Do this fast.  Guava? Apache commons? Special case for char[32]
-        // (Eventually, blank node Nodes will have two longs normally.)  
+        // (Eventually, blank node Nodes will have two longs normally.)
         return createBlankNode(String.format("%08X%08X", mostSigBits, leastSigBits)) ;
     }
 

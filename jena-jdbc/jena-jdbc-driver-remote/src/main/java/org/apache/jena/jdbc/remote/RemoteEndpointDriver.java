@@ -20,17 +20,15 @@ package org.apache.jena.jdbc.remote;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.http.auth.AuthLib;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.JenaDriver;
 import org.apache.jena.jdbc.connections.JenaConnection;
@@ -46,7 +44,7 @@ import org.apache.jena.sys.JenaSystem ;
  * <p>
  * This driver expects a URL of the following form:
  * </p>
- * 
+ *
  * <pre>
  * jdbc:jena:remote:query=http://example.org/query&amp;update=http://example.org/update
  * </pre>
@@ -171,7 +169,7 @@ public class RemoteEndpointDriver extends JenaDriver {
      */
     public static final String PARAM_CLIENT = "client";
 
-    
+
     /**
      * Static initializer block which ensures the driver gets registered
      */
@@ -186,7 +184,7 @@ public class RemoteEndpointDriver extends JenaDriver {
 
     /**
      * Registers the driver with the JDBC {@link DriverManager}
-     * 
+     *
      * @throws SQLException
      *             Thrown if the driver cannot be registered
      */
@@ -204,7 +202,7 @@ public class RemoteEndpointDriver extends JenaDriver {
     /**
      * Extension point for derived drivers which allows them to provide
      * different version information and driver prefix
-     * 
+     *
      * @param majorVersion
      *            Major version
      * @param minorVersion
@@ -243,7 +241,7 @@ public class RemoteEndpointDriver extends JenaDriver {
         return openConnection(queryEndpoint, updateEndpoint, defaultGraphs, namedGraphs, usingGraphs, usingNamedGraphs,
                 client, JenaConnection.DEFAULT_HOLDABILITY, compatibilityLevel, selectResultsType, modelResultsType);
     }
-    
+
     protected HttpClient configureClient(Properties props) throws SQLException {
         // Try to get credentials to use
         String user = props.getProperty(PARAM_USERNAME, null);
@@ -253,20 +251,21 @@ public class RemoteEndpointDriver extends JenaDriver {
 
         // If credentials then we use them
         if (user != null && password != null) {
-            BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
-            credsProv.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, password));
-            return HttpClients.custom().setDefaultCredentialsProvider(credsProv).build();
+            return HttpClient.newBuilder().authenticator(AuthLib.authenticator(user, password)).build();
         }
         // else use a supplied or default client
         Object client = props.get(PARAM_CLIENT);
         if (client != null) {
+            if ( client.getClass().getName().equals("org.apache.http.client.HttpClient") ) {
+                Log.warn(this, "Found Apache HttpClient for context symbol "+PARAM_CLIENT+". Jena now uses java.net.http.HttpClient");
+                return null;
+            }
             if (!(client instanceof HttpClient)) throw new SQLException("The " + PARAM_CLIENT
                     + " parameter is specified but the value is not an object implementing the required HttpClient interface");
             return (HttpClient) client;
         }
         return null;
     }
-
 
     /**
      * Determines the common base of the two URIs if there is one. The common
@@ -276,7 +275,7 @@ public class RemoteEndpointDriver extends JenaDriver {
      * If one URI is null and the other is non-null the non-null one is
      * returned.
      * </p>
-     * 
+     *
      * @param x
      *            URI
      * @param y
@@ -306,14 +305,14 @@ public class RemoteEndpointDriver extends JenaDriver {
             // and recurse
             if (x.length() < y.length()) {
                 // y is longer so strip last component
-                y = this.stripLastComponent(y);
+                y = stripLastComponent(y);
             } else if (x.length() > y.length()) {
                 // x is longer so strip last component
-                x = this.stripLastComponent(x);
+                x = stripLastComponent(x);
             } else {
                 // Equal length so strip last component from both
-                x = this.stripLastComponent(x);
-                y = this.stripLastComponent(y);
+                x = stripLastComponent(x);
+                y = stripLastComponent(y);
             }
 
             // Be careful that if either returned null at this point bail out
@@ -328,7 +327,7 @@ public class RemoteEndpointDriver extends JenaDriver {
 
     /**
      * Strips the last component of the given URI if possible
-     * 
+     *
      * @param input
      *            URI
      * @return Reduced URI or null if no further reduction is possible
@@ -376,7 +375,7 @@ public class RemoteEndpointDriver extends JenaDriver {
     /**
      * Get the URI with irrelevant components (Fragment and Querystring)
      * stripped off
-     * 
+     *
      * @param input
      *            URI
      * @return URI with irrelevant components stripped off or null if stripping
@@ -401,7 +400,7 @@ public class RemoteEndpointDriver extends JenaDriver {
      * {@link #connect(Properties, int)} method with their own implementation
      * that uses different connection parameters
      * </p>
-     * 
+     *
      * @param queryEndpoint
      *            SPARQL Query Endpoint
      * @param updateEndpoint

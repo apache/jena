@@ -1,0 +1,58 @@
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX sh: 	    <http://www.w3.org/ns/shacl#>
+PREFIX ex:      <http://example/>
+PREFIX sht:     <http://www.w3.org/ns/shacl-test#>
+PREFIX mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+
+ex:InvalidInstance
+  rdf:type ex:Class3 ;
+  rdfs:label "Invalid instance" ;
+.
+
+ex:ValidInstance
+  rdf:type ex:Class3 ;
+  rdfs:label "Valid instance" ;
+.
+
+ex:C0 rdfs:subClassOf rdfs:Class .
+
+ex:Class1 rdf:type rdfs:Class .
+
+ex:Class2 rdfs:subClassOf ex:Class1 ;
+   rdf:type ex:C0 ;     ## Required
+   rdf:type sh:NodeShape ;
+   sh:in (
+      ex:ValidInstance
+   ) ;
+   .
+
+ex:Class3 rdfs:subClassOf ex:Class2 .
+
+<>
+  rdf:type mf:Manifest ;
+  mf:entries ( <implicit-class-1> )
+.
+
+<implicit-class-1>
+  rdf:type sht:Validate ;
+  rdfs:label "Implicit class target and subclass test" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result
+      [ a            sh:ValidationReport ;
+        sh:conforms  false ;
+        sh:result
+           [ a      sh:ValidationResult ;
+             sh:focusNode                  ex:InvalidInstance ;
+             sh:resultMessage              "InConstraint[http://example/ValidInstance] : RDF term <http://example/InvalidInstance> not in expected values" ;
+             sh:resultSeverity             sh:Violation ;
+             sh:sourceConstraintComponent  sh:InConstraintComponent ;
+             sh:sourceShape                ex:Class2 ;
+             sh:value                      ex:InvalidInstance
+           ]
+       ]
+.

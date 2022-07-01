@@ -204,22 +204,18 @@ public class ModelExpansion
         result.add( toAdd );
         }
     
-    protected static void addSupertypes( Model result )
-        {
+    protected static void addSupertypes(Model result) {
         Model temp = ModelFactory.createDefaultModel();
-        for (StmtIterator it = result.listStatements( ANY, RDF.type, ANY ); it.hasNext();)
-            {
+        for ( StmtIterator it = result.listStatements(ANY, RDF.type, ANY) ; it.hasNext() ; ) {
             Statement s = it.nextStatement();
-            Resource c = AssemblerHelp.getResource( s );
-            for (StmtIterator subclasses = result.listStatements( c, RDFS.subClassOf, ANY ); subclasses.hasNext();)
-                {
+            Resource c = AssemblerHelp.getResource(s);
+            for ( StmtIterator subclasses = result.listStatements(c, RDFS.subClassOf, ANY) ; subclasses.hasNext() ; ) {
                 RDFNode type = subclasses.nextStatement().getObject();
-                // System.err.println( ">> adding super type: subject " + s.getSubject() + ", type " + type );
-                temp.add( s.getSubject(), RDF.type, type );
-                }
+                temp.add(s.getSubject(), RDF.type, type);
             }
-        result.add( temp );
         }
+        result.add(temp);
+    }
     
     private static void addIntersections( Model result, Model schema )
         {

@@ -18,29 +18,35 @@
 
 package org.apache.jena.tdb2.sys;
 
+import java.util.Arrays;
+
 import org.apache.jena.dboe.base.file.Location;
+import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.TDBException;
+import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
+import org.apache.jena.tdb2.store.tupletable.TupleIndex;
+import org.apache.jena.tdb2.store.tupletable.TupleIndexRecord;
 
 /**
- * A collection of helpers to abstract away from calling code knowing the 
- * internal details of TDB. 
+ * A collection of helpers to abstract away from calling code knowing the
+ * internal details of TDB.
  * <p>
  * Use with care.
  * <p>{@link DatabaseOps#compact Compaction} invalidates any previous objects.
- * 
+ *
  */
 public class TDBInternal {
-    
+
     /**
-     * Return true if this is a TDB2 backed DatasetGraph. 
+     * Return true if this is a TDB2 backed DatasetGraph.
      */
     public static boolean isTDB2(DatasetGraph dsg) {
         return ( dsg instanceof DatasetGraphSwitchable );
@@ -121,7 +127,7 @@ public class TDBInternal {
             return (DatasetGraphSwitchable)dsg;
         throw new TDBException("Not a TDB database container");
     }
-    
+
     /**
      * Return the {@link TransactionCoordinator} for a TDB2-backed DatasetGraph
      * or null, if not backed by TDB2.
@@ -150,7 +156,58 @@ public class TDBInternal {
             throw new TDBException("Not a TDB database (argument is neither a switchable nor direct TDB DatasetGraph)");
         return dsgtdb;
     }
-    
+
+    /** Find an index */
+    public static TupleIndex findIndex(DatasetGraph dsg, String indexName) {
+        DatasetGraphTDB dsgtdb = getDatasetGraphTDB(dsg);
+        if ( dsgtdb == null )
+            return null;
+
+        // The name is the order.
+        String primary = indexName;
+
+        String primaryOrder;
+        int dftKeyLength;
+        int dftValueLength;
+        int tupleLength = indexName.length();
+
+        StoreParams params = dsgtdb.getStoreParams();
+
+        TupleIndex[] indexes;
+        if ( tupleLength == 3 ) {
+            primaryOrder = params.getPrimaryIndexTriples();
+            dftKeyLength = SystemTDB.LenIndexTripleRecord;
+            dftValueLength = 0;
+            indexes = dsgtdb.getTripleTable().getNodeTupleTable().getTupleTable().getIndexes();
+        } else if ( tupleLength == 4 ) {
+            primaryOrder = params.getPrimaryIndexQuads();
+            dftKeyLength = SystemTDB.LenIndexQuadRecord;
+            dftValueLength = 0;
+            indexes = dsgtdb.getQuadTable().getNodeTupleTable().getTupleTable().getIndexes();
+        } else {
+            throw new TDBException("Bad index name: " + indexName);
+        }
+        TupleIndex index = findIndex(indexes, indexName);
+        if ( index == null )
+            throw new TDBException("Failed to find index: "+indexName+" in "+Arrays.asList(indexes));
+        return index;
+    }
+
+    private static TupleIndex findIndex(TupleIndex[] indexes, String indexName) {
+        for ( TupleIndex idx : indexes ) {
+            if ( indexName.equals(idx.getName()) )
+                return idx;
+        }
+        return null;
+    }
+
+    /** Get the B+tree for an index. */
+    private static BPlusTree asBPT(TupleIndex tupleIndex) {
+        TupleIndexRecord tIdxRec = (TupleIndexRecord)tupleIndex;
+        BPlusTree bpt = (BPlusTree)(tIdxRec.getRangeIndex());
+        return bpt;
+    }
+
     private static DatasetGraphTDB unwrap(DatasetGraph datasetGraph) {
         DatasetGraph dsg = datasetGraph;
         if ( dsg instanceof DatasetGraphSwitchable )
@@ -164,14 +221,14 @@ public class TDBInternal {
     public static synchronized void expel(DatasetGraph dsg) {
         Location locContainer = null;
         Location locStorage = null;
-        
+
         if ( dsg instanceof DatasetGraphSwitchable ) {
             locContainer = ((DatasetGraphSwitchable)dsg).getLocation();
             dsg = ((DatasetGraphSwitchable)dsg).getWrapped();
         }
         if ( dsg instanceof DatasetGraphTDB )
             locStorage = ((DatasetGraphTDB)dsg).getLocation();
-        
+
         if ( locContainer != null )
             DatabaseConnection.internalExpel(locContainer, false);
         StoreConnection.internalExpel(locStorage, false);
@@ -181,21 +238,21 @@ public class TDBInternal {
     public static synchronized void expel(DatasetGraph dsg, boolean force) {
         Location locContainer = null;
         Location locStorage = null;
-        
+
         if ( dsg instanceof DatasetGraphSwitchable ) {
             locContainer = ((DatasetGraphSwitchable)dsg).getLocation();
             dsg = ((DatasetGraphSwitchable)dsg).getWrapped();
         }
         if ( dsg instanceof DatasetGraphTDB )
             locStorage = ((DatasetGraphTDB)dsg).getLocation();
-        
+
         DatabaseConnection.internalExpel(locContainer, force);
         StoreConnection.internalExpel(locStorage, force);
     }
 
-    
-    /** 
-     * Reset the whole TDB system.      
+
+    /**
+     * Reset the whole TDB system.
      * Use with great care.
      */
     public static void reset() {

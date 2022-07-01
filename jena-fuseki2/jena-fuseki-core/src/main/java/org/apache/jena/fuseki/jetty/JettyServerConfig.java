@@ -26,31 +26,31 @@ package org.apache.jena.fuseki.jetty;
 public class JettyServerConfig
 {
     public JettyServerConfig() {}
-    
+
     /** Port to run the server service on */
-    public int port ;
-    
+    public int port;
+
     /** Path to run the server service under */
-    public String contextPath ;
-    
+    public String contextPath;
+
     /** Jetty config file - if null, use the built-in configuration of Jetty */
-    public String jettyConfigFile = null ;
-    
+    public String jettyConfigFile = null;
+
     /** Listen only on the loopback (localhost) interface */
-    public boolean loopback = false ;
-    
+    public boolean loopback = false;
+
     /** Enable Accept-Encoding compression. Set to false by default.*/
-    public boolean enableCompression = false ;
-    
+    public boolean enableCompression = false;
+
     /** Enable additional logging */
-    public boolean verboseLogging = false ;
-    
+    public boolean verboseLogging = false;
+
     /** Authentication config file used to setup Jetty Basic auth,
      * if a Jetty config file was set this is ignored since Jetty config
      * allows much more complex auth methods to be implemented.
-     * Using Apache Shiro is better as well. 
+     * Using Apache Shiro is better as well.
      */
-    public String authConfigFile ;
+    public String authConfigFile;
 
 }
 

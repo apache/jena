@@ -1,0 +1,3 @@
+<http://a.example/S1> {
+   <http://a.example/p1> NONLITERAL MAXLENGTH 19
+}

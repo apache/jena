@@ -18,11 +18,11 @@
 
 package org.apache.jena.atlas.lib;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.NumberUtils ;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test ;
 
-public class TestNumberUtils extends BaseTest
+public class TestNumberUtils
 {
     @Test public void int_format_01() { testInt(1, 1, "1") ; } 
 

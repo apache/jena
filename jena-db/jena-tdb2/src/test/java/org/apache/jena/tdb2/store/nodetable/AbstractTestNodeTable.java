@@ -18,51 +18,50 @@
 
 package org.apache.jena.tdb2.store.nodetable;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertNotEquals ;
-import static org.junit.Assert.assertNotNull ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.tdb2.store.NodeId;
-import org.apache.jena.tdb2.store.nodetable.NodeTable;
-import org.junit.Test ;
+import org.junit.Test;
 
 public abstract class AbstractTestNodeTable
 {
-    protected abstract NodeTable createEmptyNodeTable() ;
-    
+    protected abstract NodeTable createEmptyNodeTable();
+
     protected void testNode(String str) {
-        testNode(NodeFactoryExtra.parseNode(str)) ;
+        testNode(NodeFactoryExtra.parseNode(str));
     }
 
     protected void testNode(Node n) {
-        NodeTable nt = createEmptyNodeTable() ;
-        writeNode(nt, n) ;
+        NodeTable nt = createEmptyNodeTable();
+        writeNode(nt, n);
     }
 
     protected static void writeNode(NodeTable nt, String str) {
-        writeNode(nt, NodeFactoryExtra.parseNode(str)) ;
+        writeNode(nt, NodeFactoryExtra.parseNode(str));
     }
-    
+
     protected static void writeNode(NodeTable nt, Node n) {
-        NodeId nodeId = nt.getAllocateNodeId(n) ;
-        assertNotNull(nodeId) ;
-        assertNotEquals(NodeId.NodeDoesNotExist, nodeId) ;
-        assertNotEquals(NodeId.NodeIdAny, nodeId) ;
+        NodeId nodeId = nt.getAllocateNodeId(n);
+        assertNotNull(nodeId);
+        assertNotEquals(NodeId.NodeDoesNotExist, nodeId);
+        assertNotEquals(NodeId.NodeIdAny, nodeId);
 
-        Node n2 = nt.getNodeForNodeId(nodeId) ;
-        assertEquals(n, n2) ;
+        Node n2 = nt.getNodeForNodeId(nodeId);
+        assertEquals(n, n2);
 
-        NodeId nodeId2 = nt.getNodeIdForNode(n) ;
-        assertEquals(nodeId, nodeId2) ;
+        NodeId nodeId2 = nt.getNodeIdForNode(n);
+        assertEquals(nodeId, nodeId2);
     }
 
-    @Test public void nodetable_01()    { testNode("<http://example/x>") ; }
-    @Test public void nodetable_02()    { testNode("1") ; }
-    @Test public void nodetable_03()    { testNode("_:x") ; }
-    @Test public void nodetable_04()    { testNode("'x'") ; }
-    @Test public void nodetable_05()    { testNode("'x'@en") ; }
-    @Test public void nodetable_06()    { testNode("'x'^^<http://example/dt>") ; }
-    @Test public void nodetable_07()    { testNode("'نواف'") ; }
+    @Test public void nodetable_01()    { testNode("<http://example/x>"); }
+    @Test public void nodetable_02()    { testNode("1"); }
+    @Test public void nodetable_03()    { testNode("_:x"); }
+    @Test public void nodetable_04()    { testNode("'x'"); }
+    @Test public void nodetable_05()    { testNode("'x'@en"); }
+    @Test public void nodetable_06()    { testNode("'x'^^<http://example/dt>"); }
+    @Test public void nodetable_07()    { testNode("'نواف'"); }
 }

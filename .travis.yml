@@ -1,9 +1,0 @@
-language: java
-sudo: false
-install: true
-script: mvn -B clean install
-jdk:
-  - openjdk8
-  - oraclejdk8
-env:
-  - JAVA_OPTS="-Xmx3072M -Xms512M -XX:+UseG1GC"

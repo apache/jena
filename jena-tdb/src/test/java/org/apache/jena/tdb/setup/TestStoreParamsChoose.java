@@ -18,19 +18,18 @@
 
 package org.apache.jena.tdb.setup;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.setup.Build ;
-import org.apache.jena.tdb.setup.StoreParams ;
-import org.apache.jena.tdb.setup.StoreParamsCodec ;
-import org.apache.jena.tdb.setup.StoreParamsConst ;
 import org.junit.Test ;
 
 //TestParamsCreate
 /** This test suite uses on-disk structures and can be slow */ 
-public class TestStoreParamsChoose extends BaseTest {
+public class TestStoreParamsChoose {
     private String DIR = ConfigTest.getCleanDir() ;
     
     static final StoreParams pApp = StoreParams.builder()

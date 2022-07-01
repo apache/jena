@@ -83,6 +83,12 @@ public class JA
 
     public static final Property content = property( "content" );
 
+    public static final Property context = property( "context" );
+
+    public static final Property cxtName = property( "cxtName" );
+
+    public static final Property cxtValue = property( "cxtValue" );
+
     public static final Resource ExternalContent = resource( "ExternalContent" );
 
     public static final Property externalContent = property( "externalContent" );
@@ -153,18 +159,18 @@ public class JA
 
     public static final Property rootModel = property( "rootModel" );
 
-    @Deprecated
-    public static final Property reificationMode = property( "reificationMode" );
-
-    public static final Resource minimal = resource( "minimal" );
-
-    public static final Resource convenient = resource( "convenient" );
-
-    public static final Resource standard = resource( "standard" );
-
-    @Deprecated
-    public static final Resource ReificationMode = resource( "ReificationMode" );
-
+//    @Deprecated
+//    public static final Property reificationMode = property( "reificationMode" );
+//
+//    public static final Resource minimal = resource( "minimal" );
+//
+//    public static final Resource convenient = resource( "convenient" );
+//
+//    public static final Resource standard = resource( "standard" );
+//
+//    @Deprecated
+//    public static final Resource ReificationMode = resource( "ReificationMode" );
+//
     public static final Property fileEncoding = property( "fileEncoding" );
 
     public static final Property assembler = property( "assembler" );
@@ -187,7 +193,7 @@ public class JA
 
     public static Model getSchema()
         { // inline packagename to avoid clash with /our/ FileManager.
-        if (schema == null) schema = complete( org.apache.jena.util.FileManager.get().loadModel( getSchemaPath() ) );
+        if (schema == null) schema = complete( org.apache.jena.util.FileManager.getInternal().loadModelInternal( getSchemaPath() ) );
         return schema;
         }
 

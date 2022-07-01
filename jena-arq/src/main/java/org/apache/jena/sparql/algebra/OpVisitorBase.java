@@ -24,27 +24,27 @@ import org.apache.jena.sparql.algebra.op.* ;
 public class OpVisitorBase implements OpVisitor
 {
     public OpVisitorBase() {}
-    
+
     @Override public void visit(OpBGP opBGP)                    {}
 
     @Override public void visit(OpQuadPattern quadPattern)      {}
- 
+
     @Override public void visit(OpQuadBlock quadBlock)          {}
-    
+
     @Override public void visit(OpTriple opTriple)              {}
- 
+
     @Override public void visit(OpQuad opQuad)                  {}
 
     @Override public void visit(OpPath opPath)                  {}
 
     @Override public void visit(OpProcedure opProc)             {}
-    
+
     @Override public void visit(OpPropFunc opPropFunc)          {}
-    
+
     @Override public void visit(OpJoin opJoin)                  {}
 
     @Override public void visit(OpSequence opSequence)          {}
-    
+
     @Override public void visit(OpDisjunction opDisjunction)    {}
 
     @Override public void visit(OpLeftJoin opLeftJoin)          {}
@@ -52,9 +52,9 @@ public class OpVisitorBase implements OpVisitor
     @Override public void visit(OpConditional opCond)           {}
 
     @Override public void visit(OpMinus opMinus)                {}
-    
+
     @Override public void visit(OpDiff opDiff)                  {}
-    
+
     @Override public void visit(OpUnion opUnion)                {}
 
     @Override public void visit(OpFilter opFilter)              {}
@@ -91,6 +91,6 @@ public class OpVisitorBase implements OpVisitor
     @Override public void visit(OpSlice opSlice)                {}
 
     @Override public void visit(OpGroup opGroup)                {}
-    
+
     @Override public void visit(OpTopN opTop)                   {}
 }

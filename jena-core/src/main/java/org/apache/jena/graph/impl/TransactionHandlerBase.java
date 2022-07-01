@@ -21,7 +21,6 @@ package org.apache.jena.graph.impl;
 import java.util.function.Supplier ;
 
 import org.apache.jena.graph.TransactionHandler ;
-import org.apache.jena.shared.Command ;
 import org.apache.jena.shared.JenaException ;
 
 /**
@@ -32,15 +31,6 @@ import org.apache.jena.shared.JenaException ;
 public abstract class TransactionHandlerBase implements TransactionHandler {
     public TransactionHandlerBase() {
         super() ;
-    }
-
-    /**
-     * Execute the command <code>c</code> within a transaction. If it completes normally,
-     * commit the transaction and return the result. Otherwise abort the transaction.
-     */
-    @Override
-    public Object executeInTransaction(Command c) {
-        return calculate( () -> c.execute() ) ;
     }
 
     /* Abort but don't let problems with the transaction system itself cause loss of the exception */ 

@@ -18,44 +18,43 @@
 
 package org.apache.jena.fuseki.ctl;
 
-import org.apache.http.HttpHeaders ;
-import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.fuseki.async.AsyncPool ;
-import org.apache.jena.fuseki.async.AsyncTask ;
-import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.apache.jena.atlas.json.JsonBuilder;
+import org.apache.jena.atlas.json.JsonValue;
+import org.apache.jena.fuseki.async.AsyncPool;
+import org.apache.jena.fuseki.async.AsyncTask;
+import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.riot.web.HttpNames;
 
 public class Async
 {
     public static AsyncTask asyncTask(AsyncPool asyncPool, String displayName, DataService dataService, Runnable task, long requestId) {
-        AsyncTask asyncTask = asyncPool.submit(task, displayName, dataService, requestId) ;
-        return asyncTask ;
+        AsyncTask asyncTask = asyncPool.submit(task, displayName, dataService, requestId);
+        return asyncTask;
     }
-    
+
     public static JsonValue asJson(AsyncTask asyncTask) {
-        JsonBuilder builder = new JsonBuilder() ;
-        builder.startObject("outer") ;
-        builder.key(JsonConstCtl.taskId).value(asyncTask.getTaskId()) ;
+        JsonBuilder builder = new JsonBuilder();
+        builder.startObject("outer");
+        builder.key(JsonConstCtl.taskId).value(asyncTask.getTaskId());
         if ( asyncTask.getOriginatingRequestId() > 0 )
-            builder.key(JsonConstCtl.taskRequestId).value(asyncTask.getOriginatingRequestId()) ;
-        builder.finishObject("outer") ;
-        return builder.build() ;
+            builder.key(JsonConstCtl.taskRequestId).value(asyncTask.getOriginatingRequestId());
+        builder.finishObject("outer");
+        return builder.build();
     }
-    
-    public static void setLocationHeader(HttpAction action, AsyncTask asyncTask) {
-        String x = action.getRequest().getRequestURI() ;
+
+    private static void setLocationHeader(HttpAction action, AsyncTask asyncTask) {
+        String x = action.getRequestRequestURI();
         if ( ! x.endsWith("/") )
-            x += "/" ;
-        x += asyncTask.getTaskId() ;
-        //String x = "/$/tasks/"+asyncTask.getTaskId() ;
-        action.getResponse().setHeader(HttpHeaders.LOCATION, x) ;
+            x += "/";
+        x += asyncTask.getTaskId();
+        action.setResponseHeader(HttpNames.hLocation, x);
     }
 
     public static AsyncTask execASyncTask(HttpAction action, AsyncPool asyncPool, String displayName, Runnable runnable) {
-        AsyncTask atask = Async.asyncTask(asyncPool, displayName, action.getDataService(), runnable, action.id) ;
-        Async.setLocationHeader(action, atask); 
-        return atask ;
+        AsyncTask atask = Async.asyncTask(asyncPool, displayName, action.getDataService(), runnable, action.id);
+        Async.setLocationHeader(action, atask);
+        return atask;
     }
 }
 

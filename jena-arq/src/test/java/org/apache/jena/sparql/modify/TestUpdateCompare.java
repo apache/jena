@@ -18,14 +18,14 @@
 
 package org.apache.jena.sparql.modify;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.sparql.modify.UpdateCompare ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
 import org.junit.Test ;
 
-public class TestUpdateCompare extends BaseTest {
+public class TestUpdateCompare {
     @Test public void updateCompare01()     { test("INSERT DATA {}") ; }
     @Test public void updateCompare02()     { test("INSERT DATA {<s> <p> <o>}") ; }
     @Test public void updateCompare03()     { test("INSERT DATA {<s> <p> _:a}", "INSERT DATA {<s> <p> _:b}") ; }

@@ -89,7 +89,7 @@ public abstract class NodeToTriplesMapBase
         { return size; }
 
     public void removedOneViaIterator()
-        { size -= 1; /* System.err.println( ">> rOVI: size := " + size ); */ }
+        { size -= 1; }
 
     public boolean isEmpty()
         { return size == 0; }

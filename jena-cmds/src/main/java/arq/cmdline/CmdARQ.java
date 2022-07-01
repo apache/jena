@@ -18,48 +18,40 @@
 
 package arq.cmdline;
 
-import jena.cmd.ArgDecl ;
-import jena.cmd.CmdGeneral ;
-import org.apache.jena.Jena ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.engine.iterator.QueryIteratorBase ;
-import org.apache.jena.sys.JenaSystem ;
+import org.apache.jena.Jena;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sys.JenaSystem;
 
-public abstract class CmdARQ extends CmdGeneral
-{
-	static { JenaSystem.init() ; }
-
-    protected ModContext modContext = new ModContext() ;
-    ArgDecl  strictDecl = new ArgDecl(ArgDecl.NoValue, "strict") ;
-    
-    protected boolean cmdStrictMode = false ; 
-    
-    protected CmdARQ(String[] argv)
-    {
-        super(argv) ;
-        modVersion.addClass(Jena.class) ;
-        // These are the same.
-//        modVersion.addClass(ARQ.class) ;
-//        modVersion.addClass(RIOT.class) ;
-        super.add(strictDecl, "--strict", "Operate in strict SPARQL mode (no extensions of any kind)") ; 
-        addModule(modContext) ;
+public abstract class CmdARQ extends CmdGeneral {
+    static {
+        JenaSystem.init();
     }
-    
+
+    protected ModContext modContext = new ModContext();
+    ArgDecl strictDecl = new ArgDecl(ArgDecl.NoValue, "strict");
+
+    protected boolean cmdStrictMode = false;
+
+    protected CmdARQ(String[] argv) {
+        super(argv);
+        modVersion.addClass(Jena.class);
+        super.add(strictDecl, "--strict", "Operate in strict SPARQL mode (no extensions of any kind)");
+        addModule(modContext);
+    }
+
     @Override
-    protected void processModulesAndArgs()
-    {
+    protected void processModulesAndArgs() {
         super.processModulesAndArgs();
-        if ( super.contains(strictDecl) ) 
-            ARQ.setStrictMode() ;
-        cmdStrictMode = super.contains(strictDecl) ;
-        if ( modGeneral.debug )
-            QueryIteratorBase.traceIterators = true ;
+        if ( super.contains(strictDecl) )
+            ARQ.setStrictMode();
+        cmdStrictMode = super.contains(strictDecl);
     }
-    
+
     @Override
-    protected String getCommandName()
-    {
-        return Lib.className(this) ;
+    protected String getCommandName() {
+        return Lib.className(this);
     }
 }

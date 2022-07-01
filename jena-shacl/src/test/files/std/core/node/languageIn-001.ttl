@@ -1,0 +1,66 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/node/languageIn-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:TestShape
+  rdf:type sh:NodeShape ;
+  rdfs:label "Test shape" ;
+  sh:languageIn (
+      "en"
+      "fr"
+    ) ;
+  sh:targetNode rdfs:Resource ;
+  sh:targetNode "Deutsch"@de ;
+  sh:targetNode "English"@en ;
+  sh:targetNode "Francais"@fr ;
+  sh:targetNode "Plain String" ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <languageIn-001>
+    ) ;
+.
+<languageIn-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:languageIn at node shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode rdfs:Resource ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:LanguageInConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value rdfs:Resource ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode "Deutsch"@de ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:LanguageInConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value "Deutsch"@de ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode "Plain String" ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:LanguageInConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+          sh:value "Plain String" ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

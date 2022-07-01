@@ -18,55 +18,63 @@
 
 package org.apache.jena.riot.resultset;
 
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.LangBuilder ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.LangBuilder;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.WebContent;
+import org.apache.jena.riot.rowset.RowSetReaderRegistry;
+import org.apache.jena.riot.rowset.RowSetWriterRegistry;
 
 public class ResultSetLang {
 
-    public static final Lang SPARQLResultSetXML
-        = LangBuilder.create("SPARQL-Results-XML", WebContent.contentTypeResultsXML)
+    /** SPARQL results in XML syntax */
+    public static final Lang RS_XML = LangBuilder.create("SPARQL-Results-XML", WebContent.contentTypeResultsXML)
                      .addAltNames("SRX")
                      .addFileExtensions("srx")
-                     .build() ;
-    
-    public static final Lang SPARQLResultSetJSON
-        = LangBuilder.create("SPARQL-Results-JSON", WebContent.contentTypeResultsJSON)
+                     .build();
+
+    public static final Lang RS_JSON = LangBuilder.create("SPARQL-Results-JSON", WebContent.contentTypeResultsJSON)
                      .addAltNames("SRJ")
                      .addFileExtensions("srj")
-                     .build() ;
-    
-    public static final Lang SPARQLResultSetCSV = Lang.CSV;
-    
-    public static final Lang SPARQLResultSetTSV = Lang.TSV;
-    
-    public static final Lang SPARQLResultSetThrift
-        = LangBuilder.create("SPARQL-Results-Thrift", WebContent.contentTypeResultsThrift)
+                     .build();
+
+    public static final Lang RS_CSV = Lang.CSV;
+
+    public static final Lang RS_TSV = Lang.TSV;
+
+    public static final Lang RS_Thrift = LangBuilder.create("SPARQL-Results-Thrift", WebContent.contentTypeResultsThrift)
                      .addAltNames("SRT")
                      .addFileExtensions("srt")
-                     .build() ;
-    
-    public static final Lang SPARQLResultSetText
-        = LangBuilder.create("SPARQL-Results-Text", WebContent.contentTypeTextPlain)
-                     .addFileExtensions("txt")
-                     .build() ;
-    
-    public static final Lang SPARQLResultSetNone
-        = LangBuilder.create("SPARQL-Results-None", "application/sparql-results+none").build() ;
+                     .build();
 
-    private static boolean initialized = false ;
+    public static final Lang RS_Protobuf = LangBuilder.create("SPARQL-Results-Protobuf", WebContent.contentTypeResultsProtobuf)
+                     .addAltNames("SRP")
+                     .addFileExtensions("srp")
+                     .build();
+
+    public static final Lang RS_Text = LangBuilder.create("SPARQL-Results-Text", WebContent.contentTypeTextPlain)
+                     .addFileExtensions("txt")
+                     .build();
+
+    public static final Lang RS_None = LangBuilder.create("SPARQL-Results-None", "application/sparql-results+none").build();
+
+    private static boolean initialized = false;
     public static void init() {
         if ( initialized )
-            return ;
-        initialized = true ;
-        RDFLanguages.register(SPARQLResultSetXML) ;
-        RDFLanguages.register(SPARQLResultSetJSON) ;
-        RDFLanguages.register(SPARQLResultSetCSV) ;
-        RDFLanguages.register(SPARQLResultSetTSV) ;
-        RDFLanguages.register(SPARQLResultSetThrift) ;
-        RDFLanguages.register(SPARQLResultSetNone) ;
+            return;
+        initialized = true;
+        RDFLanguages.register(RS_XML);
+        RDFLanguages.register(RS_JSON);
+        RDFLanguages.register(RS_CSV);
+        RDFLanguages.register(RS_TSV);
+        RDFLanguages.register(RS_Thrift);
+        // Not output-only text.
+        RDFLanguages.register(RS_None);
+
+        RowSetReaderRegistry.init();
+        RowSetWriterRegistry.init();
+
         ResultSetReaderRegistry.init();
         ResultSetWriterRegistry.init();
-    }    
+    }
 }

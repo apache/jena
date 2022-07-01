@@ -58,6 +58,7 @@ public abstract class AbstractDatabaseMetadataTests {
      * @throws SQLException
      */
     @Test
+    @SuppressWarnings("resource")
     public void metadata_type_info() throws SQLException {
         JenaConnection conn = this.getConnection();
 

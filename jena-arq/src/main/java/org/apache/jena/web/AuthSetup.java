@@ -18,33 +18,36 @@
 
 package org.apache.jena.web;
 
-import org.apache.http.auth.AuthScope;
-
-/** Struct for the authentication information.
- * See {@link AuthScope} for "ANY" constants.
+/**
+ * Struct for the authentication information.
  */
 public class AuthSetup {
-    public final String host;
+    public static final String ANY_HOST = null;
+    public static final int ANY_PORT = -1;
+    public static final String ANY_REALM = null;
+
+    private final String host;
     public final int port;
     public final String user;
     public final String password;
     public final String realm;
-    
+
     public AuthSetup(String host, Integer port, String user, String password, String realm) {
-        this.host = any(host, AuthScope.ANY_HOST);
-        this.port = (port == null || port <= 0 ) ? AuthScope.ANY_PORT : port; 
+        this.host = any(host, ANY_HOST);
+        this.port = (port == null || port <= 0 ) ? ANY_PORT : port;
         this.user = user;
         this.password = password;
-        this.realm = any(host, AuthScope.ANY_REALM);
+        this.realm = any(host, ANY_REALM);
     }
-    
-    public AuthScope authScope() {
-        return new AuthScope(host, port, realm, AuthScope.ANY_SCHEME);
-    }
-    
+
     private <X> X any(X value, X anyVal) {
         if ( value == null )
             return anyVal;
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthSetup [host=" + host + ", port=" + port + ", user=" + user + ", password=......, realm=" + realm + "]";
     }
 }

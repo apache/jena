@@ -23,7 +23,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.junit.Test;
 
 public class TestDateTimeUtils {
@@ -53,7 +52,7 @@ public class TestDateTimeUtils {
 		cal.setTimeZone(TimeZone.getTimeZone("MST"));
 		assertEquals("1984-03-22-07:00", DateTimeUtils.calendarToXSDDateString(cal));
 	}
-    
+
     @Test
 	public void testCalendarToXSDTimeString_1() {
 		Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 14, 32, 1, 0, "GMT+01:00");
@@ -62,7 +61,7 @@ public class TestDateTimeUtils {
 		cal.setTimeZone(TimeZone.getTimeZone("MST"));
 		assertEquals("06:32:01-07:00", DateTimeUtils.calendarToXSDTimeString(cal));
 	}
-	
+
     @Test
     public void testCalendarToXSDTimeString_2() {
         Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 14, 32, 1, 500, "GMT+01:00");
@@ -71,7 +70,7 @@ public class TestDateTimeUtils {
         cal.setTimeZone(TimeZone.getTimeZone("MST"));
         assertEquals("06:32:01.500-07:00", DateTimeUtils.calendarToXSDTimeString(cal));
     }
-    
+
 	private static Calendar createCalendar(int year, int month, int dayOfMonth, int hourOfDay,
 	                                       int minute, int second, int milli, String tz) {
 	    GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone(tz)) ;

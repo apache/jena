@@ -18,75 +18,47 @@
 
 package org.apache.jena.dboe.index;
 
-import java.util.Iterator ;
-import java.util.stream.Stream ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.lib.Sync;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.base.record.RecordFactory;
 
 public interface Index extends Iterable<Record>, Sync, Closeable
 {
     /** Find one record - and return the record actually in the index (may have a value part) */
-    public Record find(Record record) ;
-    
+    public Record find(Record record);
+
     /** Return whether the index contains the record or not. */
-    public boolean contains(Record record) ;
-    
+    public boolean contains(Record record);
+
     /** Insert a record - return true if an insertion was actually needed */
-    public boolean insert(Record record) ;
-    
+    public boolean insert(Record record);
+
     /** Delete a record - Return true if a record was actually removed */
-    public boolean delete(Record record) ;
-    
-//    public default void bulkInsert(Collection<Record> inserts) {
-//        for ( Record r : inserts )
-//            insert(r) ;
-//    }
-//    
-//    public default void bulkDelete(Collection<Record> inserts) {
-//        for ( Record r : inserts )
-//            delete(r) ;
-//    }
-    
-    /** Bulk changes as given by a stream of changes.
-     * This is operations consumes the stream.
-     * @param changes
-     */
-    public default void bulkChanges(Stream<IndexChange> changes) {
-        changes.forEach(chg -> {
-            switch (chg.action) {
-                case ADD :
-                    insert(chg.record) ;
-                    break ;
-                case DELETE :
-                    delete(chg.record) ;
-                    break ;
-            }
-        }) ;
-    }
-    
-    /** Iterate over the whole index */ 
+    public boolean delete(Record record);
+
+    /** Iterate over the whole index */
     @Override
-    public Iterator<Record> iterator() ;
-    
+    public Iterator<Record> iterator();
+
     /** Get the Record factory associated with this index */
-    public RecordFactory getRecordFactory() ;
-    
+    public RecordFactory getRecordFactory();
+
     /** Close the index - can not be used again through this object */
     @Override
-    public void close() ;
-    
+    public void close();
+
     /** Answer whether the index is empty or not.  May return false for unknown or meaningless */
-    public boolean isEmpty() ;
-    
+    public boolean isEmpty();
+
     /** Clear the index */
-    public void clear() ;
-    
+    public void clear();
+
     /** Perform checks on this index */
-    public void check() ;
-    
+    public void check();
+
     /** Return size if known else return -1 : does not count the persistent storage */
-    public long size() ;
+    public long size();
 }

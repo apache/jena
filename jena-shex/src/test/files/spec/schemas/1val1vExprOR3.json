@@ -1,0 +1,34 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/S1",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p1",
+        "valueExpr": {
+          "type": "ShapeOr",
+          "shapeExprs": [
+            {
+              "type": "NodeConstraint",
+              "nodeKind": "literal",
+              "pattern": "ab.*"
+            },
+            {
+              "type": "NodeConstraint",
+              "nodeKind": "literal",
+              "pattern": ".*cd.*"
+            },
+            {
+              "type": "NodeConstraint",
+              "nodeKind": "literal",
+              "pattern": ".*ef"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

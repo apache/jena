@@ -19,39 +19,37 @@
 package org.apache.jena.sparql.modify.request;
 
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.core.Var ;
 
 /** Accumulate quads (excluding allowing variables) during parsing. */
 public class QuadDataAccSink extends QuadAccSink
 {
-    public QuadDataAccSink(Sink<Quad> sink)
-    {
+    public QuadDataAccSink(Sink<Quad> sink) {
         super(sink);
     }
 
     @Override
-    protected void check(Triple t)
-    {
-        if ( Var.isVar(getGraph()) )
-            throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;   
-        if ( Var.isVar(t.getSubject()) || Var.isVar(t.getPredicate()) || Var.isVar(t.getObject())) 
-            throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;  
-        if ( t.getSubject().isLiteral() )
-            throw new QueryParseException("Literals not allowed as subjects in data", -1, -1) ;
+    protected void check(Triple triple) {
+        check(getGraph(), triple.getSubject(), triple.getPredicate(), triple.getObject());
     }
-    
+
     @Override
-    protected void check(Quad quad)
-    {
-        if ( Var.isVar(quad.getGraph()) || 
-             Var.isVar(quad.getSubject()) || 
-             Var.isVar(quad.getPredicate()) || 
-             Var.isVar(quad.getObject())) 
-            throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;   
-        if ( quad.getSubject().isLiteral() )
-            throw new QueryParseException("Literals not allowed as subjects in quad data", -1, -1) ;
+    protected void check(Quad quad) {
+        check(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
+    }
+
+    private void check(Node g, Node s, Node p, Node o) {
+        if ( templateOnly(g) || templateOnly(s) || templateOnly(p) || templateOnly(o) )
+            throw new QueryParseException("Variables not permitted in data", -1, -1);
+        if ( s.isLiteral() )
+            throw new QueryParseException("Literals not allowed as subjects in data", -1, -1);
+    }
+
+    private boolean templateOnly(Node n) {
+        // Variables, and recursively for triple terms.
+        return !n.isConcrete();
     }
 }

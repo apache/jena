@@ -30,7 +30,7 @@ import org.apache.jena.sparql.core.Quad ;
 
 /** TriG.
  *
- * @see <a href="http://www.w3.org/TR/trig/">http://www.w3.org/TR/trig/</a> 
+ * @see <a href="http://www.w3.org/TR/trig/">http://www.w3.org/TR/trig/</a>
  */
 public class LangTriG extends LangTurtleBase {
 
@@ -62,9 +62,9 @@ public class LangTriG extends LangTurtleBase {
                 nextToken() ;
                 mustBeNamedGraph = true ;
                 token = peekToken() ;
-                // GRAPH <g> 
-                // GRAPH [] 
-                
+                // GRAPH <g>
+                // GRAPH []
+
             } else
                 exception(t, "Keyword '" + token.getImage() + "' not allowed here") ;
         }
@@ -79,7 +79,7 @@ public class LangTriG extends LangTurtleBase {
         // (1 2) :p :o .
 
         // XXX Find the Turtle code to do this for the Turtle case and refactor.
-        
+
         if ( lookingAt(LBRACKET) ) {
             nextToken() ;
             token = peekToken() ;
@@ -110,7 +110,6 @@ public class LangTriG extends LangTurtleBase {
                 expectEndOfTriplesTurtle() ;
                 return ;
             }
-
         } else if ( token.isNode() ) {
             // Either :s :p :o or :g { ... }
             Node n = node() ;
@@ -128,6 +127,10 @@ public class LangTriG extends LangTurtleBase {
             // Turtle - list
             turtle() ;
             return ;
+        } else if ( lookingAt(LT2) ) {
+            // <<:s :p :o>> :q :z -- Turtle*
+            turtle() ;
+            return;
         }
 
         if ( mustBeNamedGraph && graphNode == null )
@@ -141,7 +144,7 @@ public class LangTriG extends LangTurtleBase {
         predicateObjectList(n) ;
         expectEndOfTriplesTurtle() ;
     }
-    
+
     protected final void turtle() {
         // This does expectEndOfTriplesTurtle() ;
         triplesSameSubject() ;
@@ -188,7 +191,7 @@ public class LangTriG extends LangTurtleBase {
 
         // = is optional and old style.
         if ( lookingAt(EQUALS) ) {
-            if ( isStrictMode )
+            if ( isStrictMode() )
                 exception(token, "Use of = {} is not part of standard TriG: " + graphNode) ;
             // Skip.
             nextToken() ;
@@ -203,7 +206,7 @@ public class LangTriG extends LangTurtleBase {
 
         while (true) {
             token = peekToken() ;
-            
+
             if ( lookingAt(RBRACE) )
                 break ;
             // Unlike many operations in this parser suite,
@@ -218,7 +221,7 @@ public class LangTriG extends LangTurtleBase {
         if ( lookingAt(RBRACE) )
             exception(token, "Expected end of graph: got %s", token) ;
 
-        if ( !isStrictMode ) {
+        if ( !isStrictMode() ) {
             // Skip DOT after {}
             token = peekToken() ;
             if ( lookingAt(DOT) )
@@ -228,10 +231,10 @@ public class LangTriG extends LangTurtleBase {
         setCurrentGraph(Quad.tripleInQuad) ;
     }
 
-    
+
     @Override
     protected void expectEndOfTriples() { expectEndOfTriplesBraceGraph() ; }
-        
+
     protected void expectEndOfTriplesBraceGraph() {
         // The DOT is required by Turtle (strictly).
         // It is not in N3 and SPARQL or TriG
@@ -259,8 +262,8 @@ public class LangTriG extends LangTurtleBase {
     protected void emit(Node subject, Node predicate, Node object) {
         Node graph = getCurrentGraph() ;
 
-        if ( graph == Quad.defaultGraphNodeGenerated )
-            graph = Quad.tripleInQuad ;
+        if ( graph == Quad.tripleInQuad )
+            graph = Quad.defaultGraphNodeGenerated;
 
         Quad quad = profile.createQuad(graph, subject, predicate, object, currLine, currCol) ;
         dest.quad(quad) ;

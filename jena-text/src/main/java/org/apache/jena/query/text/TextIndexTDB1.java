@@ -18,7 +18,6 @@
 
 package org.apache.jena.query.text;
 
-import org.apache.jena.query.text.TextIndex;
 import org.apache.jena.tdb.transaction.Transaction;
 import org.apache.jena.tdb.transaction.TransactionLifecycle;
 
@@ -32,7 +31,7 @@ public class TextIndexTDB1 implements TransactionLifecycle {
     public TextIndexTDB1(TextIndex textIndex) {
         this.textIndex = textIndex;
     }
-    
+
     @Override
     public void begin(Transaction txn) {
     }
@@ -56,5 +55,4 @@ public class TextIndexTDB1 implements TransactionLifecycle {
 
     @Override
     public void clearupCommitted(Transaction txn) {}
-    
 }

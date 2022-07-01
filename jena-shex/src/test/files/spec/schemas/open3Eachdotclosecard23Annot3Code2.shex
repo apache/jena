@@ -1,0 +1,11 @@
+<http://a.example/S1> {
+   ( <http://a.example/p1> .;
+     <http://a.example/p2> .;
+     <http://a.example/p3> .
+   ){2,3} //
+      <http://a.example/annot1> "1" //
+      <http://a.example/annot2> "2" //
+      <http://a.example/annot3> "3"
+      %<http://shex.io/extensions/Test/>{ print("group semAct 1") %}
+      %<http://shex.io/extensions/Test/>{ print("group semAct 2") %}
+}

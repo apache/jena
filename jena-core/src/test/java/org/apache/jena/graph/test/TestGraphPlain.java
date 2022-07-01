@@ -31,20 +31,20 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphPlain ;
-import org.apache.jena.mem.GraphMem ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 public class TestGraphPlain {
-    
+
     private static Graph graph;
-    
+
+    @SuppressWarnings("deprecation")
     @BeforeClass public static void setUp() {
-        graph = new GraphMem();
+        graph = new org.apache.jena.mem.GraphMem();
 
         if ( ! graph.getCapabilities().handlesLiteralTyping() )
-            throw new IllegalArgumentException("Test graph does not do the value thing");  
+            throw new IllegalArgumentException("Test graph does not do the value thing");
         graphAdd(graph, "s p o ; s p 1 ; s p 01");
     }
 
@@ -54,7 +54,7 @@ public class TestGraphPlain {
         Graph plain = GraphPlain.plain(graph);
         assertFalse(plain.contains(triple));
     }
-    
+
     @Test public void contains2() {
         Triple triple = triple("s p 1");
         assertTrue(graph.contains(triple));
@@ -73,12 +73,12 @@ public class TestGraphPlain {
         Node s = node("s");
         Node p = node("p");
         Node x = node("001");
-        
+
         assertTrue(graph.contains(s,p,x));
         Graph plain = GraphPlain.plain(graph);
         assertFalse(plain.contains(s,p,x));
     }
-    
+
     @Test public void find1() {
         find_test(graph, 2);
         Graph plain = GraphPlain.plain(graph);
@@ -102,7 +102,7 @@ public class TestGraphPlain {
         List<Triple> list = plain.find(s,p,x).toList();
         assertEquals(3, list.size());
     }
-    
+
     private static void find_test(Graph testGraph, int n) {
         Triple triple = triple("?? p 1");
         ExtendedIterator<Triple> iter = testGraph.find(triple);

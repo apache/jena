@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
@@ -33,23 +33,41 @@
 
   <dependencies>
 
+    <!-- backend servlets, filters (CORS, Shiro, etc.) -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-webapp</artifactId>
       <version>${project.version}</version>
     </dependency>
 
+    <!-- frontend assets (HTML, JS, CSS, images, etc.) -->
+    <!-- Currently done by unpacking in jena-fuseki-webapp
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-ui</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    -->
+
     <!-- Require a logging implementation -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <scope>runtime</scope>
     </dependency>
     
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-    </dependency> 
-    
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -58,7 +76,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>2.4</version>
         <executions> 
           <execution>
             <id>generate-webapp</id>
@@ -67,8 +84,21 @@
           </execution>
         </executions>
         <configuration>
-          <warSourceDirectory>../jena-fuseki-webapp/src/main/webapp</warSourceDirectory>
+          <warSourceDirectory>../jena-fuseki-webapp/target/webapp/</warSourceDirectory>
           <webXml>../jena-fuseki-webapp/src/main/webapp/WEB-INF/web.xml</webXml>
+
+          <webResources>
+            <resource>
+              <directory>war-inclusions/</directory>
+              <targetPath>/</targetPath>
+            </resource>
+            <resource>
+              <directory>../jena-fuseki-webapp/src/main/webapp</directory>
+              <includes>log4j2.properties</includes>
+              <targetPath>/</targetPath>
+            </resource>
+          </webResources>
+
           <!-- Safe: Don't put in the Jetty dependency nor javax.servlet -->
           <packagingExcludes>WEB-INF/lib/jetty-*,WEB-INF/lib/javax.servlet*</packagingExcludes>
         </configuration>
@@ -76,5 +106,4 @@
     </plugins>
 
   </build>
-  
 </project>

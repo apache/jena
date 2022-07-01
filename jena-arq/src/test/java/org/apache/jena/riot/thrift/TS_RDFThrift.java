@@ -25,8 +25,8 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
     TestThriftTerm.class
     , TestThriftSetup.class
-    , TestStreamRDFThrift.class
-    , TestResultSetThrift.class
+    , TestThriftStreamRDF.class
+    , TestThriftResultSet.class
     //, TestPatchThrift.class
     
 } )

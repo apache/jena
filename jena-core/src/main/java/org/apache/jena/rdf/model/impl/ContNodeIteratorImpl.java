@@ -70,7 +70,7 @@ public class ContNodeIteratorImpl extends NiceIterator<RDFNode> implements NodeI
         else 
             {
             cont.remove( recent );
-            moved.add( new Integer( index ) );
+            moved.add( index );
             }
         recent = null;
         numDeleted += 1;

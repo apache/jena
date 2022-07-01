@@ -18,44 +18,37 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 /**
- * Test the standard {@link PrefixMapStd} implementation
+ * Test the other {@link PrefixMap} implementations.
  *
  */
-public class TestPrefixMapOther extends BaseTest
+public class TestPrefixMapOther
 {
-    @Test(expected=UnsupportedOperationException.class) 
-    public void other_01()
-    {
-        PrefixMap pmap = PrefixMapFactory.create() ;
-        pmap = PrefixMapFactory.unmodifiablePrefixMap(pmap) ;
-        pmap.add("foo", "bar") ;
+    @Test(expected = UnsupportedOperationException.class)
+    public void other_01() {
+        PrefixMap pmap = PrefixMapFactory.create();
+        pmap = PrefixMapFactory.unmodifiablePrefixMap(pmap);
+        pmap.add("foo", "bar");
     }
-    
-    @Test(expected=UnsupportedOperationException.class) 
-    public void other_02()
-    {
-        PrefixMap pmap = PrefixMapFactory.create() ;
-        pmap = PrefixMapFactory.unmodifiablePrefixMap(pmap) ;
-        pmap.getMapping().put("ex", IRIResolver.iriFactory().construct("http://example/"))  ;
-    }
-    
 
-    @Test(expected=UnsupportedOperationException.class) 
-    public void other_10()
-    {
-        PrefixMap pmap = PrefixMapFactory.emptyPrefixMap() ;
-        pmap.add("foo", "bar") ;
+    @Test(expected = UnsupportedOperationException.class)
+    public void other_02() {
+        PrefixMap pmap = PrefixMapFactory.create();
+        pmap = PrefixMapFactory.unmodifiablePrefixMap(pmap);
+        pmap.getMapping().put("ex", "http://example/");
     }
-    
-    @Test(expected=UnsupportedOperationException.class) 
-    public void other_11()
-    {
-        PrefixMap pmap = PrefixMapFactory.emptyPrefixMap() ;
-        pmap.getMapping().put("ex", IRIResolver.iriFactory().construct("http://example/"))  ;
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void other_10() {
+        PrefixMap pmap = PrefixMapFactory.emptyPrefixMap();
+        pmap.add("foo", "bar");
     }
-    
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void other_11() {
+        PrefixMap pmap = PrefixMapFactory.emptyPrefixMap();
+        pmap.getMapping().put("ex", "http://example/");
+    }
 }

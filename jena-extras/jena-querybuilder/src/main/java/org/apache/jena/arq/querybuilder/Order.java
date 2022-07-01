@@ -1,4 +1,3 @@
-package org.apache.jena.arq.querybuilder;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -17,9 +16,11 @@ package org.apache.jena.arq.querybuilder;
  * limitations under the License.
  */
 
+package org.apache.jena.arq.querybuilder;
+
 /**
  * The order for the ORDER BY modifiers.
  */
 public enum Order {
-	ASCENDING, DESCENDING
+    ASCENDING, DESCENDING
 }

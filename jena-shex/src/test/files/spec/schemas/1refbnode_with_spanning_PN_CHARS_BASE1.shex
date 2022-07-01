@@ -1,0 +1,7 @@
+<http://a.example/S1> {
+   <http://a.example/p1> @_:AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀󯿽
+}
+
+_:AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀󯿽 {
+   <http://a.example/p2> .
+}

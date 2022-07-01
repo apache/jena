@@ -1,0 +1,24 @@
+PREFIX fuseki:    <http://jena.apache.org/fuseki#>
+PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>
+##PREFIX tdb1:      <http://jena.hpl.hp.com/2008/tdb#>
+PREFIX tdb2:      <http://jena.apache.org/2016/tdb#>
+
+PREFIX ja:        <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX geosparql: <http://jena.apache.org/geosparql#>
+
+<#service1> rdf:type fuseki:Service;
+    fuseki:name "ds1";
+    fuseki:endpoint [ fuseki:operation fuseki:query; ] ;
+    fuseki:dataset <#geo_ds> .
+
+## Alt spelling
+<#geo_ds> rdf:type geosparql:geosparqlDataset ;
+    geosparql:inference true;
+    geosparql:spatialIndexFile    "target/GeoSPARQL/DB/spatial.index";
+    geosparql:dataset <#baseDataset> .
+
+
+<#baseDataset> rdf:type tdb2:DatasetTDB2 ;
+    tdb2:location "target/GeoSPARQL/DB";
+    .

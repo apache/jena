@@ -34,7 +34,7 @@ public interface Transform
     public Op transform(OpQuadPattern quadPattern) ;
     public Op transform(OpQuadBlock quadBlock) ;
     public Op transform(OpNull opNull) ;
-    
+
     // Op1
     public Op transform(OpFilter opFilter, Op subOp) ;
     public Op transform(OpGraph opGraph, Op subOp) ;
@@ -52,14 +52,14 @@ public interface Transform
     public Op transform(OpMinus opMinus, Op left, Op right) ;
     public Op transform(OpUnion opUnion, Op left, Op right) ;
     public Op transform(OpConditional opCondition, Op left, Op right) ;
-    
+
     // OpN
     public Op transform(OpSequence opSequence, List<Op> elts) ;
     public Op transform(OpDisjunction opDisjunction, List<Op> elts) ;
 
     // Extensions
     public Op transform(OpExt opExt) ;
-    
+
     // OpModifier
     public Op transform(OpList opList, Op subOp) ;
     public Op transform(OpOrder opOrder, Op subOp) ;

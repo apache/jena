@@ -20,28 +20,27 @@ package org.apache.jena.tdb2.store;
 
 import org.apache.jena.dboe.base.block.FileMode;
 import org.apache.jena.tdb2.store.value.TestDoubleNode62;
+import org.apache.jena.tdb2.store.value.TestFloatNode;
 import org.apache.jena.tdb2.store.value.TestNodeIdInline;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TestOps;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestNodeId.class
     , TestNodeIdInline.class
     , TestDoubleNode62.class
+    , TestFloatNode.class
     , TestTripleTable.class
+    , TestStorageDatasetGraphTests.class
     , TestGraphTDB.class
     , TestGraphNamedTDB.class
     , TestDatasetTDB.class
     , TestDatasetTDBPersist.class
-    //, TestBulkLoader.class
-    // The script suite
-    , TestSuiteGraphTDB.class
-    
     , Test_SPARQL_TDB.class
     , TestDynamicDatasetTDB.class
     , TestStoreConnectionMem.class
@@ -52,21 +51,22 @@ import org.junit.runners.Suite ;
     , TestTransactionLifecycleTDB.class
     , TestTransPromoteTDB.class
     , TestQuadFilter.class
+    , TestGraphView_Prefixes.class
 } )
 public class TS_Store
-{ 
-    static FileMode mode ; 
-    
+{
+    static FileMode mode;
+
     @BeforeClass
     public static void beforeClass()
     {
-        mode = SystemTDB.fileMode() ;
+        mode = SystemTDB.fileMode();
     }
-    
+
     @AfterClass
     public static void afterClass()
     {
         if ( ! SystemTDB.fileMode().equals(mode) )
-            TestOps.setFileMode(mode) ;    
+            TestOps.setFileMode(mode);
     }
 }

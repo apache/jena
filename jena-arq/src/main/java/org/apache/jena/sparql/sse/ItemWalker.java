@@ -18,45 +18,39 @@
 
 package org.apache.jena.sparql.sse;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 
 public class ItemWalker
 {
-    static void walk(ItemVisitor visitor, Item item)
-    {
-        item.visit(new Worker(visitor)) ;
+    static void walk(ItemVisitor visitor, Item item) {
+        item.visit(new Worker(visitor));
     }
-    
-    
-    static class Worker implements ItemVisitor
-    {
-        private ItemVisitor visitor ;
-        Worker(ItemVisitor visitor) { this.visitor = visitor ; }
-        
-        @Override
-        public void visit(Item item, ItemList list)
-        {
-            for ( Item subItem : list )
-            {
-                subItem.visit( this );
-            }
-            visitor.visit(item, list) ;
-        }
-        
-        @Override
-        public void visit(Item item, Node node)
-        {
-            visitor.visit(item, node) ;
-        }
-        
-        @Override
-        public void visit(Item item, String symbol)
-        {
-            visitor.visit(item, symbol) ;
+
+    static class Worker implements ItemVisitor {
+        private ItemVisitor visitor;
+        Worker(ItemVisitor visitor) {
+            this.visitor = visitor;
         }
 
         @Override
-        public void visitNil()
-        { visitor.visitNil() ; }
+        public void visit(Item item, ItemList list) {
+            for ( Item subItem : list ) {
+                subItem.visit(this);
+            }
+            visitor.visit(item, list);
+        }
+
+        @Override
+        public void visit(Item item, Node node) {
+            visitor.visit(item, node);
+        }
+
+        @Override
+        public void visit(Item item, String symbol) {
+            visitor.visit(item, symbol);
+        }
+
+        @Override
+        public void visitNil(Item item) {}
     }
 }

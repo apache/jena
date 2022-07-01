@@ -19,15 +19,15 @@
 package org.apache.jena.tdb.base.file;
 
 import static org.apache.jena.tdb.base.BufferTestLib.sameValue ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.tdb.base.block.Block ;
-import org.apache.jena.tdb.base.file.BlockAccess ;
-import org.apache.jena.tdb.base.file.FileException ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public abstract class AbstractTestBlockAccessFixedSize extends BaseTest
+public abstract class AbstractTestBlockAccessFixedSize
 {
     // Fixed block tests.
     

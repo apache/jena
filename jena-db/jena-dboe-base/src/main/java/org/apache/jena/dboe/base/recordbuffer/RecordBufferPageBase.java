@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.recordbuffer ;
+package org.apache.jena.dboe.base.recordbuffer;
 
-import java.nio.ByteBuffer ;
+import java.nio.ByteBuffer;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.dboe.base.block.Block;
 import org.apache.jena.dboe.base.buffer.RecordBuffer;
 import org.apache.jena.dboe.base.page.PageBase;
 import org.apache.jena.dboe.base.record.RecordFactory;
-import org.apache.jena.dboe.sys.Sys;
+import org.apache.jena.dboe.sys.SysDB;
 
 /**
  * The on-disk form of a block of a single RecordBuffer
@@ -36,71 +36,71 @@ import org.apache.jena.dboe.sys.Sys;
 public abstract class RecordBufferPageBase extends PageBase // implements Page
 {
     // Field offsets
-    final public static int     COUNT        = 0 ;
+    final public static int     COUNT        = 0;
     // Length due to this class - subclasses may use more overhead.
-    final private static int    FIELD_LENGTH = Sys.SizeOfInt ;
+    final private static int    FIELD_LENGTH = SysDB.SizeOfInt;
 
-    protected final int         headerLength ;
+    protected final int         headerLength;
 
     // Interface: "Page" - id, byteBuffer, count
-    protected RecordBuffer      recBuff ;
-    private final RecordFactory factory ;
+    protected RecordBuffer      recBuff;
+    private final RecordFactory factory;
 
-    // private int offset ; // Bytes of overhead.
+    // private int offset; // Bytes of overhead.
 
     public static int calcRecordSize(RecordFactory factory, int blkSize, int headerOffset) {
         // Length = X*recordLength + HEADER
-        int x = blkSize - totalOffset(headerOffset) ;
-        return x / factory.recordLength() ;
+        int x = blkSize - totalOffset(headerOffset);
+        return x / factory.recordLength();
     }
 
     public static int calcBlockSize(RecordFactory factory, int maxRec, int headerOffset) {
-        return totalOffset(headerOffset) + factory.recordLength() * maxRec ;
+        return totalOffset(headerOffset) + factory.recordLength() * maxRec;
     }
 
     private static int totalOffset(int headerOffset) {
-        return FIELD_LENGTH + headerOffset ;
+        return FIELD_LENGTH + headerOffset;
     }
 
     protected RecordBufferPageBase(Block block, int offset, RecordFactory factory, int count) {
         // This code knows the alignment of the records in the ByteBuffer.
-        super(block) ;
-        this.headerLength = FIELD_LENGTH + offset ; // NB +4 for the count field
-        this.factory = factory ;
-        rebuild(block, count) ;
+        super(block);
+        this.headerLength = FIELD_LENGTH + offset; // NB +4 for the count field
+        this.factory = factory;
+        rebuild(block, count);
     }
 
     protected void rebuild(Block block, int count) {
-        ByteBuffer bb = block.getByteBuffer() ;
-        bb.clear() ;
-        bb.position(headerLength) ;
-        bb = bb.slice() ;
-        this.recBuff = new RecordBuffer(bb, factory, count) ;
+        ByteBuffer bb = block.getByteBuffer();
+        bb.clear();
+        bb.position(headerLength);
+        bb = bb.slice();
+        this.recBuff = new RecordBuffer(bb, factory, count);
     }
 
     public final RecordBuffer getRecordBuffer() {
-        return recBuff ;
+        return recBuff;
     }
 
     public final int getCount() {
-        return recBuff.size() ;
+        return recBuff.size();
     }
 
     public final int getMaxSize() {
-        return recBuff.maxSize() ;
+        return recBuff.maxSize();
     }
 
     public void setCount(int count) {
-        recBuff.setSize(count) ;
+        recBuff.setSize(count);
     }
 
     @Override
     public String toString() {
-        return String.format("RecordBufferPageBase[id=%d]: %s", getBackingBlock().getId(), recBuff) ;
+        return String.format("RecordBufferPageBase[id=%d]: %s", getBackingBlock().getId(), recBuff);
     }
 
     @Override
     public void output(IndentedWriter out) {
-        out.print(toString()) ;
+        out.print(toString());
     }
 }

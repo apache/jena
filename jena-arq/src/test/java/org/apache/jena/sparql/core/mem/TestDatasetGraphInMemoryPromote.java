@@ -21,7 +21,6 @@ package org.apache.jena.sparql.core.mem ;
 import org.apache.jena.sparql.JenaTransactionException ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.transaction.AbstractTestTransPromote ;
-import org.apache.log4j.Logger ;
 
 /** Tests for transactions that start read and then promote to write -- TIM */
 public class TestDatasetGraphInMemoryPromote extends AbstractTestTransPromote {
@@ -34,10 +33,10 @@ public class TestDatasetGraphInMemoryPromote extends AbstractTestTransPromote {
         return new DatasetGraphInMemory() ;
     }
 
-    private static Logger[] getLoggers() {
-        return new Logger[]{ Logger.getLogger(DatasetGraphInMemory.class) } ;
+    private static String[] getLoggers() {
+        return new String[]{ DatasetGraphInMemory.class.getName() };
     }
-    
+
     @Override
     protected Class<JenaTransactionException> getTransactionExceptionClass() {
         return JenaTransactionException.class ;

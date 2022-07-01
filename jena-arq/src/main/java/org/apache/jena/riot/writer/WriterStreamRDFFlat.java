@@ -19,32 +19,31 @@
 package org.apache.jena.riot.writer;
 
 import java.io.OutputStream ;
-import java.io.Writer ;
+import java.io.Writer;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Context;
 
-/** An output of triples / quads that is streaming.
- *  It writes one line per triple/quads, with prefixes and literal short forms.
+/**
+ * An output of triples / quads that is streaming.
+ * It writes one line per triple/quads, with prefixes and literal short forms.
  */
 
 public class WriterStreamRDFFlat extends WriterStreamRDFBase
 {
-    public WriterStreamRDFFlat(OutputStream output)
-    { 
-        super(output) ;
+    public WriterStreamRDFFlat(OutputStream output, Context context) {
+        super(output, context);
     }
 
-    public WriterStreamRDFFlat(IndentedWriter output)
-    { 
-        super(output) ;
+    public WriterStreamRDFFlat(Writer output, Context context) {
+        super(output, context);
     }
 
-    public WriterStreamRDFFlat(Writer output)
-    { 
-        super(output) ;
+    public WriterStreamRDFFlat(IndentedWriter output, Context context) {
+        super(output, context);
     }
 
     @Override
@@ -65,10 +64,10 @@ public class WriterStreamRDFFlat extends WriterStreamRDFBase
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
         Node o = triple.getObject() ;
-        
+
         outputNode(s) ;
         out.print(' ') ;
-        outputNode(p) ;
+        printProperty(p);
         out.print(' ') ;
         outputNode(o) ;
         out.println(" .") ;
@@ -81,7 +80,7 @@ public class WriterStreamRDFFlat extends WriterStreamRDFBase
         Node s = quad.getSubject() ;
         Node p = quad.getPredicate() ;
         Node o = quad.getObject() ;
-        
+
         if ( g != null && ! Quad.isDefaultGraph(g) )
         {
             outputNode(g) ;
@@ -91,7 +90,7 @@ public class WriterStreamRDFFlat extends WriterStreamRDFBase
             out.print("{ ") ;
         outputNode(s) ;
         out.print(' ') ;
-        outputNode(p) ;
+        printProperty(p);
         out.print(' ') ;
         outputNode(o) ;
         out.println(" }") ;

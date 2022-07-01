@@ -22,7 +22,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.PeekIterator ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetRewindable ;
@@ -32,7 +31,7 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 
-/** A result set held in-memory. rewindable.  
+/** A result set held in-memory. rewindable.
  */
 
 public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
@@ -98,7 +97,7 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
     /**
      * Create an in-memory result set from an array of ResulSets. It is assumed
      * that all the ResultSets from the array have the same variables.
-     * 
+     *
      * @param sets
      *            the ResultSet objects to concatenate.
      */
@@ -124,16 +123,6 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
     }
 
     // -------- ResultSet interface ------------------------------
-   /**
-     *  @throws UnsupportedOperationException always thrown.
-     */
-
-    @Override
-    public void remove() throws java.lang.UnsupportedOperationException
-    {
-        throw new java.lang.UnsupportedOperationException(
-            Lib.className(this)+": Attempt to remove an element");
-    }
 
     /**
      * Is there another possibility?
@@ -143,10 +132,10 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
 
     /** Moves onto the next result possibility.
      */
-    
+
     @Override
     public QuerySolution nextSolution()  { return new ResultBinding(model, nextBinding()) ; }
-    
+
     @Override
     public Binding nextBinding()  { rowNumber++ ; return iterator.next() ; }
 
@@ -156,6 +145,9 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
 
     @Override
     public QuerySolution next() { return nextSolution() ; }
+
+    @Override
+    public void close() {}
 
     /** Reset this result set back to the beginning */
     public void rewind( ) { reset() ; }
@@ -173,12 +165,12 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
     {
         return model ;
     }
-    
+
     /** Return the number of rows
      */
     @Override
     public int size() { return rows.size() ; }
-    
+
     /** Get the variable names for the projection
      */
     @Override

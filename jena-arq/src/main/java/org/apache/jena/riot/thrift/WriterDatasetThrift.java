@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.thrift;
 
-import static org.apache.jena.riot.RDFLanguages.THRIFT ;
+import static org.apache.jena.riot.RDFLanguages.RDFTHRIFT ;
 
 import java.io.OutputStream ;
 import java.io.Writer ;
@@ -27,7 +27,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.WriterDatasetRIOT ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamOps ;
+import org.apache.jena.riot.system.StreamRDFOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
@@ -41,7 +41,7 @@ public class WriterDatasetThrift implements WriterDatasetRIOT
     }
     @Override
     public Lang getLang() {
-        return THRIFT ;
+        return RDFTHRIFT ;
     }
     @Override
     public void write(Writer out, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
@@ -49,9 +49,9 @@ public class WriterDatasetThrift implements WriterDatasetRIOT
     }
     @Override
     public void write(OutputStream out, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF stream = BinRDF.streamToOutputStream(out, withValues) ;
+        StreamRDF stream = ThriftRDF.streamToOutputStream(out, withValues) ;
         stream.start();
-        StreamOps.sendDatasetToStream(dsg, stream, prefixMap) ;
+        StreamRDFOps.sendDatasetToStream(dsg, stream, baseURI, prefixMap) ;
         stream.finish();
     }
 }

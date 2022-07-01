@@ -26,7 +26,7 @@ import java.util.function.BiConsumer;
 
 import org.apache.jena.shared.PrefixMapping;
 
-/** Sink {@link PrefixMapping}. Accepts changes but does not retain state. */ 
+/** Sink {@link PrefixMapping}. Accepts changes but does not retain state. */
 public class PrefixMappingSink extends PrefixMappingBase {
     @Override
     protected void add(String prefix, String uri) { }
@@ -38,7 +38,7 @@ public class PrefixMappingSink extends PrefixMappingBase {
     protected void clear() {}
 
     @Override
-    protected boolean isEmpty() { 
+    protected boolean isEmpty() {
         return true;
     }
 
@@ -74,10 +74,9 @@ public class PrefixMappingSink extends PrefixMappingBase {
 
     @Override
     protected void apply(BiConsumer<String, String> action) {}
-    
+
     @Override
     public String toString() {
         return "pm:Sink";
     }
-
 }

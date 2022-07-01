@@ -18,15 +18,16 @@
 
 package org.apache.jena.tdb.base.file;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.nio.ByteBuffer ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.tdb.base.file.BufferChannel ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public abstract class AbstractTestChannel extends BaseTest
+public abstract class AbstractTestChannel
 {
     protected abstract BufferChannel open() ;
     

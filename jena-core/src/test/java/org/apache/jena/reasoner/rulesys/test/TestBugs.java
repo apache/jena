@@ -248,8 +248,8 @@ public class TestBugs extends TestCase {
      */
     public void testBindSchemaValidate() {
         Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
-        Model schema = FileManager.get().loadModel("file:testing/reasoners/bugs/sbug.owl");
-        Model data = FileManager.get().loadModel("file:testing/reasoners/bugs/sbug.rdf");
+        Model schema = FileManager.getInternal().loadModelInternal("file:testing/reasoners/bugs/sbug.owl");
+        Model data = FileManager.getInternal().loadModelInternal("file:testing/reasoners/bugs/sbug.rdf");
 
         // Union version
         InfModel infu = ModelFactory.createInfModel(reasoner, data.union(schema));
@@ -382,7 +382,7 @@ public class TestBugs extends TestCase {
 
     /** Problem with bindSchema and validation rules */
     public void test_der_validation() {
-        Model abox = FileManager.get().loadModel("file:testing/reasoners/owl/nondetbug.rdf");
+        Model abox = FileManager.getInternal().loadModelInternal("file:testing/reasoners/owl/nondetbug.rdf");
         List<Rule> rules = FBRuleReasoner.loadRules("testing/reasoners/owl/nondetbug.rules");
         GenericRuleReasoner r = new GenericRuleReasoner(rules);
 //        r.setTraceOn(true);
@@ -789,7 +789,7 @@ public class TestBugs extends TestCase {
      */
     public void testLiteralsInErrorReports() {
         RDFNode culprit = doTestLiteralsInErrorReports("-> (eg:a eg:p 42).  (?X rb:violation error('test', 'arg')) <- (?S eg:p ?X).");
-        assertEquals( culprit, ResourceFactory.createTypedLiteral( new Integer(42) ));
+        assertEquals( culprit, ResourceFactory.createTypedLiteral( Integer.valueOf(42) ));
         culprit = doTestLiteralsInErrorReports("-> (eg:a eg:p 'foo').  (?X rb:violation error('test', 'arg')) <- (?S eg:p ?X).");
         assertEquals( culprit, ResourceFactory.createPlainLiteral("foo"));
         BuiltinRegistry.theRegistry.register( new SomeTriple() );
@@ -857,7 +857,7 @@ public class TestBugs extends TestCase {
      * used to trip up validation
      */
     public void testLayeredValidation() {
-        Model ont = FileManager.get().loadModel("testing/reasoners/bugs/layeredValidation.owl");
+        Model ont = FileManager.getInternal().loadModelInternal("testing/reasoners/bugs/layeredValidation.owl");
         InfModel infModel =
             ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), ont);
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF,
@@ -886,7 +886,7 @@ public class TestBugs extends TestCase {
     
     private void doTestmaxCard2(OntModelSpec spec) {
         String NS = "http://jena.hpl.hp.com/eg#";
-        Model base = FileManager.get().loadModel("testing/reasoners/bugs/terrorism.owl");
+        Model base = FileManager.getInternal().loadModelInternal("testing/reasoners/bugs/terrorism.owl");
         OntModel model = ModelFactory.createOntologyModel(spec, base);
         OntClass event = model.getOntClass(NS + "Event");
         List<OntClass> subclasses = event.listSubClasses().toList();

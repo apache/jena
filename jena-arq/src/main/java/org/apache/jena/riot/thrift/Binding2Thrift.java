@@ -19,6 +19,7 @@
 package org.apache.jena.riot.thrift;
 
 import java.io.OutputStream ;
+import java.util.ArrayList;
 import java.util.Collection ;
 import java.util.Iterator ;
 
@@ -32,6 +33,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.thrift.TException ;
 import org.apache.thrift.protocol.TProtocol ;
 import org.apache.thrift.transport.TIOStreamTransport ;
+import org.apache.thrift.transport.TTransportException;
 
 /** Converted from Bindings to SPARQL result set encoded in Thrift */
 public class Binding2Thrift implements AutoCloseable {
@@ -41,23 +43,19 @@ public class Binding2Thrift implements AutoCloseable {
     private final TProtocol protocol ;
     private final boolean encodeValues ;
 
-    public Binding2Thrift(OutputStream out, Collection<Var> vars, boolean encodeValues) { 
+    public Binding2Thrift(OutputStream out, Collection<Var> vars, boolean encodeValues) {
         this.out = out ;
-        this.vars = vars ; 
-        TIOStreamTransport transport = new TIOStreamTransport(out) ;
-        this.protocol = TRDF.protocol(transport) ;
+        this.vars = vars ;
+        try {
+            TIOStreamTransport transport = new TIOStreamTransport(out) ;
+            this.protocol = TRDF.protocol(transport) ;
+        } catch (TTransportException ex) { throw new RiotThriftException(ex); }
         this.encodeValues = encodeValues ;
         varsRow() ;
     }
 
     private void varsRow() {
-        RDF_VarTuple vrow = new RDF_VarTuple() ;
-        // ** Java8
-//        vars.iterator().forEachRemaining( v -> {
-//            RDF_VAR rv = new RDF_VAR() ;
-//            rv.setName(v.getName()) ;
-//            vrow.addToVars(rv) ;
-//        }) ;
+        RDF_VarTuple vrow = new RDF_VarTuple(new ArrayList<>(vars.size())) ;
         for ( Var v : vars ) {
             RDF_VAR rv = new RDF_VAR() ;
             rv.setName(v.getName()) ;
@@ -67,8 +65,8 @@ public class Binding2Thrift implements AutoCloseable {
         catch (TException e) { TRDF.exception(e) ; }
     }
 
-    public Binding2Thrift(TProtocol out, Collection<Var> vars, boolean encodeValues) { 
-        this.vars = vars ; 
+    public Binding2Thrift(TProtocol out, Collection<Var> vars, boolean encodeValues) {
+        this.vars = vars ;
         this.out = null ;
         this.protocol = out ;
         this.encodeValues = encodeValues ;
@@ -98,6 +96,6 @@ public class Binding2Thrift implements AutoCloseable {
 
     @Override
     public void close() {
-        TRDF.flush(protocol) ; 
+        TRDF.flush(protocol) ;
     }
 }

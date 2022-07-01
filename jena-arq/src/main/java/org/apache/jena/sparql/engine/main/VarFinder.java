@@ -49,7 +49,7 @@ public class VarFinder
 
     // See also VarUtils and OpVars.
     // This class is specific to the needs of the main query engine and scoping of variables
-    
+
     public static Set<Var> optDefined(Op op) {
         return VarUsageVisitor.apply(op).optDefines;
     }
@@ -67,16 +67,16 @@ public class VarFinder
     }
 
     VarUsageVisitor varUsageVisitor ;
-    
+
     private VarFinder(Op op)
     { varUsageVisitor = VarUsageVisitor.apply(op) ; }
-    
+
     public Set<Var> getOpt()        { return varUsageVisitor.optDefines ; }
     public Set<Var> getFilter()     { return varUsageVisitor.filterMentions ; }
     public Set<Var> getFilterOnly() { return varUsageVisitor.filterMentionsOnly ; }
     public Set<Var> getAssign()     { return varUsageVisitor.assignMentions ; }
     public Set<Var> getFixed()      { return varUsageVisitor.defines ; }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder() ;
@@ -87,7 +87,7 @@ public class VarFinder
         sb.append(", Assign:").append(getAssign()) ;
         return sb.toString() ;
     }
-    
+
     public void print(PrintStream out) {
         out.printf("  Filter:       %s\n", getFilter()) ;
         out.printf("  Filter only:  %s\n", getFilterOnly()) ;
@@ -96,7 +96,7 @@ public class VarFinder
         out.printf("  Assign:       %s\n", getAssign()) ;
     }
 
-    private static class VarUsageVisitor 
+    private static class VarUsageVisitor
         //extends OpVisitorBase
         implements OpVisitor
     {
@@ -161,7 +161,7 @@ public class VarFinder
 
         @Override
         public void visit(OpPath opPath) {
-            addVarsFromTriplePath(defines, opPath.getTriplePath()); 
+            addVarsFromTriplePath(defines, opPath.getTriplePath());
         }
 
         @Override
@@ -201,16 +201,16 @@ public class VarFinder
         }
 
         @Override
-        public void visit(OpDiff opDiff) { 
+        public void visit(OpDiff opDiff) {
             mergeMinusDiff(opDiff.getLeft(), opDiff.getRight()) ;
         }
-        
+
         private void mergeMinusDiff(Op left, Op right) {
             mergeVars(left) ;
             VarUsageVisitor usage = VarUsageVisitor.apply(right);
             // Everything in the right side is really a filter.
             combinefilterMentions(this, usage.filterMentionsOnly) ;
-            
+
             filterMentions.addAll(usage.defines) ;
             filterMentions.addAll(usage.optDefines) ;
             filterMentions.addAll(usage.filterMentions) ;
@@ -223,7 +223,7 @@ public class VarFinder
                     usage.filterMentionsOnly.add(v) ;
             }
         }
-        
+
         @Override
         public void visit(OpConditional opLeftJoin) {
             leftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), null);
@@ -256,7 +256,7 @@ public class VarFinder
             }
         }
 
-        // additionalDefines - set of variables which are defined is the filter is executed. 
+        // additionalDefines - set of variables which are defined is the filter is executed.
         private void processExpr(ExprList exprs, Set<Var> additionalDefines) {
             Set<Var> vars = ExprVars.getVarsMentioned(exprs);
             filterMentions.addAll(vars) ;
@@ -272,26 +272,26 @@ public class VarFinder
             VarUsageVisitor usage2 = VarUsageVisitor.apply(opUnion.getRight());
 
             // Fixed both sides.
-            Set<Var> fixed = SetUtils.intersection(usage1.defines, usage2.defines) ;  
+            Set<Var> fixed = SetUtils.intersection(usage1.defines, usage2.defines) ;
             defines.addAll(fixed) ;
-            
+
             // Fixed one side or the other, not both.
             Set<Var> notFixed = SetUtils.symmetricDifference(usage1.defines, usage2.defines) ;
-            optDefines.addAll(notFixed) ;                              
+            optDefines.addAll(notFixed) ;
 
             optDefines.addAll(usage1.optDefines);
             optDefines.addAll(usage2.optDefines);
-            
+
             filterMentions.addAll(usage1.filterMentions);
             filterMentions.addAll(usage2.filterMentions);
-            
+
             filterMentionsOnly.addAll(usage1.filterMentionsOnly);
             filterMentionsOnly.addAll(usage2.filterMentionsOnly);
-            
+
             assignMentions.addAll(usage1.assignMentions);
             assignMentions.addAll(usage2.assignMentions);
         }
-        
+
         @Override
         public void visit(OpDisjunction opDisjunction) {
             opDisjunction.getElements().forEach(op->mergeVars(op));
@@ -320,10 +320,10 @@ public class VarFinder
             opExtend.getSubOp().visit(this);
             processAssignVarExprList(opExtend.getVarExprList());
         }
-        
+
         private void processAssignVarExprList(VarExprList varExprList) {
             varExprList.forEachVarExpr((v,e)-> {
-                defines.add(v) ; // Expression may eval to error -> unset? 
+                defines.add(v) ; // Expression may eval to error -> unset?
                 if ( e != null )
                     ExprVars.nonOpVarsMentioned(assignMentions, e);
             }) ;
@@ -357,17 +357,17 @@ public class VarFinder
         public void visit(OpPropFunc opPropFunc) {
             VarUtils.addVars(defines, opPropFunc.getSubjectArgs()) ;
             VarUtils.addVars(defines, opPropFunc.getObjectArgs()) ;
-            
+
             mergeVars(opPropFunc.getSubOp());
-            
-            // If definite (from the property function), remove from optDefines. 
+
+            // If definite (from the property function), remove from optDefines.
             optDefines.removeAll(this.defines);
         }
 
         // Ops that add nothing to variable scoping.
         // Some can't appear without being inside a project anyway
-        // but we process generally where possible. 
-        
+        // but we process generally where possible.
+
         @Override
         public void visit(OpReduced opReduced)      { mergeVars(opReduced.getSubOp()) ; }
 
@@ -382,15 +382,15 @@ public class VarFinder
 
         @Override
         public void visit(OpList opList)            { mergeVars(opList.getSubOp()) ; }
-        
+
         @Override
         public void visit(OpService opService)      { mergeVars(opService.getSubOp()) ; }
-        
+
         @Override
         public void visit(OpTopN opTop)             { mergeVars(opTop.getSubOp()) ; }
-        
+
         @Override
-        public void visit(OpOrder opOrder) { 
+        public void visit(OpOrder opOrder) {
             mergeVars(opOrder.getSubOp()) ;
             opOrder.getConditions().forEach(sc-> {
                 sc.getExpression()    ;
@@ -411,13 +411,13 @@ public class VarFinder
         }
 
         @Override
-        public void visit(OpProcedure opProc) { 
+        public void visit(OpProcedure opProc) {
             for ( Expr expr :  opProc.getArgs() ) {
                 Set<Var> vars = expr.getVarsMentioned() ;
                 defines.addAll(vars) ;
             }
         }
-        
+
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder() ;

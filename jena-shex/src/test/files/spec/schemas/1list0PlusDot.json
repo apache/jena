@@ -1,0 +1,46 @@
+{
+  "type": "Schema",
+  "shapes": [
+    {
+      "type": "Shape",
+      "id": "http://a.example/S1",
+      "closed": true,
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p1",
+        "valueExpr": "http://a.example/List0PlusDot"
+      }
+    },
+    {
+      "type": "ShapeOr",
+      "id": "http://a.example/List0PlusDot",
+      "shapeExprs": [
+        {
+          "type": "NodeConstraint",
+          "values": [
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"
+          ]
+        },
+        {
+          "type": "Shape",
+          "closed": true,
+          "expression": {
+            "type": "EachOf",
+            "expressions": [
+              {
+                "type": "TripleConstraint",
+                "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first"
+              },
+              {
+                "type": "TripleConstraint",
+                "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
+                "valueExpr": "http://a.example/List0PlusDot"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "@context": "http://www.w3.org/ns/shex.jsonld"
+}

@@ -20,7 +20,7 @@ package org.apache.jena.sparql.expr;
 
 import org.apache.jena.sparql.ARQNotImplemented ;
 
-
+// CAST(string, IRI)
 public class E_Cast extends ExprFunction2
 {
     // See E_StrDatatype
@@ -36,10 +36,10 @@ public class E_Cast extends ExprFunction2
     {
         if ( ! x.isString() ) throw new ExprEvalException("cast: arg 2 is not a string: "+x) ;
         if ( ! y.isIRI() ) throw new ExprEvalException("cast: arg 2 is not a URI: "+y) ;
-        
+
         String lex = x.getString() ;
         y.asNode().getURI() ;
-        
+
         throw new ARQNotImplemented() ;
     }
 

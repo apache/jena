@@ -22,14 +22,13 @@ package org.apache.jena.tdb.base.block;
 import java.nio.ByteBuffer ;
 
 import static org.apache.jena.atlas.lib.ByteBufferLib.fill ;
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.tdb.base.block.Block ;
-import org.apache.jena.tdb.base.block.BlockMgr ;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public abstract class AbstractTestBlockMgr extends BaseTest
+public abstract class AbstractTestBlockMgr
 {
     static final public int BlkSize = 256 ;
     

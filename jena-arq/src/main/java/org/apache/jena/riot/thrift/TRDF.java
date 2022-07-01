@@ -18,10 +18,7 @@
 
 package org.apache.jena.riot.thrift;
 
-import java.io.BufferedInputStream ;
-import java.io.BufferedOutputStream ;
-import java.io.InputStream ;
-import java.io.OutputStream ;
+import java.io.*;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.logging.Log ;
@@ -41,17 +38,32 @@ import org.apache.thrift.transport.TTransport ;
 
 /** Support operations for RDF Thrift */
 public class TRDF {
-    public static final int InputBufferSize     = 128*1024 ; 
-    public static final int OutputBufferSize    = 128*1024 ; 
-    
+    private static final int BUFSIZE_IN   = 128*1024 ;
+    private static final int BUFSIZE_OUT  = 128*1024; ;
+
+    public static InputStream ensureBuffered(InputStream input) {
+        if ( input instanceof BufferedInputStream )
+            return input;
+        if ( input instanceof ByteArrayInputStream )
+            return input;
+        return new BufferedInputStream(input, BUFSIZE_IN);
+    }
+
+    public static OutputStream ensureBuffered(OutputStream output) {
+        if ( output instanceof BufferedOutputStream )
+            return output;
+        if ( output instanceof ByteArrayOutputStream )
+            return output;
+        return new BufferedOutputStream(output, BUFSIZE_OUT);
+    }
+
     /**
      * Create Thrift protocol for the InputStream.
      * @param in InputStream
      */
     public static TProtocol protocol(InputStream in) {
+        in = ensureBuffered(in);
         try {
-            if ( ! ( in instanceof BufferedInputStream ) )
-                in = new BufferedInputStream(in, InputBufferSize) ;
             TTransport transport = new TIOStreamTransport(in) ;
             transport.open() ;
             TProtocol protocol = protocol(transport) ;
@@ -61,15 +73,14 @@ public class TRDF {
 
     /**
      * Create Thrift protocol for the OutputStream.
-     * The caller must call {@link TRDF#flush(TProtocol)} 
-     * which will flush the underlying (internally buffered) output stream. 
+     * The caller must call {@link TRDF#flush(TProtocol)}
+     * which will flush the underlying (internally buffered) output stream.
      * @param out OutputStream
      */
     public static TProtocol protocol(OutputStream out) {
+        out = ensureBuffered(out);
         try {
-            // Flushing the protocol will flush the BufferedOutputStream 
-            if ( !( out instanceof BufferedOutputStream ) )
-                out = new BufferedOutputStream(out, OutputBufferSize) ;
+            // Flushing the protocol will flush the BufferedOutputStream
             TTransport transport = new TIOStreamTransport(out) ;
             transport.open() ;
             TProtocol protocol = protocol(transport) ;
@@ -89,26 +100,26 @@ public class TRDF {
 
     public static TProtocol protocol(TTransport transport) {
         if ( true ) return new TCompactProtocol(transport) ;
-    
+
         // Keep the warnings down.
         if ( false ) return new TTupleProtocol(transport) ;
         if ( false ) return new TJSONProtocol(transport) ;
         throw new RiotThriftException("No protocol impl choosen") ;
     }
 
-    /** Flush a TProtocol; exceptions converted to {@link RiotException} */  
+    /** Flush a TProtocol; exceptions converted to {@link RiotException} */
     public static void flush(TProtocol protocol) {
         flush(protocol.getTransport()) ;
     }
 
-    /** Flush a TTransport; exceptions converted to {@link RiotException} */  
+    /** Flush a TTransport; exceptions converted to {@link RiotException} */
     public static void flush(TTransport transport) {
         try { transport.flush() ; }
         catch (TException ex) { TRDF.exception(ex) ; }
     }
 
     public static final RDF_ANY ANY = new RDF_ANY() ;
-    /** The Thrift RDF Term 'ANY' */ 
+    /** The Thrift RDF Term 'ANY' */
     public static final RDF_Term tANY = new RDF_Term() ;
     /** The Thrift RDF Term 'UNDEF' */
     public static final RDF_UNDEF UNDEF = new RDF_UNDEF() ;

@@ -31,7 +31,7 @@ import org.apache.jena.atlas.iterator.Iter ;
  */
 public class Map2<K, V> implements Iterable<K>
 {
-    private final Map<K, V> map1 ; 
+    private final Map<K, V> map1 ;
     private final Map2<K, V> map2 ;
 
     public Map2(Map<K,V> map1, Map2<K,V> map2)
@@ -39,9 +39,11 @@ public class Map2<K, V> implements Iterable<K>
         this.map1 = map1 ;
         this.map2 = map2 ;
     }
-    
+
     public boolean containsKey(K key)
     {
+        if ( map1 == null )
+            return false;
         if ( map1.containsKey(key) )
              return true ;
         if ( map2 != null )
@@ -60,6 +62,8 @@ public class Map2<K, V> implements Iterable<K>
 
     public V get(K key)
     {
+        if ( map1 == null )
+            return null;
         V v = map1.get(key) ;
         if ( v != null ) return v ;
         if ( map2 != null )
@@ -69,6 +73,8 @@ public class Map2<K, V> implements Iterable<K>
 
     public void put(K key, V value)
     {
+        if ( map1 == null )
+            throw new IllegalArgumentException("read-only empty map") ;
         if ( map2 != null && map2.containsKey(key) )
             throw new IllegalArgumentException("Parent map already contains "+key) ;
         map1.put(key, value) ;
@@ -78,27 +84,32 @@ public class Map2<K, V> implements Iterable<K>
     @Override
     public Iterator<K> iterator()
     {
+        if ( map1 == null )
+            return Iter.nullIterator();
         Iter<K> iter1 = Iter.iter(map1.keySet().iterator()) ;
         if ( map2 == null )
-            return iter1 ; 
+            return iter1 ;
         return iter1.append(map2.iterator()) ;
     }
-    
+
     public boolean isEmpty()
     {
+        if ( map1 == null )
+            return true;
         boolean x = map1.isEmpty() ;
         if ( ! x ) return false ;
         if ( map2 != null )
             return map2.isEmpty() ;
         return true ;
     }
-    
+
     public int size()
     {
+        if ( map1 == null )
+            return 0;
         int x = map1.size() ;
         if ( map2 != null )
             x += map2.size();
         return x ;
     }
-    
 }

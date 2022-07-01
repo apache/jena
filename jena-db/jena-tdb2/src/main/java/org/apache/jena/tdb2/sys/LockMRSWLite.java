@@ -18,24 +18,24 @@
 
 package org.apache.jena.tdb2.sys;
 
-import java.util.concurrent.locks.ReadWriteLock ;
-import java.util.concurrent.locks.ReentrantReadWriteLock ;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.shared.Lock ;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.Lock;
 
-/** Light weight (?) MRSW lock implementation that assumes 
- * correct use of enterCriticalSection/leaveCriticalSection. 
+/** Light weight (?) MRSW lock implementation that assumes
+ * correct use of enterCriticalSection/leaveCriticalSection.
  * That is, there is no real checking.
  */
 public class LockMRSWLite implements Lock
 {
     public LockMRSWLite() {}
-    
-    private ReadWriteLock mrswLock = new ReentrantReadWriteLock() ;
+
+    private ReadWriteLock mrswLock = new ReentrantReadWriteLock();
     // >0 for read lock, -1 for write lock.
-    private int count = 0 ;
-    
+    private int count = 0;
+
     @Override
     public synchronized void enterCriticalSection(boolean readLockRequested)
     {
@@ -44,11 +44,11 @@ public class LockMRSWLite implements Lock
         // operation, then a valid leaveCriticalSection can only be read or
         // write.
         if ( readLockRequested ) {
-            mrswLock.readLock().lock() ;
-            count++ ;
+            mrswLock.readLock().lock();
+            count++;
         } else {
-            mrswLock.writeLock().lock() ;
-            count = -1 ;
+            mrswLock.writeLock().lock();
+            count = -1;
         }
     }
 
@@ -56,15 +56,15 @@ public class LockMRSWLite implements Lock
     public synchronized void leaveCriticalSection()
     {
         if ( count == 0 )
-            throw new JenaException("Bad lock release - don't appear to be in a critical section") ;
+            throw new JenaException("Bad lock release - don't appear to be in a critical section");
 
         if ( count < 0 ) {
-            mrswLock.writeLock().unlock() ;
-            count = 0 ;
-            return ;
+            mrswLock.writeLock().unlock();
+            count = 0;
+            return;
         } else {
-            mrswLock.readLock().unlock() ;
-            count-- ;
+            mrswLock.readLock().unlock();
+            count--;
         }
     }
 }

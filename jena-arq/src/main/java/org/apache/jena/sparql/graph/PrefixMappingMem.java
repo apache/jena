@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.graph;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,20 +26,20 @@ import java.util.function.BiConsumer;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 
-/** 
+/**
  * A {@link PrefixMapping} implemented as a pair of in-memory maps.
- * 
+ *
  * @implNote
  * {@link PrefixMappingImpl} is the long time implementation.
- * This class should be exactly the same within the {@link PrefixMappingBase} framework.  
- */ 
+ * This class should be exactly the same within the {@link PrefixMappingBase} framework.
+ */
 public class PrefixMappingMem extends PrefixMappingBase {
 
     private Map<String, String> prefixToUri = new ConcurrentHashMap<>();
     private Map<String, String> uriToPrefix = new ConcurrentHashMap<>();
 
     public PrefixMappingMem() {}
-    
+
     @Override
     protected void add(String prefix, String uri) {
         prefixToUri.put(prefix, uri);
@@ -50,10 +49,10 @@ public class PrefixMappingMem extends PrefixMappingBase {
     /** See notes on reverse mappings in {@link PrefixMappingBase}.
      * This is a complete implementation.
      * <p>
-     * Test {@lcode AbstractTestPrefixMapping.testSecondPrefixDeletedUncoversPreviousMap}.
-     */ 
+     * Test {@code AbstractTestPrefixMapping.testSecondPrefixDeletedUncoversPreviousMap}.
+     */
     @Override
-    protected void remove(String prefix) { 
+    protected void remove(String prefix) {
         String u = prefixToUri(prefix);
         if ( u == null )
             return;
@@ -76,7 +75,7 @@ public class PrefixMappingMem extends PrefixMappingBase {
         }
         return null;
     }
-    
+
     @Override
     protected void clear() {
         prefixToUri.clear();
@@ -84,7 +83,7 @@ public class PrefixMappingMem extends PrefixMappingBase {
     }
 
     @Override
-    protected boolean isEmpty() { 
+    protected boolean isEmpty() {
         return prefixToUri.isEmpty();
     }
 
@@ -110,7 +109,7 @@ public class PrefixMappingMem extends PrefixMappingBase {
 
     @Override
     protected Map<String, String> asMapCopy() {
-        return new HashMap<>(prefixToUri);
+        return Map.copyOf(prefixToUri);
     }
 
     @Override

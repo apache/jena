@@ -18,12 +18,13 @@
 
 package org.apache.jena.atlas.io ;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.StringWriter ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestBufferingWriter extends BaseTest {
+public class TestBufferingWriter {
     StringWriter    sw = null ;
     BufferingWriter w  = null ;
 
@@ -93,5 +94,30 @@ public class TestBufferingWriter extends BaseTest {
         w.close() ;
         String x = string() ;
         assertEquals("test", x) ;
+    }
+
+    @Test // JENA-19219
+    public void write_07() {
+        create(8194, 4098);
+        for (int i = 0; i < 8194;i++) {
+            w.output('a');
+        }
+        w.close();
+        String x = string();
+        assertEquals(x.length(), 8194);
+    }
+
+    @Test // JENA-1920
+    public void write_08() {
+        create(8192, 4096);
+        char[] chars = new char[8192];
+        //define enough to make it a 'large blob'
+        for(int i = 0; i < 5000; i++){
+            chars[i] = '1';
+        }
+        w.output(chars, 0, 5000);
+        w.close();
+        String x = string();
+        assertEquals(5000, x.length());
     }
 }

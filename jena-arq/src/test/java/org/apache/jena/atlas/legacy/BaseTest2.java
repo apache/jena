@@ -21,12 +21,12 @@ package org.apache.jena.atlas.legacy;
 import java.util.ArrayDeque ;
 import java.util.Deque ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.junit.AssertExtra ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 
-public class BaseTest2 extends BaseTest {
+public class BaseTest2 {
     // Should go elsewhere?
     
   private static Deque<ErrorHandler> errorHandlers = new ArrayDeque<>() ;
@@ -48,7 +48,7 @@ public class BaseTest2 extends BaseTest {
    {
        if ( errorHandlers.size() == 0 )
        {
-           Log.warn(BaseTest.class, "ErrorHandler not set for testing") ;
+           Log.warn(AssertExtra.class, "ErrorHandler not set for testing") ;
            ErrorHandlerFactory.setDefaultErrorHandler(ErrorHandlerFactory.errorHandlerStd) ;  // Panic measures
            return ;
        }

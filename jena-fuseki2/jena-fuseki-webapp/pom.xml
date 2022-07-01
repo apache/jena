@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -34,79 +34,70 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-core</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-core</artifactId>
+      <version>4.6.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
     </dependency>
    
     <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-webapp</artifactId>
-      <version>${ver.jetty}</version>
-    </dependency>
-
-    <!--
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-runner</artifactId>
-      <version>${ver.jetty}</version>
-    </dependency>
-    -->
-
-    <!-- Text and spatial -->
-    <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
     </dependency>
-
+    
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-spatial</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
     </dependency>
 
-    <!-- Apache Shiro -->
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-core</artifactId>
-      <version>${ver.shiro}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-web</artifactId>
-      <version>${ver.shiro}</version>
     </dependency>
 
-    <!-- Logging :  Needed because the Fuseki command line manages logging -->
+    <!-- frontend assets (HTML, JS, CSS, images, etc.) -->
+    <!-- Currently done by unpacking.
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-ui</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    -->
+
+    <!-- Logging  -->  
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
     </dependency>
 
-    <!-- The jena parent POM has <optional>true</optional> -->
+    <!-- Within-webapp use -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <optional>false</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <optional>false</optional>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-web</artifactId>
     </dependency>
 
     <!-- Testing -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -114,7 +105,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -122,6 +113,12 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -142,6 +139,11 @@
         <includes>
           <include>org/apache/jena/fuseki/fuseki-properties.xml</include>
         </includes>
+      </resource>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/webapp/</directory>
+        <targetPath>${project.build.directory}/webapp/</targetPath>
       </resource>
     </resources>
 
@@ -178,6 +180,28 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.jena</groupId>
+                  <artifactId>jena-fuseki-ui</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <includes>webapp/**/*.*</includes>
+                </artifactItem> 
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+
         <configuration>
           <overWriteReleases>false</overWriteReleases>
           <overWriteIfNewer>true</overWriteIfNewer>
@@ -195,5 +219,4 @@
     </plugins>
 
   </build>
-
 </project>

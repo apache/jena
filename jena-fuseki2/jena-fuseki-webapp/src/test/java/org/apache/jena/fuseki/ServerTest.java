@@ -16,27 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki ;
+package org.apache.jena.fuseki;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.sse.SSE;
 
 class ServerTest {
-    public static final String  gn1           = "http://graph/1" ;
-    public static final String  gn2           = "http://graph/2" ;
-    public static final String  gn99          = "http://graph/99" ;
+    public static final String  graphName1    = "http://graph/1";
+    public static final String  graphName2    = "http://graph/2";
+    public static final String  graphName99   = "http://graph/99";
 
-    public static final Node    n1            = NodeFactory.createURI("http://graph/1") ;
-    public static final Node    n2            = NodeFactory.createURI("http://graph/2") ;
-    public static final Node    n99           = NodeFactory.createURI("http://graph/99") ;
+    public static final Node    gn1           = NodeFactory.createURI("http://graph/1");
+    public static final Node    gn2           = NodeFactory.createURI("http://graph/2");
+    public static final Node    gn99          = NodeFactory.createURI("http://graph/99");
 
-    public static final Graph   graph1        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))") ;
-    public static final Graph   graph2        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))") ;
-
-    public static final Model   model1        = ModelFactory.createModelForGraph(graph1) ;
-    public static final Model   model2        = ModelFactory.createModelForGraph(graph2) ;
+    public static final Graph   graph1        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))");
+    public static final Graph   graph2        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))");
 }

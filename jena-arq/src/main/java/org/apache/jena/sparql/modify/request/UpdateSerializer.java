@@ -29,7 +29,7 @@ import org.apache.jena.update.Update ;
  * Interface for update serializers which may be registered indirectly with the
  * {@link SerializerRegistry} via a {@link UpdateSerializerFactory} thus
  * allowing the customisation of update serialization.
- * 
+ *
  */
 public interface UpdateSerializer extends Closeable {
 
@@ -40,7 +40,7 @@ public interface UpdateSerializer extends Closeable {
 
     /**
      * Serializes the given update
-     * 
+     *
      * @param update
      *            Update
      */
@@ -48,7 +48,7 @@ public interface UpdateSerializer extends Closeable {
 
     /**
      * Serializes a sequence of updates
-     * 
+     *
      * @param updates
      *            Updates
      */
@@ -56,10 +56,9 @@ public interface UpdateSerializer extends Closeable {
 
     /**
      * Serializes a sequence of updates
-     * 
+     *
      * @param updateIter
      *            Updates
      */
     public abstract void update(Iterator<? extends Update> updateIter);
-
 }

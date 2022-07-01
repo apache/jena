@@ -18,19 +18,22 @@
 
 package org.apache.jena.tdb.store.tupletable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Iterator ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 import org.junit.Test ;
 
 /** Test TupleIndexes (general) */
-public abstract class AbstractTestTupleIndex extends BaseTest
+public abstract class AbstractTestTupleIndex
 {
     protected static NodeId n1 = new NodeId(1) ;
     protected static NodeId n2 = new NodeId(2) ;

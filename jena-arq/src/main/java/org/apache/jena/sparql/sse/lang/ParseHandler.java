@@ -18,24 +18,27 @@
 
 package org.apache.jena.sparql.sse.lang;
 
-import org.apache.jena.sparql.sse.Item ;
+import org.apache.jena.sparql.sse.Item;
 
 public interface ParseHandler
 {
     /** The result of a parse */
-    public Item getItem() ;
-    
-    public void parseStart() ;
-    public void parseFinish() ;
-    
-    public void emitIRI(int line, int column, String iriStr) ;
-    public void emitBNode(int line, int column, String label) ;
-    public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn) ;
-    public void emitVar(int line, int column, String varName) ;
-    
-    public void emitPName(int line, int column, String pname) ;
-    public void emitSymbol(int line, int column, String symbol) ;
-    
-    public void listStart(int line, int column) ;
-    public void listFinish(int line, int column) ;
+    public Item getItem();
+
+    public void parseStart();
+    public void parseFinish();
+
+    public void emitIRI(int line, int column, String iriStr);
+    public void emitBNode(int line, int column, String label);
+    public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn);
+    public void emitVar(int line, int column, String varName);
+
+    public void emitPName(int line, int column, String pname);
+    public void emitSymbol(int line, int column, String symbol);
+
+    public void tripleTermStart(int line, int column);
+    public void tripleTermFinish(int line, int column);
+
+    public void listStart(int line, int column);
+    public void listFinish(int line, int column);
 }

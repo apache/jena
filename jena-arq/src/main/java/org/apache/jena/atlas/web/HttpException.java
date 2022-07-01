@@ -18,57 +18,84 @@
 
 package org.apache.jena.atlas.web;
 
+import org.apache.jena.web.HttpSC;
+
 /**
- * Class of HTTP Exceptions from Atlas code
- * 
+ * Class of HTTP Exceptions
  */
 public class HttpException extends RuntimeException {
-    private static final long serialVersionUID = -7224224620679594095L;
-    private int responseCode = -1;
-    private String statusLine = null ;
-	private String response;
+    private final int statusCode;
+    private final String statusLine;
+    private final String response;
 
-	public HttpException(int responseCode, String statusLine, String response) {
-		super(responseCode + " - " + statusLine);
-		this.responseCode = responseCode;
-		this.statusLine = statusLine ;
-		this.response = response;
-	}
+    // HTTP/2 does not have an information message.
+    public HttpException(int statusCode) {
+        this(statusCode, null);
+    }
 
-    
+    public HttpException(int statusCode, String statusLine) {
+        super(exMessage(statusCode, statusLine));
+        this.statusCode = statusCode;
+        this.statusLine = statusLine ;
+        this.response = null;
+    }
+
+    public HttpException(int statusCode, String statusLine, String response) {
+        super(exMessage(statusCode, statusLine));
+        this.statusCode = statusCode;
+        this.statusLine = statusLine ;
+        this.response = response;
+    }
+
+    private static String exMessage(int statusCode, String statusLine) {
+        if ( statusLine == null )
+            statusLine = HttpSC.getMessage(statusCode);
+        return statusCode+" - "+HttpSC.getMessage(statusCode);
+    }
+
     public HttpException(String message) {
         super(message);
+        this.statusCode = -1;
+        this.statusLine = null ;
+        this.response = null;
     }
 
     public HttpException(String message, Throwable cause) {
         super(message, cause);
+        this.statusCode = -1;
+        this.statusLine = null ;
+        this.response = null;
     }
-    
+
     public HttpException(Throwable cause) {
         super(cause);
+        this.statusCode = -1;
+        this.statusLine = null ;
+        this.response = null;
     }
-    
+
     /**
-     * Gets the response code, may be -1 if unknown
-     * @return Response Code if known, -1 otherwise
+     * Gets the status code, may be -1 if unknown
+     * @return Status Code if known, -1 otherwise
      */
-    public int getResponseCode() {
-        return this.responseCode;
+    public int getStatusCode() {
+        return this.statusCode;
     }
-    
+
     /**
-     * Gets the response code, may be null if unknown
+     * Gets the status line text, may be null if unknown.
+     * HTTP/2 does not have status line text; the default HTTP 1.1 message is returned.
      * @return Status line
      */
     public String getStatusLine() {
         return this.statusLine;
     }
 
-	/**
-	 * The response payload from the remote.
-	 * @return The payload, or null if no payload
-	 */
-	public String getResponse() {
-		return response;
-	}
+    /**
+     * The response payload from the remote.
+     * @return The payload, or null if no payload
+     */
+    public String getResponse() {
+        return response;
+    }
 }

@@ -31,13 +31,13 @@ import org.apache.jena.riot.lang.ReaderTriX ;
 import org.apache.jena.riot.lang.TriX ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.StreamOps ;
+import org.apache.jena.riot.system.StreamRDFOps ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 
 /** Write TriX.
  * See {@link TriX} for details.
- * The writer defers to {@link StreamWriterTriX}. 
+ * The writer defers to {@link StreamWriterTriX}.
  * @see TriX
  * @see ReaderTriX
  * @see StreamWriterTriX
@@ -50,7 +50,7 @@ public class WriterTriX implements WriterDatasetRIOT, WriterGraphRIOT {
     public Lang getLang() {
         return Lang.TRIX ;
     }
-    
+
     // Dataset
     @Override
     public void write(OutputStream out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {
@@ -65,8 +65,8 @@ public class WriterTriX implements WriterDatasetRIOT, WriterGraphRIOT {
     }
 
     private void write(IndentedWriter out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamWriterTriX w = new StreamWriterTriX(out) ;
-        StreamOps.datasetToStream(datasetGraph, w) ;
+        StreamWriterTriX w = new StreamWriterTriX(out, prefixMap) ;
+        StreamRDFOps.datasetToStream(datasetGraph, w) ;
     }
 
     // Graph
@@ -81,10 +81,10 @@ public class WriterTriX implements WriterDatasetRIOT, WriterGraphRIOT {
         IndentedWriter iOut = RiotLib.create(out) ;
         write(iOut, graph, prefixMap, baseURI, null) ;
     }
-    
+
     private static void write(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI, Object context) {
-        StreamWriterTriX w = new StreamWriterTriX(out) ;
-        StreamOps.graphToStream(graph, w) ;
+        StreamWriterTriX w = new StreamWriterTriX(out, prefixMap) ;
+        StreamRDFOps.graphToStream(graph, w) ;
     }
 }
 

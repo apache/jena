@@ -16,12 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.io ;
+package org.apache.jena.atlas.io;
 
-import java.io.IOException ;
-import java.io.Writer ;
-
-import org.apache.jena.atlas.io.IO ;
+import java.io.IOException;
+import java.io.Writer;
 
 /**
  * A buffering writer. Like BufferedWriter but with no synchronization. A
@@ -32,35 +30,34 @@ import org.apache.jena.atlas.io.IO ;
  * </p>
  * This class is not thread safe.
  */
-
 public final class BufferingWriter extends Writer {
     // Default sizes
-    private static final int SIZE      = 8 * 1024 ;      // Unit size in bytes.
-    private static final int BLOB_SIZE = SIZE / 2 ;      // Large object size,
-                                                          // worse case, bytes
+    private static final int SIZE      = 8 * 1024;      // Unit size in bytes.
+    private static final int BLOB_SIZE = SIZE / 2;      // Large object size, worse case, bytes
     // Sizes for this instance
-    private final int        blockSize ;
-    private final int        blobSize ;
+    private final int        blockSize;
+    private final int        blobSize;
 
-    private char[]           buffer    = new char[SIZE] ;
-    private int              idx       = 0 ;
-    private Writer           out ;
+    private final char[]     buffer;
+    private int              idx       = 0;
+    private final Writer     out;
 
     /** Create a buffering writer */
     public BufferingWriter(Writer dest) {
-        this(dest, SIZE, BLOB_SIZE) ;
+        this(dest, SIZE, BLOB_SIZE);
     }
 
     /** Create a buffering writer */
     public BufferingWriter(Writer dest, int size) {
-        this(dest, size, size/2) ;
+        this(dest, size, size/2);
     }
 
     /** Create a buffering writer */
     public BufferingWriter(Writer dest, int size, int blobSize) {
-        this.out = dest ;
-        this.blockSize = size ;
-        this.blobSize = blobSize ;
+        this.out = dest;
+        this.buffer = new char[size];
+        this.blockSize = size;
+        this.blobSize = blobSize;
     }
 
     /**
@@ -68,113 +65,113 @@ public final class BufferingWriter extends Writer {
      * @param string Characters
      */
     public void output(String string) {
-        output(string, 0, string.length()) ;
+        output(string, 0, string.length());
     }
-    
+
     /**
      * Output a string
-     * 
+     *
      * @param string Characters
      * @param off    Starting point in the string
      * @param length Length
      */
     public void output(String string, int off, int length) {
-        boolean largeBlob = (length > blobSize) ;
+        boolean largeBlob = (length > blobSize);
 
         // There is no space or too big
         if ( largeBlob || (blockSize - idx) < length )
-            flushBuffer() ;
+            flushBuffer();
         // If too big, do directly.
         if ( largeBlob /* too big */) {
-            try { out.write(string, off, length) ; }
-            catch (IOException ex) { IO.exception(ex) ; }
-            return ;
+            try { out.write(string, off, length); }
+            catch (IOException ex) { IO.exception(ex); }
+            return;
         }
-        int n = string.length() ;
-        string.getChars(off, (n + off), buffer, idx) ;
-        idx += n ;
+        int n = string.length();
+        string.getChars(off, (n + off), buffer, idx);
+        idx += n;
     }
 
     /** Output an array of characters */
     public void output(char chars[]) {
-        output(chars, 0, chars.length) ;
+        output(chars, 0, chars.length);
     }
 
     /**
      * Output an array of characters
-     * 
+     *
      * @param chars Characters
      * @param start Start
      * @param length Length
      */
     public void output(char chars[], int start, int length) {
-        boolean largeBlob = (length > blobSize) ;
+        boolean largeBlob = (length > blobSize);
 
         // There is no space or too big
         if ( largeBlob || (blockSize - idx) < length )
-            flushBuffer() ;
+            flushBuffer();
         // If too big, do directly.
         if ( largeBlob /* too big */) {
-            try { out.write(chars) ; }
-            catch (IOException ex) { IO.exception(ex) ; }
-            return ;
+            try { out.write(chars, start, length); }
+            catch (IOException ex) { IO.exception(ex); }
+            return;
         }
-        System.arraycopy(chars, start, buffer, idx, length) ;
-        idx += length ;
+        System.arraycopy(chars, start, buffer, idx, length);
+        idx += length;
     }
 
     /** Output a single character */
     public void output(char ch) {
         if ( blockSize == idx )
-            flushBuffer() ;
-        buffer[idx++] = ch ;
+            flushBuffer();
+        buffer[idx++] = ch;
     }
 
     private void flushBuffer() {
         if ( idx > 0 ) {
-            try { out.write(buffer, 0, idx) ; }
-            catch (IOException ex) { IO.exception(ex) ; }
-            idx = 0 ;
+            try { out.write(buffer, 0, idx); }
+            catch (IOException ex) { IO.exception(ex); }
+            idx = 0;
         }
 
     }
-    
+
     // ---- Writer
 
     @Override
     public void close() {
-        flushBuffer() ;
-        IO.close(out) ;
+        flushBuffer();
+        IO.close(out);
     }
 
     @Override
     public void flush() {
-        flushBuffer() ;
-        IO.flush(out) ;
+        flushBuffer();
+        IO.flush(out);
     }
 
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
-        output(cbuf, off, len) ;
+        output(cbuf, off, len);
     }
 
     @Override
     public void write(char[] cbuf) throws IOException {
-        write(cbuf, 0, cbuf.length) ;
+        write(cbuf, 0, cbuf.length);
     }
 
     @Override
     public void write(String string, int off, int len) throws IOException {
-        output(string, off, len) ;
+        output(string, off, len);
     }
 
     @Override
     public void write(String string) throws IOException {
-        output(string, 0, string.length()) ;
+        output(string, 0, string.length());
     }
 
     @Override
     public void write(int ch) throws IOException {
-        output((char)ch) ;
+        output((char)ch);
     }
 }

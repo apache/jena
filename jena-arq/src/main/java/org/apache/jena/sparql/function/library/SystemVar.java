@@ -18,6 +18,9 @@
 
 package org.apache.jena.sparql.function.library;
 
+import java.util.List;
+
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.ExprEvalException;
@@ -39,10 +42,15 @@ public class SystemVar extends FunctionBase0 {
         this.systemSymbol = systemSymbol;
     }
 
-    // Need to intercept exec so we can get to the FunctionEnv
     @Override
     public NodeValue exec() {
-        return get(systemSymbol, super.functionEnv);
+        throw new InternalErrorException("SystemVar.exec shoudl not have been called");
+    }
+
+    // Need to intercept exec so we can get to the FunctionEnv
+    @Override
+    protected NodeValue exec(List<NodeValue> args, FunctionEnv env) {
+        return get(systemSymbol, env);
     }
 
     public static NodeValue get(Symbol symbol, FunctionEnv env) {

@@ -20,88 +20,92 @@ package org.apache.jena.riot.system;
 
 import java.util.Map ;
 import java.util.function.BiConsumer ;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.shared.PrefixMapping ;
 
 public class PrefixMapWrapper implements PrefixMap
 {
     private final PrefixMap other ;
-    protected PrefixMap get() { return other; }
+    private PrefixMap get() { return other; }
 
     public PrefixMapWrapper(PrefixMap other) { this.other = other ; }
 
-    @Override
-    public Map<String, IRI> getMapping()
-    { return get().getMapping() ; }
+    protected PrefixMap getR() { return get(); }
+
+    protected PrefixMap getW() { return get(); }
 
     @Override
-    public Map<String, IRI> getMappingCopy()
-    { return get().getMappingCopy() ; }
+    public Map<String, String> getMapping()
+    { return getR().getMapping() ; }
 
     @Override
-    public Map<String, String> getMappingCopyStr()
-    { return get().getMappingCopyStr() ; } 
+    public Map<String, String> getMappingCopy()
+    { return getR().getMappingCopy() ; }
 
     @Override
-    public void forEach(BiConsumer<String, IRI> action) {
-        get().forEach(action);
+    public void forEach(BiConsumer<String, String> action)
+    { getR().forEach(action); }
+
+    @Override
+    public Stream<PrefixEntry> stream() {
+        return getR().stream();
     }
 
     @Override
-    public void add(String prefix, String iriString)
-    { get().add(prefix, iriString) ; }
+    public String get(String prefix)
+    { return getR().get(prefix); }
 
     @Override
-    public void add(String prefix, IRI iri)
-    { get().add(prefix, iri) ; }
+    public void add(String prefix, String iri)
+    { getW().add(prefix, iri) ; }
 
     @Override
     public void putAll(PrefixMap pmap)
-    { get().putAll(pmap) ; }
+    { getW().putAll(pmap) ; }
 
     @Override
     public void putAll(PrefixMapping pmap)
-    { get().putAll(pmap) ; }
+    { getW().putAll(pmap) ; }
 
     @Override
     public void putAll(Map<String, String> mapping)
-    { get().putAll(mapping) ; }
+    { getW().putAll(mapping) ; }
 
     @Override
     public void delete(String prefix)
-    { get().delete(prefix) ; }
+    { getW().delete(prefix) ; }
 
     @Override
     public void clear()
-    { get().clear(); }
+    { getW().clear(); }
 
     @Override
-    public boolean contains(String prefix)
-    { return get().contains(prefix) ; }
+    public boolean containsPrefix(String prefix)
+    { return getR().containsPrefix(prefix) ; }
 
     @Override
     public String abbreviate(String uriStr)
-    { return get().abbreviate(uriStr) ; }
+    { return getR().abbreviate(uriStr) ; }
 
     @Override
     public Pair<String, String> abbrev(String uriStr)
-    { return get().abbrev(uriStr) ; }
+    { return getR().abbrev(uriStr) ; }
 
     @Override
     public String expand(String prefixedName)
-    { return get().expand(prefixedName) ; }
+    { return getR().expand(prefixedName) ; }
 
     @Override
     public String expand(String prefix, String localName)
-    { return get().expand(prefix, localName) ; }
+    { return getR().expand(prefix, localName) ; }
 
     @Override
     public boolean isEmpty()
-    { return get().isEmpty() ; }
+    { return getR().isEmpty() ; }
 
     @Override
     public int size()
-    { return get().size() ; }
+    { return getR().size() ; }
 }

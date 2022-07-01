@@ -1,0 +1,91 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/path/path-complex-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:InvalidResource
+  rdf:type ex:Animal ;
+  rdfs:label "Invalid" ;
+.
+ex:MalePerson
+  rdf:type rdfs:Class ;
+  rdfs:subClassOf ex:Person ;
+.
+ex:Person
+  rdf:type rdfs:Class ;
+.
+ex:TestShape
+  rdf:type sh:PropertyShape ;
+  sh:path (
+      rdf:type
+      [
+        sh:zeroOrMorePath rdfs:subClassOf ;
+      ]
+    ) ;
+  sh:hasValue ex:Person ;
+  sh:targetNode ex:InvalidResource1 ;
+  sh:targetNode ex:InvalidResource2 ;
+  sh:targetNode ex:ValidResource1 ;
+  sh:targetNode ex:ValidResource2 ;
+  sh:targetNode ex:ValidResource3 ;
+.
+ex:ValidResource1
+  rdf:type ex:Person ;
+.
+ex:ValidResource2
+  rdf:type ex:MalePerson ;
+.
+ex:ValidResource3
+  rdf:type ex:Animal ;
+  rdf:type ex:MalePerson ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <path-complex-001>
+    ) ;
+.
+<path-complex-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of path complex (rdf:type/rdfs:subClassOf*) 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath (
+              rdf:type
+              [
+                sh:zeroOrMorePath rdfs:subClassOf ;
+              ]
+            ) ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:HasValueConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource2 ;
+          sh:resultPath (
+              rdf:type
+              [
+                sh:zeroOrMorePath rdfs:subClassOf ;
+              ]
+            ) ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:HasValueConstraintComponent ;
+          sh:sourceShape ex:TestShape ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

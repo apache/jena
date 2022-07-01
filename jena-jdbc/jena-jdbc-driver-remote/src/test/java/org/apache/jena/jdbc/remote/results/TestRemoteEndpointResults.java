@@ -22,11 +22,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.jena.fuseki.main.FusekiTestServer ;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
+import org.apache.jena.jdbc.remote.FusekiJdbcTestServer;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-import org.apache.jena.jdbc.utils.TestUtils;
+import org.apache.jena.jdbc.remote.utils.TestJdbcRemoteUtils;
 import org.apache.jena.query.Dataset ;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -43,8 +43,8 @@ public class TestRemoteEndpointResults extends AbstractRemoteEndpointResultSetTe
     
     //@BeforeClass public static void ctlBeforeClass() { FusekiTestServer.ctlBeforeClass(); }
     //@AfterClass  public static void ctlAfterClass()  { FusekiTestServer.ctlAfterClass(); }
-    @Before      public void ctlBeforeTest()         { FusekiTestServer.ctlBeforeTest(); }
-    @After       public void ctlAfterTest()          { FusekiTestServer.ctlAfterTest(); } 
+    @Before      public void ctlBeforeTest()         { FusekiJdbcTestServer.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { FusekiJdbcTestServer.ctlAfterTest(); } 
 
     /**
      * Setup for the tests by allocating a Fuseki instance to work with
@@ -52,8 +52,8 @@ public class TestRemoteEndpointResults extends AbstractRemoteEndpointResultSetTe
      */
     @BeforeClass
     public static void setup() throws SQLException {
-        FusekiTestServer.ctlBeforeClass();
-        connection = new RemoteEndpointConnection(FusekiTestServer.serviceQuery(), FusekiTestServer.serviceUpdate(), JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT);
+        FusekiJdbcTestServer.ctlBeforeClass();
+        connection = new RemoteEndpointConnection(FusekiJdbcTestServer.serviceQuery(), FusekiJdbcTestServer.serviceUpdate(), JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT);
         connection.setJdbcCompatibilityLevel(JdbcCompatibility.HIGH);
     }
     
@@ -64,7 +64,7 @@ public class TestRemoteEndpointResults extends AbstractRemoteEndpointResultSetTe
     @AfterClass
     public static void cleanup() throws SQLException {
         connection.close();
-        FusekiTestServer.ctlAfterClass();
+        FusekiJdbcTestServer.ctlAfterClass();
     }
 
     @Override
@@ -74,7 +74,7 @@ public class TestRemoteEndpointResults extends AbstractRemoteEndpointResultSetTe
     
     @Override
     protected ResultSet createResults(Dataset ds, String query, int resultSetType) throws SQLException {
-        TestUtils.copyToRemoteDataset(ds, FusekiTestServer.serviceGSP());
+        TestJdbcRemoteUtils.copyToRemoteDataset(ds, FusekiJdbcTestServer.serviceGSP());
         Statement stmt = connection.createStatement(resultSetType, ResultSet.CONCUR_READ_ONLY);
         return stmt.executeQuery(query);
     }

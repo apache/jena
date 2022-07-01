@@ -25,37 +25,60 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.system.Txn;
 
-public class DatasetGraphWrapper implements DatasetGraph, Sync 
+public class DatasetGraphWrapper implements DatasetGraph, Sync
 {
     // The wrapped DatasetGraph but all calls go via get() so this can be null.
     private final DatasetGraph dsg;
     private Context context;
-    
+
     /** Return the DatasetGraph being wrapped. */
-    public final DatasetGraph getWrapped() { 
+    public final DatasetGraph getWrapped() {
         return get();
     }
-    
-    /** Recursively unwrap a {@link DatasetGraphWrapper}.
-     * 
-     * @return the first found {@link DatasetGraph} that is not an instance of {@link DatasetGraphWrapper}
+
+    /**
+     * Recursively unwrap a {@link DatasetGraphWrapper}.
+     * <p>
+     * Note 1: Some use of DatasetGraphWrapper does not use
+     * the wrapped dataset stored in this object.
+     * <p>
+     * Note 2: TDB datasets require a  transaction to unwrap.
+     *
+     * @return the first found {@link DatasetGraph} that is not an instance of
+     *     {@link DatasetGraphWrapper}
      */
-    public final DatasetGraph getBase() { 
-        DatasetGraph dsgw = dsg;
+    public final DatasetGraph getBase() {
+        DatasetGraph dsgw = get();
         while (dsgw instanceof DatasetGraphWrapper) {
-            dsgw = ((DatasetGraphWrapper)dsg).getWrapped();
+            dsgw = ((DatasetGraphWrapper)dsgw).getWrapped();
         }
         return dsgw;
     }
-    
+
+    /**
+     * Unwrap a {@code DatasetGraph} to find the base {@code DatasetGraph}.
+     * Calls {@link #getBase} if the argument is a {@code DatasetGraphWrapper}.
+     * <p>
+     * Note 1: Some use of DatasetGraphWrapper does not use
+     * the wrapped dataset stored in this object.
+     * <p>
+     * Note 2: TDB datasets require a  transaction to unwrap.
+     */
+    public static DatasetGraph unwrap(DatasetGraph dsg) {
+        if ( ! ( dsg instanceof DatasetGraphWrapper) )
+            return dsg;
+        return ((DatasetGraphWrapper)dsg).getBase();
+    }
+
     /** Recursively unwrap a {@link DatasetGraphWrapper}, stopping at a {@link DatasetGraphWrapper}
-     * that indicate it is "view changing", ie shows quads to the base dataset graph.  
-     * 
+     * that indicate it is "view changing", ie shows quads to the base dataset graph.
+     *
      * @return the first found {@link DatasetGraph} that is not an instance of {@link DatasetGraphWrapper}
      */
     public final DatasetGraph getBaseForQuery() {
@@ -69,28 +92,29 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     }
 
     /** The dataset to use for redirection - can be overridden.
-     *  It is also guarantee that this is called only once per
+     *  It is also guaranteed that this is called only once per
      *  delegated call.  Changes to the wrapped object can be
-     *  made based on that contract. 
+     *  made based on that contract.
      */
-    protected DatasetGraph get() { return dsg; }
-    protected Context getCxt()   { return context; }
+    protected DatasetGraph get()  { return dsg; }
 
-    /** For operations that only read the DatasetGraph. */ 
+    protected Context getCxt()    { return context; }
+
+    /** For operations that only read the DatasetGraph. */
     protected DatasetGraph getR() { return get(); }
-    
-    /** For operations that write the DatasetGraph. */ 
+
+    /** For operations that write the DatasetGraph. */
     protected DatasetGraph getW() { return get(); }
-    
+
     /** For operations that get a handle on a graph. */
     protected DatasetGraph getG() { return get(); }
-    
+
     /** For operations that pass on transaction actions. */
     protected DatasetGraph getT() { return get(); }
 
     /**
      * Create a operations wrapper around {@code dsg}.
-     * The {@link Context} of the wrapper is the context of the {@code dsg}. 
+     * The {@link Context} of the wrapper is the context of the {@code dsg}.
      */
     public DatasetGraphWrapper(DatasetGraph dsg) {
         this(dsg, (dsg == null) ? null : dsg.getContext());
@@ -128,6 +152,7 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     public void removeGraph(Node graphName)
     { getW().removeGraph(graphName); }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void setDefaultGraph(Graph g)
     { getW().setDefaultGraph(g); }
@@ -155,7 +180,7 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     @Override
     public void delete(Node g, Node s, Node p, Node o)
     { getW().delete(g, s, p, o); }
-    
+
     @Override
     public void deleteAny(Node g, Node s, Node p, Node o)
     { getW().deleteAny(g, s, p, o); }
@@ -163,11 +188,15 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     @Override
     public void clear()
     { getW().clear(); }
-    
+
     @Override
     public boolean isEmpty()
     { return getR().isEmpty(); }
-    
+
+    @Override
+    public PrefixMap prefixes()
+    { return get().prefixes(); }
+
     @Override
     public Iterator<Quad> find()
     { return getR().find(); }
@@ -203,7 +232,7 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     @Override
     public void close()
     { getW().close(); }
-    
+
     @Override
     public String toString() {
         DatasetGraph dsg = getR();
@@ -213,42 +242,42 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     @Override
     public void sync() {
         // Pass down sync.
-        SystemARQ.sync(getW()); 
+        SystemARQ.sync(getW());
     }
 
     @Override
     public void begin() { getT().begin(); }
-    
+
     @Override
-    public ReadWrite transactionMode() 
+    public ReadWrite transactionMode()
     { return getT().transactionMode(); }
 
     @Override
-    public  TxnType transactionType() 
+    public  TxnType transactionType()
     { return getT().transactionType(); }
-    
+
     @Override
     public void begin(TxnType type)
     { getT().begin(type); }
 
     @Override
-    public void begin(ReadWrite readWrite) 
+    public void begin(ReadWrite readWrite)
     { getT().begin(readWrite); }
 
     @Override
     public boolean promote()
     { return getT().promote(); }
-    
+
     @Override
     public boolean promote(Promote type)
     { return getT().promote(type); }
-    
+
     @Override
-    public void commit() 
+    public void commit()
     { getT().commit(); }
 
     @Override
-    public void abort() 
+    public void abort()
     { getT().abort(); }
 
     @Override
@@ -256,15 +285,15 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     { getT().end(); }
 
     @Override
-    public boolean isInTransaction() 
-    { return get().isInTransaction(); }    
+    public boolean isInTransaction()
+    { return get().isInTransaction(); }
 
     @Override
-    public boolean supportsTransactions() 
+    public boolean supportsTransactions()
     { return getT().supportsTransactions(); }
 
     @Override
     public boolean supportsTransactionAbort()
     { return getT().supportsTransactionAbort(); }
-    
+
 }

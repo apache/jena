@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0 -->
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="90.929314"
+   height="89.5625"
+   id="svg2"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="jena-icon.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1118"
+     id="namedview13"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="1.7940591"
+     inkscape:cx="67.179959"
+     inkscape:cy="-38.036736"
+     inkscape:window-x="0"
+     inkscape:window-y="30"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
+  <defs
+     id="defs4">
+    <clipPath
+       id="clipPath3020">
+      <path
+         d="m 0,0 1507,0 0,888.648 -1507,0 L 0,0 z"
+         id="path3022"
+         inkscape:connector-curvature="0" />
+    </clipPath>
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     transform="translate(-304.86728,-220.21538)">
+    <g
+       transform="matrix(0.125,0,0,-0.125,319.59883,347.90268)"
+       id="g3016">
+      <g
+         transform="translate(-117.85113,132.85037)"
+         id="g3102">
+        <g
+           id="g3049">
+          <path
+             d="m 246.496,333.113 c 0,38.629 -5.566,55.996 -35.07,72.699 -28.895,16.333 -173.0862,68.79 -195.4533,95.008 -39.543,46.371 1.1796,108.598 47.7343,104.625 24.6836,-2.117 40.863,-16.386 55.895,-31.507 11.964,-12.043 73.73,-82.422 92.918,-101.004 15.21,-14.707 32.753,-22.657 54.562,-25.879 20.793,-3.075 38.547,1.566 53.887,11.125 25.656,16.011 44.543,45.8 59.531,76.234 17,34.516 44.031,55.356 75.84,52.816 53.41,-4.269 73.262,-56.058 58.613,-94.82 -5.898,-15.586 -31.367,-38.773 -52.824,-45.871 -18.277,-6.047 -90.223,-31.367 -100.594,-35.555 -38.98,-15.73 -47.597,-32.086 -47.597,-77.847 0,-19.504 20.519,-73.18 20.519,-95.524 0,-39.617 -20.098,-65.465 -53.109,-65.465 -32.684,0 -55.379,25.918 -55.379,65.434 0,22.98 20.527,76.035 20.527,95.531"
+             id="path3032"
+             style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             inkscape:connector-curvature="0" />
+          <path
+             d="m 480.93,727.688 c 0,-38.633 5.57,-56.004 35.062,-72.688 28.91,-16.328 173.102,-68.793 195.469,-95.016 39.543,-46.367 -1.188,-108.593 -47.746,-104.629 -24.688,2.122 -40.863,16.399 -55.887,31.52 -11.969,12.031 -73.73,82.418 -92.91,100.992 -15.219,14.711 -32.77,22.66 -54.57,25.871 -20.793,3.086 -38.551,-1.554 -53.891,-11.117 -25.656,-16.016 -44.543,-45.801 -59.527,-76.223 -16.992,-34.527 -44.028,-55.359 -75.836,-52.82 -53.414,4.258 -73.266,56.051 -58.614,94.824 5.903,15.578 31.368,38.762 52.817,45.86 18.273,6.043 90.234,31.359 100.601,35.55 38.977,15.747 47.59,32.098 47.59,77.856 0,19.496 -20.519,73.184 -20.519,95.531 0,39.61 20.097,65.449 53.109,65.449 32.684,0 55.383,-25.914 55.383,-65.429 0,-22.985 -20.531,-76.031 -20.531,-95.531"
+             id="path3076"
+             style="fill:#1a80b9;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             inkscape:connector-curvature="0" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

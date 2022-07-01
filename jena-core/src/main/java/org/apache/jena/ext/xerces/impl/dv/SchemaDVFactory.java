@@ -39,38 +39,18 @@ import org.apache.jena.ext.xerces.xs.XSObjectList;
  * @version $Id: SchemaDVFactory.java 558582 2007-07-23 02:05:04Z mrglavas $
  */
 public abstract class SchemaDVFactory {
-
-    private static final String DEFAULT_FACTORY_CLASS = "org.apache.jena.ext.xerces.impl.dv.xs.SchemaDVFactoryImpl";
-
+    
+    // JENA-1670
+    //private static final String DEFAULT_FACTORY_CLASS = "org.apache.jena.ext.xerces.impl.dv.xs.SchemaDVFactoryImpl";
+    static SchemaDVFactory INSTANCE = new org.apache.jena.ext.xerces.impl.dv.xs.SchemaDVFactoryImpl();
+    
     /**
      * Get a default instance of SchemaDVFactory implementation.
      *
      * @return  an instance of SchemaDVFactory implementation
-     * @exception DVFactoryException  cannot create an instance of the specified
-     *                                class name or the default class name
      */
-    public static final SchemaDVFactory getInstance() throws DVFactoryException {
-        return getInstance(DEFAULT_FACTORY_CLASS);
-    } //getInstance():  SchemaDVFactory
-
-
-    /**
-     * Get an instance of SchemaDVFactory implementation.
-     *
-     * @param factoryClass   name of the schema factory implementation to instantiate.
-     * @return  an instance of SchemaDVFactory implementation
-     * @exception DVFactoryException  cannot create an instance of the specified
-     *                                class name or the default class name
-     */
-    public static final SchemaDVFactory getInstance(String factoryClass) throws DVFactoryException {
-        try {
-            // if the class name is not specified, use the default one
-            return (SchemaDVFactory)(ObjectFactory.newInstance(
-                factoryClass, ObjectFactory.findClassLoader(), true));
-        } 
-        catch (ClassCastException e4) {
-            throw new DVFactoryException("Schema factory class " + factoryClass + " does not extend from SchemaDVFactory.");
-        }
+    public static final SchemaDVFactory getInstance() {
+        return INSTANCE;
     }
 
     // can't create a new object of this class

@@ -18,68 +18,40 @@
 
 package org.apache.jena.sparql.core.assembler ;
 
-import java.util.List ;
+import static org.apache.jena.sparql.util.graph.GraphUtils.getResourceValue;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.assembler.exceptions.AssemblerException;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.sparql.graph.GraphFactory ;
-import org.apache.jena.sparql.util.FmtUtils ;
-import org.apache.jena.sparql.util.graph.GraphUtils ;
+import org.apache.jena.sparql.core.DatasetGraph;
 
-public class DatasetAssembler extends AssemblerBase implements Assembler {
+public abstract class DatasetAssembler extends AssemblerBase implements Assembler {
     public static Resource getType() {
         return DatasetAssemblerVocab.tDataset ;
     }
 
     @Override
-    public Object open(Assembler a, Resource root, Mode mode) {
-        Dataset ds = createDataset(a, root, mode) ;
-        return ds ;
+    public Dataset open(Assembler a, Resource root, Mode mode) {
+        DatasetGraph dsg = createDataset(a, root) ;
+        return DatasetFactory.wrap(dsg);
     }
 
-    public Dataset createDataset(Assembler a, Resource root, Mode mode) {
-        // -------- Default graph
-        // Can use ja:graph or ja:defaultGraph
-        Resource dftGraph = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pDefaultGraph) ;
-        if ( dftGraph == null )
-            dftGraph = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pGraph) ;
+    public abstract DatasetGraph createDataset(Assembler a, Resource root);
 
-        Model dftModel = null ;
-        if ( dftGraph != null )
-            dftModel = a.openModel(dftGraph) ;
-        else
-            // Assembler description did not define one.
-            dftModel = GraphFactory.makeDefaultModel() ;
-        Dataset ds = DatasetFactory.create(dftModel) ;
-        // -------- Named graphs
-        List<RDFNode> nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph) ;
-        for ( RDFNode n : nodes ) {
-            if ( !(n instanceof Resource) )
-                throw new DatasetAssemblerException(root, "Not a resource: " + FmtUtils.stringForRDFNode(n));
-            Resource r = (Resource)n;
-
-            String gName = GraphUtils.getAsStringValue(r, DatasetAssemblerVocab.pGraphName);
-            Resource g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraph);
-            if ( g == null ) {
-                g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraphAlt);
-                if ( g != null ) {
-                    Log.warn(this, "Use of old vocabulary: use :graph not :graphData");
-                } else {
-                    throw new DatasetAssemblerException(root, "no graph for: " + gName);
-                }
-            }
-
-            Model m = a.openModel(g);
-            ds.addNamedModel(gName, m);
-        }
-        AssemblerUtils.setContext(root, ds.getContext()) ;
-        return ds ;
+    /**
+     * Helper for datasets that layer on top of other datasets.
+     * Assembler a DatasetGraph from description referred to by resource-property.
+     */
+    protected DatasetGraph createBaseDataset(Resource dbAssem, Property pDataset) {
+        Resource dataset = getResourceValue(dbAssem, pDataset) ;
+        if ( dataset == null )
+            throw new AssemblerException(dbAssem, "Required base dataset missing: "+dbAssem) ;
+        Dataset base = (Dataset)Assembler.general.open(dataset);
+        return base.asDatasetGraph();
     }
 }

@@ -27,25 +27,21 @@ import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.modify.UpdateSink ;
 import org.apache.jena.sparql.modify.request.* ;
-import org.apache.jena.sparql.util.LabelToNodeMap ;
 import org.apache.jena.update.Update ;
 
-/** Class that has all the parse event operations and other query/update specific things */  
-public class SPARQLParserBase extends ParserBase 
-{
-    private Deque<Query> stack = new ArrayDeque<>() ;
-    protected Query query ;
-    
+/** Class that has all the parse event operations and other query/update specific things */
+public class SPARQLParserBase extends QueryParserBase {
+    private Deque<Query> stack = new ArrayDeque<>();
+    protected Query query;
+
     protected SPARQLParserBase() {}
 
-    public void setQuery(Query q)
-    { 
-        query = q ;
-        setPrologue(q) ;
+    public void setQuery(Query q) {
+        query = q;
+        setPrologue(q);
     }
 
     public Query getQuery() { return query ; }
@@ -77,234 +73,216 @@ public class SPARQLParserBase extends ParserBase
     private Deque<Set<String>>    stackPreviousLabels = new ArrayDeque<>() ;
     private Deque<LabelToNodeMap> stackCurrentLabels = new ArrayDeque<>() ;
 
-//    protected UpdateSink getUpdateSink() { return sink ; }
-    public void setUpdateSink(UpdateSink sink)
-    { 
+    public void setUpdate(Prologue prologue, UpdateSink sink) {
         this.sink = sink ;
-        this.query = new Query() ; 
-        setPrologue(sink.getPrologue()) ;
+        this.query = new Query();
+        setPrologue(prologue);
     }
 
     // Signal start/finish of units
-    
+
     protected void startQuery() {}
     protected void finishQuery() {}
 
     protected void startUpdateRequest()    {}
     protected void finishUpdateRequest()   {}
-    
+
 //    protected void startBasicGraphPattern()
 //    { activeLabelMap.clear() ; }
 //
 //    protected void endBasicGraphPattern()
 //    { oldLabels.addAll(activeLabelMap.getLabels()) ; }
-    
+
     protected void startUpdateOperation()  {}
     protected void finishUpdateOperation() {}
-    
+
     protected void startModifyUpdate()     { }
     protected void finishModifyUpdate()    { }
-    
-    protected void startDataInsert(QuadDataAccSink qd, int line, int col) 
-    {
-        oldBNodesAreVariables = getBNodesAreVariables() ;
-        setBNodesAreVariables(false) ;
-        activeLabelMap.clear() ;
-    } 
-    
-    protected void finishDataInsert(QuadDataAccSink qd, int line, int col)
-    {
-        previousLabels.addAll(activeLabelMap.getLabels()) ;
-        activeLabelMap.clear() ;
-        setBNodesAreVariables(oldBNodesAreVariables) ;
+
+    protected void startDataInsert(QuadDataAccSink qd, int line, int col) {
+        oldBNodesAreVariables = getBNodesAreVariables();
+        setBNodesAreVariables(false);
+        activeLabelMap.clear();
     }
-    
-    protected void startDataDelete(QuadDataAccSink qd,int line, int col)
-    {
-        oldBNodesAreAllowed = getBNodesAreAllowed() ;
-        setBNodesAreAllowed(false) ;
-    } 
-    
-    protected void finishDataDelete(QuadDataAccSink qd, int line, int col)
-    {
-        setBNodesAreAllowed(oldBNodesAreAllowed) ;
+
+    protected void finishDataInsert(QuadDataAccSink qd, int line, int col) {
+        previousLabels.addAll(activeLabelMap.getLabels());
+        activeLabelMap.clear();
+        setBNodesAreVariables(oldBNodesAreVariables);
+    }
+
+    protected void startDataDelete(QuadDataAccSink qd, int line, int col) {
+        oldBNodesAreAllowed = getBNodesAreAllowed();
+        setBNodesAreAllowed(false);
+    }
+
+    protected void finishDataDelete(QuadDataAccSink qd, int line, int col) {
+        setBNodesAreAllowed(oldBNodesAreAllowed);
     }
 
     // These can be nested with subSELECTs but subSELECTs share bNodeLabel state.
-    protected void startWherePattern()
-    {
-        queryLevel += 1 ;
-        if ( queryLevel == 0 )
-        {
-            pushLabelState() ;
-            clearLabelState() ;
+    protected void startWherePattern() {
+        queryLevel += 1;
+        if ( queryLevel == 0 ) {
+            pushLabelState();
+            clearLabelState();
         }
     }
-    
-    protected void finishWherePattern()
-    {
+
+    protected void finishWherePattern() {
         if ( queryLevel == 0 )
-            popLabelState() ;
-        queryLevel -= 1 ;
+            popLabelState();
+        queryLevel -= 1;
     }
 
     // This holds the accumulation of labels from earlier INSERT DATA
     // across template creation (bNode in templates get cloned before
     // going into the data).
 
-    protected void startInsertTemplate(QuadAcc qd, int line, int col)
-    {
-        oldBNodesAreVariables = getBNodesAreVariables() ;
-        setBNodesAreVariables(false) ;
-        pushLabelState() ;
+    protected void startInsertTemplate(QuadAcc qd, int line, int col) {
+        oldBNodesAreVariables = getBNodesAreVariables();
+        setBNodesAreVariables(false);
+        pushLabelState();
     }
 
-    protected void finishInsertTemplate(QuadAcc qd, int line, int col)
-    {
-        // Restore accumulated labels. 
-        popLabelState() ;
-        // This also set the bnode syntax to node functionality - must be after popLabelState. 
-        setBNodesAreVariables(oldBNodesAreVariables) ;
+    protected void finishInsertTemplate(QuadAcc qd, int line, int col) {
+        // Restore accumulated labels.
+        popLabelState();
+        // This also set the bnode syntax to node functionality - must be after
+        // popLabelState.
+        setBNodesAreVariables(oldBNodesAreVariables);
     }
-    
+
     // No bNodes in delete templates.
-    protected void startDeleteTemplate(QuadAcc qd, int line, int col)
-    {
-        oldBNodesAreAllowed = getBNodesAreAllowed() ;
-        setBNodesAreAllowed(false) ;
+    protected void startDeleteTemplate(QuadAcc qd, int line, int col) {
+        oldBNodesAreAllowed = getBNodesAreAllowed();
+        setBNodesAreAllowed(false);
     }
-    
-    protected void finishDeleteTemplate(QuadAcc qd, int line, int col)
-    {
-        setBNodesAreAllowed(oldBNodesAreAllowed) ;
-    }
-    
-    protected void emitUpdate(Update update)
-    {
 
-        // The parser can send null if it already performed an INSERT_DATA or DELETE_DATA
-        if (null != update) {
+    protected void finishDeleteTemplate(QuadAcc qd, int line, int col) {
+        setBNodesAreAllowed(oldBNodesAreAllowed);
+    }
+
+    protected void emitUpdate(Update update) {
+        // The parser can send null if it already performed an INSERT_DATA or
+        // DELETE_DATA
+        if ( null != update ) {
             // Verify each operation
-            verifyUpdate(update) ;
+            verifyUpdate(update);
             sink.send(update);
         }
     }
-    
+
     private static UpdateVisitor v = new UpdateVisitorBase() {
         @Override
         public void visit(UpdateModify mod) {
             SyntaxVarScope.check(mod.getWherePattern()) ;
         }
     } ;
-    
+
     private void verifyUpdate(Update update) {
-        update.visit(v); 
+        update.visit(v);
     }
 
-    protected QuadDataAccSink createInsertDataSink()
-    {
+    protected QuadDataAccSink createInsertDataSink() {
         return sink.createInsertDataSink();
     }
-    
-    protected QuadDataAccSink createDeleteDataSink()
-    {
+
+    protected QuadDataAccSink createDeleteDataSink() {
         return sink.createDeleteDataSink();
     }
-    
-    protected void pushQuery()
-    {
+
+    protected void pushQuery() {
         if ( query == null )
             throw new ARQInternalErrorException("Parser query object is null") ;
         stack.push(query) ;
     }
-    
-    protected void startSubSelect(int line, int col)
-    {
+
+    protected void startSubSelect(int line, int col) {
         pushQuery();
         query = newSubQuery(getPrologue()) ;
     }
-    
-    protected Query newSubQuery(Prologue progloue)
-    {
-        return new Query(getPrologue());
+
+    protected Query newSubQuery(Prologue progloue) {
+        // The parser uses the same prologue throughout the parsing process.
+        // For printing purposes, the subquery must not have a prologue of its own.
+        return new Query();
     }
-    
-    protected void popQuery()
-    {
+
+    protected void popQuery() {
         query = stack.pop();
     }
-    
-    protected Query endSubSelect(int line, int column)
-    {
+
+    protected Query endSubSelect(int line, int column) {
         Query subQuery = query ;
         if ( ! subQuery.isSelectType() )
             throwParseException("Subquery not a SELECT query", line, column) ;
         popQuery();
         return subQuery ;
     }
-    
+
     private List<Var> variables = null ;
     private List<Binding> values = null ;
+    private BindingBuilder rowBuilder;
     private int currentColumn = -1 ;
-    
-    protected void startValuesClause(int line, int col)               
-    { 
+
+    // Trailing VALUES.
+    protected void startValuesClause(int line, int col) {
         variables = new ArrayList<>() ;
         values = new ArrayList<>() ;
+        rowBuilder = Binding.builder();
     }
-    
+
     protected void finishValuesClause(int line, int col)
     {
         getQuery().setValuesDataBlock(variables, values) ;
     }
-    
-    protected void startInlineData(List<Var> vars, List<Binding> rows, int line, int col)
-    {
+
+    // ElementData. VALUES in the WHERE clause.
+    protected void startInlineData(List<Var> vars, List<Binding> rows, int line, int col) {
         variables = vars ;
         values = rows ;
+        rowBuilder = Binding.builder();
     }
 
     protected void finishInlineData(int line, int col)
     {}
-    
-    private BindingMap currentValueRow()                            { return (BindingMap)values.get(values.size()-1) ; }
-    
+
     protected void emitDataBlockVariable(Var v)                     { variables.add(v) ; }
-    
-    protected void startDataBlockValueRow(int line, int col)
-    { 
-        values.add(BindingFactory.create()) ;
+
+    protected void startDataBlockValueRow(int line, int col) {
+        rowBuilder.reset();
         currentColumn = -1 ;
     }
-    
-    protected void emitDataBlockValue(Node n, int line, int col)      
-    { 
+
+    protected void emitDataBlockValue(Node n, int line, int col) {
         currentColumn++ ;
-        
+
         if ( currentColumn >= variables.size() )
             // Exception will be thrown later when we have the complete row count.
             return ;
-        
+
         Var v = variables.get(currentColumn) ;
+        if ( n != null && ! n.isConcrete() ) {
+            String msg = QueryParseException.formatMessage("Term is not concrete: "+n, line, col) ;
+            throw new QueryParseException(msg, line, col) ;
+        }
         if ( n != null )
-            currentValueRow().add(v, n) ;
-        
+            rowBuilder.add(v, n) ;
     }
 
-    protected void finishDataBlockValueRow(int line, int col)      
-    {
+    protected void finishDataBlockValueRow(int line, int col) {
         //if ( variables.size() != currentValueRow().size() )
-        
         if ( currentColumn+1 != variables.size() )
         {
             String msg = String.format("Mismatch: %d variables but %d values",variables.size(), currentColumn+1) ;
             msg = QueryParseException.formatMessage(msg, line, col) ;
             throw new QueryParseException(msg, line , col) ;
         }
+        values.add(rowBuilder.build());
     }
 
-    private void pushLabelState()
-    { 
+    private void pushLabelState() {
         // Hide used labels already tracked.
         stackPreviousLabels.push(previousLabels) ;
         stackCurrentLabels.push(activeLabelMap) ;
@@ -312,14 +290,12 @@ public class SPARQLParserBase extends ParserBase
         activeLabelMap.clear() ;
     }
 
-    private void popLabelState()
-    {
+    private void popLabelState() {
         previousLabels = stackPreviousLabels.pop() ;
         activeLabelMap = stackCurrentLabels.pop();
     }
 
-    private void clearLabelState()
-    {
+    private void clearLabelState() {
         activeLabelMap.clear() ;
         previousLabels.clear() ;
     }

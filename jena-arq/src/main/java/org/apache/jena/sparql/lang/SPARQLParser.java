@@ -29,29 +29,25 @@ import org.apache.jena.query.Syntax ;
 
 public abstract class SPARQLParser
 {
-    public final Query parse(Query query, String queryString) throws QueryParseException
-    {
-        Query q = parse$(query, queryString) ;
-        validateParsedQuery(q) ;
-        return q ;
+    public final Query parse(Query query, String queryString) throws QueryParseException {
+        Query parsedQuery = parse$(query, queryString) ;
+        validateParsedQuery(parsedQuery) ;
+        parsedQuery.resetResultVars();
+        return parsedQuery ;
     }
-    
+
     protected abstract Query parse$(Query query, String queryString) throws QueryParseException ;
-    
-    
-    public static boolean canParse(Syntax syntaxURI)
-    {
-        return SPARQLParserRegistry.get().containsFactory(syntaxURI) ;
+
+    public static boolean canParse(Syntax syntaxURI) {
+        return SPARQLParserRegistry.get().containsFactory(syntaxURI);
     }
-    
-    public static SPARQLParser createParser(Syntax syntaxURI)
-    {
-        return SPARQLParserRegistry.get().createParser(syntaxURI) ;
+
+    public static SPARQLParser createParser(Syntax syntaxURI) {
+        return SPARQLParserRegistry.get().createParser(syntaxURI);
     }
 
     // Do any testing of queries after the construction of the parse tree.
-    protected void validateParsedQuery(Query query)
-    {
-        SyntaxVarScope.check(query) ;
+    protected void validateParsedQuery(Query query) {
+        SyntaxVarScope.check(query);
     }
 }

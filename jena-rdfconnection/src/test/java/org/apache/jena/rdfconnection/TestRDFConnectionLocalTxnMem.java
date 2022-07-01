@@ -20,8 +20,6 @@ package org.apache.jena.rdfconnection;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 
 public class TestRDFConnectionLocalTxnMem extends AbstractTestRDFConnection {
 
@@ -30,9 +28,9 @@ public class TestRDFConnectionLocalTxnMem extends AbstractTestRDFConnection {
 
     @Override
     protected RDFConnection connection() {
-        // Full transactional in-memory dataset.  
+        // Full transactional in-memory dataset.
         Dataset ds = DatasetFactory.createTxnMem();
-        return RDFConnectionFactory.connect(ds);
+        return RDFConnection.connect(ds);
     }
 }
 

@@ -22,8 +22,8 @@ import org.apache.jena.dboe.DBOpEnvException;
 
 public class FileException extends DBOpEnvException
 {
-    public FileException()                          { super() ; }
-    public FileException(String msg)                { super(msg) ; }
-    public FileException(Throwable th)              { super(th) ; }
-    public FileException(String msg, Throwable th)  { super(msg, th) ; }
+    public FileException()                          { super(); }
+    public FileException(String msg)                { super(msg); }
+    public FileException(Throwable th)              { super(th); }
+    public FileException(String msg, Throwable th)  { super(msg, th); }
 }

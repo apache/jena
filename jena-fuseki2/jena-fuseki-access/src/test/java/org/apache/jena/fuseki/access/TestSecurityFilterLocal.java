@@ -29,9 +29,6 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.fuseki.access.DataAccessCtl;
-import org.apache.jena.fuseki.access.SecurityContext;
-import org.apache.jena.fuseki.access.SecurityRegistry;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
@@ -71,13 +68,13 @@ public class TestSecurityFilterLocal {
 
         Object[] obj1 = { "TDB/db", c1, true};
         Object[] obj2 = { "TDB2/db", c2, true };
-        
+
         // By adding the general, but slower, DatasetGraphFilter
         Object[] obj3 = { "TDB/filtered", c1, false };
         Object[] obj4 = { "TDB2/filtered", c2, false };
         Object[] obj5 = { "TIM/filtered", c3, false };
         Object[] obj6 = { "Plain/filtered", c4, false };
-        
+
         List<Object[]> x = new ArrayList<>();
         return Arrays.asList(obj1, obj2, obj3, obj4, obj5, obj6);
 //        x.add(obj1);
@@ -85,12 +82,12 @@ public class TestSecurityFilterLocal {
 //        x.add(obj5);
 //        return x;
     }
-    
+
     private final DatasetGraph testdsg;
     private SecurityRegistry reg = new SecurityRegistry();
     private final boolean applyFilterDSG;
     private final boolean applyFilterTDB;
-    
+
     public TestSecurityFilterLocal(String name, Creator<DatasetGraph> source, boolean applyFilterTDB) {
         DatasetGraph dsgBase = source.create();
         addTestData(dsgBase);
@@ -99,17 +96,16 @@ public class TestSecurityFilterLocal {
         reg.put("user0", new SecurityContextView(Quad.defaultGraphIRI.getURI()));
         reg.put("user1", new SecurityContextView("http://test/g1", Quad.defaultGraphIRI.getURI()));
         reg.put("user2", new SecurityContextView("http://test/g1", "http://test/g2", "http://test/g3"));
-        
-        // and graphs "**", "*" 
+
+        // and users "*", "_"
         reg.put("*", new SecurityContextView("http://test/g1"));
         reg.put("_", new SecurityContextView("http://test/g1"));
-        
-        
+
         testdsg = DataAccessCtl.controlledDataset(dsgBase, reg);
         this.applyFilterTDB = applyFilterTDB;
         this.applyFilterDSG = ! applyFilterTDB;
     }
-    
+
     private static String queryAll        = "SELECT * { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }";
     private static String queryDft        = "SELECT * { ?s ?p ?o }";
     private static String queryNamed      = "SELECT * { GRAPH ?g { ?s ?p ?o } }";
@@ -139,7 +135,7 @@ public class TestSecurityFilterLocal {
                 }
             });
     }
-    
+
     private Set<Node> subjects(DatasetGraph dsg,  Function<DatasetGraph, Graph> graphChoice, String queryString, SecurityContext sCxt) {
         final DatasetGraph dsg1 = applyFilterDSG
             ? DataAccessCtl.filteredDataset(dsg, sCxt)
@@ -225,37 +221,37 @@ public class TestSecurityFilterLocal {
 
     @Test public void graph_names_userNone() {
         SecurityContext sCxt = reg.get("userNone");
-        Set<Node> visible = graphs(testdsg, sCxt); 
+        Set<Node> visible = graphs(testdsg, sCxt);
         assertSeen(visible);
     }
-    
+
     @Test public void graph_names_userDft() {
         SecurityContext sCxt = reg.get("userDft");
-        Set<Node> visible = graphs(testdsg, sCxt); 
+        Set<Node> visible = graphs(testdsg, sCxt);
         assertSeen(visible);
     }
-    
+
     @Test public void graph_names_user0() {
         SecurityContext sCxt = reg.get("user0");
-        Set<Node> visible = graphs(testdsg, sCxt); 
+        Set<Node> visible = graphs(testdsg, sCxt);
         assertSeen(visible);
     }
-    
+
     @Test public void graph_names_user1() {
         SecurityContext sCxt = reg.get("user1");
-        Set<Node> visible = graphs(testdsg, sCxt); 
+        Set<Node> visible = graphs(testdsg, sCxt);
         assertSeen(visible, g1);
     }
 
     @Test public void graph_names_user2() {
         SecurityContext sCxt = reg.get("user2");
-        Set<Node> visible = graphs(testdsg, sCxt); 
+        Set<Node> visible = graphs(testdsg, sCxt);
         assertSeen(visible, g1, g2, g3);
     }
 
     @Test public void graph_names_userX() {
         SecurityContext sCxt = reg.get("userX");
-        Set<Node> visible = graphs(testdsg, sCxt); 
+        Set<Node> visible = graphs(testdsg, sCxt);
         assertSeen(visible);
     }
 
@@ -279,11 +275,11 @@ public class TestSecurityFilterLocal {
         }
         assertSeen(visible, expected);
     }
-    
+
     @Test public void filter_union_userNone() {
         filter_union_user("userNone");
     }
-    
+
     @Test public void filter_union_userDft() {
         // Storage default graph not visible with a union query.
         filter_union_user("userDft");
@@ -293,25 +289,25 @@ public class TestSecurityFilterLocal {
         // Storage default graph not visible with a union query.
         filter_union_user("user0");
     }
-    
+
     @Test public void filter_union_user1() {
         filter_union_user("user1", s1);
     }
-    
+
     @Test public void filter_union_user2() {
         filter_union_user("user2", s1, s2, s3);
     }
-    
+
     @Test public void filter_union_userX() {
         filter_union_user("userX");
     }
-    
-    
+
+
     // Graph/Model
     @Test public void query_model_userNone() {
         query_model_user(testdsg, dsg->dsg.getDefaultGraph(), "userNone");
     }
-    
+
     @Test public void query_model_userDft() {
         query_model_user(testdsg, dsg->dsg.getDefaultGraph(), "userDft", s0);
     }
@@ -347,7 +343,7 @@ public class TestSecurityFilterLocal {
     @Test public void query_model_ng_user22() {
         query_model_user(testdsg, dsg->dsg.getGraph(g2), "user2", s2);
     }
-    
+
     @Test public void query_model_userXa() {
         query_model_user(testdsg, dsg->dsg.getDefaultGraph(), "userX");
     }
@@ -361,8 +357,8 @@ public class TestSecurityFilterLocal {
         Set<Node> visible = subjects(dsg, graphChoice, queryDft, sCxt);
         assertSeen(visible, expected);
     }
-    
-    private static String dataStr = StrUtils.strjoinNL 
+
+    private static String dataStr = StrUtils.strjoinNL
         ("PREFIX : <http://test/>"
             ,""
             ,":s0 :p 0 ."
@@ -373,23 +369,23 @@ public class TestSecurityFilterLocal {
             );
 
 
-    public static Node s0 = SSE.parseNode("<http://test/s0>"); 
-    public static Node s1 = SSE.parseNode("<http://test/s1>"); 
-    public static Node s2 = SSE.parseNode("<http://test/s2>"); 
-    public static Node s3 = SSE.parseNode("<http://test/s3>"); 
-    public static Node s4 = SSE.parseNode("<http://test/s4>"); 
+    public static Node s0 = SSE.parseNode("<http://test/s0>");
+    public static Node s1 = SSE.parseNode("<http://test/s1>");
+    public static Node s2 = SSE.parseNode("<http://test/s2>");
+    public static Node s3 = SSE.parseNode("<http://test/s3>");
+    public static Node s4 = SSE.parseNode("<http://test/s4>");
 
-    public static Node g1 = SSE.parseNode("<http://test/g1>"); 
-    public static Node g2 = SSE.parseNode("<http://test/g2>"); 
-    public static Node g3 = SSE.parseNode("<http://test/g3>"); 
-    public static Node g4 = SSE.parseNode("<http://test/g4>"); 
+    public static Node g1 = SSE.parseNode("<http://test/g1>");
+    public static Node g2 = SSE.parseNode("<http://test/g2>");
+    public static Node g3 = SSE.parseNode("<http://test/g3>");
+    public static Node g4 = SSE.parseNode("<http://test/g4>");
 
     public static void addTestData(DatasetGraph dsg) {
         Txn.executeWrite(dsg, ()->{
             RDFParser.create().fromString(dataStr).lang(Lang.TRIG).parse(dsg);
         });
     }
-    
+
     public static void assertSeen(Set<Node> visible, Node ... expected) {
         Set<Node> expectedNodes = new HashSet<>(Arrays.asList(expected));
         assertEquals(expectedNodes, visible);

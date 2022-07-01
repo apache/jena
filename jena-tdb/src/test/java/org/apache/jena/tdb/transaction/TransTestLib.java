@@ -25,7 +25,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
 
 public class TransTestLib {
 

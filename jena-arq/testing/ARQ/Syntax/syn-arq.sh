@@ -46,6 +46,25 @@ N=$((N+1)) ; testGood $ARQ $(fname "syntax-select-expr-" $N arq) <<EOF
 PREFIX : <http://example/>
 SELECT str(?z) ?z {}
 EOF
+## ---- Nested aggregates
+
+N=0
+
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-agg-expr-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+SELECT (SUM(COUNT(*)) AS ?Z) {}
+EOF
+
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-agg-expr-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+SELECT ?Z {} HAVING (COUNT(AVG(?x)) > 0)
+EOF
+
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-agg-expr-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+SELECT ?Z {} ORDER BY COUNT(AVG(?x))
+EOF
+
 
 ## ---- SERVICE
 
@@ -277,3 +296,68 @@ CONSTRUCT {
 WHERE
    { }
 EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT {
+    { ?s ?p ?o }
+   }
+WHERE
+   { }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT 
+WHERE
+   { 
+     ?s ?p ?o
+   }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT 
+WHERE
+   { 
+     GRAPH ?g { ?s ?p ?o }
+   }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-quad-construct-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT 
+WHERE
+   { 
+     { ?s ?p ?o }
+   }
+EOF
+
+N=0
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-quad-construct-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+CONSTRUCT 
+WHERE
+   { 
+     GRAPH ?g { ?s ?p ?o. FILTER isIRI(?o) }
+   }
+EOF
+
+#median
+N=0
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-median-" $N arq) <<EOF
+PREFIX : <http://example/>
+
+SELECT median(?x)
+WHERE
+   {
+     VALUES ?x { 1 2 3 4 5 }
+     ?s ?p ?x.
+   }
+EOF
+

@@ -56,7 +56,7 @@ public class QueryIterProjectMerge extends QueryIterRepeatApply {
         return qIter ;
     }
 
-    /** Ensure binding from outer binding are present when projecting */  
+    /** Ensure binding from outer binding are present when projecting */
     static class ProjectEnsureBindingConverter implements QueryIterConvert.Converter {
 
         private final Binding   outerBinding ;
@@ -74,14 +74,14 @@ public class QueryIterProjectMerge extends QueryIterRepeatApply {
             //bind = new BindingProject(projectionVars, bind) ;
             // return BindingUtils.merge(outerBinding, bind) ;
         }
-        
+
         /** Merge two bindings, the outer and inner, projecting the inner with the give variables.
-         *  This is what happens in substitutIon execution, with a inner select-project.  
+         *  This is what happens in substitutIon execution, with a inner select-project.
          */
         private static Binding ensure(List<Var> vars, Binding outer, Binding inner) {
             // A specialised BindingUtils.merge that does project as well.
             // Reduce small object churn.
-            BindingMap b2 = BindingFactory.create(outer) ;
+            BindingBuilder b2 = Binding.builder(outer) ;
             Iterator<Var> vIter = (vars != null) ? vars.iterator() : inner.vars() ;
             // Add any variables from the RHS
             for ( ; vIter.hasNext() ; ) {
@@ -95,10 +95,10 @@ public class QueryIterProjectMerge extends QueryIterRepeatApply {
                     // Checking!
                     Node n1 = outer.get(v) ;
                     if ( ! n1.equals(n2) )
-                        Log.warn(BindingUtils.class,  "merge: Mismatch : "+n1+" != "+n2);
+                        Log.warn(ProjectEnsureBindingConverter.class,  "merge: Mismatch : "+n1+" != "+n2);
                 }
             }
-            return b2 ;
+            return b2.build() ;
         }
     }
 }

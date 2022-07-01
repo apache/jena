@@ -119,7 +119,6 @@ public class Basic extends BaseXMLWriter
     
     @Override protected void blockRule( Resource r ) {
         if (r.equals( RDFSyntax.parseTypeLiteralPropertyElt )) {
-     //       System.err.println("Blocking");
             blockLiterals = true;
         } else
            logger.warn("Cannot block rule <"+r.getURI()+">");

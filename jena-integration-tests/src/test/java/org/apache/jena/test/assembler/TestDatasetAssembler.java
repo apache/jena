@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.assembler.exceptions.AssemblerException;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.TxnType;
@@ -32,30 +31,21 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.sparql.core.DatasetOne;
-import org.apache.jena.sparql.core.TxnDataset2Graph;
+import org.apache.jena.sparql.core.DatasetGraphOne;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
-import org.apache.jena.test.txn.TestDataset2Graph;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * Tests of building datasets with assemblers.
  */
 public class TestDatasetAssembler {
-    static { JenaSystem.init(); } 
-    
-    @SuppressWarnings("deprecation")
-    @BeforeClass public static void beforeClass() {
-        if ( ! TxnDataset2Graph.TXN_DSG_GRAPH )
-            Log.warn(TestDataset2Graph.class, "**** TxnDataset2Graph.TXN_DSG_GRAPH is false in the system setup ****");
-    }
-    
+    static { JenaSystem.init(); }
+
     protected static String DIR = "testing/Assembler/";
-    
+
     static private Model     data = RDFDataMgr.loadModel(DIR + "data.ttl");
     static private Resource  s    = data.createResource("http://example/data/s");
     static private Property  p    = data.createProperty("http://example/data/p");
@@ -63,95 +53,95 @@ public class TestDatasetAssembler {
     static private Statement stmt = data.createStatement(s, p, o);
 
     // See also jena-arq/etc/...
-    
+
     // ---- Null dataset assemblers
 
     @Test public void dsg_zero() {
         Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg_zero.ttl", DatasetAssemblerVocab.tDatasetZero);
         assertNotNull(ds);
-        try { 
+        try {
             ds.getDefaultModel().add(stmt);
         } catch (UnsupportedOperationException ex) {}
     }
-    
+
     @Test public void dsg_sink() {
         Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg_sink.ttl", DatasetAssemblerVocab.tDatasetSink);
         assertNotNull(ds);
-        assertTrue(ds.getContext().isDefined(ARQ.queryTimeout)); 
+        assertTrue(ds.getContext().isDefined(ARQ.queryTimeout));
         ds.getDefaultModel().add(stmt);
         assertEquals(0, ds.getDefaultModel().size());
     }
 
     // ---- DatasetOneAssembler
-    
+
     @Test public void dsg1_1() {
         Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_1.ttl", DatasetAssemblerVocab.tDatasetOne);
         assertNotNull(ds);
         assertNotNull(ds.getDefaultModel());
-        assertTrue(ds instanceof DatasetOne);
+        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphOne);
         useIt(ds);
     }
-    
+
     @Test public void dsg1_2() {
         Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_2.ttl", DatasetAssemblerVocab.tDatasetOne);
         assertNotNull(ds);
         assertNotNull(ds.getDefaultModel());
-        assertTrue(ds instanceof DatasetOne);
+        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphOne);
         readIt(ds);
     }
-    
+
     @Test public void dsg1_3() {
         Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_3.ttl", DatasetAssemblerVocab.tDatasetOne);
         assertNotNull(ds);
         assertNotNull(ds.getDefaultModel());
-        assertTrue(ds instanceof DatasetOne);
+        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphOne);
         readIt(ds);
     }
-    
+
     @Test(expected=AssemblerException.class)
-    public void dsg1_bad_1() { 
+    public void dsg1_bad_1() {
         Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_bad_1.ttl", DatasetAssemblerVocab.tDatasetOne);
         assertNotNull(ds);
-    } 
-    
+    }
+
     @Test public void dsg1_tdb1() {
         Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_tdb1.ttl", DatasetAssemblerVocab.tDatasetOne);
         assertNotNull(ds);
         assertNotNull(ds.getDefaultModel());
-        assertTrue(ds instanceof DatasetOne);
+        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphOne);
         useIt(ds);
     }
-    
+
     @Test public void dsg1_tdb2() {
         Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_tdb2.ttl", DatasetAssemblerVocab.tDatasetOne);
         assertNotNull(ds);
         assertNotNull(ds.getDefaultModel());
-        assertTrue(ds instanceof DatasetOne);
+        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphOne);
         useIt(ds);
     }
-    
+
     @Test public void dsg1_inf_tdb1() {
         Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_inf_tdb1.ttl", DatasetAssemblerVocab.tDatasetOne);
         assertNotNull(ds);
         assertNotNull(ds.getDefaultModel());
-        assertTrue(ds instanceof DatasetOne);
+        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphOne);
         useIt(ds);
     }
-    
+
     @Test public void dsg1_inf_tdb2() {
         Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_inf_tdb2.ttl", DatasetAssemblerVocab.tDatasetOne);
         assertNotNull(ds);
         assertNotNull(ds.getDefaultModel());
-        assertTrue(ds instanceof DatasetOne);
+        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphOne);
         useIt(ds);
     }
-    
+
     private void readIt(Dataset ds) {
         Txn.exec(ds, TxnType.READ, ()->{
             assertTrue(ds.getDefaultModel().contains(stmt));
         });
     }
-    
+
     private void useIt(Dataset ds) {
         Txn.executeWrite(ds, ()->{
             ds.getDefaultModel().add(data);

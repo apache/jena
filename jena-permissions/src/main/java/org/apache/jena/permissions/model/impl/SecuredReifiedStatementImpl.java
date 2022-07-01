@@ -30,65 +30,59 @@ import org.apache.jena.shared.ReadDeniedException;
  * Implementation of SecuredReifiedStatement to be used by a SecuredItemInvoker
  * proxy.
  */
-public class SecuredReifiedStatementImpl extends SecuredResourceImpl implements
-		SecuredReifiedStatement {
-	/**
-	 * Get an instance of SecuredReifiedStatement
-	 * 
-	 * @param securedModel
-	 *            the Secured Model to use.
-	 * @param stmt
-	 *            The ReifiedStatement to secure.
-	 * @return SecuredReifiedStatement
-	 */
-	public static SecuredReifiedStatement getInstance(
-			final SecuredModel securedModel, final ReifiedStatement stmt) {
-		if (securedModel == null) {
-			throw new IllegalArgumentException(
-					"Secured securedModel may not be null");
-		}
-		if (stmt == null) {
-			throw new IllegalArgumentException("Statement may not be null");
-		}
-		final ItemHolder<ReifiedStatement, SecuredReifiedStatement> holder = new ItemHolder<>(
-				stmt);
-		final SecuredReifiedStatementImpl checker = new SecuredReifiedStatementImpl(
-				securedModel, holder);
-		// if we are going to create a duplicate proxy, just return this
-		// one.
-		if (stmt instanceof SecuredReifiedStatement) {
-			if (checker.isEquivalent((SecuredReifiedStatement) stmt)) {
-				return (SecuredReifiedStatement) stmt;
-			}
-		}
-		return holder.setSecuredItem(new SecuredItemInvoker(stmt.getClass(),
-				checker));
-	}
+public class SecuredReifiedStatementImpl extends SecuredResourceImpl implements SecuredReifiedStatement {
+    /**
+     * Get an instance of SecuredReifiedStatement
+     * 
+     * @param securedModel the Secured Model to use.
+     * @param stmt         The ReifiedStatement to secure.
+     * @return SecuredReifiedStatement
+     */
+    public static SecuredReifiedStatement getInstance(final SecuredModel securedModel, final ReifiedStatement stmt) {
+        if (securedModel == null) {
+            throw new IllegalArgumentException("Secured securedModel may not be null");
+        }
+        if (stmt == null) {
+            throw new IllegalArgumentException("Statement may not be null");
+        }
+        final ItemHolder<ReifiedStatement, SecuredReifiedStatement> holder = new ItemHolder<>(stmt);
+        final SecuredReifiedStatementImpl checker = new SecuredReifiedStatementImpl(securedModel, holder);
+        // if we are going to create a duplicate proxy, just return this
+        // one.
+        if (stmt instanceof SecuredReifiedStatement) {
+            if (checker.isEquivalent((SecuredReifiedStatement) stmt)) {
+                return (SecuredReifiedStatement) stmt;
+            }
+        }
+        return holder.setSecuredItem(new SecuredItemInvoker(stmt.getClass(), checker));
+    }
 
-	// the item holder that contains this SecuredResource
-	private final ItemHolder<? extends ReifiedStatement, ? extends SecuredReifiedStatement> holder;
+    // the item holder that contains this SecuredResource
+    private final ItemHolder<? extends ReifiedStatement, ? extends SecuredReifiedStatement> holder;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param securedModel
-	 *            The secured model to use
-	 * @param holder
-	 *            the item holder that will contain this SecuredReifiedStatement
-	 */
-	protected SecuredReifiedStatementImpl(
-			final SecuredModel securedModel,
-			final ItemHolder<? extends ReifiedStatement, ? extends SecuredReifiedStatement> holder) {
-		super(securedModel, holder);
-		this.holder = holder;
-	}
+    /**
+     * Constructor
+     * 
+     * @param securedModel The secured model to use
+     * @param holder       the item holder that will contain this
+     *                     SecuredReifiedStatement
+     */
+    protected SecuredReifiedStatementImpl(final SecuredModel securedModel,
+            final ItemHolder<? extends ReifiedStatement, ? extends SecuredReifiedStatement> holder) {
+        super(securedModel, holder);
+        this.holder = holder;
+    }
 
-	@Override
-	public SecuredStatement getStatement() throws ReadDeniedException,
-			AuthenticationRequiredException {
-		checkRead();
-		return SecuredStatementImpl.getInstance(getModel(), holder
-				.getBaseItem().getStatement());
-	}
+    /**
+     * @sec.graph Read
+     * @throws ReadDeniedException
+     * @throws AuthenticationRequiredException if user is not authenticated and is
+     *                                         required to be.
+     */
+    @Override
+    public SecuredStatement getStatement() throws ReadDeniedException, AuthenticationRequiredException {
+        checkRead();
+        return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().getStatement());
+    }
 
 }

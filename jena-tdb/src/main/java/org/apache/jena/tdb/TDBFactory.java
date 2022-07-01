@@ -77,49 +77,24 @@ public class TDBFactory
     
     /** Release from the JVM. All caching is lost. */
     public static void release(Dataset dataset) {
-        _release(location(dataset)) ;
+        release(dataset.asDatasetGraph());
     }
     
     /** Release from the JVM.  All caching is lost. */
     public static void release(DatasetGraph dataset) {
-        _release(location(dataset)) ;
+        _release(dataset) ;
     }
     
+    private static void _release(DatasetGraph dataset) {
+        TDBInternal.expel(dataset);
+    }
+
     private static DatasetGraph _createDatasetGraph(Location location) {
         return TDBMaker.createDatasetGraphTransaction(location) ;
     }
 
     private static DatasetGraph _createDatasetGraph() {
         return TDBMaker.createDatasetGraphTransaction() ;
-    }
-    
-    private static void _release(Location location) {
-        if ( location == null )
-            return ;
-        TDBMaker.releaseLocation(location) ;
-    }
-
-    /** Test whether a dataset is backed by TDB.
-     * @deprecated Use {@link #isTDB1(Dataset)}
-     */
-    @Deprecated
-    public static boolean isBackedByTDB(Dataset dataset) {
-        DatasetGraph dsg = dataset.asDatasetGraph() ;
-        return isBackedByTDB(dsg) ;
-    }
-    
-    /** Test whether a dataset is backed by TDB.
-     * @deprecated Use {@link #isTDB1(DatasetGraph)} 
-     */
-    @Deprecated
-    public static boolean isBackedByTDB(DatasetGraph datasetGraph) {
-        if ( datasetGraph instanceof DatasetGraphTransaction )
-            // The switching "connection" for TDB 
-            return true ;
-        if ( datasetGraph instanceof DatasetGraphTDB )
-            // A transaction or the base storage.
-            return true ;
-        return false ;
     }
 
     /** Test whether a dataset is backed by TDB. */ 

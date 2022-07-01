@@ -19,7 +19,6 @@
 package org.apache.jena.datatypes.xsd.impl;
 
 import org.apache.jena.datatypes.DatatypeFormatException ;
-import org.apache.jena.datatypes.xsd.impl.XSDAbstractDateTimeType ;
 
 // Xerces 2.11.0 does not have  xsd:dayTimeDuration.
 // Treat as duration with checking.

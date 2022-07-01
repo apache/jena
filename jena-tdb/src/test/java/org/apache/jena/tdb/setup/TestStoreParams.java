@@ -18,17 +18,18 @@
 
 package org.apache.jena.tdb.setup;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.block.FileMode ;
-import org.apache.jena.tdb.setup.StoreParams ;
-import org.apache.jena.tdb.setup.StoreParamsBuilder ;
-import org.apache.jena.tdb.setup.StoreParamsCodec ;
 import org.junit.Test ;
 
-public class TestStoreParams extends BaseTest {
+public class TestStoreParams {
 
     @Test public void store_params_01() {
         assertEqualsStoreParams(StoreParams.getDftStoreParams(), StoreParams.getDftStoreParams()) ; 

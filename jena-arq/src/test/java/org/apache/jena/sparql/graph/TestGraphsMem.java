@@ -23,7 +23,6 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.graph.GraphFactory ;
 import org.junit.Test ;
 
 /** Test the test for datasets and graphs */

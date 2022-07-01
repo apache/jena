@@ -18,64 +18,46 @@
 
 package org.apache.jena.fuseki;
 
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestHttpOp.class
-    , TestSPARQLProtocol.class
-    , TestHttpOperations.class
-    , TestHttpOptions.class
-    , TestDatasetGraphAccessorHTTP.class
-    , TestDatasetAccessorHTTP.class
-    , TestQuery.class
-    , TestAuth.class
-    , TestDatasetOps.class
-    , TestFileUpload.class
+      TestWebappSPARQLProtocol.class
+    , TestWebappAuthQuery_JDK.class
+    , TestWebappAuthUpdate_JDK.class
+    , TestWebappFileUpload.class
     , TestAdmin.class
     , TestAdminAPI.class
-    , TestServerReadOnly.class
+    , TestWebappServerReadOnly.class
     , TestBuilder.class
+    , TestWebappMetrics.class
 })
 
 public class TS_FusekiWebapp extends ServerTest
 {
-    public static final String FusekiTestHome = "target/FusekiHome" ;
-    public static final String FusekiTestBase = FusekiTestHome+"/run" ;
-    
+    public static String FusekiTestHome = "target/FusekiHome";
+    public static String FusekiTestBase = FusekiTestHome+"/run";
+
     @BeforeClass public static void setupForFusekiServer() {
+        AbstractTestWebappAuth_JDK.RunDependently = false;
         FileOps.ensureDir(FusekiTestHome);
-        FileOps.clearDirectory(FusekiTestHome);
-        System.setProperty("FUSEKI_HOME", FusekiTestHome) ;
-        FusekiEnv.setEnvironment() ;
+        FileOps.clearAll(FusekiTestHome);
+        System.setProperty("FUSEKI_HOME", FusekiTestHome);
+        FusekiEnv.setEnvironment();
         FusekiLogging.setLogging();
-        // To avoid confusion with log4j.properties in the main part of the server,
-        // we modify in place the logging, not try to set it with another
-        // Log4j properties file from the classpath.  
-        LogCtl.setLevel("org.apache.shiro",          "WARN") ;
-        LogCtl.setLevel("org.eclipse.jetty",         "WARN");
-        
-        LogCtl.setLevel(Fuseki.serverLogName,        "WARN");
-        LogCtl.setLevel(Fuseki.configLogName,        "WARN");
-        LogCtl.setLevel(Fuseki.adminLogName,         "WARN");
-        LogCtl.setLevel(Fuseki.builderLogName,       "WARN");
-        LogCtl.setLevel(Fuseki.actionLogName,        "WARN");
-        LogCtl.setLevel(Fuseki.requestLogName,       "WARN");
-        LogCtl.setLevel(Fuseki.servletRequestLogName,"WARN");
-        
         ServerCtl.ctlBeforeTestSuite();
     }
-    
+
     @AfterClass
     static public void afterSuiteClass() {
-        ServerCtl.ctlAfterTestSuite() ;
+        ServerCtl.ctlAfterTestSuite();
+        AbstractTestWebappAuth_JDK.RunDependently = false;
     }
 }

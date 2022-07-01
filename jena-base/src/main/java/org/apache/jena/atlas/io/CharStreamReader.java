@@ -16,38 +16,58 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.io ;
+package org.apache.jena.atlas.io;
 
-import java.io.IOException ;
-import java.io.Reader ;
+import java.io.IOException;
+import java.io.Reader;
 
-/** Machinary to add Reader functionality to a CharStream */
+/** Machinery to add Reader functionality to a CharStream.
+ * No {@code synchronized} is used for {@link #read()}.
+ */
 public abstract class CharStreamReader extends Reader implements CharStream {
-    
+
+    private boolean isClosed = false;
+
     @Override
     public int read(char[] cbuf, int off, int len) throws IOException {
-        for ( int i = 0 ; i < len ; i++ ) {
-            int x = advance() ;
-            if ( x == -1 )
-                return (i == 0) ? -1 : i ;
-            cbuf[i] = (char)x ;
+        if ( isClosed )
+            return -1;
+        for ( int i = off ; i < off + len ; i++ ) {
+            int x = advance();
+            if ( x == -1 ) {
+                close();
+                if ( i == off )
+                    return -1;
+                return (i - off);
+            }
+            cbuf[i] = (char)x;
         }
-        return len ;
+        return len;
     }
 
     @Override
     public int read() throws IOException {
-        return advance() ;
+        if ( isClosed )
+            return -1;
+        return advance();
     }
 
     @Override
     public void close() throws IOException {
-        closeStream() ;
+        if ( isClosed )
+            return;
+        isClosed = true;
+        closeStream();
     }
 
     @Override
-    public abstract int advance() ;
+    public boolean ready() throws IOException {
+        return !isClosed;
+    }
 
     @Override
-    public abstract void closeStream() ;
+    public abstract int advance();
+
+    @Override
+    public abstract void closeStream();
 }

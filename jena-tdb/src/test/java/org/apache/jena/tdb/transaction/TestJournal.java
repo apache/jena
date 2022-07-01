@@ -18,22 +18,20 @@
 
 package org.apache.jena.tdb.transaction;
 
+import static org.junit.Assert.*;
+
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.tdb.base.block.Block ;
 import org.apache.jena.tdb.base.file.BufferChannel ;
 import org.apache.jena.tdb.base.file.BufferChannelMem ;
 import org.apache.jena.tdb.sys.FileRef ;
-import org.apache.jena.tdb.transaction.Journal ;
-import org.apache.jena.tdb.transaction.JournalEntry ;
-import org.apache.jena.tdb.transaction.JournalEntryType ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public class TestJournal extends BaseTest
+public class TestJournal
 {
     static {
         FileRef.file("xyz") ;

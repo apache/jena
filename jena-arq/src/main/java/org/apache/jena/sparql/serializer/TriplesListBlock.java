@@ -34,10 +34,13 @@ import org.apache.jena.graph.Triple;
         listElementsMap.putAll(other.listElementsMap);
         triplesInLists.addAll(other.triplesInLists);
     }
-        
+
     @Override
     public String toString() {
-        return Iter.asString(listElementsMap.keySet(), ", ") + "\n" + "{"+ Iter.asString(triplesInLists.iterator(), "\n")+"}";
-            
+
+        return Iter.asString(listElementsMap.keySet().iterator(), ", ")
+            + "\n" + "{"+
+            Iter.asString(triplesInLists.iterator(), "\n")
+            +"}";
     }
 }

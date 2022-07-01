@@ -1,0 +1,9 @@
+PREFIX ex: <http://a.example/>
+
+ex:n1
+  ex:p1 "ab"^^ex:dt1 ;
+  ex:p2 _:n2 .
+
+_:n2
+  ex:p3 "ab" ;
+  ex:p4 ex:n1 .

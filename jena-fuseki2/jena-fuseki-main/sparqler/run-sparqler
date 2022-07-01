@@ -7,9 +7,9 @@ SPARQLER_DATA="${SPARQLER_DATA:-file:data/books.ttl}"
 SPARQLER_DS="${SPARQLER_DS:-/books}"
 
 ## Development
-FUSEKI_JAR1="$(echo jena-fuseki-basic-*-server.jar)"
+FUSEKI_JAR1="$(echo jena-fuseki-server-*.jar)"
 ## Deployment
-FUSEKI_JAR2="fuseki-basic.jar"
+FUSEKI_JAR2="fuseki-server.jar"
 FUSEKI_JAR3=""
 
 # Choose which jar to run
@@ -26,12 +26,12 @@ fi
 BACKGROUND=${BACKGROUND:-1}
 if [ "$BACKGROUND" = 0 ]
 then
-    LOGCONFIG=${LOGCONFIG:-file:log4j-foreground.properties}
+    LOGCONFIG=${LOGCONFIG:-file:log4j2-foreground.properties}
 else
-    LOGCONFIG=${LOGCONFIG:-file:log4j-server.properties}
+    LOGCONFIG=${LOGCONFIG:-file:log4j2-server.properties}
 fi
 
-export FUSEKI_LOG="-Dlog4j.configuration=${LOGCONFIG}"
+export FUSEKI_LOG="-Dlog4j.configurationFile=${LOGCONFIG}"
 export JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
 
 ## SPARQLER_ARGS="--base $SPARQLER_PAGES --file=$SPARQLER_DATA  $SPARQLER_DS"
@@ -45,7 +45,7 @@ export JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
 ##     exit 0
 ## fi
 
-SPARQLER_ARGS="--sparqler $SPARQLER_PAGES"
+SPARQLER_ARGS="--localhost --sparqler $SPARQLER_PAGES"
 
 set --
 

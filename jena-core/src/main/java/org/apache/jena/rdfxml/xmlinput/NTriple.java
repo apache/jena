@@ -460,7 +460,7 @@ int debugC = 0;
 //		private int ix = 0;
 //		private void userData(AResource n){
 //		    if (n.isAnonymous()) {
-////		        n.setUserData(new Integer(ix++));
+////		        n.setUserData(Integer.valueOf(ix++));
 //		    }
 //		}
 	    @Override

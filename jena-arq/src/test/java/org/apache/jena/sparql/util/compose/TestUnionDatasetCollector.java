@@ -20,6 +20,8 @@ package org.apache.jena.sparql.util.compose;
 
 import static org.apache.jena.rdf.model.ModelFactory.createModelForGraph;
 import static org.apache.jena.sparql.sse.SSE.parseGraph;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -31,12 +33,10 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.sparql.util.compose.DatasetCollector;
-import org.apache.jena.sparql.util.compose.DatasetLib;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestUnionDatasetCollector extends TestDatasetCollector {
+public class TestUnionDatasetCollector extends AbstractTestDatasetCollector {
 
     @Override
     public DatasetCollector testInstance() {

@@ -1,5 +1,0 @@
-SELECT *
-{ 
-   ?s ?p    "Arabic 123:\u0661\u0662\u0663" .
-   ?s ?p    "Arabic 123:١٢٣" .
-}

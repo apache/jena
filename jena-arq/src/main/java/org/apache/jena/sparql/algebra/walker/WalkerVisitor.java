@@ -36,7 +36,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
 
     protected int               opDepth      = 0 ;
     protected int               exprDepth    = 0 ;
-    
+
     private final OpVisitor     beforeVisitor ;
     private final OpVisitor     afterVisitor ;
 
@@ -44,7 +44,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
      * A walker. If a visitor is null, then don't walk in. For
      * "no action but keep walking inwards", use {@link OpVisitorBase} and
      * {@link ExprVisitorBase}.
-     * 
+     *
      * @see OpVisitorBase
      * @see ExprVisitorBase
      */
@@ -70,18 +70,18 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
         if ( afterVisitor != null )
             op.visit(afterVisitor) ;
     }
-    
+
     public void walk(Op op) {
         if ( op == null )
             return ;
         if ( opDepth == opDepthLimit )
             // No deeper.
             return ;
-        opDepth++ ; 
+        opDepth++ ;
         try { op.visit(this); }
         finally { opDepth-- ; }
     }
-    
+
     public void walk(Expr expr) {
         if ( expr == null )
             return ;
@@ -91,7 +91,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
         try { expr.visit(this) ; }
         finally { exprDepth-- ; }
     }
-    
+
     public void walk(ExprList exprList) {
         if ( exprList == null )
             return ;
@@ -120,9 +120,9 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
         if ( exprVisitor != null )
             walk(varExprList);
     }
-    
+
     // ----
-    
+
     public void visitOp(Op op) {
         before(op) ;
         if ( opVisitor != null )
@@ -144,8 +144,8 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
         visit1$(op) ;
         after(op) ;
     }
-    
-    // Can be called via different routes. 
+
+    // Can be called via different routes.
     private void visit1$(Op1 op) {
         if ( op.getSubOp() != null )
             op.getSubOp().visit(this) ;
@@ -176,7 +176,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
             op.visit(opVisitor) ;
         after(op) ;
     }
-    
+
     @Override
     public void visitExt(OpExt op) {
         before(op) ;
@@ -188,7 +188,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
     @Override
     public void visit(OpOrder opOrder) {
         // XXX Why not this?
-        // ApplyTransformVisitor handles the parts of OpOrder.  
+        // ApplyTransformVisitor handles the parts of OpOrder.
 //        before(opOrder) ;
 //        visitSortConditions(opOrder.getConditions()) ;
 //        visitModifer(opOrder);
@@ -201,7 +201,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
     public void visit(OpAssign opAssign) {
         before(opAssign) ;
         VarExprList varExpr = opAssign.getVarExprList() ;
-        visitVarExpr(varExpr); 
+        visitVarExpr(varExpr);
         visit1$(opAssign) ;
         after(opAssign) ;
     }
@@ -210,30 +210,28 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
     public void visit(OpExtend opExtend) {
         before(opExtend) ;
         VarExprList varExpr = opExtend.getVarExprList() ;
-        visitVarExpr(varExpr); 
+        visitVarExpr(varExpr);
         visit1$(opExtend) ;
         after(opExtend) ;
     }
 
-    
     // Transforming to quads needs the graph node handled before doing the sub-algebra ops
     // so it has to be done as before/after by the Walker. By the time visit(OpGraph) is called,
-    // the sub-tree has already been visited. 
-    
-    
+    // the sub-tree has already been visited.
+
 //    @Override
 //    public void visit(OpGraph op) {
 //        pushGraph(op.getNode()) ;
 //        OpVisitorByTypeAndExpr.super.visit(op) ;
 //        popGraph() ;
 //    }
-//    
+//
 //    private Deque<Node> stack = new ArrayDeque<>() ;
-//    
+//
 //    public Node getCurrentGraph() { return stack.peek() ; }
-//    
+//
 //    private void pushGraph(Node node) {
-//        stack.push(node) ;   
+//        stack.push(node) ;
 //    }
 //
 //    private void popGraph() {
@@ -250,7 +248,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
     public void visit(ExprFunction3 func) { visitExprFunction(func) ; }
     @Override
     public void visit(ExprFunctionN func) { visitExprFunction(func) ; }
-    
+
     @Override
     public void visitExprFunction(ExprFunction func) {
         for ( int i = 1 ; i <= func.numArgs() ; i++ ) {
@@ -264,18 +262,24 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
         if ( exprVisitor != null )
             func.visit(exprVisitor) ;
     }
-    
+
     @Override
     public void visit(ExprFunctionOp funcOp) {
         walk(funcOp.getGraphPattern());
         if ( exprVisitor != null )
             funcOp.visit(exprVisitor) ;
     }
-    
+
     @Override
     public void visit(NodeValue nv) {
         if ( exprVisitor != null )
             nv.visit(exprVisitor) ;
+    }
+
+    @Override
+    public void visit(ExprTripleTerm exTripleTerm) {
+        if ( exprVisitor != null )
+            exTripleTerm.visit(exprVisitor) ;
     }
 
     @Override

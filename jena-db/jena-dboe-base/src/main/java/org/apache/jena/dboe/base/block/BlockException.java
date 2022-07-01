@@ -22,8 +22,8 @@ import org.apache.jena.dboe.base.file.FileException;
 
 public class BlockException extends FileException
 {
-    public BlockException()                          { super() ; }
-    public BlockException(String msg)                { super(msg) ; }
-    public BlockException(Throwable th)              { super(th) ; }
-    public BlockException(String msg, Throwable th)  { super(msg, th) ; }
+    public BlockException()                          { super(); }
+    public BlockException(String msg)                { super(msg); }
+    public BlockException(Throwable th)              { super(th); }
+    public BlockException(String msg, Throwable th)  { super(msg, th); }
 }

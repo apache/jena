@@ -20,7 +20,7 @@ package org.apache.jena.riot.writer;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamOps ;
+import org.apache.jena.riot.system.StreamRDFOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
@@ -28,15 +28,13 @@ import org.apache.jena.sparql.util.Context ;
 /** TriG writer that streams - print in blocks of quads clustered
  *  by adjacent same graph and same subject
  */
-public class TriGWriterBlocks extends TriGWriterBase
-{
+public class TriGWriterBlocks extends TriGWriterBase {
+
     @Override
     protected void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF dest = new WriterStreamRDFBlocks(iOut) ;
-        dest.start() ;
-        dest.base(baseURI) ;
-        StreamOps.sendDatasetToStream(dsg, dest, prefixMap) ;
-        dest.finish() ;
+        StreamRDF dest = new WriterStreamRDFBlocks(iOut, context);
+        dest.start();
+        StreamRDFOps.sendDatasetToStream(dsg, dest, baseURI, prefixMap);
+        dest.finish();
     }
 }
-

@@ -50,7 +50,7 @@ public class ActionDumpRequest extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         doPrintInformation(req, resp);
     }
-    
+
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) {
         doPrintInformation(req, resp);
@@ -106,7 +106,7 @@ public class ActionDumpRequest extends HttpServlet {
     }
 
     // ---- Library of things to report on.
-    
+
     static public void printRequest(PrintWriter pw, HttpServletRequest req) {
         // ----Standard environment
         pw.println("Method:                 " + req.getMethod());
@@ -128,9 +128,9 @@ public class ActionDumpRequest extends HttpServlet {
         pw.println("getRemoteHost:          " + req.getRemoteHost());
         pw.println("getRequestedSessionId:  " + req.getRequestedSessionId());
     }
-    
+
     // ---- Library of things to report on.
-    
+
     static void printBody(PrintWriter pw, HttpServletRequest req) throws IOException {
         // Destructive read of the request body.
         BufferedReader in = req.getReader();
@@ -150,7 +150,7 @@ public class ActionDumpRequest extends HttpServlet {
         if ( c == null )
             pw.println("getCookies:            <none>");
         else {
-            for ( int i = 0 ; i < c.length ; i++ ) {
+            for ( int i = 0; i < c.length; i++ ) {
                 pw.println();
                 pw.println("Cookie:        " + c[i].getName());
                 pw.println("    value:     " + c[i].getValue());
@@ -167,7 +167,7 @@ public class ActionDumpRequest extends HttpServlet {
     static void printHeaders(PrintWriter pw, HttpServletRequest req) {
         Enumeration<String> en = req.getHeaderNames();
 
-        for ( ; en.hasMoreElements() ; ) {
+        for (; en.hasMoreElements(); ) {
             String name = en.nextElement();
             String value = req.getHeader(name);
             pw.println("Head: " + name + " = " + value);
@@ -177,25 +177,24 @@ public class ActionDumpRequest extends HttpServlet {
     // Note that doing this on a form causes the forms content (body) to be read
     // and parsed as form variables.
     static void printParameters(PrintWriter pw, HttpServletRequest req) {
-        Enumeration<String> en = req.getParameterNames() ;
-        for ( ; en.hasMoreElements() ; )
-        {
-            String name = en.nextElement() ;
-            String value = req.getParameter(name) ;
-            pw.println("Param: "+name + " = " + value) ;
+        Enumeration<String> en = req.getParameterNames();
+        for (; en.hasMoreElements(); ) {
+            String name = en.nextElement();
+            String value = req.getParameter(name);
+            pw.println("Param: " + name + " = " + value);
         }
     }
-    
+
     static void printQueryString(PrintWriter pw, HttpServletRequest req) {
-        Multimap<String, String> map = FusekiNetLib.parseQueryString(req) ;
+        Multimap<String, String> map = FusekiNetLib.parseQueryString(req);
         for ( String name : map.keys() )
             for ( String value : map.get(name) )
-                pw.println("Param: "+name + " = " + value) ;
+                pw.println("Param: "+name + " = " + value);
     }
-    
+
     static void printLocales(PrintWriter pw, HttpServletRequest req) {
         Enumeration<Locale> en = req.getLocales();
-        for ( ; en.hasMoreElements() ; ) {
+        for (; en.hasMoreElements(); ) {
             String name = en.nextElement().toString();
             pw.println("Locale: " + name);
         }
@@ -204,7 +203,7 @@ public class ActionDumpRequest extends HttpServlet {
 
     /**
      * <code>printEnvironment</code>
-     * 
+     *
      * @return String that is the HTML of the System properties as name/value pairs. The
      *         values are with single quotes independent of whether or not the value has
      *         single quotes in it.
@@ -225,7 +224,7 @@ public class ActionDumpRequest extends HttpServlet {
             return null;
         }
     }
-    
+
     public String printServletContext() {
         try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw);) {
             ServletContext sc = getServletContext();

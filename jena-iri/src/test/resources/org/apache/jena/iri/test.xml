@@ -4459,6 +4459,8 @@ limitations under the License.
     <violations>
     </violations>
   </IRI>
+
+  <!-- Legal in RFC 3986 (URI) , RFC 8141 (URN)
   <IRI iri='urn:x-hp:eg/'>
     <getRawHost nullValue='true'/>
     <getRawPath value='x-hp:eg/'/>
@@ -4478,6 +4480,7 @@ limitations under the License.
       <violation>SCHEME_PATTERN_MATCH_FAILED</violation>
     </violations>
   </IRI>
+
   <IRI iri='urn:x-hp:eg/hasGraphics'>
     <getRawHost nullValue='true'/>
     <getRawPath value='x-hp:eg/hasGraphics'/>
@@ -4593,6 +4596,8 @@ limitations under the License.
       </violations>
     </Relativize>
   </Resolve>
+  -->
+
   <Resolve>
     <IRI iri='base:x'>
       <getRawHost nullValue='true'/>

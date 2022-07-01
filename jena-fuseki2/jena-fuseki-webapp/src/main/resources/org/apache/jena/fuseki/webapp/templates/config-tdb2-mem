@@ -11,17 +11,16 @@ PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
 ## Updatable TDB2 dataset im-memory with all services enabled.
 
 <#service_tdb_all> rdf:type fuseki:Service ;
-    rdfs:label                      "TDB2 {NAME}" ;
-    fuseki:name                     "{NAME}" ;
-    fuseki:serviceQuery             "query" ;
-    fuseki:serviceQuery             "sparql" ;
-    fuseki:serviceUpdate            "update" ;
-    fuseki:serviceUpload            "upload" ;
-    fuseki:serviceReadWriteGraphStore      "data" ;
-    # A separate read-only graph store endpoint:
+    rdfs:label                         "TDB2 {NAME}" ;
+    fuseki:name                        "{NAME}" ;
+    fuseki:serviceQuery                "" ;
+    fuseki:serviceQuery                "sparql" ;
+    fuseki:serviceQuery                "query" ;
+    fuseki:serviceUpdate               "" ;
+    fuseki:serviceUpdate               "update" ;
+    fuseki:serviceReadWriteGraphStore  "data" ;     
     fuseki:serviceReadGraphStore       "get" ;
-    fuseki:dataset           <#tdb_dataset_readwrite> ;
-    
+    fuseki:dataset                     <#tdb_dataset_readwrite> ;
     .
 
 <#tdb_dataset_readwrite> rdf:type      tdb2:DatasetTDB2 ;

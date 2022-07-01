@@ -27,49 +27,46 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.PrefixMapFactory ;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.sse.SSE ;
 
 /**
  * Various convenience helper methods for converting to and from nodes
  */
 public class NodeFactoryExtra {
-    private static final PrefixMap prefixMappingDefault = PrefixMapFactory.createForInput(SSE.getPrefixMapRead()) ;
+    private static final PrefixMap prefixMappingDefault = Prefixes.adapt(SSE.getPrefixMapRead()) ;
 
     /**
      * Parse a node - with convenience prefix mapping
      * <p>
      * Allows surrounding white space
      * </p>
-     * 
+     *
      * @param nodeString Node string to parse
-     * 
+     *
      */
     public static Node parseNode(String nodeString) {
         return parseNode(nodeString, prefixMappingDefault) ;
     }
-
-    private static PrefixMap pmapEmpty = PrefixMapFactory.create() ;
 
     /**
      * Parse a string into a node.
      * <p>
      * Allows surrounding white space.
      * </p>
-     * 
+     *
      * @param nodeString Node string to parse
      * @param pmap Prefix Map, null to use no prefix mappings
      * @return Parsed Node
      * @throws RiotException Thrown if a valid node cannot be parsed
      */
     public static Node parseNode(String nodeString, PrefixMap pmap) {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(nodeString) ;
+        Tokenizer tokenizer = TokenizerText.create().fromString(nodeString).build();
         if ( !tokenizer.hasNext() )
             throw new RiotException("Empty RDF term") ;
         Token token = tokenizer.next() ;
@@ -86,10 +83,6 @@ public class NodeFactoryExtra {
                 throw new RiotException("Space(s) in  IRI: " + nodeString) ;
         }
         return node ;
-    }
-
-    private static QueryParseException makeException(String msg, int line, int column) {
-        return new QueryParseException(msg, line, column) ;
     }
 
     /** Create a literal Node, when the datatype, if given, is a string */
@@ -110,7 +103,7 @@ public class NodeFactoryExtra {
 
     /**
      * Node to int
-     * 
+     *
      * @param node
      * @return The int value or Integer.MIN_VALUE.
      */
@@ -125,7 +118,7 @@ public class NodeFactoryExtra {
 
     /**
      * Node to long
-     * 
+     *
      * @param node
      * @return The long value or Long.MIN_VALUE.
      */
@@ -140,7 +133,7 @@ public class NodeFactoryExtra {
 
     /**
      * Node to float
-     * 
+     *
      * @param node
      * @return The float value or Float.NaN
      */
@@ -156,7 +149,7 @@ public class NodeFactoryExtra {
 
     /**
      * Node to double
-     * 
+     *
      * @param node
      * @return The double value or Double.NaN
      */
@@ -171,7 +164,7 @@ public class NodeFactoryExtra {
 
     /**
      * int to Node
-     * 
+     *
      * @param integer
      * @return An xsd:integer
      */
@@ -181,7 +174,7 @@ public class NodeFactoryExtra {
 
     /**
      * long to Node
-     * 
+     *
      * @param integer
      * @return An xsd:integer
      */
@@ -191,7 +184,7 @@ public class NodeFactoryExtra {
 
     /**
      * float to Node
-     * 
+     *
      * @param value
      * @return An xsd:float
      */
@@ -201,7 +194,7 @@ public class NodeFactoryExtra {
 
     /**
      * double to Node
-     * 
+     *
      * @param value
      * @return An double
      */

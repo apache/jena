@@ -1,3 +1,18 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 @prefix :       <manifest#> .
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
@@ -44,6 +59,21 @@
 :test_31
 :test_32
 :test_33
+:test_34
+:test_35
+:test_36
+:test_37
+:test_38
+:test_39
+:test_40
+:test_41
+:test_42
+:test_43
+:test_44
+
+:test_50
+:test_51
+:test_52
 ) .
 
 :test_1 rdf:type   mfx:PositiveSyntaxTestARQ ;
@@ -196,19 +226,89 @@
    mf:name    "syntax-quad-construct-08.arq" ;
    mf:action  <syntax-quad-construct-08.arq> ;.
 
-:test_31 rdf:type   mfx:NegativeSyntaxTestARQ ;
+:test_31 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-quad-construct-09.arq" ;
+   mf:action  <syntax-quad-construct-09.arq> ;.
+
+:test_32 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-quad-construct-10.arq" ;
+   mf:action  <syntax-quad-construct-10.arq> ;.
+
+:test_33 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-quad-construct-11.arq" ;
+   mf:action  <syntax-quad-construct-11.arq> ;.
+
+:test_34 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-quad-construct-12.arq" ;
+   mf:action  <syntax-quad-construct-12.arq> ;.
+
+:test_35 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-median-01.arq" ;
+   mf:action  <syntax-median-01.arq> ;.
+
+:test_36 rdf:type   mfx:NegativeSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-scope-bad-01.arq" ;
+   mf:action  <syntax-scope-bad-01.arq> ;.
+
+:test_37 rdf:type   mfx:NegativeSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-scope-bad-02.arq" ;
+   mf:action  <syntax-scope-bad-02.arq> ;.
+
+:test_38 rdf:type   mfx:NegativeSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-agg-expr-bad-01.arq" ;
+   mf:action  <syntax-agg-expr-bad-01.arq> ;.
+
+:test_39 rdf:type   mfx:NegativeSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-agg-expr-bad-02.arq" ;
+   mf:action  <syntax-agg-expr-bad-02.arq> ;.
+
+:test_40 rdf:type   mfx:NegativeSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-agg-expr-bad-03.arq" ;
+   mf:action  <syntax-agg-expr-bad-03.arq> ;.
+
+:test_41 rdf:type   mfx:NegativeSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-subquery-bad-01.arq" ;
    mf:action  <syntax-subquery-bad-01.arq> ;.
 
-:test_32 rdf:type   mfx:NegativeSyntaxTestARQ ;
+:test_42 rdf:type   mfx:NegativeSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-subquery-bad-02.arq" ;
    mf:action  <syntax-subquery-bad-02.arq> ;.
 
-:test_33 rdf:type   mfx:NegativeSyntaxTestARQ ;
+:test_43 rdf:type   mfx:NegativeSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-let-bad-01.arq" ;
    mf:action  <syntax-let-bad-01.arq> ;.
 
+:test_44 rdf:type   mfx:NegativeSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-quad-construct-bad-01.arq" ;
+   mf:action  <syntax-quad-construct-bad-01.arq> ;.
+
+## IRI(base,rel)
+:test_50  rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-iri-base-1.arq" ;
+   mf:action  <syntax-iri-base-1.arq> ;.
+
+:test_51  rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-iri-base-2.arq" ;
+   mf:action  <syntax-iri-base-2.arq> ;.
+
+:test_52  rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-iri-base-3.arq" ;
+   mf:action  <syntax-iri-base-3.arq> ;.
 

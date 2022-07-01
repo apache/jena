@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@ package org.apache.jena.rdf.model.test;
 import java.io.StringReader;
 
 import org.apache.jena.graph.GraphEvents ;
-import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.rdf.model.test.helpers.RecordingModelListener ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 
@@ -35,15 +35,10 @@ public class TestReaderEvents extends AbstractModelTestBase
 	{
 		super(modelFactory, name);
 	}
-	
+
 	public TestReaderEvents()
 	{
-		this( new TestPackage.PlainModelFactory(), "TestReaderEvents"); 
-	}
-
-	public void testN3ReaderEvents()
-	{
-		testReaderEvent("N3", "");
+		this( new TestPackage.PlainModelFactory(), "TestReaderEvents");
 	}
 
 	public void testNTriplesReaderEvents()
@@ -55,7 +50,7 @@ public class TestReaderEvents extends AbstractModelTestBase
 	{
 		final RecordingModelListener L = new RecordingModelListener();
 		model.register(L);
-		final RDFReader r = model.getReader(language);
+		final RDFReaderI r = model.getReader(language);
 		final StringReader stringReader = new StringReader(emptyModel);
 		r.read(model, stringReader, "");
 		L.assertHasStart(new Object[] { "someEvent", model,

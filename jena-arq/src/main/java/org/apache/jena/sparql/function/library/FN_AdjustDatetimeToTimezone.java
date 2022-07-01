@@ -18,6 +18,7 @@
 package org.apache.jena.sparql.function.library;
 
 import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprList;
@@ -40,10 +41,12 @@ public class FN_AdjustDatetimeToTimezone extends FunctionBase {
     public NodeValue exec(List<NodeValue> args)
     {
         if ( args.size() != 1 && args.size() != 2 )
-            throw new ExprEvalException("FN_StrNormalizeUnicode: Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
+            throw new ExprEvalException("fn:adjustDateTimeToTimezone: Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
 
         NodeValue v1 = args.get(0) ;
-
+        if ( ARQ.isStrictMode() && !v1.isDateTime() )
+            throw new ExprEvalException("Not an xsd:dateTime : " + v1);
+        
         if ( args.size() == 2 )
         {
             NodeValue v2 = args.get(1) ;

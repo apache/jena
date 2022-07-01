@@ -26,12 +26,12 @@ import org.apache.jena.sparql.algebra.op.* ;
 public class TransformWrapper implements Transform
 {
     protected final Transform transform ;
-    
+
     public TransformWrapper(Transform transform)
     {
         this.transform = transform ;
     }
-    
+
     @Override
     public Op transform(OpTable opTable)                    { return transform.transform(opTable) ; }
     @Override
@@ -41,7 +41,7 @@ public class TransformWrapper implements Transform
     @Override
     public Op transform(OpQuad opQuad)                      { return transform.transform(opQuad) ; }
     @Override
-    public Op transform(OpPath opPath)                      { return transform.transform(opPath) ; } 
+    public Op transform(OpPath opPath)                      { return transform.transform(opPath) ; }
 
     @Override
     public Op transform(OpProcedure opProc, Op subOp)       { return transform.transform(opProc, subOp) ; }
@@ -54,19 +54,19 @@ public class TransformWrapper implements Transform
     public Op transform(OpQuadPattern quadPattern)          { return transform.transform(quadPattern) ; }
     @Override
     public Op transform(OpQuadBlock quadBlock)              { return transform.transform(quadBlock) ; }
-    
+
     @Override
     public Op transform(OpFilter opFilter, Op subOp)        { return transform.transform(opFilter, subOp) ; }
     @Override
-    public Op transform(OpGraph opGraph, Op subOp)          { return transform.transform(opGraph, subOp) ; } 
+    public Op transform(OpGraph opGraph, Op subOp)          { return transform.transform(opGraph, subOp) ; }
     @Override
-    public Op transform(OpService opService, Op subOp)      { return transform.transform(opService, subOp) ; } 
+    public Op transform(OpService opService, Op subOp)      { return transform.transform(opService, subOp) ; }
 
     @Override
     public Op transform(OpAssign opAssign, Op subOp)        { return transform.transform(opAssign, subOp) ; }
     @Override
     public Op transform(OpExtend opExtend, Op subOp)        { return transform.transform(opExtend, subOp) ; }
-    
+
     @Override
     public Op transform(OpJoin opJoin, Op left, Op right)           { return transform.transform(opJoin, left, right) ; }
     @Override
@@ -78,8 +78,8 @@ public class TransformWrapper implements Transform
     @Override
     public Op transform(OpUnion opUnion, Op left, Op right)         { return transform.transform(opUnion, left, right) ; }
     @Override
-    public Op transform(OpConditional opCond, Op left, Op right)    { return transform.transform(opCond, left, right) ; } 
-    
+    public Op transform(OpConditional opCond, Op left, Op right)    { return transform.transform(opCond, left, right) ; }
+
     @Override
     public Op transform(OpSequence opSequence, List<Op> elts)       { return transform.transform(opSequence, elts) ; }
     @Override
@@ -91,7 +91,7 @@ public class TransformWrapper implements Transform
     public Op transform(OpNull opNull)                      { return transform.transform(opNull) ; }
     @Override
     public Op transform(OpLabel opLabel, Op subOp)          { return transform.transform(opLabel, subOp) ; }
-    
+
     @Override
     public Op transform(OpList opList, Op subOp)            { return transform.transform(opList, subOp) ; }
     @Override

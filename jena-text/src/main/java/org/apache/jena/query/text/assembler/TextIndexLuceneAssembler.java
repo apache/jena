@@ -33,9 +33,7 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.lucene.analysis.Analyzer ;
-import org.apache.lucene.store.Directory ;
-import org.apache.lucene.store.FSDirectory ;
-import org.apache.lucene.store.RAMDirectory ;
+import org.apache.lucene.store.*;
 
 import static org.apache.jena.query.text.assembler.TextVocab.*;
 
@@ -45,7 +43,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
         #text:directory "mem" ;
         #text:directory "DIR" ;
         text:directory <file:DIR> ;
-        text:entityMap <#endMap> ;
+        text:entityMap <#entMap> ;
         .
     */
     
@@ -62,7 +60,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             if ( n.isLiteral() ) {
                 String literalValue = n.asLiteral().getLexicalForm() ; 
                 if (literalValue.equals("mem")) {
-                    directory = new RAMDirectory() ;
+                    directory = new ByteBuffersDirectory() ;
                 } else {
                     File dir = new File(literalValue) ;
                     directory = FSDirectory.open(dir.toPath()) ;
@@ -93,6 +91,33 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                     throw new TextIndexException("text:multilingualSupport property must be a boolean : " + mlsNode);
                 }
                 isMultilingualSupport = mlsNode.asLiteral().getBoolean();
+            }
+
+            int maxBasicQueries = 1024;
+            Statement maxBasicQueriesStatement = root.getProperty(pMaxBasicQueries);
+            if (null != maxBasicQueriesStatement) {
+                RDFNode mbqNode = maxBasicQueriesStatement.getObject();
+                if (! mbqNode.isLiteral()) {
+                    throw new TextIndexException("text:maxBasicQueries property must be a int : " + mbqNode);
+                }
+                try {
+                    maxBasicQueries = mbqNode.asLiteral().getInt();
+                } catch (RuntimeException ex) {
+                    // Problems with the integer.
+                    throw new TextIndexException("text:maxBasicQueries property must be a int : " + mbqNode+ "("+ex.getMessage()+")");
+                }
+            }
+
+            // define any property lists for text:query
+            Statement propListsStmt = root.getProperty(pPropLists);
+            if (null != propListsStmt) {
+                RDFNode aNode = propListsStmt.getObject();
+                
+                if (! aNode.isResource()) {
+                    throw new TextIndexException("text:propLists property is not a resource (list) : " + aNode);
+                }
+                
+                PropListsAssembler.open(a, (Resource) aNode);
             }
             
             //define any filters and tokenizers first so they can be referenced in analyzer definitions if need be
@@ -180,6 +205,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             config.setQueryAnalyzer(queryAnalyzer);
             config.setQueryParser(queryParser);
             config.setMultilingualSupport(isMultilingualSupport);
+            config.setMaxBasicQueries(maxBasicQueries);
             config.setValueStored(storeValues);
             config.setIgnoreIndexErrors(ignoreIndexErrs);
             docDef.setCacheQueries(cacheQueries);

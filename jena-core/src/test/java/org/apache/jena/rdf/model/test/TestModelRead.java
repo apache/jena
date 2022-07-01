@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,6 @@
 
 package org.apache.jena.rdf.model.test ;
 
-import org.apache.jena.iri.IRIException ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.test.helpers.ModelHelper ;
@@ -65,14 +64,5 @@ public class TestModelRead extends AbstractModelTestBase
         mBasedExplicit.read(getFileName("modelReading/based.n3"), "http://example/", "N3") ;
         ModelHelper.assertIsoModels(ModelHelper.modelWithStatements(this, "http://example/ ja:predicate ja:object"),
                                     mBasedExplicit) ;
-    }
-    @SuppressWarnings("deprecation")
-    public void testSimpleLoadImplictBase() throws IRIException {
-        final Model mBasedImplicit = createModel() ;
-        String fn=org.apache.jena.n3.N3IRIResolver.resolveGlobal(getFileName("modelReading/based.n3"));
-        final Model wanted = createModel().add(ModelHelper.resource(fn), ModelHelper.property("ja:predicate"),
-                                               ModelHelper.resource("ja:object")) ;
-        mBasedImplicit.read(fn, "N3") ;
-        ModelHelper.assertIsoModels(wanted, mBasedImplicit) ;
     }
 }

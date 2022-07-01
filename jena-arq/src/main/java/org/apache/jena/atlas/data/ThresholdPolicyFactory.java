@@ -16,68 +16,60 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.data ;
+package org.apache.jena.atlas.data;
 
-import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.util.Context;
 
 public class ThresholdPolicyFactory
 {
-    private static final long defaultThreshold = -1 ; // Use the never() policy by default
+    private static final long defaultThreshold = -1; // Use the never() policy by default
 
-    private static final ThresholdPolicy<?> NEVER = new ThresholdPolicy<Object>()
-    {
+    private static final ThresholdPolicy<? > NEVER = new ThresholdPolicy<Object>() {
         @Override
-        public void increment(Object item)
-        {
+        public void increment(Object item) {
             // Do nothing
         }
 
         @Override
-        public boolean isThresholdExceeded()
-        {
-            return false ;
+        public boolean isThresholdExceeded() {
+            return false;
         }
 
         @Override
-        public void reset()
-        {
+        public void reset() {
             // Do nothing
         }
-    } ;
+    };
 
     /**
      * A threshold policy that is never exceeded.
      */
-    public static final <E> ThresholdPolicy<E> never()
-    {
+    public static final <E> ThresholdPolicy<E> never() {
         @SuppressWarnings("unchecked")
-        ThresholdPolicy<E> policy = (ThresholdPolicy<E>) NEVER ;
-        return policy ;
-    }
-    
-    /**
-     * A threshold policy based on the number of tuples added.
-     */
-    public static <E> ThresholdPolicy<E> count(long threshold)
-    {
-        return new ThresholdPolicyCount<>(threshold) ;
+        ThresholdPolicy<E> policy = (ThresholdPolicy<E>)NEVER;
+        return policy;
     }
 
     /**
-     * A threshold policy based on the {@link org.apache.jena.query.ARQ#spillToDiskThreshold} symbol in the given Context.
-     * If the symbol is not set, then the {@link #never()} policy is used by default.
+     * A threshold policy based on the number of tuples added.
      */
-    public static <E> ThresholdPolicy<E> policyFromContext(Context context)
-    {
-        long threshold = context.getLong(ARQ.spillToDiskThreshold, defaultThreshold) ;
-        if ( threshold >= 0 )
-        {
+    public static <E> ThresholdPolicy<E> count(long threshold) {
+        return new ThresholdPolicyCount<>(threshold);
+    }
+
+    /**
+     * A threshold policy based on the
+     * {@link org.apache.jena.query.ARQ#spillToDiskThreshold} symbol in the given
+     * Context. If the symbol is not set, then the {@link #never()} policy is used by
+     * default.
+     */
+    public static <E> ThresholdPolicy<E> policyFromContext(Context context) {
+        long threshold = context.getLong(ARQ.spillToDiskThreshold, defaultThreshold);
+        if ( threshold >= 0 ) {
             return count(threshold);
-        }
-        else
-        {
-            return never() ;
+        } else {
+            return never();
         }
     }
 }

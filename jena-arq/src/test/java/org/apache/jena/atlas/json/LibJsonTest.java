@@ -20,8 +20,6 @@ package org.apache.jena.atlas.json;
 
 
 import static org.junit.Assert.assertEquals ;
-import org.apache.jena.atlas.json.JSON ;
-import org.apache.jena.atlas.json.JsonValue ;
 
 public class LibJsonTest
 {

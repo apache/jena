@@ -1,0 +1,7 @@
+BASE <http://example.org/node-or-3-not>
+
+PREFIX ex: <http://example.org/test#>
+
+shape ex:TestShape {
+	datatype=xsd:string|!datatype=rdf:langString | class = ex:TestClass .
+}

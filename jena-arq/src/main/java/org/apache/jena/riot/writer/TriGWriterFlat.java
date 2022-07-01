@@ -20,23 +20,22 @@ package org.apache.jena.riot.writer;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamOps ;
+import org.apache.jena.riot.system.StreamRDFOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 
 /** TriG writer that writes quads one per line
- *  in TriG form with prefixes and short form literals (e.g. integers) 
+ *  in TriG form with prefixes and short form literals (e.g. integers)
  */
 
-public class TriGWriterFlat extends TriGWriterBase
-{
+public class TriGWriterFlat extends TriGWriterBase {
+
     @Override
     protected void output(IndentedWriter iOut, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF dest = new WriterStreamRDFFlat(iOut) ;
-        dest.start() ;
-        dest.base(baseURI) ;
-        StreamOps.sendDatasetToStream(datasetGraph, dest, prefixMap) ;
-        dest.finish() ;
+        StreamRDF dest = new WriterStreamRDFFlat(iOut, context);
+        dest.start();
+        StreamRDFOps.sendDatasetToStream(datasetGraph, dest, baseURI, prefixMap);
+        dest.finish();
     }
 }

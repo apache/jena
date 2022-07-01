@@ -20,20 +20,17 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-arq</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Jena - ARQ (SPARQL 1.1 Query Engine)</name>
-  <version>3.11.0-SNAPSHOT</version>
-
+  <name>Apache Jena - ARQ</name>
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
-  <description>ARQ is a SPARQL 1.1 query engine for Apache Jena</description>
+  <description>SPARQL 1.1 query engine and RDF parsers for Apache Jena</description>
 
   <properties>
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
     <automatic.module.name>org.apache.jena.arq</automatic.module.name>
   </properties>
@@ -43,14 +40,14 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <classifier>tests</classifier>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -58,44 +55,77 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
       <classifier>tests</classifier>
-      <version>3.11.0-SNAPSHOT</version>
+      <version>4.6.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-shaded-guava</artifactId>
-      <version>3.11.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-    </dependency>
-
+    <!-- jsonld-java for JSON-LD 1.0 -->
     <dependency>
       <groupId>com.github.jsonld-java</groupId>
       <artifactId>jsonld-java</artifactId>
     </dependency>
-
     <!-- replace that used via jsonld-java -->
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>    
+
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient-cache</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>org.apache.thrift</groupId>
-      <artifactId>libthrift</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
     </dependency>
-
     <!--
-         Intercept any uses of Jakarta Commons Logging
-         e.g. Apache Common HTTP client.
+        Intercept any uses of Jakarta Commons Logging
+         e.g. Apache Common HTTP client (JSON-LD 1.0 support)
     -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+
+    <!-- End jsonld-java -->
+
+    <!-- For Titanium JSON-LD 1.1 -->
+    <dependency>
+      <!-- Apache License -->
+      <groupId>com.apicatalog</groupId>
+      <artifactId>titanium-json-ld</artifactId>
+    </dependency>
+    <!-- Eclipse Public License 2.0 (category-B) -->
+    <!-- Not required - contained in org.glassfish:jakarta.json
+         <dependency>
+           <groupId>jakarta.json</groupId>
+           <artifactId>jakarta.json-api</artifactId>
+         </dependency>
+    -->
+    <!--  Eclipse Public License 2.0 (category-B) -->
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.json</artifactId>
+    </dependency>
+    <!-- End Titanium JSON-LD 1.1 -->
+    
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
+      
+    <dependency>
+      <groupId>org.apache.thrift</groupId>
+      <artifactId>libthrift</artifactId>
     </dependency>
 
     <dependency>
@@ -104,8 +134,38 @@
     </dependency>
 
     <dependency>
+      <groupId>org.graalvm.js</groupId>
+      <artifactId>js</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.graalvm.js</groupId>
+      <artifactId>js-scriptengine</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.python</groupId>
+      <artifactId>jython-standalone</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -142,13 +202,13 @@
         <configuration>
           <includes>
             <!--
-          The test collections TC_General, TC_Riot, TC_Atlas
-          are development support that collect the relevant
-          tests for partial testing during development.
-        -->
+                The test collections TC_ARQ, TC_Riot, TC_Atlas_ARQ
+                are development support that collect the relevant
+                tests for partial testing during development.
+                TC_Examples does not run in the the build.
+            -->
             <include>**/TS_*.java</include>
-            <include>**/TC_Scripted.java</include>
-            <include>**/TC_DAWG.java</include>
+            <include>**/Scripts_*.java</include>
           </includes>
         </configuration>
       </plugin>
@@ -170,6 +230,13 @@
             <goals>
               <goal>test-jar-no-fork</goal>
             </goals>
+            <configuration>
+              <archive>
+                <manifestEntries>
+                  <Automatic-Module-Name>${automatic.module.name}.test</Automatic-Module-Name>
+                </manifestEntries>
+              </archive>
+            </configuration>
           </execution>
         </executions>
 
@@ -204,7 +271,6 @@
           <encoding>UTF-8</encoding>
           <windowtitle>Apache Jena ARQ</windowtitle>
           <doctitle>Apache Jena ARQ ${project.version}</doctitle>
-          <excludePackageNames>arq:arq.*:riotcmd:riotcmd.*</excludePackageNames>
           <groups>
             <group>
               <title>SPARQL Query and Update</title>

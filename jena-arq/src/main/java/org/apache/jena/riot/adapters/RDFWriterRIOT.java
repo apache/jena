@@ -26,7 +26,7 @@ import java.util.Map ;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdf.model.RDFWriter ;
+import org.apache.jena.rdf.model.RDFWriterI ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.sparql.util.Context ;
@@ -34,43 +34,40 @@ import org.apache.jena.sparql.util.Symbol ;
 
 /**
  * This class is used for indirecting all model.write calls to RIOT. It
- * implements Jena core {@link RDFWriter} can calls {@link WriterGraphRIOT}.
+ * implements Jena core {@link RDFWriterI} can calls {@link WriterGraphRIOT}.
  * <p>
  * For RDF/XML, that {@link WriterGraphRIOT} is a {@link AdapterRDFWriter} that
- * calls the old style {@link RDFWriter} interface.
+ * calls the old style {@link RDFWriterI} interface.
  * <p>
  * {@link AdapterRDFWriter} is a {@link WriterGraphRIOT} over a
- * {@link RDFWriter}.
+ * {@link RDFWriterI}.
  */
-public class RDFWriterRIOT implements RDFWriter 
+public class RDFWriterRIOT implements RDFWriterI
 {
     // ---- Compatibility
-    private final String basename ; 
-    private final String jenaName ; 
-    private Context context = new Context() ;
-    private Map<String, Object> properties = new HashMap<>() ;
+    private final String basename ;
+    private final String jenaName ;
+    private Context context = null;
+    private Map<String, Object> properties = null;
     private RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
-    
+
     public RDFWriterRIOT(String jenaName) {
         this.basename = "org.apache.jena.riot.writer." + jenaName.toLowerCase(Locale.ROOT);
         this.jenaName = jenaName;
-        context.put(SysRIOT.sysRdfWriterProperties, properties);
+
     }
 
     protected RDFWriterBuilder writer() {
         if ( jenaName == null )
             throw new IllegalArgumentException("Jena writer name is null");
-        // For writing via model.write(), use any old names for jena writers. (As of 2107-03 - there are none)
-        RDFFormat format = RDFWriterRegistry.getFormatForJenaWriter(jenaName) ;
+        // For writing via model.write(), use any old names for jena writers.
         RDFWriterBuilder builder = org.apache.jena.riot.RDFWriter.create();
-        if ( format != null )
-            return builder.format(format);
         Lang lang = RDFLanguages.nameToLang(jenaName);
         if ( lang != null )
             return builder.lang(lang);
         throw new RiotException("No graph writer for '" + jenaName + "'");
     }
-    
+
     @SuppressWarnings("deprecation")
     @Override
     public void write(Model model, Writer out, String base) {
@@ -78,7 +75,7 @@ public class RDFWriterRIOT implements RDFWriter
             base = null;
         writer().source(model).context(context).base(base).build().output(out);
     }
-    
+
     @Override
     public void write(Model model, OutputStream out, String base) {
         if ( base != null && base.equals("") )
@@ -88,11 +85,14 @@ public class RDFWriterRIOT implements RDFWriter
 
     @Override
     public Object setProperty(String propName, Object propValue) {
+        if ( context == null ) {
+            context = RIOT.getContext().copy();
+            properties = new HashMap<>() ;
+            context.put(SysRIOT.sysRdfWriterProperties, properties);
+        }
         Symbol sym = Symbol.create(basename + "#" + propName);
-        Object oldObj = context.get(sym);
-        context.set(sym, propValue);
+        Object oldObj = properties.get(propName);
         properties.put(propName, propValue) ;
-        // These are added to any Jena RDFWriter (old-style, e.g. RDF/XML) in AdapterRDFWriter  
         return oldObj;
     }
 

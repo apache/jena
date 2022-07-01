@@ -19,9 +19,9 @@ package org.apache.jena.riot.system;
 
 import java.util.Map;
 import java.util.function.BiConsumer ;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.iri.IRI;
 import org.apache.jena.shared.PrefixMapping ;
 
 /**
@@ -30,168 +30,150 @@ import org.apache.jena.shared.PrefixMapping ;
  * functionality.
  * <p>
  * The contract also does not require an implementation to do any validation
- * unlike the Jena Core {@link PrefixMapping} which require validation of
+ * unlike the Jena Core {@link PrefixMapping} which requires validation of
  * prefixes.
  * </p>
- * <h3>Implementations</h3>
- * <p>
- * For input dominated workloads where you are primarily calling
- * {@link #expand(String)} or {@link #expand(String, String)} it is best to use
- * the default implementation - {@link PrefixMapStd}. For output dominated
- * workloads where you are primarily calling {@link #abbrev(String)} or
- * {@link #abbreviate(String)} it is better to use the {@link FastAbbreviatingPrefixMap}
- * implementation.  See the javadoc for those classes for more explanation
- * of their differences.
- * </p>
- * 
  */
 public interface PrefixMap {
+    /**
+     * Return the URI for the prefix, or null if there is no entry for this prefix.
+     */
+    public String get(String prefix);
+
+    // Is this a good idea? Leave out until it is justified.
+//    /**
+//     * Find a prefix that is mapped to the URI argument.
+//     * <p>
+//     * Several prefixes may map to the same URI; this function does not say which is
+//     * return nor whether the same prefix is returned each time.
+//     * <p>
+//     * This operation may be slow (a scan of all the prefix mappings).
+//     */
+//    public default String getByURI(String uri) {
+//        Objects.requireNonNull(uri);
+//        return getMapping().entrySet().stream().filter(e->e.getValue().equals(uri)).map(e->e.getKey()).findFirst().orElse(null);
+//    }
 
     /**
      * Return the underlying mapping, this is generally unsafe to modify and
      * implementations may opt to return an unmodifiable view of the mapping if
-     * they wish
-     * 
+     * they wish.
+     *
+     * @see #getMappingCopy()
+     *
      * @return Underlying mapping
-     * */
-    public abstract Map<String, IRI> getMapping();
+     */
+    public Map<String, String> getMapping();
 
     /**
      * Return a fresh copy of the underlying mapping, should be safe to modify
      * unlike the mapping returned from {@link #getMapping()}
-     * 
+     *
      * @return Copy of the mapping
      */
-    public abstract Map<String, IRI> getMappingCopy();
+    public Map<String, String> getMappingCopy();
 
     /**
-     * Gets a fresh copy of the mapping with the IRIs translated into their
-     * strings
-     * 
-     * @return Copy of the mapping
+     * Apply a {@link BiConsumer}{@literal <String, String>} to each entry in the PrefixMap.
      */
-    public abstract Map<String, String> getMappingCopyStr();
+    public void forEach(BiConsumer<String, String> action) ;
 
     /**
-     * Apply a {@link BiConsumer}{@code <String, IRI>} to each entry in the Prefixmap.
+     * Return a stream of {@link PrefixEntry}, pairs of prefix and URI.
      */
-    public abstract void forEach(BiConsumer<String, IRI> action) ;
+    public Stream<PrefixEntry> stream();
 
     /**
      * Add a prefix, overwrites any existing association
-     * 
-     * @param prefix
-     *            Prefix
-     * @param iriString
-     *            Namespace IRI
+     *
+     * @param prefix Prefix
+     * @param iriString Namespace IRI
      */
-    public abstract void add(String prefix, String iriString);
+    public void add(String prefix, String iriString);
 
     /**
      * Add a prefix, overwrites any existing association
-     * 
-     * @param prefix
-     *            Prefix
-     * @param iri
-     *            Namespace IRI
+     *
+     * @param pmap Prefix Map
      */
-    public abstract void add(String prefix, IRI iri);
+    public void putAll(PrefixMap pmap);
 
     /**
      * Add a prefix, overwrites any existing association
-     * 
-     * @param pmap
-     *            Prefix Map
+     *
+     * @param pmap Prefix Mapping
      */
-    public abstract void putAll(PrefixMap pmap);
+    public void putAll(PrefixMapping pmap);
 
     /**
      * Add a prefix, overwrites any existing association
-     * 
-     * @param pmap
-     *            Prefix Mapping
+     *
+     * @param mapping A Map of prefix name to IRI string
      */
-    public abstract void putAll(PrefixMapping pmap);
-
-    /**
-     * Add a prefix, overwrites any existing association
-     * 
-     * @param mapping A Map of prefix name to IRI string 
-     */
-    public abstract void putAll(Map<String, String> mapping) ;
+    public void putAll(Map<String, String> mapping) ;
 
     /**
      * Delete a prefix
-     * 
-     * @param prefix
-     *            Prefix to delete
+     *
+     * @param prefix Prefix to delete
      */
-    public abstract void delete(String prefix);
+    public void delete(String prefix);
 
     /**
      * Clear all prefixes.
      */
-    public abstract void clear();
+    public void clear();
 
     /**
      * Gets whether the map contains a given prefix
-     * 
+     *
      * @param prefix
      *            Prefix
      * @return True if the prefix is contained in the map, false otherwise
      */
-    public abstract boolean contains(String prefix);
+    public boolean containsPrefix(String prefix);
 
     /**
      * Abbreviate an IRI or return null
-     * 
-     * @param uriStr
-     *            URI to abbreviate
+     *
+     * @param uriStr URI to abbreviate
      * @return URI in prefixed name form if possible, null otherwise
      */
-    public abstract String abbreviate(String uriStr);
+    public String abbreviate(String uriStr);
 
     /**
      * Abbreviate an IRI and return a pair of prefix and local parts, or null.
-     * 
-     * @param uriStr
-     *            URI string to abbreviate
+     *
+     * @param uriStr URI string to abbreviate
      * @return Pair of prefix and local name
      * @see #abbreviate
      */
-    public abstract Pair<String, String> abbrev(String uriStr);
+    public Pair<String, String> abbrev(String uriStr);
 
     /**
      * Expand a prefix named, return null if it can't be expanded
-     * 
-     * @param prefixedName
-     *            Prefixed Name
+     *
+     * @param prefixedName Prefixed Name
      * @return Expanded URI if possible, null otherwise
      */
-    public abstract String expand(String prefixedName);
+    public String expand(String prefixedName);
 
     /**
      * Expand a prefix, return null if it can't be expanded
-     * 
-     * @param prefix
-     *            Prefix
-     * @param localName
-     *            Local name
+     *
+     * @param prefix Prefix
+     * @param localName Local name
      * @return Expanded URI if possible, null otherwise
      */
-    public abstract String expand(String prefix, String localName);
-    
-    /**
-     * return whether the 
-     * @return boolean
-     */
+    public String expand(String prefix, String localName);
 
+    /**
+     * Return whether the prefix map is empty or not.
+     */
     public boolean isEmpty();
-    
+
     /**
      * Return the number of entries in the prefix map.
-     * @return Size of the prefix mapping
      */
-
     public int size();
 }

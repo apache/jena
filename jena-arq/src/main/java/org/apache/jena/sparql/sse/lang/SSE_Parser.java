@@ -18,58 +18,39 @@
 
 package org.apache.jena.sparql.sse.lang;
 
-import java.io.Reader ;
+import java.io.Reader;
 
-import org.apache.jena.sparql.sse.SSEParseException ;
-import org.apache.jena.sparql.sse.lang.parser.ParseException ;
-import org.apache.jena.sparql.sse.lang.parser.SSE_ParserCore ;
-import org.apache.jena.sparql.sse.lang.parser.TokenMgrError ;
+import org.apache.jena.sparql.sse.SSE_ParseException;
+import org.apache.jena.sparql.sse.lang.parser.ParseException;
+import org.apache.jena.sparql.sse.lang.parser.SSE_ParserCore;
+import org.apache.jena.sparql.sse.lang.parser.TokenMgrError;
 
 /** Public interface to the SSE parser */
-
 public class SSE_Parser
 {
-    public static void term(Reader reader, ParseHandler handler)
-    {
-        SSE_ParserCore p = new SSE_ParserCore(reader) ;
-        p.setHandler(handler) ;
-        try
-        {
-            p.term() ;
-            // Checks for EOF 
-//            //<EOF> test : EOF is always token 0.
-//            if ( p.token_source.getNextToken().kind != 0 )
-//                throw new SSEParseException("Trailing characters after "+item, item.getLine(), item.getColumn()) ;
-       } 
-       catch (ParseException ex)
-       { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
-       catch (TokenMgrError tErr)
-       { 
-           // Last valid token : not the same as token error message - but this should not happen
-           int col = p.token.endColumn ;
-           int line = p.token.endLine ;
-           throw new SSEParseException(tErr.getMessage(), line, col) ;
-       }
-       //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
+    @FunctionalInterface
+    private interface ParserEntry { void entry(SSE_ParserCore parser) throws ParseException; }
+
+    public static void parse(Reader reader, ParseHandler handler) {
+        parse$(reader, handler, SSE_ParserCore::parse);
     }
 
-    public static void parse(Reader reader, ParseHandler handler)
-    {
-        SSE_ParserCore p = new SSE_ParserCore(reader) ;
-        p.setHandler(handler) ;
-        try
+    private static void parse$(Reader reader, ParseHandler handler, ParserEntry parserStep) {
+        SSE_ParserCore p = new SSE_ParserCore(reader);
+        p.setHandler(handler);
+        try {
+            parserStep.entry(p);
+            // EOF checking done within the parser.
+        }
+        catch (ParseException ex)
+        { throw new SSE_ParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn); }
+        catch (TokenMgrError tErr)
         {
-            p.parse() ;
-       } 
-       catch (ParseException ex)
-       { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
-       catch (TokenMgrError tErr)
-       { 
-           // Last valid token : not the same as token error message - but this should not happen
-           int col = p.token.endColumn ;
-           int line = p.token.endLine ;
-           throw new SSEParseException(tErr.getMessage(), line, col) ;
-       }
-       //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
+            // Last valid token : not the same as token error message - but this should not happen
+            int col = p.token.endColumn;
+            int line = p.token.endLine;
+            throw new SSE_ParseException(tErr.getMessage(), line, col);
+        }
     }
+
 }

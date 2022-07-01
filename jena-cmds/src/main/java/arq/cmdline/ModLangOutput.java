@@ -22,11 +22,7 @@ import java.io.PrintStream ;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdArgModule;
-import jena.cmd.CmdException;
-import jena.cmd.CmdGeneral;
-import jena.cmd.ModBase;
+import org.apache.jena.cmd.*;
 import org.apache.jena.ext.com.google.common.base.Objects;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;

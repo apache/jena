@@ -20,10 +20,11 @@ package org.apache.jena.fuseki.ctl;
 
 public class JsonConstCtl {
 
-    public static final String taskId           = "taskId" ;
-    public static final String taskRequestId    = "requestId" ;
-    public static final String task             = "task" ;
-    public static final String finished         = "finished" ;
-    public static final String started          = "started" ;
+    public static final String taskId           = "taskId";
+    public static final String taskRequestId    = "requestId";
+    public static final String task             = "task";
+    public static final String finished         = "finished";
+    public static final String started          = "started";
+    public static final String success          = "success";
 
 }

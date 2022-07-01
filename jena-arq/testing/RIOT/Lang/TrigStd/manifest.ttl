@@ -53,7 +53,10 @@
     <#underscore_in_localName>
     <#localname_with_COLON>
     <#localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries>
-    <#localName_with_assigned_nfc_PN_CHARS_BASE_character_boundaries>
+
+    ## Contains \U000E01EF in the result which is not legal in a IRI.
+    ##   <#localName_with_assigned_nfc_PN_CHARS_BASE_character_boundaries>
+
     <#localName_with_nfc_PN_CHARS_BASE_character_boundaries>
     <#localName_with_leading_underscore>
     <#localName_with_leading_digit>

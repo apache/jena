@@ -18,45 +18,56 @@
 
 package org.apache.jena.sparql.lang;
 
+import java.io.FileReader;
 import java.io.InputStream ;
 import java.io.Reader ;
+import java.io.StringReader;
 
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.query.Syntax ;
+import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.modify.UpdateSink ;
 import org.apache.jena.util.FileUtils ;
 
-/** This class provides the root of lower level access to all the parsers.
- *  Each subclass hides the details of the per-language exception handlers and other
- *  javacc details to provide a methods that deal with setting up Query objects
- *  and using QueryException exceptions for problems.    
+/** 
+ * This class provides the root of lower level access to all the update parsers.
+ * Each subclass hides the details of the per-language exception handlers and other
+ * javacc details.    
  */
 
 public abstract class UpdateParser
 {
-    public final void parse(UpdateSink sink, String updateString) throws QueryParseException
-    {
-        parse$(sink, updateString) ;
+    protected UpdateParser() {}
+    
+    /** Parse a string */ 
+    public final void parse(UpdateSink sink, Prologue prologue, String updateString) throws QueryParseException {
+        Reader r = new StringReader(updateString);
+        executeParse(sink, prologue, r);
     }
 
-    protected abstract void parse$(UpdateSink sink, String updateString) throws QueryParseException ;
-
-    public final void parse(UpdateSink sink, InputStream input) throws QueryParseException
-    {
+    /** Parse an input stream */ 
+    public final void parse(UpdateSink sink, Prologue prologue, InputStream input) throws QueryParseException {
         // BOM processing moved to the grammar.
-        Reader r = FileUtils.asBufferedUTF8(input) ;
-        parse$(sink, r) ;
+        Reader r = FileUtils.asBufferedUTF8(input);
+        executeParse(sink, prologue, r);
     }
-    
-    protected abstract void parse$(UpdateSink sink, Reader r) throws QueryParseException ;
 
-    public static boolean canParse(Syntax syntaxURI)
-    {
-        return UpdateParserRegistry.get().containsFactory(syntaxURI) ;
+    /** Use with care - Reader must be UTF-8 */
+    public void parse(UpdateSink sink, Prologue prologue, Reader r) {
+        if ( r instanceof FileReader )
+            Log.warn(this, "FileReader passed to Update parser - use a FileInputStream");
+        executeParse(sink, prologue, r);
     }
+
+    // Subclass action.
+    protected abstract void executeParse(UpdateSink sink, Prologue prologue, Reader r);
     
-    public static UpdateParser createParser(Syntax syntaxURI)
-    {
-        return UpdateParserRegistry.get().createParser(syntaxURI) ;
+    public static boolean canParse(Syntax syntaxURI) {
+        return UpdateParserRegistry.get().containsFactory(syntaxURI);
+    }
+
+    public static UpdateParser createParser(Syntax syntaxURI) {
+        return UpdateParserRegistry.get().createParser(syntaxURI);
     }
 }

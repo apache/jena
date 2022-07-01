@@ -1,0 +1,11 @@
+bnode01.rq
+
+--strict
+--engine=ref
+
+would fail without combining assignments because the algebra is
+
+    (extend ((?b2 (bnode ?s2)))
+      (extend ((?b1 (bnode ?s1)))
+
+and scope is one "extend" (not the row).

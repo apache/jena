@@ -19,7 +19,6 @@
 package org.apache.jena.rdfxml.xmlinput.states;
 
 import org.apache.jena.rdfxml.xmlinput.impl.Names ;
-import org.apache.jena.rdfxml.xmlinput.states.FrameI ;
 import org.xml.sax.Attributes ;
 
 class AttrEvent extends Event {

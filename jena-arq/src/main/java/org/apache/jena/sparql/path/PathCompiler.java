@@ -23,20 +23,24 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.PathBlock ;
 import org.apache.jena.sparql.core.TriplePath ;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarAlloc ;
 
 public class PathCompiler
 {
     // Convert to work on OpPath.
     // Need pre (and post) BGPs.
-    
-    private static VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker+"P") ;
-    
-    // Move to AlgebraCompiler and have a per-transaction scoped var generator 
-    
+
+    private static VarAlloc varAlloc = new VarAlloc(ARQConstants.allocPathVariables) ;
+
+    /** Testing use only. */
+    public static void resetForTest() {  varAlloc = new VarAlloc(ARQConstants.allocPathVariables) ; }
+
+    // Move to AlgebraCompiler and have a per-transaction scoped var generator
+
     // ---- Syntax-based
-    
-    /** Simplify : turns constructs in simple triples and simpler TriplePaths where possible */ 
+
+    /** Simplify : turns constructs in simple triples and simpler TriplePaths where possible */
     public PathBlock reduce(PathBlock pathBlock)
     {
         PathBlock x = new PathBlock() ;
@@ -45,12 +49,12 @@ public class PathCompiler
 //        if ( varAlloc == null )
 //            // Panic
 //            throw new ARQInternalErrorException("No execution-scope allocator for variables") ;
-        
+
         // Translate one into another.
         reduce(x, pathBlock, varAlloc) ;
         return x ;
     }
-   
+
     void reduce(PathBlock x, PathBlock pathBlock, VarAlloc varAlloc )
     {
         for ( TriplePath tp : pathBlock )
@@ -63,30 +67,32 @@ public class PathCompiler
             reduce(x, varAlloc, tp.getSubject(), tp.getPath(), tp.getObject()) ;
         }
     }
-    
+
     // ---- Algebra-based transformation.
+    // Does not include "|". Called by TransformPathFlattern.
+    // See TransformPathFlatternStd for union expansion.
     public PathBlock reduce(TriplePath triplePath)
     {
         PathBlock x = new PathBlock() ;
         reduce(x, varAlloc, triplePath.getSubject(), triplePath.getPath(), triplePath.getObject()) ;
         return x ;
     }
-    
+
     public PathBlock reduce(Node start, Path path, Node finish)
     {
         PathBlock x = new PathBlock() ;
         reduce(x, varAlloc, start, path, finish) ;
         return x ;
     }
-    
+
     private static void reduce(PathBlock x, VarAlloc varAlloc, Node startNode, Path path, Node endNode)
     {
         // V-i-s-i-t-o-r!
-        
+
         if ( path instanceof P_Link )
         {
             Node pred = ((P_Link)path).getNode() ;
-            Triple t = new Triple(startNode, pred, endNode) ; 
+            Triple t = new Triple(startNode, pred, endNode) ;
             x.add(new TriplePath(t)) ;
             return ;
         }
@@ -95,8 +101,14 @@ public class PathCompiler
         {
             P_Seq ps = (P_Seq)path ;
             Node v = varAlloc.allocVar() ;
-            reduce(x, varAlloc, startNode, ps.getLeft(), v) ;
-            reduce(x, varAlloc, v, ps.getRight(), endNode) ;
+            if ( Var.isVar(startNode) && ! Var.isVar(endNode) ) {
+                // start at the grounded term.
+                reduce(x, varAlloc, v, ps.getRight(), endNode) ;
+                reduce(x, varAlloc, startNode, ps.getLeft(), v) ;
+            } else {
+                reduce(x, varAlloc, startNode, ps.getLeft(), v) ;
+                reduce(x, varAlloc, v, ps.getRight(), endNode) ;
+            }
             return ;
         }
 
@@ -114,7 +126,7 @@ public class PathCompiler
             {
                 // Don't do {0}
                 Node stepStart = startNode ;
-    
+
                 for ( long i = 0 ; i < N-1 ; i++ )
                 {
                     Node v = varAlloc.allocVar() ;
@@ -125,7 +137,7 @@ public class PathCompiler
                 return ;
             }
         }
-        
+
         if ( path instanceof P_Mod )
         {
             P_Mod pMod = (P_Mod)path ;
@@ -147,18 +159,18 @@ public class PathCompiler
                 }
             }
 
-            // This is the rewrite of 
+            // This is the rewrite of
             //    "x {N,} y" to "x :p{N} ?V . ?V :p* y"
             //    "x {N,M} y" to "x :p{N} ?V . ?V {0,M} y"
-            // The spec defines {n,m} to be 
+            // The spec defines {n,m} to be
             //   {n} union {n+1} union ... union {m}
             // which leads to a lot of repeated work.
-            
+
             if ( pMod.getMin() > 0 )
             {
                 Path p1 = PathFactory.pathFixedLength(pMod.getSubPath(), pMod.getMin()) ;
                 Path p2 ;
-                
+
                 if ( pMod.getMax() < 0 )
                     p2 = PathFactory.pathZeroOrMoreN(pMod.getSubPath()) ;
                 else
@@ -167,9 +179,9 @@ public class PathCompiler
                     if ( len2 < 0 ) len2 = 0 ;
                     p2 = PathFactory.pathMod(pMod.getSubPath(),0, len2) ;
                 }
-                
+
                 Node v = varAlloc.allocVar() ;
-                
+
                 // Start at the fixed end.
                 if ( ! startNode.isVariable() || endNode.isVariable() )
                 {
@@ -184,11 +196,11 @@ public class PathCompiler
                 }
                 return ;
             }
-            
-            
+
+
             // Else drop through
         }
-        
+
         // Nothing can be done.
         x.add(new TriplePath(startNode, path, endNode)) ;
     }

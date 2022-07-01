@@ -16,48 +16,48 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.modify ;
+package org.apache.jena.sparql.modify;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.GraphUtil ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.ARQTestSuite ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.graph.GraphFactory ;
-import org.apache.jena.update.UpdateAction ;
+import org.apache.jena.arq.ARQTestSuite;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphUtil;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.update.UpdateAction;
 
-public abstract class AbstractTestUpdateBase extends BaseTest {
-    protected abstract DatasetGraph getEmptyDatasetGraph() ;
+public abstract class AbstractTestUpdateBase
+{
+    protected abstract DatasetGraph getEmptyDatasetGraph();
 
     protected void defaultGraphData(DatasetGraph gStore, Graph data) {
-        Graph g = gStore.getDefaultGraph() ;
-        g.clear() ;
-        GraphUtil.addInto(g, data) ;
+        Graph g = gStore.getDefaultGraph();
+        g.clear();
+        GraphUtil.addInto(g, data);
     }
 
     protected void namedGraphData(DatasetGraph gStore, Node uri, Graph data) {
-        Graph g = gStore.getGraph(uri) ;
+        Graph g = gStore.getGraph(uri);
         if ( g == null ) {
-            gStore.addGraph(uri, GraphFactory.createJenaDefaultGraph()) ;
-            g = gStore.getGraph(uri) ;
+            gStore.addGraph(uri, GraphFactory.createJenaDefaultGraph());
+            g = gStore.getGraph(uri);
         } else
-            g.clear() ;
-        GraphUtil.addInto(g, data) ;
+            g.clear();
+        GraphUtil.addInto(g, data);
     }
 
-    protected static final String FileBase = ARQTestSuite.testDirUpdate ;
+    protected static final String FileBase = ARQTestSuite.testDirUpdate;
 
     protected static void script(DatasetGraph gStore, String filename) {
-        UpdateAction.readExecute(FileBase + "/" + filename, gStore) ;
+        UpdateAction.readExecute(FileBase + "/" + filename, gStore);
     }
 
     protected static boolean graphEmpty(Graph graph) {
-        return graph.isEmpty() ;
+        return graph.isEmpty();
     }
 
     protected static boolean graphContains(Graph graph, Triple triple) {
-        return graph.contains(triple) ;
+        return graph.contains(triple);
     }
 }

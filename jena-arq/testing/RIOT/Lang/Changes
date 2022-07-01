@@ -1,0 +1,15 @@
+Tests localName_with_nfc_PN_CHARS_BASE_character_boundaries
+in Turtle and Trig contain IRIs with the character \U000E01EF
+in the result nt/nq files.
+
+That character is illegal in IRIs, even if allowed by syntax.
+So it causes a failure whn reading the test.
+
+It is not in RFC 3987 - the block E0000-E0FFF is excluded.
+
+   ucschar        = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
+                  / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD
+                  / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD
+                  / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD
+                  / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD
+                  / %xD0000-DFFFD / %xE1000-EFFFD

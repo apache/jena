@@ -18,72 +18,66 @@
 
 package org.apache.jena.sparql.sse.builders;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.algebra.TableFactory ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.ItemList ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.algebra.TableFactory;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.ItemList;
+import org.apache.jena.sparql.sse.Tags;
 
 public class BuilderTable
 {
-    public static Table build(Item item)
-    {
-        BuilderLib.checkTagged(item, Tags.tagTable, "Not a (table ...)") ;
+    public static Table build(Item item) {
+        BuilderLib.checkTagged(item, Tags.tagTable, "Not a (table ...)");
 
-        ItemList list = item.getList() ;
-        int start = 1 ;
+        ItemList list = item.getList();
+        int start = 1;
         if ( list.size() == 1 )
             // Null table;
-            return TableFactory.createEmpty() ;
+            return TableFactory.createEmpty();
 
         // Maybe vars.
-        List<Var> vars = null ; 
-        if ( list.size() > 1 )
-        {
-            Item item0 = list.get(1) ;
-            if ( item0.isTagged(Tags.tagVars) )
-            {
-                vars = BuilderNode.buildVarList(item0) ;
-                list = list.cdr() ;
+        List<Var> vars = null;
+        if ( list.size() > 1 ) {
+            Item item0 = list.get(1);
+            if ( item0.isTagged(Tags.tagVars) ) {
+                vars = BuilderNode.buildVarList(item0);
+                list = list.cdr();
             }
         }
-        
-        if ( list.size() == 2 && list.get(1).isSymbol() )
-        {
-            //  Short hand for well known tables
-            String symbol = list.get(1).getSymbol() ;
-            if ( symbol.equals("unit") ) 
-                return TableFactory.createUnit() ;
-            if ( symbol.equals("empty") ) 
-                return TableFactory.createEmpty() ;
-            BuilderLib.broken(list, "Don't recognized table symbol") ;
+
+        if ( list.size() == 2 && list.get(1).isSymbol() ) {
+            // Short hand for well known tables
+            String symbol = list.get(1).getSymbol();
+            if ( symbol.equals("unit") )
+                return TableFactory.createUnit();
+            if ( symbol.equals("empty") )
+                return TableFactory.createEmpty();
+            BuilderLib.broken(list, "Don't recognized table symbol");
         }
-        
-        Table table = TableFactory.create(vars) ;
-        
-        int count = 0 ;
-        Binding lastBinding = null ;
-        for ( int i = start ; i < list.size() ; i++ )
-        {
-            Item itemRow = list.get(i) ;
-            Binding b = BuilderBinding.build(itemRow) ;
-            table.addBinding(b) ;
-            lastBinding = b ;
-            count++ ;
+
+        Table table = TableFactory.create(vars);
+
+        int count = 0;
+        Binding lastBinding = null;
+        for ( int i = start ; i < list.size() ; i++ ) {
+            Item itemRow = list.get(i);
+            Binding b = BuilderBinding.build(itemRow);
+            table.addBinding(b);
+            lastBinding = b;
+            count++;
         }
         // Was it the unit table?
-        
-        if ( table.size() == 1 )
-        {
+
+        if ( table.size() == 1 ) {
             // One row, no bindings.
             if ( lastBinding.isEmpty() )
-                return TableFactory.createUnit() ;
+                return TableFactory.createUnit();
         }
-        
-        return table ;
+
+        return table;
     }
 }

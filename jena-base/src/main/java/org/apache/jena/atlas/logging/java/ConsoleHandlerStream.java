@@ -19,6 +19,7 @@
 package org.apache.jena.atlas.logging.java;
 
 import java.io.OutputStream ;
+import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets ;
 import java.util.logging.* ;
 
@@ -43,38 +44,38 @@ import org.apache.commons.io.output.CloseShieldOutputStream;
  * org.apache.jena.atlas.logging.java.TextFormatter.format = %5$tT %3$-5s %2$-20s -- %6$s</pre>
  */
 public class ConsoleHandlerStream extends StreamHandler {
-    
-    // We can't use ConsoleHandler.  
+
+    // We can't use ConsoleHandler.
     // The setOutputStream() operation closes the previous stream but when the only
     // constructor ConsoleHandler() runs, it sets output to System.err.
     // So System.err is then closed in the app!
     // We need to chose the output in the constructor and ConsoleHandler does not allow that,
-    // hence going straight to StreamHandler and having to provide the functionality here. 
-    
+    // hence going straight to StreamHandler and having to provide the functionality here.
+
     private static OutputStream protectStdOutput(OutputStream outputStream) {
         if ( outputStream == System.err || outputStream == System.out )
-            return new CloseShieldOutputStream(outputStream);
+            return CloseShieldOutputStream.wrap(outputStream);
         return outputStream;
     }
-    
+
     public ConsoleHandlerStream() {
         this(System.out) ;
     }
-    
+
     public ConsoleHandlerStream(OutputStream outputStream) {
         super(protectStdOutput(outputStream), new TextFormatter()) ;
-        
+
         LogManager manager = LogManager.getLogManager();
         ClassLoader classLoader = ClassLoader.getSystemClassLoader() ;
         String cname = getClass().getName();
-        
+
         // -- Level
         Level level = Level.INFO ;
         String pLevel = getProperty(manager, cname, "level") ;
         if ( pLevel != null )
             level = Level.parse(pLevel) ;
         setLevel(level);
-        
+
         // -- Formatter
         // The default is TextFormatter above
         // (we had to pass a Formatter of some kind to super(,)).
@@ -82,40 +83,44 @@ public class ConsoleHandlerStream extends StreamHandler {
         if ( pFormatter != null ) {
             try {
                 Class<?> cls = classLoader.loadClass(pFormatter);
-                setFormatter((Formatter) cls.newInstance());
+                Constructor<?> constructor = cls.getConstructor();
+                Object obj = constructor.newInstance();
+                setFormatter((Formatter)obj);
             } catch (Exception ex) {
-                System.err.println("Problems setting the logging formatter") ;
+                System.err.println("Problems setting the logging formatter");
                 ex.printStackTrace(System.err);
             }
         }
-        
+
         // -- Filter
         String pFilter = getProperty(manager, cname, "filter") ;
         if ( pFilter != null ) {
             try {
                 Class<?> cls = classLoader.loadClass(pFilter);
-                setFilter((Filter) cls.newInstance());
+                Constructor<?> constructor = cls.getConstructor();
+                Object obj = constructor.newInstance();
+                setFilter((Filter)obj);
             } catch (Exception ex) {
                 System.err.println("Problems setting the logging filter") ;
                 ex.printStackTrace(System.err);
             }
         }
-        
+
         // -- Encoding : Default UTF-8
         String pEncoding = getProperty(manager, cname, "encoding") ;
         if ( pEncoding == null )
             pEncoding = StandardCharsets.UTF_8.name() ;
         try { setEncoding(pEncoding) ; }
-        catch (Exception e) { 
-            // That should work for UTF-8 as it is a required charset. 
+        catch (Exception e) {
+            // That should work for UTF-8 as it is a required charset.
             System.err.print("Failed to set encoding: "+e.getMessage()) ;
         }
     }
-    
+
     private static String getProperty(LogManager manager, String cname, String pname) {
         return manager.getProperty(cname+"."+pname);
     }
-    
+
     @Override
     public void publish(LogRecord record) {
         super.publish(record);

@@ -18,25 +18,56 @@
 
 package org.apache.jena.riot;
 
-import org.junit.Assert ;
-import org.junit.Test ;
+import java.util.Locale;
+
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.base.Sys;
+import org.junit.Assert;
+import org.junit.Test;
+import org.python.google.common.base.Predicate;
 
 public class TestSysRIOT {
-    @Test public void chooseBaseIRI_1() {
-        testChooseBaseIRI("http://example/foo/bar", "http://example/foo/bar") ;
+    @Test
+    public void chooseBaseIRI_1() {
+        testChooseBaseIRI("http://example/foo/bar", "http://example/foo/bar");
     }
 
-    @Test public void chooseBaseIRI_2() {
-        testChooseBaseIRI("-", "http://localhost/stdin/") ;
+    @Test
+    public void chooseBaseIRI_2() {
+        testChooseBaseIRI("-", "http://localhost/stdin/");
     }
 
-    @Test public void chooseBaseIRI_10() {
-        String x = SysRIOT.chooseBaseIRI(null, "foo") ;
-        Assert.assertTrue(x.startsWith("file:///"));
+    // "c:" exists (almost always)
+    @Test
+    public void chooseBaseIRI_3() {
+        if ( Sys.isWindows ) {
+            if ( IO.exists("c:/") )
+                testChooseBaseIRI("c:", s->s.toLowerCase(Locale.ROOT).startsWith("file:///c:/"));
+        } else
+            testChooseBaseIRI("x:", "x:");
+    }
+
+    @Test
+    public void chooseBaseIRI_4() {
+        if ( Sys.isWindows ) {
+            if ( IO.exists("c:/") )
+                testChooseBaseIRI("c:", s->s.toLowerCase(Locale.ROOT).startsWith("file:///c:/"));
+        } else
+            testChooseBaseIRI("x:/", "x:/");
+    }
+
+    @Test
+    public void chooseBaseIRI_10() {
+        testChooseBaseIRI("foo", s->s.startsWith("file:///"));
     }
 
     private void testChooseBaseIRI(String input, String expected) {
-        String x = SysRIOT.chooseBaseIRI(null, input) ;
-        Assert.assertEquals(expected, x) ;
+        String x = SysRIOT.chooseBaseIRI(null, input);
+        Assert.assertEquals(expected, x);
+    }
+    
+    private void testChooseBaseIRI(String input, Predicate<String> test) {
+        String x = SysRIOT.chooseBaseIRI(null, input);
+        Assert.assertTrue(test.apply(x));
     }
 }

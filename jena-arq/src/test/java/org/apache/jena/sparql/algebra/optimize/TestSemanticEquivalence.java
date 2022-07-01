@@ -24,7 +24,6 @@ import java.util.List ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVars ;
@@ -36,8 +35,6 @@ import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.main.QueryEngineMain ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
-import org.apache.jena.sparql.resultset.TextOutput ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.junit.AfterClass ;
@@ -48,7 +45,7 @@ import org.junit.Test ;
 /**
  * Tests for verifying that a query returns the same results both with and
  * without a given optimizer enabled
- * 
+ *
  */
 public class TestSemanticEquivalence {
 
@@ -74,7 +71,7 @@ public class TestSemanticEquivalence {
         dsg.add(Quad.defaultGraphNodeGenerated, b, p2, o);
         dsg.add(Quad.defaultGraphNodeGenerated, c, p1, o);
         //dsg.add(Quad.defaultGraphNodeGenerated, a, pSelf, a);
-        
+
         // Currently these optimizations are off by default
         Assert.assertFalse(ARQ.isFalse(ARQ.optFilterImplicitJoin));
         Assert.assertFalse(ARQ.isFalse(ARQ.optImplicitLeftJoin));
@@ -86,7 +83,7 @@ public class TestSemanticEquivalence {
             implJoin.close();
             implJoin = null;
         }
-        
+
         // Currently these optimizations are off by default
         Assert.assertFalse(ARQ.isFalse(ARQ.optFilterImplicitJoin));
         Assert.assertFalse(ARQ.isFalse(ARQ.optImplicitLeftJoin));
@@ -151,20 +148,20 @@ public class TestSemanticEquivalence {
         String alg2 = "(leftjoin (bgp (?x <http://p1> ?o1)) (bgp (?y <http://p2> ?o2)) (&& (= ?y ?x)(> ?o1 ?o2)))";
         testAsAlgebra(alg2, implJoin, ARQ.optImplicitLeftJoin, 3);
     }
-    
+
     @Test
     public void implicitLeftJoinEvaluation3() {
         String query = "SELECT * WHERE { ?x ?p ?o . OPTIONAL { ?y ?p1 ?o1 . ?y ?p2 ?z . FILTER(?x = ?y) FILTER(?x = ?z) FILTER(?y = ?z) } }";
         test(query, implJoin, ARQ.optImplicitLeftJoin, 5);
-        
+
         String alg1 = "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((= ?x ?y) (= ?x ?z) (= ?y ?z)))";
         testAsAlgebra(alg1, implJoin, ARQ.optImplicitLeftJoin, 5);
     }
-    
+
     /**
      * Tests whether a query gives the same results when run both with and
      * without a given optimizer
-     * 
+     *
      * @param queryStr
      *            Query
      * @param ds
@@ -179,7 +176,7 @@ public class TestSemanticEquivalence {
 
         if (!q.isSelectType())
             Assert.fail("Only SELECT queries are testable with this method");
-        
+
         Op op = Algebra.compile(q);
         // Track current state
         boolean isEnabled = ARQ.isTrue(opt);
@@ -193,8 +190,7 @@ public class TestSemanticEquivalence {
                 rs = ResultSetFactory.makeRewindable(qe.execSelect());
                 if (expected != rs.size()) {
                     System.err.println("Non-optimized results not as expected");
-                    TextOutput output = new TextOutput((SerializationContext)null);
-                    output.format(System.out, rs);
+                    ResultSetFormatter.out(System.out, rs);
                     rs.reset();
                 }
                 Assert.assertEquals(expected, rs.size());
@@ -207,8 +203,7 @@ public class TestSemanticEquivalence {
                     rsOpt = ResultSetFactory.makeRewindable(qeOpt.execSelect());
                 if (expected != rsOpt.size()) {
                     System.err.println("Optimized results not as expected");
-                    TextOutput output = new TextOutput((SerializationContext)null);
-                    output.format(System.out, rsOpt);
+                    ResultSetFormatter.out(System.out, rsOpt);
                     rsOpt.reset();
                 }
                 Assert.assertEquals(expected, rsOpt.size());
@@ -229,7 +224,7 @@ public class TestSemanticEquivalence {
     /**
      * Tests whether an algebra expression gives the same results when run both
      * with and without a given optimizer
-     * 
+     *
      * @param algStr
      *            Algebra
      * @param ds
@@ -253,14 +248,12 @@ public class TestSemanticEquivalence {
         try {
             // Run first without optimization
             ARQ.set(opt, false);
-            QueryEngineMain engine = new QueryEngineMain(op, ds.asDatasetGraph(), BindingFactory.binding(), ARQ.getContext());
-            QueryIterator iter = engine.eval(op, ds.asDatasetGraph(), BindingFactory.binding(), ARQ.getContext());
-            ResultSetRewindable rs = ResultSetFactory.makeRewindable(new ResultSetStream(vars, ModelFactory.createDefaultModel(),
-                    iter));
+            QueryEngineMain engine = new QueryEngineMain(op, ds.asDatasetGraph(), BindingFactory.empty(), ARQ.getContext());
+            QueryIterator iter = engine.eval(op, ds.asDatasetGraph(), BindingFactory.empty(), ARQ.getContext());
+            ResultSetRewindable rs = ResultSetStream.create(vars, null, iter).rewindable();
             if (expected != rs.size()) {
                 System.err.println("Non-optimized results not as expected");
-                TextOutput output = new TextOutput((SerializationContext)null);
-                output.format(System.out, rs);
+                ResultSetFormatter.out(System.out, rs);
                 rs.reset();
             }
             Assert.assertEquals(expected, rs.size());
@@ -268,14 +261,12 @@ public class TestSemanticEquivalence {
 
             // Run with optimization
             ARQ.set(opt, true);
-            engine = new QueryEngineMain(op, ds.asDatasetGraph(), BindingFactory.binding(), ARQ.getContext());
-            QueryIterator iterOpt = engine.eval(op, ds.asDatasetGraph(), BindingFactory.binding(), ARQ.getContext());
-            ResultSetRewindable rsOpt = ResultSetFactory.makeRewindable(new ResultSetStream(vars, ModelFactory
-                    .createDefaultModel(), iterOpt));
+            engine = new QueryEngineMain(op, ds.asDatasetGraph(), BindingFactory.empty(), ARQ.getContext());
+            QueryIterator iterOpt = engine.eval(op, ds.asDatasetGraph(), BindingFactory.empty(), ARQ.getContext());
+            ResultSetRewindable rsOpt = ResultSetStream.create(vars, null, iterOpt).rewindable();
             if (expected != rsOpt.size()) {
                 System.err.println("Optimized results not as expected");
-                TextOutput output = new TextOutput((SerializationContext)null);
-                output.format(System.out, rsOpt);
+                ResultSetFormatter.out(System.out, rsOpt);
                 rsOpt.reset();
             }
             Assert.assertEquals(expected, rsOpt.size());

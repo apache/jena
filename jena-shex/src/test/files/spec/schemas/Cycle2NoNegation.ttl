@@ -1,0 +1,10 @@
+PREFIX shex: <http://www.w3.org/ns/shex#>
+
+[] a shex:Schema ;
+  shex:shapes (<http://example.org/S>) .
+<http://example.org/S> a shex:Shape ;
+  shex:expression [
+    a shex:TripleConstraint ;
+    shex:predicate <http://example.org/a> ;
+    shex:valueExpr <http://example.org/S> ] .
+

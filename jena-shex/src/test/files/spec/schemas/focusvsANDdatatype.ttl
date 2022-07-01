@@ -1,0 +1,12 @@
+PREFIX ex: <http://a.example>
+PREFIX sx: <http://www.w3.org/ns/shex#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+[] a sx:Schema ;
+    sx:shapes (<http://a.example/vs1>) .
+
+<http://a.example/vs1> a sx:ShapeAnd ;
+    sx:shapeExprs ( [ a sx:NodeConstraint ;
+                sx:values ( <http://a.example/v1> <http://a.example/v2> <http://a.example/v3> ) ] [ a sx:NodeConstraint ;
+                sx:datatype <http://a.example/dt1> ] ) .
+

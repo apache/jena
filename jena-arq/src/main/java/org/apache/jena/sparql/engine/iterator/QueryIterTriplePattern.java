@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -26,17 +27,23 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
+import org.apache.jena.sparql.engine.main.QC;
+import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.util.iterator.ClosableIterator ;
 import org.apache.jena.util.iterator.NiceIterator ;
 
+/**
+ * Match a single triple pattern, no RDF-star &lt;&lt;&gt;&gt; with variables.
+ * @deprecated Use {@link QC#execute(QueryIterator, Triple, ExecutionContext)}.
+ */
+@Deprecated
 public class QueryIterTriplePattern extends QueryIterRepeatApply
 {
     private final Triple pattern ;
-    
+
     public QueryIterTriplePattern( QueryIterator input,
-                                   Triple pattern , 
+                                   Triple pattern ,
                                    ExecutionContext cxt)
     {
         super(input, cxt) ;
@@ -48,14 +55,20 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
     {
         return new TripleMapper(binding, pattern, getExecContext()) ;
     }
-    
-    static int countMapper = 0 ; 
+
+    @Override
+    protected void details(IndentedWriter out, SerializationContext sCxt) {
+        out.print("QueryIterTriplePattern: " + pattern);
+    }
+
+    static int countMapper = 0 ;
     static class TripleMapper extends QueryIter
     {
         private Node s ;
         private Node p ;
         private Node o ;
         private Binding binding ;
+        private BindingBuilder resultsBuilder ;
         private ClosableIterator<Triple> graphIter ;
         private Binding slot = null ;
         private boolean finished = false ;
@@ -68,6 +81,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             this.p = substitute(pattern.getPredicate(), binding) ;
             this.o = substitute(pattern.getObject(), binding) ;
             this.binding = binding ;
+            this.resultsBuilder = Binding.builder(binding);
             Node s2 = tripleNode(s) ;
             Node p2 = tripleNode(p) ;
             Node o2 = tripleNode(o) ;
@@ -95,31 +109,30 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
 
         private Binding mapper(Triple r)
         {
-            BindingMap results = BindingFactory.create(binding) ;
-
-            if ( ! insert(s, r.getSubject(), results) )
-                return null ; 
-            if ( ! insert(p, r.getPredicate(), results) )
+            resultsBuilder.reset();
+            if ( ! insert(s, r.getSubject(), resultsBuilder) )
                 return null ;
-            if ( ! insert(o, r.getObject(), results) )
+            if ( ! insert(p, r.getPredicate(), resultsBuilder) )
                 return null ;
-            return results ;
+            if ( ! insert(o, r.getObject(), resultsBuilder) )
+                return null ;
+            return resultsBuilder.build() ;
         }
 
-        private static boolean insert(Node inputNode, Node outputNode, BindingMap results)
+        private static boolean insert(Node inputNode, Node outputNode, BindingBuilder results)
         {
             if ( ! Var.isVar(inputNode) )
                 return true ;
-            
+
             Var v = Var.alloc(inputNode) ;
             Node x = results.get(v) ;
             if ( x != null )
                 return outputNode.equals(x) ;
-            
+
             results.add(v, outputNode) ;
             return true ;
         }
-        
+
         @Override
         protected boolean hasNextBinding()
         {
@@ -145,7 +158,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         @Override
         protected Binding moveToNextBinding()
         {
-            if ( ! hasNextBinding() ) 
+            if ( ! hasNextBinding() )
                 throw new ARQInternalErrorException() ;
             Binding r = slot ;
             slot = null ;
@@ -159,11 +172,11 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
                 NiceIterator.close(graphIter) ;
             graphIter = null ;
         }
-        
+
         @Override
         protected void requestCancel()
         {
-            // The QueryIteratorBase machinary will do the real work.
+            // The QueryIteratorBase machinery will do the real work.
             cancelled = true ;
         }
     }

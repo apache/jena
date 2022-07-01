@@ -22,8 +22,6 @@ package org.apache.jena.example;
 // Imports
 ///////////////
 import org.apache.commons.cli.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>Base file for <em>Getting Started</em> examples. A place to put shared
@@ -46,9 +44,6 @@ public abstract class Base
     /***********************************/
     /* Static variables                */
     /***********************************/
-
-    @SuppressWarnings( value = "unused" )
-    private static final Logger log = LoggerFactory.getLogger( Base.class );
 
     /** Command line options */
     private static Options options;
@@ -84,7 +79,6 @@ public abstract class Base
 
     /**
      * Return the list of options, ensuring that it is non-null
-     * @return
      */
     public static Options getOptions() {
         if (Base.options == null) {
@@ -102,7 +96,7 @@ public abstract class Base
         if (args == null) {args = new String[] {};}
 
         try {
-            commandLine = new GnuParser().parse( Base.getOptions(), args );
+            commandLine = new DefaultParser().parse( Base.getOptions(), args );
         }
         catch (ParseException e) {
             HelpFormatter formatter = new HelpFormatter();
@@ -117,7 +111,6 @@ public abstract class Base
     /**
      * Return true if the given option is set in the given command line
      * @param opt Option to test for, e.g. <code>data</code>
-     * @return
      */
     public boolean hasArg( String opt ) {
         if (commandLine == null) {

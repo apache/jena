@@ -22,6 +22,7 @@ import static org.apache.jena.atlas.lib.Chars.*;
 import static org.apache.jena.riot.system.RiotChars.*;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.io.IO;
@@ -32,56 +33,49 @@ import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.RiotChars;
 import org.apache.jena.sparql.ARQInternalErrorException;
 
-/** Tokenizer for all sorts of things RDF-ish */
-
+/**
+ * Tokenizer for the Turtle family of syntaxes.
+ * Supports addition tokens.
+ */
 public final class TokenizerText implements Tokenizer
 {
-    // Drop through to final general symbol/keyword reader, including <=, != 
+    // Drop through to final general symbol/keyword reader, including <=, !=
     // Care with <=
     // Policy driven for CURIES?
-    
-    // Various allow/deny options (via checker?)
-    
-    // Space for CURIEs, stricter Turtle QNames, sane Turtle (i.e. leading digits in local part).
-    public static final int CTRL_CHAR = CH_STAR;
-    
-    public static boolean Checking = false;
 
-    private Token token = null; 
+    private static final int CTRL_CHAR = CH_STAR;
+
+    // The code has the call points for checking tokens but it is generally better to
+    // do the check later in the parsing process. In case a need arises, the code
+    // remains, all compiled away by "if ( false )" (javac does not generate any
+    // bytecodes and even if it it did, JIT will remove dead branches).
+    private static final boolean Checking = false;
+
+    private Token token = null;
     private final StringBuilder stringBuilder = new StringBuilder(200);
     private final PeekReader reader;
-    private final boolean lineMode;        // Whether whitespace includes or excludes NL (in its various forms).  
+    // Whether whitespace between tokens includes newlines (in various forms).
+    private final boolean lineMode;
     private boolean finished = false;
-    private TokenChecker checker = null;
+    private final TokenChecker checker = null;
 
-    private static class ErrorHandlerTokenizer implements ErrorHandler {
-        @Override public void warning(String message, long line, long col) {
-            // Warning/continue.
-            //ErrorHandlerFactory.errorHandlerStd.warning(message, line, col);
-            throw new RiotParseException(message, line, col);
-        }
-
-        @Override public void error(String message, long line, long col) {
-            throw new RiotParseException(message, line, col);
-        }
-
-        @Override public void fatal(String message, long line, long col) {
-            throw new RiotParseException(message, line, col);
-        }
-    };
     // The code assumes that errors throw exception and so stop parsing.
-    private static final ErrorHandler defaultErrorHandler = new ErrorHandlerTokenizer();
-    private ErrorHandler errorHandler = defaultErrorHandler;
+    private final ErrorHandler errorHandler;
 
-    /*package*/ TokenizerText(PeekReader reader) {
-        this(reader, false);
+    public static TokenizeTextBuilder create() { return new TokenizeTextBuilder(); }
+
+    public static Tokenizer fromString(String string) { return create().fromString(string).build(); }
+
+    /*package*/ static TokenizerText internal(PeekReader reader, boolean lineMode, ErrorHandler errorHandler) {
+        return new TokenizerText(reader, lineMode, errorHandler);
     }
-    
-    /*package*/ TokenizerText(PeekReader reader, boolean lineMode) {
-        this.reader = reader;
+
+    private TokenizerText(PeekReader reader, boolean lineMode, ErrorHandler errorHandler) {
+        this.reader = Objects.requireNonNull(reader, "PeekReader");
         this.lineMode = lineMode;
+        this.errorHandler = Objects.requireNonNull(errorHandler, "ErrorHandler");
     }
-    
+
     @Override
     public final boolean hasNext() {
         if ( finished )
@@ -113,8 +107,7 @@ public final class TokenizerText implements Tokenizer
             throw new RiotParseException("Bad input stream", reader.getLineNum(), reader.getColNum());
         }
     }
-    
-    
+
     @Override
     public final boolean eof() {
         return !hasNext();
@@ -135,34 +128,30 @@ public final class TokenizerText implements Tokenizer
             return null;
         return token;
     }
-    
-    @Override
-    public void remove()                            
-    { throw new UnsupportedOperationException(); }
 
-    public TokenChecker getChecker() {
-        return checker;
-    }
+//    private TokenChecker getChecker() {
+//        return checker;
+//    }
+//
+//    private void setChecker(TokenChecker checker) {
+//        this.checker = checker;
+//    }
+//
+//    private ErrorHandler getErrorHandler() {
+//        return errorHandler;
+//    }
+//
+//    private void setErrorHandler(ErrorHandler handler) {
+//        this.errorHandler = handler;
+//    }
 
-    public void setChecker(TokenChecker checker) {
-        this.checker = checker;
-    }
-
-    public ErrorHandler getErrorHandler() {
-        return errorHandler;
-    }
-
-    public void setErrorHandler(ErrorHandler handler) {
-        this.errorHandler = handler;
-    }
-    
     @Override
     public void close() {
         IO.close(reader);
     }
 
-    // ---- Machinary
-    
+    // ---- Machinery
+
     private void skip() {
         int ch = EOF;
         for (;;) {
@@ -198,22 +187,34 @@ public final class TokenizerText implements Tokenizer
 
         int ch = reader.peekChar();
 
-        // ---- IRI
+        // ---- IRI, unless it's <<.
+        // [spc] check is for LT.
         if ( ch == CH_LT ) {
+            // Look ahead on char
             reader.readChar();
-            token.setImage(readIRI());
-            token.setType(TokenType.IRI);
-            if ( Checking )
-                checkURI(token.getImage());
-            return token;
+            int chPeek = reader.peekChar();
+            if ( chPeek != '<' ) {
+                token.setImage(readIRI());
+                token.setType(TokenType.IRI);
+                if ( Checking )
+                    checkURI(token.getImage());
+                return token;
+            }
+            if ( chPeek == '<' ) {
+                reader.readChar();
+                token.setType(TokenType.LT2);
+                //token.setImage("<<");
+                return token;
+            }
+            fatal("Internal error - parsed '%c' after '<'", chPeek);
         }
 
         // ---- Literal
         if ( ch == CH_QUOTE1 || ch == CH_QUOTE2 ) {
             // The token type is STRING.
-            // We incorporate this into a token for LITERAL_LANG or LITERAL_DT.  
+            // We incorporate this into a token for LITERAL_LANG or LITERAL_DT.
             token.setType(TokenType.STRING);
-            
+
             reader.readChar();
             int ch2 = reader.peekChar();
             if ( ch2 == ch ) {
@@ -246,12 +247,12 @@ public final class TokenizerText implements Tokenizer
 
             // White space after lexical part of a literal.
             skip();
-            
+
             // Literal. Is it @ or ^^
             if ( reader.peekChar() == CH_AT ) {
                 reader.readChar();
                 // White space is not legal here.
-                // The Turtle spec terminal is "LANGTAG" which includes the '@'.
+                // The spec terminal is "LANGTAG" which includes the '@'.
                 Token mainToken = new Token(token);
                 mainToken.setType(TokenType.LITERAL_LANG);
                 mainToken.setSubToken1(token);
@@ -261,14 +262,14 @@ public final class TokenizerText implements Tokenizer
                     checkLiteralLang(token.getImage(), token.getImage2());
             } else if ( reader.peekChar() == '^' ) {
                 expect("^^");
-                // White space is legal after a ^^. 
+                // White space is legal after a ^^.
                 // It's not a good idea, but it is legal.
 //                // Check no whitespace.
 //                int nextCh = reader.peekChar();
 //                if ( isWhitespace(nextCh) )
 //                    exception("No whitespace after ^^ in literal with datatype");
                 skip();
-                
+
                 // Stash current token.
                 Token mainToken = new Token(token);
                 mainToken.setSubToken1(token);
@@ -276,7 +277,7 @@ public final class TokenizerText implements Tokenizer
 
                 Token subToken = parseToken();
                 if ( !subToken.isIRI() )
-                    error("Datatype URI required after ^^ - URI or prefixed name expected");
+                    fatal("Datatype URI required after ^^ - URI or prefixed name expected");
 
                 mainToken.setSubToken2(subToken);
                 mainToken.setType(TokenType.LITERAL_DT);
@@ -297,7 +298,6 @@ public final class TokenizerText implements Tokenizer
             int ch2 = reader.peekChar();
             if ( ch2 == CH_COLON ) {
                 reader.readChar();
-                // Blank node :label must be at least one char
                 token.setImage(readBlankNodeLabel());
                 token.setType(TokenType.BNODE);
                 if ( Checking ) checkBlankNode(token.getImage());
@@ -328,9 +328,11 @@ public final class TokenizerText implements Tokenizer
                 checkVariable(token.getImage());
             return token;
         }
-        
+
+        //if ( ch == CH_DOLLAR ) {}
+
         switch(ch)
-        { 
+        {
             // DOT can start a decimal.  Check for digit.
             case CH_DOT:
                 reader.readChar();
@@ -345,11 +347,38 @@ public final class TokenizerText implements Tokenizer
                 }
                 token.setType(TokenType.DOT);
                 return token;
-            
+
+            case CH_GT: {
+                reader.readChar();
+                int chPeek = reader.peekChar();
+                if ( chPeek == CH_GT ) {
+                    reader.readChar();
+                    token.setType(TokenType.GT2);
+                    return token;
+                }
+                token.setType(TokenType.GT);
+                //token.setImage(">");
+                return token;
+            }
+
             case CH_SEMICOLON:  reader.readChar(); token.setType(TokenType.SEMICOLON); /*token.setImage(CH_SEMICOLON);*/ return token;
             case CH_COMMA:      reader.readChar(); token.setType(TokenType.COMMA);     /*token.setImage(CH_COMMA);*/ return token;
-            case CH_LBRACE:     reader.readChar(); token.setType(TokenType.LBRACE);    /*token.setImage(CH_LBRACE);*/ return token;
+
+            // {| for RDF-star annotation syntax.
+//            case CH_LBRACE:     reader.readChar(); token.setType(TokenType.LBRACE);    /*token.setImage(CH_LBRACE);*/ return token;
+            case CH_LBRACE: {
+                reader.readChar();
+                int chPeek = reader.peekChar();
+                if ( chPeek == CH_VBAR ) {
+                    reader.readChar();
+                    token.setType(TokenType.L_ANN);
+                    return token;
+                }
+                token.setType(TokenType.LBRACE);
+                return token;
+            }
             case CH_RBRACE:     reader.readChar(); token.setType(TokenType.RBRACE);    /*token.setImage(CH_RBRACE);*/ return token;
+
             case CH_LPAREN:     reader.readChar(); token.setType(TokenType.LPAREN);    /*token.setImage(CH_LPAREN);*/ return token;
             case CH_RPAREN:     reader.readChar(); token.setType(TokenType.RPAREN);    /*token.setImage(CH_RPAREN);*/ return token;
             case CH_LBRACKET:   reader.readChar(); token.setType(TokenType.LBRACKET);  /*token.setImage(CH_LBRACKET);*/ return token;
@@ -357,28 +386,44 @@ public final class TokenizerText implements Tokenizer
             case CH_EQUALS:     reader.readChar(); token.setType(TokenType.EQUALS);    /*token.setImage(CH_EQUALS);*/ return token;
             case CH_SLASH:      reader.readChar(); token.setType(TokenType.SLASH);     /*token.setImage(CH_SLASH);*/ return token;
             case CH_RSLASH:     reader.readChar(); token.setType(TokenType.RSLASH);    /*token.setImage(CH_RSLASH);*/ return token;
-            case CH_VBAR:       reader.readChar(); token.setType(TokenType.VBAR);      /*token.setImage(CH_VBAR);*/ return token;
-            case CH_AMPHERSAND: reader.readChar(); token.setType(TokenType.AMPHERSAND);/*token.setImage(CH_AMPHERSAND);*/ return token;
-            // Specials (if blank node processing off)
-            //case CH_COLON:      reader.readChar(); token.setType(TokenType.COLON); return token;
+//            case CH_VBAR:       reader.readChar(); token.setType(TokenType.VBAR);      /*token.setImage(CH_VBAR);*/ return token;
 
+            // |} for RDF-star annotation syntax.
+            case CH_VBAR: {
+                reader.readChar();
+                int chPeek = reader.peekChar();
+                if ( chPeek == CH_RBRACE ) {
+                    reader.readChar();
+                    token.setType(TokenType.R_ANN);
+                    return token;
+                }
+                token.setType(TokenType.VBAR);
+                return token;
+            }
+
+            case CH_AMPHERSAND: reader.readChar(); token.setType(TokenType.AMPERSAND);/*token.setImage(CH_AMPHERSAND);*/ return token;
+            // Specials (if prefix names processing is off)
+            //case CH_COLON:      reader.readChar(); token.setType(TokenType.COLON); /*token.setImage(COLON);*/return token;
             // Done above with blank nodes.
-            //case CH_UNDERSCORE: reader.readChar(); token.setType(TokenType.UNDERSCORE); /*token.setImage(CH_UNDERSCORE);*/ return token;
-            case CH_LT:         reader.readChar(); token.setType(TokenType.LT); /*token.setImage(CH_LT);*/ return token;
-            case CH_GT:         reader.readChar(); token.setType(TokenType.GT); /*token.setImage(CH_GT);*/ return token;
-            case CH_STAR:       reader.readChar(); token.setType(TokenType.STAR); /*token.setImage(CH_STAR);*/ return token;
+            //case CH_UNDERSCORE: reader.readChar(); token.setType(TokenType.UNDERSCORE);/*token.setImage(CH_UNDERSCORE);*/ return token;
+            case CH_LT:         reader.readChar(); token.setType(TokenType.LT);        /*token.setImage(CH_LT);*/ return token;
+            case CH_STAR:       reader.readChar(); token.setType(TokenType.STAR);      /*token.setImage(CH_STAR);*/ return token;
+            case CH_EMARK:      reader.readChar(); token.setType(TokenType.EMARK);     /*token.setImage(CH_EMARK);*/ return token;
 
-            // XXX Multi character symbols
+            // VAR overrides
+            //case CH_QMARK:      reader.readChar(); token.setType(TokenType.QMARK);      /*token.setImage(CH_EMARK);*/ return token;
+
+            // XXX Multi-character symbols
             // Two character tokens && || GE >= , LE <=
             //TokenType.LE
             //TokenType.GE
             //TokenType.LOGICAL_AND
             //TokenType.LOGICAL_OR
         }
-        
+
         // ---- Numbers.
         // A plain "+" and "-", not followed by a digit, are symbols.
-        
+
         /*
         [16]    integer         ::=     ('-' | '+') ? [0-9]+
         [17]    double          ::=     ('-' | '+') ? ( [0-9]+ '.' [0-9]* exponent | '.' ([0-9])+ exponent | ([0-9])+ exponent )
@@ -387,11 +432,11 @@ public final class TokenizerText implements Tokenizer
                                         0.0 .0 0.
         [19]    exponent        ::=     [eE] ('-' | '+')? [0-9]+
         []      hex             ::=     0x0123456789ABCDEFG
-        
+
         */
-        
-        // TODO readNumberNoSign
-        
+
+        // TODO extract readNumberNoSign
+
         int signCh = 0;
 
         if ( ch == CH_PLUS || ch == CH_MINUS ) {
@@ -430,29 +475,28 @@ public final class TokenizerText implements Tokenizer
             // Any number of NL and CR become one "NL" token.
             do {
                 int ch2 = reader.readChar();
-                //** stringBuilder.append((char)ch2);
+                // insertCodepointDirect(stringBuilder,ch2);
             } while (isNewlineChar(reader.peekChar()));
             token.setType(TokenType.NL);
             //** token.setImage(stringBuilder.toString());
             return token;
         }
-        
+
         // Plain words and prefixes.
         //   Can't start with a number due to numeric test above.
         //   Can't start with a '_' due to blank node test above.
         // If we see a :, the first time it means a prefixed name else it's a token break.
-        
+
         readPrefixedNameOrKeyword(token);
-        
+
         if ( Checking ) checkKeyword(token.getImage());
         return token;
     }
 
-    
     private static final boolean VeryVeryLaxIRI = false;
     // Spaces in IRI are illegal.
     private static final boolean AllowSpacesInIRI = false;
-    
+
     // [8]  IRIREF  ::= '<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>'
     private String readIRI() {
         stringBuilder.setLength(0);
@@ -460,17 +504,17 @@ public final class TokenizerText implements Tokenizer
             int ch = reader.readChar();
             switch(ch) {
                 case EOF:
-                    error("Broken IRI (End of file)"); return null;
+                    fatal("Broken IRI (End of file)"); return null;
                 case NL:
-                    error("Broken IRI (newline): %s", stringBuilder.toString()); return null;
+                    fatal("Broken IRI (newline): %s", stringBuilder.toString()); return null;
                 case CR:
-                    error("Broken IRI (CR): %s", stringBuilder.toString()); return null;
+                    fatal("Broken IRI (CR): %s", stringBuilder.toString()); return null;
                 case CH_GT:
                     // Done!
                     return stringBuilder.toString();
                 case CH_RSLASH:
                     if ( VeryVeryLaxIRI )
-                        // Includes unicode escapes and also \n etc 
+                        // Includes unicode escapes and also \n etc
                         ch = readLiteralEscape();
                     else
                         // NORMAL
@@ -480,8 +524,8 @@ public final class TokenizerText implements Tokenizer
                     // Bad characters will lead to trouble elsewhere.
                     break;
                 case CH_LT:
-                    // Probably a corrupt file so not a warning.
-                    error("Bad character in IRI (bad character: '<'): <%s[<]...>", stringBuilder.toString()); return null;
+                    // Probably a corrupt file so treat as fatal.
+                    fatal("Bad character in IRI (bad character: '<'): <%s[<]...>", stringBuilder.toString()); return null;
                 case TAB:
                     error("Bad character in IRI (Tab character): <%s[tab]...>", stringBuilder.toString()); return null;
                 case '{': case '}': case '"': case '|': case '^': case '`' :
@@ -490,27 +534,55 @@ public final class TokenizerText implements Tokenizer
                     break;
                 case SPC:
                     if ( ! AllowSpacesInIRI )
+                        error("Bad character in IRI (space): <%s[space]...>", stringBuilder.toString());
+                    else
                         warning("Bad character in IRI (space): <%s[space]...>", stringBuilder.toString());
                     break;
                 default:
                     if ( ch <= 0x19 )
                         warning("Illegal character in IRI (control char 0x%02X): <%s[0x%02X]...>", ch, stringBuilder.toString(), ch);
+
             }
+            // JENA-1924: jena-iri does not catch this.
+            if ( ! VeryVeryLaxIRI && ch >= 0xA0 && ! isUcsChar(ch) )
+                warning("Illegal character in IRI (Not a ucschar: 0x%04X): <%s[U+%04X]...>", ch, stringBuilder.toString(), ch);
             insertCodepoint(stringBuilder, ch);
         }
     }
-    
+
+    private static boolean isUcsChar(int ch) {
+        // RFC 3987
+        // ucschar    = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
+        //            / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD
+        //            / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD
+        //            / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD
+        //            / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD
+        //            / %xD0000-DFFFD / %xE1000-EFFFD
+        boolean b = range(ch, 0xA0, 0xD7FF)  || range(ch, 0xF900, 0xFDCF)  || range(ch, 0xFDF0, 0xFFEF);
+        if ( b )
+            return true;
+        if ( ch < 0x1000 )
+            return false;
+        // 32 bit checks.
+        return
+            range(ch, 0x10000, 0x1FFFD) || range(ch, 0x20000, 0x2FFFD) || range(ch, 0x30000, 0x3FFFD) ||
+            range(ch, 0x40000, 0x4FFFD) || range(ch, 0x50000, 0x5FFFD) || range(ch, 0x60000, 0x6FFFD) ||
+            range(ch, 0x70000, 0x7FFFD) || range(ch, 0x80000, 0x8FFFD) || range(ch, 0x90000, 0x9FFFD) ||
+            range(ch, 0xA0000, 0xAFFFD) || range(ch, 0xB0000, 0xBFFFD) || range(ch, 0xC0000, 0xCFFFD) ||
+            range(ch, 0xD0000, 0xDFFFD) || range(ch, 0xE1000, 0xEFFFD);
+    }
+
     // Read a unicode escape : does not allow \\ bypass
     private final int readUnicodeEscape() {
         int ch = reader.readChar();
         if ( ch == EOF )
-            error("Broken escape sequence");
-    
+            fatal("Broken escape sequence");
+
         switch (ch) {
-            case 'u': return readUnicode4Escape(); 
-            case 'U': return readUnicode8Escape(); 
+            case 'u': return readUnicode4Escape();
+            case 'U': return readUnicode8Escape();
             default:
-                error("Illegal unicode escape sequence value: \\%c (0x%02X)", ch, ch);
+                fatal("Illegal unicode escape sequence value: \\%c (0x%02X)", ch, ch);
         }
         return 0;
     }
@@ -533,22 +605,24 @@ public final class TokenizerText implements Tokenizer
         // If we made no progress, nothing found, not even a keyword -- it's an
         // error.
         if ( posn == reader.getPosition() )
-            error("Failed to find a prefix name or keyword: %c(%d;0x%04X)", ch, ch, ch);
+            fatal("Failed to find a prefix name or keyword: %c(%d;0x%04X)", ch, ch, ch);
 
         if ( Checking )
             checkKeyword(token.getImage());
-
     }
-    
+
     /*
     The token rules from SPARQL and Turtle.
     PNAME_NS       ::=  PN_PREFIX? ':'
     PNAME_LN       ::=  PNAME_NS PN_LOCAL
-    
-    PN_CHARS_BASE  ::=  [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+
+    PN_CHARS_BASE  ::=  [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF]
+                   |    [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF]
+                   |    [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD]
+                   |    [#x10000-#xEFFFF]
     PN_CHARS_U  ::=  PN_CHARS_BASE | '_'
     PN_CHARS  ::=  PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
-    
+
     PN_PREFIX  ::=  PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
     PN_LOCAL  ::=  (PN_CHARS_U | ':' | [0-9] | PLX ) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
     PLX  ::=  PERCENT | PN_LOCAL_ESC
@@ -556,16 +630,23 @@ public final class TokenizerText implements Tokenizer
     HEX  ::=  [0-9] | [A-F] | [a-f]
     PN_LOCAL_ESC  ::=  '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
     */
-    
-    private String readPrefixPart()
-    { return readSegment(false); }
-    
-    private String readLocalPart()
-    { return readSegment(true); }
 
-    private String readSegment(boolean isLocalPart) { 
+    private String readPrefixPart() {
+        // PN_PREFIX : also keywords.
+        return readSegment(false);
+    }
+
+    private String readLocalPart() {
+        // PN_LOCAL
+        return readSegment(true);
+    }
+
+    // Read the prefix or localname part of a prefixed.
+    // Returns "" when there are no valid characters, e.g. prefix for ":foo" or local name for "ex:".
+    private String readSegment(boolean isLocalPart) {
         // Prefix: PN_CHARS_BASE                       ((PN_CHARS|'.')* PN_CHARS)?
         // Local: ( PN_CHARS_U | ':' | [0-9] | PLX )   ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
+        //    PN_CHARS_U is PN_CHARS_BASE and '_'
 
         // RiotChars has isPNChars_U_N for   ( PN_CHARS_U | [0-9] )
         stringBuilder.setLength(0);
@@ -577,22 +658,23 @@ public final class TokenizerText implements Tokenizer
         if ( isLocalPart ) {
             if ( ch == CH_COLON ) {
                 reader.readChar();
-                stringBuilder.append((char)ch);
-            }
-
-            // processPLX
-            else if ( ch == CH_PERCENT || ch == CH_RSLASH ) {
+                insertCodepoint(stringBuilder, ch);
+            } else if ( ch == CH_PERCENT || ch == CH_RSLASH ) {
+                // processPLX
+                // read % or \
                 reader.readChar();
                 processPLX(ch);
             } else if ( RiotChars.isPNChars_U_N(ch) ) {
-                stringBuilder.append((char)ch);
+                if ( ch == REPLACEMENT )
+                    warning("Unicode replacement character U+FFFD");
+                insertCodepoint(stringBuilder, ch);
                 reader.readChar();
             } else
                 return "";
         } else {
             if ( !RiotChars.isPNCharsBase(ch) )
                 return "";
-            stringBuilder.append((char)ch);
+            insertCodepoint(stringBuilder, ch);
             reader.readChar();
         }
         // Done first character
@@ -605,7 +687,7 @@ public final class TokenizerText implements Tokenizer
             if ( isLocalPart && (ch == CH_PERCENT || ch == CH_RSLASH) ) {
                 reader.readChar();
                 if ( chDot != 0 )
-                    stringBuilder.append((char)chDot);
+                    insertCodepointDirect(stringBuilder, chDot);
                 processPLX(ch);
                 chDot = 0;
                 continue;
@@ -625,18 +707,21 @@ public final class TokenizerText implements Tokenizer
                 break; // Exit loop
 
             // Valid character.
-            reader.readChar();
             // Was there also a DOT previous loop?
             if ( chDot != 0 ) {
-                stringBuilder.append((char)chDot);
+                insertCodepointDirect(stringBuilder, chDot);
                 chDot = 0;
             }
 
-            if ( ch != CH_DOT )
-                stringBuilder.append((char)ch);
-            else
+            if ( ch != CH_DOT ) {
+                if ( ch == REPLACEMENT )
+                    warning("Unicode replacement character U+FFFD");
+                insertCodepoint(stringBuilder, ch);
+            } else {
                 // DOT - delay until next loop.
                 chDot = ch;
+            }
+            reader.readChar();
         }
 
         // On exit, chDot may hold a character.
@@ -652,54 +737,55 @@ public final class TokenizerText implements Tokenizer
     {
         if ( ch == CH_PERCENT )
         {
-            stringBuilder.append((char)ch);
+            insertCodepointDirect(stringBuilder, ch);
 
             ch = reader.peekChar();
             if ( ! isHexChar(ch) )
-                error("Not a hex character: '%c'",ch);
-            stringBuilder.append((char)ch);
+                fatal("Not a hex character: '%c'",ch);
+            insertCodepointDirect(stringBuilder, ch);
             reader.readChar();
 
             ch = reader.peekChar();
             if ( ! isHexChar(ch) )
-                error("Not a hex character: '%c'",ch);
-            stringBuilder.append((char)ch);
+                fatal("Not a hex character: '%c'",ch);
+            insertCodepointDirect(stringBuilder, ch);
             reader.readChar();
         }
         else if ( ch == CH_RSLASH )
         {
             ch = readCharEscape();
-            stringBuilder.append((char)ch);
+            insertCodepoint(stringBuilder, ch);
         }
         else
             throw new ARQInternalErrorException("Not a '\\' or a '%' character");
     }
-    
+
     // Get characters between two markers.
     // strEscapes may be processed
     private String readString(int startCh, int endCh) {
-        long y = getLine();
-        long x = getColumn();
+        // Position at start of string.
         stringBuilder.setLength(0);
         // Assumes first delimiter char read already.
-        // Reads terminating delimiter 
+        // Reads terminating delimiter
 
         for (;;) {
             int ch = reader.readChar();
-            if ( ch == EOF ) {
+
+            // Raw replacement char in a string.
+            if ( ch == REPLACEMENT )
+                warning("Unicode replacement character U+FFFD in string");
+            else if ( ch == EOF ) {
                 // if ( endNL ) return stringBuilder.toString();
-                error("Broken token: " + stringBuilder.toString(), y, x);
+                fatal("Broken token: %s", stringBuilder.toString());
             }
-
-            if ( ch == NL )
-                error("Broken token (newline): " + stringBuilder.toString(), y, x);
-
-            if ( ch == endCh ) {
+            else if ( ch == NL )
+                fatal("Broken token (newline): %s", stringBuilder.toString());
+            else if ( ch == endCh )
                 return stringBuilder.toString();
-            }
-
-            if ( ch == CH_RSLASH )
+            else if ( ch == CH_RSLASH )
+                // Allow escaped replacement character.
                 ch = readLiteralEscape();
+
             insertCodepoint(stringBuilder, ch);
         }
     }
@@ -708,18 +794,17 @@ public final class TokenizerText implements Tokenizer
         stringBuilder.setLength(0);
         for (;;) {
             int ch = reader.readChar();
-            if ( ch == EOF ) {
+            if ( ch == REPLACEMENT )
+                warning("Input has Unicode replacement character U+FFFD in string");
+            else if ( ch == EOF ) {
                 if ( endNL )
                     return stringBuilder.toString();
-                error("Broken long string");
+                fatal("Broken long string");
             }
-
-            if ( ch == quoteChar ) {
+            else if ( ch == quoteChar ) {
                 if ( threeQuotes(quoteChar) )
                     return stringBuilder.toString();
-            }
-
-            if ( ch == CH_RSLASH )
+            } else if ( ch == CH_RSLASH )
                 ch = readLiteralEscape();
             insertCodepoint(stringBuilder, ch);
         }
@@ -730,13 +815,13 @@ public final class TokenizerText implements Tokenizer
 
     // A 'word' is used in several places:
     //   keyword
-    //   prefix part of prefix name 
+    //   prefix part of prefix name
     //   local part of prefix name (allows digits)
-    
+
     static private char[] extraCharsWord = new char[] {'_', '.' , '-'};
-    
+
     private String readWordSub(boolean leadingDigitAllowed, boolean leadingSignAllowed) {
-        return readCharsAnd(leadingDigitAllowed, leadingSignAllowed, extraCharsWord, false);
+        return readCharsWithExtras(leadingDigitAllowed, leadingSignAllowed, extraCharsWord, false);
     }
 
     // This array adds the other characters that can occurs in an internal variable name.
@@ -744,16 +829,16 @@ public final class TokenizerText implements Tokenizer
     // variables in the query from the application.
     // See ARQConstants.
     //   allocVarAnonMarker, allocVarMarker, globalVar, allocVarBNodeToVar, allocVarScopeHiding
-    // but this set is wider and matches anywhere in the name after the first '?'. 
+    // but this set is wider and matches anywhere in the name after the first '?'.
     static private char[] extraCharsVar = new char[]{'_', '.', '-', '?', '@', '+', '/', '~'};
 
     private String readVarName() {
-        return readCharsAnd(true, true, extraCharsVar, true);
+        return readCharsWithExtras(true, true, extraCharsVar, true);
     }
-    
+
     // See also readBlankNodeLabel
-    
-    private String readCharsAnd(boolean leadingDigitAllowed, boolean leadingSignAllowed, char[] extraChars, boolean allowFinalDot) {
+
+    private String readCharsWithExtras(boolean leadingDigitAllowed, boolean leadingSignAllowed, char[] extraChars, boolean allowFinalDot) {
         stringBuilder.setLength(0);
         int idx = 0;
         if ( !leadingDigitAllowed ) {
@@ -774,7 +859,7 @@ public final class TokenizerText implements Tokenizer
 
             if ( isAlphaNumeric(ch) || Chars.charInArray(ch, extraChars) ) {
                 reader.readChar();
-                stringBuilder.append((char)ch);
+                insertCodepointDirect(stringBuilder, ch);
                 continue;
             } else
                 // Inappropriate character.
@@ -803,16 +888,15 @@ public final class TokenizerText implements Tokenizer
         {
             int ch = reader.peekChar();
             if ( ch == EOF )
-                error("Blank node label missing (EOF found)");
+                fatal("Blank node label missing (EOF found)");
             if ( isWhitespace(ch) )
-                error("Blank node label missing");
-            // if ( ! isAlpha(ch) && ch != '_' )
-            // Not strict
-
+                fatal("Blank node label missing");
             if ( !RiotChars.isPNChars_U_N(ch) )
-                error("Blank node label does not start with alphabetic or _ :" + (char)ch);
+                fatal("Blank node label does not start with alphabetic or _ : '%c'", (char)ch);
             reader.readChar();
-            stringBuilder.append((char)ch);
+            if ( ch == REPLACEMENT )
+                warning("Unicode replacement character U+FFFD in blank node label");
+            insertCodepoint(stringBuilder, ch);
         }
 
         // Remainder. DOT can't be last so do a delay on that.
@@ -830,13 +914,15 @@ public final class TokenizerText implements Tokenizer
             reader.readChar();
 
             if ( chDot != 0 ) {
-                stringBuilder.append((char)chDot);
+                insertCodepointDirect(stringBuilder, chDot);
                 chDot = 0;
             }
 
-            if ( ch != CH_DOT )
-                stringBuilder.append((char)ch);
-            else
+            if ( ch != CH_DOT ) {
+                if ( ch == REPLACEMENT )
+                    warning("Unicode replacement character U+FFFD in blank node label");
+                insertCodepoint(stringBuilder, ch);
+            } else
                 // DOT - delay until next loop.
                 chDot = ch;
         }
@@ -870,7 +956,7 @@ public final class TokenizerText implements Tokenizer
         boolean isDouble = false;
         boolean isDecimal = false;
         stringBuilder.setLength(0);
-        
+
         /*
         readPossibleSign(stringBuilder);
         readDigits may be hex
@@ -878,17 +964,17 @@ public final class TokenizerText implements Tokenizer
         readDigits
         readExponent.
         */
-        
+
         int x = 0; // Digits before a dot.
         int ch = reader.peekChar();
         if ( ch == '0' ) {
             x++;
             reader.readChar();
-            stringBuilder.append((char)ch);
+            insertCodepointDirect(stringBuilder, ch);
             ch = reader.peekChar();
             if ( ch == 'x' || ch == 'X' ) {
                 reader.readChar();
-                stringBuilder.append((char)ch);
+                insertCodepointDirect(stringBuilder, ch);
                 readHex(reader, stringBuilder);
                 token.setImage(stringBuilder.toString());
                 token.setType(TokenType.HEX);
@@ -911,7 +997,7 @@ public final class TokenizerText implements Tokenizer
         if ( x == 0 && !isDecimal )
             // Possible a tokenizer error - should not have entered readNumber
             // in the first place.
-            error("Unrecognized as number");
+            fatal("Unrecognized as number");
 
         if ( exponent(stringBuilder) ) {
             isDouble = true;
@@ -942,15 +1028,14 @@ public final class TokenizerText implements Tokenizer
         int x = 0;
         for (;;) {
             int ch = reader.peekChar();
-
             if ( !isHexChar(ch) )
                 break;
             reader.readChar();
-            sb.append((char)ch);
+            insertCodepointDirect(sb, ch);
             x++;
         }
         if ( x == 0 )
-            error("No hex characters after " + sb.toString());
+            fatal("No hex characters after %s", sb.toString());
     }
 
     private int readDigits(StringBuilder buffer) {
@@ -960,7 +1045,7 @@ public final class TokenizerText implements Tokenizer
             if ( !range(ch, '0', '9') )
                 break;
             reader.readChar();
-            buffer.append((char)ch);
+            insertCodepointDirect(buffer, ch);
             count++;
         }
         return count;
@@ -970,13 +1055,13 @@ public final class TokenizerText implements Tokenizer
         int ch = reader.peekChar();
         if ( ch == '-' || ch == '+' ) {
             reader.readChar();
-            sb.append((char)ch);
+            insertCodepointDirect(sb, ch);
         }
     }
 
-    // Assume have read the first quote char.
+    // Assume we have read the first quote char.
     // On return:
-    //   If false, have moved over no more characters (due to pushbacks) 
+    //   If false, have moved over no more characters (due to pushbacks)
     //   If true, at end of 3 quotes
     private boolean threeQuotes(int ch) {
         // reader.readChar(); // Read first quote.
@@ -1004,11 +1089,11 @@ public final class TokenizerText implements Tokenizer
         if ( ch != 'e' && ch != 'E' )
             return false;
         reader.readChar();
-        sb.append((char)ch);
+        insertCodepointDirect(sb, ch);
         readPossibleSign(sb);
         int x = readDigits(sb);
         if ( x == 0 )
-            error("Malformed double: " + sb);
+            fatal("Malformed double: %s", sb);
         return true;
     }
 
@@ -1016,40 +1101,40 @@ public final class TokenizerText implements Tokenizer
         stringBuilder.setLength(0);
         a2z(stringBuilder);
         if ( stringBuilder.length() == 0 )
-            error("Bad language tag");
+            fatal("Bad language tag");
         for (;;) {
             int ch = reader.peekChar();
             if ( ch == '-' ) {
                 reader.readChar();
-                stringBuilder.append('-');
+                insertCodepointDirect(stringBuilder, ch);
                 int x = stringBuilder.length();
                 a2zN(stringBuilder);
                 if ( stringBuilder.length() == x )
-                    error("Bad language tag");
+                    fatal("Bad language tag");
             } else
                 break;
         }
         return stringBuilder.toString().intern();
     }
-    
+
     // ASCII-only e.g. in lang tags.
-    private void a2z(StringBuilder sb2) {
+    private void a2z(StringBuilder sBuff) {
         for (;;) {
             int ch = reader.peekChar();
             if ( isA2Z(ch) ) {
                 reader.readChar();
-                stringBuilder.append((char)ch);
+                insertCodepointDirect(sBuff, ch);
             } else
                 return;
         }
     }
 
-    private void a2zN(StringBuilder sb2) {
+    private void a2zN(StringBuilder sBuff) {
         for (;;) {
             int ch = reader.peekChar();
             if ( isA2ZN(ch) ) {
                 reader.readChar();
-                stringBuilder.append((char)ch);
+                insertCodepointDirect(sBuff, ch);
             } else
                 return;
         }
@@ -1057,15 +1142,20 @@ public final class TokenizerText implements Tokenizer
 
     private void insertCodepoint(StringBuilder buffer, int ch) {
         if ( Character.charCount(ch) == 1 )
-            buffer.append((char)ch);
+            insertCodepointDirect(buffer, ch);
         else {
             // Convert to UTF-16. Note that the rest of any system this is used
             // in must also respect codepoints and surrogate pairs.
             if ( !Character.isDefined(ch) && !Character.isSupplementaryCodePoint(ch) )
-                error("Illegal codepoint: 0x%04X", ch);
+                fatal("Illegal codepoint: 0x%04X", ch);
             char[] chars = Character.toChars(ch);
             buffer.append(chars);
         }
+    }
+
+    // Insert code point, knowing that 'ch' is 16 bit (basic plane)
+    private static void insertCodepointDirect(StringBuilder buffer, int ch) {
+        buffer.append((char)ch);
     }
 
     @Override
@@ -1140,12 +1230,12 @@ public final class TokenizerText implements Tokenizer
     private final int readLiteralEscape() {
         int c = reader.readChar();
         if ( c == EOF )
-            error("Escape sequence not completed");
+            fatal("Escape sequence not completed");
 
         switch (c) {
-            case 'n':   return NL; 
+            case 'n':   return NL;
             case 'r':   return CR;
-            case 't':   return '\t';
+            case 't':   return TAB;
             case 'f':   return '\f';
             case 'b':   return BSPACE;
             case '"':   return '"';
@@ -1154,39 +1244,38 @@ public final class TokenizerText implements Tokenizer
             case 'u':   return readUnicode4Escape();
             case 'U':   return readUnicode8Escape();
             default:
-                error("Illegal escape sequence value: %c (0x%02X)", c, c);
+                fatal("Illegal escape sequence value: %c (0x%02X)", c, c);
                 return 0;
         }
     }
 
     private final int readCharEscape() {
         // PN_LOCAL_ESC ::= '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'"
-        // | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' |
-        // '%' )
+        //                | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
 
         int c = reader.readChar();
         if ( c == EOF )
-            error("Escape sequence not completed");
+            fatal("Escape sequence not completed");
 
         switch (c) {
-            case '_': case '~': case '.':  case '-':  case '!':  case '$':  case '&': 
-            case '\'':  
-            case '(':  case ')':  case '*':  case '+':  case ',':  case ';': 
+            case '_': case '~': case '.':  case '-':  case '!':  case '$':  case '&':
+            case '\'':
+            case '(':  case ')':  case '*':  case '+':  case ',':  case ';':
             case '=':  case '/':  case '?':  case '#':  case '@':  case '%':
                 return c;
             default:
-                error("illegal character escape value: \\%c", c);
+                fatal("illegal character escape value: \\%c", c);
                 return 0;
         }
     }
-    
+
     private final
     int readUnicode4Escape() { return readHexSequence(4); }
-    
+
     private final int readUnicode8Escape() {
         int ch8 = readHexSequence(8);
         if ( ch8 > Character.MAX_CODE_POINT )
-            error("Illegal code point in \\U sequence value: 0x%08X", ch8);
+            fatal("Illegal code point in \\U sequence value: 0x%08X", ch8);
         return ch8;
     }
 
@@ -1204,12 +1293,12 @@ public final class TokenizerText implements Tokenizer
     private final int readHexChar() {
         int ch = reader.readChar();
         if ( ch == EOF )
-            error("Not a hexadecimal character (end of file)");
+            fatal("Not a hexadecimal character (end of file)");
 
         int x = valHexChar(ch);
         if ( x != -1 )
             return x;
-        error("Not a hexadecimal character: " + (char)ch);
+        fatal("Not a hexadecimal character: '%c'", (char)ch);
         return -1;
     }
 
@@ -1217,13 +1306,12 @@ public final class TokenizerText implements Tokenizer
         for (int i = 0; i < str.length(); i++) {
             char want = str.charAt(i);
             if ( reader.eof() ) {
-                error("End of input during expected string: " + str);
+                fatal("End of input during expected string: %s", str);
                 return false;
             }
             int inChar = reader.peekChar();
             if ( inChar != want ) {
-                // System.err.println("N-triple reader error");
-                error("expected \"" + str + "\"");
+                fatal("expected \"%s\"", str);
                 return false;
             }
             reader.readChar();
@@ -1231,17 +1319,29 @@ public final class TokenizerText implements Tokenizer
         return true;
     }
 
+    /** Warning - can continue. */
     private void warning(String message, Object... args) {
         String msg = String.format(message, args);
         errorHandler.warning(msg, reader.getLineNum(), reader.getColNum());
-        //exception(message, args); 
     }
-    
+
+    /**
+     * Error - at the tokenizer level, it can continue (with some junk) but it is a serious error and the
+     * caller probably should treat as an error and stop.
+     * @param message
+     * @param args
+     */
     private void error(String message, Object... args) {
+        String msg = String.format(message, args);
+        errorHandler.error(msg, reader.getLineNum(), reader.getColNum());
+    }
+
+    /** Structural error - unrecoverable - but reported as ERROR (FATAL can imply system fault) */
+    private void fatal(String message, Object... args) {
         String msg = String.format(message, args);
         long line = reader.getLineNum();
         long col = reader.getColNum();
-        errorHandler.error(msg, line, col);
+        errorHandler.fatal(msg, line, col);
         // We require that errors cause the tokenizer to stop so in case the
         // provided error handler does not, we throw an exception.
         throw new RiotParseException(message, line, col);

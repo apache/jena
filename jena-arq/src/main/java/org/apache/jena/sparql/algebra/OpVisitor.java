@@ -31,7 +31,7 @@ public interface OpVisitor
     public void visit(OpPath opPath) ;
     public void visit(OpTable opTable) ;
     public void visit(OpNull opNull) ;
-    
+
     //Op1
     public void visit(OpProcedure opProc) ;
     public void visit(OpPropFunc opPropFunc) ;
@@ -42,16 +42,15 @@ public interface OpVisitor
     public void visit(OpLabel opLabel) ;
     public void visit(OpAssign opAssign) ;
     public void visit(OpExtend opExtend) ;
-    
+
     // Op2
     public void visit(OpJoin opJoin) ;
     public void visit(OpLeftJoin opLeftJoin) ;
     public void visit(OpUnion opUnion) ;
     public void visit(OpDiff opDiff) ;
     public void visit(OpMinus opMinus) ;
-    
     public void visit(OpConditional opCondition) ;
-    
+
     // OpN
     public void visit(OpSequence opSequence) ;
     public void visit(OpDisjunction opDisjunction) ;
@@ -61,7 +60,7 @@ public interface OpVisitor
         if (effective != null)
             effective.visit(this);
     }
-    
+
     // OpModifier
     public void visit(OpList opList) ;
     public void visit(OpOrder opOrder) ;

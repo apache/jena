@@ -1,0 +1,95 @@
+## Fixed example from 
+
+PREFIX mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
+PREFIX owl: <http://www.w3.org/2002/07/owl#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX sh: <http://www.w3.org/ns/shacl#> 
+PREFIX sht: <http://www.w3.org/ns/shacl-test#> 
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
+
+PREFIX ex: <http://example.com/ns#>
+PREFIX : <http://example/>
+
+ex:NS
+    sh:declare [ sh:prefix "ex" ; sh:namespace ex: ; ] ;
+	sh:declare [ sh:prefix ""   ; sh:namespace "http://example/"^^xsd:anyURI; ] ;
+    .
+	
+ex:BornInCountryTarget
+	a sh:SPARQLTargetType ;
+	rdfs:subClassOf sh:Target ;
+	sh:labelTemplate "All persons born in {$country}" ;
+	sh:parameter [
+		sh:path ex:country ;
+		sh:description "The country that the focus nodes are 'born' in." ;
+		sh:class ex:Country ;
+		sh:nodeKind sh:IRI ;
+	] ;
+	sh:prefixes ex:NS ;
+	sh:select """
+		SELECT ?this
+		WHERE {
+			#?this a ex:Person .
+			?this ex:bornIn $country .
+		}
+		"""
+    .
+
+ex:GermanCitizenShape
+	a sh:NodeShape ;
+	sh:target [
+		a ex:BornInCountryTarget ;
+		ex:country ex:Germany ;
+	] ;
+    sh:property [
+      sh:path :p ;
+      sh:datatype xsd:string ;
+      sh:minCount 1;
+    ] .
+	
+ex:USCitizenShape
+	a sh:NodeShape ;
+	sh:target [
+		a ex:BornInCountryTarget ;
+		ex:country ex:USA ;
+	] ;
+	.
+
+:person1 ex:bornIn ex:USA .
+
+:person2 ex:bornIn ex:Germany .
+
+:person3 ex:bornIn ex:Germany ;
+    :p "abc" ;
+    .
+
+## Test case
+
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <targetSparqlType-001>
+    ) ;
+.
+
+<targetSparqlType-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:target [ ex:SPARQLType ] 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode                  :person2 ;
+          sh:resultPath                 :p ;
+          sh:resultSeverity             sh:Violation ;
+          sh:sourceConstraintComponent  sh:MinCountConstraintComponent ;
+          sh:sourceShape                []
+        ] ;
+    ] ;
+.

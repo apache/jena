@@ -31,7 +31,7 @@ public interface NodeValueVisitor
     public void visit(NodeValueLang nv) ;
     public void visit(NodeValueString nv) ;
     public void visit(NodeValueSortKey nv) ;
-    public void visit(NodeValueDT nv) ;
+    public void visit(NodeValueDateTime nv) ;
 //    public void visit(NodeValueTime nv) ;
 	public void visit(NodeValueDuration nodeValueDuration);
 

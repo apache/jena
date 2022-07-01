@@ -31,6 +31,7 @@ class CacheOps {
         V value = cache.getIfPresent(key) ;
         if ( value == null ) {
             try { value = callable.call() ; }
+            catch (RuntimeException ex) { throw ex; }
             catch (Exception e) {
                 throw new AtlasException("Exception on cache fill", e) ;
             }

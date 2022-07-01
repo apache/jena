@@ -21,15 +21,13 @@ package org.apache.jena.atlas.iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
-import org.apache.jena.atlas.lib.Closeable ;
-
 /** Class to delay the initialization of an iterator until first call of an Iterator operation. */
 
-public abstract class IteratorDelayedInitialization<T> implements Iterator<T>, Closeable
+public abstract class IteratorDelayedInitialization<T> implements IteratorCloseable<T>
 {
     private boolean initialized = false ;
-    private Iterator<T> iterator ; 
-    
+    private Iterator<T> iterator ;
+
     public IteratorDelayedInitialization() {}
 
     private void init()
@@ -40,10 +38,10 @@ public abstract class IteratorDelayedInitialization<T> implements Iterator<T>, C
             iterator = initializeIterator() ;
         }
     }
-    
+
     // Called exactly once
     protected abstract Iterator<T> initializeIterator() ;
-    
+
     @Override
     public boolean hasNext()
     {
@@ -68,7 +66,7 @@ public abstract class IteratorDelayedInitialization<T> implements Iterator<T>, C
         init() ;
         iterator.remove() ;
     }
-    
+
     @Override
     public void close()
     {

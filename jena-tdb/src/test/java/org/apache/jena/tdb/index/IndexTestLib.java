@@ -29,6 +29,7 @@ import static org.apache.jena.tdb.base.record.RecordLib.intToRecord ;
 import static org.apache.jena.tdb.base.record.RecordLib.r ;
 import static org.apache.jena.tdb.base.record.RecordLib.toIntList ;
 import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.fail ;
 
@@ -37,11 +38,8 @@ import java.util.List ;
 import java.util.SortedSet ;
 import java.util.TreeSet ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordLib ;
-import org.apache.jena.tdb.index.Index ;
-import org.apache.jena.tdb.index.RangeIndex ;
 
 public class IndexTestLib
 {
@@ -162,7 +160,7 @@ public class IndexTestLib
         }
         
         for ( Record r : x )
-            BaseTest.assertFalse(index.contains(r)) ;
+            assertFalse(index.contains(r)) ;
         long size2 = index.size() ;
 
         assertEquals(size1-count, size2) ;

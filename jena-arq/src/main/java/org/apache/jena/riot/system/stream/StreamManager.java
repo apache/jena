@@ -37,8 +37,6 @@ import org.slf4j.LoggerFactory ;
  */
 
 public class StreamManager {
-    // Need to combine with IO to do the .gz and "-" things.
-
     private static Logger        log           = LoggerFactory.getLogger(StreamManager.class) ;
 
     public static boolean        logAllLookups = true ;
@@ -48,28 +46,13 @@ public class StreamManager {
 
     private static StreamManager globalStreamManager ;
 
-    public StreamManager() {}
-
-    /** Create a deep copy of this StreamManager */
-    @Override
-    public StreamManager clone() {
-        return clone(this) ;
-    }
-
-    private static StreamManager clone(StreamManager other) {
-        StreamManager sm = new StreamManager() ;
-        sm.handlers.addAll(other.handlers) ;
-        sm.mapper = other.mapper == null ? null : other.mapper.clone() ;
-        return sm ;
-    }
-
     /**
      * Return a default configuration StreamManager with a {@link LocatorFile},
      * {@link LocatorHTTP}, {@link LocatorFTP} and {@link LocatorClassLoader}
      */
-    public static StreamManager makeDefaultStreamManager() {
+    public static StreamManager createStd() {
         StreamManager streamManager = new StreamManager() ;
-        streamManager.addLocator(new LocatorFile(null)) ;
+        streamManager.addLocator(new LocatorFile()) ;
         streamManager.addLocator(new LocatorHTTP()) ;
         streamManager.addLocator(new LocatorFTP()) ;
         streamManager.addLocator(new LocatorClassLoader(streamManager.getClass().getClassLoader())) ;
@@ -110,8 +93,24 @@ public class StreamManager {
     public static void setGlobal(StreamManager streamManager) {
         globalStreamManager = streamManager ;
     }
-    
-    static { setGlobal(makeDefaultStreamManager()) ; }
+
+    static { setGlobal(createStd()) ; }
+
+    /** Create a {@code StreamManager} with no locator or location mapper. */
+    public StreamManager() {}
+
+    /** Create a deep copy of this StreamManager */
+    @Override
+    public StreamManager clone() {
+        return clone(this) ;
+    }
+
+    private static StreamManager clone(StreamManager other) {
+        StreamManager sm = new StreamManager() ;
+        sm.handlers.addAll(other.handlers) ;
+        sm.mapper = other.mapper == null ? null : other.mapper.clone() ;
+        return sm ;
+    }
 
     /**
      * Open a file using the locators of this StreamManager.
@@ -127,6 +126,11 @@ public class StreamManager {
             log.debug("open: mapped to " + uri) ;
 
         return openNoMapOrNull(uri) ;
+    }
+
+    /** Test whether a mapping exists */
+    public boolean hasMapping(String filenameOrURI) {
+        return mapper.containsMapping(filenameOrURI);
     }
 
     /** Apply the mapping of a filename or URI */
@@ -148,7 +152,7 @@ public class StreamManager {
     }
 
     /**
-     * Open a file using the locators of this FileManager but without location
+     * Open a file using the locators of this StreamManager but without location
      * mapping. Throws RiotNotFoundException if not found.
      */
     public TypedInputStream openNoMap(String filenameOrURI) {
@@ -159,7 +163,7 @@ public class StreamManager {
     }
 
     /**
-     * Open a file using the locators of this FileManager without location
+     * Open a file using the locators of this StreamManager without location
      * mapping. Return null if not found
      */
 
@@ -190,7 +194,7 @@ public class StreamManager {
         return Collections.unmodifiableList(handlers) ;
     }
 
-    /** Remove a locator */
+    /** Remove a locator. */
     public void remove(Locator loc) {
         handlers.remove(loc) ;
     }
@@ -200,8 +204,12 @@ public class StreamManager {
         handlers.clear() ;
     }
 
-    /** Add a locator to the end of the locators list */
-    public void addLocator(Locator loc) {
+    /**
+     * Add a locator to the end of the locators list.
+     * Returns {@code this} StreamManager.
+     */
+    public StreamManager addLocator(Locator loc) {
         handlers.add(loc) ;
+        return this;
     }
 }

@@ -16,85 +16,90 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.servlets ;
+package org.apache.jena.fuseki.servlets;
 
-import java.util.concurrent.atomic.AtomicLong ;
+import java.util.concurrent.atomic.AtomicLong;
 
-import javax.servlet.http.HttpServlet ;
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.riot.web.HttpNames;
 
 /**
- * Addition HTTP Servlet operations. 
+ * Addition HTTP Servlet operations.
  */
 public abstract class ServletBase extends HttpServlet {
 
-    public static final String METHOD_DELETE    = "DELETE" ;
-    public static final String METHOD_HEAD      = "HEAD" ;
-    public static final String METHOD_GET       = "GET" ;
-    public static final String METHOD_OPTIONS   = "OPTIONS" ;
-    public static final String METHOD_POST      = "POST" ;
-    public static final String METHOD_PUT       = "PUT" ;
-    public static final String METHOD_TRACE     = "TRACE" ;
-    public static final String METHOD_PATCH     = "PATCH" ;
-    
-    private static AtomicLong     requestIdAlloc = new AtomicLong(0) ;
+    public static final String METHOD_DELETE    = "DELETE";
+    public static final String METHOD_HEAD      = "HEAD";
+    public static final String METHOD_GET       = "GET";
+    public static final String METHOD_OPTIONS   = "OPTIONS";
+    public static final String METHOD_POST      = "POST";
+    public static final String METHOD_PUT       = "PUT";
+    public static final String METHOD_TRACE     = "TRACE";
+    public static final String METHOD_PATCH     = "PATCH";
+
+    private static AtomicLong     requestIdAlloc = new AtomicLong(0);
 
     protected ServletBase() {}
-    
+
     /**
-     * Helper method which gets a unique request ID and appends it as a header
+     * Helper method which gets a unique request id and appends it as a header
      * to the response
-     * 
+     *
      * @param request
      *            HTTP Request
      * @param response
      *            HTTP Response
-     * @return Request ID
+     * @return Request Id
      */
     protected static long allocRequestId(HttpServletRequest request, HttpServletResponse response) {
-        long id = requestIdAlloc.incrementAndGet() ;
-        addRequestId(response, id) ;
-        return id ;
+        long id = requestIdAlloc.incrementAndGet();
+        addRequestId(response, id);
+        return id;
     }
 
     /**
      * Helper method for attaching a request ID to a response as a header
-     * 
+     *
      * @param response
      *            Response
      * @param id
      *            Request ID
      */
     protected static void addRequestId(HttpServletResponse response, long id) {
-        response.addHeader("Fuseki-Request-ID", Long.toString(id)) ;
+        response.addHeader(Fuseki.FusekiRequestIdHeader, Long.toString(id));
     }
 
     static final String varyHeaderSetting = String.join(",",
          HttpNames.hAccept,
          HttpNames.hAcceptEncoding,
-         HttpNames.hAcceptCharset) ;
+         HttpNames.hAcceptCharset,
+         HttpNames.hOrigin,
+         HttpNames.hAccessControlRequestMethod,
+         HttpNames.hAccessControlRequestHeaders
+            );
 
     public static void setVaryHeader(HttpServletResponse httpResponse) {
-        httpResponse.setHeader(HttpNames.hVary, varyHeaderSetting) ;
+        httpResponse.setHeader(HttpNames.hVary, varyHeaderSetting);
     }
 
-    /** Done via web.xml */ 
-    public static boolean CORS_ENABLED = false ;
-    
+    /** Done via web.xml */
+    public static boolean CORS_ENABLED = false;
+
     public static void setCommonHeadersForOptions(HttpServletResponse httpResponse) {
         if ( CORS_ENABLED )
-            httpResponse.setHeader(HttpNames.hAccessControlAllowHeaders, "X-Requested-With, Content-Type, Authorization") ;
-        setCommonHeaders(httpResponse) ;
+            httpResponse.setHeader(HttpNames.hAccessControlAllowHeaders, "X-Requested-With, Content-Type, Authorization");
+        httpResponse.setHeader(HttpNames.hContentLength, "0");
+        setCommonHeaders(httpResponse);
     }
 
     public static void setCommonHeaders(HttpServletResponse httpResponse) {
         if ( CORS_ENABLED )
-            httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*") ;
+            httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*");
         if ( Fuseki.outputFusekiServerHeader )
-            httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;
+            httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName);
     }
 }

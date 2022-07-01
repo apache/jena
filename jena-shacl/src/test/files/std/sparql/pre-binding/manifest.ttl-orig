@@ -1,0 +1,22 @@
+@prefix mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sht:     <http://www.w3.org/ns/shacl-test#> .
+
+<>
+	a mf:Manifest ;
+	rdfs:label "Tests for pre-binding" ;
+	mf:include <pre-binding-001.ttl> ;
+	mf:include <pre-binding-002.ttl> ;
+	mf:include <pre-binding-003.ttl> ;
+	mf:include <pre-binding-004.ttl> ;
+	mf:include <pre-binding-005.ttl> ;
+	mf:include <pre-binding-006.ttl> ;
+	mf:include <pre-binding-007.ttl> ;
+	mf:include <shapesGraph-001.ttl> ;
+	mf:include <unsupported-sparql-001.ttl> ;
+	mf:include <unsupported-sparql-002.ttl> ;
+	mf:include <unsupported-sparql-003.ttl> ;
+	mf:include <unsupported-sparql-004.ttl> ;
+	mf:include <unsupported-sparql-005.ttl> ;
+	mf:include <unsupported-sparql-006.ttl> ;
+.

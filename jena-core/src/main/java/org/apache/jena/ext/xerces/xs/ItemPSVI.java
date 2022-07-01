@@ -99,6 +99,7 @@ public interface ItemPSVI {
      * 
      * @deprecated Use getSchemaValue().getNormalizedValue() instead
      */
+    @Deprecated
     public String getSchemaNormalizedValue();
 
     /**
@@ -110,6 +111,7 @@ public interface ItemPSVI {
      * 
      * @deprecated Use getSchemaValue().getActualValue() instead
      */
+    @Deprecated
     public Object getActualNormalizedValue()
                                    throws XSException;
 
@@ -129,6 +131,7 @@ public interface ItemPSVI {
      *   
      *  @deprecated Use getSchemaValue().getActualValueType() instead
      */
+    @Deprecated
     public short getActualNormalizedValueType()
                                    throws XSException;
 
@@ -165,6 +168,7 @@ public interface ItemPSVI {
      *  
      *  @deprecated Use getSchemaValue().getListValueTypes() instead
      */
+    @Deprecated
     public ShortList getItemValueTypes()
                                    throws XSException;
 

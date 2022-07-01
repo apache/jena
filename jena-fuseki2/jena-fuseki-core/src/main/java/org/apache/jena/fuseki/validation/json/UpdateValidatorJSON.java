@@ -25,68 +25,68 @@ import static org.apache.jena.fuseki.validation.json.ValidatorJsonLib.jParseErro
 import static org.apache.jena.fuseki.validation.json.ValidatorJsonLib.jParseErrorCol;
 import static org.apache.jena.fuseki.validation.json.ValidatorJsonLib.jParseErrorLine;
 
-import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.update.UpdateFactory ;
-import org.apache.jena.update.UpdateRequest ;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.json.JsonBuilder;
+import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.query.QueryParseException;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 
 public class UpdateValidatorJSON {
 
     public UpdateValidatorJSON() {}
-    
-    static final String paramUpdate           = "update" ;
-    static final String paramSyntax           = "languageSyntax" ;
-    
-    static final String jInput           = "input" ;
-    static final String jFormatted       = "formatted" ;
+
+    static final String paramUpdate           = "update";
+    static final String paramSyntax           = "languageSyntax";
+
+    static final String jInput           = "input";
+    static final String jFormatted       = "formatted";
 
     public static JsonObject execute(ValidationAction action) {
-        JsonBuilder obj = new JsonBuilder() ;
-        obj.startObject() ;
-        
-        final String updateString = getArg(action, paramUpdate) ;
-        String updateSyntax = getArgOrNull(action, paramSyntax) ;
+        JsonBuilder obj = new JsonBuilder();
+        obj.startObject();
+
+        final String updateString = getArg(action, paramUpdate);
+        String updateSyntax = getArgOrNull(action, paramSyntax);
         if ( updateSyntax == null || updateSyntax.equals("") )
-            updateSyntax = "SPARQL" ;
-        
-        Syntax language = Syntax.lookup(updateSyntax) ;
+            updateSyntax = "SPARQL";
+
+        Syntax language = Syntax.lookup(updateSyntax);
         if ( language == null ) {
-            ServletOps.errorBadRequest("Unknown syntax: " + updateSyntax) ;
-            return null ;
+            ServletOps.errorBadRequest("Unknown syntax: " + updateSyntax);
+            return null;
         }
-        
-        obj.key(jInput).value(updateString) ;
-        UpdateRequest request = null ;
+
+        obj.key(jInput).value(updateString);
+        UpdateRequest request = null;
         try {
-            request = UpdateFactory.create(updateString, "http://example/base/", language) ;
+            request = UpdateFactory.create(updateString, "http://example/base/", language);
         } catch (QueryParseException ex) {
-            obj.key(jErrors) ;
-            obj.startArray() ;      // Errors array
-            obj.startObject() ;
-            obj.key(jParseError).value(ex.getMessage()) ;
-            obj.key(jParseErrorLine).value(ex.getLine()) ;
-            obj.key(jParseErrorCol).value(ex.getColumn()) ;
-            obj.finishObject() ;
-            obj.finishArray() ;
-            
-            obj.finishObject() ; // Outer object
-            return obj.build().getAsObject() ;
+            obj.key(jErrors);
+            obj.startArray();      // Errors array
+            obj.startObject();
+            obj.key(jParseError).value(ex.getMessage());
+            obj.key(jParseErrorLine).value(ex.getLine());
+            obj.key(jParseErrorCol).value(ex.getColumn());
+            obj.finishObject();
+            obj.finishArray();
+
+            obj.finishObject(); // Outer object
+            return obj.build().getAsObject();
         }
-        
-        formatted(obj, request) ;
-        
-        obj.finishObject() ;
-        return obj.build().getAsObject() ;
+
+        formatted(obj, request);
+
+        obj.finishObject();
+        return obj.build().getAsObject();
     }
 
     private static void formatted(JsonBuilder obj, UpdateRequest updateRequest) {
-        IndentedLineBuffer out = new IndentedLineBuffer() ;
-        updateRequest.output(out) ;
-        obj.key(jFormatted).value(out.asString()) ;
+        IndentedLineBuffer out = new IndentedLineBuffer();
+        updateRequest.output(out);
+        obj.key(jFormatted).value(out.asString());
     }
 }
 

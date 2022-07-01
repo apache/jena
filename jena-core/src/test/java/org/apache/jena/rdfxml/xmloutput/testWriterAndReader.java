@@ -236,8 +236,8 @@ public class testWriterAndReader
 			System.out.println("Beginning " + test);
 		Random random = new Random(seed);
 
-        RDFReader rdfRdr = m1.getReader( rwLang );
-		RDFWriter rdfWtr = m1.getWriter( rwLang );
+        RDFReaderI rdfRdr = m1.getReader( rwLang );
+		RDFWriterI rdfWtr = m1.getWriter( rwLang );
 
 		setWriterOptionsAndHandlers( wopName, wopVal, rdfRdr, rdfWtr );
 		for (int variationIndex = 0; variationIndex < variationMax; variationIndex++) 
@@ -252,7 +252,7 @@ public class testWriterAndReader
      	@param rdfRdr
      	@param rdfWtr
     */
-    private void setWriterOptionsAndHandlers( String[] wopName, Object[] wopVal, RDFReader rdfRdr, RDFWriter rdfWtr )
+    private void setWriterOptionsAndHandlers( String[] wopName, Object[] wopVal, RDFReaderI rdfRdr, RDFWriterI rdfWtr )
         {
         rdfRdr.setErrorHandler( this );
         rdfWtr.setErrorHandler( this );
@@ -269,7 +269,7 @@ public class testWriterAndReader
      	@throws FileNotFoundException
      	@throws IOException
     */
-    private void testVariation( String filebase, Random random, RDFReader rdfRdr, RDFWriter rdfWtr ) 
+    private void testVariation( String filebase, Random random, RDFReaderI rdfRdr, RDFWriterI rdfWtr ) 
         throws FileNotFoundException, IOException
         {
         Model m1 = createMemModel();

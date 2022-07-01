@@ -32,7 +32,7 @@ abstract class TupleBase<X> implements Tuple<X> {
             result = prime * result + Objects.hashCode(get(i)) ;
         return result;
     }
-    
+
     @Override
     public final
     boolean equals(Object obj) {
@@ -40,13 +40,13 @@ abstract class TupleBase<X> implements Tuple<X> {
             return true;
         if ( obj == null )
             return false ;
-        if ( ! ( obj instanceof Tuple<?> ) ) 
+        if ( ! ( obj instanceof Tuple<?> ) )
             return false ;
         Tuple<?> other = (Tuple<?>)obj ;
         if ( this.len() != other.len() )
             return false ;
         for ( int i = 0 ; i < this.len() ; i++ )
-            if ( ! Objects.equals(this.get(i), other.get(i)) ) 
+            if ( ! Objects.equals(this.get(i), other.get(i)) )
                 return false ;
         return true;
     }
@@ -56,4 +56,3 @@ abstract class TupleBase<X> implements Tuple<X> {
         return asList().toString() ;
     }
 }
-

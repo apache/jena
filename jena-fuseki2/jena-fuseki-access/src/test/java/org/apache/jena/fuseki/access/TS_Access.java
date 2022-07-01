@@ -28,6 +28,6 @@ import org.junit.runners.Suite;
     TestSecurityFilterLocal.class
     , TestSecurityRegistry.class
 })
-    
+
 public class TS_Access {
 }

@@ -18,18 +18,23 @@
 
 package arq;
 
+import java.io.PrintStream;
+
 import arq.cmdline.* ;
-import jena.cmd.ArgDecl;
-import jena.cmd.CmdException;
-import jena.cmd.TerminationException;
+import org.apache.commons.io.output.NullPrintStream;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.query.* ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.RiotNotFoundException ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.shared.NotFoundException;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.core.TransactionalNull;
@@ -45,10 +50,10 @@ public class query extends CmdARQ
     private ArgDecl argExplain  = new ArgDecl(ArgDecl.NoValue, "explain") ;
     private ArgDecl argOptimize = new ArgDecl(ArgDecl.HasValue, "opt", "optimize") ;
 
-    protected int repeatCount = 1 ; 
+    protected int repeatCount = 1 ;
     protected int warmupCount = 0 ;
     protected boolean queryOptimization = true ;
-    
+
     protected ModTime       modTime =     new ModTime() ;
     protected ModQueryIn    modQuery =    null;
     protected ModDataset    modDataset =  null ;
@@ -63,7 +68,7 @@ public class query extends CmdARQ
     public query(String[] argv)
     {
         super(argv) ;
-        modQuery = new ModQueryIn(getDefaultSyntax()) ; 
+        modQuery = new ModQueryIn(getDefaultSyntax()) ;
         modDataset = setModDataset() ;
 
         super.addModule(modQuery) ;
@@ -86,7 +91,7 @@ public class query extends CmdARQ
      *  <li>Command default</li>
      *  <li>System default</li>
      *  </ul>
-     *  
+     *
      */
     protected Syntax getDefaultSyntax()     { return Syntax.defaultQuerySyntax ; }
 
@@ -97,7 +102,7 @@ public class query extends CmdARQ
         if ( contains(argRepeat) )
         {
             String[] x = getValue(argRepeat).split(",") ;
-            if ( x.length == 1 ) 
+            if ( x.length == 1 )
             {
                 try { repeatCount = Integer.parseInt(x[0]) ; }
                 catch (NumberFormatException ex)
@@ -115,26 +120,26 @@ public class query extends CmdARQ
         }
         if ( isVerbose() )
             ARQ.getContext().setTrue(ARQ.symLogExec) ;
-        
+
         if ( hasArg(argExplain) )
             ARQ.setExecutionLogging(Explain.InfoLevel.ALL) ;
-        
+
         if ( hasArg(argOptimize) )
         {
             String x1 = getValue(argOptimize) ;
-            if ( hasValueOfTrue(argOptimize) || x1.equalsIgnoreCase("on") || x1.equalsIgnoreCase("yes") ) 
+            if ( hasValueOfTrue(argOptimize) || x1.equalsIgnoreCase("on") || x1.equalsIgnoreCase("yes") )
                 queryOptimization = true ;
             else if ( hasValueOfFalse(argOptimize) || x1.equalsIgnoreCase("off") || x1.equalsIgnoreCase("no") )
                 queryOptimization = false ;
             else throw new CmdException("Optimization flag must be true/false/on/off/yes/no. Found: "+getValue(argOptimize)) ;
         }
     }
-    
+
     protected ModDataset setModDataset()
     {
         return new ModDatasetGeneralAssembler() ;
     }
-    
+
     @Override
     protected void exec()
     {
@@ -142,18 +147,16 @@ public class query extends CmdARQ
             ARQ.getContext().setFalse(ARQ.optimization) ;
         if ( cmdStrictMode )
             ARQ.getContext().setFalse(ARQ.optimization) ;
-        
+
         // Warm up.
         for ( int i = 0 ; i < warmupCount ; i++ )
-        {
-            queryExec(false, ResultsFormat.FMT_NONE) ;
-        }
-        
+            // Include the results format so that is warmed up as well. 
+            queryExec(false, modResults.getResultsFormat(), NullPrintStream.NULL_PRINT_STREAM) ;
+
         for ( int i = 0 ; i < repeatCount ; i++ )
-            queryExec(modTime.timingEnabled(),  modResults.getResultsFormat()) ;
-        
-        if ( modTime.timingEnabled() && repeatCount > 1 )
-        {
+            queryExec(modTime.timingEnabled(),  modResults.getResultsFormat(), System.out) ;
+
+        if ( modTime.timingEnabled() && repeatCount > 1 ) {
             long avg = totalTime/repeatCount ;
             String avgStr = modTime.timeStr(avg) ;
             System.err.println("Total time: "+modTime.timeStr(totalTime)+" sec for repeat count of "+repeatCount+ " : average: "+avgStr) ;
@@ -162,16 +165,16 @@ public class query extends CmdARQ
 
     @Override
     protected String getCommandName() { return Lib.className(this) ; }
-    
+
     @Override
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }
-    
+
     /** Choose the dataset.
      * <li> use the data as described on the command line
      * <li> else use FROM/FROM NAMED if present (pass null to ARQ)
      * <li> else provided an empty dataset and hope the query has VALUES/BIND
      */
-    protected Dataset getDataset(Query query)  { 
+    protected Dataset getDataset(Query query)  {
         try {
             Dataset ds = modDataset.getDataset();
             if ( ds == null )
@@ -187,27 +190,37 @@ public class query extends CmdARQ
             throw new TerminationException(1);
         }
     }
-    
-    // Policy for no command line dataset. null means "whatever" (use FROM) 
+
+    protected Query getQuery() {
+        try {
+            return modQuery.getQuery() ;
+        } catch (NotFoundException ex) {
+            System.err.println("Failed to load query: "+ex.getMessage());
+            throw new TerminationException(1);
+        }
+    }
+
+    // Policy for no command line dataset. null means "whatever" (use FROM)
     protected Dataset dealWithNoDataset(Query query)  {
         if ( query.hasDatasetDescription() )
             return null;
         return DatasetFactory.createTxnMem();
-        //throw new CmdException("No dataset provided") ; 
+        //throw new CmdException("No dataset provided") ;
     }
-    
+
     protected long totalTime = 0 ;
-    protected void queryExec(boolean timed, ResultsFormat fmt)
+    protected void queryExec(boolean timed, ResultsFormat fmt, PrintStream resultsDest)
     {
         try {
-            Query query = modQuery.getQuery() ;
+            Query query = getQuery() ;
             if ( isVerbose() ) {
-                IndentedWriter out = new IndentedWriter(System.out, true);
+                IndentedWriter out = new IndentedWriter(resultsDest, true);
                 query.serialize(out);
+                out.setLineNumbers(false);
+                out.println();
                 out.flush();
-                System.out.println();
             }
-            
+
             if ( isQuiet() )
                 LogCtl.setError(SysRIOT.riotLoggerName) ;
             Dataset dataset = getDataset(query) ;
@@ -221,12 +234,11 @@ public class query extends CmdARQ
             Txn.executeRead(transactional, ()->{
                 modTime.startTimer() ;
                 try ( QueryExecution qe = QueryExecutionFactory.create(query, dataset) ) {
-                    try { QueryExecUtils.executeQuery(query, qe, fmt); }
+                    try { QueryExecUtils.executeQuery(query, qe, fmt, resultsDest); }
                     catch (QueryCancelledException ex) {
-                        System.out.flush();
+                        IO.flush(resultsDest);
                         System.err.println("Query timed out");
                     }
-
                     long time = modTime.endTimer();
                     if ( timed ) {
                         totalTime += time;

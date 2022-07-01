@@ -18,54 +18,53 @@
 
 package org.apache.jena.dboe.base.file;
 
-
 /** Add synchronization to all BinaryDataFile operations.
- *  This gives the correct thread-safe operation 
+ *  This gives the correct thread-safe operation
  *  but isn't necessarily the best way to do it.
  */
 public class BinaryDataFileSync implements BinaryDataFile {
-    private final BinaryDataFile other ;
-    
+    private final BinaryDataFile other;
+
     public BinaryDataFileSync(BinaryDataFile other) {
-        this.other = other ;
+        this.other = other;
     }
-    
-    @Override
-    synchronized
-    public void open() { other.open() ; } 
 
     @Override
     synchronized
-    public boolean isOpen() { return other.isOpen() ; }
+    public void open() { other.open(); }
+
+    @Override
+    synchronized
+    public boolean isOpen() { return other.isOpen(); }
 
     @Override
     synchronized
     public int read(long posn, byte[] b) {
-        return other.read(posn, b) ;
+        return other.read(posn, b);
     }
 
     @Override
     synchronized
     public int read(long posn, byte[] b, int start, int length) {
-        return other.read(posn, b, start, length) ;
+        return other.read(posn, b, start, length);
     }
 
     @Override
     synchronized
     public long write(byte[] b) {
-        return other.write(b) ;
+        return other.write(b);
     }
-    
+
     @Override
     synchronized
     public long write(byte[] b, int start, int length) {
-        return other.write(b, start, length) ;
+        return other.write(b, start, length);
     }
 
     @Override
     synchronized
     public long length() {
-        return other.length() ;
+        return other.length();
     }
 
     @Override

@@ -22,16 +22,16 @@ import org.apache.jena.sparql.algebra.Transform ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.junit.Test ;
 
-/** Test BGP reordering using the fixed reordering algorithm */ 
+/** Test BGP reordering using the fixed reordering algorithm */
 public class TestReorderBGP extends AbstractTestTransform {
-    private static Transform t_reorder = new TransformReorder(ReorderLib.fixed()) ; 
-    
+    private static Transform t_reorder = new TransformReorder(ReorderLib.fixed()) ;
+
     public TestReorderBGP() {}
 
     @Test public void reorderbgp_1_1() {
         testOp("(bgp (?s :p ?o))", t_reorder, "(bgp (?s :p ?o))") ;
     }
-    
+
     @Test public void reorderbgp_1_2() {
         testOp("(bgp (?s ?p ?o))", t_reorder, "(bgp (?s ?p ?o))") ;
     }
@@ -43,7 +43,7 @@ public class TestReorderBGP extends AbstractTestTransform {
     @Test public void reorderbgp_2_2() {
         testOp("(bgp (?s :p 123) (?s :p ?o) )", t_reorder, "(bgp  (?s :p 123) (?s :p ?o))") ;
     }
-    
+
     @Test public void reorderbgp_2_3() {
         testOp("(bgp (?s :p 123) (?s rdf:type :T) )", t_reorder, "(bgp  (?s :p 123) (?s rdf:type :T))") ;
     }
@@ -52,13 +52,13 @@ public class TestReorderBGP extends AbstractTestTransform {
         testOp("(bgp (?s rdf:type :T) (?s :p 123) )", t_reorder, "(bgp  (?s :p 123) (?s rdf:type :T))") ;
     }
 
-    private static String expected3 = "(bgp  (?s :p 123)  (?s rdf:type :T) (?s :p ?o) )" ;
+    private static String expected3 = "(bgp  (?s :p 123) (?s rdf:type :T) (?s :p ?o) )" ;
 
     @Test public void reorderbgp_3_1() {
         testOp("(bgp (?s rdf:type :T) (?s :p ?o) (?s :p 123) )",
              t_reorder, expected3) ;
     }
-    
+
     @Test public void reorderbgp_3_2() {
         testOp("(bgp (?s :p ?o) (?s :p 123) (?s rdf:type :T) )",
                t_reorder, expected3) ;
@@ -73,7 +73,7 @@ public class TestReorderBGP extends AbstractTestTransform {
         testOp("(bgp (?s rdf:type :T) (?s :p 123)  (?s :p ?o) )",
                t_reorder, expected3) ;
       }
-    
+
     @Test public void reorderbgp_3_5() {
         testOp("(bgp (?s :p 123)  (?s :p ?o) (?s rdf:type :T))",
                t_reorder, expected3) ;
@@ -82,5 +82,4 @@ public class TestReorderBGP extends AbstractTestTransform {
         testOp("(bgp (?s :p ?o) (?s rdf:type :T) (?s :p 123)  )",
                t_reorder, expected3) ;
       }
-
 }

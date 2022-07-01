@@ -21,31 +21,28 @@ package org.apache.jena.dboe.base.file;
 import static org.apache.jena.dboe.test.BufferTestLib.*;
 
 import org.apache.jena.dboe.base.block.Block;
-import org.apache.jena.dboe.base.file.BlockAccess;
-import org.junit.Test ;
+import org.junit.Test;
 
 public abstract class AbstractTestBlockAccessVarSize extends AbstractTestBlockAccessFixedSize
 {
-    protected AbstractTestBlockAccessVarSize()
-    {
-        super(25) ;
+    protected AbstractTestBlockAccessVarSize() {
+        super(25);
     }
-    
-    @Test
-    public void fileaccess_50()
-    {
-        BlockAccess file = make() ;
-        Block b1 = data(file, 10) ;
-        Block b2 = data(file, 20) ;
-        file.write(b1) ;
-        file.write(b2) ;
-        
-        Block b1a = file.read(b1.getId()) ;
-        Block b2a = file.read(b2.getId()) ;
 
-        assertNotSame(b1a, b1) ;
-        assertNotSame(b2a, b2) ;
-        sameValue(b1, b1a) ;
-        sameValue(b2, b2a) ;
-    }        
+    @Test
+    public void fileaccess_50() {
+        BlockAccess file = make();
+        Block b1 = data(file, 10);
+        Block b2 = data(file, 20);
+        file.write(b1);
+        file.write(b2);
+
+        Block b1a = file.read(b1.getId());
+        Block b2a = file.read(b2.getId());
+
+        assertNotSame(b1a, b1);
+        assertNotSame(b2a, b2);
+        sameValue(b1, b1a);
+        sameValue(b2, b2a);
+    }
 }

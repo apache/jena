@@ -21,7 +21,8 @@ package org.apache.jena.riot.system;
 import java.io.OutputStream ;
 
 import org.apache.jena.riot.RDFFormat ;
+import org.apache.jena.sparql.util.Context;
 
 public interface StreamRDFWriterFactory {
-    StreamRDF create(OutputStream output, RDFFormat format) ;
+    StreamRDF create(OutputStream output, RDFFormat format, Context context) ;
 }

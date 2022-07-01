@@ -19,28 +19,26 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.jena</groupId>
   <artifactId>jena-permissions</artifactId>
-  <version>3.11.0-SNAPSHOT</version>
 
   <name>Apache Jena - Security Permissions</name>
   <description>Security Permissions wrapper around Jena RDF implementation.</description>
-  <url>http://jena.apache.org/documentation/security</url>
+  <url>https://jena.apache.org/documentation/security</url>
   <inceptionYear>2012</inceptionYear>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   
   <organization>
      <name>The Apache Software Foundation</name>
-      <url>http://www.apache.org/</url>
+      <url>https://www.apache.org/</url>
   </organization>
   <issueManagement>
-    <url>http://issues.apache.org/jira/browse/JENA</url>
+    <url>https://issues.apache.org/jira/browse/JENA</url>
     <system>JIRA</system>
   </issueManagement> 
 
@@ -55,7 +53,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.9.1</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>add-example-source</id>
@@ -226,12 +224,18 @@
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-core</artifactId>
-      <version>1.2.2</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
+      <artifactId>mockito-core</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 </project>

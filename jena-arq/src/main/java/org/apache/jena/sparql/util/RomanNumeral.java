@@ -50,15 +50,15 @@ public class RomanNumeral
 
     @Override
     public String toString() { return i2r(intValue) ; }
-    
+
     public int intValue() { return intValue ; }
-    
-    
+
+
     //String pat = "M*(CM|DC{0,3}|CD|C{0,3})(XC|LX{0,3}|XL|X{0,3})(IX|VI{0,3}|IV|I{0,3})" ;
     // Added I{0,4}
     static String numeralPattern = "M*(CM|DC{0,3}|CD|C{0,3})(XC|LX{0,3}|XL|X{0,3})(IX|VI{0,3}|IV|I{0,4})" ;
     static Pattern pattern = Pattern.compile(numeralPattern) ;
-    
+
     public static boolean isValid(String lex) {
         lex = lex.toUpperCase(Locale.ENGLISH) ;
         // Excludes IIII
@@ -113,9 +113,9 @@ public class RomanNumeral
         }
         return sbuff.toString() ;
     }
-    
+
     private static int i2r(StringBuffer sbuff, int i,
-                           String tens,  int iTens, 
+                           String tens,  int iTens,
                            String nines, int iNines,
                            String fives, int iFives,
                            String fours, int iFours)
@@ -125,7 +125,7 @@ public class RomanNumeral
             sbuff.append(tens) ;
             i -= iTens ;
         }
-        
+
         if ( i >= iNines )
         {
             sbuff.append(nines) ;
@@ -144,12 +144,12 @@ public class RomanNumeral
         }
         return i ;
     }
-   
+
     // Only subtract ten's C,X,I
     // Only allow one of them
     // One do 10^x from 10^(x+1)
     // CM, CD, XC, XL, IX, IV
-    
+
     static private int charToNum(char ch)
     {
         if ( ch == 0 ) return 0 ;
@@ -167,12 +167,12 @@ public class RomanNumeral
             new RValue[] { new RValue('M', 1000) ,
             new RValue('D', 500) ,
             new RValue('C', 100) ,
-            new RValue('L', 50) ,        
+            new RValue('L', 50) ,
             new RValue('X', 10) ,
             new RValue('V', 5) ,
             new RValue('I', 1) } ;
 
         char lex ; int val ;
-        RValue(char s, int v) { lex = s ; val = v ; } 
+        RValue(char s, int v) { lex = s ; val = v ; }
     }
 }

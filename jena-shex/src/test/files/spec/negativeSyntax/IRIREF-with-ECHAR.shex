@@ -1,0 +1,5 @@
+# IRIREF with ECHAR
+# source: turtle-syntax-bad-uri-04.ttl
+<http://a.example/IssueShape> {
+   <http://a.example/p1\n> .
+}

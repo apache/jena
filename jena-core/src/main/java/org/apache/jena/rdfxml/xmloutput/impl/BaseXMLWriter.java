@@ -275,7 +275,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     private void setFromWriterSystemProperties( Map<String, String> ns, Set<String> prefixesUsed ) {
         for ( String uri : namespacesNeeded )
         {
-            String val = JenaRuntime.getSystemProperty( RDFWriter.NSPREFIXPROPBASE + uri );
+            String val = JenaRuntime.getSystemProperty( RDFWriterI.NSPREFIXPROPBASE + uri );
             if ( val != null && checkLegalPrefix( val ) && !prefixesUsed.contains( val ) )
             {
                 ns.put( uri, val );
@@ -395,11 +395,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		return tag( uriref.substring( 0, split ), uriref.substring( split ), type, true );
     }
     
-	static public boolean dbg = false;
-    
 	String tag( String namespace, String local, int type, boolean localIsQname)  {
-		if (dbg)
-			System.err.println(namespace + " - " + local);
 		String prefix = ns.get( namespace );
 		if (type != FAST && type != FASTATTR) {
 			if ((!localIsQname) && !XMLChar.isValidNCName(local))
@@ -577,7 +573,6 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		String decl = null;
 		if (out instanceof OutputStreamWriter) {
 			String javaEnc = ((OutputStreamWriter) out).getEncoding();
-			// System.err.println(javaEnc);
 			if (!(javaEnc.equals("UTF8") || javaEnc.equals("UTF-16"))) {
 			    CharEncoding encodingInfo = CharEncoding.create(javaEnc);
 		        
@@ -643,7 +638,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         Set the writer property propName to the value obtained from propValue. Return an
         Object representation of the original value.
          
-     	@see org.apache.jena.rdf.model.RDFWriter#setProperty(java.lang.String, java.lang.Object)
+     	@see org.apache.jena.rdf.model.RDFWriterI#setProperty(java.lang.String, java.lang.Object)
      */
 	@Override
     final synchronized public Object setProperty( String propName, Object propValue ) {
@@ -652,7 +647,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         } else if (propName.equalsIgnoreCase( "showDoctypeDeclaration" )) {
             return setShowDoctypeDeclaration( propValue );
         } else if (propName.equalsIgnoreCase( "minimalPrefixes" )) {
-            try { return new Boolean( !writingAllModelPrefixNamespaces ); }
+            try { return Boolean.valueOf( !writingAllModelPrefixNamespaces ); }
             finally { writingAllModelPrefixNamespaces = !getBoolean( propValue ); }
 		} else if (propName.equalsIgnoreCase("xmlbase")) {
 			String result = xmlBase;
@@ -663,13 +658,13 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		} else if (propName.equalsIgnoreCase("width")) {
 			return setWidth(propValue);
 		} else if (propName.equalsIgnoreCase("longid")) {
-			Boolean result = new Boolean(longId);
+			Boolean result = Boolean.valueOf(longId);
 			longId = getBoolean(propValue);
 			return result;
 		} else if (propName.equalsIgnoreCase("attributeQuoteChar")) {
 			return setAttributeQuoteChar(propValue);
 		} else if (propName.equalsIgnoreCase( "allowBadURIs" )) {
-			Boolean result = new Boolean( !demandGoodURIs );
+			Boolean result = Boolean.valueOf( !demandGoodURIs );
             demandGoodURIs = !getBoolean(propValue);
 			return result;
 		} else if (propName.equalsIgnoreCase("prettyTypes")) {
@@ -696,7 +691,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	}
 
 	private Integer setWidth(Object propValue) {
-		Integer oldValue = new Integer(width);
+		Integer oldValue = Integer.valueOf(width);
 		if (propValue instanceof Integer) {
 			width = ((Integer) propValue).intValue();
 		} else {
@@ -710,7 +705,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	}
 
 	private Integer setTab(Object propValue) {
-		Integer result = new Integer(tabSize);
+		Integer result = Integer.valueOf(tabSize);
 		if (propValue instanceof Integer) {
 			tabSize = ((Integer) propValue).intValue();
 		} else {
@@ -781,7 +776,6 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			Vector<Resource> v = new Vector<>();
 			while (tkn.hasMoreElements()) {
 				String frag = tkn.nextToken();
-				//  System.err.println("Blocking " + frag);
 				v.add(new ResourceImpl(RDFSyntax.getURI() + frag));
 			}
 

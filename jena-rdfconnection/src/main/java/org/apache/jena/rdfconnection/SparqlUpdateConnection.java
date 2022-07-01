@@ -20,34 +20,44 @@ package org.apache.jena.rdfconnection;
 
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.update.Update;
+import org.apache.jena.update.UpdateExecutionBuilder;
 import org.apache.jena.update.UpdateRequest;
 
 /** SPARQL Update Operations on a connection.
- * 
+ *
  * @see RDFConnection
  * @see RDFConnectionFactory
- */  
+ */
 public interface SparqlUpdateConnection extends Transactional, AutoCloseable
 {
     /** Execute a SPARQL Update.
-     * 
+     *
      * @param update
      */
     public void update(Update update);
 
     /** Execute a SPARQL Update.
-     * 
+     *
      * @param update
      */
-    public void update(UpdateRequest update); 
-    
+    public void update(UpdateRequest update);
+
     /** Execute a SPARQL Update.
-     * 
+     *
      * @param updateString
      */
     public void update(String updateString);
-    
-    /** Close this connection. */ 
+
+    /**
+     * Return a {@link UpdateExecutionBuilder} that is initially configured for this link
+     * setup and type. The update built will be set to go to the same dataset/remote
+     * endpoint as the other RDFLink operations.
+     *
+     * @return UpdateExecBuilder
+     */
+    public UpdateExecutionBuilder newUpdate();
+
+    /** Close this connection. */
     @Override public void close();
 }
 

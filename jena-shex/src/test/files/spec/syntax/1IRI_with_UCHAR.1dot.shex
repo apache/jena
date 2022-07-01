@@ -1,0 +1,5 @@
+# source: IRI_with_four_digit_numeric_escape.ttl
+
+<http://a.example/S1> {
+   <http://a.example/p\u0031> .
+}

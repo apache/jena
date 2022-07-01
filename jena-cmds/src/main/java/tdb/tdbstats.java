@@ -24,7 +24,7 @@ import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.tdb.solver.SolverLib ;
+import org.apache.jena.tdb.solver.SolverLibTDB ;
 import org.apache.jena.tdb.solver.stats.Stats ;
 import org.apache.jena.tdb.solver.stats.StatsCollectorNodeId ;
 import org.apache.jena.tdb.solver.stats.StatsResults ;
@@ -81,7 +81,7 @@ public class tdbstats extends CmdTDBGraph
                 
             NodeTupleTable ntt = dsg.getQuadTable().getNodeTupleTable() ;
             Iterator<Tuple<NodeId>> iter = unionGraph
-                ? SolverLib.unionGraph(ntt)
+                ? SolverLibTDB.unionGraph(ntt)
                 : ntt.find(gnid, null, null, null) ;
             for ( ; iter.hasNext(); )
             {

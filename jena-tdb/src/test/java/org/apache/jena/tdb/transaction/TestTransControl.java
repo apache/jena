@@ -20,6 +20,7 @@ package org.apache.jena.tdb.transaction ;
 
 import static org.junit.Assert.assertEquals ;
 
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
@@ -28,23 +29,26 @@ import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.apache.jena.tdb.sys.TDBInternal ;
-import org.apache.log4j.Level ;
-import org.apache.log4j.Logger ;
 import org.junit.* ;
 
 /** Tests for transaction controls: batching, flushing on size, flushing on backlog of commits */ 
 public class TestTransControl {
 
-    // Currently,
-    // this feature is off and needs enabling via DatasetGraphTransaction.promotion
-    // promotiion is implicit whe a write happens.
-
-    // See beforeClass / afterClass.
-
-    private static Logger logger1 = Logger.getLogger(SystemTDB.errlog.getName()) ;
-    private static Level  level1 ;
-    private static Logger logger2 = Logger.getLogger(TDB.logInfoName) ;
-    private static Level  level2 ;
+    private static String levelInfo;  
+    private static String levelErr;  
+    
+    @BeforeClass public static void beforeClassLogging() {
+        levelInfo = LogCtl.getLevel(TDB.logInfoName);
+        levelErr = LogCtl.getLevel(SystemTDB.errlog.getName());
+        
+        LogCtl.setLevel("org.apache.jena.tdb.info", "WARN");
+        LogCtl.setLevel("org.apache.jena.tdb.exec", "WARN");
+        
+    }
+    @AfterClass public static void afterClassLogging() {
+        LogCtl.setLevel(TDB.logInfoName, levelInfo);
+        LogCtl.setLevel(SystemTDB.errlog.getName(), levelErr);
+    }
     
     private static int x_QueueBatchSize ;
     private static int x_MaxQueueThreshold ;
@@ -52,22 +56,13 @@ public class TestTransControl {
 
     @BeforeClass
     static public void beforeClass() {
-        level1 = logger1.getLevel() ;
-        level2 = logger2.getLevel() ;
-        
         x_QueueBatchSize = TransactionManager.QueueBatchSize ;
         x_MaxQueueThreshold = TransactionManager.MaxQueueThreshold ;
         x_JournalThresholdSize = TransactionManager.JournalThresholdSize ;
-        
-        // logger1.setLevel(Level.ERROR) ;
-        // logger2.setLevel(Level.ERROR) ;
     }
 
     @AfterClass
     static public void afterClass() {
-        // Restore logging setting.
-        logger2.setLevel(level2) ;
-        logger1.setLevel(level1) ;
         TransactionManager.QueueBatchSize = x_QueueBatchSize ;
         TransactionManager.MaxQueueThreshold = x_MaxQueueThreshold ;
         TransactionManager.JournalThresholdSize = x_JournalThresholdSize ;

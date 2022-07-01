@@ -22,6 +22,8 @@ import static java.lang.String.format;
 
 import java.nio.ByteBuffer;
 
+import org.apache.jena.atlas.lib.ByteBufferLib;
+
 /** Record creator */
 final
 public class RecordFactory
@@ -89,7 +91,6 @@ public class RecordFactory
             bb.put(record.getValue(), 0, valueLength);
     }
 
-    
     public static final RecordMapper<Record> mapperRecord = (bb, idx, keyBytes, factory) -> {
         byte[] key = new byte[factory.keyLength];
         byte[] value = (factory.hasValue() ? new byte[factory.valueLength] :null );
@@ -106,44 +107,50 @@ public class RecordFactory
 //            copyInto(value, bb, posnValue, factory.valueLength);
 //        }
 
-        // Using bb.get(byte[],,) may be potentially faster but requires the synchronized
+        // Using bb.get(byte[],,) - synchronize and bulk get
         // There's no absolute version.
-        synchronized(bb)
-        {
-            bb.position(idx*factory.slotLen);
-            bb.get(key, 0, factory.keyLength);
-            if ( value != null )
-                bb.get(value, 0, factory.valueLength);
+        synchronized(bb) {
+            try {
+                bb.position(idx*factory.slotLen);
+                bb.get(key, 0, factory.keyLength);
+                if ( value != null )
+                    bb.get(value, 0, factory.valueLength);
+            } catch (Throwable ex) {
+                // JENA-1908 investigation
+                String msg = String.format("bb.position(%d) idx=%d %s %s\n", idx*factory.slotLen, idx, factory, ByteBufferLib.details(bb));  
+                System.err.printf(msg);
+                throw ex;
+            }
         }
         if ( keyBytes != null )
             System.arraycopy(key, 0, keyBytes, 0, factory.keyLength);
         return factory.create(key, value);
     };
-    
+
     public <X> X access(ByteBuffer bb, int idx, byte[] keyBytes, RecordMapper<X> mapper) {
-        return mapper.map(bb, idx, keyBytes, this); 
+        return mapper.map(bb, idx, keyBytes, this);
     }
-    
+
     public Record buildFrom(ByteBuffer bb, int idx) {
         // Switchover when working. Fornow, assis breakpointing "access" leaf calls.
         return mapperRecord.map(bb, idx, null, this);
-        //return access(bb, idx, null, mapperRecord); 
+        //return access(bb, idx, null, mapperRecord);
     }
-    
+
     private final static void copyInto(byte[] dst, ByteBuffer src, int start, int length) {
         // Thread safe.
         for ( int i = 0; i < length; i++ )
             dst[i] = src.get(start+i);
     }
-    
+
     public boolean hasValue()   { return valueLength > 0; }
 
     public int recordLength()   { return keyLength + valueLength; }
-    
+
     public int keyLength()      { return keyLength; }
 
     public int valueLength()    { return valueLength; }
-    
+
     @Override
     public String toString() {
         return format("<RecordFactory k=%d v=%d>", keyLength, valueLength);

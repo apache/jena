@@ -28,12 +28,12 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
  *  It is useful to distinguish between values, vars and functions.
  *  The exists operations (which take a op, not arguments) are functions of zero arguments.
  */
- 
+
 public abstract class ExprFunction extends ExprNode
 {
-    protected FunctionLabel funcSymbol ;
-    protected String opSign ;
-    
+    protected FunctionLabel funcSymbol ;    // SPARQL format name.
+    protected String opSign ;               // Operator
+
     protected ExprFunction(String fName) {
         funcSymbol = new FunctionLabel(fName) ;
         opSign = null ;
@@ -53,23 +53,23 @@ public abstract class ExprFunction extends ExprNode
         List<Expr> argList = new ArrayList<>(numArgs()) ;
         for ( int i = 1 ; i <= numArgs() ; i++ )
             argList.add(this.getArg(i)) ;
-        return argList ;        
+        return argList ;
     }
 
     @Override
     public boolean isFunction()        { return true ; }
     @Override
     public ExprFunction getFunction()  { return this ; }
-    
+
     @Override
     public int hashCode() {
         return funcSymbol.hashCode() ^ numArgs() ;
     }
-    
+
     // A function is equal if:
     // + The name is the same
     // + The arguments are the same (including arity).
-    
+
     @Override
     public boolean equals(Expr other, boolean bySyntax) {
         if ( other == null ) return false ;
@@ -77,15 +77,15 @@ public abstract class ExprFunction extends ExprNode
 
         if ( ! other.getClass().equals(this.getClass()) )
             return false ;
-        
+
         ExprFunction ex = (ExprFunction)other ;
-        
+
         if ( ! funcSymbol.equals(ex.funcSymbol) )
             return false ;
-        
+
         if ( numArgs() != ex.numArgs() )
             return false ;
-        
+
         // Arguments are 1, 2, 3, ...
         for ( int i = 1 ; i <= numArgs() ; i++ )
         {
@@ -96,25 +96,26 @@ public abstract class ExprFunction extends ExprNode
         }
         return true ;
     }
-    
-    /** Name used for output in SPARQL format needing functional form (no specific keyword).
-     *  e.g. regexp(), custom functions, ...
+
+    /**
+     * Name used for output in SPARQL format needing functional form (no specific keyword).
+     * e.g. regexp(), custom functions, ...
      */
-    
     public String getFunctionPrintName(SerializationContext cxt)
     { return funcSymbol.getSymbol() ; }
 
-    /** Name used in a functional form (i.e. SPARQL algebra).
-     *  getOpName() is used in preference as a short, symbol name.
+    /**
+     * Name used in a functional form (i.e. SPARQL algebra).
+     * getOpName() is used in preference as a short, symbol name.
      */
     public String getFunctionName(SerializationContext cxt)
     { return funcSymbol.getSymbol() ; }
-    
-    /** Used to get a unique name for the function, which is intern'ed.  Used in hashCode() */ 
+
+    /** Used to get a unique name for the function, which is intern'ed.  Used in hashCode() */
     public FunctionLabel getFunctionSymbol()
     { return funcSymbol ; }
 
-    /** URI for this function, whether custom or specification defined URI (these are keywords in the language) */  
+    /** URI for this function, whether custom or specification defined URI (these are keywords in the language) */
     public String getFunctionIRI() { return null ; }
 
     /** Get the symbol name (+, ! etc) for this function -- maybe null for none */

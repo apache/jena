@@ -30,4 +30,3 @@ public class FN_MonthsFromDuration extends FunctionBase1
         return XSDFuncOp.durGetMonths(v) ;
     }
 }
-

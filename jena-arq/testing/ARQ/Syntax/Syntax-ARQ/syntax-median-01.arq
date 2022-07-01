@@ -1,0 +1,8 @@
+PREFIX : <http://example/>
+
+SELECT median(?x)
+WHERE
+   {
+     VALUES ?x { 1 2 3 4 5 }
+     ?s ?p ?x.
+   }

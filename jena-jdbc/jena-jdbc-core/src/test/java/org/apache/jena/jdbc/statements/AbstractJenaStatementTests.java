@@ -31,7 +31,7 @@ import java.util.TimeZone ;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.jdbc.connections.JenaConnection ;
 import org.apache.jena.query.ParameterizedSparqlString ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -46,14 +46,15 @@ import org.junit.Test ;
  * Tests for statement, note many tests are included at a higher level in the
  * {@link AbstractJenaStatementTests} and this includes tests only for statement
  * specific stuff that has to be tested within this package
- * 
+ *
  */
+@SuppressWarnings("resource")
 public abstract class AbstractJenaStatementTests {
 
     /**
      * Method that derived classes must implement to provide a connection to an
      * empty dataset for testing
-     * 
+     *
      * @return Connection
      * @throws SQLException
      */
@@ -64,22 +65,22 @@ public abstract class AbstractJenaStatementTests {
      *    http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4832236
      *  This stabilizes the tests for everyone.
      */
-    
-    static TimeZone timezone = null ; 
+
+    static TimeZone timezone = null ;
     @BeforeClass public static void fixTimezone() {
         timezone = TimeZone.getDefault() ;
         TimeZone.setDefault(TimeZone.getTimeZone("UTC")) ;
     }
-        
+
     @AfterClass public static void resetTimezone() {
         if ( timezone != null )
             TimeZone.setDefault(timezone) ;
     }
-      
-    
+
+
     /**
      * Test error case when trying to create statement with null connection
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -89,7 +90,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for unsupported wrapper features
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -107,7 +108,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for unsupported wrapper features
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -125,7 +126,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error case for unsupported cancel feature
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -143,7 +144,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -159,7 +160,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -179,7 +180,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -199,7 +200,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -219,7 +220,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Check warnings usage
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -242,7 +243,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for fetch direction settings
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -256,7 +257,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for fetch direction settings
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -275,7 +276,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute things on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -294,7 +295,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute things on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -313,7 +314,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute things on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -332,7 +333,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute things on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -351,7 +352,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute things on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -370,7 +371,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute things on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -389,7 +390,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute things on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -408,7 +409,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute things on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -427,7 +428,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute things on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -446,7 +447,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute things on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -465,7 +466,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute things on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -484,7 +485,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to access results on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -502,7 +503,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to access results on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -520,7 +521,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to access results on closed statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -538,7 +539,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute invalid SPARQL
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -556,7 +557,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute invalid SPARQL
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -574,7 +575,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute invalid SPARQL
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -592,7 +593,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute invalid SPARQL
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -610,7 +611,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute invalid SPARQL
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -628,7 +629,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute invalid SPARQL
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -646,7 +647,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute invalid SPARQL
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -664,7 +665,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute invalid SPARQL
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -682,7 +683,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute invalid SPARQL
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -700,7 +701,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute updates on read-only connections
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -719,7 +720,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute updates on read-only connections
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -738,7 +739,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute updates on read-only connections
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -757,7 +758,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for trying to execute updates on read-only connections
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -776,7 +777,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests manipulating some settings on a statement
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -796,7 +797,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests manipulating some settings on a statement
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -816,7 +817,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests manipulating some settings on a statement
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -834,7 +835,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests manipulating some settings on a statement
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -854,7 +855,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests manipulating some settings on a statement
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -874,7 +875,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests manipulating some settings on a statement
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -895,7 +896,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests manipulating some settings on a statement
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -911,7 +912,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests manipulating some settings on a statement
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -929,7 +930,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests getting metadata from the statement
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -944,7 +945,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests getting metadata from the statement
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -960,7 +961,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests around prepared statement execution
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -975,7 +976,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests around prepared statement execution
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -990,7 +991,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests around prepared statement execution
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1005,7 +1006,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests around prepared statement metadata
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1018,7 +1019,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1036,7 +1037,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1054,7 +1055,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1072,7 +1073,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1090,7 +1091,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1108,7 +1109,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1126,7 +1127,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1144,7 +1145,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1162,7 +1163,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1180,7 +1181,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1198,7 +1199,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1216,7 +1217,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1234,7 +1235,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1252,7 +1253,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1270,7 +1271,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1288,7 +1289,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1306,7 +1307,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1324,7 +1325,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1342,7 +1343,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1360,7 +1361,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1378,7 +1379,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1396,7 +1397,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1414,7 +1415,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1432,7 +1433,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1450,7 +1451,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1468,7 +1469,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1486,7 +1487,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1505,7 +1506,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1523,7 +1524,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1541,7 +1542,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1559,7 +1560,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1577,7 +1578,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1595,7 +1596,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
@@ -1613,7 +1614,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests for unsupported setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @SuppressWarnings("deprecation")
@@ -1632,7 +1633,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1651,7 +1652,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1670,7 +1671,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1689,7 +1690,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1708,7 +1709,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1727,7 +1728,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1746,7 +1747,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1765,7 +1766,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1784,7 +1785,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1803,7 +1804,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1822,7 +1823,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1841,7 +1842,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1860,7 +1861,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1879,7 +1880,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1898,7 +1899,7 @@ public abstract class AbstractJenaStatementTests {
 
     /**
      * Tests error cases for setters on prepared statements
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -1918,7 +1919,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1937,7 +1938,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1956,7 +1957,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1975,7 +1976,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -1995,7 +1996,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2014,7 +2015,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2033,7 +2034,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2053,7 +2054,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2072,7 +2073,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2091,7 +2092,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2110,7 +2111,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2129,7 +2130,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      * @throws MalformedURLException
      */
@@ -2149,7 +2150,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      * @throws URISyntaxException
      */
@@ -2169,7 +2170,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2177,7 +2178,7 @@ public abstract class AbstractJenaStatementTests {
         JenaConnection conn = this.getConnection();
         JenaPreparedStatement stmt = (JenaPreparedStatement) conn.prepareStatement("SELECT * WHERE { ?s ?p ? }");
 
-        stmt.setObject(1, IRIFactory.iriImplementation().create("http://example.org"));
+        stmt.setObject(1, IRIx.create("http://example.org"));
         ParameterizedSparqlString pss = stmt.getParameterizedString();
         Assert.assertTrue(pss.toString().contains("<http://example.org>"));
 
@@ -2188,7 +2189,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2196,7 +2197,7 @@ public abstract class AbstractJenaStatementTests {
         JenaConnection conn = this.getConnection();
         JenaPreparedStatement stmt = (JenaPreparedStatement) conn.prepareStatement("SELECT * WHERE { ?s ?p ? }");
 
-        stmt.setObject(1, IRIFactory.iriImplementation().create("http://example.org"), Types.NVARCHAR);
+        stmt.setObject(1, IRIx.create("http://example.org"), Types.NVARCHAR);
         ParameterizedSparqlString pss = stmt.getParameterizedString();
         Assert.assertTrue(pss.toString().contains("\"http://example.org\""));
 
@@ -2207,7 +2208,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2215,7 +2216,7 @@ public abstract class AbstractJenaStatementTests {
         JenaConnection conn = this.getConnection();
         JenaPreparedStatement stmt = (JenaPreparedStatement) conn.prepareStatement("SELECT * WHERE { ?s ?p ? }");
 
-        stmt.setObject(1, IRIFactory.iriImplementation().create("http://example.org"), Types.JAVA_OBJECT);
+        stmt.setObject(1, IRIx.create("http://example.org"), Types.JAVA_OBJECT);
         ParameterizedSparqlString pss = stmt.getParameterizedString();
         Assert.assertTrue(pss.toString().contains("<http://example.org>"));
 
@@ -2226,7 +2227,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2246,7 +2247,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2265,7 +2266,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2284,7 +2285,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2303,7 +2304,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2322,7 +2323,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2341,7 +2342,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2360,7 +2361,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2379,7 +2380,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2399,7 +2400,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -2419,7 +2420,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test(expected = SQLException.class)
@@ -2439,7 +2440,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2458,7 +2459,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2477,7 +2478,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2497,7 +2498,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2517,7 +2518,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2536,7 +2537,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2555,7 +2556,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2574,7 +2575,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2594,7 +2595,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2613,7 +2614,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2632,7 +2633,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2651,7 +2652,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2670,7 +2671,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2689,7 +2690,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2709,7 +2710,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2729,7 +2730,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2750,7 +2751,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2770,7 +2771,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2789,7 +2790,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2809,7 +2810,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2828,7 +2829,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2848,7 +2849,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2868,7 +2869,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2887,7 +2888,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2906,7 +2907,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2925,7 +2926,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2944,7 +2945,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2964,7 +2965,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -2984,7 +2985,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3004,7 +3005,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3024,7 +3025,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3044,7 +3045,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3065,7 +3066,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3085,7 +3086,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3105,7 +3106,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3125,7 +3126,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3145,7 +3146,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3165,7 +3166,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3186,7 +3187,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3205,7 +3206,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3224,7 +3225,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3243,7 +3244,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3262,7 +3263,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3281,7 +3282,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3300,7 +3301,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3319,7 +3320,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3339,7 +3340,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3359,7 +3360,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3379,7 +3380,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3398,7 +3399,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      * @throws MalformedURLException
      */
@@ -3418,7 +3419,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      * @throws URISyntaxException
      */
@@ -3438,7 +3439,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3459,7 +3460,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3481,7 +3482,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test
@@ -3503,7 +3504,7 @@ public abstract class AbstractJenaStatementTests {
     /**
      * Tests that the various set methods of {@link JenaPreparedStatement}
      * function correctly
-     * 
+     *
      * @throws SQLException
      */
     @Test

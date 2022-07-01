@@ -26,16 +26,20 @@ import org.apache.jena.util.iterator.* ;
     A closable iterator that wraps a base iterator and reports whether or not it
     has been closed.
 */
-public class LoggingClosableIterator<T> extends WrappedIterator<T> implements ClosableIterator<T>
-    {
-    protected LoggingClosableIterator( Iterator< ? extends T> base )
-        { super( base ); }
-    
-    private boolean wasClosed = false;
-    
-    @Override public void close()
-        { wasClosed = true; super.close(); }
-    
-    public boolean isClosed()
-        { return wasClosed; }
+public class LoggingClosableIterator<T> extends WrappedIterator<T> {
+    protected LoggingClosableIterator(Iterator<? extends T> base) {
+        super(base);
     }
+
+    private boolean wasClosed = false;
+
+    @Override
+    public void close() {
+        wasClosed = true;
+        super.close();
+    }
+
+    public boolean isClosed() {
+        return wasClosed;
+    }
+}

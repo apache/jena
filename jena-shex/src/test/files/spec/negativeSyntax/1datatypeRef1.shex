@@ -1,0 +1,4 @@
+# tripleConsraint with datatype and ref
+<http://a.example/S1> {
+   <http://a.example/p1> <http://a.example/dt1> @<http://a.example/S1>
+}

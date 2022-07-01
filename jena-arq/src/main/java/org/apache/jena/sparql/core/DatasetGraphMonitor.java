@@ -19,6 +19,8 @@
 package org.apache.jena.sparql.core ;
 
 import static org.apache.jena.atlas.iterator.Iter.take ;
+import static org.apache.jena.sparql.core.GraphView.createDefaultGraph;
+import static org.apache.jena.sparql.core.GraphView.createNamedGraph;
 
 import java.util.Iterator ;
 import java.util.List ;
@@ -32,16 +34,17 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
 /** Connect a DatasetGraph to a DatasetChanges monitor.
  *  Any add or delete to the DatasetGraph is notified to the
  *  monitoring object with a {@link QuadAction} to indicate
- *  the change made.   
+ *  the change made.
+ *  @deprecated Do not use. This class does not reflect transactions.
  */
-
+@Deprecated
 public class DatasetGraphMonitor extends DatasetGraphWrapper
 {
-    /** Whether to see if a quad action will change the dataset - test before add for existence, test before delete for absence */   
+    /** Whether to see if a quad action will change the dataset - test before add for existence, test before delete for absence */
     private boolean CheckFirst = true ;
-    /** Whether to record a no-op (maybe as a comment) */   
+    /** Whether to record a no-op (maybe as a comment) */
     private boolean RecordNoAction = true ;
-    /** Where to send the notifications */  
+    /** Where to send the notifications */
     private final DatasetChanges monitor ;
 
     /**
@@ -50,11 +53,11 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
      * Note whether additions of deletions cause an actual change to the dataset or not.
      * @param dsg       The DatasetGraph to monitor
      * @param monitor   The handler for a change
-     *         
+     *
      * @see DatasetChanges
      * @see QuadAction
      */
-    public DatasetGraphMonitor(DatasetGraph dsg, DatasetChanges monitor) 
+    protected DatasetGraphMonitor(DatasetGraph dsg, DatasetChanges monitor)
     {
         super(dsg) ;
         this.monitor = monitor ;
@@ -62,26 +65,26 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
 
     /**
      * Create a DatasetGraph wrapper that monitors the dataset for changes (add or delete quads).
-     * Use this DatasetGraph for all operations in order to record changes.  
+     * Use this DatasetGraph for all operations in order to record changes.
      * @param dsg       The DatasetGraph to monitor
      * @param monitor   The handler for a change
      * @param recordOnlyIfRealChange
      *         If true, check to see if the change would have an effect (e.g. add is a new quad).
      *         If false, log changes as ADD/DELETE regardless of whether the dataset actually changes.
-     *         
+     *
      * @see DatasetChanges
      * @see QuadAction
      */
-    public DatasetGraphMonitor(DatasetGraph dsg, DatasetChanges monitor, boolean recordOnlyIfRealChange) 
+    protected DatasetGraphMonitor(DatasetGraph dsg, DatasetChanges monitor, boolean recordOnlyIfRealChange)
     {
         super(dsg) ;
         CheckFirst = recordOnlyIfRealChange ;
         this.monitor = monitor ;
     }
 
-    /** Return the monitor */ 
+    /** Return the monitor */
     public DatasetChanges getMonitor()      { return monitor ; }
-    
+
     /** Return the monitored DatasetGraph */
     public DatasetGraph   monitored()       { return getWrapped() ; }
 
@@ -95,25 +98,25 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
         }
         add$(quad) ;
     }
-    
+
     @Override public void add(Node g, Node s, Node p, Node o)
     {
         if ( CheckFirst && contains(g,s,p,o) )
         {
             if ( RecordNoAction )
-                record(QuadAction.NO_ADD,g,s,p,o) ; 
+                record(QuadAction.NO_ADD,g,s,p,o) ;
             return ;
         }
-        
+
         add$(g,s,p,o) ;
     }
-    
+
     private void add$(Node g, Node s, Node p, Node o)
     {
         super.add(g,s,p,o) ;
-        record(QuadAction.ADD,g,s,p,o) ; 
+        record(QuadAction.ADD,g,s,p,o) ;
     }
-    
+
     private void add$(Quad quad)
     {
         super.add(quad) ;
@@ -130,7 +133,7 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
         }
         delete$(quad) ;
     }
-    
+
     @Override public void delete(Node g, Node s, Node p, Node o)
     {
         if ( CheckFirst && ! contains(g,s,p,o) )
@@ -141,36 +144,36 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
         }
         delete$(g,s,p,o) ;
     }
-    
+
     private void delete$(Quad quad)
     {
         super.delete(quad) ;
         record(QuadAction.DELETE, quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
-    
+
     private void delete$(Node g, Node s, Node p, Node o)
     {
         super.delete(g,s,p,o) ;
-        record(QuadAction.DELETE,g,s,p,o) ; 
+        record(QuadAction.DELETE,g,s,p,o) ;
     }
-    
+
 
     private static int SLICE = 1000 ;
-    
+
     @Override
     public void deleteAny(Node g, Node s, Node p, Node o)
     {
         while (true)
         {
             Iterator<Quad> iter = find(g, s, p, o) ;
-            // Materialize - stops possible ConcurrentModificationExceptions 
+            // Materialize - stops possible ConcurrentModificationExceptions
             List<Quad> some = take(iter, SLICE) ;
             for (Quad q : some)
                 delete$(q) ;
             if (some.size() < SLICE) break ;
         }
     }
-    
+
     @Override public void addGraph(Node gn, Graph g)
     {
         // Convert to quads.
@@ -182,22 +185,32 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
             add(gn, t.getSubject(), t.getPredicate(), t.getObject()) ;
         }
     }
-    
+
     @Override public void removeGraph(Node gn)
     {
         //super.removeGraph(gn) ;
         deleteAny(gn, Node.ANY, Node.ANY, Node.ANY) ;
     }
-    
+
     private void record(QuadAction action, Node g, Node s, Node p, Node o)
     {
         monitor.change(action, g, s, p, o) ;
     }
-    
+
     @Override
     public void sync() {
         SystemARQ.syncObject(monitor) ;
         super.sync() ;
+    }
+
+    @Override
+    public Graph getDefaultGraph() {
+        return createDefaultGraph(this);
+    }
+
+    @Override
+    public Graph getGraph(Node graphNode) {
+        return createNamedGraph(this, graphNode);
     }
 }
 

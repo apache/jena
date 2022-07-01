@@ -40,24 +40,24 @@ import org.junit.Test;
 public class TestCancelDistinct {
 
     private final class MockQueryIterator extends QueryIteratorBase {
-        
+
         Iterator<Binding> bindings;
-        
+
         MockQueryIterator() {
             this(new ArrayList<Binding>());
         }
-        
+
         MockQueryIterator(Binding ... bindings) {
             this(Arrays.asList(bindings));
         }
-        
+
         MockQueryIterator(List<Binding> bindings) {
             this.bindings = bindings.iterator();
         }
-        
+
         @Override
         public void output(IndentedWriter out, SerializationContext sCxt) {
-            
+
         }
 
         @Override
@@ -72,12 +72,12 @@ public class TestCancelDistinct {
 
         @Override
         protected void closeIterator() {
-            
+
         }
 
         @Override
         protected void requestCancel() {
-            
+
         }
     }
 
@@ -90,13 +90,13 @@ public class TestCancelDistinct {
         // an ExecutionContext is non-trivial.
         ExecutionContext c = null;
         QueryIteratorBase base = new MockQueryIterator();
-            
-        QueryIterDistinct d = new QueryIterDistinct(base, c);
+
+        QueryIterDistinct d = new QueryIterDistinct(base, null, c);
         assertFalse(base.getRequestingCancel());
         d.cancel();
         assertTrue(base.getRequestingCancel());
     }
-    
+
     final Context params = new Context();
 
     final Graph activeGraph = null;
@@ -106,52 +106,52 @@ public class TestCancelDistinct {
     final ExecutionContext c = new ExecutionContext(params, activeGraph, dataset, factory);
 
     /**
-       test that of a QueryIterDistinct with an active databag is 
+       test that of a QueryIterDistinct with an active databag is
        cancelled, so is the iterator that it wraps.
     */
-    @Test public void testBaggedCancelPropagates() {        
+    @Test public void testBaggedCancelPropagates() {
         params.set(ARQ.spillToDiskThreshold, 0);
-        
-        QueryIteratorBase base = new MockQueryIterator(BindingFactory.create());
-        QueryIterDistinct d = new QueryIterDistinct(base, c);
-        
+
+        QueryIteratorBase base = new MockQueryIterator(BindingFactory.empty());
+        QueryIterDistinct d = new QueryIterDistinct(base, null, c);
+
         assertNull(d.db);
-       
+
         Binding b = d.next();
-       
-        assertNotNull(d.db);      
+
+        assertNotNull(d.db);
         DistinctDataBag<Binding> db = d.db;
-        
+
         assertFalse(base.getRequestingCancel());
         d.cancel();
         assertTrue(base.getRequestingCancel());
-        
-    }    
-    
-    @Test public void testCloseWhenNoBag() {        
+
+    }
+
+    @Test public void testCloseWhenNoBag() {
         params.set(ARQ.spillToDiskThreshold, 0);
-        
-        QueryIteratorBase base = new MockQueryIterator(BindingFactory.create());
-        QueryIterDistinct d = new QueryIterDistinct(base, c);
-        
+
+        QueryIteratorBase base = new MockQueryIterator(BindingFactory.empty());
+        QueryIterDistinct d = new QueryIterDistinct(base, null, c);
+
         // when there is no databag, close leaves it null
         assertNull(d.db);
         d.close();
         assertNull(d.db);
-    }    
-    
-    @Test public void testCloseWhenBagPresent() {        
+    }
+
+    @Test public void testCloseWhenBagPresent() {
         params.set(ARQ.spillToDiskThreshold, 0);
-        
-        QueryIteratorBase base = new MockQueryIterator(BindingFactory.create());
-        QueryIterDistinct d = new QueryIterDistinct(base, c);
-        
+
+        QueryIteratorBase base = new MockQueryIterator(BindingFactory.empty());
+        QueryIterDistinct d = new QueryIterDistinct(base, null, c);
+
         assertNull(d.db);
         Binding ignored = d.next();
-        assertNotNull(d.db); 
+        assertNotNull(d.db);
         DistinctDataBag<Binding> bag = d.db;
         d.close();
         assertTrue(bag.isClosed());
         assertNull(d.db);
-    }  
+    }
 }

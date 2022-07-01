@@ -1,0 +1,8 @@
+BASE <http://a.example/base/>
+PREFIX : <http://a.example/>
+<P> [<p> <pt1> <pt2>]
+<T> [<t> <pt1> <pt2>]
+<S1> {:a @<P> *  ; :a @<T>    }
+<S2> {:a @<T> *  ; :a @<P>    }
+<S3> {:a @<P> *  ; :a @<T> *  }
+<S4> {:a @<P> {2}; :a @<T> {2}}

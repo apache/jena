@@ -1,0 +1,76 @@
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix ex: <http://datashapes.org/sh/tests/core/property/datatype-001.test#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sht: <http://www.w3.org/ns/shacl-test#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:InvalidResource1
+  rdf:type ex:TestShape ;
+  ex:dateProperty "2011-01-01"^^xsd:dateTime ;
+  ex:integerProperty 11.1 ;
+.
+ex:TestShape
+  rdf:type rdfs:Class ;
+  rdf:type sh:NodeShape ;
+  rdfs:label "Test shape" ;
+  sh:property ex:TestShape-dateProperty ;
+  sh:property ex:TestShape-integerProperty ;
+.
+ex:TestShape-dateProperty
+  sh:path ex:dateProperty ;
+  rdfs:label "date property" ;
+  sh:datatype xsd:date ;
+.
+ex:TestShape-integerProperty
+  sh:path ex:integerProperty ;
+  rdfs:label "integer property" ;
+  sh:datatype xsd:integer ;
+.
+ex:ValidResource
+  rdf:type ex:TestShape ;
+  ex:dateProperty "2014-09-01"^^xsd:date ;
+  ex:integerProperty 0 ;
+  ex:integerProperty 1234 ;
+  rdfs:label "Valid resource" ;
+.
+<>
+  rdf:type mf:Manifest ;
+  mf:entries (
+      <datatype-001>
+    ) ;
+.
+<datatype-001>
+  rdf:type sht:Validate ;
+  rdfs:label "Test of sh:datatype at property shape 001" ;
+  mf:action [
+      sht:dataGraph <> ;
+      sht:shapesGraph <> ;
+    ] ;
+  mf:result [
+      rdf:type sh:ValidationReport ;
+      sh:conforms "false"^^xsd:boolean ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath ex:dateProperty ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:DatatypeConstraintComponent ;
+          sh:sourceShape ex:TestShape-dateProperty ;
+          sh:value "2011-01-01"^^xsd:dateTime ;
+        ] ;
+      sh:result [
+          rdf:type sh:ValidationResult ;
+          sh:focusNode ex:InvalidResource1 ;
+          sh:resultPath ex:integerProperty ;
+          sh:resultSeverity sh:Violation ;
+          sh:sourceConstraintComponent sh:DatatypeConstraintComponent ;
+          sh:sourceShape ex:TestShape-integerProperty ;
+          sh:value 11.1 ;
+        ] ;
+    ] ;
+  mf:status sht:approved ;
+.

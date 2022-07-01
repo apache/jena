@@ -18,6 +18,10 @@
 
 package org.apache.jena.riot.lang;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.StringReader ;
 
 import org.apache.jena.atlas.lib.CharSpace ;
@@ -31,9 +35,9 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
-/** Test of syntax by a triples parser (does not include node validitiy checking) */ 
+/** Test of syntax by a triples parser (does not include node validity checking) */
 
-public class TestLangNTriples extends TestLangNTuples
+public class TestLangNTriples extends AbstractTestLangNTuples
 {
     // Test streaming interface.
 
@@ -77,7 +81,7 @@ public class TestLangNTriples extends TestLangNTuples
 
     @Test(expected = ExFatal.class)
     public void nt_only_2() {
-        parseCount("@base <http://example/> . <x> <p> <s> .");
+        parseCount("BASE <http://example/>  <x> <p> <s> .");
     }
 
     @Test
@@ -92,7 +96,7 @@ public class TestLangNTriples extends TestLangNTuples
 
     @Test(expected = ExFatal.class)
     public void nt_only_5b() {
-        parseCount(CharSpace.ASCII, "<x> <p> \"é\" .");
+        parseCount(CharSpace.ASCII, "<scheme:x> <scheme:p> <scheme:é> .");
     }
 
     protected Model parseToModel(String string) {

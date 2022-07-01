@@ -31,19 +31,19 @@ import org.apache.lucene.store.Directory ;
 public class TextDatasetFactory
 {
     static { JenaSystem.init(); }
-    
-    /** Use an assembler file to build a dataset with text search capabilities */ 
+
+    /** Use an assembler file to build a dataset with text search capabilities */
     public static Dataset create(String assemblerFile)
     {
         return (Dataset)AssemblerUtils.build(assemblerFile, TextVocab.textDataset) ;
     }
 
-    /** Create a text-indexed dataset */ 
+    /** Create a text-indexed dataset */
     public static Dataset create(Dataset base, TextIndex textIndex)
     {
         return create(base, textIndex, false);
     }
-    
+
     /** Create a text-indexed dataset, optionally allowing the text index to be closed if the Dataset is */
     public static Dataset create(Dataset base, TextIndex textIndex, boolean closeIndexOnDSGClose)
     {
@@ -51,7 +51,7 @@ public class TextDatasetFactory
         dsg = create(dsg, textIndex, closeIndexOnDSGClose) ;
         return DatasetFactory.wrap(dsg) ;
     }
-    
+
     /** Create a text-indexed dataset, optionally allowing the text index to be closed if the Dataset is */
     public static Dataset create(Dataset base, TextIndex textIndex, boolean closeIndexOnDSGClose, TextDocProducer producer)
     {
@@ -61,18 +61,18 @@ public class TextDatasetFactory
     }
 
 
-    /** Create a text-indexed DatasetGraph */ 
+    /** Create a text-indexed DatasetGraph */
     public static DatasetGraph create(DatasetGraph dsg, TextIndex textIndex)
     {
         return create(dsg, textIndex, false);
     }
-    
+
     /** Create a text-indexed DatasetGraph, optionally allowing the text index to be closed if the DatasetGraph is */
     public static DatasetGraph create(DatasetGraph dsg, TextIndex textIndex, boolean closeIndexOnDSGClose)
     {
         return create(dsg, textIndex, closeIndexOnDSGClose, null);
     }
-    
+
     /** Create a text-indexed DatasetGraph, optionally allowing the text index to be closed if the DatasetGraph is */
     public static DatasetGraph create(DatasetGraph dsg, TextIndex textIndex, boolean closeIndexOnDSGClose, TextDocProducer producer) {
         if (producer == null) producer = new TextDocProducerTriples(textIndex) ;
@@ -80,7 +80,6 @@ public class TextDatasetFactory
         // Also set on dsg
         Context c = dsgt.getContext() ;
         c.set(TextQuery.textIndex, textIndex) ;
-        
         return dsgt ;
     }
 

@@ -44,22 +44,18 @@ import org.apache.jena.sparql.util.graph.GraphList;
 import org.apache.jena.sparql.util.graph.GraphUtils;
 
 public class AssemblerSecurityRegistry extends AssemblerBase {
-    
+
     /**
      * SecurityRegistry.
-     * Builds a SecurityRegistry - a map fron user name to 
-     * 
-     * <#securityRegistry> rdf:type access:SecurityRegistry ;
-     *    access:entry ("user1" <http://host/graphname1>  <http://host/graphname2> ) ;) ;
-     *    access:entry ("user1" <http://host/graphname3> ) ;
-     *    access:entry ("user2" <http://host/graphname3> ) ;
-     *    
+     * Builds a SecurityRegistry - list the graphs a user has access to.
+     * <pre>
+     * &lt;#securityRegistry&gt; rdf:type access:SecurityRegistry;
+     *    access:entry ("user1" &lt;http://host/graphname1&gt;  &lt;http://host/graphname2&gt; );
+     *    access:entry ("user1" &lt;http://host/graphname3&gt; );
+     *    access:entry ("user2" &lt;http://host/graphname3&gt; );
      *    .
-     * 
-     * ## Drop?
-     * access:entry [ :user "user2" ; :graphs (<http://host/graphname3> ) ] ;
+     * </pre>
      */
-
     @Override
     public AuthorizationService open(Assembler a, Resource root, Mode mode) {
         SecurityRegistry registry = new SecurityRegistry();
@@ -68,33 +64,33 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
         if ( ! sIter.hasNext() )
             throw new AssemblerException(root, "No access entries");
         Multimap<String, Node> map = ArrayListMultimap.create();
-        
+
         sIter.forEachRemaining(s->{
-            RDFNode n = s.getObject(); 
+            RDFNode n = s.getObject();
             if ( ! n.isResource())
                 throw new AssemblerException(root, "Found access:entry with non-resource");
-                
+
             Resource r = (Resource)n;
             GNode entry = new GNode(root.getModel().getGraph(), n.asNode());
             if ( GraphList.isListNode(entry) ) {
-                // Format:: access:entry ("user1" <http://host/graphname1>  <http://host/graphname2> ) ;
+                // Format:: access:entry ("user1" <http://host/graphname1>  <http://host/graphname2> );
                 parseList(map, root, entry);
             } else if ( r.hasProperty(VocabSecurity.pUser) || r.hasProperty(VocabSecurity.pGraphs) ) {
-                // Format:: access:entry [ :user "user2" ; :graphs (<http://host/graphname3> ) ]
+                // Format:: access:entry [ :user "user2"; :graphs (<http://host/graphname3> ) ]
                 parseStruct(map, root, r);
             } else
                 throw new AssemblerException(root, "Found access:entry but failed to parse the object: "+s.getSubject());
         });
-        
+
         map.keySet().forEach(u->{
             SecurityContext sCxt = new SecurityContextView(map.get(u));
             registry.put(u, sCxt);
         });
-        
+
         return registry;
     }
 
-    /** Format:: access:entry ("user1" <http://host/graphname1>  <http://host/graphname2> ) ; */
+    /** Format:: access:entry ("user1" <http://host/graphname1>  <http://host/graphname2> ); */
     private void parseList(Multimap<String, Node> map, Resource root, GNode entry) {
         List<Node> members = GraphList.members(entry);
         // string, then URIs.
@@ -102,19 +98,19 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
             throw new AssemblerException(root, "Found access:entry with an empty list");
         Node userNode = members.get(0);
         if ( !  Util.isSimpleString(userNode) )
-            throw new AssemblerException(root, "User name is not a string: "+NodeFmtLib.str(userNode));
+            throw new AssemblerException(root, "User name is not a string: "+NodeFmtLib.strTTL(userNode));
         String user = userNode.getLiteralLexicalForm();
         List<Node> graphs = members.subList(1, members.size());
         accessEntries(root, map, user, graphs);
     }
 
-    /** Format:: access:entry [ :user "user2" ; :graphs (<http://host/graphname3> ) ] */
+    /** Format:: access:entry [ :user "user2"; :graphs (<http://host/graphname3> ) ] */
     private void parseStruct(Multimap<String, Node> map, Resource root, Resource r) {
         if ( ! GraphUtils.exactlyOneProperty(r, VocabSecurity.pUser) )
-            throw new AssemblerException(root, "Expected exactly one access:user property for "+r); 
+            throw new AssemblerException(root, "Expected exactly one access:user property for "+r);
         if ( ! GraphUtils.exactlyOneProperty(r, VocabSecurity.pGraphs) )
-            throw new AssemblerException(root, "Expected exactly one access:graphs property for "+r); 
-        
+            throw new AssemblerException(root, "Expected exactly one access:graphs property for "+r);
+
         String user = GraphUtils.getStringValue(r, VocabSecurity.pUser);
         r.listProperties(VocabSecurity.pGraphs).mapWith(s->s.getObject()).forEachRemaining(x->{
             List<Node> graphs = new ArrayList<>();
@@ -131,7 +127,7 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
             accessEntries(root, map, user, graphs);
         });
     }
-    
+
     private Node graphLabel(Node x, Resource root) {
         if ( SecurityContext.allGraphsStr.equals(x) ) x = SecurityContext.allGraphs;
         if ( SecurityContext.allNamedGraphsStr.equals(x) ) x = SecurityContext.allNamedGraphs;
@@ -139,12 +135,12 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
             throw new AssemblerException(root, "Not a graph name: "+x);
         return x;
     }
-    
+
     // Unfinished.
-    private final static boolean SKIP_ALLGRAPH = true; 
-    
+    private final static boolean SKIP_ALLGRAPH = true;
+
     private void accessEntries(Resource root, Multimap<String, Node> map, String user, List<Node> _graphs) {
-        // Convert string names for graphs to URIs. 
+        // Convert string names for graphs to URIs.
         Set<Node> graphs = _graphs.stream().map(n->graphLabel(n, root)).collect(Collectors.toSet());
 
         if ( graphs.contains(SecurityContext.allGraphs) ) {
@@ -156,29 +152,29 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
             boolean dft = dftPresent(graphs);
             Node x = SecurityContext.allNamedGraphs;
             if ( dft )
-                // Put in "*" instead. 
+                // Put in "*" instead.
                 x = SecurityContext.allGraphs;
             map.removeAll(user);
             map.put(user, x);
             return;
         }
-        
+
         if ( SKIP_ALLGRAPH ) {
             if ( graphs.contains(SecurityContext.allGraphs) ) {
-                Log.warn(this, "Graph name '"+SecurityContext.allGraphsStr+"' not supported yet"); 
+                Log.warn(this, "Graph name '"+SecurityContext.allGraphsStr+"' not supported yet");
                 graphs.remove(SecurityContext.allGraphs);
             }
             if ( graphs.contains(SecurityContext.allNamedGraphs) ) {
-                Log.warn(this, "Graph name '"+SecurityContext.allNamedGraphsStr+"' not supported yet"); 
+                Log.warn(this, "Graph name '"+SecurityContext.allNamedGraphsStr+"' not supported yet");
                 graphs.remove(SecurityContext.allNamedGraphs);
             }
         }
-        
+
         map.putAll(user, graphs);
     }
 
     private boolean dftPresent(Collection<Node> nodes) {
         return nodes.stream().anyMatch(n->Quad.isDefaultGraph(n));
     }
-    
+
 }

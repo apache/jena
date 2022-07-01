@@ -18,31 +18,46 @@
 
 package org.apache.jena.rdfconnection;
 
+import org.apache.jena.rdflink.RDFConnectionAdapter;
+import org.apache.jena.rdflink.RDFLink;
+
 /** package-wide utilities etc */
 /*package*/ class LibRDFConn {
     private static String dftName =  "default" ;
-    
+
     /*package*/ static boolean isDefault(String name) {
         return name == null || name.equals(dftName) ;
     }
-    
+
+    /*package*/ static RDFConnection adapt(RDFLink link) { return RDFConnectionAdapter.adapt(link); }
+
+
     private static String queryStringForGraph(String ch, String graphName) {
-        return 
-            ch + 
+        return
+            ch +
                 (LibRDFConn.isDefault(graphName)
                 ? "default"
                 : "graph="+graphName) ;
     }
-    
+
     /*package*/ static String urlForGraph(String graphStoreProtocolService, String graphName) {
         // If query string
         String ch = "?";
         if ( graphStoreProtocolService.contains("?") )
-            // Already has a query string, append with "&"  
+            // Already has a query string, append with "&"
             ch = "&";
         return graphStoreProtocolService + queryStringForGraph(ch, graphName) ;
     }
 
+    /**
+     * Service endpoint URL calculation.
+     * <ul>
+     * <li> If srvEndpoint is null,  "destination"
+     * <li> If srvEndpoint is "",  "destination"
+     * <li> If srvEndpoint is an absolute URL,  "srvEndpoint"
+     * <li> "destination / srvEndpoint" (ensures the "/"), while preserving the query string
+     * </ul>
+     */
     /*package*/ static String formServiceURL(String destination, String srvEndpoint) {
         if ( srvEndpoint == null )
             return null;
@@ -51,7 +66,7 @@ package org.apache.jena.rdfconnection;
         if ( destination == null )
             return srvEndpoint;
 
-        // If the srvEndpoint looks like an absolute URL, use as given. 
+        // If the srvEndpoint looks like an absolute URL, use as given.
         if ( srvEndpoint.startsWith("http:/") || srvEndpoint.startsWith("https:/") )
             return srvEndpoint;
         String queryString = null;
@@ -66,7 +81,7 @@ package org.apache.jena.rdfconnection;
             dest = dest.substring(0, dest.length()-1);
         dest = dest+"/"+srvEndpoint;
         if ( queryString != null )
-           dest = dest+queryString; 
+           dest = dest+queryString;
         return dest;
     }
 }

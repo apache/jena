@@ -56,8 +56,8 @@ public class JenaIOEnvironment
     
     /** The default path for searching for the location mapper */
     public static final String DEFAULT_PATH =
-        "location-mapping.ttl;location-mapping.rdf;location-mapping.n3;"+
-        "etc/location-mapping.rdf;etc/location-mapping.n3;etc/location-mapping.ttl" ;
+        "location-mapping.ttl;location-mapping.rdf;"+
+        "etc/location-mapping.rdf;etc/location-mapping.ttl" ;
     public static final String GlobalMapperSystemProperty1 = "http://jena.hpl.hp.com/2004/08/LocationMap" ;
     public static final String GlobalMapperSystemProperty2 = "LocationMap" ;
 

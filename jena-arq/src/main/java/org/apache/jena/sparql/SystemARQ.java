@@ -69,11 +69,6 @@ public class SystemARQ
     public static boolean UsePlainGraph         = false ;
     
     /**
-     * Whether to use StAX or SAX XML parsing for result sets (StAX preferred). 
-     */
-    public static boolean UseSAX                = false ;
-
-    /**
      * Sync a Model if it provides the underlying graph provides sync . Do nothing
      * otherwise.
      */

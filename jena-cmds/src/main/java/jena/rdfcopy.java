@@ -18,7 +18,7 @@
 
 package jena;
 
-import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
 import java.net.*;
 import java.io.*;
@@ -52,7 +52,7 @@ import org.apache.jena.shared.JenaException ;
  */
 public class rdfcopy extends java.lang.Object {
 
-    static { setCmdLogging(); }
+    static { setLogging(); }
 
 	/**
 	* @param args the command line arguments
@@ -91,7 +91,7 @@ public class rdfcopy extends java.lang.Object {
 		try {
 			Model m = ModelFactory.createDefaultModel();
             String base = in ;
-			RDFReader rdr = m.getReader(inlang);
+			RDFReaderI rdr = m.getReader(inlang);
 			for (j = 1; j < lastInProp; j++) {
 				int eq = args[j].indexOf("=");
 				rdr.setProperty(
@@ -111,7 +111,7 @@ public class rdfcopy extends java.lang.Object {
                 base = "file:///"+f.getCanonicalPath().replace('\\','/') ;
                 rdr.read(m, new FileInputStream(in), base) ;
             }
-			RDFWriter w = m.getWriter(outlang);
+			RDFWriterI w = m.getWriter(outlang);
 			j++;
 			for (; j < lastOutProp; j++) {
 				int eq = args[j].indexOf("=");

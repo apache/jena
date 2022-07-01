@@ -18,11 +18,11 @@
 
 package org.apache.jena.fuseki.webapp;
 
-import javax.servlet.ServletContextEvent ;
-import javax.servlet.ServletContextListener ;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 import org.apache.jena.fuseki.system.FusekiLogging;
-import org.apache.jena.sys.JenaSystem ;
+import org.apache.jena.sys.JenaSystem;
 
 /** Setup the environment and logging.
  *  Runs before the {@link ShiroEnvironmentLoader}.
@@ -31,24 +31,35 @@ import org.apache.jena.sys.JenaSystem ;
 public class FusekiServerEnvironmentInit implements ServletContextListener {
 
     public FusekiServerEnvironmentInit() { }
-    
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        // These two do not touch Jena.
-        FusekiEnv.setEnvironment() ;
-        FusekiLogging.setLogging(FusekiEnv.FUSEKI_BASE);
-        JenaSystem.init() ;
+        // These do not touch Jena.
+        FusekiEnv.setEnvironment();
+        // The command line initializes Fuseki-full with FusekiLogging.setLogging()
+        if ( ! FusekiLogging.hasInitialized() ) {
+            // If this is set, the webapp is controlling log4j setup via log4j-web and its own initialization.
+            // The logging file in in log4j2.properties in the webapp root directory.
+            String x = sce.getServletContext().getInitParameter(FusekiLogging.log4j2_web_configuration);
+            if ( x != null ) {
+                // https://logging.apache.org/log4j/2.x/manual/webapp.html
+                FusekiLogging.markInitialized(true);
+            } else {
+                FusekiLogging.setLogging(FusekiEnv.FUSEKI_BASE);
+            }
+        }
+        JenaSystem.init();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         // Stop handling requests.
-        
+
         // ActionService uses DataAccessPointRegistry to map URI to services (DataAccessPoint)
-        
+
         // DataService -> DataService
-//        DataAccessPointRegistry.shutdown() ;
-//        DatasetDescriptionRegistry.reset() ;
-        JenaSystem.shutdown(); 
+//        DataAccessPointRegistry.shutdown();
+//        DatasetDescriptionRegistry.reset();
+        JenaSystem.shutdown();
     }
 }

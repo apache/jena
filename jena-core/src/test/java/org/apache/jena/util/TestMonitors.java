@@ -27,8 +27,6 @@ import org.apache.jena.graph.test.* ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.RecordingModelListener ;
 import org.apache.jena.reasoner.test.TestUtil ;
-import org.apache.jena.util.MonitorGraph ;
-import org.apache.jena.util.MonitorModel ;
 
 /**
  * Tests for MonitorGraph implementation.

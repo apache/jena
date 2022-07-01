@@ -18,8 +18,8 @@
 
 options
 {
-    JAVA_UNICODE_ESCAPE = true ;
-    UNICODE_INPUT = false ;
+    JAVA_UNICODE_ESCAPE = false ;
+    UNICODE_INPUT = true ;
   STATIC = false ;
 }
 PARSER_BEGIN(ARQParser)
@@ -69,16 +69,16 @@ void Prologue() : {}
 {
   ( BaseDecl() | PrefixDecl() )*
 }
-void BaseDecl() : { String iri ; }
+void BaseDecl() : { Token t ; String iri ; }
 {
-  <BASE> iri = IRIREF()
-  { getPrologue().setBaseURI(iri) ; }
+  t = <BASE> iri = IRIREF()
+  { setBase(iri, t.beginLine, t.beginColumn ) ; }
 }
 void PrefixDecl() : { Token t ; String iri ; }
 {
     <PREFIX> t = <PNAME_NS> iri = IRIREF()
-      { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getPrologue().setPrefix(s, iri) ; }
+    { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn);
+      setPrefix(s, iri, t.beginLine, t.beginColumn) ; }
 }
 void SelectQuery() : { }
 {
@@ -194,7 +194,7 @@ void JsonClause() : {}
 void JsonObjectMember() : { Node o ; String s ; Token t; }
 {
   s = String()
-  t = < PNAME_NS > {
+  t = <PNAME_NS> {
     if ( ! t.image.equals(":") )
       throwParseException("Prefix name expression not legal at this point : "+t.image, t.beginLine, t.beginColumn) ;
   }
@@ -676,16 +676,17 @@ void DataBlock() : { }
 {
   ( InlineDataOneVar() | InlineDataFull() )
 }
-void InlineDataOneVar() : { Var v ; Node n ; Token t ; }
+void InlineDataOneVar() : { Var v ; Node n ; Token t ; ; int beginLine; int beginColumn; }
 {
   v = Var()
   { emitDataBlockVariable(v) ; }
   t = <LBRACE>
+  { beginLine = t.beginLine; beginColumn = t.beginColumn; t = null; }
   (
     n = DataBlockValue()
-    { startDataBlockValueRow(-1, -1) ;
-      emitDataBlockValue(n, -1, -1) ;
-      finishDataBlockValueRow(-1, -1) ;
+    { startDataBlockValueRow(beginLine, beginColumn) ;
+      emitDataBlockValue(n, beginLine, beginColumn) ;
+      finishDataBlockValueRow(beginLine, beginColumn) ;
     }
   )*
   t = <RBRACE>
@@ -720,11 +721,12 @@ void InlineDataFull() : { Var v ; Node n ; Token t ; int beginLine; int beginCol
 }
 Node DataBlockValue() : { Node n ; String iri ; }
 {
+  n = TripleTermData() { return n ; }
+|
   iri = iri() { return createNode(iri) ; }
 | n = RDFLiteral() { return n ; }
 | n = NumericLiteral() { return n ; }
 | n = BooleanLiteral() { return n ; }
-| n = BlankNode() { return n ; }
 | <UNDEF> { return null ; }
 }
 Element Assignment() : { Var v ; Expr expr ; }
@@ -888,6 +890,7 @@ void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
   { ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ; }
   o = GraphNode(tempAcc)
   { insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ; }
+  Annotation(acc, s, p, path, o)
 }
 void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; }
 {
@@ -939,6 +942,7 @@ void ObjectPath(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
   { ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ; }
   o = GraphNodePath(tempAcc)
   { insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ; }
+  AnnotationPath(acc, s, p, path, o)
 }
 Path PathUnit() : { Path p ; }
 {
@@ -1146,6 +1150,28 @@ Node CollectionPath(TripleCollectorMark acc) :
        insert(acc, lastCell, nRDFrest, nRDFnil) ;
      return listHead ; }
 }
+void AnnotationPath(TripleCollector acc, Node s, Node p, Path path, Node o) : {}
+{
+  (
+    <L_ANN>
+      { Node pAnn = preConditionAnnotation(s, p, path, o, token.beginLine, token.beginColumn) ;
+        Node x = createTripleTerm(s, pAnn, o, token.beginLine, token.beginColumn);
+      }
+      PropertyListPathNotEmpty(x, acc)
+    <R_ANN>
+  )?
+}
+void Annotation(TripleCollector acc, Node s, Node p, Path path, Node o) : { }
+{
+  (
+    <L_ANN>
+      { Node pAnn = preConditionAnnotation(s, p, path, o, token.beginLine, token.beginColumn) ;
+        Node x = createTripleTerm(s, p, o, token.beginLine, token.beginColumn);
+      }
+      PropertyListNotEmpty(x, acc)
+    <R_ANN>
+  )?
+}
 Node GraphNode(TripleCollectorMark acc) : { Node n ; }
 {
   n = VarOrTerm() { return n ; }
@@ -1158,10 +1184,41 @@ Node GraphNodePath(TripleCollectorMark acc) : { Node n ; }
  |
   n = TriplesNodePath(acc) { return n ; }
 }
-Node VarOrTerm() : {Node n = null ; }
+Node VarOrTerm() : { Node n = null ; }
 {
-  ( n = Var() | n = GraphTerm() )
+  ( n = TripleTerm()
+  | n = Var()
+  | n = GraphTerm()
+  )
   { return n ; }
+}
+Node TripleTerm() : { Node n = null ; Token t ; Node s , p , o ; }
+{
+  t = <LT2>
+  s = VarOrTerm()
+  p = Verb()
+  o = VarOrTerm()
+  { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
+  <GT2>
+  { return n; }
+}
+Node TripleTermData() : { Node n = null ; Token t ; String iri ; Node s , p , o ; }
+{
+  t = <LT2>
+  ( s = DataValueTerm() )
+  ( iri = iri() { p = createNode(iri) ; } | <KW_A> { p = nRDFtype ; } )
+  ( o = DataValueTerm() )
+  { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
+  <GT2>
+  { return n; }
+}
+Node DataValueTerm() : { Node n = null ; String iri ; Node s , p , o ; }
+{
+  iri = iri() { return createNode(iri) ; }
+| n = RDFLiteral() { return n ; }
+| n = NumericLiteral() { return n ; }
+| n = BooleanLiteral() { return n ; }
+| n = TripleTermData() { return n ; }
 }
 Node VarOrIri() : {Node n = null ; String iri ; }
 {
@@ -1284,6 +1341,10 @@ Expr MultiplicativeExpression() : { Expr expr1, expr2 ; }
     { expr1 = new E_Multiply(expr1, expr2) ; }
   | <SLASH> expr2 = UnaryExpression()
     { expr1 = new E_Divide(expr1, expr2) ; }
+  | <MOD> expr2 = UnaryExpression()
+    { expr1 = new E_OpNumericMod(expr1, expr2) ; }
+  | <IDIV> expr2 = UnaryExpression()
+    { expr1 = new E_OpNumericIntegerDivide(expr1, expr2) ; }
   )*
     { return expr1 ; }
 }
@@ -1295,22 +1356,44 @@ Expr UnaryExpression() : { Expr expr ; }
   | <MINUS> expr = PrimaryExpression() { return new E_UnaryMinus(expr) ; }
   | expr = PrimaryExpression() { return expr ; }
 }
-Expr PrimaryExpression() : { Expr expr ; Node gn ; }
+Expr PrimaryExpression() : { Expr expr ; Node n ; }
 {
   ( expr = BrackettedExpression() { return expr ; }
   | expr = BuiltInCall() { return expr ; }
   | expr = iriOrFunction() { return expr ; }
-  | gn = RDFLiteral() { return asExpr(gn) ; }
-  | gn = NumericLiteral() { return asExpr(gn) ; }
-  | gn = BooleanLiteral() { return asExpr(gn) ; }
-  | gn = Var() { return asExpr(gn) ; }
+  | n = RDFLiteral() { return asExpr(n) ; }
+  | n = NumericLiteral() { return asExpr(n) ; }
+  | n = BooleanLiteral() { return asExpr(n) ; }
+  | n = Var() { return asExpr(n) ; }
+  | n = ExprTripleTerm() { return asExpr(n) ; }
   )
+}
+Node ExprVarOrTerm() : { Node n; String s;}
+{
+  ( s = iri() { n = createNode(s); }
+  | n = RDFLiteral()
+  | n = NumericLiteral()
+  | n = BooleanLiteral()
+  | n = Var()
+  | n = ExprTripleTerm()
+  )
+  { return n; }
+}
+Node ExprTripleTerm() : { Token t ; Node s,p,o,n; }
+{ t = <LT2>
+  s = ExprVarOrTerm()
+  p = Verb()
+  o = ExprVarOrTerm()
+  { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
+  <GT2>
+  { return n; }
 }
 Expr BrackettedExpression() : { Expr expr ; }
 {
     <LPAREN> expr = Expression() <RPAREN> { return expr ; }
 }
-Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
+Expr BuiltInCall() : { Expr expr ;
+                       Expr expr1 = null ; Expr expr2 = null ; Expr expr3 = null ;
                        Node gn ; ExprList a ; }
 {
     expr = Aggregate() { return expr ; }
@@ -1326,10 +1409,10 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
     { return new E_Datatype(expr) ; }
   | <BOUND> <LPAREN> gn = Var() <RPAREN>
     { return new E_Bound(new ExprVar(gn)) ; }
-  | <IRI> <LPAREN> expr = Expression() <RPAREN>
-    { return new E_IRI(expr) ; }
-  | <URI> <LPAREN> expr = Expression() <RPAREN>
-    { return new E_URI(expr) ; }
+  | <IRI> <LPAREN> expr1 = Expression() (<COMMA> expr2 = Expression())? <RPAREN>
+    { return makeFunction_IRI(expr1, expr2) ; }
+  | <URI> <LPAREN> expr1 = Expression() (<COMMA> expr2 = Expression())? <RPAREN>
+    { return makeFunction_URI(expr1, expr2) ; }
   | <BNODE>
     ( <LPAREN> expr1 = Expression() <RPAREN>
       { return new E_BNode(expr1) ; }
@@ -1341,6 +1424,8 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <CEIL> <LPAREN> expr1 = Expression() <RPAREN> { return new E_NumCeiling(expr1) ; }
   | <FLOOR> <LPAREN> expr1 = Expression() <RPAREN> { return new E_NumFloor(expr1) ; }
   | <ROUND> <LPAREN> expr1 = Expression() <RPAREN> { return new E_NumRound(expr1) ; }
+  | <MOD> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN> { return new E_OpNumericMod(expr1, expr2); }
+  | <IDIV> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN> { return new E_OpNumericIntegerDivide(expr1, expr2); }
   | <CONCAT> a = ExpressionList() { return new E_StrConcat(a) ; }
   | expr = SubstringExpression() { return expr ; }
   | <STRLEN> <LPAREN> expr1 = Expression() <RPAREN> { return new E_StrLength(expr1) ; }
@@ -1408,6 +1493,16 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
     expr = RegexExpression() { return expr ; }
   | expr = ExistsFunc() { return expr ; }
   | expr = NotExistsFunc() { return expr ; }
+  | <IS_TRIPLE> <LPAREN> expr = Expression() <RPAREN>
+    { return new E_IsTriple(expr) ; }
+  | <TRIPLE> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <COMMA> expr3 = Expression() <RPAREN>
+    { return new E_TripleFn(expr1, expr2, expr3) ; }
+  | <SUBJECT> <LPAREN> expr = Expression() <RPAREN>
+    { return new E_TripleSubject(expr) ; }
+  | <PREDICATE> <LPAREN> expr = Expression() <RPAREN>
+    { return new E_TriplePredicate(expr) ; }
+  | <OBJECT> <LPAREN> expr = Expression() <RPAREN>
+    { return new E_TripleObject(expr) ; }
 }
 Expr RegexExpression() :
 { Expr expr ; Expr patExpr = null ; Expr flagsExpr = null ; }
@@ -1463,6 +1558,7 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
                      ExprList ordered = new ExprList() ;
                      Token t ; }
 {
+  { startAggregate(); }
   ( t = <COUNT> <LPAREN>
     ( <DISTINCT> { distinct = true ; } )?
     ( <STAR> | expr = Expression() )
@@ -1478,6 +1574,10 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     { agg = AggregatorFactory.createMax(distinct, expr) ; }
   | t = <AVG> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
     { agg = AggregatorFactory.createAvg(distinct, expr) ; }
+  | t = <MEDIAN> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createMedian(distinct, expr) ; }
+  | t = <MODE> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createMode(distinct, expr) ; }
   | t = <SAMPLE> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
     { agg = AggregatorFactory.createSample(distinct, expr) ; }
   | t = <GROUP_CONCAT>
@@ -1514,10 +1614,12 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
   )
   {
     if ( ! getAllowAggregatesInExpressions() )
-           throwParseException("Aggregate expression not legal at this point",
-                                t.beginLine, t.beginColumn) ;
+        throwParseException("Aggregate expression not legal at this point", t.beginLine, t.beginColumn) ;
+    if ( getAggregateDepth() > 1 )
+        throwParseException("Nested aggregate in expression not legal", t.beginLine, t.beginColumn) ;
   }
   { Expr exprAgg = getQuery().allocAggregate(agg) ;
+    finishAggregate();
     return exprAgg ; }
 }
 Expr iriOrFunction() : { String iri ; Args a = null ; }
@@ -1587,21 +1689,10 @@ String String() : { Token t ; String lex ; }
   | t = <STRING_LITERAL_LONG1> { lex = stripQuotes3(t.image) ; }
   | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
   )
-    {
+    { checkString(lex, t.beginLine, t.beginColumn) ;
       lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
       return lex ;
     }
-}
-Number Number() : { Token t ; Number number ; }
-{
-  (
-    t = < INTEGER > { number = integerValue(t.image) ; }
-  | t = < DECIMAL > { number = doubleValue(t.image) ; }
-  | t = < DOUBLE > { number = doubleValue(t.image) ; }
-  )
-  {
-    return number ;
-  }
 }
 String iri() : { String iri ; }
 {
@@ -1642,8 +1733,11 @@ TOKEN: {
 }
 TOKEN:
 {
-   <IRIref: "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`",
-                      "\u0000"-"\u0020"])* ">" >
+   <IRIref: "<"
+                ( ~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`", "\u0000"-"\u0020"]
+                | <UCHAR>
+                )*
+              ">" >
 | <PNAME_NS: (<PN_PREFIX>)? ":" >
 | <PNAME_LN: <PNAME_NS> <PN_LOCAL> >
 | <BLANK_NODE_LABEL: "_:" (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)? >
@@ -1683,7 +1777,12 @@ TOKEN [IGNORE_CASE] :
 | < MINUS_P: "minus" >
 | < BIND: "bind" >
 | < SERVICE: "service" >
-| < LET: "let" >
+| < LET: "LET" >
+| < TRIPLE: "TRIPLE" >
+| < IS_TRIPLE: "isTRIPLE" >
+| < SUBJECT: "SUBJECT" >
+| < PREDICATE: "PREDICATE" >
+| < OBJECT: "OBJECT" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
 | < AS: "as" >
@@ -1696,6 +1795,8 @@ TOKEN [IGNORE_CASE] :
 | < MAX: "max" >
 | < SUM: "sum" >
 | < AVG: "avg" >
+| < MEDIAN: "median" >
+| < MODE: "mode" >
 | < STDEV: "stdev" >
 | < STDEV_SAMP: "stdev_samp" >
 | < STDEV_POP: "stdev_pop" >
@@ -1734,6 +1835,8 @@ TOKEN [IGNORE_CASE] :
 | < CEIL: "CEIL" >
 | < FLOOR: "FLOOR" >
 | < ROUND: "ROUND" >
+| < MOD: "MOD" >
+| < IDIV: "IDIV" >
 | < CONCAT: "CONCAT" >
 | < SUBSTR: "SUBSTR" >
 | < STRLEN: "STRLEN" >
@@ -1813,17 +1916,20 @@ TOKEN :
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
 | <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+| < #UCHAR: <UCHAR4> | <UCHAR8> >
+| < #UCHAR4: "\\" "u" <HEX> <HEX> <HEX> <HEX> >
+| < #UCHAR8: "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> >
 | < STRING_LITERAL1:
-      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" >
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "'" >
 | < STRING_LITERAL2:
-      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> )* "\"" >
+      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "\"" >
 | < STRING_LITERAL_LONG1:
      <QUOTE_3S>
-      ( ("'" | "''")? (~["'","\\"] | <ECHAR> ))*
+      ( ("'" | "''")? (~["'","\\"] | <ECHAR> | <UCHAR> ))*
      <QUOTE_3S> >
 | < STRING_LITERAL_LONG2:
      <QUOTE_3D>
-      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> ))*
+      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> | <UCHAR> ))*
      <QUOTE_3D> >
 }
 TOKEN :
@@ -1845,6 +1951,10 @@ TOKEN :
 | < LT: "<" >
 | < LE: "<=" >
 | < GE: ">=" >
+| < GT2: ">>" >
+| < LT2: "<<" >
+| <L_ANN: "{|" >
+| <R_ANN: "|}" >
 | < BANG: "!" >
 | < TILDE: "~" >
 | < COLON: ":" >
@@ -1865,12 +1975,15 @@ TOKEN :
 }
 TOKEN:
 {
+  <#SURROGATE_PAIR: ["\uD800"-"\uDBFF"] ["\uDC00"-"\uDFFF"] >
+|
   <#PN_CHARS_BASE:
           ["A"-"Z"] | ["a"-"z"] |
           ["\u00C0"-"\u00D6"] | ["\u00D8"-"\u00F6"] | ["\u00F8"-"\u02FF"] |
           ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
           ["\u200C"-"\u200D"] | ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
           ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"]
+          | <SURROGATE_PAIR>
           >
 |
   <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >

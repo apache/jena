@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicLong ;
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.core.TransactionalLock ;
-import org.apache.jena.system.Txn ;
 import org.junit.Test ;
 
 /** Lifecycle tests - apply tests to a provided Transactional

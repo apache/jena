@@ -23,17 +23,19 @@ package org.apache.jena.fuseki.mgt;
  * webapp/full server.
  */
 public class ServerMgtConst {
-    public static final String  opDatasets      = "datasets" ;
-    public static final String  opListBackups   = "backups-list" ;
-    public static final String  opServer        = "server" ;
-    
-    public static final String uptime           = "uptime" ;
-    public static final String startDT          = "startDateTime" ;
-//    public static final String server           = "server" ;
-//    public static final String port             = "port" ;
-    public static final String hostname         = "hostname" ;
-    public static final String admin            = "admin" ;
-    public static final String version          = "version" ;
-    public static final String built            = "built" ;
-    public static final String services         = "services" ;
+    public static final String  opDatasets      = "datasets";
+    public static final String  opBackup        = "backup";
+    public static final String  opCompact       = "compact";
+    public static final String  opListBackups   = "backups-list";
+    public static final String  opServer        = "server";
+
+    public static final String uptime           = "uptime";
+    public static final String startDT          = "startDateTime";
+//    public static final String server           = "server";
+//    public static final String port             = "port";
+    public static final String hostname         = "hostname";
+    public static final String admin            = "admin";
+    public static final String version          = "version";
+    public static final String built            = "built";
+    public static final String services         = "services";
 }

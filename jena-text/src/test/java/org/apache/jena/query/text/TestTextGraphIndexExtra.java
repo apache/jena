@@ -21,16 +21,12 @@ package org.apache.jena.query.text;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.* ;
-import org.apache.jena.query.text.EntityDefinition ;
-import org.apache.jena.query.text.TextDatasetFactory ;
-import org.apache.jena.query.text.TextIndex ;
-import org.apache.jena.query.text.TextIndexConfig ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.system.Txn ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.vocabulary.RDFS ;
-import org.apache.lucene.store.RAMDirectory ;
+import org.apache.lucene.store.ByteBuffersDirectory ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
@@ -42,7 +38,7 @@ public class TestTextGraphIndexExtra {
 
     static Dataset textDataset(Dataset dataset) {
         EntityDefinition entdef = new EntityDefinition("uri", "text", "graph", rdfsLabel);
-        TextIndex textIndex = TextDatasetFactory.createLuceneIndex(new RAMDirectory(), new TextIndexConfig(entdef));
+        TextIndex textIndex = TextDatasetFactory.createLuceneIndex(new ByteBuffersDirectory(), new TextIndexConfig(entdef));
         return TextDatasetFactory.create(dataset, textIndex, true);
     }
     

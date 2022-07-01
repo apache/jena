@@ -19,8 +19,8 @@
 package org.apache.jena.sparql.modify.request;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.riot.out.SinkQuadBracedOutput ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.sparql.system.SinkQuadBracedOutput;
 
 public class UpdateDataWriter extends SinkQuadBracedOutput
 {

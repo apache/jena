@@ -21,12 +21,12 @@ package org.apache.jena.fuseki.system;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 public class UploadDetailsWithName {
-     public final String graphName  ;
-     public final DatasetGraph data ;
-     public final long count ;
-     public UploadDetailsWithName(String gn, DatasetGraph dsg, long parserCount) {
-         this.graphName = gn ;
-         this.data = dsg ;
-         this.count = parserCount ;
-     }
- }
+    public final String graphName;
+    public final DatasetGraph data;
+    public final long count;
+    public UploadDetailsWithName(String gn, DatasetGraph dsg, long parserCount) {
+        this.graphName = gn;
+        this.data = dsg;
+        this.count = parserCount;
+    }
+}

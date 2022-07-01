@@ -18,19 +18,19 @@
 
 package org.apache.jena.dboe.transaction.txn;
 
-/** State for one detached components. */  
+/** State for one detached components. */
 public class SysTransState {
-    private final TransactionalComponent elt ;
-    private final Transaction transaction ;
-    private final Object state ;
+    private final TransactionalComponent elt;
+    private final Transaction transaction;
+    private final Object state;
 
-    public SysTransState(TransactionalComponent elt, Transaction transaction, Object state) { 
-        this.elt = elt ;
-        this.transaction = transaction ;
-        this.state = state ;
+    public SysTransState(TransactionalComponent elt, Transaction transaction, Object state) {
+        this.elt = elt;
+        this.transaction = transaction;
+        this.state = state;
     }
 
-    public TransactionalComponent getComponent()    { return elt ; }
-    public Transaction getTransaction()             { return transaction ; } 
-    public Object getState()                         { return state ; } 
+    public TransactionalComponent getComponent()    { return elt; }
+    public Transaction getTransaction()             { return transaction; }
+    public Object getState()                        { return state; }
 }

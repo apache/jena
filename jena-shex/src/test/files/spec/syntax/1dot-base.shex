@@ -1,0 +1,5 @@
+# source: IRI_subject.ttl
+
+BASE <http://a.example/>
+
+<S1> { <p1> . }

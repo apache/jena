@@ -18,20 +18,24 @@
 
 package org.apache.jena.tdb;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.apache.jena.tdb.sys.TDBMaker ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public class TestTDBFactory extends BaseTest
+public class TestTDBFactory
 {
     String DIR = ConfigTest.getCleanDir() ;
     
@@ -40,12 +44,13 @@ public class TestTDBFactory extends BaseTest
     
     @Before
     public void before() {
-        StoreConnection.reset();
+        TDBInternal.reset();
         FileOps.clearDirectory(DIR);
     }
 
     @After
     public void after() {
+        TDBInternal.reset();
         FileOps.clearDirectory(DIR);
     }
 
@@ -112,7 +117,7 @@ public class TestTDBFactory extends BaseTest
         TDBFactory.createDataset(DIR) ;
         b = TDBFactory.inUseLocation(DIR) ;
         assertTrue("Expected true after creation attempted", b) ;
-        StoreConnection.expel(Location.create(DIR), true); 
+        TDBInternal.expel(Location.create(DIR), true); 
     }
     
     @Test public void testTDBFresh03() {
@@ -121,7 +126,7 @@ public class TestTDBFactory extends BaseTest
         TDBFactory.createDataset(DIR) ;
         b = TDBFactory.inUseLocation(DIR) ;
         assertTrue("Expected true after creation attempted", b) ;
-        StoreConnection.expel(Location.create(DIR), true);
+        TDBInternal.expel(Location.create(DIR), true);
         b = TDBFactory.inUseLocation(DIR) ;
         assertTrue("Expected true even after StoreConenction reset", b) ;
     }

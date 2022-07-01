@@ -1,0 +1,2 @@
+<http://a.example/n1>  <http://a.example/p1> "X" .
+<http://a.example/n1>  <http://a.example/p2> "Y" .

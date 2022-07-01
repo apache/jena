@@ -37,7 +37,6 @@ public interface Evaluator
     public ExecutionContext getExecContext() ;
     
     public Table basicPattern(BasicPattern pattern) ;
-    
     public Table pathPattern(TriplePath triplePath) ;
 
     // Two forms that provide custom code evaluation

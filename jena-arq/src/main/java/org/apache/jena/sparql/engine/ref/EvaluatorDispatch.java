@@ -31,7 +31,7 @@ import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.algebra.TableFactory ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.http.Service ;
+import org.apache.jena.sparql.exec.http.Service;
 
 /**  Class to provide type-safe eval() dispatch using the visitor support of Op */
 
@@ -39,7 +39,7 @@ public class EvaluatorDispatch implements OpVisitor
 {
     private Deque<Table> stack = new ArrayDeque<>() ;
     protected Evaluator evaluator ;
-    
+
     public EvaluatorDispatch(Evaluator evaluator)
     {
         this.evaluator = evaluator ;
@@ -50,16 +50,16 @@ public class EvaluatorDispatch implements OpVisitor
         op.visit(this) ;
         return pop() ;
     }
-    
+
     Table getResult()
     {
         if ( stack.size() != 1 )
             Log.warn(this, "Warning: getResult: stack size = "+stack.size()) ;
-        
+
         Table table = pop() ;
         return table ;
     }
-    
+
     @Override
     public void visit(OpBGP opBGP)
     {
@@ -70,7 +70,7 @@ public class EvaluatorDispatch implements OpVisitor
     @Override
     public void visit(OpQuadPattern quadPattern)
     {
-        push(Eval.evalQuadPattern(quadPattern, evaluator)) ;
+        push(RefEval.evalQuadPattern(quadPattern, evaluator)) ;
     }
 
     @Override
@@ -122,13 +122,13 @@ public class EvaluatorDispatch implements OpVisitor
         Table table = evaluator.join(left, right) ;
         push(table) ;
     }
-    
+
     @Override
     public void visit(OpSequence opSequence)
     {
         // Evaluation is as a sequence of joins.
         Table table = TableFactory.createUnit() ;
-        
+
         for ( Iterator<Op> iter = opSequence.iterator() ; iter.hasNext() ; )
         {
             Op op = iter.next() ;
@@ -141,9 +141,9 @@ public class EvaluatorDispatch implements OpVisitor
     @Override
     public void visit(OpDisjunction opDisjunction)
     {
-        // Evaluation is as a concatentation of alternatives 
+        // Evaluation is as a concatentation of alternatives
         Table table = TableFactory.createEmpty() ;
-        
+
         for ( Iterator<Op> iter = opDisjunction.iterator() ; iter.hasNext() ; )
         {
             Op op = iter.next() ;
@@ -152,7 +152,7 @@ public class EvaluatorDispatch implements OpVisitor
         }
         push(table) ;
     }
-    
+
     @Override
     public void visit(OpLeftJoin opLeftJoin)
     {
@@ -198,7 +198,7 @@ public class EvaluatorDispatch implements OpVisitor
         Table table = evaluator.condition(left, right) ;
         push(table) ;
     }
-    
+
     @Override
     public void visit(OpFilter opFilter)
     {
@@ -210,7 +210,7 @@ public class EvaluatorDispatch implements OpVisitor
     @Override
     public void visit(OpGraph opGraph)
     {
-        push(Eval.evalGraph(opGraph, evaluator)) ;
+        push(RefEval.evalGraph(opGraph, evaluator)) ;
     }
 
     @Override
@@ -224,7 +224,7 @@ public class EvaluatorDispatch implements OpVisitor
     @Override
     public void visit(OpDatasetNames dsNames)
     {
-        push(Eval.evalDS(dsNames, evaluator)) ;
+        push(RefEval.evalDS(dsNames, evaluator)) ;
     }
 
     @Override
@@ -239,10 +239,10 @@ public class EvaluatorDispatch implements OpVisitor
 
     @Override
     public void visit(OpNull opNull)
-    { 
+    {
         push(TableFactory.createEmpty()) ;
     }
-    
+
     @Override
     public void visit(OpLabel opLabel)
     {
@@ -337,7 +337,7 @@ public class EvaluatorDispatch implements OpVisitor
 
     protected void push(Table table)  { stack.push(table) ; }
     protected Table pop()
-    { 
+    {
         if ( stack.size() == 0 )
             Log.warn(this, "Warning: pop: empty stack") ;
         return stack.pop() ;

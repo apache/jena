@@ -21,14 +21,14 @@ package org.apache.jena.sparql.resultset;
 import java.util.ArrayList;
 
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.binding.BindingMap;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.vocabulary.ResultSetGraphVocab;
 import org.apache.jena.vocabulary.RDF;
 
@@ -96,9 +96,10 @@ public class RDFInput extends ResultSetMem {
 
     private void buildRowsOrdered(Resource root, int count) {
         Model m = root.getModel();
+        BindingBuilder builder = Binding.builder();
         // Assume one result set per file.
         for ( int index = 1 ;; index++ ) {
-            Literal ind = m.createTypedLiteral(index);
+            Literal ind = m.createTypedLiteral(index, XSDDatatype.XSDinteger);
             StmtIterator sIter = m.listStatements(null, ResultSetGraphVocab.index, ind);
             if ( !sIter.hasNext() )
                 break;
@@ -107,7 +108,7 @@ public class RDFInput extends ResultSetMem {
                 Log.warn(this, "More than one solution: index = " + index);
             Resource soln = s.getSubject();
 
-            Binding rb = buildBinding(soln);
+            Binding rb = buildBinding(builder, soln);
             rows.add(rb);
             sIter.close();
         }
@@ -119,11 +120,11 @@ public class RDFInput extends ResultSetMem {
         // Now the results themselves
         int count = 0;
         StmtIterator solnIter = root.listProperties(ResultSetGraphVocab.solution);
+        BindingBuilder builder = Binding.builder();
         for ( ; solnIter.hasNext() ; ) {
             Resource soln = solnIter.nextStatement().getResource();
             count++;
-
-            Binding rb = buildBinding(soln);
+            Binding rb = buildBinding(builder, soln);
             rows.add(rb);
         }
         solnIter.close();
@@ -138,10 +139,9 @@ public class RDFInput extends ResultSetMem {
         }
     }
 
-    private Binding buildBinding(Resource soln) {
+    private Binding buildBinding(BindingBuilder builder, Resource soln) {
+        builder.reset();
         // foreach row
-        BindingMap rb = BindingFactory.create();
-
         StmtIterator bindingIter = soln.listProperties(ResultSetGraphVocab.binding);
         for ( ; bindingIter.hasNext() ; ) {
             Resource binding = bindingIter.nextStatement().getResource();
@@ -149,7 +149,7 @@ public class RDFInput extends ResultSetMem {
             String var = binding.getRequiredProperty(ResultSetGraphVocab.variable).getString();
             try {
                 RDFNode val = binding.getRequiredProperty(ResultSetGraphVocab.value).getObject();
-                rb.add(Var.alloc(var), val.asNode());
+                builder.add(Var.alloc(var), val.asNode());
             }
             catch (PropertyNotFoundException ex) {
                 Log.warn(this, "Failed to get value for ?" + var);
@@ -164,14 +164,14 @@ public class RDFInput extends ResultSetMem {
 
         }
         bindingIter.close();
-        return rb;
+        return builder.build();
     }
 
     /**
      * Turns an RDF model, with properties and classes from the result set
      * vocabulary, into a SPARQL result set. The result set formed is a copy in
      * memory.
-     * 
+     *
      * @param model
      * @return ResultSet
      */

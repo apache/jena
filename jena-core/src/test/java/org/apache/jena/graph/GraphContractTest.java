@@ -114,7 +114,7 @@ public class GraphContractTest<T extends Graph>
 
 	/**
 	 * Inference graphs can not be truly empty.
-	 * 
+	 *
 	 * @param g
 	 * @param b
 	 */
@@ -132,7 +132,7 @@ public class GraphContractTest<T extends Graph>
 
 	/**
 	 * Inference graphs can not be truly empty
-	 * 
+	 *
 	 * @param g
 	 * @param b
 	 */
@@ -807,13 +807,13 @@ public class GraphContractTest<T extends Graph>
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
 			Node ab = NodeFactory.createLiteral(LiteralLabelFactory
-					.createTypedLiteral(new Byte((byte) 42)));
+					.createTypedLiteral(Byte.valueOf((byte) 42)));
 			Node as = NodeFactory.createLiteral(LiteralLabelFactory
-					.createTypedLiteral(new Short((short) 42)));
+					.createTypedLiteral(Short.valueOf((short) 42)));
 			Node ai = NodeFactory.createLiteral(
-					LiteralLabelFactory.createTypedLiteral(new Integer(42)));
+					LiteralLabelFactory.createTypedLiteral(Integer.valueOf(42)));
 			Node al = NodeFactory.createLiteral(
-					LiteralLabelFactory.createTypedLiteral(new Long(42)));
+					LiteralLabelFactory.createTypedLiteral(Long.valueOf(42)));
 
 			Node SB = NodeCreateUtils.create("SB");
 			Node SS = NodeCreateUtils.create("SS");
@@ -942,13 +942,13 @@ public class GraphContractTest<T extends Graph>
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
 			Node ab = NodeFactory.createLiteral(LiteralLabelFactory
-					.createTypedLiteral(new Byte((byte) 42)));
+					.createTypedLiteral(Byte.valueOf((byte) 42)));
 			Node as = NodeFactory.createLiteral(LiteralLabelFactory
-					.createTypedLiteral(new Short((short) 42)));
+					.createTypedLiteral(Short.valueOf((short) 42)));
 			Node ai = NodeFactory.createLiteral(
-					LiteralLabelFactory.createTypedLiteral(new Integer(42)));
+					LiteralLabelFactory.createTypedLiteral(Integer.valueOf(42)));
 			Node al = NodeFactory.createLiteral(
-					LiteralLabelFactory.createTypedLiteral(new Long(42)));
+					LiteralLabelFactory.createTypedLiteral(Long.valueOf(42)));
 
 			Node SB = NodeCreateUtils.create("SB");
 			Node SS = NodeCreateUtils.create("SS");
@@ -1073,19 +1073,6 @@ public class GraphContractTest<T extends Graph>
 				g.getPrefixMapping());
 		txnRollback(g);
 
-	}
-
-	@ContractTest
-	public void testGetStatisticsHandler()
-	{
-		Graph g = producer.newInstance();
-		GraphStatisticsHandler sh = g.getStatisticsHandler();
-		if (sh != null)
-		{
-			assertSame(
-					"getStatisticsHandler must always return the same object",
-					sh, g.getStatisticsHandler());
-		}
 	}
 
 	@ContractTest
@@ -1435,7 +1422,7 @@ public class GraphContractTest<T extends Graph>
 
 	/**
 	 * testIsomorphism from file data
-	 * 
+	 *
 	 * @throws URISyntaxException
 	 * @throws MalformedURLException
 	 */
@@ -1508,74 +1495,6 @@ public class GraphContractTest<T extends Graph>
 		return result;
 	}
 
-	// @ContractTest
-	// public void testTransactionCommit()
-	// {
-	// Graph g = producer.newInstance();
-	// if (g.getTransactionHandler().transactionsSupported())
-	// {
-	// Graph initial = graphWithTxn( "initial hasValue 42; also hasURI hello" );
-	// Graph extra = graphWithTxn( "extra hasValue 17; also hasURI world" );
-	// //File foo = FileUtils.tempFileName( "fileGraph", ".nt" );
-	//
-	// //Graph g = new FileGraph( foo, true, true );
-	//
-	// GraphUtil.addInto( g, initial );
-	// g.getTransactionHandler().begin();
-	// GraphUtil.addInto( g, extra );
-	// g.getTransactionHandler().commit();
-	// Graph union = graphWithTxn( "" );
-	// GraphUtil.addInto(union, initial );
-	// GraphUtil.addInto(union, extra );
-	// assertIsomorphic( union, g );
-	// //Model inFile = ModelFactory.createDefaultModel();
-	// //inFile.read( "file:///" + foo, "N-TRIPLES" );
-	// //assertIsomorphic( union, inFile.getGraph() );
-	// }
-	// }
-	//
-	// @ContractTest
-	// public void testTransactionAbort()
-	// {
-	// Graph g = producer.newInstance();
-	// if (g.getTransactionHandler().transactionsSupported())
-	// {
-	// Graph initial = graphWithTxn( "initial hasValue 42; also hasURI hello" );
-	// Graph extra = graphWithTxn( "extra hasValue 17; also hasURI world" );
-	// File foo = FileUtils.tempFileName( "fileGraph", ".n3" );
-	// //Graph g = new FileGraph( foo, true, true );
-	// GraphUtil.addInto( g, initial );
-	// g.getTransactionHandler().begin();
-	// GraphUtil.addInto( g, extra );
-	// g.getTransactionHandler().abort();
-	// assertIsomorphic( initial, g );
-	// }
-	// }
-	//
-	// @ContractTest
-	// public void testTransactionCommitThenAbort()
-	// {
-	// Graph g = producer.newInstance();
-	// if (g.getTransactionHandler().transactionsSupported())
-	// {
-	// Graph initial = graphWithTxn( "Foo pings B; B pings C" );
-	// Graph extra = graphWithTxn( "C pingedBy B; fileGraph rdf:type Graph" );
-	// //Graph g = producer.newInstance();
-	// //File foo = FileUtils.tempFileName( "fileGraph", ".nt" );
-	// //Graph g = new FileGraph( foo, true, true );
-	// g.getTransactionHandler().begin();
-	// GraphUtil.addInto( g, initial );
-	// g.getTransactionHandler().commit();
-	// g.getTransactionHandler().begin();
-	// GraphUtil.addInto( g, extra );
-	// g.getTransactionHandler().abort();
-	// assertIsomorphic( initial, g );
-	// //Model inFile = ModelFactory.createDefaultModel();
-	// // inFile.read( "file:///" + foo, "N-TRIPLES" );
-	// //assertIsomorphic( initial, inFile.getGraph() );
-	// }
-	// }
-
 	/**
 	 * This test exposed that the update-existing-graph functionality was broken
 	 * if the target graph already contained any statements with a subject S
@@ -1603,7 +1522,6 @@ public class GraphContractTest<T extends Graph>
 		txnBegin(source);
 		assertIsomorphic(graphWith("a R b; b S e; b R d"), dest);
 		txnRollback(source);
-
 	}
 
 	/**
@@ -1845,104 +1763,6 @@ public class GraphContractTest<T extends Graph>
 		} catch (UnsupportedOperationException e)
 		{
 			// No Iterator.remove
-		}
-	}
-
-	@ContractTest
-	public void testSingletonStatisticsWithSingleTriple()
-	{
-
-		Graph g = graphWith(producer.newInstance(), "a P b");
-		GraphStatisticsHandler h = g.getStatisticsHandler();
-		if (h != null)
-		{
-			assertEquals(1L, h.getStatistic(node("a"), Node.ANY, Node.ANY));
-			assertEquals(0L, h.getStatistic(node("x"), Node.ANY, Node.ANY));
-			//
-			assertEquals(1L, h.getStatistic(Node.ANY, node("P"), Node.ANY));
-			assertEquals(0L, h.getStatistic(Node.ANY, node("Q"), Node.ANY));
-			//
-			assertEquals(1L, h.getStatistic(Node.ANY, Node.ANY, node("b")));
-			assertEquals(0L, h.getStatistic(Node.ANY, Node.ANY, node("y")));
-		}
-	}
-
-	@ContractTest
-	public void testSingletonStatisticsWithSeveralTriples()
-	{
-
-		Graph g = graphWith(producer.newInstance(),
-				"a P b; a P c; a Q b; x S y");
-		GraphStatisticsHandler h = g.getStatisticsHandler();
-		if (h != null)
-		{
-			assertEquals(3L, h.getStatistic(node("a"), Node.ANY, Node.ANY));
-			assertEquals(1L, h.getStatistic(node("x"), Node.ANY, Node.ANY));
-			assertEquals(0L, h.getStatistic(node("y"), Node.ANY, Node.ANY));
-			//
-			assertEquals(2L, h.getStatistic(Node.ANY, node("P"), Node.ANY));
-			assertEquals(1L, h.getStatistic(Node.ANY, node("Q"), Node.ANY));
-			assertEquals(0L, h.getStatistic(Node.ANY, node("R"), Node.ANY));
-			//
-			assertEquals(2L, h.getStatistic(Node.ANY, Node.ANY, node("b")));
-			assertEquals(1L, h.getStatistic(Node.ANY, Node.ANY, node("c")));
-			assertEquals(0L, h.getStatistic(Node.ANY, Node.ANY, node("d")));
-		}
-	}
-
-	@ContractTest
-	public void testDoubletonStatisticsWithTriples()
-	{
-
-		Graph g = graphWith(producer.newInstance(),
-				"a P b; a P c; a Q b; x S y");
-		GraphStatisticsHandler h = g.getStatisticsHandler();
-		if (h != null)
-		{
-			assertEquals(-1L, h.getStatistic(node("a"), node("P"), Node.ANY));
-			assertEquals(-1L, h.getStatistic(Node.ANY, node("P"), node("b")));
-			assertEquals(-1L, h.getStatistic(node("a"), Node.ANY, node("b")));
-			//
-			assertEquals(0L, h.getStatistic(node("no"), node("P"), Node.ANY));
-		}
-	}
-
-	@ContractTest
-	public void testStatisticsWithOnlyVariables()
-	{
-		testStatsWithAllVariables("");
-		testStatsWithAllVariables("a P b");
-		testStatsWithAllVariables("a P b; a P c");
-		testStatsWithAllVariables("a P b; a P c; a Q b; x S y");
-	}
-
-	private void testStatsWithAllVariables(String triples)
-	{
-		Graph g = graphWith(producer.newInstance(), triples);
-		GraphStatisticsHandler h = g.getStatisticsHandler();
-		if (h != null)
-		{
-			assertEquals(g.size(),
-					h.getStatistic(Node.ANY, Node.ANY, Node.ANY));
-		}
-	}
-
-	@ContractTest
-	public void testStatsWithConcreteTriple()
-	{
-		testStatsWithConcreteTriple(0, "x P y", "");
-	}
-
-	private void testStatsWithConcreteTriple(int expect, String triple,
-			String graph)
-	{
-		Graph g = graphWith(producer.newInstance(), graph);
-		GraphStatisticsHandler h = g.getStatisticsHandler();
-		if (h != null)
-		{
-			Triple t = triple(triple);
-			assertEquals(expect, h.getStatistic(t.getSubject(),
-					t.getPredicate(), t.getObject()));
 		}
 	}
 

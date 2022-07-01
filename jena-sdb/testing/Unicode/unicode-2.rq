@@ -1,5 +1,0 @@
-SELECT *
-{ 
-	?s ?p "E-acute:\u00C9" .
-    ?s ?p "E-acute:é" .
-}

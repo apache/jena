@@ -18,98 +18,91 @@
 
 package org.apache.jena.sparql.sse.writers;
 
-import java.util.Iterator ;
-import java.util.Map ;
+import java.util.Iterator;
+import java.util.Map;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.core.Prologue ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.core.Prologue;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.FmtUtils;
 
-public class WriterBasePrefix
-{
-    private static final int NL = WriterLib.NL ;
-    private static final int NoNL = WriterLib.NoNL ;
-    private static final int NoSP = WriterLib.NoSP ;
+public class WriterBasePrefix {
+    private static final int NL = WriterLib.NL;
+    private static final int NoNL = WriterLib.NoNL;
+    private static final int NoSP = WriterLib.NoSP;
 
-    public static interface Fmt { void format() ; }
-    //public static Fmt fmt = new Fmt(){ public void format() {}} ;
+    public static interface Fmt {
+        void format();
+    }
 
     /** Output, write the thing with formatter fmt */
-    public static void output(IndentedWriter iWriter, Fmt fmt, Prologue prologue)
-    {
-        boolean printBase = false ;
+    public static void output(IndentedWriter iWriter, Fmt fmt, Prologue prologue) {
+        boolean printBase = false;
 
-        boolean closeBase = printBase(iWriter, prologue) ;
-        boolean closePrefix = printPrefix(iWriter, prologue) ;
-        
+        boolean closeBase = printBase(iWriter, prologue);
+        boolean closePrefix = printPrefix(iWriter, prologue);
+
         if ( fmt != null )
-            fmt.format() ;
+            fmt.format();
 
         if ( closeBase )
-            WriterLib.finish(iWriter, Tags.tagBase) ;
+            WriterLib.finish(iWriter, Tags.tagBase);
         if ( closePrefix )
-            WriterLib.finish(iWriter, Tags.tagPrefix) ;
-        iWriter.ensureStartOfLine() ;
+            WriterLib.finish(iWriter, Tags.tagPrefix);
+        iWriter.ensureStartOfLine();
         iWriter.flush();
     }
-    
-    private static boolean printBase(IndentedWriter iWriter, Prologue prologue)
-    {
-        String baseURI = prologue.getBaseURI() ;
-        
-        if ( baseURI != null )
-        {
-            WriterLib.start(iWriter, Tags.tagBase, NoNL) ;   
-            iWriter.print(FmtUtils.stringForURI(baseURI)) ;
-            iWriter.println();
-            return true ;
-        }
-        return false ;
-    }
-    
-    private static boolean printPrefix(IndentedWriter iWriter, Prologue prologue)
-    {
-        PrefixMapping prefixMapping = prologue.getPrefixMapping() ;
 
-        if ( prefixMapping != null )
-        {
-            Map<String, String> m = prefixMapping.getNsPrefixMap() ;
-            if ( ! m.isEmpty() )
-            {
-                int s = iWriter.getCol() ;
-                WriterLib.start(iWriter, Tags.tagPrefix, NoNL) ;
-                WriterLib.start(iWriter) ;
+    private static boolean printBase(IndentedWriter iWriter, Prologue prologue) {
+        String baseURI = prologue.getBaseURI();
+
+        if ( baseURI != null ) {
+            WriterLib.start(iWriter, Tags.tagBase, NoNL);
+            iWriter.print(FmtUtils.stringForURI(baseURI));
+            iWriter.println();
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean printPrefix(IndentedWriter iWriter, Prologue prologue) {
+        PrefixMapping prefixMapping = prologue.getPrefixMapping();
+
+        if ( prefixMapping != null ) {
+            Map<String, String> m = prefixMapping.getNsPrefixMap();
+            if ( !m.isEmpty() ) {
+                int s = iWriter.getCol();
+                WriterLib.start(iWriter, Tags.tagPrefix, NoNL);
+                WriterLib.start(iWriter);
 
                 // Indent to this col.
-                int len = iWriter.getCurrentOffset() ;
+                int len = iWriter.getCurrentOffset();
 
-                iWriter.incIndent(len) ;
+                iWriter.incIndent(len);
                 Iterator<String> iter = m.keySet().iterator();
-                boolean first = true ;
-                for ( ; iter.hasNext() ; )
-                {
-                    if ( ! first )
-                        iWriter.println() ;
-                    first = false ;
+                boolean first = true;
+                for ( ; iter.hasNext() ; ) {
+                    if ( !first )
+                        iWriter.println();
+                    first = false;
                     String prefix = iter.next();
-                    String uri = prefixMapping.getNsPrefixURI(prefix) ;
+                    String uri = prefixMapping.getNsPrefixURI(prefix);
                     // Base relative URI = but not prefix mappings!
-                    uri = FmtUtils.stringForURI(uri, prologue.getBaseURI()) ;
-                    WriterLib.start(iWriter) ;
-                    iWriter.print(prefix) ;
-                    iWriter.print(": ") ;
-                    iWriter.print(uri) ;
-                    WriterLib.finish(iWriter) ;
+                    uri = FmtUtils.stringForURI(uri, prologue.getBaseURI());
+                    WriterLib.start(iWriter);
+                    iWriter.print(prefix);
+                    iWriter.print(": ");
+                    iWriter.print(uri);
+                    WriterLib.finish(iWriter);
                 }
-                iWriter.decIndent(len) ;
-                WriterLib.finish(iWriter) ;
+                iWriter.decIndent(len);
+                WriterLib.finish(iWriter);
 
-                iWriter.ensureStartOfLine() ;
-                return true ;
+                iWriter.ensureStartOfLine();
+                return true;
             }
         }
-        return false ;
+        return false;
     }
 }

@@ -18,28 +18,17 @@
 
 package jena;
 
-import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
-import java.lang.reflect.Constructor ;
-
-import org.apache.jena.rdfxml.xmlinput.NTriple ;
-import org.apache.jena.shared.Command ;
+import org.apache.jena.sys.JenaSystem;
 
 /** A command line interface into ARP.
  * Creates NTriple's or just error messages.
  * <pre>
  * java &lt;class-path&gt; jena.rdfparse ( [ -[xstfu]][ -b xmlBase -[eiw] NNN[,NNN...] ] [ file ] [ url ] )...
- * 
- * java &lt;class-path&gt; jena.rdfparse --test
- * 
- * java &lt;class-path&gt; jena.rdfparse --internal-test
  * </pre>
  * 
  * <p>
- * The last two forms are for testing. <code>--test</code> runs ARP
- * against the RDF Core Working Group tests found at w3.org.
- * <code>--internal-test</code> uses a cached copy from within the jena.jar.
- * </p>
  * All options, files and URLs can be intemingled in any order.
  * They are processed from left-to-right.
  * <dl>
@@ -77,27 +66,11 @@ import org.apache.jena.shared.Command ;
 
 public class rdfparse {
 
-    static { setCmdLogging(); }
+    static { JenaSystem.init() ; setLogging(); }
 
-    /** Either start an RDF/XML to NTriple converter, or run test suite.
-	 * @param args The command-line arguments.
+    /** An RDF/XML to NTriple converter
 	 */
 	public static void main( String... args ) throws Exception {
-		if (args.length == 1 && (args[0].equals( "--test" ) || args[0].equals( "--internal-test" ))) 
-            runTests( args[0].equals( "--test" ) );
-        else
-		    NTriple.main( args );
+	    org.apache.jena.rdfxml.xmlinput.NTriple.main( args );
 	}
-
-    /**
-         wrapped this way so JUnit not a compile-time requirement.
-    */
-    protected static void runTests( boolean internetTest ) throws Exception { 
-        Class<?> rdfparse = Class.forName( "jena.test.rdfparse" );
-        Constructor<?> constructor = rdfparse.getConstructor( new Class[] {boolean.class} );
-        Command c = (Command) constructor.newInstance( new Object[] { internetTest } );
-        c.execute();
-//        ARPTests.internet = internetTest;
-//        TestRunner.main( new String[] { "-noloading", ARPTests.class.getName()});
-        }
 }

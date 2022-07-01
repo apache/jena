@@ -39,6 +39,16 @@ public interface RDFVisitor
     */
     Object visitURI( Resource r, String uri );
     
+    
+    /**
+     * Method to call when visiting a resource with a statement.
+     *   @param r the resource node being visited
+     *   @param statement the statement of that node
+     *   @return value to be returned from the visit
+     */ 
+        
+    default Object visitStmt( Resource r, Statement statement) { return null; }
+    
     /**
         Method to call when visiting a literal RDF node l.
         @param l the RDF Literal node

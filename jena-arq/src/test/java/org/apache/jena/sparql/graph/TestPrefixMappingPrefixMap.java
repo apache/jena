@@ -24,7 +24,6 @@ import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shared.AbstractTestPrefixMapping;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.sparql.graph.PrefixMappingAdapter;
 
 /** Test a {@link PrefixMapping} backed by a {@link PrefixMap} */
 public class TestPrefixMappingPrefixMap extends AbstractTestPrefixMapping {

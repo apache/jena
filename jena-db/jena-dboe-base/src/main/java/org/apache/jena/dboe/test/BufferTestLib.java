@@ -18,46 +18,44 @@
 
 package org.apache.jena.dboe.test;
 
-import java.nio.ByteBuffer ;
+import java.nio.ByteBuffer;
 
 import org.apache.jena.dboe.base.block.Block;
 
 public class BufferTestLib
 {
-    public static boolean sameValue(Block block1, Block block2)
-    {
-        if ( block1.getId() != block2.getId()) return false ;
-        ByteBuffer bb1 = block1.getByteBuffer() ; 
-        ByteBuffer bb2 = block2.getByteBuffer() ;
-        
-        if ( bb1.capacity() != bb2.capacity() ) return false ;
-        
-        for ( int i = 0 ; i < bb1.capacity() ; i++ )
-            if ( bb1.get(i) != bb2.get(i) ) return false ;
-        return true ;
+    public static boolean sameValue(Block block1, Block block2) {
+        if ( block1.getId() != block2.getId()) return false;
+        ByteBuffer bb1 = block1.getByteBuffer();
+        ByteBuffer bb2 = block2.getByteBuffer();
+
+        if ( bb1.capacity() != bb2.capacity() ) return false;
+
+        for ( int i = 0; i < bb1.capacity() ; i++ )
+            if ( bb1.get(i) != bb2.get(i) ) return false;
+        return true;
     }
-    
-    public static boolean sameValue(ByteBuffer bb1, ByteBuffer bb2)
-    {
-        if ( bb1.capacity() != bb2.capacity() ) return false ;
-        
+
+    public static boolean sameValue(ByteBuffer bb1, ByteBuffer bb2) {
+        if ( bb1.capacity() != bb2.capacity() ) return false;
+
         int posn1 = bb1.position();
         int limit1 = bb1.limit();
         int posn2 = bb2.position();
         int limit2 = bb2.limit();
-        
-        bb1.clear() ;
-        bb2.clear() ;
-        
+
+        bb1.clear();
+        bb2.clear();
+
         try {
-            for ( int i = 0 ; i < bb1.capacity() ; i++ )
-                if ( bb1.get(i) != bb2.get(i) ) return false ;
-            return true ;
+            for ( int i = 0; i < bb1.capacity() ; i++ )
+                if ( bb1.get(i) != bb2.get(i) ) return false;
+            return true;
         } finally {
-            bb1.position(posn1) ;
-            bb1.limit(limit1) ;
-            bb2.position(posn2) ;
-            bb2.limit(limit2) ;
+            bb1.position(posn1);
+            bb1.limit(limit1);
+            bb2.position(posn2);
+            bb2.limit(limit2);
         }
     }
 }

@@ -19,34 +19,52 @@
 package org.apache.jena.tdb2.loader.base;
 
 import org.apache.jena.dboe.base.file.Location;
+import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
 /** Per-thread TransactionCoordinator helpers. */
 public class CoLib {
-    
+
     public static TransactionCoordinator newCoordinator() {
         Journal journal = Journal.create(Location.mem());
         return new TransactionCoordinator(journal);
     }
-    
+
     public static void add(TransactionCoordinator coordinator, NodeTable nodeTable) {
         coordinator.add(LoaderOps.ntDataFile(nodeTable));
         coordinator.add(LoaderOps.ntBPTree(nodeTable));
     }
-    
+
     public static void add(TransactionCoordinator coordinator, TupleIndex... indexes) {
         for ( TupleIndex pIdx : indexes ) {
             coordinator.add(LoaderOps.idxBTree(pIdx));
         }
     }
 
+    public static void executeWrite(TupleIndex index, Runnable action) {
+        TransactionCoordinator txnCoord = CoLib.newCoordinator();
+        CoLib.add(txnCoord, index);
+        CoLib.start(txnCoord);
+        Transaction txn = txnCoord.begin(TxnType.WRITE);
+        try {
+            action.run();
+            txn.commit();
+            txn.end();
+        } catch (RuntimeException ex) {
+            txn.abort();
+            txn.end();
+            throw ex;
+        }
+    }
+
     public static void start(TransactionCoordinator coordinator) {
         coordinator.start();
     }
-    
+
     public static void finish(TransactionCoordinator coordinator) {
         // Do not do this - it will shutdown the TransactionComponents as well.
         //coordinator.shutdown();

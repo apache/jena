@@ -18,13 +18,13 @@
 
 package org.apache.jena.atlas.data;
 
-import java.util.Comparator ;
-import java.util.HashSet ;
-import java.util.Iterator ;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.PeekIterator ;
-import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.iterator.PeekIterator;
+import org.apache.jena.atlas.lib.Closeable;
 
 /**
  * <p>
@@ -49,82 +49,67 @@ import org.apache.jena.atlas.lib.Closeable ;
  * with the SortedDataBag's iterator.
  * </p>
  */
-public class DistinctDataBag<E> extends SortedDataBag<E>
-{
-    public DistinctDataBag(ThresholdPolicy<E> policy, SerializationFactory<E> serializerFactory, Comparator<E> comparator)
-    {
+public class DistinctDataBag<E> extends SortedDataBag<E> {
+
+    public DistinctDataBag(ThresholdPolicy<E> policy, SerializationFactory<E> serializerFactory, Comparator<E> comparator) {
         super(policy, serializerFactory, comparator);
         this.memory = new HashSet<>();
     }
-    
+
     @Override
-    public boolean isSorted()
-    {
+    public boolean isSorted() {
         // The bag may not be sorted if we havn't spilled
         return false;
     }
 
     @Override
-    public boolean isDistinct()
-    {
+    public boolean isDistinct() {
         return true;
     }
 
     @Override
-    public Iterator<E> iterator()
-    {
+    public Iterator<E> iterator() {
         // We could just return super.iterator() in all cases,
         // but no need to waste time sorting if we havn't spilled
-        if (!spilled)
-        {
+        if ( !spilled ) {
             checkClosed();
             finishedAdding = true;
-            
-            if (memory.size() > 0)
-            {
+
+            if ( memory.size() > 0 ) {
                 return memory.iterator();
-            }
-            else
-            {
+            } else {
                 return Iter.nullIterator();
             }
-        }
-        else
-        {
+        } else {
             return new DistinctReducedIterator<>(super.iterator());
         }
     }
-    
-    protected static class DistinctReducedIterator<T> extends PeekIterator<T> implements Closeable
-    {
+
+    protected static class DistinctReducedIterator<T> extends PeekIterator<T> implements Closeable {
         private Iterator<T> iter;
-        
-        public DistinctReducedIterator(Iterator<T> iter)
-        {
+
+        public DistinctReducedIterator(Iterator<T> iter) {
             super(iter);
             this.iter = iter;
         }
-        
+
         @Override
-        public T next()
-        {
+        public T next() {
             T item = super.next();
-            
-            // Keep going until as long as the next item is the same as the current one
-            while (hasNext() && ((null == item && null == peek()) || (null != item && item.equals(peek()))))
-            {
+
+            // Keep going until as long as the next item is the same as the current
+            // one
+            while (hasNext() && ((null == item && null == peek()) || (null != item && item.equals(peek())))) {
                 item = super.next();
             }
-            
+
             return item;
         }
-        
+
         @Override
-        public void close()
-        {
+        public void close() {
             Iter.close(iter);
         }
-        
-    }
 
+    }
 }

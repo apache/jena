@@ -28,16 +28,15 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.SortCondition ;
-import org.apache.jena.riot.system.SerializationFactoryFinder ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.binding.BindingComparator ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderBinding ;
+import org.apache.jena.sparql.system.SerializationFactoryFinder;
 import org.apache.jena.sparql.util.NodeUtils ;
 import org.junit.Test ;
 
@@ -45,7 +44,7 @@ public class TestDistinctDataNet
 {
     private static final String LETTERS = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
     Random random = new Random();
-    
+
     static Binding b12 = build("(?a 1) (?b 2)") ;
     static Binding b19 = build("(?a 1) (?b 9)") ;
     static Binding b02 = build("(?b 2)") ;
@@ -53,7 +52,7 @@ public class TestDistinctDataNet
     static Binding b0  = build("") ;
     static Binding bb1 = build("(?a _:XYZ) (?b 1)");
     static Binding x10 = build("(?x <http://example/abc>)") ;
-    
+
     @Test
     public void testDistinct()
     {
@@ -66,20 +65,20 @@ public class TestDistinctDataNet
         undistinct.add(b12);
         undistinct.add(b02);
         undistinct.add(x10);
-        
+
         List<Binding> control = Iter.toList(Iter.distinct(undistinct.iterator()));
         List<Binding> distinct = new ArrayList<>();
-        
-        
+
+
         DistinctDataNet<Binding> db = new DistinctDataNet<>(
                 new ThresholdPolicyCount<Binding>(2),
                 SerializationFactoryFinder.bindingSerializationFactory(),
-                new BindingComparator(new ArrayList<SortCondition>())); 
+                new BindingComparator(new ArrayList<SortCondition>()));
         try
         {
             db.addAll(undistinct);
-            
-            Iterator<Binding> iter = db.iterator(); 
+
+            Iterator<Binding> iter = db.iterator();
             while (iter.hasNext())
             {
                 distinct.add(iter.next());
@@ -90,11 +89,11 @@ public class TestDistinctDataNet
         {
             db.close();
         }
-        
+
         assertEquals(control.size(), distinct.size());
-        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameTerm));
+        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameNode));
     }
-    
+
     @Test
     public void testDistinct2()
     {
@@ -107,15 +106,15 @@ public class TestDistinctDataNet
         undistinct.add(b12);
         undistinct.add(b02);
         undistinct.add(x10);
-        
+
         List<Binding> control = Iter.toList(Iter.distinct(undistinct.iterator()));
         List<Binding> distinct = new ArrayList<>();
-        
-        
+
+
         DistinctDataNet<Binding> db = new DistinctDataNet<>(
                 new ThresholdPolicyCount<Binding>(2),
                 SerializationFactoryFinder.bindingSerializationFactory(),
-                new BindingComparator(new ArrayList<SortCondition>())); 
+                new BindingComparator(new ArrayList<SortCondition>()));
         try
         {
             for (Binding b : undistinct)
@@ -125,8 +124,8 @@ public class TestDistinctDataNet
                     distinct.add(b);
                 }
             }
-            
-            Iterator<Binding> iter = db.netIterator(); 
+
+            Iterator<Binding> iter = db.netIterator();
             while (iter.hasNext())
             {
                 distinct.add(iter.next());
@@ -137,11 +136,11 @@ public class TestDistinctDataNet
         {
             db.close();
         }
-        
+
         assertEquals(control.size(), distinct.size());
-        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameTerm));
+        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameNode));
     }
-    
+
     @Test
     public void testTemporaryFilesAreCleanedUpAfterCompletion()
     {
@@ -155,18 +154,18 @@ public class TestDistinctDataNet
         for(int i = 0; i < 500; i++){
             undistinct.add(randomBinding(vars));
         }
-        
+
         DistinctDataNet<Binding> db = new DistinctDataNet<>(
                 new ThresholdPolicyCount<Binding>(10),
                 SerializationFactoryFinder.bindingSerializationFactory(),
                 new BindingComparator(new ArrayList<SortCondition>()));
-        
+
         List<File> spillFiles = new ArrayList<>();
         try
         {
             db.addAll(undistinct);
             spillFiles.addAll(db.getSpillFiles());
-            
+
             int count = 0;
             for (File file : spillFiles)
             {
@@ -177,7 +176,7 @@ public class TestDistinctDataNet
             }
             // 500 bindings divided into 50 chunks (49 in files, and 1 in memory)
             assertEquals(49, count);
-            
+
             Iterator<Binding> iter = db.iterator();
             while (iter.hasNext())
             {
@@ -189,7 +188,7 @@ public class TestDistinctDataNet
         {
             db.close();
         }
-        
+
         int count = 0;
         for (File file : spillFiles)
         {
@@ -200,21 +199,21 @@ public class TestDistinctDataNet
         }
         assertEquals(0, count);
     }
-    
+
     private void testDiff(String first, String second, String expected)
     {
         DistinctDataNet.SortedDiffIterator.create(
                 Arrays.asList(first.split(" ")).iterator(),
                 Arrays.asList(second.split(" ")).iterator());
-        
+
     }
-    
+
     private void testDiff(String[] first, String[] second, String expected)
     {
         DistinctDataNet.SortedDiffIterator<String> sdi = DistinctDataNet.SortedDiffIterator.create(
                 Arrays.asList(first).iterator(),
                 Arrays.asList(second).iterator());
-        
+
         StringBuilder sb = new StringBuilder();
         boolean firstTime = true;
         while (sdi.hasNext())
@@ -224,18 +223,18 @@ public class TestDistinctDataNet
                 sb.append(" ");
             }
             firstTime = false;
-            
-            String s = sdi.next();            
+
+            String s = sdi.next();
             if (null == s)
             {
                 s = "null";
             }
             sb.append(s);
         }
-        
+
         assertEquals(expected, sb.toString());
     }
-    
+
     @Test
     public void testSortedDiffIterator()
     {
@@ -248,40 +247,40 @@ public class TestDistinctDataNet
         testDiff("b", "a", "b");
         testDiff("a b e g i j", "b g h z", "a e i j");
         testDiff("a b c", "a b c", "");
-        
+
         testDiff(new String[] {null, "a", "b", "e", "g", "i", "j", }, new String[] { "b", "g", "h", }, "null a e i j");
         testDiff(new String[] {"a", "b", "e", "g", "i", "j", }, new String[] { null, "b", "g", "h", }, "a e i j");
         testDiff(new String[] {null, "a", "b", "e", "g", "i", "j", }, new String[] { null, "b", "g", "h", }, "a e i j");
     }
-    
+
 
     private static Binding build(String string)
     {
         Item item = SSE.parse("(binding "+string+")") ;
         return BuilderBinding.build(item) ;
     }
-    
+
     private Binding randomBinding(Var[] vars)
     {
-        BindingMap binding = BindingFactory.create();
-        binding.add(vars[0], NodeFactory.createBlankNode());
-        binding.add(vars[1], NodeFactory.createURI(randomURI()));
-        binding.add(vars[2], NodeFactory.createURI(randomURI()));
-        binding.add(vars[3], NodeFactory.createLiteral(randomString(20)));
-        binding.add(vars[4], NodeFactory.createBlankNode());
-        binding.add(vars[5], NodeFactory.createURI(randomURI()));
-        binding.add(vars[6], NodeFactory.createURI(randomURI()));
-        binding.add(vars[7], NodeFactory.createLiteral(randomString(5)));
-        binding.add(vars[8], NodeFactory.createLiteral("" + random.nextInt(), XSDDatatype.XSDinteger));
-        binding.add(vars[9], NodeFactory.createBlankNode());
-        return binding;
+        BindingBuilder builder = Binding.builder();
+        builder.add(vars[0], NodeFactory.createBlankNode());
+        builder.add(vars[1], NodeFactory.createURI(randomURI()));
+        builder.add(vars[2], NodeFactory.createURI(randomURI()));
+        builder.add(vars[3], NodeFactory.createLiteral(randomString(20)));
+        builder.add(vars[4], NodeFactory.createBlankNode());
+        builder.add(vars[5], NodeFactory.createURI(randomURI()));
+        builder.add(vars[6], NodeFactory.createURI(randomURI()));
+        builder.add(vars[7], NodeFactory.createLiteral(randomString(5)));
+        builder.add(vars[8], NodeFactory.createLiteral("" + random.nextInt(), XSDDatatype.XSDinteger));
+        builder.add(vars[9], NodeFactory.createBlankNode());
+        return builder.build();
     }
 
-    public String randomURI() 
+    public String randomURI()
     {
         return String.format("http://%s.example.com/%s", randomString(10), randomString(10));
     }
-    
+
     public String randomString(int length)
     {
         StringBuilder builder = new StringBuilder();

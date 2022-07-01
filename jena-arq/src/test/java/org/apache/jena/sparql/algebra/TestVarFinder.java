@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.algebra;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays ;
 import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.main.VarFinder ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
-public class TestVarFinder extends BaseTest
+public class TestVarFinder
 {
     @Test public void varfind_01_1() { varfindFixed("(bgp (?s <p> <o>))", "s") ; }
     @Test public void varfind_01_2() { varfindOpt("(bgp (?s <p> <o>))") ; }

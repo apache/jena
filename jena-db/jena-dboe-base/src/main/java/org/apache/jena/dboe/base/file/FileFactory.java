@@ -16,34 +16,34 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.file ;
+package org.apache.jena.dboe.base.file;
 
 public class FileFactory {
-    
+
     public static BinaryDataFile createBinaryDataFile(FileSet fileset, String ext) {
-        String x = fileset.filename(ext) ;
+        String x = fileset.filename(ext);
         if ( fileset.isMem() ) {
-            return new BinaryDataFileMem() ;
+            return new BinaryDataFileMem();
         } else {
-            BinaryDataFile bdf = new BinaryDataFileRandomAccess(x) ;
-            bdf = new BinaryDataFileWriteBuffered(bdf) ;
-            return bdf ;
+            BinaryDataFile bdf = new BinaryDataFileRandomAccess(x);
+            bdf = new BinaryDataFileWriteBuffered(bdf);
+            return bdf;
         }
     }
 
     public static BinaryDataFile createBinaryDataFile() {
-        return new BinaryDataFileMem() ;
+        return new BinaryDataFileMem();
     }
 
     public static BufferChannel createBufferChannel(FileSet fileset, String ext) {
-        String x = fileset.filename(ext) ;
+        String x = fileset.filename(ext);
         if ( fileset.isMem() )
-            return BufferChannelMem.create(x) ;
+            return BufferChannelMem.create(x);
         else
-            return BufferChannelFile.create(x) ;
+            return BufferChannelFile.create(x);
     }
 
     public static BufferChannel createBufferChannelMem() {
-        return createBufferChannel(FileSet.mem(), null) ;
+        return createBufferChannel(FileSet.mem(), null);
     }
 }

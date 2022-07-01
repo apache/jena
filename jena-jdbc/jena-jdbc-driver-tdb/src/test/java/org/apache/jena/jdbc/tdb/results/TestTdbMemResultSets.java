@@ -18,11 +18,11 @@
 
 package org.apache.jena.jdbc.tdb.results;
 
-import org.apache.jena.jdbc.utils.TestUtils;
+import org.apache.jena.jdbc.utils.TestJdbcUtils;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.junit.After;
 
 /**
@@ -41,7 +41,7 @@ public class TestTdbMemResultSets extends AbstractTdbResultSetTests {
         if (currDataset != null) {
             currDataset.close();
         }
-        StoreConnection.expel(Location.mem(), true);
+        TDBInternal.expel(Location.mem(), true);
     }
     
     @Override
@@ -51,7 +51,7 @@ public class TestTdbMemResultSets extends AbstractTdbResultSetTests {
         }
         
         Dataset tdb = TDBFactory.createDataset();
-        TestUtils.copyDataset(ds, tdb, true);
+        TestJdbcUtils.copyDataset(ds, tdb, true);
         currDataset = tdb;
         return tdb;
     }

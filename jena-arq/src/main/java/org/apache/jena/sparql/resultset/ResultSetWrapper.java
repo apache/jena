@@ -27,14 +27,14 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 
 /** Wrap another {@link ResultSet} (probably to modify operations on it). */
 public class ResultSetWrapper implements ResultSet {
-    
+
     protected ResultSet get() { return rs ; }
     private final ResultSet rs;
 
     public ResultSetWrapper(ResultSet rs) {
         this.rs = rs ;
     }
-    
+
     @Override
     public boolean hasNext() {
         return get().hasNext() ;
@@ -56,6 +56,11 @@ public class ResultSetWrapper implements ResultSet {
     }
 
     @Override
+    public void close() {
+        get().close();
+    }
+
+    @Override
     public int getRowNumber() {
         return get().getRowNumber() ;
     }
@@ -69,5 +74,4 @@ public class ResultSetWrapper implements ResultSet {
     public Model getResourceModel() {
         return get().getResourceModel() ;
     }
-    
 }

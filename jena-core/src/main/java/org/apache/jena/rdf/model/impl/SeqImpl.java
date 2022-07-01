@@ -227,32 +227,32 @@ public class SeqImpl extends ContainerImpl implements Seq {
     
     @Override
     public Seq add(int index, boolean o)  {
-        return add( index, String.valueOf( o ) );
+        return add( index, getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Seq add(int index, long o)  {
-        return add( index, String.valueOf( o ) );
+        return add( index, getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Seq add(int index, char o)  {
-        return add( index, String.valueOf( o ) );
+        return add( index, getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Seq add(int index, float o)  {
-        return add( index, String.valueOf( o ) );
+        return add( index, getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Seq add(int index, double o)  {
-        return add( index, String.valueOf( o ) );
+        return add( index, getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Seq add(int index, Object o)  {
-        return add( index, String.valueOf( o ) );
+        return add( index, getModel().createTypedLiteral( o ) );
     }
     
     @Override
@@ -280,11 +280,8 @@ public class SeqImpl extends ContainerImpl implements Seq {
     
     @Override
     public Container remove(Statement s) {
-        // System.err.println( "]] SeqImpl.remove " + s );
         getModel().remove(s);
-        // System.err.println( "]] SeqImpl.remove - about to shift down " + (s.getPredicate().getOrdinal()+1) + " to " + (size()+1) );
         shiftDown(s.getPredicate().getOrdinal()+1, size()+1);
-        // System.err.println( "]] SeqImpl.remov completed" );
         return this;
     } 
     
@@ -297,7 +294,6 @@ public class SeqImpl extends ContainerImpl implements Seq {
     
     @Override
     public Container remove(int index, RDFNode o)  {
-        // System.err.println( "]] SeqImpl::remove( " + index + ", " + o + ")" );
         return remove(getModel().createStatement(this, RDF.li(index), o).remove());
     }
     
@@ -308,32 +304,32 @@ public class SeqImpl extends ContainerImpl implements Seq {
     
     @Override
     public int indexOf(boolean o)  {
-        return indexOf( String.valueOf( o ) );
+        return indexOf( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public int indexOf(long o)  {
-        return indexOf( String.valueOf( o ) );
+        return indexOf( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public int indexOf(char o)  {
-        return indexOf( String.valueOf( o ) );
+        return indexOf( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public int indexOf(float o)  {
-        return indexOf( String.valueOf( o ) );
+        return indexOf( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public int indexOf(double o)  {
-        return indexOf( String.valueOf( o ) );
+        return indexOf( getModel().createTypedLiteral( o ) );
     }
 
     @Override
     public int indexOf(Object o)  {
-        return indexOf( String.valueOf( o ) );
+        return indexOf( getModel().createTypedLiteral( o ) );
     }
         
     @Override
@@ -360,9 +356,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
     protected void shiftDown(int start, int finish)  {
         for (int i=start; i<=finish; i++) {
             Statement stmt = getRequiredProperty( RDF.li(i) );
-            // System.err.println( "]]* remove " + stmt );
             stmt.remove();
-            // System.err.println( "]]* addProperty( " + RDF.li(i-1) + " " + stmt.getObject() );
             addProperty(RDF.li(i-1), stmt.getObject());
         }
     }

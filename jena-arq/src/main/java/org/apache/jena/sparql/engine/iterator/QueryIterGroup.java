@@ -34,8 +34,8 @@ import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.expr.ExprAggregator ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.aggregate.Accumulator ;
@@ -44,12 +44,12 @@ public class QueryIterGroup extends QueryIterPlainWrapper
 {
 	private final QueryIterator embeddedIterator;
 
-	public QueryIterGroup(QueryIterator qIter, 
+	public QueryIterGroup(QueryIterator qIter,
                           VarExprList groupVars,
                           List<ExprAggregator> aggregators,
                           ExecutionContext execCxt) {
-	    // Delayed initalization 
-	    // Does the group calculation when first used (typically hasNext) 
+	    // Delayed initalization
+	    // Does the group calculation when first used (typically hasNext)
         super(calc(qIter, groupVars, aggregators, execCxt),
               execCxt);
         this.embeddedIterator = qIter;
@@ -66,10 +66,10 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         this.embeddedIterator.close();
         super.closeIterator();
     }
-	
-	private static Pair<Var, Accumulator> placeholder = Pair.create((Var)null, (Accumulator)null) ; 
-    
-    private static Iterator<Binding> calc(final QueryIterator iter, 
+
+	private static Pair<Var, Accumulator> placeholder = Pair.create((Var)null, (Accumulator)null) ;
+
+    private static Iterator<Binding> calc(final QueryIterator iter,
                                           final VarExprList groupVarExpr,
                                           final List<ExprAggregator> aggregators,
                                           final ExecutionContext execCxt) {
@@ -86,28 +86,27 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                 // 2/ No GROUP BY, e.g. COUNT=0, the results is one row always and not handled here.
                 if ( noInput ) {
                     if ( hasGroupBy )
-                        // GROUP        
+                        // GROUP
                         return Iter.nullIterator() ;
                     if ( ! hasAggregators ) {
-                        // No GROUP BY, no aggregators. One result row of no colums.
+                        // No GROUP BY, no aggregators. One result row of no columns.
                         return Iter.singleton(BindingFactory.binding());
                     }
                     // No GROUP BY, has aggregators. Insert default values.
-                    BindingMap binding = BindingFactory.create();
+                    BindingBuilder builder = Binding.builder();
                     for ( ExprAggregator agg : aggregators ) {
                         Node value = agg.getAggregator().getValueEmpty();
                         if ( value == null )
                             continue;
                         Var v = agg.getVar();
-                        binding.add(v, value);
+                        builder.add(v, value);
                     }
-                    return Iter.singleton(binding);
+                    return Iter.singleton(builder.build());
                 }
-                
-                // Case: there is input.
-                // Phase 1 : Create keys and aggreators per key, and pump bindings through the aggregators.
-                Multimap<Binding, Pair<Var, Accumulator>> accumulators = MultimapBuilder.hashKeys().arrayListValues().build();
 
+                // Case: there is input.
+                // Phase 1 : Create keys and aggregators per key, and pump bindings through the aggregators.
+                Multimap<Binding, Pair<Var, Accumulator>> accumulators = MultimapBuilder.hashKeys().arrayListValues().build();
                 while (iter.hasNext()) {
                     Binding b = iter.nextBinding();
                     Binding key = genKey(groupVarExpr, b, execCxt);
@@ -142,17 +141,17 @@ public class QueryIterGroup extends QueryIterPlainWrapper
 
                 List<Binding> results = new ArrayList<>();
                 for ( Binding k : accumulators.keySet() ) {
+                    BindingBuilder builder2 = Binding.builder(k);
                     Collection<Pair<Var, Accumulator>> accs = accumulators.get(k);
-                    BindingMap b = BindingFactory.create(k);
 
                     for ( Pair<Var, Accumulator> pair : accs ) {
                         NodeValue value = pair.getRight().getValue();
                         if ( value == null )
                             continue;
                         Var v = pair.getLeft();
-                        b.add(v, value.asNode());
+                        builder2.add(v, value.asNode());
                     }
-                    results.add(b);
+                    results.add(builder2.build());
                 }
                 return results.iterator();
             }
@@ -166,7 +165,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     static private Binding copyProject(VarExprList vars, Binding binding, ExecutionContext execCxt) {
         // No group vars (implicit or explicit) => working on whole result set.
         // Still need a BindingMap to assign to later.
-        BindingMap x = BindingFactory.create();
+        BindingBuilder x = Binding.builder();
         for ( Var var : vars.getVars() ) {
             Node node = vars.get(var, binding, execCxt);
             // Null returned for unbound and error.
@@ -174,6 +173,6 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                 x.add(var, node);
             }
         }
-        return x;
+        return x.build();
     }
 }

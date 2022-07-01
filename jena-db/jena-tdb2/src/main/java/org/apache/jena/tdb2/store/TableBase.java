@@ -18,8 +18,8 @@
 
 package org.apache.jena.tdb2.store;
 
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.lib.Sync;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTableConcrete;
@@ -27,23 +27,23 @@ import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
 public class TableBase implements Sync, Closeable
 {
-    final protected NodeTupleTable table ;
-    
+    final protected NodeTupleTable table;
+
     protected TableBase(int N, TupleIndex[] indexes, NodeTable nodeTable) {
-        table = new NodeTupleTableConcrete(N, indexes, nodeTable) ;
+        table = new NodeTupleTableConcrete(N, indexes, nodeTable);
     }
 
-    public NodeTupleTable getNodeTupleTable()   { return table ; }
-    
+    public NodeTupleTable getNodeTupleTable()   { return table; }
+
     @Override
     public void sync() {
-        table.sync() ;
+        table.sync();
     }
 
     @Override
     public void close()
-    { table.close() ; }
-    
-    public boolean isEmpty()        { return table.isEmpty() ; }
-    
+    { table.close(); }
+
+    public boolean isEmpty()        { return table.isEmpty(); }
+
 }

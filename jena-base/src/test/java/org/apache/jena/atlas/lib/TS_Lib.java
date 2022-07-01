@@ -41,6 +41,7 @@ import org.junit.runners.Suite ;
     , TestCache2.class
     , TestFileOps.class
     , TestStrUtils.class
+    , TestIRILib.class
     , TestXMLLib.class
     , TestAlarmClock.class
     , TestTrie.class

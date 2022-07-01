@@ -39,16 +39,16 @@ import org.apache.jena.sparql.engine.binding.BindingComparator ;
 
 public class QueryIterTopN extends QueryIterPlainWrapper
 {
-    /* We want to keep the N least elements (overall return is an ascending sequence so limit+ascending = least).   
-     * To do that we keep a priority heap of upto N eleemnts, ordered descending.
+    /* We want to keep the N least elements (overall return is an ascending sequence so limit+ascending = least).
+     * To do that we keep a priority heap of upto N elements, ordered descending.
      * To keep another element, it must be less than the max so far.
-     * This leaves the least N in the heap.    
+     * This leaves the least N in the heap.
      */
 	private final QueryIterator embeddedIterator;      // Keep a record of the underlying source for .cancel.
     private PriorityQueue<Binding> heap ;
     private long limit ;
     private final boolean distinct ;
-	
+
     public QueryIterTopN(QueryIterator qIter, List<SortCondition> conditions, long numItems, boolean distinct, ExecutionContext context) {
         this(qIter, new BindingComparator(conditions, context), numItems, distinct, context) ;
     }

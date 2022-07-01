@@ -77,9 +77,12 @@ public class LPBRuleEngine {
      *
      *  Note: Do no expose as protected/public, as this depends on
      *  the shadowed org.apache.jena.ext.com.google.common.*
+     *
+     *  Older Jena versions used weak references here.
+     *  If necessary that could be reinstated by adding .weakValues() in the build chain.
      */
     Cache<TriplePattern, Generator> tabledGoals = CacheBuilder.newBuilder()
-    	       .maximumSize(MAX_CACHED_TABLED_GOALS).weakValues().build();
+            .maximumSize(MAX_CACHED_TABLED_GOALS).build();
 
     /** Set of generators waiting to be run */
     protected LinkedList<LPAgendaEntry> agenda = new LinkedList<>();
@@ -331,6 +334,17 @@ public class LPBRuleEngine {
 	protected void clearCachedTabledGoals() {
 		tabledGoals.invalidateAll();
 	}
+
+	/**
+	 * If the given generator is providing a tabled entry then remove the entry so
+	 * that we can safely close the generator
+	 */
+	protected synchronized void removeTabledGenerator(Generator generator) {
+        Generator tabledGenerator = tabledGoals.getIfPresent(generator.goal);
+        if (tabledGenerator != null && tabledGenerator == generator) {
+            tabledGoals.invalidate(generator.goal);
+        }
+    }
 
     /**
      * Register that a generator or specific generator state (Consumer choice point)

@@ -22,7 +22,6 @@ import org.apache.jena.tdb.base.record.RecordLib ;
 import org.apache.jena.tdb.index.Index ;
 import org.apache.jena.tdb.index.RangeIndex ;
 import org.apache.jena.tdb.index.RangeIndexMaker ;
-import org.apache.jena.tdb.index.bplustree.BPlusTree ;
 
 public class BPlusTreeMaker implements RangeIndexMaker
 {

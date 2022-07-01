@@ -18,9 +18,10 @@
 
 package org.apache.jena.tdb.assembler;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.assembler.JA ;
 import org.apache.jena.assembler.exceptions.AssemblerException ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.Dataset ;
@@ -29,16 +30,16 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.StoreConnection ;
-import org.apache.jena.tdb.assembler.VocabTDB ;
-import org.apache.jena.tdb.store.* ;
+import org.apache.jena.tdb.store.DatasetGraphTDB;
+import org.apache.jena.tdb.store.GraphTDB;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestTDBAssembler extends BaseTest
+public class TestTDBAssembler
 {
     // Can be slow - explicitly closes the dataset.
     static String dirAssem      = null ;
@@ -52,13 +53,13 @@ public class TestTDBAssembler extends BaseTest
     
     @Before public void before()
     {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
         FileOps.clearDirectory(dirDB) ;
     }
     
     @AfterClass static public void afterClass()
     {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
         FileOps.clearDirectory(dirDB) ;
     }
     

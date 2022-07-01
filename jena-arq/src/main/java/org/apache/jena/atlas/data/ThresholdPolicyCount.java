@@ -25,11 +25,9 @@ public class ThresholdPolicyCount<T> implements ThresholdPolicy<T>
 {
     protected final long threshold;
     protected long count;
-    
-    public ThresholdPolicyCount(long threshold)
-    {
-        if (threshold < 0)
-        {
+
+    public ThresholdPolicyCount(long threshold) {
+        if ( threshold < 0 ) {
             throw new IllegalArgumentException("Threshold must be greater than or equal to zero");
         }
         this.threshold = threshold;
@@ -37,48 +35,44 @@ public class ThresholdPolicyCount<T> implements ThresholdPolicy<T>
     }
 
     @Override
-    public void increment(T item)
-    {
+    public void increment(T item) {
         count++;
     }
 
     @Override
-    public boolean isThresholdExceeded()
-    {
+    public boolean isThresholdExceeded() {
         return (count >= threshold);
     }
 
     @Override
-    public void reset()
-    {
+    public void reset() {
         count = 0;
     }
 
     /**
      * Returns the threshold before the list is written to disk.
+     *
      * @return The threshold point.
      */
-    public long getThreshold()
-    {
+    public long getThreshold() {
         return threshold;
     }
-    
+
     /**
      * Returns the current count of the number of items incremented in this policy.
+     *
      * @return The item count.
      */
-    public long getCount()
-    {
+    public long getCount() {
         return count;
     }
-    
-    /*
-     * (non-Javadoc)
+
+    /* (non-Javadoc)
+     *
      * @see java.lang.Object#toString()
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "ThresholdPolicyCount:  Threshold=" + threshold + "  Count=" + count;
     }
 }

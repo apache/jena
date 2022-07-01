@@ -18,43 +18,37 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.ArrayList;
-import java.util.Arrays ;
-import java.util.HashSet ;
-import java.util.List ;
-import java.util.Set ;
+import static org.junit.Assert.assertEquals;
+
+import java.util.*;
 import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.junit.Test ;
 
-public abstract class AbstractTestDistinctReduced extends BaseTest {
-    
+public abstract class AbstractTestDistinctReduced {
+
     static List<String> data1 =     Arrays.asList("0","1","1","3","9","5","6","8","9","0") ;
     static List<String> results1 =  Arrays.asList("0","1",    "3","9","5","6","8"        ) ;
     static List<String> data2 =     Arrays.asList("0","0","0","0") ;
     static List<String> results2 =  Arrays.asList("0","0","0","0") ;
-    
+
     static Var var_a = Var.alloc("a") ;
     static Var var_b = Var.alloc("b") ;
-    
+
     private static List<Binding> build(List<String> items) {
-        return items.stream().sequential().map((s)->{
-            BindingMap b = BindingFactory.create() ;
-            b.add(var_a, NodeFactory.createLiteral(s)) ;
-            return b ;
-        }).collect(Collectors.toList()) ;
+        return items.stream().sequential()
+                .map((s)-> BindingFactory.binding(var_a, NodeFactory.createLiteral(s)))
+                .collect(Collectors.toList());
     }
-    
+
     protected abstract QueryIterator createQueryIter(List<Binding> data) ;
-    
+
     @Test public void distinct0() {
         distinct(new ArrayList<>(), new ArrayList<>()) ;
     }
@@ -72,7 +66,7 @@ public abstract class AbstractTestDistinctReduced extends BaseTest {
     }
 
     @Test public void distinct3() {
-        List<String> data =     Arrays.asList("0","1","1","A","2","2","2","B","2","3","3","C","4","4","5") ; 
+        List<String> data =     Arrays.asList("0","1","1","A","2","2","2","B","2","3","3","C","4","4","5") ;
         List<String> results =  Arrays.asList("0","1","A","2","B","3","C","4","5") ;
         distinct(data, results) ;
     }
@@ -81,27 +75,27 @@ public abstract class AbstractTestDistinctReduced extends BaseTest {
         // Distinct Iterators are not required to preserve order.
         List<Binding> input = build(data) ;
         List<Binding> output = build(results) ;
-        
+
         QueryIterator qIter = createQueryIter(input) ;
-        
+
         List<Binding> iterList = Iter.toList(qIter) ;
         assertEquals(output+" :: "+iterList,
                      output.size() , iterList.size()) ;
         // Assume results has no duplicates so same size, same members => order dependent same.
-        Set<Binding> testExpected = new HashSet<>(output) ;
-        Set<Binding> testResult = new HashSet<>(iterList) ;
+        Set<Binding> testExpected = Set.copyOf(output) ;
+        Set<Binding> testResult = Set.copyOf(iterList) ;
         assertEquals(testExpected , testResult) ;
-        
+
     }
 
     private void testSame(QueryIterator qIter, List<Binding> data) {
         List<Binding> iterList = Iter.toList(qIter) ;
         assertEquals(data, iterList) ;
-        
-        
+
+
     }
 
-    
-    
+
+
 }
 

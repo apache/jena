@@ -28,7 +28,7 @@ import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.sys.JenaSystem;
 
 public class NodeFactory {
-    
+
     static { JenaSystem.init(); }
 
     public static RDFDatatype getType(String s) {
@@ -46,40 +46,13 @@ public class NodeFactory {
      */
     public static Node createBlankNode(BlankNodeId id) {
         Objects.requireNonNull(id, "Argument to NodeFactory.createBlankNode is null") ;
-        return new Node_Blank(id) ; 
+        return new Node_Blank(id) ;
     }
 
     /** make a blank node with the specified label */
     public static Node createBlankNode(String string) {
         BlankNodeId id = BlankNodeId.create(string) ;
-        return new Node_Blank(id) ; 
-    }
-    
-    /** make a blank node with a fresh anon id
-     *  @deprecated Use {@link #createBlankNode()}
-     */
-    @Deprecated
-    public static Node createAnon() {
-        return createAnon(BlankNodeId.create()) ;
-    }
-
-    /** make a blank node with the specified label
-     * @deprecated Use {@link #createBlankNode(BlankNodeId)}
-     */
-    @Deprecated
-    public static Node createAnon(BlankNodeId id) {
-        Objects.requireNonNull(id, "Argument to NodeFactory.createAnon is null") ;
-        return new Node_Blank(id) ; 
-    }
-
-    /** make a blank node with the specified label
-     * @deprecated Use {@link #createBlankNode(String)}
-     */
-    @Deprecated
-    public static Node createAnon(String string) {
-        Objects.requireNonNull(string, "Argument to NodeFactory.createAnon is null") ;
-        BlankNodeId id = BlankNodeId.create(string) ;
-        return new Node_Blank(id) ; 
+        return new Node_Blank(id) ;
     }
 
     /** make a literal node with the specified literal value */
@@ -100,6 +73,13 @@ public class NodeFactory {
         return new Node_Variable(name) ;
     }
 
+    /** make an extension node based on a string. */
+    public static Node createExt(String name) {
+        Objects.requireNonNull(name, "Argument to NodeFactory.createExt is null") ;
+        return new Node_Marker(name) ;
+    }
+
+
     public static Node createLiteral(String value) {
         Objects.requireNonNull(value, "Argument to NodeFactory.createLiteral is null") ;
         return createLiteral(value, "", false) ;
@@ -108,7 +88,7 @@ public class NodeFactory {
     /**
      * make a literal with specified language and XMLishness. lexical form must
      * not be null.
-     * 
+     *
      * @param lex
      * @param lang
      * @param isXml
@@ -123,7 +103,7 @@ public class NodeFactory {
 
     /**
      * Make a literal with specified language. lexical form must not be null.
-     * 
+     *
      * @param lex
      *            the lexical form of the literal
      * @param lang
@@ -141,7 +121,7 @@ public class NodeFactory {
      * Build a literal node from its lexical form. The lexical form will be
      * parsed now and the value stored. If the form is not legal this will throw
      * an exception.
-     * 
+     *
      * @param lex
      *            the lexical form of the literal
      * @param lang
@@ -159,7 +139,7 @@ public class NodeFactory {
      * Build a typed literal node from its lexical form. The lexical form will
      * be parsed now and the value stored. If the form is not legal this will
      * throw an exception.
-     * 
+     *
      * @param lex
      *            the lexical form of the literal
      * @param dtype
@@ -175,7 +155,7 @@ public class NodeFactory {
      * If the value is a string we
      * assume this is intended to be a lexical form after all.
      * @param value
-     *          The value, mapped according to registered types. 
+     *          The value, mapped according to registered types.
      * @param dtype
      *          RDF Datatype.
      * @return Node
@@ -190,9 +170,9 @@ public class NodeFactory {
      * If the value is a string we
      * assume this is intended to be a lexical form after all.
      * @param value
-     *          The value, mapped according to registered types. 
+     *          The value, mapped according to registered types.
      * @param lang
-     *          (optional) Language tag, if a string. 
+     *          (optional) Language tag, if a string.
      * @param dtype
      *          RDF Datatype.
      * @return Node
@@ -203,17 +183,19 @@ public class NodeFactory {
         return new Node_Literal(LiteralLabelFactory.createByValue(value, lang, dtype)) ;
     }
 
-    /** @deprecated To be removed: Use {@link #createLiteralByValue(Object, RDFDatatype)} */ 
-    @Deprecated
-    public static Node createUncachedLiteral(Object value, RDFDatatype dtype) throws DatatypeFormatException {
-        Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
-        return createLiteralByValue(value, dtype) ;
+    /** Create a triple node (RDF-star) */
+    public static Node createTripleNode(Node s, Node p, Node o) {
+        Triple triple = Triple.create(s, p, o);
+        return createTripleNode(triple);
     }
 
-    /** @deprecated To be removed: Use {@link #createLiteralByValue(Object, String, RDFDatatype)} */ 
-    @Deprecated
-    public static Node createUncachedLiteral(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
-        Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
-        return createLiteralByValue(value, lang, dtype) ;
+    /** Create a triple node (RDF-star) */
+    public static Node createTripleNode(Triple triple) {
+        return new Node_Triple(triple);
+    }
+
+    /** Create a graph node. This is an N3-formula; it is not a named graph (see "quad") */
+    public static Node createGraphNode(Graph graph) {
+        return new Node_Graph(graph);
     }
 }

@@ -21,8 +21,6 @@ package org.apache.jena.atlas.io;
 import java.io.ByteArrayInputStream ;
 import java.io.UnsupportedEncodingException ;
 
-import org.apache.jena.atlas.io.PeekInputStream ;
-
 public class TestPeekInputStreamSource extends AbstractTestPeekInputStream
 {
     @Override

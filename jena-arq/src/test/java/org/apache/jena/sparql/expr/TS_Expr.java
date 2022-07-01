@@ -18,53 +18,54 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.E_Function ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.apache.jena.sparql.expr.nodevalue.TestNodeValueSortKey;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { 
-    TestNodeValue.class 
+@SuiteClasses( {
+    TestNodeValue.class
     , TestExpressions.class
     , TestExpressions2.class
     , TestExpressions3.class
+    , TestExpressions4.class
     , TestCastXSD.class
     , TestNodeFunctions.class
     , TestExpressionsMath.class
     , TestFunctions.class
     , TestFunctions2.class
+    , TestTripleTermFunctions.class
     , TestLeviathanFunctions.class
     , TestNodeValueOps.class
-    , TestOrdering.class 
+    , TestOrdering.class
     , TestRegex.class
     , TestXSDFuncOp.class
     , TestExprLib.class
     , TestExprTransform.class
     , TestCustomAggregates.class
     , TestStatisticsAggregates.class
+    , TestFunctionDynamic.class
+    , TestNodeValueSortKey.class
 })
 
 public class TS_Expr
 {
     // Expected warnings off.
-    private static boolean bVerboseWarnings ;
-    private static boolean bWarnOnUnknownFunction ;
-    
-    @BeforeClass public static void beforeClass()
-    {
-        bVerboseWarnings = NodeValue.VerboseWarnings ;
-        bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction ;
-        NodeValue.VerboseWarnings = false ;
-        E_Function.WarnOnUnknownFunction = false ;
+    private static boolean bVerboseWarnings;
+    private static boolean bWarnOnUnknownFunction;
+
+    @BeforeClass public static void beforeClass() {
+        bVerboseWarnings = NodeValue.VerboseWarnings;
+        bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction;
+        NodeValue.VerboseWarnings = false;
+        E_Function.WarnOnUnknownFunction = false;
     }
-    
-    @AfterClass public static void afterClass()
-    {
-        NodeValue.VerboseWarnings = bVerboseWarnings ;
-        E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction ;
+
+    @AfterClass public static void afterClass() {
+        NodeValue.VerboseWarnings = bVerboseWarnings;
+        E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
     }
 }

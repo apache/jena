@@ -37,7 +37,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.store.Directory ;
-import org.apache.lucene.store.RAMDirectory ;
+import org.apache.lucene.store.ByteBuffersDirectory ;
 import org.junit.Test ;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -64,7 +64,7 @@ public class TestTextNonTxn
     }
     private Dataset create() {
         Dataset ds1 = factory.create();
-        Directory dir = new RAMDirectory() ;
+        Directory dir = new ByteBuffersDirectory() ;
         EntityDefinition eDef = new EntityDefinition("iri", "text");
         eDef.setPrimaryPredicate(RDFS.label);
         TextIndex tidx = new TextIndexLucene(dir, new TextIndexConfig(eDef)) ;

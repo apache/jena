@@ -28,6 +28,7 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Context;
 
 /** Convert the incoming print stream into batches. */
 abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
@@ -39,14 +40,14 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
     private List<Triple> batchTriples ;
     private List<Quad>   batchQuads ;
 
-    public WriterStreamRDFBatched(OutputStream output)
-    { super(output) ; }
+    public WriterStreamRDFBatched(OutputStream output, Context context)
+    { super(output, context) ; }
     
-    public WriterStreamRDFBatched(Writer output)
-    { super(output) ; }
+    public WriterStreamRDFBatched(Writer output, Context context)
+    { super(output, context) ; }
 
-    public WriterStreamRDFBatched(IndentedWriter output)
-    { super(output) ; }
+    public WriterStreamRDFBatched(IndentedWriter output, Context context)
+    { super(output, context) ; }
 
     @Override
     protected final void startData()    { reset() ; }

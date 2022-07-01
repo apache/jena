@@ -20,17 +20,20 @@ package org.apache.jena.sparql.core;
 
 import org.apache.jena.graph.Node ;
 
-/** Count changes, or simply note if a change has been made. */
+/** Count changes, or simply note if a change has been made.
+ *  @deprecated Do not use. This class is not transaction-aware.
+ */
+@Deprecated
 public class DatasetChangesCounter implements DatasetChanges
 {
     long countStart    = 0 ;
     long countFinish   = 0 ;
-    
+
     long countAdd      = 0 ;
     long countDelete   = 0 ;
     long countNoAdd    = 0 ;
     long countNoDelete = 0 ;
-    
+
     @Override
     public void start() {
         countStart++ ;
@@ -45,7 +48,7 @@ public class DatasetChangesCounter implements DatasetChanges
             case DELETE:    countDelete++ ; break ;
             case NO_ADD:    countNoAdd++ ; break ;
             case NO_DELETE: countNoDelete++ ; break ;
-            //default : break ;        
+            //default : break ;
         }
     }
 
@@ -53,16 +56,16 @@ public class DatasetChangesCounter implements DatasetChanges
     public void finish() {
         countFinish++ ;
     }
-    
+
     public boolean hasChanged() {
         return countAdd > 0 || countDelete > 0 ;
     }
-    
+
     @Override
-    public void reset() { 
+    public void reset() {
         countStart    = 0 ;
         countFinish   = 0 ;
-        
+
         countAdd      = 0 ;
         countDelete   = 0 ;
         countNoAdd    = 0 ;

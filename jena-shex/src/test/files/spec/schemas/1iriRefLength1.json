@@ -1,0 +1,33 @@
+{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/S1",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p1",
+        "valueExpr": {
+          "type": "ShapeAnd",
+          "shapeExprs": [
+            {
+              "type": "NodeConstraint",
+              "nodeKind": "iri",
+              "length": 19
+            },
+            "http://a.example/S2"
+          ]
+        }
+      }
+    },
+    {
+      "id": "http://a.example/S2",
+      "type": "Shape",
+      "expression": {
+        "type": "TripleConstraint",
+        "predicate": "http://a.example/p2"
+      }
+    }
+  ]
+}

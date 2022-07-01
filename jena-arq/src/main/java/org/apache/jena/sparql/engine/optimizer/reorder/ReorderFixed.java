@@ -28,38 +28,39 @@ import org.apache.jena.vocabulary.RDF;
 
 /** Fixed scheme for choosing based on the triple patterns, without
  *  looking at the data.  It gives a weight to a triple, with more grounded terms
- *  being considered better.  It weights against rdf:type because that can be 
+ *  being considered better.  It weights against rdf:type because that can be
  *  very unselective (e.g. ?x rdf:type rdf:Resource)
  */
 public class ReorderFixed extends ReorderTransformationSubstitution {
     /*
      * How it works:
-     * 
+     *
      * Choose the 'best' pattern, propagate the fact that variables are now
      * bound (ReorderTransformationSubstitution) then chooses the next triple
      * pattern.
-     * 
+     *
      * Instead of just one set of rules, we make an exception is rdf:type. ?x
      * rdf:type :T or ?x rdf:type ?type are often very much less selective and
      * we want to give them special, poorer weighings. We do this by controlling
      * the order of matching: first check to see if it's rdf;type in the
      * predicate position, then apply the appropriate matcher.
-     * 
+     *
      * If we just used a single StatsMatcher with all the rules, the
      * VAR/TERM/TERM or VAR/TERM/VAR rules match rdf:type with lower weightings.
-     * 
+     *
      * The relative order of equal weightings is not changed.
-     * 
+     *
      * There are two StatsMatchers: 'matcher' and 'matcherRdfType'
      * applied for the normal case and the rdf:type case.
      */
-    
+
     public ReorderFixed() {}
 
-    // This is called during Jena-wide initialization.
-    // Use function for constant (JENA-1294)
-    private static Item  type() 
+    // During initialization.
+    private static Item type()
     { return Item.createNode(RDF.Init.type().asNode()); }
+
+    private static final Item rdfType = type();
 
     /** The number of triples used for the base scale */
     public static final int                MultiTermSampleSize = 100 ;
@@ -68,25 +69,27 @@ public class ReorderFixed extends ReorderTransformationSubstitution {
     private final static StatsMatcher matcher             = new StatsMatcher() ;
     // Used to override choices made by the matcher above.
     private final static StatsMatcher matcherRdfType      = new StatsMatcher() ;
-    
+
     static { init() ; }
-    
+
     private static void init() {
         // rdf:type can be a bad choice e.g rdf:type rdf:Resource
         // with inference enabled.
+        // Use two weighing matchers, one for rdf:type and done for otherwise.
         // Weight use of rdf:type worse then the general pattern
-        // that would also match by using two matchers. 
-        
-        // Numbers chosen as an approximation ratios for a graph of 100 triples
+        // that would also match by using two matchers.
 
-        // 1 : TERM type TERM is builtin (SPO).
-        // matcherRdfType.addPattern(new Pattern(1, TERM, TERM, TERM)) ; 
-        matcherRdfType.addPattern(new Pattern(5, VAR, type(), TERM)) ;
-        matcherRdfType.addPattern(new Pattern(50, VAR, type(), VAR)) ;
-        
+        // Weight 1 / TERM type TERM is builtin because it must be one.
+        // matcherRdfType.addPattern(new Pattern(1, TERM, TERM, TERM)) ;
+
+        // matcher for rdf:type.
+        matcherRdfType.addPattern(new Pattern(5, VAR, rdfType, TERM)) ;
+        matcherRdfType.addPattern(new Pattern(50, VAR, rdfType, VAR)) ;
+
         // SPO - built-in - not needed as a rule
-        // matcher.addPattern(new Pattern(1, TERM, TERM, TERM)) ; 
+        // matcher.addPattern(new Pattern(1, TERM, TERM, TERM)) ;
 
+        // matcher for P != rdf:type
         matcher.addPattern(new Pattern(2, TERM, TERM, VAR)) ;                   // SP?
         matcher.addPattern(new Pattern(3, VAR, TERM, TERM)) ;                   // ?PO
         matcher.addPattern(new Pattern(2, TERM, VAR, TERM)) ;                   // S?O
@@ -100,9 +103,9 @@ public class ReorderFixed extends ReorderTransformationSubstitution {
 
     @Override
     public double weight(PatternTriple pt) {
-        // Special case rdf:type first to make it lower(worse) than 
+        // Special case rdf:type first to make it lower(worse) than
         // VAR, TERM, TERM which would otherwise be used.
-        if ( type().equals(pt.predicate) ) {
+        if ( rdfType.equals(pt.predicate) ) {
             double w = matcherRdfType.match(pt) ;
             if ( w > 0 )
                 return w ;

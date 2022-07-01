@@ -18,53 +18,56 @@
 
 package org.apache.jena.sparql.engine.binding;
 
-import java.util.Iterator ;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.function.BiConsumer;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.itr.Itr;
 
+/**
+ * Special purpose binding for just one name/value slot.
+ */
+public class Binding1 extends BindingBase {
+    private final Var  var;
+    private final Node value;
 
-/** Special purpose binding for adding just one name/value slot. */
-
-
-public class Binding1 extends BindingBase
-{
-    private final Var var ;
-    private final Node value ;
-    
-    /*package*/ Binding1(Binding parent, Var _var, Node _node)
-    { 
-        super(parent) ;
-        var = _var ; 
-        value = _node ;
+    /* package */ Binding1(Binding parent, Var var, Node value) {
+        super(parent);
+        this.var = Objects.requireNonNull(var);
+        this.value = Objects.requireNonNull(value);
     }
-    
+
     @Override
-    protected int size1() { return 1 ; }
-    
-    @Override
-    protected boolean isEmpty1() { return false ; }
-    
-    /** Iterate over all the names of variables.
-     */
-    @Override
-    public Iterator<Var> vars1() 
-    {
-        return Iter.singleton(var) ;
+    protected int size1() {
+        return 1;
     }
-    
+
     @Override
-    public boolean contains1(Var n)
-    {
-        return var.equals(n) ;
+    protected boolean isEmpty1() {
+        return false;
     }
-    
+
     @Override
-    public Node get1(Var v)
-    {
+    protected Iterator<Var> vars1() {
+        return Itr.iter1(var);
+    }
+
+    @Override
+    protected void forEach1(BiConsumer<Var, Node> action) {
+        action.accept(var, value);
+    }
+
+    @Override
+    protected boolean contains1(Var n) {
+        return var.equals(n);
+    }
+
+    @Override
+    protected Node get1(Var v) {
         if ( v.equals(var) )
-            return value ;
-        return null ;
+            return value;
+        return null;
     }
 }

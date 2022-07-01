@@ -269,8 +269,8 @@ Some more tools to help manage Java certificate store:
   <Call name="addIfAbsentConnectionFactory">
     <Arg>
       <New class="org.eclipse.jetty.server.SslConnectionFactory">
-	<Arg name="next">http/1.1</Arg>
-	<Arg name="sslContextFactory"><Ref refid="sslContextFactory"/></Arg>
+        <Arg name="next">http/1.1</Arg>
+        <Arg name="sslContextFactory"><Ref refid="sslContextFactory"/></Arg>
       </New>
     </Arg>
   </Call>
@@ -278,11 +278,10 @@ Some more tools to help manage Java certificate store:
   <Call name="addConnectionFactory">
     <Arg>
       <New class="org.eclipse.jetty.server.HttpConnectionFactory">
-	<Arg name="config"><Ref refid="sslHttpConfig" /></Arg>
+     	<Arg name="config"><Ref refid="sslHttpConfig" /></Arg>
       </New>
     </Arg>
   </Call>
 </Ref>
-
 
 </Configure>

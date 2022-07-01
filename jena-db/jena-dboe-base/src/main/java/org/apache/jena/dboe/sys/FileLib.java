@@ -18,69 +18,66 @@
 
 package org.apache.jena.dboe.sys;
 
-import java.io.FileNotFoundException ;
-import java.io.IOException ;
-import java.io.RandomAccessFile ;
-import java.nio.channels.FileChannel ;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 
-import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.dboe.base.file.ChannelManager;
 import org.apache.jena.dboe.base.file.FileException;
 
-// => IO
 public class FileLib
 {
-    // Check whether still used.
-    
     public static FileChannel openUnmanaged(String filename) {
-        return openUnmanaged(filename, "rw") ;
+        return openUnmanaged(filename, "rw");
     }
 
     // And operation from BufferChannelFile
-    
+
     public static FileChannel openUnmanaged(String filename, String mode) {
         try {
             @SuppressWarnings("resource")
-            RandomAccessFile out = new RandomAccessFile(filename, mode) ;
-            FileChannel channel = out.getChannel() ;
-            return channel ;
+            RandomAccessFile out = new RandomAccessFile(filename, mode);
+            FileChannel channel = out.getChannel();
+            return channel;
         }
         catch (FileNotFoundException e) {
-            IO.exception(e) ;
-            return null ;
+            IO.exception(e);
+            return null;
         }
     }
 
-    // TODO remove and call ChannelManager directly 
+    // TODO remove and call ChannelManager directly
     public static FileChannel openManaged(String filename) {
-        return openManaged(filename, "rw") ;
+        return openManaged(filename, "rw");
     }
 
-    // TODO remove and call ChannelManager directly 
+    // TODO remove and call ChannelManager directly
     public static FileChannel openManaged(String filename, String mode) {
-        return ChannelManager.acquire(filename, mode) ;
+        return ChannelManager.acquire(filename, mode);
     }
 
     public static long size(FileChannel channel) {
         try {
-            return channel.size() ;
+            return channel.size();
         } catch (IOException ex)
-        { IO.exception(ex) ; return -1L ; }
+        { IO.exception(ex); return -1L ; }
     }
 
     public static void truncate(FileChannel channel, long posn) {
-        try { channel.truncate(posn) ; }
-        catch (IOException ex) { IO.exception(ex) ; }
+        try { channel.truncate(posn); }
+        catch (IOException ex) { IO.exception(ex); }
     }
 
     public static void close(FileChannel channel) {
-        ChannelManager.release(channel) ;
+        ChannelManager.release(channel);
     }
 
     public static void sync(FileChannel channel) {
         try {
-            channel.force(true) ;
+            channel.force(true);
         } catch (IOException ex)
-        { throw new FileException("FileBase.sync", ex) ; }
+        { throw new FileException("FileBase.sync", ex); }
     }
 }

@@ -20,8 +20,8 @@ package org.apache.jena.dboe.base;
 
 public class StorageException extends RuntimeException
 {
-    public StorageException()                          { super() ; }
-    public StorageException(String msg)                { super(msg) ; }
-    public StorageException(Throwable th)              { super(th) ; }
-    public StorageException(String msg, Throwable th)  { super(msg, th) ; }
+    public StorageException()                          { super(); }
+    public StorageException(String msg)                { super(msg); }
+    public StorageException(Throwable th)              { super(th); }
+    public StorageException(String msg, Throwable th)  { super(msg, th); }
 }

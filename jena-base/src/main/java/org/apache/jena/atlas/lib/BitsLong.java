@@ -23,14 +23,13 @@ package org.apache.jena.atlas.lib;
 
 /** Utilities for manipulating a bit pattern which are held in a 64 bit long
  *  @see BitsInt
- *  (java.util.BitSet does not allow getting the pattern as a long) 
- */ 
+ */
 public final class BitsLong
 {
     private BitsLong() {}
 
-    private static int LongLen = Long.SIZE ;
-    
+    private static final int LongLen = Long.SIZE ;
+
     /** Extract the value packed into bits start (inclusive) and finish (exclusive),
      *  the value is returned shifted into the low part of the returned long.
      *  The low bit is bit zero.
@@ -38,8 +37,8 @@ public final class BitsLong
      * @param start
      * @param finish
      * @return long
-     */ 
-    
+     */
+
     public static final
     long unpack(long bits, int start, int finish)
     {
@@ -50,7 +49,7 @@ public final class BitsLong
     }
 
     /** Place the value into the bit pattern between start and finish
-     * and returns the new value.  Leaves other bits alone.
+     *  and returns the new value.  Leaves other bits alone.
      * @param bits
      * @param value
      * @param start
@@ -63,19 +62,19 @@ public final class BitsLong
         check(start, finish) ;
         bits = clear$(bits, start, finish) ;
         long mask = mask(start, finish) ;
-        bits = bits | ( (value<<start) & mask ) ;
+        bits = bits | ((value<<start) & mask ) ;
         return bits ;
     }
 
     /** Get bits from a hex string.
-     * 
+     *
      * @param str
-     * @param startChar     Index of first character (counted from the left, string style). 
+     * @param startChar     Index of first character (counted from the left, string style).
      * @param finishChar    Index after the last character (counted from the left, string style).
      * @return long
      * @see #access(long, int, int)
      */
-    
+
     public static final
     long unpack(String str, int startChar, int finishChar)
     {
@@ -84,20 +83,20 @@ public final class BitsLong
     }
 
     /** Set the bits specified.
-     * 
+     *
      * @param bits      Pattern
-     * @param bitIndex 
+     * @param bitIndex
      * @return          Modified pattern
      */
     public static final
     long set(long bits, int bitIndex)
-    { 
+    {
         check(bitIndex) ;
         return set$(bits, bitIndex) ;
     }
 
-    /** Set the bits from string (inc) to finish (exc) to one
-     * 
+    /** Set the bits from start (inc) to finish (exc) to one
+     *
      * @param bits      Pattern
      * @param start     start  (inclusive)
      * @param finish    finish (exclusive)
@@ -105,14 +104,14 @@ public final class BitsLong
      */
     public static final
     long set(long bits, int start, int finish)
-    { 
+    {
         check(start, finish) ;
         return set$(bits, start, finish) ;
     }
 
-    /** Test whether a bit is the same as isSet 
+    /** Test whether a bit is the same as isSet
      * @param bits      Pattern
-     * @param isSet     Test whether is set or not. 
+     * @param isSet     Test whether is set or not.
      * @param bitIndex  Bit index
      * @return          Boolean
      */
@@ -122,8 +121,8 @@ public final class BitsLong
         check(bitIndex) ;
         return test$(bits, isSet, bitIndex) ;
     }
-    
-    /** Test whether a bit is set 
+
+    /** Test whether a bit is set
      * @param bits      Pattern
      * @param bitIndex  Bit index
      * @return          Boolean
@@ -134,8 +133,8 @@ public final class BitsLong
         check(bitIndex) ;
         return test$(bits, true, bitIndex) ;
     }
-    
-    /** Test whether a range has a specific value or not   
+
+    /** Test whether a range has a specific value or not
      * @param bits      Pattern
      * @param value     Value to test for
      * @param start     start  (inclusive)
@@ -148,7 +147,7 @@ public final class BitsLong
         check(start, finish) ;
         return test$(bits, value, start, finish) ;
     }
-    
+
     /** Get the bits from start (inclusive) to finish (exclusive),
      *  leaving them aligned in the long.  See also unpack, returns
      *  the value found at that place.
@@ -156,15 +155,28 @@ public final class BitsLong
      *  @param bits
      *  @param start
      *  @param finish
-     *  @return lon     */
-    
+     *  @return long
+     */
     public static final
     long access(long bits, int start, int finish)
     {
         check(start, finish) ;
-        return access$(bits, start, finish) ; 
+        return access$(bits, start, finish) ;
     }
-    
+
+    /**
+     * Clear the bit specified.
+     *  @param bits
+     *  @param bitIndex
+     *  @return long
+     */
+    public static final
+    long clear(long bits, int bitIndex)
+    {
+        check(bitIndex) ;
+        return clear$(bits, bitIndex) ;
+    }
+
     /**
      * Clear the bits specified.
      *  @param bits
@@ -172,7 +184,7 @@ public final class BitsLong
      *  @param finish
      *  @return long
      */
-  public static final
+    public static final
     long clear(long bits, int start, int finish)
     {
         check(start, finish) ;
@@ -192,7 +204,7 @@ public final class BitsLong
         check(start, finish) ;
         return mask$(start, finish) ;
     }
-    
+
     /**
      * Create a mask that has zeros between bit positions start (inc) and finish (exc),
      * and ones elsewhere
@@ -206,7 +218,15 @@ public final class BitsLong
         check(start, finish) ;
         return maskZero$(start, finish) ;
     }
-    
+
+    private static final
+    long clear$(long bits, int bitIndex)
+    {
+        long mask = maskZero$(bitIndex) ;
+        bits = bits & mask ;
+        return bits ;
+    }
+
     private static final
     long clear$(long bits, int start, int finish)
     {
@@ -217,50 +237,46 @@ public final class BitsLong
 
     private static final
     long set$(long bits, int bitIndex)
-    { 
+    {
         long mask = mask$(bitIndex) ;
         return bits | mask ;
     }
 
     private static final
     long set$(long bits, int start, int finish)
-    { 
+    {
         long mask = mask$(start, finish) ;
         return bits | mask ;
     }
 
-    private static
+    private static final
     boolean test$(long bits, boolean isSet, int bitIndex)
     {
         return isSet == access$(bits, bitIndex) ;
     }
 
-    private static
+    private static final
     boolean test$(long bits, long value, int start, int finish)
     {
         long v = access$(bits, start, finish) ;
         return v == value ;
     }
 
-
-    
     private static final
     boolean access$(long bits, int bitIndex)
     {
         long mask = mask$(bitIndex) ;
         return (bits & mask) != 0L ;
     }
-    
+
     private static final
     long access$(long bits, int start, int finish)
     {
-        // Two ways:
-//        long mask = mask$(start, finish) ;
-//        return bits & mask ;
-        
+        // Alternative
+        //        int mask = mask$(start, finish) ;
+        //        return bits & mask ;
         return ( (bits<<(LongLen-finish)) >>> (LongLen-finish+start) ) << start  ;
     }
-    
 
     private static final
     long mask$(int bitIndex)
@@ -271,30 +287,25 @@ public final class BitsLong
     private static final
     long mask$(int start, int finish)
     {
-    //        long mask = 0 ;
-    //        if ( finish == Long.SIZE )
-    //            // <<Long.SIZE is a no-op 
-    //            mask = -1 ;
-    //        else
-    //            mask = (1L<<finish)-1 ;
         if ( finish == 0 )
-            // So start is zero and so the mask is zero.
+            // Valid args; start is zero and so the mask is zero.
             return 0 ;
+        long mask = -1L ;
+        return mask << (LongLen-finish) >>> (LongLen-finish+start) << start ;
+    }
 
-        
-        long mask = -1 ;
-//        mask = mask << (LongLen-finish) >>> (LongLen-finish) ;      // Clear the top bits
-//        return mask >>> start << start ;                  // Clear the bottom bits
-        return mask << (LongLen-finish) >>> (LongLen-finish+start) << start ; 
+    private static final
+    long maskZero$(int bitIndex)
+    {
+        return ~mask$(bitIndex) ;
     }
 
     private static final
     long maskZero$(int start, int finish)
     {
-
         return ~mask$(start, finish) ;
     }
-    
+
     private static final
     void check(long bitIndex)
     {
@@ -308,5 +319,4 @@ public final class BitsLong
         if ( finish < 0 || finish > LongLen ) throw new IllegalArgumentException("Illegal finish: "+finish) ;
         if ( start > finish )  throw new IllegalArgumentException("Illegal range: ("+start+", "+finish+")") ;
     }
-    
 }

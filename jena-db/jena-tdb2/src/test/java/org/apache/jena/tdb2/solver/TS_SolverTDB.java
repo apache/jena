@@ -18,12 +18,12 @@
 
 package org.apache.jena.tdb2.solver;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestSolverTDB.class     // Tests the TDB connectivity
+    TestSolverTDB.class
     , TestStats.class
 })
 

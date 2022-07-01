@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.modify;
 
-import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.modify.request.QuadDataAcc ;
 import org.apache.jena.sparql.modify.request.QuadDataAccSink ;
 import org.apache.jena.sparql.modify.request.UpdateDataDelete ;
@@ -28,19 +27,17 @@ import org.apache.jena.update.UpdateRequest ;
 
 public class UpdateRequestSink implements UpdateSink
 {
-    final UpdateRequest updateRequest;
+    private final UpdateRequest updateRequest;
     
-    public UpdateRequestSink(UpdateRequest updateRequest)
-    {
+    public UpdateRequestSink(UpdateRequest updateRequest) {
         this.updateRequest = updateRequest;
     }
-    
+
     @Override
-    public void send(Update update)
-    {
+    public void send(Update update) {
         updateRequest.add(update);
     }
-    
+
     @Override
     public void flush()
     { }
@@ -48,28 +45,20 @@ public class UpdateRequestSink implements UpdateSink
     @Override
     public void close()
     { }
-    
+
     @Override
-    public Prologue getPrologue()
-    {
-        return updateRequest;
-    }
-    
-    @Override
-    public QuadDataAccSink createInsertDataSink()
-    {
+    public QuadDataAccSink createInsertDataSink() {
         QuadDataAcc quads = new QuadDataAcc();
         send(new UpdateDataInsert(quads));
-        
+
         return quads;
     }
-    
+
     @Override
-    public QuadDataAccSink createDeleteDataSink()
-    {
+    public QuadDataAccSink createDeleteDataSink() {
         QuadDataAcc quads = new QuadDataAcc();
         send(new UpdateDataDelete(quads));
-        
+
         return quads;
     }
 }

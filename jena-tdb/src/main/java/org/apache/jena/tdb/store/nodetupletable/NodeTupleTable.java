@@ -35,6 +35,9 @@ public interface NodeTupleTable extends Sync, Closeable
 
     public boolean deleteRow(Node... nodes) ;
 
+    /** The length of tuples managed. -1 indicates "variable length" */
+    public int getTupleLen();
+
     /** Find by node. */
     public Iterator<Tuple<Node>> find(Node... nodes) ;
 
@@ -43,15 +46,15 @@ public interface NodeTupleTable extends Sync, Closeable
 
     /** Find by NodeId. */
     public Iterator<Tuple<NodeId>> find(NodeId... ids) ;
-    
+
     /** Find by NodeId. */
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> ids) ;
 
-    /** Find all tuples */ 
+    /** Find all tuples */
     public Iterator<Tuple<NodeId>> findAll() ;
 
-    /** Return the undelying tuple table - used with great care by tools
-     * that directly manipulate internal structures. 
+    /** Return the underlying tuple table - used with great care by tools
+     * that directly manipulate internal structures.
      */
     public TupleTable getTupleTable() ;
 
@@ -59,16 +62,16 @@ public interface NodeTupleTable extends Sync, Closeable
     public NodeTable getNodeTable() ;
 
     public boolean isEmpty() ;
-    
+
     /** Clear the tuple table.  After this operation, find* will find  nothing.
      * This does not mean all data has been removed - for example, it does not mean
      * that any node table has been emptied.
      */
     public void clear() ;
 
-    // No clear operation - need to manage the tuple table 
+    // No clear operation - need to manage the tuple table
     // and node tables separately.
-    
+
     public long size() ;
 
     /** Return the current policy, if any, for this NodeTupleTable */

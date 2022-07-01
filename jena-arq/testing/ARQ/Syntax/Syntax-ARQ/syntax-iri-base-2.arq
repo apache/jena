@@ -1,0 +1,5 @@
+BASE <http://example/>
+
+SELECT * {
+   BIND( IRI(<http://other/base>, "rel") AS ?X )
+}

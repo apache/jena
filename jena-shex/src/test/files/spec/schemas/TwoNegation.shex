@@ -1,0 +1,5 @@
+PREFIX :       <http://example.org/>
+
+:S { :a NOT @:T }
+:T NOT @:U 
+:U { :b @:S } 

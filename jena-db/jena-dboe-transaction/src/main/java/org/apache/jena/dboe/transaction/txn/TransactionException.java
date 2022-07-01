@@ -18,13 +18,13 @@
 
 package org.apache.jena.dboe.transaction.txn;
 
-import org.apache.jena.sparql.JenaTransactionException ;
+import org.apache.jena.sparql.JenaTransactionException;
 
 public class TransactionException extends JenaTransactionException {
     public TransactionException()                                  { super(); }
     public TransactionException(String message)                    { super(message); }
-    public TransactionException(Throwable cause)                   { super(cause) ; }
-    public TransactionException(String message, Throwable cause)   { super(message, cause) ; }
+    public TransactionException(Throwable cause)                   { super(cause); }
+    public TransactionException(String message, Throwable cause)   { super(message, cause); }
 
 }
 

@@ -18,11 +18,12 @@
 
 package org.apache.jena.atlas.io;
 
-import org.apache.jena.atlas.io.PeekInputStream ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test ;
 
-public abstract class AbstractTestPeekInputStream extends BaseTest
+public abstract class AbstractTestPeekInputStream
 {
     static int INIT_LINE = PeekInputStream.INIT_LINE ;
     static int INIT_COL = PeekInputStream.INIT_COL ;

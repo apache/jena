@@ -29,23 +29,27 @@ import arq.cmdline.ModContext ;
 import arq.cmdline.ModLangOutput ;
 import arq.cmdline.ModLangParse ;
 import arq.cmdline.ModTime ;
-import jena.cmd.ArgDecl ;
-import jena.cmd.CmdException;
-import jena.cmd.CmdGeneral ;
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.query.ARQ ;
+import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.rdfs.RDFSFactory;
+import org.apache.jena.rdfs.SetupRDFS;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
-import org.apache.jena.riot.process.inf.InfFactory ;
-import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
-import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.ErrorHandlerFactory.ErrorHandlerTracking;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
+import org.apache.jena.riot.system.StreamRDFWriter;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sys.JenaSystem ;
@@ -57,12 +61,12 @@ public abstract class CmdLangParse extends CmdGeneral
     protected ModTime modTime                   = new ModTime() ;
     protected ModLangParse modLangParse         = new ModLangParse() ;
     protected ModLangOutput modLangOutput       = new ModLangOutput() ;
-    protected InferenceSetupRDFS setup          = null ; 
+    protected SetupRDFS setup                   = null ;
     protected ModContext modContext             = new ModContext() ;
     protected ArgDecl strictDecl                = new ArgDecl(ArgDecl.NoValue, "strict") ;
 
-    protected boolean cmdStrictMode = false ; 
-    
+    protected boolean cmdStrictMode = false ;
+
     protected CmdLangParse(String[] argv)
     {
         super(argv) ;
@@ -70,42 +74,39 @@ public abstract class CmdLangParse extends CmdGeneral
         addModule(modTime) ;
         addModule(modLangOutput) ;
         addModule(modLangParse) ;
-        
+
         super.modVersion.addClass(Jena.class) ;
-        // Force - sometimes initialization does not cause these
-        // to initialized early enough for reflection.
-        String x1 = ARQ.VERSION ;
-        String x2 = ARQ.BUILD_DATE ;
-        super.modVersion.addClass(RIOT.class) ;
-        
+        //super.modVersion.addClass(RIOT.class) ;
     }
 
     @Override
     protected String getSummary() {
-        return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--out=FORMAT] [--compress] file ..." ;
+        return getCommandName()+" [--help] [--time] [--base=IRI] [--syntax=FORMAT] [--out=FORMAT] [--count] file ..." ;
     }
 
-    protected List<ParseRecord> outcomes = new ArrayList<>(); 
-    
-    OutputStream outputWrite = System.out ;
-    StreamRDF outputStream = null ;
+    protected List<ParseRecord> outcomes = new ArrayList<>();
+
+    protected OutputStream outputWrite = System.out ;
+    protected StreamRDF outputStream   = null ;
+    protected String parserBaseIRI     = null;
+    protected String writerBaseIRI     = null;
 
     @Override
     protected void processModulesAndArgs() {
         cmdStrictMode = super.contains(strictDecl) ;
     }
-    
+
     protected interface PostParseHandler { void postParse(); }
-    
+
     static class ParseRecord {
         final String filename;
         final boolean success;
         final long timeMillis;
-        final long triples; 
+        final long triples;
         final long quads;
         final long tuples = 0;
         final ErrorHandlerTracking errHandler;
-        
+
         public ParseRecord(String filename, boolean successful, long timeMillis,
                            long countTriples, long countQuads, ErrorHandlerTracking errHandler) {
             this.filename = filename;
@@ -119,26 +120,27 @@ public abstract class CmdLangParse extends CmdGeneral
 
     @Override
     protected void exec() {
-        if ( modLangParse.skipOnBadTerm() )
-            throw new CmdException("Not supported : skip on bad term"); 
-        
         boolean oldStrictValue = SysRIOT.isStrictMode() ;
         if ( modLangParse.strictMode() )
             SysRIOT.setStrictMode(true) ;
+
+        parserBaseIRI = modLangParse.getBaseIRI();
+        writerBaseIRI = parserBaseIRI;
+
         try { exec$() ; }
-        finally { SysRIOT.setStrictMode(oldStrictValue) ; } 
+        finally { SysRIOT.setStrictMode(oldStrictValue) ; }
     }
-    
+
     protected void exec$() {
-        
+
         if ( modLangParse.getRDFSVocab() != null )
-            setup = new InferenceSetupRDFS(modLangParse.getRDFSVocab()) ;
-     
+            setup = RDFSFactory.setupRDFS(modLangParse.getRDFSVocab().getGraph()) ;
+
         if ( modLangOutput.compressedOutput() ) {
             try { outputWrite = new GZIPOutputStream(outputWrite, true) ; }
             catch (IOException e) { IO.exception(e);}
         }
-            
+
         outputStream = null ;
         PostParseHandler postParse = null ;
 
@@ -148,9 +150,9 @@ public abstract class CmdLangParse extends CmdGeneral
             outputStream = p.getLeft() ;
             postParse = p.getRight();
         }
-        
+
         try {
-            // The actual parsing ... 
+            // The actual parsing ...
             if ( super.getPositional().isEmpty() ) {
                 ParseRecord parseRec = parseFile("-");
                 outcome(parseRec);
@@ -170,17 +172,17 @@ public abstract class CmdLangParse extends CmdGeneral
                 postParse.postParse();
             // Post parse information.
             // Total if more than one file.
-            if ( super.getPositional().size() > 1 && modTime.timingEnabled() ) {
-                long totalMillis = 0; 
+            if ( super.getPositional().size() > 1 && ( modTime.timingEnabled() || modLangParse.outputCount() ) ) {
+                long totalMillis = 0;
                 long totalTriples = 0;
                 long totalQuads = 0;
                 long totalTuples = 0;
                 long totalErrors = 0;
                 long totalWarnings = 0;
                 boolean allSuccessful = true;
-                
+
                 for ( ParseRecord pRec : outcomes ) {
-                    if ( pRec.timeMillis >= 0 ) 
+                    if ( pRec.timeMillis >= 0 )
                         totalMillis += pRec.timeMillis;
                     totalTriples += pRec.triples;
                     totalQuads += pRec.quads;
@@ -195,33 +197,41 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( outputWrite != System.out )
                 IO.close(outputWrite) ;
             else
-                IO.flush(outputWrite);    
+                IO.flush(outputWrite);
             System.err.flush() ;
         }
-        
+
         // exit(1) if there were any errors.
         for ( ParseRecord pr : outcomes ) {
             if ( ! pr.success || pr.errHandler.hadIssues() )
                 throw new CmdException();
         }
     }
-    
+
     public void outcome(ParseRecord rtn) {
+        if ( modLangParse.outputCount() ) {
+            System.err.printf("%-15s", rtn.filename);
+            if ( rtn.triples > 0 )
+                System.err.printf(" : Triples = %,d", rtn.triples);
+            if ( rtn.quads > 0 )
+                System.err.printf(" : Quads = %,d", rtn.quads);
+            System.err.println();
+        }
         outcomes.add(rtn);
         if ( modTime.timingEnabled() )
             output(rtn);
     }
-    
+
     public ParseRecord parseFile(String filename) {
-        String baseURI = modLangParse.getBaseIRI() ;
+        String baseParserIRI = this.parserBaseIRI;
         RDFParserBuilder builder = RDFParser.create();
-        if ( baseURI != null )
-            builder.base(baseURI);
+        if ( baseParserIRI != null )
+            builder.base(baseParserIRI);
         if ( modLangParse.getLang() != null )
             // Always use the command line specified syntax.
             builder.forceLang(modLangParse.getLang());
         else {
-            // Otherwise, use the command selected language, with N-Quads as the ultimate fallback.  
+            // Otherwise, use the command selected language, with N-Quads as the ultimate fallback.
             Lang lang = dftLang() ;
             if ( lang == null )
                 lang = Lang.NQUADS;
@@ -231,12 +241,19 @@ public abstract class CmdLangParse extends CmdGeneral
 
         // Set the source.
         if ( filename.equals("-") ) {
-            if ( baseURI == null ) {
-                baseURI = "http://base/";
-                builder.base(baseURI);
+            if ( baseParserIRI == null ) {
+                baseParserIRI = "http://base/";
+                builder.base(baseParserIRI);
             }
+            filename = "stdin";
             builder.source(System.in);
         } else {
+            String scheme = IRIs.scheme(filename);
+            if ( scheme == null || scheme.equalsIgnoreCase("file") )
+                // Convert spaces and other characters in file names.
+                // File handling will reverse the transformation to open
+                // the file correctly but for base name generation we want the %20 form.
+                filename = IRILib.filenameToIRI(filename);
             builder.source(filename);
         }
         return parseRIOT(builder, filename);
@@ -246,125 +263,121 @@ public abstract class CmdLangParse extends CmdGeneral
     // Contrast with --syntax=.. which forces the language.
     protected abstract Lang dftLang() ;
 
-    protected ParseRecord parseRIOT(RDFParserBuilder builder, /*Info for the ProcessOutcome*/ String filename) {
+    protected ParseRecord parseRIOT(RDFParserBuilder builder, String filename) {
         boolean checking = true ;
         if ( modLangParse.explicitChecking() )
             checking = true;
         if ( modLangParse.explicitNoChecking() )
             checking = false;
         builder.checking(checking);
+        if ( checking )
+            builder.strict(true);
 
-        ErrorHandlerTracking errHandler = ErrorHandlerFactory.errorHandlerTracking(ErrorHandlerFactory.stdLogger, 
-                                                                                   modLangParse.stopOnBadTerm(), 
+        // Should use ErrorHandlerRecorder
+        ErrorHandlerTracking errHandler = ErrorHandlerFactory.errorHandlerTracking(ErrorHandlerFactory.stdLogger,
+                                                                                   true,
                                                                                    modLangParse.stopOnWarnings());
-        
-        if ( modLangParse.skipOnBadTerm() ) {
-            // skipOnBadterm - this needs collaboration from the parser.
-        }
-        
-        // Make a flag.
-        // Input and output subflags.
+        builder.errorHandler(errHandler);
+
+        // Make into a cmd flag. (input and output subflags?)
         // If input is "label, then output using NodeToLabel.createBNodeByLabelRaw() ;
         // else use NodeToLabel.createBNodeByLabel() ;
         // Also, as URI.
         final boolean labelsAsGiven = false ;
-        
 //        NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
 //        if ( labelsAsGiven )
 //            labels = NodeToLabel.createBNodeByLabelEncoded() ;
-        
         if ( labelsAsGiven )
             builder.labelToNode(LabelToNode.createUseLabelAsGiven());
 
-        StreamRDF s = outputStream ; 
+        StreamRDF s = outputStream ;
         if ( setup != null )
-            s = InfFactory.inf(s, setup) ;
+            s = RDFSFactory.streamRDFS(s, setup) ;
         StreamRDFCounting sink = StreamRDFLib.count(s) ;
         s = null ;
-        
+
         boolean successful = true;
-        if ( checking ) 
-            SysRIOT.setStrictMode(true);
-        builder.errorHandler(errHandler);
-        
+
         modTime.startTimer() ;
-        sink.start() ;
         RDFParser parser = builder.build();
         try {
+            sink.start() ;
             parser.parse(sink);
             successful = true;
-        } catch (RiotException ex) {
+        }
+        catch (RiotNotFoundException ex) {
+            errHandler.error(ex.getMessage(), -1, -1);
+            successful = false;
+        }
+        catch (RiotException ex) {
+            successful = false;
+        }
+        catch (IRIException ex) {
             successful = false;
         }
         sink.finish() ;
         long x = modTime.endTimer() ;
-        // TEMP
         ParseRecord outcome = new ParseRecord(filename, successful, x, sink.countTriples(), sink.countQuads(), errHandler);
         return outcome;
     }
-    
+
     /** Create a streaming output sink if possible */
     protected StreamRDF createStreamSink() {
         if ( modLangParse.toBitBucket() )
             return StreamRDFLib.sinkNull() ;
-        
+
         RDFFormat fmt = modLangOutput.getOutputStreamFormat() ;
         if ( fmt == null )
             return null ;
-        /** Create an accumulating output stream for later pretty printing */        
-        return StreamRDFWriter.getWriterStream(outputWrite, fmt) ;
+        /** Create an accumulating output stream for later pretty printing */
+        return StreamRDFWriter.getWriterStream(outputWrite, fmt, RIOT.getContext()) ;
     }
-    
+
     /** Create an accumulating output stream for later pretty printing */
     protected Pair<StreamRDF, PostParseHandler> createAccumulateSink() {
         final DatasetGraph dsg = DatasetGraphFactory.create() ;
         StreamRDF sink = StreamRDFLib.dataset(dsg) ;
         final RDFFormat fmt = modLangOutput.getOutputFormatted() ;
-        PostParseHandler handler = new PostParseHandler() {
-            @Override
-            public void postParse() {
-                // Try as dataset, then as graph.
-                WriterDatasetRIOTFactory w = RDFWriterRegistry.getWriterDatasetFactory(fmt) ;
-                if ( w != null ) {
-                    RDFDataMgr.write(outputWrite, dsg, fmt) ;
-                    return ;
-                }
-                WriterGraphRIOTFactory wg = RDFWriterRegistry.getWriterGraphFactory(fmt) ;
-                if ( wg != null ) {
-                    RDFDataMgr.write(System.out, dsg.getDefaultGraph(), fmt) ;
-                    return ;
-                }
-                throw new InternalErrorException("failed to find the writer: "+fmt) ;  
-            }
-        } ;
+        PostParseHandler handler = ()->{
+            RDFWriterBuilder builder = RDFWriter.create();
+            builder.format(fmt);
+            if ( RDFLanguages.isQuads(fmt.getLang()) )
+                builder.source(dsg);
+            else
+                builder.source(dsg.getDefaultGraph());
+            String baseURI = writerBaseIRI;
+            if ( baseURI != null )
+                builder.base(baseURI);
+            builder.output(outputWrite);
+        };
         return Pair.create(sink, handler) ;
     }
-    
+
     protected Tokenizer makeTokenizer(InputStream in) {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
+        Tokenizer tokenizer = TokenizerText.create().source(in).build() ;
         return tokenizer ;
     }
-    
+
     protected void output(ParseRecord rtn) {
         output(rtn.filename, rtn.success,
                rtn.triples, rtn.quads, rtn.tuples,
                rtn.timeMillis, rtn.errHandler.getErrorCount(),
                rtn.errHandler.getWarningCount()) ;
     }
-    
+
     protected void output(String label, boolean success, long numberTriples, long numberQuads, long numberTuples, long timeMillis, long errorCount, long warningCount) {
         double timeSec = timeMillis/1000.0 ;
         long total = numberTriples + numberQuads + numberTuples;
         StringBuilder sb = new StringBuilder();
         if ( total > 0 ) {
-            sb.append(label);
+            sb.append(String.format("%-15s", label));
             if ( success )
-                appendFmt(sb, " : %,5.2f sec", timeSec);
+                appendFmt(sb, " : %,4.2f sec", timeSec);
             appendCount(sb, numberTriples, "Triple", "Triples", "TPS");
             appendCount(sb, numberQuads,   "Quad",   "Quads",   "QPS");
             appendCount(sb, numberTuples,  "Tuple",  "Tuples",  "TPS");
             if ( success && timeMillis > 0 )
-                appendFmt(sb," : %,.2f %s", numberTriples/timeSec, "per second");
+                appendFmt(sb," : %,.2f %s", total/timeSec, "per second");
         } else {
             appendFmt(sb, "%s :  (No Output)", label) ;
         }
@@ -374,7 +387,7 @@ public abstract class CmdLangParse extends CmdGeneral
         }
         System.err.println(sb.toString());
     }
-    
+
     private void appendFmt(StringBuilder sb, String fmt, Object ... args) {
         sb.append(String.format(fmt, args)) ;
     }

@@ -26,12 +26,12 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Node_Literal ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIRelativize ;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -43,28 +43,29 @@ import org.apache.jena.vocabulary.XSD ;
 
 /** Presentation forms of various kinds of objects.
  *  Beware that bNodes are abbreviated to _:b0 etc.
+ *  @see NodeFmtLib
  */
 
 public class FmtUtils
 {
-    // OLD CODE - being replaced by riot.NodeFmtLib
-    
+    // See also riot.NodeFmtLib
+
     // Consider withdrawing non-serialization context forms of this.
     // Or a temporary SerialzationContext does not abbreviate bNodes.
     static final String indentPrefix = "  " ;
     public static boolean multiLineExpr = false ;
     public static boolean printOpName = true ;
-    
+
     static NodeToLabelMap bNodeMap = new NodeToLabelMapBNode("b", false) ;
-    
+
     public static SerializationContext sCxt()
-    { 
+    {
         return sCxt(ARQConstants.getGlobalPrefixMap()) ;
     }
-    
+
     public static SerializationContext sCxt(PrefixMapping pmap)
-    { 
-        return new SerializationContext(pmap) ; 
+    {
+        return new SerializationContext(pmap) ;
     }
 
     // Formatting various items
@@ -78,19 +79,19 @@ public class FmtUtils
         stringForNode( result, triple.getObject() );
         return result.toString();
     }
-    
+
     public static String stringForTriple(Triple triple, PrefixMapping prefixMap)
     {
         return stringForTriple(triple, sCxt(prefixMap)) ;
     }
-    
+
     public static String stringForTriple(Triple triple, SerializationContext sCxt)
     {
         StringBuilder result = new StringBuilder();
         stringForTriple(result, triple, sCxt) ;
         return result.toString();
     }
-    
+
     public static void stringForTriple(StringBuilder result, Triple triple, SerializationContext sCxt)
     {
         stringForNode(result, triple.getSubject(), sCxt );
@@ -99,7 +100,7 @@ public class FmtUtils
         result.append( " " );
         stringForNode(result, triple.getObject(), sCxt );
     }
-    
+
     public static String stringForQuad(Quad quad, PrefixMapping prefixMap) {
         return stringForQuad(quad, sCxt(prefixMap)) ;
     }
@@ -107,13 +108,13 @@ public class FmtUtils
     public static String stringForQuad(Quad quad)
     {
         StringBuilder sb = new StringBuilder() ;
-        
+
         if ( quad.getGraph() != null )
         {
             sb.append(stringForNode(quad.getGraph())) ;
             sb.append(" ") ;
         }
-        
+
         stringForNode(sb, quad.getSubject() );
         sb.append(" ") ;
         stringForNode(sb, quad.getPredicate());
@@ -121,13 +122,13 @@ public class FmtUtils
         stringForNode(sb, quad.getObject());
         return sb.toString() ;
     }
-    
+
     public static String stringForQuad(Quad quad, SerializationContext sCxt) {
         StringBuilder sb = new StringBuilder() ;
         stringForQuad(sb, quad, sCxt) ;
         return sb.toString() ;
     }
-    
+
     public static void stringForQuad(StringBuilder sb, Quad quad, SerializationContext sCxt)
     {
         if ( quad.getGraph() != null )
@@ -135,17 +136,17 @@ public class FmtUtils
             sb.append(stringForNode(quad.getGraph(), sCxt)) ;
             sb.append(" ") ;
         }
-        
+
         stringForNode(sb, quad.getSubject(), sCxt);
         sb.append(" ") ;
         stringForNode( sb, quad.getPredicate(), sCxt );
         sb.append(" ") ;
         stringForNode(sb, quad.getObject(), sCxt);
     }
-    
+
     public static void formatPattern(IndentedWriter out, BasicPattern pattern, SerializationContext sCxt)
     {
-        StringBuilder buffer = new StringBuilder() ;  
+        StringBuilder buffer = new StringBuilder() ;
         boolean first = true ;
         for (Triple triple : pattern )
         {
@@ -158,7 +159,7 @@ public class FmtUtils
             first = false ;
         }
     }
-    
+
     public static String stringForObject(Object obj)
     {
         if ( obj == null )
@@ -170,8 +171,8 @@ public class FmtUtils
             return stringForNode((Node)obj) ;
         return obj.toString() ;
     }
-    
-    
+
+
     public static String stringForRDFNode(RDFNode obj)
     {
         Model m = null ;
@@ -184,7 +185,7 @@ public class FmtUtils
     {
         return stringForNode(obj.asNode(), context) ;
     }
-    
+
     public static String stringForLiteral(Node_Literal literal, SerializationContext context)
     {
         StringBuilder result = new StringBuilder(  );
@@ -277,7 +278,7 @@ public class FmtUtils
             // No op.
             return ;
         }
-        
+
         if ( NodeUtils.isLangString(literal) ) {
             result.append("@") ;
             result.append(lang) ;
@@ -297,14 +298,14 @@ public class FmtUtils
         sbuff.append("\"") ;
         stringEsc(sbuff, str, true) ;
         sbuff.append("\"") ;
-        return sbuff.toString() ; 
+        return sbuff.toString() ;
     }
-    
+
     public static String stringForResource(Resource r)
     {
         return stringForResource(r, newSerializationContext(r.getModel())) ;
     }
-   
+
     public static String stringForResource(Resource r, SerializationContext context)
     {
         return stringForNode(r.asNode(), context) ;
@@ -375,6 +376,18 @@ public class FmtUtils
             result.append("?").append(n.getName()) ;
         } else if ( n.equals(Node.ANY) ) {
             result.append("ANY") ;
+        } else if ( n.isNodeTriple() ) {
+            Triple t = n.getTriple();
+            result.append("<< ");
+            stringForNode(result, t.getSubject(), context);
+            result.append(" ");
+            stringForNode(result, t.getPredicate(), context);
+            result.append(" ");
+            stringForNode(result, t.getObject(), context);
+            result.append(" >>");
+        } else if ( n.isNodeGraph() ) {
+            Log.warn(FmtUtils.class, "Can not turn a graph term node into a string") ;
+            result.append(" { graph }");
         } else {
             Log.warn(FmtUtils.class, "Failed to turn a node into a string: " + n) ;
             result.append(n.toString()) ;
@@ -405,7 +418,7 @@ public class FmtUtils
     {
         return stringForURI(uri, baseIRI, null) ;
     }
-    
+
     static public String stringForURI(String uri, SerializationContext context)
     {
         if ( context == null )
@@ -423,7 +436,7 @@ public class FmtUtils
 
     static public String stringForURI(String uri, PrefixMapping mapping)
     { return stringForURI(uri, null, mapping) ; }
-    
+
     static public String stringForURI(String uri, String base, PrefixMapping mapping)
     {
         StringBuilder result = new StringBuilder(  );
@@ -456,28 +469,28 @@ public class FmtUtils
         stringForURI( result, uri ) ;
     }
 
-    static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
-    
-    static public String abbrevByBase(String uri, String base)
-    {
-        if ( hasScheme(uri) )
-            return uri ;
-        IRI baseIRI = IRIResolver.iriFactory().construct(base) ;
-        IRI rel = baseIRI.relativize(uri, relFlags) ;
-        String r = rel.toString() ;
-        return r ;
+    public static String abbrevByBase(String uriStr, String base) {
+        try {
+            IRIx baseIRI = IRIx.create(base);
+            if ( baseIRI == null )
+                return null;
+            IRIx relInput = IRIx.create(uriStr);
+            IRIx relativized = baseIRI.relativize(relInput);
+            return (relativized==null) ? null : relativized.toString();
+        } catch (IRIException ex) {
+            return null;
+        }
     }
-    
+
     static private Pattern schemePattern = Pattern.compile("[A-Za-z]+:") ;
-    static private boolean hasScheme(String uriStr)
-    {
+    static private boolean hasScheme(String uriStr) {
         return schemePattern.matcher(uriStr).matches() ;
     }
-    
+
     private static String prefixFor(String uri, PrefixMapping mapping)
     {
         if ( mapping == null ) return null ;
-        
+
         String pname = mapping.shortForm(uri) ;
         if ( pname != uri && checkValidPrefixName(pname) )
             return pname ;
@@ -486,7 +499,7 @@ public class FmtUtils
             return pname ;
         return null ;
     }
-    
+
     private static boolean checkValidPrefixName(String prefixedName)
     {
         // Split it to get the parts.
@@ -494,43 +507,43 @@ public class FmtUtils
         if ( i < 0 )
             throw new ARQInternalErrorException("Broken short form -- "+prefixedName) ;
         String p = prefixedName.substring(0,i) ;
-        String x = prefixedName.substring(i+1) ; 
+        String x = prefixedName.substring(i+1) ;
         // Check legality
         if ( checkValidPrefix(p) && checkValidLocalname(x) )
             return true ;
         return false ;
     }
-    
+
     private static boolean checkValidPrefix(String prefixStr)
     {
         if ( prefixStr.startsWith("_"))
-            // Should .equals?? 
+            // Should .equals??
             return false ;
         return checkValidLocalname(prefixStr) ;
     }
-    
+
     private static boolean checkValidLocalname(String localname)
     {
         if ( localname.length() == 0 )
             return true ;
-        
+
         for ( int idx = 0 ; idx < localname.length() ; idx++ )
         {
             char ch = localname.charAt(idx) ;
             if ( ! validPNameChar(ch) )
                 return false ;
         }
-        
+
         // Test start and end - at least one character in the name.
-        
+
         if ( localname.endsWith(".") )
             return false ;
         if ( localname.startsWith(".") )
             return false ;
-        
+
         return true ;
     }
-    
+
     private static boolean validPNameChar(char ch)
     {
         if ( Character.isLetterOrDigit(ch) ) return true ;
@@ -540,11 +553,11 @@ public class FmtUtils
         if ( ch == '_' )    return true ;
         return false ;
     }
-    
+
     static boolean applyUnicodeEscapes = false ;
-    
+
     // Take unescape code from ParserBase.
-    
+
     // take a string and make it safe for writing.
     public static String stringEsc(String s)
     { return stringEsc( s, true ) ; }
@@ -555,7 +568,7 @@ public class FmtUtils
         stringEsc(sb, s, singleLineString) ;
         return sb.toString() ;
     }
-    
+
     public static void stringEsc(StringBuilder sbuff, String s)
     { stringEsc( sbuff,  s, true ) ; }
 
@@ -572,14 +585,14 @@ public class FmtUtils
                 sbuff.append(c) ;
                 continue ;
             }
-            
+
             // Characters to literally output.
-            // This would generate 7-bit safe files 
+            // This would generate 7-bit safe files
 //            if (c >= 32 && c < 127)
 //            {
 //                sbuff.append(c) ;
 //                continue;
-//            }    
+//            }
 
             // Whitespace
             if ( singleLineString && ( c == '\n' || c == '\r' || c == '\f' || c == '\t' ) )
@@ -590,9 +603,9 @@ public class FmtUtils
                 if (c == '\f') sbuff.append("\\f");
                 continue ;
             }
-            
+
             // Output as is (subject to UTF-8 encoding on output that is)
-            
+
             if ( ! applyUnicodeEscapes )
                 sbuff.append(c) ;
             else
@@ -615,14 +628,14 @@ public class FmtUtils
             }
         }
     }
-    
+
     static public void resetBNodeLabels() { bNodeMap = new NodeToLabelMapBNode("b", false) ; }
-    
+
     private static SerializationContext newSerializationContext(PrefixMapping prefixMapping)
     {
         return new SerializationContext(prefixMapping, bNodeMap) ;
     }
-    
+
     private static SerializationContext newSerializationContext(Prologue prologue)
     {
         return new SerializationContext(prologue, bNodeMap) ;

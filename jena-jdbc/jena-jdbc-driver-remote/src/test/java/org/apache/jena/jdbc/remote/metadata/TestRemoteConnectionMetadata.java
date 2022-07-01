@@ -23,10 +23,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.jena.fuseki.main.FusekiTestServer;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.metadata.results.AbstractDatabaseMetadataTests;
+import org.apache.jena.jdbc.remote.FusekiJdbcTestServer;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -39,14 +39,14 @@ import org.junit.BeforeClass;
  */
 public class TestRemoteConnectionMetadata extends AbstractDatabaseMetadataTests {
     
-    @BeforeClass public static void ctlBeforeClass() { FusekiTestServer.ctlBeforeClass(); }
-    @AfterClass  public static void ctlAfterClass()  { FusekiTestServer.ctlAfterClass(); }
-    @Before      public void ctlBeforeTest()         { FusekiTestServer.ctlBeforeTest(); }
-    @After       public void ctlAfterTest()          { FusekiTestServer.ctlAfterTest(); } 
+    @BeforeClass public static void ctlBeforeClass() { FusekiJdbcTestServer.ctlBeforeClass(); }
+    @AfterClass  public static void ctlAfterClass()  { FusekiJdbcTestServer.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()         { FusekiJdbcTestServer.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { FusekiJdbcTestServer.ctlAfterTest(); } 
 
     @Override
     protected JenaConnection getConnection() throws SQLException {
-        return new RemoteEndpointConnection(FusekiTestServer.serviceQuery(), FusekiTestServer.serviceUpdate(), JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT);
+        return new RemoteEndpointConnection(FusekiJdbcTestServer.serviceQuery(), FusekiJdbcTestServer.serviceUpdate(), JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT);
     }
 
     @Override

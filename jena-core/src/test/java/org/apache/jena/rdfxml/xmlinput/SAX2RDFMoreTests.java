@@ -22,15 +22,16 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import javax.xml.parsers.SAXParserFactory;
+
 import junit.framework.TestCase;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFReader ;
+import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.rdfxml.xmlinput.SAX2RDFTest.RDFEHArray ;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 public class SAX2RDFMoreTests extends TestCase {
 	public SAX2RDFMoreTests(String nm) {
@@ -42,7 +43,7 @@ public class SAX2RDFMoreTests extends TestCase {
 	    Model m2 = ModelFactory.createDefaultModel();
 	    RDFEHArray eh = new RDFEHArray();
 	    try ( InputStream in = new FileInputStream("testing/wg/rdfms-xmllang/test004.rdf") ) {
-	        RDFReader w = m.getReader();
+	        RDFReaderI w = m.getReader();
 	        w.setErrorHandler(eh);
 	        w.read(m, in, "http://example.org/");
 	    }
@@ -50,7 +51,7 @@ public class SAX2RDFMoreTests extends TestCase {
 	    RDFEHArray eh2 = new RDFEHArray();
 
 	    try ( InputStream in = new FileInputStream("testing/wg/rdfms-xmllang/test003.rdf") ) {
-	        XMLReader saxParser = XMLReaderFactory.createXMLReader();
+	        XMLReader saxParser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 	        SAX2Model handler = SAX2Model.create("http://example.org/", m2, "fr");
 	        SAX2RDF.installHandlers(saxParser, handler);
 	        handler.setErrorHandler(eh2);

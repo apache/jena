@@ -22,7 +22,6 @@ import java.util.Iterator ;
 
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
-import org.apache.jena.tdb.index.RangeIndex ;
 
 public class RangeIndexWrapper implements RangeIndex
 {

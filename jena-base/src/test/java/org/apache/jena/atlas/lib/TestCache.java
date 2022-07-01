@@ -18,14 +18,15 @@
 
 package org.apache.jena.atlas.lib;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays ;
 import java.util.Collection ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Cache ;
-import org.apache.jena.atlas.lib.CacheFactory ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
@@ -33,7 +34,7 @@ import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 
 @RunWith(Parameterized.class)
-public class TestCache extends BaseTest
+public class TestCache
 {
     // Tests do not apply to cache1.
     private static interface CacheMaker<K,V> { Cache<K,V> make(int size) ; String name() ; } 

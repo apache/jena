@@ -1,0 +1,18 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ex: <http://example.org/shacl/tests/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+ex:s1 a sh:NodeShape ;
+ sh:targetNode ex:j, ex:i ;
+ sh:class ex:C .
+
+_:p1 sh:inversePath _:p2 .
+
+_:p2 sh:zeroOrMorePath ( _:p2 ) .
+
+_:p2 sh:zeroOrOnePath [ rdf:rest rdf:nil ] .
+
+_:p3 sh:alternativePath ( ex:p ) ;
+  rdfs:comment "invalid path" .
+

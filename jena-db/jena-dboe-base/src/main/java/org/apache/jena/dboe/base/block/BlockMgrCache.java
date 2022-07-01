@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.base.block ;
+package org.apache.jena.dboe.base.block;
 
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.jena.atlas.lib.Cache ;
-import org.apache.jena.atlas.lib.CacheFactory ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Caching block manager - this is an LRU cache */
 public class BlockMgrCache extends BlockMgrSync {
@@ -35,82 +35,82 @@ public class BlockMgrCache extends BlockMgrSync {
     // As sync is on "this", it also covers all the other operations via
     // BlockMgrSync
 
-    private static Logger            log            = LoggerFactory.getLogger(BlockMgrCache.class) ;
+    private static Logger            log            = LoggerFactory.getLogger(BlockMgrCache.class);
     // Read cache : always present.
-    private final Cache<Long, Block> readCache ;
+    private final Cache<Long, Block> readCache;
 
     // Delayed dirty writes. May be present, may not.
-    private final Cache<Long, Block> writeCache ;
+    private final Cache<Long, Block> writeCache;
 
     // Also enable the logging level.
-    public static boolean            globalLogging  = false ;    
-    private boolean                  logging        = false ;
+    public static boolean            globalLogging  = false;
+    private boolean                  logging        = false;
     // ---- stats
-    long                             cacheReadHits  = 0 ;
-    long                             cacheMisses    = 0 ;
-    long                             cacheWriteHits = 0 ;
+    long                             cacheReadHits  = 0;
+    long                             cacheMisses    = 0;
+    long                             cacheWriteHits = 0;
 
     static BlockMgr create(int readSlots, int writeSlots, final BlockMgr blockMgr) {
         if ( readSlots < 0 && writeSlots < 0 )
-            return blockMgr ;
-        return new BlockMgrCache(readSlots, writeSlots, blockMgr) ;
+            return blockMgr;
+        return new BlockMgrCache(readSlots, writeSlots, blockMgr);
     }
 
     private BlockMgrCache(int readSlots, int writeSlots, final BlockMgr blockMgr) {
-        super(blockMgr) ;
+        super(blockMgr);
         // Caches are related so we can't use a Getter for cache management.
         if ( readSlots < -1 )
-            readCache = CacheFactory.createNullCache() ;
+            readCache = CacheFactory.createNullCache();
         else
-            readCache = CacheFactory.createCache(readSlots) ;
+            readCache = CacheFactory.createCache(readSlots);
         if ( writeSlots <= 0 )
-            writeCache = null ;
+            writeCache = null;
         else {
-            writeCache = CacheFactory.createCache(writeSlots) ;
-            writeCache.setDropHandler((id, block) -> { 
+            writeCache = CacheFactory.createCache(writeSlots);
+            writeCache.setDropHandler((id, block) -> {
                 // We're inside a synchronized operation at this point.
-                log("Cache spill: write block: %d", id) ;
+                log("Cache spill: write block: %d", id);
                 if ( block == null ) {
-                    log.warn("Write cache: " + id + " dropping an entry that isn't there") ;
-                    return ;
+                    log.warn("Write cache: " + id + " dropping an entry that isn't there");
+                    return;
                 }
                 // Force the block to be writtern
                 // by sending it to the wrapped BlockMgr
-                BlockMgrCache.super.write(block) ;
-            }) ;
+                BlockMgrCache.super.write(block);
+            });
         }
     }
 
     @Override
     synchronized public void resetAlloc(long boundary) {
         // On abort, need to clear the caches of inaccesible blocks.
-        // An abort is rare (?). We do very carefully. 
+        // An abort is rare (?). We do very carefully.
         // Could (probably) delete in the loop or use Iteator.remove on keys().
         // (Check the Cache contract)
-        List<Long> removals = new ArrayList<>() ;
+        List<Long> removals = new ArrayList<>();
         readCache.keys().forEachRemaining((x)->{
             if ( x >= boundary )
-                removals.add(x) ; 
-        }) ;
-        removals.forEach(readCache::remove) ;
-        removals.clear() ;
+                removals.add(x);
+        });
+        removals.forEach(readCache::remove);
+        removals.clear();
         writeCache.keys().forEachRemaining((x)->{
             if ( x >= boundary )
-                removals.add(x) ; 
-        }) ;
-        removals.forEach(writeCache::remove) ;
-        super.resetAlloc(boundary); 
+                removals.add(x);
+        });
+        removals.forEach(writeCache::remove);
+        super.resetAlloc(boundary);
     }
-    
+
     @Override
     synchronized public Block getRead(long id) {
         // A Block may be in the read cache or the write cache.
         // It can be just in the write cache because the read cache is finite.
-        Block blk = readCache.getIfPresent(id) ;
+        Block blk = readCache.getIfPresent(id);
         if ( blk != null ) {
-            cacheReadHits++ ;
-            log("Hit(r->r) : %d", id) ;
-            return blk ;
+            cacheReadHits++;
+            log("Hit(r->r) : %d", id);
+            return blk;
         }
 
         // A requested block may be in the other cache.
@@ -119,208 +119,208 @@ public class BlockMgrCache extends BlockMgrSync {
         if ( writeCache != null )
             // Might still be in the dirty blocks.
             // Leave in write cache
-            blk = writeCache.getIfPresent(id) ;
+            blk = writeCache.getIfPresent(id);
         if ( blk != null ) {
-            cacheWriteHits++ ;
-            log("Hit(r->w) : %d", id) ;
-            return blk ;
+            cacheWriteHits++;
+            log("Hit(r->w) : %d", id);
+            return blk;
         }
 
-        cacheMisses++ ;
-        log("Miss/r: %d", id) ;
-        blk = super.getRead(id) ;
-        readCache.put(id, blk) ;
-        return blk ;
+        cacheMisses++;
+        log("Miss/r: %d", id);
+        blk = super.getRead(id);
+        readCache.put(id, blk);
+        return blk;
     }
 
     @Override
     synchronized public Block getWrite(long _id) {
-        Long id = _id ;
-        Block blk = null ;
+        Long id = _id;
+        Block blk = null;
         if ( writeCache != null )
-            blk = writeCache.getIfPresent(id) ;
+            blk = writeCache.getIfPresent(id);
         if ( blk != null ) {
-            cacheWriteHits++ ;
-            log("Hit(w->w) : %d", id) ;
-            return blk ;
+            cacheWriteHits++;
+            log("Hit(w->w) : %d", id);
+            return blk;
         }
 
         // blk is null.
         // A requested block may be in the other cache. Promote it.
 
         if ( readCache.containsKey(id) ) {
-            blk = readCache.getIfPresent(id) ;
-            cacheReadHits++ ;
-            log("Hit(w->r) : %d", id) ;
-            blk = promote(blk) ;
-            return blk ;
+            blk = readCache.getIfPresent(id);
+            cacheReadHits++;
+            log("Hit(w->r) : %d", id);
+            blk = promote(blk);
+            return blk;
         }
 
         // Did not find.
-        cacheMisses++ ;
-        log("Miss/w: %d", id) ;
+        cacheMisses++;
+        log("Miss/w: %d", id);
         // Pass operation to wrapper.
-        blk = super.getWrite(id) ;
+        blk = super.getWrite(id);
         if ( writeCache != null )
-            writeCache.put(id, blk) ;
-        return blk ;
+            writeCache.put(id, blk);
+        return blk;
     }
 
     @Override
     synchronized public Block promote(Block block) {
-        Long id = block.getId() ;
-        readCache.remove(id) ;
-        Block block2 = super.promote(block) ;
+        Long id = block.getId();
+        readCache.remove(id);
+        Block block2 = super.promote(block);
         if ( writeCache != null )
-            writeCache.put(id, block2) ;
-        return block ;
+            writeCache.put(id, block2);
+        return block;
     }
 
     @Override
     synchronized public void write(Block block) {
-        writeCache(block) ;
-        super.write(block) ;
+        writeCache(block);
+        super.write(block);
     }
 
     @Override
     synchronized public void overwrite(Block block) {
-        Long id = block.getId() ;
+        Long id = block.getId();
         // It can be a read block (by the transaction), now being written for
         // real (enacting a transaction).
-        super.overwrite(block) ;
+        super.overwrite(block);
         // Keep read cache up-to-date.
         // Must at least expel the read block (which is not the overwrite
         // block).
-        readCache.put(id, block) ;
+        readCache.put(id, block);
     }
 
     private void writeCache(Block block) {
-        Long id = block.getId() ;
-        log("WriteCache : %d", id) ;
+        Long id = block.getId();
+        log("WriteCache : %d", id);
         // Should not be in the read cache due to a getWrite earlier.
         if ( readCache.containsKey(id) )
-            log.warn("write: Block in the read cache") ;
+            log.warn("write: Block in the read cache");
         if ( writeCache != null ) {
-            writeCache.put(id, block) ;
-            return ;
+            writeCache.put(id, block);
+            return;
         }
     }
 
     @Override
     synchronized public void free(Block block) {
-        Long id = block.getId() ;
-        log("Free  : %d", id) ;
+        Long id = block.getId();
+        log("Free  : %d", id);
         if ( readCache.containsKey(id) ) {
-            log.warn("Freeing block from read cache") ;
-            readCache.remove(id) ;
+            log.warn("Freeing block from read cache");
+            readCache.remove(id);
         }
         if ( writeCache != null )
-            writeCache.remove(id) ;
-        super.free(block) ;
+            writeCache.remove(id);
+        super.free(block);
     }
 
     @Override
     synchronized public void sync() {
-        _sync(false) ;
+        _sync(false);
     }
 
     @Override
     synchronized public void syncForce() {
-        _sync(true) ;
+        _sync(true);
     }
 
     @Override
     synchronized public void close() {
         if ( writeCache != null )
-            log("close (" + writeCache.size() + " blocks)") ;
-        syncFlush() ;
-        super.close() ;
+            log("close (" + writeCache.size() + " blocks)");
+        syncFlush();
+        super.close();
     }
 
     @Override
     public String toString() {
-        return "Cache:" + super.blockMgr.toString() ;
+        return "Cache:" + super.blockMgr.toString();
     }
 
     private void log(String fmt, Object... args) {
         if ( !logging && !globalLogging )
-            return ;
-        String msg = String.format(fmt, args) ;
+            return;
+        String msg = String.format(fmt, args);
         if ( getLabel() != null )
-            msg = getLabel() + " : " + msg ;
-        log.debug(msg) ;
+            msg = getLabel() + " : " + msg;
+        log.debug(msg);
     }
 
     private void _sync(boolean force) {
         if ( true ) {
-            String x = "" ;
+            String x = "";
             if ( getLabel() != null )
-                x = getLabel() + " : " ;
-            log("%sH=%d, M=%d, W=%d", x, cacheReadHits, cacheMisses, cacheWriteHits) ;
+                x = getLabel() + " : ";
+            log("%sH=%d, M=%d, W=%d", x, cacheReadHits, cacheMisses, cacheWriteHits);
         }
 
         if ( writeCache != null )
-            log("sync (%d blocks)", writeCache.size()) ;
+            log("sync (%d blocks)", writeCache.size());
         else
-            log("sync") ;
-        boolean somethingWritten = syncFlush() ;
+            log("sync");
+        boolean somethingWritten = syncFlush();
 
         if ( force ) {
-            log("syncForce underlying BlockMgr") ;
-            super.syncForce() ;
+            log("syncForce underlying BlockMgr");
+            super.syncForce();
         } else if ( somethingWritten ) {
-            log("sync underlying BlockMgr") ;
-            super.sync() ;
+            log("sync underlying BlockMgr");
+            super.sync();
         } else
-            log("Empty sync") ;
+            log("Empty sync");
     }
 
     private boolean syncFlush() {
         if ( writeCache == null )
-            return false ;
+            return false;
 
-        boolean didSync = false ;
+        boolean didSync = false;
 
-        log("Flush (write cache)") ;
+        log("Flush (write cache)");
 
-        long N = writeCache.size() ;
-        Long[] ids = new Long[(int)N] ;
+        long N = writeCache.size();
+        Long[] ids = new Long[(int)N];
 
         // Single writer (sync is a write operation MRSW)
         // Iterating is safe.
 
-        Iterator<Long> iter = writeCache.keys() ;
+        Iterator<Long> iter = writeCache.keys();
         if ( iter.hasNext() )
-            didSync = true ;
+            didSync = true;
 
         // Need to get all then delete else concurrent modification exception.
-        for ( int i = 0 ; iter.hasNext() ; i++ )
-            ids[i] = iter.next() ;
+        for ( int i = 0; iter.hasNext() ; i++ )
+            ids[i] = iter.next();
 
-        for ( int i = 0 ; i < N ; i++ ) {
-            Long id = ids[i] ;
-            expelEntry(id) ;
+        for ( int i = 0; i < N ; i++ ) {
+            Long id = ids[i];
+            expelEntry(id);
         }
         if ( didSync )
-            super.sync() ;
-        return didSync ;
+            super.sync();
+        return didSync;
     }
 
     // Write out when flushed.
     // Do not call from drop handler.
     private void expelEntry(Long id) {
-        Block block = writeCache.getIfPresent(id) ;
+        Block block = writeCache.getIfPresent(id);
         if ( block == null ) {
-            log.warn("Write cache: " + id + " expelling entry that isn't there") ;
-            return ;
+            log.warn("Write cache: " + id + " expelling entry that isn't there");
+            return;
         }
-        log("Expel (write cache): %d", id) ;
+        log("Expel (write cache): %d", id);
         // This pushes the block to the BlockMgr being cached.
-        super.write(block) ;
-        writeCache.remove(id) ;
+        super.write(block);
+        writeCache.remove(id);
 
         // Move it into the readCache because it's often read after writing
         // and the read cache is often larger.
-        readCache.put(id, block) ;
+        readCache.put(id, block);
     }
 }

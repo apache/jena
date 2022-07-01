@@ -32,7 +32,7 @@ import org.apache.jena.sparql.function.FunctionFactory ;
 import org.apache.jena.sparql.function.FunctionRegistry ;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11 ;
-import org.apache.jena.sparql.sse.builders.ExprBuildException ;
+import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
 
 /**
  * A function factory for managing user defined functions aka function macros.
@@ -128,14 +128,14 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
     /**
      * Creates a function for the given URI
      * 
-     * @throws ExprBuildException
+     * @throws SSE_ExprBuildException
      *             Thrown if the given URI is not a known function
      */
     @Override
     public Function create(String uri) {
         UserDefinedFunctionDefinition def = this.definitions.get(uri);
         if (def == null)
-            throw new ExprBuildException("Function <" + uri + "> not known by this function factory");
+            throw new SSE_ExprBuildException("Function <" + uri + "> not known by this function factory");
         return def.newFunctionInstance();
     }
 

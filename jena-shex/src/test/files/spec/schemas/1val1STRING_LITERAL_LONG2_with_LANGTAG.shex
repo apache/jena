@@ -1,0 +1,4 @@
+# source: langtagged_LONG.ttl
+<http://a.example/S1> {
+   <http://a.example/p1> ["""STRING_LITERAL_LONG2"""@en]
+}

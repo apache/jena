@@ -129,7 +129,7 @@ public class XSDDateTime extends AbstractDateTime {
         int[] data = new int[TOTAL_SIZE];
 
         Calendar cal = (Calendar)date.clone();
-        // By observation (Sun Java 6), this is necesary (to force internal calculations presumably) ...
+        // By observation (Sun Java 6), this is necessary (to force internal calculations presumably) ...
         cal.get(Calendar.ZONE_OFFSET) ;
         // ... then we can rebase the calendar
         cal.setTimeZone(TimeZone.getTimeZone("GMT")); 

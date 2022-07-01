@@ -21,5 +21,5 @@ package org.apache.jena.dboe.base.block;
 import org.apache.jena.dboe.base.file.FileSet;
 
 public interface BlockMgrBuilder {
-    BlockMgr buildBlockMgr(FileSet fileSet, String ext, BlockParams indexParams) ;
+    BlockMgr buildBlockMgr(FileSet fileSet, String ext, BlockParams indexParams);
 }

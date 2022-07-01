@@ -19,9 +19,8 @@
 package org.apache.jena.sparql.core.assembler;
 
 import static org.apache.jena.assembler.JA.data;
-import static org.apache.jena.query.DatasetFactory.createTxnMem;
 import static org.apache.jena.riot.RDFDataMgr.read;
-import static org.apache.jena.sparql.core.assembler.AssemblerUtils.setContext;
+import static org.apache.jena.sparql.core.assembler.AssemblerUtils.mergeContext;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pGraphName;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pNamedGraph;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue;
@@ -29,31 +28,34 @@ import static org.apache.jena.sparql.util.graph.GraphUtils.multiValueAsString;
 import static org.apache.jena.sparql.util.graph.GraphUtils.multiValueResource;
 
 import org.apache.jena.assembler.Assembler;
-import org.apache.jena.assembler.Mode;
-import org.apache.jena.assembler.assemblers.AssemblerBase;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.system.Txn;
 import org.apache.jena.vocabulary.RDF;
 
 /**
  * An {@link Assembler} that creates in-memory {@link Dataset}s.
  */
-public class InMemDatasetAssembler extends AssemblerBase implements Assembler {
+public class InMemDatasetAssembler extends DatasetAssembler {
 
     public static Resource getType() {
         return DatasetAssemblerVocab.tMemoryDataset ;
     }
 
+
     @Override
-    public Dataset open(final Assembler assembler, final Resource root, final Mode mode) {
+    public DatasetGraph createDataset(Assembler a, Resource root) {
         // Old name : bypass.
         if ( ! root.hasProperty( RDF.type, DatasetAssemblerVocab.tDatasetTxnMem ) )
             checkType(root, DatasetAssemblerVocab.tMemoryDataset);
-        final Dataset dataset = createTxnMem();
-        setContext(root, dataset.getContext());
+        final DatasetGraph dataset = DatasetGraphFactory.createTxnMem();
+        mergeContext(root, dataset.getContext());
 
-        Txn.executeWrite(dataset, ()->{ 
+        Txn.executeWrite(dataset, ()->{
             // Load data into the default graph
             // This also loads quads into the dataset.
             multiValueAsString(root, data)
@@ -64,7 +66,10 @@ public class InMemDatasetAssembler extends AssemblerBase implements Assembler {
                 final String graphName = getAsStringValue(namedGraphResource, pGraphName);
                 if (namedGraphResource.hasProperty(data)) {
                     multiValueAsString(namedGraphResource, data)
-                        .forEach(namedGraphData -> read(dataset.getNamedModel(graphName), namedGraphData));
+                            .forEach(namedGraphData -> {
+                                Node gn = NodeFactory.createURI(graphName);
+                                read(dataset.getGraph(gn), namedGraphData);
+                            });
                 }
             });
         });

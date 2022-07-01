@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.core;
 
-import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
-
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Objects ;
@@ -28,8 +26,8 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorConcat ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.shared.JenaException ;
-import static org.apache.jena.sparql.util.graph.GraphUtils.* ;
 
 /** Base class for implementations of a DatasetGraph as a set of graphs.
  * This can be a fixed collection or a changeable collection depending
@@ -58,7 +56,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p , Node o)
     {
-        return triples2quadsDftGraph(getDefaultGraph().find(s, p, o)) ;
+        return G.triples2quadsDftGraph(getDefaultGraph().find(s, p, o)) ;
     }
     
     @Override
@@ -67,7 +65,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
         Graph graph = fetchGraph(g) ;
         if ( graph == null )
             return Iter.nullIter() ;
-        return triples2quads(g, graph.find(s, p, o)) ;
+        return G.triples2quads(g, graph.find(s, p, o)) ;
     }
 
     @Override

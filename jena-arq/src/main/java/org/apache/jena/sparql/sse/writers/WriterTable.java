@@ -18,55 +18,49 @@
 
 package org.apache.jena.sparql.sse.writers;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.sse.Tags;
 
 public class WriterTable
 {
-    public static void output(IndentedWriter out, Table table, SerializationContext sCxt)
-    {
-        WriterLib.start(out, Tags.tagTable, WriterLib.NoNL) ;
-        WriterNode.outputVars(out, table.getVars(), sCxt) ;
-        out.println() ;
-        outputPlain(out, table, sCxt) ;
-        WriterLib.finish(out, Tags.tagTable) ;
+    public static void output(IndentedWriter out, Table table, SerializationContext sCxt) {
+        WriterLib.start(out, Tags.tagTable, WriterLib.NoNL);
+        WriterNode.outputVars(out, table.getVars(), sCxt);
+        out.println();
+        outputPlain(out, table, sCxt);
+        WriterLib.finish(out, Tags.tagTable);
     }
-    
-    public static void outputPlain(IndentedWriter out, Table table, SerializationContext sCxt)
-    {
-        QueryIterator qIter = table.iterator(null) ; 
-        for ( ; qIter.hasNext(); )
-        {
-            Binding b = qIter.nextBinding() ;
-            output(out, b, sCxt) ;
-            out.println() ;
+
+    public static void outputPlain(IndentedWriter out, Table table, SerializationContext sCxt) {
+        QueryIterator qIter = table.iterator(null);
+        for ( ; qIter.hasNext() ; ) {
+            Binding b = qIter.nextBinding();
+            output(out, b, sCxt);
+            out.println();
         }
-        qIter.close() ;
+        qIter.close();
     }
-    
-    public static void output(IndentedWriter out, Binding binding, SerializationContext sCxt )
-    {
-        WriterLib.start(out, Tags.tagRow, WriterLib.NoSP) ;
-        for ( Iterator<Var> iter = binding.vars() ; iter.hasNext() ; )
-        {
-            Var v = iter.next() ;
-            Node n = binding.get(v) ;
-            out.print(" ") ;
-            WriterLib.start2(out) ;
-            out.print(FmtUtils.stringForNode(v, sCxt)) ;
-            out.print(" ") ;
-            out.print(FmtUtils.stringForNode(n, sCxt)) ;
-            WriterLib.finish2(out) ;
+
+    public static void output(IndentedWriter out, Binding binding, SerializationContext sCxt) {
+        WriterLib.start(out, Tags.tagRow, WriterLib.NoSP);
+        for ( Iterator<Var> iter = binding.vars() ; iter.hasNext() ; ) {
+            Var v = iter.next();
+            Node n = binding.get(v);
+            out.print(" ");
+            WriterLib.start2(out);
+            WriterNode.output(out, v, sCxt);
+            out.print(" ");
+            WriterNode.output(out, n, sCxt);
+            WriterLib.finish2(out);
         }
-        WriterLib.finish(out, Tags.tagRow) ;
+        WriterLib.finish(out, Tags.tagRow);
     }
 }

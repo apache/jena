@@ -18,17 +18,17 @@
 
 package org.apache.jena.sparql.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
 /** Directly call the view mechanism */
-public class TestDatasetGraphViewGraphs extends AbstractTestGraphOverDataset
+public class TestDatasetGraphViewGraphs extends AbstractTestGraphOverDatasetGraph
 {
     @Override
     protected DatasetGraph createBaseDSG() { return DatasetGraphFactory.create() ; }

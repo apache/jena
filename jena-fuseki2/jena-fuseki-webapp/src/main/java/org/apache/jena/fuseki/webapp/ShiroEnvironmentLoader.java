@@ -18,22 +18,20 @@
 
 package org.apache.jena.fuseki.webapp;
 
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.nio.file.Path ;
-import java.nio.file.Paths ;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
-import javax.servlet.ServletContext ;
-import javax.servlet.ServletContextEvent ;
-import javax.servlet.ServletContextListener ;
-
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.util.FileUtils ;
-import org.apache.shiro.config.ConfigurationException ;
-import org.apache.shiro.io.ResourceUtils ;
-import org.apache.shiro.web.env.EnvironmentLoader ;
-import org.apache.shiro.web.env.ResourceBasedWebEnvironment ;
-import org.apache.shiro.web.env.WebEnvironment ;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.irix.IRIs;
+import org.apache.shiro.config.ConfigurationException;
+import org.apache.shiro.io.ResourceUtils;
+import org.apache.shiro.web.env.EnvironmentLoader;
+import org.apache.shiro.web.env.ResourceBasedWebEnvironment;
+import org.apache.shiro.web.env.WebEnvironment;
 
 /** A place to perform Fuseki-specific initialization of Apache Shiro.
  *  Runs after listener {@link FusekiServerEnvironmentInit} and before {@link FusekiServerListener}.
@@ -41,21 +39,21 @@ import org.apache.shiro.web.env.WebEnvironment ;
  *  different deployment setups.
  */
 public class ShiroEnvironmentLoader extends EnvironmentLoader implements ServletContextListener {
-    private ServletContext servletContext ; 
-    
+    private ServletContext servletContext;
+
     public ShiroEnvironmentLoader() {}
-    
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        FusekiWebapp.formatBaseArea() ; 
-        this.servletContext = sce.getServletContext() ;
-        try { 
+        FusekiWebapp.formatBaseArea();
+        this.servletContext = sce.getServletContext();
+        try {
             // Shiro.
             initEnvironment(servletContext);
         } catch (ConfigurationException  ex) {
             Fuseki.configLog.error("Shiro initialization failed: "+ex.getMessage());
             // Exit?
-            throw ex ;
+            throw ex;
         }
     }
 
@@ -64,100 +62,100 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
         destroyEnvironment(sce.getServletContext());
     }
 
-    /** 
+    /**
      * Normal Shiro initialization only supports one location for an INI file.
-     *  
-     * When given multiple locations for the shiro.ini file, and 
+     *
+     * When given multiple locations for the shiro.ini file, and
      * if a {@link ResourceBasedWebEnvironment}, check the list of configuration
-     * locations, testing whether the name identified an existing resource.  
+     * locations, testing whether the name identified an existing resource.
      * For the first resource name found to exist, reset the {@link ResourceBasedWebEnvironment}
-     * to name that resource alone so the normal Shiro initialization  
+     * to name that resource alone so the normal Shiro initialization
      */
     @Override
     protected void customizeEnvironment(WebEnvironment environment) {
         if ( environment instanceof ResourceBasedWebEnvironment ) {
-            ResourceBasedWebEnvironment env = (ResourceBasedWebEnvironment)environment ;
-            String[] locations = env.getConfigLocations() ;
-            String loc = huntForShiroIni(locations) ;
+            ResourceBasedWebEnvironment env = (ResourceBasedWebEnvironment)environment;
+            String[] locations = env.getConfigLocations();
+            String loc = huntForShiroIni(locations);
             Fuseki.configLog.info("Shiro file: "+loc);
             if (loc != null )
-                locations = new String[] {loc} ;
+                locations = new String[] {loc};
             env.setConfigLocations(locations);
         }
     }
-    
-    private static final String FILE = "file" ;
-    
+
+    private static final String FILE = "file";
+
     /** Look for a Shiro ini file, or return null */
     private static String huntForShiroIni(String[] locations) {
-        FusekiEnv.setEnvironment() ;
+        FusekiEnv.setEnvironment();
         Fuseki.init();
         for ( String loc : locations ) {
             // If file:, look for that file.
-            // If a relative name without scheme, look in FUSEKI_BASE, FUSEKI_HOME, webapp. 
-            String scheme = FileUtils.getScheme(loc) ;
-            
+            // If a relative name without scheme, look in FUSEKI_BASE, FUSEKI_HOME, webapp.
+            String scheme = IRIs.scheme(loc);
+
             // Covers C:\\ as a "scheme name"
             if ( scheme != null ) {
                 if ( scheme.equalsIgnoreCase(FILE)) {
                     // Test file: for exists
-                    Path p = Paths.get(loc.substring(FILE.length()+1)) ;
+                    Path p = Path.of(loc.substring(FILE.length()+1));
                     if ( ! p.toFile().exists() )
-                        continue ;
+                        continue;
                     // Fall through.
                 }
-                // Can't test - try 
-                return loc ;
+                // Can't test - try
+                return loc;
             }
             // No scheme .
-            Path p = Paths.get(loc) ;
-            
-            String fn = resolve(FusekiEnv.FUSEKI_BASE, p) ;
+            Path p = Path.of(loc);
+
+            String fn = resolve(FusekiEnv.FUSEKI_BASE, p);
             if ( fn != null )
-                return "file://"+fn ;
-            fn = resolve(FusekiEnv.FUSEKI_HOME, p) ;
+                return "file://"+fn;
+            fn = resolve(FusekiEnv.FUSEKI_HOME, p);
             if ( fn != null )
-                return "file://"+fn ;
-            
+                return "file://"+fn;
+
             // Try in webapp.
-            
+
             try ( InputStream is = ResourceUtils.getInputStreamForPath(loc); ) {
-                boolean exists = (is != null ) ;
-                return loc ;
+                boolean exists = (is != null );
+                return loc;
             } catch (IOException e) { }
         }
-        return null ;
-    }
-    
-    /** Directory + name -> filename if it exists */ 
-    private static String resolve(Path dir, Path file) {
-        Path p = dir.resolve(file) ;
-        if ( p.toFile().exists() )
-            return p.normalize().toString() ;
-        return null ;
+        return null;
     }
 
-//    /** 
+    /** Directory + name -> filename if it exists */
+    private static String resolve(Path dir, Path file) {
+        Path p = dir.resolve(file);
+        if ( p.toFile().exists() )
+            return p.normalize().toString();
+        return null;
+    }
+
+//    /**
 //     * Test whether a name identified an existing resource
-//     * @param resource    A String in Shiro-resource name format (e.g. URL scheme names) 
-//     * @return True/false as to whether the resource can be found or not. 
+//     * @param resource    A String in Shiro-resource name format (e.g. URL scheme names)
+//     * @return True/false as to whether the resource can be found or not.
 //     */
-//    
+//
 //    private boolean resourceExists(String resource) {
 //        try {
 //            // See IniWebEnvironment.convertPathToIni
 //            if (!ResourceUtils.hasResourcePrefix(resource)) {
 //                //Sort out "path" and open as a webapp resource.
 //                resource = WebUtils.normalize(resource);
-//                URL url = servletContext.getResource(resource) ;
-//                return ( url == null ) ;
+//                URL url = servletContext.getResource(resource);
+//                return ( url == null );
 //            } else {
-//                // Treat as a plain name. 
+//                // Treat as a plain name.
 //                InputStream is = ResourceUtils.getInputStreamForPath(resource);
-//                boolean exists = (is != null ) ;
-//                is.close() ;
-//                return exists ;
+//                boolean exists = (is != null );
+//                is.close();
+//                return exists;
 //            }
-//        } catch (IOException e) { return false ; }
+//        } catch (IOException e) { return false; }
 //    }
 }

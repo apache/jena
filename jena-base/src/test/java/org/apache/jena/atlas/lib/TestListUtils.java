@@ -19,15 +19,15 @@
 package org.apache.jena.atlas.lib;
 
 import static org.apache.jena.atlas.lib.ListUtils.unique ;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList ;
 import java.util.Arrays ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestListUtils extends BaseTest
+public class TestListUtils
 {
     @Test public void list01() 
     {

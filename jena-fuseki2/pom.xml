@@ -21,13 +21,13 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
   <name>Apache Jena - Fuseki - A SPARQL 1.1 Server</name>
   <artifactId>jena-fuseki</artifactId>
-  <version>3.11.0-SNAPSHOT</version>
+  <version>4.6.0-SNAPSHOT</version>
 
   <description>Fuseki is a SPARQL 1.1 Server which provides the SPARQL query, 
   SPARQL update and SPARQL graph store protocols.
@@ -35,38 +35,48 @@
 
   <packaging>pom</packaging>
   
-  <url>http://jena.apache.org/</url>
+  <url>https://jena.apache.org/</url>
 
   <organization>
     <name>Apache Jena</name>
-    <url>http://jena.apache.org/</url>
+    <url>https://jena.apache.org/</url>
   </organization>
 
   <licenses>
     <license>
       <name>Apache 2.0 License</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
 
   <properties>
-    <ver.jetty>9.4.12.v20180830</ver.jetty>
-    <ver.shiro>1.2.6</ver.shiro>
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
   </properties>
 
   <modules>
     <module>jena-fuseki-core</module>
+
+    <!-- Graph access control -->
     <module>jena-fuseki-access</module>
 
+    <!-- Fuseki main server -->
     <module>jena-fuseki-main</module>
-    <module>jena-fuseki-server</module>
 
+    <!-- Fuseki modules for Fuseki main-->
+    <!-- ... -->
+
+    <!-- Build main jar -->
+    <module>jena-fuseki-server</module>
+    
+    <!-- Fuseki Webapp -->
     <module>jena-fuseki-webapp</module>
+    <module>jena-fuseki-ui</module>
     <module>jena-fuseki-war</module>
     <module>jena-fuseki-fulljar</module>
 
+    <module>jena-fuseki-docker</module>
+
+    <!-- Binary distribution -->
     <module>apache-jena-fuseki</module>
   </modules>
   

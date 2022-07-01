@@ -44,6 +44,7 @@ public interface XSAttributeUse extends XSObject {
      * 
      * @deprecated Use getValueConstraintValue().getNormalizedValue() instead
      */
+    @Deprecated
     public String getConstraintValue();
 
     /**
@@ -56,6 +57,7 @@ public interface XSAttributeUse extends XSObject {
      * 
      * @deprecated Use getValueConstraintValue().getActualValue() instead
      */
+    @Deprecated
     public Object getActualVC()
                                        throws XSException;
 
@@ -75,6 +77,7 @@ public interface XSAttributeUse extends XSObject {
      * 
      * @deprecated Use getValueConstraintValue().getActualValueType() instead
      */
+    @Deprecated
     public short getActualVCType()
                                        throws XSException;
 
@@ -93,6 +96,7 @@ public interface XSAttributeUse extends XSObject {
      * 
      * @deprecated Use getValueConstraintValue().getListValueTypes() instead
      */
+    @Deprecated
     public ShortList getItemValueTypes()
                                        throws XSException;
 

@@ -25,26 +25,26 @@ import java.io.OutputStream ;
 import org.apache.jena.atlas.io.IO ;
 
 public class TypedOutputStream extends FilterOutputStream
-{ 
+{
     private final MediaType mediaType ;
-    
+
     public TypedOutputStream(OutputStream out)
     { this(out, null) ; }
-    
+
     public TypedOutputStream(OutputStream out, MediaType mediaType)
     {
         super(out) ;
         this.mediaType = mediaType ;
     }
-    
+
     public TypedOutputStream(OutputStream out, String mediaType, String charset)
     {
         this(out, MediaType.create(mediaType, charset)) ;
     }
-    
-    public String getMediaType()                { return mediaType.getContentType() ; }
+
+    public String getMediaType()                { return mediaType.getContentTypeStr() ; }
     public String getCharset()                  { return mediaType.getCharset() ; }
-    
+
     @Override
     public void close()
     {

@@ -17,13 +17,13 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.util.Collection ;
-import java.util.List ;
-import java.util.Map ;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.query.Query ;
-import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.query.Query;
+import org.apache.jena.sparql.core.Var;
 
 /**
  * Handler for a dataset.
@@ -31,104 +31,107 @@ import org.apache.jena.sparql.core.Var ;
  */
 public class DatasetHandler implements Handler {
 
-	// the query to manage
-	private final Query query;
+    // the query to manage
+    private final Query query;
 
-	/**
-	 * Constructor.
-	 * @param query The query the handler will manage.
-	 */
-	public DatasetHandler(Query query) {
-		this.query = query;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param query The query the handler will manage.
+     */
+    public DatasetHandler(Query query) {
+        this.query = query;
+    }
 
-	/**
-	 * Add all the dataset information from the handler argument.
-	 * @param datasetHandler The handler to copy from.
-	 */
-	public void addAll(DatasetHandler datasetHandler) {
-		from(datasetHandler.query.getGraphURIs());
-		fromNamed(datasetHandler.query.getNamedGraphURIs());
-	}
+    /**
+     * Add all the dataset information from the handler argument.
+     * 
+     * @param datasetHandler The handler to copy from.
+     */
+    public void addAll(DatasetHandler datasetHandler) {
+        from(datasetHandler.query.getGraphURIs());
+        fromNamed(datasetHandler.query.getNamedGraphURIs());
+    }
 
-	/**
-	 * Add a graph name to the from named list.
-	 * @param graphName The graph name to add.
-	 */
-	public void fromNamed(String graphName) {
-		query.addNamedGraphURI(graphName);
-	}
+    /**
+     * Add a graph name to the from named list.
+     * 
+     * @param graphName The graph name to add.
+     */
+    public void fromNamed(String graphName) {
+        query.addNamedGraphURI(graphName);
+    }
 
-	/**
-	 * Add the graph names to the from named list.
-	 * 
-	 * The names are ordered in as defined in the collection.
-	 * 
-	 * @param graphNames The from names to add.
-	 */
-	public void fromNamed(Collection<String> graphNames) {
-		for (String uri : graphNames) {
-			query.addNamedGraphURI(uri);
-		}
-	}
+    /**
+     * Add the graph names to the from named list.
+     * 
+     * The names are ordered in as defined in the collection.
+     * 
+     * @param graphNames The from names to add.
+     */
+    public void fromNamed(Collection<String> graphNames) {
+        for (String uri : graphNames) {
+            query.addNamedGraphURI(uri);
+        }
+    }
 
-	/**
-	 * Add the graph names to the from list.
-	 * @param graphName the name to add.
-	 */
-	public void from(String graphName) {
-		query.addGraphURI(graphName);
-	}
+    /**
+     * Add the graph names to the from list.
+     * 
+     * @param graphName the name to add.
+     */
+    public void from(String graphName) {
+        query.addGraphURI(graphName);
+    }
 
-	/**
-	 * Add the graph names to the named list. 
-	 * 
-	 * The names are ordered in as defined in the collection.
-	 * 
-	 * @param graphNames The names to add.
-	 */
-	public void from(Collection<String> graphNames) {
-		for (String uri : graphNames) {
-			query.addGraphURI(uri);
-		}
-	}
+    /**
+     * Add the graph names to the named list.
+     * 
+     * The names are ordered in as defined in the collection.
+     * 
+     * @param graphNames The names to add.
+     */
+    public void from(Collection<String> graphNames) {
+        for (String uri : graphNames) {
+            query.addGraphURI(uri);
+        }
+    }
 
-	/**
-	 * Set the variables for field names that contain lists of strings.
-	 * 
-	 * Strings that start with "?" are assumed to be variable names and will be replaced
-	 * with matching node.toString() values. 
-	 * 
-	 * @param values The values to set.
-	 * @param fieldName The field name in Query that contain a list of strings.
-	 */
-	private void setVars(Map<Var, Node> values, List<String> lst) {
-		if (values.isEmpty() || lst == null || lst.isEmpty() ) {
-			return;
-		}
-		
-		for (int i =0;i<lst.size();i++)
-		{
-			String s = lst.get(i);
-			Node n = null;
-			if (s.startsWith("?")) {
-				Var v = Var.alloc(s.substring(1));
-				n = values.get(v);
-				lst.set( i , n == null ? s : n.toString());
-			}
-		}
-		
-	}
+    /**
+     * Set the variables for field names that contain lists of strings.
+     * 
+     * Strings that start with "?" are assumed to be variable names and will be
+     * replaced with matching node.toString() values.
+     * 
+     * @param values The values to set.
+     * @param fieldName The field name in Query that contain a list of strings.
+     */
+    private void setVars(Map<Var, Node> values, List<String> lst) {
+        if (values.isEmpty() || lst == null || lst.isEmpty()) {
+            return;
+        }
 
-	@Override
-	public void setVars(Map<Var, Node> values) {
-		setVars(values, query.getNamedGraphURIs());
-		setVars(values, query.getGraphURIs());
-	}
+        for (int i = 0; i < lst.size(); i++) {
+            String s = lst.get(i);
+            Node n = null;
+            if (s.startsWith("?")) {
+                Var v = Var.alloc(s.substring(1));
+                n = values.get(v);
+                lst.set(i, n == null ? s : n.toString());
+            }
+        }
 
-	@Override
-	public void build() {
-		// nothing special to do
-	}
+    }
+
+    @Override
+    public void setVars(Map<Var, Node> values) {
+        setVars(values, query.getNamedGraphURIs());
+        setVars(values, query.getGraphURIs());
+    }
+
+    @Override
+    public void build() {
+        // nothing special to do
+    }
 
 }

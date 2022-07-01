@@ -27,67 +27,69 @@ import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 
 /** A {@link DatasetGraph} class for support of {@link DatasetGraph DatasetGraphs} that do nothing.
- *  <ul> 
+ *  <ul>
  *  <li>No named graphs.
  *  <li>Empty default graph.
  *  <li>Empty union graph.
  *  <li>No update. ({@link DatasetGraphSink} overrides this)
  *  </ul>
- *  
+ *
  * @see DatasetGraphSink
  * @see DatasetGraphZero
  */
 public abstract class DatasetGraphNull extends DatasetGraphBaseFind {
-    protected abstract Graph createGraph();  
-    private Graph dftGraph = createGraph(); 
-    private Graph unionGraph = createGraph(); 
+    protected abstract Graph createGraph();
+    private Graph dftGraph = createGraph();
+    private Graph unionGraph = createGraph();
 
     protected DatasetGraphNull() {}
-    
+
+    // ----
     private Transactional txn                           = TransactionalNull.create();
-    @Override public void begin()                       { txn.begin(); }
-    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
-    @Override public boolean promote(Promote txnType)   { return txn.promote(txnType); }
-    @Override public void commit()                      { txn.commit(); }
-    @Override public void abort()                       { txn.abort(); }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
-    @Override public void end()                         { txn.end(); }
-    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
-    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    private final Transactional txn()                   { return txn; }
+    @Override public void begin()                       { txn().begin(); }
+    @Override public void begin(TxnType txnType)        { txn().begin(txnType); }
+    @Override public boolean promote(Promote txnType)   { return txn().promote(txnType); }
+    @Override public void commit()                      { txn().commit(); }
+    @Override public void abort()                       { txn().abort(); }
+    @Override public boolean isInTransaction()          { return txn().isInTransaction(); }
+    @Override public void end()                         { txn().end(); }
+    @Override public ReadWrite transactionMode()        { return txn().transactionMode(); }
+    @Override public TxnType transactionType()          { return txn().transactionType(); }
     @Override public boolean supportsTransactions()     { return true; }
     @Override public boolean supportsTransactionAbort() { return true; }
+    // ----
 
     @Override
     public Iterator<Node> listGraphNodes() {
         return Iter.nullIterator();
     }
-    
+
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
         return Iter.nullIterator();
     }
-    
+
     @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
         return Iter.nullIterator();
     }
-    
+
     @Override
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o) {
         return Iter.nullIterator();
     }
-    
+
     @Override
     public Graph getDefaultGraph() {
         return dftGraph;
     }
-    
+
     @Override
     public Graph getUnionGraph() {
         return unionGraph;
     }
-    
+
     @Override
     public Graph getGraph(Node graphNode) {
         if ( Quad.isDefaultGraph(graphNode) )
@@ -96,13 +98,13 @@ public abstract class DatasetGraphNull extends DatasetGraphBaseFind {
             return getUnionGraph();
         return null;
     }
-    
+
     @Override
-    public void add(Quad quad) { unsupportedMethod(this, "add") ; } 
-    
+    public void add(Quad quad) { unsupportedMethod(this, "add") ; }
+
     @Override
     public void delete(Quad quad) { unsupportedMethod(this, "delete") ; }
-    
+
     @Override
     public void deleteAny(Node g, Node s, Node p, Node o) {
         unsupportedMethod(this, "deleteAny");

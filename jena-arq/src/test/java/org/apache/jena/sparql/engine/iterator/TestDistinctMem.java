@@ -29,7 +29,7 @@ public class TestDistinctMem extends AbstractTestDistinctReduced {
 
     @Override
     protected QueryIterator createQueryIter(List<Binding> data) {
-        QueryIterator qIter = new QueryIterPlainWrapper(data.iterator()) ;
+        QueryIterator qIter = QueryIterPlainWrapper.create(data.iterator()) ;
         return new QueryIterDistinctMem(qIter, new ExecutionContext(new Context(), null, null, null)) ;
     }
 

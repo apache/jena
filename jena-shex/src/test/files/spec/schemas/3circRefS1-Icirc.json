@@ -1,0 +1,10 @@
+{ "@context": "http://www.w3.org/ns/shex.jsonld", "type": "Schema",
+  "imports": [ "3circRefS2-Icirc" ],
+  "shapes": [
+    { "id": "http://a.example/S1", "type": "Shape", "expression": {
+        "type": "EachOf", "expressions": [
+          { "type": "TripleConstraint", "predicate": "http://a.example/p1" },
+          { "type": "TripleConstraint", "predicate": "http://a.example/p2", "min": 0, "max": 1,
+            "valueExpr": "http://a.example/S2" }
+        ] } }
+  ] }

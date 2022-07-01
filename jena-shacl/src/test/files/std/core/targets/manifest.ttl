@@ -1,0 +1,15 @@
+@prefix mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sht:     <http://www.w3.org/ns/shacl-test#> .
+
+<>
+	a mf:Manifest ;
+	rdfs:label "Tests converted from http://datashapes.org/sh/tests/tests/core/targets" ;
+	mf:include <multipleTargets-001.ttl> ;
+	mf:include <targetClass-001.ttl> ;
+	mf:include <targetClassImplicit-001.ttl> ;
+	mf:include <targetNode-001.ttl> ;
+	mf:include <targetObjectsOf-001.ttl> ;
+	mf:include <targetSubjectsOf-001.ttl> ;
+	mf:include <targetSubjectsOf-002.ttl> ;
+	.

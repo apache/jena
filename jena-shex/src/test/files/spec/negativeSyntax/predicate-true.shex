@@ -1,0 +1,5 @@
+# keyword true as predicate
+# source: turtle-syntax-bad-kw-05.ttl
+<http://a.example/IssueShape> {
+   true .
+}

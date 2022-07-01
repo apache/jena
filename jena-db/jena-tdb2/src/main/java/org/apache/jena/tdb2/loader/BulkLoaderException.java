@@ -21,8 +21,8 @@ package org.apache.jena.tdb2.loader;
 import org.apache.jena.dboe.DBOpEnvException;
 
 public class BulkLoaderException extends DBOpEnvException {
-    public BulkLoaderException()                          { super() ; }
-    public BulkLoaderException(String msg)                { super(msg) ; }
-    public BulkLoaderException(Throwable th)              { super(th) ; }
-    public BulkLoaderException(String msg, Throwable th)  { super(msg, th) ; }
+    public BulkLoaderException()                          { super(); }
+    public BulkLoaderException(String msg)                { super(msg); }
+    public BulkLoaderException(Throwable th)              { super(th); }
+    public BulkLoaderException(String msg, Throwable th)  { super(msg, th); }
 }

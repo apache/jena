@@ -34,13 +34,14 @@ import org.junit.runners.Suite.SuiteClasses;
     TestTriTable.class,
     TestDatasetGraphInMemoryBasic.class,
     TestDatasetGraphInMemoryViews.class,
-    TestDatasetGraphInMemoryLock.class, 
-    //TestDatasetGraphInMemoryThreading.class,
+    TestDatasetGraphInMemoryLock.class,
+    TestDatasetGraphInMemoryThreading.class,
     TestDatasetGraphInMemoryTransactions.class,
-    
+
     TestDatasetGraphInMemoryFind.class,
     TestDatasetGraphInMemoryFindPattern.class,
     TestDatasetGraphInMemoryIsolation.class,
-    TestDatasetGraphInMemoryPromote.class
+    TestDatasetGraphInMemoryPromote.class,
+    TestDatasetGraphInMemoryMisc.class
  })
 public class TS_DatasetTxnMem {}

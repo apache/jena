@@ -20,45 +20,42 @@ package org.apache.jena.tdb2.solver;
 
 import java.util.function.Predicate;
 
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.main.StageGenerator ;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.main.StageGenerator;
 import org.apache.jena.tdb2.store.GraphTDB;
 import org.apache.jena.tdb2.store.GraphViewSwitchable;
 import org.apache.jena.tdb2.store.NodeId;
 
-/** Execute TDB requests directly -- no reordering
- *  Using OpExecutor is preferred.
- */ 
-public class StageGeneratorDirectTDB implements StageGenerator
-{
+/**
+ * Execute TDB requests directly -- no reordering Using OpExecutor is preferred.
+ */
+public class StageGeneratorDirectTDB implements StageGenerator {
     // Using OpExecutor is preferred.
-    StageGenerator above = null ;
-    
-    public StageGeneratorDirectTDB(StageGenerator original)
-    {
-        above = original ;
+    StageGenerator above = null;
+
+    public StageGeneratorDirectTDB(StageGenerator original) {
+        above = original;
     }
-    
+
     @Override
-    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-    {
+    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt) {
         // --- In case this isn't for TDB2
-        Graph g = execCxt.getActiveGraph() ;
-        
+        Graph g = execCxt.getActiveGraph();
+
         if ( g instanceof GraphViewSwitchable ) {
             GraphViewSwitchable gvs = (GraphViewSwitchable)g;
             g = gvs.getBaseGraph();
         }
-        
-        if ( ! ( g instanceof GraphTDB ) )
+
+        if ( !(g instanceof GraphTDB) )
             // Not us - bounce up the StageGenerator chain
-            return above.execute(pattern, input, execCxt) ;
-        GraphTDB graph = (GraphTDB)g ;
-        Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
-        return SolverLib.execute(graph, pattern, input, filter, execCxt) ;
+            return above.execute(pattern, input, execCxt);
+        GraphTDB graph = (GraphTDB)g;
+        Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext());
+        return PatternMatchTDB2.execute(graph, pattern, input, filter, execCxt);
     }
 }

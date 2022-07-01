@@ -30,10 +30,10 @@ public class TestDistinctDataBagLimited extends AbstractTestDistinctReduced {
 
     @Override
     protected QueryIterator createQueryIter(List<Binding> data) {
-        QueryIterator qIter = new QueryIterPlainWrapper(data.iterator()) ;
+        QueryIterator qIter = QueryIterPlainWrapper.create(data.iterator()) ;
         Context cxt = new Context() ;
         cxt.set(ARQ.spillToDiskThreshold, 2L);
-        return new QueryIterDistinct(qIter, new ExecutionContext(cxt, null, null, null)) ;
+        return new QueryIterDistinct(qIter, null, new ExecutionContext(cxt, null, null, null)) ;
     }
 
 }

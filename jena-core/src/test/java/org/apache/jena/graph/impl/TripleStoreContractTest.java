@@ -26,8 +26,6 @@ import org.xenei.junit.contract.ContractTest;
 import static org.junit.Assert.*;
 
 import static org.apache.jena.testing_framework.GraphHelper.*;
-import org.apache.jena.graph.impl.TripleStore;
-
 import org.xenei.junit.contract.IProducer;
 
 /**

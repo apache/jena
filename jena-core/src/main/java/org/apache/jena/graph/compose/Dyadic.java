@@ -30,7 +30,7 @@ public abstract class Dyadic extends CompositionBase
 	{
 	protected Graph L;
 	protected Graph R;
-	
+
     /**
         When the graph is constructed, copy the prefix mappings of both components
         into this prefix mapping. The prefix mapping doesn't change afterwards with the
@@ -46,7 +46,7 @@ public abstract class Dyadic extends CompositionBase
             ;
 		}
 
-	
+
 	/**
 	 * override graphBaseFind to return an iterator that will report when
 	 * a deletion occurs.
@@ -56,13 +56,13 @@ public abstract class Dyadic extends CompositionBase
     {
 		return SimpleEventManager.notifyingRemove( this, this._graphBaseFind( m ) );
     }
-	
+
 	/**
-	 * The method that the overridden graphBaseFind( TripleMatch m ) calls to actually
+	 * The method that the overridden graphBaseFind( Triple t ) calls to actually
 	 * do the work of finding.
 	 */
-	protected abstract ExtendedIterator<Triple> _graphBaseFind( Triple m );
-	
+	protected abstract ExtendedIterator<Triple> _graphBaseFind( Triple t );
+
     @Override
     public void close()
     	{
@@ -70,27 +70,27 @@ public abstract class Dyadic extends CompositionBase
     	R.close();
     	this.closed = true;
         }
-        
+
     /**
         Generic dependsOn, true iff it depends on either of the subgraphs.
     */
     @Override
     public boolean dependsOn( Graph other )
         { return other == this || L.dependsOn( other ) || R.dependsOn( other ); }
- 				
+
     public Union union( Graph X )
         { return new Union( this, X ); }
 
     /**
          Answer the left (first) operand of this Dyadic.
     */
-    public Object getL()
+    public Graph getL()
         { return L; }
 
     /**
          Answer the right (second) operand of this Dyadic.
     */
-    public Object getR()
+    public Graph getR()
         { return R; }
-        
+
     }

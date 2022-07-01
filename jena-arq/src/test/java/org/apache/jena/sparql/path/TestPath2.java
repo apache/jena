@@ -18,24 +18,24 @@
 
 package org.apache.jena.sparql.path;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.path.Path ;
-import org.apache.jena.sparql.path.PathFactory ;
 import org.apache.jena.sparql.path.eval.PathEval ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestPath2 extends BaseTest
+public class TestPath2
 {
     @BeforeClass static public void beforeClass() {}
     @AfterClass static public void afterClass() {}

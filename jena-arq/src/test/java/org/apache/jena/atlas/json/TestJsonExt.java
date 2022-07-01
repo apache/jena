@@ -20,14 +20,10 @@ package org.apache.jena.atlas.json;
 
 import static org.apache.jena.atlas.json.LibJsonTest.read ;
 import static org.apache.jena.atlas.json.LibJsonTest.writeRead ;
-import org.apache.jena.atlas.json.JsonNumber ;
-import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.atlas.json.JsonString ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 /** Tests that are of extensions of JSON */ 
-public class TestJsonExt extends BaseTest
+public class TestJsonExt
 {
     // The Jena JSON parser is more liberal than strict JSON to make embedding easier.
     // * Keys do not need quotes

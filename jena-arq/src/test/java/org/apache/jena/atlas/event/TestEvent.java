@@ -18,15 +18,12 @@
 
 package org.apache.jena.atlas.event;
 
-import org.apache.jena.atlas.event.Event ;
-import org.apache.jena.atlas.event.EventListener ;
-import org.apache.jena.atlas.event.EventManager ;
-import org.apache.jena.atlas.event.EventType ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test ;
 
 
-public class TestEvent extends BaseTest
+public class TestEvent
 {
     EventType ev1 = new EventType("1") ;
     EventType ev2 = new EventType("2") ;

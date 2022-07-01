@@ -26,7 +26,7 @@ import org.apache.jena.shared.* ;
 import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.iterator.* ;
 
-// Purely syntactic: Uses .equals, not .sameVAlueAs (see the one note at "PURE SYNTAX" below and "containsSameTerm") 
+// Purely syntactic: Uses .equals, not .sameValueAs (see the one note at "PURE SYNTAX" below and "containsSameTerm")
 
 /**
  * An implementation of graph isomorphism for Graph equality.
@@ -43,9 +43,9 @@ public class GraphMatcher extends java.lang.Object {
  /**
  * Are the two models isomorphic?
  * The isomorphism is defined as a bijection between the anonymous
- * variables such that the statements are identical. 
+ * variables such that the statements are identical.
  * This is
-	 * described in 
+	 * described in
 	 * <a href="http://www.w3.org/TR/rdf-concepts#section-Graph-syntax">
      * http://www.w3.org/TR/rdf-concepts#section-Graph-syntax
      * </a>
@@ -54,8 +54,8 @@ public class GraphMatcher extends java.lang.Object {
         if ( m1 == m2 )
             return true;
         return match(m1,m2) != null;
-    }  
-    
+    }
+
     static public int hashCode(Graph g) {
     	ClosableIterator<Triple> ci = GraphUtil.findAll( g );
     	int hash = 0;
@@ -68,12 +68,12 @@ public class GraphMatcher extends java.lang.Object {
     }
 /**
  * Return an isomorphism between the two models.
- * This function is nondeterministic in that it may return a 
- * different bijection on each call, in cases where there are 
+ * This function is nondeterministic in that it may return a
+ * different bijection on each call, in cases where there are
  * multiple isomorphisms between the models.
- * @return <code>null</code> on failure or an array of related pairs 
+ * @return <code>null</code> on failure or an array of related pairs
            (arrays of length 2) of anonymous nodes.
-            <code>match(m1,m2)[i][0]</code>  is from <code>m1</code>, 
+            <code>match(m1,m2)[i][0]</code>  is from <code>m1</code>,
             and <code>match(m1,m2)[i][1]</code> is the corresponding node in
             <code>m2</code>.
  */
@@ -105,8 +105,8 @@ public class GraphMatcher extends java.lang.Object {
     private GraphMatcher other;
     private int myHashLevel = 0; // This is usually 0, but can be any value
     // less than MAX_HASH_DEPTH
-    
-    
+
+
     static final private int MAX_HASH_DEPTH = 3;
     // I don't think there's much
     // mileage in a huge number here
@@ -114,14 +114,14 @@ public class GraphMatcher extends java.lang.Object {
     // cases, but helps in pathological cases.
     // The pathological cases are the slowest, so perhaps it
     // is best to optimise for them.!
-    
+
     // The rehashable - hash table
     // A Map from Integer => Bucket
     // Most of the time the table is a mess,
     // this is reflected in state=BAD
     private Map<Integer, Bucket> table;
-    
-    // This variable is mainly for sanity checking and
+
+    // This variable is mainly for checking and
     // documentation. It has one logical impact in
     // AnonResource.myHashCodeFromStatement() and
     // AnonResource.wrapStatements()
@@ -133,15 +133,15 @@ public class GraphMatcher extends java.lang.Object {
     static final private int REHASHING = 1;
     static final private int HASH_OK = 2;
     static final private int HASH_BAD = 4;
-    
+
     // As the algorithm proceeds we move resources
     // from one to the other.
     // At completion unBoundAnonResources is empty.
     private Set<AnonResource> unboundAnonResources = CollectionFactory.createHashedSet();
     private Set<AnonResource> boundAnonResources = CollectionFactory.createHashedSet();
-    
-    
-    
+
+
+
     private GraphMatcher(Graph m1x) {
         m = m1x;
     }
@@ -149,10 +149,10 @@ public class GraphMatcher extends java.lang.Object {
         other = oth;
         oth.other = this;
         in(HASH_BAD);
-        
+
         // check that the size's are the same.
         // If the size is not accurate then it is a lower bound
-        
+
         if (m.getCapabilities().sizeAccurate()
                 && m.size() < other.m.size() )
             return null;
@@ -306,8 +306,8 @@ public class GraphMatcher extends java.lang.Object {
             ss.close();
         }
     }
-    
-    /** Special "contains" test that always provide "same term", 
+
+    /** Special "contains" test that always provide "same term",
      * not "sameValueAs" semantics on the containment.
      * @param otherm
      * @param triple
@@ -331,7 +331,7 @@ public class GraphMatcher extends java.lang.Object {
             return false ;
         } finally { iter.close(); }
     }
-    
+
     private Bucket smallestBucket() {
         check(HASH_OK);
         Iterator<Bucket> bit = table.values().iterator();
@@ -349,7 +349,7 @@ public class GraphMatcher extends java.lang.Object {
     }
     private Bucket matchBucket(Bucket key) {
         check(HASH_OK);
-        Integer hash = new Integer(key.aMember().myHash);
+        Integer hash = Integer.valueOf(key.aMember().myHash);
         Bucket rslt = table.get(hash);
         if ( rslt != null ) {
             if ( key.size() != rslt.size() )
@@ -357,13 +357,13 @@ public class GraphMatcher extends java.lang.Object {
         }
         return rslt;
     }
-    
-    
+
+
     /* rehash performance notes:
      *Uncommenting below gives an easy way of measuring
      *rehash performance.
      *On a 480ms job the rehash appeared to take over 200ms.
-     *(Since with the code below uncommented the same 
+     *(Since with the code below uncommented the same
      *problem took about 1300ms).
      *
      */
@@ -376,7 +376,7 @@ public class GraphMatcher extends java.lang.Object {
          **/
         return rehash0(lvl);
     }
-        
+
     private int rehash0( int level ) {
         in(REHASHING);
         this.table = CollectionFactory.createHashedMap();
@@ -384,12 +384,12 @@ public class GraphMatcher extends java.lang.Object {
         // level = 0 ==> AnonResource.myHashCode() = 0
         // level = n+1 ==> AnonResource.myHashCode() = hash[n]
         myHashLevel = level;
-        
+
         // Now compute all hashes and stick things in the
         // right buckets.
         for ( AnonResource a : unboundAnonResources )
         {
-            Integer hash = new Integer( a.myHashCode() );
+            Integer hash = Integer.valueOf( a.myHashCode() );
             Bucket bkt = table.get( hash );
             if ( bkt == null )
             {
@@ -398,7 +398,7 @@ public class GraphMatcher extends java.lang.Object {
             }
             bkt.add( a );
         }
-        
+
         // Produce a checksum for the table.
         int rslt = 0;
 
@@ -409,12 +409,12 @@ public class GraphMatcher extends java.lang.Object {
             int sz = bkt.size();
             rslt += sz * 0x10001 ^ hash;
         }
-        
+
         in(HASH_OK);
         return rslt;
-        
+
     }
-    
+
     /* subjects identified by bits 0 and 1,
      * predicate           by bits 2 and 3,
      * object              by      4 and 5
@@ -460,7 +460,7 @@ public class GraphMatcher extends java.lang.Object {
     static final private int S = SX|SD;
     static final private int P = PX|PD;
     static final private int O = OX|OD;
-    
+
     static private boolean legalPattern(int mask) {
         switch (mask) {
             case NOVARS:
@@ -603,7 +603,7 @@ public class GraphMatcher extends java.lang.Object {
             }
         }
     }
-    
+
     // Record the occurence of variable r in bag.
     static void count(Map<SomeResource, int[]> bag, SomeResource r,int pos) {
         if ( r instanceof AnonResource ) {
@@ -676,7 +676,7 @@ public class GraphMatcher extends java.lang.Object {
                 impossible();
             }
         }
-        
+
         // returns the location of v in this statement.
         // e.g. PXOX to say that v is both the predicate and object.
         int varPos(AnonResource v) {
@@ -714,10 +714,10 @@ public class GraphMatcher extends java.lang.Object {
             ((vX & S) != 0 || subj.mightBeEqual(sB.subj))
             && ((vX & P) != 0 || pred.mightBeEqual(sB.pred))
             && ((vX & O) != 0 || obj.mightBeEqual(sB.obj));
-            
+
         }
     }
-    
+
     // Bucket's live longer than the table that they sit in.
     // If a bucket is matched before the main bind() loop then
     // we are iterating over it's members while the rest of the
@@ -736,7 +736,7 @@ public class GraphMatcher extends java.lang.Object {
                 return false;
             }
         }
-        
+
         void add(AnonResource r) {
             anonRes.add(r);
         }
@@ -758,7 +758,7 @@ public class GraphMatcher extends java.lang.Object {
         int boundHash;
         Set<AnonResource> friends = CollectionFactory.createHashedSet(); // Other vars in AnonStatements containing me.
         int myHash;
-        
+
         @Override
         public String toString() {
             String rslt = r.toString();
@@ -766,7 +766,7 @@ public class GraphMatcher extends java.lang.Object {
                 rslt += "[" + bound.r.toString() + "]";
             return rslt;
         }
-        
+
         AnonResource(Node r) {
             unboundAnonResources.add(this);
             this.r = r;
@@ -798,11 +798,11 @@ public class GraphMatcher extends java.lang.Object {
         }
         void bind(AnonResource pair)  {
             bound = pair;
-            
+
             if (!unboundAnonResources.remove(this))
                 impossible();
             boundAnonResources.add(this);
-            
+
             if ( pair.bound == null ) {
                 trace( true, r.getBlankNodeId()+ "=" + pair.r.getBlankNodeId() + ", " );
                 pair.bind(this);
@@ -815,40 +815,40 @@ public class GraphMatcher extends java.lang.Object {
                 // guessed badly, changed bound.myHash and then
                 // backtracked.
             }
-            
+
             if ( bound.bound != this )
                 impossible();
         }
         void unbind()  {
             AnonResource pair = bound;
             bound = null;
-            
+
             if (!boundAnonResources.remove(this))
                 impossible();
-            
+
             unboundAnonResources.add(this);
-            
+
             if ( pair.bound != null ) {
                 trace( false, r.getBlankNodeId() + "!=" + pair.r.getBlankNodeId() + ", " );
                 if ( pair.bound != this )
                     impossible();
-                
+
                 pair.unbind();
             }
-            
+
             in(HASH_BAD);
         }
         boolean checkBinding( AnonResource pair ) {
-            
+
             if ( occursIn.size() != pair.occursIn.size() )
                 return false;
-            
+
             Set<StatementWrapper> ourStatements = wrapStatements();
             Set<StatementWrapper> otherStatements = pair.wrapStatements();
-            
+
             return ourStatements.removeAll(otherStatements)
             && ourStatements.isEmpty();
-            
+
         }
         private Set<StatementWrapper> wrapStatements() {
             if ( state == HASH_BAD ) {
@@ -893,20 +893,20 @@ public class GraphMatcher extends java.lang.Object {
             @Override public int hashCode() {
                 return wrapHash;
             }
-            
+
             StatementWrapper( AnonStatement s ) {
                 wrapHash = s.myHashCode(AnonResource.this);
                 statement = s;
             }
-            
+
             AnonResource asAnonR() {
                 return AnonResource.this;
             }
         }
     }
-    
+
     private Map<Node, SomeResource> anonLookup = CollectionFactory.createHashedMap();
-    
+
     private SomeResource convert(Node n) {
         if ( n.isBlank() ) {
             SomeResource anon = anonLookup.get(n);
@@ -919,24 +919,24 @@ public class GraphMatcher extends java.lang.Object {
             return new FixedResource(n);
         }
     }
-    
+
     private void check(int s) {
-        if (( state & s) == 0 ) 
+        if (( state & s) == 0 )
             impossible();
     }
-    
+
     private void in(int s) {
         state = s;
         other.state = s;
     }
-    
+
     static private void impossible() {
         throw new JenaException( "Cannot happen!" );
     }
-    
+
     static private int col = 0;
     static private boolean lastDir = false;
-    
+
     static private void trace(boolean dir, String s) {
         if (TRACE) {
             if ( dir != lastDir ) {
@@ -959,5 +959,5 @@ public class GraphMatcher extends java.lang.Object {
             col = 0;
         }
     }
-    
+
 }

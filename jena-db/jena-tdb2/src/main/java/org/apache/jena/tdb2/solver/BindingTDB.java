@@ -18,14 +18,14 @@
 
 package org.apache.jena.tdb2.solver;
 
-import java.util.* ;
+import java.util.*;
 
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.out.NodeFmtLib ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingBase ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFmtLib;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingBase;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
@@ -34,129 +34,129 @@ import org.apache.jena.tdb2.store.nodetable.NodeTable;
 
 public class BindingTDB extends BindingBase
 {
-    private final NodeTable nodeTable ;
-    private final BindingNodeId idBinding ;
-    
-    private static final boolean caching = false ;
-    // Whether the cache is worthwhile is unclear - the NodeTable keeps a cache. 
-    private final Map<Var,Node> cache = ( caching ? new HashMap<>() : null ) ;
+    private final NodeTable nodeTable;
+    private final BindingNodeId idBinding;
+
+    private static final boolean caching = false;
+    // Whether the cache is worthwhile is unclear - the NodeTable keeps a cache.
+    private final Map<Var,Node> cache = ( caching ? new HashMap<>() : null );
 
     public BindingTDB(BindingNodeId idBinding, NodeTable nodeTable)
     {
-        // BindingNodeId contains the bindings actually used  copied down when created. 
-        super(idBinding.getParentBinding()) ;
-        this.idBinding = idBinding ;
-        this.nodeTable = nodeTable ;
+        // BindingNodeId contains the bindings actually used  copied down when created.
+        super(idBinding.getParentBinding());
+        this.idBinding = idBinding;
+        this.nodeTable = nodeTable;
     }
 
     @Override
     protected int size1() { return idBinding.size(); }
-    
-    private List<Var> vars = null ;
-    
+
+    private List<Var> vars = null;
+
     /** Iterate over all the names of variables. */
     @Override
-    protected Iterator<Var> vars1() 
+    protected Iterator<Var> vars1()
     {
         if ( vars == null )
-            vars = calcVars() ;
-        return vars.iterator() ;
+            vars = calcVars();
+        return vars.iterator();
     }
 
     private List<Var> calcVars()
     {
-        List<Var> vars = new ArrayList<>(4) ;
+        List<Var> vars = new ArrayList<>(4);
         // Only if not in parent.
-        // A (var/value) binding may have been copied down to record it's NodeId.  
-        
-        Binding b = idBinding.getParentBinding() ;
-        
-        Iterator<Var> iter = idBinding.iterator() ;
+        // A (var/value) binding may have been copied down to record it's NodeId.
+
+        Binding b = idBinding.getParentBinding();
+
+        Iterator<Var> iter = idBinding.iterator();
         for ( Var v : idBinding )
         {
             if ( b == null || ! b.contains(v) )
-                vars.add(v) ;
+                vars.add(v);
         }
-        return vars ;
+        return vars;
     }
-    
+
     @Override
     protected boolean isEmpty1()
     {
-        return size1() == 0 ;
+        return size1() == 0;
     }
 
     @Override
     public boolean contains1(Var var)
     {
-        return idBinding.containsKey(var) ;
+        return idBinding.containsKey(var);
     }
-    
-    public BindingNodeId getBindingId() { return idBinding ; }
-    
+
+    public BindingNodeId getBindingId() { return idBinding; }
+
     public NodeId getNodeId(Var var)
     {
-        NodeId id = idBinding.get(var) ;
+        NodeId id = idBinding.get(var);
         if ( id != null )
-            return id ;
-        // In case we are inserting known missing nodes. 
+            return id;
+        // In case we are handling known missing nodes.
         if ( NodeId.isDoesNotExist(id) )
-            return null ;
+            return null;
 
         if ( parent == null )
-            return null ;
+            return null;
         if ( parent instanceof BindingTDB )
-            return ((BindingTDB)parent).getNodeId(var) ;
-        return null ;
+            return ((BindingTDB)parent).getNodeId(var);
+        return null;
     }
-    
+
     @Override
     public Node get1(Var var)
     {
         try {
-            Node n = cacheGet(var) ;
+            Node n = cacheGet(var);
             if ( n != null )
-                return n ;
-            
-            NodeId id = idBinding.get(var) ;
+                return n;
+
+            NodeId id = idBinding.get(var);
             if ( id == null )
-                return null ;
+                return null;
             if ( NodeId.isDoesNotExist(id) )
                 return null;
-            n = nodeTable.getNodeForNodeId(id) ;
+            n = nodeTable.getNodeForNodeId(id);
             if ( n == null )
-                // But there was to put it in the BindingNodeId. 
+                // But there was to put it in the BindingNodeId.
                 throw new TDBException("No node in NodeTable for NodeId "+id);
             // Update cache.
-            cachePut(var, n) ;
-            return n ;
+            cachePut(var, n);
+            return n;
         } catch (Exception ex)
         {
-            Log.error(this, String.format("get1(%s)", var), ex) ;
-            return null ;
+            Log.error(this, String.format("get1(%s)", var), ex);
+            return null;
         }
     }
 
     private void cachePut(Var var, Node n)
     {
-        if ( cache != null ) cache.put(var, n) ; 
+        if ( cache != null ) cache.put(var, n);
     }
 
     private Node cacheGet(Var var)
-    { 
-        if ( cache == null ) return null ;
-        return cache.get(var) ;
-    }
-    
-    @Override
-    protected void format(StringBuffer sbuff, Var var)
     {
-        NodeId id = idBinding.get(var) ;
-        String extra = "" ;
+        if ( cache == null ) return null;
+        return cache.get(var);
+    }
+
+    @Override
+    protected void fmtVar(StringBuffer sbuff, Var var)
+    {
+        NodeId id = idBinding.get(var);
+        String extra = "";
         if ( id != null )
-            extra = "/"+id ;
-        Node node = get(var) ;
-        String tmp = NodeFmtLib.displayStr(node) ;
-        sbuff.append("( ?"+var.getVarName()+extra+" = "+tmp+" )") ;
+            extra = "/"+id;
+        Node node = get(var);
+        String tmp = NodeFmtLib.displayStr(node);
+        sbuff.append("( ?"+var.getVarName()+extra+" = "+tmp+" )");
     }
 }

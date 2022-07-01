@@ -58,6 +58,10 @@ public class VarUtils {
 
         if ( n.isVariable() )
             acc.add(Var.alloc(n));
+        else if ( n.isNodeTriple() ) {
+            Triple t = n.getTriple();
+            addVarsFromTriple(acc, t);
+        }
     }
 
     // Name to avoid erasure clash
@@ -79,9 +83,9 @@ public class VarUtils {
 
     public static void addVars(Collection<Var> acc, Node graphNode, BasicPattern triples) {
         addVar(acc, graphNode) ;
-        addVars(acc, triples) ; 
+        addVars(acc, triples) ;
     }
-    
+
     public static void addVars(Collection<Var> acc, QuadPattern quadPattern) {
         for ( Quad quad : quadPattern.getList() ) {
             addVarsFromQuad(acc, quad) ;

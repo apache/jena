@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.AccessControlException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +29,15 @@ import org.slf4j.LoggerFactory;
 /** Location files in the filing system.
  *  A FileLocator can have a "current directory" - this is separate from any
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
+ *  @deprecated Use {@code StreamManager} and {@code LocatorFile} from {@code org.apache.jena.riot.system.stream}.
  */
-
+@Deprecated
 public class LocatorFile implements Locator
 {
     static Logger log = LoggerFactory.getLogger(LocatorFile.class) ;
     private String thisDir = null ;
     private String thisDirLogStr = "" ;
-    
+
     public LocatorFile(String dir)
     {
         if ( dir != null )
@@ -53,7 +53,7 @@ public class LocatorFile implements Locator
     {
         this(null) ;
     }
-    
+
     @Override
     public boolean equals( Object other )
     {
@@ -61,7 +61,7 @@ public class LocatorFile implements Locator
             other instanceof LocatorFile
             && equals( thisDir, ((LocatorFile) other).thisDir );
     }
-    
+
     private boolean equals( String a, String b )
     {
         return a == null ? b == null : a.equals(  b  );
@@ -74,30 +74,30 @@ public class LocatorFile implements Locator
             return 157 ;
         return thisDir.hashCode();
     }
-    
+
     private File toFile(String filenameOrURI)
     {
         String fn = FileUtils.toFilename(filenameOrURI) ;
         if ( fn == null )
             return null ;
-        
+
         if ( thisDir != null && ! fn.startsWith("/") && ! fn.startsWith(FileManager.filePathSeparator) )
             fn = thisDir+java.io.File.separator+fn ;
-                     
+
         return new File(fn) ;
     }
-    
-    
+
+
     public boolean exists(String filenameOrURI)
     {
         File f = toFile(filenameOrURI) ;
-        
+
         if ( f == null )
             return false ;
-        
+
         return f.exists() ;
     }
-    
+
     @Override
     public TypedStream open(String filenameOrURI)
     {
@@ -105,25 +105,18 @@ public class LocatorFile implements Locator
         // toFile calls FileUtils.toFilename(filenameOrURI) ;
         File f = toFile(filenameOrURI) ;
 
-        try {
-            if ( f == null || !f.exists() )
-            {
-                if ( FileManager.logAllLookups && log.isTraceEnabled())
-                    log.trace("Not found: "+filenameOrURI+thisDirLogStr) ;
-                return null ;
-            }
-        } catch (AccessControlException e) {
-            log.warn("Security problem testing for file", e);
-            return null;
+        if ( f == null || !f.exists() ) {
+            if ( FileManager.logAllLookups && log.isTraceEnabled())
+                log.trace("Not found: "+filenameOrURI+thisDirLogStr) ;
+            return null ;
         }
-        
         try {
             InputStream in = new FileInputStream(f) ;
 
             if ( FileManager.logAllLookups && log.isTraceEnabled() )
                 log.trace("Found: "+filenameOrURI+thisDirLogStr) ;
-                
-            
+
+
             // Create base -- Java 1.4-isms
             //base = f.toURI().toURL().toExternalForm() ;
             //base = base.replaceFirst("^file:/([^/])", "file:///$1") ;
@@ -136,9 +129,9 @@ public class LocatorFile implements Locator
             return null ;
         }
     }
-    
+
     public String getDir()  { return thisDir ; }
-    
+
     @Override
     public String getName()
     {

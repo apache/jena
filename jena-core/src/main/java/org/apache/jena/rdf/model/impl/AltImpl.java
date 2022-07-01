@@ -129,11 +129,6 @@ public class AltImpl extends ContainerImpl implements Alt {
     }
     
     @Override
-    @Deprecated public Resource getDefaultResource(ResourceF f)  {
-    	return needDefaultStatement().getResource();
-    }
-    
-    @Override
     public Alt getDefaultAlt()  {
     	return needDefaultStatement().getAlt();
     }
@@ -158,32 +153,32 @@ public class AltImpl extends ContainerImpl implements Alt {
     
     @Override
     public Alt setDefault(boolean o)  {
-        return setDefault( String.valueOf( o ) );
+        return setDefault( getModel().createTypedLiteral( o ) );
     }
     
     @Override
     public Alt setDefault(long o)  {
-        return setDefault( String.valueOf( o ) );
+        return setDefault( getModel().createTypedLiteral( o ) );
     }    
     
     @Override
     public Alt setDefault(char o)  {
-        return setDefault( String.valueOf( o ) );
+        return setDefault( getModel().createTypedLiteral( o ) );
     }        
     
     @Override
     public Alt setDefault(float o)  {
-        return setDefault( String.valueOf( o ) );
+        return setDefault( getModel().createTypedLiteral( o ) );
     } 
     
     @Override
     public Alt setDefault(double o)  {
-        return setDefault( String.valueOf( o ) );
+        return setDefault( getModel().createTypedLiteral( o ) );
     }    
     
     @Override
     public Alt setDefault(Object o)  {
-        return setDefault( String.valueOf( o ) );
+        return setDefault( getModel().createTypedLiteral( o ) );
     }
    
     @Override

@@ -19,20 +19,13 @@
 package org.apache.jena.graph.test;
 
 import java.io.InputStream ;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.jena.graph.* ;
 import org.apache.jena.mem.TrackingTripleIterator ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.impl.ReifierStd ;
-import org.apache.jena.shared.Command ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.iterator.ClosableIterator ;
@@ -271,12 +264,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         try { th.begin(); } catch (UnsupportedOperationException x) {}
         try { th.abort(); } catch (UnsupportedOperationException x) {}
         try { th.begin(); th.commit(); } catch (UnsupportedOperationException x) {}
-        /* */
-        Command cmd = new Command() 
-        { @Override
-            public Object execute() { return null; } };
-            try { th.execute( ()->{} ); } 
-            catch (UnsupportedOperationException x) {}
+        try { th.execute(() -> {}); } catch (UnsupportedOperationException x) {}
     }
 
     public void testExecuteInTransactionCatchesThrowable() {
@@ -870,13 +858,6 @@ public abstract class AbstractTestGraph extends GraphTestBase
         }
     }
 
-    public void testGetStatisticsHandler()
-    {
-        Graph g = getGraph();
-        GraphStatisticsHandler h = g.getStatisticsHandler();
-        assertSame( h, g.getStatisticsHandler() );
-    }
-
     /**
      	Test cases for RemoveSPO(); each entry is a triple (add, remove, result).
      	<ul>
@@ -981,7 +962,6 @@ public abstract class AbstractTestGraph extends GraphTestBase
         GraphUtil.deleteFrom(toUpdate, toRemove) ;
         return toUpdate;
     }
-
 
     protected Graph copy( Graph g )
     {

@@ -18,50 +18,60 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
 
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.ctl.ActionAsyncTask;
 import org.apache.jena.fuseki.ctl.TaskBase;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.slf4j.Logger;
 
 public class ActionBackup extends ActionAsyncTask
 {
-    public ActionBackup() { super() ; }
+    public ActionBackup() { super("Backup"); }
+
+    @Override
+    public void validate(HttpAction action) {}
 
     @Override
     protected Runnable createRunnable(HttpAction action) {
-        String name = action.getDatasetName() ;
+        String name = getItemName(action);
         if ( name == null ) {
-            action.log.error("Null for dataset name in item request") ;  
+            action.log.error("Null for dataset name in item request");
             ServletOps.errorOccurred("Null for dataset name in item request");
-            return null ;
+            return null;
         }
-        
-        action.log.info(format("[%d] Backup dataset %s", action.id, name)) ;
-        return new BackupTask(action) ;
+
+        action.log.info(format("[%d] Backup dataset %s", action.id, name));
+        // ** Error changing in TaskBase
+        BackupTask task = new BackupTask(action);
+        if ( task.dataset == null ) {
+            ServletOps.errorBadRequest("Dataset not found");
+            return null;
+        }
+        return task;
     }
 
     static class BackupTask extends TaskBase {
-        static private Logger log = LoggerFactory.getLogger("Backup") ;
-        
+        static private Logger log = Fuseki.backupLog;
+
         public BackupTask(HttpAction action) {
-            super(action) ;
+            super(action);
         }
 
         @Override
         public void run() {
             try {
-                String backupFilename = Backup.chooseFileName(datasetName) ;
-                log.info(format("[%d] >>>> Start backup %s -> %s", actionId, datasetName, backupFilename)) ;
-                Backup.backup(transactional, dataset, backupFilename) ;
-                log.info(format("[%d] <<<< Finish backup %s -> %s", actionId, datasetName, backupFilename)) ;
-            } catch (Exception ex) {
-                log.info(format("[%d] **** Exception in backup", actionId), ex) ;
+                String backupFilename = Backup.chooseFileName(datasetName);
+                log.info(format("[%d] >>>> Start backup %s -> %s", actionId, datasetName, backupFilename));
+                Backup.backup(transactional, dataset, backupFilename);
+                log.info(format("[%d] <<<< Finish backup %s -> %s", actionId, datasetName, backupFilename));
+            } catch (Throwable ex) {
+                log.warn(format("[%d] **** Exception in backup", actionId), ex);
+                // Pass on - the async task tracking infrastructure will record this.
+                throw ex;
             }
         }
     }
 }
-    

@@ -1,0 +1,23 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+## See https://s.apache.org/asfyaml
+
+notifications:
+    commits:       commits@jena.apache.org
+    issues:        issues@jena.apache.org
+    pullrequests:  pr@jena.apache.org
+    jira_options:  link label
+
+github:
+  description: "Apache Jena"
+  homepage: https://jena.apache.org/
+  protected_branches:
+    main
+  features:
+    issues: true
+  labels:
+    - apache
+    - jena
+    - rdf
+    - sparql
+
