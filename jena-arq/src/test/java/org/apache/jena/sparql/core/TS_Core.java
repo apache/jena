@@ -30,6 +30,7 @@ import org.junit.runners.Suite ;
     , TestDynamicDatasetMem.class
     , TestDatasetGraphsRegular.class
     , TestDatasetGraphLink.class
+    , TestDatasetGraphMap.class
     , TestDatasetGraphCopyAdd.class
     , TestDatasetGraphViewGraphs.class
     , TestGraphView.class
