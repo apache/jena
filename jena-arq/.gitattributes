@@ -1,3 +1,5 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+##
 # Some tests require exact line endings
 # GIT will by default override the line endings with the platform default
 # So tell it not to for those files.
