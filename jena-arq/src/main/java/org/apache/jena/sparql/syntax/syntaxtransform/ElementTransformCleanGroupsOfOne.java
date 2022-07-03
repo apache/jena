@@ -47,6 +47,7 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
              ( elt instanceof ElementFilter ) ||
              ( elt instanceof ElementBind ) ||
              ( elt instanceof ElementAssign ) ||
+             ( elt instanceof ElementUnfold ) ||
              ( elt instanceof ElementMinus ) ||
              ( elt instanceof ElementOptional )
            )
