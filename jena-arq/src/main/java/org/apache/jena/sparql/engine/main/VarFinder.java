@@ -114,7 +114,7 @@ public class VarFinder
         Set<Var> filterMentions     = null ;
         // Used in a filter, before defined
         Set<Var> filterMentionsOnly = null ;
-        // Used in assign or extend expression
+        // Used in assign or extend or unfold expression
         Set<Var> assignMentions     = null ;
 
         VarUsageVisitor() {
@@ -327,6 +327,18 @@ public class VarFinder
                 if ( e != null )
                     ExprVars.nonOpVarsMentioned(assignMentions, e);
             }) ;
+        }
+
+        @Override
+        public void visit(OpUnfold opUnfold) {
+            opUnfold.getSubOp().visit(this);
+
+            defines.add( opUnfold.getVar1() );
+
+            if ( opUnfold.getVar2() != null )
+                defines.add( opUnfold.getVar2() );
+
+            ExprVars.nonOpVarsMentioned( assignMentions, opUnfold.getExpr());
         }
 
         @Override

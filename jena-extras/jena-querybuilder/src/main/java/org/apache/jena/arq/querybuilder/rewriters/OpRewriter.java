@@ -60,6 +60,7 @@ import org.apache.jena.sparql.algebra.op.OpSlice;
 import org.apache.jena.sparql.algebra.op.OpTable;
 import org.apache.jena.sparql.algebra.op.OpTopN;
 import org.apache.jena.sparql.algebra.op.OpTriple;
+import org.apache.jena.sparql.algebra.op.OpUnfold;
 import org.apache.jena.sparql.algebra.op.OpUnion;
 import org.apache.jena.sparql.algebra.table.TableN;
 import org.apache.jena.sparql.core.BasicPattern;
@@ -238,6 +239,12 @@ class OpRewriter extends AbstractRewriter<Op> implements OpVisitor {
     public void visit(OpExtend opExtend) {
         opExtend.getSubOp().visit(this);
         push(OpExtend.extend(pop(), rewrite(opExtend.getVarExprList())));
+    }
+
+    @Override
+    public void visit(OpUnfold opUnfold) {
+        opUnfold.getSubOp().visit(this);
+        push( new OpUnfold(pop(), opUnfold.getExpr(), opUnfold.getVar1(), opUnfold.getVar2()) );
     }
 
     @Override

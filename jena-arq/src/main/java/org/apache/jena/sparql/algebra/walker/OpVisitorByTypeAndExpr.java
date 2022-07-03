@@ -211,6 +211,12 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
     }
 
     @Override
+    public default void visit(OpUnfold opUnfold) {
+        visitExpr( new ExprList(opUnfold.getExpr()) ) ;
+        visit1(opUnfold);
+    }
+
+    @Override
     public default void visit(OpList opList) {
         visitModifer(opList);
     }

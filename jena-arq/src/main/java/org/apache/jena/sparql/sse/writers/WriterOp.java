@@ -542,6 +542,25 @@ public class WriterOp
         }
 
         @Override
+        public void visit(OpUnfold opUnfold) {
+            start(opUnfold, NoNL);
+
+            start();
+            WriterExpr.output(out, opUnfold.getExpr(), sContext);
+            out.print(" ");
+            out.print( opUnfold.getVar1().toString() );
+            if ( opUnfold.getVar2() != null ) {
+                out.print(" ");
+                out.print( opUnfold.getVar2().toString() );
+            }
+            finish();
+
+            out.println();
+            printOp(opUnfold.getSubOp());
+            finish(opUnfold);
+        }
+
+        @Override
         public void visit(OpSlice opSlice) {
             start(opSlice, NoNL);
             writeIntOrDefault(opSlice.getStart());

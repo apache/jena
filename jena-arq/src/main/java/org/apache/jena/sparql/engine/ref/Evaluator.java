@@ -28,6 +28,7 @@ import org.apache.jena.sparql.core.TriplePath ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprAggregator ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
@@ -45,6 +46,7 @@ public interface Evaluator
 
     public Table assign(Table table, VarExprList exprs) ;
     public Table extend(Table table, VarExprList exprs) ;
+    public Table unfold(Table table, Expr expr, Var var1, Var var2) ;
     
     public Table join(Table tableLeft, Table tableRight) ;
     public Table leftJoin(Table tableLeft, Table tableRight, ExprList expr) ;

@@ -41,6 +41,7 @@ import org.apache.jena.sparql.algebra.op.OpQuadBlock;
 import org.apache.jena.sparql.algebra.op.OpQuadPattern;
 import org.apache.jena.sparql.algebra.op.OpTable;
 import org.apache.jena.sparql.algebra.op.OpTopN;
+import org.apache.jena.sparql.algebra.op.OpUnfold;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.Vars;
@@ -165,6 +166,17 @@ public abstract class VariableUsageVisitor extends OpVisitorBase {
         for (Var var : opExtend.getVarExprList().getVars()) {
             vars.add(var);
             ExprVars.varsMentioned(vars, opExtend.getVarExprList().getExpr(var));
+        }
+        action(vars);
+    }
+
+    @Override
+    public void visit(OpUnfold opUnfold) {
+        Collection<Var> vars = new ArrayList<>();
+        ExprVars.varsMentioned(vars, opUnfold.getExpr());
+        vars.add( opUnfold.getVar1() );
+        if ( opUnfold.getVar2() != null ) {
+            vars.add( opUnfold.getVar2() );
         }
         action(vars);
     }

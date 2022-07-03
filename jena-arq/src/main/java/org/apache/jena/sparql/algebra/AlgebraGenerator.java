@@ -329,6 +329,11 @@ public class AlgebraGenerator
             return op;
         }
 
+        if ( elt instanceof ElementUnfold ) {
+        	ElementUnfold unfold = (ElementUnfold)elt;
+            return new OpUnfold(current, unfold.getExpr(), unfold.getVar1(), unfold.getVar2());
+        }
+
         // Filters were collected together by prepareGroup
         // This only handles filters left in place by some magic.
         if ( elt instanceof ElementFilter ) {

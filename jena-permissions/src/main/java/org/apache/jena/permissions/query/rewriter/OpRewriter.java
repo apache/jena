@@ -306,6 +306,19 @@ public class OpRewriter implements OpVisitor {
     }
 
     /**
+     * rewrites the subop of unfold.
+     */
+    @Override
+    public void visit(final OpUnfold opUnfold) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Starting visiting OpUnfold");
+        }
+        Op subOp = rewriteOp1(opUnfold);
+        OpUnfold opUnfold2 = new OpUnfold(subOp, opUnfold.getExpr(), opUnfold.getVar1(), opUnfold.getVar2());
+        addOp(opUnfold2);
+    }
+
+    /**
      * rewrites the subop of filter.
      */
     @Override

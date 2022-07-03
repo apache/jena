@@ -41,6 +41,7 @@ import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.* ;
 import org.apache.jena.sparql.engine.main.QC ;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprAggregator ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
@@ -262,6 +263,14 @@ public class EvaluatorSimple implements Evaluator
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
         qIter = new QueryIterAssign(qIter, exprs, getExecContext(), true) ;
+        return new TableN(qIter) ;
+    }
+
+    @Override
+    public Table unfold(Table table, Expr expr, Var var1, Var var2)
+    {
+        QueryIterator qIter = table.iterator(getExecContext()) ;
+        qIter = new QueryIterUnfold(qIter, expr, var1, var2) ;
         return new TableN(qIter) ;
     }
 

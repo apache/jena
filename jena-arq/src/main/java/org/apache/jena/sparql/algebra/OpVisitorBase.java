@@ -78,6 +78,8 @@ public class OpVisitorBase implements OpVisitor
 
     @Override public void visit(OpExtend opExtend)              {}
 
+    @Override public void visit(OpUnfold opUnfold)              {}
+
     @Override public void visit(OpList opList)                  {}
 
     @Override public void visit(OpOrder opOrder)                {}

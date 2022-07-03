@@ -148,6 +148,10 @@ public abstract class OpVisitorByType implements OpVisitor
     { visit1(opExtend) ; }
 
     @Override
+    public void visit(OpUnfold opUnfold)
+    { visit1(opUnfold) ; }
+
+    @Override
     public void visit(OpList opList)
     { visitModifer(opList) ; }
 

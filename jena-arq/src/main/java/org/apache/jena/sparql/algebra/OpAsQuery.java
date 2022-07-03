@@ -799,6 +799,15 @@ public class OpAsQuery {
         }
 
         @Override
+        public void visit(OpUnfold opUnfold) {
+            Element e = asElement(opUnfold.getSubOp()) ;
+            // If (unfold ... (table unit)), and first in group, don't add the empty group.
+            insertIntoGroup(currentGroup(), e) ;
+            Element elmtUnfold = new ElementUnfold( opUnfold.getExpr(), opUnfold.getVar1(), opUnfold.getVar2() ) ;
+            currentGroup().addElement(elmtUnfold) ;
+        }
+
+        @Override
         public void visit(OpList opList) {
             opList.getSubOp().visit(this) ;
         }

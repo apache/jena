@@ -91,6 +91,7 @@ public class Tags
     public static final String symAssign          = ":=";
     public static final String tagSlice           = "slice";
     public static final String tagRename          = "rename";
+    public static final String tagUnfold          = "unfold";
 
     public static final String tagOpTriple        = Tags.tagTriple;
     public static final String tagOpQuad          = Tags.tagQuad;
