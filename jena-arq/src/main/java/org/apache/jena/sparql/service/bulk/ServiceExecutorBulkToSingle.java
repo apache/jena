@@ -16,27 +16,38 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.service;
+package org.apache.jena.sparql.service.bulk;
 
 import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.service.single.ChainingServiceExecutor;
+import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply;
+import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.service.single.ServiceExecutor;
 
-/** Compatibility interface. Consider migrating legacy code to {@link ChainingServiceExecutor} or {@link ServiceExecutor} */
-@Deprecated(since = "4.6.0")
-@FunctionalInterface
-public interface ServiceExecutorFactory
-    extends ServiceExecutor
+/** Bridge from bulk to individual binding level*/
+public class ServiceExecutorBulkToSingle
+    implements ServiceExecutorBulk
 {
-    @Override
-    default QueryIterator createExecution(OpService opExecute, OpService original, Binding binding, ExecutionContext execCxt) {
-        ServiceExecution svcExec = createExecutor(opExecute, original, binding, execCxt);
-        QueryIterator result = svcExec == null ? null : svcExec.exec();
-        return result;
+    protected ServiceExecutor delegate;
+
+    public ServiceExecutorBulkToSingle(ServiceExecutor delegate) {
+        super();
+        this.delegate = delegate;
     }
 
-    ServiceExecution createExecutor(OpService opExecute, OpService original, Binding binding, ExecutionContext execCxt);
+    @Override
+    public QueryIterator createExecution(OpService original, QueryIterator input,
+            ExecutionContext execCxt) {
+
+        return new QueryIterRepeatApply(input, execCxt) {
+            @Override
+            protected QueryIterator nextStage(Binding binding) {
+                OpService opExecute = (OpService)QC.substitute(original, binding);
+                QueryIterator qIter = delegate.createExecution(opExecute, original, binding, execCxt);
+                return qIter;
+            }
+        };
+    }
 }

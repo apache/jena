@@ -16,27 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.service;
+package org.apache.jena.sparql.service.single;
 
 import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.service.single.ChainingServiceExecutor;
-import org.apache.jena.sparql.service.single.ServiceExecutor;
 
-/** Compatibility interface. Consider migrating legacy code to {@link ChainingServiceExecutor} or {@link ServiceExecutor} */
-@Deprecated(since = "4.6.0")
-@FunctionalInterface
-public interface ServiceExecutorFactory
-    extends ServiceExecutor
+/** Form a service executor from a base service executor and a 'chain' that acts as a decorator */
+public class ServiceExecutorDecorator
+    implements ServiceExecutor
 {
-    @Override
-    default QueryIterator createExecution(OpService opExecute, OpService original, Binding binding, ExecutionContext execCxt) {
-        ServiceExecution svcExec = createExecutor(opExecute, original, binding, execCxt);
-        QueryIterator result = svcExec == null ? null : svcExec.exec();
-        return result;
+    protected ServiceExecutor base;
+    protected ChainingServiceExecutor decorator;
+
+    public ServiceExecutorDecorator(ServiceExecutor base, ChainingServiceExecutor decorator) {
+        super();
+        this.base = base;
+        this.decorator = decorator;
     }
 
-    ServiceExecution createExecutor(OpService opExecute, OpService original, Binding binding, ExecutionContext execCxt);
+    @Override
+    public QueryIterator createExecution(OpService opExecute, OpService original, Binding binding,
+            ExecutionContext execCxt) {
+        return decorator.createExecution(opExecute, original, binding, execCxt, base);
+    }
 }
