@@ -328,6 +328,23 @@ public abstract class AbstractDatasetGraphTests
         assertFalse(dsg.containsGraph(gn)) ;
     }
 
+    @Test public void clear_02() {
+        DatasetGraph dsg = emptyDataset();
+        dsg.add(SSE.parseQuad("(quad _ <a0> <b0> <b0>)"));
+        dsg.add(SSE.parseQuad("(quad <g1> <a1> <b1> <b1>)"));
+        dsg.add(SSE.parseQuad("(quad <g2> <a2> <b2> <b2>)"));
+
+        assertEquals(2, dsg.size());
+        assertEquals(1, dsg.getDefaultGraph().size());
+        assertFalse(dsg.isEmpty());
+
+        dsg.clear();
+
+        assertEquals(0, dsg.size());
+        assertEquals(0, dsg.getDefaultGraph().size());
+        assertTrue(dsg.isEmpty());
+    }
+
     @Test public void graph_clear_1() {
         DatasetGraph dsg = emptyDataset() ;
         if ( ! dsg.supportsTransactions() )
