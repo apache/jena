@@ -52,6 +52,7 @@ public class QueryIterUnfold extends QueryIterRepeatApply
 
     public QueryIterUnfold(QueryIterator qIter, Expr expr, Var var1, Var var2, ExecutionContext execCxt) {
         super(qIter, execCxt) ;
+
         this.expr = expr ;
         this.var1 = var1 ;
         this.var2 = var2 ;
