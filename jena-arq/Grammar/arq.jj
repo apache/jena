@@ -634,6 +634,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = ExistsElt()
  |
    el = NotExistsElt()
+ |
+   el = Unfold()
  )
  { return el ; }
 }
@@ -757,6 +759,17 @@ Element NotExistsElt() : { Element el ; }
     <NOT> <EXISTS>
     el = GroupGraphPattern()
     { return new ElementNotExists(el) ; }
+}
+Element Unfold() : { Var v1 ; Var v2 = null ; Expr expr ; }
+{
+  <UNFOLD>
+  <LPAREN>
+  expr = Expression()
+  <AS>
+  v1 = Var()
+  (<COMMA> v2 = Var() { ; } )?
+  <RPAREN>
+  { return new ElementUnfold(expr, v1, v2) ; }
 }
 Element MinusGraphPattern() : { Element el ; }
 {
@@ -1790,6 +1803,7 @@ TOKEN [IGNORE_CASE] :
 | < SUBJECT: "SUBJECT" >
 | < PREDICATE: "PREDICATE" >
 | < OBJECT: "OBJECT" >
+| < UNFOLD: "unfold" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
 | < AS: "as" >
