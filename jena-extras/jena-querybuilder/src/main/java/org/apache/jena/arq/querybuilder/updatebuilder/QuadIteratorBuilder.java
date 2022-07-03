@@ -42,6 +42,7 @@ import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.sparql.syntax.ElementService;
 import org.apache.jena.sparql.syntax.ElementSubQuery;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock;
+import org.apache.jena.sparql.syntax.ElementUnfold;
 import org.apache.jena.sparql.syntax.ElementUnion;
 import org.apache.jena.sparql.syntax.ElementVisitor;
 import org.apache.jena.util.iterator.ExtendedIterator;
@@ -105,6 +106,12 @@ class QuadIteratorBuilder implements ElementVisitor {
     @Override
     public void visit(ElementBind el) {
         throw new QueryParseException("bind not permitted in data quad", -1, -1);
+
+    }
+
+    @Override
+    public void visit(ElementUnfold el) {
+        throw new QueryParseException("unfold not permitted in data quad", -1, -1);
 
     }
 

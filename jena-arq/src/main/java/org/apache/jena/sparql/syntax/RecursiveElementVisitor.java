@@ -60,6 +60,9 @@ public class RecursiveElementVisitor implements ElementVisitor
     public void startElement(ElementBind el) {}
     public void endElement  (ElementBind el) {}
 
+    public void startElement(ElementUnfold el) {}
+    public void endElement  (ElementUnfold el) {}
+
     public void startElement(ElementData el) {}
     public void endElement  (ElementData el) {}
 
@@ -138,6 +141,13 @@ public class RecursiveElementVisitor implements ElementVisitor
 
     @Override
     public void visit(ElementBind el)
+    {
+        startElement(el) ;
+        endElement(el) ;
+    }
+
+    @Override
+    public void visit(ElementUnfold el)
     {
         startElement(el) ;
         endElement(el) ;

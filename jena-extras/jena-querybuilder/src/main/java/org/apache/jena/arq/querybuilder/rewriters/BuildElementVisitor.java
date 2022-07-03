@@ -36,6 +36,7 @@ import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.sparql.syntax.ElementService;
 import org.apache.jena.sparql.syntax.ElementSubQuery;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock;
+import org.apache.jena.sparql.syntax.ElementUnfold;
 import org.apache.jena.sparql.syntax.ElementUnion;
 import org.apache.jena.sparql.syntax.ElementVisitor;
 
@@ -81,6 +82,12 @@ public class BuildElementVisitor implements ElementVisitor {
 
     @Override
     public void visit(ElementBind el) {
+        // no change
+        result = el;
+    }
+
+    @Override
+    public void visit(ElementUnfold el) {
         // no change
         result = el;
     }

@@ -35,6 +35,7 @@ import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.sparql.syntax.ElementService;
 import org.apache.jena.sparql.syntax.ElementSubQuery;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock;
+import org.apache.jena.sparql.syntax.ElementUnfold;
 import org.apache.jena.sparql.syntax.ElementUnion;
 import org.apache.jena.sparql.syntax.ElementVisitor;
 import org.apache.jena.sparql.util.NodeIsomorphismMap;
@@ -103,6 +104,12 @@ public class WhereValidator implements ElementVisitor {
 
     @Override
     public void visit(ElementBind el) {
+        checkMatching(el);
+        return;
+    }
+
+    @Override
+    public void visit(ElementUnfold el) {
         checkMatching(el);
         return;
     }

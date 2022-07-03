@@ -19,6 +19,7 @@ package org.apache.jena.arq.querybuilder.rewriters;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.graph.Node;
@@ -43,6 +44,7 @@ import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.sparql.syntax.ElementService;
 import org.apache.jena.sparql.syntax.ElementSubQuery;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock;
+import org.apache.jena.sparql.syntax.ElementUnfold;
 import org.apache.jena.sparql.syntax.ElementUnion;
 import org.apache.jena.sparql.syntax.ElementVisitor;
 
@@ -110,6 +112,23 @@ public class ElementRewriter extends AbstractRewriter<Element> implements Elemen
             ExprRewriter exprRewriter = new ExprRewriter(values);
             el.getExpr().visit(exprRewriter);
             push(new ElementBind(el.getVar(), exprRewriter.getResult()));
+        } else {
+            // push( new ElementBind( el.getVar(), NodeValue.makeNode( n )) );
+            // no op
+            push(new ElementTriplesBlock());
+        }
+    }
+
+    @Override
+    public void visit(ElementUnfold el) {
+// TODO: double check this method; I copied and adapted the method of
+//   ElementBind (see above) but I am not entirely sure it is correct
+        Node n1 = changeNode(el.getVar1());
+        Node n2 = changeNode(el.getVar2());
+        if ( Objects.equals(n1, el.getVar1()) && Objects.equals(n2, el.getVar2()) ) {
+            ExprRewriter exprRewriter = new ExprRewriter(values);
+            el.getExpr().visit(exprRewriter);
+            push( new ElementUnfold(exprRewriter.getResult(), el.getVar1(), el.getVar2()) );
         } else {
             // push( new ElementBind( el.getVar(), NodeValue.makeNode( n )) );
             // no op

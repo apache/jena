@@ -215,6 +215,7 @@ public class SyntaxVarScope {
         @Override
         public void visit(ElementGroup el) {
             // BIND scope rules
+            // UNFOLD scope rules
             // (and service warning)
 
             for ( int i = 0 ; i < el.size() ; i++ ) {
@@ -223,6 +224,11 @@ public class SyntaxVarScope {
                 if ( e instanceof ElementBind ) {
                     Collection<Var> accScope = calcScopeAll(el.getElements(), i);
                     check(accScope, (ElementBind)e);
+                }
+
+                if ( e instanceof ElementUnfold ) {
+                    Collection<Var> accScope = calcScopeAll(el.getElements(), i);
+                    check(accScope, (ElementUnfold)e);
                 }
 
                 if ( e instanceof ElementService ) {
@@ -251,6 +257,18 @@ public class SyntaxVarScope {
             if ( scope.contains(var) )
                 throw new QueryParseException("BIND: Variable used when already in-scope: " + var + " in " + el, -1, -1);
             checkExpr(scope, el.getExpr(), var);
+        }
+
+        private static void check(Collection<Var> scope, ElementUnfold el) {
+            Var var1 = el.getVar1();
+            if ( scope.contains(var1) )
+                throw new QueryParseException("UNFOLD: Variable used when already in-scope: " + var1 + " in " + el, -1, -1);
+
+            Var var2 = el.getVar2();
+            if ( var2 != null && scope.contains(var2) )
+                throw new QueryParseException("UNFOLD: Variable used when already in-scope: " + var2 + " in " + el, -1, -1);
+
+            checkExpr(scope, el.getExpr(), var1);
         }
 
         private static void check(Collection<Var> scope, ElementService el) {
