@@ -310,6 +310,13 @@ public class EvaluatorDispatch implements OpVisitor {
     }
 
     @Override
+    public void visit(OpUnfold opUnfold) {
+        Table table = eval(opUnfold.getSubOp());
+        table = evaluator.unfold(table, opUnfold.getExpr(), opUnfold.getVar1(), opUnfold.getVar2());
+        push(table);
+    }
+
+    @Override
     public void visit(OpGroup opGroup) {
         Table table = eval(opGroup.getSubOp());
         table = evaluator.groupBy(table, opGroup.getGroupVars(), opGroup.getAggregators());

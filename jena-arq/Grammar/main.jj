@@ -480,6 +480,27 @@ void OrderCondition() :
           getQuery().addOrderBy(v, direction) ; }
 }
 
+SortCondition OrderConditionForAggregationFunction() :
+{ int direction = 0 ; Expr expr = null ; Node v = null ; }
+{
+  { direction = Query.ORDER_DEFAULT ; }
+  (
+    ( // These are for clarity in the HTML
+      ( <ASC>  { direction = Query.ORDER_ASCENDING ; }
+      | <DESC> { direction = Query.ORDER_DESCENDING ; } )
+      expr = BrackettedExpression()
+    )
+  |
+    ( expr = Constraint()
+    | v = Var() //{ expr = asExpr(v) ; }
+    )
+  )
+  { if ( v == null )
+          return new SortCondition(expr, direction) ;
+      else
+          return new SortCondition(v, direction) ; }
+}
+
 void LimitOffsetClauses() : { }
 {
   // SPARQL does not care about the order here.
@@ -906,6 +927,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = ExistsElt()
  |
    el = NotExistsElt()
+ |
+   el = Unfold()
 #endif
  )
  { return el ; }
@@ -1050,6 +1073,18 @@ Element NotExistsElt() : { Element el ; }
     <NOT> <EXISTS>
     el = GroupGraphPattern()
     { return new ElementNotExists(el) ; }
+}
+
+Element Unfold() : {  Var v1 ; Var v2 = null ; Expr expr ; }
+{
+  <UNFOLD>
+  <LPAREN>
+  expr = Expression()
+  <AS>
+  v1 = Var()
+  (<COMMA> v2 = Var() { ; } )?
+  <RPAREN>
+  { return new ElementUnfold(expr, v1, v2) ; }
 }
 #endif
 
@@ -2234,6 +2269,27 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
   | t = <VAR_POP> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
     { agg = AggregatorFactory.createCustom(AggURI.var_pop, distinct, expr) ; }
 
+  | t = <FOLD>
+    { java.util.List<SortCondition> scs = null ;
+      SortCondition sc = null ; }
+    <LPAREN>
+    ( <DISTINCT> { distinct = true ; } )?
+    expr = Expression()
+    ( <COMMA> expr2 = Expression() )?
+    (
+       <ORDER> <BY>
+       (
+         sc = OrderConditionForAggregationFunction()
+         {
+           if ( scs == null )
+             scs = new java.util.ArrayList<SortCondition>();
+           scs.add(sc);
+         }
+       )+
+    )?
+    <RPAREN>
+    { agg = AggregatorFactory.createFold(distinct, expr, expr2, scs) ; }
+
     /* Explicit syntax (aggregate even if not registered) */
   | t = <AGG>
     { String iri ; }
@@ -2499,6 +2555,8 @@ TOKEN [IGNORE_CASE] :
 #ifdef ARQ
 |  < LET:         "LET" >
 |  < LATERAL:     "LATERAL" >
+
+|  < UNFOLD:      "unfold" >
 #endif
 
 |  < TRIPLE:      "TRIPLE" >
@@ -2529,6 +2587,9 @@ TOKEN [IGNORE_CASE] :
 |  < VARIANCE:    "variance" >
 |  < VAR_SAMP:    "var_samp" >
 |  < VAR_POP:     "var_pop" >
+#ifdef ARQ
+|  < FOLD:        "fold" >
+#endif
 
 |  < SAMPLE:      "sample" >
 |  < GROUP_CONCAT: "group_concat" >

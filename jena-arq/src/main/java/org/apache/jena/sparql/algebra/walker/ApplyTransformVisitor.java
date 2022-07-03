@@ -147,6 +147,11 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         visit1(opExtend2) ;
     }
 
+    @Override
+    public void visit(OpUnfold opUnfold) {
+        visit1(opUnfold) ;
+    }
+
     // Special test cases for collectors.
 
     // Careful about order.
