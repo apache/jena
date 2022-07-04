@@ -254,7 +254,7 @@ public class EvaluatorSimple implements Evaluator {
     @Override
     public Table unfold(Table table, Expr expr, Var var1, Var var2) {
         QueryIterator qIter = table.iterator(getExecContext());
-        qIter = new QueryIterUnfold(qIter, expr, var1, var2);
+        qIter = new QueryIterUnfold(qIter, expr, var1, var2, getExecContext());
         return new TableN(qIter);
     }
 
