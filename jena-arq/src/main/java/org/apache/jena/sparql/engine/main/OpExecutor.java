@@ -448,7 +448,7 @@ public class OpExecutor
 
     protected QueryIterator execute(OpUnfold opUnfold, QueryIterator input) {
         QueryIterator qIter = exec(opUnfold.getSubOp(), input) ;
-        qIter = new QueryIterUnfold(qIter, opUnfold.getExpr(), opUnfold.getVar1(), opUnfold.getVar2()) ;
+        qIter = new QueryIterUnfold(qIter, opUnfold.getExpr(), opUnfold.getVar1(), opUnfold.getVar2(), execCxt) ;
         return qIter ;
     }
 
