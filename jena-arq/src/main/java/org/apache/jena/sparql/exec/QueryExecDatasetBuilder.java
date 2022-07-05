@@ -220,7 +220,7 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
         query.setResultVars();
         Context cxt = getContext();
 
-        QueryEngineFactory qeFactory = QueryEngineRegistry.get().find(query, dataset, cxt);
+        QueryEngineFactory qeFactory = QueryEngineRegistry.findFactory(query, dataset, cxt);
         if ( qeFactory == null ) {
             Log.warn(QueryExecDatasetBuilder.class, "Failed to find a QueryEngineFactory");
             return null;
