@@ -147,9 +147,9 @@ public class FusekiMain extends CmdARQ {
             "Create an in-memory, non-persistent dataset using TDB (testing only)");
 //            add(argEmpty, "--empty",
 //                "Run with no datasets and services (validators only)");
-        add(argRDFS, "--rdfs=",
+        add(argRDFS, "--rdfs=FILE",
             "Apply RDFS on top of the dataset");
-        add(argConfig, "--config=",
+        add(argConfig, "--config=FILE",
             "Use a configuration file to determine the services");
         addModule(modDataset);
         add(argEmpty); // Hidden for now.

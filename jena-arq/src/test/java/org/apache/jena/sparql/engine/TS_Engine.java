@@ -32,6 +32,7 @@ import org.junit.runners.Suite ;
       , TestBindingStreams.class
       , TestTableJoin.class
       , TestQueryEngineMultiThreaded.class
+      , TestQueryEngineFromContext.class
       , TestJsonIterator.class
       , TestJsonEval.class
 })

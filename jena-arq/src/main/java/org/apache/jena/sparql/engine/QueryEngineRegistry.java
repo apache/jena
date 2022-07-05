@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.query.Query;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.engine.main.QueryEngineMain;
@@ -42,7 +43,48 @@ public class QueryEngineRegistry
         return registry;
     }
 
-    private QueryEngineRegistry() { }
+    /** If there is a registry in the context then return it otherwise yield the global instance */
+    static public QueryEngineRegistry chooseRegistry(Context context)
+    {
+        QueryEngineRegistry result = get(context);
+        if (result == null) {
+            result = get();
+        }
+        return result;
+    }
+
+    /** Get the query engine registry from the context or null if there is none.
+     *  Returns null if the context is null. */
+    static public QueryEngineRegistry get(Context context)
+    {
+        QueryEngineRegistry result = context == null
+                ? null
+                : context.get(ARQConstants.registryQueryEngines);
+        return result;
+    }
+
+    static public void set(Context context, QueryEngineRegistry registry)
+    {
+        context.set(ARQConstants.registryQueryEngines, registry);
+    }
+
+    public QueryEngineRegistry copy() {
+        QueryEngineRegistry result = new QueryEngineRegistry();
+        result.factories.addAll(factories);
+        return result;
+    }
+
+    /** Create a copy of the registry from the context or return a new instance */
+    public static QueryEngineRegistry copyFrom(Context context) {
+        QueryEngineRegistry tmp = get(context);
+        QueryEngineRegistry result = tmp != null
+                ? tmp.copy()
+                : new QueryEngineRegistry();
+
+        return result;
+    }
+
+    public QueryEngineRegistry() { }
 
     private static synchronized void init()
     {
@@ -59,7 +101,7 @@ public class QueryEngineRegistry
      */
 
     public static QueryEngineFactory findFactory(Query query, DatasetGraph dataset, Context context)
-    { return get().find(query, dataset, context); }
+    { return chooseRegistry(context).find(query, dataset, context); }
 
     /** Locate a suitable factory for this algebra expression
      *  and dataset from the default registry
@@ -71,7 +113,7 @@ public class QueryEngineRegistry
      */
 
     public static QueryEngineFactory findFactory(Op op, DatasetGraph dataset, Context context)
-    { return get().find(op, dataset, context); }
+    { return chooseRegistry(context).find(op, dataset, context); }
 
     /** Locate a suitable factory for this query and dataset
      *
