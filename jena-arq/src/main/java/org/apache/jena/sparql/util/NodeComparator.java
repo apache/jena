@@ -21,14 +21,19 @@ package org.apache.jena.sparql.util;
 import java.util.Comparator ;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.expr.NodeValue;
 
+/**
+ * This is not sorting by value. See {@link NodeValue#compare} and {@link NodeValue#compareAlways}.
+ * @see NodeCmp#compareRDFTerms
+ * @deprecated This can be replaced by {@code (n1,n2)->NodeCmp.compareRDFTerms(n1, n2)}.
+ */
+@Deprecated
 public class NodeComparator implements Comparator<Node>
 {
     @Override
-    public int compare(Node o1, Node o2)
-    {
-        return NodeUtils.compareRDFTerms(o1, o2);
-        //return NodeValue.compareAlways(NodeValue.makeNode(o1), NodeValue.makeNode(o2));
+    public int compare(Node o1, Node o2) {
+        return NodeCmp.compareRDFTerms(o1, o2);
     }
 }
 

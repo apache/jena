@@ -1,169 +1,168 @@
-@prefix :      <http://example/> .
-@prefix rs:    <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
-@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rs:  <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-[ a                  rs:ResultSet ;
-  rs:resultVariable  "x" , "v" ;
+[ rdf:type           rs:ResultSet ;
+  rs:resultVariable  "v" , "x" ;
   rs:size            "20"^^xsd:int ;
-  rs:solution        [ rs:binding  [ rs:value     "1"^^xsd:decimal ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :z3 ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/x3> ;
                                      rs:variable  "x"
                                    ] ;
-                       rs:index    5
+                       rs:binding  [ rs:value     "xyz"@FR ;
+                                     rs:variable  "v"
+                                   ] ;
+                       rs:index    12
                      ] ;
-  rs:solution        [ rs:binding  [ rs:value     "xyz" ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :x1 ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/z1> ;
                                      rs:variable  "x"
                                    ] ;
-                       rs:index    13
-                     ] ;
-  rs:solution        [ rs:binding  [ rs:value     1 ;
+                       rs:binding  [ rs:value     1 ;
                                      rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :z1 ;
-                                     rs:variable  "x"
-                                   ] ;
-                       rs:index    6
-                     ] ;
-  rs:solution        [ rs:binding  [ rs:value     "xyz"@FR ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :x3 ;
-                                     rs:variable  "x"
-                                   ] ;
-                       rs:index    17
-                     ] ;
-  rs:solution        [ rs:binding  [ rs:value     "abc"@en ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :y2 ;
-                                     rs:variable  "x"
-                                   ] ;
-                       rs:index    10
-                     ] ;
-  rs:solution        [ rs:binding  [ rs:value     "xyz" ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :x6 ;
-                                     rs:variable  "x"
-                                   ] ;
-                       rs:index    14
-                     ] ;
-  rs:solution        [ rs:binding  [ rs:value     "abc" ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :y4 ;
-                                     rs:variable  "x"
-                                   ] ;
-                       rs:index    8
-                     ] ;
-  rs:solution        [ rs:binding  [ rs:value     []  ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :x9 ;
-                                     rs:variable  "x"
-                                   ] ;
-                       rs:index    1
-                     ] ;
-  rs:solution        [ rs:binding  [ rs:value     "xyz"@en ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :x2 ;
-                                     rs:variable  "x"
                                    ] ;
                        rs:index    16
                      ] ;
-  rs:solution        [ rs:binding  [ rs:value     "abc"^^:unknown ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :y6 ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/x2> ;
                                      rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     "xyz"@en ;
+                                     rs:variable  "v"
                                    ] ;
                        rs:index    11
                      ] ;
-  rs:solution        [ rs:binding  [ rs:value     "abc" ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :y1 ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/x7> ;
                                      rs:variable  "x"
                                    ] ;
-                       rs:index    7
-                     ] ;
-  rs:solution        [ rs:binding  [ rs:value     "xyz"^^xsd:integer ;
+                       rs:binding  [ rs:value     "xyz"^^xsd:integer ;
                                      rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :x7 ;
-                                     rs:variable  "x"
                                    ] ;
                        rs:index    20
                      ] ;
-  rs:solution        [ rs:binding  [ rs:value     "abc"@EN ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :y3 ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/x6> ;
                                      rs:variable  "x"
                                    ] ;
-                       rs:index    9
+                       rs:binding  [ rs:value     "xyz" ;
+                                     rs:variable  "v"
+                                   ] ;
+                       rs:index    7
                      ] ;
-  rs:solution        [ rs:binding  [ rs:value     :abc ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :y7 ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/y7> ;
                                      rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     <http://example/abc> ;
+                                     rs:variable  "v"
                                    ] ;
                        rs:index    2
                      ] ;
-  rs:solution        [ rs:binding  [ rs:value     01 ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :z2 ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/x8> ;
                                      rs:variable  "x"
                                    ] ;
-                       rs:index    4
-                     ] ;
-  rs:solution        [ rs:binding  [ rs:value     "xyz"@EN ;
+                       rs:binding  [ rs:value     "xyz"^^<http://example/unknown> ;
                                      rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :x5 ;
-                                     rs:variable  "x"
-                                   ] ;
-                       rs:index    15
-                     ] ;
-  rs:solution        [ rs:binding  [ rs:value     "xyz"^^:unknown ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :x8 ;
-                                     rs:variable  "x"
                                    ] ;
                        rs:index    19
                      ] ;
-  rs:solution        [ rs:binding  [ rs:value     "xyz"@fr ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/x1> ;
+                                     rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     "xyz" ;
                                      rs:variable  "v"
                                    ] ;
-                       rs:binding  [ rs:value     :x4 ;
+                       rs:index    6
+                     ] ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/y2> ;
                                      rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     "abc"@en ;
+                                     rs:variable  "v"
+                                   ] ;
+                       rs:index    9
+                     ] ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/y4> ;
+                                     rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     "abc" ;
+                                     rs:variable  "v"
+                                   ] ;
+                       rs:index    5
+                     ] ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/y1> ;
+                                     rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     "abc" ;
+                                     rs:variable  "v"
+                                   ] ;
+                       rs:index    4
+                     ] ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/x4> ;
+                                     rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     "xyz"@fr ;
+                                     rs:variable  "v"
+                                   ] ;
+                       rs:index    13
+                     ] ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/x5> ;
+                                     rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     "xyz"@EN ;
+                                     rs:variable  "v"
+                                   ] ;
+                       rs:index    10
+                     ] ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/y6> ;
+                                     rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     "abc"^^<http://example/unknown> ;
+                                     rs:variable  "v"
+                                   ] ;
+                       rs:index    17
+                     ] ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/y3> ;
+                                     rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     "abc"@EN ;
+                                     rs:variable  "v"
+                                   ] ;
+                       rs:index    8
+                     ] ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/y5> ;
+                                     rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     "abc"^^xsd:integer ;
+                                     rs:variable  "v"
                                    ] ;
                        rs:index    18
                      ] ;
-  rs:solution        [ rs:binding  [ rs:value     :xyz ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/z3> ;
+                                     rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     "1"^^xsd:decimal ;
                                      rs:variable  "v"
                                    ] ;
-                       rs:binding  [ rs:value     :x10 ;
+                       rs:index    15
+                     ] ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/z2> ;
                                      rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     01 ;
+                                     rs:variable  "v"
+                                   ] ;
+                       rs:index    14
+                     ] ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/x9> ;
+                                     rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     []  ;
+                                     rs:variable  "v"
+                                   ] ;
+                       rs:index    1
+                     ] ;
+  rs:solution        [ rs:binding  [ rs:value     <http://example/x10> ;
+                                     rs:variable  "x"
+                                   ] ;
+                       rs:binding  [ rs:value     <http://example/xyz> ;
+                                     rs:variable  "v"
                                    ] ;
                        rs:index    3
-                     ] ;
-  rs:solution        [ rs:binding  [ rs:value     "abc"^^xsd:integer ;
-                                     rs:variable  "v"
-                                   ] ;
-                       rs:binding  [ rs:value     :y5 ;
-                                     rs:variable  "x"
-                                   ] ;
-                       rs:index    12
                      ]
 ] .
