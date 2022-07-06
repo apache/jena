@@ -79,8 +79,7 @@ public class ElementUnfold extends Element
     @Override
     public void visit(ElementVisitor v)
     {
-// TODO: extend ElementVisitor
-//        v.visit(this) ;
+        v.visit(this) ;
     }
 
 }
