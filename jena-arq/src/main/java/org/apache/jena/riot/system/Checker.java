@@ -19,7 +19,6 @@
 package org.apache.jena.riot.system;
 
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.apache.jena.JenaRuntime;
@@ -40,23 +39,20 @@ import org.apache.jena.util.SplitIRI;
 /**
  * Functions for checking nodes, triples and quads.
  * <p>
- * The check functions have two basic signatures:<br>
- * 1. "<tt>check...(<i>object</i>)</tt>"
- * 2. "<tt>check...(<i>object, errorHandler, line, col</i>)</tt>"
+ * The "check..." functions have two basic signatures:<br>
+ * 1. <tt>check...(<i>object</i>)</tt><br>
+ * 2. <tt>check...(<i>object, errorHandler, line, col</i>)</tt>
+ * <p>
  * The first type are for boolean testing and do not generate output. They call the
- * second type with default values for the last 3 parameters: nullErrorHandler, -1L, -1
+ * second type with default values for the last 3 parameters: nullErrorHandler, -1L, -1L.
  * The second type are for boolean testing and optionally generate error handling
  * output.
  * <p>
- * Parameters:<br>
- * {@link ErrorHandler} errorHandler - the errorHandler for output. If the errorHandler
+ * @param errorHandler - the {@link ErrorHandler} for output. If the errorHandler
  * is null, use the system wide handler.<br>
- * {@link long} line - code line number generating the check.<br>
- * {@link long} col - code column number generating the check.<br>
+ * @param line - code line number (a long int) generating the check.<br>
+ * @param col - code column number (a long int) generating the check.<br>
  * If the errorHandler is null, the line and column numbers not used.
- * <p>
- * The functions "<tt>check...(<i>object</i>)</tt>" are for boolean testing and do not
- * generate output.
  */
 
 public class Checker {
@@ -220,38 +216,42 @@ public class Checker {
         boolean hasLang = ( lang != null && !lang.isEmpty() );
         boolean hasDatatype = datatype != null;
 
-        // Has language...
+        // NOTE: Language and Datatype
+        // For RDF 1.1, if a Literal has a language AND a datatype, the datatype must be "rdf:langString".
+        // Prior to RDF 1.1, a Literal can have a language OR a datatype but not both.
+
+        // If the Literal has a language...
         if ( hasLang ) {
-            // Has datatype (generally, a problem)...
+            // ...and it has a datatype...
             if ( hasDatatype) {
-                // Jena is using RDF 1.1...
+                // ...and Jena is using the RDF 1.1 standard...
                 if ( JenaRuntime.isRDF11 ) {
-                    // The datatype is NOT "rdf:langString"...
-                    if ( datatype.getURI() != NodeConst.rdfLangString.getURI() ) {
+                    // ...and the datatype is NOT "rdf:langString"...
+                    if ( ! datatype.getURI().equals( NodeConst.rdfLangString.getURI() ) ) {
                         errorHandler(errorHandler).error("Literal has language but wrong datatype", line, col);
                         return false;
                     }
                     // Otherwise, it's OK to have language AND well-formed "rdf:langString" datatype.
                     // ...continue...
                 }
-                // Otherwise, when Jena is NOT using RDF 1.1...
+                // Otherwise, when Jena is NOT using the RDF 1.1 standard...
                 else {
                     errorHandler(errorHandler).error("Literal has datatype and language", line, col);
                     return false;
                 }
             }
 
-            // Test language tag format -- not a perfect test.
+            // Test language tag format -- not a perfect test...
             if ( !langPattern.matcher(lang).matches() ) {
                 errorHandler(errorHandler).warning("Language not valid: " + lang, line, col);
                 return false;
             }
         }
-        // Has datatype, no language...
+        // If the Literal has a datatype (but no language)...
         else if ( hasDatatype ) {
-            // Datatype check (and RDF 1.0 simple literals are always well-formed)...
             return validateByDatatype(lexicalForm, datatype, errorHandler, line, col);
         }
+        // Otherwise, simple literals are always well-formed...
         return true;
     }
 
