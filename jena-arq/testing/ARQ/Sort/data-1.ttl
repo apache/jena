@@ -7,7 +7,7 @@
 ##    3. IRIs
 ##    4. RDF literals
 ##    5. A plain literal before an RDF literal
-##       with type xsd:string of  the same lexical form.
+##       with type xsd:string of the same lexical form.
 
 []  :p <http://example/iri1> ;
     :i 3 .
@@ -16,16 +16,16 @@
     :i 4 .
 
 []  :p 99 ;
-    :i 5 .
-
-[]  :p 9999 ;
-    :i 6 .
-
-[]  :p "abc" ;
     :i 7 .
 
-[]  :p "abc"^^xsd:string ;
+[]  :p 9999 ;
     :i 8 .
+
+[]  :p "abc" ;
+    :i 5 .
+
+[]  :p "abc"@en ;
+    :i 6 .
 
 # Out of order because Jena will return in same
 # order for small numbers "[] :i ..."
