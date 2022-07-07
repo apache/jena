@@ -402,7 +402,7 @@ public class FusekiConfig {
 
     /** Build a DataAccessPoint, including DataService, from the description at Resource svc */
     public static DataAccessPoint buildDataAccessPoint(Resource svc, DatasetDescriptionMap dsDescMap) {
-        RDFNode n = BuildLib.getOne(svc, "fu:name");
+        RDFNode n = BuildLib.getOne(svc, FusekiVocab.pServiceName);
         try {
             if ( ! n.isLiteral() )
                 throw new FusekiConfigException("Not a literal for access point name: "+FmtUtils.stringForRDFNode(n));
@@ -426,7 +426,7 @@ public class FusekiConfig {
 
     /** Build a DatasetRef starting at Resource svc, having the services as described by the descriptions. */
     private static DataService.Builder buildDataService(Resource fusekiService, DatasetDescriptionMap dsDescMap) {
-        Resource datasetDesc = ((Resource)BuildLib.getOne(fusekiService, "fu:dataset"));
+        Resource datasetDesc = (Resource)BuildLib.getOne(fusekiService, FusekiVocab.pDataset);
         Dataset ds = getDataset(datasetDesc, dsDescMap);
         DataService.Builder dataService = DataService.newBuilder(ds.asDatasetGraph());
         Set<Endpoint> endpoints1 = new HashSet<>();
