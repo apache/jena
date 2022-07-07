@@ -16,4 +16,13 @@ testing/RIOT/Lang/TurtleStd/literal_with_LINE_FEED.ttl   text eol=lf
 testing/RIOT/Lang/TurtleSubm/test-17.ttl        text eol=lf
 testing/RIOT/Lang/TurtleSubm/test-18.ttl        text eol=lf
 
+## The exact copies from rdf-tests-cg
 
+testing/rdf-tests-cg/trig/trig-subm-15.trig     text eol=lf
+testing/rdf-tests-cg/trig/trig-subm-16.trig     text eol=lf
+
+testing/rdf-tests-cg/turtle/turtle-subm-15.ttl  text eol=lf
+testing/rdf-tests-cg/turtle/turtle-subm-16.ttl  text eol=lf
+
+testing/rdf-tests-cg/trig/literal_with_LINE_FEED.trig    text eol=lf
+testing/rdf-tests-cg/turtle/literal_with_LINE_FEED.ttl   text eol=lf

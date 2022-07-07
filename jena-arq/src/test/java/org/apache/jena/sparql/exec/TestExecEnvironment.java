@@ -26,15 +26,6 @@ import org.junit.Test;
 
 public class TestExecEnvironment {
 
-    @Test public void dummy() {}
-
-    // Authenv
-
-    // RegisterHttpClkient
-
-    // RegistryRequestModifier
-
-
     // https://github.com/apache/jena/issues/1393
     @Test
     public void testQueryExecAdapter() {

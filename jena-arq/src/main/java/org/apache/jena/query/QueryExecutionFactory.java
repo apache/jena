@@ -436,7 +436,7 @@ public class QueryExecutionFactory
             context = new Context(ARQ.getContext());
         if ( input == null )
             input = BindingRoot.create();
-        QueryEngineFactory f = QueryEngineRegistry.get().find(query, dataset, context);
+        QueryEngineFactory f = QueryEngineRegistry.findFactory(query, dataset, context);
         if ( f == null )
             return null;
         return f.create(query, dataset, input, context);

@@ -64,7 +64,7 @@
 
     <!-- Dependencies -->
     <ver.slf4j>1.7.36</ver.slf4j>
-    <ver.log4j2>2.17.2</ver.log4j2>
+    <ver.log4j2>2.18.0</ver.log4j2>
 
     <ver.lucene>8.11.1</ver.lucene>
 

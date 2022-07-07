@@ -31,7 +31,6 @@ import org.apache.jena.rdflink.RDFLink;
 
     /*package*/ static RDFConnection adapt(RDFLink link) { return RDFConnectionAdapter.adapt(link); }
 
-
     private static String queryStringForGraph(String ch, String graphName) {
         return
             ch +
