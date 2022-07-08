@@ -70,6 +70,19 @@ public class FunctionRegistry
         context.set(ARQConstants.registryFunctions, reg);
     }
 
+    /**
+     * Copies the origin registry into a new one, or makes a fresh instance if the specified registry is {@code null).
+     * @param from {@link FunctionRegistry } or {@code null}
+     * @return {@link FunctionRegistry} a new instance
+     */
+    public static FunctionRegistry createFrom(FunctionRegistry from) {
+        FunctionRegistry res = new FunctionRegistry();
+        if (from != null) {
+            res.registry.putAll(from.registry);
+        }
+        return res;
+    }
+
     public FunctionRegistry()
     {}
 
