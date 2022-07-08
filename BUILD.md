@@ -69,8 +69,6 @@ Build only a specific module (e.g. `jena-arq`) and its dependencies
 
 Also useful:
 
-`-Denforcer.skip` If the maven version is too old (e.g. server deployment), skipping the enforcer may still result in a successful build
-
 `-Drat.skip` Skips checking for license headers; useful during development.
 
 
