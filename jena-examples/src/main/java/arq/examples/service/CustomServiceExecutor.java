@@ -18,25 +18,24 @@
 
 package arq.examples.service;
 
-import java.util.Collections;
-
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.sparql.algebra.op.OpService;
-import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import org.apache.jena.sparql.engine.iterator.QueryIterRoot;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
-import org.apache.jena.sparql.service.ServiceExecutorFactory;
 import org.apache.jena.sparql.service.ServiceExecutorRegistry;
+import org.apache.jena.sparql.service.single.ChainingServiceExecutor;
+import org.apache.jena.sparql.service.single.ServiceExecutor;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.QueryExecUtils;
 
 public class CustomServiceExecutor {
 
-	/** Query for resources having the label "Apache Jena"en */
+    /** Query for resources having the label "Apache Jena"en */
     public static final String QUERY_STR = String.join("\n",
             "PREFIX wd: <http://www.wikidata.org/entity/>",
             "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
@@ -49,11 +48,15 @@ public class CustomServiceExecutor {
             "  }",
             "}");
 
+    public static final Node WIKIDATA = NodeFactory.createURI("http://query.wikidata.org/sparql");
+    public static final Node DBPEDIA = NodeFactory.createURI("http://dbpedia.org/sparql");
+
     public static void main(String[] args) {
 
         Dataset dataset = DatasetFactory.empty();
 
         conventionalExec(dataset);
+        relayWikidataToDBpediaChaining(dataset);
         relayWikidataToDBpedia(dataset);
         suppressRemoteRequests(dataset);
     }
@@ -71,21 +74,43 @@ public class CustomServiceExecutor {
          */
     }
 
-    /** Relay requests for Wikidata to DBpedia instead */
-    public static void relayWikidataToDBpedia(Dataset dataset) {
-        Node WIKIDATA = NodeFactory.createURI("http://query.wikidata.org/sparql");
-        Node DBPEDIA = NodeFactory.createURI("http://dbpedia.org/sparql");
+    /** Relay requests for Wikidata to DBpedia instead. Modern variant using chaining. */
+    public static void relayWikidataToDBpediaChaining(Dataset dataset) {
+        ChainingServiceExecutor relaySef = (opExecute, original, binding, execCxt, chain) -> {
+            if (opExecute.getService().equals(WIKIDATA)) {
+                opExecute = new OpService(DBPEDIA, opExecute.getSubOp(), opExecute.getSilent());
+            }
+            return chain.createExecution(opExecute, original, binding, execCxt);
+        };
 
-        ServiceExecutorFactory relaySef = (opExecute, original, binding, execCxt) -> {
+        Context cxt = ARQ.getContext().copy();
+        ServiceExecutorRegistry registry = ServiceExecutorRegistry.get(cxt).copy();
+        registry.addSingleLink(relaySef);
+
+        ServiceExecutorRegistry.set(cxt, registry);
+        execQueryAndShowResult(dataset, QUERY_STR, cxt);
+
+        /*
+         * -------------------
+         * | s               |
+         * ===================
+         * | dbr:Apache_Jena |
+         * -------------------
+         */
+    }
+
+    /** Relay requests for Wikidata to DBpedia instead. Non-chaining legacy variant. */
+    public static void relayWikidataToDBpedia(Dataset dataset) {
+        ServiceExecutor relaySef = (opExecute, original, binding, execCxt) -> {
                 if (opExecute.getService().equals(WIKIDATA)) {
                     opExecute = new OpService(DBPEDIA, opExecute.getSubOp(), opExecute.getSilent());
-                    return ServiceExecutorRegistry.httpService.createExecutor(opExecute, original, binding, execCxt);
+                    return ServiceExecutorRegistry.httpService.createExecution(opExecute, original, binding, execCxt);
                 }
                 return null;
             };
 
         Context cxt = ARQ.getContext().copy();
-        ServiceExecutorRegistry registry = new ServiceExecutorRegistry();
+        ServiceExecutorRegistry registry = ServiceExecutorRegistry.get(cxt).copy();
         registry.add(relaySef);
 
         ServiceExecutorRegistry.set(cxt, registry);
@@ -102,8 +127,7 @@ public class CustomServiceExecutor {
 
     /** Suppress remote requests - make any SERVICE request return the input binding */
     public static void suppressRemoteRequests(Dataset dataset) {
-        ServiceExecutorFactory noop = (opExecute, original, binding, execCxt) ->
-            () -> QueryIterPlainWrapper.create(Collections.singleton(binding).iterator());
+        ServiceExecutor noop = (opExecute, original, binding, execCxt) -> QueryIterRoot.create(execCxt);
 
         Context cxt = ARQ.getContext().copy();
         ServiceExecutorRegistry registry = new ServiceExecutorRegistry();

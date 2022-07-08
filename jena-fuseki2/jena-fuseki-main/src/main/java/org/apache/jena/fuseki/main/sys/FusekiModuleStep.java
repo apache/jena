@@ -39,8 +39,8 @@ public class FusekiModuleStep {
      * The DataAccessPointRegistry that will be used to build the server.
      *
      */
-    public static void configured(DataAccessPointRegistry dapRegistry, Model configModel) {
-        FusekiModules.forEachModule(module -> module.configured(dapRegistry, configModel));
+    public static void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
+        FusekiModules.forEachModule(module -> module.configured(serverBuilder, dapRegistry, configModel));
     }
 
     /**

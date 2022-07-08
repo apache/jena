@@ -2,7 +2,6 @@
 
 name: "Bug Report"
 description: "File a bug report"
-title: "[Bug]: "
 labels: ["bug"]
 body:
   - type: markdown
@@ -20,19 +19,20 @@ body:
     id: what-happened
     attributes:
       label: What happened?
-      description: Also tell us, what did you expect to happen?
+      description: What did you expect to happen?
       placeholder: Tell us what happened.
     validations:
       required: true
-  - type: checkboxes
-    id: operating-systems
-    attributes:
-      label: Which environment is running?
-      options:
-        - label: macOS
-        - label: Windows
-        - label: Linux
-        - label: other
+##   (2022-06) Github treats checkboxes as "tasks"
+##   - type: checkboxes
+##     id: operating-systems
+##     attributes:
+##       label: Which environment is running?
+##       options:
+##         - label: macOS
+##         - label: Windows
+##         - label: Linux
+##         - label: other
   - type: textarea
     id: output
     attributes:

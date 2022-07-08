@@ -58,24 +58,24 @@
 
     <!-- Testing -->
     <ver.junit>4.13.2</ver.junit>  
-    <ver.mockito>4.6.0</ver.mockito>
+    <ver.mockito>4.6.1</ver.mockito>
     <ver.awaitility>4.2.0</ver.awaitility>
     <ver.contract.tests>0.2.0</ver.contract.tests>
 
     <!-- Dependencies -->
     <ver.slf4j>1.7.36</ver.slf4j>
-    <ver.log4j2>2.17.2</ver.log4j2>
+    <ver.log4j2>2.18.0</ver.log4j2>
 
     <ver.lucene>8.11.1</ver.lucene>
 
-    <ver.jetty>10.0.9</ver.jetty>
-    <ver.shiro>1.9.0</ver.shiro>
+    <ver.jetty>10.0.11</ver.jetty>
+    <ver.shiro>1.9.1</ver.shiro>
 
-    <ver.protobuf>3.21.1</ver.protobuf>
+    <ver.protobuf>3.21.2</ver.protobuf>
     <ver.libthrift>0.16.0</ver.libthrift>
 
     <!-- JSON-LD 1.1 -->
-    <ver.titanium-json-ld>1.3.0</ver.titanium-json-ld>
+    <ver.titanium-json-ld>1.3.1</ver.titanium-json-ld>
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
     <!-- JSON-LD 1.0 -->
@@ -102,7 +102,7 @@
     <ver.commons-codec>1.15</ver.commons-codec>
     <ver.commons-compress>1.21</ver.commons-compress>
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.9.0</ver.micrometer>
+    <ver.micrometer>1.9.1</ver.micrometer>
 
     <!-- For testing, not shipped -->
     <ver.graalvm>22.1.0.1</ver.graalvm>
@@ -863,7 +863,7 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>0.13</version>
+        <version>0.14</version>
         <!-- 
              Run only if maven is running from this POM,
              not when run in a sub-module with this as parent.
@@ -1059,7 +1059,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.1.0</version>
         </plugin>
 
         <plugin>
@@ -1129,7 +1129,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.apache.rat</groupId>
                     <artifactId>apache-rat-plugin</artifactId>
-                    <versionRange>[0.11,)</versionRange>
+                    <versionRange>[0.14,)</versionRange>
                     <goals>
                       <goal>check</goal>
                     </goals>

@@ -32,8 +32,8 @@ import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.util.Context;
 
 /**
- * Query execution that delays making the QueryExecution until needed by exec* This
- * means timeout and initialBinds can still be set.
+ * Query execution that delays making the QueryExecution until needed by exec
+ * This means timeout and initialBindings can still be set.
  *
  * @see QueryExecution
  */
@@ -55,11 +55,13 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
     }
 
     @Override
-    protected QueryExec get() { return qExecHere; }
+    protected QueryExec get() {
+        execution();
+        return qExecHere;
+    }
 
     private void execution() {
         // Delay until used so setTimeout,setInitialBindings work.
-        // Also - rebuild allowed!
         if ( qExecHere == null )
             qExecHere = qExecBuilder.build();
     }

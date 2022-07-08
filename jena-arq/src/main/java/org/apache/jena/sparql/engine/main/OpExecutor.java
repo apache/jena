@@ -45,6 +45,7 @@ import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.procedure.ProcEval ;
 import org.apache.jena.sparql.procedure.Procedure ;
+import org.apache.jena.sparql.service.ServiceExecutorRegistry;
 
 /**
  * Turn an Op expression into an execution of QueryIterators.
@@ -305,7 +306,7 @@ public class OpExecutor
     }
 
     protected QueryIterator execute(OpService opService, QueryIterator input) {
-        return new QueryIterService(input, opService, execCxt) ;
+        return ServiceExecutorRegistry.exec(input, opService, execCxt);
     }
 
     // Quad form, "GRAPH ?g {}" Flip back to OpGraph.

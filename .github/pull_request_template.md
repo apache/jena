@@ -1,4 +1,4 @@
-GitHub issue resolved: #
+GitHub issue resolved #
 
 Pull request Description:
 

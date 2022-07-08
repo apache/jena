@@ -46,7 +46,7 @@ import org.apache.jena.rdf.model.Model;
  * <li>{@linkplain #serverBeforeStarting(FusekiServer)} -- called before {@code server.start} happens.</li>
  * <li>{@linkplain #serverAfterStarting(FusekiServer)} -- called after {@code server.start} happens.</li>
  * <li>{@linkplain #serverStopped(FusekiServer)} -- call after {@code server.stop}, but only if a clean shutdown happens.
- *     Servers may simply exit without shutdown phase.
+ *     Servers may simply exit without a shutdown phase.
  *     The JVM may exit or be killed without clean shutdown.
  *     Modules must not rely on a call to {@code serverStopped} happening.</li>
  * <li>{@linkplain #stop} -- modules finishes. Unlikely to be called in practice. There is no guarantee of a clean shutdown.
@@ -54,7 +54,7 @@ import org.apache.jena.rdf.model.Model;
  */
 public interface FusekiModule extends SubsystemLifecycle {
     /**
-     * Display name id to identify this module.
+     * Display name to identify this module.
      * <p>
      * Modules are loaded once by the service loader.
      * <p>
@@ -70,7 +70,7 @@ public interface FusekiModule extends SubsystemLifecycle {
 
     /**
      * Called at the start of "build" step. The builder has been set according to the
-     * configuration of API calls and paring configuration files. No build actions have been carried out yet.
+     * configuration of API calls and parsing configuration files. No build actions have been carried out yet.
      * The module can make further FusekiServer.{@link Builder} calls.
      * The "configModel" parameter is set if a configuration file was used otherwise it is null.
      * <p>
@@ -95,7 +95,7 @@ public interface FusekiModule extends SubsystemLifecycle {
       *    dapRegistry.accessPoints().forEach(accessPoint{@literal ->}configDataAccessPoint(accessPoint, configModel));
       * </pre>
       */
-    public default void configured(DataAccessPointRegistry dapRegistry, Model configModel) {
+    public default void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
         dapRegistry.accessPoints().forEach(accessPoint->configDataAccessPoint(accessPoint, configModel));
     }
 

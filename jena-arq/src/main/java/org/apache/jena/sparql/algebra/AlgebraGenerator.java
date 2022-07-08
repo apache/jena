@@ -349,14 +349,16 @@ public class AlgebraGenerator
     }
 
     protected Op compileElementNotExists(Op current, ElementNotExists elt2) {
-        Op op = compile(elt2.getElement());    // "compile", not "compileElement" -- do simplifcation
-        Expr expr = new E_NotExists(elt2, op);
+        Element subElt = elt2.getElement();
+        Op op = compile(subElt);    // "compile", not "compileElement" -- do simplifcation
+        Expr expr = new E_NotExists(subElt, op);
         return OpFilter.filter(expr, current);
     }
 
     protected Op compileElementExists(Op current, ElementExists elt2) {
-        Op op = compile(elt2.getElement());    // "compile", not "compileElement" -- do simplification
-        Expr expr = new E_Exists(elt2, op);
+        Element subElt = elt2.getElement();
+        Op op = compile(subElt);    // "compile", not "compileElement" -- do simplification
+        Expr expr = new E_Exists(subElt, op);
         return OpFilter.filter(expr, current);
     }
 
