@@ -1,67 +1,23 @@
 <?xml version="1.0"?>
-<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
-
-<!--
-   Licensed to the Apache Software Foundation (ASF) under one or more
-   contributor license agreements.  See the NOTICE file distributed with
-   this work for additional information regarding copyright ownership.
-   The ASF licenses this file to You under the Apache License, Version 2.0
-   (the "License"); you may not use this file except in compliance with
-   the License.  You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
--->
-
-<!--
-Example Jetty - you will need to configure a certificate.
-
-** You will need to configure this example. **
-
-See "sslContextFactory" below.
-
-Contributed by: Jason Levitt
-http://mail-archives.apache.org/mod_mbox/jena-users/201509.mbox/%3C55EB4CA2.7040803@apache.org%3E
-
-Use:
-   fuseki -jetty fuseki-jetty-https.xml ...
-
-   
-External references:
-
-Jetty documentation on SSL:
-   http://www.eclipse.org/jetty/documentation/current/configuring-ssl.html
-
-Oracle Java keytool
-   http://docs.oracle.com/javase/8/docs/technotes/tools/windows/keytool.html
-   
-Some more tools to help manage Java certificate store:
-   https://bitbucket.org/rvesse/java-ssl-helper/overview
-(external project Rob Vesse and Paul Heinlein / License: CC-BY-NC-SA)
-
--->
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "
+https://www.eclipse.org/jetty/configure_10_0.dtd">
 
 <Configure id="Server" class="org.eclipse.jetty.server.Server">
-
     <Get name="ThreadPool">
-      <Set name="minThreads" type="int"><Property name="jetty.threadPool.minThreads" deprecated="threads.min" default="10"/></Set>
-      <Set name="maxThreads" type="int"><Property name="jetty.threadPool.maxThreads" deprecated="threads.max" default="200"/></Set>
-      <Set name="idleTimeout" type="int"><Property name="jetty.threadPool.idleTimeout" deprecated="threads.timeout" default="60000"/></Set>
-      <Set name="detailedDump">false</Set>
+        <Set name="minThreads" type="int">10</Set>
+        <Set name="maxThreads" type="int">200</Set>
+        <Set name="idleTimeout" type="int">60000</Set>
+        <Set name="detailedDump">false</Set>
     </Get>
 
     <!-- =========================================================== -->
     <!-- Add shared Scheduler instance                               -->
     <!-- =========================================================== -->
     <Call name="addBean">
-      <Arg>
-        <New class="org.eclipse.jetty.util.thread.ScheduledExecutorScheduler"/>
-      </Arg>
+        <Arg>
+            <New
+class="org.eclipse.jetty.util.thread.ScheduledExecutorScheduler"/>
+        </Arg>
     </Call>
 
     <!-- =========================================================== -->
@@ -80,21 +36,20 @@ Some more tools to help manage Java certificate store:
     <!-- for all configuration that may be set here.                 -->
     <!-- =========================================================== -->
     <New id="httpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
-      <Set name="secureScheme"><Property name="jetty.httpConfig.secureScheme" default="https" /></Set>
-      <Set name="securePort"><Property name="jetty.httpConfig.securePort" deprecated="jetty.secure.port" default="8443" /></Set>
-      <Set name="outputBufferSize"><Property name="jetty.httpConfig.outputBufferSize" deprecated="jetty.output.buffer.size" default="32768" /></Set>
-      <Set name="outputAggregationSize"><Property name="jetty.httpConfig.outputAggregationSize" deprecated="jetty.output.aggregation.size" default="8192" /></Set>
-      <Set name="requestHeaderSize"><Property name="jetty.httpConfig.requestHeaderSize" deprecated="jetty.request.header.size" default="8192" /></Set>
-      <Set name="responseHeaderSize"><Property name="jetty.httpConfig.responseHeaderSize" deprecated="jetty.response.header.size" default="8192" /></Set>
-      <Set name="sendServerVersion"><Property name="jetty.httpConfig.sendServerVersion" deprecated="jetty.send.server.version" default="true" /></Set>
-      <Set name="sendDateHeader"><Property name="jetty.httpConfig.sendDateHeader" deprecated="jetty.send.date.header" default="false" /></Set>
-      <Set name="headerCacheSize"><Property name="jetty.httpConfig.headerCacheSize" default="512" /></Set>
-      <Set name="delayDispatchUntilContent"><Property name="jetty.httpConfig.delayDispatchUntilContent" deprecated="jetty.delayDispatchUntilContent" default="true"/></Set>
-      <!-- Uncomment to enable handling of X-Forwarded- style headers
-      <Call name="addCustomizer">
-        <Arg><New class="org.eclipse.jetty.server.ForwardedRequestCustomizer"/></Arg>
-      </Call>
-      -->
+        <Set name="outputBufferSize">32768</Set>
+        <Set name="outputAggregationSize">8192</Set>
+        <Set name="requestHeaderSize">8192</Set>
+        <Set name="responseHeaderSize">8192</Set>
+        <Set name="sendServerVersion">true</Set>
+        <Set name="sendDateHeader">false</Set>
+        <Set name="headerCacheSize">512</Set>
+        <Set name="delayDispatchUntilContent">true</Set>
+        <!-- Uncomment to enable handling of X-Forwarded- style headers
+        <Call name="addCustomizer">
+          <Arg><New
+class="org.eclipse.jetty.server.ForwardedRequestCustomizer"/></Arg>
+        </Call>
+        -->
     </New>
 
     <!-- =========================================================== -->
@@ -109,179 +64,214 @@ Some more tools to help manage Java certificate store:
     <!-- RequestLogHandler after the default handler                 -->
     <!-- =========================================================== -->
     <Set name="handler">
-      <New id="Handlers" class="org.eclipse.jetty.server.handler.HandlerCollection">
-        <Set name="handlers">
-         <Array type="org.eclipse.jetty.server.Handler">
-           <Item>
-             <New id="Contexts" class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
-           </Item>
-           <Item>
-             <New id="DefaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler"/>
-           </Item>
-         </Array>
-        </Set>
-      </New>
+        <New id="Handlers"
+class="org.eclipse.jetty.server.handler.HandlerCollection">
+            <Set name="handlers">
+                <Array type="org.eclipse.jetty.server.Handler">
+                    <Item>
+                        <New id="Contexts"
+class="org.eclipse.jetty.server.handler.ContextHandlerCollection"/>
+                    </Item>
+                    <Item>
+                        <New id="DefaultHandler"
+class="org.eclipse.jetty.server.handler.DefaultHandler"/>
+                    </Item>
+                </Array>
+            </Set>
+        </New>
     </Set>
 
     <!-- =========================================================== -->
     <!-- extra server options                                        -->
     <!-- =========================================================== -->
-    <Set name="stopAtShutdown"><Property name="jetty.server.stopAtShutdown" default="true"/></Set>
+    <Set name="stopAtShutdown">true</Set>
     <Set name="stopTimeout">5000</Set>
-    <Set name="dumpAfterStart"><Property name="jetty.server.dumpAfterStart" deprecated="jetty.dump.start" default="false"/></Set>
-    <Set name="dumpBeforeStop"><Property name="jetty.server.dumpBeforeStop" deprecated="jetty.dump.stop" default="false"/></Set>
+    <Set name="dumpAfterStart">false</Set>
+    <Set name="dumpBeforeStop">false</Set>
 
-<!-- ============================================================= -->
-<!-- Configure the Jetty Server instance with an ID "Server"       -->
-<!-- by adding a HTTP connector.                                   -->
-<!-- This configuration must be used in conjunction with jetty.xml -->
-<!-- ============================================================= -->
+    <!-- ============================================================= -->
+    <!-- Configure the Jetty Server instance with an ID "Server"       -->
+    <!-- by adding a HTTP connector.                                   -->
+    <!-- This configuration must be used in conjunction with jetty.xml -->
+    <!-- ============================================================= -->
 
-  <!-- =========================================================== -->
-  <!-- Add a HTTP Connector.                                       -->
-  <!-- Configure an o.e.j.server.ServerConnector with a single     -->
-  <!-- HttpConnectionFactory instance using the common httpConfig  -->
-  <!-- instance defined in jetty.xml                               -->
-  <!--                                                             -->
-  <!-- Consult the javadoc of o.e.j.server.ServerConnector and     -->
-  <!-- o.e.j.server.HttpConnectionFactory for all configuration    -->
-  <!-- that may be set here.                                       -->
-  <!-- =========================================================== -->
-  <Call name="addConnector">
-    <Arg>
-      <New id="httpConnector" class="org.eclipse.jetty.server.ServerConnector">
-        <Arg name="server"><Ref refid="Server" /></Arg>
-        <Arg name="acceptors" type="int"><Property name="jetty.http.acceptors" deprecated="http.acceptors" default="-1"/></Arg>
-        <Arg name="selectors" type="int"><Property name="jetty.http.selectors" deprecated="http.selectors" default="-1"/></Arg>
-        <Arg name="factories">
-          <Array type="org.eclipse.jetty.server.ConnectionFactory">
-            <!-- uncomment to support proxy protocol
-            <Item>
-              <New class="org.eclipse.jetty.server.ProxyConnectionFactory"/>
-            </Item>-->
-            <Item>
-              <New class="org.eclipse.jetty.server.HttpConnectionFactory">
-                <Arg name="config"><Ref refid="httpConfig" /></Arg>
-              </New>
-            </Item>
-          </Array>
+    <!-- =========================================================== -->
+    <!-- Add a HTTP Connector.                                       -->
+    <!-- Configure an o.e.j.server.ServerConnector with a single     -->
+    <!-- HttpConnectionFactory instance using the common httpConfig  -->
+    <!-- instance defined in jetty.xml                               -->
+    <!--                                                             -->
+    <!-- Consult the javadoc of o.e.j.server.ServerConnector and     -->
+    <!-- o.e.j.server.HttpConnectionFactory for all configuration    -->
+    <!-- that may be set here.                                       -->
+    <!-- =========================================================== -->
+    <Call name="addConnector">
+        <Arg>
+            <New id="httpConnector"
+class="org.eclipse.jetty.server.ServerConnector">
+                <Arg name="server">
+                    <Ref refid="Server"/>
+                </Arg>
+                <Arg name="acceptors" type="int">-1</Arg>
+                <Arg name="selectors" type="int">-1</Arg>
+                <Arg name="factories">
+                    <Array
+type="org.eclipse.jetty.server.ConnectionFactory">
+                        <!-- uncomment to support proxy protocol
+                        <Item>
+                          <New
+class="org.eclipse.jetty.server.ProxyConnectionFactory"/>
+                        </Item>-->
+                        <Item>
+                            <New
+class="org.eclipse.jetty.server.HttpConnectionFactory">
+                                <Arg name="config">
+                                    <Ref refid="httpConfig"/>
+                                </Arg>
+                            </New>
+                        </Item>
+                    </Array>
+                </Arg>
+                <Set name="host"/>
+                <Set name="port">8080</Set>
+                <Set name="idleTimeout">30000</Set>
+                <Set name="acceptorPriorityDelta">0</Set>
+                <Set name="acceptQueueSize">0</Set>
+            </New>
         </Arg>
-        <Set name="host"><Property name="jetty.http.host" deprecated="jetty.host" /></Set>
-        <Set name="port"><Property name="jetty.http.port" deprecated="jetty.port" default="8082" /></Set>
-        <Set name="idleTimeout"><Property name="jetty.http.idleTimeout" deprecated="http.timeout" default="30000"/></Set>
-        <Set name="soLingerTime"><Property name="jetty.http.soLingerTime" deprecated="http.soLingerTime" default="-1"/></Set>
-        <Set name="acceptorPriorityDelta"><Property name="jetty.http.acceptorPriorityDelta" deprecated="http.acceptorPriorityDelta" default="0"/></Set>
-        <Set name="acceptQueueSize"><Property name="jetty.http.acceptQueueSize" deprecated="http.acceptQueueSize" default="0"/></Set>
-      </New>
-    </Arg>
-  </Call>
-
-<!-- ============================================================= -->
-<!-- Base SSL configuration                                        -->
-<!-- This configuration needs to be used together with 1 or more   -->
-<!-- of jetty-https.xml or jetty-http2.xml                         -->
-<!-- ============================================================= -->
-
-  <!-- =========================================================== -->
-  <!-- Add a SSL Connector with no protocol factories              -->
-  <!-- =========================================================== -->
-  <Call  name="addConnector">
-    <Arg>
-      <New id="sslConnector" class="org.eclipse.jetty.server.ServerConnector">
-        <Arg name="server"><Ref refid="Server" /></Arg>
-        <Arg name="acceptors" type="int"><Property name="jetty.ssl.acceptors" deprecated="ssl.acceptors" default="-1"/></Arg>
-        <Arg name="selectors" type="int"><Property name="jetty.ssl.selectors" deprecated="ssl.selectors" default="-1"/></Arg>
-        <Arg name="factories">
-          <Array type="org.eclipse.jetty.server.ConnectionFactory">
-            <!-- uncomment to support proxy protocol
-            <Item>
-              <New class="org.eclipse.jetty.server.ProxyConnectionFactory"/>
-            </Item>-->
-          </Array>
-        </Arg>
-
-        <Set name="host"><Property name="jetty.ssl.host" deprecated="jetty.host" /></Set>
-        <Set name="port"><Property name="jetty.ssl.port" deprecated="ssl.port" default="8443" /></Set>
-        <Set name="idleTimeout"><Property name="jetty.ssl.idleTimeout" deprecated="ssl.timeout" default="30000"/></Set>
-        <Set name="soLingerTime"><Property name="jetty.ssl.soLingerTime" deprecated="ssl.soLingerTime" default="-1"/></Set>
-        <Set name="acceptorPriorityDelta"><Property name="jetty.ssl.acceptorPriorityDelta" deprecated="ssl.acceptorPriorityDelta" default="0"/></Set>
-        <Set name="acceptQueueSize"><Property name="jetty.ssl.acceptQueueSize" deprecated="ssl.acceptQueueSize" default="0"/></Set>
-      </New>
-    </Arg>
-  </Call>
-
-  <!-- =========================================================== -->
-  <!-- Create a TLS specific HttpConfiguration based on the        -->
-  <!-- common HttpConfiguration defined in jetty.xml               -->
-  <!-- Add a SecureRequestCustomizer to extract certificate and    -->
-  <!-- session information                                         -->
-  <!-- =========================================================== -->
-  <New id="sslHttpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
-    <Arg><Ref refid="httpConfig"/></Arg>
-    <Call name="addCustomizer">
-      <Arg>
-        <New class="org.eclipse.jetty.server.SecureRequestCustomizer">
-          <Arg type="boolean"><Property name="jetty.ssl.sniHostCheck" default="true"/></Arg>
-        </New>
-      </Arg>
     </Call>
-  </New>
 
-<!-- ============================================================= -->
-<!-- SSL ContextFactory configuration                              -->
-<!-- ============================================================= -->
-<!-- Configure id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory" -->
+    <!-- ============================================================= -->
+    <!-- Base SSL configuration                                        -->
+    <!-- This configuration needs to be used together with 1 or more   -->
+    <!-- of jetty-https.xml or jetty-http2.xml                         -->
+    <!-- ============================================================= -->
 
-<New id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory">
-  <Set name="KeyStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.sslContext.keyStorePath" deprecated="jetty.keystore" default="etc/keystore"/></Set>
-  <Set name="KeyStorePassword"><Property name="jetty.sslContext.keyStorePassword" deprecated="jetty.keystore.password" default="MyPassword" /></Set>
-  <Set name="KeyStoreType"><Property name="jetty.sslContext.keyStoreType" default="JKS"/></Set>
-  <Set name="KeyStoreProvider"><Property name="jetty.sslContext.keyStoreProvider"/></Set>
-  <Set name="KeyManagerPassword"><Property name="jetty.sslContext.keyManagerPassword" deprecated="jetty.keymanager.password" default="MyPassword" /></Set>
-  <Set name="TrustStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.sslContext.trustStorePath" deprecated="jetty.truststore" default="etc/keystore"/></Set>
-  <Set name="TrustStorePassword"><Property name="jetty.sslContext.trustStorePassword" deprecated="jetty.truststore.password" default="MyPassword" /></Set>
-  <Set name="TrustStoreType"><Property name="jetty.sslContext.trustStoreType" default="JKS"/></Set>
-  <Set name="TrustStoreProvider"><Property name="jetty.sslContext.trustStoreProvider"/></Set>
-  <Set name="EndpointIdentificationAlgorithm"></Set>
-  <Set name="NeedClientAuth"><Property name="jetty.sslContext.needClientAuth" deprecated="jetty.ssl.needClientAuth" default="false"/></Set>
-  <Set name="WantClientAuth"><Property name="jetty.sslContext.wantClientAuth" deprecated="jetty.ssl.wantClientAuth" default="false"/></Set>
-  <Set name="ExcludeCipherSuites">
-   <Array type="String">
-    <Item>SSL_RSA_WITH_DES_CBC_SHA</Item>
-    <Item>SSL_DHE_RSA_WITH_DES_CBC_SHA</Item>
-    <Item>SSL_DHE_DSS_WITH_DES_CBC_SHA</Item>
-    <Item>SSL_RSA_EXPORT_WITH_RC4_40_MD5</Item>
-    <Item>SSL_RSA_EXPORT_WITH_DES40_CBC_SHA</Item>
-    <Item>SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</Item>
-    <Item>SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</Item>
-   </Array>
-  </Set>
-  <Set name="useCipherSuitesOrder"><Property name="jetty.sslContext.useCipherSuitesOrder" default="true"/></Set>
-</New>
+    <!-- =========================================================== -->
+    <!-- Add a SSL Connector with no protocol factories              -->
+    <!-- =========================================================== -->
+    <Call name="addConnector">
+        <Arg>
+            <New id="sslConnector"
+class="org.eclipse.jetty.server.ServerConnector">
+                <Arg name="server">
+                    <Ref refid="Server"/>
+                </Arg>
+                <Arg name="acceptors" type="int">-1</Arg>
+                <Arg name="selectors" type="int">-1</Arg>
+                <Arg name="factories">
+                    <Array
+type="org.eclipse.jetty.server.ConnectionFactory">
+                        <!-- uncomment to support proxy protocol
+                        <Item>
+                          <New
+class="org.eclipse.jetty.server.ProxyConnectionFactory"/>
+                        </Item>-->
+                    </Array>
+                </Arg>
+                <Set name="host"/>
+                <Set name="port">8443</Set>
+                <Set name="idleTimeout">30000</Set>
+                <Set name="acceptorPriorityDelta">0</Set>
+                <Set name="acceptQueueSize">0</Set>
+            </New>
+        </Arg>
+    </Call>
 
-<!-- ============================================================= -->
-<!-- Configure a HTTPS connector.                                  -->
-<!-- This configuration must be used in conjunction with jetty.xml -->
-<!-- and jetty-ssl.xml.                                            -->
-<!-- ============================================================= -->
+    <!-- =========================================================== -->
+    <!-- Create a TLS specific HttpConfiguration based on the        -->
+    <!-- common HttpConfiguration defined in jetty.xml               -->
+    <!-- Add a SecureRequestCustomizer to extract certificate and    -->
+    <!-- session information                                         -->
+    <!-- =========================================================== -->
+    <New id="sslHttpConfig"
+class="org.eclipse.jetty.server.HttpConfiguration">
+        <Arg>
+            <Ref refid="httpConfig"/>
+        </Arg>
+        <Call name="addCustomizer">
+            <Arg>
+                <New
+class="org.eclipse.jetty.server.SecureRequestCustomizer">
+                    <Arg name="sniRequired" type="boolean">false</Arg>
+                    <Arg name="sniHostCheck" type="boolean">true</Arg>
+                    <Arg name="stsMaxAgeSeconds" type="int">-1</Arg>
+                    <Arg name="stsIncludeSubdomains"
+type="boolean">false</Arg>
+                </New>
+            </Arg>
+        </Call>
+    </New>
 
-<Ref id="sslConnector">
-  <Call name="addIfAbsentConnectionFactory">
-    <Arg>
-      <New class="org.eclipse.jetty.server.SslConnectionFactory">
-        <Arg name="next">http/1.1</Arg>
-        <Arg name="sslContextFactory"><Ref refid="sslContextFactory"/></Arg>
-      </New>
-    </Arg>
-  </Call>
+    <!-- ============================================================= -->
+    <!-- SSL ContextFactory configuration                              -->
+    <!-- ============================================================= -->
+    <New id="sslContextFactory"
+class="org.eclipse.jetty.util.ssl.SslContextFactory$Server">
+        <Set name="KeyStorePath">keystore.p12</Set>
+        <Set name="KeyStorePassword">MyPassword</Set>
+        <Set name="KeyStoreType">pkcs12</Set>
+        <Set name="KeyStoreProvider"/>
+        <Set name="KeyManagerPassword">MyPassword</Set>
+        <Set name="TrustStorePath">keystore.p12</Set>
+        <Set name="TrustStorePassword">MyPassword</Set>
+        <Set name="TrustStoreType">pkcs12</Set>
+        <Set name="TrustStoreProvider"/>
+        <Set name="EndpointIdentificationAlgorithm"/>
+        <Set name="NeedClientAuth">false</Set>
+        <Set name="WantClientAuth">false</Set>
+        <Set name="excludeProtocols">
+            <Array type="String">
+                <Item>TLSv1.0</Item>
+                <Item>TLSv1.1</Item>
+            </Array>
+        </Set>
+        <Set name="UseCipherSuitesOrder">true</Set>
+    </New>
 
-  <Call name="addConnectionFactory">
-    <Arg>
-      <New class="org.eclipse.jetty.server.HttpConnectionFactory">
-     	<Arg name="config"><Ref refid="sslHttpConfig" /></Arg>
-      </New>
-    </Arg>
-  </Call>
-</Ref>
+    <!-- ============================================================= -->
+    <!-- Configure a HTTPS connector.                                  -->
+    <!-- This configuration must be used in conjunction with jetty.xml -->
+    <!-- and jetty-ssl.xml.                                            -->
+    <!-- ============================================================= -->
+    <Ref refid="sslConnector">
+        <Call name="addIfAbsentConnectionFactory">
+            <Arg>
+                <New class="org.eclipse.jetty.server.SslConnectionFactory">
+                    <Arg name="next">http/1.1</Arg>
+                    <Arg name="sslContextFactory">
+                        <Ref refid="sslContextFactory"/>
+                    </Arg>
+                </New>
+            </Arg>
+        </Call>
+        <Call name="addConnectionFactory">
+            <Arg>
+                <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+                    <Arg name="config">
+                        <Ref refid="sslHttpConfig"/>
+                    </Arg>
+                </New>
+            </Arg>
+        </Call>
+    </Ref>
 
+    <!-- ============================================================= -->
+    <!-- Configure ssl-context-reload.                                 -->
+    <!-- Provides a periodic scanning of the directory where the       -->
+    <!-- KeyStore file resides. When the scanning detects a change to  -->
+    <!-- the KeyStore file, the correspondent SslContextFactory.Server -->
+    <!-- component is reloaded with the new KeyStore configuration.    -->
+    <!-- ============================================================= -->
+    <Call name="addBean">
+        <Arg>
+            <New id="keyStoreScanner"
+class="org.eclipse.jetty.util.ssl.KeyStoreScanner">
+                <Arg>
+                    <Ref refid="sslContextFactory"/>
+                </Arg>
+                <Set name="scanInterval">1</Set>
+            </New>
+        </Arg>
+    </Call>
 </Configure>
