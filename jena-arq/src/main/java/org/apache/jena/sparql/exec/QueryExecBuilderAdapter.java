@@ -74,8 +74,7 @@ public class QueryExecBuilderAdapter
 
     @Override
     public Context getContext() {
-        // throw new UnsupportedOperationException("QueryExecBuilderAdapter.getContext()");
-        return null;
+        throw new UnsupportedOperationException("QueryExecBuilderAdapter.getContext()");
     }
 
     @Override
