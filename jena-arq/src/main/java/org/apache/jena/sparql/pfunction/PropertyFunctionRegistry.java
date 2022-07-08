@@ -75,7 +75,7 @@ public class PropertyFunctionRegistry
     }
 
     /**
-     * Copies the origin registry into a new one, or makes a fresh instance if the specified registry is {@code null).
+     * Copies the origin registry into a new one, or makes a fresh instance if the specified registry is {@code null}.
      * @param from {@link PropertyFunctionRegistry} or {@code null}
      * @return {@link PropertyFunctionRegistry} a new instance
      */

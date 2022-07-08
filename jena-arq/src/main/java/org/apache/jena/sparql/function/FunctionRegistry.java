@@ -71,7 +71,7 @@ public class FunctionRegistry
     }
 
     /**
-     * Copies the origin registry into a new one, or makes a fresh instance if the specified registry is {@code null).
+     * Copies the origin registry into a new one, or makes a fresh instance if the specified registry is {@code null}.
      * @param from {@link FunctionRegistry } or {@code null}
      * @return {@link FunctionRegistry} a new instance
      */
