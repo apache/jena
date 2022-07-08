@@ -47,11 +47,12 @@ import org.apache.jena.util.SplitIRI;
  * second type with default values for the last 3 parameters: nullErrorHandler, -1L, -1L.
  * The second type are for boolean testing and optionally generate error handling
  * output.
- * <p>
- * @param errorHandler - the {@link ErrorHandler} for output. If the errorHandler
- * is null, use the system wide handler.<br>
- * @param line - code line number (a long int) generating the check.<br>
- * @param col - code column number (a long int) generating the check.<br>
+ * <ul>
+ * <li>Argument {@code errorHandler} - the {@link ErrorHandler} for output. If the errorHandler
+ * is null, use the system wide handler.
+ * <li>Argument {@code line} - code line number (a long integer) generating the check.
+ * <li>Argument {@code col} - code column number (a long integer) generating the check.
+ * </ul>
  * If the errorHandler is null, the line and column numbers not used.
  */
 
