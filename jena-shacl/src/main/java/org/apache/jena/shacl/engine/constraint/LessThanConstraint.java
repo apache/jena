@@ -30,7 +30,6 @@ import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.parser.Shape;
-import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnSinglePathNodeWithSingleCompareNodeEvent;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.path.Path;

@@ -80,7 +80,8 @@ public class HandlerBasedValidationListener implements ValidationListener {
         eventHandlers.compute(eventType, (k, l) -> {
             List<Consumer<ValidationEvent>> ret = Optional.ofNullable(l).orElse(new ArrayList<>());
             //noinspection unchecked
-            ret.add((Consumer<ValidationEvent>) handler);
+            @SuppressWarnings("unchecked")
+            boolean b = ret.add((Consumer<ValidationEvent>) handler);
             return ret;
         });
         handlerSelectionStrategy.onNewHandlerRegistered(eventType);
@@ -213,10 +214,12 @@ public class HandlerBasedValidationListener implements ValidationListener {
     public static class HandlerBuilder<T extends ValidationEvent> implements HandlerCustomizer<T>, HandlerConditionCustomizer<T> {
         private Predicate<ValidationEvent> predicate = null;
         private Consumer<T> handler = null;
+        @Override
         public HandlerBuilder<T> iff(Predicate<ValidationEvent> predicate){
             this.predicate = predicate;
             return this;
         }
+        @Override
         public void handle(Consumer<T> handler) {
             this.handler = handler;
         }

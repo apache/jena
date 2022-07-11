@@ -30,16 +30,8 @@ import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.parser.Shape;
-import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnPathNodesWithCompareNodesEvent;
-import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnSinglePathNodeWithCompareNodesEvent;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.path.Path;
-
-import java.util.Objects;
-import java.util.Set;
-
-import static org.apache.jena.shacl.compact.writer.CompactOut.compactArrayNodes;
-import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 /** sh:disjoint */
 public class DisjointConstraint extends ConstraintPairwise {

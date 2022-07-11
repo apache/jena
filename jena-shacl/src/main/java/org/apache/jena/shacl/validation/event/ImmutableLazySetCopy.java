@@ -34,6 +34,7 @@ public class ImmutableLazySetCopy<T> {
         return copy.updateAndGet(existingCopy ->  existingCopy == null ? Set.copyOf(original) : existingCopy );
     }
 
+    @Override
     public String toString(){
         return Optional.ofNullable(copy.get()).orElse(original).toString();
     }

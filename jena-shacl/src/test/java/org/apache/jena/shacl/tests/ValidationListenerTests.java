@@ -55,7 +55,6 @@ public class ValidationListenerTests {
         this.predicateTree = predicateTree;
     }
 
-    @SuppressWarnings("HttpUrlsUsage")
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
@@ -299,7 +298,6 @@ public class ValidationListenerTests {
             return passed;
         }
 
-        @SuppressWarnings("unused")
         public String getMessage() {
             return message;
         }
