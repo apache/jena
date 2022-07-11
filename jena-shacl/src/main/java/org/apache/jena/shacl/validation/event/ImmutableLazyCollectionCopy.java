@@ -36,6 +36,7 @@ public class ImmutableLazyCollectionCopy<T> {
         return copy.updateAndGet(existingCopy -> existingCopy == null ? Collections.unmodifiableCollection(new ArrayList<>(original)) : existingCopy);
     }
 
+    @Override
     public String toString(){
         return Optional.ofNullable(copy.get()).orElse(original).toString();
     }

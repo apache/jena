@@ -41,6 +41,7 @@ public class ConstraintEvaluatedOnPathNodesWithCompareNodesEvent extends Constra
         this.compareNodes = new ImmutableLazySetCopy<>(compareNodes);
     }
 
+    @Override
     public Set<Node> getCompareNodes() {
         return compareNodes.get();
     }
