@@ -18,20 +18,38 @@
 
 package org.apache.jena.sparql.exec;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionDatasetBuilder;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TestExecEnvironment {
 
-    // https://github.com/apache/jena/issues/1393
+    /** QueryExecutionAdapter.adapt must not return null; see https://github.com/apache/jena/issues/1393 */
     @Test
     public void testQueryExecAdapter() {
         try (QueryExecution qExec = QueryExecutionFactory.create("SELECT * { ?s ?p ?o }", DatasetFactory.empty())) {
             QueryExec qe  = QueryExecAdapter.adapt(qExec);
             Assert.assertNotNull(qe);
+        }
+    }
+
+    /** Tests QueryExecBuilderAdapter's special logic for passing on the initialTimeout and
+     * overallTimeout calls to the delegate. This should succeed without errors. */
+    @Test
+    public void testQueryExecutionDatasetBuilderWrapping() {
+        QueryExecBuilder builder = QueryExecBuilderAdapter.adapt(QueryExecutionDatasetBuilder.create());
+
+        try (QueryExec qe = builder
+            .query("SELECT * { ?s ?p ?o }")
+            .initialTimeout(1, TimeUnit.SECONDS)
+            .timeout(2000)
+            .overallTimeout(3, TimeUnit.SECONDS)
+            .build()) {
         }
     }
 }

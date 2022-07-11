@@ -41,7 +41,6 @@ public class TestRDFConnectionRewrapping {
         Assert.assertTrue(link.newQuery().query("ASK { ?s ?p ?o }").build().ask());
     }
 
-
     @Test
     public void testLinkOverConnGetDataset() {
         // Create a connection that returns a null dataset to indicate that it

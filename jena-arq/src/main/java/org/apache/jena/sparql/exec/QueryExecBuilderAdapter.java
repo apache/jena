@@ -19,12 +19,14 @@
 package org.apache.jena.sparql.exec;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionBuilder;
+import org.apache.jena.query.QueryExecutionDatasetBuilder;
 import org.apache.jena.query.Syntax;
 import org.apache.jena.sparql.core.ResultBinding;
 import org.apache.jena.sparql.core.Var;
@@ -47,11 +49,9 @@ public class QueryExecBuilderAdapter
     /** Adapter that attempts to unwrap a QueryExecutionBuilderAdapter's builder */
     public static QueryExecBuilder adapt(QueryExecutionBuilder builder) {
         Objects.requireNonNull(builder);
-
         QueryExecBuilder result = builder instanceof QueryExecutionBuilderAdapter
                 ? ((QueryExecutionBuilderAdapter)builder).getExecBuilder()
                 : new QueryExecBuilderAdapter(builder);
-
         return result;
     }
 
@@ -59,16 +59,27 @@ public class QueryExecBuilderAdapter
         return builder;
     }
 
+    /** Attempts to cast an object to the given class; move to generic utils? */
+    private static <T> Optional<T> tryCast(Class<T> clz, Object obj) {
+        Optional<T> result = clz.isInstance(obj)
+                ? Optional.of(clz.cast(obj))
+                : Optional.empty();
+        return result;
+    }
+
     @Override
     public QueryExecMod initialTimeout(long timeout, TimeUnit timeUnit) {
-        // Gracefully ignore?
-        // builder = builder.timeout(timeout, timeUnit);
+        tryCast(QueryExecutionDatasetBuilder.class, builder)
+                .orElseThrow(() -> new UnsupportedOperationException("QueryExecBuilderAdapter.initialTimeout()"))
+                .initialTimeout(timeout, timeUnit);
         return this;
     }
 
     @Override
     public QueryExecMod overallTimeout(long timeout, TimeUnit timeUnit) {
-        builder = builder.timeout(timeout, timeUnit);
+        tryCast(QueryExecutionDatasetBuilder.class, builder)
+            .orElseThrow(() -> new UnsupportedOperationException("QueryExecBuilderAdapter.overallTimeout()"))
+            .overallTimeout(timeout, timeUnit);
         return this;
     }
 
