@@ -34,6 +34,7 @@ import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.NodeShape;
 import org.apache.jena.shacl.parser.PropertyShape;
 import org.apache.jena.shacl.parser.Shape;
+import org.apache.jena.shacl.validation.event.*;
 import org.apache.jena.sparql.path.Path;
 
 /**
@@ -91,7 +92,7 @@ public class VLib {
             return;
         if ( vCxt.isVerbose() )
             out.println("S: "+shape);
-
+        vCxt.notifyValidationListener(() -> new FocusNodeValidationStartedEvent(vCxt, shape, focusNode));
         Path path;
         Set<Node> vNodes;
         if ( shape instanceof NodeShape ) {
@@ -101,6 +102,7 @@ public class VLib {
             PropertyShape propertyShape = (PropertyShape)shape;
             path = propertyShape.getPath();
             vNodes = ShaclPaths.valueNodes(data, focusNode, propertyShape.getPath());
+            vCxt.notifyValidationListener(() -> new ValueNodesDeterminedForPropertyShapeEvent(vCxt, shape, focusNode, path, vNodes));
         } else {
             if ( vCxt.isVerbose() )
                 out.println("Z: "+shape);
@@ -119,6 +121,7 @@ public class VLib {
         validationPropertyShapes(vCxt, data, shape.getPropertyShapes(), focusNode);
         if ( vCxt.isVerbose() )
             out.println();
+        vCxt.notifyValidationListener(() -> new FocusNodeValidationFinishedEvent(vCxt, shape, focusNode));
     }
 
     static void validationPropertyShapes(ValidationContext vCxt, Graph data, Collection<PropertyShape> propertyShapes, Node focusNode) {
@@ -137,10 +140,10 @@ public class VLib {
             return;
         if ( vCxt.isVerbose() )
             out.println("P: "+propertyShape);
-
+        vCxt.notifyValidationListener(() -> new FocusNodeValidationStartedEvent(vCxt, propertyShape, focusNode));
         Path path = propertyShape.getPath();
         Set<Node> vNodes = ShaclPaths.valueNodes(data, focusNode, path);
-
+        vCxt.notifyValidationListener(() -> new ValueNodesDeterminedForPropertyShapeEvent(vCxt, propertyShape, focusNode, path, vNodes));
         for ( Constraint c : propertyShape.getConstraints() ) {
             if ( vCxt.isVerbose() )
                 out.println("C: "+focusNode+" :: "+c);
@@ -150,6 +153,7 @@ public class VLib {
         vNodes.forEach(vNode->{
             validationPropertyShapes(vCxt, data, propertyShape.getPropertyShapes(), vNode);
         });
+        vCxt.notifyValidationListener(() -> new FocusNodeValidationFinishedEvent(vCxt, propertyShape, focusNode));
     }
 
     // ValidationProc
@@ -195,12 +199,16 @@ public class VLib {
         if ( path == null ) {
             if ( pathNodes != null )
                 throw new InternalErrorException("Path is null but pathNodes is not null");
+            vCxt.notifyValidationListener(() -> new ConstraintEvaluationForNodeShapeStartedEvent(vCxt, shape, focusNode, c));
             c.validateNodeShape(vCxt, data, shape, focusNode);
+            vCxt.notifyValidationListener(() -> new ConstraintEvaluationForNodeShapeFinishedEvent(vCxt, shape, focusNode,c));
             return;
         }
         if ( pathNodes == null )
             throw new InternalErrorException("Path is not null but pathNodes is null");
+        vCxt.notifyValidationListener(() -> new ConstraintEvaluationForPropertyShapeStartedEvent(vCxt, shape, focusNode, c,  path, pathNodes));
         c.validatePropertyShape(vCxt, data, shape, focusNode, path, pathNodes);
+        vCxt.notifyValidationListener(() -> new ConstraintEvaluationForPropertyShapeFinishedEvent(vCxt, shape, focusNode, c, path, pathNodes));
     }
 
 }

@@ -28,6 +28,7 @@ import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
+import org.apache.jena.shacl.validation.event.*;
 import org.apache.jena.sparql.expr.ExprNotComparableException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.path.Path;
@@ -67,6 +68,39 @@ public abstract class ConstraintPairwise implements Constraint {
         // pathNodes is (focusNode, sh:path ?V) = valueNodes
         Set<Node> compareNodes = G.allSP(data, focusNode, value);
         validate(vCxt, shape, focusNode, path, pathNodes, compareNodes);
+    }
+
+    protected AbstractConstraintEvaluationEvent makeEventSingleCompareNode(ValidationContext vCxt, Shape shape,
+                    Node focusNode, Path path, Node valueNode, Node compareNode, boolean isValid) {
+        if (valueNode.equals(focusNode)) {
+            return new ConstraintEvaluatedOnFocusNodeWithSingleCompareNodeEvent(vCxt, shape, focusNode, this,
+                            compareNode, isValid);
+        }
+        return new ConstraintEvaluatedOnSinglePathNodeWithSingleCompareNodeEvent(vCxt, shape,
+                        focusNode, this, path, valueNode, compareNode,
+                        isValid);
+    }
+
+    protected AbstractConstraintEvaluationEvent makeEvent(ValidationContext vCxt, Shape shape,
+                    Node focusNode, Path path, Set<Node> pathNodes, Set<Node> compareNodes, boolean isValid) {
+        if (pathNodes.size() == 1 && pathNodes.contains(focusNode)) {
+            return new ConstraintEvaluatedOnFocusNodeWithCompareNodesEvent(vCxt, shape, focusNode, this,
+                            compareNodes, isValid);
+        }
+        return new ConstraintEvaluatedOnPathNodesWithCompareNodesEvent(vCxt, shape,
+                        focusNode, this, path, pathNodes, compareNodes,
+                        isValid);
+    }
+
+    protected AbstractConstraintEvaluationEvent makeEventSinglePathNode(ValidationContext vCxt, Shape shape,
+                    Node focusNode, Path path, Node pathNode, Set<Node> compareNodes, boolean isValid) {
+        if (pathNode.equals(focusNode)) {
+            return new ConstraintEvaluatedOnFocusNodeWithCompareNodesEvent(vCxt, shape, focusNode, this,
+                            compareNodes, isValid);
+        }
+        return new ConstraintEvaluatedOnSinglePathNodeWithCompareNodesEvent(vCxt, shape,
+                        focusNode, this, path, pathNode, compareNodes,
+                        isValid);
     }
 
     public abstract void validate(ValidationContext vCxt, Shape shape, Node focusNode, Path path,

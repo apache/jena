@@ -18,15 +18,17 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import java.util.Set;
-
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnSinglePathNodeEvent;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnFocusNodeEvent;
 import org.apache.jena.sparql.path.Path;
+
+import java.util.Set;
 
 /**
  * A restriction on an RDF term which needs access to the data to check such as
@@ -53,7 +55,13 @@ public abstract class ConstraintDataTerm implements Constraint {
 
     private void applyConstraintDataTerm(ValidationContext vCxt, Shape shape, Graph data, Node focusNode, Path path, Node term) {
         ReportItem item = validate(vCxt, data, term);
-        if ( item == null )
+        boolean passed = item == null;
+        if (path == null) {
+            vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnFocusNodeEvent(vCxt, shape, focusNode, this, passed));
+        } else {
+            vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, this, path, term, passed));
+        }
+        if ( passed )
             return;
         vCxt.reportEntry(item.getMessage(), shape, focusNode, path, item.getValue(), this);
     }

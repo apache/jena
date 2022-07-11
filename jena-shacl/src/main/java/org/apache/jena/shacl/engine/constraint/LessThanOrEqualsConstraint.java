@@ -30,6 +30,10 @@ import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.parser.Shape;
+import org.apache.jena.shacl.validation.event.AbstractConstraintEvaluationEvent;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnFocusNodeWithCompareNodesEvent;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnPathNodesWithCompareNodesEvent;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnSinglePathNodeWithSingleCompareNodeEvent;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.path.Path;
@@ -47,10 +51,17 @@ public class LessThanOrEqualsConstraint extends ConstraintPairwise {
         for ( Node vn : pathNodes ) {
             for ( Node v : compareNodes ) {
                 int r = super.compare(vn, v) ;
+                boolean passed = true;
                 if ( r != Expr.CMP_LESS && r != Expr.CMP_EQUAL ) {
+                    passed = false;
                     String msg = toString()+": value node "+displayStr(vn)+" is not less than or equal to "+displayStr(v);
                     vCxt.reportEntry(msg, shape, focusNode, path, vn, this);
                 }
+                final boolean finalPassed = passed;
+                    vCxt.notifyValidationListener(() ->
+                                    makeEventSingleCompareNode(vCxt, shape,
+                                                    focusNode, path, vn, v,
+                                                    finalPassed));
             }
         }
     }

@@ -34,6 +34,7 @@ import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ValidationProc;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnPathNodesWithCompareNodesEvent;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.path.Path;
 
@@ -122,17 +123,34 @@ public class QualifiedValueShape implements Constraint {
             if ( b )
                 x++;
         }
-
+        boolean passed = true;
         if ( qMin >= 0 && qMin > x ) {
+            passed = false;
             String msg = toString()+": Min = "+qMin+" but got "+x+" validations";
             vCxt.reportEntry(msg, shape, focusNode, path, null,
                 new ReportConstraint(SHACL.QualifiedMinCountConstraintComponent));
         }
+        final int finalX = x;
+    boolean finalPassed = passed;
+        if (qMin > 0) {
+            vCxt.notifyValidationListener(() -> new QualifiedMinCountConstraintEvaluatedEvent(vCxt, shape,
+                                            focusNode, this, path, valueNodes, valueNodes2, qMin, finalX,
+                                            finalPassed));
+        }
+        passed = true;
         if ( qMax >= 0 && qMax < x ) {
+            passed = false;
             String msg = toString()+": Max = "+qMax+" but got "+x+" validations";
             vCxt.reportEntry(msg, shape, focusNode, path, null,
                 new ReportConstraint(SHACL.QualifiedMaxCountConstraintComponent));
         }
+        if (qMax > 0) {
+            boolean finalPassed2 = passed;
+            vCxt.notifyValidationListener(() -> new QualifiedMaxCountConstraintEvaluatedEvent(vCxt, shape,
+                                            focusNode, this, path, valueNodes, valueNodes2, qMax, finalX,
+                                            finalPassed2));
+        }
+        
     }
 
     private boolean conformsSiblings(ValidationContext vCxt, Node v, Collection<Node> sibs) {
@@ -212,5 +230,49 @@ public class QualifiedValueShape implements Constraint {
             (qMin<0) ? "_" : Integer.toString(qMin),
             (qMax<0) ? "_" : Integer.toString(qMax),
             qDisjoint);
+    }
+    
+    public static class QualifiedMinCountConstraintEvaluatedEvent extends
+                    ConstraintEvaluatedOnPathNodesWithCompareNodesEvent {
+        final int minCount;
+        final int actualCount;
+
+        public QualifiedMinCountConstraintEvaluatedEvent(ValidationContext vCxt, Shape shape,
+                        Node focusNode, Constraint constraint, Path path, Set<Node> valueNodes,
+                        Set<Node> compareNodes, int minCount, int actualCount, boolean valid) {
+            super(vCxt, shape, focusNode, constraint, path, valueNodes, compareNodes, valid);
+            this.minCount = minCount;
+            this.actualCount = actualCount;
+        }
+
+        public int getMinCount() {
+            return minCount;
+        }
+
+        public int getActualCount() {
+            return actualCount;
+        }
+    }
+
+    public static class QualifiedMaxCountConstraintEvaluatedEvent extends
+                    ConstraintEvaluatedOnPathNodesWithCompareNodesEvent {
+        final int maxCount;
+        final int actualCount;
+
+        public QualifiedMaxCountConstraintEvaluatedEvent(ValidationContext vCxt, Shape shape,
+                        Node focusNode, Constraint constraint, Path path, Set<Node> valueNodes,
+                        Set<Node> compareNodes, int maxCount, int actualCount, boolean valid) {
+            super(vCxt, shape, focusNode, constraint, path, valueNodes, compareNodes, valid);
+            this.maxCount = maxCount;
+            this.actualCount = actualCount;
+        }
+
+        public int getMaxCount() {
+            return maxCount;
+        }
+
+        public int getActualCount() {
+            return actualCount;
+        }
     }
 }

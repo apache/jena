@@ -16,25 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl;
+package org.apache.jena.shacl.validation.event;
 
-import org.apache.jena.shacl.compact.TS_Compact;
-import org.apache.jena.shacl.tests.TestImports;
-import org.apache.jena.shacl.tests.TestValidationReport;
-import org.apache.jena.shacl.tests.ValidationListenerTests;
-import org.apache.jena.shacl.tests.jena_shacl.TS_JenaShacl;
-import org.apache.jena.shacl.tests.std.TS_StdSHACL;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestValidationReport.class
-    , TS_StdSHACL.class
-    , TS_JenaShacl.class
-    , TS_Compact.class
-    , TestImports.class
-    , ValidationListenerTests.class
-} )
+public class ImmutableLazyCollectionCopy<T> {
+    private final Collection<T> original;
+    private final AtomicReference<Collection<T>> copy = new AtomicReference<>();
 
-public class TC_SHACL { }
+    public ImmutableLazyCollectionCopy(Collection<T> original) {
+        this.original = original;
+    }
+
+    public Collection<T> get(){
+        return copy.updateAndGet(existingCopy -> existingCopy == null ? Collections.unmodifiableCollection(new ArrayList<>(original)) : existingCopy);
+    }
+
+    public String toString(){
+        return Optional.ofNullable(copy.get()).orElse(original).toString();
+    }
+
+}

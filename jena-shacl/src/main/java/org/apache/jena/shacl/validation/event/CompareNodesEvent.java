@@ -16,25 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl;
+package org.apache.jena.shacl.validation.event;
 
-import org.apache.jena.shacl.compact.TS_Compact;
-import org.apache.jena.shacl.tests.TestImports;
-import org.apache.jena.shacl.tests.TestValidationReport;
-import org.apache.jena.shacl.tests.ValidationListenerTests;
-import org.apache.jena.shacl.tests.jena_shacl.TS_JenaShacl;
-import org.apache.jena.shacl.tests.std.TS_StdSHACL;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.apache.jena.graph.Node;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestValidationReport.class
-    , TS_StdSHACL.class
-    , TS_JenaShacl.class
-    , TS_Compact.class
-    , TestImports.class
-    , ValidationListenerTests.class
-} )
+import java.util.Set;
 
-public class TC_SHACL { }
+/**
+ * Base class for events resulting from evaluating constraints that compare value nodes with other nodes, such
+ * as <code>sh:equals</code> or <code>sh:lessThan</code>.
+ */
+public interface CompareNodesEvent extends ConstraintEvaluationEvent {
+    Set<Node> getCompareNodes();
+}

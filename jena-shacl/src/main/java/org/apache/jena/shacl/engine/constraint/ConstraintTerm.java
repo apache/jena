@@ -26,6 +26,8 @@ import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnFocusNodeEvent;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnSinglePathNodeEvent;
 import org.apache.jena.sparql.path.Path;
 
 /* Constraint that does not need access to the data other than the nodes supplied. e.g. sh:datatype. */
@@ -47,8 +49,16 @@ public abstract class ConstraintTerm implements Constraint {
 
     private void applyConstraintTerm(ValidationContext vCxt, Shape shape, Node focusNode, Path path, Node term) {
         ReportItem item = validate(vCxt, term);
-        if ( item == null )
+        boolean passed = item == null;
+        if (path == null) {
+            vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnFocusNodeEvent(vCxt, shape, focusNode, this, passed));
+        } else {
+            vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, this, path,
+                                            term, passed));
+        }
+        if ( passed ) {
             return;
+        }
         vCxt.reportEntry(item, shape, focusNode, path, this);
     }
 

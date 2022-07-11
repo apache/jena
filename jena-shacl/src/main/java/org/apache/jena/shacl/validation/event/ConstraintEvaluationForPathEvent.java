@@ -16,25 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl;
+package org.apache.jena.shacl.validation.event;
 
-import org.apache.jena.shacl.compact.TS_Compact;
-import org.apache.jena.shacl.tests.TestImports;
-import org.apache.jena.shacl.tests.TestValidationReport;
-import org.apache.jena.shacl.tests.ValidationListenerTests;
-import org.apache.jena.shacl.tests.jena_shacl.TS_JenaShacl;
-import org.apache.jena.shacl.tests.std.TS_StdSHACL;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.apache.jena.sparql.path.Path;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestValidationReport.class
-    , TS_StdSHACL.class
-    , TS_JenaShacl.class
-    , TS_Compact.class
-    , TestImports.class
-    , ValidationListenerTests.class
-} )
-
-public class TC_SHACL { }
+public interface ConstraintEvaluationForPathEvent extends ConstraintEvaluationEvent {
+    Path getPath();
+}
