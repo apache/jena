@@ -18,10 +18,15 @@
 
 package org.apache.jena.sparql.exec;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionBuilder;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.Syntax;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -42,6 +47,17 @@ public class QueryExecutionBuilderAdapter implements QueryExecutionBuilder {
 
     public QueryExecutionBuilderAdapter(QueryExecBuilder builder) {
         this.builder = builder;
+    }
+
+    /** Adapter that attempts to unwrap a QueryExecBuilderAdapter's builder */
+    public static QueryExecutionBuilder adapt(QueryExecBuilder builder) {
+        Objects.requireNonNull(builder);
+
+        QueryExecutionBuilder result = builder instanceof QueryExecBuilderAdapter
+                ? ((QueryExecBuilderAdapter)builder).getExecBuilder()
+                : new QueryExecutionBuilderAdapter(builder);
+
+        return result;
     }
 
     public QueryExecBuilder getExecBuilder() { return builder; }

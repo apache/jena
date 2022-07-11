@@ -24,6 +24,7 @@ import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
@@ -51,7 +52,8 @@ public class QueryExecAdapter implements QueryExec {
 
     @Override
     public DatasetGraph getDataset() {
-        return get().getDataset().asDatasetGraph();
+        Dataset dataset = get().getDataset();
+        return dataset == null ? null : dataset.asDatasetGraph();
     }
 
     @Override

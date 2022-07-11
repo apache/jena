@@ -107,12 +107,12 @@ public class RDFConnectionAdapter implements RDFConnection {
 
     @Override
     public QueryExecutionBuilder newQuery() {
-        return new QueryExecutionBuilderAdapter(get().newQuery());
+        return QueryExecutionBuilderAdapter.adapt(get().newQuery());
     }
 
     @Override
     public UpdateExecutionBuilder newUpdate() {
-        return new UpdateExecutionBuilderAdapter(get().newUpdate());
+        return UpdateExecutionBuilderAdapter.adapt(get().newUpdate());
     }
 
     private static QueryExecution adapt(QueryExec queryExec) {
