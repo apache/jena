@@ -31,6 +31,7 @@ public class TextDocProducerTriples implements TextDocProducer {
     // Have to have a ThreadLocal here to keep track of whether or not we are in a transaction,
     // therefore whether or not we have to do autocommit
     private final ThreadLocal<Boolean> inTransaction = new ThreadLocal<Boolean>() {
+
         @Override
         protected Boolean initialValue() {
             return Boolean.FALSE ;
@@ -63,7 +64,6 @@ public class TextDocProducerTriples implements TextDocProducer {
              qaction != TextQuadAction.DELETE )
             return ;
 
-
         Entity entity = TextQueryFuncs.entityFromQuad(defn, g, s, p, o) ;
         // Null means does not match defn
         if ( entity != null ) {
@@ -71,17 +71,15 @@ public class TextDocProducerTriples implements TextDocProducer {
                 indexer.addEntity(entity);
 
                 // Auto commit the entity if we aren't in a transaction
-                if (!inTransaction.get()) {
+                if (!inTransaction.get())
                     indexer.commit();
-                }
             }
             else if (qaction == TextQuadAction.DELETE) {
                 indexer.deleteEntity(entity);
 
                 // Auto commit the entity if we aren't in a transaction
-                if (!inTransaction.get()) {
+                if (!inTransaction.get())
                     indexer.commit();
-                }
             }
         }
     }

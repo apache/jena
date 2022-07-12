@@ -92,6 +92,7 @@ public class DatasetGraphText extends DatasetGraphTextMonitor implements Transac
             commitAction = delegateCommit;
             abortAction = delegateAbort;
         } else if ( org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) ) {
+            // But this moves!
             TransactionCoordinator coord = org.apache.jena.tdb2.sys.TDBInternal.getTransactionCoordinator(dsg);
             // Does not overlap with the ids used by TDB2.
             byte[] componentID = { 2,4,6,10 } ;
@@ -166,7 +167,6 @@ public class DatasetGraphText extends DatasetGraphTextMonitor implements Transac
 
     @Override
     public void begin(ReadWrite readWrite) {
-        // The "super.begin" is enough.
         readWriteMode.set(readWrite);
         super.begin(readWrite) ;
         super.getMonitor().start() ;
@@ -208,38 +208,7 @@ public class DatasetGraphText extends DatasetGraphTextMonitor implements Transac
 
             // Phase 2
             try {
-                // JENA-1302: This needs the exclusive lock for flushing the queue.
-                // TDB1
-                // Thread 1(W) is running, holds the exclusivitylock=R
-
-                // Thread 2(W) starts, tries to commit
-                //   Takes txnExitLock
-                //   Calls super.commit
-                //     Find an excessive flush queue.
-                //     It tries to TransactionManger.exclusiveFlushQueue
-                //       This needs exclusivitylock=W
-                //       So Thread 2 blocks, waiting for thread 1
-                //       but still holds txnExitLock
-                //
-                // Thread 1 tries to commit.
-                //   Can't take the txnExitLock because of thread 2.
-                //
-                // ==> Deadlock.
-                // Fix:
-                //   Put index commit into TDB TransactionLifecycle.
-                //   No txnExitLock.
-
-                // Doing a non-blocking exclusive attempt in TransactionManger.exclusiveFlushQueue
-                // does not help - we are in a situation where the queue is growing and unflushable
-                // which is why we entered emergency measures. Eventually, RAM will run out as well as
-                // the system becoming slow due to Journal layers.
-
-                // TDB2
-                //   All work takes place on the W commiting thread.
-                //   There is no pause point so this can't happen.
-                //     txnExitLock isn't needed, the overall TDB2 transaction
-                //     means W is unique and all work happens without any potential blocking.
-
+                // Hard to do atomically.
                 super.commit();
                 textIndex.commit();
             }
