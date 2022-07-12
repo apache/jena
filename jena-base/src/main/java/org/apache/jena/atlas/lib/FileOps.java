@@ -35,7 +35,7 @@ public class FileOps {
 
     /**
      * Delete a file
-     * 
+     *
      * @param filename
      */
     public static void delete(String filename) {
@@ -63,12 +63,19 @@ public class FileOps {
         }
     }
 
-    /** Delete all files in a directory */
+    /**
+     * Delete all files in a directory.
+     * Does nothing if the path name does not exist or is not a directory.
+     *
+     * @param dir
+     */
     public static void clearDirectory(String dir) {
         File d = new File(dir) ;
-        for ( File f : d.listFiles() ) {
-            if ( f.isFile() )
-                delete(f, false) ;
+        if ( d.isDirectory() ) {
+            for ( File f : d.listFiles() ) {
+                if ( f.isFile() )
+                    delete(f, false) ;
+            }
         }
     }
 
@@ -81,7 +88,7 @@ public class FileOps {
     public static void clearAll(File d) {
         if ( ! d.exists() )
             return ;
-        
+
 		for (File f : d.listFiles(f -> !f.getName().equals(".")
 				&& !f.getName().equals(".."))) {
             if ( f.isDirectory() )
@@ -116,7 +123,7 @@ public class FileOps {
         throw new AtlasException("Not a file") ;
     }
 
-    /** Ensure a directory exists */ 
+    /** Ensure a directory exists */
     public static void ensureDir(String dirname) {
         File dir = new File(dirname) ;
         if ( !dir.exists() )
