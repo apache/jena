@@ -20,13 +20,14 @@ package org.apache.jena.test;
 
 import org.apache.jena.geosparql.TS_GeoSPARQL;
 import org.apache.jena.http.TS_JenaHttp;
-import org.apache.jena.integration.TS_RDFLinkIntegration;
 import org.apache.jena.sparql.exec.http.TS_SparqlExecHttp;
 import org.apache.jena.test.assembler.TS_Assembler;
 import org.apache.jena.test.general.TestRemoteEndToEnd;
 import org.apache.jena.test.integration.TS_Integration;
 import org.apache.jena.test.rdfconnection.TS_RDFConnectionIntegration;
+import org.apache.jena.test.rdflink.TS_RDFLinkIntegration;
 import org.apache.jena.test.service.TS_SPARQLService;
+import org.apache.jena.test.text.TestTextTDB2Compact;
 import org.apache.jena.test.txn.TS_TranactionIntegration;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -44,6 +45,7 @@ import org.junit.runners.Suite;
     , TestRemoteEndToEnd.class
     , TS_SPARQLService.class
     , TS_GeoSPARQL.class
+    , TestTextTDB2Compact.class
 })
 
 public class TC_Integration { }

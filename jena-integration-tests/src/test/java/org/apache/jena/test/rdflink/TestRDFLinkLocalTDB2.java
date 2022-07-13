@@ -16,23 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.jena.integration;
+package org.apache.jena.test.rdflink;
 
 import org.apache.jena.rdfconnection.Isolation;
 import org.apache.jena.rdflink.AbstractTestRDFLink;
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb2.DatabaseMgr;
 
-public class TestRDFLinkLocalTDB extends AbstractTestRDFLink {
+public class TestRDFLinkLocalTDB2 extends AbstractTestRDFLink {
 
     @Override
     protected boolean supportsAbort() { return true ; }
 
     @Override
     protected RDFLink link() {
-        DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
+        DatasetGraph dsg = DatabaseMgr.createDatasetGraph() ;
         return RDFLinkFactory.connect(dsg, Isolation.COPY) ;
     }
 }

@@ -31,7 +31,10 @@ import org.apache.jena.query.text.assembler.TextVocab ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.sparql.JenaTransactionException ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
 import org.apache.lucene.store.ByteBuffersDirectory ;
@@ -43,7 +46,7 @@ import org.junit.Test ;
 public class TestLuceneWithMultipleThreads
 {
     private static final EntityDefinition entDef;
-    
+
     static {
         entDef = new EntityDefinition("uri", "label");
         entDef.setGraphField("graph");
@@ -51,7 +54,7 @@ public class TestLuceneWithMultipleThreads
         StandardAnalyzer analyzer = new StandardAnalyzer();
         entDef.setAnalyzer("label", analyzer);
     }
-    
+
     @Test
     public void testReadInMiddleOfWrite() throws InterruptedException, ExecutionException
     {
@@ -84,7 +87,7 @@ public class TestLuceneWithMultipleThreads
                 }
             }
         });
-        
+
         dsg.begin(ReadWrite.WRITE);
         try
         {
@@ -93,21 +96,21 @@ public class TestLuceneWithMultipleThreads
             // Sleep for a bit so that the reader thread can get in between these two writes
             Thread.sleep(100);
             m.add(ResourceFactory.createResource("http://example.org/"), RDFS.comment, "comment");
-            
+
             dsg.commit();
         }
         finally
         {
             dsg.end();
         }
-        
+
         execService.shutdownNow();
         execService.awaitTermination(1000, TimeUnit.MILLISECONDS);
-        
+
         // If there was an exception in the read thread then Future.get() will throw an ExecutionException
         assertTrue(f.get() == null);
     }
-    
+
     @Test
     public void testWriteInMiddleOfRead() throws InterruptedException, ExecutionException
     {
@@ -142,7 +145,7 @@ public class TestLuceneWithMultipleThreads
                 }
             }
         });
-        
+
         for (int i=0; i<numReads; i++)
         {
             dsg.begin(ReadWrite.READ);
@@ -163,26 +166,47 @@ public class TestLuceneWithMultipleThreads
                 dsg.end();
             }
         }
-        
+
         execService.shutdownNow();
         execService.awaitTermination(1000, TimeUnit.MILLISECONDS);
-        
+
         // If there was an exception in the write thread then Future.get() will throw an ExecutionException
         assertTrue(f.get() == null);
     }
-    
-    // TODO This test needs making robust to timing.
+
     @Test
-    public void testIsolation() throws InterruptedException, ExecutionException {
-        
-        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(DatasetGraphFactory.create(), new ByteBuffersDirectory(), new TextIndexConfig(entDef));
-        
+    public void testIsolationPlain() throws InterruptedException, ExecutionException {
+        // MRSW dataset
+        testIsolation(DatasetGraphFactory.create());
+    }
+
+    @Test
+    public void testIsolationTIM() throws InterruptedException, ExecutionException {
+        testIsolation(DatasetGraphFactory.createTxnMem());
+    }
+
+    @Test
+    public void testIsolationTDB1() throws InterruptedException, ExecutionException {
+        testIsolation(TDBFactory.createDatasetGraph());
+    }
+
+    @Test
+    public void testIsolationTDB2() throws InterruptedException, ExecutionException {
+        testIsolation(DatabaseMgr.createDatasetGraph());
+    }
+
+    // TODO This testing may need to be more robust to timing.
+    public void testIsolation(DatasetGraph dsg0) throws InterruptedException, ExecutionException {
+
+        final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(dsg0,
+                                                                                       new ByteBuffersDirectory(),
+                                                                                       new TextIndexConfig(entDef));
+
         final int numReaders = 2;
         final List<Future<?>> futures = new ArrayList<>(numReaders);
         final ExecutorService execService = Executors.newFixedThreadPool(numReaders);
         final Dataset ds = DatasetFactory.wrap(dsg);
-        
-        
+
         for (int i=0; i<numReaders; i++) {
             futures.add(execService.submit(new Runnable() {
                 @Override
@@ -201,7 +225,7 @@ public class TestLuceneWithMultipleThreads
                         finally {
                             dsg.end();
                         }
-                        
+
                         try {
                             Thread.sleep(10);
                         }
@@ -212,10 +236,10 @@ public class TestLuceneWithMultipleThreads
                 }
             }));
         }
-        
+
         // Give the read threads a chance to start up
         // TODO use a Semaphore!
-        
+
         Thread.sleep(500);
         try{
 
@@ -237,5 +261,5 @@ public class TestLuceneWithMultipleThreads
             assertTrue(f.get() == null);
         }
     }
-    
+
 }

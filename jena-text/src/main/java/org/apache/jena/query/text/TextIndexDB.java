@@ -25,7 +25,7 @@ import org.apache.jena.dboe.transaction.txn.TransactionalComponentBase;
 import org.apache.jena.dboe.transaction.txn.TxnId;
 import org.apache.jena.query.ReadWrite;
 
-/** 
+/**
  * Adapter to put Lucene into DBOE transactions.
  */
 public class TextIndexDB extends TransactionalComponentBase<TextIndexDB.TextState> {
@@ -41,10 +41,9 @@ public class TextIndexDB extends TransactionalComponentBase<TextIndexDB.TextStat
 
     @Override
     protected TextState _begin(ReadWrite readWrite, TxnId txnId) {
-        // Need to MRSW?
         return new TextState();
     }
-    
+
 //    @Override
 //    protected TextState _promote(TxnId txnId, TextState oldState) {
 //        return null;
@@ -75,5 +74,5 @@ public class TextIndexDB extends TransactionalComponentBase<TextIndexDB.TextStat
 //
 //    @Override
 //    protected void _shutdown() {}
-    
+
 }

@@ -362,4 +362,15 @@ public class LogCtl {
             throw new AtlasException(ex);
         }
     }
+
+    /** Execute with a given logging level. */
+    public static void withLevel(Logger logger, String execLevel, Runnable action) {
+        String currentLevel = getLevel(logger);
+        try {
+            setLevel(logger, execLevel);
+            action.run();
+        } finally {
+            setLevel(logger, currentLevel);
+        }
+    }
 }

@@ -56,7 +56,6 @@ import org.junit.runners.Parameterized.Parameters;
  * See {@code AbstractTestPrefixMap} for tests of prefix maps in general.
  */
 
-
 @FixMethodOrder(MethodSorters.JVM)
 @RunWith(Parameterized.class)
 public class TestDatasetPrefixes {
