@@ -30,6 +30,4 @@ import org.junit.runner.RunWith ;
     "testing/rdf-tests-cg/manifest-lang.ttl"
 })
 
-public class Scripts_LangSuiteCG
-{}
-
+public class Scripts_LangSuiteCG {}

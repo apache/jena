@@ -43,11 +43,25 @@ public class DisjointConstraint extends ConstraintPairwise {
     @Override
     public void validate(ValidationContext vCxt, Shape shape, Node focusNode, Path path,
                          Set<Node> pathNodes, Set<Node> compareNodes) {
+        boolean allPassed = true;
         for ( Node vn : pathNodes ) {
+            boolean passed = true;
             if ( compareNodes.contains(vn) ) {
                 String msg = toString()+": not disjoint: "+displayStr(vn)+" is in "+compareNodes;
+                passed = false;
+                allPassed = false;
                 vCxt.reportEntry(msg, shape, focusNode, path, vn, this);
             }
+            if (!passed) {
+                vCxt.notifyValidationListener(() -> makeEventSinglePathNode(
+                                                vCxt, shape, focusNode, path, vn,
+                                                compareNodes, false));
+            }
+        }
+        if (allPassed){
+            vCxt.notifyValidationListener(() -> makeEvent(
+                                            vCxt, shape, focusNode, path, pathNodes,
+                                            compareNodes, true));
         }
     }
 

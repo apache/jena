@@ -22,17 +22,21 @@ import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.service.single.ChainingServiceExecutor;
+import org.apache.jena.sparql.service.single.ServiceExecutor;
 
-/**
- * Interface for custom handling of service execution requests.
- */
+/** Compatibility interface. Consider migrating legacy code to {@link ChainingServiceExecutor} or {@link ServiceExecutor} */
+@Deprecated(since = "4.6.0")
 @FunctionalInterface
-public interface ServiceExecutorFactory {
-    /**
-     * If this factory cannot handle the execution request then this method should return null.
-     * Otherwise, a {@link ServiceExecution} with the corresponding {@link QueryIterator} is returned.
-     *
-     * @return A QueryIterator if this factory can handle the request, or null otherwise.
-     */
-    public ServiceExecution createExecutor(OpService opExecute, OpService original, Binding binding, ExecutionContext execCxt);
+public interface ServiceExecutorFactory
+    extends ServiceExecutor
+{
+    @Override
+    default QueryIterator createExecution(OpService opExecute, OpService original, Binding binding, ExecutionContext execCxt) {
+        ServiceExecution svcExec = createExecutor(opExecute, original, binding, execCxt);
+        QueryIterator result = svcExec == null ? null : svcExec.exec();
+        return result;
+    }
+
+    ServiceExecution createExecutor(OpService opExecute, OpService original, Binding binding, ExecutionContext execCxt);
 }

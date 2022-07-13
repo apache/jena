@@ -30,6 +30,4 @@ import org.junit.runner.RunWith ;
     "testing/rdf-star-cg/manifest.ttl"
 })
 
-public class Scripts_RDFStar
-{}
-
+public class Scripts_RDFStar {}

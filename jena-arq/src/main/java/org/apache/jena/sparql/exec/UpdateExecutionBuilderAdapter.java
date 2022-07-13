@@ -37,6 +37,15 @@ public class UpdateExecutionBuilderAdapter implements UpdateExecutionBuilder {
         this.builder = builder;
     }
 
+    /** Adapter that attempts to unwrap an UpdateExecBuilderAdapter builder */
+    public static UpdateExecutionBuilder adapt(UpdateExecBuilder builder) {
+        UpdateExecutionBuilder result = builder instanceof UpdateExecBuilderAdapter
+                ? ((UpdateExecBuilderAdapter)builder).getExecBuilder()
+                : new UpdateExecutionBuilderAdapter(builder);
+
+        return result;
+    }
+
     public UpdateExecBuilder getExecBuilder() { return builder; }
 
     @Override

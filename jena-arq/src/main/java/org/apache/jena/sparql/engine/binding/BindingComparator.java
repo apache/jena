@@ -38,7 +38,7 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.VariableNotBoundException ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.function.FunctionEnvBase ;
-import org.apache.jena.sparql.util.NodeUtils ;
+import org.apache.jena.sparql.util.NodeCmp;
 
 public class BindingComparator implements java.util.Comparator<Binding>
 {
@@ -168,7 +168,7 @@ public class BindingComparator implements java.util.Comparator<Binding>
         {
             Node n1 = bind1.get(v) ;
             Node n2 = bind2.get(v) ;
-            x = NodeUtils.compareRDFTerms(n1, n2) ; 
+            x = NodeCmp.compareRDFTerms(n1, n2) ; 
             if  ( x != 0 )
                 return x ;
         }

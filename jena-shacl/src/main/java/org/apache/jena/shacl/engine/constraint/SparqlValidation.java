@@ -18,11 +18,6 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Graph;
@@ -40,6 +35,7 @@ import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnSinglePathNodeEvent;
 import org.apache.jena.sparql.core.PathBlock;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
@@ -52,6 +48,11 @@ import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransformCopyBase;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.ModelUtils;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** The SPARQL validator algorithms. */
 /*package*/ class SparqlValidation {
@@ -134,12 +135,16 @@ import org.apache.jena.sparql.util.ModelUtils;
                     : substitute(violationTemplate, parameterMap, focusNode, path, valueNode);
                 vCxt.reportEntry(msg, shape, focusNode, path, valueNode, reportConstraint);
             }
+            vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, path, valueNode,
+                            b));
             return b;
         }
 
         ResultSet rs = qExec.execSelect();
-        if ( ! rs.hasNext() )
+        if ( ! rs.hasNext() ) {
+            vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, path, valueNode, true));
             return true;
+        }
 
         while(rs.hasNext()) {
             Binding row = rs.nextBinding();
@@ -163,6 +168,10 @@ import org.apache.jena.sparql.util.ModelUtils;
                 if ( qPath != null )
                     rPath = PathFactory.pathLink(qPath);
             }
+            final Path finalRPath = rPath;
+            final Node finalValue = value;
+            vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, finalRPath, finalValue,
+                            false));
             vCxt.reportEntry(msg, shape, focusNode, rPath, value, reportConstraint);
         }
         return false;

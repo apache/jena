@@ -26,6 +26,7 @@ import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnPathNodesEvent;
 import org.apache.jena.sparql.path.Path;
 
 /** A Constraint that handles an RDF "entity" (e.g. triples with the same subject)
@@ -46,7 +47,10 @@ public abstract class ConstraintEntity implements Constraint {
     final
     public void validatePropertyShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode, Path path, Set<Node> pathNodes) {
         ReportItem item = validate(vCxt, pathNodes);
-        if ( item == null)
+        boolean passed = item == null;
+        vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnPathNodesEvent(vCxt, shape, focusNode, this, path, pathNodes,
+                        passed));
+        if ( passed )
             return;
         vCxt.reportEntry(item.getMessage(), shape, focusNode, path, item.getValue(), this);
     }

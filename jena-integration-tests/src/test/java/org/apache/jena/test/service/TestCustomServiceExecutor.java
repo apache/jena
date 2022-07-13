@@ -32,10 +32,9 @@ import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.algebra.Table;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.main.iterator.QueryIterService;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
-import org.apache.jena.sparql.service.ServiceExecutorFactory;
 import org.apache.jena.sparql.service.ServiceExecutorRegistry;
+import org.apache.jena.sparql.service.single.ServiceExecutor;
 import org.apache.jena.sparql.sse.SSE;
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,15 +45,16 @@ public class TestCustomServiceExecutor {
 
     /** A custom service factory that yields the above table for any request
      *  to urn:customService */
-    static ServiceExecutorFactory factory = (op, opOriginal, binding, execCxt) ->
+    static ServiceExecutor factory = (op, opOriginal, binding, execCxt) ->
         op.getService().getURI().equals("urn:customService")
-            ? ()->table.iterator(execCxt)
+            ? table.iterator(execCxt)
             : null;
 
     static ServiceExecutorRegistry customRegistry = new ServiceExecutorRegistry().add(factory);
 
     @Test
     public void testGlobalServiceExecutorRegistry() {
+        int sizeBefore = ServiceExecutorRegistry.get().getSingleChain().size();
         ServiceExecutorRegistry.get().add(factory);
 
         try {
@@ -62,6 +62,10 @@ public class TestCustomServiceExecutor {
         } finally {
             // Better eventually remove the global registration
             ServiceExecutorRegistry.get().remove(factory);
+            int sizeAfter = ServiceExecutorRegistry.get().getSingleChain().size();
+
+            // Perform a sanity check
+            Assert.assertEquals("Removal of a registration failed", sizeBefore, sizeAfter);
         }
     }
 
@@ -98,7 +102,7 @@ public class TestCustomServiceExecutor {
      */
     @Test
     public void testIllegalServiceIri2() {
-        Class<?> logClass = QueryIterService.class;
+        Class<?> logClass = ServiceExecutorRegistry.class;
         String logLevel = LogCtl.getLevel(logClass);
         try {
             LogCtl.setLevel(logClass, "ERROR");

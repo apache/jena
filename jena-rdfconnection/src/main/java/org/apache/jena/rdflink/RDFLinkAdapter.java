@@ -20,8 +20,10 @@ package org.apache.jena.rdflink;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecutionBuilder;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.rdf.model.Model;
@@ -31,7 +33,10 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecBuilder;
+import org.apache.jena.sparql.exec.QueryExecBuilderAdapter;
 import org.apache.jena.sparql.exec.UpdateExecBuilder;
+import org.apache.jena.sparql.exec.UpdateExecBuilderAdapter;
+import org.apache.jena.update.UpdateExecutionBuilder;
 import org.apache.jena.update.UpdateRequest;
 
 public class RDFLinkAdapter implements RDFLink {
@@ -78,7 +83,10 @@ public class RDFLinkAdapter implements RDFLink {
     public boolean isInTransaction() { return conn.isInTransaction(); }
 
     @Override
-    public DatasetGraph getDataset() { return conn.fetchDataset().asDatasetGraph(); }
+    public DatasetGraph getDataset() {
+        Dataset ds = conn.fetchDataset();
+        return ds == null ? null : ds.asDatasetGraph();
+    }
 
     @Override
     public QueryExec query(Query query) { return QueryExec.adapt(conn.query(query)); }
@@ -88,14 +96,14 @@ public class RDFLinkAdapter implements RDFLink {
 
     @Override
     public QueryExecBuilder newQuery() {
-        // Can't adapt a previously wrapped RDFLink via RDFConnectionAdapter
-        throw new UnsupportedOperationException("RDFLinkAdapter.newQuery");
+        QueryExecutionBuilder qeb = conn.newQuery();
+        return QueryExecBuilderAdapter.adapt(qeb);
     }
 
     @Override
     public UpdateExecBuilder newUpdate() {
-        // Can't adapt a previously wrapped RDFLink via RDFConnectionAdapter
-        throw new UnsupportedOperationException("RDFLinkAdapter.newUpdate");
+        UpdateExecutionBuilder ueb = conn.newUpdate();
+        return UpdateExecBuilderAdapter.adapt(ueb);
     }
 
     @Override

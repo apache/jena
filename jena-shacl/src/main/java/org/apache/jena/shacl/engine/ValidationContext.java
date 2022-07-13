@@ -27,7 +27,11 @@ import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.sys.ShaclSystem;
 import org.apache.jena.shacl.validation.ReportItem;
+import org.apache.jena.shacl.validation.ValidationListener;
+import org.apache.jena.shacl.validation.event.ValidationEvent;
 import org.apache.jena.sparql.path.Path;
+
+import java.util.function.Supplier;
 
 public class ValidationContext {
 
@@ -39,15 +43,24 @@ public class ValidationContext {
     private final Shapes shapes;
     private final Graph dataGraph;
     private boolean strict = false;
+    private final ValidationListener validationListener;
 
     private final ErrorHandler errorHandler;
 
     public static ValidationContext create(Shapes shapes, Graph data) {
-        return create(shapes, data, ShaclSystem.systemShaclErrorHandler);
+        return create(shapes, data, ShaclSystem.systemShaclErrorHandler, null);
     }
-    
-    public static ValidationContext create(Shapes shapes, Graph data, ErrorHandler errorHandler) {
-        ValidationContext vCxt = new ValidationContext(shapes, data, errorHandler);
+
+    public static ValidationContext create(Shapes shapes, Graph data, ValidationListener validationListener) {
+        return create(shapes, data, null, validationListener);
+    }
+
+    public static ValidationContext create(Shapes shapes, Graph data, ErrorHandler errorHandler){
+        return create(shapes, data, errorHandler, null);
+    }
+
+    public static ValidationContext create(Shapes shapes, Graph data, ErrorHandler errorHandler, ValidationListener validationListener) {
+        ValidationContext vCxt = new ValidationContext(shapes, data, errorHandler, validationListener);
         vCxt.setVerbose(VERBOSE);
         return vCxt;
     }
@@ -62,14 +75,16 @@ public class ValidationContext {
         this.verbose = vCxt.verbose;
         this.strict = vCxt.strict;
         this.errorHandler = vCxt.errorHandler;
+        this.validationListener = vCxt.validationListener;
     }
 
-    private ValidationContext(Shapes shapes, Graph data, ErrorHandler errorHandler) {
+    private ValidationContext(Shapes shapes, Graph data, ErrorHandler errorHandler, ValidationListener validationListener) {
         this.shapes = shapes;
         this.dataGraph = data;
         if ( errorHandler == null )
             errorHandler = ShaclSystem.systemShaclErrorHandler;
         this.errorHandler = errorHandler;
+        this.validationListener = validationListener;
         validationReportBuilder.addPrefixes(data.getPrefixMapping());
         validationReportBuilder.addPrefixes(shapes.getGraph().getPrefixMapping());
     }
@@ -122,6 +137,13 @@ public class ValidationContext {
     
     public ErrorHandler getErrorHandler() {
         return errorHandler;
+    }
+
+    public void notifyValidationListener(Supplier<ValidationEvent> eventSupplier){
+        if (validationListener != null){
+            ValidationEvent event = eventSupplier.get();
+            validationListener.onValidationEvent(event);
+        }
     }
 
 }

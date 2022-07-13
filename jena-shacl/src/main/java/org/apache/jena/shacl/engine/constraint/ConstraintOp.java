@@ -26,6 +26,8 @@ import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnFocusNodeEvent;
+import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnSinglePathNodeEvent;
 import org.apache.jena.sparql.path.Path;
 
 /** A constraint that combines other constraints */
@@ -35,8 +37,11 @@ public abstract class ConstraintOp implements Constraint {
     final
     public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
         ReportItem item = validate(vCxt, data, focusNode);
-        if ( item != null )
+        boolean passed = item == null;
+        if ( ! passed ) {
             vCxt.reportEntry(item, shape, focusNode, null, this);
+        }
+        vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnFocusNodeEvent(vCxt, shape, focusNode, this, passed));
     }
 
     @Override
@@ -44,8 +49,12 @@ public abstract class ConstraintOp implements Constraint {
     public void validatePropertyShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode, Path path, Set<Node> pathNodes) {
         pathNodes.forEach(n-> {
             ReportItem item = validate(vCxt, data, n);
-            if ( item != null )
+            boolean passed = item == null;
+            if ( ! passed ) {
                 vCxt.reportEntry(item, shape, focusNode, path, this);
+            }
+            vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, this, path, n,
+                            passed));
         });
     }
 

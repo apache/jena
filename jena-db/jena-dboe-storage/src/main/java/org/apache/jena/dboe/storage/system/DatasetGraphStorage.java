@@ -205,4 +205,11 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
         storage.removeAll(graphName, Node.ANY, Node.ANY, Node.ANY);
         prefixes.deleteAll(graphName);
     }
+
+    @Override
+    public long size() {
+        // Slow!
+        return stream()
+                .map(Quad::getGraph).filter(gn->!Quad.isDefaultGraph(gn)).distinct().count();
+    }
 }

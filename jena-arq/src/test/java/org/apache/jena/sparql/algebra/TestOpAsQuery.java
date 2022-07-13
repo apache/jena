@@ -78,10 +78,16 @@ public class TestOpAsQuery {
     @Test public void testBind11() { test_roundTripQuery("SELECT ?s ('y' AS ?y) ?p ?x ?o { ?s ?p ?o BIND ('x' AS ?x) }"); }
     @Test public void testBind12() { test_roundTripQuery("SELECT ?w ('y' AS ?y) ?x { BIND('w' AS ?w) ?s ?p ?o BIND ('x' AS ?x) }"); }
     @Test public void testBind13() { test_roundTripQuery("SELECT ('x' AS ?x) (str(?x) AS ?y) (str(?x) AS ?z) {}"); }
+    // Also reported: JENA-2335
+    @Test public void testBind14() {
+        test_roundTripQuery(
+                "SELECT ?a ?d WHERE { ?a <http://example.org/p> ?b . BIND(?b AS ?c) BIND(?c AS ?d) }",
+                "SELECT  ?a (?c AS ?d) WHERE { ?a  <http://example.org/p>  ?b  BIND(?b AS ?c)}");
+        }
 
     // https://github.com/apache/jena/issues/1397
-    @Test public void testBind14() { test_roundTripQuery("SELECT * { GRAPH ?g { BIND('x' AS ?x) } }"); }
-    @Test public void testBind15() { test_roundTripQuery("SELECT * { GRAPH ?g { BIND('x' AS ?x) BIND('y' AS ?y) } }"); }
+    @Test public void testBind15() { test_roundTripQuery("SELECT * { GRAPH ?g { BIND('x' AS ?x) } }"); }
+    @Test public void testBind16() { test_roundTripQuery("SELECT * { GRAPH ?g { BIND('x' AS ?x) BIND('y' AS ?y) } }"); }
 
     @Test public void testAssign1() { test_roundTripQuery("SELECT * { GRAPH ?g { LET(?y := ?x) } }", syntaxARQ); }
     @Test public void testAssign2() { test_roundTripQuery("SELECT * { GRAPH ?g { LET(?x := 'x') LET(?y := 'y') } }", syntaxARQ); }

@@ -52,6 +52,7 @@ public class FusekiVocab
     public static final Property pUnionDefaultGraph         = property("unionDefaultGraph");
     public static final Property pAllowTimeoutOverride      = property("allowTimeoutOverride");
     public static final Property pMaximumTimeoutOverride    = property("maximumTimeoutOverride");
+    public static final Property pDataset                   = property("dataset");
 
     // Server endpoints.
     public static final Property pServerPing        = property("pingEP");

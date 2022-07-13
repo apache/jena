@@ -29,103 +29,108 @@ import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappedLoader ;
 
-public class FunctionRegistry //extends HashMap<String, Function>
+public class FunctionRegistry
 {
     // Extract a Registry class and do casting and initialization here.
-    Map<String, FunctionFactory> registry = new HashMap<>() ;
-    Set<String> attemptedLoads = new HashSet<>() ;
+    private Map<String, FunctionFactory> registry = new HashMap<>() ;
+    private Set<String> attemptedLoads = new HashSet<>() ;
 
-    public static FunctionRegistry standardRegistry()
-    {
-        FunctionRegistry reg = get(ARQ.getContext()) ;
-        return reg ;   
+    public static FunctionRegistry standardRegistry() {
+        FunctionRegistry reg = get(ARQ.getContext());
+        return reg;
     }
 
     public static void init() {
-        // Initialize if there is no registry already set 
+        // Initialize if there is no registry already set
         FunctionRegistry reg = new FunctionRegistry() ;
         ARQFunctions.load(reg);
         StandardFunctions.loadStdDefs(reg) ;
         set(ARQ.getContext(), reg) ;
     }
-    
-    public static FunctionRegistry get()
-    {
-        // Initialize if there is no registry already set 
-        FunctionRegistry reg = get(ARQ.getContext()) ;
-        if ( reg == null )
-        {
+
+    public static FunctionRegistry get() {
+        // Initialize if there is no registry already set
+        FunctionRegistry reg = get(ARQ.getContext());
+        if ( reg == null ) {
             Log.warn(FunctionRegistry.class, "Standard function registry should already have been initialized");
-            init() ;
-            reg = get(ARQ.getContext()) ;
+            init();
+            reg = get(ARQ.getContext());
         }
 
-        return reg ;
+        return reg;
     }
 
-    public static FunctionRegistry get(Context context)
-    {
+    public static FunctionRegistry get(Context context) {
         if ( context == null )
-            return null ;
-        return (FunctionRegistry)context.get(ARQConstants.registryFunctions) ;
+            return null;
+        return context.get(ARQConstants.registryFunctions);
     }
-    
-    public static void set(Context context, FunctionRegistry reg)
-    {
-        context.set(ARQConstants.registryFunctions, reg) ;
+
+    public static void set(Context context, FunctionRegistry reg) {
+        context.set(ARQConstants.registryFunctions, reg);
+    }
+
+    /**
+     * Copies the origin registry into a new one, or makes a fresh instance if the specified registry is {@code null}.
+     * @param from {@link FunctionRegistry } or {@code null}
+     * @return {@link FunctionRegistry} a new instance
+     */
+    public static FunctionRegistry createFrom(FunctionRegistry from) {
+        FunctionRegistry res = new FunctionRegistry();
+        if (from != null) {
+            res.registry.putAll(from.registry);
+        }
+        return res;
     }
 
     public FunctionRegistry()
     {}
-    
-    /** Insert a class that is the function implementation 
-     * 
+
+    /** Insert a class that is the function implementation
+     *
      * @param uri           String URI
      * @param funcClass     Class for the function (new instance called).
      */
-    public void put(String uri, Class<?> funcClass)
-    { 
-        if ( ! Function.class.isAssignableFrom(funcClass) )
-        {
-            Log.warn(this, "Class "+funcClass.getName()+" is not a Function" );
-            return ; 
+    public void put(String uri, Class<? > funcClass) {
+        if ( !Function.class.isAssignableFrom(funcClass) ) {
+            Log.warn(this, "Class " + funcClass.getName() + " is not a Function");
+            return;
         }
-        
-        put(uri, new FunctionFactoryAuto(funcClass)) ;
+
+        put(uri, new FunctionFactoryAuto(funcClass));
     }
 
-    /** Insert a function. Re-inserting with the same URI overwrites the old entry. 
-     * 
+    /** Insert a function. Re-inserting with the same URI overwrites the old entry.
+     *
      * @param uri
      * @param f
      */
     public void put(String uri, FunctionFactory f) { registry.put(uri,f) ; }
 
     /** Lookup by URI */
-    public FunctionFactory get(String uri)
-    {
-        FunctionFactory function = registry.get(uri) ;
+    public FunctionFactory get(String uri) {
+        FunctionFactory function = registry.get(uri);
         if ( function != null )
-            return function ;
+            return function;
 
         if ( attemptedLoads.contains(uri) )
-            return null ;
+            return null;
 
-        Class<?> functionClass = MappedLoader.loadClass(uri, Function.class) ;
+        Class<? > functionClass = MappedLoader.loadClass(uri, Function.class);
         if ( functionClass == null )
-            return null ;
+            return null;
         // Registry it
-        put(uri, functionClass) ;
-        attemptedLoads.add(uri) ;
+        put(uri, functionClass);
+        attemptedLoads.add(uri);
         // Call again to get it.
-        return registry.get(uri) ;
+        return registry.get(uri);
     }
-    
+
     public boolean isRegistered(String uri) { return registry.containsKey(uri) ; }
-    
+
     /** Remove by URI */
-    public FunctionFactory remove(String uri) { return registry.remove(uri) ; } 
-    
+    public FunctionFactory remove(String uri) { return registry.remove(uri) ; }
+
     /** Iterate over URIs */
     public Iterator<String> keys() { return registry.keySet().iterator() ; }
 

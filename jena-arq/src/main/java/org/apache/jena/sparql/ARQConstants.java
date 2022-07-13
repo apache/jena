@@ -284,6 +284,10 @@ public class ARQConstants
     public static final Symbol registryDescribeHandlers =
         SystemARQ.allocSymbol("registryDescribeHandlers") ;
 
+    /** The query engine registry key */
+    public static final Symbol registryQueryEngines =
+        SystemARQ.allocSymbol("registryQueryEngines") ;
+
     /** The function library registry key */
     public static final Symbol registryFunctions =
         SystemARQ.allocSymbol("registryFunctions") ;

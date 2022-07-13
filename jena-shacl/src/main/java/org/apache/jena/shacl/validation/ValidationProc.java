@@ -28,6 +28,7 @@ import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Shape;
+import org.apache.jena.shacl.validation.event.*;
 
 public class ValidationProc {
     /* 3.4 Validation
@@ -84,10 +85,16 @@ public class ValidationProc {
     }
 
     private static ValidationReport plainValidation(ValidationContext vCxt, Shapes shapes, Graph data) {
-        shapes.getTargetShapes().forEach(shape->plainValidation(vCxt, shape, data));
-        if ( vCxt.isVerbose() )
-            out.ensureStartOfLine();
-        return vCxt.generateReport();
+        Collection<Shape> targetShapes = shapes.getTargetShapes();
+        vCxt.notifyValidationListener(() -> new TargetShapesValidationStartedEvent(vCxt, targetShapes));
+        try {
+            targetShapes.forEach(shape->plainValidation(vCxt, shape, data));
+            if (vCxt.isVerbose())
+                out.ensureStartOfLine();
+            return vCxt.generateReport();
+        } finally {
+            vCxt.notifyValidationListener(() -> new TargetShapesValidationFinishedEvent(vCxt, targetShapes));
+        }
     }
 
     private static void plainValidation(ValidationContext vCxt, Shape shape, Graph data) {
@@ -105,12 +112,18 @@ public class ValidationProc {
     }
 
     private static ValidationReport plainValidationNode(ValidationContext vCxt, Shapes shapes, Node node, Graph data) {
-        shapes.getTargetShapes().forEach(shape->
-            plainValidationNode(vCxt, data, node, shape)
+        Collection<Shape> targetShapes = shapes.getTargetShapes();
+        vCxt.notifyValidationListener(() -> new TargetShapesValidationStartedEvent(vCxt, targetShapes));
+        try {
+            targetShapes.forEach(shape ->
+                            plainValidationNode(vCxt, data, node, shape)
             );
-        if ( vCxt.isVerbose() )
-            out.ensureStartOfLine();
-        return vCxt.generateReport();
+            if (vCxt.isVerbose())
+                out.ensureStartOfLine();
+            return vCxt.generateReport();
+        } finally {
+            vCxt.notifyValidationListener(() -> new TargetShapesValidationFinishedEvent(vCxt, targetShapes));
+        }
     }
 
     private static void plainValidationNode(ValidationContext vCxt, Graph data, Node node, Shape shape) {
@@ -126,7 +139,7 @@ public class ValidationProc {
      */
     private static void plainValidationInternal(ValidationContext vCxt, Graph data, Node node, Shape shape) {
         Collection<Node> focusNodes;
-
+        vCxt.notifyValidationListener(() -> new ShapeValidationStartedEvent(vCxt, shape));
         if ( node != null ) {
             if (! VLib.isFocusNode(shape, node, data))
                 return ;
@@ -134,6 +147,7 @@ public class ValidationProc {
         } else {
             focusNodes = VLib.focusNodes(data, shape);
         }
+        vCxt.notifyValidationListener(() -> new FocusNodesDeterminedEvent(vCxt, shape, focusNodes));
 
         if ( vCxt.isVerbose() ) {
             out.println(shape.toString());
@@ -149,11 +163,17 @@ public class ValidationProc {
         if ( vCxt.isVerbose() ) {
             out.decIndent();
         }
+        vCxt.notifyValidationListener(() -> new ShapeValidationFinishedEvent(vCxt, shape));
     }
 
     // Make ValidationContext carry the ShaclValidator to recurse on.
     // Recursion for shapes of shapes. "shape-expecting constraint parameters"
     public static void execValidateShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
-        VLib.validateShape(vCxt, data, shape, focusNode);
+        vCxt.notifyValidationListener(() -> new ShapeValidationStartedEvent(vCxt, shape));
+        try {
+            VLib.validateShape(vCxt, data, shape, focusNode);
+        } finally {
+            vCxt.notifyValidationListener(() -> new ShapeValidationFinishedEvent(vCxt, shape));
+        }
     }
 }

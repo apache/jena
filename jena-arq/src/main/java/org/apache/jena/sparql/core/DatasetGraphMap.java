@@ -178,6 +178,12 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
         return g;
     }
 
+    @Override
+    public void clear() {
+        super.clear();
+        graphs.clear();
+    }
+
     /** Called from getGraph when a nonexistent graph is asked for.
      * Return null for "nothing created as a graph".
      * Sub classes can reimplement this.

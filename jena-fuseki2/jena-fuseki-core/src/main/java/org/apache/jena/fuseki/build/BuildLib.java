@@ -102,8 +102,8 @@ import org.apache.jena.vocabulary.RDFS;
         return qsm;
     }
 
-    /*package*/ static RDFNode getOne(Resource svc, String property) {
-        ResultSet rs = BuildLib.query("SELECT * { ?svc " + property + " ?x}", svc.getModel(), "svc", svc);
+    /*package*/ static RDFNode getOne(Resource svc, Property property) {
+        ResultSet rs = BuildLib.query("SELECT * { ?svc <" + property.getURI() + "> ?x}", svc.getModel(), "svc", svc);
         if ( !rs.hasNext() )
             throw new FusekiConfigException("No property '" + property + "' for service " + BuildLib.nodeLabel(svc));
         RDFNode x = rs.next().get("x");

@@ -138,7 +138,7 @@ public class FusekiCmd {
                 "Use an existing TDB database (or create if does not exist)");
             add(argMemTDB, "--memTDB",
                 "Create an in-memory, non-persistent dataset using TDB (testing only)");
-            add(argRDFS, "--rdfs=",
+            add(argRDFS, "--rdfs=FILE",
                 "Apply RDFS on top of the dataset");
             add(argPort, "--port",
                 "Listen on this port number");

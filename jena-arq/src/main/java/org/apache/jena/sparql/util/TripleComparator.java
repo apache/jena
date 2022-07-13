@@ -22,10 +22,18 @@ import java.util.Comparator ;
 
 import org.apache.jena.graph.Triple ;
 
+/**
+ * This is not sorting by value.
+ *
+ * It provides total ordering of RDF triples by pairwise comparison of subject/predicate/object.
+ *
+ * @deprecated This can be replaced by {@code (n1,n2)->NodeCmp.compareRDFTerms(n1, n2)}.
+ */
+@Deprecated
 public class TripleComparator implements Comparator<Triple>
 {
     private static final NodeComparator nc = new NodeComparator();
-    
+
 	@Override
     public int compare(Triple o1, Triple o2)
     {
@@ -38,7 +46,7 @@ public class TripleComparator implements Comparator<Triple>
                 toReturn = nc.compare(o1.getObject(), o2.getObject());
             }
         }
-        
+
         return toReturn;
     }
 }

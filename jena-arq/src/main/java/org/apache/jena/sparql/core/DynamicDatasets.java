@@ -38,7 +38,7 @@ public class DynamicDatasets
      * Given a DatasetDescription, form a Dataset that is the dynamic dataset over the
      * base dataset. Returns the original Dataset if the dataset description is null or
      * empty.
-     */ 
+     */
     public static Dataset dynamicDataset(DatasetDescription description, Dataset ds, boolean defaultUnionGraph)
     {
         DatasetGraph dsg = ds.asDatasetGraph() ;
@@ -56,16 +56,16 @@ public class DynamicDatasets
     public static DatasetGraph dynamicDataset(DatasetDescription description, DatasetGraph dsg, boolean defaultUnionGraph)
     {
         if ( description == null )
-            return dsg ;    
+            return dsg ;
     	//An empty description means leave the dataset as-is
     	if (description.isEmpty() )
     		return dsg;
-    	
-        Set<Node> defaultGraphs = convertToSetNodes(description.getDefaultGraphURIs()) ; 
+
+        Set<Node> defaultGraphs = convertToSetNodes(description.getDefaultGraphURIs()) ;
         Set<Node> namedGraphs = convertToSetNodes(description.getNamedGraphURIs()) ;
         return dynamicDataset(defaultGraphs, namedGraphs, dsg, defaultUnionGraph) ;
     }
-    
+
     /**
      * Form a {@link DatasetGraph} that is the dynamic dataset from the collections of
      * graphs from the dataset that go to make up the default graph and named graphs.
@@ -81,9 +81,9 @@ public class DynamicDatasets
                 dft = dsg.getUnionGraph();
         } else
             dft = new GraphUnionRead(dsg, defaultGraphs);
-        
+
         DatasetGraph dsg2 = new DatasetGraphMapLink(dft);
-        
+
         // The named graphs.
         for ( Node gn : namedGraphs )
         {
@@ -91,19 +91,19 @@ public class DynamicDatasets
                 // Special case - don't put an explicitly named union graph into the name
                 // graphs because union is an operation over all named graphs ... which
                 // includes itself.
-                // In practical terms, it can lead to stackoveflow in execution.  
+                // In practical terms, it can lead to stackoveflow in execution.
                 continue;
             }
             Graph g = GraphOps.getGraph(dsg, gn) ;
             if ( g != null )
                 dsg2.addGraph(gn, g) ;
         }
-        
+
         if ( dsg.getContext() != null )
             dsg2.getContext().putAll(dsg.getContext()) ;
 
         dsg2 = new DynamicDatasetGraph(dsg2, dsg);
-        
+
         // Record what we've done.
         // c.f. "ARQConstants.sysDatasetDescription" which is used to pass in a DatasetDescription
         dsg2.getContext().set(ARQConstants.symDatasetDefaultGraphs, defaultGraphs) ;
@@ -117,10 +117,6 @@ public class DynamicDatasets
         public DynamicDatasetGraph(DatasetGraph viewDSG, DatasetGraph baseDSG) {
             super(viewDSG, baseDSG.getContext().copy());
             this.projected = baseDSG;
-        }
-        
-        private DatasetGraph getProjected() {
-            return projected;
         }
     }
 }

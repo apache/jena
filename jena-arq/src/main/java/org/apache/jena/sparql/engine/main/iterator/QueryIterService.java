@@ -31,12 +31,15 @@ import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.exec.http.Service;
-import org.apache.jena.sparql.service.ServiceExecution;
-import org.apache.jena.sparql.service.ServiceExecutorFactory;
 import org.apache.jena.sparql.service.ServiceExecutorRegistry;
+import org.apache.jena.sparql.service.single.ChainingServiceExecutor;
 import org.apache.jena.sparql.util.Context;
 
-
+/**
+ * This class continues to exist for compatibility with legacy service extensions.
+ * New code should register extensions at a {@link ServiceExecutorRegistry}.
+ */
+@Deprecated(since = "4.6.0")
 public class QueryIterService extends QueryIterRepeatApply
 {
     protected OpService opService ;
@@ -59,20 +62,21 @@ public class QueryIterService extends QueryIterRepeatApply
         ExecutionContext execCxt = getExecContext();
         Context cxt = execCxt.getContext();
         ServiceExecutorRegistry registry = ServiceExecutorRegistry.get(cxt);
-        ServiceExecution svcExec = null;
+        QueryIterator svcExec = null;
         OpService substitutedOp = (OpService)QC.substitute(opService, outerBinding);
 
         try {
             // ---- Find handler
             if ( registry != null ) {
-                for ( ServiceExecutorFactory factory : registry.getFactories() ) {
+                // FIXME This needs to be updated for chainable executors
+                for ( ChainingServiceExecutor factory : registry.getSingleChain() ) {
                     // Internal consistency check
                     if ( factory == null ) {
                         Log.warn(this, "SERVICE <" + opService.getService().toString() + ">: Null item in custom ServiceExecutionRegistry");
                         continue;
                     }
 
-                    svcExec = factory.createExecutor(substitutedOp, opService, outerBinding, execCxt);
+                    svcExec = factory.createExecution(substitutedOp, opService, outerBinding, execCxt, null);
                     if ( svcExec != null )
                         break;
                 }
@@ -81,8 +85,7 @@ public class QueryIterService extends QueryIterRepeatApply
             // ---- Execute
             if ( svcExec == null )
                 throw new QueryExecException("No SERVICE handler");
-            QueryIterator qIter = svcExec.exec();
-            qIter = QueryIter.makeTracked(qIter, getExecContext());
+            QueryIterator qIter = QueryIter.makeTracked(svcExec, getExecContext());
             // Need to put the outerBinding as parent to every binding of the service call.
             // There should be no variables in common because of the OpSubstitute.substitute
             return new QueryIterCommonParent(qIter, outerBinding, getExecContext());

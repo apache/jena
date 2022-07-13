@@ -18,12 +18,6 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import static org.apache.jena.shacl.compact.writer.CompactOut.compact;
-import static org.apache.jena.shacl.lib.ShLib.displayStr;
-
-import java.util.Objects;
-import java.util.Set;
-
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
@@ -32,6 +26,12 @@ import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.path.Path;
+
+import java.util.Objects;
+import java.util.Set;
+
+import static org.apache.jena.shacl.compact.writer.CompactOut.compact;
+import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 /** sh:equals */
 public class EqualsConstraint extends ConstraintPairwise {
@@ -44,16 +44,27 @@ public class EqualsConstraint extends ConstraintPairwise {
     public void validate(ValidationContext vCxt, Shape shape, Node focusNode, Path path,
                          Set<Node> pathNodes, Set<Node> compareNodes) {
         for ( Node vn : pathNodes ) {
+            boolean passed = true;
             if ( ! compareNodes.contains(vn) ) {
                 String msg = toString()+": not equal: value node "+displayStr(vn)+" is not in "+compareNodes;
+                passed = false;
                 vCxt.reportEntry(msg, shape, focusNode, path, vn, this);
             }
+            final boolean finalPassed = passed;
+            vCxt.notifyValidationListener(() ->  makeEventSinglePathNode(vCxt, shape,  focusNode, path,
+                                vn, compareNodes, finalPassed));
+
         }
         for ( Node v : compareNodes ) {
+            boolean passed = true;
             if ( ! pathNodes.contains(v) ) {
                 String msg = toString()+": not equal: value "+displayStr(v)+" is not in "+pathNodes;
+                passed = false;
                 vCxt.reportEntry(msg, shape, focusNode, path, v, this);
             }
+            final boolean finalPassed = passed;
+            vCxt.notifyValidationListener(() -> makeEventSinglePathNode(vCxt, shape, focusNode, path,
+                            v, pathNodes, finalPassed));
         }
     }
 

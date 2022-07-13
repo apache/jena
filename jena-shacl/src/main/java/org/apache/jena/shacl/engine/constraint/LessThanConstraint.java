@@ -47,10 +47,15 @@ public class LessThanConstraint extends ConstraintPairwise {
         for ( Node vn : pathNodes ) {
             for ( Node v : compareNodes ) {
                 int r = super.compare(vn, v) ;
+                boolean passed = true;
                 if ( r != Expr.CMP_LESS ) {
+                    passed = false;
                     String msg = toString()+": value node "+displayStr(vn)+" is not less than "+displayStr(v);
                     vCxt.reportEntry(msg, shape, focusNode, path, vn, this);
                 }
+                final boolean finalPassed = passed;
+                vCxt.notifyValidationListener(() -> makeEventSingleCompareNode(vCxt, shape, focusNode,
+                                                path, vn, v, finalPassed));
             }
         }
     }
