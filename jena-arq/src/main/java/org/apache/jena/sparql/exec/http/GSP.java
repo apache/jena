@@ -142,7 +142,7 @@ public class GSP extends StoreProtocol<GSP> {
     }
 
     final protected void validateGraphOperation() {
-        Objects.requireNonNull(serviceEndpoint);
+        Objects.requireNonNull("Service Endpoint", serviceEndpoint);
         if ( ! defaultGraph && graphName == null )
             throw exception("Need either default graph or a graph name");
     }
@@ -314,49 +314,35 @@ public class GSP extends StoreProtocol<GSP> {
     }
 
     // Expose access for subclasses. "final" to ensure that this class controls constraints and expectations.
-    // Only valid when the request has correctly been setup.
+    // Only valid when the request has been correctly setup.
 
     final protected String graphName()           { return graphName; }
     final protected boolean isDefaultGraph()     { return graphName == null; }
     final protected boolean isGraphOperation()   { return defaultGraph || graphName != null; }
 
-    
-
-    
-
-    //    /**
-    //     * Delete a graph.
-    //     * <p>
-    //     * Synonym for {@link #DELETE()}.
-    //     */
-    //    public void deleteGraph() {
-    //        // Synonym
-    //        DELETE();
-    //    }
-    
-        private String graphRequestURL() {
-            return HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
-        }
+    private String graphRequestURL() {
+        return HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
+    }
 
     final protected void internalDataset() {
-            // Set as dataset request.
-            // Checking is done by validateDatasetOperation.
-            // The dataset operations have "Dataset" in the name, so less point having
-            // required dataset(). We can't use GET() because the return type
-            // would be "Graph or DatasetGraph"
-            // Reconsider if graph synonyms provided.
-            this.datasetGraph = true;
-        }
+        // Set as dataset request.
+        // Checking is done by validateDatasetOperation.
+        // The dataset operations have "Dataset" in the name, so less point having
+        // required dataset(). We can't use GET() because the return type
+        // would be "Graph or DatasetGraph"
+        // Reconsider if graph synonyms provided.
+        this.datasetGraph = true;
+    }
 
     final protected void validateDatasetOperation() {
-            Objects.requireNonNull(serviceEndpoint);
-            if ( defaultGraph )
-                throw exception("Default graph specified for dataset operation");
-            if ( graphName != null )
-                throw exception("A graph name specified for dataset operation");
-            if ( ! datasetGraph )
-                throw exception("Dataset request not specified for dataset operation");
-        }
+        Objects.requireNonNull("Service Endpoint", serviceEndpoint);
+        if ( defaultGraph )
+            throw exception("Default graph specified for dataset operation");
+        if ( graphName != null )
+            throw exception("A graph name specified for dataset operation");
+        if ( ! datasetGraph )
+            throw exception("Dataset request not specified for dataset operation");
+    }
 
     // Redirect
     /** @deprecated Use {@link DSP#GET()} */
