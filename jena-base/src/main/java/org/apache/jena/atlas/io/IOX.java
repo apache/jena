@@ -145,7 +145,6 @@ public class IOX {
         }
     }
 
-
     public static void deleteAll(String start) {
         deleteAll(Paths.get(start));
     }
@@ -155,6 +154,8 @@ public class IOX {
      * Walks down the tree and deletes directories on the way backup.
      */
     public static void deleteAll(Path start) {
+        if ( ! Files.exists(start) )
+            return;
         try {
             Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
                 @Override
