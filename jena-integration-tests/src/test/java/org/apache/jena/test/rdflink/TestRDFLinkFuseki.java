@@ -16,23 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.jena.integration;
+package org.apache.jena.test.rdflink;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.rdflink.RDFLink;
+import org.apache.jena.rdflink.RDFLinkFactory;
+import org.apache.jena.rdflink.RDFLinkFuseki;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // Done in the module
-    //    TestRDFLinkLocalTxnMem
-    //    TestRDFLinkLocalMRSW
+public class TestRDFLinkFuseki extends TestRDFLinkHTTP {
+    @Override
+    protected RDFLink link() {
+        return RDFLinkFactory.connectFuseki("http://localhost:"+PORT+"/ds");
+    }
 
-    // Addition tests added here.
-    TestRDFLinkLocalTDB.class,
-    TestRDFLinkLocalTDB2.class,
-    TestRDFLinkHTTP.class,
-    TestRDFLinkFuseki.class,
-    TestRDFLinkFusekiBinary.class
-})
+    @Override
+    protected boolean defaultToCheckQueries() { return false; }
 
-public class TS_RDFLinkIntegration {}
+    @Override
+    protected RDFLink link(boolean parseCheckSPARQL) {
+        return RDFLinkFuseki.service("http://localhost:"+PORT+"/ds").parseCheckSPARQL(parseCheckSPARQL).build();
+    }
+}
