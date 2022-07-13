@@ -27,7 +27,7 @@ import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.sparql.service.ServiceExecutorRegistry;
+import org.apache.jena.sparql.service.single.ServiceExecutorHttp;
 import org.apache.jena.sparql.sse.SSE;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -72,7 +72,7 @@ public class TestServiceExec {
 
     @Test
     public void service_exec_3() {
-        Class<?> logClass = ServiceExecutorRegistry.class;
+        Class<?> logClass = ServiceExecutorHttp.class;
         String logLevel = LogCtl.getLevel(logClass);
         try {
             LogCtl.setLevel(logClass, "ERROR");
