@@ -46,9 +46,10 @@ import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.sparql.service.ServiceExecutorRegistry;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.service.ServiceExecutorRegistry;
+import org.apache.jena.sparql.service.single.ServiceExecutorHttp;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementGroup;
@@ -185,7 +186,7 @@ public class TestService {
     }
 
     @Test public void service_query_silent_no_service() {
-        logOnlyErrors(ServiceExecutorRegistry.class, ()->{
+        logOnlyErrors(ServiceExecutorHttp.class, ()->{
             DatasetGraph dsg = env.dsg();
             String queryString = "SELECT * { SERVICE SILENT <"+SERVICE+"JUNK> { VALUES ?X { 1 2 } }} ";
             try ( RDFLink link = RDFLinkFactory.connect(localDataset()) ) {
@@ -201,7 +202,7 @@ public class TestService {
     }
 
     @Test public void service_query_silent_nosite() {
-        logOnlyErrors(ServiceExecutorRegistry.class, ()->{
+        logOnlyErrors(ServiceExecutorHttp.class, ()->{
             DatasetGraph dsg = env.dsg();
             String queryString = "SELECT * { SERVICE SILENT <http://nosuchsite/> { VALUES ?X { 1 2 } }} ";
             try ( RDFLink link = RDFLinkFactory.connect(localDataset()) ) {
