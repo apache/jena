@@ -52,8 +52,8 @@ public class TestRecovery {
     private String data;
     private String data1;
     private String data2;
-    private static String loggerLevel; 
-    
+    private static String loggerLevel;
+
     @BeforeClass public static void beforeClass() {
         loggerLevel = LogCtl.getLevel(SysDB.syslog);
         LogCtl.setLevel(SysDB.syslog, "WARNING");
@@ -61,7 +61,7 @@ public class TestRecovery {
     @AfterClass public static void afterClass() {
         LogCtl.setLevel(SysDB.syslog, loggerLevel);
     }
-    
+
     @Before public void before() {
         journal  = dir.getRoot().getAbsolutePath() + "/journal.jrnl";
         data  = dir.getRoot().getAbsolutePath() + "/blob.data";
@@ -94,7 +94,8 @@ public class TestRecovery {
             journal.close();
         }
 
-        TransactionCoordinator coord = new TransactionCoordinator(Location.create(dir.getRoot().getAbsolutePath()));
+        Location location = Location.create(dir.getRoot().getAbsolutePath());
+        TransactionCoordinator coord = TransactionCoordinator.create(location);
         BufferChannel chan = BufferChannelFile.create(data);
         TransBlob tBlob = new TransBlob(cid, chan);
         coord.add(tBlob);

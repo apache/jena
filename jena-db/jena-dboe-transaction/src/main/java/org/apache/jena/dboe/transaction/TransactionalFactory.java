@@ -32,7 +32,7 @@ public class TransactionalFactory {
 
     /** Create, and start, management of a number of {@link TransactionalComponent}s */
     public static Transactional createTransactional(Location location, TransactionalComponent ... elements) {
-        TransactionCoordinator coord = new TransactionCoordinator(location);
+        TransactionCoordinator coord = TransactionCoordinator.create(location);
         return createTransactional(coord, elements);
     }
 

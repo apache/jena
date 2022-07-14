@@ -39,7 +39,7 @@ public class ComponentGroup {
     public void addAll(Collection<TransactionalComponent> components) {
         components.forEach(this::add);
     }
-    
+
     public void add(TransactionalComponent component) {
         Objects.requireNonNull(component);
         //Log.info(this, "add("+component.getComponentId()+")");
@@ -75,5 +75,7 @@ public class ComponentGroup {
     }
 
     public int size() { return group.size(); }
+
+    public boolean isEmpty() { return group.isEmpty(); }
 }
 

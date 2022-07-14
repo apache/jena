@@ -34,6 +34,7 @@ import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.IO_DB;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
+import org.apache.jena.dboe.transaction.txn.TransactionalComponent;
 import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
@@ -165,15 +166,12 @@ public class DatabaseOps {
         }
     }
 
-
     // JVM-wide :-(
     private static Object compactionLock = new Object();
 
-
     /**
-     * @deprecated Use `compact(container, false)` instead.
+     * Equivalent to {@code compact(container, false)}.
      */
-    @Deprecated
     public static void compact(DatasetGraphSwitchable container) {
         compact(container, false);
     }
@@ -196,9 +194,8 @@ public class DatabaseOps {
             // Is this the same database location?
             if ( ! loc1.equals(loc1a) )
                 throw new TDBException("Inconsistent (not latest?) : "+loc1a+" : "+loc1);
-            // -- Checks
 
-            // Version
+            // Check version
             int v = IO_DB.extractIndex(db1.getFileName().toString(), dbPrefix, SEP);
             String next = FilenameUtils.filename(dbPrefix, SEP, v+1);
 
@@ -210,6 +207,8 @@ public class DatabaseOps {
             compact(container, loc1, loc2);
 
             if ( shouldDeleteOld ) {
+                // Compact put each of the databases into exclusive mode to do the switchover.
+                // There are no previous transactions on the old database at this point.
                 Path loc1Path = IO_DB.asPath(loc1);
                 LOG.debug("Deleting old database after successful compaction (old db path='" + loc1Path + "')...");
 
@@ -221,6 +220,16 @@ public class DatabaseOps {
                     throw IOX.exception(ex);
                 }
             }
+        }
+    }
+
+    private static void deleteDatabase(Path locationPath) {
+        try (Stream<Path> walk = Files.walk(locationPath)){
+            walk.sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        } catch (IOException ex) {
+            throw IOX.exception(ex);
         }
     }
 
@@ -252,26 +261,33 @@ public class DatabaseOps {
         TransactionalSystem txnSystem = dsgBase.getTxnSystem();
         TransactionCoordinator txnMgr = dsgBase.getTxnSystem().getTxnMgr();
 
-        // Stop update.  On exit there are no writers and none will start until switched over.
+        // -- Stop updates.  On exit there are no writers and none will start until switched over.
         txnMgr.tryBlockWriters();
         // txnMgr.begin(WRITE, false) will now bounce.
 
-        // Copy the latest generation.
+        // -- Copy the latest generation.
         DatasetGraphTDB dsgCompact = StoreConnection.connectCreate(loc2).getDatasetGraphTDB();
         CopyDSG.copy(dsgBase, dsgCompact);
 
         TransactionCoordinator txnMgr2 = dsgCompact.getTxnSystem().getTxnMgr();
-        txnMgr2.startExclusiveMode();
 
-        txnMgr.startExclusiveMode();
+        txnMgr2.execExclusive(()->{
+            List<TransactionalComponent> externals = txnMgr.listExternals();
+            if ( ! externals.isEmpty() ) {
+                txnMgr2.modifyConfigDirect(()->externals.forEach(txnMgr2::addExternal));
+            }
 
-        // No transactions on either database.
-        // Switch.
-        if ( ! container.change(dsgCurrent, dsgCompact) ) {
-            Log.warn(DatabaseOps.class, "Inconistent: old datasetgraph not as expected");
-            container.set(dsgCompact);
-        }
-        txnMgr2.finishExclusiveMode();
+            // -- Switch.
+            // No transactions on either database.
+            if ( ! container.change(dsgCurrent, dsgCompact) ) {
+                Log.warn(DatabaseOps.class, "Inconistent: old datasetgraph not as expected");
+                container.set(dsgCompact);
+            }
+
+            // This switches off the source database. Exclusive mode is not exited.
+            txnMgr.startExclusiveMode();
+        });
+
         // New database running.
 
         // Clean-up.
