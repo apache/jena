@@ -55,6 +55,10 @@ PREFIX access:  <http://jena.apache.org/access#>
     access:entry [ access:user "user3" ; access:graphs (<http://host/graphname3> <http://host/graphname4> ) ] ;
     access:entry [ access:user "user3" ; access:graphs <http://host/graphname5> ] ;
     access:entry [ access:user "userZ" ; access:graphs <http://host/graphnameZ> ] ;
+    # "accessGraphsDynamic" as only entry activates dynamic mode
+    access:entry [ access:user "userDyn"; access:graphs <urn:jena:accessGraphsDynamic> ] ;
+    # Dynamic access is NOT enabled since "accessGraphsDynamic" is not the only entry
+    access:entry [ access:user "userNoDyn"; access:graphs (<urn:jena:accessGraphsDynamic> <http://host/graphname3>) ] ;
     .
 ## Dataset 2
 ## No data access control.
@@ -73,4 +77,3 @@ PREFIX access:  <http://jena.apache.org/access#>
     tdb2:location "--mem--" ;
     tdb2:unionDefaultGraph true ;
     .
-

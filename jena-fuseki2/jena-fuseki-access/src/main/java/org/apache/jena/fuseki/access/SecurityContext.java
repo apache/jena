@@ -40,6 +40,7 @@ import org.apache.jena.sparql.util.Context;
 public interface SecurityContext {
     public static final SecurityContext NONE = new SecurityContextAllowNone();
     public static final SecurityContext ALL = new SecurityContextAllowAll();
+    public static final SecurityContext DYNAMIC = new SecurityContextDynamic();
     public static SecurityContext ALL_NG(DatasetGraph dsg) {
         Collection<Node> names = Iter.toList(dsg.listGraphNodes());
         //return new SecurityContextAllowNamedGraphs(dsg);

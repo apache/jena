@@ -31,10 +31,13 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.core.DynamicDatasets.DynamicDatasetGraph;
+import org.apache.jena.sparql.util.Symbol;
 
 /** A Query {@link ActionService} that inserts a security filter on each query. */
 final
 public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
+    // For storing original query in execution context. (Used for SecurityContextDynamic support.)
+    private static final Symbol symSecQuery = Symbol.create(VocabSecurity.getURI() + "secCxtQuery");
     private final Function<HttpAction, String> requestUser;
 
     public AccessCtl_SPARQL_QueryDataset(Function<HttpAction, String> requestUser) {
@@ -59,7 +62,7 @@ public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
             return super.decideDataset(action, query, queryStringLog);
 
         DatasetDescription dsDesc0 = SPARQLProtocol.getDatasetDescription(action, query);
-        SecurityContext sCxt = DataAccessLib.getSecurityContext(action, dsg, requestUser);
+        SecurityContext sCxt = getSecurityContext(action, dsg, requestUser);
         DatasetGraph dsg2 = dynamicDataset(action, query, dsg, dsDesc0, sCxt);
         return Pair.create(dsg2,  query);
     }
@@ -104,6 +107,23 @@ public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
             .collect(toList());
     }
 
+    // Q: This is called before both decideDataset() and createQueryExecution(). Calculating the query-specific set
+    // of visible graphs twice seems wrong. What would be a good alternative?
+    @Override
+    protected void execute(String queryString, HttpAction action) {
+        action.getContext().set(symSecQuery, queryString);
+        super.execute(queryString, action);
+    }
+
+    private SecurityContext getSecurityContext(HttpAction action, DatasetGraph dsg, Function<HttpAction, String> requestUser) {
+        SecurityContext sCxt = DataAccessLib.getSecurityContext(action, dsg, requestUser);
+        if ( sCxt instanceof SecurityContextDynamic ) {
+            String queryString = action.getContext().getAsString(symSecQuery);
+            return SecurityContextDynamic.forQuery(queryString);
+        }
+        return sCxt;
+    }
+
     @Override
     protected QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph target) {
         if ( ! ALLOW_FROM ) {
@@ -120,7 +140,7 @@ public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
         if ( ! DataAccessCtl.isAccessControlled(dsg) )
             return super.createQueryExecution(action, query, target);
 
-        SecurityContext sCxt = DataAccessLib.getSecurityContext(action, dsg, requestUser);
+        SecurityContext sCxt = getSecurityContext(action, dsg, requestUser);
         // A QueryExecution for controlled access
         QueryExecution qExec = sCxt.createQueryExecution(query, target);
         return qExec;

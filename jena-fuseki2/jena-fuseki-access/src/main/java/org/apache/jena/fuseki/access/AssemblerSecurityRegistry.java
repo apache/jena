@@ -83,8 +83,13 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
         });
 
         map.keySet().forEach(u->{
-            SecurityContext sCxt = new SecurityContextView(map.get(u));
-            registry.put(u, sCxt);
+            Collection<Node> visibleGraphs = map.get(u);
+            // Dynamic mode is only activated if the marker is the only entry for this user
+            if ( visibleGraphs.size() == 1 && visibleGraphs.contains(SecurityContextDynamic.dynamicAccess)) {
+                registry.put(u, SecurityContext.DYNAMIC);
+            } else {
+                registry.put(u, new SecurityContextView(visibleGraphs));
+            }
         });
 
         return registry;

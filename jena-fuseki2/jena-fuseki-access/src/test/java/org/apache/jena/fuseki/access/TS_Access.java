@@ -27,6 +27,7 @@ import org.junit.runners.Suite;
     // These integration test are in jena-fuseki-main:org.apache.jena.fuseki.main.access
     TestSecurityFilterLocal.class
     , TestSecurityRegistry.class
+    , TestSecurityContextDynamic.class
 })
 
 public class TS_Access {

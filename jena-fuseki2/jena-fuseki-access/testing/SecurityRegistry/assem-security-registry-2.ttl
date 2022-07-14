@@ -23,12 +23,16 @@ PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
 PREFIX access:  <http://jena.apache.org/access#>
 
 <#securityRegistry> rdf:type access:SecurityRegistry ;
-    ## user1, all named graphs                     
+    ## user1, all named graphs
     access:entry ("user1" "*") ;
     ## user2, all graphs
     access:entry ("user2" "**") ;
     ## user3, all graphs, as named + dft.
     access:entry ("user3" "*" <urn:x-arq:DefaultGraph>) ;
+    ## user4, dynamic mode marker
+    access:entry ("user4" <urn:jena:accessGraphsDynamic>) ;
+    ## user5, dynamic mode marker, but other graphs also specified => no dynamic mode
+    access:entry ("user5" <urn:jena:accessGraphsDynamic> <http://host/graphname2>) ;
     ## any user
     access:entry ("*" <http://host/graphname1> ) ;
     .

@@ -205,6 +205,51 @@ public abstract class AbstractTestFusekiSecurityAssembler {
         }
     }
 
+    @Test public void query_userDyn_without_pragma_has_no_visibilty() {
+        user.set("userDyn"); // No visibility without pragma
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
+            Set<Node> visible = query(conn, "SELECT * { GRAPH ?g { ?s ?p ?o }}");
+            assertSeen(visible);
+        }
+    }
+
+    /** {@link TestSecurityFilterFuseki#query_dynamic_user_honours_graph_list} already tests multiple combinations
+     * of visible graphs. Hence here we check only a single combination
+     */
+    @Test public void query_userDyn_honours_pragma() {
+        user.set("userDyn");
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
+            Set<Node> visible = query(
+                conn,
+                "#pragma acl.graphs http://host/graphname1|http://host/graphname9\n" +
+                "SELECT * { GRAPH ?g { ?s ?p ?o }}"
+            );
+            assertSeen(visible, s1, s9);
+        }
+    }
+
+    // Dynamic mode not active because "accessGraphsDynamic" is not the only graph entry
+    @Test public void query_userNoDyn() {
+        user.set("userNoDyn"); // Dynamic mode not active because "accessGraphsDynamic" is not the only graph entry
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
+            Set<Node> visible = query(conn, "SELECT * { GRAPH ?g { ?s ?p ?o }}");
+            assertSeen(visible, s3);
+        }
+    }
+
+    @Test public void query_userNoDyn_ignores_pragma() {
+        user.set("userNoDyn");
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
+            Set<Node> visible = query(
+                conn,
+                "#pragma acl.graphs http://host/graphname1|http://host/graphname3|http://host/graphname9\n" +
+                "SELECT * { GRAPH ?g { ?s ?p ?o }}"
+            );
+            // expecting same visibility as without pragma (see query_userNoDyn)
+            assertSeen(visible, s3);
+        }
+    }
+
     // GSP. "http://host/graphname1"
     @Test public void gsp_dft_user1() {
         user.set("user1");
@@ -258,6 +303,44 @@ public abstract class AbstractTestFusekiSecurityAssembler {
     }
 
     @Test public void gsp_ng_user_null() {
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
+            gsp404(conn, "http://host/graphname1");
+        }
+    }
+
+    // Dynamic mode does not apply to GSP
+    @Test public void gsp_dft_userDyn() {
+        user.set("userDyn");
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
+            gsp404(conn, null);
+        }
+    }
+
+    @Test public void gsp_ng_userDyn() {
+        user.set("userDyn");
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
+            gsp404(conn, "http://host/graphname1");
+        }
+    }
+
+    // Since userNoDyn does not count as dynamic, its graph list behaves the same as for other static-configuration users
+    @Test public void gsp_dft_userNoDyn() {
+        user.set("userNoDyn");
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
+            gsp404(conn, null);
+        }
+    }
+
+    @Test public void gsp_ng_userNoDyn_visible() {
+        user.set("userNoDyn");
+        try(RDFConnection conn = RDFConnection.connect(getURL())) {
+            Set<Node> visible = gsp(conn, "http://host/graphname3");
+            assertSeen(visible, s3);
+        }
+    }
+
+    @Test public void gsp_ng_userNoDyn_invisible() {
+        user.set("userNoDyn");
         try(RDFConnection conn = RDFConnection.connect(getURL())) {
             gsp404(conn, "http://host/graphname1");
         }

@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.SetUtils;
@@ -30,6 +31,7 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.access.DataAccessCtl;
 import org.apache.jena.fuseki.access.SecurityContext;
 import org.apache.jena.fuseki.access.SecurityContextView;
+import org.apache.jena.fuseki.access.SecurityContextDynamic;
 import org.apache.jena.fuseki.access.SecurityRegistry;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -82,6 +84,7 @@ public class TestSecurityFilterFuseki {
         SecurityRegistry reg = new SecurityRegistry();
         reg.put("userNone", SecurityContext.NONE);
         reg.put("userDft", SecurityContextView.DFT_GRAPH);
+        reg.put("userDyn", SecurityContext.DYNAMIC);
         reg.put("user0", new SecurityContextView(Quad.defaultGraphIRI.getURI()));
         reg.put("user1", new SecurityContextView("http://test/g1", Quad.defaultGraphIRI.getURI()));
         reg.put("user2", new SecurityContextView("http://test/g1", "http://test/g2", "http://test/g3"));
@@ -117,6 +120,7 @@ public class TestSecurityFilterFuseki {
         String[] roles = new String[]{"**"};
         addUserPassword(userStore, "userNone", "pwNone", roles);
         addUserPassword(userStore, "userDft",  "pwDft",  roles);
+        addUserPassword(userStore, "userDyn",  "pwDyn",  roles);
         addUserPassword(userStore, "user0",    "pw0",    roles);
         addUserPassword(userStore, "user1",    "pw1",    roles);
         addUserPassword(userStore, "user2",    "pw2",    roles);
@@ -183,6 +187,11 @@ public class TestSecurityFilterFuseki {
         assertSeen(results);
     }
 
+    @Test public void query_userDyn() {
+        Set<Node> results = query("userDyn", "pwDyn", queryAll);
+        assertSeen(results);
+    }
+
     @Test public void query_user0() {
         Set<Node> results = query("user0", "pw0", queryAll);
         assertSeen(results, s0);
@@ -230,6 +239,42 @@ public class TestSecurityFilterFuseki {
         assertSeen(results);
         Set<Node> results2 = query("user3", "pw3", "SELECT * { GRAPH <http://test/g1> { ?s ?p ?o } }");
         assertEquals(results, results2);
+    }
+
+    @Test public void query_dynamic_user_honours_graph_list() {
+        class Params {
+            Node[] graphs;
+            Node[] visibleNodes;
+
+            Params(Node[] graphs, Node ...visibleNodes) {
+                this.graphs = graphs;
+                this.visibleNodes = visibleNodes;
+            }
+        }
+
+        for ( Params p : new Params[]{
+            new Params(new Node[]{}),
+            new Params(new Node[]{g1}, s1),
+            new Params(new Node[]{g2}, s2),
+            new Params(new Node[]{g1, g2}, s1, s2),
+            new Params(new Node[]{g2, g3, g4}, s2, s3, s4),
+            new Params(new Node[]{Quad.defaultGraphIRI, g4}, s0, s4),
+        } ) {
+            String query = "#pragma acl.graphs " + String.join(
+                SecurityContextDynamic.GRAPH_PRAGMA_DELIMITER,
+                Arrays.stream(p.graphs)
+                    .map(e -> e.getURI())
+                    .collect(Collectors.toList())
+            ) + "\n" + queryAll;
+
+            Set<Node> results = query("userDyn", "pwDyn", query);
+            assertSeen(results, p.visibleNodes);
+        }
+    }
+
+    @Test public void query_dynamic_user_has_no_access_without_list() {
+        Set<Node> results = query("userDyn", "pwDyn", queryAll);
+        assertSeen(results);
     }
 
     private Set<Node> gsp(String user, String password, String graphName) {
@@ -317,6 +362,16 @@ public class TestSecurityFilterFuseki {
         gsp404("user2", "pw2", "http://test/g1");
     }
 
+    // Dynamic mode grants no access with GSP
+    @Test public void gsp_dynamic_user_dft() {
+        Set<Node> results = gsp("userDyn", "pwDyn", null);
+        assertSeen(results);
+    }
+
+    @Test public void gsp_dynamic_user_named() {
+        gsp404("userDyn", "pwDyn", "http://test/g1");
+    }
+
     // No such graph.
     @Test public void gsp_graphX_userDft() {
         gsp404("userDft", "pwDft", "http://test/gX");
@@ -336,6 +391,10 @@ public class TestSecurityFilterFuseki {
 
     @Test public void gsp_graphX_user2() {
         gsp404("user2", "pw2", "http://test/gX");
+    }
+
+    @Test public void gsp_graphX_dynamic() {
+        gsp404("userDyn", "pwDyn", "http://test/gX");
     }
 
     @Test public void gsp_bad_user() {
