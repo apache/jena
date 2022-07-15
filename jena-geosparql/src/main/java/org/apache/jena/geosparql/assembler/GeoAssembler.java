@@ -117,6 +117,11 @@ public class GeoAssembler extends DatasetAssembler {
         if (root.hasProperty(pSpatialIndexFile) )
             spatialIndexFilename = GraphUtils.getStringValue(root, pSpatialIndexFile);
 
+        // Spatial Index enabled.
+        boolean spatialIndexEnabled = true;
+        if (root.hasProperty(pSpatialIndexEnabled) )
+        spatialIndexEnabled = getBooleanValue(root, pSpatialIndexEnabled);
+
         // ---- Build
 
         Dataset dataset = DatasetFactory.wrap(base);
@@ -148,7 +153,7 @@ public class GeoAssembler extends DatasetAssembler {
             GeoSPARQLConfig.setupNoIndex(queryRewrite);
         }
 
-        prepareSpatialExtension(dataset, spatialIndexFilename);
+        prepareSpatialExtension(dataset, spatialIndexEnabled, spatialIndexFilename);
         return base;
     }
 
@@ -165,13 +170,13 @@ public class GeoAssembler extends DatasetAssembler {
         return integerList;
     }
 
-    private static void prepareSpatialExtension(Dataset dataset, String spatialIndex){
+    private static void prepareSpatialExtension(Dataset dataset, boolean spatialIndexEnabled, String spatialIndex){
         boolean isEmpty = dataset.calculate(()->dataset.isEmpty());
-        if ( isEmpty && spatialIndex != null ) {
+        if ( isEmpty && spatialIndexEnabled && spatialIndex != null ) {
             LOG.warn("Dataset empty. Spatial Index not constructed. Server will require restarting after adding data and any updates to build Spatial Index.");
             return;
         }
-        if ( isEmpty )
+        if ( isEmpty || !spatialIndexEnabled )
             // Nothing to do.
             return;
 
