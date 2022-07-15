@@ -56,14 +56,17 @@ import org.apache.jena.fuseki.system.spot.TDBOps;
 
     private static void setupTDB1(String directory, FusekiArgs cmdLineConfig) {
         cmdLineConfig.params.put(Template.DIR, directory);
-        cmdLineConfig.templateFile = Template.templateTDB1_DirFN;
+        cmdLineConfig.templateFile = cmdLineConfig.allowUpdate
+                ? Template.templateTDB1_DirFN
+                : Template.templateTDB1_DirReadFN;
         cmdLineConfig.datasetDescription = "TDB1 dataset: location="+directory;
     }
 
     private static void setupTDB2(String directory, FusekiArgs cmdLineConfig) {
         cmdLineConfig.params.put(Template.DIR, directory);
-        cmdLineConfig.templateFile = Template.templateTDB2_DirFN;
+        cmdLineConfig.templateFile = cmdLineConfig.allowUpdate
+                ? Template.templateTDB2_DirFN
+                : Template.templateTDB2_DirReadFN;
         cmdLineConfig.datasetDescription = "TDB2 dataset: location="+directory;
     }
-
 }
