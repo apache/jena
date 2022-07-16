@@ -1966,9 +1966,9 @@ Expr BuiltInCall() : { Expr expr ;
 
   | <BNODE> 
     ( <LPAREN> expr1 = Expression() <RPAREN>
-      { return new E_BNode(expr1) ; }
+      { return makeFunction_BNode(expr1) ; }
     |
-      <NIL> { return new E_BNode() ; }
+      <NIL> { return makeFunction_BNode() ; }
     )
 
   | <RAND> <NIL> { return new E_Random() ; }
