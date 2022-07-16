@@ -37,15 +37,16 @@ public class Template
     public static final String templateTDB1_FN        = templateDir+"/config-tdb";
     public static final String templateTDB1_MemFN     = templateDir+"/config-tdb-mem";
     public static final String templateTDB1_DirFN     = templateDir+"/config-tdb-dir";
-    public static final String templateTDB1_DirReadFN = templateDir+"/config-tdb-dir-read-only";
+    public static final String templateTDB1_DirReadFN = templateDir+"/config-tdb-dir-readonly";
 
     public static final String templateTDB2_FN        = templateDir+"/config-tdb2";
     public static final String templateTDB2_MemFN     = templateDir+"/config-tdb2-mem";
     public static final String templateTDB2_DirFN     = templateDir+"/config-tdb2-dir";
-    public static final String templateTDB2_DirReadFN = templateDir+"/config-tdb2-dir-read-only";
+    public static final String templateTDB2_DirReadFN = templateDir+"/config-tdb2-dir-readonly";
 
 
     public static final String templateTIM_MemFN      = templateDir+"/config-mem";
+    public static final String templateTIM_MemReadFN  = templateDir+"/config-mem-readonly";
 
     // Template may be in a resources area of a jar file so you can't do a directory listing.
     public static final String[] templateNames = {
@@ -54,12 +55,12 @@ public class Template
         templateTDB1_FN ,
         templateTDB1_MemFN ,
         templateTDB1_DirFN ,
-        //templateTDB1_DirReadFN,
+        templateTDB1_DirReadFN,
 
         templateTDB2_FN ,
         templateTDB2_MemFN ,
         templateTDB2_DirFN ,
-        //templateTDB2_DirReadFN
+        templateTDB2_DirReadFN
     };
 
     public static final String NAME = "NAME";
