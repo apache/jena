@@ -36,7 +36,7 @@ public class TestThreadingTransactions {
     private TransactionalInteger transInt;
 
     @Before public void init() {
-        TransactionCoordinator coord = new TransactionCoordinator(Location.mem());
+        TransactionCoordinator coord = TransactionCoordinator.create(Location.mem());
         transInt = new TransactionalInteger(coord, InitValue);
         coord.start();
     }

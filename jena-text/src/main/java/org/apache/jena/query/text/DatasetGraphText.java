@@ -47,8 +47,6 @@ public class DatasetGraphText extends DatasetGraphTextMonitor implements Transac
     // when the underlying datsetGraph does not coordinate the commit.
     private final Object        txnExitLock = new Object();
 
-    private TransactionCoordinator tdb2TransactionCoordinator = null;
-
     // If we are going to implement Transactional, then we are going to have to do as DatasetGraphWithLock and
     // TDB's DatasetGraphTransaction do and track transaction state in a ThreadLocal
     private final ThreadLocal<ReadWrite> readWriteMode = new ThreadLocal<>();
@@ -95,8 +93,10 @@ public class DatasetGraphText extends DatasetGraphTextMonitor implements Transac
             abortAction = delegateAbort;
         } else if ( org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) ) {
             // This moves!
-            tdb2TransactionCoordinator = org.apache.jena.tdb2.sys.TDBInternal.getTransactionCoordinator(dsg);
-            tdb2Setup(tdb2TransactionCoordinator);
+            TransactionCoordinator coord = org.apache.jena.tdb2.sys.TDBInternal.getTransactionCoordinator(dsg);
+            byte[] componentID = { 2, 4, 6, 10 };
+            TransactionalComponent tc = new TextIndexDB(ComponentId.create(null, componentID), textIndex);
+            coord.modifyConfig(()->coord.addExternal(tc));
             commitAction = delegateCommit;
             abortAction = delegateAbort;
         } else {
@@ -166,31 +166,9 @@ public class DatasetGraphText extends DatasetGraphTextMonitor implements Transac
 
     @Override
     public void begin(ReadWrite readWrite) {
-        tdb2ResetCheck();
         readWriteMode.set(readWrite);
         super.begin(readWrite) ;
         super.getMonitor().start() ;
-    }
-
-    // if a TDB2 compaction happened, the coordinator is a new object.
-    private void tdb2ResetCheck() {
-        if ( tdb2TransactionCoordinator != null ) {
-            TransactionCoordinator currentCoord = org.apache.jena.tdb2.sys.TDBInternal.getTransactionCoordinator(super.get());
-            if ( tdb2TransactionCoordinator != currentCoord ) {
-                tdb2Setup(currentCoord);
-                tdb2TransactionCoordinator = currentCoord;
-            }
-        }
-    }
-
-    private void tdb2Setup(TransactionCoordinator coord) {
-        // Does not overlap with the ids used by TDB2.
-        byte[] componentID = { 2,4,6,10 } ;
-        TransactionalComponent tc = new TextIndexDB(ComponentId.create(null, componentID), textIndex);
-        coord.modifyConfig(()->coord.add(tc));
-        commitAction = delegateCommit;
-        abortAction = delegateAbort;
-
     }
 
     @Override
@@ -199,7 +177,6 @@ public class DatasetGraphText extends DatasetGraphTextMonitor implements Transac
         commitAction.run();
         readWriteMode.set(null);
     }
-
 
     /**
      * Rollback all changes, discarding any exceptions that occur.

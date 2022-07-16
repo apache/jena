@@ -225,15 +225,6 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
         if ( trackTxn != null )
             trackTxn.remove();
         componentState.remove();
-
-//        java version "1.8.0_31"
-//        Java(TM) SE Runtime Environment (build 1.8.0_31-b13)
-//        Java HotSpot(TM) 64-Bit Server VM (build 25.31-b07, mixed mode)
-//
-//        openjdk version "1.8.0_40-internal"
-//        OpenJDK Runtime Environment (build 1.8.0_40-internal-b09)
-//        OpenJDK 64-Bit Server VM (build 25.40-b13, mixed mode)
-
         // This one is very important else the memory usage grows.  Not clear why.
         // A Transaction has an internal AtomicReference.  Replacing the AtomicReference
         // with a plain member variable slows the growth down greatly.
@@ -253,7 +244,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
 
     protected Transaction getTransaction()          { return threadTxn.get(); }
     protected void setTransaction(Transaction txn)  { threadTxn.set(txn); }
-    
+
     private void setTrackTxn(TxnState newState) {
         if ( ! CHECKING ) return;
         trackTxn.set(newState);
@@ -289,12 +280,12 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
      * _complete
      *
      * Promote:
-     * 
+     *
      * _promote
-     * 
+     *
      * and the ReadWrite mode becomes "WRITE".
      * The transaction system manages whether the "promote " is legal,
-     * components do not have to check.  
+     * components do not have to check.
      *
      * Write lifecycle:
      * A write transaction must have a commit() or abort() before end().
@@ -359,7 +350,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
             throw new TransactionException("Not in a transaction");
     }
 
-    protected void requireTxn() { 
+    protected void requireTxn() {
         Transaction txn = getTransaction();
         if ( txn == null )
             throw new TransactionException("Not in a transaction");
@@ -372,7 +363,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
         txn.requireWriteTxn();
     }
 
-    // Better done 
+    // Better done
 //    protected void ensureWriteTxn() {
 //        Transaction txn = getTransaction();
 //        if ( txn == null )

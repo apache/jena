@@ -52,25 +52,26 @@ public class DatabaseMgr {
     }
 
     /**
-     * Compact a datasets which must be a switchable TDB database.
+     * Compact a dataset which must be a switchable TDB database.
      * This is the normal dataset type for on-disk TDB2 databases.
-     *
-     * Deletes old database after successful compaction if `shouldDeleteOld` is `true`.
+     * <p>
+     * Deletes old database after successful compaction if {@code shouldDeleteOld} is {@code true}.
+     * <p>
+     * This is equivalent to a call of {@code compact(container, false)} (do not delete old database).
      *
      * @param container
      *
-     * @deprecated Use `compact(container, false)` instead.
+     * This {@code compact(container, false)} instead.
      */
-    @Deprecated
     public static void compact(DatasetGraph container) {
         compact(container, false);
     }
 
     /**
-     * Compact a datasets which must be a switchable TDB database.
+     * Compact a dataset which must be a switchable TDB database.
      * This is the normal dataset type for on-disk TDB2 databases.
      *
-     * Deletes old database after successful compaction if `shouldDeleteOld` is `true`.
+     * Deletes old database after successful compaction if {@code shouldDeleteOld} is {@code true}.
      *
      * @param container
      * @param shouldDeleteOld

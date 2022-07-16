@@ -76,6 +76,8 @@ public class TransactionCoordinator {
     private boolean configurable = true;
 
     private final ComponentGroup components = new ComponentGroup();
+    private final ComponentGroup persistentComponents = new ComponentGroup();
+
     private final List<TransactionListener> listeners = new ArrayList<>();
 
     // Components
@@ -118,8 +120,8 @@ public class TransactionCoordinator {
     public interface ShutdownHook { void shutdown(); }
 
     /** Create a TransactionCoordinator, initially with no associated {@link TransactionalComponent}s */
-    public TransactionCoordinator(Location location) {
-        this(Journal.create(location));
+    public static TransactionCoordinator create(Location location) {
+        return new TransactionCoordinator(Journal.create(location));
     }
 
     /** Create a TransactionCoordinator, initially with no associated {@link TransactionalComponent TransactionalComponents}. */
@@ -140,7 +142,7 @@ public class TransactionCoordinator {
     }
 
     /** Add a {@link TransactionalComponent}.
-     * Safe to call at any time but it is good practice is to add all the
+     * Safe to call at any time (via {@link #modifyConfig}) but it is good practice is to add all the
      * components before any transactions start.
      * Internally, the coordinator ensures the add will safely happen but it
      * does not add the component to existing transactions.
@@ -160,6 +162,42 @@ public class TransactionCoordinator {
         checkAllowModification();
         components.remove(elt.getComponentId());
         return this;
+    }
+
+    /**
+     * Add a {@link TransactionalComponent} for an external sub-system (e.g.jena-text).
+     * The component will be transfered to any TransactionCoordinator created when switching
+     * (for example, by compaction).
+     * Use with {@link #modifyConfig}.
+     */
+    public TransactionCoordinator addExternal(TransactionalComponent elt) {
+        checkAllowModification();
+        persistentComponents.add(elt);
+        components.add(elt);
+        return this;
+    }
+
+    /**
+     * Remove an external {@link TransactionalComponent} registered via {@link #addExternal}.
+     */
+    public TransactionCoordinator removeExternal(TransactionalComponent elt) {
+        checkAllowModification();
+        ComponentId id = elt.getComponentId();
+        if ( persistentComponents.findComponent(id) == null )
+            return this;
+        persistentComponents.remove(id);
+        components.remove(id);
+        return this;
+    }
+
+    /**
+     * Return a list of external {@link TransactionalComponent}, registered via {@link #addExternal}.
+     * Changing this list has no effect on the TrasnactionCooridnator.
+     */
+    public List<TransactionalComponent> listExternals() {
+        List<TransactionalComponent> externals = new ArrayList<>();
+        persistentComponents.forEachComponent(externals::add);
+        return externals;
     }
 
     public TransactionCoordinator addListener(TransactionListener listener) {
@@ -187,13 +225,25 @@ public class TransactionCoordinator {
      * Use with care!
      */
     public void modifyConfig(Runnable action) {
+        execExclusive(()->modifyConfigDirect(action));
+    }
+
+    /**
+     * Perform modification of this {@code TransactionCoordiator}.
+     * <p>
+     * The caller must use exclusive mode (e.g. {@code #execExclusive(Runnable)}).
+     * <p>
+     * Do not call inside a transaction, it may cause a deadlock.
+     * <p>
+     * Use with care!
+     */
+    public void modifyConfigDirect(Runnable action) {
+        boolean currentSetting = configurable;
         try {
-            startExclusiveMode();
             configurable = true;
             action.run();
         } finally {
-            configurable = false;
-            finishExclusiveMode();
+            configurable = currentSetting;
         }
     }
 
@@ -580,7 +630,7 @@ public class TransactionCoordinator {
         }
     }
 
-    // Detemine ReadWrite for the transaction start from initial TxnType.
+    // Determine ReadWrite for the transaction start from initial TxnType.
     private static ReadWrite initialMode(TxnType txnType) {
         return TxnType.initial(txnType);
     }

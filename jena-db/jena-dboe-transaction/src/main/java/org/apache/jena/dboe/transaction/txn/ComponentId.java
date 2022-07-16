@@ -120,5 +120,11 @@ public class ComponentId {
         return alloc("Local-"+counter, uuid, counter);
     }
 
+    public static ComponentId allocLocal(int id) {
+        counter++;
+        UUID uuid = UUID.randomUUID();
+        byte[] bytes = Bytes.intToBytes(id);
+        return new ComponentId("Local-"+counter, uuid, bytes);
+    }
 }
 

@@ -46,7 +46,7 @@ public class TestTransactionCoordinatorControl {
     protected Transactional unit;
 
     @Before public void init() {
-        txnMgr = new TransactionCoordinator(Location.mem());
+        txnMgr = TransactionCoordinator.create(Location.mem());
         unit = new TransactionalBase(txnMgr);
         txnMgr.start();
     }

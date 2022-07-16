@@ -21,14 +21,14 @@ package org.apache.jena.query.text;
 import java.nio.ByteBuffer;
 
 import org.apache.jena.dboe.transaction.txn.ComponentId;
-import org.apache.jena.dboe.transaction.txn.TransactionalComponentBase;
+import org.apache.jena.dboe.transaction.txn.TransactionalComponentExternal;
 import org.apache.jena.dboe.transaction.txn.TxnId;
 import org.apache.jena.query.ReadWrite;
 
 /**
  * Adapter to put Lucene into DBOE transactions.
  */
-public class TextIndexDB extends TransactionalComponentBase<TextIndexDB.TextState> {
+public class TextIndexDB extends TransactionalComponentExternal<TextIndexDB.TextState> {
 
     private final TextIndex textIndex;
 
