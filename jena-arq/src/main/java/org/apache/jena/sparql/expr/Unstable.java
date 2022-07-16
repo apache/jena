@@ -18,25 +18,16 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
-
-public class E_StrUUID extends ExprFunction0 implements Unstable
-{
-    static private String fName = Tags.tagStrUUID;
-
-    public E_StrUUID() {
-        super(fName);
-    }
-
-    @Override
-    public Expr copy() {
-        return new E_StrUUID();
-    }
-
-    @Override
-    public NodeValue eval(FunctionEnv env) {
-        return NodeFunctions.struuid();
-    }
-}
+/**
+ * Marker interface for a function that is "unstable".
+ * That is, it isn't really a function.
+ * <p>
+ * A function returns the same result value when called with the same arguments.
+ * Some "functions" do not obey this condition on functions; they look like functions but aren't.
+ * RAND, BNODE, UUID, STRUUID
+ * <p>
+ * There are also "functional forms" that have special evaluation rule. These return the same value when given the same arguments.
+ * These are "stable".
+ * <a href="https://www.w3.org/TR/sparql11-query/#func-forms"></a>
+ */
+public interface Unstable {}
