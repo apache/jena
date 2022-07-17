@@ -1,0 +1,69 @@
+PREFIX : <https://data.coypu.org/>
+PREFIX fuseki:    <http://jena.apache.org/fuseki#>
+PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:      <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tdb1:      <http://jena.hpl.hp.com/2008/tdb#>
+PREFIX tdb2:      <http://jena.apache.org/2016/tdb#>
+PREFIX text:  <http://jena.apache.org/text#>
+PREFIX ja:        <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX geosparql: <http://jena.apache.org/geosparql#>
+PREFIX ex:        <http://www.example.org/resources#>
+
+# Text and Geo service 
+<#serviceTest> rdf:type fuseki:Service;
+    fuseki:name "ds";
+    fuseki:endpoint [ fuseki:operation fuseki:query ; ] ;
+    fuseki:dataset <#testTextDS> .
+
+# Text DS
+<#testTextDS> rdf:type text:TextDataset ;
+    text:dataset   <#testGeoDS> ;
+    text:index     <#testIndexLucene> ;
+    .
+
+# Text index description
+<#testIndexLucene> rdf:type text:TextIndexLucene ;
+    text:directory "mem" ;
+    text:entityMap <#testEntMap> ;
+    text:storeValues true ; 
+    text:analyzer [ a text:StandardAnalyzer ] ;
+    text:queryParser text:AnalyzingQueryParser ;
+    text:multilingualSupport true ; # optional
+    .
+
+<#testEntMap> rdf:type text:EntityMap ;
+    text:defaultField     "label" ;
+    text:entityField      "uri" ;
+    text:uidField         "uid" ;
+    text:langField        "lang" ;
+    text:graphField       "graph" ;
+    text:map (
+        [ text:field "label" ; 
+          text:predicate rdfs:label ]      
+    ) ;
+    .
+
+<#testGeoDS> rdf:type geosparql:geosparqlDataset ;
+    ## If absent build an in-memory index each time.
+    ## geosparql:spatialIndexFile     "target/tdb2/test/spatial.index";
+
+    ## Default settings. See documentation for meanings.
+    geosparql:inference            false ;
+    geosparql:queryRewrite         true ;
+    geosparql:indexEnabled         true ;
+    geosparql:applyDefaultGeometry false ;
+
+    # 3 item lists: [Geometry Literal, Geometry Transform, Query Rewrite]
+    geosparql:indexSizes           "-1,-1,-1" ;       # Default - unlimited.
+    geosparql:indexExpires         "5000,5000,5000" ; # Default - time in milliseconds.
+
+    ## Required - data over which GeoSPARQL is applied.
+    geosparql:dataset <#testDS> ;
+    .
+
+
+# TDB2 dataset
+<#testDS> rdf:type tdb2:DatasetTDB2 ;
+    tdb2:location "target/tdb2/test" ;
+    .
+
