@@ -20,8 +20,11 @@ package org.apache.jena.geosparql;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 
 import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.base.Sys;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.geosparql.assembler.VocabGeoSPARQL;
 import org.apache.jena.query.Dataset;
@@ -57,7 +60,6 @@ public class TestGeoAssembler {
         ds.executeWrite(()->{
             RDFDataMgr.read(ds, DIR+"geosparql_test.rdf");
         });
-
     }
 
     @Test public void geoAssemblerTest() {
@@ -66,18 +68,29 @@ public class TestGeoAssembler {
     }
 
     @Test public void testBasicFusekiGeoAssembler() {
-        test("geo-config.ttl", "ds1");
+        testBuildDataQuery("geo-config.ttl", "ds1");
     }
 
     @Test public void testExampleFusekiGeoAssembler() {
-        test("geo-config-ex.ttl", "ds2");
+        testBuildDataQuery("geo-config-ex.ttl", "ds2");
     }
 
     @Test public void testMemFusekiGeoAssembler() {
-        test("geo-config-mem.ttl", "ds3");
+        testBuildDataQuery("geo-config-mem.ttl", "ds3");
     }
 
-    private void test(String filename, String dbName) {
+    @Test public void testFusekiTextGeoTDB2() {
+        assumeFalse(Sys.isWindows);
+        testBuildPing("fuseki-text-geo-tdb2.ttl", "ds");
+    }
+
+    @Test public void testFusekiGeoTextTDB2() {
+        assumeFalse(Sys.isWindows);
+        testBuildPing("fuseki-geo-text-tdb2.ttl", "ds");
+    }
+
+    // Test for the configurations with data loaded in the assembler
+    private void testBuildDataQuery(String filename, String dbName) {
         FusekiServer server = FusekiServer.create().port(0)
             .parseConfigFile("file:"+DIR+filename)
             .build();
@@ -99,6 +112,22 @@ public class TestGeoAssembler {
                 RowSet rs = QueryExec.service(URL).query(queryStr).select();
                 long x = RowSetOps.count(rs);
                 assertEquals(8, x);
+        } finally {
+            server.stop();
+        }
+    }
+
+    // Test for valid configurations.
+    private void testBuildPing(String config, String dbName) {
+        FusekiServer server = FusekiServer.create().port(0)
+                .parseConfigFile("file:"+DIR+config)
+                .build();
+        try {
+            server.start();
+            int port = server.getPort();
+            String URL = "http://localhost:"+port+"/"+dbName;
+            boolean ask = QueryExec.service(URL).query("ASK{}").ask();
+            assertTrue(ask);
         } finally {
             server.stop();
         }
