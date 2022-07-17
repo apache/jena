@@ -203,17 +203,15 @@ public class ExprLib
     }
 
     private static ExprVisitor exprVisitorCheckForNonFunctions = new ExprVisitorBase() {
-        @Override
-        public void visit(ExprFunction0 func) {
-            if ( func instanceof E_Random ||
-                func instanceof E_UUID ||
-                func instanceof E_StrUUID)
-                throw new ExprUnstable() ;
-        }
-        @Override
-        public void visit(ExprFunctionN func) {
-            if (func instanceof E_BNode )
-                throw new ExprUnstable() ;
+        @Override public void visit(ExprFunction0 func) { check(func); }
+        @Override public void visit(ExprFunction1 func) { check(func); }
+        @Override public void visit(ExprFunction2 func) { check(func); }
+        @Override public void visit(ExprFunction3 func) { check(func); }
+        @Override public void visit(ExprFunctionN func) { check(func); }
+
+        private void check(ExprFunction exprFn) {
+            if ( exprFn instanceof Unstable )
+                throw new ExprUnstable();
         }
     } ;
 

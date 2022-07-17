@@ -700,10 +700,10 @@ public class BuilderExpr
     private static Build buildBNode = (ItemList list) -> {
         BuilderLib.checkLength(1, 2, list, "bnode: wanted 0 or 1 arguments: got: "+numArgs(list));
         if ( list.size() == 1 )
-            return new E_BNode();
+            return E_BNode.create();
 
         Expr expr = buildExpr(list.get(1));
-        return new E_BNode(expr);
+        return E_BNode.create(expr);
     };
 
 
