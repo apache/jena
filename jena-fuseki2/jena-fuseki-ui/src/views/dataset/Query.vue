@@ -67,6 +67,30 @@
                     </div>
                   </fieldset>
                 </div>
+                <b-col>
+                  <b-form-group
+                    label="Saved Queries"
+                  >
+                    <b-badge
+                      variant="primary"
+                      class="p-2 mr-2"
+                      href="#"
+                      @click="saveQueryModal=true"
+                    >
+                      <FontAwesomeIcon icon="floppy-disk" /> Save
+                    </b-badge>
+                    <SaveQueryModal v-if="saveQueryModal" id="save-query" :query="yasqe ? yasqe.getValue() : ''" @saveQueryModalHide="saveQueryModal=false"/>
+                    <b-badge
+                      variant="primary"
+                      class="p-2 mr-2"
+                      href="#"
+                      @click="queryLibraryModal=true"
+                    >
+                      <FontAwesomeIcon icon="folder-open" /> Load
+                    </b-badge>
+                    <QueryLibraryModal v-if="queryLibraryModal" id="query-library" @queryLibraryModalHide="queryLibraryModal=false" @loadSavedQuery="(query) => setQuery(query)"/>
+                  </b-form-group>
+                </b-col>
               </div>
               <div class="row">
                 <div class="col-sm-12 col-md-4">
@@ -180,12 +204,19 @@
 
 <script>
 import Menu from '@/components/dataset/Menu'
+import SaveQueryModal from '@/components/dataset/SaveQueryModal'
+import QueryLibraryModal from '@/components/dataset/QueryLibraryModal'
 import Yasqe from '@triply/yasqe'
 import Yasr from '@triply/yasr'
 import queryString from 'query-string'
 import Vue from 'vue'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faFloppyDisk, faFolderOpen } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import currentDatasetMixin from '@/mixins/current-dataset'
 import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
+
+library.add(faFloppyDisk, faFolderOpen)
 
 const SELECT_TRIPLES_QUERY = `SELECT ?subject ?predicate ?object
 WHERE {
@@ -208,7 +239,10 @@ export default {
   name: 'DatasetQuery',
 
   components: {
-    Menu
+    Menu,
+    SaveQueryModal,
+    QueryLibraryModal,
+    FontAwesomeIcon
   },
 
   mixins: [
@@ -219,6 +253,8 @@ export default {
 
   data () {
     return {
+      saveQueryModal: false,
+      queryLibraryModal: false,
       loading: true,
       contentTypeSelect: 'application/sparql-results+json',
       contentTypeSelectOptions: [
