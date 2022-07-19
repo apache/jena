@@ -55,6 +55,7 @@
                                   countTriplesInGraphs();
                                   $refs['count-triples-button'].disabled = isDatasetStatsLoading
                                 "
+                                id="count-triples-submit-button"
                                 type="button"
                                 class="btn btn-primary me-2">submit</button>
                               <button
@@ -83,6 +84,7 @@
                         :fields="countGraphFields"
                         :items="countGraphItems"
                         :busy="isDatasetSizeLoading"
+                        id="dataset-size-table"
                         class="mt-3"
                         bordered
                         hover
@@ -109,6 +111,7 @@
                     :fields="statsFields"
                     :items="statsItems"
                     :busy="isDatasetStatsLoading"
+                    id="statistics-table"
                     bordered
                     hover
                     small

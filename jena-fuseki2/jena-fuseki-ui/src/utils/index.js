@@ -16,7 +16,6 @@
  */
 
 export function displayError (vm, error) {
-  console.error(error)
   vm.$toast.error(error)
 }
 

@@ -20,10 +20,6 @@ import { createLocalVue, shallowMount } from '@vue/test-utils'
 import ServerStatus from '@/components/ServerStatus.vue'
 import ServerStatusModel from '@/model/server.status'
 import sinon from 'sinon'
-import BootstrapVue from 'bootstrap-vue'
-import Vue from 'vue'
-
-Vue.use(BootstrapVue)
 
 const localVue = createLocalVue()
 
