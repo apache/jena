@@ -18,16 +18,13 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import FusekiService from '@/services/fuseki.service'
 import 'bootstrap/dist/js/bootstrap.bundle.min'
-import { ToastPlugin } from '@/plugins/index'
+import { FusekiServicePlugin, ToastPlugin } from '@/plugins/index'
 
 Vue.config.productionTip = false
 
 // Create the global Fuseki Service instance.
-// TODO: move it to a plug-in?
-const fusekiService = new FusekiService(window.location)
-Vue.prototype.$fusekiService = fusekiService
+Vue.use(FusekiServicePlugin)
 
 // Install the Toasts plug-in.
 Vue.use(ToastPlugin)

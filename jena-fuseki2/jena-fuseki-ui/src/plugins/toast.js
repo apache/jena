@@ -15,10 +15,31 @@
  * limitations under the License.
  */
 
-import ToastPlugin from '@/plugins/toast'
-import FusekiServicePlugin from '@/plugins/services'
+/*
+ * A plug-in to replace Bootstrap Vue's Toasts.
+ */
+import { BUS } from '@/events'
+import Toast from '@/components/Toast'
 
-export {
-  ToastPlugin,
-  FusekiServicePlugin
+export default {
+  install (vm) {
+    // Add the global $toast object.
+    vm.prototype.$toast = {
+      error (message, options = {}) {
+        this.send(message, 'danger', options)
+      },
+      notification (message, options = {}) {
+        this.send(message, 'primary', options)
+      },
+      send (message, type, options) {
+        BUS.$emit('toast', {
+          message,
+          type,
+          options
+        })
+      }
+    }
+    // Register the component for Toasts.
+    vm.component('Toast', Toast)
+  }
 }

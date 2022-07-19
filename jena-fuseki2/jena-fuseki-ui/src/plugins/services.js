@@ -15,10 +15,14 @@
  * limitations under the License.
  */
 
-import ToastPlugin from '@/plugins/toast'
-import FusekiServicePlugin from '@/plugins/services'
+import FusekiService from '@/services/fuseki.service'
 
-export {
-  ToastPlugin,
-  FusekiServicePlugin
+/**
+ * A service to create a global Fuseki Service, used to interface
+ * with the backend application, Jena Fuseki.
+ */
+export default {
+  install (vm) {
+    vm.prototype.$fusekiService = new FusekiService(window.location)
+  }
 }
