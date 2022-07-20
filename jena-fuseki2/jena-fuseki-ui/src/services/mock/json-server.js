@@ -180,7 +180,7 @@ server.get('/\\$/stats/:datasetName', (req, res) => {
     })
 })
 
-// COUNT TRIPLES
+// SPARQL QUERY
 const sparqlCallback = (req, res) => {
   const count = 42
   const bindings = []
@@ -248,16 +248,18 @@ const sparqlCallback = (req, res) => {
 server.get('/:datasetName/sparql', sparqlCallback)
 server.post('/:datasetName/sparql', sparqlCallback)
 
+// PING
+server.get('/\\$/ping', (req, res) => {
+  res.sendStatus(200)
+})
+
+// RESET TEST DATA
 server.get('/tests/reset', (req, res) => {
   // Just delete the datasets to clean up for other tests to have a
   // brand new environment.
   for (const dataset in DATASETS) {
     delete DATASETS[dataset]
   }
-  res.sendStatus(200)
-})
-
-server.get('/\\$/ping', (req, res) => {
   res.sendStatus(200)
 })
 
