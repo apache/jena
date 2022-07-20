@@ -62,7 +62,7 @@ public class LangJSONLD11 implements ReaderRIOT {
     public void read(InputStream input, String baseURI, ContentType ct, StreamRDF output, Context context) {
         try {
             Document document = JsonDocument.of(input);
-            read(document, output, context);
+            read(document, baseURI, output, context);
         } catch (JsonLdError ex) {
             handleJsonLdError(ex);
         } catch (Exception ex) {
@@ -86,7 +86,7 @@ public class LangJSONLD11 implements ReaderRIOT {
     public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
         try {
             Document document = JsonDocument.of(in);
-            read(document, output, context);
+            read(document, baseURI, output, context);
         } catch (JsonLdError ex) {
             ex.printStackTrace();
             handleJsonLdError(ex);
@@ -96,9 +96,9 @@ public class LangJSONLD11 implements ReaderRIOT {
         }
     }
 
-    private void read(Document document, StreamRDF output, Context context) throws JsonLdError {
+    private void read(Document document, String baseURI, StreamRDF output, Context context) throws JsonLdError {
         // JSON-LD to RDF
-        RdfDataset dataset = JsonLd.toRdf(document).get();
+        RdfDataset dataset = JsonLd.toRdf(document).base(baseURI).get();
         extractPrefixes(document, output::prefix);
         JenaTitanium.convert(dataset, output);
     }

@@ -18,6 +18,7 @@
 
 package org.apache.jena.riot;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -26,6 +27,8 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.github.jsonldjava.core.DocumentLoader;
 import com.github.jsonldjava.core.JsonLdOptions;
 
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
@@ -33,6 +36,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
@@ -90,6 +94,24 @@ public class TestJsonLDReader {
 
         // check ds is correct
         assertJohnDoeIsOK(ds.getDefaultModel());
+    }
+
+    // JSONLD 1.1 : Titanium-json-ld
+
+    @Test
+    public void testJsonLdBase() {
+        // GH-1451
+        //    {
+        //        "@id": "./relative",
+        //        "@type": "RelType",
+        //        "http://example/p": { "@id" : "#frag" }
+        //     }
+        String jsonld = "{ '@id': './relative', '@type': 'RelType', 'http://example/p': { '@id' : '#frag' } }";
+        jsonld = jsonld.replaceAll("'",  "\"");
+        Graph g = RDFParser.fromString(jsonld).lang(Lang.JSONLD).base("http://base/abc").toGraph();
+        assertNotNull(g);
+        Triple t = SSE.parseTriple("( <http://base/relative> <http://example/p> <http://base/abc#frag> )");
+        assertTrue(g.contains(t));
     }
 
     /**
