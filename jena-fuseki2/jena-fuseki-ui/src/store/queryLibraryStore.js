@@ -7,13 +7,7 @@ const getWithId = (array, id) => {
 export const queryLibraryStore = {
   namespaced: true,
   state: () => ({
-    savedQueries: [
-      {
-        id: '1234',
-        name: 'xyz',
-        query: 'SELECT *'
-      }
-    ]
+    savedQueries: [] // [{ id: '', name: '', query: ''}, ...]
   }),
   getters: {
     listSavedQueries (state) {
