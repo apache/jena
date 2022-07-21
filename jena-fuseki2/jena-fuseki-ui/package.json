@@ -24,6 +24,7 @@
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.21.1",
     "follow-redirects": "^1.14.9",
+    "nanoid": "^3.3.1",
     "vue": "^2.6.14",
     "vue-router": "^3.5.3",
     "vue-upload-component": "^2.8.22"
@@ -53,10 +54,5 @@
     "sass-loader": "^10.1.1",
     "sinon": "^13.0.1",
     "vue-template-compiler": "^2.6.14"
-  },
-  "resolutions": {
-    "ansi-regex": "^4.1.1",
-    "follow-redirects": "^1.14.7",
-    "nanoid": "^3.3.1"
   }
 }
