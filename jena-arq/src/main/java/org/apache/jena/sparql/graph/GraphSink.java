@@ -26,34 +26,36 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NullIterator ;
 
-/** 
- * Black hole graph - adds and deletes are silently ignored.
- * @see GraphZero
+/**
+ * A graph that performs adds and deletes by silently ignoring them.
+ * @see GraphZero A graph that has no triples and no update.
  */
 public class GraphSink extends GraphBase
 {
     private static Graph graph = new GraphSink();
     public static Graph instance() {
-        return graph;
+        // It has transaction state that tracks the transaction so unsafe to share
+        // one object on one thread. See TransactionHandlerNull.
+        return new GraphSink();
     }
-    
+
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple triple)
     { return NullIterator.instance() ; }
-    
+
     @Override
     public void performAdd( Triple t ) {}
-    
+
     @Override
     public void performDelete( Triple t ) {}
-    
+
     @Override
-    protected PrefixMapping createPrefixMapping() { 
+    protected PrefixMapping createPrefixMapping() {
         return new PrefixMappingSink() ;
     }
-    
-    @Override 
+
+    @Override
     public TransactionHandler getTransactionHandler() {
-        return new TransactionHandlerNull(); 
+        return new TransactionHandlerNull();
     }
 }

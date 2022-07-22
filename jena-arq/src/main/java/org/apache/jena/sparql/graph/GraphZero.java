@@ -34,7 +34,8 @@ import org.apache.jena.util.iterator.NullIterator;
 public class GraphZero extends GraphBase {
 
     public static Graph instance() {
-        // It has transaction state so unsafe to share one object on one thread.
+        // It has transaction state that tracks the transaction so unsafe to share
+        // one object on one thread. See TransactionHandlerNull.
         return new GraphZero();
     }
 
@@ -62,7 +63,7 @@ public class GraphZero extends GraphBase {
     // AddDeniedException is more access centric, e.g. permissions,
     // and may be different for different callers.
     //
-    // UnsupportedOperationException is the general java "no" for not available ata ll,
+    // UnsupportedOperationException is the general java "no" for not available at all,
     // but is different from the Jena core exceptions.
     @Override
     public void performAdd( Triple t ) { throw new UnsupportedOperationException("add triple"); }

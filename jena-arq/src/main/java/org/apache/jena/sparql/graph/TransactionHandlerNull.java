@@ -22,34 +22,38 @@ import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.impl.TransactionHandlerBase;
 import org.apache.jena.sparql.JenaTransactionException;
 
-/** Implementation of {@link TransactionHandler} that does nothing but track the transaction state. */
+/**
+ * Implementation of {@link TransactionHandler} that does nothing but track the
+ * transaction state. This does make it stateful so graphs using
+ * TransactionHandlerNull can't be shred across threads when using transactions.
+ */
 public class TransactionHandlerNull extends TransactionHandlerBase {
- 
+
     private ThreadLocal<Boolean> inTransaction = ThreadLocal.withInitial(()->Boolean.FALSE);
-    
+
     @Override
     public boolean transactionsSupported() {
         return true;
     }
-    
+
     @Override
     public void begin() {
         if ( inTransaction.get() )
-            throw new JenaTransactionException("Already in transaction"); 
+            throw new JenaTransactionException("Already in transaction");
         inTransaction.set(true);
     }
 
     @Override
     public void commit() {
         if ( ! inTransaction.get() )
-            throw new JenaTransactionException("Not in transaction"); 
+            throw new JenaTransactionException("Not in transaction");
         inTransaction.set(false);
     }
 
     @Override
     public void abort() {
         if ( ! inTransaction.get() )
-            throw new JenaTransactionException("Not in transaction"); 
+            throw new JenaTransactionException("Not in transaction");
         inTransaction.set(false);
     }
 
