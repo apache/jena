@@ -29,6 +29,7 @@ import java.util.function.Supplier;
 public class ThreadLib {
 
     private static ExecutorService executor = Executors.newCachedThreadPool();
+    public static ExecutorService getExecutionService() { return executor; }
 
     /**
      * Run asynchronously on another thread; the thread has started
