@@ -111,7 +111,7 @@
     <!--- GeoSPARQL related -->
     <ver.jcommander>1.82</ver.jcommander>
     <ver.sis>1.1</ver.sis>
-    <ver.jts>1.18.2</ver.jts>
+    <ver.jts>1.19.0</ver.jts>
 
   </properties>
 
