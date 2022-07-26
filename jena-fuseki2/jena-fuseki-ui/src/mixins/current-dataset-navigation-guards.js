@@ -15,31 +15,27 @@
  * limitations under the License.
  */
 
-/*
- * A plug-in to replace Bootstrap Vue's Toasts.
- */
 import { BUS } from '@/events'
-import Toast from '@/components/Toast'
+
+/**
+ * A mixin for views and components that need to have the current dataset loaded. The
+ * dataset is loaded by its name, which is a prop for the view or component.
+ */
 
 export default {
-  install (vm) {
-    // Add the global $toast object.
-    vm.config.globalProperties.$toast = {
-      error (message, options = {}) {
-        this.send(message, 'danger', options)
-      },
-      notification (message, options = {}) {
-        this.send(message, 'primary', options)
-      },
-      send (message, type, options) {
-        BUS.emit('toast', {
-          message,
-          type,
-          options
-        })
-      }
-    }
-    // Register the component for Toasts.
-    vm.component('Toast', Toast)
+  beforeRouteEnter (from, to, next) {
+    next(async vm => {
+      BUS.on('connection:reset', vm.loadCurrentDataset)
+      await vm.loadCurrentDataset()
+    })
+  },
+  async beforeRouteUpdate (from, to, next) {
+    next(async vm => {
+      await this.loadCurrentDataset()
+    })
+  },
+  beforeRouteLeave (from, to, next) {
+    BUS.off('connection:reset')
+    next()
   }
 }

@@ -19,7 +19,7 @@
   <div class="container-fluid">
     <div class="row mt-4">
       <div class="col-12">
-        <h2>/{{ this.datasetName }}</h2>
+        <h2>/{{ datasetName }}</h2>
         <div class="card">
           <nav class="card-header">
             <Menu :dataset-name="datasetName" />
@@ -35,7 +35,8 @@
                   >
                     <label
                       tabindex="-1"
-                      class="col-form-label pt-0">Example Queries</label>
+                      class="col-form-label pt-0"
+                    >Example Queries</label>
                     <div>
                       <span
                         v-for="query of queries"
@@ -53,7 +54,8 @@
                   >
                     <label
                       tabindex="-1"
-                      class="col-form-label pt-0">Prefixes</label>
+                      class="col-form-label pt-0"
+                    >Prefixes</label>
                     <div>
                       <span
                         v-for="prefix of prefixes"
@@ -70,13 +72,15 @@
                 <div class="col-sm-12 col-md-4">
                   <fieldset
                     class="form-group"
-                    aria-labelledby="sparql-endpoint-label">
+                    aria-labelledby="sparql-endpoint-label"
+                  >
                     <div class="form-row">
                       <label
                         tabindex="-1"
                         for="sparql-endpoint"
                         class="col-6 col-form-label"
-                        id="sparql-endpoint-label">SPARQL Endpoint</label>
+                        id="sparql-endpoint-label"
+                      >SPARQL Endpoint</label>
                       <div class="col">
                         <input
                           v-model="currentDatasetUrl"
@@ -91,13 +95,15 @@
                 <div class="col-sm-12 col-md-4">
                   <fieldset
                     class="form-group"
-                    aria-labelledby="content-type-label">
+                    aria-labelledby="content-type-label"
+                  >
                     <div class="form-row">
                       <label
                         tabindex="-1"
                         for="content-type-select"
                         class="col-6 col-form-label"
-                        id="content-type-select-label">Content Type (SELECT)</label>
+                        id="content-type-select-label"
+                      >Content Type (SELECT)</label>
                       <div class="col">
                         <select
                           v-model="contentTypeSelect"
@@ -109,7 +115,9 @@
                             v-for="contentTypeSelectOption of contentTypeSelectOptions"
                             :key="contentTypeSelectOption.value"
                             :value="contentTypeSelectOption.value"
-                          >{{ contentTypeSelectOption.text }}</option>
+                          >
+                            {{ contentTypeSelectOption.text }}
+                          </option>
                         </select>
                       </div>
                     </div>
@@ -118,13 +126,15 @@
                 <div class="col-sm-12 col-md-4">
                   <fieldset
                     class="form-group"
-                    aria-labelledby="content-type-graph-label">
+                    aria-labelledby="content-type-graph-label"
+                  >
                     <div class="form-row">
                       <label
                         tabindex="-1"
                         for="content-type-graph"
                         class="col-6 col-form-label"
-                        id="content-type-graph-label">Content Type (GRAPH)</label>
+                        id="content-type-graph-label"
+                      >Content Type (GRAPH)</label>
                       <div class="col">
                         <select
                           v-model="contentTypeGraph"
@@ -136,7 +146,9 @@
                             v-for="contentTypeGraphOption of contentTypeGraphOptions"
                             :key="contentTypeGraphOption.value"
                             :value="contentTypeGraphOption.value"
-                          >{{ contentTypeGraphOption.text }}</option>
+                          >
+                            {{ contentTypeGraphOption.text }}
+                          </option>
                         </select>
                       </div>
                     </div>
@@ -173,6 +185,7 @@ import Yasr from '@triply/yasr'
 import queryString from 'query-string'
 import Vue from 'vue'
 import currentDatasetMixin from '@/mixins/current-dataset'
+import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
 
 const SELECT_TRIPLES_QUERY = `SELECT ?subject ?predicate ?object
 WHERE {
@@ -202,11 +215,11 @@ export default {
     currentDatasetMixin
   ],
 
+  ...currentDatasetMixinNavigationGuards,
+
   data () {
     return {
       loading: true,
-      yasqe: null,
-      yasr: null,
       contentTypeSelect: 'application/sparql-results+json',
       contentTypeSelectOptions: [
         { value: 'application/sparql-results+json', text: 'JSON' },
@@ -252,9 +265,15 @@ export default {
   },
 
   created () {
+    this.yasqe = null
+    this.yasr = null
     this.$nextTick(() => {
       setTimeout(() => {
         const vm = this
+
+        document.getElementById('yasr').innerHTML = ''
+        document.getElementById('yasqe').innerHTML = ''
+
         // results area
         vm.yasr = new Yasr(
           document.getElementById('yasr'),
@@ -318,7 +337,8 @@ export default {
         this.setQuery(this.$route.query.query)
       }
     })
-    next()
+    const mixinBeforeRouteUpdate = currentDatasetMixinNavigationGuards.beforeRouteEnter
+    mixinBeforeRouteUpdate(from, to, next)
   },
 
   watch: {
@@ -340,10 +360,6 @@ export default {
         this.yasqe.options.requestConfig.acceptHeaderGraph = this.contentTypeGraph
       }
     }
-  },
-
-  beforeRouteLeave (to, from, next) {
-    next()
   },
 
   methods: {

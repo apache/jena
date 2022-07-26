@@ -117,7 +117,7 @@ describe('datasets', () => {
       cy
         .get('span[role="menuitemradio"]')
         .contains('2')
-        .click()
+        .click({ force: true })
       // The first cell, of the first row, must contain the sixth dataset,
       // /f.
       cy

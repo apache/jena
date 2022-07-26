@@ -89,7 +89,7 @@ export default {
   },
 
   created () {
-    BUS.$on('toast', this.handleMessageEvent)
+    BUS.on('toast', this.handleMessageEvent)
   },
 
   methods: {

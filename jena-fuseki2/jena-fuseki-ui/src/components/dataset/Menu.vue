@@ -18,25 +18,25 @@
 <template>
   <ul class="nav nav-tabs card-header-tabs">
     <li class="nav-item">
-      <router-link :to="`/dataset/${this.datasetName}/query`" class="nav-link" exact-active-class="active">
+      <router-link :to="`/dataset/${datasetName}/query`" class="nav-link" exact-active-class="active">
         <FontAwesomeIcon icon="question-circle" />
         <span class="ms-1">query</span>
       </router-link>
     </li>
     <li class="nav-item">
-      <router-link :to="`/dataset/${this.datasetName}/upload`" class="nav-link" exact-active-class="active">
+      <router-link :to="`/dataset/${datasetName}/upload`" class="nav-link" exact-active-class="active">
         <FontAwesomeIcon icon="upload" />
         <span class="ms-1">add data</span>
       </router-link>
     </li>
     <li class="nav-item">
-      <router-link :to="`/dataset/${this.datasetName}/edit`" class="nav-link" exact-active-class="active">
+      <router-link :to="`/dataset/${datasetName}/edit`" class="nav-link" exact-active-class="active">
         <FontAwesomeIcon icon="edit" />
         <span class="ms-1">edit</span>
       </router-link>
     </li>
     <li class="nav-item">
-      <router-link :to="`/dataset/${this.datasetName}/info`" class="nav-link" exact-active-class="active">
+      <router-link :to="`/dataset/${datasetName}/info`" class="nav-link" exact-active-class="active">
         <FontAwesomeIcon icon="tachometer-alt" />
         <span class="ms-1">info</span>
       </router-link>

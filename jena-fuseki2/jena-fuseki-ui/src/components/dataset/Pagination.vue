@@ -22,7 +22,8 @@
         role="menubar"
         aria-disabled="false"
         aria-label="Pagination"
-        class="pagination mb-2 mx-0 justify-content-center">
+        class="pagination mb-2 mx-0 justify-content-center"
+      >
         <!-- pages backward controls -->
         <li
           :aria-hidden="getBackLinkAriaDisabled()"
@@ -37,7 +38,9 @@
             role="menuitem"
             tabindex="-1"
             aria-label="Go to first page"
-            >«</button>
+          >
+            «
+          </button>
         </li>
         <li
           :aria-hidden="getBackLinkAriaDisabled()"
@@ -51,14 +54,17 @@
             type="button"
             aria-label="Go to previous page"
             role="menuitem"
-          >‹</button>
+          >
+            ‹
+          </button>
         </li>
         <!-- pages -->
         <li
           v-for="page in numberOfPages"
           :key="page"
           role="presentation"
-          class="page-item">
+          class="page-item"
+        >
           <span
             :aria-label="`Go to page ${ page }`"
             :class="getPageLinkClass(page)"
@@ -84,7 +90,9 @@
             type="button"
             role="menuitem"
             aria-label="Go to last page"
-          >›</button>
+          >
+            ›
+          </button>
         </li>
         <li
           :aria-hidden="getNextLinkAriaDisabled()"
@@ -98,7 +106,9 @@
             type="button"
             role="menuitem"
             aria-label="Go to next page"
-          >»</button>
+          >
+            »
+          </button>
         </li>
       </ul>
     </div>
@@ -133,6 +143,10 @@ export default {
       return Math.ceil(this.$attrs['total-rows'] / this.$attrs['per-page']) || 0
     }
   },
+
+  emits: [
+    'input'
+  ],
 
   methods: {
     goToPage (page) {

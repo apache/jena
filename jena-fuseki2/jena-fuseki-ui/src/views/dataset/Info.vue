@@ -19,7 +19,7 @@
   <div class="container-fluid">
     <div class="row mt-4">
       <div class="col-12">
-        <h2>/{{ this.datasetName }}</h2>
+        <h2>/{{ datasetName }}</h2>
         <div class="card">
           <nav class="card-header">
             <Menu :dataset-name="datasetName" />
@@ -28,19 +28,23 @@
             <div>
               <div class="row">
                 <div class="col-sm-12 col-md-6">
-                  <h3 class="text-center">Available Services</h3>
-                  <p class="card-text placeholder-glow" v-if="this.services == null">
+                  <h3 class="text-center">
+                    Available Services
+                  </h3>
+                  <p class="card-text placeholder-glow" v-if="services == null">
                     <span class="placeholder col-12"></span>
                     <span class="placeholder col-12"></span>
                     <span class="placeholder col-12"></span>
                   </p>
                   <div
                     :key="service['srv.type']"
-                    v-for="service in this.services"
+                    v-for="service in services"
                     v-else
                   >
                     <div class="row" v-for="endpoint of service['srv.endpoints']" :key="endpoint">
-                      <div class="col-6 text-right">{{ service['srv.description'] }}</div>
+                      <div class="col-6 text-right">
+                        {{ service['srv.description'] }}
+                      </div>
                       <div class="col-6">
                         <a :href="`/${datasetName}/${endpoint}`">
                           /{{ datasetName }}/{{ endpoint }}
@@ -55,7 +59,9 @@
                         <div hidden>
                           <div ref="count-triples-content">
                             <div class="text-center">
-                              <div class="alert alert-warning">This may be slow and impose a significant load on large datasets.</div>
+                              <div class="alert alert-warning">
+                                This may be slow and impose a significant load on large datasets.
+                              </div>
                               <button
                                 @click="
                                   countTriplesInGraphs();
@@ -63,13 +69,18 @@
                                 "
                                 id="count-triples-submit-button"
                                 type="button"
-                                class="btn btn-primary me-2">submit</button>
+                                class="btn btn-primary me-2"
+                              >
+                                submit
+                              </button>
                               <button
                                 class="btn btn-secondary"
                                 @click="
                                   $refs['count-triples-button'].disabled = isDatasetStatsLoading
                                 "
-                              >cancel</button>
+                              >
+                                cancel
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -96,7 +107,7 @@
                         hover
                         small
                       >
-                        <template v-slot:table-busy>
+                        <template #table-busy>
                           <div class="text-center text-danger my-2">
                             <div class="spinner-border align-middle" role="status">
                               <span class="visually-hidden">Loading...</span>
@@ -104,7 +115,7 @@
                             <strong>Loading...</strong>
                           </div>
                         </template>
-                        <template v-slot:empty>
+                        <template #empty>
                           <span>No data</span>
                         </template>
                       </jena-table>
@@ -112,7 +123,9 @@
                   </div>
                 </div>
                 <div class="col-sm-12 col-md-6">
-                  <h3 class="text-center">Statistics</h3>
+                  <h3 class="text-center">
+                    Statistics
+                  </h3>
                   <jena-table
                     :fields="statsFields"
                     :items="statsItems"
@@ -122,7 +135,7 @@
                     hover
                     small
                   >
-                    <template v-slot:table-busy>
+                    <template #table-busy>
                       <div class="text-center text-danger my-2">
                         <div class="spinner-border align-middle" role="status">
                           <span class="visually-hidden">Loading...</span>
@@ -130,15 +143,17 @@
                         <strong>Loading...</strong>
                       </div>
                     </template>
-                    <template v-slot:custom-foot="scope">
+                    <template #custom-foot="scope">
                       <tr>
-                        <th v-for="field in scope.fields" :key="field.key">{{ overall[field.key] }}</th>
+                        <th v-for="field in scope.fields" :key="field.key">
+                          {{ overall[field.key] }}
+                        </th>
                       </tr>
                     </template>
                   </jena-table>
                 </div>
               </div>
-           </div>
+            </div>
           </div>
         </div>
       </div>
@@ -150,6 +165,7 @@
 import Menu from '@/components/dataset/Menu'
 import { displayError } from '@/utils'
 import currentDatasetMixin from '@/mixins/current-dataset'
+import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
 import { Popover } from 'bootstrap'
 import JenaTable from '@/components/dataset/JenaTable'
 
@@ -161,6 +177,8 @@ export default {
     Menu
   },
 
+  ...currentDatasetMixinNavigationGuards,
+
   mixins: [
     currentDatasetMixin
   ],
@@ -169,7 +187,7 @@ export default {
     return {
       datasetStats: {},
       datasetSize: null,
-      isDatasetSizeLoading: false,
+      isDatasetSizeLoading: null,
       statsFields: [
         {
           key: 'endpoint',
@@ -264,15 +282,10 @@ export default {
     }
   },
 
-  beforeRouteEnter (from, to, next) {
-    next(async vm => {
-      vm.datasetSize = null
-    })
-  },
-
   async beforeRouteUpdate (from, to, next) {
     this.datasetSize = null
-    next()
+    const mixinBeforeRouteUpdate = currentDatasetMixinNavigationGuards.beforeRouteUpdate
+    await mixinBeforeRouteUpdate(from, to, next)
   },
 
   mounted: function () {
@@ -297,8 +310,8 @@ export default {
       } catch (error) {
         displayError(this, error)
       } finally {
-        this.isDatasetSizeLoading = false
-        this.$refs['count-triples-button'].disabled = this.isDatasetSizeLoading
+        this.isDatasetSizeLoading = null
+        this.$refs['count-triples-button'].disabled = false
       }
     }
   }

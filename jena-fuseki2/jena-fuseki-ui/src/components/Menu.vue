@@ -19,7 +19,7 @@
   <nav class="navbar navbar-expand-md bg-light">
     <div class="container-fluid mx-2 mx-md-0">
       <router-link to="/" class="navbar-brand">
-        <img alt="Apache Jena logo" width="52px" src="../assets/logo.svg"> Apache Jena Fuseki
+        <img alt="Apache Jena logo" src="../assets/logo.svg" style="width: 52px;"> Apache Jena Fuseki
       </router-link>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>

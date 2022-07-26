@@ -65,7 +65,7 @@ class FusekiService {
       await axios.get(this.getFusekiUrl('/$/ping'))
       // connection reset?
       if (this.isOffline) {
-        BUS.$emit('connection:reset')
+        BUS.emit('connection:reset')
       }
       this.isOffline = false
       return new ServerStatus(true, `Last ping returned OK in ${this._duration(startTime)}ms`)

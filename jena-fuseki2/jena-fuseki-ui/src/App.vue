@@ -21,7 +21,7 @@
       <div class="row">
         <Menu />
       </div>
-      <router-view/>
+      <router-view />
     </div>
     <Toast />
   </div>
