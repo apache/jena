@@ -36,7 +36,7 @@ public class AsGeoJSONFFTest {
      */
     @Test
     public void testExec() throws ParseException {
-        NodeValue v = NodeValue.makeNode("<gml:LineString xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"EPSG:25832\">" +
+        NodeValue v = NodeValue.makeNode("<gml:LineString xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"EPSG:25832\">" +
                         "<gml:posList>" +
                         "663957.75944074022118 5103981.64908889029175 663955.915655555087142 5103991.151674075052142" +
                         "</gml:posList>" +

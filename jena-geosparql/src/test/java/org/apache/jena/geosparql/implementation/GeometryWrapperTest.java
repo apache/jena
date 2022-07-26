@@ -370,7 +370,7 @@ public class GeometryWrapperTest {
         GeometryWrapper instance = WKTDatatype.INSTANCE.parse(lexicalForm);
 
         Literal result = instance.asLiteral(GMLDatatype.URI);
-        String gmlGeometryLiteral = "<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"><gml:pos>-83.38 33.95</gml:pos></gml:Point>";
+        String gmlGeometryLiteral = "<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"><gml:pos>-83.38 33.95</gml:pos></gml:Point>";
         Literal expResult = ResourceFactory.createTypedLiteral(gmlGeometryLiteral, GMLDatatype.INSTANCE);
         assertEquals(expResult, result);
     }
@@ -386,7 +386,7 @@ public class GeometryWrapperTest {
         GeometryWrapper instance = WKTDatatype.INSTANCE.parse(lexicalForm);
 
         Literal result = instance.asLiteral(GMLDatatype.INSTANCE);
-        String gmlGeometryLiteral = "<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"><gml:pos>-83.38 33.95</gml:pos></gml:Point>";
+        String gmlGeometryLiteral = "<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"><gml:pos>-83.38 33.95</gml:pos></gml:Point>";
         Literal expResult = ResourceFactory.createTypedLiteral(gmlGeometryLiteral, GMLDatatype.INSTANCE);
         assertEquals(expResult, result);
     }

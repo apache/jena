@@ -64,7 +64,7 @@ public class GMLReader implements ParserReader {
     private final CoordinateSequenceDimensions dims;
     private final DimensionInfo dimensionInfo;
 
-    private static final Namespace GML_NAMESPACE = Namespace.getNamespace("gml", "http://www.opengis.net/ont/gml");
+    private static final Namespace GML_NAMESPACE = Namespace.getNamespace("gml", "http://www.opengis.net/gml/3.2");
 
     /**
      * Aiming to achieve SF-0 of GML Simple Features Profile 2.0 [10-100R3].<br>
@@ -692,7 +692,7 @@ public class GMLReader implements ParserReader {
         return memberElements;
     }
 
-    private static final String EMPTY_GML_TEXT = "<gml:Point xmlns:gml='http://www.opengis.net/ont/gml' srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\" />";
+    private static final String EMPTY_GML_TEXT = "<gml:Point xmlns:gml='http://www.opengis.net/gml/3.2' srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\" />";
 
     public static GMLReader extract(String gmlText) throws JDOMException, IOException {
 

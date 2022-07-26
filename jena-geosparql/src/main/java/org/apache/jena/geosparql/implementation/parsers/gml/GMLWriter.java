@@ -32,7 +32,7 @@ import org.locationtech.jts.geom.*;
  */
 public class GMLWriter {
 
-    public static final Namespace GML_NAMESPACE = Namespace.getNamespace("gml", "http://www.opengis.net/ont/gml");
+    public static final Namespace GML_NAMESPACE = Namespace.getNamespace("gml", "http://www.opengis.net/gml/3.2");
 
     private static final XMLOutputter XML_OUTPUT = new XMLOutputter();
 
