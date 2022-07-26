@@ -62,7 +62,7 @@ public class TransactionalBase implements TransactionalSystem {
         if ( trackAttachDetach )
             Log.info(this,  ">> detach");
         checkRunning();
-        // Not if it just commited but before end.
+        // Not if it just committed but before end.
         //checkActive();
         Transaction txn = theTxn.get();
         TransactionCoordinatorState coordinatorState = null;
@@ -127,7 +127,7 @@ public class TransactionalBase implements TransactionalSystem {
 
     @Override
     public final void commit() {
-        checkRunning();
+        checkActive();
         TransactionalSystem.super.commit();
     }
 

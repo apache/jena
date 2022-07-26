@@ -24,24 +24,16 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.dboe.base.file.Location;
+import org.apache.jena.dboe.storage.system.DatasetGraphTxnCtl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.sparql.core.Quad;
 
 final
-public class DatasetGraphSwitchable extends DatasetGraphWrapper
+public class DatasetGraphSwitchable extends DatasetGraphTxnCtl
 {
-    // QueryEngineFactoryWrapper has a QueryEngineFactory that is always loaded that
-    // executes on the unwrapped DSG (recursively). Unwrapping is via getBase, calling
-    // getWrapped() which is implemented with get().
-
-//    static {
-//        // QueryEngineRegistry.addFactory(factory());
-//    }
-
     private final AtomicReference<DatasetGraph> dsgx = new AtomicReference<>();
     // Null for in-memory datasets.
     private final Path basePath;
@@ -57,6 +49,15 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
         this.prefixes = new PrefixMapSwitchable(this);
     }
 
+    /**
+     * The dataset to use for redirection - can be overridden.
+     * It is also guaranteed that this is called only once per
+     * delegated call.  Changes to the wrapped object can be
+     * made based on that contract.
+     */
+    @Override
+    public DatasetGraph get() { return dsgx.get(); }
+
     /** Is this {@code DatasetGraphSwitchable} just a holder for a {@code DatasetGraph}?
      *  If so, it does not have a location on disk.
      */
@@ -66,15 +67,8 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
 
     public Location getLocation() { return location; }
 
-    /** The dataset to use for redirection - can be overridden.
-     *  It is also guaranteed that this is called only once per
-     *  delegated call.  Changes to the wrapped object can be
-     *  made based on that contract.
-     */
-    @Override
-    public DatasetGraph get() { return dsgx.get(); }
-
-    /** Set the base {@link DatasetGraph}.
+    /**
+     * Set the base {@link DatasetGraph}.
      * Returns the old value.
      */
     public DatasetGraph set(DatasetGraph dsg) {
@@ -86,14 +80,14 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
         return prefixes;
     }
 
-
-    /** Don't do anything on close.
-     *  This would not be safe across switches.
+    /**
+     * Don't do anything on close.
+     * This would not be safe across switches.
      */
     @Override
     public void close() {}
 
-//    /** Don't do anything on sync. */
+//    /** Don't do anything on sync.Transactions only. */
 //    @Override
 //    public void sync() { }
 
@@ -127,4 +121,3 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
         return ngCache.getOrFill(key, ()->GraphViewSwitchable.createNamedGraphSwitchable(this, key));
     }
 }
-

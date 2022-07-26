@@ -38,13 +38,13 @@ import org.apache.jena.sparql.core.Transactional.Promote;
 import org.junit.Test;
 
 /**
- * Dataset transaction lifecycle. 
+ * Dataset transaction lifecycle.
  */
 public abstract class AbstractTestTransactionLifecycle
 {
     protected abstract Dataset create();
-    
-    protected boolean supportsAbort()   { return true; } 
+
+    protected boolean supportsAbort()   { return true; }
     protected boolean supportsPromote() { return true; }
 
     @Test
@@ -101,7 +101,7 @@ public abstract class AbstractTestTransactionLifecycle
         ds.commit();
         assertFalse(ds.isInTransaction());
     }
-    
+
     @Test
     public void transaction_w02() {
         Dataset ds = create();
@@ -162,7 +162,7 @@ public abstract class AbstractTestTransactionLifecycle
 
 //    TxnType.READ_PROMOTE
 //    TxnType.READ_COMMITTED_PROMOTE
-    
+
     @Test
     public void transaction_p01() {
         assumeTrue(supportsPromote());
@@ -176,7 +176,7 @@ public abstract class AbstractTestTransactionLifecycle
         ds.commit();
         ds.end();
     }
-    
+
     @Test
     public void transaction_p02() {
         assumeTrue(supportsPromote());
@@ -191,7 +191,7 @@ public abstract class AbstractTestTransactionLifecycle
         ds.commit();
         ds.end();
     }
-    
+
     @Test
     public void transaction_p03() {
         assumeTrue(supportsPromote());
@@ -235,7 +235,7 @@ public abstract class AbstractTestTransactionLifecycle
         ds.commit();
         ds.end();
     }
-    
+
     @Test
     public void transaction_p06_err() {
         assumeTrue(supportsPromote());
@@ -248,7 +248,7 @@ public abstract class AbstractTestTransactionLifecycle
         assertFalse(b2);
         ds.end();
     }
-    
+
     // JENA-1469
     @Test
     public void transaction_p10() {
@@ -260,8 +260,6 @@ public abstract class AbstractTestTransactionLifecycle
         transaction_promote_write(TxnType.READ_PROMOTE);
     }
 
-    // XXX Refactor the above code.
-    
     // promotion type specified
     private void testPromote(TxnType txnType , Promote promoteMode, boolean succeeds) {
         Dataset ds = create();
@@ -273,58 +271,56 @@ public abstract class AbstractTestTransactionLifecycle
         assertEquals("Try same promote again", b1, b2);
         ds.commit();
         ds.end();
-        
     }
-    
+
     @Test
     public void transaction_promote_write_isolated() {
         assumeTrue(supportsPromote());
         testPromote(TxnType.WRITE, Promote.ISOLATED, true);
     }
-    
+
     @Test
     public void transaction_promote_write_readCommitted() {
         assumeTrue(supportsPromote());
         testPromote(TxnType.WRITE, Promote.READ_COMMITTED, true);
     }
-        
+
     @Test
     public void transaction_promote_read_isolated() {
         assumeTrue(supportsPromote());
         testPromote(TxnType.READ, Promote.ISOLATED, false);
     }
-    
+
     @Test
     public void transaction_promote_read_readCommitted() {
         assumeTrue(supportsPromote());
         testPromote(TxnType.READ, Promote.READ_COMMITTED, false);
     }
-        
+
     @Test
     public void transaction_promote_readPromote_isolated() {
         assumeTrue(supportsPromote());
         testPromote(TxnType.READ_PROMOTE, Promote.ISOLATED, true);
     }
-    
+
     @Test
     public void transaction_promote_readPromote_committed() {
         assumeTrue(supportsPromote());
         testPromote(TxnType.READ_PROMOTE, Promote.READ_COMMITTED, true);
     }
-        
+
     @Test
     public void transaction_promote_readCommitted_isolated() {
         assumeTrue(supportsPromote());
         testPromote(TxnType.READ_COMMITTED_PROMOTE, Promote.ISOLATED, true);
     }
-    
+
     @Test
     public void transaction_promote_readCommitted_readCommitted() {
         assumeTrue(supportsPromote());
         testPromote(TxnType.READ_COMMITTED_PROMOTE, Promote.READ_COMMITTED, true);
     }
-        
-    
+
     @Test
     public void transaction_read_promote() {
         assumeTrue(supportsPromote());
@@ -344,9 +340,9 @@ public abstract class AbstractTestTransactionLifecycle
         ds.end();
         ds.begin(TxnType.WRITE);
         ds.commit();
-        ds.end(); 
+        ds.end();
     }
-    
+
     // Patterns.
     @Test
     public void transaction_pattern_01() {
@@ -378,56 +374,56 @@ public abstract class AbstractTestTransactionLifecycle
         write(ds);
         read2(ds);
     }
-    
+
     // Cycle misalignment.
     // test : commit
     // test : abort
-    // Permit explain .end() - the case of "end" when not sure:  begin...end.end. 
-    
+    // Permit explain .end() - the case of "end" when not sure:  begin...end.end.
+
     @Test(expected=JenaTransactionException.class)
-    public void transaction_err_nontxn_commit_1() { 
+    public void transaction_err_nontxn_commit_1() {
         Dataset ds = create();
         ds.commit();
-    }    
-    
+    }
+
     @Test(expected=JenaTransactionException.class)
-    public void transaction_err_nontxn_commit_2() { 
+    public void transaction_err_nontxn_commit_2() {
         Dataset ds = create();
         ds.begin(TxnType.READ);
         ds.end();
         ds.commit();
-    }    
-    
+    }
+
     @Test(expected=JenaTransactionException.class)
-    public void transaction_err_nontxn_commit_3() { 
+    public void transaction_err_nontxn_commit_3() {
         Dataset ds = create();
         ds.begin(TxnType.WRITE);
         ds.end();
         ds.commit();
-    }    
+    }
 
     @Test(expected=JenaTransactionException.class)
-    public void transaction_err_nontxn_abort_1() { 
+    public void transaction_err_nontxn_abort_1() {
         Dataset ds = create();
         ds.abort();
-    }    
+    }
 
     @Test(expected=JenaTransactionException.class)
-    public void transaction_err_nontxn_abort_2() { 
+    public void transaction_err_nontxn_abort_2() {
         Dataset ds = create();
         ds.begin(TxnType.READ);
         ds.end();
         ds.abort();
-    }    
+    }
 
     @Test(expected=JenaTransactionException.class)
-    public void transaction_err_nontxn_abort_3() { 
+    public void transaction_err_nontxn_abort_3() {
         Dataset ds = create();
         ds.begin(TxnType.WRITE);
         ds.end();
         ds.abort();
-    }    
-    
+    }
+
     @Test
     public void transaction_err_01()    { testBeginBegin(TxnType.WRITE, TxnType.WRITE); }
 
@@ -440,28 +436,28 @@ public abstract class AbstractTestTransactionLifecycle
     @Test
     public void transaction_err_04()    { testBeginBegin(TxnType.READ, TxnType.WRITE); }
 
-    @Test 
+    @Test
     public void transaction_err_05()    { testCommitCommit(TxnType.READ); }
 
-    @Test 
+    @Test
     public void transaction_err_06()    { testCommitCommit(TxnType.WRITE); }
 
-    @Test 
+    @Test
     public void transaction_err_07()    { testCommitAbort(TxnType.READ); }
 
-    @Test 
+    @Test
     public void transaction_err_08()    { testCommitAbort(TxnType.WRITE); }
 
-    @Test 
+    @Test
     public void transaction_err_09()    { testAbortAbort(TxnType.READ); }
 
-    @Test 
+    @Test
     public void transaction_err_10()    { testAbortAbort(TxnType.WRITE); }
 
-    @Test 
+    @Test
     public void transaction_err_11()    { testAbortCommit(TxnType.READ); }
 
-    @Test 
+    @Test
     public void transaction_err_12()    { testAbortCommit(TxnType.WRITE); }
 
     private void read1(Dataset ds) {
@@ -490,7 +486,7 @@ public abstract class AbstractTestTransactionLifecycle
     private static void safeEnd(Dataset ds) {
         try { ds.end(); } catch (JenaTransactionException ex) {}
     }
-    
+
     // Error conditions that should be detected.
 
     private void testBeginBegin(TxnType txnType1, TxnType txnType2) {
@@ -504,7 +500,7 @@ public abstract class AbstractTestTransactionLifecycle
             safeEnd(ds);
         }
     }
-    
+
     private void testCommitCommit(TxnType txnType) {
         Dataset ds = create();
         ds.begin(txnType);
@@ -599,7 +595,7 @@ public abstract class AbstractTestTransactionLifecycle
     public synchronized void transaction_concurrency_reader() throws InterruptedException, ExecutionException, TimeoutException {
         ExecutorService executor = Executors.newCachedThreadPool();
         AtomicLong counter = new AtomicLong(0);
-        
+
         try {
             final Dataset ds = create();
 
