@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { BUS } from '@/events'
+import { displayError } from '@/utils'
 
 /**
  * A mixin for views and components that need to have the current dataset loaded. The
@@ -31,7 +31,7 @@ export default {
   },
   data () {
     return {
-      isDatasetStatsLoading: true,
+      isDatasetStatsLoading: null,
       serverData: {
         datasets: []
       }
@@ -57,33 +57,16 @@ export default {
     }
   },
   methods: {
-    loadCurrentDataset () {
+    async loadCurrentDataset () {
       this.isDatasetStatsLoading = true
-      this.$fusekiService
-        .getServerData()
-        .then(serverData => {
-          this.serverData = serverData
-        })
-      this.$fusekiService
-        .getDatasetStats(this.datasetName)
-        .then(datasetStats => {
-          this.datasetStats = datasetStats
-        })
-      this.isDatasetStatsLoading = false
+      try {
+        this.serverData = await this.$fusekiService.getServerData()
+        this.datasetStats = await this.$fusekiService.getDatasetStats(this.datasetName)
+      } catch (error) {
+        displayError(this, error)
+      } finally {
+        this.isDatasetStatsLoading = null
+      }
     }
-  },
-  beforeRouteEnter (from, to, next) {
-    next(async vm => {
-      BUS.$on('connection:reset', vm.loadCurrentDataset)
-      vm.loadCurrentDataset()
-    })
-  },
-  async beforeRouteUpdate (from, to, next) {
-    this.loadCurrentDataset()
-    next()
-  },
-  beforeRouteLeave (from, to, next) {
-    BUS.$off('connection:reset')
-    next()
   }
 }

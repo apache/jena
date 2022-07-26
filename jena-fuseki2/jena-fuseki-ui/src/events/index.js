@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import Vue from 'vue'
+import mitt from 'mitt'
 
-const BUS = new Vue()
+const BUS = mitt()
 
 export {
   BUS

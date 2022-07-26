@@ -19,13 +19,15 @@
   <div class="container-fluid">
     <div class="row mt-4">
       <div class="col-12">
-        <h2>/{{ this.datasetName }}</h2>
+        <h2>/{{ datasetName }}</h2>
         <div class="card">
           <nav class="card-header">
             <Menu :dataset-name="datasetName" />
           </nav>
-          <div class="card-body" v-if="this.services !== null && (!this.services['gsp-rw'] || this.services['gsp-rw'].length === 0)">
-            <div class="alert alert-warning">No service for adding data available. The Graph Store Protocol service should be configured to allow adding data.</div>
+          <div class="card-body" v-if="services !== null && (!services['gsp-rw'] || services['gsp-rw'].length === 0)">
+            <div class="alert alert-warning">
+              No service for adding data available. The Graph Store Protocol service should be configured to allow adding data.
+            </div>
           </div>
           <div class="card-body" v-else>
             <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active">
@@ -34,8 +36,10 @@
             <div class="row">
               <div class="col-sm-12">
                 <h3>Upload files</h3>
-                <p>Load data into the default graph of the currently selected dataset, or the given named graph.
-                  You may upload any RDF format, such as Turtle, RDF/XML or TRiG.</p>
+                <p>
+                  Load data into the default graph of the currently selected dataset, or the given named graph.
+                  You may upload any RDF format, such as Turtle, RDF/XML or TRiG.
+                </p>
                 <form ref="upload-form" novalidate>
                   <div
                     id="dataset-graph-name-group"
@@ -66,13 +70,14 @@
                     class="form-row form-group"
                   >
                     <label
-                      for="add-files-action-dropdown"
                       class="col-sm-4 col-md-4 col-lg-2 col-12 col-form-label col-form-label-sm"
                     >Files to upload</label>
                     <div class="col has-validation">
+                      <!-- eslint-disable vue/v-on-event-hyphenation -->
                       <file-upload
                         ref="upload"
-                        v-model="upload.files"
+                        :value="upload.files"
+                        @update:modelValue="upload.files = $event"
                         :post-action="postActionUrl"
                         :extensions="upload.extensions"
                         :accept="upload.accept"
@@ -86,6 +91,7 @@
                         :drop-directory="upload.dropDirectory"
                         :add-index="upload.addIndex"
                         :class="fileUploadClasses"
+                        :custom-action="handleUploadWithErrorHandling"
                       >
                         <FontAwesomeIcon icon="plus" />
                         <span class="ms-2">select files</span>
@@ -94,7 +100,8 @@
                         v-if="!$refs.upload || !$refs.upload.active"
                         @click.prevent="uploadAll()"
                         type="button"
-                        class="btn btn-primary ms-2 d-inline">
+                        class="btn btn-primary ms-2 d-inline"
+                      >
                         <FontAwesomeIcon icon="upload" />
                         <span class="ms-2">upload all</span>
                       </button>
@@ -102,7 +109,8 @@
                         v-else
                         @click.prevent="$refs.upload.active = false"
                         type="button"
-                        class="btn btn-primary ms-2 d-inline">
+                        class="btn btn-primary ms-2 d-inline"
+                      >
                         <FontAwesomeIcon icon="times-circle" />
                         <span class="ms-2">stop upload</span>
                       </button>
@@ -124,13 +132,13 @@
                   fixed
                   hover
                 >
-                  <template v-slot:cell(size)="data">
+                  <template #cell(size)="data">
                     {{ readableFileSize(data.item.size) }}
                   </template>
-                  <template v-slot:cell(speed)="data">
+                  <template #cell(speed)="data">
                     {{ readableFileSize(data.item.speed) }}/s
                   </template>
-                  <template v-slot:cell(status)="data">
+                  <template #cell(status)="data">
                     <div class="progress">
                       <div
                         :class="`progress-bar bg-${getFileStatus(data.item)}`"
@@ -139,7 +147,9 @@
                         aria-valuemin="0"
                         aria-valuemax="100"
                         role="progressbar"
-                      >{{ data.item.progress }}</div>
+                      >
+                        {{ data.item.progress }}
+                      </div>
                     </div>
                     <span class="small">Triples uploaded:&nbsp;</span>
                     <span v-if="data.item.response.tripleCount" class="small">
@@ -147,7 +157,7 @@
                     </span>
                     <span v-else class="small">0</span>
                   </template>
-                  <template v-slot:cell(actions)="data">
+                  <template #cell(actions)="data">
                     <button
                       @click.prevent="data.item.success || data.item.error === 'compressing' ? false : $refs.upload.update(data.item, {active: true})"
                       type="button"
@@ -183,6 +193,8 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPlus, faUpload, faTimesCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import currentDatasetMixin from '@/mixins/current-dataset'
+import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
+import { displayError } from '@/utils'
 
 library.add(faPlus, faUpload, faTimesCircle, faMinusCircle)
 
@@ -199,6 +211,8 @@ export default {
   mixins: [
     currentDatasetMixin
   ],
+
+  ...currentDatasetMixinNavigationGuards,
 
   data () {
     return {
@@ -217,7 +231,7 @@ export default {
         minSize: 0,
         // size: 1024 * 1024 * 10,
         multiple: true,
-        directory: false,
+        directory: null,
         drop: true,
         dropDirectory: true,
         addIndex: false,
@@ -307,8 +321,6 @@ export default {
   methods: {
     getFileStatus (file) {
       if (file.error) {
-        // eslint-disable-next-line no-console
-        console.error(file)
         return 'danger'
       }
       if (file.success) {
@@ -375,6 +387,15 @@ export default {
         'is-invalid'
       ]
       return false
+    },
+    async handleUploadWithErrorHandling (file, component) {
+      try {
+        return component
+          .uploadHtml5(file)
+          .catch(error => displayError(this, error))
+      } catch (error) {
+        displayError(this, error)
+      }
     }
   }
 }

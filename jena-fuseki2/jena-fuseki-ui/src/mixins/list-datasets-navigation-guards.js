@@ -15,12 +15,24 @@
  * limitations under the License.
  */
 
+import { BUS } from '@/events'
+
 export default {
-  data () {
-    return {
-      perPage: 5,
-      currentPage: 1,
-      filter: ''
-    }
+  beforeRouteEnter (from, to, next) {
+    next(async vm => {
+      await vm.initializeData()
+      BUS.on('connection:reset', vm.initializeData)
+    })
+  },
+
+  async beforeRouteUpdate (from, to, next) {
+    this.initializeData()
+    next()
+  },
+
+  beforeRouteLeave (from, to, next) {
+    this.serverData = null
+    BUS.off('connection:reset')
+    next()
   }
 }

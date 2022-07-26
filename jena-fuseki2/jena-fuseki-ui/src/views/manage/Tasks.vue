@@ -35,11 +35,10 @@
                     placeholder="Filter tasks"
                     empty-text="No tasks created"
                     empty-filtered-text="No tasks found"
-                  >
-                  </table-listing>
+                  />
                 </div>
               </div>
-           </div>
+            </div>
           </div>
         </div>
       </div>
@@ -108,7 +107,7 @@ export default {
         .getTasks()
         .then(response => {
           vm.tasks = response.data
-          vm.isBusy = false
+          vm.isBusy = null
         })
     })
   },
@@ -121,7 +120,7 @@ export default {
         .getTasks()
         .then(response => {
           vm.tasks = response.data
-          vm.isBusy = false
+          vm.isBusy = null
         })
     }, 10000)
   },

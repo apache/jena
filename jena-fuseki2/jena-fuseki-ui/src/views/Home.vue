@@ -19,7 +19,9 @@
   <div class="container-fluid">
     <div class="row mt-4">
       <div class="col-12">
-        <h2 class="text-center">Apache Jena Fuseki</h2>
+        <h2 class="text-center">
+          Apache Jena Fuseki
+        </h2>
         <div class="text-center">
           <span class="badge text-bg-secondary">{{ headerString }}</span>
         </div>
@@ -30,35 +32,43 @@
       :items="items"
       :is-busy="isBusy"
     >
-      <template v-slot:empty>
-        <h4>No datasets created - <router-link to="/manage/new">add one</router-link></h4>
+      <template #empty>
+        <h4>
+          No datasets created - <router-link to="/manage/new">
+            add one
+          </router-link>
+        </h4>
       </template>
-      <template v-slot:cell(actions)="data">
+      <template #cell(actions)="data">
         <button
           @click="$router.push(`/dataset${data.item.name}/query`)"
           type="button"
-          class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
+          class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block"
+        >
           <FontAwesomeIcon icon="question-circle" />
           <span class="ms-1">query</span>
         </button>
         <button
           @click="$router.push(`/dataset${data.item.name}/upload`)"
           type="button"
-          class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
+          class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block"
+        >
           <FontAwesomeIcon icon="upload" />
           <span class="ms-1">add data</span>
         </button>
         <button
           @click="$router.push(`/dataset${data.item.name}/edit`)"
           type="button"
-          class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
+          class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block"
+        >
           <FontAwesomeIcon icon="edit" />
           <span class="ms-1">edit</span>
         </button>
         <button
           @click="$router.push(`/dataset${data.item.name}/info`)"
           type="button"
-          class="btn btn-primary me-0 mb-md-0 d-block d-md-inline-block">
+          class="btn btn-primary me-0 mb-md-0 d-block d-md-inline-block"
+        >
           <FontAwesomeIcon icon="tachometer-alt" />
           <span class="ms-1">info</span>
         </button>
@@ -69,10 +79,12 @@
 
 <script>
 import listDatasets from '@/mixins/list-datasets'
+import listDatasetsNavigationGuards from '@/mixins/list-datasets-navigation-guards'
 import TableListing from '@/components/dataset/TableListing'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faQuestionCircle, faUpload, faTachometerAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { BUS } from '@/events'
 
 library.add(faQuestionCircle, faUpload, faTachometerAlt, faEdit)
 
@@ -83,9 +95,29 @@ export default {
     listDatasets
   ],
 
+  ...listDatasetsNavigationGuards,
+
   components: {
     'table-listing': TableListing,
     FontAwesomeIcon
+  },
+
+  beforeRouteEnter (from, to, next) {
+    next(async vm => {
+      await vm.initializeData()
+      BUS.on('connection:reset', vm.initializeData)
+    })
+  },
+
+  async beforeRouteUpdate (from, to, next) {
+    this.initializeData()
+    next()
+  },
+
+  beforeRouteLeave (from, to, next) {
+    this.serverData = null
+    BUS.off('connection:reset')
+    next()
   },
 
   computed: {

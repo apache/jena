@@ -51,7 +51,7 @@ describe('FusekiService', () => {
   it('gets server status when initially offline', async () => {
     const expected = new ServerStatus(true, 'Last ping returned OK in 0ms')
     const stub = sinon.stub(axios, 'get')
-    const bus = sinon.stub(BUS, '$emit')
+    const bus = sinon.stub(BUS, 'emit')
     stub.resolves(Promise.resolve({}))
     const serverStatus = await fusekiService.getServerStatus()
     expect(stub.calledWith('/$/ping')).to.equal(true, 'Ping URL not called')
@@ -64,7 +64,7 @@ describe('FusekiService', () => {
   it('gets server status when initially online', async () => {
     const expected = new ServerStatus(true, 'Last ping returned OK in 0ms')
     const stub = sinon.stub(axios, 'get')
-    const bus = sinon.stub(BUS, '$emit')
+    const bus = sinon.stub(BUS, 'emit')
     stub.resolves(Promise.resolve({}))
     // pretend it's online!
     fusekiService.isOffline = false
@@ -79,7 +79,7 @@ describe('FusekiService', () => {
   it('gets server status when initially online, but backend is offline', async () => {
     const expected = new ServerStatus(false, 'Last ping returned "Error: jena" in 0ms')
     const stub = sinon.stub(axios, 'get')
-    const bus = sinon.stub(BUS, '$emit')
+    const bus = sinon.stub(BUS, 'emit')
     stub.resolves(Promise.reject(new Error('jena')))
     // pretend it's online!
     fusekiService.isOffline = false

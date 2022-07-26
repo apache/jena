@@ -23,6 +23,6 @@ import FusekiService from '@/services/fuseki.service'
  */
 export default {
   install (vm) {
-    vm.prototype.$fusekiService = new FusekiService(window.location)
+    vm.config.globalProperties.$fusekiService = new FusekiService(window.location)
   }
 }

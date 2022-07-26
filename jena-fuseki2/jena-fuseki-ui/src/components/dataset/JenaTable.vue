@@ -91,9 +91,8 @@
         role="row"
         class="jena-table-cell"
       >
-        <template v-for="(field, fieldIndex) of fields">
+        <template v-for="(field, fieldIndex) of fields" :key="`jena-table-tbody-row-${rowIndex}-field-${fieldIndex}`">
           <td
-            :key="`jena-table-tbody-row-${rowIndex}-field-${fieldIndex}`"
             :aria-colindex="fieldIndex + 1"
             role="cell"
           >
@@ -110,7 +109,7 @@
     <tfoot role="rowgroup">
       <slot
         name="custom-foot"
-        :fields="this.fields"
+        :fields="fields"
       ></slot>
     </tfoot>
   </table>
@@ -143,10 +142,13 @@ export default {
       type: Number,
       default: -1
     },
-    filter: String,
+    filter: {
+      type: String,
+      default: null
+    },
     busy: {
       type: Boolean,
-      default: false
+      default: null
     },
     emptyText: {
       type: String,
@@ -177,7 +179,7 @@ export default {
       // Sorting terms.
       const sortBy = this.sortBy
       // Apply the filter - if any - and sort the list.
-      const filtered = this.items
+      const filtered = [...this.items]
         .filter(row => {
           if (!this.filter) {
             return true

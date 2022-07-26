@@ -16,18 +16,18 @@
  */
 
 import { expect } from 'chai'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import TableListing from '@/components/dataset/TableListing.vue'
-
-const localVue = createLocalVue()
-
-localVue.prototype.$fusekiService = {}
 
 describe('TableListing', () => {
   const mountFunction = options => {
     return mount(TableListing, {
-      localVue,
-      ...options
+      ...options,
+      global: {
+        mocks: {
+          $fusekiService: {}
+        }
+      }
     })
   }
   it('shows a message when table is empty', () => {

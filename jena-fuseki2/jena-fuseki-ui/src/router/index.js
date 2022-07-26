@@ -15,12 +15,9 @@
  * limitations under the License.
 */
 
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import * as VueRouter from 'vue-router'
 import Home from '../views/Home'
 import NotFound from '@/views/NotFound'
-
-Vue.use(VueRouter)
 
 const routes = [
   {
@@ -29,10 +26,16 @@ const routes = [
     component: Home
   },
   {
+    path: '/dataset/:datasetName/query',
+    name: 'DatasetQuery',
+    component: () => import(/* webpackChunkName: "datasetQuery" */ '../views/dataset/Query'),
+    props: true
+  },
+  {
     // JENA-2295: we expand the pattern of this path with an `*` to allow for the YASGUI
     //            query parameter, e.g. /#/dataset/abc/query?query=SELECT...
     path: '/dataset/:datasetName/query*',
-    name: 'DatasetQuery',
+    name: 'DatasetQueryParameters',
     component: () => import(/* webpackChunkName: "datasetQuery" */ '../views/dataset/Query'),
     props: true
   },
@@ -75,14 +78,15 @@ const routes = [
     component: () => import(/* webpackChunkName: "documentation" */ '../views/Help')
   },
   {
-    path: '*',
+    path: '/:pathMatch(.*)*',
     name: 'Not Found',
     component: NotFound
   }
 ]
 
-const router = new VueRouter({
-  routes
+const router = VueRouter.createRouter({
+  routes,
+  history: VueRouter.createWebHashHistory()
 })
 
 export default router

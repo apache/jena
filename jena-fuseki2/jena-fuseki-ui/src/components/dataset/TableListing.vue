@@ -32,7 +32,10 @@
               :disabled="!filter"
               @click="filter = ''"
               type="button"
-              class="btn btn-secondary input-group-text">Clear</button>
+              class="btn btn-secondary input-group-text"
+            >
+              Clear
+            </button>
           </div>
         </div>
       </div>
@@ -53,7 +56,7 @@
           hover
           striped
         >
-          <template v-slot:table-busy>
+          <template #table-busy>
             <div class="text-center text-danger my-2">
               <div class="spinner-border align-middle" role="status">
                 <span class="visually-hidden">Loading...</span>
@@ -61,16 +64,19 @@
               <strong>Loading...</strong>
             </div>
           </template>
-          <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
+          <template v-for="(_, slot) of $slots" #[slot]="scope">
+            <slot :name="slot" v-bind="scope" />
+          </template>
         </jena-table>
       </div>
     </div>
     <div class="row g-0">
       <div class="col-12">
         <pagination
-          v-model="currentPage"
+          :value="currentPage"
           :per-page="perPage"
           :total-rows="items.length"
+          @input="currentPage = $event"
         >
         </pagination>
       </div>
@@ -79,15 +85,14 @@
 </template>
 
 <script>
-import tableMixin from '@/mixins/table'
 import JenaTable from '@/components/dataset/JenaTable'
 import Pagination from '@/components/dataset/Pagination.vue'
 
 export default {
   name: 'TableListing',
 
-  mixins: [
-    tableMixin
+  emits: [
+    'update:currentPage'
   ],
 
   components: {
@@ -106,7 +111,7 @@ export default {
     },
     isBusy: {
       type: Boolean,
-      default: false
+      default: null
     },
     placeholder: {
       type: String,
@@ -123,6 +128,14 @@ export default {
     filterable: {
       type: Boolean,
       default: true
+    }
+  },
+
+  data () {
+    return {
+      perPage: 5,
+      currentPage: 1,
+      filter: ''
     }
   }
 }

@@ -67,6 +67,10 @@ export default {
     }
   },
 
+  emits: [
+    'toggle-sort-status'
+  ],
+
   methods: {
     toggleSortStatus () {
       if (this.sortable === true) {

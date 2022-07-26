@@ -21,17 +21,22 @@ module.exports = {
     node: true
   },
   extends: [
-    'plugin:vue/essential',
-    '@vue/standard'
+    'plugin:vue/vue3-recommended'
   ],
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: '@babel/eslint-parser',
+    requireConfigFile: false
   },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'vue/custom-event-name-casing': 'off',
-    'vue/multi-word-component-names': 'off'
+    'vue/multi-word-component-names': 'off',
+    'vue/no-reserved-component-names': 'off',
+    'vue/order-in-components': 'off',
+    'vue/max-attributes-per-line': 'off',
+    'vue/attributes-order': 'off',
+    'vue/html-self-closing': 'off'
   },
   overrides: [
     {

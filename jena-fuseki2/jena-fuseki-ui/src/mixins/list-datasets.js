@@ -55,26 +55,21 @@ export default {
         })
     },
     isBusy () {
-      return this.serverData === null
+      if (this.serverData === null) {
+        return true
+      }
+      // N.B.: For Vue-3, it's better to return a `null` value so the value is
+      // not set, as otherwise Vue-3 raises a warning about false still
+      // setting the value to the component.
+      return null
     }
   },
 
-  beforeRouteEnter (from, to, next) {
-    next(async vm => {
-      await vm.initializeData()
-      BUS.$on('connection:reset', vm.initializeData)
-    })
-  },
-
-  async beforeRouteUpdate (from, to, next) {
-    this.initializeData()
-    next()
-  },
-
-  beforeRouteLeave (from, to, next) {
-    this.serverData = null
-    BUS.$off('connection:reset')
-    next()
+  created () {
+    let route = this.$route.matched[0]
+    if (!route)
+      return;
+    route.beforeRouteEnter = this.beforeRouteEnter
   },
 
   methods: {

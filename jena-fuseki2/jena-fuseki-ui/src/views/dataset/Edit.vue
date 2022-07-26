@@ -19,13 +19,15 @@
   <div class="container-fluid">
     <div class="row mt-4">
       <div class="col-12">
-        <h2>/{{ this.datasetName }}</h2>
+        <h2>/{{ datasetName }}</h2>
         <div class="card">
           <nav class="card-header">
             <Menu :dataset-name="datasetName" />
           </nav>
-          <div class="card-body" v-if="this.services !== null && (!this.services['gsp-rw'] || this.services['gsp-rw'].length === 0)">
-            <div class="alert alert-warning">No service for adding data available. The Graph Store Protocol service should be configured to allow adding data.</div>
+          <div class="card-body" v-if="services !== null && (!services['gsp-rw'] || services['gsp-rw'].length === 0)">
+            <div class="alert alert-warning">
+              No service for adding data available. The Graph Store Protocol service should be configured to allow adding data.
+            </div>
           </div>
           <div class="card-body" v-else>
             <h3>Available Graphs</h3>
@@ -38,13 +40,16 @@
                       @click="listCurrentGraphs()"
                       type="button"
                       class="btn btn-primary"
-                    >list current graphs</button>
+                    >
+                      list current graphs
+                    </button>
                   </div>
                   <ul class="list-group">
-                    <li class="list-group-item"
+                    <li
+                      class="list-group-item"
                       v-if="!loadingGraphs"
                     >
-                      <span v-if="this.graphs.length === 0">Click to list current graphs</span>
+                      <span v-if="graphs.length === 0">Click to list current graphs</span>
                       <table-listing
                         :fields="fields"
                         :items="items"
@@ -52,7 +57,7 @@
                         :filterable="false"
                         v-else
                       >
-                        <template v-slot:cell(name)="data">
+                        <template #cell(name)="data">
                           <a href="#" @click.prevent="fetchGraph(data.item.name)">
                             {{ data.item.name }}
                           </a>
@@ -74,46 +79,47 @@
                     <span class="visually-hidden">Loading...</span>
                   </div>
                   <div v-else>
-                      <span class="input-group-text">graph</span>
-                      <input
-                        :placeholder="selectedGraph !== '' ? selectedGraph : 'choose a graph from the list'"
-                        type="text"
-                        class="form-control"
-                        aria-label="graph name"
-                        disabled
-                      />
-                    </div>
-                    <textarea
-                      ref="graph-editor"
-                      v-model="content"
+                    <span class="input-group-text">graph</span>
+                    <input
+                      :placeholder="selectedGraph !== '' ? selectedGraph : 'choose a graph from the list'"
+                      type="text"
                       class="form-control"
-                    ></textarea>
-                    <div class="mt-2 text-right">
-                      <button
-                        @click="discardChanges()"
-                        type="button"
-                        class="btn btn-secondary me-2"
-                      >
-                        <FontAwesomeIcon icon="times" />
-                        <span class="ms-1">discard changes</span>
-                      </button>
-                      <button
-                        :disabled="saveGraphDisabled"
-                        @click="saveGraph()"
-                        type="button"
-                        class="btn btn-info"
-                      >
-                        <FontAwesomeIcon icon="check" />
-                        <span
-                          class="ms-1"
-                        >save</span>
-                      </button>
-                    </div>
+                      aria-label="graph name"
+                      disabled
+                    />
+                  </div>
+                  <textarea
+                    ref="graph-editor"
+                    :value="content"
+                    @update:modelValue="content = $event"
+                    class="form-control"
+                  ></textarea>
+                  <div class="mt-2 text-right">
+                    <button
+                      @click="discardChanges()"
+                      type="button"
+                      class="btn btn-secondary me-2"
+                    >
+                      <FontAwesomeIcon icon="times" />
+                      <span class="ms-1">discard changes</span>
+                    </button>
+                    <button
+                      :disabled="saveGraphDisabled"
+                      @click="saveGraph()"
+                      type="button"
+                      class="btn btn-info"
+                    >
+                      <FontAwesomeIcon icon="check" />
+                      <span
+                        class="ms-1"
+                      >save</span>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
       </div>
     </div>
   </div>
@@ -131,6 +137,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import currentDatasetMixin from '@/mixins/current-dataset'
+import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
 import { displayError, displayNotification } from '@/utils'
 
 library.add(faTimes, faCheck)
@@ -150,10 +157,12 @@ export default {
     currentDatasetMixin
   ],
 
+  ...currentDatasetMixinNavigationGuards,
+
   data () {
     return {
-      loadingGraphs: false,
-      loadingGraph: false,
+      loadingGraphs: null,
+      loadingGraph: null,
       graphs: [],
       fields: [
         {
@@ -172,7 +181,6 @@ export default {
       selectedGraph: '',
       content: '',
       code: '',
-      codemirrorEditor: null,
       cmOptions: {
         mode: 'text/turtle',
         lineNumbers: true
@@ -197,6 +205,10 @@ export default {
     saveGraphDisabled () {
       return this.selectedGraph === '' || this.loadingGraph || this.loadingGraphs
     }
+  },
+
+  created () {
+    this.codemirrorEditor = null
   },
 
   watch: {
@@ -235,8 +247,8 @@ export default {
       } catch (error) {
         displayError(this, error)
       } finally {
-        this.loadingGraphs = false
-        this.loadingGraph = false
+        this.loadingGraphs = null
+        this.loadingGraph = null
       }
     },
     fetchGraph: async function (graphName) {
@@ -254,7 +266,7 @@ export default {
       } catch (error) {
         displayError(this, error)
       } finally {
-        this.loadingGraph = false
+        this.loadingGraph = null
       }
     },
     discardChanges: function () {
@@ -270,7 +282,7 @@ export default {
         } catch (error) {
           displayError(this, error)
         } finally {
-          this.loadingGraph = false
+          this.loadingGraph = null
         }
       }
     }

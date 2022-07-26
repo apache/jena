@@ -20,7 +20,9 @@
     <div class="row mt-2">
       <div class="col-12">
         <div class="jumbotron">
-          <h1 class="display-4">404 Page Not Found</h1>
+          <h1 class="display-4">
+            404 Page Not Found
+          </h1>
           <p class="lead">
             <button type="button" class="btn btn-primary" @click="$router.push('/')">
               <FontAwesomeIcon icon="arrow-left" /> Back to Home
