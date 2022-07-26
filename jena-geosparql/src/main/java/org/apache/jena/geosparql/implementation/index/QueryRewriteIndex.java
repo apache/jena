@@ -45,7 +45,7 @@ public class QueryRewriteIndex {
     private static String LABEL_DEFAULT = "Query Rewrite";
     private static int MAP_SIZE_DEFAULT = UNLIMITED_MAP;
     private static long MAP_EXPIRY_INTERVAL_DEFAULT = MAP_EXPIRY_INTERVAL;
-    
+
     public static final Symbol QUERY_REWRITE_INDEX_SYMBOL = Symbol.create("http://jena.apache.org/spatial#query-index");
 
     public QueryRewriteIndex() {
@@ -79,9 +79,9 @@ public class QueryRewriteIndex {
         }
 
         if (indexActive) {
-            Triple key = new Triple(subjectGeometryLiteral, predicate, objectGeometryLiteral);            
+            Triple key = new Triple(subjectGeometryLiteral, predicate, objectGeometryLiteral);
             try {
-                return index.computeIfAbsent(key, k -> propertyFunction.testFilterFunction(subjectGeometryLiteral, objectGeometryLiteral));                
+                return index.computeIfAbsent(key, k -> propertyFunction.testFilterFunction(subjectGeometryLiteral, objectGeometryLiteral));
             } catch (NullPointerException ex) {
                 //Catch NullPointerException and fall through to default action.
             }
@@ -132,12 +132,11 @@ public class QueryRewriteIndex {
      */
     public Model toModel() {
         Graph graph = GraphFactory.createDefaultGraph();
-        index.entrySet().forEach((entry) -> {            
-            if (entry.getValue()) {
-                graph.add(entry.getKey());
+        index.forEach((key, value) -> {
+            if (value) {
+                graph.add(key);
             }
         });
-
         return ModelFactory.createModelForGraph(graph);
     }
 
