@@ -20,18 +20,17 @@ package org.apache.jena.geosparql.implementation.index;
 import io.github.galbiston.expiring_map.ExpiringMap;
 import static io.github.galbiston.expiring_map.MapDefaultValues.MAP_EXPIRY_INTERVAL;
 import static io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_MAP;
-import java.util.Map.Entry;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.geo.topological.GenericPropertyFunction;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
@@ -42,12 +41,11 @@ public class QueryRewriteIndex {
 
     private boolean indexActive;
     private final String queryRewriteLabel;
-    private ExpiringMap<String, Boolean> index;
+    private ExpiringMap<Triple, Boolean> index;
     private static String LABEL_DEFAULT = "Query Rewrite";
     private static int MAP_SIZE_DEFAULT = UNLIMITED_MAP;
     private static long MAP_EXPIRY_INTERVAL_DEFAULT = MAP_EXPIRY_INTERVAL;
-    private static final String KEY_SEPARATOR = "@";
-
+    
     public static final Symbol QUERY_REWRITE_INDEX_SYMBOL = Symbol.create("http://jena.apache.org/spatial#query-index");
 
     public QueryRewriteIndex() {
@@ -74,14 +72,14 @@ public class QueryRewriteIndex {
      * @param propertyFunction
      * @return Result of relation between subject and object.
      */
-    public final Boolean test(Node subjectGeometryLiteral, Property predicate, Node objectGeometryLiteral, GenericPropertyFunction propertyFunction) {
+    public final Boolean test(Node subjectGeometryLiteral, Node predicate, Node objectGeometryLiteral, GenericPropertyFunction propertyFunction) {
 
         if (!subjectGeometryLiteral.isLiteral() || !objectGeometryLiteral.isLiteral()) {
             return false;
         }
 
         if (indexActive) {
-            String key = subjectGeometryLiteral.getLiteralLexicalForm() + KEY_SEPARATOR + predicate.getURI() + KEY_SEPARATOR + objectGeometryLiteral.getLiteralLexicalForm();
+            Triple key = new Triple(subjectGeometryLiteral, predicate, objectGeometryLiteral);            
             try {
                 return index.computeIfAbsent(key, k -> propertyFunction.testFilterFunction(subjectGeometryLiteral, objectGeometryLiteral));                
             } catch (NullPointerException ex) {
@@ -133,19 +131,14 @@ public class QueryRewriteIndex {
      * @return Model containing all true assertions.
      */
     public Model toModel() {
-        Model model = ModelFactory.createDefaultModel();
-        for (Entry<String, Boolean> entry : index.entrySet()) {
-            Boolean value = entry.getValue();
-            if (value) {
-                String[] parts = entry.getKey().split(KEY_SEPARATOR);
-                Resource subject = ResourceFactory.createResource(parts[0]);
-                Property property = ResourceFactory.createProperty(parts[1]);
-                Resource object = ResourceFactory.createResource(parts[2]);
-                model.add(subject, property, object);
+        Graph graph = GraphFactory.createDefaultGraph();
+        index.entrySet().forEach((entry) -> {            
+            if (entry.getValue()) {
+                graph.add(entry.getKey());
             }
-        }
+        });
 
-        return model;
+        return ModelFactory.createModelForGraph(graph);
     }
 
     /**
