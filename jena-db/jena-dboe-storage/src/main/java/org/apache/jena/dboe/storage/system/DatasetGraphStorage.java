@@ -212,4 +212,9 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
         return stream()
                 .map(Quad::getGraph).filter(gn->!Quad.isDefaultGraph(gn)).distinct().count();
     }
+
+    @Override
+    public String toString() {
+        return "DB: "+getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this));
+    }
 }

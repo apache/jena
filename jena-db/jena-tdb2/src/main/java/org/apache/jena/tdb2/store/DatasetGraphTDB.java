@@ -64,7 +64,7 @@ public class DatasetGraphTDB extends DatasetGraphStorage
     public boolean supportsTransactionAbort() {
         return true;
     }
-    
+
     public Location getLocation() {
         return location;
     }
