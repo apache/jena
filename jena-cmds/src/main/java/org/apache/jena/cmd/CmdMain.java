@@ -32,7 +32,7 @@ public abstract class CmdMain extends CmdLineArgs
 {
     // Do this very early so it happens before anything else
     // gets a chance to create a logger.
-    static { LogCtl.setLogging() ; }
+    static { LogCtl.setLogging(); }
 
     public CmdMain(String[] args) {
         super(args);
@@ -40,21 +40,21 @@ public abstract class CmdMain extends CmdLineArgs
 
     /** Run command - exit on failure */
     public void mainRun()
-    { mainRun(false, true) ; }
+    { mainRun(false, true); }
 
     /** Run command - choose whether to exit on failure */
     public void mainRun(boolean exitOnFailure)
-    { mainRun(exitOnFailure, true) ; }
+    { mainRun(exitOnFailure, true); }
 
     /** Run command - exit on success or failure */
     public void mainAndExit()
-    { mainRun(true, true) ; }
+    { mainRun(true, true); }
 
     /** Run command */
     public int mainRun(boolean exitOnSuccess, boolean exitOnFailure)
     {
-        try { mainMethod() ; }
-        catch (TerminationException ex) { System.exit(ex.getCode()) ; }
+        try { mainMethod(); }
+        catch (TerminationException ex) { System.exit(ex.getCode()); }
         catch (IllegalArgumentException ex)
         {
             ex.printStackTrace(System.err);
@@ -89,7 +89,7 @@ public abstract class CmdMain extends CmdLineArgs
 
     protected abstract void exec();
     protected abstract String getCommandName();
-    public void cmdError(String msg) { cmdError(msg, true) ;}
+    public void cmdError(String msg) { cmdError(msg, true);}
 
     public void cmdError(String msg, boolean exit) {
         System.err.println(msg);

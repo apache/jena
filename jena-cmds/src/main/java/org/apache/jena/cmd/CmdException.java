@@ -24,7 +24,7 @@ package org.apache.jena.cmd;
 
 public class CmdException extends RuntimeException
 {
-    public CmdException()                             { super() ; }
-    public CmdException(String msg)                   { super(msg) ; }
-    public CmdException(String msg, Throwable cause)  { super(msg, cause) ; }
+    public CmdException()                             { super(); }
+    public CmdException(String msg)                   { super(msg); }
+    public CmdException(String msg, Throwable cause)  { super(msg, cause); }
 }

@@ -20,79 +20,73 @@ package org.apache.jena.cmd;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.ext.com.google.common.collect.Lists;
 public class Usage
 {
-    class Category
-    {
+    public static class Category {
         String desc;
         List<Entry> entries = new ArrayList<>();
-        Category(String desc) { this.desc = desc ; }
+        Category(String desc) {
+            this.desc = desc;
+        }
     }
-    
-   class Entry
-   { String arg; String msg;
-     Entry(String arg, String msg) { this.arg = arg ; this.msg = msg ; }
-   }
-   
-   List<Category> categories = new ArrayList<>();
-   public Usage()
-   {
+
+    private static class Entry {
+        String arg;
+        String msg;
+        Entry(String arg, String msg) {
+            this.arg = arg;
+            this.msg = msg;
+        }
+    }
+
+   private List<Category> categories = new ArrayList<>();
+
+   public Usage() {
        // Start with an unnamed category
        startCategory(null);
    }
-   
-   public void startCategory(String desc) 
-   {
+
+   public void startCategory(String desc) {
        categories.add(new Category(desc));
    }
-   
-   public void addUsage(String argName, String msg)
-   {
+
+   public void addUsage(String argName, String msg) {
        current().entries.add(new Entry(argName, msg));
    }
-   
-   
-   public void output(PrintStream out)
-   {
+
+   public void output(PrintStream out) {
        output(new IndentedWriter(out));
    }
-   
-   public void output(IndentedWriter out)
-   {
+
+   public void output(IndentedWriter out) {
        int INDENT1 = 2;
        int INDENT2 = 4;
        out.incIndent(INDENT1);
-       List<Category> categories2 = new ArrayList<>(categories);
-       Collections.reverse(categories2);
-       for ( Category c : categories2 )
-       {
-           if ( c.desc != null )
-           {
-               out.println( c.desc );
+
+       for ( Category c : Lists.reverse(categories) ) {
+           if ( c.desc != null ) {
+               out.println(c.desc);
            }
-           out.incIndent( INDENT2 );
-           for ( final Entry e : c.entries )
-           {
-               out.print( e.arg );
-               if ( e.msg != null )
-               {
-                   out.pad( 20 );
-                   out.print( "   " );
-                   out.print( e.msg );
+           out.incIndent(INDENT2);
+           for ( final Entry e : c.entries ) {
+               out.print(e.arg);
+               if ( e.msg != null ) {
+                   out.pad(20);
+                   out.print("   ");
+                   out.print(e.msg);
                }
                out.println();
            }
-           out.decIndent( INDENT2 );
+           out.decIndent(INDENT2);
        }
        out.decIndent(INDENT1);
        out.flush();
    }
-   
-   private Category current()
-   {
-       return categories.get(categories.size()-1);
+
+   private Category current() {
+       return categories.get(categories.size() - 1);
    }
 }
