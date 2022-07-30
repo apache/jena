@@ -223,24 +223,29 @@ public class HttpLib {
         try {
             return IO.readWholeFileAsUTF8(input);
         } catch (RuntimeIOException e) { throw new HttpException(e); }
+        finally { IO.close(input); }
     }
 
+    /**
+     * Clear up and generate an exception - used for 4xx and 5xx.
+     * This consumes the response body.
+     */
     static HttpException exception(HttpResponse<InputStream> response, int httpStatusCode) {
-
         URI uri = response.request().uri();
-
         //long length = HttpLib.getContentLength(response);
         // Not critical path code. Read body regardless.
         InputStream in = response.body();
-        String msg;
         try {
-            msg = IO.readWholeFileAsUTF8(in);
-            if ( msg.isBlank())
+            String msg;
+            try {
+                msg = IO.readWholeFileAsUTF8(in);
+                if ( msg.isBlank())
+                    msg = null;
+            } catch (RuntimeIOException e) {
                 msg = null;
-        } catch (RuntimeIOException e) {
-            msg = null;
-        }
-        return new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode), msg);
+            }
+            return new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode), msg);
+        } finally { IO.close(in); }
     }
 
     private static long getContentLength(HttpResponse<InputStream> response) {
