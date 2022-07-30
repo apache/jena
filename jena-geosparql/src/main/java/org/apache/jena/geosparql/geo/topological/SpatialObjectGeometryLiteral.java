@@ -104,7 +104,7 @@ public class SpatialObjectGeometryLiteral {
     protected static final SpatialObjectGeometryLiteral retrieve(Graph graph, Node targetSpatialObject) {
 
         Node geometry = null;
-        if (targetSpatialObject.isLiteral()) {
+        if (targetSpatialObject != null && targetSpatialObject.isLiteral()) {
             if (targetSpatialObject.getLiteralDatatype() instanceof GeometryDatatype) {
                 return new SpatialObjectGeometryLiteral(NodeFactory.createBlankNode(), targetSpatialObject);
             } else {
