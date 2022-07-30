@@ -583,4 +583,37 @@ public class GenericPropertyFunctionTest {
         assertEquals(expResult, result);
     }
 
+    /**
+     * Test of execEvaluated method, of class GenericPropertyFunction.
+     * Geo extension: test lookup using geo-literal
+     */
+    @Test
+    public void testExecEvaluated_object_is_literal() {
+
+
+        String query = "PREFIX geo: <http://www.opengis.net/ont/geosparql#>\n"
+                + "\n"
+                + "SELECT ?subj\n"
+                + "WHERE{\n"
+                + "    BIND(\"<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(6 7)\"^^geo:wktLiteral AS ?lit) \n"
+                + "    ?subj geo:sfContains ?lit .\n"
+                + "}ORDER by ?subj";
+
+        List<Resource> results = new ArrayList<>();
+        try (QueryExecution qe = QueryExecutionFactory.create(query, dataset)) {
+            ResultSet rs = qe.execSelect();
+            while (rs.hasNext()) {
+                QuerySolution qs = rs.nextSolution();
+
+                Resource result = qs.getResource("subj");
+                results.add(result);
+            }
+        }
+
+        List<Resource> expResults = Arrays.asList(FEATURE_A, GEOMETRY_A);
+
+        //
+        //
+        assertEquals(expResults, results);
+    }
 }

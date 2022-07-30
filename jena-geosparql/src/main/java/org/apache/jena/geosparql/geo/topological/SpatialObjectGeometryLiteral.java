@@ -19,11 +19,13 @@ package org.apache.jena.geosparql.geo.topological;
 
 import java.util.Objects;
 import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.geosparql.spatial.ConvertLatLon;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
@@ -102,6 +104,14 @@ public class SpatialObjectGeometryLiteral {
     protected static final SpatialObjectGeometryLiteral retrieve(Graph graph, Node targetSpatialObject) {
 
         Node geometry = null;
+        if (targetSpatialObject != null && targetSpatialObject.isLiteral()) {
+            if (targetSpatialObject.getLiteralDatatype() instanceof GeometryDatatype) {
+                return new SpatialObjectGeometryLiteral(NodeFactory.createBlankNode(), targetSpatialObject);
+            } else {
+                throw new DatatypeFormatException(targetSpatialObject.getLiteralLexicalForm() + " is no Geometry literal");
+            }
+        }
+
         if (graph.contains(targetSpatialObject, RDF.type.asNode(), Geo.FEATURE_NODE)) {
             //Target is Feature - find the default Geometry.
             ExtendedIterator<Triple> geomIter = graph.find(targetSpatialObject, Geo.HAS_DEFAULT_GEOMETRY_NODE, null);
