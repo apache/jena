@@ -343,6 +343,10 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
 
@@ -394,6 +398,7 @@
         <groupId>com.github.jsonld-java</groupId>
         <artifactId>jsonld-java</artifactId>
         <version>${ver.jsonldjava}</version>
+
         <exclusions>
           <exclusion>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -407,6 +412,15 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+
           <!-- Exclude so we use our choice of versions -->
           <exclusion>
             <groupId>org.apache.httpcomponents</groupId>
