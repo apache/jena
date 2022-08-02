@@ -204,9 +204,9 @@ export default {
       this.codeChanged(newVal)
     },
     services (newVal) {
-      if (newVal && newVal['gsp-rw'] && newVal['gsp-rw'].length > 0) {
+      if (newVal && newVal['gsp-rw'] && Object.keys(newVal['gsp-rw']).length > 0) {
         const element = this.$refs['graph-editor']
-        this.codemirrorEditor = CodeMirror.fromTextArea(element.$el, this.cmOptions)
+        this.codemirrorEditor = CodeMirror.fromTextArea(element, this.cmOptions)
         this.codemirrorEditor.on('change', cm => {
           this.content = cm.getValue()
         })
@@ -266,11 +266,6 @@ export default {
         this.loadingGraph = true
         try {
           await this.$fusekiService.saveGraph(this.datasetName, this.selectedGraph, this.content)
-          this.$bvToast.toast(`Graph updated for dataset "${this.datasetName}"`, {
-            title: 'Notification',
-            autoHideDelay: 5000,
-            appendToast: false
-          })
           displayNotification(this, `Graph updated for dataset "${this.datasetName}"`)
         } catch (error) {
           displayError(this, error)

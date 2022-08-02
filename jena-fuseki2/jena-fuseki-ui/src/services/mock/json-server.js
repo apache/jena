@@ -248,6 +248,19 @@ const sparqlCallback = (req, res) => {
 server.get('/:datasetName/sparql', sparqlCallback)
 server.post('/:datasetName/sparql', sparqlCallback)
 
+// GRAPH
+server.get('/:datasetName', (req, res) => {
+  res
+    .status(200)
+    .set('Content-Type', 'text/turtle')
+    .send(`@prefix :      <https://example.org/book/> .
+@prefix dc:    <https://purl.org/dc/elements/1.1/> .
+@prefix ns:    <https://example.org/ns#> .
+@prefix vcard: <https://www.w3.org/2001/vcard-rdf/3.0#> .
+
+:book4  dc:title  "Harry Potter and the Goblet of Fire" .`)
+})
+
 // PING
 server.get('/\\$/ping', (req, res) => {
   res.sendStatus(200)

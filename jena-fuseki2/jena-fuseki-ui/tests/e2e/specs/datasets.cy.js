@@ -226,7 +226,7 @@ describe('datasets', () => {
             .should('have.property', 'status', 409)
         })
     })
-    it('Can visualize the dataset information (Info View, tab)', () => {
+    it('Visualizes the dataset information (Info View, tab)', () => {
       cy.visit('/#/dataset/a/info')
       cy
         .contains('Loading')
@@ -266,6 +266,54 @@ describe('datasets', () => {
         .get('table#dataset-size-table > tbody > tr > td')
         .eq(1)
         .should('contain', '42')
+    })
+    it('Edits the graph', () => {
+      cy.visit('/#/dataset/a/edit')
+      cy.server()
+      cy.intercept('/a*').as('getGraph')
+      cy
+        .contains('Loading')
+        .should('not.exist')
+      cy
+        .get('h3')
+        .contains('Available Graphs')
+        .should('be.visible')
+      // List the current graphs.
+      cy
+        .get('button')
+        .contains('list current graphs')
+        .click()
+      cy
+        .contains('Loading')
+        .should('not.exist')
+      // Now the table must have the new columns with the graph name and count.
+      cy
+        .get('table.jena-table > thead > tr > th')
+        .eq(0)
+        .should('contain', 'name')
+      cy
+        .get('table.jena-table > thead > tr > th')
+        .eq(1)
+        .should('contain', 'count')
+      cy
+        .get('table.jena-table > tbody > tr > td')
+        .eq(0)
+        .should('contain', 'default')
+      cy
+        .get('table.jena-table > tbody > tr > td')
+        .eq(1)
+        .should('contain', '42')
+      // Clicking on the graph name must now load the contents of the graph into the editor.
+      cy
+        .get('table.jena-table > tbody > tr > td')
+        .eq(0)
+        .find('a')
+        .first()
+        .click()
+      cy.wait('@getGraph')
+      cy
+        .get('.CodeMirror-code')
+        .should('contain', 'Harry Potter and the Goblet of Fire')
     })
   })
 })
