@@ -43,7 +43,7 @@ export default {
     },
     services () {
       if (!this.currentDataset || !this.currentDataset['ds.services']) {
-        return []
+        return null
       }
       return this.currentDataset['ds.services']
         .slice()

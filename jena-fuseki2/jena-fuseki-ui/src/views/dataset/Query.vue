@@ -244,7 +244,7 @@ export default {
 
   computed: {
     datasetUrl () {
-      if (!this.datasetName || !this.services.query || !this.services.query['srv.endpoints'] || this.services.query['srv.endpoints'].length === 0) {
+      if (!this.datasetName || this.services === null || !this.services.query || !this.services.query['srv.endpoints'] || this.services.query['srv.endpoints'].length === 0) {
         return ''
       }
       return `/${this.datasetName}/${this.services.query['srv.endpoints'][0]}`

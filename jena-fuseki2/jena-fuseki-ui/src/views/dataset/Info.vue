@@ -29,9 +29,15 @@
               <div class="row">
                 <div class="col-sm-12 col-md-6">
                   <h3 class="text-center">Available Services</h3>
+                  <p class="card-text placeholder-glow" v-if="this.services == null">
+                    <span class="placeholder col-12"></span>
+                    <span class="placeholder col-12"></span>
+                    <span class="placeholder col-12"></span>
+                  </p>
                   <div
                     :key="service['srv.type']"
                     v-for="service in this.services"
+                    v-else
                   >
                     <div class="row" v-for="endpoint of service['srv.endpoints']" :key="endpoint">
                       <div class="col-6 text-right">{{ service['srv.description'] }}</div>

@@ -24,7 +24,7 @@
           <nav class="card-header">
             <Menu :dataset-name="datasetName" />
           </nav>
-          <div class="card-body" v-if="!this.services['gsp-rw'] || this.services['gsp-rw'].length === 0">
+          <div class="card-body" v-if="this.services !== null && (!this.services['gsp-rw'] || this.services['gsp-rw'].length === 0)">
             <div class="alert alert-warning">No service for adding data available. The Graph Store Protocol service should be configured to allow adding data.</div>
           </div>
           <div class="card-body" v-else>
