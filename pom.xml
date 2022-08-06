@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>26</version>
+    <version>27</version>
   </parent>
 
   <licenses>
@@ -71,7 +71,7 @@
     <ver.jetty>10.0.11</ver.jetty>
     <ver.shiro>1.9.1</ver.shiro>
 
-    <ver.protobuf>3.21.2</ver.protobuf>
+    <ver.protobuf>3.21.4</ver.protobuf>
     <ver.libthrift>0.16.0</ver.libthrift>
 
     <!-- JSON-LD 1.1 -->
@@ -93,7 +93,7 @@
     <ver.httpcore>4.4.15</ver.httpcore>
 
     <ver.shaded-guava>31.1-jre</ver.shaded-guava>
-    <ver.gson>2.9.0</ver.gson>
+    <ver.gson>2.9.1</ver.gson>
     <ver.commonsio>2.11.0</ver.commonsio>
     <ver.commonscli>1.5.0</ver.commonscli>
     <ver.commonslang3>3.12.0</ver.commonslang3>
@@ -102,16 +102,16 @@
     <ver.commons-codec>1.15</ver.commons-codec>
     <ver.commons-compress>1.21</ver.commons-compress>
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.9.1</ver.micrometer>
+    <ver.micrometer>1.9.2</ver.micrometer>
 
     <!-- For testing, not shipped -->
-    <ver.graalvm>22.1.0.1</ver.graalvm>
+    <ver.graalvm>22.2.0</ver.graalvm>
     <ver.jython>2.7.2</ver.jython>
 
     <!--- GeoSPARQL related -->
     <ver.jcommander>1.82</ver.jcommander>
     <ver.sis>1.1</ver.sis>
-    <ver.jts>1.18.2</ver.jts>
+    <ver.jts>1.19.0</ver.jts>
 
   </properties>
 
@@ -343,6 +343,10 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
 
@@ -394,6 +398,7 @@
         <groupId>com.github.jsonld-java</groupId>
         <artifactId>jsonld-java</artifactId>
         <version>${ver.jsonldjava}</version>
+
         <exclusions>
           <exclusion>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -407,6 +412,15 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+
           <!-- Exclude so we use our choice of versions -->
           <exclusion>
             <groupId>org.apache.httpcomponents</groupId>
@@ -892,7 +906,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.4.2</version>
         </plugin>
 
         <plugin>

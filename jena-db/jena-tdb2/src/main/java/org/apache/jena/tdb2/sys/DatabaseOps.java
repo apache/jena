@@ -28,13 +28,13 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.DateTimeUtils;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.IO_DB;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
-import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -165,15 +165,12 @@ public class DatabaseOps {
         }
     }
 
-
     // JVM-wide :-(
     private static Object compactionLock = new Object();
 
-
     /**
-     * @deprecated Use `compact(container, false)` instead.
+     * Equivalent to {@code compact(container, false)}.
      */
-    @Deprecated
     public static void compact(DatasetGraphSwitchable container) {
         compact(container, false);
     }
@@ -196,9 +193,8 @@ public class DatabaseOps {
             // Is this the same database location?
             if ( ! loc1.equals(loc1a) )
                 throw new TDBException("Inconsistent (not latest?) : "+loc1a+" : "+loc1);
-            // -- Checks
 
-            // Version
+            // Check version
             int v = IO_DB.extractIndex(db1.getFileName().toString(), dbPrefix, SEP);
             String next = FilenameUtils.filename(dbPrefix, SEP, v+1);
 
@@ -210,30 +206,30 @@ public class DatabaseOps {
             compact(container, loc1, loc2);
 
             if ( shouldDeleteOld ) {
+                // Compact put each of the databases into exclusive mode to do the switchover.
+                // There are no previous transactions on the old database at this point.
                 Path loc1Path = IO_DB.asPath(loc1);
                 LOG.debug("Deleting old database after successful compaction (old db path='" + loc1Path + "')...");
-
-                try (Stream<Path> walk = Files.walk(loc1Path)){
-                    walk.sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
-                } catch (IOException ex) {
-                    throw IOX.exception(ex);
-                }
+                deleteDatabase(loc1Path);
             }
         }
     }
 
-    // XXX Later - switch in a recording dataset, not block writers, and reply after
-    // switch over before releasing the new dataset to the container.
-    // Maybe copy indexes and switch the DSG over (drop switchable).
+    private static void deleteDatabase(Path locationPath) {
+        try (Stream<Path> walk = Files.walk(locationPath)){
+            walk.sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        } catch (IOException ex) {
+            throw IOX.exception(ex);
+        }
+    }
 
     /** Copy the latest version from one location to another. */
     private static void compact(DatasetGraphSwitchable container, Location loc1, Location loc2) {
         if ( loc1.isMem() || loc2.isMem() )
             throw new TDBException("Compact involves a memory location: "+loc1+" : "+loc2);
 
-        copyFiles(loc1, loc2);
         StoreConnection srcConn = StoreConnection.connectExisting(loc1);
 
         if ( srcConn == null )
@@ -249,39 +245,74 @@ public class DatabaseOps {
         if ( dsgBase != dsgCurrent )
             throw new TDBException("Inconsistent datasets : "+dsgCurrent.getLocation()+" , "+dsgBase.getLocation());
 
-        TransactionalSystem txnSystem = dsgBase.getTxnSystem();
-        TransactionCoordinator txnMgr = dsgBase.getTxnSystem().getTxnMgr();
+        TransactionCoordinator txnMgr1 = dsgBase.getTxnSystem().getTxnMgr();
 
-        // Stop update.  On exit there are no writers and none will start until switched over.
-        txnMgr.tryBlockWriters();
-        // txnMgr.begin(WRITE, false) will now bounce.
+        // -- Stop updates.
+        // On exit there are no writers and none will start until switched over.
+        // Readers can start on the old database.
 
-        // Copy the latest generation.
-        DatasetGraphTDB dsgCompact = StoreConnection.connectCreate(loc2).getDatasetGraphTDB();
-        CopyDSG.copy(dsgBase, dsgCompact);
+        // Block writers on the container (DatasetGraphSwitchable)
+        // while we copy the database to the new location.
+        // These writer wait output the TransactionCoordinator (old and new)
+        // until the switchover has happened.
 
-        TransactionCoordinator txnMgr2 = dsgCompact.getTxnSystem().getTxnMgr();
-        txnMgr2.startExclusiveMode();
+        container.execReadOnlyDatabase(()->{
+            // No active writers or promote transactions on the current database.
+            // These are held up on a lock in the switchable container.
 
-        txnMgr.startExclusiveMode();
+            // -- Copy the current state to the new area.
+            copyConfigFiles(loc1, loc2);
+            DatasetGraphTDB dsgCompact = StoreConnection.connectCreate(loc2).getDatasetGraphTDB();
+            CopyDSG.copy(dsgBase, dsgCompact);
 
-        // No transactions on either database.
-        // Switch.
-        if ( ! container.change(dsgCurrent, dsgCompact) ) {
-            Log.warn(DatabaseOps.class, "Inconistent: old datasetgraph not as expected");
-            container.set(dsgCompact);
-        }
-        txnMgr2.finishExclusiveMode();
-        // New database running.
+            if ( false ) {
+                // DEVELOMENT. FAke a long copy time in state copy.
+                System.err.println("-- Inside compact 1");
+                Lib.sleep(3_000);
+                System.err.println("-- Inside compact 2");
+            }
 
+            TransactionCoordinator txnMgr2 = dsgCompact.getTxnSystem().getTxnMgr();
+            // Update TransactionCoordinator and switch over.
+            txnMgr2.execExclusive(()->{
+                // No active transactions in either database.
+                txnMgr2.takeOverFrom(txnMgr1);
+
+                // Copy over external transaction components.
+                txnMgr2.modifyConfigDirect(()-> {
+                    txnMgr1.listExternals().forEach(txnMgr2::addExternal);
+                    // External listeners?
+                    // (the NodeTableCache listener is not external)
+                });
+
+                // No transactions on new database 2 (not exposed yet).
+                // No writers or promote transactions on database 1.
+                // Maybe old readers on database 1.
+                // -- Switch.
+                if ( ! container.change(dsgCurrent, dsgCompact) ) {
+                    Log.warn(DatabaseOps.class, "Inconsistent: old datasetgraph not as expected");
+                    container.set(dsgCompact);
+                }
+                // The compacted database is now active
+            });
+            // New database running.
+            // New transactions go to this database.
+            // Old readers continue on db1.
+
+        });
+
+
+        // This switches off the source database.
+        // It waits until all transactions (readers) have finished.
+        // This call is not undone.
+        // Database1 is no longer in use.
+        txnMgr1.startExclusiveMode();
         // Clean-up.
-        // txnMgr.finishExclusiveMode();
-        // Don't call : txnMgr.startWriters();
         StoreConnection.release(dsgBase.getLocation());
     }
 
     /** Copy certain configuration files from {@code loc1} to {@code loc2}. */
-    private static void copyFiles(Location loc1, Location loc2) {
+    private static void copyConfigFiles(Location loc1, Location loc2) {
         FileFilter copyFiles  = (pathname)->{
             String fn = pathname.getName();
             if ( fn.equals(Names.TDB_CONFIG_FILE) )

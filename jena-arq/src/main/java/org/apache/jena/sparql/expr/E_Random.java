@@ -22,25 +22,21 @@ import org.apache.jena.atlas.lib.RandomLib ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.sse.Tags ;
 
-public class E_Random extends ExprFunction0
-{
-    private static final String symbol = Tags.tagRand ;
-    
-    public E_Random()
-    {
-        super(symbol) ;
-    }
-    
-    @Override
-    public NodeValue eval(FunctionEnv env)
-    { 
-        double d = RandomLib.random.nextDouble() ;
-        return NodeValue.makeDouble(d) ;
+public class E_Random extends ExprFunction0 implements Unstable {
+    private static final String symbol = Tags.tagRand;
+
+    public E_Random() {
+        super(symbol);
     }
 
     @Override
-    public Expr copy()
-    {
-        return new E_Random() ;
-    } 
+    public NodeValue eval(FunctionEnv env) {
+        double d = RandomLib.random.nextDouble();
+        return NodeValue.makeDouble(d);
+    }
+
+    @Override
+    public Expr copy() {
+        return new E_Random();
+    }
 }

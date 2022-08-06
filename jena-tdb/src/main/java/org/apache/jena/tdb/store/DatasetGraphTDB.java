@@ -48,7 +48,7 @@ import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
  * <p>
  *  See also:
  *  <ul>
- *  <li>{@link DatasetGraphTxn} &ndash; the sublclass that provides a single tranasaction</li>
+ *  <li>{@link DatasetGraphTxn} &ndash; the sublclass that provides a single transaction</li>
  *  <li>{@link DatasetGraphTransaction} &ndash; class that provides the application with the right DatasetGraphTDB (base or transaction).</li>
  *  </ul>
  */
@@ -265,6 +265,11 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     public void setDefaultGraph(Graph g) {
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
+    }
+
+    @Override
+    public String toString() {
+        return "TDB1: "+getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this));
     }
 
     private final Transactional txn                     = new TransactionalNotSupported() ;

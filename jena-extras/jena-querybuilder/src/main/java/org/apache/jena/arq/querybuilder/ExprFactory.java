@@ -7,9 +7,9 @@ package org.apache.jena.arq.querybuilder;
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -107,12 +107,12 @@ import org.apache.jena.sparql.expr.NodeValue;
 
 /**
  * Create expressions.
- * 
+ *
  * NodeValue contains a number of static functions to make a number of node
  * functions.
- * 
+ *
  * @see org.apache.jena.sparql.expr.NodeValue
- * 
+ *
  * Function names here map as closely as possible to the tag names for the
  * generated expression.
  *
@@ -123,7 +123,7 @@ public class ExprFactory {
 
     /**
      * Constructs an expression factor with the specified prefix definitions.
-     * 
+     *
      * @param pMap the PrefixMapping to use in the expressions.
      */
     public ExprFactory(PrefixMapping pMap) {
@@ -133,7 +133,7 @@ public class ExprFactory {
     /**
      * Constructs an expression factory with the prefix definitions found in
      * {@code PrefixMapping.Extended}
-     * 
+     *
      * @see PrefixMapping#Extended
      */
     public ExprFactory() {
@@ -144,9 +144,9 @@ public class ExprFactory {
 
     /**
      * implements rand() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-rand
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_Random
      * @return E_Random instance
      */
@@ -156,9 +156,9 @@ public class ExprFactory {
 
     /**
      * implements struuid() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-struuid
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_StrUUID
      * @return E_StrUUID instance
      */
@@ -168,9 +168,9 @@ public class ExprFactory {
 
     /**
      * implements uuid() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-uuid
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_UUID
      * @return E_UUID instance
      */
@@ -180,7 +180,7 @@ public class ExprFactory {
 
     /**
      * Returns the current ARQ name and version number as a string.
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_Version
      * @return E_Version instance
      */
@@ -190,9 +190,9 @@ public class ExprFactory {
 
     /**
      * implements now() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-now
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_Now
      * @return E_Now instance
      */
@@ -204,14 +204,14 @@ public class ExprFactory {
 
     /**
      * implements bound() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-bound
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_Bound
-     * 
+     *
      * @param expr the expression to check.
      * @return E_Bound instance
      */
@@ -221,14 +221,14 @@ public class ExprFactory {
 
     /**
      * implements datatype() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-datatype
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_Datatype
-     * 
+     *
      * @param expr the expression to check.
      * @return E_Datatype instance
      */
@@ -238,13 +238,13 @@ public class ExprFactory {
 
     /**
      * implements day() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-day
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
-     * 
+     *
      * @param expr the expression to check.
      * @return E_Datatype instance
      */
@@ -254,14 +254,14 @@ public class ExprFactory {
 
     /**
      * implements hours() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-hours
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_DateTimeHours
-     * 
+     *
      * @param expr the expression to check.
      * @return E_DateTimeHours instance
      */
@@ -271,14 +271,14 @@ public class ExprFactory {
 
     /**
      * implements minutes() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-minutes
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_DateTimeMinutes
-     * 
+     *
      * @param expr the expression to check.
      * @return E_DateTimeMinutes instance
      */
@@ -288,14 +288,14 @@ public class ExprFactory {
 
     /**
      * implements month() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-month
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_DateTimeMonth
-     * 
+     *
      * @param expr the expression to check.
      * @return E_DateTimeMonth instance
      */
@@ -305,14 +305,14 @@ public class ExprFactory {
 
     /**
      * implements seconds() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-seconds
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_DateTimeSeconds
-     * 
+     *
      * @param expr the expression to check.
      * @return E_DateTimeSeconds instance
      */
@@ -322,14 +322,14 @@ public class ExprFactory {
 
     /**
      * implements timezone() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-timezone
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_DateTimeTimezone
-     * 
+     *
      * @param expr the expression to check.
      * @return E_DateTypeTimezone instance
      */
@@ -339,14 +339,14 @@ public class ExprFactory {
 
     /**
      * implements tz() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-tz
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_DateTimeTZ
-     * 
+     *
      * @param expr the expression to check.
      * @return E_DateTimeTZ instance
      */
@@ -356,14 +356,14 @@ public class ExprFactory {
 
     /**
      * implements year() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-year
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_DateTimeYear
-     * 
+     *
      * @param expr the expression to check.
      * @return E_DateTimeYear instance
      */
@@ -373,14 +373,14 @@ public class ExprFactory {
 
     /**
      * implements iri() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-iri
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_IRI
-     * 
+     *
      * @param expr the expression to check.
      * @return E_IRI instance
      */
@@ -390,14 +390,14 @@ public class ExprFactory {
 
     /**
      * implements isBlank() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-isBlank
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_IsBlank
-     * 
+     *
      * @param expr the expression to check.
      * @return E_isBlank instance
      */
@@ -407,14 +407,14 @@ public class ExprFactory {
 
     /**
      * implements isIRI() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-isIRI
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_IsIRI
-     * 
+     *
      * @param expr the expression to check.
      * @return E_IsIRI instance
      */
@@ -424,14 +424,14 @@ public class ExprFactory {
 
     /**
      * implements isLiteral() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-isLiteral
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_IsLiteral
-     * 
+     *
      * @param expr the expression to check.
      * @return E_IsLiteral instance
      */
@@ -441,14 +441,14 @@ public class ExprFactory {
 
     /**
      * implements isNumeric() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-isNumeric
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_IsNumeric
-     * 
+     *
      * @param expr the expression to check.
      * @return E_IsNumeric instance
      */
@@ -458,14 +458,14 @@ public class ExprFactory {
 
     /**
      * implements lang() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-lang
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_Lang
-     * 
+     *
      * @param expr the expression to check.
      * @return E_Lang instance
      */
@@ -475,14 +475,14 @@ public class ExprFactory {
 
     /**
      * implements not() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-not
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_LogicalNot
-     * 
+     *
      * @param expr the expression to check.
      * @return E_LogicalNot instance
      */
@@ -492,14 +492,14 @@ public class ExprFactory {
 
     /**
      * implements abs() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-abs
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_NumAbs
-     * 
+     *
      * @param expr the expression to check.
      * @return E_NumAbs instance
      */
@@ -509,14 +509,14 @@ public class ExprFactory {
 
     /**
      * implements ceil() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-ceil
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_NumCeiling
-     * 
+     *
      * @param expr the expression to check.
      * @return E_NumCeiling instance
      */
@@ -526,14 +526,14 @@ public class ExprFactory {
 
     /**
      * implements floor() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-floor
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_NumFloor
-     * 
+     *
      * @param expr the expression to check.
      * @return E_NumFloor instance
      */
@@ -543,14 +543,14 @@ public class ExprFactory {
 
     /**
      * implements round() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-round
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_NumRound
-     * 
+     *
      * @param expr the expression to check.
      * @return E_Round instance
      */
@@ -560,14 +560,14 @@ public class ExprFactory {
 
     /**
      * implements str() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-str
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_Str
-     * 
+     *
      * @param expr the expression to check.
      * @return E_Str instance
      */
@@ -577,14 +577,14 @@ public class ExprFactory {
 
     /**
      * implements encode() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-encode
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrEncodeForURI
-     * 
+     *
      * @param expr the expression to check.
      * @return E_StrEncodedForURI instance
      */
@@ -594,14 +594,14 @@ public class ExprFactory {
 
     /**
      * implements strlen() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-strlen
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrLength
-     * 
+     *
      * @param expr the expression to check.
      * @return E_StrLength instance
      */
@@ -611,14 +611,14 @@ public class ExprFactory {
 
     /**
      * implements lcase() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-lcase
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrLowerCase
-     * 
+     *
      * @param expr the expression to check.
      * @return E_StrLowerCase instance
      */
@@ -628,14 +628,14 @@ public class ExprFactory {
 
     /**
      * implements ucase() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-ucase
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrUpperCase
-     * 
+     *
      * @param expr the expression to check.
      * @return E_StrUpperCase instance
      */
@@ -645,14 +645,14 @@ public class ExprFactory {
 
     /**
      * implements unary minus as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_UnaryMinus
-     * 
+     *
      * @param expr the expression to check.
      * @return E_UnaryMinus instance
      */
@@ -662,14 +662,14 @@ public class ExprFactory {
 
     /**
      * implements unary plus as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_UnaryPlus
-     * 
+     *
      * @param expr the expression to check.
      * @return E_UnaryPlus instance
      */
@@ -679,14 +679,14 @@ public class ExprFactory {
 
     /**
      * implements md5() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-md5
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_MD5
-     * 
+     *
      * @param expr the expression to check.
      * @return E_MD5 instance
      */
@@ -696,14 +696,14 @@ public class ExprFactory {
 
     /**
      * implements sha1() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-sha1
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_SHA1
-     * 
+     *
      * @param expr the expression to check.
      * @return E_SHA1 instance
      */
@@ -713,14 +713,14 @@ public class ExprFactory {
 
     /**
      * implements sha224() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-sha224
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_SHA224
-     * 
+     *
      * @param expr the expression to check.
      * @return E_SHA224 instance
      */
@@ -730,14 +730,14 @@ public class ExprFactory {
 
     /**
      * implements sha256() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-sha256
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_SHA256
-     * 
+     *
      * @param expr the expression to check.
      * @return E_SHA256 instance
      */
@@ -747,14 +747,14 @@ public class ExprFactory {
 
     /**
      * implements sha384() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-sha384
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_SHA384
-     * 
+     *
      * @param expr the expression to check.
      * @return E_SHA384 instance
      */
@@ -764,14 +764,14 @@ public class ExprFactory {
 
     /**
      * implements sha512() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-sha512
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_SHA512
-     * 
+     *
      * @param expr the expression to check.
      * @return E_SHA512 instance
      */
@@ -783,14 +783,14 @@ public class ExprFactory {
 
     /**
      * implements addition as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_Add
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_Add instance
@@ -806,14 +806,14 @@ public class ExprFactory {
     // }
     /**
      * implements division as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_Divide
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_Devide instance
@@ -824,14 +824,14 @@ public class ExprFactory {
 
     /**
      * implements equality as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_Equals
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_Equals instance
@@ -842,14 +842,14 @@ public class ExprFactory {
 
     /**
      * implements greater than as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_GreaterThan
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_GreaterThan instance
@@ -860,14 +860,14 @@ public class ExprFactory {
 
     /**
      * implements greater than or equal as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_GreaterThanOrEqual
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_GreaterThanOrEqual instance
@@ -878,14 +878,14 @@ public class ExprFactory {
 
     /**
      * implements langMatches() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-langMatches
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_LangMatches
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_LangMatches instance
@@ -896,14 +896,14 @@ public class ExprFactory {
 
     /**
      * implements less than as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_LessThan
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_LessThan instance
@@ -914,14 +914,14 @@ public class ExprFactory {
 
     /**
      * implements less than or equal as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_LessThanOrEqual
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_LessThanOrEqual instance
@@ -932,14 +932,14 @@ public class ExprFactory {
 
     /**
      * implements logical and as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_LogicalAnd
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_LogicalAnd instance
@@ -950,14 +950,14 @@ public class ExprFactory {
 
     /**
      * implements logical or as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_LogicalOr
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_LogicalOr instance
@@ -968,14 +968,14 @@ public class ExprFactory {
 
     /**
      * implements multiplication s per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_Multiply
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_Multiply instance
@@ -986,14 +986,14 @@ public class ExprFactory {
 
     /**
      * implements not equals as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_NotEquals
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_NotEquals instance
@@ -1004,14 +1004,14 @@ public class ExprFactory {
 
     /**
      * implements sameTerm() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-sameTerm
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_SameTerm
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_SameTerm instance
@@ -1022,14 +1022,14 @@ public class ExprFactory {
 
     /**
      * implements strafter() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-strafter
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrAfter
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_StrAfter instance
@@ -1040,14 +1040,14 @@ public class ExprFactory {
 
     /**
      * implements strbefore() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-strbefore
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrBefore
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_StrBefore instance
@@ -1058,14 +1058,14 @@ public class ExprFactory {
 
     /**
      * implements contains() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-contains
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrContains
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_StrContains instance
@@ -1076,14 +1076,14 @@ public class ExprFactory {
 
     /**
      * implements strdt() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-strdt
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrDatatype
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_StrDatatype instance
@@ -1094,14 +1094,14 @@ public class ExprFactory {
 
     /**
      * implements strends() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-strends
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrEndsWith
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_StrEndsWith instance
@@ -1112,14 +1112,14 @@ public class ExprFactory {
 
     /**
      * implements strlang() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-strlang
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrLang
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_StrLang instance
@@ -1130,14 +1130,14 @@ public class ExprFactory {
 
     /**
      * implements strstarts() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-strstarts
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrStartsWith
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_StrStartsWith instance
@@ -1148,14 +1148,14 @@ public class ExprFactory {
 
     /**
      * implements subtraction as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#OperatorMapping
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_Subtract
-     * 
+     *
      * @param expr1 the first expression.
      * @param expr2 the second expression.
      * @return E_Subtract instance
@@ -1169,14 +1169,14 @@ public class ExprFactory {
 
     /**
      * implements if() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-if
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_Conditional
-     * 
+     *
      * @param condition the condition to check.
      * @param thenExpr the expression to execute if condition is true.
      * @param elseExpr the expression to execute if condition is false.
@@ -1189,44 +1189,44 @@ public class ExprFactory {
     // exprN functions
     /**
      * implements bnode() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-bnode
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_BNode
-     * 
+     *
      * @param expr1 the blank node id.
-     * @return an E_BNode instance
+     * @return an Expr instance
      */
-    public final E_BNode bnode(Object expr1) {
-        return new E_BNode(asExpr(expr1));
+    public final Expr bnode(Object expr1) {
+        return E_BNode.create(asExpr(expr1));
     }
 
     /**
      * implements bnode() as per SPARQL 1.1 spec
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-bnode
-     * 
-     * @see org.apache.jena.sparql.expr.E_Random
-     * 
-     * @return an E_BNode instance.
+     *
+     * @see org.apache.jena.sparql.expr.E_BNode
+     *
+     * @return an Expr instance.
      */
-    public final E_BNode bnode() {
-        return new E_BNode();
+    public final Expr bnode() {
+        return E_BNode.create();
     }
 
     /**
      * Creates a dynamic function call.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rFunctionCall
-     * 
+     *
      * Converts function to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_FunctionDynamic
-     * 
+     *
      * @param function The function to execute
      * @param args the arguments to the function.
      * @return an E_FunctionDynamic instance.
@@ -1237,14 +1237,14 @@ public class ExprFactory {
 
     /**
      * Creates a dynamic function call.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rFunctionCall
-     * 
+     *
      * Converts function to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_FunctionDynamic
-     * 
+     *
      * @param function The function to execute
      * @param args the arguments to the function.
      * @return an E_FunctionDynamic instance.
@@ -1255,13 +1255,13 @@ public class ExprFactory {
 
     /**
      * Creates a function call as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rFunctionCall
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_Call
-     * 
+     *
      * The first argument is the function to call
-     * 
+     *
      * @param args the arguments to the function.
      * @return an E_Call instance.
      */
@@ -1271,11 +1271,11 @@ public class ExprFactory {
 
     /**
      * implements coalesce() as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-coalesce
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_Coalesce
-     * 
+     *
      * @param args the arguments to the function.
      * @return an E_Coalesce instance.
      */
@@ -1285,11 +1285,11 @@ public class ExprFactory {
 
     /**
      * implements coalesce() as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-coalesce
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_Coalesce
-     * 
+     *
      * @param args the arguments to the function.
      * @return an E_Coalesce instance.
      */
@@ -1299,9 +1299,9 @@ public class ExprFactory {
 
     /**
      * Creates a function call as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rFunctionCall
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_Function
      *
      * @param name the name of the function.
@@ -1314,14 +1314,14 @@ public class ExprFactory {
 
     /**
      * implements "not in" as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-not-in
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_NotOneOf
-     * 
+     *
      * @param expr the expression that is not in the list
      * @param list the list of expressions.
      * @return an E_NotOneOf instance.
@@ -1332,14 +1332,14 @@ public class ExprFactory {
 
     /**
      * implements "not in" as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-not-in
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_NotOneOf
-     * 
+     *
      * @param expr the expression that is not in the list
      * @param list the list of expressions.
      * @return an E_NotOneOf instance.
@@ -1350,14 +1350,14 @@ public class ExprFactory {
 
     /**
      * implements "in" as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-in
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_OneOf
-     * 
+     *
      * @param expr the expression that is not in the list
      * @param list the list of expressions.
      * @return an E_OneOf instance.
@@ -1368,14 +1368,14 @@ public class ExprFactory {
 
     /**
      * implements "in" as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-in
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_OneOf
-     * 
+     *
      * @param expr the expression that is not in the list
      * @param list the list of expressions.
      * @return an E_OneOf instance.
@@ -1386,14 +1386,14 @@ public class ExprFactory {
 
     /**
      * implements regex() as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-regex
-     * 
+     *
      * Converts objects to an Expr objects via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_Regex
-     * 
+     *
      * @param expr string to match.
      * @param pattern the pattern to match
      * @param flags the regex flags
@@ -1405,14 +1405,14 @@ public class ExprFactory {
 
     /**
      * implements regex() as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-regex
-     * 
+     *
      * Converts expr to an Expr object via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_Regex
-     * 
+     *
      * @param expr string to match.
      * @param pattern the pattern to match
      * @param flags the regex flags
@@ -1424,11 +1424,11 @@ public class ExprFactory {
 
     /**
      * implements concat() as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-concat
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_StrConcat
-     * 
+     *
      * @param list the list of arguments to concatenate
      * @return an E_StrConcat instance
      */
@@ -1438,11 +1438,11 @@ public class ExprFactory {
 
     /**
      * implements concat() as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-concat
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_StrConcat
-     * 
+     *
      * @param list the list of arguments to concatenate
      * @return an E_StrConcat instance
      */
@@ -1452,14 +1452,14 @@ public class ExprFactory {
 
     /**
      * implements replace() as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-replace
-     * 
+     *
      * Converts Objects to an Expr objects via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrReplace
-     * 
+     *
      * @param arg the string literal to replace
      * @param pattern the pattern to replace in the string literal.
      * @param replacement the string literal to replace the pattern with.
@@ -1472,14 +1472,14 @@ public class ExprFactory {
 
     /**
      * implements replace() as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-replace
-     * 
+     *
      * Converts Objects to an Expr objects via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrReplace
-     * 
+     *
      * @param arg the string literal to replace
      * @param pattern the pattern to replace in the string literal.
      * @param replacement the string literal to replace the pattern with.
@@ -1491,18 +1491,18 @@ public class ExprFactory {
 
     /**
      * implements substr() as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-substr
      *
      * Converts Objects to an Expr objects via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrSubstring
-     * 
+     *
      * @param src the expression to extract the substring from.
      * @param loc the location within the expression string to start
      * @param len the length of the string to extract.
-     * 
+     *
      * @return an E_Substring instance.
      */
     public final E_StrSubstring substr(Object src, Object loc, Object len) {
@@ -1511,17 +1511,17 @@ public class ExprFactory {
 
     /**
      * implements substr() as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-substr
      *
      * Converts Objects to an Expr objects via expr()
-     * 
+     *
      * @see #asExpr(Object)
      * @see org.apache.jena.sparql.expr.E_StrSubstring
-     * 
+     *
      * @param src the expression to extract the substring from.
      * @param loc the location within the expression string to start
-     * 
+     *
      * @return an E_Substring instance.
      */
     public final E_StrSubstring substr(Object src, Object loc) {
@@ -1531,11 +1531,11 @@ public class ExprFactory {
 
     /**
      * implements exists() as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-filter-exists
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_Exists
-     * 
+     *
      * @param whereClause A WhereClause to check existence of.
      * @return an E_Exists instance,
      */
@@ -1545,11 +1545,11 @@ public class ExprFactory {
 
     /**
      * implements not exists() as per the SPARQL 11 query definition.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#func-filter-exists
-     * 
+     *
      * @see org.apache.jena.sparql.expr.E_NotExists
-     * 
+     *
      * @param whereClause the argument to the function.
      * @return an E_NotExists instance.
      */
@@ -1561,9 +1561,9 @@ public class ExprFactory {
     /**
      * Should probably be called "null" but that is a reserved work. An expression
      * that can be used in place of null.
-     * 
+     *
      * @see org.apache.jena.sparql.expr.ExprNone
-     * 
+     *
      * @return an ExprNone instance
      */
     public final ExprNone none() {
@@ -1577,9 +1577,9 @@ public class ExprFactory {
      * <li>Will return null if the object is "*" or Node_RuleVariable.WILD</li>
      * <li>otherwise create an ExprVar from {AbstractQuerybuilder.makeVar}
      * </ul>
-     * 
+     *
      * @see Converters#makeVar(Object)
-     * 
+     *
      * @param o the object to convert.
      * @return an ExprVar
      */
@@ -1593,7 +1593,7 @@ public class ExprFactory {
 
     /**
      * Not really an Expr but a container of exprs.
-     * 
+     *
      * @param args the list of expressons.
      * @return the expression list.
      */
@@ -1605,7 +1605,7 @@ public class ExprFactory {
 
     /**
      * Not really an Expr but a container of exprs. creates an empty list.
-     * 
+     *
      * @return the empty expression list.
      */
     public final ExprList list() {
@@ -1614,7 +1614,7 @@ public class ExprFactory {
 
     /**
      * Convert the object into an expression using the query's PrefixMapping
-     * 
+     *
      * @param o the object to convert.
      * @return the Expr.
      */
@@ -1624,7 +1624,7 @@ public class ExprFactory {
 
     /**
      * Convenience method to call AbstractQueryBuilder.quote
-     * 
+     *
      * @see Converters#quoted(String)
      * @param s the string to quote
      * @return the quotes string.
@@ -1637,20 +1637,20 @@ public class ExprFactory {
 
     /**
      * Create an expression from an object.
-     * 
+     *
      * <b>this method does not parse strings to expressions.</b> to parse strings to
      * expressions see {AbstractQueryBuilder.makeExpr}
-     * 
+     *
      * <ul>
      * <li>If the object is null returns none()</li>
      * <li>If the object is an expression return it</li>
      * <li>If the object fronts a node and is not a var make a NodeVar</li>
      * <li>otherwise calls var()</li>
      * </ul>
-     * 
+     *
      * @see #asVar(Object)
      * @see Converters#makeVar(Object)
-     * 
+     *
      * @param o the object to create the expression from
      * @return Expr
      */

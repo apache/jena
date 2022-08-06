@@ -13,15 +13,23 @@
 
 <#service1> rdf:type fuseki:Service ;
     # URI of the dataset -- http://host:port/{NAME}
-    fuseki:name                        "{NAME}" ;
-    fuseki:serviceQuery                "" ;
-    fuseki:serviceQuery                "sparql" ;
-    fuseki:serviceQuery                "query" ;
-    fuseki:serviceUpdate               "" ;
-    fuseki:serviceUpdate               "update" ;
-    fuseki:serviceReadWriteGraphStore  "data" ;     
-    fuseki:serviceReadGraphStore       "get" ;
-    fuseki:dataset                     <#dataset> ;
+    fuseki:name     "{NAME}" ;
+    fuseki:dataset  <#dataset> ;
+    
+    fuseki:endpoint [ fuseki:operation fuseki:query ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ] ;
+
+    fuseki:endpoint [ fuseki:name "sparql" ;
+                      fuseki:operation fuseki:query ] ;
+    fuseki:endpoint [ fuseki:name "query" ;
+                      fuseki:operation fuseki:query ] ;
+    fuseki:endpoint [ fuseki:name "update" ;
+                      fuseki:operation fuseki:update ] ;
+    fuseki:endpoint [ fuseki:name "data" ;
+                      fuseki:operation fuseki:gsp-rw ] ;
+    fuseki:endpoint [ fuseki:name "get" ;
+                      fuseki:operation fuseki:gsp-r ] ;
     .
 
 # Transactional, in-memory dataset. Initially empty.

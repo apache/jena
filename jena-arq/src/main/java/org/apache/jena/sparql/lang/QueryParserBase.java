@@ -492,6 +492,15 @@ public class QueryParserBase
         return new E_URI2(expr1, prologue.getBaseURI(), expr2);
     }
 
+    // Create a E_BNode function.
+    protected Expr makeFunction_BNode() {
+        return E_BNode.create();
+    }
+
+    protected Expr makeFunction_BNode(Expr expr) {
+        return E_BNode.create(expr);
+    }
+
     // Utilities to remove escapes in strings.
 
     /*package-testing*/ static String unescapeStr(String s)

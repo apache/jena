@@ -21,11 +21,14 @@ package org.apache.jena.tdb2.sys;
 import static org.junit.Assert.*;
 import static org.junit.Assume.assumeFalse;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.base.Sys;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.IO_DB;
+import org.apache.jena.dboe.transaction.txn.*;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RDFDataMgr;
@@ -252,6 +255,49 @@ public class TestDatabaseOps
 
         Txn.executeRead(dsg,  ()->assertTrue(dsg.contains(quad2)) );
         Txn.executeRead(dsg2, ()->assertTrue(dsg2.contains(quad2)) );
+    }
+
+    @Test public void compact_external_components() {
+        assumeFalse(Sys.isWindows);
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
+
+        TransactionCoordinator txnCoord = TDBInternal.getTransactionCoordinator(dsg);
+        assertTrue(txnCoord.listExternals().isEmpty());
+
+        ComponentId id = ComponentId.allocLocal(0xF00F);
+        AtomicInteger counter = new AtomicInteger(0);
+
+        TransactionalComponent txnExternal = new TransactionalComponentExternal<Void>(id) {
+            @Override
+            protected void _commit(TxnId txnId, Void state) { counter.getAndIncrement(); }
+        };
+
+        // Add external.
+        txnCoord.modifyConfig(()->txnCoord.addExternal(txnExternal));
+
+        { // Test internal state
+            assertFalse(txnCoord.listExternals().isEmpty());
+            assertEquals(1, txnCoord.listExternals().size());
+        }
+
+        assertEquals(0, counter.get());
+        Txn.executeWrite(dsg, ()-> {
+            dsg.add(quad2);
+            dsg.add(quad1);
+        });
+        assertEquals(1, counter.get());
+
+        DatabaseMgr.compact(dsg, true);
+
+        { // Test internal state
+            TransactionCoordinator txnCoord2 = TDBInternal.getTransactionCoordinator(dsg);
+            assertNotSame(txnCoord, txnCoord2);
+            assertEquals(1, txnCoord2.listExternals().size());
+            assertSame(txnExternal, txnCoord2.listExternals().get(0));
+        }
+
+        Txn.executeWrite(dsg, ()->{});
+        assertEquals(2, counter.get());
     }
 
     @Test public void backup_1() {

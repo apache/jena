@@ -46,10 +46,10 @@ public abstract class AbstractTestTransPromote {
     // Dynamically adjust the loggingso warnings are supressed for this test suite only.
     private final String[] loggerNames;
     private String[] loggerLevelNames;
-    
+
     private boolean stdPromotion ;
     private boolean stdReadCommitted ;
-    
+
     @Before
     public void beforeLoggersNoWarnings() {
         int N = loggerNames.length ;
@@ -74,7 +74,7 @@ public abstract class AbstractTestTransPromote {
     // TDB transactions are in the TDBException hierarchy
     // so can't be JenaTransactionException.
     protected abstract Class<? extends Exception> getTransactionExceptionClass() ;
-    
+
     protected AbstractTestTransPromote(String[] loggerNames) {
         this.loggerNames = loggerNames ;
     }
@@ -94,8 +94,8 @@ public abstract class AbstractTestTransPromote {
 
     @Test public void promote_snapshot_01()         { run_01(TxnType.READ_PROMOTE) ; }
     @Test public void promote_readCommitted_01()    { run_01(TxnType.READ_COMMITTED_PROMOTE) ; }
-    
-    // READ-add
+
+    // read/promote then add
     private void run_01(TxnType txnType) {
         DatasetGraph dsg = create() ;
         dsg.begin(txnType) ;
@@ -103,58 +103,61 @@ public abstract class AbstractTestTransPromote {
         dsg.commit() ;
         dsg.end() ;
     }
-    
+
     @Test public void promote_snapshot_02()         { run_02(TxnType.READ_PROMOTE) ; }
     @Test public void promote_readCommitted_02()    { run_02(TxnType.READ_COMMITTED_PROMOTE) ; }
-    
-    // Previous transaction then READ-add
+
+    // Previous read transaction, then read/promote then add
     private void run_02(TxnType txnType) {
         DatasetGraph dsg = create() ;
-        
+
         dsg.begin(txnType) ;dsg.end() ;
-        
+
         dsg.begin(txnType) ;
         dsg.add(q1) ;
         dsg.commit() ;
         dsg.end() ;
     }
-    
+
     @Test public void promote_snapshot_03()         { run_03(TxnType.READ_PROMOTE) ; }
     @Test public void promote_readCommitted_03()    { run_03(TxnType.READ_COMMITTED_PROMOTE) ; }
 
+    // Previous write transaction, then read/promote then add
     private void run_03(TxnType txnType) {
         DatasetGraph dsg = create() ;
-        
+
         dsg.begin(TxnType.WRITE) ;dsg.commit() ; dsg.end() ;
-        
+
         dsg.begin(txnType) ;
         dsg.add(q1) ;
         dsg.commit() ;
         dsg.end() ;
     }
-    
+
     @Test public void promote_snapshot_04()         { run_04(TxnType.READ_PROMOTE) ; }
     @Test public void promote_readCommitted_04()    { run_04(TxnType.READ_COMMITTED_PROMOTE) ; }
 
+    // Previous aborted write transaction, then read/promote then add
     private void run_04(TxnType txnType) {
         DatasetGraph dsg = create() ;
-        
+
         dsg.begin(ReadWrite.WRITE) ;dsg.abort() ; dsg.end() ;
-        
+
         dsg.begin(txnType) ;
         dsg.add(q1) ;
         dsg.commit() ;
         dsg.end() ;
     }
 
+    // Read/promote, then add, then end-no-commit.
     @Test public void promote_snapshot_05()         { run_05(TxnType.READ_PROMOTE) ; }
     @Test public void promote_readCommitted_05()    { run_05(TxnType.READ_COMMITTED_PROMOTE) ; }
-    
+
     private void run_05(TxnType txnType) {
         DatasetGraph dsg = create() ;
         dsg.begin(txnType) ;
         dsg.add(q1) ;
-        
+
         try {
             dsg.end() ;
             fail("begin(W);end() did not throw an exception");
@@ -163,11 +166,10 @@ public abstract class AbstractTestTransPromote {
         assertCount(0, dsg) ;
     }
 
-    // LOCK UP
-    //@Test public void promote_snapshot_06()         { run_06(TxnMode.READ_PROMOTE) ; }
-    //@Test public void promote_readCommitted_06()    { run_06(TxnMode.READ_COMMITTED_PROMOTE) ; }
-    
-    // Async writer after promotion.
+    @Test public void promote_snapshot_06()         { run_06(TxnType.READ_PROMOTE) ; }
+    @Test public void promote_readCommitted_06()    { run_06(TxnType.READ_COMMITTED_PROMOTE) ; }
+
+    // Async writer during transaction after promotion.
     private void run_06(TxnType txnType) {
         DatasetGraph dsg = create() ;
         AtomicInteger a = new AtomicInteger(0) ;
@@ -197,8 +199,8 @@ public abstract class AbstractTestTransPromote {
 
     @Test public void promote_snapshot_07()         { run_07(TxnType.READ_PROMOTE) ; }
     @Test public void promote_readCommitted_07()    { run_07(TxnType.READ_COMMITTED_PROMOTE) ; }
-    
-    // Async writer after promotion.
+
+    // Async writer after promotion transaction commits.
     private void run_07(TxnType txnType) {
         DatasetGraph dsg = create() ;
         // Start long running reader.
@@ -216,11 +218,11 @@ public abstract class AbstractTestTransPromote {
         dsg.end() ;
         tt.run() ;
     }
-    
+
     @Test public void promote_snapshot_08()         { run_08(TxnType.READ_PROMOTE); }
     @Test public void promote_readCommitted_08()    { run_08(TxnType.READ_COMMITTED_PROMOTE) ; }
-    
-    // Async writer after promotion transaction ends.
+
+    // Async reader after promotion transaction ends.
     private void run_08(TxnType txnType) {
         DatasetGraph dsg = create() ;
         // Start R->W here
@@ -238,7 +240,7 @@ public abstract class AbstractTestTransPromote {
     @SafeVarargs
     private final void expect(Runnable runnable, Class<? extends Exception>...classes) {
         try {
-            runnable.run(); 
+            runnable.run();
             fail("Exception expected") ;
         } catch (Exception e) {
             for ( Class<?> c : classes) {
@@ -254,19 +256,19 @@ public abstract class AbstractTestTransPromote {
 
     @Test
     public void promote_11() { promote_readCommit_txnCommit(TxnType.READ_COMMITTED_PROMOTE, false) ; }
-    
+
     @Test
-    public void promote_12() { 
+    public void promote_12() {
         expect(()->promote_readCommit_txnCommit(TxnType.READ_PROMOTE, true) ,
                getTransactionExceptionClass()) ;
     }
-    
+
     @Test
     public void promote_13() { promote_readCommit_txnCommit(TxnType.READ_PROMOTE, false) ; }
 
     private void promote_readCommit_txnCommit(TxnType txnType, boolean asyncCommit) {
         DatasetGraph dsg = create() ;
-        
+
         ThreadAction tt = asyncCommit?
             ThreadTxn.threadTxnWrite(dsg, () -> dsg.add(q3) ) :
             ThreadTxn.threadTxnWriteAbort(dsg, () -> dsg.add(q3)) ;
@@ -285,21 +287,21 @@ public abstract class AbstractTestTransPromote {
         dsg.end() ;
         //logger2.setLevel(level2);
     }
-    
+
     // Active writer commits -> no promotion.
     @Test
     public void promote_active_writer_1() throws InterruptedException, ExecutionException {
         expect(()->promote_active_writer(true) ,
                getTransactionExceptionClass()) ;
     }
-    
+
     // Active writer aborts -> promotion.
     @Test
     public void promote_active_writer_2() throws InterruptedException, ExecutionException {
         // Active writer aborts -> promotion possible (but not implemented that way).
         promote_active_writer(false) ;
     }
-    
+
     private void promote_active_writer(boolean activeWriterCommit) {
         ExecutorService executor = Executors.newFixedThreadPool(2) ;
         try {
@@ -309,7 +311,7 @@ public abstract class AbstractTestTransPromote {
             executor.shutdown() ;
         }
     }
-    
+
     private void promote_clash_active_writer(ExecutorService executor, boolean activeWriterCommit) {
         Semaphore semaActiveWriterStart     = new Semaphore(0) ;
         Semaphore semaActiveWriterContinue  = new Semaphore(0) ;
@@ -318,7 +320,7 @@ public abstract class AbstractTestTransPromote {
 
         DatasetGraph dsg = create() ;
 
-        // The "active writer". 
+        // The "active writer".
         Callable<Object> activeWriter = ()->{
             dsg.begin(ReadWrite.WRITE) ;
             semaActiveWriterStart.release(1) ;
@@ -335,20 +337,20 @@ public abstract class AbstractTestTransPromote {
         Future<Object> activeWriterFuture = executor.submit(activeWriter) ;
         // Advance "active writer" to (*1), inside a write transaction and waiting.
         // The transaction has been created and started.
-        semaActiveWriterStart.acquireUninterruptibly(); 
+        semaActiveWriterStart.acquireUninterruptibly();
 
         Callable<RuntimeException> attemptedPromote = ()->{
             dsg.begin(TxnType.READ_PROMOTE) ;
             semaPromoteTxnStart.release(1) ;
             // (*2)
             semaPromoteTxnContinue.acquireUninterruptibly();
-            try { 
+            try {
                 // (*3)
                 dsg.add(q1) ;
                 return null ;
             } catch (RuntimeException e) {
                 Class<?> c = getTransactionExceptionClass() ;
-                if ( ! e.getClass().equals(c) ) 
+                if ( ! e.getClass().equals(c) )
                     throw e ;
                 return e ;
             }
@@ -358,37 +360,37 @@ public abstract class AbstractTestTransPromote {
         // Advance "attempted promote" to (*2), inside a read transaction, before attempting a promoting write.
         // The transaction has been created and started.
         semaPromoteTxnStart.acquireUninterruptibly();
-        
+
         // Advance "attempted promote" allowing it to go (*3) where it blocks
         // This may happen at any time - as soon as it does, the "attempted promote" blocks.
         semaPromoteTxnContinue.release(1);
-        // I don't know of a better way to ensure "attempted promote" is blocked. 
-        
+        // I don't know of a better way to ensure "attempted promote" is blocked.
+
         Lib.sleep(100) ;
         // Let the active writer go.
         semaActiveWriterContinue.release(1);
-        
-        try { 
+
+        try {
             // Collect the active writer.
             activeWriterFuture.get();
-            
+
             // (Ideal) and the attempted promotion should advance if the active writer aborts.
             RuntimeException e = attemptedPromoteFuture.get() ;
             if ( e != null )
                 throw e ;
         } catch (InterruptedException | ExecutionException e1) { throw new RuntimeException(e1) ; }
     }
-    
+
     // This would lock up because of a WRITE-WRITE deadly embrace.
     //  @Test(expected=JenaTransactionException.class)
     //  public void promote11() { test2(TxnMode.WRITE); }
-      
+
     @Test
     public void promote_thread_writer_1() { test_thread_writer(TxnType.READ_COMMITTED_PROMOTE); }
-      
+
     @Test(expected=JenaTransactionException.class)
     public void promote_thread_writer_2() { test_thread_writer(TxnType.READ_PROMOTE); }
-    
+
     private void test_thread_writer(TxnType txnType) {
         DatasetGraph dsg = create();
         ThreadAction a = ThreadTxn.threadTxnWrite(dsg, ()->dsg.add(q1));
@@ -402,7 +404,7 @@ public abstract class AbstractTestTransPromote {
         dsg.commit();
         dsg.end();
     }
-    
+
     // With explicit "promote()"
     private void test_promote_thread_writer(TxnType txnType) {
         DatasetGraph dsg = create();
@@ -410,9 +412,9 @@ public abstract class AbstractTestTransPromote {
         dsg.begin(txnType);
         assertEquals(txnType, dsg.transactionType());
         a.run();
-        
+
         boolean b = dsg.promote();
-        
+
         if ( txnType == TxnType.READ_PROMOTE )
             assertFalse(b);
         if ( txnType == TxnType.READ_COMMITTED_PROMOTE )

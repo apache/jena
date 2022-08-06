@@ -11,16 +11,24 @@
 ## Updatable TDB dataset im-memory with all services enabled.
 
 <#service_tdb_all> rdf:type fuseki:Service ;
-    rdfs:label                      "TDB {NAME}" ;
-    fuseki:name                        "{NAME}" ;
-    fuseki:serviceQuery                "" ;
-    fuseki:serviceQuery                "sparql" ;
-    fuseki:serviceQuery                "query" ;
-    fuseki:serviceUpdate               "" ;
-    fuseki:serviceUpdate               "update" ;
-    fuseki:serviceReadWriteGraphStore  "data" ;     
-    fuseki:serviceReadGraphStore       "get" ;
-    fuseki:dataset                     <#tdb_dataset_readwrite> ;
+    rdfs:label      "TDB1 {NAME}" ;
+    fuseki:name     "{NAME}" ;
+    fuseki:dataset  <#tdb_dataset_readwrite> ;
+
+    fuseki:endpoint [ fuseki:operation fuseki:query ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ] ;
+
+    fuseki:endpoint [ fuseki:name "sparql" ;
+                      fuseki:operation fuseki:query ] ;
+    fuseki:endpoint [ fuseki:name "query" ;
+                      fuseki:operation fuseki:query ] ;
+    fuseki:endpoint [ fuseki:name "update" ;
+                      fuseki:operation fuseki:update ] ;
+    fuseki:endpoint [ fuseki:name "data" ;
+                      fuseki:operation fuseki:gsp-rw ] ;
+    fuseki:endpoint [ fuseki:name "get" ;
+                      fuseki:operation fuseki:gsp-r ] ;
     .
 
 <#tdb_dataset_readwrite> rdf:type      tdb:DatasetTDB ;

@@ -127,13 +127,10 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         Object obj = execCxt.getContext().get(TextQuery.textIndex) ;
 
-        if (obj != null) {
-            try {
-                return (TextIndex)obj ;
-            } catch (ClassCastException ex) {
-                Log.warn(TextQueryPF.class, "Context setting '" + TextQuery.textIndex + "'is not a TextIndex") ;
-            }
-        }
+        if ( obj instanceof TextIndex )
+            return (TextIndex)obj ;
+        if ( obj != null )
+            Log.warn(TextQueryPF.class, "Context setting '" + TextQuery.textIndex + "' is not a TextIndex") ;
 
         if (dsg instanceof DatasetGraphText) {
             DatasetGraphText x = (DatasetGraphText)dsg ;
@@ -154,12 +151,12 @@ public class TextQueryPF extends PropertyFunctionBase {
                 }
             }
         }
-
         return value;
     }
 
     @Override
-    public QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
+    public QueryIterator exec(Binding binding,
+                              PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
                               ExecutionContext execCxt) {
         if (log.isTraceEnabled()) {
             IndentedLineBuffer subjBuff = new IndentedLineBuffer() ;

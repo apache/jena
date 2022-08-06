@@ -166,7 +166,7 @@ public class GeoAssembler extends DatasetAssembler {
     }
 
     private static void prepareSpatialExtension(Dataset dataset, String spatialIndex){
-        boolean isEmpty = dataset.calculate(()->dataset.isEmpty());
+        boolean isEmpty = dataset.calculateRead(()->dataset.isEmpty());
         if ( isEmpty && spatialIndex != null ) {
             LOG.warn("Dataset empty. Spatial Index not constructed. Server will require restarting after adding data and any updates to build Spatial Index.");
             return;

@@ -77,7 +77,7 @@ public class GeoSPARQLOperationsTest {
         ORIGINAL_DATA.add(geometryA, Geo.AS_WKT_PROP, wktA);
         ORIGINAL_DATASET.setDefaultModel(ORIGINAL_DATA);
 
-        Literal gmlA = ResourceFactory.createTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>1 0</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
+        Literal gmlA = ResourceFactory.createTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>1 0</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
         CONVERTED_DATATYPE_DATA.add(featureA, Geo.HAS_GEOMETRY_PROP, geometryA);
         CONVERTED_DATATYPE_DATA.add(geometryA, Geo.HAS_SERIALIZATION_PROP, gmlA);
         CONVERTED_DATATYPE_DATA.add(geometryA, Geo.AS_GML_PROP, gmlA);
@@ -89,7 +89,7 @@ public class GeoSPARQLOperationsTest {
         CONVERTED_SRS_DATA.add(geometryA, Geo.AS_WKT_PROP, wktWGSA);
         CONVERTED_SRS_DATASET.setDefaultModel(CONVERTED_SRS_DATA);
 
-        Literal gmlWGSA = ResourceFactory.createTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>1 0</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
+        Literal gmlWGSA = ResourceFactory.createTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>1 0</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
         CONVERTED_SRS_DATATYPE_DATA.add(featureA, Geo.HAS_GEOMETRY_PROP, geometryA);
         CONVERTED_SRS_DATATYPE_DATA.add(geometryA, Geo.HAS_SERIALIZATION_PROP, gmlWGSA);
         CONVERTED_SRS_DATATYPE_DATA.add(geometryA, Geo.AS_GML_PROP, gmlWGSA);

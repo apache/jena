@@ -22,24 +22,21 @@ import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.sse.Tags ;
 
-public class E_StrUUID extends ExprFunction0
+public class E_StrUUID extends ExprFunction0 implements Unstable
 {
-    static private String fName = Tags.tagStrUUID ;
-    
-    public E_StrUUID()
-    {
-        super(fName) ;
+    static private String fName = Tags.tagStrUUID;
+
+    public E_StrUUID() {
+        super(fName);
     }
 
     @Override
-    public Expr copy()
-    {
-        return new E_StrUUID() ;
+    public Expr copy() {
+        return new E_StrUUID();
     }
 
     @Override
-    public NodeValue eval(FunctionEnv env)
-    {
+    public NodeValue eval(FunctionEnv env) {
         return NodeFunctions.struuid();
     }
 }

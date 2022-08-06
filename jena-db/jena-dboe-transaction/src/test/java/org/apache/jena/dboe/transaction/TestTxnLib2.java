@@ -37,7 +37,7 @@ public class TestTxnLib2 extends Assert {
     TransactionalInteger integer;
 
     @Before public void setup() {
-        TransactionCoordinator coord = new TransactionCoordinator(Location.mem());
+        TransactionCoordinator coord = TransactionCoordinator.create(Location.mem());
         integer = new TransactionalInteger(coord, InitValue);
         coord.start();
     }

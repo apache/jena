@@ -67,7 +67,7 @@ import org.slf4j.Logger;
  * @see TransactionalSystem
  */
 final
-public class TransactionCoordinator {
+public class TransactionCoordinator implements TransactionalSystemControl {
     private static Logger SysLog = SysDB.syslog;
     private static Logger SysErr = SysDB.errlog;
 
@@ -76,6 +76,8 @@ public class TransactionCoordinator {
     private boolean configurable = true;
 
     private final ComponentGroup components = new ComponentGroup();
+    private final ComponentGroup persistentComponents = new ComponentGroup();
+
     private final List<TransactionListener> listeners = new ArrayList<>();
 
     // Components
@@ -83,7 +85,6 @@ public class TransactionCoordinator {
     private TxnIdGenerator txnIdGenerator = TxnIdFactory.txnIdGenSimple;
 
     private QuorumGenerator quorumGenerator = null;
-    //private QuorumGenerator quorumGenerator = (m) -> components;
 
     // Semaphore to implement "Single Active Writer" - independent of readers
     // This is not reentrant.
@@ -105,7 +106,7 @@ public class TransactionCoordinator {
     // seeing changes made since it started and comitted at the poiont of promotion.
 
     /* The version of the data - incremented when transaction commits.
-     * This is the version with repest to the last commited transaction.
+     * This is the version with respect to the last commited transaction.
      * Aborts do not cause the data version to advance.
      * This counter never goes backwards.
      */
@@ -118,8 +119,8 @@ public class TransactionCoordinator {
     public interface ShutdownHook { void shutdown(); }
 
     /** Create a TransactionCoordinator, initially with no associated {@link TransactionalComponent}s */
-    public TransactionCoordinator(Location location) {
-        this(Journal.create(location));
+    public static TransactionCoordinator create(Location location) {
+        return new TransactionCoordinator(Journal.create(location));
     }
 
     /** Create a TransactionCoordinator, initially with no associated {@link TransactionalComponent TransactionalComponents}. */
@@ -139,8 +140,16 @@ public class TransactionCoordinator {
             components.addAll(txnComp);
     }
 
+    /**
+     * Internal operation only.
+     * Call only when no write or potential writer transaction is active in either coordinator.
+     */
+    public void takeOverFrom(TransactionCoordinator other) {
+        dataVersion.set(other.dataVersion.get());
+    }
+
     /** Add a {@link TransactionalComponent}.
-     * Safe to call at any time but it is good practice is to add all the
+     * Safe to call at any time (via {@link #modifyConfig}) but it is good practice is to add all the
      * components before any transactions start.
      * Internally, the coordinator ensures the add will safely happen but it
      * does not add the component to existing transactions.
@@ -160,6 +169,42 @@ public class TransactionCoordinator {
         checkAllowModification();
         components.remove(elt.getComponentId());
         return this;
+    }
+
+    /**
+     * Add a {@link TransactionalComponent} for an external sub-system (e.g.jena-text).
+     * The component will be transfered to any TransactionCoordinator created when switching
+     * (for example, by compaction).
+     * Use with {@link #modifyConfig}.
+     */
+    public TransactionCoordinator addExternal(TransactionalComponent elt) {
+        checkAllowModification();
+        persistentComponents.add(elt);
+        components.add(elt);
+        return this;
+    }
+
+    /**
+     * Remove an external {@link TransactionalComponent} registered via {@link #addExternal}.
+     */
+    public TransactionCoordinator removeExternal(TransactionalComponent elt) {
+        checkAllowModification();
+        ComponentId id = elt.getComponentId();
+        if ( persistentComponents.findComponent(id) == null )
+            return this;
+        persistentComponents.remove(id);
+        components.remove(id);
+        return this;
+    }
+
+    /**
+     * Return a list of external {@link TransactionalComponent}, registered via {@link #addExternal}.
+     * Changing this list has no effect on the TrasnactionCooridnator.
+     */
+    public List<TransactionalComponent> listExternals() {
+        List<TransactionalComponent> externals = new ArrayList<>();
+        persistentComponents.forEachComponent(externals::add);
+        return externals;
     }
 
     public TransactionCoordinator addListener(TransactionListener listener) {
@@ -187,13 +232,25 @@ public class TransactionCoordinator {
      * Use with care!
      */
     public void modifyConfig(Runnable action) {
+        execExclusive(()->modifyConfigDirect(action));
+    }
+
+    /**
+     * Perform modification of this {@code TransactionCoordiator}.
+     * <p>
+     * The caller must use exclusive mode (e.g. {@code #execExclusive(Runnable)}).
+     * <p>
+     * Do not call inside a transaction, it may cause a deadlock.
+     * <p>
+     * Use with care!
+     */
+    public void modifyConfigDirect(Runnable action) {
+        boolean currentSetting = configurable;
         try {
-            startExclusiveMode();
             configurable = true;
             action.run();
         } finally {
-            configurable = false;
-            finishExclusiveMode();
+            configurable = currentSetting;
         }
     }
 
@@ -327,6 +384,16 @@ public class TransactionCoordinator {
         journal.close();
     }
 
+    @Override
+    public void startReadOnlyDatabase() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void finishReadOnlyDatabase() {
+        throw new UnsupportedOperationException();
+    }
+
     // Can modifications be made?
     private void checkAllowModification() {
         if ( ! configurable )
@@ -345,13 +412,6 @@ public class TransactionCoordinator {
             throw new TransactionException("TransactionCoordinator has been shutdown");
     }
 
-    private void releaseWriterLock() {
-        int x = writersWaiting.availablePermits();
-        if ( x != 0 )
-            throw new TransactionException("TransactionCoordinator: Probably mismatch of enable/disableWriter calls");
-        writersWaiting.release();
-    }
-
     /** Acquire the writer lock - return true if succeeded */
     private boolean acquireWriterLock(boolean canBlock) {
         if ( ! canBlock )
@@ -362,38 +422,69 @@ public class TransactionCoordinator {
         } catch (InterruptedException e) { throw new TransactionException(e); }
     }
 
-    /** Enter exclusive mode; block if necessary.
+    private void releaseWriterLock() {
+        int x = writersWaiting.availablePermits();
+        if ( x != 0 )
+            throw new TransactionException("TransactionCoordinator: Probably mismatch of acquireWriterLock/releaseWriterLock calls");
+        writersWaiting.release();
+    }
+
+    @Override
+    public void startNonExclusiveMode() {
+        tryNonExclusiveMode(true);
+    }
+
+    @Override
+    public boolean tryNonExclusiveMode(boolean canBlock) {
+        if ( ! canBlock )
+            return exclusivitylock.readLock().tryLock();
+        exclusivitylock.readLock().lock();
+        return true;
+    }
+
+    @Override
+    public void finishNonExclusiveMode() {
+        exclusivitylock.readLock().unlock();
+    }
+
+    /**
+     * Enter exclusive mode; block if necessary.
      * There are no active transactions on return; new transactions will be held up in 'begin'.
      * Return to normal (release waiting transactions, allow new transactions)
      * with {@link #finishExclusiveMode}.
      * <p>
      * Do not call inside an existing transaction.
      */
+    @Override
     public void startExclusiveMode() {
         startExclusiveMode(true);
     }
 
-    /** Try to enter exclusive mode.
-     *  If return is true, then there are no active transactions on return and new transactions will be held up in 'begin'.
-     *  If false, there were in-progress transactions.
-     *  Return to normal (release waiting transactions, allow new transactions)
-     *  with {@link #finishExclusiveMode}.
+    /**
+     * Try to enter exclusive mode.
+     * If return is true, then there are no active transactions on return and new transactions will be held up in 'begin'.
+     * If false, there were in-progress transactions.
+     * Return to normal (release waiting transactions, allow new transactions)
+     * with {@link #finishExclusiveMode}.
      * <p>
      * Do not call inside an existing transaction.
      */
+    @Override
     public boolean tryExclusiveMode() {
         return tryExclusiveMode(false);
     }
 
-    /** Try to enter exclusive mode.
-     *  If return is true, then there are no active transactions on return and new transactions will be held up in 'begin'.
-     *  If false, there were in-progress transactions.
-     *  Return to normal (release waiting transactions, allow new transactions)
-     *  with {@link #finishExclusiveMode}.
+    /**
+     * Try to enter exclusive mode.
+     * If return is true, then there are no active transactions on return and new transactions will be held up in 'begin'.
+     * If false, there were in-progress transactions.
+     * Return to normal (release waiting transactions, allow new transactions)
+     * with {@link #finishExclusiveMode}.
      * <p>
      * Do not call inside an existing transaction.
      * @param canBlock Allow the operation block and wait for the exclusive mode lock.
      */
+    @Override
     public boolean tryExclusiveMode(boolean canBlock) {
         return startExclusiveMode(canBlock);
     }
@@ -406,9 +497,11 @@ public class TransactionCoordinator {
         return exclusivitylock.writeLock().tryLock();
     }
 
-    /** Return to normal (release waiting transactions, allow new transactions).
+    /**
+     * Return to normal (release waiting transactions, allow new transactions).
      * Must be paired with an earlier {@link #startExclusiveMode}.
      */
+    @Override
     public void finishExclusiveMode() {
         exclusivitylock.writeLock().unlock();
     }
@@ -423,6 +516,7 @@ public class TransactionCoordinator {
      *
      * @param action
      */
+    @Override
     public void execExclusive(Runnable action) {
         startExclusiveMode();
         try { action.run(); }
@@ -471,6 +565,7 @@ public class TransactionCoordinator {
     public boolean tryBlockWriters(boolean canBlock) {
         return acquireWriterLock(canBlock);
     }
+
     /** Allow writers.
      * This must be used in conjunction with {@link #blockWriters()} or {@link #tryBlockWriters()}
      *
@@ -514,21 +609,8 @@ public class TransactionCoordinator {
         Objects.nonNull(txnType);
         checkActive();
 
-        if ( false /* bounceWritersAtTheMoment */) {
-            // Is this stil needed?
-            // Switching happens as copy, not in-place compaction (at the moment).
-            // so we don't need a write-reject mode currently.
-            if ( txnType == TxnType.WRITE ) {
-                throw new TransactionException("Writers currently being rejected");
-            }
-        }
-
-        if ( canBlock )
-            exclusivitylock.readLock().lock();
-        else {
-            if ( ! exclusivitylock.readLock().tryLock() )
-                return null;
-        }
+        if ( ! tryNonExclusiveMode(canBlock) )
+            return null;
 
         // Readers never block.
         if ( txnType == TxnType.WRITE ) {
@@ -538,7 +620,7 @@ public class TransactionCoordinator {
             // Released by in notifyCommitFinish/notifyAbortFinish
             boolean b = acquireWriterLock(canBlock);
             if ( !b ) {
-                exclusivitylock.readLock().unlock();
+                finishNonExclusiveMode();
                 return null;
             }
         }
@@ -580,7 +662,7 @@ public class TransactionCoordinator {
         }
     }
 
-    // Detemine ReadWrite for the transaction start from initial TxnType.
+    // Determine ReadWrite for the transaction start from initial TxnType.
     private static ReadWrite initialMode(TxnType txnType) {
         return TxnType.initial(txnType);
     }
@@ -887,7 +969,7 @@ public class TransactionCoordinator {
                 case WRITE: activeWritersCount.decrementAndGet(); break ;
             }
         }
-        exclusivitylock.readLock().unlock();
+        finishNonExclusiveMode();
     }
 
     public long countActiveReaders()    { return activeReadersCount.get(); }
@@ -919,8 +1001,6 @@ public class TransactionCoordinator {
     private void notifyPrepareFinish(Transaction transaction) {
         listeners(x -> x.notifyPrepareFinish(transaction));
     }
-
-    // Writers released here - can happen because of commit() or abort().
 
     private void notifyCommitStart(Transaction transaction) {
         listeners(x -> x.notifyCommitStart(transaction));

@@ -24,7 +24,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Tests for in-memory Dataset and its default implementation.
- *
  */
 @RunWith(Suite.class)
 @SuiteClasses({

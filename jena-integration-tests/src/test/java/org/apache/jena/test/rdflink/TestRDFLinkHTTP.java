@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.integration;
+package org.apache.jena.test.rdflink;
 
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.Fuseki ;

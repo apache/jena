@@ -4126,12 +4126,12 @@ expr1 = new E_Divide(expr1, expr2) ;
         jj_consume_token(LPAREN);
         expr1 = Expression();
         jj_consume_token(RPAREN);
-{if ("" != null) return new E_BNode(expr1) ;}
+{if ("" != null) return makeFunction_BNode(expr1) ;}
         break;
         }
       case NIL:{
         jj_consume_token(NIL);
-{if ("" != null) return new E_BNode() ;}
+{if ("" != null) return makeFunction_BNode() ;}
         break;
         }
       default:

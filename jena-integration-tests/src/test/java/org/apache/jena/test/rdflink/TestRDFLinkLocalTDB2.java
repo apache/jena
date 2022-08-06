@@ -16,23 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.integration;
+package org.apache.jena.test.rdflink;
 
+import org.apache.jena.rdfconnection.Isolation;
+import org.apache.jena.rdflink.AbstractTestRDFLink;
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkFactory;
-import org.apache.jena.rdflink.RDFLinkFuseki;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.tdb2.DatabaseMgr;
 
-public class TestRDFLinkFuseki extends TestRDFLinkHTTP {
+public class TestRDFLinkLocalTDB2 extends AbstractTestRDFLink {
+
+    @Override
+    protected boolean supportsAbort() { return true ; }
+
     @Override
     protected RDFLink link() {
-        return RDFLinkFactory.connectFuseki("http://localhost:"+PORT+"/ds");
-    }
-
-    @Override
-    protected boolean defaultToCheckQueries() { return false; }
-
-    @Override
-    protected RDFLink link(boolean parseCheckSPARQL) {
-        return RDFLinkFuseki.service("http://localhost:"+PORT+"/ds").parseCheckSPARQL(parseCheckSPARQL).build();
+        DatasetGraph dsg = DatabaseMgr.createDatasetGraph() ;
+        return RDFLinkFactory.connect(dsg, Isolation.COPY) ;
     }
 }
+

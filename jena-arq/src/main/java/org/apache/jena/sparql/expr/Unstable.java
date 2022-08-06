@@ -16,23 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.integration;
+package org.apache.jena.sparql.expr;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // Done in the module
-    //    TestRDFLinkLocalTxnMem
-    //    TestRDFLinkLocalMRSW
-
-    // Addition tests added here.
-    TestRDFLinkLocalTDB.class,
-    TestRDFLinkLocalTDB2.class,
-    TestRDFLinkHTTP.class,
-    TestRDFLinkFuseki.class,
-    TestRDFLinkFusekiBinary.class
-})
-
-public class TS_RDFLinkIntegration {}
+/**
+ * Marker interface for a function that is "unstable".
+ * That is, it isn't really a function.
+ * <p>
+ * A function returns the same result value when called with the same arguments.
+ * Some "functions" do not obey this condition on functions; they look like functions but aren't.
+ * RAND, BNODE, UUID, STRUUID
+ * <p>
+ * There are also "functional forms" that have special evaluation rule. These return the same value when given the same arguments.
+ * These are "stable".
+ * <a href="https://www.w3.org/TR/sparql11-query/#func-forms"></a>
+ */
+public interface Unstable {}

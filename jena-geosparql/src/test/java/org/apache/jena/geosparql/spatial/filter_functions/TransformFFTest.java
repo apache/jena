@@ -74,7 +74,7 @@ public class TransformFFTest {
     @Test
     public void testExec_string_string() {
 
-        NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
+        NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeString(WKTDatatype.URI);
         NodeValue v3 = NodeValue.makeString(SRS_URI.DEFAULT_WKT_CRS84);
         TransformFF instance = new TransformFF();
@@ -89,7 +89,7 @@ public class TransformFFTest {
     @Test
     public void testExec_string_URI() {
 
-        NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
+        NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeString(WKTDatatype.URI);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(SRS_URI.DEFAULT_WKT_CRS84));
         TransformFF instance = new TransformFF();
@@ -104,7 +104,7 @@ public class TransformFFTest {
     @Test
     public void testExec_URI_string() {
 
-        NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
+        NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode(NodeFactory.createURI(WKTDatatype.URI));
         NodeValue v3 = NodeValue.makeString(SRS_URI.DEFAULT_WKT_CRS84);
         TransformFF instance = new TransformFF();
@@ -119,7 +119,7 @@ public class TransformFFTest {
     @Test
     public void testExec_URI_URI() {
 
-        NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
+        NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode(NodeFactory.createURI(WKTDatatype.URI));
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(SRS_URI.DEFAULT_WKT_CRS84));
         TransformFF instance = new TransformFF();
@@ -134,7 +134,7 @@ public class TransformFFTest {
     @Test(expected = ExprEvalException.class)
     public void testExec_fail() {
 
-        NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
+        NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeInteger(8);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(SRS_URI.DEFAULT_WKT_CRS84));
         TransformFF instance = new TransformFF();
@@ -149,7 +149,7 @@ public class TransformFFTest {
     @Test(expected = ExprEvalException.class)
     public void testExec_fail2() {
 
-        NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/ont/gml\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
+        NodeValue v1 = NodeValue.makeNode("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\"><gml:pos>0 10</gml:pos></gml:Point>", GMLDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode(NodeFactory.createURI(WKTDatatype.URI));
         NodeValue v3 = NodeValue.makeInteger(8);
         TransformFF instance = new TransformFF();
@@ -171,7 +171,7 @@ public class TransformFFTest {
                 + "\n"
                 + "SELECT ?result\n"
                 + "WHERE{\n"
-                + "    BIND(\"<gml:Point xmlns:gml=\\\"http://www.opengis.net/ont/gml\\\" srsName=\\\"http://www.opengis.net/def/crs/EPSG/0/4326\\\"><gml:pos>0 10</gml:pos></gml:Point>\"^^<http://www.opengis.net/ont/geosparql#gmlLiteral> AS ?geomLit)"
+                + "    BIND(\"<gml:Point xmlns:gml=\\\"http://www.opengis.net/gml/3.2\\\" srsName=\\\"http://www.opengis.net/def/crs/EPSG/0/4326\\\"><gml:pos>0 10</gml:pos></gml:Point>\"^^<http://www.opengis.net/ont/geosparql#gmlLiteral> AS ?geomLit)"
                 + "    BIND(<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?datatypeURI)"
                 + "    BIND(<http://www.opengis.net/def/crs/OGC/1.3/CRS84> AS ?srsURI)"
                 + "    BIND( spatialF:transform(?geomLit, ?datatypeURI, ?srsURI) AS ?result) \n"
