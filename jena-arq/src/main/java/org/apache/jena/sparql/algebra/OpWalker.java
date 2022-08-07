@@ -55,7 +55,7 @@ public class OpWalker
     
     public static void walk(OpWalkerVisitor walkerVisitor, Op op)
     {
-        // Stil needed for OpWalkerVisitorVisible, OpWalkerVisitorFixed
+        // Still needed for OpWalkerVisitorVisible, OpWalkerVisitorFixed
         op.visit(walkerVisitor) ;
     }
     

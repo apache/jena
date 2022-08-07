@@ -33,6 +33,8 @@ import org.apache.jena.sparql.algebra.op.* ;
 //import org.apache.jena.sparql.algebra.walker.WalkerVisitorVisible;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.expr.ExprAggregator;
 import org.apache.jena.sparql.expr.ExprVars ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.util.VarUtils ;
@@ -107,7 +109,22 @@ public class OpVars
         OpWalker.walk(op, visitor) ;
     }
 
-    /** Do project and don't walk into it. MINUS vars aren't visible either */
+    private static void accVarsFromGroup(Collection<Var> acc, OpGroup opGroup) {
+        VarExprList groupByVars  = opGroup.getGroupVars();
+        groupByVars.forEachVarExpr((var, expr)->acc.add(var));
+
+        List<ExprAggregator> aggs = opGroup.getAggregators();
+        aggs.forEach(exprAgg -> {
+            Var v = exprAgg.getVar();
+            acc.add(v);
+        });
+    }
+
+    /**
+     * Walk the visible part of an algebra expression
+     * (the parts that set variables).
+     * Sub-ops of project, and group, and the RHS of MINUS aren't visible
+     */
     private static class OpWalkerVisitorVisible extends OpWalkerVisitor
     {
         private final Collection<Var> acc ;
@@ -132,6 +149,14 @@ public class OpVars
                 op.getLeft().visit(this) ;
             // Skip right.
             // if ( op.getRight() != null ) op.getRight().visit(this) ;
+            if (visitor != null)
+                op.visit(visitor) ;
+            after(op) ;
+        }
+
+        @Override public void visit(OpGroup op) {
+            // Do not walk inside the group
+            before(op) ;
             if (visitor != null)
                 op.visit(visitor) ;
             after(op) ;
@@ -185,6 +210,14 @@ public class OpVars
             // if ( op.getRight() != null ) op.getRight().visit(this) ;
 //            if (opVisitor != null)
 //                op.visit(opVisitor) ;
+            if (visitor != null)
+                op.visit(visitor) ;
+            after(op) ;
+        }
+
+        @Override public void visit(OpGroup op) {
+            // Do not walk inside the group
+            before(op) ;
             if (visitor != null)
                 op.visit(visitor) ;
             after(op) ;
@@ -294,6 +327,12 @@ public class OpVars
         public void visit(OpExt opExt) {
             // OpWalkerVisitor is taking care of calling opExt.effectiveOp().visit(this)
         }
+
+        @Override public void visit(OpGroup opGroup) {
+            accVarsFromGroup(acc, opGroup);
+
+        }
+
     }
 
     private static class OpVarsPatternWithPositions extends OpVisitorBase
@@ -302,7 +341,9 @@ public class OpVars
         protected Set<Var> graphAcc, subjAcc, predAcc, objAcc, unknownAcc ;
         final boolean      visibleOnly ;
 
-        OpVarsPatternWithPositions(Set<Var> graphAcc, Set<Var> subjAcc, Set<Var> predAcc, Set<Var> objAcc, Set<Var> unknownAcc, boolean visibleOnly) {
+        OpVarsPatternWithPositions(Set<Var> graphAcc,
+                                   Set<Var> subjAcc, Set<Var> predAcc, Set<Var> objAcc,
+                                   Set<Var> unknownAcc, boolean visibleOnly) {
             this.graphAcc = graphAcc;
             this.subjAcc = subjAcc;
             this.predAcc = predAcc;
@@ -354,12 +395,22 @@ public class OpVars
             // for visible variables, not mentioned variable collecting.
             // The visibleOnly/clear is simply to be as general as possible.
             List<Var> vs = opProject.getVars();
+            merge(vs);
+        }
+
+        @Override
+        public void visit(OpGroup opGroup) {
+            List<Var> vs = new ArrayList<>();
+            accVarsFromGroup(vs, opGroup);
+            merge(vs);
+        }
+
+        private void merge(List<Var> vs) {
             if (visibleOnly) {
                 clear(graphAcc, vs);
                 clear(subjAcc, vs);
                 clear(predAcc, vs);
                 clear(objAcc, vs);
-
             }
             for (Var v : vs) {
                 if (!graphAcc.contains(v) && !subjAcc.contains(v) && !predAcc.contains(v) && !objAcc.contains(v)) {
@@ -421,7 +472,6 @@ public class OpVars
                 acc.remove(v);
             }
         }
-
     }
 
     private static class OpVarsMentioned extends OpVarsPattern
