@@ -1,0 +1,17 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+
+wd:Q54872  rdfs:label  "Resource Description Framework"@en .
+
+wd:Q108379795  rdfs:label  "Andy Seaborne"@en .
+
+wd:Q1686799  rdfs:label  "Apache Jena"@en .
+
+wd:Q54871  rdfs:label  "SPARQL"@en ;
+        rdfs:label  "SPARQL"@en-ca ;
+        rdfs:label  "SPARQL"@en-gb .
+
+wd:Q54837  rdfs:label  "Semantic Web"@en ;
+        rdfs:label  "Semantic Web"@en-ca ;
+        rdfs:label  "Semantic Web"@en-gb .
