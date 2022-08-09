@@ -41,7 +41,7 @@ import org.apache.jena.sparql.expr.* ;
  * Optimizer for transforming implicit joins. These covers queries like the
  * following:
  * </p>
- * 
+ *
  * <pre>
  * SELECT *
  * WHERE
@@ -57,7 +57,7 @@ import org.apache.jena.sparql.expr.* ;
  * would otherwise be required to evaluate. The optimization where applicable
  * results in a query of the following form:
  * </p>
- * 
+ *
  * <pre>
  * SELECT *
  * WHERE
@@ -139,13 +139,13 @@ public class TransformFilterImplicitJoin extends TransformCopy {
             op = OpFilter.filterBy(exprs, op);
             return op;
         }
-        
+
         // Special case : filter is over a union where one/both sides are always false
         if (testSpecialCaseUnion(subOp, joins)) {
         	// This will attempt to eliminate the sides that are always false
         	op = processSpecialCaseUnion(subOp, joins);
-        	
-        	// In the case where both sides were invalid we'll have a table empty 
+
+        	// In the case where both sides were invalid we'll have a table empty
         	// operator at this point and can return immediately
         	if (op instanceof OpTable) return op;
         }
@@ -286,7 +286,7 @@ public class TransformFilterImplicitJoin extends TransformCopy {
             Op2 op2 = (Op2) op;
             return safeToTransform(joins, varsEquality, op2.getLeft()) && safeToTransform(joins, varsEquality, op2.getRight());
         }
-        
+
         if (op instanceof OpUnion) {
         	// True only if for any pairs that affect the pattern both variables occur
         	Set<Var> fixedVars = OpVars.fixedVars(op);
@@ -392,13 +392,13 @@ public class TransformFilterImplicitJoin extends TransformCopy {
         }
         return isTableUnit(op);
     }
-    
+
     private static boolean testSpecialCaseUnion(Op op, List<Pair<Var, Var>> joins) {
     	if (op instanceof OpUnion) {
     		OpUnion union = (OpUnion) op;
     		Set<Var> leftVars = OpVars.visibleVars(union.getLeft());
     		Set<Var> rightVars = OpVars.visibleVars(union.getRight());
-    		
+
     		// Is a special case if there is any implicit join where only one of the variables mentioned in an
     		// implicit join is present on one side of the union
     		for (Pair<Var, Var> p : joins) {
@@ -449,14 +449,14 @@ public class TransformFilterImplicitJoin extends TransformCopy {
         }
         return false;
     }
-    
+
     private static Op processSpecialCaseUnion(Op op, List<Pair<Var, Var>> joins) {
     	if (op instanceof OpUnion) {
     		OpUnion union = (OpUnion) op;
-    		
+
     		Set<Var> leftVars = OpVars.visibleVars(union.getLeft());
     		Set<Var> rightVars = OpVars.visibleVars(union.getRight());
-    		
+
     		// Is a special case if there is any implicit join where only one of the variables mentioned in an
     		// implicit join is present on one side of the union
     		boolean leftEmpty = false, rightEmpty = false;
@@ -464,7 +464,7 @@ public class TransformFilterImplicitJoin extends TransformCopy {
     			if (leftEmpty || !leftVars.contains(p.getLeft()) || !leftVars.contains(p.getRight())) leftEmpty = true;
     			if (rightEmpty || !rightVars.contains(p.getLeft()) || !rightVars.contains(p.getRight())) rightEmpty = true;
     		}
-    		
+
     		// If both sides of the union guarantee to produce errors then just replace the whole thing with table empty
     		if (leftEmpty && rightEmpty) return OpTable.empty();
     		if (leftEmpty) return union.getRight();

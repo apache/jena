@@ -41,7 +41,7 @@ import org.apache.jena.sparql.expr.* ;
  * Optimizer for transforming implicit joins. These covers queries like the
  * following:
  * </p>
- * 
+ *
  * <pre>
  * SELECT *
  * WHERE
@@ -60,7 +60,7 @@ import org.apache.jena.sparql.expr.* ;
  * would otherwise be required to evaluate. The optimization where applicable
  * results in a query of the following form:
  * </p>
- * 
+ *
  * <pre>
  * SELECT *
  * WHERE
@@ -107,10 +107,10 @@ public class TransformImplicitLeftJoin extends TransformCopy {
     private static Op apply(OpLeftJoin opLeftJoin, Op left, Op right) {
         // This handles arbitrarily nested && conditions
         ExprList orig = ExprList.splitConjunction(opLeftJoin.getExprs());
-        
+
         // Extract optimizable conditions?
         Pair<List<Pair<Var, Var>>, ExprList> p = preprocessFilterImplicitJoin(left, right, orig);
-        
+
         // Were there any optimizable conditions?
         if (p == null || p.getLeft().size() == 0)
             return null;
@@ -245,7 +245,6 @@ public class TransformImplicitLeftJoin extends TransformCopy {
         if (e instanceof E_Equals) {
             // Is a safe equals for this optimization?
             Tuple<Set<Var>> varsByPosition = OpVars.mentionedVarsByPosition(opLeft, opRight);
-
             if (!isSafeEquals(varsByPosition, left.asVar(), right.asVar()))
                 return null;
         }
@@ -330,7 +329,7 @@ public class TransformImplicitLeftJoin extends TransformCopy {
             Op2 op2 = (Op2) op;
             return safeToTransform(joins, varsEquality, op2.getLeft()) && safeToTransform(joins, varsEquality, op2.getRight());
         }
-        
+
         if (op instanceof OpUnion) {
         	// True only if for any pairs that affect the pattern both variables occur
         	Set<Var> fixedVars = OpVars.fixedVars(op);
