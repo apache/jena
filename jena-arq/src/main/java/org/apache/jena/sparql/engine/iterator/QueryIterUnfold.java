@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import java.util.Iterator;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -89,7 +88,7 @@ public class QueryIterUnfold extends QueryIterRepeatApply
                 return unfoldTypedMap(n.getLiteralLexicalForm(), inputBinding);
         }
 
-        return QueryIterSingleton.create( inputBinding, var1, n, getExecContext() );
+        return QueryIterSingleton.create( inputBinding, getExecContext() );
     }
 
     protected QueryIterator unfoldUntypedList(String listAsValue, Binding inputBinding) {
