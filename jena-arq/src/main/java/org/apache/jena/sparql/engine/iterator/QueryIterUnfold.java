@@ -46,7 +46,7 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 
 public class QueryIterUnfold extends QueryIterRepeatApply
 {
-	protected final Expr expr ;
+    protected final Expr expr ;
     protected final Var var1 ;
     protected final Var var2 ;
 
@@ -93,7 +93,6 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         final Iterable<Map.Entry<CDTKey,CDTValue>> itMapEntries = CompositeDatatypeMap.getValue(lit).entrySet();
         return new QueryIterUnfoldWorkerForMaps(inputBinding, itMapEntries);
     }
-
 
 
     protected abstract class QueryIterUnfoldWorkerBase<T> extends QueryIteratorBase {
