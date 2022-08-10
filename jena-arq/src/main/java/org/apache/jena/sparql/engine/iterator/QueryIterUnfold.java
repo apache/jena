@@ -94,6 +94,14 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         return new QueryIterUnfoldWorkerForMaps(inputBinding, itMapEntries);
     }
 
+    protected Iterator<Map.Entry<Node,Node>> parseMap(String mapAsValue) {
+        final PrefixMap pmap = (getExecContext().getDataset() == null) ? null : getExecContext().getDataset().prefixes();
+        final Iterator<Map.Entry<String,String>> itMapElmts = extractMapElements(mapAsValue);
+        return new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return itMapElmts.hasNext();
+            }
 
     protected abstract class QueryIterUnfoldWorkerBase<T> extends QueryIteratorBase {
         protected final Binding inputBinding;
