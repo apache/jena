@@ -34,6 +34,7 @@ import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
@@ -63,7 +64,18 @@ public class QueryIterUnfold extends QueryIterRepeatApply
 
     @Override
     protected QueryIterator nextStage(Binding inputBinding) {
-        NodeValue nv = expr.eval( inputBinding, getExecContext() );
+        final NodeValue nv;
+        try {
+            nv = expr.eval( inputBinding, getExecContext() );
+        }
+        catch ( final ExprEvalException ex ) {
+            // If the expression failed to evaluate, we create no
+            // no assignment (exactly as in the case of BIND, see
+            // the 'accept' method in 'QueryIterAssign')
+
+            return QueryIterSingleton.create( inputBinding, getExecContext() );
+        }
+
         Node n = nv.asNode();
         if ( n.isLiteral() ) {
             String dtURI = n.getLiteralDatatypeURI();
