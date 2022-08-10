@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -93,7 +94,7 @@ public class QueryIterUnfold extends QueryIterRepeatApply
 
     protected QueryIterator unfoldUntypedList(String listAsValue, Binding inputBinding) {
         Iterator<Node> itListElmts = parseUntypedList(listAsValue);
-        return new QueryIterUnfoldWorker(inputBinding, itListElmts);
+        return new QueryIterUnfoldWorkerForLists(inputBinding, itListElmts);
     }
 
     protected Iterator<Node> parseUntypedList(String listAsValue) {
@@ -105,7 +106,7 @@ public class QueryIterUnfold extends QueryIterRepeatApply
 
     protected QueryIterator unfoldTypedList(String listAsValue, Binding inputBinding) {
         Iterator<Node> itListElmts = parseTypedList(listAsValue);
-        return new QueryIterUnfoldWorker(inputBinding, itListElmts);
+        return new QueryIterUnfoldWorkerForLists(inputBinding, itListElmts);
     }
 
     protected Iterator<Node> parseTypedList(String listAsValue) {
@@ -114,7 +115,15 @@ public class QueryIterUnfold extends QueryIterRepeatApply
     }
 
     protected QueryIterator unfoldUntypedMap(String mapAsValue, Binding inputBinding) {
-        throw new UnsupportedOperationException("TODO");
+        Iterator<Map.Entry<Node,Node>> itMapElmts = parseUntypedMap(mapAsValue);
+        return new QueryIterUnfoldWorkerForMaps(inputBinding, itMapElmts);
+    }
+
+    protected Iterator<Map.Entry<Node,Node>> parseUntypedMap(String mapAsValue) {
+        if ( mapAsValue.startsWith("{") )
+        	mapAsValue = mapAsValue.substring( 1, mapAsValue.length() - 1 );
+
+        return parseMap(mapAsValue);
     }
 
     protected QueryIterator unfoldTypedMap(String mapAsValue, Binding inputBinding) {
@@ -138,9 +147,9 @@ public class QueryIterUnfold extends QueryIterRepeatApply
                     n = NodeFactory.createLiteral(listElmt, datatypeUntypedList);
                 else if ( listElmt.startsWith("[") && ! listElmt.endsWith("]") )
                     n = NodeFactory.createLiteral(listElmt, datatypeTypedList); // brittle
-                else if ( listElmt.startsWith("{") && listElmt.startsWith("}") )
+                else if ( listElmt.startsWith("{") && listElmt.endsWith("}") )
                     n = NodeFactory.createLiteral(listElmt, datatypeUntypedMap);
-                else if ( listElmt.startsWith("{") && ! listElmt.startsWith("}") )
+                else if ( listElmt.startsWith("{") && ! listElmt.endsWith("}") )
                     n = NodeFactory.createLiteral(listElmt, datatypeTypedMap); // brittle
                 else if ( pmap != null )
                     n = NodeFactoryExtra.parseNode(listElmt, pmap);
@@ -169,30 +178,80 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         return new ListElementExtractor(listAsValue);
     }
 
+    protected Iterator<Map.Entry<Node,Node>> parseMap(String mapAsValue) {
+        final PrefixMap pmap = (getExecContext().getDataset() == null) ? null : getExecContext().getDataset().prefixes();
+        final Iterator<Map.Entry<String,String>> itMapElmts = extractMapElements(mapAsValue);
+        return new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return itMapElmts.hasNext();
+            }
 
-    protected class QueryIterUnfoldWorker extends QueryIteratorBase {
+            @Override
+            public Map.Entry<Node,Node> next() {
+                final Map.Entry<String,String> mapElmt = itMapElmts.next();
+                final String keyAsString   = mapElmt.getKey();
+                final String valueAsString = mapElmt.getValue();
+
+                final Node keyAsNode;
+                if ( pmap != null )
+                    keyAsNode = NodeFactoryExtra.parseNode(keyAsString, pmap );
+                else
+                    keyAsNode = NodeFactoryExtra.parseNode(keyAsString);
+
+                final Node valueAsNode;
+                if ( valueAsString.startsWith("[") && valueAsString.endsWith("]") )
+                    valueAsNode = NodeFactory.createLiteral(valueAsString, datatypeUntypedList);
+                else if ( valueAsString.startsWith("[") && ! valueAsString.endsWith("]") )
+                    valueAsNode = NodeFactory.createLiteral(valueAsString, datatypeTypedList); // brittle
+                else if ( valueAsString.startsWith("{") && valueAsString.endsWith("}") )
+                    valueAsNode = NodeFactory.createLiteral(valueAsString, datatypeUntypedMap);
+                else if ( valueAsString.startsWith("{") && ! valueAsString.endsWith("}") )
+                    valueAsNode = NodeFactory.createLiteral(valueAsString, datatypeTypedMap); // brittle
+                else if ( pmap != null )
+                    valueAsNode = NodeFactoryExtra.parseNode(valueAsString, pmap);
+                else
+                    valueAsNode = NodeFactoryExtra.parseNode(valueAsString);
+
+                return new Map.Entry<>() {
+                    @Override public Node getKey() { return keyAsNode; }
+                    @Override public Node getValue() { return valueAsNode; }
+                    @Override public Node setValue(Node v) { throw new UnsupportedOperationException(); }
+                };
+            }
+        };
+    }
+
+    protected Iterator<Map.Entry<String,String>> extractMapElements(String mapAsValue) {
+    	mapAsValue = mapAsValue.strip();
+
+        if ( mapAsValue.isEmpty() ) {
+            return new Iterator<Map.Entry<String,String>>() {
+                @Override public boolean hasNext() { return false; }
+                @Override public Map.Entry<String,String> next() { throw new NoSuchElementException(); }
+            };
+        }
+
+// TODO: this method needs to be improved and, in particular, made more robust in terms
+//       of parsing the given lexical form of the literal; for instance, simply splitting
+//       by commas is an issue if the list contains literals with commas inside -- can we
+//       use existing code for parsing Turtle here?
+
+        return new MapElementExtractor(mapAsValue);
+    }
+
+
+    protected abstract class QueryIterUnfoldWorkerBase<T> extends QueryIteratorBase {
         protected final Binding inputBinding;
-        protected final Iterator<Node> itListElmts;
+        protected final Iterator<T> itElmts;
 
-        public QueryIterUnfoldWorker(Binding inputBinding, Iterator<Node> itListElmts) {
+        protected QueryIterUnfoldWorkerBase(Binding inputBinding, Iterator<T> itElmts) {
             this.inputBinding = inputBinding;
-            this.itListElmts = itListElmts;
+            this.itElmts = itElmts;
         }
 
         @Override
-        public void output(IndentedWriter out, SerializationContext sCxt) {
-            out.write("QueryIterUnfoldWorker");
-        }
-
-        @Override
-        protected Binding moveToNextBinding() {
-            return BindingFactory.binding( inputBinding, var1, itListElmts.next() );
-        }
-
-        @Override
-        protected boolean hasNextBinding() {
-            return itListElmts.hasNext();
-        }
+        protected boolean hasNextBinding() { return itElmts.hasNext(); }
 
         @Override
         protected void requestCancel() { } // nothing to do really
@@ -202,13 +261,53 @@ public class QueryIterUnfold extends QueryIterRepeatApply
     }
 
 
-    protected static class ListElementExtractor implements Iterator<String> {
-        protected final String listAsString;
-        protected int cursor = 0;
-        protected String nextElmt = null;
+    protected class QueryIterUnfoldWorkerForLists extends QueryIterUnfoldWorkerBase<Node> {
 
-        public ListElementExtractor( final String listAsString ) {
-            this.listAsString = listAsString.strip();
+        public QueryIterUnfoldWorkerForLists(Binding inputBinding, Iterator<Node> itListElmts) {
+            super(inputBinding, itListElmts);
+        }
+
+        @Override
+        public void output(IndentedWriter out, SerializationContext sCxt) {
+            out.write("QueryIterUnfoldWorkerForLists");
+        }
+
+        @Override
+        protected Binding moveToNextBinding() {
+            return BindingFactory.binding( inputBinding, var1, itElmts.next() );
+        }
+    }
+
+
+    protected class QueryIterUnfoldWorkerForMaps extends QueryIterUnfoldWorkerBase<Map.Entry<Node,Node>> {
+
+        public QueryIterUnfoldWorkerForMaps(Binding inputBinding, Iterator<Map.Entry<Node,Node>> itMapElmts) {
+            super(inputBinding, itMapElmts);
+        }
+
+        @Override
+        public void output(IndentedWriter out, SerializationContext sCxt) {
+            out.write("QueryIterUnfoldWorkerForMaps");
+        }
+
+        @Override
+        protected Binding moveToNextBinding() {
+            final Map.Entry<Node,Node> elmt = itElmts.next();
+            if ( var2 == null )
+                return BindingFactory.binding( inputBinding, var1, elmt.getKey() );
+            else
+                return BindingFactory.binding( inputBinding, var1, elmt.getKey(), var2, elmt.getValue() );
+        }
+    }
+
+
+    protected static abstract class ElementExtractorBase<T> implements Iterator<T> {
+        protected final String str;
+        protected int cursor = 0;
+        private T nextElmt = null;
+
+        protected ElementExtractorBase( final String str ) {
+            this.str = str.strip();
         }
 
         @Override
@@ -216,47 +315,35 @@ public class QueryIterUnfold extends QueryIterRepeatApply
             if ( nextElmt != null )
                 return true;
 
-            consumeWhiteSpace();
-            if ( cursor >= listAsString.length() ) {
-                return false;
-            }
-
-            final int nextElmtBegin = cursor;
-            if ( listAsString.charAt(cursor) == '[' ) {
-                advanceToEndOfSubList();
-            }
-            else if ( listAsString.charAt(cursor) == '{' ) {
-                advanceToEndOfSubMap();
-            }
-            advanceToNextCommaOrEnd();
-            nextElmt = listAsString.substring(nextElmtBegin, cursor);
-            cursor++; // move cursor to after comma
-            return true;
+            nextElmt = produceNext();
+            return ( nextElmt != null );
         }
 
         @Override
-        public String next() {
+        public T next() {
             if ( ! hasNext() )
                 throw new NoSuchElementException();
 
-            String r = nextElmt;
+            final T r = nextElmt;
             nextElmt = null;
             return r;
         }
 
+        protected abstract T produceNext();
+
         protected void consumeWhiteSpace() {
-            while ( cursor < listAsString.length() && listAsString.charAt(cursor) == ' ' )
+            while ( cursor < str.length() && str.charAt(cursor) == ' ' )
                 cursor++;
         }
 
         protected void advanceToEndOfSubList() {
-            while ( cursor < listAsString.length() && listAsString.charAt(cursor) != ']' ) {
+            while ( cursor < str.length() && str.charAt(cursor) != ']' ) {
                 cursor++;
-                if ( listAsString.charAt(cursor) == '[' ) {
+                if ( str.charAt(cursor) == '[' ) {
                     advanceToEndOfSubList();
                     cursor++;
                 }
-                else if ( listAsString.charAt(cursor) == '{' ) {
+                else if ( str.charAt(cursor) == '{' ) {
                     advanceToEndOfSubMap();
                     cursor++;
                 }
@@ -264,13 +351,13 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         }
 
         protected void advanceToEndOfSubMap() {
-            while ( cursor < listAsString.length() && listAsString.charAt(cursor) != '}' ) {
+            while ( cursor < str.length() && str.charAt(cursor) != '}' ) {
                 cursor++;
-                if ( listAsString.charAt(cursor) == '[' ) {
+                if ( str.charAt(cursor) == '[' ) {
                     advanceToEndOfSubList();
                     cursor++;
                 }
-                else if ( listAsString.charAt(cursor) == '{' ) {
+                else if ( str.charAt(cursor) == '{' ) {
                     advanceToEndOfSubMap();
                     cursor++;
                 }
@@ -278,7 +365,77 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         }
 
         protected void advanceToNextCommaOrEnd() {
-            while ( cursor < listAsString.length() && listAsString.charAt(cursor) != ',' )
+            while ( cursor < str.length() && str.charAt(cursor) != ',' )
+                cursor++;
+        }
+    }
+
+
+    protected static class ListElementExtractor extends ElementExtractorBase<String> {
+        public ListElementExtractor( final String listAsString ) {
+            super(listAsString);
+        }
+
+        @Override
+        public String produceNext() {
+            consumeWhiteSpace();
+            if ( cursor >= str.length() ) {
+                return null;
+            }
+
+            final int nextElmtBegin = cursor;
+            if ( str.charAt(cursor) == '[' ) {
+                advanceToEndOfSubList();
+            }
+            else if ( str.charAt(cursor) == '{' ) {
+                advanceToEndOfSubMap();
+            }
+            advanceToNextCommaOrEnd();
+            final String nextElmt = str.substring(nextElmtBegin, cursor).strip();
+            cursor++; // move cursor to after comma
+            return nextElmt;
+        }
+    }
+
+
+    protected static class MapElementExtractor extends ElementExtractorBase<Map.Entry<String,String>> {
+        public MapElementExtractor( final String mapAsString ) {
+            super(mapAsString);
+        }
+
+        @Override
+        public Map.Entry<String,String> produceNext() {
+            consumeWhiteSpace();
+            if ( cursor >= str.length() ) {
+                return null;
+            }
+
+            final int nextKeyBegin = cursor;
+            advanceToNextColon();
+            final String nextKey = str.substring(nextKeyBegin, cursor).strip();
+
+            cursor++; // move cursor to after colon
+            consumeWhiteSpace();
+            final int nextValueBegin = cursor;
+            if ( str.charAt(cursor) == '[' ) {
+                advanceToEndOfSubList();
+            }
+            else if ( str.charAt(cursor) == '{' ) {
+                advanceToEndOfSubMap();
+            }
+            advanceToNextCommaOrEnd();
+            final String nextValue = str.substring(nextValueBegin, cursor).strip();
+            cursor++; // move cursor to after comma
+
+            return new Map.Entry<>() {
+                @Override public String getKey() { return nextKey; }
+                @Override public String getValue() { return nextValue; }
+                @Override public String setValue(String v) { throw new UnsupportedOperationException(); }
+            };
+        }
+
+        protected void advanceToNextColon() {
+            while ( cursor < str.length() && str.charAt(cursor) != ':' )
                 cursor++;
         }
     }
