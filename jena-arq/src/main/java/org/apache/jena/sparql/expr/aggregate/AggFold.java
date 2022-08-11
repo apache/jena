@@ -3,33 +3,36 @@ package org.apache.jena.sparql.expr.aggregate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
-import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.out.NodeFmtLib;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.iterator.QueryIterUnfold;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprLib;
 import org.apache.jena.sparql.expr.ExprList;
-import org.apache.jena.sparql.expr.ExprNode;
-import org.apache.jena.sparql.expr.ExprNone;
-import org.apache.jena.sparql.expr.ExprVisitor;
 import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueNode;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueString;
 import org.apache.jena.sparql.function.FunctionEnv;
-import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.sse.writers.WriterExpr;
 import org.apache.jena.sparql.util.ExprUtils;
 
 public class AggFold extends AggregatorBase
 {
+	protected static Expr dummyExprForTypeKeyword = new NodeValueNode( Node.ANY );// Node_Marker.xlabel("TYPE") );
+
 	protected final Expr expr1;       // While the values of these member variables
 	protected final Expr expr2;       // can also be extracted from the ExprList (see
-	protected final String typeIRI1;  // createExprList below), keeping these copies
-	protected final String typeIRI2;  // here makes it easier to access these values.
+	protected final Node typeIRI1;    // createExprList below), keeping these copies
+	protected final Node typeIRI2;    // here makes it easier to access these values.
 
 	public AggFold( final Expr expr1 ) {
 		this(expr1, null, null, null);
@@ -52,8 +55,8 @@ public class AggFold extends AggregatorBase
 
 		this.expr1 = expr1;
 		this.expr2 = expr2;
-		this.typeIRI1 = typeIRI1;
-		this.typeIRI2 = typeIRI2;
+		this.typeIRI1 = (typeIRI1 != null) ? NodeFactory.createURI(typeIRI1) : null;
+		this.typeIRI2 = (typeIRI2 != null) ? NodeFactory.createURI(typeIRI2) : null;
 	}
 
 	protected static ExprList createExprList( final Expr expr1, final String typeIRI1,
@@ -61,7 +64,7 @@ public class AggFold extends AggregatorBase
 		final ExprList l = new ExprList(expr1);
 
 		if ( typeIRI1 != null ) {
-			l.add(dummyExprForType);
+			l.add(dummyExprForTypeKeyword);
 			l.add( new NodeValueString(typeIRI1) );
 		}
 
@@ -70,7 +73,7 @@ public class AggFold extends AggregatorBase
 		}
 
 		if ( typeIRI2 != null ) {
-			l.add(dummyExprForType);
+			l.add(dummyExprForTypeKeyword);
 			l.add( new NodeValueString(typeIRI2) );
 		}
 
@@ -91,7 +94,7 @@ public class AggFold extends AggregatorBase
 
 		Expr lookAhead = it.hasNext() ? it.next() : null;
 		// _typeIRI1
-		if ( lookAhead != null && lookAhead == dummyExprForType ) {
+		if ( lookAhead != null && lookAhead == dummyExprForTypeKeyword ) {
 			lookAhead = it.hasNext() ? it.next() : null;
 			if ( lookAhead != null && lookAhead instanceof NodeValueString )
 				_typeIRI1 = ((NodeValueString) lookAhead).getString();
@@ -114,7 +117,7 @@ public class AggFold extends AggregatorBase
 		}
 
 		// _typeIRI2
-		if ( lookAhead != null && lookAhead == dummyExprForType ) {
+		if ( lookAhead != null && lookAhead == dummyExprForTypeKeyword ) {
 			lookAhead = it.hasNext() ? it.next() : null;
 			if ( lookAhead != null && lookAhead instanceof NodeValueString )
 				_typeIRI2 = ((NodeValueString) lookAhead).getString();
@@ -168,6 +171,8 @@ public class AggFold extends AggregatorBase
 
 	@Override
 	public String asSparqlExpr( final SerializationContext sCxt ) {
+		final PrefixMap pmap = PrefixMapFactory.create( sCxt.getPrefixMapping() );
+
 		final IndentedLineBuffer out = new IndentedLineBuffer();
 		out.append( getName() );
 		out.append( "(" );
@@ -175,7 +180,8 @@ public class AggFold extends AggregatorBase
 		ExprUtils.fmtSPARQL(out, expr1, sCxt);
 
 		if ( typeIRI1 != null ) {
-			out.append( " TYPE " + typeIRI1 );
+			out.append( " TYPE " );
+			out.append( NodeFmtLib.str(typeIRI1, pmap) );
 		}
 
 		if ( expr2 != null ) {
@@ -184,29 +190,42 @@ public class AggFold extends AggregatorBase
 		}
 
 		if ( typeIRI2 != null ) {
-			out.append( " TYPE " + typeIRI2 );
+			out.append( " TYPE " );
+			out.append( NodeFmtLib.str(typeIRI2, pmap) );
 		}
 
 		out.append(")");
 		return out.asString();
 	}
 
+	@Override
+	public String toPrefixString() {
+		final IndentedLineBuffer out = new IndentedLineBuffer();
+		out.append("(");
+		out.append( getName().toLowerCase(Locale.ROOT) );
+		out.incIndent();
 
-	protected static Expr dummyExprForType = new ExprNode() {
-		@Override public void visit(ExprVisitor visitor) { visitor.visit( (ExprNone) ExprNone.NONE ); }
+		WriterExpr.output(out, expr1, null);
 
-		@Override public int hashCode() { return -88888; }
-
-		@Override public boolean equals(Expr other, boolean bySyntax) { return other == this; }
-
-		@Override public Expr copySubstitute(Binding binding) { return this; }
-
-		@Override public Expr applyNodeTransform(NodeTransform transform) { return this; }
-
-		@Override public NodeValue eval(Binding binding, FunctionEnv env) {
-			throw new InternalErrorException("Attempt to eval DummyExprForType");
+		if ( typeIRI1 != null ) {
+			out.append( " TYPE " );
+			out.append( typeIRI1.toString() );
 		}
-	};
+
+		if ( expr2 != null ) {
+			out.append(", ");
+			WriterExpr.output(out, expr2, null);
+		}
+
+		if ( typeIRI2 != null ) {
+			out.append( " TYPE " );
+			out.append( typeIRI2.toString() );
+		}
+
+		out.decIndent();
+		out.append(")");
+		return out.asString();
+	}
 
 	protected class ListAccumulator implements Accumulator {
 		final protected List<Node> list = new ArrayList<>();
@@ -214,13 +233,25 @@ public class AggFold extends AggregatorBase
 		@Override
 		public void accumulate( final Binding binding, final FunctionEnv functionEnv ) {
 			final NodeValue nv = ExprLib.evalOrNull(expr1, binding, functionEnv);
-			if ( nv != null )
-				list.add( nv.asNode() );
+			if ( nv != null ) {
+				final Node n = nv.asNode();
+				if ( typeIRI1 != null ) { // check the type of the node
+					final String nTypeIRI;
+					if ( n.isLiteral() )
+						nTypeIRI = n.getLiteralDatatypeURI();
+					else
+						nTypeIRI = null;
+					if ( ! typeIRI1.getURI().equals(nTypeIRI) )
+						return; // ignore the node if it is not of the expected type
+				}
+				list.add(n);
+			}
 		}
 
 		@Override
 		public NodeValue getValue() {
 			final StringBuilder sb = new StringBuilder();
+			sb.append("[");
 			if ( ! list.isEmpty() ) {
 				final Iterator<Node> it = list.iterator();
 				final Node firstNode = it.next();
@@ -233,7 +264,19 @@ public class AggFold extends AggregatorBase
 					sb.append(nextNodeAsString);
 				}
 			}
-			final Node n = NodeFactory.createLiteral( sb.toString(), QueryIterUnfold.datatypeUntypedList );
+			sb.append("]");
+
+			final RDFDatatype datatype;
+			if ( typeIRI1 != null ) {
+				sb.append("^^");
+				sb.append( NodeFmtLib.strTTL(typeIRI1) );
+				datatype = QueryIterUnfold.datatypeTypedList;
+			}
+			else {
+				datatype = QueryIterUnfold.datatypeUntypedList;
+			}
+
+			final Node n = NodeFactory.createLiteral( sb.toString(), datatype );
 			return NodeValue.makeNode(n);
 		}
 	}
@@ -244,17 +287,41 @@ public class AggFold extends AggregatorBase
 
 		@Override
 		public void accumulate( final Binding binding, final FunctionEnv functionEnv ) {
-			final NodeValue key   = ExprLib.evalOrNull(expr1, binding, functionEnv);
-			final NodeValue value = ExprLib.evalOrNull(expr2, binding, functionEnv);
-			if ( key != null && value != null ) {
-				keys.add( key.asNode() );
-				values.add( value.asNode() );
+			final NodeValue nvKey   = ExprLib.evalOrNull(expr1, binding, functionEnv);
+			final NodeValue nvValue = ExprLib.evalOrNull(expr2, binding, functionEnv);
+			if ( nvKey != null && nvValue != null ) {
+				final Node key = nvKey.asNode();
+				final Node value = nvValue.asNode();
+
+				if ( typeIRI1 != null ) { // check the type of the key
+					final String nTypeIRI;
+					if ( key.isLiteral() )
+						nTypeIRI = key.getLiteralDatatypeURI();
+					else
+						nTypeIRI = null;
+					if ( ! typeIRI1.getURI().equals(nTypeIRI) )
+						return; // ignore the key-value pair if the key is not of the expected type
+				}
+
+				if ( typeIRI2 != null ) { // check the type of the value
+					final String nTypeIRI;
+					if ( value.isLiteral() )
+						nTypeIRI = value.getLiteralDatatypeURI();
+					else
+						nTypeIRI = null;
+					if ( ! typeIRI2.getURI().equals(nTypeIRI) )
+						return; // ignore the key-value pair if the value is not of the expected type
+				}
+
+				keys.add(key);
+				values.add(value);
 			}
 		}
 
 		@Override
 		public NodeValue getValue() {
 			final StringBuilder sb = new StringBuilder();
+			sb.append("{");
 			if ( ! keys.isEmpty() ) {
 				final Iterator<Node> it  = keys.iterator();
 				final Iterator<Node> it2 = values.iterator();
@@ -276,7 +343,25 @@ public class AggFold extends AggregatorBase
 					sb.append(nextValueAsString);
 				}
 			}
-			final Node n = NodeFactory.createLiteral( sb.toString(), QueryIterUnfold.datatypeUntypedMap );
+			sb.append("}");
+
+			final RDFDatatype datatype;
+			if ( typeIRI1 != null || typeIRI2 != null ) {
+				sb.append("^^");
+				if ( typeIRI1 != null ) {
+					sb.append( NodeFmtLib.strTTL(typeIRI1) );
+				}
+				if ( typeIRI2 != null ) {
+					sb.append("^^");
+					sb.append( NodeFmtLib.strTTL(typeIRI2) );
+				}
+				datatype = QueryIterUnfold.datatypeTypedMap;
+			}
+			else {
+				datatype = QueryIterUnfold.datatypeUntypedMap;
+			}
+
+			final Node n = NodeFactory.createLiteral( sb.toString(), datatype );
 			return NodeValue.makeNode(n);
 		}
 	}
