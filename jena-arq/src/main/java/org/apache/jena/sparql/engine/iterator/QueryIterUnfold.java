@@ -93,45 +93,54 @@ public class QueryIterUnfold extends QueryIterRepeatApply
     }
 
     protected QueryIterator unfoldUntypedList(String listAsValue, Binding inputBinding) {
-        Iterator<Node> itListElmts = parseUntypedList(listAsValue);
+        final PrefixMap pmap = (getExecContext().getDataset() == null) ? null : getExecContext().getDataset().prefixes();
+        final Iterator<Node> itListElmts = parseUntypedList(listAsValue, pmap);
         return new QueryIterUnfoldWorkerForLists(inputBinding, itListElmts);
     }
 
-    protected Iterator<Node> parseUntypedList(String listAsValue) {
+    public static Iterator<Node> parseUntypedList( String listAsValue, final PrefixMap pmap ) {
         if ( listAsValue.startsWith("[") )
             listAsValue = listAsValue.substring( 1, listAsValue.length() - 1 );
 
-        return parseList(listAsValue);
+        return parseList(listAsValue, pmap);
     }
 
     protected QueryIterator unfoldTypedList(String listAsValue, Binding inputBinding) {
-        Iterator<Node> itListElmts = parseTypedList(listAsValue);
+        final PrefixMap pmap = (getExecContext().getDataset() == null) ? null : getExecContext().getDataset().prefixes();
+        Iterator<Node> itListElmts = parseTypedList(listAsValue, pmap);
         return new QueryIterUnfoldWorkerForLists(inputBinding, itListElmts);
     }
 
-    protected Iterator<Node> parseTypedList(String listAsValue) {
+    public static Iterator<Node> parseTypedList( String listAsValue, final PrefixMap pmap ) {
         listAsValue = listAsValue.substring( 1, listAsValue.lastIndexOf("]") );
-        return parseList(listAsValue);
+        return parseList(listAsValue, pmap);
     }
 
     protected QueryIterator unfoldUntypedMap(String mapAsValue, Binding inputBinding) {
-        Iterator<Map.Entry<Node,Node>> itMapElmts = parseUntypedMap(mapAsValue);
+       final PrefixMap pmap = (getExecContext().getDataset() == null) ? null : getExecContext().getDataset().prefixes();
+        Iterator<Map.Entry<Node,Node>> itMapElmts = parseUntypedMap(mapAsValue, pmap);
         return new QueryIterUnfoldWorkerForMaps(inputBinding, itMapElmts);
     }
 
-    protected Iterator<Map.Entry<Node,Node>> parseUntypedMap(String mapAsValue) {
+    public static Iterator<Map.Entry<Node,Node>> parseUntypedMap( String mapAsValue, final PrefixMap pmap ) {
         if ( mapAsValue.startsWith("{") )
         	mapAsValue = mapAsValue.substring( 1, mapAsValue.length() - 1 );
 
-        return parseMap(mapAsValue);
+        return parseMap(mapAsValue, pmap);
     }
 
     protected QueryIterator unfoldTypedMap(String mapAsValue, Binding inputBinding) {
-        throw new UnsupportedOperationException("TODO");
+        final PrefixMap pmap = (getExecContext().getDataset() == null) ? null : getExecContext().getDataset().prefixes();
+        Iterator<Map.Entry<Node,Node>> itMapElmts = parseTypedMap(mapAsValue, pmap);
+        return new QueryIterUnfoldWorkerForMaps(inputBinding, itMapElmts);
     }
 
-    protected Iterator<Node> parseList(String listAsValue) {
-        final PrefixMap pmap = (getExecContext().getDataset() == null) ? null : getExecContext().getDataset().prefixes();
+    public static Iterator<Map.Entry<Node,Node>> parseTypedMap( String mapAsValue, final PrefixMap pmap ) {
+        mapAsValue = mapAsValue.substring( 1, mapAsValue.lastIndexOf("}") );
+        return parseMap(mapAsValue, pmap);
+    }
+
+    public static Iterator<Node> parseList( final String listAsValue, final PrefixMap pmap ) {
         final Iterator<String> itListElmts = extractListElements(listAsValue);
         return new Iterator<>() {
             @Override
@@ -160,7 +169,7 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         };
     }
 
-    protected Iterator<String> extractListElements(String listAsValue) {
+    public static Iterator<String> extractListElements(String listAsValue) {
         listAsValue = listAsValue.strip();
 
         if ( listAsValue.isEmpty() ) {
@@ -178,8 +187,7 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         return new ListElementExtractor(listAsValue);
     }
 
-    protected Iterator<Map.Entry<Node,Node>> parseMap(String mapAsValue) {
-        final PrefixMap pmap = (getExecContext().getDataset() == null) ? null : getExecContext().getDataset().prefixes();
+    public static Iterator<Map.Entry<Node,Node>> parseMap( final String mapAsValue, final PrefixMap pmap ) {
         final Iterator<Map.Entry<String,String>> itMapElmts = extractMapElements(mapAsValue);
         return new Iterator<>() {
             @Override
@@ -222,7 +230,7 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         };
     }
 
-    protected Iterator<Map.Entry<String,String>> extractMapElements(String mapAsValue) {
+    public static Iterator<Map.Entry<String,String>> extractMapElements(String mapAsValue) {
     	mapAsValue = mapAsValue.strip();
 
         if ( mapAsValue.isEmpty() ) {
