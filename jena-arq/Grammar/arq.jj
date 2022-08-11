@@ -1838,12 +1838,12 @@ TOKEN [IGNORE_CASE] :
 | < SERVICE: "service" >
 | < LET: "LET" >
 | < LATERAL: "LATERAL" >
+| < UNFOLD: "unfold" >
 | < TRIPLE: "TRIPLE" >
 | < IS_TRIPLE: "isTRIPLE" >
 | < SUBJECT: "SUBJECT" >
 | < PREDICATE: "PREDICATE" >
 | < OBJECT: "OBJECT" >
-| < UNFOLD: "unfold" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
 | < AS: "as" >
