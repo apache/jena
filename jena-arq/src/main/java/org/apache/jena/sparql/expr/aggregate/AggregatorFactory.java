@@ -71,6 +71,10 @@ public class AggregatorFactory {
         return new AggNull() ;
     }
 
+    public static Aggregator createFold(Expr expr1, String typeIRI1, Expr expr2, String typeIRI2) {
+        return new AggFold(expr1, typeIRI1, expr2, typeIRI2) ;
+    }
+
     public static Aggregator createCustom(String iri, Args a) {
         return createCustom(iri, a.distinct, ExprList.copy(a)) ;
     }
