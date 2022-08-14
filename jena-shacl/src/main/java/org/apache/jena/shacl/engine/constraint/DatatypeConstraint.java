@@ -83,15 +83,25 @@ public class DatatypeConstraint extends ConstraintTerm {
         }
         if ( ! n.isLiteral() )
             return new ReportItem(toString()+" : Not a literal", n);
-        String dtStr = vCxt.getShapesGraph().getPrefixMapping().qnameFor(dtURI);
+        try {
+            String dtStrExpected = formatDatatype(vCxt, rdfDatatype);
+            String dtStrActual = formatDatatype(vCxt, n.getLiteralDatatype());
+            String errMsg = String.format("%s: Expected %s : Actual %s : Node %s", toString(), dtStrExpected, dtStrActual, displayStr(n));
+            return new ReportItem(errMsg, n);
+        } catch (RuntimeException ex) {
+            String errMsg = toString() + "Got node: "+ n;
+            return new ReportItem(errMsg, n);
 
-        if ( dtStr == null ) {
-            Node dt = NodeFactory.createURI(n.getLiteralDatatypeURI());
-            dtStr = ShLib.displayStr(dt);
         }
+    }
 
-        String errMsg = toString()+" : Got datatype "+dtStr+" : Node "+displayStr(n);
-        return new ReportItem(errMsg, n);
+    private static String formatDatatype(ValidationContext vCxt, RDFDatatype dt) {
+        // Format including the data prefixes.
+        String dtStr = vCxt.getShapesGraph().getPrefixMapping().qnameFor(dt.getURI());
+        if ( dtStr == null )
+            // No prefix in the data.
+            dtStr = ShLib.displayStr(dt);
+        return dtStr;
     }
 
     @Override
