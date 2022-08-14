@@ -80,7 +80,6 @@
                             <arguments>run test:unit</arguments>
                         </configuration>
                     </execution>
-                    <!--
                     <execution>
                         <id>yarn run test:e2e</id>
                         <goals>
@@ -88,10 +87,9 @@
                         </goals>
                         <phase>test</phase>
                         <configuration>
-                            <arguments>run test:e2e</arguments>
+                            <arguments>run test:e2e -- --headless --browser chrome</arguments>
                         </configuration>
                     </execution>
-                    -->
                 </executions>
             </plugin>
             <plugin>
