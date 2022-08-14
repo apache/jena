@@ -17,12 +17,13 @@
 
 <template>
   <div id="app">
-    <b-container fluid>
-      <b-row>
+    <div class="container-fluid">
+      <div class="row">
         <Menu />
-      </b-row>
+      </div>
       <router-view/>
-    </b-container>
+    </div>
+    <Toast />
   </div>
 </template>
 

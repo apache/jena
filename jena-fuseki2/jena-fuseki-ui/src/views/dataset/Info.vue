@@ -16,146 +16,148 @@
 -->
 
 <template>
-  <b-container fluid>
-    <b-row class="mt-4">
-      <b-col cols="12">
+  <div class="container-fluid">
+    <div class="row mt-4">
+      <div class="col-12">
         <h2>/{{ this.datasetName }}</h2>
-        <b-card no-body>
-          <b-card-header header-tag="nav">
+        <div class="card">
+          <nav class="card-header">
             <Menu :dataset-name="datasetName" />
-          </b-card-header>
-          <b-card-body>
+          </nav>
+          <div class="card-body">
             <div>
-              <b-row>
-                <b-col sm="12" md="6">
+              <div class="row">
+                <div class="col-sm-12 col-md-6">
                   <h3 class="text-center">Available Services</h3>
+                  <p class="card-text placeholder-glow" v-if="this.services == null">
+                    <span class="placeholder col-12"></span>
+                    <span class="placeholder col-12"></span>
+                    <span class="placeholder col-12"></span>
+                  </p>
                   <div
                     :key="service['srv.type']"
                     v-for="service in this.services"
+                    v-else
                   >
-                    <b-row v-for="endpoint of service['srv.endpoints']" :key="endpoint">
-                      <b-col cols="6" class="text-right">{{ service['srv.description'] }}</b-col>
-                      <b-col cols="6">
+                    <div class="row" v-for="endpoint of service['srv.endpoints']" :key="endpoint">
+                      <div class="col-6 text-right">{{ service['srv.description'] }}</div>
+                      <div class="col-6">
                         <a :href="`/${datasetName}/${endpoint}`">
                           /{{ datasetName }}/{{ endpoint }}
                         </a>
-                      </b-col>
-                    </b-row>
+                      </div>
+                    </div>
                   </div>
-                  <b-row class="my-4">
-                    <b-col cols="12" align="center">
-                      <h3 class="text-center">Dataset size</h3>
-                      <b-form-group
-                        class="mb-2"
-                      >
-                        <b-button
-                          id="count-triples-button"
-                          ref="count-triples-button"
-                          variant="primary"
-                          @click="$refs['count-triples-button'].disabled = true"
-                        >count triples in all graphs</b-button>
-                      </b-form-group>
-                      <b-popover
-                        target="count-triples-button"
-                        triggers="focus"
-                        placement="auto"
-                      >
-                        <template v-slot:title>
-                          <b-button
-                            @click="
-                              $root.$emit('bv::hide::popover', 'count-triples-button');
-                              $refs['count-triples-button'].disabled = isDatasetStatsLoading
-                            "
-                            class="close"
-                            aria-label="Close">
-                            <span class="d-inline-block" aria-hidden="true">&times;</span>
-                          </b-button>
-                          Confirm
-                        </template>
-                        <div class="text-center">
-                          <b-alert show variant="warning">This may be slow and impose a significant load on large datasets</b-alert>
-                          <b-button
-                            @click="
-                              $root.$emit('bv::hide::popover', 'count-triples-button');
-                              countTriplesInGraphs();
-                              $refs['count-triples-button'].disabled = isDatasetStatsLoading
-                            "
-                            variant="primary"
-                            class="mr-2">submit</b-button>
-                          <b-button
-                            @click="
-                              $root.$emit('bv::hide::popover', 'count-triples-button');
-                              $refs['count-triples-button'].disabled = isDatasetStatsLoading
-                            "
-                          >cancel</b-button>
+                  <div class="row my-4">
+                    <div class="col-12 text-center">
+                      <h3>Dataset size</h3>
+                      <div class="mb-2">
+                        <div hidden>
+                          <div ref="count-triples-content">
+                            <div class="text-center">
+                              <div class="alert alert-warning">This may be slow and impose a significant load on large datasets.</div>
+                              <button
+                                @click="
+                                  countTriplesInGraphs();
+                                  $refs['count-triples-button'].disabled = isDatasetStatsLoading
+                                "
+                                id="count-triples-submit-button"
+                                type="button"
+                                class="btn btn-primary me-2">submit</button>
+                              <button
+                                class="btn btn-secondary"
+                                @click="
+                                  $refs['count-triples-button'].disabled = isDatasetStatsLoading
+                                "
+                              >cancel</button>
+                            </div>
+                          </div>
                         </div>
-                      </b-popover>
-                      <b-table
+                        <button
+                          ref="count-triples-button"
+                          id="count-triples-button"
+                          type="button"
+                          class="btn btn-primary"
+                          data-bs-toggle="popover"
+                          data-bs-placement="auto"
+                          data-bs-trigger="focus"
+                          title="Confirm"
+                        >
+                          count triples in all graphs
+                        </button>
+                      </div>
+                      <jena-table
                         :fields="countGraphFields"
                         :items="countGraphItems"
                         :busy="isDatasetSizeLoading"
+                        id="dataset-size-table"
                         class="mt-3"
                         bordered
                         hover
-                        show-empty
                         small
                       >
                         <template v-slot:table-busy>
                           <div class="text-center text-danger my-2">
-                            <b-spinner class="align-middle"></b-spinner>
+                            <div class="spinner-border align-middle" role="status">
+                              <span class="visually-hidden">Loading...</span>
+                            </div>
                             <strong>Loading...</strong>
                           </div>
                         </template>
                         <template v-slot:empty>
                           <span>No data</span>
                         </template>
-                      </b-table>
-                    </b-col>
-                  </b-row>
-                </b-col>
-                <b-col sm="12" md="6">
+                      </jena-table>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
                   <h3 class="text-center">Statistics</h3>
-                  <b-table
+                  <jena-table
                     :fields="statsFields"
                     :items="statsItems"
-                    :foot-clone="false"
                     :busy="isDatasetStatsLoading"
+                    id="statistics-table"
                     bordered
                     hover
-                    show-empty
                     small
                   >
                     <template v-slot:table-busy>
                       <div class="text-center text-danger my-2">
-                        <b-spinner class="align-middle"></b-spinner>
+                        <div class="spinner-border align-middle" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
                         <strong>Loading...</strong>
                       </div>
                     </template>
                     <template v-slot:custom-foot="scope">
-                      <b-tr>
-                        <b-th v-for="field in scope.fields" :key="field.key">{{ overall[field.key] }}</b-th>
-                      </b-tr>
+                      <tr>
+                        <th v-for="field in scope.fields" :key="field.key">{{ overall[field.key] }}</th>
+                      </tr>
                     </template>
-                  </b-table>
-                </b-col>
-              </b-row>
+                  </jena-table>
+                </div>
+              </div>
            </div>
-          </b-card-body>
-        </b-card>
-      </b-col>
-    </b-row>
-  </b-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import Menu from '@/components/dataset/Menu'
 import { displayError } from '@/utils'
 import currentDatasetMixin from '@/mixins/current-dataset'
+import { Popover } from 'bootstrap'
+import JenaTable from '@/components/dataset/JenaTable'
 
 export default {
   name: 'DatasetInfo',
 
   components: {
+    JenaTable,
     Menu
   },
 
@@ -168,7 +170,6 @@ export default {
       datasetStats: {},
       datasetSize: null,
       isDatasetSizeLoading: false,
-      popoverShow: false,
       statsFields: [
         {
           key: 'endpoint',
@@ -274,9 +275,20 @@ export default {
     next()
   },
 
+  mounted: function () {
+    // Initialize the Bootstrap Popover
+    const popoverOptions = {
+      html: true,
+      content: this.$refs['count-triples-content']
+    }
+    const popoverElement = this.$refs['count-triples-button']
+    // TBD: will it be garbage collected?
+    // eslint-disable-next-line no-new
+    new Popover(popoverElement, popoverOptions)
+  },
+
   methods: {
     async countTriplesInGraphs () {
-      this.popoverShow = false
       this.isDatasetSizeLoading = true
       try {
         this.datasetSize = await this.$fusekiService.getDatasetSize(this.currentDataset['ds.name'], this.services.query['srv.endpoints'][0])

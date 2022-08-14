@@ -15,11 +15,31 @@
  * limitations under the License.
  */
 
-// https://docs.cypress.io/api/introduction/api.html
+/*
+ * A plug-in to replace Bootstrap Vue's Toasts.
+ */
+import { BUS } from '@/events'
+import Toast from '@/components/Toast'
 
-describe('My First Test', () => {
-  it('Visits the app root url', () => {
-    cy.visit('/')
-    cy.contains('h1', 'Welcome to Your Vue.js App')
-  })
-})
+export default {
+  install (vm) {
+    // Add the global $toast object.
+    vm.prototype.$toast = {
+      error (message, options = {}) {
+        this.send(message, 'danger', options)
+      },
+      notification (message, options = {}) {
+        this.send(message, 'primary', options)
+      },
+      send (message, type, options) {
+        BUS.$emit('toast', {
+          message,
+          type,
+          options
+        })
+      }
+    }
+    // Register the component for Toasts.
+    vm.component('Toast', Toast)
+  }
+}

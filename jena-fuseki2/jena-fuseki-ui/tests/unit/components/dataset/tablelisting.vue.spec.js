@@ -15,13 +15,9 @@
  * limitations under the License.
  */
 
-import Vue from 'vue'
 import { expect } from 'chai'
 import { createLocalVue, mount } from '@vue/test-utils'
 import TableListing from '@/components/dataset/TableListing.vue'
-import BootstrapVue, { BCol } from 'bootstrap-vue'
-
-Vue.use(BootstrapVue)
 
 const localVue = createLocalVue()
 
@@ -43,7 +39,7 @@ describe('TableListing', () => {
         items: []
       }
     })
-    expect(component.find('.b-table-empty-row').text()).to.equal('No datasets created')
+    expect(component.find('.jena-table-empty').text()).to.equal('No datasets created')
   })
   it('populates the table', () => {
     const component = mountFunction({
@@ -71,7 +67,9 @@ describe('TableListing', () => {
         ]
       }
     })
-    // 4 items, and the header I guess
-    expect(component.findAllComponents(BCol).length).to.equal(5)
+    // 2 columns
+    expect(component.findAll('th[role="columnheader"]').length).to.equal(2)
+    // 4 lines
+    expect(component.findAll('tbody > tr[role="row"]').length).to.equal(4)
   })
 })

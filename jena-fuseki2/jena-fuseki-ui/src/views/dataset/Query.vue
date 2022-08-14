@@ -16,102 +16,154 @@
 -->
 
 <template>
-  <b-container fluid>
-    <b-row class="mt-4">
-      <b-col cols="12">
+  <div class="container-fluid">
+    <div class="row mt-4">
+      <div class="col-12">
         <h2>/{{ this.datasetName }}</h2>
-        <b-card no-body>
-          <b-card-header header-tag="nav">
+        <div class="card">
+          <nav class="card-header">
             <Menu :dataset-name="datasetName" />
-          </b-card-header>
-          <b-card-body>
-            <b-card-title>SPARQL Query</b-card-title>
+          </nav>
+          <div class="card-body">
+            <h3>SPARQL Query</h3>
             <p>To try out some SPARQL queries against the selected dataset, enter your query here.</p>
             <div>
-              <b-row>
-                <b-col>
-                  <b-form-group
-                    label="Example Queries"
+              <div class="row">
+                <div class="col">
+                  <fieldset
+                    class="form-group"
                   >
-                    <b-badge
-                      v-for="query of queries"
-                      :key="query.text"
-                      variant="info"
-                      class="p-2 mr-2"
-                      href="#"
-                      @click="setQuery(query.value)"
-                    >{{ query.text }}</b-badge>
-                  </b-form-group>
-                </b-col>
-                <b-col>
-                  <b-form-group
-                    label="Prefixes"
+                    <label
+                      tabindex="-1"
+                      class="col-form-label pt-0">Example Queries</label>
+                    <div>
+                      <span
+                        v-for="query of queries"
+                        :key="query.text"
+                        @click="setQuery(query.value)"
+                        href="#"
+                        class="badge text-bg-info p-2 me-2"
+                      >{{ query.text }}</span>
+                    </div>
+                  </fieldset>
+                </div>
+                <div class="col">
+                  <fieldset
+                    class="form-group"
                   >
-                    <b-badge
-                      v-for="prefix of prefixes"
-                      :key="prefix.uri"
-                      :variant="getPrefixBadgeVariant(prefix)"
-                      class="p-2 mr-2"
-                      href="#"
-                      @click.capture="togglePrefix(prefix)"
-                    >{{ prefix.text }}</b-badge>
-                  </b-form-group>
-                </b-col>
-              </b-row>
-              <b-row>
-                <b-col sm="12" md="4">
-                  <b-form-group
-                    label="SPARQL Endpoint"
-                    label-cols="6"
-                  >
-                    <b-form-input
-                      :value="`${datasetName}/sparql`"
-                      v-model="datasetUrl"
-                    ></b-form-input>
-                  </b-form-group>
-                </b-col>
-                <b-col sm="12" md="4">
-                  <b-form-group
-                    label="Content Type (SELECT)"
-                    label-cols="6"
-                  >
-                    <b-form-select
-                      :options="contentTypeSelectOptions"
-                      v-model="contentTypeSelect"
-                    ></b-form-select>
-                  </b-form-group>
-                </b-col>
-                <b-col sm="12" md="4">
-                  <b-form-group
-                    label="Content Type (GRAPH)"
-                    label-cols="6"
-                  >
-                    <b-form-select
-                      :options="contentTypeGraphOptions"
-                      v-model="contentTypeGraph"
-                    ></b-form-select>
-                  </b-form-group>
-                </b-col>
-              </b-row>
+                    <label
+                      tabindex="-1"
+                      class="col-form-label pt-0">Prefixes</label>
+                    <div>
+                      <span
+                        v-for="prefix of prefixes"
+                        :key="prefix.uri"
+                        :class="`badge text-bg-${getPrefixBadgeVariant(prefix)} p-2 me-2`"
+                        @click.capture="togglePrefix(prefix)"
+                        href="#"
+                      >{{ prefix.text }}</span>
+                    </div>
+                  </fieldset>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12 col-md-4">
+                  <fieldset
+                    class="form-group"
+                    aria-labelledby="sparql-endpoint-label">
+                    <div class="form-row">
+                      <label
+                        tabindex="-1"
+                        for="sparql-endpoint"
+                        class="col-6 col-form-label"
+                        id="sparql-endpoint-label">SPARQL Endpoint</label>
+                      <div class="col">
+                        <input
+                          v-model="currentDatasetUrl"
+                          id="sparql-endpoint"
+                          type="text"
+                          class="form-control"
+                        />
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                  <fieldset
+                    class="form-group"
+                    aria-labelledby="content-type-label">
+                    <div class="form-row">
+                      <label
+                        tabindex="-1"
+                        for="content-type-select"
+                        class="col-6 col-form-label"
+                        id="content-type-select-label">Content Type (SELECT)</label>
+                      <div class="col">
+                        <select
+                          v-model="contentTypeSelect"
+                          id="content-type-select"
+                          class="form-select"
+                          aria-label="Content Type select"
+                        >
+                          <option
+                            v-for="contentTypeSelectOption of contentTypeSelectOptions"
+                            :key="contentTypeSelectOption.value"
+                            :value="contentTypeSelectOption.value"
+                          >{{ contentTypeSelectOption.text }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                  <fieldset
+                    class="form-group"
+                    aria-labelledby="content-type-graph-label">
+                    <div class="form-row">
+                      <label
+                        tabindex="-1"
+                        for="content-type-graph"
+                        class="col-6 col-form-label"
+                        id="content-type-graph-label">Content Type (GRAPH)</label>
+                      <div class="col">
+                        <select
+                          v-model="contentTypeGraph"
+                          id="content-type-graph"
+                          class="form-select"
+                          aria-label="Content Type select"
+                        >
+                          <option
+                            v-for="contentTypeGraphOption of contentTypeGraphOptions"
+                            :key="contentTypeGraphOption.value"
+                            :value="contentTypeGraphOption.value"
+                          >{{ contentTypeGraphOption.text }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+              </div>
             </div>
             <!-- This div cannot use v-if or v-show, as YASQE/YASR seem to fail to calculate the margins and
                  paddings if the element is not already rendered/existing in the DOM? -->
             <div>
-              <b-spinner v-if="loading"></b-spinner>
-              <b-row>
-                <b-col sm="12">
+              <div class="spinner-border align-middle" role="status" v-if="loading">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
                   <div id="yasqe"></div>
-                </b-col>
-                <b-col sm="12">
+                </div>
+                <div class="col-sm-12">
                   <div id="yasr"></div>
-                </b-col>
-              </b-row>
+                </div>
+              </div>
             </div>
-          </b-card-body>
-        </b-card>
-      </b-col>
-    </b-row>
-  </b-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -185,13 +237,14 @@ export default {
         { uri: 'http://www.w3.org/2002/07/owl#', text: 'owl' },
         { uri: 'http://www.w3.org/2001/XMLSchema#', text: 'xsd' }
       ],
-      currentQueryPrefixes: []
+      currentQueryPrefixes: [],
+      currentDatasetUrl: ''
     }
   },
 
   computed: {
     datasetUrl () {
-      if (!this.datasetName || !this.services.query || !this.services.query['srv.endpoints'] || this.services.query['srv.endpoints'].length === 0) {
+      if (!this.datasetName || this.services === null || !this.services.query || !this.services.query['srv.endpoints'] || this.services.query['srv.endpoints'].length === 0) {
         return ''
       }
       return `/${this.datasetName}/${this.services.query['srv.endpoints'][0]}`
@@ -219,7 +272,7 @@ export default {
             showQueryButton: true,
             resizeable: false,
             requestConfig: {
-              endpoint: this.$fusekiService.getFusekiUrl(this.datasetUrl)
+              endpoint: this.$fusekiService.getFusekiUrl(this.currentDatasetUrl)
             },
             /**
              * Based on YASGUI code, but modified to avoid parsing the Vue Route query
@@ -270,8 +323,11 @@ export default {
 
   watch: {
     datasetUrl: function (val, oldVal) {
+      this.currentDatasetUrl = val
+    },
+    currentDatasetUrl: function (val, oldVal) {
       if (this.yasqe) {
-        this.yasqe.options.requestConfig.endpoint = this.$fusekiService.getFusekiUrl(this.datasetUrl)
+        this.yasqe.options.requestConfig.endpoint = this.$fusekiService.getFusekiUrl(val)
       }
     },
     contentTypeSelect: function (val, oldVal) {

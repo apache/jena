@@ -16,36 +16,32 @@
 -->
 
 <template>
-  <b-nav card-header tabs>
-    <b-nav-item
-      :to="`/dataset/${this.datasetName}/query`"
-      active-class="active"
-    >
-      <FontAwesomeIcon icon="question-circle" />
-      <span class="ml-1">query</span>
-    </b-nav-item>
-    <b-nav-item
-      :to="`/dataset/${this.datasetName}/upload`"
-      active-class="active"
-    >
-      <FontAwesomeIcon icon="upload" />
-      <span class="ml-1">add data</span>
-    </b-nav-item>
-    <b-nav-item
-      :to="`/dataset/${this.datasetName}/edit`"
-      active-class="active"
-    >
-      <FontAwesomeIcon icon="edit" />
-      <span class="ml-1">edit</span>
-    </b-nav-item>
-    <b-nav-item
-      :to="`/dataset/${this.datasetName}/info`"
-      active-class="active"
-    >
-      <FontAwesomeIcon icon="tachometer-alt" />
-      <span class="ml-1">info</span>
-    </b-nav-item>
-  </b-nav>
+  <ul class="nav nav-tabs card-header-tabs">
+    <li class="nav-item">
+      <router-link :to="`/dataset/${this.datasetName}/query`" class="nav-link" exact-active-class="active">
+        <FontAwesomeIcon icon="question-circle" />
+        <span class="ms-1">query</span>
+      </router-link>
+    </li>
+    <li class="nav-item">
+      <router-link :to="`/dataset/${this.datasetName}/upload`" class="nav-link" exact-active-class="active">
+        <FontAwesomeIcon icon="upload" />
+        <span class="ms-1">add data</span>
+      </router-link>
+    </li>
+    <li class="nav-item">
+      <router-link :to="`/dataset/${this.datasetName}/edit`" class="nav-link" exact-active-class="active">
+        <FontAwesomeIcon icon="edit" />
+        <span class="ms-1">edit</span>
+      </router-link>
+    </li>
+    <li class="nav-item">
+      <router-link :to="`/dataset/${this.datasetName}/info`" class="nav-link" exact-active-class="active">
+        <FontAwesomeIcon icon="tachometer-alt" />
+        <span class="ms-1">info</span>
+      </router-link>
+    </li>
+  </ul>
 </template>
 
 <script>

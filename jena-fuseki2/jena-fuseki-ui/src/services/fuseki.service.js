@@ -23,9 +23,6 @@ import { BUS } from '@/events'
 const DATASET_SIZE_QUERY_1 = 'select (count(*) as ?count) {?s ?p ?o}'
 const DATASET_SIZE_QUERY_2 = 'select ?g (count(*) as ?count) {graph ?g {?s ?p ?o}} group by ?g'
 
-const DATASET_COUNT_GRAPH_QUERY_1 = 'select (count(*) as ?count) {?s ?p ?o}'
-const DATASET_COUNT_GRAPH_QUERY_2 = 'select ?g (count(*) as ?count) {graph ?g {?s ?p ?o}} group by ?g'
-
 class FusekiService {
   /**
    * @param {Location} location
@@ -165,12 +162,12 @@ class FusekiService {
       axios
         .get(this.getFusekiUrl(`/${datasetName}/${endpoint}`), {
           params: {
-            query: DATASET_COUNT_GRAPH_QUERY_1
+            query: DATASET_SIZE_QUERY_1
           }
         }),
       axios.get(this.getFusekiUrl(`/${datasetName}/${endpoint}`), {
         params: {
-          query: DATASET_COUNT_GRAPH_QUERY_2
+          query: DATASET_SIZE_QUERY_2
         }
       })
     ])

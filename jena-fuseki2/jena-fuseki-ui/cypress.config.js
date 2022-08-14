@@ -15,21 +15,32 @@
  * limitations under the License.
  */
 
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import 'bootstrap/dist/js/bootstrap.bundle.min'
-import { FusekiServicePlugin, ToastPlugin } from '@/plugins/index'
+const { defineConfig } = require('cypress')
 
-Vue.config.productionTip = false
+module.exports = defineConfig({
+  video: false,
+  defaultCommandTimeout: 7500,
+  execTimeout: 15000,
+  taskTimeout: 15000,
+  pageLoadTimeout: 15000,
+  requestTimeout: 7500,
+  responseTimeout: 7500,
+  fixturesFolder: 'tests/e2e/fixtures',
+  screenshotsFolder: 'tests/e2e/screenshots',
+  videosFolder: 'tests/e2e/videos',
 
-// Create the global Fuseki Service instance.
-Vue.use(FusekiServicePlugin)
+  e2e: {
+    setupNodeEvents (on, config) {
+      return require('./tests/e2e/plugins/index.js')(on, config)
+    },
+    specPattern: 'tests/e2e/specs/**/*.cy.{js,jsx,ts,tsx}',
+    supportFile: 'tests/e2e/support/index.js'
+  },
 
-// Install the Toasts plug-in.
-Vue.use(ToastPlugin)
-
-new Vue({
-  router,
-  render: h => h(App)
-}).$mount('#app')
+  component: {
+    devServer: {
+      framework: 'vue-cli',
+      bundler: 'webpack'
+    }
+  }
+})

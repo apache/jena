@@ -16,18 +16,18 @@
 -->
 
 <template>
-  <b-container fluid>
-    <b-row class="mt-4">
-      <b-col cols="12">
+  <div class="container-fluid">
+    <div class="row mt-4">
+      <div class="col-12">
         <h2>Manage datasets</h2>
-        <b-card no-body>
-          <b-card-header header-tag="nav">
+        <div class="card">
+          <nav class="card-header">
             <Menu />
-          </b-card-header>
-          <b-card-body>
+          </nav>
+          <div class="card-body">
             <div>
-              <b-row>
-                <b-col>
+              <div class="row">
+                <div class="col">
                   <table-listing
                     :fields="fields"
                     :items="items"
@@ -37,109 +37,99 @@
                       <h4>No datasets created - <router-link to="/manage/new">add one</router-link></h4>
                     </template>
                     <template v-slot:cell(actions)="data">
-                      <b-button
-                        :to="`/dataset${data.item.name}/query`"
-                        variant="primary"
-                        class="mr-0 mr-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
+                      <button
+                        @click="$router.push(`/dataset${data.item.name}/query`)"
+                        type="button"
+                        class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
                         <FontAwesomeIcon icon="question-circle" />
-                        <span class="ml-1">query</span>
-                      </b-button>
-                      <b-popover
-                        :target="`delete-dataset-${data.item.name}-button`"
-                        triggers="manual"
-                        placement="auto"
-                      >
-                        <template v-slot:title>
-                          <b-button
-                            @click="hidePopover(`delete-dataset-${data.item.name}-button`)"
-                            class="close"
-                            aria-label="Close">
-                            <span class="d-inline-block" aria-hidden="true">&times;</span>
-                          </b-button>
-                          Confirm
-                        </template>
-                        <div class="text-center">
-                          <b-alert show variant="danger">Are you sure you want to delete dataset {{ data.item.name }}?<br/><br/>This action cannot be reversed.</b-alert>
-                          <b-button
-                            @click="hidePopover(`delete-dataset-${data.item.name}-button`);deleteDataset(data.item.name)"
-                            variant="primary"
-                            class="mr-2"
-                          >submit</b-button>
-                          <b-button
-                            @click="hidePopover(`delete-dataset-${data.item.name}-button`)"
-                          >cancel</b-button>
+                        <span class="ms-1">query</span>
+                      </button>
+                      <!-- content for the delete dataset popover -->
+                      <div class="popover" role="popover" hidden>
+                        <div :ref="`delete-dataset-${data.item.name}-content`">
+                          <div>
+                            Confirm
+                          </div>
+                          <div class="text-center">
+                            <div class="alert alert-danger">Are you sure you want to delete dataset {{ data.item.name }}?<br/><br/>This action cannot be reversed.</div>
+                            <button
+                              @click="hidePopover();deleteDataset(data.item.name)"
+                              class="btn btn-primary me-2"
+                            >submit</button>
+                            <button
+                              @click="hidePopover()"
+                              type="button"
+                              class="btn btn-secondary"
+                            >cancel</button>
+                          </div>
                         </div>
-                      </b-popover>
-                      <b-button
+                      </div>
+                      <button
                         :id="`delete-dataset-${data.item.name}-button`"
                         :ref="`delete-dataset-${data.item.name}-button`"
-                        @click="showPopover(`delete-dataset-${data.item.name}-button`)"
-                        variant="primary"
+                        @click="showPopover(`delete-dataset-${data.item.name}`)"
+                        type="button"
                         href="#"
-                        class="mr-0 mr-md-2 mb-2 mb-md-0 d-block d-md-inline-block">
-                        <FontAwesomeIcon icon="times-circle" />
-                        <span class="ml-1">remove</span>
-                      </b-button>
-                      <b-popover
-                        :target="`backup-dataset-${data.item.name}-button`"
-                        triggers="manual"
-                        placement="auto"
+                        class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block"
                       >
-                        <template v-slot:title>
-                          <b-button
-                            @click="showPopover(`backup-dataset-${data.item.name}-button`)"
-                            class="close"
-                            aria-label="Close">
-                            <span class="d-inline-block" aria-hidden="true">&times;</span>
-                          </b-button>
-                          Confirm
-                        </template>
-                        <div class="text-center">
-                          <b-alert show variant="warning">Are you sure you want to create a backup of dataset {{ data.item.name }}?<br/><br/>This action may take some time to complete.</b-alert>
-                          <b-button
-                            @click="hidePopover(`backup-dataset-${data.item.name}-button`);backupDataset(data.item.name)"
-                            variant="primary"
-                            class="mr-2"
-                          >submit</b-button>
-                          <b-button
-                            @click="hidePopover(`backup-dataset-${data.item.name}-button`)"
-                          >cancel</b-button>
+                        <FontAwesomeIcon icon="times-circle" />
+                        <span class="ms-1">remove</span>
+                      </button>
+                      <div class="popover" role="popover" hidden>
+                        <div :ref="`backup-dataset-${data.item.name}-content`">
+                          <div>
+                            Confirm
+                          </div>
+                          <div class="text-center">
+                            <div class="alert alert-danger">Are you sure you want to create a backup of dataset {{ data.item.name }}?<br/><br/>This action may take some time to complete.</div>
+                            <button
+                              @click="hidePopover();backupDataset(data.item.name)"
+                              type="button"
+                              class="btn btn-primary me-2"
+                            >submit</button>
+                            <button
+                              @click="hidePopover()"
+                              type="button"
+                              class="btn btn-secondary"
+                            >cancel</button>
+                          </div>
                         </div>
-                      </b-popover>
-                      <b-button
+                      </div>
+                      <button
                         :id="`backup-dataset-${data.item.name}-button`"
                         :ref="`backup-dataset-${data.item.name}-button`"
-                        @click="showPopover(`backup-dataset-${data.item.name}-button`)"
-                        variant="primary"
+                        @click="showPopover(`backup-dataset-${data.item.name}`)"
+                        type="button"
                         href="#"
-                        class="mr-0 mr-md-2 mr-0 mb-2 mb-md-0 d-block d-md-inline-block">
+                        class="btn btn-primary me-0 me-md-2 me-0 mb-2 mb-md-0 d-block d-md-inline-block"
+                      >
                         <FontAwesomeIcon icon="download" />
-                        <span class="ml-1">backup</span>
-                      </b-button>
-                      <b-button
-                        :to="`/dataset${data.item.name}/upload`"
-                        variant="primary"
-                        class="mr-0 mr-md-2 mr-0 mb-2 mb-md-0 d-block d-md-inline-block">
+                        <span class="ms-1">backup</span>
+                      </button>
+                      <button
+                        @click="$router.push(`/dataset${data.item.name}/upload`)"
+                        type="button"
+                        class="btn btn-primary me-0 me-md-2 me-0 mb-2 mb-md-0 d-block d-md-inline-block">
                         <FontAwesomeIcon icon="upload" />
-                        <span class="ml-1">add data</span>
-                      </b-button>
-                      <b-button
-                        :to="`/dataset${data.item.name}/info`"
-                        variant="primary"
-                        class="mr-0 mb-md-0 d-block d-md-inline-block">
+                        <span class="ms-1">add data</span>
+                      </button>
+                      <button
+                        @click="$router.push(`/dataset${data.item.name}/info`)"
+                        type="button"
+                        class="btn btn-primary me-0 mb-md-0 d-block d-md-inline-block">
                         <FontAwesomeIcon icon="tachometer-alt" />
-                        <span class="ml-1">info</span>
-                      </b-button>
+                        <span class="ms-1">info</span>
+                      </button>
                     </template>
                   </table-listing>
-                </b-col>
-              </b-row>
+                </div>
+              </div>
            </div>
-          </b-card-body>
-        </b-card>
-      </b-col>
-    </b-row>
-  </b-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -149,6 +139,8 @@ import TableListing from '@/components/dataset/TableListing'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimesCircle, faDownload, faTachometerAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { Popover } from 'bootstrap'
+import { displayNotification } from '@/utils'
 
 library.add(faTimesCircle, faDownload, faTachometerAlt)
 
@@ -174,32 +166,36 @@ export default {
   methods: {
     async deleteDataset (datasetName) {
       await this.$fusekiService.deleteDataset(datasetName)
-      this.$bvToast.toast(`Dataset ${datasetName} deleted`, {
-        title: 'Notification',
-        autoHideDelay: 5000,
-        appendToast: false
-      })
+      displayNotification(this, `Dataset ${datasetName} deleted`)
       this.initializeData()
     },
     async backupDataset (datasetName) {
       const response = await this.$fusekiService.backupDataset(datasetName)
       const taskId = response.data.taskId
-      this.$bvToast.toast(`Backup task ${taskId} scheduled. Click on tasks for more.`, {
-        title: 'Notification',
-        autoHideDelay: 5000,
-        appendToast: false
-      })
+      displayNotification(this, `Backup task ${taskId} scheduled. Click on tasks for more.`)
       this.initializeData()
     },
-    hidePopover (id) {
-      this.$root.$emit('bv::hide::popover', id)
+    hidePopover () {
+      this.currentPopover.hide()
+      this.currentPopover = null
     },
     showPopover (id) {
       if (this.currentPopover !== null) {
-        this.$root.$emit('bv::hide::popover', this.currentPopover)
+        if (this.currentPopover.__id === id) {
+          return
+        }
+        this.hidePopover()
       }
-      this.$root.$emit('bv::show::popover', id)
-      this.currentPopover = id
+      const popoverOptions = {
+        html: true,
+        content: this.$refs[`${id}-content`],
+        trigger: 'manual',
+        placement: 'auto'
+      }
+      const popoverElement = this.$refs[`${id}-button`]
+      this.currentPopover = new Popover(popoverElement, popoverOptions)
+      this.currentPopover.__id = id
+      this.currentPopover.show()
     }
   }
 }

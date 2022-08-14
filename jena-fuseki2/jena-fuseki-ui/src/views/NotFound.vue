@@ -16,20 +16,20 @@
 -->
 
 <template>
-  <b-container fluid>
-    <b-row class="mt-2">
-      <b-col cols="12">
+  <div class="container-fluid">
+    <div class="row mt-2">
+      <div class="col-12">
         <div class="jumbotron">
           <h1 class="display-4">404 Page Not Found</h1>
           <p class="lead">
-            <b-btn variant="primary" href="/">
+            <button type="button" class="btn btn-primary" @click="$router.push('/')">
               <FontAwesomeIcon icon="arrow-left" /> Back to Home
-            </b-btn>
+            </button>
           </p>
         </div>
-      </b-col>
-    </b-row>
-  </b-container>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

@@ -15,21 +15,14 @@
  * limitations under the License.
  */
 
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import 'bootstrap/dist/js/bootstrap.bundle.min'
-import { FusekiServicePlugin, ToastPlugin } from '@/plugins/index'
+import FusekiService from '@/services/fuseki.service'
 
-Vue.config.productionTip = false
-
-// Create the global Fuseki Service instance.
-Vue.use(FusekiServicePlugin)
-
-// Install the Toasts plug-in.
-Vue.use(ToastPlugin)
-
-new Vue({
-  router,
-  render: h => h(App)
-}).$mount('#app')
+/**
+ * A service to create a global Fuseki Service, used to interface
+ * with the backend application, Jena Fuseki.
+ */
+export default {
+  install (vm) {
+    vm.prototype.$fusekiService = new FusekiService(window.location)
+  }
+}
