@@ -25,8 +25,10 @@ import java.util.*;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
@@ -199,6 +201,11 @@ public class ShLib {
     }
 
     public static String displayStr(Node n) {
+        return displayStr(n, nodeFmtAbbrev);
+    }
+
+    public static String displayStr(RDFDatatype dt) {
+        Node n = NodeFactory.createURI(dt.getURI());
         return displayStr(n, nodeFmtAbbrev);
     }
 
