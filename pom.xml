@@ -1110,6 +1110,7 @@
 		            	<bnd>
 		            	<![CDATA[
 		            			-noextraheaders: true
+		            			Import-Package: !org.apache.jena.ext.*,*
 				        ]]>
 		            	</bnd>
 		            </configuration>

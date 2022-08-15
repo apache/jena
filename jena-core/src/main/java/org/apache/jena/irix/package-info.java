@@ -40,5 +40,6 @@
  * </ul>
  */
 
+@org.osgi.annotation.bundle.Export
 package org.apache.jena.irix;
 
