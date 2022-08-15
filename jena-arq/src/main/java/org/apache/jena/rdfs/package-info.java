@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+@org.osgi.annotation.bundle.Export
 package org.apache.jena.rdfs;
 
 

@@ -16,8 +16,5 @@
  * limitations under the License.
  */
 
-/**
- * In-memory, transactional dataset
- */
 @org.osgi.annotation.bundle.Export
-package org.apache.jena.sparql.core.mem;
+package org.apache.jena.sparql.sse.lang;
