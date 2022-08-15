@@ -30,6 +30,7 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.snappy.SnappyCompressorInputStream;
+import org.apache.commons.io.IOUtils;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.StrUtils;
@@ -416,7 +417,6 @@ public class IO
      * @param filename
      * @return String
      */
-
     public static String readWholeFileAsUTF8(String filename) {
         try ( InputStream in = new FileInputStream(filename) ) {
             return readWholeFileAsUTF8(in);
@@ -441,13 +441,35 @@ public class IO
         }
     }
 
+    /** Fully reads the next up to maxWidth + 1 characters from the stream and returns them as a string.
+     * If the extra character is read then the apprevMarker in appended to the result in its place.
+     * Closing the stream is the caller's responsibility.
+     */
+    public static String abbreviate(InputStream in, Charset charset, int maxWidth, String abbrevMarker) throws IOException {
+        return abbreviate(new InputStreamReader(in, charset), maxWidth, abbrevMarker);
+    }
+
+    /** Fully reads the next up to maxWidth + 1 characters from the reader and returns them as a string.
+     * If the extra character is read then the apprevMarker in appended to the result in its place.
+     * Closing the stream is the caller's responsibility.
+     */
+    public static String abbreviate(Reader reader, int maxWidth, String abbrevMarker) throws IOException {
+        char[] buffer = new char[maxWidth + 1];
+        int n = IOUtils.read(reader, buffer);
+        StringBuilder sb = new StringBuilder();
+        sb.append(buffer, 0, Math.min(n, maxWidth));
+        if (n > maxWidth) {
+            sb.append(abbrevMarker);
+        }
+        return sb.toString();
+    }
+
     /** Read a whole file as UTF-8
      *
      * @param r
      * @return String The whole file
      * @throws IOException
      */
-
     // Private worker as we are trying to force UTF-8.
     private static String readWholeFileAsUTF8(Reader r) throws IOException {
         final int WHOLE_FILE_BUFFER_SIZE = 32*1024;
@@ -469,7 +491,6 @@ public class IO
      * @param content String to be written
      * @throws IOException
      */
-
     public static void writeStringAsUTF8(String filename, String content) throws IOException {
         try ( OutputStream out = IO.openOutputFileEx(filename) ) {
             writeStringAsUTF8(out, content);
