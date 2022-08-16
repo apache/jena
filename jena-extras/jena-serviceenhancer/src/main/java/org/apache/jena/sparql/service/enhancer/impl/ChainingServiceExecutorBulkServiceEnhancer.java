@@ -116,7 +116,7 @@ public class ChainingServiceExecutorBulkServiceEnhancer
         boolean enableSpecial = effCacheMode != CacheMode.OFF || enableBulk; // || enableLoopJoin; // || !overrides.isEmpty();
 
         if (enableSpecial) {
-            ChainingServiceExecutorBulkCache exec = new ChainingServiceExecutorBulkCache(bulkSize, cacheMode);
+            ChainingServiceExecutorBulkCache exec = new ChainingServiceExecutorBulkCache(bulkSize, effCacheMode);
             result = exec.createExecution(newOp, input, execCxt, chain);
         } else {
             result = chain.createExecution(newOp, input, execCxt);
