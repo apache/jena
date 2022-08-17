@@ -39,7 +39,7 @@ public class UpdateFactory
     public static UpdateRequest create() { return new UpdateRequest() ; }
 
     /**  Create an UpdateRequest by parsing from a string.
-     * See also <tt>read</tt> operations for parsing contents of a file.
+     * See also {@code read} operations for parsing contents of a file.
      * @param string    The update request as a string.
      */
     public static UpdateRequest create(String string) {
@@ -47,7 +47,7 @@ public class UpdateFactory
     }
 
     /**  Create an UpdateRequest by parsing from a string.
-     * See also <tt>read</tt> operations for parsing contents of a file.
+     * See also {@code read} operations for parsing contents of a file.
      * @param string    The update request as a string.
      * @param syntax    The update language syntax
      */
@@ -56,7 +56,7 @@ public class UpdateFactory
     }
 
     /**  Create an UpdateRequest by parsing from a string.
-     * See also <tt>read</tt> operations for parsing contents of a file.
+     * See also {@code read} operations for parsing contents of a file.
      * @param string    The update request as a string.
      * @param baseURI   The base URI for resolving relative URIs.
      */
@@ -65,7 +65,7 @@ public class UpdateFactory
     }
 
     /**  Create an UpdateRequest by parsing from a string.
-     * See also <tt>read</tt> operations for parsing contents of a file.
+     * See also {@code read} operations for parsing contents of a file.
      * @param string    The update request as a string.
      * @param baseURI   The base URI for resolving relative URIs.
      * @param syntax    The update language syntax
@@ -169,7 +169,7 @@ public class UpdateFactory
     }
 
     /**
-     * Create an UpdateRequest by parsing from an InputStream. See also <tt>read</tt>
+     * Create an UpdateRequest by parsing from an InputStream. See also {@code read}
      * operations for parsing contents of a file.
      *
      * @param input The source of the update request (must be UTF-8).
@@ -179,7 +179,7 @@ public class UpdateFactory
     }
 
     /**
-     * Create an UpdateRequest by parsing from an InputStream. See also <tt>read</tt>
+     * Create an UpdateRequest by parsing from an InputStream. See also {@code read}
      * operations for parsing contents of a file.
      *
      * @param usingList The list of externally defined USING statements
@@ -190,7 +190,7 @@ public class UpdateFactory
     }
 
     /**
-     * Create an UpdateRequest by parsing from an InputStream. See also <tt>read</tt>
+     * Create an UpdateRequest by parsing from an InputStream. See also {@code read}
      * operations for parsing contents of a file.
      *
      * @param input The source of the update request (must be UTF-8).
@@ -201,7 +201,7 @@ public class UpdateFactory
     }
 
     /**
-     * Create an UpdateRequest by parsing from an InputStream. See also <tt>read</tt>
+     * Create an UpdateRequest by parsing from an InputStream. See also {@code read}
      * operations for parsing contents of a file.
      *
      * @param usingList The list of externally defined USING statements
@@ -213,7 +213,7 @@ public class UpdateFactory
     }
 
     /**
-     * Create an UpdateRequest by parsing from an InputStream. See also <tt>read</tt>
+     * Create an UpdateRequest by parsing from an InputStream. See also {@code read}
      * operations for parsing contents of a file.
      *
      * @param input The source of the update request (must be UTF-8).
@@ -224,7 +224,7 @@ public class UpdateFactory
     }
 
     /**
-     * Create an UpdateRequest by parsing from an InputStream. See also <tt>read</tt>
+     * Create an UpdateRequest by parsing from an InputStream. See also {@code read}
      * operations for parsing contents of a file.
      *
      * @param usingList The list of externally defined USING statements
@@ -236,7 +236,7 @@ public class UpdateFactory
     }
 
     /**
-     * Create an UpdateRequest by parsing from an InputStream. See also <tt>read</tt>
+     * Create an UpdateRequest by parsing from an InputStream. See also {@code read}
      * operations for parsing contents of a file.
      *
      * @param input The source of the update request (must be UTF-8).
@@ -248,7 +248,7 @@ public class UpdateFactory
     }
 
     /**
-     * Create an UpdateRequest by parsing from an InputStream. See also <tt>read</tt>
+     * Create an UpdateRequest by parsing from an InputStream. See also {@code read}
      * operations for parsing contents of a file.
      *
      * @param usingList The list of externally defined USING statements

@@ -40,8 +40,8 @@ import org.apache.jena.util.SplitIRI;
  * Functions for checking nodes, triples and quads.
  * <p>
  * The "check..." functions have two basic signatures:<br>
- * 1. <tt>check...(<i>object</i>)</tt><br>
- * 2. <tt>check...(<i>object, errorHandler, line, col</i>)</tt>
+ * 1. {@code check...(<i>object</i>)}<br>
+ * 2. {@code check...(<i>object, errorHandler, line, col</i>)}
  * <p>
  * The first type are for boolean testing and do not generate output. They call the
  * second type with default values for the last 3 parameters: nullErrorHandler, -1L, -1L.

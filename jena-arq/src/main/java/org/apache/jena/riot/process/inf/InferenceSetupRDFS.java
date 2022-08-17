@@ -29,7 +29,7 @@ import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 
 
-/**  @deprecated Use package <tt>org.apache.jena.rdfs</tt>. */
+/**  @deprecated Use package {@code org.apache.jena.rdfs}. */
 @Deprecated
 public class InferenceSetupRDFS
 {

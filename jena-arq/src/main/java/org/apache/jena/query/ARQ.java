@@ -345,7 +345,7 @@ public class ARQ
 
     /**
      *  Context key controlling whether the main query engine flattens simple paths
-     *  (e.g. <tt>?x :p/:q ?z =&gt; ?x :p ?.0 . ?.0 ?q ?z</tt>)
+     *  (e.g. {@code ?x :p/:q ?z =&gt; ?x :p ?.0 . ?.0 ?q ?z})
      *  <p>Default is "true"
      */
     public static final Symbol optPathFlatten = SystemARQ.allocSymbol("optPathFlatten") ;

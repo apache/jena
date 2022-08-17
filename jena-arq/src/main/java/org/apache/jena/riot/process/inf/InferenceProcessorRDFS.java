@@ -35,7 +35,7 @@ import org.apache.jena.vocabulary.RDF ;
  *  </ul>
  *
  *  Usage: call process(Node, Node, Node), outputs to derive(Node, Node, Node).
- *  @deprecated Use package <tt>org.apache.jena.rdfs</tt>.
+ *  @deprecated Use package {@code org.apache.jena.rdfs}.
  */
 @Deprecated
 abstract class InferenceProcessorRDFS

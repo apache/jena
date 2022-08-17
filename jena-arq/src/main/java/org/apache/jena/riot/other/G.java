@@ -390,7 +390,7 @@ public class G {
 
     /**
      * List the subclasses of a type, including itself.
-     * This is <tt>?x rdfs:subClassOf* type</tt>.
+     * This is {@code ?x rdfs:subClassOf* type}.
      * The list does not contain duplicates.
      */
     public static List<Node> listSubClasses(Graph graph, Node type) {
@@ -405,7 +405,7 @@ public class G {
 
     /**
      * List the super-classes of a type, including itself.
-     * This is <tt>type rdfs:subClassOf* ?x</tt>.
+     * This is {@code type rdfs:subClassOf* ?x}.
      * The list does not contain duplicates.
      */
     public static List<Node> listSuperClasses(Graph graph, Node type) {
@@ -420,7 +420,7 @@ public class G {
 
     /**
      * Set of the subclasses of a type, including itself.
-     * This is <tt>?x rdfs:subClassOf* type</tt>.
+     * This is {@code ?x rdfs:subClassOf* type}.
      */
     public static Set<Node> subClasses(Graph graph, Node type) {
         Objects.requireNonNull(graph, "graph");
@@ -433,7 +433,7 @@ public class G {
 
     /**
      * Set of the subclasses of a type, including itself.
-     * This is <tt>?x rdfs:subClassOf* type</tt>.
+     * This is {@code ?x rdfs:subClassOf* type}.
      */
     public static Set<Node> superClasses(Graph graph, Node type) {
         Objects.requireNonNull(graph, "graph");

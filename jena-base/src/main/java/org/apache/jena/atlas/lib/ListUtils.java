@@ -94,7 +94,7 @@ public class ListUtils
 
     /**
      * Asymmetric diff of two unordered lists, returning the elements
-     * in <tt>list1</tt> not in <tt>list2</tt>.
+     * in {@code list1} not in {@code list2}.
      * Cardinality is significant.
      */
     public static <T> List<T> listDiff(List<T> list1, List<T> list2) {

@@ -37,7 +37,7 @@ import org.apache.jena.system.Txn;
  * Applications can conveniently execute the lifecycle with methods to read or write:
  * <pre>dataset.executeRead({@literal ()->} { ... sparql query ... });</pre>
  * <pre>dataset.executeWrite({@literal ()->} { ... sparql update ... });</pre>
- * Use one of <tt>calculateRead</tt> or <tt>calculateWrite</tt>
+ * Use one of {@code calculateRead} or {@code calculateWrite}
  * to return a value for the transaction block.
  * <p>
  * <h4>Core Functionality</h4>

@@ -34,17 +34,16 @@ import org.apache.jena.atlas.lib.StrUtils ;
  * General descriptor of a reordering (mapping) of slots in tuples
  * <p>
  * Naming: map is convert to the reordered form, unmap is get back.
- * <p>
- * 
+ * </p>
  * <pre>
  * map(tuple) is equivalent to
- *   create tuple(getSlotIdx(0) , getSlotIdx(1), ... getSlotIdx(n-1)) ;    
+ *   create tuple(getSlotIdx(0) , getSlotIdx(1), ... getSlotIdx(n-1)) ;
  * </pre>
- * 
+ *
  * A {@code TupleMap} holds twp maps: the "getTransform" and the "putTransform".
  * The "getTransform" is here to get the item from in the mapper Tuple.
- * In the case is {@code SPO{@literal ->}POS} this is 
- * {@code 0{@literal <-}1, 1{@literal <-}2, 2{@literal <-}0} 
+ * In the case is {@code SPO{@literal ->}POS} this is
+ * {@code 0{@literal <-}1, 1{@literal <-}2, 2{@literal <-}0}
  * and the "putTransform" is where to place the items: {@code 0{@literal ->}2, 1{@literal ->}0, 2{@literal ->}1}.
  */
 final
@@ -53,18 +52,18 @@ public class TupleMap {
      * Naming.  getTransform (from src), putTransform(into dst)
      * And these are mutual inverses: unmap process is to swap use of getTransform and putTransform
      * See getSlotIdx and putSlotIdx
-     * 
+     *
      * These are then equivalent
-     * 
+     *
      * int j = getTransform[i] ; elts[i] = src.get(j) ;
      * int j = putTransform[i] ; elts[j] = src.get(i) ;
-     * 
+     *
      * The code tends to use this style (getTransform - getSlotIdx, mapIdx)
      *     int j = getTransform[i] ;
      *     dst[i] = src[j] ;
-     * 
+     *
      * See apply and applyArray
-     * 
+     *
      * Warning : map and unmap here do not correspond to fetch and map in
      * ColumnMap. That has confusing/inconsistent usage.
      */
@@ -72,7 +71,7 @@ public class TupleMap {
     // SPO->POS: get:{0<-1, 1<-2, 2<-0} put:{0->2, 1->0, 2->1}
 
     // Map by where to fetch from source.
-    // For SPO -> POS, get from 1 to go into f(0)=1, f(1)=2, f(2)=0    
+    // For SPO -> POS, get from 1 to go into f(0)=1, f(1)=2, f(2)=0
     // i.e. the location to fetch the mapped element from.
     private final int[]  getTransform ;
 
@@ -119,7 +118,7 @@ public class TupleMap {
      * just a label and is not interpreted here.
      */
     private TupleMap(String label, int... elements) {
-        this.len = elements.length ; 
+        this.len = elements.length ;
         this.label = label;
 
         this.putTransform = new int[elements.length];
@@ -140,22 +139,22 @@ public class TupleMap {
             getTransform[x] = i;
         }
     }
-    
+
     private TupleMap(String label, int[] getTransform, int[] putTransform) {
         this.label = label ;
         this.len = getTransform.length ;
         this.getTransform = getTransform ;
         this.putTransform = putTransform ;
     }
-    
+
     /** Return a {@code TupleMap} that maps in the opposite direction
      *  <pre>
      *  this.reverseMap().map is the same as this.unmap
      *  this.reverseMap().unmap is the same as this.map
-     *  <pre>
+     *  </pre>
      */
     public TupleMap reverse() {
-       return new TupleMap("Reverse:"+label, putTransform, getTransform) ; 
+       return new TupleMap("Reverse:"+label, putTransform, getTransform) ;
     }
 
     /** Length of mapping */
@@ -163,7 +162,7 @@ public class TupleMap {
         return len;
     }
 
-    /** 
+    /**
      * Get the index of the i'th slot as it appears from a mapping : for
      * SPO{@literal ->}POS : 0'th slot is P so 0 returns 1 (the location in the tuple before mapping)
      * The 0'th mapped slot is {@code tuple.get(tupleMap.getSlotIdx(0))}.
@@ -177,15 +176,15 @@ public class TupleMap {
      * 0'th slot is S from POS so 0 returns 2
      */
     public int putSlotIdx(int idx) {
-        return putTransform[idx]; 
+        return putTransform[idx];
     }
 
-    /** 
+    /**
      * Get the index of the i'th slot as it appears from a mapping : for
      * SPO{@literal ->}POS : 0'th slot is P so 0 returns 1 (the location in the tuple before mapping)
      * Equivalent to {@link #getSlotIdx}.<br/>
      * The 0'th mapped slot is {@code tuple.get(tupleMap.mapIdx(0))}.<br/>
-     * Mapping a tuple is {@code map(tuple) == create(tuple.mapIdx(0) , tuple.mapIdx(1), ... tuple.mapIdx(n-1))}<br/>   
+     * Mapping a tuple is {@code map(tuple) == create(tuple.mapIdx(0) , tuple.mapIdx(1), ... tuple.mapIdx(n-1))}<br/>
      */
     public int mapIdx(int idx) {
         return getSlotIdx(idx) ;
@@ -196,10 +195,10 @@ public class TupleMap {
      * 0'th slot is S from POS so 0 returns 2
      * Equivalent to {@link #putSlotIdx}.<br/>
      * The 0'th unmapped slot is {@code tuple.get(tupleMap.unmapIdx(0))}.<br/>
-     * Unmapping a tuple is {@code unmap(tuple) == create(tuple.unmapIdx(0) , tuple.unmapIdx(1), ... tuple.unmapIdx(n-1))}<br/>   
+     * Unmapping a tuple is {@code unmap(tuple) == create(tuple.unmapIdx(0) , tuple.unmapIdx(1), ... tuple.unmapIdx(n-1))}<br/>
      */
     public int unmapIdx(int idx) {
-        return putSlotIdx(idx) ; 
+        return putSlotIdx(idx) ;
     }
 
     /** Apply to an <em>unmapped</em> tuple to get a tuple with the tuple mapping applied.
@@ -365,14 +364,14 @@ public class TupleMap {
 
     private static List<Integer> arrayToList(int[] array) {
         List<Integer> list = new ArrayList<>(array.length) ;
-        for ( int x : array ) 
+        for ( int x : array )
             list.add(x) ;
         return  Collections.unmodifiableList(list) ;
     }
 
     /** Is this mapping the same (has the same effect) as {@code other}? */
     public boolean sameMapping(TupleMap other) {
-        // Only need to check one array 
+        // Only need to check one array
         return Arrays.equals(getTransform, other.getTransform) ;
     }
 
@@ -394,7 +393,7 @@ public class TupleMap {
         return label;
     }
 
-    private static boolean CHECKING = true ; 
+    private static boolean CHECKING = true ;
     private final void checkLength(Tuple<?> tuple) {
         if ( CHECKING ) {
             if ( tuple.len() != length() )

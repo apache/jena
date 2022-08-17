@@ -1014,7 +1014,7 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     /** Join on an {@code Iterator}..
      * If there are going to be many iterators, it is better to create an {@link IteratorConcat}
-     * and <tt>.add</tt> each iterator.  The overheads are much lower.
+     * and {@code .add} each iterator.  The overheads are much lower.
      */
     public Iter<T> append(Iterator<T> iter) {
         return iter(IteratorCons.create(iterator, iter));
@@ -1073,8 +1073,6 @@ public class Iter<T> implements IteratorCloseable<T> {
     public Iter<T> skip(long N) {
         return Iter.iter(skip(null, N));
     }
-
-
 
     /** Count the iterator (this is destructive on the iterator) */
     public long count() {

@@ -55,13 +55,13 @@ package org.apache.jena.ext.xerces.util;
  * Generally, the default load factor (.75) offers a good tradeoff between
  * time and space costs.  Higher values decrease the space overhead but
  * increase the time cost to look up an entry (which is reflected in most
- * <tt>SymbolTable</tt> operations, including <tt>addSymbol</tt> and <tt>containsSymbol</tt>).<p>
+ * {@code SymbolTable} operations, including {@code addSymbol} and {@code containsSymbol}).<p>
  *
  * The initial capacity controls a tradeoff between wasted space and the
  * need for <code>rehash</code> operations, which are time-consuming.
  * No <code>rehash</code> operations will <i>ever</i> occur if the initial
  * capacity is greater than the maximum number of entries the
- * <tt>Hashtable</tt> will contain divided by its load factor.  However,
+ * {@code Hashtable} will contain divided by its load factor.  However,
  * setting the initial capacity too high can waste space.<p>
  *
  * If many entries are to be made into a <code>SymbolTable</code>, 
@@ -141,7 +141,7 @@ public class SymbolTable {
 
     /**
      * Constructs a new, empty SymbolTable with the specified initial capacity
-     * and default load factor, which is <tt>0.75</tt>.
+     * and default load factor, which is {@code 0.75}.
      *
      * @param     initialCapacity   the initial capacity of the hashtable.
      * @throws    IllegalArgumentException if the initial capacity is less
@@ -153,7 +153,7 @@ public class SymbolTable {
     
     /**
      * Constructs a new, empty SymbolTable with a default initial capacity (101)
-     * and load factor, which is <tt>0.75</tt>. 
+     * and load factor, which is {@code 0.75}. 
      */
     public SymbolTable() {
         this(TABLE_SIZE, 0.75f);
