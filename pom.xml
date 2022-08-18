@@ -981,9 +981,7 @@
                    jena-jdbc
             -->
             <detectJavaApiLink>false</detectJavaApiLink>
-
-            <source>${java.version}</source>
-
+            <source>8</source>
 
             <!-- To allow the build to keep going despite javadoc problems:
                  <failOnError>false</failOnError>
