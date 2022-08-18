@@ -295,18 +295,18 @@ public class ARQ
      * operations or hash tables before switching to temporary disk files.  The value defaults to -1, which will always
      * keep the bindings in memory and never write to temporary files.  The amount of memory used will vary based on
      * the size of the bindings.  If you are retrieving large literal strings, then you may need to lower the value.
-     * <p/>
+     * <p>
      * Note that for a complex query, several sort or hash operations might be running in parallel; each one will be
      * allowed to retain as many bindings in memory as this value specifies before it starts putting data in temporary
      * files.  Also, several running sessions could be doing such operations concurrently.  Therefore, the total number
      * of bindings held in memory could be many times this value; it is necessary to keep this fact in mind when
      * choosing the value.
-     * <p/>
+     * <p>
      * Operations currently affected by this symbol: <br>
      * ORDER BY, SPARQL Update, CONSTRUCT (optionally)
-     * <p/>
-     * TODO: Give a reasonable suggested value here.  10,000?
-     * <p/>
+     * <p>
+     * A reasonable value here is 10000.
+     * </p>
      * @see <a href="https://issues.apache.org/jira/browse/JENA-119">JENA-119</a>
      */
     // Some possible additions to the list:

@@ -188,8 +188,10 @@ public class NodeUtils
 
     /**
      * A Node is a simple string if:
+     * <ul>
      * <li>(RDF 1.0) No datatype and no language tag
      * <li>(RDF 1.1) xsd:string
+     * </ul>
      */
     public static boolean isSimpleString(Node n) { return Util.isSimpleString(n) ; }
 

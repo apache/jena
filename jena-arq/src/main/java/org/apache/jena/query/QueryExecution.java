@@ -184,11 +184,11 @@ public interface QueryExecution extends AutoCloseable
      * <b>Caution:</b> This method may return duplicate Quads.  This method may be useful if you only
      * need the results for stream processing, as it can avoid having to place the results in a Model.
      * </p>
-     * @return An iterator of Quad objects (possibly containing duplicates) generated
-     * by applying the CONSTRUCT template of the query to the bindings in the WHERE clause.
-     * </p>
      * <p>
      * See {@link #execConstructTriples} for usage and features.
+     * </p>
+     * @return An iterator of Quad objects (possibly containing duplicates) generated
+     * by applying the CONSTRUCT template of the query to the bindings in the WHERE clause.
      */
     public Iterator<Quad> execConstructQuads();
 

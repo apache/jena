@@ -20,9 +20,11 @@ package org.apache.jena.riot.lang;
 
 /** TriX - see <a href="http://www.hpl.hp.com/techreports/2004/HPL-2004-56.html">HPL-2004-56</a> Jeremy Carroll and Patrick Stickler.
  * Supported:
+ * <ul>
  * <li>Basic TriX as per the DTD in HPL-2004-56
  * <li>Typed literal rdf:XMLLiteral with inline XML.
  * <li>&lt;qname&gt; (on reading)
+ * </ul>
  */
 
 public class TriX {

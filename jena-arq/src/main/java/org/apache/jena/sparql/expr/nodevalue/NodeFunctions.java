@@ -79,8 +79,10 @@ public class NodeFunctions {
      * Check for string operations with primary first arg and second arg
      * (e.g. CONTAINS).  The arguments are not used in the same way and the check
      * operation is not symmetric.
+     * <ul>
      * <li> "abc"@en is compatible with "abc"
      * <li> "abc" is NOT compatible with "abc"@en
+     * </ul>
      */
     public static void checkTwoArgumentStringLiterals(String label, NodeValue arg1, NodeValue arg2) {
 

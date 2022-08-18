@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * (stats
  *    (meta ...)
  *    ((S P O) weight)
- *    (<predicate uri> weight)
+ *    (&lt;predicate uri&gt; weight)
  * )
  * </pre>
  *

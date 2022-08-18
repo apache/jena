@@ -64,14 +64,13 @@ public class DatasetGraphFactory
     /**
      * Create a general-purpose  {@link Dataset}.<br/>
      * Any graphs needed are in-memory unless explicitly added with {@link Dataset#addNamedModel}.
-     * </p>
+     * <p>
      * This dataset type can contain graphs from any source when added via {@link Dataset#addNamedModel}.
      * These are held as links to the supplied graph and not copied.
      * <p>
      * <em>This dataset does not support the graph indexing feature of jena-text.</em>
      * <p>
      * This dataset does not support serialized transactions (it only provides MRSW locking).
-     * <p>
      *
      * @see #createTxnMem
      * @return a general-purpose Dataset

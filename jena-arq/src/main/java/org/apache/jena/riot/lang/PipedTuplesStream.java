@@ -26,7 +26,7 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
- * Implementation of a producer class that sends @{code Tuple<Node>}; must be connected to a {@code PipedRDFIterator<Tuple<Node>}.
+ * Implementation of a producer class that sends {@code Tuple<Node>}; must be connected to a {@code PipedRDFIterator<Tuple<Node>}.
  *
  * @deprecated To be removed - use {@link AsyncParser}.
  */

@@ -45,7 +45,7 @@ public class AuthLib {
      * @param httpClient HttpClient
      * @param httpRequest
      * @param bodyHandler
-     * @return HttpResponse<T>
+     * @return HttpResponse&lt;T&gt;
      */
     public static <T> HttpResponse<T> authExecute(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<T> bodyHandler) {
         HttpResponse<T> httpResponse = HttpLib.executeJDK(httpClient, httpRequest, bodyHandler);
