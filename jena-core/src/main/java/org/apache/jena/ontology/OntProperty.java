@@ -574,7 +574,7 @@ public interface OntProperty
      * simulates a frame-like view of properties and classes; for more
      * details see the <a href="../../../../../../how-to/rdf-frames.html">
      * RDF frames how-to</a>.</p>
-     * @param direct If true, use only </em>direct</em> associations between classes
+     * @param direct If true, use only <em>direct</em> associations between classes
      * and properties
      * @return An iterator of the classes having this property as one
      * of their declared properties
@@ -584,10 +584,10 @@ public interface OntProperty
     /**
      * <p>Answer an iterator over any restrictions that mention this property as
      * the property that the restriction is adding some constraint to. For example:</p>
-     * <code><pre>&lt;owl:Restriction&gt;
+     * <pre>&lt;owl:Restriction&gt;
      *     &lt;owl:onProperty rdf:resource=&quot;#childOf&quot; /&gt;
      *     &lt;owl:hasValue rdf:resource=&quot;#ian&quot; /&gt;
-     * &lt;/owl:Restriction&gt;</pre></code>
+     * &lt;/owl:Restriction&gt;</pre>
      * <p><strong>Note</strong> that any such restrictions do not affect the global
      * semantics of this property itself. Restrictions define new class expressions,
      * and the property constraints are local to that class expression. This method

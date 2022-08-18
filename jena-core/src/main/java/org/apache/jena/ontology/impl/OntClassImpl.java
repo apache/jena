@@ -328,11 +328,11 @@ public class OntClassImpl
      * distinguishing extra parameter for this method is the flag <code>direct</code>
      * that allows some selectivity over the classes that appear in the iterator.
      * Consider the following scenario:
-     * <code><pre>
+     * <code>
      *   :B rdfs:subClassOf :A.
      *   :C rdfs:subClassOf :A.
      *   :D rdfs:subClassof :C.
-     * </pre></code>
+     * </pre>
      * (so A has two sub-classes, B and C, and C has sub-class D).  In a raw model, with
      * no inference support, listing the sub-classes of A will answer B and C.  In an
      * inferencing model, <code>rdfs:subClassOf</code> is known to be transitive, so
@@ -342,9 +342,9 @@ public class OntClassImpl
      * to the given root.  Thus, the direct sub-classes of A are B and C only, and not D -
      * even in an inferencing graph.  Note that this is not the same as the entailments
      * from the raw graph. Suppose we add to this example:
-     * <code><pre>
+     * <code>
      *   :D rdfs:subClassof :A.
-     * </pre></code>
+     * </pre>
      * Now, in the raw graph, A has sub-class C.  But the direct sub-classes of A remain
      * B and C, since there is a longer path A-C-D that means that D is not a direct sub-class
      * of A.  The assertion in the raw graph that A has sub-class D is essentially redundant,

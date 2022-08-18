@@ -609,9 +609,9 @@ public class TestOntDocumentManager
      * directory), and loads the model. Depending on the model contents, and the settings of the doc
      * manager, other models will be loaded. Each model is set to contain a fixed number of marker
      * statements of the form:
-     * <code><pre>
+     * <pre>
      *   <Marker rdf:ID="a0" />
-     * </pre></code>
+     * </pre>
      * the test for having correctly loaded the models is to count the markers and compare to the predicted
      * total.
      */

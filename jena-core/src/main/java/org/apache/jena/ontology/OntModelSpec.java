@@ -196,11 +196,11 @@ public class OntModelSpec {
      * calling this copy constructor, making a change to the document manager in the copy specification
      * will also affect the one that the copy was made from. The correct idiom is to replace the object
      * before side-effecting it, e.g:
-     * <code><pre>
+     * <pre>
      *   OntModelSpec newSpec = new OntModelSpec( existingSpec );
      *   newSpec.setDocumentManager( new OntDocumentManager() );
      *   newSpec.getDocumentManager().setMetaDataSearchPath( "..." );
-     * </pre></code>
+     * </pre>
      * @param spec
      */
     public OntModelSpec( OntModelSpec spec ) {

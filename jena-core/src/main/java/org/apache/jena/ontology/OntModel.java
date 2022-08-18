@@ -46,11 +46,12 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  * convenience API. Alternatively, if the OntModel wraps an OWL inferencing model,
  * the inferred triples from the extension will be reported as well. For
  * example, assume the following ontology fragment:
- * <code><pre>
+ * <pre>
  *      :A rdf:type owl:Class .
  *      :B rdf:type owl:Class ; rdfs:subClassOf :A .
  *      :widget rdf:type :B .
- * </pre></code>
+ * </pre>
+ * <p>
  * In a non-inferencing model, the <code>rdf:type</code> of the widget will be
  * reported as class <code>:B</code> only.  In a model that can process the OWL
  * semantics, the widget's types will include <code>:B</code>, <code>:A</code>,
@@ -1153,10 +1154,10 @@ public interface OntModel
      * which resource to create is the same as as the argument to the {@link RDFNode#as as()}
      * method: the Java class object of the desired abstraction.  For example, to create an
      * ontology class via this mechanism, use:
-     * <code><pre>
+     * <pre>
      *     OntClass c = (OntClass) myModel.createOntResource( OntClass.class, null,
      *                                                        "http://example.org/ex#Parrot" );
-     * </pre></code>
+     * </pre>
      * </p>
      *
      * @param javaClass The Java class object that represents the ontology abstraction to create

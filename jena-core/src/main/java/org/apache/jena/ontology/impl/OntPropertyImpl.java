@@ -175,7 +175,7 @@ public class OntPropertyImpl
      */
     @Override
     public ExtendedIterator<OntProperty> listSuperProperties( boolean direct ) {
-        // Eclispe Oxygen (July 2017) generates a warning on use of "this::equals" in filterDrop.  
+        // Eclispe Oxygen (July 2017) generates a warning on use of "this::equals" in filterDrop.
         OntProperty op = this;
         return listDirectPropertyValues( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF", OntProperty.class, getProfile().SUB_PROPERTY_OF(), direct, false )
                         .filterDrop(op::equals);
@@ -804,7 +804,7 @@ public class OntPropertyImpl
      * simulates a frame-like view of properties and classes; for more
      * details see the <a href="../../../../../../how-to/rdf-frames.html">
      * RDF frames howto</a>.</p>
-     * @param direct If true, use only </em>direct</em> associations between classes
+     * @param direct If true, use only <em>direct</em> associations between classes
      * and properties
      * @return An iterator of the classes having this property as one
      * of their declared properties
@@ -858,10 +858,10 @@ public class OntPropertyImpl
     /**
      * <p>Answer an iterator over any restrictions that mention this property as
      * the property that the restriction is adding some constraint to. For example:</p>
-     * <code><pre>&lt;owl:Restriction&gt;
+     * <pre>&lt;owl:Restriction&gt;
      *     &lt;owl:onProperty rdf:resource=&quot;#childOf&quot; /&gt;
      *     &lt;owl:hasValue rdf:resource=&quot;#ian&quot; /&gt;
-     * &lt;/owl:Restriction&gt;</pre></code>
+     * &lt;/owl:Restriction&gt;</pre>
      * <p><strong>Note</strong> that any such restrictions do not affect the global
      * semantics of this property itself. Restrictions define new class expressions,
      * and the property constraints are local to that class expression. This method

@@ -24,10 +24,10 @@ import java.util.Map ;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.jena.ext.xerces.util.XMLChar;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.util.CollectionFactory ;
+import org.apache.jena.util.XMLChar;
 
 /**
     An implementation of PrefixMapping. The mappings are stored in a pair

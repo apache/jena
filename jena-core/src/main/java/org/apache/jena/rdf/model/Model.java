@@ -45,13 +45,13 @@ import org.apache.jena.shared.* ;
     This interface defines a set of primitive methods.  A set of
     convenience methods which extends this interface, e.g. performing
     automatic type conversions and support for enhanced resources,
-    is defined in {@link ModelCon}.</P>
+    is defined in {@link ModelCon}.</p>
 
  <h2>System Properties</h2>
 
 
  <h3>Firewalls and Proxies</h3>
-
+    <p>
     Some of the methods, e.g. the read methods, may have to traverse a
     firewall.  This can be accomplished using the standard java method
     of setting system properties.  To use a socks proxy, include on the
@@ -65,13 +65,13 @@ import org.apache.jena.shared.* ;
  * -DproxySet=true -DproxyHost=[your-proxy] -DproxyPort=[your-proxy-port-number]
  * </blockquote>
  *
- * <p>Alternatively, these properties can be set programatically, e.g.</p>
+ * <p>Alternatively, these properties can be set programmatically, e.g.</p>
  *
- * <code><pre>
+ * <pre>
  *   System.getProperties().put("proxySet","true");
  *   System.getProperties().put("proxyHost","proxy.hostname");
  *   System.getProperties().put("proxyPort",port_number);
- * </pre></code>
+ * </pre>
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -190,7 +190,7 @@ public interface Model
 	   @return a new resource linked to this model.
 	*/
 	public Resource createResource( String uri ) ;
-	
+
 	/**
 	 * Create a resource that represents a statement. This is in support of RDF-star.
 	 * @param statement
@@ -304,8 +304,8 @@ public interface Model
 
     /**
      * <p>Answer a new list containing the nodes from the given eleemnts, in order.
-     * If the list of elements is empty, until the list is made the object or subject in the model, or has an element added, 
-     * it will not appear in the model (e.g. when written out).  
+     * If the list of elements is empty, until the list is made the object or subject in the model, or has an element added,
+     * it will not appear in the model (e.g. when written out).
      *
      * @param members An array of RDF nodes that will be the members of the list
      * @return An RDF-encoded list
@@ -386,13 +386,13 @@ public interface Model
      *  See <a href="http://jena.apache.org/documentation/io/index.html">"Reading and Writing RDF in Apache Jena"</a>
      *    for more information about concrete syntaxes.
      *  </p>
-	 *  
+	 *
 	 * @param in the input stream
-     
+
      @param base the base uri to be used when converting relative
          URI's to absolute URI's. (Resolving relative URIs and fragment IDs is done
-         by prepending the base URI to the relative URI/fragment.) If there are no 
-         relative URIs in the source, this argument may safely be <code>null</code>. 
+         by prepending the base URI to the relative URI/fragment.) If there are no
+         relative URIs in the source, this argument may safely be <code>null</code>.
          If the base is the empty string, then relative URIs <i>will be retained in
          the model</i>. This is typically unwise and will usually generate errors
          when writing the model back out.
@@ -403,17 +403,17 @@ public interface Model
 
 	/** Add RDF statements represented in language <code>lang</code> to the model.
 	 * <br />Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE",
-	 * "TURTLE" (or "TTL") and "N3".  
+	 * "TURTLE" (or "TTL") and "N3".
 	 * <code>null</code> represents the default language, "RDF/XML".
 	 * "RDF/XML-ABBREV" is a synonym for "RDF/XML".
      * <br />
 	 *
 	 * @return this model
-	 
+
 	 @param base the base uri to be used when converting relative
 	     URI's to absolute URI's. (Resolving relative URIs and fragment IDs is done
-	     by prepending the base URI to the relative URI/fragment.) If there are no 
-	     relative URIs in the source, this argument may safely be <code>null</code>. 
+	     by prepending the base URI to the relative URI/fragment.) If there are no
+	     relative URIs in the source, this argument may safely be <code>null</code>.
 	     If the base is the empty string, then relative URIs <i>will be retained in
 	     the model</i>. This is typically unwise and will usually generate errors
 	     when writing the model back out.
@@ -421,7 +421,7 @@ public interface Model
      *  See <a href="http://jena.apache.org/documentation/io/index.html">"Reading and Writing RDF in Apache Jena"</a>
      *    for more information about concrete syntaxes.
      *  </p>
-	     
+
 	 * @param lang the language of the serialization <code>null</code>
 	 * selects the default
 	 * @param in the source of the input serialization
@@ -430,14 +430,14 @@ public interface Model
 
     /** Using this method is often a mistake.
      * Add statements from an RDF/XML serialization.
-     * It is generally better to use an InputStream if possible, 
+     * It is generally better to use an InputStream if possible,
      * otherwise there is a danger of a
      * mismatch between the character encoding of say the FileReader and the
      * character encoding of the data in the file.
-     * 
-     * It is better to explicitly set the serialization format. 
+     *
+     * It is better to explicitly set the serialization format.
      *  See {@link #read(InputStream, String, String)} for explicitily setting the serialization language.
-     *  
+     *
      *  <p>
      *  See <a href="http://jena.apache.org/documentation/io/index.html">"Reading and Writing RDF in Apache Jena"</a>
      *    for more information about concrete syntaxes.
@@ -482,11 +482,11 @@ public interface Model
      * mismatch between the character encoding of say the FileReader and the
      * character encoding of the data in the file.
 	 * @return this model
-	 
+
      @param base the base uri to be used when converting relative
          URI's to absolute URI's. (Resolving relative URIs and fragment IDs is done
-         by prepending the base URI to the relative URI/fragment.) If there are no 
-         relative URIs in the source, this argument may safely be <code>null</code>. 
+         by prepending the base URI to the relative URI/fragment.) If there are no
+         relative URIs in the source, this argument may safely be <code>null</code>.
          If the base is the empty string, then relative URIs <i>will be retained in
          the model</i>. This is typically unwise and will usually generate errors
          when writing the model back out.
@@ -587,7 +587,7 @@ public interface Model
      * @param base The base uri to use when writing relative URI's. <code>null</code>
      * means use only absolute URI's. This is used for relative
      * URIs that would be resolved against the document retrieval URL.
-     * For some values of <code>lang</code>, this value may be included in the output. 
+     * For some values of <code>lang</code>, this value may be included in the output.
      * @param lang The language in which the RDF should be written
      * @return This model
      */
@@ -644,31 +644,31 @@ public interface Model
     @return some statement (s, p, ?O@lang) or null if none can be found
 */
     Statement getProperty(Resource s, Property p, String lang) ;
-    
-	/** 
+
+	/**
 	    An alias for <code>listResourcesWithProperty(Property)</code>,
 	    retained for backward compatibility. It may be deprecated in later
 	    releases.
 	 */
 	ResIterator listSubjectsWithProperty( Property p );
-	
+
 	/**
-	    Answer an iterator [with no duplicates] over all the resources in this 
+	    Answer an iterator [with no duplicates] over all the resources in this
 	    model that have property <code>p</code>. <code>remove()</code>
 	    is not implemented on this iterator.
 	*/
 	ResIterator listResourcesWithProperty( Property p );
 
-	/** 
+	/**
 	   An alias for <code>listResourcesWithProperty</code>, retained for
 	   backward compatibility. It may be deprecated in later releases.
 	*/
 	ResIterator listSubjectsWithProperty( Property p, RDFNode o );
-	
+
 	/**
-        Answer an iterator [with no duplicates] over all the resources in this 
+        Answer an iterator [with no duplicates] over all the resources in this
         model that have property <code>p</code> with value <code>o</code>.
-        <code>remove()</code> is not implemented on this iterator. 
+        <code>remove()</code> is not implemented on this iterator.
     */
 	ResIterator listResourcesWithProperty( Property p, RDFNode o );
 
@@ -856,7 +856,7 @@ public interface Model
 	 */
 	Model query(Selector s) ;
 
-	/** 
+	/**
          Create a new, independant, model containing all the statements in this model
          together with all of those in another given model. By <i>independant</i>
          we mean that changes to the result model do not affect the operand
@@ -865,19 +865,19 @@ public interface Model
          The new model need not be of the same type as either this model or
          the argument model: typically it will be a memory-based model, even
          if this model is a database model.
-         
+
          @return A new model containing all the statements that are in either model
          @param model The other model whose statements are to be included.
 	*/
 	Model union(Model model) ;
 
-	/** 
+	/**
          Create a new, independant, model containing all the statements which are in both
          this model and another.  As models are sets of statements, a statement
          contained in both models will only appear once in the resulting model.
          The new model need not be of the same type as either this model or
          the argument model: typically it will be a memory-based model.
-         
+
          @return A new model containing all the statements that are in both models.
          @param model The other model.
 	*/
@@ -928,7 +928,7 @@ public interface Model
 
 	 */
 	Model commit() ;
-    
+
     /**
      * Execute the runnable <code>action</code> within a transaction. If it completes normally,
      * commit the transaction, otherwise abort the transaction.

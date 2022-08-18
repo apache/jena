@@ -391,7 +391,8 @@ public class OneToManyMap<From, To> implements Map<From, To>
 
     /**
      * <p>Answer a string representation of this map. This can be quite a long string for
-     * large maps.<p>
+     * large maps.
+     * </p>
      */
     @Override public String toString() {
         StringBuffer buf = new StringBuffer( "OneToManyMap{" );
