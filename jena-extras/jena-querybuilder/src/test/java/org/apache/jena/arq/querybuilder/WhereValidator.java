@@ -49,11 +49,11 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap;
  * match is not the matcher continues to scan for the next candidate until a
  * match is found or all candidates are exhausted.
  *
- * Usage: <code> <pre>
+ * Usage: <pre>
  *  WhereValidator wv = new WhereValidator( target );
  *  query.getQueryPattern().visit( wv );
  *  assertTrue( wv.matching );
- *  </pre></code>
+ *  </pre>
  */
 public class WhereValidator implements ElementVisitor {
 
@@ -63,7 +63,7 @@ public class WhereValidator implements ElementVisitor {
 
     /**
      * Constructor.
-     * 
+     *
      * @param target The target element to locate.
      */
     public WhereValidator(Element target) {

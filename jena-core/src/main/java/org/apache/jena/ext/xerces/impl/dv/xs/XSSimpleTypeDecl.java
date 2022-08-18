@@ -31,10 +31,10 @@ import org.apache.jena.ext.xerces.impl.xs.util.ObjectListImpl;
 import org.apache.jena.ext.xerces.impl.xs.util.ShortListImpl;
 import org.apache.jena.ext.xerces.impl.xs.util.StringListImpl;
 import org.apache.jena.ext.xerces.impl.xs.util.XSObjectListImpl;
-import org.apache.jena.ext.xerces.util.XMLChar;
 import org.apache.jena.ext.xerces.xni.NamespaceContext;
 import org.apache.jena.ext.xerces.xs.*;
 import org.apache.jena.ext.xerces.xs.datatypes.ObjectList;
+import org.apache.jena.ext.xerces.util.XercesXMLChar;
 import org.w3c.dom.TypeInfo;
 
 /**
@@ -1867,15 +1867,15 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
                 boolean seenErr = false;
                 if (fPatternType == SPECIAL_PATTERN_NMTOKEN) {
                     // PATTERN "\\c+"
-                    seenErr = !XMLChar.isValidNmtoken(nvalue);
+                    seenErr = !XercesXMLChar.isValidNmtoken(nvalue);
                 }
                 else if (fPatternType == SPECIAL_PATTERN_NAME) {
                     // PATTERN "\\i\\c*"
-                    seenErr = !XMLChar.isValidName(nvalue);
+                    seenErr = !XercesXMLChar.isValidName(nvalue);
                 }
                 else if (fPatternType == SPECIAL_PATTERN_NCNAME) {
                     // PATTERN "[\\i-[:]][\\c-[:]]*"
-                    seenErr = !XMLChar.isValidNCName(nvalue);
+                    seenErr = !XercesXMLChar.isValidNCName(nvalue);
                 }
                 if (seenErr) {
                     throw new InvalidDatatypeValueException("cvc-datatype-valid.1.2.1",
@@ -2051,7 +2051,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
                 return content.toString();
             }
             else if (norm_type == NORMALIZE_TRIM) {
-                return XMLChar.trim(content.toString());
+                return XercesXMLChar.trim(content.toString());
             }
         }
 

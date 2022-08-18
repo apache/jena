@@ -19,9 +19,9 @@ package org.apache.jena.ext.xerces.impl.dv.xs;
 
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
-import org.apache.jena.ext.xerces.util.XMLChar;
 import org.apache.jena.ext.xerces.xni.QName;
 import org.apache.jena.ext.xerces.xs.datatypes.XSQName;
+import org.apache.jena.ext.xerces.util.XercesXMLChar;
 
 /**
  * Represent the schema type "QName" and "NOTATION"
@@ -59,10 +59,10 @@ public class QNameDV extends TypeValidator {
         }
 
         // both prefix (if any) a nd localpart must be valid NCName
-        if (prefix.length() > 0 && !XMLChar.isValidNCName(prefix))
+        if (prefix.length() > 0 && !XercesXMLChar.isValidNCName(prefix))
             throw new InvalidDatatypeValueException("cvc-datatype-valid.1.2.1", new Object[]{content, "QName"});
 
-        if(!XMLChar.isValidNCName(localpart))
+        if(!XercesXMLChar.isValidNCName(localpart))
             throw new InvalidDatatypeValueException("cvc-datatype-valid.1.2.1", new Object[]{content, "QName"});
 
         // resove prefix to a uri, report an error if failed

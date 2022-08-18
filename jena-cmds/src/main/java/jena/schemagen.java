@@ -34,13 +34,13 @@ import java.util.* ;
 import java.util.regex.Pattern ;
 import java.util.regex.PatternSyntaxException ;
 
-import org.apache.jena.ext.xerces.util.XMLChar;
 import org.apache.jena.ontology.Individual ;
 import org.apache.jena.ontology.OntModel ;
 import org.apache.jena.ontology.OntModelSpec ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.util.XMLChar;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 import org.apache.jena.vocabulary.OWL ;

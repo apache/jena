@@ -24,9 +24,9 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.BiConsumer;
 
-import org.apache.jena.ext.xerces.util.XMLChar;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.util.SplitIRI;
+import org.apache.jena.util.XMLChar;
 
 /**
  * Framework for implementing {@link PrefixMapping}. It is stateless (unlike
