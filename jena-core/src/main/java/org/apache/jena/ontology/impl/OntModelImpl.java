@@ -583,7 +583,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<UnionClass> listUnionClasses() {
         checkProfileEntry( getProfile().UNION_OF(), "UNION_OF" );
-        return findByDefiningPropertyAs( getProfile().UNION_OF(), UnionClass.class ) 
+        return findByDefiningPropertyAs( getProfile().UNION_OF(), UnionClass.class )
         		.filterKeep( new UniqueFilter<UnionClass>());
     }
 
@@ -706,7 +706,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     public ExtendedIterator<DataRange> listDataRanges() {
         checkProfileEntry( getProfile().DATARANGE(), "DATARANGE" );
         return findByTypeAs( getProfile().DATARANGE(), DataRange.class )
-        		.filterKeep( new UniqueFilter<DataRange>());        
+        		.filterKeep( new UniqueFilter<DataRange>());
     }
 
 
@@ -1894,10 +1894,10 @@ public class OntModelImpl extends ModelCom implements OntModel
      * which resource to create is the same as as the argument to the {@link RDFNode#as as()}
      * method: the Java class object of the desired abstraction.  For example, to create an
      * ontology class via this mechanism, use:
-     * <code><pre>
+     * <code>
      *     OntClass c = (OntClass) myModel.createOntResource( OntClass.class, null,
      *                                                        "http://example.org/ex#Parrot" );
-     * </pre></code>
+     * </pre>
      * </p>
      *
      * @param javaClass The Java class object that represents the ontology abstraction to create
@@ -2299,7 +2299,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     public ExtendedIterator<OntModel> listSubModels( final boolean withImports ) {
         ExtendedIterator<Graph> i = WrappedIterator.create( getSubGraphs().iterator() );
 
-        return i.mapWith( 
+        return i.mapWith(
                     o -> {
                         Model base = ModelFactory.createModelForGraph( o );
                         OntModel om = new OntModelImpl( m_spec, base, withImports );

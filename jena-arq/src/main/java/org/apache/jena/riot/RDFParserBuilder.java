@@ -396,7 +396,7 @@ public class RDFParserBuilder {
      * is maintained for either lower case or RFC canonicalization styles.
      * <p>
      * This option can slow parsing down.
-     * <p>
+     *
      * @see #langTagCanonical
      */
     public RDFParserBuilder langTagLowerCase() {
@@ -415,7 +415,7 @@ public class RDFParserBuilder {
      * lower case or RFC canonicalization.
      * <p>
      * This option can slow parsing down.
-     * <p>
+     * </p>
      * @see #langTagLowerCase
      */
     public RDFParserBuilder langTagCanonical() {

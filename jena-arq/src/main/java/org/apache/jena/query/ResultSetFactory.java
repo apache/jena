@@ -334,7 +334,7 @@ public class ResultSetFactory {
      * result set directly as this may cause results to be missed or put the
      * returned peekable result set into an invalid state.
      * </p>
-     * </p> Note that rewindable results may typically also be peekable so may
+     * <p> Note that rewindable results may typically also be peekable so may
      * be more broadly applicable if you can afford the cost of loading all the
      * results into memory. </p>
      *

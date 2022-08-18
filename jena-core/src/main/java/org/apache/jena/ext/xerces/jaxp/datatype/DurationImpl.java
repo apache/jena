@@ -1187,9 +1187,9 @@ class DurationImpl
      * {@link #getField(DatatypeConstants.Field)} method.
      *
      * <p>
-     * Note that since this method returns <tt>int</tt>, this
+     * Note that since this method returns {@code int}, this
      * method will return an incorrect value for {@link Duration}s
-     * with the year field that goes beyond the range of <tt>int</tt>.
+     * with the year field that goes beyond the range of {@code int}.
      * Use <code>getField(YEARS)</code> to avoid possible loss of precision.</p>
      *
      * @return
@@ -1813,10 +1813,10 @@ class DurationImpl
      * <code>(-X)-(-Y)=-(X-Y)</code>)</p>
      *
      * <p>Then two durations are subtracted field by field.
-     * If the sign of any non-zero field <tt>F</tt> is different from
+     * If the sign of any non-zero field {@code F} is different from
      * the sign of the most significant field,
-     * 1 (if <tt>F</tt> is negative) or -1 (otherwise)
-     * will be borrowed from the next bigger unit of <tt>F</tt>.</p>
+     * 1 (if {@code F} is negative) or -1 (otherwise)
+     * will be borrowed from the next bigger unit of {@code F}.</p>
      *
      * <p>This process is repeated until all the non-zero fields have
      * the same sign.</p>
@@ -1908,8 +1908,8 @@ class DurationImpl
      *
      * <p>
      * Note that because {@link Calendar#add(int, int)} is using
-     * <tt>int</tt>, {@link Duration} with values beyond the
-     * range of <tt>int</tt> in its fields
+     * {@code int}, {@link Duration} with values beyond the
+     * range of {@code int} in its fields
      * will cause overflow/underflow to the given {@link Calendar}.
      * {@link XMLGregorianCalendar#add(Duration)} provides the same
      * basic operation as this method while avoiding

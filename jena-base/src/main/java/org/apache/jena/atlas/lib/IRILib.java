@@ -150,10 +150,12 @@ public class IRILib
     }
 
     /** Create a string that is a IRI for the filename.
+     *  <ul>
      *  <li>The file name may already have {@code file:}.
      *  <li>The file name may be relative.
      *  <li>Encode using the rules for a path (e.g. ':' and'/' do not get encoded)
      *  <li>Non-IRI characters get %-encoded.
+     *  </ul>
      */
     public static String filenameToIRI(String fn) {
         if ( fn == null ) return cwdURL ;

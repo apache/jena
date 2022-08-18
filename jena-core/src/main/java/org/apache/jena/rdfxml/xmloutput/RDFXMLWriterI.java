@@ -22,7 +22,7 @@ import org.apache.jena.rdf.model.RDFWriterI ;
 import org.apache.jena.vocabulary.RDFSyntax ;
 
 /**
- * 
+ *
  * This interface only adds documentation to {@link RDFWriterI}.
  * The documentation identifies the properties that can be
  * set on RDF/XML and RDF/XML-ABBREV writers.
@@ -30,7 +30,6 @@ import org.apache.jena.vocabulary.RDFSyntax ;
 public interface RDFXMLWriterI extends RDFWriterI {
     /** Suppress a compiler warning. */
    Object _NotInteresting = RDFSyntax.parseCollection;
-    
 
 /** Sets properties on this writer.
 
@@ -103,7 +102,7 @@ To switch off relative URIs use the value "".
   no XML declaration is included.
   The default behaviour only gives an XML Declaration when
   asked to write to an OutputStreamWriter that uses some
-  encoding other than UTF-8 or UTF-16. 
+  encoding other than UTF-8 or UTF-16.
 In this case the encoding is shown
   in the XML declaration.
 To ensure that the encoding attribute is shown in the XML declaration
@@ -181,7 +180,7 @@ to false write the declaration to an OutputStream before calling
  <a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeLiteralPropertyElt">parseTypeLiteralPropertyElt</a>
  has any affect, since none of the other rules are implemented by that writer.
 </td><td>Resource[] or String</td><td></td>
- 
+
  <tr BGCOLOR="white" CLASS="TableRowColor">
  <td>prettyTypes</td>
  <td>Only for the RDF/XML-ABBREV writer.

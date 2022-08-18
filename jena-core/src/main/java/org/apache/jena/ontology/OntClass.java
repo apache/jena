@@ -174,11 +174,11 @@ public interface OntClass
      * distinguishing extra parameter for this method is the flag <code>direct</code>
      * that allows some selectivity over the classes that appear in the iterator.
      * Consider the following scenario:
-     * <code><pre>
+     * <pre>
      *   :B rdfs:subClassOf :A.
      *   :C rdfs:subClassOf :A.
      *   :D rdfs:subClassof :C.
-     * </pre></code>
+     * </pre>
      * (so A has two sub-classes, B and C, and C has sub-class D).  In a raw model, with
      * no inference support, listing the sub-classes of A will answer B and C.  In an
      * inferencing model, <code>rdfs:subClassOf</code> is known to be transitive, so
@@ -188,9 +188,9 @@ public interface OntClass
      * to the given root.  Thus, the direct sub-classes of A are B and C only, and not D -
      * even in an inferencing graph.  Note that this is not the same as the entailments
      * from the raw graph. Suppose we add to this example:
-     * <code><pre>
+     * <pre>
      *   :D rdfs:subClassof :A.
-     * </pre></code>
+     * </pre>
      * Now, in the raw graph, A has sub-class C.  But the direct sub-classes of A remain
      * B and C, since there is a longer path A-C-D that means that D is not a direct sub-class
      * of A.  The assertion in the raw graph that A has sub-class D is essentially redundant,
@@ -422,7 +422,8 @@ public interface OntClass
     /**
      * <p>Answer an iterator over the individuals in the model that have this
      * class among their types. Equivalent to {@link #listInstances(boolean)}
-     * with an argument <code>false</code>.<p>
+     * with an argument <code>false</code>.
+     * </p>
      *
      * @return An iterator over those instances that have this class as one of
      *         the classes to which they belong
@@ -432,7 +433,8 @@ public interface OntClass
 
     /**
      * <p>Answer an iterator over the individuals in the model that have this
-     * class among their types, optionally excluding sub-classes of this class.<p>
+     * class among their types, optionally excluding sub-classes of this class.
+     * </p>
      *
      * @param  direct If true, only direct instances are counted (i.e. not instances
      * of sub-classes of this class)

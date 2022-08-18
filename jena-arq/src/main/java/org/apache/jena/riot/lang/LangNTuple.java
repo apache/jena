@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory ;
  * <ul>
  * <li>The {@link #parse} method processes the whole stream of tokens,
  *   sending each to a {@link org.apache.jena.atlas.lib.Sink} object.</li>
- * <li>The <tt>Iterator&lt;X&gt;</tt> interface yields triples one-by-one.</li>
+ * <li>The {@code Iterator&lt;X&gt;} interface yields triples one-by-one.</li>
  *  </ul>
  *
  * Normally, bad terms causes the parser to stop (i.e. treat them as errors).

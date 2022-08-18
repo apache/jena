@@ -251,7 +251,8 @@ public class WebContent {
      * </p>
      * <p>
      * The decision is <blockquote> <i>Content type</i> (but not text/plain)
-     * {@literal >} <i>hint</i> {@literal >} <i>file extension</i>. </blockquote> We
+     * {@literal >} <i>hint</i> {@literal >} <i>file extension</i>. </blockquote>
+     * <p>We
      * make content type (via content negotiation) strongest because a server may
      * return something unexpected because that is all it can do. We are assuming
      * servers don't lie. The "hint" is really a hint just for file extension

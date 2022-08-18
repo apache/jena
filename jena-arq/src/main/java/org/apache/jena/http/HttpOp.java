@@ -59,11 +59,11 @@ import org.apache.jena.web.HttpSC;
  * </p>
  * <p>
  * Also supported:
+ * </p>
  * <ul>
  * <li>GET and return a string</li>
  * <li>GET and return a JSON structure</li>
  * </ul>
- * </p>
  * @see HttpRDF
  * @see GSP
  */

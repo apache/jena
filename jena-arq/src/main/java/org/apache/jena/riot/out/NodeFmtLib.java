@@ -38,9 +38,9 @@ import org.apache.jena.sparql.core.Quad;
 
 /** Presentation utilities for Nodes, Triples, Quads and more.
  * <p>
- * Methods <tt>str</tt> generate a re-parseable string.
+ * Methods {@code str} generate a re-parseable string.
  * <p>
- * Methods <tt>displayStr</tt> do not guarantee a re-parseable string
+ * Methods {@code displayStr} do not guarantee a re-parseable string
  * e.g. may use abbreviations or common prefixes.
  */
 public class NodeFmtLib

@@ -26,7 +26,7 @@ import org.apache.jena.sparql.core.Quad ;
 
 /** Receive triples and quads (incoming because this is a StreamRDF);
  *  allow RDFS; output to place provided.
- *  @deprecated Use package <tt>org.apache.jena.rdfs</tt>.
+ *  @deprecated Use package {@code org.apache.jena.rdfs}.
  */
 @Deprecated
 public class InferenceProcessorStreamRDF extends StreamRDFWrapper

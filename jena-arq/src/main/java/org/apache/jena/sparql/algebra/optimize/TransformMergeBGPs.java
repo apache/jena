@@ -27,10 +27,12 @@ import org.apache.jena.sparql.algebra.op.OpJoin ;
 import org.apache.jena.sparql.algebra.op.OpSequence ;
 import org.apache.jena.sparql.core.BasicPattern ;
 
-/** Merge BGPs 
- * 
+/** Merge BGPs
+ *
+ * <ul>
  * <li>(join BGP1 BGP2) {@literal =>} BGP
  * <li>(sequence ...BGP1 BGP2 ...) {@literal =>} (sequence ...BGP ...)
+ * </ul>
  */
 public class TransformMergeBGPs extends TransformCopy {
     @Override

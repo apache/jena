@@ -78,13 +78,13 @@ public class Build
     
     /** Choose the StoreParams.  This is the policy applied when creating or re-attaching to a database.
      * <p>
-     * If the location has parameters in a <tt>tdb.cfg</tt> file, use them, as modified by any
+     * If the location has parameters in a {@code tdb.cfg} file, use them, as modified by any
      * application-supplied internal parameters.
      * <p>
      * Otherwise, if this is a new database, use the application provided
      * parameters or if there are no application provided 
      * parameters, use the system default parameters.
-     * Write the parameters used to the location in <tt>tdb.cfg</tt>
+     * Write the parameters used to the location in {@code tdb.cfg}
      * <p>If this is an existing database and there are no location recorded parameters,
      * use system default parameters, modified by application parameters.   
      * <p>

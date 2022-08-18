@@ -28,26 +28,25 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  * A version of Graph that enforces term equality even if the base graph uses value-indexing.
  * With value-indexing, one value may have several object terms that represent it when the graph store
  * RDF terms, and but matches by value.
- * 
- * This only affects the object field of a triple in RDF but in 
- * <a href="https://www.w3.org/TR/rdf11-concepts/#section-generalized-rdf">"generalized RDF"</a> 
- * literals can appear in any triple slot.
  * <p>
- */ 
+ * This only affects the object field of a triple in RDF but in
+ * <a href="https://www.w3.org/TR/rdf11-concepts/#section-generalized-rdf">"generalized RDF"</a>
+ * literals can appear in any triple slot.
+ */
 public class GraphPlain extends WrappedGraph
 {
     /** Return a graph that only has term-equality
      * and storage in the {@code base} graph.
-     * Update affects the base graph. 
-     */ 
+     * Update affects the base graph.
+     */
     public static Graph plain(Graph base) {
         if ( ! base.getCapabilities().handlesLiteralTyping() )
             return base;
         return new GraphPlain(base);
     }
-    
-    /** Return a graph that only has term-equality. */ 
-    public static Graph plain() { 
+
+    /** Return a graph that only has term-equality. */
+    public static Graph plain() {
         return plain(Factory.createDefaultGraph());
     }
 
@@ -59,7 +58,7 @@ public class GraphPlain extends WrappedGraph
             @Override public boolean handlesLiteralTyping() { return false; }
         };
     }
-    
+
     @Override
 	public Capabilities getCapabilities() {
 		return capabilities;
@@ -69,12 +68,12 @@ public class GraphPlain extends WrappedGraph
     public void remove( Node s, Node p, Node o ) {
         GraphUtil.remove(this, s, p, o) ;
     }
-    
+
 //    @Override
 //    public void clear() {
 //        GraphUtil.remove(this, Node.ANY, Node.ANY, Node.ANY);
 //    }
-    
+
     @Override
     public boolean contains( Triple t ) {
         return contains(t.getSubject(), t.getPredicate(), t.getObject());
@@ -91,7 +90,7 @@ public class GraphPlain extends WrappedGraph
         iter.close();
         return b;
     }
-    
+
     @Override
     public ExtendedIterator<Triple> find(Triple m) {
         return find(m.getSubject(), m.getPredicate(), m.getObject());
@@ -108,19 +107,19 @@ public class GraphPlain extends WrappedGraph
         // Whole triple.
         Predicate<Triple> predicate = (dataTriple) -> sameTermMatch(subj, pred, obj, dataTriple);
         iter = iter.filterKeep(predicate) ;
-//        // For reference - just object 
+//        // For reference - just object
 //        if ( !obj.isConcrete() || obj.isLiteral() ) {
 //            Predicate<Triple> predicate = (t) -> sameTermMatch(obj, t.getObject()) ;
 //            iter = iter.filterKeep(predicate) ;
 //        }
         return iter;
     }
-    
-    @Override 
+
+    @Override
     public String toString() {
         return this.getClass().getSimpleName()+" "+base.toString();
     }
-    
+
     /**
      * Match a ground triple (even ANY and variablesare considered ground terms in the
      * data triple) with S/P/O which can be wildcards (ANY or null).
@@ -131,11 +130,11 @@ public class GraphPlain extends WrappedGraph
             sameTermMatch(matchPred, dataTriple.getPredicate()) &&
             sameTermMatch(matchObj,  dataTriple.getObject());
     }
-    
+
     /**
      * Match a ground RDF Term (ANY and variables are considered ground terms in the
      * data term) with a node which can be a wildcard (ANY or null).
-     * Language tags compare case-insensitively. 
+     * Language tags compare case-insensitively.
      */
     private static boolean sameTermMatch(Node match, Node data) {
         if ( ! Util.isLangString(data) || ! Util.isLangString(match) )

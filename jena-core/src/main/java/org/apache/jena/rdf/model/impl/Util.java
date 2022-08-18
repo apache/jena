@@ -24,11 +24,11 @@ import java.util.regex.Pattern ;
 import org.apache.jena.JenaRuntime ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.ext.xerces.util.XMLChar;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.shared.CannotEncodeCharacterException ;
 import org.apache.jena.util.SplitIRI ;
+import org.apache.jena.util.XMLChar;
 
 /** Some utility functions.
  */
@@ -42,20 +42,20 @@ public class Util extends Object {
      * colon in the string.
      * <p>
      * This operation follows XML QName rules which are more complicated than
-     * needed for Turtle and TriG.   For example, QName can't start with a digit. 
-     * 
+     * needed for Turtle and TriG.   For example, QName can't start with a digit.
+     *
      * @param uri
      * @return the index of the first character of the localname
      * @see SplitIRI
      */
     public static int splitNamespaceXML(String uri) {
-        
+
         // XML Namespaces 1.0:
         // A qname name is NCName ':' NCName
         // NCName             ::=      NCNameStartChar NCNameChar*
         // NCNameChar         ::=      NameChar - ':'
         // NCNameStartChar    ::=      Letter | '_'
-        // 
+        //
         // XML 1.0
         // NameStartChar      ::= ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] |
         //                        [#xD8-#xF6] | [#xF8-#x2FF] |
@@ -66,7 +66,7 @@ public class Util extends Object {
         // NameChar           ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
         //                        [#x0300-#x036F] | [#x203F-#x2040]
         // Name               ::= NameStartChar (NameChar)*
-        
+
         char ch;
         int lg = uri.length();
         if (lg == 0)
@@ -76,12 +76,12 @@ public class Util extends Object {
             ch = uri.charAt(i);
             if (notNameChar(ch)) break;
         }
-        
+
         int j = i + 1 ;
 
         if ( j >= lg )
             return lg ;
-        
+
         // Check we haven't split up a %-encoding.
         if ( j >= 2 && uri.charAt(j-2) == '%' )
             j = j+1 ;
@@ -123,9 +123,9 @@ public class Util extends Object {
     public static boolean notNameChar( char ch )
         { return !XMLChar.isNCName( ch ); }
 
-    protected static Pattern standardEntities = 
+    protected static Pattern standardEntities =
         Pattern.compile( "&|<|>|\t|\n|\r|\'|\"" );
-    
+
     public static String substituteStandardEntities( String s )
         {
         if (standardEntities.matcher( s ).find())
@@ -141,10 +141,10 @@ public class Util extends Object {
         else
             return s;
         }
-    
-    protected static Pattern entityValueEntities = 
+
+    protected static Pattern entityValueEntities =
         Pattern.compile( "&|%|\'|\"" );
- 
+
    public static String substituteEntitiesInEntityValue( String s )
      {
      if (entityValueEntities.matcher( s ).find())
@@ -162,14 +162,14 @@ public class Util extends Object {
     protected static Pattern elementContentEntities = Pattern.compile( "<|>|&|[\0-\37&&[^\n\t]]|\uFFFF|\uFFFE" );
     /**
         Answer <code>s</code> modified to replace &lt;, &gt;, and &amp; by
-        their corresponding entity references. 
-        
+        their corresponding entity references.
+
     <p>
-        Implementation note: as a (possibly misguided) performance hack, 
+        Implementation note: as a (possibly misguided) performance hack,
         the obvious cascade of replaceAll calls is replaced by an explicit
         loop that looks for all three special characters at once.
     */
-    public static String substituteEntitiesInElementContent( String s ) 
+    public static String substituteEntitiesInElementContent( String s )
         {
         Matcher m = elementContentEntities.matcher( s );
         if (!m.find())
@@ -202,9 +202,11 @@ public class Util extends Object {
     }
 
     /**
-     * A Node is a simple string if: 
+     * A Node is a simple string if:
+     * <ul>
      * <li>(RDF 1.0) No datatype and no language tag.
      * <li>(RDF 1.1) xsd:string
+     * </ul>
      */
     public static boolean isSimpleString(Node n) {
         Objects.requireNonNull(n) ;
@@ -231,11 +233,11 @@ public class Util extends Object {
             return false ;
         return !lang.equals("") ;
     }
-    
+
     /** Return true if the literal is a simple string.
      *  <p>RDF 1.0 {@literal =>} it is a plain literal, with no language tag
      *  <p>RDF 1.1 {@literal =>} it has datatype xsd:string
-     */ 
+     */
     public static boolean isSimpleString(Literal lit) {
         Objects.requireNonNull(lit) ;
         String dtStr = lit.getDatatypeURI() ;
@@ -245,7 +247,7 @@ public class Util extends Object {
             return dtStr.equals(XSDDatatype.XSDstring.getURI());
         return false ;
     }
-    
+
     /** Return true if the literal has a language tag. (RDF 1.0 and RDF 1.1) */
     public static boolean isLangString(Literal lit) {
         Objects.requireNonNull(lit) ;

@@ -58,7 +58,7 @@ import org.apache.jena.update.UpdateRequest;
  * <li>Using JDBC style positional parameters</li>
  * <li>Appending values directly to the command text being built</li>
  * </ul>
- * <h4>Variable Parameters</h3>
+ * <h4>Variable Parameters</h4>
  * <p>
  * Any variable in the command may have a value injected to it, injecting a
  * value replaces all usages of that variable in the command i.e. substitutes
@@ -72,8 +72,8 @@ import org.apache.jena.update.UpdateRequest;
  * index which reflects the order in which they appear in the string. Positional
  * parameters use a zero based index.
  * </p>
- * <h4>Buffer Usage</h3>
- * </p>
+ * <h4>Buffer Usage</h4>
+ * <p>
  * Additionally you may use this purely as a {@link StringBuffer} replacement
  * for creating queries since it provides a large variety of convenience methods
  * for appending things either as-is or as nodes (which causes appropriate

@@ -24,20 +24,20 @@ package org.apache.jena.sparql.syntax;
  *
  * <p> Every visit operation is bracketted by a start/end pair making the
  * calling points:
+ * </p>
  * <ul>
  * <li>start of element</li>
  * <li>start each sub element</li>
  * <li>end of each sub element</li>
  * <li>end of element</li>
  * </ul>
- * </p>
- *
  * <p>The calls before and after subElements pass in the containing Element.
  * These calls are in addition to the start/end call on elements as
  * part of the recursive walk.</p>
  *
  * <p>Usage: inherit from this class and implement  startElement/endElement as needed.
- * The ElementWalker is like implementing endElement.</p> */
+ * The ElementWalker is like implementing endElement.</p>
+ */
 
 public class RecursiveElementVisitor implements ElementVisitor
 {

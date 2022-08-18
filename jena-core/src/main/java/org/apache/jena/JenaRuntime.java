@@ -31,7 +31,7 @@ public class JenaRuntime
 {
     /**
      * <p>
-     * The global <tt>isRDF11</tt> exists only to support development in Jena2.
+     * The global {@code isRDF11} exists only to support development in Jena2.
      * It is not expected that this flag will be "true" for Jena2 releases.
      * </p>
      * <p>
@@ -45,33 +45,33 @@ public class JenaRuntime
      * </p>
      * <p>
      * One of these changes is that literals always have a datatype.  RDF 1.0 plain literals
-     * (e.g. <tt>"foo"</tt> and <tt>"foo"@en</tt>) do not have datatype.
+     * (e.g. {@code "foo"} and {@code "foo"@en}) do not have datatype.
      * </p>
      * <p>
      * In RDF 1.1:
      * <ul>
-     * <li>string literals without language tag have datatype <tt>xsd:string</tt></li>
-     * <li>string literals with language tag have datatype <tt>rdf:langString</tt>.
+     * <li>string literals without language tag have datatype {@code xsd:string}</li>
+     * <li>string literals with language tag have datatype {@code rdf:langString}.
      *      They still have a language tag.</li>
      * </ul>
      * <p>
-     * In RDF 1.0, <tt>"foo"</tt> and <tt>"foo"^^xsd:string</tt> are different RDF terms.
-     * Triples <tt>:s :p "foo"</tt> and <tt>:s :p "foo"^^xsd:string</tt> are two different RDF triples.
+     * In RDF 1.0, {@code "foo"} and {@code "foo"^^xsd:string} are different RDF terms.
+     * Triples {@code :s :p "foo"} and {@code :s :p "foo"^^xsd:string} are two different RDF triples.
      * Jena memory models provide "same value" semantics, so these can both be found looking for
-     * object of <tt>"foo"</tt> but two such triples are found.
+     * object of {@code "foo"} but two such triples are found.
      * </p>
      * <p>
      * Other storage implementations do not provide these "same value" semantics.
      * Two triples are stored in a graph or in a database.
      * </p>
      * <p>
-     * In RDF 1.1, <tt>"foo"</tt> and <tt>"foo"^^xsd:string</tt> are the same RDF term; it is just
+     * In RDF 1.1, {@code "foo"} and {@code "foo"^^xsd:string} are the same RDF term; it is just
      * two different ways to write it.  The example triples above are the same triple.
      * Only one triple would be stored in a graph or on disk.
      * </p>
      * <p>
      * It is common for applications to work either with RDF 1.0 untyped strings or with typed
-     * <tt>xsd:strings</tt>. Mixed working is less common.  Mixed working applications will be
+     * {@code xsd:strings}. Mixed working is less common.  Mixed working applications will be
      * affected by the changes in RDF 1.1.
      * </p>
      * <p>

@@ -194,7 +194,7 @@ public class QueryExecutionFactory
      * @param query         Query string
      * @param initialBinding    Any initial binding of variables
      * @return QueryExecution
-     * @deprecate Use {QueryExecution.create()....build()}.
+     * @deprecated Use {QueryExecution.create()....build()}.
      */
     @Deprecated
     static public QueryExecution create(Query query, QuerySolution initialBinding) {
@@ -208,7 +208,7 @@ public class QueryExecutionFactory
      * @param queryStr          QueryString
      * @param initialBinding    Any initial binding of variables
      * @return QueryExecution
-     * @deprecate Use {QueryExecution.create()....build()}.
+     * @deprecated Use {QueryExecution.create()....build()}.
      */
     @Deprecated
     static public QueryExecution create(String queryStr, QuerySolution initialBinding) {
@@ -235,7 +235,7 @@ public class QueryExecutionFactory
      * @param model            Target of the query
      * @param initialBinding    Any initial binding of variables
      * @return QueryExecution
-     * @deprecate Use {QueryExecution.create()....build()}.
+     * @deprecated Use {QueryExecution.create()....build()}.
      */
     @Deprecated
     static public QueryExecution create(Query query, Model model, QuerySolution initialBinding) {
@@ -265,7 +265,7 @@ public class QueryExecutionFactory
      * @param model            Target of the query
      * @param initialBinding    Any initial binding of variables
      * @return QueryExecution
-     * @deprecate Use {QueryExecution.create()....build()}.
+     * @deprecated Use {QueryExecution.create()....build()}.
      */
     @Deprecated
     static public QueryExecution create(String queryStr, Syntax syntax, Model model, QuerySolution initialBinding) {
@@ -291,7 +291,7 @@ public class QueryExecutionFactory
      * @param dataset          Target of the query
      * @param initialBinding    Any initial binding of variables
      * @return QueryExecution
-     * @deprecate Use {QueryExecution.create()....build()}.
+     * @deprecated Use {QueryExecution.create()....build()}.
      */
     @Deprecated
     static public QueryExecution create(String queryStr, Dataset dataset, QuerySolution initialBinding) {
@@ -305,7 +305,7 @@ public class QueryExecutionFactory
      * @param dataset          Target of the query
      * @param initialBinding    Any initial binding of variables
      * @return QueryExecution
-     * @deprecate Use {QueryExecution.create()....build()}.
+     * @deprecated Use {QueryExecution.create()....build()}.
      */
     @Deprecated
     static public QueryExecution create(String queryStr, Syntax syntax, Dataset dataset, QuerySolution initialBinding) {
@@ -345,7 +345,7 @@ public class QueryExecutionFactory
      * @param query         Query string to execute
      * @param defaultGraph  URI of the default graph
      * @return QueryExecution
-     * @deprecate Use {QueryExecutionHTTP.create()....build()}.
+     * @deprecated Use {QueryExecutionHTTP.create()....build()}.
      */
     @Deprecated
     static public QueryExecution sparqlService(String serviceURL, String query, String defaultGraph) {
@@ -358,7 +358,7 @@ public class QueryExecutionFactory
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
      * @return QueryExecution
-     * @deprecate Use {QueryExecutionHTTP.create()....build()}.
+     * @deprecated Use {QueryExecutionHTTP.create()....build()}.
      */
     @Deprecated
     static public QueryExecutionHTTP sparqlService(String serviceURL, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
@@ -371,7 +371,7 @@ public class QueryExecutionFactory
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
      * @return QueryExecution
-     * @deprecate Use {QueryExecutionHTTP.create()....build()}.
+     * @deprecated Use {QueryExecutionHTTP.create()....build()}.
      */
     @Deprecated
     static public QueryExecutionHTTP sparqlService(String serviceURL, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
@@ -388,7 +388,7 @@ public class QueryExecutionFactory
      * @param query         Query to execute
      * @param defaultGraph  URI of the default graph
      * @return QueryExecution
-     * @deprecate Use {QueryExecutionHTTP.create()....build()}.
+     * @deprecated Use {QueryExecutionHTTP.create()....build()}.
      */
     @Deprecated
     static public QueryExecutionHTTP sparqlService(String serviceURL, Query query, String defaultGraph) {

@@ -39,8 +39,10 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.system.Txn;
 
 /** Read anything (RDF).
+ * <ul>
  * <li>By MIME type.
  * <li>By format (resultset, boolean, graph)
+ * </ul>
  */
 public class ReadAnything {
 

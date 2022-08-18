@@ -29,30 +29,30 @@ public abstract class StatementBoundaryBase implements StatementBoundary
     {
     /**
          Method to over-ride to define what stops the boundary search; default
-         definition is !continueWith(s). <i>exactly one</code> of these two methods
+         definition is !continueWith(s). <i>exactly one</i> of these two methods
          must be defined.
     */
     @Override
-    public boolean stopAt( Statement s ) 
+    public boolean stopAt( Statement s )
         { return !continueWith( s ); }
 
     /**
          Method to over-ride to define what continues the boundary search; default
-         definition is !stopAt(s). <i>exactly one</code> of these two methods
+         definition is !stopAt(s). <i>exactly one</i> of these two methods
          must be defined.
     */
-    public boolean continueWith( Statement s ) 
+    public boolean continueWith( Statement s )
         { return !stopAt( s ); }
-    
+
     /**
          Expresses this StatementBoundary as a TripleBoundary.
     */
     @Override
-    public final TripleBoundary asTripleBoundary( Model m ) 
+    public final TripleBoundary asTripleBoundary( Model m )
         { return convert( m, this ); }
 
     /**
-         Answer a TripleBoundary that is implemented in terms of a StatementBoundary. 
+         Answer a TripleBoundary that is implemented in terms of a StatementBoundary.
     */
     public static TripleBoundary convert( final Model s, final StatementBoundary b )
         {

@@ -18,7 +18,15 @@
 
 package org.apache.jena.rdf.model;
 
-/** An RDFReader factory inferface.
+/** An RDFReader factory interface.
+ * <blockquote><i>Legacy</i></blockquote>
+ * Reading RDF is usually done via:
+ * <ul>
+ * <li>RDFDataMgr</li>
+ * <li>RDFParser</li>
+ * <li>Model.read</li>
+ * </ul>
+ * All of these will use the newer RIOT parsers, not implementations of this interface.
  *
  * <p>This factory interface is slightly unusual, in that, as well as
  * creating and returning RDFReader's, it also provides methods
@@ -35,7 +43,7 @@ package org.apache.jena.rdf.model;
  * </ul>
  *<p>System wide defaults for classes to use as readers for these languages
  *are defined.  These defaults may be overridden by setting a system property
- *with a name of the form org.apache.jena.readers.<lang> to the class
+ *with a name of the form org.apache.jena.readers.{@literal <lang>} to the class
  *name.</p>
  * <p><b>NOTE:</b> All settings are global in nature</p>
  */

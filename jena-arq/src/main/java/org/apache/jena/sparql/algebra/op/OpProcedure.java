@@ -28,8 +28,8 @@ import org.apache.jena.sparql.sse.Tags ;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
 /** General procedure in algebra evaluation (a stored procedure facility)
- *  Syntax (ARQ extension): CALL <iri>(?x, ?y+3)
- *  
+ *  Syntax (ARQ extension): {@code CALL <iri>(?x, ?y+3)}.
+ *
  *  See also the similar algebra form for property functions.  The difference is in argument handling.
  *  A property function has a URI and two argument lists, one for subject, one for objects.
  *  A procedure is a URI and a list of arguments.
@@ -41,16 +41,16 @@ public class OpProcedure extends Op1
 
     public OpProcedure(Node procId, ExprList args, Op op)
     {
-        super(op) ;   
+        super(op) ;
         this.args = args ;
         this.procId = procId ;
     }
-    
+
     public OpProcedure(String iri, ExprList args, Op op)
     {
         this(NodeFactory.createURI(iri), args, op) ;
     }
-    
+
     @Override
     public String getName()
     {
@@ -63,10 +63,10 @@ public class OpProcedure extends Op1
         if (other == this) return true;
         if ( ! (other instanceof OpProcedure) ) return false ;
         OpProcedure proc = (OpProcedure)other ;
-        
+
         if ( ! procId.equals(proc.procId) ) return false ;
         if ( ! args.equals(proc.args) ) return false ;
-        
+
         return getSubOp().equalTo(proc.getSubOp(), labelMap) ;
     }
 
@@ -104,7 +104,7 @@ public class OpProcedure extends Op1
     {
         return procId.getURI() ;
     }
-    
+
     public ExprList getArgs()
     {
         return args ;

@@ -19,6 +19,15 @@
 package org.apache.jena.rdf.model;
 
 /** An RDFWriter factory interface.
+ * <blockquote><i>Legacy</i></blockquote>
+ * <p>
+ * Writing RDF is usually done via:
+ * <ul>
+ * <li>RDFDataMgr</li>
+ * <li>RDFWriterr</li>
+ * <li>Model.write</li>
+ * </ul>
+ * All of these will use the newer RIOT writers, not implementations of this interface.
  *
  * <p>The factory will create an appropriate writer for the particular
  *   serialization language being read.  Predefined languages:</p>

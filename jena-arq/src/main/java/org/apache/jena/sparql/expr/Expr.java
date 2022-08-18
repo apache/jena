@@ -30,37 +30,37 @@ import org.apache.jena.sparql.graph.NodeTransform;
 public interface Expr
 {
     public static final Expr NONE = ExprNone.NONE0 ;
-    
+
     public static final int CMP_GREATER  =  DatatypeConstants.GREATER ;
     public static final int CMP_EQUAL    =  DatatypeConstants.EQUAL ;
     public static final int CMP_LESS     =  DatatypeConstants.LESSER ;
-    
+
     public static final int CMP_UNEQUAL  = -9 ;
     public static final int CMP_INDETERMINATE  = DatatypeConstants.INDETERMINATE ;
-    
+
     /** Test whether a Constraint is satisfied, given a set of bindings
      *  Includes error propagation and Effective Boolean Value rules.
-     * 
+     *
      * @param binding   The bindings
-     * @param execCxt   FunctionEnv   
+     * @param execCxt   FunctionEnv
      * @return  true or false
-     */ 
+     */
     public boolean isSatisfied(Binding binding, FunctionEnv execCxt) ;
-  
+
     /**
      * Variables used by this expression.
      * @see ExprVars#getVarNamesMentioned
      * @see ExprVars#getNonOpVarNamesMentioned
      */
     public Set<Var>  getVarsMentioned() ;
-    
-    /** 
+
+    /**
      * Evaluate this expression against the binding
-     * @param binding 
+     * @param binding
      * @param env
      */
     public NodeValue eval(Binding binding, FunctionEnv env) ;
-    
+
     /** Deep copy with substitution */
     public Expr copySubstitute(Binding binding) ;
 
@@ -71,8 +71,8 @@ public interface Expr
 
     /** Deep copy */
     public Expr deepCopy() ;
-    
-    /** Answer whether this is a variable. */ 
+
+    /** Answer whether this is a variable. */
     public boolean isVariable() ;
     /** Variable name (returns null if not a variable) */
     public String  getVarName() ;
@@ -83,18 +83,18 @@ public interface Expr
 
     /** Answer whether this is a constant expression - false includes "don't know"
      *  No constant folding so "false" from an expression that evaluates to a constant
-     */  
+     */
     public boolean   isConstant() ;
     /** NodeValue constant (returns null if not a constant) */
     public NodeValue getConstant() ;
-    
+
     /** Answer whether this is a function. */
     public boolean isFunction() ;
     /** Get the function (returns null if not a function) */
     public ExprFunction getFunction() ;
-    
+
     public void visit(ExprVisitor visitor) ;
-    
+
     /**
      * <code>Expr</code> are used in both syntax and algebra. There is no syntax
      * to algebra translation step because the parser uses operator precedence
@@ -112,10 +112,10 @@ public interface Expr
      * There is also <code>equalsBySyntax</code>. Because two different syntax
      * forms can yield the same algebra, but two different algebra forms
      * must be different syntax, <code>equalsBySyntax</code> implies <code>equals</code>
-     * (by alegbra).
+     * (by algebra).
      * <p>
-     * Hence, different <code>hashCode</code> {@literal =>} not <code>equalsBySyntax<code>.
-     */ 
+     * Hence, different {@code hashCode} {@literal =>} not {@code equalsBySyntax}.
+     */
     @Override
     public int hashCode() ;
 
@@ -123,7 +123,7 @@ public interface Expr
     public boolean equals(Object other) ;
 
     public boolean equalsBySyntax(Expr other) ;
-    
+
     /** General equality operation - consider this to be 'protected' */
     public boolean equals(Expr other, boolean bySyntax) ;
 }
