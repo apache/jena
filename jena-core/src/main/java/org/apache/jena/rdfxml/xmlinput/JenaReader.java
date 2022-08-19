@@ -18,19 +18,12 @@
 
 package org.apache.jena.rdfxml.xmlinput;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Locale ;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.* ;
@@ -44,6 +37,10 @@ import org.apache.jena.shared.DoesNotExistException ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.UnknownPropertyException ;
 import org.apache.jena.shared.WrappedIOException ;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 /**
  * Interface between Jena and ARP.
@@ -85,14 +82,37 @@ public class JenaReader implements RDFReaderI, ARPErrorNumbers {
     @Override
     public void read(Model m, String url) throws JenaException {
         try {
-            URLConnection conn = new URL(url).openConnection();
-			conn.setRequestProperty("accept", "application/rdf+xml, application/xml; q=0.8, text/xml; q=0.7, application/rss+xml; q=0.3, */*; q=0.2");
+            int count = 0;
+            String connectionURL = url;
+            URLConnection conn = null;
+            while ( conn == null ) {
+                URLConnection conn2 = new URL(connectionURL).openConnection();
+                if ( ! ( conn2 instanceof HttpURLConnection ) ) {
+                    conn = conn2;
+                    break;
+                }
+                count ++;
+                if ( count > 10 )
+                    throw new JenaException("Too many redirects followed for "+url);
+                // http or https (not file: or jar:)
+                HttpURLConnection httpURLConnection = (HttpURLConnection)conn2;
+                conn2.setRequestProperty("accept", "application/rdf+xml, application/xml; q=0.8, text/xml; q=0.7, application/rss+xml; q=0.3, */*; q=0.2");
+                int statusCode = httpURLConnection.getResponseCode();
+                if ( statusCode < 300 || statusCode >= 400 ) {
+                    conn = conn2;
+                    break;
+                }
+                // Redirect
+                connectionURL = conn2.getHeaderField("Location");
+                if ( connectionURL == null || url.equals(connectionURL) )
+                    throw new JenaException("Failed to follow redirects for "+url);
+            }
+
             String encoding = conn.getContentEncoding();
             if (encoding == null)
                 read(m, conn.getInputStream(), url);
             else
-                read(m, new InputStreamReader(conn.getInputStream(),
-                        encoding), url);
+                read(m, new InputStreamReader(conn.getInputStream(), encoding), url);
         } catch (FileNotFoundException e) {
             throw new DoesNotExistException(url);
         } catch (IOException e) {
