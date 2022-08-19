@@ -23,10 +23,10 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.datatypes.BaseDatatype;
-import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_LiteralWithList;
+import org.apache.jena.graph.Node_LiteralWithMap;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
@@ -41,17 +41,7 @@ import org.apache.jena.sparql.util.NodeFactoryExtra;
 
 public class QueryIterUnfold extends QueryIterRepeatApply
 {
-	public static final String datatypeUriUntypedList = "http://www.w3.org/1999/02/22-rdf-syntax-ns#UntypedList";
-	public static final String datatypeUriUntypedMap  = "http://www.w3.org/1999/02/22-rdf-syntax-ns#UntypedMap";
-	public static final String datatypeUriTypedList   = "http://www.w3.org/1999/02/22-rdf-syntax-ns#TypedList";
-	public static final String datatypeUriTypedMap    = "http://www.w3.org/1999/02/22-rdf-syntax-ns#TypedMap";
-
-	public static final RDFDatatype datatypeUntypedList = new BaseDatatype(datatypeUriUntypedList);
-	public static final RDFDatatype datatypeUntypedMap  = new BaseDatatype(datatypeUriUntypedMap);
-	public static final RDFDatatype datatypeTypedList   = new BaseDatatype(datatypeUriTypedList);
-	public static final RDFDatatype datatypeTypedMap    = new BaseDatatype(datatypeUriTypedMap);
-
-    protected final Expr expr ;
+	protected final Expr expr ;
     protected final Var var1 ;
     protected final Var var2 ;
 
@@ -79,13 +69,13 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         Node n = nv.asNode();
         if ( n.isLiteral() ) {
             String dtURI = n.getLiteralDatatypeURI();
-            if ( datatypeUriUntypedList.equals(dtURI) )
+            if ( Node_LiteralWithList.datatypeUriUntypedList.equals(dtURI) )
                 return unfoldUntypedList(n.getLiteralLexicalForm(), inputBinding);
-            if ( datatypeUriTypedList.equals(dtURI) )
+            if ( Node_LiteralWithList.datatypeUriTypedList.equals(dtURI) )
                 return unfoldTypedList(n.getLiteralLexicalForm(), inputBinding);
-            if ( datatypeUriUntypedMap.equals(dtURI) )
+            if ( Node_LiteralWithMap.datatypeUriUntypedMap.equals(dtURI) )
                 return unfoldUntypedMap(n.getLiteralLexicalForm(), inputBinding);
-            if ( datatypeUriTypedMap.equals(dtURI) )
+            if ( Node_LiteralWithMap.datatypeUriTypedMap.equals(dtURI) )
                 return unfoldTypedMap(n.getLiteralLexicalForm(), inputBinding);
         }
 
@@ -153,13 +143,13 @@ public class QueryIterUnfold extends QueryIterRepeatApply
                 final String listElmt = itListElmts.next();
                 final Node n;
                 if ( listElmt.startsWith("[") && listElmt.endsWith("]") )
-                    n = NodeFactory.createLiteral(listElmt, datatypeUntypedList);
+                    n = NodeFactory.createLiteral(listElmt, Node_LiteralWithList.datatypeUntypedList);
                 else if ( listElmt.startsWith("[") && ! listElmt.endsWith("]") )
-                    n = NodeFactory.createLiteral(listElmt, datatypeTypedList); // brittle
+                    n = NodeFactory.createLiteral(listElmt, Node_LiteralWithList.datatypeTypedList); // brittle
                 else if ( listElmt.startsWith("{") && listElmt.endsWith("}") )
-                    n = NodeFactory.createLiteral(listElmt, datatypeUntypedMap);
+                    n = NodeFactory.createLiteral(listElmt, Node_LiteralWithMap.datatypeUntypedMap);
                 else if ( listElmt.startsWith("{") && ! listElmt.endsWith("}") )
-                    n = NodeFactory.createLiteral(listElmt, datatypeTypedMap); // brittle
+                    n = NodeFactory.createLiteral(listElmt, Node_LiteralWithMap.datatypeTypedMap); // brittle
                 else if ( pmap != null )
                     n = NodeFactoryExtra.parseNode(listElmt, pmap);
                 else
@@ -209,13 +199,13 @@ public class QueryIterUnfold extends QueryIterRepeatApply
 
                 final Node valueAsNode;
                 if ( valueAsString.startsWith("[") && valueAsString.endsWith("]") )
-                    valueAsNode = NodeFactory.createLiteral(valueAsString, datatypeUntypedList);
+                    valueAsNode = NodeFactory.createLiteral(valueAsString, Node_LiteralWithList.datatypeUntypedList);
                 else if ( valueAsString.startsWith("[") && ! valueAsString.endsWith("]") )
-                    valueAsNode = NodeFactory.createLiteral(valueAsString, datatypeTypedList); // brittle
+                    valueAsNode = NodeFactory.createLiteral(valueAsString, Node_LiteralWithList.datatypeTypedList); // brittle
                 else if ( valueAsString.startsWith("{") && valueAsString.endsWith("}") )
-                    valueAsNode = NodeFactory.createLiteral(valueAsString, datatypeUntypedMap);
+                    valueAsNode = NodeFactory.createLiteral(valueAsString, Node_LiteralWithMap.datatypeUntypedMap);
                 else if ( valueAsString.startsWith("{") && ! valueAsString.endsWith("}") )
-                    valueAsNode = NodeFactory.createLiteral(valueAsString, datatypeTypedMap); // brittle
+                    valueAsNode = NodeFactory.createLiteral(valueAsString, Node_LiteralWithMap.datatypeTypedMap); // brittle
                 else if ( pmap != null )
                     valueAsNode = NodeFactoryExtra.parseNode(valueAsString, pmap);
                 else

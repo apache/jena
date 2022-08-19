@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_LiteralWithList;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.sparql.engine.iterator.QueryIterUnfold;
 import org.apache.jena.sparql.expr.ExprEvalException;
@@ -30,7 +31,7 @@ System.out.println("list2AsString " + list2AsString);
 			throw new ExprEvalException("Not a literal: " + v);
 
 		final String datatypeURI = n.getLiteralDatatypeURI();
-		if ( ! QueryIterUnfold.datatypeUriUntypedList.equals(datatypeURI) ) {
+		if ( ! Node_LiteralWithList.datatypeUriUntypedList.equals(datatypeURI) ) {
 			throw new ExprEvalException("Literal with wrong datatype: " + v);
 		}
 
@@ -39,7 +40,7 @@ System.out.println("list2AsString " + list2AsString);
 
 	protected NodeValue createResultList( final String list1AsString, final String list2AsString ) {
 		final String resultListAsString = createResultListAsString(list1AsString, list2AsString);
-		final RDFDatatype datatype = QueryIterUnfold.datatypeUntypedList;
+		final RDFDatatype datatype = Node_LiteralWithList.datatypeUntypedList;
 
 System.out.println("resultListAsString " + resultListAsString);
 		final Node n = NodeFactory.createLiteral(resultListAsString, datatype);

@@ -9,11 +9,12 @@ import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_LiteralWithList;
+import org.apache.jena.graph.Node_LiteralWithMap;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.iterator.QueryIterUnfold;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprLib;
 import org.apache.jena.sparql.expr.ExprList;
@@ -270,10 +271,10 @@ public class AggFold extends AggregatorBase
 			if ( typeIRI1 != null ) {
 				sb.append("^^");
 				sb.append( NodeFmtLib.strTTL(typeIRI1) );
-				datatype = QueryIterUnfold.datatypeTypedList;
+				datatype = Node_LiteralWithList.datatypeTypedList;
 			}
 			else {
-				datatype = QueryIterUnfold.datatypeUntypedList;
+				datatype = Node_LiteralWithList.datatypeUntypedList;
 			}
 
 			final Node n = NodeFactory.createLiteral( sb.toString(), datatype );
@@ -355,10 +356,10 @@ public class AggFold extends AggregatorBase
 					sb.append("^^");
 					sb.append( NodeFmtLib.strTTL(typeIRI2) );
 				}
-				datatype = QueryIterUnfold.datatypeTypedMap;
+				datatype = Node_LiteralWithMap.datatypeTypedMap;
 			}
 			else {
-				datatype = QueryIterUnfold.datatypeUntypedMap;
+				datatype = Node_LiteralWithMap.datatypeUntypedMap;
 			}
 
 			final Node n = NodeFactory.createLiteral( sb.toString(), datatype );
