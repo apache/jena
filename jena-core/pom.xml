@@ -180,7 +180,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <doclint>syntax</doclint>
+          <!-- OK for Java17 (compiling to Java11); not OK for Java11
+               <doclint>syntax</doclint>
+          -->
           <author>true</author>
           <version>true</version>
           <show>public</show>

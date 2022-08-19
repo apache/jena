@@ -111,7 +111,9 @@
           </execution>
         </executions>
         <configuration>
-          <doclint>syntax</doclint>
+          <!-- OK for Java17 (compiling to Java11); not OK for Java11
+               <doclint>syntax</doclint>
+          -->
           <version>true</version>
           <show>public</show>
           <quiet>true</quiet>
