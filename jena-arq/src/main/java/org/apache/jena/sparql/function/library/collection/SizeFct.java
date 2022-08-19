@@ -3,6 +3,8 @@ package org.apache.jena.sparql.function.library.collection;
 import java.util.Iterator;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_LiteralWithList;
+import org.apache.jena.graph.Node_LiteralWithMap;
 import org.apache.jena.sparql.engine.iterator.QueryIterUnfold;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
@@ -19,16 +21,16 @@ public class SizeFct extends FunctionBase1
 
 		final String datatypeURI = n.getLiteralDatatypeURI();
 		final int size;
-		if ( QueryIterUnfold.datatypeUriUntypedList.equals(datatypeURI) ) {
+		if ( Node_LiteralWithList.datatypeUriUntypedList.equals(datatypeURI) ) {
 			size = determineSizeOfUntypedList( n.getLiteral().getLexicalForm() );
 		}
-		else if ( QueryIterUnfold.datatypeUriTypedList.equals(datatypeURI) ) {
+		else if ( Node_LiteralWithList.datatypeUriTypedList.equals(datatypeURI) ) {
 			size = determineSizeOfTypedList( n.getLiteral().getLexicalForm() );
 		}
-		else if ( QueryIterUnfold.datatypeUriUntypedMap.equals(datatypeURI) ) {
+		else if ( Node_LiteralWithMap.datatypeUriUntypedMap.equals(datatypeURI) ) {
 			size = determineSizeOfUntypedMap( n.getLiteral().getLexicalForm() );
 		}
-		else if ( QueryIterUnfold.datatypeUriTypedMap.equals(datatypeURI) ) {
+		else if ( Node_LiteralWithMap.datatypeUriTypedMap.equals(datatypeURI) ) {
 			size = determineSizeOfTypedMap( n.getLiteral().getLexicalForm() );
 		}
 		else {
