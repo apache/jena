@@ -5681,7 +5681,7 @@ This class is not part of the API.
 
      <li>&lt;<code>http://example.org/fo&lt;o</code>&gt;</li>
 
-     <li>&lt;<code>http://example.org/fo>o</code>&gt;</li>
+     <li>&lt;<code>http://example.org/fo&gt;o</code>&gt;</li>
 
      <li>&lt;<code>http://example.org/fo"o</code>&gt;</li>
 
