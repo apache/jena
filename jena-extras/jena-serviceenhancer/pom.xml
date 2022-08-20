@@ -26,7 +26,7 @@
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-extras</artifactId>
     <relativePath>..</relativePath>
-    <version>4.6.0-SNAPSHOT</version>
+    <version>4.6.0</version>
   </parent>
 
   <properties>
@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>4.6.0</version>
     </dependency>
 
     <dependency>
@@ -107,7 +107,7 @@
         <dependency>
           <groupId>org.apache.jena</groupId>
           <artifactId>jena-arq</artifactId>
-          <version>4.6.0-SNAPSHOT</version>
+          <version>4.6.0</version>
           <scope>provided</scope>
         </dependency>
       </dependencies>
@@ -134,8 +134,7 @@
                     </filter>
                   </filters>
                   <transformers>
-                    <transformer
-                      implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                   </transformers>
                 </configuration>
               </execution>
