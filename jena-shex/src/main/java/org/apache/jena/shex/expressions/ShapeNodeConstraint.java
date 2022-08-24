@@ -30,8 +30,8 @@ import org.apache.jena.shex.sys.ValidationContext;
 ShapeAtom := ( nonLitNodeConstraint ( inlineShapeOrRef )?
              | litNodeConstraint
              | inlineShapeOrRef ( nonLitNodeConstraint )?
-             | <LPAREN> shapeExpression <RPAREN>
-             | <DOT>
+             | &lt;LPAREN&gt; shapeExpression &lt;RPAREN&gt;
+             | &lt;DOT&gt;
              )
 </pre>
 */

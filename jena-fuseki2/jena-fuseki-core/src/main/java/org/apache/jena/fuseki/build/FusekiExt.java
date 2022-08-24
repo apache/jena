@@ -27,7 +27,6 @@ import org.apache.jena.fuseki.servlets.ActionService;
 
 /**
  * Operations to extend Fuseki with external code.
- * <p>
  */
 public class FusekiExt {
 

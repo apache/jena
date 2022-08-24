@@ -107,7 +107,7 @@ import org.slf4j.LoggerFactory;
 * <li><b>chainPreflight</b>, if true preflight requests are chained to their
 * target resource for normal handling (as an OPTION request).  Otherwise the
 * filter will response to the preflight. Default is true.</li>
-* </ul></p>
+* </ul>1
 * <p>A typical configuration could be:
 * <pre>
 * &lt;web-app ...&gt;
@@ -122,7 +122,7 @@ import org.slf4j.LoggerFactory;
 *     &lt;/filter-mapping&gt;
 *     ...
 * &lt;/web-app&gt;
-* </pre></p>
+* </pre>
 */
 public class CrossOriginFilter implements Filter
 {

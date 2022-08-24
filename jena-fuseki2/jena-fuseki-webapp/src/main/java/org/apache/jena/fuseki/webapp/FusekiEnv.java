@@ -53,7 +53,7 @@ public class FusekiEnv {
         If at server initialization, the MODE is UNSET, then assume WAR setup.
         A WAR file does not have the opportunity to set the mode.
         <p>
-        TEST:  (better to set FUSEKI_HOME, FUSEKI_BASE from the test environment</li>
+        TEST:  (better to set FUSEKI_HOME, FUSEKI_BASE from the test environment
     */
     public enum INIT {
         // Default values of FUSEKI_HOME, and FUSEKI_BASE.

@@ -220,7 +220,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements SecuredRD
      * @sec.graph Read - if {@link SecurityEvaluator#isHardReadError()} is true and
      *            the user does not have read access then an empty list is returned.
      * @sec.triple Read for triples containing the returned RDFNodes.
-     * @return List<SecuredRDFNode>
+     * @return List&lt;SecuredRDFNode&gt;
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
      */

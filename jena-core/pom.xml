@@ -183,6 +183,7 @@
           <!-- OK for Java17 (compiling to Java11); not OK for Java11
                <doclint>syntax</doclint>
           -->
+          <doclint>none</doclint>
           <author>true</author>
           <version>true</version>
           <show>public</show>

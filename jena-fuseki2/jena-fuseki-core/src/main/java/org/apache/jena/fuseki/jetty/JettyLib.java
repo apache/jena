@@ -38,7 +38,6 @@ import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.util.security.Password;
 
 /** Helpers for working with Jetty.
- * <p>
  * <h3>SecurityHandler</h3>
  *  <pre>
  *     UserStore userStore = JettyLib.makeUserStore(...);

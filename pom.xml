@@ -990,6 +990,12 @@
                  https://maven.apache.org/guides/mini/guide-reproducible-builds.html
                  See FAQ
             -->
+
+            <!-- Java11 javadoc: "syntax,html" fails on things that aren't wrong
+                 and on unrequested checks such as group "missing".
+                 Java17 has fixed these and behaves as expected:
+                 <doclint>syntax,html</doclint>
+            -->
             <doclint>none</doclint>
 
             <notimestamp>true</notimestamp>

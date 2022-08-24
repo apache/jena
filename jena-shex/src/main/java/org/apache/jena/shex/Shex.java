@@ -40,7 +40,6 @@ import org.apache.jena.sys.JenaSystem;
 
 /**
  * <a href="https://shex.io/">ShEx</a>
- * <p>
  *
  * @see ShexValidator
  */

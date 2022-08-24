@@ -40,8 +40,6 @@ import org.apache.jena.rdf.model.Seq;
  * the arguments. Generally the result of this assembler is passed to a
  * sec:Model construction.
  *
- * @see SecuredAssembler
- *      </p>
  *      <ul>
  *      <li>The evaluator must have one and only one public constructor that
  *      takes the number of arguments specified in the assembler file.</li>
@@ -58,24 +56,25 @@ import org.apache.jena.rdf.model.Seq;
  *      constructor. For example "13"^^xsd:int will be converted to an Integer
  *      with the value of 13.
  *      </p>
- *      The assembler file should include the following <code><pre>
+ *      The assembler file should include the following
+ * <pre>
  * prefix xsd:        &lt;http://www.w3.org/2001/XMLSchema#>
  *
  * &lt;> ja:loadClass    "org.apache.jena.security.SecuredAssembler" .
  *
  * sec:Model rdfs:subClassOf ja:NamedModel .
  *
- * </pre></code>
+ * </pre>
  *
  *      The model definition should include something like.
  *
- *      <code><pre>
+ *      <pre>
  * ex:myEvaluator a sec:Evaluator ;
  *    sec:args [ rdf:_1 "argument 1 for my evaluator constructor" ;
  *               rdf:_2 "13"^^xsd:int ; ];
  *    sec:evaluatorClass "evaluatorClassname";
  *    .
- * </pre></code>
+ * </pre>
  *
  *      Terms used in above example:
  *
@@ -94,14 +93,15 @@ import org.apache.jena.rdf.model.Seq;
  *
  *      <dt>rdf:_2</dt>
  *      <dd>The second argument (an integer in this case</dd>
- * 
+ *
  *      <dt>sec:evaluatorClass</dt>
  *      <dd>The fully qualified name of the SecurityEvaluator class to call.
  *      This class must extend SecurityEvaluator, and must have one and only one
  *      constructor that takes the number of arguments specified in
  *      sec:args</dd>
+ *      </dl>
  *
- *      </p>
+ * @see SecuredAssembler
  *
  */
 public class SecurityEvaluatorAssembler extends AssemblerBase implements Assembler, AssemblerConstants {

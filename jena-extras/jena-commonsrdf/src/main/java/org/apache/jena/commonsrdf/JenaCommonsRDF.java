@@ -42,9 +42,6 @@ import org.apache.jena.sys.JenaSystem;
  * // provide as a Commons RDF graph
  * org.apache.commons.rdf.api.graph = JenaCommonsRDF.fromJena(jGraph);
  * </pre>
- * <p>
- * <pre>
- * </pre>
  */
 public class JenaCommonsRDF {
     static { JenaSystem.init(); }
