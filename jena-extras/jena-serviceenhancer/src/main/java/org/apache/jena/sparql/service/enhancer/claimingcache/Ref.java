@@ -34,10 +34,10 @@ import java.util.function.Function;
  *   <li>A reference is <b>closed</b> when {@link #close()} was called; <b>open</b> otherwise.</li>
  *   <li>A reference is <b>alive</b> when it is <b>open</b> and/or any of the child refs acquired from it are still <b>alive</b>.</li>
  *   <li>A reference is <b>released</b> (dead) as soon it is no longer alive. This immediately triggers its release action.</li>
- * <ul>
+ * </ul>
  *
  * Implementation note: At present the alive-check and release action are assumed to run synchronously. As such there
- * is no transition phase ('dying' or 'releasing'). This could be added in the future.</li>
+ * is no transition phase ('dying' or 'releasing'). This could be added in the future.
  *
  * @param <T> The value type stored in this reference.
  */

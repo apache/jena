@@ -58,7 +58,8 @@ import org.slf4j.Logger;
  * <li>getting the token from the HTTP request (e.g. from a different HTTP field)</li>
  * <li>handling the challenge case (no authentication provided)</li>
  * <li>handling the case of authentication provided, but it is not "bearer" and bearer is required</li>
- * <p>
+ * </ul>
+ *
  * A more flexible approach for mixing authentication methods is to setup Fuseki with
  * multiple {@code AuthBearerFilter} filters installed in a Fuseki server, with
  * different path specs.

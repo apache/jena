@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -89,7 +89,7 @@ public class UpdateBuilder {
     /**
      * Creates an UpdateBuilder with the prefixes defined in the prolog clause.
      * <b>May modify the contents of the prefix mapping in the prolog handler</b>
-     * 
+     *
      * @param prologClause the default prefixes for this builder.
      */
     public UpdateBuilder(PrologClause<?> prologClause) {
@@ -99,7 +99,7 @@ public class UpdateBuilder {
     /**
      * Creates an UpdateBuilder with the specified PrefixMapping. <b>May modify the
      * contents of the prefix mapping</b>
-     * 
+     *
      * @param pMap the prefix mapping to use.
      */
     public UpdateBuilder(PrefixMapping pMap) {
@@ -109,7 +109,7 @@ public class UpdateBuilder {
 
     /**
      * Convert a collection of QuadHolder to an iterator on Quads.
-     * 
+     *
      * @param holders the Collection of QuadHolder objects
      * @return an iterator over the Quads.
      */
@@ -123,10 +123,10 @@ public class UpdateBuilder {
 
     /**
      * Build the update.
-     * 
+     *
      * <b>Note: the update does not include the prefix statements</b> use
      * buildRequest() or appendTo() methods to include the prefix statements.
-     * 
+     *
      * @return the update.
      */
     public Update build() {
@@ -143,7 +143,7 @@ public class UpdateBuilder {
 
     /**
      * Build as an UpdateRequest with prefix mapping set.
-     * 
+     *
      * @return a new UpdateRequest
      */
     public UpdateRequest buildRequest() {
@@ -154,7 +154,7 @@ public class UpdateBuilder {
 
     /**
      * Appends the new Update to the UpdateRequest.
-     * 
+     *
      * @param req the UpdateRequest to append this Update to.
      * @return the req parameter for chaining.
      */
@@ -232,7 +232,7 @@ public class UpdateBuilder {
 
     /**
      * Make a triple path from the objects.
-     * 
+     *
      * For subject, predicate and objects nodes
      * <ul>
      * <li>Will return Node.ANY if object is null.</li>
@@ -248,7 +248,7 @@ public class UpdateBuilder {
      * <li>Will create a literal representation if the parseNode() fails or for any
      * other object type.</li>
      * </ul>
-     * 
+     *
      * @param s The subject object
      * @param p the predicate object
      * @param o the object object.
@@ -264,11 +264,11 @@ public class UpdateBuilder {
 
     /**
      * Convert the object to a node.
-     * 
+     *
      * Shorthand for AbstractQueryBuilder.makeNode( o, prefixes )
-     * 
+     *
      * @see AbstractQueryBuilder#makeNode(Object)
-     * 
+     *
      * @param o the object to convert to a node.
      * @return the Node.
      */
@@ -278,11 +278,11 @@ public class UpdateBuilder {
 
     /**
      * Convert the object to a node.
-     * 
+     *
      * Shorthand for AbstractQueryBuilder.makeVar( o )
-     * 
+     *
      * @see Converters#makeVar(Object)
-     * 
+     *
      * @param o the object to convert to a var.
      * @return the Var.
      * @deprecated use {@link Converters#makeVar(Object)}
@@ -294,11 +294,11 @@ public class UpdateBuilder {
 
     /**
      * Quote a string.
-     * 
+     *
      * Shorthand for AbstractQueryBuilder.quote( s )
-     * 
+     *
      * @see Converters#quoted(String)
-     * 
+     *
      * @deprecated Use quoted()
      * @param s the string to quote.
      * @return the quoted string.
@@ -311,9 +311,9 @@ public class UpdateBuilder {
 
     /**
      * Add a quad to the insert statement.
-     * 
+     *
      * Arguments are converted to nodes using the makeNode() method.
-     * 
+     *
      * @see #makeNode(Object)
      * @param g the graph
      * @param s the subject
@@ -327,8 +327,8 @@ public class UpdateBuilder {
 
     /**
      * Add a quad to the insert statement.
-     * 
-     * 
+     *
+     *
      * @param quad the quad to add.
      * @return this builder for chaining.
      */
@@ -339,9 +339,9 @@ public class UpdateBuilder {
 
     /**
      * Add a triple to the insert statement.
-     * 
+     *
      * Arguments are converted to nodes using the makeNode() method.
-     * 
+     *
      * @see #makeNode(Object)
      * @param s the subject
      * @param p the predicate
@@ -355,7 +355,7 @@ public class UpdateBuilder {
 
     /**
      * Add a triple to the insert statement.
-     * 
+     *
      * @param t the triple to add.
      * @return this builder for chaining.
      */
@@ -366,9 +366,9 @@ public class UpdateBuilder {
 
     /**
      * Add a triple in a specified graph to the insert statement.
-     * 
+     *
      * The graph object is converted by a call to makeNode().
-     * 
+     *
      * @see #makeNode(Object)
      * @param g the graph for the triple.
      * @param t the triple to add.
@@ -383,7 +383,7 @@ public class UpdateBuilder {
     /**
      * Add all the statements in the model to the insert statement. Uses
      * Quad.defaultGraphNodeGenerated as the graph name.
-     * 
+     *
      * @param model The model to insert.
      * @return this builder for chaining.
      */
@@ -395,7 +395,7 @@ public class UpdateBuilder {
     /**
      * Add all the triples in the model to the insert statement. Uses
      * Quad.defaultGraphNodeGenerated as the graph name.
-     * 
+     *
      * @param collection The triples to insert.
      * @return this builder for chaining.
      * @see Quad#defaultGraphNodeGenerated
@@ -407,7 +407,7 @@ public class UpdateBuilder {
 
     /**
      * Add all the quads in the collection to the insert statement.
-     * 
+     *
      * @param collection The quads to insert.
      * @return this builder for chaining.
      */
@@ -419,7 +419,7 @@ public class UpdateBuilder {
     /**
      * Add all the triples to the insert statement. Uses
      * Quad.defaultGraphNodeGenerated as the graph name.
-     * 
+     *
      * @param iter The iterator of triples to insert.
      * @return this builder for chaining.
      * @see Quad#defaultGraphNodeGenerated
@@ -432,9 +432,9 @@ public class UpdateBuilder {
     /**
      * Add all the statements in the model a specified graph to the insert
      * statement.
-     * 
+     *
      * The graph object is converted by a call to makeNode().
-     * 
+     *
      * @see #makeNode(Object)
      * @param g the graph for the triple.
      * @param model the model to add.
@@ -447,7 +447,7 @@ public class UpdateBuilder {
 
     /**
      * Add triples to the insert statement.
-     * 
+     *
      * @param g the name of the graph to add the triples to.
      * @param collection The triples to insert.
      * @return this builder for chaining.
@@ -459,7 +459,7 @@ public class UpdateBuilder {
 
     /**
      * Add triples to the insert statement.
-     * 
+     *
      * @param g the name of the graph to add the triples to.
      * @param iter The iterator of triples to insert.
      * @return this builder for chaining.
@@ -472,7 +472,7 @@ public class UpdateBuilder {
     /**
      * Add the statements from the where clause in the specified query builder to
      * the insert statement. Uses Quad.defaultGraphNodeGenerated as the graph name.
-     * 
+     *
      * @see #makeNode(Object)
      * @see Quad#defaultGraphNodeGenerated
      * @param queryBuilder The query builder to extract the where clause from.
@@ -486,9 +486,9 @@ public class UpdateBuilder {
     /**
      * Add the statements from the where clause in the specified query builder to
      * the insert statements for the specified graph.
-     * 
+     *
      * The graph object is converted by a call to makeNode().
-     * 
+     *
      * @see #makeNode(Object)
      * @param graph the graph to add the statements to.
      * @param queryBuilder The query builder to extract the where clause from.
@@ -501,9 +501,9 @@ public class UpdateBuilder {
 
     /**
      * Add a quad to the delete statement.
-     * 
+     *
      * Arguments are converted to nodes using the makeNode() method.
-     * 
+     *
      * @see #makeNode(Object)
      * @param g the graph
      * @param s the subject
@@ -517,7 +517,7 @@ public class UpdateBuilder {
 
     /**
      * Add a quad to the delete statement.
-     * 
+     *
      * @param quad the quad to add.
      * @return this builder for chaining.
      */
@@ -528,7 +528,7 @@ public class UpdateBuilder {
 
     /**
      * Add all the quads collection to the delete statement.
-     * 
+     *
      * @param collection The quads to insert.
      * @return this builder for chaining.
      */
@@ -539,9 +539,9 @@ public class UpdateBuilder {
 
     /**
      * Add a triple to the delete statement.
-     * 
+     *
      * Arguments are converted to nodes using the makeNode() method.
-     * 
+     *
      * @see #makeNode(Object)
      * @param s the subject
      * @param p the predicate
@@ -556,7 +556,7 @@ public class UpdateBuilder {
     /**
      * Add a triple to the delete statement. Uses Quad.defaultGraphNodeGenerated as
      * the graph name.
-     * 
+     *
      * @param t the triple to add.
      * @return this builder for chaining.
      * @see Quad#defaultGraphNodeGenerated
@@ -568,9 +568,9 @@ public class UpdateBuilder {
 
     /**
      * Add a triple to the delete statement.
-     * 
+     *
      * The graph object is converted by a call to makeNode().
-     * 
+     *
      * @see #makeNode(Object)
      * @param g the graph for the triple.
      * @param t the triple to add.
@@ -585,7 +585,7 @@ public class UpdateBuilder {
     /**
      * Add all the statements in the model to the delete statement. Uses
      * Quad.defaultGraphNodeGenerated as the graph name.
-     * 
+     *
      * @param model The model to insert.
      * @return this builder for chaining.
      * @see Quad#defaultGraphNodeGenerated
@@ -598,7 +598,7 @@ public class UpdateBuilder {
     /**
      * Add all triples to the delete statement. Uses Quad.defaultGraphNodeGenerated
      * as the graph name.
-     * 
+     *
      * @param collection The collection of triples to insert.
      * @return this builder for chaining.
      * @see Quad#defaultGraphNodeGenerated
@@ -611,7 +611,7 @@ public class UpdateBuilder {
     /**
      * Add all the triples in the iterator to the delete statement. Uses
      * Quad.defaultGraphNodeGenerated as the graph name.
-     * 
+     *
      * @param iter The iterator of triples to insert.
      * @return this builder for chaining.
      * @see Quad#defaultGraphNodeGenerated
@@ -624,9 +624,9 @@ public class UpdateBuilder {
     /**
      * Add all the statements in the model a specified graph to the delete
      * statement.
-     * 
+     *
      * The graph object is converted by a call to makeNode().
-     * 
+     *
      * @see #makeNode(Object)
      * @param g the graph for the triples.
      * @param model the model to add.
@@ -639,7 +639,7 @@ public class UpdateBuilder {
 
     /**
      * Add all the statements in the model to the delete statement.
-     * 
+     *
      * @param g the graph for the triples.
      * @param collection The collection of triples to insert.
      * @return this builder for chaining.
@@ -651,7 +651,7 @@ public class UpdateBuilder {
 
     /**
      * Add all the statements in the model to the delete statement.
-     * 
+     *
      * @param g the graph for the triples.
      * @param iter The iterator of triples to insert.
      * @return this builder for chaining.
@@ -664,7 +664,7 @@ public class UpdateBuilder {
     /**
      * Add the statements from the where clause in the specified query builder to
      * the delete statement. Uses Quad.defaultGraphNodeGenerated as the graph name.
-     * 
+     *
      * @see #makeNode(Object)
      * @see Quad#defaultGraphNodeGenerated
      * @param queryBuilder The query builder to extract the where clause from.
@@ -678,9 +678,9 @@ public class UpdateBuilder {
     /**
      * Add the statements from the where clause in the specified query builder to
      * the delete statements for the specified graph.
-     * 
+     *
      * The graph object is converted by a call to makeNode().
-     * 
+     *
      * @see #makeNode(Object)
      * @param graph the graph to add the statements to.
      * @param queryBuilder The query builder to extract the where clause from.
@@ -693,7 +693,7 @@ public class UpdateBuilder {
 
     /**
      * Add the prefix to the prefix mapping.
-     * 
+     *
      * @param pfx the prefix to add.
      * @param uri the uri for the prefix.
      * @return this builder for chaining
@@ -704,7 +704,7 @@ public class UpdateBuilder {
 
     /**
      * Add the prefix to the prefix mapping.
-     * 
+     *
      * @param pfx the prefix to add.
      * @param uri the uri for the prefix.
      * @return this builder for chaining
@@ -715,7 +715,7 @@ public class UpdateBuilder {
 
     /**
      * Add the prefix to the prefix mapping.
-     * 
+     *
      * @param pfx the prefix to add.
      * @param uri the uri for the prefix.
      * @return this builder for chaining
@@ -727,7 +727,7 @@ public class UpdateBuilder {
 
     /**
      * Add the prefixes to the prefix mapping.
-     * 
+     *
      * @param prefixes the prefixes to add.
      * @return this builder for chaining
      */
@@ -739,7 +739,7 @@ public class UpdateBuilder {
 
     /**
      * Add the prefixes to the prefix mapping.
-     * 
+     *
      * @param prefixes the prefix mapping to add.
      * @return this builder for chaining
      */
@@ -751,7 +751,7 @@ public class UpdateBuilder {
 
     /**
      * Get an ExprFactory that uses the prefixes from this builder.
-     * 
+     *
      * @return the ExpressionFactory.
      */
     public ExprFactory getExprFactory() {
@@ -761,7 +761,7 @@ public class UpdateBuilder {
     /**
      * Set a variable replacement. During build all instances of var in the query
      * will be replaced with value. If value is null the replacement is cleared.
-     * 
+     *
      * @param var The variable to replace
      * @param value The value to replace it with or null to remove the replacement.
      */
@@ -776,10 +776,10 @@ public class UpdateBuilder {
     /**
      * Set a variable replacement. During build all instances of var in the query
      * will be replaced with value. If value is null the replacement is cleared.
-     * 
+     *
      * See {@link #makeVar} for conversion of the var param. See {@link #makeNode}
      * for conversion of the value param.
-     * 
+     *
      * @param var The variable to replace.
      * @param value The value to replace it with or null to remove the replacement.
      */
@@ -803,7 +803,7 @@ public class UpdateBuilder {
 
     /**
      * Add all where attributes from the Where Handler argument.
-     * 
+     *
      * @param whereHandler The Where Handler to copy from.
      */
     public UpdateBuilder addAll(WhereHandler whereHandler) {
@@ -813,7 +813,7 @@ public class UpdateBuilder {
 
     /**
      * Add the triple path to the where clause
-     * 
+     *
      * @param t The triple path to add.
      * @throws IllegalArgumentException If the triple path is not a valid triple
      * path for a where clause.
@@ -825,7 +825,7 @@ public class UpdateBuilder {
 
     /**
      * Add the WhereClause
-     * 
+     *
      * @param whereClause
      * @throws IllegalArgumentException If the triple path is not a valid triple
      * path for a where clause.
@@ -837,7 +837,7 @@ public class UpdateBuilder {
 
     /**
      * Add an optional triple to the where clause
-     * 
+     *
      * @param t The triple path to add.
      * @return The Builder for chaining.
      * @throws IllegalArgumentException If the triple is not a valid triple for a
@@ -850,7 +850,7 @@ public class UpdateBuilder {
 
     /**
      * Add the contents of a where handler as an optional statement.
-     * 
+     *
      * @param whereHandler The where handler to use as the optional statement.
      */
     public UpdateBuilder addOptional(WhereHandler whereHandler) {
@@ -860,7 +860,7 @@ public class UpdateBuilder {
 
     /**
      * Add an expression string as a filter.
-     * 
+     *
      * @param expression The expression string to add.
      * @return The Builder for chaining.
      * @throws ParseException If the expression can not be parsed.
@@ -872,7 +872,7 @@ public class UpdateBuilder {
 
     /**
      * Add a subquery to the where clause.
-     * 
+     *
      * @param subQuery The sub query to add.
      * @return The Builder for chaining.
      */
@@ -883,7 +883,7 @@ public class UpdateBuilder {
 
     /**
      * Add a union to the where clause.
-     * 
+     *
      * @param subQuery The subquery to add as the union.
      * @return The Builder for chaining.
      */
@@ -894,7 +894,7 @@ public class UpdateBuilder {
 
     /**
      * Add a graph to the where clause.
-     * 
+     *
      * @param graph The name of the graph.
      * @param subQuery The where handler that defines the graph.
      */
@@ -905,7 +905,7 @@ public class UpdateBuilder {
 
     /**
      * Add a binding to the where clause.
-     * 
+     *
      * @param expr The expression to bind.
      * @param var The variable to bind it to.
      */
@@ -916,7 +916,7 @@ public class UpdateBuilder {
 
     /**
      * Add a binding to the where clause.
-     * 
+     *
      * @param expression The expression to bind.
      * @param var The variable to bind it to.
      * @throws ParseException
@@ -928,9 +928,9 @@ public class UpdateBuilder {
 
     /**
      * Create a list node from a list of objects as per RDF Collections.
-     * 
+     *
      * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections
-     * 
+     *
      * See {@link AbstractQueryBuilder#makeNode} for conversion of the param values.
      * <p>
      * usage:
@@ -939,8 +939,7 @@ public class UpdateBuilder {
      * <li>addWhere( list( param1, param2, param3, ... ), p, o )</li>
      * <li>addOptional( list( param1, param2, param3, ... ), p, o )</li>
      * </ul>
-     * </p>
-     * 
+     *
      * @param objs the list of objects for the list.
      * @return the first blank node in the list.
      */
@@ -965,7 +964,7 @@ public class UpdateBuilder {
 
     /**
      * Adds a triple to the where clause.
-     * 
+     *
      * @param t The triple path to add
      * @return The Builder for chaining.
      */
@@ -975,7 +974,7 @@ public class UpdateBuilder {
 
     /**
      * Adds a triple to the where clause.
-     * 
+     *
      * @param t The triple to add
      * @return The Builder for chaining.
      */
@@ -985,10 +984,10 @@ public class UpdateBuilder {
 
     /**
      * Adds a triple or triple path to the where clause.
-     * 
+     *
      * See {@link AbstractQueryBuilder#makeTriplePath} for conversion of the param
      * values.
-     * 
+     *
      * @param s The subject.
      * @param p The predicate.
      * @param o The object.
@@ -1000,7 +999,7 @@ public class UpdateBuilder {
 
     /**
      * Adds an optional triple to the where clause.
-     * 
+     *
      * @param t The triple to add
      * @return The Builder for chaining.
      */
@@ -1010,7 +1009,7 @@ public class UpdateBuilder {
 
     /**
      * Adds an optional triple as to the where clause.
-     * 
+     *
      * @param t The triple to add
      * @return The Builder for chaining.
      */
@@ -1020,10 +1019,10 @@ public class UpdateBuilder {
 
     /**
      * Adds an optional triple or triple path to the where clause.
-     * 
+     *
      * See {@link AbstractQueryBuilder#makeTriplePath} for conversion of the param
      * values.
-     * 
+     *
      * @param s The subject.
      * @param p The predicate.
      * @param o The object.
@@ -1035,7 +1034,7 @@ public class UpdateBuilder {
 
     /**
      * Adds an optional group pattern to the where clause.
-     * 
+     *
      * @param t The select builder to add as an optional pattern
      * @return The Builder for chaining.
      */
@@ -1046,14 +1045,14 @@ public class UpdateBuilder {
 
     /**
      * Adds a filter to the where clause
-     * 
+     *
      * Use ExprFactory or NodeValue static or the AbstractQueryBuilder.makeExpr
      * methods to create the expression.
-     * 
+     *
      * @see ExprFactory
      * @see org.apache.jena.sparql.expr.NodeValue
      * @see AbstractQueryBuilder#makeExpr(String)
-     * 
+     *
      * @param expression the expression to evaluate for the filter.
      * @return @return The Builder for chaining.
      */
@@ -1065,9 +1064,9 @@ public class UpdateBuilder {
     /**
      * Add a graph statement to the query as per
      * http://www.w3.org/TR/2013/REC-sparql11 -query-20130321/#rGraphGraphPattern.
-     * 
+     *
      * See {@link AbstractQueryBuilder#makeNode} for conversion of the graph param.
-     * 
+     *
      * @param graph The iri or variable identifying the graph.
      * @param subQuery The graph to add.
      * @return This builder for chaining.
@@ -1080,7 +1079,7 @@ public class UpdateBuilder {
     /**
      * Add a bind statement to the query *
      * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGraphGraphPattern.
-     * 
+     *
      * @param expression The expression to bind to the var.
      * @param var The variable to bind to.
      * @return This builder for chaining.
@@ -1093,7 +1092,7 @@ public class UpdateBuilder {
     /**
      * Add a bind statement to the query
      * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGraphGraphPattern.
-     * 
+     *
      * @param expression The expression to bind to the var.
      * @param var The variable to bind to.
      * @return This builder for chaining.
@@ -1106,9 +1105,9 @@ public class UpdateBuilder {
 
     /**
      * Add a minus clause to the query.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rMinusGraphPattern
-     * 
+     *
      * @param t The select builder to add as a minus pattern
      * @return this builder for chaining
      */
@@ -1119,8 +1118,8 @@ public class UpdateBuilder {
 
     /**
      * Specify the graph for all inserts and deletes.
-     * 
-     * 
+     *
+     *
      * @see Quad#defaultGraphNodeGenerated
      * @param iri the IRI for the graph to use.
      * @return this builder for chaining.
@@ -1139,7 +1138,7 @@ public class UpdateBuilder {
 
     /**
      * Create a DeleteWhere from the where clause.
-     * 
+     *
      * @return a DeleteWhere update.
      */
     public UpdateDeleteWhere buildDeleteWhere() {
@@ -1149,7 +1148,7 @@ public class UpdateBuilder {
 
     /**
      * Create a DeleteWhere from the where clause.
-     * 
+     *
      * @param queryBuilder the query builder to extract the where clause from.
      * @return a DeleteWhere update.
      */

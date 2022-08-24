@@ -31,13 +31,9 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.shared.AddDeniedException;
-import org.apache.jena.shared.AuthenticationRequiredException;
-import org.apache.jena.shared.DeleteDeniedException;
-import org.apache.jena.shared.ReadDeniedException;
-import org.apache.jena.shared.UpdateDeniedException;
+import org.apache.jena.shared.*;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.util.NodeUtils;
+import org.apache.jena.sparql.util.NodeCmp;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
 import org.apache.jena.vocabulary.RDF;
@@ -85,7 +81,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
             if (Node.ANY.equals(n2)) {
                 return Expr.CMP_GREATER;
             }
-            return NodeUtils.compareRDFTerms(n1, n2);
+            return NodeCmp.compareRDFTerms(n1, n2);
         }
 
         private int compare(Triple t1, Triple t2) {
@@ -112,7 +108,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
         public int compareTo(final CacheKey other) {
             int retval = this.action.compareTo(other.action);
             if (retval == Expr.CMP_EQUAL) {
-                retval = NodeUtils.compareRDFTerms(this.mNode, other.mNode);
+                retval = NodeCmp.compareRDFTerms(this.mNode, other.mNode);
             }
             if (retval == Expr.CMP_EQUAL) {
                 retval = compare(this.to, other.to);

@@ -35,7 +35,7 @@ import org.apache.jena.sparql.function.FunctionBase1 ;
  *  </pre>
  *  <pre>
  *    FILTER ext:classify(3+?x)
- *  <pre>
+ *  </pre>
  */
 
 public class classify extends FunctionBase1

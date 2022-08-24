@@ -32,7 +32,7 @@ import org.apache.jena.query.ResultSet ;
  * Interface for results post processors, post processors have the ability to
  * modify the raw SPARQL results or the JDBC results metadata before it is
  * provided for consumption to the caller of the JDBC APIs
- * 
+ *
  */
 public interface ResultsPostProcessor {
 
@@ -43,7 +43,7 @@ public interface ResultsPostProcessor {
      * provides access to all connection configuration parameters except
      * password
      * </p>
-     * 
+     *
      * @param props
      *            Connection properties
      * @throws SQLException
@@ -59,7 +59,7 @@ public interface ResultsPostProcessor {
      * manipulations on the results before they get presented through the JDBC
      * API.
      * </p>
-     * 
+     *
      * @param results
      *            Incoming results
      * @return Processed results
@@ -76,7 +76,7 @@ public interface ResultsPostProcessor {
      * application to do manipulations on the results before they get presented
      * through the JDBC API.
      * </p>
-     * 
+     *
      * @param triples
      *            Incoming results
      * @return Processed results
@@ -92,8 +92,7 @@ public interface ResultsPostProcessor {
      * gets wrapped in a JDBC result set. This allows an application to do
      * manipulations on the results before they get presented through the JDBC
      * API.
-     * <p>
-     * 
+     *
      * @param result
      *            Incoming results
      * @return Processed results
@@ -112,7 +111,7 @@ public interface ResultsPostProcessor {
      * in order to be work better with certain tools or to override the default
      * type mappings that Jena JDBC makes.
      * </p>
-     * 
+     *
      * @param metadata
      *            Calculated metadata
      * @return Processed metadata
@@ -131,7 +130,7 @@ public interface ResultsPostProcessor {
      * column types in order to be work better with certain tools or to override
      * the default type mappings that Jena JDBC makes.
      * </p>
-     * 
+     *
      * @param metadata
      *            Calculated metadata
      * @return Processed metadata
@@ -150,7 +149,7 @@ public interface ResultsPostProcessor {
      * in order to be work better with certain tools or to override the default
      * type mappings that Jena JDBC makes.
      * </p>
-     * 
+     *
      * @param metadata
      *            Calculated metadata
      * @return Processed metadata

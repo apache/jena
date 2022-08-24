@@ -133,11 +133,10 @@ public class HttpAction
      * Initialization after action creation, during lifecycle setup. This is "set
      * once" (in other words, constructor-like but delayed because the information is
      * not yet available at the point we want to create the HttpAction).
-     *
+     * <p>
      * This method sets the action dataset for service requests. Does not apply to "admin" and
      * "ctl" servlets. Setting will replace any existing {@link DataAccessPoint} and
      * {@link DataService}, as the {@link DatasetGraph} of the current HTTP Action.
-     * </p>
      * <p>
      * Once it has updated its members, the HTTP Action will change its transactional
      * state and {@link Transactional} instance according to its base dataset graph.

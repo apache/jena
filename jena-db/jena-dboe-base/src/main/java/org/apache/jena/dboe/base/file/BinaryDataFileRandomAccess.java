@@ -26,8 +26,10 @@ import org.apache.jena.atlas.io.IO;
 
 /** Implementation of {@link BinaryDataFile} using {@link RandomAccessFile}.
  *
+ * <ul>
  * <li>No buffering of reads or writes provided.
  * <li>Not thread-safe.
+ * </ul>
  *
  *  @see BinaryDataFileWriteBuffered
  */

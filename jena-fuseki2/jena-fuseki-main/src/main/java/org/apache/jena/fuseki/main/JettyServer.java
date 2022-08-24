@@ -275,7 +275,6 @@ public class JettyServer {
          * Set the number threads used by Jetty. This uses a {@code org.eclipse.jetty.util.thread.QueuedThreadPool} provided by Jetty.
          * <p>
          * Argument order is (minThreads, maxThreads).
-         * <p>
          * <ul>
          * <li>Use (-1,-1) for Jetty "default". The Jetty 9.4 defaults are (min=8,max=200).
          * <li>If (min != -1, max is -1) then the default max is 20.

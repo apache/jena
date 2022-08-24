@@ -22,9 +22,11 @@ import org.apache.jena.atlas.RuntimeIOException;
 
 /** Implementation of {@link BinaryDataFile} adding write buffering to another
  * {@link BinaryDataFile} file, such as a {@link BinaryDataFileRandomAccess}.
+ *  <ul>
  *  <li>Thread-safe.
  *  <li>No read buffering provided.
  *  <li>The write buffer is flushed when switching to read.
+ *  </ul>
  */
 
 public class BinaryDataFileWriteBuffered implements BinaryDataFile {
@@ -81,7 +83,7 @@ public class BinaryDataFileWriteBuffered implements BinaryDataFile {
         synchronized(sync) {
             checkOpen();
             long otherLen = other.length();
-            if ( bufferLength > 0) { 
+            if ( bufferLength > 0) {
                 if ( posn >= otherLen ) {
                     long bufLen = posn-otherLen;
                     if ( bufLen < bufferLength ) {
