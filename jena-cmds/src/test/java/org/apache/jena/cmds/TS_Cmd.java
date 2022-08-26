@@ -18,7 +18,6 @@
 
 package org.apache.jena.cmds;
 
-import jena.Test_rdfcat;
 import jena.Test_schemagen;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.junit.runner.RunWith ;
@@ -29,7 +28,6 @@ import org.junit.runners.Suite.SuiteClasses ;
 @SuiteClasses( {
     TestCmdLine.class
     , Test_schemagen.class
-    , Test_rdfcat.class
     , TestCmdExt.class
 })
 
