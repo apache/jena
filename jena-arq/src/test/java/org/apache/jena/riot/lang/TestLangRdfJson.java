@@ -38,12 +38,14 @@ import org.apache.jena.riot.tokens.TokenizerText;
 import org.junit.Test;
 
 public class TestLangRdfJson {
+    @SuppressWarnings("deprecation")
     @Test
     public void rdfjson_get_jena_reader() {
         Model m = ModelFactory.createDefaultModel();
         m.getReader("RDF/JSON");
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void rdfjson_get_jena_writer() {
         Model m = ModelFactory.createDefaultModel();
