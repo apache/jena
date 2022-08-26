@@ -31,9 +31,9 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 public class TestIO_JenaReaders {
-    @BeforeClass public static void beforeClass() { } 
+    @BeforeClass public static void beforeClass() { }
     @AfterClass public static void afterClass()   { IO_Jena.wireIntoJena(); }
-    
+
     @Test
     public void wireIntoJena() {
         IO_Jena.wireIntoJena();
@@ -53,30 +53,26 @@ public class TestIO_JenaReaders {
         assertEquals(RDFReaderRIOT.class, readerF.getReader("JSONLD").getClass());
         assertEquals(RDFReaderRIOT.class, readerF.getReader("RDF/JSON").getClass());
     }
-    
+
     @Test
     public void resetJena() {
         IO_Jena.wireIntoJena();
         IO_Jena.resetJena();
         RDFReaderF readerF = new RDFReaderFImpl();
-        
+
         assertNotEquals(RDFReaderRIOT.class, readerF.getReader().getClass());
         assertNotEquals(RDFReaderRIOT.class, readerF.getReader("RDF/XML").getClass());
         assertNotEquals(RDFReaderRIOT.class, readerF.getReader("RDF/XML-ABBREV").getClass());
         assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N-TRIPLES").getClass());
         assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N-Triples").getClass());
         assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N-TRIPLE").getClass());
-        assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N3").getClass());
-        assertNotEquals(RDFReaderRIOT.class, readerF.getReader("TURTLE").getClass());
-        assertNotEquals(RDFReaderRIOT.class, readerF.getReader("Turtle").getClass());
-        assertNotEquals(RDFReaderRIOT.class, readerF.getReader("TTL").getClass());
-        
+
         try { readerF.getReader("NT")      ; fail("Exception expected") ; } catch (NoReaderForLangException e) {}
         try { readerF.getReader("JSON_LD") ; fail("Exception expected") ; } catch (NoReaderForLangException e) {}
         try { readerF.getReader("RDF/JSON"); fail("Exception expected") ; } catch (NoReaderForLangException e) {}
-        
+
         IO_Jena.wireIntoJena();
     }
 
-    
+
 }

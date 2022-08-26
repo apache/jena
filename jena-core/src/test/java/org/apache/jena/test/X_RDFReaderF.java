@@ -16,18 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf.model.impl;
+package org.apache.jena.test;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.rdf.model.RDFReaderF;
 import org.apache.jena.rdf.model.RDFReaderI;
+import org.apache.jena.rdf.model.RDFReaderF;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NoReaderForLangException;
 
-public class RDFReaderFImpl extends Object implements RDFReaderF {
+public class X_RDFReaderF extends Object implements RDFReaderF {
     public static final String DEFAULTLANG = "RDF/XML" ;
     private static Map<String, Class<? extends RDFReaderI>> custom = new LinkedHashMap<>();
     private static RDFReaderF rewiredAlternative = null ;
@@ -40,7 +40,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     }
 
     /** Creates new RDFReaderFImpl */
-    public RDFReaderFImpl() {}
+    public X_RDFReaderF() {}
 
     @Override
     public RDFReaderI getReader()  {
@@ -75,7 +75,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     private static void reset() {
         Class<? extends RDFReaderI> rdfxmlReader = org.apache.jena.rdfxml.xmlinput.JenaReader.class;
         Class<? extends RDFReaderI> ntReader = org.apache.jena.rdf.model.impl.NTripleReader.class;
-        // Turtle moved to test-only
+        Class<? extends RDFReaderI> turtleReader = org.apache.jena.ttl.turtle.TurtleReader.class;
 
         custom.put("RDF", rdfxmlReader);
         custom.put("RDF/XML", rdfxmlReader);
@@ -84,6 +84,11 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         custom.put("N-TRIPLE", ntReader);
         custom.put("N-TRIPLES", ntReader);
         custom.put("N-Triples", ntReader);
+
+        custom.put("N3", turtleReader);
+        custom.put("TURTLE", turtleReader);
+        custom.put("Turtle", turtleReader);
+        custom.put("TTL", turtleReader);
     }
 
     private static String currentEntry(String lang) {
@@ -96,7 +101,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
 
     private static String remove(String lang) {
         if ( rewiredAlternative != null )
-            Log.error(RDFReaderFImpl.class, "Rewired RDFReaderFImpl - configuration changes have no effect on reading");
+            Log.error(X_RDFReaderF.class, "Rewired RDFReaderFImpl - configuration changes have no effect on reading");
 
         String oldClassName = currentEntry(lang);
         custom.remove(lang);
