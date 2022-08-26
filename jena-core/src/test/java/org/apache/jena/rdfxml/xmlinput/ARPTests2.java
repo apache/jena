@@ -37,9 +37,9 @@ import org.xml.sax.ErrorHandler ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
-public class MoreTests extends TestCase implements RDFErrorHandler,
-		ARPErrorNumbers {
-	static private Logger logger = LoggerFactory.getLogger(MoreTests.class);
+public class ARPTests2 extends TestCase implements RDFErrorHandler, ARPErrorNumbers {
+
+	static private Logger logger = LoggerFactory.getLogger(ARPTests2.class);
 
 	static public Test suite() {
 		TestSuite suite = new TestSuite("ARP Plus");
@@ -49,43 +49,43 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
         suite.addTest(TestPropEltErrorMsg.suite());
 		suite.addTest(TestScope.suite());
 		suite.addTest(ExceptionTests.suite());
-        
+
         suite.addTest(new MoreDOM2RDFTest("testDOMwithARP"));
-	
+
         // Better add tests automatcally:
-        suite.addTestSuite(MoreTests.class) ;
-//		suite.addTest(new MoreTests("testIcu"));
-//		suite.addTest(new MoreTests("testLatin1"));
-//		suite.addTest(new MoreTests("testIcu2"));
-//		suite.addTest(new MoreTests("testEncodingMismatch1"));
-//		suite.addTest(new MoreTests("testEncodingMismatch2"));
-//		suite.addTest(new MoreTests("testEncodingMismatch3"));
-//		suite.addTest(new MoreTests("testNullBaseParamOK"));
-//		suite.addTest(new MoreTests("testNullBaseParamError"));
-//		suite.addTest(new MoreTests("testEmptyBaseParamOK"));
-//		suite.addTest(new MoreTests("testEmptyBaseParamError"));
-//      suite.addTest(new MoreTests("testBadBaseParamOK"));
-//      suite.addTest(new MoreTests("testBadBaseParamError"));
-//      suite.addTest(new MoreTests("testRelativeBaseParamOK"));
-//      suite.addTest(new MoreTests("testRelativeBaseParamError"));
-//      suite.addTest(new MoreTests("testBaseTruncation"));
-//		suite.addTest(new MoreTests("testWineDefaultNS"));
-//		suite.addTest(new MoreTests("testInterrupt"));
-//      suite.addTest(new MoreTests("testDanBriXMLBase"));
-//		suite.addTest(new MoreTests("testToString"));
-		
+        suite.addTestSuite(ARPTests2.class) ;
+//		suite.addTest(new ARPTests2("testIcu"));
+//		suite.addTest(new ARPTests2("testLatin1"));
+//		suite.addTest(new ARPTests2("testIcu2"));
+//		suite.addTest(new ARPTests2("testEncodingMismatch1"));
+//		suite.addTest(new ARPTests2("testEncodingMismatch2"));
+//		suite.addTest(new ARPTests2("testEncodingMismatch3"));
+//		suite.addTest(new ARPTests2("testNullBaseParamOK"));
+//		suite.addTest(new ARPTests2("testNullBaseParamError"));
+//		suite.addTest(new ARPTests2("testEmptyBaseParamOK"));
+//		suite.addTest(new ARPTests2("testEmptyBaseParamError"));
+//      suite.addTest(new ARPTests2("testBadBaseParamOK"));
+//      suite.addTest(new ARPTests2("testBadBaseParamError"));
+//      suite.addTest(new ARPTests2("testRelativeBaseParamOK"));
+//      suite.addTest(new ARPTests2("testRelativeBaseParamError"));
+//      suite.addTest(new ARPTests2("testBaseTruncation"));
+//		suite.addTest(new ARPTests2("testWineDefaultNS"));
+//		suite.addTest(new ARPTests2("testInterrupt"));
+//      suite.addTest(new ARPTests2("testDanBriXMLBase"));
+//		suite.addTest(new ARPTests2("testToString"));
+
 //for (int i=0; i< 20; i++ ) {
-		//suite.addTest(new MoreTests("testTokenGarbage1"));
-		//suite.addTest(new MoreTests("testTokenGarbage2"));
-//		suite.addTest(new MoreTests("testTokenGarbage1"));
-//		suite.addTest(new MoreTests("testTokenGarbage2"));
-//		suite.addTest(new MoreTests("testTokenGarbage1"));
-//		suite.addTest(new MoreTests("testTokenGarbage2"));
+		//suite.addTest(new ARPTests2("testTokenGarbage1"));
+		//suite.addTest(new ARPTests2("testTokenGarbage2"));
+//		suite.addTest(new ARPTests2("testTokenGarbage1"));
+//		suite.addTest(new ARPTests2("testTokenGarbage2"));
+//		suite.addTest(new ARPTests2("testTokenGarbage1"));
+//		suite.addTest(new ARPTests2("testTokenGarbage2"));
 //}
 		return suite;
 	}
 
-	public MoreTests(String s) {
+	public ARPTests2(String s) {
 		super(s);
 	}
 
@@ -98,7 +98,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		// ensure the ont doc manager is in a consistent state
 		OntDocumentManager.getInstance().reset(true);
 	}
-	
+
    public void testXMLProperty() throws IOException {
         Model m = createMemModel();
         InputStream in = new FileInputStream("testing/arp/xml-prop.rdf");
@@ -120,33 +120,33 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     }
 
     // JENA-1537
-    // Character encoding checks removed due to lack of support in JDK XML parser APIs.  
+    // Character encoding checks removed due to lack of support in JDK XML parser APIs.
 //	public void testLatin1() throws IOException {
 //		Model m = createMemModel();
 //		RDFReader rdr = m.getReader();
 //		InputStream r = new FileInputStream(
 //				"testing/arp/i18n/latin1.rdf");
-//		
+//
 //		rdr.setErrorHandler(this);
 //		expected = new int[] { WARN_NONCANONICAL_IANA_NAME };
 //		rdr.read(m, r, "http://example.org/");
 //		checkExpected();
 //	}
-	
+
 	// JENA-1537
-    // Character encoding checks removed due to lack of support in JDK XML parser APIs.  
-	
+    // Character encoding checks removed due to lack of support in JDK XML parser APIs.
+
 //	public void testARPMacRoman() throws IOException {
 //		Model m = createMemModel();
 //		RDFReader rdr = m.getReader();
 //		InputStream r = new FileInputStream(
 //				"testing/arp/i18n/macroman.rdf");
-//		
+//
 //		rdr.setErrorHandler(this);
 //		expected = new int[] { WARN_UNSUPPORTED_ENCODING, WARN_NON_IANA_ENCODING };
 //		expected[Charset.isSupported("MacRoman")?0:1]=0;
 ////		 Only one of the warnings is expected, which depends on Java version
-//		
+//
 //		rdr.read(m, r, "http://example.org/");
 //		checkExpected();
 //	}
@@ -155,7 +155,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 //		RDFReader rdr = m.getReader();
 //		InputStream r = new FileInputStream(
 //				"testing/arp/i18n/arabic-macarabic.rdf");
-//		
+//
 //		rdr.setErrorHandler(this);
 //		expected = new int[] { WARN_UNSUPPORTED_ENCODING, WARN_NON_IANA_ENCODING };
 //		expected[Charset.isSupported("MacArabic")?0:1]=0;
@@ -163,7 +163,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 //		rdr.read(m, r, "http://example.org/");
 //		checkExpected();
 //	}
-//	
+//
 //
 //	public void testEncodingMismatch1() throws IOException {
 //		Model m = createMemModel();
@@ -187,9 +187,9 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 //	    Normalizer.  isNormalized(
 //	            "\u0bcd\u0ba4\u0bbf\u0baf\u0bbe"
 //	            ,Normalizer.NFC,0);
-	    
+
 	    Model m = createMemModel();
-	    RDFReaderI rdr = m.getReader();
+	    RDFReaderI rdr = new RDFXMLReader();
 	    try(FileInputStream r = new FileInputStream("testing/arp/i18n/icubug.rdf")){
 	        rdr.setErrorHandler(this);
 	        expected = new int[] { WARN_STRING_COMPOSING_CHAR  };
@@ -204,7 +204,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 //		            ,Normalizer.NFC,0);
 
 	    Model m = createMemModel();
-	    RDFReaderI rdr = m.getReader();
+	    RDFReaderI rdr = new RDFXMLReader();
 	    try(FileInputStream r = new FileInputStream("testing/arp/i18n/icubugtwo.rdf")) {
 	        rdr.setErrorHandler(this);
 	        expected = new int[] { WARN_STRING_NOT_NORMAL_FORM_C };
@@ -212,7 +212,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	    }
 	    checkExpected();
 	}
-	
+
 	static class ToStringStatementHandler implements StatementHandler {
 		String obj;
 
@@ -252,7 +252,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	}
 
     // JENA-1537
-    // Character encoding checks removed due to lack of support in JDK XML parser APIs.  
+    // Character encoding checks removed due to lack of support in JDK XML parser APIs.
 
 //	public void testEncodingMismatch2() throws IOException {
 //		FileReader r = new FileReader(
@@ -260,7 +260,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 //
 //		subTestEncodingMismatch2(r);
 //	}
-//	
+//
 //	public void testEncodingMismatch3() throws IOException {
 //	    try ( FileInputStream fin = new FileInputStream("testing/wg/rdf-charmod-literals/test001.rdf") ;
 //	          InputStreamReader r = new InputStreamReader(fin,"MS950")) {
@@ -279,7 +279,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 //		}
 //		Model m = createMemModel();
 //		RDFReader rdr = m.getReader();
-//		
+//
 //		rdr.setErrorHandler(this);
 //		expected = new int[] { WARN_ENCODING_MISMATCH, ERR_ENCODING_MISMATCH };
 //		rdr.read(m, r, "http://example.org/");
@@ -290,7 +290,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	public void testNullBaseParamOK() throws IOException {
 		Model m = createMemModel();
 		Model m1 = createMemModel();
-		RDFReaderI rdr = m.getReader();
+		RDFReaderI rdr = new RDFXMLReader();
 		try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf") ) {
 		    rdr.setErrorHandler(this);
 		    expected = new int[] {};
@@ -316,7 +316,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 
 	public void testNullBaseParamError() throws IOException {
 		Model m = createMemModel();
-		RDFReaderI rdr = m.getReader();
+		RDFReaderI rdr = new RDFXMLReader();
 		try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
 			rdr.setErrorHandler(this);
 			expected = new int[] { ERR_RESOLVING_URI_AGAINST_NULL_BASE, WARN_RELATIVE_URI};
@@ -328,7 +328,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	public void testEmptyBaseParamOK() throws IOException {
 	    Model m = createMemModel();
 	    Model m1 = createMemModel();
-	    RDFReaderI rdr = m.getReader();
+	    RDFReaderI rdr = new RDFXMLReader();
 	    try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")){
 	        rdr.setErrorHandler(this);
 	        expected = new int[] {};
@@ -344,7 +344,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 
 	public void testEmptyBaseParamError() throws IOException {
 		Model m = createMemModel();
-		RDFReaderI rdr = m.getReader();
+		RDFReaderI rdr = new RDFXMLReader();
 		try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
 		    rdr.setErrorHandler(this);
 		    expected = new int[] { WARN_RESOLVING_URI_AGAINST_EMPTY_BASE};
@@ -359,11 +359,11 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 
     public void testBadBaseParamError() throws IOException {
         Model m = createMemModel();
-        RDFReaderI rdr = m.getReader();
+        RDFReaderI rdr = new RDFXMLReader();
         try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
             rdr.setErrorHandler(this);
-            expected = new int[] { WARN_MALFORMED_URI, 
-                WARN_MALFORMED_URI, 
+            expected = new int[] { WARN_MALFORMED_URI,
+                WARN_MALFORMED_URI,
                 //        WARN_RELATIVE_URI, ERR_RESOLVING_AGAINST_MALFORMED_BASE};
                 ERR_RESOLVING_AGAINST_MALFORMED_BASE};
             rdr.read(m, fin, "http://jjc^3.org/demo.mp3");
@@ -373,11 +373,11 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
                 + m.toString() + "]", m.isIsomorphicWith(m1));
         checkExpected();
     }
-    
+
     public void testBadBaseParamOK() throws IOException {
         Model m = createMemModel();
         Model m1 = createMemModel();
-        RDFReaderI rdr = m.getReader();
+        RDFReaderI rdr = new RDFXMLReader();
         try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
 
             rdr.setErrorHandler(this);
@@ -393,7 +393,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     }
     public void testRelativeBaseParamError() throws IOException {
         Model m = createMemModel();
-        RDFReaderI rdr = m.getReader();
+        RDFReaderI rdr = new RDFXMLReader();
         try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
             rdr.setErrorHandler(this);
             expected = new int[] { WARN_RELATIVE_URI, WARN_RELATIVE_URI,  ERR_RESOLVING_AGAINST_RELATIVE_BASE, };
@@ -406,11 +406,11 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
                 + m.toString() + "]", m.isIsomorphicWith(m1));
         checkExpected();
     }
-    
+
     public void testRelativeBaseParamOK() throws IOException {
         Model m = createMemModel();
         Model m1 = createMemModel();
-        RDFReaderI rdr = m.getReader();
+        RDFReaderI rdr = new RDFXMLReader();
         try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
             rdr.setErrorHandler(this);
             expected = new int[] { WARN_RELATIVE_URI };
@@ -428,7 +428,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     public void testBaseTruncation() throws IOException {
         Model m = createMemModel();
         Model m1 = createMemModel();
-        RDFReaderI rdr = m.getReader();
+        RDFReaderI rdr = new RDFXMLReader();
         try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
             rdr.setErrorHandler(this);
             expected = new int[] { WARN_MALFORMED_URI, WARN_RELATIVE_URI };
@@ -466,7 +466,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	            }
 	            @Override
 	            public void fatalError(SAXParseException exception) throws SAXException {
-	                throw exception;  
+	                throw exception;
 	            }
 	            @Override
 	            public void warning(SAXParseException exception) throws SAXException {
@@ -489,52 +489,52 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     "  <rdf:value rdf:resource=\"relative random text\"/>\n" +
     " </rdf:Description>\n" +
     "</rdf:RDF>\n";
-	
+
 	public void testIRIRules_1()
 	{
         Model model = ModelFactory.createDefaultModel() ;
         model.read(new StringReader(RDF_TEXT), "http://example/") ;
 	}
-	
+
 	public void testIRIRules_2()
 	{
         Model model = ModelFactory.createDefaultModel() ;
 	    IRIFactory f = ARPOptions.getIRIFactoryGlobal() ;
 	    try {
 	        ARPOptions.setIRIFactoryGlobal(IRIFactory.iriImplementation()) ;
-	        RDFReaderI r =  model.getReader("RDF/XML") ;
+	        RDFReaderI r = new RDFXMLReader();
             expected = new int[] { WARN_MALFORMED_URI , WARN_MALFORMED_URI };
 	        r.setErrorHandler(this);
 	        r.read(model, new StringReader(RDF_TEXT), "http://example/") ;
 	    } finally { ARPOptions.setIRIFactoryGlobal(f) ; }
         checkExpected() ;
-	}	        
+	}
 
     public void testIRIRules_2a()
     {
         Model model = ModelFactory.createDefaultModel() ;
-        RDFReaderI r =  model.getReader("RDF/XML") ;
+        RDFReaderI r = new RDFXMLReader();
         r.setErrorHandler(this);
         expected = new int[] { };
         model.read(new StringReader(RDF_TEXT), "http://example/") ;
         checkExpected() ;
-    }           
-	
+    }
+
     public void testIRIRules_3()
     {
         Model model = ModelFactory.createDefaultModel() ;
-        RDFReaderI r =  model.getReader("RDF/XML") ;
+        RDFReaderI r = new RDFXMLReader();
         r.setErrorHandler(this);
         expected = new int[] { WARN_MALFORMED_URI , WARN_MALFORMED_URI };
         r.setProperty("iri-rules", "strict") ;
         r.read(model, new StringReader(RDF_TEXT), "http://example/") ;
         checkExpected() ;
-    }           
+    }
 
     public void testIRIRules_4()
     {
         Model model = ModelFactory.createDefaultModel() ;
-        RDFReaderI r =  model.getReader("RDF/XML") ;
+        RDFReaderI r = new RDFXMLReader();
         r.setProperty("iri-rules", "strict") ;
         r.setProperty( "WARN_MALFORMED_URI", ARPErrorNumbers.EM_ERROR) ;
         r.setErrorHandler(this);
@@ -542,7 +542,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
         r.read(model, new StringReader(RDF_TEXT), "http://example/") ;
         checkExpected() ;
     }
-    
+
     public void testNTripleEscaping() {
     	String data[][] = {
     			{ "foo", "foo" },
@@ -555,10 +555,10 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 //    		System.err.println(NTriple.escapeNTriple(p[0]));
     		Assert.assertEquals("NTriple escaping", p[1],NTriple.escapeNTriple(p[0]) );
     	}
-    	
-    	
+
+
     }
-	
+
 	private void checkExpected() {
         for ( int anExpected : expected )
         {

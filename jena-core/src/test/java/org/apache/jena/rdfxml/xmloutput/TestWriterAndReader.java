@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory ;
  * The test fails if the models are not 'the same'.
  * Quite what 'the same' means is debatable.
  */
-public class testWriterAndReader 
+public class TestWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
 	static private boolean showProgress = false;
 	//static private boolean errorDetail = false;
@@ -45,7 +45,7 @@ public class testWriterAndReader
 	static private int lastTest = 9;
 	static private int repetitionsJ = 6;
     
-  protected static Logger logger = LoggerFactory.getLogger( testWriterAndReader.class );
+  protected static Logger logger = LoggerFactory.getLogger( TestWriterAndReader.class );
     
 	final String lang;
    
@@ -55,10 +55,10 @@ public class testWriterAndReader
     
     String test;
 
-    testWriterAndReader( String name, String lang, int fileNumber ) 
+    TestWriterAndReader( String name, String lang, int fileNumber ) 
         { this( name, lang, fileNumber, 0 ); }
     
-	testWriterAndReader(String name, String lang, int fileNumber, int options) {
+	TestWriterAndReader(String name, String lang, int fileNumber, int options) {
 		super( name );
 		this.lang = lang;
 		this.fileNumber = fileNumber;
@@ -150,8 +150,8 @@ public class testWriterAndReader
         int optionLimit = (lang.equals( "RDF/XML-ABBREV" ) ? 1 << blockRules.length : 2);
         for (int fileNumber = firstTest; fileNumber <= lastTest; fileNumber++) 
             {
-        	suite.addTest(new testWriterAndReader("testRandom", lang, fileNumber ) );
-        	suite.addTest( new testWriterAndReader( "testLongId", lang, fileNumber ) );
+        	suite.addTest(new TestWriterAndReader("testRandom", lang, fileNumber ) );
+        	suite.addTest( new TestWriterAndReader( "testLongId", lang, fileNumber ) );
             for (int optionMask = 1; optionMask < optionLimit; optionMask += 1) 
                 {
         		if (lots || nBits( optionMask, new int[] { 1, /* 2,3,4,5, */ 6,7 } ))
@@ -161,9 +161,9 @@ public class testWriterAndReader
         return suite;
         }
 
-    private static testWriterAndReader createTestOptions( String lang, int fileNumber, int optionMask )
+    private static TestWriterAndReader createTestOptions( String lang, int fileNumber, int optionMask )
         {
-        return new testWriterAndReader( "testOptions " + fileNumber + " " + optionMask, lang, fileNumber, optionMask ) 
+        return new TestWriterAndReader( "testOptions " + fileNumber + " " + optionMask, lang, fileNumber, optionMask ) 
             {
             @Override
             public void runTest() throws IOException { testOptions(); }
