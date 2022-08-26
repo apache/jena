@@ -43,9 +43,9 @@ public class SAX2RDFMoreTests extends TestCase {
 	    Model m2 = ModelFactory.createDefaultModel();
 	    RDFEHArray eh = new RDFEHArray();
 	    try ( InputStream in = new FileInputStream("testing/wg/rdfms-xmllang/test004.rdf") ) {
-	        RDFReaderI w = m.getReader();
-	        w.setErrorHandler(eh);
-	        w.read(m, in, "http://example.org/");
+	        RDFReaderI r = new RDFXMLReader();
+	        r.setErrorHandler(eh);
+	        r.read(m, in, "http://example.org/");
 	    }
 
 	    RDFEHArray eh2 = new RDFEHArray();
@@ -70,7 +70,7 @@ public class SAX2RDFMoreTests extends TestCase {
 	    }
 		/*
 		 * System.out.println("Normal:"); m.write(System.out,"N-TRIPLE");
-		 * 
+		 *
 		 * System.out.println("New:"); m2.write(System.out,"N-TRIPLE");
 		 */
 		if (eh.v.size() == 0)

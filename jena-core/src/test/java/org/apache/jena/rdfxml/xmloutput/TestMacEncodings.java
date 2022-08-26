@@ -29,7 +29,7 @@ import java.io.Writer;
 import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.rdfxml.xmlinput.MoreTests ;
+import org.apache.jena.rdfxml.xmlinput.ARPTests2 ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,8 +59,8 @@ public class TestMacEncodings  extends ModelTestBase
          logger.warn("MacRoman not supported on this Java installation: mac encoding tests suppressed.");
         return suite;   
      }
-		suite.addTest(new MoreTests("testARPMacRoman"));
-		suite.addTest(new MoreTests("testARPMacArabic"));
+		suite.addTest(new ARPTests2("testARPMacRoman"));
+		suite.addTest(new ARPTests2("testARPMacArabic"));
 	    return suite; }
     static private boolean InUse = false;
     /*

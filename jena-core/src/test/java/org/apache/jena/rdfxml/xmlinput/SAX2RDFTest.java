@@ -43,10 +43,10 @@ import org.xml.sax.XMLReader;
 public class SAX2RDFTest extends TestCase {
 
 	protected static Logger logger = LoggerFactory.getLogger( SAX2RDFTest.class );
-    
+
 	static final private String all[] = {
     "arp/dom/domtest.rdf",
-	//"abbreviated/collection.rdf", 
+	//"abbreviated/collection.rdf",
 	"abbreviated/container.rdf",
 			"abbreviated/cookup.rdf", "abbreviated/daml.rdf",
 			"abbreviated/namespaces.rdf", "abbreviated/reification.rdf",
@@ -105,8 +105,8 @@ public class SAX2RDFTest extends TestCase {
 			"ontology/rdfs/list-syntax/test.rdf",
 			"ontology/rdfs/Ontology/test.rdf",
 			"ontology/rdfs/Property/test.rdf", "ontology/relativenames.rdf",
-			"ontology/testImport5/ont-policy.rdf", 
-			
+			"ontology/testImport5/ont-policy.rdf",
+
 			"RDQL/model5.rdf", "RDQL/vc-db-1.rdf", "RDQL/vc-db-2.rdf",
 			"RDQL/vc-db-3.rdf", "reasoners/bugs/sbug.rdf",
 			"reasoners/owl/consistentData.rdf",
@@ -1104,7 +1104,7 @@ public class SAX2RDFTest extends TestCase {
 			"wg/unrecognised-xml-attributes/test001.rdf",
 			"wg/unrecognised-xml-attributes/test002.rdf",
 			"arp/dom/domtest.rdf",
-			
+
 			//"wg/xmlbase/error001.rdf", "wg/xmlbase/test001.rdf",
 			"wg/xmlbase/test002.rdf", "wg/xmlbase/test003.rdf",
 			"wg/xmlbase/test004.rdf", "wg/xmlbase/test005.rdf",
@@ -1123,7 +1123,7 @@ public class SAX2RDFTest extends TestCase {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.apache.jena.rdf.model.RDFErrorHandler#warning(java.lang.Exception)
 		 */
 		@Override
@@ -1133,7 +1133,7 @@ public class SAX2RDFTest extends TestCase {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.apache.jena.rdf.model.RDFErrorHandler#error(java.lang.Exception)
 		 */
 		@Override
@@ -1143,7 +1143,7 @@ public class SAX2RDFTest extends TestCase {
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see org.apache.jena.rdf.model.RDFErrorHandler.errorError(java.lang.Exception)
 		 */
 		@Override
@@ -1163,14 +1163,14 @@ public class SAX2RDFTest extends TestCase {
 		TestSuite s = new TestSuite("SAX2RDF");
 //		s.addTestSuite(PushMePullYouTest.class);
 		s.addTestSuite(SAX2RDFMoreTests.class);
-		
+
 		//for (int j=0; j<20; j++)
 		for (int i = 0; i < all.length; i += 25) {
 //			String nm = all[i];
 			//if (all[i].indexOf("premises663")==-1)
 			//	continue;
 			if (all[i].startsWith("wg/")) {
-				
+
 				addTests(s, "wg/", ARPTests.wgTestDir.toString(),
 						all[i].substring(3));
 			} else if (all[i].startsWith("arp/")) {
@@ -1186,14 +1186,14 @@ public class SAX2RDFTest extends TestCase {
 
 		return s;
 	}
-	
+
 	static private void addTests(TestSuite s, String dir, String base, String file){
 		TestCase tc = new SAX2RDFTest(dir,base,file);
 		tc.setName("SAX "+tc.getName());
 		s.addTest(tc);
-		
+
 		tc = new DOM2RDFTest(dir,base,file);
-		
+
 		tc.setName("DOM "+tc.getName());
 		s.addTest(tc);
 	}
@@ -1218,9 +1218,9 @@ public class SAX2RDFTest extends TestCase {
 		Model m2 = ModelFactory.createDefaultModel();
         RDFEHArray eh = new RDFEHArray();
         try ( InputStream in = new FileInputStream(file) ) {
-            RDFReaderI w = m.getReader();
-            w.setErrorHandler(eh);
-            w.read(m, in, base);
+            RDFReaderI r = new RDFXMLReader();
+            r.setErrorHandler(eh);
+            r.read(m, in, base);
         }
 
         RDFEHArray eh2 = new RDFEHArray();
@@ -1234,7 +1234,7 @@ public class SAX2RDFTest extends TestCase {
 
 		/*
 		 * System.out.println("Normal:"); m.write(System.out,"N-TRIPLE");
-		 * 
+		 *
 		 * System.out.println("New:"); m2.write(System.out,"N-TRIPLE");
 		 */
 		if (eh.v.size() == 0)

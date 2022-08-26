@@ -57,17 +57,16 @@ public class TestWriterInterface extends ModelTestBase {
         m.write( sos );
         assertTrue( sos.toString().contains( newline_XMLNS ) );
     }
-    
+
     public void testInterface() {
         Model m1 = createMemModel();
+        // Not true when RIOT is used!
         assertTrue( "Default writer should be Basic.",  m1.getWriter() instanceof Basic );
-        assertTrue( "RDF/XML writer should be Basic.", m1.getWriter() instanceof Basic );
-        assertTrue(
-            "RDF/XML-ABBREV writer should be Abbreviated.",
-            m1.getWriter("RDF/XML-ABBREV") instanceof Abbreviated);
-        assertTrue(
-            "N-TRIPLE writer should be NTripleWriter.",
-            m1.getWriter("N-TRIPLE") instanceof NTripleWriter);
+        assertTrue( "RDF/XML writer should be Basic.", m1.getWriter("RDF/XML") instanceof Basic );
+        assertTrue("RDF/XML-ABBREV writer should be Abbreviated.",
+                   m1.getWriter("RDF/XML-ABBREV") instanceof Abbreviated);
+        assertTrue("N-TRIPLE writer should be NTripleWriter.",
+                   m1.getWriter("N-TRIPLE") instanceof NTripleWriter);
     }
 
     public void testWriting() {

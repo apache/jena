@@ -102,7 +102,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
      Model loadRDF(InFactoryX in, RDFErrorHandler eh, String base)
         throws IOException {
         Model model = ModelFactory.createDefaultModel();
-        JenaReader jr = new JenaReader();
+        RDFXMLReader jr = new RDFXMLReader();
 
         if (eh != null)
             jr.setErrorHandler(eh);
