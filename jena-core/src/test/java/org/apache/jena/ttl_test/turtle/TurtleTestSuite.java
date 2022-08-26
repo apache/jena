@@ -16,28 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ttl.turtle;
+package org.apache.jena.ttl_test.turtle;
 
-import junit.framework.TestCase;
-import org.apache.jena.rdf.model.* ;
+import junit.framework.* ;
 
-
-public class TestSyntax extends TestCase
+public class TurtleTestSuite extends TestSuite
 {
-    String uri ;
-    public TestSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
-    
-    @Override
-    public void runTest()
-    {
-        Model model = ModelFactory.createDefaultModel() ;
-        RDFReaderI t = new TurtleReader() ;
-        try {
-            t.read(model, uri) ;
-        } catch (TurtleParseException ex)
-        {
-            throw ex ;    
-        }
+    static public TestSuite suite() {
+        return new TurtleTestSuite() ;
     }
-
+	
+	private TurtleTestSuite()
+	{
+		super("Turtle") ;
+        addTest(TestTurtleReader.suite()) ;
+        addTest(TurtleInternalTests.suite()) ;
+        addTest(TurtleTestFactory.make("testing/Turtle/manifest.ttl")) ;
+//		addTest(new N3ExternalTests()) ;
+//		addTest(new N3JenaReaderTests()) ;
+//		addTest(new N3JenaWriterTests()) ;
+	}
 }

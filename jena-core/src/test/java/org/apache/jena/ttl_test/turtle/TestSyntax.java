@@ -16,16 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ttl.turtle;
+package org.apache.jena.ttl_test.turtle;
 
 import junit.framework.TestCase;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.ttl.turtle.TurtleParseException;
+import org.apache.jena.ttl.turtle.TurtleReader;
 
 
-public class TestBadSyntax extends TestCase
+public class TestSyntax extends TestCase
 {
     String uri ;
-    public TestBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
+    public TestSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
     
     @Override
     public void runTest()
@@ -34,11 +36,10 @@ public class TestBadSyntax extends TestCase
         RDFReaderI t = new TurtleReader() ;
         try {
             t.read(model, uri) ;
-            fail("Bad syntax test succeed in parsing the file") ;
         } catch (TurtleParseException ex)
         {
-            return ;    
+            throw ex ;    
         }
-
     }
+
 }

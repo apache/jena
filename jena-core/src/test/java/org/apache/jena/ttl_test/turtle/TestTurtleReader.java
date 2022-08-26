@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ttl.turtle;
+package org.apache.jena.ttl_test.turtle;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

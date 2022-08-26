@@ -16,13 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ttl.turtle;
+package org.apache.jena.ttl_test.turtle;
 
 
 import junit.framework.TestCase;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFReaderI ;
+import org.apache.jena.ttl.turtle.TurtleParseException;
+import org.apache.jena.ttl.turtle.TurtleReader;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.FileUtils ;
 

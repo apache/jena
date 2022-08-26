@@ -16,10 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ttl;
+package org.apache.jena.ttl_test;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.apache.jena.ttl.JenaURIException;
+import org.apache.jena.ttl.N3IRIResolver;
 @SuppressWarnings("deprecation")
 // Tests the old N3IRIResolver which is now only used for tests. 
 public class TestN3IRIResolver extends TestCase
