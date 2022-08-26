@@ -73,7 +73,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     }
 
     private static void reset() {
-        Class<? extends RDFReaderI> rdfxmlReader = org.apache.jena.rdfxml.xmlinput.JenaReader.class;
+        Class<? extends RDFReaderI> rdfxmlReader = org.apache.jena.rdfxml.xmlinput.RDFXMLReader.class;
         Class<? extends RDFReaderI> ntReader = org.apache.jena.rdf.model.impl.NTripleReader.class;
         // Turtle moved to test-only
 

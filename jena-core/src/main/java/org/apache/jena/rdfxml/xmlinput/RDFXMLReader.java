@@ -45,7 +45,7 @@ import org.xml.sax.SAXNotSupportedException;
 /**
  * Interface between Jena and ARP.
  */
-public class JenaReader implements RDFReaderI, ARPErrorNumbers {
+public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
 
     static private final String saxFeaturesURL = "http://xml.org/sax/features/";
 
@@ -62,7 +62,7 @@ public class JenaReader implements RDFReaderI, ARPErrorNumbers {
     /**
      * Creates new JenaReader
      */
-    public JenaReader() {
+    public RDFXMLReader() {
         arpf = RDFXMLParser.create();
     }
 
