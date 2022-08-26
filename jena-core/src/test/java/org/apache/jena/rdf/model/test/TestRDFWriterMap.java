@@ -25,8 +25,8 @@ import org.apache.jena.Jena ;
 import org.apache.jena.rdf.model.RDFWriterI ;
 import org.apache.jena.rdf.model.RDFWriterF ;
 import org.apache.jena.rdf.model.impl.NTripleWriter ;
-import org.apache.jena.rdfxml.xmloutput.impl.Abbreviated ;
-import org.apache.jena.rdfxml.xmloutput.impl.Basic ;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev ;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.NoWriterForLangException ;
 import org.apache.jena.test.JenaTestBase ;
@@ -72,9 +72,8 @@ public class TestRDFWriterMap extends JenaTestBase
 
 		private void loadDefaults()
 		{
-            setWriterClassName(TestRDFWriterMap.RDF_XML,        Jena.PATH + ".xmloutput.impl.Basic");
-            setWriterClassName(TestRDFWriterMap.RDF_XML_ABBREV, Jena.PATH + ".xmloutput.impl.Abbreviated");
-            setWriterClassName(TestRDFWriterMap.N3,             Jena.PATH + ".n3.N3JenaWriter");
+            setWriterClassName(TestRDFWriterMap.RDF_XML,        Jena.PATH + ".rdfxml.xmloutput.impl.RDFXML_Basic");
+            setWriterClassName(TestRDFWriterMap.RDF_XML_ABBREV, Jena.PATH + ".rdfxml.xmloutput.impl.RDFXML_Abbrev");
             setWriterClassName(TestRDFWriterMap.NTRIPLE,        Jena.PATH + ".rdf.model.impl.NTripleWriter");
             setWriterClassName(TestRDFWriterMap.NTRIPLES,       Jena.PATH + ".rdf.model.impl.NTripleWriter");
 		}
@@ -104,7 +103,6 @@ public class TestRDFWriterMap extends JenaTestBase
 	public static final String RDF_XML_ABBREV = "RDF/XML-ABBREV";
 	public static final String NTRIPLE = "N-TRIPLE";
 	public static final String NTRIPLES = "N-TRIPLES";
-	public static final String N3 = "N3";
 
 	public TestRDFWriterMap( final String name )
 	{
@@ -114,8 +112,8 @@ public class TestRDFWriterMap extends JenaTestBase
 	public void testDefaultWriter()
 	{
 		final RDFWriterF x = new RDFWriterMap(true);
-		Assert.assertEquals(x.getWriter("RDF/XML").getClass(), x.getWriter()
-				.getClass());
+		Assert.assertEquals(x.getWriter("RDF/XML").getClass(),
+		                    x.getWriter().getClass());
 	}
 
 	/*
@@ -144,19 +142,18 @@ public class TestRDFWriterMap extends JenaTestBase
 		testWriterAbsent(TestRDFWriterMap.RDF_XML_ABBREV);
 		testWriterAbsent(TestRDFWriterMap.NTRIPLE);
 		testWriterAbsent(TestRDFWriterMap.NTRIPLES);
-		testWriterAbsent(TestRDFWriterMap.N3);
 	}
 
 	public void testWritersPresent()
 	{
 		final RDFWriterF x = new RDFWriterMap(true);
-		Assert.assertEquals(Basic.class, x.getWriter(TestRDFWriterMap.RDF_XML)
-				.getClass());
-		Assert.assertEquals(Abbreviated.class,
-				x.getWriter(TestRDFWriterMap.RDF_XML_ABBREV).getClass());
+		Assert.assertEquals(RDFXML_Basic.class,
+		                    x.getWriter(TestRDFWriterMap.RDF_XML).getClass());
+		Assert.assertEquals(RDFXML_Abbrev.class,
+		                    x.getWriter(TestRDFWriterMap.RDF_XML_ABBREV).getClass());
 		Assert.assertEquals(NTripleWriter.class,
-				x.getWriter(TestRDFWriterMap.NTRIPLE).getClass());
+		                    x.getWriter(TestRDFWriterMap.NTRIPLE).getClass());
 		Assert.assertEquals(NTripleWriter.class,
-				x.getWriter(TestRDFWriterMap.NTRIPLES).getClass());
+		                    x.getWriter(TestRDFWriterMap.NTRIPLES).getClass());
 	}
 }

@@ -22,7 +22,9 @@ import java.io.*;
 
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev;
 import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter ;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic;
 import org.apache.jena.vocabulary.RDF ;
 
 /**
@@ -120,7 +122,7 @@ public class TestEntityOutput extends ModelTestBase
         Model m = createMemModel();
         m.read("file:testing/abbreviated/entities.rdf");
         try ( StringWriter w = new StringWriter() ) {
-            RDFWriterI wr = m.getWriter();
+            RDFWriterI wr = new RDFXML_Basic();
             wr.setProperty("showDoctypeDeclaration", "true");
             wr.write(m, w, "http://example.org/");
             Reader r = new StringReader(w.toString());
@@ -173,7 +175,7 @@ public class TestEntityOutput extends ModelTestBase
     private String modelToString( Model m )
         {
         StringWriter s = new StringWriter();
-        RDFWriterI w = m.getWriter( "RDF/XML-ABBREV" );
+        RDFWriterI w = new RDFXML_Abbrev();
         w.setProperty( "showDoctypeDeclaration", Boolean.TRUE );
         w.write( m, s, null );
         return s.toString();

@@ -26,9 +26,9 @@ import org.apache.jena.vocabulary.RDFSyntax ;
 
 /** Writes out an XML serialization of a model.
  */
-public class Basic extends BaseXMLWriter 
+public class RDFXML_Basic extends BaseXMLWriter 
     {
-	public Basic() 
+	public RDFXML_Basic() 
         {}
     
     private String space;

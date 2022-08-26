@@ -427,6 +427,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
         Model m = ModelFactory.createModelForGraph(g) ;
         // serialize
 
+        @SuppressWarnings("deprecation")
         RDFWriterI rw = m.getWriter(lang) ;
         if ( p != null )
             rw.setProperty(p, val) ;
@@ -516,6 +517,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	 *
 	 */
 	public void testRelativeAPI() {
+        @SuppressWarnings("deprecation")
 		RDFWriterI w = createMemModel().getWriter(lang);
 		String old = (String) w.setProperty("relativeURIs", "");
 		assertEquals("default value check", old,
@@ -538,6 +540,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 
 		String contents ;
 		try ( ByteArrayOutputStream bos = new ByteArrayOutputStream() ) {
+	        @SuppressWarnings("deprecation")
 		    RDFWriterI writer = m.getWriter(lang);
 		    writer.setProperty("relativeURIs", relativeParam);
 		    writer.write(m, bos, base);

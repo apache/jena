@@ -23,6 +23,7 @@ import java.util.* ;
 
 import org.apache.jena.ontology.OntModelSpec ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev;
 import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.ReasonerException ;
@@ -32,7 +33,7 @@ import org.apache.jena.reasoner.test.WGReasonerTester ;
 import org.apache.jena.vocabulary.* ;
 
 /**
- * Test harness for running the WebOnt working group tests relevant 
+ * Test harness for running the WebOnt working group tests relevant
  * to the OWL rule reasoner. See also TestOWLRules which runs the
  * core WG tests as part of the routine unit tests.
  */
@@ -43,78 +44,78 @@ public class WebOntTestHarness {
 
     /** Set to true to include modified test versions */
     public static boolean includeModified = false;
-    
+
     /** Set to true to use approved tests only */
     public static boolean approvedOnly = true;
-    
+
     /** Set to true to print LP engine profile information */
     public static boolean printProfile = false;
-    
+
 //  =======================================================================
 //  Internal state
 
     /** The reasoner being tested */
     Reasoner reasoner;
-    
+
     /** The total set of known tests */
     Model testDefinitions;
-    
+
     /** The number of tests run */
     int testCount = 0;
-    
+
     /** The time cost in ms of the last test to be run */
     long lastTestDuration = 0;
-    
+
     /** Number of tests passed */
     int passCount = 0;
-    
+
     /** The model describing the results of the run */
     Model testResults;
-    
+
     /** The resource which acts as a description for the Jena2 instance being tested */
     Resource jena2;
-    
+
 //  =======================================================================
 //  Internal constants
 
     /** The base directory for the working group test files to use */
     public static final String BASE_TESTDIR = "testing/wg/";
-    
+
     /** The base URI in which the files are purported to reside */
     public static String BASE_URI = "http://www.w3.org/2002/03owlt/";
-    
+
     /** The base URI for the results file */
     public static String BASE_RESULTS_URI = "http://jena.sourceforge.net/data/owl-results.rdf";
-    
+
     /** The list of subdirectories to process (omits the rdf/rdfs dirs) */
-    public static final String[] TEST_DIRS= {"AllDifferent", "AllDistinct", 
+    public static final String[] TEST_DIRS= {"AllDifferent", "AllDistinct",
             "AnnotationProperty", "DatatypeProperty", "FunctionalProperty",
             "I3.2", "I3.4", "I4.1", "I4.5", "I4.6", "I5.1", "I5.2", "I5.21", "I5.24",
-            "I5.26", "I5.3", "I5.5", "I5.8", "InverseFunctionalProperty", "Nothing", 
-            "Restriction", "SymmetricProperty", "Thing", "TransitiveProperty", 
-            "allValuesFrom", "amp-in-url", "cardinality", "complementOf", "datatypes", 
-            "differentFrom", "disjointWith", "distinctMembers", 
-            "equivalentClass", "equivalentProperty", "imports", 
+            "I5.26", "I5.3", "I5.5", "I5.8", "InverseFunctionalProperty", "Nothing",
+            "Restriction", "SymmetricProperty", "Thing", "TransitiveProperty",
+            "allValuesFrom", "amp-in-url", "cardinality", "complementOf", "datatypes",
+            "differentFrom", "disjointWith", "distinctMembers",
+            "equivalentClass", "equivalentProperty", "imports",
             "intersectionOf", "inverseOf", "localtests", "maxCardinality", "miscellaneous",
-            "oneOf", "oneOfDistinct", "sameAs", "sameClassAs", "sameIndividualAs", 
-            "samePropertyAs", "someValuesFrom", "statement-entailment", "unionOf", 
+            "oneOf", "oneOfDistinct", "sameAs", "sameClassAs", "sameIndividualAs",
+            "samePropertyAs", "someValuesFrom", "statement-entailment", "unionOf",
             "xmlbase",
-            "description-logic", 
-//            "extra-credit", 
+            "description-logic",
+//            "extra-credit",
         };
-    
+
     /** List of tests that are blocked because they test language features beyond Lite */
     public static final String[] BLOCKED_TESTS = {
         // Explicitly testing non-lite features
-        "http://www.w3.org/2002/03owlt/complementOf/Manifest001#test", 
-        "http://www.w3.org/2002/03owlt/description-logic/Manifest901#test", 
-        "http://www.w3.org/2002/03owlt/description-logic/Manifest903#test", 
-        "http://www.w3.org/2002/03owlt/description-logic/Manifest902#test", 
-        "http://www.w3.org/2002/03owlt/description-logic/Manifest904#test", 
-//        "http://www.w3.org/2002/03owlt/oneOf/Manifest002#test", 
-//        "http://www.w3.org/2002/03owlt/oneOf/Manifest003#test", 
-        "http://www.w3.org/2002/03owlt/oneOf/Manifest004#test", 
-        "http://www.w3.org/2002/03owlt/unionOf/Manifest001#test", 
+        "http://www.w3.org/2002/03owlt/complementOf/Manifest001#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest901#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest903#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest902#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest904#test",
+//        "http://www.w3.org/2002/03owlt/oneOf/Manifest002#test",
+//        "http://www.w3.org/2002/03owlt/oneOf/Manifest003#test",
+        "http://www.w3.org/2002/03owlt/oneOf/Manifest004#test",
+        "http://www.w3.org/2002/03owlt/unionOf/Manifest001#test",
         "http://www.w3.org/2002/03owlt/unionOf/Manifest002#test",
         "http://www.w3.org/2002/03owlt/unionOf/Manifest003#test",
         "http://www.w3.org/2002/03owlt/unionOf/Manifest004#test",
@@ -123,7 +124,7 @@ public class WebOntTestHarness {
         "http://www.w3.org/2002/03owlt/description-logic/Manifest201#test",
         "http://www.w3.org/2002/03owlt/I5.8/Manifest004#test",
         "http://www.w3.org/2002/03owlt/I5.2/Manifest004#test",
-        
+
         "http://www.w3.org/2002/03owlt/description-logic/Manifest008#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest011#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest015#test",
@@ -150,7 +151,7 @@ public class WebOntTestHarness {
         "http://www.w3.org/2002/03owlt/description-logic/Manifest111#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest502#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest504#test",
-        
+
         "http://www.w3.org/2002/03owlt/description-logic/Manifest202#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest203#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest204#test",
@@ -160,38 +161,38 @@ public class WebOntTestHarness {
         "http://www.w3.org/2002/03owlt/description-logic/Manifest208#test",
 
         "http://www.w3.org/2002/03owlt/description-logic/Manifest209#test",
-        
+
         "http://www.w3.org/2002/03owlt/miscellaneous/Manifest010#test",
         "http://www.w3.org/2002/03owlt/miscellaneous/Manifest011#test",
         "http://www.w3.org/2002/03owlt/SymmetricProperty/Manifest002#test",
-        
+
         "http://www.w3.org/2002/03owlt/Thing/Manifest005#test",
-        
+
         // Temporary block - incomplete (OOM eventually in some cases)
         "http://www.w3.org/2002/03owlt/TransitiveProperty/Manifest002#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest661#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest662#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest663#test",
-        
+
         "http://www.w3.org/2002/03owlt/description-logic/Manifest608#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest611#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest615#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest623#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest626#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest627#test",
-        "http://www.w3.org/2002/03owlt/description-logic/Manifest630#test",        
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest630#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest668#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest668#test",
 
     };
-            
+
     /** The list of status values to include. If approvedOnly then only the first
      *  entry is allowed */
     public static final String[] STATUS_FLAGS = { "APPROVED", "PROPOSED" };
-    
+
 //  =======================================================================
 //  Constructor and associated support
-    
+
     public WebOntTestHarness() {
         testDefinitions = loadAllTestDefinitions();
         reasoner = ReasonerRegistry.getOWLReasoner();
@@ -243,14 +244,14 @@ public class WebOntTestHarness {
         System.out.println("loaded");
         return testDefs;
     }
-    
-    /** 
+
+    /**
      * Initialize the result model.
      */
     public void initResults() {
         testResults = ModelFactory.createDefaultModel();
         jena2 = testResults.createResource(BASE_RESULTS_URI + "#jena2");
-        jena2.addProperty(RDFS.comment, 
+        jena2.addProperty(RDFS.comment,
             testResults.createLiteral(
                 "<a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://jena.sourceforce.net/\">Jena2</a> includes a rule-based inference engine for RDF processing, " +
                 "supporting both forward and backward chaining rules. Its OWL rule set is designed to provide sound " +
@@ -261,10 +262,10 @@ public class WebOntTestHarness {
         jena2.addProperty(RDFS.label, "Jena2");
         testResults.setNsPrefix("results", OWLResults.NS);
     }
-    
+
 //  =======================================================================
 //  Main control methods
-    
+
     public static void main(String[] args) throws IOException {
         String resultFile = "owl-results.rdf";
         if (args.length >= 1) {
@@ -279,13 +280,13 @@ public class WebOntTestHarness {
 //        harness.runTest("http://www.w3.org/2002/03owlt/Thing/Manifest003#test");
 //        harness.runTest("http://www.w3.org/2002/03owlt/Thing/Manifest004#test");
 //        harness.runTest("http://www.w3.org/2002/03owlt/Thing/Manifest005#test");
-        RDFWriterI writer = harness.testResults.getWriter("RDF/XML-ABBREV");
+        RDFWriterI writer = new RDFXML_Abbrev();
         OutputStream stream = new FileOutputStream(resultFile);
         writer.setProperty("showXmlDeclaration", "true");
         harness.testResults.setNsPrefix("", "http://www.w3.org/1999/xhtml");
         writer.write(harness.testResults, stream, BASE_RESULTS_URI);
     }
-    
+
     /**
      * Run all relevant tests.
      */
@@ -305,7 +306,7 @@ public class WebOntTestHarness {
         runTests(findTestsOfType(OWLTest.InconsistencyTest));
         System.out.println("\nPassed " + passCount + " out of " + testCount);
     }
-    
+
     /**
      * Run all tests in the given list.
      */
@@ -315,7 +316,7 @@ public class WebOntTestHarness {
             runTest( test );
         }
     }
-    
+
     /**
      * Run a single test of any sort, performing any appropriate logging
      * and error reporting.
@@ -323,7 +324,7 @@ public class WebOntTestHarness {
     public void runTest(String test) {
         runTest(testDefinitions.getResource(test));
     }
-     
+
     /**
      * Run a single test of any sort, performing any appropriate logging
      * and error reporting.
@@ -351,7 +352,7 @@ public class WebOntTestHarness {
         if (fail) {
             resultType = OWLResults.FailingRun;
         } else {
-            if (test.hasProperty(RDF.type, OWLTest.NegativeEntailmentTest) 
+            if (test.hasProperty(RDF.type, OWLTest.NegativeEntailmentTest)
             ||  test.hasProperty(RDF.type, OWLTest.ConsistencyTest)) {
                 resultType = success ? OWLResults.PassingRun : OWLResults.FailingRun;
             } else {
@@ -365,12 +366,12 @@ public class WebOntTestHarness {
             .addProperty(OWLResults.test, test)
             .addProperty(OWLResults.system, jena2);
     }
-    
+
     /**
      * Run a single test of any sort, return true if the test succeeds.
      */
     public boolean doRunTest(Resource test) throws IOException {
-        if (test.hasProperty(RDF.type, OWLTest.PositiveEntailmentTest) 
+        if (test.hasProperty(RDF.type, OWLTest.PositiveEntailmentTest)
         ||  test.hasProperty(RDF.type, OWLTest.NegativeEntailmentTest)
         ||  test.hasProperty(RDF.type, OWLTest.OWLforOWLTest)
         ||  test.hasProperty(RDF.type, OWLTest.ImportEntailmentTest)
@@ -388,7 +389,7 @@ public class WebOntTestHarness {
             Model result = ModelFactory.createModelForGraph(graph);
             boolean correct = WGReasonerTester.testConclusions(conclusions.getGraph(), result.getGraph());
             long t2 = System.currentTimeMillis();
-            lastTestDuration = t2 - t1; 
+            lastTestDuration = t2 - t1;
             if (printProfile) {
                 ((FBRuleInfGraph)graph).printLPProfile();
             }
@@ -403,7 +404,7 @@ public class WebOntTestHarness {
             InfGraph graph = reasoner.bind(input.getGraph());
             boolean correct = ! graph.validate().isValid();
             long t2 = System.currentTimeMillis();
-            lastTestDuration = t2 - t1; 
+            lastTestDuration = t2 - t1;
             return correct;
         } else if (test.hasProperty(RDF.type, OWLTest.ConsistencyTest)) {
             // Not used normally becase we are not complete enough to prove consistency
@@ -413,7 +414,7 @@ public class WebOntTestHarness {
             InfGraph graph = reasoner.bind(input.getGraph());
             boolean correct = graph.validate().isValid();
             long t2 = System.currentTimeMillis();
-            lastTestDuration = t2 - t1; 
+            lastTestDuration = t2 - t1;
             return correct;
         } else {
             for (StmtIterator i = test.listProperties(RDF.type); i.hasNext(); ) {
@@ -422,7 +423,7 @@ public class WebOntTestHarness {
             throw new ReasonerException("Unknown test type");
         }
     }
-   
+
     /**
      * Load the premises or conclusions for the test, optional performing
      * import processing.
@@ -440,7 +441,7 @@ public class WebOntTestHarness {
             return getDoc(test, docType);
         }
     }
-   
+
     /**
      * Load the premises or conclusions for the test.
      */
@@ -455,7 +456,7 @@ public class WebOntTestHarness {
     }
 
     /**
-     * Utility to load a file into a model a Model. 
+     * Utility to load a file into a model a Model.
      * Files are assumed to be relative to the BASE_URI.
      * @param file the file name, relative to baseDir
      * @return the loaded Model
@@ -475,7 +476,7 @@ public class WebOntTestHarness {
         model.read(reader, BASE_URI + fname, langType);
         return model;
     }
-    
+
     /**
      * Example the conclusions graph for introduction of restrictions which
      * require a comprehension rewrite and declare new (anon) classes
@@ -511,7 +512,7 @@ public class WebOntTestHarness {
         //   (X equivalentClass ?CC) (?CC intersectionOf Y)
         StmtIterator ii = conclusions.listStatements(null, OWL.intersectionOf, (RDFNode)null);
         List<Statement> intersections = new ArrayList<>();
-        while (ii.hasNext()) { 
+        while (ii.hasNext()) {
             intersections.add(ii.nextStatement());
         }
         for ( Statement is : intersections )
@@ -554,10 +555,10 @@ public class WebOntTestHarness {
             return mapElt;
         }
     }
-    
+
 //  =======================================================================
 //  Internal helper functions
-    
+
     /** Return a list of all tests of the given type, according to the current filters */
     public List<Resource> findTestsOfType(Resource testType) {
         ArrayList<Resource> result = new ArrayList<>();

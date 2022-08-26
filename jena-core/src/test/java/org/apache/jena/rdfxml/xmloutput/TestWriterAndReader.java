@@ -37,34 +37,34 @@ import org.slf4j.LoggerFactory ;
  * The test fails if the models are not 'the same'.
  * Quite what 'the same' means is debatable.
  */
-public class TestWriterAndReader 
+public class TestWriterAndReader
     extends ModelTestBase implements RDFErrorHandler {
 	static private boolean showProgress = false;
 	//static private boolean errorDetail = false;
 	static private int firstTest = 4;
 	static private int lastTest = 9;
 	static private int repetitionsJ = 6;
-    
+
   protected static Logger logger = LoggerFactory.getLogger( TestWriterAndReader.class );
-    
+
 	final String lang;
-   
+
 	final int fileNumber;
 
     final int options;
-    
+
     String test;
 
-    TestWriterAndReader( String name, String lang, int fileNumber ) 
+    TestWriterAndReader( String name, String lang, int fileNumber )
         { this( name, lang, fileNumber, 0 ); }
-    
+
 	TestWriterAndReader(String name, String lang, int fileNumber, int options) {
 		super( name );
 		this.lang = lang;
 		this.fileNumber = fileNumber;
 		this.options = options;
 	}
-    
+
 	@Override
     public String toString() {
 		return getName()
@@ -75,37 +75,37 @@ public class TestWriterAndReader
 			+ "000.rdf"
 			+ (options != 0 ? ("[" + options + "]") : "");
 	}
-    
+
 	static Test suiteN_TRIPLE()
         { return baseSuite( "N-TRIPLE" ); }
-    
+
     static TestSuite suiteXML()
-        { 
+        {
         TestSuite baseTests = baseSuite( "RDF/XML" );
         baseTests.addTestSuite( TestXMLFeatures_XML.class );
         baseTests.addTest( addXMLtests( "RDF/XML", false ) );
-        return baseTests; 
+        return baseTests;
         }
-    
+
     static Test suiteXML_ABBREV()
-        { 
+        {
         TestSuite suite = baseSuite( "RDF/XML-ABBREV" );
         suite.addTestSuite( TestXMLFeatures_XML_ABBREV.class );
         suite.addTestSuite( TestXMLAbbrev.class );
         suite.addTest( addXMLtests( "RDF/XML-ABBREV", false ) );
-        return suite; 
+        return suite;
         }
-    
+
     public static TestSuite repeatedAbbrevSuite()
-        { 
+        {
         TestSuite suite = baseSuite( "RDF/XML-ABBREV" );
         suite.addTestSuite( TestXMLFeatures_XML_ABBREV.class );
         suite.addTestSuite( TestXMLAbbrev.class );
         suite.addTest( addXMLtests( "RDF/XML-ABBREV", true ) );
-        return suite; 
+        return suite;
         }
 
-    static TestSuite baseSuite( String lang ) 
+    static TestSuite baseSuite( String lang )
         {
         TestSuite langsuite = new TestSuite();
         langsuite.setName( lang );
@@ -113,23 +113,23 @@ public class TestWriterAndReader
         langsuite.addTest( new TestWriterInterface( "testLineSeparator", lang ) );
         return langsuite;
         }
-    
+
     public static class TestXMLFeatures_XML extends TestXMLFeatures
         {
         public TestXMLFeatures_XML( String name )
             { super( name, "RDF/XML" ); }
         }
-    
+
     public static class TestXMLFeatures_XML_ABBREV extends TestXMLFeatures
         {
         public TestXMLFeatures_XML_ABBREV( String name )
             { super( name, "RDF/XML-ABBREV" ); }
         }
-    
-	static private boolean nBits( int i, int [] ok ) 
+
+	static private boolean nBits( int i, int [] ok )
         {
 		int bitCount = 0;
-		while (i > 0) 
+		while (i > 0)
             {
 			if ((i & 1) == 1) bitCount += 1;
 			i >>= 1;
@@ -143,16 +143,16 @@ public class TestWriterAndReader
             }
 		return false;
         }
-    
+
     private static TestSuite addXMLtests( String lang, boolean lots )
         {
         TestSuite suite = new TestSuite();
         int optionLimit = (lang.equals( "RDF/XML-ABBREV" ) ? 1 << blockRules.length : 2);
-        for (int fileNumber = firstTest; fileNumber <= lastTest; fileNumber++) 
+        for (int fileNumber = firstTest; fileNumber <= lastTest; fileNumber++)
             {
         	suite.addTest(new TestWriterAndReader("testRandom", lang, fileNumber ) );
         	suite.addTest( new TestWriterAndReader( "testLongId", lang, fileNumber ) );
-            for (int optionMask = 1; optionMask < optionLimit; optionMask += 1) 
+            for (int optionMask = 1; optionMask < optionLimit; optionMask += 1)
                 {
         		if (lots || nBits( optionMask, new int[] { 1, /* 2,3,4,5, */ 6,7 } ))
         			suite.addTest( createTestOptions( lang, fileNumber, optionMask ) );
@@ -163,23 +163,23 @@ public class TestWriterAndReader
 
     private static TestWriterAndReader createTestOptions( String lang, int fileNumber, int optionMask )
         {
-        return new TestWriterAndReader( "testOptions " + fileNumber + " " + optionMask, lang, fileNumber, optionMask ) 
+        return new TestWriterAndReader( "testOptions " + fileNumber + " " + optionMask, lang, fileNumber, optionMask )
             {
             @Override
             public void runTest() throws IOException { testOptions(); }
             };
         }
 
-	public void testRandom() throws IOException 
+	public void testRandom() throws IOException
         {
 		doTest( new String[] {}, new Object[] {} );
         }
-    
-	public void testLongId() throws IOException 
+
+	public void testLongId() throws IOException
         {
 		doTest( new String[] {"longId"}, new Object[] {Boolean.TRUE} );
         }
-    
+
 	static Resource [] blockRules =
 		{
 		RDFSyntax.parseTypeLiteralPropertyElt,
@@ -189,11 +189,11 @@ public class TestWriterAndReader
 		RDFSyntax.sectionListExpand,
 		RDFSyntax.parseTypeResourcePropertyElt,
         };
-    
-	public void testOptions() throws IOException 
+
+	public void testOptions() throws IOException
         {
 		Vector<Resource> v = new Vector<>();
-		for (int i = 0; i < blockRules.length; i += 1) 
+		for (int i = 0; i < blockRules.length; i += 1)
             {
 			if ((options & (1 << i)) != 0) v.add( blockRules[i] );
             }
@@ -201,8 +201,8 @@ public class TestWriterAndReader
 		v.copyInto( blocked );
 		doTest( new String[] { "blockRules" }, new Resource[][] { blocked } );
         }
-    
-	public void doTest( String[] propNames, Object[] propVals ) throws IOException 
+
+	public void doTest( String[] propNames, Object[] propVals ) throws IOException
         {
 		test( lang, 35, 1, propNames, propVals );
         }
@@ -211,9 +211,9 @@ public class TestWriterAndReader
 		{
 		"http://foo.com/Hello",
         };
-            
+
     ByteArrayOutputStream tmpOut;
-    
+
 	/**
 	 * @param rwLang Use Writer for this lang
 	 * @param seed  A seed for the random number generator
@@ -236,16 +236,18 @@ public class TestWriterAndReader
 			System.out.println("Beginning " + test);
 		Random random = new Random(seed);
 
+        @SuppressWarnings("deprecation")
         RDFReaderI rdfRdr = m1.getReader( rwLang );
+        @SuppressWarnings("deprecation")
 		RDFWriterI rdfWtr = m1.getWriter( rwLang );
 
 		setWriterOptionsAndHandlers( wopName, wopVal, rdfRdr, rdfWtr );
-		for (int variationIndex = 0; variationIndex < variationMax; variationIndex++) 
+		for (int variationIndex = 0; variationIndex < variationMax; variationIndex++)
 			testVariation( filebase, random, rdfRdr, rdfWtr );
 		if (showProgress)
 			System.out.println("End of " + test);
 	}
-    
+
     /**
      	@param wopName
      	@param wopVal
@@ -260,7 +262,7 @@ public class TestWriterAndReader
 			for (int i = 0; i < wopName.length; i++)
 				rdfWtr.setProperty( wopName[i], wopVal[i] );
         }
-    
+
     /**
      	@param filebase
      	@param random
@@ -269,7 +271,7 @@ public class TestWriterAndReader
      	@throws FileNotFoundException
      	@throws IOException
     */
-    private void testVariation( String filebase, Random random, RDFReaderI rdfRdr, RDFWriterI rdfWtr ) 
+    private void testVariation( String filebase, Random random, RDFReaderI rdfRdr, RDFWriterI rdfWtr )
         throws FileNotFoundException, IOException
         {
         Model m1 = createMemModel();
@@ -292,14 +294,14 @@ public class TestWriterAndReader
         		prune(m1, random, 1 + cn / 10);
         	if ((j % 2) == 0 && j > 0)
         		expand(m1, random, 1 + cn / 10);
-            
+
             tmpOut = new ByteArrayOutputStream() ;
             rdfWtr.write(m1, tmpOut, baseUriWrite);
             tmpOut.flush() ;
             tmpOut.close() ;
         	m2 = createMemModel();
         	//empty(m2);
-            
+
             try ( InputStream in = new ByteArrayInputStream( tmpOut.toByteArray() ) ) {
                 rdfRdr.read(m2, in, baseUriWrite);
             }
@@ -309,7 +311,7 @@ public class TestWriterAndReader
         	System.err.println("m1:");
         	m1.write(System.err,"N-TRIPLE");
         	System.err.println("m2:");
-        	
+
         	m2.write(System.err,"N-TRIPLE");
         	System.err.println("=");
         	*/
@@ -326,9 +328,9 @@ public class TestWriterAndReader
         	System.out.flush();
         }
         }
-    
+
   static boolean linuxFileDeleteErrorFlag = false;
-  
+
 	/**Deletes count edges from m chosen by random.
 	 * @param count The number of statements to delete.
 	 * @param m A model with more than count statements.
@@ -353,7 +355,7 @@ public class TestWriterAndReader
 			m.remove( toRemove[i] );
 		//    System.out.println("Reduced to " + (int)m.size()  );
 	}
-    
+
 	/**
 	 *  Adds count edges to m chosen by random.
 	 *
@@ -411,10 +413,10 @@ public class TestWriterAndReader
     public void warning(Exception e) {
 //		logger.warn( toString() + " " + e.getMessage(), e );
         System.out.println(new String(tmpOut.toString()));
-        
+
 		throw new JenaException( e );
 	}
-    
+
 	@Override
     public void error(Exception e) {
 		fail(e.getMessage());

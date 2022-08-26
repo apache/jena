@@ -78,8 +78,8 @@ public class X_RDFWriterF extends Object implements RDFWriterF {
     }
 
     private static void reset() {
-        Class<? extends RDFWriterI> rdfxmlWriter = org.apache.jena.rdfxml.xmloutput.impl.Basic.class;
-        Class<? extends RDFWriterI> rdfxmlAbbrevWriter = org.apache.jena.rdfxml.xmloutput.impl.Abbreviated.class;
+        Class<? extends RDFWriterI> rdfxmlWriter = org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic.class;
+        Class<? extends RDFWriterI> rdfxmlAbbrevWriter = org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev.class;
         Class<? extends RDFWriterI> ntWriter = org.apache.jena.rdf.model.impl.NTripleWriter.class;
 
         custom.put("RDF/XML", rdfxmlWriter);

@@ -29,12 +29,12 @@ import org.apache.jena.util.FileManager ;
 
 public class TestWriterFeatures extends ModelTestBase
 {
-    
+
     public TestWriterFeatures(String name)
     {
         super(name) ;
     }
-    
+
     private static String testFileBase = "file:testing/abbreviated" ;
 
     private void checkReadWriteRead(String filename, String writerName,
@@ -42,10 +42,11 @@ public class TestWriterFeatures extends ModelTestBase
     {
             Model model = createMemModel();
             FileManager.getInternal().readModelInternal(model, filename );
-            
+
             String contents = null ;
-            
+
             try ( StringWriter sw = new StringWriter() ) {
+                @SuppressWarnings("deprecation")
                 RDFWriterI w =  model.getWriter(writerName) ;
                 if ( propertyName != null )
                     w.setProperty(propertyName, propertyValue) ;
@@ -59,7 +60,7 @@ public class TestWriterFeatures extends ModelTestBase
                 assertTrue( model.isIsomorphicWith( model2 ) );
             }
     }
-    
+
     private void checkReadWriteRead(String filename, String propertyName, String propertyValue)
     {
         checkReadWriteRead(filename, "RDF/XML", propertyName, propertyValue) ;
@@ -75,7 +76,7 @@ public class TestWriterFeatures extends ModelTestBase
 
     public void testEntity_2()
     { checkReadWriteRead(testFileBase+"/entities_2.ttl", "showDoctypeDeclaration", "true") ; }
-    
+
     public void testEntity_3()
     { checkReadWriteRead(testFileBase+"/entities_3.ttl", "showDoctypeDeclaration", "true") ; }
 }
