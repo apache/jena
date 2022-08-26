@@ -226,7 +226,7 @@ abstract public class AbstractTestLangNTuples
 
     protected abstract Lang getLang();
 
-    protected long parseCount(String... strings) {
-        return ParserTestBaseLib.parseCount(getLang(), strings);
+    protected long parseCount(String string) {
+        return ParserTests.parseCount(getLang(), string);
     }
 }

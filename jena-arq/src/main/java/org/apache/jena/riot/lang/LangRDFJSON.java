@@ -32,6 +32,8 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 
 /**
  * RDF-JSON.
+ * <p>
+ * This is not JSON-LD.
  *
  * @see <a href="http://www.w3.org/TR/rdf-json/">http://www.w3.org/TR/rdf-json/</a>
  */
