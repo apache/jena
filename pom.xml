@@ -994,7 +994,7 @@
             <!-- Java11 javadoc: "syntax,html" fails on things that aren't wrong
                  and on unrequested checks such as group "missing".
                  Java17 has fixed these and behaves as expected:
-                 <doclint>syntax,html</doclint>
+                 <doclint>syntax,html,reference</doclint>
             -->
             <doclint>none</doclint>
 

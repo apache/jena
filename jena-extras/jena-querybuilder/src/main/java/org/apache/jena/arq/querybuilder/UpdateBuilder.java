@@ -1054,7 +1054,7 @@ public class UpdateBuilder {
      * @see AbstractQueryBuilder#makeExpr(String)
      *
      * @param expression the expression to evaluate for the filter.
-     * @return @return The Builder for chaining.
+     * @return The Builder for chaining.
      */
     public UpdateBuilder addFilter(Expr expression) {
         whereProcessor.addFilter(expression);
