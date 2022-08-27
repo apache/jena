@@ -970,35 +970,25 @@
             </execution>
           </executions>
           <configuration>
-            <!-- Fixes for Javadoc when building for Java11.
-                 (1) Fix for:
-                 Named / unnamed modules error/warning
-                 (2) Fix for:
-                 [ERROR] error: the unnamed module reads package PKG from both A and B
-
-                 Modules impacted:
-                   jena-geosparql
-                   jena-jdbc
-            -->
+            <!-- Fixes for Javadoc when building with Java11 -->
             <detectJavaApiLink>false</detectJavaApiLink>
-            <source>8</source>
+            <source>${java.version}</source>
 
             <!-- To allow the build to keep going despite javadoc problems:
                  <failOnError>false</failOnError>
             -->
             <!-- For producible builds
                  https://maven.apache.org/guides/mini/guide-reproducible-builds.html
-                 See FAQ
             -->
+            <notimestamp>true</notimestamp>
 
-            <!-- Java11 javadoc: "syntax,html" fails on things that aren't wrong
-                 and on unrequested checks such as group "missing".
+            <!-- Java11 javadoc: "syntax,html" fails on things that aren't 
+                 wrong and applies unrequested checks such as group "missing".
                  Java17 has fixed these and behaves as expected:
-                 <doclint>syntax,html</doclint>
+                 <doclint>syntax,html,reference</doclint>
             -->
             <doclint>none</doclint>
 
-            <notimestamp>true</notimestamp>
             <quiet>true</quiet>
             <version>true</version>
             <show>public</show>

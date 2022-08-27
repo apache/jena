@@ -262,7 +262,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * Adds a filter to the where clause
      *
      * @param expression the expression to evaluate for the filter.
-     * @return @return This Builder for chaining.
+     * @return This Builder for chaining.
      * @throws ParseException If the expression can not be parsed.
      */
     public T addFilter(String expression) throws ParseException;
@@ -278,7 +278,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * @see AbstractQueryBuilder#makeExpr(String)
      *
      * @param expression the expression to evaluate for the filter.
-     * @return @return This Builder for chaining.
+     * @return This Builder for chaining.
      */
     public T addFilter(Expr expression);
 
