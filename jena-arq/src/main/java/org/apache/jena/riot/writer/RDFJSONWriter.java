@@ -39,14 +39,21 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.NodeUtils ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
+/**
+ * RDF-JSON.
+ * <p>
+ * This is not JSON-LD.
+ *
+ * @see <a href="http://www.w3.org/TR/rdf-json/">http://www.w3.org/TR/rdf-json/</a>
+ */
 public class RDFJSONWriter extends WriterGraphRIOTBase
 {
     public RDFJSONWriter() {}
-    
+
 	public static void output(OutputStream out, Graph graph) {
 		output(new JSWriter(out), graph ) ;
 	}
-	
+
 	public static void output(Writer out, Graph graph) {
 		output(new JSWriter(new IndentedWriterEx(out)), graph ) ;
 	}
@@ -72,7 +79,7 @@ public class RDFJSONWriter extends WriterGraphRIOTBase
     private static void output(JSWriter out, Graph graph) {
 	    out.startOutput() ;
 	    out.startObject();
-	    
+
 		ExtendedIterator<Node> subjects = GraphUtil.listSubjects(graph, Node.ANY, Node.ANY) ;
 		try {
 			Map<Node, Set<Node>> predicates = new HashMap<>() ;
@@ -84,19 +91,19 @@ public class RDFJSONWriter extends WriterGraphRIOTBase
 						Triple triple = triples.next() ;
 						Node p = triple.getPredicate() ;
 						if ( predicates.containsKey(p) ) {
-							predicates.get(p).add(triple.getObject()) ; 
+							predicates.get(p).add(triple.getObject()) ;
 						} else {
 							Set<Node> objects = new HashSet<>() ;
 							objects.add(triple.getObject()) ;
 							predicates.put(p, objects) ;
 						}
-					}				
+					}
 				} finally {
 					if ( triples != null ) triples.close() ;
 				}
 				send(out, new Pair<>(subject, predicates)) ;
 				predicates.clear() ;
-			}			
+			}
 		} finally {
 			if ( subjects != null ) subjects.close() ;
 			out.finishObject();
@@ -129,16 +136,16 @@ public class RDFJSONWriter extends WriterGraphRIOTBase
                     out.pair("value", "_:" + o.getBlankNodeLabel()) ;
                 } else if ( o.isURI() ) {
                     out.pair("type", "uri") ;
-                    out.pair("value", o.getURI()) ;                 
+                    out.pair("value", o.getURI()) ;
                 } else if ( o.isLiteral() ) {
                     String lex = o.getLiteralLexicalForm() ;
                     out.pair("type", "literal") ;
                     out.pair("value", lex) ;
-                    
+
                     if ( NodeUtils.isSimpleString(o) ) {
                         // No-op.
                     } else if ( NodeUtils.isLangString(o) ) {
-                        String lang = o.getLiteralLanguage() ;    
+                        String lang = o.getLiteralLanguage() ;
                         out.pair("lang", lang) ;
                     } else {
                         // Datatype, nothing special.
@@ -157,7 +164,7 @@ public class RDFJSONWriter extends WriterGraphRIOTBase
         }
         out.finishObject() ;
     }
-	
+
     private static class IndentedWriterEx extends IndentedWriter {
         public IndentedWriterEx(Writer writer) {
             super(writer);

@@ -16,12 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ttl.turtle;
+package org.apache.jena.ttl_test.turtle;
 
 import junit.framework.* ;
 
 import java.io.* ;
 
+import org.apache.jena.ttl.turtle.TurtleEventNull;
 import org.apache.jena.ttl.turtle.parser.TurtleParser;
 import org.apache.jena.util.junit.TestUtils ;
 

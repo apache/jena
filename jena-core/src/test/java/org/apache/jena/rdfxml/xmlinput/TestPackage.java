@@ -33,7 +33,7 @@ public class TestPackage extends TestSuite
     {
         super("ARP") ;
         addTest( org.apache.jena.rdfxml.xmlinput.TestARPMain.suite());
-        addTest( org.apache.jena.rdfxml.xmlinput.MoreTests.suite());
+        addTest( org.apache.jena.rdfxml.xmlinput.ARPTests2.suite());
         addTest( org.apache.jena.rdfxml.xmlinput.states.TestARPStates.suite());
         addTest( org.apache.jena.rdfxml.xmlinput.URITests.suite());
         addTest( org.apache.jena.rdfxml.xmlinput.TaintingTests.suite());

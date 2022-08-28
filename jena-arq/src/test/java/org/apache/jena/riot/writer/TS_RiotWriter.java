@@ -31,7 +31,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestRDFJSON.class
     , TestTurtleWriter.class
     , TestTriXWriter.class
-    , TestWriteRDFXML.class
+    , TestRDFXML_WriterProperties.class
 })
 
 public class TS_RiotWriter

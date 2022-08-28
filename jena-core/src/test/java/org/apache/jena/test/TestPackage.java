@@ -20,6 +20,7 @@ package org.apache.jena.test;
 
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
+import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
 
 /**
  * All developers should edit this file to add their tests.
@@ -30,6 +31,9 @@ import junit.framework.TestSuite ;
 public class TestPackage extends TestCase {
 
     static public TestSuite suite() {
+        // Reads Turtle (old parser, not up-to-date but we need something for testing.)
+        RDFReaderFImpl.alternative(new X_RDFReaderF());
+
         TestSuite ts = new TestSuite() ;
         ts.setName("Jena") ;
         addTest(ts,  "System setup", TestSystemSetup.suite());
@@ -41,7 +45,7 @@ public class TestPackage extends TestCase {
         addTest(ts,  "Mem2", org.apache.jena.mem.test.TestGraphMemPackage.suite() );
         addTest(ts,  "Model", org.apache.jena.rdf.model.test.TestPackage.suite());
         addTest(ts,  "StandardModels", org.apache.jena.rdf.model.test.TestStandardModels.suite() );
-        addTest(ts,  "Turtle", org.apache.jena.ttl.turtle.TurtleTestSuite.suite()) ;
+        addTest(ts,  "Turtle", org.apache.jena.ttl_test.turtle.TurtleTestSuite.suite()) ;
         addTest(ts,  "XML Output", org.apache.jena.rdfxml.xmloutput.TestPackage.suite());
         addTest(ts,  "Util", org.apache.jena.util.TestPackage.suite());
         addTest(ts,  "Jena iterator", org.apache.jena.util.iterator.test.TestPackage.suite() );
@@ -60,5 +64,7 @@ public class TestPackage extends TestCase {
             tc.setName(name);
         ts.addTest(tc);
     }
+
+
 
 }

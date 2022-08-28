@@ -19,7 +19,7 @@
 package org.apache.jena.riot.writer;
 
 import org.apache.jena.rdf.model.RDFWriterI ;
-import org.apache.jena.rdfxml.xmloutput.impl.Basic ;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.adapters.AdapterRDFWriter ;
 
@@ -30,7 +30,7 @@ public class RDFXMLPlainWriter extends AdapterRDFWriter
     public RDFXMLPlainWriter() {}
     
     @Override
-    protected RDFWriterI create() { return new Basic() ; }
+    protected RDFWriterI create() { return new RDFXML_Basic() ; }
     
     @Override
     public Lang getLang()

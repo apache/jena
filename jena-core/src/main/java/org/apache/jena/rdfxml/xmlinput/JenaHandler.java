@@ -71,7 +71,7 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler, 
     {
         try
         {
-            Triple t = JenaReader.convert(subj, pred, obj) ;
+            Triple t = RDFXMLReader.convert(subj, pred, obj) ;
             graph.add(t) ;
         } catch (JenaException e)
         {
@@ -84,7 +84,7 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler, 
     {
         try
         {
-            Triple t = JenaReader.convert(subj, pred, lit) ;
+            Triple t = RDFXMLReader.convert(subj, pred, lit) ;
             graph.add(t) ;
         } catch (JenaException e)
         {

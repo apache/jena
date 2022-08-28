@@ -33,16 +33,16 @@ public class XMLOutputTestBase extends ModelTestBase
     protected final String lang;
 
     public XMLOutputTestBase( String name, String lang )
-        { 
-        super( name ); 
-        this.lang = lang; 
+        {
+        super( name );
+        this.lang = lang;
         }
 
     static SimpleLogger realLogger;
-    
+
     static boolean sawErrors;
-    
-    static SimpleLogger falseLogger = new SimpleLogger() 
+
+    static SimpleLogger falseLogger = new SimpleLogger()
         {
         @Override
         public void warn(String s) { sawErrors = true; }
@@ -50,29 +50,29 @@ public class XMLOutputTestBase extends ModelTestBase
         @Override
         public void warn(String s, Exception e) { sawErrors = true; }
         };
-    
-    static void blockLogger() 
+
+    static void blockLogger()
         {
         realLogger = BaseXMLWriter.setLogger( falseLogger );
         sawErrors = false;
         }
-    
-    static boolean unblockLogger() 
+
+    static boolean unblockLogger()
         {
         BaseXMLWriter.setLogger( realLogger );
         return sawErrors;
         }
-    
-    static protected class Change 
+
+    static protected class Change
         {
         public void modify( RDFWriterI w ) {}
         public void modify( Model m ) {}
-        
+
         public void modify( Model m, RDFWriterI w ) { modify(m); modify(w); }
-        
+
         public static Change none()
             { return new Change(); }
-        
+
         public static Change setProperty( final String property, final String value )
             {
             return new Change()
@@ -81,7 +81,7 @@ public class XMLOutputTestBase extends ModelTestBase
                     { writer.setProperty( property, value ); }
                 };
             }
-        
+
         public static Change setProperty( final String property, final boolean value )
             {
             return new Change()
@@ -90,7 +90,7 @@ public class XMLOutputTestBase extends ModelTestBase
                     { writer.setProperty( property, value ); }
                 };
             }
-        
+
         public static Change setPrefix( final String prefix, final String URI )
             {
             return new Change()
@@ -99,13 +99,13 @@ public class XMLOutputTestBase extends ModelTestBase
                     { m.setNsPrefix( prefix, URI ); }
                 };
             }
-           
+
         public static Change blockRules( String ruleName )
             { return setProperty( "blockrules", ruleName ); }
-        
+
         public Change andSetPrefix( String prefix, String URI )
             { return and( Change.setPrefix( prefix, URI ) ); }
-        
+
         private Change and( final Change change )
             { return new Change()
                 { @Override
@@ -116,19 +116,19 @@ public class XMLOutputTestBase extends ModelTestBase
                     }
                 };
             }
-        }  
-    
+        }
+
     /**
      * @param code Stuff to do to the writer.
      * @param filename Read this file, write it out, read it in.
      * @param regex    Written file must match this.
      */
     protected void check( String filename, String regex, Change code)
-        throws IOException 
+        throws IOException
         {
         check( filename, regex, null, code );
         }
-    
+
     protected void check(
         String filename,
         String regexPresent,
@@ -147,7 +147,7 @@ public class XMLOutputTestBase extends ModelTestBase
         throws IOException {
         check(filename, encoding, regexPresent, regexAbsent, false, code);
     }
-    
+
     protected void check
         (
         String filename,
@@ -155,12 +155,12 @@ public class XMLOutputTestBase extends ModelTestBase
         Change code,
         String base
         )
-        throws IOException 
+        throws IOException
         {
         check( filename, null, regexAbsent, null, false, Change.none(), base );
         check( filename, null, null, regexAbsent, false, code, base );
         }
-    
+
     protected void check(
         String filename,
         String encoding,
@@ -171,7 +171,7 @@ public class XMLOutputTestBase extends ModelTestBase
         throws IOException {
         check(filename, encoding, regexPresent, regexAbsent, errs, code, "file:"+filename);
     }
-    
+
     protected void check(String filename,
                          String encoding,
                          String regexPresent,
@@ -196,6 +196,7 @@ public class XMLOutputTestBase extends ModelTestBase
             sw = new OutputStreamWriter(bos, encoding);
         }
         Properties p = (Properties) System.getProperties().clone();
+        @SuppressWarnings("deprecation")
         RDFWriterI writer = m.getWriter(lang);
         code.modify( m, writer );
         writer.write( m, sw, base );

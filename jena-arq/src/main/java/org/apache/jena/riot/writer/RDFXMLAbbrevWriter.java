@@ -19,7 +19,7 @@
 package org.apache.jena.riot.writer;
 
 import org.apache.jena.rdf.model.RDFWriterI ;
-import org.apache.jena.rdfxml.xmloutput.impl.Abbreviated ;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.adapters.AdapterRDFWriter ;
 
@@ -31,7 +31,7 @@ public class RDFXMLAbbrevWriter extends AdapterRDFWriter
     public RDFXMLAbbrevWriter() {} 
     
     @Override
-    protected RDFWriterI create() { return new Abbreviated() ; }
+    protected RDFWriterI create() { return new RDFXML_Abbrev() ; }
     
     @Override
     public Lang getLang()

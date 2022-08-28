@@ -158,7 +158,7 @@ class Unparser {
      * @param w
      *            The output.
      */
-    Unparser(Abbreviated parent, String localName, Model m, PrintWriter w) {
+    Unparser(RDFXML_Abbrev parent, String localName, Model m, PrintWriter w) {
         setLocalName(localName);
         prettyWriter = parent;
         out = w;
@@ -306,7 +306,7 @@ class Unparser {
 
     private Set<Resource> pleasingTypeSet = new HashSet<>();
 
-    final private Abbreviated prettyWriter;
+    final private RDFXML_Abbrev prettyWriter;
 
     private boolean avoidExplicitReification = true;
 

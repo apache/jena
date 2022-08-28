@@ -50,7 +50,8 @@ public class TestReaderEvents extends AbstractModelTestBase
 	{
 		final RecordingModelListener L = new RecordingModelListener();
 		model.register(L);
-		final RDFReaderI r = model.getReader(language);
+		@SuppressWarnings("deprecation")
+        final RDFReaderI r = model.getReader(language);
 		final StringReader stringReader = new StringReader(emptyModel);
 		r.read(model, stringReader, "");
 		L.assertHasStart(new Object[] { "someEvent", model,

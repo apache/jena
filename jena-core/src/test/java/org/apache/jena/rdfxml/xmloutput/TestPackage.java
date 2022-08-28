@@ -46,9 +46,9 @@ public class TestPackage extends TestCase{
         // add all the tests defined in this class to the suite
         suite.addTestSuite( PrettyWriterTest.class );
         suite.addTest(new TestWriterInterface("testInterface", null)); 
-        suite.addTest( testWriterAndReader.suiteXML() );
-        suite.addTest( testWriterAndReader.suiteXML_ABBREV() );
-        suite.addTest( testWriterAndReader.suiteN_TRIPLE() );
+        suite.addTest( TestWriterAndReader.suiteXML() );
+        suite.addTest( TestWriterAndReader.suiteXML_ABBREV() );
+        suite.addTest( TestWriterAndReader.suiteN_TRIPLE() );
         suite.addTestSuite( TestURIExceptions.class );
         suite.addTestSuite( TestEntityOutput.class );
         suite.addTestSuite( TestLiteralEncoding.class );

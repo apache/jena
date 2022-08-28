@@ -17,7 +17,7 @@
 
 # Parser builder
 
-DIR="../src/main/java/org/apache/jena/ttl/turtle/parser"
+DIR="../src/test/java/org/apache/jena/ttl/turtle/parser"
 FILE=turtle.jj
 CLASS=TurtleParser
 

@@ -16,20 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf.model.impl;
+package org.apache.jena.test;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.rdf.model.RDFWriterI;
 import org.apache.jena.rdf.model.RDFWriterF;
+import org.apache.jena.rdf.model.RDFWriterI;
+import org.apache.jena.rdf.model.impl.RDFWriterFImpl;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NoWriterForLangException ;
 
 /**
  */
-public class RDFWriterFImpl extends Object implements RDFWriterF {
+public class X_RDFWriterF extends Object implements RDFWriterF {
     public static final String DEFAULTLANG = "RDF/XML";
     private static Map<String, Class<? extends RDFWriterI>> custom = new LinkedHashMap<>();
     private static RDFWriterF rewiredAlternative = null ;
@@ -47,7 +48,7 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
     }
 
     /** Creates new RDFReaderFImpl */
-    public RDFWriterFImpl() {}
+    public X_RDFWriterF() {}
 
     @Override
     public RDFWriterI getWriter() {
@@ -72,7 +73,7 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
         }
     }
 
-    static { 
+    static {
         reset();
     }
 

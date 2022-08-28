@@ -260,14 +260,14 @@ public class SAX2Model extends SAX2RDF {
     public Object setProperty(String str, Object value) throws JenaException {
         Object obj = value;
         if (str.startsWith("http:")) {
-            if (str.startsWith(JenaReader.arpPropertiesURL)) {
-                str = str.substring(JenaReader.arpPropertiesURLLength);
+            if (str.startsWith(RDFXMLReader.arpPropertiesURL)) {
+                str = str.substring(RDFXMLReader.arpPropertiesURLLength);
             }
         }
         return setArpProperty(str, obj);
     }
 
     private Object setArpProperty(String str, Object v) {
-        return JenaReader.processArpOptions(getOptions(), str, v, errorHandler);
+        return RDFXMLReader.processArpOptions(getOptions(), str, v, errorHandler);
     }
 }

@@ -77,12 +77,30 @@ public interface Model
     extends ModelCon, ModelGraphInterface,
         RDFReaderF, RDFWriterF, PrefixMapping, Lock
 {
+    /** @deprecated */
+    @Override
+    @Deprecated
+    public RDFReaderI getReader();
 
+    /** @deprecated */
+    @Override
+    @Deprecated
+    public RDFReaderI getReader(String lang);
+
+    /** @deprecated */
+    @Override
+    @Deprecated
+    public RDFWriterI getWriter();
+
+    /** @deprecated */
+    @Override
+    @Deprecated
+    public RDFWriterI getWriter(String lang);
 
     /**
      * size will return the number of statements in a concrete model,
      * for a virtualized model such as one created by an inference engine,
-     * it will return an estimated lower bound for the numberof statements
+     * it will return an estimated lower bound for the number of statements
      * in the model but it is possible for a subsequent listStatements on
      * such a model to discover more statements than size() indicated.
      * @return the number of statements in a concrete model or an estimated

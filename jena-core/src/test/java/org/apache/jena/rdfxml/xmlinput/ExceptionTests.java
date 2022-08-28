@@ -32,7 +32,7 @@ public class ExceptionTests
 	implements RDFErrorHandler, ARPErrorNumbers {
 	static public Test suite() {
 		TestSuite suite = new TestSuite("ARP Exceptions");
-		
+
 		suite.addTest(new ExceptionTests("testDefaultFatal"));
 		suite.addTest(new ExceptionTests("testDefaultError"));
 		suite.addTest(new ExceptionTests("testDefaultWarning"));
@@ -48,7 +48,7 @@ public class ExceptionTests
 	ExceptionTests(String s) {
 		super(s);
 	}
-	
+
 	public void testDefaultFatal() {
 		//E301
 		RDFDefaultErrorHandler.silent = true;
@@ -58,12 +58,12 @@ public class ExceptionTests
 		  fail("Fatal error did not throw exception");
 		}
 		catch (JenaException e){
-			
+
 		}
 		finally {
-			RDFDefaultErrorHandler.silent = false;			
+			RDFDefaultErrorHandler.silent = false;
 		}
-		
+
 	}
 	public void testDefaultError() {
 
@@ -77,9 +77,9 @@ public class ExceptionTests
 			  fail("Error threw exception");
 		}
 		finally {
-			RDFDefaultErrorHandler.silent = false;			
+			RDFDefaultErrorHandler.silent = false;
 		}
-		
+
 	}
 	public void testDefaultWarning() {
 		// W108
@@ -92,7 +92,7 @@ public class ExceptionTests
 			  fail("Warning threw exception");
 		}
 		finally {
-			RDFDefaultErrorHandler.silent = false;			
+			RDFDefaultErrorHandler.silent = false;
 		}
 	}
 
@@ -101,7 +101,7 @@ public class ExceptionTests
 		RDFDefaultErrorHandler.silent = true;
 		try {
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReaderI rdr = m.getReader();
+		  RDFReaderI rdr = new RDFXMLReader();
 		  rdr.setProperty("ERR_SAX_FATAL_ERROR","EM_ERROR");
 		  rdr.read(m,"file:testing/arp/error-msgs/test06.rdf");
 		}
@@ -111,16 +111,16 @@ public class ExceptionTests
 			  fail("Demoted.error error threw an exception");
 		}
 		finally {
-			RDFDefaultErrorHandler.silent = false;			
+			RDFDefaultErrorHandler.silent = false;
 		}
-	
+
 	}
 	public void testDefaultPromotedError() {
 
 		RDFDefaultErrorHandler.silent = true;
 		try {
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReaderI rdr = m.getReader();
+		  RDFReaderI rdr = new RDFXMLReader();
 		  rdr.setProperty("ERR_BAD_RDF_ATTRIBUTE","EM_FATAL");
 		  rdr.read(m,"file:testing/wg/rdfms-abouteach/error002.rdf");
 
@@ -130,10 +130,10 @@ public class ExceptionTests
 	//		System.err.println(e.getMessage());
 		}
 		finally {
-			RDFDefaultErrorHandler.silent = false;			
+			RDFDefaultErrorHandler.silent = false;
 		}
-		
-		
+
+
 	}
 	public void testDefaultPromotedWarning() {
 
@@ -141,7 +141,7 @@ public class ExceptionTests
 		try {
 
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReaderI rdr = m.getReader();
+		  RDFReaderI rdr = new RDFXMLReader();
 		  rdr.setProperty("WARN_BAD_NAME","EM_FATAL");
 		  rdr.read(m,"file:testing/arp/qname-in-ID/bug74_0.rdf");
 
@@ -150,28 +150,28 @@ public class ExceptionTests
 		catch (JenaException e){
 		}
 		finally {
-			RDFDefaultErrorHandler.silent = false;			
+			RDFDefaultErrorHandler.silent = false;
 		}
-		
+
 	}
 	public void testNonExceptionFatal() {
 
 		try {
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReaderI rdr = m.getReader();
+		  RDFReaderI rdr = new RDFXMLReader();
 		  rdr.setErrorHandler(this);
 		  rdr.read(m,"file:testing/arp/error-msgs/test06.rdf");
 		}
 		catch (JenaException e){
 			  fail("Fatal error threw an exception with non-exception handler");
 		}
-		
-		
+
+
 	}
 	public void testExceptionError() {
 		try {
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReaderI rdr = m.getReader();
+		  RDFReaderI rdr = new RDFXMLReader();
 		  rdr.setErrorHandler(this);
 		  rdr.read(m,"file:testing/wg/rdfms-abouteach/error002.rdf");
 
@@ -179,13 +179,13 @@ public class ExceptionTests
 		}
 		catch (JenaException e){
 		}
-				
+
 	}
 	public void testExceptionWarning() {
 		try {
 
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReaderI rdr = m.getReader();
+		  RDFReaderI rdr = new RDFXMLReader();
 		  rdr.setErrorHandler(this);
 		  rdr.read(m,"file:testing/arp/qname-in-ID/bug74_0.rdf");
 
@@ -193,9 +193,9 @@ public class ExceptionTests
 		}
 		catch (JenaException e){
 		}
-		
+
 	}
-	
+
 
 
 	@Override

@@ -24,6 +24,6 @@ public class BigAbbrevTestPackage extends TestCase
     {
     public static TestSuite suite() 
         {
-        return testWriterAndReader.repeatedAbbrevSuite();
+        return TestWriterAndReader.repeatedAbbrevSuite();
         }
     }

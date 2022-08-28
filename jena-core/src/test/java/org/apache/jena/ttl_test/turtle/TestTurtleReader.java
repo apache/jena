@@ -16,36 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ttl.turtle;
+package org.apache.jena.ttl_test.turtle;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFReaderI ;
-
+import org.apache.jena.ttl.turtle.TurtleReader;
 
 public class TestTurtleReader extends TestCase
 {
-    
+
     public static TestSuite suite()
     {
         return new TestSuite(TestTurtleReader.class, "Basic Turtle tests") ;
     }
-    
+
     public void test0()
     {
-        RDFReaderI r = ModelFactory.createDefaultModel().getReader("Turtle") ;
+        RDFReaderI r = new TurtleReader();
         assertNotNull(r) ;
     }
-    
+
     public void test1()
     {
         Model m = ModelFactory.createDefaultModel() ;
         m.read("file:testing/Turtle/simple.ttl", "TTL") ;
         assertFalse(m.isEmpty()) ;
     }
-       
+
     public void test2()
     {
         Model m = ModelFactory.createDefaultModel() ;

@@ -38,7 +38,7 @@ import org.apache.jena.vocabulary.RDFSyntax ;
    <code>"prettyTypes"</code>. See setProperty for information.
    @see org.apache.jena.rdf.model.RDFWriterF#getWriter(String)
  */
-public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
+public class RDFXML_Abbrev extends BaseXMLWriter implements RDFErrorHandler {
 
 	private Resource types[] =
 		new Resource[] {

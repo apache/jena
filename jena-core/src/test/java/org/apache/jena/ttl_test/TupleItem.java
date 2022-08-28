@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ttl;
+package org.apache.jena.ttl_test;
 
 /**
  * The unit found in a line of a tuple.

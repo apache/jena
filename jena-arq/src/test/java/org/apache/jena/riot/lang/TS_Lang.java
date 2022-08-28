@@ -38,6 +38,7 @@ import org.junit.runners.Suite ;
     , TestLangTurtle.class
     , TestLangTrig.class
     , TestLangRdfJson.class
+    , TestRDFXML_ReaderProperties.class
     , TestTriXReader.class
     , TestTriXBad.class
     // Protobuf is done in the "protobuf" package

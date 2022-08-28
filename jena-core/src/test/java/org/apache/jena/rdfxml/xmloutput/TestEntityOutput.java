@@ -22,7 +22,9 @@ import java.io.*;
 
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev;
 import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter ;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic;
 import org.apache.jena.vocabulary.RDF ;
 
 /**
@@ -32,7 +34,7 @@ public class TestEntityOutput extends ModelTestBase
     {
     public TestEntityOutput( String name )
         { super( name ); }
-    
+
     public void testSettingWriterEntityProperty()
         {
         FakeBaseWriter w = new FakeBaseWriter();
@@ -46,8 +48,8 @@ public class TestEntityOutput extends ModelTestBase
         assertEquals( true, w.getShowDoctypeDeclaration() );
         assertEquals( "true", w.setProperty( "showDoctypeDeclaration", Boolean.FALSE ) );
         assertEquals( false, w.getShowDoctypeDeclaration() );
-        }    
-    
+        }
+
     public void testKnownEntityNames()
         {
         BaseXMLWriter w = new FakeBaseWriter();
@@ -98,7 +100,7 @@ public class TestEntityOutput extends ModelTestBase
         testCatchesBadEntity( "apos" );
         testCatchesBadEntity( "quot" );
         }
-    
+
     /* Old code produced:
 <!DOCTYPE rdf:RDF [
   <!ENTITY dd 'http://www.example.org/a"b#'>
@@ -106,21 +108,21 @@ public class TestEntityOutput extends ModelTestBase
   <!ENTITY espace 'http://www.example.org/a%20space#'>
   <!ENTITY zz 'http://www.example.org/a'b#'>
   <!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>]>
-     * 
+     *
      */
     /**
      * See
      * http://www.w3.org/TR/xml/#NT-EntityValue
      * " & and % ' are all legal URI chars, but illegal
      * in entity defn.
-     * @throws IOException 
+     * @throws IOException
      */
-    public void testDifficultChars() throws IOException 
+    public void testDifficultChars() throws IOException
     {
         Model m = createMemModel();
         m.read("file:testing/abbreviated/entities.rdf");
         try ( StringWriter w = new StringWriter() ) {
-            RDFWriterI wr = m.getWriter();
+            RDFWriterI wr = new RDFXML_Basic();
             wr.setProperty("showDoctypeDeclaration", "true");
             wr.write(m, w, "http://example.org/");
             Reader r = new StringReader(w.toString());
@@ -129,8 +131,8 @@ public class TestEntityOutput extends ModelTestBase
             assertIsoModels("showDoctypeDeclaration problem", m, m2);
         }
     }
-    
-    public void testCRinLiterals() 
+
+    public void testCRinLiterals()
     {
         Model m = createMemModel();
         Resource r = m.createResource("http://example/r") ;
@@ -173,24 +175,24 @@ public class TestEntityOutput extends ModelTestBase
     private String modelToString( Model m )
         {
         StringWriter s = new StringWriter();
-        RDFWriterI w = m.getWriter( "RDF/XML-ABBREV" );
+        RDFWriterI w = new RDFXML_Abbrev();
         w.setProperty( "showDoctypeDeclaration", Boolean.TRUE );
         w.write( m, s, null );
         return s.toString();
         }
-    
+
     private void assertMatches( String pattern, String x )
         {
         if (!x.matches( "(?s).*(" + pattern + ").*" ) )
                 fail( "pattern {" + pattern + "} does not match string {" + x + "}" );
         }
-    
+
     private void assertMismatches( String pattern, String x )
         {
         if (x.matches( "(?s).*(" + pattern + ").*" ) )
                 fail( "pattern {" + pattern + "} should not match string {" + x + "}" );
         }
-    
+
     private final static class FakeBaseWriter extends BaseXMLWriter
         {
         @Override
