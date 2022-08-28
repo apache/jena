@@ -30,7 +30,7 @@ import org.apache.jena.sparql.graph.GraphWrapper;
  *  Usage:
  *  <pre>
  *      try {
- *          graph.getTransactionHandler().execute(()->{
+ *          graph.getTransactionHandler().execute(()-&gt;{
  *             ... application code ...
  *             });
  *     } catch (ShaclValidationException ex) {

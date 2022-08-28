@@ -56,7 +56,7 @@ public class Parameters {
         return new Parameter(path, sparqlName, isOptional, constraints);
     }
 
-    /** For a specific nodeShape or propertyShape, extract the parameter->value* map. */
+    /** For a specific nodeShape or propertyShape, extract the parameter-&gt;value* map. */
     public static Multimap<Parameter, Node> parameterValues(Graph shapesGraph, Node sh, SparqlComponent scc) {
         Multimap<Parameter, Node> paramValues = ArrayListMultimap.create();
         scc.getParams().forEach(param->{

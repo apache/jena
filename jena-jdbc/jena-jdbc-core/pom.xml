@@ -88,6 +88,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
+
+          <!-- Compensate for java11 issues; remove at java17 -->
+          <source>8</source>
+
 					<quiet>true</quiet>
 					<encoding>UTF-8</encoding>
 					<charset>UTF-8</charset>

@@ -53,7 +53,10 @@
   <dependencies>
 
     <!--
-        This works ... except break javadoc under java11.
+        This works ... 
+        except it breaks javadoc:javadoc building with Java11.
+        But it does work if Java17 is used for the build
+        
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
@@ -63,9 +66,7 @@
     -->
 
     <!-- Copied from apache-jena-libs
-       This list of dependencies is duplicated in jena-cmds.
-       Using <type>pom</type> breaks javadoc for java11
-       (and not java17)
+         to avoid <type>pom</type>
     -->
     <dependency>
       <groupId>org.apache.jena</groupId>

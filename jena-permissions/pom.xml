@@ -88,6 +88,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
+          <!-- Workaround Java11 javadoc issues (works at Java17) -->
+          <source>8</source>
           <excludePackageNames>org.apache.jena.security.example:org.apache.jena.security.example.*</excludePackageNames>
           <tags>
             <tag>
@@ -195,6 +197,14 @@
     </pluginManagement>
   </build>
   <dependencies>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>apache-jena-libs</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -204,12 +214,7 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-collections4</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>apache-jena-libs</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
-    </dependency>
+
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>

@@ -38,8 +38,8 @@
 
   <!-- 
        This list of dependencies is duplicated in jena-cmds.
-       Using <type>pom</type> breaks javadoc for java11
-       (and not java17)
+       Using <type>pom</type> breaks javadoc when building with Java11
+       but not when building with Java17 for Java11 bytecode.
   -->
 
   <dependencies>

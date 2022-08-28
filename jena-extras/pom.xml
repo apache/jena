@@ -22,10 +22,6 @@
   <version>4.7.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Apache Jena - Extras</name>
-  <description>Extra packages for Jena development.
-  This is the parent module for the Jena Extra modules.  
-  These modules provide utiliities and larger packages that make Apache Jena development or usage 
-  easier but that do not fall within the standard Jena framework.</description>
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -39,28 +35,5 @@
     <module>jena-commonsrdf</module>
     <module>jena-serviceenhancer</module>
   </modules>
-
-  <properties>
-    <plugin.license.version>1.9.0</plugin.license.version>
-    <plugin.license.headerPath>${project.basedir}</plugin.license.headerPath>
-    <jena-version>${project.version}</jena-version>
-  </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.jena</groupId>
-        <artifactId>apache-jena-libs</artifactId>
-        <version>4.7.0-SNAPSHOT</version>
-        <type>pom</type>
-      </dependency>
-      <dependency>
-        <groupId>org.xenei</groupId>
-        <artifactId>junit-contracts</artifactId>
-        <version>${ver.contract.tests}</version>
-        <scope>test</scope>
-      </dependency>   
-    </dependencies>
-  </dependencyManagement>
 
 </project>
