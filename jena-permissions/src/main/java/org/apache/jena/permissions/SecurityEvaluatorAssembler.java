@@ -58,9 +58,9 @@ import org.apache.jena.rdf.model.Seq;
  *      </p>
  *      The assembler file should include the following
  * <pre>
- * prefix xsd:        &lt;http://www.w3.org/2001/XMLSchema#>
+ * prefix xsd:        &lt;http://www.w3.org/2001/XMLSchema#&gt;
  *
- * &lt;> ja:loadClass    "org.apache.jena.security.SecuredAssembler" .
+ * &lt;&gt; ja:loadClass    "org.apache.jena.security.SecuredAssembler" .
  *
  * sec:Model rdfs:subClassOf ja:NamedModel .
  *

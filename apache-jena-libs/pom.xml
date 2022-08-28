@@ -36,6 +36,12 @@
     A POM artifact that references all the standard Jena Libraries with a single dependency.
   </description>
 
+  <!-- 
+       This list of dependencies is duplicated in jena-cmds.
+       Using <type>pom</type> breaks javadoc when building with Java11
+       but not when building with Java17 for Java11 bytecode.
+  -->
+
   <dependencies>
 
     <dependency>

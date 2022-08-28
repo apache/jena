@@ -52,11 +52,50 @@
   
   <dependencies>
 
+    <!--
+        This works ... 
+        except it breaks javadoc:javadoc building with Java11.
+        But it does work if Java17 is used for the build
+        
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
       <version>4.7.0-SNAPSHOT</version>
       <type>pom</type>
+    </dependency>
+    -->
+
+    <!-- Copied from apache-jena-libs
+         to avoid <type>pom</type>
+    -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-shacl</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-shex</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb2</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-rdfconnection</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Pull test code into scope -->
