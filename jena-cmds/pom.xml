@@ -52,11 +52,49 @@
   
   <dependencies>
 
+    <!--
+        This works ... except break javadoc under java11.
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
       <version>4.7.0-SNAPSHOT</version>
       <type>pom</type>
+    </dependency>
+    -->
+
+    <!-- Copied from apache-jena-libs
+       This list of dependencies is duplicated in jena-cmds.
+       Using <type>pom</type> breaks javadoc for java11
+       (and not java17)
+    -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-shacl</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-shex</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb2</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-rdfconnection</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Pull test code into scope -->
