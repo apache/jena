@@ -16,28 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.index.test;
+package org.apache.jena.dboe.index.testlib;
 
-import org.apache.jena.atlas.lib.RandomLib;
-import org.apache.jena.atlas.test.ExecGenerator;
+import org.apache.jena.dboe.index.Index;
 
-public class IndexTestGenerator implements ExecGenerator
+public interface IndexMaker
 {
-    int maxNumKeys;
-    int maxValue;
-    IndexMaker maker;
-
-    public IndexTestGenerator(IndexMaker maker, int maxValue, int maxNumKeys) {
-        if ( maxValue <= maxNumKeys )
-            throw new IllegalArgumentException("RangeIndexTestGenerator: Max value less than number of keys");
-        this.maker = maker;
-        this.maxValue = maxValue;
-        this.maxNumKeys = maxNumKeys;
-    }
-
-    @Override
-    public void executeOneTest() {
-        int numKeys = RandomLib.random.nextInt(maxNumKeys)+1;
-        IndexTestLib.randTest(maker.makeIndex(), maxValue, numKeys);
-    }
+    Index makeIndex();
+    String getLabel();
 }

@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.index.test;
+package org.apache.jena.dboe.index.testlib;
 
-import static org.apache.jena.dboe.index.test.IndexTestLib.*;
+import static org.apache.jena.dboe.index.testlib.IndexTestLib.*;
 import static org.apache.jena.dboe.test.RecordLib.intToRecord;
 
 import org.apache.jena.dboe.base.record.Record;

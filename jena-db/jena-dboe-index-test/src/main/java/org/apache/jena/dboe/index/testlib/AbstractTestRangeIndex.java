@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.index.test;
+package org.apache.jena.dboe.index.testlib;
 
-import static org.apache.jena.dboe.index.test.IndexTestLib.add;
-import static org.apache.jena.dboe.index.test.IndexTestLib.randTest;
-import static org.apache.jena.dboe.index.test.IndexTestLib.testInsert;
-import static org.apache.jena.dboe.index.test.IndexTestLib.testInsertDelete;
+import static org.apache.jena.dboe.index.testlib.IndexTestLib.add;
+import static org.apache.jena.dboe.index.testlib.IndexTestLib.randTest;
+import static org.apache.jena.dboe.index.testlib.IndexTestLib.testInsert;
+import static org.apache.jena.dboe.index.testlib.IndexTestLib.testInsertDelete;
 import static org.apache.jena.dboe.test.RecordLib.intToRecord;
 import static org.apache.jena.dboe.test.RecordLib.r;
 import static org.apache.jena.dboe.test.RecordLib.toIntList;
