@@ -137,6 +137,7 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
                 break;
             }
         }
+        finishNonExclusiveMode();
     }
 
     @Override
