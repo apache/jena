@@ -1,7 +1,7 @@
 ## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
 name: Task
-description: Work on code.
+description: Work on the code base
 labels: ["task"]
 body:
   - type: textarea
@@ -14,8 +14,8 @@ body:
   - type: dropdown
     id: contributor
     attributes:
-      label: Are you interested in contributing a solution yourself?
-      description: We welcome your feature request. Let us know if you would like to get involved in contributing a pull request yourself.
+      label: Are you interested in contributing a pull request for this task?
+      description: We welcome contributions. Let us know if you would like to get involved in contributing a pull request yourself.
       options:
         - 'Yes'
         - 'No'
