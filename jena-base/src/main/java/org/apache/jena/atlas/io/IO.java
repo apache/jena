@@ -88,11 +88,31 @@ public class IO
         }
         InputStream in = new FileInputStream(filename);
         String ext = getExtension(filename);
+
+        // Input is a file stream.
+        // https://commons.apache.org/proper/commons-compress/examples.html#Buffering :
+        // """
+        // The stream classes all wrap around streams provided by the calling
+        // code and they work on them directly without any additional
+        // buffering. On the other hand most of them will benefit from
+        // buffering so it is highly recommended that users wrap their stream
+        // in Buffered(In|Out)putStreams before using the Commons Compress
+        // API.
+        // """
+        // GZip and Snappy have internal buffering.
+        // BZip2 does not.
         switch ( ext ) {
-            case "":        return in;
-            case ext_gz:    return new GZIPInputStream(in);
-            case ext_bz2:   return new BZip2CompressorInputStream(in, true);
-            case ext_sz:    return new SnappyCompressorInputStream(in);
+            case "":
+                return in;
+            case ext_gz:
+                // Makes a small improvement (<5%) to use 8K.
+                return new GZIPInputStream(in, 8*1024);
+            case ext_bz2:
+                // Make a huge improvement. x10 faster.
+                in = IO.ensureBuffered(in);
+                return new BZip2CompressorInputStream(in, true);
+            case ext_sz:
+                return new SnappyCompressorInputStream(in);
         }
         return in;
     }
@@ -194,7 +214,7 @@ public class IO
 
     /** Create an buffered reader that uses UTF-8 encoding */
     static public BufferedReader asBufferedUTF8(InputStream in) {
-        // Alway buffered - for readLine.
+        // Always buffered - for readLine.
         return new BufferedReader(asUTF8(in), BUFSIZE_IN / 2);
     }
 
