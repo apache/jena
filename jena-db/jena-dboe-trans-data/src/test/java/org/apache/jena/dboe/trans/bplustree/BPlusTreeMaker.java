@@ -20,7 +20,7 @@ package org.apache.jena.dboe.trans.bplustree;
 
 import org.apache.jena.dboe.index.Index;
 import org.apache.jena.dboe.index.RangeIndex;
-import org.apache.jena.dboe.index.test.RangeIndexMaker;
+import org.apache.jena.dboe.index.testlib.RangeIndexMaker;
 import org.apache.jena.dboe.test.RecordLib;
 
 public class BPlusTreeMaker implements RangeIndexMaker

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.index.test;
+package org.apache.jena.dboe.index.testlib;
 
 import static java.lang.String.format;
 import static org.apache.jena.atlas.lib.ListUtils.asList;

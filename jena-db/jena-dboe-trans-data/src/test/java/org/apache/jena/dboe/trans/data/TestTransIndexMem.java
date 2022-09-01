@@ -21,7 +21,7 @@ package org.apache.jena.dboe.trans.data;
 import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.dboe.index.Index;
 import org.apache.jena.dboe.index.IndexMap;
-import org.apache.jena.dboe.index.test.AbstractTestIndex;
+import org.apache.jena.dboe.index.testlib.AbstractTestIndex;
 
 public class TestTransIndexMem extends AbstractTestIndex
 {

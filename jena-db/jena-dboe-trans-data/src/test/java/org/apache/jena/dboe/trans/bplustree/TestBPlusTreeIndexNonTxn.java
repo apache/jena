@@ -20,7 +20,7 @@ package org.apache.jena.dboe.trans.bplustree;
 
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.dboe.base.block.BlockMgr;
-import org.apache.jena.dboe.index.test.AbstractTestIndex;
+import org.apache.jena.dboe.index.testlib.AbstractTestIndex;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.dboe.test.RecordLib;
 import org.junit.AfterClass;

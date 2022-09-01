@@ -16,15 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.index;
+package org.apache.jena.dboe.index.test;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.apache.jena.dboe.base.record.RecordFactory;
+import org.apache.jena.dboe.index.Index;
+import org.apache.jena.dboe.index.IndexMap;
+import org.apache.jena.dboe.index.testlib.AbstractTestIndex;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestIndexMem.class
-} )
+public class TestIndexMem extends AbstractTestIndex
+{
+    @Override
+    protected Index makeIndex(int kLen, int vLen) {
+        RecordFactory rf = new RecordFactory(kLen, vLen);
+        return new IndexMap(rf);
+    }
 
-public class TS_Index
-{ }
+}
