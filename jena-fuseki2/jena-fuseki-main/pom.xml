@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>4.6.1</version>
+    <version>4.7.0-SNAPSHOT</version>
   </parent> 
 
   <packaging>jar</packaging>
@@ -39,13 +39,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-core</artifactId>
-      <version>4.6.1</version>
+      <version>4.7.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-core</artifactId>
-      <version>4.6.1</version>
+      <version>4.7.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -53,13 +53,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-access</artifactId>
-      <version>4.6.1</version>
+      <version>4.7.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>4.6.1</version>
+      <version>4.7.0-SNAPSHOT</version>
     </dependency>
 
     <!-- For parsing Jetty configuration files -->
