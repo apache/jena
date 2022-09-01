@@ -110,6 +110,27 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <detectJavaApiLink>false</detectJavaApiLink>
+          <source>8</source>
+          <doclint>none</doclint>
+          <notimestamp>true</notimestamp>
+          <quiet>true</quiet>
+          <version>true</version>
+          <show>public</show>
+          <encoding>UTF-8</encoding>
+
+          <windowtitle>${project.name} ${project.version}</windowtitle>
+          <doctitle>${project.name} ${project.version}</doctitle>
+          <bottom>Licensed under the Apache License, Version 2.0</bottom>
+
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
 </project>
