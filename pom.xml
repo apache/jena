@@ -102,7 +102,7 @@
     <ver.commons-codec>1.15</ver.commons-codec>
     <ver.commons-compress>1.21</ver.commons-compress>
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.9.2</ver.micrometer>
+    <ver.micrometer>1.9.3</ver.micrometer>
 
     <!-- For testing, not shipped -->
     <ver.graalvm>22.2.0</ver.graalvm>
