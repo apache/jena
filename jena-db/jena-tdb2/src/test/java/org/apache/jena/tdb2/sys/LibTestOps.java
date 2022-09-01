@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,16 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.sys;
+package org.apache.jena.tdb2.sys;
 
-import org.apache.jena.tdb.base.block.FileMode ;
+import org.apache.jena.dboe.base.block.FileMode;
 
-public class TestOps
-{
-    public static void setFileMode(FileMode mode)
-    {
-        SystemTDB.internalSetFileMode(mode) ;
+public class LibTestOps {
+
+    /** Expose package-scoped to other test packages */
+    public static void setFileMode(FileMode mode) {
+        SystemTDB.internalSetFileMode(mode);
     }
-    
-}
 
+}

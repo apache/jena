@@ -20,14 +20,14 @@ package org.apache.jena.tdb.transaction;
 
 import org.apache.jena.tdb.base.block.FileMode ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-import org.apache.jena.tdb.sys.TestOps ;
+import org.apache.jena.tdb.sys.LibTestOps ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 
 public class TestTransDiskDirect extends AbstractTestTransSequentialDisk
 {
     static FileMode mode = SystemTDB.fileMode() ;  
-    @BeforeClass public static void beforeClass() { TestOps.setFileMode(FileMode.direct) ; }
-    @AfterClass  public static void afterClass()  { TestOps.setFileMode(mode) ; }
+    @BeforeClass public static void beforeClass() { LibTestOps.setFileMode(FileMode.direct) ; }
+    @AfterClass  public static void afterClass()  { LibTestOps.setFileMode(mode) ; }
 }
 
