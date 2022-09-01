@@ -22,7 +22,7 @@ import org.apache.jena.dboe.base.block.FileMode;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.sys.SystemTDB;
-import org.apache.jena.tdb2.sys.TestOps;
+import org.apache.jena.tdb2.sys.LibTestOps;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -33,12 +33,12 @@ public class TestStoreConnectionDirect extends AbstractTestStoreConnectionBasics
     @BeforeClass
     public static void beforeClassFileMode() {
         mode = SystemTDB.fileMode();
-        TestOps.setFileMode(FileMode.direct);
+        LibTestOps.setFileMode(FileMode.direct);
     }
 
     @AfterClass
     public static void afterClassFileMode() {
-        TestOps.setFileMode(mode);
+        LibTestOps.setFileMode(mode);
     }
 
     @Override

@@ -23,7 +23,7 @@ import org.apache.jena.tdb2.store.value.TestDoubleNode62;
 import org.apache.jena.tdb2.store.value.TestFloatNode;
 import org.apache.jena.tdb2.store.value.TestNodeIdInline;
 import org.apache.jena.tdb2.sys.SystemTDB;
-import org.apache.jena.tdb2.sys.TestOps;
+import org.apache.jena.tdb2.sys.LibTestOps;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -67,6 +67,6 @@ public class TS_Store
     public static void afterClass()
     {
         if ( ! SystemTDB.fileMode().equals(mode) )
-            TestOps.setFileMode(mode);
+            LibTestOps.setFileMode(mode);
     }
 }
