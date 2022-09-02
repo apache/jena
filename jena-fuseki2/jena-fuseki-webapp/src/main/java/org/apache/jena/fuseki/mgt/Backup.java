@@ -18,13 +18,15 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.GZIPOutputStream;
 
-import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
@@ -72,17 +74,21 @@ public class Backup
         Txn.executeRead(transactional, ()->backup(dsg, backupfile));
     }
 
-    /** Perform a backup.
+    // This seems to achieve about the same as "gzip -6"
+    // It's not too expensive in elapsed time but it's not
+    // zero cost. GZip, large buffer.
+    private static final boolean USE_GZIP = true;
+
+    /**
+     * Perform a backup.
      *
      * @see #backup(Transactional, DatasetGraph, String)
      */
+
     private static void backup(DatasetGraph dsg, String backupfile) {
         if (dsg == null) {
             throw new FusekiException("No dataset provided to backup");
         }
-
-        if ( !backupfile.endsWith(".nq") )
-            backupfile = backupfile + ".nq";
 
         // Per backup source lock.
         synchronized(activeBackups) {
@@ -92,32 +98,22 @@ public class Backup
             activeBackups.add(dsg);
         }
 
-        OutputStream out = null;
+        if ( !backupfile.endsWith(".nq") )
+            backupfile = backupfile + ".nq";
+
+        if ( USE_GZIP )
+            backupfile = backupfile + ".gz";
+
         try {
-            if ( true ) {
-                // This seems to achieve about the same as "gzip -6"
-                // It's not too expensive in elapsed time but it's not
-                // zero cost. GZip, large buffer.
-                out = new FileOutputStream(backupfile + ".gz");
-                out = new GZIPOutputStream(out, 8 * 1024);
-                out = new BufferedOutputStream(out);
-            } else {
-                out = new FileOutputStream(backupfile);
-                out = new BufferedOutputStream(out);
-            }
-            RDFDataMgr.write(out, dsg, Lang.NQUADS);
-            out.close();
-            out = null;
-        } catch (FileNotFoundException e) {
-            FmtLog.warn(Fuseki.serverLog, "File not found: %s", backupfile);
-            throw new FusekiException("File not found: " + backupfile);
-        } catch (IOException e) {
-            IO.exception(e);
+            IOX.safeWrite(Path.of(backupfile), outfile -> {
+                OutputStream out = outfile;
+                if ( USE_GZIP )
+                    out = new GZIPOutputStream(outfile, 8 * 1024);
+                try (OutputStream out2 = new BufferedOutputStream(out)) {
+                    RDFDataMgr.write(out2, dsg, Lang.NQUADS);
+                }
+            });
         } finally {
-            try {
-                if ( out != null )
-                    out.close();
-            } catch (IOException e) { /* ignore */}
             // Remove lock.
             synchronized(activeBackups) {
                 activeBackups.remove(dsg);
