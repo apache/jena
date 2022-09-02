@@ -650,26 +650,26 @@ void annotation() : {}
 
 void semanticActions() : {}
 {
+    // semanticAction	: '%' iri (CODE | '%') ;
     (codeDecl())*
 }
 
 void codeDecl() : {}
 {
-    // Spec:
-    // <CODE>                 ::=         "{" ([^%\\] | "\\" [%\\] | UCHAR)* "%" "}"
-    //    <PERCENT_CHAR> iri() (<CODE> | <PERCENT_CHAR> )
+    // Spec: - 2.1:
+    // codeDecl	   ::=   	'%' iri (CODE | '%'){
+    // i.e.  <PERCENT_CHAR> iri() (<CODE> | <PERCENT_CHAR> )
+    //  <CODE>         ::=      "{" ([^%\\] | "\\" [%\\] | UCHAR)* "%" "}"
     
-    // Avoid <CODE> token which causes a lot of backtracking.
-    // It starts "{" which is used for blocks - and it is only the "%}"
-    // that causes the decision of <CODE> or <LBRACE>
+    // Avoid <CODE> token which causes a lot of backtracking in the tokenizer.
+    // It starts "{" which is used for blocks - and it is only when the "%}"
+    // is seen that the tokenizer can decide between <CODE> or the <LBRACE>
+    // of a <LBRACE>...<RBRACE> block (pushing back all the characters used in
+    // scanning ahead).
     
     // CODE_BLOCK this as a single token introduced with "%".
     
     <CODE_BLOCK>
-
-    // try:
-    // 
-    //  <PERCENT_CHAR> and token state change
 }
 
 Node literal() : { Node n ; }
