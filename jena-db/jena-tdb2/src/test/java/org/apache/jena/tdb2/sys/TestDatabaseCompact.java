@@ -151,7 +151,7 @@ public class TestDatabaseCompact
         // Case 2:
         // Another "can't happen" situation on ASF Jenkins only.
         // This is consistent with case 1 - it just shows up differently now.
-        // The database got created - so its directory must exist unless something external interferred.
+        // The database got created - so its directory must exist unless something external interfered.
         // No location: (/home/jenkins/workspace/Jena/Jena_Development_Deploy/jena-db/jena-tdb2/target/tdb-testing/DB,Data)
         //
         // Stacktrace
