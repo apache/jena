@@ -18,107 +18,105 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.apache.jena</groupId>
-		<artifactId>jena-jdbc</artifactId>
-		<version>4.7.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>jena-jdbc-driver-tdb</artifactId>
-	<name>Apache Jena - JDBC TDB Driver</name>
-	<description>A Jena JDBC driver for use with the Jena TDB backend</description>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-jdbc</artifactId>
+    <version>4.7.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>jena-jdbc-driver-tdb</artifactId>
+  <name>Apache Jena - JDBC TDB Driver</name>
+  <description>A Jena JDBC driver for use with the Jena TDB backend</description>
 
-	<properties>
-		<plugin.license.headerPath>${project.parent.basedir}</plugin.license.headerPath>
-		<automatic.module.name>org.apache.jena.jdbc.driver.tdb</automatic.module.name>
-	</properties>
+  <properties>
+    <automatic.module.name>org.apache.jena.jdbc.driver.tdb</automatic.module.name>
+  </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-jdbc-core</artifactId>
-			<version>4.7.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-tdb</artifactId>
-			<version>4.7.0-SNAPSHOT</version>
-		</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-jdbc-core</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+    </dependency>
 
-		<!-- Test Dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-jdbc-core</artifactId>
-			<version>4.7.0-SNAPSHOT</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-jdbc-driver-mem</artifactId>
-			<version>4.7.0-SNAPSHOT</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <!-- Test Dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-jdbc-core</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-jdbc-driver-mem</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<plugins>
-			<!-- TDB driver needs to increase heap size when run on maven command 
-				line -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine>-Xmx2G</argLine>
-					<systemProperties>
-						<java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
-					</systemProperties>
-				</configuration>
-			</plugin>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>bundle-sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+       	  <execution>
+					  <phase>package</phase>
+					  <goals>
+						  <!-- Produce Javadoc JARs for each module -->
+						  <goal>jar</goal>
+						  <goal>test-jar</goal>
+					  </goals>
+				  </execution>
+        </executions>
+      </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
+          </systemProperties>
+        </configuration>
+      </plugin>
 
-			<!-- Javadoc Plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-
-          <!-- Compensate for java11 issues; remove at java17 -->
-          <source>8</source>
-
-					<quiet>true</quiet>
-					<encoding>UTF-8</encoding>
-					<charset>UTF-8</charset>
-					<docencoding>UTF-8</docencoding>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<!-- Produce Javadoc JARs for each module -->
-							<goal>jar</goal>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+    </plugins>
+  </build>
 </project>

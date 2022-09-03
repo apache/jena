@@ -18,8 +18,6 @@
 
 package org.apache.jena.jdbc;
 
-import org.apache.jena.util.Metadata;
-
 /**
  * Root class for Jena JDBC
  *
@@ -27,17 +25,7 @@ import org.apache.jena.util.Metadata;
 public class JenaJDBC {
 
     private JenaJDBC() { }
-    
-    /** The root package name for Jena JDBC */   
-    public static final String PATH         = "org.apache.jena.jdbc";
-   
-    static private String metadataLocation  = "org/apache/jena/jdbc/jdbc-properties.xml" ;
 
-    static private Metadata metadata        = new Metadata(metadataLocation) ;
-   
-    /** The full name of the current Jena JDBC version */   
-    public static final String VERSION      = metadata.get(PATH+".version", "unknown") ;
-   
-    /** The date and time at which this release was built */   
-    public static final String BUILD_DATE   = metadata.get(PATH+".build.datetime", "unset") ;
+    /** The root package name for Jena JDBC */
+    public static final String PATH         = "org.apache.jena.jdbc";
 }
