@@ -30,7 +30,6 @@
   </parent>
 
   <properties>
-    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
     <automatic.module.name>org.apache.jena.text</automatic.module.name>
   </properties>
 
@@ -111,23 +110,6 @@
 
   <build>
     
-    <resources>
-      <resource>
-        <filtering>true</filtering>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>org/apache/jena/query/text/properties.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <filtering>false</filtering>
-        <directory>src/main/resources</directory>
-        <excludes>
-          <exclude>org/apache/jena/query/text/properties.xml</exclude>
-        </excludes>
-      </resource>
-    </resources>
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -138,7 +120,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <skip>false</skip>
           <includes>
             <include>**/TS_*.java</include>
           </includes>
@@ -147,60 +128,15 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-          <!-- Only material in the main jar <execution> <id>attach-sources-test</id> 
-               <goals> <goal>test-jar-no-fork</goal> </goals> </execution> 
-               -->
-        </executions>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <version>true</version>
-          <show>public</show>
-          <quiet>true</quiet>
-          <encoding>UTF-8</encoding>
-          <windowtitle>${project.name} ${project.version}</windowtitle>
-          <doctitle>${project.name} ${project.version}</doctitle>
-          <bottom>Licenced under the Apache License, Version 2.0</bottom>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <configuration>
-          <encoding>UTF-8</encoding>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <overWriteReleases>false</overWriteReleases>
-          <overWriteIfNewer>true</overWriteIfNewer>
+          <windowtitle>Apache Jena Text</windowtitle>
+          <doctitle>Apache Jena - Text ${project.version}</doctitle>
         </configuration>
       </plugin>
 

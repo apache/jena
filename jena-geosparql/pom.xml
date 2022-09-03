@@ -30,7 +30,6 @@
   <description>GeoSPARQL implementation for Apache Jena</description>
 
   <properties>
-     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
     <automatic.module.name>org.apache.jena.geosparql</automatic.module.name>
   </properties>
 
@@ -96,7 +95,7 @@
       <scope>test</scope>
     </dependency>
 
-     <dependency>
+    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
       <scope>test</scope>
@@ -120,36 +119,7 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <!-- <phase>package</phase> package is the default -->
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>attach-sources-test</id>
-            <goals>
-              <goal>test-jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
-            </manifestEntries>
-          </archive>
-        </configuration>
         <executions>
           <execution>
             <goals>
@@ -161,17 +131,28 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions> 
+          <execution>
+            <id>attach-sources-test</id> 
+            <goals>
+              <goal>test-jar-no-fork</goal> 
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <!-- Must not be 11 : remove when base version is Java17 -->
           <source>8</source>
-          <version>true</version>
-          <show>public</show>
-          <quiet>true</quiet>
-          <encoding>UTF-8</encoding>
+          <detectJavaApiLink>false</detectJavaApiLink>
+          <doclint>none</doclint>
+
           <windowtitle>Apache Jena GeoSPARQL</windowtitle>
-          <doctitle>Apache Jena GeoSPARQL ${project.version}</doctitle>
-          <bottom>Licenced under the Apache License, Version 2.0</bottom>
+          <doctitle>Apache Jena - GeoSPARQL ${project.version}</doctitle>
         </configuration>
       </plugin>
     </plugins>

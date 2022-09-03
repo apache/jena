@@ -49,13 +49,9 @@
     </license>
   </licenses>
 
-  <properties>
-    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-  </properties>
-
   <modules>
     <module>jena-fuseki-core</module>
-
+    <module>jena-fuseki-ui</module>
     <!-- Graph access control -->
     <module>jena-fuseki-access</module>
 
@@ -64,16 +60,14 @@
 
     <!-- Fuseki modules for Fuseki main-->
     <!-- ... -->
-
-    <!-- Build main jar -->
     <module>jena-fuseki-server</module>
     
     <!-- Fuseki Webapp -->
-    <module>jena-fuseki-ui</module>
     <module>jena-fuseki-webapp</module>
     <module>jena-fuseki-war</module>
     <module>jena-fuseki-fulljar</module>
 
+    <!-- Fuseki Dockerfile -->
     <module>jena-fuseki-docker</module>
 
     <!-- Binary distribution -->

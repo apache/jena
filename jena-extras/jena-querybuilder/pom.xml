@@ -85,30 +85,10 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <!-- <phase>package</phase> package is the default -->
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
@@ -118,16 +98,8 @@
           <detectJavaApiLink>false</detectJavaApiLink>
           <source>8</source>
           <doclint>none</doclint>
-          <notimestamp>true</notimestamp>
-          <quiet>true</quiet>
-          <version>true</version>
-          <show>public</show>
-          <encoding>UTF-8</encoding>
-
-          <windowtitle>${project.name} ${project.version}</windowtitle>
-          <doctitle>${project.name} ${project.version}</doctitle>
-          <bottom>Licensed under the Apache License, Version 2.0</bottom>
-
+          <windowtitle>Apache Jena Query Builder</windowtitle>
+          <doctitle>Apache Jena - Query Builder ${project.version}</doctitle>
         </configuration>
       </plugin>
 

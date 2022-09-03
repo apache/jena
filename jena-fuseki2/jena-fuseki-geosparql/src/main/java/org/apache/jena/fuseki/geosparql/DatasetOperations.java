@@ -235,7 +235,7 @@ public class DatasetOperations {
                 GeoSPARQLConfig.setupSpatialIndex(dataset);
             }
         } else {
-            LOGGER.warn("Datset empty. Spatial Index not constructed. Server will require restarting after adding data and any updates to build Spatial Index.");
+            LOGGER.warn("Dataset empty. Spatial Index not constructed. Server will require restarting after adding data and any updates to build Spatial Index.");
         }
     }
 

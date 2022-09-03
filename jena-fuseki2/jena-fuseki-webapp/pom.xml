@@ -29,6 +29,10 @@
   <artifactId>jena-fuseki-webapp</artifactId>
   <packaging>jar</packaging>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.fuseki.webapp</automatic.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>
@@ -129,17 +133,7 @@
       <resource>
         <filtering>false</filtering>
         <directory>src/main/resources</directory>
-        <excludes>
-          <exclude>org/apache/jena/fuseki/fuseki-properties.xml</exclude>
-        </excludes>
-      </resource>
-      <resource>
-        <filtering>true</filtering>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>org/apache/jena/fuseki/fuseki-properties.xml</include>
-        </includes>
-      </resource>
+      </resource> 
       <resource>
         <filtering>false</filtering>
         <directory>src/main/webapp/</directory>
@@ -148,9 +142,15 @@
     </resources>
 
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
       </plugin>
 
       <plugin>
@@ -205,14 +205,6 @@
         <configuration>
           <overWriteReleases>false</overWriteReleases>
           <overWriteIfNewer>true</overWriteIfNewer>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <configuration>
-          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
 

@@ -34,7 +34,7 @@
   <url>https://jena.apache.org/</url>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <automatic.module.name>org.apache.jena.examples</automatic.module.name>
   </properties>
 
   <organization>
@@ -75,5 +75,17 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+
+  <build> 
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

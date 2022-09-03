@@ -32,6 +32,10 @@
   <packaging>jar</packaging>
   <description>Fuseki Webapp - combined jar with built-in webserver.</description>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.fuseki.fulljar</automatic.module.name>
+  </properties>
+  
   <dependencies>
 
     <dependency>

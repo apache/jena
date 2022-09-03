@@ -29,6 +29,7 @@
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-db</artifactId>
     <version>4.7.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent> 
 
   <properties>
@@ -84,14 +85,12 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
-            </manifestEntries>
-          </archive>
-        </configuration>
+        <artifactId>maven-resources-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
       </plugin>
 
       <plugin>
@@ -109,13 +108,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <version>true</version>
-          <show>public</show>
-          <encoding>UTF-8</encoding>
           <windowtitle>Apache Jena TDB2</windowtitle>
           <doctitle>Apache Jena TDB2 ${project.version}</doctitle>
           <excludePackageNames>org.apache.jena.tdb2.*</excludePackageNames>
-          <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
       </plugin>
 
