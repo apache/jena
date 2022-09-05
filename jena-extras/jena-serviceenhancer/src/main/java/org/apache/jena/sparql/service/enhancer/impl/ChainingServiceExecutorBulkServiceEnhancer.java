@@ -76,8 +76,8 @@ public class ChainingServiceExecutorBulkServiceEnhancer
             case ServiceOpts.SO_BULK: // Enables bulk requests
                 enableBulk = true;
 
-                int maxBulkSize = cxt.get(ServiceEnhancerConstants.serviceBulkMaxBindingCount, ChainingServiceExecutorBulkCache.MAX_BULK_SIZE);
-                bulkSize = cxt.get(ServiceEnhancerConstants.serviceBulkBindingCount, ChainingServiceExecutorBulkCache.DEFAULT_BULK_SIZE);
+                int maxBulkSize = cxt.get(ServiceEnhancerConstants.serviceBulkMaxBindingCount, ChainingServiceExecutorBulkCache.DFT_MAX_BULK_SIZE);
+                bulkSize = cxt.get(ServiceEnhancerConstants.serviceBulkBindingCount, ChainingServiceExecutorBulkCache.DFT_BULK_SIZE);
                 try {
                     if (val == null || val.isBlank()) {
                         // Ignored
