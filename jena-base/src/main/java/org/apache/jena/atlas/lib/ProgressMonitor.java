@@ -25,7 +25,7 @@ import org.slf4j.Logger ;
 /** Progress monitor - output lines to show the progress of some long running operation.
  * This is based on "ticks", not time.
  * Once per item processed, call the {@link #tick()} operation.
- * @deprecated Use RIOT's {@code org.apache.system.preogress.ProgressMonitor}.
+ * @deprecated Use RIOT's {@code org.apache.system.progress.ProgressMonitor}.
  */
 @Deprecated
 public class ProgressMonitor {

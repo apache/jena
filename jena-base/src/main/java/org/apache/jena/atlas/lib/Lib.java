@@ -90,7 +90,7 @@ public class Lib
         return new UnsupportedOperationException(Lib.className(object) + "." + method);
     }
 
-    /** Do two lists have the same elements without considering the order of the lists? */
+    /** Do two lists have the same elements without considering the order of the lists nor duplicates? */
     public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2) {
         if ( list1 == null && list2 == null )
             return true ;

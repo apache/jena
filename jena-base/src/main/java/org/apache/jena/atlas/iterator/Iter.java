@@ -100,7 +100,7 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     @SafeVarargs
     public static <T> Iter<T> of(T ...items) {
-        return Iter.iter(Arrays.asList(items).iterator());
+        return Iter.iter(List.of(items).iterator());
     }
 
     public static<T> Iter<T> ofNullable(T t) {
