@@ -33,7 +33,6 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.atlas.iterator.IteratorOnClose;
 import org.apache.jena.atlas.lib.Closeable;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.ext.com.google.common.collect.Iterators;
 import org.apache.jena.ext.com.google.common.collect.Range;
 import org.apache.jena.ext.com.google.common.collect.RangeMap;
@@ -71,6 +70,8 @@ import org.apache.jena.sparql.service.enhancer.slice.api.ReadableChannelWithLimi
 import org.apache.jena.sparql.service.enhancer.slice.api.Slice;
 import org.apache.jena.sparql.service.enhancer.slice.api.SliceAccessor;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * QueryIter to process service requests in bulk with support for streaming caching.
@@ -81,6 +82,8 @@ import org.apache.jena.sparql.util.NodeFactoryExtra;
 public class QueryIterServiceBulk
     extends QueryIterSlottedBase
 {
+    private static final Logger logger = LoggerFactory.getLogger(QueryIterServiceBulk.class);
+
     protected OpServiceInfo serviceInfo;
     protected ServiceCacheKeyFactory cacheKeyFactory;
 
@@ -196,11 +199,11 @@ public class QueryIterServiceBulk
             boolean isBackendIt = sliceKeysForBackend.contains(partKey);
 
             if (isBackendIt && !activeIt.hasNext()) {
-                Log.debug(QueryIterServiceBulk.class, "Iterator ended without end marker - assuming remote result set limit reached");
+                logger.debug("Iterator ended without end marker - assuming remote result set limit reached");
                 long seenBackendData = backendIt.getOffset();
                 backendResultSetLimit = new Estimate<>(seenBackendData, true);
                 if (seenBackendData <= 0) {
-                    Log.warn(QueryIterServiceBulk.class, "Known result set limit of " + seenBackendData + " detected");
+                    logger.warn("Known result set limit of " + seenBackendData + " detected");
                 }
 
                 resultSizeCache.updateLimit(targetService, backendResultSetLimit);
@@ -470,7 +473,10 @@ public class QueryIterServiceBulk
         int nextAllocOutputId = 0;
         int batchSize = inputs.size();
 
-        Log.info(QueryIterServiceBulk.class, "Schedule for current batch:");
+        if (logger.isInfoEnabled()) {
+            logger.info("Schedule for current batch:");
+        }
+
         int rangeId = currentRangeId;
 
         for (int inputId = currentInputId; inputId < batchSize; ++inputId) {
@@ -508,7 +514,9 @@ public class QueryIterServiceBulk
 
                 lock = slice.getReadWriteLock().readLock();
 
-                Log.debug(QueryIterServiceBulk.class, "Created cache key: " + cacheKey);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Created cache key: " + cacheKey);
+                }
                 // Log.debug(BatchRequestIterator.class, "Cached ranges: " + slice.getLoadedRanges().toString());
 
                 lock.lock();
@@ -577,11 +585,12 @@ public class QueryIterServiceBulk
                 //   - We need to start the backend request from the request offset
                 //   - The issue is how to handle the next binding
 
-                Log.info(QueryIterServiceBulk.class, "input " + inputId + ": " +
-                    allRanges.toString()
-                        .replace("false", "fetch")
-                        .replace("true", "cached"));
-
+                if (logger.isInfoEnabled()) {
+                    logger.info("input " + inputId + ": " +
+                        allRanges.toString()
+                            .replace("false", "fetch")
+                            .replace("true", "cached"));
+                }
                 Map<Range<Long>, Boolean> mapOfRanges = allRanges.asMapOfRanges();
 
                 if (mapOfRanges.isEmpty()) {

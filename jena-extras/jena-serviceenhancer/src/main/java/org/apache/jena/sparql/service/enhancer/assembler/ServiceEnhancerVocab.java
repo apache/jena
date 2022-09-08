@@ -34,23 +34,31 @@ public class ServiceEnhancerVocab {
     public static final Resource DatasetServiceEnhancer = ResourceFactory.createResource(NS + "DatasetServiceEnhancer");
 
     /** The id (a node) to which to resolve urn:x-arq:self */
-    public static final Property datasetId              = ResourceFactory.createProperty(NS + "datasetId");
+    public static final Property datasetId = ResourceFactory.createProperty(NS + "datasetId");
 
     /** Enable privileged management functions; creates a wrapped dataset with a copied context */
-    public static final Property enableMgmt             = ResourceFactory.createProperty(NS + "enableMgmt");
+    public static final Property enableMgmt = ResourceFactory.createProperty(NS + "enableMgmt");
 
-    // The term "baseDataset" is not officially in ja but it seems reasonable to eventually add it there
-    // (so far ja only defines baseModel)
-    public static final Property baseDataset            = ResourceFactory.createProperty(JA.getURI() + "baseDataset");
+    /** The term "baseDataset" is not officially in ja but it seems reasonable to eventually add it there.
+     * So far ja only defines baseModel */
+    public static final Property baseDataset = ResourceFactory.createProperty(JA.getURI() + "baseDataset");
 
     /** Maximum number of entries the service cache can hold */
-    public static final Property cacheMaxEntryCount = ResourceFactory.createProperty(NS + "cacheMaxEntryCount") ;
+    public static final Property cacheMaxEntryCount = ResourceFactory.createProperty(NS + "cacheMaxEntryCount");
 
     /** Number number of pages for bindings an individual cache entry can hold */
-    public static final Property cacheMaxPageCount = ResourceFactory.createProperty(NS + "cacheMaxPageCount") ;
+    public static final Property cacheMaxPageCount = ResourceFactory.createProperty(NS + "cacheMaxPageCount");
 
     /** Number of bindings a page can hold */
-    public static final Property cachePageSize = ResourceFactory.createProperty(NS + "cachePageSize") ;
+    public static final Property cachePageSize = ResourceFactory.createProperty(NS + "cachePageSize");
+
+    /** Maximum size (in terms of input bindings) of bulk requests */
+    public static final Property bulkMaxSize = ResourceFactory.createProperty(NS + "bulkMaxSize");
+
+    /** Bulk size to use if no other is set. Capped by bulkMaxSize. */
+    public static final Property bulkSize = ResourceFactory.createProperty(NS + "bulkSize");
+
+    public static final Property bulkMaxOutOfBandSize = ResourceFactory.createProperty(NS + "bulkMaxOutOfBandSize");
 
     /** Adds the following prefix declarations to the given map thereby overrides existing ones:
      * <table style="border: 1px solid;">

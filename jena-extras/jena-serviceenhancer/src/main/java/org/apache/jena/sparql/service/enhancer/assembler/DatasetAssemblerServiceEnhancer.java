@@ -20,6 +20,7 @@ package org.apache.jena.sparql.service.enhancer.assembler;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.function.TriFunction;
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.logging.Log;
@@ -28,16 +29,19 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.sparql.core.assembler.DatasetAssembler;
+import org.apache.jena.sparql.service.enhancer.impl.ChainingServiceExecutorBulkCache;
 import org.apache.jena.sparql.service.enhancer.impl.ServiceResponseCache;
 import org.apache.jena.sparql.service.enhancer.impl.util.GraphUtilsExtra;
 import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerConstants;
 import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerInit;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sparql.util.graph.GraphUtils;
 
 /**
@@ -87,6 +91,16 @@ public class DatasetAssemblerServiceEnhancer
                 ServiceResponseCache.set(cxt, cache);
             }
 
+            // Transfer values from the RDF model to the context
+            configureCxt(root, ServiceEnhancerVocab.bulkMaxSize, cxt, ServiceEnhancerConstants.serviceBulkMaxBindingCount,
+                    false, ChainingServiceExecutorBulkCache.DFT_MAX_BULK_SIZE, GraphUtilsExtra::getAsInt);
+
+            configureCxt(root, ServiceEnhancerVocab.bulkSize, cxt, ServiceEnhancerConstants.serviceBulkBindingCount,
+                    false, ChainingServiceExecutorBulkCache.DFT_BULK_SIZE, GraphUtilsExtra::getAsInt);
+
+            configureCxt(root, ServiceEnhancerVocab.bulkMaxOutOfBandSize, cxt, ServiceEnhancerConstants.serviceBulkMaxOutOfBandBindingCount,
+                    false, ChainingServiceExecutorBulkCache.DFT_MAX_OUT_OUF_BAND_SIZE, GraphUtilsExtra::getAsInt);
+
             // If management is enabled then return a wrapped dataset with a copy of the context which has
             // mgmt enabled
             if (enableMgmt) {
@@ -102,5 +116,15 @@ public class DatasetAssemblerServiceEnhancer
         }
 
         return result.asDatasetGraph();
+    }
+
+
+    /** Transfer a resource's property value to a context symbol's value */
+    private static <T> void configureCxt(Resource root, Property property, Context cxt, Symbol symbol, boolean applyDefaultValueIfPropertyAbsent, T defaultValue, TriFunction<Resource, Property, T, T> getValue) {
+        if (root.hasProperty(property) || applyDefaultValueIfPropertyAbsent) {
+            Object value = getValue.apply(root, property, defaultValue);
+            cxt.set(symbol, value);
+        }
+
     }
 }

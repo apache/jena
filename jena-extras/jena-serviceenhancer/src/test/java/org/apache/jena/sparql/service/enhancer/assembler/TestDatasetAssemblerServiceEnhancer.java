@@ -30,12 +30,23 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerConstants;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TestDatasetAssemblerServiceEnhancer
 {
+    private static final String SPEC_STR_01 = String.join("\n",
+            "PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>",
+            "PREFIX se: <http://jena.apache.org/service-enhancer#>",
+            "<urn:example:root> a se:DatasetServiceEnhancer ; ja:baseDataset <urn:example:base> .",
+            "<urn:example:root> se:cacheMaxEntryCount 5 ; se:cachePageSize 1000 ; se:cacheMaxPageCount 10 .",
+            "<urn:example:root> se:bulkMaxSize 20 ; se:bulkSize 10 ; se:bulkMaxOutOfBandSize 5 .",
+            "<urn:example:base> a ja:MemoryDataset ."
+        );
+
     /**
      * This test case attempts to assemble a dataset with the service enhancer plugin
      * set up in its context. A query making use of enhancer features is fired against it.
@@ -43,18 +54,15 @@ public class TestDatasetAssemblerServiceEnhancer
      */
     @Test
     public void testAssembler() {
-        String specStr = String.join("\n",
-            "PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>",
-            "PREFIX se: <http://jena.apache.org/service-enhancer#>",
-            "<urn:example:root> a se:DatasetServiceEnhancer ; ja:baseDataset <urn:example:base> .",
-            "<urn:example:root> se:cacheMaxEntryCount 5 ; se:cachePageSize 1000 ; se:cacheMaxPageCount 10 .",
-            "<urn:example:base> a ja:MemoryDataset ."
-        );
-
         Model spec = ModelFactory.createDefaultModel();
-        RDFDataMgr.read(spec, new StringReader(specStr), null, Lang.TURTLE);
+        RDFDataMgr.read(spec, new StringReader(SPEC_STR_01), null, Lang.TURTLE);
 
         Dataset dataset = DatasetFactory.assemble(spec.getResource("urn:example:root"));
+        Context cxt = dataset.getContext();
+
+        Assert.assertEquals(20, cxt.getInt(ServiceEnhancerConstants.serviceBulkMaxBindingCount, -1));
+        Assert.assertEquals(10, cxt.getInt(ServiceEnhancerConstants.serviceBulkBindingCount, -1));
+        Assert.assertEquals(5, cxt.getInt(ServiceEnhancerConstants.serviceBulkMaxOutOfBandBindingCount, -1));
 
         try (QueryExecution qe = QueryExecutionFactory.create(
                 "SELECT * { BIND(<urn:example:x> AS ?x) SERVICE <loop:bulk+10:> { ?x ?y ?z } }", dataset)) {
