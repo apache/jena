@@ -30,7 +30,7 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.Tags;
 
 /**
- * IRI(expr), oen argument, SPARQL standard form.
+ * IRI(expr), one argument, SPARQL standard form.
  * The function URI(expr) is the same, but under a different name as a
  * subclass.
  * <p>

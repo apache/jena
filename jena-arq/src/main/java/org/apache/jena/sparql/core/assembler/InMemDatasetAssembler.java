@@ -46,7 +46,6 @@ public class InMemDatasetAssembler extends DatasetAssembler {
         return DatasetAssemblerVocab.tMemoryDataset ;
     }
 
-
     @Override
     public DatasetGraph createDataset(Assembler a, Resource root) {
         // Old name : bypass.

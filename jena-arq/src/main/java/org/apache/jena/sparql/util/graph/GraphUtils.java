@@ -39,6 +39,11 @@ import org.apache.jena.vocabulary.RDF ;
 
 public class GraphUtils {
 
+    // Only used by DatasetDescriptionAssembler
+    // (and DatasetDescriptionAssembler itself is unused)
+    /**
+     * Get all the literals for a resource-property.
+     */
     public static List<String> multiValueString(Resource r, Property p) {
         List<RDFNode> nodes = multiValue(r, p) ;
         List<String> values = new ArrayList<>() ;

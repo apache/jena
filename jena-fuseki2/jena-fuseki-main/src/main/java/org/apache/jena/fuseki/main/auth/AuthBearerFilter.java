@@ -217,7 +217,7 @@ public class AuthBearerFilter implements Filter {
 
     /**
      * Create a AuthHeader
-     * Usually, this reads the "Authenticate" and parses it (RFC 7230)
+     * Usually, this reads the "Authenticate" and parses it (RFC 7230, RFC 9112)
      * ... although AWS Cognito is different.
      * The header to access is controlled by {@link #getHttpAuthField(HttpServletRequest)}
      * and the value of the header is passed as {@code authHeaderValue}.

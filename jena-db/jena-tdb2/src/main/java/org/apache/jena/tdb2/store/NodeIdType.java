@@ -20,6 +20,8 @@ package org.apache.jena.tdb2.store;
 
 import static org.apache.jena.tdb2.store.NodeIdType.TYPES.*;
 
+import org.apache.jena.tdb2.store.value.DoubleNode62;
+
 /** Constants for NodeIds.
  * Note that "PTR" is special - it uses the high bit only set to zero.
  * Note that "XSD_DOUBLE" is special - it sets the high bit (value/ptr)
@@ -71,7 +73,7 @@ public enum NodeIdType {
      * <ul>
      * <li>PTR : high bit zero, everything else written with a high bit one (done in {@link NodeIdFactory#encode}
      * <li>T_DOUBLE : Special case: next bit one.  01?? ???? i.e. 11?? on disk (value bit, double bit).
-     *    This leaves 62 bits for encoding doubles in the future.
+     *    This leaves 62 bits for encoding a double (See {@link DoubleNode62}).
      * <li>Otherwise, a number in the low byte of the constant, high bits "10".
      * </ul>
      * The {@code T_*} constants do not include the high bit.
@@ -110,6 +112,7 @@ public enum NodeIdType {
         // Never stored : bits 1011 0000 so as not to look like a double.
         public static final int T_SPECIAL = enc(0x30);
         public static final int T_INVALID = enc(0x31);
+
         public static final int T_EXTENSION = enc(0x3F);
 
         // Encode/decode of the type value.

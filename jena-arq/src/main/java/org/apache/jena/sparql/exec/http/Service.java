@@ -269,7 +269,7 @@ public class Service {
             if ( "GET".equalsIgnoreCase(str) )
                 return QuerySendMode.asGetAlways;
             try {
-                // "asGetWithLimitForm", "asGetWithLimitBody", "asGetAlways", "asPostForm", "asPost"
+                // "asGetAlways", "asGetWithLimitForm", "asGetWithLimitBody", "asGetAlways", "asPostForm", "asPost"
                 return QuerySendMode.valueOf((String) querySendMode);
             } catch (IllegalArgumentException ex) {
                 throw new QueryExecException("Failed to interpret '"+querySendMode+"' as a query send mode");
