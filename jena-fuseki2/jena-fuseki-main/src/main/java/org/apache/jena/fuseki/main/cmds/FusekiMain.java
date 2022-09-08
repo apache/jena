@@ -23,6 +23,7 @@ import static arq.cmdline.ModAssembler.assemblerDescDecl;
 import java.net.BindException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import arq.cmdline.CmdARQ;
@@ -32,6 +33,7 @@ import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.cmd.ArgDecl;
+import org.apache.jena.cmd.ArgModuleGeneral;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.fuseki.Fuseki;
@@ -107,6 +109,10 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argSparqler     = new ArgDecl(ArgDecl.HasValue, "sparqler");
 
     private static ArgDecl  argValidators   = new ArgDecl(ArgDecl.NoValue,  "validators");
+
+    private static List<ArgModuleGeneral> additionalArgs = new ArrayList<>();
+    public static void addArgModule(ArgModuleGeneral argModule) { additionalArgs.add(argModule); }
+
     // private static ModLocation modLocation = new ModLocation();
     private static ModDatasetAssembler modDataset      = new ModDatasetAssembler();
 
@@ -134,6 +140,9 @@ public class FusekiMain extends CmdARQ {
             TransactionManager.QueueBatchSize = TransactionManager.QueueBatchSize / 2;
 
         getUsage().startCategory("Fuseki Main");
+
+        additionalArgs.forEach(aMod->super.addModule(aMod));
+
         // Control the order!
         add(argMem, "--mem",
             "Create an in-memory, non-persistent dataset for the server");
@@ -146,7 +155,7 @@ public class FusekiMain extends CmdARQ {
         add(argMemTDB, "--memTDB",
             "Create an in-memory, non-persistent dataset using TDB (testing only)");
 //            add(argEmpty, "--empty",
-//                "Run with no datasets and services (validators only)");
+//                "Run with no datasets and services");
         add(argRDFS, "--rdfs=FILE",
             "Apply RDFS on top of the dataset");
         add(argConfig, "--config=FILE",
