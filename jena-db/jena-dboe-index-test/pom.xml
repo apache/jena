@@ -50,6 +50,17 @@
       <scope>compile</scope>
     </dependency>
 
+    <!--
+        Fix necessary for java11 (not java17)
+        when building javadoc.
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>[2.1,)</version>
+      <scope>compile</scope>
+    </dependency>
+    -->
+
   </dependencies>
 
   <build>
@@ -83,6 +94,16 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <!--
+              java11 issue - 
+              For generating javadoc, the javadoc tool needs org.hamcrest:hamcrest
+              in scope compile in this module.
+              Either skip javadoc or (despite junit using hamcrest-core)
+              use the dependency commented out up-file.
+          -->
+          <skip>true</skip>
+        </configuration>
       </plugin>
 
     </plugins>
