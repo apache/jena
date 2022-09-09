@@ -22,8 +22,8 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.Tags;
 
 /**
- * This class is an alternative name for {@linkplain E_IRI}.
- * See the javadoc for {@linkplain E_IRI}.
+ * This class is an alternative name for {@linkplain E_IRI2}.
+ * See the javadoc for {@linkplain E_IRI2}.
  */
 public class E_URI2 extends E_IRI2 {
     private static final String sparqlPrintName = "URI";

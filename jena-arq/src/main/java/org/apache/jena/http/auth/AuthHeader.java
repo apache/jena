@@ -49,6 +49,7 @@ import org.apache.jena.riot.system.RiotChars;
  * </ul>
  */
 public class AuthHeader {
+    // Update for RFC 9112
     /* RFC 7235 header:
      *    WWW-Authenticate:
      *    Authorization:

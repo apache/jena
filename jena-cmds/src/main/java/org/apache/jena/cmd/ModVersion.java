@@ -26,38 +26,38 @@ public class ModVersion extends ModBase
     protected boolean version = false;
     protected boolean printAndExit = false;
     private Version versionMgr = new Version();
-    public ModVersion(boolean printAndExit)
-    {
+
+    public ModVersion(boolean printAndExit) {
         this.printAndExit = printAndExit;
     }
-    
-    public void addClass(Class<?> c) { versionMgr.addClass(c) ; }
-    
+
+    public void addClass(Class<? > c) {
+        versionMgr.addClass(c);
+    }
+
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
+    public void registerWith(CmdGeneral cmdLine) {
         cmdLine.add(versionDecl, "--version", "Version information");
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
+    public void processArgs(CmdArgModule cmdLine) {
         if ( cmdLine.contains(versionDecl) )
             version = true;
-        // The --version flag causes us to print and exit. 
+        // The --version flag causes us to print and exit.
         if ( version && printAndExit )
             printVersionAndExit();
     }
 
-    public boolean getVersionFlag() { return version ; }
-    
-    public void printVersion()
-    {
+    public boolean getVersionFlag() {
+        return version;
+    }
+
+    public void printVersion() {
         versionMgr.print(IndentedWriter.stdout);
-    }  
-     
-    public void printVersionAndExit()
-    {
+    }
+
+    public void printVersionAndExit() {
         printVersion();
         System.exit(0);
     }

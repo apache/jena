@@ -461,7 +461,7 @@ public class G {
     }
 
     /**
-     * List all the nodes of type, including node of sub-classes.
+     * List all the nodes of type, including nodes of sub-classes.
      */
     public static List<Node> listNodesOfTypeRDFS(Graph graph, Node type) {
         Objects.requireNonNull(graph, "graph");

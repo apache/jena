@@ -32,9 +32,9 @@ public class CmdLineArgs extends CommandLineBase {
     }
 
     private boolean processedArgs = false;
-    protected Map<String, ArgDecl> argMap = new HashMap<>() ;   // Map from string name to ArgDecl
-    protected Map<String, Arg> args = new HashMap<>() ;         // Name to Arg
-    protected List<String> positionals = new ArrayList<>() ;    // Positional arguments as strings.
+    protected Map<String, ArgDecl> argMap = new HashMap<>();   // Map from string name to ArgDecl
+    protected Map<String, Arg> args = new HashMap<>();         // Name to Arg
+    protected List<String> positionals = new ArrayList<>();    // Positional arguments as strings.
 
     public void process() throws IllegalArgumentException
     {
@@ -129,10 +129,10 @@ public class CmdLineArgs extends CommandLineBase {
     // ---- Indirection
 
     static final String DefaultIndirectMarker = "@";
-    public boolean matchesIndirect(String s) { return matchesIndirect(s, DefaultIndirectMarker) ; }
-    public boolean matchesIndirect(String s, String marker) { return s.startsWith(marker) ; }
+    public boolean matchesIndirect(String s) { return matchesIndirect(s, DefaultIndirectMarker); }
+    public boolean matchesIndirect(String s, String marker) { return s.startsWith(marker); }
 
-    public String indirect(String s) { return indirect(s, DefaultIndirectMarker) ; }
+    public String indirect(String s) { return indirect(s, DefaultIndirectMarker); }
 
     public String indirect(String s, String marker) {
         if ( !matchesIndirect(s, marker) )
@@ -148,26 +148,26 @@ public class CmdLineArgs extends CommandLineBase {
 
     /** Test whether an argument was seen. */
 
-    public boolean contains(ArgDecl argDecl)    { return getArg(argDecl) != null ; }
+    public boolean contains(ArgDecl argDecl)    { return getArg(argDecl) != null; }
 
     /** Test whether an argument was seen. */
 
-    public boolean contains(String s)           { return getArg(s) != null ; }
+    public boolean contains(String s)           { return getArg(s) != null; }
 
     /** Test whether an argument was seen more than once */
-    public boolean containsMultiple(String s)   { return getValues(s).size() > 1 ; }
+    public boolean containsMultiple(String s)   { return getValues(s).size() > 1; }
 
     /** Test whether an argument was seen more than once */
-    public boolean containsMultiple(ArgDecl argDecl) { return getValues(argDecl).size() > 1 ; }
+    public boolean containsMultiple(ArgDecl argDecl) { return getValues(argDecl).size() > 1; }
 
-    public boolean hasArgs() { return args.size() > 0 ; }
+    public boolean hasArgs() { return args.size() > 0; }
 
     /** Test whether the command line had a particular argument
      *
      * @param argName
      * @return this object
      */
-    public boolean hasArg(String argName) { return getArg(argName) != null ; }
+    public boolean hasArg(String argName) { return getArg(argName) != null; }
 
     /** Test whether the command line had a particular argument
      *
@@ -175,7 +175,7 @@ public class CmdLineArgs extends CommandLineBase {
      * @return true or false
      */
 
-    public boolean hasArg(ArgDecl argDecl) { return getArg(argDecl) != null ; }
+    public boolean hasArg(ArgDecl argDecl) { return getArg(argDecl) != null; }
 
 
     /** Get the argument associated with the argument declaration.
@@ -186,10 +186,8 @@ public class CmdLineArgs extends CommandLineBase {
 
     public Arg getArg(ArgDecl argDecl) {
         Arg arg = null;
-        for ( Arg a : args.values() )
-        {
-            if ( argDecl.matches( a ) )
-            {
+        for ( Arg a : args.values() ) {
+            if ( argDecl.matches(a) ) {
                 arg = a;
             }
         }
@@ -208,7 +206,10 @@ public class CmdLineArgs extends CommandLineBase {
 
     /**
      * Returns the value (a string) for an argument with a value -
-     * returns null for no argument and no value.
+     * returns null for no use of the argument and for an argument with no value
+     * ({@code ArgDecl(false}}).
+     * These two cases can be distinguished with {@link #contains(ArgDecl)}.
+     *
      * @param argDecl
      * @return String
      */
@@ -323,15 +324,13 @@ public class CmdLineArgs extends CommandLineBase {
             return super.toString();
         String str = "";
         String sep = "";
-        for ( String k : args.keySet() )
-        {
-            Arg a = args.get( k );
+        for ( String k : args.keySet() ) {
+            Arg a = args.get(k);
             str = str + sep + a;
             sep = " ";
         }
         sep = " -- ";
-        for ( String v : positionals )
-        {
+        for ( String v : positionals ) {
             str = str + sep + v;
             sep = " ";
         }

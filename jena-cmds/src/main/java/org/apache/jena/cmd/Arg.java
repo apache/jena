@@ -23,15 +23,15 @@ import java.util.List;
 
 public class Arg
 {
-    String name;
-    String value;                                      // Last seen
-    List<String> values = new ArrayList<>();     // All seen
+    private String name;
+    private String value;                                // Last seen
+    private List<String> values = new ArrayList<>();     // All seen
 
-    Arg() { name = null; value = null; }
+    /*package*/ Arg() { name = null; value = null; }
 
-    public Arg(String _name) { this(); setName(_name); }
+    /*package*/ Arg(String _name) { this(); setName(_name); }
 
-    Arg(String _name, String _value) { this(); setName(_name); setValue(_value); }
+    /*package*/ Arg(String _name, String _value) { this(); setName(_name); setValue(_value); }
 
     void setName(String n) { name = n; }
 
@@ -44,8 +44,7 @@ public class Arg
 
     public boolean hasValue() { return value != null; }
 
-    public boolean matches(ArgDecl decl)
-    {
+    public boolean matches(ArgDecl decl) {
         return decl.getNames().contains(name);
     }
 

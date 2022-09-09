@@ -197,7 +197,7 @@ public class NodeFmtLib
     // Strict N-triples only allows [A-Za-z][A-Za-z0-9]
     static char encodeMarkerChar = 'X';
 
-    // These two form a pair to convert bNode labels to a safe (i.e. legal N-triples form) and back agains.
+    // These two form a pair to convert bNode labels to a safe (i.e. legal N-triples form) and back again.
 
     // Encoding is:
     // 1 - Add a Letter
