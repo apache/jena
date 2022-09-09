@@ -101,6 +101,8 @@
     <ver.commonscsv>1.9.0</ver.commonscsv>
     <ver.commons-codec>1.15</ver.commons-codec>
     <ver.commons-compress>1.21</ver.commons-compress>
+    <ver.commons-collections>4.4</ver.commons-collections>
+    <ver.commons-fileupload>1.4</ver.commons-fileupload>
     <ver.dexxcollection>0.7</ver.dexxcollection>
     <ver.micrometer>1.9.3</ver.micrometer>
 
@@ -371,7 +373,7 @@
        <dependency>
          <groupId>commons-fileupload</groupId>
          <artifactId>commons-fileupload</artifactId>
-         <version>1.4</version>
+         <version>${ver.commons-fileupload}</version>
          <exclusions>
            <exclusion>
              <groupId>javax.servlet</groupId>
@@ -383,7 +385,7 @@
        <dependency>
          <groupId>org.apache.commons</groupId>
          <artifactId>commons-collections4</artifactId>
-         <version>4.4</version>
+         <version>${ver.commons-collections}</version>
        </dependency>
        
        <!-- supports persistent data structures -->
