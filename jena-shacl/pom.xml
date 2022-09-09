@@ -32,7 +32,6 @@
   <description>SHACL engine for Apache Jena</description>
 
   <properties>
-    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
     <automatic.module.name>org.apache.jena.shacl</automatic.module.name>
   </properties>
 
@@ -83,37 +82,10 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions> 
-          <execution>
-            <id>attach-sources</id>
-            <!-- <phase>package</phase> package is the default -->
-            <goals>
-              <goal>jar-no-fork</goal> 
-            </goals>
-          </execution>
-          <execution>
-            <id>attach-sources-test</id>
-            <goals>
-              <goal>test-jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-      
-      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
-            </manifestEntries>
-          </archive>
-        </configuration>
         <executions>
           <execution>
             <goals>
@@ -122,25 +94,28 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <source>${java.version}</source>
-          <version>true</version>
-          <show>public</show>
-          <encoding>UTF-8</encoding>
-          <windowtitle>Apache Jena TDB</windowtitle>
-          <doctitle>Apache Jena - SHACL ${project.version}</doctitle>
-          <excludePackageNames>*.compact:*.compact.*:*.engine:*.engine.*:*.lib:*.parser:*.sys:*.vocabulary</excludePackageNames>
-          <bottom>Licenced under the Apache License, Version 2.0</bottom>
-        </configuration>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions> 
+          <execution>
+            <id>attach-sources-test</id> 
+            <goals>
+              <goal>test-jar-no-fork</goal> 
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <windowtitle>Apache Jena SHACL</windowtitle>
+          <doctitle>Apache Jena - SHACL ${project.version}</doctitle>
+          <excludePackageNames>*.compact:*.compact.*:*.engine:*.engine.*:*.lib:*.parser:*.sys:*.vocabulary</excludePackageNames>
+        </configuration>
       </plugin>
 
     </plugins>

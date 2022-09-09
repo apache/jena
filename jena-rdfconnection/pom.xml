@@ -101,19 +101,24 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
+        <artifactId>maven-jar-plugin</artifactId>
         <executions>
           <execution>
-            <id>attach-sources</id>
-            <!-- <phase>package</phase> package is the default -->
             <goals>
-              <goal>jar-no-fork</goal>
+              <goal>test-jar</goal>
             </goals>
           </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions> 
           <execution>
-            <id>attach-sources-test</id>
+            <id>attach-sources-test</id> 
             <goals>
-              <goal>test-jar-no-fork</goal>
+              <goal>test-jar-no-fork</goal> 
             </goals>
           </execution>
         </executions>
@@ -131,40 +136,11 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
-            </manifestEntries>
-          </archive>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <source>${java.version}</source>
-          <version>true</version>
-          <show>public</show>
-          <encoding>UTF-8</encoding>
           <windowtitle>Apache Jena RDF Connection</windowtitle>
           <doctitle>Apache Jena RDF Connection ${project.version}</doctitle>
-          <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
       </plugin>
 
     </plugins>

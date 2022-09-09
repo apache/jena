@@ -146,6 +146,11 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
@@ -184,30 +189,19 @@
                <doclint>syntax</doclint>
           -->
           <doclint>none</doclint>
-          <author>true</author>
-          <version>true</version>
-          <show>public</show>
-          <quiet>true</quiet>
-          <encoding>UTF-8</encoding>
-          <windowtitle>Apache Jena</windowtitle>
+          <windowtitle>Apache Jena API</windowtitle>
           <doctitle>Apache Jena Core ${project.version}</doctitle>
-          <bottom>Licenced under the Apache License, Version 2.0</bottom>
-          <excludePackageNames>org.apache.jena.n3:org.apache.jena.n3.*</excludePackageNames>
           <groups>
             <group>
               <title>API - Application Programming Interface</title>
-              <packages>org.apache.jena.db:org.apache.jena.rdf.model:org.apache.jena.rdf.listeners:org.apache.jena.rdf.arp:org.apache.jena.rdf.arp.lang:org.apache.jena.datatypes:org.apache.jena.datatypes.xsd:org.apache.jena.rdql:org.apache.jena.shared:org.apache.jena.vocabulary:org.apache.jena.xmloutput:org.apache.jena.ontology:org.apache.jena.ontology.daml:org.apache.jena.reasoner:org.apache.jena.reasoner.rulesys:org.apache.jena.reasoner.rulesys.builtins:org.apache.jena.reasoner.transitiveReasoner:org.apache.jena.reasoner.dig</packages>
+              <packages>org.apache.jena.rdf.model:org.apache.jena.rdf.listeners:org.apache.jena.datatypes:org.apache.jena.datatypes.xsd:org.apache.jena.shared:org.apache.jena.vocabulary:org.apache.jena.rdfxml.xmlinput:org.apache.jena.rdfxml.xmloutput:org.apache.jena.ontology::org.apache.jena.reasoner:org.apache.jena.reasoner.rulesys:org.apache.jena.reasoner.rulesys.builtins:org.apache.jena.reasoner.transitiveReasoner</packages>
             </group>
             <group>
               <title>SPI - System Programming Interface</title>
               <packages>org.apache.jena.enhanced:org.apache.jena.graph:org.apache.jena.graph.compose:org.apache.jena.graph.query:org.apache.jena.util:org.apache.jena.util.iterator</packages>
             </group>
             <group>
-              <title>Command line tools</title>
-              <packages>jena</packages>
-            </group>
-            <group>
-              <title>Other Packages</title>
+              <title>Assembler</title>
               <packages>org.apache.jena.assembler</packages>
             </group>
           </groups>
@@ -217,25 +211,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
-            </manifestEntries>
-          </archive>
-        </configuration>
         <executions>
           <execution>
             <goals>
               <goal>test-jar</goal>
             </goals> 
-            <configuration>
-              <archive>
-                <manifestEntries>
-                  <Automatic-Module-Name>${automatic.module.name}.test</Automatic-Module-Name>
-                </manifestEntries>
-              </archive>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -252,7 +232,6 @@
             <package>org.apache.jena.enhanced</package>
             <package>org.apache.jena.graph</package>
             <package>org.apache.jena.mem</package>
-            <package>org.apache.jena.n3</package>
             <package>org.apache.jena.ontology</package>
             <package>org.apache.jena.rdf</package>
             <package>org.apache.jena.rdfxml</package>

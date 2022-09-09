@@ -75,14 +75,17 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
+        <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <archive>
-            <manifestEntries>
-              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
-            </manifestEntries>
-          </archive>
+          <includes>
+            <include>**/TS_*.java</include>
+          </includes>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
         <executions>
           <execution>
             <goals>
@@ -94,29 +97,12 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>**/TS_*.java</include>
-          </includes>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
         <executions> 
           <execution>
-            <id>attach-sources</id>
-            <!-- <phase>package</phase> package is the default -->
+            <id>attach-sources-test</id> 
             <goals>
-              <goal>jar-no-fork</goal> 
-            </goals>
-          </execution>
-          <execution>
-            <id>attach-sources-test</id>
-            <goals>
-              <goal>test-jar-no-fork</goal>
+              <goal>test-jar-no-fork</goal> 
             </goals>
           </execution>
         </executions>
@@ -126,7 +112,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <source>${java.version}</source>
+          <windowtitle>Apache Jena ShEx</windowtitle>
+          <doctitle>Apache Jena - ShEx ${project.version}</doctitle>
+          <includePackageNames>org.apache.jena.shex</includePackageNames>
         </configuration>
       </plugin>
 

@@ -88,8 +88,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <!-- Workaround Java11 javadoc issues (works at Java17) -->
+          <detectJavaApiLink>false</detectJavaApiLink>
           <source>8</source>
+          <doclint>none</doclint>
           <excludePackageNames>org.apache.jena.security.example:org.apache.jena.security.example.*</excludePackageNames>
           <tags>
             <tag>
@@ -106,16 +107,7 @@
             </tag>
           </tags>
           <overview>${basedir}/src/main/overview.html</overview>
-           
         </configuration>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

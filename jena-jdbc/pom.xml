@@ -18,76 +18,56 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.apache.jena</groupId>
-	<artifactId>jena-jdbc</artifactId>
-	<version>4.7.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>Apache Jena - JDBC Parent</name>
-	<description>This is the parent module for the Jena JDBC modules.  These modules provide JDBC Type 4 drivers for in-memory and TDB datasets as well as remote SPARQL endpoints.</description>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jena-jdbc</artifactId>
+  <packaging>pom</packaging>
+  <name>Apache Jena - JDBC Parent</name>
+  <description>This is the parent module for the Jena JDBC modules.  These modules provide JDBC Type 4 drivers for in-memory and TDB datasets as well as remote SPARQL endpoints.</description>
 
-	<parent>
-		<groupId>org.apache.jena</groupId>
-		<artifactId>jena</artifactId>
-		<version>4.7.0-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent>
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena</artifactId>
+    <version>4.7.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
 
   <properties>
     <automatic.module.name>org.apache.jena.jdbc</automatic.module.name> 
   </properties>
 
-	<modules>
-		<module>jena-jdbc-core</module>
-		<module>jena-jdbc-driver-remote</module>
-		<module>jena-jdbc-driver-tdb</module>
-		<module>jena-jdbc-driver-mem</module>
-		<module>jena-jdbc-driver-bundle</module>
-	</modules>
+  <modules>
+    <module>jena-jdbc-core</module>
+    <module>jena-jdbc-driver-remote</module>
+    <module>jena-jdbc-driver-tdb</module>
+    <module>jena-jdbc-driver-mem</module>
+    <module>jena-jdbc-driver-bundle</module>
+  </modules>
 
-	<dependencyManagement>
-		<dependencies>
-			<!-- Log4j2 -->
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-slf4j-impl</artifactId>
-				<version>${ver.log4j2}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+  <dependencyManagement>
+    <dependencies>
+      <!-- Log4j2 -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${ver.log4j2}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-	<build>
-		<plugins>
-			<!-- Compiler Plugin -->
-			<plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<!-- Sources Plugin -->
-			<plugin>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>bundle-sources</id>
-						<phase>package</phase>
-						<goals>
-							<!-- produce source artifact for main project sources -->
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-		</plugins>
-	</build>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- Compensate for java11 issues; remove this whole plugin defn at java17 -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <source>8</source>
+            <doclint>none</doclint>
+            <detectJavaApiLink>false</detectJavaApiLink>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 </project>

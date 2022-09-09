@@ -29,7 +29,6 @@
   <description>A Jena JDBC driver for use with remote SPARQL endpoints.</description>
 
   <properties>
-    <plugin.license.headerPath>${project.parent.basedir}</plugin.license.headerPath>
     <automatic.module.name>org.apache.jena.jdbc.driver.remote</automatic.module.name>
   </properties>
 
@@ -81,31 +80,34 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Javadoc Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-
-          <!-- Compensate for java11 issues; remove at java17 -->
-          <source>8</source>
-
-          <quiet>true</quiet>
-          <encoding>UTF-8</encoding>
-          <charset>UTF-8</charset>
-          <docencoding>UTF-8</docencoding>
-        </configuration>
+        <artifactId>maven-source-plugin</artifactId>
         <executions>
           <execution>
+            <id>bundle-sources</id>
             <phase>package</phase>
             <goals>
-              <!-- Produce Javadoc JARs for each module -->
-              <goal>jar</goal>
-              <goal>test-jar</goal>
+              <goal>jar-no-fork</goal>
             </goals>
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+       	  <execution>
+					  <phase>package</phase>
+					  <goals>
+						  <!-- Produce Javadoc JARs for each module -->
+						  <goal>jar</goal>
+						  <goal>test-jar</goal>
+					  </goals>
+				  </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
+
 </project>
