@@ -25,6 +25,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestDatabaseOps.class
+    , TestDatabaseCompact.class
     , TestDatabaseConnection.class
     , TestSys.class
     , TestTransactionalSystemControl.class

@@ -29,45 +29,33 @@ public class TranslationTable<X>
 {
     Map<String, X> map = new HashMap<>() ;
     boolean ignoreCase = false ;
-    
-    /** Create a translation table which respects case */
-    
-    public TranslationTable() { this(false) ; }
-    
-    /** Create a translation table - say whether to ignore case or not */ 
-    public TranslationTable(boolean ignoreCase) { this.ignoreCase = ignoreCase ; } 
-    
-    public X lookup(String name)
-    {
-        if ( name == null )
-            return null ;
 
-        for ( Map.Entry<String, X> entry : map.entrySet() )
-        {
+    /** Create a translation table which respects case */
+
+    public TranslationTable() { this(false) ; }
+
+    /** Create a translation table - say whether to ignore case or not */
+    public TranslationTable(boolean ignoreCase) { this.ignoreCase = ignoreCase ; }
+
+    public X lookup(String name) {
+        if ( name == null )
+            return null;
+
+        if ( ! ignoreCase )
+            return map.get(name);
+
+        // Case insensitive lookup (assumes small translation tables)
+
+        for ( Map.Entry<String, X> entry : map.entrySet() ) {
             String k = entry.getKey();
-            if ( ignoreCase )
-            {
-                if ( k.equalsIgnoreCase( name ) )
-                {
-                    return entry.getValue();
-                }
-            }
-            else
-            {
-                if ( k.equals( name ) )
-                {
-                    return entry.getValue();
-                }
-            }
+            if ( k.equalsIgnoreCase(name) )
+                return entry.getValue();
         }
-        return null ;
+        return null;
     }
-    
-    public void put(String k, X v)
-    {
-        map.put(k, v) ;
-    }
-    
-    public Iterator<String> keys() { return map.keySet().iterator() ; }
-    public Iterator<X> values() { return map.values().iterator() ; }
+
+    public void put(String k, X v)   { map.put(k, v) ; }
+
+    public Iterator<String> keys()   { return map.keySet().iterator() ; }
+    public Iterator<X> values()      { return map.values().iterator() ; }
 }

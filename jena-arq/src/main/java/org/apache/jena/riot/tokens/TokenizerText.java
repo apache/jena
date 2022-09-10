@@ -455,7 +455,7 @@ public final class TokenizerText implements Tokenizer
 
             // Already got a + or - ...
             // readNumberNoSign
-            // Because next, old code proceses signs.
+            // Because next, old code processes signs.
             reader.pushbackChar(ch);
             signCh = ch;
             // Drop to next "if"

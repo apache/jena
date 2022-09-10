@@ -111,14 +111,6 @@ public class DatabaseOps {
 
         DatasetGraph dsg = container;
 
-        //  // Per backup source lock.
-        //  synchronized(activeBackups) {
-        //      // Atomically check-and-set
-        //      if ( activeBackups.contains(dsg) )
-        //          Log.warn(Fuseki.serverLog, "Backup already in progress");
-        //      activeBackups.add(dsg);
-        //  }
-
         Pair<OutputStream, Path> x = openUniqueFileForWriting(backupDir, BACKUPS_FN, "nq.gz");
         try (OutputStream out2 = x.getLeft();
              OutputStream out1 = new GZIPOutputStream(out2, 8 * 1024);
