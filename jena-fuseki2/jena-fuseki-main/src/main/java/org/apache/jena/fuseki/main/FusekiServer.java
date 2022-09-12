@@ -444,6 +444,8 @@ public class FusekiServer {
             // The 7 CORS default exposed headers.
             corsInitParamsDft.put(CrossOriginFilter.EXPOSED_HEADERS_PARAM,
                 "Cache-Control, Content-Language, Content-Length, Content-Type, Expires, Last-Modified, Pragma");
+            // Respond to preflight without passing OPTIONS down the filter chain.
+            corsInitParamsDft.put(CrossOriginFilter.CHAIN_PREFLIGHT_PARAM, "false");
         }
 
         // Builder with standard operation-action mapping.
@@ -1445,19 +1447,21 @@ public class FusekiServer {
 
         /** Add servlets and servlet filters, including the {@link FusekiFilter} */
         private void servletsAndFilters(ServletContextHandler context) {
-            // First in chain. Authentication.
-            if ( hasServerWideAuth() ) {
-                Predicate<String> auth = serverAuth::isAllowed;
-                AuthFilter authFilter = new AuthFilter(auth);
-                addFilter(context, "/*", authFilter);
-            }
-
-            // CORS, maybe
+            // First in chain. CORS.
+            // Preflight to set to respond without passing on OPTIONS.
+            // Otherwise passes on to the next filter.
             if ( corsInitParams != null ) {
                 Filter corsFilter = new CrossOriginFilter();
                 FilterHolder holder = new FilterHolder(corsFilter);
                 holder.setInitParameters(corsInitParams);
                 addFilterHolder(context, "/*", holder);
+            }
+
+            // Authentication.
+            if ( hasServerWideAuth() ) {
+                Predicate<String> auth = serverAuth::isAllowed;
+                AuthFilter authFilter = new AuthFilter(auth);
+                addFilter(context, "/*", authFilter);
             }
 
             beforeFilters.forEach(pair -> addFilter(context, pair.getLeft(), pair.getRight()));
