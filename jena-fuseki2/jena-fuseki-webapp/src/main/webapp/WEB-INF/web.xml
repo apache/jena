@@ -64,6 +64,10 @@
       <param-name>exposedHeaders</param-name>
       <param-value>Access-Control-Allow-Origin,Access-Control-Allow-Credentials</param-value>
     </init-param>
+    <init-param>
+      <param-name>chainPreflight</param-name>
+      <param-value>false</param-value>
+    </init-param>
   </filter>
   
   <filter-mapping>
