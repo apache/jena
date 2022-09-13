@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.exec;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -47,6 +48,9 @@ public interface RowSet extends IteratorCloseable<Binding> {
     @Override public boolean hasNext() ;
 
     @Override public Binding next() ;
+
+    /** Short form of {@code forEachRemaining}. */
+    public default void forEach(Consumer<Binding> action) { forEachRemaining(action); }
 
     public List<Var> getResultVars() ;
 
