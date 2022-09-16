@@ -664,6 +664,9 @@ public class ARQ
         context.set(enablePropertyFunctions,       true) ;
         context.set(regexImpl,                     javaRegex) ;
 
+        final InfoLevel infoLevel = InfoLevel.get(System.getProperty("org.apache.jena.arq.exec.log.level"));
+        context.set(ARQ.symLogExec, infoLevel) ;
+
         return context ;
     }
 
