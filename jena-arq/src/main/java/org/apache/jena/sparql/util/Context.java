@@ -270,6 +270,7 @@ public class Context {
             String s = (String)x;
             if ( s.equalsIgnoreCase("true") )
                 return true;
+            return false;
         }
         return x.equals(Boolean.TRUE);
     }
@@ -295,6 +296,7 @@ public class Context {
             String s = (String)x;
             if ( s.equalsIgnoreCase("false") )
                 return true;
+            return false;
         }
         return x.equals(Boolean.FALSE);
     }
