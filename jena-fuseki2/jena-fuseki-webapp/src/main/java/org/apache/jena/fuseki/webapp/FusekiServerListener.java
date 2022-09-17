@@ -27,7 +27,7 @@ import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.cmd.FusekiArgs;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
-import org.apache.jena.fuseki.server.FusekiInfo;
+import org.apache.jena.fuseki.server.FusekiCoreInfo;
 import org.apache.jena.fuseki.server.OperationRegistry;
 import org.slf4j.Logger;
 
@@ -110,8 +110,6 @@ public class FusekiServerListener implements ServletContextListener {
         if ( initialSetup.quiet )
             return;
 
-
-
         info(initialSetup.datasetPath,
              initialSetup.datasetDescription,
              initialSetup.fusekiServerConfigFile,
@@ -124,13 +122,8 @@ public class FusekiServerListener implements ServletContextListener {
                             String serverConfigFile,
                             DataAccessPointRegistry dapRegistry) {
         Logger log = Fuseki.serverLog;
-        // Done earlier to get it before config output
-//        String version = Fuseki.VERSION;
-//        String buildDate = Fuseki.BUILD_DATE;
-//        FusekiInfo.logServer(log, Fuseki.NAME, version, buildDate);
-
-        FusekiInfo.logServerSetup(log, initialSetup.verbose,
-                                  dapRegistry,
-                                  datasetPath, datasetDescription, serverConfigFile, null);
+        FusekiCoreInfo.logServerCmdSetup(log, initialSetup.verbose,
+                                         dapRegistry,
+                                         datasetPath, datasetDescription, serverConfigFile, null);
     }
 }

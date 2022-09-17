@@ -39,7 +39,6 @@ import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.lib.Registry;
-import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
@@ -116,7 +115,6 @@ public class FusekiServer {
     /**
      * Construct a Fuseki server from command line arguments.
      * The return server has not been started.
-     *
      */
     static public FusekiServer construct(String... args) {
         return FusekiMain.build(args);
@@ -251,25 +249,36 @@ public class FusekiServer {
         return server;
     }
 
-    /** Get the {@link ServletContext} used for Fuseki processing.
+    /**
+     * Get the {@link ServletContext} used for Fuseki processing.
      * Adding new servlets is possible with care.
      */
     public ServletContext getServletContext() {
         return servletContext;
     }
 
-    /** Get the {@link DataAccessPointRegistry}.
+    /**
+     * Get the {@link DataAccessPointRegistry}.
      * This method is intended for inspecting the registry.
      */
     public DataAccessPointRegistry getDataAccessPointRegistry() {
         return DataAccessPointRegistry.get(getServletContext());
     }
 
-    /** Get the {@link OperationRegistry}.
+    /**
+     * Get the {@link OperationRegistry}.
      * This method is intended for inspecting the registry.
      */
     public OperationRegistry getOperationRegistry() {
         return OperationRegistry.get(getServletContext());
+    }
+
+    /**
+     * Return the filename to the static content area.
+     * Returns null if there is no such area.
+     */
+    public String getStaticContentDir() {
+        return staticContentDir;
     }
 
     /**
@@ -351,24 +360,6 @@ public class FusekiServer {
     public void join() {
         try { server.join(); }
         catch (Exception e) { throw new FusekiException(e); }
-    }
-
-    /** Log server details. */
-    public void logServer() {
-        Logger log = Fuseki.serverLog;
-        DataAccessPointRegistry dapRegistery = getDataAccessPointRegistry();
-        FusekiInfo.server(log);
-        if ( httpsPort > 0 && httpPort > 0 )
-            log.info("Ports: http="+httpPort+" https="+httpsPort);
-        else if ( httpsPort <= 0 )
-            log.info("Port: http="+getHttpPort());
-        else if ( httpPort <= 0 )
-            log.info("Port: https="+getHttpsPort());
-        boolean verbose = Fuseki.getVerbose(getServletContext());
-        FusekiInfo.logDataAccessPointRegistry(log, dapRegistery, verbose );
-        if ( staticContentDir != null )
-            FmtLog.info(log,  "Static files: %s", staticContentDir);
-
     }
 
     /** FusekiServer.Builder */
