@@ -38,10 +38,11 @@ import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.main.FusekiMainInfo;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
-import org.apache.jena.fuseki.server.FusekiInfo;
+import org.apache.jena.fuseki.server.FusekiCoreInfo;
 import org.apache.jena.fuseki.servlets.SPARQL_QueryGeneral;
 import org.apache.jena.fuseki.validation.DataValidator;
 import org.apache.jena.fuseki.validation.IRIValidator;
@@ -183,7 +184,7 @@ public class FusekiMain extends CmdARQ {
             "Add a general SPARQL endpoint (without a dataset) at /PATH");
 
         add(argAuth, "--auth=[basic|digest]",
-            "Run the server using basic or digest authentication (dft: digest).");
+            "Run the server using basic or digest authentication");
         add(argHttps, "--https=CONF",
             "https certificate access details. JSON file { \"cert\":FILE , \"passwd\"; SECRET } ");
         add(argHttpsPort, "--httpsPort=NUM",
@@ -480,7 +481,7 @@ public class FusekiMain extends CmdARQ {
     protected void exec() {
         try {
             FusekiServer server = buildServer(serverConfig);
-            info(server);
+            infoCmd(server);
             try {
                 server.start();
             } catch (FusekiException ex) {
@@ -582,15 +583,15 @@ public class FusekiMain extends CmdARQ {
         return builder.build();
     }
 
-    private void info(FusekiServer server) {
+    /** Information from the command line setup */
+    private void infoCmd(FusekiServer server) {
         if ( super.isQuiet() )
             return;
 
         Logger log = Fuseki.serverLog;
 
-        FusekiInfo.server(log);
+        FusekiMainInfo.logServerCode(log);
 
-        DataAccessPointRegistry dapRegistry = DataAccessPointRegistry.get(server.getServletContext());
         if ( serverConfig.empty ) {
             FmtLog.info(log, "No SPARQL datasets services");
         } else {
@@ -598,6 +599,7 @@ public class FusekiMain extends CmdARQ {
                 log.error("No dataset path nor server configuration file");
         }
 
+        DataAccessPointRegistry dapRegistry = DataAccessPointRegistry.get(server.getServletContext());
         if ( serverConfig.datasetPath != null ) {
             if ( dapRegistry.size() != 1 )
                 log.error("Expected only one dataset in the DataAccessPointRegistry");
@@ -611,8 +613,8 @@ public class FusekiMain extends CmdARQ {
         boolean verbose = serverConfig.verboseLogging;
 
         if ( ! super.isQuiet() )
-            FusekiInfo.logServerSetup(log, verbose, dapRegistry,
-                                      datasetPath, datasetDescription, serverConfigFile, staticFiles);
+            FusekiCoreInfo.logServerCmdSetup(log, verbose, dapRegistry,
+                                             datasetPath, datasetDescription, serverConfigFile, staticFiles);
     }
 
     @Override

@@ -27,64 +27,74 @@ import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
 import org.slf4j.Logger;
 
-/** Information about the server */
-public class FusekiInfo {
+/** Functions that log information about the core Fuseki engine. */
+public class FusekiCoreInfo {
 
-    public static void server(Logger log) {
+    /** Details of the code version. */
+    public static void logCode(Logger log) {
         String version = Fuseki.VERSION;
         String buildDate = Fuseki.BUILD_DATE;
-        logServer(log, Fuseki.NAME, version, buildDate);
-    }
+        String serverName = Fuseki.NAME;
 
-    public static void logServer(Logger log, String serverName, String version, String buildDate) {
         if ( version != null && version.equals("${project.version}") )
             version = null;
         if ( buildDate != null && buildDate.equals("${build.time.xsd}") )
             buildDate = DateTimeUtils.nowAsXSDDateTimeString();
-
-        String fusekiName = serverName;
-        //serverName = serverName +" (basic server)";
-
         if ( version != null ) {
             if ( Fuseki.developmentMode && buildDate != null )
-                FmtLog.info(log, "%s %s %s", fusekiName, version, buildDate);
+                FmtLog.info(log, "%s %s %s", serverName, version, buildDate);
             else
-                FmtLog.info(log, "%s %s", fusekiName, version);
+                FmtLog.info(log, "%s %s", serverName, version);
         }
     }
 
-    public static void logServerSetup(Logger log, boolean verbose,
-                                      DataAccessPointRegistry dapRegistry,
-                                      String datasetPath, String datasetDescription, String serverConfigFile, String staticFiles) {
+    /** Log details - this function is about command line details */
+    // Shared between FusekiMain and Fuseki Webapp (currently).
+    public static void logServerCmdSetup(Logger log, boolean verbose, DataAccessPointRegistry dapRegistry,
+                                         String datasetPath, String datasetDescription, String serverConfigFile, String staticFiles) {
         if ( datasetPath != null )
             FmtLog.info(log, "Database: %s", datasetDescription);
         if ( serverConfigFile != null )
             FmtLog.info(log, "Configuration file: %s", serverConfigFile);
 
-        FusekiInfo.logDataAccessPointRegistry(log, dapRegistry, verbose);
+        FusekiCoreInfo.logDataAccessPointRegistry(log, dapRegistry, verbose);
 
         if ( staticFiles != null )
             FmtLog.info(log, "Static files: %s", staticFiles);
 
-        FmtLog.info(log,"System");
-        if ( verbose )
-            PlatformInfo.logDetailsVerbose(log);
+        if ( verbose ) {
+            PlatformInfo.logDetailsSystem(log);
+            PlatformInfo.logDetailsJVM(log);
+        }
         else
-            PlatformInfo.logDetails(log);
+            PlatformInfo.logDetailsSystemPlain(log);
     }
 
     /** Log a {@link DataAccessPointRegistry} */
-    public static void logDataAccessPointRegistry(Logger log, DataAccessPointRegistry dapRegistry, boolean verbose) {
-        dapRegistry.forEach((name, dap)->{
-            FmtLog.info(log,  "Path = %s", name);
-            if ( verbose )
-                FusekiInfo.logDataAccessPointDetails(log, dapRegistry, name);
-        });
+    public static void logDataAccessPointRegistry(Logger log, DataAccessPointRegistry dapRegistry, boolean longForm) {
+        if ( longForm )
+            infoPathsOperations(log, dapRegistry);
+        else
+            infoPaths(log, dapRegistry);
+   }
+
+   private static void infoPaths(Logger log, DataAccessPointRegistry reg) {
+       reg.keys().stream().sorted().forEach(datasetPath -> {
+           //DataAccessPoint dap = reg.get(datasetPath);
+           log.info("Path = "+datasetPath);
+       });
+   }
+
+   private static void infoPathsOperations(Logger log, DataAccessPointRegistry reg) {
+       reg.keys().stream().sorted().forEach(datasetPath -> {
+           log.info("Path = "+datasetPath);
+           DataAccessPoint dap = reg.get(datasetPath);
+           logDataAccessPoint(log, dap);
+       });
     }
 
     /** Log a {@link DataAccessPoint} in detail */
-    public static void logDataAccessPointDetails(Logger log, DataAccessPointRegistry dapRegistry, String datasetPath) {
-        DataAccessPoint dap = dapRegistry.get(datasetPath);
+    public static void logDataAccessPoint(Logger log, DataAccessPoint dap) {
         operations(dap.getDataService()).forEach(operation->{
             StringBuilder sb = new StringBuilder();
             sb.append(format("  Operation = %-6s", operation.getName()));
@@ -95,16 +105,17 @@ public class FusekiInfo {
                 .sorted()
                 .forEach(sj::add);
             sb.append(sj.toString());
-
-            // Don't print access!
-//            sb.append("  Access = ");
-//            StringJoiner sj2 = new StringJoiner(", ", "[ ", " ]");
-//            dap.getDataService().getEndpoints(operation).stream()
-//                .map(Endpoint::getAuthPolicy)
-//                .map(auth-> auth==null?"*":auth.toString())
-//                .sorted()
-//                .forEach(sj2::add);
-//            sb.append(sj2.toString());
+            if ( false ) {
+                // Don't print access! Development only.
+                sb.append("  Access = ");
+                StringJoiner sj2 = new StringJoiner(", ", "[ ", " ]");
+                dap.getDataService().getEndpoints(operation).stream()
+                .map(Endpoint::getAuthPolicy)
+                .map(auth-> auth==null?"*":auth.toString())
+                .sorted()
+                .forEach(sj2::add);
+                sb.append(sj2.toString());
+            }
             FmtLog.info(log,sb.toString());
         });
     }

@@ -22,9 +22,10 @@ import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.sparql.core.DatasetGraph;
 
-/** Setup details (command line, config file) from command line processing.
- *  This is built by {@link FusekiMain#exec}.
- *  This is processed by {@link FusekiMain#buildServer}.
+/**
+ * Setup details (command line, config file) from command line processing.
+ * This is built by {@link FusekiMain#exec}.
+ * This is processed by {@link FusekiMain#buildServer}.
  */
 class ServerConfig {
     /** Server port. This is the http port when both http and https are active. */

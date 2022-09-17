@@ -30,7 +30,7 @@ import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
 import org.apache.jena.fuseki.jetty.JettyServerConfig;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
-import org.apache.jena.fuseki.server.FusekiInfo;
+import org.apache.jena.fuseki.server.FusekiCoreInfo;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.eclipse.jetty.security.*;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
@@ -108,7 +108,7 @@ public class JettyFusekiWebapp {
      */
     public void start() {
 
-        FusekiInfo.server(serverLog);
+        FusekiCoreInfo.logCode(serverLog);
         // This does not get anything usefully for Jetty as we use it.
         // String jettyVersion = org.eclipse.jetty.server.Server.getVersion();
         // serverLog.info(format("Jetty %s",jettyVersion));
