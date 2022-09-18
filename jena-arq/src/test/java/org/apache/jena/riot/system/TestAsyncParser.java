@@ -34,17 +34,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.ext.com.google.common.base.Preconditions;
-import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;
