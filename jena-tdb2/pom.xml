@@ -23,11 +23,11 @@
 
   <artifactId>jena-tdb2</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Jena - DBOE TDB2 (Native Triple Store)</name>
+  <name>Apache Jena - TDB2 (Native Triple Store)</name>
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-db</artifactId>
+    <artifactId>jena</artifactId>
     <version>4.7.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
@@ -58,6 +58,18 @@
       <artifactId>jena-arq</artifactId>
       <version>4.7.0-SNAPSHOT</version>
       <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
       <scope>test</scope>
     </dependency>
 

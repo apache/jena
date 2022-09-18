@@ -17,6 +17,7 @@
 **/target/**/*
 
 ## Misc
+archive.md
 **/README*
 **/ABOUT
 **/DEPENDENCIES
