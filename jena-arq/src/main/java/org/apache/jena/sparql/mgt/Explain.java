@@ -40,16 +40,15 @@ import org.slf4j.Logger ;
  * provides an overlay on top of the system logging to provide control of log
  * message down to a per query basis. The associated logging channel must also
  * be enabled.
- * 
+ *
  * An execution can detail the query, the algebra and every point at which the
  * dataset is touched.
- * 
+ *
  * Caution: logging can be a significant cost for small queries and for
  * memory-backed datasets because of formatting the output and disk or console
  * output overhead.
- * 
+ *
  * @see ARQ#logExec
- * @see ARQ#getExecutionLogging
  * @see ARQ#setExecutionLogging
  */
 
@@ -64,9 +63,9 @@ public class Explain {
      * The logging system provided levels: TRACE < DEBUG < INFO < WARN < ERROR <
      * FATAL Explain logging is always at logging level INFO. Per query: SYSTEM
      * > EXEC (Query) > DETAIL (Algebra) > DEBUG (every BGP)
-     * 
+     *
      * Control: tdb:logExec = true (all), or enum
-     * 
+     *
      * Document: Include setting different loggers etc for log4j.
      */
 
@@ -77,38 +76,22 @@ public class Explain {
     /** Information level for query execution. */
     public static enum InfoLevel {
         /** Log each query */
-        INFO {
-            @Override
-            public int level() {
-                return 10 ;
-            }
-        },
+        INFO(10),
 
         /** Log each query and it's algebra form after optimization */
-        FINE {
-            @Override
-            public int level() {
-                return 20 ;
-            }
-        },
+        FINE(20),
 
-        /** Log query, algebra and every database access (can be expensive) */
-        ALL {
-            @Override
-            public int level() {
-                return 30 ;
-            }
-        },
+        /** Log query, algebra and every database access (can be verbose) */
+        ALL(30),
 
         /** No query execution logging. */
-        NONE {
-            @Override
-            public int level() {
-                return -1 ;
-            }
-        } ;
+        NONE(-1);
 
-        abstract public int level() ;
+        private final int level;
+
+        InfoLevel(int xlevel) { this.level = xlevel; }
+
+        public int level() { return level; }
 
         public static InfoLevel get(String name) {
             if ( "ALL".equalsIgnoreCase(name) )
@@ -125,11 +108,6 @@ public class Explain {
 
     static public final Logger logExec = ARQ.getExecLogger() ;
     static public final Logger logInfo = ARQ.getInfoLogger() ;
-
-    //
-    // // MOVE ME to ARQConstants
-    // public static final Symbol symLogExec = TDB.symLogExec ;
-    // //ARQConstants.allocSymbol("logExec") ;
 
     // ---- Query
 
@@ -314,13 +292,9 @@ public class Explain {
         if ( level == InfoLevel.NONE )
             return false ;
 
-        Object x = context.get(ARQ.symLogExec, null) ;
+        Object x = context.get(ARQ.symLogExec);
 
         if ( x == null )
-            return false ;
-
-        // Enum level.
-        if ( level.level() == InfoLevel.NONE.level() )
             return false ;
 
         if ( x instanceof InfoLevel ) {
@@ -340,14 +314,16 @@ public class Explain {
             if ( s.equalsIgnoreCase("all") )
                 // All levels.
                 return true ;
+            if ( s.equalsIgnoreCase("none") )
+                return false ;
             // Backwards compatibility.
             if ( s.equalsIgnoreCase("true") )
                 return true ;
-            if ( s.equalsIgnoreCase("none") )
+            if ( s.equalsIgnoreCase("false") )
                 return false ;
-
         }
 
+        // otherwise : ( x instanceof Boolean )
         return Boolean.TRUE.equals(x) ;
     }
 

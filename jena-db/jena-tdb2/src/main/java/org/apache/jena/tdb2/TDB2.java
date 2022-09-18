@@ -145,7 +145,6 @@ public class TDB2 {
 
     private static void wireIntoExecution() {
         // Globally change the stage generator to intercept BGP on TDB
-        // Globally change the stage generator to intercept BGP on TDB
         Context cxt = ARQ.getContext();
         StageGenerator orig = StageBuilder.chooseStageGenerator(cxt);
 

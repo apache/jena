@@ -20,32 +20,32 @@ package org.apache.jena.rdf.model;
 import org.apache.jena.datatypes.RDFDatatype ;
 
 /** An RDF Literal.
- * 
+ *
  * <p>In RDF2003 literals can be typed. If typed then the literal comprises a
  * datatype, a lexical form and a value (together with an optional xml:lang
  * string). Old style literals have no type and are termed "plain" literals.</p>
- * 
+ *
  * <p>Implementations of this interface should be able to support both plain
- * and typed literals. In the case of typed literals the primitive accessor methods 
+ * and typed literals. In the case of typed literals the primitive accessor methods
  * such as getInt()  determine if the literal value can be coerced to an appropriate
  * java wrapper class. If so then the class is unwrapped to extract the primitive
- * value returned. If the coercion fails then a runtime DatatypeFormatException is 
+ * value returned. If the coercion fails then a runtime DatatypeFormatException is
  * thrown.</p>
- * 
+ *
  * <p>In the case of plain literals then the primitive accessor methods duplicate
  * the behaviour of jena1. The literal is internally stored in lexical form but
  * the accessor methods such as getInt will attempt to parse the lexical form
  * and if successful will return the primitive value.</p>
- * 
+ *
  * <p>Object (i.e. non-primitive) values are supported. In the case of typed literals
  * then a global TypeMapper registry determines what datatype representation to
  * use for a given Object type. In the case of plain literals then the object
- * will be stored in the lexical form given by its <CODE>toString</CODE> method. 
+ * will be stored in the lexical form given by its <CODE>toString</CODE> method.
  * Factory objects, provided by the application, are needed in that case to covert
  * the lexical form back into the appropriate object type.</p>
  */
 public interface Literal extends RDFNode {
-    
+
     /**
         Answer a version of this literal in the model m. If this literal is
         already in m, answer itself rather than create a new literal. This
@@ -53,7 +53,7 @@ public interface Literal extends RDFNode {
     */
     @Override
     public Literal inModel( Model m );
-    
+
     /**
      * Return the value of the literal. In the case of plain literals
      * this will return the literal string. In the case of typed literals
@@ -65,147 +65,136 @@ public interface Literal extends RDFNode {
      * and maximum values).
      */
     public Object getValue();
-    
+
     /**
      * Return the datatype of the literal.
      */
     public RDFDatatype getDatatype();
-     
+
     /**
      * Return the uri of the datatype of the literal.
      */
     public String getDatatypeURI();
-    
+
     /**
      * Return the lexical form of the literal.
      */
     public String getLexicalForm();
-    
+
     /**
      * If the literal is interpretable as a Boolean return its value
      * as a boolean. Plain literals are interpreted by parsing their
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
-     * 
-     
-     * @return the literal interpeted as a boolean
+     *
+     * @return the literal interpreted as a boolean
      */
     public boolean getBoolean() ;
-    
+
     /**
      * If the literal is interpretable as a Byte return its value.
      * Plain literals are interpreted by parsing their
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
-     * 
-     
-     * @return the literal interpeted as a byte
+     *
+     * @return the literal interpreted as a byte
      */
     public byte getByte() ;
-    
+
     /**
      * If the literal is interpretable as a Short return its value.
      * Plain literals are interpreted by parsing their
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
-     * 
-     
-     * @return the literal interpeted as a short
+     *
+     * @return the literal interpreted as a short
      */
     public short getShort() ;
-    
+
     /**
      * If the literal is interpretable as a Integer return its value.
      * Plain literals are interpreted by parsing their
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
-     * 
-     
-     * @return the literal interpeted as an int
+     *
+     * @return the literal interpreted as an int
      */
     public int getInt() ;
-    
+
     /**
      * If the literal is interpretable as a Long return its value.
      * Plain literals are interpreted by parsing their
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
-     * 
-     
-     * @return the literal interpeted as a long
+     *
+     * @return the literal interpreted as a long
      */
     public long getLong() ;
-    
+
     /**
      * If the literal is interpretable as a Char return its value.
      * Plain literals are interpreted by parsing their
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
-     * 
-     
-     * @return the literal interpeted as a char
+     *
+     * @return the literal interpreted as a char
      */
     public char getChar() ;
-    
+
     /**
      * If the literal is interpretable as a Float return its value.
      * Plain literals are interpreted by parsing their
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
-     * 
-     
-     * @return the literal interpeted as a float
+     *
+     * @return the literal interpreted as a float
      */
     public float getFloat() ;
-    
+
     /**
      * If the literal is interpretable as a Double return its value.
      * Plain literals are interpreted by parsing their
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
-     * 
-     
-     * @return the literal interpeted as a double
+     *
+     * @return the literal interpreted as a double
      */
     public double getDouble() ;
-    
+
     /**
      * If the literal is interpretable as a string return its value.
      * For typed literals this will throw an error for non string
-     * literals and one needs to use getLexicalForm to return the 
+     * literals and one needs to use getLexicalForm to return the
      * string form of other datatypes.
-     * 
-     
+     *
      * @return the literal string
      */
-    // TODO is this the right approach, could make getString synonomous 
-    //       with getLexicalForm
     public String getString() ;
-    
-    /** 
+
+    /**
          If a language is defined for this literal return it
          @return the language for this literal if it exists, or empty string if none
-    */    
+    */
     public String getLanguage();
-    
+
     /**
         Answer true iff this literal is (or claims to be) well-formed XML.
     */
     public boolean isWellFormedXML();
-    
+
     /** Test whether another object is equal to this object.
      *
-     * <p>A plain Literal is equal to another object only if the object is 
-     *    also a plain Literal and the string value and language of both 
-     *    literals are equal. In the case of a typed literal equality is 
+     * <p>A plain Literal is equal to another object only if the object is
+     *    also a plain Literal and the string value and language of both
+     *    literals are equal. In the case of a typed literal equality is
      *    defined by the datatype equality function on the value spaces and
      *    may or may not include comparison of the lang strings.</p>
      * @param o The object to test against
      * @return true if the the objects are equal, false otherwise
-     */    
+     */
     @Override
     public boolean equals(Object o);
-   
+
     /**
      * Test that two literals are semantically equivalent.
      * In some cases this may be the sames as equals, in others
