@@ -20,25 +20,30 @@ package org.apache.jena.riot.system;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.atlas.iterator.IteratorSlotted;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RDFParserBuilder;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.lang.RiotParsers;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.util.iterator.ClosableIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,14 +56,31 @@ import org.slf4j.LoggerFactory;
  * <p>
  * There are overheads, so this is only beneficial in some situations. Delivery to
  * the StreamRDF has an initial latency while the first batch of work is accumulated.
+ * Using the {@link AsyncParserBuilder} gives control over the chunk size such that initial latency
+ * can be reduced at the cost of possibly decreasing the overall throughput.
+ * <p>
+ * Closing the returned {@link ClosableIterator}s terminates the parsing
+ * process and closes the involved resources.
  */
 public class AsyncParser {
 
-    private static Logger LOG = LoggerFactory.getLogger(AsyncParser.class);
-    private static int chunkSize = 100_000;
+    static final Logger LOG = LoggerFactory.getLogger(AsyncParser.class);
+    static final ErrorHandler dftErrorHandler = createDefaultErrorhandler(LOG);
+
+    static final int dftChunkSize = 100_000;
     // There is no point letting the parser get a long way ahead.
-    private static int queueSize = 10;
-    private static List<EltStreamRDF> END = List.of();
+    static final int dftQueueSize = 10;
+    static final List<EltStreamRDF> END = List.of();
+
+    private static final StreamRDF alwaysFailingStreamRdf = new StreamToElements(elt -> { throw new RuntimeException(new InterruptedException()); });
+
+    /* Destination states for handling concurrent abort */
+    /** Normal operation: Accept incoming data */
+    private static final int RUNNING  = 0;
+    /** Abort requested: The next chunk will trigger placing the poison on the queue and transition to STOPPED state */
+    private static final int ABORTING = 1;
+    /** Stopped (regardless whether due to normal or exceptional cause): Any further incoming data raises an exception */
+    private static final int STOPPED  = 2;
 
     private AsyncParser() {}
 
@@ -66,8 +88,8 @@ public class AsyncParser {
      * Function that reads a file or GETs a URL, parses the content on a separate
      * thread and sends the output to a StreamRDF on the callers thread.
      */
-    public static void asyncParse(String filesOrURL, StreamRDF output) {
-        asyncParse(List.of(filesOrURL), output);
+    public static void asyncParse(String fileOrURL, StreamRDF output) {
+        AsyncParser.of(fileOrURL).asyncParseSources(output);
     }
 
     /**
@@ -75,10 +97,7 @@ public class AsyncParser {
      * and sends the output to a StreamRDF on the callers thread.
      */
     public static void asyncParse(List<String> filesOrURLs, StreamRDF output) {
-        Objects.requireNonNull(filesOrURLs);
-        Objects.requireNonNull(output);
-        LOG.debug("Parse: "+filesOrURLs);
-        asyncParseSources(urlsToSource(filesOrURLs), output);
+        AsyncParser.ofLocations(filesOrURLs).asyncParseSources(output);
     }
 
     /**
@@ -86,10 +105,7 @@ public class AsyncParser {
      * and sends the output to a StreamRDF on the callers thread.
      */
     public static void asyncParse(InputStream input, Lang lang, String baseURI, StreamRDF output) {
-        Objects.requireNonNull(input);
-        Objects.requireNonNull(lang);
-        Objects.requireNonNull(output);
-        asyncParseSources(inputStreamToSource(input, lang, baseURI), output);
+        AsyncParser.of(input, lang, baseURI).asyncParseSources(output);
     }
 
     /**
@@ -97,52 +113,17 @@ public class AsyncParser {
      * send the output to a StreamRDF on the callers thread.
      */
     public static void asyncParseSources(List<RDFParserBuilder> sources, StreamRDF output) {
-        // Async thread
-        Logger LOG1 = LOG;
-        // Receiver
-        Logger LOG2 = LOG;
-        BlockingQueue<List<EltStreamRDF>> queue = new ArrayBlockingQueue<>(queueSize);
-        startParserThread(LOG1, sources, queue);
-        receiver(LOG2, queue, output);
-    }
-
-    private static List<RDFParserBuilder> urlsToSource(List<String> filesOrURLs) {
-        return filesOrURLs.stream().map(uriOrFile-> RDFParser.source(uriOrFile)).collect(Collectors.toList());
-    }
-
-    private static List<RDFParserBuilder> inputStreamToSource(InputStream input, Lang lang, String baseURI) {
-        return List.of(RDFParser.source(input).lang(lang));
-    }
-
-    private static Function<EltStreamRDF, Triple> elt2Triple = x-> {
-        if ( x.exception != null )
-            throw x.exception;
-        if ( x.quad != null ) {
-            Node g = x.quad.getGraph();
-            if ( g == Quad.tripleInQuad || Quad.isDefaultGraph(g) )
-                return x.quad.asTriple();
-            return null;
-        }
-        return x.triple;
-    };
-
-    private static Function<EltStreamRDF, Quad> elt2Quad = x-> {
-        if ( x.exception != null )
-            throw x.exception;
-        if ( x.triple != null )
-            return Quad.create(Quad.defaultGraphIRI, x.triple);
-        return x.quad;
-    };
-
-    /** Pull parser - triples */
-    public static Iterator<Triple> asyncParseTriples(String fileOrURL) {
-        return asyncParseTriples(List.of(fileOrURL));
+        AsyncParser.ofSources(sources).asyncParseSources(output);
     }
 
     /** Pull parser - triples */
-    public static Iterator<Triple> asyncParseTriples(List<String> filesOrURLs) {
-        Iterator<EltStreamRDF> source = asyncParseIterator(urlsToSource(filesOrURLs));
-        return Iter.iter(source).map(elt2Triple).removeNulls();
+    public static IteratorCloseable<Triple> asyncParseTriples(String fileOrURL) {
+        return AsyncParser.of(fileOrURL).asyncParseTriples();
+    }
+
+    /** Pull parser - triples */
+    public static IteratorCloseable<Triple> asyncParseTriples(List<String> filesOrURLs) {
+        return AsyncParser.ofLocations(filesOrURLs).asyncParseTriples();
     }
 
     /**
@@ -150,20 +131,18 @@ public class AsyncParser {
      * <p>
      * See also {@link RiotParsers#createIteratorNTriples}.
      */
-    public static Iterator<Triple> asyncParseTriples(InputStream input, Lang lang, String baseURI) {
-        Iterator<EltStreamRDF> source = asyncParseIterator(inputStreamToSource(input, lang, baseURI));
-        return Iter.iter(source).map(elt2Triple).removeNulls();
+    public static IteratorCloseable<Triple> asyncParseTriples(InputStream input, Lang lang, String baseURI) {
+        return AsyncParser.of(input, lang, baseURI).asyncParseTriples();
     }
 
     /** Pull parser - quads */
-    public static Iterator<Quad> asyncParseQuads(String fileOrURL) {
-        return asyncParseQuads(List.of(fileOrURL));
+    public static IteratorCloseable<Quad> asyncParseQuads(String fileOrURL) {
+        return AsyncParser.of(fileOrURL).asyncParseQuads();
     }
 
     /** Pull parser - quads */
-    public static Iterator<Quad> asyncParseQuads(List<String> filesOrURLs) {
-        Iterator<EltStreamRDF> source = asyncParseIterator(urlsToSource(filesOrURLs));
-        return Iter.iter(source).map(elt2Quad).removeNulls();
+    public static IteratorCloseable<Quad> asyncParseQuads(List<String> filesOrURLs) {
+        return AsyncParser.ofLocations(filesOrURLs).asyncParseQuads();
     }
 
     /**
@@ -171,29 +150,109 @@ public class AsyncParser {
      * <p>
      * See also {@link RiotParsers#createIteratorNQuads}.
      */
-    public static Iterator<Quad> asyncParseQuads(InputStream input, Lang lang, String baseURI) {
-        Iterator<EltStreamRDF> source = asyncParseIterator(inputStreamToSource(input, lang, baseURI));
-        return Iter.iter(source).map(elt2Quad).removeNulls();
+    public static IteratorCloseable<Quad> asyncParseQuads(InputStream input, Lang lang, String baseURI) {
+        return AsyncParser.of(input, lang, baseURI).asyncParseQuads();
     }
 
-    /** Pull parser */
-    private static Iterator<EltStreamRDF> asyncParseIterator(List<RDFParserBuilder> sources) {
-        BlockingQueue<List<EltStreamRDF>> queue = new ArrayBlockingQueue<>(queueSize);
-        startParserThread(LOG, sources, queue);
-        Iterator<List<EltStreamRDF>> blocks = blockingIterator(queue, x->x==END);
-        Iterator<EltStreamRDF> elements = Iter.flatMap(blocks, x->x.iterator());
-        return elements;
+    /** Create an {@link AsyncParserBuilder} from a file or URL. */
+    public static AsyncParserBuilder of(String fileOrURL) {
+        Objects.requireNonNull(fileOrURL);
+        return ofLocations(List.of(fileOrURL));
     }
+
+    /** Create an {@link AsyncParserBuilder} from a set of files and/or URLs. */
+    public static AsyncParserBuilder ofLocations(List<String> filesOrURLs) {
+        Objects.requireNonNull(filesOrURLs);
+        LOG.debug("Parse: "+filesOrURLs);
+        return new AsyncParserBuilder(urlsToSource(filesOrURLs));
+    }
+
+    /** Create an {@link AsyncParserBuilder} from an input stream. */
+    public static AsyncParserBuilder of(InputStream input, Lang lang, String baseURI) {
+        Objects.requireNonNull(input);
+        Objects.requireNonNull(lang);
+        return ofSources(inputStreamToSource(input, lang, baseURI));
+    }
+
+    /** Create an {@link AsyncParserBuilder} from an {@link RDFParserBuilder}. */
+    public static AsyncParserBuilder of(RDFParserBuilder source) {
+        Objects.requireNonNull(source);
+        return ofSources(Arrays.asList(source));
+    }
+
+    /** Create an {@link AsyncParserBuilder} from a set of {@link RDFParserBuilder} instances. */
+    public static AsyncParserBuilder ofSources(List<RDFParserBuilder> sources) {
+        Objects.requireNonNull(sources);
+        return new AsyncParserBuilder(sources);
+    }
+
+    /*
+     * Internals
+     */
+
+    private static List<RDFParserBuilder> urlsToSource(List<String> filesOrURLs) {
+        return filesOrURLs.stream().map(
+                    uriOrFile -> RDFParser.source(uriOrFile).errorHandler(dftErrorHandler))
+            .collect(Collectors.toList());
+    }
+
+    /** Create a source object from the given arguments that is suitable for use with
+     * {@link #asyncParseIterator(List)} which return*/
+    private static List<RDFParserBuilder> inputStreamToSource(InputStream input, Lang lang, String baseURI) {
+        return List.of(RDFParser.source(input).lang(lang).base(baseURI).errorHandler(dftErrorHandler));
+    }
+
+    /**
+     * This method raises a caller-thread-side exception for a throwable returned by the parser thread.
+     * If that throwable is a RuntimeException then the caller side's stacktrace is added
+     * as a suppressed exception in order to retain the original exception type.
+     * Any other type of throwable raises a generic RuntimeException with it as the cause.
+     */
+    private static void raiseException(Throwable throwable) {
+        if (throwable instanceof RuntimeException) {
+            RuntimeException e = (RuntimeException)throwable;
+            e.addSuppressed(new RuntimeException("Encountered error element from parse thread"));
+            throw e;
+        }
+
+        throw new RuntimeException("Encountered error element from parse thread", throwable);
+    }
+
+    static Function<EltStreamRDF, Triple> elt2Triple = x-> {
+        if ( x.isException() ) {
+            raiseException(x.exception());
+        }
+        if ( x.isQuad() ) {
+            Quad quad = x.quad();
+            Node g = quad.getGraph();
+            if ( g == Quad.tripleInQuad || Quad.isDefaultGraph(g) )
+                return quad.asTriple();
+            return null;
+        }
+        return x.triple();
+    };
+
+    static Function<EltStreamRDF, Quad> elt2Quad = x-> {
+        if ( x.isException() ) {
+            raiseException(x.exception());
+        }
+        if ( x.isTriple() )
+            return Quad.create(Quad.defaultGraphIRI, x.triple());
+        return x.quad();
+    };
 
     // Iterator that stops when an end marker is seen.
-    private static  <X> Iterator<X> blockingIterator(BlockingQueue<X> queue, Predicate<X> endTest) {
-        return new IteratorSlotted<X>() {
+    static <X> IteratorCloseable<X> blockingIterator(Runnable closeAction, BlockingQueue<X> queue, Predicate<X> endTest) {
+        return new IteratorSlotted<>() {
             boolean ended = false;
 
             @Override
             protected X moveToNext() {
                 try {
-                    X x = queue.take();
+                    X x = null;
+                    if (!ended) {
+                        x = queue.take();
+                    }
                     if ( endTest.test(x) ) {
                         ended = true;
                         return null;
@@ -209,22 +268,16 @@ public class AsyncParser {
             protected boolean hasMore() {
                 return !ended;
             }
+
+            @Override
+            protected void closeIterator() {
+                closeAction.run();
+            }
         };
     }
 
-    private static void startParserThread(Logger LOG1, List<RDFParserBuilder> parserBuilders, BlockingQueue<List<EltStreamRDF>> queue) {
-        // -- Parser thread setup
-        Consumer<List<EltStreamRDF>> destination = batch->{
-            try {
-                queue.put(batch);
-            } catch (InterruptedException ex) {
-                FmtLog.error(LOG, ex, "Error: %s", ex.getMessage());
-            }
-        };
-        EltStreamBatcher batcher = new EltStreamBatcher(destination, chunkSize);
-        StreamRDF generatorStream = new StreamToElements(batcher);
-
-        ErrorHandler errhandler = new ErrorHandler() {
+    static ErrorHandler createDefaultErrorhandler(Logger LOG1) {
+        return new ErrorHandler() {
             @Override
             public void warning(String message, long line, long col)
             { LOG1.warn(SysRIOT.fmtMessage(message, line, col)); }
@@ -239,74 +292,256 @@ public class AsyncParser {
                 throw new RiotException(SysRIOT.fmtMessage(message, line, col)) ;
             }
         };
+    }
 
-        // Parser thread
-        Runnable task = ()->{
-            batcher.startBatching();
-            if ( LOG1.isDebugEnabled() )
-                LOG1.debug("Start parsing");
+    /** This class's purpose is to run a set of RDF parsers and place their generated elements on a queue.
+     * Thereby errors and abort requests are handled. */
+    private static class Task implements Runnable {
+        private Logger logger;
+        private List<RDFParserBuilder> sources;
+        private BlockingQueue<List<EltStreamRDF>> queue;
+        private int chunkSize;
+        private Predicate<EltStreamRDF> prematureDispatch;
+
+        // Destination resources are initialized upon calling run();
+        private EltStreamBatcher<EltStreamRDF> batcher;
+        private StreamRDF generatorStreamRdf;
+        private AtomicInteger destinationState = new AtomicInteger(RUNNING);
+        private boolean errorEncountered = false;
+
+        public Task(List<RDFParserBuilder> sources, BlockingQueue<List<EltStreamRDF>> queue, int chunkSize, Predicate<EltStreamRDF> prematureDispatch, Logger logger) {
+            this.sources = sources;
+            this.queue = queue;
+            this.chunkSize = chunkSize;
+            this.prematureDispatch = prematureDispatch;
+            this.logger = logger;
+        }
+
+        @Override
+        public void run() {
+            initDestination();
             try {
-                for ( RDFParserBuilder parser : parserBuilders ) {
-                    parser.errorHandler(errhandler).parse(generatorStream);
+                start();
+                int n = sources.size();
+                for (int i = 0; i < n; ++i) {
+                    RDFParserBuilder parser = sources.get(i);
+                    parse(parser);
                 }
-            } catch (RuntimeException ex) {
-                // Parse error.
-                EltStreamRDF elt = new EltStreamRDF();
-                elt.exception = ex;
-                batcher.accept(elt);
-            } catch (Throwable cause) {
-                // Very bad!
-                EltStreamRDF elt = new EltStreamRDF();
-                elt.exception = new RuntimeException(cause);
-                batcher.accept(elt);
+            } finally {
+                finish();
             }
-            batcher.finishBatching();
-            if ( LOG1.isDebugEnabled() )
-                LOG1.debug("Finish parsing");
-        };
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Finish parsing");
+            }
+        }
+
+        /** Sets the destination into ABORTING state (if it was running).
+         * This triggers transition into ABORT state on the next chunk. */
+        public void abort() {
+            destinationState.compareAndSet(RUNNING, ABORTING);
+        }
+
+        private void initDestination() {
+            // -- Parser thread setup
+            Consumer<List<EltStreamRDF>> destination = batch -> {
+                if (destinationState.get() == RUNNING) {
+                    try {
+                        queue.put(batch);
+                    } catch (InterruptedException ex) {
+                        // After interrupt we may be in ABORTING state - therefore
+                        // check whether to transition into ABORT state
+                        handleAbortingState();
+                        // FmtLog.error(LOG, ex, "Error: %s", ex.getMessage());
+                        throw new RuntimeException(ex);
+                    }
+                } else {
+                    handleAbortingState();
+                    throw new RuntimeException(new InterruptedException());
+                }
+            };
+
+            this.batcher = new EltStreamBatcher<>(destination, END, chunkSize);
+            Consumer<EltStreamRDF> eltSink = batcher;
+
+            // Take care of a custom dispatch policy
+            if (prematureDispatch != null) {
+                eltSink = elt -> {
+                    boolean dispatchImmediately = prematureDispatch.test(elt);
+                    batcher.accept(elt);
+                    if (dispatchImmediately) {
+                        batcher.flush();
+                    }
+                };
+            }
+
+            this.generatorStreamRdf = new StreamToElements(eltSink);
+        }
+
+        private void start() {
+            batcher.startBatching();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Start parsing");
+            }
+        }
+
+        private void parse(RDFParserBuilder parser) {
+            try {
+                // If an error occured then all parser are invoked anyway because any
+                // resources they own need yet to be closed.
+                // At this point, however, the parser's sink will always fail and
+                // any further errors will be suppressed.
+                StreamRDF sink = errorEncountered
+                        ? alwaysFailingStreamRdf
+                        : generatorStreamRdf;
+                parser.parse(sink);
+            } catch (RuntimeException ex) {
+                Throwable cause = ex.getCause();
+                if (errorEncountered) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Suppressed exception", ex);
+                    }
+                } else {
+                    if (cause instanceof InterruptedException) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Parsing was interrupted");
+                        }
+                    } else {
+                        // Parse error.
+                        EltStreamRDF elt = EltStreamRDF.exception(ex);
+                        batcher.accept(elt);
+                    }
+                    errorEncountered = true;
+                }
+            } catch (Throwable throwable) {
+                if (errorEncountered) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Suppressed exception", throwable);
+                    }
+                } else {
+                    // Very bad! Wrapping with runtime exception to track this location
+                    EltStreamRDF elt = EltStreamRDF.exception(new RuntimeException(throwable));
+                    batcher.accept(elt);
+                    errorEncountered = true;
+                }
+            }
+        }
+
+        private void finish() {
+            try {
+                // If we are already in ABORTED state then finishBatching will do nothing but raise
+                // an exception
+                // If we are in ABORTING state we still need to dispatch another batch in order to transition into ABORT state
+                if (destinationState.get() != STOPPED) {
+                    batcher.finishBatching();
+                }
+            } catch(Throwable ex) {
+                if (errorEncountered) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Suppressed exception", ex);
+                    }
+                } else {
+                    Throwable cause = ex.getCause();
+                    if (cause instanceof InterruptedException) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Parsing was interrupted");
+                        }
+                    } else {
+                        // Rethrow if something else went wrong
+                        throw new RuntimeException(ex);
+                    }
+                }
+            } finally {
+                // We are done; dispatching any further chunks is now an error and raises an exception
+                destinationState.set(STOPPED);
+            }
+        }
+
+        /** Check */
+        private void handleAbortingState() {
+            if (destinationState.compareAndSet(ABORTING, STOPPED)) {
+                // If we are transitioning into ABORT state then force putting
+                // the poison on the queue - regardless of further interruptions!
+                while (true) {
+                    try {
+                        queue.clear();
+                        queue.put(END);
+                        break;
+                    } catch (InterruptedException e) {
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+
+    /** Returns a runnable for stopping the parse process */
+    static Runnable startParserThread(
+            Logger logger, List<RDFParserBuilder> sources,
+            BlockingQueue<List<EltStreamRDF>> queue,
+            int chunkSize,
+            Predicate<EltStreamRDF> prematureDispatch,
+            boolean daemonMode) {
+
+        Task task = new Task(sources, queue, chunkSize, prematureDispatch, logger);
         // Ensures runnable has started.
-        //ThreadLib.async(task);
-        // Does not ensure runnable has started.
-        Thread th = new Thread(task, "AsyncParser");
-        th.setDaemon(true);
-        th.start();
+        // ThreadLib.async(task) does not ensure runnable has started.
+        Thread parserThread = new Thread(task, "AsyncParser");
+        parserThread.setDaemon(daemonMode);
+        parserThread.start();
+        return () -> {
+            task.abort();
+
+            // Interrupt the parsing thread
+            // Note that InputStreams and ByteChannels may close themselves
+            // when interrupted while reading
+            parserThread.interrupt();
+
+            try {
+                // Wait for the thread to terminate so that all is clean when we return from close()
+                // Note: Some AsyncParser unit tests assert that the number of threads
+                //  before and after parsing match up (within tolerance) - so joining is essential.
+                parserThread.join();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
     }
 
     private static void dispatch(EltStreamRDF elt, StreamRDF stream) {
-        if ( elt.triple != null )
-            stream.triple(elt.triple);
-        else if ( elt.quad != null )
-            stream.quad(elt.quad);
-        else if ( elt.prefix != null )
-            stream.prefix( elt.prefix, elt.iri);
-        else if ( elt.iri != null )
-            stream.base(elt.iri);
-        else if ( elt.exception != null )
-            throw elt.exception;
-        else
-            throw new InternalErrorException("Bad EltStreamRDF");
+        switch (elt.getType()) {
+        case TRIPLE:    stream.triple(elt.triple()); break;
+        case QUAD:      stream.quad(elt.quad()); break;
+        case PREFIX:    stream.prefix(elt.prefix(), elt.iri()); break;
+        case BASE:      stream.base(elt.iri()); break;
+        case EXCEPTION: raiseException(elt.exception()); break;
+        default: throw new InternalErrorException("Bad EltStreamRDF");
+        }
     }
 
     /** Receiver. Take chunks off the queue and send to the output StreamRDF. */
-    private static void receiver(Logger LOG2, BlockingQueue<List<EltStreamRDF>> queue, StreamRDF output) {
+    static void receiver(Runnable closeAction, Logger LOG2, BlockingQueue<List<EltStreamRDF>> queue, StreamRDF output) {
         // -- Receiver thread
         int count = 0;
         // Receive.
-        for(;;) {
-            try {
+        try {
+            for(;;) {
                 List<EltStreamRDF> batch = queue.take();
                 if ( batch == END ) {
                     FmtLog.debug(LOG2, "Receive: END (%,d)", count);
                     break;
                 }
-                //List<EltStreamRDF> batch = queue.poll(1, TimeUnit.SECONDS);
                 count += batch.size();
                 if ( LOG.isDebugEnabled() )
                     FmtLog.debug(LOG2, "Receive: Batch : %,d (%,d)", batch.size(), count);
                 dispatch(batch, output);
-            } catch (InterruptedException e) {
-                FmtLog.error(LOG2, e, "Interrupted");
             }
+        } catch (InterruptedException e) {
+            FmtLog.error(LOG2, e, "Interrupted");
+        } finally {
+            // The close action not only stops the parser but also waits
+            // for its thread to finish
+            closeAction.run();
         }
     }
 
@@ -315,17 +550,8 @@ public class AsyncParser {
             dispatch(elt, stream);
     }
 
-    /** An item of a StreamRDF, including exceptions. */
-    private static class EltStreamRDF {
-        Triple triple = null;
-        Quad quad = null;
-        String prefix = null; // Null implies "base".
-        String iri = null;
-        RuntimeException exception = null;
-    }
-
     /** Convert a Stream into EltStreamRDF */
-    private static  class StreamToElements implements StreamRDF {
+    private static class StreamToElements implements StreamRDF {
 
         private final Consumer<EltStreamRDF> destination;
 
@@ -334,38 +560,32 @@ public class AsyncParser {
         }
 
         @Override
-        public void start() {}
+        public void start() { /* nothing to do */ }
 
         @Override
-        public void finish() {}
+        public void finish() { /* nothing to do */ }
 
         @Override
         public void triple(Triple triple) {
-            EltStreamRDF elt = new EltStreamRDF();
-            elt.triple = triple;
+            EltStreamRDF elt = EltStreamRDF.triple(triple);
             deliver(elt);
         }
 
         @Override
         public void quad(Quad quad) {
-            EltStreamRDF elt = new EltStreamRDF();
-            elt.quad = quad;
+            EltStreamRDF elt = EltStreamRDF.quad(quad);
             deliver(elt);
         }
 
         @Override
         public void base(String base) {
-            EltStreamRDF elt = new EltStreamRDF();
-            //elt.prefix = null;
-            elt.iri = base;
+            EltStreamRDF elt = EltStreamRDF.base(base);
             deliver(elt);
         }
 
         @Override
         public void prefix(String prefix, String iri) {
-            EltStreamRDF elt = new EltStreamRDF();
-            elt.prefix = prefix;
-            elt.iri = iri;
+            EltStreamRDF elt = EltStreamRDF.prefix(prefix, iri);
             deliver(elt);
         }
 
@@ -375,34 +595,44 @@ public class AsyncParser {
     }
 
     /** Batch items from a StreamRDF */
-    private static class EltStreamBatcher implements Consumer<EltStreamRDF> {
+    private static class EltStreamBatcher<T> implements Consumer<T> {
 
         private final int batchSize;
-        private List<EltStreamRDF> elements = null;
-        private final Consumer<List<EltStreamRDF>> batchDestination;
+        private List<T> elements = null;
+        private final Consumer<List<T>> batchDestination;
+        private final List<T> endMarker;
 
-        public EltStreamBatcher(Consumer<List<EltStreamRDF>> batchDestination, int batchSize) {
+        public EltStreamBatcher(Consumer<List<T>> batchDestination, List<T> endMarker, int batchSize) {
             this.batchDestination = batchDestination;
             this.batchSize = batchSize;
+            this.endMarker = endMarker;
         }
 
-        public void startBatching() {}
+        public void startBatching() { /* nothing to do */ }
 
-        public void finishBatching() {
-            // Flush.
-            if ( elements != null ) {
+        /** Immediately dispatch any available data. */
+        public void flush() {
+            if (elements != null) {
                 dispatch(elements);
                 elements = null;
             }
-            dispatch(END);
+        }
+
+        public void finishBatching() {
+            try {
+                flush();
+            } finally {
+                dispatch(endMarker);
+            }
         }
 
         private <X> boolean isEmpty(List<X> list) {
             return list == null || list.isEmpty();
         }
 
+        /** The added element is included in the dispatched batch when triggered */
         @Override
-        public void accept(EltStreamRDF elt) {
+        public void accept(T elt) {
             if ( elements == null )
                 elements = allocChunk();
             elements.add(elt);
@@ -418,14 +648,13 @@ public class AsyncParser {
         }
 
         private int count = 0 ;
-        private void dispatch(List<EltStreamRDF> batch) {
+        private void dispatch(List<T> batch) {
             count += batch.size();
             batchDestination.accept(batch);
         }
 
-        private List<EltStreamRDF> allocChunk() {
+        private List<T> allocChunk() {
             return new ArrayList<>(batchSize);
         }
     }
 }
-

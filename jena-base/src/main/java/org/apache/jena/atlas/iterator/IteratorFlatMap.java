@@ -23,12 +23,10 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.apache.jena.atlas.lib.Closeable;
-
 /** flatMap iterator.
  * See {@link Stream#flatMap}
  */
-/*package*/ class IteratorFlatMap<IN,OUT> implements Iterator<OUT>, Closeable {
+/*package*/ class IteratorFlatMap<IN,OUT> implements IteratorCloseable<OUT> {
     private boolean         finished = false;
     private Iterator<OUT>   current  = null;
     private Iterator<IN>    input;
