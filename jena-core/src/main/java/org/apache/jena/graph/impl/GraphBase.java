@@ -317,14 +317,19 @@ public abstract class GraphBase implements GraphWithPerform
 
     /**
      	Answer true iff this graph contains no triples (hidden reification quads do
-        not count). The default implementation is <code>size() == 0</code>, which is
-        fine if <code>size</code> is reasonable efficient. Subclasses may override
+        not count). The default implementation tests whether the iterator returned by
+        {@link #find()} can yield at least one item. Subclasses may override
         if necessary. This method may become final and defined in terms of other
         methods.
     */
     @Override
     public boolean isEmpty()
-        { return size() == 0; }
+        {
+            checkOpen() ;
+            ExtendedIterator<Triple> it = GraphUtil.findAll( this );
+            try { return !it.hasNext(); }
+            finally { it.close(); }
+        }
 
     /**
          Answer true iff this graph is isomorphic to <code>g</code> according to
