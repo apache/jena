@@ -96,6 +96,10 @@ public class Triple implements Serializable
     private static Node nullToAny( Node n )
         { return n == null ? Node.ANY : n; }
 
+    private static boolean isAny(Node n) {
+        return n == null || Node.ANY.equals(n);
+    }
+
     public boolean isConcrete()
         { return subj.isConcrete() && pred.isConcrete() && obj.isConcrete(); }
 
@@ -167,6 +171,8 @@ public class Triple implements Serializable
 
     public static Triple create( Node s, Node p, Node o )
     {
+        if ( isAny(s) && isAny(p) && isAny(o) )
+                return Triple.ANY;
         return new Triple( s, p, o ) ;
     }
 
@@ -174,13 +180,13 @@ public class Triple implements Serializable
         { return Triple.create( nullToAny( s ), nullToAny( p ), nullToAny( o ) ); }
 
     /**
-        A Triple that is wildcarded in all fields.
+        A Triple that has {@link Node#ANY} in all fields.
     */
-    public static final Triple ANY = Triple.create( Node.ANY, Node.ANY, Node.ANY );
+    public static final Triple ANY = new Triple( Node.ANY, Node.ANY, Node.ANY );
 
     /**
         A Field is a selector from Triples; it allows selectors to be passed
-        around as if they were functions, hooray.
+        around as if they were functions.
     */
     public static abstract class Field
         {
