@@ -316,19 +316,14 @@ public abstract class GraphBase implements GraphWithPerform
         }
 
     /**
-     	Answer true iff this graph contains no triples (hidden reification quads do
-        not count). The default implementation tests whether the iterator returned by
-        {@link #find()} can yield at least one item. Subclasses may override
-        if necessary. This method may become final and defined in terms of other
-        methods.
+        Answer true iff this graph contains no triples.
+        @implNote The default implementation relies on {@link #contains(Triple)}
+         with {@link Triple#ANY} as the argument. Subclasses may override if necessary.
     */
     @Override
     public boolean isEmpty()
         {
-            checkOpen() ;
-            ExtendedIterator<Triple> it = GraphUtil.findAll( this );
-            try { return !it.hasNext(); }
-            finally { it.close(); }
+            return !contains( Triple.ANY );
         }
 
     /**
