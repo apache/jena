@@ -171,7 +171,7 @@ public class TemplateLib {
 
         Triple t = triple;
         if ( s1 != s || p1 != p || o1 != o )
-            t = new Triple(s1, p1, o1);
+            t = Triple.create(s1, p1, o1);
 
         Triple t2 = Substitute.substitute(t, b);
         return t2;

@@ -86,12 +86,12 @@ public class WhereHandlerTest extends AbstractHandlerTest {
     public void testAddAllOnEmpty() {
         Query query2 = new Query();
         WhereHandler handler2 = new WhereHandler(query2);
-        handler2.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        handler2.addWhere(new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createLiteral("three"))));
         handler.addAll(handler2);
         handler.build();
 
-        Triple t1 = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t1 = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createLiteral("three"));
         TriplePath tp = new TriplePath(t1);
         ElementPathBlock epb = new ElementPathBlock();
@@ -108,7 +108,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.addWhere(new TriplePath(Triple.ANY));
         Query query2 = new Query();
         WhereHandler handler2 = new WhereHandler(query2);
-        handler2.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        handler2.addWhere(new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createLiteral("three"))));
         handler.addAll(handler2);
         handler.build();
@@ -118,7 +118,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         ElementGroup eg = new ElementGroup();
         eg.addElement(epb);
         epb = new ElementPathBlock();
-        Triple t1 = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t1 = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createLiteral("three"));
         epb.addTriple(t1);
         eg.addElement(epb);
@@ -131,11 +131,11 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void addWhereTriple() {
-        handler.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        handler.addWhere(new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"))));
         handler.build();
 
-        Triple t1 = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t1 = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"));
         TriplePath tp = new TriplePath(t1);
         ElementPathBlock epb = new ElementPathBlock();
@@ -150,11 +150,11 @@ public class WhereHandlerTest extends AbstractHandlerTest {
     @Test
     public void testAddWhereObjects() {
         handler.addWhere(
-                new TriplePath(new Triple(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
+                new TriplePath(Triple.create(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
                         ResourceFactory.createLangLiteral("three", "en-US").asNode())));
         handler.build();
 
-        Triple t1 = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t1 = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 ResourceFactory.createLangLiteral("three", "en-US").asNode());
         TriplePath tp = new TriplePath(t1);
         ElementPathBlock epb = new ElementPathBlock();
@@ -185,10 +185,10 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void testAddWhereAnonymous() {
-        handler.addWhere(new TriplePath(new Triple(Node.ANY, RDF.first.asNode(), Node.ANY)));
+        handler.addWhere(new TriplePath(Triple.create(Node.ANY, RDF.first.asNode(), Node.ANY)));
         handler.build();
 
-        TriplePath tp = new TriplePath(new Triple(Node.ANY, RDF.first.asNode(), Node.ANY));
+        TriplePath tp = new TriplePath(Triple.create(Node.ANY, RDF.first.asNode(), Node.ANY));
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
         WhereValidator wv = new WhereValidator(epb);
@@ -199,12 +199,12 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void testAddOptionalStrings() {
-        handler.addOptional(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        handler.addOptional(new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"))));
         handler.build();
 
         TriplePath tp = new TriplePath(
-                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+                Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
         ElementOptional opt = new ElementOptional(epb);
@@ -216,10 +216,10 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void testAddOptionalAnonymous() {
-        handler.addOptional(new TriplePath(new Triple(Node.ANY, RDF.first.asNode(), Node.ANY)));
+        handler.addOptional(new TriplePath(Triple.create(Node.ANY, RDF.first.asNode(), Node.ANY)));
         handler.build();
 
-        TriplePath tp = new TriplePath(new Triple(Node.ANY, RDF.first.asNode(), Node.ANY));
+        TriplePath tp = new TriplePath(Triple.create(Node.ANY, RDF.first.asNode(), Node.ANY));
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
         ElementOptional opt = new ElementOptional(epb);
@@ -238,17 +238,17 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         Var x = Var.alloc("x");
         Node n123 = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(123));
 
-        pattern.addWhere(new TriplePath(new Triple(s, q, n123)));
-        pattern.addWhere(new TriplePath(new Triple(s, v, x)));
+        pattern.addWhere(new TriplePath(Triple.create(s, q, n123)));
+        pattern.addWhere(new TriplePath(Triple.create(s, v, x)));
 
         handler.addOptional(pattern);
         handler.build();
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementOptional optional = new ElementOptional(epb);
-        TriplePath tp = new TriplePath(new Triple(s, q, n123));
+        TriplePath tp = new TriplePath(Triple.create(s, q, n123));
         epb.addTriplePath(tp);
-        tp = new TriplePath(new Triple(s, v, x));
+        tp = new TriplePath(Triple.create(s, v, x));
         epb.addTriplePath(tp);
 
         WhereValidator visitor = new WhereValidator(optional);
@@ -260,14 +260,14 @@ public class WhereHandlerTest extends AbstractHandlerTest {
     @Test
     public void testAddOptionalObjects() {
         handler.addOptional(
-                new TriplePath(new Triple(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
+                new TriplePath(Triple.create(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
                         ResourceFactory.createLangLiteral("three", "en-US").asNode())));
         handler.build();
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementOptional optional = new ElementOptional(epb);
         TriplePath tp = new TriplePath(
-                new Triple(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
+                Triple.create(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
                         ResourceFactory.createLangLiteral("three", "en-US").asNode()));
         epb.addTriplePath(tp);
 
@@ -300,13 +300,13 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void testAddWhereStrings() {
-        handler.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        handler.addWhere(new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"))));
         handler.build();
 
         ElementPathBlock epb = new ElementPathBlock();
         TriplePath tp = new TriplePath(
-                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+                Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         epb.addTriplePath(tp);
 
         WhereValidator visitor = new WhereValidator(epb);
@@ -360,7 +360,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.addSubQuery(sb);
         handler.build();
 
-        Triple t1 = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t1 = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createLiteral("three"));
         TriplePath tp = new TriplePath(t1);
         ElementPathBlock epb = new ElementPathBlock();
@@ -383,7 +383,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.addSubQuery(sb);
         handler.build();
 
-        Triple t1 = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t1 = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createLiteral("three"));
         TriplePath tp = new TriplePath(t1);
         ElementPathBlock epb = new ElementPathBlock();
@@ -406,7 +406,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.addSubQuery(sb);
         handler.build();
 
-        Triple t1 = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t1 = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createLiteral("three"));
         TriplePath tp = new TriplePath(t1);
         ElementPathBlock epb = new ElementPathBlock();
@@ -423,9 +423,9 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void testAddUnion() {
-        Triple t1 = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t1 = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"));
-        Triple t2 = new Triple(NodeFactory.createURI("uno"), NodeFactory.createURI("dos"),
+        Triple t2 = Triple.create(NodeFactory.createURI("uno"), NodeFactory.createURI("dos"),
                 NodeFactory.createURI("tres"));
 
         SelectBuilder sb1 = new SelectBuilder().addWhere(t1);
@@ -453,7 +453,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void testAddUnionOfOne() {
-        Triple t1 = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t1 = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"));
         SelectBuilder sb = new SelectBuilder().addWhere(t1);
         handler.addUnion(sb);
@@ -470,20 +470,20 @@ public class WhereHandlerTest extends AbstractHandlerTest {
     @Test
     public void testAddUnionToExisting() {
         handler.addWhere(new TriplePath(
-                new Triple(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o"))));
+                Triple.create(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o"))));
         SelectBuilder sb = new SelectBuilder();
         sb.addWhere(
-                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+                Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         handler.addUnion(sb);
         handler.build();
 
         TriplePath tp1 = new TriplePath(
-                new Triple(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o")));
+                Triple.create(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o")));
         ElementPathBlock epb1 = new ElementPathBlock();
         epb1.addTriple(tp1);
 
         TriplePath tp2 = new TriplePath(
-                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+                Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         ElementPathBlock epb2 = new ElementPathBlock();
         epb2.addTriple(tp2);
 
@@ -499,9 +499,9 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void testAddUnionWithVar() {
-        Triple t1 = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t1 = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"));
-        Triple t2 = new Triple(NodeFactory.createURI("uno"), NodeFactory.createURI("dos"),
+        Triple t2 = Triple.create(NodeFactory.createURI("uno"), NodeFactory.createURI("dos"),
                 NodeFactory.createURI("tres"));
 
         SelectBuilder sb = new SelectBuilder().addVar("x").addWhere(t1);
@@ -533,10 +533,10 @@ public class WhereHandlerTest extends AbstractHandlerTest {
     @Test
     public void testAddUnionToExistingWithVar() {
         handler.addWhere(new TriplePath(
-                new Triple(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o"))));
+                Triple.create(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o"))));
 
         SelectBuilder sb = new SelectBuilder().addVar("x").addWhere(
-                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+                Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
 
         handler.addUnion(sb);
         handler.build();
@@ -545,12 +545,12 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         q.setQuerySelectType();
         ElementPathBlock epb1 = new ElementPathBlock();
         epb1.addTriple(
-                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+                Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         q.setQueryPattern(epb1);
         q.addProjectVars(Arrays.asList(Var.alloc("x")));
         ElementSubQuery sq = new ElementSubQuery(q);
         ElementPathBlock epb2 = new ElementPathBlock();
-        epb2.addTriple(new Triple(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o")));
+        epb2.addTriple(Triple.create(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o")));
 
         ElementUnion union = new ElementUnion();
         union.addElement(epb2);
@@ -565,14 +565,14 @@ public class WhereHandlerTest extends AbstractHandlerTest {
     public void addGraph() {
 
         WhereHandler handler2 = new WhereHandler(new Query());
-        handler2.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        handler2.addWhere(new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"))));
 
         handler.addGraph(NodeFactory.createURI("graph"), handler2);
         handler.build();
 
         TriplePath tp = new TriplePath(
-                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+                Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
         ElementNamedGraph eng = new ElementNamedGraph(NodeFactory.createURI("graph"), epb);
@@ -585,10 +585,10 @@ public class WhereHandlerTest extends AbstractHandlerTest {
     @Test
     public void testSetVarsInTriple() {
         Var v = Var.alloc("v");
-        handler.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v)));
+        handler.addWhere(new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v)));
         handler.build();
 
-        Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v);
+        Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v);
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(t);
         WhereValidator visitor = new WhereValidator(epb);
@@ -600,7 +600,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.setVars(values);
         handler.build();
 
-        t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"));
+        t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"));
         epb = new ElementPathBlock();
         epb.addTriple(t);
         visitor = new WhereValidator(epb);
@@ -635,10 +635,10 @@ public class WhereHandlerTest extends AbstractHandlerTest {
     @Test
     public void testSetVarsInOptional() {
         Var v = Var.alloc("v");
-        handler.addOptional(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v)));
+        handler.addOptional(new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v)));
         handler.build();
 
-        TriplePath tp = new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
+        TriplePath tp = new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
         ElementOptional opt = new ElementOptional(epb);
@@ -652,7 +652,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.build();
 
         tp = new TriplePath(
-                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+                Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         epb = new ElementPathBlock();
         epb.addTriple(tp);
         opt = new ElementOptional(epb);
@@ -669,7 +669,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.addSubQuery(sb);
         handler.build();
 
-        TriplePath tp = new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
+        TriplePath tp = new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
         WhereValidator wv = new WhereValidator(epb);
@@ -682,7 +682,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.build();
 
         tp = new TriplePath(
-                new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+                Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
         epb = new ElementPathBlock();
         epb.addTriple(tp);
         wv = new WhereValidator(epb);
@@ -709,11 +709,11 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         ElementUnion union = new ElementUnion();
         ElementPathBlock epb = new ElementPathBlock();
-        Triple t = new Triple(one, two, v.asNode());
+        Triple t = Triple.create(one, two, v.asNode());
         epb.addTriple(t);
         union.addElement(epb);
         ElementPathBlock epb2 = new ElementPathBlock();
-        t = new Triple(uno, dos, tres);
+        t = Triple.create(uno, dos, tres);
         epb2.addTriple(t);
         union.addElement(epb2);
         WhereValidator visitor = new WhereValidator(union);
@@ -727,11 +727,11 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         union = new ElementUnion();
         epb = new ElementPathBlock();
-        t = new Triple(one, two, three);
+        t = Triple.create(one, two, three);
         epb.addTriple(t);
         union.addElement(epb);
         epb2 = new ElementPathBlock();
-        t = new Triple(uno, dos, tres);
+        t = Triple.create(uno, dos, tres);
         epb2.addTriple(t);
         union.addElement(epb2);
         visitor = new WhereValidator(union);
@@ -778,12 +778,12 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         Node secondObject = NodeFactory.createBlankNode();
         Node thirdObject = NodeFactory.createBlankNode();
 
-        epb.addTriplePath(new TriplePath(new Triple(firstObject, RDF.first.asNode(), one)));
-        epb.addTriplePath(new TriplePath(new Triple(firstObject, RDF.rest.asNode(), secondObject)));
-        epb.addTriplePath(new TriplePath(new Triple(secondObject, RDF.first.asNode(), two)));
-        epb.addTriplePath(new TriplePath(new Triple(secondObject, RDF.rest.asNode(), thirdObject)));
-        epb.addTriplePath(new TriplePath(new Triple(thirdObject, RDF.first.asNode(), three)));
-        epb.addTriplePath(new TriplePath(new Triple(thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
+        epb.addTriplePath(new TriplePath(Triple.create(firstObject, RDF.first.asNode(), one)));
+        epb.addTriplePath(new TriplePath(Triple.create(firstObject, RDF.rest.asNode(), secondObject)));
+        epb.addTriplePath(new TriplePath(Triple.create(secondObject, RDF.first.asNode(), two)));
+        epb.addTriplePath(new TriplePath(Triple.create(secondObject, RDF.rest.asNode(), thirdObject)));
+        epb.addTriplePath(new TriplePath(Triple.create(thirdObject, RDF.first.asNode(), three)));
+        epb.addTriplePath(new TriplePath(Triple.create(thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
 
         WhereValidator visitor = new WhereValidator(epb);
         query.getQueryPattern().visit(visitor);
@@ -794,7 +794,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void testListInTriple() {
-        handler.addWhere(new TriplePath(new Triple(handler.list("<one>", "?var", "'three'"),
+        handler.addWhere(new TriplePath(Triple.create(handler.list("<one>", "?var", "'three'"),
                 ResourceFactory.createResource("foo").asNode(), ResourceFactory.createResource("bar").asNode())));
         handler.build();
 
@@ -832,7 +832,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementMinus minus = new ElementMinus(epb);
-        epb.addTriplePath(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        epb.addTriplePath(new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createLiteral("three"))));
         WhereValidator visitor = new WhereValidator(minus);
         query.getQueryPattern().visit(visitor);
@@ -1065,7 +1065,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         ElementSubQuery esq = handler.makeSubQuery(sb);
 
-        Triple t1 = new Triple(NodeFactory.createVariable("x"), RDF.type.asNode(), RDF.Alt.asNode());
+        Triple t1 = Triple.create(NodeFactory.createVariable("x"), RDF.type.asNode(), RDF.Alt.asNode());
         TriplePath tp = new TriplePath(t1);
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
@@ -1085,7 +1085,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         ElementSubQuery esq = handler.makeSubQuery(sb);
 
-        Triple t1 = new Triple(NodeFactory.createVariable("x"), RDF.type.asNode(), RDF.Alt.asNode());
+        Triple t1 = Triple.create(NodeFactory.createVariable("x"), RDF.type.asNode(), RDF.Alt.asNode());
         TriplePath tp = new TriplePath(t1);
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
@@ -1106,7 +1106,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         ElementSubQuery esq = handler.makeSubQuery(sb);
 
-        Triple t1 = new Triple(NodeFactory.createVariable("x"), RDF.type.asNode(), RDF.Alt.asNode());
+        Triple t1 = Triple.create(NodeFactory.createVariable("x"), RDF.type.asNode(), RDF.Alt.asNode());
         TriplePath tp = new TriplePath(t1);
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
@@ -1126,7 +1126,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         ElementSubQuery esq = handler.makeSubQuery(sb);
 
-        Triple t1 = new Triple(NodeFactory.createVariable("x"), RDF.type.asNode(), RDF.Alt.asNode());
+        Triple t1 = Triple.create(NodeFactory.createVariable("x"), RDF.type.asNode(), RDF.Alt.asNode());
         TriplePath tp = new TriplePath(t1);
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
@@ -1146,7 +1146,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         ElementSubQuery esq = handler.makeSubQuery(sb);
 
-        Triple t1 = new Triple(NodeFactory.createVariable("x"), RDF.type.asNode(), RDF.Alt.asNode());
+        Triple t1 = Triple.create(NodeFactory.createVariable("x"), RDF.type.asNode(), RDF.Alt.asNode());
         TriplePath tp = new TriplePath(t1);
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
@@ -1166,7 +1166,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         ElementSubQuery esq = handler.makeSubQuery(sb);
 
-        Triple t1 = new Triple(NodeFactory.createVariable("x"), RDF.type.asNode(), RDF.Alt.asNode());
+        Triple t1 = Triple.create(NodeFactory.createVariable("x"), RDF.type.asNode(), RDF.Alt.asNode());
         TriplePath tp = new TriplePath(t1);
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);

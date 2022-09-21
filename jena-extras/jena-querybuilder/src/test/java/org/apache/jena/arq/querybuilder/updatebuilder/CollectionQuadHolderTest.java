@@ -43,12 +43,12 @@ public class CollectionQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createURI("p");
         Node o = NodeFactory.createURI("o");
-        tLst.add(new Triple(s, p, o));
+        tLst.add(Triple.create(s, p, o));
 
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s2, p2, o2));
+        tLst.add(Triple.create(s2, p2, o2));
 
         holder = new CollectionQuadHolder(g, tLst);
 
@@ -66,12 +66,12 @@ public class CollectionQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createVariable("p");
         Node o = NodeFactory.createURI("o");
-        tLst.add(new Triple(s, p, o));
+        tLst.add(Triple.create(s, p, o));
 
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s2, p, o2));
+        tLst.add(Triple.create(s2, p, o2));
 
         holder = new CollectionQuadHolder(g, tLst);
         Map<Var, Node> map = new HashMap<>();
@@ -79,8 +79,8 @@ public class CollectionQuadHolderTest {
         holder.setValues(map);
 
         List<Triple> aLst = new ArrayList<Triple>();
-        aLst.add(new Triple(s, p2, o));
-        aLst.add(new Triple(s2, p2, o2));
+        aLst.add(Triple.create(s, p2, o));
+        aLst.add(Triple.create(s2, p2, o2));
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
@@ -96,12 +96,12 @@ public class CollectionQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createURI("p");
         Node o = NodeFactory.createURI("o");
-        tLst.add(new Triple(s, p, o));
+        tLst.add(Triple.create(s, p, o));
 
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s2, p2, o2));
+        tLst.add(Triple.create(s2, p2, o2));
 
         holder = new CollectionQuadHolder(g, tLst.iterator());
 
@@ -119,12 +119,12 @@ public class CollectionQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createVariable("p");
         Node o = NodeFactory.createURI("o");
-        tLst.add(new Triple(s, p, o));
+        tLst.add(Triple.create(s, p, o));
 
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s2, p, o2));
+        tLst.add(Triple.create(s2, p, o2));
 
         holder = new CollectionQuadHolder(g, tLst.iterator());
         Map<Var, Node> map = new HashMap<>();
@@ -132,8 +132,8 @@ public class CollectionQuadHolderTest {
         holder.setValues(map);
 
         List<Triple> aLst = new ArrayList<Triple>();
-        aLst.add(new Triple(s, p2, o));
-        aLst.add(new Triple(s2, p2, o2));
+        aLst.add(Triple.create(s, p2, o));
+        aLst.add(Triple.create(s2, p2, o2));
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
@@ -148,12 +148,12 @@ public class CollectionQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createURI("p");
         Node o = NodeFactory.createURI("o");
-        tLst.add(new Triple(s, p, o));
+        tLst.add(Triple.create(s, p, o));
 
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s2, p2, o2));
+        tLst.add(Triple.create(s2, p2, o2));
 
         holder = new CollectionQuadHolder(tLst);
 
@@ -169,12 +169,12 @@ public class CollectionQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createVariable("p");
         Node o = NodeFactory.createURI("o");
-        tLst.add(new Triple(s, p, o));
+        tLst.add(Triple.create(s, p, o));
 
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s2, p, o2));
+        tLst.add(Triple.create(s2, p, o2));
 
         holder = new CollectionQuadHolder(tLst);
         Map<Var, Node> map = new HashMap<>();
@@ -182,8 +182,8 @@ public class CollectionQuadHolderTest {
         holder.setValues(map);
 
         List<Triple> aLst = new ArrayList<Triple>();
-        aLst.add(new Triple(s, p2, o));
-        aLst.add(new Triple(s2, p2, o2));
+        aLst.add(Triple.create(s, p2, o));
+        aLst.add(Triple.create(s2, p2, o2));
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
@@ -198,12 +198,12 @@ public class CollectionQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createURI("p");
         Node o = NodeFactory.createURI("o");
-        tLst.add(new Triple(s, p, o));
+        tLst.add(Triple.create(s, p, o));
 
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s2, p2, o2));
+        tLst.add(Triple.create(s2, p2, o2));
 
         holder = new CollectionQuadHolder(tLst.iterator());
 
@@ -219,12 +219,12 @@ public class CollectionQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createVariable("p");
         Node o = NodeFactory.createURI("o");
-        tLst.add(new Triple(s, p, o));
+        tLst.add(Triple.create(s, p, o));
 
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s2, p, o2));
+        tLst.add(Triple.create(s2, p, o2));
 
         holder = new CollectionQuadHolder(tLst.iterator());
         Map<Var, Node> map = new HashMap<>();
@@ -232,8 +232,8 @@ public class CollectionQuadHolderTest {
         holder.setValues(map);
 
         List<Triple> aLst = new ArrayList<Triple>();
-        aLst.add(new Triple(s, p2, o));
-        aLst.add(new Triple(s2, p2, o2));
+        aLst.add(Triple.create(s, p2, o));
+        aLst.add(Triple.create(s2, p2, o2));
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());

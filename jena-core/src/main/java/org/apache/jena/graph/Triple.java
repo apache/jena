@@ -37,6 +37,10 @@ public class Triple implements Serializable
 
 	private final Node subj, pred, obj;
 
+	/**
+	 * @deprecated  Do not call "new Triple" directly, use {@link Triple#create}.
+	 */
+	@Deprecated
 	public Triple( Node s, Node p, Node o ) {
 	    if (s == null) throw new UnsupportedOperationException( "subject cannot be null" );
 	    if (p == null) throw new UnsupportedOperationException( "predicate cannot be null" );
@@ -169,8 +173,7 @@ public class Triple implements Serializable
     public static int hashCode( Node s, Node p, Node o )
         { return (s.hashCode() >> 1) ^ p.hashCode() ^ (o.hashCode() << 1); }
 
-    public static Triple create( Node s, Node p, Node o )
-    {
+    public static Triple create( Node s, Node p, Node o ) {
         if ( isAny(s) && isAny(p) && isAny(o) )
                 return Triple.ANY;
         return new Triple( s, p, o ) ;

@@ -225,7 +225,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     public SecuredResource addProperty(final Property p, final RDFNode o)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(holder.getBaseItem().asNode(), p.asNode(), o.asNode()));
+        checkCreate(Triple.create(holder.getBaseItem().asNode(), p.asNode(), o.asNode()));
         holder.getBaseItem().addProperty(p, o);
         return holder.getSecuredItem();
     }
@@ -257,7 +257,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
         final Literal l = ResourceFactory.createTypedLiteral(lexicalForm, datatype);
-        checkCreate(new Triple(holder.getBaseItem().asNode(), p.asNode(), l.asNode()));
+        checkCreate(Triple.create(holder.getBaseItem().asNode(), p.asNode(), l.asNode()));
         holder.getBaseItem().addProperty(p, l);
         return holder.getSecuredItem();
     }
@@ -274,7 +274,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     public SecuredResource addProperty(final Property p, final String o, final String l)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(holder.getBaseItem().asNode(), p.asNode(), NodeFactory.createLiteral(o, l, false)));
+        checkCreate(Triple.create(holder.getBaseItem().asNode(), p.asNode(), NodeFactory.createLiteral(o, l, false)));
         holder.getBaseItem().addProperty(p, o, l);
         return holder.getSecuredItem();
     }
@@ -311,7 +311,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
      * @throws AuthenticationRequiredException
      */
     public boolean canReadProperty(final Node p) throws AuthenticationRequiredException {
-        return canRead() && canRead(new Triple(holder.getBaseItem().asNode(), p, Node.ANY));
+        return canRead() && canRead(Triple.create(holder.getBaseItem().asNode(), p, Node.ANY));
     }
 
     /**
@@ -324,7 +324,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     protected void checkReadProperty(final Node p) throws ReadDeniedException, AuthenticationRequiredException {
         if (!canReadProperty(p)) {
             throw new ReadDeniedException(SecuredItem.Util.triplePermissionMsg(getModelNode()),
-                    new Triple(holder.getBaseItem().asNode(), p, Node.ANY));
+                    Triple.create(holder.getBaseItem().asNode(), p, Node.ANY));
         }
     }
 
@@ -540,7 +540,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     @Override
     public boolean hasLiteral(final Property p, final boolean o)
             throws ReadDeniedException, AuthenticationRequiredException {
-        if (checkSoftRead() && checkRead(new Triple(holder.getBaseItem().asNode(), p.asNode(),
+        if (checkSoftRead() && checkRead(Triple.create(holder.getBaseItem().asNode(), p.asNode(),
                 ResourceFactory.createTypedLiteral(o).asNode()))) {
             return holder.getBaseItem().hasLiteral(p, o);
         }
@@ -561,7 +561,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     @Override
     public boolean hasLiteral(final Property p, final char o)
             throws ReadDeniedException, AuthenticationRequiredException {
-        if (checkSoftRead() && checkRead(new Triple(holder.getBaseItem().asNode(), p.asNode(),
+        if (checkSoftRead() && checkRead(Triple.create(holder.getBaseItem().asNode(), p.asNode(),
                 ResourceFactory.createTypedLiteral(o).asNode()))) {
             return holder.getBaseItem().hasLiteral(p, o);
         }
@@ -582,7 +582,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     @Override
     public boolean hasLiteral(final Property p, final double o)
             throws ReadDeniedException, AuthenticationRequiredException {
-        if (checkSoftRead() && checkRead(new Triple(holder.getBaseItem().asNode(), p.asNode(),
+        if (checkSoftRead() && checkRead(Triple.create(holder.getBaseItem().asNode(), p.asNode(),
                 ResourceFactory.createTypedLiteral(o).asNode()))) {
             return holder.getBaseItem().hasLiteral(p, o);
         }
@@ -603,7 +603,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     @Override
     public boolean hasLiteral(final Property p, final float o)
             throws ReadDeniedException, AuthenticationRequiredException {
-        if (checkSoftRead() && checkRead(new Triple(holder.getBaseItem().asNode(), p.asNode(),
+        if (checkSoftRead() && checkRead(Triple.create(holder.getBaseItem().asNode(), p.asNode(),
                 ResourceFactory.createTypedLiteral(o).asNode()))) {
             return holder.getBaseItem().hasLiteral(p, o);
         }
@@ -624,7 +624,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     @Override
     public boolean hasLiteral(final Property p, final long o)
             throws ReadDeniedException, AuthenticationRequiredException {
-        if (checkSoftRead() && checkRead(new Triple(holder.getBaseItem().asNode(), p.asNode(),
+        if (checkSoftRead() && checkRead(Triple.create(holder.getBaseItem().asNode(), p.asNode(),
                 ResourceFactory.createTypedLiteral(o).asNode()))) {
             return holder.getBaseItem().hasLiteral(p, o);
         }
@@ -645,7 +645,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     @Override
     public boolean hasLiteral(final Property p, final Object o)
             throws ReadDeniedException, AuthenticationRequiredException {
-        if (checkSoftRead() && checkRead(new Triple(holder.getBaseItem().asNode(), p.asNode(),
+        if (checkSoftRead() && checkRead(Triple.create(holder.getBaseItem().asNode(), p.asNode(),
                 ResourceFactory.createTypedLiteral(o).asNode()))) {
             return holder.getBaseItem().hasLiteral(p, o);
         }
@@ -827,7 +827,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     @Override
     public SecuredResource removeAll(final Property p) throws ReadDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        if (!canDelete(new Triple(holder.getBaseItem().asNode(), p.asNode(), Node.ANY))) {
+        if (!canDelete(Triple.create(holder.getBaseItem().asNode(), p.asNode(), Node.ANY))) {
             final StmtIterator iter = holder.getBaseItem().listProperties(p);
             try {
                 if (!iter.hasNext()) {
@@ -856,7 +856,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     @Override
     public SecuredResource removeProperties() throws ReadDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        if (!canDelete(new Triple(holder.getBaseItem().asNode(), Node.ANY, Node.ANY))) {
+        if (!canDelete(Triple.create(holder.getBaseItem().asNode(), Node.ANY, Node.ANY))) {
             final StmtIterator iter = holder.getBaseItem().listProperties();
             try {
                 if (!iter.hasNext()) {

@@ -212,19 +212,19 @@ public class TestFileData {
 		
 		Graph g = Factory.createGraphMem();
 
-		g.add(new Triple(NodeFactory.createURI("http://example.com/subject"),
+		g.add(Triple.create(NodeFactory.createURI("http://example.com/subject"),
 				NodeFactory.createURI("http://example.com/predicate"),
 				NodeFactory.createURI("http://example.com/object")));
 
-		g.add(new Triple(NodeFactory.createBlankNode(BlankNodeId.create("a")),
+		g.add(Triple.create(NodeFactory.createBlankNode(BlankNodeId.create("a")),
 				NodeFactory.createURI("http://example.com/p1"), NodeFactory
 						.createBlankNode(BlankNodeId.create("b"))));
 
-		g.add(new Triple(NodeFactory.createBlankNode(BlankNodeId.create("b")),
+		g.add(Triple.create(NodeFactory.createBlankNode(BlankNodeId.create("b")),
 				NodeFactory.createURI("http://example.com/p2"), NodeFactory
 						.createLiteral("foo")));
 
-		g.add(new Triple(NodeFactory.createURI("http://example.com/ns/e"),
+		g.add(Triple.create(NodeFactory.createURI("http://example.com/ns/e"),
 				NodeFactory.createURI("http://example.com/ns/p5"), NodeFactory
 						.createLiteral("verify base works")));
 

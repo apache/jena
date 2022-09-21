@@ -53,7 +53,7 @@ public class ExProg2
         Var varTitle = Var.alloc("title") ;
         Var varX = Var.alloc("x") ;
         
-        Triple t1 = new Triple(varX, DC.title.asNode(),  varTitle) ;
+        Triple t1 = Triple.create(varX, DC.title.asNode(),  varTitle) ;
         elg.addTriplePattern(t1) ;
         
         // Adds a filter.  Need to wrap variable in a NodeVar.

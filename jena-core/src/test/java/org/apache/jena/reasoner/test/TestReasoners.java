@@ -94,8 +94,8 @@ public class TestReasoners extends TestCase {
         Node C2 = NodeFactory.createURI("C2");
         Node C3 = NodeFactory.createURI("C3");
         Node C4 = NodeFactory.createURI("C4");
-        data.add( new Triple(C1, RDFS.subClassOf.asNode(), C2) );
-        data.add( new Triple(C2, RDFS.subClassOf.asNode(), C3) );
+        data.add( Triple.create(C1, RDFS.subClassOf.asNode(), C2) );
+        data.add( Triple.create(C2, RDFS.subClassOf.asNode(), C3) );
         Reasoner reasoner = TransitiveReasonerFactory.theInstance().create(null);
         assertTrue(reasoner.supportsProperty(RDFS.subClassOf));
         assertTrue(! reasoner.supportsProperty(RDFS.domain));
@@ -103,51 +103,51 @@ public class TestReasoners extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(C1, null, null), 
             new Object[] {
-                new Triple(C1, RDFS.subClassOf.asNode(), C1),
-                new Triple(C1, RDFS.subClassOf.asNode(), C2),
-                new Triple(C1, RDFS.subClassOf.asNode(), C3)
+                Triple.create(C1, RDFS.subClassOf.asNode(), C1),
+                Triple.create(C1, RDFS.subClassOf.asNode(), C2),
+                Triple.create(C1, RDFS.subClassOf.asNode(), C3)
             } );
         Graph data2 = Factory.createGraphMem();
-        data2.add( new Triple(C1, RDFS.subClassOf.asNode(), C2) );
-        data2.add( new Triple(C2, RDFS.subClassOf.asNode(), C4) );
+        data2.add( Triple.create(C1, RDFS.subClassOf.asNode(), C2) );
+        data2.add( Triple.create(C2, RDFS.subClassOf.asNode(), C4) );
         infgraph.rebind(data2);
             
         // Incremental additions
         Node a = NodeFactory.createURI("a");
         Node b = NodeFactory.createURI("b");
         Node c = NodeFactory.createURI("c");
-        infgraph.add(new Triple(a, RDFS.subClassOf.asNode(), b));
-        infgraph.add(new Triple(b, RDFS.subClassOf.asNode(), c));
+        infgraph.add(Triple.create(a, RDFS.subClassOf.asNode(), b));
+        infgraph.add(Triple.create(b, RDFS.subClassOf.asNode(), c));
         TestUtil.assertIteratorValues(this, 
             infgraph.find(b, RDFS.subClassOf.asNode(), null), 
             new Object[] {
-                new Triple(b, RDFS.subClassOf.asNode(), c),
-                new Triple(b, RDFS.subClassOf.asNode(), b)
+                Triple.create(b, RDFS.subClassOf.asNode(), c),
+                Triple.create(b, RDFS.subClassOf.asNode(), b)
             } );
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, RDFS.subClassOf.asNode(), null), 
             new Object[] {
-                new Triple(a, RDFS.subClassOf.asNode(), a),
-                new Triple(a, RDFS.subClassOf.asNode(), b),
-                new Triple(a, RDFS.subClassOf.asNode(), c)
+                Triple.create(a, RDFS.subClassOf.asNode(), a),
+                Triple.create(a, RDFS.subClassOf.asNode(), b),
+                Triple.create(a, RDFS.subClassOf.asNode(), c)
             } );
         Node p = NodeFactory.createURI("p");
         Node q = NodeFactory.createURI("q");
         Node r = NodeFactory.createURI("r");
-        infgraph.add(new Triple(p, RDFS.subPropertyOf.asNode(), q));
-        infgraph.add(new Triple(q, RDFS.subPropertyOf.asNode(), r));
+        infgraph.add(Triple.create(p, RDFS.subPropertyOf.asNode(), q));
+        infgraph.add(Triple.create(q, RDFS.subPropertyOf.asNode(), r));
         TestUtil.assertIteratorValues(this, 
             infgraph.find(q, RDFS.subPropertyOf.asNode(), null), 
             new Object[] {
-                new Triple(q, RDFS.subPropertyOf.asNode(), q),
-                new Triple(q, RDFS.subPropertyOf.asNode(), r)
+                Triple.create(q, RDFS.subPropertyOf.asNode(), q),
+                Triple.create(q, RDFS.subPropertyOf.asNode(), r)
             } );
         TestUtil.assertIteratorValues(this, 
             infgraph.find(p, RDFS.subPropertyOf.asNode(), null), 
             new Object[] {
-                new Triple(p, RDFS.subPropertyOf.asNode(), p),
-                new Triple(p, RDFS.subPropertyOf.asNode(), q),
-                new Triple(p, RDFS.subPropertyOf.asNode(), r)
+                Triple.create(p, RDFS.subPropertyOf.asNode(), p),
+                Triple.create(p, RDFS.subPropertyOf.asNode(), q),
+                Triple.create(p, RDFS.subPropertyOf.asNode(), r)
             } );
     }
     
@@ -162,57 +162,57 @@ public class TestReasoners extends TestCase {
         Node d = NodeFactory.createURI("d");
         Node e = NodeFactory.createURI("e");
         Node closedP = RDFS.subClassOf.asNode();
-        data.add( new Triple(a, RDFS.subClassOf.asNode(), b) );
-        data.add( new Triple(a, RDFS.subClassOf.asNode(), c) );
-        data.add( new Triple(b, RDFS.subClassOf.asNode(), d) );
-        data.add( new Triple(c, RDFS.subClassOf.asNode(), d) );
-        data.add( new Triple(d, RDFS.subClassOf.asNode(), e) );
+        data.add( Triple.create(a, RDFS.subClassOf.asNode(), b) );
+        data.add( Triple.create(a, RDFS.subClassOf.asNode(), c) );
+        data.add( Triple.create(b, RDFS.subClassOf.asNode(), d) );
+        data.add( Triple.create(c, RDFS.subClassOf.asNode(), d) );
+        data.add( Triple.create(d, RDFS.subClassOf.asNode(), e) );
         Reasoner reasoner = TransitiveReasonerFactory.theInstance().create(null);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, infgraph.find(a, RDFS.subClassOf.asNode(), null),
             new Object[] {
-                new Triple(a, closedP, a),
-                new Triple(a, closedP, b),
-                new Triple(a, closedP, b),
-                new Triple(a, closedP, c),
-                new Triple(a, closedP, d),
-                new Triple(a, closedP, e)
+                Triple.create(a, closedP, a),
+                Triple.create(a, closedP, b),
+                Triple.create(a, closedP, b),
+                Triple.create(a, closedP, c),
+                Triple.create(a, closedP, d),
+                Triple.create(a, closedP, e)
             });
         TestUtil.assertIteratorValues(this, infgraph.find(b, RDFS.subClassOf.asNode(), null),
             new Object[] {
-                new Triple(b, closedP, b),
-                new Triple(b, closedP, d),
-                new Triple(b, closedP, e)
+                Triple.create(b, closedP, b),
+                Triple.create(b, closedP, d),
+                Triple.create(b, closedP, e)
             });
-        infgraph.delete(new Triple(b, closedP, d));
+        infgraph.delete(Triple.create(b, closedP, d));
         TestUtil.assertIteratorValues(this, infgraph.find(a, RDFS.subClassOf.asNode(), null),
             new Object[] {
-                new Triple(a, closedP, a),
-                new Triple(a, closedP, b),
-                new Triple(a, closedP, b),
-                new Triple(a, closedP, c),
-                new Triple(a, closedP, d),
-                new Triple(a, closedP, e)
+                Triple.create(a, closedP, a),
+                Triple.create(a, closedP, b),
+                Triple.create(a, closedP, b),
+                Triple.create(a, closedP, c),
+                Triple.create(a, closedP, d),
+                Triple.create(a, closedP, e)
             });
         TestUtil.assertIteratorValues(this, infgraph.find(b, RDFS.subClassOf.asNode(), null),
             new Object[] {
-                new Triple(b, closedP, b),
+                Triple.create(b, closedP, b),
             });
-        infgraph.delete(new Triple(a, closedP, c));
+        infgraph.delete(Triple.create(a, closedP, c));
         TestUtil.assertIteratorValues(this, infgraph.find(a, RDFS.subClassOf.asNode(), null),
             new Object[] {
-                new Triple(a, closedP, a),
-                new Triple(a, closedP, b)
+                Triple.create(a, closedP, a),
+                Triple.create(a, closedP, b)
             });
         TestUtil.assertIteratorValues(this, infgraph.find(b, RDFS.subClassOf.asNode(), null),
             new Object[] {
-                new Triple(b, closedP, b)
+                Triple.create(b, closedP, b)
             });
         TestUtil.assertIteratorValues(this, data.find(null, RDFS.subClassOf.asNode(), null),
             new Object[] {
-                new Triple(a, closedP, b),
-                new Triple(c, closedP, d),
-                new Triple(d, closedP, e)
+                Triple.create(a, closedP, b),
+                Triple.create(c, closedP, d),
+                Triple.create(d, closedP, e)
             });
     }
   
@@ -242,25 +242,25 @@ public class TestReasoners extends TestCase {
         Node q = NodeFactory.createURI("q");
         Node sC = RDFS.subClassOf.asNode();
         Node sP = RDFS.subPropertyOf.asNode();
-        data.add( new Triple(c2, sC, c3));
-        data.add( new Triple(c1, p, c2));
+        data.add( Triple.create(c2, sC, c3));
+        data.add( Triple.create(c1, p, c2));
         Reasoner reasoner = rf.create(null);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
             new Object[] {
             });
-        infgraph.add(new Triple(p, q, sC));
+        infgraph.add(Triple.create(p, q, sC));
         TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
             new Object[] {
             });
-        infgraph.add(new Triple(q, sP, sP));
+        infgraph.add(Triple.create(q, sP, sP));
         TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
             new Object[] {
-                new Triple(c1, sC, c1),
-                new Triple(c1, sC, c2),
-                new Triple(c1, sC, c3)
+                Triple.create(c1, sC, c1),
+                Triple.create(c1, sC, c2),
+                Triple.create(c1, sC, c3)
             });
-        infgraph.delete(new Triple(p, q, sC));
+        infgraph.delete(Triple.create(p, q, sC));
         TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
             new Object[] {
             });
@@ -386,27 +386,27 @@ public class TestReasoners extends TestCase {
         Node C2 = NodeFactory.createURI("C2");
         Node C3 = NodeFactory.createURI("C3");
         Node C4 = NodeFactory.createURI("C4");
-        data.add( new Triple(C1, RDFS.subClassOf.asNode(), C2) );
-        data.add( new Triple(C2, RDFS.subClassOf.asNode(), C3) );
+        data.add( Triple.create(C1, RDFS.subClassOf.asNode(), C2) );
+        data.add( Triple.create(C2, RDFS.subClassOf.asNode(), C3) );
         Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(C1, RDFS.subClassOf.asNode(), null), 
             new Object[] {
-                new Triple(C1, RDFS.subClassOf.asNode(), C1),
-                new Triple(C1, RDFS.subClassOf.asNode(), C2),
-                new Triple(C1, RDFS.subClassOf.asNode(), C3)
+                Triple.create(C1, RDFS.subClassOf.asNode(), C1),
+                Triple.create(C1, RDFS.subClassOf.asNode(), C2),
+                Triple.create(C1, RDFS.subClassOf.asNode(), C3)
             } );
         Graph data2 = Factory.createGraphMem();
-        data2.add( new Triple(C1, RDFS.subClassOf.asNode(), C2) );
-        data2.add( new Triple(C2, RDFS.subClassOf.asNode(), C4) );
+        data2.add( Triple.create(C1, RDFS.subClassOf.asNode(), C2) );
+        data2.add( Triple.create(C2, RDFS.subClassOf.asNode(), C4) );
         infgraph.rebind(data2);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(C1, RDFS.subClassOf.asNode(), null), 
             new Object[] {
-                new Triple(C1, RDFS.subClassOf.asNode(), C1),
-                new Triple(C1, RDFS.subClassOf.asNode(), C2),
-                new Triple(C1, RDFS.subClassOf.asNode(), C4)
+                Triple.create(C1, RDFS.subClassOf.asNode(), C1),
+                Triple.create(C1, RDFS.subClassOf.asNode(), C2),
+                Triple.create(C1, RDFS.subClassOf.asNode(), C4)
             } );
     }
  
@@ -493,9 +493,9 @@ public class TestReasoners extends TestCase {
         Node c3 = NodeFactory.createURI("C3");
         Node sC = RDFS.subClassOf.asNode();
         Graph data = Factory.createGraphMem();
-        data.add( new Triple(c2, sC, c3));
+        data.add( Triple.create(c2, sC, c3));
         Graph premise = Factory.createGraphMem();
-        premise.add( new Triple(c1, sC, c2));
+        premise.add( Triple.create(c1, sC, c2));
         Reasoner reasoner = rf.create(null);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
@@ -503,9 +503,9 @@ public class TestReasoners extends TestCase {
             });
         TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null, premise),
             new Object[] {
-                new Triple(c1, sC, c2),
-                new Triple(c1, sC, c3),
-                new Triple(c1, sC, c1)
+                Triple.create(c1, sC, c2),
+                Triple.create(c1, sC, c3),
+                Triple.create(c1, sC, c1)
             });
         TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
             new Object[] {

@@ -53,9 +53,9 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     protected static Node v = NodeFactoryExtra.parseNode("<http://example/v>");
 
     protected static Node o1 = NodeFactoryExtra.parseNode("2007");
-    protected static Triple triple1 = new Triple(s, p, o1);
+    protected static Triple triple1 = Triple.create(s, p, o1);
     protected static Node o2 = NodeFactoryExtra.parseNode("1066");
-    protected static Triple triple2 = new Triple(s, p, o2);
+    protected static Triple triple2 = Triple.create(s, p, o2);
     protected static Graph graph1 = data1();
     protected static Node graphIRI = NodeFactoryExtra.parseNode("<http://example/graph>");
 
@@ -226,7 +226,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     public void testModify2() {
         // Use blank nodes (will expose any problems in serialization when spill
         // occurs)
-        Triple t = new Triple(org.apache.jena.graph.NodeFactory.createBlankNode(), p, o2);
+        Triple t = Triple.create(org.apache.jena.graph.NodeFactory.createBlankNode(), p, o2);
 
         DatasetGraph gStore = getEmptyDatasetGraph();
         // Set the threshold to in order to force spill to disk
@@ -276,8 +276,8 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     public void testCopy() {
         // Use blank nodes (will expose any problems in serialization when spill
         // occurs)
-        Triple t = new Triple(org.apache.jena.graph.NodeFactory.createBlankNode(), p, o2);
-        Triple t2 = new Triple(org.apache.jena.graph.NodeFactory.createBlankNode(), p, o1);
+        Triple t = Triple.create(org.apache.jena.graph.NodeFactory.createBlankNode(), p, o2);
+        Triple t2 = Triple.create(org.apache.jena.graph.NodeFactory.createBlankNode(), p, o1);
 
         DatasetGraph gStore = getEmptyDatasetGraph();
         // Set the threshold to in order to force spill to disk
@@ -327,7 +327,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     public void testUpdateScript1() {
         DatasetGraph gStore = getEmptyDatasetGraph();
         script(gStore, "update-1.ru");
-        assertTrue(graphContains(gStore.getDefaultGraph(), new Triple(s, p, NodeFactoryExtra.parseNode("123"))));
+        assertTrue(graphContains(gStore.getDefaultGraph(), Triple.create(s, p, NodeFactoryExtra.parseNode("123"))));
     }
 
     @Test
@@ -335,7 +335,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         DatasetGraph gStore = getEmptyDatasetGraph();
         script(gStore, "update-2.ru");
         assertTrue(graphContains(gStore.getGraph(org.apache.jena.graph.NodeFactory.createURI("http://example/g1")),
-                                 new Triple(s, p, NodeFactoryExtra.parseNode("123"))));
+                                 Triple.create(s, p, NodeFactoryExtra.parseNode("123"))));
         assertTrue(graphEmpty(gStore.getDefaultGraph()));
     }
 
@@ -351,7 +351,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     public void testUpdateScript4() {
         DatasetGraph gStore = getEmptyDatasetGraph();
         script(gStore, "data-1.ru");
-        assertTrue(graphContains(gStore.getDefaultGraph(), new Triple(s, p, NodeFactoryExtra.parseNode("123"))));
+        assertTrue(graphContains(gStore.getDefaultGraph(), Triple.create(s, p, NodeFactoryExtra.parseNode("123"))));
     }
 
     @Test
@@ -362,8 +362,8 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         Graph g = GraphFactory.createPlainGraph();
         Node b = org.apache.jena.graph.NodeFactory.createBlankNode();
 
-        g.add(new Triple(s, p, b));
-        g.add(new Triple(b, q, v));
+        g.add(Triple.create(s, p, b));
+        g.add(Triple.create(b, q, v));
         assertTrue(g.isIsomorphicWith(gStore.getDefaultGraph()));
     }
 
@@ -371,16 +371,16 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     public void testUpdateScript6() {
         DatasetGraph gStore = getEmptyDatasetGraph();
         script(gStore, "data-3.ru");
-        assertTrue(graphContains(gStore.getGraph(graphIRI), new Triple(s, p, NodeFactoryExtra.parseNode("123"))));
+        assertTrue(graphContains(gStore.getGraph(graphIRI), Triple.create(s, p, NodeFactoryExtra.parseNode("123"))));
     }
 
     @Test
     public void testUpdateScript7() {
         DatasetGraph gStore = getEmptyDatasetGraph();
         script(gStore, "data-4.ru");
-        assertTrue(graphContains(gStore.getDefaultGraph(), new Triple(s, p, NodeFactoryExtra.parseNode("123"))));
+        assertTrue(graphContains(gStore.getDefaultGraph(), Triple.create(s, p, NodeFactoryExtra.parseNode("123"))));
         Graph g = gStore.getGraph(graphIRI);
-        assertTrue(graphContains(gStore.getGraph(graphIRI), new Triple(s, p, o2)));
+        assertTrue(graphContains(gStore.getGraph(graphIRI), Triple.create(s, p, o2)));
     }
 
     @Test

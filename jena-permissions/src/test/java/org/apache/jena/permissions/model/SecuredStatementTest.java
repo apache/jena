@@ -115,72 +115,72 @@ public class SecuredStatementTest {
 
     @Test
     public void testChangeLiteralObject_boolean() {
-        Triple t = new Triple(subject.asNode(), property.asNode(), ResourceFactory.createTypedLiteral(true).asNode());
+        Triple t = Triple.create(subject.asNode(), property.asNode(), ResourceFactory.createTypedLiteral(true).asNode());
         testChangeObject(() -> securedStatement.changeLiteralObject(true), t);
     }
 
     @Test
     public void testChangeLiteralObject_char() {
-        Triple t = new Triple(subject.asNode(), property.asNode(), ResourceFactory.createTypedLiteral('c').asNode());
+        Triple t = Triple.create(subject.asNode(), property.asNode(), ResourceFactory.createTypedLiteral('c').asNode());
         testChangeObject(() -> securedStatement.changeLiteralObject('c'), t);
     }
 
     @Test
     public void testChangeLiteralObject_double() {
-        Triple t = new Triple(subject.asNode(), property.asNode(), ResourceFactory.createTypedLiteral(3.14d).asNode());
+        Triple t = Triple.create(subject.asNode(), property.asNode(), ResourceFactory.createTypedLiteral(3.14d).asNode());
         testChangeObject(() -> securedStatement.changeLiteralObject(3.14d), t);
     }
 
     @Test
     public void testChangeLiteralObject_float() {
-        Triple t = new Triple(subject.asNode(), property.asNode(), ResourceFactory.createTypedLiteral(3.14f).asNode());
+        Triple t = Triple.create(subject.asNode(), property.asNode(), ResourceFactory.createTypedLiteral(3.14f).asNode());
         testChangeObject(() -> securedStatement.changeLiteralObject(3.14f), t);
     }
 
     @Test
     public void testChangeLiteralObject_int() {
-        Triple t = new Triple(subject.asNode(), property.asNode(), ResourceFactory.createTypedLiteral(2).asNode());
+        Triple t = Triple.create(subject.asNode(), property.asNode(), ResourceFactory.createTypedLiteral(2).asNode());
         testChangeObject(() -> securedStatement.changeLiteralObject(2), t);
     }
 
     @Test
     public void testChangeLiteralObject_long() {
-        Triple t = new Triple(subject.asNode(), property.asNode(), ResourceFactory.createTypedLiteral(2L).asNode());
+        Triple t = Triple.create(subject.asNode(), property.asNode(), ResourceFactory.createTypedLiteral(2L).asNode());
         testChangeObject(() -> securedStatement.changeLiteralObject(2L), t);
     }
 
     @Test
     public void testChangeObject_resource() {
         Resource r = ResourceFactory.createResource("http://example.com/resource");
-        Triple t = new Triple(subject.asNode(), property.asNode(), r.asNode());
+        Triple t = Triple.create(subject.asNode(), property.asNode(), r.asNode());
         testChangeObject(() -> securedStatement.changeObject(r), t);
     }
 
     @Test
     public void testChangeObject_string() {
         Literal l = ResourceFactory.createPlainLiteral("Waaa hooo");
-        Triple t = new Triple(subject.asNode(), property.asNode(), l.asNode());
+        Triple t = Triple.create(subject.asNode(), property.asNode(), l.asNode());
         testChangeObject(() -> securedStatement.changeObject("Waaa hooo"), t);
     }
 
     @Test
     public void testChangeObject_lexicalform() {
         final Literal l = ResourceFactory.createPlainLiteral(String.valueOf(Integer.MAX_VALUE));
-        Triple t = new Triple(subject.asNode(), property.asNode(), l.asNode());
+        Triple t = Triple.create(subject.asNode(), property.asNode(), l.asNode());
         testChangeObject(() -> securedStatement.changeObject(l.getLexicalForm(), true), t);
     }
 
     @Test
     public void testChangeObject_langString() {
         final Literal l = ResourceFactory.createLangLiteral("dos", "es");
-        Triple t = new Triple(subject.asNode(), property.asNode(), l.asNode());
+        Triple t = Triple.create(subject.asNode(), property.asNode(), l.asNode());
         testChangeObject(() -> securedStatement.changeObject("dos", "es"), t);
     }
 
     @Test
     public void testChangeObject_langString_notwellformed() {
         final Literal l = ResourceFactory.createLangLiteral("dos", "es");
-        Triple t = new Triple(subject.asNode(), property.asNode(), l.asNode());
+        Triple t = Triple.create(subject.asNode(), property.asNode(), l.asNode());
         testChangeObject(() -> securedStatement.changeObject("dos", "es", false), t);
     }
 

@@ -127,7 +127,7 @@ public class RuleMap {
         @Override
         public void headAction(Node[] args, int length, RuleContext context) {
             if (context.getGraph() instanceof FBRuleInfGraph) {
-                Triple t = new Triple(args[0], args[1], args[2]);
+                Triple t = Triple.create(args[0], args[1], args[2]);
                 ((FBRuleInfGraph)context.getGraph()).addDeduction(t);
             } else {
                 throw new BuiltinException(this, context, "Only usable in FBrule graphs");

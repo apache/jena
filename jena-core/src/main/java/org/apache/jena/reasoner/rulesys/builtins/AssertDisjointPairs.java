@@ -65,7 +65,7 @@ public class AssertDisjointPairs extends BaseBuiltin {
             {
                 if ( !x.sameValueAs( y ) )
                 {
-                    context.add( new Triple( x, OWL.differentFrom.asNode(), y ) );
+                    context.add( Triple.create( x, OWL.differentFrom.asNode(), y ) );
                 }
             }
         }

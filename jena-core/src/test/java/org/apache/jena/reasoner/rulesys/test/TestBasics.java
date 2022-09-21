@@ -323,28 +323,28 @@ public class TestBasics extends TestCase  {
                                     n2);
 
         // Should fail with no bindings
-        boolean match = FRuleEngine.match(p1, new Triple(n1, n2, n3), env);
+        boolean match = FRuleEngine.match(p1, Triple.create(n1, n2, n3), env);
         assertTrue(!match);
         assertEquals(null, env.getEnvironment()[0]);
         assertEquals(null, env.getEnvironment()[1]);
         assertEquals(null, env.getEnvironment()[2]);
 
         // Should succeed with two bindings
-        match = FRuleEngine.match(p1, new Triple(n2, n1, n3), env);
+        match = FRuleEngine.match(p1, Triple.create(n2, n1, n3), env);
         assertTrue(match);
         assertEquals(n2, env.getEnvironment()[0]);
         assertEquals(n3, env.getEnvironment()[1]);
         assertEquals(null, env.getEnvironment()[2]);
 
         // should fail but leave prior bindings intact
-        match = FRuleEngine.match(p2, new Triple(n1, n2, n2), env);
+        match = FRuleEngine.match(p2, Triple.create(n1, n2, n2), env);
         assertTrue(!match);
         assertEquals(n2, env.getEnvironment()[0]);
         assertEquals(n3, env.getEnvironment()[1]);
         assertEquals(null, env.getEnvironment()[2]);
 
         // should succeed with full binding set
-        match = FRuleEngine.match(p2, new Triple(n3, n1, n2), env);
+        match = FRuleEngine.match(p2, Triple.create(n3, n1, n2), env);
         assertTrue(match);
         assertEquals(n2, env.getEnvironment()[0]);
         assertEquals(n3, env.getEnvironment()[1]);
@@ -362,20 +362,20 @@ public class TestBasics extends TestCase  {
         List<Rule> ruleList = Rule.parseRules(rules);
 
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
-        infgraph.add(new Triple(n1, p, n2));
-        infgraph.add(new Triple(n2, p, n3));
-        infgraph.add(new Triple(n2, q, n3));
-        infgraph.add(new Triple(n4, p, n4));
+        infgraph.add(Triple.create(n1, p, n2));
+        infgraph.add(Triple.create(n2, p, n3));
+        infgraph.add(Triple.create(n2, q, n3));
+        infgraph.add(Triple.create(n4, p, n4));
 
         TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
             new Triple[] {
-                new Triple(n1, p, n2),
-                new Triple(n2, p, n3),
-                new Triple(n2, q, n3),
-                new Triple(n4, p, n4),
-                new Triple(n1, p, n3),
-                new Triple(n1, q, n3),
-                new Triple(n4, n4, p),
+                Triple.create(n1, p, n2),
+                Triple.create(n2, p, n3),
+                Triple.create(n2, q, n3),
+                Triple.create(n4, p, n4),
+                Triple.create(n1, p, n3),
+                Triple.create(n1, q, n3),
+                Triple.create(n4, n4, p),
             });
     }
 
@@ -390,22 +390,22 @@ public class TestBasics extends TestCase  {
 
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
         infgraph.setDerivationLogging(true);
-        infgraph.add(new Triple(n1, p, n3));
-        infgraph.add(new Triple(n1, q, n4));
-        infgraph.add(new Triple(n1, q, n3));
+        infgraph.add(Triple.create(n1, p, n3));
+        infgraph.add(Triple.create(n1, q, n4));
+        infgraph.add(Triple.create(n1, q, n3));
 
         TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
             new Triple[] {
-                new Triple(n1, p, n3),
-                new Triple(n2, p, n3),
-                new Triple(n1, q, n4),
-                new Triple(n2, q, n4),
-                new Triple(n1, q, n3),
-                new Triple(n2, q, n3),
-                new Triple(res, p, n3)
+                Triple.create(n1, p, n3),
+                Triple.create(n2, p, n3),
+                Triple.create(n1, q, n4),
+                Triple.create(n2, q, n4),
+                Triple.create(n1, q, n3),
+                Triple.create(n2, q, n3),
+                Triple.create(res, p, n3)
             });
 
-        Iterator<Derivation> derivs = infgraph.getDerivation(new Triple(res, p, n3));
+        Iterator<Derivation> derivs = infgraph.getDerivation(Triple.create(res, p, n3));
         StringWriter outString = new StringWriter(250);
         PrintWriter out = new PrintWriter(outString);
         while (derivs.hasNext()) {
@@ -436,22 +436,22 @@ public class TestBasics extends TestCase  {
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
         TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
             new Triple[] {
-                new Triple(n1, p, n3),
-                new Triple(n2, p, n3),
+                Triple.create(n1, p, n3),
+                Triple.create(n2, p, n3),
             });
 
-        infgraph.add(new Triple(n1, q, n4));
-        infgraph.add(new Triple(n1, q, n3));
+        infgraph.add(Triple.create(n1, q, n4));
+        infgraph.add(Triple.create(n1, q, n3));
 
         TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
             new Triple[] {
-                new Triple(n1, p, n3),
-                new Triple(n2, p, n3),
-                new Triple(n1, q, n4),
-                new Triple(n2, q, n4),
-                new Triple(n1, q, n3),
-                new Triple(n2, q, n3),
-                new Triple(res, p, n3)
+                Triple.create(n1, p, n3),
+                Triple.create(n2, p, n3),
+                Triple.create(n1, q, n4),
+                Triple.create(n2, q, n4),
+                Triple.create(n1, q, n3),
+                Triple.create(n2, q, n3),
+                Triple.create(res, p, n3)
             });
 
     }
@@ -465,10 +465,10 @@ public class TestBasics extends TestCase  {
                        "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]";
         List<Rule> ruleList = Rule.parseRules(rules);
         Graph schema = Factory.createGraphMem();
-        schema.add(new Triple(n1, p, n3));
+        schema.add(Triple.create(n1, p, n3));
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(n1, q, n4));
-        data.add(new Triple(n1, q, n3));
+        data.add(Triple.create(n1, q, n4));
+        data.add(Triple.create(n1, q, n3));
 
         Reasoner reasoner =  new BasicForwardRuleReasoner(ruleList);
         Reasoner boundReasoner = reasoner.bindSchema(schema);
@@ -476,13 +476,13 @@ public class TestBasics extends TestCase  {
 
         TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
             new Triple[] {
-                new Triple(n1, p, n3),
-                new Triple(n2, p, n3),
-                new Triple(n1, q, n4),
-                new Triple(n2, q, n4),
-                new Triple(n1, q, n3),
-                new Triple(n2, q, n3),
-                new Triple(res, p, n3)
+                Triple.create(n1, p, n3),
+                Triple.create(n2, p, n3),
+                Triple.create(n1, q, n4),
+                Triple.create(n2, q, n4),
+                Triple.create(n1, q, n3),
+                Triple.create(n2, q, n3),
+                Triple.create(res, p, n3)
             });
     }
 
@@ -542,12 +542,12 @@ public class TestBasics extends TestCase  {
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
         TestUtil.assertIteratorValues(this, infgraph.find(n1, q, null),
             new Triple[] {
-                new Triple(n1, q, Util.makeIntNode(2)),
-                new Triple(n1, q, Util.makeIntNode(5))
+                Triple.create(n1, q, Util.makeIntNode(2)),
+                Triple.create(n1, q, Util.makeIntNode(5))
             });
         TestUtil.assertIteratorValues(this, infgraph.find(n2, q, null),
             new Triple[] {
-                new Triple(n2, q, Util.makeIntNode(1))
+                Triple.create(n2, q, Util.makeIntNode(1))
             });
 
     }
@@ -562,14 +562,14 @@ public class TestBasics extends TestCase  {
         List<Rule> ruleList = Rule.parseRules(rules);
 
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
-        infgraph.add(new Triple(n1, p, Util.makeIntNode(1)));
-        infgraph.add(new Triple(n1, p, Util.makeIntNode(2)));
-        infgraph.add(new Triple(n1, q, Util.makeIntNode(2)));
+        infgraph.add(Triple.create(n1, p, Util.makeIntNode(1)));
+        infgraph.add(Triple.create(n1, p, Util.makeIntNode(2)));
+        infgraph.add(Triple.create(n1, q, Util.makeIntNode(2)));
 
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
             new Triple[] {
-                new Triple(n1, p, Util.makeIntNode(1)),
-                new Triple(n1, q, Util.makeIntNode(2))
+                Triple.create(n1, p, Util.makeIntNode(1)),
+                Triple.create(n1, q, Util.makeIntNode(2))
             });
 
     }
@@ -584,13 +584,13 @@ public class TestBasics extends TestCase  {
         List<Rule> ruleList = Rule.parseRules(rules);
 
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
-        infgraph.add(new Triple(n1, p, Util.makeIntNode(1)));
-        infgraph.add(new Triple(n1, p, Util.makeIntNode(2)));
-        infgraph.add(new Triple(n1, q, Util.makeIntNode(2)));
+        infgraph.add(Triple.create(n1, p, Util.makeIntNode(1)));
+        infgraph.add(Triple.create(n1, p, Util.makeIntNode(2)));
+        infgraph.add(Triple.create(n1, q, Util.makeIntNode(2)));
 
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
             new Triple[] {
-                new Triple(n1, q, Util.makeIntNode(2))
+                Triple.create(n1, q, Util.makeIntNode(2))
             });
 
     }
@@ -602,20 +602,20 @@ public class TestBasics extends TestCase  {
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
         List<Rule> ruleList = Rule.parseRules(rules);
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(n1, p, n2));
+        data.add(Triple.create(n1, p, n2));
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(data);
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
             new Triple[] {
-                new Triple(n1, p, n2),
-                new Triple(n1, q, n2)
+                Triple.create(n1, p, n2),
+                Triple.create(n1, q, n2)
             });
         Graph ndata = Factory.createGraphMem();
-        ndata.add(new Triple(n1, p, n3));
+        ndata.add(Triple.create(n1, p, n3));
         infgraph.rebind(ndata);
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
             new Triple[] {
-                new Triple(n1, p, n3),
-                new Triple(n1, q, n3)
+                Triple.create(n1, p, n3),
+                Triple.create(n1, q, n3)
             });
     }
 
@@ -626,7 +626,7 @@ public class TestBasics extends TestCase  {
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
         List<Rule> ruleList = Rule.parseRules(rules);
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(n1, p, n2));
+        data.add(Triple.create(n1, p, n2));
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(data);
         assertEquals(infgraph.size(), 2);
     }
@@ -663,16 +663,16 @@ public class TestBasics extends TestCase  {
         Node first = RDF.Nodes.first;
         Node rest  = RDF.Nodes.rest;
         Node nil = RDF.Nodes.nil;
-        data.add(new Triple(n1, first, p));
-        data.add(new Triple(n1, rest, n2));
-        data.add(new Triple(n2, first, q));
-        data.add(new Triple(n2, rest, nil));
+        data.add(Triple.create(n1, first, p));
+        data.add(Triple.create(n1, rest, n2));
+        data.add(Triple.create(n2, first, q));
+        data.add(Triple.create(n2, rest, nil));
 
-        data.add(new Triple(n3, first, p));
-        data.add(new Triple(n3, rest, n4));
-        data.add(new Triple(n4, rest, n5));
-        data.add(new Triple(n5, first, q));
-        data.add(new Triple(n5, rest, nil));
+        data.add(Triple.create(n3, first, p));
+        data.add(Triple.create(n3, rest, n4));
+        data.add(Triple.create(n4, rest, n5));
+        data.add(Triple.create(n5, first, q));
+        data.add(Triple.create(n5, rest, nil));
 
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
         List<Rule> ruleList = Rule.parseRules(rules);

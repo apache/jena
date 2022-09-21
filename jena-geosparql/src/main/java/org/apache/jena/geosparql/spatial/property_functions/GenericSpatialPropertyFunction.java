@@ -133,7 +133,7 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
                     Node lat = graph.find(subject, SpatialExtension.GEO_LAT_NODE, null).next().getObject();
                     Node lon = graph.find(subject, SpatialExtension.GEO_LON_NODE, null).next().getObject();
                     Node latLonGeometryLiteral = ConvertLatLon.toNode(lat, lon);
-                    Triple triple = new Triple(subject, Geo.HAS_GEOMETRY_NODE, latLonGeometryLiteral);
+                    Triple triple = Triple.create(subject, Geo.HAS_GEOMETRY_NODE, latLonGeometryLiteral);
                     spatialTriples.addIterator(Arrays.asList(triple).iterator());
                 }
             }

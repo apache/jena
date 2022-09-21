@@ -118,7 +118,7 @@ public class labelSearch implements PropertyFunction
         Var var2 = createNewVar() ;                     // Hidden variable
         
         BasicPattern bp = new BasicPattern() ;
-        Triple t = new Triple(nodeVar, RDFS.label.asNode(), var2) ;
+        Triple t = Triple.create(nodeVar, RDFS.label.asNode(), var2) ;
         bp.add(t) ;
         OpBGP op = new OpBGP(bp) ;
         
@@ -149,7 +149,7 @@ public class labelSearch implements PropertyFunction
         Var var2 = createNewVar() ; 
         // Triple patterns for   ?x rdfs:label ?hiddenVar
         ElementTriplesBlock elementBGP = new ElementTriplesBlock();
-        Triple t = new Triple(nodeVar, RDFS.label.asNode(), var2) ;
+        Triple t = Triple.create(nodeVar, RDFS.label.asNode(), var2) ;
         elementBGP.addTriple(t) ;
         
         // Regular expression for  regex(?hiddenVar, "pattern", "i") 

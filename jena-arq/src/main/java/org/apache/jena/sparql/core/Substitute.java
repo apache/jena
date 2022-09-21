@@ -82,7 +82,7 @@ public class Substitute {
 
         Triple t = triple;
         if ( s1 != s || p1 != p || o1 != o )
-            t = new Triple(s1, p1, o1);
+            t = Triple.create(s1, p1, o1);
         return t;
     }
 
@@ -224,7 +224,7 @@ public class Substitute {
                 Node s = substitute(triple.getSubject(), binding);
                 Node p = substitute(triple.getPredicate(), binding);
                 Node o = substitute(triple.getObject(), binding);
-                Triple t = new Triple(s, p, o);
+                Triple t = Triple.create(s, p, o);
                 triples.add(t);
             }
 
@@ -239,7 +239,7 @@ public class Substitute {
             // Node s = substitute(quad.getSubject(), binding) ;
             // Node p = substitute(quad.getPredicate(), binding) ;
             // Node o = substitute(quad.getObject(), binding) ;
-            // Triple t = new Triple(s, p, o) ;
+            // Triple t = Triple.create(s, p, o) ;
             // triples.add(t) ;
             // }
 

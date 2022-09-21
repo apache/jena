@@ -93,13 +93,13 @@ public class TransformPathFlatternStd extends TransformCopy {
 
         @Override
         public void visit(P_Link pathNode) {
-            Op op = new OpTriple(new Triple(subject, pathNode.getNode(), object));
+            Op op = new OpTriple(Triple.create(subject, pathNode.getNode(), object));
             result = op;
         }
 
         @Override
         public void visit(P_ReverseLink pathNode) {
-            Op op = new OpTriple(new Triple(object, pathNode.getNode(), subject));
+            Op op = new OpTriple(Triple.create(object, pathNode.getNode(), subject));
             result = op;
         }
 

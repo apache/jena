@@ -59,7 +59,7 @@ public class TestTripleTable
 
     private static void add(TripleTable table, Node s, Node p, Node o)
     {
-        table.add(new Triple(s,p,o));
+        table.add(Triple.create(s,p,o));
     }
 
     private static void notMatch(TripleTable table, Node s, Node p, Node o)
@@ -82,7 +82,7 @@ public class TestTripleTable
         Iterator<Triple> iter = table.find(s, p, o);
         assertNotNull(iter);
         assertTrue(iter.hasNext());
-        assertEquals(new Triple(s, p, o), iter.next());
+        assertEquals(Triple.create(s, p, o), iter.next());
         assertFalse(iter.hasNext());
     }
 
@@ -102,7 +102,7 @@ public class TestTripleTable
     @Test public void add1()
     {
         TripleTable table = createTripleTableMem();
-        table.add(new Triple(n1,n2,n3));
+        table.add(Triple.create(n1,n2,n3));
     }
 
     @Test public void find1()

@@ -65,7 +65,7 @@ public class TestTriple extends GraphTestBase
                 for (int k=0; k<nodes.length; k++) {
                     triples[i*nodes.length*nodes.length +
                             j*nodes.length +
-                            k] = new Triple(nodes[i], nodes[j], nodes[k]);
+                            k] = Triple.create(nodes[i], nodes[j], nodes[k]);
                 }
             }
         }
@@ -116,13 +116,13 @@ public class TestTriple extends GraphTestBase
     public void testTripleCreate()
         {
         Node S = NodeCreateUtils.create( "s" ), P = NodeCreateUtils.create( "p" ), O = NodeCreateUtils.create( "o" );
-        assertEquals( new Triple( S, P, O ), Triple.create( S, P, O ) );
+        assertEquals( Triple.create( S, P, O ), Triple.create( S, P, O ) );
         }
         
     public void testTripleCreateFromString()
         {
         Node S = NodeCreateUtils.create( "a" ), P = NodeCreateUtils.create( "_P" ), O = NodeCreateUtils.create( "?c" );
-        assertEquals( new Triple( S, P, O ), NodeCreateUtils.createTriple( "a _P ?c") );
+        assertEquals( Triple.create( S, P, O ), NodeCreateUtils.createTriple( "a _P ?c") );
         }
         
     /**
@@ -134,7 +134,7 @@ public class TestTriple extends GraphTestBase
         Node S = NodeCreateUtils.create( "rdf:alpha" ), P = NodeCreateUtils.create( "dc:creator" );
         Node O = NodeCreateUtils.create( "spoo:notmapped" );
         Triple t = NodeCreateUtils.createTriple( "rdf:alpha dc:creator spoo:notmapped" );
-        assertEquals( new Triple( S, P, O ), t );
+        assertEquals( Triple.create( S, P, O ), t );
         }
         
     public void testTripleCreationMapped()

@@ -67,9 +67,9 @@ public class TestGenericRules extends TestCase {
     List<Rule> ruleList = Rule.parseRules("[r1: (?a p ?b), (?b p ?c) -> (?a p ?c)]" +
                                     "[r2: (?a q ?b) -> (?a p ?c)]" +
                                     "-> table(p). -> table(q).");
-    Triple[] ans = new Triple[] { new Triple(a, p, b),
-                                   new Triple(b, p, c),
-                                   new Triple(a, p, c) };
+    Triple[] ans = new Triple[] { Triple.create(a, p, b),
+                                   Triple.create(b, p, c),
+                                   Triple.create(a, p, c) };
                                  
     /**
      * Boilerplate for junit
@@ -95,8 +95,8 @@ public class TestGenericRules extends TestCase {
      */
     public void testForward() {
         Graph test = Factory.createGraphMem();
-        test.add(new Triple(a, p, b));
-        test.add(new Triple(b, p, c));
+        test.add(Triple.create(a, p, b));
+        test.add(Triple.create(b, p, c));
         
         GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(null);
         reasoner.setRules(ruleList);
@@ -116,8 +116,8 @@ public class TestGenericRules extends TestCase {
      */
     public void testBackward() {
         Graph test = Factory.createGraphMem();
-        test.add(new Triple(a, p, b));
-        test.add(new Triple(b, p, c));
+        test.add(Triple.create(a, p, b));
+        test.add(Triple.create(b, p, c));
         
         GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(null);
         reasoner.setRules(ruleList);
@@ -137,8 +137,8 @@ public class TestGenericRules extends TestCase {
      */
     public void testHybrid() {
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, r, b));
-        data.add(new Triple(p, ty, s));
+        data.add(Triple.create(a, r, b));
+        data.add(Triple.create(p, ty, s));
         List<Rule> rules = Rule.parseRules(
         "[a1: -> (a rdf:type t)]" +
         "[r0: (?x r ?y) -> (?x p ?y)]" +
@@ -154,20 +154,20 @@ public class TestGenericRules extends TestCase {
         infgraph.setDerivationLogging(true);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(null, p, null), new Object[] {
-                  new Triple(a, p, a),
-                  new Triple(a, p, b),
-                  new Triple(b, p, a)
+                  Triple.create(a, p, a),
+                  Triple.create(a, p, b),
+                  Triple.create(b, p, a)
               } );
               
         // Check derivation tracing as well
-        Iterator<Derivation> di = infgraph.getDerivation(new Triple(b, p, a));
+        Iterator<Derivation> di = infgraph.getDerivation(Triple.create(b, p, a));
         assertTrue(di.hasNext());
         RuleDerivation d = (RuleDerivation)di.next();
 //        java.io.PrintWriter out = new java.io.PrintWriter(System.out); 
 //        d.printTrace(out, true);
 //        out.close();
         assertTrue(d.getRule().getName().equals("r1b"));
-        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
+        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { Triple.create(a, p, b) });
         assertTrue(! di.hasNext());
     }
     
@@ -197,8 +197,8 @@ public class TestGenericRules extends TestCase {
      */
     public void testParameters() {
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, r, b));
-        data.add(new Triple(p, ty, s));
+        data.add(Triple.create(a, r, b));
+        data.add(Triple.create(p, ty, s));
 
         Model m = ModelFactory.createDefaultModel();
         Resource configuration= m.createResource(GenericRuleReasonerFactory.URI);
@@ -210,17 +210,17 @@ public class TestGenericRules extends TestCase {
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(null, p, null), new Object[] {
-                  new Triple(a, p, a),
-                  new Triple(a, p, b),
-                  new Triple(b, p, a)
+                  Triple.create(a, p, a),
+                  Triple.create(a, p, b),
+                  Triple.create(b, p, a)
               } );
               
         // Check derivation tracing as well
-        Iterator<Derivation> di = infgraph.getDerivation(new Triple(b, p, a));
+        Iterator<Derivation> di = infgraph.getDerivation(Triple.create(b, p, a));
         assertTrue(di.hasNext());
         RuleDerivation d = (RuleDerivation)di.next();
         assertTrue(d.getRule().getName().equals("r1b"));
-        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
+        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { Triple.create(a, p, b) });
         assertTrue(! di.hasNext());
         
         // Check retrieval of configuration
@@ -257,8 +257,8 @@ public class TestGenericRules extends TestCase {
         Node D = NodeFactory.createURI(PrintUtil.egNS + "D");
         TestUtil.assertIteratorValues(this, 
               infgraph.find(null, null, null), new Object[] {
-                new Triple(an, RDF.Nodes.type, C),
-                new Triple(an, RDF.Nodes.type, D),
+                Triple.create(an, RDF.Nodes.type, C),
+                Triple.create(an, RDF.Nodes.type, D),
               } );
         
         // Test that the parameter initialization is not be overridden by subclasses
@@ -299,8 +299,8 @@ public class TestGenericRules extends TestCase {
      */
     public void testHybridFunctorFilter() {
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, r, b));
-        data.add(new Triple(a, p, s));
+        data.add(Triple.create(a, r, b));
+        data.add(Triple.create(a, p, s));
         List<Rule> rules = Rule.parseRules( "[r0: (?x r ?y) (?x p ?z) -> (?x q func(?y, ?z)) ]" );        
         GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(null);
         reasoner.setRules(rules);
@@ -315,7 +315,7 @@ public class TestGenericRules extends TestCase {
         infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(null, q, null), new Object[] {
-                  new Triple(a, q, Functor.makeFunctorNode("func", new Node[]{b, s}))
+                  Triple.create(a, q, Functor.makeFunctorNode("func", new Node[]{b, s}))
               } );
     }
     
@@ -335,7 +335,7 @@ public class TestGenericRules extends TestCase {
      */
     public void doTestFunctorLooping(RuleMode mode) {
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, r, b));
+        data.add(Triple.create(a, r, b));
         List<Rule> rules = Rule.parseRules( "(?x r ?y) -> (?x p func(?x)). (?x p ?y) -> (?x p func(?x))." );        
         GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(null);
         reasoner.setRules(rules);
@@ -417,9 +417,9 @@ public class TestGenericRules extends TestCase {
      */
     public void doTestAddRemove(boolean useTGC) {
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, C1));
-        data.add(new Triple(C1, sC, C2));
-        data.add(new Triple(C2, sC, C3));
+        data.add(Triple.create(a, p, C1));
+        data.add(Triple.create(C1, sC, C2));
+        data.add(Triple.create(C2, sC, C3));
         List<Rule> rules = Rule.parseRules(
         "-> table(rdf:type)." +
         "[r1: (?x p ?c) -> (?x rdf:type ?c)] " +
@@ -437,38 +437,38 @@ public class TestGenericRules extends TestCase {
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(a, ty, null), new Object[] {
-                  new Triple(a, ty, C1),
-                  new Triple(a, ty, C2),
-                  new Triple(a, ty, C3)
+                  Triple.create(a, ty, C1),
+                  Triple.create(a, ty, C2),
+                  Triple.create(a, ty, C3)
               } );
               
         logger.debug("Checkpoint 1");
-        infgraph.delete(new Triple(C1, sC, C2));
+        infgraph.delete(Triple.create(C1, sC, C2));
         TestUtil.assertIteratorValues(this, 
               infgraph.find(a, ty, null), new Object[] {
-                  new Triple(a, ty, C1)
+                  Triple.create(a, ty, C1)
               } );
          
         logger.debug("Checkpoint 2");
-        infgraph.add(new Triple(C1, sC, C3));
-        infgraph.add(new Triple(b, p, C2));
+        infgraph.add(Triple.create(C1, sC, C3));
+        infgraph.add(Triple.create(b, p, C2));
         TestUtil.assertIteratorValues(this, 
               infgraph.find(a, ty, null), new Object[] {
-                  new Triple(a, ty, C1),
-                  new Triple(a, ty, C3)
+                  Triple.create(a, ty, C1),
+                  Triple.create(a, ty, C3)
               } );
         TestUtil.assertIteratorValues(this, 
               infgraph.find(b, ty, null), new Object[] {
-                  new Triple(b, ty, C2),
-                  new Triple(b, ty, C3)
+                  Triple.create(b, ty, C2),
+                  Triple.create(b, ty, C3)
               } );
          
         TestUtil.assertIteratorValues(this, 
               data.find(null, null, null), new Object[] {
-                  new Triple(a, p, C1),
-                  new Triple(b, p, C2),
-                  new Triple(C2, sC, C3),
-                  new Triple(C1, sC, C3)
+                  Triple.create(a, p, C1),
+                  Triple.create(b, p, C2),
+                  Triple.create(C2, sC, C3),
+                  Triple.create(C1, sC, C3)
               } );
     }
     
@@ -477,7 +477,7 @@ public class TestGenericRules extends TestCase {
      */
     public void testAddRemove2() {
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, Util.makeIntNode(0)));
+        data.add(Triple.create(a, p, Util.makeIntNode(0)));
         List<Rule> rules = Rule.parseRules(
                 "(?x p ?v)-> (?x q inc(1, a)).\n" +
                 "(?x p ?v)-> (?x q inc(1, b)).\n" +
@@ -495,7 +495,7 @@ public class TestGenericRules extends TestCase {
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(a, p, null), new Object[] {
-                  new Triple(a, p, Util.makeIntNode(2))
+                  Triple.create(a, p, Util.makeIntNode(2))
               } );
     }
 }

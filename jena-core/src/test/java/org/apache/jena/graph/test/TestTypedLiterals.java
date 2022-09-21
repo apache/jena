@@ -474,7 +474,7 @@ public class TestTypedLiterals extends TestCase {
         Node nx1 = NodeFactory.createLiteral("0.50", dt) ;
         Node nx2 = NodeFactory.createLiteral("0.500", dt) ;
         Graph graph = Factory.createDefaultGraph() ;
-        graph.add(new Triple(ns, np, nx1)) ;
+        graph.add(Triple.create(ns, np, nx1)) ;
         assertTrue( graph.find(Node.ANY, Node.ANY, nx2).hasNext() );
     }
 

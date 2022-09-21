@@ -45,7 +45,7 @@ public abstract class AbstractTestGraphAddDelete
     protected static final Node lit3 = NodeFactoryExtra.parseNode("123") ;
     
     static Triple triple(Node s, Node p, Node o)
-    { return new Triple(s, p, o) ; }
+    { return Triple.create(s, p, o) ; }
     
     protected abstract Graph emptyGraph() ;
     protected abstract void returnGraph(Graph g) ;

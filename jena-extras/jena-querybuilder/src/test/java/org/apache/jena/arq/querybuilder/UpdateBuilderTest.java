@@ -75,7 +75,7 @@ public class UpdateBuilderTest {
 
     @Test
     public void testInsert_Triple() {
-        Triple t = new Triple(s, p, o);
+        Triple t = Triple.create(s, p, o);
         UpdateBuilder builder = new UpdateBuilder();
         builder.addInsert(t);
         Update update = builder.build();
@@ -92,7 +92,7 @@ public class UpdateBuilderTest {
 
     @Test
     public void testInsert_NodeTriple() {
-        Triple t = new Triple(s, p, o);
+        Triple t = Triple.create(s, p, o);
         UpdateBuilder builder = new UpdateBuilder();
         builder.addInsert(g, t);
         Update update = builder.build();
@@ -209,7 +209,7 @@ public class UpdateBuilderTest {
 
     @Test
     public void testDelete_Triple() {
-        Triple t = new Triple(s, p, o);
+        Triple t = Triple.create(s, p, o);
         UpdateBuilder builder = new UpdateBuilder();
         builder.addDelete(t);
         Update update = builder.build();
@@ -226,7 +226,7 @@ public class UpdateBuilderTest {
 
     @Test
     public void testDelete_NodeTriple() {
-        Triple t = new Triple(s, p, o);
+        Triple t = Triple.create(s, p, o);
         UpdateBuilder builder = new UpdateBuilder();
         builder.addDelete(g, t);
         Update update = builder.build();
@@ -330,7 +330,7 @@ public class UpdateBuilderTest {
     public void testInsertAndDelete() {
         UpdateBuilder builder = new UpdateBuilder();
         builder.addInsert(new Quad(g, s, p, o));
-        builder.addDelete(new Triple(s, p, o));
+        builder.addDelete(Triple.create(s, p, o));
         builder.addWhere(null, p, "foo");
         Update update = builder.build();
         assertTrue(update instanceof UpdateModify);
@@ -368,7 +368,7 @@ public class UpdateBuilderTest {
         Var v = Var.alloc("v");
 
         builder.addInsert(new Quad(g, s, v, o));
-        builder.addDelete(new Triple(s, v, o));
+        builder.addDelete(Triple.create(s, v, o));
         builder.addWhere(null, v, "foo");
         builder.setVar(v, p);
         Update update = builder.build();
@@ -407,7 +407,7 @@ public class UpdateBuilderTest {
         Node v = NodeFactory.createVariable("v");
 
         builder.addInsert(new Quad(g, s, v, o));
-        builder.addDelete(new Triple(s, v, o));
+        builder.addDelete(Triple.create(s, v, o));
         builder.addWhere(null, v, "foo");
         builder.setVar(v, p);
         Update update = builder.build();
@@ -446,7 +446,7 @@ public class UpdateBuilderTest {
         Node v = NodeFactory.createVariable("v");
 
         builder.addInsert(new Quad(g, s, v, o));
-        builder.addDelete(new Triple(s, v, o));
+        builder.addDelete(Triple.create(s, v, o));
         builder.addWhere(null, v, "foo");
 
         Update update = builder.build();
@@ -523,7 +523,7 @@ public class UpdateBuilderTest {
                 .addInsert(n, DC_11.creator, "A.N.Other");
 
         List<Triple> triples = new ArrayList<Triple>();
-        triples.add(new Triple(n, priceN, priceV));
+        triples.add(Triple.create(n, priceN, priceV));
         Graph g = new CollectionGraph(triples);
         Model m = ModelFactory.createModelForGraph(g);
         m.setNsPrefix("dc", DC_11.NS);

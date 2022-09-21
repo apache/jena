@@ -79,7 +79,7 @@ public class TestQueryCloningCornerCases {
         {
             Query cloneOfClone = clone.cloneQuery();
             ElementPathBlock elt = (ElementPathBlock)((ElementGroup)cloneOfClone.getQueryPattern()).get(0);
-            elt.addTriple(new Triple(RDF.Nodes.type, RDF.Nodes.type, RDF.Nodes.Property));
+            elt.addTriple(Triple.create(RDF.Nodes.type, RDF.Nodes.type, RDF.Nodes.Property));
 
             Assert.assertNotEquals(elt, query);
         }

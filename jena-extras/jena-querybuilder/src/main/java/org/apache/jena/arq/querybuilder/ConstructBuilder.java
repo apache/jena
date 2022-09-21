@@ -385,7 +385,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 
     @Override
     public ConstructBuilder addConstruct(Object s, Object p, Object o) {
-        return addConstruct(new Triple(makeNode(s), makeNode(p), makeNode(o)));
+        return addConstruct(Triple.create(makeNode(s), makeNode(p), makeNode(o)));
     }
 
     @Override

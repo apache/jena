@@ -115,13 +115,13 @@ public class AskBuilderTest extends AbstractRegexpBasedTest {
         Node secondObject = NodeFactory.createBlankNode();
         Node thirdObject = NodeFactory.createBlankNode();
 
-        epb.addTriplePath(new TriplePath(new Triple(firstObject, RDF.first.asNode(), one)));
-        epb.addTriplePath(new TriplePath(new Triple(firstObject, RDF.rest.asNode(), secondObject)));
-        epb.addTriplePath(new TriplePath(new Triple(secondObject, RDF.first.asNode(), two)));
-        epb.addTriplePath(new TriplePath(new Triple(secondObject, RDF.rest.asNode(), thirdObject)));
-        epb.addTriplePath(new TriplePath(new Triple(thirdObject, RDF.first.asNode(), three)));
-        epb.addTriplePath(new TriplePath(new Triple(thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
-        epb.addTriplePath(new TriplePath(new Triple(firstObject, foo, bar)));
+        epb.addTriplePath(new TriplePath(Triple.create(firstObject, RDF.first.asNode(), one)));
+        epb.addTriplePath(new TriplePath(Triple.create(firstObject, RDF.rest.asNode(), secondObject)));
+        epb.addTriplePath(new TriplePath(Triple.create(secondObject, RDF.first.asNode(), two)));
+        epb.addTriplePath(new TriplePath(Triple.create(secondObject, RDF.rest.asNode(), thirdObject)));
+        epb.addTriplePath(new TriplePath(Triple.create(thirdObject, RDF.first.asNode(), three)));
+        epb.addTriplePath(new TriplePath(Triple.create(thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
+        epb.addTriplePath(new TriplePath(Triple.create(firstObject, foo, bar)));
 
         WhereValidator visitor = new WhereValidator(epb);
         query.getQueryPattern().visit(visitor);

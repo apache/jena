@@ -137,7 +137,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
 
     @Override
     protected void addToDftGraph(Node s, Node p, Node o) {
-        Triple t = new Triple(s, p, o);
+        Triple t = Triple.create(s, p, o);
         triples.add(t);
     }
 
@@ -149,7 +149,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
 
     @Override
     protected void deleteFromDftGraph(Node s, Node p, Node o) {
-        triples.remove(new Triple(s, p, o));
+        triples.remove(Triple.create(s, p, o));
     }
 
     @Override
