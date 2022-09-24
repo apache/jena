@@ -20,6 +20,7 @@ package org.apache.jena.riot.tokens ;
 
 import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerExceptions;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerSimple;
+import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerWarning;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -1044,13 +1045,30 @@ public class TestTokenizer {
         // and no escaped characters for blank node labels.
     }
 
+    @Test
+    public void tokenIri_tab() {
+    	testExpectError("<http://example/invalid/iri/with_\t_tab>", TokenType.IRI, 1);
+    }
+
     private static Token testExpectWarning(String input, TokenType expectedTokenType, int warningCount) {
-        PeekReader r = PeekReader.readString(input);
-        return testExpectWarning(r, expectedTokenType, warningCount);
+        return testExpectWarningOrError(input, expectedTokenType, warningCount, 0);
     }
 
     private static Token testExpectWarning(PeekReader r, TokenType expectedTokenType, int warningCount) {
-        ErrorHandlerRecorder errHandler = new ErrorHandlerRecorder(errorHandlerSimple());
+        return testExpectWarningOrError(r, expectedTokenType, warningCount, 0);
+    }
+
+    private static Token testExpectError(String input, TokenType expectedTokenType, int errorCount) {
+        return testExpectWarningOrError(input, expectedTokenType, 0, errorCount);
+    }
+
+    private static Token testExpectWarningOrError(String input, TokenType expectedTokenType, int warningCount, int errorCount) {
+        PeekReader r = PeekReader.readString(input);
+        return testExpectWarningOrError(r, expectedTokenType, warningCount, errorCount);
+    }
+
+    private static Token testExpectWarningOrError(PeekReader r, TokenType expectedTokenType, int warningCount, int errorCount) {
+        ErrorHandlerRecorder errHandler = new ErrorHandlerRecorder(errorHandlerWarning(null));
         Tokenizer tokenizer = TokenizerText.create().source(r).errorHandler(errHandler).build();
         assertTrue(tokenizer.hasNext()) ;
         Token token = tokenizer.next() ;
@@ -1058,7 +1076,7 @@ public class TestTokenizer {
             assertEquals(expectedTokenType, token.getType());
         assertFalse("Expected one token", tokenizer.hasNext());
         assertEquals("Warnings: ", warningCount, errHandler.getWarningCount());
-        assertEquals("Errors: ", 0, errHandler.getErrorCount());
+        assertEquals("Errors: ", errorCount, errHandler.getErrorCount());
         assertEquals("Fatal: ", 0, errHandler.getFatalCount());
         return token;
     }
