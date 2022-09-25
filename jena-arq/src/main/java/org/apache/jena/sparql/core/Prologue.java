@@ -113,14 +113,6 @@ public class Prologue
     public void setPrefix(String prefix, String expansion)
     {
         try {
-            // Removal may involve regeneration of the reverse mapping
-            // so only do if needed.
-            String oldExpansion = prefixMap.getNsPrefixURI(prefix) ;
-            if ( Objects.equals(oldExpansion, expansion) )
-                return ;
-            if ( oldExpansion != null )
-                prefixMap.removeNsPrefix(prefix) ;
-
             prefixMap.setNsPrefix(prefix, expansion) ;
         } catch (PrefixMapping.IllegalPrefixException ex)
         {
