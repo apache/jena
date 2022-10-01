@@ -887,7 +887,7 @@
        <plugin>
          <groupId>org.apache.rat</groupId>
          <artifactId>apache-rat-plugin</artifactId>
-         <version>0.14</version>
+         <version>0.15</version>
          <!-- 
               Run only if maven is running from this POM,
               not when run in a sub-module with this as parent.
