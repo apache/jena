@@ -527,7 +527,7 @@ public final class TokenizerText implements Tokenizer
                     // Probably a corrupt file so treat as fatal.
                     fatal("Bad character in IRI (bad character: '<'): <%s[<]...>", stringBuilder.toString()); return null;
                 case TAB:
-                    error("Bad character in IRI (Tab character): <%s[tab]...>", stringBuilder.toString()); return null;
+                    error("Bad character in IRI (tab character): <%s[tab]...>", stringBuilder.toString()); break;
                 case '{': case '}': case '"': case '|': case '^': case '`' :
                     if ( ! VeryVeryLaxIRI )
                         warning("Illegal character in IRI (codepoint 0x%02X, '%c'): <%s[%c]...>", ch, (char)ch, stringBuilder.toString(), (char)ch);

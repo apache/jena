@@ -1044,6 +1044,13 @@ public class TestTokenizer {
         // and no escaped characters for blank node labels.
     }
 
+    @Test(expected=RiotException.class)
+    public void tokenIRI_tab() {
+        // Raw tab in a IRI string. Illegal - this is an error.
+        Tokenizer tokenizer = tokenizer("<http://example/invalid/iri/with_\t_tab>") ;
+        testNextToken(tokenizer, TokenType.IRI) ;
+    }
+
     private static Token testExpectWarning(String input, TokenType expectedTokenType, int warningCount) {
         PeekReader r = PeekReader.readString(input);
         return testExpectWarning(r, expectedTokenType, warningCount);
