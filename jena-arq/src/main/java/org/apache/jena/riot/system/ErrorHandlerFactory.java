@@ -282,11 +282,14 @@ public class ErrorHandlerFactory
             other.fatal(message, line, col);
         }
 
-        public long getFatalCount() { return this.fatalCount; }
-        public long getErrorCount() { return this.errorCount; }
-        public long getWarningCount() { return this.warningCount; }
+        public long getFatalCount()     { return this.fatalCount; }
+        public long getErrorCount()     { return this.errorCount; }
+        public long getWarningCount()   { return this.warningCount; }
+        
+        public boolean hadErrors()      { return this.errorCount > 0; }
+        public boolean hadWarnings()    { return this.warningCount > 0; }
+        public boolean hadIssues()      { return hadErrors() || hadWarnings(); }
     }
-
 
     /** An error handler that logs message for errors and warnings and throw exceptions on either */
     public static class ErrorHandlerTracking extends ErrorLogger implements ErrorHandler {
