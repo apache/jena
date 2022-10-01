@@ -108,7 +108,7 @@
 
     <!-- For testing, not shipped -->
     <ver.graalvm>22.2.0</ver.graalvm>
-    <ver.jython>2.7.2</ver.jython>
+    <ver.jython>2.7.3</ver.jython>
 
     <!--- GeoSPARQL related -->
     <ver.jcommander>1.82</ver.jcommander>
