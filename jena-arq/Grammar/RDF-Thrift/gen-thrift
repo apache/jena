@@ -11,11 +11,15 @@ fi
 PKG=../../src/main/java/org/apache/jena/riot/thrift/wire
 rm -f "$PKG"/*.java
 
-thrift -r -out ../../src/main/java -gen java "$@"
+## Avoid needing a dependency javax.annotations
+## generated_annotations=[undated|suppress]:
+##                      undated: suppress the date at @Generated annotations
+##                      suppress: suppress @Generated annotations entirely
+
+thrift -r -out ../../src/main/java -gen 'java:generated_annotations=suppress' "$@"
 
 for f in "$PKG"/*.java
 do
-##    perl -i.bak -p -e 's/^public (class|enum)/\@SuppressWarnings("all")\npublic $1/' $f
     perl -i.bak -p -e 's/^\@SuppressWarnings.*$/\@SuppressWarnings("all")/' $f
     rm -f $f.bak
 done
