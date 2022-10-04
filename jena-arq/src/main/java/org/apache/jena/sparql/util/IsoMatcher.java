@@ -33,13 +33,13 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
- * Simple isomorphism testing for on unordered collections. 
+ * Simple isomorphism testing for on unordered collections.
  * This code is simple and slow.
  * For graphs, the Graph isomorphism code in Jena is much better (better tested, better performance)
  * This code can work on any tuples of nodes.
- * 
+ *
  * See {@link Iso} for isomorphism for ordered lists.
- * 
+ *
  * See {@link IsoAlg} for the isomorphism algorithm.
  */
 public class IsoMatcher
@@ -64,7 +64,7 @@ public class IsoMatcher
     }
 
     /** Helper - convert to {@code List<Tuple<Node>>} */
-    public static List<Tuple<Node>> tuplesTriples(Iterator<Triple> iter) {
+    /*package*/ static List<Tuple<Node>> tuplesTriples(Iterator<Triple> iter) {
         return Iter.iter(iter).map(t->tuple(t.getSubject(), t.getPredicate(), t.getObject())).toList();
     }
 

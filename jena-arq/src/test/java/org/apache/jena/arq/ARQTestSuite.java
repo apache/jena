@@ -20,7 +20,6 @@ package org.apache.jena.arq;
 
 import org.apache.jena.atlas.TC_Atlas_ARQ;
 import org.apache.jena.atlas.legacy.BaseTest2;
-import org.apache.jena.common.TC_Common;
 import org.apache.jena.external.Scripts_LangSuiteCG;
 import org.apache.jena.external.Scripts_RDFStar;
 import org.apache.jena.external.Scripts_SPARQL11;
@@ -46,7 +45,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TC_Atlas_ARQ.class,
-    TC_Common.class,
 
     TC_Riot.class,
 
