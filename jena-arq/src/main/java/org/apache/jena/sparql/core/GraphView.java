@@ -60,7 +60,6 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     private final DatasetGraph dsg ;
     // null for default graph.
     private final Node graphName ;
-    private final TransactionHandlerView transactionHandler;
 
     // Factory style.
     public static GraphView createDefaultGraph(DatasetGraph dsg)
@@ -75,7 +74,6 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     protected GraphView(DatasetGraph dsg, Node gn) {
         this.dsg = dsg ;
         this.graphName = gn ;
-        this.transactionHandler = new TransactionHandlerView(dsg);
     }
 
     /**
