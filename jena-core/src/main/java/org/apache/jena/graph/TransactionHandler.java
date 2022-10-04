@@ -22,7 +22,7 @@ import java.util.function.Supplier ;
 
 /**
     Preliminary interface for graphs supporting transactions.
-    
+
  */
 public interface TransactionHandler
 {
@@ -61,8 +61,19 @@ public interface TransactionHandler
     void execute( Runnable action );
 
     /**
+     * Execute inside a transaction if transactions supported - execute anyway if transactions not supported.
+     */
+    void executeAlways( Runnable action );
+
+
+    /**
      * Execute the supplier <code>action</code> within a transaction. If it completes normally,
      * commit the transaction and return the result, otherwise abort the transaction.
      */
     <T> T calculate( Supplier<T> action ) ;
+
+    /**
+     * Calculate inside a transaction if transactions supported - calculate anyway if transactions not supported.
+     */
+    <T> T calculateAlways( Supplier<T> action );
 }

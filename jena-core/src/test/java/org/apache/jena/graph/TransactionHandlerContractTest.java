@@ -100,19 +100,16 @@ public class TransactionHandlerContractTest {
 
     @ContractTest
 	public void testExecuteInTransactionCatchesThrowable() {
-		TransactionHandler th = getTransactionHandlerProducer().newInstance();
-
-		if (th.transactionsSupported()) {
-			try {
-                th.execute(()-> { throw new Error() ; });
-                fail("Should have thrown JenaException");
-            } catch (JenaException x) { }
-            try {
-                th.calculate(()->{ throw new Error() ; });
-                fail("Should have thrown JenaException");
-            } catch (JenaException x) { }
-		}
-	}
+        TransactionHandler th = getTransactionHandlerProducer().newInstance();
+        try {
+            th.executeAlways(()-> { throw new Error() ; });
+            fail("Should have thrown JenaException");
+        } catch (JenaException x) { }
+        try {
+            th.calculateAlways(()->{ throw new Error() ; });
+            fail("Should have thrown JenaException");
+        } catch (JenaException x) { }
+    }
 
 	static final Triple[] tripleArray = tripleArray("S P O; Foo R B; X Q Y");
 
