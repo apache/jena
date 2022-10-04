@@ -609,8 +609,8 @@ public class HttpLib {
     }
 
     // Worker
-    /*package*/ static HttpResponse<InputStream> httpPushWithResponse(HttpClient httpClient, Push style, String url,
-                                                                      Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
+    public static HttpResponse<InputStream> httpPushWithResponse(HttpClient httpClient, Push style, String url,
+                                                                 Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
         URI uri = toRequestURI(url);
         HttpRequest.Builder builder = requestBuilderFor(url);
         builder.uri(uri);
@@ -620,7 +620,6 @@ public class HttpLib {
         HttpResponse<InputStream> response = execute(httpClient, builder.build());
         return response;
     }
-
 
     /** Request */
     private static void logRequest(HttpRequest httpRequest) {
