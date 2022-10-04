@@ -35,7 +35,7 @@ import org.apache.jena.reasoner.rulesys.* ;
 <p>
     If the class is specified by class name then an instance of that class
     is acquired by calling its <code>theInstance</code> method if it
-    has one. Otherwise a fresh instance is constructed by calling its 
+    has one. Otherwise a fresh instance is constructed by calling its
     zero-argument constructor (and exploding if it hasn't got one).
 <p>
     Thanks to Adam Cimarosti for provoking this code and providing an
@@ -45,7 +45,7 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
     {
     @Override
     public Object open( Assembler a, Resource root, Mode irrelevant )
-        { 
+        {
         checkType( root, JA.ReasonerFactory );
         return addSchema( root, a, addRules( root, a, getReasonerFactory( root ) ) );
         }
@@ -87,7 +87,8 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
     private void loadSchema( Graph result, Assembler a, Resource root )
         {
         Model m = a.openModel( root );
-        GraphUtil.addInto(result, m.getGraph()) ;
+        Graph g = m.getGraph();
+        g.getTransactionHandler().executeAlways(()->GraphUtil.addInto(result, m.getGraph())) ;
         }
 
     private ReasonerFactory addRules( Resource root, Assembler a, final ReasonerFactory r )
@@ -122,12 +123,12 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
 
     protected Reasoner getReasoner( Resource root )
         { return getReasonerFactory( root ).create( root ); }
-    
+
     protected static ReasonerFactory getReasonerFactory( Resource root )
         {
         Resource reasonerURL = getUniqueResource( root, JA.reasonerURL );
         String className = getOptionalClassName( root );
-        return 
+        return
             className != null ? getReasonerFactoryByClassName( root, className )
             : reasonerURL == null ? GenericRuleReasonerFactory.theInstance()
             : getReasonerFactoryByURL( root, reasonerURL )
@@ -144,7 +145,7 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
         }
 
     private static ReasonerFactory createInstance( Resource root, Class<?> c )
-        { 
+        {
         try
             { return (ReasonerFactory) c.getConstructor().newInstance(); }
         catch (Exception e)
