@@ -93,7 +93,7 @@ public class ARQ
 
     /** Symbol to enable logging of execution.
      * Must also set log4j, or other logging system,
-     * The logger is "org.apache.jena.jena.arq.exec"
+     * The logger is "org.apache.jena.arq.exec"
      * <br/>
      * log4j2:
      * <pre>
