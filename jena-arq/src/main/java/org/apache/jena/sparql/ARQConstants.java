@@ -257,10 +257,10 @@ public class ARQConstants
     /** Context key for the execution-scoped bNode variable generator */
     public static final Symbol sysVarAllocAnon          = Symbol.create(systemVarNS+"namedVarAnon") ;
 
-    /** Graphs forming the default graph (List&lt;String&gt;) (Dynamic dataset) */
+    /** Graphs forming the default graph (Collection&lt;Node&gt;) (Dynamic dataset) */
     public static final Symbol symDatasetDefaultGraphs  = SystemARQ.allocSymbol("datasetDefaultGraphs") ;
 
-    /** Graphs forming the named graphs (List&lt;String&gt;) (Dynamic dataset) */
+    /** Graphs forming the named graphs (Collection&lt;Node&gt;) (Dynamic dataset) */
     public static final Symbol symDatasetNamedGraphs    = SystemARQ.allocSymbol("datasetNamedGraphs") ;
 
     /** Context symbol for a supplied {@link Prologue} (used for text out of result sets). */

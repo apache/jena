@@ -21,6 +21,7 @@ package org.apache.jena.sparql.core;
 import static org.apache.jena.sparql.util.NodeUtils.convertToSetNodes;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.jena.graph.Graph ;
@@ -57,9 +58,9 @@ public class DynamicDatasets
     {
         if ( description == null )
             return dsg ;
-    	//An empty description means leave the dataset as-is
-    	if (description.isEmpty() )
-    		return dsg;
+        //An empty description means leave the dataset as-is
+        if (description.isEmpty() )
+            return dsg;
 
         Set<Node> defaultGraphs = convertToSetNodes(description.getDefaultGraphURIs()) ;
         Set<Node> namedGraphs = convertToSetNodes(description.getNamedGraphURIs()) ;
@@ -112,11 +113,34 @@ public class DynamicDatasets
     }
 
     public static class DynamicDatasetGraph extends DatasetGraphReadOnly implements DatasetGraphWrapperView {
-        private final DatasetGraph projected;
+        private final DatasetGraph original;
 
-        public DynamicDatasetGraph(DatasetGraph viewDSG, DatasetGraph baseDSG) {
-            super(viewDSG, baseDSG.getContext().copy());
-            this.projected = baseDSG;
+        public DynamicDatasetGraph(DatasetGraph viewDSG, DatasetGraph originalDSG) {
+            super(viewDSG, originalDSG.getContext().copy());
+            this.original = Objects.requireNonNull(originalDSG);
+        }
+
+        /** Returns the original dataset graph this DynamicDatasetGraph is based on. Never null. */
+        public DatasetGraph getOriginal() {
+            return original;
+        }
+
+        /**
+         * Returns the collection of default graphs this DynamicDatasetGraph is based on.
+         *
+         * @implNote This method returns the context's value for {@link ARQConstants#symDatasetDefaultGraphs}.
+         */
+        public Collection<Node> getOriginalDefaultGraphs() {
+            return getContext().get(ARQConstants.symDatasetDefaultGraphs);
+        }
+
+        /**
+         * Returns the collection of named graphs this DynamicDatasetGraph is based on.
+         *
+         * @implNote This method returns the context's value for {@link ARQConstants#symDatasetNamedGraphs}.
+         */
+        public Collection<Node> getOriginalNamedGraphs() {
+            return getContext().get(ARQConstants.symDatasetNamedGraphs);
         }
     }
 }
