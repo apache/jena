@@ -105,47 +105,6 @@ public class DataService {
         return dataset;
     }
 
-//    // Convenience
-//
-//   public void addEndpoint(Operation operation) {
-//       addEndpoint(operation, null, null);
-//   }
-//
-//   public void addEndpoint(Operation operation, AuthPolicy authPolicy) {
-//       addEndpoint(operation, null, authPolicy);
-//   }
-//
-//    public void addEndpoint(Operation operation, String endpointName) {
-//        addEndpoint(operation, endpointName, null);
-//    }
-//
-//    public void addEndpoint(Operation operation, String endpointName, AuthPolicy authPolicy) {
-//        Endpoint endpoint = Endpoint.create(operation, endpointName, authPolicy);
-//        addEndpoint(endpoint);
-//    }
-//
-//    public void addEndpoint(Endpoint endpoint) {
-//        addEndpoint$(endpoint);
-//    }
-//
-//    private void addEndpoint$(Endpoint endpoint) {
-//        EndpointSet eps = endpoints.computeIfAbsent(endpoint.getName(), (k)->new EndpointSet(k));
-//        eps.put(endpoint);
-//        // Cleaner not to have duplicates. But nice to have a (short) list that keeps the create order.
-//        if ( ! operationsMap.containsEntry(endpoint.getOperation(), endpoint) )
-//            operationsMap.put(endpoint.getOperation(), endpoint);
-//    }
-//
-//    private void xremoveEndpoint$(Endpoint endpoint) {
-//        EndpointSet eps = endpoints.get(endpoint.getName());
-//        if ( eps == null )
-//            return;
-//        eps.remove(endpoint);
-//        operationsMap.remove(endpoint.getOperation(), endpoint);
-//    }
-//
-//    public void setAuthPolicy(AuthPolicy authPolicy) { this.authPolicy = authPolicy; }
-
     /** Return the {@linkplain EndpointSet} for the operations for named use. */
     public EndpointSet getEndpointSet(String endpointName) {
         return endpoints.get(endpointName);
@@ -182,15 +141,17 @@ public class DataService {
         return x;
     }
 
-    /** Return the operations available here.
-     *  @see #getEndpoints(Operation) to get the endpoint list
+    /**
+     * Return the operations available here.
+     * @see #getEndpoints(Operation) to get the endpoint list
      */
     public Collection<Operation> getOperations() {
         return operationsMap.keySet();
     }
 
-    /** Return the operations available here.
-     *  @see #getEndpoints(Operation) to get the endpoint list
+    /**
+     * Return the operations available here.
+     * @see #getEndpoints(Operation) to get the endpoint list
      */
     public boolean hasOperation(Operation operation) {
         return operationsMap.keySet().contains(operation);
@@ -229,28 +190,19 @@ public class DataService {
         state = ACTIVE;
     }
 
-    // Due to concurrency, call isAcceptingRequests().
-//    public boolean isActive() {
-//        return state != DatasetStatus.ACTIVE;
-//    }
-
     public boolean isAcceptingRequests() {
         return acceptingRequests.get();
     }
 
-    //@Override
     public  CounterSet getCounters() { return counters; }
 
-    //@Override
     public long getRequests() {
         return counters.value(CounterName.Requests);
     }
 
-    //@Override
     public long getRequestsGood() {
         return counters.value(CounterName.RequestsGood);
     }
-    //@Override
     public long getRequestsBad() {
         return counters.value(CounterName.RequestsBad);
     }
