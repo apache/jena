@@ -105,7 +105,7 @@ public class ARQ
     public static final Symbol symLogExec           = SystemARQ.allocSymbol("logExec");
 
     /** Get the currently global execution logging setting */
-    public static Explain.InfoLevel getExecutionLogging() { return (Explain.InfoLevel)ARQ.getContext().get(ARQ.symLogExec); }
+    public static Explain.InfoLevel getExecutionLogging() { return ARQ.getContext().get(ARQ.symLogExec); }
 
     /** Set execution logging - logging is to logger "org.apache.jena.arq.exec" at level INFO.
      *  An appropriate logging configuration is also required.
