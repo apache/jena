@@ -244,7 +244,7 @@ void TriplesSameSubject() throws ParseException {Node s ;
 
   final public void Object(Node s, Node p) throws ParseException {Node o ;
     o = GraphNode();
-Triple t = new Triple(s,p,o) ;
+Triple t = Triple.create(s,p,o) ;
     emitTriple(token.beginLine, token.beginColumn, t) ;
 }
 
@@ -333,10 +333,10 @@ Node cell = createBNode() ;
          listHead = cell ;
       if ( lastCell != null )
         emitTriple(token.beginLine, token.beginColumn,
-                   new Triple(lastCell, nRDFrest,  cell)) ;
+                   Triple.create(lastCell, nRDFrest,  cell)) ;
       n = GraphNode();
 emitTriple(token.beginLine, token.beginColumn,
-                 new Triple(cell, nRDFfirst,  n)) ;
+                 Triple.create(cell, nRDFfirst,  n)) ;
       lastCell = cell ;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case TRUE:
@@ -369,7 +369,7 @@ emitTriple(token.beginLine, token.beginColumn,
     jj_consume_token(RPAREN);
 if ( lastCell != null )
        emitTriple(token.beginLine, token.beginColumn,
-                  new Triple(lastCell, nRDFrest,  nRDFnil)) ;
+                  Triple.create(lastCell, nRDFrest,  nRDFnil)) ;
      {if ("" != null) return listHead ;}
     throw new Error("Missing return statement in function");
 }

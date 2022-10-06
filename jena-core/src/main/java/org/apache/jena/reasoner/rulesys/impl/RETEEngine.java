@@ -529,7 +529,7 @@ public class RETEEngine implements FRuleEngineI {
                     Object head = r.getHeadElement(j);
                     if (head instanceof TriplePattern) {
                         TriplePattern h = (TriplePattern) head;
-                        Triple t = new Triple(h.getSubject(), h.getPredicate(), h.getObject());
+                        Triple t = Triple.create(h.getSubject(), h.getPredicate(), h.getObject());
                         addTriple(t, true);
                     }
                 }

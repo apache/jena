@@ -202,7 +202,7 @@ public class TestFmtUtils
         Node n1 = aNode() ;
         Node n2 = NodeFactory.createURI("n2") ;
         Node l3 = NodeFactory.createLiteral("l3") ;
-        return new Triple(n1, n2, l3) ;
+        return Triple.create(n1, n2, l3) ;
     }
 
     private Node aNode() {
@@ -213,7 +213,7 @@ public class TestFmtUtils
         Node n1 = NodeFactory.createURI("nb1") ;
         Node n2 = NodeFactory.createURI("nb2") ;
         Node l3 = NodeFactory.createLiteral("lb3") ;
-        return new Triple(n1, n2, l3) ;
+        return Triple.create(n1, n2, l3) ;
     }
 
     private Triple getPrefixedTriple() {
@@ -221,7 +221,7 @@ public class TestFmtUtils
         Node n2 = NodeFactory.createURI("n2") ;
         Node l3 = NodeFactory.createLiteral("l3") ;
 
-        return new Triple(n1, n2, l3) ;
+        return Triple.create(n1, n2, l3) ;
     }
 
     private Node aUriRemappableNode() {

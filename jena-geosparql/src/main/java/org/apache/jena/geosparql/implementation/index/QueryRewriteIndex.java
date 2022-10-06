@@ -79,7 +79,7 @@ public class QueryRewriteIndex {
         }
 
         if (indexActive) {
-            Triple key = new Triple(subjectGeometryLiteral, predicate, objectGeometryLiteral);
+            Triple key = Triple.create(subjectGeometryLiteral, predicate, objectGeometryLiteral);
             try {
                 return index.computeIfAbsent(key, k -> propertyFunction.testFilterFunction(subjectGeometryLiteral, objectGeometryLiteral));
             } catch (NullPointerException ex) {

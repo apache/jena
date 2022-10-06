@@ -166,7 +166,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
     private static Triple convert(final Triple jenaTriple) {
         if (jenaTriple.getSubject().isVariable() || jenaTriple.getPredicate().isVariable()
                 || jenaTriple.getObject().isVariable()) {
-            return new Triple(SecuredItemImpl.convert(jenaTriple.getSubject()),
+            return Triple.create(SecuredItemImpl.convert(jenaTriple.getSubject()),
                     SecuredItemImpl.convert(jenaTriple.getPredicate()),
                     SecuredItemImpl.convert(jenaTriple.getObject()));
         }
@@ -482,9 +482,9 @@ public abstract class SecuredItemImpl implements SecuredItem {
         checkUpdate();
         Triple t = front.asTriple();
         final Node n = uri == null ? SecurityEvaluator.FUTURE : NodeFactory.createURI(uri);
-        checkCreate(new Triple(n, RDF.subject.asNode(), t.getSubject()));
-        checkCreate(new Triple(n, RDF.predicate.asNode(), t.getPredicate()));
-        checkCreate(new Triple(n, RDF.object.asNode(), t.getObject()));
+        checkCreate(Triple.create(n, RDF.subject.asNode(), t.getSubject()));
+        checkCreate(Triple.create(n, RDF.predicate.asNode(), t.getPredicate()));
+        checkCreate(Triple.create(n, RDF.object.asNode(), t.getObject()));
     }
 
 //	/**

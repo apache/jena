@@ -61,7 +61,7 @@ public class TestLPBRuleEngine extends TestCase {
 	@Test
 	public void testTabledGoalsCacheHits() throws Exception {
 		Graph data = Factory.createGraphMem();
-		data.add(new Triple(a, ty, C1));
+		data.add(Triple.create(a, ty, C1));
 		List<Rule> rules = Rule
 				.parseRules("[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]"
 						+ "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]");
@@ -101,7 +101,7 @@ public class TestLPBRuleEngine extends TestCase {
 	@Test
 	public void testTabledGoalsLeak() throws Exception {
 		Graph data = Factory.createGraphMem();
-		data.add(new Triple(a, ty, C1));
+		data.add(Triple.create(a, ty, C1));
 		List<Rule> rules = Rule
 				.parseRules("[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]"
 						+ "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]");
@@ -142,7 +142,7 @@ public class TestLPBRuleEngine extends TestCase {
 		System.setProperty("jena.rulesys.lp.max_cached_tabled_goals", "" + MAX);
 		try {
 			Graph data = Factory.createGraphMem();
-			data.add(new Triple(a, ty, C1));
+			data.add(Triple.create(a, ty, C1));
 			List<Rule> rules = Rule
 					.parseRules("[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]"
 							+ "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]");

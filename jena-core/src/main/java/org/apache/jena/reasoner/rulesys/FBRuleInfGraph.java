@@ -726,7 +726,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         checkOpen();
         StandardValidityReport report = new StandardValidityReport();
         // Switch on validation
-        Triple validateOn = new Triple(NodeFactory.createBlankNode(), 
+        Triple validateOn = Triple.create(NodeFactory.createBlankNode(), 
                                 ReasonerVocabulary.RB_VALIDATION.asNode(),
                                 Functor.makeFunctorNode("on", new Node[] {}));
         // We sneak this switch directly into the engine to avoid contaminating the

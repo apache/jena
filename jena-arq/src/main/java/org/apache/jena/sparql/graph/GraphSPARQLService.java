@@ -92,7 +92,7 @@ public class GraphSPARQLService extends GraphBase implements Graph
             o = oVar ;
         }
 
-        Triple triple = new Triple(s, p ,o) ;
+        Triple triple = Triple.create(s, p ,o) ;
 
         // Evaluate as an algebra expression
         BasicPattern pattern = new BasicPattern() ;
@@ -118,7 +118,7 @@ public class GraphSPARQLService extends GraphBase implements Graph
 //                pResult = b.get(pVar) ;
 //            if ( oVar != null )
 //                oResult = b.get(oVar) ;
-//            Triple resultTriple = new Triple(sResult, pResult, oResult) ;
+//            Triple resultTriple = Triple.create(sResult, pResult, oResult) ;
 //            if ( log.isDebugEnabled() )
 //                log.debug("  "+resultTriple) ;
 //            triples.add(resultTriple) ;

@@ -30,39 +30,40 @@ public class TestHashedTripleBunch extends TestTripleBunch
         {
         public HTB( TripleBunch b )
             { super( b ); }
-    
+
         @Override
         protected int improveHashCode( int hashCode )
-            { return hashCode; }    
+            { return hashCode; }
         }
-    
+
     @Override
     public TripleBunch getBunch()
         { return new HashedTripleBunch( emptyBunch ); }
-    
-    HashedTripleBunch htb = new HTB( emptyBunch ); 
-    
+
+    HashedTripleBunch htb = new HTB( emptyBunch );
+
     static class TripleWithHash extends Triple
         {
         final int hash;
-        
+
+        @SuppressWarnings("deprecation")
         TripleWithHash( int hash, Node s, Node p, Node o )
             {
             super( s, p, o );
             this.hash = hash;
             }
-        
+
         public static TripleWithHash create( int n, String s )
             {
             Triple t = triple( s );
-            return new TripleWithHash( n, t.getSubject(), t.getPredicate(), t.getObject() );            
+            return new TripleWithHash( n, t.getSubject(), t.getPredicate(), t.getObject() );
             }
-        
+
         @Override
         public int hashCode()
             { return hash; }
         }
-    
+
     public void testHashcodeUsedAsIndex()
         {
         HashedTripleBunch htb = new HTB( emptyBunch );
@@ -80,13 +81,13 @@ public class TestHashedTripleBunch extends TestTripleBunch
         int capacity = htb.currentCapacity();
         testRemovePerformsShift( capacity - 1, capacity );
         }
-    
+
     public void testRemovePerformsShiftFromMiddle()
         {
         int capacity = htb.currentCapacity();
         testRemovePerformsShift( capacity - 3, capacity );
         }
-    
+
     public void testRemovePerformsShiftWrappingLowestTwo()
         {
         int capacity = htb.currentCapacity();
@@ -117,25 +118,25 @@ public class TestHashedTripleBunch extends TestTripleBunch
         assertSame( t2, htb.getItemForTestingAt( next ) );
         assertSame( null, htb.getItemForTestingAt( least ) );
         }
-    
+
     public void testIteratorRemovePerformsShiftAndDeliversElementFromTop()
         {
         int capacity = htb.currentCapacity();
         testIteratorRemovePerformsShiftAndDeliversElement( capacity - 1, capacity );
         }
-    
+
     public void testIteratorRemovePerformsShiftAndDeliversElementFromMiddle()
         {
         int capacity = htb.currentCapacity();
         testIteratorRemovePerformsShiftAndDeliversElement( capacity - 3, capacity );
         }
-    
+
 //    public void testIteratorRemovePerformsShiftAndDeliversElementWrappingLowest()
 //        {
 //        int capacity = htb.currentCapacity();
 //        testIteratorRemovePerformsShiftAndDeliversElement( 1, capacity );
 //        }
-//    
+//
 //    public void testIteratorRemovePerformsShiftAndDeliversElementWrappingLowestTwo()
 //        {
 //        int capacity = htb.currentCapacity();

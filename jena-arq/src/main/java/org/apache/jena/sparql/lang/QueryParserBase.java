@@ -425,25 +425,25 @@ public class QueryParserBase
     }
 
     protected void insert(TripleCollector acc, Node s, Node p, Node o) {
-        acc.addTriple(new Triple(s, p, o)) ;
+        acc.addTriple(Triple.create(s, p, o)) ;
     }
 
     protected void insert(TripleCollectorMark acc, int index, Node s, Node p, Node o) {
-        acc.addTriple(index, new Triple(s, p, o)) ;
+        acc.addTriple(index, Triple.create(s, p, o)) ;
     }
 
     protected void insert(TripleCollector acc, Node s, Node p, Path path, Node o) {
         if ( p == null )
             acc.addTriplePath(new TriplePath(s, path, o)) ;
         else
-            acc.addTriple(new Triple(s, p, o)) ;
+            acc.addTriple(Triple.create(s, p, o)) ;
     }
 
     protected void insert(TripleCollectorMark acc, int index, Node s, Node p, Path path, Node o) {
         if ( p == null )
             acc.addTriplePath(index, new TriplePath(s, path, o)) ;
         else
-            acc.addTriple(index, new Triple(s, p, o)) ;
+            acc.addTriple(index, Triple.create(s, p, o)) ;
     }
 
     protected void insert(TripleCollector target, ElementPathBlock source) {

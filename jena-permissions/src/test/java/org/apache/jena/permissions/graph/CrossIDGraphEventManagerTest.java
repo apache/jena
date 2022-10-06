@@ -41,11 +41,11 @@ public class CrossIDGraphEventManagerTest {
         this.securityEvaluator = new StaticSecurityEvaluator("ann");
 
         g = GraphFactory.createDefaultGraph();
-        g.add(new Triple(NodeFactory.createURI("urn:ann"), NodeFactory.createURI("http://example.com/v"),
+        g.add(Triple.create(NodeFactory.createURI("urn:ann"), NodeFactory.createURI("http://example.com/v"),
                 NodeFactory.createBlankNode()));
-        g.add(new Triple(NodeFactory.createURI("urn:bob"), NodeFactory.createURI("http://example.com/v"),
+        g.add(Triple.create(NodeFactory.createURI("urn:bob"), NodeFactory.createURI("http://example.com/v"),
                 NodeFactory.createBlankNode()));
-        g.add(new Triple(NodeFactory.createURI("urn:ann"), NodeFactory.createURI("http://example.com/v2"),
+        g.add(Triple.create(NodeFactory.createURI("urn:ann"), NodeFactory.createURI("http://example.com/v2"),
                 NodeFactory.createBlankNode()));
 
         sg = Factory.getInstance(securityEvaluator, "http://example.com/testGraph", g);
@@ -59,13 +59,13 @@ public class CrossIDGraphEventManagerTest {
 
     @Test
     public void notificationsTest() {
-        sg.add(new Triple(NodeFactory.createURI("urn:bob"), NodeFactory.createURI("http://example.com/v2"),
+        sg.add(Triple.create(NodeFactory.createURI("urn:bob"), NodeFactory.createURI("http://example.com/v2"),
                 NodeFactory.createBlankNode()));
 
         Assert.assertTrue("Should recorded add", bobListener.isAdd());
         Assert.assertFalse("Should not have recorded add", annListener.isAdd());
 
-        sg.delete(new Triple(NodeFactory.createURI("urn:bob"), NodeFactory.createURI("http://example.com/v2"),
+        sg.delete(Triple.create(NodeFactory.createURI("urn:bob"), NodeFactory.createURI("http://example.com/v2"),
                 NodeFactory.createBlankNode()));
 
         Assert.assertTrue("Should recorded delete", bobListener.isDelete());

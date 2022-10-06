@@ -92,7 +92,7 @@ class GraphNode {
             {
                 for ( GraphNode component : components )
                 {
-                    result.add( new Triple( base, tgc.closedPredicate, component.rdfNode ) );
+                    result.add( Triple.create( base, tgc.closedPredicate, component.rdfNode ) );
                 }
             }
         
@@ -422,10 +422,10 @@ class GraphNode {
     private List<Triple> triplesForSuccessors(Node base, boolean closed, TransitiveGraphCache tgc) {
         Set<GraphNode> successors = closed ? succClosed : succ;
         ArrayList<Triple> result = new ArrayList<>(successors.size() + 10);
-        result.add(new Triple(base, tgc.closedPredicate, base));    // implicit reflexive case 
+        result.add(Triple.create(base, tgc.closedPredicate, base));    // implicit reflexive case 
         for ( GraphNode s : successors )
         {
-            result.add( new Triple( base, tgc.closedPredicate, s.rdfNode ) );
+            result.add( Triple.create( base, tgc.closedPredicate, s.rdfNode ) );
             s.siblings.addSuccessors( base, tgc, result );
         }
         siblings.addSuccessors( base, tgc, result );

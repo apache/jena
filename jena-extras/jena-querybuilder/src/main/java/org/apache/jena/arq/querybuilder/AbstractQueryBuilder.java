@@ -152,7 +152,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
         if (po instanceof Path) {
             return new TriplePath(makeNode(s), (Path) po, makeNode(o));
         }
-        return new TriplePath(new Triple(makeNode(s), (Node) po, makeNode(o)));
+        return new TriplePath(Triple.create(makeNode(s), (Node) po, makeNode(o)));
     }
 
     /**

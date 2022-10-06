@@ -63,7 +63,7 @@ public class container extends PFuncSimple
     {
         QueryIterator input = QueryIterSingleton.create(binding, execCxt) ;
         Graph graph = execCxt.getActiveGraph() ;
-        QueryIterator qIter = QC.execute(input, new Triple(containerNode, predicate, member), execCxt) ;
+        QueryIterator qIter = QC.execute(input, Triple.create(containerNode, predicate, member), execCxt) ;
         return qIter ;
     }
 

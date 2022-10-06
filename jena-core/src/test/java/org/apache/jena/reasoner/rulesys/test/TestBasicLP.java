@@ -115,9 +115,9 @@ public class TestBasicLP  extends TestCase {
      */
     public void testBaseRules1() {    
         doBasicTest("[r1: (?x r c) <- (?x p b)]", 
-                     new Triple(Node.ANY, p, b),
+                     Triple.create(Node.ANY, p, b),
                      new Object[] {
-                        new Triple(a, p, b)
+                        Triple.create(a, p, b)
                      } );
     }
    
@@ -126,9 +126,9 @@ public class TestBasicLP  extends TestCase {
      */
     public void testBaseRules2() {    
         doBasicTest("[r1: (?x r c) <- (?x p b)]", 
-                     new Triple(Node.ANY, r, c),
+                     Triple.create(Node.ANY, r, c),
                      new Object[] {
-                        new Triple(a, r, c)
+                        Triple.create(a, r, c)
                      } );
     }
    
@@ -137,9 +137,9 @@ public class TestBasicLP  extends TestCase {
      */
     public void testBaseRules3() {    
         doBasicTest("[r1: (?x r ?x) <- (?x p b)]", 
-                     new Triple(Node.ANY, r, a),
+                     Triple.create(Node.ANY, r, a),
                      new Object[] {
-                        new Triple(a, r, a)
+                        Triple.create(a, r, a)
                      } );
     }
     
@@ -148,9 +148,9 @@ public class TestBasicLP  extends TestCase {
      */
     public void testBaseRules4() {    
         doBasicTest("[r1: (?x r ?x) <- (?y p b), (?x p b)]", 
-                     new Triple(Node.ANY, r, a),
+                     Triple.create(Node.ANY, r, a),
                      new Object[] {
-                        new Triple(a, r, a)
+                        Triple.create(a, r, a)
                      } );
     }
     
@@ -161,9 +161,9 @@ public class TestBasicLP  extends TestCase {
         doBasicTest("[r1: (?x q ?y) <- (?x r ?y)(?y s ?x)]" +
                     "[r2: (?x r ?y) <- (?x p ?y)]" + 
                     "[r3: (?x s ?y) <- (?y p ?x)]", 
-                     new Triple(Node.ANY, q, Node.ANY),
+                     Triple.create(Node.ANY, q, Node.ANY),
                      new Object[] {
-                        new Triple(a, q, b)
+                        Triple.create(a, q, b)
                      } );
     }
    
@@ -172,7 +172,7 @@ public class TestBasicLP  extends TestCase {
      */
     public void testBaseRules6() {    
         doBasicTest("[r1: (?x r ?x) <- (?x p b)]", 
-                     new Triple(a, r, b),
+                     Triple.create(a, r, b),
                      new Object[] {
                      } );
     }
@@ -182,7 +182,7 @@ public class TestBasicLP  extends TestCase {
      */
     public void testBaseRules7() {    
         doBasicTest("[r1: (?x r ?y) <- (?x p c)]", 
-                     new Triple(a, r, b),
+                     Triple.create(a, r, b),
                      new Object[] {
                      } );
     }
@@ -193,9 +193,9 @@ public class TestBasicLP  extends TestCase {
     public void testBaseRules8() {    
         doBasicTest("[r1: (?x q ?y) <- (?x r ?y)]" +
                     "[r2: (?x r ?y) <- (?x p ?y)]", 
-                     new Triple(Node.ANY, q, Node.ANY),
+                     Triple.create(Node.ANY, q, Node.ANY),
                      new Object[] {
-                        new Triple(a, q, b)
+                        Triple.create(a, q, b)
                      } );
     }
     
@@ -205,9 +205,9 @@ public class TestBasicLP  extends TestCase {
     public void testBaseRules9() {    
         doBasicTest("[r1: (?x q ?y) <- (?x r ?y)]" +
                     "[r2: (?x r ?y) <- (?y p ?x)]", 
-                     new Triple(Node.ANY, q, Node.ANY),
+                     Triple.create(Node.ANY, q, Node.ANY),
                      new Object[] {
-                        new Triple(b, q, a)
+                        Triple.create(b, q, a)
                      } );
     }
     
@@ -217,15 +217,15 @@ public class TestBasicLP  extends TestCase {
     public void testBacktrack1() {
         doTest("[r1: (?x r ?y) <- (?x p ?y)]",
                 new Triple[] {
-                    new Triple(a, p, b),
-                    new Triple(a, p, c),
-                    new Triple(a, p, d)
+                    Triple.create(a, p, b),
+                    Triple.create(a, p, c),
+                    Triple.create(a, p, d)
                 },
-                new Triple(a, p, Node.ANY),
+                Triple.create(a, p, Node.ANY),
                 new Object[] {
-                    new Triple(a, p, b),
-                    new Triple(a, p, c),
-                    new Triple(a, p, d)
+                    Triple.create(a, p, b),
+                    Triple.create(a, p, c),
+                    Triple.create(a, p, d)
                 } );
     }
     
@@ -235,15 +235,15 @@ public class TestBasicLP  extends TestCase {
     public void testBacktrack2() {
         doTest("[r1: (?x r ?y) <- (?x p ?y)]",
                 new Triple[] {
-                    new Triple(a, p, b),
-                    new Triple(a, p, c),
-                    new Triple(a, p, d)
+                    Triple.create(a, p, b),
+                    Triple.create(a, p, c),
+                    Triple.create(a, p, d)
                 },
-                new Triple(a, r, Node.ANY),
+                Triple.create(a, r, Node.ANY),
                 new Object[] {
-                    new Triple(a, r, b),
-                    new Triple(a, r, c),
-                    new Triple(a, r, d)
+                    Triple.create(a, r, b),
+                    Triple.create(a, r, c),
+                    Triple.create(a, r, d)
                 } );
     }
     
@@ -255,13 +255,13 @@ public class TestBasicLP  extends TestCase {
                "[r2: (?x r C2) <- (?x p b)]" +
                "[r3: (?x r C3) <- (?x p b)]",
                 new Triple[] {
-                    new Triple(a, p, b)
+                    Triple.create(a, p, b)
                 },
-                new Triple(a, r, Node.ANY),
+                Triple.create(a, r, Node.ANY),
                 new Object[] {
-                    new Triple(a, r, C1),
-                    new Triple(a, r, C2),
-                    new Triple(a, r, C3)
+                    Triple.create(a, r, C1),
+                    Triple.create(a, r, C2),
+                    Triple.create(a, r, C3)
                 } );
     }
     
@@ -274,16 +274,16 @@ public class TestBasicLP  extends TestCase {
                "[r3: (?x r C3) <- (?x p b)]" +
                "[r4: (?x s ?z) <- (?x p ?w), (?x r ?y) (?y p ?z)]",
                 new Triple[] {
-                    new Triple(a, p, b),
-                    new Triple(C1, p, D1),
-                    new Triple(C2, p, D2),
-                    new Triple(C3, p, D3)
+                    Triple.create(a, p, b),
+                    Triple.create(C1, p, D1),
+                    Triple.create(C2, p, D2),
+                    Triple.create(C3, p, D3)
                 },
-                new Triple(a, s, Node.ANY),
+                Triple.create(a, s, Node.ANY),
                 new Object[] {
-                    new Triple(a, s, D1),
-                    new Triple(a, s, D2),
-                    new Triple(a, s, D3)
+                    Triple.create(a, s, D1),
+                    Triple.create(a, s, D2),
+                    Triple.create(a, s, D3)
                 } );
     }
     
@@ -295,17 +295,17 @@ public class TestBasicLP  extends TestCase {
                "[r2: (?x r C2) <- (C2 p ?x)]" +
                "[r4: (?x s ?y) <- (?x r ?y)]",
                 new Triple[] {
-                    new Triple(C1, p, D1),
-                    new Triple(C1, p, a),
-                    new Triple(C2, p, D2),
-                    new Triple(C2, p, b)
+                    Triple.create(C1, p, D1),
+                    Triple.create(C1, p, a),
+                    Triple.create(C2, p, D2),
+                    Triple.create(C2, p, b)
                 },
-                new Triple(Node.ANY, s, Node.ANY),
+                Triple.create(Node.ANY, s, Node.ANY),
                 new Object[] {
-                    new Triple(D1, s, C3),
-                    new Triple(a, s, C3),
-                    new Triple(D2, s, C2),
-                    new Triple(b, s, C2)
+                    Triple.create(D1, s, C3),
+                    Triple.create(a, s, C3),
+                    Triple.create(D2, s, C2),
+                    Triple.create(b, s, C2)
                 } );
     }
     
@@ -320,15 +320,15 @@ public class TestBasicLP  extends TestCase {
                "[r4: (?x q C2) <- (?x p a)]" +
                "[r5: (?x s ?y) <- (?x r ?y) (?x q ?y)]",
                 new Triple[] {
-                    new Triple(D1, p, a),
-                    new Triple(D2, p, a),
-                    new Triple(D2, p, b),
-                    new Triple(D3, p, b)
+                    Triple.create(D1, p, a),
+                    Triple.create(D2, p, a),
+                    Triple.create(D2, p, b),
+                    Triple.create(D3, p, b)
                 },
-                new Triple(Node.ANY, s, Node.ANY),
+                Triple.create(Node.ANY, s, Node.ANY),
                 new Object[] {
-                    new Triple(D2, s, C1),
-                    new Triple(D2, s, C2),
+                    Triple.create(D2, s, C1),
+                    Triple.create(D2, s, C2),
                 } );
     }
     
@@ -348,12 +348,12 @@ public class TestBasicLP  extends TestCase {
                 "[r8: (?x t C3) <- (?x p b)]" +
                 "[r9: (?x s ?y) <- (?x r ?y) (?x q ?y) (?x t ?y)]",
                 new Triple[] {
-                    new Triple(a, p, b),
+                    Triple.create(a, p, b),
                 },
-                new Triple(Node.ANY, s, Node.ANY),
+                Triple.create(Node.ANY, s, Node.ANY),
                 new Object[] {
-                    new Triple(a, s, C2),
-                    new Triple(a, s, C3),
+                    Triple.create(a, s, C2),
+                    Triple.create(a, s, C3),
                 } );
     }
     
@@ -374,13 +374,13 @@ public class TestBasicLP  extends TestCase {
                 "[r8: (?x t C3) <- (?x p b)]" +
                 "[r9: (?x s ?y) <- (?w r C1) (?x q ?y) (?w t C1)]",
                 new Triple[] {
-                    new Triple(a, p, b),
+                    Triple.create(a, p, b),
                 },
-                new Triple(Node.ANY, s, Node.ANY),
+                Triple.create(Node.ANY, s, Node.ANY),
                 new Object[] {
-                    new Triple(a, s, D1),
-                    new Triple(a, s, C2),
-                    new Triple(a, s, C3),
+                    Triple.create(a, s, D1),
+                    Triple.create(a, s, C2),
+                    Triple.create(a, s, C3),
                 } );
     }
    
@@ -390,18 +390,18 @@ public class TestBasicLP  extends TestCase {
     public void testBacktrack9() {
         doTest("[r1: (?x s ?y) <- (?x r ?y) (?x q ?y)]",
                 new Triple[] {
-                    new Triple(a, r, D1),
-                    new Triple(a, r, D2),
-                    new Triple(a, r, D3),
-                    new Triple(b, r, D2),
-                    new Triple(a, q, D2),
-                    new Triple(b, q, D2),
-                    new Triple(b, q, D3),
+                    Triple.create(a, r, D1),
+                    Triple.create(a, r, D2),
+                    Triple.create(a, r, D3),
+                    Triple.create(b, r, D2),
+                    Triple.create(a, q, D2),
+                    Triple.create(b, q, D2),
+                    Triple.create(b, q, D3),
                 },
-                new Triple(Node.ANY, s, Node.ANY),
+                Triple.create(Node.ANY, s, Node.ANY),
                 new Object[] {
-                    new Triple(a, s, D2),
-                    new Triple(b, s, D2),
+                    Triple.create(a, s, D2),
+                    Triple.create(b, s, D2),
                 } );
     }
    
@@ -414,17 +414,17 @@ public class TestBasicLP  extends TestCase {
         "[(a p D2) <- ]" +
         "[(b p D1) <- ]",
                 new Triple[] {
-                    new Triple(a, r, D1),
-                    new Triple(a, r, D2),
-                    new Triple(a, r, D3),
-                    new Triple(b, r, D2),
-                    new Triple(a, q, D2),
-                    new Triple(b, q, D2),
-                    new Triple(b, q, D3),
+                    Triple.create(a, r, D1),
+                    Triple.create(a, r, D2),
+                    Triple.create(a, r, D3),
+                    Triple.create(b, r, D2),
+                    Triple.create(a, q, D2),
+                    Triple.create(b, q, D2),
+                    Triple.create(b, q, D3),
                 },
-                new Triple(Node.ANY, s, Node.ANY),
+                Triple.create(Node.ANY, s, Node.ANY),
                 new Object[] {
-                    new Triple(a, s, D2),
+                    Triple.create(a, s, D2),
                 } );
     }
     
@@ -437,11 +437,11 @@ public class TestBasicLP  extends TestCase {
             "[r1: (?x r C2) <- (?x p b)]" +
             "[r2: (?x r C3) <- (?x r C3) (?x p b)]");
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, b));
+        data.add(Triple.create(a, p, b));
         InfGraph infgraph =  makeInfGraph(rules, data);
         ExtendedIterator<Triple> i = infgraph.find(Node.ANY, r, Node.ANY);
         assertTrue(i.hasNext());
-        assertEquals(i.next(), new Triple(a, r, C1));
+        assertEquals(i.next(), Triple.create(a, r, C1));
         i.close();
     }
     
@@ -455,11 +455,11 @@ public class TestBasicLP  extends TestCase {
                "[r1: (?x s ?y) <- (?x r ?y)]",
                 new Triple[] {
                 },
-                new Triple(Node.ANY, s, Node.ANY),
+                Triple.create(Node.ANY, s, Node.ANY),
                 new Object[] {
-                    new Triple(a, s, C1),
-                    new Triple(a, s, C2),
-                    new Triple(b, s, C1),
+                    Triple.create(a, s, C1),
+                    Triple.create(a, s, C2),
+                    Triple.create(b, s, C1),
                 } );
     }
 
@@ -471,17 +471,17 @@ public class TestBasicLP  extends TestCase {
                "[r1: (?y t ?x) <- (?x p ?z) (?z q ?y)]" +
                "[r3: (?x s ?y) <- (?x r ?y) (?y t ?x)]",
                 new Triple[] {
-                    new Triple(a, p, C1),
-                    new Triple(a, p, C2),
-                    new Triple(a, p, C3),
-                    new Triple(C2, q, b),
-                    new Triple(C3, q, c),
-                    new Triple(D1, q, D2),
+                    Triple.create(a, p, C1),
+                    Triple.create(a, p, C2),
+                    Triple.create(a, p, C3),
+                    Triple.create(C2, q, b),
+                    Triple.create(C3, q, c),
+                    Triple.create(D1, q, D2),
                 },
-                new Triple(Node.ANY, s, Node.ANY),
+                Triple.create(Node.ANY, s, Node.ANY),
                 new Object[] {
-                    new Triple(a, s, b),
-                    new Triple(a, s, c),
+                    Triple.create(a, s, b),
+                    Triple.create(a, s, c),
                 } );
     }
     
@@ -491,13 +491,13 @@ public class TestBasicLP  extends TestCase {
     public void testBuiltin1() {
         doTest("[r1: (?x r ?y) <- (?x p ?v), sum(?v 2 ?y)]",
                 new Triple[] {
-                    new Triple(a, p, Util.makeIntNode(3)),
-                    new Triple(b, p, Util.makeIntNode(4))
+                    Triple.create(a, p, Util.makeIntNode(3)),
+                    Triple.create(b, p, Util.makeIntNode(4))
                 },
-                new Triple(Node.ANY, r, Node.ANY),
+                Triple.create(Node.ANY, r, Node.ANY),
                 new Object[] {
-                    new Triple(a, r, Util.makeIntNode(5)),
-                    new Triple(b, r, Util.makeIntNode(6)),
+                    Triple.create(a, r, Util.makeIntNode(5)),
+                    Triple.create(b, r, Util.makeIntNode(6)),
                 } );
     }
     
@@ -508,14 +508,14 @@ public class TestBasicLP  extends TestCase {
     public void testBuiltin2() {
         doTest("[r1: (?x r C1) <- (?x p ?v), lessThan(?v 3)]",
                 new Triple[] {
-                    new Triple(a, p, Util.makeIntNode(1)),
-                    new Triple(b, p, Util.makeIntNode(2)),
-                    new Triple(c, p, Util.makeIntNode(3))
+                    Triple.create(a, p, Util.makeIntNode(1)),
+                    Triple.create(b, p, Util.makeIntNode(2)),
+                    Triple.create(c, p, Util.makeIntNode(3))
                 },
-                new Triple(Node.ANY, r, Node.ANY),
+                Triple.create(Node.ANY, r, Node.ANY),
                 new Object[] {
-                    new Triple(a, r, C1),
-                    new Triple(b, r, C1),
+                    Triple.create(a, r, C1),
+                    Triple.create(b, r, C1),
                 } );
     }
     
@@ -526,14 +526,14 @@ public class TestBasicLP  extends TestCase {
     public void testWildPredicate1() {
         doTest("[r1: (b r ?y) <- (a ?y ?v)]",
                 new Triple[] {
-                    new Triple(a, p, C1),
-                    new Triple(a, q, C2),
-                    new Triple(a, q, C3),
+                    Triple.create(a, p, C1),
+                    Triple.create(a, q, C2),
+                    Triple.create(a, q, C3),
                 },
-                new Triple(b, r, Node.ANY),
+                Triple.create(b, r, Node.ANY),
                 new Object[] {
-                    new Triple(b, r, p),
-                    new Triple(b, r, q)
+                    Triple.create(b, r, p),
+                    Triple.create(b, r, q)
                 } );
     }
     
@@ -547,24 +547,24 @@ public class TestBasicLP  extends TestCase {
                 "[r3: (?x s C1) <- (?x p C1)]" +
                 "[r4: (?x t C2) <- (?x p C2)]",
                 new Triple[] {
-                    new Triple(b, p, C1),
-                    new Triple(b, q, C2),
-                    new Triple(b, q, C3),
-                    new Triple(a, p, C1),
-                    new Triple(a, p, C2),
-                    new Triple(c, p, C1),
+                    Triple.create(b, p, C1),
+                    Triple.create(b, q, C2),
+                    Triple.create(b, q, C3),
+                    Triple.create(a, p, C1),
+                    Triple.create(a, p, C2),
+                    Triple.create(c, p, C1),
                 },
-                new Triple(a, Node.ANY, Node.ANY),
+                Triple.create(a, Node.ANY, Node.ANY),
                 new Object[] {
-                    new Triple(a, r, p),
-                    new Triple(a, r, q),
-                    new Triple(a, q, C1),
-                    new Triple(a, q, C2),
-                    new Triple(a, s, C1),
-                    new Triple(a, t, C2),
-                    new Triple(a, p, C1),
-                    new Triple(a, p, C2),
-                    new Triple(a, r, s),
+                    Triple.create(a, r, p),
+                    Triple.create(a, r, q),
+                    Triple.create(a, q, C1),
+                    Triple.create(a, q, C2),
+                    Triple.create(a, s, C1),
+                    Triple.create(a, t, C2),
+                    Triple.create(a, p, C1),
+                    Triple.create(a, p, C2),
+                    Triple.create(a, r, s),
                 } );
     }
     
@@ -579,33 +579,33 @@ public class TestBasicLP  extends TestCase {
                 "[r4: (?x t ?y) <- (?x ?y C1)]";
         Triple[] data =
                 new Triple[] {
-                    new Triple(b, p, C1),
-                    new Triple(b, q, C2),
-                    new Triple(b, q, C3),
-                    new Triple(a, p, C1),
-                    new Triple(a, p, C2),
-                    new Triple(c, p, C1),
+                    Triple.create(b, p, C1),
+                    Triple.create(b, q, C2),
+                    Triple.create(b, q, C3),
+                    Triple.create(a, p, C1),
+                    Triple.create(a, p, C2),
+                    Triple.create(c, p, C1),
                 };
         doTest(rules, data,
-                new Triple(a, Node.ANY, C1),
+                Triple.create(a, Node.ANY, C1),
                 new Object[] {
-                    new Triple(a, q, C1),
-                    new Triple(a, s, C1),
-                    new Triple(a, p, C1),
+                    Triple.create(a, q, C1),
+                    Triple.create(a, s, C1),
+                    Triple.create(a, p, C1),
                 } );
         doTest(rules, data,
-                new Triple(a, t, Node.ANY),
+                Triple.create(a, t, Node.ANY),
                 new Object[] {
-                    new Triple(a, t, q),
-                    new Triple(a, t, s),
-                    new Triple(a, t, p),
+                    Triple.create(a, t, q),
+                    Triple.create(a, t, s),
+                    Triple.create(a, t, p),
                 } );
         doTest(rules, data,
-                new Triple(Node.ANY, t, q),
+                Triple.create(Node.ANY, t, q),
                 new Object[] {
-                    new Triple(a, t, q),
-                    new Triple(b, t, q),
-                    new Triple(c, t, q)
+                    Triple.create(a, t, q),
+                    Triple.create(b, t, q),
+                    Triple.create(c, t, q)
                 } );
     }
     
@@ -615,16 +615,16 @@ public class TestBasicLP  extends TestCase {
     public void testWildPredicate4() {
         doTest("[r1: (a ?p ?x) <- (b ?p ?x)]",
                 new Triple[] {
-                    new Triple(b, p, C1),
-                    new Triple(b, q, C2),
-                    new Triple(b, q, C3),
-                    new Triple(c, q, d),
+                    Triple.create(b, p, C1),
+                    Triple.create(b, q, C2),
+                    Triple.create(b, q, C3),
+                    Triple.create(c, q, d),
                 },
-                new Triple(a, Node.ANY, Node.ANY),
+                Triple.create(a, Node.ANY, Node.ANY),
                 new Object[] {
-                    new Triple(a, p, C1),
-                    new Triple(a, q, C2),
-                    new Triple(a, q, C3),
+                    Triple.create(a, p, C1),
+                    Triple.create(a, q, C2),
+                    Triple.create(a, q, C3),
                 } );
     }
 
@@ -635,17 +635,17 @@ public class TestBasicLP  extends TestCase {
         String ruleSrc = "[r1: (?x s ?y) <- (?x p foo(?z, ?y))] ";
         Triple[] triples =
             new Triple[] {
-                new Triple(a, p, Functor.makeFunctorNode("foo", new Node[] {C1, C2})),
-                new Triple(a, p, Functor.makeFunctorNode("bar", new Node[] {C1, D1})),
-                new Triple(b, p, Functor.makeFunctorNode("foo", new Node[] {C1, C2})),
-                new Triple(a, p, Functor.makeFunctorNode("foo", new Node[] {C1, C3})),
-                new Triple(a, p, D1),
+                Triple.create(a, p, Functor.makeFunctorNode("foo", new Node[] {C1, C2})),
+                Triple.create(a, p, Functor.makeFunctorNode("bar", new Node[] {C1, D1})),
+                Triple.create(b, p, Functor.makeFunctorNode("foo", new Node[] {C1, C2})),
+                Triple.create(a, p, Functor.makeFunctorNode("foo", new Node[] {C1, C3})),
+                Triple.create(a, p, D1),
             };
-        doTest(ruleSrc, triples, new Triple(Node.ANY, s, Node.ANY),
+        doTest(ruleSrc, triples, Triple.create(Node.ANY, s, Node.ANY),
             new Object[] {
-                new Triple(a, s, C2),
-                new Triple(b, s, C2),
-                new Triple(a, s, C3)
+                Triple.create(a, s, C2),
+                Triple.create(b, s, C2),
+                Triple.create(a, s, C3)
             } );
     }
 
@@ -657,18 +657,18 @@ public class TestBasicLP  extends TestCase {
                "[r2: (?x s ?y) <- (?x r foo(?z, ?y))] ";
         Triple[] triples =
             new Triple[] {
-                new Triple(a, p, C1),
-                new Triple(a, p, C3),
-                new Triple(a, q, C2),
-                new Triple(b, p, D1),
-                new Triple(b, q, D2),
-                new Triple(b, q, D3),
+                Triple.create(a, p, C1),
+                Triple.create(a, p, C3),
+                Triple.create(a, q, C2),
+                Triple.create(b, p, D1),
+                Triple.create(b, q, D2),
+                Triple.create(b, q, D3),
             };
-        doTest(ruleSrc, triples, new Triple(Node.ANY, s, Node.ANY),
+        doTest(ruleSrc, triples, Triple.create(Node.ANY, s, Node.ANY),
             new Object[] {
-                new Triple(a, s, C2),
-                new Triple(b, s, D2),
-                new Triple(b, s, D3)
+                Triple.create(a, s, C2),
+                Triple.create(b, s, D2),
+                Triple.create(b, s, D3)
             } );
     }
 
@@ -683,17 +683,17 @@ public class TestBasicLP  extends TestCase {
                         "[r5: (?x s ?y) <- (?x r foo(?y, ?z))] ";
         Triple[] triples =
             new Triple[] {
-                new Triple(a, p, C1),
-                new Triple(b, q, D1),
-                new Triple(b, p, D2),
-                new Triple(c, t, d)
+                Triple.create(a, p, C1),
+                Triple.create(b, q, D1),
+                Triple.create(b, p, D2),
+                Triple.create(c, t, d)
             };
-        doTest(ruleSrc, triples, new Triple(Node.ANY, s, Node.ANY),
+        doTest(ruleSrc, triples, Triple.create(Node.ANY, s, Node.ANY),
             new Object[] {
-                new Triple(a, s, p),
-                new Triple(b, s, p),
-                new Triple(b, s, q),
-                new Triple(c, s, d)
+                Triple.create(a, s, p),
+                Triple.create(b, s, p),
+                Triple.create(b, s, q),
+                Triple.create(c, s, d)
             } );
     }
     
@@ -705,13 +705,13 @@ public class TestBasicLP  extends TestCase {
                "[r2: (?x r ?y) <- (?x q ?y)]",
                 new Node[] { q },
                 new Triple[] {
-                    new Triple(a, p, b),
-                    new Triple(b, p, c),
+                    Triple.create(a, p, b),
+                    Triple.create(b, p, c),
                 },
-                new Triple(Node.ANY, r, Node.ANY),
+                Triple.create(Node.ANY, r, Node.ANY),
                 new Object[] {
-                    new Triple(a, r, b),
-                    new Triple(b, r, c)
+                    Triple.create(a, r, b),
+                    Triple.create(b, r, c)
                 } );
     }
     
@@ -722,17 +722,17 @@ public class TestBasicLP  extends TestCase {
         doTest("[r1: (?a p ?c) <- (?a p ?b)(?b p ?c)]",
                 new Node[] { p },
                 new Triple[] {
-                    new Triple(a, p, b),
-                    new Triple(b, p, c),
-                    new Triple(b, p, d),
+                    Triple.create(a, p, b),
+                    Triple.create(b, p, c),
+                    Triple.create(b, p, d),
                 },
-                new Triple(Node.ANY, p, Node.ANY),
+                Triple.create(Node.ANY, p, Node.ANY),
                 new Object[] {
-                    new Triple(a, p, b),
-                    new Triple(b, p, c),
-                    new Triple(a, p, c),
-                    new Triple(b, p, d),
-                    new Triple(a, p, d),
+                    Triple.create(a, p, b),
+                    Triple.create(b, p, c),
+                    Triple.create(a, p, c),
+                    Triple.create(b, p, d),
+                    Triple.create(a, p, d),
                 } );
     }
     
@@ -744,18 +744,18 @@ public class TestBasicLP  extends TestCase {
                "[r2: (?x p ?z) <- (?x e ?z), (?z q ?z)]",
                 new Node[] { p },
                 new Triple[] {
-                    new Triple(a, e, b),
-                    new Triple(a, e, d),
-                    new Triple(b, e, c),
-                    new Triple(a, q, a),
-                    new Triple(b, q, b),
-                    new Triple(c, q, c),
+                    Triple.create(a, e, b),
+                    Triple.create(a, e, d),
+                    Triple.create(b, e, c),
+                    Triple.create(a, q, a),
+                    Triple.create(b, q, b),
+                    Triple.create(c, q, c),
                 },
-                new Triple(a, p, Node.ANY),
+                Triple.create(a, p, Node.ANY),
                 new Object[] {
-                    new Triple(a, p, b),
-//                    new Triple(b, p, c),
-                    new Triple(a, p, c)
+                    Triple.create(a, p, b),
+//                    Triple.create(b, p, c),
+                    Triple.create(a, p, c)
                 } );
     }
     
@@ -769,15 +769,15 @@ public class TestBasicLP  extends TestCase {
                "[r4: (?x b ?y) <- (?x a ?z) (?z c ?y)]",
                 new Node[] { a, b },
                 new Triple[] {
-                    new Triple(p, c, q),
-                    new Triple(q, c, r),
-                    new Triple(p, d, q),
-                    new Triple(q, d, r),
+                    Triple.create(p, c, q),
+                    Triple.create(q, c, r),
+                    Triple.create(p, d, q),
+                    Triple.create(q, d, r),
                 },
-                new Triple(p, a, Node.ANY),
+                Triple.create(p, a, Node.ANY),
                 new Object[] {
-                    new Triple(p, a, q),
-                    new Triple(p, a, r)
+                    Triple.create(p, a, q),
+                    Triple.create(p, a, r)
                 } );
     }
     
@@ -789,17 +789,17 @@ public class TestBasicLP  extends TestCase {
                "[r2: (?a r ?b) <- (?a q ?b)]",
                 new Node[] { p },
                 new Triple[] {
-                    new Triple(a, p, b),
-                    new Triple(b, p, c),
-                    new Triple(a, q, d),
-                    new Triple(c, q, d),
+                    Triple.create(a, p, b),
+                    Triple.create(b, p, c),
+                    Triple.create(a, q, d),
+                    Triple.create(c, q, d),
                 },
-                new Triple(a, Node.ANY, Node.ANY),
+                Triple.create(a, Node.ANY, Node.ANY),
                 new Object[] {
-                    new Triple(a, p, b),
-                    new Triple(a, p, c),
-                    new Triple(a, q, d),
-                    new Triple(a, r, d),
+                    Triple.create(a, p, b),
+                    Triple.create(a, p, c),
+                    Triple.create(a, q, d),
+                    Triple.create(a, r, d),
                 } );
     }
    
@@ -810,17 +810,17 @@ public class TestBasicLP  extends TestCase {
     public void testTabled6() {
         doTest("[-> table(p)] [r1: (?a p ?c) <- (?a p ?b)(?b p ?c)]",
                 new Triple[] {
-                    new Triple(a, p, b),
-                    new Triple(b, p, c),
-                    new Triple(b, p, d),
+                    Triple.create(a, p, b),
+                    Triple.create(b, p, c),
+                    Triple.create(b, p, d),
                 },
-                new Triple(Node.ANY, p, Node.ANY),
+                Triple.create(Node.ANY, p, Node.ANY),
                 new Object[] {
-                    new Triple(a, p, b),
-                    new Triple(b, p, c),
-                    new Triple(a, p, c),
-                    new Triple(b, p, d),
-                    new Triple(a, p, d),
+                    Triple.create(a, p, b),
+                    Triple.create(b, p, c),
+                    Triple.create(a, p, c),
+                    Triple.create(b, p, d),
+                    Triple.create(a, p, d),
                 } );
     }
 
@@ -833,17 +833,17 @@ public class TestBasicLP  extends TestCase {
                "[r2: (?a r ?z) <- (?a q ?a)]",
                 new Node[] { },
                 new Triple[] {
-                    new Triple(a, p, b),
-                    new Triple(c, p, c),
-                    new Triple(a, p, a),
-                    new Triple(b, s, e),
-                    new Triple(d, s, d),
+                    Triple.create(a, p, b),
+                    Triple.create(c, p, c),
+                    Triple.create(a, p, a),
+                    Triple.create(b, s, e),
+                    Triple.create(d, s, d),
                 },
-                new Triple(Node.ANY, r, C1),
+                Triple.create(Node.ANY, r, C1),
                 new Object[] {
-                    new Triple(a, r, C1),
-                    new Triple(c, r, C1),
-                    new Triple(d, r, C1),
+                    Triple.create(a, r, C1),
+                    Triple.create(c, r, C1),
+                    Triple.create(d, r, C1),
                 } );
     }
     
@@ -857,17 +857,17 @@ public class TestBasicLP  extends TestCase {
     "[ (?a rdf:type C3) <- (?a rdf:type C4) ]",
                 new Node[] { ty },
                 new Triple[] {
-                    new Triple(a, ty, C1),
-                    new Triple(b, ty, C2),
-                    new Triple(c, ty, C3),
-                    new Triple(d, ty, C4),
+                    Triple.create(a, ty, C1),
+                    Triple.create(b, ty, C2),
+                    Triple.create(c, ty, C3),
+                    Triple.create(d, ty, C4),
                 },
-                new Triple(Node.ANY, ty, C1),
+                Triple.create(Node.ANY, ty, C1),
                 new Object[] {
-                    new Triple(a, ty, C1),
-                    new Triple(b, ty, C1),
-                    new Triple(c, ty, C1),
-                    new Triple(d, ty, C1),
+                    Triple.create(a, ty, C1),
+                    Triple.create(b, ty, C1),
+                    Triple.create(c, ty, C1),
+                    Triple.create(d, ty, C1),
                 } );
     }
    
@@ -881,17 +881,17 @@ public class TestBasicLP  extends TestCase {
     "[ (?a rdf:type C1) <- (?a rdf:type C4) ]",
                 new Node[] { ty },
                 new Triple[] {
-                    new Triple(a, ty, C1),
-                    new Triple(b, ty, C2),
-                    new Triple(c, ty, C3),
-                    new Triple(d, ty, C4),
+                    Triple.create(a, ty, C1),
+                    Triple.create(b, ty, C2),
+                    Triple.create(c, ty, C3),
+                    Triple.create(d, ty, C4),
                 },
-                new Triple(Node.ANY, ty, C1),
+                Triple.create(Node.ANY, ty, C1),
                 new Object[] {
-                    new Triple(a, ty, C1),
-                    new Triple(b, ty, C1),
-                    new Triple(c, ty, C1),
-                    new Triple(d, ty, C1),
+                    Triple.create(a, ty, C1),
+                    Triple.create(b, ty, C1),
+                    Triple.create(c, ty, C1),
+                    Triple.create(d, ty, C1),
                 } );
     }
 
@@ -906,12 +906,12 @@ public class TestBasicLP  extends TestCase {
                "[r3: (a r ?y) <- (a p f(?x, ?y))]",
                 new Node[] { p },
                 new Triple[] {
-                    new Triple(a, s, b),
-                    new Triple(a, t, c)
+                    Triple.create(a, s, b),
+                    Triple.create(a, t, c)
                 },
-                new Triple(a, r, Node.ANY),
+                Triple.create(a, r, Node.ANY),
                 new Object[] {
-                    new Triple(a, r, c)
+                    Triple.create(a, r, c)
                 } );
 
     }
@@ -926,20 +926,20 @@ public class TestBasicLP  extends TestCase {
         doTest( ruleSrc,
                 new Node[] { ty, sC },
                 new Triple[] {
-                    new Triple(C1, sC, C2),
-                    new Triple(C2, sC, C3),
-                    new Triple(C1, ty, RDFS.Class.asNode()),
-                    new Triple(C2, ty, RDFS.Class.asNode()),
-                    new Triple(C3, ty, RDFS.Class.asNode())
+                    Triple.create(C1, sC, C2),
+                    Triple.create(C2, sC, C3),
+                    Triple.create(C1, ty, RDFS.Class.asNode()),
+                    Triple.create(C2, ty, RDFS.Class.asNode()),
+                    Triple.create(C3, ty, RDFS.Class.asNode())
                 },
-                new Triple(Node.ANY, sC, Node.ANY),
+                Triple.create(Node.ANY, sC, Node.ANY),
                 new Object[] {
-                    new Triple(C1, sC, C2),
-                    new Triple(C1, sC, C3),
-                    new Triple(C1, sC, C1),
-                    new Triple(C2, sC, C3),
-                    new Triple(C2, sC, C2),
-                    new Triple(C3, sC, C3)
+                    Triple.create(C1, sC, C2),
+                    Triple.create(C1, sC, C3),
+                    Triple.create(C1, sC, C1),
+                    Triple.create(C2, sC, C3),
+                    Triple.create(C2, sC, C2),
+                    Triple.create(C3, sC, C3)
                 } );
     }
 
@@ -951,21 +951,21 @@ public class TestBasicLP  extends TestCase {
         "[r2: (?x r ?y) <- unbound(?x), (?x q ?y)]";
         doTest(rules,
                 new Triple[] {
-                    new Triple(a, p, b),
-                    new Triple(a, q, c)
+                    Triple.create(a, p, b),
+                    Triple.create(a, q, c)
                 },
-                new Triple(a, r, Node.ANY),
+                Triple.create(a, r, Node.ANY),
                 new Object[] {
-                    new Triple(a, r, b)
+                    Triple.create(a, r, b)
                 } );
         doTest(rules,
                 new Triple[] {
-                    new Triple(a, p, b),
-                    new Triple(a, q, c)
+                    Triple.create(a, p, b),
+                    Triple.create(a, q, c)
                 },
-                new Triple(Node.ANY, r, Node.ANY),
+                Triple.create(Node.ANY, r, Node.ANY),
                 new Object[] {
-                    new Triple(a, r, c)
+                    Triple.create(a, r, c)
                 } );
     }
 
@@ -978,15 +978,15 @@ public class TestBasicLP  extends TestCase {
         doTest(rules,
                 new Node[] { r, p },
                 new Triple[] {
-                    new Triple(a, q, a),
-                    new Triple(a, q, b),
-                    new Triple(a, q, c),
-                    new Triple(b, q, b),
-                    new Triple(b, q, d),
+                    Triple.create(a, q, a),
+                    Triple.create(a, q, b),
+                    Triple.create(a, q, c),
+                    Triple.create(b, q, b),
+                    Triple.create(b, q, d),
                 },
-                new Triple(c, r, Node.ANY),
+                Triple.create(c, r, Node.ANY),
                 new Object[] {
-                    new Triple(c, r, b)
+                    Triple.create(c, r, b)
                 } );
     }
 
@@ -1003,17 +1003,17 @@ public class TestBasicLP  extends TestCase {
         doTest( ruleSrc,
                 new Node[] { ty, sC },
                 new Triple[] {
-                    new Triple(p, sP, q),
-                    new Triple(q, sP, r),
-                    new Triple(C1, sC, C2),
-                    new Triple(C2, sC, C3),
-                    new Triple(a, ty, C1)
+                    Triple.create(p, sP, q),
+                    Triple.create(q, sP, r),
+                    Triple.create(C1, sC, C2),
+                    Triple.create(C2, sC, C3),
+                    Triple.create(a, ty, C1)
                 },
-                new Triple(a, ty, Node.ANY),
+                Triple.create(a, ty, Node.ANY),
                 new Object[] {
-                    new Triple(a, ty, C1),
-                    new Triple(a, ty, C2),
-                    new Triple(a, ty, C3)
+                    Triple.create(a, ty, C1),
+                    Triple.create(a, ty, C2),
+                    Triple.create(a, ty, C3)
                 } );
     }
 
@@ -1029,15 +1029,15 @@ public class TestBasicLP  extends TestCase {
         doTest( ruleSrc,
                 new Node[] { ty, sC, OWL.equivalentClass.asNode() },
                 new Triple[] {
-                    new Triple(a, ty, r),
-                    new Triple(a, p, b),
-                    new Triple(r, sC, C1),
-                    new Triple(C1, OWL.onProperty.asNode(), p),
-                    new Triple(C1, OWL.allValuesFrom.asNode(), c)
+                    Triple.create(a, ty, r),
+                    Triple.create(a, p, b),
+                    Triple.create(r, sC, C1),
+                    Triple.create(C1, OWL.onProperty.asNode(), p),
+                    Triple.create(C1, OWL.allValuesFrom.asNode(), c)
                 },
-                new Triple(b, ty, c),
+                Triple.create(b, ty, c),
                 new Object[] {
-                    new Triple(b, ty, c)
+                    Triple.create(b, ty, c)
                 } );
     }
 
@@ -1056,9 +1056,9 @@ public class TestBasicLP  extends TestCase {
         List<Rule> rules = Rule.parseRules(ruleSrc);
         Node[] tabled = new Node[] { ty, sC }; 
         Triple[] triples = new Triple[] {
-                    new Triple(C1, sC, C2),
-                    new Triple(C2, sC, C3),
-                    new Triple(a, ty, C1)
+                    Triple.create(C1, sC, C2),
+                    Triple.create(C2, sC, C3),
+                    Triple.create(a, ty, C1)
                 };
         Graph data = Factory.createGraphMem();
         for ( Triple triple : triples )
@@ -1075,9 +1075,9 @@ public class TestBasicLP  extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, ty, null), 
             new Object[] {
-                new Triple(a, ty, C1),
-                new Triple(a, ty, C2),
-                new Triple(a, ty, C3)
+                Triple.create(a, ty, C1),
+                Triple.create(a, ty, C2),
+                Triple.create(a, ty, C3)
             } );
     }
 
@@ -1096,16 +1096,16 @@ public class TestBasicLP  extends TestCase {
         doTest( ruleSrc,
                 new Node[] { ty, sC, OWL.equivalentClass.asNode() },
                 new Triple[] {
-                    new Triple(a, ty, OWL.Thing.asNode()),
-                    new Triple(p, ty, OWL.FunctionalProperty.asNode()),
-                    new Triple(c, OWL.equivalentClass.asNode(), C1),
-                    new Triple(C1, ty, OWL.Restriction.asNode()),
-                    new Triple(C1, OWL.onProperty.asNode(), p),
-                    new Triple(C1, OWL.maxCardinality.asNode(), Util.makeIntNode(1)),
+                    Triple.create(a, ty, OWL.Thing.asNode()),
+                    Triple.create(p, ty, OWL.FunctionalProperty.asNode()),
+                    Triple.create(c, OWL.equivalentClass.asNode(), C1),
+                    Triple.create(C1, ty, OWL.Restriction.asNode()),
+                    Triple.create(C1, OWL.onProperty.asNode(), p),
+                    Triple.create(C1, OWL.maxCardinality.asNode(), Util.makeIntNode(1)),
                 },
-                new Triple(a, ty, c),
+                Triple.create(a, ty, c),
                 new Object[] {
-                    new Triple(a, ty, c)
+                    Triple.create(a, ty, c)
                 } );
     }
       
@@ -1118,18 +1118,18 @@ public class TestBasicLP  extends TestCase {
                        "[testRule3: (a p ?a)  <- (C2 p ?a), (C2 q ?a)]";
         List<Rule> ruleList = Rule.parseRules(rules);
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(C1, p, C3));
-        data.add(new Triple(C1, q, C4));
-        data.add(new Triple(C1, q, C3));
+        data.add(Triple.create(C1, p, C3));
+        data.add(Triple.create(C1, q, C4));
+        data.add(Triple.create(C1, q, C3));
         InfGraph infgraph = makeInfGraph(ruleList, data, new Node[]{p, q});
         infgraph.setDerivationLogging(true);
 
         TestUtil.assertIteratorValues(this, infgraph.find(a, null, null),
             new Triple[] {
-                new Triple(a, p, C3)
+                Triple.create(a, p, C3)
             });
         
-        Iterator<Derivation> derivs = infgraph.getDerivation(new Triple(a, p, C3));
+        Iterator<Derivation> derivs = infgraph.getDerivation(Triple.create(a, p, C3));
         StringWriter outString = new StringWriter(250);
         PrintWriter out = new PrintWriter(outString);
         while (derivs.hasNext()) {
@@ -1159,19 +1159,19 @@ public class TestBasicLP  extends TestCase {
         doTest( ruleSrc,
                 new Node[] { ty, sI },                      // Tabled predicates
                 new Triple[] {                              // init data
-                    new Triple(a, ty, OWL.Thing.asNode()),
-                    new Triple(b, sI, c),
+                    Triple.create(a, ty, OWL.Thing.asNode()),
+                    Triple.create(b, sI, c),
                 },
-        new Triple(Node.ANY, p, Node.ANY),                // query
+        Triple.create(Node.ANY, p, Node.ANY),                // query
         new Object[] {                              // result
-            new Triple(a, p, C1),
-            new Triple(b, p, C1),
-            new Triple(c, p, C1),
+            Triple.create(a, p, C1),
+            Triple.create(b, p, C1),
+            Triple.create(c, p, C1),
         } );
-//                new Triple(Node.ANY, ty, Node.ANY),                // query
+//                Triple.create(Node.ANY, ty, Node.ANY),                // query
 //                new Object[] {                              // result
-//                    new Triple(a, ty, OWL.Thing.asNode()),
-//                    new Triple(b, ty, OWL.Thing.asNode())
+//                    Triple.create(a, ty, OWL.Thing.asNode()),
+//                    Triple.create(b, ty, OWL.Thing.asNode())
 //                } );
     } 
     
@@ -1220,17 +1220,17 @@ public class TestBasicLP  extends TestCase {
         "[(a s ?e) <- (a p ?l), listEntry(?l, 1, ?e)]";
         List<Rule> rules = Rule.parseRules(ruleSrc);
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, Util.makeList(new Node[]{C1,C2,C3},data)));
+        data.add(Triple.create(a, p, Util.makeList(new Node[]{C1,C2,C3},data)));
         InfGraph infgraph =  makeInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
-                infgraph.find(new Triple(a, r, Node.ANY)), 
+                infgraph.find(Triple.create(a, r, Node.ANY)), 
                 new Triple[] {
-                    new Triple(a, r, Util.makeIntNode(3))
+                    Triple.create(a, r, Util.makeIntNode(3))
                 }); 
         TestUtil.assertIteratorValues(this, 
-                infgraph.find(new Triple(a, s, Node.ANY)), 
+                infgraph.find(Triple.create(a, s, Node.ANY)), 
                 new Triple[] {
-                    new Triple(a, s, C2)
+                    Triple.create(a, s, C2)
                 }); 
 
         rules = Rule.parseRules(
@@ -1240,18 +1240,18 @@ public class TestBasicLP  extends TestCase {
         "[(a s e) <- (a p ?l), (a, r, ?j) listNotEqual(?l, ?j)]"
             );
         data = Factory.createGraphMem();
-        data.add(new Triple(a, p, 
+        data.add(Triple.create(a, p, 
             Util.makeList( new Node[]{C1, Util.makeIntNode(3), C3}, data) ));
-        data.add(new Triple(a, q, 
+        data.add(Triple.create(a, q, 
             Util.makeList( new Node[]{C3, C1, Util.makeLongNode(3)}, data) ));
-        data.add(new Triple(a, r, 
+        data.add(Triple.create(a, r, 
             Util.makeList( new Node[]{C3, C1, Util.makeLongNode(2)}, data) ));
         infgraph =  makeInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
-            infgraph.find(new Triple(a, s, Node.ANY)), 
+            infgraph.find(Triple.create(a, s, Node.ANY)), 
             new Triple[] {
-                new Triple(a, s, b),
-                new Triple(a, s, e),
+                Triple.create(a, s, b),
+                Triple.create(a, s, e),
             }); 
 
         rules = Rule.parseRules(
@@ -1259,18 +1259,18 @@ public class TestBasicLP  extends TestCase {
         "[(b s ?j) <- (a p ?l), (a, q, ?j) listNotContains(?l, ?j)]"
             );
         data = Factory.createGraphMem();
-        data.add(new Triple(a, p, 
+        data.add(Triple.create(a, p, 
             Util.makeList( new Node[]{C1, Util.makeIntNode(3), C3}, data) ));
-        data.add(new Triple(a, q, C1));
-        data.add(new Triple(a, q, Util.makeLongNode(3)));
-        data.add(new Triple(a, q, C2));
+        data.add(Triple.create(a, q, C1));
+        data.add(Triple.create(a, q, Util.makeLongNode(3)));
+        data.add(Triple.create(a, q, C2));
         infgraph =  makeInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
-            infgraph.find(new Triple(b, Node.ANY, Node.ANY)), 
+            infgraph.find(Triple.create(b, Node.ANY, Node.ANY)), 
             new Triple[] {
-                new Triple(b, r, C1),
-                new Triple(b, r, Util.makeIntNode(3)),
-                new Triple(b, s, C2),
+                Triple.create(b, r, C1),
+                Triple.create(b, r, Util.makeIntNode(3)),
+                Triple.create(b, s, C2),
             }); 
     }
     
@@ -1282,24 +1282,24 @@ public class TestBasicLP  extends TestCase {
         String ruleSrc = "(?a p 1) <- (?a p 0). (?a p 2) <- (?a p 0).";
         List<Rule> rules = Rule.parseRules(ruleSrc);
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, Util.makeIntNode(0)));
+        data.add(Triple.create(a, p, Util.makeIntNode(0)));
         InfGraph infgraph =  makeInfGraph(rules, data);
         
         // Check the base case works
         TestUtil.assertIteratorValues(this, 
-                infgraph.find(new Triple(a, p, Node.ANY)), 
+                infgraph.find(Triple.create(a, p, Node.ANY)), 
                 new Triple[] {
-            new Triple(a, p, Util.makeIntNode(0)),
-            new Triple(a, p, Util.makeIntNode(1)),
-            new Triple(a, p, Util.makeIntNode(2)),
+            Triple.create(a, p, Util.makeIntNode(0)),
+            Triple.create(a, p, Util.makeIntNode(1)),
+            Triple.create(a, p, Util.makeIntNode(2)),
                 }); 
         
         // Now force a CME
         boolean ok = false;
-        ExtendedIterator<Triple> i = infgraph.find(new Triple(a, p, Node.ANY));
+        ExtendedIterator<Triple> i = infgraph.find(Triple.create(a, p, Node.ANY));
         try {
             i.next();
-            infgraph.add( new Triple(a, p, Util.makeIntNode(4)) );
+            infgraph.add( Triple.create(a, p, Util.makeIntNode(4)) );
             i.next();
         } catch (ConcurrentModificationException e) {
             ok = true;
@@ -1354,7 +1354,7 @@ public class TestBasicLP  extends TestCase {
      * @param results the array of expected results
      */
     private void doBasicTest(String ruleSrc, Triple query, Object[] results) {
-        doTest(ruleSrc, new Triple[]{new Triple(a,p,b)}, query, results);
+        doTest(ruleSrc, new Triple[]{Triple.create(a,p,b)}, query, results);
     }
     
     /**
@@ -1367,12 +1367,12 @@ public class TestBasicLP  extends TestCase {
     private void doBuiltinTest(String ruleSrc, Node param1, Node param2, Node result) {
         doTest(ruleSrc,
                new Triple[] { 
-                   new Triple(a, p, param1),
-                   new Triple(a, q, param2) 
+                   Triple.create(a, p, param1),
+                   Triple.create(a, q, param2) 
                 },
-                new Triple(a, r, Node.ANY),
+                Triple.create(a, r, Node.ANY),
                 new Triple[] {
-                    new Triple(a, r, result)
+                    Triple.create(a, r, result)
                 });
     }
     

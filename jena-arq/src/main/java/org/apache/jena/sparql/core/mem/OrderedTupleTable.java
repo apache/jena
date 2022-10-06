@@ -28,7 +28,7 @@ import org.apache.jena.sparql.core.Quad;
  * A table of {@code TupleType} tuples that uses an internal order recorded via {@link TupleMap}. In this code, names
  * {@code g}, {@code s}, {@code p} and {@code o} are used for the components of a tuple in canonical order, and
  * {@code x1} through {@code x4} are used for the components of a tuple in internal order.
- * 
+ *
  * @param <TupleType> the tuple type in which an instance of this class works, typically {@link Triple} or {@link Quad}
  * @param <ConsumerType> a consumer type that can accept the elements of a {@code TupleType}, typically
  *            {@link TConsumer3} or {@link TConsumer4}
@@ -102,7 +102,7 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
     }
 
     protected Triple unmap(final Node x1, final Node x2, final Node x3) {
-        return apply(reverse, x1, x2, x3, Triple::new);
+        return apply(reverse, x1, x2, x3, Triple::create);
     }
 
     private static <X> X get(final int i, final X x1, final X x2, final X x3) {

@@ -67,22 +67,22 @@ public class TestRDFS9 extends TestCase {
         Node ty = RDF.type.asNode();
         
         Graph tdata = Factory.createGraphMem();
-        tdata.add(new Triple(C1, sC, C2));
-        tdata.add(new Triple(C2, sC, C3));
-        tdata.add(new Triple(p, RDFS.subPropertyOf.asNode(), q));
-        tdata.add(new Triple(q, RDFS.subPropertyOf.asNode(), r));
-        tdata.add(new Triple(r, RDFS.domain.asNode(), D));
+        tdata.add(Triple.create(C1, sC, C2));
+        tdata.add(Triple.create(C2, sC, C3));
+        tdata.add(Triple.create(p, RDFS.subPropertyOf.asNode(), q));
+        tdata.add(Triple.create(q, RDFS.subPropertyOf.asNode(), r));
+        tdata.add(Triple.create(r, RDFS.domain.asNode(), D));
         Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, b));
+        data.add(Triple.create(a, p, b));
         InfGraph igraph = ReasonerRegistry.getRDFSReasoner().bind(new Union(tdata, data));
         TestUtil.assertIteratorValues(this, igraph.find(a, ty, null),
         new Object[] {
-            new Triple(a, ty, D),
-            new Triple(a, ty, RDFS.Resource.asNode()),
+            Triple.create(a, ty, D),
+            Triple.create(a, ty, RDFS.Resource.asNode()),
         });
         // Check if first of these is in the wildcard listing
         boolean ok = false;
-        Triple target = new Triple(a,ty,D);
+        Triple target = Triple.create(a,ty,D);
         for (Iterator<Triple> i = igraph.find(null,ty,null); i.hasNext(); ) {
             Triple t = i.next();
             if (t.equals(target)) {
@@ -94,12 +94,12 @@ public class TestRDFS9 extends TestCase {
         igraph = ReasonerRegistry.getRDFSReasoner().bindSchema(tdata).bind(data);
         TestUtil.assertIteratorValues(this, igraph.find(a, ty, null),
         new Object[] {
-            new Triple(a, ty, D),
-            new Triple(a, ty, RDFS.Resource.asNode()),
+            Triple.create(a, ty, D),
+            Triple.create(a, ty, RDFS.Resource.asNode()),
         });
         // Check if first of these is in the wildcard listing
         ok = false;
-        target = new Triple(a,ty,D);
+        target = Triple.create(a,ty,D);
         for (Iterator<Triple> i = igraph.find(null,ty,null); i.hasNext(); ) {
             Triple t = i.next();
             if (t.equals(target)) {

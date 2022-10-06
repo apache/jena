@@ -72,37 +72,37 @@ public class TestRETE  extends TestCase {
      */
     public void testClauseFilter() {
         doTestClauseFilter( new TriplePattern(a, p, x), 
-                            new Triple(a, p, b), new Node[]{b, null, null});
+                            Triple.create(a, p, b), new Node[]{b, null, null});
         doTestClauseFilter( new TriplePattern(x, p, b), 
-                            new Triple(a, p, b), new Node[]{a, null, null});
-        doTestClauseFilter( new TriplePattern(a, p, x), new Triple(b, p, a), null);
-        doTestClauseFilter( new TriplePattern(a, p, x), new Triple(a, q, a), null);
+                            Triple.create(a, p, b), new Node[]{a, null, null});
+        doTestClauseFilter( new TriplePattern(a, p, x), Triple.create(b, p, a), null);
+        doTestClauseFilter( new TriplePattern(a, p, x), Triple.create(a, q, a), null);
         doTestClauseFilter( new TriplePattern(x, p, x), 
-                            new Triple(a, p, a), new Node[]{a, null, null});
-        doTestClauseFilter( new TriplePattern(x, p, x), new Triple(a, p, b), null);
+                            Triple.create(a, p, a), new Node[]{a, null, null});
+        doTestClauseFilter( new TriplePattern(x, p, x), Triple.create(a, p, b), null);
         doTestClauseFilter( 
             new TriplePattern(a, p, Functor.makeFunctorNode("f", new Node[]{x, c})), 
-            new Triple(a, p, a), 
+            Triple.create(a, p, a), 
             null);
         doTestClauseFilter( 
             new TriplePattern(a, p, x), 
-            new Triple(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
+            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
             new Node[]{Functor.makeFunctorNode("f", new Node[]{b, c}), null, null});
         doTestClauseFilter( 
             new TriplePattern(a, p, Functor.makeFunctorNode("g", new Node[]{x, c})), 
-            new Triple(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
+            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
             null);
         doTestClauseFilter( 
             new TriplePattern(a, p, Functor.makeFunctorNode("f", new Node[]{x, c})), 
-            new Triple(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
+            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
             new Node[] {b, null, null});
         doTestClauseFilter( 
             new TriplePattern(x, p, Functor.makeFunctorNode("f", new Node[]{x, c})), 
-            new Triple(a, p, Functor.makeFunctorNode("f", new Node[]{a, c})), 
+            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{a, c})), 
             new Node[] {a, null, null});
         doTestClauseFilter( 
             new TriplePattern(x, p, Functor.makeFunctorNode("f", new Node[]{x, c})), 
-            new Triple(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
+            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
             null);
     }
 
@@ -170,18 +170,18 @@ public class TestRETE  extends TestCase {
                        "[r3: (?a p ?a), (n1 p ?c), (n1, p, ?a) -> (?a, p, ?c)]" +
                        "[r4: (n4 ?p ?a) -> (n4, ?a, ?p)]",
                     new Triple[] {
-                        new Triple(n1, p, n2),
-                        new Triple(n2, p, n3),
-                        new Triple(n2, q, n3),
-                        new Triple(n4, p, n4) },
+                        Triple.create(n1, p, n2),
+                        Triple.create(n2, p, n3),
+                        Triple.create(n2, q, n3),
+                        Triple.create(n4, p, n4) },
                     new Triple[] {
-                        new Triple(n1, p, n2),
-                        new Triple(n2, p, n3),
-                        new Triple(n2, q, n3),
-                        new Triple(n4, p, n4),
-                        new Triple(n1, p, n3),
-                        new Triple(n1, q, n3),
-                        new Triple(n4, n4, p),
+                        Triple.create(n1, p, n2),
+                        Triple.create(n2, p, n3),
+                        Triple.create(n2, q, n3),
+                        Triple.create(n4, p, n4),
+                        Triple.create(n1, p, n3),
+                        Triple.create(n1, q, n3),
+                        Triple.create(n4, n4, p),
                     });
                     
         doRuleTest( "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
@@ -190,8 +190,8 @@ public class TestRETE  extends TestCase {
                         "[axiom1: -> (n1 p n3)]",
                      new Triple[] {},
                      new Triple[] {
-                         new Triple(n1, p, n3),
-                         new Triple(n2, p, n3)
+                         Triple.create(n1, p, n3),
+                         Triple.create(n2, p, n3)
                      });
         
         doRuleTest( "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
@@ -199,27 +199,27 @@ public class TestRETE  extends TestCase {
                         "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]" +
                         "[axiom1: -> (n1 p n3)]",
                      new Triple[] {
-                         new Triple(n1, q, n4),
-                         new Triple(n1, q, n3)
+                         Triple.create(n1, q, n4),
+                         Triple.create(n1, q, n3)
                      },
                      new Triple[] {
-                         new Triple(n1, p, n3),
-                         new Triple(n2, p, n3),
-                         new Triple(n1, q, n4),
-                         new Triple(n2, q, n4),
-                         new Triple(n1, q, n3),
-                         new Triple(n2, q, n3),
-                         new Triple(res, p, n3)
+                         Triple.create(n1, p, n3),
+                         Triple.create(n2, p, n3),
+                         Triple.create(n1, q, n4),
+                         Triple.create(n2, q, n4),
+                         Triple.create(n1, q, n3),
+                         Triple.create(n2, q, n3),
+                         Triple.create(res, p, n3)
                      });
         doRuleTest( "[rule1: (?x p ?y), (?x q ?y) -> remove(0)]",
                      new Triple[] {
-                         new Triple(n1, p, Util.makeIntNode(1)),
-                         new Triple(n1, p, Util.makeIntNode(2)),
-                         new Triple(n1, q, Util.makeIntNode(2))
+                         Triple.create(n1, p, Util.makeIntNode(1)),
+                         Triple.create(n1, p, Util.makeIntNode(2)),
+                         Triple.create(n1, q, Util.makeIntNode(2))
                      },
                      new Triple[] {
-                         new Triple(n1, p, Util.makeIntNode(1)),
-                         new Triple(n1, q, Util.makeIntNode(2))
+                         Triple.create(n1, p, Util.makeIntNode(1)),
+                         Triple.create(n1, q, Util.makeIntNode(2))
                      });
     }
 
@@ -251,14 +251,14 @@ public class TestRETE  extends TestCase {
                        "[testRule2: (?x q ?y) -> (?x p ?y)]";
         List<Rule> ruleList = Rule.parseRules(rules);
         Graph schema = Factory.createGraphMem();
-        schema.add(new Triple(a, q, c));
-        schema.add(new Triple(a, q, d));
+        schema.add(Triple.create(a, q, c));
+        schema.add(Triple.create(a, q, d));
 
         Graph data1 = Factory.createGraphMem();
-        data1.add(new Triple(b, q, c));
+        data1.add(Triple.create(b, q, c));
         
         Graph data2 = Factory.createGraphMem();
-        data2.add(new Triple(b, q, d));
+        data2.add(Triple.create(b, q, d));
         
         GenericRuleReasoner reasoner =  new GenericRuleReasoner(ruleList);
         reasoner.setMode(GenericRuleReasoner.FORWARD_RETE);
@@ -268,18 +268,18 @@ public class TestRETE  extends TestCase {
 
         TestUtil.assertIteratorValues(this, infgraph1.find(null, p, null),
             new Triple[] {
-                new Triple(a, p, c),
-                new Triple(a, p, d),
-                new Triple(b, p, c),
-                new Triple(n1, p, c)
+                Triple.create(a, p, c),
+                Triple.create(a, p, d),
+                Triple.create(b, p, c),
+                Triple.create(n1, p, c)
             });
 
         TestUtil.assertIteratorValues(this, infgraph2.find(null, p, null),
             new Triple[] {
-                new Triple(a, p, c),
-                new Triple(a, p, d),
-                new Triple(b, p, d),
-                new Triple(n1, p, d)
+                Triple.create(a, p, c),
+                Triple.create(a, p, d),
+                Triple.create(b, p, d),
+                Triple.create(n1, p, d)
             });
     }
 }

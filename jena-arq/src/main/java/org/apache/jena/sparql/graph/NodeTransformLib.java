@@ -113,7 +113,7 @@ public class NodeTransformLib {
 
         if ( !change )
             return triple;
-        return new Triple(s, p, o);
+        return Triple.create(s, p, o);
     }
 
     /**

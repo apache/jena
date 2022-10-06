@@ -201,7 +201,7 @@ public class DebugOWL {
                             properties[conceptPtr] = property;
                         }
                         concepts[conceptPtr++] = concept;
-                        testdata.add(new Triple(concept, RDFS.subClassOf.asNode(), superConcept));
+                        testdata.add(Triple.create(concept, RDFS.subClassOf.asNode(), superConcept));
                     }
                 }
             }
@@ -212,9 +212,9 @@ public class DebugOWL {
                 Node concept = concepts[j];
                 for (int k = 0; k < NI; k++) {
                     Node instance = NodeFactory.createURI("instance"+instancePtr);
-                    testdata.add(new Triple(instance, RDF.type.asNode(), concept));
+                    testdata.add(Triple.create(instance, RDF.type.asNode(), concept));
                     if (withProps && (k-1)%3 == 0) {
-                        testdata.add(new Triple(instances[instancePtr-1], property, instance));
+                        testdata.add(Triple.create(instances[instancePtr-1], property, instance));
                     }
                     instances[instancePtr++] = instance;
                 }

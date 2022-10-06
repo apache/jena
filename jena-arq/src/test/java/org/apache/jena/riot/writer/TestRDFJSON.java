@@ -146,9 +146,9 @@ public class TestRDFJSON {
         Graph g = GraphFactory.createGraphMem();
         Node s = NodeFactory.createBlankNode();
         Node p = NodeFactory.createURI("http://host");
-        g.add(new Triple(s, p, NodeFactory.createLiteral("quote \" character")));
-        g.add(new Triple(s, p, NodeFactory.createLiteral("new \n\r lines")));
-        g.add(new Triple(s, p, NodeFactory.createLiteral("tab \t character")));
+        g.add(Triple.create(s, p, NodeFactory.createLiteral("quote \" character")));
+        g.add(Triple.create(s, p, NodeFactory.createLiteral("new \n\r lines")));
+        g.add(Triple.create(s, p, NodeFactory.createLiteral("tab \t character")));
         test(g);
     }
 

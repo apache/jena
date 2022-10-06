@@ -97,7 +97,7 @@ public class CollectionQuadHolder implements QuadHolder {
             values = Collections.emptyMap();
         }
         return WrappedIterator
-                .create(collection.iterator()).mapWith(triple -> new Triple(valueMap(triple.getSubject()),
+                .create(collection.iterator()).mapWith(triple -> Triple.create(valueMap(triple.getSubject()),
                         valueMap(triple.getPredicate()), valueMap(triple.getObject())))
                 .mapWith(triple -> new Quad(defaultGraphName, triple));
     }

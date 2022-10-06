@@ -84,7 +84,7 @@ public class TestDatasetTDBPersist
         Graph g1 = ds.getDefaultModel().getGraph() ;
         Graph g2 = ds.getNamedModel("http://example/").getGraph() ;
         
-        g1.add(new Triple(n0,n1,n2) ) ;
+        g1.add(Triple.create(n0,n1,n2) ) ;
         assertTrue(g1.contains(n0,n1,n2) ) ;
         assertFalse(g2.contains(n0,n1,n2) ) ;
     }
@@ -99,7 +99,7 @@ public class TestDatasetTDBPersist
         g1.clear() ;
         
         Graph g2 = ds.getNamedModel("http://example/").getGraph() ;
-        g2.add(new Triple(n0,n1,n2) ) ;
+        g2.add(Triple.create(n0,n1,n2) ) ;
         assertTrue(g2.contains(n0,n1,n2) ) ;
         assertFalse(g1.contains(n0,n1,n2) ) ;
     }

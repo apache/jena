@@ -296,8 +296,8 @@ public class Util {
     private static Node doMakeList(Node[] nodes, int next, Graph graph) {
         if (next < nodes.length) {
             Node listNode = NodeFactory.createBlankNode();
-            graph.add(new Triple(listNode, RDF.Nodes.first, nodes[next]));
-            graph.add(new Triple(listNode, RDF.Nodes.rest, doMakeList(nodes, next+1, graph)));
+            graph.add(Triple.create(listNode, RDF.Nodes.first, nodes[next]));
+            graph.add(Triple.create(listNode, RDF.Nodes.rest, doMakeList(nodes, next+1, graph)));
             return listNode;
         } else {
             return RDF.Nodes.nil;

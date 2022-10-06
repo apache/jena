@@ -533,11 +533,11 @@ public class GraphContractTest<T extends Graph>
 			assertFalse(graph.contains(triple("S2 P O")));
 			assertTrue(graph.contains(Triple.ANY));
 			assertTrue(
-					graph.contains(new Triple(Node.ANY, Node.ANY, node("O"))));
+					graph.contains(Triple.create(Node.ANY, Node.ANY, node("O"))));
 			assertTrue(
-					graph.contains(new Triple(Node.ANY, node("P"), Node.ANY)));
+					graph.contains(Triple.create(Node.ANY, node("P"), Node.ANY)));
 			assertTrue(
-					graph.contains(new Triple(node("S"), Node.ANY, Node.ANY)));
+					graph.contains(Triple.create(node("S"), Node.ANY, Node.ANY)));
 		});
 
 	}
@@ -689,7 +689,7 @@ public class GraphContractTest<T extends Graph>
 		try
 		{
 			txnBegin(graph);
-			graph.delete(new Triple(node("S2"), node("P2"), Node.ANY));
+			graph.delete(Triple.create(node("S2"), node("P2"), Node.ANY));
 			txnCommit(graph);
 		} catch (DeleteDeniedException expected)
 		{
@@ -703,7 +703,7 @@ public class GraphContractTest<T extends Graph>
 					graph.contains(triple("S3 P3 O3")));
 		});
 		GL.assertHas("delete", graph,
-				new Triple(node("S2"), node("P2"), Node.ANY));
+				Triple.create(node("S2"), node("P2"), Node.ANY));
 	}
 
 	@ContractTest
@@ -893,32 +893,32 @@ public class GraphContractTest<T extends Graph>
 				triple("S2 P2 O2"), triple("S3 P3 O3") });
 		assertTrue("Missing some values", expected.containsAll(s));
 
-		s = graph.find(new Triple(node("S"), Node.ANY, Node.ANY)).toList();
+		s = graph.find(Triple.create(node("S"), Node.ANY, Node.ANY)).toList();
 		assertEquals(1, s.size());
 		assertTrue("Missing some values", s.contains(triple("S P O")));
 
-		s = graph.find(new Triple(Node.ANY, node("P"), Node.ANY)).toList();
+		s = graph.find(Triple.create(Node.ANY, node("P"), Node.ANY)).toList();
 		assertEquals(1, s.size());
 		assertTrue("Missing some values", s.contains(triple("S P O")));
 
-		s = graph.find(new Triple(Node.ANY, Node.ANY, node("O"))).toList();
+		s = graph.find(Triple.create(Node.ANY, Node.ANY, node("O"))).toList();
 		assertEquals(1, s.size());
 		assertTrue("Missing some values", s.contains(triple("S P O")));
 
-		s = graph.find(new Triple(node("S2"), node("P2"), node("O2"))).toList();
+		s = graph.find(Triple.create(node("S2"), node("P2"), node("O2"))).toList();
 		assertEquals(1, s.size());
 		assertTrue("Missing some values", s.contains(triple("S2 P2 O2")));
 
-		s = graph.find(new Triple(node("S2"), node("P3"), node("O2"))).toList();
+		s = graph.find(Triple.create(node("S2"), node("P3"), node("O2"))).toList();
 		assertEquals(0, s.size());
 
-		s = graph.find(new Triple(Node.ANY, node("P3"), node("O2"))).toList();
+		s = graph.find(Triple.create(Node.ANY, node("P3"), node("O2"))).toList();
 		assertEquals(0, s.size());
 
-		s = graph.find(new Triple(node("S3"), Node.ANY, node("O2"))).toList();
+		s = graph.find(Triple.create(node("S3"), Node.ANY, node("O2"))).toList();
 		assertEquals(0, s.size());
 
-		s = graph.find(new Triple(node("S3"), node("P2"), Node.ANY)).toList();
+		s = graph.find(Triple.create(node("S3"), node("P2"), Node.ANY)).toList();
 		assertEquals(0, s.size());
 		txnRollback(graph);
 	}
@@ -974,7 +974,7 @@ public class GraphContractTest<T extends Graph>
 					String.format(
 							"Should have found 4 elements, does %s really implement literal typing",
 							g.getClass()),
-					4, iteratorToSet(g.find(new Triple(Node.ANY, P,
+					4, iteratorToSet(g.find(Triple.create(Node.ANY, P,
 							NodeCreateUtils.create("42")))).size());
 			txnRollback(g);
 		}
@@ -991,9 +991,9 @@ public class GraphContractTest<T extends Graph>
 			assertTrue(chaten.sameValueAs(chatEN));
 			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
 			txnBegin(g);
-			assertEquals(1, g.find(new Triple(Node.ANY, Node.ANY, chaten))
+			assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chaten))
 					.toList().size());
-			assertEquals(1, g.find(new Triple(Node.ANY, Node.ANY, chatEN))
+			assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chatEN))
 					.toList().size());
 			txnRollback(g);
 		}
@@ -1010,9 +1010,9 @@ public class GraphContractTest<T extends Graph>
 			assertTrue(chaten.sameValueAs(chatEN));
 			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
 			txnBegin(g);
-			assertEquals(1, g.find(new Triple(Node.ANY, Node.ANY, chaten))
+			assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chaten))
 					.toList().size());
-			assertEquals(1, g.find(new Triple(Node.ANY, Node.ANY, chatEN))
+			assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chatEN))
 					.toList().size());
 			txnRollback(g);
 		}

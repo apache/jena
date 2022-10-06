@@ -239,7 +239,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
             throws UpdateDeniedException, AuthenticationRequiredException {
         checkUpdate();
         final Triple base = holder.getBaseItem().asTriple();
-        final Triple newBase = new Triple(base.getSubject(), base.getPredicate(), o.asNode());
+        final Triple newBase = Triple.create(base.getSubject(), base.getPredicate(), o.asNode());
         checkUpdate(base, newBase);
         return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().changeObject(o));
     }
@@ -272,7 +272,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
             throws UpdateDeniedException, AuthenticationRequiredException {
         checkUpdate();
         final Triple base = holder.getBaseItem().asTriple();
-        final Triple newBase = new Triple(base.getSubject(), base.getPredicate(),
+        final Triple newBase = Triple.create(base.getSubject(), base.getPredicate(),
                 NodeFactory.createLiteral(o, "", wellFormed));
         checkUpdate(base, newBase);
         return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().changeObject(o));
@@ -290,7 +290,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
             throws UpdateDeniedException, AuthenticationRequiredException {
         checkUpdate();
         final Triple base = holder.getBaseItem().asTriple();
-        final Triple newBase = new Triple(base.getSubject(), base.getPredicate(),
+        final Triple newBase = Triple.create(base.getSubject(), base.getPredicate(),
                 NodeFactory.createLiteral(o, l, false));
         checkUpdate(base, newBase);
         return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().changeObject(o, l));
@@ -308,7 +308,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
             throws UpdateDeniedException, AuthenticationRequiredException {
         checkUpdate();
         final Triple base = holder.getBaseItem().asTriple();
-        final Triple newBase = new Triple(base.getSubject(), base.getPredicate(),
+        final Triple newBase = Triple.create(base.getSubject(), base.getPredicate(),
                 NodeFactory.createLiteral(o, l, wellFormed));
         checkUpdate(base, newBase);
         return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().changeObject(o, l, wellFormed));
@@ -520,7 +520,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
     }
 
     private Triple getNewTriple(final Triple t, final Object o) {
-        return new Triple(t.getSubject(), t.getPredicate(), NodeFactory.createLiteral(String.valueOf(o), "", false));
+        return Triple.create(t.getSubject(), t.getPredicate(), NodeFactory.createLiteral(String.valueOf(o), "", false));
     }
 
     /**

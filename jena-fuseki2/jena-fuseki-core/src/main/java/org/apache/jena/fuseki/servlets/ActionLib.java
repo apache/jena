@@ -273,8 +273,8 @@ public class ActionLib {
         Lang lang;
 
         if ( ct == null || ct.getContentTypeStr().isEmpty() ) {
-            // head "Content-type:", no value.
-            lang = RDFLanguages.TURTLE;
+            // "Content-type:" header - absent or no value. Guess!
+            lang = defaultLang;
         } else if ( ct.equals(WebContent.ctHTMLForm)) {
             ServletOps.errorBadRequest("HTML Form data sent to SHACL valdiation server");
             return null;

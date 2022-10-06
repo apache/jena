@@ -1,5 +1,5 @@
 /**
- * Licensed to the Apache Software Foundation (ASF) under one
+ * Licensed to the Apache Software Foundation (ASF) sunder one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.common;
+package org.apache.jena.sparql.util;
 
 import static org.junit.Assert.assertEquals;
 
@@ -33,10 +33,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.sse.Item;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.sse.builders.BuilderNode;
-import org.apache.jena.sparql.util.Iso;
-import org.apache.jena.sparql.util.IsoAlg;
-import org.apache.jena.sparql.util.IsoMatcher;
-import org.apache.jena.sparql.util.NodeUtils;
 import org.junit.Test;
 
 public class TestIsoMatcher

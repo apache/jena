@@ -266,8 +266,8 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements SecuredRD
 
     private void checkCreateNewList(final RDFNode value, final Resource tail)
             throws AddDeniedException, AuthenticationRequiredException {
-        checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.first.asNode(), value.asNode()));
-        checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.rest.asNode(), tail.asNode()));
+        checkCreate(Triple.create(SecurityEvaluator.FUTURE, RDF.first.asNode(), value.asNode()));
+        checkCreate(Triple.create(SecurityEvaluator.FUTURE, RDF.rest.asNode(), tail.asNode()));
     }
 
     private Set<Statement> collectStatements(final Set<Action> actions) {
@@ -301,12 +301,12 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements SecuredRD
             // concatenating list onto the empty list is an error
             throw new EmptyListUpdateException("Tried to concatenate onto the empty list");
         }
-        Triple t = new Triple(SecurityEvaluator.FUTURE, RDF.first.asNode(), Node.ANY);
+        Triple t = Triple.create(SecurityEvaluator.FUTURE, RDF.first.asNode(), Node.ANY);
         if (!canCreate(t)) {
             final List<RDFNode> list = new ArrayList<>();
             while (nodes.hasNext()) {
                 final RDFNode n = nodes.next();
-                t = new Triple(SecurityEvaluator.FUTURE, RDF.first.asNode(), n.asNode());
+                t = Triple.create(SecurityEvaluator.FUTURE, RDF.first.asNode(), n.asNode());
                 checkCreate(t);
                 list.add(n);
             }
@@ -333,12 +333,12 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements SecuredRD
             // concatenating list onto the empty list is an error
             throw new EmptyListUpdateException("Tried to concatenate onto the empty list");
         }
-        Triple t = new Triple(SecurityEvaluator.FUTURE, RDF.first.asNode(), Node.ANY);
+        Triple t = Triple.create(SecurityEvaluator.FUTURE, RDF.first.asNode(), Node.ANY);
         if (!canCreate(t)) {
             final ExtendedIterator<RDFNode> iter = list.iterator();
             try {
                 while (iter.hasNext()) {
-                    t = new Triple(SecurityEvaluator.FUTURE, RDF.first.asNode(), iter.next().asNode());
+                    t = Triple.create(SecurityEvaluator.FUTURE, RDF.first.asNode(), iter.next().asNode());
                     checkCreate(t);
                 }
             } finally {
@@ -733,7 +733,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements SecuredRD
             throws UpdateDeniedException, DeleteDeniedException, AuthenticationRequiredException {
         checkUpdate();
 
-        if (!canDelete(new Triple(Node.ANY, RDF.first.asNode(), val.asNode()))) {
+        if (!canDelete(Triple.create(Node.ANY, RDF.first.asNode(), val.asNode()))) {
             RDFList cell = null;
             final ExtendedIterator<RDFList> iter = getFilteredRDFListIterator(Action.Delete);
             while (iter.hasNext()) {
@@ -791,7 +791,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements SecuredRD
     @Override
     public void removeList() throws UpdateDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        final Triple t = new Triple(Node.ANY, RDF.first.asNode(), Node.ANY);
+        final Triple t = Triple.create(Node.ANY, RDF.first.asNode(), Node.ANY);
 
         // have to be able to read and delete to delete all.
         final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Delete, Action.Read });
@@ -831,8 +831,8 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements SecuredRD
                     // verify we can delete and if so delete.
                     final RDFList list = iter.next();
                     final RDFNode retval = list.getRequiredProperty(RDF.first).getObject();
-                    final Triple t = new Triple(list.asNode(), RDF.first.asNode(), retval.asNode());
-                    final Triple t2 = new Triple(list.asNode(), RDF.first.asNode(), value.asNode());
+                    final Triple t = Triple.create(list.asNode(), RDF.first.asNode(), retval.asNode());
+                    final Triple t2 = Triple.create(list.asNode(), RDF.first.asNode(), value.asNode());
                     checkUpdate(t, t2);
                     list.getRequiredProperty(RDF.first).changeObject(value);
                     return SecuredRDFNodeImpl.getInstance(getModel(), retval);
@@ -925,8 +925,8 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements SecuredRD
 
         final Statement rest = holder.getBaseItem().getRequiredProperty(RDF.rest);
         final RDFNode retval = rest.getObject();
-        final Triple t = new Triple(holder.getBaseItem().asNode(), RDF.rest.asNode(), retval.asNode());
-        final Triple t2 = new Triple(holder.getBaseItem().asNode(), RDF.rest.asNode(), tail.asNode());
+        final Triple t = Triple.create(holder.getBaseItem().asNode(), RDF.rest.asNode(), retval.asNode());
+        final Triple t2 = Triple.create(holder.getBaseItem().asNode(), RDF.rest.asNode(), tail.asNode());
         checkUpdate(t, t2);
         rest.changeObject(tail);
         return SecuredRDFListImpl.getInstance(getModel(), retval.as(RDFList.class));
@@ -946,7 +946,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements SecuredRD
     @Override
     public int size() throws ReadDeniedException, AuthenticationRequiredException {
         if (checkSoftRead()) {
-            final Triple t = new Triple(Node.ANY, RDF.first.asNode(), Node.ANY);
+            final Triple t = Triple.create(Node.ANY, RDF.first.asNode(), Node.ANY);
             if (canRead(t)) {
                 return holder.getBaseItem().size();
             }
@@ -973,7 +973,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements SecuredRD
     public SecuredRDFList with(final RDFNode value)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.first.asNode(), value.asNode()));
+        checkCreate(Triple.create(SecurityEvaluator.FUTURE, RDF.first.asNode(), value.asNode()));
         return SecuredRDFListImpl.getInstance(getModel(), holder.getBaseItem().with(value));
     }
 

@@ -95,7 +95,7 @@ public class ReifierStd
         if ( p == null ) return null ;
         Node o = getObject(graph, n, object) ;
         if ( o == null ) return null ;
-        return new Triple(s,p,o) ;
+        return Triple.create(s,p,o) ;
     }
     
     // Get one and only one object
@@ -227,10 +227,10 @@ public class ReifierStd
                 throw new CannotReifyException(node) ;
         }
         
-        graph.add(new Triple(node, rdfType, statement)) ;
-        graph.add(new Triple(node, subject, triple.getSubject())) ;
-        graph.add(new Triple(node, predicate, triple.getPredicate())) ;
-        graph.add(new Triple(node, object, triple.getObject())) ;
+        graph.add(Triple.create(node, rdfType, statement)) ;
+        graph.add(Triple.create(node, subject, triple.getSubject())) ;
+        graph.add(Triple.create(node, predicate, triple.getPredicate())) ;
+        graph.add(Triple.create(node, object, triple.getObject())) ;
 
         return node ;
     }

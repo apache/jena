@@ -81,7 +81,7 @@ public class TestPipedRDFIterators {
                 out.start();
                 // Generate triples
                 for (int i = 1; i <= generateSize; i++) {
-                    Triple t = new Triple(org.apache.jena.graph.NodeFactory.createBlankNode(),
+                    Triple t = Triple.create(org.apache.jena.graph.NodeFactory.createBlankNode(),
                             org.apache.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
                     out.triple(t);
                 }

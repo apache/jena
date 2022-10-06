@@ -92,7 +92,7 @@ public class PathCompiler
         if ( path instanceof P_Link )
         {
             Node pred = ((P_Link)path).getNode() ;
-            Triple t = new Triple(startNode, pred, endNode) ;
+            Triple t = Triple.create(startNode, pred, endNode) ;
             x.add(new TriplePath(t)) ;
             return ;
         }

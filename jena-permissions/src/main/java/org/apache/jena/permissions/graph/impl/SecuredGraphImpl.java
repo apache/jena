@@ -114,7 +114,7 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
     @Override
     public boolean contains(final Node s, final Node p, final Node o)
             throws ReadDeniedException, AuthenticationRequiredException {
-        return contains(new Triple(s, p, o));
+        return contains(Triple.create(s, p, o));
     }
 
     /**
@@ -297,7 +297,7 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
             if (g.size() != holder.getBaseItem().size()) {
                 return false;
             }
-            final Triple t = new Triple(Node.ANY, Node.ANY, Node.ANY);
+            final Triple t = Triple.create(Node.ANY, Node.ANY, Node.ANY);
             if (!canRead(t)) {
                 final ExtendedIterator<Triple> iter = g.find(t);
                 while (iter.hasNext()) {
@@ -323,7 +323,7 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
     public void remove(Node s, Node p, Node o)
             throws UpdateDeniedException, DeleteDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        Triple t = new Triple(s, p, o);
+        Triple t = Triple.create(s, p, o);
         if (t.isConcrete()) {
             checkDelete(t);
         } else {

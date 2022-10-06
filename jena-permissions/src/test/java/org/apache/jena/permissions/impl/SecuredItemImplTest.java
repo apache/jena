@@ -78,7 +78,7 @@ public class SecuredItemImplTest {
         when(evaluator.getPrincipal()).thenReturn(PRINCIPAL);
         when(evaluator.evaluate(any(), any(SecurityEvaluator.Action.class), any(Node.class), any(Triple.class)))
                 .thenReturn(Boolean.TRUE);
-        Triple target = new Triple(SecurityEvaluator.FUTURE, Node.ANY, Var.alloc("var"));
+        Triple target = Triple.create(SecurityEvaluator.FUTURE, Node.ANY, Var.alloc("var"));
         assertTrue(securedItemImpl.canRead(target));
         verify(evaluator).evaluate(principal.capture(), action.capture(), modelNode.capture(), triple.capture());
 
@@ -126,7 +126,7 @@ public class SecuredItemImplTest {
         when(evaluator.getPrincipal()).thenReturn(PRINCIPAL);
         when(evaluator.evaluate(any(), any(SecurityEvaluator.Action.class), any(Node.class), any(Triple.class)))
                 .thenReturn(Boolean.TRUE);
-        Triple target = new Triple(SecurityEvaluator.FUTURE, Node.ANY, Var.alloc("var"));
+        Triple target = Triple.create(SecurityEvaluator.FUTURE, Node.ANY, Var.alloc("var"));
         assertTrue(securedItemImpl.canCreate(target));
         verify(evaluator).evaluate(principal.capture(), action.capture(), modelNode.capture(), triple.capture());
 
@@ -171,7 +171,7 @@ public class SecuredItemImplTest {
         when(evaluator.getPrincipal()).thenReturn(PRINCIPAL);
         when(evaluator.evaluateUpdate(any(), any(Node.class), any(Triple.class), any(Triple.class)))
                 .thenReturn(Boolean.TRUE);
-        Triple target = new Triple(SecurityEvaluator.FUTURE, Node.ANY, Var.alloc("var"));
+        Triple target = Triple.create(SecurityEvaluator.FUTURE, Node.ANY, Var.alloc("var"));
         assertTrue(securedItemImpl.canUpdate(target, Triple.ANY));
         verify(evaluator).evaluateUpdate(principal.capture(), modelNode.capture(), triple.capture(), any());
 
@@ -216,7 +216,7 @@ public class SecuredItemImplTest {
         when(evaluator.getPrincipal()).thenReturn(PRINCIPAL);
         when(evaluator.evaluate(any(), any(SecurityEvaluator.Action.class), any(Node.class), any(Triple.class)))
                 .thenReturn(Boolean.TRUE);
-        Triple target = new Triple(SecurityEvaluator.FUTURE, Node.ANY, Var.alloc("var"));
+        Triple target = Triple.create(SecurityEvaluator.FUTURE, Node.ANY, Var.alloc("var"));
         assertTrue(securedItemImpl.canDelete(target));
         verify(evaluator).evaluate(principal.capture(), action.capture(), modelNode.capture(), triple.capture());
 

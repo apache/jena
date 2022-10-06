@@ -242,7 +242,7 @@ public class TestUpdateOperations
         List<Triple> triples = m.getGraph().find(null,null,null).toList();
 
         Node s = NodeFactory.createURI("http://www.example.org/s");
-        Triple expected = new Triple(s, s, s);
+        Triple expected = Triple.create(s, s, s);
         assertTrue(triples.contains(expected));
         assertEquals(1, triples.size());
     }
@@ -263,8 +263,8 @@ public class TestUpdateOperations
         Node s1 = NodeFactory.createURI("http://www.example.org/base1/s");
         Node s2 = NodeFactory.createURI("http://www.example.org/base2/s");
         assertNotEquals("Bad test: different triples are equals", s1, s2);
-        Triple expected1 = new Triple(s1, s1, s1);
-        Triple expected2 = new Triple(s2, s2, s2);
+        Triple expected1 = Triple.create(s1, s1, s1);
+        Triple expected2 = Triple.create(s2, s2, s2);
         assertTrue(triples.contains(expected1));
         assertTrue(triples.contains(expected2));
         assertEquals(2, triples.size());
@@ -278,7 +278,7 @@ public class TestUpdateOperations
         UpdateAction.execute(req, m);
         List<Triple> triples = m.getGraph().find(null,null,null).toList();
         Node x = NodeFactory.createURI(expectedURI);
-        Triple expected = new Triple(x, x, x);
+        Triple expected = Triple.create(x, x, x);
         assertTrue(triples.contains(expected));
         assertEquals(1, triples.size());
     }

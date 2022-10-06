@@ -125,11 +125,11 @@ public class TestLPDerivation extends TestCase {
         doTest(
                 "(?x p ?y) <- (?x q ?y).", new Node[]{},    // Rules + tabling
                 new Triple[] {                              // Data
-                        new Triple(a, q, b),  
+                        Triple.create(a, q, b),  
                 },
-                new Triple(a, p, b),                        // query
+                Triple.create(a, p, b),                        // query
                 new Triple[] {                              // Expected match list in derivation
-                        new Triple(a, q, b)
+                        Triple.create(a, q, b)
                 },
                 0                                           // Expected rule in derivation
                 );
@@ -143,11 +143,11 @@ public class TestLPDerivation extends TestCase {
                 "(?x p ?y) <- (?x q ?y). (?x p ?y) <- (?x r ?y).", 
                 new Node[]{},    // Rules + tabling
                 new Triple[] {                              // Data
-                        new Triple(a, r, b),  
+                        Triple.create(a, r, b),  
                 },
-                new Triple(a, p, b),                        // query
+                Triple.create(a, p, b),                        // query
                 new Triple[] {                              // Expected match list in derivation
-                        new Triple(a, r, b)
+                        Triple.create(a, r, b)
                 },
                 1                                           // Expected rule in derivation
                 );
@@ -160,13 +160,13 @@ public class TestLPDerivation extends TestCase {
         doTest(
                 "(?x p ?y) <- (?x q ?y) (?x r ?y).",  new Node[]{},    // Rules + tabling
                 new Triple[] {                              // Data
-                        new Triple(a, q, b),  
-                        new Triple(a, r, b),  
+                        Triple.create(a, q, b),  
+                        Triple.create(a, r, b),  
                 },
-                new Triple(a, p, b),                        // query
+                Triple.create(a, p, b),                        // query
                 new Triple[] {                              // Expected match list in derivation
-                        new Triple(a, q, b),  
-                        new Triple(a, r, b)
+                        Triple.create(a, q, b),  
+                        Triple.create(a, r, b)
                 },
                 0                                           // Expected rule in derivation
                 );
@@ -180,13 +180,13 @@ public class TestLPDerivation extends TestCase {
                 "(?x s ?y) <- (?x r ?y). (?x p ?y) <- (?x q ?y) (?x s ?y). ",  
                 new Node[]{},    // Rules + tabling
                 new Triple[] {                              // Data
-                        new Triple(a, q, b),  
-                        new Triple(a, r, b),  
+                        Triple.create(a, q, b),  
+                        Triple.create(a, r, b),  
                 },
-                new Triple(a, p, b),                        // query
+                Triple.create(a, p, b),                        // query
                 new Triple[] {                              // Expected match list in derivation
-                        new Triple(a, q, b),  
-                        new Triple(a, s, b)
+                        Triple.create(a, q, b),  
+                        Triple.create(a, s, b)
                 },
                 1                                           // Expected rule in derivation
                 );
@@ -200,14 +200,14 @@ public class TestLPDerivation extends TestCase {
                 "(?x p ?z) <- (?x p ?y) (?y p ?z).",
                 new Node[]{ p },    // Rules + tabling
                 new Triple[] {                              // Data
-                        new Triple(a, p, b),  
-                        new Triple(a, p, c),  
-                        new Triple(b, p, d),  
+                        Triple.create(a, p, b),  
+                        Triple.create(a, p, c),  
+                        Triple.create(b, p, d),  
                 },
-                new Triple(a, p, d),                        // query
+                Triple.create(a, p, d),                        // query
                 new Triple[] {                              // Expected match list in derivation
-                        new Triple(a, p, b),  
-                        new Triple(b, p, d)
+                        Triple.create(a, p, b),  
+                        Triple.create(b, p, d)
                 },
                 0                                           // Expected rule in derivation
                 );

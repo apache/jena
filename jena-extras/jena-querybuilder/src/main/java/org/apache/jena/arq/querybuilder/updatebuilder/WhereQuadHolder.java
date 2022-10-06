@@ -397,13 +397,13 @@ public class WhereQuadHolder implements QuadHolder {
         Node lastObject = retval;
         for (int i = 0; i < objs.length; i++) {
             Node n = Converters.makeNode(objs[i], prefixHandler.getPrefixes());
-            addWhere(new TriplePath(new Triple(lastObject, RDF.first.asNode(), n)));
+            addWhere(new TriplePath(Triple.create(lastObject, RDF.first.asNode(), n)));
             if (i + 1 < objs.length) {
                 Node nextObject = NodeFactory.createBlankNode();
-                addWhere(new TriplePath(new Triple(lastObject, RDF.rest.asNode(), nextObject)));
+                addWhere(new TriplePath(Triple.create(lastObject, RDF.rest.asNode(), nextObject)));
                 lastObject = nextObject;
             } else {
-                addWhere(new TriplePath(new Triple(lastObject, RDF.rest.asNode(), RDF.nil.asNode())));
+                addWhere(new TriplePath(Triple.create(lastObject, RDF.rest.asNode(), RDF.nil.asNode())));
             }
 
         }

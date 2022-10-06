@@ -92,7 +92,7 @@ class NodeTransformOp extends TransformCopy
         if ( path != null )
             tp2 = new TriplePath(s1, path, o1);
         else {
-            Triple t = new Triple(s1, tp.getPredicate(), o1);
+            Triple t = Triple.create(s1, tp.getPredicate(), o1);
             tp2 = new TriplePath(t);
         }
         return new OpPath(tp2);

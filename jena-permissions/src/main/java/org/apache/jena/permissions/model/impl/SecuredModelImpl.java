@@ -398,7 +398,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredModel add(final Resource s, final Property p, final RDFNode o)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(s.asNode(), p.asNode(), o.asNode()));
+        checkCreate(Triple.create(s.asNode(), p.asNode(), o.asNode()));
         holder.getBaseItem().add(s, p, o);
         return holder.getSecuredItem();
     }
@@ -429,7 +429,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredModel add(final Resource s, final Property p, final String o, final boolean wellFormed)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(s.asNode(), p.asNode(), NodeFactory.createLiteral(o, "", wellFormed)));
+        checkCreate(Triple.create(s.asNode(), p.asNode(), NodeFactory.createLiteral(o, "", wellFormed)));
         holder.getBaseItem().add(s, p, o, wellFormed);
         return holder.getSecuredItem();
     }
@@ -446,7 +446,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredModel add(final Resource s, final Property p, final String lex, final RDFDatatype datatype)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(s.asNode(), p.asNode(), NodeFactory.createLiteral(lex, datatype)));
+        checkCreate(Triple.create(s.asNode(), p.asNode(), NodeFactory.createLiteral(lex, datatype)));
         holder.getBaseItem().add(s, p, lex, datatype);
         return holder.getSecuredItem();
     }
@@ -463,7 +463,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredModel add(final Resource s, final Property p, final String o, final String l)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(s.asNode(), p.asNode(), NodeFactory.createLiteral(o, l, false)));
+        checkCreate(Triple.create(s.asNode(), p.asNode(), NodeFactory.createLiteral(o, l, false)));
         holder.getBaseItem().add(s, p, o, l);
         return holder.getSecuredItem();
     }
@@ -1072,7 +1072,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     @Override
     public SecuredAlt createAlt() throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.type.asNode(), RDF.Alt.asNode()));
+        checkCreate(Triple.create(SecurityEvaluator.FUTURE, RDF.type.asNode(), RDF.Alt.asNode()));
         return SecuredAltImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createAlt());
     }
 
@@ -1088,7 +1088,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredAlt createAlt(final String uri)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(NodeFactory.createURI(uri), RDF.type.asNode(), RDF.Alt.asNode()));
+        checkCreate(Triple.create(NodeFactory.createURI(uri), RDF.type.asNode(), RDF.Alt.asNode()));
         return SecuredAltImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createAlt(uri));
     }
 
@@ -1103,7 +1103,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     @Override
     public SecuredBag createBag() throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.type.asNode(), RDF.Bag.asNode()));
+        checkCreate(Triple.create(SecurityEvaluator.FUTURE, RDF.type.asNode(), RDF.Bag.asNode()));
         return SecuredBagImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createBag());
     }
 
@@ -1119,7 +1119,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredBag createBag(final String uri)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(NodeFactory.createURI(uri), RDF.type.asNode(), RDF.Bag.asNode()));
+        checkCreate(Triple.create(NodeFactory.createURI(uri), RDF.type.asNode(), RDF.Bag.asNode()));
         return SecuredBagImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createBag(uri));
     }
 
@@ -1145,24 +1145,24 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredRDFList createList()
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.type.asNode(), RDF.List.asNode()));
+        checkCreate(Triple.create(SecurityEvaluator.FUTURE, RDF.type.asNode(), RDF.List.asNode()));
         return SecuredRDFListImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createList());
     }
 
     private SecuredRDFList createList(Supplier<ExtendedIterator<? extends RDFNode>> supplier) {
         checkUpdate();
-        checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.type.asNode(), RDF.List.asNode()));
+        checkCreate(Triple.create(SecurityEvaluator.FUTURE, RDF.type.asNode(), RDF.List.asNode()));
         ExtendedIterator<? extends RDFNode> iter = supplier.get();
         List<RDFNode> lst = new ArrayList<RDFNode>();
         try {
             // if the iterator is empty there are no first/rest nodes.
             if (iter.hasNext()) {
-                checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.rest.asNode(), RDF.nil.asNode()));
-                checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.rest.asNode(), SecurityEvaluator.FUTURE));
+                checkCreate(Triple.create(SecurityEvaluator.FUTURE, RDF.rest.asNode(), RDF.nil.asNode()));
+                checkCreate(Triple.create(SecurityEvaluator.FUTURE, RDF.rest.asNode(), SecurityEvaluator.FUTURE));
             }
             while (iter.hasNext()) {
                 RDFNode n = iter.next();
-                checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.first.asNode(), n.asNode()));
+                checkCreate(Triple.create(SecurityEvaluator.FUTURE, RDF.first.asNode(), n.asNode()));
                 lst.add(n);
             }
             return SecuredRDFListImpl.getInstance(holder.getSecuredItem(),
@@ -1387,7 +1387,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredResource createResource(final Resource type)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        final Triple t = new Triple(SecurityEvaluator.FUTURE, RDF.type.asNode(), type.asNode());
+        final Triple t = Triple.create(SecurityEvaluator.FUTURE, RDF.type.asNode(), type.asNode());
         checkCreate(t);
 
         return SecuredResourceImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createResource(type));
@@ -1418,7 +1418,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     }
 
     private boolean canReadOrUpdate(Resource s, Property p, RDFNode o) {
-        Triple t = new Triple(s.asNode(), p.asNode(), o.asNode());
+        Triple t = Triple.create(s.asNode(), p.asNode(), o.asNode());
         boolean canExecute = canUpdate() && canCreate(t);
         if (!canExecute && holder.getBaseItem().contains(s, p, o)) {
             canExecute |= (canRead() && canRead(t));
@@ -1461,7 +1461,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     @Override
     public SecuredSeq createSeq() throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(new Triple(SecurityEvaluator.FUTURE, RDF.type.asNode(), RDF.Alt.asNode()));
+        checkCreate(Triple.create(SecurityEvaluator.FUTURE, RDF.type.asNode(), RDF.Alt.asNode()));
         return SecuredSeqImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createSeq());
     }
 
@@ -2979,7 +2979,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredModel remove(final Resource s, final Property p, final RDFNode o)
             throws UpdateDeniedException, DeleteDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkDelete(new Triple(s.asNode(), p.asNode(), o.asNode()));
+        checkDelete(Triple.create(s.asNode(), p.asNode(), o.asNode()));
         holder.getBaseItem().remove(s, p, o);
         return holder.getSecuredItem();
     }
@@ -3085,7 +3085,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredModel removeAll(final Resource s, final Property p, final RDFNode r)
             throws UpdateDeniedException, DeleteDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        if (!canDelete(new Triple(wildCardNode(s), wildCardNode(p), wildCardNode(r)))) {
+        if (!canDelete(Triple.create(wildCardNode(s), wildCardNode(p), wildCardNode(r)))) {
             final StmtIterator iter = holder.getBaseItem().listStatements(s, p, r);
             try {
                 while (iter.hasNext()) {
@@ -3112,18 +3112,18 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public void removeAllReifications(final Statement s)
             throws UpdateDeniedException, DeleteDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        if (canDelete(new Triple(Node.ANY, RDF.subject.asNode(), wildCardNode(s.getSubject())))
-                && canDelete(new Triple(Node.ANY, RDF.predicate.asNode(), wildCardNode(s.getPredicate())))
-                && canDelete(new Triple(Node.ANY, RDF.object.asNode(), wildCardNode(s.getObject())))) {
+        if (canDelete(Triple.create(Node.ANY, RDF.subject.asNode(), wildCardNode(s.getSubject())))
+                && canDelete(Triple.create(Node.ANY, RDF.predicate.asNode(), wildCardNode(s.getPredicate())))
+                && canDelete(Triple.create(Node.ANY, RDF.object.asNode(), wildCardNode(s.getObject())))) {
             holder.getBaseItem().removeAllReifications(s);
         } else {
             final RSIterator iter = holder.getBaseItem().listReifiedStatements(s);
             try {
                 while (iter.hasNext()) {
                     final ReifiedStatement rs = iter.next();
-                    checkDelete(new Triple(rs.asNode(), RDF.subject.asNode(), wildCardNode(s.getSubject())));
-                    checkDelete(new Triple(rs.asNode(), RDF.predicate.asNode(), wildCardNode(s.getPredicate())));
-                    checkDelete(new Triple(rs.asNode(), RDF.object.asNode(), wildCardNode(s.getObject())));
+                    checkDelete(Triple.create(rs.asNode(), RDF.subject.asNode(), wildCardNode(s.getSubject())));
+                    checkDelete(Triple.create(rs.asNode(), RDF.predicate.asNode(), wildCardNode(s.getPredicate())));
+                    checkDelete(Triple.create(rs.asNode(), RDF.object.asNode(), wildCardNode(s.getObject())));
                 }
                 holder.getBaseItem().removeAllReifications(s);
             } finally {
@@ -3360,7 +3360,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     }
 
     private Triple wildCardTriple(final Statement s) {
-        return new Triple(wildCardNode(s.getSubject()), wildCardNode(s.getPredicate()), wildCardNode(s.getObject()));
+        return Triple.create(wildCardNode(s.getSubject()), wildCardNode(s.getPredicate()), wildCardNode(s.getObject()));
     }
 
     /**

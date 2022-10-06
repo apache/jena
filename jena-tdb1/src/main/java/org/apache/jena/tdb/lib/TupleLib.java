@@ -88,7 +88,7 @@ public class TupleLib {
         if ( oNode == null )
             throw new InternalErrorException("Invalid id node for object (null node): " + fmt(s, p, o));
 
-        return new Triple(sNode, pNode, oNode);
+        return Triple.create(sNode, pNode, oNode);
     }
 
     private static String fmt(NodeId s, NodeId p, NodeId o) {

@@ -45,7 +45,7 @@ public class ConstructHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void testAddAll() {
-        Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"));
         ConstructHandler handler2 = new ConstructHandler(new Query());
         handler2.addConstruct(t);
@@ -59,7 +59,7 @@ public class ConstructHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void testAddConstruct() {
-        Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"));
         handler.addConstruct(t);
         Template template = query.getConstructTemplate();
@@ -72,7 +72,7 @@ public class ConstructHandlerTest extends AbstractHandlerTest {
     @Test
     public void testSetVars() {
         Var v = Var.alloc("v");
-        Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v);
+        Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v);
         handler.addConstruct(t);
         Template template = query.getConstructTemplate();
         assertNotNull(template);
@@ -88,7 +88,7 @@ public class ConstructHandlerTest extends AbstractHandlerTest {
         assertNotNull(template);
         lst = template.getTriples();
         assertEquals(1, lst.size());
-        t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"));
+        t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"));
         assertEquals(t, lst.get(0));
     }
 

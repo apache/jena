@@ -51,12 +51,12 @@ public class ExProg1
         Var varTitle = Var.alloc("title") ;
         Var varX = Var.alloc("x") ;
         
-        Triple t1 = new Triple(varX, DC.title.asNode(),  varTitle) ;
+        Triple t1 = Triple.create(varX, DC.title.asNode(),  varTitle) ;
         elg.addTriplePattern(t1) ;
         
         // Don't use bNodes for anon variables.  The conversion is done in parsing.
         // BNodes here are assumed to be values from the target graph.
-        Triple t2 = new Triple(varX, DC.description.asNode(), Var.alloc("desc")) ;
+        Triple t2 = Triple.create(varX, DC.description.asNode(), Var.alloc("desc")) ;
         elg.addTriplePattern(t2) ;
         
         // Attach the group to query.  

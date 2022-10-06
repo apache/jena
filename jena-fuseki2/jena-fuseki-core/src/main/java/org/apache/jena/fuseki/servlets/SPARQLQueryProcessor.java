@@ -70,7 +70,8 @@ public abstract class SPARQLQueryProcessor extends ActionService
     @Override
     public void execOptions(HttpAction action) {
         ActionLib.doOptionsGetPost(action);
-        ServletOps.success(action);    }
+        ServletOps.success(action);
+    }
 
     // Not supported - depends on query and body.
     @Override public void execHead(HttpAction action) { super.execHead(action); }
@@ -83,15 +84,16 @@ public abstract class SPARQLQueryProcessor extends ActionService
         executeLifecycle(action);
     }
 
-    /** All the query parameters that are acceptable in a given request.
-    *  This is comprised of, by default,
-    *  <ul>
-    *  <li>SPARQL Protocol for query ({@link #stdParams()}) as mentioned in the spec.
-    *  <li>Fuseki parameters ({@link #fusekiParams()}) e.g. timeout and formatting
-    *  <li>Any custom parameter for this particular servlet ({@link #customParams()}, usually none.
-    *  </ul>
-    *  The default implementation calculates this list of parameters once (on first use).
-    */
+    /**
+     * All the query parameters that are acceptable in a given request.
+     * This is comprised of, by default,
+     * <ul>
+     * <li>SPARQL Protocol for query ({@link #stdParams()}) as mentioned in the spec.
+     * <li>Fuseki parameters ({@link #fusekiParams()}) e.g. timeout and formatting
+     * <li>Any custom parameter for this particular servlet ({@link #customParams()}, usually none.
+     * </ul>
+     * The default implementation calculates this list of parameters once (on first use).
+     */
     private volatile Set<String> acceptedParams_ = null;
     protected Collection<String> acceptedParams(HttpAction action) {
         if ( acceptedParams_ == null ) {

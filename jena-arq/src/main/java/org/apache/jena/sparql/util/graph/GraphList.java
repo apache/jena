@@ -328,14 +328,14 @@ public class GraphList
             // Cell:
             Node consCell = NodeFactory.createBlankNode() ;
             // Last cell to this one.
-            Triple t = new Triple(n, RDF.Nodes.rest, consCell) ;
-            Triple t1 = new Triple(consCell, RDF.Nodes.first, elt) ;
+            Triple t = Triple.create(n, RDF.Nodes.rest, consCell) ;
+            Triple t1 = Triple.create(consCell, RDF.Nodes.first, elt) ;
             n = consCell ;
             bgp.add(t) ;
             bgp.add(t1) ;
         }
         // Finish list.
-        Triple t = new Triple(n, RDF.Nodes.rest, RDF.Nodes.nil) ;
+        Triple t = Triple.create(n, RDF.Nodes.rest, RDF.Nodes.nil) ;
         bgp.add(t) ;
         return head ;
     }

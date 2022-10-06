@@ -192,7 +192,7 @@ public class SecuredModelTest {
 
     @Test
     public void testAsStatement_Exists() {
-        Triple t = new Triple(s.asNode(), p.asNode(), o.asNode());
+        Triple t = Triple.create(s.asNode(), p.asNode(), o.asNode());
         try {
             Statement stmt = securedModel.asStatement(t);
             assertEquals(securedModel, stmt.getModel());
@@ -216,7 +216,7 @@ public class SecuredModelTest {
     @Test
     public void testAsStatement_NotExists() {
         // check a triple that does not exist -- must have update to add it.
-        Triple t = new Triple(s.asNode(), p2.asNode(), o.asNode());
+        Triple t = Triple.create(s.asNode(), p2.asNode(), o.asNode());
         try {
             Statement stmt = securedModel.asStatement(t);
             assertEquals(securedModel, stmt.getModel());
@@ -640,7 +640,7 @@ public class SecuredModelTest {
     @Test
     public void testGetAlt_Existing() throws Exception {
         Resource r = baseModel.createAlt("http://example.com/securedModel/alt");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
 
         try {
             Alt alt = securedModel.getAlt(r);
@@ -676,7 +676,7 @@ public class SecuredModelTest {
     public void testGetAlt_ResourceNotExisting() throws Exception {
 
         Resource r = ResourceFactory.createResource("http://example.com/securedModel/alt");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Alt.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Alt.asNode());
         try {
             Alt alt = securedModel.getAlt(r);
             assertEquals(securedModel, alt.getModel());
@@ -696,7 +696,7 @@ public class SecuredModelTest {
     public void testGetAlt_StringNotExisting() throws Exception {
 
         Resource r = ResourceFactory.createResource("http://example.com/securedModel/alt");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Alt.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Alt.asNode());
         try {
             Alt alt = securedModel.getAlt("http://example.com/securedModel/alt");
             assertEquals(securedModel, alt.getModel());
@@ -772,7 +772,7 @@ public class SecuredModelTest {
     @Test
     public void testGetBag_Existing() {
         final Resource r = baseModel.createBag("http://example.com/securedModel/bag");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
 
         try {
             Bag bag = securedModel.getBag(r);
@@ -807,7 +807,7 @@ public class SecuredModelTest {
     public void testGetBag_ResourceNotExisting() throws Exception {
 
         Resource r = ResourceFactory.createResource("http://example.com/securedModel/bag");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
         try {
             Bag bag = securedModel.getBag(r);
             assertEquals(securedModel, bag.getModel());
@@ -827,7 +827,7 @@ public class SecuredModelTest {
     public void testGetBag_StringNotExisting() throws Exception {
 
         Resource r = ResourceFactory.createResource("http://example.com/securedModel/bag");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
         try {
             Bag bag = securedModel.getBag("http://example.com/securedModel/bag");
             assertEquals(securedModel, bag.getModel());
@@ -1024,7 +1024,7 @@ public class SecuredModelTest {
     @Test
     public void testGetSeq_Existing() {
         final Resource r = baseModel.createSeq("http://example.com/securedModel/seq");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
 
         try {
             Seq seq = securedModel.getSeq(r);
@@ -1059,7 +1059,7 @@ public class SecuredModelTest {
     public void testGetSeq_ResourceNotExisting() throws Exception {
 
         Resource r = ResourceFactory.createResource("http://example.com/securedModel/seq");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Seq.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Seq.asNode());
         try {
             Seq seq = securedModel.getSeq(r);
             assertEquals(securedModel, seq.getModel());
@@ -1079,7 +1079,7 @@ public class SecuredModelTest {
     public void testGetSeq_StringNotExisting() throws Exception {
 
         Resource r = ResourceFactory.createResource("http://example.com/securedModel/seq");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Seq.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Seq.asNode());
         try {
             Seq seq = securedModel.getSeq("http://example.com/securedModel/seq");
             assertEquals(securedModel, seq.getModel());
