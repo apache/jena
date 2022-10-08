@@ -288,7 +288,8 @@ public class GraphMatcher extends java.lang.Object {
                 Triple s = ss.next();
                 AnonStatement ass = new AnonStatement(s);
                 if ( ass.pattern == NOVARS ) {
-                    if ( !containsSameTerm( otherm, s ) ) return -1;
+                    if ( !containsSameTerm( otherm, s ) )
+                        return -1;
                 } else {
                     hash += ass.myHashCode(ass.vars[0]);
                     for (int i=0;i<ass.vars.length;i++) {
@@ -314,13 +315,17 @@ public class GraphMatcher extends java.lang.Object {
      * @return
      */
     private static boolean containsSameTerm(Graph otherm, Triple triple) {
+        // Maybe a value match - same value, different terms - for any literal.
         boolean b = otherm.contains(triple) ;
+        if ( ! b )
+            // If it does not contain by value then it won't contain by term.
+            return false ;
+        // Literals are only in the object position.
         Node o = triple.getObject() ;
         if ( !o.isConcrete() || !o.isLiteral() )
+            // Not a literal (or wildcard).
             return b ;
-        if ( ! b )
-            return false ;
-        // Force to same term when o is a ground literal.
+        // Do S P O-value and check objects using "same term" (Node.equals)
         ExtendedIterator<Triple> iter = otherm.find(triple) ;
         try {
             while (iter.hasNext()) {
