@@ -27,8 +27,10 @@ import java.util.Map.Entry ;
 import java.util.regex.Pattern ;
 
 import org.apache.jena.JenaRuntime ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIProviderJenaIRI.IRIxJena;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.rdf.model.impl.ResourceImpl ;
@@ -131,7 +133,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 
 	String xmlBase = null;
 
-    private IRI baseURI;
+    private IRIx baseURI;
 
 	boolean longId = false;
 
@@ -485,26 +487,17 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         jenaPrefixCount = 0;
         }
 
-    @SuppressWarnings("deprecation")
-    // Testing.
-    // Agrees with ARPOptions.defaultIriFactory.
-    static IRIFactory factory = IRIFactory.jenaImplementation();
-
-
 	private void writeXMLBody( Model model, PrintWriter pw, String base ) {
-        if (showDoctypeDeclaration.booleanValue()) generateDoctypeDeclaration( model, pw );
-//		try {
-        // errors?
-			if (xmlBase == null) {
-				baseURI = (base == null || base.length() == 0) ? null : factory.create(base);
-				writeBody(model, pw, base, false);
-			} else {
-				baseURI = xmlBase.length() == 0 ? null : factory.create(xmlBase);
-				writeBody(model, pw, xmlBase, true);
-			}
-//		} catch (MalformedURIException e) {
-//			throw new BadURIException( e.getMessage(), e);
-//		}
+        if (showDoctypeDeclaration.booleanValue())
+            generateDoctypeDeclaration( model, pw );
+
+        if (xmlBase == null) {
+            baseURI = (base == null || base.length() == 0) ? null : IRIx.create(base);
+            writeBody(model, pw, base, false);
+        } else {
+            baseURI = xmlBase.length() == 0 ? null : IRIx.create(xmlBase);
+            writeBody(model, pw, xmlBase, true);
+        }
 	}
 
 	protected static final Pattern predefinedEntityNames = Pattern.compile( "amp|lt|gt|apos|quot" );
@@ -788,6 +781,29 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         }
 		return rslt;
 	}
+
+	// Copy from jena-iri IRIRelativize for isolation from IRIx provider usge.
+	private class IRIRelativize {
+	    /** Allow same document references (e.g. "" or "#frag").*/
+	    static final public int SAMEDOCUMENT = 1;
+
+	    /** Allow network relative references (e.g. "//example.org/a/b/c"). */
+	    static final public int NETWORK = 2;
+
+	    /** Allow absolute relative references (e.g. "/a/b/c"). */
+	    static final public int ABSOLUTE = 4;
+
+	    /** Allow child relative references (e.g. "b/c"). */
+	    static final public int CHILD = 8;
+
+	    /** Allow parent relative references (e.g. "../b/c"). */
+
+	    static final public int PARENT = 16;
+
+	    /** Allow grandparent relative references (e.g. "../../b/c"). */
+	    static final public int GRANDPARENT = 32;
+	}
+
 	/*
 	private boolean sameDocument = true;
 	private boolean network = false;
@@ -796,11 +812,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	private boolean parent = true;
 	private boolean grandparent = false;
 	*/
-	private int relativeFlags =
-		IRI.SAMEDOCUMENT | IRI.ABSOLUTE | IRI.CHILD | IRI.PARENT;
+	//private int relativeFlags = 0;
+	private int dftRelativeFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.ABSOLUTE | IRIRelativize.CHILD | IRIRelativize.PARENT;
+	private int relativeFlags = dftRelativeFlags;
 
     /**
-        Answer the form of the URI after relativisation according to the relativeFlags set
+        Answer the form of the URI after relativiation according to the relativeFlags set
         by properties. If the flags are 0 or the base URI is null, answer the original URI.
         Throw an exception if the URI is "bad" and we demandGoodURIs.
     */
@@ -813,9 +830,43 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     /**
         Answer the relative form of the URI against the base, according to the relativeFlags.
     */
-    private String relativize( IRI base, String uri )  {
-        // errors?
-        return base.relativize( uri, relativeFlags).toString();
+    private String relativize( IRIx base, String uri )  {
+        if ( relativeFlags == 0 )
+            return uri;
+        // If jena-iri
+        if ( base instanceof IRIxJena ) {
+            org.apache.jena.iri.IRI baseImpl = ((IRIxJena)base).getImpl();
+            return baseImpl.relativize(uri, relativeFlags).toString();
+        }
+        try {
+            if ( relativeFlags != dftRelativeFlags ) {
+                org.apache.jena.iri.IRI baseImpl = org.apache.jena.iri.IRIFactory.iriImplementation().create(base.str());
+                return baseImpl.relativize(uri, relativeFlags).toString();
+            }
+//            if ( relativeFlags == 1 ) {
+//                IRI3986 iri1 = IRI3986.create(base.str());
+//                IRI3986 iri2 = IRI3986.create(uri);
+//                IRI3986 x = AlgIRI2.relativeSameDocument(iri1, iri2);
+//                return x!=null ? x.str() : uri;
+//            }
+//            if ( relativeFlags == 4 ) {
+//                IRI3986 iri1 = IRI3986.create(base.str());
+//                IRI3986 iri2 = IRI3986.create(uri);
+//                IRI3986 x = AlgIRI2.relativeResource(iri1, iri2);
+//                return x!=null ? x.str() : uri;
+//            }
+//            if ( relativeFlags == 8 ) {
+//                IRI3986 iri1 = IRI3986.create(base.str());
+//                IRI3986 iri2 = IRI3986.create(uri);
+//                IRI3986 x = AlgIRI2.relativePath(iri1, iri2);
+//                return x!=null ? x.str() : uri;
+//            }
+
+            IRIx x = base.relativize( IRIx.create(uri) );
+            return x != null ? x.str() : uri ;
+        } catch (IRIException ex) {
+            return uri;
+        }
     }
 
     /**
@@ -824,15 +875,9 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         appear to be a convenient URI.checkGood() kind of method, alas.
      */
     private String checkURI( String uri ) {
-        if (demandGoodURIs) {
-            IRI iri = factory.create( uri );
-
-            if (iri.hasViolation(false) )
-            throw new BadURIException( "Only well-formed absolute URIrefs can be included in RDF/XML output: "
-                     + (iri.violations(false).next()).getShortMessage());
-        }
-
-
+        if (demandGoodURIs)
+            // Valid or exception.
+            IRIs.checkEx(uri);
         return uri;
     }
 
@@ -855,19 +900,20 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         return false;
     }
 
+
     static private String flags2str(int f) {
 	StringBuffer oldValue = new StringBuffer(64);
-	if ( (f&IRI.SAMEDOCUMENT)!=0 )
+	if ( (f&IRIRelativize.SAMEDOCUMENT)!=0 )
 	   oldValue.append( "same-document, " );
-	if ( (f&IRI.NETWORK)!=0 )
+	if ( (f&IRIRelativize.NETWORK)!=0 )
 	   oldValue.append( "network, ");
-	if ( (f&IRI.ABSOLUTE)!=0 )
+	if ( (f&IRIRelativize.ABSOLUTE)!=0 )
 	   oldValue.append("absolute, ");
-	if ( (f&IRI.CHILD)!=0 )
+	if ( (f&IRIRelativize.CHILD)!=0 )
 	   oldValue.append("relative, ");
-	if ((f&IRI.PARENT)!=0)
+	if ((f&IRIRelativize.PARENT)!=0)
 	   oldValue.append("parent, ");
-	if ((f&IRI.GRANDPARENT)!=0)
+	if ((f&IRIRelativize.GRANDPARENT)!=0)
 	   oldValue.append("grandparent, ");
 	if (oldValue.length() > 0)
 	   oldValue.setLength(oldValue.length()-2);
@@ -880,17 +926,17 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	while ( tkn.hasMoreElements() ) {
 	    String flag = tkn.nextToken();
 	    if ( flag.equals("same-document") )
-	       rslt |= IRI.SAMEDOCUMENT;
+	       rslt |= IRIRelativize.SAMEDOCUMENT;
 	    else if ( flag.equals("network") )
-	       rslt |= IRI.NETWORK;
+	       rslt |= IRIRelativize.NETWORK;
 	    else if ( flag.equals("absolute") )
-	       rslt |= IRI.ABSOLUTE;
+	       rslt |= IRIRelativize.ABSOLUTE;
 	    else if ( flag.equals("relative") )
-	       rslt |= IRI.CHILD;
+	       rslt |= IRIRelativize.CHILD;
 	    else if ( flag.equals("parent") )
-	       rslt |= IRI.PARENT;
+	       rslt |= IRIRelativize.PARENT;
 	    else if ( flag.equals("grandparent") )
-	       rslt |= IRI.GRANDPARENT;
+	       rslt |= IRIRelativize.GRANDPARENT;
 	    else
 
 	    logger.warn(

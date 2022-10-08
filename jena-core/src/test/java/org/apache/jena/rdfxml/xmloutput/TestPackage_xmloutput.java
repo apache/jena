@@ -24,28 +24,28 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.apache.jena.irix.IRIException;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.shared.BadURIException ;
 
 /**
  * JUnit regression tests for output
  */
-public class TestPackage extends TestCase{
+public class TestPackage_xmloutput extends TestCase{
 
     /**
      * Answer a suite of all the tests defined here
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
-        
+
         // JENA-1537
-        // Character encoding checks removed due to lack of support in JDK XML parser APIs.  
+        // Character encoding checks removed due to lack of support in JDK XML parser APIs.
         //suite.addTest( TestMacEncodings.suite() );
-        
+
         // add all the tests defined in this class to the suite
         suite.addTestSuite( PrettyWriterTest.class );
-        suite.addTest(new TestWriterInterface("testInterface", null)); 
+        suite.addTest(new TestWriterInterface("testInterface", null));
         suite.addTest( TestWriterAndReader.suiteXML() );
         suite.addTest( TestWriterAndReader.suiteXML_ABBREV() );
         suite.addTest( TestWriterAndReader.suiteN_TRIPLE() );
@@ -55,7 +55,7 @@ public class TestPackage extends TestCase{
         suite.addTestSuite( TestWriterFeatures.class ) ;
         return suite;
     }
-    
+
     /**
          Added as a place to put the test(s) which ensure that thrown URI exceptions
          carry the bad URI with them.
@@ -64,14 +64,17 @@ public class TestPackage extends TestCase{
         {
         public TestURIExceptions( String name )
             { super( name ); }
-        
-        public void testBadURIExceptionContainsBadURIInMessage()
-            {
-            String badURI = "http:";            
-            Model m = ModelFactory.createDefaultModel();
-            m.add( m.createResource( badURI ), m.createProperty( "eg:B C" ), m.createResource( "eg:C D" ) );
-            try { m.write( new StringWriter() ); fail( "should detect bad URI " + badURI ); } 
-            catch (BadURIException e) { assertTrue( "message must contain failing URI", e.getMessage().indexOf( badURI ) > 0 ); }
+
+            public void testBadURIExceptionContainsBadURIInMessage() {
+                String badURI = "http:";
+                Model m = ModelFactory.createDefaultModel();
+                m.add(m.createResource(badURI), m.createProperty("eg:BC"), m.createResource("eg:CD"));
+                try {
+                    m.write(new StringWriter());
+                    fail("should detect bad URI " + badURI);
+                } catch (IRIException e) {
+                    assertTrue("message must contain failing URI", e.getMessage().indexOf(badURI) > 0);
+                }
             }
         }
 

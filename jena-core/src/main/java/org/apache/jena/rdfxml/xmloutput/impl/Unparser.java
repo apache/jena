@@ -119,7 +119,7 @@ package org.apache.jena.rdfxml.xmloutput.impl;
 import java.io.PrintWriter ;
 import java.util.* ;
 
-import org.apache.jena.iri.IRI ;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.PropertyImpl ;
 import org.apache.jena.rdf.model.impl.Util ;
@@ -133,9 +133,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /**
- * An Unparser will output a model in the abbreviated syntax. *
- *
- *          2005/07/13 15:33:51 $'
+ * An Unparser will output a model in the RDF/XML abbreviated syntax.
  */
 class Unparser {
     static private Property LI = new PropertyImpl(RDF.getURI(), "li");
@@ -151,15 +149,15 @@ class Unparser {
      * used. This will control the use of <I>ID</I> or <I>about</I> or
      * <I>resource</I> on various rules.
      *
-     * @param localName
+     * @param outputName
      *            The intended URI of the output file. No trailing "#".
      * @param m
      *            The model.
      * @param w
      *            The output.
      */
-    Unparser(RDFXML_Abbrev parent, String localName, Model m, PrintWriter w) {
-        setLocalName(localName);
+    Unparser(RDFXML_Abbrev parent, String outputName, Model m, PrintWriter w) {
+        setOutputName(outputName);
         prettyWriter = parent;
         out = w;
         model = m;
@@ -223,19 +221,17 @@ class Unparser {
     /**
      * Note: must work with uri being null.
      */
-    private void setLocalName(String uri) {
-        if (uri == null || uri.equals(""))
-            localName = "";
-        else
-//            try
-        {
-                IRI u = BaseXMLWriter.factory.create(uri);
-                u = u.create("");
-                localName = u.toString();
-            }
-//        catch (MalformedURIException e) {
-//                throw new BadURIException(uri, e);
-//            }
+    private void setOutputName(String uri) {
+        if (uri == null || uri.equals("")) {
+            outputName = "";
+            return;
+        }
+
+        // Sort out URI.
+        IRIx u = IRIx.create(uri);
+        // Removes fragments
+        u = u.resolve("");
+        outputName = u.str();
     }
 
     /**
@@ -280,7 +276,7 @@ class Unparser {
 
     final private static Integer one = 1;
 
-    private String localName;
+    private String outputName;
 
     private Map<Resource, Integer> objectTable; // This is a map from Resource to Integer
 
@@ -290,17 +286,15 @@ class Unparser {
 
     private PrintWriter out;
 
-    private Set<Resource> doing = new HashSet<>(); // Some of the resources that
+    // Some of the resources that are currently being written.
+    private Set<Resource> doing = new HashSet<>();
+    // The triples that have been output.
 
-    // are currently being written.
-    private Set<Statement> doneSet = new HashSet<>(); // The triples that have been
-                                            // output.
+    private Set<Statement> doneSet = new HashSet<>();
 
-    private Set<Resource> haveReified = new HashSet<>(); // Those local resources that
-                                                // are
-
-    // the id's of a reification, used to ensure that anonymous
-    // resources are made non-anonymous when reified in certain ways.
+    // Those local resources that are the id's of a reification, used to ensure that
+    // anonymous resources are made non-anonymous when reified in certain ways.
+    private Set<Resource> haveReified = new HashSet<>();
 
     private Resource pleasingTypes[] = null;
 
@@ -337,7 +331,7 @@ class Unparser {
         indentPlus();
         printNameSpaceDefn();
         if (xmlBase != null) {
-            setLocalName(xmlBase);
+            setOutputName(xmlBase);
             tab();
             print("xml:base=" + quote(xmlBase));
         }
@@ -1201,7 +1195,7 @@ class Unparser {
     }
 
     private boolean isLocalReference(Resource r) {
-        return (!r.isAnon()) && getXMLNameSpace(r).equals(localName + "#")
+        return (!r.isAnon()) && getXMLNameSpace(r).equals(outputName + "#")
                 && XMLChar.isValidNCName(getXMLLocalName(r));
     }
 
@@ -1600,7 +1594,7 @@ class Unparser {
      * <li>non-anonymous resources that are the object of more than one rule
      * that are in infinite cycles.
      * <li> any non genuinely anonymous resources that are in infinite cycles
-     * <li>any other resource in an infinite cyle
+     * <li>any other resource in an infinite cycle
      * <li>any other resource.
      * <li>reifications
      * </ul>
@@ -1612,7 +1606,7 @@ class Unparser {
      * allow us to manage the closing issue.
      */
     private Iterator<Resource> listSubjects() {
-        Iterator<Resource> currentFile = new SingletonIterator<>( model.createResource( this.localName ) );
+        Iterator<Resource> currentFile = new SingletonIterator<>( model.createResource( this.outputName ) );
         // The pleasing types
         Iterator<Resource> pleasing = pleasingTypeIterator();
 
@@ -1640,10 +1634,10 @@ class Unparser {
         // This is stuck in the main iterator so that it's hasNext is called
         // at an appropriate time (after the earlier stages, before the later
         // stages).
-        // We use this to trigger the dependency graph evalaution.
+        // We use this to trigger the dependency graph evaluation.
         Iterator<Resource> fakeLazyEvaluator = new NullIterator<Resource>() {
             @Override public boolean hasNext() {
-                // Evalaute dependency graph.
+                // Evaluate dependency graph.
                 findInfiniteCycles();
                 return false;
             }

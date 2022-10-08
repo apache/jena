@@ -1,0 +1,13 @@
+<!-- Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0 -->
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:eg="http://www.example.org/2001/03/#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+>
+
+
+  <rdfs:Class rdf:ID="C">
+    <eg:a>A</eg:a>
+  </rdfs:Class>
+
+</rdf:RDF>

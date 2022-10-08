@@ -3,8 +3,7 @@
     xmlns:NC="http://www.example.org/#"
     xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 
-  <RDF:Description RDF:about="&lt;b&gt;boo">
-  <!--&lt;b&gt;boo">-->
+  <RDF:Description RDF:about="boo">
     <NC:xx />
     <NC:lix RDF:resource="\\"/>
     <NC:lix RDF:resource="'"/>
