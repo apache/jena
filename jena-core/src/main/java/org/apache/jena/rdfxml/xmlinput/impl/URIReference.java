@@ -36,22 +36,12 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
     /** Creates new URIReference */
     final private String uri;
 
-    // URIReference(Location l, AbsXMLContext ctxt,String uri) throws
-    // URISyntaxException, ParseException {
-    //        
-    // // this.uri = new URI(ctxt.getURI(),URIref.encode(uri));
-    // this.uri = ctxt.resolve(l, uri);
-    // }
     protected URIReference(String uri) {
         // this.uri = new URI(URIref.encode(uri));
         this.uri = uri;
         if (uri==null)
             throw new NullPointerException();
     }
-
-//    URIReference() {
-//        uri = null;
-//    }
 
     @Override
     public String toString() {
@@ -101,7 +91,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.jena.rdf.arp.AResource#hasNodeID()
      */
     @Override
@@ -111,7 +101,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.jena.rdf.arp.AResourceInternal#setHasBeenUsed()
      */
     @Override
@@ -120,7 +110,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.jena.rdf.arp.AResourceInternal#getHasBeenUsed()
      */
     @Override
@@ -129,7 +119,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
     }
 
     /**
-     * 
+     *
      * @param f
      *            A frame for error reporting. AbsXMLContext of frame is ignored.
      * @param x
@@ -139,17 +129,16 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
      * @return The resulting URI
      * @throws SAXParseException
      */
-    public static URIReference fromID(Frame f, AbsXMLContext x, String name)
-            throws SAXParseException {
+    public static URIReference fromID(Frame f, AbsXMLContext x, String name) throws SAXParseException {
         // Other errors are checked for by the AttributeLexer
         URIReference rslt = resolve(f,x,"#"+name);
         f.checkIdSymbol(rslt,x,name);
         return rslt;
-        
+
     }
 
     /**
-     * 
+     *
      * @param f
      *            A frame for error reporting. AbsXMLContext of frame is ignored.
      * @param ctxt

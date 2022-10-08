@@ -46,11 +46,11 @@ public class TestPackage extends TestCase {
         addTest(ts,  "Model", org.apache.jena.rdf.model.test.TestPackage.suite());
         addTest(ts,  "StandardModels", org.apache.jena.rdf.model.test.TestStandardModels.suite() );
         addTest(ts,  "Turtle", org.apache.jena.ttl_test.turtle.TurtleTestSuite.suite()) ;
-        addTest(ts,  "XML Output", org.apache.jena.rdfxml.xmloutput.TestPackage.suite());
+        addTest(ts,  "XML Output", org.apache.jena.rdfxml.xmloutput.TestPackage_xmloutput.suite());
         addTest(ts,  "Util", org.apache.jena.util.TestPackage.suite());
         addTest(ts,  "Jena iterator", org.apache.jena.util.iterator.test.TestPackage.suite() );
         addTest(ts,  "Assembler", org.apache.jena.assembler.test.TestAssemblerPackage.suite() );
-        addTest(ts,  "ARP", org.apache.jena.rdfxml.xmlinput.TestPackage.suite());
+        addTest(ts,  "ARP", org.apache.jena.rdfxml.xmlinput.TestPackage_xmlinput.suite());
         addTest(ts,  "Vocabularies", org.apache.jena.vocabulary.test.TestVocabularies.suite() );
         addTest(ts,  "Shared", org.apache.jena.shared.TestSharedPackage.suite() );
         addTest(ts,  "Reasoners", org.apache.jena.reasoner.test.TestPackage.suite());

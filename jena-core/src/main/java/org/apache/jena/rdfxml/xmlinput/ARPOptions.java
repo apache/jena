@@ -31,48 +31,28 @@ import org.apache.jena.iri.IRIFactory;
  * class is not supported. The inheritance of this interface will be removed.
  */
 public class ARPOptions implements ARPErrorNumbers {
-    
-    /**
-     * Do not use this constructor.
-     * An example of not using this constructor is as follows.
-     * <br/>
-     * Deprecated usage:
-     * <br/>
-     * <pre>
-        ARP arp = new ARP();
-        ARPOptions options = new ARPOptions();
-     </pre>
-     <br/>
-     * Preferred code:
-     * <br/>
-     * <pre>
-        ARP arp = new ARP();
-        ARPOptions options = arp.getOptions();
-     </pre>
-     */
-    private ARPOptions() {
-        //*@ deprecated Use {@link ARPConfig#getOptions()}
-        
-    }
-    
+
+    /** Use {@link ARPConfig#getOptions()} */
+    private ARPOptions() {}
+
     /** Internal use only */
     public static ARPOptions createNewOptions() { return new ARPOptions() ; }
-    
+
     private static int defaultErrorMode[] = new int[400];
     static {
         for (int i = 0; i < defaultErrorMode.length; i++)
             defaultErrorMode[i] = i / 100;
-        
+
     }
     private boolean embedding = false;
     private int errorMode[] = defaultErrorMode.clone();
-    
+
     // Note: This is the legacy setup for jena-core only.
-    // When used normally, with RIOT, the IRIFcatory is 
+    // When used normally, with RIOT, the IRIFactory is
     // org.apache.jena.riot.system.IRIResolver.iriFactory
     // which is RDF 1.1 and also the IRIfcatory used by all
     // RIOT parsing.
- 
+
     @SuppressWarnings("deprecation")
     private static IRIFactory defaultIriFactory = IRIFactory.jenaImplementation() ;
     private IRIFactory iriFactory = defaultIriFactory ;
@@ -82,26 +62,26 @@ public class ARPOptions implements ARPErrorNumbers {
      * Illegal error numbers may result in an ArrayIndexOutOfBoundsException but
      * are usually ignored.
      * Most conditions are associated with one or more specific resources or literals
-     * formed during the parse. 
-     * Triples involving resource or literal associated with an error condition 
+     * formed during the parse.
+     * Triples involving resource or literal associated with an error condition
      * are not produced.
-     * The precise definition of 'associated with' is deliberately 
+     * The precise definition of 'associated with' is deliberately
      * undefined, and may change in future releases.
-     * This method can be used to downgrade an error condition to 
+     * This method can be used to downgrade an error condition to
      * a warning, or to upgrade a warning to an error.
      * Such a change modifies which triples are produced.
      * <p>
-     * 
-     * When the condition is a violation of the RDF/XML Syntax (Revised) Recommendations, 
+     *
+     * When the condition is a violation of the RDF/XML Syntax (Revised) Recommendations,
      * and the error mode is {@link ARPErrorNumbers#EM_IGNORE} or  {@link ARPErrorNumbers#EM_WARNING},
-     * the precise rules which ARP uses to generate triples for such ill-formed input are 
+     * the precise rules which ARP uses to generate triples for such ill-formed input are
      * not defined by any standard and are subject to change with future releases.
-     * For input involving no errors, ARP creates triples in accordance with 
-     * the RDF/XML Syntax Revised Recommendation. 
+     * For input involving no errors, ARP creates triples in accordance with
+     * the RDF/XML Syntax Revised Recommendation.
      * <p>
-     * 
+     *
      * The mode can have one of the following four values.
-     * 
+     *
      * <dl>
      * <dt>{@link ARPErrorNumbers#EM_IGNORE}</dt>
      * <dd>Ignore this condition. Produce triples.</dd>
@@ -115,8 +95,7 @@ public class ARPOptions implements ARPErrorNumbers {
      * In unusual situations, a few further warnings and errors may be reported.
      * </dd>
      * </dl>
-     * 
-     * 
+     *
      * @param errno The specific error condition to change.
      * @param mode The new mode for this condition.
      * @return The old error mode for this condition.
@@ -134,7 +113,8 @@ public class ARPOptions implements ARPErrorNumbers {
         errorMode = defaultErrorMode.clone();
     }
 
-    /** As many errors as possible are ignored.
+    /**
+     * As many errors as possible are ignored.
      * As many triples as possible are produced.
      */
     public void setLaxErrorMode() {
@@ -150,11 +130,12 @@ public class ARPOptions implements ARPErrorNumbers {
     }
 
     /**
-     * This method detects and prohibits errors according to
-     *the W3C Recommendations.
-     * For other conditions, such as 
-     {@link ARPErrorNumbers#WARN_PROCESSING_INSTRUCTION_IN_RDF}, nonErrorMode is used. 
-     *@param nonErrorMode The way of treating non-error conditions.
+     * This method detects and prohibits errors according to the W3C Recommendations.
+     * For other conditions, such as
+     * {@link ARPErrorNumbers#WARN_PROCESSING_INSTRUCTION_IN_RDF}, nonErrorMode is
+     * used.
+     *
+     * @param nonErrorMode The way of treating non-error conditions.
      */
     public void setStrictErrorMode(int nonErrorMode) {
         setDefaultErrorMode();
@@ -243,23 +224,24 @@ public class ARPOptions implements ARPErrorNumbers {
     public boolean getEmbedding() {
     	return embedding;
     }
-    
+
     /** Set the IRI factory (and hence the IRI checking rules) */
     public void setIRIFactory(IRIFactory f) { iriFactory = f ; }
-    
+
     /** Get the IRI factory (and hence the IRI checking rules) */
     public IRIFactory getIRIFactory() { return iriFactory ; }
-    
-    /** Set the system-wide default IRI factory, which incorporates the checking rules.
+
+    /**
+     * Set the system-wide default IRI factory, which incorporates the checking rules.
      * By default, Jena provides checking in compliance with the RDF spec but
      * that is quite loose and allows strings that are not IRIs (the final
      * IRI spec came along after the RDF spec).  Example: spaces are
      * strictly legal in RDF URIReferences but not in IRIs or URIs.
-     * Note that options to the RDF/XML parser override this. 
-     */ 
+     * Note that options to the RDF/XML parser override this.
+     */
 
-    public static void setIRIFactoryGlobal(IRIFactory f) { defaultIriFactory = f ; }  
-    
+    public static void setIRIFactoryGlobal(IRIFactory f) { defaultIriFactory = f ; }
+
     /** Get the default (global) IRI factory (and hence the IRI checking rules) */
     public static IRIFactory getIRIFactoryGlobal() { return defaultIriFactory ; }
 }

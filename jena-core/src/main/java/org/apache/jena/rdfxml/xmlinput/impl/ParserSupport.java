@@ -34,11 +34,7 @@ import org.apache.jena.util.XMLChar;
 import org.xml.sax.SAXParseException ;
 
 public class ParserSupport implements ARPErrorNumbers, Names {
-    
-//    protected void checkBadURI(Taint taintMe,RDFURIReference uri) throws SAXParseException {
-//        arp.checkBadURI(taintMe,uri);
-//    }
-    
+
 	protected ParserSupport(XMLHandler arp, AbsXMLContext xml) {
 		this.arp = arp;
         this.xml= xml;
@@ -84,29 +80,18 @@ public class ParserSupport implements ARPErrorNumbers, Names {
 		checkID_XMLName(taintMe,str);
 		checkEncoding(taintMe,str);
 	}
-	
+
 	protected void checkNodeID_XMLName( Taint taintMe, String str) throws SAXParseException {
-	    if ( ! XMLChar.isValidNCName(str) ) { 
+	    if ( ! XMLChar.isValidNCName(str) ) {
             warning(taintMe,
                 WARN_BAD_NAME,
                 "Not an XML Name: '" + str + "'");
         }
 	}
-	
-	protected void checkID_XMLName( Taint taintMe, String str) throws SAXParseException {
-	    // Was called "checkXMLName" and same code as checkNodeID_XMLName until Jena 3.1.0.
-	    // See JENA-1071
-	    
-	    // Java and xerces are XML 1.0 4th edition.
-	    // XML 1.0 5th edition and XML 1.1 allow a wider range of characters in an NCName.
-	    
-	    // rdf:about="..." is any string but rdf:ID="..." is an XML NCName.
-	    
-	    // This operation here should allow the wider range to make
-	    // it compatible with rdf:about="...full URI..."
 
+	protected void checkID_XMLName( Taint taintMe, String str) throws SAXParseException {
 	    //if (!XMLChar.isValidNCName(str)) {
-		if ( ! XML11Char.isXML11ValidNCName(str) ) { 
+		if ( ! XML11Char.isXML11ValidNCName(str) ) {
 			warning(taintMe,
 				WARN_BAD_NAME,
 				"Not an XML Name: '" + str + "'");
@@ -138,53 +123,6 @@ public class ParserSupport implements ARPErrorNumbers, Names {
                     + "\" (" + (int)ch[st]+ ")");
     }
 
-	
-//	public void checkXMLLang(Taint taintMe, String lang) throws SAXParseException {
-//		if (lang.equals(""))
-//			return;
-//		try {
-//			LanguageTag tag = new LanguageTag(lang);
-//			int tagType = tag.tagType();
-//			if (tagType == LT_ILLEGAL) {
-//				warning(taintMe,
-//					WARN_BAD_XMLLANG,
-//					tag.errorMessage());
-//			}
-//			if ((tagType & LT_UNDETERMINED) == LT_UNDETERMINED) {
-//				warning(taintMe,
-//					WARN_BAD_XMLLANG,
-//					"Unnecessary use of language tag \"und\" prohibited by RFC3066");
-//			}
-//			if ((tagType & LT_IANA_DEPRECATED) == LT_IANA_DEPRECATED) {
-//				warning(taintMe,
-//					WARN_DEPRECATED_XMLLANG,
-//					"Use of deprecated language tag \"" + lang + "\".");
-//			}
-//			if ((tagType & LT_PRIVATE_USE) == LT_PRIVATE_USE) {
-//				warning(taintMe,
-//					IGN_PRIVATE_XMLLANG,
-//					"Use of (IANA) private language tag \"" + lang + "\".");
-//			} else if ((tagType & LT_LOCAL_USE) == LT_LOCAL_USE) {
-//				warning(taintMe,
-//					IGN_PRIVATE_XMLLANG,
-//					"Use of (ISO639-2) local use language tag \""
-//						+ lang
-//						+ "\".");
-//			} else if ((tagType & LT_EXTRA) == LT_EXTRA) {
-//				warning(taintMe,
-//					IGN_PRIVATE_XMLLANG,
-//					"Use of additional private subtags on language \""
-//						+ lang
-//						+ "\".");
-//			}
-//		} catch (LanguageTagSyntaxException e) {
-//			warning(taintMe,
-//				WARN_MALFORMED_XMLLANG,
-//				e.getMessage());
-//		}
-//	}
-
-
 	public void checkEncoding(Taint taintMe, String s) throws SAXParseException {
 		if (arp.encodingProblems) {
 			for (int i = s.length() - 1; i >= 0; i--) {
@@ -206,29 +144,33 @@ public class ParserSupport implements ARPErrorNumbers, Names {
     protected void warning(Taint taintMe, int i, String msg) throws SAXParseException {
         arp.warning(taintMe, i,msg);
     }
+
     protected boolean isWhite(char ch[], int st, int ln) {
         for (int i=0;i<ln;i++)
             if (! isWhite(ch[st+i]) )
                 return false;
          return true;
     }
+
     protected boolean isWhite(StringBuffer buf) {
         for (int i=buf.length()-1;i>=0;i--)
            if (! isWhite(buf.charAt(i)) )
                return false;
         return true;
     }
+
     private boolean isWhite(char c) {
         switch (c) {
-        case '\n' :
-        case '\r' :
-        case '\t' :
-        case ' ' :
-            return true;
-        default :
-            return false;
+            case '\n' :
+            case '\r' :
+            case '\t' :
+            case ' ' :
+                return true;
+            default :
+                return false;
+        }
     }
-    }
+
     protected void triple(ANode a, ANode b, ANode c) {
         arp.triple(a,b,c);
     }
@@ -243,8 +185,6 @@ public class ParserSupport implements ARPErrorNumbers, Names {
 
     protected String resolve(Taint taintMe,AbsXMLContext x, String uri) throws SAXParseException {
         IRI ref = x.resolveAsURI(arp,taintMe,uri);
-//        checkBadURI(taintMe,ref);
         return ref.toString();
     }
-
 }
