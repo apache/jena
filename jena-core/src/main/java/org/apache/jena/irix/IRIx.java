@@ -19,6 +19,7 @@
 package org.apache.jena.irix;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 /**
  * Support for RFC3986 IRIs.
@@ -113,6 +114,9 @@ public abstract class IRIx {
      * This not a term in
      * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>
      * and it is not the same as "absolute URI".
+     * This is a change from
+     * <a href="https://tools.ietf.org/html/rfc2396">RFC 2396</a>
+     * where an absolute URI means "has scheme".
      * <p>
      * In RDF data it is a
      * <a href="https://www.w3.org/TR/rdf11-concepts/#section-IRIs">useful concept</a>.
@@ -182,6 +186,18 @@ public abstract class IRIx {
      * If no relative IRI can be found, return null.
      */
     public abstract IRIx relativize(IRIx other);
+
+    /**
+     * Does this IRIx have any warnings and errors that are
+     * not syntax errors, for example, from URI scheme checks.
+     */
+    public abstract boolean hasViolations();
+
+    /**
+     * Handle violations by sending a boolean, indicating whether this is an error or
+     * a warning, and string message to a handler.
+     */
+    public abstract void handleViolations(BiConsumer<Boolean, String> violation);
 
     /**
      * Return the URI as string. This has a stronger contract than "toString".

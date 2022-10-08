@@ -175,7 +175,7 @@ public class TestIRIx extends AbstractTestIRIx {
 
     @Test public void relative_http_07() { relative("http://example/abcd", "http://example/abcd?query=qs#f", "?query=qs#f"); }
 
-    @Test public void relative_http_08() { relative("http://example/dir1/dir2/path", "http://example/otherDir/abcd", null); }
+    @Test public void relative_http_08() { relative("http://example/dir1/dir2/path", "http://example/otherDir/abcd", "/otherDir/abcd"); }
 
     @Test public void relative_http_09() { relative("http://example/path", "http://example/path", ""); }
 
