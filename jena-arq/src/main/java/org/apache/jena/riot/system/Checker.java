@@ -155,7 +155,7 @@ public class Checker {
                     continue;
                 }
 
-                // Convert selected violations from ERROR to WARN for output/
+                // Convert selected violations from ERROR to WARN for output.
                 // There are cases where jena-iri always makes a violation an ERROR regardless of SetupJenaIRI
                 // PROHIBITED_COMPONENT_PRESENT
 //                if ( code == Violation.PROHIBITED_COMPONENT_PRESENT )
