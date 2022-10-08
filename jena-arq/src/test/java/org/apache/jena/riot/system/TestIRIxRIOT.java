@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.ByteArrayInputStream;
@@ -30,79 +30,155 @@ import java.util.Optional;
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIxResolver;
+import org.apache.jena.irix.SystemIRIx;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.RiotException;
 import org.junit.FixMethodOrder;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runners.MethodSorters;
 
 /** Test IRIx in parser usage. */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestIRIxRIOT {
 
+    private static final String ProviderName = SystemIRIx.getProvider().getClass().getSimpleName();
+
     // The cases:
     // _nt        ::  N-triples, default configuration.
     // _nt_check  ::  N-triples, with checking.
     // _ttl       :: Turtle, default configuration (which is checking).
 
-    @Test public void irix_http_1_nt()          { testDft("<http://example/>", Lang.NT, 0, 0); }
-    @Test public void irix_http_1_nt_check()    { testNT("<http://example/>", TRUE, UNSET, 0, 0); }
-    @Test public void irix_http_1_ttl()         { testDft("<http://example/>", Lang.TTL, 0, 0); }
+    private static String httpUri01 = "<http://example/>";
+    @Test public void irix_http_1_nt()          { testDft (httpUri01, Lang.NT, 0, 0); }
+    @Test public void irix_http_1_nt_check()    { testLang(httpUri01, Lang.NT, TRUE, UNSET, 0, 0); }
+    @Test public void irix_http_1_ttl()         { testDft (httpUri01, Lang.TTL, 0, 0); }
 
-    @Test public void irix_http_2_nt()          { testDft("<HTTP://example/>", Lang.NT, 0, 0); }
-    @Test public void irix_http_2_nt_check()    { testLang("<HTTP://example/>", Lang.NT, UNSET, TRUE, 0, 1); }
-    @Test public void irix_http_2_ttl()         { testDft("<HTTP://example/>", Lang.TTL, 0, 1); }
+    private static String httpUri02 = "<HTTP://example/>";
+    @Test public void irix_http_2_nt()          { testDft (httpUri02, Lang.NT, 0, 0); }
+    @Test public void irix_http_2_nt_check()    { testLang(httpUri02, Lang.NT, UNSET, TRUE, 0, 1); }
+    @Test public void irix_http_2_ttl()         { testDft (httpUri02, Lang.TTL, 0, 1); }
 
-    @Test public void irix_http_3_nt()          { testDft("<http://EXAMPLE/>", Lang.NT, 0, 0); }
-    @Test public void irix_http_3_nt_check()    { testLang("<http://EXAMPLE/>", Lang.NT, UNSET, TRUE, 0, 0); }
-    @Test public void irix_http_3_ttl()         { testDft("<http://EXAMPLE/>", Lang.TTL, 0, 0); }
+    private static String httpUri03 = "<http://EXAMPLE/>";
+    @Test public void irix_http_3_nt()          { testDft (httpUri03, Lang.NT, 0, 0); }
+    @Test public void irix_http_3_nt_check()    { testLang(httpUri03, Lang.NT, UNSET, TRUE, 0, 0); }
+    @Test public void irix_http_3_ttl()         { testDft (httpUri03, Lang.TTL, 0, 0); }
 
-    @Test public void irix_http_4_nt()          { testDft("<http://user:pw@host/>", Lang.NT, 0, 0); }
-    @Test public void irix_http_4_nt_check()    { testLang("<http://user:pw@host/>", Lang.NT, UNSET, TRUE, 0, 2); }
-    @Test public void irix_http_4_ttl()         { testDft("<http://user:pw@host/>", Lang.TTL, 0, 2); }
+    private static String httpUri04 = "<http://user:pw@host/>";
+    @Test public void irix_http_4_nt()          { testDft (httpUri04, Lang.NT, 0, 0); }
+    @Test public void irix_http_4_nt_check()    { testLang(httpUri04, Lang.NT, UNSET, TRUE, 0, 2); }
+    @Test public void irix_http_4_ttl()         { testDft (httpUri04, Lang.TTL, 0, 2); }
 
-    @Test public void irix_uuid_1_nt()          { testDft("<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79>", Lang.NT, 0, 0); }
-    @Test public void irix_uuid_1_nt_check()    { testLang("<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79>", Lang.NT, UNSET, TRUE, 0, 0); }
-    @Test public void irix_uuid_1_ttl()         { testDft("<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79>", Lang.TTL, 0, 0); }
+    private static String httpUri05 = "<http://user@host/>";
+    @Test public void irix_http_5_nt()          { testDft (httpUri05, Lang.NT, 0, 0); }
+    @Test public void irix_http_5_nt_check()    { testLang(httpUri05, Lang.NT, UNSET, TRUE, 0, 1); }
+    @Test public void irix_http_5_ttl()         { testDft (httpUri05, Lang.TTL, 0, 1); }
 
-    @Test public void irix_uuid_2_nt()          { testDft("<urn:uuid:bad>", Lang.NT, 0, 1); }
-    @Test public void irix_uuid_2_nt_check()    { testLang("<urn:uuid:bad>", Lang.NT, UNSET, TRUE, 0, 1); }
-    @Test public void irix_uuid_2_ttl()         { testDft("<urn:uuid:bad>", Lang.TTL, 0, 1); }
+    private static String urnuuid01 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79>";
+    @Test public void irix_uuid_1_nt()          { testDft (urnuuid01, Lang.NT, 0, 0); }
+    @Test public void irix_uuid_1_nt_check()    { testLang(urnuuid01, Lang.NT, UNSET, TRUE, 0, 0); }
+    @Test public void irix_uuid_1_ttl()         { testDft (urnuuid01, Lang.TTL, 0, 0); }
 
-    @Test public void irix_uuid_3_nt()          { testDft("<urn:uuid:bad>", Lang.NT, 0, 1); }
-    @Test public void irix_uuid_3_nt_check()    { testLang("<urn:uuid:bad>", Lang.NT, UNSET, TRUE, 0, 1); }
-    @Test public void irix_uuid_3_ttl()         { testDft("<urn:uuid:bad>", Lang.TTL, 0, 1); }
+    // urn:uuid -- IRI3986 answers
+    //
+//    private static String urnuuid02 = "<urn:uuid:bad>";
+//    @Test public void irix_uuid_2_nt()          { testDft (urnuuid02, Lang.NT, 0, 0); }
+//    @Test public void irix_uuid_2_nt_check()    { testLang(urnuuid02, Lang.NT, UNSET, TRUE, 0, 1); }
+//    @Test public void irix_uuid_2_ttl()         { testDft (urnuuid02, Lang.TTL, 0, 1); }
+//
+//    private static String uuid03 = "<uuid:bad>";
+//    @Test public void irix_uuid_3_nt()          { testDft (uuid03, Lang.NT, 0, 0); }
+//    @Test public void irix_uuid_3_nt_check()    { testLang(uuid03, Lang.NT, UNSET, TRUE, 0, 1); }
+//    @Test public void irix_uuid_3_ttl()         { testDft (uuid03, Lang.TTL, 0, 1); }
+//
+//    private static String urnuuid04 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79?query>";
+//    @Test public void irix_uuid_4_nt()          { testDft (urnuuid04, Lang.NT, 0, 0); }
+//    @Test public void irix_uuid_4_nt_check()    { testLang(urnuuid04, Lang.NT, UNSET, TRUE, 0, 1); }
+//    @Test public void irix_uuid_4_ttl()         { testDft (urnuuid04, Lang.TTL, 0, 1); }
+//
+//    private static String uruuidurn05 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79#fragment>";
+//    @Test public void irix_uuid_5_nt()          { testDft (uruuidurn05, Lang.NT, 0, 0); }
+//    @Test public void irix_uuid_5_nt_check()    { testLang(uruuidurn05, Lang.NT, UNSET, TRUE, 0, 1); }
+//    @Test public void irix_uuid_5_ttl()         { testDft (uruuidurn05, Lang.TTL, 0, 1); }
+//
+//    private static String urnuuid06 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79?query#fragment>";
+//    @Test public void irix_uuid_6_nt()          { testDft (urnuuid06, Lang.NT, 0, 0); }
+//    @Test public void irix_uuid_6_nt_check()    { testLang(urnuuid06, Lang.NT, UNSET, TRUE, 0, 2); }
+//    @Test public void irix_uuid_6_ttl()         { testDft (urnuuid06, Lang.TTL, 0, 2); }
+//
+//    private static String uuid07 = "<uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79?query#fragment>";
+//    @Test public void irix_uuid_7_nt()          { testDft (uuid07, Lang.NT, 0, 0); }
+//    @Test public void irix_uuid_7_nt_check()    { testLang(uuid07, Lang.NT, UNSET, TRUE, 0, 2); }
+//    @Test public void irix_uuid_7_ttl()         { testDft (uuid07, Lang.TTL, 0, 2); }
 
-    @Test public void irix_uuid_4_nt()          { testDft("<uuid:bad>", Lang.NT, 0, 1); }
-    @Test public void irix_uuid_4_nt_check()    { testLang("<uuid:bad>", Lang.NT, UNSET, TRUE, 0, 1); }
-    @Test public void irix_uuid_4_ttl()         { testDft("<uuid:bad>", Lang.TTL, 0, 1); }
+    // -- urn:uuid -- jena-iri answers
+    // The warning on bad UUIDs is from IRIProviderjenaIRI, not jena-iri, and so it isn't check/no check sensitive.
+    private static String urnuuid02 = "<urn:uuid:bad>";
+    @Test public void irix_uuid_2_nt()          { testDft (urnuuid02, Lang.NT, 0, 1); }
+    @Test public void irix_uuid_2_nt_check()    { testLang(urnuuid02, Lang.NT, UNSET, TRUE, 0, 1); }
+    @Test public void irix_uuid_2_ttl()         { testDft (urnuuid02, Lang.TTL, 0, 1); }
 
-    @Test public void irix_urn_1_nt()           { testDft("<urn:ab:c>", Lang.NT, 0, 0); }
-    @Test public void irix_urn_1_nt_check()     { testLang("<urn:ab:c>", Lang.NT, UNSET, TRUE, 0, 0); }
-    @Test public void irix_urn_1_ttl()          { testDft("<urn:ab:c>", Lang.TTL, 0, 0); }
+    private static String uuid03 = "<uuid:bad>";
+    @Test public void irix_uuid_3_nt()          { testDft (uuid03, Lang.NT, 0, 1); }
+    @Test public void irix_uuid_3_nt_check()    { testLang(uuid03, Lang.NT, UNSET, TRUE, 0, 1); }
+    @Test public void irix_uuid_3_ttl()         { testDft (uuid03, Lang.TTL, 0, 1); }
+
+    private static String urnuuid04 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79?query>";
+    @Test public void irix_uuid_4_nt()          { testDft (urnuuid04, Lang.NT, 0, 0); }
+    @Test public void irix_uuid_4_nt_check()    { testLang(urnuuid04, Lang.NT, UNSET, TRUE, 0, 1); }
+    @Test public void irix_uuid_4_ttl()         { testDft (urnuuid04, Lang.TTL, 0, 1); }
+
+    private static String uruuidurn05 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79#fragment>";
+    @Test public void irix_uuid_5_nt()          { testDft (uruuidurn05, Lang.NT, 0, 1); }
+    @Test public void irix_uuid_5_nt_check()    { testLang(uruuidurn05, Lang.NT, UNSET, TRUE, 0, 1); }
+    @Test public void irix_uuid_5_ttl()         { testDft (uruuidurn05, Lang.TTL, 0, 1); }
+
+    private static String urnuuid06 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79?query#fragment>";
+    @Test public void irix_uuid_6_nt()          { testDft (urnuuid06, Lang.NT, 0, 0); }
+    @Test public void irix_uuid_6_nt_check()    { testLang(urnuuid06, Lang.NT, UNSET, TRUE, 0, 1); }
+    @Test public void irix_uuid_6_ttl()         { testDft (urnuuid06, Lang.TTL, 0, 1); }
+
+    private static String uuid07 = "<uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79?query#fragment>";
+    @Test public void irix_uuid_7_nt()          { testDft (uuid07, Lang.NT, 0, 1); }
+    @Test public void irix_uuid_7_nt_check()    { testLang(uuid07, Lang.NT, UNSET, TRUE, 0, 1); }
+    @Test public void irix_uuid_7_ttl()         { testDft (uuid07, Lang.TTL, 0, 1); }
+
+    // -- urn:uuid
+
+    private static String uri08 = "<urn:ab:c>";
+    @Test public void irix_urn_1_nt()           { testDft (uri08, Lang.NT, 0, 0); }
+    @Test public void irix_urn_1_nt_check()     { testLang(uri08, Lang.NT, UNSET, TRUE, 0, 0); }
+    @Test public void irix_urn_1_ttl()          { testDft (uri08, Lang.TTL, 0, 0); }
 
     // URNs are required to have 2+ character NID : RFC 8141
-    @Test public void irix_urn_2_nt()           { testDft("<urn:x:c>", Lang.NT, 0, 0); }
-    @Test public void irix_urn_2_nt_check()     { testLang("<urn:x:c>", Lang.NT, UNSET, TRUE, 0, 1); }
-    @Test public void irix_urn_2_ttl()          { testDft("<urn:x:c>", Lang.TTL, 0, 1); }
+    private static String uri09 = "<urn:x:c>";
+    @Test public void irix_urn_2_nt()           { testDft (uri09, Lang.NT, 0, 0); }
+    @Test public void irix_urn_2_nt_check()     { testLang(uri09, Lang.NT, UNSET, TRUE, 0, 1); }
+    @Test public void irix_urn_2_ttl()          { testDft (uri09, Lang.TTL, 0, 1); }
 
-    @Test public void irix_urn_3_nt()           { testDft("<urn:00:c>", Lang.NT, 0, 0); }
-    @Test public void irix_urn_3_nt_check()     { testLang("<urn:00:c>", Lang.NT, UNSET, TRUE, 0, 0); }
-    @Test public void irix_urn_3_ttl()          { testDft("<urn:00:c>", Lang.TTL, 0, 0); }
+    private static String uri10 = "<urn:00:c>";
+    @Test public void irix_urn_3_nt()           { testDft (uri10, Lang.NT, 0, 0); }
+    @Test public void irix_urn_3_nt_check()     { testLang(uri10, Lang.NT, UNSET, TRUE, 0, 0); }
+    @Test public void irix_urn_3_ttl()          { testDft (uri10, Lang.TTL, 0, 0); }
 
     // URIs
-    @Test public void irix_err_1_nt()           { testDft("<http://host/bad path/>", Lang.NT, 1, 1); }
-    @Test public void irix_err_1_nt_check()     { testLang("<http://host/bad path/>", Lang.NT, UNSET, TRUE, 1, 1); }
-    @Test public void irix_err_1_ttl()          { testDft("<http://host/bad path/>", Lang.TTL, 1, 1); }
+    private static String uri11 = "<http://host/bad path/>";
+    @Test public void irix_err_1_nt()           { testDft (uri11, Lang.NT, 1, 1); }
+    @Test public void irix_err_1_nt_check()     { testLang(uri11, Lang.NT, UNSET, TRUE, 1, 1); }
+    @Test public void irix_err_1_ttl()          { testDft (uri11, Lang.TTL, 1, 1); }
 
     // NT: Relative URI
-    @Test public void irix_relative_nt()           { testNT("<relative>", UNSET, UNSET, 0, 0); }
-    @Test public void irix_relative_nt_check()     { testNT("<relative>", UNSET, TRUE, 0, 1); }
-    @Test public void irix_relative_nt_strict()    { testNT("<relative>", TRUE, UNSET, 1, 0); }
-    @Test public void irix_relative_nt_strict_check()    { testNT("<relative>", TRUE, TRUE, 1, 0); }
-    @Test public void irix_relative_nt_strict_nocheck()   { testNT("<relative>", TRUE, FALSE, 1, 0); }
+    private static String uriRel = "<relative>";
+    @Test public void irix_relative_nt()                { testNT(uriRel, UNSET, UNSET, 0, 0); }
+    @Test public void irix_relative_nt_check()          { testNT(uriRel, UNSET, TRUE, 0, 1); }
+    @Test public void irix_relative_nt_strict()         { testNT(uriRel, TRUE, UNSET, 1, 0); }
+    @Test public void irix_relative_nt_strict_check()   { testNT(uriRel, TRUE, TRUE, 1, 0); }
+    @Test public void irix_relative_nt_strict_nocheck() { testNT(uriRel, TRUE, FALSE, 1, 0); }
 
     // -------- Special cases for Turtle.
     // Turtle - base defaults to system base in normal use.
@@ -110,81 +186,92 @@ public class TestIRIxRIOT {
     @Test
     public void irix_relative_3_ttl() {
         assumeTrue(IRIs.getBaseStr() != null);
-        testTTL("<relative>", UNSET, UNSET, 0, 0);
+        testTTL(uriRel, UNSET, UNSET, 0, 0);
     }
 
     // Turtle with directly set resolver, non-standard setup. no base, resolve, no relative IRIs
     @Test public void irix_ttl_resolver_0() {
         // Resolver:: default is allowRelative(true)
         IRIxResolver resolver = IRIxResolver.create().noBase().build();
-        testTTL("<relative>", resolver, 0, 1);
+        testTTL(uriRel, resolver, 0, 1);
     }
 
     @Test public void irix_ttl_resolver_1() {
         // Resolver:: no base, no relative IRIs -> error.
         IRIxResolver resolver = IRIxResolver.create().noBase().allowRelative(false).build();
-        testTTL("<relative>", resolver, 1, 0);
+        testTTL(uriRel, resolver, 1, 0);
     }
 
     // Turtle with directly set resolver, non-standard setup. No base, no resolve, no relative IRIs.
     @Test public void irix_ttl_resolver_2() {
         // Resolver:: no base, no relative IRIs, no resolving -> error.
         IRIxResolver resolver = IRIxResolver.create().noBase().resolve(false).allowRelative(false).build();
-        testTTL("<relative>", resolver, 1, 0);
+        testTTL(uriRel, resolver, 1, 0);
     }
 
     @Test public void irix_ttl_resolver_3() {
         // Resolver:: no base, allow relative IRIs -> warning.
         IRIxResolver resolver = IRIxResolver.create().noBase().resolve(true).allowRelative(true).build();
-        testTTL("<relative>", resolver, 0, 1);
+        testTTL(uriRel, resolver, 0, 1);
     }
 
     @Test public void irix_ttl_resolver_4() {
         // Resolver:: no base, allow relative IRIs, no resolving -> warning.
         IRIxResolver resolver = IRIxResolver.create().noBase().resolve(false).allowRelative(true).build();
-        testTTL("<relative>", resolver, 0, 1);
+        testTTL(uriRel, resolver, 0, 1);
     }
 
     @Test public void irix_ttl_resolver_5() {
         // Resolver:: no base, allow relative IRIs, no resolving -> warning.
         IRIxResolver resolver = IRIxResolver.create().noBase().resolve(false).allowRelative(true).build();
-        testTTL("<relative>", resolver, 0, 1);
+        testTTL(uriRel, resolver, 0, 1);
     }
 
     // --------
+    // Get the test name.
+    private String testMethodName = null;
+    @Rule
+    public TestRule watcher = new TestWatcher() {
+        @Override protected void starting(Description description) {
+            testMethodName = description.getMethodName();
+        }
+        @Override protected void finished(Description description) {
+            testMethodName = null;
+        }
+    };
 
     private static final Optional<Boolean> TRUE  = Optional.of(true);
     private static final Optional<Boolean> FALSE = Optional.of(false);
     private static final Optional<Boolean> UNSET = Optional.empty();
 
     // Default behaviour of Lang.
-    private static void testDft(String iri, Lang lang, int numErrors, int numWarnings) {
+    private void testDft(String iri, Lang lang, int numErrors, int numWarnings) {
         testLang(iri, lang, /*base*/null, UNSET, UNSET, numErrors, numWarnings);
     }
 
-    // Behaviour of Lang, toegther with settable strict and checking.
-    private static void testLang(String iri, Lang lang, Optional<Boolean> strict, Optional<Boolean> checking, int numErrors, int numWarnings) {
+    // Behaviour of Lang, together with settable strict and checking.
+    private void testLang(String iri, Lang lang, Optional<Boolean> strict, Optional<Boolean> checking, int numErrors, int numWarnings) {
         testLang(iri, lang, /*base*/null, strict, checking, numErrors, numWarnings);
     }
 
     // N-triples
-    private static void testNT(String iri, Optional<Boolean> strict, Optional<Boolean> checking, int numErrors, int numWarnings) {
+    private void testNT(String iri, Optional<Boolean> strict, Optional<Boolean> checking, int numErrors, int numWarnings) {
         testLang(iri, Lang.NT, /*base*/null, strict, checking, numErrors, numWarnings);
     }
 
     // Turtle, with base.
-    private static void testTTL(String iri, Optional<Boolean> strict, Optional<Boolean> checking, int numErrors, int numWarnings) {
+    private void testTTL(String iri, Optional<Boolean> strict, Optional<Boolean> checking, int numErrors, int numWarnings) {
         testLang(iri, Lang.TTL, "http://base/", strict, checking, numErrors, numWarnings);
     }
 
     // Turtle, with resolver
-    private static void testTTL(String iri, IRIxResolver resolver, int numErrors, int numWarnings) {
+    private void testTTL(String iri, IRIxResolver resolver, int numErrors, int numWarnings) {
         InputStream in = generateSource(iri);
         RDFParserBuilder builder = RDFParser.source(in).forceLang(Lang.TTL).resolver(resolver);
         runTest(builder, iri, numErrors, numWarnings);
     }
 
-    private static void testLang(String iri, Lang lang, String base, Optional<Boolean> strict, Optional<Boolean> checking, int numErrors, int numWarnings) {
+    private void testLang(String iri, Lang lang, String base, Optional<Boolean> strict, Optional<Boolean> checking, int numErrors, int numWarnings) {
         InputStream in = generateSource(iri);
         RDFParserBuilder builder = RDFParser.source(in).forceLang(lang);
         builder.base(base);
@@ -195,7 +282,7 @@ public class TestIRIxRIOT {
         runTest(builder, iri, numErrors, numWarnings);
     }
 
-    private static void runTest(RDFParserBuilder builder, String iri, int numErrors, int numWarnings) {
+    private void runTest(RDFParserBuilder builder, String iri, int numErrors, int numWarnings) {
         StreamRDF dest = new CatchParserOutput();
         ErrorHandlerCollector eh = new ErrorHandlerCollector();
         builder.errorHandler(eh);
@@ -206,26 +293,25 @@ public class TestIRIxRIOT {
         int numErrorsActual = eh.errors.size();
         int numWarningsActual = eh.warnings.size();
 
-        String msg = "Errors=("+numErrors+",got="+numErrorsActual+") Warnings=("+numWarnings+",got="+numWarningsActual+")";
+        String msg = ProviderName+" --"+
+                     " Errors=(expected="+numErrors+",got="+numErrorsActual+")"+
+                     " Warnings=(expected="+numWarnings+",got="+numWarningsActual+")";
+        boolean testPasses = ( numErrors == numErrorsActual && numWarnings == numWarningsActual );
 
-        if ( numErrors != numErrorsActual || numWarnings != numWarningsActual ) {
-            System.err.println("== "+iri);
+        if ( !testPasses ) {
+            System.err.println("== "+testMethodName+" : "+iri);
             System.err.println("-- "+msg);
             if ( numErrorsActual == 0 )
-                System.err.println("Errors: None");
+                ; //System.err.println("Errors: None");
             else
                 eh.errors.forEach(m->System.err.println("Error: "+m));
             if ( numWarningsActual == 0 && numWarnings >= 0 )
                 System.err.println("Warnings: None");
             else
                 eh.warnings.forEach(m->System.err.println("Warnings: "+m));
+            System.err.println();
         }
-
-        assertEquals("Errors ("+msg+")", numErrors, numErrorsActual);
-        // Only tested if errors passes.
-        // -1 => ignore
-        if ( numWarnings >= 0 )
-            assertEquals("Warnings ("+msg+")", numWarnings, numWarningsActual);
+        assertTrue(msg, testPasses);
     }
 
     private static InputStream generateSource(String iri) {
