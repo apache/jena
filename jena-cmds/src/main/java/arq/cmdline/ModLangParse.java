@@ -110,8 +110,6 @@ public class ModLangParse extends ModBase
             baseIRI = cmdLine.getValue(argBase);
             try {
                 IRIx iri = IRIs.reference(baseIRI);
-                if ( !iri.isAbsolute() )
-                    throw new CmdException("Base IRI not suitable for use as a base for RDF: " + baseIRI);
             } catch (IRIException ex) {
                 throw new CmdException("Bad base IRI: " + baseIRI);
             }
