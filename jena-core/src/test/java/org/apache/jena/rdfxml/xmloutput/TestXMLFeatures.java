@@ -26,6 +26,7 @@ import java.util.Set ;
 import java.util.regex.Pattern ;
 
 import org.apache.jena.graph.* ;
+import org.apache.jena.irix.IRIException;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFReaderI ;
@@ -36,7 +37,6 @@ import org.apache.jena.rdf.model.test.ModelTestBase ;
 import org.apache.jena.rdfxml.xmlinput.RDFXMLReader;
 import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter ;
 import org.apache.jena.rdfxml.xmloutput.impl.SimpleLogger ;
-import org.apache.jena.shared.BadURIException ;
 import org.apache.jena.shared.InvalidPropertyURIException ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.vocabulary.RDF ;
@@ -460,10 +460,10 @@ public class TestXMLFeatures extends XMLOutputTestBase {
                     assertTrue("Comparing Model written out and read in.", m.isIsomorphicWith(m2)) ;
                     break ;
             }
-        } catch (BadURIException e) {
+        } catch (IRIException ex) {
             if ( behaviour == BadURI )
                 return ;
-            throw e ;
+            throw ex ;
         } catch (InvalidPropertyURIException je) {
             if ( behaviour == BadPropURI )
                 return ;

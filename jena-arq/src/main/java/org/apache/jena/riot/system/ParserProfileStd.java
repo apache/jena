@@ -96,8 +96,6 @@ public class ParserProfileStd implements ParserProfile {
             return IRIx.createAny(uriStr);
         }
 
-        // Relative IRIs.
-        // jena-iri : these are errors on the
         try {
             IRIx iri = resolver.resolve(uriStr);
             if ( checking )

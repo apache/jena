@@ -31,11 +31,9 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
     public XMLBaselessContext(XMLHandler f, int eno) {
       this(f,eno,f.sameDocRef());
     }
-//    XMLBaselessContext(XMLHandler f, int eno, String baseURI) {
-//        this(f,eno,f.iriFactory().create(baseURI).create(""));
-//    }
+
     XMLBaselessContext(XMLHandler f, int eno, IRI baseURI) {
-        super(true, null, baseURI, 
+        super(true, null, baseURI,
                 new TaintImpl(), "",
                 new TaintImpl());
         errno = eno;
@@ -77,7 +75,7 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
         IRI newB = resolveAsURI(forErrors, taintB, b, false);
         if (newB.isRelative() )
             return new XMLBaselessContext(forErrors,errno,newB.create(""));
-        
+
         if (newB.hasViolation(false))
             return new XMLBaselessContext(forErrors,ERR_RESOLVING_AGAINST_MALFORMED_BASE,newB);
         return new XMLContext(keepDocument(forErrors), document, newB
@@ -104,9 +102,8 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
         String resolvedURI = rslt.toString();
         if (relUri.equals(resolvedURI) && rslt.isAbsolute())
             return;
-        
-        forErrors.warning(taintMe, errno, errmsg + ": <" + relUri + ">");
-       
-    }
 
+        forErrors.warning(taintMe, errno, errmsg + ": <" + relUri + ">");
+
+    }
 }

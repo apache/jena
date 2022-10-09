@@ -19,6 +19,7 @@
 package org.apache.jena.irix;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 /**
  * Non-resolving provider that accepts anything string for &lt;...&gt;.
@@ -67,15 +68,25 @@ public class IRIProviderAny  implements IRIProvider {
         public IRIx relativize(IRIx other) {
             return null;
         }
+
         @Override
         public Object getImpl() {
             return str();
         }
 
         @Override
+        public boolean hasViolations() {
+            return false;
+        }
+
+        @Override
+        public void handleViolations(BiConsumer<Boolean, String> handler) {}
+
+        @Override
         public int hashCode() {
             return 29 + super.str().hashCode();
         }
+
         @Override
         public boolean equals(Object obj) {
             if ( this == obj )

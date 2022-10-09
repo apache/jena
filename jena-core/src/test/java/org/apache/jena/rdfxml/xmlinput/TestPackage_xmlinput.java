@@ -20,16 +20,15 @@ package org.apache.jena.rdfxml.xmlinput;
 
 import junit.framework.TestSuite;
 
-public class TestPackage extends TestSuite
+public class TestPackage_xmlinput extends TestSuite
 {
-
     static public TestSuite suite()
     {
-        return new TestPackage() ;
-        
+        return new TestPackage_xmlinput() ;
+
     }
-    
-    private TestPackage()
+
+    private TestPackage_xmlinput()
     {
         super("ARP") ;
         addTest( org.apache.jena.rdfxml.xmlinput.TestARPMain.suite());
@@ -40,7 +39,7 @@ public class TestPackage extends TestSuite
         addTest( org.apache.jena.rdfxml.xmlinput.SAX2RDFTest.suite());
         addTest( org.apache.jena.rdfxml.xmlinput.StAX2ModelTest.suite());
     }
-    
+
     private void addTest(String name, TestSuite tc) {
         tc.setName(name);
         addTest(tc);

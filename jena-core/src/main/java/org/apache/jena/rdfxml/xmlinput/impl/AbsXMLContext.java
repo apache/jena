@@ -30,16 +30,6 @@ import org.xml.sax.SAXParseException ;
 
 public abstract class AbsXMLContext implements ARPErrorNumbers {
 
-    // protected static String truncateXMLBase(String rslt) {
-    // if (rslt == null)
-    // return null;
-    // int hash = rslt.indexOf('#');
-    // if (hash != -1) {
-    // return rslt.substring(0, hash);
-    // }
-    // return rslt;
-    // }
-
     protected final String lang;
 
     protected final Taint langTaint;
@@ -50,9 +40,7 @@ public abstract class AbsXMLContext implements ARPErrorNumbers {
 
     protected final AbsXMLContext document;
 
-    protected AbsXMLContext(boolean useDoc, AbsXMLContext document, IRI uri,
-            Taint baseT, String lang, Taint langT) {
-        // this.base=base;
+    protected AbsXMLContext(boolean useDoc, AbsXMLContext document, IRI uri, Taint baseT, String lang, Taint langT) {
         this.lang = lang;
         langTaint = langT;
         baseTaint = baseT;
@@ -60,27 +48,13 @@ public abstract class AbsXMLContext implements ARPErrorNumbers {
         this.document = useDoc ? (document == null ? this : document) : null;
     }
 
-    protected static Taint initTaint(XMLHandler h, IRI base)
-            throws SAXParseException {
+    protected static Taint initTaint(XMLHandler h, IRI base) throws SAXParseException {
         Taint rslt = new TaintImpl();
         checkURI(h, rslt, base);
         return rslt;
     }
 
-//    protected AbsXMLContext withBase(XMLHandler forErrors, String b)
-//            throws SAXParseException {
-//        TaintImpl taintB = new TaintImpl();
-//        IRI newB = resolveAsURI(forErrors, taintB, b, false);
-//        // TO  DO update MALFORMED_CONTEXT
-//        if (newB.isVeryBad())
-//            return new XMLBaselessContext(forErrors,
-//                    ERR_RESOLVING_AGAINST_MALFORMED_BASE, b);
-//        return new XMLContext(keepDocument(forErrors), document, newB
-//                .create(""), taintB, lang, langTaint);
-//    }
-
-    public AbsXMLContext withBase(XMLHandler forErrors, String b)
-            throws SAXParseException {
+    public AbsXMLContext withBase(XMLHandler forErrors, String b) throws SAXParseException {
         TaintImpl taintB = new TaintImpl();
         IRI newB = resolveAsURI(forErrors, taintB, b, false);
         if (newB.isRelative())
@@ -95,9 +69,7 @@ public abstract class AbsXMLContext implements ARPErrorNumbers {
 
     abstract boolean keepDocument(XMLHandler forErrors);
 
-    protected AbsXMLContext withLang(XMLHandler forErrors, String l)
-            throws SAXParseException {
-
+    protected AbsXMLContext withLang(XMLHandler forErrors, String l) throws SAXParseException {
         Taint taint = new TaintImpl();
         checkXMLLang(forErrors, taint, l);
         return clone(uri, baseTaint, l, taint);
@@ -111,20 +83,13 @@ public abstract class AbsXMLContext implements ARPErrorNumbers {
         return lang;
     }
 
-    // protected RDFURIReference getURI(XMLHandler forErrors, Taint taintMe,
-    // String relUri) throws SAXParseException {
-    // baseUsed(forErrors, taintMe, relUri, null);
-    // if (baseTaint.isTainted())
-    // taintMe.taint();
-    // return uri;
-    // }
     final IRI resolveAsURI(XMLHandler forErrors, Taint taintMe, String relUri)
             throws SAXParseException {
         return resolveAsURI(forErrors, taintMe, relUri, true);
     }
 
-    final IRI resolveAsURI(XMLHandler forErrors, Taint taintMe, String relUri,
-            boolean checkBaseUse) throws SAXParseException {
+    final IRI resolveAsURI(XMLHandler forErrors, Taint taintMe, String relUri, boolean checkBaseUse)
+            throws SAXParseException {
         IRI rslt = uri.create(relUri);
 
         if (checkBaseUse)
@@ -135,12 +100,8 @@ public abstract class AbsXMLContext implements ARPErrorNumbers {
         return rslt;
     }
 
-    abstract void checkBaseUse(XMLHandler forErrors, Taint taintMe,
-            String relUri, IRI rslt) throws SAXParseException;
-
-    // abstract void baseUsed(XMLHandler forErrors, Taint taintMe, String
-    // relUri,
-    // String string) throws SAXParseException;
+    abstract void checkBaseUse(XMLHandler forErrors, Taint taintMe, String relUri, IRI rslt)
+            throws SAXParseException;
 
     protected static void checkURI(XMLHandler forErrors, Taint taintMe, IRI rslt)
             throws SAXParseException {
@@ -169,7 +130,7 @@ public abstract class AbsXMLContext implements ARPErrorNumbers {
     }
 
     private static Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*") ;
-        
+
     /* This is just a light syntactic check of the language tag.
      * See JENA-827.
      * Jena, when parsing RDF/XML, used to check the syntax and against (an encoded copy of) the IANA registry.
@@ -180,7 +141,7 @@ public abstract class AbsXMLContext implements ARPErrorNumbers {
             return;
         if (newLang.equalsIgnoreCase("und") )
             arp.warning(taintMe, WARN_BAD_XMLLANG, "Bad language tag: "+newLang+" (not allowed)") ;
-        if ( ! langPattern.matcher(newLang).matches() ) 
+        if ( ! langPattern.matcher(newLang).matches() )
             arp.warning(taintMe, WARN_BAD_XMLLANG, "Bad language tag: "+newLang) ;
     }
 }

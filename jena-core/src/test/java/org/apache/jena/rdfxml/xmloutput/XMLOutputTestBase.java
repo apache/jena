@@ -148,38 +148,19 @@ public class XMLOutputTestBase extends ModelTestBase
         check(filename, encoding, regexPresent, regexAbsent, false, code);
     }
 
-    protected void check
-        (
-        String filename,
-        String regexAbsent,
-        Change code,
-        String base
-        )
-        throws IOException
-        {
-        check( filename, null, regexAbsent, null, false, Change.none(), base );
-        check( filename, null, null, regexAbsent, false, code, base );
-        }
+    protected void check(String filename, String regexAbsent, Change code, String base) throws IOException {
+        // Ensure regexAbsent is present when no changes (Change.none())
+        check(filename, null, regexAbsent, null, false, Change.none(), base);
+        check(filename, null, null, regexAbsent, false, code, base);
+    }
 
-    protected void check(
-        String filename,
-        String encoding,
-        String regexPresent,
-        String regexAbsent,
-        boolean errs,
-        Change code)
-        throws IOException {
+    protected void check(String filename, String encoding, String regexPresent, String regexAbsent,
+                         boolean errs, Change code) throws IOException {
         check(filename, encoding, regexPresent, regexAbsent, errs, code, "file:"+filename);
     }
 
-    protected void check(String filename,
-                         String encoding,
-                         String regexPresent,
-                         String regexAbsent,
-                         boolean errorExpected,
-                         Change code,
-                         String base)
-                             throws IOException {
+    protected void check(String filename, String encoding, String regexPresent, String regexAbsent,
+                         boolean errorExpected, Change code, String base) throws IOException {
         blockLogger();
         boolean errorsFound;
         Model m = createMemModel();

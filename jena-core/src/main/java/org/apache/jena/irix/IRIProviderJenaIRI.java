@@ -20,6 +20,7 @@ package org.apache.jena.irix;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 
 import org.apache.jena.iri.*;
@@ -92,12 +93,10 @@ public class IRIProviderJenaIRI implements IRIProvider {
             return new IRIxJena(irin.toString(), irin);
         }
 
-        static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
+        // The default setting in previous Jena.
+        static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.ABSOLUTE | IRIRelativize.CHILD | IRIRelativize.PARENT;
         @Override
         public IRIx relativize(IRIx other) {
-            // Align of IRI3986 algorithm.
-            if (jenaIRI.getRawQuery() != null )
-                return null;
             IRIxJena iriOther = (IRIxJena)other;
             IRI iri2 = jenaIRI.relativize(iriOther.jenaIRI, relFlags);
             if ( iri2.equals(iriOther.jenaIRI))
@@ -108,6 +107,17 @@ public class IRIProviderJenaIRI implements IRIProvider {
         @Override
         public IRI getImpl() {
             return jenaIRI;
+        }
+
+        @Override
+        public boolean hasViolations() {
+            return jenaIRI.hasViolation(false);
+        }
+
+        @Override
+        public void handleViolations(BiConsumer<Boolean, String> handler) {
+            jenaIRI.violations(false)
+                   .forEachRemaining(v->handler.accept(v.isError(), v.getShortMessage()));
         }
 
         @Override
@@ -276,6 +286,10 @@ public class IRIProviderJenaIRI implements IRIProvider {
     }
 
     private static void checkUUID(IRI iriObj, String original) {
+        if ( iriObj.hasViolation(true) )
+            // Already has problems.
+            return;
+        // Unfortunately, these tests are check/no-check sensitive.
         if ( iriObj.getRawFragment() != null )
             throw new IRIException("Fragment used with UUID");
         if ( iriObj.getRawQuery() != null )

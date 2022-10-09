@@ -55,10 +55,6 @@ public class SetupJenaIRI {
         return iriCheckerInst;
     }
 
-    // Currently the same factory.
-    // The difference is the treatment in IRIProviderJenaIRI and ParserProfileStd.internalMakeIRI
-    // both of which can be scheme and component sensitive.
-
     /*package*/ static final IRIFactory setupIRIFactory() {
         return setupCheckerIRIFactory();
     }
@@ -110,7 +106,6 @@ public class SetupJenaIRI {
 
         // == Path
         setErrorWarning(iriCheckerFactory, ViolationCodes.NON_INITIAL_DOT_SEGMENT, false, false);
-
 
         // == Character related.
         //setErrorWarning(iriFactoryInst, ViolationCodes.NOT_NFC,  false, false);

@@ -293,50 +293,10 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                 return new XMLBaselessContext(this,
                         WARN_RESOLVING_URI_AGAINST_EMPTY_BASE);
             } else {
-//                if (base.toLowerCase().startsWith("file:")
-//                    && base.length()>5
-//                    && base.charAt(5) != '/'
-//                ) {
-//                    System.err.print(base);
-//                    try {
-//                        base = new File(base.substring(5)).toURL().toString();
-//                        if (base.length()<=6
-//                                || base.charAt(6)!= '/')
-//                            base = "file://"+base.substring(5);
-//                    } catch (MalformedURLException e) {
-//                        // ignore, just leave it alone.
-//                    }
-//                    System.err.println(" ==> "+base);
-//
-//                }
                 return new XMLBaselessContext(this,
                         ERR_RESOLVING_AGAINST_RELATIVE_BASE).withBase(this,base);
             }
     }
-    /*
-    private XMLContext initialContextWithBasex(String base)
-            throws SAXParseException {
-        XMLContext rslt = new XMLContext(this, base);
-        RDFURIReference b = rslt.getURI();
-        if (base == null) {
-            warning(null,IGN_NO_BASE_URI_SPECIFIED,
-                    "Base URI not specified for input file; local URI references will be in error.");
-
-        } else if (base.equals("")) {
-            warning(null,IGN_NO_BASE_URI_SPECIFIED,
-                    "Base URI specified as \"\"; local URI references will not be resolved.");
-
-        } else {
-            checkBadURI(null,b);
-            // Warnings on bad base.
-
-            // if (b.isVeryBad()||b.isRelative()) {
-            // return
-        }
-
-        return rslt;
-    }
-    */
 
     private ARPOptions options = ARPOptions.createNewOptions() ;
     private ARPHandlers handlers = ARPHandlers.createNewHandlers() ;
@@ -364,7 +324,6 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         handlers.setExtendedHandler(newHh.getExtendedHandler());
         handlers.setNamespaceHandler(newHh.getNamespaceHandler());
         handlers.setStatementHandler(newHh.getStatementHandler());
-
     }
 
     private Map<String, Object> nodeIdUserData;
@@ -385,9 +344,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     /**
-     * This method must be always be called after parsing, e.g. in a finally
-     * block.
-     *
+     * This method must be always be called after parsing, e.g. in a finally block.
      */
     void afterParse() {
         while (frame != null) {
@@ -429,15 +386,6 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         if (uri.length() != 0)
              {
                 IRI u = iriFactory().create(uri);
-//                if (u.isVeryBad()) {
-//                    warning(null,
-//                            WARN_BAD_NAMESPACE_URI,
-//                            "The namespace URI: <"
-//                                    + uri
-//                                    + "> is not well formed.");
-//                    return;
-//
-//                }
                 if (!u.isAbsolute()) {
                     warning(null,
                             WARN_RELATIVE_NAMESPACE_URI_DEPRECATED,
@@ -516,6 +464,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     };
 }
 
+// Some contributed code in this file are:
 /*
  *  (c) Copyright 2003, Plugged In Software
  *

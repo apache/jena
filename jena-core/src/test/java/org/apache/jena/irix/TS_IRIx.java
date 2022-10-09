@@ -30,7 +30,7 @@ import org.junit.runners.Suite;
     TestRFC3986.class,
     TestResolve.class,
     TestNormalize.class,
-    TestRelative.class,
+    TestRelative.class
 } )
 
 public class TS_IRIx {

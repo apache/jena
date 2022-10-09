@@ -29,21 +29,18 @@ import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
 import org.xml.sax.SAXParseException ;
 
 /**
- * 
+ *
  * Both the baseURI and the lang may be tainted with errors. They should not be
  * accessed without providing a taint object to propagate such tainting.
  */
 public class XMLContext extends AbsXMLContext implements ARPErrorNumbers
 {
-    // final private String base;
-
     /**
      * Creates new XMLContext
-     * 
+     *
      * @throws SAXParseException
      */
     XMLContext(XMLHandler h, String base) throws SAXParseException {
-
         this(h, h.iriFactory().create(base));
     }
 
@@ -118,5 +115,4 @@ public class XMLContext extends AbsXMLContext implements ARPErrorNumbers
         }
 
     }
-
 }

@@ -58,7 +58,7 @@
       <version>4.7.0-SNAPSHOT</version>
     </dependency>
 
-     <dependency>
+    <dependency>
        <artifactId>commons-cli</artifactId>
        <groupId>commons-cli</groupId>
      </dependency>

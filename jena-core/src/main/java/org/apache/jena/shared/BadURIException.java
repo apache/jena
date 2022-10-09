@@ -19,7 +19,7 @@
 package org.apache.jena.shared;
 
 /**
-    A Jena exception for malformed URIs. 
+    A Jena exception for malformed URIs.
     <p>
     Jena checks URIs sometimes, particularly on input and output.
     It is however possible to have a Jena model which contains
@@ -32,7 +32,9 @@ package org.apache.jena.shared;
     (This one is an unchecked
     exception, so we don't litter our code with try-catch blocks or throws
     declarations.)
+    @deprecated To be removed.
 */
+@Deprecated
 public class BadURIException extends JenaException
     {
     public BadURIException( String message )
