@@ -124,9 +124,7 @@ public class VarScopeUtils {
 
     public static BiMap<Var, Var> normalizeVarScopes(Collection<Var> vars) {
         Map<String, Integer> varToMinLevel = getMinimumScopeLevels(vars);
-
         BiMap<Var, Var> result = HashBiMap.create();
-
         for (Var from : vars) {
             String fromName = from.getName();
             int fromLevel = getScopeLevel(fromName);
@@ -137,7 +135,6 @@ public class VarScopeUtils {
             Var to = allocScoped(plainName, normalizedLevel);
             result.put(from, to);
         }
-
         return result;
     }
 

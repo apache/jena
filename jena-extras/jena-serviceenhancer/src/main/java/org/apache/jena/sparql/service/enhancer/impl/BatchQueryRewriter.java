@@ -33,7 +33,6 @@ import java.util.Set;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.SortCondition;
-import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.OpAsQuery;
 import org.apache.jena.sparql.algebra.op.OpExtend;
@@ -85,11 +84,6 @@ public class BatchQueryRewriter {
     static int REMOTE_END_MARKER = 1000000000;
     static NodeValue NV_REMOTE_END_MARKER = NodeValue.makeInteger(REMOTE_END_MARKER);
 
-    /** True if either local or remote end marker */
-//    public static boolean isLocalOrRemoteEndMarker(int id) {
-//        return isRemoteEndMarker(id) || isLocalEndMarker(id);
-//    }
-
     public static boolean isRemoteEndMarker(int id) {
         return id == REMOTE_END_MARKER;
     }
@@ -97,21 +91,6 @@ public class BatchQueryRewriter {
     public static boolean isRemoteEndMarker(Integer id) {
         return Objects.equals(id, REMOTE_END_MARKER);
     }
-
-
-
-    // Local end marker is not returned by the remote service
-//    static int LOCAL_END_MARKER = 1000000001;
-//    static NodeValue NV_LOCAL_END_MARKER = NodeValue.makeInteger(LOCAL_END_MARKER);
-//
-//    public static boolean isLocalEndMarker(int id) {
-//        return id == LOCAL_END_MARKER;
-//    }
-//
-//    public static boolean isLocalEndMarker(Integer id) {
-//        return Objects.equals(id, LOCAL_END_MARKER);
-//    }
-
 
     public BatchQueryRewriter(OpServiceInfo serviceInfo, Var idxVar,
             boolean sequentialUnion, boolean orderRetainingUnion,
@@ -136,18 +115,17 @@ public class BatchQueryRewriter {
     }
 
     public BatchQueryRewriteResult rewrite(Batch<Integer, PartitionRequest<Binding>> batchRequest) {
-
         Op newOp = null;
         List<Entry<Integer, PartitionRequest<Binding>>> es = new ArrayList<>(batchRequest.getItems().entrySet());
         Collections.reverse(es);
 
-        Query normQuery = serviceInfo.getNormedQuery();
-        Op normOp = serviceInfo.getNormedQueryOp();
+        Query normedQuery = serviceInfo.getNormedQuery();
+        Op normedOp = serviceInfo.getNormedQueryOp();
 
         // Prepare the sort conditions
         List<SortCondition> sortConditions = new ArrayList<>();
         List<SortCondition> localSortConditions =
-                Optional.ofNullable(normQuery.getOrderBy()).orElse(Collections.emptyList());
+                Optional.ofNullable(normedQuery.getOrderBy()).orElse(Collections.emptyList());
 
         boolean noOrderNeeded =
                 orderRetainingUnion || sequentialUnion && localSortConditions.isEmpty();
@@ -162,9 +140,14 @@ public class BatchQueryRewriter {
 
         sortConditions.addAll(localSortConditions);
 
-        for (Entry<Integer, PartitionRequest<Binding>> e : es) { // batchRequest.getItems().entrySet()) {
+        if (!omitEndMarker) {
+            Op endMarker = OpExtend.create(OpTable.unit(), idxVar, NV_REMOTE_END_MARKER);
+            newOp = newOp == null ? endMarker : OpUnion.create(newOp, endMarker);
+        }
 
-            PartitionRequest<Binding> req = e.getValue(); // batchRequest.get(i);
+        for (Entry<Integer, PartitionRequest<Binding>> e : es) {
+
+            PartitionRequest<Binding> req = e.getValue();
             long idx = e.getKey();
             Binding scopedBinding = req.getPartitionKey();
 
@@ -173,37 +156,15 @@ public class BatchQueryRewriter {
             Map<Var, Var> varMapScopedToNormed = ServiceCacheKeyFactory
                     .createJoinVarMapScopedToNormed(serviceInfo, scopedBindingVars);
 
-            // Binding plainBinding = BindingUtils.renameKeys(scopedBinding, serviceInfo.getMentionedSubOpVarsScopedToPlain());
             Binding normedBinding = BindingUtils.renameKeys(scopedBinding, varMapScopedToNormed);
 
             // Op op = serviceInfo.getNormedQueryOp();
-            Op op = normOp;
+            Op op = normedOp;
 
             // Note: QC.substitute does not remove variables being substituted from projections
             //   This may cause unbound variables to be projected
 
-            // If the union is sequential and order retaining we can retain the order on the members
-            // otherwise, we can remove any ordering on the member
-            if ((sequentialUnion && orderRetainingUnion) || localSortConditions.isEmpty()) {
-                // If the union is sequential and order retaining we can retain the order on the members
-                // otherwise, we can remove any ordering on the member
-            } else {
-                // Member order may not be retained - remove it from the query
-
-                // TODO This should be done once OpServiceInfo
-                Query tmp = normQuery.cloneQuery();
-                if (tmp.hasOrderBy()) {
-                    tmp.getOrderBy().clear();
-                }
-
-                op = Algebra.compile(tmp);
-                // TODO Something is odd with ordering here
-                // Add the sort conditions
-                // op = new OpOrder(op, localSortConditions);
-            }
-
             op = QC.substitute(op, normedBinding);
-            op = OpExtend.create(op, idxVar, NodeValue.makeInteger(idx));
 
             long o = req.hasOffset() ? req.getOffset() : Query.NOLIMIT;
             long l = req.hasLimit() ? req.getLimit() : Query.NOLIMIT;
@@ -211,14 +172,11 @@ public class BatchQueryRewriter {
             if (o != Query.NOLIMIT || l != Query.NOLIMIT) {
                 op = new OpSlice(op, o, l);
             }
+            op = OpExtend.create(op, idxVar, NodeValue.makeInteger(idx));
 
             newOp = newOp == null ? op : OpUnion.create(op, newOp);
         }
 
-        if (!omitEndMarker) {
-            Op endMarker = OpExtend.create(OpTable.unit(), idxVar, NV_REMOTE_END_MARKER);
-            newOp = newOp == null ? endMarker : OpUnion.create(newOp, endMarker);
-        }
 
         if (orderNeeded) {
             newOp = new OpOrder(newOp, sortConditions);
