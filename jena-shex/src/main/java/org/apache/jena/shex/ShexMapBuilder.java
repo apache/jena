@@ -28,17 +28,17 @@ public class ShexMapBuilder {
 
     private List<ShexRecord> records = new ArrayList<>();
 
-    public static ShexMap record(Node focus, Node shapeRef) {
+    public static ShapeMap record(Node focus, Node shapeRef) {
         return new ShexMapBuilder().add(focus, shapeRef).build();
     }
 
-    public static ShexMap record(Triple pattern, Node shapeRef) {
+    public static ShapeMap record(Triple pattern, Node shapeRef) {
         return new ShexMapBuilder().add(pattern, shapeRef).build();
     }
 
     public ShexMapBuilder() {}
 
-    public ShexMapBuilder(ShexMap base) {
+    public ShexMapBuilder(ShapeMap base) {
         base.entries().forEach(records::add);
     }
 
@@ -52,9 +52,9 @@ public class ShexMapBuilder {
         return this;
     }
 
-    public ShexMap build() {
+    public ShapeMap build() {
         // Copies argument.
-        ShexMap map = ShexMap.create(records);
+        ShapeMap map = ShapeMap.create(records);
         records.clear();
         return map;
     }

@@ -43,7 +43,7 @@ public class Shex02_validateNode {
 
         // Shapes map.
         System.out.println("Read shapes map");
-        ShexMap shapeMap = Shex.readShapeMap(SHAPES_MAP);
+        ShapeMap shapeMap = Shex.readShapeMap(SHAPES_MAP);
 
         Node data1 = NodeFactory.createURI("http://example/x");
         Node data2 = NodeFactory.createURI("http://example/s");

@@ -41,7 +41,7 @@ public class Shex01_validateGraph {
 
         // Shapes map.
         System.out.println("Read shapes map");
-        ShexMap shapeMap = Shex.readShapeMap(SHAPES_MAP);
+        ShapeMap shapeMap = Shex.readShapeMap(SHAPES_MAP);
 
         // ShexReport
         System.out.println("Validate");
