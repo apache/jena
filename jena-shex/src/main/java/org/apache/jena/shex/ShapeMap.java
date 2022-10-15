@@ -26,38 +26,35 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
 /**
- * DEPRECATED - please use ShapeMap (e.g. ShapeMap.create()) instead.
+ * <a href="https://shexspec.github.io/shape-map/">ShEx shape map</a> used for both
+ * targeting validation and reporting violations.
  */
-@Deprecated
-public class ShexMap {
+public class ShapeMap extends ShexMap {
 
-    protected final List<ShexRecord> associations;
-
-    public static ShexMap create(List<ShexRecord> associations) {
+    public static ShapeMap create(List<ShexRecord> associations) {
         associations = new ArrayList<>(associations);
-        return new ShexMap(associations);
+        return new ShapeMap(associations);
     }
 
-    protected ShexMap(List<ShexRecord> associations) {
-        this.associations = associations;
+    private ShapeMap(List<ShexRecord> associations) {
+        super(associations); // TODO next version: remove super() and replace with:
+        // this.associations = associations;
     }
 
-    public List<ShexRecord> entries() {
-        return Collections.unmodifiableList(associations);
+    // TODO next version: mv ShexMap `List<ShexRecord> entries()` here
+
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    public static ShapeMap.Builder newBuilder() {
-        return new ShapeMap.Builder();
+    public static ShapeMap record(Node focus, Node shapeRef) {
+        return new Builder().add(focus, shapeRef).build();
     }
 
-    public static ShexMap record(Node focus, Node shapeRef) {
-        return new ShapeMap.Builder().add(focus, shapeRef).build();
+    public static ShapeMap record(Triple pattern, Node shapeRef) {
+        return new Builder().add(pattern, shapeRef).build();
     }
 
-    public static ShexMap record(Triple pattern, Node shapeRef) {
-        return new ShapeMap.Builder().add(pattern, shapeRef).build();
-    }
-    /*
     public static class Builder {
 
         private List<ShexRecord> records = new ArrayList<>();
@@ -85,5 +82,4 @@ public class ShexMap {
             return map;
         }
     }
-    */
 }

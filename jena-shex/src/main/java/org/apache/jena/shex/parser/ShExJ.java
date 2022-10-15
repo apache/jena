@@ -31,7 +31,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.shex.ShexException;
 import org.apache.jena.shex.ShexRecord;
-import org.apache.jena.shex.ShexMap;
+import org.apache.jena.shex.ShapeMap;
 
 /** Shape Expressions : JSON syntax */
 public class ShExJ {
@@ -40,7 +40,7 @@ public class ShExJ {
      * @param input
      * @return ShexShapeMap
      */
-    public static ShexMap readShapeMapJson(InputStream input) {
+    public static ShapeMap readShapeMapJson(InputStream input) {
         if ( input instanceof BufferedInputStream )
             input = new BufferedInputStream(input, 128*1024);
         JsonValue x = JSON.parseAny(input);
@@ -52,7 +52,7 @@ public class ShExJ {
             ShexRecord a = parseShapeMapEntry(j.getAsObject());
             associations.add(a);
         });
-        return ShexMap.create(associations);
+        return ShapeMap.create(associations);
     }
 
     private static ShexRecord parseShapeMapEntry(JsonObject obj) {
