@@ -36,7 +36,7 @@ import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.lang.extra.LangParserBase;
 import org.apache.jena.riot.lang.extra.LangParserLib;
-import org.apache.jena.shex.ShexMap;
+import org.apache.jena.shex.ShapeMap;
 import org.apache.jena.shex.ShexRecord;
 import org.apache.jena.shex.ShexSchema;
 import org.apache.jena.shex.ShexShape;
@@ -837,8 +837,8 @@ public class ParserShExC extends LangParserBase {
 
     public void parseShapeMapStart() {}
 
-    public ShexMap parseShapeMapFinish() {
-        return ShexMap.create(associations);
+    public ShapeMap parseShapeMapFinish() {
+        return ShapeMap.create(associations);
     }
 
     protected Triple createTriple(Node s, Node p, Node o, int line, int column) {

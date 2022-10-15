@@ -24,13 +24,13 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shex.*;
 import org.apache.jena.shex.sys.ShexLib;
 
-/** Read data, ShEx schema and ShEx map, then validate */
+/** Read data, ShEx schema and shape map, then validate */
 public class Shex01_validateGraph {
     static { LogCtl.setLogging(); }
 
     public static void main(String ...args) {
         String SHAPES = "examples/schema.shex";
-        String SHAPES_MAP = "examples/shape-map.shexmap";
+        String SHAPES_MAP = "examples/shape-map.smap";
         String DATA = "examples/data.ttl";
 
         System.out.println("Read data");
@@ -41,7 +41,7 @@ public class Shex01_validateGraph {
 
         // Shapes map.
         System.out.println("Read shapes map");
-        ShexMap shapeMap = Shex.readShapeMap(SHAPES_MAP);
+        ShapeMap shapeMap = Shex.readShapeMap(SHAPES_MAP);
 
         // ShexReport
         System.out.println("Validate");
