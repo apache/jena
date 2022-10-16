@@ -78,7 +78,6 @@ public class ShapeEval {
             if ( ! non_matchables.isEmpty() )
                 return false;
         }
-
         return true;
     }
 
@@ -101,14 +100,10 @@ public class ShapeEval {
         }
         else if ( tripleExpr instanceof TripleConstraint ) {
             return ShapeEvalTripleConstraint.matchesCardinalityTC(vCxt, T, node, (TripleConstraint)tripleExpr, extras);
-//            TripleConstraint tc = (TripleConstraint)tripleExpr;
-//            tc.matches(vCxt, data);
         }
         else if ( tripleExpr instanceof TripleExprNone ) {
             return true;
         }
-
-        //return tripleExpr.matchesTE(vCxt, null) != null;
         throw new NotImplemented(tripleExpr.getClass().getSimpleName());
     }
 
