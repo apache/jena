@@ -35,6 +35,8 @@ PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
      ja:baseModel :baseModel ;
      ja:reasoner [
          ja:reasonerURL <http://jena.hpl.hp.com/2003/OWLFBRuleReasoner>
+         # For RDFS: use this instead:
+         ## ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
      ] .
 
 # The base data.
