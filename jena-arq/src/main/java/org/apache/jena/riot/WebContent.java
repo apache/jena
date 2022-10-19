@@ -142,6 +142,9 @@ public class WebContent {
     public static final String contentTypeHTMLForm = "application/x-www-form-urlencoded";
     public static final ContentType ctHTMLForm = ContentType.create(contentTypeHTMLForm);
 
+    public static final String contentTypeHTML = "text/html";
+    public static final ContentType ctTextHTML = ContentType.create(contentTypeHTML);
+
     public static final String contentTypeTextCSV = "text/csv";
     public static final ContentType ctTextCSV = ContentType.create(contentTypeTextCSV);
 
