@@ -29,7 +29,9 @@ import org.apache.jena.graph.Triple;
  * <a href="https://shexspec.github.io/shape-map/">ShEx shape map</a> used for both
  * targeting validation and reporting violations.
  */
-public class ShapeMap extends ShexMap {
+public class ShapeMap {
+
+    protected final List<ShexRecord> associations;
 
     public static ShapeMap create(List<ShexRecord> associations) {
         associations = new ArrayList<>(associations);
@@ -37,11 +39,12 @@ public class ShapeMap extends ShexMap {
     }
 
     private ShapeMap(List<ShexRecord> associations) {
-        super(associations); // TODO next version: remove super() and replace with:
-        // this.associations = associations;
+        this.associations = associations;
     }
 
-    // TODO next version: mv ShexMap `List<ShexRecord> entries()` here
+    public List<ShexRecord> entries() {
+        return Collections.unmodifiableList(associations);
+    }
 
     public static Builder newBuilder() {
         return new Builder();
