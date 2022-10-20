@@ -43,7 +43,7 @@ public class ShexValidationTest implements Runnable {
     private final Node focus;
     private final ShexSchema shapes;
     private final String shapeMapURI;
-    private final ShexMap shapeMap;
+    private final ShapeMap shapeMap;
     private final boolean positiveTest;
     private final boolean verbose = false;
 
