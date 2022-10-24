@@ -45,9 +45,10 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
 
     /*package*/ final String label;
     /*package*/ final Item<FileMode>           fileMode;
-    /*package*/ final Item<Integer>            blockSize;
-    /*package*/ final Item<Integer>            blockReadCacheSize;
-    /*package*/ final Item<Integer>            blockWriteCacheSize;
+
+    /*package*/ final Item<Integer>            blockReadCacheSize;          // Direct mode block cache size
+    /*package*/ final Item<Integer>            blockWriteCacheSize;         // Direct mode block cache size
+
     /*package*/ final Item<Integer>            Node2NodeIdCacheSize;
     /*package*/ final Item<Integer>            NodeId2NodeCacheSize;
     /*package*/ final Item<Integer>            NodeMissCacheSize;
@@ -62,6 +63,7 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
      * If you want to, say, change the index structure,
      * you'll need to use the index tools.
      */
+    /*package*/ final Item<Integer>            blockSize;
 
     /*package*/ final Item<String>             nodeTableBaseName;
 
@@ -161,6 +163,7 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         return StoreParamsConst.smallStoreParams;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }

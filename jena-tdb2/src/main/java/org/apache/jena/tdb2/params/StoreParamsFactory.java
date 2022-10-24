@@ -50,30 +50,37 @@ public class StoreParamsFactory {
      * providing some parameters in the {@link TDB2Factory} call.
      * <p>
      * This includes changing filenames,  indexing choices and block size.
-     * Otherwise, the database may be permanetly and irrecovably corrupted.
+     * Otherwise, the database may be permanently and irrevocably corrupted.
      * You have been warned.
      *
-     * @param location The place where the database is or will be.
-     * @param isNew  Whether the database is being created or whether there is an existing database.
-     * @param pApp   Application-provide store parameters.
-     * @param pLoc   Store parameters foud at the location.
-     * @param pDft   System default store parameters.
-     * @return       StoreParams
+     * @param location      The place where the database is or will be.
+     * @param isNew         Whether the database is being created or whether there is an existing database.
+     * @param pApp          Application-provide store parameters.
+     * @param pLocContainer Store parameters found at the location of the container .
+     * @param pLocStorage Store parameters found at the location of the storage within the container.
+     * @param pDft          System default store parameters.
+     * @return              StoreParams
      *
      * @see StoreParams
      * @see StoreParamsDynamic
      */
-    public static StoreParams decideStoreParams(Location location, boolean isNew, StoreParams pApp, StoreParams pLoc, StoreParams pDft) {
-        StoreParams p = null;
-        if ( pLoc != null ) {
+    public static StoreParams decideStoreParams(Location location, boolean isNew,
+                                                StoreParams pApp,
+                                                StoreParams pLocContainer,
+                                                StoreParams pLocStorage,
+                                                StoreParams pDft) {
+        // Use storage parameters if available, else any in the container (switchable).
+        StoreParams existingStoreParams =  pLocStorage != null ? pLocStorage : pLocContainer;
+
+        if ( existingStoreParams != null ) {
             // pLoc so use it, modify by pApp.
             // Covers new and reconnect cases.
-            p = pLoc;
+            StoreParams p = existingStoreParams;
             if ( pApp != null )
-                p = StoreParamsBuilder.modify(pLoc, pApp);
+                p = StoreParamsBuilder.modify(existingStoreParams, pApp);
             return p;
         }
-        // No pLoc.
+        // No storage or container parameters.
         // Use pApp if available.  Write to location if new.
         if ( pApp != null ) {
             if ( isNew ) {
@@ -86,9 +93,8 @@ public class StoreParamsFactory {
             // Not new : pLoc is implicitly pDft.
             return StoreParamsBuilder.modify(pDft, pApp);
         }
-        // no pLoc, no pApp
+        // no locations, no application params
         return pDft;
     }
-
 }
 

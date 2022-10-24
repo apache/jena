@@ -27,6 +27,9 @@ import org.apache.jena.dboe.base.block.FileMode;
 
 public interface StoreParamsDynamic {
 
+    /** Convenience label - no effect except as a descriptive label */
+    public String getLabel();
+
     /** Store-wide file access mode */
     public FileMode getFileMode();
     public boolean isSetFileMode();
@@ -39,6 +42,8 @@ public interface StoreParamsDynamic {
     public Integer getBlockWriteCacheSize();
     public boolean isSetBlockWriteCacheSize();
 
+
+    // == NodeTable - Triples and Quads
     /** Node cache for Node{@literal ->}NodeId. */
     public Integer getNode2NodeIdCacheSize();
     public boolean isSetNode2NodeIdCacheSize();
@@ -51,7 +56,7 @@ public interface StoreParamsDynamic {
     public Integer getNodeMissCacheSize();
     public boolean isSetNodeMissCacheSize();
 
-    // Same for prefix table.
+    // == NodeTable - Prefix table.
     /** Node cache for Node{@literal ->}NodeId. */
     public Integer getPrefixNode2NodeIdCacheSize();
     public boolean isSetPrefixNode2NodeIdCacheSize();

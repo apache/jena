@@ -43,10 +43,10 @@ import org.junit.Test;
 
 /**
  * This test suite uses on-disk structures, does a lot of clean/create/sync
- * calls and can be noticably slow.
+ * calls and can be noticeably slow.
  */
 public class TestStoreParamsCreate {
-    // Thse tests work on storage locations.
+    // These tests work on storage locations.
     private final String DB_DIR = ConfigTest.getCleanDir();
     private final Path db = Path.of(DB_DIR);
     private final Path cfg = Path.of(DB_DIR, Names.TDB_CONFIG_FILE);
