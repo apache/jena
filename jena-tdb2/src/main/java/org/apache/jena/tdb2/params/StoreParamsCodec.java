@@ -86,6 +86,9 @@ public class StoreParamsCodec {
         JsonBuilder builder = new JsonBuilder();
         builder.startObject("StoreParams");    // "StoreParams" is an internal alignment marker - not in the JSON.
 
+        if ( params.label != null )
+            encode(builder, key(fLabel),                params.getLabel());
+
         encode(builder, key(fFileMode),                 params.getFileMode().name());
         encode(builder, key(fBlockSize),                params.getBlockSize());
         encode(builder, key(fBlockReadCacheSize),       params.getBlockReadCacheSize());
@@ -121,11 +124,12 @@ public class StoreParamsCodec {
     }
 
     public static StoreParams decode(JsonObject json) {
-        StoreParamsBuilder builder = StoreParams.builder();
+        StoreParamsBuilder builder = StoreParams.builder("From JSON");
 
         for ( String key : json.keys() ) {
             String short_key = unkey(key);
             switch(short_key) {
+                case fLabel :                  builder.label(getString(json, key));                        break ;
                 case fFileMode :               builder.fileMode(FileMode.valueOf(getString(json, key)));   break ;
                 case fBlockSize:               builder.blockSize(getInt(json, key));                       break ;
                 case fBlockReadCacheSize:      builder.blockReadCacheSize(getInt(json, key));              break ;

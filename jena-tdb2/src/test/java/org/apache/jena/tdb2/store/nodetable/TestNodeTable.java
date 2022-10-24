@@ -25,11 +25,14 @@ import org.apache.jena.tdb2.params.StoreParamsBuilder;
 
 public class TestNodeTable extends AbstractTestNodeTable
 {
+    private static int counter = 0;
+    private static String label() { return TestNodeTable.class.getSimpleName()+"-"+(++counter); }
+
     @Override
     protected NodeTable createEmptyNodeTable()
     {
         StoreParams params =
-            StoreParamsBuilder.create()
+            StoreParamsBuilder.create(label())
                 .nodeId2NodeCacheSize(10)
                 .node2NodeIdCacheSize(10)
                 .nodeMissCacheSize(10).build();

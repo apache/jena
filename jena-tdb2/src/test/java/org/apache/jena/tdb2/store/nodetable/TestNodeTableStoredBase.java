@@ -28,6 +28,8 @@ import org.apache.jena.tdb2.params.StoreParamsBuilder;
 
 public class TestNodeTableStoredBase extends AbstractTestNodeTable
 {
+    private static int counter = 0;
+    private static String label() { return TestNodeTableStoredBase.class.getSimpleName()+"-"+(++counter); }
 
     static String base = ConfigTest.getTestingDir();
     static Location location = Location.create(base+"/nodetable-test");
@@ -38,7 +40,7 @@ public class TestNodeTableStoredBase extends AbstractTestNodeTable
         FileOps.ensureDir(location.getDirectoryPath());
         FileOps.clearDirectory(location.getDirectoryPath());
         StoreParams params =
-            StoreParamsBuilder.create()
+            StoreParamsBuilder.create(label())
                 .nodeId2NodeCacheSize(-1)
                 .node2NodeIdCacheSize(-1)
                 .nodeMissCacheSize(-1).build();

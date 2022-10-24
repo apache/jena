@@ -120,7 +120,7 @@ public class ProcIngestDataX {
         TDBInternal.expel(dsg0);
 
         if ( true ) {
-            storeParams = StoreParams.builder(storeParams)
+            storeParams = StoreParams.builder("xloader", storeParams)
                     .node2NodeIdCacheSize(10_000_000)
                     .build();
         }

@@ -31,23 +31,26 @@ import org.junit.Test;
 
 public class TestStoreParams {
 
+    private static int counter = 0;
+    private static String label() { return TestStoreParams.class.getSimpleName()+"-"+(++counter); }
+
     @Test public void store_params_01() {
         assertEqualsStoreParams(StoreParams.getDftStoreParams(), StoreParams.getDftStoreParams());
     }
 
     @Test public void store_params_02() {
         StoreParams input = StoreParams.getDftStoreParams();
-        StoreParams sp = StoreParams.builder(input).build();
+        StoreParams sp = StoreParams.builder(label(), input).build();
         assertEqualsStoreParams(StoreParams.getDftStoreParams(), sp);
     }
 
     @Test public void store_params_03() {
-        StoreParams sp = StoreParams.builder().build();
+        StoreParams sp = StoreParams.builder(label()).build();
         assertEqualsStoreParams(StoreParams.getDftStoreParams(), sp);
     }
 
     @Test public void store_params_04() {
-        StoreParams params = StoreParams.builder().build();
+        StoreParams params = StoreParams.builder(label()).build();
         StoreParams params2 = roundTrip(params);
         assertEqualsStoreParams(params,params2);
     }
@@ -55,7 +58,7 @@ public class TestStoreParams {
     // ----
 
     @Test public void store_params_10() {
-        StoreParams params = StoreParams.builder().fileMode(FileMode.direct).blockSize(1024).build();
+        StoreParams params = StoreParams.builder(label()).fileMode(FileMode.direct).blockSize(1024).build();
         StoreParams params2 = roundTrip(params);
         assertEqualsStoreParams(params,params2);
         assertEquals(params.getFileMode(), params2.getFileMode());
@@ -65,7 +68,7 @@ public class TestStoreParams {
     @Test public void store_params_11() {
         String xs = "{ \"tdb.block_size\": 2048 }";
         JsonObject x = JSON.parse(xs);
-        StoreParams paramsExpected = StoreParams.builder().blockSize(2048).build();
+        StoreParams paramsExpected = StoreParams.builder(label()).blockSize(2048).build();
         StoreParams paramsActual = StoreParamsCodec.decode(x);
         assertEqualsStoreParams(paramsExpected,paramsActual);
     }
@@ -73,7 +76,7 @@ public class TestStoreParams {
     @Test public void store_params_12() {
         String xs = "{ \"tdb.file_mode\": \"direct\" , \"tdb.block_size\": 2048 }";
         JsonObject x = JSON.parse(xs);
-        StoreParams paramsExpected = StoreParams.builder().blockSize(2048).fileMode(FileMode.direct).build();
+        StoreParams paramsExpected = StoreParams.builder(label()).blockSize(2048).fileMode(FileMode.direct).build();
         StoreParams paramsActual = StoreParamsCodec.decode(x);
         assertEqualsStoreParams(paramsExpected,paramsActual);
     }
@@ -98,16 +101,16 @@ public class TestStoreParams {
     // Check that setting gets recorded and propagated.
 
     @Test public void store_params_20() {
-        StoreParams params = StoreParams.builder().blockReadCacheSize(0).build();
+        StoreParams params = StoreParams.builder(label()).blockReadCacheSize(0).build();
         assertTrue(params.isSetBlockReadCacheSize());
         assertFalse(params.isSetBlockWriteCacheSize());
     }
 
     @Test public void store_params_21() {
-        StoreParams params1 = StoreParams.builder().blockReadCacheSize(0).build();
+        StoreParams params1 = StoreParams.builder(label()).blockReadCacheSize(0).build();
         assertTrue(params1.isSetBlockReadCacheSize());
         assertFalse(params1.isSetBlockWriteCacheSize());
-        StoreParams params2 = StoreParams.builder(params1).blockWriteCacheSize(0).build();
+        StoreParams params2 = StoreParams.builder(label(), params1).blockWriteCacheSize(0).build();
         assertTrue(params2.isSetBlockReadCacheSize());
         assertTrue(params2.isSetBlockWriteCacheSize());
         assertFalse(params2.isSetNodeMissCacheSize());
@@ -115,11 +118,11 @@ public class TestStoreParams {
 
     // Modify
     @Test public void store_params_22() {
-        StoreParams params1 = StoreParams.builder()
+        StoreParams params1 = StoreParams.builder(label())
             .blockReadCacheSize(0)
             .blockWriteCacheSize(1)
             .build();
-        StoreParams params2 = StoreParams.builder()
+        StoreParams params2 = StoreParams.builder(label())
             .blockReadCacheSize(5)
             .build();
         StoreParams params3 = StoreParamsBuilder.modify(params1, params2);

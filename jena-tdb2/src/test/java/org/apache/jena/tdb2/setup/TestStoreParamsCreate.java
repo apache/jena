@@ -54,7 +54,7 @@ public class TestStoreParamsCreate {
 
     static final StoreParams pApp = StoreParams.getSmallStoreParams();
     static final StoreParams pDft = StoreParams.getDftStoreParams();
-    static final StoreParams pSpecial = StoreParams.builder(pApp)
+    static final StoreParams pSpecial = StoreParams.builder("pApp", pApp)
         .blockSize(1024)
         .blockReadCacheSize(4)
         .build();
