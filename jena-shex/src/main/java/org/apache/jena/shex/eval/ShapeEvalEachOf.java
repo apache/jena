@@ -29,7 +29,6 @@ import org.apache.jena.shex.expressions.TripleExpression;
 import org.apache.jena.shex.expressions.TripleExprEachOf;
 import org.apache.jena.shex.sys.ValidationContext;
 
-public
 /*package*/ class ShapeEvalEachOf {
     // Sufficiently large and complex so separated from ShapeEval.
 

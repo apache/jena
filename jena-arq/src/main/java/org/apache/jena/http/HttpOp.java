@@ -286,7 +286,7 @@ public class HttpOp {
 
     /** POST - the application MUST close the InputStream.*/
     public static TypedInputStream httpPostStream(HttpClient httpClient, String url, String contentType, BodyPublisher bodyContent) {
-        return httpPostStream(httpClient, url, contentType, bodyContent);
+        return httpPostStream(httpClient, url, contentType, bodyContent, null);
     }
 
     /** POST - the application MUST close the InputStream.*/

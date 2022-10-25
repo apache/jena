@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.NotImplemented;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
@@ -303,11 +304,11 @@ public class HttpAction
     public void end() {
         dataService.finishTxn();
         if ( transactional.isInTransaction() ) {
-            Log.warn(this, "Transaction still active - no commit or abort seen (forced abort)");
+            FmtLog.warn(log, "[%d] Transaction still active - no commit or abort seen (forced abort)", this.id);
             try {
                 transactional.abort();
             } catch (RuntimeException ex) {
-                Log.warn(this, "Exception in forced abort (trying to continue)", ex);
+                FmtLog.warn(log, "[%d] Exception in forced abort (trying to continue)", this.id, ex);
             }
         }
         if ( transactional.isInTransaction() ) {

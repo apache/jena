@@ -41,6 +41,8 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.params.StoreParams;
+import org.apache.jena.tdb2.params.StoreParamsCodec;
+import org.apache.jena.tdb2.params.StoreParamsFactory;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.slf4j.Logger;
@@ -81,7 +83,7 @@ public class DatabaseOps {
         return createSwitchable(location, params);
     }
 
-    private static DatasetGraphSwitchable createSwitchable(Location location, StoreParams params) {
+    private static DatasetGraphSwitchable createSwitchable(Location location, StoreParams appParams) {
         if ( location.isMem() ) {
             DatasetGraph dsg = StoreConnection.connectCreate(location).getDatasetGraph();
             return new DatasetGraphSwitchable(null, location, dsg);
@@ -91,15 +93,38 @@ public class DatabaseOps {
             throw new TDBException("No such location: "+location);
         Path path = IO_DB.asPath(location);
         // Scan for DBs
-        Path db = findLocation(path, dbPrefix);
+        Path existingStorage = findLocation(path, dbPrefix);
+        boolean isNewArea = (existingStorage == null);
+
+        Path db = existingStorage;
         if ( db == null ) {
             db = path.resolve(dbPrefix+SEP+startCount);
             IOX.createDirectory(db);
         }
-        Location loc2 = IO_DB.asLocation(db);
-        DatasetGraphTDB dsg = StoreConnection.connectCreate(loc2, params).getDatasetGraphTDB();
+        Location locationStorage = IO_DB.asLocation(db);
+
+        // Find the params (if any).
+        StoreParams switchableParams = StoreParamsCodec.read(location);
+        StoreParams storageParams    = StoreParamsCodec.read(locationStorage);
+        StoreParams locParams        = storageParams != null ? storageParams : switchableParams;
+        StoreParams dftParams =
+                //location.isMem() ? StoreParams.getMemParams() :
+                StoreParams.getDftStoreParams();
+
+        StoreParams params = StoreParamsFactory.decideStoreParams(location, isNewArea, appParams, switchableParams, storageParams, dftParams);
+
+//        *** Check for params in switchable
+//        *** Check for params in storage.
+        // Remove access in
+
+        DatasetGraphTDB dsg = StoreConnection.connectCreate(locationStorage, params).getDatasetGraphTDB();
         DatasetGraphSwitchable appDSG = new DatasetGraphSwitchable(path, location, dsg);
         return appDSG;
+    }
+
+    private static void chooseStoreParams(Location containerLocation, Location storageLocation, StoreParams appParams) {
+
+
     }
 
     public static String backup(DatasetGraphSwitchable container) {

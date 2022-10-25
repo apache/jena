@@ -62,6 +62,9 @@ public class StoreParamsBuilder {
     /** Database and query configuration */
     // Key names are the base name -  encode/decode may add a prefix.
 
+    // Convenince label.
+    private String                   label                 = null;
+
     private Item<FileMode>           fileMode              = new Item<>(StoreParamsConst.fileMode, false);
 
     private Item<Integer>            blockReadCacheSize    = new Item<>(StoreParamsConst.blockReadCacheSize, false);
@@ -100,12 +103,24 @@ public class StoreParamsBuilder {
 
     private Item<String[]>           prefixIndexes         = new Item<>(StoreParamsConst.prefixIndexes, false);
 
+    /** @deprecated Prefer {@link #create(String)}. */
+    @Deprecated
     public static StoreParamsBuilder create() {
         return new StoreParamsBuilder();
     }
 
+    /** @deprecated Prefer {@link #create(String, StoreParams)}. */
+    @Deprecated
     public static StoreParamsBuilder create(StoreParams params) {
         return new StoreParamsBuilder(params);
+    }
+
+    public static StoreParamsBuilder create(String label) {
+        return new StoreParamsBuilder().label(label);
+    }
+
+    public static StoreParamsBuilder create(String label, StoreParams params) {
+        return new StoreParamsBuilder(params).label(label);
     }
 
     /** Using a base set of {@link StoreParams}, and update with dynamic parameters.
@@ -114,7 +129,6 @@ public class StoreParamsBuilder {
      * @param additionalParams
      * @return StoreParams
      */
-
     public static StoreParams modify(StoreParams baseParams, StoreParamsDynamic additionalParams) {
         StoreParamsBuilder b = new StoreParamsBuilder(baseParams);
         // Merge explicitly set params
@@ -142,7 +156,7 @@ public class StoreParamsBuilder {
 
     private StoreParamsBuilder() {}
 
-    /** Initial with a StoreParams as default values */
+    /** Initial with a StoreParams as default values (no label) */
     private StoreParamsBuilder(StoreParams other) {
         this.fileMode               = other.fileMode;
         this.blockSize              = other.blockSize;
@@ -172,7 +186,7 @@ public class StoreParamsBuilder {
 
     public StoreParams build() {
         return new StoreParams(
-                 fileMode, blockSize, blockReadCacheSize, blockWriteCacheSize,
+                 label, fileMode, blockSize, blockReadCacheSize, blockWriteCacheSize,
                  Node2NodeIdCacheSize, NodeId2NodeCacheSize, NodeMissCacheSize,
                  prefixNode2NodeIdCacheSize, prefixNodeId2NodeCacheSize, prefixNodeMissCacheSize,
                  nodeTableBaseName,
@@ -180,6 +194,15 @@ public class StoreParamsBuilder {
                  primaryIndexQuads, quadIndexes,
                  prefixTableBaseName, primaryIndexPrefix,
                  prefixIndexes);
+    }
+
+    public String label() {
+        return this.label;
+    }
+
+    public StoreParamsBuilder label(String label) {
+        this.label = label;
+        return this;
     }
 
     public FileMode getFileMode() {

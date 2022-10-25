@@ -21,302 +21,272 @@ package org.apache.jena.atlas.lib;
 // NB shifting is "mod 32" -- <<32 is a no-op (not a clear).
 // http://mindprod.com/jgloss/masking.html
 
-/** Utilities for manipulating a bit pattern which are held in a 32 bit int.
- *  @see BitsLong
+/**
+ * Utilities for manipulating a bit pattern which are held in a 32 bit int.
+ *
+ * @see BitsLong
  */
-public final class BitsInt
-{
+public final class BitsInt {
     private BitsInt() {}
 
-    private static final int IntLen = Integer.SIZE ;
+    private static final int IntLen = Integer.SIZE;
 
-    /** Extract the value packed into bits start (inclusive) and finish (exclusive).
-     *  The value is returned in the low part of the returned int.
-     *  The low bit is bit zero.
+    /**
+     * Extract the value packed into bits start (inclusive) and finish (exclusive).
+     * The value is returned in the low part of the returned int. The low bit is bit
+     * zero.
+     *
      * @param bits
      * @param start
      * @param finish
      * @return int
      */
-
-    public static final
-    int unpack(int bits, int start, int finish)
-    {
-        check(start, finish) ;
-        if ( finish == 0 ) return 0 ;
-        // Remove top bits by moving up.  Clear bottom bits by them moving down.
-        return (bits<<(IntLen-finish)) >>> ((IntLen-finish)+start) ;
+    public static final int unpack(int bits, int start, int finish) {
+        check(start, finish);
+        if ( finish == 0 )
+            return 0;
+        // Remove top bits by moving up. Clear bottom bits by them moving down.
+        return (bits << (IntLen - finish)) >>> ((IntLen - finish) + start);
     }
 
-    /** Place the value into the bit pattern between start and finish
-     *  and returns the new int.  Leaves other bits alone.
+    /**
+     * Place the value into the bit pattern between start and finish and returns the
+     * new int. Leaves other bits alone.
+     *
      * @param bits
      * @param value
      * @param start
      * @param finish
      * @return int
      */
-    public static final
-    int pack(int bits, int value, int start, int finish)
-    {
-        check(start, finish) ;
-        bits = clear$(bits, start, finish) ;
-        int mask = mask(start, finish) ;
-        bits = bits | ((value<<start) & mask) ;
-        return bits ;
+    public static final int pack(int bits, int value, int start, int finish) {
+        check(start, finish);
+        bits = clear$(bits, start, finish);
+        int mask = mask(start, finish);
+        bits = bits | ((value << start) & mask);
+        return bits;
     }
 
-    /** Get bits from a hex string.
+    /**
+     * Get bits from a hex string.
      *
      * @param str
-     * @param startChar     Index of first character (counted from the left, string style).
-     * @param finishChar    Index after the last character (counted from the left, string style).
+     * @param startChar Index of first character (counted from the left, string
+     *     style).
+     * @param finishChar Index after the last character (counted from the left,
+     *     string style).
      * @return int
      * @see #access(int, int, int)
      */
 
-    public static final
-    int unpack(String str, int startChar, int finishChar)
-    {
-        String s = str.substring(startChar, finishChar) ;
-        return Integer.parseInt(s, 16) ;
+    public static final int unpack(String str, int startChar, int finishChar) {
+        String s = str.substring(startChar, finishChar);
+        return Integer.parseInt(s, 16);
     }
 
-    /** Set the bits specified.
+    /**
+     * Set the bits specified.
      *
-     * @param bits      Pattern
+     * @param bits Pattern
      * @param bitIndex
-     * @return          Modified pattern
+     * @return Modified pattern
      */
-    public static final
-    int set(int bits, int bitIndex)
-    {
-        check(bitIndex) ;
-        return set$(bits, bitIndex) ;
+    public static final int set(int bits, int bitIndex) {
+        check(bitIndex);
+        return set$(bits, bitIndex);
     }
 
-    /** Set the bits from start (inc) to finish (exc) to one
+    /**
+     * Set the bits from start (inc) to finish (exc) to one
      *
-     * @param bits      Pattern
-     * @param start     start  (inclusive)
-     * @param finish    finish (exclusive)
-     * @return          Modified pattern
+     * @param bits Pattern
+     * @param start start (inclusive)
+     * @param finish finish (exclusive)
+     * @return Modified pattern
      */
-    public static final
-    int set(int bits, int start, int finish)
-    {
-        check(start, finish) ;
-        return set$(bits, start, finish) ;
+    public static final int set(int bits, int start, int finish) {
+        check(start, finish);
+        return set$(bits, start, finish);
     }
 
-    /** Test whether a bit is the same as isSet
-     * @param bits      Pattern
-     * @param isSet     Test whether is set or not.
-     * @param bitIndex  Bit index
-     * @return          Boolean
+    /**
+     * Test whether a bit is the same as isSet
+     *
+     * @param bits Pattern
+     * @param isSet Test whether is set or not.
+     * @param bitIndex Bit index
+     * @return Boolean
      */
-    public static final
-    boolean test(int bits, boolean isSet, int bitIndex)
-    {
-        check(bitIndex) ;
-        return test$(bits, isSet, bitIndex) ;
+    public static final boolean test(int bits, boolean isSet, int bitIndex) {
+        check(bitIndex);
+        return test$(bits, isSet, bitIndex);
     }
 
-    /** Test whether a bit is set
-     * @param bits      Pattern
-     * @param bitIndex  Bit index
-     * @return          Boolean
+    /**
+     * Test whether a bit is set
+     *
+     * @param bits Pattern
+     * @param bitIndex Bit index
+     * @return Boolean
      */
-    public static final
-    boolean isSet(int bits, int bitIndex)
-    {
-        check(bitIndex) ;
-        return test$(bits, true, bitIndex) ;
+    public static final boolean isSet(int bits, int bitIndex) {
+        check(bitIndex);
+        return test$(bits, true, bitIndex);
     }
 
-    /** Test whether a range has a specific value or not
-     * @param bits      Pattern
-     * @param value     Value to test for
-     * @param start     start  (inclusive)
-     * @param finish    finish (exclusive)
-     * @return          Boolean
+    /**
+     * Test whether a range has a specific value or not
+     *
+     * @param bits Pattern
+     * @param value Value to test for
+     * @param start start (inclusive)
+     * @param finish finish (exclusive)
+     * @return Boolean
      */
-    public static final
-    boolean test(int bits, int value, int start, int finish)
-    {
-        check(start, finish) ;
-        return test$(bits, value, start, finish) ;
+    public static final boolean test(int bits, int value, int start, int finish) {
+        check(start, finish);
+        return test$(bits, value, start, finish);
     }
 
-    /** Get the bits from start (inclusive) to finish (exclusive),
-     *  leaving them aligned in the int.  See also unpack, returns
-     *  the value found at that place.
-     *  @see #unpack(int, int, int)
-     *  @param bits
-     *  @param start
-     *  @param finish
-     *  @return int
+    /**
+     * Get the bits from start (inclusive) to finish (exclusive), leaving them
+     * aligned in the int. See also {@link #unpack} which returns the value found at
+     * that place.
+     *
+     * @see #unpack(int, int, int)
+     * @param bits
+     * @param start
+     * @param finish
+     * @return int
      */
-    public static final
-    int access(int bits, int start, int finish)
-    {
-        check(start, finish) ;
-        return access$(bits, start, finish) ;
+    public static final int access(int bits, int start, int finish) {
+        check(start, finish);
+        return access$(bits, start, finish);
     }
 
     /**
      * Clear the bit specified.
-     *  @param bits
-     *  @param bitIndex
-     *  @return int
+     *
+     * @param bits
+     * @param bitIndex
+     * @return int
      */
-    public static final
-    int clear(int bits, int bitIndex)
-    {
+    public static final int clear(int bits, int bitIndex) {
         check(bitIndex);
-        return clear$(bits, bitIndex) ;
+        return clear$(bits, bitIndex);
     }
 
     /**
      * Clear the bits specified.
-     *  @param bits
-     *  @param start
-     *  @param finish
-     *  @return int
-     */
-    public static final
-    int clear(int bits, int start, int finish)
-    {
-        check(start, finish) ;
-        return clear$(bits, start, finish) ;
-    }
-
-    /**
-     * Create a mask that has ones between bit positions start (inc) and finish (exc),
-     * and zeros elsewhere.
+     *
+     * @param bits
      * @param start
      * @param finish
      * @return int
      */
-    public static final
-    int mask(int start, int finish)
-    {
-        check(start, finish) ;
-        return mask$(start, finish) ;
+    public static final int clear(int bits, int start, int finish) {
+        check(start, finish);
+        return clear$(bits, start, finish);
     }
 
     /**
-     * Create a mask that has zeros between bit positions start (inc) and finish (exc),
-     * and ones elsewhere
+     * Create a mask that has ones between bit positions start (inc) and finish
+     * (exc), and zeros elsewhere.
+     *
      * @param start
      * @param finish
      * @return int
      */
-    public static final
-    int maskZero(int start, int finish)
-    {
-        check(start, finish) ;
-        return maskZero$(start, finish) ;
+    public static final int mask(int start, int finish) {
+        check(start, finish);
+        return mask$(start, finish);
     }
 
-    private static final
-    int clear$(int bits, int bitIndex)
-    {
+    /**
+     * Create a mask that has zeros between bit positions start (inc) and finish
+     * (exc), and ones elsewhere
+     *
+     * @param start
+     * @param finish
+     * @return int
+     */
+    public static final int maskZero(int start, int finish) {
+        check(start, finish);
+        return maskZero$(start, finish);
+    }
+
+    private static final int clear$(int bits, int bitIndex) {
         int mask = maskZero$(bitIndex);
-        bits = bits & mask ;
-        return bits ;
+        bits = bits & mask;
+        return bits;
     }
 
-    private static final
-    int clear$(int bits, int start, int finish)
-    {
-        int mask = maskZero$(start, finish) ;
-        bits = bits & mask ;
-        return bits ;
+    private static final int clear$(int bits, int start, int finish) {
+        int mask = maskZero$(start, finish);
+        bits = bits & mask;
+        return bits;
     }
 
-    private static final
-    int set$(int bits, int bitIndex)
-    {
-        int mask = mask$(bitIndex) ;
-        return bits | mask ;
+    private static final int set$(int bits, int bitIndex) {
+        int mask = mask$(bitIndex);
+        return bits | mask;
     }
 
-    private static final
-    int set$(int bits, int start, int finish)
-    {
-        int mask = mask$(start, finish) ;
-        return bits | mask ;
+    private static final int set$(int bits, int start, int finish) {
+        int mask = mask$(start, finish);
+        return bits | mask;
     }
 
-    private static final
-    boolean test$(int bits, boolean isSet, int bitIndex)
-    {
-        return isSet == access$(bits, bitIndex) ;
+    private static final boolean test$(int bits, boolean isSet, int bitIndex) {
+        return isSet == access$(bits, bitIndex);
     }
 
-    private static final
-    boolean test$(int bits, int value, int start, int finish)
-    {
-        int v = access$(bits, start, finish) ;
-        return v == value ;
+    private static final boolean test$(int bits, int value, int start, int finish) {
+        int v = access$(bits, start, finish);
+        return v == value;
     }
 
-    private static final
-    boolean access$(int bits, int bitIndex)
-    {
-        int mask = mask$(bitIndex) ;
-        return (bits & mask) != 0L ;
+    private static final boolean access$(int bits, int bitIndex) {
+        int mask = mask$(bitIndex);
+        return (bits & mask) != 0L;
     }
 
-    private static final
-    int access$(int bits, int start, int finish)
-    {
+    private static final int access$(int bits, int start, int finish) {
         // Alternative
-        //        int mask = mask$(start, finish) ;
-        //        return bits & mask ;
-        return ( (bits<<(IntLen-finish)) >>> (IntLen-finish+start) ) << start  ;
+        //    int mask = mask$(start, finish);
+        //    return bits & mask;
+        return ((bits << (IntLen - finish)) >>> (IntLen - finish + start)) << start;
     }
 
-    private static final
-    int mask$(int bitIndex)
-    {
-        return 1 << bitIndex ;
+    private static final int mask$(int bitIndex) {
+        return 1 << bitIndex;
     }
 
-    private static final
-    int mask$(int start, int finish)
-    {
+    private static final int mask$(int start, int finish) {
         if ( finish == 0 )
             // Valid args; start is zero and so the mask is zero.
-            return 0 ;
-        int mask = -1 ;
-        return mask << (IntLen-finish) >>> (IntLen-finish+start) << start ;
+            return 0;
+        int mask = -1;
+        return ((mask << (IntLen - finish)) >>> (IntLen - finish + start)) << start;
     }
 
-    private static final
-    int maskZero$(int bitIndex)
-    {
+    private static final int maskZero$(int bitIndex) {
         return ~mask$(bitIndex);
     }
 
-    private static final
-    int maskZero$(int start, int finish)
-    {
-        return ~mask$(start, finish) ;
+    private static final int maskZero$(int start, int finish) {
+        return ~mask$(start, finish);
     }
 
     private static final
-    void check(int bitIndex)
-    {
-        if ( bitIndex < 0 || bitIndex >= IntLen ) throw new IllegalArgumentException("Illegal bit index: "+bitIndex) ;
+    void check(int bitIndex) {
+        if ( bitIndex < 0 || bitIndex >= IntLen ) throw new IllegalArgumentException("Illegal bit index: "+bitIndex);
     }
 
     private static final
-    void check(int start, int finish)
-    {
-        if ( start < 0 || start >= IntLen ) throw new IllegalArgumentException("Illegal start: "+start) ;
-        if ( finish < 0 || finish > IntLen ) throw new IllegalArgumentException("Illegal finish: "+finish) ;
-        if ( start > finish )  throw new IllegalArgumentException("Illegal range: ("+start+", "+finish+")") ;
+    void check(int start, int finish) {
+        if ( start < 0 || start >= IntLen ) throw new IllegalArgumentException("Illegal start: "+start);
+        if ( finish < 0 || finish > IntLen ) throw new IllegalArgumentException("Illegal finish: "+finish);
+        if ( start > finish )  throw new IllegalArgumentException("Illegal range: ("+start+", "+finish+")");
     }
 }

@@ -29,6 +29,8 @@ public class StoreParamsConst {
     /** Database and query configuration */
     // Key names are the base name -  encode/decode may add a prefix.
 
+    public static final String   fLabel                = "label";
+
     public static final String   fFileMode             = "file_mode";
     public static final FileMode fileMode              = SystemTDB.fileMode();
 
@@ -88,11 +90,10 @@ public class StoreParamsConst {
     // because StoreParamsBuilder uses these constants.
 
     /** The system default parameters for on-disk databases. */
-    static StoreParams dftStoreParams = StoreParams.builder().build();
+    static StoreParams dftStoreParams = StoreParams.builder("DefaultStoreParams").build();
 
     /** The system default parameters for in-memory databases. */
-    static StoreParams dftMemStoreParams = StoreParams.builder()
-        .fileMode(FileMode.direct)
+    static StoreParams dftMemStoreParams = StoreParams.builder("DefaultMemStoreParams")
         // Small block caches, mainly so it behaves like a direct on-disk database.
         .blockReadCacheSize(10)
         .blockWriteCacheSize(10)
@@ -102,7 +103,17 @@ public class StoreParamsConst {
         .build();
 
     /** The "small store" parameters. */
-    static StoreParams smallStoreParams = StoreParams.builder()
+    static StoreParams smallStoreParams = StoreParams.builder("SmallStoreParams")
+        //.fileMode(FileMode.direct)
+        .blockReadCacheSize(100)
+        .blockWriteCacheSize(100)
+        .node2NodeIdCacheSize(10000)
+        .nodeId2NodeCacheSize(10000)
+        .nodeMissCacheSize(100)
+        .build();
+
+    /** The "small store" parameters (direct for 32bit mode JVMs). */
+    static StoreParams smallStoreParams32 = StoreParams.builder("SmallStoreParams32")
         .fileMode(FileMode.direct)
         .blockReadCacheSize(100)
         .blockWriteCacheSize(100)

@@ -73,28 +73,24 @@ public class TDB2StorageBuilder {
     private static Logger log = LoggerFactory.getLogger(TDB2StorageBuilder.class);
 
     public static DatasetGraphTDB build(Location location) {
-        return build(location, null);
+        return build(location, StoreParams.getDftStoreParams());
     }
 
-//    public static DatasetGraphTxn build(Location location, StoreParams appParams) {
-//        StoreParams locParams = StoreParamsCodec.read(location);
-//        StoreParams dftParams = StoreParams.getDftStoreParams();
-//        boolean newArea = isNewDatabaseArea(location);
-//        if ( newArea ) {
-//        }
-//        // This can write the chosen parameters if necessary (new database, appParams != null, locParams == null)
-//        StoreParams params = StoreParamsFactory.decideStoreParams(location, newArea, appParams, locParams, dftParams);
-//        return create(location, params).build$();
-//    }
 
     public static DatasetGraphTDB build(Location location, StoreParams appParams) {
+        //
         StoreParams locParams = StoreParamsCodec.read(location);
         StoreParams dftParams = StoreParams.getDftStoreParams();
         boolean newArea = isNewDatabaseArea(location);
         if ( newArea ) {
         }
         // This can write the chosen parameters if necessary (new database, appParams != null, locParams == null)
-        StoreParams params = StoreParamsFactory.decideStoreParams(location, newArea, appParams, locParams, dftParams);
+        StoreParams params = StoreParamsFactory.decideStoreParams(location, newArea, appParams, null, locParams, dftParams);
+
+        // Better - move the params stuff out to DatabaseOps.build.
+//    public static DatasetGraphTDB build(Location location, StoreParams params) {
+//        if (params == null )
+//            params = StoreParams.getDftStoreParams();
 
         // Builder pattern for adding components.
         TransactionCoordinator txnCoord = buildTransactionCoordinator(location);
@@ -116,17 +112,6 @@ public class TDB2StorageBuilder {
         // Enable query processing.
         QC.setFactory(dsg.getContext(), OpExecutorTDB2.OpExecFactoryTDB);
         return dsg;
-    }
-
-    private static StoreParams storeParams(Location location, StoreParams appParams) {
-        StoreParams locParams = StoreParamsCodec.read(location);
-        StoreParams dftParams = StoreParams.getDftStoreParams();
-        // This can write the chosen parameters if necessary (new database, appParams != null, locParams == null)
-        boolean newArea = isNewDatabaseArea(location);
-        if ( newArea ) {
-        }
-        StoreParams params = StoreParamsFactory.decideStoreParams(location, newArea, appParams, locParams, dftParams);
-        return params;
     }
 
     private static TransactionCoordinator buildTransactionCoordinator(Location location) {

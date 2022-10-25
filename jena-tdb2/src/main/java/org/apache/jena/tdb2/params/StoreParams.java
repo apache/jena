@@ -43,10 +43,12 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
 {
     /* These are items you can change JVM to JVM */
 
+    /*package*/ final String label;
     /*package*/ final Item<FileMode>           fileMode;
-    /*package*/ final Item<Integer>            blockSize;
-    /*package*/ final Item<Integer>            blockReadCacheSize;
-    /*package*/ final Item<Integer>            blockWriteCacheSize;
+
+    /*package*/ final Item<Integer>            blockReadCacheSize;          // Direct mode block cache size
+    /*package*/ final Item<Integer>            blockWriteCacheSize;         // Direct mode block cache size
+
     /*package*/ final Item<Integer>            Node2NodeIdCacheSize;
     /*package*/ final Item<Integer>            NodeId2NodeCacheSize;
     /*package*/ final Item<Integer>            NodeMissCacheSize;
@@ -54,13 +56,14 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
     /*package*/ final Item<Integer>            prefixNodeId2NodeCacheSize;
     /*package*/ final Item<Integer>            prefixNodeMissCacheSize;
 
-    /* 
+    /*
      * These are items affect database layout and
      * only can be applied when a database is created.
      * They do not affect existing databases.
      * If you want to, say, change the index structure,
      * you'll need to use the index tools.
      */
+    /*package*/ final Item<Integer>            blockSize;
 
     /*package*/ final Item<String>             nodeTableBaseName;
 
@@ -74,21 +77,33 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
     /*package*/ final Item<String>             primaryIndexPrefix;
     /*package*/ final Item<String[]>           prefixIndexes;
 
+    /** @deprecated Prefer {@link #builder(String)}. */
+    @Deprecated
+    public static StoreParamsBuilder builder() {
+        return builder((String)null);
+    }
+
+    /** @deprecated Prefer {@link #builder(String, StoreParams)}. */
+    @Deprecated
+    public static StoreParamsBuilder builder(StoreParams params) {
+        return builder(null, params);
+    }
+
     /** Build StoreParams, starting from system defaults.
      *
      * @return StoreParamsBuilder
      */
-    public static StoreParamsBuilder builder() { return StoreParamsBuilder.create(); }
+    public static StoreParamsBuilder builder(String label) { return StoreParamsBuilder.create(label); }
 
     /** Build StoreParams, starting from given default values.
      *
      * @return StoreParamsBuilder
      */
-    public static StoreParamsBuilder builder(StoreParams params) { return StoreParamsBuilder.create(params); }
+    public static StoreParamsBuilder builder(String label, StoreParams params) { return StoreParamsBuilder.create(label, params); }
 
-    /*package*/ StoreParams(Item<FileMode> fileMode, Item<Integer> blockSize,
+    /*package*/ StoreParams(String label,
+                            Item<FileMode> fileMode, Item<Integer> blockSize,
                             Item<Integer> blockReadCacheSize, Item<Integer> blockWriteCacheSize,
-
 
                             Item<Integer> node2NodeIdCacheSize, Item<Integer> nodeId2NodeCacheSize,
                             Item<Integer> nodeMissCacheSize,
@@ -102,6 +117,7 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
 
                             Item<String> prefixTableBasename,
                             Item<String> primaryIndexPrefix, Item<String[]> prefixIndexes) {
+        this.label                  = label;
         this.fileMode               = fileMode;
         this.blockSize              = blockSize;
         this.blockReadCacheSize     = blockReadCacheSize;
@@ -145,6 +161,11 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
      */
     public static StoreParams getSmallStoreParams() {
         return StoreParamsConst.smallStoreParams;
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
     }
 
     @Override
@@ -287,6 +308,9 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
     @Override
     public String toString() {
         StringBuilder buff = new StringBuilder();
+        if ( label != null )
+            fmt(buff, "label", label, true);
+
         fmt(buff, "fileMode", getFileMode().toString(), fileMode.isSet);
         fmt(buff, "blockSize", getBlockSize(), blockSize.isSet);
         fmt(buff, "readCacheSize", getBlockReadCacheSize(), blockReadCacheSize.isSet);
