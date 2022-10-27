@@ -24,6 +24,7 @@ import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.RDFNode;
@@ -31,6 +32,8 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shex.*;
 import org.apache.jena.shex.sys.ShexLib;
+
+import java.util.List;
 
 /** A Shex validation test. Created by {@link RunnerShexValidation}.  */
 public class ShexValidationTest implements Runnable {
@@ -46,6 +49,8 @@ public class ShexValidationTest implements Runnable {
     private final ShexMap shapeMap;
     private final boolean positiveTest;
     private final boolean verbose = false;
+    private final List<Resource> traits;
+    private List<Pair<Resource,String>> extensionResults;
 
     enum TestType{ ShapeFocus, StartFocus, ShapeMap }
 
@@ -109,6 +114,8 @@ public class ShexValidationTest implements Runnable {
                 : Shex.readShapeMapJson(shapeMapRef);
         this.shapes = Shex.readSchema(schema.getURI(), base);
         this.positiveTest = entry.getTestType().equals(ShexT.cValidationTest);
+        this.traits = ShexTests.extractTraits(entry);
+//        this.extensionResults = entry.extractExtensionResults();
     }
 
     @Override

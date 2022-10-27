@@ -18,19 +18,17 @@
 
 package org.apache.jena.shex.runner;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import org.apache.jena.arq.junit.manifest.Manifest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.arq.junit.manifest.Prefix;
 import org.apache.jena.arq.junit.runners.Label;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.system.stream.Locator;
 import org.apache.jena.riot.system.stream.LocatorFile;
 import org.apache.jena.riot.system.stream.StreamManager;
@@ -40,6 +38,7 @@ public class ShexTests {
     static boolean VERBOSE = false;
 
     // Validation test filtering.
+    static Set<Resource> excludeTraits = new HashSet<>();
     static Set<String> excludes = new HashSet<>();
     static Set<String> includes = new LinkedHashSet<>();
     static boolean dumpTest = false;
@@ -53,6 +52,7 @@ public class ShexTests {
         //includes.add("#start2RefS1-IstartS2");
 
         VERBOSE = ! includes.isEmpty();
+
         // --- Exclusions - development
 
         // # External
@@ -62,23 +62,10 @@ public class ShexTests {
         excludes.add("#shapeExternRef_fail");
 
         // ## semantic actions
-        excludes.add("#1dotCode1_pass");
-        excludes.add("#1dotNoCode1_pass");
-        excludes.add("#1inversedotCode1_pass");
-        excludes.add("#1dotCode3_pass");
-        excludes.add("#1dotNoCode3_pass");
-        excludes.add("#1dotCode3fail_abort");
-        excludes.add("#1dotCodeWithEscapes1_pass");
-        excludes.add("#1dotShapeCode1_pass");
-        excludes.add("#1dotShapeNoCode1_pass");
-        excludes.add("#open3EachdotcloseCode1-p1p2p3");
-        excludes.add("#startCode1_pass");
-        excludes.add("#startNoCode1_pass");
-        excludes.add("#startCode1fail_abort");
-        excludes.add("#startCode1startRef_pass");
-        excludes.add("#startCode1startReffail_abort");
-        excludes.add("#startCode3_pass");
-        excludes.add("#startCode3fail_abort");
+        excludeTraits.add(ShexT.tSemanticAction);
+        excludeTraits.add(ShexT.tExternalSemanticAction);
+        excludeTraits.add(ShexT.tOrderedSemanticActions);
+
 
         // ## annotations + semantic actions
         excludes.add("#open3Eachdotclosecard23Annot3Code2-p1p2p3X3");
@@ -86,6 +73,8 @@ public class ShexTests {
         // ---- Exclusions
         // BNodes tests we don't support (testing labels, cross file references)
         excludes.addAll(bNodeLabeltests());
+        // excludeTraits.add(ShexT.tLexicalBNode);
+        // excludeTraits.add(ShexT.tToldBNode);
 
         // Syntax exclusions - may be needed here.
         //    //---- Exclusions
@@ -316,6 +305,14 @@ public class ShexTests {
         }
     }
 
+    public static List<Resource> extractTraits(ManifestEntry entry) {
+        Resource traitsRsrc = Manifest.getResource(entry.getEntry(), ShexT.trait) ;
+        if (traitsRsrc == null)
+            return null;
+        List<Statement> x = entry.getEntry().listProperties(ShexT.trait).toList();
+        return x.stream().map(t -> t.getObject().asResource()).collect(Collectors.toList());
+    }
+
     private static boolean runTestExclusionsInclusions(ManifestEntry entry) {
         String fragment = fragment(entry);
         if ( fragment != null ) {
@@ -329,6 +326,13 @@ public class ShexTests {
                 // [shex] Convert to "ignored"
                 //System.err.println("Skipping:  "+fragment);
                 return false;
+            }
+
+            List<Resource> traits = extractTraits(entry);
+            if (traits != null) {
+                List<Resource> excludedBecause = traits.stream().filter(excl -> excludeTraits.contains(excl)).collect(Collectors.toList());
+                if (excludedBecause.size() > 0)
+                    return false;
             }
         }
         return true;
