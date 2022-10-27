@@ -40,9 +40,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDBException;
-import org.apache.jena.tdb2.params.StoreParams;
-import org.apache.jena.tdb2.params.StoreParamsCodec;
-import org.apache.jena.tdb2.params.StoreParamsFactory;
+import org.apache.jena.tdb2.params.*;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.slf4j.Logger;
@@ -68,7 +66,7 @@ public class DatabaseOps {
     private static Logger LOG = LoggerFactory.getLogger(DatabaseOps.class);
     public static final String dbPrefix     = "Data";
     public static final String SEP          = "-";
-    private static final String startCount   = "0001";
+    public static final String startCount   = "0001";
 
     private static final String BACKUPS_DIR  = "Backups";
     // Basename of the backup file. "backup_{DateTime}.nq.gz
@@ -83,15 +81,18 @@ public class DatabaseOps {
         return createSwitchable(location, params);
     }
 
-    private static DatasetGraphSwitchable createSwitchable(Location location, StoreParams appParams) {
-        if ( location.isMem() ) {
-            DatasetGraph dsg = StoreConnection.connectCreate(location).getDatasetGraph();
-            return new DatasetGraphSwitchable(null, location, dsg);
+    private static DatasetGraphSwitchable createSwitchable(Location containerLocation, StoreParams appParams) {
+        if ( containerLocation.isMem() ) {
+            // A memory store is create in the container directly - compact does not apply.
+            Location storageLocation = containerLocation;
+            StoreParams params = appParams != null ? appParams : StoreParams.getDftMemStoreParams();
+            DatasetGraph dsg = StoreConnection.connectCreate(storageLocation, params).getDatasetGraph();
+            return new DatasetGraphSwitchable(null, containerLocation, dsg);
         }
         // Exists?
-        if ( ! location.exists() )
-            throw new TDBException("No such location: "+location);
-        Path path = IO_DB.asPath(location);
+        if ( ! containerLocation.exists() )
+            throw new TDBException("No such location: "+containerLocation);
+        Path path = IO_DB.asPath(containerLocation);
         // Scan for DBs
         Path existingStorage = findLocation(path, dbPrefix);
         boolean isNewArea = (existingStorage == null);
@@ -101,30 +102,71 @@ public class DatabaseOps {
             db = path.resolve(dbPrefix+SEP+startCount);
             IOX.createDirectory(db);
         }
-        Location locationStorage = IO_DB.asLocation(db);
+        Location storageLocation = IO_DB.asLocation(db);
 
         // Find the params (if any).
-        StoreParams switchableParams = StoreParamsCodec.read(location);
-        StoreParams storageParams    = StoreParamsCodec.read(locationStorage);
+        // **** if new, then
+        StoreParams switchableParams = StoreParamsCodec.read(containerLocation);
+        StoreParams storageParams    = StoreParamsCodec.read(storageLocation);
+        // Choose from a location : storage first then container.
         StoreParams locParams        = storageParams != null ? storageParams : switchableParams;
-        StoreParams dftParams =
-                //location.isMem() ? StoreParams.getMemParams() :
-                StoreParams.getDftStoreParams();
+        StoreParams dftParams        = containerLocation.isMem() ? StoreParams.getDftMemStoreParams() : StoreParams.getDftStoreParams();
 
-        StoreParams params = StoreParamsFactory.decideStoreParams(location, isNewArea, appParams, switchableParams, storageParams, dftParams);
+        StoreParams params = StoreParamsFactory.decideStoreParams(null, isNewArea, appParams, switchableParams, storageParams, dftParams);
 
-//        *** Check for params in switchable
-//        *** Check for params in storage.
-        // Remove access in
+        // If new and some form of custom setup (appParams) passedin by code:
+        if ( isNewArea &&
+                // Not found on disk.
+             switchableParams == null && storageParams == null &&
+                 // Object pointer equality.
+             ! params.equals(dftParams) ) {
+            // Write to container.
+            StoreParamsCodec.write(containerLocation, params);
+//            // Write to storage.
+//            StoreParamsCodec.write(locationStorage, params);
+        }
 
-        DatasetGraphTDB dsg = StoreConnection.connectCreate(locationStorage, params).getDatasetGraphTDB();
-        DatasetGraphSwitchable appDSG = new DatasetGraphSwitchable(path, location, dsg);
+        DatasetGraphTDB dsg = StoreConnection.connectCreate(storageLocation, params).getDatasetGraphTDB();
+        DatasetGraphSwitchable appDSG = new DatasetGraphSwitchable(path, containerLocation, dsg);
         return appDSG;
     }
 
-    private static void chooseStoreParams(Location containerLocation, Location storageLocation, StoreParams appParams) {
+    private static StoreParams buildStoreParams(boolean isNewArea, Location containerLocation, Location storageLocation, StoreParams appParams) {
+        // Find the params (if any).
+        StoreParams switchableParams = StoreParamsCodec.read(containerLocation);
+        StoreParams storageParams    = StoreParamsCodec.read(storageLocation);
+
+        StoreParams params = null;
+        params = buildParamsHelper(params, switchableParams);
+        params = buildParamsHelper(params, storageParams);
+        params = buildParamsHelper(params, appParams);
+        if ( isNewArea && params != null ) {
+            StoreParamsCodec.write(storageLocation, params);
+        }
 
 
+        if ( storageParams != null )
+            params = storageParams;
+        if ( switchableParams != null ) {
+            if ( params != null  )
+                params = StoreParamsBuilder.modify(params, switchableParams);
+            else
+                params = switchableParams;
+        }
+        if ( appParams != null ) {
+            if ( params != null  )
+                params = StoreParamsBuilder.modify(params, appParams);
+            else
+                params = appParams;
+        }
+        return params;
+    }
+    private static StoreParams buildParamsHelper(StoreParams baseParams, StoreParams additionalParams) {
+        if ( baseParams == null )
+            return additionalParams;
+        if ( additionalParams == null )
+            return null;
+        return StoreParamsBuilder.modify(baseParams, additionalParams);
     }
 
     public static String backup(DatasetGraphSwitchable container) {

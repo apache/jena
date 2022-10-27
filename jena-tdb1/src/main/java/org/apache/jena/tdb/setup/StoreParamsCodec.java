@@ -30,17 +30,17 @@ import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.block.FileMode ;
 import org.apache.jena.tdb.base.file.Location ;
 
-/** Encode and decode {@link StoreParams} */ 
+/** Encode and decode {@link StoreParams} */
 public class StoreParamsCodec {
-    
-    /** Write to a file */ 
+
+    /** Write to a file */
     public static void write(Location location, StoreParams params) {
         write(location.getPath(TDB_CONFIG_FILE) ,params) ;
     }
-    
-    /** Write to a file */ 
+
+    /** Write to a file */
     public static void write(String filename, StoreParams params) {
-        try (OutputStream out = new FileOutputStream(filename); 
+        try (OutputStream out = new FileOutputStream(filename);
              OutputStream out2 = new BufferedOutputStream(out); ) {
             JsonObject object = encodeToJson(params) ;
             JSON.write(out2, object) ;
@@ -51,7 +51,7 @@ public class StoreParamsCodec {
 
     /**
      * Read from a file if possible.
-     * Return null for memory locations, file not found or syntax errors. 
+     * Return null for memory locations, file not found or syntax errors.
      */
     public static StoreParams read(Location location) {
         if ( location.isMem() )
@@ -59,9 +59,9 @@ public class StoreParamsCodec {
         return read(location.getPath(TDB_CONFIG_FILE)) ;
     }
 
-    /** 
+    /**
      * Read from a file if possible.
-     * Return null if the file is not found or has a syntax error. 
+     * Return null if the file is not found or has a syntax error.
      */
     public static StoreParams read(String filename) {
         try {
@@ -70,8 +70,8 @@ public class StoreParamsCodec {
                 return null;
             JsonObject obj = JSON.parse(in) ;
             return StoreParamsCodec.decode(obj) ;
-        } catch (FileNotFoundException ex) { 
-            return null; 
+        } catch (FileNotFoundException ex) {
+            return null;
         } catch (JsonParseException ex) {
             FmtLog.warn(StoreParamsCodec.class, "Ignoring store params : Syntax error in '%s': [line:%d, col:%d] %s", filename, ex.getLine(), ex.getColumn(), ex.getMessage());
             return null ;
@@ -84,7 +84,7 @@ public class StoreParamsCodec {
     public static JsonObject encodeToJson(StoreParams params) {
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("StoreParams") ;    // "StoreParams" is an internal alignment marker - not in the JSON.
-        
+
         encode(builder, key(fFileMode),                 params.getFileMode().name()) ;
         encode(builder, key(fBlockSize),                params.getBlockSize()) ;
         encode(builder, key(fBlockReadCacheSize),       params.getBlockReadCacheSize()) ;
@@ -103,13 +103,13 @@ public class StoreParamsCodec {
         encode(builder, key(fIndexPrefix),              params.getIndexPrefix()) ;
         encode(builder, key(fPrefixNode2Id),            params.getPrefixNode2Id()) ;
         encode(builder, key(fPrefixId2Node),            params.getPrefixId2Node()) ;
-        
+
         builder.finishObject("StoreParams") ;
         return (JsonObject)builder.build() ;
     }
 
     private static final String jsonKeyPrefix= "tdb." ;
-    
+
     private static String key(String string) {
         if ( string.startsWith(jsonKeyPrefix))
             throw new TDBException("Key name already starts with '"+jsonKeyPrefix+"'") ;
@@ -124,7 +124,7 @@ public class StoreParamsCodec {
 
     public static StoreParams decode(JsonObject json) {
         StoreParamsBuilder builder = StoreParams.builder() ;
-        
+
         for ( String key : json.keys() ) {
             String short_key = unkey(key) ;
             switch(short_key) {
@@ -147,14 +147,14 @@ public class StoreParamsCodec {
                 case fPrefixNode2Id:           builder.prefixNode2Id(getString(json, key)) ;                break ;
                 case fPrefixId2Node:           builder.prefixId2Node(getString(json, key)) ;                break ;
                 default:
-                    throw new TDBException("StoreParams key no recognized: "+key) ;
+                    throw new TDBException("StoreParams key not recognized: "+key) ;
             }
         }
         return builder.build() ;
     }
 
     // "Get or error" operations.
-    
+
     private static String getString(JsonObject json, String key) {
         if ( ! json.hasKey(key) )
             throw new TDBException("StoreParamsCodec.getString: no such key: "+key) ;
@@ -168,7 +168,7 @@ public class StoreParamsCodec {
         Integer x = json.get(key).getAsNumber().value().intValue() ;
         return x ;
     }
-    
+
     private static String[] getStringArray(JsonObject json, String key) {
         if ( ! json.hasKey(key) )
             throw new TDBException("StoreParamsCodec.getStringArray: no such key: "+key) ;

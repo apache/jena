@@ -45,8 +45,6 @@ import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
 import org.apache.jena.sparql.sse.SSE_ParseException;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.params.StoreParams;
-import org.apache.jena.tdb2.params.StoreParamsCodec;
-import org.apache.jena.tdb2.params.StoreParamsFactory;
 import org.apache.jena.tdb2.solver.OpExecutorTDB2;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetable.NodeTableCache;
@@ -76,21 +74,14 @@ public class TDB2StorageBuilder {
         return build(location, StoreParams.getDftStoreParams());
     }
 
-
-    public static DatasetGraphTDB build(Location location, StoreParams appParams) {
-        //
-        StoreParams locParams = StoreParamsCodec.read(location);
-        StoreParams dftParams = StoreParams.getDftStoreParams();
-        boolean newArea = isNewDatabaseArea(location);
-        if ( newArea ) {
+    public static DatasetGraphTDB build(Location location, StoreParams params) {
+//        // Decisions about the params to choose is in  DatabaseOps.build.
+        if (params == null ) {
+            if ( location.isMem() )
+                params = StoreParams.getDftMemStoreParams();
+            else
+                params = StoreParams.getDftStoreParams();
         }
-        // This can write the chosen parameters if necessary (new database, appParams != null, locParams == null)
-        StoreParams params = StoreParamsFactory.decideStoreParams(location, newArea, appParams, null, locParams, dftParams);
-
-        // Better - move the params stuff out to DatabaseOps.build.
-//    public static DatasetGraphTDB build(Location location, StoreParams params) {
-//        if (params == null )
-//            params = StoreParams.getDftStoreParams();
 
         // Builder pattern for adding components.
         TransactionCoordinator txnCoord = buildTransactionCoordinator(location);
@@ -176,7 +167,8 @@ public class TDB2StorageBuilder {
     private final Collection<TransactionListener> listeners = new ArrayList<>();
 
     private TDB2StorageBuilder(TransactionalSystem txnSystem,
-                        Location location, StoreParams params, ComponentIdMgr componentIdMgr) {
+                               Location location, StoreParams params,
+                               ComponentIdMgr componentIdMgr) {
         this.txnSystem = txnSystem;
         this.location = location;
         this.params = params;

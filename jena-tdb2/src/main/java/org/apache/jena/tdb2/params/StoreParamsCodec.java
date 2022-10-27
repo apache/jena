@@ -45,7 +45,6 @@ public class StoreParamsCodec {
              OutputStream out2 = new BufferedOutputStream(out); ) {
             JsonObject object = encodeToJson(params);
             JSON.write(out2, object);
-            out2.write('\n');
         }
         catch (IOException ex) { IO.exception(ex); }
     }
@@ -86,7 +85,6 @@ public class StoreParamsCodec {
         JsonBuilder builder = new JsonBuilder();
         builder.startObject("StoreParams");    // "StoreParams" is an internal alignment marker - not in the JSON.
 
-        //Don't include label - otherwise previous versions can't read the database.
 //        if ( params.label != null )
 //            encode(builder, key(fLabel),                params.getLabel());
 
@@ -152,7 +150,7 @@ public class StoreParamsCodec {
                 case fPrefixIndexes:           builder.prefixIndexes(getStringArray(json, key));           break ;
 
                 default:
-                    throw new TDBException("StoreParams key no recognized: "+key);
+                    throw new TDBException("StoreParams key not recognized: "+key);
             }
         }
         return builder.build();

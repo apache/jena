@@ -131,7 +131,7 @@ public class StoreParamsBuilder {
      */
     public static StoreParams modify(StoreParams baseParams, StoreParamsDynamic additionalParams) {
         StoreParamsBuilder b = new StoreParamsBuilder(baseParams);
-        // Merge explicitly set params
+        // Merge explicitly set dynamic params
         if ( additionalParams.isSetFileMode() )
             b.fileMode(additionalParams.getFileMode());
 
