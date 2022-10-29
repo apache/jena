@@ -79,6 +79,8 @@ public class StandardFunctions
         addCastNumeric(registry, XSDDatatype.XSDdouble) ;
         addCastNumeric(registry, XSDDatatype.XSDfloat) ;
 
+        //addCastXSD(registry, XSDDatatype.XSDprecisionDecimal);
+
         addCastXSD(registry, XSDDatatype.XSDboolean) ;
         addCastXSD(registry, XSDDatatype.XSDduration) ;
         addCastXSD(registry, XSDDatatype.XSDdayTimeDuration) ;
