@@ -107,7 +107,7 @@
     <ver.micrometer>1.9.4</ver.micrometer>
 
     <!-- For testing, not shipped -->
-    <ver.graalvm>22.2.0</ver.graalvm>
+    <ver.graalvm>22.3.0</ver.graalvm>
     <ver.jython>2.7.3</ver.jython>
 
     <!--- GeoSPARQL related -->
