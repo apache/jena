@@ -37,7 +37,7 @@ class ShexValidatorImpl implements ShexValidator{
 
     /** Validate data using a collection of shapes and a shape map */
     @Override
-    public ShexReport validate(Graph dataGraph, ShexSchema shapes, ShexMap shapeMap) {
+    public ShexReport validate(Graph dataGraph, ShexSchema shapes, ShapeMap shapeMap) {
         Objects.requireNonNull(dataGraph);
         Objects.requireNonNull(shapes);
         Objects.requireNonNull(shapeMap);
@@ -87,7 +87,7 @@ class ShexValidatorImpl implements ShexValidator{
     }
 
     @Override
-    public ShexReport validate(Graph dataGraph, ShexSchema shapes, ShexMap shapeMap, Node focus) {
+    public ShexReport validate(Graph dataGraph, ShexSchema shapes, ShapeMap shapeMap, Node focus) {
         Objects.requireNonNull(shapes);
         Objects.requireNonNull(dataGraph);
         Objects.requireNonNull(shapeMap);

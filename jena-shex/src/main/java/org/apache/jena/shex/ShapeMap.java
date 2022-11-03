@@ -29,16 +29,16 @@ import org.apache.jena.graph.Triple;
  * <a href="https://shexspec.github.io/shape-map/">ShEx shape map</a> used for both
  * targeting validation and reporting violations.
  */
-public class ShexMap {
+public class ShapeMap {
 
     protected final List<ShexRecord> associations;
 
-    public static ShexMap create(List<ShexRecord> associations) {
+    public static ShapeMap create(List<ShexRecord> associations) {
         associations = new ArrayList<>(associations);
-        return new ShexMap(associations);
+        return new ShapeMap(associations);
     }
 
-    private ShexMap(List<ShexRecord> associations) {
+    private ShapeMap(List<ShexRecord> associations) {
         this.associations = associations;
     }
 
@@ -46,15 +46,15 @@ public class ShexMap {
         return Collections.unmodifiableList(associations);
     }
 
-    public static ShexMap.Builder newBuilder() {
+    public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static ShexMap record(Node focus, Node shapeRef) {
+    public static ShapeMap record(Node focus, Node shapeRef) {
         return new Builder().add(focus, shapeRef).build();
     }
 
-    public static ShexMap record(Triple pattern, Node shapeRef) {
+    public static ShapeMap record(Triple pattern, Node shapeRef) {
         return new Builder().add(pattern, shapeRef).build();
     }
 
@@ -64,7 +64,7 @@ public class ShexMap {
 
         Builder() {}
 
-        Builder(ShexMap base) {
+        Builder(ShapeMap base) {
             base.entries().forEach(records::add);
         }
 
@@ -78,9 +78,9 @@ public class ShexMap {
             return this;
         }
 
-        public ShexMap build() {
+        public ShapeMap build() {
             // Copies argument.
-            ShexMap map = ShexMap.create(records);
+            ShapeMap map = ShapeMap.create(records);
             records.clear();
             return map;
         }

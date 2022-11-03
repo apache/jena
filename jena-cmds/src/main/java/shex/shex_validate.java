@@ -137,7 +137,7 @@ public class shex_validate extends CmdGeneral {
 //        }
 
         if ( mapfile != null ) {
-            ShexMap map;
+            ShapeMap map;
             try {
                 map = Shex.readShapeMap(mapfile);
             } catch (ShexException ex) {
