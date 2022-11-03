@@ -103,14 +103,6 @@ public class DatabaseConnection {
         return new DatabaseConnection(dsg, location, lock);
     }
 
-//    private static DatasetGraph buildMem(Location location, StoreParams params) {
-//        return StoreConnection.connectCreate(location, params).getDatasetGraph();
-//    }
-//
-//    private static DatasetGraph buildDisk(Location location, StoreParams params) {
-//        return DatabaseOps.create(location);
-//    }
-
     private static DatabaseConnection buildUniqueMem(Location location, StoreParams params) {
         // Uncached, in-memory.
         DatasetGraph dsg = DatabaseOps.create(location, params);
@@ -118,7 +110,6 @@ public class DatabaseConnection {
         return dbConn;
     }
 
-    // DRY
     /** Create or fetch a {@link ProcessFileLock} for a Location */
     public static ProcessFileLock lockForLocation(Location location) {
         FileOps.ensureDir(location.getDirectoryPath());
@@ -176,8 +167,7 @@ public class DatabaseConnection {
     private final ProcessFileLock   lock;
     private boolean                 isValid = true;
 
-    private DatabaseConnection(DatasetGraph dsg, Location location, ProcessFileLock fileLock)
-    {
+    private DatabaseConnection(DatasetGraph dsg, Location location, ProcessFileLock fileLock) {
         this.datasetGraph = dsg;
         this.datasetGraphSwitchable = ( dsg instanceof DatasetGraphSwitchable ) ? (DatasetGraphSwitchable )dsg : null;
         this.location = location;

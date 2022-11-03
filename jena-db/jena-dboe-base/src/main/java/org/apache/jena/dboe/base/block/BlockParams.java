@@ -24,4 +24,3 @@ public interface BlockParams {
     public Integer getBlockReadCacheSize();
     public Integer getBlockWriteCacheSize();
 }
-

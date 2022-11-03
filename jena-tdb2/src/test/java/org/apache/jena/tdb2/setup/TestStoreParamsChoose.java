@@ -28,7 +28,6 @@ import org.apache.jena.tdb2.params.StoreParamsCodec;
 import org.apache.jena.tdb2.params.StoreParamsFactory;
 import org.junit.Test;
 
-//TestParamsCreate
 /** This test suite uses on-disk structures and can be slow */
 public class TestStoreParamsChoose {
     private String DIR = ConfigTest.getCleanDir();
@@ -45,7 +44,6 @@ public class TestStoreParamsChoose {
     static final StoreParams pLocStorage = StoreParams.builder("Storage")
             .blockSize(20)
             .nodeMissCacheSize(20).build();
-
 
     static final StoreParams pDft = StoreParams.getDftStoreParams();
 
@@ -122,7 +120,7 @@ public class TestStoreParamsChoose {
         assertFalse(StoreParams.sameValues(p, pDft));
 
         assertEquals(20, p.getBlockSize().intValue());
-        assertEquals(12,  p.getNodeMissCacheSize().intValue());
+        assertEquals(12, p.getNodeMissCacheSize().intValue());
     }
 
     @Test public void params_choose_existing_4a() {
@@ -137,20 +135,6 @@ public class TestStoreParamsChoose {
     }
 
     @Test public void params_choose_new_persist_1() {
-        // new database, app defined.
-        Location loc = Location.create(DIR);
-        FileOps.clearAll(loc.getDirectoryPath());
-        // Clear.
-        StoreParams p = StoreParamsFactory.decideStoreParams(loc, true, pApp, null, null, pDft);
-        // Check location now has a pLoc.
-        String fn = loc.getPath(Names.TDB_CONFIG_FILE);
-        assertTrue(FileOps.exists(fn));
-
-        StoreParams pLoc2 = StoreParamsCodec.read(loc);
-        assertTrue(StoreParams.sameValues(pLoc2, p));
-    }
-
-    @Test public void params_choose_new_persist_2a() {
         // new database, location defined.
         Location loc = Location.create(DIR);
         FileOps.clearAll(loc.getDirectoryPath());
@@ -166,7 +150,7 @@ public class TestStoreParamsChoose {
         assertTrue(StoreParams.sameValues(pLocStorage, p));
     }
 
-    @Test public void params_choose_new_persist_2b() {
+    @Test public void params_choose_new_persist_2() {
         // new database, location defined.
         Location loc = Location.create(DIR);
         FileOps.clearAll(loc.getDirectoryPath());
@@ -182,7 +166,7 @@ public class TestStoreParamsChoose {
         assertTrue(StoreParams.sameValues(pLocContainer, p));
     }
 
-    @Test public void params_choose_new_persist_2() {
+    @Test public void params_choose_new_persist_3() {
         // new database, location defined.
         Location loc = Location.create(DIR);
         FileOps.clearAll(loc.getDirectoryPath());
@@ -198,7 +182,7 @@ public class TestStoreParamsChoose {
         assertTrue(StoreParams.sameValues(pLocStorage, p));
     }
 
-    @Test public void params_choose_new_persist_3() {
+    @Test public void params_choose_new_persist_4() {
         // new database, location defined, application modified.
         Location loc = Location.create(DIR);
         FileOps.clearAll(loc.getDirectoryPath());

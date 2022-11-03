@@ -235,7 +235,6 @@ public class ShexTests {
             return ()->{};
         }
 
-
         // -- Check
         // map or (shape+focus)
         if ( ! action.hasProperty(ShexT.schema) ) {

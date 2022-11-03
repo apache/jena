@@ -41,6 +41,7 @@ import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.dboe.transaction.txn.TransactionException;
 import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.ActionContainerItem;
@@ -52,8 +53,8 @@ import org.apache.jena.fuseki.server.ServerConst;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.system.DataUploader;
+import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;
 import org.apache.jena.fuseki.webapp.SystemState;
 import org.apache.jena.graph.Node;
@@ -399,7 +400,11 @@ public class ActionDatasets extends ActionContainerItem {
             boolean isTDB1 = org.apache.jena.tdb.sys.TDBInternal.isTDB1(dataService.getDataset());
             boolean isTDB2 = org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dataService.getDataset());
 
-            dataService.shutdown();
+            // This occasionally fails in tests due to outstanding transactions.
+            // Unclear what's holding the transaction (maybe another test clearing up slowly).
+            try {
+                dataService.shutdown();
+            } catch (/*DBOE*/ TransactionException ex) { }
             // JENA-1481: Really delete files.
             if ( ( isTDB1 || isTDB2 ) ) {
                 // Delete databases created by the UI, or the admin operation, which are

@@ -20,6 +20,7 @@ package org.apache.jena.tdb2.params;
 
 import java.util.Objects;
 
+import org.apache.jena.dboe.base.block.BlockParams;
 import org.apache.jena.dboe.base.block.FileMode;
 import org.apache.jena.dboe.index.IndexParams;
 import org.apache.jena.tdb2.params.StoreParamsBuilder.Item;
@@ -30,7 +31,7 @@ import org.apache.jena.tdb2.params.StoreParamsBuilder.Item;
  * and some parameters can only be changed at the point the database is
  * created.
  * <p>
- * Getting parameters settings wrong can destroy a databse.
+ * Getting parameters settings wrong can destroy a database.
  * Alternating the block size is not encouraged and should only be
  * done if necessary.  It can silently destroy a database if set
  * to a different value than that used to create the database.  The
@@ -39,7 +40,7 @@ import org.apache.jena.tdb2.params.StoreParamsBuilder.Item;
  * @see StoreParamsBuilder  for constructing StoreParams
  * @see StoreParamsConst    for default values.
  */
-public class StoreParams implements IndexParams, StoreParamsDynamic
+public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
 {
     /* These are items you can change JVM to JVM */
 
@@ -150,6 +151,11 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
     public static StoreParams getDftStoreParams() {
         return StoreParamsConst.dftStoreParams;
     }
+
+    public static StoreParams getDftMemStoreParams() {
+        return StoreParamsConst.dftMemStoreParams;
+    }
+
 
     /** A {@code StoreParams} that provides a smaller
      * in-JVM foot print.  This is compatible with
