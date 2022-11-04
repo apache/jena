@@ -22,6 +22,7 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
+import org.apache.jena.atlas.logging.LogCtlJUL;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.graph.Node ;
@@ -49,6 +50,7 @@ public class textindexer extends CmdARQ {
     protected ProgressMonitor  progressMonitor ;
 
     static public void main(String... argv) {
+        LogCtlJUL.routeJULtoSLF4J();
         new textindexer(argv).mainRun() ;
     }
 
