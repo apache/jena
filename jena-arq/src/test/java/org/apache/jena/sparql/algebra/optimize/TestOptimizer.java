@@ -38,7 +38,7 @@ public class TestOptimizer extends AbstractTestTransform
 {
     static { JenaSystem.init(); }
 
-    // These test calls of the whole optimzier.
+    // These test calls of the whole optimizer.
     // A lot of the optimizer is tested by using the scripted queries.
     // There are many tests of individual transforms.
 
@@ -242,7 +242,7 @@ public class TestOptimizer extends AbstractTestTransform
              ,"      (triple ?var2 :p2 ?var3)"
              ,"    ))") ;
 
-        // Answer when  reorder BGPs before general filter placements.
+        // Answer when reorder BGPs before general filter placements.
         String expected = StrUtils.strjoinNL
             ("(filter (!= ?VAR 123)"
             ,"  (disjunction"
@@ -260,23 +260,27 @@ public class TestOptimizer extends AbstractTestTransform
             ,"         )))))"
             );
 
-        checkAlgebra(in, expected) ;
+        // 2022-11: JENA-2317 (reorder BGPs in the algebra optimizer) is causing problems
+        // because it does not consider variables flowing into a BGP (OpSequence, EXISTS).
+        // For now, it defaults to off.
+        //checkAlgebra(in, expected) ;
 
         // Before JENA-2317 when BGP reordering was done in the algebra optimization phase.
-//        String out = StrUtils.strjoinNL
-//                ("(filter (!= ?VAR 123)"
-//                 ," (disjunction"
-//                 ,"   (assign ((?var3 'ABC'))"
-//                 ,"     (sequence"
-//                 ,"       (filter (regex ?var4 'pat1')"
-//                 ,"         (bgp (triple ?var2 :p1 ?var4)))"
-//                 ,"       (bgp (triple ?var2 :p2 'ABC'))))"
-//                 ,"   (assign ((?var3 'XYZ'))"
-//                 ,"     (sequence"
-//                 ,"       (filter (regex ?var4 'pat1')"
-//                 ,"         (bgp (triple ?var2 :p1 ?var4)))"
-//                 ,"       (bgp (triple ?var2 :p2 'XYZ'))))))"
-//                 ) ;
+        String expectedNoReorderBGP = StrUtils.strjoinNL
+                ("(filter (!= ?VAR 123)"
+                 ," (disjunction"
+                 ,"   (assign ((?var3 'ABC'))"
+                 ,"     (sequence"
+                 ,"       (filter (regex ?var4 'pat1')"
+                 ,"         (bgp (triple ?var2 :p1 ?var4)))"
+                 ,"       (bgp (triple ?var2 :p2 'ABC'))))"
+                 ,"   (assign ((?var3 'XYZ'))"
+                 ,"     (sequence"
+                 ,"       (filter (regex ?var4 'pat1')"
+                 ,"         (bgp (triple ?var2 :p1 ?var4)))"
+                 ,"       (bgp (triple ?var2 :p2 'XYZ'))))))"
+                 ) ;
+        checkAlgebra(in, expectedNoReorderBGP) ;
     }
 
     @Test public void combine_extend_01()

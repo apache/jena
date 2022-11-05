@@ -134,7 +134,11 @@ public class OptimizerStd implements Rewrite
             op = transformJoinStrategy(op) ;
 
         // Do a basic reordering so that triples with more defined terms go first.
-        if ( context.isTrueOrUndef(ARQ.optReorderBGP) )
+        // 2022-11: This does not take into account values flowed into the BGP
+        // (OpSequence, Lateral joins, EXISTS) so the default is not enabled.
+        // Use "ARQ.getContext.set(ARQ.optReorderBGP, true)" to enable.
+        //if ( context.isTrueOrUndef(ARQ.optReorderBGP) )
+        if ( context.isTrue(ARQ.optReorderBGP) )
             op = transformReorder(op) ;
 
         // Place filters close to where their input variables are defined.
