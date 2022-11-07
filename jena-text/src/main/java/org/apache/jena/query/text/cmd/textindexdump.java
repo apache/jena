@@ -19,6 +19,7 @@
 package org.apache.jena.query.text.cmd ;
 
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.logging.LogCtlJUL;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.query.text.* ;
@@ -49,6 +50,7 @@ public class textindexdump extends CmdARQ {
     protected TextIndex        textIndex    = null ;
 
     static public void main(String... argv) {
+        LogCtlJUL.routeJULtoSLF4J();
         new textindexdump(argv).mainRun() ;
     }
 

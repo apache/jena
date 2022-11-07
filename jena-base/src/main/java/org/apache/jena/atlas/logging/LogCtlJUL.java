@@ -126,8 +126,12 @@ public class LogCtlJUL {
      */
     public static void routeJULtoSLF4J() {
         try {
-            SLF4JBridgeHandler.removeHandlersForRootLogger();
-            SLF4JBridgeHandler.install();
-        } catch (Throwable th) {}
+            if (!SLF4JBridgeHandler.isInstalled()) {
+                SLF4JBridgeHandler.removeHandlersForRootLogger();
+                SLF4JBridgeHandler.install();
+            }
+        }
+        catch (Throwable th) {
+        }
     }
 }
