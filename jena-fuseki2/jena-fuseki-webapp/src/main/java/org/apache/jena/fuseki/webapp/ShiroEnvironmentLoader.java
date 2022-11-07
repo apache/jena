@@ -134,28 +134,4 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
             return p.normalize().toString();
         return null;
     }
-
-//    /**
-//     * Test whether a name identified an existing resource
-//     * @param resource    A String in Shiro-resource name format (e.g. URL scheme names)
-//     * @return True/false as to whether the resource can be found or not.
-//     */
-//
-//    private boolean resourceExists(String resource) {
-//        try {
-//            // See IniWebEnvironment.convertPathToIni
-//            if (!ResourceUtils.hasResourcePrefix(resource)) {
-//                //Sort out "path" and open as a webapp resource.
-//                resource = WebUtils.normalize(resource);
-//                URL url = servletContext.getResource(resource);
-//                return ( url == null );
-//            } else {
-//                // Treat as a plain name.
-//                InputStream is = ResourceUtils.getInputStreamForPath(resource);
-//                boolean exists = (is != null );
-//                is.close();
-//                return exists;
-//            }
-//        } catch (IOException e) { return false; }
-//    }
 }
