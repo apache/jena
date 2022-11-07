@@ -22,23 +22,24 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.Transform ;
 import org.apache.jena.sparql.algebra.TransformCopy ;
-import org.apache.jena.sparql.algebra.op.OpTable ;
-import org.junit.Test ;
+import org.apache.jena.sparql.algebra.op.OpTable;
+import org.junit.Test;
+import static org.apache.jena.sparql.algebra.optimize.TransformTests.*;
 
 /** Tests of transforms related to filters */
-public class TestTransformFilters extends AbstractTestTransform
+public class TestTransformFilters
 {
-    private Transform t_inequality  = new TransformFilterInequality() ;
-    private Transform t_disjunction = new TransformFilterDisjunction() ;
-    private Transform t_expandOneOf = new TransformExpandOneOf() ;
-    private Transform t_implicitJoin = new TransformFilterImplicitJoin() ;
-    private Transform t_implicitLeftJoin = new TransformImplicitLeftJoin() ;
+    private Transform t_inequality  = new TransformFilterInequality();
+    private Transform t_disjunction = new TransformFilterDisjunction();
+    private Transform t_expandOneOf = new TransformExpandOneOf();
+    private Transform t_implicitJoin = new TransformFilterImplicitJoin();
+    private Transform t_implicitLeftJoin = new TransformImplicitLeftJoin();
 
     @Test public void nested_01() {
         testOp(
-               "(filter (?A) (filter (?B) (table unit)))", 
+               "(filter (?A) (filter (?B) (table unit)))",
                new TransformCopy(),
-               (String[])null) ;
+               (String[])null);
     }
 
 
@@ -47,23 +48,23 @@ public class TestTransformFilters extends AbstractTestTransform
             @Override
             public Op transform(OpTable opTable) {
                 // Always a new object
-                return OpTable.create(opTable.getTable()) ;
+                return OpTable.create(opTable.getTable());
             }
         };
-        
+
         testOp(
-               "(filter (?A) (filter (?B) (table unit)))", 
+               "(filter (?A) (filter (?B) (table unit)))",
                tableChanger,
-               "(filter (exprlist ?B ?A) (table unit))") ;
+               "(filter (exprlist ?B ?A) (table unit))");
     }
-    
-    
-//    // JENA-1184 workaround - this optimization is current not active. 
+
+
+//    // JENA-1184 workaround - this optimization is current not active.
 //    @Test public void equality04() {
 //        // Eliminate unused
 //        testOp("(filter (= ?UNUSED <x>) (bgp ( ?s ?p ?x)) )",
 //               t_equality,
-//               "(table empty)") ;
+//               "(table empty)");
 //    }
 
     @Test public void optionalEqualitySubQuery_01() {
@@ -72,10 +73,10 @@ public class TestTransformFilters extends AbstractTestTransform
         String qs = StrUtils.strjoinNL
             ( "SELECT *"
               , "WHERE {"
-              , "    ?test ?p1 ?X." 
+              , "    ?test ?p1 ?X."
               , "    FILTER ( ?test = <http://localhost/t1> )"
               , "    { SELECT ?s1 ?test { ?test ?p2 ?o2 } }"
-              , "}") ; 
+              , "}");
 
         String ops = StrUtils.strjoinNL
             ("(sequence"
@@ -83,50 +84,50 @@ public class TestTransformFilters extends AbstractTestTransform
              ,"     (bgp (triple <http://localhost/t1> ?p1 ?X)))"
              ,"   (project (?s1 ?test)"
              ,"     (bgp (triple ?test ?/p2 ?/o2))))"
-                ) ;
-        TestOptimizer.check(qs, ops) ;
+                );
+        check(qs, ops);
     }
 
     @Test public void optionalEqualitySubQuery_02() {
         String qs = StrUtils.strjoinNL
             ( "SELECT *"
               , "WHERE {"
-              , "    ?test ?p1 ?X." 
+              , "    ?test ?p1 ?X."
               , "    FILTER ( ?test = <http://localhost/t1> )"
               , "    { SELECT ?s1 { ?test ?p2 ?o2 } }"
-              , "}") ;
+              , "}");
         // JENA-616
-        // Answer if FILTER equality done only after filter placement. 
+        // Answer if FILTER equality done only after filter placement.
         String ops = StrUtils.strjoinNL
             ( "(sequence"
               , "  (assign ((?test <http://localhost/t1>))"
               , "     (bgp (triple <http://localhost/t1> ?p1 ?X)))"
               , "  (project (?s1)"
               , "     (bgp (triple ?/test ?/p2 ?/o2))) )"
-                ) ;
-        // Answer if weaker filter placement done, leaving the filter on the whole sequence. 
+                );
+        // Answer if weaker filter placement done, leaving the filter on the whole sequence.
         //        String ops = StrUtils.strjoinNL
         //            ( "(assign ((?test <http://localhost/t1>))"
         //            , "  (sequence"
         //            , "    (bgp (triple <http://localhost/t1> ?p1 ?X))"
         //            , "    (project (?s1)"
         //            , "      (bgp (triple ?/test ?/p2 ?/o2)) )))"
-        //            ) ;
+        //            );
 
-        TestOptimizer.check(qs, ops) ;
+        check(qs, ops);
     }
 
     // JENA-383, simplified.
     @Test public void optionalEquality_01() {
         // Not optimized because the TransformFilterEquality does not notice
-        // ?x is fixed in the expression by the join.  
+        // ?x is fixed in the expression by the join.
         String qs = StrUtils.strjoinNL
             ( "PREFIX : <http://example/> SELECT * {"
               , "    OPTIONAL { ?x :q ?o }"
               , "    FILTER(?x = :x)"
               , "    ?x :p ?o2"
               , "}"
-                ) ;
+                );
         // Answer if weaker filter placement done, leaving the filter on the whole sequence. JENA-671
         //        String ops = StrUtils.strjoinNL
         //            ( "(filter (= ?x <http://example/x>)"
@@ -135,8 +136,8 @@ public class TestTransformFilters extends AbstractTestTransform
         //            , "        (table unit)"
         //            , "        (bgp (triple ?x <http://example/q> ?o)))"
         //            , "     (bgp (triple ?x <http://example/p> ?o2))"
-        //            , " ))" 
-        //            ) ;
+        //            , " ))"
+        //            );
         //JENA-671
         String ops = StrUtils.strjoinNL
             ("(sequence"
@@ -145,10 +146,10 @@ public class TestTransformFilters extends AbstractTestTransform
              , "      (bgp (triple ?x <http://example/q> ?o)))"
              , "    (assign ((?x <http://example/x>))"
              , "      (bgp (triple <http://example/x> <http://example/p> ?o2)))"
-             , ")" 
-                ) ;
+             , ")"
+                );
 
-        TestOptimizer.check(qs, ops) ;
+        check(qs, ops);
     }
 
     @Test public void optionalEqualityScope_01() {
@@ -158,7 +159,7 @@ public class TestTransformFilters extends AbstractTestTransform
               , "    FILTER(?x = :x)"
               , "    ?x :p ?o2"
               , "}"
-                ) ;
+                );
         // Transformation if filter place not happening.
         // Weaker placement.
         String ops = StrUtils.strjoinNL
@@ -168,7 +169,7 @@ public class TestTransformFilters extends AbstractTestTransform
              , "         (table unit)"
              , "         (bgp (triple <http://example/x> <http://example/q> ?o)))"
              , "       (bgp (triple <http://example/x> <http://example/p> ?o2))))"
-                ) ;
+                );
         //JENA-671
         // Note that "assign" is a filter as well
         // so it filters the ?x from the RHS of the conditional.
@@ -179,9 +180,9 @@ public class TestTransformFilters extends AbstractTestTransform
              ,"    (bgp (triple ?x <http://example/q> ?o)) )"
              ,"  (assign ((?x <http://example/x>))"
              ,"    (bgp (triple <http://example/x> <http://example/p> ?o2)))"
-             ,"  )"     
-                ) ;
-        TestOptimizer.check(qs, ops2) ;
+             ,"  )"
+                );
+        check(qs, ops2);
     }
 
     // JENA-294 part II
@@ -193,7 +194,7 @@ public class TestTransformFilters extends AbstractTestTransform
               , "    OPTIONAL { ?x :q ?o }"
               , "    FILTER(?x = :x)"
               , "}"
-                ) ;
+                );
         // JENA-616
         // Answer if FILTER equality optimization done only after FILTER placement.
         String ops = StrUtils.strjoinNL
@@ -202,7 +203,7 @@ public class TestTransformFilters extends AbstractTestTransform
               , "     (bgp (triple <http://example/x> <http://example/p> ?o2)))"
               , "  (bgp (triple ?x <http://example/q> ?o))"
               , "  )"
-                ) ;
+                );
         // Answer if FILTER equality optimization done before FILTER placement
         // (and possible afterwards as well).
         //        String ops = StrUtils.strjoinNL
@@ -211,8 +212,8 @@ public class TestTransformFilters extends AbstractTestTransform
         //            , "    (bgp (triple <http://example/x> <http://example/p> ?o2))"
         //            , "    (bgp (triple <http://example/x> <http://example/q> ?o))"
         //            , "  ))"
-        //            ) ;
-        TestOptimizer.check(qs, ops) ;
+        //            );
+        check(qs, ops);
     }
 
     // JENA-294 part II
@@ -223,26 +224,26 @@ public class TestTransformFilters extends AbstractTestTransform
               , "    OPTIONAL { ?x :q ?o }"
               , "    FILTER(?x = :x)"
               , "}"
-                ) ;
-        // Unsafe to transform:  ?x is optional. 
+                );
+        // Unsafe to transform:  ?x is optional.
         String ops = StrUtils.strjoinNL
             ( "(filter (= ?x <http://example/x>)"
               , "   (conditional"
               , "     (bgp (triple ?z <http://example/p> ?o2))"
               , "     (bgp (triple ?x <http://example/q> ?o))"
               , "))"
-                ) ;
-        TestOptimizer.check(qs, ops) ;
+                );
+        check(qs, ops);
     }
 
-    // Scope of variable (optional, defined) cases 
+    // Scope of variable (optional, defined) cases
     @Test public void test_OptEqualityScope_04() {
         String qs = StrUtils.strjoinNL
             ( "PREFIX : <http://example/> SELECT * {"
               , "    OPTIONAL { ?x :q ?o }"
               , "    FILTER(?x = :x)"
               , "}"
-                ) ;
+                );
         // Unsafe to transform:  This may not defined ?x, then FILTER -> unbound -> error -> false
         String ops1 = StrUtils.strjoinNL
             ("(filter (= ?x <http://example/x>)"
@@ -250,9 +251,9 @@ public class TestTransformFilters extends AbstractTestTransform
              ,"      (table unit)"
              ,"      (assign ((?x <http://example/x>))"
              ,"        (bgp (triple <http://example/x> <http://example/q> ?o)))))"
-                ) ;
+                );
 
-        TestOptimizer.check(qs, ops1) ;
+        check(qs, ops1);
     }
 
 
@@ -262,7 +263,7 @@ public class TestTransformFilters extends AbstractTestTransform
                "(disjunction ",
                "(assign ((?x <x>)) (bgp ( ?s ?p <x>)))",
                "(assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
-            ")") ;
+            ")");
     }
 
     @Test public void disjunction02() {
@@ -271,7 +272,7 @@ public class TestTransformFilters extends AbstractTestTransform
                "(disjunction ",
                "(assign ((?x <x>)) (bgp ( ?s ?p <x>)))",
                "(filter (!= ?x <y>) (bgp ( ?s ?p ?x)))",
-            ")") ;
+            ")");
     }
 
     @Test public void disjunction03() {
@@ -281,13 +282,13 @@ public class TestTransformFilters extends AbstractTestTransform
                "(disjunction ",
                "(assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
                "(filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
-            ")") ;
+            ")");
     }
 
     @Test public void disjunction04() {
         testOp("(filter (|| (!= ?x <y>) (!= ?x <x>)) (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               (String[])null) ;
+               (String[])null);
     }
 
     @Test public void disjunction05() {
@@ -297,50 +298,50 @@ public class TestTransformFilters extends AbstractTestTransform
                "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
                "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
                ")"
-            ) ;
+            );
     }
 
     @Test public void disjunction06() {
         testOp("(filter (exprlist (lang ?x) (|| (= ?x <y>) (!= ?x <x>)))    (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               "(filter (lang ?x)",   
+               "(filter (lang ?x)",
                "  (disjunction",
                "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
                "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
                "))"
-            ) ;
+            );
     }
 
     @Test public void disjunction07() {
         testOp("(filter (exprlist (|| (= ?x <y>) (!= ?x <x>)) (lang ?x) )    (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               "(filter (lang ?x)",   
+               "(filter (lang ?x)",
                "  (disjunction",
                "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
                "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
                "))"
-            ) ;
+            );
     }
 
     @Test public void oneOf1() {
         testOp(
                "(filter (in ?x <x> 2 3) (bgp (?s ?p ?x)))",
                t_expandOneOf,
-               "(filter (|| ( || (= ?x <x>) (= ?x 2)) (= ?x 3)) (bgp (?s ?p ?x)))") ;
+               "(filter (|| ( || (= ?x <x>) (= ?x 2)) (= ?x 3)) (bgp (?s ?p ?x)))");
     }
 
     @Test public void oneOf2() {
         testOp(
                "(filter (exprlist (= ?x 99) (in ?x <x> 2 3)) (bgp (?s ?p ?x)))",
                t_expandOneOf,
-               "(filter (exprlist (= ?x 99) (|| ( || (= ?x <x>) (= ?x 2)) (= ?x 3))) (bgp (?s ?p ?x)))") ;
+               "(filter (exprlist (= ?x 99) (|| ( || (= ?x <x>) (= ?x 2)) (= ?x 3))) (bgp (?s ?p ?x)))");
     }
 
     @Test public void oneOf3() {
         testOp(
                "(filter (notin ?x <x> 2 3) (bgp (?s ?p ?x)))",
                t_expandOneOf,
-               "(filter (exprlist (!= ?x <x>) (!= ?x 2) (!= ?x 3)) (bgp (?s ?p ?x)))") ;
+               "(filter (exprlist (!= ?x <x>) (!= ?x 2) (!= ?x 3)) (bgp (?s ?p ?x)))");
     }
 
     @Test
@@ -348,7 +349,7 @@ public class TestTransformFilters extends AbstractTestTransform
         // JENA-771
         testOp("(filter true (distinct (filter (in ?x 1 2) (bgp (?s ?p ?x)) )))",
                t_expandOneOf,
-               "(filter true (distinct (filter (|| (= ?x 1) (= ?x 2) ) (bgp (triple ?s ?p ?x)) )))") ;
+               "(filter true (distinct (filter (|| (= ?x 1) (= ?x 2) ) (bgp (triple ?s ?p ?x)) )))");
     }
 
     @Test
@@ -356,30 +357,30 @@ public class TestTransformFilters extends AbstractTestTransform
         // JENA-771
         testOp("(filter true (distinct (filter (notin ?x 1 2) (bgp (?s ?p ?x)) )))",
                t_expandOneOf,
-               "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2)) (bgp (triple ?s ?p ?x)) )))") ;
+               "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2)) (bgp (triple ?s ?p ?x)) )))");
     }
-    
+
     @Test
     public void oneOf6() {
         // JENA-1113
-        int x = TransformExpandOneOf.REWRITE_LIMIT ;
+        int x = TransformExpandOneOf.REWRITE_LIMIT;
         try {
-            TransformExpandOneOf.REWRITE_LIMIT = 3 ;
+            TransformExpandOneOf.REWRITE_LIMIT = 3;
             testOp("(filter true (distinct (filter (notin ?x 1 2) (bgp (?s ?p ?x)) )))",
                    t_expandOneOf,
-                "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2)) (bgp (triple ?s ?p ?x)) )))") ;
+                "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2)) (bgp (triple ?s ?p ?x)) )))");
             testOp("(filter true (distinct (filter (notin ?x 1 2 3) (bgp (?s ?p ?x)) )))",
                    t_expandOneOf,
                    // No change.
-                   "(filter true (distinct (filter (notin ?x 1 2 3) (bgp (?s ?p ?x)) )))") ;
-            
+                   "(filter true (distinct (filter (notin ?x 1 2 3) (bgp (?s ?p ?x)) )))");
+
         } finally {
-            TransformExpandOneOf.REWRITE_LIMIT = x ;
+            TransformExpandOneOf.REWRITE_LIMIT = x;
         }
         // Check reset.
         testOp("(filter true (distinct (filter (notin ?x 1 2 3) (bgp (?s ?p ?x)) )))",
                t_expandOneOf,
-               "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2) (!= ?x 3)) (bgp (triple ?s ?p ?x)) )))") ;
+               "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2) (!= ?x 3)) (bgp (triple ?s ?p ?x)) )))");
     }
 
 
@@ -466,7 +467,7 @@ public class TestTransformFilters extends AbstractTestTransform
 
     @Test public void implictJoin11() {
         // Test case related to JENA-500
-        // Detect that the expression (= ?prebound ?y) is always 'error' because 
+        // Detect that the expression (= ?prebound ?y) is always 'error' because
         // ?prebound is undef.  Therefore the whole thing can be removed as there
         // can be no solutions.
         testOp(
@@ -480,7 +481,7 @@ public class TestTransformFilters extends AbstractTestTransform
         // Implicit join should not apply to the whole union because the variables involved aren't fixed
         // However we can spot the special case of one branch of the union being invalid and throw it out
         testOp(
-               "(filter (= ?a ?b) (union (bgp (triple ?a :p :o1)) (bgp (triple ?b :p ?a))))", 
+               "(filter (= ?a ?b) (union (bgp (triple ?a :p :o1)) (bgp (triple ?b :p ?a))))",
                t_implicitJoin,
                "(assign ((?a ?b)) (bgp (triple ?b :p ?b)))");
     }
@@ -490,7 +491,7 @@ public class TestTransformFilters extends AbstractTestTransform
         // Implicit join should not apply to the whole union because the variables involved aren't fixed
         // However we can spot the special case of one branch of the union being invalid and throw it out
         testOp(
-               "(filter (= ?a ?b) (union (bgp (triple ?b :p ?a)) (bgp (triple ?a :p :o1))))", 
+               "(filter (= ?a ?b) (union (bgp (triple ?b :p ?a)) (bgp (triple ?a :p :o1))))",
                t_implicitJoin,
                "(assign ((?a ?b)) (bgp (triple ?b :p ?b)))");
     }
@@ -500,7 +501,7 @@ public class TestTransformFilters extends AbstractTestTransform
         // Implicit join should not apply to the whole union because the variables involved aren't fixed
         // However we can spot the special case where both branches are invalid
         testOp(
-               "(filter (= ?a ?b) (union (bgp (triple ?b :p :o1)) (bgp (triple ?a :p :o2))))", 
+               "(filter (= ?a ?b) (union (bgp (triple ?b :p :o1)) (bgp (triple ?a :p :o2))))",
                t_implicitJoin,
                "(table empty)");
     }
@@ -509,7 +510,7 @@ public class TestTransformFilters extends AbstractTestTransform
         // Variation on the test case from JENA-692 with additional assignment added
         // Implicit join should not apply to the whole union because not all assignments are valid
         testOp(
-               "(filter ((= ?a ?b) (= ?a ?p)) (union (bgp (triple ?a ?p :o1)) (bgp (triple ?b ?p ?a))))", 
+               "(filter ((= ?a ?b) (= ?a ?p)) (union (bgp (triple ?a ?p :o1)) (bgp (triple ?b ?p ?a))))",
                t_implicitJoin,
                (String[])null);
     }
@@ -518,7 +519,7 @@ public class TestTransformFilters extends AbstractTestTransform
         // Variation on test case from JENA-692
         // Implicit join can apply because assignments are valid over both branches of the union
         testOp(
-               "(filter (= ?a ?b) (union (bgp (triple ?a :p ?b)) (bgp (triple ?b :p ?a))))", 
+               "(filter (= ?a ?b) (union (bgp (triple ?a :p ?b)) (bgp (triple ?b :p ?a))))",
                t_implicitJoin,
                "(assign ((?a ?b)) (union (bgp (triple ?b :p ?b)) (bgp (triple ?b :p ?b))))");
     }
@@ -527,7 +528,7 @@ public class TestTransformFilters extends AbstractTestTransform
         // Variation on test case from JENA-692
         // Implicit join can apply because the filter is over the branch of the union where it is valid
         testOp(
-               "(union (bgp (triple ?a :p :o1)) (filter (= ?a ?b) (bgp (triple ?b :p ?a))))", 
+               "(union (bgp (triple ?a :p :o1)) (filter (= ?a ?b) (bgp (triple ?b :p ?a))))",
                t_implicitJoin,
                "(union (bgp (triple ?a :p :o1)) (assign ((?a ?b)) (bgp (triple ?b :p ?b))))");
     }
@@ -844,7 +845,7 @@ public class TestTransformFilters extends AbstractTestTransform
         // Modified test case from JENA-692
         // Implicit join should not apply to the whole union because the variables involved aren't fixed
         testOp(
-               "(leftjoin (bgp (triple ?a <http://type> ?type)) (union (bgp (triple ?a :p :o1)) (bgp (triple ?b :p ?a))) ((= ?a ?b)))", 
+               "(leftjoin (bgp (triple ?a <http://type> ?type)) (union (bgp (triple ?a :p :o1)) (bgp (triple ?b :p ?a))) ((= ?a ?b)))",
                t_implicitLeftJoin,
                (String[])null);
     }
@@ -860,74 +861,74 @@ public class TestTransformFilters extends AbstractTestTransform
     @Test public void inequality01() {
         testOp("(filter (!= ?x <x>) (bgp ( ?s ?p ?x)) )",
                t_inequality,
-               "(minus (bgp ( ?s ?p ?x)) (table (vars ?x) (row [?x <x>])))") ;
+               "(minus (bgp ( ?s ?p ?x)) (table (vars ?x) (row [?x <x>])))");
     }
 
     @Test public void inequality02() {
         // Not safe on strings
         testOp("(filter (!= ?x 'x') (bgp ( ?s ?p ?x)) )",
                t_inequality,
-               (String[])null) ;
+               (String[])null);
     }
 
     @Test public void inequality03() {
         // Not safe on numbers
         testOp("(filter (!= ?x 123) (bgp ( ?s ?p ?x)) )",
                t_inequality,
-               (String[])null) ;
+               (String[])null);
     }
 
     @Test public void inequality04() {
         // Unused
         testOp("(filter (!= ?UNUSED <x>) (bgp ( ?s ?p ?x)) )",
                t_inequality,
-               "(table empty)") ;
+               "(table empty)");
     }
 
     @Test public void inequality05() {
-        // Can't optimize if filter does not cover vars in LHS 
+        // Can't optimize if filter does not cover vars in LHS
         testOp("(filter (!= ?x2 <x>) (conditional (bgp ( ?s1 ?p1 ?x1))  (bgp ( ?s2 ?p2 ?x2))))",
                t_inequality,
-               (String[])null) ;
+               (String[])null);
     }
 
     @Test public void inequality06() {
         testOp("(filter (!= ?x <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))))",
                t_inequality,
-               "(minus (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))) (table (vars ?x) (row [?x <x>])))") ;
+               "(minus (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))) (table (vars ?x) (row [?x <x>])))");
     }
 
     @Test public void inequality07() {
         testOp("(filter (!= ?x <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))))",
                t_inequality,
-               "(minus (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))) (table (vars ?x) (row [?x <x>])))") ;
+               "(minus (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))) (table (vars ?x) (row [?x <x>])))");
     }
 
     @Test public void inequality08() {
         // Tests use of multiple != conditions on same variable
         testOp("(filter ((!= ?x <x>) (!= ?x <y>)) (bgp ( ?s ?p ?x)) )",
                t_inequality,
-               "(minus (bgp (?s ?p ?x)) (table (vars ?x) (row [?x <y>]) (row [?x <x>])))") ;
+               "(minus (bgp (?s ?p ?x)) (table (vars ?x) (row [?x <y>]) (row [?x <x>])))");
     }
 
     @Test public void inequality09() {
         // Tests use of multiple != conditions on different variables
         testOp("(filter ((!= ?x <x>) (!= ?p <y>)) (bgp ( ?s ?p ?x)) )",
                t_inequality,
-               "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?p <y>]) (row [?x <x>])))") ;
+               "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?p <y>]) (row [?x <x>])))");
     }
 
     @Test public void inequality10() {
         // Tests use of multiple != conditions on both same and different variables
         testOp("(filter ((!= ?x <x>) (!= ?x <y>) (!= ?p <type>)) (bgp ( ?s ?p ?x)) )",
                t_inequality,
-               "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?p <type>]) (row [?x <y>]) (row [?x <x>])))") ;
+               "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?p <type>]) (row [?x <y>]) (row [?x <x>])))");
     }
 
     @Test public void inequality11() {
         // Other filter conditions should be preserved
         testOp("(filter ((!= ?x <x>) (> ?x 10)) (bgp ( ?s ?p ?x)) )",
                t_inequality,
-               "(filter (> ?x 10) (minus (bgp ( ?s ?p ?x)) (table (vars ?x) (row [?x <x>]))))") ;
+               "(filter (> ?x 10) (minus (bgp ( ?s ?p ?x)) (table (vars ?x) (row [?x <x>]))))");
     }
 }

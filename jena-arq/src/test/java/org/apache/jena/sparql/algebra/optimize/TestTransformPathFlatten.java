@@ -35,8 +35,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestTransformPathFlatten {
-    private static String pre = "(prefix ((: <http://example/>))" ;
-    private static String post =  ")" ;
+    private static String pre = "(prefix ((: <http://example/>))";
+    private static String post =  ")";
     
     private static Prologue prologue;
 
