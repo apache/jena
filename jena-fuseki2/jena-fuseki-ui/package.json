@@ -71,6 +71,7 @@
     "webpack": "^5.74.0"
   },
   "overrides": {
-    "terser": "^5.14.2"
+    "terser": "^5.14.2",
+    "loader-utils": "^1.4.1"
   }
 }
