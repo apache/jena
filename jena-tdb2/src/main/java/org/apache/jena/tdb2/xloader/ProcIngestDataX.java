@@ -125,7 +125,7 @@ public class ProcIngestDataX {
                     .build();
         }
 
-        DatasetGraph dsg = DatabaseConnection.connectCreate(loc, storeParams).getDatasetGraph();
+        DatasetGraph dsg = DatabaseConnection.connectCreate(loc, storeParams, null).getDatasetGraph();
         StoreParams storeParamsActual = TDBInternal.getDatasetGraphTDB(dsg).getStoreParams();
 //        FmtLog.info(LOG, "Node to NodeId cache size: %,d", storeParamsActual.getNode2NodeIdCacheSize());
 //        FmtLog.info(LOG, "NodeId to Node cache size: %,d", storeParamsActual.getNodeId2NodeCacheSize());

@@ -38,11 +38,8 @@ import org.apache.jena.dboe.trans.bplustree.BPlusTreeFactory;
 import org.apache.jena.dboe.trans.data.TransBinaryDataFile;
 import org.apache.jena.dboe.transaction.txn.*;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
-import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.engine.main.QC;
-import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
-import org.apache.jena.sparql.sse.SSE_ParseException;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.solver.OpExecutorTDB2;
@@ -61,27 +58,36 @@ import org.apache.jena.tdb2.sys.SystemTDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Build TDB2 databases based on {@linkplain DatabaseRDF}.
+/**
+ * Build TDB2 databases based on {@linkplain DatabaseRDF}.
  * This builds the storage database, not the switchable.
  *
  * {@link DatabaseOps#createSwitchable} adds the switching layer
- * and is called by {@link DatabaseConnection#make}.
+ * and is called by {@link DatabaseConnection#make}
+ * with the machinery in {@link DatabaseOps}.
  */
 public class TDB2StorageBuilder {
     private static Logger log = LoggerFactory.getLogger(TDB2StorageBuilder.class);
 
+    /*
+     * Build a storage database at the given location with default store parameters and reorder transformation.
+     * Typically used only for databases without a switchable container (tests or in-memory TDB2).
+     */
     public static DatasetGraphTDB build(Location location) {
-        return build(location, StoreParams.getDftStoreParams());
+        return build(location, null, null);
     }
 
-    public static DatasetGraphTDB build(Location location, StoreParams params) {
-//        // Decisions about the params to choose is in  DatabaseOps.build.
+    public static DatasetGraphTDB build(Location location, StoreParams params, ReorderTransformation reorderTransform) {
+        // Decisions about the StoreParams params and ReorderTransformation are made in DatabaseOps.build.
         if (params == null ) {
             if ( location.isMem() )
                 params = StoreParams.getDftMemStoreParams();
             else
                 params = StoreParams.getDftStoreParams();
         }
+
+        if ( reorderTransform == null )
+            reorderTransform = SystemTDB.getDefaultReorderTransform();
 
         // Builder pattern for adding components.
         TransactionCoordinator txnCoord = buildTransactionCoordinator(location);
@@ -96,8 +102,7 @@ public class TDB2StorageBuilder {
         builder.listeners.forEach(txnCoord::addListener);
         // Freezes the TransactionCoordinator components
         txnCoord.start();
-        ReorderTransformation reorderTranform = chooseReorderTransformation(location);
-        DatasetGraphTDB dsg = new DatasetGraphTDB(location, params, reorderTranform,
+        DatasetGraphTDB dsg = new DatasetGraphTDB(location, params, reorderTransform,
                                                   storage, prefixes, txnSystem);
 
         // Enable query processing.
@@ -317,41 +322,4 @@ public class TDB2StorageBuilder {
         TransBinaryDataFile transBinFile = new TransBinaryDataFile(binFile, cid, pState);
         return transBinFile;
     }
-
-    private static boolean warnAboutOptimizer = true ;
-    public static ReorderTransformation chooseReorderTransformation(Location location) {
-        if ( location == null )
-            return ReorderLib.identity() ;
-
-        ReorderTransformation reorder = null ;
-        if ( location.exists(Names.optStats) ) {
-            try {
-                reorder = ReorderLib.weighted(location.getPath(Names.optStats)) ;
-                log.debug("Statistics-based BGP optimizer") ;
-            }
-            catch (SSE_ParseException ex) {
-                log.warn("Error in stats file: " + ex.getMessage()) ;
-                reorder = null ;
-            }
-        }
-
-        if ( reorder == null && location.exists(Names.optFixed) ) {
-            reorder = ReorderLib.fixed() ;
-            log.debug("Fixed pattern BGP optimizer") ;
-        }
-
-        if ( location.exists(Names.optNone) ) {
-            reorder = ReorderLib.identity() ;
-            log.debug("Optimizer explicitly turned off") ;
-        }
-
-        if ( reorder == null )
-            reorder = SystemTDB.getDefaultReorderTransform() ;
-
-        if ( reorder == null && warnAboutOptimizer )
-            ARQ.getExecLogger().warn("No BGP optimizer") ;
-
-        return reorder ;
-    }
-
 }

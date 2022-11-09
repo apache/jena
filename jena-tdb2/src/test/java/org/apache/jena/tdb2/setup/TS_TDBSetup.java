@@ -26,8 +26,7 @@ import org.junit.runners.Suite;
     TestStoreParams.class
     , TestStoreParamsChoose.class
     , TestStoreParamsCreate.class
+    , TestReorderSetup.class
 })
 public class TS_TDBSetup {
-
 }
-
