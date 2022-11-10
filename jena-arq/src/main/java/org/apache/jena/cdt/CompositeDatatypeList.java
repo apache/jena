@@ -27,7 +27,7 @@ import org.apache.jena.riot.out.NodeFmtLib;
 
 public class CompositeDatatypeList extends CompositeDatatypeBase
 {
-	public final static String uri = "http://www.w3.org/1999/02/22-rdf-syntax-ns#List";
+	public final static String uri = "http://example.org/cdt/List";
 	public final static CompositeDatatypeList type = new CompositeDatatypeList();
 
 	protected CompositeDatatypeList() {}
