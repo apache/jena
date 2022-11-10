@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.Transform ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.Transform;
 
 /** Super class for operators that operate on a single sub-operation (i.e. a table or sequence))*/
 
@@ -29,12 +29,12 @@ public abstract class Op1 extends OpBase
 
     public Op1(Op subOp)
     {
-        this.sub = subOp ;
+        this.sub = subOp;
     }
     
-    public Op getSubOp() { return sub ; }
-    //public void setSubOp(Op op) { sub = op ; }
+    public Op getSubOp() { return sub; }
+    //public void setSubOp(Op op) { sub = op; }
     
-    public abstract Op apply(Transform transform, Op subOp) ;
-    public abstract Op1 copy(Op subOp) ;
+    public abstract Op apply(Transform transform, Op subOp);
+    public abstract Op1 copy(Op subOp);
 }

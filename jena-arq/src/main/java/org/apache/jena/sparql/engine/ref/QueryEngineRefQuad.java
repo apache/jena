@@ -18,65 +18,65 @@
 
 package org.apache.jena.sparql.engine.ref;
 
-import org.apache.jena.query.Query ;
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.engine.Plan ;
-import org.apache.jena.sparql.engine.QueryEngineFactory ;
-import org.apache.jena.sparql.engine.QueryEngineRegistry ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.query.Query;
+import org.apache.jena.sparql.algebra.Algebra;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.engine.Plan;
+import org.apache.jena.sparql.engine.QueryEngineFactory;
+import org.apache.jena.sparql.engine.QueryEngineRegistry;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.util.Context;
 
 public class QueryEngineRefQuad extends QueryEngineRef
 {
     public QueryEngineRefQuad(Op op, DatasetGraph dataset, Context context)
-    { this(op, dataset, null, context) ; }
-    
+    { this(op, dataset, null, context); }
+
     public QueryEngineRefQuad(Op op, DatasetGraph dataset, Binding input, Context context)
-    { super(op, dataset, input, context) ; }
+    { super(op, dataset, input, context); }
 
     protected QueryEngineRefQuad(Query query, DatasetGraph dataset,
                              Binding input, Context context)
     {
-        super(query, dataset, input, context) ;
+        super(query, dataset, input, context);
     }
-    
+
     @Override
     protected Op modifyOp(Op op)
-    { 
-        op = super.modifyOp(op) ;
-        op = Algebra.toQuadForm(op) ;
-        return op ;
+    {
+        op = super.modifyOp(op);
+        op = Algebra.toQuadForm(op);
+        return op;
     }
-    
-    static public QueryEngineFactory getFactory()   { return factory ; } 
-    static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
-    static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
-    
+
+    static public QueryEngineFactory getFactory()   { return factory; }
+    static public void register()       { QueryEngineRegistry.addFactory(factory); }
+    static public void unregister()     { QueryEngineRegistry.removeFactory(factory); }
+
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
         @Override
-        public boolean accept(Query query, DatasetGraph dataset, Context context) 
-        { return true ; }
+        public boolean accept(Query query, DatasetGraph dataset, Context context)
+        { return true; }
 
         @Override
         public Plan create(Query query, DatasetGraph dataset, Binding binding, Context context)
         {
-            QueryEngineRefQuad engine = new QueryEngineRefQuad(query, dataset, binding, context) ;
-            return engine.getPlan() ;
+            QueryEngineRefQuad engine = new QueryEngineRefQuad(query, dataset, binding, context);
+            return engine.getPlan();
         }
-        
+
         @Override
-        public boolean accept(Op op, DatasetGraph dataset, Context context) 
-        { return true ; }
+        public boolean accept(Op op, DatasetGraph dataset, Context context)
+        { return true; }
 
         @Override
         public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
         {
-            QueryEngineRefQuad engine = new QueryEngineRefQuad(op, dataset, binding, context) ;
-            return engine.getPlan() ;
+            QueryEngineRefQuad engine = new QueryEngineRefQuad(op, dataset, binding, context);
+            return engine.getPlan();
         }
 
-    } ;
+    };
 }

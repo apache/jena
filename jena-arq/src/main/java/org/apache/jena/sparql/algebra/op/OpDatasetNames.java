@@ -18,43 +18,42 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpDatasetNames extends Op0
 {
-    Node graphNode ;
+    Node graphNode;
 
-    public OpDatasetNames(Node gn) { this.graphNode = gn ; }
-    
+    public OpDatasetNames(Node gn) { this.graphNode = gn; }
+
     public Node getGraphNode()
     {
-        return graphNode ;
+        return graphNode;
     }
 
     @Override
-    public String getName()                 { return Tags.tagDatasetNames ; } 
+    public String getName()                 { return Tags.tagDatasetNames; }
 
     @Override
-    public Op apply(Transform transform)    { return transform.transform(this) ; } 
+    public Op apply(Transform transform)    { return transform.transform(this); }
     @Override
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this); }
     @Override
-    public Op0 copy()                        { return new OpDatasetNames(graphNode) ; }
+    public Op0 copy()                        { return new OpDatasetNames(graphNode); }
 
     @Override
     public int hashCode()
-    { return graphNode.hashCode() ; }
+    { return graphNode.hashCode(); }
 
     @Override
-    public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
-    {
-        if ( ! ( op2 instanceof OpDatasetNames) ) return false ;
-        OpDatasetNames other = (OpDatasetNames)op2 ;
-        return graphNode.equals(other.graphNode) ;
+    public boolean equalTo(Op op2, NodeIsomorphismMap labelMap) {
+        if ( ! ( op2 instanceof OpDatasetNames) ) return false;
+        OpDatasetNames other = (OpDatasetNames)op2;
+        return graphNode.equals(other.graphNode);
     }
 }

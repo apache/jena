@@ -18,41 +18,40 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpNull extends Op0
 {
     // Only really need one.
-    public static OpNull create() { return new OpNull() ; }
-    
+    public static OpNull create() { return new OpNull(); }
+
     private OpNull() { }
-    
+
     @Override
     public Op apply(Transform transform)
-    { return transform.transform(this) ; }
+    { return transform.transform(this); }
 
     @Override
-    public Op0 copy() { return this ; }
+    public Op0 copy() { return this; }
 
     @Override
-    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
+    public void visit(OpVisitor opVisitor) { opVisitor.visit(this); }
 
     @Override
-    public String getName()
-    {
-        return Tags.tagNull ;
+    public String getName() {
+        return Tags.tagNull;
     }
 
     @Override
     public int hashCode()
-    { return OpBase.HashNull ; }
+    { return OpBase.HashNull; }
 
 
     @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    { return ( other instanceof OpNull ) ; }
+    { return ( other instanceof OpNull ); }
 }

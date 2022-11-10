@@ -18,61 +18,57 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.syntax.ElementService ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.syntax.ElementService;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpService extends Op1
 {
-    private final Node serviceNode ;
-    private final ElementService serviceElement ;
-    private final boolean silent ;
+    private final Node serviceNode;
+    private final ElementService serviceElement;
+    private final boolean silent;
 
-    public OpService(Node serviceNode, Op subOp, boolean silent)
-    {
-        this(serviceNode, subOp, null, silent) ;
+    public OpService(Node serviceNode, Op subOp, boolean silent) {
+        this(serviceNode, subOp, null, silent);
     }
 
-    public OpService(Node serviceNode, Op subOp, ElementService elt, boolean silent)
-    {
-        super(subOp) ;
-        this.serviceNode = serviceNode ;
-        this.serviceElement = elt ;
-        this.silent = silent ;
+    public OpService(Node serviceNode, Op subOp, ElementService elt, boolean silent) {
+        super(subOp);
+        this.serviceNode = serviceNode;
+        this.serviceElement = elt;
+        this.silent = silent;
     }
 
     @Override
-    public Op apply(Transform transform, Op subOp)  { return transform.transform(this, subOp) ; }
+    public Op apply(Transform transform, Op subOp)  { return transform.transform(this, subOp); }
 
     @Override
-    public Op1 copy(Op newOp)                   { return new OpService(serviceNode, newOp, silent) ; }
+    public Op1 copy(Op newOp)                   { return new OpService(serviceNode, newOp, silent); }
     @Override
-    public String getName()                     { return Tags.tagService ; }
+    public String getName()                     { return Tags.tagService; }
     @Override
-    public void visit(OpVisitor opVisitor)      { opVisitor.visit(this) ; }
-    public Node getService()                    { return serviceNode ;  }
-    public ElementService getServiceElement()   { return serviceElement ;  }
-    public boolean getSilent()                  { return silent ; }
+    public void visit(OpVisitor opVisitor)      { opVisitor.visit(this); }
+    public Node getService()                    { return serviceNode;  }
+    public ElementService getServiceElement()   { return serviceElement;  }
+    public boolean getSilent()                  { return silent; }
 
     @Override
     public int hashCode()
-    { return serviceNode.hashCode() ^ getSubOp().hashCode() ; }
+    { return serviceNode.hashCode() ^ getSubOp().hashCode(); }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! (other instanceof OpService) )
-            return false ;
-        OpService opService = (OpService)other ;
-        if ( ! ( serviceNode.equals(opService.serviceNode) ) )
-            return false ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpService) )
+            return false;
+        OpService opService = (OpService)other;
+        if ( !(serviceNode.equals(opService.serviceNode)) )
+            return false;
         if ( opService.getSilent() != getSilent() )
-            return false ;
-        return getSubOp().equalTo(opService.getSubOp(), labelMap) ;
+            return false;
+        return getSubOp().equalTo(opService.getSubOp(), labelMap);
     }
-
 }

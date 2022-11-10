@@ -18,43 +18,42 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpUnion extends Op2
 {
     /** Create a union, dropping any nulls. */
-    public static Op create(Op left, Op right)
-    {
+    public static Op create(Op left, Op right) {
         if ( left == null )
-            return right ;
+            return right;
         if ( right == null )
-            return left ;
+            return left;
 
-        return new OpUnion(left, right) ;
+        return new OpUnion(left, right);
     }
-    
-    public OpUnion(Op left, Op right) { super(left, right) ; }
-    
+
+    public OpUnion(Op left, Op right) { super(left, right); }
+
     @Override
     public Op apply(Transform transform, Op left, Op right)
-    { return transform.transform(this, left, right) ; }
+    { return transform.transform(this, left, right); }
 
     @Override
-    public String getName()                 { return Tags.tagUnion ; }
+    public String getName()                 { return Tags.tagUnion; }
     @Override
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this); }
     @Override
     public Op2 copy(Op newLeft, Op newRight)
-    { return new OpUnion(newLeft, newRight) ; }
-    
+    { return new OpUnion(newLeft, newRight); }
+
     @Override
-    public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
-    {
-        if ( ! ( op2 instanceof OpUnion) ) return false ;
-        return super.sameArgumentsAs((Op2)op2, labelMap) ;
+    public boolean equalTo(Op op2, NodeIsomorphismMap labelMap) {
+        if ( !(op2 instanceof OpUnion) )
+            return false;
+        return super.sameArgumentsAs((Op2)op2, labelMap);
     }
 }

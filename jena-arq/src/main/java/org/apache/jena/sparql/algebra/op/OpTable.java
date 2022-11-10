@@ -18,60 +18,58 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.* ;
-import org.apache.jena.sparql.algebra.table.TableUnit ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.*;
+import org.apache.jena.sparql.algebra.table.TableUnit;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpTable extends Op0
 {
     public static OpTable unit()
-    { return new OpTable(TableFactory.createUnit()) ; }
+    { return new OpTable(TableFactory.createUnit()); }
 
     public static OpTable create(Table table)
     // Check for Unit-ness?
-    { return new OpTable(table) ; }
+    { return new OpTable(table); }
 
     public static OpTable empty()
     // Check for Unit-ness?
-    { return new OpTable(TableFactory.createEmpty()) ; }
-    
-    private Table table ;
-    
-    private OpTable(Table table) { this.table = table ; }
-    
+    { return new OpTable(TableFactory.createEmpty()); }
+
+    private Table table;
+
+    private OpTable(Table table) { this.table = table; }
+
     public boolean isJoinIdentity()
-    { return TableUnit.isTableUnit(table) ; }
-    
+    { return TableUnit.isTableUnit(table); }
+
     public Table getTable()
-    { return table ; }
-    
+    { return table; }
+
     @Override
-    public String getName() { return Tags.tagTable ; }
-    
+    public String getName() { return Tags.tagTable; }
+
     @Override
     public void visit(OpVisitor opVisitor)
-    { opVisitor.visit(this) ; }
+    { opVisitor.visit(this); }
 
     @Override
     public Op apply(Transform transform)
-    { return transform.transform(this) ; }
+    { return transform.transform(this); }
 
     @Override
     public Op0 copy()
-    { return new OpTable(table) ; }
+    { return new OpTable(table); }
 
     @Override
     public int hashCode()
-    { return table.hashCode() ; } 
+    { return table.hashCode(); }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! ( other instanceof OpTable) ) return false ;
-        OpTable opTable = (OpTable)other ;
-        return table.equals(opTable.table) ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpTable) )
+            return false;
+        OpTable opTable = (OpTable)other;
+        return table.equals(opTable.table);
     }
-    
-
 }

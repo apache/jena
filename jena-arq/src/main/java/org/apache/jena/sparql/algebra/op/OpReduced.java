@@ -18,44 +18,44 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpReduced extends OpDistinctReduced
 {
     public static Op create(Op op)
     {
         if ( op instanceof OpReduced)
-            return op ;
-        return new OpReduced(op) ;
+            return op;
+        return new OpReduced(op);
     }
-    
+
     private OpReduced(Op subOp)
-    { super(subOp) ; }
-    
+    { super(subOp); }
+
     @Override
     public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp) ; }
+    { return transform.transform(this, subOp); }
 
     @Override
-    public String getName()                 { return Tags.tagReduced ; }
+    public String getName()                 { return Tags.tagReduced; }
 
     @Override
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this); }
     @Override
-    public Op1 copy(Op subOp)                { return new OpReduced(subOp) ; }
+    public Op1 copy(Op subOp)                { return new OpReduced(subOp); }
 
     @Override
     public int hashCode()
-    { return getSubOp().hashCode() ^ OpBase.HashReduced ; }
-    
+    { return getSubOp().hashCode() ^ OpBase.HashReduced; }
+
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! (other instanceof OpReduced) ) return false ;
-        return getSubOp().equalTo(((OpReduced)other).getSubOp(), labelMap) ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpReduced) )
+            return false;
+        return getSubOp().equalTo(((OpReduced)other).getSubOp(), labelMap);
     }
 }

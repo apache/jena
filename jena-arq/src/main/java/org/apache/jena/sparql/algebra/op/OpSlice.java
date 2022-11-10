@@ -18,56 +18,53 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpSlice extends OpModifier
 {
-    private long start ;
-    private long length ;
+    private long start;
+    private long length;
 
-    public OpSlice(Op subOp, long start, long length)
-    {
-        super(subOp) ;
-        this.start = start ;
-        this.length = length ;
+    public OpSlice(Op subOp, long start, long length) {
+        super(subOp);
+        this.start = start;
+        this.length = length;
     }
-    
-    public long getLength()         { return length ; }
-    public long getStart()          { return start ; } 
 
-    public Op copy()
-    {
-        return null ;
+    public long getLength()         { return length; }
+    public long getStart()          { return start; }
+
+    public Op copy() {
+        return null;
     }
 
     @Override
-    public String getName()                 { return Tags.tagSlice ; }
+    public String getName()                 { return Tags.tagSlice; }
     @Override
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this); }
     @Override
-    public Op1 copy(Op subOp)                { return new OpSlice(subOp, start, length) ; }
+    public Op1 copy(Op subOp)                { return new OpSlice(subOp, start, length); }
 
     @Override
     public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp) ; }
-    
+    { return transform.transform(this, subOp); }
+
     @Override
-    public int hashCode()
-    {
-        return getSubOp().hashCode() ^ (int)(start&0xFFFFFFFF) ^ (int)(length&0xFFFFFFFF) ;
+    public int hashCode() {
+        return getSubOp().hashCode() ^ (int)(start & 0xFFFFFFFF) ^ (int)(length & 0xFFFFFFFF);
     }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! (other instanceof OpSlice) ) return false ;
-        OpSlice opSlice = (OpSlice)other ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpSlice) )
+            return false;
+        OpSlice opSlice = (OpSlice)other;
         if ( opSlice.start != start || opSlice.length != length )
             return false;
-        return getSubOp().equalTo(opSlice.getSubOp(), labelMap) ;
+        return getSubOp().equalTo(opSlice.getSubOp(), labelMap);
     }
 }

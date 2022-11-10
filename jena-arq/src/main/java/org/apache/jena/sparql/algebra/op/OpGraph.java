@@ -18,46 +18,45 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpGraph extends Op1
 {
-    private final Node node ;
+    private final Node node;
 
-    public OpGraph(Node node, Op pattern)
-    { 
-        super(pattern) ; 
-        this.node = node ;
+    public OpGraph(Node node, Op pattern) {
+        super(pattern);
+        this.node = node;
     }
-    
-    public Node getNode() { return node ; }
-    
-    @Override
-    public String getName()                         { return Tags.tagGraph ; }
+
+    public Node getNode() { return node; }
 
     @Override
-    public Op apply(Transform transform, Op op)     { return transform.transform(this, op) ; } 
+    public String getName()                         { return Tags.tagGraph; }
+
     @Override
-    public void visit(OpVisitor opVisitor)          { opVisitor.visit(this) ; }
+    public Op apply(Transform transform, Op op)     { return transform.transform(this, op); }
     @Override
-    public Op1 copy(Op newOp)                        { return new OpGraph(node, newOp) ; }
-    
+    public void visit(OpVisitor opVisitor)          { opVisitor.visit(this); }
+    @Override
+    public Op1 copy(Op newOp)                        { return new OpGraph(node, newOp); }
+
     @Override
     public int hashCode()
-    { return node.hashCode() ^ getSubOp().hashCode() ; }
-    
+    { return node.hashCode() ^ getSubOp().hashCode(); }
+
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! (other instanceof OpGraph) ) return false ;
-        OpGraph opGraph = (OpGraph)other ;
-        if ( ! ( node.equals(opGraph.node) ) )
-            return false ;
-        return getSubOp().equalTo(opGraph.getSubOp(), labelMap) ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpGraph) )
+            return false;
+        OpGraph opGraph = (OpGraph)other;
+        if ( !(node.equals(opGraph.node)) )
+            return false;
+        return getSubOp().equalTo(opGraph.getSubOp(), labelMap);
     }
 }
