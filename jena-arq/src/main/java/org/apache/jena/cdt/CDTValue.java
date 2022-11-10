@@ -80,6 +80,12 @@ public abstract class CDTValue
 		catch ( final ExprEvalException ex ) {
 			return false;
 		}
+
+		if ( v2.isNode() ) {
+			return v2.asNode().equals(n1);
+		}
+
+		return false;
 	}
 
 	public boolean sameAs( final Object other ) throws ExprEvalException {

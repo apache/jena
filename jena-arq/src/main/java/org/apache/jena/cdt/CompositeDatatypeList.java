@@ -83,6 +83,25 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 		return isValid(lex);
 	}
 
+	/**
+	 * Returns true if the given node is a literal with {@link #uri}
+	 * as its datatype URI. Notice that this does not mean that this
+	 * literal is actually valid; for checking validity, use
+	 * {@link #isValidLiteral(LiteralLabel)}.
+	 */
+	public static boolean isListLiteral( final Node n ) {
+		return n.isLiteral() && n.getLiteralDatatypeURI().equals(uri);
+	}
+
+	/**
+	 * Returns true if the datatype URI of the given {@link LiteralLabel} is
+	 * {@link #uri}. Notice that this does not mean that this LiteralLabel is
+	 * actually valid; for checking validity, use {@link #isValidLiteral(LiteralLabel)}.
+	 */
+	public static boolean isListLiteral( final LiteralLabel lit ) {
+		return lit.getDatatypeURI().equals(uri);
+	}
+
 	@Override
 	public boolean isValid( final String lexicalForm ) {
 		try {
