@@ -32,6 +32,8 @@ import javax.xml.datatype.XMLGregorianCalendar ;
 
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.cdt.CompositeDatatypeList ;
+import org.apache.jena.cdt.CompositeDatatypeMap ;
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -429,8 +431,128 @@ public abstract class NodeValue extends ExprNode
         return node.isNodeTriple() ;
     }
 
+<<<<<<< HEAD
     public ValueSpace getValueSpace() {
         return classifyValueSpace(this);
+=======
+    // ----------------------------------------------------------------
+    // ---- sameValueAs
+
+    // Disjoint value spaces : dateTime and dates are not comparable
+    // Every langtag implies another value space as well.
+
+    /** Return true if the two NodeValues are known to be the same value
+     *  return false if known to be different values,
+     *  throw ExprEvalException otherwise
+     */
+    public static boolean sameAs(NodeValue nv1, NodeValue nv2)
+    {
+        if ( nv1 == null || nv2 == null )
+            throw new ARQInternalErrorException("Attempt to sameValueAs on a null") ;
+
+        ValueSpaceClassification compType = classifyValueOp(nv1, nv2) ;
+
+        // Special case - date/dateTime comparison is affected by timezones and may be
+        // indeterminate based on the value of the dateTime/date.
+
+        switch (compType)
+        {
+            case VSPACE_NUM:
+                return XSDFuncOp.compareNumeric(nv1, nv2) == Expr.CMP_EQUAL ;
+            case VSPACE_DATETIME:
+            case VSPACE_DATE:
+            case VSPACE_TIME:
+            case VSPACE_G_YEAR :
+            case VSPACE_G_YEARMONTH :
+            case VSPACE_G_MONTH :
+            case VSPACE_G_MONTHDAY :
+            case VSPACE_G_DAY :
+            {
+                int x = XSDFuncOp.compareDateTime(nv1, nv2) ;
+                if ( x == Expr.CMP_INDETERMINATE )
+                    throw new ExprNotComparableException("Indeterminate dateTime comparison") ;
+                return  x == Expr.CMP_EQUAL ;
+            }
+            case VSPACE_DURATION:
+            {
+                int x = XSDFuncOp.compareDuration(nv1, nv2) ;
+                if ( x == Expr.CMP_INDETERMINATE )
+                	throw new ExprNotComparableException("Indeterminate duration comparison") ;
+                return  x == Expr.CMP_EQUAL ;
+            }
+
+            case VSPACE_STRING:     return XSDFuncOp.compareString(nv1, nv2) == Expr.CMP_EQUAL ;
+            case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) == Expr.CMP_EQUAL ;
+
+            case VSPACE_TRIPLE_TERM: {
+                Triple t1 = nv1.getNode().getTriple();
+                Triple t2 = nv2.getNode().getTriple();
+                return nSameAs(t1.getSubject(), t2.getSubject())
+                    && nSameAs(t1.getPredicate(), t2.getPredicate())
+                    && nSameAs(t1.getObject(), t2.getObject());
+            }
+
+            case VSPACE_LANG:
+            case VSPACE_NODE:
+                // Two non-literals
+                return NodeFunctions.sameTerm(nv1.getNode(), nv2.getNode()) ;
+
+            case VSPACE_UNKNOWN:
+            {
+                // One or two unknown value spaces, or one has a lang tag (but not both).
+                Node node1 = nv1.asNode() ;
+                Node node2 = nv2.asNode() ;
+
+                if ( ! SystemARQ.ValueExtensions )
+                    // No value extensions => raw rdfTermEquals
+                    return NodeFunctions.rdfTermEquals(node1, node2) ;
+
+                // Some "value spaces" are know to be not equal (no overlap).
+                // Like one literal with a language tag, and one without can't be sameAs.
+
+                if ( ! node1.isLiteral() || ! node2.isLiteral() )
+                    // Can't both be non-literals - that's VSPACE_NODE
+                    // One or other not a literal => not sameAs
+                    return false ;
+
+                // Two literals at this point.
+
+                if ( NodeFunctions.sameTerm(node1, node2) )
+                    return true ;
+
+                if ( ! node1.getLiteralLanguage().equals("") ||
+                     ! node2.getLiteralLanguage().equals("") )
+                    // One had lang tag but weren't sameNode => not equals
+                    return false ;
+
+                raise(new ExprEvalException("Unknown equality test: "+nv1+" and "+nv2)) ;
+                throw new ARQInternalErrorException("raise returned (sameValueAs)") ;
+            }
+            case VSPACE_SORTKEY:
+                return nv1.getSortKey().compareTo(nv2.getSortKey()) == 0 ;
+
+            case VSPACE_DIFFERENT:
+                // Known to be incompatible.
+                if ( ! SystemARQ.ValueExtensions && ( nv1.isLiteral() && nv2.isLiteral() ) )
+                    raise(new ExprEvalException("Incompatible: "+nv1+" and "+nv2)) ;
+                return false ;
+
+            case VSPACE_CDT_LIST:
+            {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                return CompositeDatatypeList.type.isEqual(lit1, lit2) ;
+            }
+            case VSPACE_CDT_MAP:
+            {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                return CompositeDatatypeMap.type.isEqual(lit1, lit2) ;
+            }
+        }
+
+        throw new ARQInternalErrorException("sameValueAs failure "+nv1+" and "+nv2) ;
+>>>>>>> 3f5b140c95 (adds comparison of cdt:List literals and of cdt:Map literals as another special case for the equals (=) operator in SPARQL)
     }
 
     public static ValueSpace classifyValueOp(NodeValue nv1, NodeValue nv2) {
@@ -478,6 +600,7 @@ public abstract class NodeValue extends ExprNode
         return NodeValueCmp.notSameValueAs(nv1, nv2);
     }
 
+<<<<<<< HEAD
     // ----------------------------------------------------------------
     // compare
 
@@ -507,6 +630,17 @@ public abstract class NodeValue extends ExprNode
     public static int compareAlways(NodeValue nv1, NodeValue nv2) {
         //return NodeValueCompare.compareAlways(nv1, nv2);
         return NodeValueCmp.compareAlways(nv1, nv2);
+=======
+        if ( nv.isLiteral() ) {
+            final String dtURI = nv.getDatatypeURI() ;
+            if ( dtURI.equals(CompositeDatatypeList.uri) )  return VSPACE_CDT_LIST ;
+            if ( dtURI.equals(CompositeDatatypeMap.uri) )   return VSPACE_CDT_MAP ;
+        }
+
+        if ( NodeUtils.hasLang(nv.asNode()) )
+            return VSPACE_LANG ;
+        return VSPACE_UNKNOWN ;
+>>>>>>> 3f5b140c95 (adds comparison of cdt:List literals and of cdt:Map literals as another special case for the equals (=) operator in SPARQL)
     }
 
     // ----------------------------------------------------------------
