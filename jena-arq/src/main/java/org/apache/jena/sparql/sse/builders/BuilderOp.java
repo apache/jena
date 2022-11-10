@@ -82,6 +82,7 @@ public class BuilderOp
         addBuild(Tags.tagMinus,         buildMinus);
         addBuild(Tags.tagUnion,         buildUnion);
         addBuild(Tags.tagDatasetNames,  buildDatasetNames);
+        addBuild(Tags.tagLateral,       buildLateral);
         addBuild(Tags.tagConditional,   buildConditional);
 
         addBuild(Tags.tagToList,        buildToList);
@@ -356,6 +357,14 @@ public class BuilderOp
 		BuilderLib.checkLength(2, list, Tags.tagDatasetNames);
 		Node n = BuilderNode.buildNode(list.get(1));
 		return new OpDatasetNames(n);
+    };
+
+    final protected Build buildLateral = (ItemList list) -> {
+        BuilderLib.checkLength(3, 4, list, "lateral");
+        Op left = build(list, 1);
+        Op right = build(list, 2);
+        Op op = OpLateral.create(left, right);
+        return op;
     };
 
     final protected Build buildConditional = (ItemList list) -> {

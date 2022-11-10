@@ -18,12 +18,11 @@
 
 package org.apache.jena.sparql.engine.ref;
 
-
-import org.apache.jena.sparql.engine.ExecutionContext ;
+import org.apache.jena.sparql.engine.ExecutionContext;
 
 public class EvaluatorFactory
 {
     public static Evaluator create(ExecutionContext context)
-    { return new EvaluatorSimple(context) ; }
+    { return new EvaluatorSimple(context); }
 
 }

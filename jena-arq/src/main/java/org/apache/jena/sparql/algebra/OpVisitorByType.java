@@ -103,6 +103,9 @@ public abstract class OpVisitorByType implements OpVisitor
     public void visit(OpUnion opUnion)
     { visit2(opUnion) ; }
 
+    @Override public void visit(OpLateral opLateral)
+    { visit2(opLateral) ; }
+
     @Override
     public void visit(OpConditional opCond)
     { visit2(opCond) ; }

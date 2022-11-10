@@ -226,7 +226,6 @@ public class VarFinder
 
         @Override
         public void visit(OpLateral opLateral) {
-            // [LATERAL] ???
             mergeVars(opLateral.getLeft());
             mergeVars(opLateral.getRight());
         }

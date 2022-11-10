@@ -26,32 +26,32 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 public abstract class Element
 {
     public abstract void visit(ElementVisitor v) ;
-    
+
     @Override
     public abstract int hashCode() ;
     // If the labelMap is null, do .equals() on nodes, else map from
-    // bNode varables in one to bNodes variables in the other 
+    // bNode varables in one to bNodes variables in the other
     public abstract boolean equalTo(Element el2, NodeIsomorphismMap isoMap) ;
-    
+
     @Override
     final public boolean equals(Object el2)
-    { 
+    {
         if ( this == el2 ) return true ;
 
         if ( ! ( el2 instanceof Element ) )
             return false ;
         return equalTo((Element)el2, null) ;
     }
-    
+
     @Override
     public String toString()
     {
         return FormatterElement.asString(this) ;
     }
-    
+
     // Constants used in hashing to stop an element and it's subelement
     // (if just one) having the same hash.
-    
+
     static final int HashBasicGraphPattern    = 0xA1 ;
     static final int HashGroup                = 0xA2 ;
     static final int HashUnion                = 0xA3 ;
@@ -61,4 +61,5 @@ public abstract class Element
     static final int HashNotExists            = 0xA7 ;
     static final int HashPath                 = 0xA8 ;
     static final int HashFetch                = 0xA9 ;
+    static final int HashLateral              = 0xAA ;
 }

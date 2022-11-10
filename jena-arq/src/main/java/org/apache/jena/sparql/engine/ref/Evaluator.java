@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.Table;
 import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.core.TriplePath;
@@ -51,7 +52,7 @@ public interface Evaluator
     public Table diff(Table tableLeft, Table tableRight);
     public Table minus(Table left, Table right);
     public Table union(Table tableLeft, Table tableRight);
-    //public Table lateral(Table left, Op right, List<Var> vars);
+    public Table lateral(Table left, Op right);
     public Table condition(Table left, Table right);
 
     public Table filter(ExprList expressions, Table tableLeft);

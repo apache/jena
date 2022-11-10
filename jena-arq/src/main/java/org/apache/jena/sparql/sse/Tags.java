@@ -66,17 +66,20 @@ public class Tags
     public static final String tagFilter          = "filter";
     public static final String tagLabel           = "label";
     public static final String tagService         = "service";
-    public static final String tagProc            = "proc";
-    public static final String tagPropFunc        = "propfunc";
     public static final String tagJoin            = "join";
-    public static final String tagSequence        = "sequence";
-    public static final String tagDisjunction     = "disjunction";
+    public static final String tagLateral         = "lateral";
     public static final String tagLeftJoin        = "leftjoin";
-    public static final String tagConditional     = "conditional";
     public static final String tagDiff            = "diff";
     public static final String tagMinus           = "minus";
     public static final String tagUnion           = "union";
     public static final String tagDatasetNames    = "datasetnames";
+
+    // Additional operators.
+    public static final String tagProc            = "proc";
+    public static final String tagPropFunc        = "propfunc";
+    public static final String tagSequence        = "sequence";
+    public static final String tagDisjunction     = "disjunction";
+    public static final String tagConditional     = "conditional";
 
     public static final String tagToList          = "tolist";
     public static final String tagOrderBy         = "order";
@@ -150,6 +153,7 @@ public class Tags
     public static final String tagSubtract        = "subtract";
     public static final String tagUnaryMinus      = "unaryminus";
     public static final String symMult            = "*";
+    public static final String symStar            = "*";        // Synonym
     public static final String tagMultiply        = "multiply";
     public static final String symDiv             = "/";
     public static final String tagDivide          = "divide";

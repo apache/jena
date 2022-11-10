@@ -99,6 +99,8 @@ import org.apache.jena.sparql.modify.request.* ;
 #endif
 #ifdef ARQ
 import org.apache.jena.sparql.core.Quad ;
+import java.util.List;
+import java.util.ArrayList;
 #endif
 
 public class CLASS extends PARSERBASE
@@ -879,6 +881,10 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GroupOrUnionGraphPattern()
  |
    el = OptionalGraphPattern()
+#ifdef ARQ
+ |
+   el = LateralGraphPattern()
+#endif
  |
    el = MinusGraphPattern()
  |
@@ -910,12 +916,18 @@ Element OptionalGraphPattern() : { Element el ; }
     { return new ElementOptional(el) ; }
 }
 
+#ifdef ARQ
+Element LateralGraphPattern() : { Element el ; }
+{ <LATERAL> el = GroupGraphPattern()
+    { return new ElementLateral(el) ; }
+}
+#endif
+
 Element GraphGraphPattern() : { Element el ; Node n ;}
 {
   <GRAPH> n = VarOrIri() el = GroupGraphPattern()
     { return new ElementNamedGraph(n, el) ; }
 }
-
 
 Element ServiceGraphPattern() : { Element el ; Node n ; boolean silent = false ; }
 {
@@ -2522,6 +2534,7 @@ TOKEN [IGNORE_CASE] :
 |  < SUBJECT:     "SUBJECT" >
 |  < PREDICATE:   "PREDICATE" >
 |  < OBJECT:      "OBJECT" >
+|  < LATERAL:     "LATERAL" >
 #endif
 |  < EXISTS:      "exists" >
 |  < NOT:         "not" >

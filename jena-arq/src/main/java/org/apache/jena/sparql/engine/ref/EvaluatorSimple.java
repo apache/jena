@@ -26,19 +26,14 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.query.SortCondition;
-import org.apache.jena.sparql.algebra.Algebra;
-import org.apache.jena.sparql.algebra.JoinType;
-import org.apache.jena.sparql.algebra.Table;
-import org.apache.jena.sparql.algebra.TableFactory;
+import org.apache.jena.sparql.algebra.*;
 import org.apache.jena.sparql.algebra.table.TableN;
-import org.apache.jena.sparql.core.BasicPattern;
-import org.apache.jena.sparql.core.TriplePath;
-import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.ResultSetStream;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.iterator.*;
 import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.expr.ExprAggregator;
@@ -172,6 +167,25 @@ public class EvaluatorSimple implements Evaluator {
         }
         right.close();
         return left;
+    }
+
+    @Override
+    public Table lateral(Table left, Op right) {
+        if ( left.isEmpty() ) {
+            left.close();
+            return TableFactory.createEmpty();
+        }
+        TableN result = new TableN();
+        left.iterator(getExecContext()).forEachRemaining(binding->{
+            Op op = Substitute.substitute(right, binding);
+            Table t = RefEval.eval(this, op);
+            t.iterator(getExecContext()).forEachRemaining(b->{
+                Binding b2 = BindingBuilder.create(binding).addAll(b).build();
+                result.addBinding(b2);
+            });
+        });
+        left.close();
+        return result;
     }
 
     @Override

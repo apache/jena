@@ -22,7 +22,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.QueryExecException;
@@ -203,12 +202,8 @@ public class EvaluatorDispatch implements OpVisitor
     @Override
     public void visit(OpLateral opLateral)
     {
-        if ( true )
-            throw new NotImplemented();
         Table left = eval(opLateral.getLeft());
-        // But right is substitute and eval.
-        //Table table = evaluator.lateral(left, opLateral.getRight(), opLateral.vars());
-        Table table = null;
+        Table table = evaluator.lateral(left, opLateral.getRight());
         push(table);
     }
 

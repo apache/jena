@@ -342,6 +342,15 @@ public class FormatterElement extends FormatterBase implements ElementVisitor {
     }
 
     @Override
+    public void visit(ElementLateral el) {
+        out.print("LATERAL");
+        out.incIndent(INDENT);
+        out.newline();
+        visitAsGroup(el.getLateralElement());
+        out.decIndent(INDENT);
+    }
+
+    @Override
     public void visit(ElementNamedGraph el) {
         visitNodePattern("GRAPH", el.getGraphNameNode(), el.getElement());
     }
