@@ -9,7 +9,7 @@ import org.apache.jena.riot.out.NodeFmtLib;
 
 public class CompositeDatatypeMap extends CompositeDatatypeBase
 {
-	public final static String uri = "http://www.w3.org/1999/02/22-rdf-syntax-ns#Map";
+	public final static String uri = "http://example.org/cdt/Map";
 	public final static CompositeDatatypeMap type = new CompositeDatatypeMap();
 
 	protected CompositeDatatypeMap() {}
