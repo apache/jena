@@ -23,11 +23,15 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.cdt.CDTKey;
+import org.apache.jena.cdt.CDTValue;
+import org.apache.jena.cdt.CompositeDatatypeList;
+import org.apache.jena.cdt.CompositeDatatypeMap;
+import org.apache.jena.cdt.LiteralLabelForList;
+import org.apache.jena.cdt.LiteralLabelForMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Node_LiteralWithList;
-import org.apache.jena.graph.Node_LiteralWithMap;
-import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -37,7 +41,6 @@ import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.serializer.SerializationContext;
-import org.apache.jena.sparql.util.NodeFactoryExtra;
 
 public class QueryIterUnfold extends QueryIterRepeatApply
 {
@@ -69,174 +72,25 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         Node n = nv.asNode();
         if ( n.isLiteral() ) {
             String dtURI = n.getLiteralDatatypeURI();
-            if ( Node_LiteralWithList.datatypeUriUntypedList.equals(dtURI) )
-                return unfoldUntypedList(n.getLiteralLexicalForm(), inputBinding);
-            if ( Node_LiteralWithList.datatypeUriTypedList.equals(dtURI) )
-                return unfoldTypedList(n.getLiteralLexicalForm(), inputBinding);
-            if ( Node_LiteralWithMap.datatypeUriUntypedMap.equals(dtURI) )
-                return unfoldUntypedMap(n.getLiteralLexicalForm(), inputBinding);
-            if ( Node_LiteralWithMap.datatypeUriTypedMap.equals(dtURI) )
-                return unfoldTypedMap(n.getLiteralLexicalForm(), inputBinding);
+            if ( CompositeDatatypeList.uri.equals(dtURI) )
+                return unfoldList( n.getLiteral(), inputBinding );
+            if ( CompositeDatatypeMap.uri.equals(dtURI) )
+                return unfoldMap( n.getLiteral(), inputBinding );
         }
 
         return QueryIterSingleton.create( inputBinding, getExecContext() );
     }
 
-    protected QueryIterator unfoldUntypedList(String listAsValue, Binding inputBinding) {
-        final PrefixMap pmap = (getExecContext().getDataset() == null) ? null : getExecContext().getDataset().prefixes();
-        final Iterator<Node> itListElmts = parseUntypedList(listAsValue, pmap);
+    protected QueryIterator unfoldList( final LiteralLabel lit, final Binding inputBinding ) {
+        final Iterable<CDTValue> itListElmts = CompositeDatatypeList.getValue(lit);
         return new QueryIterUnfoldWorkerForLists(inputBinding, itListElmts);
     }
 
-    public static Iterator<Node> parseUntypedList( String listAsValue, final PrefixMap pmap ) {
-        if ( listAsValue.startsWith("[") )
-            listAsValue = listAsValue.substring( 1, listAsValue.length() - 1 );
-
-        return parseList(listAsValue, pmap);
+    protected QueryIterator unfoldMap( final LiteralLabel lit, final Binding inputBinding ) {
+        final Iterable<Map.Entry<CDTKey,CDTValue>> itMapEntries = CompositeDatatypeMap.getValue(lit).entrySet();
+        return new QueryIterUnfoldWorkerForMaps(inputBinding, itMapEntries);
     }
 
-    protected QueryIterator unfoldTypedList(String listAsValue, Binding inputBinding) {
-        final PrefixMap pmap = (getExecContext().getDataset() == null) ? null : getExecContext().getDataset().prefixes();
-        Iterator<Node> itListElmts = parseTypedList(listAsValue, pmap);
-        return new QueryIterUnfoldWorkerForLists(inputBinding, itListElmts);
-    }
-
-    public static Iterator<Node> parseTypedList( String listAsValue, final PrefixMap pmap ) {
-        listAsValue = listAsValue.substring( 1, listAsValue.lastIndexOf("]") );
-        return parseList(listAsValue, pmap);
-    }
-
-    protected QueryIterator unfoldUntypedMap(String mapAsValue, Binding inputBinding) {
-       final PrefixMap pmap = (getExecContext().getDataset() == null) ? null : getExecContext().getDataset().prefixes();
-        Iterator<Map.Entry<Node,Node>> itMapElmts = parseUntypedMap(mapAsValue, pmap);
-        return new QueryIterUnfoldWorkerForMaps(inputBinding, itMapElmts);
-    }
-
-    public static Iterator<Map.Entry<Node,Node>> parseUntypedMap( String mapAsValue, final PrefixMap pmap ) {
-        if ( mapAsValue.startsWith("{") )
-        	mapAsValue = mapAsValue.substring( 1, mapAsValue.length() - 1 );
-
-        return parseMap(mapAsValue, pmap);
-    }
-
-    protected QueryIterator unfoldTypedMap(String mapAsValue, Binding inputBinding) {
-        final PrefixMap pmap = (getExecContext().getDataset() == null) ? null : getExecContext().getDataset().prefixes();
-        Iterator<Map.Entry<Node,Node>> itMapElmts = parseTypedMap(mapAsValue, pmap);
-        return new QueryIterUnfoldWorkerForMaps(inputBinding, itMapElmts);
-    }
-
-    public static Iterator<Map.Entry<Node,Node>> parseTypedMap( String mapAsValue, final PrefixMap pmap ) {
-        mapAsValue = mapAsValue.substring( 1, mapAsValue.lastIndexOf("}") );
-        return parseMap(mapAsValue, pmap);
-    }
-
-    public static Iterator<Node> parseList( final String listAsValue, final PrefixMap pmap ) {
-        final Iterator<String> itListElmts = extractListElements(listAsValue);
-        return new Iterator<>() {
-            @Override
-            public boolean hasNext() {
-                return itListElmts.hasNext();
-            }
-
-            @Override
-            public Node next() {
-                final String listElmt = itListElmts.next();
-                final Node n;
-                if ( listElmt.startsWith("[") && listElmt.endsWith("]") )
-                    n = NodeFactory.createLiteral(listElmt, Node_LiteralWithList.datatypeUntypedList);
-                else if ( listElmt.startsWith("[") && ! listElmt.endsWith("]") )
-                    n = NodeFactory.createLiteral(listElmt, Node_LiteralWithList.datatypeTypedList); // brittle
-                else if ( listElmt.startsWith("{") && listElmt.endsWith("}") )
-                    n = NodeFactory.createLiteral(listElmt, Node_LiteralWithMap.datatypeUntypedMap);
-                else if ( listElmt.startsWith("{") && ! listElmt.endsWith("}") )
-                    n = NodeFactory.createLiteral(listElmt, Node_LiteralWithMap.datatypeTypedMap); // brittle
-                else if ( pmap != null )
-                    n = NodeFactoryExtra.parseNode(listElmt, pmap);
-                else
-                    n = NodeFactoryExtra.parseNode(listElmt);
-                return n;
-            }
-        };
-    }
-
-    public static Iterator<String> extractListElements(String listAsValue) {
-        listAsValue = listAsValue.strip();
-
-        if ( listAsValue.isEmpty() ) {
-            return new Iterator<String>() {
-                @Override public boolean hasNext() { return false; }
-                @Override public String next() { throw new NoSuchElementException(); }
-            };
-        }
-
-// TODO: this method needs to be improved and, in particular, made more robust in terms
-//       of parsing the given lexical form of the literal; for instance, simply splitting
-//       by commas is an issue if the list contains literals with commas inside -- can we
-//       use existing code for parsing Turtle here?
-
-        return new ListElementExtractor(listAsValue);
-    }
-
-    public static Iterator<Map.Entry<Node,Node>> parseMap( final String mapAsValue, final PrefixMap pmap ) {
-        final Iterator<Map.Entry<String,String>> itMapElmts = extractMapElements(mapAsValue);
-        return new Iterator<>() {
-            @Override
-            public boolean hasNext() {
-                return itMapElmts.hasNext();
-            }
-
-            @Override
-            public Map.Entry<Node,Node> next() {
-                final Map.Entry<String,String> mapElmt = itMapElmts.next();
-                final String keyAsString   = mapElmt.getKey();
-                final String valueAsString = mapElmt.getValue();
-
-                final Node keyAsNode;
-                if ( pmap != null )
-                    keyAsNode = NodeFactoryExtra.parseNode(keyAsString, pmap );
-                else
-                    keyAsNode = NodeFactoryExtra.parseNode(keyAsString);
-
-                final Node valueAsNode;
-                if ( valueAsString.startsWith("[") && valueAsString.endsWith("]") )
-                    valueAsNode = NodeFactory.createLiteral(valueAsString, Node_LiteralWithList.datatypeUntypedList);
-                else if ( valueAsString.startsWith("[") && ! valueAsString.endsWith("]") )
-                    valueAsNode = NodeFactory.createLiteral(valueAsString, Node_LiteralWithList.datatypeTypedList); // brittle
-                else if ( valueAsString.startsWith("{") && valueAsString.endsWith("}") )
-                    valueAsNode = NodeFactory.createLiteral(valueAsString, Node_LiteralWithMap.datatypeUntypedMap);
-                else if ( valueAsString.startsWith("{") && ! valueAsString.endsWith("}") )
-                    valueAsNode = NodeFactory.createLiteral(valueAsString, Node_LiteralWithMap.datatypeTypedMap); // brittle
-                else if ( pmap != null )
-                    valueAsNode = NodeFactoryExtra.parseNode(valueAsString, pmap);
-                else
-                    valueAsNode = NodeFactoryExtra.parseNode(valueAsString);
-
-                return new Map.Entry<>() {
-                    @Override public Node getKey() { return keyAsNode; }
-                    @Override public Node getValue() { return valueAsNode; }
-                    @Override public Node setValue(Node v) { throw new UnsupportedOperationException(); }
-                };
-            }
-        };
-    }
-
-    public static Iterator<Map.Entry<String,String>> extractMapElements(String mapAsValue) {
-    	mapAsValue = mapAsValue.strip();
-
-        if ( mapAsValue.isEmpty() ) {
-            return new Iterator<Map.Entry<String,String>>() {
-                @Override public boolean hasNext() { return false; }
-                @Override public Map.Entry<String,String> next() { throw new NoSuchElementException(); }
-            };
-        }
-
-// TODO: this method needs to be improved and, in particular, made more robust in terms
-//       of parsing the given lexical form of the literal; for instance, simply splitting
-//       by commas is an issue if the list contains literals with commas inside -- can we
-//       use existing code for parsing Turtle here?
-
-        return new MapElementExtractor(mapAsValue);
-    }
 
 
     protected abstract class QueryIterUnfoldWorkerBase<T> extends QueryIteratorBase {
@@ -246,6 +100,10 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         protected QueryIterUnfoldWorkerBase(Binding inputBinding, Iterator<T> itElmts) {
             this.inputBinding = inputBinding;
             this.itElmts = itElmts;
+        }
+
+        protected QueryIterUnfoldWorkerBase(Binding inputBinding, Iterable<T> itElmts) {
+            this( inputBinding, itElmts.iterator() );
         }
 
         @Override
@@ -259,9 +117,13 @@ public class QueryIterUnfold extends QueryIterRepeatApply
     }
 
 
-    protected class QueryIterUnfoldWorkerForLists extends QueryIterUnfoldWorkerBase<Node> {
+    protected class QueryIterUnfoldWorkerForLists extends QueryIterUnfoldWorkerBase<CDTValue> {
 
-        public QueryIterUnfoldWorkerForLists(Binding inputBinding, Iterator<Node> itListElmts) {
+        public QueryIterUnfoldWorkerForLists(Binding inputBinding, Iterator<CDTValue> itListElmts) {
+            super(inputBinding, itListElmts);
+        }
+
+        public QueryIterUnfoldWorkerForLists(Binding inputBinding, Iterable<CDTValue> itListElmts) {
             super(inputBinding, itListElmts);
         }
 
@@ -272,14 +134,40 @@ public class QueryIterUnfold extends QueryIterRepeatApply
 
         @Override
         protected Binding moveToNextBinding() {
-            return BindingFactory.binding( inputBinding, var1, itElmts.next() );
+            final CDTValue nextElmt = itElmts.next();
+
+            if ( nextElmt.isNull() ) {
+                return inputBinding;
+            }
+
+            final Node value;
+            if ( nextElmt.isNode() ) {
+                value = nextElmt.asNode();
+            }
+            else if ( nextElmt.isList() ) {
+                final LiteralLabel lit = new LiteralLabelForList( nextElmt.asList() );
+                value = NodeFactory.createLiteral(lit);
+            }
+            else if ( nextElmt.isMap() ) {
+                final LiteralLabel lit = new LiteralLabelForMap( nextElmt.asMap() );
+                value = NodeFactory.createLiteral(lit);
+            }
+            else {
+                throw new UnsupportedOperationException( "unexpected list element: " + nextElmt.getClass().getName() );
+            }
+
+            return BindingFactory.binding(inputBinding, var1, value);
         }
     }
 
 
-    protected class QueryIterUnfoldWorkerForMaps extends QueryIterUnfoldWorkerBase<Map.Entry<Node,Node>> {
+    protected class QueryIterUnfoldWorkerForMaps extends QueryIterUnfoldWorkerBase<Map.Entry<CDTKey,CDTValue>> {
 
-        public QueryIterUnfoldWorkerForMaps(Binding inputBinding, Iterator<Map.Entry<Node,Node>> itMapElmts) {
+        public QueryIterUnfoldWorkerForMaps(Binding inputBinding, Iterator<Map.Entry<CDTKey,CDTValue>> itMapElmts) {
+            super(inputBinding, itMapElmts);
+        }
+
+        public QueryIterUnfoldWorkerForMaps(Binding inputBinding, Iterable<Map.Entry<CDTKey,CDTValue>> itMapElmts) {
             super(inputBinding, itMapElmts);
         }
 
@@ -290,11 +178,39 @@ public class QueryIterUnfold extends QueryIterRepeatApply
 
         @Override
         protected Binding moveToNextBinding() {
-            final Map.Entry<Node,Node> elmt = itElmts.next();
-            if ( var2 == null )
-                return BindingFactory.binding( inputBinding, var1, elmt.getKey() );
-            else
-                return BindingFactory.binding( inputBinding, var1, elmt.getKey(), var2, elmt.getValue() );
+            final Map.Entry<CDTKey,CDTValue> elmt = itElmts.next();
+            final CDTKey key     = elmt.getKey();
+            final CDTValue value = elmt.getValue();
+
+            final Node keyNode;
+            if ( key.isNode() ) {
+                keyNode = key.asNode();
+            }
+            else {
+                throw new UnsupportedOperationException( "unexpected map key: " + key.getClass().getName() );
+            }
+
+            if ( value.isNull() ) {
+                return BindingFactory.binding( inputBinding, var1, keyNode );
+            }
+
+            final Node valueNode;
+            if ( value.isNode() ) {
+                valueNode = value.asNode();
+            }
+            else if ( value.isList() ) {
+                final LiteralLabel lit = new LiteralLabelForList( value.asList() );
+                valueNode = NodeFactory.createLiteral(lit);
+            }
+            else if ( value.isMap() ) {
+                final LiteralLabel lit = new LiteralLabelForMap( value.asMap() );
+                valueNode = NodeFactory.createLiteral(lit);
+            }
+            else {
+                throw new UnsupportedOperationException( "unexpected map value: " + value.getClass().getName() );
+            }
+
+            return BindingFactory.binding(inputBinding, var1, keyNode, var2, valueNode);
         }
     }
 

@@ -1,11 +1,12 @@
 package org.apache.jena.sparql.function.library.collection;
 
-import java.util.Iterator;
-
+import org.apache.jena.cdt.CompositeDatatypeList;
+import org.apache.jena.cdt.CompositeDatatypeMap;
+import org.apache.jena.cdt.LiteralLabelForList;
+import org.apache.jena.cdt.LiteralLabelForMap;
+import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_LiteralWithList;
-import org.apache.jena.graph.Node_LiteralWithMap;
-import org.apache.jena.sparql.engine.iterator.QueryIterUnfold;
+import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase1;
@@ -19,54 +20,33 @@ public class SizeFct extends FunctionBase1
 		if ( ! n.isLiteral() )
 			throw new ExprEvalException("Not a literal: " + nv);
 
-		final String datatypeURI = n.getLiteralDatatypeURI();
 		final int size;
-		if ( Node_LiteralWithList.datatypeUriUntypedList.equals(datatypeURI) ) {
-			size = determineSizeOfUntypedList( n.getLiteral().getLexicalForm() );
+		try {
+			final LiteralLabel lit = n.getLiteral();
+			final String datatypeURI = n.getLiteralDatatypeURI();
+			if ( lit instanceof LiteralLabelForList ) {
+				size = ( (LiteralLabelForList) lit ).getValue().size();
+			}
+			else if ( lit instanceof LiteralLabelForMap ) {
+				size = ( (LiteralLabelForMap) lit ).getValue().size();
+			}
+			else if ( datatypeURI.equals(CompositeDatatypeList.uri) ) {
+				final String lex = lit.getLexicalForm();
+				size = CompositeDatatypeList.parseList(lex).size();
+			}
+			else if ( datatypeURI.equals(CompositeDatatypeMap.uri) ) {
+				final String lex = lit.getLexicalForm();
+				size = CompositeDatatypeMap.parseMap(lex).size();
+			}
+			else {
+				throw new ExprEvalException("Literal with wrong datatype: " + nv);
+			}
 		}
-		else if ( Node_LiteralWithList.datatypeUriTypedList.equals(datatypeURI) ) {
-			size = determineSizeOfTypedList( n.getLiteral().getLexicalForm() );
-		}
-		else if ( Node_LiteralWithMap.datatypeUriUntypedMap.equals(datatypeURI) ) {
-			size = determineSizeOfUntypedMap( n.getLiteral().getLexicalForm() );
-		}
-		else if ( Node_LiteralWithMap.datatypeUriTypedMap.equals(datatypeURI) ) {
-			size = determineSizeOfTypedMap( n.getLiteral().getLexicalForm() );
-		}
-		else {
-			throw new ExprEvalException("Literal with wrong datatype: " + nv);
+		catch ( final DatatypeFormatException ex ) {
+			throw new ExprEvalException("Literal with incorrect lexical form: " + nv, ex);
 		}
 
 		return NodeValue.makeInteger(size);
-	}
-
-	protected int determineSizeOfUntypedList( final String listAsString ) {
-		final Iterator<?> it = QueryIterUnfold.parseUntypedList(listAsString, null);
-		return determineNumberOfElements(it);
-	}
-
-	protected int determineSizeOfTypedList( final String listAsString ) {
-		final Iterator<?> it = QueryIterUnfold.parseTypedList(listAsString, null);
-		return determineNumberOfElements(it);
-	}
-
-	protected int determineSizeOfUntypedMap( final String mapAsString ) {
-		final Iterator<?> it = QueryIterUnfold.parseUntypedMap(mapAsString, null);
-		return determineNumberOfElements(it);
-	}
-
-	protected int determineSizeOfTypedMap( final String mapAsString ) {
-		final Iterator<?> it = QueryIterUnfold.parseTypedMap(mapAsString, null);
-		return determineNumberOfElements(it);
-	}
-
-	protected int determineNumberOfElements( final Iterator<?> it ) {
-		int i = 0;
-		while ( it.hasNext() ) {
-			i++;
-			it.next();
-		}
-		return i;
 	}
 
 }

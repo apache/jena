@@ -1619,16 +1619,14 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
   | t = <VAR_POP> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
     { agg = AggregatorFactory.createCustom(AggURI.var_pop, distinct, expr) ; }
   | t = <FOLD>
-    { String typeIRI1 = null ;
-      String typeIRI2 = null ;
-      Expr orderByExpr = null ;
+    { Expr orderByExpr = null ;
       Var orderByVar = null ;
       int orderByDirection = Query.ORDER_DEFAULT ; }
     <LPAREN>
-    expr = Expression() ( <TYPE> typeIRI1 = iri() )?
-    ( <COMMA> expr2 = Expression() ( <TYPE> typeIRI2 = iri() )? )?
+    expr = Expression()
+    ( <COMMA> expr2 = Expression() )?
     <RPAREN>
-    { agg = AggregatorFactory.createFold(expr, typeIRI1, expr2, typeIRI2) ; }
+    { agg = AggregatorFactory.createFold(expr, expr2) ; }
   | t = <AGG>
     { String iri ; }
     iri = iri()
@@ -1829,7 +1827,6 @@ TOKEN [IGNORE_CASE] :
 | < VAR_SAMP: "var_samp" >
 | < VAR_POP: "var_pop" >
 | < FOLD: "fold" >
-| < TYPE: "type" >
 | < SAMPLE: "sample" >
 | < GROUP_CONCAT: "group_concat" >
 | < FILTER: "filter" >

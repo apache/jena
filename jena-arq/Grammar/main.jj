@@ -2270,16 +2270,14 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     { agg = AggregatorFactory.createCustom(AggURI.var_pop, distinct, expr) ; }
 
   | t = <FOLD>
-    { String typeIRI1 = null ;
-      String typeIRI2 = null ;
-      Expr orderByExpr = null ;
+    { Expr orderByExpr = null ;
       Var  orderByVar  = null ;
       int  orderByDirection = Query.ORDER_DEFAULT ; }
     <LPAREN>
-    expr = Expression() ( <TYPE> typeIRI1 = iri() )?
-    ( <COMMA> expr2 = Expression() ( <TYPE> typeIRI2 = iri() )? )?
+    expr = Expression()
+    ( <COMMA> expr2 = Expression() )?
     <RPAREN>
-    { agg = AggregatorFactory.createFold(expr, typeIRI1, expr2, typeIRI2) ; }
+    { agg = AggregatorFactory.createFold(expr, expr2) ; }
 
     /* Explicit syntax (aggregate even if not registered) */
   | t = <AGG>
@@ -2575,7 +2573,6 @@ TOKEN [IGNORE_CASE] :
 |  < VAR_POP:     "var_pop" >
 #ifdef ARQ
 |  < FOLD:        "fold" >
-|  < TYPE:        "type" >
 #endif
 
 |  < SAMPLE:      "sample" >
