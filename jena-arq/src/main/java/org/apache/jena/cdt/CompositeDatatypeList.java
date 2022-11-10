@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.riot.out.NodeFmtLib;
 
@@ -150,11 +151,33 @@ public class CompositeDatatypeList extends CompositeDatatypeBase
 		return isValid(lex);
 	}
 
+	/**
+	 * Returns true if the given node is a literal with {@link #uri}
+	 * as its datatype URI. Notice that this does not mean that this
+	 * literal is actually valid; for checking validity, use
+	 * {@link #isValidLiteral(LiteralLabel)}.
+	 */
+	public static boolean isListLiteral( final Node n ) {
+		return n.isLiteral() && n.getLiteralDatatypeURI().equals(uri);
+	}
+
+	/**
+	 * Returns true if the datatype URI of the given {@link LiteralLabel} is
+	 * {@link #uri}. Notice that this does not mean that this LiteralLabel is
+	 * actually valid; for checking validity, use {@link #isValidLiteral(LiteralLabel)}.
+	 */
+	public static boolean isListLiteral( final LiteralLabel lit ) {
+		return lit.getDatatypeURI().equals(uri);
+	}
+
 	@Override
 	public boolean isEqual( final LiteralLabel value1, final LiteralLabel value2 ) {
 		final List<CDTValue> list1 = getValue(value1);
 		final List<CDTValue> list2 = getValue(value2);
-
+System.out.println("list1");
+System.out.println(list1);
+System.out.println("list2");
+System.out.println(list2);
 		return list1.equals(list2);
 	}
 

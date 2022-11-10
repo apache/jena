@@ -42,12 +42,12 @@ public abstract class CDTKey
 
 	@Override
 	public boolean equals( final Object other ) {
-		if ( !(other instanceof CDTKey) ) {
-			return false;
+		if ( other instanceof CDTKey ) {
+			final CDTKey otherKey = (CDTKey) other;
+			return asNode().equals( otherKey.asNode() );
 		}
 
-		final CDTKey otherKey = (CDTKey) other;
-		return asNode().equals( otherKey.asNode() );
+		return false;
 	}
 
 	@Override
