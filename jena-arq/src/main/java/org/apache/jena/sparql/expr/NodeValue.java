@@ -34,6 +34,8 @@ import org.apache.jena.JenaRuntime;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.cdt.CompositeDatatypeList ;
+import org.apache.jena.cdt.CompositeDatatypeMap ;
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -533,6 +535,19 @@ public abstract class NodeValue extends ExprNode
                 if ( ! SystemARQ.ValueExtensions && ( nv1.isLiteral() && nv2.isLiteral() ) )
                     raise(new ExprEvalException("Incompatible: "+nv1+" and "+nv2)) ;
                 return false ;
+
+            case VSPACE_CDT_LIST:
+            {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                return CompositeDatatypeList.type.isEqual(lit1, lit2) ;
+            }
+            case VSPACE_CDT_MAP:
+            {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                return CompositeDatatypeMap.type.isEqual(lit1, lit2) ;
+            }
         }
 
         throw new ARQInternalErrorException("sameValueAs failure "+nv1+" and "+nv2) ;
@@ -855,6 +870,12 @@ public abstract class NodeValue extends ExprNode
         if ( nv.isGDay() )          return VSPACE_G_DAY ;
 
         if ( nv.isSortKey() )       return VSPACE_SORTKEY ;
+
+        if ( nv.isLiteral() ) {
+            final String dtURI = nv.getDatatypeURI() ;
+            if ( dtURI.equals(CompositeDatatypeList.uri) )  return VSPACE_CDT_LIST ;
+            if ( dtURI.equals(CompositeDatatypeMap.uri) )   return VSPACE_CDT_MAP ;
+        }
 
         if ( NodeUtils.hasLang(nv.asNode()) )
             return VSPACE_LANG ;

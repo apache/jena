@@ -35,6 +35,9 @@ public enum ValueSpaceClassification {
     VSPACE_G_MONTH,
     VSPACE_G_DAY,
 
+    VSPACE_CDT_LIST,
+    VSPACE_CDT_MAP,
+
     VSPACE_STRING, VSPACE_LANG, VSPACE_SORTKEY,
     VSPACE_BOOLEAN,
     VSPACE_UNKNOWN,
