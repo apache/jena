@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.riot.out.NodeFmtLib;
 
@@ -142,6 +143,25 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase
 
 		final String lex = lit.getLexicalForm();
 		return isValid(lex);
+	}
+
+	/**
+	 * Returns true if the given node is a literal with {@link #uri}
+	 * as its datatype URI. Notice that this does not mean that this
+	 * literal is actually valid; for checking validity, use
+	 * {@link #isValidLiteral(LiteralLabel)}.
+	 */
+	public static boolean isMapLiteral( final Node n ) {
+		return n.isLiteral() && n.getLiteralDatatypeURI().equals(uri);
+	}
+
+	/**
+	 * Returns true if the datatype URI of the given {@link LiteralLabel} is
+	 * {@link #uri}. Notice that this does not mean that this LiteralLabel is
+	 * actually valid; for checking validity, use {@link #isValidLiteral(LiteralLabel)}.
+	 */
+	public static boolean isMapLiteral( final LiteralLabel lit ) {
+		return lit.getDatatypeURI().equals(uri);
 	}
 
 	@Override
