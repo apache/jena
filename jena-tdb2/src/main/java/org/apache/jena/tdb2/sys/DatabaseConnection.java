@@ -31,25 +31,27 @@ import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.base.file.ProcessFileLock;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.params.StoreParamsDynamic;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 
-// StoreConnection, DatabaseConnection < Connection<X>
-
+/**
+ * Connection to a TDB2 database - low level system API.
+ */
 public class DatabaseConnection {
     static { JenaSystem.init(); }
 
-    // ConnectionTracker<X>
-
     private static Map<Location, DatabaseConnection> cache = new ConcurrentHashMap<>();
 
-    /** Get the {@code DatabaseConnection} to a location,
-     *  creating the storage structures if it does not exist. */
+    /**
+     * Get the {@code DatabaseConnection} to a location, creating the storage
+     * structures with default settings if it does not exist.
+     */
     public synchronized static DatabaseConnection connectCreate(Location location) {
-        return connectCreate(location, null);
+        return connectCreate(location, null, null);
     }
 
     /** Get the {@code DatabaseConnection} to a location,
@@ -57,20 +59,26 @@ public class DatabaseConnection {
      *  Use the provided {@link StoreParams} - any persistent setting
      *  already at the location take precedence.
      */
-    public synchronized static DatabaseConnection connectCreate(Location location, StoreParams params) {
-        return make(location, params);
+    public synchronized static DatabaseConnection connectCreate(Location location, StoreParams params, ReorderTransformation reorderTransform) {
+        return make(location, params, reorderTransform);
     }
 
     /**
      * Return a {@code StoreConnection} for a particular location,
      * creating it if it does not exist in storage.
      */
-    private synchronized static DatabaseConnection make(Location location, StoreParams params) {
+    private synchronized static DatabaseConnection make(Location location, StoreParams params, ReorderTransformation reorderTransform) {
         if ( location.isMemUnique() )
-            return buildUniqueMem(location, params);
+            return buildUniqueMem(location, params, reorderTransform);
         // Cached by Location. Named in-memory or on-disk.
-        DatabaseConnection dbConn = cache.computeIfAbsent(location, (loc)->build(loc, params));
+        DatabaseConnection dbConn = cache.computeIfAbsent(location, (loc)->build(loc, params, reorderTransform));
         return dbConn;
+    }
+
+    /** @deprecated Use @link {{@link #createDirect(Location, StoreParams, ReorderTransformation)} */
+    @Deprecated
+    public static DatabaseConnection createDirect(Location location, StoreParams params) {
+        return createDirect(location, params, null);
     }
 
     /**
@@ -78,14 +86,17 @@ public class DatabaseConnection {
      * any other {@link DatabaseConnection} for the same location. This function must
      * be used with care. If any other {@link DatabaseConnection} for this location has been created,
      * only {@link StoreParamsDynamic} will apply.
+     * @param location
+     * @param params            StoreParams -- "null" means "use system default settings".
+     * @param reorderTransform  ReorderTransformation -- "null" means "use system default settings".
      */
-    public static DatabaseConnection createDirect(Location location, StoreParams params) {
+    public static DatabaseConnection createDirect(Location location, StoreParams params, ReorderTransformation reorderTransform) {
         if ( location.isMemUnique() )
-            return buildUniqueMem(location, params);
-        return build(location, params);
+            return buildUniqueMem(location, params, reorderTransform);
+        return build(location, params, reorderTransform);
     }
 
-    private static DatabaseConnection build(Location location, StoreParams params) {
+    private static DatabaseConnection build(Location location, StoreParams params, ReorderTransformation reorderTransform) {
         if ( location.isMemUnique() ) {
             throw new TDBException("Can't buildForCache a memory-unique location");
         }
@@ -98,14 +109,14 @@ public class DatabaseConnection {
             lock.lockEx();
         }
         // c.f. StoreConnection.make
-        DatasetGraph dsg = DatabaseOps.create(location, params);
+        DatasetGraph dsg = DatabaseOps.create(location, params, reorderTransform);
 
         return new DatabaseConnection(dsg, location, lock);
     }
 
-    private static DatabaseConnection buildUniqueMem(Location location, StoreParams params) {
+    private static DatabaseConnection buildUniqueMem(Location location, StoreParams params, ReorderTransformation reorderTransform) {
         // Uncached, in-memory.
-        DatasetGraph dsg = DatabaseOps.create(location, params);
+        DatasetGraph dsg = DatabaseOps.create(location, params, reorderTransform);
         DatabaseConnection dbConn = new DatabaseConnection(dsg, location, null);
         return dbConn;
     }

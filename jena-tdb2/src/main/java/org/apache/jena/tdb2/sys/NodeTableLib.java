@@ -27,7 +27,7 @@ import org.apache.jena.tdb2.store.nodetable.NodeTable;
 
 public class NodeTableLib {
     /** Print the main node table - development helper */
-    public static void printNodeTable(DatasetGraph dsg, long limit) {
+    public static void xprintNodeTable(DatasetGraph dsg, long limit) {
         dsg.executeRead(()->{
             DatasetGraphTDB dsgtdb = TDBInternal.getDatasetGraphTDB(dsg);
             NodeTable nodeTable = dsgtdb.getTripleTable().getNodeTupleTable().getNodeTable();

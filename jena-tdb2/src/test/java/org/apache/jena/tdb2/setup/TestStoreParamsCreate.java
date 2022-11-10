@@ -92,7 +92,7 @@ public class TestStoreParamsCreate {
     }
 
     @Test public void params_create_02() {
-        dbConnection = DatabaseConnection.connectCreate(locContainer, pApp);
+        dbConnection = DatabaseConnection.connectCreate(locContainer, pApp, null);
         // Check.  Custom setup.
         assertTrue("DB directory", Files.exists(dbContainer));
         assertTrue("Config file not found", Files.exists(cfgContainer));
@@ -124,7 +124,7 @@ public class TestStoreParamsCreate {
         // Drop.
         expel();
         // Reconnect
-        dbConnection = DatabaseConnection.connectCreate(locContainer, pSpecial);
+        dbConnection = DatabaseConnection.connectCreate(locContainer, pSpecial, null);
 
         StoreParams pDB = TDBInternal.getDatasetGraphTDB(dbConnection.getDatasetGraph()).getStoreParams();
         assertNotNull(pDB);
@@ -143,11 +143,11 @@ public class TestStoreParamsCreate {
     // Custom, then reconnect with some special settings.
     @Test public void params_reconnect_03() {
         // Create.
-        dbConnection = DatabaseConnection.connectCreate(locContainer, pApp);
+        dbConnection = DatabaseConnection.connectCreate(locContainer, pApp, null);
         // Drop.
         expel();
         // Reconnect
-        dbConnection = DatabaseConnection.connectCreate(locContainer, pSpecial);
+        dbConnection = DatabaseConnection.connectCreate(locContainer, pSpecial, null);
         StoreParams pDB = TDBInternal.getDatasetGraphTDB(dbConnection.getDatasetGraph()).getStoreParams();
         assertNotNull(pDB);
 

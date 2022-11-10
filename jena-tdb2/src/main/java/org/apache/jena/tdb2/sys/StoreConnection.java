@@ -33,6 +33,7 @@ import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.TransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.TDB2StorageBuilder;
@@ -44,19 +45,22 @@ public class StoreConnection
 {
     private static Map<Location, StoreConnection> cache = new ConcurrentHashMap<>();
 
-    /** Get the {@code StoreConnection} to a location,
-     *  creating the storage structures if it does not exist. */
+    /**
+     * Get the {@code StoreConnection} to a location,
+     * creating the storage structures with default settings
+     * if it does not exist.
+     */
     public synchronized static StoreConnection connectCreate(Location location) {
-        return connectCreate(location, null);
+        return connectCreate(location, null, null);
     }
 
     /** Get the {@code StoreConnection} to a location,
      *  creating the storage structures if it does not exist.
-     *  Use the provided {@link StoreParams} - any persistent setting
-     *  already at the location take precedence.
+     *  Use the provided {@link StoreParams} and {@link ReorderTransformation} - any persistent settings
+     *  already at the location takes precedence.
      */
-    public synchronized static StoreConnection connectCreate(Location location, StoreParams params) {
-        return make(location, params);
+    public synchronized static StoreConnection connectCreate(Location location, StoreParams params, ReorderTransformation reorderTransform) {
+        return make(location, params, reorderTransform);
     }
 
     /** Get the {@code StoreConnection} for a location, but do not create it.
@@ -75,7 +79,7 @@ public class StoreConnection
      * Return a {@code StoreConnection} for a particular location,
      * creating it if it does not exist in storage.
      */
-    private synchronized static StoreConnection make(Location location, StoreParams params) {
+    private synchronized static StoreConnection make(Location location, StoreParams params, ReorderTransformation reorderTransform) {
         StoreConnection sConn = cache.get(location);
         if ( sConn == null ) {
             ProcessFileLock lock = null;
@@ -88,7 +92,7 @@ public class StoreConnection
             }
             // Recovery happens when TransactionCoordinator.start is called
             // during the building of the DatasetGraphTDB
-            DatasetGraphTDB dsg = TDB2StorageBuilder.build(location, params);
+            DatasetGraphTDB dsg = TDB2StorageBuilder.build(location, params, reorderTransform);
             sConn = new StoreConnection(dsg, lock);
             if (!location.isMemUnique())
                 cache.put(location, sConn);
