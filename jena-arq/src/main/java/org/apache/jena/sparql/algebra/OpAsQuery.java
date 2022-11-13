@@ -499,7 +499,7 @@ public class OpAsQuery {
         }
 
         // There is one special case to consider:
-        // A path expression was expanded into a OpSequence during Algenra
+        // A path expression was expanded into a OpSequence during Algebra
         // generation. The simple path expressions become an OpSequence that could be
         // recombined into an ElementPathBlock.
 
@@ -616,8 +616,12 @@ public class OpAsQuery {
 
         @Override
         public void visit(OpLeftJoin opLeftJoin) {
-            Element eLeft = asElement(opLeftJoin.getLeft()) ;
-            ElementGroup eRight = asElementGroup(opLeftJoin.getRight()) ;
+            convertLeftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), opLeftJoin.getExprs());
+        }
+
+        private void convertLeftJoin(Op opLeft, Op opRight, ExprList exprs) {
+            Element eLeft = asElement(opLeft) ;
+            ElementGroup eRight = asElementGroup(opRight) ;
 
             // If the RHS is (filter) we need to protect it from becoming
             // part of the expr for the LeftJoin.
@@ -632,8 +636,8 @@ public class OpAsQuery {
                 eRight = eRight2 ;
             }
 
-            if ( opLeftJoin.getExprs() != null ) {
-                for ( Expr expr : opLeftJoin.getExprs() ) {
+            if ( exprs != null ) {
+                for ( Expr expr : exprs ) {
                     ElementFilter f = new ElementFilter(expr) ;
                     eRight.addElement(f) ;
                 }
@@ -691,7 +695,8 @@ public class OpAsQuery {
 
         @Override
         public void visit(OpConditional opCondition) {
-            throw new ARQNotImplemented("OpCondition") ;
+            // Possibly imperfect because there might be filters outside the OpConditional.
+            convertLeftJoin(opCondition.getLeft(), opCondition.getRight(), null);
         }
 
         @Override
