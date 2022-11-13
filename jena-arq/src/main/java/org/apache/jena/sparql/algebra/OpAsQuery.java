@@ -524,7 +524,12 @@ public class OpAsQuery {
 
         @Override
         public void visit(OpDisjunction opDisjunction) {
-            throw new ARQNotImplemented("OpDisjunction") ;
+            ElementUnion elUnion = new ElementUnion();
+            for ( Op op : opDisjunction.getElements() ) {
+                Element el = asElement(op) ;
+                elUnion.addElement(el);
+            }
+            currentGroup().addElement(elUnion) ;
         }
 
         private Element process(BasicPattern pattern) {
