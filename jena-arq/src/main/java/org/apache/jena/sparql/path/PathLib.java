@@ -22,6 +22,7 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -41,9 +42,7 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.iterator.QueryIterConcat ;
-import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import org.apache.jena.sparql.engine.iterator.QueryIterYieldN ;
+import org.apache.jena.sparql.engine.iterator.*;
 import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.path.eval.PathEval ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionFactory ;
@@ -78,7 +77,7 @@ public class PathLib
         op = flush(bp, op);
         return op;
     }
-    
+
     static private Op flush(BasicPattern bp, Op op) {
         if ( bp == null || bp.isEmpty() )
             return op;
@@ -104,14 +103,14 @@ public class PathLib
             Path path = new P_Link(triplePath.getPredicate());
             triplePath = new TriplePath(triplePath.getSubject(), path, triplePath.getObject());
         }
-        
-        return execTriplePath(binding, 
+
+        return execTriplePath(binding,
                               triplePath.getSubject(),
                               triplePath.getPath(),
                               triplePath.getObject(),
                               execCxt) ;
     }
-    
+
     public static QueryIterator execTriplePath(Binding binding, Node s, Path path, Node o, ExecutionContext execCxt) {
         Explain.explain(s, path, o, execCxt.getContext()) ;
         s = Var.lookup(binding, s) ;
@@ -143,13 +142,13 @@ public class PathLib
         }
         return evalGroundedOneEnd(binding, iter, endNode, execCxt);
     }
-    
+
     private static QueryIterator evalGroundedOneEnd(Binding binding, Iterator<Node> iter, Node endNode, ExecutionContext execCxt) {
         List<Binding> results = new ArrayList<>() ;
-        
+
         if (! Var.isVar(endNode))
-            throw new ARQInternalErrorException("Non-variable endnode in _execTriplePath") ;
-        
+            throw new ARQInternalErrorException("Non-variable endNode in evalGroundedOneEnd") ;
+
         Var var = Var.alloc(endNode) ;
         // Assign.
         for (; iter.hasNext();) {
@@ -160,68 +159,59 @@ public class PathLib
     }
 
     // Subject and object are nodes.
-    private static QueryIterator evalGroundedPath(Binding binding, 
+    private static QueryIterator evalGroundedPath(Binding binding,
                                                   Graph graph, Node subject, Path path, Node object,
                                                   ExecutionContext execCxt) {
         Iterator<Node> iter = PathEval.eval(graph, subject, path, execCxt.getContext()) ;
         // Now count the number of matches.
-        
+
         int count = 0 ;
         for ( ; iter.hasNext() ; ) {
             Node n = iter.next() ;
             if ( n.sameValueAs(object) )
                 count++ ;
         }
-        
+
         return new QueryIterYieldN(count, binding, execCxt) ;
     }
 
-    // Brute force evaluation of a TriplePath where neither subject nor object are bound 
+    // Brute force evaluation of a TriplePath where neither subject nor object are bound
     private static QueryIterator execUngroundedPath(Binding binding, Graph graph, Var sVar, Path path, Var oVar, ExecutionContext execCxt) {
         // Starting points.
         Iterator<Node> iter = determineUngroundedStartingSet(graph, path, execCxt) ;
-        QueryIterConcat qIterCat = new QueryIterConcat(execCxt) ;
-        
-        for ( ; iter.hasNext() ; )
-        {
-            Node n = iter.next() ;
-            Binding b2 = BindingFactory.binding(binding, sVar, n) ;
-            Iterator<Node> pathIter = PathEval.eval(graph, n, path, execCxt.getContext()) ;
-            QueryIterator qIter = evalGroundedOneEnd(b2, pathIter, oVar, execCxt) ;
-            qIterCat.add(qIter) ;
-        }
-        return qIterCat ;
+        QueryIterator input = new QueryIterExtendByVar(binding, sVar, iter, execCxt);
+        Function<Binding, QueryIterator> mapper = b -> {
+            Iterator<Node> pathIter = PathEval.eval(graph, b.get(sVar), path, execCxt.getContext());
+            QueryIterator qIter = evalGroundedOneEnd(b, pathIter, oVar, execCxt);
+            return qIter;
+        };
+        return QueryIter.flatMap(input, mapper, execCxt);
     }
-    
+
     private static QueryIterator execUngroundedPathSameVar(Binding binding, Graph graph, Var var, Path path, ExecutionContext execCxt) {
         // Try each end, ungrounded.
-        // Slightly more efficient would be to add a per-engine to do this.
         Iterator<Node> iter = determineUngroundedStartingSet(graph, path, execCxt) ;
-        QueryIterConcat qIterCat = new QueryIterConcat(execCxt) ;
-        
-        for ( ; iter.hasNext() ; )
-        {
-            Node n = iter.next() ;
-            Binding b2 = BindingFactory.binding(binding, var, n) ;
-            int x = existsPath(graph, n, path, n, execCxt) ;
-            if ( x > 0 )
-            {
-                QueryIterator qIter = new QueryIterYieldN(x, b2, execCxt) ;
-                qIterCat.add(qIter) ;
-            }
-        }
-        return qIterCat ; 
+        QueryIterator input = new QueryIterExtendByVar(binding, var, iter, execCxt);
+        Function<Binding, QueryIterator> mapper = b -> {
+            Node n = b.get(var);
+            int x = existsPath(graph, n, path, n, execCxt);
+            if (x <= 0)
+                return null;
+            Binding b2 = BindingFactory.binding(binding, var, n);
+            return new QueryIterYieldN(x, b2, execCxt);
+        };
+        return QueryIter.flatMap(input, mapper, execCxt);
     }
-    
+
     private static Iterator<Node> determineUngroundedStartingSet(Graph graph, Path path, ExecutionContext execCxt) {
         // Find a better set of seed values than "everything"
         //    (:p+) and (^:p)+
-        //  :p* need everything because it is always the case that "<x> :p* <x>" 
+        //  :p* need everything because it is always the case that "<x> :p* <x>"
         if ( path instanceof P_OneOrMore1 || path instanceof P_OneOrMoreN ) {
             Path subPath = ((P_Path1)path).getSubPath() ;
             if ( subPath instanceof P_Link ) {
                 // :predicate+
-                // If a property functions, 
+                // If a property functions,
                 P_Link link = (P_Link)subPath ;
                 if ( ! isPropertyFunction(link.getNode(), execCxt.getContext()) ) {
                     Iterator<Triple> sIter = graph.find(null, link.getNode(), null) ;
@@ -244,7 +234,7 @@ public class PathLib
         // No idea - everything.
         return GraphUtils.allNodes(graph) ;
     }
-    
+
     private static boolean isPropertyFunction(Node node, Context context) {
         if ( ! node.isURI() )
             return false ;
@@ -255,10 +245,10 @@ public class PathLib
         if ( ! subject.isConcrete() || !object.isConcrete() )
             throw new ARQInternalErrorException("Non concrete node for existsPath evaluation") ;
         Iterator<Node> iter = PathEval.eval(graph, subject, path, execCxt.getContext()) ;
-        Predicate<Node> filter = node -> Objects.equals(node,  object); 
+        Predicate<Node> filter = node -> Objects.equals(node,  object);
         // See if we got to the node we're interested in finishing at.
         iter = Iter.filter(iter, filter) ;
-        long x = Iter.count(iter) ; 
+        long x = Iter.count(iter) ;
         return (int)x ;
     }
 }
