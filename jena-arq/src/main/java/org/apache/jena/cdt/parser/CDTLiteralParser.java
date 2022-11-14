@@ -26,9 +26,8 @@ import java.util.Map;
 
 import org.apache.jena.cdt.*;
 import org.apache.jena.graph.Node;
-import org.apache.jena.ttl.turtle.TurtleParserBase;
 
-public class CDTLiteralParser extends TurtleParserBase implements CDTLiteralParserConstants {
+public class CDTLiteralParser extends CDTLiteralParserBase implements CDTLiteralParserConstants {
 
 // --- Entry point
   final public void parse() throws ParseException {
