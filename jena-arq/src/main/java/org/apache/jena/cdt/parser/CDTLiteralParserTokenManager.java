@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.jena.cdt.*;
 import org.apache.jena.graph.Node;
-import org.apache.jena.ttl.turtle.TurtleParserBase;
 
 /** Token Manager. */
 public class CDTLiteralParserTokenManager implements CDTLiteralParserConstants
