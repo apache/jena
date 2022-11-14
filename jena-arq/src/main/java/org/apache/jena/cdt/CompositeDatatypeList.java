@@ -174,10 +174,6 @@ public class CompositeDatatypeList extends CompositeDatatypeBase
 	public boolean isEqual( final LiteralLabel value1, final LiteralLabel value2 ) {
 		final List<CDTValue> list1 = getValue(value1);
 		final List<CDTValue> list2 = getValue(value2);
-System.out.println("list1");
-System.out.println(list1);
-System.out.println("list2");
-System.out.println(list2);
 		return list1.equals(list2);
 	}
 
