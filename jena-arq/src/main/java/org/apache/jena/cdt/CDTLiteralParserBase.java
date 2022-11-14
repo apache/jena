@@ -9,12 +9,12 @@ public class CDTLiteralParserBase extends TurtleParserBase
 {
 	@Override
 	protected Node createLiteral( final String lex, final String langTag, final String datatypeURI ) {
-		if ( datatypeURI.equals(CompositeDatatypeList.uri) ) {
+		if ( CompositeDatatypeList.uri.equals(datatypeURI) ) {
 			final LiteralLabel lit = new LiteralLabelForList(lex);
 			return NodeFactory.createLiteral(lit);
 		}
 
-		if ( datatypeURI.equals(CompositeDatatypeMap.uri) ) {
+		if ( CompositeDatatypeMap.uri.equals(datatypeURI) ) {
 			final LiteralLabel lit = new LiteralLabelForMap(lex);
 			return NodeFactory.createLiteral(lit);
 		}
