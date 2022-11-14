@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.sparql.expr.NodeValue;
 
 public abstract class CDTValue extends CDTKey
 {
@@ -126,7 +127,9 @@ public abstract class CDTValue extends CDTKey
 		}
 
 		if ( v2.isNode() ) {
-			return v2.asNode().equals(n1);
+			final NodeValue nv1 = NodeValue.makeNode(n1);
+			final NodeValue nv2 = NodeValue.makeNode( v2.asNode() );
+			return NodeValue.sameAs(nv1, nv2);
 		}
 
 		return false;

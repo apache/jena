@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.jena.cdt.parser.CDTLiteralParser;
 import org.apache.jena.cdt.parser.ParseException;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ttl.turtle.parser.TokenMgrError;
 import org.apache.jena.util.FileUtils;
 
@@ -73,16 +74,14 @@ public class ParserForCDTLiterals
 		if ( recursive && ! list.isEmpty() ) {
 			for ( int i = 0; i < list.size(); i++ ) {
 				final CDTValue v = list.get(i);
-				if ( v.isNode() && v.asNode().isLiteral() ) {
-					final String lex = v.asNode().getLiteralLexicalForm();
-					final String dtURI = v.asNode().getLiteralDatatypeURI();
-
-					if ( dtURI.equals(CompositeDatatypeList.uri) ) {
-						final List<CDTValue> subList = parseListLiteral(lex, recursive);
+				if ( v.isNode() ) {
+					final Node vn = v.asNode();
+					if ( CompositeDatatypeList.isListLiteral(vn) ) {
+						final List<CDTValue> subList = parseListLiteral(vn.getLiteralLexicalForm(), recursive);
 						list.set( i, CDTFactory.createValue(subList) );
 					}
-					else if ( dtURI.equals(CompositeDatatypeMap.uri) ) {
-						final Map<CDTKey,CDTValue> subMap = parseMapLiteral(lex, recursive);
+					else if ( CompositeDatatypeMap.isMapLiteral(vn) ) {
+						final Map<CDTKey,CDTValue> subMap = parseMapLiteral(vn.getLiteralLexicalForm(), recursive);
 						list.set( i, CDTFactory.createValue(subMap) );
 					}
 				}
@@ -133,17 +132,15 @@ public class ParserForCDTLiterals
 		if ( recursive && ! map.isEmpty() ) {
 			for ( final CDTKey key : map.keySet() ) {
 				final CDTValue v = map.get(key);
-				if ( v.isNode() && v.asNode().isLiteral() ) {
-					final String lex = v.asNode().getLiteralLexicalForm();
-					final String dtURI = v.asNode().getLiteralDatatypeURI();
-
-					if ( dtURI.equals(CompositeDatatypeMap.uri) ) {
-						final Map<CDTKey,CDTValue> subMap = parseMapLiteral(lex, recursive);
-						map.put( key, CDTFactory.createValue(subMap) );
-					}
-					else if ( dtURI.equals(CompositeDatatypeList.uri) ) {
-						final List<CDTValue> subList = parseListLiteral(lex, recursive);
+				if ( v.isNode() ) {
+					final Node vn = v.asNode();
+					if ( CompositeDatatypeList.isListLiteral(vn) ) {
+						final List<CDTValue> subList = parseListLiteral(vn.getLiteralLexicalForm(), recursive);
 						map.put( key, CDTFactory.createValue(subList) );
+					}
+					else if ( CompositeDatatypeMap.isMapLiteral(vn) ) {
+						final Map<CDTKey,CDTValue> subMap = parseMapLiteral(vn.getLiteralLexicalForm(), recursive);
+						map.put( key, CDTFactory.createValue(subMap) );
 					}
 				}
 			}

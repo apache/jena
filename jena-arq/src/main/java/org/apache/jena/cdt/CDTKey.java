@@ -19,6 +19,7 @@
 package org.apache.jena.cdt;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.expr.NodeValue;
 
 public abstract class CDTKey
 {
@@ -44,7 +45,10 @@ public abstract class CDTKey
 	public boolean equals( final Object other ) {
 		if ( other instanceof CDTKey ) {
 			final CDTKey otherKey = (CDTKey) other;
-			return asNode().equals( otherKey.asNode() );
+
+			final NodeValue thisNV  = NodeValue.makeNode( asNode() );
+			final NodeValue otherNV = NodeValue.makeNode( otherKey.asNode() );
+			return NodeValue.sameAs(thisNV, otherNV);
 		}
 
 		return false;
