@@ -184,6 +184,7 @@
          <module>jena-arq</module>
          <module>jena-shacl</module>
          <module>jena-shex</module>
+         <module>jena-rdfpatch</module>
          <module>jena-rdfconnection</module>
          <module>jena-db</module>
          <module>jena-tdb1</module>
@@ -243,6 +244,7 @@
          <module>jena-arq</module>
          <module>jena-shacl</module>
          <module>jena-shex</module>
+         <module>jena-rdfpatch</module>
          <module>jena-rdfconnection</module>
          <module>jena-db</module>
          <module>jena-tdb1</module>

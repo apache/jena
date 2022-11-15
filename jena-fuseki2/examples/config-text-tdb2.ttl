@@ -40,8 +40,8 @@ PREFIX text:    <http://jena.apache.org/text#>
         fuseki:name "data"
     ] ; 
     fuseki:endpoint [ 
-        fuseki:operation fuseki:upload ;
-        fuseki:name "upload"
+        fuseki:operation fuseki:patch ;
+        fuseki:name "patch"
     ] ; 
     fuseki:dataset :text_dataset ;
     .

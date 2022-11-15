@@ -82,7 +82,8 @@ public class FusekiConfig {
                    "query",    Operation.Query,
                    "update",   Operation.Update,
                    "data",     Operation.GSP_RW,
-                   "get",      Operation.GSP_R);
+                   "get",      Operation.GSP_R,
+                   "patch",    Operation.Patch);
 
     private static Set<Operation> stdDatasetRead =
             Set.of(Operation.Query,
@@ -91,7 +92,8 @@ public class FusekiConfig {
     private static Set<Operation> stdDatasetWrite =
             Set.of(Operation.Query,
                    Operation.Update,
-                   Operation.GSP_RW);
+                   Operation.GSP_RW,
+                   Operation.Patch);
 
     static { Fuseki.init(); }
 
