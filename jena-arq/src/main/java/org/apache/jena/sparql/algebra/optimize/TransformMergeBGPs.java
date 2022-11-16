@@ -25,9 +25,12 @@ import org.apache.jena.sparql.algebra.TransformCopy ;
 import org.apache.jena.sparql.algebra.op.OpBGP ;
 import org.apache.jena.sparql.algebra.op.OpJoin ;
 import org.apache.jena.sparql.algebra.op.OpSequence ;
+import org.apache.jena.sparql.algebra.op.OpTriple;
 import org.apache.jena.sparql.core.BasicPattern ;
 
-/** Merge BGPs
+/**
+ * Merge BGPs, additionally merges the special {@link OpTriple} operator which is a BGP of a single triple pattern that
+ * may be introduced by other transforms
  *
  * <ul>
  * <li>(join BGP1 BGP2) {@literal =>} BGP
@@ -106,6 +109,8 @@ public class TransformMergeBGPs extends TransformCopy {
     private static BasicPattern asBGP(Op op) {
         if ( op instanceof OpBGP )
             return ((OpBGP)op).getPattern() ;
+        if ( op instanceof OpTriple)
+            return ((OpTriple)op).asBGP().getPattern();
         return null ;
     }
 

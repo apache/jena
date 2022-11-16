@@ -33,15 +33,26 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarAlloc ;
 import org.apache.jena.sparql.path.* ;
 
-/** The path transformation step exactly as per the SPARQL 1.1 spec.
- *  i.e. joins triples rather creating BGPs.
- *  It does not produce very nice execution structures so ARQ uses
- *  a functional equivalent, but different, transformation.
+/**
+ *  The path transformation step mostly per the SPARQL 1.1 spec with some enhancement e.g. expanded alternative paths
+ *  into unions.
+ *  <p>
+ *  It does not necessarily produce very nice execution structures so ARQ uses a functionally equivalent, but different,
+ *  transformation, see {@link TransformPathFlattern}.  Although that transformation covers fewer cases than this.
+ *  </p>
+ *  <p>
+ *  However for users who are using property paths in their queries heavily there may be benefits to using this
+ *  transform over the default one.  The {@link org.apache.jena.query.ARQ#optPathFlattenAlgebra} symbol can be set in
+ *  an ARQ context to enable this transform in preference to the simpler transform.
+ *  </p>
  */
-public class TransformPathFlatternStd extends TransformCopy {
+public class TransformPathFlattenAlgebra extends TransformCopy {
     private static VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker + "Q");
 
-    public TransformPathFlatternStd() {}
+    /** Testing use only. */
+    public static void resetForTest() {  varAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker + "Q"); }
+
+    public TransformPathFlattenAlgebra() {}
 
     @Override
     public Op transform(OpPath opPath) {
@@ -151,10 +162,19 @@ public class TransformPathFlatternStd extends TransformCopy {
             PathTransform pt = new PathTransform(object, subject);
             inversePath.getSubPath().visit(pt);
             result = pt.getResult();
+            if (result == null) {
+                // Further transform of the sub-path was not possible BUT can still compile out the inverse
+                result = make(object, inversePath.getSubPath(), subject);
+            }
         }
 
         @Override
         public void visit(P_Mod pathMod) {
+            if (pathMod.getMin() == -1 || pathMod.getMax() == -1)
+            {
+                result = null;
+                return;
+            }
             if ( pathMod.getMin() > pathMod.getMax() )
                 throw new ARQException("Bad path: " + pathMod);
 

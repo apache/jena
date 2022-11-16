@@ -71,7 +71,11 @@ public class OptimizerStd implements Rewrite
 
         // Convert paths to triple patterns if possible.
         if ( context.isTrueOrUndef(ARQ.optPathFlatten) ) {
-            op = apply("Path flattening", new TransformPathFlattern(), op) ;
+            if (context.isTrue(ARQ.optPathFlattenAlgebra)) {
+                op = apply("Path flattening (algebra)", new TransformPathFlattenAlgebra(), op);
+            } else {
+                op = apply("Path flattening", new TransformPathFlattern(), op);
+            }
             // and merge adjacent BGPs (part 1)
             if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
                 op = apply("Merge BGPs", new TransformMergeBGPs(), op) ;
