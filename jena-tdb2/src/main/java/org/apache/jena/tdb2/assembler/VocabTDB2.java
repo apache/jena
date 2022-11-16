@@ -26,6 +26,7 @@ import org.apache.jena.assembler.assemblers.AssemblerGroup;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
+import org.apache.jena.system.Vocab;
 import org.apache.jena.tdb2.TDB2;
 
 public class VocabTDB2

@@ -22,7 +22,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
-import org.apache.jena.tdb.assembler.Vocab;
+import org.apache.jena.system.Vocab;
 
 public class VocabPatch {
 

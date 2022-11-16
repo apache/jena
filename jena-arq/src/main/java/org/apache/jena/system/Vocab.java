@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.assembler;
+package org.apache.jena.system;
 
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
