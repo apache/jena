@@ -21,6 +21,8 @@ package org.apache.jena.sparql.path;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.algebra.optimize.TransformPathFlattenAlgebra;
+import org.apache.jena.sparql.algebra.optimize.TransformPathFlattern;
 import org.apache.jena.sparql.core.PathBlock ;
 import org.apache.jena.sparql.core.TriplePath ;
 import org.apache.jena.sparql.core.Var;
@@ -68,9 +70,13 @@ public class PathCompiler
         }
     }
 
-    // ---- Algebra-based transformation.
-    // Does not include "|". Called by TransformPathFlattern.
-    // See TransformPathFlatternStd for union expansion.
+    /**
+     * Algebra-based transformation.
+     * <p>
+     * Does not include "|", this method is called by {@link TransformPathFlattern}. See
+     * {@link TransformPathFlattenAlgebra} for union expansion.
+     * </p>
+     */
     public PathBlock reduce(TriplePath triplePath)
     {
         PathBlock x = new PathBlock() ;

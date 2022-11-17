@@ -206,9 +206,58 @@ public class TestTransformPathFlatten {
         test(op1, expected);
     }
 
-    @Test public void pathFlatten_n_to_m_02() {
+    @Test public void pathFlatten_n_to_m_01_algebra() {
         Op op1 = path("?x", ":p{2,}", ":T1");
-        testAlgebra(op1, null);
+        Op expected = op(
+                "(sequence",
+                "  (join",
+                "    (triple ??Q0 :p ??Q1)",
+                "    (triple ??Q1 :p :T1))",
+                "  (path ?x (pathN* :p) ??Q0)",
+                ")"
+        );
+        testAlgebra(op1, expected);
+    }
+
+    @Test public void pathFlatten_n_to_m_01b_algebra() {
+        Op op1 = path("?x", ":p{2,}", ":T1");
+        Op expected = op(
+                "(sequence",
+                "  (bgp",
+                "    (triple ??Q0 :p ??Q1)",
+                "    (triple ??Q1 :p :T1))",
+                "  (path ?x (pathN* :p) ??Q0)",
+                ")"
+        );
+        Context ctx = new Context();
+        ctx.set(ARQ.optPathFlattenAlgebra, true);
+        testOptimise(op1, expected, ctx);
+    }
+
+    @Test public void pathFlatten_n_to_m_02() {
+        Op op1 = path(":T1", ":p{2,}", "?x");
+        Op expected = op(
+                "(sequence",
+                "  (bgp",
+                "    (triple :T1 :p ??P1)",
+                "    (triple ??P1 :p ??P0))",
+                "  (path ??P0 (pathN* :p) ?x)",
+                ")"
+        );
+        test(op1, expected);
+    }
+
+    @Test public void pathFlatten_n_to_m_02_algebra() {
+        Op op1 = path(":T1", ":p{2,}", "?x");
+        Op expected = op(
+                "(sequence",
+                "  (join",
+                "    (triple :T1 :p ??Q1)",
+                "    (triple ??Q1 :p ??Q0))",
+                "  (path ??Q0 (pathN* :p) ?x)",
+                ")"
+        );
+        testAlgebra(op1, expected);
     }
     
     private static Op path(String s, String pathStr, String o) {
