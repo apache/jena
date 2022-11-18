@@ -76,19 +76,19 @@ public class TestCastXSD {
     @Test public void cast_to_decimal_05()  { testCast      ("xsd:decimal('11e0'^^xsd:double)",     "11.0") ; }
     @Test public void cast_to_decimal_06()  { testCast      ("xsd:decimal('-0.01'^^xsd:double)",    "-0.01") ; }
     @Test public void cast_to_decimal_07()  { testCast      ("xsd:decimal('1'^^xsd:double)",        "'1.0'^^xsd:decimal") ; }
-    
+
     @Test public void cast_to_boolean_01()  { testCast      ("xsd:boolean('1'^^xsd:double)",        "true") ; }
     @Test public void cast_to_boolean_02()  { testCast      ("xsd:boolean('+1.0e5'^^xsd:double)",   "true") ; }
     @Test public void cast_to_boolean_03()  { testCast      ("xsd:boolean('0'^^xsd:float)",         "false") ; }
     @Test public void cast_to_boolean_04()  { testCast      ("xsd:boolean(0.0e0)",                  "false") ; }
     @Test public void cast_to_boolean_05()  { testCast      ("xsd:boolean(-0.0e0)",                 "false") ; }
     @Test public void cast_to_boolean_06()  { testCast      ("xsd:boolean('NaN'^^xsd:float)",       "false") ; }
-    
+
     @Test public void cast_to_boolean_07()  { testCast      ("xsd:boolean(1.0)",                    "true") ; }
     @Test public void cast_to_boolean_08()  { testCast      ("xsd:boolean(0.0)",                    "false") ; }
     @Test public void cast_to_boolean_09()  { testCast      ("xsd:boolean(-1.00)",                  "true") ; }
     @Test public void cast_to_boolean_10()  { testCast      ("xsd:boolean(0)",                      "false") ; }
-    
+
     @Test public void cast_to_boolean_11()  { testCast      ("xsd:boolean('1')",                    "true") ; }
     @Test public void cast_to_boolean_12()  { testCast      ("xsd:boolean('true')",                 "true") ; }
     @Test public void cast_to_boolean_13()  { testCast      ("xsd:boolean('0')",                    "false") ; }
@@ -105,6 +105,7 @@ public class TestCastXSD {
     @Test public void cast_from_boolean_03() { testCast     ("xsd:integer('1'^^xsd:boolean)",            "1" ) ; }
     @Test public void cast_from_boolean_04() { testCast     ("xsd:decimal('false'^^xsd:boolean)",        "0.0" ) ; }
     @Test public void cast_from_boolean_05() { testCast     ("xsd:double('false'^^xsd:boolean)",         "0.0E0" ) ; }
+    @Test public void cast_from_boolean_06() { testCast     ("xsd:int('false'^^xsd:boolean)",            "'0'^^xsd:int" ) ; }
 
     @Test public void cast_to_duration_01()  { testCast     ("xsd:duration('PT10S')",                            "'PT10S'^^xsd:duration") ; }
     @Test public void cast_to_duration_02()  { testCast     ("xsd:duration('P1DT10S'^^xsd:dayTimeDuration)",     "'P1DT10S'^^xsd:duration") ; }
