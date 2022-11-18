@@ -71,10 +71,6 @@ public class TestSemanticEquivalence {
         dsg.add(Quad.defaultGraphNodeGenerated, b, p2, o);
         dsg.add(Quad.defaultGraphNodeGenerated, c, p1, o);
         //dsg.add(Quad.defaultGraphNodeGenerated, a, pSelf, a);
-
-        // Currently these optimizations are off by default
-        Assert.assertFalse(ARQ.isFalse(ARQ.optFilterImplicitJoin));
-        Assert.assertFalse(ARQ.isFalse(ARQ.optImplicitLeftJoin));
     }
 
     @AfterClass

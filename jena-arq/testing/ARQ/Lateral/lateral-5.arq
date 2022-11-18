@@ -1,0 +1,7 @@
+PREFIX : <http://example/>
+
+SELECT * {
+  ?s :p ?o .
+  ## ?s : different scope
+  LATERAL { SELECT ?label { ?s :p ?label } }
+}
