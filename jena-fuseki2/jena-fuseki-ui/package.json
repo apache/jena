@@ -72,6 +72,6 @@
   },
   "overrides": {
     "terser": "^5.14.2",
-    "loader-utils": "^1.4.1"
+    "loader-utils": "^1.4.2"
   }
 }
