@@ -1,0 +1,4 @@
+SELECT * { 
+  ?s ?p ?o 
+  LATERAL { SELECT ?x { ?s ?q ?x } LIMIT 2 }
+}
