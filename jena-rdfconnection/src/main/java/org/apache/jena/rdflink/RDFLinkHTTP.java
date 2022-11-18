@@ -387,7 +387,6 @@ public class RDFLinkHTTP implements RDFLink {
 //        throw ex;
 //    }
 
-    /** {@inheritDoc} */
     @Override
     public Graph get(Node graphName) {
         checkGSP();
@@ -457,35 +456,35 @@ public class RDFLinkHTTP implements RDFLink {
     private String ct(RDFFormat format) { return format.getLang().getHeaderString(); }
 
     private GSP gsp() {
-        return gspRequest().defaultGraph();
+        return gspRequest().acceptHeader(acceptGraph).defaultGraph();
     }
 
     private GSP gsp(Node graphName) {
         if ( LibRDFLink.isDefault(graphName) )
-            return gspRequest().defaultGraph();
+            return gspRequest().acceptHeader(acceptGraph).defaultGraph();
         else
-            return gspRequest().graphName(graphName);
+            return gspRequest().acceptHeader(acceptGraph).graphName(graphName);
     }
 
+    /**
+     * Create a GSP request. The HTTP headers are not set and
+     * the appropriate input or output headers need to be set.
+     */
     private GSP gspRequest() {
         GSP gsp = GSP.service(svcGraphStore);
         if ( httpClient != null )
             gsp.httpClient(httpClient);
-        if ( outputTriples != null )
-            gsp.contentType(outputTriples);
-        if ( acceptGraph != null )
-            gsp.acceptHeader(acceptGraph);
         return gsp;
     }
 
+    /**
+     * Create a DSP request. The HTTP headers are not set and
+     * the appropriate input or output headers need to be set.
+     */
     private DSP dspRequest() {
         DSP dsp = DSP.service(svcGraphStore);
         if ( httpClient != null )
             dsp.httpClient(httpClient);
-        if ( outputQuads != null )
-            dsp.contentType(outputQuads);
-        if ( acceptDataset != null )
-            dsp.acceptHeader(acceptDataset);
         return dsp;
     }
 
@@ -510,25 +509,25 @@ public class RDFLinkHTTP implements RDFLink {
     @Override
     public void loadDataset(String file) {
         checkDataset();
-        dspRequest().POST(file);
+        dspRequest().contentType(outputQuads).POST(file);
     }
 
     @Override
     public void loadDataset(DatasetGraph dataset) {
         checkDataset();
-        dspRequest().POST(dataset);
+        dspRequest().contentType(outputQuads).POST(dataset);
     }
 
     @Override
     public void putDataset(String file) {
         checkDataset();
-        dspRequest().PUT(file);
+        dspRequest().contentType(outputQuads).PUT(file);
     }
 
     @Override
     public void putDataset(DatasetGraph dataset) {
         checkDataset();
-        dspRequest().PUT(dataset);
+        dspRequest().contentType(outputQuads).PUT(dataset);
     }
 
     // -- Internal.
