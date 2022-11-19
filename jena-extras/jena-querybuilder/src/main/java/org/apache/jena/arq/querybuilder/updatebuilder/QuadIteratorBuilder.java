@@ -26,24 +26,7 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.TriplePath;
-import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.syntax.ElementAssign;
-import org.apache.jena.sparql.syntax.ElementBind;
-import org.apache.jena.sparql.syntax.ElementData;
-import org.apache.jena.sparql.syntax.ElementDataset;
-import org.apache.jena.sparql.syntax.ElementExists;
-import org.apache.jena.sparql.syntax.ElementFilter;
-import org.apache.jena.sparql.syntax.ElementGroup;
-import org.apache.jena.sparql.syntax.ElementMinus;
-import org.apache.jena.sparql.syntax.ElementNamedGraph;
-import org.apache.jena.sparql.syntax.ElementNotExists;
-import org.apache.jena.sparql.syntax.ElementOptional;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
-import org.apache.jena.sparql.syntax.ElementService;
-import org.apache.jena.sparql.syntax.ElementSubQuery;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock;
-import org.apache.jena.sparql.syntax.ElementUnion;
-import org.apache.jena.sparql.syntax.ElementVisitor;
+import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
 
@@ -69,7 +52,7 @@ class QuadIteratorBuilder implements ElementVisitor {
 
     /**
      * Constructor.
-     * 
+     *
      * @param defaultGraph the default graph name.
      */
     QuadIteratorBuilder(Node defaultGraph) {
@@ -118,6 +101,11 @@ class QuadIteratorBuilder implements ElementVisitor {
         for (final Element e : el.getElements()) {
             e.visit(this);
         }
+    }
+
+    @Override
+    public void visit(ElementLateral el) {
+        throw new QueryParseException("lateral not permitted in data quad", -1, -1);
     }
 
     @Override
