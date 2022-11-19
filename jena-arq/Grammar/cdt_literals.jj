@@ -63,26 +63,24 @@ public class CDTLiteralParser extends CDTLiteralParserBase
 }
 PARSER_END(CDTLiteralParser)
 
-// --- Entry point
-
-void parse() : {}
-{
-  ( List() | Map() )
-}
+// --- Entry point for cdt:List literals
 
 List<CDTValue> List() : { List<CDTValue> l = new ArrayList<CDTValue>(); }
 {
   <LBRACKET>
 
-  ( ListElement(l) )?
-
-  ( <COMMA> ListElement(l) )*
-
-  // should we permit a trailing comma?
+  ( NonEmptyListContent(l) )?
 
   <RBRACKET>
 
   { return l; }
+}
+
+void NonEmptyListContent(List<CDTValue> l) : { }
+{
+  ListElement(l)
+
+  (  <COMMA> ListElement(l)  )*
 }
 
 void ListElement(List<CDTValue> l) : { String iri; Node n; List<CDTValue> subList; Map<CDTKey,CDTValue> m; }
@@ -104,17 +102,24 @@ void ListElement(List<CDTValue> l) : { String iri; Node n; List<CDTValue> subLis
   m = Map()             { l.add( CDTFactory.createValue(m) ); }
 }
 
+// --- Entry point for cdt:Map literals
+
 Map<CDTKey,CDTValue> Map() : { Map<CDTKey,CDTValue> m = new HashMap<CDTKey,CDTValue>(); }
 {
   <LBRACE>
 
-  ( MapEntry(m) )?
-
-  ( <COMMA> MapEntry(m) )*
+  ( NonEmptyMapContent(m) )?
 
   <RBRACE>
 
   { return m; }
+}
+
+void NonEmptyMapContent(Map<CDTKey,CDTValue> m) : { }
+{
+  MapEntry(m)
+
+  ( <COMMA> MapEntry(m) )*
 }
 
 void MapEntry(Map<CDTKey,CDTValue> m) : { CDTKey key; CDTValue value; }
