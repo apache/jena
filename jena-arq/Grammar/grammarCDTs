@@ -30,8 +30,8 @@ javacc -OUTPUT_DIRECTORY=$DIR -JDK_VERSION=1.8 "$FILE"
 RC=$?
 [ "$RC" = 0 ] || return
 
-## echo "---- Create text form ----"
-## jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
+echo "---- Create text form ----"
+jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
 
 echo "---- Fixing Java warnings in TokenMgrError"
 F="$DIR/TokenMgrError.java"
@@ -55,5 +55,11 @@ F="$DIR/${CLASS}.java"
 sed -e 's/@SuppressWarnings("serial")//' \
     < $F > F
 mv F $F
+
+echo "---- Create HTML form ----"
+./jj2html ${FILE%%.jj}.txt 'tokens.txt' > ${FILE%%.jj}-1.html
+./grammarExtracts < ${FILE%%.jj}-1.html > ${FILE%%.jj}-2.html
+
+echo "Check X and Y for IRI_REF because \" became '"
 
 echo "---- Done"
