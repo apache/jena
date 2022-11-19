@@ -13,7 +13,7 @@
     "lint": "vue-cli-service lint",
     "coverage:e2e": "bash -c 'concurrently --names \"SERVER,TESTS\" --prefix-colors \"yellow,blue\" --success \"first\" --kill-others \"yarn run serve:fuseki\" \"nyc vue-cli-service test:e2e ${0}\"'",
     "coverage:unit": "nyc vue-cli-service test:unit",
-    "serve:fuseki": "nodemon src/services/mock/json-server.js src/services/mock/db.json",
+    "serve:fuseki": "nodemon src/services/mock/json-server.js",
     "serve:offline": "concurrently --names 'SERVER,CLIENT' --prefix-colors 'yellow,blue' --success \"first\" --kill-others 'yarn run serve:fuseki' 'yarn run serve'"
   },
   "dependencies": {

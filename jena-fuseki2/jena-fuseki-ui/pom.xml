@@ -37,6 +37,28 @@
 
     <build>
         <plugins>
+            <!-- Allocate two network ports for Jena Fuseki UI and for Jena Fuseki -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>reserve-network-port</id>
+                        <goals>
+                            <goal>reserve-network-port</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <portNames>
+                                <portName>org.apache.jena.fuseki.port</portName>
+                                <portName>org.apache.jena.fuseki.ui.port</portName>
+                            </portNames>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Run Yarn to build and run tests -->
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
@@ -87,6 +109,10 @@
                         </goals>
                         <phase>test</phase>
                         <configuration>
+                            <environmentVariables>
+                                <PORT>${org.apache.jena.fuseki.ui.port}</PORT>
+                                <FUSEKI_PORT>${org.apache.jena.fuseki.port}</FUSEKI_PORT>
+                            </environmentVariables>
                             <arguments>run test:e2e -- --headless --browser chrome</arguments>
                         </configuration>
                     </execution>

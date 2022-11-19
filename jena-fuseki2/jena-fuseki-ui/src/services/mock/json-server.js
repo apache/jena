@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-const PORT = 3030
+const PORT = process.env.FUSEKI_PORT || 3030
 
 const data = {}
 

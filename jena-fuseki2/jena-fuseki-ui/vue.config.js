@@ -74,7 +74,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/': {
-        target: 'http://localhost:3030',
+        target: `http://localhost:${process.env.FUSEKI_PORT || 3030}`,
         ws: true,
         changeOrigin: true
       }
