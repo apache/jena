@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -140,23 +141,28 @@ public class QueryIterUnfold extends QueryIterRepeatApply
                 return inputBinding;
             }
 
-            final Node value;
             if ( nextElmt.isNode() ) {
-                value = nextElmt.asNode();
-            }
-            else if ( nextElmt.isList() ) {
-                final LiteralLabel lit = new LiteralLabelForList( nextElmt.asList() );
-                value = NodeFactory.createLiteral(lit);
-            }
-            else if ( nextElmt.isMap() ) {
-                final LiteralLabel lit = new LiteralLabelForMap( nextElmt.asMap() );
-                value = NodeFactory.createLiteral(lit);
-            }
-            else {
-                throw new UnsupportedOperationException( "unexpected list element: " + nextElmt.getClass().getName() );
+                final Node n = nextElmt.asNode();
+
+                final Node value;
+                if ( CompositeDatatypeList.isListLiteral(n) && !(n.getLiteral() instanceof LiteralLabelForList) ) {
+                    final List<CDTValue> l = CompositeDatatypeList.getValue( n.getLiteral() );
+                    final LiteralLabel lit = new LiteralLabelForList(l);
+                    value = NodeFactory.createLiteral(lit);
+                }
+                else if ( CompositeDatatypeMap.isMapLiteral(n) && !(n.getLiteral() instanceof LiteralLabelForMap) ) {
+                    final Map<CDTKey,CDTValue> m = CompositeDatatypeMap.getValue( n.getLiteral() );
+                    final LiteralLabel lit = new LiteralLabelForMap(m);
+                    value = NodeFactory.createLiteral(lit);
+                }
+                else {
+                    value = n;
+                }
+
+                return BindingFactory.binding(inputBinding, var1, value);
             }
 
-            return BindingFactory.binding(inputBinding, var1, value);
+            throw new UnsupportedOperationException( "unexpected list element: " + nextElmt.getClass().getName() );
         }
     }
 
@@ -194,23 +200,28 @@ public class QueryIterUnfold extends QueryIterRepeatApply
                 return BindingFactory.binding( inputBinding, var1, keyNode );
             }
 
-            final Node valueNode;
             if ( value.isNode() ) {
-                valueNode = value.asNode();
-            }
-            else if ( value.isList() ) {
-                final LiteralLabel lit = new LiteralLabelForList( value.asList() );
-                valueNode = NodeFactory.createLiteral(lit);
-            }
-            else if ( value.isMap() ) {
-                final LiteralLabel lit = new LiteralLabelForMap( value.asMap() );
-                valueNode = NodeFactory.createLiteral(lit);
-            }
-            else {
-                throw new UnsupportedOperationException( "unexpected map value: " + value.getClass().getName() );
+            	final Node n = value.asNode();
+
+                final Node valueNode;
+                if ( CompositeDatatypeList.isListLiteral(n) && !(n.getLiteral() instanceof LiteralLabelForList) ) {
+                    final List<CDTValue> l = CompositeDatatypeList.getValue( n.getLiteral() );
+                    final LiteralLabel lit = new LiteralLabelForList(l);
+                    valueNode = NodeFactory.createLiteral(lit);
+                }
+                else if ( CompositeDatatypeMap.isMapLiteral(n) && !(n.getLiteral() instanceof LiteralLabelForMap) ) {
+                    final Map<CDTKey,CDTValue> m = CompositeDatatypeMap.getValue( n.getLiteral() );
+                    final LiteralLabel lit = new LiteralLabelForMap(m);
+                    valueNode = NodeFactory.createLiteral(lit);
+                }
+                else {
+                    valueNode = n;
+                }
+
+                return BindingFactory.binding(inputBinding, var1, keyNode, var2, valueNode);
             }
 
-            return BindingFactory.binding(inputBinding, var1, keyNode, var2, valueNode);
+            throw new UnsupportedOperationException( "unexpected map value: " + value.getClass().getName() );
         }
     }
 
