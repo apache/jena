@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.impl.LiteralLabel;
 
 public class CDTFactory
 {
@@ -40,17 +42,15 @@ public class CDTFactory
 	}
 
 	public static CDTValue createValue( final List<CDTValue> l ) {
-		return new CDTValue() {
-			@Override public boolean isList() { return true; }
-			@Override public List<CDTValue> asList() { return l; }
-		};
+		final LiteralLabel lit = new LiteralLabelForList(l);
+		final Node n = NodeFactory.createLiteral(lit);
+		return createValue(n);
 	}
 
 	public static CDTValue createValue( final Map<CDTKey,CDTValue> m ) {
-		return new CDTValue() {
-			@Override public boolean isMap() { return true; }
-			@Override public Map<CDTKey,CDTValue> asMap() { return m; }
-		};
+		final LiteralLabel lit = new LiteralLabelForMap(m);
+		final Node n = NodeFactory.createLiteral(lit);
+		return createValue(n);
 	}
 
 	public static CDTValue getNullValue() {
