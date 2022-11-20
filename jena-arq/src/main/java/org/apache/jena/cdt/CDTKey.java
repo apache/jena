@@ -19,6 +19,7 @@
 package org.apache.jena.cdt;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.sparql.expr.NodeValue;
 
 public abstract class CDTKey
@@ -63,4 +64,13 @@ public abstract class CDTKey
 			return super.toString();
 		}
 	}
+
+	/**
+	 * Returns a string representation of this element
+	 * to be included in the lexical form of literals.
+	 */
+	public String asLexicalForm() {
+		return NodeFmtLib.strTTL( asNode() );
+	}
+
 }

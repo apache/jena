@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.impl.LiteralLabel;
-import org.apache.jena.riot.out.NodeFmtLib;
 
 public class CompositeDatatypeList extends CompositeDatatypeBase
 {
@@ -70,16 +69,7 @@ public class CompositeDatatypeList extends CompositeDatatypeBase
 	}
 
 	public static String unparseListElement( final CDTValue elmt ) {
-		if ( elmt.isNode() )
-			return NodeFmtLib.strTTL( elmt.asNode() );
-		else if ( elmt.isList() )
-			return unparseList( elmt.asList() );
-		else if ( elmt.isMap() )
-			return CompositeDatatypeMap.unparseMap( elmt.asMap() );
-		else if ( elmt.isNull() )
-			return "null";
-		else
-			throw new UnsupportedOperationException( "unexpected list element: " + elmt.getClass().getName() );
+		return elmt.asLexicalForm();
 	}
 
 	@Override
@@ -177,7 +167,7 @@ public class CompositeDatatypeList extends CompositeDatatypeBase
 		return list1.equals(list2);
 	}
 
-	public static List<CDTValue> getValue( final LiteralLabel lit ) {
+	public static List<CDTValue> getValue( final LiteralLabel lit ) throws DatatypeFormatException {
 		if ( lit instanceof LiteralLabelForList ) {
 			return ( (LiteralLabelForList) lit ).getValue();
 		}

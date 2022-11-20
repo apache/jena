@@ -18,52 +18,17 @@
 
 package org.apache.jena.cdt;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.impl.LiteralLabel;
-import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.riot.out.NodeFmtLib;
 
 public abstract class CDTValue extends CDTKey
 {
 	/**
-	 * Returns true if this object is a list. In that case, {@link #asList()}
-	 * can be used to get it as an actual {@link List} object.
-	 */
-	public boolean isList() {
-		return false;
-	}
-
-	/**
-	 * Returns true if this object is a map. In that case, {@link #asMap()}
-	 * can be used to get it as an actual {@link Map} object.
-	 */
-	public boolean isMap() {
-		return false;
-	}
-
-	/**
-	 * Returns true if this is a null value.
+	 * Returns true if this is a null value (in which
+	 * case {@link #isNode()} must return false).
 	 */
 	public boolean isNull() {
 		return false;
-	}
-
-	/**
-	 * Returns this object as a list, assuming it is one. If it is not,
-	 * then an {@link UnsupportedOperationException} is thrown.
-	 */
-	public List<CDTValue> asList() {
-		throw new UnsupportedOperationException( this + " is not a list" );
-	}
-
-	/**
-	 * Returns this object as a map, assuming it is one. If it is not,
-	 * then an {@link UnsupportedOperationException} is thrown.
-	 */
-	public Map<CDTKey,CDTValue> asMap() {
-		throw new UnsupportedOperationException( this + " is not a map" );
 	}
 
 	@Override
@@ -72,93 +37,48 @@ public abstract class CDTValue extends CDTKey
 			return false;
 		}
 
-		if ( !(other instanceof CDTValue) ) {
-			if ( other instanceof CDTKey && isNode() ) {
-				final CDTKey otherKey = (CDTKey) other;
-				return asNode().equals( otherKey.asNode() );
-			}
-			else {
+		if ( other instanceof CDTValue ) {
+			final CDTValue otherValue = (CDTValue) other;
+
+			if ( otherValue.isNull() ) {
 				return false;
 			}
+
+			if ( isNode() ) {
+				return otherValue.isNode() && asNode().sameValueAs( otherValue.asNode() );
+			}
+
+			throw new IllegalStateException( "unexpected type of CDTValue: " + this.getClass().getName() );
 		}
 
-		final CDTValue otherValue = (CDTValue) other;
+		if ( other instanceof CDTKey && isNode() ) {
+			final CDTKey otherKey = (CDTKey) other;
+			return asNode().sameValueAs( otherKey.asNode() );
+		}
 
-		if ( otherValue.isNull() ) return false;
+		return false;
+	}
 
-		if ( isNode() ) return isEqual( asNode(), otherValue );
+	@Override
+	public String asLexicalForm() {
+		if ( isNull() ) {
+			return "null";
+		}
 
-		if ( isList() ) return isEqual( asList(), otherValue );
-
-		if ( isMap() ) return isEqual( asMap(), otherValue );
+		if ( isNode() ) {
+			final Node n = asNode();
+			if ( CompositeDatatypeList.isListLiteral(n) ) {
+				return n.getLiteralLexicalForm();
+			}
+			else if ( CompositeDatatypeMap.isMapLiteral(n) ) {
+				return n.getLiteralLexicalForm();
+			}
+			else {
+				return NodeFmtLib.strTTL(n);
+			}
+		}
 
 		throw new IllegalStateException( "unexpected type of CDTValue: " + this.getClass().getName() );
-	}
-
-	public static boolean isEqual( final Node n1, final CDTValue v2 ) {
-		if ( CompositeDatatypeList.isListLiteral(n1) ) {
-			final LiteralLabel lit1 = n1.getLiteral();
-
-			if ( v2.isNode() && CompositeDatatypeList.isListLiteral(v2.asNode()) ) {
-				final LiteralLabel lit2 = v2.asNode().getLiteral();
-				return CompositeDatatypeList.type.isEqual(lit1, lit2);
-			}
-
-			if ( v2.isList() ) {
-				return CompositeDatatypeList.getValue(lit1).equals( v2.asList() );
-			}
-
-			return false;
-		}
-
-		if ( CompositeDatatypeMap.isMapLiteral(n1) ) {
-			final LiteralLabel lit1 = n1.getLiteral();
-
-			if ( v2.isNode() && CompositeDatatypeMap.isMapLiteral(v2.asNode()) ) {
-				final LiteralLabel lit2 = v2.asNode().getLiteral();
-				return CompositeDatatypeList.type.isEqual(lit1, lit2);
-			}
-
-			if ( v2.isMap() ) {
-				return CompositeDatatypeMap.getValue(lit1).equals( v2.asMap() );
-			}
-
-			return false;
-		}
-
-		if ( v2.isNode() ) {
-			final NodeValue nv1 = NodeValue.makeNode(n1);
-			final NodeValue nv2 = NodeValue.makeNode( v2.asNode() );
-			return NodeValue.sameAs(nv1, nv2);
-		}
-
-		return false;
-	}
-
-	public static boolean isEqual( final List<CDTValue> list1, final CDTValue v2 ) {
-		if ( v2.isNode() && CompositeDatatypeList.isListLiteral(v2.asNode()) ) {
-			final LiteralLabel lit2 = v2.asNode().getLiteral();
-			return CompositeDatatypeList.getValue(lit2).equals(list1);
-		}
-
-		if ( v2.isList() ) {
-			return v2.asList().equals(list1);
-		}
-
-		return false;
-	}
-
-	public static boolean isEqual( final Map<CDTKey,CDTValue> map1, final CDTValue v2 ) {
-		if ( v2.isNode() && CompositeDatatypeMap.isMapLiteral(v2.asNode()) ) {
-			final LiteralLabel lit2 = v2.asNode().getLiteral();
-			return CompositeDatatypeMap.getValue(lit2).equals(map1);
-		}
-
-		if ( v2.isMap() ) {
-			return v2.asMap().equals(map1);
-		}
-
-		return false;
 	}
 
 }

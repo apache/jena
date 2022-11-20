@@ -76,11 +76,11 @@ public class ParserForCDTLiterals
 				final CDTValue v = list.get(i);
 				if ( v.isNode() ) {
 					final Node vn = v.asNode();
-					if ( CompositeDatatypeList.isListLiteral(vn) ) {
+					if ( CompositeDatatypeList.isListLiteral(vn) && !(vn.getLiteral() instanceof LiteralLabelForList) ) {
 						final List<CDTValue> subList = parseListLiteral(vn.getLiteralLexicalForm(), recursive);
 						list.set( i, CDTFactory.createValue(subList) );
 					}
-					else if ( CompositeDatatypeMap.isMapLiteral(vn) ) {
+					else if ( CompositeDatatypeMap.isMapLiteral(vn) && !(vn.getLiteral() instanceof LiteralLabelForMap) ) {
 						final Map<CDTKey,CDTValue> subMap = parseMapLiteral(vn.getLiteralLexicalForm(), recursive);
 						list.set( i, CDTFactory.createValue(subMap) );
 					}
@@ -134,11 +134,11 @@ public class ParserForCDTLiterals
 				final CDTValue v = map.get(key);
 				if ( v.isNode() ) {
 					final Node vn = v.asNode();
-					if ( CompositeDatatypeList.isListLiteral(vn) ) {
+					if ( CompositeDatatypeList.isListLiteral(vn) && !(vn.getLiteral() instanceof LiteralLabelForList) ) {
 						final List<CDTValue> subList = parseListLiteral(vn.getLiteralLexicalForm(), recursive);
 						map.put( key, CDTFactory.createValue(subList) );
 					}
-					else if ( CompositeDatatypeMap.isMapLiteral(vn) ) {
+					else if ( CompositeDatatypeMap.isMapLiteral(vn) && !(vn.getLiteral() instanceof LiteralLabelForMap) ) {
 						final Map<CDTKey,CDTValue> subMap = parseMapLiteral(vn.getLiteralLexicalForm(), recursive);
 						map.put( key, CDTFactory.createValue(subMap) );
 					}

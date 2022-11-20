@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.impl.LiteralLabel;
-import org.apache.jena.riot.out.NodeFmtLib;
 
 public class CompositeDatatypeMap extends CompositeDatatypeBase
 {
@@ -54,23 +53,9 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase
 	}
 
 	public static void unparseMapEntry( final Map.Entry<CDTKey,CDTValue> entry, final StringBuilder sb ) {
-		if ( entry.getKey().isNode() )
-			sb.append( NodeFmtLib.strTTL( entry.getKey().asNode() ) );
-		else
-			throw new UnsupportedOperationException( "unexpected map key: " + entry.getKey().getClass().getName() );
-
+		sb.append( entry.getKey().asLexicalForm() );
 		sb.append(" : ");
-
-		if ( entry.getValue().isNode() )
-			sb.append( NodeFmtLib.strTTL( entry.getValue().asNode() ) );
-		else if ( entry.getValue().isList() )
-			sb.append( CompositeDatatypeList.unparseList( entry.getValue().asList() ) );
-		else if ( entry.getValue().isMap() )
-			sb.append( unparseMap( entry.getValue().asMap() ) );
-		else if ( entry.getValue().isNull() )
-			sb.append( "null" );
-		else
-			throw new UnsupportedOperationException( "unexpected list element: " + entry.getValue().getClass().getName() );
+		sb.append( entry.getValue().asLexicalForm() );
 	}
 
 	@Override
@@ -172,7 +157,7 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase
 		return map1.equals(map2);
 	}
 
-	public static Map<CDTKey,CDTValue> getValue( final LiteralLabel lit ) {
+	public static Map<CDTKey,CDTValue> getValue( final LiteralLabel lit ) throws DatatypeFormatException {
 		if ( lit instanceof LiteralLabelForMap ) {
 			return ( (LiteralLabelForMap) lit ).getValue();
 		}

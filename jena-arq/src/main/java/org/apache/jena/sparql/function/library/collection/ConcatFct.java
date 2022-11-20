@@ -21,6 +21,14 @@ public class ConcatFct extends FunctionBase2
 		final List<CDTValue> list1 = getInputList(v1);
 		final List<CDTValue> list2 = getInputList(v2);
 
+		if ( list1.isEmpty() ) {
+			return v2;
+		}
+
+		if ( list2.isEmpty() ) {
+			return v1;
+		}
+
 		final List<CDTValue> result = new ArrayList<>();
 		result.addAll(list1);
 		result.addAll(list2);
@@ -33,22 +41,11 @@ public class ConcatFct extends FunctionBase2
 	protected List<CDTValue> getInputList( final NodeValue nv ) {
 		final Node n = nv.asNode();
 
-		if ( ! n.isLiteral() )
-			throw new ExprEvalException("Not a literal: " + nv);
+		if ( ! CompositeDatatypeList.isListLiteral(n) )
+			throw new ExprEvalException("Not a cdt:List literal: " + nv);
 
 		try {
-			final LiteralLabel lit = n.getLiteral();
-			final String datatypeURI = n.getLiteralDatatypeURI();
-			if ( lit instanceof LiteralLabelForList ) {
-				return ( (LiteralLabelForList) lit ).getValue();
-			}
-			else if ( datatypeURI.equals(CompositeDatatypeList.uri) ) {
-				final String lex = lit.getLexicalForm();
-				return CompositeDatatypeList.parseList(lex);
-			}
-			else {
-				throw new ExprEvalException("Literal with wrong datatype: " + nv);
-			}
+			return CompositeDatatypeList.getValue( n.getLiteral() );
 		}
 		catch ( final DatatypeFormatException ex ) {
 			throw new ExprEvalException("Literal with incorrect lexical form: " + nv, ex);
