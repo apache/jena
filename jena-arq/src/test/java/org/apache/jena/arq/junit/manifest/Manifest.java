@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF ;
@@ -66,7 +65,7 @@ public class Manifest
     }
 
     private Manifest(String fn) {
-        filename = IRILib.filenameToIRI(fn) ;
+        filename = fn;
         manifest = RDFDataMgr.loadModel(filename) ;
         parseManifest() ;
         parseIncludes() ;
