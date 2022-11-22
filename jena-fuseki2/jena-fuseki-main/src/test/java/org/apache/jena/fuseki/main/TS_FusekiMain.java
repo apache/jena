@@ -46,6 +46,8 @@ import org.junit.runners.Suite.SuiteClasses;
   , TestQuery.class
   , TestSPARQLProtocol.class
 
+  , TestPatchFuseki.class
+
   // Test ping.
   , TestMetrics.class
   , TestFusekiShaclValidation.class

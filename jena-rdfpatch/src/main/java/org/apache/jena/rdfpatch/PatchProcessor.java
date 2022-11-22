@@ -16,26 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.assembler;
+package org.apache.jena.rdfpatch;
 
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.ResourceFactory ;
-
-public class Vocab
-{
-    public static Resource type(String namespace, String localName)
-    { 
-        return ResourceFactory.createResource(namespace+localName) ;
-    }
-    
-    public static Resource resource(String namespace, String localName)
-    {
-        return ResourceFactory.createResource(namespace+localName) ;
-    }
-
-    public static Property property(String namespace, String localName)
-    {
-        return ResourceFactory.createProperty(namespace+localName) ;
-    }
+public interface PatchProcessor {
+    public void apply(RDFChanges destination);
 }

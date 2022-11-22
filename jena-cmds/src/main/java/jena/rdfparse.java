@@ -18,12 +18,12 @@
 
 package jena;
 
-/** @deprecated Use "riot" or the original command is available as "rdfxmlparse"; */
+/** @deprecated Use "riot" or the original command renamed "rdfxml"; */
 @Deprecated
 public class rdfparse {
 
 	public static void main( String... args ) throws Exception {
-	    System.err.println("Use \"riot\" or the original command is available as \"rdfxmlparse\"");
+	    System.err.println("Use \"riot\" or the original command which is available as \"rdfxml\"");
 	    System.exit(1);
 	}
 }

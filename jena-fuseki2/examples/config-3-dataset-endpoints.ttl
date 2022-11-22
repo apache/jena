@@ -26,6 +26,7 @@ PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
     fuseki:endpoint [ fuseki:operation fuseki:gsp-r ;  ] ;
     fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ; ] ; 
     fuseki:endpoint [ fuseki:operation fuseki:upload ; ] ; 
+    fuseki:endpoint [ fuseki:operation fuseki:patch ; ] ; 
     fuseki:dataset :dataset ;
     .
 

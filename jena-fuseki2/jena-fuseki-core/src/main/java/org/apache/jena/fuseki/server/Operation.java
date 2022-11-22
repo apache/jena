@@ -83,6 +83,7 @@ public class Operation {
 
     public static final Operation Shacl    = alloc(FusekiVocab.opShacl.asNode(),  "SHACL",  "SHACL Validation");
     public static final Operation Upload   = alloc(FusekiVocab.opUpload.asNode(), "upload", "File Upload");
+    public static final Operation Patch    = alloc(FusekiVocab.opPatch.asNode(),  "patch", "RDF Patch");
 
     public static final Operation NoOp     = alloc(FusekiVocab.opNoOp.asNode(),   "no-op",  "No Op");
     static {

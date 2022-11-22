@@ -16,25 +16,27 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.assembler;
+package org.apache.jena.rdfpatch.filelog;
 
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdfpatch.system.InitPatch;
+import org.apache.jena.sys.JenaSubsystemLifecycle;
+import org.apache.jena.sys.JenaSystem;
 
-public class Vocab {
-    
-    private Vocab() {}
-    
-    public static Resource type(String namespace, String localName) {
-        return ResourceFactory.createResource(namespace + localName);
+public class InitPatchFileLog implements JenaSubsystemLifecycle {
+
+    public static int level = InitPatch.level+2;
+
+    @Override
+    public void start() {
+        JenaSystem.logLifecycle("filePatchIdx.init - start");
+        VocabPatch.init();
+        JenaSystem.logLifecycle("filePatchIdx.init - finish");
     }
 
-    public static Resource resource(String namespace, String localName) {
-        return ResourceFactory.createResource(namespace + localName);
-    }
+    @Override
+    public void stop() {}
 
-    public static Property property(String namespace, String localName) {
-        return ResourceFactory.createProperty(namespace + localName);
-    }
+    @Override
+    public int level() { return level ; }
+
 }

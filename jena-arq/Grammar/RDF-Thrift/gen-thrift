@@ -23,3 +23,11 @@ do
     perl -i.bak -p -e 's/^\@SuppressWarnings.*$/\@SuppressWarnings("all")/' $f
     rm -f $f.bak
 done
+
+## PatchTxn.java
+F="$PKG/PatchTxn.java"
+if [ -e "$F" ]
+then
+    sed -e 's/public int getValue/@Override public int getValue/' < $F > F 
+    mv F $F
+fi

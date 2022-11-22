@@ -64,6 +64,12 @@
     </dependency>
     -->
 
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-rdfpatch</artifactId>
+      <version>4.7.0-SNAPSHOT</version>
+    </dependency>
+
     <!-- Copied from apache-jena-libs
          to avoid <type>pom</type>
     -->
