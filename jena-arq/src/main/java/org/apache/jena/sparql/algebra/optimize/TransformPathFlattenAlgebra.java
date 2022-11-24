@@ -33,15 +33,28 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarAlloc ;
 import org.apache.jena.sparql.path.* ;
 
-/** The path transformation step exactly as per the SPARQL 1.1 spec.
- *  i.e. joins triples rather creating BGPs.
- *  It does not produce very nice execution structures so ARQ uses
- *  a functional equivalent, but different, transformation.
+/**
+ *  The path transformation step mostly per the SPARQL 1.1 spec with some enhancement e.g. expanding alternative paths
+ *  into unions.
+ *  <p>
+ *  It does not necessarily produce very nice execution structures so ARQ uses a functionally equivalent, but different,
+ *  transformation, see {@link TransformPathFlattern}, although that transformation covers fewer cases than this.  Some
+ *  of the rough edges of this transform are however smoothed out by subsequent application of other transforms e.g.
+ *  {@link TransformMergeBGPs} in the standard optimiser (see {@link OptimizerStd})
+ *  </p>
+ *  <p>
+ *  However, for users who are using property paths in their queries heavily there may be benefits to using this
+ *  transform over the default one.  The {@link org.apache.jena.query.ARQ#optPathFlattenAlgebra} symbol can be set in
+ *  an ARQ context to enable this transform in preference to the default transform.
+ *  </p>
  */
-public class TransformPathFlatternStd extends TransformCopy {
+public class TransformPathFlattenAlgebra extends TransformCopy {
     private static VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker + "Q");
 
-    public TransformPathFlatternStd() {}
+    /** Testing use only. */
+    public static void resetForTest() {  varAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker + "Q"); }
+
+    public TransformPathFlattenAlgebra() {}
 
     @Override
     public Op transform(OpPath opPath) {
@@ -131,7 +144,7 @@ public class TransformPathFlatternStd extends TransformCopy {
             }
 
             if ( !backwards.isEmpty() ) {
-                // Could reverse here.
+                // TODO Could reverse here.
                 P_NegPropSet pBwd = new P_NegPropSet();
                 for ( P_Path0 p : backwards )
                     pBwd.add(p);
@@ -151,10 +164,53 @@ public class TransformPathFlatternStd extends TransformCopy {
             PathTransform pt = new PathTransform(object, subject);
             inversePath.getSubPath().visit(pt);
             result = pt.getResult();
+            if (result == null) {
+                // Further transform of the sub-path was not possible BUT can still compile out the inverse
+                result = make(object, inversePath.getSubPath(), subject);
+            }
         }
 
         @Override
         public void visit(P_Mod pathMod) {
+            if (pathMod.isFixedLength() && pathMod.getFixedLength() > 0) {
+                // Treat as a fixed length path and convert that way instead
+                Path p = PathFactory.pathFixedLength(pathMod.getSubPath(), pathMod.getFixedLength());
+                Op op = transformPath(null, subject, p, object);
+                result = op;
+                return;
+            }
+
+            if (pathMod.getMin() < 0 || pathMod.getMax() < 0)
+            {
+                // Handle :p{N,}
+                if (pathMod.getMin() > 0) {
+                    // Handles :p{N,}
+                    Node v = varAlloc.allocVar();
+                    if (!subject.isVariable() || object.isVariable()) {
+                        Path p1 = PathFactory.pathFixedLength(pathMod.getSubPath(), pathMod.getMin());
+                        Path p2 = PathFactory.pathZeroOrMoreN(pathMod.getSubPath());
+                        Op op1 = transformPath(null, subject, p1, v);
+                        Op op2 = transformPath(null, v, p2, object);
+                        result = OpSequence.create(op1, op2);
+                    } else {
+                        Path p1 = PathFactory.pathZeroOrMoreN(pathMod.getSubPath());
+                        Path p2 = PathFactory.pathFixedLength(pathMod.getSubPath(), pathMod.getMin());
+                        Op op1 = transformPath(null, subject, p1, v);
+                        Op op2 = transformPath(null, v, p2, object);
+                        result = OpSequence.create(op2, op1);
+                    }
+                    return;
+                }
+
+                // For :p{,M} we don't do anything currently
+                // Could potentially expand into a union of all paths up to length M (plus 0 length) but not clear
+                // that would actually improve performance
+                result = null;
+                return;
+            }
+
+            // General expansion of p{N,M} into a Union of paths of each fixed length between N and M
+            // We've already handled the cases of N==M and either N or M being undefined prior to this check
             if ( pathMod.getMin() > pathMod.getMax() )
                 throw new ARQException("Bad path: " + pathMod);
 

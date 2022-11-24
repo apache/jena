@@ -345,9 +345,17 @@ public class ARQ
     /**
      *  Context key controlling whether the main query engine flattens simple paths
      *  (e.g. {@code ?x :p/:q ?z =&gt; ?x :p ?.0 . ?.0 ?q ?z})
-     *  <p>Default is "true"
+     *  <p>Default is "true"</p>
      */
     public static final Symbol optPathFlatten = SystemARQ.allocSymbol("optPathFlatten");
+
+    /**
+     * Context key controlling whether the main query engine does more extensive property path flattening that involves
+     * more in-depth manipulation of the SPARQL algebra. This must be explicitly enabled and is only used if
+     * {@link #optPathFlatten} is also enabled (which it is by default).
+     * <p>Default is {@code false}</p>
+     */
+    public static final Symbol optPathFlattenAlgebra = SystemARQ.allocSymbol("optPathFlattenAlgebra");
 
     /**
      *  Context key controlling whether the main query engine moves filters to the "best" place.
