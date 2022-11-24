@@ -95,8 +95,9 @@ import org.apache.jena.shex.sys.ValidationContext;
                     break;
                 }
             }
-            // This partition works.
-            if ( success )
+
+            // If this partition satisfies the nested expressions, test SemActs.
+            if ( success && eachOf.testSemanticActions(vCxt, matchables) )
                 return true;
         }
         return false;

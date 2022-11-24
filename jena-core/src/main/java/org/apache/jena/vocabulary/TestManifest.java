@@ -39,7 +39,7 @@ public class TestManifest {
     /** <p>The namespace of the vocabulary as a resource</p> */
     public static final Resource NAMESPACE = m_model.createResource( NS );
     
-    /** <p>The test statusThe expected outcome</p> */
+    /** <p>The expected outcome</p> */
     public static final Property result = m_model.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result" );
     
     /** <p>Action to perform</p> */

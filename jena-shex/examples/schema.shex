@@ -12,4 +12,4 @@ START = @<#shape2>
 
 <#shape2> IRI {
    :property [123 456] ;
-   }
+}

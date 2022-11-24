@@ -18,6 +18,7 @@
 
 package org.apache.jena.shex.expressions;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -53,8 +54,8 @@ public class TripleConstraint extends TripleExpression {
     private final int min;
     private final int max;
 
-    public TripleConstraint(Node label, Node predicate, boolean reverse, ShapeExpression valueExpr, Cardinality cardinality) {
-        super();
+    public TripleConstraint(Node label, Node predicate, boolean reverse, ShapeExpression valueExpr, Cardinality cardinality, List<SemAct> semActs) {
+        super(semActs);
         this.label = label;
         this.predicate = predicate;
         this.reverse = reverse;

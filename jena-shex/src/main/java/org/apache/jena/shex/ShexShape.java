@@ -47,7 +47,8 @@ public class ShexShape {
     public boolean satisfies(ValidationContext vCxt, Node data) {
         vCxt.startValidate(this, data);
         try {
-            return shExpression.satisfies(vCxt, data);
+            return shExpression.satisfies(vCxt, data) &&
+                    shExpression.testShapeExprSemanticActions(vCxt, data);
         } finally {
             vCxt.finishValidate(this, data);
         }

@@ -18,6 +18,7 @@
 
 package org.apache.jena.shex.expressions;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -39,11 +40,12 @@ public class ShapeNodeConstraint extends ShapeExpression {
 
     private final NodeConstraint nodeConstraint;
 
-    public ShapeNodeConstraint(NodeConstraint nodeConstraint) {
-        this(null, Objects.requireNonNull(nodeConstraint, "NodeConstraint"));
+    public ShapeNodeConstraint(NodeConstraint nodeConstraint, List<SemAct> semActs) {
+        this(null, Objects.requireNonNull(nodeConstraint, "NodeConstraint"), semActs);
     }
 
-    private ShapeNodeConstraint(ShapeExpression shapeExpression, NodeConstraint nodeConstraint) {
+    private ShapeNodeConstraint(ShapeExpression shapeExpression, NodeConstraint nodeConstraint, List<SemAct> semActs) {
+        super(semActs);
         this.nodeConstraint = nodeConstraint;
 
     }

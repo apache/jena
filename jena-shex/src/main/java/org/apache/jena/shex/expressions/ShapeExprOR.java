@@ -41,6 +41,7 @@ public class ShapeExprOR extends ShapeExpression {
     private List<ShapeExpression> shapeExpressions;
 
     private ShapeExprOR(List<ShapeExpression> expressions) {
+        super(null);
         this.shapeExpressions = expressions;
     }
 
@@ -53,7 +54,7 @@ public class ShapeExprOR extends ShapeExpression {
     public boolean satisfies(ValidationContext vCxt, Node data) {
         // We need to ignore validation failures from expressions - we need to find one success.
         for ( ShapeExpression shExpr : shapeExpressions ) {
-            ValidationContext vCxt2 = ValidationContext.create(vCxt);
+            ValidationContext vCxt2 = vCxt.create();
             boolean innerSatisfies = shExpr.satisfies(vCxt2, data);
             if ( innerSatisfies )
                 return true;

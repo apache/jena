@@ -29,7 +29,9 @@ import org.apache.jena.shex.sys.ValidationContext;
  */
 public class ShapeExprTrue extends ShapeExpression {
 
-    public ShapeExprTrue(int x) {}
+    public ShapeExprTrue(int x) {
+        super(null);
+    }
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {

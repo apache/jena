@@ -20,12 +20,18 @@ package org.apache.jena.shex;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.shex.semact.SemanticActionPlugin;
 import org.apache.jena.shex.sys.SysShex;
+
+import java.util.Collection;
 
 public interface ShexValidator {
 
     /** Return the current system-wide {@code ShexValidator}. */
     public static ShexValidator get() { return SysShex.get();}
+    public static ShexValidator getNew(Collection<SemanticActionPlugin> semanticActionPlugins) {
+        return SysShex.getNew(semanticActionPlugins);
+    }
 
     /** Validate data using a collection of shapes and a shape map */
     public ShexReport validate(Graph graph, ShexSchema shapes, ShapeMap shapeMap);

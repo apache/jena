@@ -30,7 +30,7 @@ public class TripleExprRef extends TripleExpression {
     private Node ref;
 
     public TripleExprRef(Node node) {
-        super();
+        super(null);
         this.ref = node;
     }
 

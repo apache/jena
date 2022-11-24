@@ -18,50 +18,48 @@
 
 package org.apache.jena.shex.expressions;
 
-import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.graph.Node;
-import org.apache.jena.riot.out.NodeFormatter;
-import org.apache.jena.shex.sys.ValidationContext;
+import java.util.Objects;
 
-public class ShapeExprExternal extends ShapeExpression {
+public class SemAct {
+    private final String iri;
+    private final String code;
 
-    public ShapeExprExternal() {
-        super(null);
+    public SemAct(String iri, String code) {
+        this.iri = iri;
+        this.code = code;
     }
 
-    @Override
-    public boolean satisfies(ValidationContext vCxt, Node data) {
-        return false;
+    public String getIri() {
+        return iri;
     }
 
-    @Override
-    public void print(IndentedWriter out, NodeFormatter nFmt) {
-        out.println("EXTERNAL");
+    public String getCode() {
+        return code;
     }
 
-    @Override
-    public void visit(ShapeExprVisitor visitor) {
-        visitor.visit(this);
+    static String semActStr(String iri, String code) {
+        return String.format("%%<%s>{%s%%}", iri, code == null ? "" : code);
     }
 
     @Override
     public String toString() {
-        return "ShapeExprExternal []";
+        return semActStr(iri, code);
     }
 
     @Override
     public int hashCode() {
-        return ShexConst.hashShExprExternal;
+        return Objects.hash(code, iri);
     }
 
     @Override
-    public  boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if ( this == obj )
             return true;
         if ( obj == null )
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        return true;
+        SemAct other = (SemAct)obj;
+        return Objects.equals(iri, other.iri) && Objects.equals(code, other.code);
     }
 }
