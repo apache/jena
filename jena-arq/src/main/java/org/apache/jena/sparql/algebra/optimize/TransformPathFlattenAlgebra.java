@@ -38,7 +38,7 @@ import org.apache.jena.sparql.path.* ;
  *  into unions.
  *  <p>
  *  It does not necessarily produce very nice execution structures so ARQ uses a functionally equivalent, but different,
- *  transformation, see {@link TransformPathFlattern}, although that transformation covers fewer cases than this.  Some
+ *  transformation, see {@link TransformPathFlatten}, although that transformation covers fewer cases than this.  Some
  *  of the rough edges of this transform are however smoothed out by subsequent application of other transforms e.g.
  *  {@link TransformMergeBGPs} in the standard optimiser (see {@link OptimizerStd})
  *  </p>

@@ -74,7 +74,7 @@ public class OptimizerStd implements Rewrite
             if (context.isTrue(ARQ.optPathFlattenAlgebra)) {
                 op = apply("Path flattening (algebra)", new TransformPathFlattenAlgebra(), op);
             } else {
-                op = apply("Path flattening", new TransformPathFlattern(), op);
+                op = apply("Path flattening", new TransformPathFlatten(), op);
             }
             // and merge adjacent BGPs (part 1)
             if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )

@@ -41,7 +41,7 @@ import org.junit.Test;
 public class TestTransformPathFlatten {
     private static String pre = "(prefix ((: <http://example/>))";
     private static String post =  ")";
-    
+
     private static Prologue prologue;
 
     /**
@@ -61,13 +61,13 @@ public class TestTransformPathFlatten {
         PathCompiler.resetForTest();
         TransformPathFlattenAlgebra.resetForTest();
     }
-    
+
     @Test public void pathFlatten_00() {
         Op op1 = path(":x0", ":p0", ":T0");
         Op op2 = op("(bgp (triple :x0 :p0 :T0))");
         testDefaultTransform(op1, op2);
     }
-    
+
     @Test public void pathFlatten_01() {
         Op op1 = path(":x1", ":q1/:p1*", ":T1");
         Op op2 = op("(sequence"
@@ -96,7 +96,7 @@ public class TestTransformPathFlatten {
         context.set(ARQ.optPathFlattenAlgebra, true);
         testOptimise(op1, op2, context);
     }
-    
+
     @Test public void pathFlatten_02() {
         Op op1 = path("?x", ":q1/:p1*", ":T1");
         // JENA-1918 : order of sequence is grounded first.
@@ -129,7 +129,7 @@ public class TestTransformPathFlatten {
         testOptimise(op1, op2, context);
     }
 
-    @Test public void pathFlatten_10() { 
+    @Test public void pathFlatten_10() {
         Op op1 = path("?x", ":p1{2}", ":T1");
         // JENA-1918 : order of sequence is grounded first.
         Op op2 = op("(bgp"
@@ -140,7 +140,7 @@ public class TestTransformPathFlatten {
         testDefaultTransform(op1, op2);
     }
 
-    @Test public void pathFlatten_11() { 
+    @Test public void pathFlatten_11() {
         Op op1 = path("?x", ":p1{2,}", ":T1");
         Op op2 = op
             ("(sequence"
@@ -444,21 +444,21 @@ public class TestTransformPathFlatten {
         Op op1 = path(":T1", ":p{3,0}", "?x");
         testAlgebraTransform(op1, null);
     }
-    
+
     private static Op path(String s, String pathStr, String o) {
         Path path = PathParser.parse(pathStr, prologue);
         TriplePath tp = new TriplePath(SSE.parseNode(s), path, SSE.parseNode(o));
         return new OpPath(tp);
     }
-    
+
     private static Op op(String...opStr) {
         String s = strjoinNL(opStr);
         String input = pre + s + post;
         return SSE.parseOp(input);
     }
-    
+
     private static void testDefaultTransform(Op opInput, Op opExpected) {
-        testPathTransform(opInput, opExpected, new TransformPathFlattern());
+        testPathTransform(opInput, opExpected, new TransformPathFlatten());
     }
 
     /**
