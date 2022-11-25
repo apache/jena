@@ -312,24 +312,55 @@ public class G {
 
     // DISTINCT means these are space using.
 
+    /** @deprecated Use {@link #iterSubjects(Graph)} */
+    @Deprecated public static Iterator<Node> listSubjects(Graph graph) { return iterSubjects(graph); }
+
+    /** @deprecated Use {@link #iterPredicates(Graph)} */
+    @Deprecated public static Iterator<Node> listPredicates(Graph graph) { return iterPredicates(graph); }
+
+    /** @deprecated Use {@link #iterObjects(Graph)} */
+    @Deprecated public static Iterator<Node> listObjects(Graph graph) { return iterObjects(graph); }
+
     /** List the subjects in a graph (no duplicates) */
-    public static Iterator<Node> listSubjects(Graph graph) {
+    public static Iterator<Node> iterSubjects(Graph graph) {
         Objects.requireNonNull(graph, "graph");
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY);
         return Iter.iter(iter).map(Triple::getSubject).distinct();
     }
 
     /** List the predicates in a graph (no duplicates) */
-    public static Iterator<Node> listPredicates(Graph graph) {
+    public static Iterator<Node> iterPredicates(Graph graph) {
         Objects.requireNonNull(graph, "graph");
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY);
         return Iter.iter(iter).map(Triple::getPredicate).distinct();
     }
 
     /** List the objects in a graph (no duplicates) */
-    public static Iterator<Node> listObjects(Graph graph) {
+    public static Iterator<Node> iterObjects(Graph graph) {
         Objects.requireNonNull(graph, "graph");
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY);
+        return Iter.iter(iter).map(Triple::getObject).distinct();
+    }
+
+    /**
+     * List the subjects of a predicate in a graph (no duplicates)
+     * <p>
+     * Use {@code iterPO(predicate, null)} for "with duplicates."
+     */
+    public static Iterator<Node> iterSubjectsOfPredicate(Graph graph, Node predicate) {
+        Objects.requireNonNull(graph, "graph");
+        ExtendedIterator<Triple> iter = graph.find(Node.ANY, predicate, Node.ANY);
+        return Iter.iter(iter).map(Triple::getSubject).distinct();
+    }
+
+    /**
+     * List the objects in a graph (no duplicates)
+     * <p>
+     * Use {@code iterSP(null, predicate)} for "with duplicates."
+     */
+    public static Iterator<Node> iterObjectsOfPredicate(Graph graph, Node predicate) {
+        Objects.requireNonNull(graph, "graph");
+        ExtendedIterator<Triple> iter = graph.find(Node.ANY, predicate, Node.ANY);
         return Iter.iter(iter).map(Triple::getObject).distinct();
     }
 
