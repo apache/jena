@@ -80,8 +80,8 @@ public class TestTransformPathFlatten {
     @Test public void pathFlatten_01_algebra() {
         Op op1 = path(":x1", ":q1/:p1*", ":T1");
         Op op2 = op("(join"
-                ,"  (triple :x1 :q1 ??Q0)"
-                ,"  (path ??Q0 (path* :p1) :T1))"
+                   ,"  (triple :x1 :q1 ??Q0)"
+                   ,"  (path ??Q0 (path* :p1) :T1))"
         );
         testAlgebraTransform(op1, op2);
     }
@@ -89,8 +89,8 @@ public class TestTransformPathFlatten {
     @Test public void pathFlatten_01b_algebra() {
         Op op1 = path(":x1", ":q1/:p1*", ":T1");
         Op op2 = op("(sequence"
-                ,"  (triple :x1 :q1 ??Q0)"
-                ,"  (path ??Q0 (path* :p1) :T1))"
+                   ,"  (triple :x1 :q1 ??Q0)"
+                   ,"  (path ??Q0 (path* :p1) :T1))"
         );
         Context context = new Context();
         context.set(ARQ.optPathFlattenAlgebra, true);
@@ -111,8 +111,8 @@ public class TestTransformPathFlatten {
         Op op1 = path("?x", ":q1/:p1*", ":T1");
         // JENA-1918 : order of sequence is grounded first.
         Op op2 = op("(join"
-                ,"  (path ??Q0 (path* :p1) :T1)"
-                ,"  (triple ?x :q1 ??Q0))"
+                   ,"  (path ??Q0 (path* :p1) :T1)"
+                   ,"  (triple ?x :q1 ??Q0))"
         );
         testAlgebraTransform(op1, op2);
     }
@@ -121,8 +121,8 @@ public class TestTransformPathFlatten {
         Op op1 = path("?x", ":q1/:p1*", ":T1");
         // JENA-1918 : order of sequence is grounded first.
         Op op2 = op("(sequence"
-                ,"  (path ??Q0 (path* :p1) :T1)"
-                ,"  (triple ?x :q1 ??Q0))"
+                   ,"  (path ??Q0 (path* :p1) :T1)"
+                   ,"  (triple ?x :q1 ??Q0))"
         );
         Context context = new Context();
         context.set(ARQ.optPathFlattenAlgebra, true);

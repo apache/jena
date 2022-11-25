@@ -26,6 +26,7 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
     TestPath.class
     , TestPath2.class
+    , TestPathQuery.class
     , TestPathPF.class
 })
 

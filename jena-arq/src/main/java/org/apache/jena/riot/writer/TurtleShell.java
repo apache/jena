@@ -319,7 +319,7 @@ public abstract class TurtleShell {
         }
 
         private Iterator<Node> listSubjects() {
-            return G.listSubjects(graph) ;
+            return G.iterSubjects(graph);
         }
 
         // ---- Data access
