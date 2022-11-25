@@ -20,6 +20,7 @@ package org.apache.jena.sparql.engine.iterator;
 
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Var ;
@@ -28,7 +29,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 
 /**
- * Yield new bindings, with a fixed parent, with values from an iterator. 
+ * Yield new bindings, with a fixed parent, with values from an iterator.
  */
 public class QueryIterExtendByVar extends QueryIter
 {
@@ -36,10 +37,10 @@ public class QueryIterExtendByVar extends QueryIter
     private Binding binding ;
     private Var var ;
     private Iterator<Node> members ;
-    
+
     public QueryIterExtendByVar(Binding binding, Var var, Iterator<Node> members, ExecutionContext execCxt) {
         super(execCxt);
-        if ( true ) { // Assume not too costly.
+        if ( true ) {
             if ( binding.contains(var) )
                 throw new ARQInternalErrorException("Var " + var + " already set in " + binding);
         }
@@ -61,7 +62,9 @@ public class QueryIterExtendByVar extends QueryIter
     }
 
     @Override
-    protected void closeIterator() {}
+    protected void closeIterator() {
+        Iter.close(members);
+    }
 
     @Override
     protected void requestCancel() {}
