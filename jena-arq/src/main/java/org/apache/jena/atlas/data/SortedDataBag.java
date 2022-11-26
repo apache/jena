@@ -188,7 +188,6 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
     @Override
     public Iterator<E> iterator() {
         preMerge();
-
         return iterator(getSpillFiles().size());
     }
 
@@ -199,7 +198,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
         int memSize = memory.size();
 
         // Constructing an iterator from this class is not thread-safe (just
-        // like all the the other methods)
+        // like all the other methods)
         if ( !finishedAdding && memSize > 1 ) {
             E[] array = (E[])memory.toArray();
             comparator.abortableSort(array); // don't care if we aborted or not
