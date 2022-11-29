@@ -1,5 +1,7 @@
 package org.apache.jena.cdt;
 
+import java.util.Objects;
+
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.rdf.model.impl.Util;
@@ -139,6 +141,23 @@ public abstract class LiteralLabelForCDTs<T> implements LiteralLabel
 		}
 
 		return getValue().equals( other.getValue() );
+	}
+
+	@Override
+	public boolean equals( final Object other ) {
+		if ( this == other ) return true;
+
+		if ( other == null || !(other instanceof LiteralLabel) ) return false;
+
+		final LiteralLabel otherLiteral = (LiteralLabel) other;
+
+		final String otherLang = otherLiteral.language();
+		if ( otherLang != null && ! otherLang.isEmpty() ) return false;
+
+		final String otherDTypeURI = otherLiteral.getDatatypeURI();
+		if ( ! Objects.equals(getDatatypeURI(), otherDTypeURI) ) return false;
+
+		return Objects.equals( getLexicalForm(), otherLiteral.getLexicalForm() );
 	}
 
 	@Override
