@@ -18,14 +18,16 @@
 package org.apache.jena.geosparql.spatial;
 
 import java.lang.invoke.MethodHandles;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Objects;
+
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.SRSInfo;
 import org.apache.jena.geosparql.implementation.UnitsOfMeasure;
 import org.apache.jena.geosparql.implementation.great_circle.GreatCirclePointDistance;
 import org.apache.jena.geosparql.implementation.great_circle.LatLonPoint;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.locationtech.jts.geom.Envelope;
 import org.opengis.geometry.MismatchedDimensionException;
@@ -107,11 +109,28 @@ public class SearchEnvelope {
         return srsInfo;
     }
 
-    public HashSet<Resource> check(SpatialIndex spatialIndex) {
-        HashSet<Resource> features = spatialIndex.query(mainEnvelope);
+
+//    public Collection<Node> check(SpatialIndex spatialIndex) {
+//        Collection<Node> features = spatialIndex.query(mainEnvelope);
+//
+//        if (wrapEnvelope != null) {
+//            Collection<Node> wrapFeatures = spatialIndex.query(wrapEnvelope);
+//            features.addAll(wrapFeatures);
+//        }
+//        return features;
+//    }
+
+    // Check default graph only
+    public Collection<Node> check(SpatialIndex spatialIndex) {
+        return check(spatialIndex, Quad.defaultGraphIRI);
+    }
+
+    // Check within a single graph; null for default graph.
+    public Collection<Node> check(SpatialIndex spatialIndex, Node graph) {
+        Collection<Node> features = spatialIndex.query(mainEnvelope, graph);
 
         if (wrapEnvelope != null) {
-            HashSet<Resource> wrapFeatures = spatialIndex.query(wrapEnvelope);
+            Collection<Node> wrapFeatures = spatialIndex.query(wrapEnvelope, graph);
             features.addAll(wrapFeatures);
         }
         return features;
