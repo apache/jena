@@ -191,6 +191,23 @@ public abstract class LiteralLabelForCDTs<T> implements LiteralLabel
 	}
 
 	@Override
+	public boolean equals( final Object other ) {
+		if ( this == other ) return true;
+
+		if ( other == null || !(other instanceof LiteralLabel) ) return false;
+
+		final LiteralLabel otherLiteral = (LiteralLabel) other;
+
+		final String otherLang = otherLiteral.language();
+		if ( otherLang != null && ! otherLang.isEmpty() ) return false;
+
+		final String otherDTypeURI = otherLiteral.getDatatypeURI();
+		if ( ! Objects.equals(getDatatypeURI(), otherDTypeURI) ) return false;
+
+		return Objects.equals( getLexicalForm(), otherLiteral.getLexicalForm() );
+	}
+
+	@Override
 	public int getDefaultHashcode() {
 		return hash;
 	}
