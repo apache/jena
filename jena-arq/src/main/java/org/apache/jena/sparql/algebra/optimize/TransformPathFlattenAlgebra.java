@@ -172,11 +172,16 @@ public class TransformPathFlattenAlgebra extends TransformCopy {
 
         @Override
         public void visit(P_Mod pathMod) {
-            if (pathMod.isFixedLength() && pathMod.getFixedLength() > 0) {
-                // Treat as a fixed length path and convert that way instead
-                Path p = PathFactory.pathFixedLength(pathMod.getSubPath(), pathMod.getFixedLength());
-                Op op = transformPath(null, subject, p, object);
-                result = op;
+            if (pathMod.isFixedLength()) {
+                if (pathMod.getFixedLength() > 0) {
+                    // Treat as a fixed length path and convert that way instead
+                    Path p = PathFactory.pathFixedLength(pathMod.getSubPath(), pathMod.getFixedLength());
+                    Op op = transformPath(null, subject, p, object);
+                    result = op;
+                } else {
+                    // Don't transform :p{0,0}
+                    result = null;
+                }
                 return;
             }
 
@@ -250,7 +255,12 @@ public class TransformPathFlattenAlgebra extends TransformCopy {
             Var v = varAlloc.allocVar();
             Op op1 = transformPath(null, subject, pathSeq.getLeft(), v);
             Op op2 = transformPath(null, v, pathSeq.getRight(), object);
-            result = join(op1, op2);
+            // Want to evaluate the grounded portion of the path (if any) first
+            if (!subject.isVariable() || object.isVariable()) {
+                result = join(op1, op2);
+            } else {
+                result = join(op2, op1);
+            }
         }
     }
 }
