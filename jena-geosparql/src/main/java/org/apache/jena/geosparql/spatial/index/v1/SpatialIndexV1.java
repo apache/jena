@@ -15,13 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.geosparql.spatial;
+package org.apache.jena.geosparql.spatial.index.v1;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IOX;
@@ -32,12 +40,26 @@ import org.apache.jena.geosparql.implementation.registry.SRSRegistry;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
+import org.apache.jena.geosparql.spatial.ConvertLatLon;
+import org.apache.jena.geosparql.spatial.SpatialIndexException;
+import org.apache.jena.geosparql.spatial.SpatialIndexItem;
+import org.apache.jena.geosparql.spatial.SpatialIndexStorage;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndex;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.ReadWrite;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.NodeIterator;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.ModelUtils;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.locationtech.jts.geom.Envelope;
@@ -55,9 +77,9 @@ import org.slf4j.LoggerFactory;
  * The SpatialIndex is added to the Dataset Context when it is built.<br>
  * QueryRewriteIndex is also stored in the SpatialIndex as its content is
  * Dataset specific.
- *
  */
-public class SpatialIndex {
+@Deprecated /** Superseded by {@link org.apache.jena.geosparql.spatial.index.v2.SpatialIndex}*/
+public class SpatialIndexV1 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -67,8 +89,9 @@ public class SpatialIndex {
     private boolean isBuilt;
     private final STRtree strTree;
     private static final int MINIMUM_CAPACITY = 2;
+    private File location;
 
-    private SpatialIndex() {
+    private SpatialIndexV1() {
         this.strTree = new STRtree(MINIMUM_CAPACITY);
         this.isBuilt = true;
         this.strTree.build();
@@ -81,7 +104,7 @@ public class SpatialIndex {
      * @param capacity
      * @param srsURI
      */
-    public SpatialIndex(int capacity, String srsURI) {
+    public SpatialIndexV1(int capacity, String srsURI) {
         int indexCapacity = capacity < MINIMUM_CAPACITY ? MINIMUM_CAPACITY : capacity;
         this.strTree = new STRtree(indexCapacity);
         this.isBuilt = false;
@@ -95,13 +118,21 @@ public class SpatialIndex {
      * @param srsURI
      * @throws SpatialIndexException
      */
-    public SpatialIndex(Collection<SpatialIndexItem> spatialIndexItems, String srsURI) throws SpatialIndexException {
+    public SpatialIndexV1(Collection<SpatialIndexItem> spatialIndexItems, String srsURI) throws SpatialIndexException {
         int indexCapacity = spatialIndexItems.size() < MINIMUM_CAPACITY ? MINIMUM_CAPACITY : spatialIndexItems.size();
         this.strTree = new STRtree(indexCapacity);
         insertItems(spatialIndexItems);
         this.strTree.build();
         this.isBuilt = true;
         this.srsInfo = SRSRegistry.getSRSInfo(srsURI);
+    }
+
+    public File getLocation() {
+        return location;
+    }
+
+    public void setLocation(File location) {
+        this.location = location;
     }
 
     /**
@@ -147,7 +178,7 @@ public class SpatialIndex {
     public final void insertItems(Collection<SpatialIndexItem> indexItems) throws SpatialIndexException {
 
         for (SpatialIndexItem indexItem : indexItems) {
-            insertItem(indexItem.getEnvelope(), indexItem.getItem());
+            insertItem(indexItem.getEnvelope(), ModelUtils.convertGraphNodeToRDFNode(indexItem.getItem()).asResource());
         }
     }
 
@@ -187,10 +218,10 @@ public class SpatialIndex {
      * @return SpatialIndex contained in the Context.
      * @throws SpatialIndexException
      */
-    public static final SpatialIndex retrieve(ExecutionContext execCxt) throws SpatialIndexException {
+    public static final SpatialIndexV1 retrieve(ExecutionContext execCxt) throws SpatialIndexException {
 
         Context context = execCxt.getContext();
-        SpatialIndex spatialIndex = (SpatialIndex) context.get(SPATIAL_INDEX_SYMBOL, null);
+        SpatialIndexV1 spatialIndex = (SpatialIndexV1) context.get(SPATIAL_INDEX_SYMBOL, null);
 
         if (spatialIndex == null) {
             throw new SpatialIndexException("Dataset Context does not contain SpatialIndex.");
@@ -216,9 +247,10 @@ public class SpatialIndex {
      * @param dataset
      * @param spatialIndex
      */
-    public static final void setSpatialIndex(Dataset dataset, SpatialIndex spatialIndex) {
+    public static final void setSpatialIndex(Dataset dataset, SpatialIndexV1 spatialIndex) {
         Context context = dataset.getContext();
-        context.set(SPATIAL_INDEX_SYMBOL, spatialIndex);
+        SpatialIndex wrapper = new SpatialIndexAdapterV1(spatialIndex);
+        SpatialIndexUtils.setSpatialIndex(context, wrapper);
     }
 
     /**
@@ -232,14 +264,15 @@ public class SpatialIndex {
      * @return SpatialIndex constructed.
      * @throws SpatialIndexException
      */
-    public static SpatialIndex buildSpatialIndex(Dataset dataset, String srsURI, File spatialIndexFile) throws SpatialIndexException {
+    public static SpatialIndexV1 buildSpatialIndex(Dataset dataset, String srsURI, File spatialIndexFile) throws SpatialIndexException {
 
-        SpatialIndex spatialIndex = load(spatialIndexFile);
+        SpatialIndexV1 spatialIndex = load(spatialIndexFile);
+        spatialIndex.setLocation(spatialIndexFile);
 
         if (spatialIndex.isEmpty()) {
             Collection<SpatialIndexItem> spatialIndexItems = findSpatialIndexItems(dataset, srsURI);
             save(spatialIndexFile, spatialIndexItems, srsURI);
-            spatialIndex = new SpatialIndex(spatialIndexItems, srsURI);
+            spatialIndex = new SpatialIndexV1(spatialIndexItems, srsURI);
             spatialIndex.build();
         }
 
@@ -258,9 +291,9 @@ public class SpatialIndex {
      * @return SpatialIndex constructed.
      * @throws SpatialIndexException
      */
-    public static SpatialIndex buildSpatialIndex(Dataset dataset, File spatialIndexFile) throws SpatialIndexException {
+    public static SpatialIndexV1 buildSpatialIndex(Dataset dataset, File spatialIndexFile) throws SpatialIndexException {
         String srsURI = GeoSPARQLOperations.findModeSRS(dataset);
-        SpatialIndex spatialIndex = buildSpatialIndex(dataset, srsURI, spatialIndexFile);
+        SpatialIndexV1 spatialIndex = buildSpatialIndex(dataset, srsURI, spatialIndexFile);
         return spatialIndex;
     }
 
@@ -273,11 +306,11 @@ public class SpatialIndex {
      * @return SpatialIndex constructed.
      * @throws SpatialIndexException
      */
-    public static SpatialIndex buildSpatialIndex(Dataset dataset, String srsURI) throws SpatialIndexException {
+    public static SpatialIndexV1 buildSpatialIndex(Dataset dataset, String srsURI) throws SpatialIndexException {
         LOGGER.info("Building Spatial Index - Started");
 
         Collection<SpatialIndexItem> items = findSpatialIndexItems(dataset, srsURI);
-        SpatialIndex spatialIndex = new SpatialIndex(items, srsURI);
+        SpatialIndexV1 spatialIndex = new SpatialIndexV1(items, srsURI);
         spatialIndex.build();
         setSpatialIndex(dataset, spatialIndex);
         LOGGER.info("Building Spatial Index - Completed");
@@ -321,9 +354,9 @@ public class SpatialIndex {
      * @return SpatialIndex constructed.
      * @throws SpatialIndexException
      */
-    public static SpatialIndex buildSpatialIndex(Dataset dataset) throws SpatialIndexException {
+    public static SpatialIndexV1 buildSpatialIndex(Dataset dataset) throws SpatialIndexException {
         String srsURI = GeoSPARQLOperations.findModeSRS(dataset);
-        SpatialIndex spatialIndex = buildSpatialIndex(dataset, srsURI);
+        SpatialIndexV1 spatialIndex = buildSpatialIndex(dataset, srsURI);
         return spatialIndex;
     }
 
@@ -477,7 +510,7 @@ public class SpatialIndex {
      * @return Built Spatial Index.
      * @throws SpatialIndexException
      */
-    public static final SpatialIndex load(File spatialIndexFile) throws SpatialIndexException {
+    public static final SpatialIndexV1 load(File spatialIndexFile) throws SpatialIndexException {
 
         if (spatialIndexFile != null && spatialIndexFile.exists()) {
             LOGGER.info("Loading Spatial Index - Started: {}", spatialIndexFile.getAbsolutePath());
@@ -485,14 +518,14 @@ public class SpatialIndex {
             try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(spatialIndexFile))) {
                 SpatialIndexStorage storage = (SpatialIndexStorage) in.readObject();
 
-                SpatialIndex spatialIndex = storage.getSpatialIndex();
+                SpatialIndexV1 spatialIndex = storage.getSpatialIndex();
                 LOGGER.info("Loading Spatial Index - Completed: {}", spatialIndexFile.getAbsolutePath());
                 return spatialIndex;
             } catch (ClassNotFoundException | IOException ex) {
                 throw new SpatialIndexException("Loading Exception: " + ex.getMessage(), ex);
             }
         } else {
-            return new SpatialIndex();
+            return new SpatialIndexV1();
         }
     }
 
