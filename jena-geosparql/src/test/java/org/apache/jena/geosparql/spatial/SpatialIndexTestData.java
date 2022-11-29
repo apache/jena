@@ -22,12 +22,17 @@ import org.apache.jena.geosparql.implementation.SRSInfo;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -107,6 +112,10 @@ public class SpatialIndexTestData {
         }
 
         return TEST_DATASET;
+    }
+
+    public static Set<Node> asNodes(Collection<Resource> resources) {
+        return resources.stream().map(Resource::asNode).collect(Collectors.toSet());
     }
 
 }

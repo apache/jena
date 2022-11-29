@@ -44,6 +44,7 @@ import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.geosparql.spatial.ConvertLatLon;
+import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.ReadWrite;
@@ -501,6 +502,11 @@ public class GeoSPARQLOperations {
      * @return SRS URI
      */
     public static final String findModeSRS(Dataset dataset) throws SrsException {
+        // return SRS if set via assembler config
+        if (dataset.getContext().isDefined(SpatialIndex.symSrsUri)) {
+            return dataset.getContext().getAsString(SpatialIndex.symSrsUri);
+        }
+
         LOGGER.info("Find Mode SRS - Started");
         ModeSRS modeSRS = new ModeSRS();
         //Default Model

@@ -18,13 +18,15 @@
 
 package org.apache.jena.sparql.expr;
 
+import org.apache.jena.query.QueryParseException;
+
 /** Exception for an undefined function. */
 
-public class ExprUndefFunction extends ExprEvalException
+public class ExprUndefFunction extends QueryParseException
 {
     private final String fnName;
 
-    public ExprUndefFunction(String msg, String fnName) { super(msg) ; this.fnName = fnName;}
+    public ExprUndefFunction(String msg, String fnName) { super(msg, -1, -1) ; this.fnName = fnName;}
     
     public String getFunctionName() {
         return fnName;

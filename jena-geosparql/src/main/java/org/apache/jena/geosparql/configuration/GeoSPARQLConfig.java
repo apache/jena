@@ -278,6 +278,10 @@ public class GeoSPARQLConfig {
         SpatialIndex.buildSpatialIndex(dataset, spatialIndexFile);
     }
 
+    public static final void setupSpatialIndex(Dataset dataset, File spatialIndexFile, boolean spatialIndexPerGraph) throws SpatialIndexException {
+        SpatialIndex.buildSpatialIndex(dataset, spatialIndexFile, spatialIndexPerGraph);
+    }
+
     /**
      * Setup Spatial Index using Dataset using provided SRS URI.<br>
      * Spatial Index written to file once created.

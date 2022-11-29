@@ -9,6 +9,10 @@
   "scripts": {
     "dev": "vite",
     "serve": "vite preview",
+    "//": [
+      {"prebuild": "pwd"},
+      {"prebuild": "patch -R -F0 -ff -p1 < yasqe.lateral.patch >/dev/null || : ; patch -F0 -ff -p1 < yasqe.lateral.patch" }
+    ],
     "build": "vite build",
     "test:unit": "vitest run --pool=threads --environment jsdom",
     "test:e2e": "run-script-os",

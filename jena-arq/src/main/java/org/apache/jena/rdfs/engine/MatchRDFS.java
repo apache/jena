@@ -21,6 +21,7 @@ package org.apache.jena.rdfs.engine;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.InternalErrorException;
@@ -206,10 +207,12 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
         Set<X> types = subTypes(type);
         // [RDFS] Make these streams?
 
-        accInstances(tuples, types, type);
-        accInstancesRange(tuples, types, type);
-        accInstancesDomain(tuples, types, type);
-        return tuples.stream();
+        return Stream.concat(
+                Stream.concat(
+                        accInstances(tuples, types, type),
+                        accInstancesRange(tuples, types, type)),
+                accInstancesDomain(tuples, types, type))
+                .distinct();
     }
 
     private Stream<T> find_ANY_type_ANY() {
@@ -360,35 +363,56 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
         return stream;
     }
 
-    private void accInstances(Set<T> tuples, Set<X> types, X requestedType) {
-        for ( X type : types ) {
-            Stream<T> stream = sourceFind(ANY, rdfType, type);
-            stream.forEach(triple -> tuples.add(dstCreate(subject(triple), rdfType, requestedType)) );
-        }
+    private Stream<T> accInstances(Set<T> tuples, Set<X> types, X requestedType) {
+        return types.stream()
+                .flatMap(type -> sourceFind(ANY, rdfType, type))
+                .map(triple -> dstCreate(subject(triple), rdfType, requestedType));
+//        return types.stream()
+//                .map(type -> sourceFind(ANY, rdfType, type))
+//                .reduce(Stream::concat)
+//                .orElse(Stream.empty());
     }
 
-    private void accInstancesDomain(Set<T> tuples, Set<X> types, X requestedType) {
-        for ( X type : types ) {
-            Set<X> predicates = setup.getPropertiesByDomain(type);
-            if ( isEmpty(predicates) )
-                continue;
-            predicates.forEach(p -> {
-                Stream<T> stream = sourceFind(ANY, p, ANY);
-                stream.forEach(triple -> tuples.add(dstCreate(subject(triple), rdfType, requestedType)) );
-            });
-        }
+    private Stream<T> accInstancesDomain(Set<T> tuples, Set<X> types, X requestedType) {
+        // collect properties for all types once, then get all subjects of triples with those properties
+        return types.stream()
+                .map(setup::getPropertiesByDomain)
+                .flatMap(Set::stream)
+                .distinct()
+                .flatMap(p -> sourceFind(ANY, p, ANY))
+                .map(triple -> dstCreate(subject(triple), rdfType, requestedType));
+//        Stream<T> fullStream = Stream.empty();
+//        for (X type : types) {
+//            Set<X> predicates = setup.getPropertiesByDomain(type);
+//            if (isEmpty(predicates))
+//                continue;
+//            for (X p : predicates) {
+//                Stream<T> stream = sourceFind(ANY, p, ANY).map(triple -> dstCreate(subject(triple), rdfType, requestedType));
+//                fullStream = Stream.concat(fullStream, stream);
+//            }
+//        }
+//        return fullStream;
     }
 
-    private void accInstancesRange(Set<T> tuples, Set<X> types, X requestedType) {
-        for ( X type : types ) {
-            Set<X> predicates = setup.getPropertiesByRange(type);
-            if ( isEmpty(predicates) )
-                continue;
-            predicates.forEach(p -> {
-                Stream<T> stream = sourceFind(ANY, p, ANY);
-                stream.forEach(triple -> tuples.add(dstCreate(object(triple), rdfType, requestedType)) );
-            });
-        }
+    private Stream<T> accInstancesRange(Set<T> tuples, Set<X> types, X requestedType) {
+        // collect properties for all types once, then get all objects of triples with those properties
+        return types.stream()
+                .map(setup::getPropertiesByRange)
+                .flatMap(Set::stream)
+                .distinct()
+                .flatMap(p -> sourceFind(ANY, p, ANY))
+                .map(triple -> dstCreate(object(triple), rdfType, requestedType));
+//        Stream<T> fullStream = Stream.empty();
+//        for (X type : types) {
+//            Set<X> predicates = setup.getPropertiesByRange(type);
+//            if (isEmpty(predicates))
+//                continue;
+//            for (X p : predicates) {
+//                Stream<T> stream = sourceFind(ANY, p, ANY).map(triple -> dstCreate(object(triple), rdfType, requestedType));
+//                fullStream = Stream.concat(fullStream, stream);
+//            }
+//        }
+//        return fullStream;
     }
 
     private void accTypes(Set<X> types, X subject) {
@@ -398,20 +422,24 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
 
     private void accTypesDomain(Set<X> types, X X) {
         Stream<T> stream = sourceFind(X, ANY, ANY);
-        stream.forEach(triple -> {
-            X p = predicate(triple);
-            Set<X> x = setup.getDomain(p);
-            types.addAll(x);
-        });
+
+        stream.map(this::predicate)
+                .distinct()
+                .forEach(p -> {
+                    Set<X> x = setup.getDomain(p);
+                    types.addAll(x);
+                });
     }
 
     private void accTypesRange(Set<X> types, X X) {
         Stream<T> stream = sourceFind(ANY, ANY, X);
-        stream.forEach(triple -> {
-            X p = predicate(triple);
-            Set<X> x = setup.getRange(p);
-            types.addAll(x);
-        });
+
+        stream.map(this::predicate)
+                .distinct()
+                .forEach(p -> {
+                    Set<X> x = setup.getRange(p);
+                    types.addAll(x);
+                });
     }
 
     private Set<X> subTypes(Set<X> types) {
