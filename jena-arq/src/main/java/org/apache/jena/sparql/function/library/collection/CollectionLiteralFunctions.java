@@ -10,5 +10,6 @@ public class CollectionLiteralFunctions {
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "concat",  ConcatFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "contains",  ContainsFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "containsTerm",  ContainsTermFct.class );
+		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "get",     GetFct.class );
 	}
 }
