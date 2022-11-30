@@ -13,7 +13,7 @@ import org.apache.jena.sparql.expr.NodeValue;
 public class TailFct extends FunctionBase1List
 {
 	@Override
-	protected NodeValue _exec( final List<CDTValue> list ) {
+	protected NodeValue _exec( final List<CDTValue> list, final NodeValue nvList ) {
 		if ( list.size() == 0 )
 			throw new ExprEvalException("Empty list");
 
