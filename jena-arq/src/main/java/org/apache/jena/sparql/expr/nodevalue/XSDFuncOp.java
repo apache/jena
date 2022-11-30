@@ -1110,8 +1110,6 @@ public class XSDFuncOp
         }
     }
 
-    //public static int compareDatetime(NodeValue nv1, NodeValue nv2)
-
     // --------------------------------
     // Functions on strings
     // http://www.w3.org/TR/xpath-functions/#d1e2222

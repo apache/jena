@@ -630,7 +630,7 @@ public abstract class NodeValue extends ExprNode
 
         // Special case - date/dateTime comparison is affected by timezones and may be
         // indeterminate based on the value of the dateTime/date.
-        // Do this first,
+        // Do this first, so that indeterminate can drop through to a general ordering.
 
         switch (compType)
         {
