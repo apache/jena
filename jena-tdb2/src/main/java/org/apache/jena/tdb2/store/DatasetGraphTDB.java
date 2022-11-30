@@ -20,11 +20,13 @@ package org.apache.jena.tdb2.store;
 
 import java.util.Iterator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.dboe.storage.system.DatasetGraphStorage;
+import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -137,10 +139,13 @@ public class DatasetGraphTDB extends DatasetGraphStorage
         checkNotClosed();
         NodeTupleTable quads = getQuadTable().getNodeTupleTable();
         Iterator<Tuple<NodeId>> x = quads.findAll();
-        // XXX Future: Ensure we scan a G??? index and use distinctAdjacent.
-        // See TupleTable.chooseScanAllIndex
-        Iterator<NodeId> z = Iter.iter(x).map(t -> t.get(0)).distinct();
-        Iterator<Node> r = NodeLib.nodes(quads.getNodeTable(), z);
+        // If we are using a Graph based index i.e. Graph is the first part of the record then we can use a more
+        // efficient distinct implementation that only needs to remember the most recently seen graph name
+        boolean usingGraphBasedIndex = StringUtils.startsWith(quads.getTupleTable().getIndex(0).getName(), "G");
+        Iterator<NodeId> graphNodeIds = Iter.iter(x).map(t -> t.get(0));
+        Iterator<NodeId> distinctGraphNodeIds
+                = usingGraphBasedIndex ? Iter.distinctAdjacent(graphNodeIds) : Iter.distinct(graphNodeIds);
+        Iterator<Node> r = NodeLib.nodes(quads.getNodeTable(), distinctGraphNodeIds);
         return r;
     }
 
