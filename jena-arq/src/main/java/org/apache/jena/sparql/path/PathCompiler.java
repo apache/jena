@@ -21,6 +21,7 @@ package org.apache.jena.sparql.path;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.algebra.optimize.TransformPathFlattenAlgebra;
 import org.apache.jena.sparql.algebra.optimize.TransformPathFlattern;
 import org.apache.jena.sparql.core.PathBlock ;
@@ -181,6 +182,9 @@ public class PathCompiler
                     p2 = PathFactory.pathZeroOrMoreN(pMod.getSubPath()) ;
                 else
                 {
+                    if ( pMod.getMin() > pMod.getMax() )
+                        throw new ARQException("Bad path: " + pMod);
+
                     long len2 = pMod.getMax()-pMod.getMin() ;
                     if ( len2 < 0 ) len2 = 0 ;
                     p2 = PathFactory.pathMod(pMod.getSubPath(),0, len2) ;
