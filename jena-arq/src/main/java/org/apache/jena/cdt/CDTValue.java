@@ -20,6 +20,7 @@ package org.apache.jena.cdt;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFmtLib;
+import org.apache.jena.sparql.expr.ExprEvalException;
 
 public abstract class CDTValue extends CDTKey
 {
@@ -32,16 +33,25 @@ public abstract class CDTValue extends CDTKey
 	}
 
 	@Override
-	public final boolean equals( final Object other ) {
-		if ( isNull() ) {
+	public boolean equals( final Object other ) {
+		try {
+			return sameAs(other);
+		}
+		catch ( final ExprEvalException ex ) {
 			return false;
+		}
+	}
+
+	public boolean sameAs( final Object other ) throws ExprEvalException {
+		if ( isNull() ) {
+			throw new ExprEvalException();
 		}
 
 		if ( other instanceof CDTValue ) {
 			final CDTValue otherValue = (CDTValue) other;
 
 			if ( otherValue.isNull() ) {
-				return false;
+				throw new ExprEvalException();
 			}
 
 			if ( isNode() ) {
@@ -57,6 +67,22 @@ public abstract class CDTValue extends CDTKey
 		}
 
 		return false;
+	}
+
+	public final boolean sameAs( final CDTValue otherValue ) throws ExprEvalException {
+		if ( isNull() ) {
+			throw new ExprEvalException();
+		}
+
+		if ( otherValue.isNull() ) {
+			throw new ExprEvalException();
+		}
+
+		if ( isNode() ) {
+			return otherValue.isNode() && asNode().sameValueAs( otherValue.asNode() );
+		}
+
+		throw new IllegalStateException( "unexpected type of CDTValue: " + this.getClass().getName() );
 	}
 
 	@Override
