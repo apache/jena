@@ -80,6 +80,12 @@ public abstract class CDTValue
 		catch ( final ExprEvalException ex ) {
 			return false;
 		}
+	}
+
+	public boolean sameAs( final Object other ) throws ExprEvalException {
+		if ( isNull() ) {
+			throw new ExprEvalException();
+		}
 
 		if ( v2.isNode() ) {
 			final NodeValue nv1 = NodeValue.makeNode(n1);
