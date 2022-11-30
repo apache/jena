@@ -164,7 +164,21 @@ public class CompositeDatatypeList extends CompositeDatatypeBase
 	public boolean isEqual( final LiteralLabel value1, final LiteralLabel value2 ) {
 		final List<CDTValue> list1 = getValue(value1);
 		final List<CDTValue> list2 = getValue(value2);
-		return list1.equals(list2);
+
+		if ( list1.size() != list2.size() ) return false;
+		if ( list1.isEmpty() ) return true;
+
+		final Iterator<CDTValue> it1 = list1.iterator();
+		final Iterator<CDTValue> it2 = list2.iterator();
+		while ( it1.hasNext() ) {
+			final CDTValue v1 = it1.next();
+			final CDTValue v2 = it2.next();
+			if ( ! v1.sameAs(v2) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public static List<CDTValue> getValue( final LiteralLabel lit ) throws DatatypeFormatException {
