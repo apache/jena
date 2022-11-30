@@ -20,8 +20,8 @@ public abstract class FunctionBase1List extends FunctionBase1
 
 		final List<CDTValue> list = CompositeDatatypeList.getValue( n.getLiteral() );
 
-		return _exec(list);
+		return _exec(list, nv);
 	}
 
-	protected abstract NodeValue _exec( List<CDTValue> list );
+	protected abstract NodeValue _exec( List<CDTValue> list, NodeValue nvList );
 }
