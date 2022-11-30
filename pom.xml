@@ -102,7 +102,6 @@
     <ver.commons-codec>1.15</ver.commons-codec>
     <ver.commons-compress>1.22</ver.commons-compress>
     <ver.commons-collections>4.4</ver.commons-collections>
-    <ver.commons-fileupload>1.4</ver.commons-fileupload>
     <ver.dexxcollection>0.7</ver.dexxcollection>
     <ver.micrometer>1.10.2</ver.micrometer>
 
@@ -372,18 +371,6 @@
          <groupId>org.apache.commons</groupId>
          <artifactId>commons-lang3</artifactId>
          <version>${ver.commonslang3}</version>
-       </dependency>
-
-       <dependency>
-         <groupId>commons-fileupload</groupId>
-         <artifactId>commons-fileupload</artifactId>
-         <version>${ver.commons-fileupload}</version>
-         <exclusions>
-           <exclusion>
-             <groupId>javax.servlet</groupId>
-             <artifactId>servlet-api</artifactId>
-           </exclusion>
-         </exclusions>
        </dependency>
 
        <dependency>
