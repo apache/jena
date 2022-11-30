@@ -9,7 +9,7 @@ import org.apache.jena.sparql.expr.NodeValue;
 public class HeadFct extends FunctionBase1List
 {
 	@Override
-	protected NodeValue _exec( final List<CDTValue> list ) {
+	protected NodeValue _exec( final List<CDTValue> list, final NodeValue nvList ) {
 		if ( list.size() == 0 )
 			throw new ExprEvalException("Empty list");
 
