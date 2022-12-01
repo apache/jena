@@ -44,14 +44,14 @@ public abstract class CDTValue extends CDTKey
 
 	public boolean sameAs( final Object other ) throws ExprEvalException {
 		if ( isNull() ) {
-			throw new ExprEvalException();
+			throw new ExprEvalException("nulls cannot be compared");
 		}
 
 		if ( other instanceof CDTValue ) {
 			final CDTValue otherValue = (CDTValue) other;
 
 			if ( otherValue.isNull() ) {
-				throw new ExprEvalException();
+				throw new ExprEvalException("nulls cannot be compared");
 			}
 
 			if ( isNode() ) {
@@ -71,11 +71,11 @@ public abstract class CDTValue extends CDTKey
 
 	public final boolean sameAs( final CDTValue otherValue ) throws ExprEvalException {
 		if ( isNull() ) {
-			throw new ExprEvalException();
+			throw new ExprEvalException("nulls cannot be compared");
 		}
 
 		if ( otherValue.isNull() ) {
-			throw new ExprEvalException();
+			throw new ExprEvalException("nulls cannot be compared");
 		}
 
 		if ( isNode() ) {

@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.sparql.expr.ExprEvalException;
 
 public class CompositeDatatypeList extends CompositeDatatypeBase
 {
@@ -170,13 +171,19 @@ public class CompositeDatatypeList extends CompositeDatatypeBase
 
 		final Iterator<CDTValue> it1 = list1.iterator();
 		final Iterator<CDTValue> it2 = list2.iterator();
+		boolean errorCaught = false;
 		while ( it1.hasNext() ) {
 			final CDTValue v1 = it1.next();
 			final CDTValue v2 = it2.next();
-			if ( ! v1.sameAs(v2) ) {
-				return false;
+			try {
+				if ( ! v1.sameAs(v2) ) return false;
+			}
+			catch ( final ExprEvalException ex ) {
+				errorCaught = true;
 			}
 		}
+
+		if ( errorCaught ) throw new ExprEvalException("nulls in lists cannot be compared");
 
 		return true;
 	}
