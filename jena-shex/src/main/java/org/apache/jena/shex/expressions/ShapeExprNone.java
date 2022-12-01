@@ -30,7 +30,7 @@ public class ShapeExprNone extends ShapeExpression {
     public static ShapeExpression get() { return instance ; }
 
     private ShapeExprNone() {
-        super(null);
+        super();
     }
 
     @Override

@@ -22,7 +22,6 @@ import java.util.*;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shex.eval.ShapeEval;
 import org.apache.jena.shex.sys.ValidationContext;

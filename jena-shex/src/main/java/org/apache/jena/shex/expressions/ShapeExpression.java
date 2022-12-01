@@ -20,12 +20,10 @@ package org.apache.jena.shex.expressions;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shex.sys.ValidationContext;
 
 import java.util.List;
-import java.util.Set;
 
 public abstract class ShapeExpression implements ShapeElement {
 
@@ -34,6 +32,7 @@ public abstract class ShapeExpression implements ShapeElement {
     public ShapeExpression(List<SemAct> semActs) {
         this.semActs = semActs;
     }
+
     protected ShapeExpression() { this(null); }
 
     public List<SemAct> getSemActs() {

@@ -27,7 +27,7 @@ import org.apache.jena.shex.sys.ValidationContext;
 public class ShapeExprDot extends ShapeExpression {
 
     public ShapeExprDot() {
-        super(null);
+        super();
     }
 
     @Override

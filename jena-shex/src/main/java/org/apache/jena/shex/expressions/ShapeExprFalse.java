@@ -28,7 +28,7 @@ import org.apache.jena.shex.sys.ValidationContext;
 public class ShapeExprFalse extends ShapeExpression {
 
     public ShapeExprFalse() {
-        super(null);
+        super();
     }
 
     @Override

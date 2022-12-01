@@ -30,7 +30,7 @@ import org.apache.jena.shex.sys.ValidationContext;
 public class ShapeExprTrue extends ShapeExpression {
 
     public ShapeExprTrue(int x) {
-        super(null);
+        super();
     }
 
     @Override

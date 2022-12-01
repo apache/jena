@@ -20,10 +20,8 @@ package org.apache.jena.shex.sys;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.shex.Plugin;
 import org.apache.jena.shex.ShexValidator;
 import org.apache.jena.shex.semact.SemanticActionPlugin;
-import org.apache.jena.shex.semact.TestSemanticActionPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +63,7 @@ public class SysShex {
     }
 
     public static ShexValidator getNew(Collection<SemanticActionPlugin> pz) {
-        Map iriToPlugin = new ConcurrentHashMap<>();
+        Map<String, SemanticActionPlugin> iriToPlugin = new ConcurrentHashMap<>();
         pz.forEach(p -> {
             p.getUris().forEach(u -> iriToPlugin.put(u, p));
         });
