@@ -93,7 +93,7 @@ public class LibTestExpr {
     }
 
     private static boolean sameValueSameDatatype(NodeValue nv1, NodeValue nv2) {
-        if ( ! NodeValue.sameAs(nv1, nv2) )
+        if ( ! NodeValue.sameValueAs(nv1, nv2) )
             return false;
         Node n1 = nv1.asNode();
         Node n2 = nv2.asNode();
@@ -124,7 +124,7 @@ public class LibTestExpr {
         NodeValue expected = NodeValue.makeNode(result);
         // Note that we don't test lexical form because we can get mismatches
         // between how things like doubles are expressed
-        if (NodeValue.sameAs(expected, actual))
+        if (NodeValue.sameValueAs(expected, actual))
             return;
         testDouble(exprString, expected.getDouble(), delta);;
     }

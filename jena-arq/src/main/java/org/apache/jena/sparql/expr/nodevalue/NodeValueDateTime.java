@@ -78,7 +78,10 @@ public class NodeValueDateTime extends NodeValue
     public boolean isGDay()         { return XSDgDay.equals(getNode().getLiteralDatatype()) ; }
 
     @Override
-    public XMLGregorianCalendar getDateTime()    { return (XMLGregorianCalendar)datetime.clone() ; }
+    public XMLGregorianCalendar getDateTime() {
+        // Clone - this object is mutable (and is mutated for calculation purposes).
+        return (XMLGregorianCalendar)datetime.clone();
+    }
 
     @Override
     protected Node makeNode()

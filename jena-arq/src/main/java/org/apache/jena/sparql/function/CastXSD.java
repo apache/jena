@@ -272,7 +272,7 @@ public class CastXSD {
         if ( nv.isBoolean() )
             return nv;
         if ( nv.isNumber() ) {
-            if ( NodeValue.sameAs(nv, nvZERO) || NodeValue.sameAs(nv, nvNaN) || NodeValue.sameAs(nv, nvNegZERO) )
+            if ( NodeValue.sameValueAs(nv, nvZERO) || NodeValue.sameValueAs(nv, nvNaN) || NodeValue.sameValueAs(nv, nvNegZERO) )
                 return NodeValue.FALSE;
             return NodeValue.TRUE;
         }

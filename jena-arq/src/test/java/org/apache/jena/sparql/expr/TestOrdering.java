@@ -27,6 +27,9 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.NodeCmp;
 import org.junit.Test;
 
+/**
+ * See also {@link TestComparison} and {@link TestSortOrdering}.
+ */
 public class TestOrdering {
     private NodeValue nvInt2 = NodeValue.makeNodeInteger(2);
     private NodeValue nvInt3 = NodeValue.makeNodeInteger("3");

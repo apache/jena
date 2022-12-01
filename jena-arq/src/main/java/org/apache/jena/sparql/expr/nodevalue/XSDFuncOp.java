@@ -48,7 +48,6 @@ import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.datatypes.xsd.XSDDateTime ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.impl.Util ;
@@ -545,7 +544,7 @@ public class XSDFuncOp
             String formatForOutput = nvFormat.getString() ;
             List<Object> objVals = new ArrayList<>();
             for(NodeValue nvValue:valuesToPrint) {
-                ValueSpaceClassification vlSpClass = nvValue.getValueSpace();
+                ValueSpace vlSpClass = nvValue.getValueSpace();
                 switch (vlSpClass) {
                     case VSPACE_NUM:
                         NumericType type = classifyNumeric("javaSprintf", nvValue);
@@ -1132,118 +1131,75 @@ public class XSDFuncOp
     // works for dates as well because they are implemented as dateTimes on their start point.
 
     public static int compareDateTime(NodeValue nv1, NodeValue nv2) {
+        // XSD Datatypes defines a partial order on dateTimes when comparing with
+        // and without timezone => compareXSDDateTime
+        // F&O defines a total order by applying the context-dependent implicit
+        // timezone => compareDateTimeFO
+        //
+        // Because we're on the web, locale makes less sense so the implicit
+        // timezone is UTC (Z, +00:00)
+        // https://www.w3.org/TR/xpath-functions-3/#comp.datetime
+        //
+        // "Comparison operators on xs:date, xs:gYearMonth and xs:gYear compare their
+        // starting instants. These xs:dateTime values are calculated as described
+        // below."
         if ( SystemARQ.StrictDateTimeFO )
             return compareDateTimeFO(nv1, nv2) ;
-        return compareXSDDateTime(nv1.getDateTime(), nv2.getDateTime()) ;
+        return compareDateTimeXSD(nv1, nv2); //getXMLGregorianCalendarXSD(nv1), getXMLGregorianCalendarXSD(nv2)) ;
     }
 
-    public static int compareDuration(NodeValue nv1, NodeValue nv2) {
-        return compareDuration(nv1.getDuration(), nv2.getDuration()) ;
+    /** Compare two date/times by XSD rules (dateTimes, one with and one without timezone can be indeterminate) */
+    public static int compareDateTimeXSD(NodeValue nv1, NodeValue nv2) {
+
+        XMLGregorianCalendar dt1 = getXMLGregorianCalendarXSD(nv1);
+        XMLGregorianCalendar dt2 = getXMLGregorianCalendarXSD(nv2);
+        int x = compareDateTime(dt1, dt2) ;
+        return x ;
     }
 
     public static final String defaultTimezone = "Z" ;
 
-    /** Strict {@literal F&O} handling of compare date(times).
+    /**
+     * Strict {@literal F&O} handling of compare date(times).
      * But that means applying the "local" timezone if there is no TZ.
      * The data may have come from different timezones to the query.
+     * We use a fixed locale timezone of UTC/00:00.
      */
-    private static int compareDateTimeFO(NodeValue nv1, NodeValue nv2) {
-        XMLGregorianCalendar dt1 = nv1.getDateTime() ;
-        XMLGregorianCalendar dt2 = nv2.getDateTime() ;
-
-        int x = compareXSDDateTime(dt1, dt2) ;
-
-        if ( x == XSDDateTime.INDETERMINATE ) {
-            NodeValue nv3 = (nv1.isDate()) ? fixupDate(nv1) : fixupDateTime(nv1) ;
-            if ( nv3 != null ) {
-                XMLGregorianCalendar dt3 = nv3.getDateTime() ;
-                x = compareXSDDateTime(dt3, dt2) ;
-                if ( x == XSDDateTime.INDETERMINATE )
-                    throw new ARQInternalErrorException("Still get indeterminate comparison") ;
-                return x ;
-            }
-
-            nv3 = (nv2.isDate()) ? fixupDate(nv2) : fixupDateTime(nv2) ;
-            if ( nv3 != null ) {
-                XMLGregorianCalendar dt3 = nv3.getDateTime() ;
-                x = compareXSDDateTime(dt1, dt3) ;
-                if ( x == XSDDateTime.INDETERMINATE )
-                    throw new ARQInternalErrorException("Still get indeterminate comparison") ;
-                return x ;
-            }
-
-            throw new ARQInternalErrorException("Failed to fixup dateTimes") ;
-        }
+    public static int compareDateTimeFO(NodeValue nv1, NodeValue nv2) {
+        XMLGregorianCalendar dt1 = getXMLGregorianCalendarFO(nv1);
+        XMLGregorianCalendar dt2 = getXMLGregorianCalendarFO(nv2);
+        int x = compareDateTime(dt1, dt2) ;
         return x ;
     }
 
-//    // This only differs by some "dateTime" => "date"
-//    // Comparison is done on the dateTime start point of an xsd:date so this code is not needed.
-//    private static int compareDateFO(NodeValue nv1, NodeValue nv2)
-//    {
-//        XMLGregorianCalendar dt1 = nv1.getDateTime() ;
-//        XMLGregorianCalendar dt2 = nv2.getDateTime() ;
-//
-//        int x = compareXSDDateTime(dt1, dt2) ;    // Yes - compareDateTIme
-//        if ( x == XSDDateTime.INDETERMINATE )
-//        {
-//            NodeValue nv3 = fixupDate(nv1) ;
-//            if ( nv3 != null )
-//            {
-//                XMLGregorianCalendar dt3 = nv3.getDateTime() ;
-//                x =  compareXSDDateTime(dt3, dt2) ;
-//                if ( x == XSDDateTime.INDETERMINATE )
-//                    throw new ARQInternalErrorException("Still get indeterminate comparison") ;
-//                return x ;
-//            }
-//
-//            nv3 = fixupDate(nv2) ;
-//            if ( nv3 != null )
-//            {
-//                XMLGregorianCalendar dt3 = nv3.getDateTime() ;
-//                x = compareXSDDateTime(dt1, dt3) ;
-//                if ( x == XSDDateTime.INDETERMINATE )
-//                    throw new ARQInternalErrorException("Still get indeterminate comparison") ;
-//                return x ;
-//            }
-//
-//            throw new ARQInternalErrorException("Failed to fixup dateTimes") ;
-//        }
-//        return x ;
-//    }
+    /** Return a normalized XMLGregorianCalendar appropriate for comparision */
+    private static XMLGregorianCalendar getXMLGregorianCalendarFO(NodeValue nv) {
+        // This is a copy.
+        XMLGregorianCalendar dt = nv.getDateTime();
+        if ( dt.getTimezone() == DatatypeConstants.FIELD_UNDEFINED )
+            dt.setTimezone(0);
 
-    private static NodeValue fixupDateOrDateTime(NodeValue nv) {
-        if ( nv.isDateTime() )
-            return fixupDateTime(nv);
-        if ( nv.isDate() )
-            return fixupDate(nv);
-        throw new ARQInternalErrorException("Attempt to fixupDateOrDateTime on "+nv);
-    }
-
-    private static NodeValue fixupDateTime(NodeValue nv) {
-        DateTimeStruct dts = DateTimeStruct.parseDateTime(nv.asNode().getLiteralLexicalForm()) ;
-        if ( dts.timezone != null )
-            return null ;
-        dts.timezone = defaultTimezone ;
-        nv = NodeValue.makeDateTime(dts.toString()) ;
-        if ( !nv.isDateTime() )
-            throw new ARQInternalErrorException("Failed to reform an xsd:dateTime") ;
-        return nv ;
-    }
-
-    private static NodeValue fixupDate(NodeValue nv) {
-        DateTimeStruct dts = DateTimeStruct.parseDate(nv.asNode().getLiteralLexicalForm()) ;
-        if ( dts.timezone != null )
-            return null ;
-        dts.timezone = defaultTimezone ;
-        nv = NodeValue.makeDate(dts.toString()) ;
-        if ( !nv.isDate() )
-            throw new ARQInternalErrorException("Failed to reform an xsd:date") ;
-        return nv ;
+        if ( nv.isDate()) {
+            // Force time.
+            dt.setHour(0);
+            dt.setMinute(0);
+            dt.setSecond(0);
+            return dt;
+        }
+        if ( nv.isTime()) {
+            if ( dt.getHour() == 24 )
+                // Normalize "24:00:00"
+                dt.setHour(0);
+            return dt;
+        }
+        return dt;
     }
 
     /** Compare date times, including "indeterminate" rather than applying locale timezone */
-    private static int compareXSDDateTime(XMLGregorianCalendar dt1, XMLGregorianCalendar dt2) {
+    public static int compareXSDDateTime(NodeValue nv1, NodeValue nv2) {
+        XMLGregorianCalendar dt1 = getXMLGregorianCalendarXSD(nv1);
+        XMLGregorianCalendar dt2 = getXMLGregorianCalendarXSD(nv2);
+
         // Returns codes are -1/0/1 but also 2 for "Indeterminate"
         // which occurs when one has a timezone and one does not
         // and they are less then 14 hours apart.
@@ -1255,10 +1211,28 @@ public class XSDFuncOp
         return convertComparison(x) ;
     }
 
-    private static int compareDuration(Duration duration1, Duration duration2) {
+
+    /** Return a XMLGregorianCalendar appropriate for XSD comparision */
+    private static XMLGregorianCalendar getXMLGregorianCalendarXSD(NodeValue nv) {
+        XMLGregorianCalendar dt = nv.getDateTime();
+        if ( nv.isTime()) {
+            if ( dt.getHour() == 24 )
+                // Normalize "24:00:00"
+                dt.setHour(0);
+        }
+        return dt;
+    }
+
+    /** Compare date times, after fixups for XSD or FO. */
+    private static int compareDateTime(XMLGregorianCalendar dt1, XMLGregorianCalendar dt2) {
         // Returns codes are -1/0/1 but also 2 for "Indeterminate"
-        // In F&O, the expression op:duration-equal(xs:duration("P1Y"), xs:duration("P365D")) returns false().
-        int x = duration1.compare(duration2) ;
+        // which occurs when one has a timezone and one does not
+        // and they are less then 14 hours apart.
+
+        // F&O has an "implicit timezone" - this code implements the XMLSchema
+        // compare algorithm.
+
+        int x = dt1.compare(dt2) ;
         return convertComparison(x) ;
     }
 
@@ -1469,6 +1443,7 @@ public class XSDFuncOp
         return dtGetSeconds(nv) ;
     }
 
+    /** Create an xsd:dateTime from an xsd:date and an xsd:time. */
     public static NodeValue dtDateTime(NodeValue nv1, NodeValue nv2) {
         if ( ! nv1.isDate() )
             throw new ExprEvalException("fn:dateTime: arg1: Not an xsd:date: "+nv1) ;
@@ -1638,6 +1613,8 @@ public class XSDFuncOp
                && (dur.isSet(DAYS) || dur.isSet(HOURS) || dur.isSet(MINUTES) || dur.isSet(SECONDS)) ;
     }
 
+    // ---- Durations
+
     public static NodeValue durGetYears(NodeValue nv) {
         return accessDuration(nv, DatatypeConstants.YEARS) ;
     }
@@ -1685,6 +1662,16 @@ public class XSDFuncOp
     }
 
     public static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(true, null, null, null, null, null, BigDecimal.ZERO) ;
+
+    public static int compareDuration(NodeValue nv1, NodeValue nv2) {
+        return compareDuration(nv1.getDuration(), nv2.getDuration()) ;
+    }
+
+    private static int compareDuration(Duration duration1, Duration duration2) {
+        // Returns codes are -1/0/1 but also 2 for "Indeterminate"
+        // In F&O, the expression op:duration-equal(xs:duration("P1Y"), xs:duration("P365D")) returns false().
+        return XSDDuration.durationCompare(duration1, duration2);
+    }
 
     public static NodeValue localTimezone() {
         Duration dur = localTimezoneDuration();
