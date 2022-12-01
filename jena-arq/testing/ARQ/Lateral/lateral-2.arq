@@ -1,0 +1,5 @@
+PREFIX : <http://example/>
+
+SELECT * {
+  LATERAL { ?s :label ?label }
+}

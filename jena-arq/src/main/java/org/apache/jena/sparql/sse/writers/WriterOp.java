@@ -129,6 +129,15 @@ public class WriterOp
             finish(op);
         }
 
+        private void visitOp2(Op2 op) {
+            start(op, NL);
+            printOp(op.getLeft());
+            out.ensureStartOfLine();
+            printOp(op.getRight());
+            finish(op);
+        }
+
+        // Op2 with a associate expression (e.g. LeftJoin).
         private void visitOp2(Op2 op, ExprList exprs) {
             start(op, NL);
             printOp(op.getLeft());
@@ -268,7 +277,7 @@ public class WriterOp
 
         @Override
         public void visit(OpJoin opJoin) {
-            visitOp2(opJoin, null);
+            visitOp2(opJoin);
         }
 
         @Override
@@ -288,22 +297,27 @@ public class WriterOp
 
         @Override
         public void visit(OpDiff opDiff) {
-            visitOp2(opDiff, null);
+            visitOp2(opDiff);
         }
 
         @Override
         public void visit(OpMinus opMinus) {
-            visitOp2(opMinus, null);
+            visitOp2(opMinus);
         }
 
         @Override
         public void visit(OpUnion opUnion) {
-            visitOp2(opUnion, null);
+            visitOp2(opUnion);
+        }
+
+        @Override
+        public void visit(OpLateral opLateral) {
+            visitOp2(opLateral);
         }
 
         @Override
         public void visit(OpConditional opCondition) {
-            visitOp2(opCondition, null);
+            visitOp2(opCondition);
         }
 
         @Override

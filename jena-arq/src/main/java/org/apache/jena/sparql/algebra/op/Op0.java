@@ -18,13 +18,13 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.Transform ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.Transform;
 
 /** Super class for operators that do not combine other operators */
 
 public abstract class Op0 extends OpBase
 {
-    public abstract Op apply(Transform transform) ;
-    public abstract Op0 copy() ;
+    public abstract Op apply(Transform transform);
+    public abstract Op0 copy();
 }

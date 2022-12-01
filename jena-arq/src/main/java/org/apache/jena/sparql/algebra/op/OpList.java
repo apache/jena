@@ -18,43 +18,42 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpList extends OpModifier
 {
     public OpList(Op subOp)
-    { super(subOp) ; }
+    { super(subOp); }
 
     @Override
     public Op1 copy(Op subOp)
-    { return new OpList(subOp) ; }
+    { return new OpList(subOp); }
 
     @Override
     public void visit(OpVisitor opVisitor)
-    { opVisitor.visit(this) ; }
+    { opVisitor.visit(this); }
 
     @Override
-    public String getName() { return Tags.tagToList ; }
+    public String getName() { return Tags.tagToList; }
 
     @Override
-    public Op apply(Transform transform, Op subOp) 
-    { return transform.transform(this, subOp) ; }
-    
+    public Op apply(Transform transform, Op subOp)
+    { return transform.transform(this, subOp); }
+
     @Override
     public int hashCode()
     {
-        return getSubOp().hashCode() ^ OpBase.HashToList ; 
+        return getSubOp().hashCode() ^ OpBase.HashToList;
     }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! (other instanceof OpList) ) return false ;
-        return getSubOp().equalTo(((OpList)other).getSubOp(), labelMap) ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpList) )
+            return false;
+        return getSubOp().equalTo(((OpList)other).getSubOp(), labelMap);
     }
-
 }

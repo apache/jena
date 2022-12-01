@@ -1,0 +1,24 @@
+PREFIX : <http://example/>
+
+:s1 :p 1 .
+:s1 :label "s1-one" .
+
+:s2 :p 2 .
+:s2 :label "s2-one" .
+:s2 :label "s2-two" .
+
+:s3 :p 3 .
+:s3 :label "s3-one" .
+:s3 :label "s3-two" .
+:s3 :label "s3-three" .
+
+:x1 :q 1 .
+:z1 :q 1 .
+
+:x0 :q "a" .
+:z0 :q "b" .
+
+
+
+
+

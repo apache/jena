@@ -35,6 +35,8 @@ import org.apache.jena.sparql.expr.aggregate.lib.* ;
 import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
 import org.apache.jena.sparql.core.Quad ;
+import java.util.List;
+import java.util.ArrayList;
 public class ARQParser extends ARQParserBase
 {}
 PARSER_END(ARQParser)
@@ -613,6 +615,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
  |
    el = OptionalGraphPattern()
  |
+   el = LateralGraphPattern()
+ |
    el = MinusGraphPattern()
  |
    el = GraphGraphPattern()
@@ -636,6 +640,10 @@ Element GraphPatternNotTriples() : { Element el = null ; }
 Element OptionalGraphPattern() : { Element el ; }
 { <OPTIONAL> el = GroupGraphPattern()
     { return new ElementOptional(el) ; }
+}
+Element LateralGraphPattern() : { Element el ; }
+{ <LATERAL> el = GroupGraphPattern()
+    { return new ElementLateral(el) ; }
 }
 Element GraphGraphPattern() : { Element el ; Node n ;}
 {
@@ -1783,6 +1791,7 @@ TOKEN [IGNORE_CASE] :
 | < SUBJECT: "SUBJECT" >
 | < PREDICATE: "PREDICATE" >
 | < OBJECT: "OBJECT" >
+| < LATERAL: "LATERAL" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
 | < AS: "as" >

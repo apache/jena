@@ -129,6 +129,13 @@ public class ElementTransformCopyBase implements ElementTransform {
     }
 
     @Override
+    public Element transform(ElementLateral el, Element elt1) {
+        if ( !alwaysCopy && el.getLateralElement() == elt1 )
+            return el ;
+        return new ElementLateral(elt1);
+    }
+
+    @Override
     public Element transform(ElementGroup el, List<Element> elts) {
         if ( !alwaysCopy && el.getElements() == elts )
             return el ;

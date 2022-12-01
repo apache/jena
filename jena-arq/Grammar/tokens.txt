@@ -104,6 +104,7 @@
 [<GRAPH>]      ::= 'GRAPH'
 [<UNION>]      ::= 'UNION'
 [<OPTIONAL>]   ::= 'OPTIONAL'
+[<LATERAL>]    ::= 'LATERAL'
 [<BOUND>]      ::= 'BOUND'
 [<COALESCE>]   ::= 'COALESCE'
 [<IF>]         ::= 'IF'

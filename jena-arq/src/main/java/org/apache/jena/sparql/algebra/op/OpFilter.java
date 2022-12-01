@@ -18,23 +18,23 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpFilter extends Op1
 {
-    protected ExprList expressions ;
+    protected ExprList expressions;
 
     /** Add expression - mutates an existing filter */
     public static Op filter(Expr expr, Op op) {
-        OpFilter f = ensureFilter(op) ;
-        f.getExprs().add(expr) ;
-        return f ;
+        OpFilter f = ensureFilter(op);
+        f.getExprs().add(expr);
+        return f;
     }
 
     /**
@@ -47,9 +47,9 @@ public class OpFilter extends Op1
      */
     public static OpFilter ensureFilter(Op op) {
         if ( op instanceof OpFilter )
-            return (OpFilter)op ;
+            return (OpFilter)op;
         else
-            return new OpFilter(op) ;
+            return new OpFilter(op);
     }
 
     /** Combine an ExprList with an Op so that the expressions filter the Op.
@@ -59,82 +59,82 @@ public class OpFilter extends Op1
      */
     public static Op filterBy(ExprList exprs, Op op) {
         if ( exprs == null || exprs.isEmpty() )
-            return op ;
-        OpFilter f = ensureFilter(op) ;
-        f.getExprs().addAll(exprs) ;
-        return f ;
+            return op;
+        OpFilter f = ensureFilter(op);
+        f.getExprs().addAll(exprs);
+        return f;
     }
 
     /** Create a OpFilter with the expressions and subOp.
      * If subOp is a filter, combine expressions (de-layer).
      */
     public static OpFilter filterAlways(ExprList exprs, Op subOp) {
-        OpFilter f = ensureFilter(subOp) ;
-        f.getExprs().addAll(exprs) ;
-        return f ;
+        OpFilter f = ensureFilter(subOp);
+        f.getExprs().addAll(exprs);
+        return f;
     }
 
     /** Make a OpFilter - guaranteed to return an fresh OpFilter */
     public static OpFilter filterDirect(ExprList exprs, Op op) {
-        return new OpFilter(exprs, op) ;
+        return new OpFilter(exprs, op);
     }
 
     /** Make a OpFilter - guaranteed to return an fresh OpFilter */
     public static OpFilter filterDirect(Expr expr, Op op) {
-        OpFilter f = new OpFilter(op) ;
+        OpFilter f = new OpFilter(op);
         f.getExprs().add(expr);
-        return f ;
+        return f;
     }
 
     private OpFilter(Op sub) {
-        super(sub) ;
-        expressions = new ExprList() ;
+        super(sub);
+        expressions = new ExprList();
     }
 
     private OpFilter(ExprList exprs, Op sub) {
-        super(sub) ;
-        expressions = exprs ;
+        super(sub);
+        expressions = exprs;
     }
 
     /** Compress multiple filters: (filter (filter (filter op)))) into one (filter op) */
     public static OpFilter tidy(OpFilter base) {
-        ExprList exprs = new ExprList() ;
+        ExprList exprs = new ExprList();
 
-        Op op = base ;
+        Op op = base;
         while (op instanceof OpFilter) {
-            OpFilter f = (OpFilter)op ;
-            exprs.addAll(f.getExprs()) ;
-            op = f.getSubOp() ;
+            OpFilter f = (OpFilter)op;
+            exprs.addAll(f.getExprs());
+            op = f.getSubOp();
         }
-        return new OpFilter(exprs, op) ;
+        return new OpFilter(exprs, op);
     }
 
-    public ExprList getExprs() { return expressions ; }
+    public ExprList getExprs() { return expressions; }
 
     @Override
-    public String getName() { return Tags.tagFilter ; }
+    public String getName() { return Tags.tagFilter; }
 
     @Override
     public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp) ; }
+    { return transform.transform(this, subOp); }
 
     @Override
-    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
+    public void visit(OpVisitor opVisitor) { opVisitor.visit(this); }
 
     @Override
-    public Op1 copy(Op subOp)                { return new OpFilter(expressions, subOp) ; }
+    public Op1 copy(Op subOp) { return new OpFilter(expressions, subOp); }
 
     @Override
     public int hashCode() {
-        return expressions.hashCode() ;
+        return expressions.hashCode();
     }
 
     @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
-        if ( ! (other instanceof OpFilter) ) return false ;
-        OpFilter opFilter = (OpFilter)other ;
+        if ( ! (other instanceof OpFilter) ) return false;
+        OpFilter opFilter = (OpFilter)other;
         if ( ! expressions.equals(opFilter.expressions) )
-            return false ;
-        return getSubOp().equalTo(opFilter.getSubOp(), labelMap) ;
+            return false;
+        return getSubOp().equalTo(opFilter.getSubOp(), labelMap);
     }
 }

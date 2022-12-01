@@ -1,0 +1,32 @@
+{ "head": {
+    "vars": [ "s" , "label" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example/s3" } ,
+        "label": { "type": "literal" , "value": "s3-three" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/s3" } ,
+        "label": { "type": "literal" , "value": "s3-two" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/s1" } ,
+        "label": { "type": "literal" , "value": "s1-one" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/s2" } ,
+        "label": { "type": "literal" , "value": "s2-one" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/s2" } ,
+        "label": { "type": "literal" , "value": "s2-two" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/s3" } ,
+        "label": { "type": "literal" , "value": "s3-one" }
+      }
+    ]
+  }
+}

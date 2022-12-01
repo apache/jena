@@ -1,0 +1,97 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#>
+PREFIX ut:     <http://www.w3.org/2009/sparql/tests/test-update#>
+PREFIX dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#>
+PREFIX test:   <http://www.w3.org/2001/sw/DataAccess/tests/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+
+<#manifest>      rdf:type mf:Manifest ;
+    rdfs:label "SPARQL-star Evaluation Tests" ;
+    skos:prefLabel "LATERAL"@en;
+    dct:licence <https://www.apache.org/licenses/LICENSE-2.0> ;
+    mf:entries (
+      <#lateral-1>
+      <#lateral-2>
+      <#lateral-3>
+      <#lateral-4>
+      <#lateral-5>
+    ).
+
+<#lateral-1> rdf:type mf:QueryEvaluationTest ;
+    mf:name      "LATERAL - LIMIT 2" ;
+    mf:action [
+       qt:query  <lateral-1.arq> ;
+       qt:data   <data.ttl>
+    ] ;
+    mf:result  <lateral-1.srj>
+    .
+
+<#lateral-2> rdf:type mf:QueryEvaluationTest ;
+    mf:name      "LATERAL - only pattern" ;
+    mf:action [
+       qt:query  <lateral-2.arq> ;
+       qt:data   <data.ttl>
+    ] ;
+    mf:result  <lateral-2.srj>
+    .
+
+<#lateral-3> rdf:type mf:QueryEvaluationTest ;
+    mf:name      "LATERAL - filter scope" ;
+    mf:action [
+       qt:query  <lateral-3.arq> ;
+       qt:data   <data.ttl>
+    ] ;
+    mf:result  <lateral-3.srj>
+    .
+
+<#lateral-4> rdf:type mf:QueryEvaluationTest ;
+    mf:name      "LATERAL - nested scope" ;
+    mf:action [
+       qt:query  <lateral-4.arq> ;
+       qt:data   <data.ttl>
+    ] ;
+    mf:result  <lateral-4.srj>
+    .
+
+<#lateral-5> rdf:type mf:QueryEvaluationTest ;
+    mf:name      "LATERAL - nested scope - hidden variable" ;
+    mf:action [
+       qt:query  <lateral-5.arq> ;
+       qt:data   <data.ttl>
+    ] ;
+    mf:result  <lateral-5.srj>
+    .
+
+
+## ?x :q ?z . LATERAL { ?s :q ?o FILTER (?z = ?o) }
+
+# No!
+## ?s :p ?o . LATERAL { SELECT ?label { ?s :p ?label } }
+
+## bad
+## ?s :p ?o . LATERAL { BIND(123 AS ?o) }
+## ?s :p ?o . LATERAL { VALUES ?o ( 456 ) }
+## ?s :p ?o . LATERAL { SELECT (789 AS ?s) {} }
+

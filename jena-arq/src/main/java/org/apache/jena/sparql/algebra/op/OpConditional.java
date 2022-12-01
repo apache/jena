@@ -18,11 +18,11 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** Conditional execution - works with streamed execution and is known to safe to
  *  evaluate that way (no issues from nested optionals). 
@@ -34,32 +34,32 @@ public class OpConditional extends Op2
 {
     public OpConditional(Op left, Op right)
     {
-        super(left, right) ;
+        super(left, right);
     }
 
     @Override
     public Op apply(Transform transform, Op left, Op right)
-    { return transform.transform(this, left, right) ; }
+    { return transform.transform(this, left, right); }
         
     @Override
     public void visit(OpVisitor opVisitor) 
-    { opVisitor.visit(this) ; }
+    { opVisitor.visit(this); }
     
     @Override
     public Op2 copy(Op newLeft, Op newRight)
-    { return new OpConditional(newLeft, newRight) ; }
+    { return new OpConditional(newLeft, newRight); }
     
     @Override
     public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
     {
-        if ( ! ( op2 instanceof OpConditional) ) return false ;
-        return super.sameArgumentsAs((OpConditional)op2, labelMap) ;
+        if ( ! ( op2 instanceof OpConditional) ) return false;
+        return super.sameArgumentsAs((OpConditional)op2, labelMap);
     }
     
     @Override
     public String getName()
     {
-        return Tags.tagConditional ;
+        return Tags.tagConditional;
     }
 
 }

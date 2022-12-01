@@ -278,7 +278,7 @@ public class TestTransformFilters
     @Test public void disjunction03() {
         testOp("(filter (|| (!= ?x <x>) (= ?x <y>)) (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               // Note - reording of disjunction terms.
+               // Note - reordering of disjunction terms.
                "(disjunction ",
                "(assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
                "(filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
@@ -391,11 +391,21 @@ public class TestTransformFilters
                "(assign ((?x ?y)) (bgp (?y ?p ?o)(?y ?p1 ?o1)))");
     }
 
+    // Test no longer appropriate.
+    // LATERAL means the variables that are join-scope bound may have values at execution time.
+//    @Test public void implicitJoin02() {
+//        testOp(
+//               "(filter (= ?x ?y) (bgp (?x ?p ?o)))",
+//               t_implicitJoin,
+//               "(table empty)");
+//    }
+
+    // LATERAL safe - no transformation.
     @Test public void implicitJoin02() {
         testOp(
                "(filter (= ?x ?y) (bgp (?x ?p ?o)))",
                t_implicitJoin,
-               "(table empty)");
+               "(filter (= ?x ?y) (bgp (?x ?p ?o)))");
     }
 
     @Test public void implicitJoin03() {
@@ -465,16 +475,27 @@ public class TestTransformFilters
                (String[])null);
     }
 
+    // Test no longer appropriate.
+    // LATERAL means the variables that are join-scope bound may have values at execution time.
+//    @Test public void implictJoin11() {
+//        // Test case related to JENA-500
+//        // Detect that the expression (= ?prebound ?y) is always 'error' because
+//        // ?prebound is undef.  Therefore the whole thing can be removed as there
+//        // can be no solutions.
+//        testOp(
+//               "(filter (= ?prebound ?y) (extend ((?y (ex:someFunction ?x))) (table unit)))",
+//               t_implicitJoin,
+//               "(table empty)");
+//    }
+
+    // LATERAL safe - no "(table empty)" substitution.
     @Test public void implictJoin11() {
-        // Test case related to JENA-500
-        // Detect that the expression (= ?prebound ?y) is always 'error' because
-        // ?prebound is undef.  Therefore the whole thing can be removed as there
-        // can be no solutions.
         testOp(
                "(filter (= ?prebound ?y) (extend ((?y (ex:someFunction ?x))) (table unit)))",
                t_implicitJoin,
-               "(table empty)");
+               "(filter (= ?prebound ?y) (extend ((?y (ex:someFunction ?x))) (table unit)))");
     }
+
 
     @Test public void implicitJoin12() {
         // Test case from JENA-692

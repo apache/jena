@@ -37,11 +37,15 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.Rename;
 import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.expr.aggregate.Aggregator ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.syntax.* ;
-import org.apache.jena.sparql.syntax.syntaxtransform.*;
+import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransform;
+import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransformCleanGroupsOfOne;
+import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransformer;
+import org.apache.jena.sparql.syntax.syntaxtransform.ExprTransformApplyElementTransform;
 import org.apache.jena.sparql.util.graph.GraphList ;
 import org.apache.jena.vocabulary.RDF ;
 
@@ -499,7 +503,7 @@ public class OpAsQuery {
         }
 
         // There is one special case to consider:
-        // A path expression was expanded into a OpSequence during Algenra
+        // A path expression was expanded into a OpSequence during Algebra
         // generation. The simple path expressions become an OpSequence that could be
         // recombined into an ElementPathBlock.
 
@@ -524,7 +528,12 @@ public class OpAsQuery {
 
         @Override
         public void visit(OpDisjunction opDisjunction) {
-            throw new ARQNotImplemented("OpDisjunction") ;
+            ElementUnion elUnion = new ElementUnion();
+            for ( Op op : opDisjunction.getElements() ) {
+                Element el = asElement(op) ;
+                elUnion.addElement(el);
+            }
+            currentGroup().addElement(elUnion) ;
         }
 
         private Element process(BasicPattern pattern) {
@@ -616,8 +625,12 @@ public class OpAsQuery {
 
         @Override
         public void visit(OpLeftJoin opLeftJoin) {
-            Element eLeft = asElement(opLeftJoin.getLeft()) ;
-            ElementGroup eRight = asElementGroup(opLeftJoin.getRight()) ;
+            convertLeftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), opLeftJoin.getExprs());
+        }
+
+        private void convertLeftJoin(Op opLeft, Op opRight, ExprList exprs) {
+            Element eLeft = asElement(opLeft) ;
+            ElementGroup eRight = asElementGroup(opRight) ;
 
             // If the RHS is (filter) we need to protect it from becoming
             // part of the expr for the LeftJoin.
@@ -632,8 +645,8 @@ public class OpAsQuery {
                 eRight = eRight2 ;
             }
 
-            if ( opLeftJoin.getExprs() != null ) {
-                for ( Expr expr : opLeftJoin.getExprs() ) {
+            if ( exprs != null ) {
+                for ( Expr expr : exprs ) {
                     ElementFilter f = new ElementFilter(expr) ;
                     eRight.addElement(f) ;
                 }
@@ -690,8 +703,25 @@ public class OpAsQuery {
         }
 
         @Override
+        public void visit(OpLateral opLateral) {
+            Element eLeft = asElement(opLateral.getLeft()) ;
+            ElementGroup eRight = asElementGroup(opLateral.getRight()) ;
+            ElementGroup g = currentGroup() ;
+            if ( !emptyGroup(eLeft) ) {
+                if ( eLeft instanceof ElementGroup )
+                    g.getElements().addAll(((ElementGroup)eLeft).getElements()) ;
+                else
+                    g.addElement(eLeft) ;
+            }
+            ElementLateral eltLateral = new ElementLateral(eRight) ;
+            g.addElement(eltLateral) ;
+        }
+
+        @Override
         public void visit(OpConditional opCondition) {
-            throw new ARQNotImplemented("OpCondition") ;
+            // Possibly completely reversing a query exactly because
+            // there might be filters outside the OpConditional.
+            convertLeftJoin(opCondition.getLeft(), opCondition.getRight(), null);
         }
 
         @Override
@@ -812,7 +842,10 @@ public class OpAsQuery {
         }
 
         private void convertAsSubQuery(Op op) {
-            Converter subConverter = new Converter(op) ;
+            // Reverse scoped renaming.
+            // ?/x is illegal so the original query string must have had ?x at this point for any number of "/"
+            Op op1 = Rename.reverseVarRename(op, true);
+            Converter subConverter = new Converter(op1) ;
             ElementSubQuery subQuery = new ElementSubQuery(subConverter.convert()) ;
             ElementGroup g = currentGroup() ;
             g.addElement(subQuery) ;

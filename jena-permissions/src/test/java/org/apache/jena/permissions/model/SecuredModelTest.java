@@ -92,7 +92,7 @@ public class SecuredModelTest {
 
     /**
      * create an unsecured securedModel.
-     * 
+     *
      * @return
      */
     protected Model createModel() {
@@ -1010,6 +1010,7 @@ public class SecuredModelTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testGetReader() {
         securedModel.getReader();
@@ -1095,6 +1096,7 @@ public class SecuredModelTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testGetWriter() {
         securedModel.getWriter();

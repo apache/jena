@@ -16,18 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.algebra.op ;
+package org.apache.jena.sparql.algebra.op;
 
 import java.util.Objects;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.core.VarExprList ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpAssign extends OpExtendAssign {
     // These factory operations compress nested assignments if possible.
@@ -39,16 +39,16 @@ public class OpAssign extends OpExtendAssign {
      */ 
     static public Op assign(Op op, Var var, Expr expr) {
         if ( !(op instanceof OpAssign) )
-            return create(op, var, expr) ;
+            return create(op, var, expr);
 
-        OpAssign opAssign = (OpAssign)op ;
+        OpAssign opAssign = (OpAssign)op;
         if ( opAssign.assignments.contains(var) )
             // Same variable :
             // Layer one assignment over the top of another
-            return create(op, var, expr) ;
+            return create(op, var, expr);
 
-        opAssign.add(var, expr) ;
-        return opAssign ;
+        opAssign.add(var, expr);
+        return opAssign;
     }
 
     /** Create an v or add to an existing one.
@@ -57,70 +57,70 @@ public class OpAssign extends OpExtendAssign {
      */ 
     static public Op assign(Op op, VarExprList exprs) {
         if ( !(op instanceof OpAssign) )
-            return create(op, exprs) ;
+            return create(op, exprs);
 
-        OpAssign opAssign = (OpAssign)op ;
+        OpAssign opAssign = (OpAssign)op;
         for (Var var : exprs.getVars()) {
             if ( opAssign.assignments.contains(var) )
-                return create(op, exprs) ;
+                return create(op, exprs);
         }
 
-        opAssign.assignments.addAll(exprs) ;
-        return opAssign ;
+        opAssign.assignments.addAll(exprs);
+        return opAssign;
     }
 
     /** Make a OpAssign - this does not aggregate (assign .. (assign ...)) */
     public static OpAssign create(Op op, VarExprList exprs) {
-        return new OpAssign(op, exprs) ;
+        return new OpAssign(op, exprs);
     }
 
     /** Make a OpAssign - this does not aggregate (assign .. (assign ...)) */
     static private Op create(Op op, Var var, Expr expr) {
-        return new OpAssign(op, new VarExprList(var, expr)) ;
+        return new OpAssign(op, new VarExprList(var, expr));
     }
 
     private OpAssign(Op subOp) {
-        super(subOp) ;
+        super(subOp);
     }
 
     private OpAssign(Op subOp, VarExprList exprs) {
-        super(subOp, exprs) ;
+        super(subOp, exprs);
     }
 
     @Override
     public String getName() {
-        return Tags.tagAssign ;
+        return Tags.tagAssign;
     }
 
     @Override
     public void visit(OpVisitor opVisitor) {
-        opVisitor.visit(this) ;
+        opVisitor.visit(this);
     }
 
     @Override
     public Op1 copy(Op subOp) {
-        OpAssign op = new OpAssign(subOp, new VarExprList(getVarExprList())) ;
-        return op ;
+        OpAssign op = new OpAssign(subOp, new VarExprList(getVarExprList()));
+        return op;
     }
     
     @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
         if ( !(other instanceof OpAssign) )
-            return false ;
-        OpAssign assign = (OpAssign)other ;
+            return false;
+        OpAssign assign = (OpAssign)other;
 
         if ( !Objects.equals(assignments, assign.assignments) )
-            return false ;
-        return getSubOp().equalTo(assign.getSubOp(), labelMap) ;
+            return false;
+        return getSubOp().equalTo(assign.getSubOp(), labelMap);
     }
 
     @Override
     public Op apply(Transform transform, Op subOp) {
-        return transform.transform(this, subOp) ;
+        return transform.transform(this, subOp);
     }
 
     @Override
     public OpExtendAssign copy(Op subOp, VarExprList varExprList) {
-        return new OpAssign(subOp, varExprList) ;
+        return new OpAssign(subOp, varExprList);
     }
 }

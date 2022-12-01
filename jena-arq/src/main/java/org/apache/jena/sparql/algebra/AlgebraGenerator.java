@@ -301,6 +301,11 @@ public class AlgebraGenerator
             return compileElementOptional(eltOpt, current);
         }
 
+        if ( elt instanceof ElementLateral ) {
+            ElementLateral eltLateral = (ElementLateral)elt;
+            return compileElementLateral(eltLateral, current);
+        }
+
         if ( elt instanceof ElementMinus ) {
             ElementMinus elt2 = (ElementMinus)elt;
             Op op = compileElementMinus(current, elt2);
@@ -395,6 +400,12 @@ public class AlgebraGenerator
         }
         current = OpLeftJoin.create(current, op, exprs);
         return current;
+    }
+
+    protected Op compileElementLateral(ElementLateral eltLateral, Op current) {
+        Element subElt = eltLateral.getLateralElement();
+        Op op = compileElement(subElt);
+        return OpLateral.create(current, op);
     }
 
     protected Op compileBasicPattern(BasicPattern pattern) {

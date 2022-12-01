@@ -120,10 +120,14 @@ public class TransformFilterImplicitJoin extends TransformCopy {
         // ---- Check if the subOp is the right shape to transform.
         Op op = subOp;
 
-        // Special case : deduce that the filter will always "eval unbound"
-        // hence eliminate all rows. Return the empty table.
+        // LATERAL : This is not longer true.
+//        // Special case : deduce that the filter will always "eval unbound"
+//        // hence eliminate all rows. Return the empty table.
+//        if (testSpecialCaseUnused(subOp, joins, remaining))
+//            return OpTable.empty();
+        // But simply skipping this causes (filter) to become (assign) which fails as (assign) does not handle errors.
         if (testSpecialCaseUnused(subOp, joins, remaining))
-            return OpTable.empty();
+            return null;
 
         // Special case: the deep left op of a OpConditional/OpLeftJoin is unit
         // table.

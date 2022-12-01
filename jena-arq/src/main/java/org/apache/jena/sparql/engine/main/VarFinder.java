@@ -225,6 +225,12 @@ public class VarFinder
         }
 
         @Override
+        public void visit(OpLateral opLateral) {
+            mergeVars(opLateral.getLeft());
+            mergeVars(opLateral.getRight());
+        }
+
+        @Override
         public void visit(OpConditional opLeftJoin) {
             leftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), null);
         }

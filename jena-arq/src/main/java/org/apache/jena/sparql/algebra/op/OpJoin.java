@@ -18,74 +18,70 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.algebra.table.TableUnit ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.algebra.table.TableUnit;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpJoin extends Op2
 {
-    /** Create join - an argument of null is 
+    /** Create join - an argument of null is
      * simply dropped so Join.create(null, op) is op and Join.create(op,null) is op.
      */
-    public static Op create(Op left, Op right)
-    {
+    public static Op create(Op left, Op right) {
         if ( left == null )
-            return right ;
+            return right;
         if ( right == null )
-            return left ;
-        return new OpJoin(left, right) ;
+            return left;
+        return new OpJoin(left, right);
     }
-    
-    /** Create join, removing any joins with the identity table and any nulls.
-     *  <br>Join.create(null, op) is op.
-     *  <br>Join.create(op, null) is op.
-     *  <br>Join.create(TableUnit, op) is op.
-     *  <br>Join.create(op, TableUnit) is op.
-     */
-    public static Op createReduce(Op left, Op right)
-    {
-        if ( left == null || isJoinIdentify(left) )
-            return right ;
-        if ( right == null || isJoinIdentify(right) )
-            return left ;
-        return new OpJoin(left, right) ;
-    }
-    
 
-    public static boolean isJoinIdentify(Op op)
-    {
-        if ( ! ( op instanceof OpTable ) )
-            return false ;
-        Table t = ((OpTable)op).getTable() ;
-        // Safe answer.
-        return TableUnit.isTableUnit(t) ;
+    /**
+     * Create join, removing any joins with the identity table and any nulls. <br>
+     * Join.create(null, op) is op. <br>
+     * Join.create(op, null) is op. <br>
+     * Join.create(TableUnit, op) is op. <br>
+     * Join.create(op, TableUnit) is op.
+     */
+    public static Op createReduce(Op left, Op right) {
+        if ( left == null || isJoinIdentify(left) )
+            return right;
+        if ( right == null || isJoinIdentify(right) )
+            return left;
+        return new OpJoin(left, right);
     }
-    
-    private OpJoin(Op left, Op right) { super(left, right) ; }
-    
+
+    public static boolean isJoinIdentify(Op op) {
+        if ( !(op instanceof OpTable) )
+            return false;
+        Table t = ((OpTable)op).getTable();
+        // Safe answer.
+        return TableUnit.isTableUnit(t);
+    }
+
+    private OpJoin(Op left, Op right) { super(left, right); }
+
     @Override
-    public String getName() { return Tags.tagJoin ; }
+    public String getName() { return Tags.tagJoin; }
 
     @Override
     public Op apply(Transform transform, Op left, Op right)
-    { return transform.transform(this, left, right) ; }
-        
+    { return transform.transform(this, left, right); }
+
     @Override
-    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
-    
+    public void visit(OpVisitor opVisitor) { opVisitor.visit(this); }
+
     @Override
     public Op2 copy(Op newLeft, Op newRight)
-    { return new OpJoin(newLeft, newRight) ; }
-    
-    @Override
-    public boolean equalTo(Op op2, NodeIsomorphismMap labelMap)
-    {
-        if ( ! ( op2 instanceof OpJoin) ) return false ;
-        return super.sameArgumentsAs((Op2)op2, labelMap) ;
-    }
+    { return new OpJoin(newLeft, newRight); }
 
+    @Override
+    public boolean equalTo(Op op2, NodeIsomorphismMap labelMap) {
+        if ( !(op2 instanceof OpJoin) )
+            return false;
+        return super.sameArgumentsAs((Op2)op2, labelMap);
+    }
 }

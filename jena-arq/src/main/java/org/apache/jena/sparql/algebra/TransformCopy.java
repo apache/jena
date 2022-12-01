@@ -80,6 +80,8 @@ public class TransformCopy implements Transform
     @Override
     public Op transform(OpUnion opUnion, Op left, Op right)         { return xform(opUnion, left, right) ; }
     @Override
+    public Op transform(OpLateral opLateral, Op left, Op right)     { return xform(opLateral, left, right) ; }
+    @Override
     public Op transform(OpConditional opCond, Op left, Op right)    { return xform(opCond, left, right) ; }
 
     @Override
