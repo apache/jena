@@ -26,7 +26,6 @@ import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.dboe.storage.system.DatasetGraphStorage;
-import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
