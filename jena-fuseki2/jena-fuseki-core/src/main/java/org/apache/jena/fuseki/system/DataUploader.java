@@ -102,15 +102,33 @@ public class DataUploader {
         }
     }
 
+    // @MultipartConfig but for ServletFilters
+    // * @MultipartConfig only wokrs on servlets.
+    // * Jetty: attribute setting.
+    // * Tomcat: META-INF/context.xml setting
+
     // Jetty requires a setting of this annotation object as a request attribute.
-     private static MultipartConfigElement multipartConfigElement = new MultipartConfigElement("");
-     private static String multipartAttributeName = org.eclipse.jetty.server.Request.__MULTIPART_CONFIG_ELEMENT;
+    private static final MultipartConfigElement multipartConfigElement = new MultipartConfigElement("");;
+    private static final String jettyMultipartAttributeName;
+
+    static {
+        String x;
+        // May not be on the classpath
+        try {
+            Class.forName("org.eclipse.jetty.server.Request");
+            x = org.eclipse.jetty.server.Request.__MULTIPART_CONFIG_ELEMENT; }
+        catch (ClassNotFoundException th) { x = null; }
+        jettyMultipartAttributeName = x;
+    }
+
+
+    // Tomcat: In the WAR file: META-INF/context.xml
+    // <Context allowCasualMultipartParsing="true">
+    // </Context>
 
     /**
      * Process an HTTP upload of RDF files (triples or quads) with content type
      * "multipart/form-data" or "multipart/mixed".
-     * <p>
-     * Form data (content-disposition: form-data; name="...") is rejected.
      * <p>
      * Data is streamed straight into the destination graph or dataset.
      * <p>
@@ -120,8 +138,11 @@ public class DataUploader {
         HttpServletRequest request = action.getRequest();
         String base = ActionLib.wholeRequestURL(request);
         StreamRDFCounting countingDest =  StreamRDFLib.count(dest);
-        if ( request.getAttribute(multipartAttributeName) == null )
-            request.setAttribute(multipartAttributeName, multipartConfigElement);
+
+        // Jetty
+        if ( jettyMultipartAttributeName != null && request.getAttribute(jettyMultipartAttributeName) == null )
+            request.setAttribute(jettyMultipartAttributeName, multipartConfigElement);
+
         try {
             for ( Part part : request.getParts() ) {
                 InputStream input = part.getInputStream();

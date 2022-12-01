@@ -28,7 +28,8 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.Dispatcher;
 import org.slf4j.Logger;
 
-/** Look at all requests and see if they match a registered dataset name;
+/**
+ * Look at all requests and see if they match a registered dataset name;
  * if they do, pass down to the uber servlet, which can dispatch any request
  * for any service.
  */
