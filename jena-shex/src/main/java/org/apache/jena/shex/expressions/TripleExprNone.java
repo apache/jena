@@ -25,7 +25,7 @@ public class TripleExprNone extends TripleExpression {
     private static TripleExpression instance = new TripleExprNone();
     public static TripleExpression get() { return instance ; }
 
-    private TripleExprNone() { super(); }
+    private TripleExprNone() { super(null); }
 
     @Override
     public void visit(TripleExprVisitor visitor) {

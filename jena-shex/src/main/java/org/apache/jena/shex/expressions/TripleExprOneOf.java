@@ -27,18 +27,18 @@ import org.apache.jena.riot.out.NodeFormatter;
 
 public class TripleExprOneOf extends TripleExpression {
 
-    public static TripleExpression create(List<TripleExpression> acc) {
+    public static TripleExpression create(List<TripleExpression> acc, List<SemAct> semActs) {
         if ( acc.size() == 0 )
             throw new InternalErrorException("Empty list");
         if ( acc.size() == 1 )
             return acc.get(0);
-        return new TripleExprOneOf(acc);
+        return new TripleExprOneOf(acc, semActs);
     }
 
     private List<TripleExpression> tripleExpressions;
 
-    private TripleExprOneOf(List<TripleExpression> expressions) {
-        super();
+    private TripleExprOneOf(List<TripleExpression> expressions, List<SemAct> semActs) {
+        super(semActs);
         this.tripleExpressions = expressions;
     }
 

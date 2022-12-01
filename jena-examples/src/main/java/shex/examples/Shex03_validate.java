@@ -28,7 +28,7 @@ import org.apache.jena.shex.*;
 import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.vocabulary.RDF;
 
-/** Validate based on building a shap map in the code. */
+/** Validate based on building a shape map in the code. */
 public class Shex03_validate {
     static { LogCtl.setLogging(); }
 

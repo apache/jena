@@ -29,7 +29,9 @@ public class ShapeExprNone extends ShapeExpression {
     private static ShapeExpression instance = new ShapeExprNone();
     public static ShapeExpression get() { return instance ; }
 
-    private ShapeExprNone() {}
+    private ShapeExprNone() {
+        super(null);
+    }
 
     @Override
     public boolean satisfies(ValidationContext vCxt, Node data) {

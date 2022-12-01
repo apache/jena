@@ -22,6 +22,7 @@ import java.util.*;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.shex.expressions.SemAct;
 import org.apache.jena.shex.expressions.TripleExpression;
 import org.apache.jena.shex.sys.SysShex;
 
@@ -41,9 +42,10 @@ public class ShexSchema {
     private final String baseURI;
     private final PrefixMap prefixes;
     private final List<String> imports;
+    private final List<SemAct> semActs;
 
     public static ShexSchema shapes(String source, String baseURI, PrefixMap prefixes, ShexShape startShape,
-                                    List<ShexShape> shapes, List<String> imports,
+                                    List<ShexShape> shapes, List<String> imports, List<SemAct> semActs,
                                     Map<Node, TripleExpression> tripleRefs) {
         shapes = new ArrayList<>(shapes);
         Map<Node, ShexShape> shapeMap = new LinkedHashMap<>();
@@ -56,12 +58,12 @@ public class ShexSchema {
 
         tripleRefs = new LinkedHashMap<>(tripleRefs);
 
-        return new ShexSchema(source, baseURI, prefixes, startShape, shapes, shapeMap, imports, tripleRefs);
+        return new ShexSchema(source, baseURI, prefixes, startShape, shapes, shapeMap, imports, semActs, tripleRefs);
     }
 
     /*package*/ ShexSchema(String source, String baseURI, PrefixMap prefixes,
                            ShexShape startShape, List<ShexShape> shapes, Map<Node, ShexShape> shapeMap,
-                           List<String> imports, Map<Node, TripleExpression> tripleRefMap) {
+                           List<String> imports, List<SemAct> semActs, Map<Node, TripleExpression> tripleRefMap) {
         this.sourceURI = source;
         this.baseURI = baseURI;
         this.prefixes = prefixes;
@@ -69,6 +71,7 @@ public class ShexSchema {
         this.shapes = shapes;
         this.shapeMap = shapeMap;
         this.imports = imports;
+        this.semActs = semActs;
         this.tripleRefs = tripleRefMap;
     }
 
@@ -147,7 +150,7 @@ public class ShexSchema {
 //                mergedShapeMap.put(SysShex.startNode, startShape);
             shapesWithImports = new ShexSchema(sourceURI, baseURI, prefixes,
                                                startShape, mergedShapes, mergedShapeMap,
-                                               null/*imports*/, mergedTripleRefs);
+                                               null/*imports*/, semActs, mergedTripleRefs);
             return shapesWithImports;
         }
     }
@@ -210,5 +213,9 @@ public class ShexSchema {
         return Objects.equals(imports, other.imports) &&
                Objects.equals(shapeMap, other.shapeMap) &&
                Objects.equals(startShape, other.startShape);
+    }
+
+    public List<SemAct> getSemActs() {
+        return semActs;
     }
 }

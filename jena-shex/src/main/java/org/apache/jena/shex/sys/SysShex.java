@@ -20,9 +20,16 @@ package org.apache.jena.shex.sys;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.shex.Plugin;
 import org.apache.jena.shex.ShexValidator;
+import org.apache.jena.shex.semact.SemanticActionPlugin;
+import org.apache.jena.shex.semact.TestSemanticActionPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SysShex {
 
@@ -36,13 +43,33 @@ public class SysShex {
     // Node used for FOCUS in a shape map.
     public static Node focusNode = NodeFactory.createExt("|focus|");
 
+    private static Map<String, SemanticActionPlugin> semActPluginIndex;
+
+    public static void registerSemActPlugin(String uri, SemanticActionPlugin plugin) {
+        semActPluginIndex.put(uri, plugin);
+    }
+
     // This is thread-safe.
-    private static ShexValidator systemValiditor = new ShexValidatorImpl();
+    private static ShexValidator systemValiditor;
 
     /** Set the current system-wide {@link ShexValidator}. */
     public static void set(ShexValidator validator) { systemValiditor = validator; }
 
     public static ShexValidator get() {
         return systemValiditor;
+    }
+
+    static {
+        semActPluginIndex = new ConcurrentHashMap<>();
+        systemValiditor = new ShexValidatorImpl(semActPluginIndex);
+    }
+
+    public static ShexValidator getNew(Collection<SemanticActionPlugin> pz) {
+        Map iriToPlugin = new ConcurrentHashMap<>();
+        pz.forEach(p -> {
+            p.getUris().forEach(u -> iriToPlugin.put(u, p));
+        });
+        ShexValidator ret = new ShexValidatorImpl(iriToPlugin);
+        return ret;
     }
 }

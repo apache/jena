@@ -26,7 +26,9 @@ import org.apache.jena.shex.sys.ValidationContext;
 /** A DOT expression -- "{ . }"  */
 public class ShapeExprDot extends ShapeExpression {
 
-    public ShapeExprDot() {}
+    public ShapeExprDot() {
+        super(null);
+    }
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {

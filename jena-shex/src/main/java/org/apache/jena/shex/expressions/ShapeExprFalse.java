@@ -27,7 +27,9 @@ import org.apache.jena.shex.sys.ValidationContext;
 /** A shape expression that is always false.  */
 public class ShapeExprFalse extends ShapeExpression {
 
-    public ShapeExprFalse() {}
+    public ShapeExprFalse() {
+        super(null);
+    }
 
     @Override
     public void print(IndentedWriter out, NodeFormatter nFmt) {

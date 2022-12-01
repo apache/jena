@@ -19,18 +19,29 @@
 package org.apache.jena.shex.runner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.base.Sys;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shex.*;
+import org.apache.jena.shex.semact.SemanticActionPlugin;
+import org.apache.jena.shex.semact.TestSemanticActionPlugin;
 import org.apache.jena.shex.sys.ShexLib;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /** A Shex validation test. Created by {@link RunnerShexValidation}.  */
 public class ShexValidationTest implements Runnable {
@@ -46,6 +57,8 @@ public class ShexValidationTest implements Runnable {
     private final ShapeMap shapeMap;
     private final boolean positiveTest;
     private final boolean verbose = false;
+    private final List<Resource> traits;
+    private List<Pair<Resource,String>> extensionResults;
 
     enum TestType{ ShapeFocus, StartFocus, ShapeMap }
 
@@ -109,6 +122,8 @@ public class ShexValidationTest implements Runnable {
                 : Shex.readShapeMapJson(shapeMapRef);
         this.shapes = Shex.readSchema(schema.getURI(), base);
         this.positiveTest = entry.getTestType().equals(ShexT.cValidationTest);
+        this.traits = ShexTests.extractTraits(entry);
+        this.extensionResults = ShexTests.extractExtensionResults(entry);
     }
 
     @Override
@@ -118,16 +133,18 @@ public class ShexValidationTest implements Runnable {
             if ( ShexTests.dumpTest )
                 describeTest();
             ShexReport report;
+            TestSemanticActionPlugin semActPlugin = new TestSemanticActionPlugin();
+            List<SemanticActionPlugin> semanticActionPlugins = Collections.singletonList(semActPlugin);
             switch (this.testType) {
                 case ShapeFocus :
-                    report = ShexValidator.get().validate(graph, shapes, shape, focus);
+                    report = ShexValidator.getNew(semanticActionPlugins).validate(graph, shapes, shape, focus);
                     break;
                 case ShapeMap :
-                    report = ShexValidator.get().validate(graph, shapes, shapeMap);
+                    report = ShexValidator.getNew(semanticActionPlugins).validate(graph, shapes, shapeMap);
                     break;
                 case StartFocus : {
                     ShexShape startShape = shapes.getStart();
-                    report = ShexValidator.get().validate(graph, shapes, startShape, focus);
+                    report = ShexValidator.getNew(semanticActionPlugins).validate(graph, shapes, startShape, focus);
                     break;
                 }
                 default:
@@ -138,6 +155,15 @@ public class ShexValidationTest implements Runnable {
             if ( !b ) {
                 if ( ! ShexTests.dumpTest )
                     describeTest();
+            }
+            if (this.extensionResults != null) {
+                List<String> output = semActPlugin.getOut();
+                assertEquals(String.format("expected %s lines from SemAct, got %s", String.join("\n", extensionResults.stream().map(p -> p.getRight()).collect(Collectors.toList())), String.join("\n", output)), output.size(), extensionResults.size());
+                for(int i = 0; i < extensionResults.size(); i++) {
+                    String expected = extensionResults.get(i).getRight();
+                    String actual = output.get(i);
+                    assertTrue("expected: " + expected + ", actual: " + actual, expected.equals(actual));
+                }
             }
             assertEquals(entry.getName(), positiveTest, report.conforms());
         } catch (java.lang.AssertionError ex) {

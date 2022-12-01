@@ -49,7 +49,7 @@ public class TestManifest {
     /** <p>Required functionality for execution of this test</p> */
     public static final Property requires = m_model.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#requires" );
     
-    /** <p>The test statusThe expected outcome</p> */
+    /** <p>The expected outcome</p> */
     public static final Property result = m_model.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result" );
     
     /** <p>Action to perform</p> */

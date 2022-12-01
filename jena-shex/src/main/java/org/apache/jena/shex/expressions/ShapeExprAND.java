@@ -44,6 +44,7 @@ public class ShapeExprAND extends ShapeExpression {
     List<ShapeExpression> shapeExpressions;
 
     private ShapeExprAND(List<ShapeExpression> expressions) {
+        super(null);
         this.shapeExpressions = expressions;
     }
 
