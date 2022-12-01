@@ -32,6 +32,7 @@ import java.util.List;
 
 public interface SemanticActionPlugin extends Plugin {
 
+    @Override
     default void register() {
         List<String> uris = getUris();
         if(uris != null && !uris.isEmpty()) {

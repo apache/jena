@@ -32,7 +32,7 @@ public class ShapeExprRef extends ShapeExpression {
     private final Node ref;
 
     public ShapeExprRef(Node ref) {
-        super(null);
+        super();
         this.ref = ref;
     }
 

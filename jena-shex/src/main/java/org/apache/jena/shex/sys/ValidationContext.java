@@ -45,27 +45,15 @@ public class ValidationContext {
 
     private final ShexReport.Builder reportBuilder = ShexReport.create();
 
-
+    /** @deprecated Use method {@link #create()} */
     @Deprecated
     public static ValidationContext create(ValidationContext vCxt) {
-        // Fresh ShexReport.Builder
-        return new ValidationContext(vCxt, vCxt.data, vCxt.shapes, vCxt.inProgress, vCxt.semActPluginIndex);
+        return vCxt.create();
     }
 
-    /**
-     * Creates a new validation context with the current one as its parent context.
-     * Initializes the new context with the state of the parent context.
-     *
-     * @return new ValidationContext with this as parent.
-     */
-    public ValidationContext create() {
-        // Fresh ShexReport.Builder
-        return new ValidationContext(this, this.data, this.shapes, this.inProgress, this.semActPluginIndex);
+    public ValidationContext(Graph data, ShexSchema shapes) {
+        this(data, shapes, null);
     }
-
-//    public ValidationContext(Graph data, ShexSchema shapes) {
-//        this(data, shapes, null, null);
-//    }
 
     /**
      * Precondition: vCxt cannot be null
@@ -79,10 +67,6 @@ public class ValidationContext {
     public ValidationContext(Graph data, ShexSchema shapes, Map<String, SemanticActionPlugin> semActPluginIndex) {
         this(null, data, shapes, null, semActPluginIndex);
     }
-
-//    private ValidationContext(Graph data, ShexSchema shapes ,Deque<Pair<Node, ShexShape>> progress) {
-//        this(data, shapes, progress, null);
-//    }
 
     private ValidationContext(ValidationContext parentCtx, Graph data, ShexSchema shapes, Deque<Pair<Node, ShexShape>> progress, Map<String, SemanticActionPlugin> semActPluginIndex) {
         this.parentCtx = parentCtx;
@@ -119,6 +103,17 @@ public class ValidationContext {
 
     public Graph getData() {
         return data;
+    }
+
+    /**
+     * Creates a new validation context with the current one as its parent context.
+     * Initializes the new context with the state of the parent context.
+     *
+     * @return new ValidationContext with this as parent.
+     */
+    public ValidationContext create() {
+        // Fresh ShexReport.Builder
+        return new ValidationContext(this, this.data, this.shapes, this.inProgress, this.semActPluginIndex);
     }
 
     public void startValidate(ShexShape shape, Node data) {
