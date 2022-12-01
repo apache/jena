@@ -71,7 +71,7 @@
     <ver.jetty>10.0.12</ver.jetty>
     <ver.shiro>1.10.0</ver.shiro>
 
-    <ver.protobuf>3.21.9</ver.protobuf>
+    <ver.protobuf>3.21.10</ver.protobuf>
     <ver.libthrift>0.17.0</ver.libthrift>
 
     <!-- JSON-LD 1.1 -->
