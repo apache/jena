@@ -42,6 +42,8 @@ import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
+import org.apache.jena.tdb2.store.tupletable.TupleIndex;
+import org.apache.jena.tdb2.store.tupletable.TupleTable;
 import org.apache.jena.tdb2.sys.TDBInternal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,12 +143,28 @@ public class SolverLibTDB
         }
     }
 
+    private static Tuple<NodeId> TupleANY = TupleFactory.create4(NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny);
+
     /** Find all the graph names in the quads table. */
     static QueryIterator graphNames(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
-                                           Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
+                                    Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         List<Abortable> killList = new ArrayList<>();
-        Iterator<Tuple<NodeId>> iter1 = ds.getQuadTable().getNodeTupleTable().find(NodeId.NodeIdAny, NodeId.NodeIdAny,
-                                                                                   NodeId.NodeIdAny, NodeId.NodeIdAny);
+        NodeTupleTable ntt = ds.getQuadTable().getNodeTupleTable();
+
+        TupleIndex idx = findGraphIndex(ntt.getTupleTable(), "G");
+
+        boolean needDistinct;
+        Iterator<Tuple<NodeId>> iter1;
+
+        if ( idx == null ) {
+            iter1 = ntt.findAll();
+            needDistinct = true;
+        }
+        else {
+            iter1 = idx.find(TupleANY);
+            needDistinct = false;
+        }
+
         if ( filter != null )
             iter1 = Iter.filter(iter1, filter);
 
@@ -154,7 +172,7 @@ public class SolverLibTDB
         // Project is cheap - don't brother wrapping iter1
         iter2 = makeAbortable(iter2, killList);
 
-        Iterator<NodeId> iter3 = Iter.distinct(iter2);
+        Iterator<NodeId> iter3 = (needDistinct) ? Iter.distinct(iter2) : Iter.distinctAdjacent(iter2);
         iter3 = makeAbortable(iter3, killList);
 
         Iterator<Node> iter4 = NodeLib.nodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3);
@@ -162,6 +180,17 @@ public class SolverLibTDB
         final Var var = Var.alloc(graphNode);
         Iterator<Binding> iterBinding = Iter.map(iter4, node -> BindingFactory.binding(var, node));
         return new QueryIterAbortable(iterBinding, killList, input, execCxt);
+    }
+
+    private static TupleIndex findGraphIndex(TupleTable tupleTable, String indexPrefix) {
+        TupleIndex[] indexes = tupleTable.getIndexes();
+        for ( int i = 0 ; i < indexes.length ; i++ ) {
+            TupleIndex idx = indexes[i];
+            String n = idx.getName();
+            if ( n.startsWith(indexPrefix) )
+                return idx;
+        }
+        return null;
     }
 
     static Set<NodeId> convertToNodeIds(Collection<Node> nodes, DatasetGraphTDB dataset)

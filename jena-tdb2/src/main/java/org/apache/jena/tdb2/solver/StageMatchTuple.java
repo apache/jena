@@ -90,7 +90,6 @@ class StageMatchTuple {
             iterMatches = Iter.distinctAdjacent(iterMatches);
         }
 
-
         Function<Tuple<NodeId>, BindingNodeId> binder = tuple -> tupleToBinding(input, tuple, vars);
         return Iter.iter(iterMatches).map(binder).removeNulls();
     }

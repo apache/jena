@@ -81,10 +81,7 @@ public class Fuseki {
     static private Metadata metadata                     = initMetadata();
 
     private static Metadata initMetadata() {
-        Metadata m = new Metadata();
-        // m.addMetadata(metadataDevLocation);
-        m.addMetadata(metadataLocation);
-        return m;
+        return new Metadata(metadataLocation);
     }
 
     /** The name of the Fuseki server.*/

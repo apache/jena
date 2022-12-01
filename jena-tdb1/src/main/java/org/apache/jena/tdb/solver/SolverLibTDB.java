@@ -143,7 +143,7 @@ public class SolverLibTDB
 
     /** Find all the graph names in the quads table. */
     static QueryIterator graphNames(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
-                                           Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
+                                    Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         List<Abortable> killList = new ArrayList<>();
         Iterator<Tuple<NodeId>> iter1 = ds.getQuadTable().getNodeTupleTable().find(NodeId.NodeIdAny, NodeId.NodeIdAny,
                                                                                    NodeId.NodeIdAny, NodeId.NodeIdAny);
