@@ -84,7 +84,7 @@ public abstract class CDTValue
 
 	public boolean sameAs( final Object other ) throws ExprEvalException {
 		if ( isNull() ) {
-			throw new ExprEvalException();
+			throw new ExprEvalException("nulls cannot be compared");
 		}
 
 		if ( v2.isNode() ) {

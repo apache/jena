@@ -182,6 +182,7 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 
 		final Iterator<CDTValue> it1 = list1.iterator();
 		final Iterator<CDTValue> it2 = list2.iterator();
+		boolean errorCaught = false;
 		while ( it1.hasNext() ) {
 			final CDTValue v1 = it1.next();
 			final CDTValue v2 = it2.next();
@@ -204,6 +205,8 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 				}
 			}
 		}
+
+		if ( errorCaught ) throw new ExprEvalException("nulls in lists cannot be compared");
 
 		return true;
 	}
