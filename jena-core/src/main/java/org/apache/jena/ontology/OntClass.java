@@ -406,7 +406,7 @@ public interface OntClass
      * of a class</em>, by looking at the domains of the properties in this
      * class's model, and matching them to this class. A full description of
      * the frame-like view of a class may be found in:
-     * <a href="//how-to/rdf-frames.html">RDF frames how-to</a>
+     * <a href="/documentation/notes/rdf-frames.html">RDF frames how-to</a>
      * for full details.<p>
      * Note that many cases of determining whether a
      * property is associated with a class depends on RDFS or OWL reasoning.

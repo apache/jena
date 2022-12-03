@@ -787,7 +787,7 @@ public class OntPropertyImpl
      * that each returned class has this property as one of its
      * properties in {@link OntClass#listDeclaredProperties()}. This
      * simulates a frame-like view of properties and classes; for more
-     * details see the <a href="../../../../../../how-to/rdf-frames.html">
+     * details see the <a href=/documentation/notes/rdf-frames.html">
      * RDF frames howto</a>.</p>
      * @return An iterator of the classes having this property as one
      * of their declared properties
@@ -802,7 +802,7 @@ public class OntPropertyImpl
      * that each returned class has this property as one of its
      * properties in {@link OntClass#listDeclaredProperties(boolean)}. This
      * simulates a frame-like view of properties and classes; for more
-     * details see the <a href="../../../../../../how-to/rdf-frames.html">
+     * details see the <a href="/documentation/notes/rdf-frames.html">
      * RDF frames howto</a>.</p>
      * @param direct If true, use only <em>direct</em> associations between classes
      * and properties
