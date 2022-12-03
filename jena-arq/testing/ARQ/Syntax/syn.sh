@@ -50,6 +50,14 @@ source syn-func.sh
 	'<http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-service/manifest#>'
 )
 
+# Lateral
+(
+    cd Syntax-Lateral
+    clean 
+    source ../syn-lateral.sh 
+    createManifest "Syntax-Lateral" '<manifest#>'
+)
+
 # ARQ
 (
     cd Syntax-ARQ

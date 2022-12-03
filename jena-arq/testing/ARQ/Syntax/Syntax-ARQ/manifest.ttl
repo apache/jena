@@ -70,302 +70,224 @@
 :test_42
 :test_43
 :test_44
-:test_45
-:test_46
-:test_47
-:test_48
-:test_49
-:test_50
-:test_51
-:test_52
-:test_53
-:test_54
-:test_55
-:test_56
-:test_57
 ) .
 
 :test_1 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-01.arq" ;
-   mf:action  <syntax-lateral-01.arq> ;.
-
-:test_2 rdf:type   mfx:PositiveSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-02.arq" ;
-   mf:action  <syntax-lateral-02.arq> ;.
-
-:test_3 rdf:type   mfx:PositiveSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-03.arq" ;
-   mf:action  <syntax-lateral-03.arq> ;.
-
-:test_4 rdf:type   mfx:PositiveSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-04.arq" ;
-   mf:action  <syntax-lateral-04.arq> ;.
-
-:test_5 rdf:type   mfx:PositiveSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-05.arq" ;
-   mf:action  <syntax-lateral-05.arq> ;.
-
-:test_6 rdf:type   mfx:PositiveSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-select-expr-01.arq" ;
    mf:action  <syntax-select-expr-01.arq> ;.
 
-:test_7 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_2 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-select-expr-02.arq" ;
    mf:action  <syntax-select-expr-02.arq> ;.
 
-:test_8 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_3 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-select-expr-03.arq" ;
    mf:action  <syntax-select-expr-03.arq> ;.
 
-:test_9 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_4 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-select-expr-04.arq" ;
    mf:action  <syntax-select-expr-04.arq> ;.
 
-:test_10 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_5 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-select-expr-05.arq" ;
    mf:action  <syntax-select-expr-05.arq> ;.
 
-:test_11 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_6 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-select-expr-06.arq" ;
    mf:action  <syntax-select-expr-06.arq> ;.
 
-:test_12 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_7 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-select-expr-07.arq" ;
    mf:action  <syntax-select-expr-07.arq> ;.
 
-:test_13 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_8 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-service-01.arq" ;
    mf:action  <syntax-service-01.arq> ;.
 
-:test_14 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_9 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-group-01.arq" ;
    mf:action  <syntax-group-01.arq> ;.
 
-:test_15 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_10 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-group-02.arq" ;
    mf:action  <syntax-group-02.arq> ;.
 
-:test_16 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_11 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-group-03.arq" ;
    mf:action  <syntax-group-03.arq> ;.
 
-:test_17 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_12 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-group-04.arq" ;
    mf:action  <syntax-group-04.arq> ;.
 
-:test_18 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_13 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-count-01.arq" ;
    mf:action  <syntax-count-01.arq> ;.
 
-:test_19 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_14 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-count-02.arq" ;
    mf:action  <syntax-count-02.arq> ;.
 
-:test_20 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_15 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-count-03.arq" ;
    mf:action  <syntax-count-03.arq> ;.
 
-:test_21 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_16 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-count-04.arq" ;
    mf:action  <syntax-count-04.arq> ;.
 
-:test_22 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_17 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-subquery-01.arq" ;
    mf:action  <syntax-subquery-01.arq> ;.
 
-:test_23 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_18 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-subquery-02.arq" ;
    mf:action  <syntax-subquery-02.arq> ;.
 
-:test_24 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_19 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-subquery-03.arq" ;
    mf:action  <syntax-subquery-03.arq> ;.
 
-:test_25 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_20 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-subquery-04.arq" ;
    mf:action  <syntax-subquery-04.arq> ;.
 
-:test_26 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_21 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-let-01.arq" ;
    mf:action  <syntax-let-01.arq> ;.
 
-:test_27 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_22 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-let-02.arq" ;
    mf:action  <syntax-let-02.arq> ;.
 
-:test_28 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_23 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-01.arq" ;
    mf:action  <syntax-quad-construct-01.arq> ;.
 
-:test_29 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_24 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-02.arq" ;
    mf:action  <syntax-quad-construct-02.arq> ;.
 
-:test_30 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_25 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-03.arq" ;
    mf:action  <syntax-quad-construct-03.arq> ;.
 
-:test_31 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_26 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-04.arq" ;
    mf:action  <syntax-quad-construct-04.arq> ;.
 
-:test_32 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_27 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-05.arq" ;
    mf:action  <syntax-quad-construct-05.arq> ;.
 
-:test_33 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_28 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-06.arq" ;
    mf:action  <syntax-quad-construct-06.arq> ;.
 
-:test_34 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_29 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-07.arq" ;
    mf:action  <syntax-quad-construct-07.arq> ;.
 
-:test_35 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_30 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-08.arq" ;
    mf:action  <syntax-quad-construct-08.arq> ;.
 
-:test_36 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_31 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-09.arq" ;
    mf:action  <syntax-quad-construct-09.arq> ;.
 
-:test_37 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_32 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-10.arq" ;
    mf:action  <syntax-quad-construct-10.arq> ;.
 
-:test_38 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_33 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-11.arq" ;
    mf:action  <syntax-quad-construct-11.arq> ;.
 
-:test_39 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_34 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-12.arq" ;
    mf:action  <syntax-quad-construct-12.arq> ;.
 
-:test_40 rdf:type   mfx:PositiveSyntaxTestARQ ;
+:test_35 rdf:type   mfx:PositiveSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-median-01.arq" ;
    mf:action  <syntax-median-01.arq> ;.
 
-:test_41 rdf:type   mfx:NegativeSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-bad-01.arq" ;
-   mf:action  <syntax-lateral-bad-01.arq> ;.
-
-:test_42 rdf:type   mfx:NegativeSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-bad-02.arq" ;
-   mf:action  <syntax-lateral-bad-02.arq> ;.
-
-:test_43 rdf:type   mfx:NegativeSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-bad-03.arq" ;
-   mf:action  <syntax-lateral-bad-03.arq> ;.
-
-:test_44 rdf:type   mfx:NegativeSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-bad-04.arq" ;
-   mf:action  <syntax-lateral-bad-04.arq> ;.
-
-:test_45 rdf:type   mfx:NegativeSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-bad-05.arq" ;
-   mf:action  <syntax-lateral-bad-05.arq> ;.
-
-:test_46 rdf:type   mfx:NegativeSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-bad-06.arq" ;
-   mf:action  <syntax-lateral-bad-06.arq> ;.
-
-:test_47 rdf:type   mfx:NegativeSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-bad-07.arq" ;
-   mf:action  <syntax-lateral-bad-07.arq> ;.
-
-:test_48 rdf:type   mfx:NegativeSyntaxTestARQ ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-lateral-bad-08.arq" ;
-   mf:action  <syntax-lateral-bad-08.arq> ;.
-
-:test_49 rdf:type   mfx:NegativeSyntaxTestARQ ;
+:test_36 rdf:type   mfx:NegativeSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-scope-bad-01.arq" ;
    mf:action  <syntax-scope-bad-01.arq> ;.
 
-:test_50 rdf:type   mfx:NegativeSyntaxTestARQ ;
+:test_37 rdf:type   mfx:NegativeSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-scope-bad-02.arq" ;
    mf:action  <syntax-scope-bad-02.arq> ;.
 
-:test_51 rdf:type   mfx:NegativeSyntaxTestARQ ;
+:test_38 rdf:type   mfx:NegativeSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-agg-expr-bad-01.arq" ;
    mf:action  <syntax-agg-expr-bad-01.arq> ;.
 
-:test_52 rdf:type   mfx:NegativeSyntaxTestARQ ;
+:test_39 rdf:type   mfx:NegativeSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-agg-expr-bad-02.arq" ;
    mf:action  <syntax-agg-expr-bad-02.arq> ;.
 
-:test_53 rdf:type   mfx:NegativeSyntaxTestARQ ;
+:test_40 rdf:type   mfx:NegativeSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-agg-expr-bad-03.arq" ;
    mf:action  <syntax-agg-expr-bad-03.arq> ;.
 
-:test_54 rdf:type   mfx:NegativeSyntaxTestARQ ;
+:test_41 rdf:type   mfx:NegativeSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-subquery-bad-01.arq" ;
    mf:action  <syntax-subquery-bad-01.arq> ;.
 
-:test_55 rdf:type   mfx:NegativeSyntaxTestARQ ;
+:test_42 rdf:type   mfx:NegativeSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-subquery-bad-02.arq" ;
    mf:action  <syntax-subquery-bad-02.arq> ;.
 
-:test_56 rdf:type   mfx:NegativeSyntaxTestARQ ;
+:test_43 rdf:type   mfx:NegativeSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-let-bad-01.arq" ;
    mf:action  <syntax-let-bad-01.arq> ;.
 
-:test_57 rdf:type   mfx:NegativeSyntaxTestARQ ;
+:test_44 rdf:type   mfx:NegativeSyntaxTestARQ ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-quad-construct-bad-01.arq" ;
    mf:action  <syntax-quad-construct-bad-01.arq> ;.
