@@ -293,10 +293,12 @@ public class RDFParserBuilder {
     /** Set the base URI for parsing.  The default is to have no base URI. */
     public RDFParserBuilder base(String base) { this.baseURI = base ; return this; }
 
-    /** Choose whether to resolve URIs.<br/>
-     *  This does not affect all languages: N-Triples and N-Quads never resolve URIs.<br/>
-     *  Relative URIs are bad data.<br/>
-     *  Only set this to false for debugging and development purposes.
+    /**
+     * Choose whether to resolve URIs or throw an error.
+     * <p>
+     * This does not affect all languages: N-Triples and N-Quads never resolve URIs.<br/>
+     * If this is flag false, relative URIs cause parse errors.<br/>
+     * Only set this to false for debugging and development purposes.
      */
     public RDFParserBuilder resolveURIs(boolean flag) { this.resolveURIs = flag ; return this; }
 
