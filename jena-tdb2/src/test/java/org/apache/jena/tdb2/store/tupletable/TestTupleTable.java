@@ -30,6 +30,7 @@ import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.sys.SystemTDB;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestTupleTable
@@ -147,6 +148,41 @@ public class TestTupleTable
 
         Tuple<NodeId> e1 = x.get(0);
         assertEquals(tuple(n1, n2, n3) , e1);
+    }
+
+    @Test public void selectIndex1() {
+        TupleTable table = create();
+
+        // With no index type constraint should return an index for S, P and O but not G as test table doesn't have that
+        // index
+        TupleIndex byS = table.selectIndex("S");
+        Assert.assertNotNull(byS);
+        TupleIndex byP = table.selectIndex("P");
+        Assert.assertNotNull(byP);
+        TupleIndex byO = table.selectIndex("O");
+        Assert.assertNotNull(byO);
+        TupleIndex byG = table.selectIndex("G");
+        Assert.assertNull(byG);
+
+        // We're using TupleIndexRecord as the index type so this should select indexes for everything but G
+        TupleIndexRecord recordByS = table.selectIndex("S", TupleIndexRecord.class);
+        Assert.assertNotNull(recordByS);
+        TupleIndexRecord recordByP = table.selectIndex("P", TupleIndexRecord.class);
+        Assert.assertNotNull(recordByP);
+        TupleIndexRecord recordByO = table.selectIndex("O", TupleIndexRecord.class);
+        Assert.assertNotNull(recordByO);
+        TupleIndexRecord recordByG = table.selectIndex("G", TupleIndexRecord.class);
+        Assert.assertNull(recordByG);
+
+        // Using the wrong type constraint should select no index for anything
+        TupleIndexWrapper wrapperByS = table.selectIndex("S", TupleIndexWrapper.class);
+        Assert.assertNull(wrapperByS);
+        TupleIndexWrapper wrapperByP = table.selectIndex("P", TupleIndexWrapper.class);
+        Assert.assertNull(wrapperByP);
+        TupleIndexWrapper wrapperByO = table.selectIndex("O", TupleIndexWrapper.class);
+        Assert.assertNull(wrapperByO);
+        TupleIndexWrapper wrapperByG = table.selectIndex("G", TupleIndexWrapper.class);
+        Assert.assertNull(wrapperByG);
     }
 
 }

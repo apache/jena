@@ -18,15 +18,12 @@
 
 package org.apache.jena.tdb2.store;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.dboe.storage.system.DatasetGraphStorage;
 import org.apache.jena.dboe.trans.bplustree.BPlusTree;
@@ -38,9 +35,7 @@ import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.lib.NodeLib;
 import org.apache.jena.tdb2.params.StoreParams;
-import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
-import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 import org.apache.jena.tdb2.store.tupletable.TupleIndexRecord;
 
 final
@@ -145,14 +140,9 @@ public class DatasetGraphTDB extends DatasetGraphStorage
         checkNotClosed();
         NodeTupleTable quads = getQuadTable().getNodeTupleTable();
 
-        TupleIndexRecord graphIndex = null;
-        for (TupleIndex index : quads.getTupleTable().getIndexes()) {
-            if (StringUtils.startsWith(index.getName(), "G") && index instanceof TupleIndexRecord)
-                graphIndex = (TupleIndexRecord) index;
-        }
-
+        TupleIndexRecord graphIndex = quads.getTupleTable().selectIndex("G", TupleIndexRecord.class);
         if (graphIndex != null && graphIndex.getRangeIndex() instanceof BPlusTree) {
-            BPlusTree bpt = (BPlusTree) graphIndex.getRangeIndex();
+            BPlusTree bpt = (BPlusTree) (graphIndex).getRangeIndex();
             Iterator<NodeId> distinctGraphNodeIds
                     = Iter.iter(bpt.distinctByKeyPrefix(NodeId.SIZE)).map(r -> NodeIdFactory.get(r.getKey(), 0));
             return NodeLib.nodes(quads.getNodeTable(), distinctGraphNodeIds);
@@ -177,62 +167,5 @@ public class DatasetGraphTDB extends DatasetGraphStorage
         else
             // Includes Node.ANY and union graph
             return getQuadTable().getNodeTupleTable();
-    }
-
-    private static class DistinctKeyPrefixIterator implements Iterator<Node> {
-        private final BPlusTree bpt;
-        private final NodeTable nodeTable;
-        private Iterator<Record> records = null;
-        private byte[] lastKey = null;
-        private Record next = null;
-
-        public DistinctKeyPrefixIterator(BPlusTree bpt, NodeTable nodeTable) {
-            this.bpt = bpt;
-            this.nodeTable = nodeTable;
-        }
-
-        @Override
-        public boolean hasNext() {
-            if (this.records == null) {
-                this.records = this.bpt.iterator();
-            }
-            return this.next != null || this.moveToNext();
-        }
-
-        private boolean moveToNext() {
-            // Try to find the next record whose key prefix differs from the previously seen prefix
-            while (this.records.hasNext()) {
-                Record r = this.records.next();
-                byte[] currentKey = r.getKey();
-                if (this.lastKey == null) {
-                    // First time we've been called so just return the first record
-                    this.next = r;
-                    this.lastKey = currentKey;
-                    return true;
-                } else if (Arrays.compare(this.lastKey, 0, NodeId.SIZE, currentKey, 0, NodeId.SIZE) == 0) {
-                    // If the current record key prefix is the same as the last record key prefix we yielded then skip
-                    // this record
-                    continue;
-                } else {
-                    // Otherwise this is a different key prefix therefore we can yield this next
-                    this.next = r;
-                    this.lastKey = currentKey;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        @Override
-        public Node next() {
-            if (this.next == null) {
-                if (!this.moveToNext()) throw new NoSuchElementException();
-            }
-            Record r = this.next;
-            this.next = null;
-            NodeId id = NodeIdFactory.get(r.getKey(), 0);
-            return nodeTable.getNodeForNodeId(id);
-        }
     }
 }

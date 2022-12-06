@@ -201,6 +201,44 @@ public class TupleTable implements Sync, Closeable
     /** Get i'th index */
     public TupleIndex getIndex(int i)                   { return indexes[i]; }
 
+    /**
+     * Selects an index that starts with the given prefix, used for internal execution optimisations that need to ensure
+     * they are accessing an index organised in a specific way.
+     * <p>
+     * If an optimisation needs access to a specific index type to function then it should use the
+     * {@link #selectIndex(String, Class)} overload providing the desired index implementation type.
+     * </p>
+     *
+     * @param prefix Index prefix
+     * @return Tuple Index, or {@code null} if no such index exists
+     */
+    public TupleIndex selectIndex(String prefix) {
+        return this.selectIndex(prefix, TupleIndex.class);
+    }
+
+    /**
+     * Selects an index that starts with the given prefix and is of the given implementation class.
+     * <p>
+     * Used for internal execution optimisation that need to access specific index types in specific ways.
+     * </p>
+     *
+     * @param prefix     Index Prefix
+     * @param indexType  Index implementation class
+     * @return Index, or {@code null} if no such index of the correct type exists
+     * @param <T> Index type
+     */
+    public <T extends TupleIndex> T selectIndex(String prefix, Class<T> indexType) {
+        if (indexes == null)
+            return null;
+        for ( int i = 0 ; i < indexes.length ; i++ ) {
+            TupleIndex idx = indexes[i];
+            String n = idx.getName();
+            if ( n.startsWith(prefix) && indexType.isAssignableFrom(idx.getClass()) )
+                return indexType.cast(idx);
+        }
+        return null;
+    }
+
     /** Get all indexes - for code that manipulates internal structures directly - use with care */
     public TupleIndex[] getIndexes()                    { return indexes; }
 
