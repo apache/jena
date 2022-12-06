@@ -49,10 +49,15 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
     BPTreeDistinctKeyPrefixIterator(BPTreeNode node, int keyPrefixLength) {
         if (keyPrefixLength < 1) {
             throw new IllegalArgumentException("keyPrefixLength must be >= 1");
+        } else if (keyPrefixLength > node.params.recordFactory.keyLength()) {
+            throw new IllegalArgumentException(
+                    "Maximum keyPrefixLength for this B+Tree is " + node.params.recordFactory.keyLength());
         }
+
         this.keyPrefixLength = keyPrefixLength;
         this.minRecord = node.minRecord();
         this.maxRecord = node.maxRecord();
+
         BPTreeRecords r = loadStack(node);
         current = getRecordsIterator(r);
     }
@@ -116,8 +121,7 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
             // iterator for this entire subtree and skip further recursion
             Record subtreeMin = n.minRecord();
             Record subtreeMax = n.maxRecord();
-            if (Arrays.compare(subtreeMin.getKey(), 0, this.keyPrefixLength, subtreeMax.getKey(), 0,
-                               this.keyPrefixLength) == 0) {
+            if (haveSamePrefix(subtreeMin, subtreeMax)) {
                 return Iter.singleton(subtreeMin);
             }
             r = loadStack(n);
@@ -127,25 +131,29 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
         return getRecordsIterator(r);
     }
 
+    protected final boolean haveSamePrefix(Record a, Record b) {
+        return Arrays.compare(a.getKey(), 0, this.keyPrefixLength, b.getKey(), 0, this.keyPrefixLength) == 0;
+    }
+
     // ---- Places we touch blocks.
 
     protected Iterator<Record> getRecordsIterator(BPTreeRecords records) {
         records.bpTree.startReadBlkMgr();
         Iterator<Record> iter;
         if (!records.hasAnyKeys()) {
-            return Iter.nullIterator();
-        }
-        // Check whether we need to scan the whole page or can process it by skipping or singleton yield
-        Record lowRecord = records.getLowRecord();
-        if (Arrays.compare(lowRecord.getKey(), 0, this.keyPrefixLength, records.getHighRecord().getKey(),
-                           0, this.keyPrefixLength) == 0) {
-            // If the low and high keys for this page have the same prefix then just return a singleton iterator
-            iter = Iter.singleton(lowRecord);
+            iter = Iter.nullIterator();
         } else {
-            // Otherwise need to scan the whole page
-            iter = records.getRecordBuffer().iterator();
-            records.bpTree.finishReadBlkMgr();
+            // Check whether we need to scan the whole page or can process it by skipping or singleton yield
+            Record lowRecord = records.getLowRecord();
+            if (haveSamePrefix(lowRecord, records.getHighRecord())) {
+                // If the low and high keys for this page have the same prefix then just return a singleton iterator
+                iter = Iter.singleton(lowRecord);
+            } else {
+                // Otherwise need to scan the whole page
+                iter = records.getRecordBuffer().iterator();
+            }
         }
+        records.bpTree.finishReadBlkMgr();
         return iter;
     }
 
@@ -161,7 +169,7 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
             if (it == null || !it.hasNext()) {
                 continue;
             }
-            BPTreePage p = it.next();
+            it.next();
             stack.push(it);
         }
         BPTreePage p = steps.get(steps.size() - 1).page;
