@@ -19,6 +19,7 @@
 package org.apache.jena.dboe.trans.bplustree;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.trans.bplustree.AccessPath.AccessStep;
@@ -34,7 +35,24 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
     static Logger log = LoggerFactory.getLogger(BPTreeDistinctKeyPrefixIterator.class);
 
     public static Iterator<Record> create(BPTreeNode node, int keyPrefixLength) {
-        return new BPTreeDistinctKeyPrefixIterator(node, keyPrefixLength);
+        if (keyPrefixLength < 1) {
+            throw new IllegalArgumentException("keyPrefixLength must be >= 1");
+        } else if (keyPrefixLength > node.params.recordFactory.keyLength()) {
+            throw new IllegalArgumentException(
+                    "Maximum keyPrefixLength for this B+Tree is " + node.params.recordFactory.keyLength());
+        }
+        Record minRecord = node.minRecord();
+        Record maxRecord = node.maxRecord();
+        // If there's no records just return a null iterator
+        if (minRecord == null) {
+            return Iter.nullIter();
+        }
+        // If there's only a single distinct prefix then just return a singleton
+        if (Arrays.compare(minRecord.getKey(), 0, keyPrefixLength, maxRecord.getKey(), 0, keyPrefixLength) == 0) {
+            return Iter.singleton(minRecord);
+        }
+        // Otherwise need the full iterator
+        return new BPTreeDistinctKeyPrefixIterator(node, keyPrefixLength, minRecord, maxRecord);
     }
 
     // Convert path to a stack of iterators
@@ -46,17 +64,10 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
 
     private final int keyPrefixLength;
 
-    BPTreeDistinctKeyPrefixIterator(BPTreeNode node, int keyPrefixLength) {
-        if (keyPrefixLength < 1) {
-            throw new IllegalArgumentException("keyPrefixLength must be >= 1");
-        } else if (keyPrefixLength > node.params.recordFactory.keyLength()) {
-            throw new IllegalArgumentException(
-                    "Maximum keyPrefixLength for this B+Tree is " + node.params.recordFactory.keyLength());
-        }
-
+    BPTreeDistinctKeyPrefixIterator(BPTreeNode node, int keyPrefixLength, Record minRecord, Record maxRecord) {
         this.keyPrefixLength = keyPrefixLength;
-        this.minRecord = node.minRecord();
-        this.maxRecord = node.maxRecord();
+        this.minRecord = minRecord;
+        this.maxRecord = maxRecord;
 
         BPTreeRecords r = loadStack(node);
         current = getRecordsIterator(r);

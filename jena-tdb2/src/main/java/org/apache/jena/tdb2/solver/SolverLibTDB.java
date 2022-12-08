@@ -161,7 +161,7 @@ public class SolverLibTDB
 
         // Select a graph based index for use, if a suitable one is available
         // We select twice here because if there is an index of a specific type we can do additional optimisation, but
-        // a graph based index allows for some optimisation regardless
+        // a graph based index allows for some optimisation regardless of the underlying index type
         TupleIndexRecord idxRecord = ntt.getTupleTable().selectIndex("G", TupleIndexRecord.class);
         TupleIndex idx = ntt.getTupleTable().selectIndex("G");
 
@@ -187,7 +187,8 @@ public class SolverLibTDB
         } else {
             // Fall back to a find all which will use the most appropriate index available
             // Need full distinct calculation as no guarantee that the index is ordered with respect to the graph name
-            // Memory usage will scale with number of distinct graph names though this is a
+            // Memory usage will scale with number of distinct graph names though this is likely to be relatively
+            // modest so generally not a problem
             iter1 = ntt.findAll();
             distinctMode = GraphNamesDistinctMode.FULL;
         }

@@ -80,17 +80,24 @@ public class TestBPTreeDistinctKeys extends TestBPTreeModes {
         this.treeOrder = treeOrder;
 
         // Generate random data
+        // We generate a random selection of keys such that those keys will always have the same 1 byte prefix by
+        // limiting the range of our randomly generated numbers to up to the first key that would not have an empty 1st
+        // byte
         Random random = new Random();
         randomData = new ArrayList<>();
         int maxKey = (int) Math.pow(2, 24);
         while (randomData.size() < this.randomSize) {
             int x = random.nextInt(maxKey);
+            // Need to ensure that every random key generated is unique since the B+Tree will not permit duplicate
+            // keys
             if (!randomData.contains(x)) {
                 randomData.add(x);
             }
         }
 
-        // Sort out random data into the order we expect it back out
+        // Sort out random data into the order we expect to retrieve it back out for our test assertions
+        // Intentionally keeping the random data in the randomly generated order thus we're also exercising the B+Tree
+        // being populated in a random order as part of these tests
         expectedData = new ArrayList<>(randomData);
         Collections.sort(expectedData);
     }
@@ -258,8 +265,8 @@ public class TestBPTreeDistinctKeys extends TestBPTreeModes {
             bpt.insert(factory.create(Bytes.packInt(key)));
         }
 
-        // Find only the keys with a unique 2 byte prefix, since we already ensured with our data generation that the
-        // first byte is always identical only need to use the 2nd byte as the key here
+        // Find only the first keys with a unique 2 byte prefix, since we already ensured with our data generation that
+        // the first byte is always identical only need to use the 2nd byte as the key here
         Map<Byte, Integer> relevantKeys = new HashMap<>();
         for (int key : expectedData) {
             byte[] keyBytes = Bytes.packInt(key);
@@ -281,7 +288,7 @@ public class TestBPTreeDistinctKeys extends TestBPTreeModes {
             bpt.insert(factory.create(Bytes.packInt(key)));
         }
 
-        // Find only the keys with a unique 3 byte prefix
+        // Find only the first keys with each unique 3 byte prefix
         Map<Record, Integer> relevantKeys = new HashMap<>();
         for (int key : expectedData) {
             byte[] keyBytes = Bytes.packInt(key);
