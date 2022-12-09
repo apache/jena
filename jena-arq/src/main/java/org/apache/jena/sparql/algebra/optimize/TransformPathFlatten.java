@@ -36,16 +36,16 @@ import org.apache.jena.sparql.path.PathLib ;
  * </ul>
  */
 
-public class TransformPathFlattern extends TransformCopy
+public class TransformPathFlatten extends TransformCopy
 {
     // This transform is also used so programmatically built queries also get converted.
     // Need previous BGP for merging?  Do as a separate pass (sequence, BGP collapse)
 
     private PathCompiler pathCompiler ;
 
-    public TransformPathFlattern() { this(new PathCompiler()) ; }
+    public TransformPathFlatten() { this(new PathCompiler()) ; }
 
-    public TransformPathFlattern(PathCompiler pathCompiler)
+    public TransformPathFlatten(PathCompiler pathCompiler)
     {
         this.pathCompiler = pathCompiler ;
     }
