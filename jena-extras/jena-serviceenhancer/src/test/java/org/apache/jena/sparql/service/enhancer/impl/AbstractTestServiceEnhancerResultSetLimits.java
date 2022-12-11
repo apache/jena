@@ -163,51 +163,12 @@ public abstract class AbstractTestServiceEnhancerResultSetLimits {
     }
 
     public static int testCore(Dataset dataset, String queryStr, int hiddenLimit) {
-
-
         Query query = QueryFactory.create(queryStr);
 
-        // Register a service plugin that slices the result
+        // Set up a custom service executor registry that "secretly" slices
+        // (i.e. cuts off) result sets after a certain number of rows
+        // This simulates result set limits which one typically encounters with public SPARQL endpoints
         ServiceExecutorRegistry reg = ServiceExecutorRegistry.get().copy();
-/*
-        reg.addBulkLink(
-                (op, iter, execCxt, chain) -> {
-                    // apply the slice to each input binding
-                    QueryIterator x = new QueryIterRepeatApply(iter, execCxt) {
-                        @Override
-                        protected QueryIterator nextStage(Binding binding) {
-                            QueryIterator qi = QueryIterPlainWrapper.create(Collections.singleton(binding).iterator(), execCxt);
-                            return new QueryIterSlice(chain.createExecution(op, qi, execCxt), 0, hiddenLimit, execCxt);
-                        }
-                    };
-
-                    QueryIterator r;
-                    boolean failOnPurpose = false;
-                    if (failOnPurpose) {
-                        QueryIterator y = QueryIterPlainWrapper.create(new AbstractIterator<Binding>() {
-                            @Override
-                            protected Binding computeNext() {
-                                throw new RuntimeException("Synthetic error to test for resource leaks on failure");
-                            }
-                        }, execCxt);
-
-                        QueryIterConcat z = new QueryIterConcat(execCxt);
-                        z.add(x);
-                        z.add(y);
-                        r = z;
-                    } else {
-                        r = x;
-                    }
-
-                    return r;
-                });
-*/
-
-//        reg.addBulkLink(
-//                (op, iter, execCxt, chain) -> {
-//                        return new QueryIterSlice(chain.createExecution(op, iter, execCxt), 0, hiddenLimit, execCxt);
-//                    }
-//                );
 
         reg.addSingleLink((opExec, opOrig, binding, execCxt, chain) -> {
             return new QueryIterSlice(chain.createExecution(opExec, opOrig, binding, execCxt), 0, hiddenLimit, execCxt);

@@ -18,7 +18,11 @@
 
 package org.apache.jena.sparql.service.enhancer.impl;
 
-/** Helper class to capture a range of data w.r.t. a partition key (typically a binding) and assign it an id */
+/**
+ * Helper class to capture a range of data (specified by limit + offset)
+ * w.r.t. a partition key (typically a {@link org.apache.jena.sparql.engine.binding.Binding}
+ * and give that information an id.
+ */
 public class PartitionRequest<I>
 {
     protected long outputId;

@@ -208,7 +208,7 @@ public class QueryIterServiceBulk
 
                 resultSizeCache.updateLimit(targetService, backendResultSetLimit);
 
-                // We obtained to few data for the current id - repeat the request
+                // We obtained too little data for the current id - repeat the request
                 prepareNextBatchExec(false);
                 continue;
             }

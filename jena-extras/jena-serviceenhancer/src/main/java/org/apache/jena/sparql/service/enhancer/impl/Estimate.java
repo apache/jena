@@ -21,7 +21,9 @@ package org.apache.jena.sparql.service.enhancer.impl;
 import java.io.Serializable;
 import java.util.Objects;
 
-/** An estimated value with a flag that indicates whether it's exact */
+/**
+ * An estimated value with a flag that indicates whether it's exact.
+ */
 public class Estimate<T>
     implements Serializable
 {

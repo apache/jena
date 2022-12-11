@@ -32,7 +32,7 @@ import org.apache.jena.ext.com.google.common.collect.Streams;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestBatcher {
+public class TestServiceEnhancerBatcher {
 
     private static final List<Entry<String, Integer>> testData01 = List.<Entry<String, Integer>>of(
             Map.entry("a", 0),

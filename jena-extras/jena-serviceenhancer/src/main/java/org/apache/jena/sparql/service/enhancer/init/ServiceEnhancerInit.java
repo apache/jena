@@ -18,23 +18,41 @@
 
 package org.apache.jena.sparql.service.enhancer.init;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.assemblers.AssemblerGroup;
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
+import org.apache.jena.query.Query;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpAsQuery;
+import org.apache.jena.sparql.algebra.OpVars;
 import org.apache.jena.sparql.algebra.Transformer;
 import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.algebra.optimize.Optimize;
 import org.apache.jena.sparql.algebra.optimize.Rewrite;
 import org.apache.jena.sparql.algebra.optimize.RewriteFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DynamicDatasets.DynamicDatasetGraph;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssembler;
 import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.Plan;
+import org.apache.jena.sparql.engine.QueryEngineFactory;
+import org.apache.jena.sparql.engine.QueryEngineRegistry;
 import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.Rename;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.engine.iterator.QueryIter;
+import org.apache.jena.sparql.engine.iterator.QueryIterCommonParent;
+import org.apache.jena.sparql.engine.iterator.QueryIteratorMapped;
 import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
@@ -48,6 +66,8 @@ import org.apache.jena.sparql.service.enhancer.impl.ChainingServiceExecutorBulkS
 import org.apache.jena.sparql.service.enhancer.impl.ServiceOpts;
 import org.apache.jena.sparql.service.enhancer.impl.ServiceResponseCache;
 import org.apache.jena.sparql.service.enhancer.impl.ServiceResultSizeCache;
+import org.apache.jena.sparql.service.enhancer.impl.util.DynamicDatasetUtils;
+import org.apache.jena.sparql.service.enhancer.impl.util.VarScopeUtils;
 import org.apache.jena.sparql.service.enhancer.pfunction.cacheLs;
 import org.apache.jena.sparql.service.single.ChainingServiceExecutor;
 import org.apache.jena.sparql.util.Context;
@@ -100,26 +120,79 @@ public class ServiceEnhancerInit
             QueryIterator r;
             ServiceOpts so = ServiceOpts.getEffectiveService(opExec);
             OpService target = so.getTargetService();
+            DatasetGraph dataset = execCxt.getDataset();
 
             // It seems that we always need to run the optimizer here
             // in order to have property functions recognized properly
             if (ServiceEnhancerConstants.SELF.equals(target.getService())) {
                 String optimizerMode = so.getFirstValue(ServiceOpts.SO_OPTIMIZE, "on", "on");
                 Op op = opExec.getSubOp();
-                // Run the optimizer unless disabled
-                if (!"off".equals(optimizerMode)) {
-                    Context cxt = execCxt.getContext();
-                    RewriteFactory rf = decideOptimizer(cxt);
-                    Rewrite rw = rf.create(cxt);
-                    op = rw.rewrite(op);
+
+                boolean useQc = false;
+                if (useQc) {
+                    // Run the optimizer unless disabled
+                    if (!"off".equals(optimizerMode)) {
+                        Context cxt = execCxt.getContext();
+                        RewriteFactory rf = decideOptimizer(cxt);
+                        Rewrite rw = rf.create(cxt);
+                        op = rw.rewrite(op);
+                    }
+                    // Using QC with e.g. TDB2 breaks unionDefaultGraph mode.
+                    //   Issue seems to be mitigated going through QueryEngineRegistry.
+                    r = QC.execute(op, binding, execCxt);
+                } else {
+                    // A context copy is needed in order to isolate changes from further executions;
+                    //   without a copy query engines may e.g. overwrite the context value for the NOW() function.
+                    Context cxtCopy = execCxt.getContext().copy();
+                    r = execute(op, dataset, binding, cxtCopy);
                 }
-                r = QC.execute(op, binding, execCxt);
             } else {
                 r = chain.createExecution(opExec, opOrig, binding, execCxt);
             }
             return r;
         };
         registry.addSingleLink(selfExec);
+    }
+
+    /** Special processing that unwraps dynamic datasets */
+    private static QueryIterator execute(Op op, DatasetGraph dataset, Binding binding, Context cxt) {
+        QueryIterator innerIter = null;
+        QueryIterator outerIter = null;
+        ExecutionContext execCxt = null;
+
+        DynamicDatasetGraph ddg = DynamicDatasetUtils.asUnwrappableDynamicDatasetOrNull(dataset);
+        if (ddg != null) {
+            // We are about to create a query from the op which loses scope information
+            // Set up the map that allows for mapping the query's result set variables's
+            // to the appropriately scoped ones
+            Set<Var> visibleVars = OpVars.visibleVars(op);
+            Map<Var, Var> normedToScoped = VarScopeUtils.normalizeVarScopes(visibleVars).inverse();
+
+            Op opRestored = Rename.reverseVarRename(op, true);
+            Query baseQuery = OpAsQuery.asQuery(opRestored);
+            Pair<Query, DatasetGraph> pair = DynamicDatasetUtils.unwrap(baseQuery, ddg);
+            Query effQuery = pair.getLeft();
+            DatasetGraph effDataset = pair.getRight();
+
+            QueryEngineFactory qef = QueryEngineRegistry.findFactory(effQuery, effDataset, cxt);
+            // The scoping of the binding does not match with that of the query.
+            // Therefore pass on an empty binding and rename the result set variables
+            // back into their proper scope
+            Plan plan = qef.create(effQuery, effDataset, BindingFactory.empty(), cxt);
+            innerIter = plan.iterator();
+            outerIter = new QueryIteratorMapped(innerIter, normedToScoped);
+        }
+
+        if (innerIter == null) {
+            QueryEngineFactory qef = QueryEngineRegistry.findFactory(op, dataset, cxt);
+            Plan plan = qef.create(op, dataset, BindingFactory.empty(), cxt);
+            innerIter = plan.iterator();
+            outerIter = innerIter;
+        }
+
+        execCxt = innerIter instanceof QueryIter ? ((QueryIter)innerIter).getExecContext() : null;
+        QueryIterator result = new QueryIterCommonParent(outerIter, binding, execCxt);
+        return result;
     }
 
     static void registerWith(AssemblerGroup g)
