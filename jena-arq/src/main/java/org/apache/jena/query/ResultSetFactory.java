@@ -248,7 +248,9 @@ public class ResultSetFactory {
      * @param in
      *            InputStream
      * @return ResultSet
+     * @deprecated Use {@code ResultSetMgr.read(in, ResultSetLang.RS_TSV)}
      */
+    @Deprecated
     public static ResultSet fromTSV(InputStream in) {
         return ResultSetMgr.read(in, ResultSetLang.RS_TSV);
     }
