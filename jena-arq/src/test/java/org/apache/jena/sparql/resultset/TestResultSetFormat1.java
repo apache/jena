@@ -28,6 +28,8 @@ import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.query.ResultSetFormatter ;
 import org.apache.jena.query.ResultSetRewindable ;
+import org.apache.jena.riot.ResultSetMgr;
+import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderRowSet;
@@ -145,7 +147,7 @@ public class TestResultSetFormat1
         ResultSetFormatter.outputAsXML(out, rs) ;
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
         ResultSet rs2 = ResultSetFactory.fromXML(in) ;
-        areIsomorphic(rs, rs2);
+        checkIsomorphic(rs, rs2);
     }
 
     @Test public void resultset_03()
@@ -155,7 +157,7 @@ public class TestResultSetFormat1
         ResultSetFormatter.outputAsJSON(out, rs) ;
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
         ResultSet rs2 = ResultSetFactory.fromJSON(in) ;
-        areIsomorphic(rs, rs2);
+        checkIsomorphic(rs, rs2);
     }
 
     @Test public void resultset_04()
@@ -164,8 +166,8 @@ public class TestResultSetFormat1
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         ResultSetFormatter.outputAsTSV(out, rs) ;
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-        ResultSet rs2 = ResultSetFactory.fromTSV(in) ;
-        areIsomorphic(rs, rs2);
+        ResultSet rs2 = ResultSetMgr.read(in, ResultSetLang.RS_TSV);
+        checkIsomorphic(rs, rs2);
     }
 
     @Test public void resultset_05()
@@ -175,7 +177,7 @@ public class TestResultSetFormat1
         ResultSetFormatter.outputAsCSV(out, rs) ;
     }
 
-    private static void areIsomorphic(ResultSet x, ResultSet y)
+    private static void checkIsomorphic(ResultSet x, ResultSet y)
     {
         ResultSetRewindable rs1 = x.rewindable();
         ResultSetRewindable rs2 = y.rewindable();

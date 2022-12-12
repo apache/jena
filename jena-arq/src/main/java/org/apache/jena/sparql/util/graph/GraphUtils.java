@@ -28,7 +28,6 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.PropertyNotFoundException;
-import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.util.NotUniqueException ;
 import org.apache.jena.sparql.util.PropertyRequiredException ;
 import org.apache.jena.sparql.util.QueryExecUtils;
