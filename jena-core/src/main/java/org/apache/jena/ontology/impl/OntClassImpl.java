@@ -999,6 +999,7 @@ public class OntClassImpl
                 }
                 else if (!canProveSuperClass( domain )) {
                     // there is a class in the domain of p that is not a super-class of this class
+                    i.close();
                     return false;
                 }
             }

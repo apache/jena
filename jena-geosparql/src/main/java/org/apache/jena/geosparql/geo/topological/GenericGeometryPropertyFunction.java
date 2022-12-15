@@ -23,6 +23,7 @@ import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -68,24 +69,17 @@ public abstract class GenericGeometryPropertyFunction extends PFuncSimple {
 
         try {
             //Check for the asserted value and return if found.
-            if (graph.contains(subject, predicate, null)) {
-                ExtendedIterator<Triple> iter = graph.find(subject, predicate, null);
-                Node geometryLiteral = extractObject(iter);
-                return geometryLiteral;
-            }
+            if (graph.contains(subject, predicate, null))
+                return G.getSP(graph, subject, predicate);
 
             //Check that the Geometry has a serialisation to use.
-            ExtendedIterator<Triple> iter = graph.find(subject, Geo.HAS_SERIALIZATION_NODE, null);
-            Node geomLiteral = extractObject(iter);
+            Node geomLiteral = G.getSP(graph, subject, Geo.HAS_SERIALIZATION_NODE);
 
             // If hasSerialization not found then check asWKT and asGML.
             if (geomLiteral == null) {
-                iter = graph.find(subject, Geo.AS_WKT_NODE, null);
-                geomLiteral = extractObject(iter);
-                if (geomLiteral == null) {
-                    iter = graph.find(subject, Geo.AS_GML_NODE, null);
-                    geomLiteral = extractObject(iter);
-                }
+                geomLiteral = G.getSP(graph, subject, Geo.AS_WKT_NODE);
+                if (geomLiteral == null)
+                    geomLiteral = G.getSP(graph, subject, Geo.AS_GML_NODE);
             }
 
             if (geomLiteral != null) {
@@ -98,16 +92,6 @@ public abstract class GenericGeometryPropertyFunction extends PFuncSimple {
 
         } catch (DatatypeFormatException ex) {
             throw new ExprEvalException(ex.getMessage(), ex);
-        }
-    }
-
-    private static Node extractObject(ExtendedIterator<Triple> iter) {
-
-        if (iter.hasNext()) {
-            Triple triple = iter.next();
-            return triple.getObject();
-        } else {
-            return null;
         }
     }
 
