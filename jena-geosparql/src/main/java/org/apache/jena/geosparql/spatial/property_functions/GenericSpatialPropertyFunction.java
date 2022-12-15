@@ -20,6 +20,7 @@ package org.apache.jena.geosparql.spatial.property_functions;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.commons.collections4.iterators.IteratorChain;
@@ -36,6 +37,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -113,9 +115,8 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
             //Check for Geometry and so GeometryLiterals.
             if (graph.contains(subject, Geo.HAS_GEOMETRY_NODE, null)) {
                 //A Feature can have many geometries so add each of them. The check Geo.HAS_DEFAULT_GEOMETRY_NODE will only return one but requires the data to have these present.
-                Iterator<Triple> geometryTriples = graph.find(subject, Geo.HAS_GEOMETRY_NODE, null);
-                while (geometryTriples.hasNext()) {
-                    Node geometry = geometryTriples.next().getObject();
+                List<Node> geometryNodes = G.listSP(graph, subject, Geo.HAS_GEOMETRY_NODE);
+                geometryNodes.forEach(geometry->{
                     ExtendedIterator<Triple> iter = graph.find(geometry, Geo.HAS_SERIALIZATION_NODE, null);
                     // Check for asWKT
                     if (!iter.hasNext()) {
@@ -126,12 +127,12 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
                         iter = graph.find(geometry, Geo.AS_GML_NODE, null);
                     }
                     spatialTriples.addIterator(iter);
-                }
+                });
             } else {
                 //Check for Geo predicates against the feature when no geometry literals found.
                 if (graph.contains(subject, SpatialExtension.GEO_LAT_NODE, null) && graph.contains(subject, SpatialExtension.GEO_LON_NODE, null)) {
-                    Node lat = graph.find(subject, SpatialExtension.GEO_LAT_NODE, null).next().getObject();
-                    Node lon = graph.find(subject, SpatialExtension.GEO_LON_NODE, null).next().getObject();
+                    Node lat = G.getOneSP(graph, subject, SpatialExtension.GEO_LAT_NODE);
+                    Node lon = G.getOneSP(graph, subject, SpatialExtension.GEO_LON_NODE);
                     Node latLonGeometryLiteral = ConvertLatLon.toNode(lat, lon);
                     Triple triple = Triple.create(subject, Geo.HAS_GEOMETRY_NODE, latLonGeometryLiteral);
                     spatialTriples.addIterator(Arrays.asList(triple).iterator());
@@ -141,7 +142,6 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
             //Check through each Geometry and stop if one is accepted.
             boolean isMatched = false;
             while (spatialTriples.hasNext()) {
-
                 Triple triple = spatialTriples.next();
                 Node geometryLiteral = triple.getObject();
                 GeometryWrapper targetGeometryWrapper = GeometryWrapper.extract(geometryLiteral);

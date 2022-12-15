@@ -18,6 +18,7 @@
 package org.apache.jena.geosparql.geo.topological;
 
 import java.util.Objects;
+
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
@@ -27,6 +28,8 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.other.G;
+import org.apache.jena.riot.other.RDFDataException;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 
@@ -114,8 +117,8 @@ public class SpatialObjectGeometryLiteral {
 
         if (graph.contains(targetSpatialObject, RDF.type.asNode(), Geo.FEATURE_NODE)) {
             //Target is Feature - find the default Geometry.
-            ExtendedIterator<Triple> geomIter = graph.find(targetSpatialObject, Geo.HAS_DEFAULT_GEOMETRY_NODE, null);
-            geometry = extractObject(geomIter);
+            geometry = G.getSP(graph, targetSpatialObject, Geo.HAS_DEFAULT_GEOMETRY_NODE);
+
         } else if (graph.contains(targetSpatialObject, RDF.type.asNode(), Geo.GEOMETRY_NODE)) {
             //Target is a Geometry.
             geometry = targetSpatialObject;
@@ -124,57 +127,31 @@ public class SpatialObjectGeometryLiteral {
         if (geometry != null) {
             //Find the Geometry Literal of the Geometry.
             ExtendedIterator<Triple> iter = graph.find(geometry, Geo.HAS_SERIALIZATION_NODE, null);
-            Node literalNode = extractObject(iter);
-
+            Node literalNode = G.getSP(graph, geometry, Geo.HAS_SERIALIZATION_NODE);
             // If hasSerialization not found then check asWKT.
-            if (literalNode == null) {
-                iter = graph.find(geometry, Geo.AS_WKT_NODE, null);
-                literalNode = extractObject(iter);
-            }
+            if (literalNode == null)
+                literalNode = G.getSP(graph, geometry, Geo.AS_WKT_NODE);
             // If asWKT not found then check asGML.
-            if (literalNode == null) {
-                iter = graph.find(geometry, Geo.AS_GML_NODE, null);
-                literalNode = extractObject(iter);
-            }
-
-            if (literalNode != null) {
+            if (literalNode == null)
+                literalNode = G.getSP(graph, geometry, Geo.AS_GML_NODE);
+            if (literalNode != null)
                 return new SpatialObjectGeometryLiteral(targetSpatialObject, literalNode);
-            }
         } else {
             //Target is not a Feature or Geometry but could have Geo Predicates.
-            if (graph.contains(targetSpatialObject, SpatialExtension.GEO_LAT_NODE, null) && graph.contains(targetSpatialObject, SpatialExtension.GEO_LON_NODE, null)) {
-
-                //Extract Lat coordinate.
-                ExtendedIterator<Triple> latIter = graph.find(targetSpatialObject, SpatialExtension.GEO_LAT_NODE, null);
-                Node lat = latIter.next().getObject();
-
-                //Extract Lon coordinate.
-                ExtendedIterator<Triple> lonIter = graph.find(targetSpatialObject, SpatialExtension.GEO_LON_NODE, null);
-                Node lon = lonIter.next().getObject();
-
-                //Ensure that only a single Latitude and Longitude are present for the subject.
-                if (latIter.hasNext() || lonIter.hasNext()) {
-                    latIter.close();
-                    lonIter.close();
+            if ( graph.contains(targetSpatialObject, SpatialExtension.GEO_LAT_NODE, null)
+                    && graph.contains(targetSpatialObject, SpatialExtension.GEO_LON_NODE, null)) {
+                try {
+                    //Extract Lat,Lon coordinate.
+                    Node lat = G.getOneSP(graph, targetSpatialObject, SpatialExtension.GEO_LAT_NODE);
+                    Node lon = G.getOneSP(graph, targetSpatialObject, SpatialExtension.GEO_LON_NODE);
+                    Node latLonGeometryLiteral = ConvertLatLon.toNode(lat, lon);
+                    return new SpatialObjectGeometryLiteral(targetSpatialObject, latLonGeometryLiteral);
+                } catch ( RDFDataException ex) {
                     throw new DatatypeFormatException(targetSpatialObject.getURI() + " has more than one geo:lat or geo:lon property.");
                 }
-
-                Node latLonGeometryLiteral = ConvertLatLon.toNode(lat, lon);
-                return new SpatialObjectGeometryLiteral(targetSpatialObject, latLonGeometryLiteral);
             }
         }
 
         return new SpatialObjectGeometryLiteral(null, null);
     }
-
-    private static Node extractObject(ExtendedIterator<Triple> iter) {
-
-        if (iter.hasNext()) {
-            Triple triple = iter.next();
-            return triple.getObject();
-        } else {
-            return null;
-        }
-    }
-
 }
