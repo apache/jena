@@ -557,6 +557,10 @@ public abstract class TurtleShell {
         // Write free standing lists - ones where the head is not an object of
         // some other triple. Turtle does not allow free standing (... ) .
         // so write as a predicateObjectList for one element.
+        // Later:
+        // RDF-star does not allow list syntax in quoted triples.
+        // (All that can go there are RDF terms).
+        // so write the head as a labelled bnode and the rest as a list.
         private boolean writeRemainingFreeLists(boolean somethingWritten) {
             for ( Node n : freeLists.keySet() ) {
                 if ( somethingWritten )
@@ -564,9 +568,11 @@ public abstract class TurtleShell {
                 somethingWritten = true ;
 
                 List<Node> x = freeLists.get(n) ;
-                // Print first element for the [ ... ]
-                out.print("[ ") ;
 
+                // Quick fix for lists put in quoted triples by API.
+                // Print first element for the list as a referenceable node.
+                writeNode(n) ;
+                print(" ") ;
                 writeNode(RDF_First) ;
                 print(" ") ;
                 writeNode(x.get(0)) ;
@@ -574,9 +580,25 @@ public abstract class TurtleShell {
                 writeNode(RDF_Rest) ;
                 print(" ") ;
                 x = x.subList(1, x.size()) ;
-                // Print remainder.
                 writeList(x) ;
-                out.println(" ] .") ;
+                out.println(" .") ;
+
+                // Pre RDF-star code. Remove when it is clear if the RDF-star WG is
+                // going to keep or change the syntax from the CG report.
+
+//                // Print first element for the [ ... ]
+//                out.print("[ ") ;
+//
+//                writeNode(RDF_First) ;
+//                print(" ") ;
+//                writeNode(x.get(0)) ;
+//                print(" ; ") ;
+//                writeNode(RDF_Rest) ;
+//                print(" ") ;
+//                x = x.subList(1, x.size()) ;
+//                // Print remainder.
+//                writeList(x) ;
+//                out.println(" ] .") ;
             }
             return somethingWritten ;
         }

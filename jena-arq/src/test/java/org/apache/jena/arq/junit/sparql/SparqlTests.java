@@ -43,11 +43,10 @@ public class SparqlTests {
             return null;
         }
 
-        // Defaults.
+        // Override!
         Syntax querySyntax = Syntax.syntaxSPARQL_11;
 
         // Syntax to use for tests where the file extension .rq/.ru applies.
-        // Normally, syntaxSPARQL_11
         // For SPARQL*/RDF*, use ARQ syntax so we can run the RDF-star community tests.
         Syntax querySyntax11 = defaultSyntaxForTests;
         Syntax updateSyntax11 = defaultSyntaxForTests;

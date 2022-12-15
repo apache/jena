@@ -179,8 +179,25 @@ public class TestFileUtils extends TestCase {
 		checkToFilename("Dir/File+With+Plus", "Dir/File+With+Plus");
 	}
 
-	public void testTranslateFilename12() {
-		checkToFilename("file:Dir/File+With+Plus", "Dir/File+With+Plus");
+	public void testExtension_01() { extension("/a/b/c.ext", "ext"); }
+	public void testExtension_02() { extension("c:/a/b/c.ext", "ext"); }
+	public void testExtension_03() { extension("file://host/a/b/c.ext", "ext"); }
+	public void testExtension_04() { extension("file://host/a/b/c.", ""); }
+
+	public void testExtension_05() { extension("http://host/a/b/c.ext", "ext"); }
+	public void testExtension_06() { extension("https://host/a/b/c.ext", "ext"); }
+
+	public void testExtension_10() { extension("http://host/a/b/c.ext?param=value", "ext"); }
+    public void testExtension_11() { extension("https://host/a/b/c.ext?param=value", "ext"); }
+	public void testExtension_12() { extension("http://host/a/b/c?param=value", ""); }
+	public void testExtension_13() { extension("http://host/a/b/c?param=value.ext", ""); }
+	public void testExtension_14() { extension("http://host/a/b/c.ext?param=value.alt", "ext"); }
+	public void testExtension_15() { extension("https://host/a/b/c.x?param=value.alt", "x"); }
+	public void testExtension_16() { extension("https://host/a/b/c.?param=value.alt", ""); }
+
+	private static void extension(String filename, String expected) {
+	    String ext = FileUtils.getFilenameExt(filename);
+	    assertEquals(expected, ext) ;
 	}
 
 	void isFilename(String fn) {
