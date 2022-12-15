@@ -345,9 +345,21 @@ export default {
     datasetUrl: function (val, oldVal) {
       this.currentDatasetUrl = val
     },
-    currentDatasetUrl: function (val, oldVal) {
+    currentDatasetUrl: async function (val, oldVal) {
       if (this.yasqe) {
         this.yasqe.options.requestConfig.endpoint = this.$fusekiService.getFusekiUrl(val)
+      }
+      if (this.serverData.datasets.find((ds) => ds['ds.name'] === `/${this.$fusekiService.getYasguiConfigDsName()}`)) {
+        const [queries_res, prefixes_res] = await Promise.all([
+          this.$fusekiService.getYasguiExampleQueries(this.datasetName),
+          this.$fusekiService.getYasguiPrefixes(this.datasetName)
+        ])
+        if (queries_res.data.length !== 0) {
+          this.queries.splice(0, Infinity, ...queries_res.data)
+        }
+        if (prefixes_res.data.length !== 0) {
+          this.prefixes.splice(0, Infinity, ...prefixes_res.data)
+        }
       }
     },
     contentTypeSelect: function (val, oldVal) {

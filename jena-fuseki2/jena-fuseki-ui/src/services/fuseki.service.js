@@ -22,6 +22,39 @@ import { BUS } from '@/events'
 
 const DATASET_SIZE_QUERY_1 = 'select (count(*) as ?count) {?s ?p ?o}'
 const DATASET_SIZE_QUERY_2 = 'select ?g (count(*) as ?count) {graph ?g {?s ?p ?o}} group by ?g'
+const CONF_DATASET_NAME = 'yasgui-config'
+const CONF_EXAMPLE_QUERIES_QUERY = `PREFIX conf: <https://yasgui.triply.cc/config#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#first>
+PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+PREFIX list: <http://jena.apache.org/ARQ/list#>
+JSON {
+ "text": ?text,
+ "value": ?value
+} WHERE {
+  ?root sd:endpoint "/@DATASET_NAME@/" .
+  ?root conf:exampleQueries ?list .
+  ?list list:index (?idx ?ex) .
+  ?ex rdfs:label ?text .
+  ?ex conf:query ?value .
+}
+ORDER BY ?idx`
+const CONF_PREFIXES_QUERY = `PREFIX conf: <https://yasgui.triply.cc/config#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#first>
+PREFIX sd: <http://www.w3.org/ns/sparql-service-description#>
+PREFIX list: <http://jena.apache.org/ARQ/list#>
+JSON {
+ "text": ?text,
+ "uri": ?uri
+} WHERE {
+  ?root sd:endpoint "/@DATASET_NAME@/" .
+  ?root conf:prefixes ?list .
+  ?list list:index (?idx ?ex) .
+  ?ex rdfs:label ?text .
+  ?ex conf:uri ?uri .
+}
+ORDER BY ?idx`
 
 class FusekiService {
   /**
@@ -207,6 +240,28 @@ class FusekiService {
       .catch(error => {
         throw new Error(error.response.data)
       })
+  }
+
+  async getYasguiExampleQueries (datasetName) {
+    return await axios
+      .get(this.getFusekiUrl(`/${CONF_DATASET_NAME}`), {
+        params: {
+          query: CONF_EXAMPLE_QUERIES_QUERY.replaceAll("@DATASET_NAME@", datasetName)
+        }
+      })
+  }
+
+  async getYasguiPrefixes (datasetName) {
+    return await axios
+      .get(this.getFusekiUrl(`/${CONF_DATASET_NAME}`), {
+        params: {
+          query: CONF_PREFIXES_QUERY.replaceAll("@DATASET_NAME@", datasetName)
+        }
+      })
+  }
+
+  getYasguiConfigDsName () {
+    return CONF_DATASET_NAME
   }
 }
 
