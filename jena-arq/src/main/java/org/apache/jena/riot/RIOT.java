@@ -54,9 +54,11 @@ public class RIOT {
     /** Control of multiline literals */
     public static final Symbol multilineLiterals = Symbol.create("riot.multiline_literals") ;
 
-    /** The system-wide context */
+    /** The system-wide context, shared with ARQ and other modules. */
+    private static Context systemGlobalContext = null;
+
     public static Context getContext() {
-        return ARQ.getContext();
+        return systemGlobalContext;
     }
 
     public static void init() {
@@ -68,7 +70,10 @@ public class RIOT {
                 return ;
             }
             initialized = true ;
+
             JenaSystem.logLifecycle("RIOT.init - start") ;
+            systemGlobalContext = defaultSettings();
+
             RDFLanguages.init() ;
             RDFParserRegistry.init() ;
             RDFWriterRegistry.init() ;
@@ -84,6 +89,11 @@ public class RIOT {
             // This is done in ARQ.init at the proper moment.
             JenaSystem.logLifecycle("RIOT.init - finish") ;
         }
+    }
+
+    private static Context defaultSettings() {
+        // RIOT has no global defaults in the context.
+        return new Context();
     }
 
     private static boolean registered = false ;

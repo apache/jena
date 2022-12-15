@@ -178,8 +178,8 @@ public class ARQ
     /** Turn on/off processing of blank node labels in queries */
     public static void enableBlankNodeResultLabels(boolean val) {
         Boolean b = val;
-        globalContext.set(inputGraphBNodeLabels, b);
-        globalContext.set(outputGraphBNodeLabels, b);
+        getContext().set(inputGraphBNodeLabels, b);
+        getContext().set(outputGraphBNodeLabels, b);
     }
 
     /**
@@ -206,7 +206,7 @@ public class ARQ
     public static final Symbol stageGenerator = SystemARQ.allocSymbol("stageGenerator");
 
     /**
-     * Context key to control hiding non-distinuished variables
+     * Context key to control hiding non-distinguished variables
      */
     public static final Symbol hideNonDistiguishedVariables = SystemARQ.allocSymbol("hideNonDistiguishedVariables");
 
@@ -607,15 +607,10 @@ public class ARQ
     /** The date and time at which this release was built */
     public static final String BUILD_DATE   = metadata.get(PATH+".build.datetime", "unset");
 
-    // Initialize now in case other initialization uses getContext().
-    private static Context globalContext = null;
-
-    /** Ensure things have started - applications do not need call this.
+    /**
+     * Ensure things have started - applications do not need call this.
      * The method is public so any part of ARQ can call it.
      */
-
-    static { JenaSystem.init(); }
-
     public static void init() {
         if ( initialized )
             return;
@@ -625,9 +620,11 @@ public class ARQ
             initialized = true;
             JenaSystem.logLifecycle("ARQ.init - start");
             // Force constants to be set.  This should be independent of other initialization including jena core.
+            setARQSettings();
             ARQConstants.getGlobalPrefixMap();
             ResultSetLang.init();
-            globalContext = defaultSettings();
+            // Done as a class init.
+            //globalContext = defaultSettings();
             ARQMgt.init();         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
             MappingRegistry.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqParamNS);
 
@@ -649,26 +646,24 @@ public class ARQ
         }
     }
 
-    /* Side effects */
-    private static Context defaultSettings() {
+    private static void setARQSettings() {
         // This must be executable before initialization
         SystemARQ.StrictDateTimeFO      = false;
         SystemARQ.ValueExtensions       = true;
         SystemARQ.EnableRomanNumerals   = false;
 
-        Context context = new Context();
+        // The system context is allocated in RIOT because RIOT initializes before ARQ.
+        Context context = RIOT.getContext();
         context.unset(optimization);
         //context.set(hideNonDistiguishedVariables, true);
         context.set(strictSPARQL,                  false);
         context.set(constantBNodeLabels,           true);
         context.set(enablePropertyFunctions,       true);
         context.set(regexImpl,                     javaRegex);
-
-        return context;
     }
 
     public static Context getContext() {
-        return globalContext;
+        return RIOT.getContext();
     }
 
     // Convenience call-throughs

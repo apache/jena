@@ -23,37 +23,38 @@ import java.util.StringTokenizer ;
 import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.adapters.AdapterFileManager ;
 import org.apache.jena.shared.JenaException ;
-import org.apache.jena.util.FileUtils ;
 import org.apache.jena.vocabulary.LocationMappingVocab ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** Code for using the general facilities of the location mapper/ filemanager subsystem
- *  and set up for Jena usage. e.g. find a location mapper with RDf description. 
+ *  and set up for Jena usage. e.g. find a location mapper with RDf description.
  */
 public class JenaIOEnvironment
 {
-    static LocationMapper theMapper = null ;
-    private final static Object lock = new Object() ;
+    static LocationMapper theMapper = null;
+    private final static Object lock = new Object();
     /** Get the global LocationMapper */
-    public static LocationMapper getLocationMapper()
-    {
+    public static LocationMapper getLocationMapper() {
         synchronized (lock) {
             if ( theMapper == null ) {
-                String path = getGlobalConfigPath() ;
+                String path = getGlobalConfigPath();
                 if ( path != null )
-                    theMapper = JenaIOEnvironment.createLocationMapper(path) ;
+                    theMapper = JenaIOEnvironment.createLocationMapper(path);
                 if ( theMapper == null )
-                    theMapper = new LocationMapper() ;
+                    theMapper = new LocationMapper();
             }
-            return theMapper ;
+            return theMapper;
         }
     }
-    
-    static Logger log = LoggerFactory.getLogger(JenaIOEnvironment.class)  ;
-    
+
+    static Logger log = LoggerFactory.getLogger(JenaIOEnvironment.class);
+
     /** The default path for searching for the location mapper */
     public static final String DEFAULT_PATH =
         "location-mapping.ttl;location-mapping.rdf;"+
@@ -61,132 +62,118 @@ public class JenaIOEnvironment
     public static final String GlobalMapperSystemProperty1 = "http://jena.hpl.hp.com/2004/08/LocationMap" ;
     public static final String GlobalMapperSystemProperty2 = "LocationMap" ;
 
-    static String s_globalMapperPath = null ; 
+    static String s_globalMapperPath = null ;
 
-    static private String getGlobalConfigPath()
-    {
+    static private String getGlobalConfigPath() {
         if ( s_globalMapperPath == null )
-            s_globalMapperPath = JenaRuntime.getSystemProperty(GlobalMapperSystemProperty1,null) ;
+            s_globalMapperPath = JenaRuntime.getSystemProperty(GlobalMapperSystemProperty1, null);
         if ( s_globalMapperPath == null )
-            s_globalMapperPath = JenaRuntime.getSystemProperty(GlobalMapperSystemProperty2,null) ;
+            s_globalMapperPath = JenaRuntime.getSystemProperty(GlobalMapperSystemProperty2, null);
         if ( s_globalMapperPath == null )
-            s_globalMapperPath = DEFAULT_PATH ;
-        return s_globalMapperPath ;
+            s_globalMapperPath = DEFAULT_PATH;
+        return s_globalMapperPath;
     }
 
-    /** Set the global location mapper. (as returned by get())
-     * If called before any call to get(), then the usual default global location mapper is not created 
+    /**
+     * Set the global location mapper. (as returned by get()) If called before any
+     * call to get(), then the usual default global location mapper is not created
+     *
      * @param globalLocationMapper
      */
-    public static void setGlobalLocationMapper(LocationMapper globalLocationMapper)
-    {
-        theMapper = globalLocationMapper ;
+    public static void setGlobalLocationMapper(LocationMapper globalLocationMapper) {
+        theMapper = globalLocationMapper;
     }
 
-    /** Make a location mapper from the path settings */ 
-    static public LocationMapper makeGlobal()
-    {
-        LocationMapper lMap = new LocationMapper() ;
-        if ( getGlobalConfigPath() != null )
-        {
-            LocationMapper lMap2 = JenaIOEnvironment.createLocationMapper(getGlobalConfigPath()) ;
-            lMap.copyFrom(lMap2) ;
+    /** Make a location mapper from the path settings */
+    static public LocationMapper makeGlobal() {
+        LocationMapper lMap = new LocationMapper();
+        if ( getGlobalConfigPath() != null ) {
+            LocationMapper lMap2 = JenaIOEnvironment.createLocationMapper(getGlobalConfigPath());
+            lMap.copyFrom(lMap2);
         }
-        return lMap ;
+        return lMap;
     }
-  
+
     /** Create a LocationMapper based on Model */
-    public static LocationMapper processConfig(Model m)
-    {
-        LocationMapper locMap = new LocationMapper() ; 
-        StmtIterator mappings =
-            m.listStatements(null, LocationMappingVocab.mapping, (RDFNode)null) ;
-    
-        for (; mappings.hasNext();)
-        {
-            Statement s = mappings.nextStatement() ;
-            Resource mapping =  s.getResource() ;
-            
-            if ( mapping.hasProperty(LocationMappingVocab.name) )
-            {
-                try 
-                {
-                    String name = mapping.getRequiredProperty(LocationMappingVocab.name)
-                                        .getString() ;
-                    String altName = mapping.getRequiredProperty(LocationMappingVocab.altName)
-                                        .getString() ;
-                    locMap.addAltEntry(name, altName) ;
-                    log.debug("Mapping: "+name+" => "+altName) ;
-                } catch (JenaException ex)
-                {
-                    log.warn("Error processing name mapping: "+ex.getMessage()) ;
-                    throw ex ;
+    public static LocationMapper processConfig(Model m) {
+        LocationMapper locMap = new LocationMapper();
+        StmtIterator mappings = m.listStatements(null, LocationMappingVocab.mapping, (RDFNode)null);
+
+        for ( ; mappings.hasNext() ; ) {
+            Statement s = mappings.nextStatement();
+            Resource mapping = s.getResource();
+
+            if ( mapping.hasProperty(LocationMappingVocab.name) ) {
+                try {
+                    String name = mapping.getRequiredProperty(LocationMappingVocab.name).getString();
+                    String altName = mapping.getRequiredProperty(LocationMappingVocab.altName).getString();
+                    locMap.addAltEntry(name, altName);
+                    log.debug("Mapping: " + name + " => " + altName);
+                } catch (JenaException ex) {
+                    log.warn("Error processing name mapping: " + ex.getMessage());
+                    throw ex;
                 }
             }
-            
-            if ( mapping.hasProperty(LocationMappingVocab.prefix) )
-            {
-                try 
-                {
-                    String prefix = mapping.getRequiredProperty(LocationMappingVocab.prefix)
-                                        .getString() ;
-                    String altPrefix = mapping.getRequiredProperty(LocationMappingVocab.altPrefix)
-                                        .getString() ;
-                    locMap.addAltPrefix(prefix, altPrefix) ;
-                    log.debug("Prefix mapping: "+prefix+" => "+altPrefix) ;
-                } catch (JenaException ex)
-                {
-                    log.warn("Error processing prefix mapping: "+ex.getMessage()) ;
-                    throw ex ;
+
+            if ( mapping.hasProperty(LocationMappingVocab.prefix) ) {
+                try {
+                    String prefix = mapping.getRequiredProperty(LocationMappingVocab.prefix).getString();
+                    String altPrefix = mapping.getRequiredProperty(LocationMappingVocab.altPrefix).getString();
+                    locMap.addAltPrefix(prefix, altPrefix);
+                    log.debug("Prefix mapping: " + prefix + " => " + altPrefix);
+                } catch (JenaException ex) {
+                    log.warn("Error processing prefix mapping: " + ex.getMessage());
+                    throw ex;
                 }
             }
         }
-        return locMap ;
+        return locMap;
     }
 
-    /** Search a path (which is delimited by ";" because ":" is used in URIs)
-     *  to find a description of a LocationMapper, then create and return a
-     *  LocationMapper based on the description.
+    /**
+     * Search a path (which is delimited by ";" because ":" is used in URIs) to find
+     * a description of a LocationMapper, then create and return a LocationMapper
+     * based on the description.
      */
     public static LocationMapper createLocationMapper(String configPath) {
         if ( configPath == null || configPath.length() == 0 ) {
-            log.warn("Null configuration") ;
-            return null ;
+            log.warn("Null configuration");
+            return null;
         }
 
         // Make a file manager to look for the location mapping file
-        StreamManager smgr = new StreamManager() ;
-        smgr.addLocator(new LocatorFile()) ;
-        smgr.addLocator(new LocatorClassLoader(smgr.getClass().getClassLoader())) ;
+        StreamManager smgr = new StreamManager();
+        smgr.addLocator(new LocatorFile());
+        smgr.addLocator(new LocatorClassLoader(smgr.getClass().getClassLoader()));
 
         try {
-            String uriConfig = null ;
-            TypedInputStream in = null ;
+            String uriConfig = null;
+            TypedInputStream in = null;
 
-            StringTokenizer pathElems = new StringTokenizer(configPath, AdapterFileManager.PATH_DELIMITER) ;
+            StringTokenizer pathElems = new StringTokenizer(configPath, AdapterFileManager.PATH_DELIMITER);
             while (pathElems.hasMoreTokens()) {
-                String uri = pathElems.nextToken() ;
+                String uri = pathElems.nextToken();
                 if ( uri == null || uri.length() == 0 )
-                    break ;
+                    break;
 
-                in = smgr.openNoMapOrNull(uri) ;
+                in = smgr.openNoMapOrNull(uri);
                 if ( in != null ) {
-                    uriConfig = uri ;
-                    break ;
+                    uriConfig = uri;
+                    break;
                 }
             }
 
             if ( in == null ) {
-                log.debug("Failed to find configuration: " + configPath) ;
-                return null ;
+                log.debug("Failed to find configuration: " + configPath);
+                return null;
             }
-            String syntax = FileUtils.guessLang(uriConfig) ;
-            Model model = ModelFactory.createDefaultModel() ;
-            model.read(in, uriConfig, syntax) ;
-            return processConfig(model) ;
+            Lang lang = RDFLanguages.resourceNameToLang(configPath);
+            Model model = ModelFactory.createDefaultModel();
+            RDFParser.source(in).lang(lang).parse(model);
+            return processConfig(model);
         } catch (JenaException ex) {
-            LoggerFactory.getLogger(LocationMapper.class).warn("Error in configuration file: " + ex.getMessage()) ;
-            return new LocationMapper() ;
+            LoggerFactory.getLogger(LocationMapper.class).warn("Error in configuration file: " + ex.getMessage());
+            return new LocationMapper();
         }
     }
 }
