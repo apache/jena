@@ -283,8 +283,11 @@ describe('FusekiService', () => {
     stub.resolves(Promise.resolve({
       data: 42
     }))
-    const graph = await fusekiService.fetchGraph('jena', 'default')
+    const graph = await fusekiService.fetchGraph('jena', ['dataEndpoint'], 'default')
     expect(stub.called).to.equal(true)
+    const getArgs = stub.getCall(0).args
+    // See https://github.com/apache/jena/pull/1679
+    expect(getArgs[0]).to.equal('/jena/dataEndpoint')
     expect(graph).to.deep.equal({ data: 42 })
     stub.restore()
   })
@@ -293,7 +296,7 @@ describe('FusekiService', () => {
     stub.resolves(Promise.resolve({
       data: 42
     }))
-    const graph = await fusekiService.saveGraph('jena', 'default', 'abc')
+    const graph = await fusekiService.saveGraph('jena', [], 'default', 'abc')
     expect(stub.called).to.equal(true)
     expect(graph).to.deep.equal({ data: 42 })
     stub.restore()
@@ -306,7 +309,7 @@ describe('FusekiService', () => {
     }
     stub.resolves(Promise.reject(error))
     try {
-      await fusekiService.saveGraph('jena', 'default', 'abc')
+      await fusekiService.saveGraph('jena', [], 'default', 'abc')
       expect.fail('Not supposed to get here')
     } catch (error) {
       expect(error.message).to.be.equal('42')
