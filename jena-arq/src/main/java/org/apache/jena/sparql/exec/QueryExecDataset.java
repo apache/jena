@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
-import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.atlas.lib.Alarm;
 import org.apache.jena.atlas.lib.AlarmClock;
 import org.apache.jena.atlas.logging.Log;
@@ -48,7 +47,6 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.describe.DescribeHandler;
 import org.apache.jena.sparql.core.describe.DescribeHandlerRegistry;
-import org.apache.jena.sparql.engine.JsonIterator;
 import org.apache.jena.sparql.engine.Plan;
 import org.apache.jena.sparql.engine.QueryEngineFactory;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -56,7 +54,6 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorWrapper;
 import org.apache.jena.sparql.graph.GraphOps;
-import org.apache.jena.sparql.lib.RDFTerm2Json;
 import org.apache.jena.sparql.modify.TemplateLib;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.Template;
@@ -340,23 +337,9 @@ public class QueryExecDataset implements QueryExec
         checkNotClosed();
         if ( !query.isJsonType() )
             throw new QueryExecException("Attempt to get a JSON result from a " + labelForQuery(query) + " query");
-
         startQueryIterator();
-
-        JsonArray jsonArray = new JsonArray();
+        JsonArray jsonArray = JsonResults.results(queryIterator, query.getJsonMapping());
         List<String> resultVars = query.getResultVars();
-
-        while (queryIterator.hasNext()) {
-            Binding binding = queryIterator.next();
-            JsonObject jsonObject = new JsonObject();
-            for ( String resultVar : resultVars ) {
-                Node n = binding.get(Var.alloc(resultVar));
-                JsonValue value = RDFTerm2Json.fromNode(n);
-                jsonObject.put(resultVar, value);
-            }
-            jsonArray.add(jsonObject);
-        }
-
         return jsonArray;
     }
 
@@ -366,7 +349,7 @@ public class QueryExecDataset implements QueryExec
         if ( !query.isJsonType() )
             throw new QueryExecException("Attempt to get a JSON result from a " + labelForQuery(query) + " query");
         startQueryIterator();
-        return new JsonIterator(queryIterator, query.getResultVars());
+        return JsonResults.iterator(queryIterator, query.getJsonMapping());
     }
 
     private static boolean isTimeoutSet(long x) {

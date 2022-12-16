@@ -18,73 +18,30 @@
 
 package org.apache.jena.sparql.engine;
 
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Map;
 
 import org.apache.jena.atlas.json.JsonObject;
-import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.lib.RDFTerm2Json;
+import org.apache.jena.sparql.exec.JsonResults;
 
-/** A JSON iterator for JsonObject's, that wraps a QueryIterator, and a list
+/**
+ * A JSON iterator for JsonObject's, that wraps a QueryIterator, and a list
  * of result variables.
+ * @deprecated To be removed. Use Iterator<JsonObject> via {@link JsonResults#iterator}.
  */
+@Deprecated
 public class JsonIterator implements Iterator<JsonObject>
 {
+    private Iterator<JsonObject> results;
 
-    private final QueryIterator queryIterator ;
-    private final List<String> resultVars ;
-
-    public JsonIterator(QueryIterator queryIterator, List<String> resultVars)
-    {
-        this.queryIterator = queryIterator ;
-        this.resultVars = Collections.unmodifiableList(resultVars) ;
+    public JsonIterator(QueryIterator queryIterator, Map<String, Node> template) {
+        this.results = JsonResults.iterator(queryIterator, template);
     }
 
     @Override
-    public boolean hasNext()
-    {
-        if (queryIterator == null)
-            return false;
-        boolean r = queryIterator.hasNext() ;
-        if (!r)
-            close() ;
-        return r ;
-    }
+    public boolean hasNext() { return results.hasNext(); }
 
     @Override
-    public JsonObject next()
-    {
-        if (queryIterator == null)
-            throw new NoSuchElementException(this.getClass() + ".next") ;
-        try
-        {
-            Binding binding = queryIterator.next() ;
-            JsonObject jsonObject = new JsonObject() ;
-            for (String resultVar : resultVars)
-            {
-                Node n = binding.get(Var.alloc(resultVar)) ;
-                JsonValue value = RDFTerm2Json.fromNode(n) ;
-                jsonObject.put(resultVar, value);
-            }
-            return jsonObject ;
-        }
-        catch (NoSuchElementException ex)
-        {
-            close() ;
-            throw ex ;
-        }
-    }
-
-    /**
-     * Closes the QueryIterator, if it is an instance of Closeable.
-     */
-    private void close()
-    {
-        queryIterator.close();
-    }
+    public JsonObject next() { return results.next(); }
 }
