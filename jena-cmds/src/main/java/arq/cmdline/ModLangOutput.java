@@ -63,7 +63,7 @@ public class ModLangOutput extends ModBase
                 throw new CmdException("No output set: '"+langName+"'") ;
             }
         }
-        
+
         if ( cmdLine.contains(argStream) ) {
             String langName = cmdLine.getValue(argStream) ;
             Lang lang = RDFLanguages.nameToLang(langName) ;
@@ -76,13 +76,13 @@ public class ModLangOutput extends ModBase
                 throw new CmdException("No output set: '"+langName+"'") ;
             }
         }
-        
+
         if ( cmdLine.contains(argOutput) ) {
             String langName = cmdLine.getValue(argOutput) ;
             Lang lang = RDFLanguages.nameToLang(langName) ;
             if ( lang == null )
                 throw new CmdException("Not recognized as an RDF language : '"+langName+"'") ;
-            
+
             if ( StreamRDFWriter.registered(lang) ) {
                 streamOutput = StreamRDFWriter.defaultSerialization(lang) ;
             } else {
@@ -93,23 +93,23 @@ public class ModLangOutput extends ModBase
                     throw new CmdException("No output set: '"+langName+"'") ;
                 }
                 // Non-streaming block-style writers.
-                // The normal RDF/XML writer is the pretty one, also know as "RDF/XML-ABBREV" 
+                // The normal RDF/XML writer is the pretty one, also know as "RDF/XML-ABBREV"
                 // but it can occassionally use a lot of stack and heap.
-                // 
+                //
                 // The RDF/XML basic writer ("Basic") is not streaming but does not
                 // consume a lot of stack and heap as it writes in a flat block style.
                 //
-                // To make it accessible, we use --pretty for the pretty form, also known as 
-                // RDF/XML-ABBREV and --output for the basic writer.  
+                // To make it accessible, we use --pretty for the pretty form, also known as
+                // RDF/XML-ABBREV and --output for the basic writer.
                 if ( Objects.equal(formattedOutput, RDFFormat.RDFXML_PRETTY) ) {
                     formattedOutput = RDFFormat.RDFXML_PLAIN;
                 }
             }
         }
-        
+
         if ( cmdLine.contains(argCompress))
             compressedOutput = true ;
-        
+
         if ( streamOutput == null && formattedOutput == null )
             streamOutput = RDFFormat.NQUADS ;
     }
@@ -119,13 +119,13 @@ public class ModLangOutput extends ModBase
         hiddenLanguages.add(Lang.RDFNULL) ;
         hiddenLanguages.add(Lang.CSV) ;
     }
-    
+
     private static void printRegistered(PrintStream out) {
         out.println("Streaming languages:") ;
         Set<Lang> seen = new HashSet<>() ;
         for ( RDFFormat fmt : StreamRDFWriter.registered()) {
             Lang lang = fmt.getLang() ;
-            if ( hiddenLanguages.contains(lang)) 
+            if ( hiddenLanguages.contains(lang))
                 continue ;
             if ( seen.contains(lang) )
                 continue ;
@@ -133,9 +133,9 @@ public class ModLangOutput extends ModBase
             out.println("   "+lang.getLabel()) ;
         }
         System.err.println("Non-streaming languages:") ;
-        for ( RDFFormat fmt : RDFWriterRegistry.registered() ) {
+        for ( RDFFormat fmt : RDFWriterRegistry.registeredFormats() ) {
             Lang lang = fmt.getLang() ;
-            if ( hiddenLanguages.contains(lang)) 
+            if ( hiddenLanguages.contains(lang))
                 continue ;
             if ( seen.contains(lang) )
                 continue ;
@@ -143,15 +143,15 @@ public class ModLangOutput extends ModBase
             out.println("   "+lang.getLabel()) ;
         }
     }
-    
+
     public RDFFormat getOutputStreamFormat() {
         return streamOutput ;
     }
-    
+
     public RDFFormat getOutputFormatted() {
         return formattedOutput ;
     }
-    
+
     public boolean compressedOutput() {
         return compressedOutput ;
     }

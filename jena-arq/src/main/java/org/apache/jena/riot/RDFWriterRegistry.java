@@ -128,7 +128,7 @@ public class RDFWriterRegistry
 
         // ==== System defaults for JSON-LD writing.
         // ** Coordinate with RDFFormat definitions of JSONLD RDFFormats:
-        //    JSONLD_PRETTY, JSONLD_PLAIN, JSONLD,JSONLD_FLAT
+        //    JSONLD_PRETTY, JSONLD_PLAIN, JSONLD, JSONLD_FLAT
 
         WriterGraphRIOTFactory jsonldWriterGraphDefault      = wgJsonldFactory11;
         WriterDatasetRIOTFactory jsonldWriterDatasetDefault  = wdsJsonldFactory11;
@@ -325,12 +325,12 @@ public class RDFWriterRegistry
     public static Collection<RDFFormat> registered() {
         return registeredFormats();
     }
-    
+
     /** All registered languages */
     public static Collection<Lang> registeredLangs() {
         return Set.copyOf(langToFormat.keySet());
     }
-    
+
     /** Get the graph writer factory associated with the language */
     public static WriterGraphRIOTFactory getWriterGraphFactory(Lang lang) {
         RDFFormat serialization = defaultSerialization(lang) ;
