@@ -174,12 +174,12 @@ public class RDFParserRegistry
 
     /** Return registered triple languages. */
     public static Set<Lang> registeredLangTriples() {
-        return Collections.unmodifiableCollection(langTriples);
+        return Collections.unmodifiableSet(langTriples);
     }
 
     /** Return registered quad languages. */
     public static Set<Lang> registeredLangQuads() {
-        return Collections.unmodifiableCollection(langQuads);
+        return Collections.unmodifiableSet(langQuads);
     }
 
     // Parsers and factories.

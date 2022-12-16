@@ -22,10 +22,7 @@ import static org.apache.jena.riot.resultset.ResultSetLang.*;
 
 import java.io.InputStream ;
 import java.io.Reader ;
-import java.util.Collections;
-import java.util.HashMap ;
-import java.util.Map ;
-import java.util.Objects ;
+import java.util.*;
 
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.riot.Lang ;
@@ -81,7 +78,7 @@ public class ResultSetReaderRegistry {
     
     /** Return registered result set languages. */
     public static Set<Lang> registered() {
-        return Collections.unmodifiableCollection(registry.keySet());
+        return Collections.unmodifiableSet(registry.keySet());
     }
 
     private static class ResultSetReaderAdapter implements ResultSetReader {
