@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,26 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.engine.join;
+package org.apache.jena.sparql.engine.binding;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@SuiteClasses( {
-    TestJoinSimple.class
-    , TestJoinNestedLoopSimple.class    // Real simple materializing version.
-    , TestJoinNestedLoop.class
-    , TestHashJoin.class
-
-    , TestLeftJoinSimple.class
-    , TestLeftJoinNestedLoopSimple.class    // Real simple materializing version.
-    , TestLeftJoinNestedLoop.class
-    , TestHashLeftJoin_Left.class           // Left hash, stream right
-    , TestHashLeftJoin_Right.class          // Normal implementation.
-    , TestTableJoin.class
+@Suite.SuiteClasses( {
+        TestItr.class
+      , TestBinding.class
+      , TestBindingStreams.class
 })
 
-public class TS_Join { }
-
+public class TS_EngineBinding { }
