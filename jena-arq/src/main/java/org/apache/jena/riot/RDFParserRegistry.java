@@ -22,6 +22,7 @@ import static org.apache.jena.riot.Lang.*;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -170,6 +171,16 @@ public class RDFParserRegistry
 
     /** return true if the language is registered with the quads parser factories */
     public static boolean isQuads(Lang lang)   { return langQuads.contains(lang); }
+
+    /** Return registered triple languages. */
+    public static Set<Lang> registeredLangTriples() {
+        return Collections.unmodifiableCollection(langTriples);
+    }
+
+    /** Return registered quad languages. */
+    public static Set<Lang> registeredLangQuads() {
+        return Collections.unmodifiableCollection(langQuads);
+    }
 
     // Parsers and factories.
 
