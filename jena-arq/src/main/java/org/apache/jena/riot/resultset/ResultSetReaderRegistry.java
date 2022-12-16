@@ -112,5 +112,6 @@ public class ResultSetReaderRegistry {
         public SPARQLResult readAny(InputStream in, Context context) {
             QueryExecResult result = reader().readAny(in, context);
             return SPARQLResult.adapt(result);
-        }};
+        }
+    }
 }
