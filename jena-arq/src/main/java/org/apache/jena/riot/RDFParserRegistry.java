@@ -22,11 +22,11 @@ import static org.apache.jena.riot.Lang.*;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collection;
 
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
@@ -173,13 +173,13 @@ public class RDFParserRegistry
     public static boolean isQuads(Lang lang)   { return langQuads.contains(lang); }
 
     /** Return registered triple languages. */
-    public static Set<Lang> registeredLangTriples() {
-        return Collections.unmodifiableSet(langTriples);
+    public static Collection<Lang> registeredLangTriples() {
+        return Set.copyOf(langTriples);
     }
 
     /** Return registered quad languages. */
-    public static Set<Lang> registeredLangQuads() {
-        return Collections.unmodifiableSet(langQuads);
+    public static Collection<Lang> registeredLangQuads() {
+        return Set.copyOf(langQuads);
     }
 
     // Parsers and factories.
