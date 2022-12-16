@@ -22,17 +22,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Iterator;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.rdf.model.AnonId;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.sparql.engine.JsonIterator;
+import org.apache.jena.rdf.model.*;
 import org.junit.Test;
 
 /**
@@ -64,7 +59,7 @@ public class TestResultSetFormatter {
         Query query = QueryFactory.create("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
                 + "WHERE { ?s ?p ?o }", Syntax.syntaxARQ);
         try ( QueryExecution qexec = QueryExecutionFactory.create(query, model) ) {
-            JsonIterator execJsonItems = (JsonIterator) qexec.execJsonItems();
+            Iterator<JsonObject> execJsonItems = qexec.execJsonItems();
             try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                 ResultSetFormatter.output(baos, execJsonItems);
                 String output = baos.toString(Charset.forName("UTF-8"));
