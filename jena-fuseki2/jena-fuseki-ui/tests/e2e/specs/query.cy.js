@@ -76,4 +76,31 @@ describe('Query', () => {
       .its('response')
       .should('have.property', 'statusCode', 203)
   })
+  it('Can resize the query editor', () => {
+    cy.visit('/#/dataset/skosmos/query')
+    cy
+      .get('div.CodeMirror')
+      .should('be.visible')
+      .invoke('css', 'height')
+      .as('beforeHeight')
+    cy
+      .get('div.resizeChip')
+      .should('exist')
+      .trigger('mousedown', {
+        which: 1, force: true
+      })
+      .trigger('mousemove', { which: 1, force: true, x: 0, y: 50 })
+      .trigger('mouseup', {
+        force: true
+      });
+    cy
+      .get('div.CodeMirror')
+      .invoke('css', 'height')
+      .as('afterHeight')
+    cy.get('@beforeHeight').then(beforeHeight => {
+      cy.get('@afterHeight').then(afterHeight => {
+        expect(afterHeight).to.not.equal(beforeHeight)
+      })
+    })
+  })
 })
