@@ -18,12 +18,13 @@
 
 package org.apache.jena.sparql.service.enhancer.assembler;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 
-import org.apache.jena.ext.com.google.common.io.MoreFiles;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.QueryExecException;
@@ -171,7 +172,10 @@ public class TestServiceEnhancerDatasetAssembler
 
             Assert.assertEquals(4, actualRowCount);
         } finally {
-            MoreFiles.deleteRecursively(tdb2TmpFolder);
+            Files.walk(tdb2TmpFolder)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
         }
     }
 }
