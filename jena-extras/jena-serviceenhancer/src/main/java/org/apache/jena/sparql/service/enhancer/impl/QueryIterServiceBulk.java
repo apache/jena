@@ -118,7 +118,7 @@ public class QueryIterServiceBulk
 
     protected TreeBasedTable<Integer, Integer, Integer> inputToRangeToOutput = TreeBasedTable.create();
 
-    // This is the reverse mapping of the table above; PartitionKey = (inputId, rangeId)
+    // This is the reverse mapping of the table above; SliceKey = (inputId, rangeId)
     protected Map<Integer, SliceKey> outputToSliceKey = new HashMap<>();
 
     // The set of outputIds that are served from the backend (absent means served from cache)
@@ -458,7 +458,7 @@ public class QueryIterServiceBulk
     // seqId = sequential number injected into the request
     // inputId = id (index) of the input binding
     // rangeId = id of the range w.r.t. to the input binding
-    // partitionKey = (inputId, rangeId)
+    // sliceKey = (inputId, rangeId)
     public void prepareNextBatchExec(boolean bypassCacheOnFirstInput) {
 
         freeResources();
@@ -595,16 +595,22 @@ public class QueryIterServiceBulk
 
                 if (mapOfRanges.isEmpty()) {
                     // Special case if it is known that there are no bindings:
-                    // Register an empty iterator
-                    SliceKey partitionKey = new SliceKey(inputId, rangeId);
-                    QueryIterPeek it = QueryIterPeek.create(new QueryIterNullIterator(execCxt), execCxt);
-                    sliceKeyToIter.put(partitionKey, it);
-                    sliceKeyToClose.add(partitionKey); // it);
+                    // Register an empty iterator for (inputId, rangeId)
 
-                    // Close the cache ref immediately
+                    // Release the reference to the cache entry immediately
                     if (cacheValueRef != null) {
                         cacheValueRef.close();
                     }
+
+                    SliceKey sliceKey = new SliceKey(inputId, rangeId);
+                    QueryIterPeek it = QueryIterPeek.create(new QueryIterNullIterator(execCxt), execCxt);
+                    sliceKeyToIter.put(sliceKey, it);
+                    sliceKeyToClose.add(sliceKey);
+
+                    inputToRangeToOutput.put(inputId, rangeId, nextAllocOutputId);
+                    outputToSliceKey.put(nextAllocOutputId, sliceKey);
+                    ++rangeId;
+                    ++nextAllocOutputId;
                 } else {
                     Iterator<Entry<Range<Long>, Boolean>> rangeIt = mapOfRanges.entrySet().iterator();
 
@@ -612,7 +618,7 @@ public class QueryIterServiceBulk
 
                     boolean usesCacheRead = false;
                     while (rangeIt.hasNext()) {
-                        SliceKey partitionKey = new SliceKey(inputId, rangeId);
+                        SliceKey sliceKey = new SliceKey(inputId, rangeId);
                         Entry<Range<Long>, Boolean> f = rangeIt.next();
 
                         Range<Long> range = f.getKey();
@@ -663,17 +669,16 @@ public class QueryIterServiceBulk
 
                             QueryIterPeek it = QueryIterPeek.create(qIterB, execCxt);
 
-                            sliceKeyToIter.put(partitionKey, it);
-                            sliceKeyToClose.add(partitionKey); // it);
+                            sliceKeyToIter.put(sliceKey, it);
+                            sliceKeyToClose.add(sliceKey);
                         } else {
                             PartitionRequest<Binding> request = new PartitionRequest<>(nextAllocOutputId, inputBinding, lo, lim);
                             backendRequests.put(nextAllocOutputId, request);
-                            sliceKeysForBackend.add(partitionKey);
+                            sliceKeysForBackend.add(sliceKey);
                         }
 
                         inputToRangeToOutput.put(inputId, rangeId, nextAllocOutputId);
-                        outputToSliceKey.put(nextAllocOutputId, partitionKey);
-
+                        outputToSliceKey.put(nextAllocOutputId, sliceKey);
                         ++rangeId;
                         ++nextAllocOutputId;
                     }

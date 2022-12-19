@@ -37,29 +37,6 @@ import org.apache.jena.sparql.engine.Rename;
  */
 public class VarScopeUtils {
 
-    public static Map<Var, Var> reverseVarRenameMap(Collection<Var> vars) {
-        Map<Var, Var> result = vars.stream()
-                .collect(Collectors.toMap(
-                        v -> v,
-                        v -> (Var)Rename.reverseVarRename(v),
-                        (v, w) -> v,
-                        LinkedHashMap::new));
-        return result;
-    }
-
-    public static Set<Var> reverseVarRename(Collection<Var> vars) {
-        return reverseVarRename(vars, new LinkedHashSet<>());
-    }
-
-    /** Reverse-rename all variables in the given collection */
-    public static <C extends Collection<? super Var>> C reverseVarRename(Collection<Var> vars, C acc) {
-        for (Var v : vars) {
-            Var w = (Var)Rename.reverseVarRename(v);
-            acc.add(w);
-        }
-        return acc;
-    }
-
     public static String getPlainName(String varName) {
         int delta = ARQConstants.allocVarScopeHiding.length();
         int pos = 0;
@@ -122,15 +99,31 @@ public class VarScopeUtils {
         return result;
     }
 
+    /**
+     * Return a mapping that reduces every variable's scope level by the minimum scope level
+     * among the variables having the same base name.
+     * Consequently, for every variable name the minimum scope level will be normalized to 0.
+     * <p>
+     * Example: normalizeVarScopes({?a, ?/b, ?//c, ?////c}) yields:
+     * <ul>
+     *   <li>?a -&gt; ?a</li>
+     *   <li>?/b -&gt; ?b</li>
+     *   <li>?//c -&gt; ?c</li>
+     *   <li>?////c -&gt; ?//c</li>
+     * </ul>
+     *
+     * @param vars A set of variables with arbitrary scope levels.
+     * @return A mapping that normalizes every variable's minimum scope to 0.
+     */
     public static BiMap<Var, Var> normalizeVarScopes(Collection<Var> vars) {
-        Map<String, Integer> varToMinLevel = getMinimumScopeLevels(vars);
+        Map<String, Integer> nameToMinLevel = getMinimumScopeLevels(vars);
         BiMap<Var, Var> result = HashBiMap.create();
         for (Var from : vars) {
             String fromName = from.getName();
             int fromLevel = getScopeLevel(fromName);
 
             String plainName = getPlainName(fromName);
-            int minLevel = varToMinLevel.get(plainName);
+            int minLevel = nameToMinLevel.get(plainName);
             int normalizedLevel = fromLevel - minLevel;
             Var to = allocScoped(plainName, normalizedLevel);
             result.put(from, to);
@@ -138,6 +131,12 @@ public class VarScopeUtils {
         return result;
     }
 
+    /**
+     * Similar to {@link #normalizeVarScopes(Collection)}, however reduces the scope levels of all variables
+     * by the globally minimum scope level.
+     * In other words, if the minimum scope level among all given variables is 'n' then the returned mapping
+     * reduces every scope level by 'n'.
+     */
     public static BiMap<Var, Var> normalizeVarScopesGlobal(Collection<Var> vars) {
         int globalMinScopeLevel = vars.stream().mapToInt(VarScopeUtils::getScopeLevel).min().orElse(0);
 
@@ -154,5 +153,28 @@ public class VarScopeUtils {
         }
 
         return result;
+    }
+
+    public static Map<Var, Var> reverseVarRenameMap(Collection<Var> vars) {
+        Map<Var, Var> result = vars.stream()
+                .collect(Collectors.toMap(
+                        v -> v,
+                        v -> (Var)Rename.reverseVarRename(v),
+                        (v, w) -> v,
+                        LinkedHashMap::new));
+        return result;
+    }
+
+    public static Set<Var> reverseVarRename(Collection<Var> vars) {
+        return reverseVarRename(vars, new LinkedHashSet<>());
+    }
+
+    /** Reverse-rename all variables in the given collection */
+    public static <C extends Collection<? super Var>> C reverseVarRename(Collection<Var> vars, C acc) {
+        for (Var v : vars) {
+            Var w = (Var)Rename.reverseVarRename(v);
+            acc.add(w);
+        }
+        return acc;
     }
 }

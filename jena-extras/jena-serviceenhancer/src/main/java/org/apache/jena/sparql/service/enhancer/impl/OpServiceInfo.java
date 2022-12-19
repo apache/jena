@@ -93,7 +93,7 @@ public class OpServiceInfo {
 
         // Handling of a null supOp - can that happen?
         Set<Var> visibleSubOpVars = OpVars.visibleVars(baseSubOp);
-        this.visibleSubOpVarsScopedToNorm = VarScopeUtils.normalizeVarScopesGlobal(visibleSubOpVars);
+        this.visibleSubOpVarsScopedToNorm = VarScopeUtils.normalizeVarScopes(visibleSubOpVars);
 
         this.normedQuery = OpAsQuery.asQuery(normedQueryOp);
 
