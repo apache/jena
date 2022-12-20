@@ -109,60 +109,60 @@ public class RequestExecutor
         // Peek the next binding on the active iterator and verify that it maps to the current
         // partition key
         while (true) {
-          if (activeIter.hasNext()) {
-              Binding peek = activeIter.peek();
-              long peekOutputId = BindingUtils.getNumber(peek, globalIdxVar).longValue();
+            if (activeIter.hasNext()) {
+                Binding peek = activeIter.peek();
+                long peekOutputId = BindingUtils.getNumber(peek, globalIdxVar).longValue();
 
-              boolean matchesCurrentPartition = peekOutputId == currentInputId;
+                boolean matchesCurrentPartition = peekOutputId == currentInputId;
 
-              if (matchesCurrentPartition) {
-                  parentBinding = inputToBinding.get(currentInputId);
-                  childBindingWithIdx = activeIter.next();
-                  break;
-              }
-          }
+                if (matchesCurrentPartition) {
+                    parentBinding = inputToBinding.get(currentInputId);
+                    childBindingWithIdx = activeIter.next();
+                    break;
+                }
+            }
 
-          // Cleanup of no longer needed resources
-          boolean isClosePoint = inputToClose.contains(currentInputId);
-          if (isClosePoint) {
-              QueryIterPeek it = inputToOutputIt.get(currentInputId);
-              it.close();
-              inputToClose.remove(currentInputId);
-          }
+            // Cleanup of no longer needed resources
+            boolean isClosePoint = inputToClose.contains(currentInputId);
+            if (isClosePoint) {
+                QueryIterPeek it = inputToOutputIt.get(currentInputId);
+                it.close();
+                inputToClose.remove(currentInputId);
+            }
 
-          inputToBinding.remove(currentInputId);
+            inputToBinding.remove(currentInputId);
 
-          // Increment rangeId/inputId until we reach the end
-          ++currentInputId;
+            // Increment rangeId/inputId until we reach the end
+            ++currentInputId;
 
-          // Check if we need to load the next batch
-          // If there are missing (=non-loaded) rows within the read ahead range then load them
-          if (!inputToOutputIt.containsKey(currentInputId)) {
-              if (batchIterator.hasNext()) {
-                  prepareNextBatchExec();
-              }
-          }
+            // Check if we need to load the next batch
+            // If there are missing (=non-loaded) rows within the read ahead range then load them
+            if (!inputToOutputIt.containsKey(currentInputId)) {
+                if (batchIterator.hasNext()) {
+                    prepareNextBatchExec();
+                }
+            }
 
-          // If there is still no further batch then we assume we reached the end
-          if (!inputToOutputIt.containsKey(currentInputId)) {
-              break;
-          }
+            // If there is still no further batch then we assume we reached the end
+            if (!inputToOutputIt.containsKey(currentInputId)) {
+                break;
+            }
 
-          activeIter = inputToOutputIt.get(currentInputId);
-      }
+            activeIter = inputToOutputIt.get(currentInputId);
+        }
 
-      // Remove the idxVar from the childBinding
-      Binding result = null;
-      if (childBindingWithIdx != null) {
-          Binding childBinding = BindingUtils.project(childBindingWithIdx, childBindingWithIdx.vars(), globalIdxVar);
-          result = BindingFactory.builder(parentBinding).addAll(childBinding).build();
-      }
+        // Remove the idxVar from the childBinding
+        Binding result = null;
+        if (childBindingWithIdx != null) {
+            Binding childBinding = BindingUtils.project(childBindingWithIdx, childBindingWithIdx.vars(), globalIdxVar);
+            result = BindingFactory.builder(parentBinding).addAll(childBinding).build();
+        }
 
-      if (result == null) {
-          freeResources();
-      }
+        if (result == null) {
+            freeResources();
+        }
 
-      return result;
+        return result;
     }
 
     /** Prepare the lazy execution of the next batch and register all iterators with {@link #inputToOutputIt} */

@@ -18,15 +18,22 @@
 
 package org.apache.jena.sparql.service.enhancer.impl;
 
+import org.apache.jena.ext.com.google.common.base.StandardSystemProperty;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.OpAsQuery;
@@ -461,5 +468,55 @@ public class TestServiceEnhancerMisc {
 
         int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(dataset, queryStr, 1000);
         Assert.assertEquals(4, actualRowCount);
+    }
+
+    /**
+     * Test for <a href="https://github.com/apache/jena/issues/1688">/issues/1688</a>.
+     * <p>
+     * This test checks that building an overall result set from a bulk request
+     * that involves contributions of cached empty result sets works as expected.
+     * Without the fix corresponding to this issues this test fails.
+     *
+     * @implNote This test case makes use of a dataset where only a few resources have labels.
+     * The test query caches the labels of all resources which means that most cache entries
+     * have empty results.
+     */
+    @Test
+    public void testBulkRequestsOverCachedEmptyResultSets() {
+        String dataStr = String.join(StandardSystemProperty.LINE_SEPARATOR.value(),
+            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+            "<urn:example:00> a rdfs:Resource .",
+            "<urn:example:01> a rdfs:Resource .",
+            "<urn:example:02> a rdfs:Resource .",
+            "<urn:example:03> a rdfs:Resource .",
+            "<urn:example:04> a rdfs:Resource ; rdfs:label '04' .",
+            "<urn:example:05> a rdfs:Resource .",
+            "<urn:example:06> a rdfs:Resource .",
+            "<urn:example:07> a rdfs:Resource .",
+            "<urn:example:08> a rdfs:Resource ; rdfs:label '08' .",
+            "<urn:example:09> a rdfs:Resource ; rdfs:label '09' .");
+
+        String queryStr = String.join(StandardSystemProperty.LINE_SEPARATOR.value(),
+            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+            "SELECT * {",
+            "  { SELECT * { ?s a rdfs:Resource } ORDER BY ?s }",
+            "   SERVICE <loop:cache:bulk+5> { ?s rdfs:label ?l }",
+            "}");
+
+        Dataset ds = RDFParser.fromString(dataStr).lang(Lang.TURTLE).toDataset();
+        Query query = QueryFactory.create(queryStr);
+
+        int rsSize;
+        ServiceResponseCache localCache = new ServiceResponseCache();
+        // Execute twice: First populate the cache then read from it
+        for (int i = 0; i < 2; ++i) {
+            try (QueryExecution qe = QueryExecutionFactory.create(query, ds)) {
+                ServiceResponseCache.set(qe.getContext(), localCache);
+                ResultSet rs = qe.execSelect();
+                rsSize = ResultSetFormatter.consume(rs);
+            }
+            // Expect the 3 labels of the test dataset
+            Assert.assertEquals(3, rsSize);
+        }
     }
 }
