@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>4.7.0-SNAPSHOT</version>
+    <version>4.7.0</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -42,7 +42,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
       <type>pom</type>
     </dependency>
 
@@ -50,13 +50,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -64,14 +64,14 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -79,19 +79,19 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-geosparql</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-main</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-core</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -99,7 +99,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-main</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>  
@@ -107,14 +107,14 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
     </dependency>
 
     <!-- The test artifacts to go with apache-jena-libs -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -122,13 +122,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-index-test</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-trans-data</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -137,14 +137,14 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <classifier>tests</classifier>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
       <scope>test</scope>
     </dependency>    
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>4.7.0-SNAPSHOT</version>
+      <version>4.7.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
