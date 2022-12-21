@@ -18,50 +18,20 @@
 
 package org.apache.jena.test;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.jena.JenaRuntime ;
-import org.apache.jena.util.FileUtils;
-import org.apache.jena.vocabulary.RDFS;
-import org.junit.Assert;
 
 public class TestSystemSetup extends TestCase {
 
     public static TestSuite suite() {
         return new TestSuite(TestSystemSetup.class, "System setup") ;
     }
-    
+
     public void testRDF11() {
-        // This should be "false" in Jena2. 
-        // This should be "true" in Jena3. 
+        // This should be "false" in Jena2.
+        // This should be "true" in Jena3, Jena4, ...
         if ( ! JenaRuntime.isRDF11 )
-            fail("RDF 1.0 mode enabled in Jena3 test run") ;
-    }
-
-    /** This test relies on forking a clean JVM */ 
-    public void testInitFromRDFS() throws IOException, InterruptedException {
-        String separator = System.getProperty("file.separator");
-        String classpath = System.getProperty("java.class.path");
-        String java = System.getProperty("java.home")
-                + separator + "bin" + separator + "java";
-        if (SystemUtils.IS_OS_WINDOWS)
-            java += ".exe";
-
-        List<String> args = Arrays.asList(java, "-cp", classpath,
-                "org.apache.jena.test.RDFSJenaInitTestApp");
-        Process child = new ProcessBuilder().command(args)
-                .redirectError(ProcessBuilder.Redirect.INHERIT)
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .start();
-
-        Assert.assertEquals(0, child.waitFor());
-        Assert.assertEquals(RDFS.subClassOf.toString()+"\n",
-                            FileUtils.readWholeFileAsUTF8(child.getInputStream()));
+            fail("RDF 1.0 mode enabled in Jena test run") ;
     }
 }
-
