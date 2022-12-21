@@ -140,7 +140,7 @@ public class BlockAccessMapped extends BlockAccessBase
 
         int seg = segment(id);                 // Segment.
         int segOff = byteOffset(id);           // Byte offset in segment
-        
+
         if ( getLog().isTraceEnabled() )
             getLog().trace(format("%d => [%d, %d]", id, seg, segOff));
 
@@ -215,7 +215,7 @@ public class BlockAccessMapped extends BlockAccessBase
             }
             catch (IOException ex) {
                 if ( ex.getCause() instanceof java.lang.OutOfMemoryError )
-                    throw new FileException("BlockMgrMapped.segmentAllocate: Segment = " + seg + " : Offset = " + offset);
+                    throw new FileException("BlockMgrMapped.segmentAllocate: Segment = " + seg + " : Offset = " + offset, ex);
                 throw new FileException("BlockMgrMapped.segmentAllocate: Segment = " + seg, ex);
             }
         }
