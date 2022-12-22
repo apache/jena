@@ -139,7 +139,7 @@ public class QueryExecTest implements Runnable {
                 return createDataset(testItem.getDefaultGraphURIs(), testItem.getNamedGraphURIs());
 
             if ( !doesQueryHaveDataset(query) )
-                setupFailure("No dataset");
+                return DatasetFactory.createTxnMem();
 
             // Left to query
             return null;

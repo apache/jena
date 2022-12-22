@@ -55,6 +55,7 @@ import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.expr.*;
+import org.apache.jena.sparql.function.library.FN_AdjustToTimezone;
 import org.apache.jena.sparql.util.DateTimeStruct ;
 /**
  * Implementation of XQuery/XPath functions and operators.
@@ -1256,6 +1257,7 @@ public class XSDFuncOp
 
     private static int compareDuration(Duration duration1, Duration duration2) {
         // Returns codes are -1/0/1 but also 2 for "Indeterminate"
+        // In F&O, the expression op:duration-equal(xs:duration("P1Y"), xs:duration("P365D")) returns false().
         int x = duration1.compare(duration2) ;
         return convertComparison(x) ;
     }
@@ -1698,7 +1700,13 @@ public class XSDFuncOp
         return dur;
     }
 
-    public static NodeValue adjustDatetimeToTimezone(NodeValue nv1,NodeValue nv2){
+    /**
+     * Adjust xsd:dateTime/xsd:date/xsd:time to a timezone.
+     * {@code fn:adjust-to-timezone} ({@link FN_AdjustToTimezone}) is not a real F&O function.
+     * If the second argument is null, use implicit timezone.
+     * In Jena, the implicit timezone is fixed to UTC.
+     */
+    public static NodeValue adjustToTimezone(NodeValue nv1, NodeValue nv2){
         if(nv1 == null)
             return null;
 
@@ -1706,11 +1714,10 @@ public class XSDFuncOp
             throw new ExprEvalException("Not a valid date, datetime or time:"+nv1);
 
         XMLGregorianCalendar calValue = nv1.getDateTime();
-        Boolean hasTz = calValue.getTimezone() != DatatypeConstants.FIELD_UNDEFINED;
+        boolean hasTz = ( calValue.getTimezone() != DatatypeConstants.FIELD_UNDEFINED );
         int inputOffset = 0;
-        if(hasTz){
+        if ( hasTz )
             inputOffset = calValue.getTimezone();
-        }
 
         int tzOffset = 0;
         if(nv2 != null){
@@ -1721,7 +1728,7 @@ public class XSDFuncOp
                     if(nv1.isDateTime())
                         return NodeValue.makeDateTime(calValue);
                     else if(nv1.isTime())
-                        return NodeValue.makeNode(calValue.toXMLFormat(),XSDDatatype.XSDtime);
+                        return NodeValue.makeNode(calValue.toXMLFormat(), XSDDatatype.XSDtime);
                     else
                         return NodeValue.makeDate(calValue);
                 }
@@ -1735,7 +1742,7 @@ public class XSDFuncOp
             if(absTzOffset > 14*60)
                 throw new ExprEvalException("The timezone should be a duration between -PT14H and PT14H.");
         }
-        else{
+        else {
             tzOffset = TimeZone.getDefault().getOffset(new Date().getTime())/(1000*60);
         }
         Duration durToAdd = NodeValue.xmlDatatypeFactory.newDurationDayTime((tzOffset-inputOffset) > 0,0,0,java.lang.Math.abs(tzOffset-inputOffset),0);
@@ -1745,7 +1752,7 @@ public class XSDFuncOp
         if(nv1.isDateTime())
             return NodeValue.makeDateTime(calValue);
         else if(nv1.isTime())
-            return NodeValue.makeNode(calValue.toXMLFormat(),XSDDatatype.XSDtime);
+            return NodeValue.makeNode(calValue.toXMLFormat(), XSDDatatype.XSDtime);
         else
             return NodeValue.makeDate(calValue);
     }

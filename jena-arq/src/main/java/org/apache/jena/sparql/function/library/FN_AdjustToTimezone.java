@@ -17,8 +17,9 @@
  */
 package org.apache.jena.sparql.function.library;
 
+import java.util.List;
+
 import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.query.ARQ;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprList;
@@ -26,10 +27,9 @@ import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase;
 
-import java.util.List;
-
-public class FN_AdjustTimeToTimezone extends FunctionBase {
-    public FN_AdjustTimeToTimezone(){super();}
+/** Do any of FN_Adjust(date/time)ToTimezone */
+public class FN_AdjustToTimezone extends FunctionBase {
+    public FN_AdjustToTimezone(){super();}
 
     @Override
     public void checkBuild(String uri, ExprList args)
@@ -41,11 +41,11 @@ public class FN_AdjustTimeToTimezone extends FunctionBase {
     public NodeValue exec(List<NodeValue> args)
     {
         if ( args.size() != 1 && args.size() != 2 )
-            throw new ExprEvalException("fn:adjust-time-to-timezone: Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
+            throw new ExprEvalException("fn:adjust-to-timezone: Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
 
         NodeValue v1 = args.get(0) ;
-        if ( ARQ.isStrictMode() && !v1.isTime() )
-            throw new ExprEvalException("fn:adjust-time-to-timezone: Arg 1 not an xsd:time : " + v1);
+        if ( !v1.isDateTime() && !v1.isDate() && !v1.isTime() )
+            throw new ExprEvalException("Not an xsd:dateTime, xsd:date or xsd:time : " + v1);
 
         if ( args.size() == 2 ) {
             NodeValue v2 = args.get(1) ;
