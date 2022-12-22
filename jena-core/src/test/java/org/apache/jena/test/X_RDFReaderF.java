@@ -31,7 +31,9 @@ public class X_RDFReaderF extends Object implements RDFReaderF {
     public static final String DEFAULTLANG = "RDF/XML" ;
     private static Map<String, Class<? extends RDFReaderI>> custom = new LinkedHashMap<>();
     private static RDFReaderF rewiredAlternative = null ;
-    /** Rewire to use an external RDFReaderF (typically, RIOT).
+
+    /**
+     * Rewire to use an external RDFReaderF (typically, RIOT).
      * Set to null to use old jena-core setup.
      * @param other
      */
