@@ -619,7 +619,10 @@ public class ARQ
                 return;
             initialized = true;
             JenaSystem.logLifecycle("ARQ.init - start");
+            // Should be unnecessary but it is harmless to call again.
+            RIOT.init();
             // Force constants to be set.  This should be independent of other initialization including jena core.
+            ARQConstants.init();
             setARQSettings();
             ARQConstants.getGlobalPrefixMap();
             ResultSetLang.init();
@@ -635,7 +638,6 @@ public class ARQ
             // Register RIOT details here, not earlier, to avoid
             // initialization loops with RIOT.init() called directly.
             RIOT.register();
-
             // Initialise the standard library.
             FunctionRegistry.init();
             ServiceExecutorRegistry.init();

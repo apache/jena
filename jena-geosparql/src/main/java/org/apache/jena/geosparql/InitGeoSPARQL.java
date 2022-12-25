@@ -30,18 +30,31 @@ import org.apache.jena.sys.JenaSystem;
 
 public class InitGeoSPARQL implements JenaSubsystemLifecycle {
 
+    private static volatile boolean initialized = false ;
+    private static Object           initLock    = new Object() ;
+
     @Override
     public void start() {
-        // SIS uses JUL for logging.
-        LogCtlJUL.routeJULtoSLF4J();
-        JenaSystem.logLifecycle("InitGeoSPARQL - start");
-        GeometryDatatype.registerDatatypes();
-        // Logs "SIS_DATA is not set"
-        GeoSPARQLConfig.loadFunctions();
-        Assembler assembler = new GeoAssembler();
-        AssemblerUtils.registerDataset(VocabGeoSPARQL.tGeoDataset,    assembler);
-        AssemblerUtils.registerDataset(VocabGeoSPARQL.tGeoDatasetAlt, assembler);
-        JenaSystem.logLifecycle("InitGeoSPARQL - finish");
+        if ( initialized )
+            return ;
+        synchronized (initLock) {
+            if ( initialized ) {
+                JenaSystem.logLifecycle("InitGeoSPARQL - skip") ;
+                return ;
+            }
+            initialized = true ;
+
+            // SIS uses JUL for logging.
+            LogCtlJUL.routeJULtoSLF4J();
+            JenaSystem.logLifecycle("InitGeoSPARQL - start");
+            GeometryDatatype.registerDatatypes();
+            // Logs "SIS_DATA is not set"
+            GeoSPARQLConfig.loadFunctions();
+            Assembler assembler = new GeoAssembler();
+            AssemblerUtils.registerDataset(VocabGeoSPARQL.tGeoDataset,    assembler);
+            AssemblerUtils.registerDataset(VocabGeoSPARQL.tGeoDatasetAlt, assembler);
+            JenaSystem.logLifecycle("InitGeoSPARQL - finish");
+        }
     }
 
     @Override
