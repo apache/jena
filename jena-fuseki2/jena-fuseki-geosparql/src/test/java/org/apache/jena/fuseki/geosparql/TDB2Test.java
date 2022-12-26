@@ -51,7 +51,7 @@ public class TDB2Test {
     public static void setUpClass() throws DatasetException, SpatialIndexException {
 
         File tempTDBDir = Files.createTempDir();
-        String[] args = {"-rf", "geosparql_test.rdf>xml", "-i", "-t", tempTDBDir.getAbsolutePath(), "-t2"};
+        String[] args = {"-rf", "geosparql_test.rdf>xml", "-i", "-t", tempTDBDir.getAbsolutePath(), "-t2", "--port", "4047"};
 
         ArgsConfig argsConfig = new ArgsConfig();
         JCommander.newBuilder()
