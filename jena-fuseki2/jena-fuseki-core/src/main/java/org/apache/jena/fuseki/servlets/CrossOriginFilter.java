@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.servlets;
 
-// This is a copy of Jetty's CrossOriginFilter - Fuseki need something
+// This is a copy of Jetty's CrossOriginFilter - Fuseki needs something
 // that works without Jetty on the classpath when running as a WAR file.
 // Copy from Jetty 10.0.11
 // We elect to use and distribute under The Apache License v2.0.
@@ -26,7 +26,7 @@ package org.apache.jena.fuseki.servlets;
 //Changes:
 //  * Package declaration
 //  * Comment out casts in to remove warnings in method isEnabled.
-
+//  * Functions from org.eclipse.jetty.utilStringUtil to make this class portable.
 
 //
 //========================================================================
@@ -44,24 +44,13 @@ package org.apache.jena.fuseki.servlets;
 //package org.eclipse.jetty.servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -538,5 +527,262 @@ public class CrossOriginFilter implements Filter
         allowedHeaders.clear();
         preflightMaxAge = 0;
         allowCredentials = false;
+    }
+}
+
+class StringUtil {
+    /**
+     * Replace chars within string.
+     * <p>
+     * Fast replacement for {@code java.lang.String#}{@link String#replace(char, char)}
+     * </p>
+     *
+     * @param str the input string
+     * @param find the char to look for
+     * @param with the char to replace with
+     * @return the now replaced string
+     */
+    public static String replace(String str, char find, char with)
+    {
+        if (str == null)
+            return null;
+
+        if (find == with)
+            return str;
+
+        int c = 0;
+        int idx = str.indexOf(find, c);
+        if (idx == -1)
+        {
+            return str;
+        }
+        char[] chars = str.toCharArray();
+        int len = chars.length;
+        for (int i = idx; i < len; i++)
+        {
+            if (chars[i] == find)
+                chars[i] = with;
+        }
+        return String.valueOf(chars);
+    }
+
+    /**
+     * Replace substrings within string.
+     * <p>
+     * Fast replacement for {@code java.lang.String#}{@link String#replace(CharSequence, CharSequence)}
+     * </p>
+     *
+     * @param s the input string
+     * @param sub the string to look for
+     * @param with the string to replace with
+     * @return the now replaced string
+     */
+    public static String replace(String s, String sub, String with)
+    {
+        if (s == null)
+            return null;
+
+        int c = 0;
+        int i = s.indexOf(sub, c);
+        if (i == -1)
+        {
+            return s;
+        }
+        StringBuilder buf = new StringBuilder(s.length() + with.length());
+        do
+        {
+            buf.append(s, c, i);
+            buf.append(with);
+            c = i + sub.length();
+        }
+        while ((i = s.indexOf(sub, c)) != -1);
+        if (c < s.length())
+        {
+            buf.append(s.substring(c));
+        }
+        return buf.toString();
+    }
+
+
+    /**
+     * Parse a CSV string using {@link #csvSplit(List, String, int, int)}
+     *
+     * @param s The string to parse
+     * @return An array of parsed values.
+     */
+    public static String[] csvSplit(String s)
+    {
+        if (s == null)
+            return null;
+        return csvSplit(s, 0, s.length());
+    }
+
+    /**
+     * Parse a CSV string using {@link #csvSplit(List, String, int, int)}
+     *
+     * @param s The string to parse
+     * @param off The offset into the string to start parsing
+     * @param len The len in characters to parse
+     * @return An array of parsed values.
+     */
+    public static String[] csvSplit(String s, int off, int len)
+    {
+        if (s == null)
+            return null;
+        if (off < 0 || len < 0 || off > s.length())
+            throw new IllegalArgumentException();
+        List<String> list = new ArrayList<>();
+        csvSplit(list, s, off, len);
+        return list.toArray(new String[list.size()]);
+    }
+
+    enum CsvSplitState
+    {
+        PRE_DATA, QUOTE, SLOSH, DATA, WHITE, POST_DATA
+    }
+
+    /**
+     * Split a quoted comma separated string to a list
+     * <p>Handle <a href="https://www.ietf.org/rfc/rfc4180.txt">rfc4180</a>-like
+     * CSV strings, with the exceptions:<ul>
+     * <li>quoted values may contain double quotes escaped with back-slash
+     * <li>Non-quoted values are trimmed of leading trailing white space
+     * <li>trailing commas are ignored
+     * <li>double commas result in a empty string value
+     * </ul>
+     *
+     * @param list The Collection to split to (or null to get a new list)
+     * @param s The string to parse
+     * @param off The offset into the string to start parsing
+     * @param len The len in characters to parse
+     * @return list containing the parsed list values
+     */
+    public static List<String> csvSplit(List<String> list, String s, int off, int len)
+    {
+        if (list == null)
+            list = new ArrayList<>();
+        CsvSplitState state = CsvSplitState.PRE_DATA;
+        StringBuilder out = new StringBuilder();
+        int last = -1;
+        while (len > 0)
+        {
+            char ch = s.charAt(off++);
+            len--;
+
+            switch (state)
+            {
+                case PRE_DATA:
+                    if (Character.isWhitespace(ch))
+                        continue;
+                    if ('"' == ch)
+                    {
+                        state = CsvSplitState.QUOTE;
+                        continue;
+                    }
+
+                    if (',' == ch)
+                    {
+                        list.add("");
+                        continue;
+                    }
+                    state = CsvSplitState.DATA;
+                    out.append(ch);
+                    continue;
+
+                case DATA:
+                    if (Character.isWhitespace(ch))
+                    {
+                        last = out.length();
+                        out.append(ch);
+                        state = CsvSplitState.WHITE;
+                        continue;
+                    }
+
+                    if (',' == ch)
+                    {
+                        list.add(out.toString());
+                        out.setLength(0);
+                        state = CsvSplitState.PRE_DATA;
+                        continue;
+                    }
+                    out.append(ch);
+                    continue;
+
+                case WHITE:
+                    if (Character.isWhitespace(ch))
+                    {
+                        out.append(ch);
+                        continue;
+                    }
+
+                    if (',' == ch)
+                    {
+                        out.setLength(last);
+                        list.add(out.toString());
+                        out.setLength(0);
+                        state = CsvSplitState.PRE_DATA;
+                        continue;
+                    }
+
+                    state = CsvSplitState.DATA;
+                    out.append(ch);
+                    last = -1;
+                    continue;
+
+                case QUOTE:
+                    if ('\\' == ch)
+                    {
+                        state = CsvSplitState.SLOSH;
+                        continue;
+                    }
+                    if ('"' == ch)
+                    {
+                        list.add(out.toString());
+                        out.setLength(0);
+                        state = CsvSplitState.POST_DATA;
+                        continue;
+                    }
+                    out.append(ch);
+                    continue;
+
+                case SLOSH:
+                    out.append(ch);
+                    state = CsvSplitState.QUOTE;
+                    continue;
+
+                case POST_DATA:
+                    if (',' == ch)
+                    {
+                        state = CsvSplitState.PRE_DATA;
+                        continue;
+                    }
+                    continue;
+
+                default:
+                    throw new IllegalStateException(state.toString());
+            }
+        }
+        switch (state)
+        {
+            case PRE_DATA:
+            case POST_DATA:
+                break;
+
+            case DATA:
+            case QUOTE:
+            case SLOSH:
+                list.add(out.toString());
+                break;
+
+            case WHITE:
+                out.setLength(last);
+                list.add(out.toString());
+                break;
+
+            default:
+                throw new IllegalStateException(state.toString());
+        }
+
+        return list;
     }
 }
