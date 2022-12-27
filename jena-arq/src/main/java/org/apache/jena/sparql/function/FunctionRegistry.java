@@ -28,9 +28,12 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappedLoader ;
+import org.apache.jena.sys.JenaSystem;
 
 public class FunctionRegistry
 {
+    static { JenaSystem.init(); }
+
     // Extract a Registry class and do casting and initialization here.
     private Map<String, FunctionFactory> registry = new HashMap<>() ;
     private Set<String> attemptedLoads = new HashSet<>() ;

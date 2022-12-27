@@ -22,12 +22,15 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.sys.JenaSystem;
 
 /**
  * Internal constants - configuration is in class ARQ
  */
 public class ARQConstants
 {
+    static { JenaSystem.init(); }
+
     /** The prefix of XQuery/Xpath functions and operator */
     public static final String fnPrefix = "http://www.w3.org/2005/xpath-functions#" ;
 
@@ -303,4 +306,7 @@ public class ARQConstants
     /** The extension library registry key */
     public static final Symbol registryExtensions =
         SystemARQ.allocSymbol("registryExtensions") ;
+
+    public static void init() {}
+
 }

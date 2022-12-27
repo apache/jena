@@ -18,6 +18,7 @@
 package org.apache.jena.geosparql.configuration;
 
 import java.io.File;
+
 import org.apache.jena.geosparql.geof.topological.RelateFF;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.function_registration.*;
@@ -31,6 +32,7 @@ import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
+import org.apache.jena.sys.JenaSystem;
 
 /**
  *
@@ -38,11 +40,15 @@ import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
  */
 public class GeoSPARQLConfig {
 
+    static { JenaSystem.init(); }
+
     /**
      * GeoSPARQL schema
      */
-    private static Boolean IS_FUNCTIONS_REGISTERED = false;
-    private static Boolean IS_QUERY_REWRITE_ENABLED = true;
+    // Must be boolean, not Boolean, because then IS_FUNCTIONS_REGISTERED is
+    // defined and not null.
+    private static boolean IS_FUNCTIONS_REGISTERED = false;
+    private static boolean IS_QUERY_REWRITE_ENABLED = true;
 
     /**
      * Precision of calculations. Inaccuracies exist in these calculations and a
@@ -189,7 +195,7 @@ public class GeoSPARQLConfig {
     }
 
     public static final void loadFunctions() {
-        //Only register functions once.
+        //Only register functions once in system initialization.
         if (!IS_FUNCTIONS_REGISTERED) {
             // loading is actually idempotent.
             IS_FUNCTIONS_REGISTERED = true;

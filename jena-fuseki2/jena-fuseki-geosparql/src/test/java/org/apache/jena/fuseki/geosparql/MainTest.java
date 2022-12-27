@@ -47,7 +47,7 @@ public class MainTest {
 
     @BeforeClass
     public static void setUpClass() throws DatasetException, SpatialIndexException {
-        String[] args = {"-rf", "geosparql_test.rdf>xml", "-i"};
+        String[] args = {"-rf", "geosparql_test.rdf>xml", "-i", "--port", "4048"};
 
         ArgsConfig argsConfig = new ArgsConfig();
         JCommander.newBuilder()

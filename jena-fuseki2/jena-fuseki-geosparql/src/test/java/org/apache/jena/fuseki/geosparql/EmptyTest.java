@@ -45,7 +45,7 @@ public class EmptyTest {
 
     @BeforeClass
     public static void setUpClass() throws DatasetException, SpatialIndexException {
-        String[] args = {"-u"};
+        String[] args = {"-u", "--port", "4049"};
 
         ArgsConfig argsConfig = new ArgsConfig();
         JCommander.newBuilder()
