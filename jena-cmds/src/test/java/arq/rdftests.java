@@ -86,25 +86,32 @@ public class rdftests extends CmdGeneral
         }
     }
 
-    protected ModContext modContext     = new ModContext();
-    protected ArgDecl  strictDecl       = new ArgDecl(ArgDecl.NoValue, "strict");
-    protected boolean  cmdStrictMode    = false;
+    protected ModContext modContext        = new ModContext();
+    protected ArgDecl    strictDecl        = new ArgDecl(ArgDecl.NoValue, "strict");
+    protected boolean    cmdStrictMode     = false;
 
-    protected ArgDecl earlDecl          = new ArgDecl(ArgDecl.NoValue, "earl");
-    protected boolean createEarlReport  = false;
+    protected ArgDecl    arqDecl           = new ArgDecl(ArgDecl.NoValue, "arq");
+    // Run with ".rq" as ARQ extended syntax.
+    protected boolean    arqAsNormal       = false;
 
-    protected ArgDecl  baseDecl         = new ArgDecl(ArgDecl.HasValue, "base");
-    protected String baseURI            = null;
+    protected ArgDecl    earlDecl          = new ArgDecl(ArgDecl.NoValue, "earl");
+    protected boolean    createEarlReport  = false;
+
+    protected ArgDecl    baseDecl          = new ArgDecl(ArgDecl.HasValue, "base");
+    protected String     baseURI           = null;
 
     private static final PrintStream earlOut = System.out;
 
+    private static boolean strictMode = false;
+
     protected rdftests(String[] argv) {
         super(argv);
-        super.add(strictDecl, "--strict", "Operate in strict mode (no extensions of any kind)");
-        super.add(baseDecl, "--base=URI", "Set the base URI");
+//        super.add(baseDecl, "--base=URI", "Set the base URI");
         super.modVersion.addClass(ARQ.class);
         getUsage().startCategory("Tests (execute test manifest)");
         getUsage().addUsage("<manifest>", "run the tests specified in the given manifest");
+        add(arqDecl, "--arq",       "Operate with ARQ syntax)");
+        add(strictDecl, "--strict", "Operate in strict mode (no extensions of any kind)");
         add(earlDecl, "--earl", "create EARL report");
         addModule(modContext);
     }
@@ -120,27 +127,30 @@ public class rdftests extends CmdGeneral
         if ( !hasPositional() )
             throw new CmdException("No manifest file");
         createEarlReport = contains(earlDecl);
+        cmdStrictMode = super.hasArg(strictDecl);
+        if ( contains(baseDecl) )
+            baseURI = super.getValue(baseDecl);
+        arqAsNormal = contains(arqDecl);
     }
 
     @Override
     protected void exec() {
-        BaseTest2.setTestLogging();
-
-        if ( contains(strictDecl) ) {
-            // Always done in test setups.
-            cmdStrictMode = true;
-            // Which will apply to reading the manifests!
-            ARQ.setStrictMode();
-            SysRIOT.setStrictMode(true);
-            SparqlTests.defaultSyntaxForTests = Syntax.syntaxSPARQL_11;
-        }
-        if ( contains(baseDecl) ) {
-            baseURI = super.getValue(baseDecl);
-        }
-
         NodeValue.VerboseWarnings = false;
         E_Function.WarnOnUnknownFunction = false;
         EarlReport report = new EarlReport(systemURI);
+
+        BaseTest2.setTestLogging();
+
+        if ( cmdStrictMode ) {
+            // Which will apply to reading the manifests!
+            ARQ.setStrictMode();
+            SysRIOT.setStrictMode(true);
+        }
+
+        if ( arqAsNormal )
+            SparqlTests.defaultSyntaxForSyntaxTests = Syntax.syntaxARQ;
+        else
+            SparqlTests.defaultSyntaxForSyntaxTests = Syntax.syntaxSPARQL_11;
 
         for ( String fn : getPositional() ) {
             System.out.println("Run: "+fn);
