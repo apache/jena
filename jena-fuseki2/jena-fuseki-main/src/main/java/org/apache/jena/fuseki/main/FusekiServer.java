@@ -55,11 +55,9 @@ import org.apache.jena.fuseki.main.sys.FusekiModuleStep;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.*;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
@@ -760,6 +758,17 @@ public class FusekiServer {
             x.forEach(dap->addDataAccessPoint(dap));
             configModel = model;
             return this;
+        }
+
+        /**
+         * Configure using a Fuseki services/datasets assembler in a {@link Graph}.
+         * <p>
+         * The application is responsible for ensuring a correct classpath. For example,
+         * including a dependency on {@code jena-text} if the configuration file includes
+         * a text index.
+         */
+        public Builder parseConfig(Graph graph) {
+            return parseConfig(ModelFactory.createModelForGraph(graph));
         }
 
         /** Add a {@link DataAccessPoint} as a builder. */
