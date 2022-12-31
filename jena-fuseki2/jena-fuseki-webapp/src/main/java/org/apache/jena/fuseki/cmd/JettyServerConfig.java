@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.jetty;
+package org.apache.jena.fuseki.cmd;
 
 
-/** Configuration of the Jetty server when run from the command line directly,
- *  not as a webapp/war file.
+/**
+ * Configuration of the Jetty server when run from the command line directly,
+ * not as a webapp/war file.
  */
 
 public class JettyServerConfig

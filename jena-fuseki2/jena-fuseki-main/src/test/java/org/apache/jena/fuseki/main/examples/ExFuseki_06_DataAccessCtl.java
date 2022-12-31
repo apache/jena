@@ -30,9 +30,9 @@ import org.apache.jena.fuseki.access.AuthorizationService;
 import org.apache.jena.fuseki.access.DataAccessCtl;
 import org.apache.jena.fuseki.access.SecurityContextView;
 import org.apache.jena.fuseki.access.SecurityRegistry;
-import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.auth.AuthLib;
 import org.apache.jena.query.Dataset;
@@ -162,8 +162,8 @@ public class ExFuseki_06_DataAccessCtl {
         // Add service endpoint login for authentication.
         ConstraintSecurityHandler sh = null;
         if ( userStore != null ) {
-            sh = JettyLib.makeSecurityHandler("Dataset:"+dsName, userStore);
-            JettyLib.addPathConstraint(sh, dsName);
+            sh = JettySecurityLib.makeSecurityHandler("Dataset:"+dsName, userStore);
+            JettySecurityLib.addPathConstraint(sh, dsName);
             builder.securityHandler(sh);
         }
         return builder.build();

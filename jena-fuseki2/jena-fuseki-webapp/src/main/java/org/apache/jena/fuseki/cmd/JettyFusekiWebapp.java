@@ -27,8 +27,6 @@ import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
-import org.apache.jena.fuseki.jetty.JettyServerConfig;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiCoreInfo;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
@@ -50,7 +48,7 @@ import org.eclipse.jetty.xml.XmlConfiguration;
  * immediate access to the {@link org.eclipse.jetty.server.Server#start()} and
  * {@link org.eclipse.jetty.server.Server#stop()} commands as well as obtaining
  * instances of the server and server configuration. Finally we can obtain
- * instances of {@link org.apache.jena.fuseki.jetty.JettyServerConfig}.
+ * instances of {@link org.apache.jena.fuseki.cmd.JettyServerConfig}.
  */
 public class JettyFusekiWebapp {
     // Jetty specific.
@@ -80,7 +78,7 @@ public class JettyFusekiWebapp {
     public static final String resourceBase2   = "target/webapp";
 
     /**
-     * Default setup which requires a {@link org.apache.jena.fuseki.jetty.JettyServerConfig}
+     * Default setup which requires a {@link org.apache.jena.fuseki.cmd.JettyServerConfig}
      * object as input.  We use this config to pass in the command line arguments for dataset,
      * name etc.
      * @param config

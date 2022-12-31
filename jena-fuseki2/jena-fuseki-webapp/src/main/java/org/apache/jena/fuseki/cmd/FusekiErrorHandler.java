@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.jetty;
+package org.apache.jena.fuseki.cmd;
 
 import static java.lang.String.format;
 
@@ -34,7 +34,7 @@ import org.eclipse.jetty.server.handler.ErrorHandler;
 
 /**
  * Fuseki error handler (used with ServletAPI HttpServletResponse.sendError).
- * Typically ServletOps.responseSendError is used which directly send the error and a message. 
+ * Typically ServletOps.responseSendError is used which directly sends the error and a message.
  */
 public class FusekiErrorHandler extends ErrorHandler
 {
@@ -46,11 +46,11 @@ public class FusekiErrorHandler extends ErrorHandler
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String method = request.getMethod();
 
-        if ( !method.equals(HttpMethod.GET.asString()) 
-            && !method.equals(HttpMethod.POST.asString()) 
+        if ( !method.equals(HttpMethod.GET.asString())
+            && !method.equals(HttpMethod.POST.asString())
             && !method.equals(HttpMethod.HEAD.asString()) )
             return;
-        
+
         ServletOps.setNoCache(response);
         int code = response.getStatus();
         String message = (response instanceof Response) ? ((Response)response).getReason() : HttpSC.getMessage(code);

@@ -29,8 +29,8 @@ import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
-import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.DatasetFactory;
@@ -72,20 +72,20 @@ public class TestSecurityBuilderSetup {
 
         // Two authorized users.
         UserStore userStore = new UserStore();
-        JettyLib.addUser(userStore, authSetup1.user, authSetup1.password);
-        JettyLib.addUser(userStore, authSetup2.user, authSetup2.password);
+        JettySecurityLib.addUser(userStore, authSetup1.user, authSetup1.password);
+        JettySecurityLib.addUser(userStore, authSetup2.user, authSetup2.password);
         try { userStore.start(); }
         catch (Exception ex) { throw new RuntimeException("UserStore", ex); }
 
-        ConstraintSecurityHandler sh = JettyLib.makeSecurityHandler(authSetup1.realm, userStore);
+        ConstraintSecurityHandler sh = JettySecurityLib.makeSecurityHandler(authSetup1.realm, userStore);
 
         // Secure these areas.
         // User needs to be logged in.
-        JettyLib.addPathConstraint(sh, "/ds");
+        JettySecurityLib.addPathConstraint(sh, "/ds");
         // Allow auth control even through there isn't anything there
-        JettyLib.addPathConstraint(sh, "/nowhere");
+        JettySecurityLib.addPathConstraint(sh, "/nowhere");
         // user1 only.
-        JettyLib.addPathConstraint(sh, "/ctl");
+        JettySecurityLib.addPathConstraint(sh, "/ctl");
 
         // Not controlled: "/open"
 

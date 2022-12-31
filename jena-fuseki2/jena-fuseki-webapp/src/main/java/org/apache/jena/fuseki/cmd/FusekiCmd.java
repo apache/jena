@@ -30,7 +30,6 @@ import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.jetty.JettyServerConfig;
 import org.apache.jena.fuseki.mgt.Template;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.fuseki.webapp.FusekiEnv;

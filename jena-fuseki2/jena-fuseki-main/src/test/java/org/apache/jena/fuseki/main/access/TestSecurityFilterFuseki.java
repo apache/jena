@@ -31,8 +31,8 @@ import org.apache.jena.fuseki.access.DataAccessCtl;
 import org.apache.jena.fuseki.access.SecurityContext;
 import org.apache.jena.fuseki.access.SecurityContextView;
 import org.apache.jena.fuseki.access.SecurityRegistry;
-import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.Model;
@@ -92,8 +92,8 @@ public class TestSecurityFilterFuseki {
         testdsg3 = DataAccessCtl.controlledDataset(testdsg3, reg);
 
         UserStore userStore = userStore();
-        ConstraintSecurityHandler sh = JettyLib.makeSecurityHandler("*", userStore);
-        JettyLib.addPathConstraint(sh, "/*");
+        ConstraintSecurityHandler sh = JettySecurityLib.makeSecurityHandler("*", userStore);
+        JettySecurityLib.addPathConstraint(sh, "/*");
 
         // If used, also check log4j2.properties.
         //FusekiLogging.setLogging();

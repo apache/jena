@@ -48,10 +48,10 @@ import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.*;
-import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
-import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
+import org.apache.jena.fuseki.main.sys.FusekiErrorHandler;
 import org.apache.jena.fuseki.main.sys.FusekiModuleStep;
+import org.apache.jena.fuseki.main.sys.JettyLib;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.*;
@@ -1250,8 +1250,8 @@ public class FusekiServer {
         }
 
         private ConstraintSecurityHandler buildSecurityHandler() {
-            UserStore userStore = JettyLib.makeUserStore(passwordFile);
-            return JettyLib.makeSecurityHandler(realm, userStore, authScheme);
+            UserStore userStore = JettySecurityLib.makeUserStore(passwordFile);
+            return JettySecurityLib.makeSecurityHandler(realm, userStore, authScheme);
         }
 
         // These booleans are only for validation.
@@ -1393,7 +1393,7 @@ public class FusekiServer {
                 if ( securityHandler instanceof ConstraintSecurityHandler ) {
                     ConstraintSecurityHandler csh = (ConstraintSecurityHandler)securityHandler;
                     if ( hasServerWideAuth() ) {
-                        JettyLib.addPathConstraint(csh, "/*");
+                        JettySecurityLib.addPathConstraint(csh, "/*");
                     }
                     else {
                         // Find datasets that need login.
@@ -1401,8 +1401,8 @@ public class FusekiServer {
                         DataAccessPointRegistry.get(cxt.getServletContext()).forEach((name, dap)-> {
                             DatasetGraph dsg = dap.getDataService().getDataset();
                             if ( ! authAny(dap.getDataService().authPolicy()) ) {
-                                JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name));
-                                JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
+                                JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name));
+                                JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
                             }
                             else {
                                 // Need to to a pass to find the "right" set to install.
@@ -1411,14 +1411,13 @@ public class FusekiServer {
                                     if ( ! authAny(ep.getAuthPolicy()) ) {
                                         // Unnamed - applies to the dataset. Yuk.
                                         if ( ep.getName().isEmpty() ) {
-                                            JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name));
-                                            JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
-
+                                            JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name));
+                                            JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
                                         } else {
                                             // Named.
-                                            JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/"+ep.getName());
+                                            JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/"+ep.getName());
                                             if ( Fuseki.GSP_DIRECT_NAMING )
-                                                JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/"+ep.getName()+"/*");
+                                                JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/"+ep.getName()+"/*");
                                         }
                                     }
                                 });

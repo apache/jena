@@ -22,8 +22,8 @@ import java.util.Objects;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.WebLib;
-import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.web.HttpSC;
@@ -154,7 +154,7 @@ public class FusekiTestAuth {
         securityHandler.addConstraintMapping(mapping);
         securityHandler.setIdentityService(identService);
 
-        UserStore userStore = JettyLib.makeUserStore(user, password, role);
+        UserStore userStore = JettySecurityLib.makeUserStore(user, password, role);
 
         HashLoginService loginService = new HashLoginService("Fuseki Authentication");
         loginService.setUserStore(userStore);

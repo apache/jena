@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.main;
 
-import org.apache.jena.fuseki.jetty.JettyLib;
+import org.apache.jena.fuseki.main.sys.JettyLib;
 import org.eclipse.jetty.http.HttpScheme;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.*;
