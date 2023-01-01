@@ -504,13 +504,11 @@ public class FusekiServer {
             return this.staticContentDir;
         }
 
-        /** Set a Jetty SecurityHandler.
+        /**
+         * Set a Jetty SecurityHandler.
          * <p>
-         *  By default, the server runs with no security.
-         *  This is more for using the basic server for testing.
-         *  The full Fuseki server provides security with Apache Shiro
-         *  and a defensive reverse proxy (e.g. Apache httpd) in front of the Jetty server
-         *  can also be used, which provides a wide variety of proven security options.
+         * This is an alternative to using the Fuseki Main built-in security
+         * configuration.
          */
         public Builder securityHandler(SecurityHandler securityHandler) {
             requireNonNull(securityHandler, "securityHandler");
@@ -1388,44 +1386,45 @@ public class FusekiServer {
 
         private void buildAccessControl(ServletContextHandler cxt) {
             // -- Access control
-            if ( securityHandler != null ) {
-                cxt.setSecurityHandler(securityHandler);
-                if ( securityHandler instanceof ConstraintSecurityHandler ) {
-                    ConstraintSecurityHandler csh = (ConstraintSecurityHandler)securityHandler;
-                    if ( hasServerWideAuth() ) {
-                        JettySecurityLib.addPathConstraint(csh, "/*");
-                    }
-                    else {
-                        // Find datasets that need login.
-                        // If any endpoint
-                        DataAccessPointRegistry.get(cxt.getServletContext()).forEach((name, dap)-> {
-                            DatasetGraph dsg = dap.getDataService().getDataset();
-                            if ( ! authAny(dap.getDataService().authPolicy()) ) {
+            if ( securityHandler == null )
+                return;
+            cxt.setSecurityHandler(securityHandler);
+            if ( ! ( securityHandler instanceof ConstraintSecurityHandler ) ) {
+                // Externally provided security handler.
+                return;
+            }
+
+            ConstraintSecurityHandler csh = (ConstraintSecurityHandler)securityHandler;
+            if ( hasServerWideAuth() ) {
+                JettySecurityLib.addPathConstraint(csh, "/*");
+                return;
+            }
+
+            // Look for datasets and endpoints that need login and add a path constraint.
+            DataAccessPointRegistry.get(cxt.getServletContext()).forEach((name, dap)-> {
+                if ( ! authAny(dap.getDataService().authPolicy()) ) {
+                    // Dataset wide.
+                    JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name));
+                    JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
+                }
+                else {
+                    // Check endpoints.
+                    dap.getDataService().forEachEndpoint(ep->{
+                        if ( ! authAny(ep.getAuthPolicy()) ) {
+                            // Unnamed - unfortunately this then applies to all operations on the dataset.
+                            if ( ep.getName().isEmpty() ) {
                                 JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name));
                                 JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
+                            } else {
+                                // Named service.
+                                JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/"+ep.getName());
+                                if ( Fuseki.GSP_DIRECT_NAMING )
+                                    JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/"+ep.getName()+"/*");
                             }
-                            else {
-                                // Need to to a pass to find the "right" set to install.
-                                dap.getDataService().forEachEndpoint(ep->{
-                                    // repeats.
-                                    if ( ! authAny(ep.getAuthPolicy()) ) {
-                                        // Unnamed - applies to the dataset. Yuk.
-                                        if ( ep.getName().isEmpty() ) {
-                                            JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name));
-                                            JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
-                                        } else {
-                                            // Named.
-                                            JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/"+ep.getName());
-                                            if ( Fuseki.GSP_DIRECT_NAMING )
-                                                JettySecurityLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/"+ep.getName()+"/*");
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
+                        }
+                    });
                 }
-            }
+            });
         }
 
         /** Build a ServletContextHandler */
