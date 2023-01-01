@@ -89,7 +89,7 @@
     -->
     <ver.jsonldjava>0.13.4</ver.jsonldjava>
     <ver.jackson>2.14.1</ver.jackson>
-    <ver.httpclient>4.5.13</ver.httpclient>
+    <ver.httpclient>4.5.14</ver.httpclient>
     <ver.httpcore>4.4.16</ver.httpcore>
 
     <ver.shaded-guava>31.1-jre</ver.shaded-guava>
