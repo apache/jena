@@ -34,7 +34,7 @@ import org.apache.jena.sparql.util.Symbol;
  * Function that returns the value of a context setting.
  */
 public class context extends FunctionBase {
-    // This function exists more for testing comnetxt get setup correctly than anything else.
+    // This function exists more for testing context get setup correctly than anything else.
     public context() {}
 
     @Override
@@ -58,7 +58,7 @@ public class context extends FunctionBase {
             return NodeValue.nvEmptyString;
         if ( obj instanceof String )
             return NodeValue.makeString((String)obj);
-        
+
         if ( !(obj instanceof Node) )
             throw new ExprEvalException("Not a Node: " + Lib.className(obj));
         Node n = (Node)obj;

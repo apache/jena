@@ -37,7 +37,7 @@ public class E_NotEquals extends ExprFunction2
         // sameValueAs means "know to be the same value"
         // so they are not opposites
 
-        boolean b = NodeValue.notSameAs(x, y) ;
+        boolean b = NodeValue.notSameValueAs(x, y) ;
         return NodeValue.booleanReturn(b) ;
     }
     

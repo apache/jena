@@ -50,6 +50,7 @@ public class StandardFunctions
 
     public static void loadStdDefs(FunctionRegistry registry) {
         String xfn = ARQConstants.fnPrefix ;
+        String afn = ARQConstants.ARQFunctionLibraryURI ;
         String math = ARQConstants.mathPrefix ;
         String sparqlfn = ARQConstants.fnSparql ;
 
@@ -108,7 +109,6 @@ public class StandardFunctions
 
         // 3.1.1 fn:error
         add(registry, xfn+"error",         FN_Error.class) ;
-
 
 //      5.4.1 fn:concat
 //      5.4.3 fn:substring
@@ -216,6 +216,12 @@ public class StandardFunctions
         add(registry, xfn+"adjust-date-to-timezone",  FN_AdjustDateToTimezone.class) ;
 //        9.6.3 fn:adjust-time-to-timezone
         add(registry, xfn+"adjust-time-to-timezone",  FN_AdjustTimeToTimezone.class) ;
+
+        // Not in 3.1 : does any of the three above.
+        add(registry, xfn+"adjust-to-timezone",  FN_AdjustToTimezone.class) ;
+        // Same except ARQ URI afn:adjust-to-timezone
+        add(registry, afn+"adjust-to-timezone",  FN_AdjustToTimezone.class) ;
+
 //        9.8.1 fn:format-dateTime
 //        9.8.2 fn:format-date
 //        9.8.3 fn:format-time

@@ -78,7 +78,7 @@ public class nowtz extends FunctionBase0
         // Timezone as xsd:dayTimeDuration.
         NodeValue nvTz = XSDFuncOp.localTimezone();
         // Comes out as "Z", not "+00:00" because of cal.toXMLFormat() in NodeValue.makeDateTime
-        return XSDFuncOp.adjustDatetimeToTimezone(nv, nvTz);
+        return XSDFuncOp.adjustToTimezone(nv, nvTz);
     }
     
     // For information. Do it by accessing the query current time and converting using

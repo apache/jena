@@ -52,9 +52,9 @@ public class SystemARQ
     /**
      * Under strict {@literal F&O}, dateTimes and dates with no timezone have one magically applied.
      * This default timezone is implementation dependent and can lead to different answers
-     * to queries depending on the timezone. Normally, ARQ uses XMLSchema dateTime comparions,
+     * to queries depending on the timezone. Normally, ARQ uses XMLSchema dateTime comparisons,
      * which an yield "indeterminate", which in turn is an evaluation error.
-     * {@literal F&O} insists on true/false and so can lead to false positves and negatives.
+     * {@literal F&O} insists on true/false and so can lead to false positives and negatives.
      */
     public static boolean StrictDateTimeFO      = false ;
 

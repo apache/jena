@@ -570,7 +570,7 @@ public class TestFunctions2
         Node r = NodeFactoryExtra.parseNode(result) ;
         NodeValue nvr = NodeValue.makeNode(r) ;
 
-        assertTrue("Not same value: Expected: "+nvr+" : Actual = "+nv, NodeValue.sameAs(nvr, nv)) ;
+        assertTrue("Not same value: Expected: "+nvr+" : Actual = "+nv, NodeValue.sameValueAs(nvr, nv)) ;
         // test result must be lexical form exact.
         assertEquals(r, nv.asNode()) ;
     }

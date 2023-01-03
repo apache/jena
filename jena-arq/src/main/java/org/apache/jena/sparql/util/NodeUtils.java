@@ -146,7 +146,7 @@ public class NodeUtils
         // 2 literals.
         NodeValue nv1 = NodeValue.makeNode(n1);
         NodeValue nv2 = NodeValue.makeNode(n2);
-        try { return NodeValue.sameAs(nv1, nv2); }
+        try { return NodeValue.sameValueAs(nv1, nv2); }
         catch(ExprEvalException ex)
         {
             // Incomparable as values - must be different for our purposes.
