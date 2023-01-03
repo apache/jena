@@ -27,10 +27,10 @@ import static org.apache.jena.riot.WebContent.matchContentType;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
+
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.riot.Lang;
@@ -102,40 +102,52 @@ public class DataUploader {
         }
     }
 
+    // @MultipartConfig but for ServletFilters
+    // * @MultipartConfig only wokrs on servlets.
+    // * Jetty: attribute setting.
+    // * Tomcat: META-INF/context.xml setting
+
+    // Jetty requires a setting of this annotation object as a request attribute.
+    private static final MultipartConfigElement multipartConfigElement = new MultipartConfigElement("");;
+    private static final String jettyMultipartAttributeName;
+
+    static {
+        String x;
+        // May not be on the classpath
+        try {
+            Class.forName("org.eclipse.jetty.server.Request");
+            x = org.eclipse.jetty.server.Request.__MULTIPART_CONFIG_ELEMENT; }
+        catch (ClassNotFoundException th) { x = null; }
+        jettyMultipartAttributeName = x;
+    }
+
+
+    // Tomcat: In the WAR file: META-INF/context.xml
+    // <Context allowCasualMultipartParsing="true">
+    // </Context>
+
     /**
      * Process an HTTP upload of RDF files (triples or quads) with content type
      * "multipart/form-data" or "multipart/mixed".
-     * <p>
-     * Form data (content-disposition: form-data; name="...") is rejected.
      * <p>
      * Data is streamed straight into the destination graph or dataset.
      * <p>
      * This function assumes it is inside a transaction.
      */
     private static UploadDetails fileUploadMultipart(HttpAction action, StreamRDF dest) {
-        String base = ActionLib.wholeRequestURL(action.getRequest());
-        ServletFileUpload upload = new ServletFileUpload();
+        HttpServletRequest request = action.getRequest();
+        String base = ActionLib.wholeRequestURL(request);
         StreamRDFCounting countingDest =  StreamRDFLib.count(dest);
 
-        try {
-            FileItemIterator iter = upload.getItemIterator(action.getRequest());
-            while (iter.hasNext()) {
-                FileItemStream fileStream = iter.next();
-                if (fileStream.isFormField()) {
-                    // Form field - this code only supports multipart file upload.
-                    String fieldName = fileStream.getFieldName();
-                    InputStream stream = fileStream.openStream();
-                    String value = Streams.asString(stream, "UTF-8");
-                    // This code is currently used to put multiple files into a single destination.
-                    // Additional field/values do not make sense.
-                    ServletOps.errorBadRequest(format("Only files accepted in multipart file upload (got %s=%s)", fieldName, value));
-                    // errorBadRequest does not return.
-                    return null;
-                }
+        // Jetty
+        if ( jettyMultipartAttributeName != null && request.getAttribute(jettyMultipartAttributeName) == null )
+            request.setAttribute(jettyMultipartAttributeName, multipartConfigElement);
 
-                InputStream input = fileStream.openStream();
+        try {
+            for ( Part part : request.getParts() ) {
+                InputStream input = part.getInputStream();
                 // Content-Type:
-                String contentTypeHeader = fileStream.getContentType();
+                String contentTypeHeader = part.getContentType();
                 ContentType ct = ContentType.create(contentTypeHeader);
 
                 Lang lang = null;
@@ -144,7 +156,7 @@ public class DataUploader {
 
                 if ( lang == null ) {
                     // Not a recognized Content-Type. Look at file extension.
-                    String name = fileStream.getName();
+                    String name = part.getSubmittedFileName();
                     if ( name == null || name.equals("") )
                         ServletOps.errorBadRequest("No name for content - can't determine RDF syntax");
                     lang = RDFLanguages.pathnameToLang(name);
@@ -155,8 +167,8 @@ public class DataUploader {
                     // Desperate.
                     lang = RDFLanguages.RDFXML;
 
-                String printfilename = fileStream.getName();
-                if ( printfilename == null  || printfilename.equals("") )
+                String printfilename = part.getSubmittedFileName();
+                if ( printfilename == null || printfilename.equals("") )
                     printfilename = "<none>";
 
                 // count just this step
