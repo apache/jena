@@ -18,7 +18,10 @@
 
 package org.apache.jena.fuseki.webapp;
 
+import static org.apache.jena.atlas.lib.Lib.getenv;
+
 import java.nio.file.Path;
+
 import org.apache.commons.lang3.SystemUtils;
 
 /**
@@ -146,14 +149,6 @@ public class FusekiEnv {
     private static void logInitError(String fmt, Object ... args) {
         System.err.printf(fmt, args);
         System.err.println();
-    }
-
-    /** Get environment variable value (maybe in system properties) */
-    public static String getenv(String name) {
-        String x = System.getenv(name);
-        if ( x == null )
-            x = System.getProperty(name);
-        return x;
     }
 }
 

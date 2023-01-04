@@ -114,6 +114,14 @@ public class Lib
         catch (InterruptedException ex) { Log.warn(Lib.class, "interrupted", ex) ; }
     }
 
+    /** Get an environment variable value; if not found try in the system properties. */
+    public static String getenv(String name) {
+        String x = System.getenv(name);
+        if ( x == null )
+            x = System.getProperty(name);
+        return x;
+    }
+
     /**
      * Read thread local, assuming that "null" means it does not exist for this thread.
      * If null is read, the thread local is removed.
