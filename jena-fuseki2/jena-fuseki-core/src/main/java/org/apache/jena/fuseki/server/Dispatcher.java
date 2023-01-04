@@ -58,22 +58,40 @@ public class Dispatcher {
 
     /**
      * Handle an HTTP request if it is sent to a registered dataset.
-     *
+     * <p>
      * Fuseki uses dynamic dispatch, the set of registered datasets can change while
      * the server is running, so dispatch is driven off Fuseki system registries.
-     *
+     * <p>
      * If the request URL matches a registered dataset, process the request, and send
      * the response.
-     *
+     * <p>
      * This function is called by {@link FusekiFilter#doFilter}.
-     *
+     * <p>
      * Returns {@code true} if the request has been handled, including an error response sent,
      * and returns false (no error or response sent) if the request has not been handled.
-     *
+     * <p>
      * This function does not throw exceptions.
+     * <p>
+     * The dispatch process is:
+     * <ul>
+     * <li> Decide the data, based on the request URI ({@link #locateDataAccessPoint(HttpServletRequest, DataAccessPointRegistry)}
+     * <li> Allocate HttpAction ({@link #process}, {@link #dispatchAction}).
+     * <li> Decide service endpoint name ({@link #chooseProcessor})
+     * <li> Decvice operation {@link #chooseEndpoint}
+     *   <ul>
+     *   <li> Request parameters - query string (fixed for SPARQL query and SPARQL update) ({@link #chooseOperation})
+     *   <li> Content type  ({@link #chooseOperation})
+     *   <li> Default - quads operation
+     *   </ul>
+     * <li>Allow authentication for the dispatch choice.
+     * </ul>
+     *
      */
     public static boolean dispatch(HttpServletRequest request, HttpServletResponse response) {
         DataAccessPointRegistry registry = DataAccessPointRegistry.get(request.getServletContext());
+        // Use the name to choose a DataAccessPoint. This is dispatch to the right dataset.
+        // A DataAccessPoint is a pair of dataset name and DataService.
+        // The DataService may have multiple services and endpoints.
         DataAccessPoint dap = locateDataAccessPoint(request, registry);
         if ( dap == null ) {
             if ( LogDispatch )
@@ -91,7 +109,7 @@ public class Dispatcher {
      * <p>
      * The second form looks like dataset="path" and service="dataset"
      * We don't know the service until we find the DataAccessPoint.
-     * For /dataset/sparql or /dataset, there is not problem. The latter is too short to be a named service.
+     * For /dataset/sparql or /dataset, there is not a problem. The latter is too short to be a named service.
      * <p>
      * This function chooses the DataAccessPoint.
      * There may not be an endpoint and operation to handle the request.
@@ -161,6 +179,8 @@ public class Dispatcher {
      * {@link HttpAction}, including access control at the dataset and service levels.
      */
     private static boolean dispatchAction(HttpAction action) {
+        // Pass as a Supplier so that chooseProcessor is inside
+        // the error handling and after the start of the request.
         return ActionExecLib.execAction(action, ()->chooseProcessor(action));
     }
 
@@ -171,16 +191,18 @@ public class Dispatcher {
      *
      * Returning null indicates an HTTP error response, and the HTTP response has been done.
      *
-     * Process
+     * Process:
+     * <ul>
      * <li> mapRequestToEndpointName -> endpoint name
      * <li> chooseEndpoint(action, dataService, endpointName) -> Endpoint.
      * <li> Endpoint to Operation (endpoint carries Operation).
      * <li> target(action, operation) -> ActionProcess.
+     * </ul>
      *
      * @return ActionProcessor or null if the request URI can not be dealt with.
      */
     private static ActionProcessor chooseProcessor(HttpAction action) {
-        // "return null" indicates that processing failed to find a ActionProcessor
+        // "return null" indicates that processing failed to find an ActionProcessor
         DataAccessPoint dataAccessPoint = action.getDataAccessPoint();
         DataService dataService = action.getDataService();
 
@@ -207,25 +229,9 @@ public class Dispatcher {
             ServletOps.errorNotFound("No operation: "+action.getActionURI());
             return null;
         }
-
         action.setEndpoint(endpoint);
 
-        // ---- Authorization
-        // -- Server-level authorization.
-        // Checking was carried out by servlet filter AuthFilter.
-        // Need to check Data service and endpoint authorization policies.
-        String user = action.getUser();
-
-        // -- Data service level authorization
-        if ( dataService.authPolicy() != null ) {
-            if ( ! dataService.authPolicy().isAllowed(user) )
-                ServletOps.errorForbidden();
-        }
-
-        // -- Endpoint level authorization
-        // Make sure all contribute authentication.
-        Auth.allow(user, action.getEndpoint().getAuthPolicy(), ServletOps::errorForbidden);
-        // ---- Authorization checking.
+        applyAuthentication(action.getUser(), dataService, endpoint);
 
         // ---- Handler.
         // Decide the code to execute the request.
@@ -366,6 +372,21 @@ public class Dispatcher {
         // ---- No registered content type, no query parameters.
         // Plain HTTP operation on the dataset handled as quads or rejected.
         return quadsOperation(action, request);
+    }
+
+    /**
+     * Having chosen the data service and the endpoint, check the user request is permitted.
+     * {@link AuthFilter} has already checked the server-level authorization.
+     */
+    private static void applyAuthentication(String user, DataService dataService, Endpoint endpoint) {
+        // -- Server-level authorization.
+        // AuthFilter.
+
+        // -- Data service level authorization
+        Auth.allow(user, dataService.authPolicy(), ServletOps::errorForbidden);
+
+        // -- Endpoint level authorization
+        Auth.allow(user, endpoint.getAuthPolicy(), ServletOps::errorForbidden);
     }
 
     /**

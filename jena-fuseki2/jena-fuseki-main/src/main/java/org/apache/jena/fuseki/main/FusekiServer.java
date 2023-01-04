@@ -419,8 +419,8 @@ public class FusekiServer {
         private SecurityHandler          securityHandler    = null;
         private Map<String, Object>      servletAttr        = new HashMap<>();
 
-        // Setting and access methods also not active.
         //private Context                  context            = null;
+
         // The default CORS settings.
         private static final Map<String, String> corsInitParamsDft = new LinkedHashMap<>();
         static {
@@ -438,12 +438,12 @@ public class FusekiServer {
         }
 
         // Builder with standard operation-action mapping.
-        Builder() {
+        private Builder() {
             this.operationRegistry = OperationRegistry.createStd();
         }
 
         // Builder with provided operation-action mapping.
-        Builder(OperationRegistry operationRegistry) {
+        private Builder(OperationRegistry operationRegistry) {
             // Isolate.
             this.operationRegistry = OperationRegistry.createEmpty();
             OperationRegistry.copyConfig(operationRegistry, this.operationRegistry);
