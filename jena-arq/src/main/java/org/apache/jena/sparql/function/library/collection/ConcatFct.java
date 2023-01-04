@@ -11,27 +11,38 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.function.FunctionBase2;
+import org.apache.jena.sparql.function.FunctionBase;
 
-public class ConcatFct extends FunctionBase2
+public class ConcatFct extends FunctionBase
 {
 	@Override
-	public NodeValue exec( final NodeValue v1, final NodeValue v2 ) {
-		final List<CDTValue> list1 = getInputList(v1);
-		final List<CDTValue> list2 = getInputList(v2);
+	public void checkBuild( final String uri, final ExprList args ) {
+		// nothing to check
+	}
 
-		if ( list1.isEmpty() ) {
-			return v2;
+	@Override
+	public NodeValue exec( final List<NodeValue> args ) {
+		if ( args.isEmpty() ) {
+			final List<CDTValue> result = new ArrayList<>();
+			final LiteralLabel lit = new LiteralLabelForList(result);
+			final Node n = NodeFactory.createLiteral(lit);
+			return NodeValue.makeNode(n);
 		}
 
-		if ( list2.isEmpty() ) {
-			return v1;
+		if ( args.size() == 1 ) {
+			final NodeValue nv =  args.get(0);
+			// make sure that the argument is a well-formed cdt:List literal
+			getInputList(nv);
+
+			return nv;
 		}
 
 		final List<CDTValue> result = new ArrayList<>();
-		result.addAll(list1);
-		result.addAll(list2);
+		for ( final NodeValue nv : args ) {
+			result.addAll( getInputList(nv) );
+		}
 
 		final LiteralLabel lit = new LiteralLabelForList(result);
 		final Node n = NodeFactory.createLiteral(lit);
