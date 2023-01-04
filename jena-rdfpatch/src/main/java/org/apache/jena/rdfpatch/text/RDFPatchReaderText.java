@@ -191,7 +191,7 @@ public class RDFPatchReaderText implements PatchProcessor {
             return RiotLib.createIRIorBNode(token.getImage());
         if ( token.isBNode() ) {
             // Blank node as _:...
-            String label = token.getImage().substring(bNodeLabelStart.length());
+            String label = token.getImage().substring(bNodeLabelStart.length()-1);
             return NodeFactory.createBlankNode(label);
         }
         Node node = token.asNode();
