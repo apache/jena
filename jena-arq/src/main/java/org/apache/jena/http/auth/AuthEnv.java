@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 /**
  * An authentication environment. Multiple {@code AuthEnv} would exists for a
  * multi-tenant environment. This is not currently supported but the use of
- * an object, obtained with {@link #get}, allows for that in teh future,
+ * an object, obtained with {@link #get}, allows for that in the future,
  */
 public class AuthEnv {
     public static Logger LOG =  LoggerFactory.getLogger(AuthEnv.class);
@@ -59,6 +59,11 @@ public class AuthEnv {
     public void registerUsernamePassword(URI uri, String user, String password) {
         AuthDomain domain = new AuthDomain(uri);
         passwordRegistry.put(domain, new PasswordRecord(user, password));
+        // Remove any existing registration for this URI,
+        // but not registrations with this URI as prefix.
+        // unregisterUsernamePassword() removes registration
+        // with the URI as prefix.
+        authModifiers.remove(uri.toString());
     }
 
     /** Check whether there is a registration. */

@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.auth.Auth;
-import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.fuseki.servlets.FusekiFilter;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.rdfconnection.RDFConnection;
@@ -48,8 +48,8 @@ public class ExFusekiMain_1_Servlet_AddFilter
         try {
             FusekiLogging.setLogging();
 
-            UserStore userStore = JettyLib.makeUserStore("u", "p");
-            SecurityHandler sh = JettyLib.makeSecurityHandler("TripleStore",  userStore, AuthScheme.BASIC);
+            UserStore userStore = JettySecurityLib.makeUserStore("u", "p");
+            SecurityHandler sh = JettySecurityLib.makeSecurityHandler("TripleStore",  userStore, AuthScheme.BASIC);
 
             FusekiServer server = FusekiServer.create()
                 .add("/ds", DatasetGraphFactory.createTxnMem())

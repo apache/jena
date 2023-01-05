@@ -64,7 +64,7 @@ public class PatchApplyService extends ActionREST {
         // Must be UTF-8 or unset. But this is wrong so often.
         // It is less trouble to just force UTF-8.
         String charset = action.getRequest().getCharacterEncoding();
-        if ( charset != null && ! WebContent.charsetUTF8.equals(charset) )
+        if ( charset != null && ! WebContent.charsetUTF8.equalsIgnoreCase(charset) )
             ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Charset must be omitted or UTF-8, not "+charset);
 
         if ( WebContent.contentTypeHTMLForm.equals(ctStr) ) {

@@ -33,7 +33,7 @@ public class CounterName {
     // The "name" is used as a JSON key string.
     // Legacy from when this was an enum and the name() was used for the UI.
     // The better hierarchicalName is not used but becuse this has
-    // leaked to the jaavscript, we're a bit stuck.
+    // leaked to the javascript, we're a bit stuck.
 
     private final String name;
     private final String hierarchicalName;

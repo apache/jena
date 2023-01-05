@@ -21,6 +21,7 @@ package org.apache.jena.fuseki.servlets;
 // This is a copy of Jetty's CrossOriginFilter - Fuseki needs something
 // that works without Jetty on the classpath when running as a WAR file.
 // Copy from Jetty 10.0.11
+// https://github.com/eclipse/jetty.project/blob/jetty-10.0.x/jetty-servlets/src/main/java/org/eclipse/jetty/servlets/CrossOriginFilter.java
 // We elect to use and distribute under The Apache License v2.0.
 
 //Changes:

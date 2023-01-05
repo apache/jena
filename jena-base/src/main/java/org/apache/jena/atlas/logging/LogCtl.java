@@ -287,13 +287,20 @@ public class LogCtl {
             System.getenv("JENA_LOGLOGGING") != null ||
             System.getProperty("jena.loglogging") != null;
 
-    private static void logLogging(String fmt, Object ... args) {
+    private static void logLogging(String str) {
         if ( LogLogging ) {
             System.err.print("Fuseki Logging: ");
-            System.err.printf(fmt, args);
-            System.err.println();
+            System.err.println(str);
         }
     }
+
+//    private static void logLogging(String fmt, Object ... args) {
+//        if ( LogLogging ) {
+//            System.err.print("Fuseki Logging: ");
+//            System.err.printf(fmt, args);
+//            System.err.println();
+//        }
+//    }
 
     /**
      * Setup log4j2, including looking for a file "log4j2.properties" or "log4j2.xml"

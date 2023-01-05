@@ -41,7 +41,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 
 public class DataService {
-    // Not final - it null'ed if closed to release the dataset state.
+    // Not final - it is null'ed if closed to release the dataset state.
     private DatasetGraph dataset;
 
     private final Map<String, EndpointSet> endpoints;

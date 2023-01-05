@@ -16,35 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.jetty;
+package org.apache.jena.fuseki.main;
 
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.riot.WebContent;
-import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.security.*;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.security.authentication.DigestAuthenticator;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.HttpConfiguration;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.util.security.Password;
 
-/** Helpers for working with Jetty.
- * <h3>SecurityHandler</h3>
- *  <pre>
- *     UserStore userStore = JettyLib.makeUserStore(...);
- *     SecurityHandler securityHandler = JettyLib.makeSecurityHandler(String pathSpec, String realm, UserStore userStore);
- *  </pre>
- */
-public class JettyLib {
+public class JettySecurityLib {
+    /** Default setting. */
+    public final static AuthScheme dftAuthMode = AuthScheme.BASIC;
+    /** Current auth mode */
+    public static AuthScheme authMode = dftAuthMode;
 
     /** Create a Jetty {@link SecurityHandler} for a specific pathSpace, e.g {@code /database}. */
     public static SecurityHandler makeSecurityHandlerForPathspec(String pathSpec, String realm, UserStore userStore) {
@@ -52,11 +42,6 @@ public class JettyLib {
         addPathConstraint(sh, pathSpec);
         return sh;
     }
-
-    /** Default setting. */
-    public final static AuthScheme dftAuthMode = AuthScheme.BASIC;
-    /** Current auth mode */
-    public static AuthScheme authMode = dftAuthMode;
 
     /** Create a Jetty {@link SecurityHandler} for basic authentication.
      * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
@@ -66,7 +51,7 @@ public class JettyLib {
          return makeSecurityHandler(realm, userStore, "**", authMode);
      }
 
-     /** Create a Jetty {@link SecurityHandler} for basic authentication.
+    /** Create a Jetty {@link SecurityHandler} for basic authentication.
       * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
       * for adding the {@code pathspec} to apply it to.
       */
@@ -74,7 +59,7 @@ public class JettyLib {
           return makeSecurityHandler(realm, userStore, "**", authMode);
       }
 
-      /** Create a Jetty {@link SecurityHandler} for basic authentication.
+    /** Create a Jetty {@link SecurityHandler} for basic authentication.
      * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
      * for adding the {@code pathspec} to apply it to.
      */
@@ -103,7 +88,7 @@ public class JettyLib {
         return securityHandler;
     }
 
-     public static void addPathConstraint(ConstraintSecurityHandler securityHandler, String pathSpec) {
+    public static void addPathConstraint(ConstraintSecurityHandler securityHandler, String pathSpec) {
          addPathConstraint(securityHandler, pathSpec, "**");
      }
 
@@ -165,65 +150,5 @@ public class JettyLib {
         userStore.addUser(user, cred, roles);
         return userStore;
 
-    }
-
-    /** Add or append a {@link Handler} to a Jetty {@link Server}. */
-    public static void addHandler(Server server, Handler handler) {
-        final Handler currentHandler = server.getHandler();
-        if (currentHandler == null) {
-            server.setHandler(handler);
-        } else {
-            if (currentHandler instanceof HandlerList) {
-                ((HandlerList) currentHandler).addHandler(handler);
-            } else {
-                // Singleton handler. Convert to list.
-                final HandlerList handlerList = new HandlerList();
-                handlerList.addHandler(currentHandler);
-                handlerList.addHandler(handler);
-                server.setHandler(handlerList);
-            }
-        }
-    }
-
-    /** Add the RDF MIME Type mappins */
-    public static void setMimeTypes(ServletContextHandler context) {
-        MimeTypes mimeTypes = new MimeTypes();
-        // RDF syntax
-        mimeTypes.addMimeMapping("nt",      WebContent.contentTypeNTriples);
-        mimeTypes.addMimeMapping("nq",      WebContent.contentTypeNQuads);
-        mimeTypes.addMimeMapping("ttl",     WebContent.contentTypeTurtle+";charset=utf-8");
-        mimeTypes.addMimeMapping("trig",    WebContent.contentTypeTriG+";charset=utf-8");
-        mimeTypes.addMimeMapping("rdf",     WebContent.contentTypeRDFXML);
-        mimeTypes.addMimeMapping("jsonld",  WebContent.contentTypeJSONLD);
-        mimeTypes.addMimeMapping("rj",      WebContent.contentTypeRDFJSON);
-        mimeTypes.addMimeMapping("rt",      WebContent.contentTypeRDFThrift);
-        mimeTypes.addMimeMapping("trdf",    WebContent.contentTypeRDFThrift);
-
-        // SPARQL syntax
-        mimeTypes.addMimeMapping("rq",      WebContent.contentTypeSPARQLQuery);
-        mimeTypes.addMimeMapping("ru",      WebContent.contentTypeSPARQLUpdate);
-
-        // SPARQL Result set
-        mimeTypes.addMimeMapping("rsj",     WebContent.contentTypeResultsJSON);
-        mimeTypes.addMimeMapping("rsx",     WebContent.contentTypeResultsXML);
-        mimeTypes.addMimeMapping("srt",     WebContent.contentTypeResultsThrift);
-        mimeTypes.addMimeMapping("srt",     WebContent.contentTypeResultsProtobuf);
-
-        // Other
-        mimeTypes.addMimeMapping("txt",     WebContent.contentTypeTextPlain);
-        mimeTypes.addMimeMapping("csv",     WebContent.contentTypeTextCSV);
-        mimeTypes.addMimeMapping("tsv",     WebContent.contentTypeTextTSV);
-        context.setMimeTypes(mimeTypes);
-    }
-
-    /** HTTP configuration with setting for Fuseki workload. No "secure" settings. */
-    public static HttpConfiguration httpConfiguration() {
-        HttpConfiguration http_config = new HttpConfiguration();
-        // Some people do try very large operations ... really, should use POST.
-        http_config.setRequestHeaderSize(512 * 1024);
-        http_config.setOutputBufferSize(1024 * 1024);
-//      http_config.setResponseHeaderSize(8192);
-        http_config.setSendServerVersion(false);
-        return http_config;
     }
 }

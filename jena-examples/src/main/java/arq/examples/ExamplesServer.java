@@ -22,8 +22,8 @@ import java.util.Objects;
 
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.auth.Auth;
-import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.UserStore;
@@ -50,8 +50,8 @@ public class ExamplesServer {
         Objects.requireNonNull(user);
         Objects.requireNonNull(password);
 
-        UserStore userStore = JettyLib.makeUserStore(user, password);
-        SecurityHandler sh = JettyLib.makeSecurityHandler("Fuseki",  userStore, AuthScheme.BASIC);
+        UserStore userStore = JettySecurityLib.makeUserStore(user, password);
+        SecurityHandler sh = JettySecurityLib.makeSecurityHandler("Fuseki",  userStore, AuthScheme.BASIC);
 
         FusekiServer server = FusekiServer.create()
             .port(0)

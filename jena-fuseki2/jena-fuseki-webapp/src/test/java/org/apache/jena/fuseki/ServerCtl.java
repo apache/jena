@@ -29,7 +29,7 @@ import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.cmd.FusekiArgs;
 import org.apache.jena.fuseki.cmd.JettyFusekiWebapp;
-import org.apache.jena.fuseki.jetty.JettyServerConfig;
+import org.apache.jena.fuseki.cmd.JettyServerConfig;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.fuseki.webapp.FusekiServerListener;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;

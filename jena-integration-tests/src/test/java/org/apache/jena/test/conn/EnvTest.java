@@ -25,8 +25,8 @@ import java.time.Duration;
 
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.auth.Auth;
-import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.system.Txn;
@@ -123,8 +123,8 @@ public class EnvTest {
             .addServlet(data, holder)
             .add(dsName, dsg);
         if ( user != null ) {
-            UserStore userStore = JettyLib.makeUserStore(user, password);
-            SecurityHandler sh = JettyLib.makeSecurityHandler("TripleStore",  userStore, AuthScheme.BASIC);
+            UserStore userStore = JettySecurityLib.makeUserStore(user, password);
+            SecurityHandler sh = JettySecurityLib.makeSecurityHandler("TripleStore",  userStore, AuthScheme.BASIC);
             builder.securityHandler(sh)
                    .serverAuthPolicy(Auth.policyAllowSpecific(user));
         }

@@ -24,8 +24,8 @@ import java.util.Objects;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.auth.Auth;
-import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.http.auth.AuthEnv;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -82,8 +82,8 @@ public class TestAuthDigestRemote extends AbstractTestAuthRemote {
             .auth(AuthScheme.DIGEST)
             .add(dsName, dsg);
         if ( user != null ) {
-            UserStore userStore = JettyLib.makeUserStore(user, password);
-            SecurityHandler sh = JettyLib.makeSecurityHandler("TripleStore",  userStore, AuthScheme.DIGEST);
+            UserStore userStore = JettySecurityLib.makeUserStore(user, password);
+            SecurityHandler sh = JettySecurityLib.makeSecurityHandler("TripleStore",  userStore, AuthScheme.DIGEST);
             builder.securityHandler(sh)
                    .serverAuthPolicy(Auth.policyAllowSpecific(user));
         }

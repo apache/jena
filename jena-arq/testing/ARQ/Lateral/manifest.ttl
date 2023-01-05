@@ -28,7 +28,7 @@ PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
 PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
 
 <#manifest>      rdf:type mf:Manifest ;
-    rdfs:label "SPARQL-star Evaluation Tests" ;
+    rdfs:label "Lateral Evaluation Tests" ;
     skos:prefLabel "LATERAL"@en;
     dct:licence <https://www.apache.org/licenses/LICENSE-2.0> ;
     mf:entries (

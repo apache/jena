@@ -37,45 +37,45 @@ import org.slf4j.LoggerFactory;
 final
 public class BlockAccessMapped extends BlockAccessBase
 {
-    /* Blocks are addressed by positive ints - 
+    /* Blocks are addressed by positive ints -
      * Is that a limit?
      * One billion is 2^30
      * If a block is 8K, the 2^31*2^13 =  2^44 bits or 2^14 billion = 16K Billion. = 16 trillion bytes.
-     * No limit at the moment - later performance tuning will see what the cost of 48 or 63 bit addresses would be.    
+     * No limit at the moment - later performance tuning will see what the cost of 48 or 63 bit addresses would be.
      */
-    
+
     private static Logger log = LoggerFactory.getLogger(BlockAccessMapped.class) ;
-    private enum CopyContents { Overwrite, NoCopy } 
-    
-    // Segmentation avoids over-mapping; allows file to grow (in chunks) 
+    private enum CopyContents { Overwrite, NoCopy }
+
+    // Segmentation avoids over-mapping; allows file to grow (in chunks)
     private final int GrowthFactor = 2 ;
     private final int SegmentSize = SystemTDB.SegmentSize ;
-    private final int blocksPerSegment ;                              
-    
+    private final int blocksPerSegment ;
+
     private int initialNumSegements = 1 ;
-    private MappedByteBuffer[] segments = new MappedByteBuffer[initialNumSegements] ;  
-    
+    private MappedByteBuffer[] segments = new MappedByteBuffer[initialNumSegements] ;
+
     // Unflushed segments.
     private int segmentDirtyCount = 0 ;
-    private boolean[] segmentDirty = new boolean[initialNumSegements] ; 
-    
+    private boolean[] segmentDirty = new boolean[initialNumSegements] ;
+
     public BlockAccessMapped(String filename, int blockSize)
     {
         super(filename, blockSize) ;
         blocksPerSegment = SegmentSize/blockSize ;
         if ( SegmentSize%blockSize != 0 )
             getLog().warn(format("%s: Segment size(%d) not a multiple of blocksize (%d)", filename, SegmentSize, blockSize)) ;
-        
+
         for ( int i = 0 ; i < initialNumSegements ; i++ )
             // Not strictly necessary - default value is false.
             segmentDirty[i] = false ;
         segmentDirtyCount = 0 ;
-        
+
         if ( getLog().isDebugEnabled() )
             getLog().debug(format("Segment:%d  BlockSize=%d  blocksPerSegment=%d", SegmentSize, blockSize, blocksPerSegment)) ;
     }
-    
-    
+
+
     @Override
     public Block allocate(int blkSize)
     {
@@ -87,7 +87,7 @@ public class BlockAccessMapped extends BlockAccessBase
         Block block = new Block(id, bb) ;
         return block ;
     }
-    
+
     @Override
     public Block read(long id)
     {
@@ -104,7 +104,7 @@ public class BlockAccessMapped extends BlockAccessBase
     {
         write(block, CopyContents.NoCopy) ;
     }
-    
+
     @Override
     public void overwrite(Block block)
     {
@@ -117,7 +117,7 @@ public class BlockAccessMapped extends BlockAccessBase
         check(block) ;
         checkIfClosed() ;
         int id = block.getId().intValue() ;
-        
+
         if ( copyContents == CopyContents.Overwrite )
         {
             ByteBuffer bbDst = getByteBuffer(id) ;
@@ -126,12 +126,12 @@ public class BlockAccessMapped extends BlockAccessBase
             bbSrc.rewind() ;
             bbDst.put(bbSrc) ;
         }
-        
+
         // Assumed MRSW - no need to sync as we are the only Writer
         segmentDirty[segment(id)] = true ;
         writeNotification(block) ;
     }
-    
+
     @Override
     public void sync()
     {
@@ -144,11 +144,11 @@ public class BlockAccessMapped extends BlockAccessBase
         // Limitation: ids must be integers.
         // ids are used to index into []-arrays.
         int id = (int)_id ;
-        
+
         int seg = segment(id) ;                 // Segment.
         int segOff = byteOffset(id) ;           // Byte offset in segment
 
-        if ( getLog().isTraceEnabled() ) 
+        if ( getLog().isTraceEnabled() )
             getLog().trace(format("%d => [%d, %d]", id, seg, segOff)) ;
 
         synchronized (this) {
@@ -159,14 +159,14 @@ public class BlockAccessMapped extends BlockAccessBase
                 segBuffer.position(segOff) ;
                 segBuffer.limit(segOff+blockSize) ;
                 ByteBuffer dst = segBuffer.slice() ;
-                
+
                 // And then reset limit to max for segment.
                 segBuffer.limit(segBuffer.capacity()) ;
-                // Extend block count when we allocate above end. 
+                // Extend block count when we allocate above end.
                 numFileBlocks = Math.max(numFileBlocks, id+1) ;
                 return dst ;
             } catch (IllegalArgumentException ex) {
-                // Shouldn't (ha!) happen because the second "limit" resets 
+                // Shouldn't (ha!) happen because the second "limit" resets
                 log.error("Id: "+id) ;
                 log.error("Seg="+seg) ;
                 log.error("Segoff="+segOff) ;
@@ -175,20 +175,20 @@ public class BlockAccessMapped extends BlockAccessBase
             }
         }
     }
-    
+
     private final int segment(int id)                   { return id/blocksPerSegment ; }
     private final int byteOffset(int id)                { return (id%blocksPerSegment)*blockSize ; }
     private final long fileLocation(long segmentNumber) { return segmentNumber*SegmentSize ; }
-    
+
     // Even for MultipleReader this needs to be sync'ed.
     private MappedByteBuffer allocSegment(int seg)
     {
         // Auxiliary function for get - which holds the lock needed here.
         // The MappedByteBuffer must be sliced and reset once found/allocated
         // so as not to mess up the underlying MappedByteBuffer in segments[].
-        
+
         // Only allocSegment(seg) and flushDirtySegements() and close()
-        // directly access segments[] 
+        // directly access segments[]
 
         if ( seg < 0 )
         {
@@ -207,15 +207,15 @@ public class BlockAccessMapped extends BlockAccessBase
             segmentDirty = segmentDirty2 ;
             segments = segments2 ;
         }
-        
+
         long offset = fileLocation(seg) ;
-        
+
         if ( offset < 0 )
         {
             getLog().error("Segment offset gone negative: "+seg) ;
             throw new FileException("Negative segment offset: "+seg) ;
         }
-        
+
         MappedByteBuffer segBuffer = segments[seg] ;
         if ( segBuffer == null )
         {
@@ -227,7 +227,7 @@ public class BlockAccessMapped extends BlockAccessBase
             } catch (IOException ex)
             {
                 if ( ex.getCause() instanceof java.lang.OutOfMemoryError )
-                    throw new FileException("BlockMgrMapped.segmentAllocate: Segment = "+seg+" : Offset = "+offset) ;
+                    throw new FileException("BlockMgrMapped.segmentAllocate: Segment = "+seg+" : Offset = "+offset, ex) ;
                 throw new FileException("BlockMgrMapped.segmentAllocate: Segment = "+seg, ex) ;
             }
         }
@@ -238,7 +238,7 @@ public class BlockAccessMapped extends BlockAccessBase
     {
         // This does not force dirty segments to disk.
         super.force() ;
-        
+
         // A linked list (with uniqueness) of dirty segments may be better.
         for ( int i = 0 ; i < segments.length ; i++ )
         {
@@ -263,20 +263,20 @@ public class BlockAccessMapped extends BlockAccessBase
        Arrays.fill(segmentDirty, false) ;
        segmentDirtyCount = 0 ;
     }
-    
+
     @Override
     protected void force()
     {
         flushDirtySegments() ;
         super.force() ;
     }
-    
+
     @Override
     protected Logger getLog()
     {
         return log ;
     }
-    
+
     @Override
     public String toString()
     {
