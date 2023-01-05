@@ -74,14 +74,14 @@ public class Dispatcher {
      * <p>
      * The dispatch process is:
      * <ul>
-     * <li> Decide the data, based on the request URI ({@link #locateDataAccessPoint(HttpServletRequest, DataAccessPointRegistry)}
-     * <li> Allocate HttpAction ({@link #process}, {@link #dispatchAction}).
-     * <li> Decide service endpoint name ({@link #chooseProcessor})
-     * <li> Decvice operation {@link #chooseEndpoint}
+     * <li>Decide the data, based on the request URI ({@link #locateDataAccessPoint(HttpServletRequest, DataAccessPointRegistry)}
+     * <li>Allocate HttpAction ({@link #process}, {@link #dispatchAction}).
+     * <li>Decide service endpoint name ({@link #chooseProcessor})
+     * <li>Decide operation {@link #chooseEndpoint}
      *   <ul>
-     *   <li> Request parameters - query string (fixed for SPARQL query and SPARQL update) ({@link #chooseOperation})
-     *   <li> Content type  ({@link #chooseOperation})
-     *   <li> Default - quads operation
+     *   <li>Request parameters - query string (fixed for SPARQL query and SPARQL update) ({@link #chooseOperation})
+     *   <li>Content type  ({@link #chooseOperation})
+     *   <li>Default - quads operation
      *   </ul>
      * <li>Allow authentication for the dispatch choice.
      * </ul>
@@ -89,9 +89,9 @@ public class Dispatcher {
      */
     public static boolean dispatch(HttpServletRequest request, HttpServletResponse response) {
         DataAccessPointRegistry registry = DataAccessPointRegistry.get(request.getServletContext());
-        // Use the name to choose a DataAccessPoint. This is dispatch to the right dataset.
+        // Use the name to choose a DataAccessPoint.
         // A DataAccessPoint is a pair of dataset name and DataService.
-        // The DataService may have multiple services and endpoints.
+        // The DataService may have multiple endpoints.
         DataAccessPoint dap = locateDataAccessPoint(request, registry);
         if ( dap == null ) {
             if ( LogDispatch )

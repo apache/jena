@@ -387,7 +387,8 @@ public class ActionLib {
         return values[0];
     }
 
-    /** Get the content type of an action or return the default.
+    /**
+     * Get the content type of an action.
      * @param  action
      * @return ContentType
      */

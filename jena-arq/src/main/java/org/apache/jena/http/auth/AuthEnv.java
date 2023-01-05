@@ -62,7 +62,7 @@ public class AuthEnv {
         // Remove any existing registration for this URI,
         // but not registrations with this URI as prefix.
         // unregisterUsernamePassword() removes registration
-		// with the URI as prefix.
+        // with the URI as prefix.
         authModifiers.remove(uri.toString());
     }
 

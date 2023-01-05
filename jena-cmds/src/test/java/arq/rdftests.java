@@ -110,7 +110,7 @@ public class rdftests extends CmdGeneral
         super.modVersion.addClass(ARQ.class);
         getUsage().startCategory("Tests (execute test manifest)");
         getUsage().addUsage("<manifest>", "run the tests specified in the given manifest");
-        add(arqDecl, "--arq",       "Operate with ARQ syntax)");
+        add(arqDecl, "--arq",       "Operate with ARQ syntax");
         add(strictDecl, "--strict", "Operate in strict mode (no extensions of any kind)");
         add(earlDecl, "--earl", "create EARL report");
         addModule(modContext);
