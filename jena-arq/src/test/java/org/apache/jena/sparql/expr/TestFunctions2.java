@@ -478,6 +478,26 @@ public class TestFunctions2
     @Test(expected=ExprEvalException.class)
     public void timezone_11()             { test("timezone('2010-junk'^^xsd:gYear)", "'PT0S'^^xsd:dayTimeDuration") ; }
 
+    // General "adjust-to-timezone"
+    @Test public void adjust_1() {
+        test("adjust(xsd:dateTime('2022-12-21T05:05:07'), '-PT10H'^^xsd:duration)", "'2022-12-21T05:05:07-10:00'^^xsd:dateTime");
+    }
+
+    @Test(expected=ExprEvalException.class)
+    public void adjust_2() {
+        test("adjust('2022-12-21T05:05:07', 'PT08H'^^xsd:duration)", "'2022-12-21T05:05:07+08:00'^^xsd:dateTime");
+    }
+
+    // General "adjust-to-timezone"
+    @Test public void adjust_3() {
+        test("adjust(xsd:date('2022-12-21'), 'PT1H'^^xsd:duration)", "'2022-12-21+01:00'^^xsd:date");
+    }
+
+    @Test public void adjust_4() {
+        test("adjust(xsd:dateTime('2022-12-21T05:05:07'))", "'2022-12-21T05:05:07Z'^^xsd:dateTime");
+    }
+
+
     // TZ
     @Test public void tz_01()             { test("tz('2010-12-24T16:24:35.123Z'^^xsd:dateTime)", "'Z'") ; }
     @Test public void tz_02()             { test("tz('2010-12-24T16:24:35.123-08:00'^^xsd:dateTime)", "'-08:00'") ; }
@@ -576,5 +596,4 @@ public class TestFunctions2
     }
 
     // ROUND to TestXSDFuncOps.
-
 }

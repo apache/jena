@@ -29,33 +29,15 @@ public class TestExpressions4 {
 
     static { JenaSystem.init(); }
 
-    @Test public void adjust_1() {
+    @Test public void adjust_fn_1() {
         strict(()->test("fn:adjust-dateTime-to-timezone(xsd:dateTime('2022-12-21T05:05:07'), '-PT10H'^^xsd:duration)",
                           "'2022-12-21T05:05:07-10:00'^^xsd:dateTime"));
     }
 
     @Test(expected=ExprEvalException.class)
-    public void adjust_2() {
+    public void adjust_fn_2() {
         strict(()->test("fn:adjust-dateTime-to-timezone(xsd:date('2022-12-21'), '-PT10H'^^xsd:duration)",
                         "'2022-12-21-10:00'^^xsd:date"));
-    }
-
-    // General "adjust-to-timezone"
-    @Test public void adjust_3() {
-        strict(()->test("fn:adjust-to-timezone(xsd:dateTime('2022-12-21T05:05:07'), '-PT10H'^^xsd:duration)",
-                        "'2022-12-21T05:05:07-10:00'^^xsd:dateTime"));
-    }
-
-    @Test(expected=ExprEvalException.class)
-    public void adjust_4() {
-        strict(()->test("fn:adjust-to-timezone('2022-12-21T05:05:07', 'PT08H'^^xsd:duration)",
-                        "'2022-12-21T05:05:07+08:00'^^xsd:dateTime"));
-    }
-
-    // General "adjust-to-timezone"
-    @Test public void adjust_5() {
-        strict(()->test("afn:adjust-to-timezone(xsd:date('2022-12-21'), 'PT1H'^^xsd:duration)",
-                        "'2022-12-21+01:00'^^xsd:date"));
     }
 
     // Run in strict mode.

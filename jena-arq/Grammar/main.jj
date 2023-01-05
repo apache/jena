@@ -2042,7 +2042,12 @@ Expr BuiltInCall() : { Expr expr ;
     
   | <TIMEZONE> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeTimezone(expr1) ; }
   | <TZ> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeTZ(expr1) ; }
-
+#if ARQ
+  | <ADJUST>
+    // One or two arguments
+    <LPAREN> expr1 = Expression() (<COMMA> expr2 = Expression())? <RPAREN>
+    { return new E_AdjustToTimezone(expr1, expr2) ; }
+#endif
   | <NOW> <NIL>   { return new E_Now() ; }
 
   | <UUID> <NIL>  { return new E_UUID() ; }
@@ -2625,6 +2630,9 @@ TOKEN [IGNORE_CASE] :
 |  < SECONDS:     "SECONDS" >
 |  < TIMEZONE:    "TIMEZONE" >
 |  < TZ:          "TZ" >
+#ifdef ARQ
+|  < ADJUST:      "ADJUST" >
+#endif
 |  < NOW:         "NOW" >
 |  < UUID:        "UUID" >
 |  < STRUUID:     "STRUUID" >
