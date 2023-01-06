@@ -52,4 +52,12 @@ public class TextListenerLong extends TextListener
         out.println("  Ignored");
     }
 
+    @Override
+    protected void printFailure(Failure each, String prefix) {
+        out.println(prefix + ") " + each.getTestHeader());
+        // Don't print stack trace.
+        // Stack traces are printed when the test runs.
+        //out.print(each.getTrimmedTrace());
+    }
+
 }
