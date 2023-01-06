@@ -146,7 +146,7 @@ public class rdftests extends CmdGeneral
             // Which will apply to reading the manifests!
             ARQ.setStrictMode();
             SysRIOT.setStrictMode(true);
-            QueryExecTest.testByValue = false;
+            QueryExecTest.compareResultSetsByValue = false;
         }
 
         if ( arqAsNormal )

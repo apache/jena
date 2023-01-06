@@ -65,6 +65,16 @@ public class QueryExecTest implements Runnable {
     private final SPARQLResult results;
     private final QueryTestItem testItem;
     private final Creator<Dataset> creator;
+    /**
+     * Whether to test result sets "by value" or "by term".
+     * <p>
+     * Normally "true" - test by value.
+     * <ul>
+     * <li>Some SPARQL tests are value/test sensitive.
+     * <li>TDB stores literals in value format and rebuilds canonical lexical terms.
+     * </ul>
+     */
+    public static boolean compareResultSetsByValue = true;
 
     public QueryExecTest(ManifestEntry entry, Creator<Dataset> maker) {
         testEntry = entry;
@@ -290,8 +300,7 @@ public class QueryExecTest implements Runnable {
     }
 
     private static boolean resultSetEquivalent(Query query, ResultSetRewindable resultsExpected, ResultSetRewindable resultsActual) {
-        final boolean testByValue = true;
-        if ( testByValue ) {
+        if ( compareResultSetsByValue ) {
             if ( query.isOrdered() )
                 return ResultSetCompare.equalsByValueAndOrder(resultsExpected, resultsActual);
             else

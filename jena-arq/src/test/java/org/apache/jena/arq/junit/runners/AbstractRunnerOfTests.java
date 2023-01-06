@@ -166,10 +166,10 @@ public abstract class AbstractRunnerOfTests extends ParentRunner<Runner> {
         });
     }
 
-    // Keep Eclipse happy.
     public static String fixupName(String string) {
-        string = string.replace('(', '[');
-        string = string.replace(')', ']');
+        // Eclipse used to parse test names and () were special. 
+//        string = string.replace('(', '[');
+//        string = string.replace(')', ']');
         return string;
     }
 
