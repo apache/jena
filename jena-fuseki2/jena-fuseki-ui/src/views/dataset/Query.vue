@@ -289,7 +289,7 @@ export default {
           document.getElementById('yasqe'),
           {
             showQueryButton: true,
-            resizeable: false,
+            resizeable: true,
             requestConfig: {
               endpoint: this.$fusekiService.getFusekiUrl(this.currentDatasetUrl)
             },
