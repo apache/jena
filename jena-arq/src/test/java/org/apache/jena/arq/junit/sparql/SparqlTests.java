@@ -35,9 +35,9 @@ import org.apache.jena.sparql.vocabulary.TestManifest_11;
 public class SparqlTests {
 
     // test suite default setting.
+
     // See also "rdftests --arq"
-    public static Syntax defaultSyntaxForTests = Syntax.syntaxARQ;
-    public static Syntax defaultSyntaxForSyntaxTests = Syntax.syntaxSPARQL_11;
+    public static Syntax defaultForSyntaxTests = Syntax.syntaxSPARQL_11;
 
     /** Create a SPARQL test (syntax or valuation) test - or return null for "unrecognized" */
     public static Runnable makeSPARQLTest(ManifestEntry entry) {
@@ -46,12 +46,12 @@ public class SparqlTests {
             return null;
         }
 
-        Syntax querySyntax = defaultSyntaxForSyntaxTests;
+        Syntax querySyntax = defaultForSyntaxTests;
 
         // Syntax to use for tests where the file extension .rq/.ru applies.
         // For SPARQL*/RDF*, use ARQ syntax so we can run the RDF-star community tests.
-        Syntax querySyntax11 = defaultSyntaxForTests;
-        Syntax updateSyntax11 = defaultSyntaxForTests;
+        Syntax querySyntax11 = querySyntax;
+        Syntax updateSyntax11 = querySyntax;
 
         if ( querySyntax != null ) {
             if ( ! querySyntax.equals(Syntax.syntaxARQ) &&

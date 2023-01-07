@@ -36,7 +36,7 @@ public class TextTestRunner {
     public static void runOne(String manifestFile, Function<ManifestEntry, Runnable> testMaker) {
         runOne(null, manifestFile, testMaker);
     }
-    
+
     public static void runOne(EarlReport report, String manifestFile, Function<ManifestEntry, Runnable> testMaker) {
         Manifest manifest = Manifest.parse(manifestFile);
         RunnerOneManifest top = AbstractRunnerOfTests.build(report, manifest, testMaker, null);
