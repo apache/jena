@@ -445,6 +445,15 @@ public class BuilderExpr
         return new E_DateTimeTZ(ex);
     };
 
+    private static Build buildAdjust = (ItemList list) -> {
+        BuilderLib.checkLength(2, 3, list, "adjust: wanted 1 or 2 arguments: got: "+numArgs(list));
+        Expr expr1 = buildExpr(list.get(1));
+        Expr expr2 = null;
+        if ( list.size() > 2 )
+            expr2 = buildExpr(list.get(2));
+        return new E_AdjustToTimezone(expr1, expr2);
+    };
+
     private static Build buildNow = (ItemList list) -> {
         BuilderLib.checkLength(1, list, "now: wanted 0 arguments: got: "+numArgs(list));
         return new E_Now();
@@ -1009,6 +1018,7 @@ public class BuilderExpr
         dispatch.put(Tags.tagSeconds, buildSeconds);
         dispatch.put(Tags.tagTimezone, buildTimezone);
         dispatch.put(Tags.tagTZ, buildTZ);
+        dispatch.put(Tags.tagAdjust, buildAdjust);
 
         dispatch.put(Tags.tagRand, buildRand);
         dispatch.put(Tags.tagNow, buildNow);

@@ -54,7 +54,6 @@ import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.expr.*;
-import org.apache.jena.sparql.function.library.FN_AdjustToTimezone;
 import org.apache.jena.sparql.util.DateTimeStruct ;
 /**
  * Implementation of XQuery/XPath functions and operators.
@@ -1689,7 +1688,7 @@ public class XSDFuncOp
 
     /**
      * Adjust xsd:dateTime/xsd:date/xsd:time to a timezone.
-     * {@code fn:adjust-to-timezone} ({@link FN_AdjustToTimezone}) is not a real F&O function.
+     * {@code fn:adjust-to-timezone} ({@link E_AdjustToTimezone}) is not a real F&O function.
      * If the second argument is null, use implicit timezone.
      * In Jena, the implicit timezone is fixed to UTC.
      */

@@ -15,37 +15,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.sparql.function.library;
+package org.apache.jena.sparql.expr;
 
 import java.util.List;
 
-import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.query.QueryBuildException;
-import org.apache.jena.sparql.expr.ExprEvalException;
-import org.apache.jena.sparql.expr.ExprList;
-import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
-import org.apache.jena.sparql.function.FunctionBase;
+import org.apache.jena.sparql.sse.Tags;
 
 /** Do any of FN_Adjust(date/time)ToTimezone */
-public class FN_AdjustToTimezone extends FunctionBase {
-    public FN_AdjustToTimezone(){super();}
+public class E_AdjustToTimezone extends ExprFunctionN {
+
+    public E_AdjustToTimezone(Expr expr1, Expr expr2){
+        super(Tags.tagAdjust, expr1, expr2);
+    }
 
     @Override
-    public void checkBuild(String uri, ExprList args)
-    {
-        if ( args.size() != 1 && args.size() != 2 )
-            throw new QueryBuildException("Function '"+ Lib.className(this)+"' takes one or two arguments") ;
+    public Expr copy(ExprList newArgs) {
+        return new E_AdjustToTimezone(super.getArg(0), super.getArg(1));
     }
+
     @Override
-    public NodeValue exec(List<NodeValue> args)
+    public NodeValue eval(List<NodeValue> args)
     {
         if ( args.size() != 1 && args.size() != 2 )
-            throw new ExprEvalException("fn:adjust-to-timezone: Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
+            throw new ExprEvalException("ADJUST: Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
 
         NodeValue v1 = args.get(0) ;
         if ( !v1.isDateTime() && !v1.isDate() && !v1.isTime() )
-            throw new ExprEvalException("Not an xsd:dateTime, xsd:date or xsd:time : " + v1);
+            throw new ExprEvalException("ADJUST: Not an xsd:dateTime, xsd:date or xsd:time : " + v1);
 
         if ( args.size() == 2 ) {
             NodeValue v2 = args.get(1) ;

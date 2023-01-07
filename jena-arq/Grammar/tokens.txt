@@ -149,6 +149,7 @@
 [<SECONDS>]     ::= 'SECONDS'
 [<TIMEZONE>]    ::= 'TIMEZONE'
 [<TZ>]          ::= 'TZ'
+[<ADJUST>]      ::= 'ADJUST'
 [<NOW>]         ::= 'NOW'
 [<UUID>]        ::= 'UUID'
 [<STRUUID>]     ::= 'STRUUID'
