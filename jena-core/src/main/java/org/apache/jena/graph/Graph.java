@@ -154,6 +154,12 @@ public interface Graph
 	 * <a href="http://www.w3.org/TR/rdf-concepts#section-Graph-syntax">
      * http://www.w3.org/TR/rdf-concepts#section-Graph-syntax
      * </a>
+     *
+     * Note: this implementation does not handle correctly blank nodes in
+     * quoted triples (RDF-star). If you need to work with RDF-star,
+     * use the slower implementation in
+     * {@link org.apache.jena.sparql.util.IsoMatcher}.
+     *
 	 * @param g Compare against this.
 	 * @return boolean True if the two graphs are isomorphic.
 	 */
