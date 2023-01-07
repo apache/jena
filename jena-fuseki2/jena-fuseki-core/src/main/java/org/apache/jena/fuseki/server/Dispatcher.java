@@ -281,9 +281,9 @@ public class Dispatcher {
         if ( ep == null ) {
             if ( GSP_R.equals(operation) )
                 // If asking for GSP_R, and GSP_RW available, pass that back.
-                ep = epSet.get(GSP_RW); // [GSP Promote]
+                ep = epSet.get(GSP_RW);
             else if ( GSP_RW.equals(operation) ) {
-                // If asking for GSP_RW, only GSP_R available -> 405.
+                // If asking for GSP_RW, but only GSP_R available -> 405.
                 if ( epSet.contains(GSP_R) )
                     ServletOps.errorMethodNotAllowed(action.getMethod());
             }
