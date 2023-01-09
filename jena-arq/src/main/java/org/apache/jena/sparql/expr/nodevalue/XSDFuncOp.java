@@ -1128,16 +1128,15 @@ public class XSDFuncOp
     // --------------------------------
     // Date/DateTime operations
     // works for dates as well because they are implemented as dateTimes on their start point.
+    // The implicit timezone is fixed as UTC (Z, +00:00)
+    // because we're on the web, locale makes less sense.
+    // https://www.w3.org/TR/xpath-functions-3/#comp.datetime
 
     public static int compareDateTime(NodeValue nv1, NodeValue nv2) {
         // XSD Datatypes defines a partial order on dateTimes when comparing with
         // and without timezone => compareXSDDateTime
         // F&O defines a total order by applying the context-dependent implicit
         // timezone => compareDateTimeFO
-        //
-        // Because we're on the web, locale makes less sense so the implicit
-        // timezone is UTC (Z, +00:00)
-        // https://www.w3.org/TR/xpath-functions-3/#comp.datetime
         //
         // "Comparison operators on xs:date, xs:gYearMonth and xs:gYear compare their
         // starting instants. These xs:dateTime values are calculated as described
@@ -1156,8 +1155,6 @@ public class XSDFuncOp
         return x ;
     }
 
-    public static final String defaultTimezone = "Z" ;
-
     /**
      * Strict {@literal F&O} handling of compare date(times).
      * But that means applying the "local" timezone if there is no TZ.
@@ -1171,12 +1168,12 @@ public class XSDFuncOp
         return x ;
     }
 
-    /** Return a normalized XMLGregorianCalendar appropriate for comparision */
+    /** Return a normalized XMLGregorianCalendar appropriate for F&O comparison using the XSD algorithm. */
     private static XMLGregorianCalendar getXMLGregorianCalendarFO(NodeValue nv) {
         // This is a copy.
         XMLGregorianCalendar dt = nv.getDateTime();
         if ( dt.getTimezone() == DatatypeConstants.FIELD_UNDEFINED )
-            dt.setTimezone(0);
+            dt.setTimezone(implicitTimezoneMinutes());
 
         if ( nv.isDate()) {
             // Force time.
@@ -1672,14 +1669,46 @@ public class XSDFuncOp
         return XSDDuration.durationCompare(duration1, duration2);
     }
 
-    public static NodeValue localTimezone() {
-        Duration dur = localTimezoneDuration();
-        NodeValue nv = NodeValue.makeDuration(dur);
+
+    public static final String implicitTimezoneStr = "Z" ;
+    private static final NodeValue implicitTimezone_ = NodeValue.makeNode("PT0S", XSDDatatype.XSDdayTimeDuration);
+
+    // minutes are used for the timezone in XMLGregorianCalendar
+    private static final int implicitTimezoneMinutes() { return 0; }
+
+    // Server-local timezone
+    //    private static NodeValue serverTimezone() {
+    //    }
+    //
+    //    /**
+    //     * Calculate the server current local timezone in minutes
+    //     */
+    //    private static int localTimezoneOffsetMinutes() {
+    //        return TimeZone.getDefault().getOffset(new Date().getTime())/(1000*60);
+    //    }
+
+    /**
+     *
+     * <a href="https://www.w3.org/TR/xpath-functions-3/#func-implicit-timezone">Implciit Timezone</a>
+     * // https://www.w3.org/TR/xpath-functions-3/#comp.datetime
+     */
+
+    //fn:implicit-timezone() as xs:dayTimeDuration
+
+    public static NodeValue implicitTimezone() {
+        return implicitTimezone_;
+    }
+
+    /** Local timezone of the query engine: afn:system-timezone */
+    public static NodeValue localSystemTimezone() {
+        Duration dur = localSystemTimezoneDuration();
+        String lex = dur.toString();
+        NodeValue nv = NodeValue.makeNode(lex, XSDDatatype.XSDdayTimeDuration);
         return nv;
     }
 
     /** Local (query engine) timezone including DST */
-    private static Duration localTimezoneDuration() {
+    private static Duration localSystemTimezoneDuration() {
         ZonedDateTime zdt = ZonedDateTime.now();
         int tzDurationInSeconds = zdt.getOffset().getTotalSeconds();
         Duration dur = NodeFunctions.duration(tzDurationInSeconds);
@@ -1688,7 +1717,8 @@ public class XSDFuncOp
 
     /**
      * Adjust xsd:dateTime/xsd:date/xsd:time to a timezone.
-     * {@code fn:adjust-to-timezone} ({@link E_AdjustToTimezone}) is not a real F&O function.
+     * This covers fn:adjust-dateTime-to-timezone, fn:adjust-date-to-timezone and fn:adjust-time-to-timezone.
+     * via {@code ADJUST} ({@link E_AdjustToTimezone}).
      * If the second argument is null, use implicit timezone.
      * In Jena, the implicit timezone is fixed to UTC.
      */
@@ -1705,7 +1735,8 @@ public class XSDFuncOp
         if ( hasTz )
             inputOffset = calValue.getTimezone();
 
-        int tzOffset = 0;
+        // XSMLGregorianCalendar uses minutes for timezone.
+        int tzOffsetMins = 0;
         if(nv2 != null){
             if(!nv2.isDuration()) {
                 String nv2StrValue = nv2.getString();
@@ -1721,20 +1752,20 @@ public class XSDFuncOp
                 throw new ExprEvalException("Not a valid duration:" + nv2);
             }
             Duration tzDuration = nv2.getDuration();
-            tzOffset = tzDuration.getSign()*(tzDuration.getMinutes() + 60*tzDuration.getHours());
+            tzOffsetMins = tzDuration.getSign()*(tzDuration.getMinutes() + 60*tzDuration.getHours());
             if(tzDuration.getSeconds() > 0)
                 throw new ExprEvalException("The timezone duration should be an integral number of minutes");
-            int absTzOffset = java.lang.Math.abs(tzOffset);
+            int absTzOffset = java.lang.Math.abs(tzOffsetMins);
             if(absTzOffset > 14*60)
                 throw new ExprEvalException("The timezone should be a duration between -PT14H and PT14H.");
         }
         else {
-            tzOffset = TimeZone.getDefault().getOffset(new Date().getTime())/(1000*60);
+            tzOffsetMins = implicitTimezoneMinutes();
         }
-        Duration durToAdd = NodeValue.xmlDatatypeFactory.newDurationDayTime((tzOffset-inputOffset) > 0,0,0,java.lang.Math.abs(tzOffset-inputOffset),0);
+        Duration durToAdd = NodeValue.xmlDatatypeFactory.newDurationDayTime((tzOffsetMins-inputOffset) > 0,0,0,java.lang.Math.abs(tzOffsetMins-inputOffset),0);
         if(hasTz)
             calValue.add(durToAdd);
-        calValue.setTimezone(tzOffset);
+        calValue.setTimezone(tzOffsetMins);
         if(nv1.isDateTime())
             return NodeValue.makeDateTime(calValue);
         else if(nv1.isTime())

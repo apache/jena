@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,8 +18,19 @@
 
 package org.apache.jena.sparql.function.library;
 
-/**
- * fn:implicit-timezone
- */
-// Old name in ARQ.
-public class FN_Timezone extends FN_ImplicitTimezone {}
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase0;
+
+public class AFN_SystemTimezone extends FunctionBase0 {
+
+    public AFN_SystemTimezone() {
+        super();
+    }
+
+    @Override
+    public NodeValue exec() {
+        return XSDFuncOp.localSystemTimezone();
+    }
+
+}

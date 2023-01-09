@@ -41,6 +41,13 @@ public class StandardFunctions
      * and sparql:* for all the SPARQL builtins.
      */
 
+    public static void loadOtherDefs(FunctionRegistry registry) {
+        // Only need to add functions that are not in org.apache.jena.sparql.function.library or have names that are not java-compliant
+        String afn = ARQConstants.ARQFunctionLibraryURI ;
+        add(registry, afn+"adjust-to-timezone",  AFN_AdjustToTimezone.class);
+        add(registry, afn+"system-timezone",  AFN_SystemTimezone.class);
+    }
+
     /* Implementation notes
      *   fn:format-dateTime / fn:format-time / fn:format-date
      *   This is not Java's SimpleDateFormat.
@@ -50,9 +57,11 @@ public class StandardFunctions
 
     public static void loadStdDefs(FunctionRegistry registry) {
         String xfn = ARQConstants.fnPrefix ;
-        String afn = ARQConstants.ARQFunctionLibraryURI ;
+
         String math = ARQConstants.mathPrefix ;
         String sparqlfn = ARQConstants.fnSparql ;
+
+
 
         // Update documentation in xsd-support.md
 

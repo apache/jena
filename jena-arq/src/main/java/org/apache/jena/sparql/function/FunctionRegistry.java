@@ -48,6 +48,7 @@ public class FunctionRegistry
         FunctionRegistry reg = new FunctionRegistry() ;
         ARQFunctions.load(reg);
         StandardFunctions.loadStdDefs(reg) ;
+        StandardFunctions.loadOtherDefs(reg) ;
         set(ARQ.getContext(), reg) ;
     }
 
