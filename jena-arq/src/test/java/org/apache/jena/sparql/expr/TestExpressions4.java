@@ -40,6 +40,11 @@ public class TestExpressions4 {
                         "'2022-12-21-10:00'^^xsd:date"));
     }
 
+    @Test public void adjust_fn_3() {
+        // ARQ addition
+        test("afn:adjust-to-timezone(xsd:date('2022-12-21'), '-PT10H'^^xsd:duration)", "'2022-12-21-10:00'^^xsd:date");
+    }
+
     // Run in strict mode.
     private static void strict(Runnable action) {
         boolean b = ARQ.isStrictMode();

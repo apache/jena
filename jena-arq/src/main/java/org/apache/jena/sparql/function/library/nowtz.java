@@ -45,7 +45,7 @@ public class nowtz extends FunctionBase0
 {
     public nowtz() { }
 
-    public static Symbol symNowTz = SystemARQ.allocSymbol("nowtz"); 
+    public static Symbol symNowTz = SystemARQ.allocSymbol("nowtz");
 
     @Override
     public NodeValue exec() {
@@ -57,7 +57,7 @@ public class nowtz extends FunctionBase0
         Context cxt = functionEnv.getContext();
         if ( cxt.isDefined(symNowTz) ) {
             NodeValue nvx = cxt.get(symNowTz);
-            return nvx; 
+            return nvx;
         }
         NodeValue nvx = execAdjust(functionEnv);
 //        String formattedDate = fromQueryTime(cxt);
@@ -65,28 +65,28 @@ public class nowtz extends FunctionBase0
         cxt.set(symNowTz, nvx);
         return nvx;
     }
-    
+
     private NodeValue execAdjust(FunctionEnv functionEnv) {
         // NOW is UTC in Jena to make the same whoever is looking.
-        // For presentation reasons, you may want it in the (server) local timezone. 
+        // For presentation reasons, you may want it in the (server) local timezone.
         // Calculate:
         //   fn:adjust-dateTime-to-timezone(NOW(), fn:implicit-timezone())
         //   fn:adjust-dateTime-to-timezone(NOW(), afn:timezone())
-        
-        // Query time, in UTC. 
+
+        // Query time, in UTC.
         NodeValue nv = SystemVar.get(ARQConstants.sysCurrentTime, functionEnv);
         // Timezone as xsd:dayTimeDuration.
-        NodeValue nvTz = XSDFuncOp.localTimezone();
+        NodeValue nvTz = XSDFuncOp.localSystemTimezone();
         // Comes out as "Z", not "+00:00" because of cal.toXMLFormat() in NodeValue.makeDateTime
         return XSDFuncOp.adjustToTimezone(nv, nvTz);
     }
-    
+
     // For information. Do it by accessing the query current time and converting using
-    // ZonedDateTime.withZoneSameInstant (from Java8 java.time). 
+    // ZonedDateTime.withZoneSameInstant (from Java8 java.time).
 
     private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxxxx");
     private static ZoneId zoneIdUTC = ZoneOffset.UTC;
-    
+
     private static String fromQueryTime(Context cxt) {
         // In UTC.
         Node n = cxt.get(ARQConstants.sysCurrentTime);
@@ -94,7 +94,7 @@ public class nowtz extends FunctionBase0
         ZonedDateTime zdt = dtf.parse(x, ZonedDateTime::from);
         ZonedDateTime zdtLocal;
         // Convert to local timezone. (maybe should put the time into context as an Instant?)
-        if ( ! zoneIdUTC.equals(ZoneId.systemDefault()) ) 
+        if ( ! zoneIdUTC.equals(ZoneId.systemDefault()) )
             zdtLocal = zdt.withZoneSameInstant(ZoneId.systemDefault());
         else
             zdtLocal = zdt;

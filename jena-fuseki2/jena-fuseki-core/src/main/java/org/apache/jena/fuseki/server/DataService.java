@@ -117,7 +117,7 @@ public class DataService {
 
     /** Return a collection of all endpoints for this {@linkplain DataService}. */
     public Collection<Endpoint> getEndpoints() {
-        // A copy :-(
+        // A copy
         Set<Endpoint> x = new HashSet<>();
         endpoints.forEach((k,eps)->{
             eps.forEach((op,ep)->x.add(ep));
@@ -129,10 +129,6 @@ public class DataService {
     public void forEachEndpoint(Consumer<Endpoint> action) {
         endpoints.forEach((k,eps)->{
             eps.forEach((op,ep)->action.accept(ep));
-        });
-        Set<Endpoint> x = new HashSet<>();
-        endpoints.forEach((k,eps)->{
-            eps.forEach((op,ep)->x.add(ep));
         });
     }
 
