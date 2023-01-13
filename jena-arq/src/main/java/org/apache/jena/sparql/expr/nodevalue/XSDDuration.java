@@ -26,7 +26,7 @@ import org.apache.jena.sparql.expr.Expr;
 import javax.xml.datatype.DatatypeConstants.Field;
 
 /**
- * Functions relating to XSD durations (F&O 3.1), using
+ * Functions relating to XSD durations (F&amp;O 3.1), using
  * {@code javax.xml.datatype.Duration}
  */
 public class XSDDuration {

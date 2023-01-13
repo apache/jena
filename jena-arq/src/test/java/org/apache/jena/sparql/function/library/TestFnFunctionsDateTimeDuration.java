@@ -20,15 +20,13 @@ package org.apache.jena.sparql.function.library;
 import static org.apache.jena.sparql.expr.LibTestExpr.test;
 import static org.junit.Assert.fail;
 
-import java.util.Date;
-import java.util.TimeZone;
-
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.LibTestExpr;
 import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sys.JenaSystem ;
 import org.junit.Test ;
@@ -142,13 +140,13 @@ public class TestFnFunctionsDateTimeDuration {
     @Test public void exprAdjustDatetimeToTz_01(){
         test(
             "fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00'^^xsd:dateTime)",
-            "fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00'^^xsd:dateTime,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+            "fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00'^^xsd:dateTime,"+getTimezoneDurationString()+")");
     }
 
     @Test public void exprAdjustDatetimeToTz_02(){
         test(
             "fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime)",
-            "fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+            "fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,"+getTimezoneDurationString()+")");
     }
 
     @Test public void exprAdjustDatetimeToTz_03() { test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00'^^xsd:dateTime,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-07T10:00:00-10:00"));}
@@ -166,13 +164,13 @@ public class TestFnFunctionsDateTimeDuration {
     @Test public void exprAdjustDateToTz_01(){
         test(
             "fn:adjust-date-to-timezone('2002-03-07'^^xsd:date)",
-            "fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+            "fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,"+getTimezoneDurationString()+")");
     }
 
     @Test public void exprAdjustDateToTz_02(){
         test(
             "fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date)",
-            "fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+            "fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,"+getTimezoneDurationString()+")");
     }
 
     @Test public void exprAdjustDateToTz_03() { test("fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDate("2002-03-07-10:00"));}
@@ -186,13 +184,13 @@ public class TestFnFunctionsDateTimeDuration {
     @Test public void exprAdjustTimeToTz_01(){
         test(
             "fn:adjust-time-to-timezone('10:00:00'^^xsd:time)",
-            "fn:adjust-time-to-timezone('10:00:00'^^xsd:time,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+            "fn:adjust-time-to-timezone('10:00:00'^^xsd:time,"+getTimezoneDurationString()+")");
     }
 
     @Test public void exprAdjustTimeToTz_02(){
         test(
             "fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time)",
-            "fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+            "fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,"+getTimezoneDurationString()+")");
     }
 
     @Test public void exprAdjustTimeToTz_03() { test("fn:adjust-time-to-timezone('10:00:00'^^xsd:time,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("10:00:00-10:00",XSDDatatype.XSDtime));}
@@ -208,14 +206,9 @@ public class TestFnFunctionsDateTimeDuration {
 
     @Test public void localTimezone_1() { test("fn:implicit-timezone()", nv->nv.isDayTimeDuration()); }
 
-    private String getDynamicDurationString(){
-        int tzOffset = TimeZone.getDefault().getOffset(new Date().getTime()) / (1000*60);
-        String off = "PT"+Math.abs(tzOffset)+"M";
-        if(tzOffset < 0)
-            off = "-"+off;
-        return off;
+    /** Return syntax for the timezone as a day-time duration */
+    private String getTimezoneDurationString(){
+        // Timezone for ARQ is not the JVM timezone.
+        return XSDFuncOp.implicitTimezone().asQuotedString();
     }
-
-
-
 }

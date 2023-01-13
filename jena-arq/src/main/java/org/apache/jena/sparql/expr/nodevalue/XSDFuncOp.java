@@ -1676,19 +1676,7 @@ public class XSDFuncOp
     // minutes are used for the timezone in XMLGregorianCalendar
     private static final int implicitTimezoneMinutes() { return 0; }
 
-    // Server-local timezone
-    //    private static NodeValue serverTimezone() {
-    //    }
-    //
-    //    /**
-    //     * Calculate the server current local timezone in minutes
-    //     */
-    //    private static int localTimezoneOffsetMinutes() {
-    //        return TimeZone.getDefault().getOffset(new Date().getTime())/(1000*60);
-    //    }
-
     /**
-     *
      * <a href="https://www.w3.org/TR/xpath-functions-3/#func-implicit-timezone">Implciit Timezone</a>
      * // https://www.w3.org/TR/xpath-functions-3/#comp.datetime
      */
