@@ -179,11 +179,11 @@
 </template>
 
 <script>
-import Menu from '@/components/dataset/Menu'
+import Menu from '@/components/dataset/Menu.vue'
 import Yasqe from '@triply/yasqe'
 import Yasr from '@triply/yasr'
 import queryString from 'query-string'
-import Vue from 'vue'
+import { nextTick } from 'vue'
 import currentDatasetMixin from '@/mixins/current-dataset'
 import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
 
@@ -330,7 +330,7 @@ export default {
   },
 
   beforeRouteUpdate (from, to, next) {
-    Vue.nextTick(() => {
+    nextTick(() => {
       if (this.$route.query.query !== undefined) {
         // N.B: a blank value, like query=, will clear the query editor. Not sure if
         //      desirable, but this can be easily modified later if necessary.

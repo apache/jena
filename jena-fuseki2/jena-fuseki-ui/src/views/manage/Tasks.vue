@@ -47,8 +47,8 @@
 </template>
 
 <script>
-import Menu from '@/components/manage/Menu'
-import TableListing from '@/components/dataset/TableListing'
+import Menu from '@/components/manage/Menu.vue'
+import TableListing from '@/components/dataset/TableListing.vue'
 
 export default {
   name: 'ManageTasks',

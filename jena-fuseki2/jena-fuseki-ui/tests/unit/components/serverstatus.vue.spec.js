@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { expect } from 'chai'
+import { describe, expect, it, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import ServerStatus from '@/components/ServerStatus.vue'
 import ServerStatusModel from '@/model/server.status'

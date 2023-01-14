@@ -78,7 +78,6 @@ describe('datasets', () => {
     })
     it('Edits the graph', () => {
       cy.visit('/#/dataset/a/edit')
-      cy.server()
       cy.intercept('/a*').as('getGraph')
       cy
         .contains('Loading')
@@ -122,7 +121,7 @@ describe('datasets', () => {
       cy.wait('@getGraph')
       cy
         .get('.CodeMirror-code')
-        .should('contain', 'Harry Potter and the Goblet of Fire')
+        .should('contain.text', 'Harry Potter and the Goblet of Fire')
     })
     it('Visits datasets page', () => {
       cy.visit('/')
@@ -253,8 +252,10 @@ describe('datasets', () => {
       cy
         .contains('Loading')
         .should('not.exist')
-      cy.server()
-      cy.route('POST', '/$/datasets').as('post')
+      cy.intercept({
+        method: 'POST',
+        url: '/$/datasets'
+      }).as('post')
       cy
         .visit('/#/manage/new')
         .then(() => {
@@ -271,7 +272,8 @@ describe('datasets', () => {
           // from Jena, due to the duplicate dataset name.
           cy
             .get('@post')
-            .should('have.property', 'status', 409)
+            .its('response')
+            .should('have.property', 'statusCode', 409)
         })
     })
     it('Visualizes the dataset information (Info View, tab)', () => {

@@ -152,10 +152,10 @@
 </template>
 
 <script>
-import Menu from '@/components/manage/Menu'
+import Menu from '@/components/manage/Menu.vue'
 import listDatasets from '@/mixins/list-datasets'
 import listDatasetsNavigationGuards from '@/mixins/list-datasets-navigation-guards'
-import TableListing from '@/components/dataset/TableListing'
+import TableListing from '@/components/dataset/TableListing.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimesCircle, faDownload, faTachometerAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'

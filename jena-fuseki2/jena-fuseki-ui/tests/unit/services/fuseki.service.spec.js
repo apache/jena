@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { expect } from 'chai'
+import { describe, expect, it, beforeEach, afterEach } from 'vitest'
 import sinon from 'sinon'
 import FusekiService from '@/services/fuseki.service'
 import axios from 'axios'

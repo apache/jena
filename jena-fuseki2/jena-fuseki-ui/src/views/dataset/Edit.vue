@@ -126,8 +126,8 @@
 </template>
 
 <script>
-import Menu from '@/components/dataset/Menu'
-import TableListing from '@/components/dataset/TableListing'
+import Menu from '@/components/dataset/Menu.vue'
+import TableListing from '@/components/dataset/TableListing.vue'
 import CodeMirror from 'codemirror'
 import 'codemirror/mode/turtle/turtle'
 import {

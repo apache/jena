@@ -16,6 +16,7 @@
  */
 
 const { defineConfig } = require('cypress')
+const vitePreprocessor = require('cypress-vite')
 
 module.exports = defineConfig({
   video: false,
@@ -25,22 +26,23 @@ module.exports = defineConfig({
   pageLoadTimeout: 15000,
   requestTimeout: 7500,
   responseTimeout: 7500,
-  fixturesFolder: 'tests/e2e/fixtures',
-  screenshotsFolder: 'tests/e2e/screenshots',
-  videosFolder: 'tests/e2e/videos',
 
   e2e: {
+    baseUrl: 'http://localhost:8080/',
     setupNodeEvents (on, config) {
+      on('file:preprocessor', vitePreprocessor())
       return require('./tests/e2e/plugins/index.js')(on, config)
     },
     specPattern: 'tests/e2e/specs/**/*.cy.{js,jsx,ts,tsx}',
-    supportFile: 'tests/e2e/support/index.js'
+    fixturesFolder: 'tests/e2e/fixtures',
+    screenshotsFolder: 'tests/e2e/screenshots',
+    videosFolder: 'tests/e2e/videos',
+    supportFile: 'tests/e2e/support/index.js',
   },
 
-  component: {
-    devServer: {
-      framework: 'vue-cli',
-      bundler: 'webpack'
-    }
-  }
+  env: {
+    codeCoverage: {
+      exclude: 'cypress/**/*.*',
+    },
+  },
 })

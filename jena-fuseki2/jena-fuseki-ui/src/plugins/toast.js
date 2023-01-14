@@ -19,7 +19,7 @@
  * A plug-in to replace Bootstrap Vue's Toasts.
  */
 import { BUS } from '@/events'
-import Toast from '@/components/Toast'
+import Toast from '@/components/Toast.vue'
 
 export default {
   install (vm) {

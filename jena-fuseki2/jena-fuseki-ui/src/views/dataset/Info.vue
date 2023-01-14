@@ -162,12 +162,12 @@
 </template>
 
 <script>
-import Menu from '@/components/dataset/Menu'
+import Menu from '@/components/dataset/Menu.vue'
 import { displayError } from '@/utils'
 import currentDatasetMixin from '@/mixins/current-dataset'
 import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
 import { Popover } from 'bootstrap'
-import JenaTable from '@/components/dataset/JenaTable'
+import JenaTable from '@/components/dataset/JenaTable.vue'
 
 export default {
   name: 'DatasetInfo',

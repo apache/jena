@@ -16,8 +16,8 @@
 */
 
 import * as VueRouter from 'vue-router'
-import Home from '../views/Home'
-import NotFound from '@/views/NotFound'
+import Home from '../views/Home.vue'
+import NotFound from '@/views/NotFound.vue'
 
 const routes = [
   {
@@ -28,7 +28,7 @@ const routes = [
   {
     path: '/dataset/:datasetName/query',
     name: 'DatasetQuery',
-    component: () => import(/* webpackChunkName: "datasetQuery" */ '../views/dataset/Query'),
+    component: () => import(/* webpackChunkName: "datasetQuery" */ '../views/dataset/Query.vue'),
     props: true
   },
   {
@@ -36,46 +36,46 @@ const routes = [
     //            query parameter, e.g. /#/dataset/abc/query?query=SELECT...
     path: '/dataset/:datasetName/query*',
     name: 'DatasetQueryParameters',
-    component: () => import(/* webpackChunkName: "datasetQuery" */ '../views/dataset/Query'),
+    component: () => import(/* webpackChunkName: "datasetQuery" */ '../views/dataset/Query.vue'),
     props: true
   },
   {
     path: '/dataset/:datasetName/upload',
     name: 'DatasetUpload',
-    component: () => import(/* webpackChunkName: "datasetUpload" */ '../views/dataset/Upload'),
+    component: () => import(/* webpackChunkName: "datasetUpload" */ '../views/dataset/Upload.vue'),
     props: true
   },
   {
     path: '/dataset/:datasetName/edit',
     name: 'DatasetEdit',
-    component: () => import(/* webpackChunkName: "datasetEdit" */ '../views/dataset/Edit'),
+    component: () => import(/* webpackChunkName: "datasetEdit" */ '../views/dataset/Edit.vue'),
     props: true
   },
   {
     path: '/dataset/:datasetName/info',
     name: 'DatasetInfo',
-    component: () => import(/* webpackChunkName: "datasetInfo" */ '../views/dataset/Info'),
+    component: () => import(/* webpackChunkName: "datasetInfo" */ '../views/dataset/Info.vue'),
     props: true
   },
   {
     path: '/manage',
     name: 'ManageDatasets',
-    component: () => import(/* webpackChunkName: "manageDatasets" */ '../views/manage/ExistingDatasets')
+    component: () => import(/* webpackChunkName: "manageDatasets" */ '../views/manage/ExistingDatasets.vue')
   },
   {
     path: '/manage/new',
     name: 'NewDataset',
-    component: () => import(/* webpackChunkName: "newDataset" */ '../views/manage/NewDataset')
+    component: () => import(/* webpackChunkName: "newDataset" */ '../views/manage/NewDataset.vue')
   },
   {
     path: '/manage/tasks',
     name: 'Tasks',
-    component: () => import(/* webpackChunkName: "tasks" */ '../views/manage/Tasks')
+    component: () => import(/* webpackChunkName: "tasks" */ '../views/manage/Tasks.vue')
   },
   {
     path: '/documentation',
     name: 'Help',
-    component: () => import(/* webpackChunkName: "documentation" */ '../views/Help')
+    component: () => import(/* webpackChunkName: "documentation" */ '../views/Help.vue')
   },
   {
     path: '/:pathMatch(.*)*',
