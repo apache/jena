@@ -37,11 +37,6 @@ const startTime = new Date()
 
 // Add custom routes before JSON Server router
 
-// GET PING STATUS
-server.get('/\\$/ping', (req, res) => {
-  res.jsonp(new Date().toISOString())
-})
-
 // GET SERVER INFO
 server.get('/\\$/server', (req, res) => {
   res.jsonp({
@@ -262,8 +257,13 @@ server.get('/:datasetName', (req, res) => {
 })
 
 // PING
+// GET PING STATUS
 server.get('/\\$/ping', (req, res) => {
-  res.sendStatus(200)
+  res
+    .status(200)
+    .jsonp({
+      body: new Date().toISOString()
+    })
 })
 
 // RESET TEST DATA

@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import JenaTable from '@/components/dataset/JenaTable'
+import JenaTable from '@/components/dataset/JenaTable.vue'
 import Pagination from '@/components/dataset/Pagination.vue'
 
 export default {

@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import Menu from '@/components/manage/Menu'
+import Menu from '@/components/manage/Menu.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'

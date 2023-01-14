@@ -54,7 +54,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faDatabase, faCogs, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import ServerStatus from '@/components/ServerStatus'
+import ServerStatus from '@/components/ServerStatus.vue'
 
 library.add(faDatabase, faCogs, faInfoCircle)
 

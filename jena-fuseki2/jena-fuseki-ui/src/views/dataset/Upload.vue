@@ -186,9 +186,9 @@
 </template>
 
 <script>
-import Menu from '@/components/dataset/Menu'
+import Menu from '@/components/dataset/Menu.vue'
 import FileUpload from 'vue-upload-component'
-import JenaTable from '@/components/dataset/JenaTable'
+import JenaTable from '@/components/dataset/JenaTable.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPlus, faUpload, faTimesCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'

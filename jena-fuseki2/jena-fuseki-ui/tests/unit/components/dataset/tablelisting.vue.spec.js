@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import TableListing from '@/components/dataset/TableListing.vue'
 
