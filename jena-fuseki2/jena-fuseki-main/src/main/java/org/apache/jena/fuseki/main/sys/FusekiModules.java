@@ -18,8 +18,8 @@
 
 package org.apache.jena.fuseki.main.sys;
 
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import org.apache.jena.base.module.Subsystem;
@@ -27,8 +27,10 @@ import org.apache.jena.base.module.Subsystem;
 /** Registry of modules */
 public class FusekiModules {
 
-    // Modules added programmatically
-    private static Set<FusekiModule> registry = null;
+    private static Object lock = new Object();
+
+    // Record of what is loaded.
+    private static List<FusekiModule> registry = null;
 
     private static Subsystem<FusekiModule> subsystem = null;
 
@@ -38,35 +40,45 @@ public class FusekiModules {
     }
 
     public static void reload() {
-        registry = ConcurrentHashMap.newKeySet();
+        registry = new ArrayList<>();
         subsystem = new Subsystem<FusekiModule>(FusekiModule.class);
         subsystem.initialize();
-        subsystem.forEach(registry::add);
+        synchronized(lock) {
+            subsystem.forEach(registry::add);
+        }
     }
 
     /** Add a code module */
     public static void add(FusekiModule module) {
-        load();
-        module.start();
-        registry.add(module);
+        synchronized(lock) {
+            load();
+            module.start();
+            registry.add(module);
+        }
     }
 
     /** Remove a code module */
     public static void remove(FusekiModule module) {
-        registry.remove(module);
-        module.stop();
+        synchronized(lock) {
+            registry.remove(module);
+            module.stop();
+        }
     }
 
     /** Test whether a code module is registered. */
     public static boolean contains(FusekiModule module) {
-        return registry.contains(module);
+        synchronized(lock) {
+            return registry.contains(module);
+        }
     }
 
     /*package*/ static void forEachModule(Consumer<FusekiModule> action) {
-        if ( registry == null )
-            load();
-        if ( registry == null || registry.isEmpty() )
-            return ;
-        registry.forEach(action);
+        synchronized(lock) {
+            if ( registry == null )
+                load();
+            if ( registry == null || registry.isEmpty() )
+                return ;
+            registry.forEach(action);
+        }
     }
 }
