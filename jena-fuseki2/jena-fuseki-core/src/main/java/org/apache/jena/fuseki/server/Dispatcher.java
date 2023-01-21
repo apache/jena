@@ -42,13 +42,55 @@ import org.slf4j.Logger;
 /**
  * Dispatch on registered datasets. This is the entry point into Fuseki for dataset
  * operations.
- *
- * Administration operations, and directly registered servlets and static content are
- * called through the usual web server process.
- *
- * HTTP Request URLs, after servlet context removed, take the form {@code /dataset} or {@code /dataset/service}.
- * The most general URL is {@code /context/dataset/service}.
- * The {@link DataAccessPointRegistry} maps {@code /dataset} to a {@link DataAccessPoint}.
+ * <p>
+ * Administration operations, and directly registered servlets and static content,
+ * are called through the usual web server process.
+ * <p>
+ * HTTP Request URLs, after servlet context removed, take the form {@code /dataset}
+ * or {@code /dataset/service}. The most general URL is
+ * {@code /context/dataset/service}. The {@link DataAccessPointRegistry} maps
+ * {@code /dataset} to a {@link DataAccessPoint} which is a name and a
+ * {@linkplain DataService}.
+ * <p>
+ * The dispatch process is:
+ * </p>
+ * <p>
+ * 1. {@linkplain Dispatcher#dispatch} calls
+ * {@linkplain Dispatcher#locateDataAccessPoint} to get the
+ * {@linkplain DataAccessPoint} and calls {@linkplain Dispatcher#process}.
+ * </p>
+ * <p>
+ * 2. {@linkplain Dispatcher#process} create the {@linkplain HttpAction} then calls
+ * {@linkplain Dispatcher#dispatchAction} which calls through to
+ * {@linkplain Dispatcher#chooseProcessor}.
+ * </p>
+ * <p>
+ * 3. {@linkplain Dispatcher#chooseProcessor} does some checking and calls
+ * {@linkplain Dispatcher#chooseEndpoint}.
+ * </p>
+ * <p>
+ * 4. {@linkplain Dispatcher#chooseEndpoint} looks at request, and determines the
+ * {@linkplain EndpointSet}.
+ * </p>
+ * <p>
+ * 5. If there isn't an {@linkplain EndpointSet}, the dispatch process returns.
+ * </p>
+ * <p>
+ * 6. If there is exactly one entry, this is the outcome.
+ * </p>
+ * <p>
+ * 7. If there are multiple choices , {@linkplain Dispatcher#chooseOperation} looks
+ * at request and decides which {@linkplain Operation} is being requested based on
+ * SPARQL operations signatures and Content-Type.
+ * </p>
+ * <p>
+ * 8.There is a default for dispatches with multiple choices that can't be separated
+ * by SPARQL signature. These have no regsitered Content-type and no query string.
+ * </p>
+ * <p>
+ * A choice by dispatch does not necessarily mean an operation is valid and will be
+ * executed. It may fail authentication or not have an registered handler.
+ * </p>
  */
 public class Dispatcher {
 
@@ -274,18 +316,23 @@ public class Dispatcher {
         if ( ep != null )
             // Single dispatch, may not be valid.
             return ep;
+
         // No single direct dispatch. Multiple choices (different operation, same endpoint name)
-        // Work out which operation we are looking for.
-        Operation operation = chooseOperation(action);
-        ep = epSet.get(operation);
-        if ( ep == null ) {
-            if ( GSP_R.equals(operation) )
-                // If asking for GSP_R, and GSP_RW available, pass that back.
-                ep = epSet.get(GSP_RW);
-            else if ( GSP_RW.equals(operation) ) {
-                // If asking for GSP_RW, but only GSP_R available -> 405.
-                if ( epSet.contains(GSP_R) )
-                    ServletOps.errorMethodNotAllowed(action.getMethod());
+        // Work out which operation we are looking for based on SPARQL characteristics.
+        Operation operation = chooseOperation(action, epSet);
+
+     // Special case for GSP_R/GSP_RW
+        if ( operation != null ) {
+            ep = epSet.get(operation);
+            if ( ep == null ) {
+                if ( GSP_R.equals(operation) )
+                    // If asking for GSP_R, and GSP_RW available, pass that back.
+                    ep = epSet.get(GSP_RW);
+                else if ( GSP_RW.equals(operation) ) {
+                    // If asking for GSP_RW, but only GSP_R available -> 405.
+                    if ( epSet.contains(GSP_R) )
+                        ServletOps.errorMethodNotAllowed(action.getMethod());
+                }
             }
         }
 
@@ -296,20 +343,22 @@ public class Dispatcher {
     }
 
     /**
-     * Identify the operation being requested.
-     * It is analysing the HTTP request using global configuration.
-     * The decision is based on
+     * Identify the operation being requested. It is analysing the HTTP request using
+     * global configuration. The decision is based on
      * <ul>
      * <li>HTTP query string parameters (URL query string or HTML form)</li>
      * <li>Registered Content-Type header</li>
      * <li>Otherwise it is a plain REST (quads)</li>
      * </ul>
-     * The HTTP Method is not considered.
+     * The HTTP Method is not considered. This affects GSP. For read return GSP_R,
+     * for changes return GSP_RW. The dispatcher will map GSP_R to GSP_RW when only
+     * GSP_RW is available.
      * <p>
      * The operation is not guaranteed to be supported on every {@link DataService}
      * nor that access control will allow it to be performed.
      */
-    private static Operation chooseOperation(HttpAction action) {
+    private static Operation chooseOperation(HttpAction action, EndpointSet epSet) {
+        // which is a DispatchFunction.
         HttpServletRequest request = action.getRequest();
 
         // ---- Dispatch based on HttpParams : Query, Update, GSP.
@@ -370,8 +419,19 @@ public class Dispatcher {
         }
 
         // ---- No registered content type, no query parameters.
-        // Plain HTTP operation on the dataset handled as quads or rejected.
-        return quadsOperation(action, request);
+        // Plain HTTP operation on the dataset.
+        DispatchFunction selectOperation = action.getDataService().getDefaultOperationChooser();
+        if ( selectOperation == null )
+            // Defaul is a quads operation.
+            selectOperation = Dispatcher::selectPlainOperation;
+        return selectOperation.selectOperation(action, epSet);
+    }
+
+    /**
+     * This is a system default {@link DispatchFunction}.
+     */
+    public static Operation selectPlainOperation(HttpAction action, EndpointSet epSet) {
+        return gspOperation(action, action.getRequest());
     }
 
     /**
@@ -395,27 +455,13 @@ public class Dispatcher {
      * Assumes, and does not check, that the action is a GSP action.
      */
     private static Operation gspOperation(HttpAction action, HttpServletRequest request) {
-        // Check enabled.
-        if ( isReadMethod(request) )
-            return GSP_R;
-        else
-            return GSP_RW;
+        return isReadMethod(request) ? GSP_R : GSP_RW;
     }
 
     /**
-     * Determine the {@link Operation} for a Quads operation. (GSP, except on the
-     * whole dataset).
-     * <p>
-     * Assumes, and does not check, that the action is a Quads action.
+     * Return whether request method is a "read" (GET or HEAD) or "write", modifying
+     * (POST, PUT, DELETE, PATCH)
      */
-    private static Operation quadsOperation(HttpAction action, HttpServletRequest request) {
-        // Check enabled. Extends GSP.
-        if ( isReadMethod(request) )
-            return GSP_R;
-        else
-            return GSP_RW;
-    }
-
     private static boolean isReadMethod(HttpServletRequest request) {
         String method = request.getMethod();
         // REST dataset.

@@ -16,41 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main;
+package org.apache.jena.fuseki.server;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.apache.jena.fuseki.servlets.HttpAction;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-
-  TestPlainServer.class
-
-  // This tests modules and modifies the system state.
-  , TestFusekiModules.class
-  , TestMultipleEmbedded.class
-  , TestFusekiCustomOperation.class
-  , TestFusekiMainCmd.class
-  , TestStdSetup.class
-  , TestConfigFile.class
-  , TestFusekiServerBuild.class
-
-  , TestFileUpload.class
-  , TestAuthQuery_JDK.class
-  , TestAuthUpdate_JDK.class
-  , TestHttpOperations.class
-  , TestHttpOptions.class
-
-  , TestQuery.class
-  , TestSPARQLProtocol.class
-
-  , TestPatchFuseki.class
-
-  // Test ping.
-  , TestMetrics.class
-  , TestFusekiShaclValidation.class
-
-})
-public class TS_FusekiMain {}
-
+/**
+ * Select a operation based on the request ({@link HttpAction}) and the choices at
+ * this named endpoint ({@link EndpointSet}).
+ */
+@FunctionalInterface
+public interface DispatchFunction {
+    Operation selectOperation(HttpAction action, EndpointSet epSet);
+}

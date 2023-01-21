@@ -82,9 +82,6 @@ public class UploadRDF extends ActionREST {
         if ( ct == null )
             ServletOps.errorBadRequest("No Content-Type:");
 
-        if ( !action.getDataService().allowUpdate() )
-            ServletOps.errorMethodNotAllowed(action.getMethod());
-
         UploadDetails details;
         if ( action.isTransactional() )
             details = quadsPutPostTxn(action, replaceOperation);
