@@ -18,38 +18,37 @@
 
 package tdb.cmdline;
 
-import org.apache.jena.cmd.ArgDecl;
-import org.apache.jena.cmd.CmdArgModule;
-import org.apache.jena.cmd.CmdGeneral;
-import org.apache.jena.cmd.ModBase;
-import org.apache.jena.tdb.base.file.Location ;
+import java.util.List;
 
-public class ModLocation extends ModBase
-{
+import org.apache.jena.cmd.*;
+import org.apache.jena.tdb.base.file.Location;
+
+public class ModLocation extends ModBase {
     public ModLocation() {}
-    
-    protected final ArgDecl locationDecl = new ArgDecl(ArgDecl.HasValue, "location", "loc") ;
-    protected Location location = null ;
-    
-    @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
-        cmdLine.getUsage().startCategory("Location") ;
-        cmdLine.add(locationDecl, "--loc=DIR", "Location (a directory)") ;
-    }
-    
-    public void checkCommandLine(CmdArgModule cmdLine)
-    {}
+
+    protected final ArgDecl locationDecl = new ArgDecl(ArgDecl.HasValue, "location", "loc");
+    protected Location location = null;
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
-        if ( cmdLine.contains(locationDecl) )
-        {
-            String dir = cmdLine.getValue(locationDecl) ;
-            location = Location.create(dir) ;
+    public void registerWith(CmdGeneral cmdLine) {
+        cmdLine.getUsage().startCategory("Location");
+        cmdLine.add(locationDecl, "--loc=DIR", "Location (a directory)");
+    }
+
+    public void checkCommandLine(CmdArgModule cmdLine) {}
+
+    @Override
+    public void processArgs(CmdArgModule cmdLine) {
+        List<String> locations = cmdLine.getValues(locationDecl);
+        if ( ! locations.isEmpty() ) {
+            if ( locations.size() > 1 )
+                throw new CmdException("Multiple locations specified: "+locations) ;
+            String dir = cmdLine.getValue(locations.get(0));
+            location = Location.create(dir);
         }
     }
-    
-    public Location getLocation() { return location ; }
+
+    public Location getLocation() {
+        return location;
+    }
 }
