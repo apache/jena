@@ -40,9 +40,9 @@ public class ModLocation extends ModBase {
     @Override
     public void processArgs(CmdArgModule cmdLine) {
         List<String> locations = cmdLine.getValues(locationDecl);
-        if ( ! locations.isEmpty() ) {
+        if ( !locations.isEmpty() ) {
             if ( locations.size() > 1 )
-                throw new CmdException("Multiple locations specified: "+locations) ;
+                throw new CmdException("Multiple locations specified: " + locations);
             String dir = cmdLine.getValue(locations.get(0));
             location = Location.create(dir);
         }

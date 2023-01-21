@@ -47,25 +47,27 @@ import tdb2.cmdline.CmdTDB;
 import tdb2.cmdline.CmdTDBGraph;
 
 public class tdbloader extends CmdTDBGraph {
-    private static final ArgDecl argStats   = new ArgDecl(ArgDecl.HasValue, "stats");
-    private static final ArgDecl argLoader  = new ArgDecl(ArgDecl.HasValue, "loader");
-    private static final ArgDecl argSyntax  = new ArgDecl(ArgDecl.HasValue, "syntax");
+    private static final ArgDecl argStats = new ArgDecl(ArgDecl.HasValue, "stats");
+    private static final ArgDecl argLoader = new ArgDecl(ArgDecl.HasValue, "loader");
+    private static final ArgDecl argSyntax = new ArgDecl(ArgDecl.HasValue, "syntax");
 
-    private enum LoaderEnum { Basic, Parallel, Sequential, Light, Phased }
+    private enum LoaderEnum {
+        Basic, Parallel, Sequential, Light, Phased
+    }
 
-    private boolean    showProgress  = true;
-    private boolean    generateStats = false;
-    private LoaderEnum loader        = null;
-    private Lang       lang          = Lang.NQUADS;
+    private boolean showProgress = true;
+    private boolean generateStats = false;
+    private LoaderEnum loader = null;
+    private Lang lang = Lang.NQUADS;
 
-    public static void main(String... args) {
+    public static void main(String...args) {
         CmdTDB.init();
         new tdbloader(args).mainRun();
     }
 
     protected tdbloader(String[] argv) {
         super(argv);
-//        super.add(argStats, "Generate statistics");
+// super.add(argStats, "Generate statistics");
         super.add(argLoader, "--loader=", "Loader to use: 'basic', 'phased' (default), 'sequential', 'parallel' or 'light'");
         super.add(argSyntax, "--syntax=LANG", "Syntax of data from stdin");
     }
@@ -87,12 +89,12 @@ public class tdbloader extends CmdTDBGraph {
             else if ( loadername.matches("light") )
                 loader = LoaderEnum.Light;
             else
-                throw new CmdException("Unrecognized value for --loader: "+loadername);
+                throw new CmdException("Unrecognized value for --loader: " + loadername);
         }
 
         if ( super.contains(argStats) ) {
-            if ( ! hasValueOfTrue(argStats) && ! hasValueOfFalse(argStats) )
-                throw new CmdException("Not a boolean value: "+getValue(argStats));
+            if ( !hasValueOfTrue(argStats) && !hasValueOfFalse(argStats) )
+                throw new CmdException("Not a boolean value: " + getValue(argStats));
             generateStats = super.hasValueOfTrue(argStats);
         }
 
@@ -100,11 +102,11 @@ public class tdbloader extends CmdTDBGraph {
             lang = Lang.NTRIPLES;
 
         if ( super.contains(argSyntax) ) {
-            String syntax = super.getValue(argSyntax) ;
-            Lang lang$ = RDFLanguages.nameToLang(syntax) ;
+            String syntax = super.getValue(argSyntax);
+            Lang lang$ = RDFLanguages.nameToLang(syntax);
             if ( lang$ == null )
-                throw new CmdException("Can not detemine the syntax from '" + syntax + "'") ;
-            this.lang = lang$ ;
+                throw new CmdException("Can not detemine the syntax from '" + syntax + "'");
+            this.lang = lang$;
         }
     }
 
@@ -154,19 +156,18 @@ public class tdbloader extends CmdTDBGraph {
 
     // Check files exists before starting.
     private void checkFiles(List<String> urls) {
-        List<String> problemFiles =
-            ListUtils.toList(
-                urls.stream()
-                .filter(u->FileUtils.isFile(u))  // Local files.
-                .map(Paths::get)
-                .filter(p-> !Files.exists(p) || !Files.isRegularFile(p /*follow links*/) || !Files.isReadable(p) )
-                .map(Path::toString)
-                );
-        if ( ! problemFiles.isEmpty() ) {
+        List<String> problemFiles = ListUtils.toList(urls.stream().filter(u -> FileUtils.isFile(u))  // Local
+                                                                                                     // files.
+                                                         .map(Paths::get)
+                                                         .filter(p -> !Files.exists(p) || !Files.isRegularFile(p /* follow
+                                                                                                                  * links */)
+                                                                      || !Files.isReadable(p))
+                                                         .map(Path::toString));
+        if ( !problemFiles.isEmpty() ) {
             if ( problemFiles.size() == 1 )
-                throw new CmdException("Can't read file : "+problemFiles.get(0));
+                throw new CmdException("Can't read file : " + problemFiles.get(0));
             String str = String.join(", ", problemFiles);
-            throw new CmdException("Can't read files : "+str);
+            throw new CmdException("Can't read files : " + str);
         }
     }
 
@@ -181,32 +182,32 @@ public class tdbloader extends CmdTDBGraph {
 
     private long execBulkLoad(DatasetGraph dsg, String graphName, List<String> urls, boolean showProgress) {
         DataLoader loader = chooseLoader(dsg, graphName);
-        long elapsed = Timer.time(()->{
-                    loader.startBulk();
-                    loader.load(urls);
-                    loader.finishBulk();
+        long elapsed = Timer.time(() -> {
+            loader.startBulk();
+            loader.load(urls);
+            loader.finishBulk();
         });
         return elapsed;
     }
 
     private long loadQuadsStdin() {
-        Lang parseLang = ( lang != null ) ? lang : Lang.NQUADS;
+        Lang parseLang = (lang != null) ? lang : Lang.NQUADS;
         long elapsed = execBulkLoadStdin(super.getDatasetGraph(), null, parseLang, showProgress);
         return elapsed;
     }
 
     private long loadTriplesStdin() {
-        Lang parseLang = ( lang != null ) ? lang : Lang.NTRIPLES;
+        Lang parseLang = (lang != null) ? lang : Lang.NTRIPLES;
         long elapsed = execBulkLoadStdin(super.getDatasetGraph(), graphName, parseLang, showProgress);
         return elapsed;
     }
 
     private long execBulkLoadStdin(DatasetGraph dsg, String graphName, Lang syntax, boolean showProgress) {
         DataLoader loader = chooseLoader(dsg, graphName);
-        long elapsed = Timer.time(()->{
-                    loader.startBulk();
-                    loader.loadFromInputStream("(stdin)", System.in, syntax);
-                    loader.finishBulk();
+        long elapsed = Timer.time(() -> {
+            loader.startBulk();
+            loader.loadFromInputStream("(stdin)", System.in, syntax);
+            loader.finishBulk();
         });
         return elapsed;
     }
@@ -221,7 +222,7 @@ public class tdbloader extends CmdTDBGraph {
         LoaderEnum useLoader = loader;
         if ( useLoader == null ) {
             // Default choice - phased if empty. basic if not.
-            boolean isEmpty = Txn.calculateRead(dsg, ()->dsg.isEmpty());
+            boolean isEmpty = Txn.calculateRead(dsg, () -> dsg.isEmpty());
             if ( isEmpty )
                 useLoader = LoaderEnum.Phased;
             else
@@ -232,11 +233,11 @@ public class tdbloader extends CmdTDBGraph {
         DataLoader loader = createLoader(useLoader, dsg, gn, output);
         if ( output != null )
             output.print("Loader = %s", loader.getClass().getSimpleName());
-        return loader ;
+        return loader;
     }
 
     private DataLoader createLoader(LoaderEnum useLoader, DatasetGraph dsg, Node gn, MonitorOutput output) {
-        switch(useLoader) {
+        switch (useLoader) {
             case Phased :
                 return LoaderFactory.phasedLoader(dsg, gn, output);
             case Parallel :
@@ -248,7 +249,7 @@ public class tdbloader extends CmdTDBGraph {
             case Basic :
                 return LoaderFactory.basicLoader(dsg, gn, output);
             default :
-                throw new InternalErrorException("Unrecognized loader: "+useLoader);
+                throw new InternalErrorException("Unrecognized loader: " + useLoader);
         }
     }
 }

@@ -18,38 +18,33 @@
 
 package tdb2;
 
-import arq.cmdline.ModLangOutput ;
+import arq.cmdline.ModLangOutput;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.sys.DatabaseOps;
 import tdb2.cmdline.CmdTDB;
 
-public class tdbbackup extends CmdTDB
-{
-    static ModLangOutput modLangOutput = new ModLangOutput() ;
-    
-    static public void main(String... argv)
-    { 
-        CmdTDB.init() ;
-        new tdbbackup(argv).mainRun() ;
+public class tdbbackup extends CmdTDB {
+    static ModLangOutput modLangOutput = new ModLangOutput();
+
+    static public void main(String...argv) {
+        CmdTDB.init();
+        new tdbbackup(argv).mainRun();
     }
 
-    protected tdbbackup(String[] argv)
-    {
-        super(argv) ;
-        addModule(modLangOutput) ;
-    }
-    
-    @Override
-    protected String getSummary()
-    {
-        return getCommandName()+" : Backup a TDB dataset" ;
+    protected tdbbackup(String[] argv) {
+        super(argv);
+        addModule(modLangOutput);
     }
 
     @Override
-    protected void exec()
-    {
+    protected String getSummary() {
+        return getCommandName() + " : Backup a TDB dataset";
+    }
+
+    @Override
+    protected void exec() {
         DatasetGraphSwitchable dsg = getDatabaseContainer();
         String fn = DatabaseOps.backup(dsg);
-        System.out.println("Backup written to "+fn);
+        System.out.println("Backup written to " + fn);
     }
 }

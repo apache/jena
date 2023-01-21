@@ -24,6 +24,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Objects ;
 
+import arq.cmdline.CmdARQ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
@@ -40,8 +41,6 @@ import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 import org.apache.jena.tdb.store.tupletable.TupleIndexRecord ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-
-import arq.cmdline.CmdARQ;
 import tdb.cmdline.ModLocation ;
 
 public class dumpbpt extends CmdARQ {
@@ -86,7 +85,7 @@ public class dumpbpt extends CmdARQ {
         // The name is the order.
         for ( String indexName : super.getPositional() ) {
             String primary ;
-            
+
             if ( indexName.length() == 3 ) {
                 primary = Names.primaryIndexTriples ;
             } else if ( indexName.length() == 4 ) {
@@ -97,7 +96,7 @@ public class dumpbpt extends CmdARQ {
                 cmdError("Wrong length: " + indexName) ;
                 primary = null ;
             }
-            
+
             //prefix2id
             //prefixIdx : GPU
 
@@ -105,7 +104,7 @@ public class dumpbpt extends CmdARQ {
             int keyUnitLen = indexName.length() ;
             int keyLength = keySubLen * keyUnitLen ;
             int valueLength = 0 ;
-            
+
             // Node table indexes.
             if ( Objects.equals(indexName, Names.indexNode2Id) || Objects.equals(indexName, Names.prefixNode2Id) ) {
                 keySubLen = SystemTDB.LenNodeHash;
@@ -125,7 +124,7 @@ public class dumpbpt extends CmdARQ {
             if ( false ) {
                 System.out.println("---- Index structure") ;
                 bpt.dump() ;
-                
+
             }
             if ( true ) {
                 System.out.println("---- Index contents") ;
@@ -194,7 +193,7 @@ public class dumpbpt extends CmdARQ {
             // long x = Bytes.getLong(r.getKey(), i*SystemTDB.SizeOfNodeId) ;
             // System.out.printf("%016X", x) ;
         }
-        
+
         if ( r.getValue() != null &&  r.getValue().length != 0 ) {
             out.print(" -> ");
             String s = Bytes.asHexUC(r.getValue());
@@ -202,7 +201,7 @@ public class dumpbpt extends CmdARQ {
         }
 
 
-        
+
         out.println() ;
     }
 }

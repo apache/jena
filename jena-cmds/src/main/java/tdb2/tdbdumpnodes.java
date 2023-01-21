@@ -50,16 +50,11 @@ public class tdbdumpnodes {
 
         TProtocol protocol = TRDF.protocol(transport) ;
         transport.readPosition(0) ;
-//        [0x        1BFEA0FD]
-//            <http://data.europa.eu/esco/occupation/99492920-e5a5-4dba-9e5a-93193147198c>
-//            [0x        1BFEA14C] ** Bad read ** don't know what type: 14
-//        transport.readPosition(0x1BFEA0FD);
         long limit = f.length();
-//        limit = 0x1C2092FF;
 
         System.out.printf("File length: %,d [0x%16X]\n", limit, limit);
 
-        //transport.readPosition(0x1C1E78F3);
+        // transport.readPosition(0x1C1E78F3);
 
         while (true) {
             long locn = transport.readPosition();
@@ -67,21 +62,21 @@ public class tdbdumpnodes {
                 break;
             try {
                 Node n = readOne(protocol);
-                System.out.printf("[0x%16X] %s\n",locn, FmtUtils.stringForNode(n));
+                System.out.printf("[0x%16X] %s\n", locn, FmtUtils.stringForNode(n));
             } catch (Exception ex) {
-                System.out.printf("[0x%16X] ** Bad read ** %s\n",locn, ex.getMessage());
+                System.out.printf("[0x%16X] ** Bad read ** %s\n", locn, ex.getMessage());
                 long jump = 100;
                 long i = locn;
-                for ( ; i < locn+jump ; i++ ) {
+                for ( ; i < locn + jump ; i++ ) {
                     transport.readPosition(i);
                     try {
                         Node n = readOne(protocol);
-                        System.out.printf("Resync: %,d  [0x%16X] ==> [0x%16X]\n",i-locn, locn, i);
-                        System.out.printf("[0x%16X] ** %s\n",locn, FmtUtils.stringForNode(n));
+                        System.out.printf("Resync: %,d  [0x%16X] ==> [0x%16X]\n", i - locn, locn, i);
+                        System.out.printf("[0x%16X] ** %s\n", locn, FmtUtils.stringForNode(n));
                     } catch (Exception ex2) {}
                 }
                 if ( locn - i >= jump )
-                    System.out.printf("No resync: %,d  [0x%16X] ==> [0x%16X]\n",i-locn, locn, i);
+                    System.out.printf("No resync: %,d  [0x%16X] ==> [0x%16X]\n", i - locn, locn, i);
 
 //                // Problems - back up and dump.
 //                byte bytes[] = new byte[256];
@@ -110,10 +105,10 @@ public class tdbdumpnodes {
     }
 
     private static Node readOne(TProtocol protocol) throws TException {
-        RDF_Term term = new RDF_Term() ;
-        term.read(protocol) ;
-        Node n = ThriftConvert.convert(term) ;
-        return n ;
+        RDF_Term term = new RDF_Term();
+        term.read(protocol);
+        Node n = ThriftConvert.convert(term);
+        return n;
     }
 
 }

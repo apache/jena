@@ -18,43 +18,36 @@
 
 package tdb;
 
-import org.apache.jena.tdb.TDB ;
-import tdb.cmdline.CmdTDB ;
-import tdb.cmdline.ModTDBDataset ;
-import arq.cmdline.ModDataset ;
+import org.apache.jena.tdb.TDB;
+import tdb.cmdline.CmdTDB;
+import tdb.cmdline.ModTDBDataset;
+import arq.cmdline.ModDataset;
 
-
-public class tdbquery extends arq.query
-{
-    // Inherits from arq.query so is not a CmdTDB.  Mixins for Java!
-    public static void main(String...argv)
-    {
-        CmdTDB.init() ;
-        new tdbquery(argv).mainRun() ;
+public class tdbquery extends arq.query {
+    // Inherits from arq.query so is not a CmdTDB. Mixins for Java!
+    public static void main(String...argv) {
+        CmdTDB.init();
+        new tdbquery(argv).mainRun();
     }
-    
-    public tdbquery(String[] argv)
-    {
-        super(argv) ;
+
+    public tdbquery(String[] argv) {
+        super(argv);
         // Because this inherits from an ARQ command
-        super.modVersion.addClass(TDB.class) ;
+        super.modVersion.addClass(TDB.class);
     }
 
     @Override
-    protected String getSummary() 
-    { 
-        return getCommandName()+" --loc=<path> --query=<query>" ; 
+    protected String getSummary() {
+        return getCommandName() + " --loc=<path> --query=<query>";
     }
-    
+
     @Override
-    protected void processModulesAndArgs()
-    {
-        super.processModulesAndArgs() ;
+    protected void processModulesAndArgs() {
+        super.processModulesAndArgs();
     }
-    
+
     @Override
-    protected ModDataset setModDataset()
-    {
-        return new ModTDBDataset() ;
+    protected ModDataset setModDataset() {
+        return new ModTDBDataset();
     }
 }

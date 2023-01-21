@@ -26,46 +26,46 @@ import org.apache.jena.cmd.CmdException;
 
 public class CmdSub {
     public interface Exec {
-        public void exec(String[] argv) ;
+        public void exec(String[] argv);
     }
-    private Map<String, Exec> dispatch = new HashMap<>() ;
+    private Map<String, Exec> dispatch = new HashMap<>();
 
-    private String    subCmd ;
-    private String    args[] ;
+    private String subCmd;
+    private String args[];
 
-    public CmdSub(String... argv) {
-        subCmd = subCommand(argv) ;
-        args = cmdline(argv) ;
+    public CmdSub(String...argv) {
+        subCmd = subCommand(argv);
+        args = cmdline(argv);
     }
 
     protected void exec() {
-        Exec exec = dispatch.get(subCmd) ;
+        Exec exec = dispatch.get(subCmd);
         if ( exec == null )
-            throw new CmdException("No subcommand: " + subCmd) ;
-        exec.exec(args) ;
+            throw new CmdException("No subcommand: " + subCmd);
+        exec.exec(args);
     }
 
-    protected static String[] cmdline(String... argv) {
-        String[] a = new String[argv.length - 1] ;
-        System.arraycopy(argv, 1, a, 0, argv.length - 1) ;
-        return a ;
+    protected static String[] cmdline(String...argv) {
+        String[] a = new String[argv.length - 1];
+        System.arraycopy(argv, 1, a, 0, argv.length - 1);
+        return a;
     }
 
-    protected static String subCommand(String... argv) {
+    protected static String subCommand(String...argv) {
         if ( argv.length == 0 )
-            throw new CmdException("Missing subcommand") ;
+            throw new CmdException("Missing subcommand");
 
-        String subCmd = argv[0] ;
+        String subCmd = argv[0];
         if ( subCmd.startsWith("-") )
-            throw new CmdException("Argument found where subcommand expected") ;
-        return subCmd ;
+            throw new CmdException("Argument found where subcommand expected");
+        return subCmd;
     }
 
     protected void addSubCommand(String subCmdName, Exec exec) {
-        dispatch.put(subCmdName, exec) ;
+        dispatch.put(subCmdName, exec);
     }
 
     protected Collection<String> subCommandNames() {
-        return dispatch.keySet() ;
+        return dispatch.keySet();
     }
 }

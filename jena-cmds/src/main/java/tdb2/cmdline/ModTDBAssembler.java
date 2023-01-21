@@ -34,55 +34,53 @@ public class ModTDBAssembler extends ModAssembler
 {
     private ModLocation modLocation     =  new ModLocation() ;
 
-    public static final String defaultAssemblerFile = "tdb.ttl" ;
-    protected boolean useDefaultAssemblerFile = false ;
+    public static final String defaultAssemblerFile = "tdb.ttl";
+    protected boolean useDefaultAssemblerFile = false;
     
-    public ModTDBAssembler()
-    { 
-        super() ;
-        ModAssembler.assemblerDescDecl.addName("tdb") ;
+    public ModTDBAssembler() {
+        super();
+        ModAssembler.assemblerDescDecl.addName("tdb");
     }
-    
-    @Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
-        int count = 0 ;
 
-        modLocation.processArgs(cmdLine) ;
-        super.processArgs(cmdLine) ;
-        if ( super.getAssemblerFile() != null ) count++ ;
-        if ( modLocation.getLocation() != null ) count++ ;    
-        
-        if ( count == 0 )
-        {
-            useDefaultAssemblerFile = true ;
+    @Override
+    public void processArgs(CmdArgModule cmdLine) {
+        int count = 0;
+
+        modLocation.processArgs(cmdLine);
+        super.processArgs(cmdLine);
+        if ( super.getAssemblerFile() != null )
+            count++;
+        if ( modLocation.getLocation() != null )
+            count++;
+
+        if ( count == 0 ) {
+            useDefaultAssemblerFile = true;
             // throw new CmdException("No assembler file and no location") ;
         }
-            
+
         if ( count > 1 )
-            throw new CmdException("Only one of an assembler file and a location") ;
+            throw new CmdException("Only one of an assembler file and a location");
     }
-   
+
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
-        super.registerWith(cmdLine) ;
-        cmdLine.addModule(modLocation) ;
-        //cmdLine.getUsage().startCategory("Dataset") ;
-        cmdLine.getUsage().addUsage("--tdb=", "Assembler description file") ;
+    public void registerWith(CmdGeneral cmdLine) {
+        super.registerWith(cmdLine);
+        cmdLine.addModule(modLocation);
+        // cmdLine.getUsage().startCategory("Dataset") ;
+        cmdLine.getUsage().addUsage("--tdb=", "Assembler description file");
     }
- 
-    public Location getLocation() { return modLocation.getLocation() ; }
-    
+
+    public Location getLocation() {
+        return modLocation.getLocation();
+    }
+
     @Override
-    public String getAssemblerFile()
-    {
-        if ( useDefaultAssemblerFile )
-        {
-            File f = new File(defaultAssemblerFile) ;
+    public String getAssemblerFile() {
+        if ( useDefaultAssemblerFile ) {
+            File f = new File(defaultAssemblerFile);
             if ( f.exists() )
-                return defaultAssemblerFile ; 
+                return defaultAssemblerFile;
         }
-        return super.getAssemblerFile() ;
+        return super.getAssemblerFile();
     }
 }

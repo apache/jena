@@ -18,14 +18,14 @@
 
 package tdb2.cmdline;
 
-import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Model;
 
 public abstract class CmdTDBGraph extends CmdTDB
 {

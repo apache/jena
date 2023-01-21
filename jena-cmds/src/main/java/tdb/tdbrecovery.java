@@ -18,37 +18,33 @@
 
 package tdb;
 
-import org.apache.jena.tdb.TDB ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.transaction.JournalControl ;
-import tdb.cmdline.CmdTDB ;
+import org.apache.jena.tdb.TDB;
+import org.apache.jena.tdb.store.DatasetGraphTDB;
+import org.apache.jena.tdb.transaction.JournalControl;
+import tdb.cmdline.CmdTDB;
 
-public class tdbrecovery extends CmdTDB
-{
-    static public void main(String... argv)
-    { 
-        CmdTDB.init() ;
-        TDB.setOptimizerWarningFlag(false) ;
-        new tdbrecovery(argv).mainRun() ;
+public class tdbrecovery extends CmdTDB {
+    static public void main(String...argv) {
+        CmdTDB.init();
+        TDB.setOptimizerWarningFlag(false);
+        new tdbrecovery(argv).mainRun();
     }
 
-    protected tdbrecovery(String[] argv)
-    {
-        super(argv) ;
+    protected tdbrecovery(String[] argv) {
+        super(argv);
     }
 
     @Override
-    protected String getSummary()
-    {
-        return getCommandName()+" --loc DIRECTORY\nRun database journal recovery." ;
+    protected String getSummary() {
+        return getCommandName() + " --loc DIRECTORY\nRun database journal recovery.";
     }
 
     @Override
-    protected void exec()
-    {
-        DatasetGraphTDB dsg = super.getDatasetGraphTDB() ;
-        // Just creating the DSG does a recovery so this is not (currently) necessary:
+    protected void exec() {
+        DatasetGraphTDB dsg = super.getDatasetGraphTDB();
+        // Just creating the DSG does a recovery so this is not (currently)
+        // necessary:
         // This may change (not immediately recovering on start up).
-        JournalControl.recovery(dsg) ;
+        JournalControl.recovery(dsg);
     }
 }
