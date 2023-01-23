@@ -18,66 +18,58 @@
 
 package tdb;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.Bytes ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.tdb.lib.NodeLib ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.store.Hash ;
-import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.nodetable.NodeTable ;
-import org.apache.jena.tdb.sys.SystemTDB ;
-import tdb.cmdline.CmdTDB ;
+import org.apache.jena.atlas.lib.Bytes;
+import org.apache.jena.graph.Node;
+import org.apache.jena.tdb.lib.NodeLib;
+import org.apache.jena.tdb.store.DatasetGraphTDB;
+import org.apache.jena.tdb.store.Hash;
+import org.apache.jena.tdb.store.NodeId;
+import org.apache.jena.tdb.store.nodetable.NodeTable;
+import org.apache.jena.tdb.sys.SystemTDB;
+import tdb.cmdline.CmdTDB;
 
-public class tdbnode extends CmdTDB
-{
+public class tdbnode extends CmdTDB {
     // Debugging tool.
-    static public void main(String... argv)
-    { 
-        CmdTDB.init() ;
-        new tdbnode(argv).mainRun() ;
+    static public void main(String...argv) {
+        CmdTDB.init();
+        new tdbnode(argv).mainRun();
     }
 
-    protected tdbnode(String[] argv)
-    {
-        super(argv) ;
-    }
-
-    @Override
-    protected String getSummary()
-    {
-        return getCommandName()+" NodeId ..." ;
+    protected tdbnode(String[] argv) {
+        super(argv);
     }
 
     @Override
-    protected void exec()
-    {
-        DatasetGraphTDB dsg = getDatasetGraphTDB() ;
-        NodeTable nodeTable = dsg.getTripleTable().getNodeTupleTable().getNodeTable() ;
-        Iterator<String> iter = super.getPositional().iterator() ;
-        if ( ! iter.hasNext() )
-        {
-            System.err.println("No node ids") ;
-            return ;
+    protected String getSummary() {
+        return getCommandName() + " NodeId ...";
+    }
+
+    @Override
+    protected void exec() {
+        DatasetGraphTDB dsg = getDatasetGraphTDB();
+        NodeTable nodeTable = dsg.getTripleTable().getNodeTupleTable().getNodeTable();
+        Iterator<String> iter = super.getPositional().iterator();
+        if ( !iter.hasNext() ) {
+            System.err.println("No node ids");
+            return;
         }
-        
-        for ( ; iter.hasNext() ; )
-        {
-            String id = iter.next() ;
-            try {
-                long x = Long.parseLong(id) ;
-                NodeId nodeId = new NodeId(x) ;
-                Node n = nodeTable.getNodeForNodeId(nodeId) ;
-                //System.out.printf("%s [%d] => %s\n", id, x, n) ;
 
-                Hash h = new Hash(SystemTDB.LenNodeHash) ;
-                NodeLib.setHash(h, n) ;
-                String str = Bytes.asHex(h.getBytes()) ;
-                System.out.printf("%s %08d 0x%s # %s\n", id, x, str, n) ;
-            } catch (Exception ex)
-            {
-                System.out.println("Failed to decode: "+id) ;
+        for ( ; iter.hasNext() ; ) {
+            String id = iter.next();
+            try {
+                long x = Long.parseLong(id);
+                NodeId nodeId = new NodeId(x);
+                Node n = nodeTable.getNodeForNodeId(nodeId);
+                // System.out.printf("%s [%d] => %s\n", id, x, n) ;
+
+                Hash h = new Hash(SystemTDB.LenNodeHash);
+                NodeLib.setHash(h, n);
+                String str = Bytes.asHex(h.getBytes());
+                System.out.printf("%s %08d 0x%s # %s\n", id, x, str, n);
+            } catch (Exception ex) {
+                System.out.println("Failed to decode: " + id);
             }
         }
     }

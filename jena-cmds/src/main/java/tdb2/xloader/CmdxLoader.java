@@ -30,7 +30,6 @@ import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.sys.TDBInternal;
 import org.apache.jena.tdb2.xloader.BulkLoaderX;
 
-
 /**
  * A version of xloader/TDB2 that runs in a single JVM.
  * <p>
@@ -98,44 +97,43 @@ public class CmdxLoader extends AbstractCmdxLoad {
         System.out.printf("RAM = %,d\n", maxMemory);
 
         System.out.println("STEP 1 - load node table");
-        step(()->CmdxBuildNodeTable.main("--loc=" + DIR, "--threads="+super.sortThreads, datafile));
+        step(() -> CmdxBuildNodeTable.main("--loc=" + DIR, "--threads=" + super.sortThreads, datafile));
 
         System.out.println("STEP 2 - ingest triples and quads");
-        step(()->CmdxIngestData.main("--loc=" + DIR, datafile));
+        step(() -> CmdxIngestData.main("--loc=" + DIR, datafile));
 
         System.out.println("STEP 3 - build indexes");
 
-        if ( ! isEmptyFile(loaderFiles.triplesFile) ) {
-            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=SPO"));
-            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=POS"));
-            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=OSP"));
+        if ( !isEmptyFile(loaderFiles.triplesFile) ) {
+            step(() -> CmdxBuildIndex.main("--loc=" + DIR, "--threads=" + super.sortThreads, "--index=SPO"));
+            step(() -> CmdxBuildIndex.main("--loc=" + DIR, "--threads=" + super.sortThreads, "--index=POS"));
+            step(() -> CmdxBuildIndex.main("--loc=" + DIR, "--threads=" + super.sortThreads, "--index=OSP"));
         }
 
-        if ( ! isEmptyFile(loaderFiles.quadsFile) ) {
-            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=GSPO"));
-            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=GPOS"));
-            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=GOSP"));
+        if ( !isEmptyFile(loaderFiles.quadsFile) ) {
+            step(() -> CmdxBuildIndex.main("--loc=" + DIR, "--threads=" + super.sortThreads, "--index=GSPO"));
+            step(() -> CmdxBuildIndex.main("--loc=" + DIR, "--threads=" + super.sortThreads, "--index=GPOS"));
+            step(() -> CmdxBuildIndex.main("--loc=" + DIR, "--threads=" + super.sortThreads, "--index=GOSP"));
 
-            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=SPOG"));
-            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=POSG"));
-            step(()->CmdxBuildIndex.main("--loc=" + DIR, "--threads="+super.sortThreads, "--index=OSPG"));
+            step(() -> CmdxBuildIndex.main("--loc=" + DIR, "--threads=" + super.sortThreads, "--index=SPOG"));
+            step(() -> CmdxBuildIndex.main("--loc=" + DIR, "--threads=" + super.sortThreads, "--index=POSG"));
+            step(() -> CmdxBuildIndex.main("--loc=" + DIR, "--threads=" + super.sortThreads, "--index=OSPG"));
         }
         expel();
     }
 
     // Compression - empty file != zero size
     private boolean isEmptyFile(String filename) {
-        try ( InputStream in = IO.openFile(filename) ) {
+        try (InputStream in = IO.openFile(filename)) {
             int b = in.read();
             return (b == -1);
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             throw IOX.exception(ex);
         }
     }
 
     private void step(Runnable action) {
-        //expel();
+        // expel();
         action.run();
     }
 

@@ -18,68 +18,67 @@
 
 package tdb.cmdline;
 
-import arq.cmdline.CmdARQ ;
-import org.apache.jena.Jena ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.query.ARQ ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.tdb.TDB ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.setup.DatasetBuilderStd ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.sys.TDBInternal ;
+import arq.cmdline.CmdARQ;
+import org.apache.jena.Jena;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sys.JenaSystem;
+import org.apache.jena.tdb.TDB;
+import org.apache.jena.tdb.base.file.Location;
+import org.apache.jena.tdb.setup.DatasetBuilderStd;
+import org.apache.jena.tdb.store.DatasetGraphTDB;
+import org.apache.jena.tdb.sys.TDBInternal;
 
-public abstract class CmdTDB extends CmdARQ
-{
-    protected final ModTDBDataset tdbDatasetAssembler   = new ModTDBDataset() ;
+public abstract class CmdTDB extends CmdARQ {
+    protected final ModTDBDataset tdbDatasetAssembler = new ModTDBDataset();
 
-    private static boolean initialized = false ;
-    
+    private static boolean initialized = false;
+
     protected CmdTDB(String[] argv) {
-        super(argv) ;
-        init() ;
-        super.addModule(tdbDatasetAssembler) ;
-        super.modVersion.addClass(Jena.class) ;
-        super.modVersion.addClass(ARQ.class) ;
-        super.modVersion.addClass(TDB.class) ;
+        super(argv);
+        init();
+        super.addModule(tdbDatasetAssembler);
+        super.modVersion.addClass(Jena.class);
+        super.modVersion.addClass(ARQ.class);
+        super.modVersion.addClass(TDB.class);
     }
 
     public static synchronized void init() {
         // In case called from elsewhere.
-        JenaSystem.init() ;
-        if (initialized)
-            return ;
+        JenaSystem.init();
+        if ( initialized )
+            return;
         // attempt once.
-        initialized = true ;
-        DatasetBuilderStd.setOptimizerWarningFlag(false) ;
+        initialized = true;
+        DatasetBuilderStd.setOptimizerWarningFlag(false);
     }
 
     @Override
     protected void processModulesAndArgs() {
-        super.processModulesAndArgs() ;
+        super.processModulesAndArgs();
     }
 
     protected Location getLocation() {
-        return tdbDatasetAssembler.getLocation() ;
+        return tdbDatasetAssembler.getLocation();
     }
 
     protected DatasetGraph getDatasetGraph() {
-        return getDataset().asDatasetGraph() ;
+        return getDataset().asDatasetGraph();
     }
 
     protected DatasetGraphTDB getDatasetGraphTDB() {
-        DatasetGraph dsg = getDatasetGraph() ;
-        return TDBInternal.getBaseDatasetGraphTDB(dsg) ;
+        DatasetGraph dsg = getDatasetGraph();
+        return TDBInternal.getBaseDatasetGraphTDB(dsg);
     }
 
     protected Dataset getDataset() {
-        return tdbDatasetAssembler.getDataset() ;
+        return tdbDatasetAssembler.getDataset();
     }
 
     @Override
     protected String getCommandName() {
-        return Lib.className(this) ;
+        return Lib.className(this);
     }
 }

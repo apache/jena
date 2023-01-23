@@ -18,28 +18,27 @@
 
 package tdb.cmdline;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import arq.cmdline.ModDataset ;
-import org.apache.jena.atlas.logging.Log ;
+import arq.cmdline.ModDataset;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdArgModule;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
-import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
-import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.tdb.assembler.VocabTDB ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils;
+import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
+import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb.assembler.VocabTDB;
+import org.apache.jena.tdb.base.file.Location;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction;
 
-public class ModTDBDataset extends ModDataset
-{
+public class ModTDBDataset extends ModDataset {
     // Mixes assembler, location and "tdb"
     // Can make a single model or a dataset
     
@@ -48,89 +47,82 @@ public class ModTDBDataset extends ModDataset
     private String inMemFile                = null ;
     
     public ModTDBDataset() {}
-    
+
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
-        cmdLine.add(argMem, "--mem=FILE", "Execute on an in-memory TDB database (for testing)") ;
-        cmdLine.addModule(modAssembler) ;
+    public void registerWith(CmdGeneral cmdLine) {
+        cmdLine.add(argMem, "--mem=FILE", "Execute on an in-memory TDB database (for testing)");
+        cmdLine.addModule(modAssembler);
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
-        inMemFile = cmdLine.getValue(argMem) ;
-        modAssembler.processArgs(cmdLine) ;
-    }        
+    public void processArgs(CmdArgModule cmdLine) {
+        inMemFile = cmdLine.getValue(argMem);
+        modAssembler.processArgs(cmdLine);
+    }
 
     @Override
-    public Dataset createDataset()
-    {
-        if ( inMemFile != null )
-        {
-            Dataset ds = TDBFactory.createDataset() ;
-            RDFDataMgr.read(ds, inMemFile) ;
-            return ds ;
-            
+    public Dataset createDataset() {
+        if ( inMemFile != null ) {
+            Dataset ds = TDBFactory.createDataset();
+            RDFDataMgr.read(ds, inMemFile);
+            return ds;
+
         }
-        
-        if (  modAssembler.getAssemblerFile() != null )
-        {
-            Dataset thing = null ;
+
+        if ( modAssembler.getAssemblerFile() != null ) {
+            Dataset thing = null;
             // Two variants: plain dataset with a TDB graph or a TDB dataset.
             try {
-                thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), VocabTDB.tDatasetTDB) ;
-                if ( thing != null && ! ( thing.asDatasetGraph() instanceof DatasetGraphTransaction ) )
-                        Log.warn(this, "Unexpected: Not a TDB dataset for type DatasetTDB");
-                
+                thing = (Dataset)AssemblerUtils.build(modAssembler.getAssemblerFile(), VocabTDB.tDatasetTDB);
+                if ( thing != null && !(thing.asDatasetGraph() instanceof DatasetGraphTransaction) )
+                    Log.warn(this, "Unexpected: Not a TDB dataset for type DatasetTDB");
+
                 if ( thing == null )
-                    // Should use assembler inheritance but how do we assert the subclass relationship in a program?
-                    thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), DatasetAssemblerVocab.tDataset) ;
+                    // Should use assembler inheritance but how do we assert the
+                    // subclass relationship in a program?
+                    thing = (Dataset)AssemblerUtils.build(modAssembler.getAssemblerFile(), DatasetAssemblerVocab.tDataset);
+            } catch (JenaException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                throw new CmdException("Error creating", ex);
             }
-            catch (JenaException ex)    { throw ex ; }
-            catch (Exception ex)
-            { throw new CmdException("Error creating", ex) ; }
-            return thing ;
+            return thing;
         }
-        
+
         if ( modAssembler.getLocation() == null )
-            throw new CmdException("No assembler file nor location provided") ;
-        
+            throw new CmdException("No assembler file nor location provided");
+
         // No assembler - use location to find a database.
-        Dataset ds = TDBFactory.createDataset(modAssembler.getLocation()) ;
-        return ds ;
+        Dataset ds = TDBFactory.createDataset(modAssembler.getLocation());
+        return ds;
     }
-    
-    public Location getLocation()
-    {
-        List<String> x = locations() ;
+
+    public Location getLocation() {
+        List<String> x = locations();
         if ( x.size() == 0 )
-            return null ;
-        return Location.create(x.get(0)) ;
+            return null;
+        return Location.create(x.get(0));
     }
-    
-    public List<String> locations()
-    {
-        List<String> locations = new ArrayList<>() ;
-        
+
+    public List<String> locations() {
+        List<String> locations = new ArrayList<>();
+
         if ( modAssembler.getLocation() != null )
-            locations.add(modAssembler.getLocation().getDirectoryPath()) ;
+            locations.add(modAssembler.getLocation().getDirectoryPath());
 
         // Extract the location from the assembler file.
-        if ( modAssembler.getAssemblerFile() != null )
-        {
+        if ( modAssembler.getAssemblerFile() != null ) {
             // Find and clear all locations
             Model m = RDFDataMgr.loadModel(modAssembler.getAssemblerFile());
-            Query query = QueryFactory.create("PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#> SELECT ?dir { [] tdb:location ?dir FILTER (isURI(?dir)) }") ;
-            try(QueryExecution qExec = QueryExecutionFactory.create(query, m)) {
-                for (ResultSet rs = qExec.execSelect() ; rs.hasNext() ; )
-                {
-                    String x = rs.nextSolution().getResource("dir").getURI() ;
-                    locations.add(x) ;
+            Query query = QueryFactory.create("PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#> SELECT ?dir { [] tdb:location ?dir FILTER (isURI(?dir)) }");
+            try (QueryExecution qExec = QueryExecutionFactory.create(query, m)) {
+                for ( ResultSet rs = qExec.execSelect() ; rs.hasNext() ; ) {
+                    String x = rs.nextSolution().getResource("dir").getURI();
+                    locations.add(x);
                 }
             }
         }
-        
-        return locations ;
+
+        return locations;
     }
 }

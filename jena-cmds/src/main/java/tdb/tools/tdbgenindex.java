@@ -16,71 +16,71 @@
  * limitations under the License.
  */
 
-package tdb.tools ;
+package tdb.tools;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.tupletable.TupleIndex ;
-import org.apache.jena.tdb.sys.Names ;
-import org.apache.jena.tdb.sys.SetupTDB ;
-import org.apache.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.tdb.base.file.Location;
+import org.apache.jena.tdb.store.NodeId;
+import org.apache.jena.tdb.store.tupletable.TupleIndex;
+import org.apache.jena.tdb.sys.Names;
+import org.apache.jena.tdb.sys.SetupTDB;
+import org.apache.jena.tdb.sys.SystemTDB;
 
 /** copy one index to another, possibly changing the order */
 public class tdbgenindex {
-    public static void main(String... argv) {
+    public static void main(String...argv) {
         // Usage: srcLocation indexName dstLocation indexName
         if ( argv.length != 4 ) {
-            System.err.println("Usage: " + Lib.classShortName(tdbgenindex.class) + " srcLocation srcIndex dstLocation dstIndex") ;
-            System.exit(1) ;
+            System.err.println("Usage: " + Lib.classShortName(tdbgenindex.class) + " srcLocation srcIndex dstLocation dstIndex");
+            System.exit(1);
         }
 
-        Location srcLoc = Location.create(argv[0]) ;
-        String srcIndexName = argv[1] ;
+        Location srcLoc = Location.create(argv[0]);
+        String srcIndexName = argv[1];
 
-        Location dstLoc = Location.create(argv[2]) ;
-        String dstIndexName = argv[3] ;
+        Location dstLoc = Location.create(argv[2]);
+        String dstIndexName = argv[3];
 
-        int readCacheSize = 0 ;
-        int writeCacheSize = -1 ;
+        int readCacheSize = 0;
+        int writeCacheSize = -1;
 
         if ( srcIndexName.length() != dstIndexName.length() ) {
-            System.err.println("srcIndexName.length() != dstIndexName.length() " + srcIndexName + " :: " + dstIndexName) ;
-            System.exit(1) ;
+            System.err.println("srcIndexName.length() != dstIndexName.length() " + srcIndexName + " :: " + dstIndexName);
+            System.exit(1);
         }
 
-        String primary ;
-        int dftKeyLength ;
-        int dftValueLength ;
+        String primary;
+        int dftKeyLength;
+        int dftValueLength;
 
         if ( srcIndexName.length() == 3 ) {
-            primary = Names.primaryIndexTriples ;
-            dftKeyLength = SystemTDB.LenIndexTripleRecord ;
-            dftValueLength = 0 ;
+            primary = Names.primaryIndexTriples;
+            dftKeyLength = SystemTDB.LenIndexTripleRecord;
+            dftValueLength = 0;
         } else if ( srcIndexName.length() == 4 ) {
-            primary = Names.primaryIndexQuads ;
-            dftKeyLength = SystemTDB.LenIndexQuadRecord ;
-            dftValueLength = 0 ;
+            primary = Names.primaryIndexQuads;
+            dftKeyLength = SystemTDB.LenIndexQuadRecord;
+            dftValueLength = 0;
         } else {
-            System.err.println("indexlength != 3 or 4") ;
-            System.exit(1) ;
-            primary = null ;
-            dftKeyLength = 0 ;
-            dftValueLength = 0 ;
+            System.err.println("indexlength != 3 or 4");
+            System.exit(1);
+            primary = null;
+            dftKeyLength = 0;
+            dftValueLength = 0;
         }
 
-        TupleIndex srcIdx = SetupTDB.makeTupleIndex(srcLoc, primary, srcIndexName, srcIndexName, dftKeyLength) ;
-        TupleIndex dstIdx = SetupTDB.makeTupleIndex(dstLoc, primary, dstIndexName, dstIndexName, dftKeyLength) ;
+        TupleIndex srcIdx = SetupTDB.makeTupleIndex(srcLoc, primary, srcIndexName, srcIndexName, dftKeyLength);
+        TupleIndex dstIdx = SetupTDB.makeTupleIndex(dstLoc, primary, dstIndexName, dstIndexName, dftKeyLength);
 
-        Iterator<Tuple<NodeId>> iter = srcIdx.all() ;
+        Iterator<Tuple<NodeId>> iter = srcIdx.all();
         for ( ; iter.hasNext() ; ) {
-            Tuple<NodeId> tuple = iter.next() ;
-            dstIdx.add(tuple) ;
+            Tuple<NodeId> tuple = iter.next();
+            dstIdx.add(tuple);
         }
-        srcIdx.close() ;
-        dstIdx.close() ;
+        srcIdx.close();
+        dstIdx.close();
     }
 }

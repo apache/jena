@@ -16,66 +16,66 @@
  * limitations under the License.
  */
 
-package tdb.tools ;
+package tdb.tools;
 
-import java.io.PrintStream ;
+import java.io.PrintStream;
 
 import arq.cmdline.CmdARQ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.transaction.Journal ;
-import org.apache.jena.tdb.transaction.JournalControl ;
-import tdb.cmdline.ModLocation ;
+import org.apache.jena.tdb.base.file.Location;
+import org.apache.jena.tdb.transaction.Journal;
+import org.apache.jena.tdb.transaction.JournalControl;
+import tdb.cmdline.ModLocation;
 
 public class dumpjournal extends CmdARQ {
-    ModLocation modLocation = new ModLocation() ;
+    ModLocation modLocation = new ModLocation();
 
-    static public void main(String... argv) {
+    static public void main(String...argv) {
         LogCtl.setLogging();
-        new dumpjournal(argv).mainRun() ;
+        new dumpjournal(argv).mainRun();
     }
 
     protected dumpjournal(String[] argv) {
-        super(argv) ;
-        super.addModule(modLocation) ;
+        super(argv);
+        super.addModule(modLocation);
     }
 
     @Override
     protected void exec() {
-        Location loc = modLocation.getLocation() ;
-        Journal journal =  determineJournal(loc);
-        dump(System.out, journal) ;
+        Location loc = modLocation.getLocation();
+        Journal journal = determineJournal(loc);
+        dump(System.out, journal);
     }
-    
+
     private void dump(PrintStream out, Journal journal) {
         JournalControl.print(journal);
     }
 
     private Journal determineJournal(Location loc) {
         // Directly open the jounral.
-        if ( ! Journal.exists(loc) )
-            throw new CmdException("No journal file in "+loc);
-        return Journal.create(loc); 
+        if ( !Journal.exists(loc) )
+            throw new CmdException("No journal file in " + loc);
+        return Journal.create(loc);
     }
 
     @Override
     protected void processModulesAndArgs() {
         if ( modVersion.getVersionFlag() )
-            modVersion.printVersionAndExit() ;
+            modVersion.printVersionAndExit();
         if ( modLocation.getLocation() == null )
-            cmdError("Location required") ;
+            cmdError("Location required");
     }
 
     @Override
     protected String getSummary() {
-        return getCommandName() + " --loc=DIR IndexName" ;
+        return getCommandName() + " --loc=DIR IndexName";
     }
 
     @Override
     protected String getCommandName() {
-        return Lib.className(this) ;
+        return Lib.className(this);
     }
 
 }

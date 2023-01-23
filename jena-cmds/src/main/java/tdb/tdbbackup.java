@@ -18,32 +18,26 @@
 
 package tdb;
 
-import org.apache.jena.tdb.TDBBackup ;
-import tdb.cmdline.CmdTDB ;
+import org.apache.jena.tdb.TDBBackup;
+import tdb.cmdline.CmdTDB;
 
-public class tdbbackup extends CmdTDB
-{
-    static public void main(String... argv)
-    { 
-        CmdTDB.init() ;
-        new tdbdump(argv).mainRun() ;
+public class tdbbackup extends CmdTDB {
+    static public void main(String...argv) {
+        CmdTDB.init();
+        new tdbdump(argv).mainRun();
     }
 
-    protected tdbbackup(String[] argv)
-    {
-        super(argv) ;
-    }
-    
-    @Override
-    protected String getSummary()
-    {
-        return getCommandName()+" : Write N-Quads to stdout" ;
+    protected tdbbackup(String[] argv) {
+        super(argv);
     }
 
     @Override
-    protected void exec()
-    {
-        TDBBackup.backup(getLocation(), System.out) ;
+    protected String getSummary() {
+        return getCommandName() + " : Write N-Quads to stdout";
+    }
+
+    @Override
+    protected void exec() {
+        TDBBackup.backup(getLocation(), System.out);
     }
 }
-

@@ -36,7 +36,7 @@ public abstract class CmdTDB extends CmdARQ
     protected final ModTDBDataset tdbDatasetAssembler   = new ModTDBDataset() ;
 
     private static boolean initialized = false ;
-    
+
     protected CmdTDB(String[] argv) {
         super(argv) ;
         init() ;
