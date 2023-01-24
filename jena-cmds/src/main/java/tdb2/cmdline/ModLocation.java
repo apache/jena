@@ -43,7 +43,7 @@ public class ModLocation extends ModBase {
         if ( ! locations.isEmpty() ) {
             if ( locations.size() > 1 )
                 throw new CmdException("Multiple locations specified: "+locations) ;
-            String dir = cmdLine.getValue(locations.get(0));
+            String dir = locations.get(0);
             location = Location.create(dir);
         }
     }
