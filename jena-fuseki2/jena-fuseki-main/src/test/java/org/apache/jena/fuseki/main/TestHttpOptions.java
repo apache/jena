@@ -55,5 +55,15 @@ public class TestHttpOptions extends AbstractFusekiTest
         FusekiTest.assertStringList(v, "GET", "OPTIONS", "HEAD", "POST", "PUT", "DELETE");
     }
 
-}
+    @Test
+    public void options_gsp_r() {
+        String v = HttpOp.httpOptions(serviceGSP_R()+"?default");
+        FusekiTest.assertStringList(v, "GET", "OPTIONS", "HEAD");
+    }
 
+    @Test
+    public void options_dataset_gsp() {
+        String v = HttpOp.httpOptions(databaseURL()+"?default");
+        FusekiTest.assertStringList(v, "GET", "OPTIONS", "HEAD", "POST", "PUT", "DELETE");
+    }
+}

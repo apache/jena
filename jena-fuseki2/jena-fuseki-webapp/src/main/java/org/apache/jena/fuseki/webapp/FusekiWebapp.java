@@ -203,7 +203,7 @@ public class FusekiWebapp
 
     public static void copyFileFromResource(String fn, Path dstFile) {
         try {
-            // Get from the file from area "org/apache/jena/fuseki/server"  (our package)
+            // Get from the file from area "org/apache/jena/fuseki/webapp"  (our package)
             URL url = FusekiWebapp.class.getResource(fn);
             if ( url == null )
                 throw new FusekiConfigException("Failed to find resource '"+fn+"'");

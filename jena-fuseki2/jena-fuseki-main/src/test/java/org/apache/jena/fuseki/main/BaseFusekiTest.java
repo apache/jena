@@ -59,12 +59,7 @@ public class BaseFusekiTest
 
     protected static final String serviceUpdate()  { return databaseURL()+"/update"; }
     protected static final String serviceQuery()   { return databaseURL()+"/query"; }
+    protected static final String serviceGSP_R()   { return databaseURL()+"/get"; }
     protected static final String serviceGSP()     { return databaseURL()+"/data"; }
-
-    // Operations on the database URL.
-//    public static final String serviceUpdate()  { return "http://localhost:"+port()+datasetPath(); }
-//    public static final String serviceQuery()   { return "http://localhost:"+port()+datasetPath(); }
-//    public static final String serviceGSP()     { return "http://localhost:"+port()+datasetPath(); }
-
 }
 

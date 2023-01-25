@@ -137,9 +137,6 @@ public class GSP_RW extends GSP_R {
         if ( ct == null )
             ServletOps.errorBadRequest("No Content-Type:");
 
-        if ( !action.getDataService().allowUpdate() )
-            ServletOps.errorMethodNotAllowed(action.getMethod());
-
         UploadDetails details;
         if ( action.isTransactional() )
             details = UploadRDF.quadsPutPostTxn(action, a->decideDataset(a), replaceOperation);
