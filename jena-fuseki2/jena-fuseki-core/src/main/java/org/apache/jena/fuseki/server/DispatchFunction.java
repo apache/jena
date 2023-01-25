@@ -21,7 +21,7 @@ package org.apache.jena.fuseki.server;
 import org.apache.jena.fuseki.servlets.HttpAction;
 
 /**
- * Select a operation based on the request ({@link HttpAction}) and the choices at
+ * Select an operation based on the request ({@link HttpAction}) and the choices at
  * this named endpoint ({@link EndpointSet}).
  */
 @FunctionalInterface

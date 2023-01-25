@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.servlets.*;
@@ -85,11 +86,11 @@ import org.slf4j.Logger;
  * </p>
  * <p>
  * 8.There is a default for dispatches with multiple choices that can't be separated
- * by SPARQL signature. These have no regsitered Content-type and no query string.
+ * by SPARQL signature. These have no registered Content-type and no query string.
  * </p>
  * <p>
  * A choice by dispatch does not necessarily mean an operation is valid and will be
- * executed. It may fail authentication or not have an registered handler.
+ * executed. It may fail authentication or not have a registered handler.
  * </p>
  */
 public class Dispatcher {
@@ -97,6 +98,9 @@ public class Dispatcher {
     // Development debugging only. Excessive for normal operation.
     private static final boolean LogDispatch = false;
     private static Logger        LOG         = Fuseki.serverLog;
+
+    // Development support
+    private static final boolean DEBUG       = false;
 
     /**
      * Handle an HTTP request if it is sent to a registered dataset.
@@ -248,6 +252,9 @@ public class Dispatcher {
         DataAccessPoint dataAccessPoint = action.getDataAccessPoint();
         DataService dataService = action.getDataService();
 
+        if ( DEBUG )
+            FmtLog.info(LOG, "Dispatch: "+ dataAccessPoint.getName());
+
         if ( !dataService.isAcceptingRequests() ) {
             ServletOps.error(HttpSC.SERVICE_UNAVAILABLE_503, "Dataset not currently active");
             return null;
@@ -255,22 +262,31 @@ public class Dispatcher {
 
         // ---- Determine Endpoint.
         String endpointName = mapRequestToEndpointName(action, dataAccessPoint);
+        if ( DEBUG )
+            FmtLog.info(LOG, "Dispatch: endpointName: "+ endpointName);
+
         // Main step of choosing the endpoint for the dispatch of the request.
         // An endpoint is a (name, operation).
         // There may be multiple operations for an endpointName of this data service.
 
         Endpoint endpoint = chooseEndpoint(action, dataService, endpointName);
-        if ( endpoint == null )
+        if ( endpoint == null ) {
+            if ( DEBUG )
+                FmtLog.info(LOG, "Dispatch: no endpoint");
             // Includes named service, no such endpoint.
             // Allows for resources under /dataset/
             // The request will pass on down the filter/servlet chain.
             return null;
+        }
 
         Operation operation = endpoint.getOperation();
         if ( operation == null ) {
             ServletOps.errorNotFound("No operation: "+action.getActionURI());
             return null;
         }
+        if ( DEBUG )
+            FmtLog.info(LOG, "Dispatch: endpoint operation: "+ operation);
+
         action.setEndpoint(endpoint);
 
         applyAuthentication(action.getUser(), dataService, endpoint);
@@ -321,25 +337,55 @@ public class Dispatcher {
         // Work out which operation we are looking for based on SPARQL characteristics.
         Operation operation = chooseOperation(action, epSet);
 
-     // Special case for GSP_R/GSP_RW
-        if ( operation != null ) {
-            ep = epSet.get(operation);
-            if ( ep == null ) {
-                if ( GSP_R.equals(operation) )
-                    // If asking for GSP_R, and GSP_RW available, pass that back.
-                    ep = epSet.get(GSP_RW);
-                else if ( GSP_RW.equals(operation) ) {
-                    // If asking for GSP_RW, but only GSP_R available -> 405.
-                    if ( epSet.contains(GSP_R) )
-                        ServletOps.errorMethodNotAllowed(action.getMethod());
-                }
-            }
-        }
-
+        // Special case for GSP_R/GSP_RW
+        if ( operation != null )
+            // May cause 405.
+            operation = mapGSP(action, operation, epSet);
+        if ( operation == null )
+            ServletOps.errorBadRequest("No operation for request: "+action.getActionURI());
+        ep = epSet.get(operation);
         // There are multiple endpoints; if none are suitable, then 400.
         if ( ep == null )
             ServletOps.errorBadRequest("No operation for request: "+action.getActionURI());
         return ep;
+    }
+
+    /**
+     * Special case : GSP.
+     * <p>
+     * It is special because the two forms, GSP_R and GSP_RW overlap. GSP_RW can
+     * service GSP_R methods (GET and HEAD). It is also special because there is a
+     * different sattus code for attempting to write to GSP_R.
+     * <p>
+     * If this EndpointSet does not have exactly right operation:
+     * <ul>
+     * <li>If request is GSP_R, then if the EndpointSet has GSP_RW use that,
+     *     else no operation.
+     * <li>If request is GSP_RW, and the method is OPTIONS, redirect to
+     *     GSP_R if available.
+     * <li>If request is GSP_RW, and it is POST, PUT, DELETE, when only
+     *     GSP_R is available, reject 405 "method not allowed".
+     * </ul>
+     */
+    private static Operation mapGSP(HttpAction action, Operation operation, EndpointSet epSet) {
+        // Get the endpoint
+        Endpoint ep = epSet.get(operation);
+        if ( ep == null ) {
+            if ( GSP_R.equals(operation) ) {
+                // If asking for GSP_R, and GSP_RW is available, use GSP_RW.
+                if ( epSet.contains(GSP_RW) )
+                    return GSP_RW;
+            } else if ( GSP_RW.equals(operation) ) {
+                // If asking for GSP_RW, but only GSP_R is available ...
+                // ... if OPTIONS, use GSP_R.
+                if ( action.getMethod().equals(HttpNames.METHOD_OPTIONS) && epSet.contains(GSP_R) )
+                        return GSP_R;
+                // ... else 405
+                if ( epSet.contains(GSP_R) )
+                    ServletOps.errorMethodNotAllowed(action.getMethod());
+            }
+        }
+        return operation;
     }
 
     /**
@@ -350,9 +396,9 @@ public class Dispatcher {
      * <li>Registered Content-Type header</li>
      * <li>Otherwise it is a plain REST (quads)</li>
      * </ul>
-     * The HTTP Method is not considered. This affects GSP. For read return GSP_R,
-     * for changes return GSP_RW. The dispatcher will map GSP_R to GSP_RW when only
-     * GSP_RW is available.
+     * The configured endpoints is not considered.
+     * This affects GSP. For read methods return GSP_R, and for changes return GSP_RW.
+     * The dispatcher will map GSP_R to GSP_RW when only GSP_RW is available.
      * <p>
      * The operation is not guaranteed to be supported on every {@link DataService}
      * nor that access control will allow it to be performed.
@@ -422,7 +468,7 @@ public class Dispatcher {
         // Plain HTTP operation on the dataset.
         DispatchFunction selectOperation = action.getDataService().getDefaultOperationChooser();
         if ( selectOperation == null )
-            // Defaul is a quads operation.
+            // Default is a quads operation.
             selectOperation = Dispatcher::selectPlainOperation;
         return selectOperation.selectOperation(action, epSet);
     }
