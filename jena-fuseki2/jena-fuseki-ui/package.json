@@ -66,6 +66,7 @@
   "overrides": {
     "terser": "^5.14.2",
     "loader-utils": "^1.4.2",
+    "cookiejar": "^2.1.4",
     "json5": "^1.0.2"
   }
 }
