@@ -61,6 +61,7 @@ import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.NotUniqueException;
 import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.apache.jena.sys.JenaSystem;
@@ -750,8 +751,13 @@ public class FusekiServer {
             processConfigServerLevel(server);
 
             // Process server and services, whether via server ja:services or, if absent, by finding by type.
+
+            // Context is only set, not deleted, in a configuration file.
+            Context settings = new Context();
+            List<DataAccessPoint> x = FusekiConfig.processServerConfiguration(model, settings);
+
             // Side effect - sets global context.
-            List<DataAccessPoint> x = FusekiConfig.processServerConfiguration(model, Fuseki.getContext());
+            Fuseki.getContext().putAll(settings);
             // Can further modify the services in the configuration file.
             x.forEach(dap->addDataAccessPoint(dap));
             configModel = model;
