@@ -17,17 +17,12 @@
  */
 package org.apache.jena.fuseki.metrics;
 
+import java.util.List;
+
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import java.util.List;
-import org.apache.jena.fuseki.server.Counter;
-import org.apache.jena.fuseki.server.CounterName;
-import org.apache.jena.fuseki.server.CounterSet;
-import org.apache.jena.fuseki.server.DataAccessPoint;
-import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.server.Endpoint;
-import org.apache.jena.fuseki.server.Operation;
+import org.apache.jena.fuseki.server.*;
 
 public class FusekiRequestsMetrics implements MeterBinder {
 
@@ -60,5 +55,4 @@ public class FusekiRequestsMetrics implements MeterBinder {
             }
         }
     }
-
 }

@@ -1205,6 +1205,9 @@ public class FusekiServer {
             // FusekiModule call - inspect the DataAccessPointRegistry.
             FusekiModuleStep.configured(this, dapRegistry, configModel);
 
+            // Setup Prometheus metrics. This will become a module.
+            bindPrometheus(dapRegistry);
+
             buildSecurity(dapRegistry);
             try {
                 validate();
@@ -1240,7 +1243,7 @@ public class FusekiServer {
         }
 
         private DataAccessPointRegistry buildStart() {
-            DataAccessPointRegistry dapRegistry = new DataAccessPointRegistry( MetricsProviderRegistry.get().getMeterRegistry() );
+            DataAccessPointRegistry dapRegistry = new DataAccessPointRegistry();
             dataServices.forEach((name, builder)->{
                 DataService dSrv = builder.build();
                 DataAccessPoint dap = new DataAccessPoint(name, dSrv);
@@ -1251,6 +1254,13 @@ public class FusekiServer {
                 dapRegistry.register(dap);
             });
             return dapRegistry;
+        }
+
+        private void bindPrometheus(DataAccessPointRegistry dapRegistry) {
+            if ( withMetrics ) {
+                // Connect to Prometheus metrics.
+                MetricsProviderRegistry.bindPrometheus(dapRegistry);
+            }
         }
 
         private ConstraintSecurityHandler buildSecurityHandler() {

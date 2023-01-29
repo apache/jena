@@ -70,8 +70,7 @@ public class FusekiServerListener implements ServletContextListener {
 
         OperationRegistry operationRegistry = OperationRegistry.createStd();
         OperationRegistry.set(servletContext, operationRegistry);
-        DataAccessPointRegistry dataAccessPointRegistry = new DataAccessPointRegistry(
-                                                                    MetricsProviderRegistry.get().getMeterRegistry());
+        DataAccessPointRegistry dataAccessPointRegistry = new DataAccessPointRegistry();
         DataAccessPointRegistry.set(servletContext, dataAccessPointRegistry);
 
         try {
@@ -102,6 +101,9 @@ public class FusekiServerListener implements ServletContextListener {
                 dap.getDataService().goActive();
                 //Fuseki.configLog.info("Register: "+dap.getName());
             });
+
+            MetricsProviderRegistry.bindPrometheus(dataAccessPointRegistry);
+
         } catch (Throwable th) {
             Fuseki.serverLog.error("Exception in initialization: {}", th.getMessage());
             throw th;
