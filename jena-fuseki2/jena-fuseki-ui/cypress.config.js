@@ -28,7 +28,7 @@ module.exports = defineConfig({
   responseTimeout: 7500,
 
   e2e: {
-    baseUrl: 'http://localhost:8080/',
+    baseUrl: 'http://localhost:' + (process.env.PORT || 8080),
     setupNodeEvents (on, config) {
       on('file:preprocessor', vitePreprocessor())
       return require('./tests/e2e/plugins/index.js')(on, config)

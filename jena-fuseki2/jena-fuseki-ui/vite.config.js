@@ -49,7 +49,8 @@ export default defineConfig({
     sourcemap: 'inline',
   },
   server: {
-    port: 8080,
+    // Default, can be overridden by `--port 1234` in package.json
+    port: process.env.PORT || 8080,
     // The proxy is used for the `dev` target, for e2e tests, rapid development in the IDE, etc.
     proxy: {
       '/': {
