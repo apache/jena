@@ -109,16 +109,11 @@
                         </goals>
                         <phase>test</phase>
                         <configuration>
-                          <!--
-                               An unstable test. 
-                               https://github.com/apache/jena/issues/1644 
-                          -->
-                            <testFailureIgnore>true</testFailureIgnore>
                             <environmentVariables>
                                 <PORT>${org.apache.jena.fuseki.ui.port}</PORT>
                                 <FUSEKI_PORT>${org.apache.jena.fuseki.port}</FUSEKI_PORT>
                             </environmentVariables>
-                            <arguments>run test:e2e -- --headless --browser chrome</arguments>
+                            <arguments>run test:e2e</arguments>
                         </configuration>
                     </execution>
                 </executions>

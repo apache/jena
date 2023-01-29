@@ -32,3 +32,13 @@ YASGUI and Axios.
   - Starts a fake Fuseki backend with responses saves from a real instance. Used to test the UI without the backend, and for e2e tests.
 - `serve:offline`
   - Runs both the serve:offline and the serve scripts to serve the UI offline.
+
+For every command above that starts Vite (default port `8080`) or Fuseki (default port `3030`), you
+can customize the ports used. For example:
+
+```bash
+FUSEKI_PORT=9999 yarn run serve:fuseki
+PORT=1313 FUSEKI_PORT=9999 yarn run serve:offline
+FUSEKI_PORT=3031 PORT=8081 yarn run test:e2e
+...
+```

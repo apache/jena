@@ -7,15 +7,15 @@
   "license": "Apache-2.0",
   "scripts": {
     "dev": "vite",
-    "serve": "vite preview --port 8080",
+    "serve": "vite preview",
     "build": "vite build",
     "test:unit": "vitest run --environment jsdom",
-    "test:e2e": "bash -c 'concurrently --names \"SERVER,TESTS\" --prefix-colors \"yellow,blue\" --success \"first\" --kill-others \"yarn run serve:offline\" \"cross-env CYPRESS_COVERAGE=false cypress run ${0}\"'",
+    "test:e2e": "concurrently --names 'SERVER,CLIENT,TESTS' --prefix-colors 'yellow,blue,green' --success 'first' --kill-others 'yarn run serve:fuseki' 'yarn wait-on http://localhost:${FUSEKI_PORT}/ping && yarn run dev' 'yarn wait-on http-get://localhost:${PORT}/index.html && cypress run ${0}'",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
-    "coverage:unit": "vitest run --environment jsdom --coverage",
-    "coverage:e2e": "bash -c 'concurrently --names \"SERVER,TESTS\" --prefix-colors \"yellow,blue\" --success \"first\" --kill-others \"yarn run serve:offline\" \"cross-env CYPRESS_COVERAGE=true cypress run ${0}\"'",
+    "coverage:unit": "yarn run test:unit -- --coverage",
+    "coverage:e2e": "cross-env-shell CYPRESS_COVERAGE=true yarn run test:e2e",
     "serve:fuseki": "nodemon src/services/mock/json-server.js",
-    "serve:offline": "concurrently --names 'SERVER,CLIENT' --prefix-colors 'yellow,blue' --success \"first\" --kill-others 'yarn run serve:fuseki' 'yarn run dev'"
+    "serve:offline": "cross-env FUSEKI_PORT=\"${FUSEKI_PORT:=3030}\" PORT=\"${PORT:=8080}\" concurrently --names 'SERVER,CLIENT' --prefix-colors 'yellow,blue' --success 'first' --kill-others 'yarn run serve:fuseki' 'yarn wait-on http://localhost:${FUSEKI_PORT}/ping && yarn run dev'"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
@@ -42,7 +42,7 @@
     "@vue/compiler-sfc": "^3.2.39",
     "@vue/eslint-config-standard": "^8.0.1",
     "@vue/test-utils": "^2.0.2",
-    "concurrently": "^7.4.0",
+    "concurrently": "^7.6.0",
     "cross-env": "^7.0.3",
     "cypress": "^12.1.0",
     "cypress-vite": "^1.3.0",
@@ -61,7 +61,8 @@
     "sinon": "^14.0.0",
     "vite": "^4.0.4",
     "vite-plugin-istanbul": "^4.0.0",
-    "vitest": "^0.27.1"
+    "vitest": "^0.27.1",
+    "wait-on": "^7.0.1"
   },
   "overrides": {
     "terser": "^5.14.2",
