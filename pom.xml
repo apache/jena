@@ -103,7 +103,7 @@
     <ver.commons-compress>1.22</ver.commons-compress>
     <ver.commons-collections>4.4</ver.commons-collections>
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.10.2</ver.micrometer>
+    <ver.micrometer>1.10.3</ver.micrometer>
 
     <!-- For testing, not shipped -->
     <ver.graalvm>22.3.0</ver.graalvm>
