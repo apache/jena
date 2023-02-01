@@ -88,7 +88,7 @@
          and use that or later.
     -->
     <ver.jsonldjava>0.13.4</ver.jsonldjava>
-    <ver.jackson>2.14.1</ver.jackson>
+    <ver.jackson>2.14.2</ver.jackson>
     <ver.httpclient>4.5.14</ver.httpclient>
     <ver.httpcore>4.4.16</ver.httpcore>
 
