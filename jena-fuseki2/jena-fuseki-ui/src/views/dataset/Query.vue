@@ -309,9 +309,9 @@ export default {
                 document.location.search +
                 '#' +
                 vm.$route.path +
-                '?query=' +
+                '?' +
                 // Same as YASGUI does, good idea to avoid security problems...
-                queryString.stringify(queryString.parse(yasqe.getValue()))
+                queryString.stringify({'query':yasqe.getValue()})
               )
             }
           }
