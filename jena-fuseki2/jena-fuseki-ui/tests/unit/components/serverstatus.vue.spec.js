@@ -33,7 +33,6 @@ describe('ServerStatus', () => {
         mocks: {
           $fusekiService: {
             async getServerStatus () {
-              console.log('Hola!')
               count += 1
               return new ServerStatusModel(true, `OK ${count}`)
             }
