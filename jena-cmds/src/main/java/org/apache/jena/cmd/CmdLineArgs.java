@@ -281,7 +281,7 @@ public class CmdLineArgs extends CommandLineBase {
         return arg.getValues();
     }
 
-   // ---- Positional
+    // ---- Positional
     /** Get the i'th positional argument (indexed from 0)*/
     public String getPositionalArg(int i) {
         return positionals.get(i);

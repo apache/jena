@@ -17,6 +17,10 @@
  */
 package org.apache.jena.fuseki.metrics;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry;
+
 public class MetricsProviderRegistry {
 
     private static int priority = Integer.MAX_VALUE;
@@ -33,4 +37,17 @@ public class MetricsProviderRegistry {
         }
     }
 
+    /** Bind each data access point in a DataAccessPointRegistry to Prometheus. */
+    public static void bindPrometheus(DataAccessPointRegistry dapRegistry) {
+        try {
+            MeterRegistry meterRegistry = MetricsProviderRegistry.get().getMeterRegistry();
+            if (meterRegistry != null) {
+                dapRegistry.accessPoints().forEach(dap->{
+                    new FusekiRequestsMetrics( dap ).bindTo( meterRegistry );
+                });
+            }
+        } catch (Throwable th) {
+            Fuseki.configLog.error("Failed to bind all data access points to Prometheus", th);
+        }
+    }
 }

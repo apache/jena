@@ -18,11 +18,16 @@
 
 package org.apache.jena.fuseki.main;
 
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
+import static org.apache.jena.fuseki.Fuseki.serverLog;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
@@ -33,7 +38,6 @@ import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.OperationRegistry;
 import org.apache.jena.fuseki.servlets.ActionBase;
@@ -42,11 +46,7 @@ import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.security.SecurityHandler;
-import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Response;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -58,10 +58,6 @@ import org.eclipse.jetty.util.thread.ThreadPool;
 import org.eclipse.jetty.xml.XmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-import static org.apache.jena.fuseki.Fuseki.serverLog;
 
 /**
  * Jetty server for servlets, including being able to run Fuseki {@link ActionBase} derived servlets.
@@ -376,7 +372,7 @@ public class JettyServer {
             try {
                 Fuseki.setVerbose(cxt, verbose);
                 OperationRegistry.set(cxt, OperationRegistry.createEmpty());
-                DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(MetricsProviderRegistry.get().getMeterRegistry()));
+                DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry());
             } catch (NoClassDefFoundError err) {
                 LOG.info("Fuseki classes not found");
             }
