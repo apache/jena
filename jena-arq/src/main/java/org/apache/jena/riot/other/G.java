@@ -18,18 +18,23 @@
 
 package org.apache.jena.riot.other;
 
+import static org.apache.jena.graph.Node.ANY;
+
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.*;
+import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.util.graph.GNode;
 import org.apache.jena.sparql.util.graph.GraphList;
+import org.apache.jena.util.IteratorCollection;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -65,6 +70,7 @@ public class G {
     public static boolean isResource(Node n)    { return n != null && (n.isURI()||n.isBlank()); }
     public static boolean isNodeTriple(Node n)  { return n != null && n.isNodeTriple(); }
     public static boolean isNodeGraph(Node n)   { return n != null && n.isNodeGraph(); }
+    public static boolean isNullOrAny(Node n)   { return n == null || Node.ANY.equals(n); }
 
     /** Convert null to Node.ANY */
     public static Node nullAsAny(Node x) { return nullAsDft(x, Node.ANY); }
@@ -845,4 +851,106 @@ public class G {
             return action.get();
     }
 
+
+    /**
+     * Find triples and execute an action on each triple found.
+     */
+    public static void findExec(Graph graph, Consumer<Triple> action, Node s, Node p , Node o) {
+        ExtendedIterator<Triple> eIter = G.find(graph, s, p, o);
+        try {
+            eIter.forEach(action);
+        } finally { eIter.close(); }
+    }
+
+    // From GraphUtils.
+
+    /** Add triples into the destination (arg 1) from the source (arg 2)*/
+    public static void addInto(Graph dstGraph, Graph srcGraph ) {
+        if ( dstGraph == srcGraph && ! dstGraph.getEventManager().listening() )
+            return ;
+        dstGraph.getPrefixMapping().setNsPrefixes(srcGraph.getPrefixMapping()) ;
+        findExec(srcGraph, dstGraph::add, ANY, ANY, ANY);
+        dstGraph.getEventManager().notifyAddGraph( dstGraph, srcGraph );
+    }
+
+    private static void addIteratorWorker( Graph graph, Iterator<Triple> it ) {
+        List<Triple> s = IteratorCollection.iteratorToList( it );
+        addIteratorWorkerDirect(graph, s.iterator());
+    }
+
+    private static void addIteratorWorkerDirect( Graph graph, Iterator<Triple> it ) {
+        it.forEachRemaining(graph::add);
+//        if ( OldStyle && graph instanceof GraphWithPerform ) {
+//            GraphWithPerform g = (GraphWithPerform)graph;
+//            it.forEachRemaining(g::performAdd);
+//        } else {
+//            it.forEachRemaining(graph::add);
+//        }
+    }
+
+    /**
+     * Test whether a graph contains by "same term", regardless of whether the graph
+     * implements "same value" or "same term".
+     */
+    public static boolean containsBySameTerm(Graph graph, Triple triple) {
+        return containsBySameTerm(graph, triple.getSubject(), triple.getPredicate(), triple.getObject());
+    }
+
+    /**
+     * Test whether a graph contains by "same term", regardless of whether the graph
+     * implements "same value" or "same term".
+     */
+    public static boolean containsBySameTerm(Graph graph, Node s, Node p, Node o) {
+        // Do direct for efficiency.
+        if ( ! graph.contains(s,p,o) )
+            return false;
+        // May have matched by value.  Do a term test find to restrict to RDF terms.
+        ExtendedIterator<Triple> iter = graph.find(s, p, o);
+        // Unless generalized RDF, only need to test object.
+        Predicate<Triple> predicate = (dataTriple) -> sameTermMatch(s, p, o, dataTriple);
+        iter = iter.filterKeep(predicate);
+        try {
+            return iter.hasNext();
+        } finally { iter.close(); }
+
+//    // For reference - just object
+//    if ( !o.isConcrete() || o.isLiteral() ) {
+//        Predicate<Triple> predicate = (t) -> sameTermMatch(o, t.getObject()) ;
+//        iter = iter.filterKeep(predicate) ;
+//    }
+
+    }
+
+    /**
+     * Match S/P/O which can be wildcards (ANY or null), against a ground triple
+     * (even ANY and variables are considered ground terms in the data triple).
+     */
+    public static boolean sameTermMatch(Node matchSubj, Node matchPred, Node matchObj, Triple dataTriple) {
+        return sameTermMatch(matchSubj, dataTriple.getSubject()) &&
+               sameTermMatch(matchPred, dataTriple.getPredicate()) &&
+               sameTermMatch(matchObj,  dataTriple.getObject());
+    }
+
+    /**
+     * Match a node, which can be a wildcard (ANY or null)
+     * against a ground RDF Term (ANY and variables are considered ground terms in the
+     * data term).
+     * Language tags compare case-insensitively.
+     */
+    public static boolean sameTermMatch(Node match, Node data) {
+        if ( isNullOrAny(match) )
+            return true;
+
+        // Allow for case-insensitive language tag comparison.
+        if ( ! Util.isLangString(data) || ! Util.isLangString(match) )
+            // Any mix of node types except both strings with lang tags.
+            return match.equals(data) ;
+
+        // Both nodes with language tags : compare languages case insensitively.
+        String lex1 = match.getLiteralLexicalForm();
+        String lex2 = data.getLiteralLexicalForm();
+        String lang1 = match.getLiteralLanguage();
+        String lang2 = data.getLiteralLanguage();
+        return lex1.equals(lex2) && lang1.equalsIgnoreCase(lang2);
+    }
 }
