@@ -33,6 +33,7 @@ import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.TS_System;
+import org.apache.jena.system.buffering.TS_Buffering;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -49,6 +50,7 @@ import org.junit.runners.Suite;
     TC_Riot.class,
 
     TS_System.class,
+    TS_Buffering.class,
 
     TS_InfRdfs.class,
     TS_HttpAuth.class,
