@@ -32,7 +32,20 @@
 
   <properties>
     <automatic.module.name>org.apache.jena.fuseki.main</automatic.module.name>
+    <ver.otel-alpha>1.20.1-alpha</ver.otel-alpha>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.opentelemetry</groupId>
+        <artifactId>opentelemetry-bom</artifactId>
+        <version>1.20.1</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies> 
 
@@ -97,6 +110,86 @@
       <optional>true</optional>
     </dependency>
 
+    <!-- OpenTelemetry dependencies -->
+    <dependency>
+      <groupId>io.opentelemetry.javaagent</groupId>
+      <artifactId>opentelemetry-javaagent</artifactId>
+      <version>1.20.2</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-metrics-testing</artifactId>
+      <version>1.13.0-alpha</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporters-inmemory</artifactId>
+      <version>0.9.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-semconv</artifactId>
+      <version>${ver.otel-alpha}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-extension-autoconfigure</artifactId>
+      <version>${ver.otel-alpha}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-logging</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.opentelemetry.instrumentation</groupId>
+      <artifactId>opentelemetry-runtime-metrics</artifactId>
+      <version>${ver.otel-alpha}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.valfirst</groupId>
+      <artifactId>slf4j-test</artifactId>
+      <version>2.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -138,6 +231,7 @@
         <configuration>
           <includes>
             <include>**/TS_*.java</include>
+            <include>devtelicent/**.java</include>
           </includes>
         </configuration>
       </plugin>
@@ -145,6 +239,40 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+
+      <!-- OpenTelemetry Java agent plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}/lib</outputDirectory>
+              <includeTypes>jar</includeTypes>
+              <includeScope>compile</includeScope>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-agents</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}/agents</outputDirectory>
+              <includeTypes>jar</includeTypes>
+              <includeScope>runtime</includeScope>
+              <includeGroupIds>io.opentelemetry.javaagent</includeGroupIds>
+              <stripVersion>true</stripVersion>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
 
