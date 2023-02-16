@@ -34,7 +34,7 @@ defaults to the version of the overall Jena release it was part of. It is best
 to use the release of this set of tools from the same release of the desired
 server.
 
-    docker-compose build --build-arg JENA_VERSION=3.16.0
+    docker-compose build --build-arg JENA_VERSION=4.7.0
 
 Note the build command must provide the version number.
 
@@ -89,7 +89,7 @@ If you prefer to use `docker` directly:
 
 Build:
 
-    docker build --force-rm --build-arg JENA_VERSION=3.16.0 -t fuseki .
+    docker build --force-rm --build-arg JENA_VERSION=4.7.0 -t fuseki .
 
 Run:
 
