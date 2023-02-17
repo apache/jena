@@ -1,0 +1,70 @@
+<!--++ I4.5/inconsistent002.rdf ** generated using webont test editor. ++-->
+<!--++ Created 23 Jul 2003 11:12:01 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: inconsistent002.rdf,v 1.5 2003-12-05 05:09:34 jeremy_carroll Exp $
+-->
+<!--
+An example combining owl:oneOf and owl:inverseOf.
+-->
+<!-- Author: Charles White -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/I4.5/inconsistent002#"
+    xml:base="http://www.w3.org/2002/03owlt/I4.5/inconsistent002" >
+
+    <owl:Class rdf:ID="EuropeanCountry" />
+    <owl:Class rdf:ID="Person" />
+
+    <owl:Class rdf:ID="EUCountry">
+      <owl:oneOf rdf:parseType="Collection">
+         <first:EuropeanCountry rdf:ID="UK"/>
+         <first:EuropeanCountry rdf:ID="BE"/>
+         <first:EuropeanCountry rdf:ID="ES"/>
+         <first:EuropeanCountry rdf:ID="FR"/>
+         <first:EuropeanCountry rdf:ID="NL"/>
+         <first:EuropeanCountry rdf:ID="PT"/>
+      </owl:oneOf>
+    </owl:Class>
+
+    <owl:ObjectProperty rdf:ID="hasEuroMP" >
+      <rdfs:domain rdf:resource="#EUCountry"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:ID="isEuroMPFrom" >
+      <owl:inverseOf rdf:resource="#hasEuroMP"/>
+    </owl:ObjectProperty>
+
+    <owl:Class rdf:ID="EuroMP">
+      <owl:equivalentClass>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#isEuroMPFrom" />
+          <owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
+        </owl:Restriction>
+      </owl:equivalentClass>
+    </owl:Class>
+
+    <first:Person rdf:ID="Kinnock" >
+      <rdf:type>
+         <owl:Class>
+            <owl:complementOf rdf:resource="#EuroMP"/>
+         </owl:Class>
+      </rdf:type>
+    </first:Person>
+
+    <first:EuropeanCountry rdf:about="#UK">
+      <first:hasEuroMP rdf:resource="#Kinnock" />
+    </first:EuropeanCountry>
+  
+
+</rdf:RDF>

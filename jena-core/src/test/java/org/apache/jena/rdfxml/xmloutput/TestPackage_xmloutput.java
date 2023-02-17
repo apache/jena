@@ -1,5 +1,5 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
+t * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -27,6 +27,8 @@ import junit.framework.TestSuite;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
+import org.apache.jena.test.X_RDFReaderF;
 
 /**
  * JUnit regression tests for output
@@ -37,7 +39,9 @@ public class TestPackage_xmloutput extends TestCase{
      * Answer a suite of all the tests defined here
      */
     public static TestSuite suite() {
-        TestSuite suite = new TestSuite();
+        TestSuite suite = new TestSuite("RDF/XML Output");
+
+        RDFReaderFImpl.alternative(new X_RDFReaderF());
 
         // JENA-1537
         // Character encoding checks removed due to lack of support in JDK XML parser APIs.

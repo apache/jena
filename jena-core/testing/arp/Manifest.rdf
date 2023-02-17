@@ -230,16 +230,6 @@
     </test:outputDocument>
   </test:PositiveParserTest>
 
-  <test:NegativeParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/bad01" test:status="ARP">
-    <test:warning>This should be a warning</test:warning>
-    <test:inputDocument>
-      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/bad01.rdf"/>
-    </test:inputDocument>
-    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_BAD_NAMESPACE_URI'/>
-  </test:NegativeParserTest>
-
-
-
   <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/test01" test:status="ARP">
     <test:inputDocument>
       <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/test01.rdf"/>

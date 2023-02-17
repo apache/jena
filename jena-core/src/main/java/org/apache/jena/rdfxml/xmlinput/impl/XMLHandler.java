@@ -23,12 +23,13 @@
 
 package org.apache.jena.rdfxml.xmlinput.impl;
 
-import java.net.MalformedURLException ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIProvider;
+import org.apache.jena.irix.IRIx;
+import org.apache.jena.irix.SystemIRIx;
 import org.apache.jena.rdfxml.xmlinput.* ;
 import org.apache.jena.rdfxml.xmlinput.states.Frame ;
 import org.apache.jena.rdfxml.xmlinput.states.FrameI ;
@@ -41,15 +42,14 @@ import org.xml.sax.SAXParseException ;
 
 /**
  * This class converts SAX events into a stream of encapsulated events suitable
- * for the RDF parser. In effect, this is the RDF lexer. updates by kers to
- * handle exporting namespace prefix maps.
+ * for the RDF parser. In effect, this is the RDF lexer.
  */
 public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         Names {
 
     boolean encodingProblems = false;
 
-    protected Map<IRI, Map<String,ARPLocation>> idsUsed = new HashMap<>();
+    protected Map<IRIx, Map<String,ARPLocation>> idsUsed = new HashMap<>();
     protected int idsUsedCount = 0;
 
     public XMLHandler() {}
@@ -370,22 +370,26 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         return new ARPLocation(locator);
     }
 
-    private IRIFactory factory = null ;
-
-    IRIFactory iriFactory() {
-        if (factory == null) {
-            factory = options.getIRIFactory() ;
-            if ( factory == null )
-                factory = ARPOptions.getIRIFactoryGlobal() ;
+    private IRIProvider provider = null ;
+    IRIProvider iriProvider() {
+        if (provider == null) {
+            provider = options.getIRIProvider() ;
+            if ( provider == null )
+                provider = SystemIRIx.getProvider();
         }
-        return factory;
+        return provider;
     }
 
     private void checkNamespaceURI(String uri) throws SAXParseException {
         ((Frame) frame).checkEncoding(null,uri);
         if (uri.length() != 0)
              {
-                IRI u = iriFactory().create(uri);
+                IRIx u = iriProvider().create(uri);
+                try {
+                    u = IRIx.create(uri);
+                } catch (IRIException ex) {
+                    u = IRIx.createAny(uri);
+                }
                 if (!u.isAbsolute()) {
                     warning(null,
                             WARN_RELATIVE_NAMESPACE_URI_DEPRECATED,
@@ -393,20 +397,20 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                                     + uri
                                     + "> is relative. Such use has been deprecated by the W3C, and may result in RDF interoperability failures. Use an absolute namespace URI.");
                 }
-                try {
-                    if (!u.toASCIIString().equals(u.toString()))
-                        warning(null,
-                                WARN_BAD_NAMESPACE_URI,
-                                "Non-ascii characters in a namespace URI may not be completely portable: <"
-                                        + u.toString()
-                                        + ">. Resulting RDF URI references are legal.");
-                } catch (MalformedURLException e) {
-                    warning(null,
-                            WARN_BAD_NAMESPACE_URI,
-                            "Bad namespace URI: <"
-                                    + u.toString()
-                                    + ">. " + e.getMessage());
-              }
+//                try {
+//                    if (!u.toASCIIString().equals(u.toString()))
+//                        warning(null,
+//                                WARN_BAD_NAMESPACE_URI,
+//                                "Non-ascii characters in a namespace URI may not be completely portable: <"
+//                                        + u.toString()
+//                                        + ">. Resulting RDF URI references are legal.");
+//                } catch (MalformedURLException e) {
+//                    warning(null,
+//                            WARN_BAD_NAMESPACE_URI,
+//                            "Bad namespace URI: <"
+//                                    + u.toString()
+//                                    + ">. " + e.getMessage());
+//              }
 
                 if (uri.startsWith(rdfns) && !uri.equals(rdfns))
                     warning(null,WARN_BAD_RDF_NAMESPACE_URI, "Namespace URI ref <"
@@ -420,11 +424,10 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     public boolean allowRelativeURIs() {
         return allowRelativeReferences;
     }
-    private IRI sameDocRef;
-    public IRI sameDocRef() {
-        if (sameDocRef==null){
-            sameDocRef = iriFactory().create("");
-        }
+    private IRIx sameDocRef;
+    public IRIx sameDocRef() {
+        if (sameDocRef==null)
+            sameDocRef = iriProvider().create("");
         return sameDocRef;
     }
 

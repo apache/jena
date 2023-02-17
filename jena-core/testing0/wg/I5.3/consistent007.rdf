@@ -1,0 +1,26 @@
+<!--++ I5.3/consistent007.rdf ** generated using webont test editor. ++-->
+<!--++ Created 8 Jan 2003 16:23:33 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: consistent007.rdf,v 1.6 2003-12-05 05:09:30 jeremy_carroll Exp $
+-->
+<!--
+Any RDF/XML document is in OWL Full.  
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:first="http://www.w3.org/2002/03owlt/I5.3/consistent007#"
+    xml:base="http://www.w3.org/2002/03owlt/I5.3/consistent007" >
+    <rdf:Description>
+      <first:dp>value</first:dp>
+    </rdf:Description>
+</rdf:RDF>

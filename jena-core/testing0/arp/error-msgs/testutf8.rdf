@@ -1,0 +1,8 @@
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:eg="http://example.org/2#"
+    xml:base="http://example.org/3" >
+  <rdf:Description>
+     <eg:v>foè</eg:v>
+  </rdf:Description>
+</rdf:RDF>

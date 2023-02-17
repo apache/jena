@@ -35,14 +35,14 @@ public class AllAccept extends AssemblerTestBase
     {
     public AllAccept( String name )
         { super( name ); }
-    
+
     public static TestSuite suite()
         {
         TestSuite result = new TestSuite();
         result.addTestSuite( AllAccept.class );
         return result;
         }
-    
+
     public void testUnadornedInferenceModel()
         {
         Resource root = resourceInModel( "x ja:reasoner R; R rdf:type ja:ReasonerFactory" );
@@ -52,7 +52,7 @@ public class AllAccept extends AssemblerTestBase
         assertIsoModels( empty, inf.getRawModel() );
         assertInstanceOf( GenericRuleReasoner.class, inf.getReasoner() );
         }
-    
+
     public void testWithContent() throws IOException
         {
         File f = FileUtils.tempFileName( "assembler-acceptance-", ".n3" );

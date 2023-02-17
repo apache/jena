@@ -113,6 +113,12 @@ public class ParserProfileStd implements ParserProfile {
     }
 
     private void doChecking(IRIx irix, String uriStr, long line, long col) {
+        // Should become ...
+//        irix.handleViolations((isError, message)->{
+//            if ( isError )
+//                errorHandler.error(message, line, col);
+//        });
+
         IRI iri;
         if ( irix instanceof IRIProviderJenaIRI.IRIxJena )
             iri = (IRI)irix.getImpl();

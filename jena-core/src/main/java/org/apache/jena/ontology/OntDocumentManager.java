@@ -26,6 +26,7 @@ package org.apache.jena.ontology;
 import java.io.InputStream ;
 import java.util.* ;
 
+import org.apache.jena.ontology.impl.OntResolve;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
@@ -61,7 +62,7 @@ import org.slf4j.LoggerFactory ;
 public class OntDocumentManager
 {
     // @SuppressWarnings - FileManager model caching.
-    
+
     // Constants
     ////////////////////////////////////
 
@@ -468,6 +469,7 @@ public class OntDocumentManager
      * @see #getOntology
      */
     public Model getModel( String uri ) {
+        uri = OntResolve.resolve(uri);
         Model m = getFileManager().getFromCache( uri );
 
         // if a previously cached model has been closed, we ignore it
@@ -523,6 +525,8 @@ public class OntDocumentManager
      * @param replace If true, replace any existing entry with this one.
      */
     public void addModel( String docURI, Model model, boolean replace ) {
+        docURI = OntResolve.resolve(docURI);
+
         if (getFileManager().isCachingModels() &&
             (replace || !getFileManager().hasCachedModel( docURI )))
         {
@@ -540,6 +544,7 @@ public class OntDocumentManager
      * @param docURI The public URI for an ontology document
      */
     public void forget( String docURI ) {
+        docURI = OntResolve.resolve(docURI);
         getFileManager().getLocationMapper().removeAltEntry( docURI );
         getFileManager().removeCacheModel( docURI );
     }
@@ -645,6 +650,7 @@ public class OntDocumentManager
      * @param uri A URI to ignore when importing
      */
     public void addIgnoreImport( String uri ) {
+        uri = OntResolve.resolve(uri);
         m_ignoreImports.add( uri );
     }
 
@@ -653,6 +659,7 @@ public class OntDocumentManager
      * @param uri A URI to ignore no longer when importing
      */
     public void removeIgnoreImport( String uri ) {
+        uri = OntResolve.resolve(uri);
         m_ignoreImports.remove( uri );
     }
 
@@ -670,6 +677,7 @@ public class OntDocumentManager
      * @return True if uri will be ignored as an import
      */
     public boolean ignoringImport( String uri ) {
+        uri = OntResolve.resolve(uri);
         return m_ignoreImports.contains( uri );
     }
 
@@ -783,37 +791,41 @@ public class OntDocumentManager
             String importURI = unloadQueue.remove( 0 );
 
             if (model.hasLoadedImport( importURI )) {
-                // this import has not been unloaded yet
-
-                // look up the cached model - if we can't find it, we can't unload the import
-                Model importModel = getModel( importURI );
-                if (importModel != null) {
-                    List<String> imports = new ArrayList<>();
-
-                    // collect a list of the imports from the model that is scheduled for removal
-                    for (StmtIterator i = importModel.listStatements( null, model.getProfile().IMPORTS(), (RDFNode) null ); i.hasNext(); ) {
-                        imports.add( i.nextStatement().getResource().getURI() );
-                    }
-
-                    // now remove the sub-model
-                    model.removeSubModel( importModel, false );
-                    model.removeLoadedImport( importURI );
-
-                    // check the list of imports of the model we have removed - if they are not
-                    // imported by other imports that remain, we should remove them as well
-                    for (StmtIterator i = model.listStatements( null, model.getProfile().IMPORTS(), (RDFNode) null ); i.hasNext(); ) {
-                        imports.remove( i.nextStatement().getResource().getURI() );
-                    }
-
                     // any imports that remain are scheduled for removal
-                    unloadQueue.addAll( imports );
-                }
+                List<String> imports = unload(importURI, model);
+                unloadQueue.addAll( imports );
             }
         }
 
         model.rebind();
     }
 
+    private List<String> unload(String importURI, OntModel model) {
+        // this import has not been unloaded yet
+
+        // look up the cached model - if we can't find it, we can't unload the import
+        Model importModel = getModel( importURI );
+        if ( importModel == null)
+            return List.of();
+
+        List<String> imports = new ArrayList<>();
+
+        // collect a list of the imports from the model that is scheduled for removal
+        for (StmtIterator i = importModel.listStatements( null, model.getProfile().IMPORTS(), (RDFNode) null ); i.hasNext(); ) {
+            imports.add( i.nextStatement().getResource().getURI() );
+        }
+
+        // now remove the sub-model
+        model.removeSubModel( importModel, false );
+        model.removeLoadedImport( importURI );
+
+        // check the list of imports of the model we have removed - if they are not
+        // imported by other imports that remain, we should remove them as well
+        for (StmtIterator i = model.listStatements( null, model.getProfile().IMPORTS(), (RDFNode) null ); i.hasNext(); ) {
+            imports.remove( i.nextStatement().getResource().getURI() );
+        }
+        return imports;
+    }
 
     /**
      * <p>Add the ontologies imported by the given model to the end of the queue.</p>

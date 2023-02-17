@@ -24,10 +24,10 @@
 
 package org.apache.jena.rdfxml.xmlinput.impl;
 
-import org.xml.sax.SAXParseException;
-import org.apache.jena.iri.IRI;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
 import org.apache.jena.rdfxml.xmlinput.states.Frame ;
+import org.xml.sax.SAXParseException;
 
 // TODO: not for 2.3 IRI spec conformance
 
@@ -152,7 +152,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
             throws SAXParseException {
 
         Taint taintMe = new TaintImpl();
-        IRI iri = ctxt.resolveAsURI(f.arp,taintMe,uri);
+        IRIx iri = ctxt.resolveAsURI(f.arp,taintMe,uri);
         f.checkEncoding(taintMe,uri);
 
         URIReference rslt = new URIReference(iri.toString());
@@ -166,7 +166,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
         URIReference rslt = new URIReference(ns + local);
         f.checkEncoding(rslt,local);
         // TODO: not for 2.3 move some of the check upwards ...
-        IRI iri = f.arp.iriFactory().create(ns+local);
+        IRIx iri = f.arp.iriProvider().create(ns+local);
         AbsXMLContext.checkURI(f.arp,rslt,iri);
         return rslt;
     }

@@ -1,0 +1,145 @@
+<!--++ description-logic/inconsistent909.rdf ** generated using webont test editor. ++-->
+<!--++ Created 9 Sep 2003 20:23:14 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: inconsistent909.rdf,v 1.5 2003-12-05 05:06:35 jeremy_carroll Exp $
+-->
+<!--
+This test shows integer multiplication in OWL DL.<br></br>
+For some finite K,
+N times K is 2 times K. M times K is 3 times K.
+N times M times K is not 5 times K.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdfs= "http://www.w3.org/2000/01/rdf-schema#"
+    xml:base="http://www.w3.org/2002/03owlt/description-logic/inconsistent909" >
+
+   <owl:FunctionalProperty rdf:ID="p-N-to-1" >
+     <owl:inverseOf>
+        <owl:ObjectProperty rdf:ID="invP-1-to-N" />
+     </owl:inverseOf>
+     <rdfs:domain rdf:resource="#cardinality-N" />
+     <rdfs:range rdf:resource="#finite" />
+   </owl:FunctionalProperty>
+   <owl:ObjectProperty rdf:about="#p-N-to-1" />
+
+   <owl:FunctionalProperty rdf:ID="q-M-to-1" >
+     <owl:inverseOf>
+        <owl:ObjectProperty  rdf:ID="invQ-1-to-M" />
+     </owl:inverseOf>
+     <rdfs:domain rdf:resource="#cardinality-N-times-M" />
+     <rdfs:range rdf:resource="#cardinality-N" />
+   </owl:FunctionalProperty>
+   <owl:ObjectProperty rdf:about="#q-M-to-1" />
+
+   <owl:FunctionalProperty rdf:ID="r-N-times-M-to-1">
+     <owl:inverseOf>
+        <owl:ObjectProperty  rdf:ID="invR-N-times-M-to-1" />
+     </owl:inverseOf>
+     <rdfs:domain rdf:resource="#cardinality-N-times-M" />
+     <rdfs:range rdf:resource="#finite" />
+   </owl:FunctionalProperty>
+   <owl:ObjectProperty rdf:about="#r-N-times-M-to-1"/>
+  
+   <owl:FunctionalProperty rdf:ID="f-K-to-1" >
+     <owl:inverseOf>
+        <owl:ObjectProperty rdf:ID="invF-1-to-K" />
+     </owl:inverseOf>
+     <rdfs:domain rdf:resource="#finite" />
+     <rdfs:range rdf:resource="#only-d" />
+   </owl:FunctionalProperty>
+   <owl:ObjectProperty rdf:about="#f-K-to-1" />
+
+   <owl:Class rdf:ID="only-d">
+      <owl:oneOf rdf:parseType="Collection">
+         <owl:Thing rdf:ID="d"/>
+      </owl:oneOf>
+      <owl:equivalentClass>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#invF-1-to-K"/>
+          <owl:maxCardinality rdf:datatype=
+            "http://www.w3.org/2001/XMLSchema#integer"
+           >1000000000</owl:maxCardinality>
+        </owl:Restriction>
+      </owl:equivalentClass>
+    </owl:Class>
+
+    <owl:Class rdf:ID="finite">
+      <owl:equivalentClass>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#invP-1-to-N"/>
+          <owl:cardinality rdf:datatype=
+            "http://www.w3.org/2001/XMLSchema#integer"
+           >2</owl:cardinality>
+        </owl:Restriction>
+      </owl:equivalentClass>
+
+      <owl:equivalentClass>
+         <owl:Restriction>
+           <owl:onProperty rdf:resource="#invR-N-times-M-to-1"/>
+          <owl:cardinality rdf:datatype=
+            "http://www.w3.org/2001/XMLSchema#integer"
+           >5</owl:cardinality>
+
+       <owl:equivalentClass>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="#f-K-to-1"/>
+            <owl:someValuesFrom rdf:resource="#only-d"/>
+          </owl:Restriction>
+       </owl:equivalentClass>
+
+        </owl:Restriction>
+      </owl:equivalentClass>
+
+
+    </owl:Class>
+
+    <owl:Class rdf:ID="cardinality-N">
+       <owl:equivalentClass>
+         <owl:Restriction>
+           <owl:onProperty rdf:resource="#p-N-to-1"/>
+           <owl:someValuesFrom rdf:resource="#finite"/>
+         </owl:Restriction>
+       </owl:equivalentClass>
+       <owl:equivalentClass>
+         <owl:Restriction>
+             <owl:onProperty rdf:resource="#invQ-1-to-M"/>
+             <owl:cardinality rdf:datatype=
+               "http://www.w3.org/2001/XMLSchema#integer"
+              >3</owl:cardinality>
+         </owl:Restriction>
+       </owl:equivalentClass>
+    </owl:Class>
+
+    <owl:Class rdf:ID="cardinality-N-times-M">
+       <owl:equivalentClass>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="#q-M-to-1"/>
+            <owl:someValuesFrom rdf:resource="#cardinality-N"/>
+          </owl:Restriction>
+       </owl:equivalentClass>
+    </owl:Class>
+
+
+    <owl:Class rdf:about="#cardinality-N-times-M">
+       <owl:equivalentClass>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="#r-N-times-M-to-1"/>
+            <owl:someValuesFrom rdf:resource="#finite"/>
+          </owl:Restriction>
+       </owl:equivalentClass>
+    </owl:Class>
+
+
+</rdf:RDF>

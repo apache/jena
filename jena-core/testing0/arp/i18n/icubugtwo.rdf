@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<rdf:RDF xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:dmoz="http://rdf.dmoz.org/" xmlns:dc="http://purl.org/dc/elements/1.0/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://rdf.dmoz.org/">
+   <skos:Concept rdf:about="http://rdf.dmoz.org/Top/World/Tamil/x">
+      <dc:title>&#2951;&#2984;&#3021;&#2980;&#3007;u&#x308;&#2991;&#3006;</dc:title>
+   </skos:Concept>
+	
+</rdf:RDF>

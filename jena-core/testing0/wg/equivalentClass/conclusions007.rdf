@@ -1,0 +1,46 @@
+<!--++ equivalentClass/conclusions007.rdf ** generated using webont test editor. ++-->
+<!--++ Created 18 Dec 2002 12:44:02 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions007.rdf,v 1.5 2003-12-05 05:09:31 jeremy_carroll Exp $
+-->
+<!--
+De Morgan's law.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/equivalentClass/conclusions007" >
+   <rdf:Description>
+      <owl:intersectionOf rdf:parseType="Collection">
+          <rdf:Description>
+             <owl:complementOf rdf:resource="premises007#A"/>
+          </rdf:Description>
+          <rdf:Description>
+             <owl:complementOf rdf:resource="premises007#B"/>
+          </rdf:Description>
+      </owl:intersectionOf>
+      <owl:equivalentClass>
+         <rdf:Description>
+           <owl:complementOf>
+             <rdf:Description>
+               <owl:unionOf rdf:parseType="Collection">
+                 <rdf:Description rdf:about="premises007#A"/>
+                 <rdf:Description rdf:about="premises007#B"/>
+               </owl:unionOf>
+             </rdf:Description>
+           </owl:complementOf>
+         </rdf:Description>
+      </owl:equivalentClass>
+   </rdf:Description>   
+</rdf:RDF>

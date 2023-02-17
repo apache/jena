@@ -19,7 +19,6 @@
 package org.apache.jena.rdfxml.xmlinput;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -47,12 +46,12 @@ public class TestScope extends TestCase {
 	public void test03() throws Exception {
 		check("testing/arp/scope/test03.rdf");
 	}
-	
+
 
 	public void test04() throws Exception {
 		check("testing/arp/scope/test04.rdf");
 	}
-	
+
 	public void test05() throws Exception {
 		check("testing/arp/scope/test05.rdf");
 	}
@@ -73,17 +72,11 @@ public class TestScope extends TestCase {
 		@Override
         public void fatalError(Exception e) {
 		}
-		
+
 	};
 	private void check(final String fn) throws IOException {
-		
-		NTripleTestSuite.loadRDFx(new InFactoryX(){
 
-			@Override
-            public InputStream open() throws IOException {
-				return new FileInputStream(fn);
-			}
-		},suppress,"http://example.org/a",false,0);
+		NTripleTestSuite.loadRDFx( ()->new FileInputStream(fn), suppress, "http://example.org/a",false,0);
 	//	in.close();
 	}
 

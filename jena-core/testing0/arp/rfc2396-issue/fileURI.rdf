@@ -1,0 +1,16 @@
+<!--
+see
+http://sourceforge.net/tracker/index.php?func=detail&aid=713251&group_id=40417&atid=430288
+file URIs
+-->
+
+<rdf:RDF  
+  xmlns:sw="http://example.org/"
+  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+
+	<rdf:Description>
+ 		<sw:prop rdf:resource="file:/C:/a"/>
+ 	</rdf:Description>
+        
+
+</rdf:RDF>

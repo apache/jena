@@ -54,11 +54,12 @@ public class PrettyWriterTest extends ModelTestBase {
 
 	private void checkNoMatch(String filename, String regex ) throws IOException {
 		check(filename, regex, false);
-		
+
 	}
-	private void check( String filename, String regex, boolean match ) throws IOException {
+	private void check( String filename, String regex, boolean expected ) throws IOException {
 		String contents = null;
 		try {
+
 			Model m = createMemModel();
 			m.read( filename );
 			try ( StringWriter sw = new StringWriter() ) {
@@ -68,12 +69,18 @@ public class PrettyWriterTest extends ModelTestBase {
 			Model m2 = createMemModel();
 			m2.read( new StringReader( contents ), filename );
 			assertTrue( m.isIsomorphicWith( m2 ) );
-            
+
+			boolean found = Pattern.compile( regex,Pattern.DOTALL ).matcher( contents ).find();
+			if ( expected != found ) {
+			    System.err.println("File: "+filename);
+			    System.err.println("Looking for /" + regex + "/ in "+contents);
+			    System.err.println("File: "+filename);
+                m2.write(System.err);
+			}
+
 			assertTrue(
-				"Looking for /" + regex + "/ ",
-//                +contents,
-                match==Pattern.compile( regex,Pattern.DOTALL ).matcher( contents ).find()
-//				matcher.contains(contents, awk.compile(regex))
+			    "Looking for /" + regex + "/ ",
+				expected==found
                 );
 			contents = null;
 		} finally {
@@ -83,29 +90,24 @@ public class PrettyWriterTest extends ModelTestBase {
 			}
 		}
 	}
-	
-	public void testConsistency() throws IOException {
-		checkNoMatch(
-				"file:testing/abbreviated/consistency.rdf",
-	            "rdf:resource");
-	}
 
+	public void testConsistency() throws IOException {
+		checkNoMatch("file:testing/abbreviated/consistency.rdf"
+		            ,"rdf:resource");
+	}
 
 	public void testRDFCollection() throws IOException {
-		check(
-			"file:testing/abbreviated/collection.rdf",
-			"rdf:parseType=[\"']Collection[\"']");
+		check("file:testing/abbreviated/collection.rdf"
+		     ,"rdf:parseType=[\"']Collection[\"']");
 	}
 
-	public void testOWLPrefix() {
-		//		check(
-		//			"file:testing/abbreviated/collection.rdf",
-		//			"xmlns:owl=[\"']http://www.w3.org/2002/07/owl#[\"']");
+	public void testOWLPrefix()  throws IOException {
+	    check("file:testing/abbreviated/collection.rdf"
+	         ,"xmlns:owl=[\"']http://www.w3.org/2002/07/owl#[\"']");
 	}
 
 	public void testLi() throws IOException {
-		check(
-			"file:testing/abbreviated/container.rdf",
-			"<rdf:li.*<rdf:li.*<rdf:li.*<rdf:li");
+		check("file:testing/abbreviated/container.rdf"
+		     ,"<rdf:li.*<rdf:li.*<rdf:li.*<rdf:li");
 	}
 }

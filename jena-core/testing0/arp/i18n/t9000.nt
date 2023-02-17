@@ -1,0 +1,17 @@
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#xx> "" .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/\u005C\u005C> .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/'> .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/"> .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/{> .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/}> .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/\u0009> .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/\u000A\u000A> .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/\u000D> .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/`> .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/ > .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/  > .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/   > .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/    > .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/|> .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/> .
+<http://example.org/\u003Cb\u003Eboo> <http://www.example.org/#li> <http://example.org/foo#> .

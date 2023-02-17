@@ -1,0 +1,20 @@
+<!--
+  Local test files use in Jena2 development
+
+  Test core intersectionOf processing - 'if' direction.
+-->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/equivalentClass/premisesSubclass001" >
+    
+    <rdf:Description rdf:about="#a">
+      <rdfs:subClassOf rdf:resource="#c"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#Thing">
+      <owl:equivalentClass rdf:resource="#d"/>
+    </rdf:Description>
+
+</rdf:RDF>

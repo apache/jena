@@ -123,28 +123,15 @@ public class XMLOutputTestBase extends ModelTestBase
      * @param filename Read this file, write it out, read it in.
      * @param regex    Written file must match this.
      */
-    protected void check( String filename, String regex, Change code)
-        throws IOException
-        {
-        check( filename, regex, null, code );
-        }
-
-    protected void check(
-        String filename,
-        String regexPresent,
-        String regexAbsent,
-        Change code )
-        throws IOException {
-        check( filename, null, regexPresent, regexAbsent, false, code);
+    protected void check(String filename, String regex, Change code) throws IOException {
+        check(filename, regex, null, code);
     }
 
-    protected void check(
-        String filename,
-        String encoding,
-        String regexPresent,
-        String regexAbsent,
-        Change code)
-        throws IOException {
+    protected void check(String filename, String regexPresent, String regexAbsent, Change code) throws IOException {
+        check(filename, null, regexPresent, regexAbsent, false, code);
+    }
+
+    protected void check(String filename, String encoding, String regexPresent, String regexAbsent, Change code) throws IOException {
         check(filename, encoding, regexPresent, regexAbsent, false, code);
     }
 
@@ -164,6 +151,7 @@ public class XMLOutputTestBase extends ModelTestBase
         blockLogger();
         boolean errorsFound;
         Model m = createMemModel();
+
         try(InputStream in = new FileInputStream(filename)) {
             m.read(in,base);
         }
@@ -193,18 +181,22 @@ public class XMLOutputTestBase extends ModelTestBase
             Model m2 = createMemModel();
             m2.read(new StringReader(contents), base);
             assertTrue("Data got changed.",m.isIsomorphicWith(m2));
-            if (regexPresent != null)
-                assertTrue(
-                    "Should find /" + regexPresent + "/",
-                    Pattern.compile(regexPresent,Pattern.DOTALL).matcher(contents).find()
-//                  matcher.contains(contents, awk.compile(regexPresent))
-                    );
-            if (regexAbsent != null)
-                assertTrue(
-                    "Should not find /" + regexAbsent + "/",
-                    !Pattern.compile(regexAbsent,Pattern.DOTALL).matcher(contents).find()
-//                  !matcher.contains(contents, awk.compile(regexAbsent))
-                    );
+            if (regexPresent != null) {
+                boolean b = Pattern.compile(regexPresent,Pattern.DOTALL).matcher(contents).find();
+                if ( !b ) {
+                    System.err.println("File: "+filename);
+                    System.err.println("Should find /" + regexPresent + "/ in \n"+contents);
+                }
+                assertTrue("Should find /" + regexPresent + "/ in |"+contents+"|", b);
+            }
+            if (regexAbsent != null) {
+                boolean b = !Pattern.compile(regexAbsent,Pattern.DOTALL).matcher(contents).find();
+                if ( !b ) {
+                    System.err.println("File: "+filename);
+                    System.err.println("Should not find /" + regexPresent + "/ in \n"+contents);
+                }
+                assertTrue("Should not find /" + regexAbsent + "/ in |"+contents+"|", b);
+            }
             contents = null;
         } finally {
             errorsFound = unblockLogger();

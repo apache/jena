@@ -27,7 +27,7 @@ package org.apache.jena.rdfxml.xmlinput.impl;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.apache.jena.iri.IRI ;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
 import org.apache.jena.util.XML11Char;
 import org.apache.jena.util.XMLChar;
@@ -39,7 +39,7 @@ public class ParserSupport implements ARPErrorNumbers, Names {
 		this.arp = arp;
         this.xml= xml;
 	}
-    Map<IRI, Map<String,ARPLocation>> idsUsed() {
+    Map<IRIx, Map<String,ARPLocation>> idsUsed() {
         return arp.idsUsed;
     }
     protected final XMLHandler arp;
@@ -50,7 +50,7 @@ public class ParserSupport implements ARPErrorNumbers, Names {
 	protected void checkIdSymbol(Taint taintMe, AbsXMLContext ctxt, String str)
 		throws SAXParseException {
 		if (arp.idsUsed != null) {
-			IRI uri = ctxt.uri;
+			IRIx uri = ctxt.uri;
             Map<String,ARPLocation> idsUsedForBase = idsUsed().get(uri);
 			if (idsUsedForBase == null) {
 				idsUsedForBase = new HashMap<>();
@@ -184,7 +184,7 @@ public class ParserSupport implements ARPErrorNumbers, Names {
     }
 
     protected String resolve(Taint taintMe,AbsXMLContext x, String uri) throws SAXParseException {
-        IRI ref = x.resolveAsURI(arp,taintMe,uri);
+        IRIx ref = x.resolveAsURI(arp,taintMe,uri);
         return ref.toString();
     }
 }

@@ -1,0 +1,3 @@
+_:jA12 <h^ttp:prop> "foo" .
+<http://www.w3.org/> <h^ttp:title> _:jA12 .
+<http://www.w3.org/> <h^ttp:title> "World Wide Web Consortium"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .

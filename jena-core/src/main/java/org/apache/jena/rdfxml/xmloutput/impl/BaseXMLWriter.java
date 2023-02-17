@@ -840,6 +840,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         }
         try {
             if ( relativeFlags != dftRelativeFlags ) {
+                // Use jena-iri for relativization. Backwards compatibility.
                 org.apache.jena.iri.IRI baseImpl = org.apache.jena.iri.IRIFactory.iriImplementation().create(base.str());
                 return baseImpl.relativize(uri, relativeFlags).toString();
             }

@@ -1,0 +1,157 @@
+<!--++ description-logic/premises108.rdf ** generated using webont test editor. ++-->
+<!--++ Created 27 Feb 2003 22:34:05 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises108.rdf,v 1.5 2003-12-05 05:06:34 jeremy_carroll Exp $
+-->
+<!--
+DL Test: heinsohn3.2
+Tbox tests from <a href="#ref-Heinsohn_et_al.">[Heinsohn et al.]</a>
+
+Tests incoherency caused by number restrictions and role hierarchy
+-->
+<!-- Author: Sean Bechhofer -->
+<rdf:RDF
+    xml:base="http://www.w3.org/2002/03owlt/description-logic/premises108"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+    <owl:Ontology rdf:about=""/>
+    <owl:Class rdf:about="http://oiled.man.example.net/test#Unsatisfiable">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Class>
+                        <owl:complementOf>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="http://oiled.man.example.net/test#r"/>
+                                <owl:minCardinality
+ rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+                                >2</owl:minCardinality>
+                            </owl:Restriction>
+                        </owl:complementOf>
+                    </owl:Class>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://oiled.man.example.net/test#r1"/>
+                        <owl:someValuesFrom>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <owl:Restriction>
+                                    <owl:onProperty rdf:resource="http://oiled.man.example.net/test#tt"/>
+                                    <owl:maxCardinality
+ rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+                                    >1</owl:maxCardinality>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                    <owl:onProperty rdf:resource="http://oiled.man.example.net/test#t1"/>
+                                    <owl:someValuesFrom>
+                                    <owl:Class rdf:about="http://oiled.man.example.net/test#c"/>
+                                    </owl:someValuesFrom>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://oiled.man.example.net/test#r2"/>
+                        <owl:someValuesFrom>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <owl:Restriction>
+                                    <owl:onProperty rdf:resource="http://oiled.man.example.net/test#tt"/>
+                                    <owl:maxCardinality
+ rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+                                    >1</owl:maxCardinality>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                    <owl:onProperty rdf:resource="http://oiled.man.example.net/test#t2"/>
+                                    <owl:someValuesFrom>
+                                    <owl:Class rdf:about="http://oiled.man.example.net/test#d"/>
+                                    </owl:someValuesFrom>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://oiled.man.example.net/test#r3"/>
+                        <owl:someValuesFrom>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <owl:Restriction>
+                                    <owl:onProperty rdf:resource="http://oiled.man.example.net/test#tt"/>
+                                    <owl:maxCardinality
+ rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+                                    >1</owl:maxCardinality>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                    <owl:onProperty rdf:resource="http://oiled.man.example.net/test#t3"/>
+                                    <owl:someValuesFrom>
+                                    <owl:Class rdf:about="http://oiled.man.example.net/test#e"/>
+                                    </owl:someValuesFrom>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Class rdf:about="http://oiled.man.example.net/test#a">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <owl:Class rdf:about="http://oiled.man.example.net/test#c"/>
+                    <owl:Class rdf:about="http://oiled.man.example.net/test#d"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Class rdf:about="http://oiled.man.example.net/test#c"/>
+    <owl:Class rdf:about="http://oiled.man.example.net/test#d"/>
+    <owl:Class rdf:about="http://oiled.man.example.net/test#e"/>
+    <owl:ObjectProperty rdf:about="http://oiled.man.example.net/test#r"/>
+    <owl:ObjectProperty rdf:about="http://oiled.man.example.net/test#r1">
+        <rdfs:subPropertyOf rdf:resource="http://oiled.man.example.net/test#r"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://oiled.man.example.net/test#r2">
+        <rdfs:subPropertyOf rdf:resource="http://oiled.man.example.net/test#r"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://oiled.man.example.net/test#r3">
+        <rdfs:subPropertyOf rdf:resource="http://oiled.man.example.net/test#r"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://oiled.man.example.net/test#t1">
+        <rdfs:subPropertyOf rdf:resource="http://oiled.man.example.net/test#tt"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://oiled.man.example.net/test#t2">
+        <rdfs:subPropertyOf rdf:resource="http://oiled.man.example.net/test#tt"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://oiled.man.example.net/test#t3">
+        <rdfs:subPropertyOf rdf:resource="http://oiled.man.example.net/test#tt"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://oiled.man.example.net/test#tt"/>
+    <owl:Class rdf:about="http://oiled.man.example.net/test#c">
+        <owl:disjointWith>
+            <owl:Class rdf:about="http://oiled.man.example.net/test#d"/>
+        </owl:disjointWith>
+    </owl:Class>
+    <owl:Class rdf:about="http://oiled.man.example.net/test#c">
+        <owl:disjointWith>
+            <owl:Class rdf:about="http://oiled.man.example.net/test#e"/>
+        </owl:disjointWith>
+    </owl:Class>
+    <owl:Class rdf:about="http://oiled.man.example.net/test#d">
+        <owl:disjointWith>
+            <owl:Class rdf:about="http://oiled.man.example.net/test#e"/>
+        </owl:disjointWith>
+    </owl:Class>
+</rdf:RDF>

@@ -30,7 +30,7 @@ package org.apache.jena.rdfxml.xmlinput;
 public interface ARPErrorNumbers {
     /** Used as ErrorMode to not report an error.
      * @see ARPOptions#setErrorMode
-     * 
+     *
      *
      */
     public int EM_IGNORE = 0;
@@ -39,16 +39,16 @@ public interface ARPErrorNumbers {
      */
     public int EM_WARNING = 1;
     /** Used as ErrorMode to report error, and not generate associated triples.
-     * 
-     * In the event of an error (i.e. a condition with this error mode), 
-     * no further triples involving the resources and literals associated with the error are created. 
-     * The precise definition of 'associated with' is deliberately 
+     *
+     * In the event of an error (i.e. a condition with this error mode),
+     * no further triples involving the resources and literals associated with the error are created.
+     * The precise definition of 'associated with' is deliberately
      * undefined, and may change in future releases.
-     * 
+     *
      * When the file includes.error error conditions the parsing is aborted immediately after such an error.
 Otherwise, it is possible to see all the triples, including those involving resources and literals associated with any condition, by ensuring that the error mode of every error code is WARNING or IGNORE. (i.e. ARP optionally permits all errors to be downgraded to warnings, or to be ignored).
 In this case, the precise rules which ARP uses to generate triples for ill-formed input are not defined by any standard and are subject to change with future releases.
-For input involving no errors, ARP creates triples in accordance with the RDF/XML Syntax Revised Recommendation. 
+For input involving no errors, ARP creates triples in accordance with the RDF/XML Syntax Revised Recommendation.
      * @see ARPOptions#setErrorMode
      */
     public int EM_ERROR = 2;
@@ -62,7 +62,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
     // Don't see->@see : some javadoc production then generates warning (incorrectly)
     /**
      An xml:lang attribute uses one or more of the extension
-     facilities in RFC3066 or ISO639. 
+     facilities in RFC3066 or ISO639.
      *In some way, the language specified is non-standard.
      *
      *In both default and strict modes this is ignored; a conservative application
@@ -83,7 +83,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      */
     public int IGN_XMLBASE_USED = 2;
     /**
-     Indicates that somewhere, 
+     Indicates that somewhere,
      an xml:base attribute has been used and
      changes the interpretation of some URI (either through a
      relative URI-reference or rdf:ID). (W003)
@@ -91,7 +91,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      @see #IGN_XMLBASE_USED
      */
     public int IGN_XMLBASE_SIGNIFICANT = 3;
-    
+
 	/**
 	 Indicates that no name is known for the current file being parsed.
 	 * (W005)
@@ -101,7 +101,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
 
 
     /**
-     
+
      * (W100)
      * @deprecated {@link #IGN_NO_BASE_URI_SPECIFIED}
      */
@@ -109,30 +109,30 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
     @Deprecated
     public int WARN_XMLBASE_MISSING = 100;
     /**
-     A standard rdf attribute like type or about is used 
+     A standard rdf attribute like type or about is used
      without a namespace qualifier. In default and strict mode ARP adds the
      *rdf: qualifier and reports a warning. (W101).
     */
     public int WARN_UNQUALIFIED_RDF_ATTRIBUTE = 101;
     /**
-     *Some attribute that is not an RDF keyword is used in an 
+     *Some attribute that is not an RDF keyword is used in an
        unqualified fashion. In default mode,  then the namespace of
        the enclosing element
-       is used. 
+       is used.
        In strict mode this is an error. (W102).
-   
+
      *
      */
     public int WARN_UNQUALIFIED_ATTRIBUTE = 102;
     /**
-    An attribute name in the RDF namespace has been 
+    An attribute name in the RDF namespace has been
      used that is not a reserved RDF attribute name.
      *In default and strict modes, a statement is generated with the given name as property.
      * In default and strict modes this is a warning. (W103).
      **/
     public int WARN_UNKNOWN_RDF_ATTRIBUTE = 103;
     /**
-    An element tag is not a qualified name. 
+    An element tag is not a qualified name.
      In default mode, a resource or property is generated with a malformed URI.
      * Strict mode treats this as an error. (W104).
     */
@@ -140,37 +140,37 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
 
     /**
      *The same name has been used for more than one rdf:ID or rdf:bagID,
-     * in the context of the same xml:base (if any). 
-      The default mode allows this with a warning. 
+     * in the context of the same xml:base (if any).
+      The default mode allows this with a warning.
      This check is expensive in memory. When processing very large files,
      it may be sensible to switch the check off by using
      {@link ARPOptions#setErrorMode(int,int)} to ignore this condition.
      * (W105).
      @see #WARN_LEGAL_REUSE_OF_ID
-    
+
      */
 
     public int WARN_REDEFINITION_OF_ID = 105;
     /**
-     An unrecognised value for rdf:parseType has been found. 
-     In strict mode, this error is ignored, and it is treated 
+     An unrecognised value for rdf:parseType has been found.
+     In strict mode, this error is ignored, and it is treated
      as rdf:parseType="Literal", in default mode a warning is issued.
      * (W106)
     */
     public int WARN_UNKNOWN_PARSETYPE = 106;
     /**
-     *A URI reference does not conform to the definition of RDF URI Reference. 
-       Use Exception.getMessage() for details. 
-       In default mode, the malformed URI is passed to the RDF 
+     *A URI reference does not conform to the definition of RDF URI Reference.
+       Use Exception.getMessage() for details.
+       In default mode, the malformed URI is passed to the RDF
        processing application; strict mode treats this as an error.
      * (W107)
-    
+
      *
      */
     public int WARN_MALFORMED_URI = 107;
     /**
-     *An ID symbol or other grammar production that should be an 
-       XML name is malformed. In default mode, 
+     *An ID symbol or other grammar production that should be an
+       XML name is malformed. In default mode,
       the malformed string is passed to the RDF application. (W108)
      *Strict mode treats this as an error.
      *
@@ -178,42 +178,42 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
     public int WARN_BAD_NAME = 108;
     /**
      *A namespace has been declared with a relative URI.
-      Such relative URI namespaces have been 
-       <a href="http://www.w3.org/2000/09/xppa">deprecated</a>. 
+      Such relative URI namespaces have been
+       <a href="http://www.w3.org/2000/09/xppa">deprecated</a>.
        This often results in related {@link #WARN_RELATIVE_URI}
        warnings.
        (W109)
      *
      */
     public int WARN_RELATIVE_NAMESPACE_URI_DEPRECATED = 109;
-   
+
     //   public int WARN_EMPTY_ABOUT_EACH                        =110;
     /**
      *No longer used.
      *(W111)
      * @deprecated
-    
+
      */
 
     @Deprecated
     public int WARN_BAD_XML = 111;
     /**
      *
-     *Should not happen. 
+     *Should not happen.
      *(W112)
      *@deprecated No longer used.
      */
     @Deprecated
     public int WARN_MINOR_INTERNAL_ERROR = 112;
     /**
-     *An element is tagged rdf:XXX where XXX is not a recognised RDF element name. 
+     *An element is tagged rdf:XXX where XXX is not a recognised RDF element name.
      *The typed node or property element construction is matched.
      *In both default and strict modes this is a warning. (W113).
      */
     public int WARN_UNKNOWN_RDF_ELEMENT = 113;
     /**
-     * rdf:_NNN is being used in the typed node construction. 
-     * 
+     * rdf:_NNN is being used in the typed node construction.
+     *
      * In default mode this is a warning; in strict mode it is ignored.(W114)
      */
     public int WARN_RDF_NN_AS_TYPE = 114;
@@ -232,7 +232,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
       you should ignore this condition.
      *The use of a three letter tag instead of a two letter tag or use of
       the language tag "und" is also reported under this condition, see RFC3066.
-     * 
+     *
        In default mode this is a warning, in strict mode an error. (W116)
      */
     public int WARN_BAD_XMLLANG = 116;
@@ -243,13 +243,13 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      */
     public int WARN_UNKNOWN_XML_ATTRIBUTE = 118;
     /**
-     * An XML processing instruction occurred in RDF content. 
+     * An XML processing instruction occurred in RDF content.
      * Such instructions are ignored, and are usually in error. (W119).
      * In default mode this is a warning; in strict mode it is ignored.
      */
     public int WARN_PROCESSING_INSTRUCTION_IN_RDF = 119;
     /**
-     * No longer used. 
+     * No longer used.
      * @see #WARN_REDEFINITION_OF_ID
      @deprecated Last supported in Jena 2.1 - too expensive.
      */
@@ -264,17 +264,17 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
       **/
     public int WARN_STRING_COMPOSING_CHAR = 121;
     /**
-      * No longer used. (W122). 
-      * 
+      * No longer used. (W122).
+      *
       * @deprecated Superceded by the more general {@link #WARN_BAD_NAME} */
     @Deprecated
     public int WARN_QNAME_AS_ID = 122;
 
     /**
       * No longer used. (W123)
-      * 
+      *
      * @deprecated WG decision on <a href=
-     * 
+     *
 "http://www.w3.org/2001/sw/RDFCore/20030123-issues/#williams-01"
       >williams-01</a>.
       **/
@@ -304,7 +304,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
     * and strict modes. (W126)
     */
     public int WARN_SAX_WARNING = 126;
-    
+
     /**
      * Within RDF, it is not permitted to define an
      *  XML namespace that has a namespace URI with the
@@ -320,17 +320,17 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      * error in strict mode.
      */
     public int WARN_BAD_XML_NAMESPACE_URI = 128;
-    
+
     /**
      * ARP was called with an InputSteamReader or a FileReader which used
      * an encoding differnt from that in the XML declaration. The usual fix
-     * is to use an InputStream or a FileInputStream instead. (W129).  
+     * is to use an InputStream or a FileInputStream instead. (W129).
      * A warning in default mode, an error in strict mode.
      * @see #ERR_ENCODING_MISMATCH
      */
     public int WARN_ENCODING_MISMATCH = 129;
 	/**
-	 * A base URI was required but "" was given. The 
+	 * A base URI was required but "" was given. The
 	 * RDF/XML input includes a relative URI, an rdf:ID or
 	 * some other same document reference. (W130).
 	 */
@@ -338,11 +338,11 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
 
 	/**
 		* String Literals in RDF should be in Unicode Normal Form C
-		* 
+		*
 		* *  (W131).
 		**/
 	   public int WARN_STRING_NOT_NORMAL_FORM_C = 131;
-	   
+
 	   /**
 	    * The character encoding in the XML declaration is not
 	    * fully supported. In particular, advice about
@@ -376,13 +376,13 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
 	    * (W134).
 	    */
 	   public int WARN_NONCANONICAL_IANA_NAME =134;
-       
+
        /**
         * It seems likely that the namespace for rdf: has a typo in it.
         * (W135)
         */
         public int WARN_NOT_RDF_NAMESPACE = 135;
-        
+
         /**
          *A URI reference which is a relative reference
          *has been used either as the starting base URI
@@ -391,26 +391,26 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
          *(W136)
          */
         public int WARN_RELATIVE_URI = 136;
-        
+
         /**
          * After 10000 rdf:ID attributes have been
          * read, ARP no longer checks for
          * {@link #WARN_REDEFINITION_OF_ID}.
          * This warning is to inform the user that
          * ARP behaviour has changed during parsing.
-         * 
+         *
          */
         public int WARN_BIG_FILE = 137;
-        
-    
-    /** Should not happen. 
+
+
+    /** Should not happen.
      (E200)
     @deprecated No longer used.
      */
     @Deprecated
     public int ERR_INTERNAL_ERROR = 200;
-    /** The attributes or element tags contravene the RDF grammar. 
-     (XML syntax errors are not reported with this mechanism, 
+    /** The attributes or element tags contravene the RDF grammar.
+     (XML syntax errors are not reported with this mechanism,
      but as {@link org.xml.sax.SAXParseException SAXParseException}'s).
      The detailed error message indicates the nature of the contravention.
      Future releases may specialize these codes, it is better to
@@ -418,8 +418,8 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      (E201).
      */
     public int ERR_SYNTAX_ERROR = 201;
-    /** Non-white character data has occurred where the RDF grammar 
-     does not permit it. This is a special case of ERR_SYNTAX_ERROR, 
+    /** Non-white character data has occurred where the RDF grammar
+     does not permit it. This is a special case of ERR_SYNTAX_ERROR,
      which is detected differently.
     (E202)
      */
@@ -434,7 +434,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
     @Deprecated
     public int ERR_ABOUTEACH_NOT_TOPLEVEL = 203;
     /**
-     * rdf:li is being used in the typed node construction. 
+     * rdf:li is being used in the typed node construction.
      * (E204)
      */
     public int ERR_LI_AS_TYPE = 204;
@@ -444,7 +444,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      */
     public int ERR_BAD_RDF_ELEMENT = 205;
     /**
-    An attribute name in the RDF namespace has been 
+    An attribute name in the RDF namespace has been
      used that is reserved as an RDF name, but not as an attribute.
      These are rdf:Description, rdf:aboutEach, rdf:aboutEachPrefix.
      The latter two are deprecated. (E206).
@@ -454,7 +454,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      * No longer used.
      * @see #WARN_STRING_NOT_NORMAL_FORM_C
      @deprecated See 2nd Last Call docs
-     * 
+     *
      * *  (E207).
      **/
     @Deprecated
@@ -462,18 +462,18 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
     /**
      * No longer used.(E208).
      * @deprecated WG decision on <a href=
-     * 
+     *
 "http://www.w3.org/2001/sw/RDFCore/20030123-issues/#williams-01"
       >williams-01</a>.
    */
     @Deprecated
     public int ERR_URI_NOT_NORMAL_FORM_C = 208;
     /**
-    * The SAX Parser generated an error. 
+    * The SAX Parser generated an error.
     * Treated as an error in both default and strict modes. (E209)
     */
     public int ERR_SAX_ERROR = 209;
-    
+
 
     /**
      * ARP was called with an InputSteamReader or a FileReader which used
@@ -484,9 +484,9 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      * @see #WARN_ENCODING_MISMATCH
      */
     public int ERR_ENCODING_MISMATCH = 210;
-    
+
     /**
-     * A base URI was required but not given. The 
+     * A base URI was required but not given. The
      * RDF/XML input includes a relative URI, an rdf:ID or
      * some other same document reference. (E211).
      */
@@ -500,7 +500,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      * An IOException occurred. (E213).
      */
     public int ERR_GENERIC_IO = 213;
-    
+
     /**
      * Cannot resolve a relative URI, because base URI is malformed.
      * The base URI, specified in the API call, or
@@ -525,12 +525,12 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
     @Deprecated
     public int ERR_UNABLE_TO_RECOVER = 300;
 
-    /**   The SAX Parser generated a.error error. 
-     * Resetting this mode is not supported. 
+    /**   The SAX Parser generated a.error error.
+     * Resetting this mode is not supported.
      * Treated as a.error error in both
      * default and strict modes. (E301) */
     public int ERR_SAX_FATAL_ERROR = 301;
-    
+
 
     /**   The Thread was interrupted. (E302) */
     public int ERR_INTERRUPTED = 302;

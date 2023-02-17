@@ -1,0 +1,38 @@
+<!--++ I5.26/consistent007.rdf ** generated using webont test editor. ++-->
+<!--++ Created 25 Jul 2003 20:33:24 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: consistent007.rdf,v 1.5 2003-12-05 05:09:27 jeremy_carroll Exp $
+-->
+<!--
+The blank nodes in a class description in OWL DL may not form a directed cycle.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/I5.26/consistent007" >
+    <owl:Class rdf:nodeID="B">
+      <owl:intersectionOf rdf:parseType="Collection">
+        <owl:Class rdf:ID="B"/>
+        <owl:Class>
+           <owl:unionOf rdf:parseType="Collection">
+              <rdf:Description rdf:nodeID="B"/>
+              <owl:Class rdf:ID="C"/>
+            </owl:unionOf>
+         </owl:Class>
+      </owl:intersectionOf>
+    </owl:Class>
+    <rdf:Description>
+       <rdf:type rdf:nodeID="B"/>
+    </rdf:Description>
+
+</rdf:RDF>

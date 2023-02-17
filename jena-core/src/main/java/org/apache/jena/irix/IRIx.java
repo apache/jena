@@ -194,8 +194,8 @@ public abstract class IRIx {
     public abstract boolean hasViolations();
 
     /**
-     * Handle violations by sending a boolean, indicating whether this is an error or
-     * a warning, and string message to a handler.
+     * Handle violations by sending a boolean, indicating whether this is an error (true) or
+     * a warning (false), and string message to a handler.
      */
     public abstract void handleViolations(BiConsumer<Boolean, String> violation);
 

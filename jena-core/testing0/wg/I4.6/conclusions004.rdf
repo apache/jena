@@ -1,0 +1,28 @@
+<!--++ I4.6/conclusions004.rdf ** generated using webont test editor. ++-->
+<!--++ Created 22 Apr 2003 18:55:15 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions004.rdf,v 1.5 2003-12-05 05:09:28 jeremy_carroll Exp $
+-->
+<!--
+owl:sameAs is stronger than owl:sameClassAs.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/I4.6/conclusions004" >
+    <owl:Class rdf:ID="C1">
+       <owl:sameAs>
+           <owl:Class rdf:ID="C2"/>
+       </owl:sameAs>
+    </owl:Class>
+</rdf:RDF>

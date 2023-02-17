@@ -1,0 +1,48 @@
+<!--++ miscellaneous/consistent205.rdf ** generated using webont test editor. ++-->
+<!--++ Created 16 May 2003 06:54:00 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: consistent205.rdf,v 1.5 2003-12-05 05:09:29 jeremy_carroll Exp $
+-->
+<!--
+This shows that an OWL consistency checker which does not
+support the datatype
+<a href="http://www.w3.org/TR/rdf-concepts/#section-XMLLiteral">rdf:XMLLiteral</a>
+should
+not detect inconsistencies depending on it.
+This file is <a href="#miscellaneous-204">inconsistent</a> with a <a href=
+"http://www.w3.org/TR/owl-semantics/direct#datatype_theory"
+>datatype theory</a> which supports <code>rdf:XMLLiteral</code>,
+but consistent in this test, which excludes such support.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:first="http://www.w3.org/2002/03owlt/miscellaneous/consistent205#"
+    xml:base="http://www.w3.org/2002/03owlt/miscellaneous/consistent205" >
+
+   <owl:FunctionalProperty rdf:ID="fp"/>
+   <owl:DatatypeProperty rdf:about="#fp"/>
+   <owl:Thing>
+     <first:fp rdf:parseType="Literal"
+     ><span xml:lang='en'>
+        <b>Good!</b></span
+     ></first:fp>
+     <first:fp rdf:parseType="Literal"
+     ><span xml:lang='en'>
+        <b>Bad!</b></span
+     ></first:fp>
+   </owl:Thing>
+
+
+</rdf:RDF>

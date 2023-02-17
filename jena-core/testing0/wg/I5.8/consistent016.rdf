@@ -1,0 +1,34 @@
+<!--++ I5.8/consistent016.rdf ** generated using webont test editor. ++-->
+<!--++ Created 19 Sep 2003 16:16:52 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: consistent016.rdf,v 1.3 2003-12-05 05:06:34 jeremy_carroll Exp $
+-->
+<!--
+This test illustrates the use of an undeclared user defined datatype. The document is hence in Full.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:eg="http://example.org/user/data#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/I5.8/consistent016#"
+    xml:base="http://www.w3.org/2002/03owlt/I5.8/consistent016" >
+
+    <owl:DatatypeProperty rdf:ID="prop"/>
+
+    <owl:Thing>
+      <first:prop rdf:datatype="http://example.org/user/data#type"
+      >foo</first:prop>
+    </owl:Thing>
+
+</rdf:RDF>

@@ -32,31 +32,33 @@ public class ParseException extends SAXParseException implements
         ARPErrorNumbers {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -5986976549492477885L;
     final int id;
 
     protected ParseException(int id, ARPLocation where, String msg) {
-        super(msg, where.inputName, null, where.endLine, where.endColumn);
-        this.id = id;
-        
+        this(id, where.inputName, where.endLine, where.endColumn, msg);
     }
-
-
 
     public ParseException(int id, ARPLocation where, Exception e) {
-        super(e.getMessage(), where.inputName, null, where.endLine, where.endColumn,e);
-        if (getCause()==null)
-            initCause(e);
+        this(id, where.inputName, where.endLine, where.endColumn, e);
+    }
+
+    protected ParseException(int id, String inputName, int endLine, int endColumn, String msg) {
+        super(msg, inputName, null, endLine, endColumn);
         this.id = id;
     }
 
+    protected ParseException(int id, String inputName, int endLine, int endColumn, Exception e) {
+        super(e.getMessage(), inputName, null, endLine, endColumn, e);
+        this.id = id;
+    }
 
     /**
      * The error number (from {@link ARPErrorNumbers}) related to this
      * exception.
-     * 
+     *
      * @return The error number.
      */
     public int getErrorNumber() {
@@ -86,12 +88,12 @@ public class ParseException extends SAXParseException implements
         return false;
     }
 
-    SAXParseException rootCause() {
+    private SAXParseException rootCause() {
         Exception e = getException();
         return e == null ? this : (SAXParseException) e;
     }
 
-    
+
 
 
     private boolean promoteMe;
@@ -110,7 +112,7 @@ public class ParseException extends SAXParseException implements
      * The message without location information. Use either the formatMessage
      * method, or the SAXParseException interface, to access the location
      * information.
-     * 
+     *
      * @return The exception message.
      */
     @Override
@@ -119,7 +121,7 @@ public class ParseException extends SAXParseException implements
         // turn 204 to E204
         String idStr = id != 0 ? "{" + (id < 200 ? "W" : "E")
                 + ("" + (1000 + id)).substring(1) + "} " : "";
-        
+
             return idStr + super.getMessage();
     }
 
@@ -128,7 +130,7 @@ public class ParseException extends SAXParseException implements
     /**
      * Calls e.getMessage() and also accesses line and column information for
      * SAXParseException's.
-     * 
+     *
      * @return e.getMessage() possibly prepended by error location information.
      * @param e
      *            The exception to describe.

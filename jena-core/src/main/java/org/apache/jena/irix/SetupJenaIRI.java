@@ -27,10 +27,6 @@ import org.apache.jena.iri.impl.PatternCompiler;
 /** Setup of jena-iri package IRI Factory for parsing and for checking. */
 public class SetupJenaIRI {
 
-    // Currently, the same.
-    // The difference is the treatment in IRIProviderJenaIRI and ParserProfileStd.internalMakeIRI
-    // both of which can be scheme and component sensitive.
-
     private static final IRIFactory iriFactoryInst = setupIRIFactory();
     private static final IRIFactory iriCheckerInst = setupCheckerIRIFactory();
 
@@ -41,11 +37,6 @@ public class SetupJenaIRI {
      */
     public static IRIFactory iriFactory() {
         return iriFactoryInst;
-    }
-
-    public static IRIFactory iriFactory_RDFXML() {
-        // Used in ReaderRiotRDFXML
-        return iriFactory();
     }
 
     /**

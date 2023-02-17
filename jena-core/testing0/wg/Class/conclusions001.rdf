@@ -1,0 +1,30 @@
+<!--++ Class/conclusions001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 19 Sep 2003 12:04:54 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions001.rdf,v 1.3 2003-12-05 05:09:30 jeremy_carroll Exp $
+-->
+<!--
+In OWL Full every rdfs:Class is an owl:Class, in particular
+rdfs:Class is an owl:Class.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/Class/conclusions001" >
+   <owl:Class rdf:about="http://www.w3.org/2000/01/rdf-schema#Class">
+     <owl:equivalentClass>
+       <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#Class"/>
+     </owl:equivalentClass>
+   </owl:Class>
+</rdf:RDF>

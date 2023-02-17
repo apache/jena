@@ -1,0 +1,15 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# $Id: test008a.nt,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
+#
+#####################################################################
+<http://example.org/a> <http://example.org/b> "10" .
+<http://example.org/c> <http://example.org/d> "10" .

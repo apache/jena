@@ -9,9 +9,6 @@
 
 <!--
     An augmented set of mappings for locally cached ontologies, used in the test scripts
-
-    Author: Ian Dickinson, mailto:ian_dickinson@users.sourceforge.net
-    CVS:    $Id: ont-policy.rdf,v 1.5 2003/11/06 17:37:24 ian_dickinson Exp $
 -->
 
 <DocumentManagerPolicy>

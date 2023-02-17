@@ -26,18 +26,17 @@ import java.util.*;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.iri.IRI;
-import org.apache.jena.iri.IRIFactory;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.PropertyImpl ;
 import org.apache.jena.rdf.model.impl.ResourceImpl ;
+import org.apache.jena.rdfxml.libtest.InputStreamFactoryTests;
 import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory ;
 import org.apache.jena.reasoner.test.WGReasonerTester ;
 import org.apache.jena.shared.BrokenException ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.impl.JenaParameters ;
-import org.apache.jena.shared.wg.InputStreamFactoryTests ;
 import org.apache.jena.vocabulary.OWLResults ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
@@ -94,7 +93,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     	return ARPTests.internet;
     }
     static private boolean inDevelopment = false;
-     Model loadRDF(InFactoryX in, RDFErrorHandler eh, String base)
+     Model loadRDF(InputSupplier in, RDFErrorHandler eh, String base)
         throws IOException {
         Model model = ModelFactory.createDefaultModel();
         RDFXMLReader jr = new RDFXMLReader();
@@ -160,7 +159,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     static private Resource ntriple = new ResourceImpl(testNS, "NT-Document");
 	//  static private Resource falseDoc = new ResourceImpl(testNS, "False-Document");
 
-    private IRI testDir;
+    private String testDir;
 
     private Act noop = new Act() {
         @Override
@@ -238,11 +237,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         try ( InputStream in = fact.fullyOpen(file) ) {
             if (in == null )
                 return null;
-            m = loadRDF(new InFactoryX(){
-                @Override
-                public InputStream open() throws IOException {
-                    return fact.fullyOpen(file);
-                } }, null, base + file);
+            m = loadRDF(()->fact.fullyOpen(file) , null, base + file);
         } catch (JenaException e) {
             //	System.out.println(e.getMessage());
             throw e;
@@ -260,7 +255,6 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         This is a private snapshot of the RDF Test Cases Working Draft's
         data.
      */
-    String createMe;
 
     WGTestSuite(InputStreamFactoryTests fact, String name, boolean dynamic) {
         super(name);
@@ -269,18 +263,10 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         if (dynamic)
             try {
 //            	String wgDir = ARPTests.wgTestDir.toString();
-            	System.err.println(testDir+", "+fact.getMapBase());
+            	System.err.println(testDir);
             	  wgReasoner = new WGReasonerTester("Manifest.rdf",
                           "testing/wg/");
 //                          wgDir);
-                createMe =
-                    "new "
-                        + this.getClass().getName()
-                        + "("
-                        + fact.getCreationJava()
-                        + ", \""
-                        + name
-                        + "\", false )";
                 Model m = loadRDF(fact, "Manifest.rdf");
                 //	System.out.println("OK2");
                 Model extra = loadRDF(fact, "Manifest-extra.rdf");
@@ -324,14 +310,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 
    // private ZipFile zip;
 
-    static TestSuite suite(IRI testDir, String d, String nm) {
-        return new WGTestSuite(
-            new InputStreamFactoryTests(testDir, d),
-            nm,
-            true);
-    }
-
-    static TestSuite suite(IRI testDir, IRI d, String nm) {
+    static TestSuite suite(String testDir, String d, String nm) {
         return new WGTestSuite(
             new InputStreamFactoryTests(testDir, d),
             nm,
@@ -403,6 +382,13 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 
     }
 
+    private String relativize(String uri) {
+        IRIx base2 = IRIx.create(testDir);
+        IRIx uri2 = IRIx.create(uri);
+        IRIx relative = base2.relativize(uri2);
+        return relative.str();
+    }
+
     abstract class Test extends TestCase implements RDFErrorHandler {
         Resource testID;
         String createURI() {
@@ -410,13 +396,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
         abstract String createMe();
         Test(Resource r) {
-            super(
-                WGTestSuite
-                    .this
-                    .testDir
-                    .relativize(IRIFactory.iriImplementation().create(r.getURI()),
-                            IRI.CHILD)
-                    .toString());
+            super( relativize(r.getURI()) );
             testID = r;
         }
         String create(Property p) {
@@ -437,15 +417,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             if (ntriple.equals(t)) {
                 return loadNT(factory.open(uri),uri);
             } else if (rdfxml.equals(t)) {
-                return loadRDF(
-                new InFactoryX(){
-
-					@Override
-                    public InputStream open() throws IOException {
-						return factory.open(uri);
-					}
-                }
-                , this, uri);
+                return loadRDF( ()->factory.open(uri), this, uri);
             } else {
                 fail("Unrecognized file type: " + t);
             }
@@ -533,7 +505,6 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 Model m2 = read(output);
                 super.reallyRunTest();
                 if (!m1.equals(m2)) {
-                    save(output);
                     assertTrue(m1.isIsomorphicWith( m2 ) );
                 }
             } catch (RuntimeException e) {
@@ -592,19 +563,19 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             super(nm);
             initExpected();
         }
-        void save(Property p)  {
-            if (factory.savable()) {
-                String uri = testID.getRequiredProperty(p).getResource().getURI();
-                int suffix = uri.lastIndexOf('.');
-                String saveUri = uri.substring(0, suffix) + ".ntx";
-                //   System.out.println("Saving to " + saveUri);
-                try ( OutputStream w = factory.openOutput(saveUri) ) {
-                    m1.write(w, "N-TRIPLE");
-                } catch (IOException e) {
-                    throw new JenaException( e );
-                }
-            }
-        }
+//        void save(Property p)  {
+//            if (factory.savable()) {
+//                String uri = testID.getRequiredProperty(p).getResource().getURI();
+//                int suffix = uri.lastIndexOf('.');
+//                String saveUri = uri.substring(0, suffix) + ".ntx";
+//                //   System.out.println("Saving to " + saveUri);
+//                try ( OutputStream w = factory.openOutput(saveUri) ) {
+//                    m1.write(w, "N-TRIPLE");
+//                } catch (IOException e) {
+//                    throw new JenaException( e );
+//                }
+//            }
+//        }
         void initExpectedFromModel()  {
             StmtIterator si = testID.listProperties(errorCodes);
             if (si.hasNext()) {
@@ -624,11 +595,6 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             try {
                 m1 = read(input);
 
-                if (expectedLevel == 1
-                    && expected == null
-                    && errorCnt[2] == 0
-                    && errorCnt[1] == 0)
-                    save(input);
             } catch (JenaException re) {
                 if (re.getCause() instanceof SAXException) {
                     // ignore.
@@ -716,9 +682,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     class Test2 extends TestCase implements RDFErrorHandler {
         //Resource testID;
         Test2(String r) {
-            super(
-                WGTestSuite.this.testDir.relativize(r,
-                        IRI.CHILD).toString());
+            super(relativize(r));
             //   testID = r;
         }
         Model read(String file, boolean type) throws IOException {
@@ -726,17 +690,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 return loadNT(factory.open(file),file);
             }
                 final String uri = file;
-                return loadRDF(
-                new InFactoryX(){
-
-					@Override
-                    public InputStream open() throws IOException {
-						return factory.open(uri);
-					}
-                }
-
-                , this, uri);
-
+                return loadRDF( ()->factory.open(uri) , this, uri);
         }
 
         @Override
@@ -920,7 +874,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 if (re.getCause() instanceof SAXException) {
                     // ignore.
                 } else {
-                    fail(re.getMessage());
+                    fail(re.getMessage()+"\n File: "+in);
                 }
             } catch (IOException ioe) {
                 fail(ioe.getMessage());

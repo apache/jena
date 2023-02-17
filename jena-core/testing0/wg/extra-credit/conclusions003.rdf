@@ -1,0 +1,40 @@
+<!--++ extra-credit/conclusions003.rdf ** generated using webont test editor. ++-->
+<!--++ Created 7 May 2003 12:12:13 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions003.rdf,v 1.5 2003-12-05 05:09:31 jeremy_carroll Exp $
+-->
+<!--
+Prime factorization can be expressed in OWL Full.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/extra-credit/conclusions003" >
+    
+    <owl:Class>
+         <owl:oneOf rdf:parseType="Collection">
+            <rdf:Description rdf:about="premises003#N"/>
+            <rdf:Description rdf:about="premises003#M"/>
+         </owl:oneOf>
+         <owl:oneOf rdf:parseType="Collection">
+            <rdf:Description>
+              <owl:sameAs rdf:datatype=
+"http://www.w3.org/2001/XMLSchema#int">7</owl:sameAs>
+            </rdf:Description>
+            <rdf:Description>
+              <owl:sameAs rdf:datatype=
+"http://www.w3.org/2001/XMLSchema#int">11</owl:sameAs>
+            </rdf:Description>
+         </owl:oneOf>
+    </owl:Class>
+</rdf:RDF>

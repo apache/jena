@@ -35,7 +35,7 @@ import org.apache.jena.sparql.util.Context;
 /** Set properties of the RDF/XML parser (ARP) */
 public class ExRIOT_RDFXML_ReaderProperties {
     static { LogCtl.setLogging(); }
-    
+
     public static void main(String[] args) {
         // Inline illustrative data.
         String data = StrUtils.strjoinNL
@@ -49,15 +49,15 @@ public class ExRIOT_RDFXML_ReaderProperties {
         System.out.println(data);
         System.out.println();
         // Properties to be set.
-        // This is a map propertyName->value 
+        // This is a map propertyName->value
         Map<String, Object> properties = new HashMap<>();
         // See class ARPErrorNumbers for the possible ARP properies.
         properties.put("WARN_BAD_NAME", "EM_IGNORE");
-        
+
         // Put a properties object into the Context.
         Context cxt = new Context();
         cxt.set(SysRIOT.sysRdfReaderProperties, properties);
-        
+
         Model model = ModelFactory.createDefaultModel();
         // Build and run a parser
         RDFParser.create()

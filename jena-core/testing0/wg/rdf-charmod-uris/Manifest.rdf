@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:test="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema/"
+>
+
+
+<test:PositiveParserTest rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test001">
+
+   <test:issue rdf:resource="http://www.w3.org/2000/03/rdf-tracking/#rdf-charmod-uris" />
+
+   <test:status>APPROVED</test:status>
+   <test:approval rdf:resource="http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Apr/0474.html" />
+
+   <test:discussion rdf:resource="http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Apr/0113.html" />
+   <test:description>
+	A uriref is allowed to match non-US ASCII forms 
+        conforming to Unicode Normal Form C.
+        No escaping algorithm is applied.
+   </test:description>
+
+   <test:inputDocument>
+     <test:RDF-XML-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test001.rdf" />
+   </test:inputDocument>
+
+   <test:outputDocument>
+      <test:NT-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test001.nt" />
+   </test:outputDocument>
+
+</test:PositiveParserTest>
+
+<test:PositiveParserTest rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test002">
+
+   <test:issue rdf:resource="http://www.w3.org/2000/03/rdf-tracking/#rdf-charmod-uris" />
+
+   <test:status>APPROVED</test:status>
+   <test:approval rdf:resource="http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Apr/0474.html" />
+
+   <test:discussion rdf:resource="http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Apr/0113.html" />
+   <test:description>
+	A uriref which already has % escaping is permitted.
+        No unescaping algorithm is applied.
+   </test:description>
+
+   <test:inputDocument>
+     <test:RDF-XML-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test002.rdf" />
+   </test:inputDocument>
+
+   <test:outputDocument>
+      <test:NT-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test002.nt" />
+   </test:outputDocument>
+
+</test:PositiveParserTest>
+
+
+
+<test:NegativeParserTest rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/error001">
+
+   <test:issue rdf:resource="http://www.w3.org/2000/03/rdf-tracking/#rdf-charmod-uris" />
+
+   <test:status>APPROVED</test:status>
+   <test:approval rdf:resource="http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Apr/0474.html" />
+
+   <test:discussion rdf:resource="http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Apr/0113.html" />
+   <test:description>
+	Test for failure for uriref not in Normal Form C.
+   </test:description>
+
+   <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/error001.rdf" />
+   </test:inputDocument>
+
+</test:NegativeParserTest>
+
+
+<test:NegativeEntailmentTest rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test003">
+
+   <test:issue rdf:resource="http://www.w3.org/2000/03/rdf-tracking/#rdf-charmod-uris" />
+   <test:status>APPROVED</test:status>
+   <test:approval rdf:resource="http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Apr/0474.html" />
+
+   <test:discussion rdf:resource="http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Apr/0113.html" />
+   
+   <test:description>
+     An international URI ref and its %-escaped form label
+     different nodes in the graph.
+     No model theoretic relationship holds between them.
+   </test:description>
+
+   <test:entailmentRules rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+
+   <test:premiseDocument>
+     <test:RDF-XML-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test001.rdf" />
+   </test:premiseDocument>
+
+   <test:conclusionDocument>
+     <test:RDF-XML-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test002.rdf" />
+   </test:conclusionDocument>
+
+</test:NegativeEntailmentTest>
+
+
+<test:NegativeEntailmentTest rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test004">
+
+   <test:issue rdf:resource="http://www.w3.org/2000/03/rdf-tracking/#rdf-charmod-uris" />
+   <test:status>APPROVED</test:status>
+   <test:approval rdf:resource="http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Apr/0474.html" />
+
+   <test:discussion rdf:resource="http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Apr/0113.html" />
+   
+   <test:description>
+     An international URI ref and its %-escaped form label
+     different nodes in the graph.
+     No model theoretic relationship holds between them.
+   </test:description>
+
+   <test:entailmentRules rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />
+
+   <test:premiseDocument>
+     <test:RDF-XML-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test002.rdf" />
+   </test:premiseDocument>
+
+   <test:conclusionDocument>
+     <test:RDF-XML-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test001.rdf" />
+   </test:conclusionDocument>
+
+</test:NegativeEntailmentTest>
+
+
+</rdf:RDF>
+

@@ -1,0 +1,29 @@
+<!--++ imports/main006.rdf ** generated using webont test editor. ++-->
+<!--++ Created 10 Jan 2003 08:10:35 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: main006.rdf,v 1.6 2003-12-05 05:09:26 jeremy_carroll Exp $
+-->
+<!--
+The type declarations required by <a href="#I5.3">semantic layering</a>
+can be imported into an OWL Lite or OWL DL file.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/imports/imports006#"
+    xml:base="http://www.w3.org/2002/03owlt/imports/main006" >
+    <owl:Ontology rdf:about="">
+      <owl:imports rdf:resource="imports006"/>
+    </owl:Ontology>
+    <first:c rdf:ID="x"/>
+</rdf:RDF>

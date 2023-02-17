@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<RDF:RDF
+     xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Seq RDF:ID="pref-advanced.xul">
+    <RDF:li>chrome://messenger/content/mailPrefsOverlay.xul</RDF:li>
+  </RDF:Seq>
+  <RDF:Seq RDF:ID="activation.xul">
+    <RDF:li>chrome://messenger/content/mailActivationOverlay.xul</RDF:li>
+  </RDF:Seq>
+  <RDF:Seq RDF:ID="utilityOverlay.xul">
+    <RDF:li>chrome://aim/content/AimGlobalOverlay.xul</RDF:li>
+  </RDF:Seq>
+  <RDF:Seq RDF:ID="bookmarks.xul">
+    <RDF:li>chrome://messenger/content/mailNavigatorOverlay.xul</RDF:li>
+  </RDF:Seq>
+  <RDF:Seq RDF:ID="bm-find.xul">
+    <RDF:li>chrome://messenger/content/mailNavigatorOverlay.xul</RDF:li>
+  </RDF:Seq>
+  <RDF:Seq RDF:ID="history.xul">
+    <RDF:li>chrome://messenger/content/mailNavigatorOverlay.xul</RDF:li>
+  </RDF:Seq>
+  <RDF:Seq RDF:ID="preftree.xul">
+    <RDF:li>chrome://editor/content/editorPrefsOverlay.xul</RDF:li>
+    <RDF:li>chrome://messenger/content/mailPrefsOverlay.xul</RDF:li>
+    <RDF:li>chrome://communicator/content/pref/pref-IM_overlay.xul</RDF:li>
+  </RDF:Seq>
+  <RDF:Seq RDF:ID="tasksOverlay.xul">
+    <RDF:li>chrome://net2phone/content/Net2PhoneTaskMenu.xul</RDF:li>
+    <RDF:li>chrome://messenger/content/mailTasksOverlay.xul</RDF:li>
+    <RDF:li>chrome://aim/content/AimTaskMenu.xul</RDF:li>
+  </RDF:Seq>
+  <RDF:Seq RDF:ID="pref-appearance.xul">
+    <RDF:li>chrome://editor/content/editorPrefsOverlay.xul</RDF:li>
+    <RDF:li RDF:resource="chrome://messenger/content/mailPrefsOverlay.xul"/>
+    <RDF:li>chrome://communicator/content/pref/pref-IM-appearance_overlay.xul</RDF:li>
+  </RDF:Seq>
+</RDF:RDF>

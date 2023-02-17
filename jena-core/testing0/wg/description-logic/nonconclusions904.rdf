@@ -1,0 +1,56 @@
+<!--++ description-logic/nonconclusions904.rdf ** generated using webont test editor. ++-->
+<!--++ Created 28 Feb 2003 05:54:50 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: nonconclusions904.rdf,v 1.5 2003-12-05 05:06:38 jeremy_carroll Exp $
+-->
+<!--
+This non-entailment can be replicated for any three natural numbers
+<em>i</em>, <em>j</em>, <em>k</em> such that <em>i</em>+<em>j</em> &lt; <em>k</em>. In this example, they are chosen as 200, 300 and 600.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/description-logic/nonconclusions904" >
+
+  <owl:Class>
+    <owl:intersectionOf rdf:parseType="Collection">
+       <owl:Restriction>
+          <owl:onProperty>
+            <owl:ObjectProperty rdf:about="premises904#p"/>
+          </owl:onProperty>
+          <owl:minCardinality rdf:datatype=
+"http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+          >200</owl:minCardinality>
+       </owl:Restriction>
+       <owl:Restriction>
+          <owl:onProperty>
+            <owl:ObjectProperty rdf:about="premises904#q"/>
+          </owl:onProperty>
+          <owl:minCardinality rdf:datatype=
+"http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+          >300</owl:minCardinality>
+       </owl:Restriction>
+    </owl:intersectionOf>
+    <rdfs:subClassOf>
+       <owl:Restriction>
+          <owl:onProperty>
+            <owl:ObjectProperty rdf:about="premises904#r"/>
+          </owl:onProperty>
+          <owl:minCardinality rdf:datatype=
+"http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+          >600</owl:minCardinality>
+       </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+</rdf:RDF>

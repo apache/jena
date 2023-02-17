@@ -40,12 +40,12 @@ public class ExRIOT_RDFXML_WriteProperties {
             );
         Model model = ModelFactory.createDefaultModel();
         RDFDataMgr.read(model, new StringReader(x), null, Lang.TURTLE);
-        
+
         // Write, default settings.
         writePlain(model);
         System.out.println();
 
-        // Write, with properties 
+        // Write, with properties
         writeProperties(model);
     }
 

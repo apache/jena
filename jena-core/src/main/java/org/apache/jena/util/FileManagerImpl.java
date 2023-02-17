@@ -440,38 +440,8 @@ public class FileManagerImpl implements FileManager
         return model ;
     }
 
-    private static String chooseBaseURI(String baseURI)
-    {
-        String scheme = IRIs.scheme(baseURI) ;
-
-        if ( scheme != null )
-        {
-            if ( scheme.equals("file") )
-            {
-                if ( ! baseURI.startsWith("file:///") )
-                {
-                    try {
-                        // Fix up file URIs.  Yuk.
-                        String tmp = baseURI.substring("file:".length()) ;
-                        File f = new File(tmp) ;
-                        baseURI = "file:///"+f.getCanonicalPath() ;
-                        baseURI = baseURI.replace('\\','/') ;
-
-//                        baseURI = baseURI.replace(" ","%20");
-//                        baseURI = baseURI.replace("~","%7E");
-                        // Convert to URI.  Except that it removes ///
-                        // Could do that and fix up (again)
-                        //java.net.URL u = new java.net.URL(baseURI) ;
-                        //baseURI = u.toExternalForm() ;
-                    } catch (Exception ex) {}
-                }
-            }
-            return baseURI ;
-        }
-
-        if ( baseURI.startsWith("/") )
-            return "file://"+baseURI ;
-        return "file:"+baseURI ;
+    private static String chooseBaseURI(String baseURI) {
+        return IRIs.resolve(baseURI);
     }
 
     /** Open a file using the locators of this FileManager */
