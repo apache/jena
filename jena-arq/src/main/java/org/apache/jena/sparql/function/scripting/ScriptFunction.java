@@ -43,6 +43,10 @@ public class ScriptFunction extends FunctionBase {
 
     static {
         System.setProperty("polyglot.engine.WarnInterpreterOnly", "false");
+        // Enable es6 in Nashorn
+        if (System.getProperty("nashorn.args") == null) {
+            System.setProperty("nashorn.args", "--language=es6");
+        }
     }
 
     private static void checkScriptingEnabled() {
