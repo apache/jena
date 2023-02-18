@@ -32,10 +32,20 @@ import org.junit.runner.RunWith;
 @Manifests({
     "testing/ARQ/Scripting/manifest.ttl"
 })
-// TODO: Add more languages
+
+
+
 public class TestSPARQL_Scripting {
     static final String JS_LIB_FILE = "testing/ARQ/Scripting/test-library.js";
-    
+
+    @BeforeClass public static void enableScripting() {
+        System.setProperty(ARQ.systemPropertyScripting, "true");
+    }
+
+    @AfterClass public static void disbleScripting() {
+        System.clearProperty(ARQ.systemPropertyScripting);
+    }
+
     @BeforeClass
     public static void setupJS() {
         Context cxt = ARQ.getContext();
@@ -43,7 +53,7 @@ public class TestSPARQL_Scripting {
         cxt.set(ARQ.symJavaScriptFunctions, "function inc(x) { return x+1 }");
         ScriptFunction.clearEngineCache();
     }
-    
+
     @AfterClass
     public static void unsetupJS() {
         Context cxt = ARQ.getContext();

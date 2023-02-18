@@ -40,9 +40,17 @@ import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.function.FunctionBase;
 
 public class ScriptFunction extends FunctionBase {
-	static {
+
+    static {
         System.setProperty("polyglot.engine.WarnInterpreterOnly", "false");
     }
+
+    private static void checkScriptingEnabled() {
+        String x = System.getProperty(ARQ.systemPropertyScripting);
+        boolean scriptingEnabled = "true".equals(x);
+        if ( !scriptingEnabled )
+            throw new ExprException("Scripting not enabled");
+	}
 
     private static final ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 
@@ -78,6 +86,7 @@ public class ScriptFunction extends FunctionBase {
 
     @Override
     public void checkBuild(String uri, ExprList args) {
+        checkScriptingEnabled();
         if (!isScriptFunction(uri))
             throw new ExprException("Invalid URI: " + uri);
         String localPart = uri.substring(ARQ_NS.length());
@@ -99,6 +108,7 @@ public class ScriptFunction extends FunctionBase {
 
     @Override
     public NodeValue exec(List<NodeValue> args) {
+        checkScriptingEnabled();
         Invocable engine = getEngine();
 
         try {
@@ -149,7 +159,7 @@ public class ScriptFunction extends FunctionBase {
         if (!(engine instanceof Invocable))
             throw new ExprException("Script engine  " + engine.getFactory().getEngineName() + " doesn't implement Invocable");
 
-        String functionLibFile = ARQ.getContext().getAsString(LanguageSymbols.scriptLibrary(lang));
+        String functionLibFile = ARQ.getContext().getAsString(ScriptLangSymbols.scriptLibrary(lang));
         if (functionLibFile != null) {
             try (Reader reader = Files.newBufferedReader(Path.of(functionLibFile), StandardCharsets.UTF_8)) {
                 engine.eval(reader);
@@ -162,7 +172,7 @@ public class ScriptFunction extends FunctionBase {
             }
         }
 
-        String functions = ARQ.getContext().getAsString(LanguageSymbols.scriptFunctions(lang));
+        String functions = ARQ.getContext().getAsString(ScriptLangSymbols.scriptFunctions(lang));
         if (functions != null) {
             try {
                 engine.eval(functions);
