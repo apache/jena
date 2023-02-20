@@ -130,30 +130,12 @@
 
     <dependency>
       <groupId>io.opentelemetry</groupId>
-      <artifactId>opentelemetry-sdk-metrics-testing</artifactId>
-      <version>1.13.0-alpha</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.opentelemetry</groupId>
-      <artifactId>opentelemetry-exporters-inmemory</artifactId>
-      <version>0.9.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-exporter-otlp</artifactId>
     </dependency>
 
     <dependency>
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-semconv</artifactId>
-      <version>${ver.otel-alpha}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.opentelemetry</groupId>
-      <artifactId>opentelemetry-sdk-extension-autoconfigure</artifactId>
       <version>${ver.otel-alpha}</version>
     </dependency>
 
@@ -186,10 +168,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jul-to-slf4j</artifactId>
-    </dependency>
   </dependencies>
 
   <build>
