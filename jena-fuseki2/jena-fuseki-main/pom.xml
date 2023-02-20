@@ -32,7 +32,6 @@
 
   <properties>
     <automatic.module.name>org.apache.jena.fuseki.main</automatic.module.name>
-    <ver.otel-alpha>1.20.1-alpha</ver.otel-alpha>
   </properties>
 
   <dependencyManagement>
@@ -40,7 +39,7 @@
       <dependency>
         <groupId>io.opentelemetry</groupId>
         <artifactId>opentelemetry-bom</artifactId>
-        <version>1.20.1</version>
+        <version>1.23.1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -114,7 +113,7 @@
     <dependency>
       <groupId>io.opentelemetry.javaagent</groupId>
       <artifactId>opentelemetry-javaagent</artifactId>
-      <version>1.20.2</version>
+      <version>1.23.0</version>
       <scope>runtime</scope>
     </dependency>
 
@@ -136,7 +135,7 @@
     <dependency>
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-semconv</artifactId>
-      <version>${ver.otel-alpha}</version>
+      <version>1.23.1-alpha</version>
     </dependency>
 
     <dependency>
@@ -147,7 +146,7 @@
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-runtime-metrics</artifactId>
-      <version>${ver.otel-alpha}</version>
+      <version>1.23.0-alpha</version>
     </dependency>
 
     <dependency>
