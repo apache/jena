@@ -21,6 +21,7 @@ package org.apache.jena.fuseki.main.fmods;
 
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.instrumentation.runtimemetrics.*;
+import org.apache.jena.Jena;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
@@ -107,7 +108,7 @@ public class FusekiOpenTelemetryModule {
         }
 
         public static void buildMetrics(DataAccessPoint dap) {
-            Meter meter = JenaMetrics.getMeter("Jena");
+            Meter meter = JenaMetrics.getMeter("Jena", Jena.VERSION);
             DataService dataService = dap.getDataService();
 
             for (Operation operation : dataService.getOperations()) {

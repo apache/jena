@@ -86,20 +86,6 @@ public class JenaMetrics {
     }
 
     /**
-     * Gets or create the Meter instance for the given library
-     * <p>
-     * Library version detection will be attempted by calling {@link LibraryVersion#get(String)}, see
-     * {@link LibraryVersion} for more details.
-     * </p>
-     *
-     * @param library Library
-     * @return Meter instance
-     */
-    public static Meter getMeter(String library) {
-        return getMeter(library, LibraryVersion.get(library));
-    }
-
-    /**
      * Gets or creates the Meter instance for the given library
      *
      * @param library Library name
