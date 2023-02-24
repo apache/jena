@@ -92,7 +92,7 @@ public class IOX {
 
     /** Write a file safely - the change happens (the function returns true) or
      * something went wrong (the function throws a runtime exception) and the file is not changed.
-     * Note that the tempfile must be in the same directory as the actual file so an OS-atomic rename can be done.
+     * Note that the tmpfile must be in the same directory as the actual file so an OS-atomic rename can be done.
      */
     public static boolean safeWrite(Path file, Path tmpFile, IOConsumer<OutputStream> writerAction) {
         try {

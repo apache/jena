@@ -31,7 +31,11 @@ public class CacheFactory {
         return new CacheGuava<>(maxSize) ;
     }
 
-    /** Create a null cache */
+    /**
+     * Create a null cache.
+     * This cache never retains a value and always
+     * evaluates in {@link Cache#getOrFill}.
+     */
     public static <Key, Value> Cache<Key, Value> createNullCache() {
         return new Cache0<>() ;
     }
@@ -49,7 +53,7 @@ public class CacheFactory {
     /**
      * Create set-cache, rather than a map-cache.
      * The cache is thread-safe for single operations.
-     * 
+     *
      * @see Pool
      */
     public static <Obj> CacheSet<Obj> createCacheSet(int size) {
