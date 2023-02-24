@@ -19,11 +19,7 @@
 package org.apache.jena.query.text ;
 
 import java.io.IOException ;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry ;
 import java.util.function.UnaryOperator;
 
@@ -33,7 +29,10 @@ import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.query.text.analyzer.*;
+import org.apache.jena.query.text.analyzer.IndexingMultilingualAnalyzer;
+import org.apache.jena.query.text.analyzer.MultilingualAnalyzer;
+import org.apache.jena.query.text.analyzer.QueryMultilingualAnalyzer;
+import org.apache.jena.query.text.analyzer.Util;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.Var;
@@ -43,35 +42,15 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexFormatTooOldException;
-import org.apache.lucene.index.IndexOptions;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.document.*;
+import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.classic.ParseException ;
 import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.apache.lucene.queryparser.complexPhrase.ComplexPhraseQueryParser ;
 import org.apache.lucene.queryparser.surround.query.BasicQueryFactory;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.IndexSearcher ;
-import org.apache.lucene.search.Query ;
-import org.apache.lucene.search.ScoreDoc ;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.highlight.Highlighter;
-import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
-import org.apache.lucene.search.highlight.QueryScorer;
-import org.apache.lucene.search.highlight.SimpleFragmenter;
-import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
-import org.apache.lucene.search.highlight.TextFragment ;
+import org.apache.lucene.search.*;
+import org.apache.lucene.search.highlight.*;
 import org.apache.lucene.store.Directory ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -82,7 +61,7 @@ public class TextIndexLucene implements TextIndex {
     private static int             MAX_N    = 10000 ;
     // prefix for storing datatype URIs in the index, to distinguish them from language tags
     private static final String    DATATYPE_PREFIX = "^^";
-    
+
     private static final String    RIGHT_ARROW = "\u21a6";
     private static final String    LEFT_ARROW  = "\u21a4";
     private static final String    DIVIDES  =    "\u2223";
@@ -111,7 +90,7 @@ public class TextIndexLucene implements TextIndex {
     private final boolean          isMultilingual ;
     private final int              maxBasicQueries ;
     private final boolean          ignoreIndexErrors ;
-    
+
     private Map<String, Analyzer> multilingualQueryAnalyzers = new HashMap<>();
 
     // The IndexWriter can't be final because we may have to recreate it if rollback() is called.
@@ -137,7 +116,7 @@ public class TextIndexLucene implements TextIndex {
             //multilingual index cannot work without lang field
             docDef.setLangField("lang");
         }
-        
+
         this.ignoreIndexErrors = config.ignoreIndexErrors ;
 
 
@@ -171,7 +150,7 @@ public class TextIndexLucene implements TextIndex {
         this.ftText = config.isValueStored() ? TextField.TYPE_STORED : TextField.TYPE_NOT_STORED ;
         // the following is used for lang derived fields
         this.ftTextNotStored = TextField.TYPE_NOT_STORED ;
-        this.ftTextStoredNoIndex = new FieldType(); 
+        this.ftTextStoredNoIndex = new FieldType();
         this.ftTextStoredNoIndex.setIndexOptions(IndexOptions.NONE);
         this.ftTextStoredNoIndex.setStored(true);
         this.ftTextStoredNoIndex.freeze();
@@ -452,9 +431,11 @@ public class TextIndexLucene implements TextIndex {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
         List<Map<String, Node>> records = new ArrayList<>() ;
+        StoredFields sFields = indexSearcher.storedFields();
 
         for ( ScoreDoc sd : sDocs ) {
-            Document doc = indexSearcher.doc(sd.doc) ;
+            Document doc = sFields.document(sd.doc);
+
             String[] x = doc.getValues(docDef.getEntityField()) ;
             if ( x.length != 1 ) {}
             String uriStr = x[0] ;
@@ -541,24 +522,25 @@ public class TextIndexLucene implements TextIndex {
             return  UnaryOperator.identity();
         }
     }
-    
+
     private String getDocField(Document doc, List<String> fields) {
         for (String field : fields) {
             if (doc.get(field) != null) {
                 return field;
             }
         }
-        
+
         return null;
     }
 
-    private List<TextHit> simpleResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, List<String> fields) 
-            throws IOException 
+    private List<TextHit> simpleResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, List<String> fields)
+            throws IOException
     {
         List<TextHit> results = new ArrayList<>() ;
+        StoredFields sFields = indexSearcher.storedFields();
 
         for ( ScoreDoc sd : sDocs ) {
-            Document doc = indexSearcher.doc(sd.doc) ;
+            Document doc = sFields.document(sd.doc);
             log.trace("simpleResults[{}]: fields: {} doc: {}", sd.doc, fields, doc) ;
             String entity = doc.get(docDef.getEntityField()) ;
 
@@ -591,7 +573,7 @@ public class TextIndexLucene implements TextIndex {
             TextHit hit = new TextHit(subject, sd.score, literal, graph, prop);
             results.add(hit) ;
         }
-        
+
         return results ;
     }
 
@@ -604,7 +586,7 @@ public class TextIndexLucene implements TextIndex {
         String patternExpr = null;
         boolean joinHi = true;
         boolean joinFrags = true;
-        
+
         public HighlightOpts(String optStr) {
             String[] opts = optStr.trim().split("\\|");
             for (String opt : opts) {
@@ -653,28 +635,28 @@ public class TextIndexLucene implements TextIndex {
 
         return sb.toString();
     }
-    
-    private List<TextHit> highlightResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, List<String> fields, String highlight, String queryLang) 
-            throws IOException, InvalidTokenOffsetsException { 
+
+    private List<TextHit> highlightResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, List<String> fields, String highlight, String queryLang)
+            throws IOException, InvalidTokenOffsetsException {
         List<TextHit> results = new ArrayList<>() ;
-        
+
         HighlightOpts opts = new HighlightOpts(highlight);
 
         SimpleHTMLFormatter formatter = new SimpleHTMLFormatter(opts.start, opts.end);
         Highlighter highlighter = new Highlighter(formatter, new QueryScorer(query));
         highlighter.setTextFragmenter(new SimpleFragmenter(opts.fragSize));
+        StoredFields sFields = indexSearcher.storedFields();
 
         for ( ScoreDoc sd : sDocs ) {
-            Document doc = indexSearcher.doc(sd.doc) ;
+            Document doc = sFields.document(sd.doc);
             String entity = doc.get(docDef.getEntityField()) ;
 
             Node literal = null;
-            
             String field = getDocField(doc, fields) ;
             String lexical = doc.get(field);
             Collection<Node> props = docDef.getPredicates(field);
-            Node prop = props.isEmpty() ? null : props.iterator().next(); // pick one - should be only one normally         
-            
+            Node prop = props.isEmpty() ? null : props.iterator().next(); // pick one - should be only one normally
+
             String docLang = doc.get(docDef.getLangField()) ;
             String effectiveField = queryLang != null ? field + "_" + Util.getEffectiveLang(docLang, queryLang) : field;
             log.trace("highlightResults[{}]: {}, field: {}, lexical: {}, docLang: {}, effectiveField: {}", sd.doc, doc, field, lexical, docLang, effectiveField) ;
@@ -696,7 +678,7 @@ public class TextIndexLucene implements TextIndex {
         }
         return results ;
     }
-    
+
     private Analyzer getQueryAnalyzer(boolean usingSearchFor, String lang) {
         if (usingSearchFor) {
             Analyzer qa = multilingualQueryAnalyzers.get(lang);
@@ -709,11 +691,11 @@ public class TextIndexLucene implements TextIndex {
             return queryAnalyzer;
         }
     }
-    
+
     private String composeQField(String qs, String textField, String lang, boolean usingSearchFor, List<String> searchForTags) {
         String textClause = "";
-        
-        if (usingSearchFor) {            
+
+        if (usingSearchFor) {
             for (String tag : searchForTags) {
                 String tf = textField + "_" + tag;
                 textClause += tf + ":" + qs + " ";
@@ -724,15 +706,15 @@ public class TextIndexLucene implements TextIndex {
             }
             textClause = textField + ":" + qs + " ";
         }
-        
+
         return textClause;
     }
 
-    private List<TextHit> query$(IndexReader indexReader, List<Resource> props, String qs, UnaryOperator<Query> textQueryExtender, String graphURI, String lang, int limit, String highlight) 
-            throws ParseException, IOException, InvalidTokenOffsetsException 
+    private List<TextHit> query$(IndexReader indexReader, List<Resource> props, String qs, UnaryOperator<Query> textQueryExtender, String graphURI, String lang, int limit, String highlight)
+            throws ParseException, IOException, InvalidTokenOffsetsException
     {
         List<String> textFields = new ArrayList<>();
-        String qString = "";               
+        String qString = "";
         String langField = getDocDef().getLangField();
 
         // the list will have at least the lang as an element
@@ -760,19 +742,19 @@ public class TextIndexLucene implements TextIndex {
                 textFields.add(textField);
             }
         }
-        
+
         log.trace("query$ PROCESSING LIST of properties: {}; Lucene queryString: {}; textFields: {} ", props, qString, textFields) ;
         for (String textField : textFields) {
             qString += composeQField(qs, textField, lang, usingSearchFor, searchForTags);
         }
-        
+
         // we need to check whether there was a lang arg either on the query string
-        // or explicitly as an input arg and add it to the qString; otherwise, Lucene 
+        // or explicitly as an input arg and add it to the qString; otherwise, Lucene
         // won't be able to properly process the query
         if (textFields.isEmpty() && lang != null) {
             qString += composeQField(qs, docDef.getPrimaryField(), lang, usingSearchFor, searchForTags);
         }
-        
+
         log.trace("query$ PROCESSED LIST of properties: {} with resulting qString: {} ", props, qString) ;
 
         // add a clause for the lang if not usingSearchFor and there is a defined langFIeld in the config
@@ -785,7 +767,7 @@ public class TextIndexLucene implements TextIndex {
             String escaped = QueryParserBase.escape(graphURI) ;
             qString = "(" + qString + ") AND " + getDocDef().getGraphField() + ":" + escaped ;
         }
-        
+
         Analyzer qa = getQueryAnalyzer(usingSearchFor, lang);
         Query textQuery = parseQuery(qString, qa);
         Query query = textQueryExtender.apply(textQuery);
@@ -798,7 +780,7 @@ public class TextIndexLucene implements TextIndex {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
 
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
-        
+
         // if there were no explicit textFields supplied then Lucene used
         // the default field if defined otherwise Lucene simply interpreted the qs
         // as presented - perhaps with multiple fields indexed on a separate system.
@@ -807,7 +789,7 @@ public class TextIndexLucene implements TextIndex {
         if (textFields.isEmpty()) {
             textFields.add(docDef.getPrimaryField());
         }
-        
+
         if (highlight != null) {
             return highlightResults(sDocs, indexSearcher, query, textFields, highlight, lang);
         } else {
