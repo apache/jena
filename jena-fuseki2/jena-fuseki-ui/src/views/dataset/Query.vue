@@ -188,21 +188,18 @@ export default {
       const curriedCreateShareableLink = yasqe => {
         return createShareableLink(yasqe.getValue(), this.$route.path)
       }
-      console.log(this.currentDatasetUrl)
       yasgui = new Yasgui(yasguiElement, {
-        yasr: {
-          persistenceId: null,
-        },
         requestConfig: {
           endpoint: this.$fusekiService.getFusekiUrl(this.currentDatasetUrl)
+        },
+        copyEndpointOnNewTab: false,
+        yasr: {
+          persistenceId: null,
         },
         // NOTE: the full screen functionality was removed from YASQE: https://github.com/Triply-Dev/YASGUI.YASQE-deprecated/issues/139#issuecomment-573656137
         yasqe: {
           showQueryButton: true,
           resizeable: true,
-          requestConfig: {
-            endpoint: this.$fusekiService.getFusekiUrl(this.currentDatasetUrl)
-          },
           createShareableLink: curriedCreateShareableLink
         }
       })
@@ -325,4 +322,8 @@ export default {
 //  }
 //}
 @import '@zazuko/yasgui/build/yasgui.min.css';
+
+.yasgui .autocompleteWrapper {
+  display: none !important;
+}
 </style>
