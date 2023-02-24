@@ -154,7 +154,7 @@ public class OntResourceImpl
      */
     @Override
     public boolean isOntLanguageTerm() {
-        if (!isAnon()) {
+        if ( isURIResource() ) {
             for ( String KNOWN_LANGUAGE : KNOWN_LANGUAGES )
             {
                 if ( getURI().startsWith( KNOWN_LANGUAGE ) )
