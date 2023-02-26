@@ -37,6 +37,7 @@ import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
 /** Additional ARP tests */
+@SuppressWarnings("deprecation")
 public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbers {
 
 	static private Logger logger = LoggerFactory.getLogger(TestsARP.class);

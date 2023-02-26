@@ -64,7 +64,7 @@ import org.xml.sax.SAXException;
  * <p>See <a href="/documentation/io/index.html">ARP documentation</a> for more information.</p>
  * Includes contributions from Simon Raboczi and Andrew Newman
  */
-public class ARP implements ARPConfig
+public class ARP0 implements ARPConfig
 {
 
     final private RDFXMLParser arpf;
@@ -72,7 +72,7 @@ public class ARP implements ARPConfig
 /** Creates a new RDF Parser.
  * Can parse one file at a time.
  */
-    public ARP()  {
+    public ARP0()  {
         arpf =  RDFXMLParser.create();
     }
     /**

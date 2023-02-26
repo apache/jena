@@ -80,7 +80,7 @@ public class ARPHandlers {
      * Sets the ExtendedHandler that provides the callback mechanism for bnodes
      * as they leave scope, and for the start and end of rdf:RDF elements.
      * <p>
-     * See note about large files in {@link ARP} class documentation.
+     * See note about large files in {@link ARP0} class documentation.
      * 
      * @param sh
      *            The handler to use.

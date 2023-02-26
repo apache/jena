@@ -23,7 +23,7 @@ import org.xml.sax.ErrorHandler;
 
 /**
  * Used to set event handlers and options
- * on {@link ARP}, {@link SAX2Model}, and
+ * on {@link ARP0}, {@link SAX2Model}, and
  * {@link SAX2RDF} instances.
  */
 public interface ARPConfig {

@@ -57,7 +57,7 @@ public interface AResource {
 	 * No references to the user data are maintained after a blank node goes out of
 	 * scope.
 	 * <p>
-	 * See note about large files in class documentation for {@link ARP}.
+	 * See note about large files in class documentation for {@link ARP0}.
 	 * @param d A user data object which may be retrieved later with {@link #getUserData}.
 	 */    
 	     public void setUserData(Object d);

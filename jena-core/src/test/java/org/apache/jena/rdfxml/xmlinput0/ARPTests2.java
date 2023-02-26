@@ -243,7 +243,7 @@ public class ARPTests2 extends TestCase implements RDFErrorHandler, ARPErrorNumb
 				+ "</rdf:Description> "
 				+ "</rdf:RDF>";
 
-		ARP parser = new ARP();
+		ARP0 parser = new ARP0();
 		ToStringStatementHandler tssh = new ToStringStatementHandler();
 		parser.getHandlers().setStatementHandler(tssh);
 		parser.load(new StringReader(testcase), "http://www.example.com");
@@ -441,7 +441,7 @@ public class ARPTests2 extends TestCase implements RDFErrorHandler, ARPErrorNumb
         checkExpected();
     }
 	public void testInterrupt() throws SAXException, IOException {
-	    ARP a = new ARP();
+	    ARP0 a = new ARP0();
 	    try ( InputStream in = new FileInputStream("testing0/wg/miscellaneous/consistent001.rdf") ) {
 	        a.getHandlers().setStatementHandler(new StatementHandler() {
 	            int countDown = 10;

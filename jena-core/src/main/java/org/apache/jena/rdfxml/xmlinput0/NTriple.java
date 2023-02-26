@@ -87,7 +87,7 @@ import org.xml.sax.SAXParseException;
 public class NTriple implements ARPErrorNumbers {
 
 	private static StringBuffer line = new StringBuffer();
-	private static ARP arp;
+	private static ARP0 arp;
 	private static String xmlBase = null;
 	private static boolean numbers = false;
 	/** Starts an RDF/XML to NTriple converter.
@@ -111,7 +111,7 @@ public class NTriple implements ARPErrorNumbers {
 		andMeToo = ap;
 		//SH sh = new SH();
 		int i;
-		arp = new ARP();
+		arp = new ARP0();
 		ARPHandlers handlers = arp.getHandlers();
 		handlers.setStatementHandler(getSH(true));
 //        arp.getOptions().setEmbedding(true);
