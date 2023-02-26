@@ -18,28 +18,22 @@
 
 package org.apache.jena.enhanced;
 
-import org.apache.jena.atlas.lib.Cache;
-import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.graph.* ;
 import org.apache.jena.rdf.model.RDFNode ;
 
 /**
- *  {@code EnhGraph} wraps a {@link Graph plain graph} 
+ *  {@code EnhGraph} wraps a {@link Graph plain graph}
  *  and contains {@link EnhNode enhanced nodes} that wrap the
  *  plain nodes of the plain graph. All the enhanced nodes in
  *  the enhanced graph share the same polymorphic personality.
  */
 
-public class EnhGraph 
+public class EnhGraph
 {
     // Instance variables
     /** The graph that this enhanced graph is wrapping */
     protected Graph graph;
-    
-    /** Cache of enhanced nodes that have been created */
-    // 1000 seems to be a "about the right size" by experimentation.
-    protected Cache<Node, RDFNode> enhNodes = CacheFactory.createCache(1000);
-    
+
     /** The unique personality that is bound to this polymorphic instance */
     private Personality<RDFNode> personality;
 
@@ -47,8 +41,8 @@ public class EnhGraph
     /**
      * Construct an enhanced graph from the given underlying graph, and
      * a factory for generating enhanced nodes.
-     * 
-     * @param g The underlying plain graph, may be null to defer binding to a given 
+     *
+     * @param g The underlying plain graph, may be null to defer binding to a given
      *      graph until later.
      * @param p The personality factory, that maps types to realizations
      */
@@ -57,7 +51,7 @@ public class EnhGraph
         graph = g;
         personality = p;
     }
-   
+
     /**
      * Answer the normal graph that this enhanced graph is wrapping.
      * @return A graph
@@ -65,7 +59,7 @@ public class EnhGraph
     public Graph asGraph() {
         return graph;
     }
-   
+
     /**
      * Hashcode for an enhanced graph is delegated to the underlying graph.
      * @return The hashcode as an int
@@ -73,7 +67,7 @@ public class EnhGraph
     @Override final public int hashCode() {
      	return graph.hashCode();
     }
-     
+
     /**
      * An enhanced graph is equal to another graph g iff the underlying graphs
      * are equal.
@@ -88,16 +82,16 @@ public class EnhGraph
      * @see #isIsomorphicWith
      */
     @Override final public boolean equals(Object o) {
-        return 
-            this == o 
+        return
+            this == o
             || o instanceof EnhGraph && graph.equals(((EnhGraph) o).asGraph());
     }
-    
+
     /**
-     * Answer true if the given enhanced graph contains the same nodes and 
+     * Answer true if the given enhanced graph contains the same nodes and
      * edges as this graph.  The default implementation delegates this to the
      * underlying graph objects.
-     * 
+     *
      * @param eg A graph to test
      * @return True if eg is a graph with the same structure as this.
      */
@@ -108,38 +102,31 @@ public class EnhGraph
     /**
      * Answer an enhanced node that wraps the given node and conforms to the given
      * interface type.
-     * 
+     *
      * @param n A node (assumed to be in this graph)
      * @param interf A type denoting the enhanced facet desired
      * @return An enhanced node
      */
     public <X extends RDFNode> X getNodeAs( Node n, Class<X> interf ) {
-         // We use a cache to avoid reconstructing the same Node too many times.
-        EnhNode eh = (EnhNode) enhNodes.getIfPresent( n );
-        if ( eh == null ) {
-            // not in the cache, so build a new one
-            X constructed = personality.newInstance(interf, n, this) ;
-            enhNodes.put(n, constructed) ;
-            return constructed ;
-        }
-        else
-            return eh.viewAs( interf );
-        }
-    
-    /**
-     * Set the cache controller object for this graph
-     * @param cc The cache controller
-     */
-    public void setNodeCache(Cache<Node, RDFNode> cc) {
-         enhNodes = cc;
+        X constructed = personality.newInstance(interf, n, this) ;
+        return constructed ;
     }
-     
+
     /**
      * Answer the personality object bound to this polymorphic instance
-     * 
+     *
      * @return The personality object
      */
     protected Personality<RDFNode> getPersonality() {
         return personality;
     }
+
+    /**
+     * Set the cache controller object for this graph
+     *
+     * @param cc The cache controller
+     * @deprecated This is a no-op and the method will be removed.
+     */
+    @Deprecated
+    public void setNodeCache(org.apache.jena.atlas.lib.Cache<Node, RDFNode> cc) {}
 }
