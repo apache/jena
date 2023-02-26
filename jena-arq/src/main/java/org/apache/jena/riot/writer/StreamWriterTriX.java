@@ -52,7 +52,7 @@ public class StreamWriterTriX implements StreamRDF {
      *    (to change, need to change the tags to trix:trix etc and write xmls:trix=)
      */
 
-    private final static String rdfXMLLiteral = XMLLiteralType.theXMLLiteralType.getURI() ;
+    private final static String rdfXMLLiteral = XMLLiteralType.XMLLiteralTypeURI;
     private final IndentedWriter out ;
     private Node gn = null ;
     private boolean inGraph = false ;
