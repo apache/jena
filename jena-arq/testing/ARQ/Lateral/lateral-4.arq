@@ -3,5 +3,5 @@ PREFIX : <http://example/>
 SELECT * {
   ?s :p ?o .
   ## ?s : in-scope
-  LATERAL { SELECT ?s ?label { ?s :p ?label } }
+  LATERAL { SELECT ?s ?z { ?s :p ?z } }
 }

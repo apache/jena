@@ -1,22 +1,22 @@
 { "head": {
-    "vars": [ "s" , "o" , "label" ]
+    "vars": [ "s" , "o" , "z" ]
   } ,
   "results": {
     "bindings": [
       { 
         "s": { "type": "uri" , "value": "http://example/s3" } ,
         "o": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "3" } ,
-        "label": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "3" }
+        z: { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "3" }
       } ,
       { 
         "s": { "type": "uri" , "value": "http://example/s1" } ,
         "o": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "1" } ,
-        "label": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "1" }
+        z: { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "1" }
       } ,
       { 
         "s": { "type": "uri" , "value": "http://example/s2" } ,
         "o": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "2" } ,
-        "label": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "2" }
+        z: { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "2" }
       }
     ]
   }
