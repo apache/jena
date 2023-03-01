@@ -72,7 +72,7 @@
     <ver.shiro>1.11.0</ver.shiro>
 
     <ver.protobuf>3.21.12</ver.protobuf>
-    <ver.libthrift>0.17.0</ver.libthrift>
+    <ver.libthrift>0.18.0</ver.libthrift>
 
     <!-- JSON-LD 1.1 -->
     <ver.titanium-json-ld>1.3.1</ver.titanium-json-ld>
