@@ -68,7 +68,7 @@
 
     <ver.lucene>9.5.0</ver.lucene>
 
-    <ver.jetty>10.0.13</ver.jetty>
+    <ver.jetty>10.0.14</ver.jetty>
     <ver.shiro>1.11.0</ver.shiro>
 
     <ver.protobuf>3.21.12</ver.protobuf>
