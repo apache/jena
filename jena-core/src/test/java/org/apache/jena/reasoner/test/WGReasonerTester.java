@@ -46,57 +46,57 @@ import org.slf4j.LoggerFactory ;
  * A utility to support execution of the RDFCode working group entailment
  * tests as specified in <a href="http://www.w3.org/TR/2003/WD-rdf-testcases-20030123/">
  * http://www.w3.org/TR/2003/WD-rdf-testcases-20030123/</a>.
- * 
+ *
  * <p>The manifest file defines a set of tests. Only the positive and negative
  * entailment tests are handled by this utility. Each test defines a set
  * of data files to load. For normal positive entailment tests we check each
  * triple in the conclusions file to ensure it is included in the inferred
- * graph. For postive entailment tests which are supposed to entail the 
+ * graph. For postive entailment tests which are supposed to entail the
  * false document we run an additional validation check. For
- * negative entailment tests which tests all triples in the non-conclusions file 
+ * negative entailment tests which tests all triples in the non-conclusions file
  * and check that at least one trile is missing. </p>
  */
 public class WGReasonerTester {
 
     /** The namespace for the test specification schema */
     public static final String NS = "http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#";
-    
+
     /** The base URI in which the files are purported to reside */
     public static final String BASE_URI = "http://www.w3.org/2000/10/rdf-tests/rdfcore/";
-    
+
     /** Default location for the test data */
     public static final String DEFAULT_BASE_DIR = "testing/wg/";
-    
+
     /** The base directory in which the test data is actually stored */
     final protected String baseDir;
-    
+
     /** The rdf class for positive tests */
     public static final Resource PositiveEntailmentTest;
-    
+
     /** The rdf class for positive tests */
     public static final Resource NegativeEntailmentTest;
-    
+
     /** The constant used to indicate an invalid document */
     public static final Resource FalseDocument;
-    
+
     /** The predicate defining the description of the test */
     public static final Property descriptionP;
-    
+
     /** The predicate defining the status of the test */
     public static final Property statusP;
-    
+
     /** The predicate defining the rule sets used */
     public static final Property entailmentRulesP;
-    
+
     /** The predicate defining a premise for the test */
     public static final Property premiseDocumentP;
-    
+
     /** The predicate defining the conclusion from the test */
     public static final Property conclusionDocumentP;
-    
+
     /** The type of the current test */
     Resource testType;
-    
+
     /** List of tests block because they are only intended for non-dt aware processors */
     public static final String[] blockedTests = {
         BASE_URI + "datatypes/Manifest.rdf#language-important-for-non-dt-entailment-1",
@@ -108,7 +108,7 @@ public class WGReasonerTester {
 //	BASE_URI + "xmlsch-02/Manifest.rdf#whitespace-facet-1",
 //	BASE_URI + "datatypes-intensional/Manifest.rdf#xsd-integer-string-incompatible",
     };
-    
+
     // Static initializer for the predicates
     static {
         PositiveEntailmentTest = new ResourceImpl(NS, "PositiveEntailmentTest");
@@ -120,12 +120,12 @@ public class WGReasonerTester {
         premiseDocumentP = new PropertyImpl(NS, "premiseDocument");
         conclusionDocumentP = new PropertyImpl(NS, "conclusionDocument");
     }
-    
+
     /** The rdf defining all the tests to be run */
     protected Model testManifest;
-    
+
     protected static Logger logger = LoggerFactory.getLogger(WGReasonerTester.class);
-    
+
     /**
      * Constructor.
      * @param manifest the name of the manifest file defining these
@@ -136,7 +136,7 @@ public class WGReasonerTester {
         this.baseDir = baseDir;
         testManifest = loadFile(manifest);
     }
-    
+
     /**
      * Constructor.
      * @param manifest the name of the manifest file defining these
@@ -145,7 +145,7 @@ public class WGReasonerTester {
     public WGReasonerTester(String manifest) throws IOException {
         this(manifest, DEFAULT_BASE_DIR);
     }
-    
+
     /**
      * Utility to load a file in rdf/nt/n3 format as a Model.
      * Files are assumed to be relative to the BASE_URI.
@@ -164,7 +164,7 @@ public class WGReasonerTester {
         if (fname.startsWith(BASE_URI)) {
             fname = fname.substring(BASE_URI.length());
         }
-        
+
         /* Change note - jjc
          * Now use InputStream instead of Reader (general hygine).
          * Also treat http:.... as URL not local file.
@@ -176,12 +176,12 @@ public class WGReasonerTester {
         	in = new FileInputStream(baseDir + fname);
         }
         in = new BufferedInputStream(in);
-        
-        
+
+
         result.read(in, BASE_URI + fname, langType);
         return result;
     }
-    
+
     /**
      * Load the datafile given by the property name.
      * @param test the test being processed
@@ -198,7 +198,7 @@ public class WGReasonerTester {
             return Factory.createGraphMem();
         }
     }
-    
+
     /**
      * Run all the tests in the manifest
      * @param reasonerF the factory for the reasoner to be tested
@@ -218,7 +218,7 @@ public class WGReasonerTester {
         }
         return true;
     }
-    
+
     /**
      * Return a list of all test names defined in the manifest for this test harness.
      */
@@ -234,7 +234,7 @@ public class WGReasonerTester {
         }
         return testList;
     }
-    
+
     /**
      * Return the type of the last test run. Nasty hack to enable calling test harness
      * to interpret the success/fail boolen differently according to test type.
@@ -242,7 +242,7 @@ public class WGReasonerTester {
     public Resource getTypeOfLastTest() {
         return testType;
     }
-    
+
     /**
      * Run a single designated test.
      * @param uri the uri of the test, as defined in the manifest file
@@ -260,7 +260,7 @@ public class WGReasonerTester {
     static final public int NOT_APPLICABLE = 0;
     static final public int INCOMPLETE = 1;
     static final public int PASS  = 2;
-    
+
 	/**
 		 * Run a single designated test.
 		 * @param uri the uri of the test, as defined in the manifest file
@@ -271,10 +271,10 @@ public class WGReasonerTester {
 		 * @throws IOException if one of the test files can't be found
 		 * @throws JenaException if the test can't be found or fails internally
 		 */
-    
-	
+
+
 	   public int runTestDetailedResponse(String uri, ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
-    
+
         // Find the specification for the named test
         Resource test = testManifest.getResource(uri);
         testType = (Resource)test.getRequiredProperty(RDF.type).getObject();
@@ -290,7 +290,7 @@ public class WGReasonerTester {
         if (! status.equals("APPROVED")) {
             return NOT_APPLICABLE;
         }
-        
+
         // Skip the test designed for only non-datatype aware processors
            for ( String blockedTest : blockedTests )
            {
@@ -299,7 +299,7 @@ public class WGReasonerTester {
                    return NOT_APPLICABLE;
                }
            }
-                
+
         // Load up the premise documents
         Model premises = ModelFactory.createDefaultModel();
         for (StmtIterator premisesI = test.listProperties(premiseDocumentP); premisesI.hasNext(); ) {
@@ -313,12 +313,12 @@ public class WGReasonerTester {
         if (!conclusionsType.equals(FalseDocument)) {
             conclusions = loadFile(conclusionsRes.toString());
         }
-        
+
         // Construct the inferred graph
         Reasoner reasoner = reasonerF.create(configuration);
         InfGraph graph = reasoner.bind(premises.getGraph());
         Model result = ModelFactory.createModelForGraph(graph);
-        
+
         // Check the results against the official conclusions
         boolean correct = true;
         int goodResult = PASS;
@@ -370,14 +370,14 @@ public class WGReasonerTester {
                 }
             }
         }
-        
-        // Signal the results        
+
+        // Signal the results
         if (testcase != null) {
 //            if ( !correct )
 //            {
 //                boolean b = testConclusions(conclusions.getGraph(), result.getGraph());
 //                System.out.println("**** actual") ;
-//                result.write(System.out, "TTL") ; 
+//                result.write(System.out, "TTL") ;
 //                System.out.println("**** expected") ;
 //                conclusions.write(System.out, "TTL") ;
 //            }
@@ -385,7 +385,7 @@ public class WGReasonerTester {
         }
         return correct?goodResult:FAIL;
     }
-    
+
     /**
      * Test a conclusions graph against a result graph.
     * This works by

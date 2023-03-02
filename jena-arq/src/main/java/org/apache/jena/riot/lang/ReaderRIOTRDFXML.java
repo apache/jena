@@ -23,7 +23,6 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.util.Map;
 
-import org.apache.jena.JenaRuntime;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType;
@@ -33,7 +32,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.irix.IRIs;
-import org.apache.jena.irix.SetupJenaIRI;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput.* ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
@@ -50,6 +48,7 @@ import org.xml.sax.SAXParseException ;
  *
  * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
  */
+@SuppressWarnings("deprecation")
 public class ReaderRIOTRDFXML implements ReaderRIOT
 {
     public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) ->
@@ -98,7 +97,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
     // RDF 1.0 (and RDF/XML) was based on "RDF URI References" which did allow spaces.
 
     // Use with TDB requires this to be "true" - it is set by InitTDB.
-    public static boolean RiotUniformCompatibility = false ;
+    public static boolean RiotUniformCompatibility = true ;
     // Warnings in ARP that should be errors to be compatible with
     // non-XML-based languages.  e.g. language tags should be
     // syntactically valid.
@@ -162,9 +161,6 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
                 arpOptions.setErrorMode(code, ARPErrorNumbers.EM_ERROR) ;
         }
 
-        if ( JenaRuntime.isRDF11 )
-            arp.getOptions().setIRIFactory(SetupJenaIRI.iriFactory_RDFXML());
-
         if ( context != null ) {
             Map<String, Object> properties = null;
             try {
@@ -201,8 +197,8 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
     private static String baseURI_RDFXML(String baseIRI) {
         if ( baseIRI == null )
             return IRIs.getBaseStr();
-        else
-            return IRIs.toBase(baseIRI) ;
+        // RDFParserBuidler resolved the baseIRI
+        return baseIRI;
     }
 
     private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler {

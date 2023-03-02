@@ -27,7 +27,10 @@ import java.util.Locale ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.* ;
-import org.apache.jena.iri.IRIFactory;
+import org.apache.jena.irix.IRIProvider;
+import org.apache.jena.irix.IRIProviderAny;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.SystemIRIx;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdf.model.RDFReaderI ;
@@ -59,12 +62,27 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
 
     static final int arpPropertiesURLLength = arpPropertiesURL.length();
 
+    private final boolean resolveInitialXmlBase;
+
     /**
      * Creates new JenaReader
      */
     public RDFXMLReader() {
         arpf = RDFXMLParser.create();
+        this.resolveInitialXmlBase = true;
     }
+
+    /**
+     * Creates new JenaReader which does not resolve the XMLbase when parsing. This
+     * is the original behaviour of RDFXMLReader but that has not been exposed via
+     * RIOT; only directly creating an RDFXMLReader or running without RIOT
+     * (which is in jena-arq) has had that behaviour.
+     */
+    public RDFXMLReader(boolean resolveInitialXmlBase) {
+        arpf = RDFXMLParser.create();
+        this.resolveInitialXmlBase = resolveInitialXmlBase;
+    }
+
 
     final private RDFXMLParser arpf;
 
@@ -175,6 +193,8 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
     private JenaHandler handler;
 
     synchronized private void read(final Graph g, InputSource inputS, String xmlBase, Model m) {
+        if ( xmlBase != null && resolveInitialXmlBase)
+            xmlBase = IRIs.resolve(xmlBase);
         try {
             g.getEventManager().notifyEvent(g, GraphEvents.startRead);
             inputS.setSystemId(xmlBase);
@@ -242,7 +262,7 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
     }
 
     /**
-     * Reads from inputStream, using base URI xmlbase, adding triples to graph.
+     * Reads from inputStream, using base URI xmlBase, adding triples to graph.
      * If xmlbase is "" then relative URIs may be added to graph.
      *
      * @param g
@@ -345,9 +365,9 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
      * <td><CODE>true</CODE> or <CODE>false</CODE></td>
      * </tr>
      * <tr BGCOLOR="white" CLASS="TableRowColor">
-     * <td><code>ERR_&lt;XXX&gt;</code><br>
-     * <code>WARN_&lt;XXX&gt;</code><br>
-     * <code>IGN_&lt;XXX&gt;</code></td>
+     * <td><code>ERR_&lt;&gt;</code><br>
+     * <code>WARN_&lt;&gt;</code><br>
+     * <code>IGN_&lt;&gt;</code></td>
      * <td>{@link ARPErrorNumbers}<br>
      * Any of the error condition numbers listed. <br>
      * {@link ARPOptions#setErrorMode(int, int)}</td>
@@ -453,7 +473,7 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
      * WARN_* ditto<br/>
      * iri-rules (String), "Jena", "IRI", "strict", "lax"
      */
-    @SuppressWarnings("deprecation")
+    //@SuppressWarnings("deprecation")
     static Object processArpOptions(ARPOptions options, String str, Object v,
             RDFErrorHandler eh) {
         // ARPOptions options = arpf.getOptions();
@@ -466,8 +486,11 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
         if (str.equals("ERROR-MODE")) {
             if (v instanceof String) {
                 String val = (String) v;
+                options.setIRIProvider(SystemIRIx.getProvider());
+
                 if (val.equals("LAX")) {
                     options.setLaxErrorMode();
+                    options.setIRIProvider(new IRIProviderAny());
                     return null;
                 }
                 if (val.equals("DEFAULT")) {
@@ -554,15 +577,14 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
             }
         }
 
-        if ( str.equals("IRI-RULES") )
-        {
-            IRIFactory old = options.getIRIFactory() ;
-            if ( v.equals("STRICT") )   { options.setIRIFactory(IRIFactory.semanticWebImplementation()) ; }
-            else if ( v.equals("IRI") ) { options.setIRIFactory(IRIFactory.iriImplementation()) ; }
-            else if ( v.equals("LAX") ) { options.setIRIFactory(IRIFactory.jenaImplementation()) ; }
+        if ( str.equals("IRI-RULES") ) {
+            IRIProvider old = options.getIRIProvider() ;
+            if ( v.equals("STRICT") )   { options.setIRIProvider(SystemIRIx.getProvider()); }
+            else if ( v.equals("IRI") ) { options.setIRIProvider(SystemIRIx.getProvider()); }
+            else if ( v.equals("LAX") ) { options.setIRIProvider(new IRIProviderAny()); }
             else
                 eh.error(new IllegalArgumentException(
-                "Property \"IRI-RULES\" requires one of 'STRICT', 'IRI' or 'LAX'"));
+                        "Property \"IRI-RULES\" requires one of 'STRICT', 'IRI' or 'LAX'"));
             return old ;
         }
 

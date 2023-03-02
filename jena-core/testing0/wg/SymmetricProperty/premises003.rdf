@@ -1,0 +1,33 @@
+<!--++ SymmetricProperty/premises003.rdf ** generated using webont test editor. ++-->
+<!--++ Created 22 Sep 2003 14:04:59 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises003.rdf,v 1.3 2003-12-05 05:09:28 jeremy_carroll Exp $
+-->
+<!--
+A Lite version of test <a href="#SymmetricProperty-001">001</a>.
+-->
+<!-- Author: Jos De Roo -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/SymmetricProperty/premises003#"
+    xml:base="http://www.w3.org/2002/03owlt/SymmetricProperty/premises003" >
+
+    <owl:Thing rdf:about="premises003#Ghent">
+        <first:path>
+           <owl:Thing rdf:about="premises003#Antwerp"/>
+        </first:path>
+    </owl:Thing>
+
+    <owl:SymmetricProperty rdf:about="premises003#path"/>
+
+</rdf:RDF>

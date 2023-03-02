@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: test004.rdf,v 1.2 2005-08-04 09:53:22 jeremy_carroll Exp $
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:test="http://example.org/">
+
+  <test:Domain1 rdf:about="http://example.org/baz1"/>
+  <test:Domain2 rdf:about="http://example.org/baz1"/>
+  <test:Range1 rdf:about="http://example.org/baz2"/>
+  <test:Range2 rdf:about="http://example.org/baz2"/>
+  <rdfs:Class rdf:about="http://example.org/Domain1" /> 
+  <rdfs:Class rdf:about="http://example.org/Domain2" /> 
+  <rdfs:Class rdf:about="http://example.org/Range1" /> 
+  <rdfs:Class rdf:about="http://example.org/Range2" /> 
+</rdf:RDF>

@@ -7,6 +7,7 @@
 >
 
 <owl:Ontology rdf:about="">
+    <!-- base is an http URL so the resource is a path from where the called is locates -->
     <owl:imports rdf:resource="file:testing/ontology/testImport4/b.owl" />
 </owl:Ontology>
 

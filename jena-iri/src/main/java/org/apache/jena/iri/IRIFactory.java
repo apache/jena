@@ -31,7 +31,7 @@ import org.apache.jena.iri.impl.IRIFactoryImpl ;
  *  particularly identifying which standard(s) to enforce
  *  <li>The creation of IRI objects, checking
  *  them against the selected standard(s)
- *  <li>The setting of optional behaviours, as 
+ *  <li>The setting of optional behaviours, as
  *  specified in the various standard(s)
  * </ul>
  * <p>
@@ -49,7 +49,7 @@ import org.apache.jena.iri.impl.IRIFactoryImpl ;
  * If none of these meets your application needs
  * then you have to configure your own factory.
  * </p>
- * 
+ *
  * <p>
  * When initializing a factory, the initialization
  * methods should be used in the following order:
@@ -84,12 +84,12 @@ import org.apache.jena.iri.impl.IRIFactoryImpl ;
   <li>{@link #useSchemeSpecificRules(String,boolean)}
   </ul>
  *  <li>Finally calls to
- *  <ul> 
+ *  <ul>
  *  <li>{@link #setIsError(int, boolean)}
  *  <li>{@link #setIsWarning(int, boolean)}
  *  </ul>
  *  </ol>
- *  
+ *
  *  <p>
  *  It is possible to make these calls in different
  *  orders, but the resultant behaviour is likely
@@ -99,10 +99,10 @@ import org.apache.jena.iri.impl.IRIFactoryImpl ;
  *  have order dependencies.</p>
  */
 
-public class IRIFactory extends IRIFactoryImpl 
-  implements  
+public class IRIFactory extends IRIFactoryImpl
+  implements
   IRIFactoryI {
-    
+
     static {
         // call static initializers
         new ViolationCodes.Initialize();
@@ -122,7 +122,7 @@ public class IRIFactory extends IRIFactoryImpl
     static public IRIFactory iriImplementation() {
         return theIRIFactory;
     }
-    
+
 
     /**
      * This factory implements RFC 3986
@@ -134,32 +134,32 @@ public class IRIFactory extends IRIFactoryImpl
     static public IRIFactory uriImplementation() {
         return theURIFactory;
     }
-    
 
-    /** 
+
+    /**
      * This factory is a conservative implementation
      * appropriate for Semantic Web applications.
-     * It implements: 
-     * RDF URI Reference (essential), 
-     * IRI (needed for SPARQL) and 
+     * It implements:
+     * RDF URI Reference (essential),
+     * IRI (needed for SPARQL) and
      * XLink locator (ensures that only legal XML characters are
      * included, allowing RDF/XML usage).
      * In addition, {@link ViolationCodes#NON_INITIAL_DOT_SEGMENT}
-     * is treated as an error (since 
-     * any IRI with this condition cannot be 
+     * is treated as an error (since
+     * any IRI with this condition cannot be
      * serialized in RDF/XML, which resolves
      * all IRIs against the inscope base, and hence uses
      * the remove_dot_segments algorithm).
      * This should ensure that any IRI that is
-     * not in error, can be used 
+     * not in error, can be used
      * interoperably in RDF/XML, SPARQL, N3
      * and N-Triple.
      * <p>
-     * This is the support for RDF 1.0 / RDF 2004 which includes "RDF URI References" 
+     * This is the support for RDF 1.0 / RDF 2004 which includes "RDF URI References"
      * (they are very broad and allow spaces, for example; the IRI RFC was not finalized
      * when the RDF 1.1 specs were published).
      * Nowadays, IRIs are strongly preferred by the semantic web standards.
- 
+
      * @return A factory suitable for Semantic Web applications.
      * @deprecated Use {@link #iriImplementation()}
      */
@@ -167,10 +167,10 @@ public class IRIFactory extends IRIFactoryImpl
     static public IRIFactory semanticWebImplementation() {
         return theSemWebFactory;
     }
-    /** 
+    /**
      * For use by Jena intenal use only.
      * <p>
-     * This is the support for RDF 1.0 / RDF 2004 which includes "RDF URI References" 
+     * This is the support for RDF 1.0 / RDF 2004 which includes "RDF URI References"
      * (they are very broad and allow spaces, for example; the IRI RFC was not finalized
      * when the RDF 1.1 specs were published).
      * Nowadays, IRIs are strongly preferred by the semantic web standards.
@@ -205,7 +205,7 @@ public class IRIFactory extends IRIFactoryImpl
          * </ul>
          * */
         // TODO copy port numbers into violations.xml
-//        registerScheme("ftp",21); //,H,Q);   
+//        registerScheme("ftp",21); //,H,Q);
 //        registerScheme("http",80); // ,H,U);
 //        registerScheme("gopher",70);
 //        registerScheme("mailto",OPAQUE);
@@ -261,11 +261,11 @@ public class IRIFactory extends IRIFactoryImpl
 //        registerScheme("tn3270",UNKNOWN_SYNTAX);
 //        registerScheme("mailserver",UNKNOWN_SYNTAX);
 
-         
+
     }
     /**
      * Create a new IRIFactory with
-     * the same conformance settings as the 
+     * the same conformance settings as the
      * template factory.
      * These can then be modified before using
      * the new factory.
@@ -284,11 +284,11 @@ public class IRIFactory extends IRIFactoryImpl
 ////        setConformance(recsExceptions, recsWarnings);
 ////        setExceptionMask(exceptions,warnings);
 //    }
-    
+
 //    static final private IRIFactory theFactory = new IRIFactory();
 //    static public IRIFactory defaultFactory() {
 //        return theFactory;
-//    }    
+//    }
 //    public void setConformance(int recsForExceptions,
 //                               int recsForWarnings) {
 //        exceptions = recsToMask(recsForExceptions);
@@ -298,25 +298,25 @@ public class IRIFactory extends IRIFactoryImpl
 //        exceptions = exceptions_;
 //        warnings = warnings_;
 //    }
-    
+
     // choice point: IRIs are heavy weight objects
     // use String s for long term storage, and reparse them
 //    public void setCompact(boolean compact) {
-//        
+//
 //    }
 //    public void setComponentCaching(boolean caching){
-//        
+//
 //    }
-    
-    
+
+
 //    public IRI emptyIRI() {
 //        return new IRIImpl(this);
 //    }
-    
+
     /**
      * Allows scheme:relative-path as a relative
      * reference against a base URI from the same scheme.
-     * 
+     *
      * <p>
      * Sets the behaviour of the relative
      * reference resolution algorithm to be the
@@ -332,7 +332,7 @@ public class IRIFactory extends IRIFactoryImpl
          undefine(R.scheme);
    endif;
 </pre>
-     * 
+     *
      * </blockquote>
      * @param scheme The scheme to enable this behaviour for, or "*" for all schemes
      */
@@ -341,16 +341,16 @@ public class IRIFactory extends IRIFactoryImpl
         super.setSameSchemeRelativeReferences(scheme);
     }
     /**
-     * Allows the unwise characters as optionally 
+     * Allows the unwise characters as optionally
      * permitted by RFC 3987 (IRI).
      * <blockquote>
-Systems accepting IRIs MAY also deal with the 
-printable characters in US-ASCII that are not allowed 
-in URIs, namely "&lt;", "&gt;", '"', space, "{", "}", "|", 
-"\", "^", and "`", in step 2 above. If these characters 
-are found but are not converted, then the conversion 
-SHOULD fail. Please note that the number sign ("#"), 
-the percent sign ("%"), and the square bracket 
+Systems accepting IRIs MAY also deal with the
+printable characters in US-ASCII that are not allowed
+in URIs, namely "&lt;", "&gt;", '"', space, "{", "}", "|",
+"\", "^", and "`", in step 2 above. If these characters
+are found but are not converted, then the conversion
+SHOULD fail. Please note that the number sign ("#"),
+the percent sign ("%"), and the square bracket
 characters ("[", "]") are not part of the above list
      * </blockquote>
      *<p>This method is intended to be used
@@ -374,7 +374,7 @@ characters ("[", "]") are not part of the above list
             setIsWarning(DOUBLE_WHITESPACE,warning);
         }
     }
-    
+
     /**
      * The character constraints on the query component
      * of an IRI are weaker than on other components.
@@ -407,8 +407,8 @@ characters ("[", "]") are not part of the above list
     public void setEncoding(String enc) throws UnsupportedEncodingException {
        super.setEncoding(enc);
     }
-    
-    
+
+
     /**
      * Create an IRI from the given components.
      * Performs whatever percent escaping
@@ -416,7 +416,7 @@ characters ("[", "]") are not part of the above list
      * to make this IRI legal for this factory
      * (if possible).
      * Omitted components are passed as null.
-     * 
+     *
      * @param scheme Schema
      * @param userInfo User Info
      * @param host Will be encoded using punycode, if necessary.
@@ -427,7 +427,7 @@ characters ("[", "]") are not part of the above list
      * @return An IRI with the given components.
      @see #setEncoding(String)
      */
-    
+
     public IRI create(
             String scheme,
             String userInfo,
@@ -440,7 +440,7 @@ characters ("[", "]") are not part of the above list
         // TODO create/7
         return null;
     }
-    
+
 
     /**
      * Create an IRI from the given components.
@@ -449,7 +449,7 @@ characters ("[", "]") are not part of the above list
      * (if possible).
      * Omitted components are passed as null.
      * Use {@link #create(String, String, String, int, String, String, String)}
-     * when the authority is a DNS hostname, even if 
+     * when the authority is a DNS hostname, even if
      * both the user information and the port are unspecified;
      * this version uses percent escaping as opposed to punycode
      * for the authority. DNS hostnames should be
@@ -472,7 +472,7 @@ characters ("[", "]") are not part of the above list
         // TODO create/5
         return null;
     }
-    
+
     /**
      * Create an IRI from the given components.
      * Performs whatever percent escaping
@@ -490,7 +490,7 @@ characters ("[", "]") are not part of the above list
      * @return An IRI with the given components.
      * * @throws IRIException If the resulting IRI
      *    has unfixable errors, e.g. non-ascii chars in the scheme name
-     
+
      @see #setEncoding(String)
      */
     public IRI construct(
@@ -511,7 +511,7 @@ characters ("[", "]") are not part of the above list
                 fragment
                 ));
     }
-    
+
     /**
      * Create an IRI from the given components.
      * Performs whatever percent escaping is necessary
@@ -519,7 +519,7 @@ characters ("[", "]") are not part of the above list
      * (if possible).
      * Omitted components are passed as null.
      * Use {@link #construct(String, String, String, int, String, String, String)}
-     * when the authority is a DNS hostname, even if 
+     * when the authority is a DNS hostname, even if
      * both the user information and the port are unspecified;
      * this version uses percent escaping as opposed to punycode
      * for the authority. DNS hostnames should be
@@ -530,10 +530,10 @@ characters ("[", "]") are not part of the above list
      * @param query Query string
      * @param fragment Fragment
      * @return An IRI with the given components.
-    
+
      * @throws IRIException If the resulting IRI
      *    has unfixable errors, e.g. non-ascii chars in the scheme name
-     
+
      @see #setEncoding(String)
      */
     public IRI construct(
@@ -550,11 +550,11 @@ characters ("[", "]") are not part of the above list
                 fragment
                 ));
     }
-    
+
     /**
      * Is condition #<code>code</code> being treated as an error.
      * @param code A condition code from {@link ViolationCodes}.
-     * 
+     *
      */
     public boolean isError(int code) {
         return (errors & (1l<<code))!=0;
@@ -574,7 +574,7 @@ characters ("[", "]") are not part of the above list
      * to be treated as an error; or clear it as an error condition.
      * <p>
      * Care must be taken when using this to clear the error behaviour
-     * on a code documented 
+     * on a code documented
      * in {@link ViolationCodes}
      * as having SHOULD force:
      * see the documentation at {@link #shouldViolation(boolean, boolean)},
@@ -599,7 +599,7 @@ characters ("[", "]") are not part of the above list
 
     /**
      * Set condition #<code>code</code>
-     * to be treated as a warning; 
+     * to be treated as a warning;
      * or clear it as a warning condition.
      * Setting a code to be a warning, clears it from
      * being an error. Care must be taken
@@ -609,20 +609,20 @@ characters ("[", "]") are not part of the above list
      * result in a nonconformant application.
      * @param code A condition code from {@link ViolationCodes}.
      * @param set True to set this as a warning, false to clear.
-     
+
      * @throws IllegalStateException If this factory has already been used to create an IRI.
      */
     public void setIsWarning(int code, boolean set) {
 
         initializing();
-        
-        if (set) { 
+
+        if (set) {
             warnings |= (1l<<code);
-            setIsError(code,false); 
+            setIsError(code,false);
         } else
             warnings &= ~(1l<<code);
     }
-    
+
     /**
      * Is condition #<code>code</code> being ignored.
      * @param code A condition code from {@link ViolationCodes}.
@@ -630,23 +630,23 @@ characters ("[", "]") are not part of the above list
     public boolean ignoring(int code) {
         return !(isError(code)||isWarning(code));
     }
-    
-    
-    
+
+
+
     /**
      * The factory will check for violations of RFC 3986, URI.
      * Non-ascii input will result in warnings or errors.
      * @param asErrors If true, then violations are treated as errors; if false violations are treated as warnings.
-     
+
      * @throws IllegalStateException If this factory has already been used to create an IRI.
      */
     public void useSpecificationURI(boolean asErrors){
         useSpec("URI",asErrors);
-    } 
+    }
     /**
      * The factory will check for violations of RFC 3987, IRI.
      * @param asErrors If true, then violations are treated as errors; if false violations are treated as warnings.
-     
+
      * @throws IllegalStateException If this factory has already been used to create an IRI.
      */
     public void useSpecificationIRI(boolean asErrors){
@@ -657,20 +657,20 @@ characters ("[", "]") are not part of the above list
      * The factory will check for violations of RDF URI Reference.
      * Note: relative IRIs are prohibited.
      * @param asErrors If true, then violations are treated as errors; if false violations are treated as warnings.
-     
+
      * @throws IllegalStateException If this factory has already been used to create an IRI.
      */
     public void useSpecificationRDF(boolean asErrors){
         useSpec("RDF",asErrors);
     }
-    
+
 
     /**
      * The factory will check for violations of XML Schema anyURI.
      * @param asErrors If true, then violations are treated as errors; if false violations are treated as warnings.
-     
+
      * @throws IllegalStateException If this factory has already been used to create an IRI.
-     
+
      */
     public void useSpecificationXMLSchema(boolean asErrors){
         usingSpecXMLSchema = true;
@@ -682,17 +682,17 @@ characters ("[", "]") are not part of the above list
      * The factory will check for violations of XML constraints on system ID.
      * Note: fragments are prohibited.
      * @param asErrors If true, then violations are treated as errors; if false violations are treated as warnings.
-     
+
      * @throws IllegalStateException If this factory has already been used to create an IRI.
      */
     public void useSpecificationXMLSystemID(boolean asErrors){
-     
+
         useSpec("XML",asErrors);
     }
     /**
      * The factory will check for violations of XLink locator: <code>href</code> value.
      * @param asErrors If true, then violations are treated as errors; if false violations are treated as warnings.
-     
+
      * @throws IllegalStateException If this factory has already been used to create an IRI.
      */
     public void useSpecificationXLink(boolean asErrors){
@@ -703,18 +703,18 @@ characters ("[", "]") are not part of the above list
      * violations of "SHOULD" force statements
      * from the specifications it is enforcing as errors,
      * or warnings, or not at all. (Default is error)
-     * 
+     *
      * <p>
      * From <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-3">RFC 2119</a>
      * <em>the full implications must be understood and carefully weighed before</em>
-     * calling this method with <code>isError=false</code>. 
+     * calling this method with <code>isError=false</code>.
      * Thus, you MUST have read and understood
      * the specifications that you are configuring the factory
      * to use, before switching SHOULDs to warnings or to be
      * ignored.
      * An easier path, is to understand a specific error code,
      * with SHOULD force,
-     * and then use {@link #setIsError(int, boolean)}, and 
+     * and then use {@link #setIsError(int, boolean)}, and
      * {@link #setIsWarning(int, boolean)} to modify the behaviour
      * of that error code only. The prerequisite for modifiying a
      * single error code to be ignored, or to be treated as a warning
@@ -722,12 +722,12 @@ characters ("[", "]") are not part of the above list
      * rather than of all the SHOULD force statements within all
      * the specifications being used.
      * </p>
-     * 
-     * 
+     *
+     *
      * @param isError  If true, treat violations of SHOULDs as errors.
      * @param isWarning If true, treat violations of SHOULDs as warnings.
      * @throws IllegalArgumentException if <code>isError &amp;&amp; isWarning</code>.
-     
+
      * @throws IllegalStateException If this factory has already been used to create an IRI.
      */
     public void shouldViolation(boolean isError,boolean isWarning){
@@ -736,7 +736,7 @@ characters ("[", "]") are not part of the above list
     /**
      * The factory will treat
      * violations of statements
-     * from the specifications 
+     * from the specifications
      * flagged as security issues,
      * including weak heuristical suggestions,
      * it is enforcing as errors,
@@ -751,7 +751,7 @@ characters ("[", "]") are not part of the above list
     /**
      * The factory will treat
      * violations of statements
-     * from the implemented scheme specifications 
+     * from the implemented scheme specifications
      * it is enforcing as errors,
      * or warnings, or not at all. (Default is error)
      * You must also call {@link #useSchemeSpecificRules(String)}
@@ -768,13 +768,13 @@ characters ("[", "]") are not part of the above list
     /**
      * The factory will treat
      * violations of statements
-     * from the specifications 
+     * from the specifications
      * flagged as DNS issues,
      * including Internationalized Domain Name issues,
      * it is enforcing as errors,
      * or warnings, or not at all. (Default is error)
-     * 
-     * 
+     *
+     *
      * @param isError  If true, treat DNS violations as errors.
      * @param isWarning If true, treat DNS violations as warnings.
      * @throws IllegalArgumentException if <code>isError &amp;&amp; isWarning</code>.
@@ -791,22 +791,22 @@ characters ("[", "]") are not part of the above list
      * A sample phrase indicating the intent is this one
      * from RFC 3986:
      * <blockquote>
-     * An implementation should accept uppercase letters as equivalent to lowercase in scheme names (e.g., allow "HTTP" as well as 
-     * "http") for the sake of robustness but 
-     * should only produce lowercase scheme names for 
+     * An implementation should accept uppercase letters as equivalent to lowercase in scheme names (e.g., allow "HTTP" as well as
+     * "http") for the sake of robustness but
+     * should only produce lowercase scheme names for
      * consistency.
      * </blockquote>
      * @param isError  If true, treat violations of minting force statements as errors.
      * @param isWarning If true, treat violations of  minting force statements as warnings.
      * @throws IllegalArgumentException if <code>isError &amp;&amp; isWarning</code>.
      * @throws IllegalStateException If this factory has already been used to create an IRI.
-     
+
      */
     public void mintingViolation(boolean isError,boolean isWarning){
         setViolation(MINTING,isError,isWarning);
     }
-    
-//    
+
+//
     /* *
      * Adds a scheme to the list of known schemes.
      * The <code>port</code> argument either
@@ -824,7 +824,7 @@ characters ("[", "]") are not part of the above list
      * @throws IllegalStateException If this factory has already been used to create an IRI.
      */
 //    public void registerScheme(String scheme, int port){
-//        
+//
 //    }
     /**
      * Use the rules for a given scheme,
@@ -851,7 +851,7 @@ characters ("[", "]") are not part of the above list
      * <table>
      * <tr><th>Scheme</th><th>Level of implementation</th></tr>
      * <tr><td>none</td><td></td></tr>
-     * </table> 
+     * </table>
      * @param scheme The scheme name or "*" to use all implemented scheme specific rules.
      * @param asErrors If true, then violations are treated as errors; if false violations are treated as warnings.
      * @throws IllegalStateException If this factory has already been used to create an IRI.
@@ -860,13 +860,13 @@ characters ("[", "]") are not part of the above list
     public void useSchemeSpecificRules(String scheme, boolean asErrors){
         super.useSchemeSpecificRules(scheme,asErrors);
     }
-    
+
     static {
         theIRIFactory = new IRIFactory();
         theIRIFactory.useSpecificationIRI(true);
         theIRIFactory.useSchemeSpecificRules("*",true);
         theIRIFactory.create("");
-        
+
         jenaFactory = new IRIFactory();
 //        jenaFactory.dnsViolation(false,false);
 //        jenaFactory.setSameSchemeRelativeReferences("file");
@@ -881,12 +881,12 @@ characters ("[", "]") are not part of the above list
 //        jenaFactory.setIsWarning(PORT_SHOULD_NOT_BE_WELL_KNOWN,false);
         jenaFactory.useSchemeSpecificRules("http",true);
         jenaFactory.create("");
-        
+
         theURIFactory = new IRIFactory();
         theURIFactory.useSpecificationURI(true);
         theURIFactory.useSchemeSpecificRules("*",true);
         theURIFactory.create("");
-        
+
         theSemWebFactory = new IRIFactory();
         theSemWebFactory.useSpecificationRDF(true);
         theSemWebFactory.useSpecificationIRI(true);
@@ -894,12 +894,12 @@ characters ("[", "]") are not part of the above list
         theSemWebFactory.useSchemeSpecificRules("*",true);
         theSemWebFactory.setIsError(NON_INITIAL_DOT_SEGMENT,true);
         theSemWebFactory.create("");
-        
+
     }
 
     /**
      * This <em>globally</em> sets the {@link #jenaImplementation}; use with care.
-     * This should be used before any calls to {@link #jenaImplementation}; 
+     * This should be used before any calls to {@link #jenaImplementation};
      * it does not modify the factory returned by any previous calls, but subsequent
      * calls to {@link #jenaImplementation} will return the new value.
      * @param jf The new Jena Factory
@@ -909,7 +909,7 @@ characters ("[", "]") are not part of the above list
 	}
     /**
      * This <em>globally</em> sets the {@link #iriImplementation}; use with care.
-     * This should be used before any calls to {@link #iriImplementation}; 
+     * This should be used before any calls to {@link #iriImplementation};
      * it does not modify the factory returned by any previous calls, but subsequent
      * calls to {@link #iriImplementation} will return the new value.
      * @param iriF The new IRI Factory
@@ -919,7 +919,7 @@ characters ("[", "]") are not part of the above list
 	}
     /**
      * This <em>globally</em> sets the {@link #uriImplementation}; use with care.
-     * This should be used before any calls to {@link #uriImplementation}; 
+     * This should be used before any calls to {@link #uriImplementation};
      * it does not modify the factory returned by any previous calls, but subsequent
      * calls to {@link #uriImplementation} will return the new value.
      * @param uriF The new URI Factory
@@ -929,7 +929,7 @@ characters ("[", "]") are not part of the above list
 	}
     /**
      * This <em>globally</em> sets the {@link #semanticWebImplementation}; use with care.
-     * This should be used before any calls to {@link #semanticWebImplementation}; 
+     * This should be used before any calls to {@link #semanticWebImplementation};
      * it does not modify the factory returned by any previous calls, but subsequent
      * calls to {@link #semanticWebImplementation} will return the new value.
      * @param sw The new IRI Factory

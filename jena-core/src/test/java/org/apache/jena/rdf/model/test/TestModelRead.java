@@ -38,7 +38,7 @@ public class TestModelRead extends AbstractModelTestBase
     }
 
     public TestModelRead() {
-        this(new TestPackage.PlainModelFactory(), "TestModelRead") ;
+        this(new TestPackage_model.PlainModelFactory(), "TestModelRead") ;
     }
 
     public void testDefaultLangXML() {

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: Example of relative uri with too many ..'s in path.
+  Note: RFC 2396 appears to permit implementations that discard 
+        excess .. components, "compensating for obvious author 
+        errors".
+        Such behaviour is not correct for RDF/XML.
+  Author: Jeremy Carroll (jjc@hpl.hp.com)
+
+  $Id: test012.rdf,v 1.2 2005-08-04 09:53:19 jeremy_carroll Exp $
+-->
+
+<!--
+Test case WITHDRAWN in light of 2396bis
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/"
+         xml:base="http://example.org/dir/file">
+
+ <eg:type rdf:about="../../../absfile" />
+
+</rdf:RDF>
+-->

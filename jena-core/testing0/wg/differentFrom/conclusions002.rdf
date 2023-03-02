@@ -1,0 +1,28 @@
+<!--++ differentFrom/conclusions002.rdf ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions002.rdf,v 1.6 2003-12-05 05:09:25 jeremy_carroll Exp $
+-->
+<!--
+using <code>distinctMembers</code> to derive <code>differentFrom</code>
+-->
+<!-- Author: Jos De Roo -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/differentFrom/premises002#"
+    xml:base="http://www.w3.org/2002/03owlt/differentFrom/conclusions002" >
+
+    <rdf:Description rdf:about="premises002#Barney">
+        <owl:differentFrom rdf:resource="premises002#Wilma"/>
+    </rdf:Description>
+
+</rdf:RDF>

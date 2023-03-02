@@ -23,10 +23,7 @@ import junit.framework.TestSuite ;
 import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
 
 /**
- * All developers should edit this file to add their tests.
- * Please try to name your tests and test suites appropriately.
- * Note, it is better to name your test suites on creation
- * rather than in this file.
+ * Jena core test suite.
  */
 public class TestPackage extends TestCase {
 
@@ -36,26 +33,34 @@ public class TestPackage extends TestCase {
 
         TestSuite ts = new TestSuite() ;
         ts.setName("Jena") ;
+
         addTest(ts,  "System setup", TestSystemSetup.suite());
         addTest(ts,  "IRI", org.apache.jena.irix.TS_IRIx.suite());
-        addTest(ts,  "Enhanced", org.apache.jena.enhanced.test.TestPackage.suite());
-        addTest(ts,  "Datatypes", org.apache.jena.datatypes.TestPackage.suite()) ;
-        addTest(ts,  "Graph", org.apache.jena.graph.test.TestPackage.suite());
+        addTest(ts,  "Enhanced", org.apache.jena.enhanced.test.TestPackage_enh.suite());
+        addTest(ts,  "Datatypes", org.apache.jena.datatypes.TestPackage_dt.suite()) ;
+        addTest(ts,  "Graph", org.apache.jena.graph.test.TestPackage_graph.suite());
         addTest(ts,  "Mem", org.apache.jena.mem.test.TestMemPackage.suite() );
         addTest(ts,  "Mem2", org.apache.jena.mem.test.TestGraphMemPackage.suite() );
-        addTest(ts,  "Model", org.apache.jena.rdf.model.test.TestPackage.suite());
+        addTest(ts,  "Model", org.apache.jena.rdf.model.test.TestPackage_model.suite());
         addTest(ts,  "StandardModels", org.apache.jena.rdf.model.test.TestStandardModels.suite() );
-        addTest(ts,  "Turtle", org.apache.jena.ttl_test.turtle.TurtleTestSuite.suite()) ;
+        // Currently, "ARP[IRIx]"
+        addTest(ts,  "XML Input", org.apache.jena.rdfxml.xmlinput.TestPackage_xmlinput.suite());
         addTest(ts,  "XML Output", org.apache.jena.rdfxml.xmloutput.TestPackage_xmloutput.suite());
-        addTest(ts,  "Util", org.apache.jena.util.TestPackage.suite());
-        addTest(ts,  "Jena iterator", org.apache.jena.util.iterator.test.TestPackage.suite() );
+        addTest(ts,  "Util", org.apache.jena.util.TestPackage_util.suite());
+        addTest(ts,  "Jena iterator", org.apache.jena.util.iterator.test.TestPackage_iter.suite() );
         addTest(ts,  "Assembler", org.apache.jena.assembler.test.TestAssemblerPackage.suite() );
-        addTest(ts,  "ARP", org.apache.jena.rdfxml.xmlinput.TestPackage_xmlinput.suite());
         addTest(ts,  "Vocabularies", org.apache.jena.vocabulary.test.TestVocabularies.suite() );
         addTest(ts,  "Shared", org.apache.jena.shared.TestSharedPackage.suite() );
-        addTest(ts,  "Reasoners", org.apache.jena.reasoner.test.TestPackage.suite());
-        addTest(ts,  "Composed graphs", org.apache.jena.graph.compose.test.TestPackage.suite() );
-        addTest(ts,  "Ontology", org.apache.jena.ontology.impl.TestPackage.suite() );
+        addTest(ts,  "Composed graphs", org.apache.jena.graph.compose.test.TestPackage_compose.suite() );
+        addTest(ts,  "Reasoners", org.apache.jena.reasoner.test.TestPackage_reasoners.suite());
+        addTest(ts,  "Ontology", org.apache.jena.ontology.impl.TestPackage_ont.suite() );
+
+        // ARP, with jena-iri
+        addTest(ts,  "ARP[Legacy]", org.apache.jena.rdfxml.xmlinput0.TestPackage_xmlinput0.suite());
+
+        // Local TTL parser for tests - not fully compliant.
+        addTest(ts,  "Turtle", org.apache.jena.ttl_test.test.turtle.TurtleTestSuite.suite()) ;
+
         return ts ;
     }
 
@@ -64,7 +69,4 @@ public class TestPackage extends TestCase {
             tc.setName(name);
         ts.addTest(tc);
     }
-
-
-
 }

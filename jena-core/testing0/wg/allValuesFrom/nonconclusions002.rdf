@@ -1,0 +1,34 @@
+<!--++ allValuesFrom/nonconclusions002.rdf ** generated using webont test editor. ++-->
+<!--++ Created 7 May 2003 11:25:25 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: nonconclusions002.rdf,v 1.6 2003-12-05 05:09:26 jeremy_carroll Exp $
+-->
+<!--
+Another simple example; contrast with <code>owl:someValuesFrom</code>.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/allValuesFrom/premises002#"
+    xmlns:second="http://www.w3.org/2002/03owlt/allValuesFrom/nonconclusions002#"
+    xml:base="http://www.w3.org/2002/03owlt/allValuesFrom/nonconclusions002" >
+    <owl:Thing rdf:about="premises002#i">
+        <first:p>
+           <first:c rdf:nodeID="o" />
+         </first:p>
+    </owl:Thing>
+    <owl:Thing rdf:nodeID="o" />
+    <owl:ObjectProperty rdf:about="premises002#p"/>
+    <owl:Class rdf:about="premises002#c"/>
+</rdf:RDF>

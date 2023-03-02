@@ -1,0 +1,43 @@
+<!--++ cardinality/Manifest004.rdf ** generated using webont test editor. ++-->
+<!--++ Created 19 Apr 2003 11:39:41 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: Manifest004.rdf,v 1.6 2003-12-05 05:09:30 jeremy_carroll Exp $
+-->
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+      xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+      xmlns:rtest='http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#'
+      xmlns:otest='http://www.w3.org/2002/03owlt/testOntology#'
+      xmlns:dc='http://purl.org/dc/elements/1.0/'
+      xmlns='http://www.w3.org/1999/xhtml'
+      xmlns:owl='http://www.w3.org/2002/07/owl#'
+      xml:base='http://www.w3.org/2002/03owlt/cardinality/Manifest004'
+>
+<otest:PositiveEntailmentTest rdf:ID='test'>
+   <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
+   <rtest:status>APPROVED</rtest:status> <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Jan/0444"/>
+   <dc:creator>Jeremy J. Carroll</dc:creator>
+   <otest:feature rdf:resource='http://www.w3.org/2002/07/owl#cardinality' />
+   <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#DL' />
+   <rtest:description rdf:parseType='Literal'>
+An <code>owl:cardinality</code> constraint is simply shorthand for a pair of <code>owl:minCardinality</code> and <code>owl:maxCardinality</code> constraints.</rtest:description>
+   <rtest:premiseDocument>
+         <rtest:RDF-XML-Document rdf:about='premises004' >
+              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#DL' />
+         </rtest:RDF-XML-Document>
+   </rtest:premiseDocument>
+   <rtest:conclusionDocument>
+         <rtest:RDF-XML-Document rdf:about='conclusions004' >
+              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#DL' />
+         </rtest:RDF-XML-Document>
+   </rtest:conclusionDocument>
+</otest:PositiveEntailmentTest >
+</rdf:RDF>

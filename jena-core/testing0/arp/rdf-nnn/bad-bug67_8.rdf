@@ -1,0 +1,20 @@
+<!--
+  Failing (not RDF document) Test case for bug #67.
+  i.e. hp internal bugzilla #67
+  
+  Various incorrect rdf:_NNN attributes.
+  result in a warning/error message.
+  
+  WARN_UNKNOWN_RDF_ATTRIBUTE * 3
+  WARN_UNKNOWN_RDF_ELEMENT * 3
+  
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+  <rdf:Bag rdf:_-1="c" rdf:_0="d" rdf:_01="e">
+    <rdf:_-1>h</rdf:_-1>
+    <rdf:_0>i</rdf:_0>
+    <rdf:_01>j</rdf:_01>
+  </rdf:Bag>
+   
+</rdf:RDF>

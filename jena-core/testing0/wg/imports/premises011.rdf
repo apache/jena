@@ -1,0 +1,31 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises011.rdf,v 1.6 2003-12-05 05:09:27 jeremy_carroll Exp $
+-->
+<!--
+A Lite version of test <a href="#imports-001">imports-001</a>.
+-->
+<!-- Author: Jeff Heflin -->
+<rdf:RDF
+    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+    xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+    xmlns:owl='http://www.w3.org/2002/07/owl#'
+    xmlns:ont='http://www.w3.org/2002/03owlt/imports/support011-A#'
+    xml:base='http://www.w3.org/2002/03owlt/imports/premises011' >
+
+    <owl:Ontology rdf:about=''>
+        <owl:imports 
+     rdf:resource="http://www.w3.org/2002/03owlt/imports/support011-A"/>
+    </owl:Ontology>
+
+    <ont:Man rdf:about='http://example.org/data#Socrates'/>
+
+</rdf:RDF>

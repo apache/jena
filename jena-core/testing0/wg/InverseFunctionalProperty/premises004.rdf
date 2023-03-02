@@ -1,0 +1,33 @@
+<!--++ InverseFunctionalProperty/premises004.rdf ** generated using webont test editor. ++-->
+<!--++ Created 27 Sep 2002 10:47:22 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises004.rdf,v 1.6 2003-12-05 05:09:25 jeremy_carroll Exp $
+-->
+<!--
+If the domain of <code>prop</code> is a singleton set then it is necessarily inverse functional, (i.e. every member of its 
+ range is the value of a single item) so it is an 
+ <code>owl:InverseFunctionalProperty</code>.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"  
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.w3.org/2002/03owlt/InverseFunctionalProperty/premises004" >
+    <owl:ObjectProperty rdf:ID="prop">
+      <rdfs:domain rdf:resource="#Singleton"/>
+    </owl:ObjectProperty>
+    <rdfs:Class rdf:ID="Singleton">
+      <owl:oneOf rdf:parseType="Collection">
+          <rdf:Description/>
+      </owl:oneOf>
+    </rdfs:Class>
+</rdf:RDF>

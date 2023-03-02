@@ -78,6 +78,8 @@ public class IRIs {
      * turn it into a IRI suitable as a base IRI.
      */
     public static String toBase(String baseURI) {
+        if ( baseURI == null )
+            return getBaseStr();
         String scheme = scheme(baseURI);
         if ( Sys.isWindows ) {
             // Assume a scheme of one letter is a Windows drive letter.

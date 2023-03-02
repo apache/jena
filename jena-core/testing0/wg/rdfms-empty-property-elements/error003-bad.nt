@@ -1,0 +1,3 @@
+_:jA112 <http://random.ioctl.org/#prop2> "baz" .
+<http://random.ioctl.org/#bar> <http://random.ioctl.org/#someProperty> _:jA112 .
+<http://random.ioctl.org/#bar> <http://random.ioctl.org/#someProperty> ""^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .

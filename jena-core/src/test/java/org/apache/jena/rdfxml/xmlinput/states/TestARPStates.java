@@ -32,11 +32,13 @@ public class TestARPStates extends TestCase {
         super();
     }
 
+    static String dataFile = "testing/arp/state.txt";
+
     public static TestSuite suite() {
         TestSuite rslt = new TestSuite();
         //rslt.setName("ARP state machine");
         Map<String, TestSuite> tests = new HashMap<>();
-        try ( LineNumberReader r = new LineNumberReader(new FileReader(TestData.dataFile)) ) {
+        try ( LineNumberReader r = new LineNumberReader(new FileReader(dataFile)) ) {
             while (true) {
                 String line = r.readLine();
                 if (line == null)

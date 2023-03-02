@@ -1,0 +1,28 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: nonconclusions006.rdf,v 1.2 2005-08-04 09:53:21 jeremy_carroll Exp $
+-->
+<!--
+See Manifest.rdf for description.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xml:base="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-domain-and-range/nonconclusions006.rdf" >
+
+   <rdfs:Property rdf:about="premises006.rdf#prop">
+     <rdfs:domain>
+        <rdfs:Class rdf:about="premises006.rdf#B"/>
+     </rdfs:domain>
+   </rdfs:Property>
+
+</rdf:RDF>

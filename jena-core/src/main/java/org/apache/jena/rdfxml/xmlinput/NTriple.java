@@ -84,6 +84,7 @@ import org.xml.sax.SAXParseException;
  * Ignores numbered error/warning conditions.
  * </dl>
  */
+@SuppressWarnings("deprecation")
 public class NTriple implements ARPErrorNumbers {
 
 	private static StringBuffer line = new StringBuffer();
@@ -105,7 +106,7 @@ public class NTriple implements ARPErrorNumbers {
 	 * @param eh Can be null.
 	 * @param ap Can be null.
 	 */
-	static public void mainEh(String args[], ErrorHandler eh, ARPEventHandler ap) {
+    static public void mainEh(String args[], ErrorHandler eh, ARPEventHandler ap) {
 		boolean doneOne = false;
 		startMem = -1;
 		andMeToo = ap;
@@ -247,7 +248,7 @@ public class NTriple implements ARPErrorNumbers {
 			switch (opt) {
 				case 'D':
 					final int nStatements = Integer.parseInt(nextArg);
- rt.gc(); rt.gc(); 
+ rt.gc(); rt.gc();
  startMem = (int)(rt.totalMemory()-rt.freeMemory());
 				arp.getHandlers().setStatementHandler(new StatementHandler(){
 int debugC = 0;
@@ -255,7 +256,7 @@ int debugC = 0;
 					@Override
                     public void statement(AResource subj, AResource pred, AResource obj) {
 						statement(null,null,(ALiteral)null);
-						
+
 					}
 
 					@Override
@@ -266,9 +267,9 @@ int debugC = 0;
 							System.out.println("M1: "+ (rt.totalMemory()-rt.freeMemory()-startMem));
 						  rt.gc();
 							System.out.println("M2: " + (rt.totalMemory()-rt.freeMemory()-startMem));
-						} 
+						}
 						if ( debugC == 1 ){
-							rt.gc(); rt.gc(); 
+							rt.gc(); rt.gc();
 							startMem = (int)(rt.totalMemory()-rt.freeMemory());
 						}
 						if (debugC == nStatements) {
@@ -281,10 +282,10 @@ int debugC = 0;
 						  catch (Exception e){
                               // ignore
 						  }
-						  
+
 						}
-							
-						
+
+
 					}
 				});
 				  break;
@@ -313,9 +314,9 @@ int debugC = 0;
                         @Override
                         public void error(SAXParseException exception) { /* ignore */ }
                         @Override
-                        public void fatalError(SAXParseException exception) { /* ignore */ }     
+                        public void fatalError(SAXParseException exception) { /* ignore */ }
                     });
-                    
+
                     arp.setBadStatementHandler(new SH(System.err));
                     break;
 				case 'b' :
@@ -395,7 +396,7 @@ int debugC = 0;
 	@SuppressWarnings("resource")
     static private void process(String surl) {
 		InputStream in = null ;
-		
+
 		URL url;
 		String baseURL;
 
@@ -422,9 +423,9 @@ int debugC = 0;
 			}
 		}
 		process(in, baseURL, surl);
-		try { in.close() ; } catch (IOException ex) {} 
+		try { in.close() ; } catch (IOException ex) {}
 	}
-		
+
 	static private void process(InputStream in, String xmlBasex, String surl) {
 		String xmlBasey = xmlBase == null ? xmlBasex : xmlBase;
 		try {
@@ -525,14 +526,14 @@ int debugC = 0;
 			print("> ");
 		}
 	}
-	
-	
+
+
 	static private Pattern ntripleBnode=Pattern.compile("[a-zA-Y0-9]*");
 	/**
-	 * 
+	 *
 	 * Replace any non-legal char (or Z) with ZNN where NN are the hex codes
 	 * in UTF-8
-	 * @param anonymousID Is something that corresponds to an XMLName 
+	 * @param anonymousID Is something that corresponds to an XMLName
 	 * @return an ascii string that is legal NTriple
 	 */
 	public static String escapeNTriple(String anonymousID) {
@@ -543,9 +544,9 @@ int debugC = 0;
 		StringBuilder rslt = new StringBuilder();
 		int lastNotMatched = 0;
 		while (matcher.find()) {
-			
+
 			String unmatched = anonymousID.substring(lastNotMatched, matcher.start());
-			
+
 			rslt.append(escapeUTF8(unmatched));
 			lastNotMatched = matcher.end();
 			rslt.append(matcher.group());

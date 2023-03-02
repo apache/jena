@@ -1,0 +1,37 @@
+<!--++ I6.1/Manifest001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 19 Nov 2003 17:42:11 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: Manifest001.rdf,v 1.4 2003/12/02 05:07:36 jcarroll Exp $
+-->
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+      xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+      xmlns:rtest='http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#'
+      xmlns:otest='http://www.w3.org/2002/03owlt/testOntology#'
+      xmlns:dc='http://purl.org/dc/elements/1.0/'
+      xmlns='http://www.w3.org/1999/xhtml'
+      xmlns:owl='http://www.w3.org/2002/07/owl#'
+      xml:base='http://www.w3.org/2002/03owlt/I6.1/Manifest001'
+>
+<otest:ConsistencyTest rdf:ID='test'>
+   <rtest:status>EXTRACREDIT</rtest:status><rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Dec/0006"/>
+   <dc:creator>Jeremy J. Carroll</dc:creator>
+   <rtest:issue rdf:resource='http://www.w3.org/2001/sw/WebOnt/webont-issues#I6.1-UnnamedIndividualRestrictions' />
+   <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
+   <rtest:description rdf:parseType='Literal'>
+The blank nodes in a individual description in OWL DL may not form a directed cycle.</rtest:description>
+   <rtest:inputDocument>
+         <rtest:RDF-XML-Document rdf:about='consistent001' >
+              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
+         </rtest:RDF-XML-Document>
+   </rtest:inputDocument>
+</otest:ConsistencyTest >
+</rdf:RDF>

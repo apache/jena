@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Issue: http://www.w3.org/2000/03/rdf-tracking/#rdf-charmod-uris
+  Test:  error 1
+  Author: Jeremy Carroll, HP
+
+  Description:
+      Any uriref label in an RDF graph must conform with Unicode
+      Normal Form C (NFC). The URI in this example is not normalized
+      correctly.
+        
+  $Id: error001.rdf,v 1.2 2005-08-04 09:53:24 jeremy_carroll Exp $
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/#">
+   <!-- The é below is two characters an e followed by 
+          #x301 (encoded here as two Unicode octets #CC #81).
+        It should be displayed identically to é (#C3 #A9). -->
+   <rdf:Description rdf:about="http://example.org/#André"> 
+        <eg:owes>2000</eg:owes>
+   </rdf:Description>
+</rdf:RDF>
+

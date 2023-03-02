@@ -57,13 +57,14 @@ public class TestErrorMsg extends TestCase {
 		check(filename, regex, null);
 	}
 	*/
+    @SuppressWarnings("deprecation")
 	private void check(
 		String filename,
 		String regexPresent,
 		String regexAbsent)
 		throws IOException {
 		final StringBuffer buf = new StringBuffer();
-		ARP arp = new ARP();
+        ARP arp = new ARP();
 		arp.getHandlers().setErrorHandler(new ErrorHandler() {
 
 			@Override
@@ -99,7 +100,7 @@ public class TestErrorMsg extends TestCase {
 				!Pattern.compile(regexAbsent,Pattern.DOTALL).matcher(contents).find());
 		contents = null;
 	}
-	
+
 	public void testErrMsg01() throws Exception {
 		check("test01",null,"Unusual");
 	}

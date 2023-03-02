@@ -1,0 +1,31 @@
+<!--++ Class/nonconclusions004.rdf ** generated using webont test editor. ++-->
+<!--++ Created 22 Sep 2003 09:27:31 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: nonconclusions004.rdf,v 1.3 2003-12-05 05:09:30 jeremy_carroll Exp $
+-->
+<!--
+Annotations about owl:Class are not related to those about rdfs:Class.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/Class/premises004#"
+    xmlns:dc='http://purl.org/dc/elements/1.0/'
+    xml:base="http://www.w3.org/2002/03owlt/Class/nonconclusions004" >
+   <owl:Class rdf:about="premises004#WorkingGroup"/>
+   <owl:Class rdf:about="http://www.w3.org/2002/07/owl#Class">
+     <dc:creator>
+        <first:WorkingGroup  />
+     </dc:creator>
+   </owl:Class>
+</rdf:RDF>

@@ -1,0 +1,16 @@
+<!--
+The test is to give an error message
+that does not mention the absence of parseType="Literal"  
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns="http://example.org/">
+  <ConfigurationKey rdf:ID="aclcodecs">
+This constant is the key of the property whose
+value contains the
+list of ACLCODECSs that have to be launched
+at bootstrap time.
+This list must be retrieved via the
+<code>getSpecifiers(ACLCODECS)</code>
+method.
+  </ConfigurationKey>
+</rdf:RDF>

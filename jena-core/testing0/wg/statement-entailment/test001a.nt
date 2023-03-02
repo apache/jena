@@ -1,0 +1,12 @@
+<http://example.org/stmt1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://example.org/stmt1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://example.org/subject> .
+<http://example.org/stmt1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/predicate> .
+<http://example.org/stmt1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://example.org/object> .
+
+<http://example.org/stmt2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://example.org/stmt2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://example.org/subject> .
+<http://example.org/stmt2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/predicate> .
+<http://example.org/stmt2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://example.org/object> .
+
+<http://example.org/stmt1> <http://example.org/property> <http://example.org/foo> .
+

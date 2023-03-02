@@ -30,11 +30,10 @@ import org.xml.sax.SAXParseException;
 
 public class ARPString extends TaintImpl implements ALiteral {
 
-    final static String RDFXMLLiteral =
-    "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
+    final static String RDFXMLLiteral = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
     /** Creates new StringToken */
     public ARPString(Frame f,String value,String parseType)
-      throws SAXParseException 
+      throws SAXParseException
       {
         f.checkString(this,value);
         this.value = value;
@@ -48,23 +47,23 @@ public class ARPString extends TaintImpl implements ALiteral {
         this.lang = forXMLLang.getLang(this);
         this.isWellFormedXML = false;
     }
-    
-   
+
+
     private String value;
     private String lang;
     private boolean isWellFormedXML;
     private String parseType;
-    
+
     @Override
     public String toString() {
         return value;
     }
-    
+
 //    public ARPString concatenate(ARPString s2) {
 //        if (lang.equals(s2.lang)) {
 //            return new ARPString(value+s2.value,lang);
 //        }
-//        throw 
+//        throw
 //          new IllegalArgumentException("ARPStrings can only be concatenated if they have the same xml:lang attribute");
 //    }
 //    ARPString quickConcatenate(ARPString s2) {
@@ -75,7 +74,7 @@ public class ARPString extends TaintImpl implements ALiteral {
     public boolean isWellFormedXML() {
         return this.isWellFormedXML;
     }
-    
+
     @Override
     public String getLang() {
         return lang;
@@ -84,5 +83,5 @@ public class ARPString extends TaintImpl implements ALiteral {
     public String getDatatypeURI() {
         return isWellFormedXML?RDFXMLLiteral:null;
     }
-    
+
 }

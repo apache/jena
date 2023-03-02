@@ -28,30 +28,39 @@ import org.apache.jena.atlas.logging.Log;
 public class SystemIRIx {
 
     // -- Providers
-    private static IRIProvider providerJenaIRI = new IRIProviderJenaIRI();
-    static {
-        providerJenaIRI.strictMode("urn",  false);
-        providerJenaIRI.strictMode("http", false);
-        providerJenaIRI.strictMode("file", false);
+    private static IRIProvider makeProviderJenaIRI() {
+        IRIProvider newProviderJenaIRI = new IRIProviderJenaIRI();
+        newProviderJenaIRI.strictMode("urn",  false);
+        newProviderJenaIRI.strictMode("http", false);
+        newProviderJenaIRI.strictMode("file", false);
+        return newProviderJenaIRI;
     }
+    private static IRIProvider providerJenaIRI = makeProviderJenaIRI();
 
-    private static IRIProvider providerJDK     = new IRIProviderJDK();
     // ** Do not use IRIProviderJDK in production. **
-    static {}
+    private static IRIProvider makeProviderJDK() { return new IRIProviderJDK(); }
 
-//    private static IRIProvider providerIRI3986 = new IRIProvider3986();
-//    static {
-//        providerIRI3986.strictMode("urn",  true);
-//        providerIRI3986.strictMode("http", true);
-//        providerIRI3986.strictMode("file", true);
+//    private static IRIProvider makeProviderIRI3986() {
+//        IRIProvider newProviderIRI3986 = new IRIProvider3986();
+//        newProviderIRI3986.strictMode("urn", true);
+//        newProviderIRI3986.strictMode("http", true);
+//        newProviderIRI3986.strictMode("file", true);
 //    }
+//    private static IRIProvider providerIRI3986 = makeProviderIRI3986();
 
     // -- System-wide provider.
 
-    private static IRIProvider provider = providerJenaIRI;
-    //private static IRIProvider provider = providerIRI3986;
+    public static IRIProvider makeFreshSystemProvider() {
+        // Choice point.
+        return makeProviderJenaIRI();
+    }
+
+    private static IRIProvider provider = makeFreshSystemProvider();
 
     public static void init() {}
+    public static void reset() {
+        provider = makeFreshSystemProvider();
+    }
 
     public static void setProvider(IRIProvider aProvider) {
         provider = aProvider;

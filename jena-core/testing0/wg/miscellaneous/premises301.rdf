@@ -1,0 +1,29 @@
+<!--++ miscellaneous/premises301.rdf ** generated using webont test editor. ++-->
+<!--++ Created 19 Feb 2003 19:55:48 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises301.rdf,v 1.5 2003-12-05 05:09:29 jeremy_carroll Exp $
+-->
+<!--
+Annotations participate a little in the semantics.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/miscellaneous/premises301#"
+    xml:base="http://www.w3.org/2002/03owlt/miscellaneous/premises301" >
+
+<owl:Thing rdf:about="#a">
+   <first:prop>foo</first:prop>
+</owl:Thing>
+
+</rdf:RDF>

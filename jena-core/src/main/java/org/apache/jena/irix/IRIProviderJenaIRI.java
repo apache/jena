@@ -195,8 +195,6 @@ public class IRIProviderJenaIRI implements IRIProvider {
         return this.getClass().getSimpleName();
     }
 
-    private static IRI baseIRI = null;
-
     // -----------------------------
 
     private static IRIFactory iriFactory() {

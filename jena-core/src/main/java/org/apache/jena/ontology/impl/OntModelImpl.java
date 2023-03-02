@@ -47,7 +47,10 @@ import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.ValidityReport ;
 import org.apache.jena.shared.ConfigException ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.NullIterator;
+import org.apache.jena.util.iterator.UniqueFilter;
+import org.apache.jena.util.iterator.WrappedIterator;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.jena.vocabulary.ReasonerVocabulary ;
@@ -1978,9 +1981,9 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public boolean hasLoadedImport( String uri ) {
+        uri = OntResolve.resolve(uri);
         return m_imported.contains( uri );
     }
-
 
     /**
      * <p>
@@ -1992,6 +1995,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public void addLoadedImport( String uri ) {
+        uri = OntResolve.resolve(uri);
         m_imported.add( uri );
     }
 
@@ -2006,6 +2010,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public void removeLoadedImport( String uri ) {
+        uri = OntResolve.resolve(uri);
         m_imported.remove( uri );
     }
 
@@ -2357,6 +2362,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public OntModel getImportedModel( String uri ) {
+        uri = OntResolve.resolve(uri);
         if (listImportedOntologyURIs( true ).contains( uri )) {
             Model mi = getDocumentManager().getModel( uri );
 

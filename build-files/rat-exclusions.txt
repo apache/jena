@@ -75,6 +75,7 @@ archive.md
 **/src/test/files/**/*
 **/src/test/resources/**/*
 **/testing/**/*
+jena-core/testing0/**
 
 ## Databases
 **/DB/**/*

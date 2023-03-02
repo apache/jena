@@ -30,14 +30,18 @@ public class TestPackage_xmlinput extends TestSuite
 
     private TestPackage_xmlinput()
     {
-        super("ARP") ;
-        addTest( org.apache.jena.rdfxml.xmlinput.TestARPMain.suite());
-        addTest( org.apache.jena.rdfxml.xmlinput.ARPTests2.suite());
+        super("RDF/XML Input") ;
+        addTest( org.apache.jena.rdfxml.xmlinput.TestURIs.suite());
+        addTest( org.apache.jena.rdfxml.xmlinput.TestSuiteWG_NTriples.suite());
+        addTest( org.apache.jena.rdfxml.xmlinput.TestSuiteWG_RDFXML.suite());
+        addTest( org.apache.jena.rdfxml.xmlinput.TestSuiteWG_RDFXML_ARP.suite());
+
+        addTest( org.apache.jena.rdfxml.xmlinput.TestsARP.suite());
         addTest( org.apache.jena.rdfxml.xmlinput.states.TestARPStates.suite());
-        addTest( org.apache.jena.rdfxml.xmlinput.URITests.suite());
-        addTest( org.apache.jena.rdfxml.xmlinput.TaintingTests.suite());
-        addTest( org.apache.jena.rdfxml.xmlinput.SAX2RDFTest.suite());
-        addTest( org.apache.jena.rdfxml.xmlinput.StAX2ModelTest.suite());
+
+        addTest( org.apache.jena.rdfxml.xmlinput.TestsTainting.suite());
+        addTest( org.apache.jena.rdfxml.xmlinput.TestsSAX2RDF.suite());
+        addTest( org.apache.jena.rdfxml.xmlinput.TestsStAX2Model.suite());
     }
 
     private void addTest(String name, TestSuite tc) {

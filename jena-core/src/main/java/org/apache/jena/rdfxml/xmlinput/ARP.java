@@ -63,7 +63,9 @@ import org.xml.sax.SAXException;
  * usage through the file life time. </p>
  * <p>See <a href="/documentation/io/index.html">ARP documentation</a> for more information.</p>
  * Includes contributions from Simon Raboczi and Andrew Newman
+ * @deprecated Direct access to the RDF/XML parser is planned for removal. Please contact the Jena development community for details.
  */
+@Deprecated
 public class ARP implements ARPConfig
 {
 
@@ -109,8 +111,7 @@ public class ARP implements ARPConfig
  * @throws SAXException More serious error during XML or RDF processing; or thrown from the ErrorHandler.
  * @throws IOException Occurring during XML processing.
  */
-    public void load(InputStream in,String xmlBase) throws SAXException,
-IOException {
+    public void load(InputStream in,String xmlBase) throws SAXException, IOException {
         //load(new InputStreamReader(in),xmlBase);
         InputSource inputS = new InputSource(in);
         inputS.setSystemId(xmlBase);

@@ -37,18 +37,22 @@ import org.xml.sax.SAXParseException ;
  * Builtin data type to represent XMLLiteral (i.e. items created
  * by use of <code>rdf:parsetype='literal'</code>.
  */
+@SuppressWarnings("deprecation")
 public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
+
+
+    public static String XMLLiteralTypeURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
     /** Singleton instance */
     // Include the string for the RDF namespace, not use RDF.getURI(), to avoid an initializer circularity
-    public static final RDFDatatype theXMLLiteralType = new XMLLiteralType("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
-    
+    public static final RDFDatatype theXMLLiteralType = new XMLLiteralType(XMLLiteralTypeURI);
+
     /**
      * Private constructor.
      */
     private XMLLiteralType(String uri) {
         super(uri);
     }
-    
+
     /**
      * Convert a serialize a value of this datatype out
      * to lexical form.
@@ -57,7 +61,7 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
     public String unparse(Object value) {
         return value.toString();
     }
-    
+
     /**
      * Parse a lexical form of this datatype to a value
      * @throws DatatypeFormatException if the lexical form is not legal
@@ -68,7 +72,7 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
           throw new DatatypeFormatException("Bad rdf:XMLLiteral");
         return lexicalForm;
     }
-    
+
     /**
      * Test whether the given string is a legal lexical form
      * of this datatype.
@@ -89,9 +93,9 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
         // status[0] true on error or other reason to know that this is not well-formed
         // status[1] true once first triple found
         // status[2] the result (good if status[1] and not status[0]).
-        
+
         ARP arp = new ARP();
-        
+
         arp.getHandlers().setErrorHandler(new ErrorHandler(){
         	@Override
             public void fatalError(SAXParseException e){
@@ -112,7 +116,7 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
         	/* this method is invoked exactly once
         	 * while parsing the dummy document.
         	 * The l argument is in exclusive canonical XML and
-        	 * corresponds to where the lexical form has been 
+        	 * corresponds to where the lexical form has been
         	 * in the dummy document. The lexical form is valid
         	 * iff it is unchanged.
         	 */
@@ -130,24 +134,24 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
 	    }
         });
         try {
-        
+
         arp.load(new StringReader(
         "<rdf:RDF  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>\n"
         +"<rdf:Description><rdf:value rdf:parseType='Literal'>"
         +lexicalForm+"</rdf:value>\n"
         +"</rdf:Description></rdf:RDF>"
         ));
-        
+
         }
         catch (IOException ioe){
-           throw new BrokenException(ioe);	
+           throw new BrokenException(ioe);
         }
         catch (SAXException s){
         	return false;
         }
-        
-        
+
+
         return (!status[0])&&status[1]&&status[2];
-    }    
+    }
 
 }

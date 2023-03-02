@@ -1,0 +1,37 @@
+<!--++ FunctionalProperty/premises002.rdf ** generated using webont test editor. ++-->
+<!--++ Created 14 May 2003 18:52:31 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises002.rdf,v 1.6 2003-12-05 05:09:27 jeremy_carroll Exp $
+-->
+<!--
+If <code>prop</code> belongs to <code>owl:FunctionalProperty</code>,
+and <code>subject</code> denotes a resource
+which is the subject of two <code>prop</code> triples, then the <code>object</code>s
+of these triples have the same denotation.Hence any assertion made 
+using one of them can be transferred to the other.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns:eg ="http://www.example.org/"
+  xmlns:first="http://www.w3.org/2002/03owlt/FunctionalProperty/premises002#" 
+  xml:base="http://www.w3.org/2002/03owlt/FunctionalProperty/premises002" >
+    <owl:FunctionalProperty rdf:ID="prop"/>
+    <rdf:Description rdf:ID="subject">
+      <first:prop>
+          <rdf:Description rdf:ID="object1">
+            <eg:prop2>value</eg:prop2>
+          </rdf:Description>
+      </first:prop>
+      <first:prop rdf:resource="#object2" />
+    </rdf:Description>
+</rdf:RDF>

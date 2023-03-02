@@ -1,0 +1,34 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: error0007.rdf,v 1.2 2005-08-04 09:53:17 jeremy_carroll Exp $
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+ <!-- 
+  Failing (not RDF document) Test case for
+  Issue http://www.w3.org/2000/03/rdf-tracking/#rdf-ns-prefix-confusion
+
+  Dave Beckett - http://purl.org/net/dajobe/
+
+ -->
+
+  <!-- Test aboutEach attribute - MUST FAIL -->
+
+  <rdf:Description aboutEach="#container">
+    <eg:property>bar</eg:property>
+  </rdf:Description>
+   
+  <rdf:Bag ID="container">
+    <rdf:li resource="http://example.org/resource/" />
+  </rdf:Bag>
+
+</rdf:RDF>

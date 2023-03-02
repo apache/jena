@@ -58,8 +58,8 @@ public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
 
     @Override
     public void fatalError(Exception e) {
-    	if (!silent)
-    	    logger.error(ParseException.formatMessage(e));
+        if (!silent)
+            logger.error(ParseException.formatMessage(e));
         throw e instanceof RuntimeException
             ? (RuntimeException) e
             : new JenaException( e );

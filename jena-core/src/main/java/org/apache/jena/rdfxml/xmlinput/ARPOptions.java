@@ -18,7 +18,8 @@
 
 package org.apache.jena.rdfxml.xmlinput;
 
-import org.apache.jena.iri.IRIFactory;
+import org.apache.jena.irix.IRIProvider;
+import org.apache.jena.irix.SystemIRIx;
 
 
 /**
@@ -47,15 +48,7 @@ public class ARPOptions implements ARPErrorNumbers {
     private boolean embedding = false;
     private int errorMode[] = defaultErrorMode.clone();
 
-    // Note: This is the legacy setup for jena-core only.
-    // When used normally, with RIOT, the IRIFactory is
-    // org.apache.jena.riot.system.IRIResolver.iriFactory
-    // which is RDF 1.1 and also the IRIfcatory used by all
-    // RIOT parsing.
-
-    @SuppressWarnings("deprecation")
-    private static IRIFactory defaultIriFactory = IRIFactory.jenaImplementation() ;
-    private IRIFactory iriFactory = defaultIriFactory ;
+    private IRIProvider iriProvider = SystemIRIx.getProvider();
 
     /** Sets or gets the error handling mode for a specific error condition.
      * Changes that cannot be honoured are silently ignored.
@@ -226,22 +219,8 @@ public class ARPOptions implements ARPErrorNumbers {
     }
 
     /** Set the IRI factory (and hence the IRI checking rules) */
-    public void setIRIFactory(IRIFactory f) { iriFactory = f ; }
+    public void setIRIProvider(IRIProvider f) { iriProvider = f ; }
 
     /** Get the IRI factory (and hence the IRI checking rules) */
-    public IRIFactory getIRIFactory() { return iriFactory ; }
-
-    /**
-     * Set the system-wide default IRI factory, which incorporates the checking rules.
-     * By default, Jena provides checking in compliance with the RDF spec but
-     * that is quite loose and allows strings that are not IRIs (the final
-     * IRI spec came along after the RDF spec).  Example: spaces are
-     * strictly legal in RDF URIReferences but not in IRIs or URIs.
-     * Note that options to the RDF/XML parser override this.
-     */
-
-    public static void setIRIFactoryGlobal(IRIFactory f) { defaultIriFactory = f ; }
-
-    /** Get the default (global) IRI factory (and hence the IRI checking rules) */
-    public static IRIFactory getIRIFactoryGlobal() { return defaultIriFactory ; }
+    public IRIProvider getIRIProvider() { return iriProvider ; }
 }

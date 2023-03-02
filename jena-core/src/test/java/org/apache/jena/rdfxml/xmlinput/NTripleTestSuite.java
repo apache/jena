@@ -21,13 +21,11 @@ import java.io.* ;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import junit.framework.TestSuite ;
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
+import org.apache.jena.rdfxml.libtest.InputStreamFactoryTests;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPResource ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
-import org.apache.jena.shared.wg.InputStreamFactoryTests ;
 import org.junit.Assert ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
@@ -42,27 +40,8 @@ class NTripleTestSuite extends WGTestSuite {
 		super(fact, name, b);
 	}
 
-	static TestSuite suite(IRI testDir, String d, String nm) {
-		return new NTripleTestSuite(
-			new InputStreamFactoryTests(testDir, d),
-			nm,
-			true);
-	}
+	static class SimulatedException extends RuntimeException {}
 
-	static TestSuite suite(IRI testDir, IRI d, String nm) {
-		return new NTripleTestSuite(
-			new InputStreamFactoryTests(testDir, d),
-			nm,
-			true);
-	}
-
-	static class SimulatedException extends RuntimeException {
-
-        /**
-         * 
-         */
-        private static final long serialVersionUID = -4804213791508445759L;
-	}
 	static class TestHandler
 		extends ARPSaxErrorHandler
 		implements ARPEventHandler, org.xml.sax.ErrorHandler {
@@ -174,7 +153,7 @@ class NTripleTestSuite extends WGTestSuite {
 		}
 
 		/**
-		 * 
+		 *
 		 */
 		public void atEndOfFile() {
 			if (!anon.isEmpty()) {
@@ -226,7 +205,7 @@ class NTripleTestSuite extends WGTestSuite {
 
 		}
 		/**
-		 * 
+		 *
 		 */
 		public int getCount() {
 			return -countDown;
@@ -242,13 +221,13 @@ class NTripleTestSuite extends WGTestSuite {
 	}
 
 	@Override
-    Model loadRDF(InFactoryX in, RDFErrorHandler eh, String base)
+    Model loadRDF(InputSupplier in, RDFErrorHandler eh, String base)
 		throws IOException {
 		return loadRDFx(in, eh, base, true, 0);
 	}
-	
+
     static Model loadRDFx(
-		InFactoryX in,
+		InputSupplier in,
 		RDFErrorHandler eh,
 		String base,
 		boolean wantModel,
@@ -294,7 +273,7 @@ class NTripleTestSuite extends WGTestSuite {
 			if (wantModel) {
 				ntIn = new FileInputStream(ntriples);
 				return loadNT(ntIn, base);
-			} 
+			}
 		    return null;
 		} finally {
 			System.in.close();

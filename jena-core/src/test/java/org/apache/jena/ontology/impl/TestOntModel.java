@@ -496,6 +496,11 @@ public class TestOntModel
         assertEquals( "n subgraphs should be ", 3, subs.size() );
     }
 
+    private static boolean hasImport(Collection<String> c, String x) {
+        String x2 = x.substring("file:".length());
+        return c.stream().anyMatch(elt->elt.endsWith(x2));
+    }
+
 
     public void testListImportURIs() {
         OntModel m = ModelFactory.createOntologyModel();
@@ -503,16 +508,16 @@ public class TestOntModel
         Collection<String> c = m.listImportedOntologyURIs();
 
         assertEquals( "Should be two non-closed import URI's", 2, c.size() );
-        assertTrue( "b should be imported ", c.contains( "file:testing/ontology/testImport6/b.owl" ));
-        assertFalse( "c should not be imported ", c.contains( "file:testing/ontology/testImport6/c.owl" ));
-        assertTrue( "d should be imported ", c.contains( "file:testing/ontology/testImport6/d.owl" ));
+        assertTrue( "b should be imported ", hasImport(c, "file:testing/ontology/testImport6/b.owl"));
+        assertFalse( "c should not be imported ", hasImport(c, "file:testing/ontology/testImport6/c.owl"));
+        assertTrue( "d should be imported ", hasImport(c, "file:testing/ontology/testImport6/d.owl"));
 
         c = m.listImportedOntologyURIs( true );
 
         assertEquals( "Should be two non-closed import URI's", 3, c.size() );
-        assertTrue( "b should be imported ", c.contains( "file:testing/ontology/testImport6/b.owl" ));
-        assertTrue( "c should be imported ", c.contains( "file:testing/ontology/testImport6/c.owl" ));
-        assertTrue( "d should be imported ", c.contains( "file:testing/ontology/testImport6/d.owl" ));
+        assertTrue( "b should be imported ", hasImport(c, "file:testing/ontology/testImport6/b.owl" ));
+        assertTrue( "c should be imported ", hasImport(c, "file:testing/ontology/testImport6/c.owl" ));
+        assertTrue( "d should be imported ", hasImport(c, "file:testing/ontology/testImport6/d.owl" ));
     }
 
     /** Some tests for listing properties. See also {@link TestListSyntaxCategories} */

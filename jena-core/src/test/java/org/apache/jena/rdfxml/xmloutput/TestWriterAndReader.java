@@ -42,7 +42,7 @@ public class TestWriterAndReader
 	static private boolean showProgress = false;
 	//static private boolean errorDetail = false;
 	static private int firstTest = 4;
-	static private int lastTest = 9;
+	static private int lastTest = 8;
 	static private int repetitionsJ = 6;
 
   protected static Logger logger = LoggerFactory.getLogger( TestWriterAndReader.class );
