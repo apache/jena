@@ -436,8 +436,10 @@ public class NodeFunctions {
     private static String resolveCheckIRI(String baseIRI, String iriStr) {
         try {
             IRIx iri = IRIx.create(iriStr);
+            if ( ! iri.isRelative() )
+                    return iriStr;
             IRIx base = ( baseIRI != null ) ? IRIx.create(baseIRI) : IRIs.getSystemBase();
-            if ( base.isRelative() )
+            if ( base.isRelative() /*&& iri.isRelative()*/ )
                 throw new ExprEvalException("Relative IRI for base: " + iriStr) ;
             IRIx result = base.resolve(iri);
             if ( ! result.isReference() )

@@ -90,7 +90,7 @@ public abstract class IRIx {
 
     /**
      * A <a href="https://tools.ietf.org/html/rfc3986#section-4.2"><em>relative
-     * URI</em></a> one without a scheme, and maybe without some of the other parts.
+     * URI</em></a> is one without a scheme, and maybe without some of the other parts.
      * <p>
      * Often it is just the path part.
      * <p>
