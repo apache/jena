@@ -38,7 +38,7 @@ public class Shacl03_FusekiValidationService {
     public static void main(String ...a) throws IOException {
         FusekiLogging.setLogging();
         // If not standard registration...
-        Operation op = Operation.alloc(FusekiVocab.NS+"shacl", "shacl", "SHACL valdiation");
+        Operation op = Operation.alloc(FusekiVocab.NS+"shacl", "shacl", "SHACL validation");
 //        FusekiExt.registerOperation(op, new SHACL_Validation());
 //        FusekiExt.addDefaultEndpoint(op, "shacl");
         //Operation op = Operation.Shacl;
