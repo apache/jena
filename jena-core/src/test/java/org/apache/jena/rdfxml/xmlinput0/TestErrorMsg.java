@@ -63,7 +63,8 @@ public class TestErrorMsg extends TestCase {
 		String regexAbsent)
 		throws IOException {
 		final StringBuffer buf = new StringBuffer();
-		ARP0 arp = new ARP0();
+		@SuppressWarnings("deprecation")
+        ARP0 arp = new ARP0();
 		arp.getHandlers().setErrorHandler(new ErrorHandler() {
 
 			@Override
@@ -99,7 +100,7 @@ public class TestErrorMsg extends TestCase {
 				!Pattern.compile(regexAbsent,Pattern.DOTALL).matcher(contents).find());
 		contents = null;
 	}
-	
+
 	public void testErrMsg01() throws Exception {
 		check("test01",null,"Unusual");
 	}

@@ -27,10 +27,7 @@ import java.util.Locale ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.* ;
-import org.apache.jena.irix.IRIProvider;
-import org.apache.jena.irix.IRIProviderAny;
-import org.apache.jena.irix.IRIs;
-import org.apache.jena.irix.SystemIRIx;
+import org.apache.jena.irix.*;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdf.model.RDFReaderI ;
@@ -193,8 +190,15 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
     private JenaHandler handler;
 
     synchronized private void read(final Graph g, InputSource inputS, String xmlBase, Model m) {
-        if ( xmlBase != null && resolveInitialXmlBase)
-            xmlBase = IRIs.resolve(xmlBase);
+
+        try {
+            if ( xmlBase != null && resolveInitialXmlBase )
+                xmlBase = IRIs.resolve(xmlBase);
+        } catch (IRIException ex) {
+            ParseException parseException = new ParseException(ARPErrorNumbers.EM_ERROR, null, -1, -1, ex.getMessage());
+            errorHandler.error(parseException);
+            throw new JenaException(parseException);
+        }
         try {
             g.getEventManager().notifyEvent(g, GraphEvents.startRead);
             inputS.setSystemId(xmlBase);

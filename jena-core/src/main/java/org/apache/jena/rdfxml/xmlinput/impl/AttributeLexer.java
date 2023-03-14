@@ -20,7 +20,9 @@ package org.apache.jena.rdfxml.xmlinput.impl;
 
 import java.util.BitSet;
 
+import org.apache.jena.irix.IRIException;
 import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
+import org.apache.jena.rdfxml.xmlinput.ParseException;
 import org.apache.jena.rdfxml.xmlinput.states.Frame ;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
@@ -57,7 +59,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
     int index;
 
     Attributes att;
-    
+
     AbsXMLContext xml;
 
     public int processSpecials(Taint taintMe, Attributes a) throws SAXParseException {
@@ -83,7 +85,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
 
             case A_XMLLANG:
                 lang = value();
-              
+
                 break;
             case A_XML_OTHER:
             case A_XMLNS:
@@ -134,7 +136,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
             if (matched) {
                 done.set(index);
                 count++;
-            } 
+            }
         }
         xml = computeXml(frame.getXMLContext());
         return count;
@@ -147,14 +149,19 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
     }
     private AbsXMLContext computeXml(AbsXMLContext in) throws SAXParseException {
         if (base != null) {
+            try {
             in = in.withBase(frame.arp,base);
+            } catch (IRIException ex) {
+                ARPLocation aLoc = new ARPLocation(frame.arp.getLocator());
+                throw new ParseException(EM_ERROR, aLoc, ex.getMessage());
+            }
         }
         if (lang != null)
             in = in.withLang(frame.arp,lang);
         return in;
     }
 
-   
+
 
     @Override
     boolean isInRdfns(Taint taintMe) throws SAXParseException {
@@ -181,12 +188,12 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
         case A_BAGID:
             e = ERR_BAD_RDF_ATTRIBUTE;
             break;
-        
+
         }
         frame.warning(taintMe, e, getQName()
                 + " not allowed as attribute"
                 + (e == ERR_BAD_RDF_ATTRIBUTE?".":" here."));
-        
+
     }
 
     @Override
@@ -208,7 +215,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
     private String value() {
         return att.getValue(index);
     }
-    
+
     /**
         Answer the xml:base value, or null if there wasn't one.
         [Added by kers, in search of xml:base processing]
@@ -228,7 +235,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
     String getQName() {
         return att.getQName(index);
     }
-    
+
     public boolean done(int i) {
         return done.get(i);
     }

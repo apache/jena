@@ -36,8 +36,9 @@ public class ParseException extends SAXParseException implements
      */
     private static final long serialVersionUID = -5986976549492477885L;
     final int id;
+    private final String inputName;
 
-    protected ParseException(int id, ARPLocation where, String msg) {
+    public ParseException(int id, ARPLocation where, String msg) {
         this(id, where.inputName, where.endLine, where.endColumn, msg);
     }
 
@@ -46,13 +47,15 @@ public class ParseException extends SAXParseException implements
     }
 
     protected ParseException(int id, String inputName, int endLine, int endColumn, String msg) {
-        super(msg, inputName, null, endLine, endColumn);
+        super(msg, null, null, endLine, endColumn);
         this.id = id;
+        this.inputName = inputName;
     }
 
     protected ParseException(int id, String inputName, int endLine, int endColumn, Exception e) {
-        super(e.getMessage(), inputName, null, endLine, endColumn, e);
+        super(e.getMessage(), null, null, endLine, endColumn, e);
         this.id = id;
+        this.inputName = inputName;
     }
 
     /**
@@ -125,8 +128,6 @@ public class ParseException extends SAXParseException implements
             return idStr + super.getMessage();
     }
 
-
-
     /**
      * Calls e.getMessage() and also accesses line and column information for
      * SAXParseException's.
@@ -142,26 +143,16 @@ public class ParseException extends SAXParseException implements
         if (!(e instanceof SAXParseException))
             return msg;
         SAXParseException sax = (SAXParseException) e;
-        String file = sax.getSystemId();
-        if (file == null)
-            file = sax.getPublicId();
-        String rslt = file == null ? "" : file;
         if (sax.getLineNumber() == -1)
-            return (file != null ? (file + ": ") : "") + msg;
-
-        if (sax.getColumnNumber() == -1) {
-            return rslt + "(line " + sax.getLineNumber() + "): " + msg;
-        }
-        return rslt + "(line " + sax.getLineNumber() + " column " + sax.getColumnNumber()
-                + "): " + msg;
-
+            return msg;
+        if (sax.getColumnNumber() == -1)
+            return "(line " + sax.getLineNumber() + "): " + msg;
+        return "(line " + sax.getLineNumber() + " column " + sax.getColumnNumber()+ "): " + msg;
     }
 
     public boolean isPromoted() {
         return promoteMe;
     }
-
-
 
     /**
      * The  string from
@@ -189,8 +180,6 @@ public class ParseException extends SAXParseException implements
         return null;
     }
 
-
-
     /**
      * The integer code associated with a string from
      * {@link ARPErrorNumbers}.
@@ -206,5 +195,4 @@ public class ParseException extends SAXParseException implements
             return -1;
         }
     }
-
 }
