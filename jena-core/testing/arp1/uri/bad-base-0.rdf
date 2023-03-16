@@ -1,0 +1,11 @@
+<!-- Bad URI : external base -->
+
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' 
+         xmlns:ex='http://example/'
+         >
+
+  <rdf:Description rdf:about="x">
+    <ex:p>string</ex:p>
+  </rdf:Description>
+
+</rdf:RDF>

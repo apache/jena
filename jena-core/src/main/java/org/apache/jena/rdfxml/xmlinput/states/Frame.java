@@ -18,7 +18,9 @@
 
 package org.apache.jena.rdfxml.xmlinput.states;
 
+import org.apache.jena.irix.IRIException;
 import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
+import org.apache.jena.rdfxml.xmlinput.ParseException;
 import org.apache.jena.rdfxml.xmlinput.impl.* ;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
@@ -54,7 +56,7 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
     protected void warning(int i, String msg) throws SAXParseException {
         warning(taint, i, msg);
     }
-    
+
 
     @Override
     public void afterChild() {
@@ -73,9 +75,9 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
     /**
      * endElement is called on the state of the frame created by the matching
      * startElement.
-     * 
+     *
      * @throws SAXParseException
-     * 
+     *
      */
     @Override
     public void endElement() throws SAXParseException {
@@ -135,12 +137,17 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
         if (el.goodMatch) {
             AttributeLexer ap = new AttributeLexer(this, A_XMLBASE | A_XMLLANG
                     | A_XML_OTHER, 0);
+            try {
             if (ap.processSpecials(taint, atts) != atts.getLength()) {
                 warning(ERR_SYNTAX_ERROR, "Illegal attributes on rdf:RDF");
             }
             // TODO this may be one point to intercept xml:base.
             arp.startRDF();
             return new WantTopLevelDescription(this, ap);
+            } catch (IRIException ex) {
+                ARPLocation aLoc = new ARPLocation(arp.getLocator());
+                throw new ParseException(EM_ERROR, aLoc, ex.getMessage());
+            }
         }
         AttributeLexer ap = new AttributeLexer(this, A_XMLBASE | A_XMLLANG, 0);
         ap.processSpecials(taint, atts);
@@ -150,7 +157,7 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
     /**
      * Additional message if mixed content is found in a syntactically
      * disallowed place. Subclasses override to suppress message.
-     * 
+     *
      */
     String suggestParsetypeLiteral() {
         return " Maybe there should be an rdf:parseType='Literal' for embedding mixed XML content in RDF.";

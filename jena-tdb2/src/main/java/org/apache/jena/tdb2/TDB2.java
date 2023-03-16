@@ -19,7 +19,6 @@
 package org.apache.jena.tdb2;
 
 import org.apache.jena.query.ARQ;
-import org.apache.jena.riot.lang.ReaderRIOTRDFXML;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.engine.main.StageBuilder;
@@ -127,7 +126,6 @@ public class TDB2 {
                 System.err.println("TDB2.init - start");
 
             SystemTDB.init();
-            ReaderRIOTRDFXML.RiotUniformCompatibility = true;
             EnvTDB.processGlobalSystemProperties();
 
             MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace);

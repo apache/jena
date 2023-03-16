@@ -32,9 +32,7 @@ import org.apache.jena.vocabulary.RDF ;
 import org.junit.Assert ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import org.xml.sax.ErrorHandler ;
 import org.xml.sax.SAXException ;
-import org.xml.sax.SAXParseException ;
 
 /** Additional ARP tests */
 @SuppressWarnings("deprecation")
@@ -430,65 +428,6 @@ public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbe
                    + "]", m.isIsomorphicWith(m1));
         checkExpected();
     }
-
-    // Becomes a IRI error.
-//    public void testBaseTruncation() throws IOException {
-//        Model m = createMemModel();
-//        Model m1 = createMemModel();
-//        RDFReaderI rdr = new RDFXMLReader();
-//        try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
-//            rdr.setErrorHandler(this);
-//            expected = new int[] { WARN_MALFORMED_URI, WARN_RELATIVE_URI };
-//            rdr.read(m, fin, "ht#tp://jjc3.org/demo.mp3#frag");
-//        }
-////        try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
-////            rdr.read(m1, fin, "");
-////        }
-//        assertTrue("Bad base URI should have no effect.[" + m1.toString()+ "]",
-//                   m.isIsomorphicWith(m1));
-//        checkExpected();
-//    }
-
-	public void testInterrupt() throws SAXException, IOException {
-	    ARP a = new ARP();
-	    try ( InputStream in = new FileInputStream("testing/wg/miscellaneous/consistent001.rdf") ) {
-	        a.getHandlers().setStatementHandler(new StatementHandler() {
-	            int countDown = 10;
-
-	            @Override
-	            public void statement(AResource subj, AResource pred, AResource obj) {
-	                if (countDown-- == 0)
-	                    Thread.currentThread().interrupt();
-
-	            }
-
-	            @Override
-	            public void statement(AResource subj, AResource pred, ALiteral lit) {
-
-	            }
-	        });
-	        a.getHandlers().setErrorHandler(new ErrorHandler(){
-	            @Override
-	            public void error(SAXParseException exception) throws SAXException {
-	                throw new RuntimeException("Unexpected error", exception);
-	            }
-	            @Override
-	            public void fatalError(SAXParseException exception) throws SAXException {
-	                throw exception;
-	            }
-	            @Override
-	            public void warning(SAXParseException exception) throws SAXException {
-	                throw new RuntimeException("Unexpected warning", exception);
-	            }});
-	        try {
-	            a.load(in);
-	            fail("Thread was not interrupted.");
-	        } catch (InterruptedIOException | SAXParseException e) {
-	        }
-	    }
-	    // System.err.println("Finished "+Thread.interrupted());
-
-	}
 
 	static String RDF_TEXT = "<?xml version=\"1.0\" ?>\n" +
     "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n" +

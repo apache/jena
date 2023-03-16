@@ -30,7 +30,7 @@ public class ARPLocation implements Locator {
     final String publicId;
     public final int endLine;
     public final int endColumn;
-    ARPLocation(Locator locator) {
+    public ARPLocation(Locator locator) {
     	if (locator==null){
     	  inputName = "unknown-source";
     	  publicId = "unknown-source";
@@ -65,5 +65,5 @@ public class ARPLocation implements Locator {
     public String getPublicId() {
         return publicId;
     }
-    
+
 }

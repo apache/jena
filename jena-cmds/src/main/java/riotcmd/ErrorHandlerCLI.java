@@ -25,7 +25,7 @@ import org.apache.jena.riot.system.ErrorHandler;
 import org.slf4j.Logger;
 
 /**
- * Error handler for "rio"t command line parsing.
+ * Error handler for "riot" command line parsing.
  */
 class ErrorHandlerCLI implements ErrorHandler {
 

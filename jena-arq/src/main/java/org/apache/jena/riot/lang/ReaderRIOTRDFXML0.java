@@ -32,10 +32,9 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.irix.IRIs;
-import org.apache.jena.query.ARQ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdfxml.xmlinput.* ;
-import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
+import org.apache.jena.rdfxml.xmlinput0.* ;
+import org.apache.jena.rdfxml.xmlinput0.impl.ARPSaxErrorHandler ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.Checker;
 import org.apache.jena.riot.system.ErrorHandler;
@@ -46,22 +45,24 @@ import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
 /** RDF/XML.
+ * <p>
+ * <b>LEGACY</b>
+ * <p>
+ * Uses xmlinput0 - uses the version of ARP from jena 4.7.0 before the conversion to IRIx.
  *
  * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
  */
 @SuppressWarnings("deprecation")
-public class ReaderRIOTRDFXML implements ReaderRIOT
+class ReaderRIOTRDFXML0 implements ReaderRIOT
 {
-    public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) -> {
-        // Ignore the provided ParserProfile
-        // ARP predates RIOT and does many things internally already.
-        String legacySwitch = ARQ.getContext().get(RIOT.symRDFXML0);
-        if ( legacySwitch != null && legacySwitch.equals("true") )
-            return new ReaderRIOTRDFXML0(parserProfile.getErrorHandler());
-        return new ReaderRIOTRDFXML(parserProfile.getErrorHandler());
-    };
+    public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) ->
+            // Ignore the provided ParserProfile
+            // ARP predates RIOT and does many things internally already.
+            // This includes IRI resolution.
+            new ReaderRIOTRDFXML0(parserProfile.getErrorHandler())
+            ;
 
-    private ARP arp = new ARP() ;
+    private ARP0 arp = new ARP0() ;
 
     private InputStream input = null ;
     private Reader reader = null ;
@@ -72,7 +73,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
 
     private Context context;
 
-    public ReaderRIOTRDFXML(ErrorHandler errorHandler) {
+    public ReaderRIOTRDFXML0(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
     }
 
@@ -100,8 +101,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
     // RDF 1.0 (and RDF/XML) was based on "RDF URI References" which did allow spaces.
 
     // Use with TDB requires this to be "true" - it is set by InitTDB.
-    public static final boolean RiotUniformCompatibility = true ;
-
+    public static boolean RiotUniformCompatibility = true ;
     // Warnings in ARP that should be errors to be compatible with
     // non-XML-based languages.  e.g. language tags should be
     // syntactically valid.

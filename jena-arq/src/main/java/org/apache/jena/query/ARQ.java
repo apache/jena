@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 public class ARQ
 {
     // Initialization statics must be first in the class to avoid
-    // problems with recursive initialization.  Specifcally,
+    // problems with recursive initialization.  Specifically,
     // initLock being null because elsewhere started the initialization
     // and is calling into the TDB class.
     // The best order is:

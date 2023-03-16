@@ -97,6 +97,8 @@ public class IRIProviderJenaIRI implements IRIProvider {
         static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.ABSOLUTE | IRIRelativize.CHILD | IRIRelativize.PARENT;
         @Override
         public IRIx relativize(IRIx other) {
+            if ( jenaIRI.getRawQuery() != null )
+                return null;
             IRIxJena iriOther = (IRIxJena)other;
             IRI iri2 = jenaIRI.relativize(iriOther.jenaIRI, relFlags);
             if ( iri2.equals(iriOther.jenaIRI))

@@ -23,7 +23,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UTFDataFormatException;
 
+import org.apache.jena.irix.IRIException;
 import org.apache.jena.rdfxml.xmlinput.FatalParsingErrorException ;
+import org.apache.jena.rdfxml.xmlinput.ParseException;
 import org.apache.jena.rdfxml.xmlinput.SAX2RDF ;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.CharEncoding ;
@@ -92,6 +94,8 @@ public class RDFXMLParser extends XMLHandler {
         initParse(base,"");
         SAX2RDF.installHandlers(saxParser, this);
         initEncodingChecks(input);
+
+        // Catch everything else it is swallowed by
         try {
             saxParser.parse(input);
         }
@@ -100,6 +104,16 @@ public class RDFXMLParser extends XMLHandler {
         }
         catch (IOException e) {
                 generalError(ERR_GENERIC_IO, e);
+        }
+        catch (ParseException ex) {
+            saxParser.getErrorHandler().error(ex);
+            // If error didn't throw an exception.
+            throw ex;
+        }
+        catch (IRIException ex) {
+            // These should have been caught in ARP, turned into an
+            // ARP ParseException with location, if available.
+            throw ex;
         }
         catch (WrappedException wrapped) {
             wrapped.throwMe();

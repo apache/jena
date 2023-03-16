@@ -30,7 +30,6 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.riot.lang.ReaderRIOTRDFXML;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.main.StageBuilder ;
@@ -250,7 +249,6 @@ public class TDB {
             }
             initialized = true ;
             JenaSystem.logLifecycle("TDB1.init - start") ;
-            ReaderRIOTRDFXML.RiotUniformCompatibility = true ;
             EnvTDB.processGlobalSystemProperties() ;
 
             MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix,  SystemTDB.symbolNamespace) ;

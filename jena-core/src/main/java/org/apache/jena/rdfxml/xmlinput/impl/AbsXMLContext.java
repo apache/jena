@@ -88,6 +88,7 @@ public abstract class AbsXMLContext implements ARPErrorNumbers {
 
     final IRIx resolveAsURI(XMLHandler forErrors, Taint taintMe, String relUri, boolean checkBaseUse)
             throws SAXParseException {
+
         IRIx rslt = uri.resolve(relUri);
 
         if (checkBaseUse)

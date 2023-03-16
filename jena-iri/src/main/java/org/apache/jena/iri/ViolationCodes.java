@@ -1,7 +1,3 @@
-
-
-
-
  /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -2936,7 +2932,9 @@ This class is not part of the API.
             new ViolationCodeInfo(
                 UNWISE_CHARACTER,
                 "UNWISE_CHARACTER",
-                "The character matches no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, XML system identifiers, and XML Schema anyURIs.",
+//                "The character matches no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, XML system identifiers, and XML Schema anyURIs.",
+                // RDF 1.1 - RDF URI References replaced by IRIs.
+                "The character matches no grammar rules of URIs/IRIs.",
                 "<p>The character matches no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, XML system identifiers, and XML Schema anyURIs.</p>",
                 0|Force.minting,
                 new InSpec[]{
@@ -3642,7 +3640,9 @@ This class is not part of the API.
             new ViolationCodeInfo(
                 WHITESPACE,
                 "WHITESPACE",
-                "A single whitespace character. These match no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, XML system identifiers, and XML Schema anyURIs.",
+//                "A single whitespace character. These match no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, XML system identifiers, and XML Schema anyURIs.",
+                // RDF 1.1 - RDF URI References replaced by IRIs.
+                "A single whitespace character. These match no grammar rules of URIs/IRIs.",
                 "<p>A single whitespace character. These match no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, XML system identifiers, and XML Schema anyURIs.</p>",
                 0,
                 new InSpec[]{
@@ -3676,7 +3676,9 @@ This class is not part of the API.
             new ViolationCodeInfo(
                 DOUBLE_WHITESPACE,
                 "DOUBLE_WHITESPACE",
-                "Either two or more consecutive whitespace characters, or leading or trailing whitespace. These match no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, XML system identifiers, but not XML Schema anyURIs.",
+
+                //"Either two or more consecutive whitespace characters, or leading or trailing whitespace. These match no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, XML system identifiers, but not XML Schema anyURIs.",
+                "Either two or more consecutive whitespace characters, or leading or trailing whitespace. These match no grammar rules of URIs/IRIs.",
                 "<p>Either two or more consecutive whitespace characters, or leading or trailing whitespace. These match no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, XML system identifiers, but not XML Schema anyURIs.</p>",
                 0,
                 new InSpec[]{
@@ -3719,7 +3721,8 @@ This class is not part of the API.
             new ViolationCodeInfo(
                 NOT_XML_SCHEMA_WHITESPACE,
                 "NOT_XML_SCHEMA_WHITESPACE",
-                "Whitespace characters match no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, and XML system identifiers. However, tab and new line characters, and consecutive space characters cannot occur in XML Schema anyURIs.",
+                //"Whitespace characters match no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, and XML system identifiers. However, tab and new line characters, and consecutive space characters cannot occur in XML Schema anyURIs.",
+                "Whitespace characters match no grammar rules of URIs/IRIs.",
                 "<p>Whitespace characters match no grammar rules of URIs/IRIs. These characters are permitted in RDF URI References, and XML system identifiers. However, tab and new line characters, and consecutive space characters cannot occur in XML Schema anyURIs.</p>",
                 0,
                 new InSpec[]{

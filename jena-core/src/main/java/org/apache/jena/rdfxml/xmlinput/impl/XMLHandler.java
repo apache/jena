@@ -80,7 +80,17 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     @Override
     public void startPrefixMapping(String prefix, String uri)
             throws SAXParseException {
+        try {
         checkNamespaceURI(uri);
+        } catch (IRIException ex) {
+            ARPLocation aLoc;
+            if ( frame instanceof Frame ) {
+                aLoc = new ARPLocation(((Frame)frame).arp.getLocator());
+            } else
+                aLoc = new ARPLocation(null);
+
+            throw new ParseException(EM_ERROR, aLoc, ex.getMessage());
+        }
         handlers.getNamespaceHandler().startPrefixMapping(prefix, uri);
     }
 
@@ -397,21 +407,6 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                                     + uri
                                     + "> is relative. Such use has been deprecated by the W3C, and may result in RDF interoperability failures. Use an absolute namespace URI.");
                 }
-//                try {
-//                    if (!u.toASCIIString().equals(u.toString()))
-//                        warning(null,
-//                                WARN_BAD_NAMESPACE_URI,
-//                                "Non-ascii characters in a namespace URI may not be completely portable: <"
-//                                        + u.toString()
-//                                        + ">. Resulting RDF URI references are legal.");
-//                } catch (MalformedURLException e) {
-//                    warning(null,
-//                            WARN_BAD_NAMESPACE_URI,
-//                            "Bad namespace URI: <"
-//                                    + u.toString()
-//                                    + ">. " + e.getMessage());
-//              }
-
                 if (uri.startsWith(rdfns) && !uri.equals(rdfns))
                     warning(null,WARN_BAD_RDF_NAMESPACE_URI, "Namespace URI ref <"
                             + uri + "> may not be used in RDF/XML.");

@@ -84,6 +84,7 @@ public class RIOT {
             RDFWriterRegistry.init() ;
             ResultSetLang.init();
 
+            MappingRegistry.addPrefixMapping("rdfxml", RDFXML_SYMBOL_BASE) ;
             MappingRegistry.addPrefixMapping("ttl", TURTLE_SYMBOL_BASE) ;
             MappingRegistry.addPrefixMapping("trig", TURTLE_SYMBOL_BASE) ;
 
@@ -125,6 +126,14 @@ public class RIOT {
     // ---- Symbols
 
     private static String TURTLE_SYMBOL_BASE = "http://jena.apache.org/riot/turtle#";
+    private static String RDFXML_SYMBOL_BASE = "http://jena.apache.org/riot/rdfxml#";
+
+    /**
+     * Access to the legacy RDF/XML parser.
+     * @deprecated Do not use! This will be removed.
+     */
+    @Deprecated
+    public static Symbol symRDFXML0 = SystemARQ.allocSymbol(RDFXML_SYMBOL_BASE, "rdfxml0");
 
     /**
      * Printing style. One of "RDF11" or RDF10". Controls {@literal @prefix} vs PREFIX.

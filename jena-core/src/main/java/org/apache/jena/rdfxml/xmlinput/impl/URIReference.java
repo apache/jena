@@ -24,8 +24,10 @@
 
 package org.apache.jena.rdfxml.xmlinput.impl;
 
+import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
+import org.apache.jena.rdfxml.xmlinput.ParseException;
 import org.apache.jena.rdfxml.xmlinput.states.Frame ;
 import org.xml.sax.SAXParseException;
 
@@ -152,13 +154,18 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
             throws SAXParseException {
 
         Taint taintMe = new TaintImpl();
-        IRIx iri = ctxt.resolveAsURI(f.arp,taintMe,uri);
-        f.checkEncoding(taintMe,uri);
+        try {
+            IRIx iri = ctxt.resolveAsURI(f.arp,taintMe,uri);
+            f.checkEncoding(taintMe,uri);
 
-        URIReference rslt = new URIReference(iri.toString());
-        if (taintMe.isTainted())
-            rslt.taint();
-        return rslt;
+            URIReference rslt = new URIReference(iri.toString());
+            if (taintMe.isTainted())
+                rslt.taint();
+            return rslt;
+        } catch (IRIException ex) {
+            ARPLocation aLoc = new ARPLocation(f.arp.getLocator());
+            throw new ParseException(EM_ERROR, aLoc, ex.getMessage());
+        }
     }
 
     public static URIReference fromQName(Frame f, String ns, String local)

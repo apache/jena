@@ -20,17 +20,16 @@ package org.apache.jena.rdfxml.xmlinput;
 
 import junit.framework.TestSuite;
 
-public class TestPackage_xmlinput extends TestSuite
+public class TestPackage_xmlinput1 extends TestSuite
 {
     static public TestSuite suite()
     {
-        return new TestPackage_xmlinput() ;
-
+        return new TestPackage_xmlinput1() ;
     }
 
-    private TestPackage_xmlinput()
+    private TestPackage_xmlinput1()
     {
-        super("RDF/XML Input") ;
+        super("RDF/XML Input ARP1") ;
         addTest( org.apache.jena.rdfxml.xmlinput.TestURIs.suite());
         addTest( org.apache.jena.rdfxml.xmlinput.TestSuiteWG_NTriples.suite());
         addTest( org.apache.jena.rdfxml.xmlinput.TestSuiteWG_RDFXML.suite());
@@ -42,6 +41,7 @@ public class TestPackage_xmlinput extends TestSuite
         addTest( org.apache.jena.rdfxml.xmlinput.TestsTainting.suite());
         addTest( org.apache.jena.rdfxml.xmlinput.TestsSAX2RDF.suite());
         addTest( org.apache.jena.rdfxml.xmlinput.TestsStAX2Model.suite());
+        addTest( org.apache.jena.rdfxml.xmlinput.TestRDFXML_URI.suite());
     }
 
     private void addTest(String name, TestSuite tc) {

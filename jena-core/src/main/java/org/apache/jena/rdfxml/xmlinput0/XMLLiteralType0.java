@@ -89,6 +89,7 @@ public class XMLLiteralType0 extends BaseDatatype implements RDFDatatype {
         // status[1] true once first triple found
         // status[2] the result (good if status[1] and not status[0]).
 
+        @SuppressWarnings("deprecation")
         ARP0 arp = new ARP0();
 
         arp.getHandlers().setErrorHandler(new ErrorHandler(){
