@@ -671,7 +671,6 @@ public abstract class NodeValue extends ExprNode
         if ( NodeUtils.hasLang(node) )
             return new NodeValueLang(node) ;
         LiteralLabel lit = node.getLiteral() ;
-        String lex = lit.getLexicalForm() ;
         RDFDatatype datatype = lit.getDatatype() ;
 
         // Quick check.
@@ -683,10 +682,12 @@ public abstract class NodeValue extends ExprNode
             return null ;
         }
 
+        String lex = lit.getLexicalForm() ;
+
         try { // DatatypeFormatException - should not happen
             if ( XSDstring.isValidLiteral(lit) )
                 // String - plain or xsd:string, or derived datatype.
-                return new NodeValueString(lit.getLexicalForm(), node) ;
+                return new NodeValueString(lex, node) ;
 
             // Otherwise xsd:string is like any other unknown datatype.
             // Ditto literals with language tags (which are handled by nodeToNodeValue)
