@@ -19,8 +19,17 @@
 package org.apache.jena.fuseki.main;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
+import org.apache.jena.fuseki.main.sys.FusekiModulesLoaded;
+import org.apache.jena.fuseki.main.sys.FusekiModulesSystem;
+import org.apache.jena.rdf.model.Model;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -32,16 +41,19 @@ public class TestFusekiModules {
     // file :: src/test/resources/META-INF/services/org.apache.jena.fuseki.main.sys.FusekiModule
     // Module: ModuleForTest
 
+    private static FusekiModules system = null;
+
     @BeforeClass public static void beforeClass() {
-        FusekiModules.load();
+        system = FusekiModulesSystem.get();
+        FusekiModulesLoaded.resetSystem();
     }
 
     @Before public void beforeTest() {
         ModuleForTest.module.clearLifecycle();
     }
 
-    @AfterClass public static void afterTest() {
-        FusekiModules.remove(ModuleForTest.module);
+    @AfterClass public static void afterClass() {
+        FusekiModulesSystem.set(system);
     }
 
     @Test public void modules_0() {
@@ -51,33 +63,99 @@ public class TestFusekiModules {
         assertEquals(0, module.countConfiguration.get());
     }
 
+    @Test public void modules_1() {
+        boolean bIsEmpty1 = FusekiModulesLoaded.loaded().asList().isEmpty();
+        assertFalse(bIsEmpty1);
+
+        FusekiModulesLoaded.enable(false);
+
+        boolean bIsEmpty2 =
+                FusekiModulesLoaded.loaded().asList().isEmpty();
+        assertTrue(bIsEmpty2);
+
+        FusekiModulesLoaded.enable(true);
+
+        boolean bIsEmpty3 = FusekiModulesLoaded.loaded().asList().isEmpty();
+        assertFalse(bIsEmpty3);
+    }
+
+    @Test public void modules_2() {
+        boolean bIsEmpty1 = FusekiModulesLoaded.loaded().asList().isEmpty();
+        assertFalse(bIsEmpty1);
+        FusekiModulesLoaded.enable(false);
+        boolean bIsEmpty2 =
+                FusekiModulesLoaded.loaded().asList().isEmpty();
+        assertTrue(bIsEmpty2);
+    }
+
+
+
     @Test public void lifecycle_1() {
+        FusekiModulesLoaded.resetSystem();
+
         ModuleForTest module = findModule();
+
+
+        assertFalse(FusekiModulesSystem.get().asList().isEmpty());
 
         FusekiServer.Builder builder = FusekiServer.create().port(0);
 
-        assertEquals(1, module.countStart.get());
-        assertEquals(0, module.countConfiguration.get());
-        assertEquals(0, module.countServer.get());
-        assertEquals(0, module.countServerBeforeStarting.get());
+        assertEquals("start:"  ,       1, module.countStart.get());
+        assertEquals("prepare:",       0, module.countPrepared.get());
+        assertEquals("configured:",    0, module.countConfiguration.get());
+        assertEquals("server: ",       0, module.countServer.get());
+        assertEquals("serverBefore: ", 0, module.countServerBeforeStarting.get());
+        assertEquals("serverAfter: ",  0, module.countServerAfterStarting.get());
 
         FusekiServer server = builder.build();
 
-        assertEquals(1, module.countStart.get());
-        assertEquals(1, module.countConfiguration.get());
-        assertEquals(1, module.countServer.get());
-        assertEquals(0, module.countServerBeforeStarting.get());
-        assertEquals(0, module.countServerAfterStarting.get());
+
+        assertFalse(server.getModules().asList().isEmpty());
+
+        assertEquals("start:"  ,       1, module.countStart.get());
+        assertEquals("prepare:",       1, module.countPrepared.getPlain());
+        assertEquals("configured:",    1, module.countConfiguration.get());
+        assertEquals("server: ",       1, module.countServer.get());
+        assertEquals("serverBefore: ", 0, module.countServerBeforeStarting.get());
+        assertEquals("serverAfter: ",  0, module.countServerAfterStarting.get());
 
         server.start();
 
-        assertEquals(1, module.countStart.get());
-        assertEquals(1, module.countConfiguration.get());
-        assertEquals(1, module.countServer.get());
-        assertEquals(1, module.countServerBeforeStarting.get());
-        assertEquals(1, module.countServerAfterStarting.get());
+        assertEquals("start:"  ,       1, module.countStart.get());
+        assertEquals("prepare:",       1, module.countPrepared.get());
+        assertEquals("configured:",    1, module.countConfiguration.get());
+        assertEquals("server: ",       1, module.countServer.get());
+        assertEquals("serverBefore: ", 1, module.countServerBeforeStarting.get());
+        assertEquals("serverAfter: ",  1, module.countServerAfterStarting.get());
 
         server.stop();
+    }
+
+    @Test public void server_module_1() {
+        AtomicBoolean called1 = new AtomicBoolean(false);
+        AtomicBoolean called2 = new AtomicBoolean(false);
+        FusekiModule oneOff = new FusekiModule() {
+            @Override public String name() { return "Local"; }
+            @Override public void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
+                called1.set(true);
+            }
+            @Override public void serverBeforeStarting(FusekiServer server) {
+                called2.set(true);
+            }
+        };
+
+        assertFalse(FusekiModulesLoaded.loaded().asList().contains(oneOff));
+
+        FusekiModules mods = FusekiModules.create(oneOff);
+        assertFalse(called1.get());
+        assertFalse(called2.get());
+        FusekiServer server = FusekiServer.create().port(0).setModules(mods).build();
+        assertTrue(called1.get());
+        assertFalse(called2.get());
+        try {
+            server.start();
+            assertTrue(called2.get());
+        } finally { server.stop(); }
     }
 
     private ModuleForTest findModule() {

@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.fuseki.main.sys.FusekiModule;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
 
 public class ModuleForTest implements FusekiModule {
@@ -30,6 +31,7 @@ public class ModuleForTest implements FusekiModule {
     public static ModuleForTest module = null;
 
     public AtomicInteger countStart = new AtomicInteger(0);
+    public AtomicInteger countPrepared = new AtomicInteger(0);
     public AtomicInteger countConfiguration = new AtomicInteger(0);
     public AtomicInteger countServer = new AtomicInteger(0);
     public AtomicInteger countServerBeforeStarting = new AtomicInteger(0);
@@ -49,6 +51,7 @@ public class ModuleForTest implements FusekiModule {
     public void clearLifecycle() {
         // Not countStart.
         countConfiguration.set(0);
+        countPrepared.set(0);
         countServer.set(0);
         countServerBeforeStarting.set(0);
         countServerAfterStarting.set(0);
@@ -61,8 +64,14 @@ public class ModuleForTest implements FusekiModule {
 
     @Override
     public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
+        countPrepared.incrementAndGet();
+    }
+
+    @Override
+    public void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
         countConfiguration.getAndIncrement();
     }
+
 
     // Built, not started, about to be returned to the builder caller
     @Override public void server(FusekiServer server) {

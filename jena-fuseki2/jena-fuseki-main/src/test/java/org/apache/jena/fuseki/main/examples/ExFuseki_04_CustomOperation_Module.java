@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.main.examples;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -59,11 +60,13 @@ public class ExFuseki_04_CustomOperation_Module {
     // Example usage.
     public static void main(String...args) {
 
-        // Imitate FusekiModule service loader behaviour.
-        FusekiModules.add(new FMod_Custom());
+        FusekiModule fmodCustom = new FMod_Custom();
+
+        FusekiModules modules = FusekiModules.create(List.of(fmodCustom));
 
         FusekiServer.create().port(3230)
             .add("/ds", DatasetGraphFactory.createTxnMem())
+            .setModules(modules)
             .build()
             .start();
 
@@ -75,6 +78,10 @@ public class ExFuseki_04_CustomOperation_Module {
 
         private Operation myOperation = null;
 
+        public FMod_Custom() {
+            myOperation = Operation.alloc("http://example/extra-service", "extra-service", "Test");
+        }
+
         @Override
         public String name() {
             return "Custom Operation Example";
@@ -82,9 +89,9 @@ public class ExFuseki_04_CustomOperation_Module {
 
         @Override
         public void start() {
+            // Only called if loaded via the ServiceLoader.
             Fuseki.configLog.info("Add custom operation into global registry.");
             System.err.println("**** Fuseki extension ****");
-            myOperation = Operation.alloc("http://example/extra-service", "extra-service", "Test");
         }
 
         @Override

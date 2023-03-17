@@ -49,9 +49,7 @@ import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.*;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
-import org.apache.jena.fuseki.main.sys.FusekiErrorHandler;
-import org.apache.jena.fuseki.main.sys.FusekiModuleStep;
-import org.apache.jena.fuseki.main.sys.JettyLib;
+import org.apache.jena.fuseki.main.sys.*;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.*;
@@ -151,15 +149,18 @@ public class FusekiServer {
     private int httpsPort;
     private final String staticContentDir;
     private final ServletContext servletContext;
+    private final FusekiModules modules;
 
     private FusekiServer(int httpPort, int httpsPort, Server server,
                          String staticContentDir,
+                         FusekiModules modules,
                          ServletContext fusekiServletContext) {
-        this.server = server;
+        this.server = Objects.requireNonNull(server);
         this.httpPort = httpPort;
         this.httpsPort = httpsPort;
         this.staticContentDir = staticContentDir;
-        this.servletContext = fusekiServletContext;
+        this.servletContext = Objects.requireNonNull(fusekiServletContext);
+        this.modules = Objects.requireNonNull(modules);
     }
 
     /**
@@ -281,6 +282,13 @@ public class FusekiServer {
     }
 
     /**
+     * Return the list of {@link FusekiModule}s for this server.
+     */
+    public FusekiModules getModules() {
+        return modules;
+    }
+
+    /**
      * Start the server - the server continues to run after this call returns.
      * To synchronise with the server stopping, call {@link #join}.
      */
@@ -288,7 +296,6 @@ public class FusekiServer {
         try {
             FusekiModuleStep.serverBeforeStarting(this);
             server.start();
-            FusekiModuleStep.serverAfterStarting(this);
         }
         catch (IOException ex) {
             if ( ex.getCause() instanceof java.security.UnrecoverableKeyException )
@@ -303,6 +310,7 @@ public class FusekiServer {
             throw new FusekiException(ex);
         }
 
+        // Post-start completion. Find the ports.
         Connector[] connectors = server.getServer().getConnectors();
         if ( connectors.length == 0 )
             serverLog.warn("Start Fuseki: No connectors");
@@ -317,6 +325,8 @@ public class FusekiServer {
                 connector(scheme, port);
             }
         });
+
+        FusekiModuleStep.serverAfterStarting(this);
 
         if ( httpsPort > 0 && httpPort > 0 )
             Fuseki.serverLog.info("Start Fuseki (http="+httpPort+" https="+httpsPort+")");
@@ -414,6 +424,10 @@ public class FusekiServer {
         // whereas several filters can share a path spec and order matters.
         private List<Pair<String, Filter>> beforeFilters    = new ArrayList<>();
         private List<Pair<String, Filter>> afterFilters     = new ArrayList<>();
+
+        // Modules to use to process the building of the server.
+        // The default (fusekiModules is null) is the system-wide modules.
+        private FusekiModules            fusekiModules     = null;
 
         private String                   contextPath        = "/";
         private String                   staticContentDir   = null;
@@ -1038,6 +1052,26 @@ public class FusekiServer {
         }
 
         /**
+         * Set the {@link FusekiModule Fuseki Module} for a server.
+         * If no modules are added to a builder, then the system-wide default set (found by loading FusekiModule
+         * via Java's {@link ServiceLoader} mechanism) is used.
+         * <p>Pass {@code null} to switch back the system-wide default set.
+         *
+         * @see FusekiModules
+         */
+        public Builder setModules(FusekiModules modules) {
+            fusekiModules = modules;
+            return this;
+        }
+
+        /**
+         * Return the current list of Fuseki modules in the builder.
+         */
+        public FusekiModules getFusekiModules() {
+            return fusekiModules;
+        }
+
+        /**
          * Add an operation and handler to the server. This does not enable it for any dataset.
          * <p>
          * To associate an operation with a dataset, call {@link #addEndpoint} after adding the dataset.
@@ -1192,9 +1226,13 @@ public class FusekiServer {
             if ( serverHttpPort < 0 && serverHttpsPort < 0 )
                 serverHttpPort = DefaultServerPort;
 
+            FusekiModules modules = (fusekiModules == null)
+                    ? FusekiModulesSystem.get()
+                    : fusekiModules;
+
             // FusekiModule call - final preparations.
             Set<String> datasetNames = Set.copyOf(dataServices.keys());
-            FusekiModuleStep.prepare(this, datasetNames, configModel);
+            FusekiModuleStep.prepare(modules, this, datasetNames, configModel);
 
             // Freeze operation registry (builder may be reused).
             OperationRegistry operationReg = new OperationRegistry(operationRegistry);
@@ -1203,7 +1241,7 @@ public class FusekiServer {
             DataAccessPointRegistry dapRegistry = buildStart();
 
             // FusekiModule call - inspect the DataAccessPointRegistry.
-            FusekiModuleStep.configured(this, dapRegistry, configModel);
+            FusekiModuleStep.configured(modules, this, dapRegistry, configModel);
 
             // Setup Prometheus metrics. This will become a module.
             bindPrometheus(dapRegistry);
@@ -1228,7 +1266,7 @@ public class FusekiServer {
 
                 if ( jettyServerConfig != null ) {
                     Server server = jettyServer(handler, jettyServerConfig);
-                    return new FusekiServer(-1, -1, server, staticContentDir, handler.getServletContext());
+                    return new FusekiServer(-1, -1, server, staticContentDir, modules, handler.getServletContext());
                 }
 
                 Server server;
@@ -1245,7 +1283,7 @@ public class FusekiServer {
                 if ( networkLoopback )
                     applyLocalhost(server);
 
-                FusekiServer fusekiServer = new FusekiServer(httpPort, httpsPort, server, staticContentDir, handler.getServletContext());
+                FusekiServer fusekiServer = new FusekiServer(httpPort, httpsPort, server, staticContentDir, modules, handler.getServletContext());
                 FusekiModuleStep.server(fusekiServer);
                 return fusekiServer;
             } finally {
