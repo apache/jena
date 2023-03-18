@@ -215,7 +215,7 @@ public class QueryIterUnfold extends QueryIterRepeatApply
                 throw new UnsupportedOperationException( "unexpected map key: " + key.getClass().getName() );
             }
 
-            if ( value.isNull() ) {
+            if ( value.isNull() || var2 == null ) {
                 return BindingFactory.binding( inputBinding, var1, keyNode );
             }
 
