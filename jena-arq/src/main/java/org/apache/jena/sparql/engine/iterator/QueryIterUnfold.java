@@ -30,6 +30,7 @@ import org.apache.jena.cdt.CompositeDatatypeList;
 import org.apache.jena.cdt.CompositeDatatypeMap;
 import org.apache.jena.cdt.LiteralLabelForList;
 import org.apache.jena.cdt.LiteralLabelForMap;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.impl.LiteralLabel;
@@ -120,6 +121,8 @@ public class QueryIterUnfold extends QueryIterRepeatApply
 
     protected class QueryIterUnfoldWorkerForLists extends QueryIterUnfoldWorkerBase<CDTValue> {
 
+        protected int nextIndex = 0;
+
         public QueryIterUnfoldWorkerForLists(Binding inputBinding, Iterator<CDTValue> itListElmts) {
             super(inputBinding, itListElmts);
         }
@@ -136,9 +139,22 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         @Override
         protected Binding moveToNextBinding() {
             final CDTValue nextElmt = itElmts.next();
+            nextIndex++; // index values to be assigned to the second variable start at 1
+
+            final Node indexNode;
+            if ( var2 != null ) {
+                final String indexStr = Integer.toString(nextIndex);
+                indexNode = NodeFactory.createLiteral(indexStr, XSDDatatype.XSDinteger);
+            }
+            else {
+                indexNode = null;
+            }
 
             if ( nextElmt.isNull() ) {
-                return inputBinding;
+                if ( var2 != null )
+                    return BindingFactory.binding(inputBinding, var2, indexNode);
+                else
+                    return inputBinding;
             }
 
             if ( nextElmt.isNode() ) {
@@ -159,7 +175,10 @@ public class QueryIterUnfold extends QueryIterRepeatApply
                     value = n;
                 }
 
-                return BindingFactory.binding(inputBinding, var1, value);
+                if ( var2 != null )
+                    return BindingFactory.binding(inputBinding, var1, value, var2, indexNode);
+                else
+                    return BindingFactory.binding(inputBinding, var1, value);
             }
 
             throw new UnsupportedOperationException( "unexpected list element: " + nextElmt.getClass().getName() );
