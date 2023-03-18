@@ -26,42 +26,55 @@ import org.apache.jena.rdf.model.Model;
 
 /** Call points for FusekiModule extensions */
 public class FusekiModuleStep {
+
     /**
      * Call at the start of "build" step.
      * The builder has been set according to the configuration.
      * The "configModel" parameter is set if a configuration file was used else it is null.
      */
+    public static void prepare(FusekiModules modules, FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
+        modules.forEach(module -> module.prepare(serverBuilder, datasetNames, configModel));
+    }
+
+    /** @deprecated Use {@code prepare(FusekiModules, ...)}. */
+    @Deprecated
     public static void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
-        FusekiModules.forEachModule(module -> module.prepare(serverBuilder, datasetNames, configModel));
+        prepare(systemModules(), serverBuilder, datasetNames, configModel);
     }
 
     /**
      * The DataAccessPointRegistry that will be used to build the server.
      *
      */
+    public static void configured(FusekiModules modules, FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
+        modules.forEach(module -> module.configured(serverBuilder, dapRegistry, configModel));
+    }
+
+    /** @deprecated Use {@code configured(FusekiModules.loaded(), ...)}. */
+    @Deprecated
     public static void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
-        FusekiModules.forEachModule(module -> module.configured(serverBuilder, dapRegistry, configModel));
+        configured(systemModules(), serverBuilder, dapRegistry, configModel);
     }
 
     /**
      * The outcome of the "build" step.
      */
     public static void server(FusekiServer server) {
-        FusekiModules.forEachModule(module -> module.server(server));
+        server.getModules().forEach(module -> module.server(server));
     }
 
     /**
      * Called just before {@code server.start()} called.
      */
     public static void serverBeforeStarting(FusekiServer server) {
-        FusekiModules.forEachModule(module -> module.serverBeforeStarting(server));
+        server.getModules().forEach(module -> module.serverBeforeStarting(server));
     }
 
     /**
      * Called just after {@code server.start()} called.
      */
     public static void serverAfterStarting(FusekiServer server) {
-        FusekiModules.forEachModule(module -> module.serverAfterStarting(server));
+        server.getModules().forEach(module -> module.serverAfterStarting(server));
     }
 
     /**
@@ -70,6 +83,10 @@ public class FusekiModuleStep {
      * simply exits the JVM or is killed externally.
      */
     public static void serverStopped(FusekiServer server) {
-        FusekiModules.forEachModule(module -> module.serverStopped(server));
+        server.getModules().forEach(module -> module.serverStopped(server));
+    }
+
+    private static FusekiModules systemModules() {
+        return FusekiModulesSystem.get();
     }
 }
