@@ -32,7 +32,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
-import org.apache.jena.rdfxml.xmlinput0.impl.RDFXMLParser;
+import org.apache.jena.rdfxml.xmlinput0.impl.RDFXMLParser0;
 import org.apache.jena.shared.DoesNotExistException ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.UnknownPropertyException ;
@@ -63,10 +63,10 @@ public class RDFXMLReader0 implements RDFReaderI, ARPErrorNumbers {
      * Creates new JenaReader
      */
     public RDFXMLReader0() {
-        arpf = RDFXMLParser.create();
+        arpf = RDFXMLParser0.create();
     }
 
-    final private RDFXMLParser arpf;
+    final private RDFXMLParser0 arpf;
 
     private Model model;
 
