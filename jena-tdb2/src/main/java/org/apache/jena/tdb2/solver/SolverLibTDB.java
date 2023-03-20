@@ -27,6 +27,7 @@ import java.util.function.Predicate;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
+import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
@@ -40,10 +41,11 @@ import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator;
 import org.apache.jena.tdb2.lib.NodeLib;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.NodeId;
+import org.apache.jena.tdb2.store.NodeIdFactory;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
-import org.apache.jena.tdb2.store.tupletable.TupleTable;
+import org.apache.jena.tdb2.store.tupletable.TupleIndexRecord;
 import org.apache.jena.tdb2.sys.TDBInternal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,24 +147,50 @@ public class SolverLibTDB
 
     private static Tuple<NodeId> TupleANY = TupleFactory.create4(NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny);
 
+    private enum GraphNamesDistinctMode {
+        NONE,
+        ADJACENT,
+        FULL;
+    }
+
     /** Find all the graph names in the quads table. */
     static QueryIterator graphNames(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
                                     Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         List<Abortable> killList = new ArrayList<>();
         NodeTupleTable ntt = ds.getQuadTable().getNodeTupleTable();
 
-        TupleIndex idx = findGraphIndex(ntt.getTupleTable(), "G");
+        // Select a graph based index for use, if a suitable one is available
+        // We select twice here because if there is an index of a specific type we can do additional optimisation, but
+        // a graph based index allows for some optimisation regardless of the underlying index type
+        TupleIndexRecord idxRecord = ntt.getTupleTable().selectIndex("G", TupleIndexRecord.class);
+        TupleIndex idx = ntt.getTupleTable().selectIndex("G");
 
-        boolean needDistinct;
+        GraphNamesDistinctMode distinctMode;
         Iterator<Tuple<NodeId>> iter1;
 
-        if ( idx == null ) {
-            iter1 = ntt.findAll();
-            needDistinct = true;
-        }
-        else {
+        if (idxRecord != null && idxRecord.getRangeIndex() instanceof BPlusTree) {
+            // Have a B+Tree based graph index so can use our distinct by key prefix iterator to optimise evaluation
+            // This iterator already guarantees the graph names returned are distinct so no further distinct calculation
+            // is needed
+            // Need to pad the yielded tuple with placeholders to create a tuple of the right length so the subsequent
+            // filtering (if any) applies correctly
+            BPlusTree bpt = (BPlusTree) (idxRecord).getRangeIndex();
+            iter1 = Iter.iter(bpt.distinctByKeyPrefix(NodeId.SIZE))
+                        .map(r -> TupleFactory.create4(NodeIdFactory.get(r.getKey(), 0), NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny));
+            distinctMode =  GraphNamesDistinctMode.NONE;
+        } else if (idx != null) {
+            // Have a generic Graph based index, can at least optimise slightly by only needing distinct adjacent as we
+            // know the same Graph Names will be stored in a sequence within the index. This also keeps memory footprint
+            // for the distinct constant to a single Graph Name
             iter1 = idx.find(TupleANY);
-            needDistinct = false;
+            distinctMode = GraphNamesDistinctMode.ADJACENT;
+        } else {
+            // Fall back to a find all which will use the most appropriate index available
+            // Need full distinct calculation as no guarantee that the index is ordered with respect to the graph name
+            // Memory usage will scale with number of distinct graph names though this is likely to be relatively
+            // modest so generally not a problem
+            iter1 = ntt.findAll();
+            distinctMode = GraphNamesDistinctMode.FULL;
         }
 
         if ( filter != null )
@@ -172,7 +200,20 @@ public class SolverLibTDB
         // Project is cheap - don't brother wrapping iter1
         iter2 = makeAbortable(iter2, killList);
 
-        Iterator<NodeId> iter3 = (needDistinct) ? Iter.distinct(iter2) : Iter.distinctAdjacent(iter2);
+        // Apply the necessary distinct calculation (if any)
+        Iterator<NodeId> iter3;
+        switch (distinctMode) {
+            case FULL:
+                iter3 = Iter.distinct(iter2);
+                break;
+            case ADJACENT:
+                iter3 = Iter.distinctAdjacent(iter2);
+                break;
+            case NONE:
+            default:
+                iter3 = iter2;
+                break;
+        }
         iter3 = makeAbortable(iter3, killList);
 
         Iterator<Node> iter4 = NodeLib.nodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3);
@@ -180,17 +221,6 @@ public class SolverLibTDB
         final Var var = Var.alloc(graphNode);
         Iterator<Binding> iterBinding = Iter.map(iter4, node -> BindingFactory.binding(var, node));
         return new QueryIterAbortable(iterBinding, killList, input, execCxt);
-    }
-
-    private static TupleIndex findGraphIndex(TupleTable tupleTable, String indexPrefix) {
-        TupleIndex[] indexes = tupleTable.getIndexes();
-        for ( int i = 0 ; i < indexes.length ; i++ ) {
-            TupleIndex idx = indexes[i];
-            String n = idx.getName();
-            if ( n.startsWith(indexPrefix) )
-                return idx;
-        }
-        return null;
     }
 
     static Set<NodeId> convertToNodeIds(Collection<Node> nodes, DatasetGraphTDB dataset)

@@ -48,7 +48,7 @@ import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
  * <p>
  *  See also:
  *  <ul>
- *  <li>{@link DatasetGraphTxn} &ndash; the sublclass that provides a single transaction</li>
+ *  <li>{@link DatasetGraphTxn} &ndash; the subclass that provides a single transaction</li>
  *  <li>{@link DatasetGraphTransaction} &ndash; class that provides the application with the right DatasetGraphTDB (base or transaction).</li>
  *  </ul>
  */

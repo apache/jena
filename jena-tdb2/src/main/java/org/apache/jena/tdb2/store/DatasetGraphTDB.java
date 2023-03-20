@@ -26,6 +26,7 @@ import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.dboe.storage.system.DatasetGraphStorage;
+import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -35,6 +36,7 @@ import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.lib.NodeLib;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
+import org.apache.jena.tdb2.store.tupletable.TupleIndexRecord;
 
 final
 public class DatasetGraphTDB extends DatasetGraphStorage
@@ -137,9 +139,19 @@ public class DatasetGraphTDB extends DatasetGraphStorage
     public Iterator<Node> listGraphNodes() {
         checkNotClosed();
         NodeTupleTable quads = getQuadTable().getNodeTupleTable();
+
+        TupleIndexRecord graphIndex = quads.getTupleTable().selectIndex("G", TupleIndexRecord.class);
+        if (graphIndex != null && graphIndex.getRangeIndex() instanceof BPlusTree) {
+            BPlusTree bpt = (BPlusTree) (graphIndex).getRangeIndex();
+            Iterator<NodeId> distinctGraphNodeIds
+                    = Iter.iter(bpt.distinctByKeyPrefix(NodeId.SIZE)).map(r -> NodeIdFactory.get(r.getKey(), 0));
+            return NodeLib.nodes(quads.getNodeTable(), distinctGraphNodeIds);
+        }
+
         Iterator<Tuple<NodeId>> x = quads.findAll();
         // If we are using a Graph based index i.e. Graph is the first part of the record then we can use a more
         // efficient distinct implementation that only needs to remember the most recently seen graph name
+        // findAll() always uses the first index for the tuple table hence the assumption in the following test
         boolean usingGraphBasedIndex = StringUtils.startsWith(quads.getTupleTable().getIndex(0).getName(), "G");
         Iterator<NodeId> graphNodeIds = Iter.iter(x).map(t -> t.get(0));
         Iterator<NodeId> distinctGraphNodeIds
