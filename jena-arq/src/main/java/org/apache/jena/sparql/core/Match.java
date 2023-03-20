@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.core;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -71,5 +73,15 @@ public class Match {
     public static boolean matchValue(Node node, Node pattern) {
         Objects.requireNonNull(node);
         return pattern == null || pattern == Node.ANY || pattern.sameValueAs(node);
+    }
+
+    /** Return a filter stream of matches for triples in the collection. */
+    public static Stream<Triple> match(Collection<Triple> triples, Node s, Node p, Node o) {
+        return triples.stream().filter(t -> match(t, s, p, o));
+    }
+
+    /** Return a filter stream of matches for quads in the collection. */
+    public static Stream<Quad> match(Collection<Quad> quads, Node g, Node s, Node p, Node o) {
+        return quads.stream().filter(q -> match(q, g, s, p, o));
     }
 }

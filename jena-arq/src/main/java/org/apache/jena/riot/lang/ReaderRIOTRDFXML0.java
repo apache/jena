@@ -62,13 +62,6 @@ class ReaderRIOTRDFXML0 implements ReaderRIOT
             new ReaderRIOTRDFXML0(parserProfile.getErrorHandler())
             ;
 
-    private ARP0 arp = new ARP0() ;
-
-    private InputStream input = null ;
-    private Reader reader = null ;
-    private String xmlBase ;
-    private String filename ;
-    private StreamRDF sink ;
     private ErrorHandler errorHandler;
 
     private Context context;
@@ -79,22 +72,12 @@ class ReaderRIOTRDFXML0 implements ReaderRIOT
 
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        this.input = in ;
-        this.xmlBase = baseURI_RDFXML(baseURI) ;
-        this.filename = baseURI ;
-        this.sink = output ;
-        this.context = context;
-        parse();
+        parse(in, null, baseURI, ct, output, context);
     }
 
     @Override
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        this.reader = reader ;
-        this.xmlBase = baseURI_RDFXML(baseURI) ;
-        this.filename = baseURI ;
-        this.sink = output ;
-        this.context = context;
-        parse();
+        parse(null, reader, baseURI, ct, output, context);
     }
 
     // RDF 1.1 is based on URIs/IRIs, where space are not allowed.
@@ -148,11 +131,14 @@ class ReaderRIOTRDFXML0 implements ReaderRIOT
         options.setErrorMode(cond, val);
     }
 
-    public void parse() {
+    /*package*/ void parse(InputStream input, Reader reader, String xmlBase, ContentType ct, StreamRDF sink, Context context) {
+        // One of input and reader is null.
+
         // Hacked out of ARP because of all the "private" methods
         // JenaReader has reset the options since new ARP() was called.
         sink.start() ;
         HandlerSink rslt = new HandlerSink(sink, errorHandler) ;
+        ARP0 arp = new ARP0() ;
         arp.getHandlers().setStatementHandler(rslt) ;
         arp.getHandlers().setErrorHandler(rslt) ;
         arp.getHandlers().setNamespaceHandler(rslt) ;
@@ -178,6 +164,8 @@ class ReaderRIOTRDFXML0 implements ReaderRIOT
                 properties.forEach((k,v) -> oneProperty(arpOptions, k, v)) ;
         }
         arp.setOptionsWith(arpOptions) ;
+
+        String filename = xmlBase;
 
         try {
             if ( reader != null )

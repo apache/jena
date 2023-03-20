@@ -52,11 +52,11 @@ public class E_IRI extends ExprFunction1 {
     }
 
     public E_IRI(String parserBaseURI, Expr relExpr) {
+        // The base is the base of the parser at the time this E_IRI was created.
         this(parserBaseURI, relExpr, sparqlPrintName, sseFunctionName);
     }
 
     protected E_IRI(String baseStr, Expr relExpr, String sparqlName, String sseName) {
-        //super(relExpr, sparqlName, sseName);
         super(relExpr, sseName);
         this.parserBase = baseStr;
         this.relExpr = relExpr;
@@ -74,14 +74,15 @@ public class E_IRI extends ExprFunction1 {
 
     /*package*/ static NodeValue resolve(NodeValue relative, String baseIRI, FunctionEnv env) {
         if ( baseIRI == null ) {
-            // Legacy
             if ( env.getContext() != null ) {
                 Query query = (Query)env.getContext().get(ARQConstants.sysCurrentQuery);
                 if ( query != null )
                     baseIRI = query.getBaseURI();
+                // If still null, NodeFunctions.iri will use the system base.
+//                if ( baseIRI == null )
+//                    baseIRI = IRIs.getBaseStr();
             }
         }
-        // XXX Need fix for relative already a URI
         if ( NodeFunctions.isIRI(relative.asNode()) ) {
             relative = NodeValue.makeString(relative.asString());
         }
