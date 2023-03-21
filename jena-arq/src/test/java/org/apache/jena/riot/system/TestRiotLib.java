@@ -18,7 +18,12 @@
 
 package org.apache.jena.riot.system;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,5 +93,30 @@ public class TestRiotLib {
         String result = writer.asString();
 
         Assert.assertEquals(expectedOldStyle, result);
+    }
+
+    @Test
+    public void bnodeAsURI_1() {
+        // Start at blank node.
+        Node bn = NodeFactory.createBlankNode();
+        Node n1 = RiotLib.blankNodeToIri(bn);
+        assertTrue(n1.isURI());
+        Node n2 = RiotLib.fromIRIorBNode(n1);
+        assertTrue(n2.isBlank());
+        assertEquals(bn, n2);
+    }
+
+    @Test
+    public void bnodeAsURI_2() {
+        // Start at URI.
+        String x = "_:bdd2e1f1-dea6-4822-8018-5c5e97530595";
+        Node n0 = NodeFactory.createURI(x);
+        Node n1 = RiotLib.fromIRIorBNode(n0);
+        assertTrue(n1.isBlank());
+        Node n2 = RiotLib.fromIRIorBNode(n0);
+        assertTrue(n2.isBlank());
+        Node n3 = RiotLib.blankNodeToIri(n2);
+        assertTrue(n3.isURI());
+        assertEquals(x, n3.getURI());
     }
 }
