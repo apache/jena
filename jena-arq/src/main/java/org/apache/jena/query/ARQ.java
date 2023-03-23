@@ -30,6 +30,7 @@ import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.exec.http.QuerySendMode;
 import org.apache.jena.sparql.expr.aggregate.AggregateRegistry;
 import org.apache.jena.sparql.function.FunctionRegistry;
+import org.apache.jena.sparql.function.scripting.ScriptLangSymbols;
 import org.apache.jena.sparql.mgt.ARQMgt;
 import org.apache.jena.sparql.mgt.Explain;
 import org.apache.jena.sparql.mgt.Explain.InfoLevel;
@@ -523,14 +524,21 @@ public class ARQ
     public static final Symbol extensionValueTypes = SystemARQ.allocSymbol("extensionValueTypesExpr");
 
     /**
-     * Context symbol for JavaScript functions as a string value which is evaluated.
+     * Java system property to enable JavaScript functions
      */
-    public static Symbol symJavaScriptFunctions = SystemARQ.allocSymbol("js-functions");
+    public static final String systemPropertyScripting = "jena:scripting";
+
+    /**
+     * Context symbol for JavaScript functions as a string value which is evaluated.
+     * {@code arq:js-functions}.
+     */
+    public static Symbol symJavaScriptFunctions = ScriptLangSymbols.scriptFunctions("js");
 
     /**
      * Context symbol for JavaScript library of functions defined in a file.
+     * {@code arq:js-library}.
      */
-    public static Symbol symJavaScriptLibFile = SystemARQ.allocSymbol("js-library");
+    public static Symbol symJavaScriptLibFile = ScriptLangSymbols.scriptLibrary("js");
 
     /**
      * Generate the ToList operation in the algebra (as ARQ is stream based, ToList is a non-op).

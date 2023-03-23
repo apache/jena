@@ -25,8 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.script.*;
@@ -37,20 +36,26 @@ import org.apache.jena.atlas.lib.PoolBase;
 import org.apache.jena.atlas.lib.PoolSync;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RiotNotFoundException;
-import org.apache.jena.sparql.expr.ExprEvalException;
-import org.apache.jena.sparql.expr.ExprList;
-import org.apache.jena.sparql.expr.ExprUndefFunction;
-import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.function.FunctionBase;
-import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException;
 
 public class ScriptFunction extends FunctionBase {
-	static {
+
+    static {
         System.setProperty("polyglot.engine.WarnInterpreterOnly", "false");
     }
-	
+
+    private static void checkScriptingEnabled() {
+        String x = System.getProperty(ARQ.systemPropertyScripting);
+        boolean scriptingEnabled = "true".equals(x);
+        if ( !scriptingEnabled )
+            throw new ExprException("Scripting not enabled");
+	}
+
     private static final ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 
+    // The URI is structured: http://jena.apache.org/ARQ/jsFunction#fn
+    // which is ../ARQ/<lang>Function#<function to call>
     private static final String ARQ_NS = "http://jena.apache.org/ARQ/";
     private static final String FUNCTION_SUFFIX = "Function";
 
@@ -59,36 +64,51 @@ public class ScriptFunction extends FunctionBase {
     private String lang;
     private String name;
 
+    // Collect language names (for reference).
+//    private static Set<String> languageNames = new HashSet<>();
+//    static {
+//        scriptEngineManager
+//            .getEngineFactories()
+//            .forEach(sef -> sef.getNames().forEach(languageNames::add));
+//    }
+
     public static boolean isScriptFunction(String uri) {
         if (!uri.startsWith(ARQ_NS)) {
             return false;
         }
         String localPart = uri.substring(ARQ_NS.length());
         int separatorPos = localPart.indexOf('#');
-        if (separatorPos < 0) {
+        if (separatorPos < 0)
             return false;
-        }
         String langPart = localPart.substring(0, separatorPos);
-        if (!langPart.endsWith(FUNCTION_SUFFIX)) {
-            return false;
-        }
-        return true;
+        return langPart.endsWith(FUNCTION_SUFFIX);
     }
 
     @Override
     public void checkBuild(String uri, ExprList args) {
-        if (!isScriptFunction(uri)) {
-            throw new SSE_ExprBuildException("Invalid URI: " + uri);
-        }
-
+        checkScriptingEnabled();
+        if (!isScriptFunction(uri))
+            throw new ExprException("Invalid URI: " + uri);
         String localPart = uri.substring(ARQ_NS.length());
         int separatorPos = localPart.indexOf('#');
         this.lang = localPart.substring(0, separatorPos - FUNCTION_SUFFIX.length());
         this.name = localPart.substring(separatorPos + 1);
+
+        // Check for bare names that are provided by the language e.g. 'eval' which
+        // is a JS and Python built-in function and always available.
+        if ( lang.toLowerCase(Locale.ROOT).contains("python") ) {
+            if ( Objects.equals("eval", name) || Objects.equals("exec", name) )
+                throw new ExprException(lang+" function '"+name+"' is not allowed");
+        } else {
+            // Assume javascript.
+            if ( Objects.equals("eval", name) )
+                throw new ExprException("JS function '"+name+"' is not allowed");
+        }
     }
 
     @Override
     public NodeValue exec(List<NodeValue> args) {
+        checkScriptingEnabled();
         Invocable engine = getEngine();
 
         try {
@@ -107,7 +127,7 @@ public class ScriptFunction extends FunctionBase {
             }
 
             if (r == null)
-                // null is used used to signal an ExprEvalException.
+                // null is used to signal an ExprEvalException.
                 throw new ExprEvalException(name);
             return NV.toNodeValue(r);
         } finally {
@@ -118,9 +138,8 @@ public class ScriptFunction extends FunctionBase {
     private Invocable getEngine() {
         Pool<Invocable> pool = enginePools.computeIfAbsent(lang, key -> PoolSync.create(new PoolBase<>()));
         Invocable engine = pool.get();
-        if (engine == null) {
+        if (engine == null)
             engine = createEngine();
-        }
         return engine;
     }
 
@@ -130,19 +149,17 @@ public class ScriptFunction extends FunctionBase {
 
     private Invocable createEngine() {
         ScriptEngine engine = scriptEngineManager.getEngineByName(lang);
-        if (engine == null) {
-            throw new SSE_ExprBuildException("Unknown scripting language: " + lang);
-        }
+        if (engine == null)
+            throw new ExprException("Unknown scripting language: " + lang);
         // Enforce Nashorn compatibility for Graal.js
         if (engine.getFactory().getEngineName().equals("Graal.js")) {
             engine.getContext().setAttribute("polyglot.js.nashorn-compat", true, ScriptContext.ENGINE_SCOPE);
         }
 
-        if (!(engine instanceof Invocable)) {
-            throw new SSE_ExprBuildException("Script engine  " + engine.getFactory().getEngineName() + " doesn't implement Invocable");
-        }
+        if (!(engine instanceof Invocable))
+            throw new ExprException("Script engine  " + engine.getFactory().getEngineName() + " doesn't implement Invocable");
 
-        String functionLibFile = ARQ.getContext().getAsString(LanguageSymbols.scriptLibrary(lang));
+        String functionLibFile = ARQ.getContext().getAsString(ScriptLangSymbols.scriptLibrary(lang));
         if (functionLibFile != null) {
             try (Reader reader = Files.newBufferedReader(Path.of(functionLibFile), StandardCharsets.UTF_8)) {
                 engine.eval(reader);
@@ -151,16 +168,16 @@ public class ScriptFunction extends FunctionBase {
             } catch (IOException ex) {
                 IO.exception(ex);
             } catch (ScriptException e) {
-                throw new SSE_ExprBuildException("Failed to load " + lang + " library", e);
+                throw new ExprException("Failed to load " + lang + " library", e);
             }
         }
 
-        String functions = ARQ.getContext().getAsString(LanguageSymbols.scriptFunctions(lang));
+        String functions = ARQ.getContext().getAsString(ScriptLangSymbols.scriptFunctions(lang));
         if (functions != null) {
             try {
                 engine.eval(functions);
             } catch (ScriptException e) {
-                throw new SSE_ExprBuildException("Failed to load " + lang + " functions", e);
+                throw new ExprException("Failed to load " + lang + " functions", e);
             }
         }
 
@@ -169,8 +186,9 @@ public class ScriptFunction extends FunctionBase {
             try {
                 invocable.invokeFunction("arq" + name + "init");
             } catch (NoSuchMethodException ignore) {
+                /* empty */
             } catch (ScriptException ex) {
-                throw new SSE_ExprBuildException("Failed to call " + lang + " initialization function", ex);
+                throw new ExprException("Failed to call " + lang + " initialization function", ex);
             }
         }
 
