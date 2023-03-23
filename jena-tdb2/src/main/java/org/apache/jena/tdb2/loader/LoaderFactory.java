@@ -57,7 +57,7 @@ public class LoaderFactory {
     }
 
     /**
-     * A simple loader loader to load a single graph in the destination {@code DatasetGraph}.
+     * A simple loader to load a single graph in the destination {@code DatasetGraph}.
      * <p>
      * Use {@link Quad#defaultGraphIRI} to load the default graph.
      * <p>
