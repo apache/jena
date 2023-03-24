@@ -28,7 +28,7 @@ import org.apache.jena.web.HttpSC;
 import org.apache.shiro.web.filter.authz.AuthorizationFilter;
 import org.apache.shiro.web.util.WebUtils;
 
-/** Specialise AuthorizationFilter to yield HTTP 403 on access denied */
+/** Specialize AuthorizationFilter to yield HTTP 403 on access denied */
 public abstract class AuthorizationFilter403 extends AuthorizationFilter
 {
     private String message;
