@@ -32,5 +32,5 @@ jobs:
 
     - name: Build with Maven for windows-latest
       # If Windows and java 11, then MJAVADOC-586 / JDK issue.
-      run: bash -c "mvn -B -o --file pom.xml -Dmaven.javadoc.skip=true verify"
+      run: bash -c "mvn -B --file pom.xml -Dmaven.javadoc.skip=true verify"
       working-directory: c:\jena
