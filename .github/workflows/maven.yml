@@ -30,4 +30,4 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
     - name: Build with Maven
-      run: mvn -B -o --file pom.xml -Dmaven.javadoc.skip=true verify
+      run: mvn -B --file pom.xml -Dmaven.javadoc.skip=true verify
