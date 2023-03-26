@@ -21,11 +21,11 @@ const vitePreprocessor = require('cypress-vite')
 module.exports = defineConfig({
   video: false,
   defaultCommandTimeout: 20000,
-  execTimeout: 15000,
-  taskTimeout: 15000,
-  pageLoadTimeout: 15000,
-  requestTimeout: 7500,
-  responseTimeout: 7500,
+  execTimeout: 30000,
+  taskTimeout: 30000,
+  pageLoadTimeout: 30000,
+  requestTimeout: 10000,
+  responseTimeout: 10000,
 
   e2e: {
     baseUrl: 'http://localhost:' + (process.env.PORT || 8080),
@@ -42,7 +42,11 @@ module.exports = defineConfig({
 
   env: {
     codeCoverage: {
-      exclude: 'cypress/**/*.*',
+      exclude: [
+        'src/services/mock/**/*.*',
+        'cypress/**/*.*',
+        'tests/**/*.*'
+      ],
     },
   },
 })

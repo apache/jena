@@ -26,7 +26,12 @@ export default defineConfig({
     vue(),
     istanbul({
       include: "src/*",
-      exclude: ["node_modules"],
+      exclude: [
+        "node_modules",
+        "tests",
+        "coverage",
+        "src/services/mock/*"
+      ],
       extension: [".js", ".jsx", ".ts", ".vue"],
       requireEnv: true,
       cypress: true
@@ -68,6 +73,7 @@ export default defineConfig({
           // or that are requesting /node_modules/ (dev Vite/Vue/JS modules).
           const sendToUI =
             req.method !== 'POST' &&
+            req.url.indexOf('tests/reset') < 0 &&
             (
               (req.hasOwnProperty('originalUrl') && req.originalUrl.includes('node_modules')) ||
               (
