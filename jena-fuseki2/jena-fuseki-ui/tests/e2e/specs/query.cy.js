@@ -19,7 +19,7 @@
  * Tests the Query view and YASGUI & family components.
  */
 describe('Query', () => {
-  before(() => {
+  beforeEach(() => {
     // Special endpoint that clears the datasets data.
     cy.request('/tests/reset')
     // Create a sample dataset.
@@ -41,7 +41,7 @@ describe('Query', () => {
           .should('be.visible')
       })
   })
-  after(() => {
+  afterEach(() => {
     // Special endpoint that clears the datasets data.
     cy.request('/tests/reset')
   })
