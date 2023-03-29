@@ -122,6 +122,40 @@ public class ByteBufferLib {
             return ;
         }
 
+        bbcopyBulk(bb, src, dst, length, slotLen) ;
+    }
+
+    private final static void bbcopyBulk(ByteBuffer bb, int src, int dst, int length, int slotLen) {
+        int bDst = dst * slotLen ;
+        int bSrc = src * slotLen ;
+        int bLen = length * slotLen ;
+
+        byte[] srcBytes = new byte[bLen];
+
+        int pos = bb.position();
+        bb.position(bSrc);
+        bb.get(srcBytes, 0, bLen);
+
+        bb.position(bDst);
+        bb.put(srcBytes, 0, bLen);
+        bb.position(pos);
+    }
+
+    // --- For reference
+    // Copy without creating a temporary area, but then unable to use bulk operations.
+    // 2023-03 : This is slower than bbcopyBulk.
+    // https://github.com/apache/jena/pull/1800
+    // https://github.com/apache/jena/issue/1803
+
+    private final static void bbcopyOLD(ByteBuffer bb, int src, int dst, int length, int slotLen) {
+        if ( src == dst )
+            return ;
+
+        if ( allowArray && bb.hasArray() ) {
+            acopyArray(bb, src, dst, length, slotLen) ;
+            return ;
+        }
+        // For non-array versions : beware of overlaps.
         if ( src < dst )
             bbcopy1(bb, src, dst, length, slotLen) ;
         else
@@ -145,6 +179,7 @@ public class ByteBufferLib {
         for ( int i = 0 ; i < bLen ; i++ )
             bb.put(bDst + i, bb.get(bSrc + i)) ;
     }
+    // --- For reference
 
     public final static void bbcopy(ByteBuffer bb1, int src, ByteBuffer bb2, int dst, int length, int slotLen) {
         // Assume bb1 and bb2 are different and do not overlap.
@@ -158,8 +193,18 @@ public class ByteBufferLib {
         int bDst = dst * slotLen ;
         int bLen = length * slotLen ;
 
-        for ( int i = 0 ; i < bLen ; i++ )
-            bb2.put(bDst + i, bb1.get(bSrc + i)) ;
+        // Use bulk get/put to speed up data copy
+        byte[] srcBytes = new byte[bLen];
+
+        int pos1 = bb1.position();
+        bb1.position(bSrc);
+        bb1.get(srcBytes, 0, bLen);
+        bb1.position(pos1);
+
+        int pos2 = bb2.position();
+        bb2.position(bDst);
+        bb2.put(srcBytes, 0, bLen);
+        bb2.position(pos2);
     }
 
     final public static void bbfill(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue, int slotLen) {
