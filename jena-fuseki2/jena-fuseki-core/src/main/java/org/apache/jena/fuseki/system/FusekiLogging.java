@@ -47,14 +47,11 @@ public class FusekiLogging
     // setLogging is pointless (it's already set).
 
     // Set logging.
-    // 1/ Use system property log4j.configurationFile if defined.
+    // 1/ Use system property log4j2.configurationFile if defined.
     // 2/ Use file:log4j2.properties if exists
     // 3/ Use log4j2.properties on the classpath.
     // 4/ Use org/apache/jena/fuseki/log4j2.properties on the classpath.
     // 5/ Use built in string
-    //
-    // If a webapp running as a .war file in webapp container (e.g. Tomcat)
-    // logging is initialized in FusekiServerEnvironmentInit using a <contaxt-param>.
 
     /**
      * Places for the log4j properties file at (3).
@@ -89,7 +86,8 @@ public class FusekiLogging
         setLogging(null);
     }
 
-    public static final String log4j2_configurationFile = "log4j.configurationFile";
+    public static final String log4j2_configurationFile = "log4j2.configurationFile";
+    // Only used by the webapp.
     public static final String log4j2_web_configuration = "log4jConfiguration";
 
     public static synchronized boolean hasInitialized() {
@@ -120,7 +118,7 @@ public class FusekiLogging
         }
 
         logLogging("Setup");
-        // Look for a log4j.properties file in the current working directory
+        // Look for a log4j2.properties file in the current working directory
         // and a place (e.g. FUSEKI_BASE in the webapp/full server) for easy customization.
         String fn1 = "log4j2.properties";
         String fn2 = null;
