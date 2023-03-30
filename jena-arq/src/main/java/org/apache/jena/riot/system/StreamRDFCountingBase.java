@@ -16,47 +16,50 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system ;
+package org.apache.jena.riot.system;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.lang.StreamRDFCounting ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.lang.StreamRDFCounting;
+import org.apache.jena.sparql.core.Quad;
 
 /** Wrap another StreamRDF and provide counts of items */
 public class StreamRDFCountingBase extends StreamRDFWrapper implements StreamRDF, StreamRDFCounting {
-    private long countTriples  = 0 ;
-    private long countQuads    = 0 ;
-    private long countBase     = 0 ;
-    private long countPrefixes = 0 ;
+    private long countTriples = 0;
+    private long countQuads = 0;
+    private long countBase = 0;
+    private long countPrefixes = 0;
 
     public StreamRDFCountingBase(StreamRDF other) {
-        super(other) ;
+        super(other);
     }
 
     @Override
     public void triple(Triple triple) {
-        countTriples++ ;
-        super.triple(triple) ;
+        countTriples++;
+        super.triple(triple);
     }
 
     @Override
     public void quad(Quad quad) {
-        countQuads++ ;
-        super.quad(quad) ;
+        if ( quad.isTriple() )
+            countTriples++;
+        else
+            countQuads++;
+        super.quad(quad);
     }
 
     @Override
     public long count() {
-        return countTriples + countQuads ;
+        return countTriples + countQuads;
     }
 
     @Override
     public long countTriples() {
-        return countTriples ;
+        return countTriples;
     }
 
     @Override
     public long countQuads() {
-        return countQuads ;
+        return countQuads;
     }
 }

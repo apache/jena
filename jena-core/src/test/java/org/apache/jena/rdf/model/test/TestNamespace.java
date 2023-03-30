@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,8 +18,8 @@
 
 package org.apache.jena.rdf.model.test;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +63,7 @@ public class TestNamespace extends AbstractModelTestBase
 
 	/**
 	 * make a single-element set.
-	 * 
+	 *
 	 * @param element
 	 *            the single element to contain
 	 * @return a set whose only element == element
@@ -102,9 +102,9 @@ public class TestNamespace extends AbstractModelTestBase
 	/**
 	 * a horridly written test to write out a model with some known namespace
 	 * prefixes and see if they can be read back in again.
-	 * 
+	 *
 	 * TODO tidy and abstract this - we want some more tests.
-	 * 
+	 *
 	 * TODO there's a problem: namespaces that aren't used on properties
 	 * don't reliably get used. Maybe they shouldn't be - but it seems odd.
 	 */
@@ -112,22 +112,20 @@ public class TestNamespace extends AbstractModelTestBase
 	{
 		ModelCom.addNamespaces(model,
 				makePrefixes("fred=ftp://net.fred.org/;spoo=http://spoo.net/"));
-		final File f = File.createTempFile("hedgehog", ".rdf");
 		model.add(ModelHelper.statement(model,
 				"http://spoo.net/S http://spoo.net/P http://spoo.net/O"));
 		model.add(ModelHelper.statement(model,
 				"http://spoo.net/S ftp://net.fred.org/P http://spoo.net/O"));
-		model.write(new FileOutputStream(f));
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		model.write(bout);
+		ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
 		/* */
 		final Model m2 = ModelFactory.createDefaultModel();
-		m2.read("file:" + f.getAbsolutePath());
+
+		m2.read(bin,"http://example/base/", "RDF/XML");
 		final Map<String, String> ns = m2.getNsPrefixMap();
-		Assert.assertEquals("namespace spoo", "http://spoo.net/",
-				ns.get("spoo"));
-		Assert.assertEquals("namespace fred", "ftp://net.fred.org/",
-				ns.get("fred"));
-		/* */
-		f.deleteOnExit();
+		Assert.assertEquals("namespace spoo", "http://spoo.net/", ns.get("spoo"));
+		Assert.assertEquals("namespace fred", "ftp://net.fred.org/", ns.get("fred"));
 	}
 
 }

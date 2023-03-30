@@ -19,7 +19,6 @@
 package org.apache.jena.dboe.trans.bplustree;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.trans.bplustree.AccessPath.AccessStep;

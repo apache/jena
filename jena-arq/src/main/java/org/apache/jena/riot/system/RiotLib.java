@@ -86,6 +86,16 @@ public class RiotLib {
     }
 
     /**
+     * Convert an ARQ-encoded blank node URI to a blank node, otherwise return the argument node unchanged.
+     */
+    public static Node fromIRIorBNode(Node node) {
+        if ( ! node.isURI() )
+            return node;
+        String uristr = node.getURI();
+        return createIRIorBNode(uristr);
+    }
+
+    /**
      * Implement {@code <_:....>} as a "Node IRI"
      * that is, use the given label as the BNode internal label.
      * Use with care.
@@ -101,10 +111,19 @@ public class RiotLib {
     }
 
     /**
-     * Test whether a IRI is a ARQ-encoded blank node.
+     * Test whether a IRI is an ARQ-encoded blank node.
      */
     public static boolean isBNodeIRI(String iri) {
         return iri.startsWith(bNodeLabelStart);
+    }
+
+    /**
+     * Test whether a node is an ARQ-encoded blank node IRI.
+     */
+    public static boolean isBNodeIRI(Node node) {
+        if ( ! node.isURI() )
+            return false;
+        return isBNodeIRI(node.getURI());
     }
 
     private static final String URI_PREFIX_FIXUP = "local:";
@@ -121,7 +140,7 @@ public class RiotLib {
     public static final Predicate<String> testFixupedPrefixURI = (x) -> x.startsWith(URI_PREFIX_FIXUP);
 
     /**
-     * Test whether a IRI is a ARQ-encoded blank node.
+     * Test whether a IRI is an ARQ-encoded blank node.
      */
     public static boolean isPrefixIRI(String iri) {
         return testFixupedPrefixURI.test(iri);

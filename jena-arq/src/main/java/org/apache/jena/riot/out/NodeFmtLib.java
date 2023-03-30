@@ -35,6 +35,7 @@ import org.apache.jena.riot.system.RiotChars;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sys.JenaSystem;
 
 /** Presentation utilities for Nodes, Triples, Quads and more.
  * <p>
@@ -45,6 +46,8 @@ import org.apache.jena.sparql.core.Quad;
  */
 public class NodeFmtLib
 {
+    static { JenaSystem.init(); }
+
     // Replaces FmtUtils
     // See and use EscapeStr
 
@@ -195,19 +198,26 @@ public class NodeFmtLib
     // ---- Blank node labels.
 
     // Strict N-triples only allows [A-Za-z][A-Za-z0-9]
-    static char encodeMarkerChar = 'X';
+    private static final char encodeMarkerChar = 'X';
 
     // These two form a pair to convert bNode labels to a safe (i.e. legal N-triples form) and back again.
 
-    // Encoding is:
-    // 1 - Add a Letter
-    // 2 - Hexify, as Xnn, anything outside ASCII A-Za-z0-9
-    // 3 - X is encoded as XX
+    /**
+     *  Encoding is:
+     *  <ul>
+     *  <li> Add a start letter
+     *  <li> Hexify, as Xnn, anything outside ASCII A-Za-z0-9
+     *  <li> X is encoded as XX
+     */
 
-    private static char LabelLeadingLetter = 'B';
+    private static final char LabelLeadingLetter = 'B';
 
     public static String encodeBNodeLabel(String label) {
-        StringBuilder buff = new StringBuilder();
+        // The common case is a UUID string of 36 characters including 4 dashes.
+        // Dashes encode as X2D.
+        // Together with the leading 'B', a total of 45 characters.
+        // 48 is greater than 45 and 8 byte aligned.
+        StringBuilder buff = new StringBuilder(48);
         // Must be at least one char and not a digit.
         buff.append(LabelLeadingLetter);
 
