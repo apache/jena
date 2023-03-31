@@ -122,28 +122,24 @@ public class ByteBufferLib {
             return ;
         }
 
-        if ( src < dst )
-            bbcopy1(bb, src, dst, length, slotLen) ;
-        else
-            bbcopy2(bb, src, dst, length, slotLen) ;
+        bbcopyBulk(bb, src, dst, length, slotLen) ;
     }
 
-    private final static void bbcopy1(ByteBuffer bb, int src, int dst, int length, int slotLen) {
+    private final static void bbcopyBulk(ByteBuffer bb, int src, int dst, int length, int slotLen) {
         int bDst = dst * slotLen ;
         int bSrc = src * slotLen ;
         int bLen = length * slotLen ;
-        // src < dst so top dst is not in the overlap : work backwards
-        for ( int i = bLen - 1 ; i >= 0 ; i-- )
-            bb.put(bDst + i, bb.get(bSrc + i)) ;
-    }
 
-    private final static void bbcopy2(ByteBuffer bb, int src, int dst, int length, int slotLen) {
-        int bDst = dst * slotLen ;
-        int bSrc = src * slotLen ;
-        int bLen = length * slotLen ;
-        // src > dst so dst[0] is not in the overlap
-        for ( int i = 0 ; i < bLen ; i++ )
-            bb.put(bDst + i, bb.get(bSrc + i)) ;
+        byte[] srcBytes = new byte[bLen];
+
+        int pos = bb.position();
+        bb.position(bSrc);
+        bb.get(srcBytes, 0, bLen);
+
+        bb.position(bDst);
+        bb.put(srcBytes, 0, bLen);
+        bb.position(pos);
+
     }
 
     public final static void bbcopy(ByteBuffer bb1, int src, ByteBuffer bb2, int dst, int length, int slotLen) {
@@ -158,8 +154,18 @@ public class ByteBufferLib {
         int bDst = dst * slotLen ;
         int bLen = length * slotLen ;
 
-        for ( int i = 0 ; i < bLen ; i++ )
-            bb2.put(bDst + i, bb1.get(bSrc + i)) ;
+        // Use bulk get/put to speed up data copy
+        byte[] srcBytes = new byte[bLen];
+
+        int pos1 = bb1.position();
+        bb1.position(bSrc);
+        bb1.get(srcBytes, 0, bLen);
+        bb1.position(pos1);
+
+        int pos2 = bb2.position();
+        bb2.position(bDst);
+        bb2.put(srcBytes, 0, bLen);
+        bb2.position(pos2);
     }
 
     final public static void bbfill(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue, int slotLen) {
