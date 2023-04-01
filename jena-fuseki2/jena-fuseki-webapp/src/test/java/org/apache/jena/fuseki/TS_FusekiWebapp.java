@@ -42,7 +42,7 @@ import org.junit.runners.Suite;
 
 public class TS_FusekiWebapp extends ServerTest
 {
-    public static String FusekiTestHome = "target/FusekiHome";
+    public static String FusekiTestHome = "target/FusekiTest";
     public static String FusekiTestBase = FusekiTestHome+"/run";
 
     @BeforeClass public static void setupForFusekiServer() {

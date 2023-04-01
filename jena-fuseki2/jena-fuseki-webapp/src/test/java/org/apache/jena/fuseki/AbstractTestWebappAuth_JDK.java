@@ -47,7 +47,7 @@ public class AbstractTestWebappAuth_JDK {
     protected static final String authServiceREST   = "http://localhost:"+authPort+authDatasetPath+"/data";
     private static File realmFile;
 
-    private static final String FusekiTestHome = "target/FusekiHome";
+    private static final String FusekiTestHome = "target/FusekiTest";
     private static final String FusekiTestBase = FusekiTestHome+"/run";
 
     // False when in TS_FusekiWebapp
