@@ -141,8 +141,8 @@ public class ActionDatasets extends ActionContainerItem {
 
         try {
             // Where to build the templated service/database.
-            Model model = ModelFactory.createDefaultModel();
-            StreamRDF dest = StreamRDFLib.graph(model.getGraph());
+            Model modelData = ModelFactory.createDefaultModel();
+            StreamRDF dest = StreamRDFLib.graph(modelData.getGraph());
 
             if ( hasParams || WebContent.isHtmlForm(ct) )
                 assemblerFromForm(action, dest);
@@ -151,6 +151,8 @@ public class ActionDatasets extends ActionContainerItem {
             else
                 assemblerFromBody(action, dest);
 
+            Model model = ModelFactory.createDefaultModel();
+            model.add(modelData);
             AssemblerUtils.addRegistered(model);
 
             // ----
@@ -158,7 +160,7 @@ public class ActionDatasets extends ActionContainerItem {
             // anything other than being "for the record".
             systemFileCopy = FusekiWebapp.dirSystemFileArea.resolve(uuid.toString()).toString();
             try ( OutputStream outCopy = IO.openOutputFile(systemFileCopy) ) {
-                RDFDataMgr.write(outCopy, model, Lang.TURTLE);
+                RDFDataMgr.write(outCopy, modelData, Lang.TURTLE);
             }
             // ----
             // Process configuration.
@@ -202,7 +204,7 @@ public class ActionDatasets extends ActionContainerItem {
 
             // Write to configuration directory.
             try ( OutputStream outCopy = IO.openOutputFile(configFile) ) {
-                RDFDataMgr.write(outCopy, model, Lang.TURTLE);
+                RDFDataMgr.write(outCopy, modelData, Lang.TURTLE);
             }
 
             // Currently do nothing with the system database.
@@ -538,8 +540,6 @@ public class ActionDatasets extends ActionContainerItem {
         return stmt;
     }
 
-    // TODO Merge with Upload.incomingData
-
     private static void bodyAsGraph(HttpAction action, StreamRDF dest) {
         HttpServletRequest request = action.getRequest();
         String base = ActionLib.wholeRequestURL(request);
@@ -549,18 +549,6 @@ public class ActionDatasets extends ActionContainerItem {
             ServletOps.errorBadRequest("Unknown content type for triples: " + ct);
             return;
         }
-        // Don't log - assemblers are typically small.
-        // Adding this to the log confuses things.
-        // Reserve logging for data uploads.
-//        long len = request.getContentLengthLong();
-//        if ( action.verbose ) {
-//            if ( len >= 0 )
-//                alog.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,
-//                                ct.getContentType(), ct.getCharset(), lang.getName()));
-//            else
-//                alog.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", action.id, ct.getContentType(),
-//                                ct.getCharset(), lang.getName()));
-//        }
         dest.prefix("root", base+"#");
         ActionLib.parseOrError(action, dest, lang, base);
     }
