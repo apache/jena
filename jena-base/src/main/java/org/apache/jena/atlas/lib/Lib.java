@@ -116,9 +116,14 @@ public class Lib
 
     /** Get an environment variable value; if not found try in the system properties. */
     public static String getenv(String name) {
-        String x = System.getenv(name);
+        return getenv(name, name);
+    }
+
+    /** Get an environment variable value; if not found try in the system properties under the second name. */
+    public static String getenv(String name1, String name2) {
+        String x = System.getenv(name1);
         if ( x == null )
-            x = System.getProperty(name);
+            x = System.getProperty(name2);
         return x;
     }
 
