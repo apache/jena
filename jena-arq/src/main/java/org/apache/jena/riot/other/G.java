@@ -78,6 +78,13 @@ public class G {
     /** Convert null to some default Node */
     public static Node nullAsDft(Node x, Node dft) { return x==null ? dft : x; }
 
+    /** Get a string, assuming the node is an xsd:string literal. */
+    public static String asString(Node x) {
+        if ( ! Util.isSimpleString(x) )
+            throw new RDFDataException("Expected a string: found: "+NodeFmtLib.strTTL(x));
+        return x.getLiteralLexicalForm();
+    }
+
     /** Does the graph match the s/p/o pattern? */
     public static boolean contains(Graph graph, Node subject, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");
