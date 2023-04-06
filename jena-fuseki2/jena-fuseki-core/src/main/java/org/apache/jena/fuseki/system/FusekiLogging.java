@@ -115,7 +115,7 @@ public class FusekiLogging
              checkSystemProperties(log4j2_configurationFileLegacy) ||
              System.getenv("LOG4J_CONFIGURATION_FILE") != null )
         {
-            logLogging("External log4j2 setup");
+            logLogging("External log4j2 setup ");
             return ;
         }
 
@@ -229,7 +229,7 @@ public class FusekiLogging
             , "appender.console.layout.type = PatternLayout"
             , "appender.console.layout.pattern = [%d{yyyy-MM-dd HH:mm:ss}] %-10c{1} %-5p %m%n"
             , ""
-            , "rootLogger.level                  = INFO"
+            , "rootLogger.level                  = WARN"
             , "rootLogger.appenderRef.stdout.ref = OUT"
             , ""
             , "logger.jena.name  = org.apache.jena"
