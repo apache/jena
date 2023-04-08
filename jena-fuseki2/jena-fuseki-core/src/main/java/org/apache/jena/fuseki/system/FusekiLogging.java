@@ -63,9 +63,9 @@ public class FusekiLogging
         "log4j2.properties"
     };
 
-    private static final boolean LogLogging = true ;
-//            System.getenv("FUSEKI_LOGLOGGING") != null ||
-//            System.getProperty("fuseki.loglogging") != null;
+    private static final boolean LogLogging =
+            System.getenv("FUSEKI_LOGLOGGING") != null ||
+            System.getProperty("fuseki.loglogging") != null;
 
     private static boolean loggingInitialized   = false;
 
@@ -146,7 +146,6 @@ public class FusekiLogging
             if ( url != null ) {
                 try ( InputStream inputStream = url.openStream() ) {
                     String x = IO.readWholeFileAsUTF8(inputStream);
-                    System.err.println(x);
                 } catch (IOException ex) { IO.exception(ex); }
 
                 try ( InputStream inputStream = url.openStream() ) {
