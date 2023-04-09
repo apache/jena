@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,6 @@ import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Builder for SPARQL Describe Queries.
@@ -53,7 +52,7 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException;
  * {@link DescribeBuilder#setVar(Object, Object)} and
  * {@link DescribeBuilder#setVar(Var, Node)}. The method
  * {@link DescribeBuilder#clearWhereValues()} allows to clear the set values.
- * 
+ *
  * @see AskBuilder
  * @see ConstructBuilder
  * @see SelectBuilder
@@ -88,7 +87,7 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
     }
 
     @Override
-    public DescribeBuilder addVar(String expr, Object var) throws ParseException {
+    public DescribeBuilder addVar(String expr, Object var) {
         getSelectHandler().addVar(expr, Converters.makeVar(var));
         return this;
     }
@@ -153,19 +152,19 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
     }
 
     @Override
-    public DescribeBuilder addHaving(String expression) throws ParseException {
+    public DescribeBuilder addHaving(String expression) {
         getSolutionModifierHandler().addHaving(expression);
         return this;
     }
 
     @Override
-    public DescribeBuilder addHaving(Expr expression) throws ParseException {
+    public DescribeBuilder addHaving(Expr expression) {
         getSolutionModifierHandler().addHaving(expression);
         return this;
     }
 
     @Override
-    public DescribeBuilder addHaving(Object var) throws ParseException {
+    public DescribeBuilder addHaving(Object var) {
         getSolutionModifierHandler().addHaving(Converters.makeVar(var));
         return this;
     }
@@ -288,7 +287,7 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
     }
 
     @Override
-    public DescribeBuilder addFilter(String expression) throws ParseException {
+    public DescribeBuilder addFilter(String expression) {
         getWhereHandler().addFilter(expression);
         return this;
     }
@@ -349,7 +348,7 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
     }
 
     @Override
-    public DescribeBuilder addBind(String expression, Object var) throws ParseException {
+    public DescribeBuilder addBind(String expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
         return this;
     }

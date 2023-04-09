@@ -35,17 +35,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
-import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.syntax.ElementBind;
-import org.apache.jena.sparql.syntax.ElementFilter;
-import org.apache.jena.sparql.syntax.ElementGroup;
-import org.apache.jena.sparql.syntax.ElementMinus;
-import org.apache.jena.sparql.syntax.ElementNamedGraph;
-import org.apache.jena.sparql.syntax.ElementOptional;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock;
-import org.apache.jena.sparql.syntax.ElementUnion;
+import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NiceIterator;
@@ -259,9 +249,8 @@ public class WhereQuadHolder implements QuadHolder {
      * Add an expression string as a filter.
      *
      * @param expression The expression string to add.
-     * @throws ParseException If the expression can not be parsed.
      */
-    public void addFilter(String expression) throws ParseException {
+    public void addFilter(String expression) {
         getClause().addElement(new ElementFilter(parseExpr(expression)));
     }
 
@@ -351,9 +340,8 @@ public class WhereQuadHolder implements QuadHolder {
      *
      * @param expression The expression to bind.
      * @param var The variable to bind it to.
-     * @throws ParseException
      */
-    public void addBind(String expression, Var var) throws ParseException {
+    public void addBind(String expression, Var var) {
         getClause().addElement(new ElementBind(var, parseExpr(expression)));
     }
 

@@ -49,7 +49,6 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.modify.request.QuadAcc;
 import org.apache.jena.sparql.modify.request.QuadDataAcc;
 import org.apache.jena.sparql.modify.request.UpdateDataDelete;
@@ -863,9 +862,8 @@ public class UpdateBuilder {
      *
      * @param expression The expression string to add.
      * @return The Builder for chaining.
-     * @throws ParseException If the expression can not be parsed.
      */
-    public UpdateBuilder addFilter(String expression) throws ParseException {
+    public UpdateBuilder addFilter(String expression) {
         whereProcessor.addFilter(expression);
         return this;
     }
@@ -919,9 +917,8 @@ public class UpdateBuilder {
      *
      * @param expression The expression to bind.
      * @param var The variable to bind it to.
-     * @throws ParseException
      */
-    public UpdateBuilder addBind(String expression, Var var) throws ParseException {
+    public UpdateBuilder addBind(String expression, Var var) {
         whereProcessor.addBind(expression, var);
         return this;
     }
@@ -1096,9 +1093,8 @@ public class UpdateBuilder {
      * @param expression The expression to bind to the var.
      * @param var The variable to bind to.
      * @return This builder for chaining.
-     * @throws ParseException
      */
-    public UpdateBuilder addBind(String expression, Object var) throws ParseException {
+    public UpdateBuilder addBind(String expression, Object var) {
         whereProcessor.addBind(expression, makeVar(var));
         return this;
     }

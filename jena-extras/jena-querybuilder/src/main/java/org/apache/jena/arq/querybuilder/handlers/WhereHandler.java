@@ -17,12 +17,7 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.Converters;
@@ -37,18 +32,7 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
-import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.syntax.ElementBind;
-import org.apache.jena.sparql.syntax.ElementFilter;
-import org.apache.jena.sparql.syntax.ElementGroup;
-import org.apache.jena.sparql.syntax.ElementMinus;
-import org.apache.jena.sparql.syntax.ElementNamedGraph;
-import org.apache.jena.sparql.syntax.ElementOptional;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
-import org.apache.jena.sparql.syntax.ElementSubQuery;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock;
-import org.apache.jena.sparql.syntax.ElementUnion;
+import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.vocabulary.RDF;
 
@@ -86,7 +70,7 @@ public class WhereHandler implements Handler {
 
     /**
      * Get the query pattern from this where handler.
-     * 
+     *
      * @return the query pattern
      */
     public Element getQueryPattern() {
@@ -277,7 +261,7 @@ public class WhereHandler implements Handler {
 
     /**
      * Add the contents of a where handler as an optional statement.
-     * 
+     *
      * @param whereHandler The where handler to use as the optional statement.
      */
     public void addOptional(WhereHandler whereHandler) {
@@ -288,9 +272,8 @@ public class WhereHandler implements Handler {
      * Add an expression string as a filter.
      *
      * @param expression The expression string to add.
-     * @throws ParseException If the expression can not be parsed.
      */
-    public void addFilter(String expression) throws ParseException {
+    public void addFilter(String expression) {
         getClause().addElement(new ElementFilter(ExprUtils.parse(query, expression, true)));
     }
 
@@ -412,9 +395,8 @@ public class WhereHandler implements Handler {
      *
      * @param expression The expression to bind.
      * @param var The variable to bind it to.
-     * @throws ParseException
      */
-    public void addBind(String expression, Var var) throws ParseException {
+    public void addBind(String expression, Var var) {
         getClause().addElement(new ElementBind(var, ExprUtils.parse(query, expression, true)));
     }
 
