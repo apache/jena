@@ -31,6 +31,9 @@ public class Syntax extends Symbol {
     /** The syntax that the SPARQL 1.1 working group has defined. */
     public static final Syntax syntaxSPARQL_11 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_11");
 
+    /** The syntax that is SPARQL 1.2 from the RDF-star working group. */
+    public static final Syntax syntaxSPARQL_12 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_12");
+
     /** The query syntax for extended SPARQL. */
     public static final Syntax syntaxARQ = new Syntax("http://jena.hpl.hp.com/2003/07/query/ARQ");
 
@@ -60,11 +63,18 @@ public class Syntax extends Symbol {
     public static TranslationTable<Syntax> querySyntaxNames = new TranslationTable<>(true);
     static {
         querySyntaxNames.put("sparql", syntaxSPARQL);
+
         querySyntaxNames.put("sparql10", syntaxSPARQL_10);
         querySyntaxNames.put("sparql_10", syntaxSPARQL_10);
+
         querySyntaxNames.put("sparql11", syntaxSPARQL_11);
         querySyntaxNames.put("sparql_11", syntaxSPARQL_11);
+
+        querySyntaxNames.put("sparql12", syntaxSPARQL_12);
+        querySyntaxNames.put("sparql_12", syntaxSPARQL_12);
+
         querySyntaxNames.put("arq", syntaxARQ);
+
         querySyntaxNames.put("alg", syntaxAlgebra);
         querySyntaxNames.put("op", syntaxAlgebra);
     }
@@ -73,6 +83,7 @@ public class Syntax extends Symbol {
     static {
         updateSyntaxNames.put("sparql", syntaxSPARQL);
         updateSyntaxNames.put("sparql_11", syntaxSPARQL_11);
+        updateSyntaxNames.put("sparql_12", syntaxSPARQL_11);
         updateSyntaxNames.put("arq", syntaxARQ);
     }
 
@@ -99,6 +110,8 @@ public class Syntax extends Symbol {
             return syntaxSPARQL_10;
         if ( sym.equals(syntaxSPARQL_11) )
             return syntaxSPARQL_11;
+        if ( sym.equals(syntaxSPARQL_11) )
+            return syntaxSPARQL_12;
         if ( sym.equals(syntaxAlgebra) )
             return syntaxAlgebra;
         return null;

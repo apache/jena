@@ -22,18 +22,26 @@
 #endif
 
 
-#if !defined(ARQ) && !defined(SPARQL_11)
-#error Please define one of ARQ and SPARQL_11
+#if !defined(ARQ) && !defined(SPARQL_12)
+#error Please define one of ARQ and SPARQL_12
 #endif
 
-#if defined(ARQ) && defined(SPARQL_11)
-#error Please define only one of ARQ and SPARQL_11
+#if defined(ARQ) && defined(SPARQL_12)
+#error Please define only one of ARQ and SPARQL_12
 #endif
 
-#ifdef SPARQL_11
-#define PACKAGE     lang.sparql_11
-#define CLASS       SPARQLParser11
-#define PARSERBASE  SPARQLParser11Base
+#if defined(SPARQL_10)
+#error This is not the SPARQL 1.0 grammar file.
+#endif
+
+#if defined(SPARQL_11)
+#error This is not the SPARQL 1.1 grammar file.
+#endif
+
+#ifdef SPARQL_12
+#define PACKAGE     lang.sparql_12
+#define CLASS       SPARQLParser12
+#define PARSERBASE  SPARQLParser12Base
 #define UPDATE
 #endif
 
@@ -46,7 +54,7 @@
 
 options
 {
-#ifdef SPARQL_11
+#ifdef SPARQL_12
     // Standards with \ u everywhere, \U in strings and IRIs only.
     // \ u processed in the input stream
     // SPARQL 1.0 and 1.1
@@ -219,7 +227,7 @@ void SelectClause() : {  Var v ; Expr expr ; Node n ; }
         { v = null ; }
         <LPAREN>
         expr = Expression() 
-#ifdef SPARQL_11
+#ifdef SPARQL_12
         <AS> v = Var()
 #endif
 #ifdef ARQ
@@ -750,7 +758,7 @@ void Quads(QuadAccSink acc) : { }
 void QuadsNotTriples(QuadAccSink acc) : {Node gn ; Node prev = acc.getGraph() ; }
 {
     <GRAPH>
-#ifdef SPARQL_11   
+#ifdef SPARQL_12   
        gn = VarOrIri()
 #endif
 #ifdef ARQ
@@ -795,7 +803,7 @@ void ConstructQuadsNotTriples(QuadAccSink acc) :
 
 void TriplesTemplate(TripleCollector acc) : { }
 {    // same as ConstructTriples
-#if SPARQL_11
+#if SPARQL_12
     // Version for the spec.
     TriplesSameSubject(acc)
     (<DOT> (TriplesTemplate(acc))?)?
@@ -1188,7 +1196,7 @@ Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP
 
 void ConstructTriples(TripleCollector acc) : { }
 {    // Same as TriplesTemplate, but retain for 1.0 legacy
-#ifdef SPARQL_11
+#ifdef SPARQL_12
 // SPARQL - recursion - does not scale for SPARQL/Update
     TriplesSameSubject(acc)
     (<DOT> (ConstructTriples(acc))? )?
@@ -1661,7 +1669,7 @@ Node GraphNodePath(TripleCollectorMark acc) : { Node n ; }
   n = TriplesNodePath(acc) { return n ; }
 }
 
-#ifdef SPARQL_11
+#ifdef SPARQL_12
 Node VarOrTerm() : {Node n = null ; }
 {
   ( n = Var() | n = GraphTerm() )
@@ -1900,7 +1908,7 @@ Expr PrimaryExpression() : { Expr expr ; Node n ; }
   | n = BooleanLiteral()  { return asExpr(n) ; }
   | n = Var()             { return asExpr(n) ; }
   | n = ExprTripleTerm()  { return asExpr(n) ; }
-// and not SPARQL 11
+// and not SPARQL 12
 // needs checking.
 // Use this for ?var(args)
 //  |  expr = VarOrFunction()  { return expr ; }
@@ -2236,7 +2244,7 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     <LPAREN>
     (t = <DISTINCT> { distinct = true ; })?
     expr = Expression()
-#ifdef SPARQL_11
+#ifdef SPARQL_12
     // Single arg version
     (<SEMICOLON> <SEPARATOR> <EQ> sep=String())?
 #endif
@@ -2715,7 +2723,7 @@ TOKEN :
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
 | <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
-#ifdef SPARQL_11
+#ifdef SPARQL_12
 // Done instream by JavaCC
 | < #UCHAR:      <UCHAR8> >
 #endif

@@ -89,8 +89,9 @@ function grammar
 if [ $# == 0 ]
 then
     # Not sparql10
-    set -- sparql11 arq
-    ## echo "Usage: grammar [arq|sparql]" 1>&2
+    # Not sparql11
+    set -- sparql12 arq
+    ## echo "Usage: grammar [arq|sparql12]" 1>&2
     ## exit 1
     fi
 
@@ -104,17 +105,22 @@ do
 ##           #### cat "$GRAMMAR" | cpp -P -DSPARQL -DSPARQL_10 > sparql_10.jj
 ##           grammar sparql_10.jj sparql_10 SPARQLParser10
 ##           ;;
-         echo "SPARQL 1.0 - not rebuilt"
+          echo "SPARQL 1.0 - not rebuilt"	  
           ;;
 
       sparql11|sparql_11.jj)
-	  # License header.  cpp is run to exclude comments from \$GRAMMAR
-	  # because thay picks up unwanted material as well as the comments
-	  # in $GRAMMAR
-	  cp header.jj sparql_11.jj
+##           # The parser that is exactly the working group grammar.
+##           ##cat "$GRAMMAR" | cpp -P -DSPARQL -DSPARQL_11 >> sparql_11.jj
+##           grammar sparql-dev-final.jj sparql_11 SPARQLParser11	  
+##           ##grammar sparql_11.jj sparql_11 SPARQLParser11
+	  echo "SPARQL 1.1 - not rebuilt"
+	  ;;
+      
+      sparql12|sparql_12.jj)
+	  cp header.jj sparql_12.jj
           # The parser that is exactly the working group grammar.
-          cat "$GRAMMAR" | cpp -P -DSPARQL -DSPARQL_11 >> sparql_11.jj
-          grammar sparql_11.jj sparql_11 SPARQLParser11
+          cat "$GRAMMAR" | cpp -P -DSPARQL -DSPARQL_12 >> sparql_12.jj
+          grammar sparql_12.jj sparql_12 SPARQLParser12
           ;;
 
       arq|arq.jj)

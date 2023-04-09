@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,6 @@ import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Builder for SPARQL Ask Queries.
@@ -50,7 +49,7 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException;
  * the created query can be set with {@link AskBuilder#setVar(Object, Object)}
  * and {@link AskBuilder#setVar(Var, Node)}. The method
  * {@link AskBuilder#clearWhereValues()} allows to clear the set values.
- * 
+ *
  * @see ConstructBuilder
  * @see DescribeBuilder
  * @see SelectBuilder
@@ -215,7 +214,7 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
     }
 
     @Override
-    public AskBuilder addFilter(String s) throws ParseException {
+    public AskBuilder addFilter(String s) {
         getWhereHandler().addFilter(s);
         return this;
     }
@@ -270,7 +269,7 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
     }
 
     @Override
-    public AskBuilder addBind(String expression, Object var) throws ParseException {
+    public AskBuilder addBind(String expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
         return this;
     }
@@ -330,19 +329,19 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
     }
 
     @Override
-    public AskBuilder addHaving(String having) throws ParseException {
+    public AskBuilder addHaving(String having) {
         getSolutionModifierHandler().addHaving(having);
         return this;
     }
 
     @Override
-    public AskBuilder addHaving(Expr expression) throws ParseException {
+    public AskBuilder addHaving(Expr expression) {
         getSolutionModifierHandler().addHaving(expression);
         return this;
     }
 
     @Override
-    public AskBuilder addHaving(Object var) throws ParseException {
+    public AskBuilder addHaving(Object var) {
         getSolutionModifierHandler().addHaving(Converters.makeVar(var));
         return this;
     }

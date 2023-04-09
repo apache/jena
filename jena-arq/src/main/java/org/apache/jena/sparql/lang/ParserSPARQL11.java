@@ -31,7 +31,6 @@ import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.Template ;
 
-
 public class ParserSPARQL11 extends SPARQLParser
 {
     private interface Action { void exec(SPARQLParser11 parser) throws Exception ; }

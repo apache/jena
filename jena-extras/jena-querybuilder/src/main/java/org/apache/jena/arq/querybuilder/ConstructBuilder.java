@@ -36,7 +36,6 @@ import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Builder for SPARQL Construct Queries.
@@ -176,19 +175,19 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
     }
 
     @Override
-    public ConstructBuilder addHaving(String having) throws ParseException {
+    public ConstructBuilder addHaving(String having) {
         getSolutionModifierHandler().addHaving(having);
         return this;
     }
 
     @Override
-    public ConstructBuilder addHaving(Expr expression) throws ParseException {
+    public ConstructBuilder addHaving(Expr expression) {
         getSolutionModifierHandler().addHaving(expression);
         return this;
     }
 
     @Override
-    public ConstructBuilder addHaving(Object var) throws ParseException {
+    public ConstructBuilder addHaving(Object var) {
         getSolutionModifierHandler().addHaving(Converters.makeVar(var));
         return this;
     }
@@ -312,7 +311,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
     }
 
     @Override
-    public ConstructBuilder addFilter(String s) throws ParseException {
+    public ConstructBuilder addFilter(String s) {
         getWhereHandler().addFilter(s);
         return this;
     }
@@ -367,7 +366,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
     }
 
     @Override
-    public ConstructBuilder addBind(String expression, Object var) throws ParseException {
+    public ConstructBuilder addBind(String expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
         return this;
     }
