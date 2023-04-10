@@ -26,6 +26,7 @@ import java.net.URL;
 import java.nio.file.Path;
 
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.logging.LogCtlLog4j2;
@@ -63,9 +64,21 @@ public class FusekiLogging
         "log4j2.properties"
     };
 
-    private static final boolean LogLogging =
-            System.getenv("FUSEKI_LOGLOGGING") != null ||
-            System.getProperty("fuseki.loglogging") != null;
+    public static String envLogLoggingProperty = "FUSEKI_LOGLOGGING";
+    public static String logLoggingProperty = "fuseki.logLogging";
+    private static String logLoggingPropertyAlt = "fuseki.loglogging";
+
+    private static final boolean LogLogging = getLogLogging();
+
+    private static final boolean getLogLogging() {
+        String x = System.getProperty(logLoggingPropertyAlt);
+        if ( x != null ) {
+            logLogging("Old system property used '%s'", logLoggingPropertyAlt);
+            return x.equalsIgnoreCase("true");
+        }
+        x = Lib.getenv("FUSEKI_LOGLOGGING", logLoggingProperty);
+        return x != null && x.equalsIgnoreCase("true");
+    }
 
     private static boolean loggingInitialized   = false;
 
