@@ -37,6 +37,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.*;
+import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -72,18 +73,15 @@ import org.apache.jena.sparql.util.Symbol;
  */
 public class LangJSONLD10 implements ReaderRIOT
 {
-    private static final String SYMBOLS_NS = "http://jena.apache.org/riot/jsonld#" ;
-    private static Symbol createSymbol(String localName) {
-        return Symbol.create(SYMBOLS_NS + localName);
-    }
+    private static final String SYMBOLS_NS = "http://jena.apache.org/riot/jsonld#";
     /**
      * Symbol to use to pass (in a Context object) the "@context" to be used when reading jsonld
      * (overriding the actual @context in the jsonld)
      * Expected value: the value of the "@context",
      * as expected by the JSONLD-java API (a Map) */
-    public static final Symbol JSONLD_CONTEXT = createSymbol("JSONLD_CONTEXT");
+    public static final Symbol JSONLD_CONTEXT = SystemARQ.allocSymbol(SYMBOLS_NS, "JSONLD_CONTEXT");
     /** value: the option object expected by JsonLdProcessor (instance of JsonLdOptions) */
-    public static final Symbol JSONLD_OPTIONS = createSymbol("JSONLD_OPTIONS");
+    public static final Symbol JSONLD_OPTIONS = SystemARQ.allocSymbol(SYMBOLS_NS, "JSONLD_OPTIONS");
     private /*final*/ ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
     private /*final*/ ParserProfile profile;
     
@@ -196,14 +194,8 @@ public class LangJSONLD10 implements ReaderRIOT
 
     /** Get the (jsonld) options from the jena context if exists or create default */
     static private JsonLdOptions getJsonLdOptions(String baseURI, Context jenaContext) {
-        JsonLdOptions opts = null;
-        if (jenaContext != null) {
-            opts = (JsonLdOptions) jenaContext.get(JSONLD_OPTIONS);
-        }
-        if (opts == null) {
-            opts = defaultJsonLdOptions(baseURI);
-        }
-        return opts;
+        JsonLdOptions opts = jenaContext.get(JSONLD_OPTIONS);
+        return (opts != null) ? opts : defaultJsonLdOptions(baseURI);
     }
 
     static private JsonLdOptions defaultJsonLdOptions(String baseURI) {
