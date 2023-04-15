@@ -116,10 +116,34 @@ public class Lib
 
     /** Get an environment variable value; if not found try in the system properties. */
     public static String getenv(String name) {
-        String x = System.getenv(name);
+        return getenv(name, name);
+    }
+
+    /**
+     * Get system properties (argument sysPropName) or if not found, read an
+     * environment variable value (argument envName).
+     */
+    public static String getenv(String sysPropName, String envName) {
+        String x = System.getProperty(sysPropName);
         if ( x == null )
-            x = System.getProperty(name);
+            x = System.getenv(envName);
         return x;
+    }
+
+    /** Test whether a property (environment variable or system property) is true. */
+    public static boolean isPropertyOrEnvVarSetToTrue(String name) {
+        return isPropertyOrEnvVarSetToTrue(name, name);
+    }
+
+    /**
+     * Test whether a property (argument sysPropName) or an environment variable
+     * (argument envName) is true.
+     */
+    public static boolean isPropertyOrEnvVarSetToTrue(String sysPropName, String envName) {
+        String value = getenv(sysPropName, envName);
+        if ( value == null )
+            return false;
+        return value.equalsIgnoreCase("true");
     }
 
     /**

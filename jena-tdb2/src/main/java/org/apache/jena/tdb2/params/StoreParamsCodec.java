@@ -64,8 +64,7 @@ public class StoreParamsCodec {
      * Return null if the file is not found or has a syntax error.
      */
     public static StoreParams read(String filename) {
-        try {
-            InputStream in = IO.openFileEx(filename);
+        try ( InputStream in = IO.openFileEx(filename) ) {
             if ( in == null )
                 return null;
             JsonObject obj = JSON.parse(in);

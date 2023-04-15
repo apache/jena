@@ -297,14 +297,7 @@ public class LogCtl {
         }
     }
 
-
-//    private static void logLogging(String fmt, Object ... args) {
-//        if ( LogLogging ) {
-//            System.err.print("Fuseki Logging: ");
-//            System.err.printf(fmt, args);
-//            System.err.println();
-//        }
-//    }
+    private static boolean loggingInitialized   = false;
 
     /**
      * Setup log4j2, including looking for a file "log4j2.properties" or "log4j2.xml"
@@ -312,8 +305,12 @@ public class LogCtl {
      * @see #setLogging()
      */
     public static void setLog4j2() {
-        logLogging("Ensure Log4j2 setup");
+        if ( loggingInitialized )
+            return;
+        loggingInitialized = true;
+
         if ( ! isSetLog4j2property() ) {
+            logLogging("Set logging");
             setLog4j2property();
             if ( isSetLog4j2property() ) {
                 return;
@@ -347,7 +344,9 @@ public class LogCtl {
         for ( String fn : log4j2files ) {
             File f = new File(fn);
             if ( f.exists() ) {
-                System.setProperty(log4j2ConfigFileProperty, "file:" + fn);
+                String fileURL = "file:"+fn;
+                logLogging("Set %s=%s", log4j2ConfigFileProperty, fileURL);
+                System.setProperty(log4j2ConfigFileProperty, fileURL);
                 return;
             }
         }
