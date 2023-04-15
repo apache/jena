@@ -37,6 +37,8 @@ const startTime = new Date()
 
 // Add custom routes before JSON Server router
 
+server.get('/index.html', (req, res) => res.jsonp(''))
+
 // GET SERVER INFO
 server.get('/\\$/server', (req, res) => {
   res.jsonp({
@@ -244,16 +246,19 @@ server.get('/:datasetName/sparql', sparqlCallback)
 server.post('/:datasetName/sparql', sparqlCallback)
 
 // GRAPH
-server.get('/:datasetName', (req, res) => {
-  res
-    .status(200)
-    .set('Content-Type', 'text/turtle')
-    .send(`@prefix :      <https://example.org/book/> .
+const dataContent = `@prefix :      <https://example.org/book/> .
 @prefix dc:    <https://purl.org/dc/elements/1.1/> .
 @prefix ns:    <https://example.org/ns#> .
 @prefix vcard: <https://www.w3.org/2001/vcard-rdf/3.0#> .
 
-:book4  dc:title  "Harry Potter and the Goblet of Fire" .`)
+:book4  dc:title  "Harry Potter and the Goblet of Fire" .`
+
+// This gets called when you count the graphs
+server.get('/:datasetName/data', (req, res) => {
+  res
+    .status(200)
+    .set('Content-Type', 'text/turtle')
+    .send(dataContent)
 })
 
 // PING

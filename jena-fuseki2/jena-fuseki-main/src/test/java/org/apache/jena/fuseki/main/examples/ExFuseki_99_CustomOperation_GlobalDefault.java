@@ -42,6 +42,8 @@ import org.apache.jena.web.HttpSC;
  * Example of adding a new operation to a Fuseki server by registering it with the
  * global Fuseki registries and adding it to the global default services.
  * <p>
+ * <i>The preferred way of doing this is now to use {@link FusekiModule FusekiModules}.</i>
+ * <p>
  * The custom operation is loaded using {@link ServiceLoader} as shown in
  * {@link InitFusekiCustomOperation}.
  * <p>
@@ -53,9 +55,10 @@ import org.apache.jena.web.HttpSC;
  * See <a href="https://jena.apache.org/documentation/notes/jena-repack.html">Repacking Jena jars</a>.
  * <p>
  * See <a href="https://jena.apache.org/documentation/notes/system-initialization.html">System Initialization</a>
- *
- * This example code predates {@link FusekiModule}.
+ * <p>
+ * <b>This example code predates {@link FusekiModule FusekiModules}.</b>
  */
+@Deprecated
 public class ExFuseki_99_CustomOperation_GlobalDefault {
 
     static {
@@ -90,7 +93,6 @@ public class ExFuseki_99_CustomOperation_GlobalDefault {
 
         public InitFusekiCustomOperation() {}
 
-        @SuppressWarnings("deprecation")
         @Override
         public void start() {
             // Can use Fuseki server logging.

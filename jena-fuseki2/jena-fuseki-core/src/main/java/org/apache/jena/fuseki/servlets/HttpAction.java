@@ -224,8 +224,9 @@ public class HttpAction
         return transactional;
     }
 
-    /** This is the requestURI with the context path removed.
-     *  It should be used internally for dispatch.
+    /**
+     * This is the requestURI with the context path removed.
+     * It should be used internally for dispatch.
      */
     public String getActionURI() {
         return actionURI;

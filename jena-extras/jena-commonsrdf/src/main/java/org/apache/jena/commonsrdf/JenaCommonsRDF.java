@@ -83,7 +83,7 @@ public class JenaCommonsRDF {
     public static org.apache.jena.graph.Triple toJena(Triple triple) {
         if ( triple instanceof JenaTriple )
             return ((JenaTriple)triple).getTriple();
-        return new org.apache.jena.graph.Triple(toJena(triple.getSubject()), toJena(triple.getPredicate()), toJena(triple.getObject()) );
+        return org.apache.jena.graph.Triple.create(toJena(triple.getSubject()), toJena(triple.getPredicate()), toJena(triple.getObject()) );
     }
 
     /** Convert a CommonsRDF Quad to a Jena Quad.
@@ -93,7 +93,7 @@ public class JenaCommonsRDF {
     public static org.apache.jena.sparql.core.Quad toJena(Quad quad) {
         if ( quad instanceof JenaTriple )
             return ((JenaQuad)quad).getQuad();
-        return new org.apache.jena.sparql.core.Quad(toJena(quad.getGraphName()), toJena(quad.getSubject()), toJena(quad.getPredicate()), toJena(quad.getObject()) );
+        return org.apache.jena.sparql.core.Quad.create(toJena(quad.getGraphName()), toJena(quad.getSubject()), toJena(quad.getPredicate()), toJena(quad.getObject()) );
     }
 
     /** Public ?? */

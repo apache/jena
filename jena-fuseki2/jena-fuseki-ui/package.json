@@ -10,12 +10,12 @@
     "serve": "vite preview",
     "build": "vite build",
     "test:unit": "vitest run --environment jsdom",
-    "test:e2e": "concurrently --names 'SERVER,CLIENT,TESTS' --prefix-colors 'yellow,blue,green' --success 'first' --kill-others 'yarn run serve:fuseki' 'yarn wait-on http://localhost:${FUSEKI_PORT}/ping && yarn run dev' 'yarn wait-on http-get://localhost:${PORT}/index.html && cypress run ${0}'",
+    "test:e2e": "cross-env FUSEKI_PORT=\"${FUSEKI_PORT:=3030}\" PORT=\"${PORT:=8080}\" concurrently --names 'SERVER,CLIENT,TESTS' --prefix-colors 'yellow,blue,green' --success 'first' --kill-others 'yarn run serve:fuseki' 'yarn wait-on http://localhost:${FUSEKI_PORT}/$/ping && yarn run dev' 'yarn wait-on http-get://localhost:${PORT}/index.html && cypress run $@'",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
-    "coverage:unit": "yarn run test:unit -- --coverage",
+    "coverage:unit": "yarn run test:unit --coverage",
     "coverage:e2e": "cross-env-shell CYPRESS_COVERAGE=true yarn run test:e2e",
     "serve:fuseki": "nodemon src/services/mock/json-server.js",
-    "serve:offline": "cross-env FUSEKI_PORT=\"${FUSEKI_PORT:=3030}\" PORT=\"${PORT:=8080}\" concurrently --names 'SERVER,CLIENT' --prefix-colors 'yellow,blue' --success 'first' --kill-others 'yarn run serve:fuseki' 'yarn wait-on http://localhost:${FUSEKI_PORT}/ping && yarn run dev'"
+    "serve:offline": "cross-env FUSEKI_PORT=\"${FUSEKI_PORT:=3030}\" PORT=\"${PORT:=8080}\" concurrently --names 'SERVER,CLIENT' --prefix-colors 'yellow,blue' --success 'first' --kill-others 'yarn run serve:fuseki' 'yarn wait-on http://localhost:${FUSEKI_PORT}/$/ping && yarn run dev'"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.0",

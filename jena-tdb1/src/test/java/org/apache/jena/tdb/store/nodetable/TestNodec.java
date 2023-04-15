@@ -120,7 +120,7 @@ public class TestNodec
         assertEquals(bbLen, x);
         assertEquals(0, bb.position());
 
-        ByteBuffer bb2 = ByteBufferLib.duplicate(bb);
+        ByteBuffer bb2 = ByteBufferLib.copyOf(bb);
         Node n2 = nodec.decode(bb2, null);
         assertEquals(n, n2);
     }

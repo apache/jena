@@ -26,7 +26,9 @@ import java.net.URL;
 import java.nio.file.Path;
 
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.logging.LogCtlLog4j2;
 import org.apache.jena.fuseki.Fuseki;
 
@@ -62,9 +64,21 @@ public class FusekiLogging
         "log4j2.properties"
     };
 
-    private static final boolean LogLogging =
-            System.getenv("FUSEKI_LOGLOGGING") != null ||
-            System.getProperty("fuseki.loglogging") != null;
+    public static String envLogLoggingProperty = "FUSEKI_LOGLOGGING";
+    public static String logLoggingProperty = "fuseki.logLogging";
+    private static String logLoggingPropertyAlt = "fuseki.loglogging";
+
+    private static final boolean LogLogging = getLogLogging();
+
+    private static final boolean getLogLogging() {
+        String x = System.getProperty(logLoggingPropertyAlt);
+        if ( x != null ) {
+            logLogging("Old system property used '%s'", logLoggingPropertyAlt);
+            return x.equalsIgnoreCase("true");
+        }
+        x = Lib.getenv("FUSEKI_LOGLOGGING", logLoggingProperty);
+        return x != null && x.equalsIgnoreCase("true");
+    }
 
     private static boolean loggingInitialized   = false;
 
@@ -86,7 +100,8 @@ public class FusekiLogging
         setLogging(null);
     }
 
-    public static final String log4j2_configurationFile = "log4j2.configurationFile";
+    public static final String log4j2_configurationFile = LogCtl.log4j2ConfigFileProperty;
+    private static final String log4j2_configurationFileLegacy = LogCtl.log4j2ConfigFilePropertyLegacy;
     // Only used by the webapp.
     public static final String log4j2_web_configuration = "log4jConfiguration";
 
@@ -109,11 +124,11 @@ public class FusekiLogging
         logLogging("Set logging");
 
         // Is there a log4j setup provided?
-        if ( checkSystemProperties("log4j2.configurationFile") ||
-             checkSystemProperties("log4j.configurationFile") ||    // Log4j2 legacy name
+        if ( checkSystemProperties(log4j2_configurationFile) ||
+             checkSystemProperties(log4j2_configurationFileLegacy) ||
              System.getenv("LOG4J_CONFIGURATION_FILE") != null )
         {
-            logLogging("External log4j2 setup");
+            logLogging("External log4j2 setup ");
             return ;
         }
 
@@ -142,6 +157,10 @@ public class FusekiLogging
 //            }
 
             if ( url != null ) {
+                try ( InputStream inputStream = url.openStream() ) {
+                    String x = IO.readWholeFileAsUTF8(inputStream);
+                } catch (IOException ex) { IO.exception(ex); }
+
                 try ( InputStream inputStream = url.openStream() ) {
                     loadConfiguration(inputStream, resourceName);
                 } catch (IOException ex) { IO.exception(ex); }
@@ -223,7 +242,7 @@ public class FusekiLogging
             , "appender.console.layout.type = PatternLayout"
             , "appender.console.layout.pattern = [%d{yyyy-MM-dd HH:mm:ss}] %-10c{1} %-5p %m%n"
             , ""
-            , "rootLogger.level                  = INFO"
+            , "rootLogger.level                  = WARN"
             , "rootLogger.appenderRef.stdout.ref = OUT"
             , ""
             , "logger.jena.name  = org.apache.jena"

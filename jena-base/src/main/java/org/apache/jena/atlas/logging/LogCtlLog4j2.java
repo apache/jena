@@ -104,38 +104,13 @@ public class LogCtlLog4j2 {
 
         , "logger.riot.name  = org.apache.jena.riot"
         , "logger.riot.level = INFO"
+
+        // If mixed with Fuseki code, and command logging happens, then ensure Jetty is WARN.
+        , "logger.jetty.name  = org.eclipse.jetty"
+        , "logger.jetty.level = WARN"
         );
     // @formatter:on
 
-    // @formatter:off
-    /** A format for commands using stderr. */
-    public static String log4j2setupCmd = StrUtils.strjoinNL
-        ( "## Command default log4j2 setup : log4j2 properties syntax."
-        , "status = error"
-        , "name = PropertiesConfig"
-//        , "filters = threshold"
-//        , ""
-//        , "filter.threshold.type = ThresholdFilter"
-//        , "filter.threshold.level = ALL"
-//      , ""
-        , "appender.console.type = Console"
-        , "appender.console.name = OUT"
-        , "appender.console.target = SYSTEM_ERR"
-        , "appender.console.layout.type = PatternLayout"
-        , "appender.console.layout.pattern = %d{HH:mm:ss} %-5p %-15c{1} :: %m%n"
-        , "#appender.console.layout.pattern = [%d{yyyy-MM-dd HH:mm:ss}] %-5p %-15c{1} ::: %m%n"
-
-        , "rootLogger.level                  = INFO"
-        , "rootLogger.appenderRef.stdout.ref = OUT"
-
-        , "logger.jena.name  = org.apache.jena"
-        , "logger.jena.level = INFO"
-
-        , "logger.arq-exec.name  = org.apache.jena.arq.exec"
-        , "logger.arq-exec.level = INFO"
-
-        , "logger.riot.name  = org.apache.jena.riot"
-        , "logger.riot.level = INFO"
-        );
-    // @formatter:on
+//    /** A format for commands using stderr. */
+//    public static String log4j2setupCmd = log4j2setup.replace("SYSTEM_OUT", "SYSTEM_ERR");
 }

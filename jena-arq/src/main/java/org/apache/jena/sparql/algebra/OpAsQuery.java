@@ -548,7 +548,7 @@ public class OpAsQuery {
                 return e ;
             }
 
-            if ( query.getSyntax() == Syntax.syntaxSPARQL_11 || query.getSyntax() == Syntax.syntaxARQ ) {
+            if ( query.getSyntax() == Syntax.syntaxSPARQL_12 || query.getSyntax() == Syntax.syntaxSPARQL_11 || query.getSyntax() == Syntax.syntaxARQ ) {
                 ElementPathBlock e = new ElementPathBlock() ;
                 for ( Triple t : pattern )
                     // Leave bNode variables as they are

@@ -18,21 +18,20 @@
 
 package org.apache.jena.sparql.function.user;
 
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.apache.jena.query.QueryParseException;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprTransformer ;
 import org.apache.jena.sparql.function.Function ;
 import org.apache.jena.sparql.function.FunctionFactory ;
 import org.apache.jena.sparql.function.FunctionRegistry ;
-import org.apache.jena.sparql.lang.sparql_11.ParseException ;
-import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
+import org.apache.jena.sparql.util.ExprUtils;
 
 /**
  * A function factory for managing user defined functions aka function macros.
@@ -45,7 +44,7 @@ import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
  * <p>
  * For example we can define a <strong>square</strong> function like so:
  * </p>
- * 
+ *
  * <pre>
  * List&lt;Var&gt; args = new ArrayList&lt;Var&gt;(Var.alloc(&quot;x&quot;));
  * UserDefinedFunctionFactory.getFactory().add(&quot;http://example/square&quot;, &quot;?x * ?x&quot;, args);
@@ -53,7 +52,7 @@ import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
  * <p>
  * We can then use this in queries like so:
  * </p>
- * 
+ *
  * <pre>
  * SELECT (&lt;http://example/square&gt;(3) AS ?ThreeSquared) { }
  * </pre>
@@ -75,7 +74,7 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
 
     /**
      * Gets the static instance of the factory
-     * 
+     *
      * @return Function Factory
      */
     public static UserDefinedFunctionFactory getFactory() {
@@ -107,7 +106,7 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
      * in which case this option may be disabled with the corresponding
      * {@link #setPreserveDependencies(boolean)} setter
      * </p>
-     * 
+     *
      * @return Whether explicit dependencies are allowed
      */
     public boolean getPreserveDependencies() {
@@ -117,7 +116,7 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
     /**
      * Sets whether user functions may explicitly depend on each other, see
      * {@link #getPreserveDependencies()} for explanation of this behavior
-     * 
+     *
      * @param allow
      *            Whether to preserve dependencies
      */
@@ -127,7 +126,7 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
 
     /**
      * Creates a function for the given URI
-     * 
+     *
      * @throws SSE_ExprBuildException
      *             Thrown if the given URI is not a known function
      */
@@ -141,7 +140,7 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
 
     /**
      * Adds a function
-     * 
+     *
      * @param uri
      *            URI
      * @param e
@@ -166,22 +165,22 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
      * This method will build the expression to use based on the expression
      * string given, strings must match the SPARQL expression syntax e.g.
      * </p>
-     * 
+     *
      * <pre>
      * (?x * ?y) + 5
      * </pre>
-     * 
+     *
      * @param uri
      *            URI
      * @param expr
      *            Expression String (in SPARQL syntax)
      * @param args
      *            Arguments
-     * @throws ParseException
+     * @throws QueryParseException
      *             Thrown if the expression string is not valid syntax
      */
-    public void add(String uri, String expr, List<Var> args) throws ParseException {
-        Expr e = new SPARQLParser11(new StringReader(expr)).Expression();
+    public void add(String uri, String expr, List<Var> args) {
+        Expr e = ExprUtils.parse(expr);
         if (!preserveDependencies) {
             // If not allowing dependencies expand expression fully
             e = ExprTransformer.transform(new ExprTransformExpand(this.definitions), e);
@@ -194,7 +193,7 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
 
     /**
      * Removes a function definition
-     * 
+     *
      * @param uri
      *            URI
      * @throws NoSuchElementException
@@ -209,7 +208,7 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
 
     /**
      * Gets the definition of the function (if registered)
-     * 
+     *
      * @param uri
      *            URI
      * @return Function Definition if registered, null otherwise
@@ -222,7 +221,7 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
 
     /**
      * Gets whether a function with the given URI has been registered
-     * 
+     *
      * @param uri
      *            URI
      * @return True if registered, false otherwise

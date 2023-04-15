@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,7 +37,6 @@ import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Builder for SPARQL Select Queries.
@@ -54,7 +53,7 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException;
  * {@link SelectBuilder#setVar(Object, Object)} and
  * {@link SelectBuilder#setVar(Var, Node)}. The method
  * {@link SelectBuilder#clearWhereValues()} allows to clear the set values.
- * 
+ *
  * @see AskBuilder
  * @see ConstructBuilder
  * @see DescribeBuilder
@@ -90,9 +89,9 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
     /**
      * Sets the distinct flag.
-     * 
+     *
      * Setting the select distinct will unset reduced if it was set.
-     * 
+     *
      * @param state if true results will be distinct.
      * @return This builder for chaining.
      */
@@ -103,9 +102,9 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
     /**
      * Sets the reduced flag.
-     * 
+     *
      * Setting the select reduced will unset distinct if it was set.
-     * 
+     *
      * @param state if true results will be reduced.
      * @return This builder for chaining.
      */
@@ -121,7 +120,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     }
 
     @Override
-    public SelectBuilder addVar(String expression, Object var) throws ParseException {
+    public SelectBuilder addVar(String expression, Object var) {
         getSelectHandler().addVar(expression, Converters.makeVar(var));
         return this;
     }
@@ -221,19 +220,19 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     }
 
     @Override
-    public SelectBuilder addHaving(String having) throws ParseException {
+    public SelectBuilder addHaving(String having) {
         getSolutionModifierHandler().addHaving(having);
         return this;
     }
 
     @Override
-    public SelectBuilder addHaving(Expr expression) throws ParseException {
+    public SelectBuilder addHaving(Expr expression) {
         getSolutionModifierHandler().addHaving(expression);
         return this;
     }
 
     @Override
-    public SelectBuilder addHaving(Object var) throws ParseException {
+    public SelectBuilder addHaving(Object var) {
         getSolutionModifierHandler().addHaving(Converters.makeVar(var));
         return this;
     }
@@ -254,7 +253,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
      * Converts a node to a string. If the node is a literal return the literal
      * value. If the node is a URI return the URI enclosed with &lt; and &gt; If the
      * node is a variable return the name preceded by '?'
-     * 
+     *
      * @param node The node to convert.
      * @return A string representation of the node.
      */
@@ -283,7 +282,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
      * <li>If the node is a variable return the name preceded by '?'</li>
      * </ul>
      * otherwise return the toString() method of the object.
-     * 
+     *
      * @param o the Object to convert.
      * @return The string representation of the object.
      */
@@ -404,7 +403,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     }
 
     @Override
-    public SelectBuilder addFilter(String s) throws ParseException {
+    public SelectBuilder addFilter(String s) {
         getWhereHandler().addFilter(s);
         return this;
     }
@@ -459,7 +458,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     }
 
     @Override
-    public SelectBuilder addBind(String expression, Object var) throws ParseException {
+    public SelectBuilder addBind(String expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
         return this;
     }

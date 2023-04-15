@@ -31,7 +31,6 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Interface that defines the WhereClause as per
@@ -263,9 +262,8 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      *
      * @param expression the expression to evaluate for the filter.
      * @return This Builder for chaining.
-     * @throws ParseException If the expression can not be parsed.
      */
-    public T addFilter(String expression) throws ParseException;
+    public T addFilter(String expression);
 
     /**
      * Adds a filter to the where clause
@@ -377,9 +375,8 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * @param expression The expression to bind to the var.
      * @param var The variable to bind to.
      * @return This builder for chaining.
-     * @throws ParseException
      */
-    public T addBind(String expression, Object var) throws ParseException;
+    public T addBind(String expression, Object var);
 
     /**
      * Get the Where handler for this clause.

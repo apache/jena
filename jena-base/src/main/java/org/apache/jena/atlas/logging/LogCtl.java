@@ -278,8 +278,10 @@ public class LogCtl {
 
     // ---- log4j2.
 
-    /** The log4j2 configuration file - must be a file or URL, not a classpath java resource */
-    public static final String log4j2ConfigProperty = "log4j.configurationFile";
+    /** The log4j2 configuration file - must be a file or URL, not a classpath java resource. */
+    public static final String log4j2ConfigFileProperty = "log4j2.configurationFile";
+    /** Legacy name for log4j2 configuration file */
+    public static final String log4j2ConfigFilePropertyLegacy = "log4j.configurationFile";
 
     private static final String[] log4j2files = {"log4j2.properties", "log4j2.xml"};
 
@@ -287,20 +289,15 @@ public class LogCtl {
             System.getenv("JENA_LOGLOGGING") != null ||
             System.getProperty("jena.loglogging") != null;
 
-    private static void logLogging(String str) {
+    private static void logLogging(String fmt, Object ... args) {
         if ( LogLogging ) {
-            System.err.print("Fuseki Logging: ");
-            System.err.println(str);
+            System.err.print("Jena Logging: ");
+            System.err.printf(fmt, args);
+            System.err.println();
         }
     }
 
-//    private static void logLogging(String fmt, Object ... args) {
-//        if ( LogLogging ) {
-//            System.err.print("Fuseki Logging: ");
-//            System.err.printf(fmt, args);
-//            System.err.println();
-//        }
-//    }
+    private static boolean loggingInitialized   = false;
 
     /**
      * Setup log4j2, including looking for a file "log4j2.properties" or "log4j2.xml"
@@ -308,8 +305,12 @@ public class LogCtl {
      * @see #setLogging()
      */
     public static void setLog4j2() {
-        logLogging("Ensure Log4j2 setup");
+        if ( loggingInitialized )
+            return;
+        loggingInitialized = true;
+
         if ( ! isSetLog4j2property() ) {
+            logLogging("Set logging");
             setLog4j2property();
             if ( isSetLog4j2property() ) {
                 return;
@@ -318,13 +319,23 @@ public class LogCtl {
             logLogging("Log4j2: built-in default");
             LogCtlLog4j2.resetLogging(LogCtlLog4j2.log4j2setup);
         } else {
-            logLogging("Ready set: "+log4j2ConfigProperty+"="+System.getProperty(log4j2ConfigProperty));
+            if ( isSetLog4j2property(log4j2ConfigFilePropertyLegacy) )
+                logLogging("Already set: %s=%s", log4j2ConfigFilePropertyLegacy, System.getProperty(log4j2ConfigFilePropertyLegacy));
+            else
+                logLogging("Already set: %s=%s", log4j2ConfigFileProperty, System.getProperty(log4j2ConfigFileProperty));
         }
     }
 
     /* package */ static boolean isSetLog4j2property() {
-        return System.getProperty(log4j2ConfigProperty) != null;
+        // Either name,
+        return isSetLog4j2property(log4j2ConfigFileProperty) ||
+               isSetLog4j2property(log4j2ConfigFilePropertyLegacy);
     }
+
+    private static boolean isSetLog4j2property(String systemProperty) {
+        return System.getProperty(systemProperty) != null;
+    }
+
 
     /** Set log4j, looking for files */
     /*package*/ static void setLog4j2property() {
@@ -333,7 +344,9 @@ public class LogCtl {
         for ( String fn : log4j2files ) {
             File f = new File(fn);
             if ( f.exists() ) {
-                System.setProperty(log4j2ConfigProperty, "file:" + fn);
+                String fileURL = "file:"+fn;
+                logLogging("Set %s=%s", log4j2ConfigFileProperty, fileURL);
+                System.setProperty(log4j2ConfigFileProperty, fileURL);
                 return;
             }
         }

@@ -21,11 +21,16 @@ package org.apache.jena.fuseki.main.sys;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.base.module.Subsystem;
+import org.apache.jena.fuseki.Fuseki;
+import org.slf4j.Logger;
 
 /** Control of fuseki modules loaded via ServiceLoader */
 public class FusekiModulesLoaded {
 
+    private static final Logger LOG = Fuseki.serverLog;
     private static final Object lock = new Object();
 
     // Record of what is loaded.
@@ -34,7 +39,13 @@ public class FusekiModulesLoaded {
     // Loaded modules as FusekiModules
     private static FusekiModules loaded = null;
 
+    public static final String logLoadingProperty = "fuseki.logLoading";
+    public static final String envLogLoadingProperty = "FUSEKI_LOGLOADING";
     private static boolean enabled = true;
+
+    private static boolean logModuleLoading() {
+        return Lib.isPropertyOrEnvVarSetToTrue(logLoadingProperty, envLogLoadingProperty);
+    }
 
     /** Enable/disable loaded modules. */
     public static void enable(boolean setting) {
@@ -79,12 +90,22 @@ public class FusekiModulesLoaded {
      * Load and set system wide Fuseki modules.
      */
     public static void reload() {
+        boolean logProcess = logModuleLoading();
         synchronized(lock) {
             List<FusekiModule> thisLoad = new ArrayList<>();
             Subsystem<FusekiModule> subsystem = new Subsystem<FusekiModule>(FusekiModule.class);
+            if ( logProcess )
+                subsystem.debug(true);
             subsystem.initialize();
             subsystem.forEach(thisLoad::add);
             loadedModules = List.copyOf(thisLoad);
+            if ( logProcess ) {
+                if ( loadedModules.isEmpty() )
+                    LOG.info("No modules loaded");
+                else
+                    loadedModules.forEach(x->FmtLog.info(LOG, "Loaded: %s", x.name()));
+            }
+
             loaded = FusekiModules.create(loadedModules);
             enabled = true;
         }
