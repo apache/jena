@@ -19,7 +19,7 @@
 package org.apache.jena.tdb;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.base.Sys;
 
 public class ConfigTest
 {
@@ -27,7 +27,7 @@ public class ConfigTest
     // Place under target
     private static final String testingDir = "target/tdb-testing" ;
     private static final String testingDirDB = "target/tdb-testing/DB" ;
-    static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
+    static boolean nonDeleteableMMapFiles = Sys.isWindows ;
 
     static boolean initialized = false ;
 

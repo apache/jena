@@ -25,6 +25,8 @@ import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.jena.base.Sys;
+
 public class ProcessUtils {
 
     private static int myPid = -1;
@@ -32,11 +34,11 @@ public class ProcessUtils {
     /**
      * Tries to get the PID of the current process caching it for future calls
      * since it won't change throughout the life of the process
-     * 
+     *
      * @param fallback
      *            Fallback PID to return if unable to determine the PID i.e. an
      *            error code to return
-     * 
+     *
      * @return PID of current process or provided {@code fallback} if unable to
      *         determine PID
      */
@@ -74,7 +76,7 @@ public class ProcessUtils {
 
     /**
      * Determines whether a given PID is alive
-     * 
+     *
      * @param pid
      *            PID
      * @return True if the given PID is alive or unknown, false if it is dead
@@ -110,7 +112,7 @@ public class ProcessUtils {
      * negative (i.e. invalid) PIDs as alive because of the format in which the
      * command line process monitor application for the system returns errors
      * for invalid PIDs
-     * 
+     *
      * @return True if a negative PID is treated as alive on this platform or we
      *         cannot determine liveness for PIDs on this platform, false
      *         otherwise
@@ -121,7 +123,7 @@ public class ProcessUtils {
 
     /**
      * Gets process information based on the given PID string
-     * 
+     *
      * @param pidStr
      *            PID string
      * @return Output of running the OSes appropriate command line task info
@@ -132,7 +134,7 @@ public class ProcessUtils {
      */
     private static List<String> getProcessInfo(String pidStr) throws IOException {
         Process p;
-        if (SystemTDB.isWindows) {
+        if (Sys.isWindows) {
             // Use the Windows tasklist utility
             ProcessBuilder builder = new ProcessBuilder("tasklist", "/FI", "PID eq " + pidStr);
             builder.redirectErrorStream(true);

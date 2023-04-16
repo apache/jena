@@ -26,6 +26,7 @@ import java.util.Properties ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.PropertyUtils ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.base.Sys;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
@@ -315,18 +316,9 @@ public class SystemTDB
 
     // --------
 
-    public static final boolean isWindows = determineIfWindows() ;	// Memory mapped files behave differently.
-
-    //Or look in File.listRoots.
-    //Alternative method:
-    //  http://stackoverflow.com/questions/1293533/name-of-the-operating-system-in-java-not-os-name
-
-    private static boolean determineIfWindows() {
-    	String s = System.getProperty("os.name") ;
-    	if ( s == null )
-    		return false ;
-    	return s.startsWith("Windows ") ;
-	}
+    /** @deprecated Use {@link Sys#isWindows} */
+    @Deprecated
+    public static final boolean isWindows = Sys.isWindows;
 
     private static boolean determineIf64Bit()
     {
