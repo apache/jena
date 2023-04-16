@@ -208,7 +208,7 @@ public class TestScriptFunction {
 
     @Test
     public void script_err_3() {
-        if (!language.equals("JS")) {
+        if (!language.equalsIgnoreCase("JS")) {
             return;
         }
         // Legal in JS.
@@ -218,7 +218,7 @@ public class TestScriptFunction {
 
     @Test
     public void script_err_4() {
-        if (!language.equals("JS")) {
+        if (!language.equalsIgnoreCase("JS")) {
             return;
         }
         // Legal in JS.
