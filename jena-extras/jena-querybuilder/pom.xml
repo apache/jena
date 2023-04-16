@@ -26,7 +26,7 @@
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-extras</artifactId>
     <relativePath>..</relativePath>
-    <version>4.8.0-SNAPSHOT</version>
+    <version>4.8.0</version>
   </parent>
 
   <properties>
@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>4.8.0-SNAPSHOT</version>
+      <version>4.8.0</version>
       <type>pom</type>
     </dependency>
 
