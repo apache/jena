@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-db</artifactId>
-    <version>4.8.0</version>
+    <version>4.9.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
@@ -39,26 +39,26 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-transaction</artifactId>
-      <version>4.8.0</version>
+      <version>4.9.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-index</artifactId>
-      <version>4.8.0</version>
+      <version>4.9.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-index-test</artifactId>
-      <version>4.8.0</version>
+      <version>4.9.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-base</artifactId>
-      <version>4.8.0</version>
+      <version>4.9.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
