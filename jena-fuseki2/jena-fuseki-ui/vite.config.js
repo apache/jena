@@ -52,6 +52,28 @@ export default defineConfig({
     outDir: 'target/webapp',
     assetsDir: 'static',
     sourcemap: 'inline',
+    // https://router.vuejs.org/guide/advanced/lazy-loading.html
+    rollupOptions: {
+      // https://rollupjs.org/guide/en/#outputmanualchunks
+      output: {
+        manualChunks: {
+          queryDataset: [
+            'src/views/manage/ExistingDatasets.vue',
+            'src/views/dataset/Query.vue'
+          ],
+          manageDataset: [
+            'src/views/manage/NewDataset.vue',
+            'src/views/dataset/Upload.vue',
+            'src/views/dataset/Edit.vue',
+            'src/views/dataset/Info.vue'
+          ],
+          other: [
+            'src/views/manage/Tasks.vue',
+            'src/views/Help.vue'
+          ]
+        }
+      }
+    }
   },
   server: {
     // Default, can be overridden by `--port 1234` in package.json
