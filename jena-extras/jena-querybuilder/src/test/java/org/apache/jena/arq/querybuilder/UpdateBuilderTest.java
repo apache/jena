@@ -58,6 +58,16 @@ public class UpdateBuilderTest {
     private Node o = NodeFactory.createURI("http://example.com/object");
 
     @Test
+    public void testConstructorWithPrefixMappingAndWhereClause() {
+        Model model = ModelFactory.createDefaultModel();
+        model.setNsPrefix("ex", "http://example.com/");
+        UpdateBuilder builder = new UpdateBuilder(model);
+        builder.addInsert(s, "ex:predicate", "?o");
+        builder.addWhere( s, "ex:predicat2", "?o" );
+        builder.build();
+    }
+    
+    @Test
     public void testInsert_SPO() {
         UpdateBuilder builder = new UpdateBuilder();
         builder.addInsert(s, p, o);

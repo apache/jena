@@ -104,6 +104,8 @@ public class UpdateBuilder {
     public UpdateBuilder(PrefixMapping pMap) {
         this.prefixHandler = new PrefixHandler(pMap);
         this.whereProcessor = new WhereQuadHolder(prefixHandler);
+        this.values = new HashMap<Var, Node>();
+        this.with = null;
     }
 
     /**
