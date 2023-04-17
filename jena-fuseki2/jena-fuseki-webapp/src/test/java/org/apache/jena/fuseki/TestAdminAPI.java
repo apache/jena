@@ -34,7 +34,6 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.web.HttpSC;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /** More tests of the admin functionality
@@ -46,10 +45,9 @@ public class TestAdminAPI extends AbstractFusekiWebappTest {
         testAddDelete("db_mem", "mem", false);
     }
 
-    @Ignore  // Not stable on github actions.
     @Test public void add_delete_api_2() throws Exception {
         // Deleted mmap files on Windows does not go away until the JVM exits.
-        if ( Sys.isWindows )
+        if ( org.apache.jena.tdb.sys.SystemTDB.isWindows )
             return;
         testAddDelete("db_tdb", "tdb", true);
     }
