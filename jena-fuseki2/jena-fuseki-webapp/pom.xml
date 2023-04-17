@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>4.9.0-SNAPSHOT</version>
+    <version>4.8.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -38,13 +38,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-core</artifactId>
-      <version>4.9.0-SNAPSHOT</version>
+      <version>4.8.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-core</artifactId>
-      <version>4.9.0-SNAPSHOT</version>
+      <version>4.8.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -52,13 +52,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>4.9.0-SNAPSHOT</version>
+      <version>4.8.0-SNAPSHOT</version>
     </dependency>
    
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>4.9.0-SNAPSHOT</version>
+      <version>4.8.0-SNAPSHOT</version>
     </dependency>
     
     <dependency>
@@ -101,7 +101,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>4.9.0-SNAPSHOT</version>
+      <version>4.8.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -109,7 +109,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>4.9.0-SNAPSHOT</version>
+      <version>4.8.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
