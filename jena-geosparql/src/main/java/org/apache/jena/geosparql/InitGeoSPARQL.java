@@ -35,6 +35,10 @@ public class InitGeoSPARQL implements JenaSubsystemLifecycle {
 
     @Override
     public void start() {
+        init();
+    }
+
+    public static void init() {
         if ( initialized )
             return ;
         synchronized (initLock) {
