@@ -21,7 +21,7 @@
 #  execute "sudo systemctl restart sparqler.service
 
 [Unit]
-Description=SPARQLR server
+Description=SPARQLER server
 After=apache2.service
 Documentation=https://jena.apache.org/documentation/fuseki2/index.html
 
