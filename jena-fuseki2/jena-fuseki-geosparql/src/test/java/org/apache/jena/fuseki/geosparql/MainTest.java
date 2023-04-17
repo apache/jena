@@ -65,7 +65,9 @@ public class MainTest {
 
     @AfterClass
     public static void tearDownClass() {
-        SERVER.shutdown();
+        try {
+            SERVER.shutdown();
+        } catch (Throwable th) {}
     }
 
     @Before
