@@ -1,7 +1,7 @@
 ## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
 #
-# This script runs sparqlr under systemd.  
+# This script runs sparqler under systemd.  
 #
 # Assumptions:
 #  sparqler is installed in /etc/jena/sparqler
