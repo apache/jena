@@ -325,6 +325,7 @@ public class SystemTDB
     	String s = System.getProperty("os.name") ;
     	if ( s == null )
     		return false ;
+    	// Using Sys.isWindows (= Commons lang3.SystemUtils.IS_OS_WINDOWS) has caused static initializer problems (2023-04).
     	return s.startsWith("Windows ") ;
 	}
 
