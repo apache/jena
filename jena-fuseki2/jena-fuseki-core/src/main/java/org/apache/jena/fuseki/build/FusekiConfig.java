@@ -188,35 +188,13 @@ public class FusekiConfig {
      */
     public static List<DataAccessPoint> processServerConfiguration(Model configuration, Context context) {
         Resource server = findServer(configuration);
-        mergeContext(server, context);
-        processLoadClass(server);
+        if ( server != null ) {
+            mergeContext(server, context);
+            processLoadClass(server);
+        }
         // Process services, whether via server ja:services or, if absent, by finding by type.
-        List<DataAccessPoint> x = servicesAndDatasets(configuration);
-        return x;
+        return servicesAndDatasets$(server, configuration);
     }
-
-    /**
-     * Process a configuration file, starting at {@code server}.
-     * Return the {@link DataAccessPoint DataAccessPoints}
-     * set the context provided for server-wide settings.
-     *
-     * This bundles together the steps:
-     * <ul>
-     * <li>{@link #findServer}
-     * <li>{@link #parseContext}
-     * <li>{@link #processLoadClass} (legacy)
-     * <li>{@link #servicesAndDatasets}
-     * </ul>
-     */
-    public static List<DataAccessPoint> processServerConfiguration(Resource server, Context context) {
-        Objects.requireNonNull(server);
-        mergeContext(server, context);
-        processLoadClass(server);
-        // Process services, whether via server ja:services or, if absent, by finding by type.
-        List<DataAccessPoint> x = servicesAndDatasets(server);
-        return x;
-    }
-
 
     /* Find the server resource in a configuration file.
      * Returns null if there isn't one.

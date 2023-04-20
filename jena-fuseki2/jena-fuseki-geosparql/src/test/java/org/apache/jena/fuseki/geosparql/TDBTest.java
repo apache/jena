@@ -108,19 +108,22 @@ public class TDBTest {
             //ResultSetFormatter.outputAsTSV(rs);
         }
 
-        List<Resource> expResult = new ArrayList<>();
-        expResult.add(ResourceFactory.createResource("http://example.org/Feature#A"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Feature#D"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Feature#H"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Feature#K"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#LineStringD"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PointA"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PolygonH"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PolygonK"));
+        Runnable r = ()->{
+            List<Resource> expResult = new ArrayList<>();
+            expResult.add(ResourceFactory.createResource("http://example.org/Feature#A"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Feature#D"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Feature#H"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Feature#K"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#LineStringD"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PointA"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PolygonH"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PolygonK"));
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
-        assertEquals(expResult, result);
+            //System.out.println("Exp: " + expResult);
+            //System.out.println("Res: " + result);
+            assertEquals(expResult, result);
+        };
+        Helper.run(r);
     }
 
 }

@@ -24,12 +24,19 @@ import java.util.List;
 
 import com.beust.jcommander.JCommander;
 
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.update.*;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
+import org.apache.jena.update.UpdateExecution;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 import org.junit.*;
 
 /**
@@ -75,10 +82,19 @@ public class EmptyTest {
                 + " a geo:SpatialObject ."
                 + "}";
 
-        UpdateRequest updateRequest = UpdateFactory.create(update);
-        UpdateExecution updateProcessor = UpdateExecution.service(SERVER.getLocalServiceURL()).update(updateRequest).build();
-        updateProcessor.execute();
+        Runnable r = ()->{
+            UpdateRequest updateRequest = UpdateFactory.create(update);
+            UpdateExecution updateProcessor = UpdateExecution.service(SERVER.getLocalServiceURL()).update(updateRequest).build();
+            updateProcessor.execute();
+        } ;
+        try {
+            Helper.run(r);
+        } catch (QueryExceptionHTTP | HttpException ex) {
+            SERVER.shutdown();
+        }
     }
+
+
 
     @AfterClass
     public static void tearDownClass() {
@@ -104,23 +120,25 @@ public class EmptyTest {
                 + "WHERE{\n"
                 + "    <http://example.org/Geometry#LineStringA> geo:sfCrosses ?obj .\n"
                 + "}ORDER by ?obj";
-        List<Resource> result = new ArrayList<>();
-        try (QueryExecution qe = QueryExecution.service(SERVER.getLocalServiceURL()).query(query).build()) {
-            ResultSet rs = qe.execSelect();
+        Runnable r = ()->{
+            List<Resource> result = new ArrayList<>();
+            try (QueryExecution qe = QueryExecution.service(SERVER.getLocalServiceURL()).query(query).build()) {
+                ResultSet rs = qe.execSelect();
 
-            while (rs.hasNext()) {
-                QuerySolution qs = rs.nextSolution();
-                Resource obj = qs.getResource("obj");
-                result.add(obj);
+                while (rs.hasNext()) {
+                    QuerySolution qs = rs.nextSolution();
+                    Resource obj = qs.getResource("obj");
+                    result.add(obj);
+                }
+
+                //ResultSetFormatter.outputAsTSV(rs);
             }
 
-            //ResultSetFormatter.outputAsTSV(rs);
-        }
+            List<Resource> expResult = new ArrayList<>();
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#LineStringB"));
 
-        List<Resource> expResult = new ArrayList<>();
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#LineStringB"));
-
-        assertEquals(expResult, result);
+            assertEquals(expResult, result);
+        };
+        Helper.run(r);
     }
-
 }
