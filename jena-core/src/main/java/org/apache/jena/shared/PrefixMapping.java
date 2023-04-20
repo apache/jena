@@ -18,10 +18,11 @@
 
 package org.apache.jena.shared;
 
-import java.util.*;
+import java.util.Map;
 
 import org.apache.jena.assembler.JA ;
-import org.apache.jena.shared.impl.* ;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.* ;
 
 /**
@@ -47,9 +48,9 @@ public interface PrefixMapping
         Need not check the RFC2396 validity of the URI. Bad URIs are either silently
         ignored or behave as if they were good. The earlier restriction that the URI
         should end with a non-NCName character has been removed.
-   <p>        
-         
-        Note, in particular, that the prefix mapping can only be used 
+   <p>
+
+        Note, in particular, that the prefix mapping can only be used
         if it includes the URI up to any '#' character because '#' is not legal
         in the local part of an NCName.
 
@@ -76,12 +77,12 @@ public interface PrefixMapping
 
     PrefixMapping removeNsPrefix( String prefix );
 
-    /** 
+    /**
      * Clear this prefix mapping of all mappings
      */
     PrefixMapping clearNsPrefixMap();
 
-    
+
     /**
         Copies the prefixes from other into this. Any existing binding of the
         same prefix is lost.  The result is this same prefixMapping.
@@ -174,20 +175,20 @@ public interface PrefixMapping
          @return this mapping, locked against changes
     */
     PrefixMapping lock();
-    
+
     // These can not be called the usual "isEmpty" and "size" because this interface is inherited
-    // in places where those names are in use for the main putrpose of the interface (e.g. Model).  
-    
+    // in places where those names are in use for the main putrpose of the interface (e.g. Model).
+
     /**
         Return whether the prefix mapping has any defined prefixes.
      */
     default boolean hasNoMappings() { return numPrefixes() == 0 ; }
-    
+
     /**
          Return the number of defined prefixes.
      */
     int numPrefixes() ;
-    
+
     /**
         Exception to throw when the prefix argument to setNsPrefix is
         illegal for some reason.
@@ -208,8 +209,10 @@ public interface PrefixMapping
     /**
         Factory class to create an unspecified kind of PrefixMapping.
     */
-    public static class Factory
-        { public static PrefixMapping create() { return new PrefixMappingImpl(); } }
+    public static class Factory {
+        static { JenaSystem.init(); }
+
+        public static PrefixMapping create() { return new PrefixMappingImpl(); } }
 
     /**
         A PrefixMapping that contains the "standard" prefixes we know about,
