@@ -16,7 +16,8 @@
  */
 
 const { defineConfig } = require('cypress')
-const vitePreprocessor = require('cypress-vite')
+const vitePreprocessor = require('./tests/e2e/support/vite-preprocessor')
+const path = require('path')
 
 module.exports = defineConfig({
   video: false,
@@ -30,7 +31,13 @@ module.exports = defineConfig({
   e2e: {
     baseUrl: 'http://localhost:' + (process.env.PORT || 8080),
     setupNodeEvents (on, config) {
-      on('file:preprocessor', vitePreprocessor())
+      // For test coverage
+      require('@cypress/code-coverage/task')(on, config)
+
+      on(
+        'file:preprocessor',
+        vitePreprocessor(path.resolve(__dirname, 'vite.config.js'))
+      )
       return require('./tests/e2e/plugins/index.js')(on, config)
     },
     specPattern: 'tests/e2e/specs/**/*.cy.{js,jsx,ts,tsx}',
@@ -39,7 +46,10 @@ module.exports = defineConfig({
     videosFolder: 'tests/e2e/videos',
     supportFile: 'tests/e2e/support/index.js',
   },
-
+  components: {
+    framework: 'vue',
+    bundler: 'vite'
+  },
   env: {
     codeCoverage: {
       exclude: [
