@@ -1,7 +1,86 @@
 ==== Apache Jena 4.8.0
-Released:
+Released: 2023-04-23
 Issues: https://s.apache.org/jena-4.8.0-issues
-Announcement:
+Announcement: 
+https://lists.apache.org/thread/o5x5tls77t13c3mc93dp2h4fgh1hr6kp
+
+* The RDF/XML parser has been converted to use the
+  Jena IRI abstraction IRIx.
+  https://github.com/apache/jena/issues/1773
+
+See below.
+
+* New keyword in SPARQL : "ADJUST"
+  https://github.com/apache/jena/issues/1706
+
+ADJUST adjusts the timezone of time and date related datatypes.
+It calls one of:
+  fn:adjust-dateTime-to-timezone
+  fn:adjust-date-to-timezone
+  fn:adjust-time-to-timezone
+based on argument type.
+
+== Notes
+
+All issues: https://s.apache.org/jena-4.8.0-issues
+
+There is a CHANGES.txt in the root of the repository
+with the history of announcement messages.
+
+@lucasvr (Lucas C. Villa Real) provided an analysis and improvement to bulk loading operations.
+  https://github.com/apache/jena/issues/1803
+  https://github.com/apache/jena/pull/1819
+
+@wjl110 - Shiro upgrade PR#1728
+  https://github.com/apache/jena/pull/1728
+
+Lucene upgrade from 9.4.2 to 9.5.0
+  https://github.com/apache/jena/pull/1740
+  https://lists.apache.org/thread/696xgpyg2441kzdowmp1b40tshctw25c
+
+@dplagge (Daniel Plagge) - Delta graph fix
+https://github.com/apache/jena/issue/1751
+
+Simon Bin: Fix for sharing link in Fuseki and YASGE
+  https://github.com/apache/jena/issues/1745
+
+Improved performance of "GRAPH ?g {}" (all graph names)
+Prefix scan -- GRAPH ?G
+  https://github.com/apache/jena/issues/1639
+  https://github.com/apache/jena/pull/1655
+
+Custom Javascript execution checking:
+  Use of javascript or Python to write custom functions
+  new requires system property -Djena:scripting=true
+
+@nichtich (Jakob Voß) jena-site improvements:
+  https://github.com/apache/jena-site/pull/151
+
+@sverholen JENA-2350 Pass JsonLdOptions to titanium for json-ld 1.1
+
+Simon Bin: Fix for working on non-root gsp-rw endpoint
+   https://github.com/apache/jena/issues/1679
+
+== RDF/XML reader changes.
+
+* The RDF/XML parser has been converted to use the
+  Jena IRI abstraction IRIx.
+  https://github.com/apache/jena/issues/1773
+
+Uses of RDF/XML read through RIOT (RDFDataMgr, RDFParser) and from the command line "riot" should see no changes except where both WARN and ERROR were reported, now only the ERROR happens.
+
+Code that directly calls the RDF/XML parser will encounter the behaviour seen from RIOT. Relative IRIs will not be in the parsed data. IRI errors are reported as errors.
+
+The original RDF/XML parser is still accessible:
+https://jena.apache.org/documentation/io/rdfxml-io.html
+
+From the command line: "riot --set xmlrdf:xmlrdf0=true ..."
+
+This is the first part of a move to convert the RDF/XML parser to be consistent with the rest of Jena parsing
+
+1. unified IRI treatment of error handling and reporting throughout Jena
+2. improve maintainability
+3. allow for alternative providers of IRI functionality
 
 
 ==== Apache Jena 4.7.0
@@ -45,6 +124,7 @@ Contributors:
   Brian Vvosburgh
   Eric Prud'hommeaux
 
+
 ==== Apache Jena 4.6.1
 Released: 2022-09-06
 Announcement:
@@ -54,6 +134,7 @@ This release has a bug fix release for TDB2 and Fuseki.
 https://github.com/apache/jena/issues/1499
 
 Users should upgrade from 4.6.0. 
+
 
 ==== Apache Jena 4.6.0
 Released: 2022-08-25
@@ -103,6 +184,7 @@ https://github.com/apache/jena/issues?q=is%3Aissue+closed%3A2022-05-04..2022-08-
 
 JIRA Tickets this release:
 https://s.apache.org/jena-4.6.0-jira
+
 
 ==== Apache Jena 4.5.0
 Released: 2022-05-04
@@ -244,6 +326,7 @@ JENA-2214: Upgrade to Log4j2 2.16.0
 JENA-2216: Fuseki/GeoSPARQL startup fix.
 JENA-2215: Fix inclusion of log4j in the Fuseki war file.
 
+
 ==== Apache Jena 4.3.1
 Released: 2021-12-17
 Annoucement:
@@ -264,12 +347,11 @@ JENA-2209, JENA-2210: xloader improvements
 
 JENA-2207: Fix for SERVICE
 
+
 ==== Apache Jena 4.3.0
 Released: 2021-12-09
 Annoucement:
 https://lists.apache.org/thread/j6xqhbzxw9ct0owl5ghd8zrpz9lqn5pl
-
-In this release:
 
 * java.net.http
 
@@ -345,12 +427,11 @@ See notes on changes:
 
 https://jena.apache.org/documentation/sparql-apis/#changes
 
+
 ==== Apache Jena 4.2.0
 Released: 2021-09-16
 Announcement:
 https://lists.apache.org/thread/mwrdh3xtbm4ly1dk9ro2mdd82fppc9f2
-
-In this release:
 
 * ShEx engine
    JENA-2112
@@ -395,12 +476,11 @@ released OSGi artifacts to maven central.
 If you are able to help with the production of Jena's OSGi artifacts, 
 please drop into the dev@ list.
 
+
 ==== Apache Jena 4.1.0
 Released: 2021-06-04 
 Announcement:
 https://lists.apache.org/thread/m7m73dl7mgp3k5ljolc1tvrt7b202l3w
-
-In this release:
 
 * RDF-star implementation up-to-date with community work.
 
@@ -459,8 +539,6 @@ https://lists.apache.org/thread/m7m73dl7mgp3k5ljolc1tvrt7b202l3w
 The Apache Jena development community is pleased to
 announce the release of Apache Jena 4.0.0
 
-In this release:
-
 * Require Java11 runtime.
 
 * RDF-star implementation up-to-date with community work.
@@ -494,7 +572,7 @@ In this release:
 62 tickets this release:
 https://s.apache.org/jena-4.0.0-jira
 
-==== Notes
+== Notes
 
 Lucene:
 
