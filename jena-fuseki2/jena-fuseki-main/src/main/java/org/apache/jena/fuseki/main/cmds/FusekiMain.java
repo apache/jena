@@ -151,7 +151,9 @@ public class FusekiMain extends CmdARQ {
         add(argFile, "--file=FILE",
             "Create an in-memory, non-persistent dataset for the server, initialised with the contents of the file");
         add(argTDB2mode, "--tdb2",
-            "Use TDB2 for command line persistent datasets (default is TDB1)");
+            "Use TDB2 for command line persistent datasets");
+        add(argTDB1mode, "--tdb1",
+                "Use TDB1 for command line persistent datasets (default is TDB2)");
         add(argTDB, "--loc=DIR",
             "Use an existing TDB database (or create if does not exist)");
         add(argMemTDB, "--memTDB",
