@@ -69,7 +69,7 @@ public class TestDoubleNode62 {
     @Test public void double_50() { testConst(DoubleNode62.POSITIVE_INFINITY_BITS, 0x1ff0000000000000L); }
     @Test public void double_51() { testConst(DoubleNode62.NEGATIVE_INFINITY_BITS, 0x3ff0000000000000L); }
     @Test public void double_52() { testConst(DoubleNode62.NaN_BITS, 0x1ff8000000000000L); }
-    @Test public void double_53() { testConst(DoubleNode62.MAX_VALUE_BITS,  0x3fefffffffffffffL); }
+    @Test public void double_53() { testConst(DoubleNode62.MAX_VALUE_BITS,  0x1fefffffffffffffL); }
     @Test public void double_54() { testConst(DoubleNode62.MIN_NORMAL_BITS, 0x0010000000000000L); }
     @Test public void double_55() { testConst(DoubleNode62.MIN_VALUE_BITS,  0x01L); }
 
