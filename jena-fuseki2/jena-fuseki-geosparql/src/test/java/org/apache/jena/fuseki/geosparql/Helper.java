@@ -40,11 +40,8 @@ public class Helper {
         int sc = statusCode;
         for (int i = 0 ; i < RETRIES ; i++ ) {
             String label = ex.getClass().getSimpleName();
-            System.err.println(label+": "+statusCode);
             if ( ex.getCause() != null )
-                System.err.println(label+": "+ex.getCause().getClass().getCanonicalName());
             if ( statusCode == -1 && ex.getCause() instanceof java.net.ConnectException ) {
-                System.err.println(" ==== Re-try ["+i+"]");
                 // Likely the server isn't fully up and running yet.
                 // VM-based CI is prone to other threads having significant pauses.
                 Lib.sleep(1000);
