@@ -189,7 +189,7 @@ public class StoreConnection
      * Use via {@link TDBInternal#expel} wherever possible.
      */
     public static synchronized void expel(Location location, boolean force) {
-        // Evict from TBDMaker cache otherwise that wil retain a reference to this StoreConnection.
+        // Evict from TBDMaker cache otherwise that will retain a reference to this StoreConnection.
         StoreConnection sConn = cache.get(location) ;
         if (sConn == null)
             return ;

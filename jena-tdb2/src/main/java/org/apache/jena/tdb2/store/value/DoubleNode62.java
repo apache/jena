@@ -203,7 +203,7 @@ public class DoubleNode62 {
      *
      * @see Double#MAX_VALUE
      */
-    public static final long MAX_VALUE_BITS = 0x3fefffffffffffffL;
+    public static final long MAX_VALUE_BITS = 0x1fefffffffffffffL;
 
     /**
      * 0x3fefffffffffffffL
@@ -212,7 +212,7 @@ public class DoubleNode62 {
      *
      * @see Double#MAX_VALUE
      */
-    public static final double MAX_VALUE = unpack(MAX_VALUE_BITS);
+    public static final double MAX_VALUE = unpack(MAX_VALUE_BITS);          // 1.1579208923731618e+77
 
     /**
      * 0x0010000000000000L
@@ -223,7 +223,7 @@ public class DoubleNode62 {
     /**
      * @see Double#MIN_NORMAL
      */
-    public static final double MIN_NORMAL = unpack(0x0010000000000000L);
+    public static final double MIN_NORMAL = unpack(0x0010000000000000L);    // 3.454467422037778e-77
 
     /**
      * 0x01L
@@ -235,7 +235,7 @@ public class DoubleNode62 {
      * 0x01L
      * @see Double#MIN_VALUE
      */
-    public static final double MIN_VALUE = unpack(MIN_VALUE_BITS);
+    public static final double MIN_VALUE = unpack(MIN_VALUE_BITS);          // 4.9e-324
 
     /**
      * @see Double#MAX_EXPONENT

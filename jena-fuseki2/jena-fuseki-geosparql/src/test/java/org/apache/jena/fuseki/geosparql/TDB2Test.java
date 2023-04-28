@@ -95,32 +95,35 @@ public class TDB2Test {
                 + "WHERE{\n"
                 + "    <http://example.org/Geometry#PolygonH> geo:sfContains ?obj .\n"
                 + "}ORDER by ?obj";
-        List<Resource> result = new ArrayList<>();
-        try (QueryExecution qe = QueryExecution.service(SERVER.getLocalServiceURL()).query(query).build()) {
-            ResultSet rs = qe.execSelect();
+        Runnable r = () -> {
+            List<Resource> result = new ArrayList<>();
+            try (QueryExecution qe = QueryExecution.service(SERVER.getLocalServiceURL()).query(query).build()) {
+                ResultSet rs = qe.execSelect();
 
-            while (rs.hasNext()) {
-                QuerySolution qs = rs.nextSolution();
-                Resource obj = qs.getResource("obj");
-                result.add(obj);
+                while (rs.hasNext()) {
+                    QuerySolution qs = rs.nextSolution();
+                    Resource obj = qs.getResource("obj");
+                    result.add(obj);
+                }
+
+                //ResultSetFormatter.outputAsTSV(rs);
             }
 
-            //ResultSetFormatter.outputAsTSV(rs);
-        }
+            List<Resource> expResult = new ArrayList<>();
+            expResult.add(ResourceFactory.createResource("http://example.org/Feature#A"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Feature#D"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Feature#H"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Feature#K"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#LineStringD"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PointA"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PolygonH"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PolygonK"));
 
-        List<Resource> expResult = new ArrayList<>();
-        expResult.add(ResourceFactory.createResource("http://example.org/Feature#A"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Feature#D"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Feature#H"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Feature#K"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#LineStringD"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PointA"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PolygonH"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PolygonK"));
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
-        assertEquals(expResult, result);
+            //System.out.println("Exp: " + expResult);
+            //System.out.println("Res: " + result);
+            assertEquals(expResult, result);
+        };
+        Helper.run(r);
     }
 
 }
