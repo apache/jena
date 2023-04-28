@@ -66,7 +66,7 @@ public class TestNV {
         String largeInteger = "1" + "0".repeat(22);
         NodeValue nodeValue = NV.toNodeValue(new BigInteger(largeInteger).doubleValue());
         NV nv = new NV(nodeValue);
-        assertEquals(nv.getValue(), largeInteger);
+        assertEquals(largeInteger, nv.getValue());
         assertTrue("is a number", nv.isNumber());
     }
 
