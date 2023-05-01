@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.util.graph ;
+package org.apache.jena.sparql.util.graph;
 
 import java.util.*;
 
-import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.ListUtils;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.PropertyNotFoundException;
-import org.apache.jena.sparql.util.NotUniqueException ;
-import org.apache.jena.sparql.util.PropertyRequiredException ;
+import org.apache.jena.sparql.util.NotUniqueException;
+import org.apache.jena.sparql.util.PropertyRequiredException;
 import org.apache.jena.sparql.util.QueryExecUtils;
-import org.apache.jena.sparql.util.TypeNotUniqueException ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.sparql.util.TypeNotUniqueException;
+import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NiceIterator;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDF;
 
 /** Graph utilities. See also GraphFactory. */
 
@@ -46,103 +46,103 @@ public class GraphUtils {
      * Get all the literals for a resource-property.
      */
     public static List<String> multiValueString(Resource r, Property p) {
-        List<RDFNode> nodes = multiValue(r, p) ;
-        List<String> values = new ArrayList<>() ;
+        List<RDFNode> nodes = multiValue(r, p);
+        List<String> values = new ArrayList<>();
 
         for ( RDFNode n : nodes ) {
             if ( n.isLiteral() ) {
-                values.add(((Literal)n).getString()) ;
+                values.add(((Literal)n).getString());
             }
         }
-        return values ;
+        return values;
     }
 
     /** Get a list of the URIs (as strings) and strings
      *  @see #getAsStringValue
      */
     public static List<String> multiValueAsString(Resource r, Property p) {
-        List<RDFNode> nodes = multiValue(r, p) ;
-        List<String> values = new ArrayList<>() ;
+        List<RDFNode> nodes = multiValue(r, p);
+        List<String> values = new ArrayList<>();
 
         for ( RDFNode n : nodes ) {
             if ( n.isLiteral() ) {
-                values.add(((Literal)n).getString()) ;
+                values.add(((Literal)n).getString());
             }
             if ( n.isURIResource() ) {
                 values.add(((Resource)n).getURI());
             }
         }
-        return values ;
+        return values;
     }
 
     public static List<RDFNode> multiValue(Resource r, Property p) {
-        List<RDFNode> values = new ArrayList<>() ;
-        StmtIterator sIter = r.listProperties(p) ;
+        List<RDFNode> values = new ArrayList<>();
+        StmtIterator sIter = r.listProperties(p);
         while (sIter.hasNext()) {
-            Statement s = sIter.nextStatement() ;
-            values.add(s.getObject()) ;
+            Statement s = sIter.nextStatement();
+            values.add(s.getObject());
         }
-        return values ;
+        return values;
     }
 
     public static List<Resource> multiValueResource(Resource r, Property p) {
-        List<RDFNode> nodes = multiValue(r, p) ;
-        List<Resource> values = new ArrayList<>() ;
+        List<RDFNode> nodes = multiValue(r, p);
+        List<Resource> values = new ArrayList<>();
 
         for ( RDFNode n : nodes ) {
             if ( n.isResource() ) {
-                values.add((Resource)n) ;
+                values.add((Resource)n);
             }
         }
-        return values ;
+        return values;
     }
 
     public static List<String> multiValueURI(Resource r, Property p) {
-        List<RDFNode> nodes = multiValue(r, p) ;
-        List<String> values = new ArrayList<>() ;
+        List<RDFNode> nodes = multiValue(r, p);
+        List<String> values = new ArrayList<>();
 
         for ( RDFNode n : nodes ) {
             if ( n.isURIResource() ) {
-                values.add(((Resource)n).getURI()) ;
+                values.add(((Resource)n).getURI());
             }
         }
-        return values ;
+        return values;
     }
 
     public static boolean exactlyOneProperty(Resource r, Property p) {
-        StmtIterator sIter = r.listProperties(p) ;
+        StmtIterator sIter = r.listProperties(p);
         try {
             if ( !sIter.hasNext() )
-                throw new PropertyRequiredException(r, p) ;
-            sIter.next() ;
+                throw new PropertyRequiredException(r, p);
+            sIter.next();
             if ( sIter.hasNext() )
-                throw new NotUniqueException(r, p) ;
+                throw new NotUniqueException(r, p);
         }
         finally {
-            sIter.close() ;
+            sIter.close();
         }
-        return true ;
+        return true;
     }
 
     public static boolean atmostOneProperty(Resource r, Property p) {
-        StmtIterator sIter = r.listProperties(p) ;
+        StmtIterator sIter = r.listProperties(p);
         try {
             if ( !sIter.hasNext() )
-                return true ;
-            sIter.next() ;
+                return true;
+            sIter.next();
             if ( sIter.hasNext() )
-                throw new NotUniqueException(r, p) ;
+                throw new NotUniqueException(r, p);
         }
         finally {
-            sIter.close() ;
+            sIter.close();
         }
-        return true ;
+        return true;
     }
 
     public static boolean getBooleanValue(Resource r, Property p) {
         if ( !GraphUtils.atmostOneProperty(r, p) )
-            throw new NotUniqueException(r, p) ;
-        Statement s = r.getProperty(p) ;
+            throw new NotUniqueException(r, p);
+        Statement s = r.getProperty(p);
         if ( s == null )
             throw new PropertyNotFoundException(p);
         return s.getBoolean();
@@ -162,7 +162,7 @@ public class GraphUtils {
         if ( obj == null )
             return null;
         if ( obj.isResource() )
-            return obj.asResource().getURI() ;
+            return obj.asResource().getURI();
         if ( obj.isLiteral() )
             return obj.asLiteral().getString();
         throw new UnsupportedOperationException("Not a URI or a string");
@@ -170,47 +170,47 @@ public class GraphUtils {
 
     public static RDFNode getAsRDFNode(Resource r, Property p) {
         if ( !atmostOneProperty(r, p) )
-            throw new NotUniqueException(r, p) ;
-        Statement s = r.getProperty(p) ;
+            throw new NotUniqueException(r, p);
+        Statement s = r.getProperty(p);
         if ( s == null )
-            return null ;
+            return null;
         return s.getObject();
     }
 
     public static Resource getResourceValue(Resource r, Property p) {
         if ( !atmostOneProperty(r, p) )
-            throw new NotUniqueException(r, p) ;
-        Statement s = r.getProperty(p) ;
+            throw new NotUniqueException(r, p);
+        Statement s = r.getProperty(p);
         if ( s == null )
-            return null ;
-        return s.getResource() ;
+            return null;
+        return s.getResource();
     }
 
     public static List<Resource> listResourcesByType(Model model, Resource type) {
-        return Iter.toList(model.listSubjectsWithProperty(RDF.type, type)) ;
+        return Iter.toList(model.listSubjectsWithProperty(RDF.type, type));
     }
 
     public static Resource getResourceByType(Model model, Resource type) {
-        ResIterator sIter = model.listSubjectsWithProperty(RDF.type, type) ;
+        ResIterator sIter = model.listSubjectsWithProperty(RDF.type, type);
         if ( !sIter.hasNext() )
-            return null ;
+            return null;
         Resource r = sIter.next();
         if ( sIter.hasNext() )
-            throw new TypeNotUniqueException(r) ;
-        return r ;
+            throw new TypeNotUniqueException(r);
+        return r;
     }
 
     public static Resource findRootByType(Model model, Resource atype) {
         String s = String.join("\n",
             "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
             "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
-        Query q = QueryFactory.create(s) ;
-        QuerySolutionMap qsm = new QuerySolutionMap() ;
-        qsm.add("ATYPE", atype) ;
+            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }");
+        Query q = QueryFactory.create(s);
+        QuerySolutionMap qsm = new QuerySolutionMap();
+        qsm.add("ATYPE", atype);
 
         try(QueryExecution qExec = QueryExecution.model(model).query(q).initialBinding(qsm).build() ) {
-            return (Resource)QueryExecUtils.getAtMostOne(qExec, "root") ;
+            return (Resource)QueryExecUtils.getAtMostOne(qExec, "root");
         }
     }
 
@@ -218,10 +218,10 @@ public class GraphUtils {
         String s = String.join("\n",
             "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
             "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
-        Query q = QueryFactory.create(s) ;
-        QuerySolutionMap qsm = new QuerySolutionMap() ;
-        qsm.add("ATYPE", atype) ;
+            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }");
+        Query q = QueryFactory.create(s);
+        QuerySolutionMap qsm = new QuerySolutionMap();
+        qsm.add("ATYPE", atype);
         try(QueryExecution qExec = QueryExecution.model(model).query(q).initialBinding(qsm).build() ) {
             return ListUtils.toList(
                     QueryExecUtils.getAll(qExec, "root").stream().map(r->(Resource)r));
@@ -230,12 +230,12 @@ public class GraphUtils {
     }
 
     public static String fmtURI(Resource r) {
-        return r.getModel().shortForm(r.getURI()) ;
+        return r.getModel().shortForm(r.getURI());
     }
 
     /** All subjects and objects, no duplicates. */
     public static Iterator<Node> allNodes(Graph graph) {
-        ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
+        ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY);
         IterSO iterSO = new IterSO(iter);
         Iterator<Node> distinctIterator = Iter.distinct(iterSO);
         return distinctIterator;
