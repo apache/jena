@@ -58,7 +58,7 @@
 
     <!-- Testing -->
     <ver.junit>4.13.2</ver.junit>  
-    <ver.mockito>5.2.0</ver.mockito>
+    <ver.mockito>5.3.1</ver.mockito>
     <ver.awaitility>4.2.0</ver.awaitility>
     <ver.contract.tests>0.2.0</ver.contract.tests>
 
