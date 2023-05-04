@@ -22,29 +22,35 @@ package org.apache.jena.sparql.function;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.util.Context;
 
 /** Interface to value-testing extensions to the expression evaluator. */
-
 public interface Function
 {
-    /** Called during query plan construction immediately after the
+    /**
+     * Called during query plan construction immediately after the
      * construction of the extension instance.
-     * Can throw ExprBuildException if something is wrong (like wrong number of arguments). 
+     * Can throw ExprBuildException if something is wrong (like wrong number of arguments).
+     * @param uri The function URI
      * @param args The parsed arguments
-     */ 
+     * @param context The build context.
+     */
+    public default void build(String uri, ExprList args, Context context) { build(uri, args); }
+
+    /** Use {@link #build(String, ExprList, Context)} */
+    @Deprecated
     public void build(String uri, ExprList args) ;
 
     /** Test a list of values - argument will not be null but
      *  may have the wrong number of arguments.
-     *  FunctionBase provides a more convenient way to implement a function. 
+     *  FunctionBase provides a more convenient way to implement a function.
      *  Can throw ExprEvalsException if something goes wrong.
-     *   
+     *
      * @param binding   The current solution
      * @param args      A list of unevaluated expressions
-     * @param uri       The name of this   
+     * @param uri       The name of this
      * @param env   The execution context
      * @return NodeValue - a value
-     */ 
-    
+     */
     public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) ;
 }

@@ -23,34 +23,29 @@
     rdfs:comment  "JavaScript function" ;
     mf:entries
     ( 
-      [  mf:name    "JS Call: file-defined function" ;
+      [  mf:name    "JS Call: file-defined function - js:identity" ;
          mf:action
             [ qt:query  <js-query-1.rq> ;
               qt:data   <data.ttl> ] ;
          mf:result  <js-query-1.srj>
       ]
-      [  mf:name    "JS Call: string-defined function" ;
+      [  mf:name    "JS Call: string-defined function - js:inc" ;
          mf:action
             [ qt:query  <js-query-2.rq> ;
               qt:data   <data.ttl> ] ;
          mf:result  <js-query-2.srj>
       ]
-      [  mf:name    "JS Call: nested functions" ;
+      [  mf:name    "JS Call: nested functions - js:inc(js:inc)" ;
          mf:action
             [ qt:query  <js-query-3.rq> ;
               qt:data   <data.ttl> ] ;
          mf:result  <js-query-3.srj>
       ]
-      [  mf:name    "JS Call: FILTER functions" ;
+      [  mf:name    "JS Call: FILTER functions - multiple calls" ;
          mf:action
             [ qt:query  <js-query-4.rq> ;
               qt:data   <data.ttl> ] ;
          mf:result  <js-query-4.srj>
       ]
-      [  mf:name    "JS Call: FILTER functions" ;
-         mf:action
-            [ qt:query  <js-query-5.rq> ;
-              qt:data   <data.ttl> ] ;
-         mf:result  <js-query-5.srj>
-      ]
+      ## js-query-5 is a build time error.
     ).
