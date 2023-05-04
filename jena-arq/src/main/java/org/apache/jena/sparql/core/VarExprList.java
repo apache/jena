@@ -29,6 +29,7 @@ import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.function.scripting.ScriptDenyException;
 
 public class VarExprList {
     private List<Var> vars;
@@ -115,10 +116,11 @@ public class VarExprList {
             if ( nv == null )
                 return null;
             return nv.asNode();
-        } catch (ExprEvalException ex)
-        // { Log.warn(this, "Eval failure "+expr+": "+ex.getMessage()) ; }
-        {}
-        return null;
+        } catch (ScriptDenyException ex) {
+            throw ex;
+        } catch (ExprEvalException ex) {
+            return null;
+        }
     }
 
     public void add(Var var) {

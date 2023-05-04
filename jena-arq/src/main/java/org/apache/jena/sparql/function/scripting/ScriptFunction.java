@@ -38,6 +38,9 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.function.FunctionBase;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 
 public class ScriptFunction extends FunctionBase {
 
@@ -53,7 +56,7 @@ public class ScriptFunction extends FunctionBase {
         String x = System.getProperty(ARQ.systemPropertyScripting);
         boolean scriptingEnabled = "true".equals(x);
         if ( !scriptingEnabled )
-            throw new ExprException("Scripting not enabled");
+            throw new ScriptDenyException("Scripting not enabled");
 	}
 
     private static final ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
@@ -67,6 +70,9 @@ public class ScriptFunction extends FunctionBase {
 
     private String lang;
     private String name;
+    // Permitted functions
+    private Set<String> allowList;
+    private Set<String> denyList;
 
     // Collect language names (for reference).
 //    private static Set<String> languageNames = new HashSet<>();
@@ -88,8 +94,15 @@ public class ScriptFunction extends FunctionBase {
         return langPart.endsWith(FUNCTION_SUFFIX);
     }
 
+    public ScriptFunction() { }
+
     @Override
     public void checkBuild(String uri, ExprList args) {
+        throw new IllegalStateException("ScriptFunction.checkBuild called");
+    }
+
+    @Override
+    public void build(String uri, ExprList args, Context cxt) {
         checkScriptingEnabled();
         if (!isScriptFunction(uri))
             throw new ExprException("Invalid URI: " + uri);
@@ -97,17 +110,47 @@ public class ScriptFunction extends FunctionBase {
         int separatorPos = localPart.indexOf('#');
         this.lang = localPart.substring(0, separatorPos - FUNCTION_SUFFIX.length());
         this.name = localPart.substring(separatorPos + 1);
+        this.allowList = allowList(cxt, ARQ.symCustomFunctionScriptAllowList);
 
-        // Check for bare names that are provided by the language e.g. 'eval' which
-        // is a JS and Python built-in function and always available.
-        if ( lang.toLowerCase(Locale.ROOT).contains("python") ) {
-            if ( Objects.equals("eval", name) || Objects.equals("exec", name) )
-                throw new ExprException(lang+" function '"+name+"' is not allowed");
-        } else {
-            // Assume javascript.
-            if ( Objects.equals("eval", name) )
-                throw new ExprException("JS function '"+name+"' is not allowed");
+        String cname = lang.toLowerCase(Locale.ROOT);
+        switch(cname) {
+            case "js":
+                // never allow these.
+                this.denyList = Set.of("eval", "load");
+                check(lang, name, allowList, denyList);
+                break;
+            case "python":
+                // never allow these.
+                this.denyList = Set.of("eval", "exec");
+                check(lang, name, allowList, denyList);
+                break;
+            default:
+                throw new ScriptDenyException("Language '"+lang+"' not recognized");
         }
+    }
+
+    private static Set<String> allowList(Context cxt, Symbol symScriptAllowList) {
+        String x = cxt.get(symScriptAllowList);
+        if ( x == null )
+            return Set.of();
+        // Exact names.
+        String[] x2 = x.split(",");
+        return Set.of(x2);
+    }
+
+    private static void check(String lang, String name, Set<String> allowList, Set<String> denyList) {
+        if ( name == null )
+            throw new ExprException("No function name");
+        if ( denyList.contains(name) )
+            throw new ScriptDenyException("Function '"+name+"' not allowed");
+        if ( !allowList.contains(name) )
+            throw new ScriptDenyException("Function '"+name+"' not in the list of allowed functions");
+    }
+
+    @Override
+    protected NodeValue exec(List<NodeValue> args, FunctionEnv env) {
+        env.getContext();
+        return exec(args);
     }
 
     @Override
@@ -186,16 +229,15 @@ public class ScriptFunction extends FunctionBase {
         }
 
         Invocable invocable = (Invocable) engine;
-        for (String name : engine.getFactory().getNames()) {
-            try {
-                invocable.invokeFunction("arq" + name + "init");
-            } catch (NoSuchMethodException ignore) {
-                /* empty */
-            } catch (ScriptException ex) {
-                throw new ExprException("Failed to call " + lang + " initialization function", ex);
-            }
-        }
-
+//        for (String name : engine.getFactory().getNames()) {
+//            try {
+//                invocable.invokeFunction("arq" + name + "init");
+//            } catch (NoSuchMethodException ignore) {
+//                /* empty */
+//            } catch (ScriptException ex) {
+//                throw new ExprException("Failed to call " + lang + " initialization function", ex);
+//            }
+//        }
         return invocable;
     }
 

@@ -18,17 +18,29 @@
 
 package org.apache.jena.sparql.function.scripting;
 
-import org.apache.jena.sparql.SystemARQ;
-import org.apache.jena.sparql.util.Symbol;
+import static org.apache.jena.sparql.function.scripting.TestScriptFunction.DIR;
 
-public class ScriptLangSymbols {
-    public static Symbol scriptLibrary(String lang) {
-        return SystemARQ.allocSymbol(lang + "-library");
+import org.apache.jena.query.ARQ;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+public class TestSPARQLCustomFunctions {
+
+    @BeforeClass public static void enableScripting() {
+        System.setProperty(ARQ.systemPropertyScripting, "true");
     }
 
-    public static Symbol scriptFunctions(String lang) {
-        return SystemARQ.allocSymbol(lang + "-functions");
+    @AfterClass public static void disableScripting() {
+        System.clearProperty(ARQ.systemPropertyScripting);
     }
 
-    public static Symbol scriptAllowList = SystemARQ.allocSymbol("allowList");
+    @Test public void script_sparql_bad_1() {
+        Query query = QueryFactory.read(DIR+"/js-query-5.rq");
+    }
+
+
+
 }

@@ -28,8 +28,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {
         TestNV.class,
         TestScriptFunction.class,
-        // Between two classes with scripting enabled.
-        TestNoScripting.class,
         TestSPARQL_Scripting.class
 })
 public class TS_FunctionScripting {

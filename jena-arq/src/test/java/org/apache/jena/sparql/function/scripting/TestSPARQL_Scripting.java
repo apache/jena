@@ -33,8 +33,6 @@ import org.junit.runner.RunWith;
     "testing/ARQ/Scripting/manifest.ttl"
 })
 
-
-
 public class TestSPARQL_Scripting {
     static final String JS_LIB_FILE = "testing/ARQ/Scripting/test-library.js";
 
@@ -51,6 +49,9 @@ public class TestSPARQL_Scripting {
         Context cxt = ARQ.getContext();
         cxt.set(ARQ.symJavaScriptLibFile, JS_LIB_FILE);
         cxt.set(ARQ.symJavaScriptFunctions, "function inc(x) { return x+1 }");
+        String allowList = TestScriptFunction.testLibAllow+",inc";
+
+        cxt.set(ARQ.symCustomFunctionScriptAllowList, allowList);
         ScriptFunction.clearEngineCache();
     }
 

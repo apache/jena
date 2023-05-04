@@ -37,6 +37,7 @@ import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.OperationDeniedException;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.expr.ExprException;
+import org.apache.jena.sparql.function.scripting.ScriptDenyException;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
 
@@ -165,6 +166,8 @@ public class ActionExecLib {
                 ServletOps.responseSendError(response, sc);
             else
                 ServletOps.responseSendError(response, sc, ex.getMessage());
+        } catch (ScriptDenyException ex) {
+            ServletOps.responseSendError(response, HttpSC.BAD_REQUEST_400, ex.getMessage());
         } catch (RuntimeIOException ex) {
             FmtLog.warn(action.log, /*ex,*/ "[%d] Runtime IO Exception (client left?) RC = %d : %s", action.id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage());
             ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage());

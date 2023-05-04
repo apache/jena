@@ -18,17 +18,8 @@
 
 package org.apache.jena.sparql.function.scripting;
 
-import org.apache.jena.sparql.SystemARQ;
-import org.apache.jena.sparql.util.Symbol;
+import org.apache.jena.sparql.expr.ExprException;
 
-public class ScriptLangSymbols {
-    public static Symbol scriptLibrary(String lang) {
-        return SystemARQ.allocSymbol(lang + "-library");
-    }
-
-    public static Symbol scriptFunctions(String lang) {
-        return SystemARQ.allocSymbol(lang + "-functions");
-    }
-
-    public static Symbol scriptAllowList = SystemARQ.allocSymbol("allowList");
+public class ScriptDenyException extends ExprException {
+    public ScriptDenyException(String msg) { super(msg) ; }
 }

@@ -527,6 +527,11 @@ public class ARQ
     public static final String systemPropertyScripting = "jena:scripting";
 
     /**
+     * Context symbol for the script function allow list
+     */
+    public static final Symbol symCustomFunctionScriptAllowList = ScriptLangSymbols.scriptAllowList;
+
+    /**
      * Context symbol for JavaScript functions as a string value which is evaluated.
      * {@code arq:js-functions}.
      */
