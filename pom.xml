@@ -186,6 +186,7 @@
         
         <module>jena-core</module>
         <module>jena-arq</module>
+        <module>jena-ontapi</module>
         <module>jena-shacl</module>
         <module>jena-shex</module>
         <module>jena-rdfpatch</module>
@@ -248,6 +249,7 @@
         <!-- Main modules -->
         <module>jena-core</module>
         <module>jena-arq</module>
+        <module>jena-ontapi</module>
         <module>jena-shacl</module>
         <module>jena-shex</module>
         <module>jena-rdfpatch</module>

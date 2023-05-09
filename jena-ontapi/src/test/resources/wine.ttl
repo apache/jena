@@ -1,0 +1,1874 @@
+@prefix :      <http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix vin:   <http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix food:  <http://www.w3.org/TR/2003/PR-owl-guide-20031209/food#> .
+
+owl:NamedIndividual  a            owl:Class ;
+        rdfs:comment      "A `owl:NamedIndividual` is explicitly declared as a class for backwards compatibility with OWL1." .
+
+vin:CorbansPrivateBinSauvignonBlanc
+        a              owl:NamedIndividual , vin:SauvignonBlanc ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Strong ;
+        vin:hasMaker   vin:Corbans ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:NewZealandRegion .
+
+vin:WineFlavor  a            owl:Class ;
+        rdfs:subClassOf      vin:WineTaste ;
+        owl:equivalentClass  [ a          owl:Class ;
+                               owl:oneOf  ( vin:Delicate vin:Moderate vin:Strong )
+                             ] .
+
+vin:SevreEtMaineMuscadet
+        a             owl:NamedIndividual , vin:Muscadet ;
+        vin:hasMaker  vin:SevreEtMaine .
+
+vin:ChateauChevalBlancStEmilion
+        a             owl:NamedIndividual , vin:StEmilion ;
+        vin:hasMaker  vin:ChateauChevalBlanc .
+
+vin:EdnaValleyRegion  a  owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:CaliforniaRegion .
+
+vin:Handley  a  owl:NamedIndividual , vin:Winery .
+
+vin:hasVintageYear  a  owl:ObjectProperty , owl:FunctionalProperty ;
+        rdfs:domain  vin:Vintage ;
+        rdfs:range   vin:VintageYear .
+
+vin:SchlossVolrad  a  owl:NamedIndividual , vin:Winery .
+
+vin:MendocinoRegion  a      owl:NamedIndividual , vin:Region ;
+        vin:adjacentRegion  vin:SonomaRegion ;
+        vin:locatedIn       vin:CaliforniaRegion .
+
+vin:Delicate  a  owl:NamedIndividual , owl:Thing , vin:WineFlavor .
+
+vin:CheninBlanc  a           owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:White ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Moderate ;
+                               owl:onProperty  vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Full vin:Medium )
+                                                  ] ;
+                               owl:onProperty     vin:hasBody
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Dry vin:OffDry )
+                                                  ] ;
+                               owl:onProperty     vin:hasSugar
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:CheninBlancGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:WhiteWine  a             owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:White ;
+                                                       owl:onProperty  vin:hasColor
+                                                     ]
+                                                   )
+                             ] .
+
+[ a                    owl:AllDifferent ;
+  owl:distinctMembers  ( vin:Light vin:Medium vin:Full )
+] .
+
+vin:SemillonOrSauvignonBlanc
+        a                    owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:White ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Medium vin:Full )
+                                                  ] ;
+                               owl:onProperty     vin:hasBody
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a                  owl:Restriction ;
+                                                       owl:allValuesFrom  [ a          owl:Class ;
+                                                                            owl:oneOf  ( vin:SemillonGrape vin:SauvignonBlancGrape )
+                                                                          ] ;
+                                                       owl:onProperty     vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:CabernetFranc  a         owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Red ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Moderate ;
+                               owl:onProperty  vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Medium ;
+                               owl:onProperty  vin:hasBody
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Dry ;
+                               owl:onProperty  vin:hasSugar
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:CabernetFrancGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:MedocRegion  a     owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:BordeauxRegion .
+
+vin:MariettaPetiteSyrah
+        a              owl:NamedIndividual , vin:PetiteSyrah ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Marietta ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SonomaRegion .
+
+vin:CabernetSauvignonGrape
+        a       owl:NamedIndividual , owl:Thing , vin:WineGrape .
+
+vin:PinotBlanc  a            owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:White ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:PinotBlancGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+[ a                    owl:AllDifferent ;
+  owl:distinctMembers  ( vin:Red vin:White vin:Rose )
+] .
+
+vin:Merlot  a                owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Red ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Dry ;
+                               owl:onProperty  vin:hasSugar
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Moderate vin:Delicate )
+                                                  ] ;
+                               owl:onProperty     vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Light vin:Medium )
+                                                  ] ;
+                               owl:onProperty     vin:hasBody
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:MerlotGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:McGuinnesso  a  owl:NamedIndividual , vin:Winery .
+
+vin:Ventana  a  owl:NamedIndividual , vin:Winery .
+
+vin:NapaRegion  a      owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:CaliforniaRegion .
+
+vin:RieslingGrape  a  owl:NamedIndividual , vin:WineGrape .
+
+vin:BordeauxRegion  a  owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:FrenchRegion .
+
+vin:DryRedWine  a            owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:DryWine vin:RedWine )
+                             ] .
+
+vin:ChateauDYchemSauterne
+        a                  owl:NamedIndividual , vin:Sauternes ;
+        vin:hasFlavor      vin:Strong ;
+        vin:hasMaker       vin:ChateauDYchem ;
+        vin:madeFromGrape  vin:SauvignonBlancGrape , vin:SemillonGrape .
+
+vin:RedTableWine  a          owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:TableWine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:Red ;
+                                                       owl:onProperty  vin:hasColor
+                                                     ]
+                                                   )
+                             ] .
+
+vin:RoseWine  a              owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:Rose ;
+                                                       owl:onProperty  vin:hasColor
+                                                     ]
+                                                   )
+                             ] .
+
+food:PotableLiquid  a  owl:Class .
+
+vin:WhitehallLane  a  owl:NamedIndividual , vin:Winery .
+
+vin:Selaks  a   owl:NamedIndividual , vin:Winery .
+
+vin:CorbansDryWhiteRiesling
+        a              owl:NamedIndividual , vin:Riesling ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Corbans ;
+        vin:hasSugar   vin:OffDry ;
+        vin:locatedIn  vin:NewZealandRegion .
+
+vin:MariettaZinfandel
+        a              owl:NamedIndividual , vin:Zinfandel ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Marietta ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SonomaRegion .
+
+vin:RoseDAnjou  a     owl:NamedIndividual , vin:Anjou ;
+        vin:hasMaker  vin:DAnjou .
+
+vin:ClosDeLaPoussieSancerre
+        a             owl:NamedIndividual , vin:Sancerre ;
+        vin:hasMaker  vin:ClosDeLaPoussie .
+
+vin:Forman  a   owl:NamedIndividual , vin:Winery .
+
+[ a                    owl:AllDifferent ;
+  owl:distinctMembers  ( vin:Sweet vin:OffDry vin:Dry )
+] .
+
+vin:Wine  a              owl:Class ;
+        rdfs:label       "vin"@fr , "wine"@en ;
+        rdfs:subClassOf  food:PotableLiquid ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:nonNegativeInteger ;
+                           owl:onProperty   vin:hasColor
+                         ] ;
+        rdfs:subClassOf  [ a                  owl:Restriction ;
+                           owl:allValuesFrom  vin:Winery ;
+                           owl:onProperty     vin:hasMaker
+                         ] ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:nonNegativeInteger ;
+                           owl:onProperty   vin:hasFlavor
+                         ] ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:nonNegativeInteger ;
+                           owl:onProperty   vin:hasMaker
+                         ] ;
+        rdfs:subClassOf  [ a                   owl:Restriction ;
+                           owl:onProperty      vin:locatedIn ;
+                           owl:someValuesFrom  vin:Region
+                         ] ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:nonNegativeInteger ;
+                           owl:onProperty   vin:hasBody
+                         ] ;
+        rdfs:subClassOf  [ a                   owl:Restriction ;
+                           owl:minCardinality  "1"^^xsd:nonNegativeInteger ;
+                           owl:onProperty      vin:madeFromGrape
+                         ] ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:nonNegativeInteger ;
+                           owl:onProperty   vin:hasSugar
+                         ] .
+
+vin:BourgogneRegion  a  owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:FrenchRegion .
+
+vin:ChiantiRegion  a   owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:ItalianRegion .
+
+vin:TexasWine  a             owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:TexasRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:ChateauDeMeursaultMeursault
+        a              owl:NamedIndividual , vin:Meursault ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:ChateauDeMeursault .
+
+vin:Stonleigh  a  owl:NamedIndividual , vin:Winery .
+
+vin:ChateauDeMeursault
+        a       owl:NamedIndividual , vin:Winery .
+
+vin:AustralianRegion  a  owl:NamedIndividual , vin:Region .
+
+vin:Full  a     owl:NamedIndividual , owl:Thing , vin:WineBody .
+
+vin:StGenevieveTexasWhite
+        a              owl:NamedIndividual , vin:WhiteWine ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:StGenevieve ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:CentralTexasRegion .
+
+vin:hasFlavor  a            owl:ObjectProperty , owl:FunctionalProperty ;
+        rdfs:range          vin:WineFlavor ;
+        rdfs:subPropertyOf  vin:hasWineDescriptor .
+
+vin:Pauillac  a              owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Full ;
+                               owl:onProperty  vin:hasBody
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Strong ;
+                               owl:onProperty  vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:CabernetSauvignonGrape ;
+                               owl:onProperty  vin:madeFromGrape
+                             ] ;
+        rdfs:subClassOf      [ a                   owl:Restriction ;
+                               owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                               owl:onProperty      vin:madeFromGrape
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Medoc
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:PauillacRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:WineTaste  a         owl:Class ;
+        rdfs:subClassOf  vin:WineDescriptor .
+
+vin:SaucelitoCanyonZinfandel
+        a              owl:NamedIndividual , vin:Zinfandel ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:SaucelitoCanyon ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:ArroyoGrandeRegion .
+
+vin:ClosDeLaPoussie  a  owl:NamedIndividual , vin:Winery .
+
+vin:FormanChardonnay  a  owl:NamedIndividual , vin:Chardonnay ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Forman ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:NapaRegion .
+
+vin:ChateauMorgon  a  owl:NamedIndividual , vin:Winery .
+
+vin:CotesDOr  a              owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Moderate ;
+                               owl:onProperty  vin:hasFlavor
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:RedBurgundy
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:CotesDOrRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:ToursRegion  a     owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:LoireRegion .
+
+vin:WhitehallLaneCabernetFranc
+        a              owl:NamedIndividual , vin:CabernetFranc ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:WhitehallLane ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:NapaRegion .
+
+vin:SchlossRothermelTrochenbierenausleseRiesling
+        a              owl:NamedIndividual , vin:SweetRiesling ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Strong ;
+        vin:hasMaker   vin:SchlossRothermel ;
+        vin:hasSugar   vin:Sweet ;
+        vin:locatedIn  vin:GermanyRegion .
+
+vin:FormanCabernetSauvignon
+        a              owl:NamedIndividual , vin:CabernetSauvignon ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Strong ;
+        vin:hasMaker   vin:Forman ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:NapaRegion .
+
+food:madeFromFruit  a  owl:ObjectProperty .
+
+vin:SantaCruzMountainVineyardCabernetSauvignon
+        a              owl:NamedIndividual , vin:CabernetSauvignon ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Strong ;
+        vin:hasMaker   vin:SantaCruzMountainVineyard ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SantaCruzMountainsRegion .
+
+vin:producesWine  a    owl:ObjectProperty ;
+        owl:inverseOf  vin:hasMaker .
+
+vin:ItalianWine  a           owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:ItalianRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:Port  a              owl:Class ;
+        rdfs:subClassOf  vin:RedWine ;
+        rdfs:subClassOf  [ a               owl:Restriction ;
+                           owl:hasValue    vin:PortugalRegion ;
+                           owl:onProperty  vin:locatedIn
+                         ] ;
+        rdfs:subClassOf  [ a               owl:Restriction ;
+                           owl:hasValue    vin:Full ;
+                           owl:onProperty  vin:hasBody
+                         ] ;
+        rdfs:subClassOf  [ a               owl:Restriction ;
+                           owl:hasValue    vin:Strong ;
+                           owl:onProperty  vin:hasFlavor
+                         ] ;
+        rdfs:subClassOf  [ a               owl:Restriction ;
+                           owl:hasValue    vin:Sweet ;
+                           owl:onProperty  vin:hasSugar
+                         ] .
+
+vin:Loire  a                 owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:LoireRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:ArroyoGrandeRegion
+        a              owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:CaliforniaRegion .
+
+vin:LaneTannerPinotNoir
+        a              owl:NamedIndividual , vin:PinotNoir ;
+        vin:hasBody    vin:Light ;
+        vin:hasFlavor  vin:Delicate ;
+        vin:hasMaker   vin:LaneTanner ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SantaBarbaraRegion .
+
+vin:StGenevieve  a  owl:NamedIndividual , vin:Winery .
+
+vin:Chianti  a           owl:Class ;
+        rdfs:subClassOf  vin:ItalianWine ;
+        rdfs:subClassOf  [ a               owl:Restriction ;
+                           owl:hasValue    vin:ChiantiRegion ;
+                           owl:onProperty  vin:locatedIn
+                         ] ;
+        rdfs:subClassOf  [ a               owl:Restriction ;
+                           owl:hasValue    vin:Red ;
+                           owl:onProperty  vin:hasColor
+                         ] ;
+        rdfs:subClassOf  [ a               owl:Restriction ;
+                           owl:hasValue    vin:SangioveseGrape ;
+                           owl:onProperty  vin:madeFromGrape
+                         ] ;
+        rdfs:subClassOf  [ a               owl:Restriction ;
+                           owl:hasValue    vin:Moderate ;
+                           owl:onProperty  vin:hasFlavor
+                         ] ;
+        rdfs:subClassOf  [ a               owl:Restriction ;
+                           owl:hasValue    vin:Dry ;
+                           owl:onProperty  vin:hasSugar
+                         ] ;
+        rdfs:subClassOf  [ a                  owl:Restriction ;
+                           owl:allValuesFrom  [ a          owl:Class ;
+                                                owl:oneOf  ( vin:Light vin:Medium )
+                                              ] ;
+                           owl:onProperty     vin:hasBody
+                         ] .
+
+vin:MerlotGrape  a  owl:NamedIndividual , owl:Thing , vin:WineGrape .
+
+vin:GamayGrape  a  owl:NamedIndividual , vin:WineGrape .
+
+vin:SancerreRegion  a  owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:LoireRegion .
+
+vin:MuscadetRegion  a  owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:LoireRegion .
+
+vin:SauvignonBlancGrape
+        a       owl:NamedIndividual , owl:Thing , vin:WineGrape .
+
+vin:AlsatianWine  a          owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:AlsaceRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:Gamay  a                 owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:GamayGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:LateHarvest  a        owl:Class ;
+        rdfs:subClassOf   vin:Wine ;
+        rdfs:subClassOf   [ a               owl:Restriction ;
+                            owl:hasValue    vin:Sweet ;
+                            owl:onProperty  vin:hasSugar
+                          ] ;
+        rdfs:subClassOf   [ a                  owl:Restriction ;
+                            owl:allValuesFrom  [ a          owl:Class ;
+                                                 owl:oneOf  ( vin:Moderate vin:Strong )
+                                               ] ;
+                            owl:onProperty     vin:hasFlavor
+                          ] ;
+        owl:disjointWith  vin:EarlyHarvest .
+
+vin:Mountadam  a  owl:NamedIndividual , vin:Winery .
+
+vin:LaneTanner  a  owl:NamedIndividual , vin:Winery .
+
+vin:Muscadet  a              owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Light ;
+                               owl:onProperty  vin:hasBody
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Delicate ;
+                               owl:onProperty  vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Dry ;
+                               owl:onProperty  vin:hasSugar
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:PinotBlancGrape ;
+                               owl:onProperty  vin:madeFromGrape
+                             ] ;
+        rdfs:subClassOf      [ a                   owl:Restriction ;
+                               owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                               owl:onProperty      vin:madeFromGrape
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Loire
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:MuscadetRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:Elyse  a    owl:NamedIndividual , vin:Winery .
+
+vin:locatedIn  a     owl:ObjectProperty , owl:TransitiveProperty ;
+        rdfs:domain  owl:Thing ;
+        rdfs:range   vin:Region .
+
+vin:SonomaRegion  a    owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:CaliforniaRegion .
+
+vin:CentralCoastRegion
+        a              owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:CaliforniaRegion .
+
+vin:ElyseZinfandel  a  owl:NamedIndividual , vin:Zinfandel ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Elyse ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:NapaRegion .
+
+vin:ChateauLafiteRothschild
+        a       owl:NamedIndividual , vin:Winery .
+
+vin:GermanWine  a            owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:GermanyRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:Taylor  a   owl:NamedIndividual , vin:Winery .
+
+vin:LoireRegion  a     owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:FrenchRegion .
+
+vin:PetiteSyrahGrape  a  owl:NamedIndividual , vin:WineGrape .
+
+vin:CentralTexasRegion
+        a              owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:TexasRegion .
+
+vin:Burgundy  a              owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Dry ;
+                               owl:onProperty  vin:hasSugar
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:BourgogneRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:KathrynKennedy  a  owl:NamedIndividual , vin:Winery .
+
+vin:CabernetFrancGrape
+        a       owl:NamedIndividual , owl:Thing , vin:WineGrape .
+
+vin:IceWine  a               owl:Class ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Medium vin:Full )
+                                                  ] ;
+                               owl:onProperty     vin:hasBody
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Moderate vin:Strong )
+                                                  ] ;
+                               owl:onProperty     vin:hasFlavor
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:LateHarvest vin:DessertWine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:White ;
+                                                       owl:onProperty  vin:hasColor
+                                                     ]
+                                                   )
+                             ] .
+
+vin:LongridgeMerlot  a  owl:NamedIndividual , vin:Merlot ;
+        vin:hasBody    vin:Light ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Longridge ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:NewZealandRegion .
+
+vin:PetiteVerdotGrape
+        a       owl:NamedIndividual , owl:Thing , vin:WineGrape .
+
+vin:Riesling  a              owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:White ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:RieslingGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+[ a                    owl:AllDifferent ;
+  owl:distinctMembers  ( vin:Bancroft vin:ChateauChevalBlanc vin:ChateauDYchem vin:ChateauDeMeursault vin:ChateauLafiteRothschild vin:ChateauMargauxWinery vin:ChateauMorgon vin:ClosDeLaPoussie vin:ClosDeVougeot vin:CongressSprings vin:Corbans vin:CortonMontrachet vin:Cotturi vin:DAnjou vin:Elyse vin:Forman vin:Foxen vin:GaryFarrell vin:KalinCellars vin:KathrynKennedy vin:LaneTanner vin:Longridge vin:Marietta vin:McGuinnesso vin:MountEdenVineyard vin:Mountadam vin:PageMillWinery vin:PeterMccoy vin:PulignyMontrachet vin:SantaCruzMountainVineyard vin:SaucelitoCanyon vin:SchlossRothermel vin:SchlossVolrad vin:SeanThackrey vin:Selaks vin:SevreEtMaine vin:StGenevieve vin:Stonleigh vin:Taylor vin:Ventana vin:WhitehallLane )
+] .
+
+vin:MeursaultRegion  a  owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:BourgogneRegion .
+
+vin:hasBody  a              owl:ObjectProperty , owl:FunctionalProperty ;
+        rdfs:range          vin:WineBody ;
+        rdfs:subPropertyOf  vin:hasWineDescriptor .
+
+vin:FullBodiedWine  a        owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:Full ;
+                                                       owl:onProperty  vin:hasBody
+                                                     ]
+                                                   )
+                             ] .
+
+vin:WhiteNonSweetWine
+        a                    owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:WhiteWine
+                                                     [ a                  owl:Restriction ;
+                                                       owl:allValuesFrom  [ a          owl:Class ;
+                                                                            owl:oneOf  ( vin:Dry vin:OffDry )
+                                                                          ] ;
+                                                       owl:onProperty     vin:hasSugar
+                                                     ]
+                                                   )
+                             ] .
+
+vin:SchlossRothermel  a  owl:NamedIndividual , vin:Winery .
+
+vin:WhiteLoire  a            owl:Class ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:CheninBlancGrape vin:PinotBlancGrape vin:SauvignonBlancGrape )
+                                                  ] ;
+                               owl:onProperty     vin:madeFromGrape
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Loire vin:WhiteWine )
+                             ] .
+
+vin:DAnjou  a   owl:NamedIndividual , vin:Winery .
+
+vin:adjacentRegion  a  owl:ObjectProperty , owl:SymmetricProperty ;
+        rdfs:domain  vin:Region ;
+        rdfs:range   vin:Region .
+
+vin:Tours  a                 owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:CheninBlancGrape ;
+                               owl:onProperty  vin:madeFromGrape
+                             ] ;
+        rdfs:subClassOf      [ a                   owl:Restriction ;
+                               owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                               owl:onProperty      vin:madeFromGrape
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Loire
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:ToursRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:White  a    owl:NamedIndividual , owl:Thing , vin:WineColor .
+
+vin:FrenchRegion  a  owl:NamedIndividual , vin:Region .
+
+vin:GaryFarrellMerlot
+        a              owl:NamedIndividual , vin:Merlot ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:GaryFarrell ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SonomaRegion .
+
+vin:ItalianRegion  a  owl:NamedIndividual , vin:Region .
+
+vin:SchlossVolradTrochenbierenausleseRiesling
+        a              owl:NamedIndividual , vin:SweetRiesling ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:SchlossVolrad ;
+        vin:hasSugar   vin:Sweet ;
+        vin:locatedIn  vin:GermanyRegion .
+
+vin:CorbansSauvignonBlanc
+        a              owl:NamedIndividual , vin:SauvignonBlanc ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Strong ;
+        vin:hasMaker   vin:Corbans ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:NewZealandRegion .
+
+vin:MountEdenVineyard
+        a       owl:NamedIndividual , vin:Winery .
+
+vin:BeaujolaisRegion  a  owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:FrenchRegion .
+
+vin:ChateauDYchem  a  owl:NamedIndividual , vin:Winery .
+
+vin:GaryFarrell  a  owl:NamedIndividual , vin:Winery .
+
+vin:USRegion  a  owl:NamedIndividual , vin:Region .
+
+vin:Margaux  a               owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Delicate ;
+                               owl:onProperty  vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:MerlotGrape ;
+                               owl:onProperty  vin:madeFromGrape
+                             ] ;
+        rdfs:subClassOf      [ a                   owl:Restriction ;
+                               owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                               owl:onProperty      vin:madeFromGrape
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Medoc
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:MargauxRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:SevreEtMaine  a  owl:NamedIndividual , vin:Winery .
+
+vin:MalbecGrape  a  owl:NamedIndividual , owl:Thing , vin:WineGrape .
+
+vin:CotesDOrRegion  a  owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:BourgogneRegion .
+
+<http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine>
+        a                 owl:Ontology ;
+        rdfs:comment      "An example OWL ontology" , "Derived from the DAML Wine ontology at \n      http://ontolingua.stanford.edu/doc/chimaera/ontologies/wines.daml\n      Substantially changed, in particular the Region based relations.\n    " ;
+        rdfs:label        "Wine Ontology" ;
+        owl:imports       <http://www.w3.org/TR/2003/PR-owl-guide-20031209/food> ;
+        owl:priorVersion  <http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine> .
+
+vin:SouthAustraliaRegion
+        a              owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:AustralianRegion .
+
+vin:ChateauLafiteRothschildPauillac
+        a             owl:NamedIndividual , vin:Pauillac ;
+        vin:hasMaker  vin:ChateauLafiteRothschild .
+
+vin:Vintage  a           owl:Class ;
+        rdfs:subClassOf  [ a                owl:Restriction ;
+                           owl:cardinality  "1"^^xsd:nonNegativeInteger ;
+                           owl:onProperty   vin:hasVintageYear
+                         ] .
+
+vin:AmericanWine  a          owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:USRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:Chardonnay  a            owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:White ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Full vin:Medium )
+                                                  ] ;
+                               owl:onProperty     vin:hasBody
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Strong vin:Moderate )
+                                                  ] ;
+                               owl:onProperty     vin:hasFlavor
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:ChardonnayGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:SantaBarbaraRegion
+        a              owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:CaliforniaRegion .
+
+vin:PeterMccoyChardonnay
+        a              owl:NamedIndividual , vin:Chardonnay ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:PeterMccoy ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SonomaRegion .
+
+vin:Light  a    owl:NamedIndividual , owl:Thing , vin:WineBody .
+
+vin:Longridge  a  owl:NamedIndividual , vin:Winery .
+
+food:Grape  a   owl:Class .
+
+vin:SemillonGrape  a  owl:NamedIndividual , owl:Thing , vin:WineGrape .
+
+vin:MariettaOldVinesRed
+        a              owl:NamedIndividual , vin:RedTableWine ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Marietta ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SonomaRegion .
+
+vin:AlsaceRegion  a    owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:FrenchRegion .
+
+vin:StEmilion  a             owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Red ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Strong ;
+                               owl:onProperty  vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:CabernetSauvignonGrape ;
+                               owl:onProperty  vin:madeFromGrape
+                             ] ;
+        rdfs:subClassOf      [ a                   owl:Restriction ;
+                               owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                               owl:onProperty      vin:madeFromGrape
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Bordeaux
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:StEmilionRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:PulignyMontrachetWhiteBurgundy
+        a              owl:NamedIndividual , vin:WhiteBurgundy ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:PulignyMontrachet ;
+        vin:hasSugar   vin:Dry .
+
+vin:SeanThackreySiriusPetiteSyrah
+        a              owl:NamedIndividual , vin:PetiteSyrah ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Strong ;
+        vin:hasMaker   vin:SeanThackrey ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:NapaRegion .
+
+vin:MountadamRiesling
+        a              owl:NamedIndividual , vin:DryRiesling ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Delicate ;
+        vin:hasMaker   vin:Mountadam ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SouthAustraliaRegion .
+
+vin:Cotturi  a  owl:NamedIndividual , vin:Winery .
+
+vin:ChiantiClassico  a  owl:NamedIndividual , vin:Chianti ;
+        vin:hasBody   vin:Medium ;
+        vin:hasMaker  vin:McGuinnesso .
+
+vin:TableWine  a             owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:Dry ;
+                                                       owl:onProperty  vin:hasSugar
+                                                     ]
+                                                   )
+                             ] .
+
+vin:PulignyMontrachet
+        a       owl:NamedIndividual , vin:Winery .
+
+vin:SelaksSauvignonBlanc
+        a              owl:NamedIndividual , vin:SauvignonBlanc ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Selaks ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:NewZealandRegion .
+
+vin:madeFromGrape  a        owl:ObjectProperty ;
+        rdfs:domain         vin:Wine ;
+        rdfs:range          vin:WineGrape ;
+        rdfs:subPropertyOf  food:madeFromFruit .
+
+vin:Dry  a      owl:NamedIndividual , owl:Thing , vin:WineSugar .
+
+vin:TaylorPort  a     owl:NamedIndividual , vin:Port ;
+        vin:hasMaker  vin:Taylor .
+
+vin:MountadamPinotNoir
+        a              owl:NamedIndividual , vin:PinotNoir ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Mountadam ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SouthAustraliaRegion .
+
+vin:PageMillWineryCabernetSauvignon
+        a              owl:NamedIndividual , vin:CabernetSauvignon ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:PageMillWinery ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:NapaRegion .
+
+vin:CaliforniaRegion  a  owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:USRegion .
+
+vin:Sancerre  a              owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Medium ;
+                               owl:onProperty  vin:hasBody
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:OffDry ;
+                               owl:onProperty  vin:hasSugar
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Delicate ;
+                               owl:onProperty  vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:SauvignonBlancGrape ;
+                               owl:onProperty  vin:madeFromGrape
+                             ] ;
+        rdfs:subClassOf      [ a                   owl:Restriction ;
+                               owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                               owl:onProperty      vin:madeFromGrape
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Loire
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:SancerreRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:Bordeaux  a              owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:BordeauxRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:WineColor  a             owl:Class ;
+        rdfs:subClassOf      vin:WineDescriptor ;
+        owl:equivalentClass  [ a          owl:Class ;
+                               owl:oneOf  ( vin:White vin:Rose vin:Red )
+                             ] .
+
+vin:WhiteBurgundy  a         owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:ChardonnayGrape ;
+                               owl:onProperty  vin:madeFromGrape
+                             ] ;
+        rdfs:subClassOf      [ a                   owl:Restriction ;
+                               owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                               owl:onProperty      vin:madeFromGrape
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Burgundy vin:WhiteWine )
+                             ] .
+
+vin:KalinCellarsSemillon
+        a              owl:NamedIndividual , vin:Semillon ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Strong ;
+        vin:hasMaker   vin:KalinCellars ;
+        vin:hasSugar   vin:Dry .
+
+vin:PinotBlancGrape  a  owl:NamedIndividual , owl:Thing , vin:WineGrape .
+
+vin:DryWine  a               owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:Dry ;
+                                                       owl:onProperty  vin:hasSugar
+                                                     ]
+                                                   )
+                             ] .
+
+vin:Meritage  a              owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Red ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a                  owl:Restriction ;
+                                                       owl:allValuesFrom  [ a          owl:Class ;
+                                                                            owl:oneOf  ( vin:CabernetSauvignonGrape vin:CabernetFrancGrape vin:MalbecGrape vin:PetiteVerdotGrape vin:MerlotGrape )
+                                                                          ] ;
+                                                       owl:onProperty     vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:minCardinality  "2"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:AnjouRegion  a     owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:LoireRegion .
+
+vin:madeIntoWine  a    owl:ObjectProperty ;
+        owl:inverseOf  vin:madeFromGrape .
+
+vin:WineSugar  a             owl:Class ;
+        rdfs:subClassOf      vin:WineTaste ;
+        owl:equivalentClass  [ a          owl:Class ;
+                               owl:oneOf  ( vin:Sweet vin:OffDry vin:Dry )
+                             ] .
+
+vin:KathrynKennedyLateral
+        a              owl:NamedIndividual , vin:Meritage ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Delicate ;
+        vin:hasMaker   vin:KathrynKennedy ;
+        vin:hasSugar   vin:Dry .
+
+vin:WhitehallLanePrimavera
+        a              owl:NamedIndividual , vin:DessertWine ;
+        vin:hasBody    vin:Light ;
+        vin:hasFlavor  vin:Delicate ;
+        vin:hasSugar   vin:Sweet ;
+        vin:locatedIn  vin:NapaRegion .
+
+vin:DryRiesling  a           owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:White ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Delicate ;
+                               owl:onProperty  vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Light vin:Medium )
+                                                  ] ;
+                               owl:onProperty     vin:hasBody
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Riesling
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:Dry ;
+                                                       owl:onProperty  vin:hasSugar
+                                                     ]
+                                                   )
+                             ] .
+
+vin:Rose  a     owl:NamedIndividual , owl:Thing , vin:WineColor .
+
+vin:yearValue  a     owl:DatatypeProperty ;
+        rdfs:domain  vin:VintageYear ;
+        rdfs:range   xsd:positiveInteger .
+
+vin:NewZealandRegion  a  owl:NamedIndividual , vin:Region .
+
+vin:hasColor  a             owl:ObjectProperty , owl:FunctionalProperty ;
+        rdfs:domain         vin:Wine ;
+        rdfs:range          vin:WineColor ;
+        rdfs:subPropertyOf  vin:hasWineDescriptor .
+
+vin:ChateauChevalBlanc
+        a       owl:NamedIndividual , vin:Winery .
+
+vin:RedBurgundy  a           owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:PinotNoirGrape ;
+                               owl:onProperty  vin:madeFromGrape
+                             ] ;
+        rdfs:subClassOf      [ a                   owl:Restriction ;
+                               owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                               owl:onProperty      vin:madeFromGrape
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Burgundy vin:RedWine )
+                             ] .
+
+vin:OffDry  a              owl:NamedIndividual , owl:Thing , vin:WineSugar ;
+        owl:differentFrom  vin:Dry , vin:Sweet .
+
+vin:hasMaker  a  owl:ObjectProperty , owl:FunctionalProperty .
+
+vin:VintageYear  a  owl:Class .
+
+vin:hasSugar  a             owl:ObjectProperty , owl:FunctionalProperty ;
+        rdfs:range          vin:WineSugar ;
+        rdfs:subPropertyOf  vin:hasWineDescriptor .
+
+vin:ChateauMorgonBeaujolais
+        a             owl:NamedIndividual , vin:Beaujolais ;
+        vin:hasMaker  vin:ChateauMorgon .
+
+vin:Corbans  a  owl:NamedIndividual , vin:Winery .
+
+vin:SantaCruzMountainVineyard
+        a       owl:NamedIndividual , vin:Winery .
+
+vin:Anjou  a                 owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Rose ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Light ;
+                               owl:onProperty  vin:hasBody
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Delicate ;
+                               owl:onProperty  vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:OffDry ;
+                               owl:onProperty  vin:hasSugar
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Loire
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:AnjouRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:PauillacRegion  a  owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:MedocRegion .
+
+vin:Sauternes  a         owl:Class ;
+        rdfs:subClassOf  vin:LateHarvest , vin:Bordeaux ;
+        rdfs:subClassOf  [ a               owl:Restriction ;
+                           owl:hasValue    vin:SauterneRegion ;
+                           owl:onProperty  vin:locatedIn
+                         ] ;
+        rdfs:subClassOf  [ a               owl:Restriction ;
+                           owl:hasValue    vin:Medium ;
+                           owl:onProperty  vin:hasBody
+                         ] ;
+        rdfs:subClassOf  [ a               owl:Restriction ;
+                           owl:hasValue    vin:White ;
+                           owl:onProperty  vin:hasColor
+                         ] .
+
+vin:SweetRiesling  a         owl:Class ;
+        rdfs:subClassOf      vin:DessertWine ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Full ;
+                               owl:onProperty  vin:hasBody
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Moderate vin:Strong )
+                                                  ] ;
+                               owl:onProperty     vin:hasFlavor
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Riesling
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:Sweet ;
+                                                       owl:onProperty  vin:hasSugar
+                                                     ]
+                                                   )
+                             ] .
+
+vin:StEmilionRegion  a  owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:BordeauxRegion .
+
+vin:FoxenCheninBlanc  a  owl:NamedIndividual , vin:CheninBlanc ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Foxen ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SantaBarbaraRegion .
+
+vin:Winery  a   owl:Class .
+
+vin:PetiteSyrah  a           owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Red ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Dry ;
+                               owl:onProperty  vin:hasSugar
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Moderate vin:Strong )
+                                                  ] ;
+                               owl:onProperty     vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Medium vin:Full )
+                                                  ] ;
+                               owl:onProperty     vin:hasBody
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:PetiteSyrahGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:PortugalRegion  a  owl:NamedIndividual , vin:Region .
+
+vin:WhiteTableWine  a        owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:TableWine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:White ;
+                                                       owl:onProperty  vin:hasColor
+                                                     ]
+                                                   )
+                             ] .
+
+vin:ClosDeVougeotCotesDOr
+        a             owl:NamedIndividual , vin:CotesDOr ;
+        vin:hasMaker  vin:ClosDeVougeot .
+
+vin:Year1998  a        owl:NamedIndividual , vin:VintageYear ;
+        vin:yearValue  "1998"^^xsd:positiveInteger .
+
+vin:Bancroft  a  owl:NamedIndividual , vin:Winery .
+
+vin:MargauxRegion  a   owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:MedocRegion .
+
+vin:SauvignonBlanc  a        owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:SemillonOrSauvignonBlanc
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:SauvignonBlancGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:BancroftChardonnay
+        a              owl:NamedIndividual , vin:Chardonnay ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Bancroft ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:NapaRegion .
+
+vin:ChateauMargauxWinery
+        a       owl:NamedIndividual , vin:Winery .
+
+vin:CortonMontrachetWhiteBurgundy
+        a              owl:NamedIndividual , vin:WhiteBurgundy ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Strong ;
+        vin:hasMaker   vin:CortonMontrachet ;
+        vin:hasSugar   vin:Dry .
+
+vin:EarlyHarvest  a      owl:Class ;
+        rdfs:subClassOf  vin:Wine ;
+        rdfs:subClassOf  [ a                  owl:Restriction ;
+                           owl:allValuesFrom  [ a          owl:Class ;
+                                                owl:oneOf  ( vin:Dry vin:OffDry )
+                                              ] ;
+                           owl:onProperty     vin:hasSugar
+                         ] .
+
+vin:SelaksIceWine  a   owl:NamedIndividual , vin:IceWine ;
+        vin:hasBody    vin:Medium ;
+        vin:hasColor   vin:White ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Selaks ;
+        vin:locatedIn  vin:NewZealandRegion .
+
+vin:Red  a      owl:NamedIndividual , owl:Thing , vin:WineColor .
+
+vin:GermanyRegion  a  owl:NamedIndividual , vin:Region .
+
+vin:PeterMccoy  a  owl:NamedIndividual , vin:Winery .
+
+[ a                    owl:AllDifferent ;
+  owl:distinctMembers  ( vin:Delicate vin:Moderate vin:Strong )
+] .
+
+vin:WineGrape  a         owl:Class ;
+        rdfs:subClassOf  food:Grape .
+
+vin:Meursault  a             owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Full ;
+                               owl:onProperty  vin:hasBody
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:WhiteBurgundy
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:MeursaultRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:CaliforniaWine  a        owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:CaliforniaRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:SangioveseGrape  a  owl:NamedIndividual , vin:WineGrape .
+
+vin:Beringer  a  owl:NamedIndividual , vin:Winery .
+
+vin:PageMillWinery  a  owl:NamedIndividual , vin:Winery .
+
+vin:DryWhiteWine  a          owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:DryWine vin:WhiteWine )
+                             ] .
+
+vin:PinotNoir  a             owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Red ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:PinotNoirGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:SweetWine  a             owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:Sweet ;
+                                                       owl:onProperty  vin:hasSugar
+                                                     ]
+                                                   )
+                             ] .
+
+vin:WineBody  a              owl:Class ;
+        rdfs:subClassOf      vin:WineTaste ;
+        owl:equivalentClass  [ a          owl:Class ;
+                               owl:oneOf  ( vin:Light vin:Medium vin:Full )
+                             ] .
+
+vin:ClosDeVougeot  a  owl:NamedIndividual , vin:Winery .
+
+vin:Moderate  a  owl:NamedIndividual , owl:Thing , vin:WineFlavor .
+
+vin:Medoc  a                 owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Red ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Dry ;
+                               owl:onProperty  vin:hasSugar
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Bordeaux
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:MedocRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:CabernetSauvignon
+        a                    owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Red ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Dry ;
+                               owl:onProperty  vin:hasSugar
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Moderate vin:Strong )
+                                                  ] ;
+                               owl:onProperty     vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Medium vin:Full )
+                                                  ] ;
+                               owl:onProperty     vin:hasBody
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:CabernetSauvignonGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:Sweet  a               owl:NamedIndividual , owl:Thing , vin:WineSugar ;
+        owl:differentFrom  vin:Dry .
+
+vin:hasWineDescriptor
+        a            owl:ObjectProperty ;
+        rdfs:domain  vin:Wine ;
+        rdfs:range   vin:WineDescriptor .
+
+vin:MountEdenVineyardEstatePinotNoir
+        a              owl:NamedIndividual , vin:PinotNoir ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Strong ;
+        vin:hasMaker   vin:MountEdenVineyard ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:EdnaValleyRegion .
+
+vin:WhiteBordeaux  a         owl:Class ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:SemillonGrape vin:SauvignonBlancGrape )
+                                                  ] ;
+                               owl:onProperty     vin:madeFromGrape
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Bordeaux vin:WhiteWine )
+                             ] .
+
+vin:Region  a   owl:Class .
+
+vin:SaucelitoCanyon  a  owl:NamedIndividual , vin:Winery .
+
+vin:CheninBlancGrape  a  owl:NamedIndividual , owl:Thing , vin:WineGrape .
+
+vin:SeanThackrey  a  owl:NamedIndividual , vin:Winery .
+
+vin:ChateauMargaux  a  owl:NamedIndividual , vin:Margaux ;
+        vin:hasMaker  vin:ChateauMargauxWinery .
+
+vin:SauterneRegion  a  owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:BordeauxRegion .
+
+vin:Zinfandel  a             owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Red ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Dry ;
+                               owl:onProperty  vin:hasSugar
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Full vin:Medium )
+                                                  ] ;
+                               owl:onProperty     vin:hasBody
+                             ] ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:Moderate vin:Strong )
+                                                  ] ;
+                               owl:onProperty     vin:hasFlavor
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:ZinfandelGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:FrenchWine  a            owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:FrenchRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:RedBordeaux  a           owl:Class ;
+        rdfs:subClassOf      [ a                  owl:Restriction ;
+                               owl:allValuesFrom  [ a          owl:Class ;
+                                                    owl:oneOf  ( vin:CabernetSauvignonGrape vin:MerlotGrape )
+                                                  ] ;
+                               owl:onProperty     vin:madeFromGrape
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Bordeaux vin:RedWine )
+                             ] .
+
+vin:DessertWine  a       owl:Class ;
+        rdfs:subClassOf  vin:Wine ;
+        rdfs:subClassOf  [ a                  owl:Restriction ;
+                           owl:allValuesFrom  [ a          owl:Class ;
+                                                owl:oneOf  ( vin:OffDry vin:Sweet )
+                                              ] ;
+                           owl:onProperty     vin:hasSugar
+                         ] .
+
+vin:Semillon  a              owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:SemillonOrSauvignonBlanc
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:SemillonGrape ;
+                                                       owl:onProperty  vin:madeFromGrape
+                                                     ]
+                                                     [ a                   owl:Restriction ;
+                                                       owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                                                       owl:onProperty      vin:madeFromGrape
+                                                     ]
+                                                   )
+                             ] .
+
+vin:Strong  a   owl:NamedIndividual , owl:Thing , vin:WineFlavor .
+
+vin:Marietta  a  owl:NamedIndividual , vin:Winery .
+
+vin:ChardonnayGrape  a  owl:NamedIndividual , vin:WineGrape .
+
+vin:TexasRegion  a     owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:USRegion .
+
+vin:StonleighSauvignonBlanc
+        a              owl:NamedIndividual , vin:SauvignonBlanc ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Delicate ;
+        vin:hasMaker   vin:Stonleigh ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:NewZealandRegion .
+
+vin:Beaujolais  a            owl:Class ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Red ;
+                               owl:onProperty  vin:hasColor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Light ;
+                               owl:onProperty  vin:hasBody
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Dry ;
+                               owl:onProperty  vin:hasSugar
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:Delicate ;
+                               owl:onProperty  vin:hasFlavor
+                             ] ;
+        rdfs:subClassOf      [ a               owl:Restriction ;
+                               owl:hasValue    vin:GamayGrape ;
+                               owl:onProperty  vin:madeFromGrape
+                             ] ;
+        rdfs:subClassOf      [ a                   owl:Restriction ;
+                               owl:maxCardinality  "1"^^xsd:nonNegativeInteger ;
+                               owl:onProperty      vin:madeFromGrape
+                             ] ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:BeaujolaisRegion ;
+                                                       owl:onProperty  vin:locatedIn
+                                                     ]
+                                                   )
+                             ] .
+
+vin:CongressSpringsSemillon
+        a              owl:NamedIndividual , vin:Semillon ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:CongressSprings ;
+        vin:hasSugar   vin:Dry .
+
+vin:CortonMontrachet  a  owl:NamedIndividual , vin:Winery .
+
+vin:WineDescriptor  a        owl:Class ;
+        rdfs:comment         "Made WineDescriptor unionType of tastes and color" ;
+        owl:equivalentClass  [ a            owl:Class ;
+                               owl:unionOf  ( vin:WineTaste vin:WineColor )
+                             ] .
+
+vin:ZinfandelGrape  a  owl:NamedIndividual , vin:WineGrape .
+
+vin:MountEdenVineyardEdnaValleyChardonnay
+        a              owl:NamedIndividual , vin:Chardonnay ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:MountEdenVineyard ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:EdnaValleyRegion .
+
+vin:SaucelitoCanyonZinfandel1998
+        a                   owl:NamedIndividual , vin:Zinfandel ;
+        vin:hasBody         vin:Medium ;
+        vin:hasFlavor       vin:Moderate ;
+        vin:hasMaker        vin:SaucelitoCanyon ;
+        vin:hasSugar        vin:Dry ;
+        vin:hasVintageYear  vin:Year1998 ;
+        vin:locatedIn       vin:ArroyoGrandeRegion .
+
+vin:Foxen  a    owl:NamedIndividual , vin:Winery .
+
+vin:MountadamChardonnay
+        a              owl:NamedIndividual , vin:Chardonnay ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Strong ;
+        vin:hasMaker   vin:Mountadam ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SouthAustraliaRegion .
+
+vin:KalinCellars  a  owl:NamedIndividual , vin:Winery .
+
+vin:CongressSprings  a  owl:NamedIndividual , vin:Winery .
+
+vin:PinotNoirGrape  a  owl:NamedIndividual , vin:WineGrape .
+
+vin:SantaCruzMountainsRegion
+        a              owl:NamedIndividual , vin:Region ;
+        vin:locatedIn  vin:CaliforniaRegion .
+
+vin:Medium  a   owl:NamedIndividual , owl:Thing , vin:WineBody .
+
+vin:RedWine  a               owl:Class ;
+        owl:equivalentClass  [ a                   owl:Class ;
+                               owl:intersectionOf  ( vin:Wine
+                                                     [ a               owl:Restriction ;
+                                                       owl:hasValue    vin:Red ;
+                                                       owl:onProperty  vin:hasColor
+                                                     ]
+                                                   )
+                             ] .
+
+vin:CotturiZinfandel  a  owl:NamedIndividual , vin:Zinfandel ;
+        vin:hasBody    vin:Full ;
+        vin:hasFlavor  vin:Strong ;
+        vin:hasMaker   vin:Cotturi ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SonomaRegion .
+
+vin:VentanaCheninBlanc
+        a              owl:NamedIndividual , vin:CheninBlanc ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Ventana ;
+        vin:hasSugar   vin:OffDry ;
+        vin:locatedIn  vin:CentralCoastRegion .
+
+vin:MariettaCabernetSauvignon
+        a              owl:NamedIndividual , vin:CabernetSauvignon ;
+        vin:hasBody    vin:Medium ;
+        vin:hasFlavor  vin:Moderate ;
+        vin:hasMaker   vin:Marietta ;
+        vin:hasSugar   vin:Dry ;
+        vin:locatedIn  vin:SonomaRegion .
