@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://jena.hpl.hp.com/testing/ontology#"
+  xml:base  ="http://jena.hpl.hp.com/testing/ontology"
+>
+
+<owl:Class rdf:ID="A">
+</owl:Class>
+
+<owl:Class rdf:ID="B">
+  <rdfs:subClassOf rdf:resource="#A" />
+</owl:Class>
+
+<owl:Class rdf:ID="C">
+  <rdfs:subClassOf rdf:resource="#B" />
+</owl:Class>
+
+<owl:ObjectProperty rdf:ID="pA">
+  <rdfs:domain rdf:resource="#A"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="pB">
+  <rdfs:domain rdf:resource="#B"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="pC">
+  <rdfs:domain rdf:resource="#C"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="qA">
+  <rdfs:domain rdf:resource="#A" />
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="qB">
+  <rdfs:subPropertyOf rdf:resource="#qA" />
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="global">
+</owl:ObjectProperty>
+
+<owl:Class rdf:ID="HasAnn">
+</owl:Class>
+
+<owl:AnnotationProperty rdf:ID="ann">
+  <rdfs:domain rdf:resource="#HasAnn"/>
+</owl:AnnotationProperty>
+
+<owl:Class rdf:ID="Joint">
+</owl:Class>
+
+<owl:ObjectProperty rdf:ID="j">
+  <!-- joint domains, so should not be in ldp of Joint or A -->
+  <!-- covered by the tests on ldp(A) -->
+  <rdfs:domain rdf:resource="#Joint"/>
+  <rdfs:domain rdf:resource="#A"/>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:ID="unionP">
+  <rdfs:domain>
+    <owl:Class>
+      <owl:unionOf rdf:parseType="Collection">
+				<owl:Class rdf:ID="Union1">
+				</owl:Class>
+				<owl:Class rdf:ID="Union2">
+				</owl:Class>
+      </owl:unionOf>
+  	</owl:Class>
+  </rdfs:domain>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="intersectionP">
+  <rdfs:domain>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+				<owl:Class rdf:ID="Intersect1">
+				</owl:Class>
+				<owl:Class rdf:ID="Intersect2">
+				</owl:Class>
+      </owl:intersectionOf>
+  	</owl:Class>
+  </rdfs:domain>
+</owl:ObjectProperty>
+
+</rdf:RDF>
