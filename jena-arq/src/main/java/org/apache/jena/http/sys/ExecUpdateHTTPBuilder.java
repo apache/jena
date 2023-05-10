@@ -179,25 +179,25 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
         if ( context == null )
             return thisBuilder();
         ensureContext();
-        this.context.putAll(context);
+        this.context.setAll(context);
         return thisBuilder();
     }
 
     public Y set(Symbol symbol, Object value) {
         ensureContext();
-        this.context.put(symbol, value);
+        this.context.set(symbol, value);
         return thisBuilder();
     }
 
     public Y set(Symbol symbol, boolean value) {
         ensureContext();
-        this.context.put(symbol, value);
+        this.context.set(symbol, value);
         return thisBuilder();
     }
 
     private void ensureContext() {
         if ( context == null )
-            context = new Context();
+            context = Context.create();
     }
 
     private void ensureUpdateRequest() {
