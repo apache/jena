@@ -30,5 +30,5 @@ public class ScriptLangSymbols {
         return SystemARQ.allocSymbol(lang + "-functions");
     }
 
-    public static Symbol scriptAllowList = SystemARQ.allocSymbol("allowList");
+    public static Symbol scriptAllowList = SystemARQ.allocSymbol("scriptAllowList");
 }
