@@ -58,7 +58,7 @@ public class Context {
      * Create a context and initialize it with a copy of the named values of
      * another one. Shallow copy: the values themselves are not copied
      */
-    public Context(Context cxt) {
+    private Context(Context cxt) {
         putAll(cxt);
     }
 
@@ -78,6 +78,12 @@ public class Context {
             return;
         }
         context.put(property, value);
+    }
+
+    protected void mapPutAll(Context other) {
+        if ( readonly )
+            throw new ARQException("Context is readonly");
+        other.mapForEach(context::put);
     }
 
     protected void mapRemove(Symbol property) {
@@ -127,7 +133,7 @@ public class Context {
         return x;
     }
 
-    /** Store a named value - overwrites any previous set value */
+    /** Store a named value - overwrites any previous set value. */
     public void put(Symbol property, Object value) {
         mapPut(property, value);
     }
@@ -167,11 +173,13 @@ public class Context {
         return set(property, Boolean.FALSE);
     }
 
+    public Context setAll(Context other) {
+        putAll(other);
+        return this;
+    }
+
     public void putAll(Context other) {
-        if ( readonly )
-            throw new ARQException("Context is readonly");
-        if ( other != null )
-            other.mapForEach(this::put);
+        mapPutAll(other);
     }
 
     /** Remove any value associated with a property */
@@ -179,9 +187,10 @@ public class Context {
         mapRemove(property);
     }
 
-    /** Remove any value associated with a property - alternative method name */
-    public void unset(Symbol property) {
+    /** Remove any value associated with a property. Returns "this". */
+    public Context unset(Symbol property) {
         remove(property);
+        return this;
     }
 
     // ---- Helpers
