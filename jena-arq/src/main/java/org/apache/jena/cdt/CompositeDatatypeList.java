@@ -25,6 +25,8 @@ import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprNotComparableException;
+import org.apache.jena.sparql.expr.NodeValue;
 
 public class CompositeDatatypeList extends CompositeDatatypeBase
 {
@@ -171,7 +173,6 @@ public class CompositeDatatypeList extends CompositeDatatypeBase
 
 		final Iterator<CDTValue> it1 = list1.iterator();
 		final Iterator<CDTValue> it2 = list2.iterator();
-		boolean errorCaught = false;
 		while ( it1.hasNext() ) {
 			final CDTValue v1 = it1.next();
 			final CDTValue v2 = it2.next();
@@ -179,13 +180,54 @@ public class CompositeDatatypeList extends CompositeDatatypeBase
 				if ( ! v1.sameAs(v2) ) return false;
 			}
 			catch ( final ExprEvalException ex ) {
-				errorCaught = true;
+				throw new ExprEvalException("nulls in lists cannot be compared");
 			}
 		}
 
-		if ( errorCaught ) throw new ExprEvalException("nulls in lists cannot be compared");
-
 		return true;
+	}
+
+	public int compare( final LiteralLabel value1, final LiteralLabel value2 ) throws ExprNotComparableException {
+		final List<CDTValue> list1;
+		final List<CDTValue> list2;
+		try {
+			list1 = getValue(value1);
+			list2 = getValue(value2);
+		}
+		catch ( final DatatypeFormatException e ) {
+			throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+		}
+
+		if ( list1.isEmpty() && list2.isEmpty() ) return 0;
+		if ( list1.isEmpty() && ! list2.isEmpty() ) return -1;
+		if ( list2.isEmpty() && ! list1.isEmpty() ) return 1;
+
+		final int n = Math.min( list1.size(), list2.size() );
+		for ( int i = 0; i < n; i++ ) {
+			final CDTValue elmt1 = list1.get(i);
+			final CDTValue elmt2 = list2.get(i);
+
+			if ( elmt1.isNull() || elmt2.isNull() ) {
+				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+			}
+
+			if ( ! elmt1.sameAs(elmt2) ) {
+				final NodeValue nv1 = NodeValue.makeNode( elmt1.asNode() );
+				final NodeValue nv2 = NodeValue.makeNode( elmt2.asNode() );
+
+				final int c;
+				try {
+					c = NodeValue.compare(nv1, nv2);
+				}
+				catch ( final Exception e ) {
+					throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+				}
+
+				if ( c != 0 ) return c;
+			}
+		}
+
+		return ( list1.size() - list2.size() );
 	}
 
 	public static List<CDTValue> getValue( final LiteralLabel lit ) throws DatatypeFormatException {
