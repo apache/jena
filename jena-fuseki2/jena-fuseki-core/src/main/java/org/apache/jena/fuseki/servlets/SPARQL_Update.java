@@ -83,7 +83,7 @@ public class SPARQL_Update extends ActionService
 
     @Override
     public void execGet(HttpAction action) {
-        ServletOps.errorMethodNotAllowed(HttpNames.METHOD_GET, "SPARQL Update is not supported with GET. Use POST instead");
+        ServletOps.errorMethodNotAllowed(HttpNames.METHOD_GET, "SPARQL Update is not supported with GET. Use POST or PATCH instead");
     }
 
     @Override
