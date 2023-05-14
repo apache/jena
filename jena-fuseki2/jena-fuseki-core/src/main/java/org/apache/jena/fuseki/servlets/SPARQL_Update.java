@@ -124,8 +124,8 @@ public class SPARQL_Update extends ActionService
         if ( HttpNames.METHOD_OPTIONS.equals(action.getRequestMethod()) )
             return;
 
-        if ( ! HttpNames.METHOD_POST.equalsIgnoreCase(action.getRequestMethod()) )
-            ServletOps.errorMethodNotAllowed("SPARQL Update : use POST");
+        if ( ! HttpNames.METHOD_POST.equalsIgnoreCase(action.getRequestMethod()) && ! HttpNames.METHOD_PATCH.equalsIgnoreCase(action.getRequestMethod()) )
+            ServletOps.errorMethodNotAllowed("SPARQL Update : use POST or PATCH");
 
         ContentType ct = ActionLib.getContentType(action);
         if ( ct == null )
