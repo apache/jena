@@ -29,12 +29,13 @@ public class Timer {
 
     public Timer() {}
 
-    public void startTimer() {
+    public Timer startTimer() {
         if ( inTimer )
             throw new AtlasException("Already in timer");
         timeStart = System.currentTimeMillis();
         timeFinish = -1;
         inTimer = true;
+        return this;
     }
 
     /** Stop timing and return the elapsed time in milliseconds */
