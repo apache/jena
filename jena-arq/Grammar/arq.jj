@@ -729,13 +729,12 @@ void InlineDataFull() : { Var v ; Node n ; Token t ; int beginLine; int beginCol
 }
 Node DataBlockValue() : { Node n ; String iri ; }
 {
-  n = TripleTermData() { return n ; }
-|
   iri = iri() { return createNode(iri) ; }
 | n = RDFLiteral() { return n ; }
 | n = NumericLiteral() { return n ; }
 | n = BooleanLiteral() { return n ; }
 | <UNDEF> { return null ; }
+| n = QuotedTripleData() { return n ; }
 }
 Element Assignment() : { Var v ; Expr expr ; }
 {
@@ -1163,7 +1162,7 @@ void AnnotationPath(TripleCollector acc, Node s, Node p, Path path, Node o) : {}
   (
     <L_ANN>
       { Node pAnn = preConditionAnnotation(s, p, path, o, token.beginLine, token.beginColumn) ;
-        Node x = createTripleTerm(s, pAnn, o, token.beginLine, token.beginColumn);
+        Node x = createQuotedTriple(s, pAnn, o, token.beginLine, token.beginColumn);
       }
       PropertyListPathNotEmpty(x, acc)
     <R_ANN>
@@ -1174,7 +1173,7 @@ void Annotation(TripleCollector acc, Node s, Node p, Path path, Node o) : { }
   (
     <L_ANN>
       { Node pAnn = preConditionAnnotation(s, p, path, o, token.beginLine, token.beginColumn) ;
-        Node x = createTripleTerm(s, p, o, token.beginLine, token.beginColumn);
+        Node x = createQuotedTriple(s, p, o, token.beginLine, token.beginColumn);
       }
       PropertyListNotEmpty(x, acc)
     <R_ANN>
@@ -1192,31 +1191,36 @@ Node GraphNodePath(TripleCollectorMark acc) : { Node n ; }
  |
   n = TriplesNodePath(acc) { return n ; }
 }
-Node VarOrTerm() : { Node n = null ; }
+Node VarOrTerm() : { Node n = null ; String iri ; }
 {
-  ( n = TripleTerm()
-  | n = Var()
-  | n = GraphTerm()
-  )
+  ( n = Var()
+  | iri = iri() { return createNode(iri) ; }
+  | n = RDFLiteral() { return n ; }
+  | n = NumericLiteral() { return n ; }
+  | n = BooleanLiteral() { return n ; }
+  | n = BlankNode() { return n ; }
+  | <NIL> { return nRDFnil ; }
+  | n = QuotedTriple()
+)
   { return n ; }
 }
-Node TripleTerm() : { Node n = null ; Token t ; Node s , p , o ; }
+Node QuotedTriple() : { Node n = null ; Token t ; Node s , p , o ; }
 {
   t = <LT2>
   s = VarOrTerm()
   p = Verb()
   o = VarOrTerm()
-  { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
+  { n = createQuotedTriple(s, p, o, t.beginLine, t.beginColumn); }
   <GT2>
   { return n; }
 }
-Node TripleTermData() : { Node n = null ; Token t ; String iri ; Node s , p , o ; }
+Node QuotedTripleData() : { Node n = null ; Token t ; String iri ; Node s , p , o ; }
 {
   t = <LT2>
   ( s = DataValueTerm() )
   ( iri = iri() { p = createNode(iri) ; } | <KW_A> { p = nRDFtype ; } )
   ( o = DataValueTerm() )
-  { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
+  { n = createQuotedTriple(s, p, o, t.beginLine, t.beginColumn); }
   <GT2>
   { return n; }
 }
@@ -1226,7 +1230,7 @@ Node DataValueTerm() : { Node n = null ; String iri ; Node s , p , o ; }
 | n = RDFLiteral() { return n ; }
 | n = NumericLiteral() { return n ; }
 | n = BooleanLiteral() { return n ; }
-| n = TripleTermData() { return n ; }
+| n = QuotedTripleData() { return n ; }
 }
 Node VarOrIri() : {Node n = null ; String iri ; }
 {
@@ -1242,15 +1246,6 @@ Var Var() : { Token t ;}
 {
     ( t = <VAR1> | t = <VAR2> )
     { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
-}
-Node GraphTerm() : { Node n ; String iri ; }
-{
-  iri = iri() { return createNode(iri) ; }
-| n = RDFLiteral() { return n ; }
-| n = NumericLiteral() { return n ; }
-| n = BooleanLiteral() { return n ; }
-| n = BlankNode() { return n ; }
-| <NIL> { return nRDFnil ; }
 }
 Expr Expression() : { Expr expr ; }
 {
@@ -1373,7 +1368,7 @@ Expr PrimaryExpression() : { Expr expr ; Node n ; }
   | n = NumericLiteral() { return asExpr(n) ; }
   | n = BooleanLiteral() { return asExpr(n) ; }
   | n = Var() { return asExpr(n) ; }
-  | n = ExprTripleTerm() { return asExpr(n) ; }
+  | n = ExprQuotedTriple() { return asExpr(n) ; }
   )
 }
 Node ExprVarOrTerm() : { Node n; String s;}
@@ -1383,16 +1378,16 @@ Node ExprVarOrTerm() : { Node n; String s;}
   | n = NumericLiteral()
   | n = BooleanLiteral()
   | n = Var()
-  | n = ExprTripleTerm()
+  | n = ExprQuotedTriple()
   )
   { return n; }
 }
-Node ExprTripleTerm() : { Token t ; Node s,p,o,n; }
+Node ExprQuotedTriple() : { Token t ; Node s,p,o,n; }
 { t = <LT2>
   s = ExprVarOrTerm()
   p = Verb()
   o = ExprVarOrTerm()
-  { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
+  { n = createQuotedTriple(s, p, o, t.beginLine, t.beginColumn); }
   <GT2>
   { return n; }
 }
@@ -1504,7 +1499,7 @@ Expr BuiltInCall() : { Expr expr ;
     expr = RegexExpression() { return expr ; }
   | expr = ExistsFunc() { return expr ; }
   | expr = NotExistsFunc() { return expr ; }
-  | <IS_TRIPLE> <LPAREN> expr = Expression() <RPAREN>
+| <IS_TRIPLE> <LPAREN> expr = Expression() <RPAREN>
     { return new E_IsTriple(expr) ; }
   | <TRIPLE> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <COMMA> expr3 = Expression() <RPAREN>
     { return new E_TripleFn(expr1, expr2, expr3) ; }
@@ -1789,12 +1784,12 @@ TOKEN [IGNORE_CASE] :
 | < BIND: "bind" >
 | < SERVICE: "service" >
 | < LET: "LET" >
+| < LATERAL: "LATERAL" >
 | < TRIPLE: "TRIPLE" >
 | < IS_TRIPLE: "isTRIPLE" >
 | < SUBJECT: "SUBJECT" >
 | < PREDICATE: "PREDICATE" >
 | < OBJECT: "OBJECT" >
-| < LATERAL: "LATERAL" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
 | < AS: "as" >

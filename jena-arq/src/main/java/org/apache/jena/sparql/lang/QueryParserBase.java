@@ -399,7 +399,13 @@ public class QueryParserBase
         return null;
     }
 
+    /** @deprecated Use {@link #createQuotedTrple}. */
+    @Deprecated
     protected Node createTripleTerm(Node s, Node p, Node o, int line, int column) {
+        return createQuotedTriple(s, p, o, line, column);
+    }
+
+    protected Node createQuotedTriple(Node s, Node p, Node o, int line, int column) {
         return NodeFactory.createTripleNode(s, p, o);
     }
 

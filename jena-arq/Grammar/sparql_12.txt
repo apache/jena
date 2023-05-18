@@ -16,7 +16,6 @@ TOKENS
 <DEFAULT> TOKEN : {
 <#WS: " " | "\t" | "\n" | "\r" | "\f">
 | <#WSC: <WS> | <SINGLE_LINE_COMMENT>>
-| <BOM: "\ufeff">
 }
 
 <DEFAULT> TOKEN : {
@@ -62,6 +61,11 @@ TOKENS
 | <MINUS_P: "minus">
 | <BIND: "bind">
 | <SERVICE: "service">
+| <TRIPLE: "TRIPLE">
+| <IS_TRIPLE: "isTRIPLE">
+| <SUBJECT: "SUBJECT">
+| <PREDICATE: "PREDICATE">
+| <OBJECT: "OBJECT">
 | <EXISTS: "exists">
 | <NOT: "not">
 | <AS: "as">
@@ -207,6 +211,10 @@ TOKENS
 | <LT: "<">
 | <LE: "<=">
 | <GE: ">=">
+| <GT2: ">>">
+| <LT2: "<<">
+| <L_ANN: "{|">
+| <R_ANN: "|}">
 | <BANG: "!">
 | <TILDE: "~">
 | <COLON: ":">
@@ -243,10 +251,9 @@ TOKENS
 }
 
 NON-TERMINALS
-	QueryUnit	:=	ByteOrderMark Query <EOF>
+	QueryUnit	:=	Query <EOF>
 	Query	:=	Prologue ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery ) ValuesClause
-	UpdateUnit	:=	ByteOrderMark Update <EOF>
-	ByteOrderMark	:=	( <BOM> )?
+	UpdateUnit	:=	Update <EOF>
 	Prologue	:=	( BaseDecl | PrefixDecl )*
 	BaseDecl	:=	<BASE> IRIREF
 	PrefixDecl	:=	<PREFIX> <PNAME_NS> IRIREF
@@ -313,6 +320,7 @@ NON-TERMINALS
 		|	NumericLiteral
 		|	BooleanLiteral
 		|	<UNDEF>
+		|	QuotedTripleData
 	MinusGraphPattern	:=	<MINUS_P> GroupGraphPattern
 	GroupOrUnionGraphPattern	:=	GroupGraphPattern ( <UNION> GroupGraphPattern )*
 	Filter	:=	<FILTER> Constraint
@@ -328,7 +336,7 @@ NON-TERMINALS
 	PropertyListNotEmpty	:=	Verb ObjectList ( <SEMICOLON> ( Verb ObjectList )? )*
 	Verb	:=	( VarOrIri | <KW_A> )
 	ObjectList	:=	Object ( <COMMA> Object )*
-	Object	:=	GraphNode
+	Object	:=	GraphNode Annotation
 	TriplesSameSubjectPath	:=	VarOrTerm PropertyListPathNotEmpty
 		|	TriplesNodePath PropertyListPath
 	PropertyListPath	:=	( PropertyListPathNotEmpty )?
@@ -336,7 +344,7 @@ NON-TERMINALS
 	VerbPath	:=	Path
 	VerbSimple	:=	Var
 	ObjectListPath	:=	ObjectPath ( <COMMA> ObjectPath )*
-	ObjectPath	:=	GraphNodePath
+	ObjectPath	:=	GraphNodePath AnnotationPath
 	Path	:=	PathAlternative
 	PathAlternative	:=	PathSequence ( <VBAR> PathSequence )*
 	PathSequence	:=	PathEltOrInverse ( <SLASH> PathEltOrInverse )*
@@ -355,20 +363,22 @@ NON-TERMINALS
 	BlankNodePropertyListPath	:=	<LBRACKET> PropertyListPathNotEmpty <RBRACKET>
 	Collection	:=	<LPAREN> ( GraphNode )+ <RPAREN>
 	CollectionPath	:=	<LPAREN> ( GraphNodePath )+ <RPAREN>
+	AnnotationPath	:=	( <L_ANN> PropertyListPathNotEmpty <R_ANN> )?
+	Annotation	:=	( <L_ANN> PropertyListNotEmpty <R_ANN> )?
 	GraphNode	:=	VarOrTerm
 		|	TriplesNode
 	GraphNodePath	:=	VarOrTerm
 		|	TriplesNodePath
-	VarOrTerm	:=	( Var | GraphTerm )
-	VarOrIri	:=	( Var | iri )
-	VarOrBlankNodeOrIri	:=	( Var | BlankNode | iri )
-	Var	:=	( <VAR1> | <VAR2> )
-	GraphTerm	:=	iri
+	VarOrTerm	:=	( Var | iri | RDFLiteral | NumericLiteral | BooleanLiteral | BlankNode | <NIL> | QuotedTriple )
+	QuotedTriple	:=	<LT2> VarOrTerm Verb VarOrTerm <GT2>
+	QuotedTripleData	:=	<LT2> ( DataValueTerm ) ( iri | <KW_A> ) ( DataValueTerm ) <GT2>
+	DataValueTerm	:=	iri
 		|	RDFLiteral
 		|	NumericLiteral
 		|	BooleanLiteral
-		|	BlankNode
-		|	<NIL>
+		|	QuotedTripleData
+	VarOrIri	:=	( Var | iri )
+	Var	:=	( <VAR1> | <VAR2> )
 	Expression	:=	ConditionalOrExpression
 	ConditionalOrExpression	:=	ConditionalAndExpression ( <SC_OR> ConditionalAndExpression )*
 	ConditionalAndExpression	:=	ValueLogical ( <SC_AND> ValueLogical )*
@@ -381,7 +391,9 @@ NON-TERMINALS
 		|	<PLUS> PrimaryExpression
 		|	<MINUS> PrimaryExpression
 		|	PrimaryExpression
-	PrimaryExpression	:=	( BrackettedExpression | BuiltInCall | iriOrFunction | RDFLiteral | NumericLiteral | BooleanLiteral | Var )
+	PrimaryExpression	:=	( BrackettedExpression | BuiltInCall | iriOrFunction | RDFLiteral | NumericLiteral | BooleanLiteral | Var | ExprQuotedTriple )
+	ExprVarOrTerm	:=	( iri | RDFLiteral | NumericLiteral | BooleanLiteral | Var | ExprQuotedTriple )
+	ExprQuotedTriple	:=	<LT2> ExprVarOrTerm Verb ExprVarOrTerm <GT2>
 	BrackettedExpression	:=	<LPAREN> Expression <RPAREN>
 	BuiltInCall	:=	Aggregate
 		|	<STR> <LPAREN> Expression <RPAREN>
@@ -438,6 +450,11 @@ NON-TERMINALS
 		|	RegexExpression
 		|	ExistsFunc
 		|	NotExistsFunc
+		|	<IS_TRIPLE> <LPAREN> Expression <RPAREN>
+		|	<TRIPLE> <LPAREN> Expression <COMMA> Expression <COMMA> Expression <RPAREN>
+		|	<SUBJECT> <LPAREN> Expression <RPAREN>
+		|	<PREDICATE> <LPAREN> Expression <RPAREN>
+		|	<OBJECT> <LPAREN> Expression <RPAREN>
 	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
 	SubstringExpression	:=	<SUBSTR> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
 	StrReplaceExpression	:=	<REPLACE> <LPAREN> Expression <COMMA> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>

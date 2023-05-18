@@ -70,8 +70,7 @@ $tokens =~ s!\r!!g ;
 # Grammar rules
 # Direct from "jjdoc -TEXT=true"
 
-for $g (@g)
-{
+for $g (@g) {
     ($rulename, $rulebody) = split(/:=/,$g) ;
 
     $rulename =~ s!^\s*!! ;
@@ -79,23 +78,12 @@ for $g (@g)
 
     $rulebody =~ s!^\s*!! ;
     $rulebody =~ s!\s*$!! ;
+
     
     # Remove outer brackets
 #    $rulebody =~ s!^\((.*)\)$!$1! ;
 
-    # Remove <> around tokens in grammar.
-    ## Now done very late (as &lt;&gt;) in fixups.
-    ## $rulebody =~ s/\<(\w+)\>/$1/g ;
-    # Leave in - so tokens distinguished from rules
-
     next if $rulename eq '' ;
-    #next if $rulebody eq '' ;
-
-    # Skip the root rule.
-    next if ( $rulename eq 'CompilationUnit' ) ;
-
-    $rulebody = 'Perl 5 regular expression'
-	if ( $rulename eq 'PatternLiteral' ) ;
 
     push @rules, $rulename ;
     warn "Duplicate rule (grammar): $rulename\n" if defined($ruleMap{$rulename}) ;
@@ -104,7 +92,6 @@ for $g (@g)
 ##     print "----------\n" ;
 ##     print $rulename,"\n" ;
 ##     print $rulebody,"\n" ;
-
 }
 
 
@@ -117,53 +104,36 @@ $tokens =~ s/^\n// ;
 
 @t = split(/\n(?=\<|\[)/, $tokens) ;
 
-for $t (@t)
-{
+for $t (@t) {
     ($tokenname,$tokenbody) = split(/::=/, $t) ;
     $tokenname =~ s!^\s*!! ;
     $tokenname =~ s!\s*$!! ;
-
-##     # remove <> around tokens
-## Do very late as a formatting fix up.
-##     $tokenname =~ s/^\<// ;
-##     $tokenname =~ s/\>$// ;
-
     $tokenname =~ s/#// ;
-    
+
     $tokenbody =~ s!^\s*!! ;
     $tokenbody =~ s!\s*$!! ;
-    
-    # <> round tokens
-    # Remove at last minute.
-
-    # Remove outer ()
-    # $tokenbody =~ s!^\((.*)\)$!$1! ;
 
     # Inline?
-    if ( $tokenname =~ /^\[\<\w*\>\]/ )
-    {
+    if ( $tokenname =~ /^\[\<\w*\>\]/ ) {
 	warn "Duplicate inline (token): $tokenname\n" if defined($inline{$tokenname}) ;
 	$tokenname =~ s/^\[//g ;
 	$tokenname =~ s/\]$//g ;
 	$tokenbody =~ s/"/'/g ; # '" -- But not literal " -- how?
         $tokenbody =~ s/\<\>\'\{\}/\<\>\"\{\}/ ; # '" IRI fixup
-
 	$inline{$tokenname} = $tokenbody ;
 
 	#print "INLINE: ",$tokenname," => ",$tokenbody,"\n" ;
-    }
-    else
-    {
+    } else {
 	push @rules, $tokenname ;
 	warn "Duplicate rule (token): $tokenname\n" if defined($tokenMap{$tokenname}) ;
 	$ruleMap{$tokenname} = $tokenbody ; 
     }
+    
 }
 
 # Table
 
-if ( ! $TABLE )
-{
+if ( ! $TABLE ) {
     print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" ;
     print "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n" ;
     print "    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" ;
@@ -194,15 +164,17 @@ EOF
      print "<body>\n";
 
     print "\n" ;
-}
+} ## End TABLE
 
-print "<div class=\"grammarTable\">\n" ;
-print "  <table><tbody>\n" ;
+$indent = "        ";
+## $indent = "";
+
+print $indent,"<div class=\"grammarTable\">\n" ;
+print $indent,"  <table><tbody>\n" ;
 
 $ruleNum = 0 ;
 
-for $r (@rules)
-{
+for $r (@rules) {
     $DEBUG = 0 ;
     $ruleNum++ ;
     $rulename = $r ;
@@ -211,45 +183,35 @@ for $r (@rules)
 
 ##    $DEBUG = 1 if ( $rulename =~ /Prolog/ ) ;
 
-    $rb = $rulebody ;
 
-    if ( $DEBUG )
-    {
+    if ( $DEBUG ) {
 	print STDERR "\n" ;
 	print STDERR "Rule: $rulename\n" ; 
 	print STDERR "Body: $rulebody\n" ; 
     }
 
-    ## Do before '||' substitution
-    # Not perfect - some fixups later.
-    #$rb =~ s%\|%\<br/\>\|%g ;
-
+    $ruleBodyStr = $rulebody ;
     # Escape HTML chars before adding markup.
-    $rb = esc($rb) ;
+    $ruleBodyStr = esc($ruleBodyStr) ;
     
     # Inlines
-    for $k (keys %inline)
-    {
-	$s = span('token', $inline{$k}) ;
+    for $k (keys %inline) {
+	$s = '<span class="token">' . esc($inline{$k}) . '</span>' ;
 	$k = esc($k) ;
 	# Assumes escaped <> round tokens.
 	$k = quotemeta $k ;
-	$rb =~ s/$k/$s/g ;
-
+	$ruleBodyStr =~ s/$k/$s/g ;
     }
 
-    if ( $DEBUG )
-    {
+    if ( $DEBUG ) {
 	print STDERR "After inlining\n" ;
-	print STDERR $rb,"\n" ; ; 
+	print STDERR $ruleBodyStr,"\n" ; ; 
     }
-
 
     # Add hrefs - issue if one is a substring of another \W helps.
 
-    for $k (keys %ruleMap)
-    {
-	$s = href("r-".$k,$k) ;
+    for $k (keys %ruleMap) {
+	$s = '<a href="#r' . sane($k) . '">' . esc($k) . '</a>' ;
 
 	$k = esc($k) ;
 	$k = quotemeta $k ;
@@ -260,73 +222,75 @@ for $r (@rules)
 ## 	}
 
 
-	$rb =~ s/(?=\W)(\s*)$k(\s*)(?=\W)/$1$s$2/g ;
-	$rb =~ s/^$k(\s*)(?=\W)/$s$1/g ;
-	$rb =~ s/(?=\W)(\s*)$k$/$1$s/g ;
-	$rb =~ s/^$k$/$s/g ;
+	$ruleBodyStr =~ s/(?=\W)(\s*)$k(\s*)(?=\W)/$1$s$2/g ;
+	$ruleBodyStr =~ s/^$k(\s*)(?=\W)/$s$1/g ;
+	$ruleBodyStr =~ s/(?=\W)(\s*)$k$/$1$s/g ;
+	$ruleBodyStr =~ s/^$k$/$s/g ;
     }
     
-    if ( $DEBUG )
-    {
+    if ( $DEBUG ) {
 	print STDERR "After hrefs\n" ;
-	print STDERR $rb,"\n" ; ; 
+	print STDERR $ruleBodyStr,"\n" ; ; 
     }
 
     #exit if $ruleNum > 2 ;
 
-    $rn = anchor("r-".$rulename, $rulename) ;
-    $rn = fixupHead($rn) ;
+    $ruleId = sane("r".$rulename) ;
 
-    if($rulename eq 'IRIREF') 
-    {
-	print "  </tbody></table>\n" ;
-	print "</div>\n" ;
-	print "<p>Productions for terminals:</p>\n" ;
-	print "<div class=\"grammarTable\">\n" ;
-	print "  <table><tbody>\n" ;
+    if($rulename eq 'IRIREF') {
+	print $indent,"  </tbody></table>\n" ;
+	print $indent,"</div>\n" ;
+	print $indent,"<p>Productions for terminals:</p>\n" ;
+	print $indent,"<div class=\"grammarTable\">\n" ;
+	print $indent,"  <table><tbody>\n" ;
     }
 
-
     print "\n" ;
-    print "<tr valign=\"baseline\">\n" ;
+    $indentRule = "              ";
+    ##$indentRule = "";
+    print $indentRule,"<tr style=\"vertical-align: baseline\">\n";
+    
     $rlabel = '[' . $ruleNum .  ']&nbsp;&nbsp;' ;
 
-    print "  <td>",code('gRuleLabel', $rlabel),"</td>\n" ;
+    print $indentRule,"  <td><code>",$rlabel,"</code></td>\n" ;
 
-    #print "  <td>",span('gRuleHead', $rn),"</td>\n" ;
-    print "  <td>",code('gRuleHead',$rn),"</td>\n" ;
-
-    print "  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>\n" ;
+    $rn = $rulename;
+    $rn =~ s!^<!!; 
+    $rn =~ s!>$!!; 
     
-    $rb = fixupRule($rulename, $rb) ;
-    print "  <td>",code('gRuleBody',$rb),"</td>\n" ;
+    print $indentRule,
+	'  <td><code><span class="doc-ref" id="',$ruleId,'">',
+	esc($rn),
+	'</span></code></td>',"\n";
+    
+    print $indentRule,"  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>\n" ;
+    
+    $ruleBodyStr = fixupRule($rulename, $ruleBodyStr) ;
+    print $indentRule,"  <td>",code('gRuleBody',$ruleBodyStr),"</td>\n" ;
 
-    print "</tr>\n" ;
+    print $indentRule,"</tr>\n" ;
 
 #    $rule{$rulename, $rulebody) ;
 #    print $rulename , "\n" ;
 }
 
-print "  </tbody></table>\n" ;
-print "</div>\n" ;
+print $indent,"  </tbody></table>\n" ;
+print $indent,"</div>\n" ;
 
-if ( !$TABLE )
-{
+if ( !$TABLE ) {
     print "\n" ;
     print "</body>\n" ;
     print "</html>\n" ;
 }
 
-sub readFile
-{
+sub readFile {
     my $f = $_[0] ;
     open(F, "$f") || die "$f: $!"; 
     my $s = <F> ;
     return $s ;
 }
 
-sub esc
-{
+sub esc {
     my $s = $_[0] ;
     $s =~ s/&/&amp;/g ; 
     $s =~ s/</&lt;/g ; 
@@ -334,78 +298,31 @@ sub esc
     return $s ;
 }
 
-sub span
-{
-    my $c = $_[0] ;
-    my $t = $_[1] ;
-    $t = esc($t) ;
-    my $s = '<span class="' . $c . '">' . $t . '</span>' ;
-    return $s ;
-}
-
-sub href
-{
-    my $a = $_[0] ;
-    my $t = $_[1] ;
-    $a = sane($a) ;
-    $t = esc($t) ;
-    my $s = '<a href="#' . $a . '">' . $t . '</a>' ;
-    return $s ;
-}
-
-sub anchor
-{
-    my $a = $_[0] ;
-    my $t = $_[1] ;
-    $a = sane($a) ;
-    $t = esc($t) ;
-    my $s = '<a id="' . $a . '" name="' . $a . '">' . $t . '</a>' ;
-    return $s ;
-}
-
-sub sane
-{
+sub sane {
    my $a = $_[0] ;
    $a =~ s/\W//g ;
    return $a ;
 }
 
-sub code
-{
+sub code {
     my $c = $_[0] ;
     my $t = $_[1] ;
     return '<code class="' . $c . '">' . $t . '</code>' ;
 }
 
-sub fixupHead
-{
+sub fixupHead {
     my $head = $_[0] ;
     # Remove <> around tokens.
     $head =~ s/&lt;(\w+)&gt;/$1/g ;
     return $head ;
 }
 
-sub fixupRule
-{
+sub fixupRule {
     my $head = $_[0] ;
     my $body = $_[1] ;
 
     # Remove unnecessary ()
     $body =~ s/\(\s*([^()| ]*) \)/$1/g ;
-
-##     if ( $body =~ m!\(\s+(\<a[^>]*\>[^<>]*\</a\>)\s+\)! )
-##     {
-## 	$b = $body ;
-## 	print "================================\n" ;
-## 	print STDERR "$b\n" ;
-## 	print STDERR "--------\n" ;
-## 	$b =~ s!\(\s+(\<a[^>]*\>[^<>]*\</a\>)\s+\)!$1!g ;
-## 	$b =~ s!\(\s+(\<span[^>]*\>[^<>]*\</span\>)\s+\)!$1!g ;
-## 	print STDERR "$b\n" ;
-## 	print STDERR "=====\n" ;
-## 	print STDERR "\n" ;
-##     }
-
 
     # Remove outer matching () where there are no inner ()
     $body =~ s/^\(\s+([^\(]*)\s+\)$/$1/ ;
@@ -451,13 +368,13 @@ sub fixupRule
 	$body =~ s%\<br/\>\| *\<a href="#rNIL"\>NIL\</a\>%\| \<a href="#rNIL"\>NIL\</a\>%g ;
     }
 
-    if ( $head eq "RelationalExpression" ||
-	 $head eq "AdditiveExpression" ||
-	 $head eq "MultiplicativeExpression" ||
-	 $head eq "ConditionalOrExpression")
-    {
-	$body =~ s%\*\(%<br/>\(% ;
-    }
+##     if ( $head eq "RelationalExpression" ||
+## 	 $head eq "AdditiveExpression" ||
+## 	 $head eq "MultiplicativeExpression" ||
+## 	 $head eq "ConditionalOrExpression")
+##     {
+## 	$body =~ s%\*\(%<br/>\(% ;
+##     }
 
     # These failed the outer () test because they have nested () in them
     if (  $head eq "QueryPattern" ||

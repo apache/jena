@@ -39,7 +39,6 @@ public class SPARQLParser12 extends SPARQLParser12Base
 PARSER_END(SPARQLParser12)
 void QueryUnit(): { }
 {
-  ByteOrderMark()
   { startQuery() ; }
   Query() <EOF>
   { finishQuery() ; }
@@ -53,15 +52,10 @@ void Query() : { }
 }
 void UpdateUnit() : {}
 {
-  ByteOrderMark()
   { startUpdateRequest() ; }
   Update()
   <EOF>
   { finishUpdateRequest() ; }
-}
-void ByteOrderMark() : {}
-{
-   (<BOM>)?
 }
 void Prologue() : {}
 {
@@ -645,6 +639,7 @@ Node DataBlockValue() : { Node n ; String iri ; }
 | n = NumericLiteral() { return n ; }
 | n = BooleanLiteral() { return n ; }
 | <UNDEF> { return null ; }
+| n = QuotedTripleData() { return n ; }
 }
 Element MinusGraphPattern() : { Element el ; }
 {
@@ -784,6 +779,7 @@ void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
   { ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ; }
   o = GraphNode(tempAcc)
   { insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ; }
+  Annotation(acc, s, p, path, o)
 }
 void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; }
 {
@@ -835,6 +831,7 @@ void ObjectPath(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
   { ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ; }
   o = GraphNodePath(tempAcc)
   { insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ; }
+  AnnotationPath(acc, s, p, path, o)
 }
 Path Path() : { Path p ; }
 {
@@ -995,6 +992,28 @@ Node CollectionPath(TripleCollectorMark acc) :
        insert(acc, lastCell, nRDFrest, nRDFnil) ;
      return listHead ; }
 }
+void AnnotationPath(TripleCollector acc, Node s, Node p, Path path, Node o) : {}
+{
+  (
+    <L_ANN>
+      { Node pAnn = preConditionAnnotation(s, p, path, o, token.beginLine, token.beginColumn) ;
+        Node x = createQuotedTriple(s, pAnn, o, token.beginLine, token.beginColumn);
+      }
+      PropertyListPathNotEmpty(x, acc)
+    <R_ANN>
+  )?
+}
+void Annotation(TripleCollector acc, Node s, Node p, Path path, Node o) : { }
+{
+  (
+    <L_ANN>
+      { Node pAnn = preConditionAnnotation(s, p, path, o, token.beginLine, token.beginColumn) ;
+        Node x = createQuotedTriple(s, p, o, token.beginLine, token.beginColumn);
+      }
+      PropertyListNotEmpty(x, acc)
+    <R_ANN>
+  )?
+}
 Node GraphNode(TripleCollectorMark acc) : { Node n ; }
 {
   n = VarOrTerm() { return n ; }
@@ -1007,34 +1026,56 @@ Node GraphNodePath(TripleCollectorMark acc) : { Node n ; }
  |
   n = TriplesNodePath(acc) { return n ; }
 }
-Node VarOrTerm() : {Node n = null ; }
+Node VarOrTerm() : { Node n = null ; String iri ; }
 {
-  ( n = Var() | n = GraphTerm() )
+  ( n = Var()
+  | iri = iri() { return createNode(iri) ; }
+  | n = RDFLiteral() { return n ; }
+  | n = NumericLiteral() { return n ; }
+  | n = BooleanLiteral() { return n ; }
+  | n = BlankNode() { return n ; }
+  | <NIL> { return nRDFnil ; }
+  | n = QuotedTriple()
+)
   { return n ; }
+}
+Node QuotedTriple() : { Node n = null ; Token t ; Node s , p , o ; }
+{
+  t = <LT2>
+  s = VarOrTerm()
+  p = Verb()
+  o = VarOrTerm()
+  { n = createQuotedTriple(s, p, o, t.beginLine, t.beginColumn); }
+  <GT2>
+  { return n; }
+}
+Node QuotedTripleData() : { Node n = null ; Token t ; String iri ; Node s , p , o ; }
+{
+  t = <LT2>
+  ( s = DataValueTerm() )
+  ( iri = iri() { p = createNode(iri) ; } | <KW_A> { p = nRDFtype ; } )
+  ( o = DataValueTerm() )
+  { n = createQuotedTriple(s, p, o, t.beginLine, t.beginColumn); }
+  <GT2>
+  { return n; }
+}
+Node DataValueTerm() : { Node n = null ; String iri ; Node s , p , o ; }
+{
+  iri = iri() { return createNode(iri) ; }
+| n = RDFLiteral() { return n ; }
+| n = NumericLiteral() { return n ; }
+| n = BooleanLiteral() { return n ; }
+| n = QuotedTripleData() { return n ; }
 }
 Node VarOrIri() : {Node n = null ; String iri ; }
 {
   ( n = Var() | iri = iri() { n = createNode(iri) ; } )
   { return n ; }
 }
-Node VarOrBlankNodeOrIri() : {Node n = null ; String iri ; }
-{
-  ( n = Var() | n = BlankNode() | iri = iri() { n = createNode(iri) ; } )
-  { return n ; }
-}
 Var Var() : { Token t ;}
 {
     ( t = <VAR1> | t = <VAR2> )
     { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
-}
-Node GraphTerm() : { Node n ; String iri ; }
-{
-  iri = iri() { return createNode(iri) ; }
-| n = RDFLiteral() { return n ; }
-| n = NumericLiteral() { return n ; }
-| n = BooleanLiteral() { return n ; }
-| n = BlankNode() { return n ; }
-| <NIL> { return nRDFnil ; }
 }
 Expr Expression() : { Expr expr ; }
 {
@@ -1153,7 +1194,28 @@ Expr PrimaryExpression() : { Expr expr ; Node n ; }
   | n = NumericLiteral() { return asExpr(n) ; }
   | n = BooleanLiteral() { return asExpr(n) ; }
   | n = Var() { return asExpr(n) ; }
+  | n = ExprQuotedTriple() { return asExpr(n) ; }
   )
+}
+Node ExprVarOrTerm() : { Node n; String s;}
+{
+  ( s = iri() { n = createNode(s); }
+  | n = RDFLiteral()
+  | n = NumericLiteral()
+  | n = BooleanLiteral()
+  | n = Var()
+  | n = ExprQuotedTriple()
+  )
+  { return n; }
+}
+Node ExprQuotedTriple() : { Token t ; Node s,p,o,n; }
+{ t = <LT2>
+  s = ExprVarOrTerm()
+  p = Verb()
+  o = ExprVarOrTerm()
+  { n = createQuotedTriple(s, p, o, t.beginLine, t.beginColumn); }
+  <GT2>
+  { return n; }
 }
 Expr BrackettedExpression() : { Expr expr ; }
 {
@@ -1250,6 +1312,16 @@ Expr BuiltInCall() : { Expr expr ;
     expr = RegexExpression() { return expr ; }
   | expr = ExistsFunc() { return expr ; }
   | expr = NotExistsFunc() { return expr ; }
+| <IS_TRIPLE> <LPAREN> expr = Expression() <RPAREN>
+    { return new E_IsTriple(expr) ; }
+  | <TRIPLE> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <COMMA> expr3 = Expression() <RPAREN>
+    { return new E_TripleFn(expr1, expr2, expr3) ; }
+  | <SUBJECT> <LPAREN> expr = Expression() <RPAREN>
+    { return new E_TripleSubject(expr) ; }
+  | <PREDICATE> <LPAREN> expr = Expression() <RPAREN>
+    { return new E_TriplePredicate(expr) ; }
+  | <OBJECT> <LPAREN> expr = Expression() <RPAREN>
+    { return new E_TripleObject(expr) ; }
 }
 Expr RegexExpression() :
 { Expr expr ; Expr patExpr = null ; Expr flagsExpr = null ; }
@@ -1447,8 +1519,6 @@ TOKEN: {
   <#WS: " " | "\t" | "\n" | "\r" | "\f">
 |
   <#WSC: <WS> | <SINGLE_LINE_COMMENT> >
-|
-  <BOM: "\uFEFF">
 }
 TOKEN:
 {
@@ -1495,6 +1565,11 @@ TOKEN [IGNORE_CASE] :
 | < MINUS_P: "minus" >
 | < BIND: "bind" >
 | < SERVICE: "service" >
+| < TRIPLE: "TRIPLE" >
+| < IS_TRIPLE: "isTRIPLE" >
+| < SUBJECT: "SUBJECT" >
+| < PREDICATE: "PREDICATE" >
+| < OBJECT: "OBJECT" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
 | < AS: "as" >
@@ -1654,6 +1729,10 @@ TOKEN :
 | < LT: "<" >
 | < LE: "<=" >
 | < GE: ">=" >
+| < GT2: ">>" >
+| < LT2: "<<" >
+| <L_ANN: "{|" >
+| <R_ANN: "|}" >
 | < BANG: "!" >
 | < TILDE: "~" >
 | < COLON: ":" >

@@ -95,17 +95,17 @@ public interface ARQParserConstants {
   /** RegularExpression Id. */
   int LET = 47;
   /** RegularExpression Id. */
-  int TRIPLE = 48;
+  int LATERAL = 48;
   /** RegularExpression Id. */
-  int IS_TRIPLE = 49;
+  int TRIPLE = 49;
   /** RegularExpression Id. */
-  int SUBJECT = 50;
+  int IS_TRIPLE = 50;
   /** RegularExpression Id. */
-  int PREDICATE = 51;
+  int SUBJECT = 51;
   /** RegularExpression Id. */
-  int OBJECT = 52;
+  int PREDICATE = 52;
   /** RegularExpression Id. */
-  int LATERAL = 53;
+  int OBJECT = 53;
   /** RegularExpression Id. */
   int EXISTS = 54;
   /** RegularExpression Id. */
@@ -518,12 +518,12 @@ public interface ARQParserConstants {
     "\"bind\"",
     "\"service\"",
     "\"LET\"",
+    "\"LATERAL\"",
     "\"TRIPLE\"",
     "\"isTRIPLE\"",
     "\"SUBJECT\"",
     "\"PREDICATE\"",
     "\"OBJECT\"",
-    "\"LATERAL\"",
     "\"exists\"",
     "\"not\"",
     "\"as\"",

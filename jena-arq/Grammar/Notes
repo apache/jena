@@ -7,12 +7,15 @@ main.jj - Template for SPARQL and ARQ
     cpp input to produce sparql.jj or arq.jj
 
 sparql_11.jj - The SPARQL working group syntax
-    This should be exactly the grammar in the SPARQL rec.
+    This should be exactly the grammar in the SPARQL 1.1 rec.
     Generates org.apache.jena.query.parser.sparql_11.SPARQLParser
+
+sparql_12.jj - The RDF Star working group syntax
+    This should be exactly the grammar in the SPARQL 1.2 rec.
+    Generates org.apache.jena.query.parser.sparql_12.SPARQLParser
 
 arq.jj - The native query language of the query engine
     Generates org.apache.jena.query.parser.arq.ARQParser
-
 
 sparql_10-final.jj - SPARQL 1.0, but updated to match internal chnages in ARQ.
     This should produce the grammar in the SPARQ 1.0/DAWG rec.
@@ -31,7 +34,7 @@ Note this runs cpp over main.jj to produce arq.jj or sparql.jj
 
 ==== Making the HTML
 
-sparql_N.txt is produced by "grammar", used to make HTML.
+sparql_N.txt is produced by "grammar", and is used to make HTML.
 We don't use jjdoc to produce HTML but instead get jjdoc to produce
 its text form and process that, toegther with a hand-managed
 token.txt file.
@@ -41,6 +44,6 @@ token.txt file.
 Run "jj2tokens sparql_11.jj > tokens.txt" to get a first pass at a tokens file.
 Manually tidy, noting which to inline
 
-Produce HTML suiatble for inclusion in the SPARQL recomendations.
+Produce HTML suitable for inclusion in the SPARQL recomendations.
 Includes some hand-craft tidying up. 
   jj2html arq.txt tokens.txt 
