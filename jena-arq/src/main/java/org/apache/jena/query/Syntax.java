@@ -57,8 +57,8 @@ public class Syntax extends Symbol {
      */
     public static Syntax defaultUpdateSyntax = defaultSyntax;
 
-    /** The query syntax currently that is standardized, published, SPARQL Query */
-    public static final Syntax syntaxSPARQL = syntaxSPARQL_11;
+    /** The latest SPARQL query syntax - no ARQ syntax extensions. */
+    public static final Syntax syntaxSPARQL = syntaxSPARQL_12;
 
     public static TranslationTable<Syntax> querySyntaxNames = new TranslationTable<>(true);
     static {
