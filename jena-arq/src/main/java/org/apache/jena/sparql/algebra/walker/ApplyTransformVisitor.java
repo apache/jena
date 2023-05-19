@@ -149,6 +149,10 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
 
     @Override
     public void visit(OpUnfold opUnfold) {
+        final Expr e2 = pop(exprStack);
+        if ( ! opUnfold.getExpr().equals(e2) )
+            throw new IllegalArgumentException("Expression on stack differs from expression of UNFOLD.");
+
         visit1(opUnfold) ;
     }
 
