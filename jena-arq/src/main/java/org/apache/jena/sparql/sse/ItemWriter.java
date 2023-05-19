@@ -44,10 +44,18 @@ public class ItemWriter
     }
 
     public static void write(IndentedWriter out, Item item, SerializationContext sCxt) {
-        writeFn(out, item, sCxt);
+        writeInline(out, item, sCxt);
     }
 
-    // Core function. Does not apply reverse lift.
+    // Core function. Does not apply reverse lift. Does not write prefixes or base.
+    private static void writeInline(IndentedWriter out, Item item, SerializationContext sCxt) {
+        Print pv = new Print(out, sCxt);
+        pv.startPrint();
+        item.visit(pv);
+        pv.finishPrint();
+    }
+
+    // Core function. Writes self contained output with prfixes and base.
     private static void writeFn(IndentedWriter out, Item item, SerializationContext sCxt) {
         Print pv = new Print(out, sCxt);
         pv.startPrint();
@@ -130,7 +138,9 @@ public class ItemWriter
             this.sCxt = sCxt;
         }
 
-        void startPrint() {
+        void startPrint() {}
+
+        void writeContext() {
             if ( sCxt != null ) {
                 if ( includeBase && sCxt.getBaseIRI() != null ) {
                     out.print("(base ");
@@ -151,7 +161,6 @@ public class ItemWriter
                 }
             }
         }
-
         void finishPrint() {
             if ( doneBase ) {
                 out.print(")");
