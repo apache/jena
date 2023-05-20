@@ -33,6 +33,7 @@ import org.apache.jena.Jena;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
@@ -44,14 +45,12 @@ import org.apache.jena.rdfs.SetupRDFS;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.lang.StreamRDFCounting;
-import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.system.StreamRDFLib;
-import org.apache.jena.riot.system.StreamRDFWriter;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sys.JenaSystem;
 
 /** Common framework for running RIOT parsers */
@@ -101,7 +100,7 @@ public abstract class CmdLangParse extends CmdGeneral {
         void postParse();
     }
 
-    static class ParseRecord {
+    protected static class ParseRecord {
         final String filename;
         final boolean success;
         final long timeMillis;
@@ -118,6 +117,19 @@ public abstract class CmdLangParse extends CmdGeneral {
             this.triples = countTriples;
             this.quads = countQuads;
             this.errHandler = errHandler;
+        }
+    }
+
+    /** Quads to triples. */
+    protected static class StreamRDFasTriples extends StreamRDFWrapper {
+
+        public StreamRDFasTriples(StreamRDF destination) {
+            super(destination);
+        }
+
+        @Override
+        public void quad(Quad quad) {
+            super.triple(quad.asTriple());
         }
     }
 
@@ -160,6 +172,11 @@ public abstract class CmdLangParse extends CmdGeneral {
             Pair<StreamRDF, PostParseHandler> p = createAccumulateSink();
             outputStream = p.getLeft();
             postParse = p.getRight();
+        }
+
+        if ( ! isQuadsOutput() ) {
+            // Only pass through triples.
+            outputStream = StreamTriplesOnly.warnIfQuads(SysRIOT.getLogger(), outputStream);
         }
 
         try {
@@ -351,7 +368,6 @@ public abstract class CmdLangParse extends CmdGeneral {
         RDFFormat fmt = modLangOutput.getOutputStreamFormat();
         if ( fmt == null )
             return null;
-        /** Create an accumulating output stream for later pretty printing */
         return StreamRDFWriter.getWriterStream(outputWrite, fmt, RIOT.getContext());
     }
 
@@ -365,14 +381,30 @@ public abstract class CmdLangParse extends CmdGeneral {
             builder.format(fmt);
             if ( RDFLanguages.isQuads(fmt.getLang()) )
                 builder.source(dsg);
-            else
+            else {
+                // Should only see triples - this is a consistency check.
+                if ( dsg.size() > 0 )
+                    Log.warn(SysRIOT.getLogger(), "Quads seen when only triples expected - quads ignored");
                 builder.source(dsg.getDefaultGraph());
+            }
+
             String baseURI = writerBaseIRI;
             if ( baseURI != null )
                 builder.base(baseURI);
             builder.output(outputWrite);
         };
         return Pair.create(sink, handler);
+    }
+
+    protected boolean isQuadsOutput() {
+        // Use stream in preference - CmdLangParse
+        RDFFormat fmt = modLangOutput.getOutputStreamFormat();
+        if ( fmt == null)
+            fmt = modLangOutput.getOutputFormatted();
+        if ( fmt != null && RDFLanguages.isTriples(fmt.getLang()) )
+            return false;
+        else
+            return true;
     }
 
     protected Tokenizer makeTokenizer(InputStream in) {

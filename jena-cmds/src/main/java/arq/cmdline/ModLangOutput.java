@@ -51,6 +51,9 @@ public class ModLangOutput extends ModBase
 
     @Override
     public void processArgs(CmdArgModule cmdLine) {
+
+        // [QT]  ** check only one of argPretty, argStream, argOutput **
+
         if ( cmdLine.contains(argPretty) ) {
             String langName = cmdLine.getValue(argPretty) ;
             Lang lang = RDFLanguages.nameToLang(langName) ;
@@ -94,7 +97,7 @@ public class ModLangOutput extends ModBase
                 }
                 // Non-streaming block-style writers.
                 // The normal RDF/XML writer is the pretty one, also know as "RDF/XML-ABBREV"
-                // but it can occassionally use a lot of stack and heap.
+                // but it can occasionally uses a lot of stack and heap.
                 //
                 // The RDF/XML basic writer ("Basic") is not streaming but does not
                 // consume a lot of stack and heap as it writes in a flat block style.
