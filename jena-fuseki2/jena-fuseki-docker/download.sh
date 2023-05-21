@@ -18,7 +18,7 @@
 # limitations under the License.
 
 # This is an ash/dash script (it uses "local"), not a bash script.
-# It can run in an Alpine image durign a docker build.
+# It can run in an Alpine image during a docker build.
 #
 # The advantage over using docker ADD is that it checks
 # whether download file is already present and does not
@@ -38,46 +38,46 @@ CHKSUM_TYPE='unset'
 
 while [ $# -gt 0 ] ; do
     case "$1" in
-	--chksum|-chksum|-sha|--sha)
-	    if [ $# -lt 2 ]
-	    then
-		echo "$USAGE" 1>&2
-		exit 1
-	    fi
-	    CHKSUM_TYPE=$2
-	    shift
-	    shift
-	    ;;
-	-h|--help)
-	    echo "$USAGE" 1>&2
-	    exit 0
-	    ;;
-	-*)
-	    echo "$USAGE" 1>&2
-	    exit 1
-	    ;;
-	*)
-	    if [ $# -ne 1 ]
-	    then
-		echo "$USAGE" 1>&2
-		exit 1
-	    fi
-	    URL="$1"
-	    shift
-	    ;;
+    --chksum|-chksum|-sha|--sha)
+        if [ $# -lt 2 ]
+        then
+        echo "$USAGE" 1>&2
+        exit 1
+        fi
+        CHKSUM_TYPE=$2
+        shift
+        shift
+        ;;
+    -h|--help)
+        echo "$USAGE" 1>&2
+        exit 0
+        ;;
+    -*)
+        echo "$USAGE" 1>&2
+        exit 1
+        ;;
+    *)
+        if [ $# -ne 1 ]
+        then
+        echo "$USAGE" 1>&2
+        exit 1
+        fi
+        URL="$1"
+        shift
+        ;;
     esac
 done
 
 case "${CHKSUM_TYPE}" in
     unset)
-	echo "$USAGE" 1>&2
-	exit 1
-	;;
+    echo "$USAGE" 1>&2
+    exit 1
+    ;;
     sha*|md5) ;;
     *)
-	echo "Bad checksum type: '$CHKSUM_TYPE' (must start 'sha' or be 'md5')" 2>&1
-	exit 1	 
-	;;
+    echo "Bad checksum type: '$CHKSUM_TYPE' (must start 'sha' or be 'md5')" 2>&1
+    exit 1
+    ;;
 esac
 
 ## ---- Script starts ----
@@ -105,11 +105,11 @@ download() { # URL
     local FN="$(basename "$URL")"
     if [ ! -e "$FN" ]
     then
-	echo "Fetching $URL"
-	curl $CURL_FETCH_OPTS "$URL" --output "$FN" \
-	    || { echo "Bad download of $FN" 2>&1 ; return 1 ; }
+    echo "Fetching $URL"
+    curl $CURL_FETCH_OPTS "$URL" --output "$FN" \
+        || { echo "Bad download of $FN" 2>&1 ; return 1 ; }
     else
-	echo "$FN already present"
+    echo "$FN already present"
     fi
     return 0
 }
@@ -119,8 +119,8 @@ checkChksum() { # Filename checksum
     local CHKSUM="$2"
     if [ ! -e "$FN" ]
     then
-	echo "No such file: '$FN'" 2>&1
-	exit 1
+    echo "No such file: '$FN'" 2>&1
+    exit 1
     fi
     # NB Two spaces required for busybox
     echo "$CHKSUM  $FN" | ${CHKSUMPROG} -c > /dev/null
