@@ -86,14 +86,42 @@ public abstract class CmdLangParse extends CmdGeneral {
     protected List<ParseRecord> outcomes = new ArrayList<>();
 
     protected OutputStream outputWrite = System.out;
-    protected StreamRDF outputStream = null;
+    protected StreamRDF parserOutputStream = null;
     protected String parserBaseIRI = null;
     protected boolean passRelativeURIs = false;
     protected String writerBaseIRI = null;
-
     @Override
     protected void processModulesAndArgs() {
         cmdStrictMode = super.contains(strictDecl);
+        // checking.
+
+        // True if any input is quads
+        // False is unknow (stdin, no --syntax)
+        // Check will also be done during parsing.
+        boolean someQuadsInput = false;
+
+        if ( ! getPositional().isEmpty() || modLangParse.getLang() != null ) {
+            // otherwise the input is stdin and maybe triples or quads.
+            if ( modLangParse.getLang() != null ) {
+                someQuadsInput = RDFLanguages.isQuads(modLangParse.getLang());
+            } else {
+                for ( String fn :  super.getPositional() ) {
+                    Lang lang = RDFLanguages.filenameToLang(fn);
+                    if ( !RDFLanguages.isQuads(lang) ) {
+                        someQuadsInput = false;
+                        break;
+                    }
+                }
+            }
+        }
+        RDFFormat output = modLangOutput.getOutputStreamFormat();
+        if ( output == null )
+            output =  modLangOutput.getOutputFormatted();
+        if ( output == null )
+            output = RDFFormat.NQUADS;
+
+        if ( someQuadsInput && ! isQuadsOutput() )
+            Log.warn(SysRIOT.getLogger(), "Quads syntax in the input files but triple output requested.");
     }
 
     protected interface PostParseHandler {
@@ -164,19 +192,30 @@ public abstract class CmdLangParse extends CmdGeneral {
             }
         }
 
-        outputStream = null;
+        parserOutputStream = null;
         PostParseHandler postParse = null;
 
-        outputStream = createStreamSink();
-        if ( outputStream == null ) {
+        parserOutputStream = createStreamSink();
+        if ( parserOutputStream == null ) {
             Pair<StreamRDF, PostParseHandler> p = createAccumulateSink();
-            outputStream = p.getLeft();
+            parserOutputStream = p.getLeft();
             postParse = p.getRight();
         }
 
         if ( ! isQuadsOutput() ) {
             // Only pass through triples.
-            outputStream = StreamTriplesOnly.warnIfQuads(SysRIOT.getLogger(), outputStream);
+            final StreamRDF dest = parserOutputStream;
+            if ( isStreamingOutput() ) {
+                Runnable action = () -> {
+                    // dest may be significantly buffered over the top of the output stream.
+                    // The log message does not necessarily come out in the right place - it may be early.
+                    IO.flush(outputWrite);
+                    Log.warn(SysRIOT.getLogger(), "Quads in triples output - quads ignored.");
+                };
+                parserOutputStream = StreamTriplesOnly.actionIfQuads(parserOutputStream, action);
+            } else {
+                // Not streaming - code can issue error before formatting.
+            }
         }
 
         try {
@@ -332,10 +371,11 @@ public abstract class CmdLangParse extends CmdGeneral {
         if ( labelsAsGiven )
             builder.labelToNode(LabelToNode.createUseLabelAsGiven());
 
-        StreamRDF s = outputStream;
+        // Build parser output additions.
+        StreamRDF s = parserOutputStream;
         if ( setup != null )
             s = RDFSFactory.streamRDFS(s, setup);
-        StreamRDFCounting sink = StreamRDFLib.count(s);
+        StreamRDFCounting parserOut = StreamRDFLib.count(s);
         s = null;
 
         boolean successful = true;
@@ -343,8 +383,8 @@ public abstract class CmdLangParse extends CmdGeneral {
         modTime.startTimer();
         RDFParser parser = builder.build();
         try {
-            sink.start();
-            parser.parse(sink);
+            parserOut.start();
+            parser.parse(parserOut);
             successful = true;
         } catch (RiotNotFoundException ex) {
             errHandler.error(ex.getMessage(), -1, -1);
@@ -354,9 +394,9 @@ public abstract class CmdLangParse extends CmdGeneral {
         } catch (IRIException ex) {
             successful = false;
         }
-        sink.finish();
+        parserOut.finish();
         long x = modTime.endTimer();
-        ParseRecord outcome = new ParseRecord(filename, successful, x, sink.countTriples(), sink.countQuads(), errHandler);
+        ParseRecord outcome = new ParseRecord(filename, successful, x, parserOut.countTriples(), parserOut.countQuads(), errHandler);
         return outcome;
     }
 
@@ -383,8 +423,10 @@ public abstract class CmdLangParse extends CmdGeneral {
                 builder.source(dsg);
             else {
                 // Should only see triples - this is a consistency check.
-                if ( dsg.size() > 0 )
-                    Log.warn(SysRIOT.getLogger(), "Quads seen when only triples expected - quads ignored");
+                if ( dsg.size() > 0 ) {
+                    Log.error(SysRIOT.getLogger(), "Quads seen in input but output is triples only.");
+                    throw new CmdException();
+                }
                 builder.source(dsg.getDefaultGraph());
             }
 
@@ -401,10 +443,16 @@ public abstract class CmdLangParse extends CmdGeneral {
         RDFFormat fmt = modLangOutput.getOutputStreamFormat();
         if ( fmt == null)
             fmt = modLangOutput.getOutputFormatted();
-        if ( fmt != null && RDFLanguages.isTriples(fmt.getLang()) )
+        // RDFLanguages.isTriples means the language can be used in a triples context
+        // hence the test is "not quads".
+        if ( fmt != null && ! RDFLanguages.isQuads(fmt.getLang()) )
             return false;
         else
             return true;
+    }
+
+    protected boolean isStreamingOutput() {
+        return modLangOutput.getOutputStreamFormat() != null;
     }
 
     protected Tokenizer makeTokenizer(InputStream in) {

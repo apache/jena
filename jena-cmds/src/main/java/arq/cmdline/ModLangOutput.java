@@ -36,7 +36,7 @@ public class ModLangOutput extends ModBase
     protected ArgDecl argPretty       = new ArgDecl(ArgDecl.HasValue, "formatted", "pretty", "fmt") ;
     protected ArgDecl argStream       = new ArgDecl(ArgDecl.HasValue, "stream") ;
     protected ArgDecl argCompress     = new ArgDecl(ArgDecl.NoValue, "compress") ;
-    private boolean compressedOutput = false ;
+    private boolean compressedOutput  = false ;
     private RDFFormat streamOutput    = null ;
     private RDFFormat formattedOutput = null ;
 
@@ -51,9 +51,18 @@ public class ModLangOutput extends ModBase
 
     @Override
     public void processArgs(CmdArgModule cmdLine) {
+        {
+            int x = 0;
+            if ( cmdLine.contains(argPretty) )
+                x++;
+            if ( cmdLine.contains(argStream) )
+                x++;
+            if ( cmdLine.contains(argOutput) )
+                x++;
 
-        // [QT]  ** check only one of argPretty, argStream, argOutput **
-
+            if ( x >= 2 )
+                throw new CmdException("Multiple output choices given: Use one of--stream, --output and --formatted");
+        }
         if ( cmdLine.contains(argPretty) ) {
             String langName = cmdLine.getValue(argPretty) ;
             Lang lang = RDFLanguages.nameToLang(langName) ;

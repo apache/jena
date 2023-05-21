@@ -18,27 +18,25 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.sparql.core.Quad;
-import org.slf4j.Logger;
 
 /**
  * {@link StreamRDF} that expects triples not quads.
- * Issues a warning when the first quad is seen.
+ * Runs an action the first time a quad is seen.
  * Quads that are the default graph or no graph are redirected to {@link StreamRDF#triple}.
  */
 public class StreamTriplesOnly extends StreamRDFWrapper {
 
-    public static StreamRDF warnIfQuads(Logger log, StreamRDF stream) {
-        return new StreamTriplesOnly(log, stream);
+    public static StreamRDF actionIfQuads(StreamRDF stream, Runnable action) {
+        return new StreamTriplesOnly(stream, action);
     }
 
     private boolean seenQuads = false;
-    private final Logger log;
+    private final Runnable action;
 
-    private StreamTriplesOnly(Logger logger, StreamRDF sink) {
+    private StreamTriplesOnly(StreamRDF sink, Runnable action) {
         super(sink) ;
-        this.log = logger;
+        this.action = action;
     }
 
     @Override
@@ -48,7 +46,7 @@ public class StreamTriplesOnly extends StreamRDFWrapper {
             return;
         }
         if ( ! seenQuads ) {
-            Log.warn(log, "Quads in triples output - quads ignored");
+            action.run();
             seenQuads = true;
         }
     }
