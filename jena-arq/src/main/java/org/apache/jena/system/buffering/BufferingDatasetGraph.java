@@ -70,6 +70,11 @@ public class BufferingDatasetGraph extends DatasetGraphTriplesQuads implements D
     private Set<Quad>   addedQuads     = new HashSet<>();
     private Set<Quad>   deletedQuads   = new HashSet<>();
 
+    public Set<Triple> getAddedTriples()     { return addedTriples; }
+    public Set<Triple> getDeletedTriples()   { return deletedTriples; }
+    public Set<Quad>   getAddedQuads()       { return addedQuads; }
+    public Set<Quad>   getDeletedQuads()     { return deletedQuads; }
+
     private BufferingPrefixMap prefixes;
 
     // True  -> read-optimized.

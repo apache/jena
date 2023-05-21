@@ -18,33 +18,31 @@
 
 package org.apache.jena.sparql.util.graph;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 
 class FindableGraph implements Findable
 {
-    private Graph graph ;
+    private Graph graph;
 
-    FindableGraph(Graph graph) { this.graph = graph ; }
+    FindableGraph(Graph graph) { this.graph = graph; }
 
     @Override
-    public Iterator<Triple> find(Node s, Node p, Node o)
-    {
-        if ( s == null ) s = Node.ANY ;
-        if ( p == null ) p = Node.ANY ;
-        if ( o == null ) o = Node.ANY ;
-        return graph.find(s, p ,o) ;
+    public Iterator<Triple> find(Node s, Node p, Node o) {
+        if ( s == null ) s = Node.ANY;
+        if ( p == null ) p = Node.ANY;
+        if ( o == null ) o = Node.ANY;
+        return graph.find(s, p ,o);
     }
 
     @Override
-    public boolean contains(Node s, Node p, Node o)
-    {
-        if ( s == null ) s = Node.ANY ;
-        if ( p == null ) p = Node.ANY ;
-        if ( o == null ) o = Node.ANY ;
-        return graph.contains(s, p, o) ;
+    public boolean contains(Node s, Node p, Node o) {
+        if ( s == null ) s = Node.ANY;
+        if ( p == null ) p = Node.ANY;
+        if ( o == null ) o = Node.ANY;
+        return graph.contains(s, p, o);
     }
 }

@@ -69,8 +69,7 @@ public class StreamRDFOps {
 
     /** Send a dataset to a StreamRDF as prefixes, triples and quads */
     public static void sendDatasetToStream(DatasetGraph datasetGraph, StreamRDF stream) {
-        PrefixMap prefixMap = PrefixMapFactory.create(datasetGraph.getDefaultGraph().getPrefixMapping()) ;
-        sendDatasetToStream(datasetGraph, stream, null, prefixMap) ;
+        sendDatasetToStream(datasetGraph, stream, null, datasetGraph.prefixes()) ;
     }
 
     /** Send a dataset to a StreamRDF as triples and quads, using the explicitly given prefix map */

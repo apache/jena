@@ -427,6 +427,22 @@ public class G {
         Objects.requireNonNull(graph, "graph");
         Objects.requireNonNull(node, "node");
         GNode gNode = GNode.create(graph, node);
+        if ( ! GraphList.isListNode(gNode) )
+            return null;
+        return GraphList.members(gNode);
+    }
+
+    /**
+     * Return a java list where the {@code node} is an RDF list of nodes or a single
+     * node (returned a singleton list).
+     */
+    public static List<Node> getOneOrList(Graph graph, Node node) {
+        Objects.requireNonNull(graph, "graph");
+        Objects.requireNonNull(node, "node");
+        GNode gNode = GNode.create(graph, node);
+        // An element on its own is a list of one
+        if ( ! GraphList.isListNode(gNode) )
+            return List.of(node);
         return GraphList.members(gNode);
     }
 
