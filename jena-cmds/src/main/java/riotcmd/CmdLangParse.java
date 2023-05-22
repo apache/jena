@@ -63,9 +63,10 @@ public abstract class CmdLangParse extends CmdGeneral {
     protected ModLangOutput modLangOutput = new ModLangOutput();
     protected SetupRDFS setup = null;
     protected ModContext modContext = new ModContext();
-    protected ArgDecl strictDecl = new ArgDecl(ArgDecl.NoValue, "strict");
+    protected ArgDecl argStrict = new ArgDecl(ArgDecl.NoValue, "strict");
 
     protected boolean cmdStrictMode = false;
+    // Merge quads to triples.
 
     protected CmdLangParse(String[] argv) {
         super(argv);
@@ -92,7 +93,8 @@ public abstract class CmdLangParse extends CmdGeneral {
     protected String writerBaseIRI = null;
     @Override
     protected void processModulesAndArgs() {
-        cmdStrictMode = super.contains(strictDecl);
+        cmdStrictMode = super.contains(argStrict);
+
         // checking.
 
         // True if any input is quads
@@ -149,9 +151,9 @@ public abstract class CmdLangParse extends CmdGeneral {
     }
 
     /** Quads to triples. */
-    protected static class StreamRDFasTriples extends StreamRDFWrapper {
+    protected static class QuadsToTriples extends StreamRDFWrapper {
 
-        public StreamRDFasTriples(StreamRDF destination) {
+        public QuadsToTriples(StreamRDF destination) {
             super(destination);
         }
 
@@ -202,7 +204,7 @@ public abstract class CmdLangParse extends CmdGeneral {
             postParse = p.getRight();
         }
 
-        if ( ! isQuadsOutput() ) {
+        if ( ! modLangParse.mergeQuads() && ! isQuadsOutput() ) {
             // Only pass through triples.
             final StreamRDF dest = parserOutputStream;
             if ( isStreamingOutput() ) {
@@ -217,6 +219,10 @@ public abstract class CmdLangParse extends CmdGeneral {
                 // Not streaming - code can issue error before formatting.
             }
         }
+
+        // If QuadsToTriples is added here, then counts will be "triples only"
+        if (false && modLangParse.mergeQuads() )
+            parserOutputStream = new QuadsToTriples(parserOutputStream);
 
         try {
             // The actual parsing ...
@@ -360,10 +366,6 @@ public abstract class CmdLangParse extends CmdGeneral {
         builder.errorHandler(errHandler);
 
         // Make into a cmd flag. (input and output subflags?)
-        // If input is "label, then output using NodeToLabel.createBNodeByLabelRaw()
-        // ;
-        // else use NodeToLabel.createBNodeByLabel() ;
-        // Also, as URI.
         final boolean labelsAsGiven = false;
 // NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
 // if ( labelsAsGiven )
@@ -375,6 +377,9 @@ public abstract class CmdLangParse extends CmdGeneral {
         StreamRDF s = parserOutputStream;
         if ( setup != null )
             s = RDFSFactory.streamRDFS(s, setup);
+        // If added here, count is quads and triples seen in the input.
+        if ( modLangParse.mergeQuads() )
+            s = new QuadsToTriples(s);
         StreamRDFCounting parserOut = StreamRDFLib.count(s);
         s = null;
 
