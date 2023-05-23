@@ -105,4 +105,4 @@ then
     JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=\"$TMP\""
 fi
 
-"$JAVA" $JVM_ARGS $LOGGING -cp "$JENA_CP" JENA_CMD "$@" 
+"$JAVA" $JVM_ARGS $LOGGING -cp "$JENA_CP:$CLASSPATH" JENA_CMD "$@" 
