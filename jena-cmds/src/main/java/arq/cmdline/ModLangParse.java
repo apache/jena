@@ -47,6 +47,7 @@ public class ModLangParse extends ModBase
     private ArgDecl argRDFS     = new ArgDecl(ArgDecl.HasValue, "rdfs");
 
     private ArgDecl argSyntax   = new ArgDecl(ArgDecl.HasValue, "syntax");
+    private ArgDecl argMerge    = new ArgDecl(ArgDecl.NoValue, "merge", "union");
 
     private String rdfsVocabFilename    = null;
     private Model  rdfsVocab            = null;
@@ -64,6 +65,8 @@ public class ModLangParse extends ModBase
     private boolean strict              = false;
     private boolean validate            = false;
     private boolean outputCount         = false;
+    private boolean quadsToTriples    = false;
+
     private Lang lang                   = null;
 
     @Override
@@ -77,6 +80,7 @@ public class ModLangParse extends ModBase
         cmdLine.add(argStrict,  "--strict",         "Run with in strict mode");
         cmdLine.add(argValidate,"--validate",       "Same as --sink --check --strict");
         cmdLine.add(argCount,   "--count",          "Count triples/quads parsed, not output them");
+        cmdLine.add(argMerge,   "--merge",          "Convert quads to triples");
         cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file");
         cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms");
 
@@ -139,6 +143,8 @@ public class ModLangParse extends ModBase
             outputCount = true;
         }
 
+        quadsToTriples = cmdLine.contains(argMerge);
+
         if ( cmdLine.contains(argRDFS) ) {
             try {
                 rdfsVocabFilename = cmdLine.getArg(argRDFS).getValue();
@@ -169,6 +175,10 @@ public class ModLangParse extends ModBase
 
     public boolean outputCount() {
         return outputCount;
+    }
+
+    public boolean mergeQuads() {
+        return quadsToTriples;
     }
 
     public boolean stopOnBadTerm() {

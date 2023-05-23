@@ -166,18 +166,20 @@ public class WhereHandler implements Handler {
      */
     private static void testTriple(TriplePath t) {
         // verify Triple is valid
-        boolean validSubject = t.getSubject().isURI() || t.getSubject().isBlank() || t.getSubject().isVariable()
-                || t.getSubject().equals(Node.ANY);
+        boolean validSubject =
+                t.getSubject().isURI() || t.getSubject().isBlank() || t.getObject().isNodeTriple()
+                || t.getSubject().isVariable() || t.getSubject().equals(Node.ANY);
         boolean validPredicate;
 
         if (t.isTriple()) {
-            validPredicate = t.getPredicate().isURI() || t.getPredicate().isVariable()
-                    || t.getPredicate().equals(Node.ANY);
+            validPredicate = t.getPredicate().isURI()
+                    || t.getPredicate().isVariable() || t.getPredicate().equals(Node.ANY);
         } else {
             validPredicate = t.getPath() != null;
         }
 
-        boolean validObject = t.getObject().isURI() || t.getObject().isLiteral() || t.getObject().isBlank()
+        boolean validObject =
+                t.getObject().isURI() || t.getObject().isLiteral() || t.getObject().isBlank() || t.getObject().isNodeTriple()
                 || t.getObject().isVariable() || t.getObject().equals(Node.ANY);
 
         if (!validSubject || !validPredicate || !validObject) {
