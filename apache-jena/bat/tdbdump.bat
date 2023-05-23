@@ -13,6 +13,10 @@ exit /B
 set JENA_CP=%JENA_HOME%\lib\*;
 set LOGGING=file:%JENA_HOME%/log4j2.properties
 
+if "%CLASSPATH%" == "" goto :noExtra
+set JENA_CP="%JENA_CP%:%CLASSPATH%"
+:noExtra
+
 @rem JVM_ARGS comes from the environment.
 java %JVM_ARGS% -Dlog4j.configurationFile="%LOGGING%" -cp "%JENA_CP%" tdb.tdbdump %*
 exit /B
