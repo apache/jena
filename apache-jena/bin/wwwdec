@@ -87,6 +87,7 @@ fi
 # JVM_ARGS : don't set here but it can be set in the environment.
 # Expand JENA_HOME but literal *
 JENA_CP="$JENA_HOME"'/lib/*'
+
 LOGGING="${LOGGING:--Dlog4j.configurationFile=file:$JENA_HOME/log4j2.properties}"
 
 # Platform specific fixup
@@ -103,6 +104,12 @@ then
 elif [ -n "$TMP" ]
 then
     JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=\"$TMP\""
+fi
+
+## Append any custom classpath
+if [ -n "$CLASSPATH" ]
+then
+    JENA_CP="$JENA_CP:$CLASSPATH"
 fi
 
 "$JAVA" $JVM_ARGS $LOGGING -cp "$JENA_CP" arq.wwwdec "$@" 
