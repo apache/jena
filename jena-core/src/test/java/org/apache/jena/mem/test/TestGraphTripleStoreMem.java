@@ -16,27 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.jena.mem;
+package org.apache.jena.mem.test;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.Triple.* ;
+import junit.framework.TestSuite;
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.impl.TripleStore ;
+import org.apache.jena.graph.test.AbstractTestTripleStore ;
+import org.apache.jena.mem.GraphTripleStoreMem;
 
-/**
-    GraphTripleStore - the underlying triple-indexed triple store for GraphMem et al,
-    ripped out from the heart of GraphMem as part of simplifying the reification code.
-    A GraphTripleStore is a searchable repository for triples. 
-
-*/
-
-public class GraphTripleStore extends GraphTripleStoreBase implements TripleStore
-    {   
-    public GraphTripleStore( Graph parent )
-        { 
-        super( parent,
-            new NodeToTriplesMap( Field.fieldSubject, Field.fieldPredicate, Field.fieldObject ),
-            new NodeToTriplesMap( Field.fieldPredicate, Field.fieldObject, Field.fieldSubject ),
-            new NodeToTriplesMap( Field.fieldObject, Field.fieldSubject, Field.fieldPredicate )
-            ); 
-        }
+public class TestGraphTripleStoreMem extends AbstractTestTripleStore
+    {
+    public TestGraphTripleStoreMem(String name )
+        { super( name ); }
+    
+    public static TestSuite suite()
+        { return new TestSuite( TestGraphTripleStoreMem.class ); }
+    
+    @Override
+    public TripleStore getTripleStore()
+        { return new GraphTripleStoreMem( Graph.emptyGraph ); }
     }

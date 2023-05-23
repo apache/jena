@@ -23,26 +23,26 @@ import java.util.*;
 import junit.framework.TestSuite;
 import org.apache.jena.graph.* ;
 import org.apache.jena.graph.Triple.* ;
-import org.apache.jena.mem.NodeToTriplesMap ;
+import org.apache.jena.mem.NodeToTriplesMapMem ;
 
 /**
  	TestNodeToTriplesMap: added, post-hoc, by kers once NTM got
  	rather complicated. So these tests may be (are, at the moment)
  	incomplete.
 */
-public class TestNodeToTriplesMap extends GraphTestBase
+public class TestNodeToTriplesMapMem extends GraphTestBase
     {
-    public TestNodeToTriplesMap( String name )
+    public TestNodeToTriplesMapMem(String name )
         { super( name ); }
     
     public static TestSuite suite()
-        { return new TestSuite( TestNodeToTriplesMap.class ); }
+        { return new TestSuite( TestNodeToTriplesMapMem.class ); }
     
-    protected NodeToTriplesMap ntS = new NodeToTriplesMap( Field.fieldSubject, Field.fieldPredicate, Field.fieldObject );
+    protected NodeToTriplesMapMem ntS = new NodeToTriplesMapMem( Field.fieldSubject, Field.fieldPredicate, Field.fieldObject );
     	
-    protected NodeToTriplesMap ntP = new NodeToTriplesMap( Field.fieldPredicate, Field.fieldObject, Field.fieldSubject );
+    protected NodeToTriplesMapMem ntP = new NodeToTriplesMapMem( Field.fieldPredicate, Field.fieldObject, Field.fieldSubject );
     	
-    protected NodeToTriplesMap ntO = new NodeToTriplesMap( Field.fieldObject, Field.fieldPredicate, Field.fieldSubject );
+    protected NodeToTriplesMapMem ntO = new NodeToTriplesMapMem( Field.fieldObject, Field.fieldPredicate, Field.fieldSubject );
 
     protected static final Node x = node( "x" );
     
@@ -53,7 +53,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
         testZeroSize( "fresh NTM", ntS );
         }
     
-    protected void testZeroSize( String title, NodeToTriplesMap nt )
+    protected void testZeroSize( String title, NodeToTriplesMapMem nt )
         {
         assertEquals( title + " should have size 0", 0, nt.size() );
         assertEquals( title + " should be isEmpty()", true, nt.isEmpty() );
@@ -72,7 +72,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
         testJustOne( x, ntS );
         }
     
-    protected void testJustOne( Node x, NodeToTriplesMap nt )
+    protected void testJustOne( Node x, NodeToTriplesMapMem nt )
         {
         assertEquals( 1, nt.size() );
         assertEquals( false, nt.isEmpty() );
@@ -136,7 +136,49 @@ public class TestNodeToTriplesMap extends GraphTestBase
             }
         assertEquals( tripleSet( "x nice a; x nice c; y nice d; y nice f" ), ntS.iterateAll().toSet() );
         }
-    
+
+    public void testRemoveByIteratorTriggerMove()
+        {
+            /*need hash collisions to be able to test moves caused by iterator#remove*/
+            var nodeA = new Node_URI("A") {
+                @Override
+                public int hashCode() {
+                    return 1;
+                }
+            };
+            var nodeB = new Node_URI("B") {
+                @Override
+                public int hashCode() {
+                    return 1;
+                }
+            };
+            var nodeC = new Node_URI("C") {
+                @Override
+                public int hashCode() {
+                    return 1;
+                }
+            };
+            ntS.add(Triple.create(nodeA, NodeFactory.createURI("loves"), nodeB));
+            ntS.add(Triple.create(nodeB, NodeFactory.createURI("loves"), nodeC));
+            ntS.add(Triple.create(nodeC, NodeFactory.createURI("loves"), nodeA));
+
+            var triplesToFind = ntS.iterateAll().toSet();
+
+            Iterator<Triple> it = ntS.iterateAll();
+            while (it.hasNext())
+            {
+                Triple t = it.next();
+                triplesToFind.remove(t);
+                if (t.getSubject().equals( nodeA )) it.remove();
+            }
+            assertTrue(triplesToFind.isEmpty());
+
+            var expectedRemainingTripples = new HashSet<Triple>();
+            expectedRemainingTripples.add(Triple.create(nodeB, NodeFactory.createURI("loves"), nodeC));
+            expectedRemainingTripples.add(Triple.create(nodeC, NodeFactory.createURI("loves"), nodeA));
+            assertEquals( expectedRemainingTripples, ntS.iterateAll().toSet() );
+        }
+
     public void testIteratorWIthPatternOnEmpty()
         {
         assertEquals( tripleSet( "" ), ntS.iterateAll( triple( "a P b" ) ).toSet() );
@@ -207,7 +249,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
     
     // TODO more here
     
-    protected void addTriples( NodeToTriplesMap nt, String facts )
+    protected void addTriples( NodeToTriplesMapMem nt, String facts )
         {
         Triple [] t = tripleArray( facts );
             for ( Triple aT : t )

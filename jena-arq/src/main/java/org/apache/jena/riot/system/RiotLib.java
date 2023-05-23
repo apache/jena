@@ -283,10 +283,7 @@ public class RiotLib {
      * Collect all the matching triples
      */
     public static void accTriples(Collection<Triple> acc, Graph graph, Node s, Node p, Node o) {
-        ExtendedIterator<Triple> iter = graph.find(s, p, o);
-        while (iter.hasNext())
-            acc.add(iter.next());
-        iter.close();
+        graph.find(s, p, o).forEach(acc::add);
     }
 
     public static void writeBase(IndentedWriter out, String base, boolean newStyle) {

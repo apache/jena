@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 /**
  * Iterator of Iterators IteratorConcat is better when there are lots of iterators to
@@ -88,6 +89,24 @@ public class IteratorConcat<T> implements IteratorCloseable<T> {
         if ( !hasNext() )
             throw new NoSuchElementException();
         return current.next();
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super T> action) {
+        if( finished )
+            return;
+        if( current != null ) {
+            current.forEachRemaining(action);
+            Iter.close(current);
+        }
+        idx++;
+        for ( ; idx < iterators.size() ; idx++ ) {
+            current = iterators.get(idx);
+            current.forEachRemaining(action);
+            Iter.close(current);
+        }
+        current = null;
+        finished = true;
     }
 
     @Override

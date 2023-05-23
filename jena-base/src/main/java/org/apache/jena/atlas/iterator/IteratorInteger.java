@@ -19,6 +19,7 @@
 package org.apache.jena.atlas.iterator;
 
 import java.util.Iterator ;
+import java.util.function.Consumer;
 
 public class IteratorInteger implements Iterator<Long>
 {
@@ -49,8 +50,14 @@ public class IteratorInteger implements Iterator<Long>
     @Override
     public Long next()
     {
-        Long v = current;
-        current++ ;
-        return v ;
+        return current++;
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super Long> action) {
+        while (current < finish) {
+            action.accept(current);
+            current++;
+        }
     }
 }

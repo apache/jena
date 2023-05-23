@@ -237,7 +237,12 @@ public abstract class AbstractResultSetTests {
      */
     @Test
     public void results_select_objects_02() throws SQLException {
-        ResultSet rset = this.createResults(ds, "SELECT ?o { ?s ?p ?o . FILTER(ISNUMERIC(?o)) }");
+        /* Ordering the numbers is important to ensure we get the right type as first result.
+         * When org.apache.jena.jdbc.JdbcCompatibility.HIGH is used, the first result is used
+         * to determine the type of the column.
+         */
+
+        ResultSet rset = this.createResults(ds, "SELECT ?o { ?s ?p ?o . FILTER(ISNUMERIC(?o)) } ORDER BY DESC(?o)");
         Assert.assertNotNull(rset);
         Assert.assertFalse(rset.isClosed());
         Assert.assertTrue(rset.isBeforeFirst());

@@ -147,20 +147,19 @@ public class Constraints {
     /*package*/ static List<Constraint> parseConstraints(Graph shapesGraph, Node shape, Map<Node, Shape> parsed, Set<Node> traversed) {
         List<Constraint> constraints = new ArrayList<>();
         Iterator<Triple> iter = G.find(shapesGraph, shape, null, null);
-        while(iter.hasNext()) {
-            Triple t = iter.next();
+        iter.forEachRemaining(t -> {
             Node p = t.getPredicate();
             // The parser handles sh:property specially as a PropertyShape.
             if ( SHACL.property.equals(p) )
-                continue;
+                return;
             if ( SHACL.path.equals(p) )
-                continue;
+                return;
             Node s = t.getSubject();
             Node o = t.getObject();
             Constraint c = parseConstraint(shapesGraph, s, p, o, parsed, traversed);
             if ( c != null )
                 constraints.add(c);
-        }
+        });
         return constraints;
     }
 

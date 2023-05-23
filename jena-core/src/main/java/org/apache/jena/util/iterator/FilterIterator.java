@@ -20,6 +20,7 @@ package org.apache.jena.util.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /** 
@@ -84,5 +85,19 @@ public class FilterIterator<T> extends WrappedIterator<T>
             return current;
             }
 		throw new NoSuchElementException();
+        }
+
+    @Override
+        public void forEachRemaining(Consumer<? super T> action)
+        {
+        if (hasCurrent) {
+            action.accept(current);
+            hasCurrent = false;
+        }
+        super.forEachRemaining(e -> {
+            if (f.test(e)) {
+                action.accept(e);
+            }
+        });
         }
     }

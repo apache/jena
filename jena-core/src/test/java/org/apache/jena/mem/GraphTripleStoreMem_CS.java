@@ -27,7 +27,7 @@ import org.apache.jena.graph.Graph;
 import org.xenei.junit.contract.IProducer;
 
 @RunWith(ContractSuite.class)
-@ContractImpl(GraphTripleStore.class)
+@ContractImpl(GraphTripleStoreMem.class)
 public class GraphTripleStoreMem_CS {
 
 	private IProducer<GraphTripleStoreMem> producer = new IProducer<GraphTripleStoreMem>() {

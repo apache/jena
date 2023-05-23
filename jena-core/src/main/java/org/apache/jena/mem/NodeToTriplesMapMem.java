@@ -18,9 +18,6 @@
 
 package org.apache.jena.mem;
 
-import static org.apache.jena.util.iterator.WrappedIterator.create;
-
-import java.util.Iterator ;
 import java.util.function.Predicate;
 
 import org.apache.jena.graph.Node ;
@@ -84,11 +81,18 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
         Answer an iterator over all the triples in this NTM which have index node
         <code>o</code>.
     */
-    @Override public Iterator<Triple> iterator( Object o, HashCommon.NotifyEmpty container ) 
+    @Override public ExtendedIterator<Triple> iterator( Object o, HashCommon.NotifyEmpty container )
        {
        TripleBunch s = bunchMap.get( o );
        return s == null ? NullIterator.<Triple>instance() : s.iterator( container );
        }
+
+    public ExtendedIterator<Triple> iterateAll(Triple pattern)
+        {
+        Predicate<Triple> filter = indexField.filterOn(pattern)
+                .and(f2.filterOn(pattern)).and(f3.filterOn(pattern));
+        return iterateAll().filterKeep(filter);
+        }
     
     public class NotifyMe implements HashCommon.NotifyEmpty
         {
@@ -129,17 +133,19 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
        TripleBunch s = bunchMap.get( indexValue );
 //       System.err.println( ">> ntmf::iterator: " + (s == null ? (Object) "None" : s.getClass()) );
        if (s == null) return NullIterator.<Triple>instance();
-       final Predicate<Triple> filter = f2.filterOn( n2 ).and( f3.filterOn( n3 ) );
-       return create(s.iterator( new NotifyMe( indexValue ))).filterKeep(filter);
-       }    
+           var filter = FieldFilter.filterOn(f2, n2, f3, n3);
+           return filter.hasFilter()
+               ? s.iterator( new NotifyMe( indexValue ) ).filterKeep( filter.getFilter() )
+               : s.iterator( new NotifyMe( indexValue ) );
+       }
 
-    protected TripleBunch get( Object index )
+        protected TripleBunch get( Object index )
         { return bunchMap.get( index ); }
     
     /**
      Answer an iterator over all the triples that are indexed by the item <code>y</code>.
         Note that <code>y</code> need not be a Node (because of indexing values).
     */
-    @Override public Iterator<Triple> iteratorForIndexed( Object y )
+    @Override public ExtendedIterator<Triple> iteratorForIndexed( Object y )
         { return get( y ).iterator();  }
     }

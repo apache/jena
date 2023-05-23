@@ -20,6 +20,7 @@ package org.apache.jena.sparql.engine;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.graph.Node;
@@ -44,4 +45,9 @@ public class JsonIterator implements Iterator<JsonObject>
 
     @Override
     public JsonObject next() { return results.next(); }
+
+    @Override
+    public void forEachRemaining(Consumer<? super JsonObject> action) {
+        results.forEachRemaining(action);
+    }
 }

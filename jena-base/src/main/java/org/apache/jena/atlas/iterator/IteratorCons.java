@@ -20,6 +20,7 @@ package org.apache.jena.atlas.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.lib.Lib;
 
@@ -96,6 +97,18 @@ public class IteratorCons<T> implements IteratorCloseable<T> {
             return iter2.next();
         }
         throw new Error(Lib.className(this) + ".next (two null iterators)");
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super T> action) {
+        if ( iter1 != null ) {
+            iter1.forEachRemaining(action);
+            iter1 = null;
+        }
+        if ( iter2 != null ) {
+            iter2.forEachRemaining(action);
+            iter2 = null;
+        }
     }
 
     @Override

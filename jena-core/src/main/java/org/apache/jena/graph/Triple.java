@@ -197,6 +197,8 @@ public class Triple implements Serializable
 
         public abstract Predicate<Triple> filterOn( Node n );
 
+        public abstract Predicate<Triple> filterOnConcrete( Node n );
+
         public final Predicate<Triple> filterOn( Triple t )
             { return filterOn( getField( t ) ); }
 
@@ -214,7 +216,10 @@ public class Triple implements Serializable
                     : anyTriple
                     ;
                 }
+            @Override public Predicate<Triple> filterOnConcrete( final Node n )
+                { return x -> n.equals( x.subj ); }
             };
+
 
         public static final Field fieldObject = new Field()
             {
@@ -226,6 +231,9 @@ public class Triple implements Serializable
                     ? x -> n.sameValueAs( x.obj )
                     : anyTriple;
                 }
+
+            @Override public Predicate<Triple> filterOnConcrete( final Node n )
+                { return x -> n.sameValueAs( x.obj ); }
             };
 
         public static final Field fieldPredicate = new Field()
@@ -238,6 +246,9 @@ public class Triple implements Serializable
                     ? x -> n.equals( x.pred )
                     : anyTriple;
                 }
+
+            @Override public Predicate<Triple> filterOnConcrete( final Node n )
+                { return x -> n.equals( x.pred ); }
             };
         }
     }

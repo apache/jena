@@ -18,6 +18,8 @@
 
 package org.apache.jena.util.iterator;
 
+import java.util.function.Consumer;
+
 /**
  * A ClosableIterator that contains only one element
  */
@@ -58,4 +60,11 @@ public class SingletonIterator<T> extends NiceIterator<T> implements ExtendedIte
         }
     }
 
+    @Override
+    public void forEachRemaining(Consumer<? super T> action) {
+        if(!delivered) {
+            action.accept(item);
+            delivered = true;
+        }
+    }
 }
