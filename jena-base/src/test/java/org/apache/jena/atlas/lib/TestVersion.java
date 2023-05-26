@@ -18,42 +18,18 @@
 
 package org.apache.jena.atlas.lib;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.apache.jena.atlas.lib.cache.TestCacheSimple;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import java.util.Optional;
 
-/**
- * Tests for the Atlas lib package
- */
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestAlg.class
-    , TestBitsLong.class
-    , TestBitsInt.class
-    , TestBytes.class
-    , TestEscapeStr.class
-    , TestHex.class
-    , TestListUtils.class
-    , TestSetUtils.class
-    , TestCollectionUtils.class
-    , TestCache.class
-    , TestCache2.class
-    , TestFileOps.class
-    , TestStrUtils.class
-    , TestIRILib.class
-    , TestXMLLib.class
-    , TestAlarmClock.class
-    , TestTrie.class
-    , TestFilenameProcessing.class
-    , TestNumberUtils.class
-    , TestDateTimeUtils.class
-    , TestCacheSimple.class
-    , TestRefCountingMap.class
-    , TestVersion.class
-} )
+import org.junit.Test;
 
-public class TS_Lib
-{
-
+public class TestVersion {
+    @Test public void version_01() {
+        // This can not be a Jena class (jar probably does not exist during tests)
+        Optional<String> x = Version.versionForClass(org.slf4j.Logger.class);
+        assertNotNull("Optional<String> version info is null", x);
+        assertTrue("Version info is null", x.isPresent());
+    }
 }

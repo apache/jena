@@ -22,6 +22,7 @@ import java.io.PrintStream;
 
 import arq.cmdline.* ;
 import org.apache.commons.io.output.NullPrintStream;
+import org.apache.jena.Jena;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
@@ -70,6 +71,7 @@ public class query extends CmdARQ
         super(argv) ;
         modQuery = new ModQueryIn(getDefaultSyntax()) ;
         modDataset = setModDataset() ;
+        modVersion.addClass(null, Jena.class);
 
         super.addModule(modQuery) ;
         super.addModule(modResults) ;
@@ -150,7 +152,7 @@ public class query extends CmdARQ
 
         // Warm up.
         for ( int i = 0 ; i < warmupCount ; i++ )
-            // Include the results format so that is warmed up as well. 
+            // Include the results format so that is warmed up as well.
             queryExec(false, modResults.getResultsFormat(), NullPrintStream.NULL_PRINT_STREAM) ;
 
         for ( int i = 0 ; i < repeatCount ; i++ )

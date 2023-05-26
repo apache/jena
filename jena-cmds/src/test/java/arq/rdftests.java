@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import arq.cmdline.ModContext;
+import org.apache.jena.Jena;
 import org.apache.jena.arq.junit.SurpressedTest;
 import org.apache.jena.arq.junit.TextTestRunner;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
@@ -108,7 +109,7 @@ public class rdftests extends CmdGeneral
     protected rdftests(String[] argv) {
         super(argv);
 //        super.add(baseDecl, "--base=URI", "Set the base URI");
-        super.modVersion.addClass(ARQ.class);
+        super.modVersion.addClass(Jena.class);
         getUsage().startCategory("Tests (execute test manifest)");
         getUsage().addUsage("<manifest>", "run the tests specified in the given manifest");
         add(arqDecl, "--arq",       "Operate with ARQ syntax");

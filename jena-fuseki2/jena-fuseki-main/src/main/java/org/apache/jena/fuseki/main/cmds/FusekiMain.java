@@ -206,7 +206,7 @@ public class FusekiMain extends CmdARQ {
         add(argWithMetrics, "--metrics",    "Enable /$/metrics");
         add(argWithCompact, "--compact",    "Enable /$/compact/*");
 
-        super.modVersion.addClass(Fuseki.class);
+        super.modVersion.addClass("Fuseki", Fuseki.class);
     }
 
     static String argUsage = "[--config=FILE] [--mem|--desc=AssemblerFile|--file=FILE] [--port PORT] /DatasetPathName";

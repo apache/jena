@@ -216,7 +216,7 @@ public class tdbconfig extends CmdSub
         protected void exec() {
             System.out.println("-- " + DateTimeUtils.nowAsString() + " --");
             ModVersion v = new ModVersion(true);
-            v.addClass(TDB.class);
+            v.addClass("TDB1", TDB.class);
             v.printVersionAndExit();
         }
 

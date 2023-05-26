@@ -18,21 +18,43 @@
 
 package org.apache.jena.cmd;
 
-import org.apache.jena.atlas.io.IndentedWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.jena.Jena;
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.lib.Version;
+
+/**
+ * Version information.
+ * <p>
+ * The version is the manifest entry in the jar file for a
+ * class. It is not available if the class comes from a development tree where the
+ * class file is from "target" (maven).
+ */
 public class ModVersion extends ModBase
 {
     protected final ArgDecl versionDecl = new ArgDecl(ArgDecl.NoValue, "version");
     protected boolean version = false;
     protected boolean printAndExit = false;
-    private Version versionMgr = new Version();
+
+    // (system name, version string)
+    private List<Pair<String, Optional<String>>> descriptions = new ArrayList<>();
 
     public ModVersion(boolean printAndExit) {
         this.printAndExit = printAndExit;
     }
 
+    /** Add a class for the version number */
     public void addClass(Class<? > c) {
-        versionMgr.addClass(c);
+        addClass(c.getSimpleName(), c);
+    }
+
+    /** Add a label and a class for the version number */
+    public void addClass(String name, Class<? > cls) {
+        Pair<String, Optional<String>> desc = Pair.create(name, Version.versionForClass(cls));
+        descriptions.add(desc);
     }
 
     @Override
@@ -54,7 +76,11 @@ public class ModVersion extends ModBase
     }
 
     public void printVersion() {
-        versionMgr.print(IndentedWriter.stdout);
+        if ( descriptions.isEmpty() ) {
+            Version.printVersion(System.out, null, Version.versionForClass(Jena.class));
+            return;
+        }
+        descriptions.forEach(p->Version.printVersion(System.out, p.getLeft(), p.getRight()));
     }
 
     public void printVersionAndExit() {
