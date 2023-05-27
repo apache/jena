@@ -1,4 +1,4 @@
-This is a Turtle parser used in support of jena-core tests.
+This is a Turtle parser used in support of jena-core tests and nothing more.
 
 It is not compliant with RDF 1.1 Turtle.
 
