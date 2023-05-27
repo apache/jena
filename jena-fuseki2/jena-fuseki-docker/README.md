@@ -40,7 +40,7 @@ Note the build command must provide the version number.
 
 ## Test Run
 
-`docker-compose run` cam be used to test the build from the previous section.
+`docker-compose run` can be used to test the build from the previous section.
 
 Examples:
 
