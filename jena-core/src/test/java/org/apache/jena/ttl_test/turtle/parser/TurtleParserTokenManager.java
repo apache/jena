@@ -19,8 +19,8 @@
  */
 
 package org.apache.jena.ttl_test.turtle.parser;
-import org.apache.jena.graph.* ;
 import org.apache.jena.ttl_test.turtle.*;
+import org.apache.jena.graph.* ;
 
 /** Token Manager. */
 @SuppressWarnings ("unused")

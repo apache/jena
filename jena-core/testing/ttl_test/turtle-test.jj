@@ -54,9 +54,9 @@ PARSER_BEGIN(TurtleParser)
  * limitations under the License.
  */
 
-package org.apache.jena.ttl.turtle.parser;
+package org.apache.jena.ttl_test.turtle.parser;
 
-import org.apache.jena.ttl.turtle.*;
+import org.apache.jena.ttl_test.turtle.*;
 import org.apache.jena.graph.* ;
 
 public class TurtleParser extends TurtleParserBase
@@ -135,7 +135,7 @@ void ObjectList(Node s, Node p): { Node o ; }
 void Object(Node s, Node p): { Node o ; }
 {
   o = GraphNode() 
-  { Triple t = new Triple(s,p,o) ; 
+  { Triple t = Triple.create(s,p,o) ; 
     emitTriple(token.beginLine, token.beginColumn, t) ; }  
 }
 
@@ -194,12 +194,12 @@ Node Collection() :
          listHead = cell ;
       if ( lastCell != null )
         emitTriple(token.beginLine, token.beginColumn,
-                   new Triple(lastCell, nRDFrest,  cell)) ;
+                   Triple.create(lastCell, nRDFrest,  cell)) ;
     }
     n = GraphNode()
     {
       emitTriple(token.beginLine, token.beginColumn,
-                 new Triple(cell, nRDFfirst,  n)) ;      
+                 Triple.create(cell, nRDFfirst,  n)) ;      
       lastCell = cell ;
     }
   ) +
@@ -207,7 +207,7 @@ Node Collection() :
   <RPAREN>
    { if ( lastCell != null )
        emitTriple(token.beginLine, token.beginColumn,
-                  new Triple(lastCell, nRDFrest,  nRDFnil)) ;
+                  Triple.create(lastCell, nRDFrest,  nRDFnil)) ;
      return listHead ; }
 }
 
