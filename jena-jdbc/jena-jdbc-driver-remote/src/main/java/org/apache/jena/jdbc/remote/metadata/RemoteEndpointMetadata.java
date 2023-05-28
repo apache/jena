@@ -28,24 +28,21 @@ import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection ;
 
 /**
  * Represents metadata about connections to remote endpoints
- * 
+ *
  */
 public class RemoteEndpointMetadata extends JenaMetadata {
 
-    private Version jdbc;
     private RemoteEndpointConnection remoteConn;
 
     /**
      * Creates new metadata
-     * 
+     *
      * @param connection
      *            Remote Endpoint connection
      * @throws SQLException
      */
     public RemoteEndpointMetadata(RemoteEndpointConnection connection) throws SQLException {
         super(connection);
-        this.jdbc = new Version();
-        this.jdbc.addClass(JenaJDBC.class);
         this.remoteConn = connection;
     }
 
@@ -100,7 +97,7 @@ public class RemoteEndpointMetadata extends JenaMetadata {
 
     @Override
     public String getDriverVersion() {
-        return jdbc.toString();
+        return Version.versionForClass(JenaJDBC.class, "<development>");
     }
 
     @Override

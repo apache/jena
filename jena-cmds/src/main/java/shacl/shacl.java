@@ -19,9 +19,8 @@
 package shacl;
 
 import java.util.Arrays;
+import java.util.Optional;
 
-import org.apache.jena.Jena;
-import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.sys.JenaSystem;
@@ -32,13 +31,6 @@ public class shacl {
         JenaSystem.init();
     }
 
-    private static void version() {
-        Version version = new Version();
-        version.addClass(Jena.class) ;
-        version.print(IndentedWriter.stdout);
-        System.exit(0) ;
-    }
-    
     public static void main(String...args) {
         if ( args.length == 0 ) {
             System.err.println("Usage: shacl SUB ARGS...");
@@ -60,9 +52,11 @@ public class shacl {
                 return;
             case "version":
             case "--version":
-            case "-version":
-                version();
+            case "-version": {
+                Optional<String> ver = Version.versionForClass(shacl.class);
+                Version.printVersion(System.err, "SHACL",  ver);
                 System.exit(0);
+            }
         }
 
         // Map to full name.

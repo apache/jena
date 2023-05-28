@@ -29,7 +29,6 @@ import arq.cmdline.ModContext;
 import arq.cmdline.ModLangOutput;
 import arq.cmdline.ModLangParse;
 import arq.cmdline.ModTime;
-import org.apache.jena.Jena;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.Pair;
@@ -74,9 +73,7 @@ public abstract class CmdLangParse extends CmdGeneral {
         addModule(modTime);
         addModule(modLangOutput);
         addModule(modLangParse);
-
-        super.modVersion.addClass(Jena.class);
-        // super.modVersion.addClass(RIOT.class) ;
+        super.modVersion.addClass(RIOT.class);
     }
 
     @Override

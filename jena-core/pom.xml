@@ -127,14 +127,6 @@
         <directory>src/main/resources</directory>
       </resource>
 
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>org/apache/jena/jena-properties.xml</include>
-        </includes>
-        <filtering>true</filtering>
-      </resource>
-
     </resources>
 
     <plugins>

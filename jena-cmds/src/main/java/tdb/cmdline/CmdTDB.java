@@ -19,9 +19,7 @@
 package tdb.cmdline;
 
 import arq.cmdline.CmdARQ;
-import org.apache.jena.Jena;
 import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sys.JenaSystem;
@@ -40,9 +38,7 @@ public abstract class CmdTDB extends CmdARQ {
         super(argv);
         init();
         super.addModule(tdbDatasetAssembler);
-        super.modVersion.addClass(Jena.class);
-        super.modVersion.addClass(ARQ.class);
-        super.modVersion.addClass(TDB.class);
+        super.modVersion.addClass("TDB1", TDB.class);
     }
 
     public static synchronized void init() {

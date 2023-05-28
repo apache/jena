@@ -76,24 +76,7 @@
   </dependencies>
 
   <build>
-    <resources>
-      <resource>
-        <filtering>false</filtering>
-        <directory>src/main/resources</directory>
-        <excludes>
-          <exclude>org/apache/jena/tdb2/tdb2-properties.xml</exclude>
-        </excludes>
-      </resource>
-      <resource>
-        <filtering>true</filtering>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>org/apache/jena/tdb2/tdb2-properties.xml</include>
-        </includes>
-      </resource>
-    </resources>
-
-    <plugins> 
+    <plugins>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

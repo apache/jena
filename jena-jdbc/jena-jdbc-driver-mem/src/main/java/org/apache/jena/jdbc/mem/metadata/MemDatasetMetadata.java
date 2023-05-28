@@ -24,16 +24,12 @@ import org.apache.jena.atlas.lib.Version ;
 import org.apache.jena.jdbc.JenaJDBC ;
 import org.apache.jena.jdbc.connections.DatasetConnection ;
 import org.apache.jena.jdbc.metadata.DatasetMetadata ;
-import org.apache.jena.query.ARQ ;
 
 /**
  * Connection metadata for in-memory datasets
  *
  */
 public class MemDatasetMetadata extends DatasetMetadata {
-    
-    private Version arq;
-    private Version jdbc;
 
     /**
      * Creates new metadata
@@ -42,10 +38,6 @@ public class MemDatasetMetadata extends DatasetMetadata {
      */
     public MemDatasetMetadata(DatasetConnection connection) throws SQLException {
         super(connection);
-        arq = new Version();
-        arq.addClass(ARQ.class);
-        jdbc = new Version();
-        jdbc.addClass(JenaJDBC.class);
     }
 
     @Override
@@ -65,7 +57,7 @@ public class MemDatasetMetadata extends DatasetMetadata {
 
     @Override
     public String getDatabaseProductVersion() {
-        return arq.toString();
+        return Version.versionForClass(JenaJDBC.class, "<development>");
     }
 
     @Override
@@ -85,12 +77,12 @@ public class MemDatasetMetadata extends DatasetMetadata {
 
     @Override
     public String getDriverVersion() {
-        return jdbc.toString();
+        return getDatabaseProductVersion();
     }
 
     @Override
     public String getURL() {
-        return "http://jena.apache.org";
+        return "https://jena.apache.org";
     }
 
     @Override

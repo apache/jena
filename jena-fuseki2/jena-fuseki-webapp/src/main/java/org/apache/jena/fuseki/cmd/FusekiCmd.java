@@ -43,7 +43,6 @@ import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.sys.Names;
 import org.slf4j.Logger;
 
@@ -154,7 +153,6 @@ public class FusekiCmd {
             add(argGZip, "--gzip=on|off",
                 "Enable GZip compression (HTTP Accept-Encoding) if request header set");
 
-            super.modVersion.addClass(TDB.class);
             super.modVersion.addClass(Fuseki.class);
         }
 

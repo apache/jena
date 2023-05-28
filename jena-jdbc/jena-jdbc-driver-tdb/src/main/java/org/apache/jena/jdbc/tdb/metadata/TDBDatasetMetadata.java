@@ -25,16 +25,12 @@ import org.apache.jena.atlas.lib.Version ;
 import org.apache.jena.jdbc.JenaJDBC ;
 import org.apache.jena.jdbc.connections.DatasetConnection ;
 import org.apache.jena.jdbc.metadata.DatasetMetadata ;
-import org.apache.jena.tdb.TDB ;
 
 /**
  * Connection metadata for TDB datasets
  *
  */
 public class TDBDatasetMetadata extends DatasetMetadata {
-    
-    private Version tdb;
-    private Version jdbc;
 
     /**
      * Creates new metadata
@@ -43,10 +39,6 @@ public class TDBDatasetMetadata extends DatasetMetadata {
      */
     public TDBDatasetMetadata(DatasetConnection connection) throws SQLException {
         super(connection);
-        tdb = new Version();
-        tdb.addClass(TDB.class);
-        jdbc = new Version();
-        jdbc.addClass(JenaJDBC.class);
     }
 
     @Override
@@ -66,9 +58,9 @@ public class TDBDatasetMetadata extends DatasetMetadata {
 
     @Override
     public String getDatabaseProductVersion() {
-        return tdb.toString(true);
+        return Version.versionForClass(JenaJDBC.class, "<development>");
     }
-    
+
     @Override
     public int getDefaultTransactionIsolation() {
         return Connection.TRANSACTION_SERIALIZABLE;
@@ -86,17 +78,17 @@ public class TDBDatasetMetadata extends DatasetMetadata {
 
     @Override
     public String getDriverName() {
-        return "Apache Jena - JDBC - TDB Driver";
+        return "Apache Jena - JDBC - TDB1 Driver";
     }
 
     @Override
     public String getDriverVersion() {
-        return jdbc.toString(true);
+        return Version.versionForClass(JenaJDBC.class, "<development>");
     }
 
     @Override
     public String getURL() {
-        return "http://jena.apache.org";
+        return "https://jena.apache.org";
     }
 
     @Override
