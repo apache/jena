@@ -226,7 +226,7 @@ public class NodeValueCmp {
                 // Must be same URI
                 if ( nv1.getDatatypeURI().equals(nv2.getDatatypeURI()) )
                     // Indeterminate possible.
-                    return XSDFuncOp.compareDateTimeXSD(nv1, nv2);
+                    return XSDFuncOp.compareDateTime(nv1, nv2);
                 raise(new ExprNotComparableException("Can't compare (incompatible temporal value spaces) "+nv1+" and "+nv2)) ;
 
 //            case VSPACE_DURATION_DAYTIME:
