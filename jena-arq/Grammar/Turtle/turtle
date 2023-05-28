@@ -26,6 +26,9 @@ javacc -OUTPUT_DIRECTORY=$DIR -JDK_VERSION=1.8 "$FILE"
 RC=$?
 [ "$RC" = 0 ] || exit $RC
 
+## echo "---- Create text form"
+## jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
+ 
 echo "---- Fixing Java warnings in TokenMgrError"
 F="$DIR/TokenMgrError.java"
 if [ -e "$F" ]

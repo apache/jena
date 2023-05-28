@@ -142,7 +142,7 @@ void Annotation(Node s, Node p, Node o) : {}
 {
   (
     <L_ANN>
-      { Node x = createTripleTerm(s, p, o, token.beginLine, token.beginColumn); }
+      { Node x = createQuotedTriple(s, p, o, token.beginLine, token.beginColumn); }
       PredicateObjectList(x)
     <R_ANN>
   )?
@@ -164,7 +164,7 @@ Node Subject() : { Node s; String iri ; }
   |
     s = Collection()
   |
-    s = EmbTriple()
+    s = QuotedTriple()
   )
   { return s ; }
 }
@@ -185,40 +185,39 @@ Node Object(): { Node o ; String iri; }
   | o = Collection()
   | o = BlankNodePropertyList()
   | o = Literal()
-  | o = EmbTriple()
+  | o = QuotedTriple()
   )
   { return o; }
 }
 
-Node EmbSubject(): { Node o ; String iri; }
+Node QuotedTripleSubject(): { Node o ; String iri; }
 {
   ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
   | o = BlankNode()
-  | o = EmbTriple()
+  | o = QuotedTriple()
   )
   { return o; }
 }
 
-Node EmbObject(): { Node o ; String iri; }
+Node QuotedTripleObject(): { Node o ; String iri; }
 {
   ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
   | o = BlankNode()
   | o = Literal()
-  | o = EmbTriple()
+  | o = QuotedTriple()
   )
   { return o ; } 
 }
 
 // The syntax for RDF-star <<>>
-Node EmbTriple() : { Node s , p , o ; Token t ; }
+Node QuotedTriple() : { Node s , p , o ; Token t ; }
 {
   t = <LT2>
-    { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
-  s = EmbSubject()
+  s = QuotedTripleSubject()
   p = Verb()
-  o = EmbObject()
+  o = QuotedTripleObject()
   <GT2>
-  { Node n = createTripleTerm(s, p, o, beginLine, beginColumn);
+  { Node n = createQuotedTriple(s, p, o, t.beginLine, t.beginColumn);
     return n;
   }
 }
