@@ -57,7 +57,7 @@ public class MemDatasetMetadata extends DatasetMetadata {
 
     @Override
     public String getDatabaseProductVersion() {
-        return Version.versionForClass(JenaJDBC.class, "<development>");
+        return Version.versionForClass(JenaJDBC.class).orElse("<development>");
     }
 
     @Override

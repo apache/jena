@@ -97,7 +97,7 @@ public class RemoteEndpointMetadata extends JenaMetadata {
 
     @Override
     public String getDriverVersion() {
-        return Version.versionForClass(JenaJDBC.class, "<development>");
+        return Version.versionForClass(JenaJDBC.class).orElse("<development>");
     }
 
     @Override
