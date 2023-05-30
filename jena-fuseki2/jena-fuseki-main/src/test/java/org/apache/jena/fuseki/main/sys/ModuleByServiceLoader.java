@@ -16,26 +16,38 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main;
+package org.apache.jena.fuseki.main.sys;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.jena.fuseki.main.sys.FusekiModule;
+import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
 
-public class ModuleForTest implements FusekiModule {
+public class ModuleByServiceLoader extends ModuleForTest {
 
-    public AtomicInteger countStart = new AtomicInteger(0);
-    public AtomicInteger countPrepared = new AtomicInteger(0);
-    public AtomicInteger countConfiguration = new AtomicInteger(0);
-    public AtomicInteger countServer = new AtomicInteger(0);
-    public AtomicInteger countServerBeforeStarting = new AtomicInteger(0);
-    public AtomicInteger countServerAfterStarting = new AtomicInteger(0);
+    private static ModuleByServiceLoader module = null;
 
-    public ModuleForTest() {}
+    // Must be public for the system-wide loader to create.
+    public ModuleByServiceLoader() {
+        module = this;
+    }
+
+    static ModuleByServiceLoader resetForTest() {
+        module.reset();
+        return module;
+    }
+
+    private void reset() {
+        // Not countStart.
+//      countStart.set(0);
+        countPrepared.set(0);
+        countConfiguration.set(0);
+        countServer.set(0);
+        countServerBeforeStarting.set(0);
+        countServerAfterStarting.set(0);
+    }
 
     private String modName = UUID.randomUUID().toString();
 
@@ -44,14 +56,14 @@ public class ModuleForTest implements FusekiModule {
         return modName;
     }
 
-    public void clearLifecycle() {
-        // Not countStart.
-        countConfiguration.set(0);
-        countPrepared.set(0);
-        countServer.set(0);
-        countServerBeforeStarting.set(0);
-        countServerAfterStarting.set(0);
-    }
+//    public void clearLifecycle() {
+//        // Not countStart.
+//        countConfiguration.set(0);
+//        countPrepared.set(0);
+//        countServer.set(0);
+//        countServerBeforeStarting.set(0);
+//        countServerAfterStarting.set(0);
+//    }
 
     @Override
     public void start() {

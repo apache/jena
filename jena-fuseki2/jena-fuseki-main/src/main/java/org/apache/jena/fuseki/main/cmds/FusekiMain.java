@@ -40,6 +40,8 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiMainInfo;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.sys.FusekiModules;
+import org.apache.jena.fuseki.main.sys.FusekiModulesCtl;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiCoreInfo;
@@ -98,6 +100,9 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argWithMetrics  = new ArgDecl(ArgDecl.NoValue,  "withMetrics", "metrics");
     private static ArgDecl  argWithCompact  = new ArgDecl(ArgDecl.NoValue,  "withCompact", "compact");
 
+    // Default is "true" and use modules found by the ServiceLoader.
+    private static ArgDecl  argEnableModules  = new ArgDecl(ArgDecl.HasValue,  "modules", "fuseki-modules");
+
     private static ArgDecl  argAuth         = new ArgDecl(ArgDecl.HasValue, "auth");
 
     private static ArgDecl  argHttps        = new ArgDecl(ArgDecl.HasValue, "https");
@@ -122,17 +127,41 @@ public class FusekiMain extends CmdARQ {
     // Default
     private boolean useTDB2 = true;
 
+    // -- Programmatic ways to create a server
+
     /** Build, but do not start, a server based on command line syntax. */
-    public static FusekiServer build(String... argv) {
-        FusekiMain inner = new FusekiMain(argv);
-        inner.process();
-        return inner.buildServer();
+    public static FusekiServer build(String... args) {
+        FusekiServer.Builder builder = builder(args);
+        return builder.build();
     }
+
+    /**
+     * Create a {@link org.apache.jena.fuseki.main.FusekiServer.Builder} which has
+     * been setup according to the command line arguments.
+     * The builder can be further modified.
+     */
+    public static FusekiServer.Builder builder(String... args) {
+        // Parses command line, sets arguments.
+        FusekiMain inner = new FusekiMain(args);
+        // Process command line args according to the argument specified.
+        inner.process();
+        // Apply command line/serverConfig to a builder.
+        FusekiServer.Builder builder = inner.builder();
+        applyServerArgs(builder, inner.serverConfig);
+        return builder;
+    }
+
+    /**
+     * Create a server and run, within the same JVM.
+     * This is the command line entry point.
+     */
 
     static void run(String... argv) {
         JenaSystem.init();
         new FusekiMain(argv).mainRun();
     }
+
+    // --
 
     protected FusekiMain(String... argv) {
         super(argv);
@@ -205,6 +234,8 @@ public class FusekiMain extends CmdARQ {
         add(argWithStats,   "--stats",      "Enable /$/stats");
         add(argWithMetrics, "--metrics",    "Enable /$/metrics");
         add(argWithCompact, "--compact",    "Enable /$/compact/*");
+
+        add(argEnableModules, "--modules=true|false", "Enable Fuseki modules");
 
         super.modVersion.addClass("Fuseki", Fuseki.class);
     }
@@ -459,6 +490,24 @@ public class FusekiMain extends CmdARQ {
             serverConfig.jettyConfigFile = jettyConfigFile;
         }
 
+        boolean withModules = hasValueOfTrue(argEnableModules);;
+        if ( withModules ) {
+            // Use the discovered ones.
+            FusekiModulesCtl.enable(true);
+            // Allows for external setting of serverConfig.fusekiModules
+            if ( serverConfig.fusekiModules == null ) {
+                FusekiModulesCtl.setup();
+                serverConfig.fusekiModules = FusekiModulesCtl.load();
+            }
+        } else {
+            // Disabled module discovery.
+            FusekiModulesCtl.enable(false);
+            // Allows for external setting of serverConfig.fusekiModules
+            if ( serverConfig.fusekiModules == null ) {
+                serverConfig.fusekiModules = FusekiModules.empty();
+            }
+        }
+
         // 2020-10: Ignore argCORS - CORS is now on by default in Fuseki Main cmd
         serverConfig.withCORS = ! contains(argNoCORS);
         serverConfig.withPing = contains(argWithPing);
@@ -484,7 +533,7 @@ public class FusekiMain extends CmdARQ {
         try {
             Logger log = Fuseki.serverLog;
             FusekiMainInfo.logServerCode(log);
-            FusekiServer server = buildServer(serverConfig);
+            FusekiServer server = makeServer(serverConfig);
             infoCmd(server, log);
             try {
                 server.start();
@@ -512,21 +561,31 @@ public class FusekiMain extends CmdARQ {
         }
     }
 
-    private FusekiServer buildServer() {
-        return buildServer(serverConfig);
-    }
-
-    // ServerConfig -> Setup the builder.
-    private FusekiServer buildServer(ServerConfig serverConfig) {
+    /**
+     * Take a {@link ServerConfig} and make a {@Link FusekiServer}.
+     * The server has not been started.
+     */
+    private FusekiServer makeServer(ServerConfig serverConfig) {
         FusekiServer.Builder builder = builder();
-        return buildServer(builder, serverConfig);
+        applyServerArgs(builder, serverConfig);
+        return builder.build();
     }
 
     protected FusekiServer.Builder builder() {
         return FusekiServer.create();
     }
 
+    /**
+     * Process {@link ServerConfig} and build a server.
+     * The server has not been started.
+     */
     private static FusekiServer buildServer(FusekiServer.Builder builder, ServerConfig serverConfig) {
+        applyServerArgs(builder, serverConfig);
+        return builder.build();
+    }
+
+    /** Apply {@link ServerConfig} to a {@link FusekiServer.Builder}. */
+    private static void applyServerArgs(FusekiServer.Builder builder, ServerConfig serverConfig) {
         if ( serverConfig.jettyConfigFile != null )
             builder.jettyServerConfig(serverConfig.jettyConfigFile);
         builder.port(serverConfig.port);
@@ -553,6 +612,9 @@ public class FusekiMain extends CmdARQ {
                 // One dataset.
                 builder.add(serverConfig.datasetPath, serverConfig.dsg, serverConfig.allowUpdate);
         }
+
+        if ( serverConfig.fusekiModules != null )
+            builder.setFusekiModules(serverConfig.fusekiModules);
 
         if ( serverConfig.contentDirectory != null )
             builder.staticFileBase(serverConfig.contentDirectory);
@@ -583,8 +645,6 @@ public class FusekiMain extends CmdARQ {
 
         if ( serverConfig.withCompact )
             builder.enableCompact(true);
-
-        return builder.build();
     }
 
     /** Information from the command line setup */

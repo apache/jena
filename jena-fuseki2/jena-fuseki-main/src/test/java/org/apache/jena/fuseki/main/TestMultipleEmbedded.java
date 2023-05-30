@@ -33,10 +33,13 @@ import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
 import org.junit.Test;
 
 public class TestMultipleEmbedded {
+
+    static { JenaSystem.init(); }
 
     static Quad q1 = SSE.parseQuad("(_ :s :p 1)");
     static Quad q2 = SSE.parseQuad("(_ :s :p 2)");

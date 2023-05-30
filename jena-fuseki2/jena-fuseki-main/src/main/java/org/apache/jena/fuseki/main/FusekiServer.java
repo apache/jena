@@ -1051,6 +1051,12 @@ public class FusekiServer {
             return this;
         }
 
+        /** @deprecated Use {@link #setFusekiModules(FusekiModules)}. */
+        @Deprecated
+        public Builder setModules(FusekiModules modules) {
+            return setFusekiModules(modules);
+        }
+
         /**
          * Set the {@link FusekiModule Fuseki Module} for a server.
          * If no modules are added to a builder, then the system-wide default set (found by loading FusekiModule
@@ -1059,7 +1065,7 @@ public class FusekiServer {
          *
          * @see FusekiModules
          */
-        public Builder setModules(FusekiModules modules) {
+        public Builder setFusekiModules(FusekiModules modules) {
             fusekiModules = modules;
             return this;
         }
@@ -1227,7 +1233,7 @@ public class FusekiServer {
                 serverHttpPort = DefaultServerPort;
 
             FusekiModules modules = (fusekiModules == null)
-                    ? FusekiModulesSystem.get()
+                    ? FusekiModulesCtl.load()
                     : fusekiModules;
 
             // FusekiModule call - final preparations.

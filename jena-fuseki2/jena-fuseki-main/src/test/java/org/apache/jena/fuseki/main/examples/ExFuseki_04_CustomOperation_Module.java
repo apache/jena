@@ -66,7 +66,7 @@ public class ExFuseki_04_CustomOperation_Module {
 
         FusekiServer.create().port(3230)
             .add("/ds", DatasetGraphFactory.createTxnMem())
-            .setModules(modules)
+            .setFusekiModules(modules)
             .build()
             .start();
 

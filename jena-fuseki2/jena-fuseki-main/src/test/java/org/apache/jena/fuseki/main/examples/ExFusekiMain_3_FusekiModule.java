@@ -24,8 +24,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -37,7 +35,6 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
-import org.apache.jena.fuseki.main.sys.FusekiModulesLoaded;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.rdf.model.Model;
@@ -57,19 +54,15 @@ public class ExFusekiMain_3_FusekiModule {
         //
         // The file is typically put into the jar by having
         //   src/main/resources/META-INF/services/org.apache.jena.fuseki.main.sys.FusekiModule
+
         // For this example, we add the module directly.
         FusekiModule module = new FMod_ProvidePATCH();
-
-
-        List<FusekiModule> modules = new ArrayList<>();
-        modules.addAll(FusekiModulesLoaded.loaded().asList());
-        modules.add(module);
-        FusekiModules fusekiModules = FusekiModules.create(modules);
+        FusekiModules fusekiModules = FusekiModules.create(module);
         // Create server.
         FusekiServer server =
             FusekiServer.create()
                 .port(0)
-                .setModules(fusekiModules)
+                .setFusekiModules(fusekiModules)
                 .build()
                 .start();
         int port = server.getPort();
