@@ -6,7 +6,7 @@
 ## the License.  You may obtain a copy of the License at
 ##
 ##     http://www.apache.org/licenses/LICENSE-2.0
-## 
+##
 ## Unless required by applicable law or agreed to in writing, software
 ## distributed under the License is distributed on an "AS IS" BASIS,
 ## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -72,12 +72,6 @@ RUN \
 ADD entrypoint.sh .
 ADD log4j2.properties .
 
-# Run as this user
-# -H : no home directorry
-# -D : no password
-
-RUN adduser -H -D fuseki fuseki
-
 ## ---- Stage: Build runtime
 FROM alpine:${ALPINE_VERSION}
 
@@ -89,18 +83,32 @@ ARG FUSEKI_JAR
 
 COPY --from=base /opt/java-minimal /opt/java-minimal
 COPY --from=base /fuseki /fuseki
-COPY --from=base /etc/passwd /etc/passwd
 
 WORKDIR $FUSEKI_DIR
 
 ARG LOGS=${FUSEKI_DIR}/logs
 ARG DATA=${FUSEKI_DIR}/databases
 
+ARG JENA_USER=fuseki
+ARG JENA_GROUP=$JENA_USER
+ARG JENA_GID=1000
+ARG JENA_UID=1000
+
+# Run as this user
+# -H : no home directory
+# -D : no password
+RUN addgroup -g "${JENA_GID}" "${JENA_GROUP}" && \
+    adduser "${JENA_USER}" -G "${JENA_GROUP}" -s /bin/ash -u "${JENA_UID}" -H -D
+
+RUN mkdir --parents "${FUSEKI_DIR}" && \
+    chown -R $JENA_USER ${FUSEKI_DIR}
+
+USER $JENA_USER
+
 RUN \
     mkdir -p $LOGS && \
     mkdir -p $DATA && \
-    chown -R fuseki ${FUSEKI_DIR} && \
-    chmod a+x entrypoint.sh 
+    chmod a+x entrypoint.sh
 
 ## Default environment variables.
 ENV \
@@ -109,8 +117,6 @@ ENV \
     JENA_VERSION=${JENA_VERSION}        \
     FUSEKI_JAR="${FUSEKI_JAR}"          \
     FUSEKI_DIR="${FUSEKI_DIR}"
-
-USER fuseki
 
 EXPOSE 3030
 
