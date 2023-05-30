@@ -34,31 +34,38 @@ import org.apache.jena.rdf.model.Model;
  * the application code. Calls are made to each module at certain points in the
  * lifecycle of a Fuseki server.
  * <p>
- *  A module must provide a no-argument constructor if it is to be loaded automatically.
+ * A module must provide a no-argument constructor if it is to be loaded automatically.
+ * <p>
+ *
+ * Automatically loaded Fuseki modules:
  * <ul>
- * <li>{@linkplain #start()} -- called when the module is loaded.</li>
+ * <li>{@linkplain #start()} -- called when the module is loaded and instantiated.</li>
+ * <li>{@linkplain #stop} -- modules finishes. This is unlikely to be called in practice and there is no guarantee of a clean shutdown.
+ * </ul>
+ * When a server is being built:
+ * * <ul>
  * <li>{@linkplain #prepare}
  *      -- called at the beginning of the
  *     {@link org.apache.jena.fuseki.main.FusekiServer.Builder#build() FusekiServer.Builder build()}
  *      step. This call can manipulate the server configuration. This is the usual operation for customizing a server.</li>
- * <li>{@linkplain #configured} -- called after the DataAccessPoint registry has been built..</li>
- * <li>{@linkplain #server(FusekiServer)} -- called at the end of the "build" step.</li>
+ * <li>{@linkplain #configured} -- called after the DataAccessPoint registry has been built.</li>
+ * <li>{@linkplain #server(FusekiServer)} -- called at the end of the "build" step before
+ *     {@link org.apache.jena.fuseki.main.FusekiServer.Builder#build() FusekiServer.Builder build()}
+ *     returns.</li>
+ * </ul>
+ * At server start-up:
+ * <ul>
  * <li>{@linkplain #serverBeforeStarting(FusekiServer)} -- called before {@code server.start} happens.</li>
  * <li>{@linkplain #serverAfterStarting(FusekiServer)} -- called after {@code server.start} happens.</li>
  * <li>{@linkplain #serverStopped(FusekiServer)} -- call after {@code server.stop}, but only if a clean shutdown happens.
  *     Servers may simply exit without a shutdown phase.
  *     The JVM may exit or be killed without clean shutdown.
  *     Modules must not rely on a call to {@code serverStopped} happening.</li>
- * <li>{@linkplain #stop} -- modules finishes. Unlikely to be called in practice. There is no guarantee of a clean shutdown.
  * </ul>
  */
 public interface FusekiModule extends SubsystemLifecycle {
     /**
      * Display name to identify this module.
-     * <p>
-     * Modules are loaded once by the service loader.
-     * <p>
-     * Modules added programmatically should be added once only.
      */
     public String name();
 

@@ -24,14 +24,14 @@ import java.util.function.Consumer;
 
 /**
  * List of {@linkplain FusekiModule Fuseki modules}.
- * This is the immutable collection of modules for a server.
+ * This is the immutable group of modules for a server.
  * <p>
- * @see FusekiModulesLoaded
+ * @see FusekiModulesCtl
  */
 public class FusekiModules {
 
     /** A Fuseki module with no members. */
-    public static final FusekiModules empty = FusekiModules.create();
+    public static final FusekiModules empty() { return FusekiModules.create(); }
 
     /** Create a collection of Fuseki modules */
     public static FusekiModules create(FusekiModule ... modules) {
