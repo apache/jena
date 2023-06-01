@@ -92,7 +92,7 @@
     <ver.httpclient>4.5.14</ver.httpclient>
     <ver.httpcore>4.4.16</ver.httpcore>
 
-    <ver.shaded-guava>31.1-jre</ver.shaded-guava>
+    <ver.shaded-guava>32.0.0-jre</ver.shaded-guava>
     <ver.gson>2.10.1</ver.gson>
     <ver.commonsio>2.11.0</ver.commonsio>
     <ver.commonscli>1.5.0</ver.commonscli>
