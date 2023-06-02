@@ -46,6 +46,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
+import org.apache.jena.sparql.exec.http.Service;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Convert;
@@ -80,6 +81,11 @@ public class TestQuery extends AbstractFusekiTest {
     @Test
     public void query_recursive_01() {
         String query = "SELECT * WHERE { SERVICE <" + serviceQuery() + "> { ?s ?p ?o . BIND(?o AS ?x) } }";
+
+        // Set in server!
+        Object serverSetting = Fuseki.getContext().get(Service.httpServiceAllowed);
+        Fuseki.getContext().set(Service.httpServiceAllowed, true);
+
         try (QueryExecution qExec = QueryExecution.service(serviceQuery(), query)) {
             ResultSet rs = qExec.execSelect();
             Var x = Var.alloc("x");
@@ -87,6 +93,8 @@ public class TestQuery extends AbstractFusekiTest {
                 Binding b = rs.nextBinding();
                 Assert.assertNotNull(b.get(x));
             }
+        } finally {
+            Fuseki.getContext().set(Service.httpServiceAllowed, serverSetting);
         }
     }
 

@@ -20,6 +20,9 @@ package org.apache.jena.sparql.exec.http;
 
 import static org.junit.Assert.*;
 
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.net.http.HttpConnectTimeoutException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +35,7 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.http.sys.HttpRequestModifier;
 import org.apache.jena.http.sys.RegistryRequestModifier;
 import org.apache.jena.query.*;
@@ -39,6 +43,7 @@ import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkFactory;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.op.OpBGP;
 import org.apache.jena.sparql.algebra.op.OpService ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -57,13 +62,15 @@ import org.apache.jena.sparql.syntax.ElementService;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 /** Test Service implementation code -- Service.exec */
 public class TestService {
+    // ---- Enable service
+    @BeforeClass public static void enableAllowServiceExecution() { CtlService.enableAllowServiceExecution(); }
+    @AfterClass public static void resetAllowServiceExecution() { CtlService.resetAllowServiceExecution(); }
+    public static Context minimalContext() { return CtlService.minimalContext(); }
+    // ----
 
     private static String SERVICE;
     private static EnvTest env;
@@ -133,13 +140,13 @@ public class TestService {
 
     @Test public void service_exec_1() {
         OpService op = makeOp(env);
-        QueryIterator qIter = Service.exec(op, new Context());
+        QueryIterator qIter = Service.exec(op, minimalContext());
         assertNotNull(qIter);
     }
 
     @Test public void service_exec_2() {
         OpService op = makeOpElt(env);
-        QueryIterator qIter = Service.exec(op, new Context());
+        QueryIterator qIter = Service.exec(op, minimalContext());
         assertNotNull(qIter);
     }
 
@@ -148,7 +155,7 @@ public class TestService {
         dsg.executeWrite(()->dsg.add(SSE.parseQuad("(_ :s :p :o)")));
 
         OpService op = makeOpElt(env);
-        QueryIterator qIter = Service.exec(op, new Context());
+        QueryIterator qIter = Service.exec(op, minimalContext());
         assertNotNull(qIter);
         assertTrue(qIter.hasNext());
         qIter.next();
@@ -235,6 +242,41 @@ public class TestService {
         }
     }
 
+    @Test
+    public void testNumericTimeout() {
+        Context context = minimalContext();
+        context.set(Service.httpQueryTimeout, 10);
+        execTestTimeout(context);
+    }
+
+    @Test
+    public void testStringTimeout() {
+        Context context = minimalContext();
+        context.set(Service.httpQueryTimeout, "10");
+        execTestTimeout(context);
+    }
+
+    private static void execTestTimeout(Context context) {
+        String SERVICE_EX = "http://example.com:40000/";
+        BasicPattern basicPattern = new BasicPattern();
+        basicPattern.add(Triple.ANY);
+        Node serviceNode = NodeFactory.createURI(SERVICE_EX);
+        OpService opService = new OpService(serviceNode, new OpBGP(basicPattern), false);
+        try {
+            Service.exec(opService, context);
+            Assert.fail("Expected QueryExceptionHTTP");
+        } catch (QueryExceptionHTTP expected) {
+            Throwable thrown = expected.getCause() ;
+            if ( thrown instanceof SocketException || thrown instanceof HttpConnectTimeoutException || thrown instanceof UnknownHostException )  {
+                // expected
+            } else {
+                Assert.fail(String.format("Expected SocketException or HttpConnectTimeoutException, instead got: %s %s",
+                                          thrown.getClass().getName(),
+                                          thrown.getMessage()));
+            }
+        }
+    }
+
     // Uses a HttpRequestModifier to check the changes.
     @Test public void service_query_extra_params_oldstyle_by_context_1() {
 
@@ -293,38 +335,6 @@ public class TestService {
 
 
     // Same except set the QExec context.
-
-    @Test (expected=QueryExecException.class)
-    public void service_query_disabled_local_dataset() {
-        String queryString = "ASK { SERVICE <"+SERVICE+"?format=json> { BIND(now() AS ?now) } }";
-        DatasetGraph localdsg = localDataset();
-        localdsg.getContext().set(Service.httpServiceAllowed, false);
-        try ( RDFLink link = RDFLinkFactory.connect(localdsg) ) {
-            boolean b = link.queryAsk(queryString);
-        }
-    }
-
-    @Test (expected=QueryExecException.class)
-    public void service_query_disabled_global() {
-        String queryString = "ASK { SERVICE <"+SERVICE+"?format=json> { BIND(now() AS ?now) } }";
-        try {
-            ARQ.getContext().set(Service.httpServiceAllowed, false);
-            try ( RDFLink link = RDFLinkFactory.connect(localDataset()) ) {
-                boolean b = link.queryAsk(queryString);
-            }
-        } finally {
-            ARQ.getContext().unset(Service.httpServiceAllowed);
-        }
-    }
-
-    @Test (expected=QueryExecException.class)
-    public void service_query_disabled_queryexec() {
-        String queryString = "ASK { SERVICE <"+SERVICE+"?format=json> { BIND(now() AS ?now) } }";
-        Context context = Context.create().set(Service.httpServiceAllowed, false);
-        try ( QueryExec qExec = QueryExec.dataset(localDataset()).query(queryString).context(context).build() ) {
-            qExec.ask();
-        }
-    }
 
     @Test public void service_query_modified_cxt() {
         DatasetGraph dsg = env.dsg();

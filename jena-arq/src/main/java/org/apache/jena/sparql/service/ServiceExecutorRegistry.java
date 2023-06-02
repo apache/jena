@@ -29,8 +29,6 @@ import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.service.bulk.ChainingServiceExecutorBulk;
-import org.apache.jena.sparql.service.bulk.ServiceExecutorBulk;
-import org.apache.jena.sparql.service.bulk.ServiceExecutorBulkOverRegistry;
 import org.apache.jena.sparql.service.single.ChainingServiceExecutor;
 import org.apache.jena.sparql.service.single.ChainingServiceExecutorWrapper;
 import org.apache.jena.sparql.service.single.ServiceExecutor;
@@ -103,8 +101,7 @@ public class ServiceExecutorRegistry
     }
 
     /** Return the registry from the given context only; null if there is none */
-    public static ServiceExecutorRegistry get(Context context)
-    {
+    public static ServiceExecutorRegistry get(Context context) {
         if ( context == null )
             return null ;
         return (ServiceExecutorRegistry)context.get(ARQConstants.registryServiceExecutors) ;
@@ -218,16 +215,12 @@ public class ServiceExecutorRegistry
         return result;
     }
 
-    /*
+    /**
      * Execution
+     * @deprecated To be removed. Moved to {@link ServiceExec#exec}.
      */
-
-    /** Execute an OpService w.r.t. the execCxt's service executor registry */
+    @Deprecated(since = "4.9.0")
     public static QueryIterator exec(QueryIterator input, OpService opService, ExecutionContext execCxt) {
-        Context cxt = execCxt.getContext();
-        ServiceExecutorRegistry registry = ServiceExecutorRegistry.chooseRegistry(cxt);
-        ServiceExecutorBulk serviceExecutor = new ServiceExecutorBulkOverRegistry(registry);
-        QueryIterator qIter = serviceExecutor.createExecution(opService, input, execCxt);
-        return qIter;
+        return ServiceExec.exec(input, opService, execCxt);
     }
 }

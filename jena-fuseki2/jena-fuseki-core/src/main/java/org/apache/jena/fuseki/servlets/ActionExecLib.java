@@ -33,6 +33,7 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.system.ActionCategory;
 import org.apache.jena.query.QueryCancelledException;
+import org.apache.jena.query.QueryDeniedException;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.OperationDeniedException;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
@@ -131,6 +132,9 @@ public class ActionExecLib {
             //    protocol -- SPARQL_Query.setAnyTimeouts
             String message = "Query timed out";
             ServletOps.responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
+        } catch (QueryDeniedException ex) {
+            // Typically a configuration setting blocks the query.
+            ServletOps.responseSendError(response, HttpSC.UNPROCESSABLE_ENTITY_422, ex.getMessage());
         } catch (OperationDeniedException ex) {
             if ( ex.getMessage() == null )
                 FmtLog.info(action.log, "[%d] OperationDeniedException", action.id);

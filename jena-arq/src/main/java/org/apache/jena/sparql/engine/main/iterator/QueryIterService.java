@@ -38,21 +38,17 @@ import org.apache.jena.sparql.util.Context;
 /**
  * This class continues to exist for compatibility with legacy service extensions.
  * New code should register extensions at a {@link ServiceExecutorRegistry}.
+ * @deprecated To be removed. Migrate to {@link ServiceExecutorRegistry}.
  */
 @Deprecated(since = "4.6.0")
 public class QueryIterService extends QueryIterRepeatApply
 {
     protected OpService opService ;
 
-    public QueryIterService(QueryIterator input, OpService opService, ExecutionContext context)
+    public QueryIterService(QueryIterator input, OpService opService, ExecutionContext execCxt)
     {
-        super(input, context) ;
-        if ( context.getContext().isFalse(Service.httpServiceAllowed) )
-            throw new QueryExecException("SERVICE not allowed") ;
-        // Old name.
-        if ( context.getContext().isFalse(Service.serviceAllowed) )
-            throw new QueryExecException("SERVICE not allowed") ;
-
+        super(input, execCxt) ;
+        Service.checkServiceAllowed(execCxt.getContext());
         this.opService = opService ;
     }
 

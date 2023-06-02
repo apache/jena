@@ -36,16 +36,9 @@ public class ServiceExecutorHttp
     implements ServiceExecutor
 {
     @Override
-    public QueryIterator createExecution(OpService opExecute, OpService opOriginal, Binding binding,
-            ExecutionContext execCxt) {
-
+    public QueryIterator createExecution(OpService opExecute, OpService opOriginal,
+                                         Binding binding, ExecutionContext execCxt) {
         Context context = execCxt.getContext();
-        if ( context.isFalse(Service.httpServiceAllowed) )
-            throw new QueryExecException("SERVICE not allowed") ;
-        // Old name.
-        if ( context.isFalse(Service.serviceAllowed) )
-            throw new QueryExecException("SERVICE not allowed") ;
-
         boolean silent = opExecute.getSilent();
 
         try {

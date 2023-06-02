@@ -48,9 +48,7 @@ public class TestFusekiModules {
         FusekiModulesLoaded.resetSystem();
     }
 
-    @Before public void beforeTest() {
-        ModuleForTest.module.clearLifecycle();
-    }
+    @Before public void beforeTest() { }
 
     @AfterClass public static void afterClass() {
         FusekiModulesSystem.set(system);
@@ -95,10 +93,9 @@ public class TestFusekiModules {
 
         ModuleForTest module = findModule();
 
-
         assertFalse(FusekiModulesSystem.get().asList().isEmpty());
 
-        FusekiServer.Builder builder = FusekiServer.create().port(0);
+        FusekiServer.Builder builder = FusekiServer.create().setModules(FusekiModules.create(module)).port(0);
 
         assertEquals("start:"  ,       1, module.countStart.get());
         assertEquals("prepare:",       0, module.countPrepared.get());
@@ -108,7 +105,6 @@ public class TestFusekiModules {
         assertEquals("serverAfter: ",  0, module.countServerAfterStarting.get());
 
         FusekiServer server = builder.build();
-
 
         assertFalse(server.getModules().asList().isEmpty());
 
@@ -159,6 +155,8 @@ public class TestFusekiModules {
     }
 
     private ModuleForTest findModule() {
-        return ModuleForTest.module;
+        ModuleForTest mod = new ModuleForTest();
+        mod.start();
+        return mod;
     }
 }

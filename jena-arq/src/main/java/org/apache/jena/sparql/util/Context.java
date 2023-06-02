@@ -301,6 +301,32 @@ public class Context {
         return x.equals(Boolean.FALSE);
     }
 
+    /**
+     * Is the value true or false, either as a Boolean or a string.
+     * If undefined, return null.
+     * Exception if not a boolean or a string.
+     *
+     */
+    public Boolean getTrueOrFalse(Symbol property) {
+        Object x = get(property);
+        if ( x == null )
+            return null;
+        if ( x instanceof String ) {
+            String s = (String)x;
+            if ( s.equalsIgnoreCase("false") )
+                return false;
+            if ( s.equalsIgnoreCase("true") )
+                return true;
+            throw new ARQException("Bad string for boolean: "+s);
+        }
+        // Possible class cast exception.
+        try {
+            return (Boolean)x;
+        } catch (Throwable th) {
+            throw new ARQException("Bad setting for boolean: "+x);
+        }
+    }
+
     // -- Test for value
 
     /** Test whether a named value is a specific value (.equals) */
