@@ -29,7 +29,6 @@ import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.thrift.ThriftRDF;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.RowSetStream;
 
@@ -155,10 +154,7 @@ public class ProtobufRDF {
         try {
             List<Var> vars = rowSet.getResultVars();
             try ( Binding2Protobuf b2p = new Binding2Protobuf(out, vars, false) ) {
-                for ( ; rowSet.hasNext() ; ) {
-                    Binding b = rowSet.next();
-                    b2p.output(b);
-                }
+                rowSet.forEachRemaining(b2p::output);
             }
         } finally { IO.flush(out); }
     }

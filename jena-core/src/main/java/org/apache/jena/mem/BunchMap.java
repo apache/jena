@@ -18,6 +18,8 @@
 
 package org.apache.jena.mem;
 
+import java.util.Iterator;
+import java.util.Spliterator;
 import java.util.function.Function ;
 
 import org.apache.jena.util.iterator.ExtendedIterator ;
@@ -68,4 +70,8 @@ public interface BunchMap
         Answer an iterator over all the keys in this map.
     */
     public ExtendedIterator<Object> keyIterator();
+
+    public Iterator<TripleBunch> iterator();
+
+    public Spliterator<TripleBunch> spliterator();
     }

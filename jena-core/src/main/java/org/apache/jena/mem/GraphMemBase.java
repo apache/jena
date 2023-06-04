@@ -61,7 +61,7 @@ public abstract class GraphMemBase extends GraphBase
     */
     public GraphMemBase openAgain()
         { 
-        count += 1; 
+        count++;
         return this;
         }
 

@@ -24,6 +24,7 @@ import java.util.ConcurrentModificationException ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 import java.util.concurrent.atomic.AtomicLong ;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
@@ -124,6 +125,13 @@ public class DatasetControlMRSW implements DatasetControl
                 close();
                 throw ex;
             }
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super T> action) {
+            iter.forEachRemaining(action);
+            checkIterConcurrentModification();
+            close();
         }
 
         @Override

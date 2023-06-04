@@ -20,6 +20,7 @@ package org.apache.jena.sparql.resultset;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.query.QuerySolution ;
@@ -73,6 +74,13 @@ public class ResultSetPeeking implements ResultSetPeekable, Closeable {
     @Override
     public QuerySolution next() {
         return new ResultBinding(this.model, this.nextBinding());
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super QuerySolution> action) {
+        while (this.hasNext()) {
+            action.accept(this.next());
+        }
     }
 
     @Override

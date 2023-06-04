@@ -19,6 +19,7 @@
 package org.apache.jena.mem;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import org.apache.jena.shared.BrokenException ;
 import org.apache.jena.shared.JenaException ;
@@ -178,7 +179,7 @@ public abstract class HashCommon<Key>
     public void remove( Key key )
         { primitiveRemove( key ); }
 
-    private void primitiveRemove( Key key )
+    protected void primitiveRemove( Key key )
         {
         int slot = findSlot( key );
         if (slot < 0) removeFrom( ~slot );
@@ -235,7 +236,7 @@ public abstract class HashCommon<Key>
         about the overhead of the linear probing.
     <p>
         Iterators running over the keys may miss elements that are moved from the
-        top of the table to the bottom because of Iterator::remove. removeFrom
+        bottom of the table to the top because of Iterator::remove. removeFrom
         returns such a moved key as its result, and null otherwise.
     */
     protected Key removeFrom( int here )
@@ -258,9 +259,8 @@ public abstract class HashCommon<Key>
                     { /* Nothing. We'd have preferred an `unless` statement. */}
                 else
                     {
-                    if (here <= original && scan > original) {
-                        wrappedAround = keys[scan];
-                    }
+                    if (here >= original && scan < original)
+                        { wrappedAround = keys[scan]; }
                     keys[here] = keys[scan];
                     moveAssociatedValues( here, scan );
                     here = scan;
@@ -318,15 +318,20 @@ public abstract class HashCommon<Key>
 
         @Override public boolean hasNext()
             { 
-            if (changes > initialChanges) throw new ConcurrentModificationException( "changes " + changes + " > initialChanges " + initialChanges );
-            return index < movedKeys.size(); 
+            return index < movedKeys.size();
             }
 
         @Override public Key next()
             {
+            if (changes > initialChanges) throw new ConcurrentModificationException( "changes " + changes + " > initialChanges " + initialChanges );
+            if (index < movedKeys.size()) return movedKeys.get( index++ );
+            return noElements( "" );
+            }
+
+        @Override public void forEachRemaining(Consumer<? super Key> action)
+            {
+            while(index < movedKeys.size()) action.accept( movedKeys.get( index++ ) );
             if (changes > initialChanges) throw new ConcurrentModificationException();
-            if (hasNext() == false) noElements( "" );
-            return movedKeys.get( index++ );
             }
 
         @Override public void remove()
@@ -347,7 +352,7 @@ public abstract class HashCommon<Key>
         {
         protected final List<Key> movedKeys;
 
-        int index = 0;
+        int pos = capacity-1;
         final int initialChanges;
         final NotifyEmpty container;
 
@@ -360,16 +365,30 @@ public abstract class HashCommon<Key>
 
         @Override public boolean hasNext()
             {
-            if (changes > initialChanges) throw new ConcurrentModificationException();
-            while (index < capacity && keys[index] == null) index += 1;
-            return index < capacity;
+            while(-1 < pos)
+                {
+                if(null != keys[pos])
+                    return true;
+                pos--;
+                }
+            return false;
             }
 
         @Override public Key next()
             {
             if (changes > initialChanges) throw new ConcurrentModificationException();
-            if (hasNext() == false) noElements( "HashCommon keys" );
-            return keys[index++];
+            if (-1 < pos && null != keys[pos]) return keys[pos--];
+            throw new NoSuchElementException("HashCommon keys");
+            }
+
+        @Override public void forEachRemaining(Consumer<? super Key> action)
+            {
+            while(-1 < pos)
+                {
+                if(null != keys[pos]) action.accept(keys[pos]);
+                pos--;
+                }
+            if (changes > initialChanges) throw new ConcurrentModificationException();
             }
 
         @Override public void remove()
@@ -377,11 +396,21 @@ public abstract class HashCommon<Key>
             if (changes > initialChanges) throw new ConcurrentModificationException();
             // System.err.println( ">> keyIterator::remove, size := " + size +
             // ", removing " + keys[index + 1] );
-            Key moved = removeFrom( index - 1 );
+            Key moved = removeFrom( pos + 1 );
             if (moved != null) movedKeys.add( moved );
             if (size == 0) container.emptied();
             if (size < 0) throw new BrokenException( "BROKEN" );
             showkeys();
             }
+        }
+
+        public Spliterator<Key> keySpliterator()
+        {
+            final var initialChanges = changes;
+            final Runnable checkForConcurrentModification = () ->
+            {
+                if (changes != initialChanges) throw new ConcurrentModificationException();
+            };
+            return new SparseArraySpliterator<>(keys, size, checkForConcurrentModification);
         }
     }

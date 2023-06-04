@@ -41,7 +41,7 @@ public class TestPackage_graph extends TestSuite {
         addTest( TestNode.suite() );
         addTest( TestTriple.suite() );
         addTest( TestTripleField.suite() );
-        addTest( TestNodeToTriplesMap.suite() );
+        addTest( TestNodeToTriplesMapMem.suite() );
         addTest( TestReifier.suite() );
         addTest( TestTypedLiterals.suite() );
         addTest( TestDateTime.suite() );

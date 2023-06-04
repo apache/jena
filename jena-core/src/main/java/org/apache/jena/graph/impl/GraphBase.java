@@ -18,6 +18,7 @@
 
 package org.apache.jena.graph.impl;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.* ;
 import org.apache.jena.shared.AddDeniedException ;
 import org.apache.jena.shared.ClosedException ;
@@ -307,9 +308,7 @@ public abstract class GraphBase implements GraphWithPerform
 		ExtendedIterator<Triple> it = GraphUtil.findAll( this );
         try
             {
-            int tripleCount = 0;
-            while (it.hasNext()) { it.next(); tripleCount += 1; }
-            return tripleCount;
+            return (int) Iter.count(it);
             }
         finally
             { it.close(); }

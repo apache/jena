@@ -19,6 +19,7 @@
 package org.apache.jena.mem;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import org.apache.jena.graph.* ;
 import org.apache.jena.util.CollectionFactory ;
@@ -57,7 +58,25 @@ public abstract class ObjectIterator extends NiceIterator<Node>
             ( "ObjectIterator.next()" );
         return pending.remove( pending.size() - 1 );
         }
-    
+
+    @Override public void forEachRemaining(Consumer<? super Node> action)
+        {
+            pending.forEach(action);
+            domain.forEachRemaining(y ->
+                {
+                if (y instanceof Node)
+                    action.accept( (Node) y );
+                else
+                    {
+                    iteratorFor( y ).forEachRemaining(triple ->
+                        {
+                        if (seen.add( triple.getObject() )) action.accept( triple.getObject() );
+                        });
+                    }
+                }
+            );
+        }
+
     protected void refillPending()
         {
         Object y = domain.next();
@@ -65,12 +84,9 @@ public abstract class ObjectIterator extends NiceIterator<Node>
             pending.add( (Node) y );
         else
             {
-            Iterator<Triple> z = iteratorFor( y );
-            while (z.hasNext())
-                {
-                Node object = z.next().getObject();
-                if (seen.add( object )) pending.add( object );
-                }
+            iteratorFor( y ).forEachRemaining(triple -> {
+                if (seen.add( triple.getObject() )) pending.add( triple.getObject() );
+            });
             }
         }
     

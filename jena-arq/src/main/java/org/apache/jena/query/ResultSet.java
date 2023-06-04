@@ -20,6 +20,7 @@ package org.apache.jena.query;
 
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.function.Consumer;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -52,6 +53,9 @@ public interface ResultSet extends Iterator<QuerySolution>
     /** Moves onto the next result. */
     @Override
     public QuerySolution next() ;
+
+    @Override
+    public void forEachRemaining(Consumer<? super QuerySolution> action);
 
     /** Moves onto the next result (legacy - use .next()). */
     public QuerySolution nextSolution() ;

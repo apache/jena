@@ -128,6 +128,15 @@ public class TestIter
         assertFalse(iter.hasNext());
     }
 
+    private static void testWithForeachRemaining(Iterator<? > iter, Object...items) {
+        Integer i[] = {0};
+        iter.forEachRemaining(x -> {
+            assertTrue(i[0] < items.length);
+            assertEquals(items[i[0]], x);
+            i[0]++;
+        });
+    }
+
     static Iter.Folder<String, String> f1 = (acc, arg)->acc + arg ;
 
     @Test
@@ -159,9 +168,61 @@ public class TestIter
     }
 
     @Test
+    public void operate_01() {
+        var elements = new ArrayList<>(Arrays.asList("x", "y", "z"));
+        Iterator<String> it = Iter.operate(data2.iterator(), item -> elements.remove(item));
+        test(it, elements.toArray());
+        assertEquals(0, elements.size());
+    }
+
+    @Test
+    public void operate_02() {
+        var elements = new ArrayList<>(Arrays.asList("x", "y", "z"));
+        Iterator<String> it = Iter.operate(data2.iterator(), item -> elements.remove(item));
+        testWithForeachRemaining(it, elements.toArray());
+        assertEquals(0, elements.size());
+    }
+
+    @Test
+    public void limit_01() {
+        Iterator<String> it = Iter.limit(data2.iterator(), 0);
+        assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void limit_02() {
+        Iterator<String> it = Iter.limit(data2.iterator(), 1);
+        test(it, "x");
+    }
+
+    @Test
+    public void limit_03() {
+        Iterator<String> it = Iter.limit(data2.iterator(), 2);
+        test(it, "x", "y");
+    }
+
+    @Test
+    public void limit_04() {
+        Iterator<String> it = Iter.limit(data2.iterator(), 3);
+        test(it, "x", "y", "z");
+    }
+
+    @Test
+    public void limit_05() {
+        Iterator<String> it = Iter.limit(data2.iterator(), 4);
+        test(it, "x", "y", "z");
+    }
+
+    @Test
     public void map_01() {
         Iterator<String> it = Iter.map(data2.iterator(), item -> item + item);
         test(it, "xx", "yy", "zz");
+    }
+
+    @Test
+    public void map_02() {
+        Iterator<String> it = Iter.map(data2.iterator(), item -> item + item);
+        testWithForeachRemaining(it, "xx", "yy", "zz");
     }
 
     @Test
@@ -179,7 +240,6 @@ public class TestIter
         });
         test(it, 1, 9);
     }
-
     @Test
     public void flatmap_03() {
         List<Integer> data = Arrays.asList(1,2,3);
@@ -194,6 +254,37 @@ public class TestIter
 
         Iter<String> it = Iter.iter(data.iterator()).flatMap(mapper);
         test(it, "two");
+    }
+    @Test
+    public void flatmap_04() {
+        Iterator<String> it = Iter.flatMap(data2.iterator(), item -> Arrays.asList(item+item, item).iterator());
+        testWithForeachRemaining(it, "xx", "x", "yy", "y", "zz", "z");
+    }
+
+    @Test
+    public void flatmap_05() {
+        List<Integer> data = Arrays.asList(1,2,3);
+        Iterator<Integer> it = Iter.flatMap(data.iterator(), x -> {
+            if ( x == 2 ) return Iter.nullIterator();
+            return Arrays.asList(x*x).iterator();
+        });
+        testWithForeachRemaining(it, 1, 9);
+    }
+
+    @Test
+    public void flatmap_06() {
+        List<Integer> data = Arrays.asList(1,2,3);
+        Function<Integer, Iterator<String>> mapper = x -> {
+            switch(x) {
+                case 1: return Iter.nullIterator();
+                case 2: return Arrays.asList("two").iterator();
+                case 3: return Iter.nullIterator();
+                default: throw new IllegalArgumentException();
+            }
+        };
+
+        Iter<String> it = Iter.iter(data.iterator()).flatMap(mapper);
+        testWithForeachRemaining(it, "two");
     }
 
     private Predicate<String> filter = item -> item.length() == 1;
@@ -512,6 +603,18 @@ public class TestIter
     public void filter_03() {
         Iterator<String> it = Iter.filter(data3.iterator(), item -> null == item || "x".equals(item));
         test(it, null, "x", null, null, null, null);
+    }
+
+    @Test
+    public void filter_04() {
+        Iterator<String> it = Iter.filter(data3.iterator(), item -> "x".equals(item) || "z".equals(item));
+        testWithForeachRemaining(it, "x", "z");
+    }
+
+    @Test
+    public void filter_05() {
+        Iterator<String> it = Iter.filter(data3.iterator(), item -> null == item || "x".equals(item));
+        testWithForeachRemaining(it, null, "x", null, null, null, null);
     }
 
     @Test

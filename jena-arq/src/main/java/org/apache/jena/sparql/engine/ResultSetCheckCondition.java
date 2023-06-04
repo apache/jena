@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine;
 
 import java.util.List ;
+import java.util.function.Consumer;
 
 import org.apache.jena.query.QueryExecution ;
 import org.apache.jena.query.QuerySolution ;
@@ -77,6 +78,16 @@ public class ResultSetCheckCondition implements ResultSet
     public void close() {
         check() ;
         other.close();
+    }
+
+    /**
+     * Attention: The check is only done once before the first consumer accept call.
+     * @param action The action to be performed for each element
+     */
+    @Override
+    public void forEachRemaining(Consumer<? super QuerySolution> action) {
+        check() ;
+        other.forEachRemaining(action);
     }
 
     @Override

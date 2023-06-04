@@ -18,6 +18,8 @@
 
 package org.apache.jena.util.iterator;
 
+import java.util.function.Consumer;
+
 /** An ExtendedIterator that is created lazily.
  * This is useful when constructing an iterator is expensive and 
  * you'd prefer to delay doing it until certain it's actually needed.
@@ -50,6 +52,12 @@ abstract public class LazyIterator<T> extends NiceIterator<T> {
     public T next() {
 		lazy();
 		return it.next();
+	}
+
+	@Override
+	public void forEachRemaining(Consumer<? super T> action) {
+		lazy();
+		it.forEachRemaining(action);
 	}
 
 	@Override

@@ -69,7 +69,25 @@ public class TestTripleField extends GraphTestBase
         assertTrue( Field.fieldPredicate.filterOn( node( "P" ) ).test( triple( "a P b" ) ) );
         assertFalse( Field.fieldPredicate.filterOn( node( "Q" ) ).test( triple( "a P b" ) ) );
         }
-    
+
+    public void testFilterOnConcreteSubject()
+        {
+        assertTrue( Field.fieldSubject.filterOnConcrete( node( "a" ) ).test( triple( "a P b" ) ) );
+        assertFalse( Field.fieldSubject.filterOnConcrete( node( "x" ) ).test( triple( "a P b" ) ) );
+        }
+
+    public void testFilterOnConcreteObject()
+        {
+        assertTrue( Field.fieldObject.filterOnConcrete( node( "b" ) ).test( triple( "a P b" ) ) );
+        assertFalse( Field.fieldObject.filterOnConcrete( node( "c" ) ).test( triple( "a P b" ) ) );
+        }
+
+    public void testFilterOnConcretePredicate()
+        {
+        assertTrue( Field.fieldPredicate.filterOnConcrete( node( "P" ) ).test( triple( "a P b" ) ) );
+        assertFalse( Field.fieldPredicate.filterOnConcrete( node( "Q" ) ).test( triple( "a P b" ) ) );
+        }
+
     public void testFilterByTriple()
         {
         assertTrue( Field.fieldSubject.filterOn( triple( "s P o" ) ).test( triple( "s Q p" ) ) );

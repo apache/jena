@@ -27,6 +27,7 @@ import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.iterator.IteratorSlotted ;
 import org.apache.jena.atlas.lib.Closeable ;
@@ -104,6 +105,11 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     public Binding next()
     {
         return iter.next() ;
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super Binding> action) {
+        iter.forEachRemaining(action);
     }
 
     @Override

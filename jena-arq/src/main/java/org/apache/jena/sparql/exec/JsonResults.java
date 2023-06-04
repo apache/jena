@@ -21,6 +21,7 @@ package org.apache.jena.sparql.exec;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
@@ -81,6 +82,15 @@ public class JsonResults {
             Binding binding = queryIterator.next();
             JsonObject jsonObject = JsonResults.generateJsonObject(binding, template);
             return jsonObject;
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super JsonObject> action) {
+            if ( queryIterator == null )
+                return;
+            queryIterator.forEachRemaining(binding
+                    -> action.accept( JsonResults.generateJsonObject(binding, template) ));
+            close();
         }
 
         /** Close the query iterator */

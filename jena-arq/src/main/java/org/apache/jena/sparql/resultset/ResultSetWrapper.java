@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.resultset;
 
 import java.util.List ;
+import java.util.function.Consumer;
 
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
@@ -43,6 +44,11 @@ public class ResultSetWrapper implements ResultSet {
     @Override
     public QuerySolution next() {
         return get().next();
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super QuerySolution> action) {
+        get().forEachRemaining(action);
     }
 
     @Override

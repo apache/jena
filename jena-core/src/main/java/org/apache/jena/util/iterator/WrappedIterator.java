@@ -19,6 +19,7 @@
 package org.apache.jena.util.iterator;
 
 import java.util.Iterator;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -106,10 +107,11 @@ public class WrappedIterator<T> extends NiceIterator<T>
     @Override public T next()
         { return base.next(); }
 
-    /**
-         if .remove() is allowed, delegate to the base iterator's .remove;
-         otherwise, throw an UnsupportedOperationException.
-    */
+    /** forEachRemaining: defer to the base iterator */
+    @Override
+        public void forEachRemaining(Consumer<? super T> action)
+        { base.forEachRemaining(action); }
+
     @Override public void remove()
         {
         if (removeDenied) throw new UnsupportedOperationException();

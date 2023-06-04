@@ -105,17 +105,18 @@ public class TestHashCommon extends ModelTestBase
 
     public void testRemoveSimpleMove()
         {
-        ProbeHashCommon h = probeWith( "0:2:X 1:1:Y 2:2:Z" );
-        assertSame( null, h.removeFrom( 1 ) );
-        assertAlike( probeWith( "1:2:X 2:2:Z"), h );
+        ProbeHashCommon h = probeWith( "0:0:X 1:2:Y -1:2:Z" );
+        Item moved = (Item) h.removeFrom( 1 );
+        assertSame( null, moved );
+        assertAlike( probeWith( "0:0:X 1:2:Z" ), h );
         }
 
     public void testRemoveCircularMove()
         {
-        ProbeHashCommon h = probeWith( "0:0:X 1:2:Y -1:2:Z" );
+        ProbeHashCommon h = probeWith( "0:2:X 1:1:Y 2:2:Z" );
         Item moved = (Item) h.removeFrom( 1 );
-        assertAlike( probeWith( "0:0:X 1:2:Z" ), h );
-        assertEquals( new Item( 2, "Z" ), moved );
+        assertEquals( new Item( 2, "X" ), moved );
+        assertAlike( probeWith( "1:2:X 2:2:Z"), h );
         }
 
     public void testKeyIterator()

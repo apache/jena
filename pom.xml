@@ -108,6 +108,7 @@
     <!-- For testing, not shipped -->
     <ver.graalvm>22.3.2</ver.graalvm>
     <ver.jython>2.7.3</ver.jython>
+    <ver.org.openjdk.jmh>1.36</ver.org.openjdk.jmh>
 
     <!--- GeoSPARQL related -->
     <ver.jcommander>1.82</ver.jcommander>
@@ -199,6 +200,7 @@
 
          <module>jena-integration-tests</module>
 
+         <module>jena-benchmarks</module>
          <!-- Binary distribution -->
          <!-- <module>apache-jena</module> -->
 
@@ -265,6 +267,8 @@
              test remote client APIs.
          -->
          <module>jena-integration-tests</module>
+
+         <module>jena-benchmarks</module>
          
          <!-- Binary distribution -->
          <module>apache-jena</module>
@@ -698,6 +702,20 @@
          <groupId>org.python</groupId>
          <artifactId>jython-standalone</artifactId>
          <version>${ver.jython}</version>
+         <scope>test</scope>
+       </dependency>
+
+       <dependency>
+         <groupId>org.openjdk.jmh</groupId>
+         <artifactId>jmh-core</artifactId>
+         <version>${ver.org.openjdk.jmh}</version>
+         <scope>test</scope>
+       </dependency>
+
+       <dependency>
+         <groupId>org.openjdk.jmh</groupId>
+         <artifactId>jmh-generator-annprocess</artifactId>
+         <version>${ver.org.openjdk.jmh}</version>
          <scope>test</scope>
        </dependency>
 

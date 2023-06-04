@@ -19,6 +19,7 @@
 package org.apache.jena.util.iterator;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -102,10 +103,18 @@ public class NiceIterator<T> implements ExtendedIterator<T>
             private Iterator<? extends T> current = a;
             private Iterator<? extends T> removeFrom = null;
 
+            boolean hasNext = false;
+
             @Override public boolean hasNext()
                 {
-                while (current.hasNext() == false && index < pending.size()) current = advance();
-                return current.hasNext();
+                if (hasNext) return true;
+                if (current.hasNext()) return hasNext = true;
+                while (index < pending.size())
+                    {
+                    current = advance();
+                    if(current.hasNext()) return hasNext = true;
+                    }
+                return false;
                 }
 
             private Iterator< ? extends T> advance()
@@ -120,7 +129,18 @@ public class NiceIterator<T> implements ExtendedIterator<T>
                 {
                 if (!hasNext()) noElements( "concatenation" );
                 removeFrom = current;
+                hasNext = false;
                 return current.next();
+                }
+
+            @Override public void forEachRemaining(Consumer<? super T> action)
+                {
+                current.forEachRemaining(action);
+                while(index < pending.size())
+                    {
+                    current = advance();
+                    current.forEachRemaining(action);
+                    }
                 }
 
             @Override public void close()
@@ -206,7 +226,7 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     public static <T> Set<T> asSet( ExtendedIterator<T> it )
         {
         Set<T> result = new HashSet<>();
-        while (it.hasNext()) result.add( it.next() );
+        it.forEachRemaining(result::add);
         return result;
         }
 
@@ -217,7 +237,7 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     public static <T> List<T> asList( ExtendedIterator<T> it )
         {
         List<T> result = new ArrayList<>();
-        while (it.hasNext()) result.add( it.next() );
+        it.forEachRemaining(result::add);
         return result;
         }
     }
