@@ -22,6 +22,10 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.irix.IRIs;
 
+/**
+ * @deprecated To be removed.
+ */
+@Deprecated(since="4.9.0")
 public class SystemInfo implements SystemInfoMBean {
     private final String name ;
     private final Node   iri ;

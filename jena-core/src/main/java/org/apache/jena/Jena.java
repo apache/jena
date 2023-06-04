@@ -18,6 +18,8 @@
 
 package org.apache.jena;
 
+import org.apache.jena.atlas.lib.Version;
+
 /**
  * <p>
  * Provides various meta-data constants about the Jena package.
@@ -25,23 +27,18 @@ package org.apache.jena;
  */
 public interface Jena
 {
-	/** The root package name for Jena */    
+	/** The root package name for Jena */
     public static final String PATH = "org.apache.jena";
-    
+
     /** The root name for metadata */
-    
     public static final String MPATH = "org.apache.jena";
-    static final String UNSET = "unset" ;
-    
-    /** The product name */    
-    public static final String NAME = JenaRuntime.getMetadata( MPATH + ".name", UNSET ) ;
-    
-    /** The Jena web site */    
-    public static final String WEBSITE = JenaRuntime.getMetadata( MPATH + ".website", UNSET ) ;
-    
-    /** The full name of the current Jena version */    
-    public static final String VERSION = JenaRuntime.getMetadata( MPATH + ".version", UNSET ) ;
-    
-    /** The date and time at which this release was built */    
-    public static final String BUILD_DATE = JenaRuntime.getMetadata( MPATH + ".build.datetime", UNSET ) ;
+
+    /** The product name */
+    public static final String NAME = "Apache Jena";
+
+    /** The Jena web site */
+    public static final String WEBSITE = "https://jena.apache.org/";
+
+    /** The full name of the current Jena version */
+    public static final String VERSION = Version.versionForClass(Jena.class).orElse("<development>");
 }

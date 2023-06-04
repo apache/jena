@@ -18,18 +18,21 @@
 
 package org.apache.jena.sparql.mgt;
 
-/** Details of a single query execution */
+/**
+ * @deprecated To be removed.
+ */
+@Deprecated(since="4.9.0")
 public interface QueryExecMBean
 {
     /** State - what's it doing */
     String getState() ;
-    
+
     /** Query as a string */
     String getQueryString() ;
-    
+
     /** Point in time when query execution started */
     String getQueryExecAt() ;
 
-    /** Length of elapsed time (in microseconds) for query : -1 for unknown or unfinished */  
+    /** Length of elapsed time (in microseconds) for query : -1 for unknown or unfinished */
     long getQueryExecTime() ;
 }

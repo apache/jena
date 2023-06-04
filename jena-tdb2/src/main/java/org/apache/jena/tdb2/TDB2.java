@@ -18,12 +18,11 @@
 
 package org.apache.jena.tdb2;
 
+import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.engine.main.StageBuilder;
 import org.apache.jena.sparql.engine.main.StageGenerator;
-import org.apache.jena.sparql.mgt.SystemInfo;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.MappingRegistry;
 import org.apache.jena.sparql.util.Symbol;
@@ -35,7 +34,7 @@ import org.apache.jena.tdb2.solver.StageGeneratorDirectTDB;
 import org.apache.jena.tdb2.sys.EnvTDB;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.apache.jena.util.Metadata;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,11 +152,7 @@ public class TDB2 {
         StageBuilder.setGenerator(ARQ.getContext(), stageGenerator);
     }
 
-    // ---- Static constants read by modVersion
     // ---- Must be after initialization.
-
-    private static final String      metadataLocation = "org/apache/jena/tdb2/tdb2-properties.xml";
-    private static final Metadata    metadata         = new Metadata(metadataLocation);
 
     /** The root package name for TDB */
     public static final String PATH             = "org.apache.jena.tdb2";
@@ -167,20 +162,12 @@ public class TDB2 {
     public static final String NAME             = "TDB";
 
     /** The full name of the current TDB version */
-    public static final String VERSION          = metadata.get(PATH + ".version", "DEV");
-
-    /** The date and time at which this release was built */
-    public static final String BUILD_DATE       = metadata.get(PATH + ".build.datetime", "unset");
+    public static final String VERSION          = Version.versionForClass(TDB2.class).orElse("<development>");
 
     // Final initialization (in case any statics in this file are important).
     static {
         initialization2();
     }
 
-    private static void initialization2() {
-        // Set management information.
-        SystemInfo systemInfo = new SystemInfo(TDB2.tdbIRI, TDB2.PATH, TDB2.VERSION, TDB2.BUILD_DATE);
-        SystemARQ.registerSubSystem(systemInfo);
-    }
-
+    private static void initialization2() {}
 }

@@ -42,8 +42,7 @@ server.get('/index.html', (req, res) => res.jsonp(''))
 // GET SERVER INFO
 server.get('/\\$/server', (req, res) => {
   res.jsonp({
-    version: '3.14.0',
-    built: builtTime.toISOString(),
+    version: '4.x.y',
     startDateTime: startTime.toISOString(),
     uptime: parseInt(`${(new Date() - startTime) / 1000}`),
     datasets: Object.values(DATASETS)

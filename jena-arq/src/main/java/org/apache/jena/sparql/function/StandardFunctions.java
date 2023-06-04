@@ -61,10 +61,7 @@ public class StandardFunctions
         String math = ARQConstants.mathPrefix ;
         String sparqlfn = ARQConstants.fnSparql ;
 
-
-
         // Update documentation in xsd-support.md
-
         // See also:
         // http://www.w3.org/TR/xpath-datamodel/#types-hierarchy
         // https://www.w3.org/TR/xpath-datamodel-3/

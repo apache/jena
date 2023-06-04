@@ -25,18 +25,16 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContext;
 
 import org.apache.jena.atlas.lib.DateTimeUtils;
+import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.system.stream.LocatorFTP;
 import org.apache.jena.riot.system.stream.LocatorHTTP;
 import org.apache.jena.riot.system.stream.StreamManager;
-import org.apache.jena.sparql.SystemARQ;
-import org.apache.jena.sparql.mgt.SystemInfo;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.MappingRegistry;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.transaction.TransactionManager;
-import org.apache.jena.util.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,30 +66,11 @@ public class Fuseki {
     /** Add CORS header */
     static public final boolean CORS_ENABLED = false;
 
-    /**
-     * A relative resources path to the location of
-     * <code>fuseki-properties.xml</code> file.
-     */
-    static private String   metadataLocation             = "org/apache/jena/fuseki/fuseki-properties.xml";
-
-    /**
-     * Object which holds metadata specified within
-     * {@link Fuseki#metadataLocation}
-     */
-    static private Metadata metadata                     = initMetadata();
-
-    private static Metadata initMetadata() {
-        return new Metadata(metadataLocation);
-    }
-
     /** The name of the Fuseki server.*/
     static public final String        NAME              = "Apache Jena Fuseki";
 
     /** Version of this Fuseki instance */
-    static public final String        VERSION           = metadata.get(PATH + ".version", "development");
-
-    /** Date when Fuseki was built */
-    static public final String        BUILD_DATE        = metadata.get(PATH + ".build.datetime", "unknown");
+    static public final String        VERSION           = Version.versionForClass(Fuseki.class).orElse("<devlopment>");
 
     /** Supporting Graph Store Protocol direct naming.
      * <p>
@@ -264,12 +243,10 @@ public class Fuseki {
             return;
         initialized = true;
         JenaSystem.init();
-        SystemInfo sysInfo = new SystemInfo(FusekiIRI, PATH, VERSION, BUILD_DATE);
-        SystemARQ.registerSubSystem(sysInfo);
         MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI);
 
         TDB.setOptimizerWarningFlag(false);
-        // Don't set TDB batch commits.
+        // Don't use TDB1 batch commits.
         // This can be slower, but it less memory hungry and more predictable.
         TransactionManager.QueueBatchSize = 0;
     }
@@ -281,10 +258,5 @@ public class Fuseki {
      */
     public static Context getContext() {
         return ARQ.getContext();
-    }
-
-    // Force a call to init.
-    static {
-        init();
     }
 }

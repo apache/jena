@@ -18,17 +18,14 @@
 
 package org.apache.jena.tdb.sys;
 
-
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.TDB;
 import org.junit.Test;
 
-public class TestSys
-{
-    @Test public void sys1()
-    {
-        assertNotNull(TDB.VERSION) ;
-        assertNotNull(TDB.BUILD_DATE) ;
+public class TestSys {
+    @Test
+    public void sys1() {
+        assertNotNull(TDB.VERSION);
     }
 }
