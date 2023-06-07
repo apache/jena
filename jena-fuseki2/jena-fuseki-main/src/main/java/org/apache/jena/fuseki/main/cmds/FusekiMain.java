@@ -614,7 +614,7 @@ public class FusekiMain extends CmdARQ {
         }
 
         if ( serverConfig.fusekiModules != null )
-            builder.setFusekiModules(serverConfig.fusekiModules);
+            builder.fusekiModules(serverConfig.fusekiModules);
 
         if ( serverConfig.contentDirectory != null )
             builder.staticFileBase(serverConfig.contentDirectory);

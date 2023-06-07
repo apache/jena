@@ -62,7 +62,7 @@ public class ExFusekiMain_3_FusekiModule {
         FusekiServer server =
             FusekiServer.create()
                 .port(0)
-                .setFusekiModules(fusekiModules)
+                .fusekiModules(fusekiModules)
                 .build()
                 .start();
         int port = server.getPort();

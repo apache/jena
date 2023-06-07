@@ -77,7 +77,7 @@ public class TestFusekiModules {
         FusekiModules fmods = FusekiModules.create(module);
         FusekiModulesCtl.setSystemDefault(null);
         // Explicit FusekiModules
-        FusekiServer.Builder builder = FusekiServer.create().setFusekiModules(fmods).port(0);
+        FusekiServer.Builder builder = FusekiServer.create().fusekiModules(fmods).port(0);
         lifecycle(builder, module);
     }
 
@@ -141,7 +141,7 @@ public class TestFusekiModules {
         FusekiModules mods = FusekiModules.create(oneOff);
         assertFalse(called1.get());
         assertFalse(called2.get());
-        FusekiServer server = FusekiServer.create().port(0).setFusekiModules(mods).build();
+        FusekiServer server = FusekiServer.create().port(0).fusekiModules(mods).build();
         assertTrue(called1.get());
         assertFalse(called2.get());
         try {
