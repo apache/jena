@@ -34,6 +34,27 @@ public class Lib
 {
     private Lib() {}
 
+    /**
+     * Concatenate two "/" delimited path names.
+     * <ul>
+     * <li>If path (second argument) starts with "/", it is assumed to be absolute and path is returned.</li>
+     * <li>If path (second argument) is "", return the directory.</li>
+     * <li>Otherwise the arguments are concatenated ensuring there is a "/" between them.</li>
+     * </ul>
+     */
+    public static String concatPaths(String directory, String path) {
+        Objects.requireNonNull(directory);
+        Objects.requireNonNull(path);
+        if ( path.startsWith("/") )
+            return path;
+        if ( path.isEmpty())
+            return directory;
+        if ( directory.endsWith("/") )
+            return directory+path;
+        else
+            return directory+"/"+path;
+    }
+
     /** Stream to {@link List} */
     public static <X> List<X> toList(Stream<X> stream) {
         // Findability.
