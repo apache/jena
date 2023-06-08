@@ -176,11 +176,20 @@ public class CompositeDatatypeList extends CompositeDatatypeBase
 		while ( it1.hasNext() ) {
 			final CDTValue v1 = it1.next();
 			final CDTValue v2 = it2.next();
-			try {
-				if ( ! v1.sameAs(v2) ) return false;
-			}
-			catch ( final ExprEvalException ex ) {
+
+			if ( v1.isNull() || v2.isNull() ) {
 				throw new ExprEvalException("nulls in lists cannot be compared");
+			}
+
+			final Node n1 = v1.asNode();
+			final Node n2 = v2.asNode();
+
+			if ( n1.isBlank() || n2.isBlank() ) {
+				throw new ExprEvalException("blank nodes in lists cannot be compared");
+			}
+
+			if ( ! n1.sameValueAs(n2) ) {
+				return false;
 			}
 		}
 
@@ -211,9 +220,16 @@ public class CompositeDatatypeList extends CompositeDatatypeBase
 				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
 			}
 
+			final Node n1 = elmt1.asNode();
+			final Node n2 = elmt2.asNode();
+
+			if ( n1.isBlank() && n2.isBlank() ) {
+				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+			}
+
 			if ( ! elmt1.sameAs(elmt2) ) {
-				final NodeValue nv1 = NodeValue.makeNode( elmt1.asNode() );
-				final NodeValue nv2 = NodeValue.makeNode( elmt2.asNode() );
+				final NodeValue nv1 = NodeValue.makeNode(n1);
+				final NodeValue nv2 = NodeValue.makeNode(n2);
 
 				final int c;
 				try {
