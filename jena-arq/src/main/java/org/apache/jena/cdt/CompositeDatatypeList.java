@@ -203,6 +203,17 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 					return false;
 				}
 			}
+
+			final Node n1 = v1.asNode();
+			final Node n2 = v2.asNode();
+
+			if ( n1.isBlank() || n2.isBlank() ) {
+				throw new ExprEvalException("blank nodes in lists cannot be compared");
+			}
+
+			if ( ! n1.sameValueAs(n2) ) {
+				return false;
+			}
 		}
 
 		return true;
