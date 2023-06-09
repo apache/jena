@@ -40,32 +40,29 @@ public class TestFusekiModules {
 
     @Test public void modules_0() {
         ModuleForTest module = new ModuleForTest();
-        assertEquals(0, module.countStart.get());
+        assertEquals(0, module.countPrepared.get());
         assertEquals(0, module.countConfiguration.get());
-        module.start();
-        assertEquals(1, module.countStart.get());
+        // Created, not loaded
     }
 
     private static void reset() {
-        FusekiSystemModules.reset();
+        FusekiAutoModules.reset();
     }
-
 
     @Test public void lifecycle_1() {
         reset();
 
         ModuleForTest module = new ModuleForTest();
-        module.start();
         FusekiModules fmods = FusekiModules.create(module);
 
         // Mock default set.
-        FusekiModulesCtl.setSystemDefault(fmods);
+        FusekiAutoModules.setSystemDefault(fmods);
 
         FusekiServer.Builder builder = FusekiServer.create().port(0);
         try {
             lifecycle(builder, module);
         } finally {
-            FusekiModulesCtl.setSystemDefault(null);
+            FusekiAutoModules.setSystemDefault(null);
         }
     }
 
@@ -73,30 +70,14 @@ public class TestFusekiModules {
         reset();
 
         ModuleForTest module = new ModuleForTest();
-        module.start();
         FusekiModules fmods = FusekiModules.create(module);
-        FusekiModulesCtl.setSystemDefault(null);
+        FusekiAutoModules.setSystemDefault(null);
         // Explicit FusekiModules
         FusekiServer.Builder builder = FusekiServer.create().fusekiModules(fmods).port(0);
         lifecycle(builder, module);
     }
 
-    @Test public void lifecycle_3() {
-        reset();
-        FusekiSystemModules.get().load();
-
-        ModuleForTest module = ModuleByServiceLoader.resetForTest();
-        module.start();
-        FusekiModules fmods = FusekiModules.create(module);
-        FusekiModulesCtl.setSystemDefault(fmods);
-        // Default FusekiModules
-        FusekiServer.Builder builder = FusekiServer.create().port(0);
-        lifecycle(builder, module);
-    }
-
-
     private void lifecycle(FusekiServer.Builder builder, ModuleForTest module) {
-        assertEquals("start:"  ,       1, module.countStart.get());
         assertEquals("prepare:",       0, module.countPrepared.get());
         assertEquals("configured:",    0, module.countConfiguration.get());
         assertEquals("server: ",       0, module.countServer.get());
@@ -106,7 +87,6 @@ public class TestFusekiModules {
         FusekiServer server = builder.build();
         assertFalse(server.getModules().asList().isEmpty());
 
-        assertEquals("start:"  ,       1, module.countStart.get());
         assertEquals("prepare:",       1, module.countPrepared.getPlain());
         assertEquals("configured:",    1, module.countConfiguration.get());
         assertEquals("server: ",       1, module.countServer.get());
@@ -115,7 +95,6 @@ public class TestFusekiModules {
 
         server.start();
 
-        assertEquals("start:"  ,       1, module.countStart.get());
         assertEquals("prepare:",       1, module.countPrepared.get());
         assertEquals("configured:",    1, module.countConfiguration.get());
         assertEquals("server: ",       1, module.countServer.get());
@@ -123,6 +102,23 @@ public class TestFusekiModules {
         assertEquals("serverAfter: ",  1, module.countServerAfterStarting.get());
 
         server.stop();
+    }
+
+    @Test public void autoload_1() {
+        reset();
+        ModuleByServiceLoader.reset();
+
+        // Default : loaded FusekiAutoModules
+        FusekiServer.Builder builder = FusekiServer.create().port(0);
+        FusekiServer server = builder.build();
+        ModuleForTest module = ModuleByServiceLoader.lastLoaded();
+
+        assertEquals(1, ModuleByServiceLoader.countLoads.get());
+        assertEquals(1, ModuleByServiceLoader.countStart.get());
+
+        assertEquals("prepare:",       1, module.countPrepared.getPlain());
+        assertEquals("configured:",    1, module.countConfiguration.get());
+        assertEquals("server: ",       1, module.countServer.get());
     }
 
     @Test public void server_module_1() {

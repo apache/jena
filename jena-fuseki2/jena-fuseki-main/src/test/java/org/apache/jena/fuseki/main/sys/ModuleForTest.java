@@ -28,7 +28,6 @@ import org.apache.jena.rdf.model.Model;
 
 public class ModuleForTest implements FusekiModule {
 
-    public AtomicInteger countStart = new AtomicInteger(0);
     public AtomicInteger countPrepared = new AtomicInteger(0);
     public AtomicInteger countConfiguration = new AtomicInteger(0);
     public AtomicInteger countServer = new AtomicInteger(0);
@@ -44,18 +43,13 @@ public class ModuleForTest implements FusekiModule {
         return modName;
     }
 
-//    public void clearLifecycle() {
-//        // Not countStart.
-//        countConfiguration.set(0);
-//        countPrepared.set(0);
-//        countServer.set(0);
-//        countServerBeforeStarting.set(0);
-//        countServerAfterStarting.set(0);
-//    }
-
-    @Override
-    public void start() {
-        countStart.getAndIncrement();
+    public void clearLifecycle() {
+        // Not countStart.
+        countConfiguration.set(0);
+        countPrepared.set(0);
+        countServer.set(0);
+        countServerBeforeStarting.set(0);
+        countServerAfterStarting.set(0);
     }
 
     @Override

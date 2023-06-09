@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  * List of {@linkplain FusekiModule Fuseki modules}.
  * This is the immutable group of modules for a server.
  * <p>
- * @see FusekiModulesCtl
+ * @see FusekiAutoModules
  */
 public class FusekiModules {
 

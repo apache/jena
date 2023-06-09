@@ -20,33 +20,32 @@ package org.apache.jena.fuseki.main.sys;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
 
-public class ModuleByServiceLoader extends ModuleForTest {
+public class ModuleByServiceLoader extends ModuleForTest implements FusekiAutoModule  {
 
     private static ModuleByServiceLoader module = null;
 
+    public static AtomicInteger countStart = new AtomicInteger(0);
+    public static AtomicInteger countLoads = new AtomicInteger(0);
+
     // Must be public for the system-wide loader to create.
     public ModuleByServiceLoader() {
+        countLoads.getAndIncrement();
         module = this;
     }
 
-    static ModuleByServiceLoader resetForTest() {
-        module.reset();
+    static ModuleByServiceLoader lastLoaded() {
         return module;
     }
 
-    private void reset() {
-        // Not countStart.
-//      countStart.set(0);
-        countPrepared.set(0);
-        countConfiguration.set(0);
-        countServer.set(0);
-        countServerBeforeStarting.set(0);
-        countServerAfterStarting.set(0);
+    static void reset() {
+        countStart.set(0);
+        countLoads.set(0);
     }
 
     private String modName = UUID.randomUUID().toString();

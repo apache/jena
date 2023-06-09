@@ -41,7 +41,7 @@ import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiMainInfo;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
-import org.apache.jena.fuseki.main.sys.FusekiModulesCtl;
+import org.apache.jena.fuseki.main.sys.FusekiAutoModules;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiCoreInfo;
@@ -493,15 +493,15 @@ public class FusekiMain extends CmdARQ {
         boolean withModules = hasValueOfTrue(argEnableModules);;
         if ( withModules ) {
             // Use the discovered ones.
-            FusekiModulesCtl.enable(true);
+            FusekiAutoModules.enable(true);
             // Allows for external setting of serverConfig.fusekiModules
             if ( serverConfig.fusekiModules == null ) {
-                FusekiModulesCtl.setup();
-                serverConfig.fusekiModules = FusekiModulesCtl.load();
+                FusekiAutoModules.setup();
+                serverConfig.fusekiModules = FusekiAutoModules.load();
             }
         } else {
             // Disabled module discovery.
-            FusekiModulesCtl.enable(false);
+            FusekiAutoModules.enable(false);
             // Allows for external setting of serverConfig.fusekiModules
             if ( serverConfig.fusekiModules == null ) {
                 serverConfig.fusekiModules = FusekiModules.empty();
