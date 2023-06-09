@@ -1246,7 +1246,7 @@ public class FusekiServer {
                 serverHttpPort = DefaultServerPort;
 
             FusekiModules modules = (fusekiModules == null)
-                    ? FusekiModulesCtl.load()
+                    ? FusekiAutoModules.load()
                     : fusekiModules;
 
             // FusekiModule call - final preparations.

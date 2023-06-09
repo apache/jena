@@ -20,6 +20,8 @@ package org.apache.jena.fuseki.main.sys;
 
 import java.util.Set;
 
+import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
@@ -72,5 +74,22 @@ public class FusekiModuleStep {
      */
     public static void serverStopped(FusekiServer server) {
         server.getModules().forEach(module -> module.serverStopped(server));
+    }
+
+    /**
+     * Sever reload.
+     * Return true if reload happened, else false.
+     * @see FusekiBuildCycle#serverConfirmReload
+     * @see FusekiBuildCycle#serverReload
+     */
+    public static boolean serverReload(FusekiServer server) {
+        for ( FusekiModule fmod : server.getModules().asList() ) {
+            if ( ! fmod.serverConfirmReload(server) ) {
+                FmtLog.warn(Fuseki.configLog, "Can not reload : module %s", fmod.name());
+                return false;
+            }
+        }
+        server.getModules().forEach(module -> module.serverReload(server));
+        return true;
     }
 }
