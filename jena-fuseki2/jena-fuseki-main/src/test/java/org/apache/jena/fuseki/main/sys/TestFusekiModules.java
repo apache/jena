@@ -25,6 +25,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sys.JenaSystem;
@@ -110,7 +112,10 @@ public class TestFusekiModules {
 
         // Default : loaded FusekiAutoModules
         FusekiServer.Builder builder = FusekiServer.create().port(0);
-        FusekiServer server = builder.build();
+        //Generates "warn"
+        LogCtl.withLevel(Fuseki.serverLog, "error", ()->{
+            builder.build();
+        });
         ModuleForTest module = ModuleByServiceLoader.lastLoaded();
 
         assertEquals(1, ModuleByServiceLoader.countLoads.get());

@@ -107,7 +107,7 @@ public class FusekiAutoModules {
         altFusekiModules = fusekiModules;
     }
 
-    // Single auto module contoller.
+    // Single auto module controller.
     private static FusekiServiceLoaderModules autoModules = null;
 
     private static FusekiServiceLoaderModules getServiceLoaderModules() {
@@ -118,7 +118,7 @@ public class FusekiAutoModules {
 
     private static FusekiServiceLoaderModules createServiceLoaderModules() {
         FusekiServiceLoaderModules newAutoModules = new FusekiServiceLoaderModules();
-        newAutoModules.discover();
+        newAutoModules.setDiscovery();
         return newAutoModules;
     }
 
@@ -134,7 +134,9 @@ public class FusekiAutoModules {
         // This keeps the list of discovered Fuseki modules.
         private ServiceLoader<FusekiAutoModule> serviceLoader = null;
 
-        private FusekiServiceLoaderModules() {
+        private FusekiServiceLoaderModules() { }
+
+        private void setDiscovery() {
             serviceLoader = discover();
         }
 
@@ -143,6 +145,11 @@ public class FusekiAutoModules {
          * This step does not create the module objects.
          */
         private ServiceLoader<FusekiAutoModule> discover() {
+            // Look for the 4.8.0 name (FusekiModule) which (4.9.0) is split into
+            // FusekiModule (interface) and FusekiAutoModule (this is loaded by ServiceLoader)
+            // Remove sometime!
+            discoveryWarnLegacy();
+
             Class<FusekiAutoModule> moduleClass = FusekiAutoModule.class;
             ServiceLoader<FusekiAutoModule> newServiceLoader = null;
             synchronized (this) {
@@ -159,6 +166,18 @@ public class FusekiAutoModules {
                 }
             }
             return newServiceLoader;
+        }
+
+        private void discoveryWarnLegacy() {
+            Class<FusekiModule> moduleClass = FusekiModule.class;
+            try {
+                ServiceLoader<FusekiModule> newServiceLoader = ServiceLoader.load(moduleClass, this.getClass().getClassLoader());
+                newServiceLoader.stream().forEach(provider->{
+                    FmtLog.warn(FusekiAutoModules.class, "Ignored: \"%s\" : legacy use of interface FusekiModule which has changed to FusekiAutoModule", provider.type().getSimpleName());
+                });
+            } catch (ServiceConfigurationError ex) {
+                // Ignore - we were only checking.
+            }
         }
 
         /**
