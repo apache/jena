@@ -50,7 +50,7 @@ public class SystemARQ
     public static boolean ValueExtensions       = true ;
 
     /**
-     * Under strict {@literal F&O}, dateTimes and dates with no timezone have one magically applied.
+     * Under strict {@literal F&O}, dateTimes and dates that have no timezone have one magically applied.
      * This default timezone is implementation dependent and can lead to different answers
      * to queries depending on the timezone. Normally, ARQ uses XMLSchema dateTime comparisons,
      * which an yield "indeterminate", which in turn is an evaluation error.
@@ -58,7 +58,7 @@ public class SystemARQ
      */
     public static boolean StrictDateTimeFO      = false ;
 
-    /** Whether support for roman numerals (datatype http://rome.example.org/Numeral).
+    /** Whether support for Roman numerals (datatype http://rome.example.org/Numeral).
      *  Mainly a test of datatype extension.
      */
     public static boolean EnableRomanNumerals   = true ;

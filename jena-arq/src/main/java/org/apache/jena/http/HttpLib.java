@@ -232,9 +232,9 @@ public class HttpLib {
      */
     static HttpException exception(HttpResponse<InputStream> response, int httpStatusCode) {
         URI uri = response.request().uri();
-        //long length = HttpLib.getContentLength(response);
-        // Not critical path code. Read body regardless.
         InputStream in = response.body();
+        if ( in == null )
+            return new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode));
         try {
             String msg;
             try {

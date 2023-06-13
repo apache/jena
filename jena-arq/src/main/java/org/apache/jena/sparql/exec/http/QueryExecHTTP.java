@@ -246,6 +246,8 @@ public class QueryExecHTTP implements QueryExec {
     }
 
     private String removeCharset(String contentType) {
+        if ( contentType == null )
+            return contentType;
         int idx = contentType.indexOf(';');
         if ( idx < 0 )
             return contentType;

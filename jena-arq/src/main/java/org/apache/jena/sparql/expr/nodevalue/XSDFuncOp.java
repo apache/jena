@@ -1141,14 +1141,13 @@ public class XSDFuncOp
         // "Comparison operators on xs:date, xs:gYearMonth and xs:gYear compare their
         // starting instants. These xs:dateTime values are calculated as described
         // below."
-        if ( SystemARQ.StrictDateTimeFO )
+       if ( SystemARQ.StrictDateTimeFO )
             return compareDateTimeFO(nv1, nv2) ;
-        return compareDateTimeXSD(nv1, nv2); //getXMLGregorianCalendarXSD(nv1), getXMLGregorianCalendarXSD(nv2)) ;
+        return compareDateTimeXSD(nv1, nv2);
     }
 
     /** Compare two date/times by XSD rules (dateTimes, one with and one without timezone can be indeterminate) */
     public static int compareDateTimeXSD(NodeValue nv1, NodeValue nv2) {
-
         XMLGregorianCalendar dt1 = getXMLGregorianCalendarXSD(nv1);
         XMLGregorianCalendar dt2 = getXMLGregorianCalendarXSD(nv2);
         int x = compareDateTime(dt1, dt2) ;
@@ -1668,7 +1667,6 @@ public class XSDFuncOp
         // In F&O, the expression op:duration-equal(xs:duration("P1Y"), xs:duration("P365D")) returns false().
         return XSDDuration.durationCompare(duration1, duration2);
     }
-
 
     public static final String implicitTimezoneStr = "Z" ;
     private static final NodeValue implicitTimezone_ = NodeValue.makeNode("PT0S", XSDDatatype.XSDdayTimeDuration);

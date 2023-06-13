@@ -941,7 +941,6 @@ public class G {
 //        Predicate<Triple> predicate = (t) -> sameTermMatch(o, t.getObject()) ;
 //        iter = iter.filterKeep(predicate) ;
 //    }
-
     }
 
     /**
@@ -963,11 +962,14 @@ public class G {
     public static boolean sameTermMatch(Node match, Node data) {
         if ( isNullOrAny(match) )
             return true;
+        if ( ! match.isLiteral() )
+            // Only literals have values
+            return match.equals(data);
 
         // Allow for case-insensitive language tag comparison.
         if ( ! Util.isLangString(data) || ! Util.isLangString(match) )
             // Any mix of node types except both strings with lang tags.
-            return match.equals(data) ;
+            return match.equals(data);
 
         // Both nodes with language tags : compare languages case insensitively.
         String lex1 = match.getLiteralLexicalForm();
