@@ -22,6 +22,7 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.ontology.OntModel ;
@@ -30,11 +31,9 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.main.StageBuilder ;
 import org.apache.jena.sparql.engine.main.StageGenerator ;
-import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
@@ -49,7 +48,6 @@ import org.apache.jena.tdb.sys.EnvTDB ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.apache.jena.tdb.sys.TDBInternal;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
-import org.apache.jena.util.Metadata;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -214,20 +212,13 @@ public class TDB {
             ((Sync)object).sync() ;
     }
 
-    // ---- Static constants read by modVersion
-    // ---- Must be after initialization.
-
-    static private String      metadataLocation = "org/apache/jena/tdb/tdb-properties.xml" ;
-    static private Metadata    metadata         = new Metadata(metadataLocation) ;
     /** The root package name for TDB */
     public static final String PATH             = "org.apache.jena.tdb" ;
     // The names known to ModVersion : "NAME", "VERSION", "BUILD_DATE"
 
     public static final String NAME             = "TDB1" ;
     /** The full name of the current TDB version */
-    public static final String VERSION          = metadata.get(PATH + ".version", "DEV") ;
-    /** The date and time at which this release was built */
-    public static final String BUILD_DATE       = metadata.get(PATH + ".build.datetime", "unset") ;
+    public static final String VERSION          = Version.versionForClass(TDB.class).orElse("<development>");
 
     static { JenaSystem.init(); }
 
@@ -274,22 +265,10 @@ public class TDB {
         StageBuilder.setGenerator(ARQ.getContext(), stageGenerator) ;
     }
 
-    // ---- Static constants read by modVersion
-    // ---- Must be after initialization.
-
-
-
-    // The names known to ModVersion : "NAME", "VERSION", "BUILD_DATE"
-
     // Final initialization (in case any statics in this file are important).
     static {
         initialization2() ;
     }
 
-    private static void initialization2() {
-        // Set management information.
-        SystemInfo systemInfo = new SystemInfo(TDB.tdbIRI, TDB.PATH, TDB.VERSION, TDB.BUILD_DATE) ;
-        SystemARQ.registerSubSystem(systemInfo) ;
-    }
-
+    private static void initialization2() {}
 }

@@ -18,11 +18,10 @@
 
 package org.apache.jena.riot ;
 
-import org.apache.jena.query.ARQ ;
+import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry;
 import org.apache.jena.sparql.util.Symbol ;
@@ -45,8 +44,7 @@ public class RIOT {
     // public static final String VERSION = NAME+"/"+ARQ.VERSION ;
     // public static final String BUILD_DATE = ARQ.BUILD_DATE ;
 
-    public static String       VERSION ;
-    public static String       BUILD_DATE ;
+    public static final String       VERSION = Version.versionForClass(RIOT.class).orElse("<development>");;
 
     /** The root package name for RIOT */
     public static final String PATH    = "org.apache.jena.riot" ;
@@ -107,20 +105,15 @@ public class RIOT {
         if ( registered )
             return ;
         registered = true ;
-
-        VERSION = getVersion() ;
-        BUILD_DATE = getBuildDate() ;
-
-        SystemInfo sysInfo2 = new SystemInfo(RIOT.riotIRI, RIOT.PATH, VERSION, BUILD_DATE) ;
-        SystemARQ.registerSubSystem(sysInfo2) ;
     }
 
     public static String getVersion() {
-        return ARQ.VERSION ;
+        return RIOT.VERSION ;
     }
 
+    @Deprecated
     public static String getBuildDate() {
-        return ARQ.BUILD_DATE ;
+        return "";
     }
 
     // ---- Symbols

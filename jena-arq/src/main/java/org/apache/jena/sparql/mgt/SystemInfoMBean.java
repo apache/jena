@@ -18,6 +18,10 @@
 
 package org.apache.jena.sparql.mgt;
 
+/**
+ * @deprecated To be removed.
+ */
+@Deprecated(since="4.9.0")
 public interface SystemInfoMBean
 {
     public String getName() ;

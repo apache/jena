@@ -82,19 +82,11 @@ public class ActionServerStatus extends ActionCtl
 
     private void describeServer(JsonBuilder builder, int requestPort) {
         String versionStr = Fuseki.VERSION;
-        String builtDateStr = Fuseki.BUILD_DATE;
-        if ( versionStr == null || versionStr.startsWith("${") )
-            versionStr = "Development";
-        if ( builtDateStr == null || builtDateStr.startsWith("${") )
-            builtDateStr = "Unknown";
-
         builder
             .pair(ServerMgtConst.version,   versionStr)
-            .pair(ServerMgtConst.built,     builtDateStr)
             .pair(ServerMgtConst.startDT,   Fuseki.serverStartedAt())
             .pair(ServerMgtConst.uptime,    Fuseki.serverUptimeSeconds())
-;
-
+            ;
     }
 
     private void describeDatasets(JsonBuilder builder, DataAccessPointRegistry registry) {

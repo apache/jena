@@ -18,10 +18,9 @@
 
 package org.apache.jena.sparql;
 
-import java.util.ArrayList ;
 import java.util.Iterator ;
-import java.util.List ;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.compose.Polyadic ;
@@ -33,10 +32,10 @@ import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.graph.GraphWrapper ;
-import org.apache.jena.sparql.mgt.ARQMgt ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Symbol ;
 
+@SuppressWarnings("deprecation")
 public class SystemARQ
 {
     // Various system wide settings, "constants" that might change e.g. test setups
@@ -126,16 +125,18 @@ public class SystemARQ
             ((Sync)object).sync() ;
     }
 
-    private static List<SystemInfo> versions = new ArrayList<>() ;
+    /**
+     * @deprected To be removed. This is a no-op.
+     */
+    @Deprecated(since="4.9.0")
     public static void registerSubSystem(SystemInfo systemInfo)
-    {
-        ARQMgt.register(systemInfo.getJmxPath() + ".system:type=SystemInfo", systemInfo) ;
-        versions.add(systemInfo) ;
-    }
+    { }
 
-    public static Iterator<SystemInfo> registeredSubsystems() {
-        return versions.iterator() ;
-    }
+    /**
+     * @deprected To be removed. This is a no-op.
+     */
+    @Deprecated(since="4.9.0")
+    public static Iterator<SystemInfo> registeredSubsystems() { return Iter.nullIterator(); }
 
     public static Symbol allocSymbol(String shortName) {
         // This must work even if initialization is happening.

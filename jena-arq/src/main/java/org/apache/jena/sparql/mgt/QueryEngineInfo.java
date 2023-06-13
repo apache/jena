@@ -24,21 +24,25 @@ import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.algebra.Op ;
 
+/**
+ * @deprecated To be removed.
+ */
+@Deprecated(since="4.9.0")
 public class QueryEngineInfo implements QueryEngineInfoMBean
 {
     // Has to be careful about concurrency.
     // It is possible that the count may be momentarily wrong
     // (reading longs is not atomic).
-    
+
     private AtomicLong count = new AtomicLong(0) ;
     @Override
     public long getQueryCount()                 { return count.get() ; }
     public void incQueryCount()                 { count.incrementAndGet() ; }
-    
+
     Query query = null ;
     @Override
     public String getLastQueryString()
-    { 
+    {
         Query q = query ;    // Get once.
         if ( q != null ) return q.toString() ;
         // Sometimes an alegra expression is executited without a query.
@@ -63,6 +67,6 @@ public class QueryEngineInfo implements QueryEngineInfoMBean
 //    private long lastExecTime ;
 //    public long getLastQueryExecTime()          { return lastExecTime ; }
 //    public void setLastQueryExecTime(long timeMillis)   { lastExecTime = timeMillis ; }
-    
-    
+
+
 }

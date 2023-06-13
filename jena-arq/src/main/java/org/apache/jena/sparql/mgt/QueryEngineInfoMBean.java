@@ -18,21 +18,24 @@
 
 package org.apache.jena.sparql.mgt;
 
-/** Overall statistics from a query engine - one such per type of engine. */
+/**
+ * @deprecated To be removed.
+ */
+@Deprecated(since="4.9.0")
 public interface QueryEngineInfoMBean
 {
     /** Number of queries executed */
-    long getQueryCount() ; 
-    
+    long getQueryCount() ;
+
     /** Last query seen, as a string */
     String getLastQueryString() ;
-    
+
     /** Last algebra expression seen, as a string */
     String getLastAlgebra() ;
 
     /** Point in time when last query seen */
     String getLastQueryExecAt() ;
 
-//    /** Length of elapsed time (in microseconds) for the last query : -1 for unknown */  
+//    /** Length of elapsed time (in microseconds) for the last query : -1 for unknown */
 //    long getLastQueryExecTime() ;
 }

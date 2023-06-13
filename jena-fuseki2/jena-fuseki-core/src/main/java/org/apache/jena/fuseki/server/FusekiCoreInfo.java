@@ -22,7 +22,6 @@ import static java.lang.String.format;
 
 import java.util.*;
 
-import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
 import org.slf4j.Logger;
@@ -33,19 +32,8 @@ public class FusekiCoreInfo {
     /** Details of the code version. */
     public static void logCode(Logger log) {
         String version = Fuseki.VERSION;
-        String buildDate = Fuseki.BUILD_DATE;
         String serverName = Fuseki.NAME;
-
-        if ( version != null && version.equals("${project.version}") )
-            version = null;
-        if ( buildDate != null && buildDate.equals("${build.time.xsd}") )
-            buildDate = DateTimeUtils.nowAsXSDDateTimeString();
-        if ( version != null ) {
-            if ( Fuseki.developmentMode && buildDate != null )
-                FmtLog.info(log, "%s %s %s", serverName, version, buildDate);
-            else
-                FmtLog.info(log, "%s %s", serverName, version);
-        }
+        FmtLog.info(log, "%s %s", serverName, version);
     }
 
     /** Log details - this function is about command line details */

@@ -16,12 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.mgt ;
+package org.apache.jena.sparql.function.library;
 
-public class ARQMgt {
-    // No-op version.
-    // See JENA-614 and ARQMgt_X
-    public static void init() {}
-    public static void register(String name, Object bean) { }
-    public static void unregister(String name) { }
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.function.FunctionBase0 ;
+
+/** Version number, as a string */
+public class version extends FunctionBase0
+{
+    @Override
+    public NodeValue exec() { return NodeValue.makeNodeString(ARQ.VERSION);}
 }

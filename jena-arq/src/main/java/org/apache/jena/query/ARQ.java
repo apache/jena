@@ -18,6 +18,7 @@
 
 package org.apache.jena.query;
 
+import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.http.sys.HttpRequestModifier;
 import org.apache.jena.http.sys.RegistryRequestModifier;
 import org.apache.jena.riot.RIOT;
@@ -31,17 +32,14 @@ import org.apache.jena.sparql.exec.http.QuerySendMode;
 import org.apache.jena.sparql.expr.aggregate.AggregateRegistry;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.apache.jena.sparql.function.scripting.ScriptLangSymbols;
-import org.apache.jena.sparql.mgt.ARQMgt;
 import org.apache.jena.sparql.mgt.Explain;
 import org.apache.jena.sparql.mgt.Explain.InfoLevel;
-import org.apache.jena.sparql.mgt.SystemInfo;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
 import org.apache.jena.sparql.service.ServiceExecutorRegistry;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.MappingRegistry;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.util.Metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -599,21 +597,11 @@ public class ARQ
 
     // ----------------------------------
 
-    /** The root package name for ARQ */
-    public static final String PATH         = "org.apache.jena.arq";
-
-    static private String metadataLocation  = "org/apache/jena/arq/arq-properties.xml";
-
-    static private Metadata metadata        = new Metadata(metadataLocation);
-
     /** The product name */
-    public static final String NAME         = "ARQ";
+    public static final String NAME         = "Apache Jena ARQ";
 
-    /** The full name of the current ARQ version */
-    public static final String VERSION      = metadata.get(PATH+".version", "unknown");
-
-    /** The date and time at which this release was built */
-    public static final String BUILD_DATE   = metadata.get(PATH+".build.datetime", "unset");
+    /** The ARQ version */
+    public static final String VERSION      = Version.versionForClass(ARQ.class).orElse("<development>");
 
     /**
      * Ensure things have started - applications do not need call this.
@@ -636,12 +624,8 @@ public class ARQ
             ResultSetLang.init();
             // Done as a class init.
             //globalContext = defaultSettings();
-            ARQMgt.init();         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
             MappingRegistry.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqParamNS);
 
-            // This is the pattern for any subsystem to register.
-            SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.PATH, ARQ.VERSION, ARQ.BUILD_DATE);
-            SystemARQ.registerSubSystem(sysInfo);
             AssemblerUtils.init();
             // Register RIOT details here, not earlier, to avoid
             // initialization loops with RIOT.init() called directly.

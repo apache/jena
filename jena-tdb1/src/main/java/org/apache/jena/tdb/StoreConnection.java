@@ -23,7 +23,6 @@ import java.util.Map ;
 import java.util.Set ;
 
 import org.apache.jena.query.TxnType;
-import org.apache.jena.sparql.mgt.ARQMgt ;
 import org.apache.jena.tdb.base.file.ChannelManager ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.base.file.LocationLock ;
@@ -282,9 +281,6 @@ public class StoreConnection
             if (!location.isMemUnique())
                 // Don't cache use-once in-memory datasets.
                 cache.put(location, sConn) ;
-            String NS = TDB.PATH ;
-            TransactionInfo txInfo = new TransactionInfo(sConn.transactionManager) ;
-            ARQMgt.register(NS + ".system:type=Transactions", txInfo) ;
         }
         return sConn ;
     }

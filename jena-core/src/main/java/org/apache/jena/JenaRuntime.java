@@ -20,8 +20,6 @@ package org.apache.jena;
 
 import java.util.* ;
 
-import org.apache.jena.util.Metadata ;
-
 /**
  * Methods and constants that define features of the current the environment.
  * Primarily for other parts of the Jena framework.
@@ -84,14 +82,16 @@ public class JenaRuntime
 
     // --------------------------------------------------------------
 
-    private static String metadataLocation = "org/apache/jena/jena-properties.xml" ;
-    private static Metadata metadata = new Metadata(metadataLocation) ;
-    public static String getMetadata(String key, String defaultValue) { return metadata.get(key, defaultValue) ; }
+    /** @deprecated To be removed */
+    @Deprecated(since="4.9.0")
+    public static String getMetadata(String key, String defaultValue) { return null; }
 
-    /** The JVM does not implement java.security (correctly) */
+    /** @deprecated To be removed */
+    @Deprecated(since="4.9.0")
     public static final String featureNoSecurity = "http://jena.hpl.hp.com/2004/07/feature/noSecurity" ;
 
-    /** The JVM does not implement java.nio.charset.Charset operations (correctly) */
+    /** @deprecated To be removed */
+    @Deprecated(since="4.9.0")
     public static final String featureNoCharset = "http://jena.hpl.hp.com/2004/07/feature/noCharset" ;
 
     static Map<String, String> features = new HashMap<>() ;
@@ -105,9 +105,9 @@ public class JenaRuntime
                 setFeature(featureNoCharset) ;
     }
 
+    /** @deprecated To be removed */
+    @Deprecated(since="4.9.0")
     public static void setFeature(String featureName) { features.put(featureName, "true") ; }
-    public static boolean runUnder(String featureName) { return features.containsKey(featureName) ; }
-    public static boolean runNotUnder(String featureName) { return ! features.containsKey(featureName) ; }
 
 
     static final String lineSeparator = getSystemProperty("line.separator", "\n") ;

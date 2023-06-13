@@ -45,30 +45,21 @@ public class FileUtils
     static Charset utf8 = StandardCharsets.UTF_8 ;
 
     /** Create a reader that uses UTF-8 encoding */
-
     static public Reader asUTF8(InputStream in) {
-        if ( JenaRuntime.runUnder(JenaRuntime.featureNoCharset) )
-            return new InputStreamReader(in) ;
-        // Not ,utf8 -- GNUClassPath (0.20) apparently fails on passing in a charset
-        // but if passed not the decoder or the name of the charset.
-        // Reported and fixed.
         return new InputStreamReader(in, utf8.newDecoder());
     }
 
     /** Create a buffered reader that uses UTF-8 encoding */
 
-    static public BufferedReader asBufferedUTF8(InputStream in)
-    {
-        BufferedReader r = new BufferedReader(asUTF8(in)) ;
-        return r ;
+    static public BufferedReader asBufferedUTF8(InputStream in) {
+        BufferedReader r = new BufferedReader(asUTF8(in));
+        return r;
     }
 
     /** Create a writer that uses UTF-8 encoding */
 
     static public Writer asUTF8(OutputStream out) {
-        if ( JenaRuntime.runUnder(JenaRuntime.featureNoCharset) )
-            return new OutputStreamWriter(out) ;
-        return new OutputStreamWriter(out, utf8.newEncoder());
+        return new OutputStreamWriter(out, utf8);
     }
 
     /** Create a print writer that uses UTF-8 encoding */
