@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.exec.http;
 
+//import static org.apache.jena.query.ARQ.*;
+
 import java.net.http.HttpClient;
 import java.util.HashMap;
 import java.util.List;
@@ -30,10 +32,7 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.RegistryHttpClient;
-import org.apache.jena.query.ARQ;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecException;
-import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.*;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpAsQuery ;
@@ -69,9 +68,9 @@ public class Service {
 //    //public static final Symbol httpQueryCompression    = ARQ.httpQueryCompression;
     public static final Symbol httpQueryClient          = ARQ.httpQueryClient;
     public static final Symbol httpServiceSendMode      = ARQ.httpServiceSendMode;
-//
-//    public static final Symbol httpServiceContext       = ARQ.httpServiceContext;
-//    // Not connection timeout which is now in HttpClient
+    @Deprecated(since = "4.8.0")
+    public static final Symbol httpServiceContext    = ARQ.httpServiceContext;
+//    // No connection timeout which is now in HttpClient
     public static final Symbol httpQueryTimeout         = ARQ.httpQueryTimeout;
 
     // ContextBuilder?
@@ -88,27 +87,69 @@ public class Service {
     // Compatibility with old AHC (Apache HttpClient) version
     public static final Symbol serviceAllowed    = SystemARQ.allocSymbol(baseOld, "serviceAllowed");
 
-    private void oldCheckForOldParameters(Context context) {
+    private static void checkForOldParameters(Context context) {
         if ( context == null )
             return ;
-        checkForOldParameters(context, oldQueryClient);
-        checkForOldParameters(context, oldServiceContext);
-        checkForOldParameters(context, oldServiceAllowed);
-        checkForOldParameters(context, oldQueryTimeout);
-        checkForOldParameters(context, oldQueryCompression);
+        checkForOldParameter(context, oldQueryClient);
+        checkForOldParameter(context, oldServiceContext);
+        checkForOldParameter(context, oldServiceAllowed);
+        checkForOldParameter(context, oldQueryTimeout);
+        checkForOldParameter(context, oldQueryCompression);
     }
 
-    private void checkForOldParameters(Context context, Symbol oldSymbol) {
+    private static void checkForOldParameter(Context context, Symbol oldSymbol) {
         if ( context.isDefined(oldSymbol) )
             Log.warnOnce(LOGGER, "Service context parameter '"+oldSymbol.getSymbol()+"' no longer used - see ARQ constants for replacements.", oldSymbol);
     }
 
+    /** Test whether SERVICE calls out of this JVM are allowed. */
+    public static void checkServiceAllowed(Context context) {
+        if ( ! ARQ.globalServiceAllowed )
+            serviceDisabled();
+
+        if ( context == null )
+            context = ARQ.getContext();
+
+        Boolean b1 = getBoolean(context, httpServiceAllowed);
+        if ( b1 != null) {
+            if ( b1 )
+                return;
+            serviceNotEnabled();
+        }
+        Boolean b2 = getBoolean(context, oldServiceAllowed);
+        if ( b2 != null) {
+            if ( b2 )
+                return;
+            serviceNotEnabled();
+        }
+        // Not set.
+        if ( ! ARQ.allowServiceDefault )
+            serviceNotEnabled();
+    }
+
+    private static Boolean getBoolean(Context context, Symbol symbol) {
+        try {
+             return context.getTrueOrFalse(httpServiceAllowed);
+        } catch (Throwable ex) {
+            throw new QueryException("Failed to read content setting  "+symbol.getSymbol());
+        }
+    }
+
+    private static void serviceNotEnabled() {
+        throw new QueryDeniedException("SERVICE execution disabled - enable with "+httpServiceAllowed) ;
+    }
+
+    private static void serviceDisabled() {
+        throw new QueryDeniedException("SERVICE execution disabled") ;
+    }
+
+    /** Plain service execution. */
     public static QueryIterator exec(OpService op, Context context) {
+        checkServiceAllowed(context);
+        //checkForOldParameters(context);
+
         if ( context == null )
             context = emptyContext;
-
-        if ( context != null && context.isFalse(httpServiceAllowed) )
-            throw new QueryExecException("SERVICE execution disabled") ;
 
         if (!op.getService().isURI())
             throw new QueryExecException("Service URI not bound: " + op.getService());

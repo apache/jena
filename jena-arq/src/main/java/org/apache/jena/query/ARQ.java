@@ -18,6 +18,8 @@
 
 package org.apache.jena.query;
 
+import java.net.http.HttpClient;
+
 import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.http.sys.HttpRequestModifier;
 import org.apache.jena.http.sys.RegistryRequestModifier;
@@ -269,6 +271,20 @@ public class ARQ
      */
     public static final Symbol httpRequestModifer = SystemARQ.allocSymbol("httpRequestModifer");
 
+    // ---- SERVICE
+    /**
+     * Global on/off for all SERVICE calls.
+     * <p>
+     * Set {@code false} to disable SERVICE calls
+     * regardless of any context or default setting.
+     */
+    public static boolean globalServiceAllowed = true;
+
+    /**
+     * Default for whether SERVICE is enabled when no context setting {@link ARQ#httpServiceAllowed} is found.
+     */
+    public static boolean allowServiceDefault = true;
+
     /**
      * Control whether SERVICE processing is allowed.
      * If the context of the query execution contains this,
@@ -277,10 +293,24 @@ public class ARQ
     public static final Symbol httpServiceAllowed = SystemARQ.allocSymbol("httpServiceAllowed");
 
     //public static final Symbol httpQueryCompression  = SystemARQ.allocSymbol("httpQueryCompression");
+
+    /** {@link HttpClient} to use. */
     public static final Symbol httpQueryClient       = SystemARQ.allocSymbol("httpQueryClient");
+    /**
+     * Context to use to set up the SERVICE call.
+     * @deprecated This no longer does anything. The context comes from the query
+     *     execution settings or the dataset settings.
+     */
+    @Deprecated(since="4.9.0")
     public static final Symbol httpServiceContext    = SystemARQ.allocSymbol("httpServiceContext");
-    // Not connection timeout which is now in HttpClient
+
+    /**
+     * Operation timeout.
+     * Connection timeout is controlled via {@link java.net.http.HttpClient}.
+     */
     public static final Symbol httpQueryTimeout      = SystemARQ.allocSymbol("httpQueryTimeout");
+
+    // ----
 
     /**
      * If set to true, the parsers will convert undefined prefixes to a URI

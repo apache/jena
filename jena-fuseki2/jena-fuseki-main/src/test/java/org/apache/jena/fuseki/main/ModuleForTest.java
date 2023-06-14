@@ -28,8 +28,6 @@ import org.apache.jena.rdf.model.Model;
 
 public class ModuleForTest implements FusekiModule {
 
-    public static ModuleForTest module = null;
-
     public AtomicInteger countStart = new AtomicInteger(0);
     public AtomicInteger countPrepared = new AtomicInteger(0);
     public AtomicInteger countConfiguration = new AtomicInteger(0);
@@ -37,9 +35,7 @@ public class ModuleForTest implements FusekiModule {
     public AtomicInteger countServerBeforeStarting = new AtomicInteger(0);
     public AtomicInteger countServerAfterStarting = new AtomicInteger(0);
 
-    public ModuleForTest() {
-        module = this;
-    }
+    public ModuleForTest() {}
 
     private String modName = UUID.randomUUID().toString();
 

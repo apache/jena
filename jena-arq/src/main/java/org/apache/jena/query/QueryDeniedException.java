@@ -16,25 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.exec.http;
+package org.apache.jena.query;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+/**
+ * {@code QueryDeniedException} indicates an invalid condition or constraint was
+ * encountered during query evaluation and the execution was abandoned.
+ * <p>
+ * This is not an internal error.
+ * It is usually due to setup or a configuration error.
+ * <p>
+ * In Fuseki, it is a a bad request or a
+ * causing the query execution to be aborted.
+ */
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses(
-    { TestGSP.class
-    , TestDSP.class
-    , TestModelStore.class
-    , TestQueryExecHTTP.class
-    , TestQueryExecCleanServer.class
-    , TestUpdateExecHTTP.class
-    , TestServiceOnOff.class
-    , TestServiceFunctions.class
-    , TestService.class
-    , TestService2.class
-    , TestServiceAuth.class
-    , TestSetupHTTP.class
-    })
-
-public class TS_SparqlExecHttp { }
+public class QueryDeniedException extends QueryException
+{
+    public QueryDeniedException() { super() ; }
+    public QueryDeniedException(Throwable cause) { super(cause) ; }
+    public QueryDeniedException(String msg) { super(msg) ; }
+    public QueryDeniedException(String msg, Throwable cause) { super(msg, cause) ; }
+}
