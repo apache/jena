@@ -168,6 +168,9 @@ public class AggFold extends AggregatorBase
 			if ( nvKey == null ) {
 				return; // ignore if creating the key using the given binding failed
 			}
+			if ( nvKey.isBlank() ) {
+				return; // ignore if the key would be a blank node
+			}
 
 			final CDTKey key = CDTFactory.createKey( nvKey.asNode() );
 
