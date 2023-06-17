@@ -33,13 +33,12 @@ import org.apache.jena.sparql.util.FmtUtils;
 import java.util.List;
 
 /** SPARQL filter function */
-
 public class E_Function extends ExprFunctionN
 {
     private static final String name = "function" ;
     public static boolean WarnOnUnknownFunction = true ;
     private String functionIRI ;
-    
+
     private Function function = null ;
     private boolean functionBound = false ;
 
@@ -54,13 +53,11 @@ public class E_Function extends ExprFunctionN
 
     @Override
     public String getFunctionIRI() { return functionIRI ; }
-    
+
     // The Function subsystem takes over evaluation via SpecialForms.
     // This allows a "function" to behave as a special form (this is discouraged).
-    
     @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env) {
-        // Only needed because some tests call straight in.
         // Otherwise, the buildFunction() calls should have done everything
         if ( !functionBound )
             buildFunction(env.getContext()) ;
@@ -69,7 +66,7 @@ public class E_Function extends ExprFunctionN
         NodeValue r = function.exec(binding, args, getFunctionIRI(), env) ;
         return r ;
     }
-    
+
     @Override
     public NodeValue eval(List<NodeValue> args) {
         // evalSpecial hands over function evaluation to the "Function" hierarchy
@@ -83,13 +80,13 @@ public class E_Function extends ExprFunctionN
                 ARQ.getExecLogger().warn("URI <"+functionIRI+"> has no registered function factory") ;
         }
     }
-    
+
     private FunctionFactory functionFactory(Context cxt) {
         FunctionRegistry registry = chooseRegistry(cxt) ;
         FunctionFactory ff = registry.get(functionIRI) ;
         return ff;
     }
-    
+
     private void bindFunction(Context cxt) {
         if ( functionBound )
             return ;
@@ -102,10 +99,10 @@ public class E_Function extends ExprFunctionN
             }
             function = ff.create(functionIRI);
         }
-        function.build(functionIRI, args) ;
+        function.build(functionIRI, args, cxt) ;
         functionBound = true ;
     }
-    
+
     private FunctionRegistry chooseRegistry(Context context) {
         FunctionRegistry registry = FunctionRegistry.get(context) ;
         if ( registry == null )

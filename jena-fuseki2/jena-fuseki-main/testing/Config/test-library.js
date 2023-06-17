@@ -1,10 +1,7 @@
-var barx = '||';
-function bar(x,y)       { return barx+combine(x,y)+barx } 
-function value(n)       { return n.value ; }
-function combine(x,y)   { return x+y }
-function identity(x)    { return x }
 
-// The JavaScript types (numbers split).
+function inc(x)         { return x+1; }
+function dec(x)         { return x-1; }
+
 function rtnBoolean()   { return true; }
 function rtnString()    { return "foo"; }
 function rtnInteger()   { return 57 }

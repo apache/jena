@@ -3,5 +3,5 @@ PREFIX : <http://example/>
 
 SELECT * {
    ?s ?p ?o
-   FILTER(js:nosuchFunction())
+   FILTER(js:notAllowedFunction())
 }

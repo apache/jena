@@ -433,7 +433,7 @@ public class QueryExecutionFactory
     private static Plan makePlan(Query query, DatasetGraph dataset, Binding input, Context context)
     {
         if ( context == null )
-            context = new Context(ARQ.getContext());
+            context = ARQ.getContext().copy();
         if ( input == null )
             input = BindingRoot.create();
         QueryEngineFactory f = QueryEngineRegistry.findFactory(query, dataset, context);

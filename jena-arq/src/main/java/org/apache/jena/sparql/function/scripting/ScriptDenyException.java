@@ -18,29 +18,8 @@
 
 package org.apache.jena.sparql.function.scripting;
 
-import org.apache.jena.sparql.expr.E_Function;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.apache.jena.sparql.expr.ExprException;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-        TestNV.class,
-        TestScriptFunction.class,
-        TestSPARQL_Scripting.class
-})
-public class TS_FunctionScripting {
-    static boolean b = false;
-
-    @BeforeClass
-    public static void beforeClass() {
-        b = E_Function.WarnOnUnknownFunction;
-        E_Function.WarnOnUnknownFunction = false ;
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        E_Function.WarnOnUnknownFunction = b ;
-    }
+public class ScriptDenyException extends ExprException {
+    public ScriptDenyException(String msg) { super(msg) ; }
 }

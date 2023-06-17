@@ -29,4 +29,6 @@ public class ScriptLangSymbols {
     public static Symbol scriptFunctions(String lang) {
         return SystemARQ.allocSymbol(lang + "-functions");
     }
+
+    public static Symbol scriptAllowList = SystemARQ.allocSymbol("scriptAllowList");
 }

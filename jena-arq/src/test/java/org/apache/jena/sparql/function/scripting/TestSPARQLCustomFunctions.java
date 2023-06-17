@@ -18,47 +18,29 @@
 
 package org.apache.jena.sparql.function.scripting;
 
-import org.apache.jena.arq.junit.manifest.Manifests;
-import org.apache.jena.arq.junit.runners.Label;
-import org.apache.jena.arq.junit.runners.RunnerSPARQL;
+import static org.apache.jena.sparql.function.scripting.TestScriptFunction.DIR;
+
 import org.apache.jena.query.ARQ;
-import org.apache.jena.sparql.util.Context;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
+import org.junit.Test;
 
-@RunWith(RunnerSPARQL.class)
-@Label("SPARQL-JS")
-@Manifests({
-    "testing/ARQ/Scripting/manifest.ttl"
-})
-
-public class TestSPARQL_Scripting {
-    static final String JS_LIB_FILE = "testing/ARQ/Scripting/test-library.js";
+public class TestSPARQLCustomFunctions {
 
     @BeforeClass public static void enableScripting() {
         System.setProperty(ARQ.systemPropertyScripting, "true");
     }
 
-    @AfterClass public static void disbleScripting() {
+    @AfterClass public static void disableScripting() {
         System.clearProperty(ARQ.systemPropertyScripting);
     }
 
-    @BeforeClass
-    public static void setupJS() {
-        Context cxt = ARQ.getContext();
-        cxt.set(ARQ.symJavaScriptLibFile, JS_LIB_FILE);
-        cxt.set(ARQ.symJavaScriptFunctions, "function inc(x) { return x+1 }");
-        String allowList = TestScriptFunction.testLibAllow+",inc";
-
-        cxt.set(ARQ.symCustomFunctionScriptAllowList, allowList);
-        ScriptFunction.clearEngineCache();
+    @Test public void script_sparql_bad_1() {
+        Query query = QueryFactory.read(DIR+"/js-query-5.rq");
     }
 
-    @AfterClass
-    public static void unsetupJS() {
-        Context cxt = ARQ.getContext();
-        cxt.remove(ARQ.symJavaScriptLibFile);
-        cxt.remove(ARQ.symJavaScriptFunctions);
-    }
+
+
 }

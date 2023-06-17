@@ -33,9 +33,9 @@ import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
  * </p>
  */
 public class ExprTransformExpand extends ExprTransformCopy {
-    
+
     private Map<String, UserDefinedFunctionDefinition> definitions;
-    
+
     /**
      * Creates a new transformer
      * @param defs User defined function definitions
@@ -51,7 +51,7 @@ public class ExprTransformExpand extends ExprTransformCopy {
         if (this.shouldExpand(f)) {
             UserDefinedFunctionDefinition def = this.definitions.get(f.getFunction().getFunctionIRI());
             UserDefinedFunction uFunc = (UserDefinedFunction) def.newFunctionInstance();
-            
+
             //Need to watch out for the case where the arguments supplied to the invoked
             //function are in a different order to the arguments supplied to the defined
             //function
@@ -59,7 +59,7 @@ public class ExprTransformExpand extends ExprTransformCopy {
             //manually
             List<Var> defArgs = def.getArgList();
             ExprList subArgs = new ExprList();
-            
+
             for (int i = 0; i < args.size(); i++) {
                 Expr arg = args.get(i);
                 String var = arg.getVarName();
@@ -74,15 +74,15 @@ public class ExprTransformExpand extends ExprTransformCopy {
                     subArgs.add(arg);
                 }
             }
-            
-            //Expand the function
+
+            // Expand the function
             uFunc.build(def.getUri(), subArgs);
             return uFunc.getActualExpr();
         } else {
             return super.transform(func, args);
         }
     }
-    
+
     private boolean shouldExpand(ExprFunction func) {
         return this.definitions.containsKey(func.getFunctionIRI());
     }
