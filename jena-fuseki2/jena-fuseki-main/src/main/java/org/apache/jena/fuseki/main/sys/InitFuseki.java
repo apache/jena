@@ -56,7 +56,8 @@ public class InitFuseki implements JenaSubsystemLifecycle {
             }
             initialized = true;
             JenaSystem.logLifecycle("Fuseki.init - start");
-            FusekiModulesLoaded.init();
+            // Leave until known to be needed FusekiServer build with no specific FusekikModules given.
+            // FusekiModulesCtl.setup();
             try {
                 Cmds.injectCmd("fuseki", a->FusekiMainCmd.main(a));
             } catch (NoClassDefFoundError ex) {

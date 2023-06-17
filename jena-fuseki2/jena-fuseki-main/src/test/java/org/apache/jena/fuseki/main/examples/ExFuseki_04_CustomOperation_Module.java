@@ -20,11 +20,9 @@ package org.apache.jena.fuseki.main.examples;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.apache.jena.atlas.lib.DateTimeUtils;
-import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
@@ -42,9 +40,6 @@ import org.apache.jena.web.HttpSC;
 
 /**
  * Example of adding a new operation to a Fuseki server with a {@link FusekiModule}.
- * <p>
- * Doing this, adding the jar to the classpath, including the {@link ServiceLoader}
- * setup, will automatically add it to the server.
  * <p>
  * See <a href="https://jena.apache.org/documentation/notes/jena-repack.html">Repacking Jena jars</a>.
  * <p>
@@ -66,7 +61,7 @@ public class ExFuseki_04_CustomOperation_Module {
 
         FusekiServer.create().port(3230)
             .add("/ds", DatasetGraphFactory.createTxnMem())
-            .setModules(modules)
+            .fusekiModules(modules)
             .build()
             .start();
 
@@ -85,13 +80,6 @@ public class ExFuseki_04_CustomOperation_Module {
         @Override
         public String name() {
             return "Custom Operation Example";
-        }
-
-        @Override
-        public void start() {
-            // Only called if loaded via the ServiceLoader.
-            Fuseki.configLog.info("Add custom operation into global registry.");
-            System.err.println("**** Fuseki extension ****");
         }
 
         @Override

@@ -20,6 +20,8 @@ package org.apache.jena.fuseki.main.sys;
 
 import java.util.Set;
 
+import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
@@ -36,24 +38,12 @@ public class FusekiModuleStep {
         modules.forEach(module -> module.prepare(serverBuilder, datasetNames, configModel));
     }
 
-    /** @deprecated Use {@code prepare(FusekiModules, ...)}. */
-    @Deprecated
-    public static void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
-        prepare(systemModules(), serverBuilder, datasetNames, configModel);
-    }
-
     /**
      * The DataAccessPointRegistry that will be used to build the server.
      *
      */
     public static void configured(FusekiModules modules, FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
         modules.forEach(module -> module.configured(serverBuilder, dapRegistry, configModel));
-    }
-
-    /** @deprecated Use {@code configured(FusekiModules.loaded(), ...)}. */
-    @Deprecated
-    public static void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
-        configured(systemModules(), serverBuilder, dapRegistry, configModel);
     }
 
     /**
@@ -86,7 +76,20 @@ public class FusekiModuleStep {
         server.getModules().forEach(module -> module.serverStopped(server));
     }
 
-    private static FusekiModules systemModules() {
-        return FusekiModulesSystem.get();
+    /**
+     * Sever reload.
+     * Return true if reload happened, else false.
+     * @see FusekiBuildCycle#serverConfirmReload
+     * @see FusekiBuildCycle#serverReload
+     */
+    public static boolean serverReload(FusekiServer server) {
+        for ( FusekiModule fmod : server.getModules().asList() ) {
+            if ( ! fmod.serverConfirmReload(server) ) {
+                FmtLog.warn(Fuseki.configLog, "Can not reload : module %s", fmod.name());
+                return false;
+            }
+        }
+        server.getModules().forEach(module -> module.serverReload(server));
+        return true;
     }
 }

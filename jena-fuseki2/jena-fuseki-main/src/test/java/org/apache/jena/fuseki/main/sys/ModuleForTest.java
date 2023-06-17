@@ -16,19 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main;
+package org.apache.jena.fuseki.main.sys;
 
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.jena.fuseki.main.sys.FusekiModule;
+import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
 
 public class ModuleForTest implements FusekiModule {
 
-    public AtomicInteger countStart = new AtomicInteger(0);
     public AtomicInteger countPrepared = new AtomicInteger(0);
     public AtomicInteger countConfiguration = new AtomicInteger(0);
     public AtomicInteger countServer = new AtomicInteger(0);
@@ -51,11 +50,6 @@ public class ModuleForTest implements FusekiModule {
         countServer.set(0);
         countServerBeforeStarting.set(0);
         countServerAfterStarting.set(0);
-    }
-
-    @Override
-    public void start() {
-        countStart.getAndIncrement();
     }
 
     @Override

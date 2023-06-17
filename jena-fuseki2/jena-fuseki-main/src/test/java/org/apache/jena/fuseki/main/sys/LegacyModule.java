@@ -18,21 +18,16 @@
 
 package org.apache.jena.fuseki.main.sys;
 
-import java.util.Objects;
+/** testing the legacy-discovery code */
+public class LegacyModule implements FusekiModule {
 
-public class FusekiModulesSystem {
+    public LegacyModule() {
 
-    // The immutable system-wide FusekiModules
-    // Used by default during a Fuseki server build cycle.
-    private static FusekiModules systemModules = FusekiModules.empty;
-
-    /** The current system-wide modules. */
-    public static FusekiModules get() {
-        return systemModules;
     }
 
-    /** Set the system-wide modules. This will then ignore loaded modules. */
-    public static void set(FusekiModules modules) {
-        systemModules = Objects.requireNonNull(modules);
+    @Override
+    public String name() {
+        return "LegacyModule";
     }
+
 }
