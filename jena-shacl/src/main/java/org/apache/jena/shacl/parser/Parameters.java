@@ -23,8 +23,8 @@ import static org.apache.jena.shacl.sys.C.TRUE;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
-import org.apache.jena.ext.com.google.common.collect.Multimap;
+import org.apache.commons.collections4.MultiMapUtils;
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.other.G;
@@ -57,8 +57,8 @@ public class Parameters {
     }
 
     /** For a specific nodeShape or propertyShape, extract the parameter-&gt;value* map. */
-    public static Multimap<Parameter, Node> parameterValues(Graph shapesGraph, Node sh, SparqlComponent scc) {
-        Multimap<Parameter, Node> paramValues = ArrayListMultimap.create();
+    public static MultiValuedMap<Parameter, Node> parameterValues(Graph shapesGraph, Node sh, SparqlComponent scc) {
+        MultiValuedMap<Parameter, Node> paramValues = MultiMapUtils.newListValuedHashMap();
         scc.getParams().forEach(param->{
             List<Node> values = G.listSP(shapesGraph, sh, param.getParameterPath());
             if ( ! values.isEmpty() ) {

@@ -20,61 +20,70 @@ package org.apache.jena.atlas.lib.cache;
 
 import java.util.Iterator ;
 import java.util.concurrent.Callable ;
-import java.util.concurrent.ExecutionException ;
 import java.util.function.BiConsumer ;
 import java.util.function.Function;
 
-import com.google.common.cache.CacheBuilder ;
-import com.google.common.cache.RemovalListener ;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.RemovalListener;
 
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.logging.Log ;
 
-/** Wrapper around a com.google.common.cache */
-final public class CacheGuava<K,V> implements Cache<K, V>
+/** Wrapper around a com.github.benmanes.caffeine */
+final public class CacheCaffeine<K,V> implements Cache<K, V>
 {
+    private static boolean WITH_STATS = false;
+
     private BiConsumer<K, V> dropHandler = null ;
 
-    private com.google.common.cache.Cache<K,V> cache ;
+    private com.github.benmanes.caffeine.cache.Cache<K,V> cache ;
 
-    public CacheGuava(int size) {
+    public CacheCaffeine(int size) {
         this(size, null);
     }
 
-    public CacheGuava(int size, BiConsumer<K, V> dropHandler) {
+    public CacheCaffeine(int size, BiConsumer<K, V> dropHandler) {
         @SuppressWarnings("unchecked")
-        CacheBuilder<K,V> builder = (CacheBuilder<K,V>)CacheBuilder.newBuilder()
+        Caffeine<K,V> builder = (Caffeine<K,V>)Caffeine.newBuilder()
             .maximumSize(size)
-            .recordStats()
-            .concurrencyLevel(8);
+            .initialCapacity(size/2)
+            // Eviction immediately using the caller thread.
+            .executor(c->c.run());
+
         if ( dropHandler != null ) {
-            RemovalListener<K,V> drop = (notification)-> {
-                dropHandler.accept(notification.getKey(),
-                                   notification.getValue()) ;
+            RemovalListener<K,V> drop = (key, value, cause)-> {
+                if ( dropHandler != null )
+                    dropHandler.accept(key, value);
             };
-           builder = builder.removalListener(drop);
+            builder = builder.removalListener(drop);
         }
+        if ( WITH_STATS )
+            builder = builder.recordStats();
         cache = builder.build();
     }
 
-    public CacheGuava(com.google.common.cache.Cache<K,V> guavaCache) {
-        this.cache = guavaCache;
+    public CacheCaffeine(com.github.benmanes.caffeine.cache.Cache<K,V> caffeine) {
+        cache = caffeine;
     }
 
     @Override
     public V getOrFill(K key, Callable<V> filler) {
+        return cache.get(key, k->call(filler));
+    }
+
+    // Callable to function conversion.
+    private static <X> X call(Callable<X> filler) {
         try {
-            return cache.get(key, filler) ;
-        }
-        catch (ExecutionException e) {
-            Log.warn(CacheGuava.class, "Execution exception filling cache", e) ;
+            return filler.call();
+        } catch (Exception e) {
+            Log.warn(CacheCaffeine.class, "Execution exception filling cache", e) ;
             return null ;
         }
     }
 
     @Override
-    public V get(K key, Function<K, V> callable) {
-        return getOrFill(key, ()->callable.apply(key));
+    public V get(K key, Function<K, V> f) {
+        return cache.get(key, f);
     }
 
     @Override
@@ -107,7 +116,7 @@ final public class CacheGuava<K,V> implements Cache<K, V>
 
     @Override
     public boolean isEmpty() {
-        return cache.size() == 0 ;
+        return cache.estimatedSize() == 0 ;
     }
 
     @Override
@@ -117,7 +126,7 @@ final public class CacheGuava<K,V> implements Cache<K, V>
 
     @Override
     public long size() {
-        return cache.size() ;
+        return cache.estimatedSize() ;
     }
 }
 

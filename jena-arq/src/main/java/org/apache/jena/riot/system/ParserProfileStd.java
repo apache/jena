@@ -123,7 +123,7 @@ public class ParserProfileStd implements ParserProfile {
         if ( irix instanceof IRIProviderJenaIRI.IRIxJena )
             iri = (IRI)irix.getImpl();
         else
-            iri = iriCache.getOrFill(uriStr, () -> SetupJenaIRI.iriCheckerFactory().create(uriStr));
+            iri = iriCache.get(uriStr, x -> SetupJenaIRI.iriCheckerFactory().create(x));
         Checker.iriViolations(iri, errorHandler, false, true, line, col);
     }
 

@@ -18,17 +18,18 @@
 
 package org.apache.jena.dboe.trans.data;
 
-import org.apache.jena.dboe.base.record.RecordFactory;
-import org.apache.jena.dboe.index.Index;
-import org.apache.jena.dboe.index.IndexMap;
-import org.apache.jena.dboe.index.testlib.AbstractTestIndex;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class TestTransIndexMem extends AbstractTestIndex
-{
-    @Override
-    protected Index makeIndex(int kLen, int vLen) {
-        RecordFactory rf = new RecordFactory(kLen, vLen);
-        return new IndexMap(rf);
-    }
+@RunWith(Suite.class)
+@SuiteClasses( {
+    TestTxnIndexMem.class
+    , TestTxnBlob.class
+    , TestTxnBlobPersistent.class
+    , TestTxnBinaryDataFileGeneral.class
+    , TestTxnBinaryDataFile.class
+})
 
-}
+public class TS_TransactionalData { }
+

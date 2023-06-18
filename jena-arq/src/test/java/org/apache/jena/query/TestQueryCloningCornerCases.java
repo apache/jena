@@ -17,9 +17,6 @@
  */
 package org.apache.jena.query;
 
-import java.util.concurrent.TimeUnit;
-
-import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.syntax.ElementData;
@@ -30,35 +27,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestQueryCloningCornerCases {
-
-    // @Test
-    public void benchmarkQueryClone() {
-        String str = "SELECT * { ?s ?p ?o }";
-        int n = 1000000;
-
-        // Warmup runs
-        Query q = QueryFactory.create(str);
-        for(int i = 0; i < n; ++i) {
-            TestQueryCloningEssentials.slowClone(q);
-            q.cloneQuery();
-        }
-
-        Stopwatch printParseSw = Stopwatch.createStarted();
-        for(int i = 0; i < n; ++i) {
-            TestQueryCloningEssentials.slowClone(q);
-        }
-        printParseSw.stop();
-
-        Stopwatch transformSw = Stopwatch.createStarted();
-        for(int i = 0; i < n; ++i) {
-            q.cloneQuery();
-        }
-        transformSw.stop();
-
-        double qpsPrintParse = n / (printParseSw.elapsed(TimeUnit.MILLISECONDS) * 0.001);
-        double qpsTransform = n / (transformSw.elapsed(TimeUnit.MILLISECONDS) * 0.001);
-        System.out.println("Queries/Second [Print-Parse: " + qpsPrintParse + "], [Transform: " + qpsTransform + "]");
-    }
 
     /**
      * Tests for the {@link Query} clone method.

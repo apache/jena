@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 public class SetUtils
 {
     private SetUtils() {}
-    
+
     /** "ConcurrentHashSet" */
     public static final <X> Set<X> concurrentHashSet() {
         return ConcurrentHashMap.newKeySet() ;
@@ -48,8 +48,6 @@ public class SetUtils
      * @param s1 a {@link Set}
      * @param s2 a {@link Set}
      * @return the set-theoretic union of {@code s1} and {@code s2}
-     * 
-     * @see org.apache.jena.ext.com.google.common.collect.Sets#union(Set, Set) for a view-based alternative
      */
     public static <T> Set<T> union(Set<? extends T> s1, Set<? extends T> s2) {
         Set<T> s3 = new HashSet<>(s1) ;
@@ -61,8 +59,6 @@ public class SetUtils
      * @param s1 a {@link Set}
      * @param s2 a {@link Set}
      * @return {@code s1 ∪ s2  \ s1 ∩ s2} : those elements in {@code s1} or {@code s2} but not both
-     * 
-     * @see org.apache.jena.ext.com.google.common.collect.Sets#symmetricDifference(Set, Set) for a view-based alternative
      */
     public static <T> Set<T> symmetricDifference(Set<? extends T> s1, Set<? extends T> s2) {
         Set<T> s3 = new HashSet<>() ;
@@ -81,8 +77,6 @@ public class SetUtils
      * @param s1 a {@link Set}
      * @param s2 a {@link Set}
      * @return {@code s1} \ {@code s2}
-     * 
-     * @see org.apache.jena.ext.com.google.common.collect.Sets#difference(Set, Set) for a view-based alternative
      */
     public static <T> Set<T> difference(Set<? extends T> s1, Set<? extends T> s2) {
         Set<T> s3 = new HashSet<>(s1) ;
@@ -90,7 +84,7 @@ public class SetUtils
         return s3 ;
     }
 
-    /** Stream to set */ 
+    /** Stream to set */
     public static <T> Set<T> toSet(Stream<T> stream) {
         return stream.collect(Collectors.toSet());
     }

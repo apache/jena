@@ -22,7 +22,6 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
-import org.apache.jena.ext.com.google.common.collect.Streams;
 import org.apache.jena.riot.system.PrefixEntry;
 import org.apache.jena.riot.system.PrefixLib;
 import org.apache.jena.riot.system.PrefixMap;
@@ -63,7 +62,7 @@ public class BufferingPrefixMap extends PrefixMapBase {
     public Stream<PrefixEntry> stream() {
         Stream<PrefixEntry> stream1 = base.stream().filter(entry->!deletedMappings.contains(entry.getPrefix()));
         Stream<PrefixEntry> stream2 = addedMappings.entrySet().stream().map(e->PrefixEntry.create(e.getKey(), e.getValue()));
-        return Streams.concat(stream1, stream2);
+        return Stream.concat(stream1, stream2);
     }
 
     @Override

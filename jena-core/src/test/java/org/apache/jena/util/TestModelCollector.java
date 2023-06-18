@@ -25,14 +25,13 @@ import static java.util.stream.Collector.Characteristics.UNORDERED;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Stream.generate;
 import static java.util.stream.Stream.iterate;
-import static org.apache.jena.ext.com.google.common.collect.Lists.newArrayList;
 import static org.apache.jena.graph.NodeFactory.createLiteralByValue;
 import static org.apache.jena.rdf.model.ModelFactory.createDefaultModel;
 import static org.apache.jena.rdf.model.ModelFactory.createModelForGraph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -42,7 +41,6 @@ import java.util.stream.Stream;
 import junit.framework.JUnit4TestAdapter;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
-import org.apache.jena.ext.com.google.common.collect.ImmutableSet;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -55,7 +53,7 @@ import org.apache.jena.util.ModelCollector.UnionModelCollector;
 import org.junit.Test;
 
 public class TestModelCollector {
-    
+
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(TestModelCollector.class) ;
     }
@@ -67,10 +65,10 @@ public class TestModelCollector {
 
     @Test
     public void testCharacteristics() {
-        Set<Characteristics> characteristics = ImmutableSet.of(UNORDERED, IDENTITY_FINISH);
+        Set<Characteristics> characteristics = Set.of(UNORDERED, IDENTITY_FINISH);
         assertEquals(characteristics, new UnionModelCollector().characteristics());
         assertEquals(characteristics, new IntersectionModelCollector().characteristics());
-        characteristics = ImmutableSet.of(CONCURRENT, UNORDERED, IDENTITY_FINISH);
+        characteristics = Set.of(CONCURRENT, UNORDERED, IDENTITY_FINISH);
         assertEquals(characteristics, new ConcurrentModelCollector(null).characteristics());
     }
 
@@ -93,8 +91,8 @@ public class TestModelCollector {
         assertTrue(Stream.<Model>empty().collect(testCollector).isEmpty());
     }
 
-    private static ArrayList<ModelCollector> collectors() {
-        return newArrayList(new UnionModelCollector(), new IntersectionModelCollector());
+    private static List<ModelCollector> collectors() {
+        return List.of(new UnionModelCollector(), new IntersectionModelCollector());
     }
 
     @Test
@@ -132,7 +130,7 @@ public class TestModelCollector {
         Stream<Model> models = iterate(0, i -> i + 1).limit(10).map(this::sampleFromNum).map(this::intoModel);
         test(models, EMPTY_MODEL, testCollector);
     }
-    
+
     private Model intoModel(Triple t) {
         return createModelForGraph(new CollectionGraph(singleton(t)));
     }

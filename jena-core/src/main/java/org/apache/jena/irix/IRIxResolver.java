@@ -79,7 +79,7 @@ public class IRIxResolver {
             return iri;
         // May throw an exception
         IRIx iriValue = resolve0(other);
-        return cache.getOrFill(other, ()->iriValue);
+        return cache.get(other, k->iriValue);
     }
 
     private IRIx resolve0(String str) {

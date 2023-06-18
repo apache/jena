@@ -23,9 +23,9 @@ import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 import java.util.*;
 
+import org.apache.commons.collections4.MultiMapUtils;
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
-import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.other.G;
@@ -57,7 +57,7 @@ public class ConstraintComponents {
 
     // 6.3 Validation with SPARQL-based Constraint Components
 
-    /*package*/ Multimap<Node, SparqlComponent> paramPathToComponents = ArrayListMultimap.create();
+    /*package*/ MultiValuedMap<Node, SparqlComponent> paramPathToComponents = MultiMapUtils.newListValuedHashMap();
     /*package*/ Set<Parameter> parameters = new HashSet<>();
 
     /*package*/ ConstraintComponents() {}
@@ -125,7 +125,7 @@ public class ConstraintComponents {
                 if ( Parameters.doesShapeHaveAllParameters(shapesGraph, shape.getShapeNode(), required) ) {
                     // shape -> parameters
                     // Is this a cross product and can it be avoided?
-                    Multimap<Parameter, Node> parameterValues = constraintParameterValues(shapesGraph, shNode, scc);
+                    MultiValuedMap<Parameter, Node> parameterValues = constraintParameterValues(shapesGraph, shNode, scc);
                     // [PARSE]
                     // Syntax rule: https://www.w3.org/TR/shacl/#syntax-rule-multiple-parameters
                     //  If there are >1 parameters, each must be single valued.
@@ -149,12 +149,12 @@ public class ConstraintComponents {
         return constraints;
     }
 
-    private static Multimap<Parameter, Node> constraintParameterValues(Graph shapesGraph, Node shNode, SparqlComponent scc) {
+    private static MultiValuedMap<Parameter, Node> constraintParameterValues(Graph shapesGraph, Node shNode, SparqlComponent scc) {
         Node nodeValidatorNode = G.getZeroOrOneSP(shapesGraph, shNode, SHACL.nodeValidator);
         Node propertyValidatorNode = G.getZeroOrOneSP(shapesGraph, shNode, SHACL.propertyValidator);
         Node validatorNode = G.getZeroOrOneSP(shapesGraph, shNode, SHACL.validator);
         Node vNode = firstNonNull(nodeValidatorNode, propertyValidatorNode, validatorNode);
-        Multimap<Parameter, Node> parameterValues = Parameters.parameterValues(shapesGraph, shNode, scc);
+        MultiValuedMap<Parameter, Node> parameterValues = Parameters.parameterValues(shapesGraph, shNode, scc);
         return parameterValues;
     }
 

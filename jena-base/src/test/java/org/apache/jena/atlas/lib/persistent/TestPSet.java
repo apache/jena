@@ -19,7 +19,8 @@
 package org.apache.jena.atlas.lib.persistent;
 
 import static java.util.stream.Collectors.toSet;
-import static org.apache.jena.ext.com.google.common.collect.Sets.newHashSet;
+
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,6 +43,6 @@ public class TestPSet extends Assert {
 		final Object testObject1 = new Object();
 		final Object testObject2 = new Object();
 		final PersistentSet<Object> testSet = PSet.empty().plus(testObject1).plus(testObject2);
-		assertEquals(newHashSet(testObject1, testObject2), testSet.stream().collect(toSet()));
+		assertEquals(Set.of(testObject1, testObject2), testSet.stream().collect(toSet()));
 	}
 }

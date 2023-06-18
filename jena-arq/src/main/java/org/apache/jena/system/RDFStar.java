@@ -273,7 +273,7 @@ public class RDFStar {
         Node_Triple nt = ( t2 == null )
             ? (Node_Triple)x
             : (Node_Triple)NodeFactory.createTripleNode(t2);
-        return cache.getOrFill(nt, ()->genReif(nt, output));
+        return cache.get(nt, key->genReif(key, output));
     }
 
     /** Build a mapping of reification terms to RDF-startriple terms. */

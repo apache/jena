@@ -118,6 +118,6 @@ public class DatasetGraphSwitchable extends DatasetGraphTxnCtl
     @Override
     public Graph getGraph(Node gn) {
         Node key = ( gn != null ) ? gn : Quad.defaultGraphNodeGenerated;
-        return ngCache.getOrFill(key, ()->GraphViewSwitchable.createNamedGraphSwitchable(this, key));
+        return ngCache.get(key, (k)->GraphViewSwitchable.createNamedGraphSwitchable(this, k));
     }
 }

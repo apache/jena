@@ -21,7 +21,7 @@ package org.apache.jena.tdb2.store.nodetable;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Cache;
@@ -136,6 +136,7 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
         return baseCache.getIfPresent(key);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Value getOrFill(Key key, Callable<Value> callable) {
         if ( ! buffering() )
@@ -147,13 +148,28 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
         item = baseCache.getIfPresent(key);
         if ( item != null )
             return item;
-        // Add to cache so new data hence place in localCache.
         try {
             item = callable.call();
             localCache().put(key, item);
         } catch (Exception ex) {
             throw new TDBException("Exception filling cache", ex);
         }
+        return item;
+    }
+
+    @Override
+    public Value get(Key key, Function<Key, Value> provider) {
+        if ( ! buffering() )
+            return baseCache.get(key, provider);
+        // Not thread safe but this overlay cache is for single-thread use.
+        Value item = localCache().getIfPresent(key);
+        if ( item != null )
+            return item;
+        item = baseCache.getIfPresent(key);
+        if ( item != null )
+            return item;
+        item = provider.apply(key);
+        localCache().put(key, item);
         return item;
     }
 
@@ -206,12 +222,5 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
         if ( ! buffering() )
             return baseCache.size();
         return localCache().size();
-    }
-
-    @Override
-    public void setDropHandler(BiConsumer<Key, Value> dropHandler) {
-        if ( ! buffering() )
-            return ;
-       localCache().setDropHandler(dropHandler);
     }
 }
