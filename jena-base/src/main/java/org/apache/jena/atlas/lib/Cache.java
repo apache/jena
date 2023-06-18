@@ -20,38 +20,61 @@ package org.apache.jena.atlas.lib;
 
 import java.util.Iterator ;
 import java.util.concurrent.Callable ;
-import java.util.function.BiConsumer;
+import java.util.function.Function;
 
-/** A cache */
+import org.apache.jena.atlas.lib.cache.CacheInfo;
+
+/**
+ * An abstraction of a cache for basic use.
+ * <p>
+ * For more complex configuration of the
+ * cache, use the cache builder of the implementation of choice.
+ *
+ * @see CacheFactory for create caches.
+ */
 public interface Cache<Key, Value>
 {
-    
     /** Does the cache contain the key? */
     public boolean containsKey(Key key) ;
-    
-    /** Get from cache - or return null. */  
+
+    /** Get from cache - or return null. */
     public Value getIfPresent(Key key) ;
-    
-    /** Get from cache, of not present, call the {@link Callable}
+
+    /** Get from cache; if not present, call the {@link Callable}
      *  to try to fill the cache. This operation should be atomic.
+     *  @deprecated Use {@link #get(Object, Function)}
      */
-    public Value getOrFill(Key key, Callable<Value> callable) ;
+    @Deprecated
+    public default Value getOrFill(Key key, Callable<Value> callable) {
+        return get(key, k->{
+            try {
+                return callable.call();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    /** Get from cache; if not present, call the {@link Function}
+     *  to fill the cache slot. This operation should be atomic.
+     */
+    public Value get(Key key, Function<Key, Value> callable) ;
 
     /** Insert into the cache */
     public void put(Key key, Value thing) ;
 
     /** Remove from cache - return true if key referenced an entry */
     public void remove(Key key) ;
-    
-    /** Iterate over all keys. Iterating over the keys requires the caller be thread-safe. */ 
+
+    /** Iterate over all keys. Iterating over the keys requires the caller be thread-safe. */
     public Iterator<Key> keys() ;
-    
+
     public boolean isEmpty() ;
     public void clear() ;
-    
+
     /** Current size of cache */
     public long size() ;
-    
-    /** Register a callback - called when an object is dropped from the cache (optional operation) */ 
-    public void setDropHandler(BiConsumer<Key,Value> dropHandler) ;
+
+    /** Cache statistics (not supported by all caches) */
+    public default CacheInfo stats() { return null; }
 }

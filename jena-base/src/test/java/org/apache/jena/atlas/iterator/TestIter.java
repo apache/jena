@@ -644,4 +644,26 @@ public class TestIter
         Iterator<String> iter = Iter.distinctAdjacent(x.iterator());
         test(iter, "a", "b", "a");
     }
+
+    @Test
+    public void reverse_iter_00() {
+        List<String> x = List.of();
+        Iterator<String> iter = Iter.reverseIterate(x);
+        test(iter);
+    }
+
+    @Test
+    public void reverse_iter_01() {
+        List<String> x = List.of("A");
+        Iterator<String> iter = Iter.reverseIterate(x);
+        test(iter, "A");
+    }
+
+    @Test
+    public void reverse_iter_02() {
+        List<String> x = List.of("a", "b", "c");
+        Iterator<String> iter = Iter.reverseIterate(x);
+        test(iter, "c", "b", "a");
+    }
+
 }

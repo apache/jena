@@ -18,8 +18,13 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -49,11 +54,6 @@ import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransformCopyBase;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.ModelUtils;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /** The SPARQL validator algorithms. */
 /*package*/ class SparqlValidation {
 
@@ -61,7 +61,7 @@ import java.util.regex.Pattern;
 
     public static void validate(ValidationContext vCxt, Graph data, Shape shape,
                                 Node focusNode, Path path, Node valueNode,
-                                Query query, Multimap<Parameter, Node> parameterMap,
+                                Query query, MultiValuedMap<Parameter, Node> parameterMap,
                                 String violationTemplate, Constraint reportConstraint) {
         // Two sub-cases:
         //    Syntax rule: https://www.w3.org/TR/shacl/#syntax-rule-multiple-parameters
@@ -88,13 +88,11 @@ import java.util.regex.Pattern;
         validateMap(vCxt, data, shape, focusNode, path, valueNode, query, pmap, violationTemplate, reportConstraint);
     }
 
-    private static Map<Parameter, Node> flatten(Multimap<Parameter, Node> parameterMap) {
+    private static Map<Parameter, Node> flatten(MultiValuedMap<Parameter, Node> parameterMap) {
         if ( parameterMap == null )
             return null;
         Map<Parameter, Node> pmap = new HashMap<>(parameterMap.size());
-        parameterMap.forEach((p,v)->{
-            pmap.put(p, v);
-        });
+        parameterMap.mapIterator().forEachRemaining(k->parameterMap.get(k).forEach(v->pmap.put(k,v)) );
         return pmap;
     }
 

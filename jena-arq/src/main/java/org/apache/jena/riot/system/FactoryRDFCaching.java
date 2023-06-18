@@ -18,16 +18,13 @@
 
 package org.apache.jena.riot.system;
 
-import java.util.concurrent.ExecutionException ;
 
-import org.apache.jena.ext.com.google.common.cache.Cache ;
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.cache.CacheInfo ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.ext.com.google.common.cache.CacheBuilder ;
-import org.apache.jena.ext.com.google.common.cache.CacheStats ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.sparql.graph.NodeConst ;
 
@@ -35,7 +32,7 @@ import org.apache.jena.sparql.graph.NodeConst ;
 public class FactoryRDFCaching extends FactoryRDFStd {
     public static final int DftNodeCacheSize = 5000 ;
 
-    // Control the setup - for one thread; start size = 50% of full size, no stats
+    private final int cacheSize ;
     private final Cache<String, Node> cache ;
 
     public FactoryRDFCaching() {
@@ -44,26 +41,17 @@ public class FactoryRDFCaching extends FactoryRDFStd {
 
     public FactoryRDFCaching(int cacheSize, LabelToNode labelMapping) {
         super(labelMapping) ;
-        cache = setCache(cacheSize) ;
+        this.cacheSize = cacheSize;
+        this.cache = setCache(cacheSize) ;
     }
 
     private Cache<String, Node> setCache(int cacheSize) {
-        return CacheBuilder.newBuilder()
-            .maximumSize(cacheSize)
-            .initialCapacity(cacheSize/2)
-            //.recordStats()
-            .concurrencyLevel(1)
-            .build() ;
+        return CacheFactory.createCache(cacheSize);
     }
 
     @Override
     public Node createURI(String uriStr) {
-        try {
-            return cache.get(uriStr, ()->RiotLib.createIRIorBNode(uriStr)) ;
-        }
-        catch (ExecutionException e) {
-            throw new RiotException("Execution exception filling cache <"+uriStr+">", e) ;
-        }
+        return cache.get(uriStr, RiotLib::createIRIorBNode);
     }
 
     // A few constants
@@ -95,17 +83,7 @@ public class FactoryRDFCaching extends FactoryRDFStd {
         return super.createStringLiteral(lexical) ;
     }
 
-    // The cache is not reset.  It can be carried across parser runs.
-//    @Override
-//    public void reset() {
-//        super.reset();
-//    }
-
     public CacheInfo stats() {
-        CacheStats stats = cache.stats() ;
-        if ( stats.missCount() == 0 && stats.hitCount() == 0 )
-            // Stats not enabled - all counts zero.
-            return null ;
-        return new CacheInfo(DftNodeCacheSize, stats) ;
+        return cache.stats();
     }
 }

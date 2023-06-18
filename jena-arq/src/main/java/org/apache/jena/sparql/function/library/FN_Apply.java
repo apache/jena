@@ -69,7 +69,7 @@ public class FN_Apply extends FunctionBase {
             throw new ExprEvalException("fn:apply: function id is an unbound variable (must be a URI)");
         if ( fnNode.isURI() ) {
             String functionIRI = fnNode.getURI();
-            Function function = cache1.getOrFill(functionIRI, ()->buildFunction(functionIRI, env));
+            Function function = cache1.get(functionIRI, x->buildFunction(x, env));
             if ( function == null )
                 throw new ExprEvalException("fn:apply: Unknown function: <"+functionId+">");
             if ( function instanceof FunctionBase ) {

@@ -37,7 +37,6 @@ import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.index.Index;
 import org.apache.jena.dboe.index.RangeIndex;
 import org.apache.jena.dboe.test.RecordLib;
-import org.apache.jena.ext.com.google.common.primitives.Ints;
 import org.junit.Assert;
 
 public class IndexTestLib {
@@ -96,6 +95,7 @@ public class IndexTestLib {
     public static void randTest(Index index, int maxValue, int numKeys) {
         randTest(index, maxValue, numKeys, true);
     }
+
     public static void randTest(Index index, int maxValue, int numKeys, boolean includeIteratorCheck) {
         if ( numKeys >= 5000 )
             System.err.printf("Warning: too many keys\n");
@@ -124,13 +124,40 @@ public class IndexTestLib {
         }
     }
 
-    /** Pull items out of the list in a random order */
+    /** Randomise the contest of an array.*/
     private static int[] permute2(int[] x) {
-        int[] ints = Arrays.copyOf(x, x.length);
-        List<Integer> list = Ints.asList(ints);
+        List<Integer> list = asIntList(x);
         Collections.shuffle(list, random);
+        int ints[] = new int[x.length];
+        for ( int i = 0 ; i < x.length ; i++ )
+            ints[i] = list.get(i);
+//        // Check.
+//        List<Integer> after = asIntList(ints);
+//        for ( int i = 0 ; i < ints.length ; i++ ) {
+//            if ( ! list.contains(ints[i]) )
+//                throw new RuntimeException();
+//            if ( ! after.contains(x[i]) )
+//                throw new RuntimeException();
+//        }
         return ints;
     }
+
+    // List.of or Arrays.asList does not work because of the boxing.
+    private static List<Integer> asIntList(int[] x) {
+        List<Integer> list = new ArrayList<>();
+        for ( int i = 0 ; i < x.length ; i++ )
+            list.add(x[i]);
+        return list;
+    }
+
+    // Guava code based on wrapping
+//    /** Pull items out of the list in a random order */
+//    private static int[] permute2(int[] x) {
+//        int[] ints = Arrays.copyOf(x, x.length);
+//        List<Integer> list = Ints.asList(ints);
+//        Collections.shuffle(list, random);
+//        return ints;
+//    }
 
     private static Random randInit() {
         // Cheap random numbers, well seeded.

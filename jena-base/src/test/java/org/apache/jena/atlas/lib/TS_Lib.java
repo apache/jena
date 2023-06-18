@@ -51,6 +51,7 @@ import org.junit.runners.Suite ;
     , TestCacheSimple.class
     , TestRefCountingMap.class
     , TestVersion.class
+    , TestPowerSet.class
 } )
 
 public class TS_Lib

@@ -20,10 +20,10 @@ package arq.cmdline;
 
 import java.io.PrintStream;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.jena.cmd.*;
-import org.apache.jena.ext.com.google.common.base.Objects;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFLanguages;
@@ -114,7 +114,7 @@ public class ModLangOutput extends ModBase
                 //
                 // To make it accessible, we use --pretty for the pretty form, also known as
                 // RDF/XML-ABBREV and --output for the basic writer.
-                if ( Objects.equal(formattedOutput, RDFFormat.RDFXML_PRETTY) ) {
+                if ( Objects.equals(formattedOutput, RDFFormat.RDFXML_PRETTY) ) {
                     formattedOutput = RDFFormat.RDFXML_PLAIN;
                 }
             }

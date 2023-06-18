@@ -19,7 +19,7 @@
 package org.apache.jena.atlas.lib.cache;
 import java.util.Iterator ;
 import java.util.concurrent.Callable ;
-import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.lib.Cache ;
 
@@ -28,7 +28,7 @@ import org.apache.jena.atlas.lib.Cache ;
 public class CacheWrapper<Key,T> implements Cache<Key,T>
 {
     protected Cache<Key,T> cache ;
-    
+
     public CacheWrapper(Cache<Key,T> cache)         { this.cache = cache ; }
 
     @Override
@@ -36,12 +36,17 @@ public class CacheWrapper<Key,T> implements Cache<Key,T>
 
     @Override
     public boolean containsKey(Key key)             { return cache.containsKey(key) ; }
-    
+
     @Override
     public T getIfPresent(Key key)                  { return cache.getIfPresent(key) ; }
 
+    @SuppressWarnings("deprecation")
     @Override
     public T getOrFill(Key key, Callable<T> callable)  { return cache.getOrFill(key, callable) ; }
+
+    @Override
+    public T get(Key key, Function<Key, T> fucntion)  { return cache.get(key, fucntion) ; }
+
 
     @Override
     public boolean isEmpty()                        { return cache.isEmpty() ; }
@@ -54,10 +59,6 @@ public class CacheWrapper<Key,T> implements Cache<Key,T>
 
     @Override
     public void remove(Key key)                     { cache.remove(key) ; }
-
-    @Override
-    public void setDropHandler(BiConsumer<Key, T> dropHandler)
-    { cache.setDropHandler(dropHandler) ; }
 
     @Override
     public long size()                              { return cache.size() ; }

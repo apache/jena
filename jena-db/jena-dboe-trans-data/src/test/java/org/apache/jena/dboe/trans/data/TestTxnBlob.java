@@ -36,7 +36,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestTransBlob extends Assert {
+public class TestTxnBlob extends Assert {
     private Journal         journal;
     private TransBlob       transBlob;
     private Transactional   transactional;

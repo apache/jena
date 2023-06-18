@@ -21,6 +21,7 @@ package org.apache.jena.dboe.base.block;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
@@ -66,25 +67,29 @@ public class BlockMgrCache extends BlockMgrSync {
         if ( writeSlots <= 0 )
             writeCache = null;
         else {
-            writeCache = CacheFactory.createCache(writeSlots);
-            writeCache.setDropHandler((id, block) -> {
+            BiConsumer<Long, Block> dropHandler = (id, block) -> {
                 // We're inside a synchronized operation at this point.
                 log("Cache spill: write block: %d", id);
                 if ( block == null ) {
                     log.warn("Write cache: " + id + " dropping an entry that isn't there");
                     return;
                 }
-                // Force the block to be writtern
+                // Force the block to be written
                 // by sending it to the wrapped BlockMgr
+                try {
                 BlockMgrCache.super.write(block);
-            });
+                } catch (Throwable th) {
+                    th.printStackTrace();
+                }
+            };
+            writeCache = CacheFactory.createCache(writeSlots, dropHandler);
         }
     }
 
     @Override
     synchronized public void resetAlloc(long boundary) {
         // On abort, need to clear the caches of inaccesible blocks.
-        // An abort is rare (?). We do very carefully.
+        // An abort is rare (?). We do the operation very carefully.
         // Could (probably) delete in the loop or use Iteator.remove on keys().
         // (Check the Cache contract)
         List<Long> removals = new ArrayList<>();

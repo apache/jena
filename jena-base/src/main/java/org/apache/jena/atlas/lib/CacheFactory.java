@@ -18,6 +18,8 @@
 
 package org.apache.jena.atlas.lib ;
 
+import java.util.function.BiConsumer;
+
 import org.apache.jena.atlas.lib.cache.* ;
 
 public class CacheFactory {
@@ -28,7 +30,21 @@ public class CacheFactory {
      * The cache is thread-safe for single operations.
      */
     public static <Key, Value> Cache<Key, Value> createCache(int maxSize) {
-        return new CacheGuava<>(maxSize) ;
+        return createCache(maxSize, null) ;
+    }
+
+    /**
+     * Create a cache which has space for up to a certain number of objects.
+     * This is an LRU cache, or similar.
+     * The cache returns null for a cache miss.
+     * The cache is thread-safe for single operations.
+     */
+    public static <Key, Value> Cache<Key, Value> createCache(int maxSize, BiConsumer<Key, Value> dropHandler) {
+        return new CacheCaffeine<>(maxSize, dropHandler) ;
+    }
+
+    public static <Key, Value> Cache<Key, Value> wrap(com.github.benmanes.caffeine.cache.Cache<Key,Value> caffeine) {
+        return new CacheCaffeine<>(caffeine) ;
     }
 
     /**
@@ -42,7 +58,7 @@ public class CacheFactory {
 
     /** Create a lightweight cache (e.g. slot replacement) */
     public static <Key, Value> Cache<Key, Value> createSimpleCache(int size) {
-        return new CacheSimple<>(size) ;
+        return new CacheSimple<>(size, null) ;
     }
 
     /** One slot cache */

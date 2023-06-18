@@ -26,8 +26,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
-import org.apache.jena.ext.com.google.common.collect.ImmutableSet;
-
 public interface IdentityFinishCollector<T, A> extends Collector<T, A, A> {
 
     @Override
@@ -37,14 +35,14 @@ public interface IdentityFinishCollector<T, A> extends Collector<T, A, A> {
 
     @Override
     default Set<Characteristics> characteristics() {
-        return ImmutableSet.of(IDENTITY_FINISH);
+        return Set.of(IDENTITY_FINISH);
     }
 
     public interface UnorderedIdentityFinishCollector<T, A> extends IdentityFinishCollector<T, A> {
 
         @Override
         default Set<Characteristics> characteristics() {
-            return ImmutableSet.of(UNORDERED, IDENTITY_FINISH);
+            return Set.of(UNORDERED, IDENTITY_FINISH);
         }
     }
 
@@ -52,7 +50,7 @@ public interface IdentityFinishCollector<T, A> extends Collector<T, A, A> {
 
         @Override
         default Set<Characteristics> characteristics() {
-            return ImmutableSet.of(CONCURRENT, UNORDERED, IDENTITY_FINISH);
+            return Set.of(CONCURRENT, UNORDERED, IDENTITY_FINISH);
         }
 
     }

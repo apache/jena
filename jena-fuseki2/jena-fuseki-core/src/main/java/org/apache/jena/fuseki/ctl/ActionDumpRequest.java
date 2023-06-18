@@ -38,8 +38,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 
 /** Dump the HTTP request */
@@ -186,7 +186,7 @@ public class ActionDumpRequest extends HttpServlet {
     }
 
     static void printQueryString(PrintWriter pw, HttpServletRequest req) {
-        Multimap<String, String> map = FusekiNetLib.parseQueryString(req);
+        MultiValuedMap<String, String> map = FusekiNetLib.parseQueryString(req);
         for ( String name : map.keys() )
             for ( String value : map.get(name) )
                 pw.println("Param: "+name + " = " + value);

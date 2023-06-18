@@ -31,7 +31,7 @@ import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.junit.*;
 
-public class TestTransBlobPersistent extends Assert {
+public class TestTxnBlobPersistent extends Assert {
     private final static String DIR  = "target/blobtest";
     private final static String JRNL = DIR+"/journal.jrnl";
     private final static String DATA = DIR+"/blob.data";
@@ -58,7 +58,7 @@ public class TestTransBlobPersistent extends Assert {
         Transactional transactional = TransactionalFactory.createTransactional(journal, transBlob);
         String str = "Hello";
 
-        TestTransBlob.write(transactional, transBlob, str);
+        TestTxnBlob.write(transactional, transBlob, str);
 
         chan.close();
         journal.close();
@@ -98,7 +98,7 @@ public class TestTransBlobPersistent extends Assert {
             ComponentId cid = ComponentId.allocLocal();
             TransBlob transBlob = new TransBlob(cid, chan);
             Transactional transactional = TransactionalFactory.createTransactional(journal, transBlob);
-            TestTransBlob.write(transactional, transBlob, str);
+            TestTxnBlob.write(transactional, transBlob, str);
             chan.close();
             journal.close();
         }
@@ -109,7 +109,7 @@ public class TestTransBlobPersistent extends Assert {
             ComponentId cid = ComponentId.allocLocal();
             TransBlob transBlob = new TransBlob(cid, chan);
             Transactional transactional = TransactionalFactory.createTransactional(journal, transBlob);
-            String s = TestTransBlob.read(transactional, transBlob);
+            String s = TestTxnBlob.read(transactional, transBlob);
             assertEquals(str, s);
         }
     }

@@ -24,11 +24,11 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.ext.com.google.common.collect.BiMap;
-import org.apache.jena.ext.com.google.common.collect.EnumHashBiMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.impl.LiteralLabel;
@@ -94,7 +94,7 @@ public class NodeIdInline {
     };
 
     // Integer derived types.
-    private static BiMap<NodeIdType, RDFDatatype> derivedTypeMap = EnumHashBiMap.create(NodeIdType.class);
+    private static BidiMap<NodeIdType, RDFDatatype> derivedTypeMap = new DualHashBidiMap<>();
     static {
         derivedTypeMap.put(NodeIdType.XSD_LONG, XSDDatatype.XSDlong);
         derivedTypeMap.put(NodeIdType.XSD_INT, XSDDatatype.XSDint);
@@ -185,7 +185,7 @@ public class NodeIdInline {
                     return null;
 
                 // Derived types.
-                NodeIdType type = derivedTypeMap.inverse().getOrDefault(lit.getDatatype(), NodeIdType.XSD_INTEGER);
+                NodeIdType type = derivedTypeMap.inverseBidiMap().getOrDefault(lit.getDatatype(), NodeIdType.XSD_INTEGER);
 
                 try {
                     long v = ((Number)lit.getValue()).longValue();
