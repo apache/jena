@@ -93,6 +93,9 @@
     <ver.httpcore>4.4.16</ver.httpcore>
 
     <ver.caffeine>3.1.6</ver.caffeine>
+    <!-- Most of Jena uses other libraries for equivalent functionality. -->
+    <ver.guava>32.0.0-jre</ver.guava>
+
     <ver.gson>2.10.1</ver.gson>
     <ver.commonsio>2.11.0</ver.commonsio>
     <ver.commonscli>1.5.0</ver.commonscli>
@@ -385,6 +388,12 @@
          <groupId>com.github.ben-manes.caffeine</groupId>
          <artifactId>caffeine</artifactId>
          <version>${ver.caffeine}</version>
+       </dependency>
+
+       <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>${ver.guava}</version>
        </dependency>
        
        <!-- supports persistent data structures -->

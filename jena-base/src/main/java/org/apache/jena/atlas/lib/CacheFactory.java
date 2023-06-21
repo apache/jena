@@ -40,10 +40,13 @@ public class CacheFactory {
      * The cache is thread-safe for single operations.
      */
     public static <Key, Value> Cache<Key, Value> createCache(int maxSize, BiConsumer<Key, Value> dropHandler) {
+        // Choice point. Add a Guava dependency and ...
+        //return new CacheGuava<>(maxSize, dropHandler) ;
         return new CacheCaffeine<>(maxSize, dropHandler) ;
     }
 
     public static <Key, Value> Cache<Key, Value> wrap(com.github.benmanes.caffeine.cache.Cache<Key,Value> caffeine) {
+        // Use a configured and built Caffeine cache with this API.
         return new CacheCaffeine<>(caffeine) ;
     }
 
