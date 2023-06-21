@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.ext.com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheBuilder;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.service.enhancer.claimingcache.AsyncClaimingCache;

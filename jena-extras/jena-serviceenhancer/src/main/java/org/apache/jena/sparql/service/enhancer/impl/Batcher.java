@@ -18,19 +18,14 @@
 
 package org.apache.jena.sparql.service.enhancer.impl;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.NavigableMap;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.TreeMap;
 import java.util.function.Function;
+
+import com.google.common.collect.AbstractIterator;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorCloseable;
-import org.apache.jena.ext.com.google.common.collect.AbstractIterator;
 
 /**
  * The batcher transform an iterator of input items into an iterator of batches.

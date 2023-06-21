@@ -33,14 +33,14 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.atlas.iterator.IteratorOnClose;
 import org.apache.jena.atlas.lib.Closeable;
-import org.apache.jena.ext.com.google.common.collect.Iterators;
-import org.apache.jena.ext.com.google.common.collect.Range;
-import org.apache.jena.ext.com.google.common.collect.RangeMap;
-import org.apache.jena.ext.com.google.common.collect.RangeSet;
-import org.apache.jena.ext.com.google.common.collect.TreeBasedTable;
-import org.apache.jena.ext.com.google.common.collect.TreeRangeMap;
-import org.apache.jena.ext.com.google.common.collect.TreeRangeSet;
-import org.apache.jena.ext.com.google.common.math.LongMath;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeMap;
+import com.google.common.collect.RangeSet;
+import com.google.common.collect.TreeBasedTable;
+import com.google.common.collect.TreeRangeMap;
+import com.google.common.collect.TreeRangeSet;
+import com.google.common.math.LongMath;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.algebra.Algebra;
@@ -219,7 +219,6 @@ public class QueryIterServiceBulk
 
                 // totalNeededBackendRowCount: The number of rows the backend needs to deliver before we can serve any
                 // additional rows to the client.
-                @SuppressWarnings("unused") // For debugging
                 long totalNeededBackendRowCount;
                 long obtainedRowCount = 0;
 
@@ -630,7 +629,7 @@ public class QueryIterServiceBulk
 
                         if (isLoaded) {
                             usesCacheRead = true;
-                            @SuppressWarnings("resource") // Accessor will be closed via channel below
+                            // Accessor will be closed via channel below
                             SliceAccessor<Binding[]> accessor = slice.newSliceAccessor();
 
                             // Prevent eviction of the scheduled range
@@ -639,7 +638,7 @@ public class QueryIterServiceBulk
                             // Create a channel over the accessor for sequential reading
                             // Reading from the channel internally advances the range of data claimed by the accessor
                             // Note: As an improvement the eviction guard could be managed by the channel so that data is immediately released after read.
-                            @SuppressWarnings("resource") // Channel will be closed via baseIt below
+                            // Channel will be closed via baseIt below
                             ReadableChannel<Binding[]> channel =
                                     new ReadableChannelWithLimit<>(
                                             new ReadableChannelOverSliceAccessor<>(accessor, lo),

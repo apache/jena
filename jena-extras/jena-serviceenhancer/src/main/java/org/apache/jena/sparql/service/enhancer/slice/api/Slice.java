@@ -25,9 +25,10 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeSet;
+
 import org.apache.jena.atlas.lib.Sync;
-import org.apache.jena.ext.com.google.common.collect.Range;
-import org.apache.jena.ext.com.google.common.collect.RangeSet;
 
 /**
  * A concurrently accessible sequence of data of possibly unknown size.
@@ -46,7 +47,7 @@ public interface Slice<T>
      * Otherwise, a disposable must be returned. As long as it is not disposed, the
      * no data in the range may get lost due to eviction.
      *
-     * This method should not be used directly but via {@link SliceAccessor#addEvictionGuard(Range)}.
+     * This method should not be used directly but via {@link SliceAccessor#addEvictionGuard}.
      */
     Disposable addEvictionGuard(RangeSet<Long> range);
 

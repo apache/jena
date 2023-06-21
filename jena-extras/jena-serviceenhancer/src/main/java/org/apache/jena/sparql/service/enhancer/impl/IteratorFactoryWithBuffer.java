@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.stream.IntStream;
 
-import org.apache.jena.ext.com.google.common.collect.MultimapBuilder;
-import org.apache.jena.ext.com.google.common.collect.PeekingIterator;
-import org.apache.jena.ext.com.google.common.collect.SetMultimap;
-import org.apache.jena.ext.com.google.common.primitives.Ints;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.PeekingIterator;
+import com.google.common.collect.SetMultimap;
+import com.google.common.primitives.Ints;
 import org.apache.jena.sparql.service.enhancer.impl.util.SinglePrefetchIterator;
 
 /**
@@ -133,7 +133,7 @@ public class IteratorFactoryWithBuffer<T, I extends Iterator<T>>
 
         @Override
         public SubIterator<T, I> createSubIterator(boolean startAtUnbuffered) {
-            @SuppressWarnings("resource") // The result must be closed by the caller
+            // The result must be closed by the caller
             SubIterator<T, I> result = isOpen()
                     ? startAtUnbuffered
                             ? IteratorFactoryWithBuffer.this.createSubIterator(startAtUnbuffered)

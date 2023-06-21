@@ -105,7 +105,6 @@ public interface Ref<T>
      * Return a Ref with a new referent obtained by mapping this ref's value with mapper.
      * Closing the returned Ref closes the original one. Synchronizes on the same object as this ref.
      */
-    @SuppressWarnings("resource") // Result must be closed by caller
     default <X> Ref<X> acquireMapped(Function<? super T, ? extends X> mapper) {
         Ref<T> base = acquire();
         X mapped = mapper.apply(base.get());

@@ -22,9 +22,9 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 
-import org.apache.jena.ext.com.google.common.cache.CacheBuilder;
-import org.apache.jena.ext.com.google.common.collect.Range;
-import org.apache.jena.ext.com.google.common.collect.RangeSet;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeSet;
 import org.apache.jena.sparql.service.enhancer.claimingcache.AsyncClaimingCache;
 import org.apache.jena.sparql.service.enhancer.claimingcache.AsyncClaimingCacheImplGuava;
 import org.apache.jena.sparql.service.enhancer.claimingcache.RefFuture;
@@ -128,7 +128,6 @@ public class SliceInMemoryCache<A>
         return pageCache.claim(pageId);
     }
 
-    @SuppressWarnings("resource")
     @Override
     public Disposable addEvictionGuard(RangeSet<Long> ranges) {
         long pageSize = getPageSize();

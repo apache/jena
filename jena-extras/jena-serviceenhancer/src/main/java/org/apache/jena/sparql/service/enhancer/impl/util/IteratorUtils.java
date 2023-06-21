@@ -29,9 +29,9 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.ext.com.google.common.collect.AbstractIterator;
-import org.apache.jena.ext.com.google.common.collect.Table.Cell;
-import org.apache.jena.ext.com.google.common.collect.Tables;
+import com.google.common.collect.AbstractIterator;
+import com.google.common.collect.Table.Cell;
+import com.google.common.collect.Tables;
 
 public class IteratorUtils {
 

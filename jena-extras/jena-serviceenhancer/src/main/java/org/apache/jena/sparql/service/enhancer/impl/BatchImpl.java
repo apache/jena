@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import org.apache.jena.ext.com.google.common.collect.DiscreteDomain;
+import com.google.common.collect.DiscreteDomain;
 
 /**
  * Batch implementation backed by a navigable map.

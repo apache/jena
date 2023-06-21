@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.service.enhancer.impl;
 
-import org.apache.jena.ext.com.google.common.cache.Cache;
-import org.apache.jena.ext.com.google.common.cache.CacheBuilder;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerConstants;

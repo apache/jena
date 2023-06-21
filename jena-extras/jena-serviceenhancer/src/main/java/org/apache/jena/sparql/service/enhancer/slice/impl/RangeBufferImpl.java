@@ -20,10 +20,10 @@ package org.apache.jena.sparql.service.enhancer.slice.impl;
 
 import java.io.IOException;
 
-import org.apache.jena.ext.com.google.common.collect.Range;
-import org.apache.jena.ext.com.google.common.collect.RangeSet;
-import org.apache.jena.ext.com.google.common.collect.TreeRangeSet;
-import org.apache.jena.ext.com.google.common.math.LongMath;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeSet;
+import com.google.common.collect.TreeRangeSet;
+import com.google.common.math.LongMath;
 import org.apache.jena.sparql.service.enhancer.impl.util.RangeUtils;
 import org.apache.jena.sparql.service.enhancer.slice.api.ArrayOps;
 

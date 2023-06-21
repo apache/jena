@@ -21,10 +21,10 @@ package org.apache.jena.sparql.service.enhancer.slice.impl;
 import java.io.Serializable;
 import java.util.List;
 
-import org.apache.jena.ext.com.google.common.collect.RangeMap;
-import org.apache.jena.ext.com.google.common.collect.RangeSet;
-import org.apache.jena.ext.com.google.common.collect.TreeRangeMap;
-import org.apache.jena.ext.com.google.common.collect.TreeRangeSet;
+import com.google.common.collect.RangeMap;
+import com.google.common.collect.RangeSet;
+import com.google.common.collect.TreeRangeMap;
+import com.google.common.collect.TreeRangeSet;
 import org.apache.jena.sparql.service.enhancer.slice.api.SliceMetaDataBasic;
 
 public class SliceMetaDataImpl
