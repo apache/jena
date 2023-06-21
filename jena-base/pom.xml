@@ -42,12 +42,6 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>32.0.0-jre</version>
-    </dependency>
-    
     <!-- For compiling the log4j2 helper code. -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -94,6 +88,13 @@
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
     </dependency>
+
+    <!--
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    -->
 
     <!-- supports persistent data structures -->
     <dependency>
