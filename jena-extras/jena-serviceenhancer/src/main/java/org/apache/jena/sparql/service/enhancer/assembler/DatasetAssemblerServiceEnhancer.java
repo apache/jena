@@ -20,11 +20,12 @@ package org.apache.jena.sparql.service.enhancer.assembler;
 
 import java.util.Objects;
 
+import com.google.common.base.Preconditions;
+
 import org.apache.commons.lang3.function.TriFunction;
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.ext.com.google.common.base.Preconditions;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;
@@ -104,7 +105,7 @@ public class DatasetAssemblerServiceEnhancer
             // If management is enabled then return a wrapped dataset with a copy of the context which has
             // mgmt enabled
             if (enableMgmt) {
-                cxt = new Context(cxt);
+                cxt = cxt.copy();
                 cxt.set(ServiceEnhancerConstants.enableMgmt, true);
                 result = DatasetFactory.wrap(new DatasetGraphWrapper(result.asDatasetGraph(), cxt));
             }

@@ -41,7 +41,7 @@ public interface RefFuture<T>
     RefFuture<T> acquire();
 
     /** Create a sub-reference to a transformed value of the CompletableFuture */
-    @SuppressWarnings("resource") // Result must be closed by caller
+    // Result must be closed by caller
     default <U> RefFuture<U> acquireTransformed(Function<? super T, ? extends U> transform) {
         RefFuture<T> acquired = this.acquire();
         Object synchronizer = acquired.getSynchronizer();

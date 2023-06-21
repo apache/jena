@@ -31,14 +31,14 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.stream.Collectors;
 
-import org.apache.jena.ext.com.google.common.base.Preconditions;
-import org.apache.jena.ext.com.google.common.collect.ContiguousSet;
-import org.apache.jena.ext.com.google.common.collect.DiscreteDomain;
-import org.apache.jena.ext.com.google.common.collect.Range;
-import org.apache.jena.ext.com.google.common.collect.RangeMap;
-import org.apache.jena.ext.com.google.common.collect.RangeSet;
-import org.apache.jena.ext.com.google.common.collect.TreeRangeMap;
-import org.apache.jena.ext.com.google.common.primitives.Ints;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ContiguousSet;
+import com.google.common.collect.DiscreteDomain;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeMap;
+import com.google.common.collect.RangeSet;
+import com.google.common.collect.TreeRangeMap;
+import com.google.common.primitives.Ints;
 import org.apache.jena.sparql.service.enhancer.claimingcache.Ref;
 import org.apache.jena.sparql.service.enhancer.claimingcache.RefFuture;
 import org.apache.jena.sparql.service.enhancer.impl.util.AutoCloseableWithLeakDetectionBase;
@@ -309,7 +309,6 @@ public class SliceAccessorImpl<A>
 
         int remainingInSrc = length;
         for (long i = startPageId; remainingInSrc > 0; ++i) {
-            @SuppressWarnings("resource") // Resource is closed upon claiming a different range or closing this instance
             RefFuture<BufferView<A>> currentPageRef = getClaimedPages().get(i);
 
             BufferView<A> buffer = currentPageRef.await();
@@ -455,7 +454,6 @@ public class SliceAccessorImpl<A>
 
     @Override
     public void addEvictionGuard(RangeSet<Long> ranges) {
-        @SuppressWarnings("resource") // The disposable is closed upon closing this accessor
         Disposable disposable = slice.addEvictionGuard(ranges);
         if (disposable != null) {
             evictionGuards.add(disposable);

@@ -20,7 +20,7 @@ package org.apache.jena.sparql.service.enhancer.slice.api;
 
 import java.io.IOException;
 
-import org.apache.jena.ext.com.google.common.primitives.Ints;
+import com.google.common.primitives.Ints;
 
 public class ReadableChannelWithLimit<A>
     implements ReadableChannel<A>

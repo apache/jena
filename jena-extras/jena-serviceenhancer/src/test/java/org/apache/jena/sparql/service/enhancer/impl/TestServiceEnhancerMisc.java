@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.service.enhancer.impl;
 
-import org.apache.jena.ext.com.google.common.base.StandardSystemProperty;
+import com.google.common.base.StandardSystemProperty;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;

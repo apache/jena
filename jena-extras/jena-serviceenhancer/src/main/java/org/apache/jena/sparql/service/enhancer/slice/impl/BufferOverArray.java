@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.service.enhancer.slice.impl;
 
-import org.apache.jena.ext.com.google.common.primitives.Ints;
+import com.google.common.primitives.Ints;
+
 import org.apache.jena.sparql.service.enhancer.slice.api.ArrayOps;
 
 public class BufferOverArray<A>

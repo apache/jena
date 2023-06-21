@@ -31,7 +31,7 @@ public class StackTraceUtils {
         try {
            assert false;
            result = false;
-        } catch (@SuppressWarnings("unused") AssertionError e) {
+        } catch (AssertionError e) {
            result = true;
         }
         return result;

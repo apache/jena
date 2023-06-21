@@ -20,11 +20,12 @@ package org.apache.jena.sparql.service.enhancer.slice.api;
 
 import java.util.List;
 
-import org.apache.jena.ext.com.google.common.base.Preconditions;
-import org.apache.jena.ext.com.google.common.collect.Range;
-import org.apache.jena.ext.com.google.common.collect.RangeMap;
-import org.apache.jena.ext.com.google.common.collect.RangeSet;
-import org.apache.jena.ext.com.google.common.collect.TreeRangeSet;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeMap;
+import com.google.common.collect.RangeSet;
+import com.google.common.collect.TreeRangeSet;
+
 import org.apache.jena.sparql.service.enhancer.impl.util.RangeUtils;
 
 public interface SliceMetaDataBasic {
