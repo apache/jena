@@ -18,9 +18,8 @@
 
 package org.apache.jena.mem;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.GraphBase ;
-import org.apache.jena.graph.impl.TripleStore ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.GraphBase;
 
 /**
      GraphMemBase - a common base class for GraphMem and SmallGraphMem.
@@ -38,23 +37,14 @@ public abstract class GraphMemBase extends GraphBase
          The number-of-times-opened count.
     */
     protected int count;
-    
-    /**
-        This Graph's TripleStore. Visible for <i>read-only</i> purposes only.
-    */
-    public final TripleStore store;
-    
+
     /**
          initialise a GraphMemBase with its count set to 1.
     */
     public GraphMemBase( )
     {
-        store = createTripleStore();
-        count = 1; 
+        count = 1;
     }
-    
-    protected abstract TripleStore createTripleStore();
-    
     /**
          Note a re-opening of this graph by incrementing the count. Answer
          this Graph.

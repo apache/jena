@@ -28,11 +28,14 @@ import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Predicate;
 
 @State(Scope.Benchmark)
 public class TestGraphContainsAnything {
+
 
     @Param({
             "../testing/cheeses-0.1.ttl",
@@ -43,17 +46,17 @@ public class TestGraphContainsAnything {
 
     @Param({
             "GraphMem (current)",
+            "GraphMem2Fast (current)",
+            "GraphMem2Legacy (current)",
+            "GraphMem2Roaring (current)",
             "GraphMem (Jena 4.8.0)",
     })
     public String param1_GraphImplementation;
-
+    java.util.function.Function<String, Boolean> graphContains;
     private Graph sutCurrent;
     private org.apache.shadedJena480.graph.Graph sut480;
-
     private List<Triple> triplesToFindCurrent;
     private List<org.apache.shadedJena480.graph.Triple> triplesToFind480;
-
-    java.util.function.Function<String, Boolean> graphContains;
 
     @Benchmark
     public boolean graphContainsS__() {
@@ -63,6 +66,11 @@ public class TestGraphContainsAnything {
     @Benchmark
     public boolean graphContains_P_() {
         return graphContains.apply("_P_");
+    }
+
+    @Benchmark
+    public boolean graphContains__O() {
+        return graphContains.apply("__O");
     }
 
     @Benchmark
@@ -80,15 +88,12 @@ public class TestGraphContainsAnything {
         return graphContains.apply("_PO");
     }
 
-    @Benchmark
-    public boolean graphContains__O() {
-        return graphContains.apply("__O");
-    }
+
 
     private boolean graphContainsCurrent(String pattern) {
         var containsPredicate = getContainsPredicateByPatternCurrent(pattern);
         var found = false;
-        for(var t: triplesToFindCurrent) {
+        for (var t : triplesToFindCurrent) {
             found = containsPredicate.test(t);
             Assert.assertTrue(found);
         }
@@ -98,7 +103,7 @@ public class TestGraphContainsAnything {
     private boolean graphContains480(String pattern) {
         var containsPredicate = getContainsPredicateByPattern480(pattern);
         var found = false;
-        for(var t: triplesToFind480) {
+        for (var t : triplesToFind480) {
             found = containsPredicate.test(t);
             Assert.assertTrue(found);
         }
@@ -147,30 +152,34 @@ public class TestGraphContainsAnything {
     public void setupTrial() throws Exception {
         var trialContext = new Context(param1_GraphImplementation);
         switch (trialContext.getJenaVersion()) {
-            case CURRENT:
-                {
-                    this.sutCurrent = Releases.current.createGraph(trialContext.getGraphClass());
-                    this.graphContains = this::graphContainsCurrent;
+            case CURRENT: {
+                this.sutCurrent = Releases.current.createGraph(trialContext.getGraphClass());
+                this.graphContains = this::graphContainsCurrent;
 
-                    var triples = Releases.current.readTriples(param0_GraphUri);
-                    triples.forEach(this.sutCurrent::add);
+                var triples = Releases.current.readTriples(param0_GraphUri);
+                triples.forEach(this.sutCurrent::add);
 
-                    /*clone the triples because they should not be the same objects*/
-                    this.triplesToFindCurrent = Releases.current.cloneTriples(triples);
-                }
-                break;
-            case JENA_4_8_0:
-                {
-                    this.sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
-                    this.graphContains = this::graphContains480;
+                /*clone the triples because they should not be the same objects*/
+                this.triplesToFindCurrent = Releases.current.cloneTriples(triples);
 
-                    var triples = Releases.v480.readTriples(param0_GraphUri);
-                    triples.forEach(this.sut480::add);
+                    /* Shuffle is import because the order might play a role. We want to test the performance of the
+                       contains method regardless of the order */
+                Collections.shuffle(this.triplesToFindCurrent, new Random(4721));
+            }
+            break;
+            case JENA_4_8_0: {
+                this.sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
+                this.graphContains = this::graphContains480;
 
-                    /*clone the triples because they should not be the same objects*/
-                    this.triplesToFind480 = Releases.v480.cloneTriples(triples);
-                }
-                break;
+                var triples = Releases.v480.readTriples(param0_GraphUri);
+                triples.forEach(this.sut480::add);
+
+                    /* Shuffle is import because the order might play a role. We want to test the performance of the
+                       contains method regardless of the order */
+                this.triplesToFind480 = Releases.v480.cloneTriples(triples);
+                Collections.shuffle(this.triplesToFind480, new Random(4721));
+            }
+            break;
             default:
                 throw new IllegalArgumentException("Unknown Jena version: " + trialContext.getJenaVersion());
         }

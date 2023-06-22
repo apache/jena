@@ -44,15 +44,16 @@ public class TestGraphStreamAll {
 
     @Param({
             "GraphMem (current)",
+            "GraphMem2Fast (current)",
+            "GraphMem2Legacy (current)",
+            "GraphMem2Roaring (current)",
             "GraphMem (Jena 4.8.0)",
     })
     public String param1_GraphImplementation;
-
-    private Graph sutCurrent;
-    private org.apache.shadedJena480.graph.Graph sut480;
-
     java.util.function.Supplier<Object> graphStream;
     java.util.function.Supplier<Object> graphStreamParallel;
+    private Graph sutCurrent;
+    private org.apache.shadedJena480.graph.Graph sut480;
 
     @Benchmark
     public Object graphStream() {
@@ -92,26 +93,24 @@ public class TestGraphStreamAll {
     public void setupTrial() throws Exception {
         Context trialContext = new Context(param1_GraphImplementation);
         switch (trialContext.getJenaVersion()) {
-            case CURRENT:
-                {
-                    this.sutCurrent = Releases.current.createGraph(trialContext.getGraphClass());
-                    this.graphStream = this::graphStreamCurrent;
-                    this.graphStreamParallel = this::graphStreamParallelCurrent;
+            case CURRENT: {
+                this.sutCurrent = Releases.current.createGraph(trialContext.getGraphClass());
+                this.graphStream = this::graphStreamCurrent;
+                this.graphStreamParallel = this::graphStreamParallelCurrent;
 
-                    var triples = Releases.current.readTriples(param0_GraphUri);
-                    triples.forEach(this.sutCurrent::add);
-                }
-                break;
-            case JENA_4_8_0:
-                {
-                    this.sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
-                    this.graphStream = this::graphStream480;
-                    this.graphStreamParallel = this::graphStreamParallel480;
+                var triples = Releases.current.readTriples(param0_GraphUri);
+                triples.forEach(this.sutCurrent::add);
+            }
+            break;
+            case JENA_4_8_0: {
+                this.sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
+                this.graphStream = this::graphStream480;
+                this.graphStreamParallel = this::graphStreamParallel480;
 
-                    var triples = Releases.v480.readTriples(param0_GraphUri);
-                    triples.forEach(this.sut480::add);
-                }
-                break;
+                var triples = Releases.v480.readTriples(param0_GraphUri);
+                triples.forEach(this.sut480::add);
+            }
+            break;
             default:
                 throw new IllegalArgumentException("Unknown Jena version: " + trialContext.getJenaVersion());
         }

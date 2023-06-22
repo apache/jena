@@ -16,11 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.mem.spliterator;
+package org.apache.jena.mem2.spliterator;
 
 import org.apache.jena.atlas.iterator.ActionCount;
-import org.apache.jena.mem.SparseArraySpliterator;
-import org.apache.jena.mem.SparseArraySubSpliterator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
@@ -42,26 +40,21 @@ import java.util.stream.StreamSupport;
 public class TestSparseArraySpliteratorsStreamParallel {
 
 
-    final static int[] stepsWithNull = new int[] {1, 2, 3, 4, 5};
-
-    List<Object[]> arraysWithNulls = new ArrayList<>(stepsWithNull.length);
-
-    List<Integer> elementsCounts = new ArrayList<>(stepsWithNull.length);
-
-
+    final static int[] stepsWithNull = new int[]{1, 2, 3, 4, 5};
     @Param({"1000000", "2000000", "3000000", "5000000"})
     public int param0_arraySize;
-
     @Param({
-            "SparseArraySpliterator",
-            "SparseArraySubSpliterator",
+            "mem.SparseArraySpliterator",
+            "mem2.SparseArraySpliterator"
     })
     public String param1_iteratorImplementation;
+    List<Object[]> arraysWithNulls = new ArrayList<>(stepsWithNull.length);
+    List<Integer> elementsCounts = new ArrayList<>(stepsWithNull.length);
 
     @Benchmark
     public long testSpliteratorForeachRemaining() {
         long total = 0;
-        for(int i = 0; i < stepsWithNull.length; i++) {
+        for (int i = 0; i < stepsWithNull.length; i++) {
             var arrayWithNulls = arraysWithNulls.get(i);
             var elementsCount = elementsCounts.get(i);
             var actionCounter = new ActionCount<>();
@@ -84,11 +77,10 @@ public class TestSparseArraySpliteratorsStreamParallel {
             }
         };
         switch (param1_iteratorImplementation) {
-            case "SparseArraySpliterator":
-                return new SparseArraySpliterator<>(arrayWithNulls, 0, checkForConcurrentModification);
-
-            case "SparseArraySubSpliterator":
-                return new SparseArraySubSpliterator<>(arrayWithNulls, 0, checkForConcurrentModification);
+            case "mem.SparseArraySpliterator":
+                return new org.apache.jena.mem.SparseArraySpliterator<>(arrayWithNulls, count, checkForConcurrentModification);
+            case "mem2.SparseArraySpliterator":
+                return new SparseArraySpliterator<>(arrayWithNulls, checkForConcurrentModification);
 
             default:
                 throw new IllegalArgumentException("Unknown spliterator implementation: " + param1_iteratorImplementation);
@@ -97,11 +89,11 @@ public class TestSparseArraySpliteratorsStreamParallel {
 
     @Setup(Level.Trial)
     public void setupTrial() throws Exception {
-        for(int i = 0; i < stepsWithNull.length; i++) {
+        for (int i = 0; i < stepsWithNull.length; i++) {
             var arrayWithNulls = new Object[param0_arraySize];
-            var stepsWithNull = this.stepsWithNull[i];
+            var stepsWithNull = TestSparseArraySpliteratorsStreamParallel.stepsWithNull[i];
             var elementsCount = 0;
-            for (int k = 0; k < arrayWithNulls.length; k+=1+ stepsWithNull) {
+            for (int k = 0; k < arrayWithNulls.length; k += 1 + stepsWithNull) {
                 arrayWithNulls[k] = new Object();
                 elementsCount++;
             }
@@ -117,7 +109,7 @@ public class TestSparseArraySpliteratorsStreamParallel {
                 // You can be more specific if you'd like to run only one benchmark per test.
                 .include(this.getClass().getName())
                 // Set the following options as needed
-                .mode (Mode.AverageTime)
+                .mode(Mode.AverageTime)
                 .timeUnit(TimeUnit.SECONDS)
                 .warmupTime(TimeValue.NONE)
                 .warmupIterations(10)

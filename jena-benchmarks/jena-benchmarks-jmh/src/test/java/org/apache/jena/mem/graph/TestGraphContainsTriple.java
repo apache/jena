@@ -29,6 +29,7 @@ import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 
 import java.util.List;
+import java.util.Random;
 
 
 @State(Scope.Benchmark)
@@ -42,18 +43,18 @@ public class TestGraphContainsTriple {
     public String param0_GraphUri;
 
     @Param({
-            "GraphMem (Jena 4.8.0)",
             "GraphMem (current)",
+            "GraphMem2Fast (current)",
+            "GraphMem2Legacy (current)",
+            "GraphMem2Roaring (current)",
+            "GraphMem (Jena 4.8.0)",
     })
     public String param1_GraphImplementation;
-
+    java.util.function.Supplier<Boolean> graphContains;
     private Graph sutCurrent;
     private org.apache.shadedJena480.graph.Graph sut480;
-
     private List<Triple> triplesToFindCurrent;
     private List<org.apache.shadedJena480.graph.Triple> triplesToFind480;
-
-    java.util.function.Supplier<Boolean> graphContains;
 
     @Benchmark
     public boolean graphContains() {
@@ -62,7 +63,7 @@ public class TestGraphContainsTriple {
 
     private boolean graphContainsCurrent() {
         var found = false;
-        for(var t: triplesToFindCurrent) {
+        for (var t : triplesToFindCurrent) {
             found = sutCurrent.contains(t);
             Assert.assertTrue(found);
         }
@@ -71,7 +72,7 @@ public class TestGraphContainsTriple {
 
     private boolean graphContains480() {
         var found = false;
-        for(var t: triplesToFind480) {
+        for (var t : triplesToFind480) {
             found = sut480.contains(t);
             Assert.assertTrue(found);
         }
@@ -83,30 +84,34 @@ public class TestGraphContainsTriple {
     public void setupTrial() throws Exception {
         var trialContext = new Context(param1_GraphImplementation);
         switch (trialContext.getJenaVersion()) {
-            case CURRENT:
-                {
-                    this.sutCurrent = Releases.current.createGraph(trialContext.getGraphClass());
-                    this.graphContains = this::graphContainsCurrent;
+            case CURRENT: {
+                this.sutCurrent = Releases.current.createGraph(trialContext.getGraphClass());
+                this.graphContains = this::graphContainsCurrent;
 
-                    var triples = Releases.current.readTriples(param0_GraphUri);
-                    triples.forEach(this.sutCurrent::add);
+                var triples = Releases.current.readTriples(param0_GraphUri);
+                triples.forEach(this.sutCurrent::add);
 
-                    /*clone the triples because they should not be the same objects*/
-                    this.triplesToFindCurrent = Releases.current.cloneTriples(triples);
-                }
-                break;
-            case JENA_4_8_0:
-                {
-                    this.sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
-                    this.graphContains = this::graphContains480;
+                /*clone the triples because they should not be the same objects*/
+                this.triplesToFindCurrent = Releases.current.cloneTriples(triples);
+                    /* Shuffle is import because the order might play a role. We want to test the performance of the
+                       contains method regardless of the order */
+                java.util.Collections.shuffle(this.triplesToFindCurrent, new Random(4721));
+            }
+            break;
+            case JENA_4_8_0: {
+                this.sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
+                this.graphContains = this::graphContains480;
 
-                    var triples = Releases.v480.readTriples(param0_GraphUri);
-                    triples.forEach(this.sut480::add);
+                var triples = Releases.v480.readTriples(param0_GraphUri);
+                triples.forEach(this.sut480::add);
 
-                    /*clone the triples because they should not be the same objects*/
-                    this.triplesToFind480 = Releases.v480.cloneTriples(triples);
-                }
-                break;
+                /*clone the triples because they should not be the same objects*/
+                this.triplesToFind480 = Releases.v480.cloneTriples(triples);
+                    /* Shuffle is import because the order might play a role. We want to test the performance of the
+                       contains method regardless of the order */
+                java.util.Collections.shuffle(this.triplesToFind480, new Random(4721));
+            }
+            break;
             default:
                 throw new IllegalArgumentException("Unknown Jena version: " + trialContext.getJenaVersion());
         }

@@ -27,18 +27,23 @@ import java.util.stream.Stream;
 /** @deprecated This implementation of GraphMem will be replaced by a new implementation at Jena 4.6.0.
  *   Application should be using {@link GraphMemFactory#createDefaultGraph()} for a general purpose graph or {@link GraphMemFactory#createGraphMem()}
  *   to specific this style of implementation.
-*/
+ */
 @Deprecated
-public class GraphMem extends GraphMemBase
-{
-    public GraphMem()
-    { super(  ); }
+public class GraphMem extends GraphMemBase {
+    /**
+     This Graph's TripleStore. Visible for <i>read-only</i> purposes only.
+     */
+    public final TripleStore store;
 
-    @Override protected TripleStore createTripleStore()
-    { return new GraphTripleStoreMem( this ); }
+    public GraphMem() {
+        super();
+        store = new GraphTripleStoreMem(this);
+    }
 
-    @Override protected void destroy()
-    { store.close(); }
+    @Override
+    protected void destroy() {
+        store.close();
+    }
 
     @Override public void performAdd( Triple t )
     { store.add( t ); }

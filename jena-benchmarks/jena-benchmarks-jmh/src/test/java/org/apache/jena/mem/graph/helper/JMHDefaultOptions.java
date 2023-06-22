@@ -37,7 +37,7 @@ public class JMHDefaultOptions {
                 // You can be more specific if you'd like to run only one benchmark per test.
                 .include(c.getName())
                 // Set the following options as needed
-                .mode (Mode.AverageTime)
+                .mode(Mode.AverageTime)
                 .timeUnit(TimeUnit.SECONDS)
                 .warmupTime(TimeValue.NONE)
                 .warmupIterations(5)

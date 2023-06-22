@@ -23,12 +23,15 @@ package org.apache.jena.graph.test;
     and reifier test suites.
 */
 
-import junit.framework.Test ;
-import junit.framework.TestSuite ;
-import org.apache.jena.graph.GraphMemFactory ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.impl.WrappedGraph ;
-import org.apache.jena.mem.GraphMem ;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.impl.WrappedGraph;
+import org.apache.jena.mem.GraphMem;
+import org.apache.jena.mem2.GraphMem2Fast;
+import org.apache.jena.mem2.GraphMem2Legacy;
+import org.apache.jena.mem2.GraphMem2Roaring;
 
 @SuppressWarnings("deprecation")
 public class TestGraph extends GraphTestBase
@@ -42,13 +45,19 @@ public class TestGraph extends GraphTestBase
      */
     public static TestSuite suite()
         {
-        TestSuite result = new TestSuite( TestGraph.class );
-        result.addTest( suite( MetaTestGraph.class, GraphMem.class ) );
-        result.addTest( suite( TestReifier.class, GraphMem.class ) );
-        result.addTest( suite( MetaTestGraph.class, WrappedGraphMem.class ) );
-        result.addTest( suite( TestReifier.class, WrappedGraphMem.class ) );
-        result.addTest( TestGraphListener.suite() );
-        result.addTestSuite( TestRegisterGraphListener.class );
+        TestSuite result = new TestSuite(TestGraph.class);
+        result.addTest(suite(MetaTestGraph.class, GraphMem.class));
+        result.addTest(suite(TestReifier.class, GraphMem.class));
+        result.addTest(suite(MetaTestGraph.class, WrappedGraphMem.class));
+        result.addTest(suite(TestReifier.class, WrappedGraphMem.class));
+        result.addTest(suite(MetaTestGraph.class, GraphMem2Fast.class));
+        result.addTest(suite(TestReifier.class, GraphMem2Fast.class));
+        result.addTest(suite(MetaTestGraph.class, GraphMem2Legacy.class));
+        result.addTest(suite(TestReifier.class, GraphMem2Legacy.class));
+        result.addTest(suite(MetaTestGraph.class, GraphMem2Roaring.class));
+        result.addTest(suite(TestReifier.class, GraphMem2Roaring.class));
+        result.addTest(TestGraphListener.suite());
+        result.addTestSuite(TestRegisterGraphListener.class);
         return result;
         }
 

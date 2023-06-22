@@ -43,14 +43,15 @@ public class TestGraphFindAllWithHasNextAndNext {
 
     @Param({
             "GraphMem (current)",
+            "GraphMem2Fast (current)",
+            "GraphMem2Legacy (current)",
+            "GraphMem2Roaring (current)",
             "GraphMem (Jena 4.8.0)",
     })
     public String param1_GraphImplementation;
-
+    java.util.function.Supplier<Long> graphFindAll;
     private Graph sutCurrent;
     private org.apache.shadedJena480.graph.Graph sut480;
-
-    java.util.function.Supplier<Long> graphFindAll;
 
     @Benchmark
     public Long graphFindAll() {
@@ -60,7 +61,7 @@ public class TestGraphFindAllWithHasNextAndNext {
     private Long graphFindAllCurrent() {
         var actionCounter = new ActionCount<>();
         var iter = sutCurrent.find();
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
             actionCounter.accept(iter.next());
         }
         iter.close();
@@ -71,7 +72,7 @@ public class TestGraphFindAllWithHasNextAndNext {
     private Long graphFindAll480() {
         var actionCounter = new ActionCount<>();
         var iter = sut480.find();
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
             actionCounter.accept(iter.next());
         }
         iter.close();
@@ -83,23 +84,21 @@ public class TestGraphFindAllWithHasNextAndNext {
     public void setupTrial() throws Exception {
         Context trialContext = new Context(param1_GraphImplementation);
         switch (trialContext.getJenaVersion()) {
-            case CURRENT:
-                {
-                    this.sutCurrent = Releases.current.createGraph(trialContext.getGraphClass());
-                    this.graphFindAll = this::graphFindAllCurrent;
+            case CURRENT: {
+                this.sutCurrent = Releases.current.createGraph(trialContext.getGraphClass());
+                this.graphFindAll = this::graphFindAllCurrent;
 
-                    var triples = Releases.current.readTriples(param0_GraphUri);
-                    triples.forEach(this.sutCurrent::add);
-                }
-                break;
-            case JENA_4_8_0:
-                {
-                    this.sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
-                    this.graphFindAll = this::graphFindAll480;
+                var triples = Releases.current.readTriples(param0_GraphUri);
+                triples.forEach(this.sutCurrent::add);
+            }
+            break;
+            case JENA_4_8_0: {
+                this.sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
+                this.graphFindAll = this::graphFindAll480;
 
-                    var triples = Releases.v480.readTriples(param0_GraphUri);
-                    triples.forEach(this.sut480::add);
-                }
+                var triples = Releases.v480.readTriples(param0_GraphUri);
+                triples.forEach(this.sut480::add);
+            }
             break;
             default:
                 throw new IllegalArgumentException("Unknown Jena version: " + trialContext.getJenaVersion());

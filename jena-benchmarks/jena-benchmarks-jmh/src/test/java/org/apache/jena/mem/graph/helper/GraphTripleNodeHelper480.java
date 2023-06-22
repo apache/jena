@@ -26,17 +26,16 @@ import org.apache.shadedJena480.riot.RDFDataMgr;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GraphTripleNodeHelper480 implements GraphTripleNodeHelper<Graph, Triple, Node> {
 
     @Override
     public Graph createGraph(Context.GraphClass graphClass) {
-        switch (graphClass) {
-            case GraphMem:
-                return new GraphMem();
-            default:
-                throw new IllegalArgumentException("Unknown graph class: " + graphClass);
+        if (Objects.requireNonNull(graphClass) == Context.GraphClass.GraphMem) {
+            return new GraphMem();
         }
+        throw new IllegalArgumentException("Unknown graph class: " + graphClass);
     }
 
     @Override
@@ -67,13 +66,13 @@ public class GraphTripleNodeHelper480 implements GraphTripleNodeHelper<Graph, Tr
 
     @Override
     public Node cloneNode(Node node) {
-        if(node.isLiteral()) {
+        if (node.isLiteral()) {
             return NodeFactory.createLiteralByValue(node.getLiteralLexicalForm(), node.getLiteralLanguage(), node.getLiteralDatatype());
         }
-        if(node.isURI()) {
+        if (node.isURI()) {
             return NodeFactory.createURI(node.getURI());
         }
-        if(node.isBlank()) {
+        if (node.isBlank()) {
             return NodeFactory.createBlankNode(node.getBlankNodeLabel());
         }
         throw new IllegalArgumentException("Only literals, URIs and blank nodes are supported");
