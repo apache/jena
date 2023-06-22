@@ -21,8 +21,8 @@ package org.apache.jena.shacl.engine.constraint;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
@@ -39,11 +39,11 @@ import org.apache.jena.sparql.path.Path;
 /** SPARQL Constraint (ASK or SELECT) */
 public class ConstraintComponentSPARQL implements Constraint {
     protected final SparqlComponent sparqlConstraintComponent;
-    protected final Multimap<Parameter, Node> parameterMap;
+    protected final MultiValuedMap<Parameter, Node> parameterMap;
     protected final Query query;
 
     public ConstraintComponentSPARQL(SparqlComponent sparqlConstraintComponent,
-                                     Multimap<Parameter, Node> parameterMap) {
+                                     MultiValuedMap<Parameter, Node> parameterMap) {
         //sh:labelTemplate
         this.sparqlConstraintComponent = sparqlConstraintComponent;
         this.parameterMap = parameterMap;

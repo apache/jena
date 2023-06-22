@@ -18,10 +18,14 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import static org.apache.jena.ext.com.google.common.collect.ImmutableSet.of;
+import static java.util.Set.of;
 import static org.apache.jena.graph.Node.ANY;
-import static org.apache.jena.sparql.core.mem.TripleTableForm.*;
-import static org.apache.jena.sparql.core.mem.TupleSlot.*;
+import static org.apache.jena.sparql.core.mem.TripleTableForm.OSP;
+import static org.apache.jena.sparql.core.mem.TripleTableForm.POS;
+import static org.apache.jena.sparql.core.mem.TripleTableForm.SPO;
+import static org.apache.jena.sparql.core.mem.TupleSlot.OBJECT;
+import static org.apache.jena.sparql.core.mem.TupleSlot.PREDICATE;
+import static org.apache.jena.sparql.core.mem.TupleSlot.SUBJECT;
 
 import java.util.HashMap;
 import java.util.Map;

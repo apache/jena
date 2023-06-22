@@ -18,7 +18,8 @@
 
 package org.apache.jena.rdfpatch.changes;
 
-import org.apache.jena.ext.com.google.common.base.Objects;
+import java.util.Objects;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdfpatch.RDFPatchConst;
 import org.apache.jena.rdfpatch.system.Printer;
@@ -35,7 +36,7 @@ public class RDFChangesLogSummary extends RDFChangesCounter {
 
     @Override
     public void header(String field, Node value) {
-        if ( Objects.equal(field, RDFPatchConst.ID) )
+        if ( Objects.equals(field, RDFPatchConst.ID) )
             node = value;
         super.header(field, value);
     }

@@ -18,21 +18,12 @@
 
 package org.apache.jena.reasoner.rulesys.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+import java.util.*;
+import java.util.function.Function;
 
 import org.apache.jena.JenaRuntime;
-import org.apache.jena.ext.com.google.common.cache.Cache;
-import org.apache.jena.ext.com.google.common.cache.CacheBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.reasoner.ReasonerException;
@@ -41,6 +32,8 @@ import org.apache.jena.reasoner.rulesys.BackwardRuleInfGraphI;
 import org.apache.jena.reasoner.rulesys.Rule;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * LP version of the core backward chaining engine. For each parent inference
@@ -81,8 +74,7 @@ public class LPBRuleEngine {
      *  Older Jena versions used weak references here.
      *  If necessary that could be reinstated by adding .weakValues() in the build chain.
      */
-    Cache<TriplePattern, Generator> tabledGoals = CacheBuilder.newBuilder()
-            .maximumSize(MAX_CACHED_TABLED_GOALS).build();
+    Cache<TriplePattern, Generator> tabledGoals = CacheFactory.createCache(MAX_CACHED_TABLED_GOALS);
 
     /** Set of generators waiting to be run */
     protected LinkedList<LPAgendaEntry> agenda = new LinkedList<>();
@@ -284,7 +276,7 @@ public class LPBRuleEngine {
      * @param clauses the precomputed set of code blocks used to implement the goal
      */
     public synchronized Generator generatorFor(final TriplePattern goal, final List<RuleClauseCode> clauses) {
-        return getCachedTabledGoal(goal, () -> {
+        return getCachedTabledGoal(goal, (g) -> {
 	 		/** FIXME: Unify with #generatorFor(TriplePattern) - but investigate what about
 	 		 * the edge case that this method might have been called with the of goal == null
 	 		 * or goal.size()==0 -- which gives different behaviour in
@@ -292,9 +284,9 @@ public class LPBRuleEngine {
 	 		 * generatorFor(TriplePattern) which calls a different LPInterpreter constructor
 	 		 * which would fill in from RuleStore.
 	 		 */
-			LPInterpreter interpreter = new LPInterpreter(LPBRuleEngine.this, goal, clauses, false);
+			LPInterpreter interpreter = new LPInterpreter(LPBRuleEngine.this, g, clauses, false);
 			activeInterpreters.add(interpreter);
-			Generator generator = new Generator(interpreter, goal);
+			Generator generator = new Generator(interpreter, g);
 			schedule(generator);
 			return generator;
 		});
@@ -306,25 +298,17 @@ public class LPBRuleEngine {
      * @param goal the goal whose results are to be generated
      */
     public synchronized Generator generatorFor(final TriplePattern goal) {
-    	return getCachedTabledGoal(goal, () -> {
-            LPInterpreter interpreter = new LPInterpreter(LPBRuleEngine.this, goal, false);
+    	return getCachedTabledGoal(goal, (g) -> {
+            LPInterpreter interpreter = new LPInterpreter(LPBRuleEngine.this, g, false);
             activeInterpreters.add(interpreter);
-            Generator generator = new Generator(interpreter, goal);
+            Generator generator = new Generator(interpreter, g);
             schedule(generator);
             return generator;
 		});
     }
 
-    protected Generator getCachedTabledGoal(TriplePattern goal,
-			Callable<Generator> callable) {
-    	try {
-			return tabledGoals.get(goal, callable);
-		} catch (ExecutionException e) {
-			if (e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException)e.getCause();
-			}
-			throw new RuntimeException(e);
-		}
+    protected Generator getCachedTabledGoal(TriplePattern goal, Function<TriplePattern, Generator> callable) {
+        return tabledGoals.get(goal, callable);
 	}
 
 	protected long cachedTabledGoals() {
@@ -332,7 +316,7 @@ public class LPBRuleEngine {
     }
 
 	protected void clearCachedTabledGoals() {
-		tabledGoals.invalidateAll();
+		tabledGoals.clear();
 	}
 
 	/**
@@ -342,7 +326,7 @@ public class LPBRuleEngine {
 	protected synchronized void removeTabledGenerator(Generator generator) {
         Generator tabledGenerator = tabledGoals.getIfPresent(generator.goal);
         if (tabledGenerator != null && tabledGenerator == generator) {
-            tabledGoals.invalidate(generator.goal);
+            tabledGoals.remove(generator.goal);
         }
     }
 

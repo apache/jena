@@ -18,8 +18,6 @@
 
 package org.apache.jena.atlas.lib;
 
-import java.util.function.Consumer;
-
 public interface CacheSet<T>
 {
     public void add(T e) ;
@@ -29,6 +27,4 @@ public interface CacheSet<T>
 //    public Iterator<T> iterator() ;
     public void remove(T obj) ;
     public long size() ;
-    /** Register a callback - called when an object is dropped from the cache (optional operation) */ 
-    public void setDropHandler(Consumer<T> dropHandler) ;
 }

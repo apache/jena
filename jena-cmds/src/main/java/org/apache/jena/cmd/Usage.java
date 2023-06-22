@@ -21,8 +21,10 @@ package org.apache.jena.cmd;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.ext.com.google.common.collect.Lists;
+import org.apache.jena.atlas.iterator.Iter;
+
 public class Usage
 {
     public static class Category {
@@ -66,7 +68,7 @@ public class Usage
        int INDENT2 = 4;
        out.incIndent(INDENT1);
 
-       for ( Category c : Lists.reverse(categories) ) {
+       Iter.reverseIterate(categories, c->{
            if ( c.desc != null ) {
                out.println(c.desc);
            }
@@ -81,7 +83,7 @@ public class Usage
                out.println();
            }
            out.decIndent(INDENT2);
-       }
+       });
        out.decIndent(INDENT1);
        out.flush();
    }

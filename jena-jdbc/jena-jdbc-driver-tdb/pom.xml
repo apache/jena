@@ -98,6 +98,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <argLine>-Xmx4G</argLine>
           <systemProperties>
             <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
           </systemProperties>

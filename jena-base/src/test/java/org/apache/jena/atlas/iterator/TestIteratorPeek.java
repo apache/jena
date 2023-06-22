@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.ext.com.google.common.collect.Iterators ;
 import org.junit.Test ;
 
 public class TestIteratorPeek
@@ -35,21 +34,21 @@ public class TestIteratorPeek
     {
         data1.add("a") ;
     }
-    
+
     List<String> data2 = new ArrayList<>() ;
     {
         data2.add("x") ;
         data2.add("y") ;
         data2.add("z") ;
     }
-    
-    @Test public void iter_01() 
+
+    @Test public void iter_01()
     {
         Iter<String> iter = Iter.iter(data2) ;
         iter = iter.append(data2.iterator()) ;
         test(iter, "x", "y", "z", "x", "y", "z") ;
     }
-    
+
     private static void test(Iter<?> iter, Object... items)
     {
         for ( Object x : items )
@@ -59,19 +58,19 @@ public class TestIteratorPeek
         }
         assertFalse(iter.hasNext()) ;
     }
-    
-    private static PeekIterator<String> create(String...a)
-    { 
-        return new PeekIterator<>(Iterators.forArray(a)) ;
+
+    private static PeekIterator<String> create(String...a) {
+        List<String> x = List.of(a);
+        return new PeekIterator<>(x.iterator());
     }
-    
+
     @Test public void peek_1()
     {
         PeekIterator<String> peek = create("a", "b", "c") ;
         assertEquals("a", peek.peek()) ;
         test(Iter.iter(peek), "a", "b", "c") ;
     }
-    
+
     @Test public void peek_2()
     {
         PeekIterator<String> peek = create() ;

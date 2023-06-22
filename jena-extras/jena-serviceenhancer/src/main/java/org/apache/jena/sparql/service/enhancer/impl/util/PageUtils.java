@@ -24,9 +24,9 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-import org.apache.jena.ext.com.google.common.collect.ContiguousSet;
-import org.apache.jena.ext.com.google.common.collect.DiscreteDomain;
-import org.apache.jena.ext.com.google.common.collect.Range;
+import com.google.common.collect.ContiguousSet;
+import com.google.common.collect.DiscreteDomain;
+import com.google.common.collect.Range;
 
 /**
  * Utility methods for working with (fixed-size) pages.

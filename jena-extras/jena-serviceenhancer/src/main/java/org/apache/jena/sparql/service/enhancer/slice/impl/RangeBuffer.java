@@ -20,10 +20,10 @@ package org.apache.jena.sparql.service.enhancer.slice.impl;
 
 import java.io.IOException;
 
-import org.apache.jena.ext.com.google.common.collect.ContiguousSet;
-import org.apache.jena.ext.com.google.common.collect.DiscreteDomain;
-import org.apache.jena.ext.com.google.common.collect.Range;
-import org.apache.jena.ext.com.google.common.collect.RangeSet;
+import com.google.common.collect.ContiguousSet;
+import com.google.common.collect.DiscreteDomain;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeSet;
 
 
 public interface RangeBuffer<A>

@@ -20,7 +20,7 @@ package org.apache.jena.tdb2.loader.main;
 
 import java.util.List;
 
-import org.apache.jena.ext.com.google.common.collect.Lists;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.tdb2.loader.base.BulkStartFinish;
 
 public class BulkProcesses {
@@ -30,7 +30,6 @@ public class BulkProcesses {
     }
 
     public static void finish(List<BulkStartFinish> list) {
-        Lists.reverse(list).forEach(x->x.finishBulk());
+        Iter.reverseIterate(list, item -> item.finishBulk());
     }
-
 }

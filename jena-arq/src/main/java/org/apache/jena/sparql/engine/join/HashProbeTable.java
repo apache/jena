@@ -23,9 +23,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.MultiMapUtils;
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
-import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.sparql.engine.binding.Binding;
 
 /** The probe table for a hash join */
@@ -38,12 +38,12 @@ class HashProbeTable {
     /*package*/ long s_countScanMiss   = 0;
 
     private final List<Binding>             noKeyBucket = new ArrayList<>();
-    private final Multimap<Object, Binding> buckets;
+    private final MultiValuedMap<Object, Binding> buckets;
     private final JoinKey                   joinKey;
 
     HashProbeTable(JoinKey joinKey) {
         this.joinKey = joinKey;
-        buckets = ArrayListMultimap.create();
+        buckets = MultiMapUtils.newListValuedHashMap();
     }
 
     public void put(Binding row) {
@@ -109,7 +109,7 @@ class HashProbeTable {
         return Iter.concat(buckets.values().iterator(),
                            noKeyBucket.iterator()) ;
     }
-    
+
     public void clear() {
         buckets.clear();
     }

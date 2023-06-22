@@ -25,7 +25,7 @@ import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.query.ReadWrite;
 
-public class TestTransBinaryDataFileGeneral extends AbstractTestBinaryDataFile {
+public class TestTxnBinaryDataFileGeneral extends AbstractTestBinaryDataFile {
     private Journal journal;
     private BinaryDataFile baseBinData;
     private TransBinaryDataFile transBinData;

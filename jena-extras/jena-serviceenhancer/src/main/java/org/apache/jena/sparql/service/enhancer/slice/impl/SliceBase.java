@@ -23,8 +23,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.jena.ext.com.google.common.collect.RangeMap;
-import org.apache.jena.ext.com.google.common.collect.RangeSet;
+import com.google.common.collect.RangeMap;
+import com.google.common.collect.RangeSet;
 import org.apache.jena.sparql.service.enhancer.slice.api.ArrayOps;
 import org.apache.jena.sparql.service.enhancer.slice.api.Slice;
 import org.apache.jena.sparql.service.enhancer.slice.api.SliceMetaDataBasic;

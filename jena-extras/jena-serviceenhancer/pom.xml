@@ -41,6 +41,11 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.xenei</groupId>
       <artifactId>junit-contracts</artifactId> 
       <scope>test</scope>

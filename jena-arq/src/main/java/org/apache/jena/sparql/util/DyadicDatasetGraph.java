@@ -21,7 +21,6 @@ package org.apache.jena.sparql.util;
 import static java.util.Objects.requireNonNull;
 import static org.apache.jena.atlas.iterator.Iter.count;
 import static org.apache.jena.atlas.iterator.Iter.map;
-import static org.apache.jena.ext.com.google.common.collect.Iterators.concat;
 import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.query.TxnType.READ;
 import static org.apache.jena.sparql.core.Quad.defaultGraphIRI;
@@ -29,6 +28,7 @@ import static org.apache.jena.sparql.core.Quad.defaultGraphIRI;
 import java.util.Iterator;
 import java.util.Objects;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.PairOfSameType;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -190,16 +190,19 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
 
     @Override
     public Iterator<Quad> find(Node g, Node s, Node p, Node o) {
-        return g.isConcrete()
-                ? findInOneGraph(g, s, p, o)
-                : concat(findNG(ANY, s, p, o), findInOneGraph(defaultGraphIRI, s, p, o));
+        if ( g.isConcrete() )
+            return findInOneGraph(g, s, p, o);
+        Iterator<Quad> iter = findNG(ANY, s, p, o);
+        iter = Iter.concat(iter, findInOneGraph(defaultGraphIRI, s, p, o));
+        return iter;
     }
 
     @Override
     public Iterator<Quad> findNG(Node g, Node s, Node p, Node o) {
-        return g.isConcrete()
-                ? findInOneGraph(g, s, p, o)
-                : concat(map(listGraphNodes(), gn -> findInOneGraph(gn, s, p, o)));
+        if ( g.isConcrete() )
+            return findInOneGraph(g, s, p, o);
+        Iterator<Quad> iter = Iter.flatMap(listGraphNodes(), gn -> findInOneGraph(gn, s, p, o));
+        return iter;
     }
 
     protected Iterator<Quad> findInOneGraph(Node g, Node s, Node p, Node o) {

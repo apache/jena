@@ -23,11 +23,11 @@ import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.commons.collections4.MultiMapUtils;
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.ext.com.google.common.collect.Multimap;
-import org.apache.jena.ext.com.google.common.collect.MultimapBuilder;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
@@ -106,7 +106,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
 
                 // Case: there is input.
                 // Phase 1 : Create keys and aggregators per key, and pump bindings through the aggregators.
-                Multimap<Binding, Pair<Var, Accumulator>> accumulators = MultimapBuilder.hashKeys().arrayListValues().build();
+                MultiValuedMap<Binding, Pair<Var, Accumulator>> accumulators = MultiMapUtils.newListValuedHashMap();
                 while (iter.hasNext()) {
                     Binding b = iter.nextBinding();
                     Binding key = genKey(groupVarExpr, b, execCxt);

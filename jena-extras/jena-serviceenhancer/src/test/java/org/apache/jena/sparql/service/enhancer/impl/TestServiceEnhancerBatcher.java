@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorCloseable;
-import org.apache.jena.ext.com.google.common.collect.Streams;
+import com.google.common.collect.Streams;
 import org.junit.Assert;
 import org.junit.Test;
 

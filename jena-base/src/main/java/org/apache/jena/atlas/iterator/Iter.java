@@ -885,6 +885,24 @@ public class Iter<T> implements IteratorCloseable<T> {
         return -1;
     }
 
+    /** reverse iterator for a list */
+    public static <T> Iterator<T> reverseIterate(List<T> list) {
+        ListIterator<T> iter = list.listIterator(list.size());
+        return new Iterator<>() {
+            @Override public boolean hasNext() { return iter.hasPrevious(); }
+            @Override public T next() { return iter.previous(); }
+        };
+    }
+
+    /** reverse for each on a list. */
+    public static <T> void reverseIterate(List<T> list, Consumer<? super T> action) {
+        ListIterator<T> iter = list.listIterator(list.size());
+        while(iter.hasPrevious()) {
+            T t = iter.previous();
+            action.accept(t);
+        }
+    }
+
     // ------------------------------------------------------
     // The class.
 

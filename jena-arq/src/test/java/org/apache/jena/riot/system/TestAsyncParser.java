@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.IteratorCloseable;
-import org.apache.jena.ext.com.google.common.base.Preconditions;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;
@@ -307,7 +306,8 @@ public class TestAsyncParser {
         public RepeatingReadableByteChannel(byte[] data, long pos) {
             super();
             Objects.requireNonNull(data);
-            Preconditions.checkArgument(data.length > 0, "Provided data array must have at least 1 item");
+            if ( data.length == 0 )
+                throw new RuntimeException("Provided data array must have at least 1 item");
             this.data = data;
             this.pos = pos;
             this.isOpen = true;

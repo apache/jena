@@ -20,9 +20,9 @@ package org.apache.jena.sparql.service.enhancer.slice.api;
 
 import java.io.IOException;
 
-import org.apache.jena.ext.com.google.common.collect.ImmutableRangeSet;
-import org.apache.jena.ext.com.google.common.collect.Range;
-import org.apache.jena.ext.com.google.common.collect.RangeSet;
+import com.google.common.collect.ImmutableRangeSet;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeSet;
 
 /**
  * Abstraction over a sequence of pages to view their content as

@@ -21,8 +21,9 @@ package org.apache.jena.sparql.service.enhancer.example;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Stopwatch;
+
 import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;

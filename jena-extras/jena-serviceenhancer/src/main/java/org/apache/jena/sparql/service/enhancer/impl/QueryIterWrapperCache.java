@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.NavigableMap;
 
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.ext.com.google.common.collect.AbstractIterator;
-import org.apache.jena.ext.com.google.common.collect.Iterators;
-import org.apache.jena.ext.com.google.common.collect.Table.Cell;
-import org.apache.jena.ext.com.google.common.math.LongMath;
+import com.google.common.collect.AbstractIterator;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Table.Cell;
+import com.google.common.math.LongMath;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator;

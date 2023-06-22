@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import org.apache.jena.ext.com.google.common.collect.Lists;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.FusekiJdbcTestServer;
@@ -40,35 +39,35 @@ import org.junit.BeforeClass;
  *
  */
 public class TestRemoteEndpointResultsWithGraphUris extends AbstractRemoteEndpointResultSetTests {
-    
+
     //@BeforeClass public static void ctlBeforeClass() { FusekiTestServer.ctlBeforeClass(); }
     //@AfterClass  public static void ctlAfterClass()  { FusekiTestServer.ctlAfterClass(); }
     @Before      public void ctlBeforeTest()  { FusekiJdbcTestServer.ctlBeforeTest(); }
-    @After       public void ctlAfterTest()   { FusekiJdbcTestServer.ctlAfterTest(); } 
+    @After       public void ctlAfterTest()   { FusekiJdbcTestServer.ctlAfterTest(); }
 
 
     /**
      * Constant for default graph URI used in these tests
      */
     private static final String DEFAULT_GRAPH_URI = "http://example.org/defaultGraphUri";
-    
+
     private static RemoteEndpointConnection connection;
-    
+
     /**
      * Setup for the tests by allocating a Fuseki instance to work with
-     * @throws SQLException 
+     * @throws SQLException
      */
     @BeforeClass
     public static void setup() throws SQLException {
         FusekiJdbcTestServer.ctlBeforeClass();
-        List<String> defaultGraphUris = Lists.newArrayList(DEFAULT_GRAPH_URI);
+        List<String> defaultGraphUris = List.of(DEFAULT_GRAPH_URI);
         connection = new RemoteEndpointConnection(FusekiJdbcTestServer.serviceQuery(), FusekiJdbcTestServer.serviceUpdate(), defaultGraphUris, null, defaultGraphUris, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, null, null);
         connection.setJdbcCompatibilityLevel(JdbcCompatibility.HIGH);
     }
-    
+
     /**
      * Clean up after tests by de-allocating the Fuseki instance
-     * @throws SQLException 
+     * @throws SQLException
      */
     @AfterClass
     public static void cleanup() throws SQLException {
@@ -80,7 +79,7 @@ public class TestRemoteEndpointResultsWithGraphUris extends AbstractRemoteEndpoi
     protected ResultSet createResults(Dataset ds, String query) throws SQLException {
         return createResults(ds, query, ResultSet.TYPE_FORWARD_ONLY);
     }
-    
+
     @Override
     protected ResultSet createResults(Dataset ds, String query, int resultSetType) throws SQLException {
         ds = TestJdbcRemoteUtils.renameGraph(ds, null, DEFAULT_GRAPH_URI);

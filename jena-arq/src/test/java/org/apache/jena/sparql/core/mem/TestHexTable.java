@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.core.mem;
 
 import static java.util.stream.Collectors.toSet;
-import static org.apache.jena.ext.com.google.common.collect.ImmutableSet.of;
 import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.graph.NodeFactory.createBlankNode;
 import static org.apache.jena.sparql.core.mem.TupleSlot.*;
@@ -67,10 +66,10 @@ public class TestHexTable extends AbstractTestQuadTable {
 			Set<Quad> contents = index
 					.find(testQuery.getGraph(), testQuery.getSubject(), testQuery.getPredicate(), testQuery.getObject())
 					.collect(toSet());
-			assertEquals(of(testTuple()), contents);
+			assertEquals(Set.of(testTuple()), contents);
 			// both Node.ANY and null should work as wildcards
 			contents = index.find(null, ANY, null, ANY).collect(toSet());
-			assertEquals(of(testTuple(), noiseQuad), contents);
+			assertEquals(Set.of(testTuple(), noiseQuad), contents);
 			index.end();
 		});
 	}

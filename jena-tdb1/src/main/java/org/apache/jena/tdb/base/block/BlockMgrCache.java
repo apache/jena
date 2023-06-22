@@ -19,6 +19,7 @@
 package org.apache.jena.tdb.base.block;
 
 import java.util.Iterator ;
+import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
@@ -31,28 +32,28 @@ public class BlockMgrCache extends BlockMgrSync
     // Actually, this is two caches, one on the read blocks and one on the write blocks.
     // The overridden public operations are sync'ed.
     // As sync is on "this", it also covers all the other operations via BlockMgrSync
-    
+
     private static Logger log = LoggerFactory.getLogger(BlockMgrCache.class) ;
     // Read cache : always present.
     private final Cache<Long, Block> readCache ;
 
     // Delayed dirty writes.  May be present, may not.
     private final Cache<Long, Block> writeCache ;
-    
-    public static boolean globalLogging = false ;           // Also enable the logging level. 
-    private boolean logging = false ;                       // Also enable the logging level. 
+
+    public static boolean globalLogging = false ;           // Also enable the logging level.
+    private boolean logging = false ;                       // Also enable the logging level.
     // ---- stats
     long cacheReadHits = 0 ;
     long cacheMisses = 0 ;
     long cacheWriteHits = 0 ;
-    
+
     static BlockMgr create(int readSlots, int writeSlots, final BlockMgr blockMgr)
     {
         if ( readSlots < 0 && writeSlots < 0 )
             return blockMgr ;
         return new BlockMgrCache(readSlots, writeSlots, blockMgr) ;
     }
-    
+
     private BlockMgrCache(int readSlots, int writeSlots, final BlockMgr blockMgr)
     {
         super(blockMgr) ;
@@ -65,30 +66,29 @@ public class BlockMgrCache extends BlockMgrSync
             writeCache = null ;
         else
         {
-            writeCache = CacheFactory.createCache(writeSlots) ;
-            writeCache.setDropHandler((id, block) -> { 
-                    // We're inside a synchronized operation at this point.
-                    log("Cache spill: write block: %d", id) ;
-                    if (block == null)
-                    {
-                        log.warn("Write cache: " + id + " dropping an entry that isn't there") ;
-                        return ;
-                    }
-                    // Force the block to be writtern
-                    // by sending it to the wrapped BlockMgr
-                    BlockMgrCache.super.write(block) ;
+            BiConsumer<Long, Block> dropHandler = (id, block) -> {
+                // We're inside a synchronized operation at this point.
+                log("Cache spill: write block: %d", id) ;
+                if (block == null)
+                {
+                    log.warn("Write cache: " + id + " dropping an entry that isn't there") ;
+                    return ;
                 }
-            ) ;
+                // Force the block to be writtern
+                // by sending it to the wrapped BlockMgr
+                BlockMgrCache.super.write(block) ;
+            } ;
+            writeCache = CacheFactory.createCache(writeSlots, dropHandler) ;
         }
     }
-    
+
     // Pool?
 //    @Override
 //    public ByteBuffer allocateBuffer(int id)
 //    {
 //        super.allocateBuffer(id) ;
 //    }
-    
+
     @Override
     synchronized
     public Block getRead(long id)
@@ -102,7 +102,7 @@ public class BlockMgrCache extends BlockMgrSync
             log("Hit(r->r) : %d", id) ;
             return blk ;
         }
-        
+
         // A requested block may be in the other cache.
         // Writable blocks are readable.
         // readable blocks are not writeable (see below).
@@ -116,20 +116,20 @@ public class BlockMgrCache extends BlockMgrSync
             log("Hit(r->w) : %d",id) ;
             return blk ;
         }
-        
+
         cacheMisses++ ;
         log("Miss/r: %d", id) ;
         blk = super.getRead(id) ;
         readCache.put(id, blk) ;
         return blk ;
     }
-    
+
     @Override
     synchronized
     public Block getReadIterator(long id)
     {
         // And don't pass down "iterator" calls.
-        return getRead(id) ; 
+        return getRead(id) ;
     }
 
 
@@ -147,10 +147,10 @@ public class BlockMgrCache extends BlockMgrSync
             log("Hit(w->w) : %d", id) ;
             return blk ;
         }
-        
+
         // blk is null.
         // A requested block may be in the other cache. Promote it.
-        
+
         if ( readCache.containsKey(id) )
         {
             blk = readCache.getIfPresent(id) ;
@@ -159,7 +159,7 @@ public class BlockMgrCache extends BlockMgrSync
             blk = promote(blk) ;
             return blk ;
         }
-        
+
         // Did not find.
         cacheMisses++ ;
         log("Miss/w: %d", id) ;
@@ -169,7 +169,7 @@ public class BlockMgrCache extends BlockMgrSync
             writeCache.put(id, blk) ;
         return blk ;
     }
-    
+
 
     @Override
     synchronized
@@ -182,7 +182,7 @@ public class BlockMgrCache extends BlockMgrSync
             writeCache.put(id, block2) ;
         return block ;
     }
-    
+
     @Override
     synchronized
     public void write(Block block)
@@ -190,7 +190,7 @@ public class BlockMgrCache extends BlockMgrSync
         writeCache(block) ;
         super.write(block) ;
     }
-    
+
     @Override
     synchronized
     public void overwrite(Block block)
@@ -198,11 +198,11 @@ public class BlockMgrCache extends BlockMgrSync
         Long id = block.getId() ;
         // It can be a read block (by the transaction), now being written for real (enacting a transaction).
         super.overwrite(block) ;
-        // Keep read cache up-to-date. 
+        // Keep read cache up-to-date.
         // Must at least expel the read block (which is not the overwrite block).
         readCache.put(id, block) ;
     }
-    
+
     private void writeCache(Block block)
     {
         Long id = block.getId() ;
@@ -216,7 +216,7 @@ public class BlockMgrCache extends BlockMgrSync
             return ;
         }
     }
-    
+
     @Override
     synchronized
     public void free(Block block)
@@ -239,14 +239,14 @@ public class BlockMgrCache extends BlockMgrSync
     {
         _sync(false) ;
     }
-    
+
     @Override
     synchronized
     public void syncForce()
     {
         _sync(true) ;
     }
-    
+
     @Override
     synchronized
     public void close()
@@ -256,23 +256,23 @@ public class BlockMgrCache extends BlockMgrSync
         syncFlush() ;
         super.close() ;
     }
-    
+
     @Override
     public String toString()
     {
-        return "Cache:"+super.blockMgr.toString() ; 
+        return "Cache:"+super.blockMgr.toString() ;
     }
-    
+
 
     private void log(String fmt, Object... args)
-    { 
+    {
         if ( ! logging && ! globalLogging ) return ;
         String msg = String.format(fmt, args) ;
         if ( getLabel() != null )
              msg = getLabel()+" : "+msg ;
         log.debug(msg) ;
     }
-    
+
     private void _sync(boolean force)
     {
         if ( true )
@@ -282,7 +282,7 @@ public class BlockMgrCache extends BlockMgrSync
                 x = getLabel()+" : ";
             log("%sH=%d, M=%d, W=%d", x, cacheReadHits, cacheMisses, cacheWriteHits) ;
         }
-        
+
         if ( writeCache != null )
             log("sync (%d blocks)", writeCache.size()) ;
         else
@@ -321,7 +321,7 @@ public class BlockMgrCache extends BlockMgrSync
         if ( iter.hasNext() )
             didSync = true ;
 
-        // Need to get all then delete else concurrent modification exception. 
+        // Need to get all then delete else concurrent modification exception.
         for ( int i = 0 ; iter.hasNext() ; i++ )
             ids[i] = iter.next() ;
 
@@ -334,7 +334,7 @@ public class BlockMgrCache extends BlockMgrSync
             super.sync() ;
         return didSync ;
     }
-    
+
     // Write out when flushed.
     // Do not call from drop handler.
     private void expelEntry(Long id)

@@ -35,7 +35,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestTransBinaryDataFile {
+public class TestTxnBinaryDataFile {
     private Journal journal;
     private BinaryDataFile baseBinData;
     private TransBinaryDataFile transBinData;

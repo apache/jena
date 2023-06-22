@@ -35,7 +35,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public abstract class AbstractTestRangeIndex extends Assert {
-    // ---- Overridable maker
+
     protected RangeIndex makeRangeIndex(int order) {
         return makeRangeIndex(order, order);
     }

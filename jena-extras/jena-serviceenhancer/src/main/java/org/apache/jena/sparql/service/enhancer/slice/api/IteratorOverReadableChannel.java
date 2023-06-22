@@ -20,9 +20,10 @@ package org.apache.jena.sparql.service.enhancer.slice.api;
 
 import java.io.IOException;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.AbstractIterator;
+
 import org.apache.jena.atlas.iterator.IteratorCloseable;
-import org.apache.jena.ext.com.google.common.base.Preconditions;
-import org.apache.jena.ext.com.google.common.collect.AbstractIterator;
 
 public class IteratorOverReadableChannel<T>
     extends AbstractIterator<T>

@@ -19,8 +19,6 @@
 package org.apache.jena.atlas.lib.cache ;
 
 import java.util.Iterator ;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheSet ;
@@ -31,30 +29,9 @@ public class CacheSetImpl<T> implements CacheSet<T> {
     Cache<T, Object> cacheMap     = null ;
 
     public CacheSetImpl(Cache<T, Object> cache) {
-        // Use the characteristics of the cache used 
-        // e.g. the cache size and the eviction policy 
+        // Use the characteristics of the cache used
+        // e.g. the cache size and the eviction policy
         cacheMap = cache ;
-    }
-
-    /** Callback for entries when dropped from the cache */
-    @Override
-    public void setDropHandler(Consumer<T> dropHandler) {
-        cacheMap.setDropHandler(new Wrapper<>(dropHandler)) ;
-    }
-    
-    // From map action to set action.
-    static class Wrapper<T> implements BiConsumer<T, Object> {
-        Consumer<T> dropHandler ;
-
-        public Wrapper(Consumer<T> dropHandler) {
-            this.dropHandler = dropHandler ;
-        }
-
-        @Override
-        public void accept(T key, Object value) {
-            dropHandler.accept(key) ;
-        }
-
     }
 
     @Override

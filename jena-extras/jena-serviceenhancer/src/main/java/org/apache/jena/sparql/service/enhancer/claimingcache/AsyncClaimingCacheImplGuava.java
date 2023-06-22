@@ -18,15 +18,8 @@
 
 package org.apache.jena.sparql.service.enhancer.claimingcache;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -36,12 +29,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.apache.jena.ext.com.google.common.cache.CacheBuilder;
-import org.apache.jena.ext.com.google.common.cache.CacheLoader;
-import org.apache.jena.ext.com.google.common.cache.LoadingCache;
-import org.apache.jena.ext.com.google.common.cache.RemovalCause;
-import org.apache.jena.ext.com.google.common.cache.RemovalListener;
-import org.apache.jena.ext.com.google.common.cache.RemovalNotification;
+import com.google.common.cache.*;
+
 import org.apache.jena.sparql.service.enhancer.impl.util.LockUtils;
 import org.apache.jena.sparql.service.enhancer.slice.api.Disposable;
 import org.slf4j.Logger;
@@ -171,7 +160,6 @@ public class AsyncClaimingCacheImplGuava<K, V>
             boolean[] isFreshSecondaryRef = { false };
 
             // Guard against concurrent invalidations
-            @SuppressWarnings("resource")
             RefFuture<V> secondaryRef = LockUtils.runWithLock(invalidationLock.readLock(), () -> {
                 return level1.computeIfAbsent(key, k -> {
                     // Wrap the loaded reference such that closing the fully loaded reference adds it to level 2
