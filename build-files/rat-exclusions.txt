@@ -15,6 +15,7 @@
 
 ## Maven
 **/target/**/*
+**/.mvn/**/*
 
 ## Misc
 archive.md
