@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Iterator;
 
-import javax.servlet.ServletOutputStream;
+import jakarta.servlet.ServletOutputStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.json.JsonObject;

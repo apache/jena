@@ -21,7 +21,7 @@ package org.apache.jena.fuseki.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import org.apache.jena.atlas.lib.Registry;

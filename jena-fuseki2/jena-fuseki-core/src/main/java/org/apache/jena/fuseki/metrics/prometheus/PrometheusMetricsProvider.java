@@ -29,7 +29,7 @@ import io.micrometer.core.instrument.binder.system.UptimeMetrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import java.io.File;
-import javax.servlet.ServletOutputStream;
+import jakarta.servlet.ServletOutputStream;
 import org.apache.jena.fuseki.metrics.MetricsProvider;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;

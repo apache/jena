@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.system;
 
 import static org.apache.jena.riot.web.HttpNames.hAcceptCharset;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.MediaRange;

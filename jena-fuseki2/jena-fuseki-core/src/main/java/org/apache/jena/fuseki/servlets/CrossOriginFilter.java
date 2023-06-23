@@ -20,26 +20,26 @@ package org.apache.jena.fuseki.servlets;
 
 // This is a copy of Jetty's CrossOriginFilter - Fuseki needs something
 // that works without Jetty on the classpath when running as a WAR file.
-// Copy from Jetty 10.0.11
-// https://github.com/eclipse/jetty.project/blob/jetty-10.0.x/jetty-servlets/src/main/java/org/eclipse/jetty/servlets/CrossOriginFilter.java
+// Copy from Jetty 11.0.15
+// https://github.com/eclipse/jetty.project/blob/jetty-11.0.x/jetty-servlets/src/main/java/org/eclipse/jetty/servlets/CrossOriginFilter.java
 // We elect to use and distribute under The Apache License v2.0.
 
 //Changes:
 //  * Package declaration
-//  * Comment out casts in to remove warnings in method isEnabled.
-//  * Functions from org.eclipse.jetty.utilStringUtil to make this class portable.
+//  * Comment out casts in method isEnabled to remove warnings
+//  * Functions from org.eclipse.jetty.utilStringUtil to make this class portable
 
 //
-//========================================================================
-//Copyright (c) 1995-2022 Mort Bay Consulting Pty Ltd and others.
+// ========================================================================
+// Copyright (c) 1995 Mort Bay Consulting Pty Ltd and others.
 //
-//This program and the accompanying materials are made available under the
-//terms of the Eclipse Public License v. 2.0 which is available at
-//https://www.eclipse.org/legal/epl-2.0, or the Apache License, Version 2.0
-//which is available at https://www.apache.org/licenses/LICENSE-2.0.
+// This program and the accompanying materials are made available under the
+// terms of the Eclipse Public License v. 2.0 which is available at
+// https://www.eclipse.org/legal/epl-2.0, or the Apache License, Version 2.0
+// which is available at https://www.apache.org/licenses/LICENSE-2.0.
 //
-//SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
-//========================================================================
+// SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+// ========================================================================
 //
 
 //package org.eclipse.jetty.servlets;
@@ -48,13 +48,15 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.eclipse.jetty.http.HttpField;
+import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.http.PreEncodedHttpField;
+import org.eclipse.jetty.server.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Implementation of the
@@ -170,6 +172,7 @@ public class CrossOriginFilter implements Filter
     private static final List<String> SIMPLE_HTTP_METHODS = Arrays.asList("GET", "POST", "HEAD");
     private static final List<String> DEFAULT_ALLOWED_METHODS = Arrays.asList("GET", "POST", "HEAD");
     private static final List<String> DEFAULT_ALLOWED_HEADERS = Arrays.asList("X-Requested-With", "Content-Type", "Accept", "Origin");
+    private static final HttpField VARY_ORIGIN = new PreEncodedHttpField(HttpHeader.VARY, HttpHeader.ORIGIN.asString());
 
     private boolean anyOriginAllowed;
     private boolean anyTimingOriginAllowed;
@@ -290,6 +293,10 @@ public class CrossOriginFilter implements Filter
 
     private void handle(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException
     {
+        if (response instanceof Response)
+            ((Response)response).getHttpFields().add(VARY_ORIGIN);
+        else
+            response.addHeader(VARY_ORIGIN.getName(), VARY_ORIGIN.getValue());
         String origin = request.getHeader(ORIGIN_HEADER);
         // Is it a cross origin request ?
         if (origin != null && isEnabled(request))
@@ -340,12 +347,12 @@ public class CrossOriginFilter implements Filter
         // protocol that does not accept extra response headers on the upgrade response
         for (Enumeration<String> connections = request.getHeaders("Connection"); connections.hasMoreElements(); )
         {
-            String connection = /*(String)*/connections.nextElement();
+            String connection = /*(String)*/connections.nextElement();  // Jena
             if ("Upgrade".equalsIgnoreCase(connection))
             {
                 for (Enumeration<String> upgrades = request.getHeaders("Upgrade"); upgrades.hasMoreElements(); )
                 {
-                    String upgrade = /*(String)*/upgrades.nextElement();
+                    String upgrade = /*(String)*/upgrades.nextElement(); // Jena
                     if ("WebSocket".equalsIgnoreCase(upgrade))
                         return false;
                 }
@@ -410,8 +417,6 @@ public class CrossOriginFilter implements Filter
     private void handleSimpleResponse(HttpServletRequest request, HttpServletResponse response, String origin)
     {
         response.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, origin);
-        //W3C CORS spec http://www.w3.org/TR/cors/#resource-implementation
-        response.addHeader("Vary", ORIGIN_HEADER);
         if (allowCredentials)
             response.setHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER, "true");
         if (!exposedHeaders.isEmpty())
@@ -429,9 +434,6 @@ public class CrossOriginFilter implements Filter
         if (!headersAllowed)
             return;
         response.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, origin);
-        //W3C CORS spec http://www.w3.org/TR/cors/#resource-implementation
-        if (!anyOriginAllowed)
-            response.addHeader("Vary", ORIGIN_HEADER);
         if (allowCredentials)
             response.setHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER, "true");
         if (preflightMaxAge > 0)
@@ -531,7 +533,17 @@ public class CrossOriginFilter implements Filter
     }
 }
 
-class StringUtil {
+/**
+ * Fast String Utilities.
+ *
+ * These string utilities provide both convenience methods and
+ * performance improvements over most standard library versions. The
+ * main aim of the optimizations is to avoid object creation unless
+ * absolutely required.
+ */
+class StringUtil
+{
+    //Extracted functions
     /**
      * Replace chars within string.
      * <p>
@@ -604,6 +616,22 @@ class StringUtil {
         return buf.toString();
     }
 
+    /**
+     * Parse the string representation of a list using {@link #csvSplit(List, String, int, int)}
+     *
+     * @param s The string to parse, expected to be enclosed as '[...]'
+     * @return An array of parsed values.
+     */
+    public static String[] arrayFromString(String s)
+    {
+        if (s == null)
+            return new String[]{};
+        if (!s.startsWith("[") || !s.endsWith("]"))
+            throw new IllegalArgumentException();
+        if (s.length() == 2)
+            return new String[]{};
+        return csvSplit(s, 1, s.length() - 2);
+    }
 
     /**
      * Parse a CSV string using {@link #csvSplit(List, String, int, int)}

@@ -21,8 +21,8 @@ package org.apache.jena.fuseki.validation.html;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.fuseki.Fuseki;
