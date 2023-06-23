@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
-import javax.servlet.DispatcherType;
+import jakarta.servlet.DispatcherType;
 
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;

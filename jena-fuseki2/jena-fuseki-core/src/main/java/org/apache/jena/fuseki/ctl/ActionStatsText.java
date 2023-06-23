@@ -21,8 +21,8 @@ package org.apache.jena.fuseki.ctl;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.fuseki.server.*;

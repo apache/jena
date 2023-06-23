@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.servlets;
 
 import java.util.Enumeration;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.jena.riot.web.HttpNames;
 

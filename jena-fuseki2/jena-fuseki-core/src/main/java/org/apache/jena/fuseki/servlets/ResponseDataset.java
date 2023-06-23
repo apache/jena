@@ -23,8 +23,8 @@ import static org.apache.jena.riot.WebContent.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.fuseki.DEF;

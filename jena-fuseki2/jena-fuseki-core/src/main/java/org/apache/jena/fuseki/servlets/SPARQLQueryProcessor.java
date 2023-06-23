@@ -31,7 +31,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedLineBuffer;

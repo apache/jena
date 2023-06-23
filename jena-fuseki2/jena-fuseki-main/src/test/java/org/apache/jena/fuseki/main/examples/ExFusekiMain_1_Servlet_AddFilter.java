@@ -21,8 +21,8 @@ package org.apache.jena.fuseki.main.examples;
 import java.io.IOException;
 import java.security.Principal;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.auth.Auth;
