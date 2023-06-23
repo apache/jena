@@ -36,7 +36,7 @@ public class TestCaseBasic extends org.apache.jena.regression.TestCaseBasic
     private Graph newGraph( Constructor< ? extends Graph> cons ) throws Exception
     	{
     	return cons.newInstance
-            ( Factory.createGraphMem(), Factory.createGraphMem() );
+            ( GraphMemFactory.createGraphMem(), GraphMemFactory.createGraphMem() );
     	}
     	
     @Override public void setUp() throws Exception

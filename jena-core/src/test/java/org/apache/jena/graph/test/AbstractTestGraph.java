@@ -970,7 +970,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     protected Graph copy( Graph g )
     {
-        Graph result = Factory.createDefaultGraph();
+        Graph result = GraphMemFactory.createDefaultGraph();
         GraphUtil.addInto(result, g) ;
         return result;
     }

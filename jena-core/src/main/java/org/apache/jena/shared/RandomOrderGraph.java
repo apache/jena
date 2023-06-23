@@ -29,7 +29,7 @@ import org.apache.jena.util.iterator.* ;
 public class RandomOrderGraph extends WrappedGraph {
 
 	public static Graph createDefaultGraph() {
-		return new RandomOrderGraph(Factory.createDefaultGraph());
+		return new RandomOrderGraph(GraphMemFactory.createDefaultGraph());
 	}
 
 	public static Model createDefaultModel() {

@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -67,7 +67,7 @@ public class BufferingGraph extends GraphWrapper implements BufferingCtl {
         super(graph);
         prefixMapping = new BufferingPrefixMapping(graph.getPrefixMapping());
         if ( graph.getCapabilities().handlesLiteralTyping())
-            addedGraph = Factory.createDefaultGraph();
+            addedGraph = GraphMemFactory.createDefaultGraph();
         else
             addedGraph = GraphPlain.plain();
     }

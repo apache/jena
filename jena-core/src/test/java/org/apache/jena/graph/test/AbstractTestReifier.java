@@ -80,7 +80,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
     {
         Graph g = getGraph( );
         ReifierStd.reifyAs( g, node( "a" ), triple( "p Q r" ) );
-        Graph r = Factory.createDefaultGraph( );
+        Graph r = GraphMemFactory.createDefaultGraph( );
         graphAdd( r, "a rdf:type rdf:Statement; a rdf:subject p; a rdf:predicate Q; a rdf:object r" );
         assertEquals( 4, g.size() );
         assertIsomorphic( r, g );

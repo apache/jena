@@ -25,7 +25,7 @@ package org.apache.jena.graph.test;
 
 import junit.framework.Test ;
 import junit.framework.TestSuite ;
-import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.impl.WrappedGraph ;
 import org.apache.jena.mem.GraphMem ;
@@ -61,7 +61,7 @@ public class TestGraph extends GraphTestBase
     */
     public void testWrappedSame()
         {
-        Graph m = Factory.createGraphMem();
+        Graph m = GraphMemFactory.createGraphMem();
         Graph w = new WrappedGraph( m );
         graphAdd( m, "a trumps b; c eats d" );
         assertIsomorphic( m, w );
@@ -75,6 +75,6 @@ public class TestGraph extends GraphTestBase
     public static class WrappedGraphMem extends WrappedGraph
         {
         public WrappedGraphMem( )
-            { super( Factory.createGraphMem( ) ); }
+            { super( GraphMemFactory.createGraphMem( ) ); }
         }
     }

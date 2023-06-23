@@ -99,7 +99,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     public synchronized void prepare() {
         if (this.isPrepared()) return;
         
-        fdeductions = new FGraph( Factory.createGraphMem() );
+        fdeductions = new FGraph( GraphMemFactory.createGraphMem() );
         extractAxioms();
         dataFind = fdata;
         if (fdeductions != null) {

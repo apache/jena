@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphUtil;
 import org.apache.jena.graph.Node;
@@ -205,7 +205,7 @@ public class GraphHelper extends TestUtils {
 	 * Answer a new memory-based graph with Extended prefixes.
 	 */
 	public static Graph memGraph() {
-		Graph result = Factory.createGraphMem();
+		Graph result = GraphMemFactory.createGraphMem();
 		result.getPrefixMapping().setNsPrefixes(PrefixMapping.Extended);
 		return result;
 	}

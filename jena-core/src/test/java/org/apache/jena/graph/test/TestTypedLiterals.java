@@ -472,7 +472,7 @@ public class TestTypedLiterals extends TestCase {
         Node np = NodeFactory.createURI("p") ;
         Node nx1 = NodeFactory.createLiteral("0.50", dt) ;
         Node nx2 = NodeFactory.createLiteral("0.500", dt) ;
-        Graph graph = Factory.createDefaultGraph() ;
+        Graph graph = GraphMemFactory.createDefaultGraph() ;
         graph.add(Triple.create(ns, np, nx1)) ;
         assertTrue( graph.find(Node.ANY, Node.ANY, nx2).hasNext() );
     }

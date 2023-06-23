@@ -78,7 +78,7 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
 
     private Graph loadSchema( Resource root, Assembler a )
         {
-        Graph result = Factory.createDefaultGraph();
+        Graph result = GraphMemFactory.createDefaultGraph();
         for (StmtIterator models = root.listProperties( JA.ja_schema ); models.hasNext();)
             loadSchema( result, a, getResource( models.nextStatement() ) );
         return result;

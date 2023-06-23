@@ -229,11 +229,11 @@ public class TestRETE  extends TestCase {
      */
     private void doRuleTest(String rules, Triple[] adds, Triple[] expected) {
         List<Rule> ruleList = Rule.parseRules(rules);
-        BasicForwardRuleInfGraph infgraph = new BasicForwardRuleInfGraph(null, new ArrayList<Rule>(), null, Factory.createGraphMem());
+        BasicForwardRuleInfGraph infgraph = new BasicForwardRuleInfGraph(null, new ArrayList<Rule>(), null, GraphMemFactory.createGraphMem());
 //        infgraph.setTraceOn(true);
         RETEEngine engine = new RETEEngine(infgraph, ruleList);
         infgraph.prepare();
-        engine.init(true, new FGraph(Factory.createGraphMem()));
+        engine.init(true, new FGraph(GraphMemFactory.createGraphMem()));
         for ( Triple add : adds )
         {
             engine.addTriple( add, true );
@@ -250,14 +250,14 @@ public class TestRETE  extends TestCase {
         String rules = "[testRule1: (a p ?x) (b p ?x) -> (n1 p ?x) ]" +
                        "[testRule2: (?x q ?y) -> (?x p ?y)]";
         List<Rule> ruleList = Rule.parseRules(rules);
-        Graph schema = Factory.createGraphMem();
+        Graph schema = GraphMemFactory.createGraphMem();
         schema.add(Triple.create(a, q, c));
         schema.add(Triple.create(a, q, d));
 
-        Graph data1 = Factory.createGraphMem();
+        Graph data1 = GraphMemFactory.createGraphMem();
         data1.add(Triple.create(b, q, c));
         
-        Graph data2 = Factory.createGraphMem();
+        Graph data2 = GraphMemFactory.createGraphMem();
         data2.add(Triple.create(b, q, d));
         
         GenericRuleReasoner reasoner =  new GenericRuleReasoner(ruleList);
