@@ -21,7 +21,7 @@ package org.apache.jena.fuseki.cmd;
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.Fuseki.serverLog;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.FileOps;

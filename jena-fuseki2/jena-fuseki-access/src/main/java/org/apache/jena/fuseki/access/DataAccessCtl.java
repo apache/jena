@@ -21,7 +21,7 @@ package org.apache.jena.fuseki.access;
 import java.util.Collection;
 import java.util.function.Function;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.fuseki.servlets.HttpAction;

@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.access;
 
 import java.util.function.Function;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.servlets.HttpAction;

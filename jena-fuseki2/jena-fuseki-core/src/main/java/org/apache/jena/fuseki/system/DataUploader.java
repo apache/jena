@@ -27,9 +27,9 @@ import static org.apache.jena.riot.WebContent.matchContentType;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.servlets.*;

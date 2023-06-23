@@ -23,7 +23,7 @@ import static org.apache.jena.riot.WebContent.contentTypeTextPlain;
 
 import java.io.IOException;
 
-import javax.servlet.ServletOutputStream;
+import jakarta.servlet.ServletOutputStream;
 
 import org.apache.jena.fuseki.ctl.ActionCtl;
 import org.apache.jena.fuseki.servlets.HttpAction;

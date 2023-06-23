@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.Bytes;
