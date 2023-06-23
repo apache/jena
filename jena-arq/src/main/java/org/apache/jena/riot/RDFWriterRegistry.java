@@ -68,6 +68,8 @@ public class RDFWriterRegistry
                 return new TurtleWriterBlocks() ;
             if ( Objects.equals(RDFFormat.TURTLE_FLAT, serialization) )
                 return new TurtleWriterFlat() ;
+            if ( Objects.equals(RDFFormat.TURTLE_LONG, serialization) )
+                return new TurtleWriterLong() ;
 
             if ( Objects.equals(RDFFormat.NTRIPLES_UTF8, serialization) )
                 return new NTriplesWriter() ;
@@ -97,6 +99,8 @@ public class RDFWriterRegistry
                 return new TriGWriterBlocks() ;
             if ( Objects.equals(RDFFormat.TRIG_FLAT, serialization) )
                 return new TriGWriterFlat() ;
+            if ( Objects.equals(RDFFormat.TRIG_LONG, serialization) )
+                return new TriGWriterLong() ;
             if ( Objects.equals(RDFFormat.NQUADS_UTF8, serialization) )
                 return new NQuadsWriter() ;
             if ( Objects.equals(RDFFormat.NQUADS_ASCII, serialization) )
@@ -159,6 +163,7 @@ public class RDFWriterRegistry
         register(RDFFormat.TURTLE_PRETTY,  wgfactory) ;
         register(RDFFormat.TURTLE_BLOCKS,  wgfactory) ;
         register(RDFFormat.TURTLE_FLAT,    wgfactory) ;
+        register(RDFFormat.TURTLE_LONG,    wgfactory) ;
 
         register(RDFFormat.NTRIPLES,       wgfactory) ;
         register(RDFFormat.NTRIPLES_ASCII, wgfactory) ;
@@ -213,6 +218,7 @@ public class RDFWriterRegistry
         register(RDFFormat.TRIG_PRETTY,    wgfactory) ;
         register(RDFFormat.TRIG_BLOCKS,    wgfactory) ;
         register(RDFFormat.TRIG_FLAT,      wgfactory) ;
+        register(RDFFormat.TRIG_LONG,      wgfactory) ;
 
         register(RDFFormat.NQUADS,         wgfactory) ;
         register(RDFFormat.NQUADS_ASCII,   wgfactory) ;

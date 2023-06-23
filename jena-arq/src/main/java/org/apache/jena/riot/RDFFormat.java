@@ -33,6 +33,8 @@ public class RDFFormat {
     public static final RDFFormatVariant BLOCKS         = new RDFFormatVariant("blocks") ;
     /** Print out one per line */
     public static final RDFFormatVariant FLAT           = new RDFFormatVariant("flat") ;
+    /** Print with fixed indentation width and linebreaks after each sequence element */
+    public static final RDFFormatVariant LONG           = new RDFFormatVariant("long") ;
 
     /** Use ASCII output (N-triples, N-Quads) */
     public static final RDFFormatVariant ASCII          = new RDFFormatVariant("ascii") ;
@@ -51,6 +53,8 @@ public class RDFFormat {
     public static final RDFFormat        TURTLE_BLOCKS  = new RDFFormat(Lang.TURTLE, BLOCKS) ;
     /** Turtle - one line per triple  */
     public static final RDFFormat        TURTLE_FLAT    = new RDFFormat(Lang.TURTLE, FLAT) ;
+    /** Turtle - with fixed indentation width and linebreaks after each sequence element */
+    public static final RDFFormat        TURTLE_LONG    = new RDFFormat(Lang.TURTLE, LONG) ;
 
     /** N-Triples in UTF-8 */
     public static final RDFFormat        NTRIPLES_UTF8  = new RDFFormat(Lang.NTRIPLES, UTF8) ;
@@ -78,6 +82,8 @@ public class RDFFormat {
     public static final RDFFormat        TRIG_BLOCKS    = new RDFFormat(Lang.TRIG, BLOCKS) ;
     /** TriG - one line per triple  */
     public static final RDFFormat        TRIG_FLAT      = new RDFFormat(Lang.TRIG, FLAT) ;
+    /** TriG - with fixed indentation width and linebreaks after each sequence element */
+    public static final RDFFormat        TRIG_LONG      = new RDFFormat(Lang.TRIG, LONG) ;
 
     /** SHACL Compact Syntax */
     public static final RDFFormat        SHACLC         = new RDFFormat(Lang.SHACLC);

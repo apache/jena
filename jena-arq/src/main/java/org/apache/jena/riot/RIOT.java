@@ -142,4 +142,10 @@ public class RIOT {
      * not output BASE even when given.
      */
     public static final Symbol symTurtleOmitBase = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "omitBase");
+
+
+    /**
+     * Printing style. Whether to use a "wide" or "long" indentation style.
+     */
+    public static final Symbol symTurtleIndentStyle = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "indentStyle");
 }

@@ -40,10 +40,12 @@ public class TestTurtleWriter {
         x.add(new Object[]{"Turtle/Pretty", RDFFormat.TURTLE_PRETTY});
         x.add(new Object[]{"Turtle/Blocks", RDFFormat.TURTLE_BLOCKS});
         x.add(new Object[]{"Turtle/Flat", RDFFormat.TURTLE_FLAT});
+        x.add(new Object[]{"Turtle/Long", RDFFormat.TURTLE_LONG});
         x.add(new Object[]{"Trig", RDFFormat.TRIG});
         x.add(new Object[]{"Trig/Pretty", RDFFormat.TRIG_PRETTY});
         x.add(new Object[]{"Trig/Blocks", RDFFormat.TRIG_BLOCKS});
         x.add(new Object[]{"Trig/Flat", RDFFormat.TRIG_FLAT});
+        x.add(new Object[]{"Trig/Long", RDFFormat.TRIG_LONG});
         return x ; 
     }
     
