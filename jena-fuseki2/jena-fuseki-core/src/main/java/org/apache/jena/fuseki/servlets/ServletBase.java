@@ -20,9 +20,9 @@ package org.apache.jena.fuseki.servlets;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.riot.web.HttpNames;

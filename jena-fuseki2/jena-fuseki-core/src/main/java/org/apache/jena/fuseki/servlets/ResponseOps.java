@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;

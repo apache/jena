@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;

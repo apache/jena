@@ -20,9 +20,9 @@ package org.apache.jena.fuseki.authz;
 
 import java.io.IOException;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.web.HttpSC;
 import org.apache.shiro.web.filter.authz.AuthorizationFilter;
