@@ -52,7 +52,7 @@
 
    <properties>
      <!-- Build -->
-    <java.version>11</java.version>
+    <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputTimestamp>2023-07-04T17:09:48Z</project.build.outputTimestamp>
 
@@ -1038,7 +1038,6 @@
              </execution>
            </executions>
            <configuration>
-             <!-- Fixes for Javadoc when building with Java11 -->
              <detectJavaApiLink>false</detectJavaApiLink>
              <source>${java.version}</source>
 
