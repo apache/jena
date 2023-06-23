@@ -47,6 +47,7 @@ import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class TestJsonLD10Writer {
 
     /**

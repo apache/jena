@@ -112,8 +112,17 @@ public class RDFLanguages
      * Override for JSON-LD 1.0 - requires an explicit language name
      * {@code RDFParser.forceLang(Lang.JSONLD10)...}
      * or use of the file extensions {@code .jsonld10}
+     * @deprecated use JSON-LD 1.1
      */
+    /**
+     * @deprecated use JSON-LD 1.1
+     */
+    @Deprecated
     public static final String strLangJSONLD10     = "JSON-LD-10";
+    /**
+     * @deprecated use JSON-LD 1.1
+     */
+    @Deprecated
     public static final Lang JSONLD10   = LangBuilder.create(strLangJSONLD10, "x/ld-json-10")
                                                      .addAltNames("JSONLD10")
                                                      .addFileExtensions("jsonld10")
@@ -197,6 +206,7 @@ public class RDFLanguages
     public static void init() {}
     static { init$(); }
 
+    @SuppressWarnings("deprecation")
     private static synchronized void init$() {
         initStandard();
         // Needed to avoid a class initialization loop.

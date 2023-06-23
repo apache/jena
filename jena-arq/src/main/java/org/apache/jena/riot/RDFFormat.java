@@ -141,13 +141,29 @@ public class RDFFormat {
     private static final RDFFormatVariant FRAME_PRETTY       = new JSONLDVariant("frame pretty", true, JSONLDVariant.JSONLD_FORMAT.FRAME) ;
     private static final RDFFormatVariant FRAME_FLAT         = new JSONLDVariant("frame flat", false, JSONLDVariant.JSONLD_FORMAT.FRAME) ;
 
+    /** @deprecated Use JSON-LD 1.1 */
+    @Deprecated
     public static final RDFFormat        JSONLD10_EXPAND_PRETTY   = new RDFFormat(Lang.JSONLD10, EXPAND_PRETTY) ;
+    /** @deprecated Use JSON-LD 1.1 */
+    @Deprecated
     public static final RDFFormat        JSONLD10_EXPAND_FLAT     = new RDFFormat(Lang.JSONLD10, EXPAND_FLAT) ;
+    /** @deprecated Use JSON-LD 1.1 */
+    @Deprecated
     public static final RDFFormat        JSONLD10_COMPACT_PRETTY  = new RDFFormat(Lang.JSONLD10, COMPACT_PRETTY) ;
+    /** @deprecated Use JSON-LD 1.1 */
+    @Deprecated
     public static final RDFFormat        JSONLD10_COMPACT_FLAT    = new RDFFormat(Lang.JSONLD10, COMPACT_FLAT) ;
+    /** @deprecated Use JSON-LD 1.1 */
+    @Deprecated
     public static final RDFFormat        JSONLD10_FLATTEN_PRETTY  = new RDFFormat(Lang.JSONLD10, FLATTEN_PRETTY) ;
+    /** @deprecated Use JSON-LD 1.1 */
+    @Deprecated
     public static final RDFFormat        JSONLD10_FLATTEN_FLAT    = new RDFFormat(Lang.JSONLD10, FLATTEN_FLAT) ;
+    /** @deprecated Use JSON-LD 1.1 */
+    @Deprecated
     public static final RDFFormat        JSONLD10_FRAME_PRETTY    = new RDFFormat(Lang.JSONLD10, FRAME_PRETTY) ;
+    /** @deprecated Use JSON-LD 1.1 */
+    @Deprecated
     public static final RDFFormat        JSONLD10_FRAME_FLAT      = new RDFFormat(Lang.JSONLD10, FRAME_FLAT) ;
 
     /** Use {@link #JSONLD10_EXPAND_PRETTY} */
@@ -182,8 +198,14 @@ public class RDFFormat {
     @Deprecated
     public static final RDFFormat        JSONLD_FRAME_FLAT      = JSONLD10_FRAME_FLAT;
 
+    /** @deprecated Use JSON-LD 1.1 */
+    @Deprecated
     public static final RDFFormat        JSONLD10        = JSONLD10_COMPACT_PRETTY ;
+    /** @deprecated Use JSON-LD 1.1 */
+    @Deprecated
     public static final RDFFormat        JSONLD10_PRETTY = JSONLD10_COMPACT_PRETTY ;
+    /** @deprecated Use JSON-LD 1.1 */
+    @Deprecated
     public static final RDFFormat        JSONLD10_FLAT   = JSONLD10_COMPACT_FLAT ;
 
     // JSON-LD 1.0

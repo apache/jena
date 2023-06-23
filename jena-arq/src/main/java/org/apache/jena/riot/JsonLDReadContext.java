@@ -29,14 +29,16 @@ import java.io.InputStream;
 /**
  * Set of parameters that can be used to control the reading of JSON-LD.
  *
- * This class provides setters to define a "Context" suitable to be passed as 
+ * This class provides setters to define a "Context" suitable to be passed as
  * last argument to  {@link ReaderRIOT#read(InputStream, String, ContentType, StreamRDF, Context)}
  * when the ReaderRIOT has been created with one of the JSON-LD RDFFormat variants (that is, when it is
  * an instance of {@link LangJSONLD10})
  *
  * Parameters that are actually useful are ''documentLoader'' and ''produceGeneralizedRdf''.
  *
+ * @deprecated Migrate to JSON-LD 1.1
  */
+@Deprecated
 public class JsonLDReadContext extends Context {
     /**
      * Set the value of the JSON-LD "@context" node, used when reading a jsonld (overriding the actual @context in the jsonld). "Compact" and "Flattened" JSON-LD outputs.

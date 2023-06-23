@@ -40,7 +40,9 @@ import com.github.jsonldjava.core.JsonLdOptions;
  * None of them is required (default values being used), except for the "frame" one,
  * when outputting using JSON-LD "frame" output variant.
  *
+ * @deprecated Migrate to JSON-LD 1.1
  */
+@Deprecated
 public class JsonLDWriteContext extends Context {
     /**
      * Set the JSON-LD java API's options

@@ -109,6 +109,7 @@ public class RDFWriterRegistry
 
     public static void init() {}
     static { init$() ; }
+    @SuppressWarnings("deprecation")
     private static void init$()
     {
         WriterGraphRIOTFactory wgfactory = createWriterGraphFactory();

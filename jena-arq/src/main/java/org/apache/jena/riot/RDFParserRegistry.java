@@ -69,6 +69,7 @@ public class RDFParserRegistry
         initStandard();
     }
 
+    @SuppressWarnings("deprecation")
     private static void initStandard() {
         // Make sure the constants are initialized.
         RDFLanguages.init();
@@ -98,10 +99,10 @@ public class RDFParserRegistry
         ReaderRIOTFactory parserFactoryJsonLD11  = new ReaderRIOTFactoryJSONLD11();
 
         // ==== JSON-LD system default for parsing.
-        ReaderRIOTFactory jsonldReadDefault = parserFactoryJsonLD11;
+        ReaderRIOTFactory jsonldParserDefault = parserFactoryJsonLD11;
 
         // Register default JSON-LD here.
-        registerLangTriples(JSONLD,     jsonldReadDefault);
+        registerLangTriples(JSONLD,     jsonldParserDefault);
         registerLangTriples(JSONLD10,   parserFactoryJsonLD10);
         registerLangTriples(JSONLD11,   parserFactoryJsonLD11);
 
@@ -112,7 +113,7 @@ public class RDFParserRegistry
         registerLangQuads(TRIX,         parserFactoryTriX);
         registerLangQuads(RDFNULL,      parserFactoryRDFNULL);
 
-        registerLangQuads(JSONLD,       jsonldReadDefault);
+        registerLangQuads(JSONLD,       jsonldParserDefault);
         registerLangQuads(JSONLD10,     parserFactoryJsonLD10);
         registerLangQuads(JSONLD11,     parserFactoryJsonLD11);
 
@@ -211,6 +212,7 @@ public class RDFParserRegistry
     }
 
     private static class ReaderRIOTFactoryJSONLD10 implements ReaderRIOTFactory {
+        @SuppressWarnings("deprecation")
         @Override
         public ReaderRIOT create(Lang language, ParserProfile profile) {
             if ( !Lang.JSONLD.equals(language) && !Lang.JSONLD10.equals(language) )
