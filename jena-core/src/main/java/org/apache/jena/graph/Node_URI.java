@@ -18,67 +18,88 @@
 
 package org.apache.jena.graph;
 
+import java.util.Objects;
+
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.shared.* ;
 
 /**
     RDF nodes with a global identity given by a URI.
 */
-public class Node_URI extends Node_Concrete
-{    
+public class Node_URI extends Node
+{
+    private final String uriStr;
 
     protected Node_URI( String uri )
-        { super( uri ); }
+    { this.uriStr = Objects.requireNonNull(uri); }
+
+    @Override
+    public boolean isConcrete() { return true; }
 
     @Override
     public String getURI()
-        { return (String) label; }
-        
+    { return uriStr; }
+
     @Override
     public Object visitWith( NodeVisitor v )
-        { return v.visitURI( this, (String) label ); }
-        
+    { return v.visitURI( this, uriStr ); }
+
     @Override
     public boolean isURI()
-        { return true; }
-        
-    /**
-        Answer a String representing the node, taking into account the PrefixMapping.
-        The horrible test against null is a stopgap to avoid a circularity issue.
-        TODO fix the circularity issue
-    */
-    @Override
-    public String toString( PrefixMapping pm, boolean quoting )
-        { return pm == null ? (String) label : pm.shortForm( (String) label ); }
-        
-    @Override
-    public boolean equals( Object other )
-        {
-        if ( this == other ) return true ;
-        return 
-            other instanceof Node_URI 
-            && same( (Node_URI) other ); }
+    { return true; }
 
-    final boolean same( Node_URI other )
-        { return label.equals( other.label ); }
-    
     @Override
-    public String getNameSpace()
-        { 
-        String s = (String) label;
-        return s.substring( 0, Util.splitNamespaceXML( s ) );
+    public String toString( )
+    // Should be:
+    //{ return "<"+uriStr+">"; }
+    // but it is safer (Jena5) to follow the unlimited style
+    // which is the traditional Jena behaviour.
+    // This has a knock on effect on Triple.toString.
+    // Test TestTriple.testTripleToStringOrdering is affected.
+    { return uriStr; }
+
+    /**
+     * Answer a String representing the node, taking into account the PrefixMapping.
+     */
+    @Override
+    public String toString(PrefixMapping pm) {
+        if ( pm != null ) {
+            String x = pm.qnameFor(uriStr);
+            if ( x != null )
+                return x;
         }
-    
-    @Override
-    public String getLocalName()
-        {  
-        String s = (String) label;
-        return s.substring( Util.splitNamespaceXML( s ) );
-        }
-    
-    @Override
-    public boolean hasURI( String uri )
-        { return label.equals( uri ); }
-    
-    
+        return toString();
     }
+
+    @Override
+    public String getNameSpace() {
+        return uriStr.substring(0, Util.splitNamespaceXML(uriStr));
+    }
+
+    @Override
+    public String getLocalName() {
+        return uriStr.substring(Util.splitNamespaceXML(uriStr));
+    }
+
+    @Override
+    public boolean hasURI(String uri) {
+        return uriStr.equals(uri);
+    }
+
+    @Override
+    public int hashCode() {
+        return Node.hashURI+uriStr.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        Node_URI other = (Node_URI)obj;
+        return uriStr.equals(other.uriStr);
+    }
+}

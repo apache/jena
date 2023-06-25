@@ -22,10 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
@@ -35,7 +32,6 @@ import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
@@ -53,16 +49,7 @@ import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.P_Seq;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathParser;
-import org.apache.jena.sparql.syntax.ElementBind;
-import org.apache.jena.sparql.syntax.ElementData;
-import org.apache.jena.sparql.syntax.ElementFilter;
-import org.apache.jena.sparql.syntax.ElementMinus;
-import org.apache.jena.sparql.syntax.ElementNamedGraph;
-import org.apache.jena.sparql.syntax.ElementOptional;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
-import org.apache.jena.sparql.syntax.ElementSubQuery;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock;
-import org.apache.jena.sparql.syntax.ElementUnion;
+import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
 import org.xenei.junit.contract.Contract;
@@ -236,7 +223,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         Node q = NodeFactory.createURI("urn:q");
         Node v = NodeFactory.createURI("urn:v");
         Var x = Var.alloc("x");
-        Node n123 = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(123));
+        Node n123 = NodeFactory.createLiteralByValue(123);
 
         SelectBuilder pattern = new SelectBuilder();
         pattern.addWhere(Triple.create(s, q, n123));
@@ -265,7 +252,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         Node q = NodeFactory.createURI("urn:q");
         Node v = NodeFactory.createURI("urn:v");
         Var x = Var.alloc("x");
-        Node n123 = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(123));
+        Node n123 = NodeFactory.createLiteralByValue(123);
 
         SelectBuilder pattern = new SelectBuilder();
         pattern.addWhere(Triple.create(s, q, n123));
@@ -463,7 +450,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         builder.build().getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
 
-        Node literal = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
+        Node literal = NodeFactory.createLiteralByValue(10);
         builder.setVar(Var.alloc("v"), literal);
 
         NodeValueInteger lit = new NodeValueInteger(10);
@@ -965,10 +952,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     @ContractTest
     public void testAddWhereValueVars() {
         final Var v = Var.alloc("v");
-        Map<Object, List<?>> map = new HashMap<Object, List<?>>();
+        Map<Object, List<?>> map = new LinkedHashMap<Object, List<?>>();
 
+        // Order matters for the test
+        map.put(Var.alloc("x"), Arrays.asList("three", "four"));
         map.put(Var.alloc("v"), Arrays.asList("<one>", "<two>"));
-        map.put("?x", Arrays.asList("three", "four"));
 
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addWhereValueVars(map);
@@ -998,10 +986,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     @ContractTest
     public void testAddWhereValueVars_InSubQuery() {
         final Var v = Var.alloc("v");
-        Map<Object, List<?>> map = new HashMap<Object, List<?>>();
+        Map<Object, List<?>> map = new LinkedHashMap<Object, List<?>>();
 
-        map.put(Var.alloc("v"), Arrays.asList("<one>", "<two>"));
+        // Order matters for the test
         map.put("?x", Arrays.asList("three", "four"));
+        map.put(Var.alloc("v"), Arrays.asList("<one>", "<two>"));
 
         WhereClause<?> whereClause = getProducer().newInstance();
         WhereClause<?> whereClause2 = getProducer().newInstance();
@@ -1025,10 +1014,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     @ContractTest
     public void testAddWhereValueVars_Node_Variable() {
 
-        Map<Object, List<?>> map = new HashMap<Object, List<?>>();
+        Map<Object, List<?>> map = new LinkedHashMap<Object, List<?>>();
 
-        map.put(NodeFactory.createVariable("v"), Arrays.asList("<one>", "<two>"));
+        // Order matters for the test
         map.put("?x", Arrays.asList("three", "four"));
+        map.put(NodeFactory.createVariable("v"), Arrays.asList("<one>", "<two>"));
 
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addWhereValueVars(map);
@@ -1142,7 +1132,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     @ContractTest
     public void testSetVarsInWhereValues() {
         Var v = Var.alloc("v");
-        Node value = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
+        Node value = NodeFactory.createLiteralByValue(10);
         Map<Var, Node> values = new HashMap<>();
         values.put(v, value);
 
@@ -1170,7 +1160,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     @ContractTest
     public void testSetVarsInWhereValues_NodeVariable() {
         Node v = NodeFactory.createVariable("v");
-        Node value = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
+        Node value = NodeFactory.createLiteralByValue(10);
 
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addWhereValueVar("?x", "<one>", "?v");

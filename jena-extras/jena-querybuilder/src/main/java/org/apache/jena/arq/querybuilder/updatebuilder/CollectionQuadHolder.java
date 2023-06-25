@@ -17,12 +17,7 @@
  */
 package org.apache.jena.arq.querybuilder.updatebuilder;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -36,37 +31,37 @@ import org.apache.jena.util.iterator.WrappedIterator;
  *
  */
 public class CollectionQuadHolder implements QuadHolder {
-    private final Set<Triple> collection;
+    private final List<Triple> collection;
     private final Node defaultGraphName;
     private Map<Var, Node> values;
 
     /**
      * Constructor.
-     * 
+     *
      * @param graph the default graph name for the triples
      * @param triples the collection of triples.
      */
     public CollectionQuadHolder(final Node graph, Collection<Triple> triples) {
-        this.collection = new HashSet<Triple>();
+        this.collection = new ArrayList<>();
         this.collection.addAll(triples);
         defaultGraphName = graph;
     }
 
     /**
      * Constructor.
-     * 
+     *
      * @param graph the default graph name for the triples
      * @param triples the iterator of triples.
      */
     public CollectionQuadHolder(final Node graph, Iterator<Triple> triples) {
-        this.collection = new HashSet<Triple>();
+        this.collection = new ArrayList<>();
         triples.forEachRemaining(this.collection::add);
         defaultGraphName = graph;
     }
 
     /**
      * Constructor. Uses Quad.defaultGraphNodeGenerated for the graph name.
-     * 
+     *
      * @see Quad#defaultGraphNodeGenerated
      * @param triples the collection of triples.
      */
@@ -76,7 +71,7 @@ public class CollectionQuadHolder implements QuadHolder {
 
     /**
      * Constructor.
-     * 
+     *
      * @param triples the iterator of triples.
      */
     public CollectionQuadHolder(final Iterator<Triple> triples) {

@@ -240,7 +240,7 @@ public class UpdateBuilderExampleTests {
         Model m2 = ds.getNamedModel(graphName.getURI());
         List<RDFNode> nodes = m2.listObjectsOfProperty(FOAF.givenName).toList();
         assertEquals(1, nodes.size());
-        assertEquals("William", nodes.get(0).asLiteral().toString());
+        assertEquals("William", nodes.get(0).asLiteral().getLexicalForm());
         List<Resource> subjects = m2.listSubjectsWithProperty(FOAF.givenName).toList();
         assertEquals(3, subjects.size());
     }

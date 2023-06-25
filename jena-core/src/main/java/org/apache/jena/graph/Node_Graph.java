@@ -18,12 +18,16 @@
 
 package org.apache.jena.graph;
 
+import org.apache.jena.shared.PrefixMapping;
+
 /** RDF Graphs as RDF terms.
  * <p>
  * Beware that equality and hashCode are defined by
- * object identity, not graph same-triples nor isomorphism.
+ * object identity, not graph same-triples nor isomorphism
+ * due to the costs.
  * <p>
  * For experimentation.
+ * <br/>
  * Otherwise, unsupported.
  */
 public class Node_Graph extends Node {
@@ -31,7 +35,6 @@ public class Node_Graph extends Node {
     private final Graph graph;
 
     public Node_Graph(Graph graph) {
-        super(graph);
         this.graph = graph;
     }
 
@@ -49,6 +52,8 @@ public class Node_Graph extends Node {
     public Object visitWith(NodeVisitor v) {
         return v.visitGraph(this, graph);
     }
+
+    // Note - object identity equality!
 
     @Override
     public int hashCode() {
@@ -69,5 +74,13 @@ public class Node_Graph extends Node {
     public boolean isConcrete() {
         // Safe answer!
         return false;
+    }
+
+    @Override
+    public String toString( PrefixMapping pmap ) { return toString(); }
+
+    @Override
+    public String toString() {
+        return "Node_Graph";
     }
 }

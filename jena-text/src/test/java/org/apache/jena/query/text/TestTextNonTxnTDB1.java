@@ -52,7 +52,7 @@ public class TestTextNonTxnTDB1 extends AssertExtra
     }
 
     @Test public void textTDB1_1() {
-        // Check the union graph stil works  
+        // Check the union graph stil works
         Dataset ds = create() ;
         ds.getContext().set(TDB.symUnionDefaultGraph, true) ;
         Quad quad = SSE.parseQuad("(<g> <p> rdfs:label 'foo')") ;
@@ -63,14 +63,14 @@ public class TestTextNonTxnTDB1 extends AssertExtra
         List<QuerySolution> x = Iter.toList(rs) ;
         assertEquals(1,x.size());
     }
-    
+
     @Test public void textTDB1_2() {
         // Check text query and union graph
         Dataset ds = create() ;
         ds.getContext().set(TDB.symUnionDefaultGraph, true) ;
         Quad quad = SSE.parseQuad("(<g> <s> rdfs:label 'foo')") ;
         ds.asDatasetGraph().add(quad) ;
-        
+
         String qs = StrUtils.strjoinNL("PREFIX text: <http://jena.apache.org/text#>",
                                        "PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>",
                                        "SELECT *",
@@ -84,11 +84,11 @@ public class TestTextNonTxnTDB1 extends AssertExtra
         List<QuerySolution> x = Iter.toList(rs) ;
         assertEquals(1,x.size());
     }
-    
+
     @Test public void textTDB1_3() {
         Dataset ds = create() ;
         ds.getContext().set(TDB.symUnionDefaultGraph, true) ;
-        data(ds, 
+        data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
              "(<ex:g2> <s2> rdfs:label 'bar')") ;
 
@@ -101,7 +101,7 @@ public class TestTextNonTxnTDB1 extends AssertExtra
             "     rdfs:label 'foo'",
             "}"
             ) ;
-        
+
         Query q = QueryFactory.create(qs) ;
         QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
         ResultSet rs = qexec.execSelect() ;
@@ -109,14 +109,14 @@ public class TestTextNonTxnTDB1 extends AssertExtra
         ds.end() ;
         assertEquals(1,x.size());
     }
-    
+
     @Test public void textTDB1_4() {
         Dataset ds = create() ;
-        data(ds, 
+        data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
              "(<ex:g1> <s2> rdfs:label 'apple')",
              "(<ex:g2> <s3> rdfs:label 'bar')") ;
-        
+
         ds.begin(ReadWrite.READ) ;
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
@@ -135,17 +135,17 @@ public class TestTextNonTxnTDB1 extends AssertExtra
 
     @Test public void textTDB1_5() {
         Dataset ds = create() ;
-        data(ds, 
+        data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
              "(<ex:g1> <s2> rdfs:label 'apple')",
              "(<ex:g2> <s3> rdfs:label 'food')") ;
-        
+
         ds.begin(ReadWrite.READ) ;
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
             "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT *",
-            "FROM <"+Quad.unionGraph+">",
+            "FROM <"+Quad.unionGraph.getURI()+">",
             "{ ?s text:query 'foo*' . ?s rdfs:label ?o }"
             ) ;
         Query q = QueryFactory.create(qs) ;
@@ -158,17 +158,17 @@ public class TestTextNonTxnTDB1 extends AssertExtra
 
     @Test public void textTDB1_6() {
         Dataset ds = create() ;
-        data(ds, 
+        data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
              "(<ex:g1> <s2> rdfs:label 'apple')",
              "(<ex:g2> <s3> rdfs:label 'food')") ;
-        
+
         ds.begin(ReadWrite.READ) ;
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
             "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT *",
-            "{ GRAPH <"+Quad.unionGraph+">",
+            "{ GRAPH <"+Quad.unionGraph.getURI()+">",
             "    { ?s text:query 'foo*' . ?s rdfs:label ?o }",
             "}"
             ) ;
@@ -179,17 +179,17 @@ public class TestTextNonTxnTDB1 extends AssertExtra
         ds.end() ;
         assertEquals(2,x.size());
     }
-    
+
     @Test public void textTDB1_7_subject_bound_first() {
         Dataset ds = create() ;
-        data(ds, 
+        data(ds,
             "(<ex:g1> <s1> rdfs:label 'foo')",
             "(<ex:g1> <s1> rdf:type <http://example.org/Entity>)",
             "(<ex:g1> <s2> rdfs:label 'apple')",
             "(<ex:g1> <s2> rdf:type <http://example.org/Entity>)",
             "(<ex:g2> <s3> rdfs:label 'food')",
             "(<ex:g2> <s3> rdf:type <http://example.org/Entity>)");
-        
+
         ds.begin(ReadWrite.READ) ;
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
@@ -214,7 +214,7 @@ public class TestTextNonTxnTDB1 extends AssertExtra
                 "[] a <http://example.org/Entity>; rdfs:label 'foo' ."
             )
         );
-        
+
         ds.begin(ReadWrite.READ) ;
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
@@ -238,7 +238,7 @@ public class TestTextNonTxnTDB1 extends AssertExtra
                 "[] a <http://example.org/Entity>; rdfs:label 'foo' ."
             )
         );
-        
+
         ds.begin(ReadWrite.READ) ;
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
@@ -268,7 +268,7 @@ public class TestTextNonTxnTDB1 extends AssertExtra
         model.read(reader, "", "TURTLE");
         ds.commit();
     }
-    
+
     // With transactions
     // With FROM and FROM NAMED + TDB
 }

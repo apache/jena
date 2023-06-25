@@ -143,7 +143,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         String value = null;
         for (Node node : objArgs) {
             if (node.isLiteral()) {
-                String arg = node.getLiteral().toString();
+                String arg = node.getLiteral().getLexicalForm();
                 if (arg.startsWith(prefix + ":")) {
                     value = arg.substring(prefix.length()+1);
                     break;

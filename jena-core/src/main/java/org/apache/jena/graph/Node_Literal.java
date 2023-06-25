@@ -18,6 +18,8 @@
 
 package org.apache.jena.graph;
 
+import java.util.Objects;
+
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.impl.* ;
 import org.apache.jena.shared.* ;
@@ -25,84 +27,104 @@ import org.apache.jena.shared.* ;
 /**
     An RDF node holding a literal value. Literals may have datatypes.
 */
-public class Node_Literal extends Node_Concrete
+public class Node_Literal extends Node
 {
+    private final LiteralLabel label;
+
     /* package */ Node_Literal( LiteralLabel label )
-        { super( label ); }
+    { this.label = Objects.requireNonNull(label); }
+
+    @Override
+    public boolean isConcrete()
+    { return true; }
 
     @Override
     public LiteralLabel getLiteral()
-        { return (LiteralLabel) label; }
-    
+    { return label; }
+
     @Override
     public final Object getLiteralValue()
-        { return getLiteral().getValue(); }
-    
+    { return getLiteral().getValue(); }
+
     @Override
     public final String getLiteralLexicalForm()
-        { return getLiteral().getLexicalForm(); }
-    
+    { return getLiteral().getLexicalForm(); }
+
     @Override
     public final String getLiteralLanguage()
-        { return getLiteral().language(); }
-    
+    { return getLiteral().language(); }
+
     @Override
     public final String getLiteralDatatypeURI()
-        { return getLiteral().getDatatypeURI(); }
-    
+    { return getLiteral().getDatatypeURI(); }
+
     @Override
     public final RDFDatatype getLiteralDatatype()
-        { return getLiteral().getDatatype(); }
-    
+    { return getLiteral().getDatatype(); }
+
     @Override
     public final boolean getLiteralIsXML()
-        { return getLiteral().isXML(); }
-    
+    { return getLiteral().isXML(); }
+
     @Override
-    public String toString( PrefixMapping pm, boolean quoting )
-        { return ((LiteralLabel) label).toString( quoting ); }
-        
-    @Override
-    public boolean isLiteral() 
-        { return true; }    
-        
+    public boolean isLiteral()
+    { return true; }
+
     /**
-        Literal nodes defer their indexing value to the component literal.
-        @see org.apache.jena.graph.Node#getIndexingValue()
-    */
+     * Literal nodes defer their indexing value to the component literal.
+     *
+     * @see org.apache.jena.graph.Node#getIndexingValue()
+     */
     @Override
     public Object getIndexingValue()
-        { return getLiteral().getIndexingValue(); }
-    
+    { return getLiteral().getIndexingValue(); }
+
     @Override
     public Object visitWith( NodeVisitor v )
-        { return v.visitLiteral( this, getLiteral() ); }
-        
+    { return v.visitLiteral( this, getLiteral() ); }
+
     @Override
-    public boolean equals( Object other )
-        {
-        if ( this == other ) return true ;
-        return other instanceof Node_Literal && label.equals( ((Node_Literal) other).label );
-        }
-        
+    public int hashCode()
+    { return label.hashCode(); }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        Node_Literal other = (Node_Literal)obj;
+        return label.equals(other.label);
+    }
+
     /**
-     * Test that two nodes are semantically equivalent.
-     * In some cases this may be the same as equals, in others
+     * Test that two nodes are equivalent as values.
+     * In some cases this may be the same as "same term", in others
      * equals is stricter. For example, two xsd:int literals with
-     * the same value but different language tag are semantically
-     * equivalent but distinguished by the java equality function
-     * in order to support round tripping.
+     * the same value if they are "01" and "1".
      * <p>Default implementation is to use equals, subclasses should
      * override this.</p>
      */
     @Override
     public boolean sameValueAs(Object o) {
-        return o instanceof Node_Literal 
-              && ((LiteralLabel)label).sameValueAs( ((Node_Literal) o).getLiteral() );
+        return o instanceof Node_Literal
+              && label.sameValueAs( ((Node_Literal) o).getLiteral() );
     }
-    
+
     @Override
-    public boolean matches( Node x )
-        { return sameValueAs( x ); }
-    
+    public boolean matches(Node x) {
+        return sameValueAs(x);
+    }
+
+    @Override
+    public String toString(PrefixMapping pm) {
+        return label.toString(pm, true);
+    }
+
+    @Override
+    public String toString() {
+        return label.toString(PrefixMapping.Standard, true);
+    }
 }

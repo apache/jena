@@ -29,7 +29,7 @@ public class ResourceRequiredException extends JenaException
     {
     public ResourceRequiredException( RDFNode n )
         { this( n.asNode() ); }
-        
+
     public ResourceRequiredException( Node n )
-        { super( n.toString( PrefixMapping.Extended, true) ); }
+        { super( n.toString( PrefixMapping.Extended) ); }
     }
