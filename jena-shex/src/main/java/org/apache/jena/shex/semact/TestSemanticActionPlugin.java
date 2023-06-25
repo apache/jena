@@ -135,6 +135,8 @@ public class TestSemanticActionPlugin implements SemanticActionPlugin {
             default:
                 throw new RuntimeException(String.format("%s semantic action argument %s was not a literal or 's', 'p', or 'o'", SemActIri, varName));
         }
+        if ( pos.isURI() )
+            return pos.getURI();
         return pos.toString();
     }
 }

@@ -310,7 +310,7 @@ public class GraphHelper extends TestUtils {
 	 * <code>n.toString(PrefixMapping.Extended,true)</code>.
 	 */
 	protected static String nice(Node n) {
-		return n.toString(PrefixMapping.Extended, true);
+		return n.toString(PrefixMapping.Extended);
 	}
 
 	/**

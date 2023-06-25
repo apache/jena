@@ -161,6 +161,19 @@ public class NodeFactory {
      * assume this is intended to be a lexical form after all.
      * @param value
      *          The value, mapped according to registered types.
+     * @return Node
+     * @throws DatatypeFormatException
+     */
+    public static Node createLiteralByValue(Object value) throws DatatypeFormatException {
+        Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
+        return new Node_Literal(LiteralLabelFactory.createByValue(value)) ;
+    }
+
+    /** Create a Node based on the value
+     * If the value is a string we
+     * assume this is intended to be a lexical form after all.
+     * @param value
+     *          The value, mapped according to registered types.
      * @param dtype
      *          RDF Datatype.
      * @return Node
@@ -182,7 +195,9 @@ public class NodeFactory {
      *          RDF Datatype.
      * @return Node
      * @throws DatatypeFormatException
+     * @deprecated Use either {@link #createLiteralByValue(Object, RDFDatatype)} or {@link #createLiteral(String, String)}
      */
+    @Deprecated
     public static Node createLiteralByValue(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
         Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
         return new Node_Literal(LiteralLabelFactory.createByValue(value, lang, dtype)) ;

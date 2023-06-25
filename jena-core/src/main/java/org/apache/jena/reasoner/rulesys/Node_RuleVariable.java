@@ -38,24 +38,25 @@ public class Node_RuleVariable extends Node_Variable {
     /** The value to which this variable is bound, can be another variable,
      *  itself (meaning unbound) or an actual value */
     protected Node value;
-    
+
     /** A flag to indicate that the value is reference (pointer to a var) */
     protected boolean isRef = true;
-    
+
     /** A static wildcard - like Node.ANY but tests equal to other Node_RuleVariables */
     public static final Node_RuleVariable WILD = new Node_RuleVariable("*", -1);
-         
+
     /**
      * Constructor
      * @param label the text label for the variable
      * @param index the calculated index of this variable in the rule
      */
     public Node_RuleVariable(String label, int index) {
+        //super(label==null ? "" : label);
         super(label);
         this.index = index;
         this.value = this;
     }
-    
+
     /**
      * Returns the variable's index in a binding vector.
      * @return int
@@ -63,7 +64,7 @@ public class Node_RuleVariable extends Node_Variable {
     public int getIndex() {
         return index;
     }
-    
+
     /**
      * Changes the variable's index. This is used in LP rules which classify the
      * variables into different sequences.
@@ -71,9 +72,9 @@ public class Node_RuleVariable extends Node_Variable {
     public void setIndex(int index) {
         this.index = index;
     }
-    
+
     /**
-     * Return an indexable object for this Node. This is actually the 
+     * Return an indexable object for this Node. This is actually the
      * rule label. This is weird but needed because equals is (deliberately)
      * perverse on Node_RuleVariable so if we want to put then in a Set or Map
      * we need something with a better equals function.
@@ -81,7 +82,7 @@ public class Node_RuleVariable extends Node_Variable {
 //    public Object getRepresentative() {
 //        return label;
 //    }
-    
+
     /**
      * Binds a value to the brule version of the variable. Does not follow
      * any reference trail, assues we have already been derefenced.
@@ -92,7 +93,7 @@ public class Node_RuleVariable extends Node_Variable {
         value = node;
         isRef = node instanceof Node_RuleVariable;
     }
-    
+
     /**
      * Dereference a variable by following the reference chain.
      * @return either a concrete node value or the last variable
@@ -108,7 +109,7 @@ public class Node_RuleVariable extends Node_Variable {
         }
         return var.value;
     }
-    
+
     /**
      * Return the raw value to which this variable is bound (via LP binding) with
      * no dereferencing.
@@ -116,7 +117,7 @@ public class Node_RuleVariable extends Node_Variable {
     public Node getRawBoundValue() {
         return value;
     }
-    
+
     /**
      * Set the variable to be unbound (in the brule sense)
      */
@@ -124,22 +125,22 @@ public class Node_RuleVariable extends Node_Variable {
         isRef = true;
         value = this;
     }
-    
+
     /**
      * Test if the variable is unbound (in the brule sense).
      */
     public boolean isUnbound() {
         return (isRef && (value == this));
     }
-    
+
     /**
      * Clone the rule variable to allow multiple rule instaces to be active at the same time.
      */
     public Node_RuleVariable cloneNode() {
-        return new Node_RuleVariable(getName(), index);        
+        return new Node_RuleVariable(getName(), index);
     }
-    
-    /** printable form */        
+
+    /** printable form */
     @Override
     public String toString() {
         if (getName() == null) return "*";
@@ -155,7 +156,7 @@ public class Node_RuleVariable extends Node_Variable {
             } else {
                 return name.equals( ((Node_RuleVariable)o).getName() );
             }
-        } else 
+        } else
             return false;
     }
 

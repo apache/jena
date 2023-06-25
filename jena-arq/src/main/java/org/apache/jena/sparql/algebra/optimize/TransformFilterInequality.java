@@ -199,7 +199,7 @@ public class TransformFilterInequality extends TransformCopy {
     }
 
     private static Collection<Var> varsMentionedInInequalityFilters(List<Pair<Var, NodeValue>> inequalities) {
-        Set<Var> vars = new HashSet<>();
+        Set<Var> vars = new LinkedHashSet<>();
         for (Pair<Var, NodeValue> p : inequalities)
             vars.add(p.getLeft());
         return vars;
@@ -371,13 +371,20 @@ public class TransformFilterInequality extends TransformCopy {
     }
 
     private static Op processFilterWorker(Op op, List<Pair<Var, NodeValue>> inequalities) {
-        // Firstly find all the possible values for each variable
-        Map<Var, Set<NodeValue>> possibleValues = new HashMap<>();
+        // Firstly, find all the possible values for each variable
+        int maxSize = inequalities.size();
+        Map<Var, List<NodeValue>> possibleValues = new LinkedHashMap<>();
         for (Pair<Var, NodeValue> inequalityTest : inequalities) {
-            if (!possibleValues.containsKey(inequalityTest.getLeft())) {
-                possibleValues.put(inequalityTest.getLeft(), new HashSet<NodeValue>());
+            Var var = inequalityTest.getLeft();
+            NodeValue nv = inequalityTest.getRight();
+
+            if (!possibleValues.containsKey(var)) {
+                possibleValues.put(var, new ArrayList<NodeValue>(maxSize));
             }
-            possibleValues.get(inequalityTest.getLeft()).add(inequalityTest.getRight());
+            // One only.
+            List<NodeValue> values = possibleValues.get(var);
+            if ( ! values.contains(nv) )
+                possibleValues.get(var).add(nv);
         }
 
         // Then combine them into all possible rows to be eliminated
@@ -387,7 +394,7 @@ public class TransformFilterInequality extends TransformCopy {
         return OpMinus.create(op, OpTable.create(table));
     }
 
-    private static Table buildTable(Map<Var, Set<NodeValue>> possibleValues) {
+    private static Table buildTable(Map<Var, List<NodeValue>> possibleValues) {
         if (possibleValues.size() == 0)
             return TableFactory.createEmpty();
         Table table = TableFactory.create();

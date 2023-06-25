@@ -51,9 +51,9 @@ import org.slf4j.LoggerFactory ;
  * different files. The files can be of type .rdf, .nt or .n3.</p>
  * <p>
  * A single manifest file defines the set of tests to run. Each test
- * specifies a name, source tbox file, source data file, query file and result file using 
+ * specifies a name, source tbox file, source data file, query file and result file using
  * the properties "name", "source", "query" and "result" in the namespace
- * "http://www.hpl.hp.com/semweb/2003/query_tester#". The file names are 
+ * "http://www.hpl.hp.com/semweb/2003/query_tester#". The file names are
  * given as strings instead of URIs because the base directory for the test
  * files is subject to change. </p>
  * <p>
@@ -65,31 +65,31 @@ public class ReasonerTester {
 
     /** The namespace for the test specification schema */
     public static final String NS = "http://www.hpl.hp.com/semweb/2003/query_tester#";
-    
+
     /** The base URI in which the files are purported to reside */
     public static final String BASE_URI = "http://www.hpl.hp.com/semweb/2003/query_tester/";
-    
+
     /** The rdf class to which all tests belong */
     public static final Resource testClass;
-    
+
     /** The predicate defining the description of the test */
     public static final Property descriptionP;
-    
+
     /** The predicate defining the source tbox file for the test */
     public static final Property tboxP;
-    
+
     /** The predicate defining the source data file for the test */
     public static final Property dataP;
-    
+
     /** The predicate defining the query file for the test */
     public static final Property queryP;
-    
+
     /** The predicate defining the result file for the test */
     public static final Property resultP;
-    
+
     /** The base directory in which the test data is stored */
     public static final String baseDir = "testing/reasoners/";
-    
+
     // Static initializer for the predicates
     static {
         descriptionP = new PropertyImpl(NS, "description");
@@ -99,15 +99,15 @@ public class ReasonerTester {
         resultP = new PropertyImpl(NS, "result");
         testClass = new ResourceImpl(NS, "Test");
     }
-    
+
     /** The rdf defining all the tests to be run */
     protected Model testManifest;
-    
+
     /** A cache of loaded source files, map from source name to Model */
     protected Map<String, Model> sourceCache = new HashMap<>();
-    
+
     protected static Logger logger = LoggerFactory.getLogger(ReasonerTester.class);
-    
+
     /**
      * Constructor.
      * @param manifest the name of the manifest file defining these
@@ -116,7 +116,7 @@ public class ReasonerTester {
     public ReasonerTester(String manifest) throws IOException {
         testManifest = loadFile(manifest, false);
     }
-    
+
     /**
      * Utility to load a file in rdf/nt/n3 format as a Model.
      * @param file the file name, relative to baseDir
@@ -141,7 +141,7 @@ public class ReasonerTester {
         }
         return result;
     }
-    
+
     /**
      * Load the datafile given by the property name.
      * @param test the test being processed
@@ -152,14 +152,14 @@ public class ReasonerTester {
      */
     public Graph loadTestFile(Resource test, Property predicate) throws IOException {
         if (test.hasProperty(predicate)) {
-            String fileName = test.getRequiredProperty(predicate).getObject().toString();
+            String fileName = test.getRequiredProperty(predicate).getObject().asLiteral().getLexicalForm();
             boolean cache = predicate.equals(tboxP) || predicate.equals(dataP);
             return loadFile(fileName, cache).getGraph();
         } else {
             return GraphMemFactory.createGraphMem();
         }
     }
-    
+
     /**
      * Convert a triple into a triple pattern by converting var resources into
      * wildcard variables.
@@ -170,20 +170,20 @@ public class ReasonerTester {
                         nodeToPattern(t.getPredicate()),
                         nodeToPattern(t.getObject()));
     }
-    
+
     /**
      * Convert a node into a pattern node by converting var resources into wildcard
      * variables.
      */
     public static Node nodeToPattern(Node n) {
-        if (n.isURI() && n.toString().startsWith("var:")) {
+        if (n.isURI() && n.getURI().startsWith("var:")) {
             return Node_RuleVariable.WILD;
 //            return Node.ANY;
         } else {
             return n;
         }
     }
-    
+
     /**
      * Run all the tests in the manifest
      * @param reasonerF the factory for the reasoner to be tested
@@ -203,7 +203,7 @@ public class ReasonerTester {
         }
         return true;
     }
-    
+
     /**
      * Run all the tests in the manifest
      * @param reasoner the reasoner to be tested
@@ -222,7 +222,7 @@ public class ReasonerTester {
         }
         return true;
     }
-    
+
     /**
      * Return a list of all test names defined in the manifest for this test harness.
      */
@@ -234,8 +234,8 @@ public class ReasonerTester {
         }
         return testList;
     }
-    
-    
+
+
     /**
      * Run a single designated test.
      * @param uri the uri of the test, as defined in the manifest file
@@ -250,7 +250,7 @@ public class ReasonerTester {
         Reasoner reasoner = reasonerF.create(configuration);
         return runTest(uri, reasoner, testcase);
     }
-    
+
     /**
      * Run a single designated test.
      * @param uri the uri of the test, as defined in the manifest file
@@ -269,12 +269,12 @@ public class ReasonerTester {
 
         String description = test.getRequiredProperty(descriptionP).getObject().toString();
         logger.debug("Reasoner test " + test.getURI() + " - " + description);
-        
+
         // Construct the inferred graph
         Graph tbox = loadTestFile(test, tboxP);
         Graph data = loadTestFile(test, dataP);
         InfGraph graph = reasoner.bindSchema(tbox).bind(data);
-        
+
         // Run each query triple and accumulate the results
         Graph queryG = loadTestFile(test, queryP);
         Graph resultG = GraphMemFactory.createGraphMem();
@@ -290,7 +290,7 @@ public class ReasonerTester {
                 resultG.add(ans);
             }
         }
-        
+
         // Check the total result set against the correct answer
         Graph correctG = loadTestFile(test, resultP);
         boolean correct = correctG.isIsomorphicWith(resultG);
@@ -314,7 +314,7 @@ public class ReasonerTester {
                     System.out.println("  - " + t);
                 }
             }
-            
+
         }
         */
         // ... end of debugging hack
@@ -323,5 +323,5 @@ public class ReasonerTester {
         }
         return correct;
     }
-    
+
 }

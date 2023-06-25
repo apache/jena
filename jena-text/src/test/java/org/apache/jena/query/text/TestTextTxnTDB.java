@@ -58,7 +58,7 @@ import org.junit.runners.Parameterized.Parameters;
  * When used outside a transaction, writes are "autocommit" (see
  * {@link TextDocProducerTriples}) and so are visible immediately.
  * <p>
- * TDB2 is transactional only. 
+ * TDB2 is transactional only.
  * <p>Union graph support by context is required for these tests.
  */
 
@@ -74,13 +74,13 @@ public class TestTextTxnTDB
             { "TDB2", tdb2Factory }
         });
     }
-    
+
     private final Creator<Dataset> factory;
 
     public TestTextTxnTDB(String name, Creator<Dataset> factory) {
         this.factory = factory;
     }
-    
+
     private Dataset create() {
         Dataset ds1 = factory.create();
         Directory dir = new ByteBuffersDirectory() ;
@@ -92,13 +92,13 @@ public class TestTextTxnTDB
     }
 
     @Test public void textTDB_union_1() {
-        // Check the union graph still works  
+        // Check the union graph still works
         Dataset ds = create() ;
         ds.getContext().set(TDB.symUnionDefaultGraph, true) ;
         ds.getContext().set(TDB2.symUnionDefaultGraph, true) ;
         Quad quad = SSE.parseQuad("(<g> <p> rdfs:label 'foo')") ;
         Txn.executeWrite(ds, ()->ds.asDatasetGraph().add(quad));
-        
+
         Txn.executeRead(ds, ()->{
             Query q = QueryFactory.create("SELECT * { ?s ?p ?o }") ;
             QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
@@ -107,7 +107,7 @@ public class TestTextTxnTDB
             assertEquals(1,x.size());
         });
     }
-    
+
     @Test public void textTDB_union_2() {
         // Check text query and union graph
         Dataset ds = create() ;
@@ -132,13 +132,13 @@ public class TestTextTxnTDB
             assertEquals(1,x.size());
         });
     }
-    
+
     @Test public void textTDB_3() {
         Dataset ds = create() ;
         ds.getContext().set(TDB.symUnionDefaultGraph, true) ;
         ds.getContext().set(TDB2.symUnionDefaultGraph, true) ;
         Txn.executeWrite(ds, ()->{
-            data(ds, 
+            data(ds,
                 "(<ex:g1> <s1> rdfs:label 'foo')",
                 "(<ex:g2> <s2> rdfs:label 'bar')") ;
         });
@@ -159,11 +159,11 @@ public class TestTextTxnTDB
             assertEquals(1,x.size());
         });
     }
-    
+
     @Test public void textTDB_4() {
         Dataset ds = create() ;
         Txn.executeWrite(ds, ()->{
-            data(ds, 
+            data(ds,
                 "(<ex:g1> <s1> rdfs:label 'foo')",
                 "(<ex:g1> <s2> rdfs:label 'apple')",
                 "(<ex:g2> <s3> rdfs:label 'bar')") ;
@@ -187,7 +187,7 @@ public class TestTextTxnTDB
     @Test public void textTDB_5() {
         Dataset ds = create() ;
         Txn.executeWrite(ds, ()->{
-        data(ds, 
+        data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
              "(<ex:g1> <s2> rdfs:label 'apple')",
              "(<ex:g2> <s3> rdfs:label 'food')") ;
@@ -197,7 +197,7 @@ public class TestTextTxnTDB
                 "PREFIX text:   <http://jena.apache.org/text#>",
                 "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
                 "SELECT *",
-                "FROM <"+Quad.unionGraph+">",
+                "FROM <"+Quad.unionGraph.getURI()+">",
                 "{ ?s text:query 'foo*' . ?s rdfs:label ?o }"
                 ) ;
             Query q = QueryFactory.create(qs) ;
@@ -212,7 +212,7 @@ public class TestTextTxnTDB
     @Test public void textTDB_6() {
         Dataset ds = create() ;
         Txn.executeWrite(ds, ()->{
-            data(ds, 
+            data(ds,
                 "(<ex:g1> <s1> rdfs:label 'foo')",
                 "(<ex:g1> <s2> rdfs:label 'apple')",
                 "(<ex:g2> <s3> rdfs:label 'food')") ;
@@ -222,7 +222,7 @@ public class TestTextTxnTDB
                 "PREFIX text:   <http://jena.apache.org/text#>",
                 "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
                 "SELECT *",
-                "{ GRAPH <"+Quad.unionGraph+">",
+                "{ GRAPH <"+Quad.unionGraph.getURI()+">",
                 "    { ?s text:query 'foo*' . ?s rdfs:label ?o }",
                 "}"
                 ) ;
@@ -233,11 +233,11 @@ public class TestTextTxnTDB
             assertEquals(2,x.size());
         });
     }
-    
+
     @Test public void textTDB_7_subject_bound_first() {
         Dataset ds = create() ;
         Txn.executeWrite(ds, ()->{
-            data(ds, 
+            data(ds,
                 "(<ex:g1> <s1> rdfs:label 'foo')",
                 "(<ex:g1> <s1> rdf:type <http://example.org/Entity>)",
                 "(<ex:g1> <s2> rdfs:label 'apple')",
@@ -323,7 +323,7 @@ public class TestTextTxnTDB
         Reader reader = new StringReader(turtle);
         model.read(reader, "", "TURTLE");
     }
-    
+
     // With FROM and FROM NAMED + TDB
 }
 

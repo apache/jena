@@ -18,25 +18,34 @@
 
 package org.apache.jena.graph;
 
+import java.util.Objects;
+
+import org.apache.jena.shared.PrefixMapping;
+
 /**
     "variable" nodes; these are outside the RDF2003 specification, but are
     used internally for "placeholder" nodes where blank nodes would be
     wrong, most specifically in Query.
 */
 
-public class Node_Variable extends Node_Fluid
+public class Node_Variable extends Node
 {
+    private final String varName;
 
     /**
         Initialise this Node_Variable from a string <code>name</code>,
         which becomes wrapped in a VariableName.
      */
     public Node_Variable( String name )
-    { super( new VariableName( name ) ); }
+//    { this.varName = Objects.requireNonNull(name) ; }
+    { this.varName = name ; }   // Node_RuleVariable
+
+    @Override
+    public boolean isConcrete() { return false; }
 
     @Override
     public String getName()
-    { return ((VariableName) label).name; }
+    { return varName; }
 
     @Override
     public Object visitWith( NodeVisitor v )
@@ -47,40 +56,30 @@ public class Node_Variable extends Node_Fluid
     { return true; }
 
     @Override
-    public String toString()
-    { return label.toString(); }
+    public int hashCode() {
+        if ( varName == null )
+            return hashVariable;
+        return varName.hashCode();
+    }
 
     @Override
-    public boolean equals( Object other )
-    {
-        if ( this == other ) return true ;
-        return other instanceof Node_Variable && label.equals( ((Node_Variable) other).label );
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        // For jena-arq Var
+        if ( ! (obj instanceof Node_Variable) )
+            return false;
+        Node_Variable other = (Node_Variable)obj;
+        return Objects.equals(varName, other.varName);
     }
 
-    public static Object variable( String name )
-    { return new VariableName( name ); }
+    @Override
+    public String toString( PrefixMapping pmap ) { return toString(); }
 
-    public static class VariableName
-    {
-        private String name;
-
-        public VariableName( String name )
-        { this.name = name; }
-
-        @Override
-        public int hashCode()
-        { return name.hashCode(); }
-
-        @Override
-        public boolean equals( Object other )
-        {
-            if ( this == other ) return true ;
-            return other instanceof VariableName && name.equals( ((VariableName) other).name );
-        }
-
-        @Override
-        public String toString()
-        { return "?" + name; }
-    }
+    @Override
+    public String toString()
+    { return "?"+varName; }
 }
 

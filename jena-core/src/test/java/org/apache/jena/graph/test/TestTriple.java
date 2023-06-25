@@ -249,7 +249,7 @@ public class TestTriple extends GraphTestBase
     public void testTripleToStringQuoting()
         {
         Triple t1 = NodeCreateUtils.createTriple( "subject predicate 'object'" );
-        assertTrue( t1.toString().indexOf( "\"object\"") > 0 );
+        assertTrue( t1.toString().indexOf( "object") > 0 );
         }
 
     public void testTripleToStringWithPrefixing()
@@ -257,7 +257,8 @@ public class TestTriple extends GraphTestBase
         PrefixMapping pm = PrefixMapping.Factory.create();
         pm.setNsPrefix( "spoo", "eg://domain.dom/spoo#" );
         Triple t1 = NodeCreateUtils.createTriple( "eg://domain.dom/spoo#a b c" );
-        assertEquals( "spoo:a @eh:/b eh:/c", t1.toString( pm ) );
+        //assertEquals( "spoo:a <eh:/b> <eh:/c>", t1.toString( pm ) );
+        assertEquals( "spoo:a eh:/b eh:/c", t1.toString( pm ) );
         }
 
     public void testTripleMaps()

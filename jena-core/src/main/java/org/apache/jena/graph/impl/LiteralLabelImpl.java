@@ -23,11 +23,14 @@ import java.util.Locale ;
 import java.util.Objects ;
 
 import org.apache.jena.JenaRuntime ;
-import org.apache.jena.datatypes.* ;
-import org.apache.jena.datatypes.xsd.* ;
-import org.apache.jena.datatypes.xsd.impl.* ;
-import org.apache.jena.rdf.model.impl.Util ;
+import org.apache.jena.atlas.lib.EscapeStr;
+import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.TypeMapper;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.JenaParameters ;
 import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger;
@@ -42,9 +45,9 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 
 	static private Logger log = LoggerFactory.getLogger( LiteralLabelImpl.class );
 
-    /** 
-	 * The lexical form of the literal, may be null if the literal was 
-	 * created programatically and has not yet been serialized 
+    /**
+	 * The lexical form of the literal, may be null if the literal was
+	 * created programatically and has not yet been serialized
 	 */
 	private String lexicalForm;
 
@@ -76,13 +79,13 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	 * N.B. This applies to any literal, not just XML well-formed literals.
 	 */
 	private boolean wellformed = true;
-	
+
 	/**
 	 * keeps the DatatypeFormatException if parsing failed for delayed
 	 * exception thrown in getValue()
 	 */
 	private Throwable exception = null;
-	
+
 	//=======================================================================
 	// Constructors
 
@@ -90,7 +93,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	 * Build a typed literal label from its lexical form. The
 	 * lexical form will be parsed now and the value stored. If
 	 * the form is not legal this will throw an exception.
-	 * 
+	 *
 	 * @param lex the lexical form of the literal
 	 * @param lang the optional language tag, only relevant for plain literals
 	 * @param dtype the type of the literal, null for old style "plain" literals
@@ -113,11 +116,11 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
         }
         normalize();
     }
-	
+
 	/**
 	 * Build a typed literal label from its value form. If the value is a string we
      * assume this is intended to be a lexical form after all.
-	 * 
+	 *
 	 * @param value the value of the literal
 	 * @param lang the optional language tag, only relevant for plain literals
 	 * @param dtype the type of the literal, null for old style "plain" literals
@@ -125,7 +128,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	LiteralLabelImpl(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
 	    setLiteralLabel_2(value, lang, dtype) ;
 	}
-	
+
 	/**
 	 * Build a typed literal label from its value form using
 	 * whatever datatype is currently registered as the default
@@ -148,10 +151,10 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 		TypeMapper.getInstance().registerDatatype( dt );
 		this.lang = "";
 		this.dtype = dt;
-		this.value = value;		
+		this.value = value;
 		this.lexicalForm = value.toString();
 	}
-	
+
 	private void setLiteralLabel_2(Object value, String language, RDFDatatype dtype) throws DatatypeFormatException
     {
         // Constructor extraction: Preparation for moving into Node_Literal.
@@ -168,9 +171,9 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
         } else {
             this.value = (dtype == null) ? value : dtype.cannonicalise( value );
         }
-        
+
         normalize();
-        
+
         if (dtype != null && lexicalForm == null) {
             // We are creating a literal from a java object, check the lexical form of the object is acceptable
             // Done here and uses this.dtype so it can use the normalized type
@@ -178,14 +181,14 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
             if (JenaParameters.enableEagerLiteralValidation && !wellformed) {
                 throw new DatatypeFormatException(value.toString(),  dtype, "in literal creation");
             }
-        } 
+        }
     }
 
     /**
 	 * Old style constructor. Creates either a plain literal or an
 	 * XMLLiteral.
 	 *       @param xml If true then s is exclusive canonical XML of type rdf:XMLLiteral, and no checking will be invoked.
-	
+
 	 */
 	LiteralLabelImpl(String s, String lang, boolean xml) {
 	    setLiteralLabel_3(s, lang, xml) ;
@@ -206,7 +209,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
             this.dtype = null;
         }
     }
-	
+
 	/**
 	 * Internal function to set the object value from the lexical form.
 	 * Requires datatype to be set.
@@ -227,7 +230,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 			}
 		}
 	}
-    
+
     /**
      * Normalize the literal. If the value is narrower than the current data type
      * (e.g. value is xsd:date but the time is xsd:datetime) it will narrow
@@ -243,57 +246,77 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	//=======================================================================
 	// Methods
 
-	/** 
+	/**
         Answer true iff this is a well-formed XML literal.
     */
 	@Override
     public boolean isXML() {
 		return dtype == XMLLiteralType.theXMLLiteralType && this.wellformed;
 	}
-    
-	/** 
+
+	/**
      	Answer true iff this is a well-formed literal.
     */
 	@Override
     public boolean isWellFormed() {
 		return dtype != null && this.wellformed;
 	}
-    
+
     @Override
     public boolean isWellFormedRaw() {
         return wellformed;
     }
 
-	
-	/**
-	    Answer a human-acceptable representation of this literal value.
-	    This is NOT intended for a machine-processed result. 
-	*/
 	@Override
     public String toString(boolean quoting) {
+	    return toString(PrefixMapping.Standard, quoting);
+	}
+
+	@Override
+	public String toString(PrefixMapping pmap, boolean quoting) {
         StringBuilder b = new StringBuilder() ;
+        if ( ! quoting && simpleLiteral() )
+            return getLexicalForm();
+
+        quoting = true;
+        // Always quoted for language strings and datatypes (not xsd:string).
         if ( quoting )
             b.append('"') ;
-        String lex = getLexicalForm() ;
-        lex = Util.replace(lex, "\"", "\\\"") ;
-        b.append(lex) ;
+        String elex = EscapeStr.stringEsc(getLexicalForm());
+        b.append(elex) ;
         if ( quoting )
             b.append('"') ;
+
         if ( lang != null && !lang.equals("") )
             b.append("@").append(lang) ;
         else if ( dtype != null ) {
-            if ( ! ( JenaRuntime.isRDF11 && dtype.equals(XSDDatatype.XSDstring) ) )  
-                b.append("^^").append(dtype.getURI()) ;
+            if ( ! ( JenaRuntime.isRDF11 && dtype.equals(XSDDatatype.XSDstring) ) ) {
+                String x = (pmap != null)
+                        ? PrefixMapping.Standard.shortForm(dtype.getURI())
+                        : dtype.getURI();
+                b.append("^^").append(x);
+            }
         }
         return b.toString() ;
 	}
 
-	@Override
+	private boolean simpleLiteral() {
+	    if ( JenaRuntime.isRDF11 )
+	        return dtype.equals(XSDDatatype.XSDstring);
+	    // RDF 1.0
+	    if ( lang != null && !lang.equals("") )
+	        return false;
+	    if ( dtype != null )
+	        return false;
+	    return true;
+    }
+
+    @Override
     public String toString() {
-		return toString(false);
+		return toString(true);
 	}
 
-	/** 
+	/**
      	Answer the lexical form of this literal, constructing it on-the-fly
         (and remembering it) if necessary.
     */
@@ -303,7 +326,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 			lexicalForm = (dtype == null ? value.toString() : dtype.unparse(value));
 		return lexicalForm;
 	}
-    
+
     /**
      * Answer an object used to index this literal. This object must provide
      * {@link Object#equals} and {@link Object#hashCode} based on values, not object
@@ -333,7 +356,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
      */
     static class ByteArray {
         private int hashCode = 0 ;
-        
+
         private final byte[] bytes;
         /*package*/ ByteArray(byte[] bytes) {
             this.bytes = bytes;
@@ -361,8 +384,8 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
             return Arrays.equals(bytes, other.bytes);
         }
     }
-    
-	/** 
+
+	/**
      	Answer the language associated with this literal (the empty string if
         there's no language).
     */
@@ -371,7 +394,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 		return lang;
 	}
 
-	/** 
+	/**
      	Answer a suitable instance of a Java class representing this literal's
         value. May throw an exception if the literal is ill-formed.
     */
@@ -387,7 +410,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 		}
 	}
 
-	/** 
+	/**
      	Answer the datatype of this literal, null if it is untyped.
     */
 	@Override
@@ -395,7 +418,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 		return dtype;
 	}
 
-	/** 
+	/**
      	Answer the datatype URI of this literal, null if it untyped.
     */
 	@Override
@@ -405,7 +428,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 		return dtype.getURI();
 	}
 
-	/** 
+	/**
      	Answer true iff this literal is syntactically equal to <code>other</code>.
         Note: this is <i>not</i> <code>sameValueAs</code>.
     */
@@ -416,7 +439,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	        return false;
 	    }
 	    LiteralLabel otherLiteral = (LiteralLabel) other;
-	    
+
 	    boolean typeEquals = Objects.equals(dtype, otherLiteral.getDatatype()) ;
 	    if ( !typeEquals )
 	        return false ;
@@ -429,12 +452,12 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
         boolean langEquals = Objects.equals(lang, otherLiteral.language()) ;
 	    if ( ! langEquals )
 	        return false ;
-	    // Ignore xml flag as it is calculated from the lexical form + datatype 
-	    // Ignore value as lexical form + datatype -> value is a function. 
+	    // Ignore xml flag as it is calculated from the lexical form + datatype
+	    // Ignore value as lexical form + datatype -> value is a function.
 	    return true ;
 	}
 
-	/** 
+	/**
      	Answer true iff this literal represents the same (abstract) value as
         the other one.
     */
@@ -442,7 +465,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
     public boolean sameValueAs( LiteralLabel other ) {
 	    return sameValueAs(this, other) ;
 	}
-	/** 
+	/**
 	 * Two literal labels are the "same value" if they are the same string,
 	 * or same language string or same value-by-datatype or .equals (= Same RDF Term)
 	 * @param lit1
@@ -450,7 +473,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	 * @return
 	 */
     private static boolean sameValueAs(LiteralLabel lit1, LiteralLabel lit2) {
-        //return  lit1.sameValueAs(lit2) ; 
+        //return  lit1.sameValueAs(lit2) ;
         if ( lit1 == null )
             throw new NullPointerException() ;
         if ( lit2 == null )
@@ -464,19 +487,19 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
                 return lit1.getLexicalForm().equals(lit2.getLexicalForm()) &&
                     Objects.equals(lit1.getDatatype(), lit2.getDatatype()) ;
         }
-        
+
         if ( isStringValue(lit1) ) return false ;
         if ( isStringValue(lit2) ) return false ;
-        
+
         // Language tag strings
         if ( isLangString(lit1) && isLangString(lit2) ) {
             String lex1 = lit1.getLexicalForm() ;
             String lex2 = lit2.getLexicalForm() ;
             return lex1.equals(lex2) && lit1.language().equalsIgnoreCase(lit2.language()) ;
-        } 
+        }
         if ( isLangString(lit1) ) return false ;
         if ( isLangString(lit2) ) return false ;
-        
+
         // Both not strings, not lang strings.
         // Datatype set.
         if ( lit1.isWellFormedRaw() && lit2.isWellFormedRaw() )
@@ -487,8 +510,8 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
         // One is well formed, the other is not.
         return false ;
     }
-    
-	/** Return true if the literal lable is a string value (RDF 1.0 and RDF 1.1) */ 
+
+	/** Return true if the literal lable is a string value (RDF 1.0 and RDF 1.1) */
     private static boolean isStringValue(LiteralLabel lit) {
         if ( lit.getDatatype() == null )
             // RDF 1.0
@@ -497,7 +520,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
             return true;
         return false ;
     }
-    
+
     /** Return true if the literal label is a language string. (RDF 1.0 and RDF 1.1) */
     public static boolean isLangString(LiteralLabel lit) {
         // Duplicated by Util.isLangString except for the consistency check.
@@ -516,7 +539,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
     }
 
     private int hash = 0 ;
-	/** 
+	/**
      	Answer the hashcode of this literal, derived from its value if it's
         well-formed and otherwise its lexical form.
     */
@@ -530,7 +553,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 
     /**
         Answer the default hash value, suitable for datatypes which have values
-        which support hashCode() naturally: it is derived from its value if it is 
+        which support hashCode() naturally: it is derived from its value if it is
         well-formed and otherwise from its lexical form.
     */
     @Override

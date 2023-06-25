@@ -46,7 +46,6 @@ public class TestHashedTripleBunch extends TestTripleBunch
         {
         final int hash;
 
-        @SuppressWarnings("deprecation")
         TripleWithHash( int hash, Node s, Node p, Node o )
             {
             super( s, p, o );

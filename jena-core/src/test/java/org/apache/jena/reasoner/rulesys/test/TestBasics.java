@@ -514,14 +514,11 @@ public class TestBasics extends TestCase  {
         Resource foo = infModel.createResource(PrintUtil.egNS + "foo");
         Resource bar = infModel.createResource(PrintUtil.egNS + "bar");
 
-        RDFNode flit = infModel.getResource(R1.getURI()).getRequiredProperty(rbr).getObject();
-        assertNotNull(flit);
-        assertEquals(flit.toString(), "allOK");
-//        assertTrue(flit instanceof Literal);
-//        Functor func = (Functor)((Literal)flit).getValue();
-//        assertEquals("all", func.getName());
-//        assertEquals(p.getNode(), func.getArgs()[0]);
-//        assertEquals(D.getNode(), func.getArgs()[1]);
+        RDFNode fLit = infModel.getResource(R1.getURI()).getRequiredProperty(rbr).getObject();
+        assertNotNull(fLit);
+        assertTrue(fLit.isLiteral());
+        String strflit = fLit.asLiteral().getLexicalForm();
+        assertEquals("allOK", strflit);
 
         Literal one = (Literal)foo.getRequiredProperty(propbar).getObject();
         assertEquals(Integer.valueOf(1), one.getValue());

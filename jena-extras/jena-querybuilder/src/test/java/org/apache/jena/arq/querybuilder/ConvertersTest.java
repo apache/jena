@@ -18,11 +18,7 @@
 
 package org.apache.jena.arq.querybuilder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,11 +30,10 @@ import java.util.UUID;
 import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.TypeMapper;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.impl.LiteralLabel;
-import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.reasoner.rulesys.Node_RuleVariable;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.Var;
@@ -68,18 +63,20 @@ public class ConvertersTest {
         Node n = Converters.makeLiteral(5);
         assertEquals("5", n.getLiteralLexicalForm());
         assertEquals(Integer.valueOf(5), n.getLiteralValue());
-        assertEquals("\"5\"^^http://www.w3.org/2001/XMLSchema#int", n.toString(null, true));
+        Node n2 = NodeFactory.createLiteral("5", XSDDatatype.XSDint);
+        assertEquals(n2, n);
 
         n = Converters.makeLiteral("Hello");
         assertEquals("Hello", n.getLiteralLexicalForm());
         assertEquals("Hello", n.getLiteralValue());
-        assertEquals("\"Hello\"", n.toString(null, true));
+        assertEquals(XSDDatatype.XSDstring, n.getLiteralDatatype());
 
         URL url = new URL("http://example.com");
         n = Converters.makeLiteral(url);
         assertEquals("http://example.com", n.getLiteralLexicalForm());
         assertEquals(url, n.getLiteralValue());
-        assertEquals("\"http://example.com\"^^http://www.w3.org/2001/XMLSchema#anyURI", n.toString(null, true));
+        Node n3 = NodeFactory.createLiteral("http://example.com", XSDDatatype.XSDanyURI);
+        assertEquals(n3, n);
 
         UUID uuid = UUID.randomUUID();
         try {
@@ -95,7 +92,7 @@ public class ConvertersTest {
             assertEquals(uuid.toString(), n.getLiteralLexicalForm());
             assertEquals(uuid, n.getLiteralValue());
             String value = String.format("\"%s\"^^java:java.util.UUID", uuid);
-            assertEquals(value, n.toString(null, true));
+            assertEquals(value, n.toString());
         } catch (IllegalArgumentException expected) {
             fail("Unexpected IllegalArgumentException");
         }
@@ -107,7 +104,7 @@ public class ConvertersTest {
         Node n = Converters.makeLiteral("5", "http://www.w3.org/2001/XMLSchema#int");
         assertEquals("5", n.getLiteralLexicalForm());
         assertEquals(Integer.valueOf(5), n.getLiteralValue());
-        assertEquals("\"5\"^^http://www.w3.org/2001/XMLSchema#int", n.toString(null, true));
+        assertEquals("\"5\"^^xsd:int", n.toString());
 
         n = Converters.makeLiteral("one", "some:stuff");
         assertEquals("one", n.getLiteralLexicalForm());
@@ -117,7 +114,7 @@ public class ConvertersTest {
         } catch (DatatypeFormatException expected) {
             // do nothing.
         }
-        assertEquals("\"one\"^^some:stuff", n.toString(null, true));
+        assertEquals("\"one\"^^some:stuff", n.toString());
 
         try {
             Converters.makeLiteral("NaN", "http://www.w3.org/2001/XMLSchema#int");
@@ -159,8 +156,8 @@ public class ConvertersTest {
 
         TypeMapper.getInstance().registerDatatype(new UuidDataType());
         n = Converters.makeNode(uuid, pMap);
-        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(uuid);
-        assertEquals(NodeFactory.createLiteral(ll), n);
+        Node nu = NodeFactory.createLiteralByValue(uuid);
+        assertEquals(nu, n);
 
         n = Converters.makeNode(NodeFactory.createVariable("foo"), pMap);
         assertTrue(n.isVariable());
@@ -204,8 +201,8 @@ public class ConvertersTest {
 
         TypeMapper.getInstance().registerDatatype(new UuidDataType());
         n = Converters.makeNodeOrPath(uuid, pMap);
-        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(uuid);
-        assertEquals(NodeFactory.createLiteral(ll), n);
+        Node nu = NodeFactory.createLiteralByValue(uuid);
+        assertEquals(nu, n);
 
         n = Converters.makeNodeOrPath(NodeFactory.createVariable("foo"), pMap);
         assertTrue(n instanceof Var);

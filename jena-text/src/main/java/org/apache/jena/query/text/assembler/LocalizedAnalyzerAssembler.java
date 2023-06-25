@@ -34,7 +34,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 public class LocalizedAnalyzerAssembler extends AssemblerBase {
     /*
     text:map (
-         [ text:field "text" ; 
+         [ text:field "text" ;
            text:predicate rdfs:label;
            text:analyzer [
                a  lucene:LocalizedAnalyzer ;
@@ -50,7 +50,7 @@ public class LocalizedAnalyzerAssembler extends AssemblerBase {
             if (! node.isLiteral()) {
                 throw new TextIndexException("text:language property must be a string : " + node);
             }
-            String lang = node.toString();
+            String lang = node.asLiteral().getLexicalForm();
             return Util.getLocalizedAnalyzer(lang);
         } else {
             return new StandardAnalyzer();

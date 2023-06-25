@@ -153,20 +153,6 @@ public abstract class StatementBase
 	public String getLanguage()
 		{ return getLiteral().getLanguage(); }
 
-    /**
-     * @deprecated To be removed. Well-formedness of XML literal is not tested for.
-     */
-    @Deprecated
-	public boolean getWellFormed()
-		{ return hasWellFormedXML(); }
-
-	/**
-     * @deprecated To be removed. Well-formness of XML literal is not tested for.
-	 */
-	@Deprecated
-    public boolean hasWellFormedXML()
-        { return getLiteral().isWellFormedXML(); }
-
 	/**
 	 	Answer a string describing this Statement in a vaguely pretty way, with the
 	 	representations of the subject, predicate, and object in that order.
@@ -183,9 +169,9 @@ public abstract class StatementBase
 		}
 
 	/**
-	 	Answer a string describing <code>object</code>, quoting it if it is a literal.
+	 	Answer a string describing <code>object</code>
 	*/
-	protected String objectString( RDFNode object )
-		{ return object.asNode().toString( null, true ); }
-
-	}
+    protected String objectString(RDFNode object) {
+        return object.toString();
+    }
+}

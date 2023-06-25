@@ -18,29 +18,55 @@
 
 package org.apache.jena.graph;
 
+import java.util.Objects;
 
+import org.apache.jena.shared.PrefixMapping;
 
 /**
     RDF blank nodes, ie nodes with identity but without URIs.
 */
 
-public class Node_Blank extends Node_Concrete
+public class Node_Blank extends Node
 {
-    /* package */ Node_Blank( BlankNodeId id ) { super( id ); } 
+    private final BlankNodeId blankNodeId;
+
+    /* package */ Node_Blank( BlankNodeId id ) { this.blankNodeId = Objects.requireNonNull(id); }
 
     @Override
     public boolean isBlank() { return true; }
 
     @Override
-    public BlankNodeId getBlankNodeId()  { return (BlankNodeId) label; }
-    
+    public boolean isConcrete() { return true; }
+
+    @Override
+    public BlankNodeId getBlankNodeId()  { return blankNodeId; }
+
     @Override
     public Object visitWith( NodeVisitor v )
-        { return v.visitBlank( this, (BlankNodeId) label ); }
-    
+    { return v.visitBlank( this, blankNodeId); }
+
     @Override
-    public boolean equals( Object other )
-        {
-        if ( this == other ) return true ;
-        return other instanceof Node_Blank && label.equals( ((Node_Blank) other).label ); }
-        }
+    public int hashCode() {
+        return Objects.hash(blankNodeId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        Node_Blank other = (Node_Blank)obj;
+        return Objects.equals(blankNodeId, other.blankNodeId);
+    }
+
+    @Override
+    public String toString( PrefixMapping pmap ) { return toString(); }
+
+    @Override
+    public String toString() {
+        return "_:"+blankNodeId.toString();
+    }
+}

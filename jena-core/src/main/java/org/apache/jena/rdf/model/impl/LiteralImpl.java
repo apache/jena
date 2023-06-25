@@ -83,7 +83,14 @@ public class LiteralImpl extends EnhNode implements Literal {
         { return (ModelCom) getGraph(); }
 
     @Override public String toString() {
-        return asNode().toString( PrefixMapping.Standard, false );
+        // Code has depended on toString() on a string literal being the
+        // string itself, not quoted or escaped.
+        // Jena5 is now clean but applications may also have the same assumption.
+        // Jena 2,3,4 --
+        // return asNode().getLiteral().toString( PrefixMapping.Standard, false );
+        if ( Util.isSimpleString(this) )
+            return getLexicalForm();
+        return asNode().toString(PrefixMapping.Standard);
     }
 
     /**

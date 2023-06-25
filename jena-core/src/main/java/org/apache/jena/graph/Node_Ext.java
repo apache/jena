@@ -30,8 +30,10 @@ import java.util.Objects;
  */
 public abstract class Node_Ext<X> extends Node {
 
-    protected Node_Ext(X label) {
-        super(label);
+    private final X object;
+
+    protected Node_Ext(X object) {
+        this.object = Objects.requireNonNull(object);
     }
 
     @Override
@@ -46,9 +48,8 @@ public abstract class Node_Ext<X> extends Node {
         return false;
     }
 
-    @SuppressWarnings("unchecked")
     public X get() {
-        return (X)label;
+        return object;
     }
 
     @Override
@@ -56,14 +57,11 @@ public abstract class Node_Ext<X> extends Node {
         return true;
     }
 
-
-    // Only based on label.
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + Objects.hash(label);
-        return result;
+        if ( object == null )
+            return Node.hashExt;
+        return object.hashCode();
     }
 
     @Override
@@ -72,10 +70,9 @@ public abstract class Node_Ext<X> extends Node {
             return true;
         if ( obj == null )
             return false;
-        // Class test - makes equality keep apart subclass instances.
         if ( getClass() != obj.getClass() )
             return false;
         Node_Ext<?> other = (Node_Ext<?>)obj;
-        return Objects.equals(label, other.label);
+        return Objects.equals(object, other.object);
     }
 }

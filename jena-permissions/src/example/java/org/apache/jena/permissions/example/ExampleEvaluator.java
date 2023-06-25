@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,6 @@ package org.apache.jena.permissions.example;
 import java.security.Principal;
 import java.util.Set;
 
-import org.apache.http.auth.BasicUserPrincipal;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.SecurityEvaluator;
@@ -42,7 +41,7 @@ public class ExampleEvaluator implements SecurityEvaluator {
     private Property pFrom = ResourceFactory.createProperty("http://example.com/from");
 
     /**
-     * 
+     *
      * @param model The graph we are going to evaluate against.
      */
     public ExampleEvaluator(Model model) {
@@ -127,7 +126,11 @@ public class ExampleEvaluator implements SecurityEvaluator {
         if (userName == null) {
             principal = null;
         }
-        principal = new BasicUserPrincipal(userName);
+        principal = new Principal() {
+            @Override
+            public String getName() {
+                return userName;
+            }};
     }
 
     @Override

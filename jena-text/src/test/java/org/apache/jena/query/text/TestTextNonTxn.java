@@ -45,7 +45,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /** Test using various dataset implmentations without transactions
  *  No context-set union graph usage either.
- */  
+ */
 @RunWith(Parameterized.class)
 public class TestTextNonTxn
 {
@@ -71,10 +71,10 @@ public class TestTextNonTxn
         Dataset ds = TextDatasetFactory.create(ds1, tidx) ;
         return ds ;
     }
-    
+
     private final Creator<Dataset> factory;
     private final boolean dsFrom;
-    
+
     public TestTextNonTxn(String name, Creator<Dataset> factory, Boolean dsFrom) {
         this.factory = factory;
         // Does FROM work by pulling graphs from the dataset?
@@ -84,7 +84,7 @@ public class TestTextNonTxn
     @Test public void textNonTxn_from_named_graph_1() {
         assumeTrue(dsFrom);
         Dataset ds = create() ;
-        data(ds, 
+        data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
              "(<ex:g1> <s2> rdfs:label 'apple')",
              "(<ex:g2> <s3> rdfs:label 'bar')") ;
@@ -105,7 +105,7 @@ public class TestTextNonTxn
     @Test public void textNonTxn_from_union_graph() {
         assumeTrue(dsFrom);
         Dataset ds = create() ;
-        data(ds, 
+        data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
              "(<ex:g1> <s2> rdfs:label 'apple')",
              "(<ex:g2> <s3> rdfs:label 'food')") ;
@@ -113,7 +113,7 @@ public class TestTextNonTxn
             "PREFIX text:   <http://jena.apache.org/text#>",
             "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT *",
-            "FROM <"+Quad.unionGraph+">",
+            "FROM <"+Quad.unionGraph.getURI()+">",
             "{ ?s text:query 'foo*' . ?s rdfs:label ?o }"
             ) ;
         Query q = QueryFactory.create(qs) ;
@@ -125,7 +125,7 @@ public class TestTextNonTxn
 
     @Test public void textNonTxn_graph_union_graph() {
         Dataset ds = create() ;
-        data(ds, 
+        data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
              "(<ex:g1> <s2> rdfs:label 'apple')",
              "(<ex:g2> <s3> rdfs:label 'food')") ;
@@ -133,7 +133,7 @@ public class TestTextNonTxn
             "PREFIX text:   <http://jena.apache.org/text#>",
             "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT *",
-            "{ GRAPH <"+Quad.unionGraph+">",
+            "{ GRAPH <"+Quad.unionGraph.getURI()+">",
             "    { ?s text:query 'foo*' . ?s rdfs:label ?o }",
             "}"
             ) ;
@@ -143,10 +143,10 @@ public class TestTextNonTxn
         List<QuerySolution> x = Iter.toList(rs) ;
         assertEquals(2,x.size());
     }
-    
+
     @Test public void textDB_7_subject_bound_first() {
         Dataset ds = create() ;
-        data(ds, 
+        data(ds,
             "(<ex:g1> <s1> rdfs:label 'foo')",
             "(<ex:g1> <s1> rdf:type <http://example.org/Entity>)",
             "(<ex:g1> <s2> rdfs:label 'apple')",

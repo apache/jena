@@ -56,7 +56,7 @@ public abstract class AbstractTestAdditional {
                                             ,")");
             DatasetGraph dsg = SSE.parseDatasetGraph(data);
             dataset.asDatasetGraph().addAll(dsg);
-            String qs = PREFIXES+"SELECT * { VALUES ?s { :s1 } GRAPH <"+Quad.unionGraph+"> { ?s ?p ?o } }";
+            String qs = PREFIXES+"SELECT * { VALUES ?s { :s1 } GRAPH <"+Quad.unionGraph.getURI()+"> { ?s ?p ?o } }";
             Query query = QueryFactory.create(qs);
             try ( QueryExec qExec = QueryExec.dataset(dsg).query(query).build() ) {
                 RowSetRewindable rs = qExec.select().rewindable();
