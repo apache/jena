@@ -74,6 +74,28 @@ public class LiteralLabelFactory
      * assume this is intended to be a lexical form after all.
      *
      * @param value the value of the literal
+     */
+    public static LiteralLabel createByValue(Object value) throws DatatypeFormatException {
+        return new LiteralLabel(value) ;
+    }
+
+    /**
+     * Build a typed literal label from its value form. If the value is a string we
+     * assume this is intended to be a lexical form after all.
+     *
+     * @param value the value of the literal
+     * @param dtype the type of the literal, null for old style "plain" literals (which become xsd:string in RDF 1.1)
+     */
+    public static LiteralLabel createByValue(Object value, RDFDatatype dtype) throws DatatypeFormatException {
+        dtype = fixDatatype(dtype, null) ;
+        return new LiteralLabel(value, null, dtype) ;
+    }
+
+    /**
+     * Build a typed literal label from its value form. If the value is a string we
+     * assume this is intended to be a lexical form after all.
+     *
+     * @param value the value of the literal
      * @param lang the optional language tag, only relevant for plain literals
      * @param dtype the type of the literal, null for old style "plain" literals (which become xsd:string in RDF 1.1)
      */

@@ -38,7 +38,7 @@ public class TestNodeValueSortKey {
         assertTrue(nv instanceof NodeValueSortKey);
         assertEquals("es", nv.getSortKey().getCollation());
     }
-    
+
     @Test
     public void testCreateNodeValueSortKey() {
         NodeValueSortKey nv = new NodeValueSortKey("", null);
@@ -72,7 +72,7 @@ public class TestNodeValueSortKey {
         NodeValueSortKey nv = new NodeValueSortKey("Casa", "pt-BR");
         Node n = nv.makeNode();
         assertTrue(n.isLiteral());
-        assertEquals("Casa", n.getLiteral().toString());
+        assertEquals("\"Casa\"", n.getLiteral().toString());
     }
 
     @Test

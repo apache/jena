@@ -187,8 +187,12 @@ public class ResourceImpl extends EnhNode implements Resource {
         { return node.hasURI( uri ); }
 
     @Override
-    public String toString()
-        { return asNode().toString(); }
+    public String toString() {
+        if ( isURIResource() )
+            return getURI();
+        else
+            return asNode().toString();
+    }
 
 	protected ModelCom mustHaveModel()
 		{

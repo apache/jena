@@ -56,17 +56,13 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
     protected static Map<String, List<Rule>> ruleSets = new HashMap<>();
 
     /** The rule file names, indexed by processing level */
-    protected static Map<String, String> ruleFiles;
+    protected static Map<String, String> ruleFiles = Map.of
+            (DEFAULT_RULES, RULE_FILE,
+             FULL_RULES, FULL_RULE_FILE,
+             SIMPLE_RULES, SIMPLE_RULE_FILE);
 
     /** The (stateless) preprocessor for container membership properties */
     protected static RulePreprocessHook cmpProcessor = new RDFSCMPPreprocessHook();
-
-    static {
-        ruleFiles = new HashMap<>();
-        ruleFiles.put(DEFAULT_RULES, RULE_FILE);
-        ruleFiles.put(FULL_RULES, FULL_RULE_FILE);
-        ruleFiles.put(SIMPLE_RULES, SIMPLE_RULE_FILE);
-    }
 
     /**
      * Constructor
@@ -89,7 +85,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
             StmtIterator i = configuration.listProperties();
             while (i.hasNext()) {
                 Statement st = i.nextStatement();
-                doSetParameter(st.getPredicate(), st.getObject().toString());
+                doSetParameter(st.getPredicate(), st.getObject());
             }
         }
     }
@@ -110,6 +106,10 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
      */
     @Override
     protected boolean doSetParameter(Property parameter, Object value) {
+        if ( value instanceof Literal )
+            // Without risk of quoting
+            value = ((Literal)value).getString();
+
         if (parameter.equals(ReasonerVocabulary.PROPenableCMPScan)) {
             boolean scanProperties = Util.convertBooleanPredicateArg(parameter, value);
             if (scanProperties) {

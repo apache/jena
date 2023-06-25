@@ -28,6 +28,7 @@ import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
 public class TestPackage extends TestCase {
 
     static public TestSuite suite() {
+        //JenaSystem.init();
         // Reads Turtle (old parser, not up-to-date but we need something for testing.)
         RDFReaderFImpl.alternative(new X_RDFReaderF());
 
