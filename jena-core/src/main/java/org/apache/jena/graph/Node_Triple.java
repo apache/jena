@@ -22,8 +22,9 @@ import java.util.Objects;
 
 import org.apache.jena.shared.PrefixMapping;
 
-/** RDF triples as RDF terms for RDF-star embedded triples. */
+/** RDF triples as RDF terms for RDF-star quoted triples. */
 public class Node_Triple extends Node {
+
     private final Triple triple;
 
     public Node_Triple(Node s, Node p, Node o) {
@@ -31,15 +32,13 @@ public class Node_Triple extends Node {
     }
 
     public Node_Triple(Triple triple) {
-        super(triple);
-        this.triple = triple;
+        this.triple = Objects.requireNonNull(triple);
     }
 
     @Override
     public Triple getTriple() {
         return triple;
     }
-
 
     @Override
     public boolean isConcrete() {
@@ -59,10 +58,7 @@ public class Node_Triple extends Node {
     // Only based on label.
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + Objects.hash(label);
-        return result;
+        return Node.hashNodeTriple + triple.hashCode();
     }
 
     @Override
@@ -74,12 +70,16 @@ public class Node_Triple extends Node {
         if ( getClass() != obj.getClass() )
             return false;
         Node_Triple other = (Node_Triple)obj;
-        return Objects.equals(label, other.label);
+        return triple.equals(other.triple);
     }
 
+    @Override
+    public String toString(PrefixMapping pm) {
+        return "<< " + triple.toString() + " >>";
+    }
 
     @Override
-    public String toString(PrefixMapping pm, boolean quoting) {
-        return "<< " + label.toString() + " >>";
+    public String toString() {
+        return triple.toString();
     }
 }

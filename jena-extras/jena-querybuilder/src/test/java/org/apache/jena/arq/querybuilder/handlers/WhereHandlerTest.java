@@ -22,24 +22,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
-import org.apache.jena.arq.querybuilder.AskBuilder;
-import org.apache.jena.arq.querybuilder.ConstructBuilder;
-import org.apache.jena.arq.querybuilder.DescribeBuilder;
-import org.apache.jena.arq.querybuilder.ExprFactory;
-import org.apache.jena.arq.querybuilder.SelectBuilder;
-import org.apache.jena.arq.querybuilder.WhereBuilder;
-import org.apache.jena.arq.querybuilder.WhereValidator;
+import org.apache.jena.arq.querybuilder.*;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.shared.PrefixMapping;
@@ -57,16 +45,7 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathParser;
-import org.apache.jena.sparql.syntax.ElementBind;
-import org.apache.jena.sparql.syntax.ElementData;
-import org.apache.jena.sparql.syntax.ElementFilter;
-import org.apache.jena.sparql.syntax.ElementGroup;
-import org.apache.jena.sparql.syntax.ElementMinus;
-import org.apache.jena.sparql.syntax.ElementNamedGraph;
-import org.apache.jena.sparql.syntax.ElementOptional;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
-import org.apache.jena.sparql.syntax.ElementSubQuery;
-import org.apache.jena.sparql.syntax.ElementUnion;
+import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Before;
 import org.junit.Test;
@@ -236,7 +215,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         Node q = NodeFactory.createURI("urn:q");
         Node v = NodeFactory.createURI("urn:v");
         Var x = Var.alloc("x");
-        Node n123 = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(123));
+        Node n123 = NodeFactory.createLiteralByValue(123);
 
         pattern.addWhere(new TriplePath(Triple.create(s, q, n123)));
         pattern.addWhere(new TriplePath(Triple.create(s, v, x)));
@@ -621,12 +600,12 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         Map<Var, Node> values = new HashMap<>();
 
-        values.put(Var.alloc("v"), NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
+        values.put(Var.alloc("v"), NodeFactory.createLiteralByValue(10));
         handler.setVars(values);
         handler.build();
 
         expr = new ExprFactory().lt(NodeFactory.createVariable("one"),
-                NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
+                                    NodeFactory.createLiteralByValue(10));
         visitor = new WhereValidator(new ElementFilter(expr));
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
@@ -1001,7 +980,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
     @Test
     public void testSetVarsInWhereValues() {
         Var v = Var.alloc("v");
-        Node value = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
+        Node value = NodeFactory.createLiteralByValue(10);
         Map<Var, Node> values = new HashMap<>();
         values.put(v, value);
 

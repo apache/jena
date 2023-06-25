@@ -18,38 +18,50 @@
 
 package org.apache.jena.graph;
 
-import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.shared.PrefixMapping;
 
 /**
     A Node_ANY (there should be only one) is a meta-node that is used to stand
     for any other node in a query.
 */
 
-public class Node_ANY extends Node_Fluid
-    {
-    /* package */ Node_ANY() { super( "" ); }
-    
-    /** Node_ANY's are only equal to other Node_ANY's */
+public class Node_ANY extends Node {
+
+    /*package*/ static final Node_ANY nodeANY = new Node_ANY();
+
+    private Node_ANY() {}
+
     @Override
-    public boolean equals( Object other )
-        {
-        if ( this == other ) return true ;
-        return other instanceof Node_ANY;
-        }
-        
+    public boolean isConcrete() { return false; }
+
     @Override
-    public Object visitWith( NodeVisitor v )
-        { return v.visitAny( this ); }
-        
-    @Override
-    public boolean matches( Node other )
-        { return other != null; }
-        
-    @Override
-    public String toString()
-        { return "ANY"; }
-    
-    @Override
-    public String toString( PrefixMapping pm, boolean quoting )
-        { return "ANY"; }
+    public int hashCode() {
+        return Node.hashANY;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        // This is only one such object.
+        if ( this == other )
+            return true;
+        return false;
+    }
+
+    @Override
+    public Object visitWith(NodeVisitor v) {
+        return v.visitAny(this);
+    }
+
+    @Override
+    public boolean matches(Node other) {
+        return other != null;
+    }
+
+    @Override
+    public String toString( PrefixMapping pmap ) { return toString(); }
+
+    @Override
+    public String toString() {
+        return "ANY";
+    }
+}

@@ -929,21 +929,21 @@ public class TestTransformFilters
         // Tests use of multiple != conditions on same variable
         testOp("(filter ((!= ?x <x>) (!= ?x <y>)) (bgp ( ?s ?p ?x)) )",
                t_inequality,
-               "(minus (bgp (?s ?p ?x)) (table (vars ?x) (row [?x <y>]) (row [?x <x>])))");
+               "(minus (bgp (?s ?p ?x)) (table (vars ?x) (row [?x <x>]) (row [?x <y>])) )");
     }
 
     @Test public void inequality09() {
         // Tests use of multiple != conditions on different variables
         testOp("(filter ((!= ?x <x>) (!= ?p <y>)) (bgp ( ?s ?p ?x)) )",
                t_inequality,
-               "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?p <y>]) (row [?x <x>])))");
+               "(minus (bgp (?s ?p ?x)) (table (vars ?x ?p) (row [?x <x>])(row [?p <y>]) ))");
     }
 
     @Test public void inequality10() {
         // Tests use of multiple != conditions on both same and different variables
         testOp("(filter ((!= ?x <x>) (!= ?x <y>) (!= ?p <type>)) (bgp ( ?s ?p ?x)) )",
                t_inequality,
-               "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?p <type>]) (row [?x <y>]) (row [?x <x>])))");
+               "(minus (bgp (?s ?p ?x)) (table (vars ?x ?p) (row [?x <x>]) (row [?x <y>]) (row [?p <type>]) ))");
     }
 
     @Test public void inequality11() {

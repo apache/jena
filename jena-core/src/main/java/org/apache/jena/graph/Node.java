@@ -39,15 +39,20 @@ import org.apache.jena.sys.Serializer;
 
 public abstract class Node implements Serializable {
 
-    final protected Object label;
-    static final int THRESHOLD = 10000;
-
     /**
         The canonical instance of Node_ANY. No other instances are required.
     */
-    public static final Node ANY = new Node_ANY();
+    public static final Node ANY = Node_ANY.nodeANY;
 
     static final String RDFprefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+
+    // Constants to separate hashes.
+    // e.g. label is string so we perturb the hash code.
+    protected static final int hashURI = 30 ;
+    protected static final int hashVariable = 29 ;
+    protected static final int hashANY = 28 ;
+    protected static final int hashNodeTriple = 27;
+    protected static final int hashExt = 26 ;
 
     /**
         Visit a Node and dispatch on it to the appropriate method from the
@@ -59,7 +64,7 @@ public abstract class Node implements Serializable {
     public abstract Object visitWith( NodeVisitor v );
 
     /**
-        Answer true iff this node is concrete, ie not variable, ie URI, blank, or literal.
+        Answer true iff this node is concrete, meaning a node that is data in an RDF Graph.
     */
     public abstract boolean isConcrete();
 
@@ -207,14 +212,19 @@ public abstract class Node implements Serializable {
     public boolean hasURI( String uri )
         { return false; }
 
-    /* package visibility only */ Node( Object label )
-        { this.label = label; }
+    /** See {@link Node_Ext} for custom Nodes */
+    /*package*/ Node( ) {}
 
     /**
-		Nodes only equal other Nodes that have equal labels.
+		Java rules for equals.
+
+		See also {#sameTermAs} and {#sameValueAs} Nodes only equal other Nodes that have equal labels.
 	*/
     @Override
     public abstract boolean equals(Object o);
+
+    public boolean sameTermAs(Object o)
+    { return equals( o ); }
 
     /**
      * Test that two nodes are semantically equivalent.
@@ -226,20 +236,30 @@ public abstract class Node implements Serializable {
      * override this.</p>
      */
     public boolean sameValueAs(Object o)
-        { return equals( o ); }
+    { return equals( o ); }
 
+    /** Answer a human-readable representation of this Node. */
     @Override
-    public int hashCode()
-        { return label.hashCode() * 31; }
+    public abstract String toString();
 
     /**
-        Answer true iff this node accepts the other one as a match.
-        The default is an equality test; it is over-ridden in subclasses to
-        provide the appropriate semantics for literals, ANY, and variables.
+     * Answer a human-readable representation of the Node.
+     * For URIs, abbreviate URI.
+     * For literals, quoting literals and abbreviating datatype URI.
+     */
+    public abstract String toString( PrefixMapping pmap );
 
-        @param other a node to test for matching
-        @return true iff this node accepts the other as a match
-    */
+    @Override
+    public abstract int hashCode();
+
+    /**
+     * Answer true iff this node accepts the other one as a match. The default is an
+     * equality test; it is over-ridden in subclasses to provide the appropriate
+     * semantics for literals, ANY, and variables.
+     *
+     * @param other a node to test for matching
+     * @return true iff this node accepts the other as a match
+     */
     public boolean matches( Node other )
         { return equals( other ); }
 
@@ -260,33 +280,4 @@ public abstract class Node implements Serializable {
     }
     // ---- Serializable
 
-    /**
-        Answer a human-readable representation of this Node. It will not compress URIs,
-        nor quote literals (because at the moment too many places use toString() for
-        something machine-oriented).
-    */
-    @Override
-    public String toString()
-    	{ return toString( null ); }
-
-    /**
-         Answer a human-readable representation of this Node where literals are
-         quoted according to <code>quoting</code> but URIs are not compressed.
-    */
-    public String toString( boolean quoting )
-        { return toString( null, quoting ); }
-
-    /**
-        Answer a human-readable representation of the Node, quoting literals and
-        compressing URIs.
-    */
-    public String toString( PrefixMapping pm )
-        { return toString( pm, true ); }
-
-    /**
-        Answer a human readable representation of this Node, quoting literals if specified,
-        and compressing URIs using the prefix mapping supplied.
-    */
-    public String toString( PrefixMapping pm, boolean quoting )
-        { return label.toString(); }
-    }
+}

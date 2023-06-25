@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.impl.LiteralLabel;
@@ -94,8 +95,8 @@ public class AbstractQueryBuilderTest {
 
         n = builder.makeNode(Integer.valueOf(5));
         assertTrue(n.isLiteral());
-        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(Integer.valueOf(5));
-        assertEquals(NodeFactory.createLiteral(ll), n);
+        assertEquals(XSDDatatype.XSDint, n.getLiteralDatatype());
+        assertEquals("5", n.getLiteralLexicalForm());
 
         n = builder.makeNode(NodeFactory.createVariable("foo"));
         assertTrue(n.isVariable());
@@ -128,8 +129,10 @@ public class AbstractQueryBuilderTest {
         assertTrue(result.contains(n2));
         assertTrue(result.contains(NodeFactory.createURI("http://example.com/type")));
         assertTrue(result.contains(NodeFactory.createURI("one")));
+
+        Node n = NodeFactory.createLiteral("5", XSDDatatype.XSDint);
         LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(Integer.valueOf(5));
-        assertTrue(result.contains(NodeFactory.createLiteral(ll)));
+        assertTrue(result.contains(n));
 
     }
 

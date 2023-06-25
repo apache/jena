@@ -963,11 +963,11 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString copy = query.copy();
         copy.setIri("x", "http://example.org/copy");
 
-        Assert.assertEquals("http://example.org/original", query.getParam("x").toString());
-        Assert.assertFalse("http://example.org/copy".equals(query.getParam("x").toString()));
+        Assert.assertEquals("http://example.org/original", query.getParam("x").getURI());
+        Assert.assertFalse("http://example.org/copy".equals(query.getParam("x").getURI()));
 
-        Assert.assertEquals("http://example.org/copy", copy.getParam("x").toString());
-        Assert.assertFalse("http://example.org/original".equals(copy.getParam("x").toString()));
+        Assert.assertEquals("http://example.org/copy", copy.getParam("x").getURI());
+        Assert.assertFalse("http://example.org/original".equals(copy.getParam("x").getURI()));
     }
 
     @Test
@@ -997,7 +997,7 @@ public class TestParameterizedSparqlString {
         query.setIri("x", "http://example.org/original");
         ParameterizedSparqlString copy = query.copy(false);
 
-        Assert.assertEquals("http://example.org/original", query.getParam("x").toString());
+        Assert.assertEquals("http://example.org/original", query.getParam("x").getURI());
         Assert.assertEquals(null, copy.getParam("x"));
     }
 
@@ -1020,11 +1020,11 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString copy = query.copy();
         copy.setIri(0, "http://example.org/copy");
 
-        Assert.assertEquals("http://example.org/original", query.getParam(0).toString());
-        Assert.assertFalse("http://example.org/copy".equals(query.getParam(0).toString()));
+        Assert.assertEquals("http://example.org/original", query.getParam(0).getURI());
+        Assert.assertFalse("http://example.org/copy".equals(query.getParam(0).getURI()));
 
-        Assert.assertEquals("http://example.org/copy", copy.getParam(0).toString());
-        Assert.assertFalse("http://example.org/original".equals(copy.getParam(0).toString()));
+        Assert.assertEquals("http://example.org/copy", copy.getParam(0).getURI());
+        Assert.assertFalse("http://example.org/original".equals(copy.getParam(0).getURI()));
     }
 
     @Test
@@ -1034,7 +1034,7 @@ public class TestParameterizedSparqlString {
         query.setIri(0, "http://example.org/original");
         ParameterizedSparqlString copy = query.copy(false);
 
-        Assert.assertEquals("http://example.org/original", query.getParam(0).toString());
+        Assert.assertEquals("http://example.org/original", query.getParam(0).getURI());
         Assert.assertEquals(null, copy.getParam(0));
     }
 

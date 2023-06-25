@@ -257,10 +257,8 @@ public class TestNode extends GraphTestBase
 
     public void testVariableSupport()
     {
-        assertEquals( Node_Variable.variable( "xxx" ), Node_Variable.variable( "xxx" ) );
-        assertDiffer( Node_Variable.variable( "xxx" ), Node_Variable.variable( "yyy" ) );
-        assertEquals( Node_Variable.variable( "aaa" ), Node_Variable.variable( "aaa" ) );
-        assertDiffer( Node_Variable.variable( "aaa" ), Node_Variable.variable( "yyy" ) );
+        assertEquals( new Node_Variable( "xxx" ), new Node_Variable( "xxx" ) );
+        assertDiffer( new Node_Variable( "xxx" ), new Node_Variable( "yyy" ) );
     }
 
     /**
@@ -419,7 +417,7 @@ public class TestNode extends GraphTestBase
         testCreateURI( "dc:creator", DC.getURI() + "creator" );
         testCreateURI( "rss:something", RSS.getURI() + "something" );
         testCreateURI( "vcard:TITLE", VCARD.getURI() + "TITLE" );
-        testCreateURI( "owl:wol", OWL.NAMESPACE + "wol" );
+        testCreateURI( "owl:wol", OWL.NAMESPACE.getURI() + "wol" );
     }
 
     public void testCreateURIOtherMap()
@@ -621,9 +619,8 @@ public class TestNode extends GraphTestBase
         Node english = NodeFactory.createLiteral( "eccentric", "en_UK");
         Node typed = NodeFactory.createLiteral( "10", dtInt );
         assertEquals( "\"rhubarb\"", plain.toString() );
-        assertEquals( "rhubarb", plain.toString( false ) );
         assertEquals( "\"eccentric\"@en_UK", english.toString() );
-        assertEquals( "10^^http://www.w3.org/2001/XMLSchema#int", typed.toString( false ) );
+        assertEquals( "\"10\"^^xsd:int", typed.toString() );
     }
 
     public void testGetIndexingValueURI()

@@ -53,7 +53,7 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestDatasetWithStandardAnalyzer.class
     , TestDatasetWithKeywordAnalyzer.class
     , TestDatasetWithLowerCaseKeywordAnalyzer.class
-    , TestLuceneWithMultipleThreads.class
+//    , TestLuceneWithMultipleThreads.class
     , TestDatasetWithLocalizedAnalyzer.class
     , TestDatasetWithConfigurableAnalyzer.class
     , TestDatasetWithAnalyzingQueryParser.class

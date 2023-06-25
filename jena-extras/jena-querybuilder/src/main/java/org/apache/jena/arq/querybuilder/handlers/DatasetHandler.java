@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,7 @@ public class DatasetHandler implements Handler {
 
     /**
      * Constructor.
-     * 
+     *
      * @param query The query the handler will manage.
      */
     public DatasetHandler(Query query) {
@@ -45,7 +45,7 @@ public class DatasetHandler implements Handler {
 
     /**
      * Add all the dataset information from the handler argument.
-     * 
+     *
      * @param datasetHandler The handler to copy from.
      */
     public void addAll(DatasetHandler datasetHandler) {
@@ -55,7 +55,7 @@ public class DatasetHandler implements Handler {
 
     /**
      * Add a graph name to the from named list.
-     * 
+     *
      * @param graphName The graph name to add.
      */
     public void fromNamed(String graphName) {
@@ -64,9 +64,9 @@ public class DatasetHandler implements Handler {
 
     /**
      * Add the graph names to the from named list.
-     * 
+     *
      * The names are ordered in as defined in the collection.
-     * 
+     *
      * @param graphNames The from names to add.
      */
     public void fromNamed(Collection<String> graphNames) {
@@ -77,7 +77,7 @@ public class DatasetHandler implements Handler {
 
     /**
      * Add the graph names to the from list.
-     * 
+     *
      * @param graphName the name to add.
      */
     public void from(String graphName) {
@@ -86,9 +86,9 @@ public class DatasetHandler implements Handler {
 
     /**
      * Add the graph names to the named list.
-     * 
+     *
      * The names are ordered in as defined in the collection.
-     * 
+     *
      * @param graphNames The names to add.
      */
     public void from(Collection<String> graphNames) {
@@ -99,10 +99,10 @@ public class DatasetHandler implements Handler {
 
     /**
      * Set the variables for field names that contain lists of strings.
-     * 
+     *
      * Strings that start with "?" are assumed to be variable names and will be
      * replaced with matching node.toString() values.
-     * 
+     *
      * @param values The values to set.
      * @param fieldName The field name in Query that contain a list of strings.
      */
@@ -117,10 +117,20 @@ public class DatasetHandler implements Handler {
             if (s.startsWith("?")) {
                 Var v = Var.alloc(s.substring(1));
                 n = values.get(v);
-                lst.set(i, n == null ? s : n.toString());
+                // Need a raw string for URIs and literals.
+                // Protect against choice of toString.
+                String x = s ;
+                if ( n != null ) {
+                    if ( n.isURI() )
+                        x = n.getURI();
+                    else if ( n.isLiteral() )
+                        x = n.getLiteralLexicalForm() ;
+                    else
+                        x = n.toString();
+                }
+                lst.set(i, x);
             }
         }
-
     }
 
     @Override
