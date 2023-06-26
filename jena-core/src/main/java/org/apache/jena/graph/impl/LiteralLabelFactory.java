@@ -47,7 +47,7 @@ public class LiteralLabelFactory
 
     /** Create a literal with a dtype. */
     public static LiteralLabel create( String lex, RDFDatatype dtype) {
-        return new LiteralLabelImpl( lex, "", dtype );
+        return new LiteralLabel( lex, "", dtype );
     }
 
     /** Using {@link #create(String, String)} or {@link #create(String, RDFDatatype)}
@@ -57,7 +57,7 @@ public class LiteralLabelFactory
         throws DatatypeFormatException
     {
         dtype = fixDatatype(dtype, lang) ;
-        return new LiteralLabelImpl( lex, lang, dtype ); }
+        return new LiteralLabel( lex, lang, dtype ); }
 
     /**
      * Build a plain literal label from its lexical form and language tag.
@@ -66,7 +66,7 @@ public class LiteralLabelFactory
      */
     public static LiteralLabel create(String lex, String lang) {
         RDFDatatype dt = fixDatatype(null, lang) ;
-        return new LiteralLabelImpl(lex, lang, dt);
+        return new LiteralLabel(lex, lang, dt);
     }
 
     /**
@@ -101,7 +101,7 @@ public class LiteralLabelFactory
      */
     public static LiteralLabel createByValue(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
         dtype = fixDatatype(dtype, lang) ;
-        return new LiteralLabelImpl(value, lang, dtype) ;
+        return new LiteralLabel(value, lang, dtype) ;
     }
 
     /**
@@ -112,7 +112,7 @@ public class LiteralLabelFactory
      * @param value the literal value to encapsulate
      */
     public static LiteralLabel createTypedLiteral(Object value) {
-        return new LiteralLabelImpl(value) ;
+        return new LiteralLabel(value) ;
     }
 
     /**
@@ -121,7 +121,7 @@ public class LiteralLabelFactory
      */
     public static LiteralLabel create(String s, String lang, boolean xml) {
         if ( xml )
-            return new LiteralLabelImpl(s, lang, xml) ;
+            return new LiteralLabel(s, lang, xml) ;
         return create(s, lang) ;
     }
 
