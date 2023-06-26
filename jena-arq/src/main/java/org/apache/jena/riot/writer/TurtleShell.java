@@ -58,6 +58,7 @@ public abstract class TurtleShell {
     protected final String         baseURI ;
     protected final Context        context ;
     protected final DirectiveStyle    prefixStyle;
+    protected final IndentStyle    indentStyle;
 
     protected TurtleShell(IndentedWriter out, PrefixMap pmap, String baseURI, NodeFormatter nodeFmt, Context context) {
         this.out = out ;
@@ -68,6 +69,7 @@ public abstract class TurtleShell {
         this.nodeFmt = nodeFmt ;
         this.context = context;
         this.prefixStyle = WriterLib.directiveStyle(context) ;
+        this.indentStyle = WriterLib.indentStyle(context) ;
     }
 
     protected TurtleShell(IndentedWriter out, PrefixMap pmap, String baseURI, Context context) {
@@ -92,7 +94,7 @@ public abstract class TurtleShell {
 
     /** Write graph in Turtle syntax (or part of TriG) */
     protected void writeGraphTTL(Graph graph) {
-        ShellGraph x = new ShellGraph(graph, null, null, null) ;
+        ShellGraph x = createShellGraph(graph, null, null, null) ;
         x.writeGraph() ;
     }
 
@@ -101,13 +103,504 @@ public abstract class TurtleShell {
         Graph g = (graphName == null || Quad.isDefaultGraph(graphName))
             ? dsg.getDefaultGraph()
             : dsg.getGraph(graphName) ;
-        ShellGraph x = new ShellGraph(g, graphName, dsg, graphNames) ;
+        ShellGraph x = createShellGraph(g, graphName, dsg, graphNames) ;
         x.writeGraph() ;
     }
 
+    private ShellGraph createShellGraph(Graph graph, Node graphName, DatasetGraph dsg, Set<Node> graphNames) {
+        if (this.indentStyle == IndentStyle.LONG) {
+            return new ShellGraphLong(graph, graphName, dsg, graphNames) ;
+        } else {
+            return new ShellGraphWide(graph, graphName, dsg, graphNames) ;
+        }
+    }
+
+    private final class ShellGraphWide extends ShellGraph {
+
+         private ShellGraphWide(Graph graph, Node graphName, DatasetGraph dsg, Set<Node> graphNames) {
+            super(graph, graphName, dsg, graphNames);
+        }
+
+         protected boolean writeRemainingNLinkedLists(boolean somethingWritten) {
+            // Print carefully - need a label for the first cell.
+            // So we write out the first element of the list in triples, then
+            // put the remainer as a pretty list
+            for ( Node n : nLinkedLists.keySet() ) {
+                if ( somethingWritten )
+                    out.println() ;
+                somethingWritten = true ;
+
+                List<Node> x = nLinkedLists.get(n) ;
+                writeNode(n) ;
+
+                write_S_P_Gap();
+                out.pad() ;
+
+                writeNode(RDF_First) ;
+                print(" ") ;
+                writeNode(x.get(0)) ;
+                print(" ;") ;
+                println() ;
+                writeNode(RDF_Rest) ;
+                print("  ") ;
+                x = x.subList(1, x.size()) ;
+                writeList(x) ;
+                print(" .") ;
+                out.decIndent(INDENT_PREDICATE) ;
+                println() ;
+            }
+            return somethingWritten ;
+        }
+
+        protected void writeCluster(Node subject, Collection<Triple> cluster) {
+            if ( cluster.isEmpty() )
+                return ;
+            writeNode(subject) ;
+            writeClusterPredicateObjectList(INDENT_PREDICATE, cluster) ;
+        }
+
+        protected void writePredicateObjectList(Collection<Triple> cluster) {
+            Map<Node, List<Node>> pGroups = groupByPredicates(cluster) ;
+            Collection<Node> predicates = pGroups.keySet() ;
+
+            // Find longest predicate URI
+            int predicateMaxWidth = Widths.calcWidth(prefixMap, baseURI, predicates, MIN_PREDICATE, LONG_PREDICATE, printTypeKeyword) ;
+
+            boolean first = true ;
+
+            if ( !OBJECT_LISTS ) {
+                for ( Node p : predicates ) {
+                    for ( Node o : pGroups.get(p) ) {
+                        writePredicateObject(p, o, predicateMaxWidth, first) ;
+                        first = false ;
+                    }
+                }
+                return ;
+            }
+
+            for ( Node p : predicates ) {
+                // Literals in the group
+                List<Node> rdfLiterals = new ArrayList<>() ;
+                // Non-literals, printed
+                List<Node> rdfSimpleNodes = new ArrayList<>() ;
+                // Non-literals, printed (), or []-embedded
+                List<Node> rdfComplexNodes = new ArrayList<>() ;
+
+                for ( Node o : pGroups.get(p) ) {
+                    if ( o.isLiteral() ) {
+                        rdfLiterals.add(o) ;
+                        continue ;
+                    }
+                    if ( isPrettyNode(o) ) {
+                        rdfComplexNodes.add(o) ;
+                        continue ;
+                    }
+                    rdfSimpleNodes.add(o) ;
+                }
+
+                if ( ! rdfLiterals.isEmpty() ) {
+                    writePredicateObjectList(p, rdfLiterals, predicateMaxWidth, first) ;
+                    first = false ;
+                }
+                if ( ! rdfSimpleNodes.isEmpty() ) {
+                    writePredicateObjectList(p, rdfSimpleNodes, predicateMaxWidth, first) ;
+                    first = false ;
+                }
+                for ( Node o : rdfComplexNodes ) {
+                    writePredicateObject(p, o, predicateMaxWidth, first) ;
+                    first = false ;
+                }
+            }
+        }
+
+        private void writePredicateObjectList(Node p, List<Node> objects, int predicateMaxWidth, boolean first) {
+           writePredicate(p, predicateMaxWidth, first) ;
+            out.incIndent(INDENT_OBJECT) ;
+
+            boolean lastObjectMultiLine = false ;
+            boolean firstObject = true ;
+            for ( Node o : objects ) {
+                if ( !firstObject ) {
+                    if ( out.getCurrentOffset() > 0 )
+                        out.print(" , ") ;
+                    else
+                        // Before the current indent, due to a multiline literal being written raw.
+                        // We will pad spaces to indent on output spaces.  Don't add a first " "
+                        out.print(", ") ;
+                }
+                else
+                    firstObject = false ;
+                int row1 = out.getRow() ;
+                writeNode(o) ;
+                int row2 = out.getRow();
+                lastObjectMultiLine = (row2 > row1) ;
+            }
+            out.decIndent(INDENT_OBJECT) ;
+        }
+
+        private void writePredicateObject(Node p, Node obj, int predicateMaxWidth, boolean first) {
+            writePredicate(p, predicateMaxWidth, first) ;
+            out.incIndent(INDENT_OBJECT) ;
+            writeNodePretty(obj) ;
+            out.decIndent(INDENT_OBJECT) ;
+        }
+
+        private void writePredicate(Node p, int predicateMaxWidth, boolean first) {
+            if ( ! first ) {
+                print(" ;") ;
+                println() ;
+            }
+            int colPredicateStart = out.getAbsoluteIndent() ;
+
+            if ( printTypeKeyword && RDF_type.equals(p) )
+                print("a") ;
+            else
+                writeNode(p) ;
+
+            int colPredicateFinish = out.getCol() ;
+            int wPredicate = (colPredicateFinish - colPredicateStart) ;
+
+            if ( wPredicate > LONG_PREDICATE )
+                println() ;
+            else {
+                out.pad(predicateMaxWidth) ;
+                gap(GAP_P_O) ;
+            }
+        }
+
+        protected void writeNestedObjectTopLevel(Node subject) {
+            if ( true ) {
+                writeNestedObject(subject) ;
+                out.println(" .") ;
+            } else {
+                // Alternative.
+                Collection<Triple> cluster = triplesOfSubject(subject) ;
+                print("[]") ;
+                writeClusterPredicateObjectList(0, cluster) ;
+            }
+        }
+
+        protected void writeNestedObject(Node node) {
+            Collection<Triple> x = triplesOfSubject(node) ;
+
+            if ( x.isEmpty() ) {
+                print("[] ") ;
+                return ;
+            }
+
+            if ( isCompact(x) ) {
+                print("[ ") ;
+                out.incIndent(2) ;
+                writePredicateObjectList(x) ;
+                out.decIndent(2) ;
+                print(" ]") ;
+                return ;
+            }
+
+            int indent0 = out.getAbsoluteIndent() ;
+            int here = out.getCol() ;
+            out.setAbsoluteIndent(here) ;
+            print("[ ") ;
+            out.incIndent(2) ;
+            writePredicateObjectList(x) ;
+            out.decIndent(2) ;
+            if ( true ) {
+                println() ; // Newline for "]"
+                print("]") ;
+            } else { // Compact
+                print(" ]") ;
+            }
+            out.setAbsoluteIndent(indent0) ;
+        }
+
+        protected void writeList(List<Node> elts) {
+            if ( elts.size() == 0 ) {
+                out.print("()") ;
+                return ;
+            }
+
+            if ( false ) {
+                out.print("(") ;
+                for ( Node n : elts ) {
+                    out.print(" ") ;
+                    writeNodePretty(n) ;
+                }
+                out.print(" )") ;
+            }
+
+            if ( true ) {
+                // "fresh line mode" means printed one on new line
+                // Multi line items are ones that can be multiple lines. Non-literals.
+                // Was the previous row a multiLine?
+                boolean lastItemFreshLine = false ;
+                // Have there been any items that causes "fresh line" mode?
+                boolean multiLineAny = false ;
+                boolean first = true ;
+
+                // Where we started.
+                int originalIndent = out.getAbsoluteIndent() ;
+                // Rebase indent here.
+                int x = out.getCol() ;
+                out.setAbsoluteIndent(x);
+
+                out.print("(") ;
+                out.incIndent(2);
+                for ( Node n : elts ) {
+
+                    // Print this item on a fresh line? (still to check: first line)
+                    boolean thisItemFreshLine = /* multiLineAny | */ n.isBlank() ;
+
+                    // Special case List in List.
+                    // Start on this line if last item was on this line.
+                    if ( lists.containsKey(n) )
+                        thisItemFreshLine = lastItemFreshLine ;
+
+                    // Starting point.
+                    if ( ! first ) {
+                        if ( lastItemFreshLine | thisItemFreshLine )
+                            out.println() ;
+                        else
+                            out.print(" ") ;
+                    }
+
+                    first = false ;
+                    //Literals with newlines: int x1 = out.getRow() ;
+                    // Adds INDENT_OBJECT even for a [ one triple ]
+                    // Special case [ one triple ]??
+                    writeNodePretty(n) ;
+                    //Literals with newlines:int x2 = out.getRow() ;
+                    //Literals with newlines: boolean multiLineAnyway = ( x1 != x2 ) ;
+                    lastItemFreshLine = thisItemFreshLine ;
+                    multiLineAny  = multiLineAny | thisItemFreshLine ;
+
+                }
+                if ( multiLineAny )
+                    out.println() ;
+                else
+                    out.print(" ") ;
+                out.decIndent(2);
+                out.setAbsoluteIndent(x);
+                out.print(")") ;
+                out.setAbsoluteIndent(originalIndent) ;
+            }
+        }
+
+        protected void write_S_P_Gap() {
+            if ( out.getCol() > LONG_SUBJECT )
+                out.println() ;
+            else
+                gap(GAP_S_P) ;
+        }
+    }
+
+    private final class ShellGraphLong extends ShellGraph {
+
+        private static final int INDENT = 2 ;
+
+        private ShellGraphLong(Graph graph, Node graphName, DatasetGraph dsg, Set<Node> graphNames) {
+            super(graph, graphName, dsg, graphNames);
+        }
+
+
+        protected boolean writeRemainingNLinkedLists(boolean somethingWritten) {
+            // Print carefully - need a label for the first cell.
+            // So we write out the first element of the list in triples, then
+            // put the remainer as a pretty list
+            for ( Node n : nLinkedLists.keySet() ) {
+                if ( somethingWritten )
+                    out.println() ;
+                somethingWritten = true ;
+
+                List<Node> x = nLinkedLists.get(n) ;
+                writeNode(n) ;
+
+                write_S_P_Gap();
+                out.pad() ;
+
+                writeNode(RDF_First) ;
+                print(" ") ;
+                writeNode(x.get(0)) ;
+                print(" ;") ;
+                println() ;
+                writeNode(RDF_Rest) ;
+                print("  ") ;
+                x = x.subList(1, x.size()) ;
+                writeList(x) ;
+                print(" .") ;
+                out.decIndent(INDENT) ;
+                println() ;
+            }
+            return somethingWritten ;
+        }
+
+        protected void writeCluster(Node subject, Collection<Triple> cluster) {
+            if ( cluster.isEmpty() )
+                return ;
+            writeNode(subject) ;
+            writeClusterPredicateObjectList(INDENT, cluster) ;
+        }
+        // Writing predicate-object lists.
+        // We group the cluster by predicate and within each group
+        // we print:
+        //    literals, then simple objects, then pretty objects
+
+        protected void writePredicateObjectList(Collection<Triple> cluster) {
+            Map<Node, List<Node>> pGroups = groupByPredicates(cluster) ;
+            Collection<Node> predicates = pGroups.keySet() ;
+
+            boolean first = true ;
+
+            if ( !OBJECT_LISTS ) {
+                for ( Node p : predicates ) {
+                    for ( Node o : pGroups.get(p) ) {
+                        writePredicateObject(p, o, first) ;
+                        first = false ;
+                    }
+                }
+                return ;
+            }
+
+            for ( Node p : predicates ) {
+                // Literals in the group
+                List<Node> rdfLiterals = new ArrayList<>() ;
+                // Non-literals, printed
+                List<Node> rdfSimpleNodes = new ArrayList<>() ;
+                // Non-literals, printed (), or []-embedded
+                List<Node> rdfComplexNodes = new ArrayList<>() ;
+
+                for ( Node o : pGroups.get(p) ) {
+                    if ( o.isLiteral() ) {
+                        rdfLiterals.add(o) ;
+                        continue ;
+                    }
+                    if ( isPrettyNode(o) ) {
+                        rdfComplexNodes.add(o) ;
+                        continue ;
+                    }
+                    rdfSimpleNodes.add(o) ;
+                }
+
+                if ( ! rdfLiterals.isEmpty() ) {
+                    writePredicateObjectList(p, rdfLiterals, first) ;
+                    first = false ;
+                }
+                if ( ! rdfSimpleNodes.isEmpty() ) {
+                    writePredicateObjectList(p, rdfSimpleNodes, first) ;
+                    first = false ;
+                }
+                for ( Node o : rdfComplexNodes ) {
+                    writePredicateObject(p, o, first) ;
+                    first = false ;
+                }
+            }
+        }
+
+        private void writePredicateObject(Node p, Node obj, boolean first) {
+            writePredicate(p, first) ;
+            writeNodePretty(obj) ;
+        }
+
+        private void writePredicateObjectList(Node p, List<Node> objects, boolean first) {
+            writePredicate(p, first) ;
+            out.incIndent(INDENT) ;
+
+            boolean firstObject = true ;
+            for ( Node o : objects ) {
+                if ( !firstObject ) {
+                    if ( out.getCurrentOffset() > 0 )
+                        out.print(" , ") ;
+                    else
+                        // Before the current indent, due to a multiline literal being written raw.
+                        // We will pad spaces to indent on output spaces.  Don't add a first " "
+                        out.print(", ") ;
+                }
+                else
+                    firstObject = false ;
+                writeNode(o) ;
+            }
+            out.decIndent(INDENT) ;
+        }
+
+        /** Write a predicate - jump to next line if deemed long */
+        private void writePredicate(Node p, boolean first) {
+            if ( ! first ) {
+                print(" ;") ;
+                println() ;
+            }
+            int colPredicateStart = out.getAbsoluteIndent() ;
+
+            if ( printTypeKeyword && RDF_type.equals(p) )
+                print("a") ;
+            else
+                writeNode(p) ;
+
+            int colPredicateFinish = out.getCol() ;
+            int wPredicate = (colPredicateFinish - colPredicateStart) ;
+
+            if ( wPredicate > LONG_PREDICATE )
+                println() ;
+            else {
+                gap(1) ;
+            }
+        }
+
+        protected void writeNestedObjectTopLevel(Node subject) {
+            writeNestedObject(subject) ;
+            out.println(" .") ;
+        }
+
+        protected void writeNestedObject(Node node) {
+            Collection<Triple> x = triplesOfSubject(node) ;
+
+            if ( x.isEmpty() ) {
+                print("[] ") ;
+                return ;
+            }
+
+            if ( isCompact(x) ) {
+                print("[ ") ;
+                out.incIndent(2) ;
+                writePredicateObjectList(x) ;
+                out.decIndent(2) ;
+                print(" ]") ;
+                return ;
+            }
+
+            print("[") ;
+            out.println();
+            out.incIndent(2) ;
+            writePredicateObjectList(x) ;
+            out.decIndent(2) ;
+            println() ;
+            print("]") ;
+        }
+
+        protected void writeList(List<Node> elts) {
+            if ( elts.size() == 0 ) {
+                out.print("()") ;
+                return ;
+            }
+
+            out.print("(") ;
+            out.incIndent(2);
+            for ( Node n : elts ) {
+                out.println() ;
+                writeNodePretty(n) ;
+            }
+            out.println() ;
+            out.decIndent(2);
+            out.print(")") ;
+        }
+
+        protected void write_S_P_Gap() {
+            out.println();
+        }
+    }
+
+
     // Write one graph - using an inner object class to isolate
     // the state variables for writing a single graph.
-    private final class ShellGraph {
+    private abstract class ShellGraph {
         // Dataset (for writing graphs in datasets) -- may be null
         private final DatasetGraph          dsg ;
         private final Collection<Node>      graphNames ;
@@ -123,13 +616,13 @@ public abstract class TurtleShell {
         private final Set<Node>             freeBnodes ;
 
         // The head node in each well-formed list -> list elements
-        private final Map<Node, List<Node>> lists ;
+        protected final Map<Node, List<Node>> lists ;
 
         // List that do not have any incoming triples
         private final Map<Node, List<Node>> freeLists ;
 
         // Lists that have more than one incoming triple
-        private final Map<Node, List<Node>> nLinkedLists ;
+        protected final Map<Node, List<Node>> nLinkedLists ;
 
         // All nodes that are part of list structures.
         private final Collection<Node>      listElts ;
@@ -138,7 +631,7 @@ public abstract class TurtleShell {
         // This is true for the main pretty printing then
         // false when we are clearing up unwritten triples.
         private boolean allowDeepPretty = true ;
-        private final boolean printTypeKeyword;
+        protected final boolean printTypeKeyword;
 
         private ShellGraph(Graph graph, Node graphName, DatasetGraph dsg, Set<Node> graphNames) {
             this.dsg = dsg ;
@@ -314,7 +807,7 @@ public abstract class TurtleShell {
         }
 
         /** Get triples with the same subject */
-        private Collection<Triple> triplesOfSubject(Node subj) {
+        protected Collection<Triple> triplesOfSubject(Node subj) {
             return RiotLib.triplesOfSubject(graph, subj) ;
         }
 
@@ -505,7 +998,7 @@ public abstract class TurtleShell {
 
         // ----
 
-        private void writeGraph() {
+        protected void writeGraph() {
             Iterator<Node> subjects = listSubjects() ;
             boolean somethingWritten = writeBySubject(subjects) ;
             // Write remainders
@@ -523,36 +1016,7 @@ public abstract class TurtleShell {
             somethingWritten = writeRemainingNestedObjects(singleNodes, somethingWritten) ;
         }
 
-        private boolean writeRemainingNLinkedLists(boolean somethingWritten) {
-            // Print carefully - need a label for the first cell.
-            // So we write out the first element of the list in triples, then
-            // put the remainer as a pretty list
-            for ( Node n : nLinkedLists.keySet() ) {
-                if ( somethingWritten )
-                    out.println() ;
-                somethingWritten = true ;
-
-                List<Node> x = nLinkedLists.get(n) ;
-                writeNode(n) ;
-
-                write_S_P_Gap();
-                out.pad() ;
-
-                writeNode(RDF_First) ;
-                print(" ") ;
-                writeNode(x.get(0)) ;
-                print(" ;") ;
-                println() ;
-                writeNode(RDF_Rest) ;
-                print("  ") ;
-                x = x.subList(1, x.size()) ;
-                writeList(x) ;
-                print(" .") ;
-                out.decIndent(INDENT_PREDICATE) ;
-                println() ;
-            }
-            return somethingWritten ;
-        }
+        protected abstract boolean writeRemainingNLinkedLists(boolean somethingWritten) ;
 
         // Write free standing lists - ones where the head is not an object of
         // some other triple. Turtle does not allow free standing (... ) .
@@ -660,16 +1124,11 @@ public abstract class TurtleShell {
         }
 
         // A Cluster is a collection of triples with the same subject.
-        private void writeCluster(Node subject, Collection<Triple> cluster) {
-            if ( cluster.isEmpty() )
-                return ;
-            writeNode(subject) ;
-            writeClusterPredicateObjectList(INDENT_PREDICATE, cluster) ;
-        }
+        protected abstract void writeCluster(Node subject, Collection<Triple> cluster) ;
 
         // Write the PredicateObjectList for a subject already output.
         // The subject may have been a "[]" or a URI - the indentation is passed in.
-        private void writeClusterPredicateObjectList(int indent, Collection<Triple> cluster) {
+        protected void writeClusterPredicateObjectList(int indent, Collection<Triple> cluster) {
             write_S_P_Gap() ;
             out.incIndent(indent) ;
             out.pad() ;
@@ -679,122 +1138,9 @@ public abstract class TurtleShell {
             println() ;
         }
 
-        // Writing predicate-object lists.
-        // We group the cluster by predicate and within each group
-        // we print:
-        //    literals, then simple objects, then pretty objects
+        protected abstract void writePredicateObjectList(Collection<Triple> cluster) ;
 
-        private void writePredicateObjectList(Collection<Triple> cluster) {
-            Map<Node, List<Node>> pGroups = groupByPredicates(cluster) ;
-            Collection<Node> predicates = pGroups.keySet() ;
-
-            // Find longest predicate URI
-            int predicateMaxWidth = Widths.calcWidth(prefixMap, baseURI, predicates, MIN_PREDICATE, LONG_PREDICATE, printTypeKeyword) ;
-
-            boolean first = true ;
-
-            if ( !OBJECT_LISTS ) {
-                for ( Node p : predicates ) {
-                    for ( Node o : pGroups.get(p) ) {
-                        writePredicateObject(p, o, predicateMaxWidth, first) ;
-                        first = false ;
-                    }
-                }
-                return ;
-            }
-
-            for ( Node p : predicates ) {
-                // Literals in the group
-                List<Node> rdfLiterals = new ArrayList<>() ;
-                // Non-literals, printed
-                List<Node> rdfSimpleNodes = new ArrayList<>() ;
-                // Non-literals, printed (), or []-embedded
-                List<Node> rdfComplexNodes = new ArrayList<>() ;
-
-                for ( Node o : pGroups.get(p) ) {
-                    if ( o.isLiteral() ) {
-                        rdfLiterals.add(o) ;
-                        continue ;
-                    }
-                    if ( isPrettyNode(o) ) {
-                        rdfComplexNodes.add(o) ;
-                        continue ;
-                    }
-                    rdfSimpleNodes.add(o) ;
-                }
-
-                if ( ! rdfLiterals.isEmpty() ) {
-                    writePredicateObjectList(p, rdfLiterals, predicateMaxWidth, first) ;
-                    first = false ;
-                }
-                if ( ! rdfSimpleNodes.isEmpty() ) {
-                    writePredicateObjectList(p, rdfSimpleNodes, predicateMaxWidth, first) ;
-                    first = false ;
-                }
-                for ( Node o : rdfComplexNodes ) {
-                    writePredicateObject(p, o, predicateMaxWidth, first) ;
-                    first = false ;
-                }
-            }
-        }
-
-        private void writePredicateObject(Node p, Node obj, int predicateMaxWidth, boolean first) {
-            writePredicate(p, predicateMaxWidth, first) ;
-            out.incIndent(INDENT_OBJECT) ;
-            writeNodePretty(obj) ;
-            out.decIndent(INDENT_OBJECT) ;
-        }
-
-        private void writePredicateObjectList(Node p, List<Node> objects, int predicateMaxWidth, boolean first) {
-            writePredicate(p, predicateMaxWidth, first) ;
-            out.incIndent(INDENT_OBJECT) ;
-
-            boolean lastObjectMultiLine = false ;
-            boolean firstObject = true ;
-            for ( Node o : objects ) {
-                if ( !firstObject ) {
-                    if ( out.getCurrentOffset() > 0 )
-                        out.print(" , ") ;
-                    else
-                        // Before the current indent, due to a multiline literal being written raw.
-                        // We will pad spaces to indent on output spaces.  Don't add a first " "
-                        out.print(", ") ;
-                }
-                else
-                    firstObject = false ;
-                int row1 = out.getRow() ;
-                writeNode(o) ;
-                int row2 = out.getRow();
-                lastObjectMultiLine = (row2 > row1) ;
-            }
-            out.decIndent(INDENT_OBJECT) ;
-        }
-
-        /** Write a predicate - jump to next line if deemed long */
-        private void writePredicate(Node p, int predicateMaxWidth, boolean first) {
-            if ( ! first ) {
-                print(" ;") ;
-                println() ;
-            }
-            int colPredicateStart = out.getAbsoluteIndent() ;
-
-            if ( printTypeKeyword && RDF_type.equals(p) )
-                print("a") ;
-            else
-                writeNode(p) ;
-
-            int colPredicateFinish = out.getCol() ;
-            int wPredicate = (colPredicateFinish - colPredicateStart) ;
-
-            if ( wPredicate > LONG_PREDICATE )
-                println() ;
-            else {
-                out.pad(predicateMaxWidth) ;
-                gap(GAP_P_O) ;
-            }
-        }
-
-        private Map<Node, List<Node>> groupByPredicates(Collection<Triple> cluster) {
+        protected Map<Node, List<Node>> groupByPredicates(Collection<Triple> cluster) {
             SortedMap<Node, List<Node>> x = new TreeMap<>(compPredicates) ;
             for ( Triple t : cluster ) {
                 Node p = t.getPredicate() ;
@@ -807,7 +1153,7 @@ public abstract class TurtleShell {
         }
 
         // Compact if one triple, or one predicate and several non-pretty objects.
-        private boolean isCompact(Collection<Triple> cluster) {
+        protected boolean isCompact(Collection<Triple> cluster) {
             Node predicate = null;
             for ( Triple t : cluster ) {
                 Node p = t.getPredicate() ;
@@ -824,126 +1170,13 @@ public abstract class TurtleShell {
             return true;
         }
 
-        // [ :p "abc" ] .  or    [] : "abc" .
-        private void writeNestedObjectTopLevel(Node subject) {
-            if ( true ) {
-                writeNestedObject(subject) ;
-                out.println(" .") ;
-            } else {
-                // Alternative.
-                Collection<Triple> cluster = triplesOfSubject(subject) ;
-                print("[]") ;
-                writeClusterPredicateObjectList(0, cluster) ;
-            }
-        }
+        protected abstract void writeNestedObjectTopLevel(Node subject) ;
 
-        private void writeNestedObject(Node node) {
-            Collection<Triple> x = triplesOfSubject(node) ;
+        protected abstract void writeNestedObject(Node node) ;
 
-            if ( x.isEmpty() ) {
-                print("[] ") ;
-                return ;
-            }
+        protected abstract void writeList(List<Node> elts) ;
 
-            if ( isCompact(x) ) {
-                print("[ ") ;
-                out.incIndent(2) ;
-                writePredicateObjectList(x) ;
-                out.decIndent(2) ;
-                print(" ]") ;
-                return ;
-            }
-
-            int indent0 = out.getAbsoluteIndent() ;
-            int here = out.getCol() ;
-            out.setAbsoluteIndent(here) ;
-            print("[ ") ;
-            out.incIndent(2) ;
-            writePredicateObjectList(x) ;
-            out.decIndent(2) ;
-            if ( true ) {
-                println() ; // Newline for "]"
-                print("]") ;
-            } else { // Compact
-                print(" ]") ;
-            }
-            out.setAbsoluteIndent(indent0) ;
-        }
-
-        // Write a list
-        private void writeList(List<Node> elts) {
-            if ( elts.size() == 0 ) {
-                out.print("()") ;
-                return ;
-            }
-
-            if ( false ) {
-                out.print("(") ;
-                for ( Node n : elts ) {
-                    out.print(" ") ;
-                    writeNodePretty(n) ;
-                }
-                out.print(" )") ;
-            }
-
-            if ( true ) {
-                // "fresh line mode" means printed one on new line
-                // Multi line items are ones that can be multiple lines. Non-literals.
-                // Was the previous row a multiLine?
-                boolean lastItemFreshLine = false ;
-                // Have there been any items that causes "fresh line" mode?
-                boolean multiLineAny = false ;
-                boolean first = true ;
-
-                // Where we started.
-                int originalIndent = out.getAbsoluteIndent() ;
-                // Rebase indent here.
-                int x = out.getCol() ;
-                out.setAbsoluteIndent(x);
-
-                out.print("(") ;
-                out.incIndent(2);
-                for ( Node n : elts ) {
-
-                    // Print this item on a fresh line? (still to check: first line)
-                    boolean thisItemFreshLine = /* multiLineAny | */ n.isBlank() ;
-
-                    // Special case List in List.
-                    // Start on this line if last item was on this line.
-                    if ( lists.containsKey(n) )
-                        thisItemFreshLine = lastItemFreshLine ;
-
-                    // Starting point.
-                    if ( ! first ) {
-                        if ( lastItemFreshLine | thisItemFreshLine )
-                            out.println() ;
-                        else
-                            out.print(" ") ;
-                    }
-
-                    first = false ;
-                    //Literals with newlines: int x1 = out.getRow() ;
-                    // Adds INDENT_OBJECT even for a [ one triple ]
-                    // Special case [ one triple ]??
-                    writeNodePretty(n) ;
-                    //Literals with newlines:int x2 = out.getRow() ;
-                    //Literals with newlines: boolean multiLineAnyway = ( x1 != x2 ) ;
-                    lastItemFreshLine = thisItemFreshLine ;
-                    multiLineAny  = multiLineAny | thisItemFreshLine ;
-
-                }
-                if ( multiLineAny )
-                    out.println() ;
-                else
-                    out.print(" ") ;
-                out.decIndent(2);
-                out.setAbsoluteIndent(x);
-                out.print(")") ;
-                out.setAbsoluteIndent(originalIndent) ;
-            }
-        }
-
-        private boolean isPrettyNode(Node n) {
+        protected boolean isPrettyNode(Node n) {
             // Maybe ought to be the same test as writePredicateObjectList
             // Order matters? - one connected objects may include list elements.
             if ( allowDeepPretty ) {
@@ -958,7 +1191,7 @@ public abstract class TurtleShell {
         }
 
         // --> write S or O??
-        private void writeNodePretty(Node obj) {
+        protected void writeNodePretty(Node obj) {
             // Assumes "isPrettyNode" is true.
             // Order matters? - one connected objects may include list elements.
             if ( lists.containsKey(obj) )
@@ -980,12 +1213,8 @@ public abstract class TurtleShell {
         // Other.
         // Sorted by URI.
 
-        private void write_S_P_Gap() {
-            if ( out.getCol() > LONG_SUBJECT )
-                out.println() ;
-            else
-                gap(GAP_S_P) ;
-        }
+        protected abstract void write_S_P_Gap() ;
+
     }
 
     // Order of properties.

@@ -39,7 +39,9 @@ public class TestTurtleWriterPretty {
     public static Iterable<Object[]> data() {
         List<Object[]> x = new ArrayList<>() ;
         x.add(new Object[]{"Turtle/Pretty", RDFFormat.TURTLE_PRETTY});
+        x.add(new Object[]{"Turtle/Long", RDFFormat.TURTLE_LONG});
         x.add(new Object[]{"Trig/Pretty", RDFFormat.TRIG_PRETTY});
+        x.add(new Object[]{"Trig/Long", RDFFormat.TRIG_LONG});
         return x ; 
     }
     

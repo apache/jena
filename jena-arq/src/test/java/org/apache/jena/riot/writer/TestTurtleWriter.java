@@ -82,9 +82,6 @@ public class TestTurtleWriter {
     public void bnode_cycles_02() { blankNodeLang(cycle1, RDFFormat.TURTLE_BLOCKS) ; }
 
     @Test
-    public void bnode_cycles_03() { blankNodeLang(cycle1, RDFFormat.TURTLE_FLAT) ; }
-
-    @Test
     public void bnode_cycles_04() { blankNodeLang(cycle1, RDFFormat.TURTLE_PRETTY) ; }
 
     @Test
@@ -98,6 +95,9 @@ public class TestTurtleWriter {
 
     @Test
     public void bnode_cycles_08() { blankNodeLang(cycle2, RDFFormat.TURTLE_PRETTY) ; }
+
+    @Test
+    public void bnode_cycles_09() { blankNodeLang(cycle2, RDFFormat.TURTLE_LONG) ; }
 
     @Test
     public void bnode_cycles() {
