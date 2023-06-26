@@ -113,11 +113,6 @@ public abstract class CmdLangParse extends CmdGeneral {
                 }
             }
         }
-        RDFFormat output = modLangOutput.getOutputStreamFormat();
-        if ( output == null )
-            output =  modLangOutput.getOutputFormatted();
-        if ( output == null )
-            output = RDFFormat.NQUADS;
 
         if ( someQuadsInput && ! isQuadsOutput() )
             Log.warn(SysRIOT.getLogger(), "Quads syntax in the input files but triple output requested.");
@@ -442,9 +437,7 @@ public abstract class CmdLangParse extends CmdGeneral {
 
     protected boolean isQuadsOutput() {
         // Use stream in preference - CmdLangParse
-        RDFFormat fmt = modLangOutput.getOutputStreamFormat();
-        if ( fmt == null)
-            fmt = modLangOutput.getOutputFormatted();
+        RDFFormat fmt = outputFormat();
         // RDFLanguages.isTriples means the language can be used in a triples context
         // hence the test is "not quads".
         if ( fmt != null && ! RDFLanguages.isQuads(fmt.getLang()) )
@@ -453,6 +446,15 @@ public abstract class CmdLangParse extends CmdGeneral {
             return true;
     }
 
+    private RDFFormat outputFormat() {
+        // Use stream in preference - CmdLangParse
+        RDFFormat fmt = modLangOutput.getOutputStreamFormat();
+        if ( fmt == null)
+            fmt = modLangOutput.getOutputFormatted();
+        // RDFLanguages.isTriples means the language can be used in a triples context
+        // hence the test is "not quads".
+        return fmt;
+    }
     protected boolean isStreamingOutput() {
         return modLangOutput.getOutputStreamFormat() != null;
     }

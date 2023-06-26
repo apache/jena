@@ -76,28 +76,35 @@ public class TestTurtleWriter {
 
     // Tests from JENA-908
     @Test
-    public void bnode_cycles_01() { blankNodeLang(cycle1, RDFFormat.TURTLE) ; }
+    public void bnode_cycle1_1() { blankNodeLang(cycle1, RDFFormat.TURTLE) ; }
 
     @Test
-    public void bnode_cycles_02() { blankNodeLang(cycle1, RDFFormat.TURTLE_BLOCKS) ; }
+    public void bnode_cycle1_2() { blankNodeLang(cycle1, RDFFormat.TURTLE_BLOCKS) ; }
 
     @Test
-    public void bnode_cycles_04() { blankNodeLang(cycle1, RDFFormat.TURTLE_PRETTY) ; }
+    public void bnode_cycle1_3() { blankNodeLang(cycle1, RDFFormat.TURTLE_FLAT) ; }
 
     @Test
-    public void bnode_cycles_05() { blankNodeLang(cycle2, RDFFormat.TURTLE) ; }
+    public void bnode_cycle1_4() { blankNodeLang(cycle1, RDFFormat.TURTLE_PRETTY) ; }
 
     @Test
-    public void bnode_cycles_06() { blankNodeLang(cycle2, RDFFormat.TURTLE_BLOCKS) ; }
+    public void bnode_cycle1_15() { blankNodeLang(cycle1, RDFFormat.TURTLE_LONG) ; }
+
 
     @Test
-    public void bnode_cycles_07() { blankNodeLang(cycle2, RDFFormat.TURTLE_FLAT) ; }
+    public void bnode_cycles2_1() { blankNodeLang(cycle2, RDFFormat.TURTLE) ; }
 
     @Test
-    public void bnode_cycles_08() { blankNodeLang(cycle2, RDFFormat.TURTLE_PRETTY) ; }
+    public void bnode_cycles2_2() { blankNodeLang(cycle2, RDFFormat.TURTLE_BLOCKS) ; }
 
     @Test
-    public void bnode_cycles_09() { blankNodeLang(cycle2, RDFFormat.TURTLE_LONG) ; }
+    public void bnode_cycles2_3() { blankNodeLang(cycle2, RDFFormat.TURTLE_FLAT) ; }
+
+    @Test
+    public void bnode_cycle2_4() { blankNodeLang(cycle2, RDFFormat.TURTLE_PRETTY) ; }
+
+    @Test
+    public void bnode_cycle2_5() { blankNodeLang(cycle2, RDFFormat.TURTLE_LONG) ; }
 
     @Test
     public void bnode_cycles() {
