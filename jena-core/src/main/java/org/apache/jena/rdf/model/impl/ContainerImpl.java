@@ -31,80 +31,74 @@ import org.apache.jena.vocabulary.RDF ;
 */
 
 public class ContainerImpl extends ResourceImpl
-                           implements Container, ContainerI {
-    
-    static NodeIteratorFactory iteratorFactory;
-    
-    static {
-        iteratorFactory = new ContNodeIteratorFactoryImpl();
-    }
+                           implements Container, ContainerRemove {
 
     /** Creates new ContainerImpl */
     public ContainerImpl( ModelCom model ) {
         super(model);
     }
-    
+
     public ContainerImpl( String uri, ModelCom model ){
         super(uri, model);
     }
-    
+
     public ContainerImpl(Resource r, ModelCom  model) {
         super(r.asNode(), model);
     }
-    
+
     public ContainerImpl(Node n, EnhGraph g) {
         super(n,g);
     }
-    
+
     protected ContainerImpl( Resource r )
         { this( r, (ModelCom) r.getModel() ); }
-    
+
     private boolean is( Resource r ) {
         return hasProperty(RDF.type, r);
     }
-    
+
     @Override
     public boolean isAlt() {
         return is(RDF.Alt);
     }
-    
+
     @Override
     public boolean isBag() {
         return is(RDF.Bag);
     }
-    
+
     @Override
     public boolean isSeq() {
         return is(RDF.Seq);
     }
-    
+
     @Override
     public Container add(RDFNode n)  {
         int i = size();
         addProperty(RDF.li(i+1), n);
         return this;
-    } 
-    
+    }
+
     @Override
     public Container add(boolean o)  {
         return add( getModel().createTypedLiteral( o ) );
     }
-    
+
     @Override
     public Container add(long o)  {
         return add( getModel().createTypedLiteral( o ) );
     }
-    
+
     @Override
     public Container add(char o)  {
         return add( getModel().createTypedLiteral( o ) );
     }
-    
+
     @Override
     public Container add( float o )  {
         return add( getModel().createTypedLiteral( o ) );
     }
-    
+
     @Override
     public Container add(double o)  {
         return add( getModel().createTypedLiteral( o ) );
@@ -114,17 +108,17 @@ public class ContainerImpl extends ResourceImpl
     public Container add(Object o)  {
         return add( getModel().createTypedLiteral( o ) );
     }
-     
+
     @Override
     public Container add(String o)  {
         return add( o, "" );
     }
-    
+
     @Override
     public Container add(String o, String l)  {
         return add( literal( o, l ) );
     }
-    
+
     @Override
     public boolean contains(RDFNode n)  {
         return containerContains( n );
@@ -159,12 +153,12 @@ public class ContainerImpl extends ResourceImpl
     public boolean contains(Object o)  {
         return contains( getModel().createTypedLiteral( o ) );
     }
-    
+
     @Override
     public boolean contains(String o)  {
         return contains( o, "" );
     }
-    
+
     @Override
     public boolean contains( String o, String l )  {
         return contains( literal( o, l ) );
@@ -172,22 +166,22 @@ public class ContainerImpl extends ResourceImpl
 
     private Literal literal( String s, String lang )
         { return new LiteralImpl( NodeFactory.createLiteral( s, lang ), getModelCom() ); }
-            
+
     @Override
-    public NodeIterator iterator()  
-        { return listContainerMembers( iteratorFactory ); }
-        
+    public NodeIterator iterator()
+        { return listContainerMembers( ); }
+
     @Override
-    public int size()  
+    public int size()
         {
         int result = 0;
         StmtIterator iter = listProperties();
-        while (iter.hasNext()) 
+        while (iter.hasNext())
             if (iter.nextStatement().getPredicate().getOrdinal() != 0) result += 1;
         iter.close();
         return result;
         }
-        
+
     @Override
     public Container remove(Statement s)  {
         int size = size();
@@ -199,25 +193,24 @@ public class ContainerImpl extends ResourceImpl
             s.changeObject(last.getObject());
             getModel().remove(last);
         }
-        if (size() != (size -1)) 
-            throw new AssertionFailureException( "container size" ); 
+        if (size() != (size -1))
+            throw new AssertionFailureException( "container size" );
         return this;
     }
-    
+
     @Override
     public Container remove(int index, RDFNode object)  {
         remove(getModel().createStatement(this, RDF.li(index), object));
         return this;
     }
-        
+
    /**
         Answer an iterator over the members of this container.
-        @param f the factory for constructing the final iterator
         @return the member iterator
    */
-   public NodeIterator listContainerMembers( NodeIteratorFactory f )
+   public NodeIterator listContainerMembers()
         {
-        StmtIterator iter = listProperties(); 
+        StmtIterator iter = listProperties();
         Vector<Statement> result = new Vector<>();
         int maxOrdinal = 0;
         while (iter.hasNext()) {
@@ -232,9 +225,12 @@ public class ContainerImpl extends ResourceImpl
             }
         }
         iter.close();
-        return f.createIterator( result.iterator(), result, this );
-    }  
-    
+        return createIterator( result.iterator() );
+    }
+
+   protected NodeIterator createIterator(Iterator<Statement> iter)
+   { return new ContNodeIteratorImpl(iter, this); }
+
     public int containerIndexOf( RDFNode n )  {
         int result = 0;
         StmtIterator iter = listProperties();
@@ -249,8 +245,8 @@ public class ContainerImpl extends ResourceImpl
         iter.close();
         return result;
     }
-    
+
    public boolean containerContains( RDFNode n)
         { return containerIndexOf( n ) != 0; }
-            
+
 }

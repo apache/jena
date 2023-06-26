@@ -34,40 +34,40 @@ public class ContNodeIteratorImpl extends NiceIterator<RDFNode> implements NodeI
     protected int index = 0;
     protected int numDeleted = 0;
     protected final List<Integer> moved = new ArrayList<>();
-    
+
     protected final Iterator<Statement> iterator;
-    
+
     /** Creates new ContNodeIteratorImpl */
-    public ContNodeIteratorImpl (Iterator<Statement>iterator, Object ignored, Container  cont )  
+    public ContNodeIteratorImpl (Iterator<Statement>iterator, Container cont )
         {
         this.iterator = iterator;
         this.cont = cont;
         this.size = cont.size();
         }
 
-    @Override public RDFNode next() throws NoSuchElementException 
+    @Override public RDFNode next() throws NoSuchElementException
         {
         recent = iterator.next();
         index += 1;
         return recent.getObject();
         }
-    
+
     @Override public boolean hasNext()
         { return iterator.hasNext(); }
-    
+
     @Override
-    public RDFNode nextNode() throws NoSuchElementException 
+    public RDFNode nextNode() throws NoSuchElementException
         { return next(); }
-            
+
     @Override public void remove() throws NoSuchElementException
         {
         if (recent == null) throw new NoSuchElementException();
         iterator.remove();
-        if (index > (size - numDeleted)) 
+        if (index > (size - numDeleted))
             {
-            ((ContainerI) cont).remove( moved.get(size-index).intValue(), recent.getObject() );
-            } 
-        else 
+            ((ContainerRemove) cont).remove( moved.get(size-index).intValue(), recent.getObject() );
+            }
+        else
             {
             cont.remove( recent );
             moved.add( index );

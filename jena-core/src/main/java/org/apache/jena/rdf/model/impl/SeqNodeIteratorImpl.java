@@ -27,24 +27,24 @@ import org.apache.jena.util.iterator.* ;
 /** An internal class not normally of interest to developers.
  *  A sequence node iterator.
  */
-public class SeqNodeIteratorImpl extends NiceIterator<RDFNode> implements NodeIterator 
+public class SeqNodeIteratorImpl extends NiceIterator<RDFNode> implements NodeIterator
     {
     Seq       seq;
     int       size;
     int       index = 0;
     Statement stmt = null;
     Iterator<Statement> base;
-    
+
     private int       numDeleted=0;
-    
-    /** Creates new SeqNodeIteratorImpl 
+
+    /** Creates new SeqNodeIteratorImpl
     */
     public SeqNodeIteratorImpl ( Iterator<Statement>  iterator, Seq seq )  {
-        this.base = iterator; 
+        this.base = iterator;
         this.seq = seq;
         this.size = seq.size();
     }
-    
+
     @Override public boolean hasNext()
         { return base.hasNext(); }
 
@@ -53,15 +53,15 @@ public class SeqNodeIteratorImpl extends NiceIterator<RDFNode> implements NodeIt
         index += 1;
         return stmt.getObject();
     }
-    
+
     @Override
     public RDFNode nextNode() {
         return next();
     }
-            
+
     @Override public void remove() {
         if (stmt == null) throw new NoSuchElementException();
-        ((ContainerI)seq).remove(index-numDeleted, stmt.getObject());
+        ((ContainerRemove)seq).remove(index-numDeleted, stmt.getObject());
         stmt = null;
         numDeleted++;
     }
