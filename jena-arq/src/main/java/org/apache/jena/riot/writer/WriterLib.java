@@ -26,6 +26,8 @@ import org.apache.jena.sparql.util.Context;
 
     private static final DirectiveStyle dftDirectiveStyle = DirectiveStyle.AT;
 
+    private static final IndentStyle dftIndentStyle = IndentStyle.WIDE;
+
     // Determine the directive style (applies to PREFIX and BASE).
     /*package*/ static DirectiveStyle directiveStyle(Context context) {
         if ( context == null )
@@ -42,5 +44,20 @@ import org.apache.jena.sparql.util.Context;
 
         // Default choice; includes null in context.
         return dftDirectiveStyle;
+    }
+
+    /*package*/ static IndentStyle indentStyle(Context context) {
+        if ( context == null )
+            return dftIndentStyle;
+        Object x = context.get(RIOT.symTurtleIndentStyle) ;
+
+        if ( x instanceof String ) {
+            String s = (String)x ;
+            IndentStyle style = IndentStyle.create(s);
+            return style == null ? dftIndentStyle : style;
+        }
+
+        // Default choice; includes null in context.
+        return dftIndentStyle;
     }
 }
