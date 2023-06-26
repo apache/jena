@@ -18,16 +18,16 @@
 
 package org.apache.jena.rdf.model.impl;
 
-import java.util.Iterator;
-
 import org.apache.jena.rdf.model.* ;
 
-/** An internal class, not normally of interest to application developers.
- *  A simple factory class which creates ContainerNodeIterator's.
+/** An internal interface, not normally of interest to application developers.
  */
-public class ContNodeIteratorFactoryImpl implements NodeIteratorFactory 
-    {
-    @Override
-    public NodeIterator createIterator( Iterator<Statement> iter,Object o,Container cont )
-        { return new ContNodeIteratorImpl(iter, o, cont); }
-    }
+interface ContainerRemove {
+
+    /** Remove the given value at the given index.
+     * @param index The index at which the value should be removed.
+     * @param object The object at that index to be removed
+     * @return this object
+     */
+    public Container remove(int index, RDFNode object) ;
+}
