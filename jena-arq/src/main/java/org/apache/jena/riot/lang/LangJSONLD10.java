@@ -70,7 +70,10 @@ import org.apache.jena.sparql.util.Symbol;
  * Note: it is possible to override jsonld's "@context" value by providing one,
  * using a {@link org.apache.jena.sparql.util.Context}, and setting the {@link LangJSONLD10#JSONLD_CONTEXT} Symbol's value
  * to the data expected by JSON-LD java API (a {@link Map}).
+ *
+ * @deprecated Migrate to JSON-LD 1.1
  */
+@Deprecated
 public class LangJSONLD10 implements ReaderRIOT
 {
     private static final String SYMBOLS_NS = "http://jena.apache.org/riot/jsonld#";
@@ -84,27 +87,27 @@ public class LangJSONLD10 implements ReaderRIOT
     public static final Symbol JSONLD_OPTIONS = SystemARQ.allocSymbol(SYMBOLS_NS, "JSONLD_OPTIONS");
     private /*final*/ ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
     private /*final*/ ParserProfile profile;
-    
+
     public LangJSONLD10(Lang lang, ParserProfile profile, ErrorHandler errorHandler) {
         this.profile = profile;
         this.errorHandler = errorHandler;
     }
-    
+
     @Override
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
         try {
             Object jsonObject = JsonUtils.fromReader(reader) ;
             readWithJsonLDCtxOptions(jsonObject, baseURI, output, context) ;
         }
-        catch (JsonProcessingException ex) {    
+        catch (JsonProcessingException ex) {
             // includes JsonParseException
             // The Jackson JSON parser, or addition JSON-level check, throws up something.
             JsonLocation loc = ex.getLocation() ;
-            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr()); 
+            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr());
             throw new RiotException(ex.getOriginalMessage()) ;
         }
         catch (IOException e) {
-            errorHandler.error(e.getMessage(), -1, -1); 
+            errorHandler.error(e.getMessage(), -1, -1);
             IO.exception(e) ;
         }
     }
@@ -115,15 +118,15 @@ public class LangJSONLD10 implements ReaderRIOT
             Object jsonObject = JsonUtils.fromInputStream(in) ;
             readWithJsonLDCtxOptions(jsonObject, baseURI, output, context) ;
         }
-        catch (JsonProcessingException ex) {    
+        catch (JsonProcessingException ex) {
             // includes JsonParseException
             // The Jackson JSON parser, or addition JSON-level check, throws up something.
             JsonLocation loc = ex.getLocation() ;
-            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr()); 
+            errorHandler.error(ex.getOriginalMessage(), loc.getLineNr(), loc.getColumnNr());
             throw new RiotException(ex.getOriginalMessage()) ;
         }
         catch (IOException e) {
-            errorHandler.error(e.getMessage(), -1, -1); 
+            errorHandler.error(e.getMessage(), -1, -1);
             IO.exception(e) ;
         }
     }
@@ -144,16 +147,16 @@ public class LangJSONLD10 implements ReaderRIOT
 
     private void read$(Object jsonObject, JsonLdOptions options, final StreamRDF output) {
         output.start() ;
-        try {       	
+        try {
             JsonLdTripleCallback callback = new JsonLdTripleCallback() {
                 @Override
                 public Object call(RDFDataset dataset) {
-                	
+
                 	// Copy across namespaces
                 	for (Entry<String, String> namespace : dataset.getNamespaces().entrySet()) {
                 		output.prefix(namespace.getKey(), namespace.getValue());
                 	}
-                	
+
                 	// Copy triples and quads
                     for ( String gn : dataset.keySet() ) {
                         Object x = dataset.get(gn) ;
@@ -170,7 +173,7 @@ public class LangJSONLD10 implements ReaderRIOT
                         } else {
                             @SuppressWarnings("unchecked")
                             List<Map<String, Object>> quads = (List<Map<String, Object>>)x ;
-                            Node g = createURI(gn) ; 
+                            Node g = createURI(gn) ;
                             for ( Map<String, Object> q : quads ) {
                                 Node s = createNode(q, "subject") ;
                                 Node p = createNode(q, "predicate") ;
@@ -186,7 +189,7 @@ public class LangJSONLD10 implements ReaderRIOT
             JsonLdProcessor.toRDF(jsonObject, callback, options) ;
         }
         catch (JsonLdError e) {
-            errorHandler.error(e.getMessage(), -1, -1); 
+            errorHandler.error(e.getMessage(), -1, -1);
             throw new RiotException(e) ;
         }
         output.finish() ;
@@ -235,7 +238,7 @@ public class LangJSONLD10 implements ReaderRIOT
     }
 
     private static final String xsdString = XSDDatatype.XSDstring.getURI() ;
-    
+
     private Node createNode(Map<String, Object> map) {
         String type = (String)map.get("type") ;
         String lex = (String)map.get("value") ;
@@ -248,7 +251,7 @@ public class LangJSONLD10 implements ReaderRIOT
             String datatype = (String)map.get("datatype") ;
             if ( Objects.equals(xsdString, datatype) )
                 // In RDF 1.1, simple literals and xsd:string are the same.
-                // During migration, we prefer simple literals to xsd:strings. 
+                // During migration, we prefer simple literals to xsd:strings.
                 datatype = null ;
             if ( lang == null && datatype == null )
                 return profile.createStringLiteral(lex,-1, -1) ;

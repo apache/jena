@@ -41,7 +41,10 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class TestJsonLDReader {
+
+    // [JSONLD 1.0]
 
     // These tests fail under some java11 (but not java17)
     // for RIOT default JSON-LD 1.1 because Titanium contacts schema.org
@@ -60,12 +63,15 @@ public class TestJsonLDReader {
      */
     @Test
     public final void overrideAtContextTest() throws JsonGenerationException, IOException {
+
         // some jsonld using schema.org's URI as "@context"
         String jsonld = someSchemaDotOrgJsonld();
 
         // pass the jsonldContext to the read using a jena Context
-        JsonLDReadContext jenaCtx = new JsonLDReadContext();
-        jenaCtx.setJsonLDContext(schemaOrgResolvedContext());
+        // [JSONLD 1.0]
+//        JsonLDReadContext jenaCtx = new JsonLDReadContext();
+//        jenaCtx.setJsonLDContext(schemaOrgResolvedContext());
+        JsonLDReadContext jenaCtx = null;
 
         // read the jsonld, replacing its "@context"
         Dataset ds = jsonld2dataset(jsonld, jenaCtx, Lang.JSONLD);
@@ -74,6 +80,7 @@ public class TestJsonLDReader {
         assertJohnDoeIsOK(ds.getDefaultModel());
     }
 
+    // [JSONLD 1.0]
     @Test
     public final void overrideJsonLdOptions() throws JsonGenerationException, IOException {
         // some jsonld using a (fake) http://pseudo.schema.org's URI as "@context"
@@ -84,6 +91,7 @@ public class TestJsonLDReader {
         dl.addInjectedDoc("http://pseudo.schema.org", String.format("{ \"@context\": %s }", schemaOrgResolvedContext()));
         options.setDocumentLoader(dl);
 
+        // [JSONLD 1.0]
         // pass the jsonldContext and JsonLdOptions to the read using a jena Context
         JsonLDReadContext jenaCtx = new JsonLDReadContext();
         jenaCtx.setOptions(options);
@@ -125,6 +133,8 @@ public class TestJsonLDReader {
             .fromString(jsonld)
             .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
             .lang(lang)
+            // Only needed for JSON-LD 1.0 (jsonld-java) usage.
+            // [JSONLD 1.0] Remove
             .context(jenaCtx)
             .parse(ds.asDatasetGraph());
         return ds;

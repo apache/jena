@@ -62,7 +62,11 @@ public class Lang
      */
     public static Lang JSONLD ;
 
-    /** JSONLD 1.0 */
+    /**
+     * JSONLD 1.0
+     * @deprecated use JSON-LD 1.1
+     */
+    @Deprecated
     public static Lang JSONLD10 ;
 
     /** JSONLD 1.1 */

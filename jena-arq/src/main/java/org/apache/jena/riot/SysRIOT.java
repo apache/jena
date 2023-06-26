@@ -146,6 +146,7 @@ public class SysRIOT
      *
      * @param version   A string that is either "1.1" or "1.0" or "" (reset to system installation default)
      */
+    @SuppressWarnings("deprecation")
     public static void setDefaultJSONLD(String version) {
         Objects.requireNonNull(version, "Argument 'version' must be \"1.1\", \"1.0\" or \"\" (empty string)");
 

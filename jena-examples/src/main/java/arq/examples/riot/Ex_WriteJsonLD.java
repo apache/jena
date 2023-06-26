@@ -36,9 +36,10 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 /**
- * Example writing as JSON-LD using jsonlkd-java (JSON-LD 1.0)
- * sNote the use of "JSONLD10"
-  */
+ * Example writing as JSON-LD using jsonld-java (JSON-LD 1.0)
+ * Note the use of "JSONLD10"
+ */
+@SuppressWarnings("deprecation")
 public class Ex_WriteJsonLD
 {
     public static void main(String[] args) {
