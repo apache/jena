@@ -32,7 +32,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /** Tests for Turtle (and Trig) */
 @RunWith(Parameterized.class)
-public class TestTurtleWriter {
+public class TestTurtleTrigWriter {
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
         List<Object[]> x = new ArrayList<>() ;
@@ -58,7 +58,7 @@ public class TestTurtleWriter {
     private final String filename;
     
 
-    public TestTurtleWriter(String name, RDFFormat format) {
+    public TestTurtleTrigWriter(String name, RDFFormat format) {
         this.format = format;
         if ( format.getLang().equals(Lang.TRIG) )
             this.filename = DIR+"rdfwriter-02.trig";

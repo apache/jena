@@ -143,7 +143,6 @@ public class RIOT {
      */
     public static final Symbol symTurtleOmitBase = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "omitBase");
 
-
     /**
      * Printing style. Whether to use a "wide" or "long" indentation style.
      */
