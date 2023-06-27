@@ -25,7 +25,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.AssertExtra ;
-import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -70,7 +70,7 @@ public class TestPathPF
         ":s1 :p (4 5) .\n" +
         ":s3 :p (8 9) .\n" ;
     
-    private static Graph graph2 = Factory.createDefaultGraph() ;
+    private static Graph graph2 = GraphMemFactory.createDefaultGraph() ;
     static { RDFDataMgr.read(graph2, new StringReader(data), null, Lang.TTL); }
     
     @BeforeClass public static void beforeClass() {

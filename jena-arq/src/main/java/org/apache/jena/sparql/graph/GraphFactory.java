@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.impl.GraphPlain;
 import org.apache.jena.rdf.model.Model;
@@ -38,7 +38,7 @@ public class GraphFactory {
      * @see #createDefaultGraph
      */
     public static Graph createGraphMem() {
-        return Factory.createGraphMem();
+        return GraphMemFactory.createGraphMem();
     }
 
     /**
@@ -62,7 +62,7 @@ public class GraphFactory {
 
     /** Create a graph - always the Jena default graph type */
     public static Graph createJenaDefaultGraph() {
-        return Factory.createDefaultGraph();
+        return GraphMemFactory.createDefaultGraph();
     }
 
     /** Graph that uses same-term for find() and contains(). */

@@ -25,7 +25,7 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
 import java.util.stream.Stream;
 
 /** @deprecated This implementation of GraphMem will be replaced by a new implementation at Jena 4.6.0.
- *   Application should be using {@link Factory#createDefaultGraph()} for a general purpose graph or {@link Factory#createGraphMem()}
+ *   Application should be using {@link GraphMemFactory#createDefaultGraph()} for a general purpose graph or {@link GraphMemFactory#createGraphMem()}
  *   to specific this style of implementation.
 */
 @Deprecated

@@ -20,7 +20,7 @@ package org.apache.jena.graph.compose.test;
 
 
 import junit.framework.*;
-import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.compose.* ;
 import org.apache.jena.rdf.model.Model ;
@@ -39,7 +39,7 @@ public class TestPackage_compose extends TestCase {
 			@Override
 			Graph getGraph()
 			{
-				return new Intersection(Factory.createGraphMem(), Factory.createGraphMem());
+				return new Intersection(GraphMemFactory.createGraphMem(), GraphMemFactory.createGraphMem());
 			}};
 
     	AbstractTestPackage atp = new AbstractTestPackage( "Intersection",  gmf ){};
@@ -53,7 +53,7 @@ public class TestPackage_compose extends TestCase {
 			@Override
 			Graph getGraph()
 			{
-				return new Difference(Factory.createGraphMem(), Factory.createGraphMem());
+				return new Difference(GraphMemFactory.createGraphMem(), GraphMemFactory.createGraphMem());
 			}};
 
     	atp = new AbstractTestPackage( "Difference",  gmf ){};
@@ -67,7 +67,7 @@ public class TestPackage_compose extends TestCase {
 			@Override
 			Graph getGraph()
 			{
-				return new Union(Factory.createGraphMem(), Factory.createGraphMem());
+				return new Union(GraphMemFactory.createGraphMem(), GraphMemFactory.createGraphMem());
 			}};
 
     	atp = new AbstractTestPackage( "Union",  gmf ){};

@@ -210,7 +210,7 @@ public class TestFileData {
 
 	public static Graph getGraph() {
 		
-		Graph g = Factory.createGraphMem();
+		Graph g = GraphMemFactory.createGraphMem();
 
 		g.add(Triple.create(NodeFactory.createURI("http://example.com/subject"),
 				NodeFactory.createURI("http://example.com/predicate"),

@@ -18,42 +18,36 @@
 
 package org.apache.jena.graph;
 
+import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.mem.GraphMem ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.NullIterator ;
 
 /**
-    A factory class for creating Graphs.
-   @deprecated Use GraphMemFactory
+    A factory class for creating memory Graphs.
 */
 
-@Deprecated
-public class Factory
-    {
-    private Factory()
-        { super(); }
+@SuppressWarnings("deprecation")
+public class GraphMemFactory
+{
+    private GraphMemFactory() {}
 
     /**
         Answer a memory-based Graph.
-    */
+     */
     public static Graph createDefaultGraph()
-        { return GraphMemFactory.createGraphMem( ); }
+    { return GraphMemFactory.createGraphMem( ); }
 
     public static Graph createGraphMem()
-        { return GraphMemFactory.createGraphMem( ); }
+    { return new GraphMem(); }
 
-    /** @deprecated To be removed */
-    @Deprecated
-    public static Graph createGraphMemWithTransactionHandler( final TransactionHandler th )
-        {
-        Graph g = new GraphMem()
-            {
-            @Override
-            public TransactionHandler getTransactionHandler()
-                {  return th; }
-            };
-        return g;
+    private final static Graph emptyGraph = new GraphBase() {
+        @Override
+        protected ExtendedIterator<Triple> graphBaseFind(Triple triplePattern) {
+            return NullIterator.instance() ;
         }
+    } ;
 
     /** Immutable graph with no triples */
-    public static Graph empty() { return GraphMemFactory.empty() ; }
-
-    }
+    public static Graph empty() { return emptyGraph ; }
+}

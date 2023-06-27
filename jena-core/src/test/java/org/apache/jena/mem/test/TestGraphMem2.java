@@ -34,7 +34,7 @@ public class TestGraphMem2 extends AbstractTestGraph
     { return new TestSuite( TestGraphMem2.class ); }
     
     @Override
-    public Graph getGraph() { return Factory.createGraphMem(); }
+    public Graph getGraph() { return GraphMemFactory.createGraphMem(); }
     
     public void testBrokenIndexes()
         {

@@ -22,7 +22,7 @@ import java.io.StringReader ;
 
 import junit.framework.JUnit4TestAdapter;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -39,7 +39,7 @@ public class TestPrefixMappingUtils {
     }
 
     static Graph create (String data) {
-        Graph graph = Factory.createGraphMem() ;
+        Graph graph = GraphMemFactory.createGraphMem() ;
         Model m = ModelFactory.createModelForGraph(graph);
         m.read(new StringReader(data), null, "TTL");
         return graph ;

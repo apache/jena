@@ -421,7 +421,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
         blockLogger() ;
         Node blank = NodeFactory.createBlankNode() ;
         Node prop = NodeFactory.createURI(s) ;
-        Graph g = Factory.createGraphMem() ;
+        Graph g = GraphMemFactory.createGraphMem() ;
         g.add(Triple.create(blank, prop, blank)) ;
         // create Model
         Model m = ModelFactory.createModelForGraph(g) ;

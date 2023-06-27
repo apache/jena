@@ -45,7 +45,7 @@ public class SimpleGraphMaker extends BaseGraphMaker
     private Map<String, Graph> graphs = new HashMap<>();
 
     public Graph create()
-    { return Factory.createGraphMem(); }
+    { return GraphMemFactory.createGraphMem(); }
 
     /**
         Create a graph and record it with the given name in the local map.
@@ -56,7 +56,7 @@ public class SimpleGraphMaker extends BaseGraphMaker
         GraphMemBase already = (GraphMemBase) graphs.get( name );
         if (already == null)
         {
-            Graph result = Factory.createGraphMem( );
+            Graph result = GraphMemFactory.createGraphMem( );
             graphs.put( name, result );
             return result;            
         }

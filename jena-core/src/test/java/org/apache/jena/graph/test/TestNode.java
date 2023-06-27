@@ -508,7 +508,7 @@ public class TestNode extends GraphTestBase
         Node_Triple nt = new Node_Triple(s, p, o);
         nt.visitWith(nv);
         // ---
-        Graph g = Factory.empty();
+        Graph g = GraphMemFactory.empty();
         Node_Graph ng = new Node_Graph(g);
         ng.visitWith(nv);
     }

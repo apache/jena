@@ -66,13 +66,13 @@ public class TestRDFS9 extends TestCase {
         Node sC = RDFS.subClassOf.asNode();
         Node ty = RDF.type.asNode();
         
-        Graph tdata = Factory.createGraphMem();
+        Graph tdata = GraphMemFactory.createGraphMem();
         tdata.add(Triple.create(C1, sC, C2));
         tdata.add(Triple.create(C2, sC, C3));
         tdata.add(Triple.create(p, RDFS.subPropertyOf.asNode(), q));
         tdata.add(Triple.create(q, RDFS.subPropertyOf.asNode(), r));
         tdata.add(Triple.create(r, RDFS.domain.asNode(), D));
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         data.add(Triple.create(a, p, b));
         InfGraph igraph = ReasonerRegistry.getRDFSReasoner().bind(new Union(tdata, data));
         TestUtil.assertIteratorValues(this, igraph.find(a, ty, null),

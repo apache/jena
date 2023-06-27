@@ -185,7 +185,7 @@ public class GraphTestBase extends JenaTestBase
     */
     public static Graph newGraph()
         {
-        Graph result = Factory.createGraphMem();
+        Graph result = GraphMemFactory.createGraphMem();
         result.getPrefixMapping().setNsPrefixes( PrefixMapping.Extended );
         return result;
         }

@@ -65,7 +65,7 @@ public abstract class TestDyadic extends AbstractTestGraph
     
     public void testDyadicOperands()
         {
-        Graph g = Factory.createGraphMem(), h = Factory.createGraphMem();
+        Graph g = GraphMemFactory.createGraphMem(), h = GraphMemFactory.createGraphMem();
         Dyadic d = new Dyadic( g, h )
             {
             @Override protected ExtendedIterator<Triple> _graphBaseFind( Triple m ) { return null; }

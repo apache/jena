@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
 
 import org.junit.Test;
 
-import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -62,7 +62,7 @@ public class TestLPBRuleEngineLeak extends TestCase {
 
 	@Test
 	public void testNotLeakingActiveInterpreters() throws Exception {
-		Graph data = Factory.createGraphMem();
+		Graph data = GraphMemFactory.createGraphMem();
 		data.add(Triple.create(a, ty, C1));
 		data.add(Triple.create(b, ty, C1));
 		List<Rule> rules = Rule
@@ -107,7 +107,7 @@ public class TestLPBRuleEngineLeak extends TestCase {
 	
 	@Test
 	public void testTabledGoalsCacheHits() throws Exception {
-		Graph data = Factory.createGraphMem();
+		Graph data = GraphMemFactory.createGraphMem();
 		data.add(Triple.create(a, ty, C1));
 		List<Rule> rules = Rule
 				.parseRules("[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]"

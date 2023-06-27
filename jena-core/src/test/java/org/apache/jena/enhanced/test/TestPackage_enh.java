@@ -140,7 +140,7 @@ public class TestPackage_enh extends GraphTestBase  {
      *  The methods tested are as and supports.
      */
     private static void basic(String title, Personality<RDFNode> p) {
-        Graph g = Factory.createGraphMem();
+        Graph g = GraphMemFactory.createGraphMem();
         TestModel model =  new TestModelImpl(g,p);
         // create some data
         graphAdd( g, "x R y;" );
@@ -236,7 +236,7 @@ public class TestPackage_enh extends GraphTestBase  {
 	}
 
     private void follow(String title, Personality<RDFNode> p) {
-        Graph g = Factory.createGraphMem();
+        Graph g = GraphMemFactory.createGraphMem();
         TestModel model =  new TestModelImpl(g,p);
         // create some data
         graphAdd( g, "a b c;" );
@@ -307,7 +307,7 @@ public class TestPackage_enh extends GraphTestBase  {
     	// bitOfBoth is a surprising personality ...
     	// we can have two different java objects implementing the same interface.
 
-		Graph g = Factory.createGraphMem();
+		Graph g = GraphMemFactory.createGraphMem();
 		TestModel model =  new TestModelImpl(g,bitOfBoth);
 		// create some data
 		graphAdd( g, "a a a;" );
@@ -376,7 +376,7 @@ public class TestPackage_enh extends GraphTestBase  {
 
     public void testSimple()
         {
-        Graph g = Factory.createGraphMem();
+        Graph g = GraphMemFactory.createGraphMem();
         Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
         EnhGraph eg = new EnhGraph( g, ours );
         Node n = NodeFactory.createURI( "spoo:bar" );
@@ -400,7 +400,7 @@ public class TestPackage_enh extends GraphTestBase  {
 
     public void testAlreadyLinkedViewException()
         {
-         Graph g = Factory.createGraphMem();
+         Graph g = GraphMemFactory.createGraphMem();
          Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
          EnhGraph eg = new EnhGraph( g, ours );
          Node n = NodeCreateUtils.create( "spoo:bar" );
@@ -424,7 +424,7 @@ public class TestPackage_enh extends GraphTestBase  {
     */
     public void testNullPointerTrap()
         {
-        EnhGraph eg = new EnhGraph( Factory.createGraphMem(), new Personality<RDFNode>() );
+        EnhGraph eg = new EnhGraph( GraphMemFactory.createGraphMem(), new Personality<RDFNode>() );
         Node n = NodeCreateUtils.create( "eh:something" );
         EnhNode en = new EnhNode( n, eg );
         try
@@ -442,7 +442,7 @@ public class TestPackage_enh extends GraphTestBase  {
 
     public void testNullPointerTrapInCanSupport()
         {
-        EnhGraph eg = new EnhGraph( Factory.createGraphMem(), new Personality<RDFNode>() );
+        EnhGraph eg = new EnhGraph( GraphMemFactory.createGraphMem(), new Personality<RDFNode>() );
         Node n = NodeCreateUtils.create( "eh:something" );
         EnhNode en = new EnhNode( n, eg );
         assertFalse( en.canAs( Property.class ) );

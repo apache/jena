@@ -64,7 +64,7 @@ public class TestMonitors extends TestCase {
      * Basic graph level test, no monitoring
      */
     public void testBasics() {
-        Graph base = Factory.createGraphMem();
+        Graph base = GraphMemFactory.createGraphMem();
         MonitorGraph monitor = new MonitorGraph(base);
         
         // base data
@@ -97,7 +97,7 @@ public class TestMonitors extends TestCase {
      * Monitoring test.
      */
     public void testListener() {
-        Graph base = Factory.createGraphMem();
+        Graph base = GraphMemFactory.createGraphMem();
         MonitorGraph monitor = new MonitorGraph(base);
         RecordingListener listener = new RecordingListener();
         monitor.getEventManager().register(listener);

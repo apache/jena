@@ -145,7 +145,7 @@ public class TestGraphListener extends MetaTestGraph {
 
     @Override
 	public Graph getGraph() {
-    	Graph g = Factory.createGraphMem();
+    	Graph g = GraphMemFactory.createGraphMem();
 
     	g.getEventManager().register(new CheckChanges("simple tracking",g));
 	    return g;

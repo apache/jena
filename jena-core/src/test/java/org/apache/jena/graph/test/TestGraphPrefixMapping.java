@@ -19,7 +19,7 @@
 package org.apache.jena.graph.test;
 
 import junit.framework.TestSuite;
-import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.shared.AbstractTestPrefixMapping ;
 import org.apache.jena.shared.PrefixMapping ;
@@ -34,7 +34,7 @@ public class TestGraphPrefixMapping extends GraphTestBase
     
     public void testGraphPrefixMapping()
         { 
-        Graph g = Factory.createDefaultGraph();
+        Graph g = GraphMemFactory.createDefaultGraph();
         AbstractTestPrefixMapping.testUseEasyPrefix
             ( "from Graph", g.getPrefixMapping() ); 
         testSameMapping( g );

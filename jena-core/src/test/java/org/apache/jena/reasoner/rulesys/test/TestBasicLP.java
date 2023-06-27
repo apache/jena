@@ -436,7 +436,7 @@ public class TestBasicLP  extends TestCase {
             "[r1: (?x r C1) <- (?x p b)]" +
             "[r1: (?x r C2) <- (?x p b)]" +
             "[r2: (?x r C3) <- (?x r C3) (?x p b)]");
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         data.add(Triple.create(a, p, b));
         InfGraph infgraph =  makeInfGraph(rules, data);
         ExtendedIterator<Triple> i = infgraph.find(Node.ANY, r, Node.ANY);
@@ -1060,7 +1060,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(C2, sC, C3),
                     Triple.create(a, ty, C1)
                 };
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         for ( Triple triple : triples )
         {
             data.add( triple );
@@ -1117,7 +1117,7 @@ public class TestBasicLP  extends TestCase {
                        "[testRule2: (C2, q, ?a) <- (C1 q ?a)]" +
                        "[testRule3: (a p ?a)  <- (C2 p ?a), (C2 q ?a)]";
         List<Rule> ruleList = Rule.parseRules(rules);
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         data.add(Triple.create(C1, p, C3));
         data.add(Triple.create(C1, q, C4));
         data.add(Triple.create(C1, q, C3));
@@ -1219,7 +1219,7 @@ public class TestBasicLP  extends TestCase {
         String ruleSrc = "[(a r ?n) <- (a p ?l), listLength(?l, ?n)]" +
         "[(a s ?e) <- (a p ?l), listEntry(?l, 1, ?e)]";
         List<Rule> rules = Rule.parseRules(ruleSrc);
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         data.add(Triple.create(a, p, Util.makeList(new Node[]{C1,C2,C3},data)));
         InfGraph infgraph =  makeInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
@@ -1239,7 +1239,7 @@ public class TestBasicLP  extends TestCase {
         "[(a s d) <- (a p ?l), (a, r, ?j) listEqual(?l, ?j)]" +
         "[(a s e) <- (a p ?l), (a, r, ?j) listNotEqual(?l, ?j)]"
             );
-        data = Factory.createGraphMem();
+        data = GraphMemFactory.createGraphMem();
         data.add(Triple.create(a, p, 
             Util.makeList( new Node[]{C1, Util.makeIntNode(3), C3}, data) ));
         data.add(Triple.create(a, q, 
@@ -1258,7 +1258,7 @@ public class TestBasicLP  extends TestCase {
         "[(b r ?j) <- (a p ?l), (a, q, ?j) listContains(?l, ?j)]" +
         "[(b s ?j) <- (a p ?l), (a, q, ?j) listNotContains(?l, ?j)]"
             );
-        data = Factory.createGraphMem();
+        data = GraphMemFactory.createGraphMem();
         data.add(Triple.create(a, p, 
             Util.makeList( new Node[]{C1, Util.makeIntNode(3), C3}, data) ));
         data.add(Triple.create(a, q, C1));
@@ -1281,7 +1281,7 @@ public class TestBasicLP  extends TestCase {
     public void testCME() {
         String ruleSrc = "(?a p 1) <- (?a p 0). (?a p 2) <- (?a p 0).";
         List<Rule> rules = Rule.parseRules(ruleSrc);
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         data.add(Triple.create(a, p, Util.makeIntNode(0)));
         InfGraph infgraph =  makeInfGraph(rules, data);
         
@@ -1318,7 +1318,7 @@ public class TestBasicLP  extends TestCase {
      */
     private void doTest(String ruleSrc, Triple[] triples, Triple query, Object[] results) {
         List<Rule> rules = Rule.parseRules(ruleSrc);
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         for ( Triple triple : triples )
         {
             data.add( triple );
@@ -1337,7 +1337,7 @@ public class TestBasicLP  extends TestCase {
      */
     private void doTest(String ruleSrc, Node[] tabled, Triple[] triples, Triple query, Object[] results) {
         List<Rule> rules = Rule.parseRules(ruleSrc);
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         for ( Triple triple : triples )
         {
             data.add( triple );

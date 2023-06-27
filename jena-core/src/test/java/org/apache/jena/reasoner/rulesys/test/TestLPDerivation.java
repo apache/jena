@@ -95,7 +95,7 @@ public class TestLPDerivation extends TestCase {
      */
     private void doTest(String ruleSrc, Node[] tabled, Triple[] triples, Triple query, Triple[] matches, int rulenumber) {
         List<Rule> rules = Rule.parseRules(ruleSrc);
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         for ( Triple triple : triples )
         {
             data.add( triple );

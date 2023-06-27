@@ -47,7 +47,7 @@ public class GraphPlain extends WrappedGraph
 
     /** Return a graph that only has term-equality. */
     public static Graph plain() {
-        return plain(Factory.createDefaultGraph());
+        return plain(GraphMemFactory.createDefaultGraph());
     }
 
     private final Capabilities capabilities;

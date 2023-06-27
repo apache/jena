@@ -41,7 +41,7 @@ public class TestNodeExtras {
 
     private static Node_Graph newGraphTerm(Graph graph)                 { return new Node_Graph(graph); }
 
-    private static Node_Graph newGraphTerm()                            { return new Node_Graph(Factory.empty()); }
+    private static Node_Graph newGraphTerm()                            { return new Node_Graph(GraphMemFactory.empty()); }
 
      @Test public void term_triple_1() {
         Node nt = newTripleTerm(s,p,o);

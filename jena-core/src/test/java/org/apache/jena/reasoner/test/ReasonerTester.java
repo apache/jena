@@ -25,7 +25,7 @@ import java.io.Reader ;
 import java.util.* ;
 
 import junit.framework.TestCase ;
-import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -156,7 +156,7 @@ public class ReasonerTester {
             boolean cache = predicate.equals(tboxP) || predicate.equals(dataP);
             return loadFile(fileName, cache).getGraph();
         } else {
-            return Factory.createGraphMem();
+            return GraphMemFactory.createGraphMem();
         }
     }
     
@@ -277,7 +277,7 @@ public class ReasonerTester {
         
         // Run each query triple and accumulate the results
         Graph queryG = loadTestFile(test, queryP);
-        Graph resultG = Factory.createGraphMem();
+        Graph resultG = GraphMemFactory.createGraphMem();
 
         Iterator<Triple> queries = queryG.find(null, null, null);
         while (queries.hasNext()) {

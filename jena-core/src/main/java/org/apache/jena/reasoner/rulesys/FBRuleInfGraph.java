@@ -447,7 +447,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 
         // Call any optional preprocessing hook
         if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
-            Graph inserts = Factory.createGraphMem();
+            Graph inserts = GraphMemFactory.createGraphMem();
             for ( RulePreprocessHook hook : preprocessorHooks )
             {
                 hook.run( this, dataFind, inserts );
