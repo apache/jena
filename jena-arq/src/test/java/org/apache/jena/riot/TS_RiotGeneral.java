@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot;
 
-import org.apache.jena.riot.writer.TestJsonLD10Writer;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -42,7 +41,6 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestTurtleWriterPretty.class
 
     , TestJsonLDReader.class
-    , TestJsonLD10Writer.class
 })
 
 public class TS_RiotGeneral

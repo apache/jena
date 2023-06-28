@@ -35,7 +35,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-@SuppressWarnings("deprecation")
 @RunWith(Parameterized.class)
 public class TestRiotWriterGraph extends AbstractWriterTest
 {
@@ -60,10 +59,6 @@ public class TestRiotWriterGraph extends AbstractWriterTest
             , { RDFFormat.JSONLD }
             , { RDFFormat.JSONLD_PRETTY }
             , { RDFFormat.JSONLD_FLAT }
-
-            , { RDFFormat.JSONLD10 }
-            , { RDFFormat.JSONLD10_PRETTY }
-            , { RDFFormat.JSONLD10_FLAT }
 
             , { RDFFormat.JSONLD11 }
             , { RDFFormat.JSONLD11_PRETTY }
@@ -107,8 +102,7 @@ public class TestRiotWriterGraph extends AbstractWriterTest
     @Test public void writer08() { test("writer-rt-08.ttl"); }
 
     private static boolean isJsonLDJava(RDFFormat format) {
-        return Lang.JSONLD.equals(format.getLang()) ||
-               Lang.JSONLD10.equals(format.getLang());
+        return Lang.JSONLD.equals(format.getLang());
     }
 
     @Test public void writer09() {

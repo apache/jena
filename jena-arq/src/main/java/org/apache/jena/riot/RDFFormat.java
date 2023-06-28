@@ -102,123 +102,52 @@ public class RDFFormat {
     /** JSON LD 1.1 default form - multi-line JSON */
     public static RDFFormat             JSONLD11        = JSONLD11_PRETTY;
 
-    // ---- JSONLD 1.0 / jsonld-java
 
-    public static class JSONLDVariant extends RDFFormatVariant {
-        private static enum JSONLD_FORMAT {
-            COMPACT,
-            FLATTEN,
-            EXPAND,
-            FRAME
-        }
-
-        private JSONLD_FORMAT format ;
-        private boolean prettyJson ;
-
-        JSONLDVariant(String name, boolean prettyJson, JSONLD_FORMAT format) {
-            super(name) ;
-            this.format = format ;
-            this.prettyJson = prettyJson ;
-        }
-
-        public boolean isPretty() { return prettyJson ; }
-
-        private boolean isFormat(JSONLD_FORMAT fmt) {
-            return (fmt == format);
-        }
-
-        public boolean isCompact() { return isFormat(JSONLD_FORMAT.COMPACT); }
-        public boolean isFlatten() { return isFormat(JSONLD_FORMAT.FLATTEN); }
-        public boolean isExpand() { return isFormat(JSONLD_FORMAT.EXPAND); }
-        public boolean isFrame() { return isFormat(JSONLD_FORMAT.FRAME); }
-    }
-
-    // Variants for the JsonLD 1.0 outputs.
-    // because of the pre-existing JSONLD_PRETTY and JSONLD_FLAT,
-    // we're more or less obliged to create all of these
-    // Assumes jsonld-java.
-
-    private static final RDFFormatVariant EXPAND_PRETTY      = new JSONLDVariant("expand pretty", true, JSONLDVariant.JSONLD_FORMAT.EXPAND) ;
-    private static final RDFFormatVariant EXPAND_FLAT        = new JSONLDVariant("expand flat", false, JSONLDVariant.JSONLD_FORMAT.EXPAND) ;
-    private static final RDFFormatVariant COMPACT_PRETTY     = new JSONLDVariant("compact pretty", true, JSONLDVariant.JSONLD_FORMAT.COMPACT) ;
-    private static final RDFFormatVariant COMPACT_FLAT       = new JSONLDVariant("compact flat", false, JSONLDVariant.JSONLD_FORMAT.COMPACT) ;
-    private static final RDFFormatVariant FLATTEN_PRETTY     = new JSONLDVariant("flatten pretty", true, JSONLDVariant.JSONLD_FORMAT.FLATTEN) ;
-    private static final RDFFormatVariant FLATTEN_FLAT       = new JSONLDVariant("flatten flat", false, JSONLDVariant.JSONLD_FORMAT.FLATTEN) ;
-    private static final RDFFormatVariant FRAME_PRETTY       = new JSONLDVariant("frame pretty", true, JSONLDVariant.JSONLD_FORMAT.FRAME) ;
-    private static final RDFFormatVariant FRAME_FLAT         = new JSONLDVariant("frame flat", false, JSONLDVariant.JSONLD_FORMAT.FRAME) ;
-
-    /** @deprecated Use JSON-LD 1.1 */
-    @Deprecated
-    public static final RDFFormat        JSONLD10_EXPAND_PRETTY   = new RDFFormat(Lang.JSONLD10, EXPAND_PRETTY) ;
-    /** @deprecated Use JSON-LD 1.1 */
-    @Deprecated
-    public static final RDFFormat        JSONLD10_EXPAND_FLAT     = new RDFFormat(Lang.JSONLD10, EXPAND_FLAT) ;
-    /** @deprecated Use JSON-LD 1.1 */
-    @Deprecated
-    public static final RDFFormat        JSONLD10_COMPACT_PRETTY  = new RDFFormat(Lang.JSONLD10, COMPACT_PRETTY) ;
-    /** @deprecated Use JSON-LD 1.1 */
-    @Deprecated
-    public static final RDFFormat        JSONLD10_COMPACT_FLAT    = new RDFFormat(Lang.JSONLD10, COMPACT_FLAT) ;
-    /** @deprecated Use JSON-LD 1.1 */
-    @Deprecated
-    public static final RDFFormat        JSONLD10_FLATTEN_PRETTY  = new RDFFormat(Lang.JSONLD10, FLATTEN_PRETTY) ;
-    /** @deprecated Use JSON-LD 1.1 */
-    @Deprecated
-    public static final RDFFormat        JSONLD10_FLATTEN_FLAT    = new RDFFormat(Lang.JSONLD10, FLATTEN_FLAT) ;
-    /** @deprecated Use JSON-LD 1.1 */
-    @Deprecated
-    public static final RDFFormat        JSONLD10_FRAME_PRETTY    = new RDFFormat(Lang.JSONLD10, FRAME_PRETTY) ;
-    /** @deprecated Use JSON-LD 1.1 */
-    @Deprecated
-    public static final RDFFormat        JSONLD10_FRAME_FLAT      = new RDFFormat(Lang.JSONLD10, FRAME_FLAT) ;
-
-    /** Use {@link #JSONLD10_EXPAND_PRETTY} */
-    @Deprecated
-    public static final RDFFormat        JSONLD_EXPAND_PRETTY   = JSONLD10_EXPAND_PRETTY;
-
-    /** Use {@link #JSONLD10_EXPAND_FLAT} */
-    @Deprecated
-    public static final RDFFormat        JSONLD_EXPAND_FLAT     = JSONLD10_EXPAND_FLAT;
-
-    /** Use {@link #JSONLD10_COMPACT_PRETTY} */
-    @Deprecated
-    public static final RDFFormat        JSONLD_COMPACT_PRETTY  = JSONLD10_COMPACT_PRETTY;
-
-    /** Use {@link #JSONLD10_COMPACT_FLAT} */
-    @Deprecated
-    public static final RDFFormat        JSONLD_COMPACT_FLAT    = JSONLD10_COMPACT_FLAT;
-
-    /** Use {@link #JSONLD10_FLATTEN_PRETTY} */
-    @Deprecated
-    public static final RDFFormat        JSONLD_FLATTEN_PRETTY  = JSONLD10_FLATTEN_PRETTY;
-
-    /** Use {@link #JSONLD10_FLATTEN_FLAT} */
-    @Deprecated
-    public static final RDFFormat        JSONLD_FLATTEN_FLAT    = JSONLD10_FLATTEN_FLAT;
-
-    /** Use {@link #JSONLD10_FRAME_PRETTY} */
-    @Deprecated
-    public static final RDFFormat        JSONLD_FRAME_PRETTY    = JSONLD10_FRAME_PRETTY;
-
-    /** Use {@link #JSONLD10_FRAME_FLAT} */
-    @Deprecated
-    public static final RDFFormat        JSONLD_FRAME_FLAT      = JSONLD10_FRAME_FLAT;
-
-    /** @deprecated Use JSON-LD 1.1 */
-    @Deprecated
-    public static final RDFFormat        JSONLD10        = JSONLD10_COMPACT_PRETTY ;
-    /** @deprecated Use JSON-LD 1.1 */
-    @Deprecated
-    public static final RDFFormat        JSONLD10_PRETTY = JSONLD10_COMPACT_PRETTY ;
-    /** @deprecated Use JSON-LD 1.1 */
-    @Deprecated
-    public static final RDFFormat        JSONLD10_FLAT   = JSONLD10_COMPACT_FLAT ;
-
-    // JSON-LD 1.0
-//    public static final RDFFormat        JSONLD_PRETTY  = new RDFFormat(Lang.JSONLD, JSONLD10.getVariant());
-//    public static final RDFFormat        JSONLD_PLAIN   = new RDFFormat(Lang.JSONLD, JSONLD10.getVariant());
-//    public static final RDFFormat        JSONLD         = JSONLD_PRETTY;
-//    public static final RDFFormat        JSONLD_FLAT    = new RDFFormat(Lang.JSONLD, JSONLD10_EXPAND_FLAT.getVariant());
+// ---- JSONLD 1.0 / jsonld-java -- support removed in Jena 5
+// Constants left in the source in case someone makes a future contribution.
+//
+//    public static class JSONLDVariant extends RDFFormatVariant {
+//        private static enum JSONLD_FORMAT {
+//            COMPACT,
+//            FLATTEN,
+//            EXPAND,
+//            FRAME
+//        }
+//
+//        private JSONLD_FORMAT format ;
+//        private boolean prettyJson ;
+//
+//        JSONLDVariant(String name, boolean prettyJson, JSONLD_FORMAT format) {
+//            super(name) ;
+//            this.format = format ;
+//            this.prettyJson = prettyJson ;
+//        }
+//
+//        public boolean isPretty() { return prettyJson ; }
+//
+//        private boolean isFormat(JSONLD_FORMAT fmt) {
+//            return (fmt == format);
+//        }
+//
+//        public boolean isCompact() { return isFormat(JSONLD_FORMAT.COMPACT); }
+//        public boolean isFlatten() { return isFormat(JSONLD_FORMAT.FLATTEN); }
+//        public boolean isExpand() { return isFormat(JSONLD_FORMAT.EXPAND); }
+//        public boolean isFrame() { return isFormat(JSONLD_FORMAT.FRAME); }
+//    }
+//
+//    // Variants for the JsonLD 1.0 outputs.
+//    // because of the pre-existing JSONLD_PRETTY and JSONLD_FLAT,
+//    // we're more or less obliged to create all of these
+//    // Assumes jsonld-java.
+//
+//    private static final RDFFormatVariant EXPAND_PRETTY      = new JSONLDVariant("expand pretty", true, JSONLDVariant.JSONLD_FORMAT.EXPAND) ;
+//    private static final RDFFormatVariant EXPAND_FLAT        = new JSONLDVariant("expand flat", false, JSONLDVariant.JSONLD_FORMAT.EXPAND) ;
+//    private static final RDFFormatVariant COMPACT_PRETTY     = new JSONLDVariant("compact pretty", true, JSONLDVariant.JSONLD_FORMAT.COMPACT) ;
+//    private static final RDFFormatVariant COMPACT_FLAT       = new JSONLDVariant("compact flat", false, JSONLDVariant.JSONLD_FORMAT.COMPACT) ;
+//    private static final RDFFormatVariant FLATTEN_PRETTY     = new JSONLDVariant("flatten pretty", true, JSONLDVariant.JSONLD_FORMAT.FLATTEN) ;
+//    private static final RDFFormatVariant FLATTEN_FLAT       = new JSONLDVariant("flatten flat", false, JSONLDVariant.JSONLD_FORMAT.FLATTEN) ;
+//    private static final RDFFormatVariant FRAME_PRETTY       = new JSONLDVariant("frame pretty", true, JSONLDVariant.JSONLD_FORMAT.FRAME) ;
+//    private static final RDFFormatVariant FRAME_FLAT         = new JSONLDVariant("frame flat", false, JSONLDVariant.JSONLD_FORMAT.FRAME) ;
 
     // JSON-LD 1.1
     public static final RDFFormat        JSONLD_PRETTY  = new RDFFormat(Lang.JSONLD, PRETTY);

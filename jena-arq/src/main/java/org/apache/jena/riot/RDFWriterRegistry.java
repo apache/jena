@@ -113,15 +113,12 @@ public class RDFWriterRegistry
 
     public static void init() {}
     static { init$() ; }
-    @SuppressWarnings("deprecation")
     private static void init$()
     {
         WriterGraphRIOTFactory wgfactory = createWriterGraphFactory();
         WriterDatasetRIOTFactory wdsfactory = createWriterDatasetFactory();
 
         // Safer here than as statics due to class initialization ordering effects.
-        WriterDatasetRIOTFactory wdsJsonldFactory10 = syntaxForm -> new JsonLD10Writer(syntaxForm);
-        WriterGraphRIOTFactory wgJsonldFactory10    = syntaxForm -> RiotLib.adapter(new JsonLD10Writer(syntaxForm));
         WriterDatasetRIOTFactory wdsJsonldFactory11 = syntaxForm -> new JsonLD11Writer(syntaxForm);
         WriterGraphRIOTFactory wgJsonldFactory11    = syntaxForm -> RiotLib.adapter(new JsonLD11Writer(syntaxForm));
         WriterGraphRIOTFactory wgProtoFactory       = syntaxForm -> new WriterGraphProtobuf(syntaxForm);
@@ -147,7 +144,6 @@ public class RDFWriterRegistry
         register(Lang.RDFXML,      RDFFormat.RDFXML) ;
 
         register(Lang.JSONLD,      RDFFormat.JSONLD) ;
-        register(Lang.JSONLD10,    RDFFormat.JSONLD10) ;
         register(Lang.JSONLD11,    RDFFormat.JSONLD11) ;
         register(Lang.RDFJSON,     RDFFormat.RDFJSON) ;
 
@@ -168,25 +164,6 @@ public class RDFWriterRegistry
 
         register(RDFFormat.NTRIPLES,       wgfactory) ;
         register(RDFFormat.NTRIPLES_ASCII, wgfactory) ;
-
-        // JSON-LD 1.0
-        register(RDFFormat.JSONLD10_COMPACT_PRETTY,     wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FLATTEN_PRETTY,     wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_EXPAND_PRETTY,      wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FRAME_PRETTY,       wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_COMPACT_FLAT,       wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FLATTEN_FLAT,       wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_EXPAND_FLAT,        wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FRAME_FLAT,         wgJsonldFactory10) ;
-
-        register(RDFFormat.JSONLD10_COMPACT_PRETTY,     wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FLATTEN_PRETTY,     wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_EXPAND_PRETTY,      wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FRAME_PRETTY,       wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_COMPACT_FLAT,       wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FLATTEN_FLAT,       wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_EXPAND_FLAT,        wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FRAME_FLAT,         wdsJsonldFactory10) ;
 
         // JSON-LD 1.1
         register(RDFFormat.JSONLD11,                    wgJsonldFactory11) ;

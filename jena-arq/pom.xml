@@ -59,44 +59,15 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- jsonld-java for JSON-LD 1.0 -->
-    <dependency>
-      <groupId>com.github.jsonld-java</groupId>
-      <artifactId>jsonld-java</artifactId>
-    </dependency>
-    <!-- replace that used via jsonld-java -->
-
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
     </dependency>    
 
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient-cache</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-    </dependency>
-    <!--
-        Intercept any uses of Jakarta Commons Logging
-         e.g. Apache Common HTTP client (JSON-LD 1.0 support)
-    -->
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-    </dependency>
-
-    <!-- End jsonld-java -->
 
     <!-- For Titanium JSON-LD 1.1 -->
     <dependency>
