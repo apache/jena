@@ -23,10 +23,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.github.jsonldjava.core.DocumentLoader;
-import com.github.jsonldjava.core.JsonLdOptions;
-
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Dataset;
@@ -41,10 +37,7 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 
-@SuppressWarnings("deprecation")
 public class TestJsonLDReader {
-
-    // [JSONLD 1.0]
 
     // These tests fail under some java11 (but not java17)
     // for RIOT default JSON-LD 1.1 because Titanium contacts schema.org
@@ -57,54 +50,6 @@ public class TestJsonLDReader {
         Dataset ds = jsonld2dataset(jsonld, null, Lang.JSONLD);
         assertJohnDoeIsOK(ds.getDefaultModel());
     }
-
-    /**
-     * Test using the jena Context mechanism to pass the jsonld "@context"
-     */
-    @Test
-    public final void overrideAtContextTest() throws JsonGenerationException, IOException {
-
-        // some jsonld using schema.org's URI as "@context"
-        String jsonld = someSchemaDotOrgJsonld();
-
-        // pass the jsonldContext to the read using a jena Context
-        // [JSONLD 1.0]
-//        JsonLDReadContext jenaCtx = new JsonLDReadContext();
-//        jenaCtx.setJsonLDContext(schemaOrgResolvedContext());
-        JsonLDReadContext jenaCtx = null;
-
-        // read the jsonld, replacing its "@context"
-        Dataset ds = jsonld2dataset(jsonld, jenaCtx, Lang.JSONLD);
-
-        // check ds is correct
-        assertJohnDoeIsOK(ds.getDefaultModel());
-    }
-
-    // [JSONLD 1.0]
-    @Test
-    public final void overrideJsonLdOptions() throws JsonGenerationException, IOException {
-        // some jsonld using a (fake) http://pseudo.schema.org's URI as "@context"
-        String jsonld = "{\"@id\":\"_:b0\",\"@type\":\"Person\",\"name\":\"John Doe\",\"@context\":\"http://pseudo.schema.org\"}";
-
-        JsonLdOptions options = new JsonLdOptions();
-        DocumentLoader dl = new DocumentLoader();
-        dl.addInjectedDoc("http://pseudo.schema.org", String.format("{ \"@context\": %s }", schemaOrgResolvedContext()));
-        options.setDocumentLoader(dl);
-
-        // [JSONLD 1.0]
-        // pass the jsonldContext and JsonLdOptions to the read using a jena Context
-        JsonLDReadContext jenaCtx = new JsonLDReadContext();
-        jenaCtx.setOptions(options);
-
-        // read the jsonld, replacing its "@context"
-        // Uses JsonLdOptions which is specific to jsonld-java (1.0).
-        Dataset ds = jsonld2dataset(jsonld, jenaCtx, Lang.JSONLD10);
-
-        // check ds is correct
-        assertJohnDoeIsOK(ds.getDefaultModel());
-    }
-
-    // JSONLD 1.1 : Titanium-json-ld
 
     @Test
     public void testJsonLdBase() {
