@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,8 +17,8 @@
  */
 package org.apache.jena.permissions.contract.graph;
 
-import org.apache.jena.graph.Factory;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.test.MetaTestGraph;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
@@ -39,7 +39,7 @@ public class SecuredGraphContractTests extends MetaTestGraph {
 
     @Override
     public Graph getGraph() {
-        return org.apache.jena.permissions.Factory.getInstance(eval, getName(), Factory.createDefaultGraph());
+        return org.apache.jena.permissions.Factory.getInstance(eval, getName(), GraphMemFactory.createDefaultGraph());
     }
 
 }

@@ -21,7 +21,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.mem.GraphMem;
 import org.apache.jena.mem2.GraphMem2Fast;
 import org.apache.jena.mem2.GraphMem2Legacy;
 import org.apache.jena.mem2.GraphMem2Roaring;
@@ -32,11 +31,12 @@ import java.util.List;
 
 public class GraphTripleNodeHelperCurrent implements GraphTripleNodeHelper<Graph, Triple, Node> {
 
+    @SuppressWarnings("deprecation")
     @Override
     public Graph createGraph(Context.GraphClass graphClass) {
         switch (graphClass) {
             case GraphMem:
-                return new GraphMem();
+                return new org.apache.jena.mem.GraphMem();
             case GraphMem2Fast:
                 return new GraphMem2Fast();
             case GraphMem2Legacy:
@@ -51,7 +51,8 @@ public class GraphTripleNodeHelperCurrent implements GraphTripleNodeHelper<Graph
     @Override
     public List<Triple> readTriples(String graphUri) {
         var list = new ArrayList<Triple>();
-        var g1 = new GraphMem() {
+        @SuppressWarnings("deprecation")
+        var g1 = new org.apache.jena.mem.GraphMem() {
             @Override
             public void add(Triple t) {
                 list.add(t);
@@ -70,7 +71,7 @@ public class GraphTripleNodeHelperCurrent implements GraphTripleNodeHelper<Graph
 
     @Override
     public Triple cloneTriple(Triple triple) {
-        return new Triple(cloneNode(triple.getSubject()), cloneNode(triple.getPredicate()), cloneNode(triple.getObject()));
+        return Triple.create(cloneNode(triple.getSubject()), cloneNode(triple.getPredicate()), cloneNode(triple.getObject()));
     }
 
 
