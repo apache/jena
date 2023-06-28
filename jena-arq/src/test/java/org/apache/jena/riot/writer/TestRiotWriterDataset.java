@@ -35,7 +35,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-@SuppressWarnings("deprecation")
 @RunWith(Parameterized.class)
 public class TestRiotWriterDataset extends AbstractWriterTest
 {
@@ -68,8 +67,7 @@ public class TestRiotWriterDataset extends AbstractWriterTest
     }
 
     private static boolean isJsonLDJava(RDFFormat format) {
-        return Lang.JSONLD.equals(format.getLang()) ||
-               Lang.JSONLD10.equals(format.getLang());
+        return Lang.JSONLD.equals(format.getLang());
     }
 
 

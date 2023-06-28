@@ -23,7 +23,6 @@ import static org.apache.jena.riot.WebContent.*;
 import java.util.*;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.util.FileUtils;
@@ -108,26 +107,6 @@ public class RDFLanguages
                                                      .addFileExtensions("jsonld11")
                                                      .build();
 
-    /*
-     * Override for JSON-LD 1.0 - requires an explicit language name
-     * {@code RDFParser.forceLang(Lang.JSONLD10)...}
-     * or use of the file extensions {@code .jsonld10}
-     * @deprecated use JSON-LD 1.1
-     */
-    /**
-     * @deprecated use JSON-LD 1.1
-     */
-    @Deprecated
-    public static final String strLangJSONLD10     = "JSON-LD-10";
-    /**
-     * @deprecated use JSON-LD 1.1
-     */
-    @Deprecated
-    public static final Lang JSONLD10   = LangBuilder.create(strLangJSONLD10, "x/ld-json-10")
-                                                     .addAltNames("JSONLD10")
-                                                     .addFileExtensions("jsonld10")
-                                                     .build();
-
     /** <a href="http://www.w3.org/TR/rdf-json/">RDF/JSON</a>.  This is not <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
     public static final Lang RDFJSON    = LangBuilder.create(strLangRDFJSON, contentTypeRDFJSON)
                                                      .addAltNames("RDFJSON")
@@ -206,7 +185,6 @@ public class RDFLanguages
     public static void init() {}
     static { init$(); }
 
-    @SuppressWarnings("deprecation")
     private static synchronized void init$() {
         initStandard();
         // Needed to avoid a class initialization loop.
@@ -217,7 +195,6 @@ public class RDFLanguages
         Lang.TURTLE     = RDFLanguages.TURTLE;
         Lang.TTL        = RDFLanguages.TTL;
         Lang.JSONLD     = RDFLanguages.JSONLD;
-        Lang.JSONLD10   = RDFLanguages.JSONLD10;
         Lang.JSONLD11   = RDFLanguages.JSONLD11;
         Lang.RDFJSON    = RDFLanguages.RDFJSON;
         Lang.NQUADS     = RDFLanguages.NQUADS;
@@ -248,7 +225,6 @@ public class RDFLanguages
         register(N3);
         register(NTRIPLES);
         register(JSONLD);
-        register(JSONLD10);
         register(JSONLD11);
         register(RDFJSON);
         register(TRIG);
@@ -258,17 +234,6 @@ public class RDFLanguages
         register(TRIX);
         register(RDFNULL);
         register(SHACLC);
-
-        // Check for JSON-LD engine.
-        String clsName = "com.github.jsonldjava.core.JsonLdProcessor";
-        try {
-            Class.forName(clsName);
-        } catch (ClassNotFoundException ex) {
-            Log.warn(RDFLanguages.class, "java-jsonld classes not on the classpath - JSON-LD input-output not available.");
-            Log.warn(RDFLanguages.class, "Minimum jarfiles are jsonld-java, jackson-core, jackson-annotations");
-            Log.warn(RDFLanguages.class, "If using a Jena distribution, put all jars in the lib/ directory on the classpath");
-            return;
-        }
     }
 
     /**
