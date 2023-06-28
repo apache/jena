@@ -24,26 +24,25 @@ import org.apache.jena.JenaVersion;
  */
 public class Context {
 
-    public GraphClass getGraphClass() {
-        return graphClass;
-    }
-
-    public JenaVersion getJenaVersion() {
-        return jenaVersion;
-    }
-
-    public enum GraphClass {
-        GraphMem
-    }
-
     private final GraphClass graphClass;
     private final JenaVersion jenaVersion;
-
 
     public Context(String graphImplementation) {
         switch (graphImplementation) {
             case "GraphMem (current)":
                 this.graphClass = GraphClass.GraphMem;
+                this.jenaVersion = JenaVersion.CURRENT;
+                break;
+            case "GraphMem2Fast (current)":
+                this.graphClass = GraphClass.GraphMem2Fast;
+                this.jenaVersion = JenaVersion.CURRENT;
+                break;
+            case "GraphMem2Legacy (current)":
+                this.graphClass = GraphClass.GraphMem2Legacy;
+                this.jenaVersion = JenaVersion.CURRENT;
+                break;
+            case "GraphMem2Roaring (current)":
+                this.graphClass = GraphClass.GraphMem2Roaring;
                 this.jenaVersion = JenaVersion.CURRENT;
                 break;
             case "GraphMem (Jena 4.8.0)":
@@ -53,6 +52,22 @@ public class Context {
             default:
                 throw new IllegalArgumentException("Unknown graph implementation: " + graphImplementation);
         }
+    }
+
+    public GraphClass getGraphClass() {
+        return graphClass;
+    }
+
+    public JenaVersion getJenaVersion() {
+        return jenaVersion;
+    }
+
+
+    public enum GraphClass {
+        GraphMem,
+        GraphMem2Fast,
+        GraphMem2Legacy,
+        GraphMem2Roaring,
     }
 
 

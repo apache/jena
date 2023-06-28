@@ -43,15 +43,29 @@ public class TestGraphMemoryConsumption {
 
     @Param({
             "GraphMem (current)",
+            "GraphMem2Fast (current)",
+            "GraphMem2Legacy (current)",
+            "GraphMem2Roaring (current)",
             "GraphMem (Jena 4.8.0)",
     })
     public String param1_GraphImplementation;
+    java.util.function.Supplier<Object> graphFill;
     private Context trialContext;
-
     private List<Triple> allTriplesCurrent;
     private List<org.apache.shadedJena480.graph.Triple> allTriples480;
 
-    java.util.function.Supplier<Object> graphFill;
+    /**
+     * This method is used to get the memory consumption of the current JVM.
+     *
+     * @return the memory consumption in MB
+     */
+    private static double runGcAndGetUsedMemoryInMB() {
+        System.runFinalization();
+        System.gc();
+        Runtime.getRuntime().runFinalization();
+        Runtime.getRuntime().gc();
+        return BigDecimal.valueOf(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()).divide(BigDecimal.valueOf(1024L)).divide(BigDecimal.valueOf(1024L)).doubleValue();
+    }
 
     @Benchmark
     public Object graphFill() {
@@ -65,10 +79,10 @@ public class TestGraphMemoryConsumption {
         allTriplesCurrent.forEach(sut::add);
         stopwatch.stop();
         var memoryAfter = runGcAndGetUsedMemoryInMB();
-        System.out.println(String.format("graphs: %d time to fill graphs: %s additional memory: %5.3f MB",
+        System.out.printf("graphs: %d time to fill graphs: %s additional memory: %5.3f MB%n",
                 sut.size(),
                 stopwatch.formatTime(),
-                (memoryAfter - memoryBefore)));
+                (memoryAfter - memoryBefore));
         return sut;
     }
 
@@ -79,23 +93,11 @@ public class TestGraphMemoryConsumption {
         allTriples480.forEach(sut::add);
         stopwatch.stop();
         var memoryAfter = runGcAndGetUsedMemoryInMB();
-        System.out.println(String.format("graphs: %d time to fill graphs: %s additional memory: %5.3f MB",
+        System.out.printf("graphs: %d time to fill graphs: %s additional memory: %5.3f MB%n",
                 sut.size(),
                 stopwatch.formatTime(),
-                (memoryAfter - memoryBefore)));
+                (memoryAfter - memoryBefore));
         return sut;
-    }
-
-    /**
-     * This method is used to get the memory consumption of the current JVM.
-     * @return the memory consumption in MB
-     */
-    private static double runGcAndGetUsedMemoryInMB() {
-        System.runFinalization();
-        System.gc();
-        Runtime.getRuntime().runFinalization();
-        Runtime.getRuntime().gc();
-        return BigDecimal.valueOf(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()).divide(BigDecimal.valueOf(1024l)).divide(BigDecimal.valueOf(1024l)).doubleValue();
     }
 
     @Setup(Level.Trial)

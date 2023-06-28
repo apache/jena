@@ -30,6 +30,7 @@ import org.openjdk.jmh.runner.Runner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -48,20 +49,26 @@ public class TestGraphStreamByMatchAndCount {
 
     @Param({
             "GraphMem (current)",
+            "GraphMem2Fast (current)",
+            "GraphMem2Legacy (current)",
+            "GraphMem2Roaring (current)",
             "GraphMem (Jena 4.8.0)",
     })
     public String param1_GraphImplementation;
 
-    @Param({"500"})
+    @Param({"800"})
     public int param2_sampleSize;
-
+    Function<String, Object> graphStreamByMatchAndCount;
     private Graph sutCurrent;
     private org.apache.shadedJena480.graph.Graph sut480;
-
     private List<Triple> triplesToFindCurrent;
     private List<org.apache.shadedJena480.graph.Triple> triplesToFind480;
 
-    Function<String, Object> graphStreamByMatchAndCount;
+    private static int count(final Stream stream) {
+        var actionCounter = new ActionCount<>();
+        stream.forEach(actionCounter::accept);
+        return (int) actionCounter.getCount();
+    }
 
     @Benchmark
     public Object graphStreamS__() {
@@ -71,6 +78,11 @@ public class TestGraphStreamByMatchAndCount {
     @Benchmark
     public Object graphStream_P_() {
         return graphStreamByMatchAndCount.apply("_P_");
+    }
+
+    @Benchmark
+    public Object graphStream__O() {
+        return graphStreamByMatchAndCount.apply("__O");
     }
 
     @Benchmark
@@ -86,11 +98,6 @@ public class TestGraphStreamByMatchAndCount {
     @Benchmark
     public Object graphStream_PO() {
         return graphStreamByMatchAndCount.apply("_PO");
-    }
-
-    @Benchmark
-    public Object graphStream__O() {
-        return graphStreamByMatchAndCount.apply("__O");
     }
 
     private int graphStreamByMatchAndCount(String pattern) {
@@ -109,12 +116,6 @@ public class TestGraphStreamByMatchAndCount {
             total += count(streamFunction.apply(sample));
         }
         return total;
-    }
-
-    private static int count(final Stream stream) {
-        var actionCounter = new ActionCount<>();
-        stream.forEach(actionCounter::accept);
-        return (int)actionCounter.getCount();
     }
 
     Function<Triple, Stream<Triple>> getStreamFunctionByPatternCurrent(String pattern) {
@@ -159,8 +160,7 @@ public class TestGraphStreamByMatchAndCount {
     public void setupTrial() throws Exception {
         Context trialContext = new Context(param1_GraphImplementation);
         switch (trialContext.getJenaVersion()) {
-            case CURRENT:
-            {
+            case CURRENT: {
                 this.sutCurrent = Releases.current.createGraph(trialContext.getGraphClass());
                 this.graphStreamByMatchAndCount = this::graphStreamByMatchAndCount;
 
@@ -170,14 +170,15 @@ public class TestGraphStreamByMatchAndCount {
                 /*clone the triples because they should not be the same objects*/
                 this.triplesToFindCurrent = new ArrayList<>(param2_sampleSize);
                 var sampleIncrement = triples.size() / param2_sampleSize;
-                for(var i=0; i< triples.size(); i+=sampleIncrement) {
+                for (var i = 0; i < triples.size(); i += sampleIncrement) {
                     this.triplesToFindCurrent.add(Releases.current.cloneTriple(triples.get(i)));
                 }
-
+                /* Shuffle is import because the order might play a role. We want to test the performance of the
+                       contains method regardless of the order */
+                java.util.Collections.shuffle(this.triplesToFindCurrent, new Random(4721));
             }
             break;
-            case JENA_4_8_0:
-            {
+            case JENA_4_8_0: {
                 this.sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
                 this.graphStreamByMatchAndCount = this::graphStreamByMatchAndCount480;
 
@@ -187,9 +188,12 @@ public class TestGraphStreamByMatchAndCount {
                 /*clone the triples because they should not be the same objects*/
                 this.triplesToFind480 = new ArrayList<>(param2_sampleSize);
                 var sampleIncrement = triples.size() / param2_sampleSize;
-                for(var i=0; i< triples.size(); i+=sampleIncrement) {
+                for (var i = 0; i < triples.size(); i += sampleIncrement) {
                     this.triplesToFind480.add(Releases.v480.cloneTriple(triples.get(i)));
                 }
+                /* Shuffle is import because the order might play a role. We want to test the performance of the
+                       contains method regardless of the order */
+                java.util.Collections.shuffle(this.triplesToFind480, new Random(4721));
             }
             break;
             default:

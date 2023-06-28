@@ -29,6 +29,7 @@ import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 
 import java.util.List;
+import java.util.Random;
 
 @State(Scope.Benchmark)
 public class TestGraphDelete {
@@ -42,22 +43,20 @@ public class TestGraphDelete {
 
     @Param({
             "GraphMem (current)",
+            "GraphMem2Fast (current)",
+            "GraphMem2Legacy (current)",
+            "GraphMem2Roaring (current)",
             "GraphMem (Jena 4.8.0)",
     })
     public String param1_GraphImplementation;
+    java.util.function.Supplier<Integer> graphDelete;
     private Context trialContext;
-
     private Graph sutCurrent;
     private org.apache.shadedJena480.graph.Graph sut480;
-
     private List<Triple> allTriplesCurrent;
     private List<org.apache.shadedJena480.graph.Triple> allTriples480;
-
     private List<Triple> triplesToDeleteFromSutCurrent;
     private List<org.apache.shadedJena480.graph.Triple> triplesToDeleteFromSut480;
-
-
-    java.util.function.Supplier<Integer> graphDelete;
 
     @Benchmark
     public int graphDelete() {
@@ -84,6 +83,9 @@ public class TestGraphDelete {
                 this.allTriplesCurrent.forEach(this.sutCurrent::add);
                 /*cloning is important so that the triples are not reference equal */
                 this.triplesToDeleteFromSutCurrent = Releases.current.cloneTriples(this.allTriplesCurrent);
+                /* Shuffle is import because the order might play a role. We want to test the performance of the
+                       contains method regardless of the order */
+                java.util.Collections.shuffle(this.triplesToDeleteFromSutCurrent, new Random(4721));
                 break;
 
             case JENA_4_8_0:
@@ -91,6 +93,9 @@ public class TestGraphDelete {
                 this.allTriples480.forEach(this.sut480::add);
                 /*cloning is important so that the triples are not reference equal */
                 this.triplesToDeleteFromSut480 = Releases.v480.cloneTriples(this.allTriples480);
+                /* Shuffle is import because the order might play a role. We want to test the performance of the
+                       contains method regardless of the order */
+                java.util.Collections.shuffle(this.triplesToDeleteFromSut480, new Random(4721));
                 break;
 
             default:
