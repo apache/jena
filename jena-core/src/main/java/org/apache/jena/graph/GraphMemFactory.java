@@ -33,17 +33,51 @@ import org.apache.jena.util.iterator.NullIterator ;
  * Apache Jena is migrating to term semantics graph for consistency across all in-memory and persistent storage graphs
  *
  */
-
 public class GraphMemFactory
 {
+    // Default for sameTerm/sameValue
+    private static boolean defaultSameTerm = false;
+    static {
+        // Initial setting.
+        String x = System.getProperty("jena:graphSameTerm");
+        if ( x != null && x.equalsIgnoreCase("true") )
+            defaultSameTerm = true;
+    }
+
+    /**
+     * Set the default mode for in-memory graphs : same term (true) or same value
+     * (false).
+     * <p>
+     * This is initially set with system property "jena:graphSameTerm"
+     * with the system default is same value (Jena4).
+     * <p>
+     * This affects {@link #createDefaultGraph}.
+     */
+    public static void setDftGraphSameTerm(boolean value) {
+        defaultSameTerm = value;
+    }
+
+    /**
+     * Get the default mode for in-memory for graphs : same term (true) or same value
+     * (false).
+     * <p>
+     * This is used by {@link #createDefaultGraph}.
+     */
+    public static boolean dftGraphSameTerm() {
+        return defaultSameTerm;
+    }
+
     private GraphMemFactory() {}
 
     /**
      * Answer a memory-based graph.
      * This is the system default.
      */
-    public static Graph createDefaultGraph()
-    { return GraphMemFactory.createGraphMem( ); }
+    public static Graph createDefaultGraph() {
+        return dftGraphSameTerm()
+                ? createDefaultGraphSameTerm()
+                : createDefaultGraphSameValue();
+    }
 
     /**
      * This function will track the preferred general purpose graph.
