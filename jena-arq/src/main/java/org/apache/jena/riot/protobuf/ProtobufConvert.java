@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger ;
 
 import org.apache.jena.JenaRuntime ;
+import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -33,13 +34,20 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.protobuf.wire.PB_RDF.*;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.core.Quad;
 //port org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
 
 /** Convert to and from Protobuf wire objects.
+ * <p>
  * See {@link StreamRDF2Protobuf} and {@link Protobuf2StreamRDF}
  * for ways to convert as streams (they recycle intermediate objects).
+ * <p>
+ * Many operations have available with a cache.
+ * The cache is used for creating URis from strings. It interns the node
+ * leading to significant savings of space, especially in the property position.
+ *
  * @see StreamRDF2Protobuf
  * @see Protobuf2StreamRDF
  */
@@ -126,17 +134,38 @@ public class ProtobufConvert
 
     /** Build a {@link Node} from an {@link RDF_Term}. */
     public static Node convert(RDF_Term term) {
-        return convert(term, null) ;
+        return convert(null, term) ;
     }
+
+    /** Build a {@link Node} from an {@link RDF_Term}. */
+    public static Node convert(Cache<String, Node> uriCache, RDF_Term term) {
+        return convert(uriCache, term, null) ;
+    }
+
+    // Create URI, using a cached copy if possible.
+    private static Node uri(Cache<String, Node> uriCache, String uriStr) {
+        if ( uriCache != null )
+            return uriCache.get(uriStr, RiotLib::createIRIorBNode);
+        return RiotLib.createIRIorBNode(uriStr);
+    }
+
 
     /**
      * Build a {@link Node} from an {@link RDF_Term} using a prefix map which must agree
      * with the map used to create the {@code RDF_Term} in the first place.
      */
     public static Node convert(RDF_Term term, PrefixMap pmap) {
+        return convert(null, term, pmap);
+    }
+
+    /**
+     * Build a {@link Node} from an {@link RDF_Term} using a prefix map which must agree
+     * with the map used to create the {@code RDF_Term} in the first place.
+     */
+    public static Node convert(Cache<String, Node> uriCache, RDF_Term term, PrefixMap pmap) {
         switch (term.getTermCase()) {
             case IRI :
-                return NodeFactory.createURI(term.getIri().getIri()) ;
+                return uri(uriCache, term.getIri().getIri()) ;
             case BNODE :
                 return NodeFactory.createBlankNode(term.getBnode().getLabel()) ;
             case LITERAL : {
@@ -170,7 +199,7 @@ public class ProtobufConvert
             case PREFIXNAME : {
                 String x = expand(term.getPrefixName(), pmap) ;
                 if ( x != null )
-                    return NodeFactory.createURI(x) ;
+                    return uri(uriCache, x) ;
                 throw new RiotProtobufException("Failed to expand "+term) ;
             }
             case VARIABLE :
@@ -214,21 +243,33 @@ public class ProtobufConvert
     }
 
     public static Triple convert(RDF_Triple triple) {
-        return convert(triple, null) ;
+        return convert(null, triple, null) ;
+    }
+
+    public static Triple convert(Cache<String, Node> uriCache, RDF_Triple triple) {
+        return convert(uriCache, triple, null) ;
     }
 
     public static Triple convert(RDF_Triple rt, PrefixMap pmap) {
-        Node s = convert(rt.getS(), pmap) ;
-        Node p = convert(rt.getP(), pmap) ;
-        Node o = convert(rt.getO(), pmap) ;
+        return convert(null, rt, pmap);
+    }
+
+    public static Triple convert(Cache<String, Node> uriCache, RDF_Triple rt, PrefixMap pmap) {
+        Node s = convert(uriCache, rt.getS(), pmap) ;
+        Node p = convert(uriCache, rt.getP(), pmap) ;
+        Node o = convert(uriCache, rt.getO(), pmap) ;
         return Triple.create(s, p, o) ;
     }
 
     public static Quad convert(RDF_Quad rq, PrefixMap pmap) {
-        Node g = (rq.hasG() ? convert(rq.getG(), pmap) : null ) ;
-        Node s = convert(rq.getS(), pmap) ;
-        Node p = convert(rq.getP(), pmap) ;
-        Node o = convert(rq.getO(), pmap) ;
+        return convert(null, rq, pmap);
+    }
+
+    public static Quad convert(Cache<String, Node> uriCache, RDF_Quad rq, PrefixMap pmap) {
+        Node g = (rq.hasG() ? convert(uriCache,rq.getG(), pmap) : null ) ;
+        Node s = convert(uriCache,rq.getS(), pmap) ;
+        Node p = convert(uriCache,rq.getP(), pmap) ;
+        Node o = convert(uriCache,rq.getO(), pmap) ;
         return Quad.create(g, s, p, o) ;
     }
 

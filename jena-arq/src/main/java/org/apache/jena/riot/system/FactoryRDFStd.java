@@ -51,8 +51,8 @@ public class FactoryRDFStd implements FactoryRDF {
 
     @Override
     public Node createURI(String uriStr) {
-        return RiotLib.createIRIorBNode(uriStr) ;
-        //return NodeFactory.createURI(uriStr) ;
+        return RiotLib.createIRIorBNode(uriStr);
+        //return NodeFactory.createURI(uriStr);
     }
 
     @Override
