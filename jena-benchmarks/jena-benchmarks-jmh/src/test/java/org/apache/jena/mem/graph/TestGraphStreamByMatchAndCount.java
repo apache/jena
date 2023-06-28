@@ -64,7 +64,7 @@ public class TestGraphStreamByMatchAndCount {
     private List<Triple> triplesToFindCurrent;
     private List<org.apache.shadedJena480.graph.Triple> triplesToFind480;
 
-    private static int count(final Stream stream) {
+    private static int count(final Stream<?> stream) {
         var actionCounter = new ActionCount<>();
         stream.forEach(actionCounter::accept);
         return (int) actionCounter.getCount();
