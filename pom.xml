@@ -88,7 +88,6 @@
          and use that or later.
     -->
     <ver.jsonldjava>0.13.4</ver.jsonldjava>
-    <ver.jackson>2.15.3</ver.jackson>
     <ver.httpclient>4.5.14</ver.httpclient>
     <ver.httpcore>4.4.16</ver.httpcore>
 
@@ -322,14 +321,6 @@
          </exclusions>
        </dependency>
 
-       <dependency>
-         <groupId>com.fasterxml.jackson</groupId>
-         <artifactId>jackson-bom</artifactId>
-         <version>${ver.jackson}</version>
-         <type>pom</type>
-         <scope>import</scope>
-       </dependency>
-       
        <!-- Protobuf only, not gRPC -->
        <dependency>
          <groupId>com.google.protobuf</groupId>
@@ -428,81 +419,6 @@
          <version>${ver.gson}</version>
        </dependency>    
        
-       <!-- jsonld-java for JSON-LD 1.0 -->
-       <dependency>
-         <groupId>com.github.jsonld-java</groupId>
-         <artifactId>jsonld-java</artifactId>
-         <version>${ver.jsonldjava}</version>
-
-         <exclusions>
-           <exclusion>
-             <groupId>com.fasterxml.jackson.core</groupId>
-             <artifactId>jackson-core</artifactId>
-           </exclusion>
-           <exclusion>
-             <groupId>com.fasterxml.jackson.core</groupId>
-             <artifactId>jackson-databind</artifactId>
-           </exclusion>
-           <exclusion>
-             <groupId>commons-logging</groupId>
-             <artifactId>commons-logging</artifactId>
-           </exclusion>
-           <exclusion>
-             <groupId>commons-io</groupId>
-             <artifactId>commons-io</artifactId>
-           </exclusion>
-           <exclusion>
-             <groupId>org.slf4j</groupId>
-             <artifactId>*</artifactId>
-           </exclusion>
-
-           <!-- Exclude so we use our choice of versions -->
-           <exclusion>
-             <groupId>org.apache.httpcomponents</groupId>
-             <artifactId>httpclient-cache</artifactId>
-           </exclusion>
-           <exclusion>
-             <groupId>org.apache.httpcomponents</groupId>
-             <artifactId>httpclient</artifactId>
-           </exclusion>
-           <exclusion>
-             <groupId>org.apache.httpcomponents</groupId>
-             <artifactId>httpclient-osgi</artifactId>
-           </exclusion>
-           <exclusion>
-             <groupId>org.apache.httpcomponents</groupId>
-             <artifactId>httpcore-osgi</artifactId>
-           </exclusion>
-           <exclusion>
-             <groupId>org.slf4j</groupId>
-             <artifactId>slf4j-api</artifactId>
-           </exclusion>
-         </exclusions>
-       </dependency>
-
-       <!-- Control version of Apache HttpClient components -->
-       <dependency>
-         <groupId>org.apache.httpcomponents</groupId>
-         <artifactId>httpclient-cache</artifactId>
-         <version>${ver.httpclient}</version>
-         <exclusions>
-           <!-- Replace with slf4j adapter -->
-           <exclusion>
-             <groupId>commons-logging</groupId>
-             <artifactId>commons-logging</artifactId>
-           </exclusion>
-           <exclusion>
-             <groupId>commons-codec</groupId>
-             <artifactId>commons-codec</artifactId>
-           </exclusion>
-           <!-- JENA 2137: scope=provided and the enforcer plugin -->
-           <exclusion>
-             <groupId>org.osgi</groupId>
-             <artifactId>org.osgi.core</artifactId>
-           </exclusion>
-         </exclusions>
-       </dependency>
-
        <dependency>
          <groupId>org.apache.httpcomponents</groupId>
          <artifactId>httpclient</artifactId>

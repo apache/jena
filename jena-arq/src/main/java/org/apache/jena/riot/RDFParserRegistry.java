@@ -22,11 +22,7 @@ import static org.apache.jena.riot.Lang.*;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Collection;
+import java.util.*;
 
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
@@ -34,7 +30,9 @@ import org.apache.jena.riot.lang.*;
 import org.apache.jena.riot.lang.extra.TurtleJCC;
 import org.apache.jena.riot.protobuf.ProtobufRDF;
 import org.apache.jena.riot.protobuf.RiotProtobufException;
-import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.thrift.RiotThriftException;
 import org.apache.jena.riot.thrift.ThriftRDF;
 import org.apache.jena.sparql.util.Context;
@@ -69,7 +67,6 @@ public class RDFParserRegistry
         initStandard();
     }
 
-    @SuppressWarnings("deprecation")
     private static void initStandard() {
         // Make sure the constants are initialized.
         RDFLanguages.init();
@@ -95,7 +92,6 @@ public class RDFParserRegistry
 
         // Keep here, not in statics, due to class initialization ordering effects.
         // JSON-LD
-        ReaderRIOTFactory parserFactoryJsonLD10  = new ReaderRIOTFactoryJSONLD10();
         ReaderRIOTFactory parserFactoryJsonLD11  = new ReaderRIOTFactoryJSONLD11();
 
         // ==== JSON-LD system default for parsing.
@@ -103,7 +99,6 @@ public class RDFParserRegistry
 
         // Register default JSON-LD here.
         registerLangTriples(JSONLD,     jsonldParserDefault);
-        registerLangTriples(JSONLD10,   parserFactoryJsonLD10);
         registerLangTriples(JSONLD11,   parserFactoryJsonLD11);
 
         registerLangQuads(NQUADS,       parserFactory);
@@ -114,7 +109,6 @@ public class RDFParserRegistry
         registerLangQuads(RDFNULL,      parserFactoryRDFNULL);
 
         registerLangQuads(JSONLD,       jsonldParserDefault);
-        registerLangQuads(JSONLD10,     parserFactoryJsonLD10);
         registerLangQuads(JSONLD11,     parserFactoryJsonLD11);
 
         // Javacc based Turtle parser, different language name.
@@ -208,17 +202,6 @@ public class RDFParserRegistry
         public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             LangRIOT parser = RiotParsers.createParser(in, lang, output, parserProfile);
             parser.parse();
-        }
-    }
-
-    private static class ReaderRIOTFactoryJSONLD10 implements ReaderRIOTFactory {
-        @SuppressWarnings("deprecation")
-        @Override
-        public ReaderRIOT create(Lang language, ParserProfile profile) {
-            if ( !Lang.JSONLD.equals(language) && !Lang.JSONLD10.equals(language) )
-                throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD 1.0");
-            // jsonld-java is JSON-LD 1.0
-            return new LangJSONLD10(language, profile, profile.getErrorHandler());
         }
     }
 
