@@ -18,103 +18,107 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.Set ;
+import java.util.Set;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.graph.NodeTransform;
-import org.apache.jena.sparql.sse.writers.WriterExpr ;
+import org.apache.jena.sparql.sse.writers.WriterExpr;
 
-/** 
+/**
  * A node that is a constraint expression that can be evaluated
  * An {@link Expr} is already a Constraint - ExprNode is the base implementation
  * of all {@link Expr} classes that provides the Constraint machinery.
  */
- 
+
 public abstract class ExprNode implements Expr
 {
     @Override
     public boolean isSatisfied(Binding binding, FunctionEnv funcEnv) {
         try {
-            NodeValue v = eval(binding, funcEnv) ;
-            boolean b = XSDFuncOp.booleanEffectiveValue(v) ;
-            return b ;
+            NodeValue v = eval(binding, funcEnv);
+            boolean b = XSDFuncOp.booleanEffectiveValue(v);
+            return b;
         }
-        catch (ExprEvalException ex) { 
-            return false ;
+        catch (ExprEvalException ex) {
+            return false;
         }
     }
 
-    public boolean isExpr()     { return true ; }
-    public final Expr getExpr() { return this ; }
-    
+    public boolean isExpr()     { return true; }
+    public final Expr getExpr() { return this; }
+
     // --- interface Constraint
-    
-    @Override
-    public abstract NodeValue eval(Binding binding, FunctionEnv env) ; 
-    
-    @Override
-    public final Set<Var> getVarsMentioned()                    { return ExprVars.getVarsMentioned(this) ; }
 
     @Override
-    public abstract int hashCode() ;
+    public abstract NodeValue eval(Binding binding, FunctionEnv env);
+
+    @Override
+    public final Set<Var> getVarsMentioned()                    { return ExprVars.getVarsMentioned(this); }
+
+    @Override
+    public abstract int hashCode();
+
     @Override
     public final boolean equals(Object other) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof Expr ) ) return false ;
-        return equals((Expr)other, false) ;
+        if ( other == null )
+            return false;
+        if ( this == other )
+            return true;
+        if ( !(other instanceof Expr) )
+            return false;
+        return equals((Expr)other, false);
     }
-    
+
     @Override
     public final boolean equalsBySyntax(Expr other) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
-        return equals(other, true) ;
+        if ( other == null ) return false;
+        if ( this == other ) return true;
+        return equals(other, true);
     }
-    
+
     @Override
-    public abstract boolean equals(Expr other, boolean bySyntax) ;
-    
-    protected static NodeValue eval(Binding binding, FunctionEnv funcEnv, Expr expr) {   
-        if ( expr == null ) return null ;
-        return expr.eval(binding, funcEnv) ;
+    public abstract boolean equals(Expr other, boolean bySyntax);
+
+    protected static NodeValue eval(Binding binding, FunctionEnv funcEnv, Expr expr) {
+        if ( expr == null ) return null;
+        return expr.eval(binding, funcEnv);
     }
-    
+
     @Override
-    final public Expr deepCopy()        { return copySubstitute(null) ; }
-    
+    final public Expr deepCopy()        { return copySubstitute(null); }
+
     @Override
-    public abstract Expr copySubstitute(Binding binding) ;
-    
+    public abstract Expr copySubstitute(Binding binding);
+
     @Override
-    public abstract Expr applyNodeTransform(NodeTransform transform) ;
-        
+    public abstract Expr applyNodeTransform(NodeTransform transform);
+
     // ---- Default implementations
     @Override
-    public boolean isVariable()         { return false ; }
+    public boolean isVariable()         { return false; }
     @Override
-    public String getVarName()          { return null ; } //throw new ExprException("Expr.getVarName called on non-variable") ; }
+    public String getVarName()          { return null; } //throw new ExprException("Expr.getVarName called on non-variable"); }
     @Override
-    public ExprVar getExprVar()         { return null ; } //throw new ExprException("Expr.getVar called on non-variable") ; }
+    public ExprVar getExprVar()         { return null; } //throw new ExprException("Expr.getVar called on non-variable"); }
     @Override
-    public Var asVar()                  { return null ; } //throw new ExprException("Expr.getVar called on non-variable") ; }
-    
-    @Override
-    public boolean isConstant()         { return false ; }
-    @Override
-    public NodeValue getConstant()      { return null ; } // throw new ExprException("Expr.getConstant called on non-constant") ; }
-    
-    @Override
-    public boolean isFunction()         { return false ; }
-    @Override
-    public ExprFunction getFunction()   { return null ; }
+    public Var asVar()                  { return null; } //throw new ExprException("Expr.getVar called on non-variable"); }
 
-    public boolean isGraphPattern()     { return false ; }
-    public Op getGraphPattern()         { return null ; }
     @Override
-    public String toString()            { return WriterExpr.asString(this) ; } 
+    public boolean isConstant()         { return false; }
+    @Override
+    public NodeValue getConstant()      { return null; } // throw new ExprException("Expr.getConstant called on non-constant"); }
+
+    @Override
+    public boolean isFunction()         { return false; }
+    @Override
+    public ExprFunction getFunction()   { return null; }
+
+    public boolean isGraphPattern()     { return false; }
+    public Op getGraphPattern()         { return null; }
+    @Override
+    public String toString()            { return WriterExpr.asString(this); }
 }

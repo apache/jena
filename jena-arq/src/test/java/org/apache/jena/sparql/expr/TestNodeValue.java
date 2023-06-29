@@ -1068,6 +1068,51 @@ public class TestNodeValue
     }
 
     @Test
+    public void testSameValueNaN_double_1() {
+        NodeValue nv1 = NodeValue.makeNode("NaN", XSDDatatype.XSDdouble);
+        NodeValue nv2 = NodeValue.makeNode("NaN", XSDDatatype.XSDdouble);
+        assertEquals(nv1, nv2);
+        assertFalse(NodeValue.sameValueAs(nv1, nv2));
+        assertTrue(NodeValue.notSameValueAs(nv1, nv2));
+    }
+
+    @Test
+    public void testSameValueNaN_float_1() {
+        NodeValue nv1 = NodeValue.makeNode("NaN", XSDDatatype.XSDfloat);
+        NodeValue nv2 = NodeValue.makeNode("NaN", XSDDatatype.XSDfloat);
+        assertEquals(nv1, nv2);
+        assertFalse(NodeValue.sameValueAs(nv1, nv2));
+        assertTrue(NodeValue.notSameValueAs(nv1, nv2));
+        // NaN is weird.
+        assertFalse(NodeValue.sameValueAs(nv1, nv1));
+        assertTrue(NodeValue.notSameValueAs(nv1, nv1));
+    }
+
+    @Test
+    public void testSameValueNaN_double_2() {
+        NodeValue nv1 = NodeValue.makeDouble(Double.NaN);
+        NodeValue nv2 = NodeValue.makeDouble(Double.NaN);
+        assertEquals(nv1, nv2);
+        assertFalse(NodeValue.sameValueAs(nv1, nv2));
+        assertTrue(NodeValue.notSameValueAs(nv1, nv2));
+
+        assertFalse(NodeValue.sameValueAs(nv1, nv1));
+        assertTrue(NodeValue.notSameValueAs(nv1, nv1));
+    }
+
+    @Test
+    public void testSameValueNaN_float_2() {
+        NodeValue nv1 = NodeValue.makeFloat(Float.NaN);
+        NodeValue nv2 = NodeValue.makeFloat(Float.NaN);
+        assertEquals(nv1, nv2);
+        assertFalse(NodeValue.sameValueAs(nv1, nv2));
+        assertTrue(NodeValue.notSameValueAs(nv1, nv2));
+
+        assertFalse(NodeValue.sameValueAs(nv1, nv1));
+        assertTrue(NodeValue.notSameValueAs(nv1, nv1));
+    }
+
+    @Test
     public void testLang1() {
         Node n1 = org.apache.jena.graph.NodeFactory.createLiteral("xyz", "en");
         NodeValue nv1 = NodeValue.makeNode(n1);

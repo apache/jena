@@ -55,12 +55,10 @@ public class NodeValueCmp {
 
         ValueSpace compType = NodeValue.classifyValueOp(nv1, nv2);
 
-        if ( nv1 == nv2 )
-            return true;
-        if ( nv1.hasNode() && nv2.hasNode() ) {
-            // Fast path - same RDF term => sameValue
-            if ( nv1.getNode().equals(nv2.getNode()) )
-                return true;
+        if ( nv1.equals(nv2) ) {
+            // Fast path - same RDF term => sameValue (except NaN).
+            if ( nv1.getNode() != null && nv2.getNode() != null && nv1.getNode().equals(nv2.asNode()) )
+                return sameExceptNaN(nv1, nv2);
         }
 
         // Special case - date/dateTime comparison is affected by timezones and may
@@ -152,6 +150,15 @@ public class NodeValueCmp {
         throw new ARQInternalErrorException("sameValueAs failure " + nv1 + " and " + nv2);
     }
 
+    // When nv1 and nv1 are known to be the sameTerm, including java ==
+    private static boolean sameExceptNaN(NodeValue nv1, NodeValue nv2) {
+        if ( nv1.isDouble() && Double.isNaN(nv1.getDouble()) )
+            return false;
+        if ( nv1.isFloat() && Float.isNaN(nv1.getFloat()) )
+            return false;
+        return true;
+    }
+
     /** Worker for sameAs. */
     private static boolean nSameValueAs(Node n1, Node n2) {
         NodeValue nv1 = NodeValue.makeNode(n1);
@@ -171,8 +178,9 @@ public class NodeValueCmp {
      * Return true if the two NodeValues are known to be different, return false if
      * the two NodeValues are known to be the same, else throw ExprEvalException
      */
-    /*package*/private static boolean notSameValueAs(NodeValue nv1, NodeValue nv2) {
-        return !sameValueAs(nv1, nv2);
+    /*package*/ static boolean notSameValueAs(NodeValue nv1, NodeValue nv2) {
+        // Works for NaN as well.
+        return  !sameValueAs(nv1, nv2);
     }
 
     // ==== Compare
