@@ -18,14 +18,18 @@
 
 package org.apache.jena.riot.protobuf;
 
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_IRI;
 import org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_PrefixDecl;
 import org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_Quad;
 import org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_Triple;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.riot.system.FactoryRDFCaching;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.sparql.core.Quad;
 
 /** Protobuf RDF (wire format items) to StreamRDF terms (Jena java objects)
  *
@@ -34,37 +38,39 @@ import org.apache.jena.sparql.core.Quad ;
 
 public class Protobuf2StreamRDF implements VisitorStreamRowProtoRDF {
 
-    private final StreamRDF dest ;
-    private final PrefixMap pmap ;
+    private final StreamRDF dest;
+    private final PrefixMap pmap;
+    private final Cache<String, Node> uriCache =
+            CacheFactory.createSimpleCache(FactoryRDFCaching.DftNodeCacheSize);
 
     public Protobuf2StreamRDF(PrefixMap pmap, StreamRDF stream) {
-        this.pmap = pmap ;
-        this.dest = stream ;
+        this.pmap = pmap;
+        this.dest = stream;
     }
 
     @Override
     public void visit(RDF_Triple rt) {
-        Triple t = ProtobufConvert.convert(rt, pmap) ;
-        dest.triple(t) ;
+        Triple t = ProtobufConvert.convert(uriCache, rt, pmap);
+        dest.triple(t);
     }
 
     @Override
     public void visit(RDF_Quad rq) {
-        Quad q = ProtobufConvert.convert(rq, pmap) ;
-        dest.quad(q) ;
+        Quad q = ProtobufConvert.convert(uriCache, rq, pmap);
+        dest.quad(q);
     }
 
     @Override
     public void visit(RDF_PrefixDecl prefixDecl) {
-        String prefix = prefixDecl.getPrefix() ;
-        String iriStr = prefixDecl.getUri() ;
-        pmap.add(prefix, iriStr) ;
-        dest.prefix(prefix, iriStr) ;
+        String prefix = prefixDecl.getPrefix();
+        String iriStr = prefixDecl.getUri();
+        pmap.add(prefix, iriStr);
+        dest.prefix(prefix, iriStr);
     }
 
     @Override
     public void visit(RDF_IRI baseDecl) {
         String iriStr = baseDecl.getIri();
-        dest.base(iriStr) ;
+        dest.base(iriStr);
     }
 }

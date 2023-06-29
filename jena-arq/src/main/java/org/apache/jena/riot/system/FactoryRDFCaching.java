@@ -46,7 +46,8 @@ public class FactoryRDFCaching extends FactoryRDFStd {
     }
 
     private Cache<String, Node> setCache(int cacheSize) {
-        return CacheFactory.createCache(cacheSize);
+        // Cache not thread safe.
+        return CacheFactory.createSimpleCache(cacheSize);
     }
 
     @Override

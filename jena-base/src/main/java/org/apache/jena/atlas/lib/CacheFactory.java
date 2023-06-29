@@ -45,6 +45,7 @@ public class CacheFactory {
         return new CacheCaffeine<>(maxSize, dropHandler) ;
     }
 
+    /** Wrap an existing Caffeine cache */
     public static <Key, Value> Cache<Key, Value> wrap(com.github.benmanes.caffeine.cache.Cache<Key,Value> caffeine) {
         // Use a configured and built Caffeine cache with this API.
         return new CacheCaffeine<>(caffeine) ;
@@ -52,14 +53,20 @@ public class CacheFactory {
 
     /**
      * Create a null cache.
+     * <p>
      * This cache never retains a value and always
      * evaluates in {@link Cache#getOrFill}.
+     * <p>
+     * This cache is thread-safe.
      */
     public static <Key, Value> Cache<Key, Value> createNullCache() {
         return new Cache0<>() ;
     }
 
-    /** Create a lightweight cache (e.g. slot replacement) */
+    /**
+     * Create a lightweight cache (e.g. slot replacement).
+     * This cache is not thread-safe.
+     */
     public static <Key, Value> Cache<Key, Value> createSimpleCache(int size) {
         return new CacheSimple<>(size, null) ;
     }
