@@ -142,7 +142,7 @@
     <!-- Require a logging implementation -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
+      <artifactId>log4j-slf4j2-impl</artifactId>
       <!-- This module can be used as a dependency downstream -->
       <optional>true</optional>
     </dependency>
