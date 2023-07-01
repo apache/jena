@@ -110,7 +110,7 @@
     <ver.roaringbitmap>0.9.44</ver.roaringbitmap>
 
     <!-- For testing, not shipped -->
-    <ver.graalvm>22.3.2</ver.graalvm>
+    <ver.graalvm>23.0.0</ver.graalvm>
     <ver.jython>2.7.3</ver.jython>
     <ver.org.openjdk.jmh>1.36</ver.org.openjdk.jmh>
 
