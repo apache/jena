@@ -487,7 +487,7 @@ public abstract class NodeValue extends ExprNode
      * the two NodeValues are known to be the same, else throw ExprEvalException
      */
     public static boolean notSameValueAs(NodeValue nv1, NodeValue nv2) {
-        return !sameValueAs(nv1, nv2);
+        return NodeValueCmp.notSameValueAs(nv1, nv2);
     }
 
     /** @deprecated Use {@link #sameValueAs(NodeValue, NodeValue)}. */
@@ -844,28 +844,25 @@ public abstract class NodeValue extends ExprNode
     public final String asQuotedString()
     { return asQuotedString(new SerializationContext()) ; }
 
-    public final String asQuotedString(SerializationContext context)
-    {
+    public final String asQuotedString(SerializationContext context) {
         // If possible, make a node and use that as the formatted output.
         if ( node == null )
-            node = asNode() ;
+            node = asNode();
         if ( node != null )
-            return FmtUtils.stringForNode(node, context) ;
-        return toString() ;
+            return FmtUtils.stringForNode(node, context);
+        return toString();
     }
 
-    // Convert to a string  - usually overridden.
-    public String asString()
-    {
+    // Convert to a string - usually overridden.
+    public String asString() {
         // Do not call .toString()
-        forceToNode() ;
-        return NodeFunctions.str(node) ;
+        forceToNode();
+        return NodeFunctions.str(node);
     }
 
     @Override
-    public int hashCode()
-    {
-        return asNode().hashCode() ;
+    public int hashCode() {
+        return asNode().hashCode();
     }
 
     @Override
@@ -873,7 +870,6 @@ public abstract class NodeValue extends ExprNode
         if ( other == null ) return false ;
         if ( this == other ) return true ;
         // This is the equality condition Jena uses - lang tags are different by case.
-
         if ( ! ( other instanceof NodeValue ) )
             return false ;
         NodeValue nv = (NodeValue)other ;
