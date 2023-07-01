@@ -11,7 +11,7 @@ exit /B
 
 :okHome
 set JENA_CP=%JENA_HOME%\lib\*;
-set LOGGING=file:%JENA_HOME%/log4j2.properties
+set LOGGING=%JENA_HOME%/log4j2.properties
 
 if "%CLASSPATH%" == "" goto :noExtra
 set JENA_CP="%JENA_CP%:%CLASSPATH%"
