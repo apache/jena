@@ -18,6 +18,21 @@ PluggedIn Software under a BSD license.
 
 - - - - - - - - - - - - - - - - - - - - - - -
 
+Dexx Collections
+Copyright (c) 2014 Andrew O'Malley
+https://github.com/andrewoma/dexx
+MIT-Style License
+  https://github.com/andrewoma/dexx/blob/master/LICENSE.txt
+  
+and includes the following NOTICE
+----------
+Portions based on code from the Scala standard library.
+Copyright (c) 2002-2014 EPFL
+Copyright (c) 2011-2014 Typesafe, Inc.
+Licensed under BSD-style license (see licenses/LICENSE_Scala.txt)
+
+- - - - - - - - - - - - - - - - - - - - - - -
+
   Apache Xerces Java
    Copyright 1999-2013 The Apache Software Foundation
 
