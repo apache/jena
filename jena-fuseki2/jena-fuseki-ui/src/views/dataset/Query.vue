@@ -180,8 +180,8 @@
 
 <script>
 import Menu from '@/components/dataset/Menu.vue'
-import Yasqe from '@triply/yasqe'
-import Yasr from '@triply/yasr'
+import Yasqe from '@zazuko/yasqe'
+import Yasr from '@zazuko/yasr'
 import { createShareableLink } from '@/utils/query'
 import { nextTick } from 'vue'
 import currentDatasetMixin from '@/mixins/current-dataset'
@@ -387,8 +387,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~@triply/yasqe/build/yasqe.min.css';
-@import '~@triply/yasr/build/yasr.min.css';
+@import '@zazuko/yasqe/build/yasqe.min.css';
+@import '@zazuko/yasr/build/yasr.min.css';
 
 // N.B: these were copied from an old release of YASR due to this
 //      change: https://github.com/TriplyDB/Yasgui/commit/19521998f035e718d3f1d5cfa6073ce2e34242e7
