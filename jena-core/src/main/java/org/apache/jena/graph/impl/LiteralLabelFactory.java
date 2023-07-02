@@ -45,6 +45,11 @@ public class LiteralLabelFactory
         return dtype ;
     }
 
+    /** Create a string literal */
+    public static LiteralLabel create( String lex) {
+        return new LiteralLabel( lex, "", XSDDatatype.XSDstring);
+    }
+
     /** Create a literal with a dtype. */
     public static LiteralLabel create( String lex, RDFDatatype dtype) {
         return new LiteralLabel( lex, "", dtype );
