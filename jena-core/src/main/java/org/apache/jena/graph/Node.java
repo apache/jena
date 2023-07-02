@@ -163,9 +163,6 @@ public abstract class Node implements Serializable {
     public RDFDatatype getLiteralDatatype()
         { throw new NotLiteral( this ); }
 
-    public boolean getLiteralIsXML()
-        { throw new NotLiteral( this ); }
-
     /**
         Exception thrown if a literal-access operation is attempted on a
         non-literal node.

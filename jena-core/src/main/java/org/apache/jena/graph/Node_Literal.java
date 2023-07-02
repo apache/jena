@@ -63,10 +63,6 @@ public class Node_Literal extends Node
     { return getLiteral().getDatatype(); }
 
     @Override
-    public final boolean getLiteralIsXML()
-    { return getLiteral().isXML(); }
-
-    @Override
     public boolean isLiteral()
     { return true; }
 
@@ -80,8 +76,8 @@ public class Node_Literal extends Node
     { return getLiteral().getIndexingValue(); }
 
     @Override
-    public Object visitWith( NodeVisitor v )
-    { return v.visitLiteral( this, getLiteral() ); }
+    public Object visitWith(NodeVisitor v)
+    { return v.visitLiteral(this, getLiteralLexicalForm(), getLiteralLanguage(), getLiteralDatatype()); }
 
     @Override
     public int hashCode()

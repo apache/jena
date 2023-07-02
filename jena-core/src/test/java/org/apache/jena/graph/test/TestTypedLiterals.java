@@ -35,8 +35,6 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.* ;
 import org.apache.jena.datatypes.xsd.impl.RDFLangString ;
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType ;
-import org.apache.jena.enhanced.EnhNode ;
 import org.apache.jena.graph.* ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
@@ -160,15 +158,6 @@ public class TestTypedLiterals extends TestCase {
             assertTrue("Allowed int conversion", false);
         } catch (DatatypeFormatException e) {}
         assertEquals("Extract xml tag", l1.isWellFormedXML(), false);
-    }
-
-    public void testXMLLiteral() {
-//    	Literal ll = m.createLiteral("<bad",true);
-//    	assertTrue("Error checking must be off.",((EnhNode)ll).asNode().getLiteralIsXML());
-//		ll = m.createTypedLiteral("<bad/>",XMLLiteralType.theXMLLiteralType);
-//		assertFalse("Error checking must be on.",((EnhNode)ll).asNode().getLiteralIsXML());
-        Literal ll2 = m.createTypedLiteral("<good></good>",XMLLiteralType.theXMLLiteralType);
-		assertTrue("Well-formed XMLLiteral.",((EnhNode)ll2).asNode().getLiteralIsXML());
     }
 
     public void testRDFLangString_1() {

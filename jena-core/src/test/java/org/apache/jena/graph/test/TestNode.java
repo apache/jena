@@ -474,7 +474,7 @@ public class TestNode extends GraphTestBase
             @Override
             public Object visitBlank( Node_Blank it, BlankNodeId id ) { return it; }
             @Override
-            public Object visitLiteral( Node_Literal it, LiteralLabel lit ) { return it; }
+            public Object visitLiteral( Node_Literal it, String lex, String lang, RDFDatatype dtype) { return it; }
             @Override
             public Object visitURI( Node_URI it, String uri ) { return it; }
             @Override
@@ -527,8 +527,13 @@ public class TestNode extends GraphTestBase
             public Object visitBlank( Node_Blank it, BlankNodeId id )
             { assertTrue( it.getBlankNodeId() == id ); return null; }
             @Override
-            public Object visitLiteral( Node_Literal it, LiteralLabel lit )
-            { assertTrue( it.getLiteral() == lit ); return null; }
+            public Object visitLiteral( Node_Literal it, String lex, String lang, RDFDatatype dtype) {
+                assertEquals(lex, it.getLiteralLexicalForm());
+                assertEquals(lang, it.getLiteralLanguage());
+                assertEquals(dtype, it.getLiteralDatatype());
+                return null;
+            }
+
             @Override
             public Object visitURI( Node_URI it, String uri )
             { assertTrue( it.getURI() == uri ); return null; }
@@ -561,7 +566,7 @@ public class TestNode extends GraphTestBase
             public Object visitBlank( Node_Blank it, BlankNodeId id )
             { strings[0] += " blank"; return null; }
             @Override
-            public Object visitLiteral( Node_Literal it, LiteralLabel lit )
+            public Object visitLiteral( Node_Literal it, String lex, String lang, RDFDatatype dtype)
             { strings[0] += " literal"; return null; }
             @Override
             public Object visitURI( Node_URI it, String uri )

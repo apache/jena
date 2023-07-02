@@ -26,6 +26,7 @@ import java.util.Locale ;
 
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
+import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.* ;
 import org.apache.jena.irix.*;
 import org.apache.jena.rdf.model.Model ;
@@ -142,7 +143,7 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
             return NodeFactory.createLiteral(lit.toString(), lit.getLang());
 
         if (lit.isWellFormedXML()) {
-            return NodeFactory.createLiteral(lit.toString(), null, true);
+            return NodeFactory.createLiteral(lit.toString(), null, XMLLiteralType.theXMLLiteralType);
         }
 
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
