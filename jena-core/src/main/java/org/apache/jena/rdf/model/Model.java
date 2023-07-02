@@ -250,7 +250,10 @@ public interface Model
        @param v the lexical form of the literal
        @param wellFormed true if the Literal is well formed XML, in the lexical space of rdf:XMLLiteral
        @return a new literal
+       
+       @deprecated To be removed. Argument 'wellFormed' is ignored
      */
+	@Deprecated
     public Literal createLiteral(String v, boolean wellFormed);
 
     /**

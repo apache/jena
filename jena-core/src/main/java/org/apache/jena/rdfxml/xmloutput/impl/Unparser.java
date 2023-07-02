@@ -426,6 +426,7 @@ class Unparser {
      * [6.12.2] propertyElt ::= '<' propName idAttr? parseLiteral '>' literal '</'
      * propName '>'
      */
+    @SuppressWarnings("deprecation")
     private boolean wPropertyEltLiteral(WType wt, Property prop, Statement s,
             RDFNode r) {
         if (prettyWriter.sParseTypeLiteralPropertyElt)

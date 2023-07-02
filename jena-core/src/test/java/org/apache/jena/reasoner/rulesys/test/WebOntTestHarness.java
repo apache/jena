@@ -250,15 +250,7 @@ public class WebOntTestHarness {
      */
     public void initResults() {
         testResults = ModelFactory.createDefaultModel();
-        jena2 = testResults.createResource(BASE_RESULTS_URI + "#jena2");
-        jena2.addProperty(RDFS.comment,
-            testResults.createLiteral(
-                "<a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://jena.sourceforce.net/\">Jena2</a> includes a rule-based inference engine for RDF processing, " +
-                "supporting both forward and backward chaining rules. Its OWL rule set is designed to provide sound " +
-                "but not complete instance resasoning for that fragment of OWL/Full limited to the OWL/lite vocabulary. In" +
-                "particular it does not support unionOf/complementOf.",
-                true)
-        );
+        jena2 = testResults.createResource(BASE_RESULTS_URI + "#jena");
         jena2.addProperty(RDFS.label, "Jena2");
         testResults.setNsPrefix("results", OWLResults.NS);
     }
