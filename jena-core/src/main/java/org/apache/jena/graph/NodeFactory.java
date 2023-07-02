@@ -20,11 +20,14 @@ package org.apache.jena.graph ;
 
 import java.util.Objects ;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
+import org.apache.jena.datatypes.xsd.impl.RDFLangString;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.sys.JenaSystem;
 
 public class NodeFactory {
@@ -85,7 +88,7 @@ public class NodeFactory {
 
     public static Node createLiteral(String value) {
         Objects.requireNonNull(value, "Argument to NodeFactory.createLiteral is null") ;
-        return createLiteral(value, "", false) ;
+        return createLiteral(LiteralLabelFactory.create(value)) ;
     }
 
     /**
@@ -123,21 +126,36 @@ public class NodeFactory {
     }
 
     /**
-     * Build a literal node from its lexical form. The lexical form will be
-     * parsed now and the value stored. If the form is not legal this will throw
-     * an exception.
+     * Build a literal node from its lexical form. The lexical form will be parsed
+     * now and the value stored. If the form is not legal this will throw an
+     * exception.
+     * <p>
+     * This is a convenience operation for passing in language and datatype without
+     * needing the caller to differentiate the xsd:string, rdf:langString and other
+     * datatype cases. {@link #createLiteral(String, String)}
      *
-     * @param lex
-     *            the lexical form of the literal
-     * @param lang
-     *            the optional language tag
-     * @param dtype
-     *            the type of the literal
-     * @throws DatatypeFormatException
-     *             if lex is not a legal form of dtype
+     * @param lex the lexical form of the literal
+     * @param lang the optional language tag
+     * @param dtype the type of the literal
+     * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
     public static Node createLiteral(String lex, String lang, RDFDatatype dtype) throws DatatypeFormatException {
-        return createLiteral(LiteralLabelFactory.createLiteralLabel(lex, lang, dtype)) ;
+        boolean hasLang = StringUtils.isEmpty(lang);
+        if ( hasLang ) {
+            if ( dtype != null && ! dtype.equals(RDFLangString.rdfLangString) )
+                throw new JenaException("Datatype is not rdf:langString but a language was given");
+            return createLiteral(lex, lang);
+        }
+
+        if ( dtype == null )
+            // No datatype, no lang (it is null or "") => xsd:string.
+            return createLiteral(lex);
+
+        // No lang, with datatype and it's not rdf:langString
+        if ( dtype.equals(RDFLangString.rdfLangString) )
+            throw new JenaException("Datatype is rdf:langString but no language given");
+
+        return createLiteral(lex, dtype);
     }
 
     /**

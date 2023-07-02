@@ -28,6 +28,7 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
+import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
@@ -220,7 +221,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
                 return NodeFactory.createLiteral(lit.toString(), lit.getLang());
 
             if (lit.isWellFormedXML()) {
-                return NodeFactory.createLiteral(lit.toString(), null, true);
+                return NodeFactory.createLiteral(lit.toString(), XMLLiteralType.theXMLLiteralType);
             }
 
             RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
