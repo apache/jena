@@ -37,7 +37,7 @@ public class NodeCreateUtils
     /**
         Returns a Node described by the string, primarily for testing purposes.
         The string represents a URI, a numeric literal, a string literal, a bnode label,
-        or a variable.        
+        or a variable.
         <ul>
         <li> 'some text' :: a string literal with that text
         <li> 'some text'someLanguage:: a string literal with that text and language
@@ -53,11 +53,11 @@ public class NodeCreateUtils
     */
     public static Node create( String x )
         { return create( PrefixMapping.Extended, x ); }
-    
+
     /**
     Returns a Node described by the string, primarily for testing purposes.
     The string represents a URI, a numeric literal, a string literal, a bnode label,
-    or a variable.        
+    or a variable.
     <ul>
     <li> 'some text' :: a string literal with that text
     <li> 'some text'someLanguage:: a string literal with that text and language
@@ -68,11 +68,12 @@ public class NodeCreateUtils
     <li> &PPP :: to be done
     <li> name:stuff :: the URI; name may be expanded using the Extended map
     </ul>
-    
+
     @param pm the PrefixMapping for translating pre:X strings
     @param x the string encoding the node to create
     @return a node with the appropriate type and label
     */
+    @SuppressWarnings("deprecation")
     public static Node create( PrefixMapping pm, String x )
         {
         if (x.equals( "" ))
@@ -80,7 +81,7 @@ public class NodeCreateUtils
         char first = x.charAt( 0 );
         if (first == '\'' || first == '\"')
             return NodeFactory.createLiteral( newString( pm, first, x ) );
-        if (Character.isDigit( first )) 
+        if (Character.isDigit( first ))
             return NodeFactory.createLiteral( x, XSDDatatype.XSDinteger );
         if (first == '_')
             return NodeFactory.createBlankNode( BlankNodeId.create( x ) );
@@ -89,10 +90,10 @@ public class NodeCreateUtils
         if (first == '?')
             return NodeFactory.createVariable( x.substring( 1 ) );
         if (first == '&')
-            return NodeFactory.createURI( "q:" + x.substring( 1 ) );        
+            return NodeFactory.createURI( "q:" + x.substring( 1 ) );
         int colon = x.indexOf( ':' );
         String d = pm.getNsPrefixURI( "" );
-        return colon < 0 
+        return colon < 0
             ? NodeFactory.createURI( (d == null ? "eh:/" : d) + x )
             : NodeFactory.createURI( pm.expandPrefix( x ) )
             ;
@@ -114,7 +115,7 @@ public class NodeCreateUtils
         result.append( spelling.substring( start ) );
         return result.toString();
         }
-    
+
     private static char unEscape( char ch )
         {
         switch (ch)
@@ -133,7 +134,7 @@ public class NodeCreateUtils
         {
         String content = unEscape( spelling );
         int colon = langOrType.indexOf( ':' );
-        return colon < 0 
+        return colon < 0
             ? LiteralLabelFactory.create( content, langOrType, false )
             : LiteralLabelFactory.create( content, NodeFactory.getType( pm.expandPrefix( langOrType ) ) )
             ;
@@ -164,7 +165,7 @@ public class NodeCreateUtils
 	    details of the supported syntax. This method exists to support test code.
 	    Nodes are interpreted using the Standard prefix mapping.
 	*/
-	
+
 	public static Triple createTriple( String fact )
 	    { return createTriple( PrefixMapping.Standard, fact ); }
     }

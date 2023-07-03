@@ -31,18 +31,18 @@ import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.shared.PrefixMapping ;
 
 public class TestTriple extends GraphTestBase
-    {    
-        
+    {
+
     public TestTriple(String name)
         { super( name ); }
-    
+
     public static TestSuite suite()
-        { return new TestSuite( TestTriple.class ); }   
-                
+        { return new TestSuite( TestTriple.class ); }
+
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
     private static final LiteralLabel L = LiteralLabelFactory.create( "ashes are burning", "en", false );
-        
+
     public void testTripleEquals() {
         // create some nodes to test
         BlankNodeId id = BlankNodeId.create();
@@ -50,6 +50,7 @@ public class TestTriple extends GraphTestBase
         String U2 = id.toString();
         String N2 = id.toString();
 
+        @SuppressWarnings("deprecation")
         Node[] nodes = new Node[] {
             Node.ANY,
             NodeFactory.createBlankNode(id),    NodeFactory.createBlankNode(),
@@ -58,7 +59,7 @@ public class TestTriple extends GraphTestBase
             NodeFactory.createVariable(N), NodeFactory.createVariable(N2)
         };
 
-        Triple[] triples = 
+        Triple[] triples =
             new Triple [nodes.length * nodes.length * nodes.length];
         for (int i=0; i<nodes.length; i++) {
             for (int j=0; j<nodes.length; j++) {
@@ -112,19 +113,19 @@ public class TestTriple extends GraphTestBase
             }
         }
     }
-    
+
     public void testTripleCreate()
         {
         Node S = NodeCreateUtils.create( "s" ), P = NodeCreateUtils.create( "p" ), O = NodeCreateUtils.create( "o" );
         assertEquals( Triple.create( S, P, O ), Triple.create( S, P, O ) );
         }
-        
+
     public void testTripleCreateFromString()
         {
         Node S = NodeCreateUtils.create( "a" ), P = NodeCreateUtils.create( "_P" ), O = NodeCreateUtils.create( "?c" );
         assertEquals( Triple.create( S, P, O ), NodeCreateUtils.createTriple( "a _P ?c") );
         }
-        
+
     /**
         Test that triple-creation respects prefixes, assuming that node creation
         does.
@@ -136,7 +137,7 @@ public class TestTriple extends GraphTestBase
         Triple t = NodeCreateUtils.createTriple( "rdf:alpha dc:creator spoo:notmapped" );
         assertEquals( Triple.create( S, P, O ), t );
         }
-        
+
     public void testTripleCreationMapped()
         {
         PrefixMapping pm = PrefixMapping.Factory.create()
@@ -147,14 +148,14 @@ public class TestTriple extends GraphTestBase
         Triple got = NodeCreateUtils.createTriple( pm, "a:x b:y c:z" );
         assertEquals( wanted, got );
         }
-        
+
     public void testPlainTripleMatches()
         {
         testMatches( "S P O" );
         testMatches( "_S _P _O" );
         testMatches( "1 2 3" );
         }
-        
+
     public void testAnyTripleMatches()
         {
         testMatches( "?? P O", "Z P O" );
@@ -165,30 +166,30 @@ public class TestTriple extends GraphTestBase
         testMatches( "?? ?? ??", "_X Y Z" );
         testMatches( "?? ?? ??", "X _Y Z" );
         }
-        
+
     private void testMatches( String triple )
         { testMatches( triple, triple ); }
-        
+
     private void testMatches( String pattern, String triple )
         { assertTrue( NodeCreateUtils.createTriple( pattern ).matches( NodeCreateUtils.createTriple( triple ) ) ); }
-        
+
     public void testPlainTripleDoesntMatch()
         {
         testMatchFails( "S P O", "Z P O" );
         testMatchFails( "S P O", "S Q O" );
         testMatchFails( "S P O", "S P oh" );
         }
-        
+
     public void testAnyTripleDoesntMatch()
         {
         testMatchFails( "?? P O", "S P oh" );
         testMatchFails( "S ?? O", "Z R O" );
         testMatchFails( "S P ??", "Z P oh" );
         }
-        
+
     public void testMatchFails( String pattern, String triple )
         { assertFalse( NodeCreateUtils.createTriple( pattern ).matches( NodeCreateUtils.createTriple( triple ) ) ); }
-        
+
     public void testMatchesNodes()
         {
         assertTrue( NodeCreateUtils.createTriple( "S P O" ).matches( node("S" ), node( "P" ), node( "O" ) ) );
@@ -198,9 +199,9 @@ public class TestTriple extends GraphTestBase
     /* */
         assertFalse( NodeCreateUtils.createTriple( "S P O" ).matches( node("Z" ), node( "P" ), node( "O" ) ) );
         assertFalse( NodeCreateUtils.createTriple( "S P O" ).matches( node("S" ), node( "Q" ), node( "O" ) ) );
-        assertFalse( NodeCreateUtils.createTriple( "S P O" ).matches( node("Z" ), node( "P" ), node( "I" ) ) );        
+        assertFalse( NodeCreateUtils.createTriple( "S P O" ).matches( node("Z" ), node( "P" ), node( "I" ) ) );
         }
-        
+
     public void testElementMatches()
         {
         assertTrue( NodeCreateUtils.createTriple( "S P O" ).subjectMatches( node( "S" ) ) );
@@ -209,13 +210,13 @@ public class TestTriple extends GraphTestBase
     /* */
         assertFalse( NodeCreateUtils.createTriple( "S P O" ).subjectMatches( node( "Z" ) ) );
         assertFalse( NodeCreateUtils.createTriple( "S P O" ).predicateMatches( node( "Q" ) ) );
-        assertFalse( NodeCreateUtils.createTriple( "S P O" ).objectMatches( node( "I" ) ) );        
+        assertFalse( NodeCreateUtils.createTriple( "S P O" ).objectMatches( node( "I" ) ) );
     /* */
         assertTrue( NodeCreateUtils.createTriple( "?? P O" ).subjectMatches( node( "SUB" ) ) );
         assertTrue( NodeCreateUtils.createTriple( "S ?? O" ).predicateMatches( node( "PRED" ) ) );
-        assertTrue( NodeCreateUtils.createTriple( "S P ??" ).objectMatches( node( "OBJ" ) ) );    
+        assertTrue( NodeCreateUtils.createTriple( "S P ??" ).objectMatches( node( "OBJ" ) ) );
         }
-        
+
     public void testConcrete()
         {
         assertTrue( NodeCreateUtils.createTriple( "S P O" ).isConcrete() );
@@ -232,7 +233,7 @@ public class TestTriple extends GraphTestBase
         assertFalse( NodeCreateUtils.createTriple( "S ?P 11").isConcrete() );
         assertFalse( NodeCreateUtils.createTriple( "S P ?O").isConcrete() );
         }
-        
+
     /**
         Primarily to make sure that literals get quoted and stuff comes out in some
         kind of coherent order.
@@ -244,13 +245,13 @@ public class TestTriple extends GraphTestBase
         assertTrue( "subject must preceed predicate", t1.toString().indexOf( "subject" ) < t1.toString().indexOf( "predicate" ) );
         assertTrue( "predicate must preceed object", t1.toString().indexOf( "predicate" ) < t1.toString().indexOf( "object" ) );
         }
-        
+
     public void testTripleToStringQuoting()
         {
         Triple t1 = NodeCreateUtils.createTriple( "subject predicate 'object'" );
         assertTrue( t1.toString().indexOf( "\"object\"") > 0 );
         }
-        
+
     public void testTripleToStringWithPrefixing()
         {
         PrefixMapping pm = PrefixMapping.Factory.create();
@@ -258,14 +259,14 @@ public class TestTriple extends GraphTestBase
         Triple t1 = NodeCreateUtils.createTriple( "eg://domain.dom/spoo#a b c" );
         assertEquals( "spoo:a @eh:/b eh:/c", t1.toString( pm ) );
         }
-    
+
     public void testTripleMaps()
         {
         assertEquals( node( "x" ), getSubject.apply( NodeCreateUtils.createTriple( "x P z" ) ) );
         assertEquals( node( "P" ), getPredicate.apply( NodeCreateUtils.createTriple( "x P z" ) ) );
         assertEquals( node( "z" ), getObject.apply( NodeCreateUtils.createTriple( "x P z" ) ) );
         }
-    
+
     public static final Function<Triple, Node> getSubject = t -> t.getSubject();
     public static final Function<Triple, Node> getPredicate = t -> t.getPredicate();
     public static final Function<Triple, Node> getObject = t -> t.getObject();

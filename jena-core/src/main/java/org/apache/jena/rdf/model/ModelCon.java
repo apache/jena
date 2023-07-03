@@ -419,10 +419,9 @@ public interface ModelCon {
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
      * @param wellFormed true if the string is well formed XML
+
      * @return the new statement
-     * @deprecated To be removed: Argument 'wellFormed is ignored
      */
-    @Deprecated
     public Statement createStatement(Resource s, Property p, String o,
                                      boolean wellFormed) ;
 
@@ -438,8 +437,10 @@ public interface ModelCon {
      * @param o is the value to be the object of the statement
      * @param l the language associated with the object
      * @param wellFormed true of the string is well formed XML
+
      * @return the new statement
-     * @deprecated To be removed: Argument 'wellFormed is ignored
+    *
+     * @deprecated To be removed. Argument 'wellFormed' is ignored
      */
     @Deprecated
     public Statement createStatement(Resource s, Property p, String o, String l, boolean wellFormed) ;

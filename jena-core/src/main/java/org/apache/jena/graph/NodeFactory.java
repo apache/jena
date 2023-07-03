@@ -55,12 +55,6 @@ public class NodeFactory {
         return new Node_Blank(id) ;
     }
 
-    /** make a literal node with the specified literal value */
-    public static Node createLiteral(LiteralLabel lit) {
-        Objects.requireNonNull(lit, "Argument to NodeFactory.createLiteral is null") ;
-        return new Node_Literal( lit ) ;
-    }
-
     /** make a URI node with the specified URIref string */
     public static Node createURI(String uri) {
         Objects.requireNonNull(uri, "Argument to NodeFactory.createURI is null") ;
@@ -80,6 +74,15 @@ public class NodeFactory {
     }
 
 
+    /** make a literal node with the specified literal value
+     * @deprecated Making nodes directly from {@link LiteralLabel} may be removed.
+     */
+    @Deprecated
+    public static Node createLiteral(LiteralLabel lit) {
+        Objects.requireNonNull(lit, "Argument to NodeFactory.createLiteral is null") ;
+        return new Node_Literal( lit ) ;
+    }
+
     public static Node createLiteral(String value) {
         Objects.requireNonNull(value, "Argument to NodeFactory.createLiteral is null") ;
         return createLiteral(value, "", false) ;
@@ -94,7 +97,9 @@ public class NodeFactory {
      * @param isXml
      *            If true then lit is exclusive canonical XML of type
      *            rdf:XMLLiteral, and no checking will be invoked.
+       @deprecated To be removed.
      */
+    @Deprecated
     public static Node createLiteral(String lex, String lang, boolean isXml) {
         if ( lex == null )
             throw new NullPointerException("null lexical form for literal") ;

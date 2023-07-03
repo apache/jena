@@ -256,7 +256,9 @@ public interface Statement extends FrontsTriple
         Answer true iff the Literal object of this statement is well-formed XML
         (ie equivalent to getLiteral().isWellFormedXML()). If the object is not
         a Literal, throw an exception.
-    */
+        @deprecated To be removed.
+     */
+    @Deprecated
     public boolean hasWellFormedXML();
 
     /**
