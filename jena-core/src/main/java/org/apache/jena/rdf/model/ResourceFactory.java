@@ -333,6 +333,7 @@ public class ResourceFactory {
             return new LiteralImpl(NodeFactory.createLiteral(string, dType), null) ;
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public Literal createTypedLiteral( Object value ) {
             LiteralLabel ll = null;

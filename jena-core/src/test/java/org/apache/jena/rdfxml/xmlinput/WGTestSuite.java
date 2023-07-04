@@ -48,16 +48,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 	static private void initResults() {
 		logging = true;
 		testResults = ModelFactory.createDefaultModel();
-		jena2 = testResults.createResource(BASE_RESULTS_URI + "#jena2");
-		jena2.addProperty(RDFS.comment,
-			testResults.createLiteral(
-				"<a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://jena.sourceforce.net/\">Jena2</a> is a" +
-				" Semantic Web framework in Java" +
-				" available from <a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://www.sourceforce.net/projects/jena\">" +
-				"sourceforge</a> CVS.",
-				true)
-		);
-		jena2.addProperty(RDFS.label, "Jena2");
+		jena2 = testResults.createResource(BASE_RESULTS_URI + "#jena");
+		jena2.addProperty(RDFS.label, "Jena");
 		testResults.setNsPrefix("results", OWLResults.NS);
 	}
 	static void logResult(Resource test, int type) {

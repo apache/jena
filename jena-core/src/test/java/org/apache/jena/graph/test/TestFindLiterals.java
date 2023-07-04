@@ -32,19 +32,19 @@ public class TestFindLiterals extends GraphTestBase
     {
     public TestFindLiterals( String name )
         { super( name ); }
-    
+
     public static TestFindLiterals aTest
         ( final String graph, final int size, final String search, final String results )
         {
         return new TestFindLiterals
-            ( "TestFindLiterals: graph {" + graph 
-            + "} size " + size 
-            + " search " + search 
+            ( "TestFindLiterals: graph {" + graph
+            + "} size " + size
+            + " search " + search
             + " expecting {" + results + "}" )
             {
             @Override
             public void runBare()
-                { 
+                {
                 Graph g = graphWith( graph );
                 Node literal = NodeCreateUtils.create( search );
             //
@@ -54,10 +54,10 @@ public class TestFindLiterals extends GraphTestBase
                 }
             };
         }
-    
+
     public static TestSuite suite()
-        { 
-        TestSuite result = new TestSuite( TestFindLiterals.class ); 
+        {
+        TestSuite result = new TestSuite( TestFindLiterals.class );
     //
         result.addTest( aTest( "a P 'simple'", 1, "'simple'", "'simple'" ) );
         result.addTest( aTest( "a P 'simple'xsd:string", 1, "'simple'", "'simple'xsd:string" ) );
@@ -77,7 +77,7 @@ public class TestFindLiterals extends GraphTestBase
     //
         result.addTest( aTest( "a P 'abc'rdf:XMLLiteral", 1, "'abc'", "" ) );
         result.addTest( aTest( "a P 'abc'", 1, "'abc'rdf:XMLLiteral", "" ) );
-    //    
+    //
     // floats & doubles are not compatible
     //
         result.addTest( aTest( "a P '1'xsd:float", 1, "'1'xsd:double", "" ) );
@@ -89,8 +89,8 @@ public class TestFindLiterals extends GraphTestBase
         result.addTest( aTest( "a P '1'xsd:short", 1, "'1'xsd:integer", "'1'xsd:short" ) );
         result.addTest( aTest( "a P '1'xsd:int", 1, "'1'xsd:integer", "'1'xsd:int" ) );
         return result;
-        }    
-    
+        }
+
     public void testFloatVsDouble()
         {
         Node A = NodeCreateUtils.create( "'1'xsd:float" );
@@ -101,8 +101,9 @@ public class TestFindLiterals extends GraphTestBase
         assertFalse( A.matches( B ) );
         assertFalse( B.matches( A ) );
         }
-    
-    public void testProgrammaticValues() 
+
+    @SuppressWarnings("deprecation")
+    public void testProgrammaticValues()
         {
         Node ab = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral( (byte) 42 ) );
         Node as = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral( (short) 42 ) );

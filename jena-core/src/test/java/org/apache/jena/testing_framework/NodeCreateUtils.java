@@ -48,7 +48,7 @@ public class NodeCreateUtils {
 	 * <li>&PPP :: to be done
 	 * <li>name:stuff :: the URI; name may be expanded using the Extended map
 	 * </ul>
-	 * 
+	 *
 	 * @param x
 	 *            the string describing the node
 	 * @return a node of the appropriate type with the appropriate label
@@ -72,13 +72,14 @@ public class NodeCreateUtils {
 	 * <li>&PPP :: to be done
 	 * <li>name:stuff :: the URI; name may be expanded using the Extended map
 	 * </ul>
-	 * 
+	 *
 	 * @param pm
 	 *            the PrefixMapping for translating pre:X strings
 	 * @param x
 	 *            the string encoding the node to create
 	 * @return a node with the appropriate type and label
 	 */
+    @SuppressWarnings("deprecation")
 	public static Node create(PrefixMapping pm, String x) {
 		if (x.equals(""))
 			throw new JenaException(

@@ -240,7 +240,9 @@ public class LiteralImpl extends EnhNode implements Literal {
         return asNode().getLiteralLanguage();
     }
 
+    /** @deprecated To be removed. Well-formness of XML literal is not tested for. */
     @Override
+    @Deprecated
     public boolean isWellFormedXML() {
         return asNode().getLiteralIsXML();
     }

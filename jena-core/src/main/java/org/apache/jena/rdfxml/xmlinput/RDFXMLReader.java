@@ -135,6 +135,7 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static Node convert(ALiteral lit) {
         String dtURI = lit.getDatatypeURI();
         if (dtURI == null)

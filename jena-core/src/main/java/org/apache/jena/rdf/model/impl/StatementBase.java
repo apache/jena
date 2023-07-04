@@ -51,15 +51,17 @@ public abstract class StatementBase
 	 * LiteralRequiredException.
 	 */
 	public abstract Literal getLiteral();
-	
+
 	public abstract Resource getResource();
-	
+
 	public abstract Resource getSubject();
-	
+
 	public abstract Property getPredicate();
-	
+
 	public abstract RDFNode getObject();
 
+    /** @deprecated To be removed: Argument 'wellFormed is ignored */
+    @Deprecated
 	protected StatementImpl stringReplace(String s, String lang, boolean wellFormed) {
 	    return replace(new LiteralImpl(NodeFactory.createLiteral(s, lang, wellFormed), model));
 	}
@@ -75,7 +77,7 @@ public abstract class StatementBase
 
 	public Statement changeLiteralObject( boolean o )
 		{ return changeObject( model.createTypedLiteral( o ) ); }
-	
+
     public Statement changeLiteralObject( long o )
         { return changeObject( model.createTypedLiteral( o ) ); }
 
@@ -84,24 +86,28 @@ public abstract class StatementBase
 
     public Statement changeLiteralObject( double o )
         { return changeObject( model.createTypedLiteral( o ) ); }
-    
+
 	public Statement changeLiteralObject( float o )
 		{ return changeObject( model.createTypedLiteral( o ) ); }
-	
+
     public Statement changeLiteralObject( int o )
         { return changeObject( model.createTypedLiteral( o ) ); }
 
 	public Statement changeObject( String o )
 		{ return stringReplace( String.valueOf( o ) ); }
 
+    /** @deprecated To be removed: Argument 'wellFormed is ignored */
+    @Deprecated
 	public Statement changeObject( String o, boolean wellFormed )
 		{ return stringReplace( String.valueOf( o ), "", wellFormed ); }
 
 	public Statement changeObject( String o, String l )
 		{ return stringReplace( String.valueOf( o ), l, false ); }
 
+	/** @deprecated To be removed: Argument 'wellFormed is ignored */
+	@Deprecated
 	public Statement changeObject( String o, String l, boolean wellFormed )
-		{ return stringReplace( String.valueOf( o ), l, wellFormed ); }
+	{ return stringReplace( String.valueOf( o ), l, wellFormed ); }
 
 	public Statement changeObject( RDFNode o )
 		{ return replace( o ); }
@@ -147,23 +153,31 @@ public abstract class StatementBase
 	public String getLanguage()
 		{ return getLiteral().getLanguage(); }
 
+    /**
+     * @deprecated To be removed. Well-formedness of XML literal is not tested for.
+     */
+    @Deprecated
 	public boolean getWellFormed()
 		{ return hasWellFormedXML(); }
-    
+
+	/**
+     * @deprecated To be removed. Well-formness of XML literal is not tested for.
+	 */
+	@Deprecated
     public boolean hasWellFormedXML()
         { return getLiteral().isWellFormedXML(); }
 
 	/**
-	 	Answer a string describing this Statement in a vaguely pretty way, with the 
+	 	Answer a string describing this Statement in a vaguely pretty way, with the
 	 	representations of the subject, predicate, and object in that order.
 	*/
 	@Override
     public String toString()
 		{
 		return
-		    "[" 
+		    "["
 		    + getSubject().toString()
-		    + ", " + getPredicate().toString() 
+		    + ", " + getPredicate().toString()
 		    + ", " + objectString( getObject() )
 		    + "]";
 		}

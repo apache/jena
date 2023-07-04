@@ -821,9 +821,10 @@ public class TestBugs extends TestCase {
         public boolean bodyCall(Node[] args, int length, RuleContext context) {
             checkArgs(length, context);
             BindingEnvironment env = context.getEnv();
-            Triple t = Triple.create( NodeFactory.createBlankNode(), 
-                                   NodeFactory.createURI("http://jena.hpl.hp.com/example#"), 
+            Triple t = Triple.create( NodeFactory.createBlankNode(),
+                                   NodeFactory.createURI("http://jena.hpl.hp.com/example#"),
                                    NodeFactory.createBlankNode());
+            @SuppressWarnings("deprecation")
             Node l = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral(t) );
             return env.bind(args[0], l);
         }
@@ -873,7 +874,7 @@ public class TestBugs extends TestCase {
 //            System.out.println(" - " + i.next());
 //        }
 //    }
-    
+
     /**
      * Potential problem in handling of maxCardinality(0) assertions in the
      * presence of disjointness.
@@ -882,8 +883,8 @@ public class TestBugs extends TestCase {
         doTestmaxCard2(OntModelSpec.OWL_MEM_MINI_RULE_INF);
         doTestmaxCard2(OntModelSpec.OWL_MEM_RULE_INF);
     }
-    
-    
+
+
     private void doTestmaxCard2(OntModelSpec spec) {
         String NS = "http://jena.hpl.hp.com/eg#";
         Model base = FileManager.getInternal().loadModelInternal("testing/reasoners/bugs/terrorism.owl");

@@ -162,8 +162,12 @@ implements Model, PrefixMapping, Lock
         return this;
     }
 
-    private Literal literal( String s, String lang, boolean wellFormed )
-    { return new LiteralImpl( NodeFactory.createLiteral( s, lang, wellFormed), this ); }
+    private Literal literal( String s, String lang, boolean wellFormed ) {
+        LiteralLabel ll = LiteralLabelFactory.create(s, lang, wellFormed);
+        @SuppressWarnings("deprecation")
+        Node n = NodeFactory.createLiteral(ll);
+        return new LiteralImpl( n, this );
+    }
 
     private Literal literal( String lex, RDFDatatype datatype)
     { return new LiteralImpl( NodeFactory.createLiteral( lex, datatype), this ); }
@@ -646,7 +650,7 @@ implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(String v)  {
         LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(v);
-        return new LiteralImpl(NodeFactory.createLiteral(ll), this);
+        return new LiteralImpl(NodeFactory.createLiteral(v), this);
     }
 
     /**
@@ -656,7 +660,9 @@ implements Model, PrefixMapping, Lock
     public Literal createTypedLiteral(Calendar cal) {
         Object value = new XSDDateTime(cal);
         LiteralLabel ll = LiteralLabelFactory.createByValue(value, "", XSDDatatype.XSDdateTime);
-        return new LiteralImpl(NodeFactory.createLiteral(ll), this);
+        @SuppressWarnings("deprecation")
+        Node n = NodeFactory.createLiteral(ll);
+        return new LiteralImpl(n, this);
 
     }
 
@@ -684,7 +690,9 @@ implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(Object value, RDFDatatype dtype) {
         LiteralLabel ll = LiteralLabelFactory.createByValue(value, "", dtype);
-        return new LiteralImpl( NodeFactory.createLiteral(ll), this );
+        @SuppressWarnings("deprecation")
+        Node n = NodeFactory.createLiteral(ll);
+        return new LiteralImpl( n, this );
     }
 
     /**
@@ -700,7 +708,9 @@ implements Model, PrefixMapping, Lock
     public Literal createTypedLiteral(String lex, String typeURI)  {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = LiteralLabelFactory.create( lex, dt );
-        return new LiteralImpl( NodeFactory.createLiteral(ll), this );
+        @SuppressWarnings("deprecation")
+        Node n = NodeFactory.createLiteral(ll);
+        return new LiteralImpl( n, this );
     }
 
     /**
@@ -713,7 +723,9 @@ implements Model, PrefixMapping, Lock
     public Literal createTypedLiteral(Object value, String typeURI) {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = LiteralLabelFactory.createByValue(value, "", dt);
-        return new LiteralImpl(NodeFactory.createLiteral(ll), this);
+        @SuppressWarnings("deprecation")
+        Node n = NodeFactory.createLiteral(ll);
+        return new LiteralImpl( n, this );
     }
 
     /**
@@ -729,7 +741,9 @@ implements Model, PrefixMapping, Lock
         if (value instanceof Calendar)
             return createTypedLiteral( (Calendar)value );
         LiteralLabel ll = LiteralLabelFactory.createTypedLiteral( value );
-        return new LiteralImpl( NodeFactory.createLiteral( ll ), this);
+        @SuppressWarnings("deprecation")
+        Node n = NodeFactory.createLiteral(ll);
+        return new LiteralImpl( n, this );
     }
 
     @Override

@@ -806,12 +806,16 @@ public class GraphContractTest<T extends Graph>
 		Graph g = producer.newInstance();
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
+            @SuppressWarnings("deprecation")
 			Node ab = NodeFactory.createLiteral(LiteralLabelFactory
 					.createTypedLiteral(Byte.valueOf((byte) 42)));
+            @SuppressWarnings("deprecation")
 			Node as = NodeFactory.createLiteral(LiteralLabelFactory
 					.createTypedLiteral(Short.valueOf((short) 42)));
+            @SuppressWarnings("deprecation")
 			Node ai = NodeFactory.createLiteral(
 					LiteralLabelFactory.createTypedLiteral(Integer.valueOf(42)));
+            @SuppressWarnings("deprecation")
 			Node al = NodeFactory.createLiteral(
 					LiteralLabelFactory.createTypedLiteral(Long.valueOf(42)));
 
@@ -941,12 +945,16 @@ public class GraphContractTest<T extends Graph>
 		Graph g = producer.newInstance();
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
-			Node ab = NodeFactory.createLiteral(LiteralLabelFactory
+			@SuppressWarnings("deprecation")
+            Node ab = NodeFactory.createLiteral(LiteralLabelFactory
 					.createTypedLiteral(Byte.valueOf((byte) 42)));
+            @SuppressWarnings("deprecation")
 			Node as = NodeFactory.createLiteral(LiteralLabelFactory
 					.createTypedLiteral(Short.valueOf((short) 42)));
+            @SuppressWarnings("deprecation")
 			Node ai = NodeFactory.createLiteral(
 					LiteralLabelFactory.createTypedLiteral(Integer.valueOf(42)));
+            @SuppressWarnings("deprecation")
 			Node al = NodeFactory.createLiteral(
 					LiteralLabelFactory.createTypedLiteral(Long.valueOf(42)));
 
