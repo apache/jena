@@ -114,6 +114,8 @@
     <ver.org.openjdk.jmh>1.37</ver.org.openjdk.jmh>
 
     <!--- GeoSPARQL related -->
+    <ver.jaxb-api>2.3.1</ver.jaxb-api>
+    <ver.jakarta-xml-bind>4.0.0</ver.jakarta-xml-bind>
     <ver.jcommander>1.82</ver.jcommander>
     <ver.sis>1.1</ver.sis>
     <ver.jts>1.19.0</ver.jts>
@@ -735,9 +737,16 @@
        </dependency>
 
        <dependency>
+         <groupId>jakarta.xml.bind</groupId>
+         <artifactId>jakarta.xml.bind-api</artifactId>
+         <version>${ver.jakarta-xml-bind}</version>
+       </dependency>
+       
+       <!-- Needed by jena-geosparql -->
+       <dependency>
          <groupId>javax.xml.bind</groupId>
          <artifactId>jaxb-api</artifactId>
-         <version>2.3.1</version>
+         <version>${ver.jaxb-api}</version>
        </dependency>
 
        <dependency>
