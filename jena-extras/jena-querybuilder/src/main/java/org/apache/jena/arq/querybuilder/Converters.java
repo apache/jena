@@ -29,8 +29,6 @@ import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.impl.LiteralLabel;
-import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shared.PrefixMapping;
@@ -54,7 +52,7 @@ public class Converters {
 
     /**
      * Converts any Node_Variable nodes into Var nodes.
-     * 
+     *
      * @param n the node to check
      * @return the node n or a new Var if n is an instance of Node_Variable
      */
@@ -69,7 +67,7 @@ public class Converters {
      * Creates a literal from an object. If the object type is registered with the
      * TypeMapper the associated literal string is returned. If the object is not
      * registered an IllegalArgumentException is thrown.
-     * 
+     *
      * @param o the object to convert.
      * @return the literal node.
      * @throws IllegalArgumentException if object type is not registered.
@@ -82,8 +80,7 @@ public class Converters {
                     + "register one or use makeLiteral() method in query builder instance.";
             throw new IllegalArgumentException(String.format(msg, o.getClass()));
         }
-        return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(o));
-
+        return NodeFactory.createLiteralByValue(o, dt);
     }
 
     /**
@@ -103,14 +100,13 @@ public class Converters {
      * <li>If the URI is registered but the value is not a proper lexical form a
      * DatatypeFormatException will be thrown by this method.</li>
      * </ul>
-     * 
+     *
      * @param value the value for the literal
      * @param typeUri the type URI for the literal node.
      * @return the literal node.
      * @throws DatatypeFormatException on errors noted above
      */
     public static Node makeLiteral(String value, String typeUri) {
-        Object oValue = value;
         RDFDatatype dt = TypeMapper.getInstance().getTypeByName(typeUri);
         if (dt == null) {
             dt = new BaseDatatype(typeUri) {
@@ -131,10 +127,9 @@ public class Converters {
 
             };
         } else {
-            oValue = dt.parse(value);
+            dt.parse(value);
         }
-        LiteralLabel ll = LiteralLabelFactory.createByValue(oValue, null, dt);
-        return NodeFactory.createLiteral(ll);
+        return NodeFactory.createLiteral(value, dt);
     }
 
     /**
@@ -148,7 +143,7 @@ public class Converters {
      * <li>Will call makeLiteral() to create a literal representation if the
      * parseNode() fails or for any other object type.</li>
      * </ul>
-     * 
+     *
      * @param o The object to convert (may be null).
      * @param pMapping The prefix mapping to use for prefix resolution.
      * @return The Node value.
@@ -190,7 +185,7 @@ public class Converters {
      * <li>Will call makeLiteral() to create a literal representation if the
      * parseNode() fails or for any other object type.</li>
      * </ul>
-     * 
+     *
      * @param o the object that should be interpreted as a path or a node.
      * @param pMapping the prefix mapping to resolve path or node with
      * @return the Path or Node
@@ -272,7 +267,7 @@ public class Converters {
 
     /**
      * A convenience method to quote a string.
-     * 
+     *
      * @param q the string to quote.
      *
      * Will use single quotes if there are no single quotes in the string or if the
@@ -300,7 +295,7 @@ public class Converters {
 
     /**
      * Creates a collection of nodes from an iterator of Objects.
-     * 
+     *
      * @param iter the iterator of objects, may be null or empty.
      * @param prefixMapping the PrefixMapping to use when nodes are created.
      * @return a Collection of nodes or null if iter is null or empty.

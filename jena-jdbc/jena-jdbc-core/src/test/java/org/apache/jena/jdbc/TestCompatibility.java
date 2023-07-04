@@ -14,7 +14,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 
 package org.apache.jena.jdbc;
 
@@ -48,7 +48,7 @@ public class TestCompatibility {
         Assert.assertEquals(JdbcCompatibility.HIGH, JdbcCompatibility.normalizeLevel(JdbcCompatibility.HIGH));
         Assert.assertEquals(JdbcCompatibility.MEDIUM, JdbcCompatibility.normalizeLevel(JdbcCompatibility.DEFAULT));
     }
-    
+
     /**
      * Test values outside range are normalized to range ends
      */
@@ -57,7 +57,7 @@ public class TestCompatibility {
         Assert.assertEquals(JdbcCompatibility.LOW, JdbcCompatibility.normalizeLevel(Integer.MIN_VALUE));
         Assert.assertEquals(JdbcCompatibility.HIGH, JdbcCompatibility.normalizeLevel(Integer.MAX_VALUE));
     }
-    
+
     /**
      * Test all values in acceptable range are left as is
      */
@@ -76,7 +76,7 @@ public class TestCompatibility {
         Assert.assertFalse(JdbcCompatibility.shouldTypeColumnsAsString(JdbcCompatibility.LOW));
         Assert.assertFalse(JdbcCompatibility.shouldDetectColumnTypes(JdbcCompatibility.LOW));
     }
-    
+
     /**
      * Test that with medium compatibility columns will be typed as strings but not detected types
      */
@@ -84,12 +84,12 @@ public class TestCompatibility {
     public void test_level_behaviours_columns_02() {
         Assert.assertTrue(JdbcCompatibility.shouldTypeColumnsAsString(JdbcCompatibility.MEDIUM));
         Assert.assertFalse(JdbcCompatibility.shouldDetectColumnTypes(JdbcCompatibility.MEDIUM));
-        
+
         // This also applies to DEFAULT level
         Assert.assertTrue(JdbcCompatibility.shouldTypeColumnsAsString(JdbcCompatibility.DEFAULT));
         Assert.assertFalse(JdbcCompatibility.shouldDetectColumnTypes(JdbcCompatibility.DEFAULT));
     }
-    
+
     /**
      * Test that with high compatibility columns will not be typed as strings but with detected types
      */
@@ -98,7 +98,7 @@ public class TestCompatibility {
         Assert.assertFalse(JdbcCompatibility.shouldTypeColumnsAsString(JdbcCompatibility.HIGH));
         Assert.assertTrue(JdbcCompatibility.shouldDetectColumnTypes(JdbcCompatibility.HIGH));
     }
-        
+
     /**
      * Detects a columns types and checks basic information from the detected type, returns the detected column information so tests can make further assertions on this
      * @param var Variable Name i.e. Column Label
@@ -122,10 +122,10 @@ public class TestCompatibility {
         Assert.assertEquals(Node.class.getCanonicalName(), info.getTypeName());
         return info;
     }
-    
+
     /**
      * Expect xsd:integer to be typed as integers
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_integer_01() throws SQLException {
@@ -133,10 +133,10 @@ public class TestCompatibility {
         Assert.assertEquals(0, info.getScale());
         Assert.assertTrue(info.isSigned());
     }
-    
+
     /**
      * Expect xsd:int to be typed as integers
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_integer_02() throws SQLException {
@@ -144,10 +144,10 @@ public class TestCompatibility {
         Assert.assertEquals(0, info.getScale());
         Assert.assertTrue(info.isSigned());
     }
-    
+
     /**
      * Expect xsd:long to be typed as integers
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_integer_03() throws SQLException {
@@ -155,10 +155,10 @@ public class TestCompatibility {
         Assert.assertEquals(0, info.getScale());
         Assert.assertTrue(info.isSigned());
     }
-    
+
     /**
      * Expect xsd:unsignedInteger to be typed as integers
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_integer_04() throws SQLException {
@@ -166,10 +166,10 @@ public class TestCompatibility {
         Assert.assertEquals(0, info.getScale());
         Assert.assertFalse(info.isSigned());
     }
-    
+
     /**
      * Expect xsd:unsignedLong to be typed as integers
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_integer_05() throws SQLException {
@@ -177,10 +177,10 @@ public class TestCompatibility {
         Assert.assertEquals(0, info.getScale());
         Assert.assertFalse(info.isSigned());
     }
-    
+
     /**
      * Expect xsd:short to be typed as integers
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_integer_06() throws SQLException {
@@ -188,10 +188,10 @@ public class TestCompatibility {
         Assert.assertEquals(0, info.getScale());
         Assert.assertTrue(info.isSigned());
     }
-    
+
     /**
      * Expect xsd:unsignedShort to be typed as integers
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_integer_07() throws SQLException {
@@ -199,10 +199,10 @@ public class TestCompatibility {
         Assert.assertEquals(0, info.getScale());
         Assert.assertFalse(info.isSigned());
     }
-    
+
     /**
      * Expect xsd:byte to be typed as bytes
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_byte_01() throws SQLException {
@@ -210,10 +210,10 @@ public class TestCompatibility {
         Assert.assertEquals(0, info.getScale());
         Assert.assertTrue(info.isSigned());
     }
-    
+
     /**
      * Expect xsd:unsignedByte to be typed as bytes
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_byte_02() throws SQLException {
@@ -221,7 +221,7 @@ public class TestCompatibility {
         Assert.assertEquals(0, info.getScale());
         Assert.assertFalse(info.isSigned());
     }
-    
+
     /**
      * Expect xsd:boolean to be typed as booleans
      * @throws SQLException
@@ -230,11 +230,11 @@ public class TestCompatibility {
     public void test_column_type_detection_boolean() throws SQLException {
         testColumnTypeDetection("x", NodeFactory.createLiteral("true", XSDDatatype.XSDboolean), true, Types.BOOLEAN, Boolean.class.getCanonicalName());
     }
-    
-    
+
+
     /**
      * Expect xsd:decimal to be typed as decimal
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_decimal() throws SQLException {
@@ -243,10 +243,10 @@ public class TestCompatibility {
         Assert.assertEquals(16, info.getPrecision());
         Assert.assertTrue(info.isSigned());
     }
-    
+
     /**
      * Expect xsd:double to be typed as double
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_double() throws SQLException {
@@ -255,10 +255,10 @@ public class TestCompatibility {
         Assert.assertEquals(16, info.getPrecision());
         Assert.assertTrue(info.isSigned());
     }
-    
+
     /**
      * Expect xsd:float to be typed as float
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_float() throws SQLException {
@@ -267,44 +267,44 @@ public class TestCompatibility {
         Assert.assertEquals(15, info.getPrecision());
         Assert.assertTrue(info.isSigned());
     }
-    
+
     /**
      * Tests that xsd:dateTime is typed as Date
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_datetimes_01() throws SQLException {
         Model m = ModelFactory.createDefaultModel();
         testColumnTypeDetection("x", m.createTypedLiteral(Calendar.getInstance()).asNode(), true, Types.TIMESTAMP, Timestamp.class.getCanonicalName());
     }
-    
+
     /**
      * Tests that xsd:date is typed as Date
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_datetimes_02() throws SQLException {
         testColumnTypeDetection("x", NodeFactory.createLiteral("2013-04-08", XSDDatatype.XSDdate), true, Types.DATE, Date.class.getCanonicalName());
     }
-    
+
     /**
      * Tests that xsd:time is typed as Time
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_datetimes_03() throws SQLException {
         testColumnTypeDetection("x", NodeFactory.createLiteral("13:15:00", XSDDatatype.XSDtime), true, Types.TIME, Time.class.getCanonicalName());
     }
-    
+
     /**
      * Tests that xsd:time is typed as Time
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Test
     public void test_column_type_detection_datetimes_04() throws SQLException {
         testColumnTypeDetection("x", NodeFactory.createLiteral("13:15:00.123", XSDDatatype.XSDtime), true, Types.TIME, Time.class.getCanonicalName());
     }
-    
+
     /**
      * Test that simple literals are typed as strings
      * @throws SQLException
@@ -313,16 +313,16 @@ public class TestCompatibility {
     public void test_column_type_detection_strings_01() throws SQLException {
         testColumnTypeDetection("x", NodeFactory.createLiteral("simple"), true, Types.NVARCHAR, String.class.getCanonicalName());
     }
-    
+
     /**
      * Test that literals with languages are typed as strings
      * @throws SQLException
      */
     @Test
     public void test_column_type_detection_strings_02() throws SQLException {
-        testColumnTypeDetection("x", NodeFactory.createLiteral("simple", "en", false), true, Types.NVARCHAR, String.class.getCanonicalName());
+        testColumnTypeDetection("x", NodeFactory.createLiteral("simple", "en"), true, Types.NVARCHAR, String.class.getCanonicalName());
     }
-    
+
     /**
      * Test that xsd:string literals are typed as strings
      * @throws SQLException
@@ -331,7 +331,7 @@ public class TestCompatibility {
     public void test_column_type_detection_strings_03() throws SQLException {
         testColumnTypeDetection("x", NodeFactory.createLiteral("simple", XSDDatatype.XSDstring), true, Types.NVARCHAR, String.class.getCanonicalName());
     }
-    
+
     /**
      * Test that custom typed literals are typed as strings
      * @throws SQLException
@@ -340,7 +340,7 @@ public class TestCompatibility {
     public void test_column_type_detection_strings_04() throws SQLException {
         testColumnTypeDetection("x", NodeFactory.createLiteral("simple", TypeMapper.getInstance().getSafeTypeByName("http://datatypes/custom")), true, Types.NVARCHAR, String.class.getCanonicalName());
     }
-    
+
     /**
      * Test that URI are typed as strings
      * @throws SQLException
@@ -349,7 +349,7 @@ public class TestCompatibility {
     public void test_column_type_detection_strings_05() throws SQLException {
         testColumnTypeDetection("x", NodeFactory.createURI("http://example.org"), true, Types.NVARCHAR, String.class.getCanonicalName());
     }
-    
+
     /**
      * Test that blank nodes are typed as strings
      * @throws SQLException
@@ -358,7 +358,7 @@ public class TestCompatibility {
     public void test_column_type_detection_strings_06() throws SQLException {
         testColumnTypeDetection("x", NodeFactory.createBlankNode(), true, Types.NVARCHAR, String.class.getCanonicalName());
     }
-    
+
     /**
      * Tests treatment of nulls in type detection
      * @throws SQLException
@@ -367,7 +367,7 @@ public class TestCompatibility {
     public void test_column_type_detection_nulls_01() throws SQLException {
         testColumnTypeDetection("x", null, true, Types.NVARCHAR, String.class.getCanonicalName());
     }
-    
+
     /**
      * Tests treatment of nulls in type detection
      * @throws SQLException

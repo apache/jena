@@ -408,44 +408,6 @@ public interface ModelCon {
      */
     public Statement createStatement(Resource s, Property p, String o, String l) ;
 
-    /** Create a Statement instance.
-     *
-     * <p>Subsequent operations on the statement or any of its parts may
-     * modify this model.</p>
-     * <p>Creating a statement does not add it to the set of statements in the
-     * model. </p>
-     * <p>The Object o will be converted to a Literal.</P>
-     * @param s the subject of the statement
-     * @param p the predicate of the statement
-     * @param o is the value to be the object of the statement
-     * @param wellFormed true if the string is well formed XML
-
-     * @return the new statement
-     */
-    public Statement createStatement(Resource s, Property p, String o,
-                                     boolean wellFormed) ;
-
-    /** Create a Statement instance.
-     *
-     * <p>Subsequent operations on the statement or any of its parts may
-     * modify this model.</p>
-     * <p>Creating a statement does not add it to the set of statements in the
-     * model. </p>
-     * <p>The Object o will be converted to a Literal.</P>
-     * @param s the subject of the statement
-     * @param p the predicate of the statement
-     * @param o is the value to be the object of the statement
-     * @param l the language associated with the object
-     * @param wellFormed true of the string is well formed XML
-
-     * @return the new statement
-    *
-     * @deprecated To be removed. Argument 'wellFormed' is ignored
-     */
-    @Deprecated
-    public Statement createStatement(Resource s, Property p, String o, String l, boolean wellFormed) ;
-
-
     /** Create a new anonymous bag.
      *
      * <p>Subsequent operations on the bag or any of its parts may
@@ -592,27 +554,6 @@ public interface ModelCon {
     */
     Model add(Resource s, Property p, String lex, RDFDatatype datatype) ;
 
-    /** add a statement to this model.
-     *
-     * @return this model
-     * @param s the subject of the statement to add
-     * @param p the predicate of the statement to add
-     * @param o the object of the statement to add
-     * @param wellFormed true if o is well formed XML
-     * @deprecated To be removed. Argument 'wellFormed' is ignored
-     */
-    @Deprecated
-    Model add(Resource s, Property p, String o, boolean wellFormed);
-
-    /** add a statement to this model.
-     *
-     * @return this model
-     * @param s the subject of the statement to add
-     * @param p the predicate of the statement to add
-     * @param o the object of the statement to add
-     * @param l the language associated with the object
-
-     */
     Model add(Resource s, Property p, String o, String l) ;
 
     /**

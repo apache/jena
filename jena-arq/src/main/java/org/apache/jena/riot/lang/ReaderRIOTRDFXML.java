@@ -214,7 +214,6 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
         { output.triple(convert(subj, pred, lit)) ; }
 
         // From JenaReader
-        @SuppressWarnings("deprecation")
         private static Node convert(ALiteral lit) {
             String dtURI = lit.getDatatypeURI();
             if (dtURI == null)

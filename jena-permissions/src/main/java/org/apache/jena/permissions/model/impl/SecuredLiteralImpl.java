@@ -38,7 +38,7 @@ import org.apache.jena.shared.ReadDeniedException;
 public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements SecuredLiteral {
     /**
      * Get an instance of SecuredLiteral
-     * 
+     *
      * @param securedModel the item providing the security context.
      * @param literal      the literal to secure
      * @return SecuredLiteral
@@ -74,7 +74,7 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements SecuredLit
 
     /**
      * Constructor
-     * 
+     *
      * @param securityEvaluator The security evaluator to use.
      * @param graphIRI          the graph IRI to validate against.
      * @param holder            The item holder that will contain this
@@ -282,18 +282,6 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements SecuredLit
     public Literal inModel(final Model m) throws ReadDeniedException, AuthenticationRequiredException {
         checkRead();
         return m.createTypedLiteral(holder.getBaseItem().getLexicalForm(), holder.getBaseItem().getDatatype());
-    }
-
-    /**
-     * @sec.graph Read
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public boolean isWellFormedXML() throws ReadDeniedException, AuthenticationRequiredException {
-        checkRead();
-        return holder.getBaseItem().isWellFormedXML();
     }
 
     /**

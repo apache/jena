@@ -414,23 +414,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     @Override
     public SecuredModel add(final Resource s, final Property p, final String o)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
-        return add(s, p, o, false);
-    }
-
-    /**
-     * @sec.graph Update
-     * @sec.triple Create the triple Triple(s,p,o)
-     * @throws UpdateDeniedException
-     * @throws AddDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public SecuredModel add(final Resource s, final Property p, final String o, final boolean wellFormed)
-            throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(Triple.create(s.asNode(), p.asNode(), NodeFactory.createLiteral(o, "", wellFormed)));
-        holder.getBaseItem().add(s, p, o, wellFormed);
+        checkCreate(Triple.create(s.asNode(), p.asNode(), NodeFactory.createLiteral(o, "")));
+        holder.getBaseItem().add(s, p, o);
         return holder.getSecuredItem();
     }
 
@@ -463,7 +449,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredModel add(final Resource s, final Property p, final String o, final String l)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(Triple.create(s.asNode(), p.asNode(), NodeFactory.createLiteral(o, l, false)));
+        checkCreate(Triple.create(s.asNode(), p.asNode(), NodeFactory.createLiteral(o, l)));
         holder.getBaseItem().add(s, p, o, l);
         return holder.getSecuredItem();
     }
@@ -1212,13 +1198,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     }
 
     @Override
-    public SecuredLiteral createLiteral(final String v, final boolean wellFormed) {
-        return SecuredLiteralImpl.getInstance(holder.getSecuredItem(),
-                holder.getBaseItem().createLiteral(v, wellFormed));
-
-    }
-
-    @Override
     public SecuredLiteral createLiteral(final String v, final String language) {
         return SecuredLiteralImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createLiteral(v, language));
     }
@@ -1519,42 +1498,12 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
      *                                         required to be.
      */
     @Override
-    public SecuredStatement createStatement(final Resource s, final Property p, final String o,
-            final boolean wellFormed)
-            throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
-        return createStatement(s, p, o, "", wellFormed);
-    }
-
-    /**
-     * @sec.graph Update
-     * @sec.triple Create Triple( s, p, o )
-     * @throws UpdateDeniedException
-     * @throws AddDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
     public SecuredStatement createStatement(final Resource s, final Property p, final String o, final String l)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
-        return createStatement(s, p, o, l, false);
-    }
-
-    /**
-     * @sec.graph Update
-     * @sec.triple Create Triple( s, p, o )
-     * @throws UpdateDeniedException
-     * @throws AddDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public SecuredStatement createStatement(final Resource s, final Property p, final String o, final String l,
-            final boolean wellFormed)
-            throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
-        Node n = NodeFactory.createLiteral(o, l, wellFormed);
+        Node n = NodeFactory.createLiteral(o, l);
         checkReadOrUpdate(s, p, holder.getBaseItem().getRDFNode(n));
         return SecuredStatementImpl.getInstance(holder.getSecuredItem(),
-                holder.getBaseItem().createStatement(s, p, o, l, wellFormed));
+                holder.getBaseItem().createStatement(s, p, o, l));
     }
 
     @Override

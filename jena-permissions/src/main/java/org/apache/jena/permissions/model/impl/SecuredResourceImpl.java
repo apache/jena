@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,7 +48,7 @@ import org.apache.jena.util.iterator.NiceIterator;
 public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredResource {
     /**
      * Get a SecuredResource.
-     * 
+     *
      * @param securedModel the securedItem that provides the security context.
      * @param resource     The resource to secure.
      * @return The SecuredResource
@@ -94,7 +94,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 
     /**
      * Constructor.
-     * 
+     *
      * @param securedModel The secured model to use
      * @param holder       the item holder that will contain this SecuredResource.
      */
@@ -106,7 +106,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 
     /**
      * Abort the transaction in the associated securedModel.
-     * 
+     *
      * @return This resource to permit cascading.
      */
     @Override
@@ -274,7 +274,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     public SecuredResource addProperty(final Property p, final String o, final String l)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(Triple.create(holder.getBaseItem().asNode(), p.asNode(), NodeFactory.createLiteral(o, l, false)));
+        checkCreate(Triple.create(holder.getBaseItem().asNode(), p.asNode(), NodeFactory.createLiteral(o, l)));
         holder.getBaseItem().addProperty(p, o, l);
         return holder.getSecuredItem();
     }
@@ -374,7 +374,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * Gets the first statement in the iterator that the user can read, null
      * otherwise.
-     * 
+     *
      * @param supplier the supplier of the Statement iterator.
      * @return the statement or null.
      */
@@ -395,10 +395,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 
     /**
      * @sec.graph Read
-     * 
+     *
      *            if {@link SecurityEvaluator#isHardReadError()} is true and the
      *            user does not have read access then {@code null} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -410,10 +410,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 
     /**
      * @sec.graph Read
-     * 
+     *
      *            if {@link SecurityEvaluator#isHardReadError()} is true and the
      *            user does not have read access then {@code null} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -426,10 +426,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 
     /**
      * @sec.graph Read
-     * 
+     *
      *            if {@link SecurityEvaluator#isHardReadError()} is true and the
      *            user does not have read access then {@code null} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -452,11 +452,11 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 
     /**
      * @sec.graph Read
-     * 
+     *
      *            if {@link SecurityEvaluator#isHardReadError()} is true and the
      *            user does not have read access then PropertyNotFoundException is
      *            thrown.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -473,11 +473,11 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 
     /**
      * @sec.graph Read
-     * 
+     *
      *            if {@link SecurityEvaluator#isHardReadError()} is true and the
      *            user does not have read access then PropertyNotFoundException is
      *            thrown.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -494,7 +494,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 
     /**
      * @sec.graph Read
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -507,10 +507,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 
     /**
      * @sec.graph Read
-     * 
+     *
      *            if {@link SecurityEvaluator#isHardReadError()} is true and the
      *            user does not have read access then @{code null} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -529,10 +529,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple(this,p,o)
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -550,10 +550,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple(this,p,o)
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -571,10 +571,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple(this,p,o)
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -592,10 +592,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple(this,p,o)
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -613,10 +613,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple(this,p,o)
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -634,10 +634,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple(this,p,o)
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -669,10 +669,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple(this,p,o)
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -685,10 +685,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple(this,p,o)
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -702,10 +702,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple(this,p,o)
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -719,10 +719,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple(this,p,o)
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -766,11 +766,11 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read on returned Statements
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then an empty iterator is
      *             returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -783,11 +783,11 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read on returned Statements
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then an empty iterator is
      *             returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -801,11 +801,11 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     /**
      * @sec.graph Read
      * @sec.triple Read on returned Statements
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then an empty iterator is
      *             returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.

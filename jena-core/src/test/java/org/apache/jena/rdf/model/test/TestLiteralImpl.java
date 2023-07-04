@@ -149,7 +149,6 @@ public class TestLiteralImpl extends AbstractModelTestBase
 	{
 		testLiteralHasModel(model, model.createLiteral("hello, world"));
 		testLiteralHasModel(model, model.createLiteral("hello, world", "en-GB"));
-		testLiteralHasModel(model, model.createTypedLiteral("hello, world"));
 		testLiteralHasModel(model, model.createTypedLiteral(false));
 		testLiteralHasModel(model, model.createTypedLiteral(17));
 		testLiteralHasModel(model, model.createTypedLiteral('x'));

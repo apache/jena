@@ -119,6 +119,7 @@ package org.apache.jena.rdfxml.xmloutput.impl;
 import java.io.PrintWriter ;
 import java.util.* ;
 
+import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.PropertyImpl ;
@@ -426,12 +427,11 @@ class Unparser {
      * [6.12.2] propertyElt ::= '<' propName idAttr? parseLiteral '>' literal '</'
      * propName '>'
      */
-    @SuppressWarnings("deprecation")
-    private boolean wPropertyEltLiteral(WType wt, Property prop, Statement s,
-            RDFNode r) {
+    private boolean wPropertyEltLiteral(WType wt, Property prop, Statement s, RDFNode r) {
         if (prettyWriter.sParseTypeLiteralPropertyElt)
             return false;
-        if (!((r instanceof Literal) && ((Literal) r).isWellFormedXML())) {
+        boolean isXML = (r instanceof Literal) && XMLLiteralType.theXMLLiteralType.equals(((Literal) r).getDatatype());
+        if (! isXML ) {
             return false;
         }
         // print out.

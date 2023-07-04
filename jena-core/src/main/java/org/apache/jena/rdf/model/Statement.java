@@ -253,15 +253,6 @@ public interface Statement extends FrontsTriple
     public String getLanguage();
 
     /**
-        Answer true iff the Literal object of this statement is well-formed XML
-        (ie equivalent to getLiteral().isWellFormedXML()). If the object is not
-        a Literal, throw an exception.
-        @deprecated To be removed.
-     */
-    @Deprecated
-    public boolean hasWellFormedXML();
-
-    /**
          Remove this statement (s, p, x) from the model that contains it. Create a
          new statement (s, p, o'), where o' is the typed literal corresponding to
          o, add it to the model, and answer it.
@@ -314,18 +305,6 @@ public interface Statement extends FrontsTriple
 
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and
-     *  a new statement with the new value added and returned.</p>
-     * @param o The value to be set.
-     * @param wellFormed true if o is well formed XML
-     *
-     * @return the new (S, P, o) statement.
-     * @deprecated To be removed: Argument 'wellFormed is ignored
-     */
-    @Deprecated
-    public Statement changeObject(String o, boolean wellFormed) ;
-
-    /** change the object of the statement (S, P, X) to (S, P, o).
-     *  <p>The statement with the old value is removed from the model and
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @param l the language of the String
@@ -333,19 +312,6 @@ public interface Statement extends FrontsTriple
      * @return the new (S, P, o) statement..
      */
     public Statement changeObject(String o, String l) ;
-
-    /** change the object of the statement (S, P, X) to (S, P, o).
-     *  <p>The statement with the old value is removed from the model and
-     *  a new statement with the new value added.</p>
-     * @param o The value to be set.
-     * @param l the language of the String
-     *
-     * @return the new (S, P, o) statement.
-     * @deprecated To be removed: Argument 'wellFormed is ignored
-     */
-    @Deprecated
-    public Statement changeObject(String o, String l, boolean wellFormed)
-      ;
 
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and

@@ -154,7 +154,6 @@ public class SecuredModelTest {
         __testAdd(() -> securedModel.add(baseModel));
         __testAdd(() -> securedModel.add(s, p, o));
         __testAdd(() -> securedModel.add(s, p, "foo"));
-        __testAdd(() -> securedModel.add(s, p, "foo", false));
         __testAdd(() -> securedModel.add(s, p, "foo", XSDDatatype.XSDstring));
         __testAdd(() -> securedModel.add(s, p, "foo", "en"));
     }
@@ -470,7 +469,7 @@ public class SecuredModelTest {
     @Test
     public void testCreateLiteral() throws Exception {
         securedModel.createLiteral("foo");
-        securedModel.createLiteral("foo", false);
+        securedModel.createLiteral("foo", "");
     }
 
     @Test

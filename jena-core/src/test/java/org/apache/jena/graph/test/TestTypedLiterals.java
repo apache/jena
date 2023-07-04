@@ -79,7 +79,6 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Test the base functioning of unknown datatypes
      */
-    @SuppressWarnings("deprecation")
     public void testUnknown() {
         String typeURI = "urn:x-hp-dt:unknown";
         String typeURI2 = "urn:x-hp-dt:unknown2";
@@ -108,7 +107,6 @@ public class TestTypedLiterals extends TestCase {
             assertTrue("Allowed int conversion", false);
         } catch (DatatypeFormatException e) {}
         assertEquals("Extract value", l1.getValue(), new BaseDatatype.TypedValue("foo", typeURI));
-        assertEquals("Extract xml tag", l1.isWellFormedXML(), false);
 
         JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = false;
         boolean foundException = false;
@@ -129,7 +127,6 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Tests the base functioning of a user defined datatype
      */
-    @SuppressWarnings("deprecation")
     public void testUserDef() {
         // Register the user defined type for rationals
         RDFDatatype rtype = RationalType.theRationalType;
@@ -157,7 +154,6 @@ public class TestTypedLiterals extends TestCase {
             l1.getInt();
             assertTrue("Allowed int conversion", false);
         } catch (DatatypeFormatException e) {}
-        assertEquals("Extract xml tag", l1.isWellFormedXML(), false);
     }
 
     public void testRDFLangString_1() {

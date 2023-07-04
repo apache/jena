@@ -44,13 +44,13 @@ public class TestCurrentRDFWG extends ReasonerTestBase {
 //    public static final String TEST_DIR = "testing/wg/";
 
     /** The base URI for the results file */
-    public static String BASE_RESULTS_URI = "http://jena.sourceforge.net/data/rdf-results.rdf";
+    public static String BASE_RESULTS_URI = "http://jena.apache.org/data/rdf-results.rdf";
 
     /** The model describing the results of the run */
     Model testResults;
 
-    /** The resource which acts as a description for the Jena2 instance being tested */
-    Resource jena2;
+    /** The resource which acts as a description for the Jena instance being tested */
+    Resource jena;
 
     protected static Logger logger = LoggerFactory.getLogger(TestCurrentRDFWG.class);
 
@@ -66,8 +66,8 @@ public class TestCurrentRDFWG extends ReasonerTestBase {
      */
     public void initResults() {
         testResults = ModelFactory.createDefaultModel();
-        jena2 = testResults.createResource(BASE_RESULTS_URI + "#jena");
-        jena2.addProperty(RDFS.label, "Jena");
+        jena = testResults.createResource(BASE_RESULTS_URI + "#jena2");
+        jena.addProperty(RDFS.label, "Jena2");
         testResults.setNsPrefix("results", OWLResults.NS);
     }
 
