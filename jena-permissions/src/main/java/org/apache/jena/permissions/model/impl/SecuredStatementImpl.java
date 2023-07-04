@@ -56,7 +56,7 @@ import org.apache.jena.util.iterator.NiceIterator;
 public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStatement {
     /**
      * get a SecuredStatement
-     * 
+     *
      * @param securedModel The secured model that provides the security context
      * @param stmt         The statement to secure.
      * @return the SecuredStatement
@@ -89,7 +89,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
 
     /**
      * Constructor.
-     * 
+     *
      * @param securityEvaluator The security evaluator to use.
      * @param graphIRI          the graph IRI to verify against.
      * @param holder            The item holder that will contain this
@@ -268,50 +268,14 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
      *                                         required to be.
      */
     @Override
-    public SecuredStatement changeObject(final String o, final boolean wellFormed)
-            throws UpdateDeniedException, AuthenticationRequiredException {
-        checkUpdate();
-        final Triple base = holder.getBaseItem().asTriple();
-        final Triple newBase = Triple.create(base.getSubject(), base.getPredicate(),
-                NodeFactory.createLiteral(o, "", wellFormed));
-        checkUpdate(base, newBase);
-        return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().changeObject(o));
-    }
-
-    /**
-     * @sec.graph Update
-     * @sec.triple Update
-     * @throws UpdateDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
     public SecuredStatement changeObject(final String o, final String l)
             throws UpdateDeniedException, AuthenticationRequiredException {
         checkUpdate();
         final Triple base = holder.getBaseItem().asTriple();
         final Triple newBase = Triple.create(base.getSubject(), base.getPredicate(),
-                NodeFactory.createLiteral(o, l, false));
+                NodeFactory.createLiteral(o, l));
         checkUpdate(base, newBase);
         return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().changeObject(o, l));
-    }
-
-    /**
-     * @sec.graph Update
-     * @sec.triple Update
-     * @throws UpdateDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public SecuredStatement changeObject(final String o, final String l, final boolean wellFormed)
-            throws UpdateDeniedException, AuthenticationRequiredException {
-        checkUpdate();
-        final Triple base = holder.getBaseItem().asTriple();
-        final Triple newBase = Triple.create(base.getSubject(), base.getPredicate(),
-                NodeFactory.createLiteral(o, l, wellFormed));
-        checkUpdate(base, newBase);
-        return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().changeObject(o, l, wellFormed));
     }
 
     /**
@@ -520,7 +484,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
     }
 
     private Triple getNewTriple(final Triple t, final Object o) {
-        return Triple.create(t.getSubject(), t.getPredicate(), NodeFactory.createLiteral(String.valueOf(o), "", false));
+        return Triple.create(t.getSubject(), t.getPredicate(), NodeFactory.createLiteral(String.valueOf(o), ""));
     }
 
     /**
@@ -657,20 +621,6 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
         checkRead();
         checkRead(holder.getBaseItem().asTriple());
         return SecuredResourceImpl.getInstance(getModel(), holder.getBaseItem().getSubject());
-    }
-
-    /**
-     * @sec.graph Read
-     * @sec.triple Read
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public boolean hasWellFormedXML() throws ReadDeniedException, AuthenticationRequiredException {
-        checkRead();
-        checkRead(holder.getBaseItem().asTriple());
-        return holder.getBaseItem().getLiteral().isWellFormedXML();
     }
 
     /**

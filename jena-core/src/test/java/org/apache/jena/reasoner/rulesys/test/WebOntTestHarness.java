@@ -72,8 +72,8 @@ public class WebOntTestHarness {
     /** The model describing the results of the run */
     Model testResults;
 
-    /** The resource which acts as a description for the Jena2 instance being tested */
-    Resource jena2;
+    /** The resource which acts as a description for the Jena instance being tested */
+    Resource jena;
 
 //  =======================================================================
 //  Internal constants
@@ -85,7 +85,7 @@ public class WebOntTestHarness {
     public static String BASE_URI = "http://www.w3.org/2002/03owlt/";
 
     /** The base URI for the results file */
-    public static String BASE_RESULTS_URI = "http://jena.sourceforge.net/data/owl-results.rdf";
+    public static String BASE_RESULTS_URI = "https://jena.apache.org/data/owl-results.rdf";
 
     /** The list of subdirectories to process (omits the rdf/rdfs dirs) */
     public static final String[] TEST_DIRS= {"AllDifferent", "AllDistinct",
@@ -250,8 +250,8 @@ public class WebOntTestHarness {
      */
     public void initResults() {
         testResults = ModelFactory.createDefaultModel();
-        jena2 = testResults.createResource(BASE_RESULTS_URI + "#jena");
-        jena2.addProperty(RDFS.label, "Jena2");
+        jena = testResults.createResource(BASE_RESULTS_URI + "#jena");
+        jena.addProperty(RDFS.label, "Jena");
         testResults.setNsPrefix("results", OWLResults.NS);
     }
 
@@ -356,7 +356,7 @@ public class WebOntTestHarness {
             .addProperty(RDF.type, OWLResults.TestRun)
             .addProperty(RDF.type, resultType)
             .addProperty(OWLResults.test, test)
-            .addProperty(OWLResults.system, jena2);
+            .addProperty(OWLResults.system, jena);
     }
 
     /**

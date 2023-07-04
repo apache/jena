@@ -252,23 +252,6 @@ public interface Model
 	public Literal createLiteral(String v, String language);
 
     /**
-        Create a literal from a String value. An existing literal
-        of the right value may be returned, or a fresh one created.
-        The use of the wellFormed flag is to create typed literals of
-        type rdf:XMLLiteral, without error checking. This should
-        only be use when the lexical form is known to already be
-        in exclusive canonical XML.
-
-       @param v the lexical form of the literal
-       @param wellFormed true if the Literal is well formed XML, in the lexical space of rdf:XMLLiteral
-       @return a new literal
-
-       @deprecated To be removed. Argument 'wellFormed' is ignored
-     */
-	@Deprecated
-    public Literal createLiteral(String v, boolean wellFormed);
-
-    /**
         Build a typed literal from its lexical form. The
         lexical form will be parsed now and the value stored. If
         the form is not legal this will throw an exception.

@@ -686,16 +686,6 @@ public class TestNode extends GraphTestBase
         assertString(NodeCreateUtils.create( "'plain'" )) ;
     }
 
-    @SuppressWarnings("deprecation")
-    public void testLiteralIsXML()
-    {
-        assertFalse( NodeCreateUtils.create( "'notXML'" ).getLiteralIsXML() );
-        assertFalse( NodeCreateUtils.create( "17" ).getLiteralIsXML() );
-        assertFalse( NodeCreateUtils.create( "'joke'xsd:Joke" ).getLiteralIsXML() );
-        assertTrue( NodeFactory.createLiteral( "lit", "lang", true ).getLiteralIsXML() );
-        assertFalse( NodeFactory.createLiteral( "lit", "lang", false ).getLiteralIsXML() );
-    }
-
     public void testConcrete()
     {
         assertTrue( NodeCreateUtils.create( "S" ).isConcrete() );

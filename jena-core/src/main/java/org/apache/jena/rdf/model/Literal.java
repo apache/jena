@@ -177,13 +177,6 @@ public interface Literal extends RDFNode {
     */
     public String getLanguage();
 
-    /**
-        Answer true iff this literal is (or claims to be) well-formed XML.
-        @deprecated To be removed. Well-formness of XML literal is not tested for.
-     */
-    @Deprecated
-    public boolean isWellFormedXML();
-
     /** Test whether another object is equal to this object.
      *
      * <p>A plain Literal is equal to another object only if the object is

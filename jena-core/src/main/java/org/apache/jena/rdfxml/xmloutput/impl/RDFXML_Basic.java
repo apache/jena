@@ -20,6 +20,7 @@ package org.apache.jena.rdfxml.xmloutput.impl;
 
 import java.io.PrintWriter;
 
+import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.vocabulary.RDFSyntax ;
@@ -152,13 +153,13 @@ public class RDFXML_Basic extends BaseXMLWriter
 		}
 	}
 
-	@SuppressWarnings("deprecation")
     protected void writeLiteral( Literal l, PrintWriter writer ) {
 		String lang = l.getLanguage();
         String form = l.getLexicalForm();
+        boolean isXML = XMLLiteralType.theXMLLiteralType.equals(l.getDatatype());
 		if (Util.isLangString(l)) {
 			writer.print(" xml:lang=" + attributeQuoted( lang ));
-		} else if (l.isWellFormedXML() && !blockLiterals) {
+		} else if ( isXML && !blockLiterals) {
 		    // RDF XML Literals inline.
 			writer.print(" " + rdfAt("parseType") + "=" + attributeQuoted( "Literal" )+">");
 			writer.print( form );
