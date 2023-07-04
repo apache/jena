@@ -25,7 +25,6 @@ import static org.junit.Assert.fail;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.MockSecurityEvaluator;
@@ -91,7 +90,7 @@ public class SecuredStatementTest {
     /**
      * Sets the secured statement. Sets the baseStatement and creates the
      * securedStatement from it.
-     * 
+     *
      * @param stmt The statement to use as the baseStatement.
      */
     private void setSecuredStatement(Statement stmt) {
@@ -167,7 +166,7 @@ public class SecuredStatementTest {
     public void testChangeObject_lexicalform() {
         final Literal l = ResourceFactory.createPlainLiteral(String.valueOf(Integer.MAX_VALUE));
         Triple t = Triple.create(subject.asNode(), property.asNode(), l.asNode());
-        testChangeObject(() -> securedStatement.changeObject(l.getLexicalForm(), true), t);
+        testChangeObject(() -> securedStatement.changeObject(l.getLexicalForm()), t);
     }
 
     @Test
@@ -181,7 +180,7 @@ public class SecuredStatementTest {
     public void testChangeObject_langString_notwellformed() {
         final Literal l = ResourceFactory.createLangLiteral("dos", "es");
         Triple t = Triple.create(subject.asNode(), property.asNode(), l.asNode());
-        testChangeObject(() -> securedStatement.changeObject("dos", "es", false), t);
+        testChangeObject(() -> securedStatement.changeObject("dos", "es"), t);
     }
 
     private void testCreateReifiedStatement(Supplier<ReifiedStatement> supplier, Resource expected) {
@@ -302,19 +301,6 @@ public class SecuredStatementTest {
     public void testGetString() {
         setSecuredStatement(baseStatement.changeObject("Whooo hooo"));
         testGet(() -> securedStatement.getString(), "Whooo hooo");
-    }
-
-    @Test
-    public void testHasWellFormedXML_false() {
-        setSecuredStatement(baseStatement.changeObject("Whooo hooo"));
-        testGet(() -> securedStatement.hasWellFormedXML(), false);
-    }
-
-    @Test
-    public void testHasWellFormedXML_true() {
-        Literal l = ResourceFactory.createTypedLiteral("true", XMLLiteralType.theXMLLiteralType);
-        setSecuredStatement(baseStatement.changeObject(l));
-        testGet(() -> securedStatement.hasWellFormedXML(), true);
     }
 
     @Test

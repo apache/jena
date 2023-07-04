@@ -60,10 +60,8 @@ public abstract class StatementBase
 
 	public abstract RDFNode getObject();
 
-    /** @deprecated To be removed: Argument 'wellFormed is ignored */
-    @Deprecated
-	protected StatementImpl stringReplace(String s, String lang, boolean wellFormed) {
-	    return replace(new LiteralImpl(NodeFactory.createLiteral(s, lang, wellFormed), model));
+	protected StatementImpl stringReplace(String s, String lang) {
+	    return replace(new LiteralImpl(NodeFactory.createLiteral(s, lang), model));
 	}
 
 	/**
@@ -73,7 +71,7 @@ public abstract class StatementBase
 	 * disappear.
 	 */
 	protected StatementImpl stringReplace( String s )
-		{ return stringReplace( s, "", false ); }
+		{ return stringReplace( s, ""); }
 
 	public Statement changeLiteralObject( boolean o )
 		{ return changeObject( model.createTypedLiteral( o ) ); }
@@ -96,18 +94,8 @@ public abstract class StatementBase
 	public Statement changeObject( String o )
 		{ return stringReplace( String.valueOf( o ) ); }
 
-    /** @deprecated To be removed: Argument 'wellFormed is ignored */
-    @Deprecated
-	public Statement changeObject( String o, boolean wellFormed )
-		{ return stringReplace( String.valueOf( o ), "", wellFormed ); }
-
 	public Statement changeObject( String o, String l )
-		{ return stringReplace( String.valueOf( o ), l, false ); }
-
-	/** @deprecated To be removed: Argument 'wellFormed is ignored */
-	@Deprecated
-	public Statement changeObject( String o, String l, boolean wellFormed )
-	{ return stringReplace( String.valueOf( o ), l, wellFormed ); }
+		{ return stringReplace( String.valueOf( o ), l ); }
 
 	public Statement changeObject( RDFNode o )
 		{ return replace( o ); }
