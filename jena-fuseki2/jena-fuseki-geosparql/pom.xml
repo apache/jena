@@ -23,7 +23,7 @@
     <parent>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki</artifactId>
-      <version>4.9.0</version>
+      <version>4.10.0-SNAPSHOT</version>
       <relativePath>../</relativePath>
     </parent>
     
@@ -38,13 +38,13 @@
       <dependency>
         <groupId>org.apache.jena</groupId>
         <artifactId>jena-geosparql</artifactId>
-        <version>4.9.0</version>
+        <version>4.10.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.jena</groupId>
         <artifactId>jena-fuseki-main</artifactId>
-        <version>4.9.0</version>
+        <version>4.10.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
