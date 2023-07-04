@@ -39,8 +39,7 @@ public class XSDhexBinary extends XSDbinary {
     public String unparse(Object value) {
         if (value instanceof byte[]) {
             // XSD canonical form uses upper case and this aligns with
-            // javax.xml.bind.DatatypeConverter.printHexBinary which
-            // Jena used until 3.7.0.
+            // javax.xml.bind.DatatypeConverter.printHexBinary.
             return Hex.encodeHexString((byte[])value, false);
         } else {
             throw new DatatypeFormatException("hexBinary asked to encode a non-byte arrary");
