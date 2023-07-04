@@ -34,16 +34,6 @@ public class TestStatements extends AbstractModelTestBase
 		super(modelFactory, name);
 	}
 
-	@SuppressWarnings("deprecation")
-    public void testHasWellFormedXML()
-	{
-		Assert.assertFalse(ModelHelper.statement("s P 1").hasWellFormedXML());
-		Assert.assertFalse(ModelHelper.statement("S P '<x>/x>'rdf:XMLLiteral")
-				.hasWellFormedXML());
-		Assert.assertTrue(ModelHelper.statement("S P '<x></x>'rdf:XMLLiteral")
-				.hasWellFormedXML());
-	}
-
 	public void testOtherStuff()
 	{
 		final Model A = createModel();

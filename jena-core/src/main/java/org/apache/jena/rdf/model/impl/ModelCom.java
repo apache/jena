@@ -138,18 +138,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
 
     @Override
     public Model add(Resource s, Property p, String o)  {
-        return add( s, p, o, "", false );
-    }
-
-    @Override
-    public Model add(Resource s, Property p, String o, boolean wellFormed) {
-        add(s, p, literal(o, "", wellFormed));
-        return this;
-    }
-
-    public Model add(Resource s, Property p, String o, String lang, boolean wellFormed) {
-        add(s, p, literal(o, lang, wellFormed));
-        return this;
+        return add( s, p, literal( o, "" ) );
     }
 
     @Override
@@ -158,22 +147,18 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
         return this;
     }
 
-    private Literal literal(String s, String lang, boolean wellFormed) {
-        LiteralLabel ll = LiteralLabelFactory.create(s, lang, wellFormed);
-        @SuppressWarnings("deprecation")
-        Node n = NodeFactory.createLiteral(ll);
-        return new LiteralImpl(n, this);
-    }
+    private Literal literal( String s, String lang)
+    { return new LiteralImpl( NodeFactory.createLiteral( s, lang), this ); }
 
     private Literal literal( String lex, RDFDatatype datatype)
     { return new LiteralImpl( NodeFactory.createLiteral( lex, datatype), this ); }
 
     @Override
     public Model add( Resource s, Property p, String o, String l )
-    { return add( s, p, o, l, false ); }
+    { return add( s, p, literal(o, l) ); }
 
     @Override
-    @Deprecated public Model addLiteral( Resource s, Property p, Object o )
+    public Model addLiteral( Resource s, Property p, Object o )
     { return add( s, p, asObject( o ) ); }
 
     @Override
@@ -370,7 +355,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
 
     @Override
     public boolean contains( Resource s, Property p, String o, String l )
-    { return contains( s, p, literal( o, l, false ) ); }
+    { return contains( s, p, literal( o, l ) ); }
 
     @Override
     public boolean containsLiteral(Resource s, Property p, Object o)
@@ -522,7 +507,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
 
     @Override
     public ResIterator listSubjectsWithProperty( Property p, String o, String l )
-    { return listResourcesWithProperty(p, literal( o, l, false ) ); }
+    { return listResourcesWithProperty(p, literal( o, l ) ); }
 
     @Override
     public Resource createResource( Resource type )
@@ -725,14 +710,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
 
     @Override
     public Literal createLiteral( String v, String l )
-    { return literal( v, l, false ); }
-
-    @Override
-    public Literal createLiteral( String v, boolean wellFormed )
-    { return literal( v, "", wellFormed ); }
-
-    public Literal createLiteral(String v, String l, boolean wellFormed)
-    { return literal( v, l, wellFormed ); }
+    { return literal( v, l ); }
 
     @Override
     public Statement createLiteralStatement( Resource r, Property p, boolean o )
@@ -767,18 +745,8 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     { return createStatement( r, p, asObject( o ) ); }
 
     @Override
-    public Statement createStatement
-    ( Resource r, Property p, String o, boolean wellFormed )
-    { return createStatement( r, p, o, "", wellFormed ); }
-
-    @Override
     public Statement createStatement(Resource r, Property p, String o, String l)
-    { return createStatement( r, p, o, l, false ); }
-
-    @Override
-    public Statement createStatement
-    ( Resource r, Property p, String o, String l, boolean wellFormed )
-    { return createStatement( r, p, literal( o, l, wellFormed ) ); }
+    { return createStatement( r, p, literal(o, l)); }
 
     @Override
     public Bag createBag()
