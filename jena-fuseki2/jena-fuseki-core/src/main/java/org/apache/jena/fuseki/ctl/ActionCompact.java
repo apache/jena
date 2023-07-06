@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.ctl;
 
 import static java.lang.String.format;
 
-import com.github.jsonldjava.shaded.com.google.common.base.Predicate;
+import java.util.function.Predicate;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -77,9 +77,9 @@ public class ActionCompact extends ActionAsyncTask
 
     private static DatasetGraph unwrap(DatasetGraph dsg, Predicate<DatasetGraph> predicate, Predicate<DatasetGraph> failPredicate) {
         for ( ;; ) {
-            if ( failPredicate.apply(dsg) )
+            if ( failPredicate.test(dsg) )
                 return null;
-            if ( predicate.apply(dsg) )
+            if ( predicate.test(dsg) )
                 return dsg;
             if ( ! ( dsg instanceof DatasetGraphWrapper) )
                 return null;
