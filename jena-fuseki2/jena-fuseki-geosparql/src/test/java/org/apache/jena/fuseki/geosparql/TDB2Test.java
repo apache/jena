@@ -19,12 +19,13 @@ package org.apache.jena.fuseki.geosparql;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.beust.jcommander.JCommander;
-import com.github.jsonldjava.shaded.com.google.common.io.Files;
 
 import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
@@ -48,10 +49,9 @@ public class TDB2Test {
     }
 
     @BeforeClass
-    public static void setUpClass() throws DatasetException, SpatialIndexException {
-
-        File tempTDBDir = Files.createTempDir();
-        String[] args = {"-rf", "geosparql_test.rdf>xml", "-i", "-t", tempTDBDir.getAbsolutePath(), "-t2", "--port", "4047"};
+    public static void setUpClass() throws DatasetException, SpatialIndexException, IOException {
+        Path tempTDBDir = Files.createTempDirectory("geospoarql");
+        String[] args = {"-rf", "geosparql_test.rdf>xml", "-i", "-t", tempTDBDir.toAbsolutePath().toString(), "-t2", "--port", "4047"};
 
         ArgsConfig argsConfig = new ArgsConfig();
         JCommander.newBuilder()
