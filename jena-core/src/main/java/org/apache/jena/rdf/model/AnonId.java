@@ -18,58 +18,48 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.graph.BlankNodeId ;
+import org.apache.jena.graph.BlankNodeId;
 
 /** System id for an anonymous node.
  * <p>
  * Blank nodes have identity ({@code .equals} tells them apart)
  * but have no web-visible external stable identifier like a URI.
  * <p>
- * The Jena API has traditionally had {@code AnonId}
- * in the RDF API. {@link BlankNodeId} is the SPI equivalent and databases 
- * that need a persistent identifier across JVM instances use that for blank nodes.
+ * The Jena API has traditionally had {@code AnonId} in the RDF API.
  *
  * <p>This id is guaranteed to be unique on this machine.</p>
  */
 
 public class AnonId {
-    private final BlankNodeId blankNodeId ;
-    
+    private final String blankNodeLabel ;
+
     public static AnonId create()
         { return new AnonId(); }
-    
+
     public static AnonId create( String id )
         { return new AnonId( id ); }
 
-    public AnonId() { 
-        blankNodeId = BlankNodeId.create() ;
-    } 
-    
+    public AnonId() {
+        this(BlankNodeId.createFreshId());
+    }
+
     /** Create a new AnonId from the string argument supplied
      * @param idStr A string representation of the id to be created.
-     */    
-    public AnonId( String idStr ) { 
-        blankNodeId = BlankNodeId.create(idStr) ;
+     */
+    public AnonId( String idStr ) {
+        blankNodeLabel = idStr;
     }
-    
-    /** Create a new AnonId from the BlankNodeId argument supplied
-     * @param id A string representation of the id to be created.
-     */    
-    public AnonId( BlankNodeId id ) { blankNodeId = id ; }
 
-    public String getLabelString() { return blankNodeId.getLabelString() ; }
-    
-    /** Return the system BlankNodeId */
-    public BlankNodeId getBlankNodeId() { return blankNodeId ; }
-    
+    public String getLabelString() { return blankNodeLabel ; }
+
     @Override
-    public String toString() { return blankNodeId.toString() ; }
-    
+    public String toString() { return blankNodeLabel.toString() ; }
+
     @Override
     public int hashCode() {
         final int prime = 31 ;
         int result = 1 ;
-        result = prime * result + ((blankNodeId == null) ? 0 : blankNodeId.hashCode()) ;
+        result = prime * result + ((blankNodeLabel == null) ? 0 : blankNodeLabel.hashCode()) ;
         return result ;
     }
 
@@ -82,10 +72,10 @@ public class AnonId {
         if ( !(obj instanceof AnonId) )
             return false ;
         AnonId other = (AnonId)obj ;
-        if ( blankNodeId == null ) {
-            if ( other.blankNodeId != null )
+        if ( blankNodeLabel == null ) {
+            if ( other.blankNodeLabel != null )
                 return false ;
-        } else if ( !blankNodeId.equals(other.blankNodeId) )
+        } else if ( !blankNodeLabel.equals(other.blankNodeLabel) )
             return false ;
         return true ;
     }

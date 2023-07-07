@@ -151,7 +151,7 @@ public class ResourceImpl extends EnhNode implements Resource {
 
     @Override
     public AnonId getId() {
-        return new AnonId(asNode().getBlankNodeId());
+        return new AnonId(asNode().getBlankNodeLabel());
     }
 
     @Override

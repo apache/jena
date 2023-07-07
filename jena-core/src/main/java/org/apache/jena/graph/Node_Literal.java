@@ -20,9 +20,9 @@ package org.apache.jena.graph;
 
 import java.util.Objects;
 
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.graph.impl.* ;
-import org.apache.jena.shared.* ;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.graph.impl.*;
+import org.apache.jena.shared.*;
 
 /**
     An RDF node holding a literal value. Literals may have datatypes.
@@ -33,6 +33,23 @@ public class Node_Literal extends Node
 
     /* package */ Node_Literal( LiteralLabel label )
     { this.label = Objects.requireNonNull(label); }
+
+    /* package */ Node_Literal(String string) {
+        Objects.requireNonNull(string, "Argument to NodeFactory.createLiteral is null");
+        this.label = LiteralLabelFactory.create(string);
+    }
+
+    /* package */ Node_Literal(String string, String lang) {
+        Objects.requireNonNull(string, "null lexical form for literal");
+        Objects.requireNonNull(lang, "null language");
+        this.label = LiteralLabelFactory.create(string, lang);
+    }
+
+    /* package */ Node_Literal(String lex, RDFDatatype dtype) {
+        Objects.requireNonNull(lex, "null lexical form for literal");
+        Objects.requireNonNull(dtype, "null datatype");
+        this.label = LiteralLabelFactory.create(lex, dtype);
+    }
 
     @Override
     public boolean isConcrete()

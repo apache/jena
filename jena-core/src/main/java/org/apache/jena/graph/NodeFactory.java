@@ -24,8 +24,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.impl.RDFLangString;
-import org.apache.jena.graph.impl.LiteralLabel ;
+import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sys.JenaSystem;
@@ -42,20 +43,12 @@ public class NodeFactory {
 
     /** Make a fresh blank node */
     public static Node createBlankNode() {
-        return createBlankNode(BlankNodeId.create()) ;
-    }
-
-    /** make a blank node with the specified label
-     */
-    public static Node createBlankNode(BlankNodeId id) {
-        Objects.requireNonNull(id, "Argument to NodeFactory.createBlankNode is null") ;
-        return new Node_Blank(id) ;
+        return createBlankNode(BlankNodeId.createFreshId());
     }
 
     /** make a blank node with the specified label */
     public static Node createBlankNode(String string) {
-        BlankNodeId id = BlankNodeId.create(string) ;
-        return new Node_Blank(id) ;
+        return new Node_Blank(string) ;
     }
 
     /** make a URI node with the specified URIref string */
@@ -76,7 +69,6 @@ public class NodeFactory {
         return new Node_Marker(name) ;
     }
 
-
     /** make a literal node with the specified literal value
      * @deprecated Making nodes directly from {@link LiteralLabel} may be removed.
      */
@@ -86,43 +78,22 @@ public class NodeFactory {
         return new Node_Literal( lit ) ;
     }
 
-    public static Node createLiteral(String value) {
-        Objects.requireNonNull(value, "Argument to NodeFactory.createLiteral is null") ;
-        return createLiteral(LiteralLabelFactory.create(value)) ;
+    public static Node createLiteral(String string) {
+        Objects.requireNonNull(string, "Argument to NodeFactory.createLiteral is null") ;
+        return new Node_Literal(string);
     }
-
-//    /**
-//     * make a literal with specified language and XMLishness. lexical form must
-//     * not be null.
-//     *
-//     * @param lex
-//     * @param lang
-//     * @param isXml
-//     *            If true then lit is exclusive canonical XML of type
-//     *            rdf:XMLLiteral, and no checking will be invoked.
-//       @deprecated To be removed.
-//     */
-//    @Deprecated
-//    public static Node createLiteral(String lex, String lang, boolean isXml) {
-//        if ( lex == null )
-//            throw new NullPointerException("null lexical form for literal") ;
-//        return createLiteral(LiteralLabelFactory.create(lex, lang, isXml)) ;
-//    }
 
     /**
      * Make a literal with specified language. lexical form must not be null.
      *
-     * @param lex
+     * @param string
      *            the lexical form of the literal
      * @param lang
      *            the optional language tag
      */
-    public static Node createLiteral(String lex, String lang) {
-        // Equivalent to create(lex, lang, false) except the XML flag is
-        // hidden so client code does not see it unnecesarily.
-        if ( lex == null )
-            throw new NullPointerException("null lexical form for literal") ;
-        return createLiteral(LiteralLabelFactory.create(lex, lang)) ;
+    public static Node createLiteral(String string, String lang) {
+        Objects.requireNonNull(string, "null lexical form for literal") ;
+        return StringUtils.isEmpty(lang) ?new Node_Literal(string) : new Node_Literal(string, lang);
     }
 
     /**
@@ -132,7 +103,9 @@ public class NodeFactory {
      * <p>
      * This is a convenience operation for passing in language and datatype without
      * needing the caller to differentiate the xsd:string, rdf:langString and other
-     * datatype cases. {@link #createLiteral(String, String)}
+     * datatype cases. It calls {@link #createLiteral(String)},
+     * {@link #createLiteral(String, String)} or
+     * {@link #createLiteral(String, RDFDatatype)}.
      *
      * @param lex the lexical form of the literal
      * @param lang the optional language tag
@@ -140,7 +113,7 @@ public class NodeFactory {
      * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
     public static Node createLiteral(String lex, String lang, RDFDatatype dtype) throws DatatypeFormatException {
-        boolean hasLang = StringUtils.isEmpty(lang);
+        boolean hasLang = ! StringUtils.isEmpty(lang);
         if ( hasLang ) {
             if ( dtype != null && ! dtype.equals(RDFLangString.rdfLangString) )
                 throw new JenaException("Datatype is not rdf:langString but a language was given");
@@ -159,9 +132,7 @@ public class NodeFactory {
     }
 
     /**
-     * Build a typed literal node from its lexical form. The lexical form will
-     * be parsed now and the value stored. If the form is not legal this will
-     * throw an exception.
+     * Build a typed literal node from its lexical form.
      *
      * @param lex
      *            the lexical form of the literal
@@ -171,7 +142,10 @@ public class NodeFactory {
      *             if lex is not a legal form of dtype
      */
     public static Node createLiteral(String lex, RDFDatatype dtype) throws DatatypeFormatException {
-        return createLiteral(LiteralLabelFactory.create(lex, dtype)) ;
+        Objects.requireNonNull(lex, "null lexical form for literal") ;
+        if ( dtype == null )
+            dtype = XSDDatatype.XSDstring;
+        return new Node_Literal(lex, dtype);
     }
 
     /** Create a Node based on the value

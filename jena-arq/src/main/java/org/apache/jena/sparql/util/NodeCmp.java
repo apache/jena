@@ -67,8 +67,8 @@ public class NodeCmp {
         //-- Blank nodes
         if ( node1.isBlank() ) {
             if ( node2.isBlank() ) {
-                String s1 = node1.getBlankNodeId().getLabelString();
-                String s2 = node2.getBlankNodeId().getLabelString();
+                String s1 = node1.getBlankNodeLabel();
+                String s2 = node2.getBlankNodeLabel();
                 return StrUtils.strCompare(s1, s2);
             }
             // bNodes before anything but variables

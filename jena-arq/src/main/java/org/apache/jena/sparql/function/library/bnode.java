@@ -23,7 +23,7 @@ import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionBase1 ;
 
-/** Get the bnode label - a non-bnode cause a type failure */ 
+/** Get the bnode label - a non-bnode cause a type failure */
 
 public class bnode extends FunctionBase1
 {
@@ -34,8 +34,8 @@ public class bnode extends FunctionBase1
         Node n = v.asNode() ;
         if ( ! n.isBlank() )
             throw new ExprEvalException("bnode: not a blank node") ;
-        
-        NodeValue nv = NodeValue.makeString(n.getBlankNodeId().getLabelString()) ;
+
+        NodeValue nv = NodeValue.makeString(n.getBlankNodeLabel()) ;
         return nv ;
     }
 }

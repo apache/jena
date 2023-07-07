@@ -28,26 +28,29 @@ import org.apache.jena.shared.PrefixMapping;
 
 public class Node_Blank extends Node
 {
-    private final BlankNodeId blankNodeId;
+    private final String label;
 
-    /* package */ Node_Blank( BlankNodeId id ) { this.blankNodeId = Objects.requireNonNull(id); }
+    //Node_Blank( String label ) { this.label = Objects.requireNonNull(label); }
+    Node_Blank( String label ) {
+        this.label = Objects.requireNonNull(label);
+    }
 
     @Override
     public boolean isBlank() { return true; }
 
     @Override
+    public String getBlankNodeLabel() { return label; }
+
+    @Override
     public boolean isConcrete() { return true; }
 
     @Override
-    public BlankNodeId getBlankNodeId()  { return blankNodeId; }
-
-    @Override
     public Object visitWith( NodeVisitor v )
-    { return v.visitBlank( this, blankNodeId); }
+    { return v.visitBlank( this, label); }
 
     @Override
     public int hashCode() {
-        return Objects.hash(blankNodeId);
+        return Node.hashBNode + Objects.hash(label);
     }
 
     @Override
@@ -59,7 +62,7 @@ public class Node_Blank extends Node
         if ( getClass() != obj.getClass() )
             return false;
         Node_Blank other = (Node_Blank)obj;
-        return Objects.equals(blankNodeId, other.blankNodeId);
+        return Objects.equals(label, other.label);
     }
 
     @Override
@@ -67,6 +70,6 @@ public class Node_Blank extends Node
 
     @Override
     public String toString() {
-        return "_:"+blankNodeId.toString();
+        return "_:"+label;
     }
 }
