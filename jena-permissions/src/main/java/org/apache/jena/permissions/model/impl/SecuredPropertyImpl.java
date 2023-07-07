@@ -33,7 +33,7 @@ import org.apache.jena.shared.ReadDeniedException;
 public class SecuredPropertyImpl extends SecuredResourceImpl implements SecuredProperty {
     /**
      * Get an instance of SecuredProperty
-     * 
+     *
      * @param securedModel the Secured Model to use.
      * @param property     The property to secure
      * @return The SecuredProperty
@@ -51,7 +51,7 @@ public class SecuredPropertyImpl extends SecuredResourceImpl implements SecuredP
         if (goodProp.getModel() == null) {
             final Node n = property.asNode();
             if (property.isAnon()) {
-                goodProp = securedModel.createProperty(n.getBlankNodeId().getLabelString());
+                goodProp = securedModel.createProperty(n.getBlankNodeLabel());
             } else {
                 goodProp = securedModel.createProperty(property.asNode().getURI());
             }
@@ -74,7 +74,7 @@ public class SecuredPropertyImpl extends SecuredResourceImpl implements SecuredP
 
     /**
      * Constructor
-     * 
+     *
      * @param securityEvaluator The security evaluator to use.
      * @param graphIRI          the graph IRI to validate against.
      * @param holder            The item holder that will contain this

@@ -45,7 +45,7 @@ public class TestTriple extends GraphTestBase
 
     public void testTripleEquals() {
         // create some nodes to test
-        BlankNodeId id = BlankNodeId.create();
+        String id = BlankNodeId.createFreshId();
         LiteralLabel L2 = LiteralLabelFactory.create(id.toString(), "", false);
         String U2 = id.toString();
         String N2 = id.toString();

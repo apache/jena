@@ -32,7 +32,7 @@ import org.junit.Test ;
 /**
  * Class that produces RDF and TTL data, a Graph and a Model that all contain
  * the same data. This is used for various tests where files are read/written
- * 
+ *
  */
 public class TestFileData {
 
@@ -209,18 +209,18 @@ public class TestFileData {
 	}
 
 	public static Graph getGraph() {
-		
+
 		Graph g = GraphMemFactory.createGraphMem();
 
 		g.add(Triple.create(NodeFactory.createURI("http://example.com/subject"),
 				NodeFactory.createURI("http://example.com/predicate"),
 				NodeFactory.createURI("http://example.com/object")));
 
-		g.add(Triple.create(NodeFactory.createBlankNode(BlankNodeId.create("a")),
+		g.add(Triple.create(NodeFactory.createBlankNode("a"),
 				NodeFactory.createURI("http://example.com/p1"), NodeFactory
-						.createBlankNode(BlankNodeId.create("b"))));
+						.createBlankNode("b")));
 
-		g.add(Triple.create(NodeFactory.createBlankNode(BlankNodeId.create("b")),
+		g.add(Triple.create(NodeFactory.createBlankNode("b"),
 				NodeFactory.createURI("http://example.com/p2"), NodeFactory
 						.createLiteral("foo")));
 

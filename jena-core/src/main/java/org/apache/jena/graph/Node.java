@@ -30,11 +30,15 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sys.Serializer;
 
 /**
-    A Node has five subtypes: Node_Blank, Node_Anon, Node_URI,
-    Node_Variable, and Node_ANY.
-    Nodes are only constructed by the node factory methods, and they will
-    attempt to re-use existing nodes with the same label if they are recent
-    enough.
+    A Node has subtypes:
+    <ul>
+    <li>{@link Node_Blank}, {@link Node_URI}, {@link Node_Literal}, {@link Node_Triple} for RDF terms.</li>
+    <li> {@link Node_Variable}, {@link Node_ANY}, for variables and wildcard.
+         ARQs {@code Var} extends Node_Variable.</li>
+    <li> {@link Node_Ext}(ension), and {@link Node_Graph} outside RDF.</li>
+    </ul>
+    <p>
+    Nodes should be constructed by the {@code NodeFactory} methods.
 */
 
 public abstract class Node implements Serializable {
@@ -48,11 +52,12 @@ public abstract class Node implements Serializable {
 
     // Constants to separate hashes.
     // e.g. label is string so we perturb the hash code.
-    protected static final int hashURI = 30 ;
-    protected static final int hashVariable = 29 ;
-    protected static final int hashANY = 28 ;
-    protected static final int hashNodeTriple = 27;
-    protected static final int hashExt = 26 ;
+    protected static final int hashURI          = 30;
+    protected static final int hashVariable     = 29;
+    protected static final int hashANY          = 28;
+    protected static final int hashNodeTriple   = 27;
+    protected static final int hashExt          = 26;
+    protected static final int hashBNode        = 25;
 
     /**
         Visit a Node and dispatch on it to the appropriate method from the
@@ -110,16 +115,12 @@ public abstract class Node implements Serializable {
         return false;
     }
 
-    /** get the blank node id if the node is blank, otherwise die horribly */
-    public BlankNodeId getBlankNodeId()
-        { throw new UnsupportedOperationException( this + " is not a blank node" ); }
-
     /**
         Answer the label of this blank node or throw an UnsupportedOperationException
         if it's not blank.
     */
     public String getBlankNodeLabel()
-        { return getBlankNodeId().getLabelString(); }
+        { throw new UnsupportedOperationException( this + " is not a blank node" ); }
 
     /**
          Answer the literal value of a literal node, or throw an UnsupportedOperationException

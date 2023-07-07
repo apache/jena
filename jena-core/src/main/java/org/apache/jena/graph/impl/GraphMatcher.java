@@ -809,9 +809,9 @@ public class GraphMatcher extends java.lang.Object {
             boundAnonResources.add(this);
 
             if ( pair.bound == null ) {
-                trace( true, r.getBlankNodeId()+ "=" + pair.r.getBlankNodeId() + ", " );
+                trace( true, r.getBlankNodeLabel()+ "=" + pair.r.getBlankNodeLabel() + ", " );
                 pair.bind(this);
-                // choice any arbitary number here
+                // choice any arbitrary number here
                 // helps spread the bits.
                 bound.boundHash= boundHash =random.nextInt();
                 //  if ( myHash != bound.myHash )
@@ -834,7 +834,7 @@ public class GraphMatcher extends java.lang.Object {
             unboundAnonResources.add(this);
 
             if ( pair.bound != null ) {
-                trace( false, r.getBlankNodeId() + "!=" + pair.r.getBlankNodeId() + ", " );
+                trace( false, r.getBlankNodeLabel() + "!=" + pair.r.getBlankNodeLabel() + ", " );
                 if ( pair.bound != this )
                     impossible();
 

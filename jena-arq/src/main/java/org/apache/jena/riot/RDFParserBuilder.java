@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.jena.atlas.lib.IRILib;
-import org.apache.jena.graph.BlankNodeId;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.irix.IRIs;
@@ -475,7 +474,7 @@ public class RDFParserBuilder {
      * reuse.
      * <br/>
      * The {@code FactoryRDF} also determines how blank node labels in RDF syntax are
-     * mapped to {@link BlankNodeId}. Use
+     * mapped to blank node objects.
      * <pre>
      *    new Factory(myLabelToNode)
      * </pre>
