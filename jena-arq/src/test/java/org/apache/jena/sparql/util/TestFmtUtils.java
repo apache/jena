@@ -17,6 +17,7 @@ import org.apache.jena.graph.Node_Literal ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.rdf.model.impl.LiteralImpl ;
 import org.apache.jena.rdf.model.impl.ResourceImpl ;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.core.BasicPattern ;
@@ -54,7 +55,7 @@ public class TestFmtUtils
     public void stringForTriple_WithPrefixMapping() {
         assertEquals("zz:abs <n2> \"l3\"", stringForTriple(getPrefixedTriple(), getPrefixMapping())) ;
     }
-    
+
     @Test
     public void stringForQuadEncoding() {
         Node n1 = NodeFactory.createURI("q1") ;
@@ -98,32 +99,32 @@ public class TestFmtUtils
         assertEquals("<n1>", stringForRDFNode(new LiteralImpl(aNode(), null))) ;
     }
 
-    @Test
-    public void stringLiteral() throws Exception {
+    @Test(expected = JenaException.class)
+    public void stringLiteral() {
         Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("abc", "no", new XSDDatatype("string")) ;
         assertEquals("\"abc\"@no", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
-    public void integerLiteral() throws Exception {
+    public void integerLiteral() {
         Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("2", new XSDDatatype("int")) ;
         assertEquals("\"2\"^^<http://www.w3.org/2001/XMLSchema#int>", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
-    public void doubleLiteral() throws Exception {
+    public void doubleLiteral() {
         Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("2.1e2", new XSDDatatype("double")) ;
         assertEquals("2.1e2", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
-    public void decimalLiteral() throws Exception {
+    public void decimalLiteral() {
         Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("2.4", new XSDDatatype("decimal")) ;
         assertEquals("2.4", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
-    public void booleanLiteral() throws Exception {
+    public void booleanLiteral() {
         Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("false", new XSDDatatype("boolean")) ;
         assertEquals("false", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
@@ -136,13 +137,13 @@ public class TestFmtUtils
 
     @Test
     public void anonNode1() {
-        FmtUtils.resetBNodeLabels(); 
+        FmtUtils.resetBNodeLabels();
         assertEquals("_:b0", FmtUtils.stringForNode(NodeFactory.createBlankNode())) ;
     }
 
     @Test
     public void anonNode2() {
-        FmtUtils.resetBNodeLabels(); 
+        FmtUtils.resetBNodeLabels();
         assertEquals("_:b0", FmtUtils.stringForNode(NodeFactory.createBlankNode())) ;
         assertEquals("_:b1", FmtUtils.stringForNode(NodeFactory.createBlankNode())) ;
         assertEquals("_:b2", FmtUtils.stringForNode(NodeFactory.createBlankNode())) ;
@@ -164,14 +165,14 @@ public class TestFmtUtils
         assertEquals("<zz:ü_fe-zz>", s) ;
 
     }
-    
+
     @Test
     public void stringForURI_colonInLocalname_shouldCompact() {
         String uri = aUri + "local:name";
         final String result = FmtUtils.stringForURI(uri, getPrefixMapping());
         assertEquals("zz:local:name", result);
     }
-    
+
     @Test
     public void testStringEsc() {
         assertEquals("\\\\\\r\\n", FmtUtils.stringEsc("\\\r\n")) ;

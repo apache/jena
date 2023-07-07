@@ -641,7 +641,7 @@ public abstract class NodeValue extends ExprNode
         // This includes type testing
         //if ( ! lit.getDatatype().isValidLiteral(lit) )
         // Use this - already calculated when the node is formed.
-        if ( !node.getLiteral().isWellFormed() )
+        if ( !lit.isWellFormed() )
         {
             if ( NodeValue.VerboseWarnings )
             {
@@ -658,7 +658,6 @@ public abstract class NodeValue extends ExprNode
 
         return new NodeValueNode(node) ;
         //raise(new ExprException("NodeValue.nodeToNodeValue: Unknown Node type: "+n)) ;
-
     }
 
     // Jena code does not have these types (yet)

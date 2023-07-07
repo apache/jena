@@ -621,7 +621,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
         Object value = new XSDDateTime(cal);
         LiteralLabel ll = LiteralLabelFactory.createByValue(value, "", XSDDatatype.XSDdateTime);
         @SuppressWarnings("deprecation")
-        Node n = NodeFactory.createLiteral(ll);
+        Node n = NodeFactory.createLiteralByValue(value, "", XSDDatatype.XSDdateTime);
         return new LiteralImpl(n, this);
 
     }
