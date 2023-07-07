@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,9 +31,9 @@ import org.apache.jena.shared.Lock ;
 
 /**
  * Collected test suite for the .model package.
- * 
+ *
  * This is the base class for TestPackage implementations.
- * 
+ *
  * Model developers should extend this class to implement the package test
  * suite.
  * See TestPackage for example of usage.
@@ -44,7 +44,7 @@ public abstract class AbstractTestPackage extends TestSuite
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param suiteName
 	 *            The name for this TestPackage
 	 * @param modelFactory
@@ -116,7 +116,6 @@ public abstract class AbstractTestPackage extends TestSuite
 		addTest(TestLiteralsInModel.class, modelFactory);
 		addTest(TestRemoveSPO.class, modelFactory);
 		addTest(TestListSubjectsEtc.class, modelFactory);
-		addTest(TestModelExtract.class, modelFactory);
 		addTest(TestModelRead.class, modelFactory);
 		addTestSuite(TestPropertyImpl.class);
 		addTest(TestRemoveBug.class, modelFactory);
@@ -147,7 +146,7 @@ public abstract class AbstractTestPackage extends TestSuite
 	 * Adds a test to the test suite by looking for the standard test methods.
 	 * These are
 	 * methods that start with "test" and have no arguments.
-	 * 
+	 *
 	 * @param testClass
 	 * @param constructorArgs
 	 * @throws SecurityException

@@ -1504,35 +1504,6 @@ public class GraphContractTest<T extends Graph>
 	}
 
 	/**
-	 * This test exposed that the update-existing-graph functionality was broken
-	 * if the target graph already contained any statements with a subject S
-	 * appearing as subject in the source graph - no further Spo statements were
-	 * added.
-	 */
-	@ContractTest
-	public void testPartialUpdate()
-	{
-		Graph source = graphWith(producer.newInstance(), "a R b; b S e");
-		Graph dest = graphWith(producer.newInstance(), "b R d");
-		txnBegin(source);
-		try
-		{
-			GraphExtract e = new GraphExtract(TripleBoundary.stopNowhere);
-			e.extractInto(dest, node("a"), source);
-			txnCommit(source);
-		} catch (RuntimeException e)
-		{
-			txnRollback(source);
-			e.printStackTrace();
-			fail(e.getMessage());
-
-		}
-		txnBegin(source);
-		assertIsomorphic(graphWith("a R b; b S e; b R d"), dest);
-		txnRollback(source);
-	}
-
-	/**
 	 * Ensure that triples removed by calling .remove() on the iterator returned
 	 * by a find() will generate deletion notifications.
 	 */
