@@ -68,7 +68,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
         if (goodResource.getModel() == null) {
             final Node n = resource.asNode();
             if (resource.isAnon()) {
-                goodResource = securedModel.createResource(new AnonId(n.getBlankNodeId()));
+                goodResource = securedModel.createResource(new AnonId(n.getBlankNodeLabel()));
             } else {
                 goodResource = securedModel.createResource(n.getURI());
             }

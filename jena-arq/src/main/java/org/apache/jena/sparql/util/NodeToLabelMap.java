@@ -23,7 +23,7 @@ import java.util.Map ;
 
 import org.apache.jena.graph.Node ;
 
-/** Map nodes to blank node representations. */ 
+/** Map nodes to blank node representations. */
 public class NodeToLabelMap
 {
     // Could abstract again as a node -> label cache + cache miss handler.
@@ -31,11 +31,11 @@ public class NodeToLabelMap
     Map<Node, String> bNodeStrings = new HashMap<>() ;
     boolean bNodesAsFakeURIs = false ;
     String prefixString = "b" ;
-    
+
     public NodeToLabelMap() { this("b") ; }
-    
+
     public NodeToLabelMap(String prefix) { this(prefix, false) ; }
-    
+
     public NodeToLabelMap(String prefix, boolean bNodesAsFakeURIs)
     {
         if ( prefix == null || prefix.equals("") )
@@ -43,13 +43,13 @@ public class NodeToLabelMap
         this.prefixString = "_:"+prefix ;
         this.bNodesAsFakeURIs = bNodesAsFakeURIs ;
     }
-    
+
     // Null means not mapped
     public String asString(Node n)
-    { 
+    {
         if ( ! n.isBlank() )
             return null ;
-        
+
         return mapNode(n) ;
     }
 
@@ -59,7 +59,7 @@ public class NodeToLabelMap
         String s = bNodeStrings.get(n) ;
         if ( s != null )
             return s ;
-        
+
         s = genStringForNode(n) ;
         bNodeStrings.put(n, s) ;
         return s ;
@@ -68,7 +68,7 @@ public class NodeToLabelMap
     protected String genStringForNode(Node n)
     {
         if ( bNodesAsFakeURIs && n.isBlank() )
-            return "<_:"+n.getBlankNodeId().getLabelString()+">" ;
+            return "<_:"+n.getBlankNodeLabel()+">" ;
 
         return  prefixString+(bNodeCounter++) ;
     }
@@ -96,7 +96,7 @@ public class NodeToLabelMap
 //            Log.fatal(this,"Prefix string is the empty string") ;
 //            throw new ARQInternalErrorException("Prefix string is the empty string") ;
 //        }
-//            
+//
 //        this.prefixString = prefix ;
 //    }
 }

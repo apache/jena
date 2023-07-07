@@ -49,7 +49,7 @@ public class TestNode extends GraphTestBase
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
     private static final LiteralLabel L = LiteralLabelFactory.create( "ashes are burning", "en", false );
-    private static final BlankNodeId A = BlankNodeId.create();
+    private static final String A = BlankNodeId.createFreshId();
 
     public void testBlanks()
     {
@@ -57,7 +57,7 @@ public class TestNode extends GraphTestBase
         assertFalse( "anonymous nodes aren't literal", NodeFactory.createBlankNode().isLiteral() );
         assertFalse( "anonymous nodes aren't URIs", NodeFactory.createBlankNode().isURI() );
         assertFalse( "anonymous nodes aren't variables", NodeFactory.createBlankNode().isVariable() );
-        assertEquals( "anonymous nodes have the right id", NodeFactory.createBlankNode(A).getBlankNodeId(), A );
+        assertEquals( "anonymous nodes have the right id", NodeFactory.createBlankNode(A).getBlankNodeLabel(), A);
     }
 
     @SuppressWarnings("deprecation")
@@ -117,7 +117,7 @@ public class TestNode extends GraphTestBase
     @SuppressWarnings("deprecation")
     private Object [][] eqTestCases()
     {
-        BlankNodeId id = BlankNodeId.create();
+        String id = BlankNodeId.createFreshId();
         LiteralLabel L2 = LiteralLabelFactory.create( id.toString(), "", false );
 
         LiteralLabel LLang1 = LiteralLabelFactory.createByValue( "xyz", "en", null) ;
@@ -197,9 +197,9 @@ public class TestNode extends GraphTestBase
     @SuppressWarnings("deprecation")
     public void testLabels()
     {
-        BlankNodeId id = BlankNodeId.create();
+        String id = BlankNodeId.createFreshId();
         assertEquals( "get URI value", U, NodeFactory.createURI( U ).getURI() );
-        assertEquals( "get blank value", id, NodeFactory.createBlankNode( id ).getBlankNodeId() );
+        assertEquals( "get blank value", id, NodeFactory.createBlankNode( id ).getBlankNodeLabel() );
         assertEquals( "get literal value", L, NodeFactory.createLiteral( L ).getLiteral() );
         assertEquals( "get variable name", N, NodeFactory.createVariable( N ).getName() );
     }
@@ -237,7 +237,7 @@ public class TestNode extends GraphTestBase
     }
 
     public void testGetBlankNodeIdFails( Node n )
-    { try { n.getBlankNodeId(); fail( n.getClass() + " should fail getName()" ); } catch (UnsupportedOperationException e) {} }
+    { try { n.getBlankNodeLabel(); fail( n.getClass() + " should fail getName()" ); } catch (UnsupportedOperationException e) {} }
 
     public void testGetURIFails( Node n )
     { try { n.getURI(); fail( n.getClass() + " should fail getURI()" ); } catch (UnsupportedOperationException e) {} }
@@ -252,7 +252,7 @@ public class TestNode extends GraphTestBase
     public void testGetBlankNodeLabelString()
     {
         Node n = NodeFactory.createBlankNode();
-        assertEquals( n.getBlankNodeId().getLabelString(), n.getBlankNodeLabel() );
+        assertNotNull(n.getBlankNodeLabel());
     }
 
     public void testVariableSupport()
@@ -278,11 +278,13 @@ public class TestNode extends GraphTestBase
      */
     public void testCreateBlankNode()
     {
-        String idA = "_xxx", idB = "_yyy";
-        Node a = NodeCreateUtils.create( idA ), b = NodeCreateUtils.create( idB );
+        String idA = "_xxx";
+        String idB = "_yyy";
+        Node a = NodeCreateUtils.create( idA );
+        Node b = NodeCreateUtils.create( idB );
         assertTrue( "both must be bnodes", a.isBlank() && b.isBlank() );
-        assertEquals( BlankNodeId.create( idA ), a.getBlankNodeId() );
-        assertEquals( BlankNodeId.create( idB ), b.getBlankNodeId() );
+        assertEquals( NodeFactory.createBlankNode( idA ).getBlankNodeLabel(), a.getBlankNodeLabel() );
+        assertEquals( NodeFactory.createBlankNode( idB ).getBlankNodeLabel(), b.getBlankNodeLabel() );
     }
 
     public void testCreateVariable()
@@ -444,7 +446,7 @@ public class TestNode extends GraphTestBase
     public void testCreatePrefixed()
     {
         PrefixMapping pm = PrefixMapping.Factory.create();
-        /* TODO Node n = */ NodeCreateUtils.create( pm, "xyz" );
+        NodeCreateUtils.create( pm, "xyz" );
     }
 
     public void testToStringWithPrefixMapping()
@@ -472,7 +474,7 @@ public class TestNode extends GraphTestBase
             @Override
             public Object visitAny( Node_ANY it ) { return it; }
             @Override
-            public Object visitBlank( Node_Blank it, BlankNodeId id ) { return it; }
+            public Object visitBlank( Node_Blank it, String id ) { return it; }
             @Override
             public Object visitLiteral( Node_Literal it, String lex, String lang, RDFDatatype dtype) { return it; }
             @Override
@@ -524,8 +526,8 @@ public class TestNode extends GraphTestBase
             public Object visitAny( Node_ANY it )
             { return null; }
             @Override
-            public Object visitBlank( Node_Blank it, BlankNodeId id )
-            { assertTrue( it.getBlankNodeId() == id ); return null; }
+            public Object visitBlank( Node_Blank it, String label )
+            { assertTrue( it.getBlankNodeLabel() == label ); return null; }
             @Override
             public Object visitLiteral( Node_Literal it, String lex, String lang, RDFDatatype dtype) {
                 assertEquals(lex, it.getLiteralLexicalForm());
@@ -563,7 +565,7 @@ public class TestNode extends GraphTestBase
             public Object visitAny( Node_ANY it )
             { strings[0] += " any"; return null; }
             @Override
-            public Object visitBlank( Node_Blank it, BlankNodeId id )
+            public Object visitBlank( Node_Blank it, String id )
             { strings[0] += " blank"; return null; }
             @Override
             public Object visitLiteral( Node_Literal it, String lex, String lang, RDFDatatype dtype)
