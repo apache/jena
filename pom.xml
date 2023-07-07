@@ -208,6 +208,8 @@
          <!-- Binary distribution -->
          <!-- <module>apache-jena</module> -->
 
+         <module>jena-bom</module>
+
        </modules>
 
        <build>
@@ -283,6 +285,8 @@
 
          <!-- Slow building modules -->
          <module>jena-jdbc</module>
+
+         <module>jena-bom</module>
 
        </modules>
      </profile>
