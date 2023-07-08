@@ -32,7 +32,7 @@ public class RDFLangString extends BaseDatatype implements RDFDatatype {
     /** Singleton instance */
     // Include the string for the RDF namespace, not use RDF.getURI(), to avoid an initializer circularity
     public static final RDFDatatype rdfLangString = new RDFLangString("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString");
-    
+
     /**
      * Private constructor.
      */
@@ -41,19 +41,19 @@ public class RDFLangString extends BaseDatatype implements RDFDatatype {
     }
 
     /**
-     * Compares two instances of values of the given datatype. 
+     * Compares two instances of values of the given datatype.
      */
     @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
         return isEqualByTerm(value1, value2) ;
     }
-    
+
     // This covers the unusual case of "foo"^^"rdf:langString"
     // When there is a language tag, there is a lexcial form but it is in two parts lex@lang
     // This is not rdf:plainLiteral!
     @Override
     public Object parse(String lexicalForm) { return lexicalForm ; }
-    
+
     @Override
     public String unparse(Object value) { return value.toString(); }
 }

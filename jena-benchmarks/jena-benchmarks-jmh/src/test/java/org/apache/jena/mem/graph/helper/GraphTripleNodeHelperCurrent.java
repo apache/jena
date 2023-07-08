@@ -78,7 +78,7 @@ public class GraphTripleNodeHelperCurrent implements GraphTripleNodeHelper<Graph
     @Override
     public Node cloneNode(Node node) {
         if (node.isLiteral()) {
-            return NodeFactory.createLiteralByValue(node.getLiteralLexicalForm(), node.getLiteralLanguage(), node.getLiteralDatatype());
+            return NodeFactory.createLiteral(node.getLiteralLexicalForm(), node.getLiteralLanguage(), node.getLiteralDatatype());
         }
         if (node.isURI()) {
             return NodeFactory.createURI(node.getURI());

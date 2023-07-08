@@ -18,14 +18,20 @@
 
 package org.apache.jena.reasoner.rulesys;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.impl.* ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.reasoner.Finder ;
 import org.apache.jena.reasoner.IllegalParameterException ;
@@ -261,20 +267,16 @@ public class Util {
      * Construct a new integer valued node
      */
     public static Node makeIntNode(int value) {
-        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral( value );
-        @SuppressWarnings("deprecation")
-        Node n = NodeFactory.createLiteral(ll);
-        return n;
+        return NodeFactory.createLiteral(Integer.toString(value), XSDDatatype.XSDint);
     }
 
     /**
      * Construct a new long valued node
      */
     public static Node makeLongNode(long value) {
-        @SuppressWarnings("deprecation")
-        Node n = (value > Integer.MAX_VALUE)
-            ? NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral( value ))
-            : NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral( (int) value ));
+        Node n = (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE )
+            ? NodeFactory.createLiteral( Long.toString(value), XSDDatatype.XSDlong )
+            : makeIntNode( (int) value );
         return n;
     }
 
@@ -282,9 +284,7 @@ public class Util {
      * Construct a new double valued node
      */
     public static Node makeDoubleNode(double value) {
-        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral( value );
-        @SuppressWarnings("deprecation")
-        Node n = NodeFactory.createLiteral(ll);
+        Node n = NodeFactory.createLiteralByValue(value);
         return n;
     }
 
