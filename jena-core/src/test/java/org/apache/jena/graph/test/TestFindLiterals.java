@@ -21,75 +21,118 @@ package org.apache.jena.graph.test;
 import java.util.Set;
 
 import junit.framework.TestSuite;
-import org.apache.jena.JenaRuntime ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.LiteralLabelFactory ;
+import org.apache.jena.JenaRuntime;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
 
-public class TestFindLiterals extends GraphTestBase
-    {
+public class TestFindLiterals extends GraphTestBase {
     public TestFindLiterals( String name )
         { super( name ); }
 
-    public static TestFindLiterals aTest
-        ( final String graph, final int size, final String search, final String results )
-        {
-        return new TestFindLiterals
-            ( "TestFindLiterals: graph {" + graph
-            + "} size " + size
-            + " search " + search
-            + " expecting {" + results + "}" )
-            {
-            @Override
-            public void runBare()
-                {
-                Graph g = graphWith( graph );
-                Node literal = NodeCreateUtils.create( search );
-            //
-                assertEquals( "graph has wrong size", size, g.size() );
-                Set<Node> got = g.find( Node.ANY, Node.ANY, literal ).mapWith( t -> t.getObject() ).toSet();
-                assertEquals( nodeSet( results ), got );
-                }
-            };
-        }
 
-    public static TestSuite suite()
-        {
-        TestSuite result = new TestSuite( TestFindLiterals.class );
-    //
-        result.addTest( aTest( "a P 'simple'", 1, "'simple'", "'simple'" ) );
-        result.addTest( aTest( "a P 'simple'xsd:string", 1, "'simple'", "'simple'xsd:string" ) );
-        result.addTest( aTest( "a P 'simple'", 1, "'simple'xsd:string", "'simple'" ) );
-        result.addTest( aTest( "a P 'simple'xsd:string", 1, "'simple'xsd:string", "'simple'xsd:string" ) );
-    //
-        int expected = JenaRuntime.isRDF11 ? 1 : 2 ;
-        result.addTest( aTest( "a P 'simple'; a P 'simple'xsd:string", expected, "'simple'", "'simple' 'simple'xsd:string" ) );
-        result.addTest( aTest( "a P 'simple'; a P 'simple'xsd:string", expected, "'simple'xsd:string", "'simple' 'simple'xsd:string" ) );
-    //
-        result.addTest( aTest( "a P 1", 1, "1", "1" ) );
-        result.addTest( aTest( "a P '1'xsd:float", 1, "'1'xsd:float", "'1'xsd:float" ) );
-        result.addTest( aTest( "a P '1'xsd:double", 1, "'1'xsd:double", "'1'xsd:double" ) );
-        result.addTest( aTest( "a P '1'xsd:float", 1, "'1'xsd:float", "'1'xsd:float" ) );
-        result.addTest( aTest( "a P '1.1'xsd:float", 1, "'1'xsd:float", "" ) );
-        result.addTest( aTest( "a P '1'xsd:double", 1, "'1'xsd:int", "" ) );
-    //
-        result.addTest( aTest( "a P 'abc'rdf:XMLLiteral", 1, "'abc'", "" ) );
-        result.addTest( aTest( "a P 'abc'", 1, "'abc'rdf:XMLLiteral", "" ) );
+    public static junit.framework.Test suite() {
+        return new TestSuite(TestFindLiterals.class);
+    }
+
+    private void runTest(String graph, int size, String search, String results ) {
+        Graph g = graphWith( graph );
+        Node literal = NodeCreateUtils.create( search );
+        assertEquals( "graph has wrong size", size, g.size() );
+        Set<Node> got = g.find( Node.ANY, Node.ANY, literal ).mapWith( t -> t.getObject() ).toSet();
+        assertEquals( nodeSet( results ), got );
+    }
+
+    public void test01() {
+        runTest("a P 'simple'", 1, "'simple'", "'simple'");
+    }
+
+    public void test02() {
+        runTest("a P 'simple'xsd:string", 1, "'simple'", "'simple'xsd:string");
+    }
+
+    public void test03() {
+        runTest("a P 'simple'", 1, "'simple'xsd:string", "'simple'");
+    }
+
+    public void test04() {
+        runTest("a P 'simple'xsd:string", 1, "'simple'xsd:string", "'simple'xsd:string");
+    }
+
+    int expected = JenaRuntime.isRDF11 ? 1 : 2;
+    public void test05() {
+        runTest("a P 'simple'; a P 'simple'xsd:string", expected, "'simple'", "'simple' 'simple'xsd:string");
+    }
+
+    public void test06() {
+        runTest("a P 'simple'; a P 'simple'xsd:string", expected, "'simple'xsd:string", "'simple' 'simple'xsd:string");
+    }
+
+    public void test07() {
+        runTest("a P 1", 1, "1", "1");
+    }
+
+    public void test08() {
+        runTest("a P '1'xsd:float", 1, "'1'xsd:float", "'1'xsd:float");
+    }
+
+    public void test09() {
+        runTest("a P '1'xsd:double", 1, "'1'xsd:double", "'1'xsd:double");
+    }
+
+    public void test10() {
+        runTest("a P '1'xsd:float", 1, "'1'xsd:float", "'1'xsd:float");
+    }
+
+    public void test11() {
+        runTest("a P '1.1'xsd:float", 1, "'1'xsd:float", "");
+    }
+
+    public void test12() {
+        runTest("a P '1'xsd:double", 1, "'1'xsd:int", "");
+
+    }
+
+    public void test13() {
+        runTest("a P 'abc'rdf:XMLLiteral", 1, "'abc'", "");
+    }
+
+    public void test14() {
+        runTest("a P 'abc'", 1, "'abc'rdf:XMLLiteral", "");
+    }
+
     //
     // floats & doubles are not compatible
     //
-        result.addTest( aTest( "a P '1'xsd:float", 1, "'1'xsd:double", "" ) );
-        result.addTest( aTest( "a P '1'xsd:double", 1, "'1'xsd:float", "" ) );
-    //
-        result.addTest( aTest( "a P 1", 1, "'1'", "" ) );
-        result.addTest( aTest( "a P 1", 1, "'1'xsd:integer", "'1'xsd:integer" ) );
-        result.addTest( aTest( "a P 1", 1, "'1'", "" ) );
-        result.addTest( aTest( "a P '1'xsd:short", 1, "'1'xsd:integer", "'1'xsd:short" ) );
-        result.addTest( aTest( "a P '1'xsd:int", 1, "'1'xsd:integer", "'1'xsd:int" ) );
-        return result;
-        }
+    public void test15() {
+        runTest("a P '1'xsd:float", 1, "'1'xsd:double", "");
+    }
+
+    public void test16() {
+        runTest("a P '1'xsd:double", 1, "'1'xsd:float", "");
+    }
+
+    public void test17() {
+        runTest("a P 1", 1, "'1'", "");
+    }
+
+    public void test18() {
+        runTest("a P 1", 1, "'1'xsd:integer", "'1'xsd:integer");
+    }
+
+    public void test19() {
+        runTest("a P 1", 1, "'1'", "");
+    }
+
+    public void test20() {
+        runTest("a P '1'xsd:short", 1, "'1'xsd:integer", "'1'xsd:short");
+    }
+
+    public void test21() {
+        runTest("a P '1'xsd:int", 1, "'1'xsd:integer", "'1'xsd:int");
+    }
 
     public void testFloatVsDouble()
         {
