@@ -24,22 +24,21 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.apache.jena.datatypes.DatatypeFormatException;
-import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.datatypes.TypeMapper;
-import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.datatypes.xsd.XSDDateTime;
-import org.apache.jena.enhanced.BuiltinPersonalities;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.enhanced.Personality;
-import org.apache.jena.graph.*;
-import org.apache.jena.graph.impl.LiteralLabel;
-import org.apache.jena.graph.impl.LiteralLabelFactory;
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.shared.*;
-import org.apache.jena.shared.impl.PrefixMappingImpl;
-import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.util.CollectionFactory;
+import org.apache.jena.datatypes.DatatypeFormatException ;
+import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.datatypes.TypeMapper ;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.datatypes.xsd.XSDDateTime ;
+import org.apache.jena.enhanced.BuiltinPersonalities ;
+import org.apache.jena.enhanced.EnhGraph ;
+import org.apache.jena.enhanced.Personality ;
+import org.apache.jena.graph.* ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.shared.* ;
+import org.apache.jena.shared.impl.JenaParameters;
+import org.apache.jena.shared.impl.PrefixMappingImpl ;
+import org.apache.jena.sys.JenaSystem ;
+import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.iterator.ClosableIterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.FilterIterator;
@@ -608,8 +607,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
      * @return a new literal representing the value v
      */
     @Override
-    public Literal createTypedLiteral(String v) {
-        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(v);
+    public Literal createTypedLiteral(String v)  {
         return new LiteralImpl(NodeFactory.createLiteral(v), this);
     }
 
@@ -619,11 +617,8 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(Calendar cal) {
         Object value = new XSDDateTime(cal);
-        LiteralLabel ll = LiteralLabelFactory.createByValue(value, "", XSDDatatype.XSDdateTime);
-        @SuppressWarnings("deprecation")
-        Node n = NodeFactory.createLiteralByValue(value, "", XSDDatatype.XSDdateTime);
+        Node n = NodeFactory.createLiteralByValue(value, XSDDatatype.XSDdateTime);
         return new LiteralImpl(n, this);
-
     }
 
     /**
@@ -637,7 +632,15 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
      */
     @Override
     public Literal createTypedLiteral(String lex, RDFDatatype dtype) throws DatatypeFormatException {
-        return new LiteralImpl( NodeFactory.createLiteral( lex, dtype ), this);
+        Node n = NodeFactory.createLiteral( lex, dtype );
+        // Force value to be calculated if it was delayed.
+        // Check here as well because NodeFactory may change to be being "lazy value".
+        if ( JenaParameters.enableEagerLiteralValidation ) {
+            Object v = n.getLiteralValue();
+            if ( v == null )
+                throw new DatatypeFormatException("Bad lexical form '"+lex+"'for datatype: "+dtype);
+        }
+        return new LiteralImpl( n, this);
     }
 
     /**
@@ -648,9 +651,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
      */
     @Override
     public Literal createTypedLiteral(Object value, RDFDatatype dtype) {
-        LiteralLabel ll = LiteralLabelFactory.createByValue(value, "", dtype);
-        @SuppressWarnings("deprecation")
-        Node n = NodeFactory.createLiteral(ll);
+        Node n = NodeFactory.createLiteralByValue(value, dtype);
         return new LiteralImpl( n, this );
     }
 
@@ -664,11 +665,16 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
      * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
     @Override
-    public Literal createTypedLiteral(String lex, String typeURI)  {
+    public Literal createTypedLiteral(String lex, String typeURI) {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
-        LiteralLabel ll = LiteralLabelFactory.create( lex, dt );
-        @SuppressWarnings("deprecation")
-        Node n = NodeFactory.createLiteral(ll);
+        Node n = NodeFactory.createLiteral(lex, dt);
+        // Force value to be calculated if it was delayed.
+        // Check here as well because NodeFactory may change to be being "lazy value".
+        if ( JenaParameters.enableEagerLiteralValidation ) {
+            Object v = n.getLiteralValue();
+            if ( v == null )
+                throw new DatatypeFormatException("Bad lexical form '"+lex+"'for datatype: "+typeURI);
+        }
         return new LiteralImpl( n, this );
     }
 
@@ -681,9 +687,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(Object value, String typeURI) {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
-        LiteralLabel ll = LiteralLabelFactory.createByValue(value, "", dt);
-        @SuppressWarnings("deprecation")
-        Node n = NodeFactory.createLiteral(ll);
+        Node n = NodeFactory.createLiteralByValue(value, dt);
         return new LiteralImpl( n, this );
     }
 
@@ -694,13 +698,11 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
      * @param value the literal value to encapsulate
      */
     @Override
-    public Literal createTypedLiteral(Object value) {
+    public Literal createTypedLiteral( Object value ) {
         // Catch special case of a Calendar which we want to act as if it were an XSDDateTime
         if (value instanceof Calendar)
             return createTypedLiteral( (Calendar)value );
-        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral( value );
-        @SuppressWarnings("deprecation")
-        Node n = NodeFactory.createLiteral(ll);
+        Node n = NodeFactory.createLiteralByValue(value);
         return new LiteralImpl( n, this );
     }
 

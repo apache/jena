@@ -308,15 +308,9 @@ public interface ModelCon {
      * Build a typed literal from its lexical form. The
      * lexical form will be parsed now and the value stored. If
      * the form is not legal this will throw an exception.
-     * <p>
-     * Note that in preview releases of Jena2 it was also possible to specify
-     *   a language type. Changes to the RDF specification mean that this is no longer
-     *   legal except for plain literals. To create a plain literal with a language tag
-     *   use {@link Model#createLiteral(String, String) createLiteral}.
-     * </p>
      *
      * @param lex the lexical form of the literal
-     * @param typeURI the uri of the type of the literal, null for old style "plain" literals
+     * @param typeURI the uri of the type of the literal, null for xsd;string (RDF 1.1)
      * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
     public Literal createTypedLiteral(String lex, String typeURI)  ;

@@ -363,7 +363,7 @@ public class TestTypedLiterals extends TestCase {
         assertSameValueAs("Null type = plain literal", lPlain, lPlain2);
         assertSameValueAs("Null type = plain literal", lPlain, lPlain3);
         assertSameValueAs("Null type = plain literal", lPlain2, lPlain3);
-        assertTrue("null type", lPlain3.getDatatype() == null);
+        assertEquals("null type mean xsd:string", XSDDatatype.XSDstring, lPlain3.getDatatype());
         assertDiffer("String != int", lString, lInt);
         assertDiffer("Plain != int", lPlain, lInt);
         assertDiffer("Plain != int", lPlain2, lInt);
@@ -934,6 +934,9 @@ public class TestTypedLiterals extends TestCase {
     public void testBinary4() {
         Literal la = m.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
         Literal lb = m.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
+
+        la.sameValueAs(lb);
+
         assertTrue("equality test", la.sameValueAs(lb));
 
         data = new byte[] {15, (byte)0xB7};

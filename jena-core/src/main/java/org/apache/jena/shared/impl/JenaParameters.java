@@ -40,9 +40,8 @@ public class JenaParameters {
      * <p>
      * RDF does not require ill-formed typed literals to be rejected from a graph
      * but rather allows them to be included but marked as distinct from
-     * all legally formed typed literals. Jena2 reflects this by optionally
-     * delaying validation of literals against datatype type constraints until
-     * the first access. </p>
+     * all legally formed typed literals.
+     * </p>
      */
      public static boolean enableEagerLiteralValidation = false;
 
