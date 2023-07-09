@@ -1,3 +1,141 @@
+==== Apache Jena 4.9.0
+Released: 2023-07-08
+Issues: https://s.apache.org/jena-4.9.0-issues
+Announcement: 
+https://lists.apache.org/thread/vhn0olwcmv755np52qqddn74d5hrnot8
+
+In this release:
+
+* New in-memory graph implementations
+
+* Important update to Fuseki UI.
+   Switch from TriplyDB/(yasr,yasqe) to zazuko/(yasr,yasqe)
+   This changes picks up some security fixes in yasr and
+   Fuseki users are advised to upgrade to get these fixes.
+
+* Prepare for Jena5:
+   Deprecate JSON-LD 1.0 constants
+   Deprecate API calls that may be removed.
+
+== Notes
+
+All issues: https://s.apache.org/jena-4.9.0-issues
+
+There is a CHANGES.txt in the root of the repository
+with the history of previous announcement messages.
+
+== Jena5
+
+Plans for jena5 include:
+* Require Java17
+* Move from javvax.servlet.* to jakara.servlet.* (Jetty11)
+* Drop JSON-LD 1.0 subsystem.
+
+It will not happen until after Java21 is released in
+keeping with the policy of supporting two java versions.
+
+Jena 4.9.0 is built for a minimum of Java11.
+It has been tested on Java17 and Java21 EA.
+
+==== Items in this release
+
+Arne Berdhardt
+https://github.com/apache/jena/issues/1912
+New implementations of in-memory graphs with better storage and performance.
+
+See the issue for performance details.
+
+See GraphMemFactory for access to these new graph implementations.
+
+Arne has also provided a performance analysis and improvements for the 
+existing default in-memory graphs together with a benchmarking framework
+   https://github.com/apache/jena/pull/1279
+
+-- 
+
+Switch from TriplyDB/(yasr,yasqe) to zazuko/(yasr,yasqe)
+to pick up fixes.
+Thank you Zazuko!
+
+This changes picks up some security fixes in yasr and users are advised 
+to upgrade to get these fixes.
+
+-- 
+
+SERVICE on/off control
+https://github.com/apache/jena/pull/1906
+
+Provide the ability to switch off all SERVICE processing completely.
+Use
+   Code: arq:httpServiceAllowed
+   or http://jena.apache.org/ARQ#httpServiceAllowed=false
+to disable.
+
+e.g.
+   fuseki-server --set arq:httpServiceAllowed=false ....
+
+-- 
+
+Additional restrictions and control for SPARQL script functions
+   https://github.com/apache/jena/pull/1908
+
+There is a new Jena context setting
+   http://jena.apache.org/ARQ#scriptAllowList
+which is on the command line:
+   arq:scriptAllowList
+and java constant
+   ARQ.symCustomFunctionScriptAllowList
+
+Its value is a comma separated list of function names.
+   "function1,function2"
+Only the functions in this can be called from SPARQL.
+
+As in Jena 4.8.0, the Java system property "jena:scripting" must also be 
+set to "true" to enable script functions.
+   Website (when published):
+   https://jena.apache.org/documentation/query/javascript-functions
+
+-- 
+
+Track RDF 1.2 and SPARQL 1.2
+Specific SPARQL 1.2 parser, tracking the RDF-star working group.
+   All features are also available in the default SPARQL parser.
+
+-- 
+
+Ryan Shaw(@rybesh)
+   new Turtle RDFFormat
+   https://github.com/apache/jena/issues/1924
+
+-- 
+
+Simon Bin (@SimonBin)
+   A fix for incorrect integer cast in scripting.NV
+   https://github.com/apache/jena/pull/1851
+
+-- 
+
+Alexander Ilin-Tomich (@ailintom)
+   Fix for SPARQL_Update verification and /HTTP PATCH
+
+-- 
+
+Ryan Shaw (@rybesh)
+   Script fix for additional classpath elements
+   https://github.com/apache/jena/pull/1877
+
+-- 
+
+FusekiModules:
+Issue: https://github.com/apache/jena/issues/1897
+
+There is a change in that the interface for automatically loading 
+modules from the classpath has changed to FusekiAutoModule. The 
+interface FusekiModule is now the configuration lifecycle only. This is 
+to allow for programmatically set up a Fuskei server with Fuseki 
+modules, including custom one from the calling application.
+
+
 ==== Apache Jena 4.8.0
 Released: 2023-04-23
 Issues: https://s.apache.org/jena-4.8.0-issues
