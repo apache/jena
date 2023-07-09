@@ -41,7 +41,7 @@ public class StreamRDFToConnection implements StreamRDF {
 	private RDFConnection connection;
 	private int bufferSize = 1000;
 	private Set<Quad> quads = new HashSet<Quad>();
-	private Model model = ModelFactory.createMemModelMaker().createFreshModel();
+	private Model model = ModelFactory.createDefaultModel();
 
 	/**
 	 * Constructs the StreamRDFToConnection using default 1000 quad buffer size.

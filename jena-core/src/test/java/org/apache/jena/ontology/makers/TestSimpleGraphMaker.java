@@ -16,39 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.graph.impl;
+package org.apache.jena.ontology.makers;
 
-import org.junit.runner.RunWith;
-import org.xenei.junit.contract.Contract;
-import org.xenei.junit.contract.ContractImpl;
-import org.xenei.junit.contract.ContractSuite;
-import org.xenei.junit.contract.IProducer;
+import org.apache.jena.graph.test.AbstractTestGraphMaker;
+import org.apache.jena.ontology.models.GraphMaker;
+import org.apache.jena.ontology.models.SimpleGraphMaker;
 
-@RunWith(ContractSuite.class)
-@ContractImpl(SimpleGraphMaker.class)
-public class SimpleGraphMaker_CS {
-	 
-	protected IProducer<SimpleGraphMaker> graphProducer;
-	
-	public SimpleGraphMaker_CS() {
-		graphProducer = new IProducer<SimpleGraphMaker>() {
-			
-			@Override
-			public SimpleGraphMaker newInstance() {
-				return new SimpleGraphMaker();
-			}
+/**
+    Test the SimpleGraphFactory by extending AbstractTestGraphFactory
+    and supplying new SimplGraphFactorys via getGraph.
+*/
+public class TestSimpleGraphMaker extends AbstractTestGraphMaker
+    {
+    public TestSimpleGraphMaker( String name )
+        { super( name ); }
 
-			@Override
-			public void cleanUp() {
-				// nothing to do
-			}
-
-		};
-	}
-
-	@Contract.Inject
-	public final IProducer<SimpleGraphMaker> getCollectionTestProducer() {
-		return graphProducer;
-	}
-
-}
+    @Override
+    public GraphMaker getGraphMaker()
+        { return new SimpleGraphMaker(); }
+    }

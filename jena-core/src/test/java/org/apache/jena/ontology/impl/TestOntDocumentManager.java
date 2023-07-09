@@ -28,11 +28,12 @@ import java.util.*;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.graph.impl.SimpleGraphMaker ;
 import org.apache.jena.ontology.* ;
 import org.apache.jena.ontology.OntDocumentManager.ReadFailureHandler ;
+import org.apache.jena.ontology.models.ModelMaker;
+import org.apache.jena.ontology.models.ModelMakerImpl;
+import org.apache.jena.ontology.models.SimpleGraphMaker;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.impl.ModelMakerImpl ;
 import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
 import org.apache.jena.reasoner.test.TestUtil ;
 import org.apache.jena.test.X_RDFReaderF;
