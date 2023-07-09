@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.graph.impl;
+package org.apache.jena.ontology.models;
 
 import org.apache.jena.graph.* ;
 import org.apache.jena.shared.* ;
@@ -62,7 +62,7 @@ public abstract class BaseGraphMaker implements GraphMaker
          
      /**
         A non-strict create.
-      	@see org.apache.jena.graph.GraphMaker#createGraph(java.lang.String)
+      	@see org.apache.jena.ontology.models.GraphMaker#createGraph(java.lang.String)
       */
     @Override
     public Graph createGraph(String name)
@@ -70,7 +70,7 @@ public abstract class BaseGraphMaker implements GraphMaker
         
     /**
         A non-strict open.
-     	@see org.apache.jena.graph.GraphMaker#openGraph(java.lang.String)
+     	@see org.apache.jena.ontology.models.GraphMaker#openGraph(java.lang.String)
      */
     @Override
     public Graph openGraph( String name )

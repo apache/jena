@@ -38,6 +38,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.compose.MultiUnion ;
 import org.apache.jena.ontology.* ;
+import org.apache.jena.ontology.models.ModelMaker;
 import org.apache.jena.rdf.listeners.StatementListener ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.IteratorFactory ;

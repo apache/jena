@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.graph.impl;
+package org.apache.jena.ontology.models;
 
 import java.util.*;
 

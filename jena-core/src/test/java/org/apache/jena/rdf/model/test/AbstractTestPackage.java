@@ -104,7 +104,6 @@ public abstract class AbstractTestPackage extends TestSuite
 				Lock.WRITE, Lock.READ, false);
 
 		addTest(TestConcurrencyParallel.class, modelFactory);
-		addTest(TestModelMakerImpl.class);
 		addTest(TestContainers.class, modelFactory);
 		addTest(TestModel.class, modelFactory);
 		addTest(TestModelSetOperations.class, modelFactory);

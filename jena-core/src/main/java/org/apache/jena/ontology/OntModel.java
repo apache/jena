@@ -29,6 +29,7 @@ import java.util.List ;
 import java.util.Set ;
 
 import org.apache.jena.graph.Graph ;
+import org.apache.jena.ontology.models.ModelMaker;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 

@@ -25,6 +25,8 @@ package org.apache.jena.ontology;
 
 import org.apache.jena.assembler.* ;
 import org.apache.jena.ontology.impl.OntModelImpl ;
+import org.apache.jena.ontology.models.ModelGetter;
+import org.apache.jena.ontology.models.ModelMaker;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.ReasonerFactory ;
