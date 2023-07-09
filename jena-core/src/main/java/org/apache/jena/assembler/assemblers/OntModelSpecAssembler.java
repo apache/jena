@@ -23,6 +23,7 @@ import java.lang.reflect.*;
 import org.apache.jena.assembler.* ;
 import org.apache.jena.assembler.exceptions.ReasonerClashException ;
 import org.apache.jena.ontology.* ;
+import org.apache.jena.ontology.models.ModelGetter;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.reasoner.ReasonerFactory ;
 import org.apache.jena.shared.NotFoundException ;

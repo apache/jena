@@ -16,7 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf.model;
+package org.apache.jena.ontology.models;
+
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelReader;
 
 /**
     A ModelGetter object can retrieve a Model given a URL for it. If it doesn't

@@ -25,7 +25,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
-
+import org.apache.jena.ontology.models.GraphMaker;
 import org.apache.jena.shared.AlreadyExistsException;
 import org.apache.jena.shared.DoesNotExistException;
 import org.apache.jena.testing_framework.GraphHelper;

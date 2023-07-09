@@ -21,8 +21,8 @@ package org.apache.jena.assembler.test;
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.JA ;
 import org.apache.jena.assembler.assemblers.ModelSourceAssembler ;
-import org.apache.jena.rdf.model.ModelGetter ;
-import org.apache.jena.rdf.model.impl.MemoryModelGetter ;
+import org.apache.jena.ontology.models.MemoryModelGetter;
+import org.apache.jena.ontology.models.ModelGetter;
 
 public class TestModelSourceAssembler extends AssemblerTestBase
     {

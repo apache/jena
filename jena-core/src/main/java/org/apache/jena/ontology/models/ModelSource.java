@@ -16,7 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf.model;
+package org.apache.jena.ontology.models;
+
+import org.apache.jena.rdf.model.Model;
 
 /**
     The revised and soon-to-be-core interface for sources of models,

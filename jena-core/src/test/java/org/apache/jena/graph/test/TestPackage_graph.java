@@ -48,7 +48,6 @@ public class TestPackage_graph extends TestSuite {
         addTest( TestFactory.suite() );
         addTest( TestGraph.suite() );
         addTest( new JUnit4TestAdapter(TestGraphPlain.class) );
-        addTest( TestSimpleGraphMaker.suite() );
         addTest( TestGraphUtils.suite() );
         addTest( TestGraphPrefixMapping.suite() );
         addTest( TestGraphMatchWithInference.suite());

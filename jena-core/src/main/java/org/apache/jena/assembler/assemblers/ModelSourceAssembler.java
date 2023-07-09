@@ -19,8 +19,8 @@
 package org.apache.jena.assembler.assemblers;
 
 import org.apache.jena.assembler.* ;
+import org.apache.jena.ontology.models.MemoryModelGetter;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.impl.MemoryModelGetter ;
 
 public class ModelSourceAssembler extends AssemblerBase
     {

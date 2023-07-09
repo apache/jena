@@ -16,25 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.graph.test;
+package org.apache.jena.ontology.makers;
 
-import junit.framework.*;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.impl.* ;
+import junit.framework.TestSuite;
 
-/**
-    Test the SimpleGraphFactory by extending AbstractTestGraphFactory
-    and supplying new SimplGraphFactorys via getGraph.
-*/
-public class TestSimpleGraphMaker extends AbstractTestGraphMaker
-    {
-    public TestSimpleGraphMaker( String name )
-        { super( name ); }
+public class TestPackage_ModelMakers extends TestSuite {
 
-    public static TestSuite suite()
-        { return new TestSuite( TestSimpleGraphMaker.class ); }
-    
-    @Override
-    public GraphMaker getGraphMaker()
-        { return new SimpleGraphMaker(); }    
+    public static TestSuite suite() {
+        TestSuite result = new TestSuite();
+        result.addTestSuite(TestSimpleGraphMaker.class);
+        result.addTestSuite(TestModelMakerImpl.class);
+        return result;
     }
+
+}
