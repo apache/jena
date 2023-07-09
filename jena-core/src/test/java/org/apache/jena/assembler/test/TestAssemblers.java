@@ -26,7 +26,7 @@ public class TestAssemblers extends AssemblerTestBase
     {
     public TestAssemblers( String name )
         { super( name ); }
-    
+
     public static TestSuite suite()
         {
         TestSuite result = new TestSuite( TestAssemblers.class );
@@ -46,15 +46,12 @@ public class TestAssemblers extends AssemblerTestBase
         result.addTestSuite( TestPrefixMappingAssembler.class );
         result.addTestSuite( TestBuiltinAssemblerGroup.class );
         result.addTestSuite( TestModelAssembler.class );
-        result.addTestSuite( TestModelSourceAssembler.class );
-        result.addTestSuite( TestLocationMapperAssembler.class );
-        result.addTestSuite( TestFileManagerAssembler.class );
         result.addTestSuite( TestDocumentManagerAssembler.class );
         result.addTest( TestOntModelSpecAssembler.suite() );
         result.addTest( TestOntModelAssembler.suite() );
         return result;
         }
-    
+
     public void testToSilenceJUnit() {}
 
     @Override protected Class<? extends Assembler> getAssemblerClass()
