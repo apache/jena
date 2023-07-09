@@ -27,10 +27,10 @@ import org.apache.jena.graph.impl.LiteralLabel ;
  * can inherit.
  */
 public class BaseDatatype implements RDFDatatype {
-    
+
     /** The URI label for this data type */
     protected String uri;
-    
+
     /**
      * Constructor.
      * @param uri the URI label to use for this datatype
@@ -38,7 +38,7 @@ public class BaseDatatype implements RDFDatatype {
     public BaseDatatype(String uri) {
         this.uri = uri;
     }
-    
+
     /**
      * Return the URI which is the label for this datatype
      */
@@ -46,52 +46,52 @@ public class BaseDatatype implements RDFDatatype {
     public String getURI() {
         return uri;
     }
-    
+
     /**
-     * Pair object used to encode both lexical form 
+     * Pair object used to encode both lexical form
      * and datatype for a typed literal with unknown
      * datatype.
      */
     public static class TypedValue {
         public final String lexicalValue;
         public final String datatypeURI;
-        
+
         public TypedValue(String lexicalValue, String datatypeURI) {
             this.lexicalValue = lexicalValue;
             this.datatypeURI = datatypeURI;
         }
-        
+
         @Override
         public boolean equals(Object other) {
             if (other instanceof TypedValue) {
-                return lexicalValue.equals(((TypedValue)other).lexicalValue) 
+                return lexicalValue.equals(((TypedValue)other).lexicalValue)
                          && datatypeURI.equals(((TypedValue)other).datatypeURI);
             } else {
                 return false;
             }
         }
-        
+
         @Override
         public int hashCode() {
             return lexicalValue.hashCode() ^ datatypeURI.hashCode();
         }
-        
+
     }
-    
+
     /**
      * Convert a value of this datatype out
      * to lexical form.
      */
     @Override
     public String unparse(Object value) {
-        // Default implementation expects a parsed TypedValue but will 
+        // Default implementation expects a parsed TypedValue but will
         // accept a pure lexical form
         if (value instanceof TypedValue) {
             return ((TypedValue)value).lexicalValue;
-        } 
+        }
         return value.toString();
     }
-    
+
     /**
      * Parse a lexical form of this datatype to a value
      * @throws DatatypeFormatException if the lexical form is not legal
@@ -100,7 +100,7 @@ public class BaseDatatype implements RDFDatatype {
     public Object parse(String lexicalForm) throws DatatypeFormatException {
         return new TypedValue(lexicalForm, getURI());
     }
-    
+
     /**
      * Test whether the given string is a legal lexical form
      * of this datatype.
@@ -113,8 +113,8 @@ public class BaseDatatype implements RDFDatatype {
         } catch (DatatypeFormatException e) {
             return false;
         }
-    }    
-    
+    }
+
     /**
      * Test whether the given LiteralLabel is a valid instance
      * of this datatype. This takes into account typing information
@@ -127,7 +127,7 @@ public class BaseDatatype implements RDFDatatype {
         // default is that only literals with the same type are valid
         return equals(lit.getDatatype());
     }
-     
+
     /**
      * Test whether the given object is a legal value form
      * of this datatype.
@@ -137,7 +137,7 @@ public class BaseDatatype implements RDFDatatype {
         // Default to brute force
         return isValid(unparse(valueForm));
     }
-    
+
     /**
      * Compares two instances of values of the given datatype.
      * This default requires value and datatype equality.
@@ -146,18 +146,17 @@ public class BaseDatatype implements RDFDatatype {
     public boolean isEqual(LiteralLabel litLabel1, LiteralLabel litLabel2) {
         return isEqualPlain(litLabel1, litLabel2) ;
     }
-    
-    /** The default for equality - same datatype, same value */ 
+
+    /** The default for equality - same datatype, same value */
     protected static boolean isEqualPlain(LiteralLabel litLabel1, LiteralLabel litLabel2) {
         return litLabel1.getDatatype() == litLabel2.getDatatype()
         && litLabel1.getValue().equals(litLabel2.getValue());
-    }   
-    
-    
-    /** 
-     * Equality for datatypes based solely on lexical form, 
-     * i.e. there value space is equivalent to their lexical space. 
-     */  
+    }
+
+    /**
+     * Equality for datatypes based solely on lexical form, datatype and any language tag.
+     * i.e. there value space is equivalent to their lexical space.
+     */
     protected static boolean isEqualByTerm(LiteralLabel value1, LiteralLabel value2) {
         if ( value2 == null && value1 == null )
             return true ;
@@ -168,9 +167,9 @@ public class BaseDatatype implements RDFDatatype {
         return
             Objects.equals(value1.getLexicalForm(), value2.getLexicalForm()) &&
             Objects.equals(value1.getDatatype(), value2.getDatatype()) &&
-            Objects.equals(value1.language(), value2.language()) ;  
+            Objects.equals(value1.language(), value2.language()) ;
     }
-    
+
     /**
          Default implementation of getHashCode() delegates to the default from
          the literal label.
@@ -179,7 +178,7 @@ public class BaseDatatype implements RDFDatatype {
     public int getHashCode( LiteralLabel lit ) {
         return lit.getDefaultHashcode();
         }
-    
+
     /**
      * Helper function to compare language tag values
      */
@@ -190,7 +189,7 @@ public class BaseDatatype implements RDFDatatype {
             return value1.language().equalsIgnoreCase(value2.language());
         }
     }
-    
+
     /**
      * Returns the java class which is used to represent value
      * instances of this datatype.
@@ -199,33 +198,33 @@ public class BaseDatatype implements RDFDatatype {
     public Class<?> getJavaClass() {
         return null;
     }
-    
+
     /**
      * Cannonicalise a java Object value to a normal form.
      * Primarily used in cases such as xsd:integer to reduce
      * the Java object representation to the narrowest of the Number
-     * subclasses to ensure that indexing of typed literals works. 
+     * subclasses to ensure that indexing of typed literals works.
      */
     @Override
     public Object cannonicalise( Object value ) {
         return value;
     }
-    
+
     /**
      * Returns an object giving more details on the datatype.
      * This is type system dependent. In the case of XSD types
-     * this will be an instance of 
+     * this will be an instance of
      * <code>org.apache.xerces.impl.xs.psvi.XSTypeDefinition</code>.
      */
     @Override
     public Object extendedTypeDefinition() {
         return null;
     }
-    
+
     /**
      * Normalization. If the value is narrower than the current data type
      * (e.g. value is xsd:date but the time is xsd:datetime) returns
-     * the narrower type for the literal. 
+     * the narrower type for the literal.
      * If the type is narrower than the value then it may normalize
      * the value (e.g. set the mask of an XSDDateTime)
      * Currently only used to narrow gener XSDDateTime objects
@@ -238,7 +237,7 @@ public class BaseDatatype implements RDFDatatype {
     public RDFDatatype normalizeSubType(Object value, RDFDatatype dt) {
         return this; // default is no narrowing
     }
-    
+
     /**
      * Display format
      */
