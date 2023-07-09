@@ -34,23 +34,20 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
     public void testGeneralRegistration()
         {
         assertAssemblerClass( JA.DefaultModel, DefaultModelAssembler.class );
-        assertAssemblerClass( JA.PrefixMapping, PrefixMappingAssembler.class );      
-        assertAssemblerClass( JA.SinglePrefixMapping, PrefixMappingAssembler.class );      
-        assertAssemblerClass( JA.OntModel, OntModelAssembler.class );       
-        assertAssemblerClass( JA.OntModelSpec, OntModelSpecAssembler.class );     
-        assertAssemblerClass( JA.Content, ContentAssembler.class );         
-        assertAssemblerClass( JA.ContentItem, ContentAssembler.class );       
-        assertAssemblerClass( JA.ReasonerFactory, ReasonerFactoryAssembler.class );  
-        assertAssemblerClass( JA.InfModel, InfModelAssembler.class );       
-        assertAssemblerClass( JA.MemoryModel, MemoryModelAssembler.class );       
+        assertAssemblerClass( JA.PrefixMapping, PrefixMappingAssembler.class );
+        assertAssemblerClass( JA.SinglePrefixMapping, PrefixMappingAssembler.class );
+        assertAssemblerClass( JA.OntModel, OntModelAssembler.class );
+        assertAssemblerClass( JA.OntModelSpec, OntModelSpecAssembler.class );
+        assertAssemblerClass( JA.Content, ContentAssembler.class );
+        assertAssemblerClass( JA.ContentItem, ContentAssembler.class );
+        assertAssemblerClass( JA.ReasonerFactory, ReasonerFactoryAssembler.class );
+        assertAssemblerClass( JA.InfModel, InfModelAssembler.class );
+        assertAssemblerClass( JA.MemoryModel, MemoryModelAssembler.class );
         assertAssemblerClass( JA.RuleSet, RuleSetAssembler.class );
-        assertAssemblerClass( JA.LocationMapper, LocationMapperAssembler.class );
-        assertAssemblerClass( JA.FileManager, FileManagerAssembler.class );
         assertAssemblerClass( JA.DocumentManager, DocumentManagerAssembler.class );
         assertAssemblerClass( JA.UnionModel, UnionModelAssembler.class );
-        assertAssemblerClass( JA.ModelSource, ModelSourceAssembler.class );
         }
-    
+
     public void testVariables()
         {
         assertInstanceOf( DefaultModelAssembler.class, Assembler.defaultModel );
@@ -62,19 +59,17 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         assertInstanceOf( InfModelAssembler.class, Assembler.infModel );
         assertInstanceOf( MemoryModelAssembler.class, Assembler.memoryModel );
         assertInstanceOf( RuleSetAssembler.class, Assembler.ruleSet );
-        assertInstanceOf( LocationMapperAssembler.class, Assembler.locationMapper );
-        assertInstanceOf( FileManagerAssembler.class, Assembler.fileManager );
         assertInstanceOf( DocumentManagerAssembler.class, Assembler.documentManager );
         assertInstanceOf( UnionModelAssembler.class, Assembler.unionModel );
         }
-    
+
     public void testRecognisesAndAssemblesSinglePrefixMapping()
         {
         PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix( "P", "spoo:/" );
         Resource r = resourceInModel( "x ja:prefix 'P'; x ja:namespace 'spoo:/'" );
         assertEquals( wanted, Assembler.general.open( r ) );
         }
-    
+
     public void testRecognisesAndAssemblesMultiplePrefixMappings()
         {
         PrefixMapping wanted = PrefixMapping.Factory.create()
@@ -91,7 +86,7 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         else
             fail( "expected " + wanted + " but was: " + got );
         }
-    
+
     private void assertAssemblerClass( Resource type, Class<?> C )
         {
         assertInstanceOf( C, Assembler.general.assemblerFor( type ) );
