@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.graph;
+package org.apache.jena.ontology.makers;
 
 import static org.junit.Assert.*;
 import java.util.Set;
@@ -25,6 +25,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontology.models.GraphMaker;
 import org.apache.jena.shared.AlreadyExistsException;
 import org.apache.jena.shared.DoesNotExistException;
