@@ -54,6 +54,7 @@ public class TestPackage extends TestCase {
         addTest(ts,  "Shared", org.apache.jena.shared.TestSharedPackage.suite() );
         addTest(ts,  "Composed graphs", org.apache.jena.graph.compose.test.TestPackage_compose.suite() );
         addTest(ts,  "Reasoners", org.apache.jena.reasoner.test.TestPackage_reasoners.suite());
+        addTest(ts,  "Ontology ModelMaker", org.apache.jena.ontology.makers.TestPackage_ModelMakers.suite() );
         addTest(ts,  "Ontology", org.apache.jena.ontology.impl.TestPackage_ont.suite() );
 
         // ARP, with jena-iri

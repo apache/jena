@@ -27,6 +27,7 @@ import java.io.InputStream ;
 import java.util.* ;
 
 import org.apache.jena.ontology.impl.OntResolve;
+import org.apache.jena.ontology.models.ModelMaker;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;

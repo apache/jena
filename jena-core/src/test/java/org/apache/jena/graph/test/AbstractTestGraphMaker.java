@@ -21,9 +21,9 @@ package org.apache.jena.graph.test;
 import java.util.Set;
 
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.GraphMaker ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.ontology.models.GraphMaker;
 import org.apache.jena.shared.AlreadyExistsException ;
 import org.apache.jena.shared.DoesNotExistException ;
 

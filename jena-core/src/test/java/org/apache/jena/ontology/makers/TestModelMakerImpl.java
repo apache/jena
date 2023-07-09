@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf.model.test;
+package org.apache.jena.ontology.makers;
 
 import java.util.ArrayList ;
 import java.util.List ;
 
 import junit.framework.TestCase ;
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.GraphMaker ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.test.GraphTestBase ;
+import org.apache.jena.ontology.models.GraphMaker;
+import org.apache.jena.ontology.models.ModelMaker;
+import org.apache.jena.ontology.models.ModelMakerImpl;
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelMaker ;
-import org.apache.jena.rdf.model.impl.ModelMakerImpl ;
 import org.apache.jena.test.JenaTestBase ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NullIterator ;

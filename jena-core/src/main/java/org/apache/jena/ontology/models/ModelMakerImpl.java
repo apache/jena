@@ -16,10 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf.model.impl;
+package org.apache.jena.ontology.models;
 
 import org.apache.jena.graph.* ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.impl.ModelCom;
 import org.apache.jena.util.iterator.* ;
 
 /**
