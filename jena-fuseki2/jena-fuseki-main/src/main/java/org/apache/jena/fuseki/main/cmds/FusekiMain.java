@@ -90,6 +90,10 @@ public class FusekiMain extends CmdARQ {
 
     private static ArgDecl  argJettyConfig  = new ArgDecl(ArgDecl.HasValue, "jetty-config", "jetty");
     private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
+    // Set the servlet context path (the initial path for URLs.) for any datasets.
+    // A context of "/path" and a dataset name of "/ds", service "sparql" is accessed as "/path/ds/sparql"
+    private static ArgDecl  argPathBase     = new ArgDecl(ArgDecl.HasValue, "pathBase", "contextPath");
+    // Static files. URLs are affected by argPathBase
     private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
 
     // This is now a no-op - CORS is included unless "--no-cors" is used.
@@ -207,6 +211,8 @@ public class FusekiMain extends CmdARQ {
             "Enable GZip compression (HTTP Accept-Encoding) if request header set");
         add(argBase, "--base=DIR",
             "Directory for static content");
+        add(argPathBase, "--pathBase=DIR",
+            "Context path for datasets");
         add(argSparqler, "--sparqler=DIR",
             "Run with SPARQLer services Directory for static content");
         add(argValidators, "--validators",
@@ -442,6 +448,15 @@ public class FusekiMain extends CmdARQ {
 
         // -- Server setup.
 
+        if ( contains(argPathBase) ) {
+            // Static files.
+            String servletContextPath = getValue(argPathBase);
+
+            if ( servletContextPath.endsWith("/") )
+                throw new CmdException("Path base must not end with \"/\": "+argPathBase);
+            serverConfig.servletContextPath = servletContextPath;
+        }
+
         if ( contains(argBase) ) {
             // Static files.
             String filebase = getValue(argBase);
@@ -615,6 +630,9 @@ public class FusekiMain extends CmdARQ {
 
         if ( serverConfig.fusekiModules != null )
             builder.fusekiModules(serverConfig.fusekiModules);
+
+        if ( serverConfig.servletContextPath != null )
+            builder.contextPath(serverConfig.servletContextPath);
 
         if ( serverConfig.contentDirectory != null )
             builder.staticFileBase(serverConfig.contentDirectory);

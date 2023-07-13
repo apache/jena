@@ -489,8 +489,10 @@ public class FusekiServer {
             return this;
         }
 
-        /** Context path to Fuseki.  If it's "/" then Fuseki URL look like
+        /**
+         * Context path to Fuseki.  If it's "/" then Fuseki URL look like
          * "http://host:port/dataset/query" else "http://host:port/path/dataset/query"
+         * The default is "/".
          */
         public Builder contextPath(String path) {
             requireNonNull(path, "path");
@@ -507,6 +509,8 @@ public class FusekiServer {
         /** Set the location (filing system directory) to serve static files from. */
         public Builder staticFileBase(String directory) {
             requireNonNull(directory, "directory");
+            if ( ! FileOps.exists(directory) )
+                Fuseki.configLog.warn("File area not found: "+directory);
             this.staticContentDir = directory;
             return this;
         }

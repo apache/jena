@@ -36,7 +36,7 @@ public class ModuleForTest implements FusekiModule {
 
     public ModuleForTest() {}
 
-    private String modName = UUID.randomUUID().toString();
+    private String modName = "ModuleForTest-"+UUID.randomUUID().toString();
 
     @Override
     public String name() {

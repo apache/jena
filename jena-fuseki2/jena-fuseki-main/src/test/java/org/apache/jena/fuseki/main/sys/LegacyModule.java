@@ -22,7 +22,6 @@ package org.apache.jena.fuseki.main.sys;
 public class LegacyModule implements FusekiModule {
 
     public LegacyModule() {
-
     }
 
     @Override

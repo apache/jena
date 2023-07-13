@@ -33,6 +33,8 @@ public class ModuleByServiceLoader extends ModuleForTest implements FusekiAutoMo
     public static AtomicInteger countStart = new AtomicInteger(0);
     public static AtomicInteger countLoads = new AtomicInteger(0);
 
+    private String modName = "ModuleByServiceLoader-"+UUID.randomUUID().toString();
+
     // Must be public for the system-wide loader to create.
     public ModuleByServiceLoader() {
         countLoads.getAndIncrement();
@@ -48,21 +50,10 @@ public class ModuleByServiceLoader extends ModuleForTest implements FusekiAutoMo
         countLoads.set(0);
     }
 
-    private String modName = UUID.randomUUID().toString();
-
     @Override
     public String name() {
         return modName;
     }
-
-//    public void clearLifecycle() {
-//        // Not countStart.
-//        countConfiguration.set(0);
-//        countPrepared.set(0);
-//        countServer.set(0);
-//        countServerBeforeStarting.set(0);
-//        countServerAfterStarting.set(0);
-//    }
 
     @Override
     public void start() {
