@@ -76,16 +76,16 @@ public class Operation {
         return new Operation(id, shortName, shortName.toLowerCase(Locale.ROOT), description);
     }
 
-    public static final Operation Query    = alloc(FusekiVocab.opQuery.asNode(),  "query",  "SPARQL Query");
-    public static final Operation Update   = alloc(FusekiVocab.opUpdate.asNode(), "update", "SPARQL Update");
-    public static final Operation GSP_R    = alloc(FusekiVocab.opGSP_r.asNode(),  "gsp-r",  "Graph Store Protocol (Read)");
-    public static final Operation GSP_RW   = alloc(FusekiVocab.opGSP_rw.asNode(), "gsp-rw", "Graph Store Protocol");
+    public static final Operation Query    = alloc(FusekiVocab.opQuery.asNode(),   "query",   "SPARQL Query");
+    public static final Operation Update   = alloc(FusekiVocab.opUpdate.asNode(),  "update",  "SPARQL Update");
+    public static final Operation GSP_R    = alloc(FusekiVocab.opGSP_r.asNode(),   "gsp-r",   "Graph Store Protocol (Read)");
+    public static final Operation GSP_RW   = alloc(FusekiVocab.opGSP_rw.asNode(),  "gsp-rw",  "Graph Store Protocol");
 
-    public static final Operation Shacl    = alloc(FusekiVocab.opShacl.asNode(),  "SHACL",  "SHACL Validation");
-    public static final Operation Upload   = alloc(FusekiVocab.opUpload.asNode(), "upload", "File Upload");
-    public static final Operation Patch    = alloc(FusekiVocab.opPatch.asNode(),  "patch", "RDF Patch");
+    public static final Operation Shacl    = alloc(FusekiVocab.opShacl.asNode(),   "SHACL",   "SHACL Validation");
+    public static final Operation Upload   = alloc(FusekiVocab.opUpload.asNode(),  "upload",  "File Upload");
+    public static final Operation Patch    = alloc(FusekiVocab.opPatch.asNode(),   "patch",   "RDF Patch");
 
-    public static final Operation NoOp     = alloc(FusekiVocab.opNoOp.asNode(),   "no-op",  "No Op");
+    public static final Operation NoOp     = alloc(FusekiVocab.opNoOp.asNode(),    "no-op",   "No Op");
     static {
         // Not everyone will remember "_" vs "-" so ...
         altName(FusekiVocab.opNoOp_alt,   FusekiVocab.opNoOp);
