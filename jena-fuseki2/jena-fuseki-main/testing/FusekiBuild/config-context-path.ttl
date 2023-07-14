@@ -5,11 +5,16 @@ PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
 PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#>
 
+[] rdf:type fuseki:Server ;
+#   fuseki:services ( <#serviceInMemory> );
+    fuseki:contextPath  "/ABC";
+    .
+
 <#serviceInMemory> rdf:type fuseki:Service;
     rdfs:label "test";
     fuseki:name "FuTest";
-    fuseki:serviceQuery "query";
-    fuseki:serviceUpdate "update";
+    fuseki:endpoint [ fuseki:name "sparql" ; fuseki:operation fuseki:query ] ;
+    fuseki:endpoint [ fuseki:name "update" ; fuseki:operation fuseki:update ] ;
     fuseki:dataset <#dataset> ;
 .
 

@@ -277,7 +277,8 @@ public class FusekiConfig {
      * starting from {@code server} which can have a {@code fuseki:services ( .... )}
      * but, if not found, all {@code rdf:type fuseki:services} are processed.
      */
-    public static List<DataAccessPoint> servicesAndDatasets(Resource server) {
+    private
+    /*public*/ static List<DataAccessPoint> servicesAndDatasets_notUsed(Resource server) {
         Objects.requireNonNull(server);
         return servicesAndDatasets$(server, server.getModel());
     }

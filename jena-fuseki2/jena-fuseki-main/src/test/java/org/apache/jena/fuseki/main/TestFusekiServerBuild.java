@@ -92,7 +92,7 @@ public class TestFusekiServerBuild {
         } finally { server.stop(); }
     }
 
-    private static final String DIR = "testing/FusekiEmbedded/";
+    private static final String DIR = "testing/FusekiBuild/";
 
     // Build with defaults.
     @Test public void fuseki_build_dft_port_01() {
@@ -365,6 +365,7 @@ public class TestFusekiServerBuild {
 
     // Context path.
     @Test public void fuseki_build_08() {
+        // Context path
         DatasetGraph dsg = dataset();
         FusekiServer server = FusekiServer.create()
             .port(0)
@@ -382,6 +383,7 @@ public class TestFusekiServerBuild {
     }
 
     @Test public void fuseki_build_09() {
+        // Config file
         FusekiServer server = FusekiServer.create()
             .port(0)
             .parseConfigFile(DIR+"config.ttl")
@@ -394,6 +396,7 @@ public class TestFusekiServerBuild {
     }
 
     @Test public void fuseki_build_10() {
+        // Context path and config file
         FusekiServer server = FusekiServer.create()
             .port(0)
             .contextPath("/ABC")
@@ -411,6 +414,26 @@ public class TestFusekiServerBuild {
             query("http://localhost:"+port+"/ABC/FuTest","ASK{}",x->{});
         } finally { server.stop(); }
     }
+
+    @Test public void fuseki_build_11() {
+        // Config file with context path
+        FusekiServer server = FusekiServer.create()
+            .port(0)
+            .parseConfigFile(DIR+"config-context-path.ttl")
+            .build();
+        server.start();
+        int port = server.getPort();
+        try {
+            try {
+                query("http://localhost:"+port+"/FuTest", "ASK{}", x->{});
+            } catch (HttpException ex) {
+                assertEquals(HttpSC.METHOD_NOT_ALLOWED_405, ex.getStatusCode());
+            }
+
+            query("http://localhost:"+port+"/ABC/FuTest","ASK{}",x->{});
+        } finally { server.stop(); }
+    }
+
 
     // Errors in the configuration file.
 

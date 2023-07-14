@@ -26,6 +26,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.*;
 import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.out.NodeFmtLib;
@@ -72,15 +74,33 @@ public class G {
     public static boolean isNodeGraph(Node n)   { return n != null && n.isNodeGraph(); }
     public static boolean isNullOrAny(Node n)   { return n == null || Node.ANY.equals(n); }
 
+    /**
+     * Return true if n is a literal and it has the
+     * given datatype, else return false.
+     */
+    public static boolean hasDatatype(Node n, RDFDatatype datatype) {
+        Objects.requireNonNull(n, "hasDatatype: first argument is null");
+        Objects.requireNonNull(datatype, "hasDatatype: second argument is null");
+        return isLiteral(n) && datatype.equals(n.getLiteralDatatype());
+    }
+
+    // -- Literal and datatypes
+    public static boolean isString(Node n)      { return Util.isSimpleString(n); }
+    public static boolean isBoolean(Node n)     {
+        if ( ! n.isLiteral() )
+            throw new RDFDataException("Not a literal: "+NodeFmtLib.strTTL(n));
+        return hasDatatype(n, XSDDatatype.XSDboolean);
+    }
+
     /** Convert null to Node.ANY */
-    public static Node nullAsAny(Node x) { return nullAsDft(x, Node.ANY); }
+    public static Node nullAsAny(Node x)        { return nullAsDft(x, Node.ANY); }
 
     /** Convert null to some default Node */
     public static Node nullAsDft(Node x, Node dft) { return x==null ? dft : x; }
 
     /** Get a string, assuming the node is an xsd:string literal. */
     public static String asString(Node x) {
-        if ( ! Util.isSimpleString(x) )
+        if ( ! isString(x) )
             throw new RDFDataException("Expected a string: found: "+NodeFmtLib.strTTL(x));
         return x.getLiteralLexicalForm();
     }

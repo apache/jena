@@ -54,8 +54,10 @@ import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
@@ -495,7 +497,6 @@ public class FusekiServer {
          * The default is "/".
          */
         public Builder contextPath(String path) {
-            requireNonNull(path, "path");
             this.contextPath = path;
             return this;
         }
@@ -822,6 +823,8 @@ public class FusekiServer {
             if ( server == null )
                 return;
 
+            if ( server.hasProperty(FusekiVocab.pServerContextPath) )
+                contextPath(argString(server, FusekiVocab.pServerContextPath, "/"));
             enablePing(argBoolean(server, FusekiVocab.pServerPing,  false));
             enableStats(argBoolean(server, FusekiVocab.pServerStats, false));
             enableMetrics(argBoolean(server, FusekiVocab.pServerMetrics, false));
@@ -870,6 +873,25 @@ public class FusekiServer {
                 throw new FusekiConfigException("Not a boolean for '"+p+"' : "+stmt.getObject());
             }
         }
+
+        private static String argString(Resource r, Property p, String dftValue) {
+            try { GraphUtils.atmostOneProperty(r, p); }
+            catch (NotUniqueException ex) {
+                throw new FusekiConfigException(ex.getMessage());
+            }
+            Statement stmt = r.getProperty(p);
+            if ( stmt == null )
+                return dftValue;
+            try {
+                Node n = stmt.getObject().asLiteral().asNode();
+                if ( ! G.isString(n) )
+                    throw new FusekiConfigException("Not a string for '"+p+"' : "+stmt.getObject());
+                return n.getLiteralLexicalForm();
+            } catch (JenaException ex) {
+                throw new FusekiConfigException("Not a string for '"+p+"' : "+stmt.getObject());
+            }
+        }
+
 
         /**
          * Choose the HTTP authentication scheme.
