@@ -36,13 +36,13 @@ public class Node_Literal extends Node
 
     /* package */ Node_Literal(String string) {
         Objects.requireNonNull(string, "Argument to NodeFactory.createLiteral is null");
-        this.label = LiteralLabelFactory.create(string);
+        this.label = LiteralLabelFactory.createString(string);
     }
 
     /* package */ Node_Literal(String string, String lang) {
         Objects.requireNonNull(string, "null lexical form for literal");
         Objects.requireNonNull(lang, "null language");
-        this.label = LiteralLabelFactory.create(string, lang);
+        this.label = LiteralLabelFactory.createLang(string, lang);
     }
 
     /* package */ Node_Literal(String lex, RDFDatatype dtype) {

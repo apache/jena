@@ -624,7 +624,7 @@ public class TestTypedLiterals extends TestCase {
             calM1.set(Calendar.MONTH, 10);
             calM1.set(Calendar.DATE,  23);
             XSDDateTime xdtM = new XSDDateTime(calM1);
-            LiteralLabel xdtM_ll = LiteralLabelFactory.createByValue(xdtM, "", XSDDatatype.XSDdateTime);
+            LiteralLabel xdtM_ll = LiteralLabelFactory.createByValue(xdtM, XSDDatatype.XSDdateTime);
 
             assertTrue("Pre-1000 calendar value", xdtM_ll.isWellFormed()) ;
             assertTrue("Pre-1000 calendar value", xdtM_ll.getLexicalForm().matches("^[0-9]{4}-.*")) ;

@@ -41,12 +41,12 @@ public class TestTriple extends GraphTestBase
 
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
-    private static final LiteralLabel L = LiteralLabelFactory.create( "ashes are burning", "en", false );
+    private static final LiteralLabel L = LiteralLabelFactory.createLang( "ashes are burning", "en" );
 
     public void testTripleEquals() {
         // create some nodes to test
         String id = BlankNodeId.createFreshId();
-        LiteralLabel L2 = LiteralLabelFactory.create(id.toString(), "", false);
+        LiteralLabel L2 = LiteralLabelFactory.createLang(id.toString(), "");
         String U2 = id.toString();
         String N2 = id.toString();
 
