@@ -172,7 +172,7 @@ public class NodeFactory {
      */
     public static Node createLiteralByValue(Object value, RDFDatatype dtype) {
         Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null");
-        return new Node_Literal(LiteralLabelFactory.createByValue(value, "", dtype));
+        return new Node_Literal(LiteralLabelFactory.createByValue(value, dtype));
     }
 
     /** Create a triple node (RDF-star) */

@@ -1211,7 +1211,9 @@ public class FusekiServer {
         }
 
         /**
-         * Set the number threads used by Jetty. This uses a {@code org.eclipse.jetty.util.thread.QueuedThreadPool} provided by Jetty.
+         * Set the number threads used by Jetty.
+         * This uses a {@link org.eclipse.jetty.util.thread.QueuedThreadPool}
+         * provided by Jetty.
          * <p>
          * Argument order is (minThreads, maxThreads).
          * <ul>
