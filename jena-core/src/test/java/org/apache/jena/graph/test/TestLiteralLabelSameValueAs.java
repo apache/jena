@@ -54,7 +54,7 @@ public class TestLiteralLabelSameValueAs
     }
 
     private static LiteralLabel gen(String lex, String lang) {
-        return LiteralLabelFactory.create(lex, lang) ;
+        return LiteralLabelFactory.createLang(lex, lang) ;
     }
 
     private static LiteralLabel gen(String lex) {

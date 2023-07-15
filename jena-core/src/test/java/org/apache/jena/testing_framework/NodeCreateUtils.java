@@ -20,6 +20,7 @@ package org.apache.jena.testing_framework;
 
 import java.util.StringTokenizer ;
 
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -141,9 +142,13 @@ public class NodeCreateUtils {
 			String langOrType) {
 		String content = unEscape(spelling);
 		int colon = langOrType.indexOf(':');
-		return colon < 0 ? LiteralLabelFactory.create(content, langOrType,
-				false) : LiteralLabelFactory.createLiteralLabel(content, "",
-				NodeFactory.getType(pm.expandPrefix(langOrType)));
+		if ( colon < 0 )
+		    return LiteralLabelFactory.createLang(content, langOrType);
+		else {
+		    String dtURI = pm.expandPrefix(langOrType);
+		    RDFDatatype dt = NodeFactory.getType(dtURI);
+		    return LiteralLabelFactory.create(content, dt);
+		}
 	}
 
 	public static LiteralLabel newString(PrefixMapping pm, char quote,
