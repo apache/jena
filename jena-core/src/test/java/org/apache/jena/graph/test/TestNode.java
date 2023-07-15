@@ -48,7 +48,7 @@ public class TestNode extends GraphTestBase
 
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
-    private static final LiteralLabel L = LiteralLabelFactory.create( "ashes are burning", "en", false );
+    private static final LiteralLabel L = LiteralLabelFactory.createLang( "ashes are burning", "en" );
     private static final String A = BlankNodeId.createFreshId();
 
     public void testBlanks()
@@ -118,10 +118,10 @@ public class TestNode extends GraphTestBase
     private Object [][] eqTestCases()
     {
         String id = BlankNodeId.createFreshId();
-        LiteralLabel L2 = LiteralLabelFactory.create( id.toString(), "", false );
+        LiteralLabel L2 = LiteralLabelFactory.createString(id.toString());
 
-        LiteralLabel LLang1 = LiteralLabelFactory.createByValue( "xyz", "en", null) ;
-        LiteralLabel LLang2 = LiteralLabelFactory.createByValue( "xyz", "EN", null) ;
+        LiteralLabel LLang1 = LiteralLabelFactory.createLang( "xyz", "en") ;
+        LiteralLabel LLang2 = LiteralLabelFactory.createLang( "xyz", "EN") ;
 
         String U2 = id.toString();
         String N2 = id.toString();

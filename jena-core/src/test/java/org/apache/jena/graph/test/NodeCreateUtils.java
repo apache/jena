@@ -135,7 +135,7 @@ public class NodeCreateUtils
         String content = unEscape( spelling );
         int colon = langOrType.indexOf( ':' );
         return colon < 0
-            ? LiteralLabelFactory.create( content, langOrType, false )
+            ? LiteralLabelFactory.createLang( content, langOrType )
             : LiteralLabelFactory.create( content, NodeFactory.getType( pm.expandPrefix( langOrType ) ) )
             ;
         }

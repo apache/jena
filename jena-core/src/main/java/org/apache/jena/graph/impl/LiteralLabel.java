@@ -26,15 +26,12 @@ import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.JenaParameters ;
 import org.apache.jena.vocabulary.RDF ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Represents the "contents" of a Node_Literal.
@@ -42,8 +39,6 @@ import org.slf4j.LoggerFactory;
  * and optional datatype structure and a value.
  */
 final public class LiteralLabel {
-
-	static private Logger log = LoggerFactory.getLogger( LiteralLabel.class );
 
     /**
 	 * The lexical form of the literal, may be null if the literal was
@@ -99,17 +94,19 @@ final public class LiteralLabel {
 	 * @param dtype the type of the literal, null for old style "plain" literals
 	 * @throws DatatypeFormatException if lex is not a legal form of dtype
 	 */
-	/*package*/ LiteralLabel(String lex, String lang, RDFDatatype dtype) throws DatatypeFormatException
-	{
+	/*package*/ LiteralLabel(String lex, String lang, RDFDatatype dtype) {
 	    setLiteralLabel_1(lex, lang, dtype) ;
 	}
 
-	private void setLiteralLabel_1(String lex, String lang, RDFDatatype dtype)
-        throws DatatypeFormatException {
+	LiteralLabel(String lex, RDFDatatype dtype) {
+	    setLiteralLabel_1(lex, "", dtype) ;
+	}
+
+	private void setLiteralLabel_1(String lex, String lang, RDFDatatype dtype) {
         this.lexicalForm = lex;
         this.dtype = dtype;
         this.lang = (lang == null ? "" : lang);
-        if (dtype == null) {
+        if (dtype == null) { // RDF 1.0 compatibility and legacy code.
             value = lex;
         } else {
             setValue(lex);
@@ -125,8 +122,8 @@ final public class LiteralLabel {
 	 * @param lang the optional language tag, only relevant for plain literals
 	 * @param dtype the type of the literal, null for old style "plain" literals
 	 */
-	/*package*/ LiteralLabel(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
-	    setLiteralLabel_2(value, lang, dtype) ;
+	/*package*/ LiteralLabel(Object value, RDFDatatype dtype) throws DatatypeFormatException {
+	    setLiteralLabel_2(value, "", dtype) ;
 	}
 
 	/**
@@ -136,27 +133,11 @@ final public class LiteralLabel {
 	 * @param value the literal value to encapsulate
 	 */
 	/*package*/ LiteralLabel( Object value ) {
-		RDFDatatype dt = TypeMapper.getInstance().getTypeByValue( value );
-		if (dt == null) {
-			setWithNewDatatypeForValueClass(value);
-		} else {
-			setLiteralLabel_2( value, "", dt );
-		}
+		RDFDatatype dt = LiteralValue.datatypeForValueAny(value);
+		setLiteralLabel_2( value, "", dt );
 	}
 
-	private void setWithNewDatatypeForValueClass( Object value ) {
-		Class<?> c = value.getClass();
-		log.warn( "inventing a datatype for " + c );
-		RDFDatatype dt = new AdhocDatatype( c );
-		TypeMapper.getInstance().registerDatatype( dt );
-		this.lang = "";
-		this.dtype = dt;
-		this.value = value;
-		this.lexicalForm = value.toString();
-	}
-
-	private void setLiteralLabel_2(Object value, String language, RDFDatatype dtype) throws DatatypeFormatException
-    {
+	private void setLiteralLabel_2(Object value, String language, RDFDatatype dtype) {
         // Constructor extraction: Preparation for moving into Node_Literal.
         this.dtype = dtype;
         this.lang = (language == null ? "" : language);
@@ -181,32 +162,6 @@ final public class LiteralLabel {
             if (JenaParameters.enableEagerLiteralValidation && !wellformed) {
                 throw new DatatypeFormatException(value.toString(),  dtype, "in literal creation");
             }
-        }
-    }
-
-    /**
-	 * Old style constructor. Creates either a plain literal or an
-	 * XMLLiteral.
-	 *       @param xml If true then s is exclusive canonical XML of type rdf:XMLLiteral, and no checking will be invoked.
-
-	 */
-	/*package*/ LiteralLabel(String s, String lang, boolean xml) {
-	    setLiteralLabel_3(s, lang, xml) ;
-	}
-
-	private void setLiteralLabel_3(String s, String lang, boolean xml) {
-	    // Constructor extraction: Preparation for moving into Node_Literal.
-        this.lexicalForm = s;
-        this.lang = (lang == null ? "" : lang);
-        if (xml) {
-            // XML Literal
-            this.dtype = XMLLiteralType.theXMLLiteralType;
-            value = s;
-            wellformed = true;
-        } else {
-            // Plain literal
-            this.value = s;
-            this.dtype = null;
         }
     }
 

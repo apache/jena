@@ -46,16 +46,26 @@ public class LiteralLabelFactory
     }
 
     /** Create a string literal */
-    public static LiteralLabel create( String lex) {
+    public static LiteralLabel createString(String lex) {
         return new LiteralLabel( lex, "", XSDDatatype.XSDstring);
     }
 
+    /**
+     * Build a plain literal label from its lexical form and language tag.
+     * @param lex the lexical form of the literal
+     * @param lang the optional language tag, only relevant for plain literals
+     */
+    public static LiteralLabel createLang(String lex, String lang) {
+        RDFDatatype dt = fixDatatype(null, lang);
+        return new LiteralLabel(lex, lang, dt);
+    }
+
     /** Create a literal with a dtype. */
-    public static LiteralLabel create( String lex, RDFDatatype dtype) {
+    public static LiteralLabel create(String lex, RDFDatatype dtype) {
         return new LiteralLabel( lex, "", dtype );
     }
 
-    /** Using {@link #create(String, String)} or {@link #create(String, RDFDatatype)}
+    /** Using {@link #createLang(String, String)} or {@link #create(String, RDFDatatype)}
      * where possible is preferred.
      */
     public static LiteralLabel createLiteralLabel( String lex, String lang, RDFDatatype dtype )
@@ -63,16 +73,6 @@ public class LiteralLabelFactory
     {
         dtype = fixDatatype(dtype, lang);
         return new LiteralLabel( lex, lang, dtype ); }
-
-    /**
-     * Build a plain literal label from its lexical form and language tag.
-     * @param lex the lexical form of the literal
-     * @param lang the optional language tag, only relevant for plain literals
-     */
-    public static LiteralLabel create(String lex, String lang) {
-        RDFDatatype dt = fixDatatype(null, lang);
-        return new LiteralLabel(lex, lang, dt);
-    }
 
     /**
      * Build a typed literal label from its value form. If the value is a string we
@@ -93,20 +93,7 @@ public class LiteralLabelFactory
      */
     public static LiteralLabel createByValue(Object value, RDFDatatype dtype) throws DatatypeFormatException {
         dtype = fixDatatype(dtype, null);
-        return new LiteralLabel(value, null, dtype);
-    }
-
-    /**
-     * Build a typed literal label from its value form. If the value is a string we
-     * assume this is intended to be a lexical form after all.
-     *
-     * @param value the value of the literal
-     * @param lang the optional language tag, only relevant for plain literals
-     * @param dtype the type of the literal, null for old style "plain" literals (which become xsd:string in RDF 1.1)
-     */
-    public static LiteralLabel createByValue(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
-        dtype = fixDatatype(dtype, lang);
-        return new LiteralLabel(value, lang, dtype);
+        return new LiteralLabel(value, dtype);
     }
 
     /**
@@ -119,16 +106,4 @@ public class LiteralLabelFactory
     public static LiteralLabel createTypedLiteral(Object value) {
         return new LiteralLabel(value);
     }
-
-    /**
-     * Creates either a plain literal or an XMLLiteral.
-     *       @param xml If true then s is exclusive canonical XML of type rdf:XMLLiteral, and no checking will be invoked.
-     */
-    public static LiteralLabel create(String s, String lang, boolean xml) {
-        if ( xml )
-            return new LiteralLabel(s, lang, xml);
-        return create(s, lang);
-    }
-
-
 }

@@ -37,13 +37,13 @@ public class TestLiteralLabels extends GraphTestBase
     }
 
     public void testHashCode() {
-        LiteralLabel ll = LiteralLabelFactory.createByValue("test", "", null);
+        LiteralLabel ll = LiteralLabelFactory.createByValue("test", null);
         ll.hashCode();
     }
 
     public void testHashCode2() {
-        LiteralLabel ll1 = LiteralLabelFactory.createByValue("test", "", null);
-        LiteralLabel ll2 = LiteralLabelFactory.createByValue("test", "", null);
+        LiteralLabel ll1 = LiteralLabelFactory.createByValue("test", null);
+        LiteralLabel ll2 = LiteralLabelFactory.createByValue("test", null);
         assertEquals(ll1.hashCode(), ll2.hashCode());
     }
 
@@ -79,8 +79,8 @@ public class TestLiteralLabels extends GraphTestBase
                 return false;
             }
         };
-        LiteralLabel A = LiteralLabelFactory.createByValue("17", "", d);
-        LiteralLabel B = LiteralLabelFactory.createByValue("17", "", null);
+        LiteralLabel A = LiteralLabelFactory.createByValue("17",  d);
+        LiteralLabel B = LiteralLabelFactory.createByValue("17", null);
         assertFalse(A.sameValueAs(B));
     }
 
@@ -100,15 +100,15 @@ public class TestLiteralLabels extends GraphTestBase
     }
 
     public void testEquality3() {
-        LiteralLabel A = LiteralLabelFactory.create("xyz", "en-us");
-        LiteralLabel B = LiteralLabelFactory.create("xyz", "en-uk");
+        LiteralLabel A = LiteralLabelFactory.createLang("xyz", "en-us");
+        LiteralLabel B = LiteralLabelFactory.createLang("xyz", "en-uk");
         assertFalse(A.equals(B));
         assertFalse(A.sameValueAs(B));
     }
 
     public void testEquality4() {
-        LiteralLabel A = LiteralLabelFactory.create("xyz", "en-UK");
-        LiteralLabel B = LiteralLabelFactory.create("xyz", "en-uk");
+        LiteralLabel A = LiteralLabelFactory.createLang("xyz", "en-UK");
+        LiteralLabel B = LiteralLabelFactory.createLang("xyz", "en-uk");
         assertFalse(A.equals(B));
         assertTrue(A.sameValueAs(B));
     }
