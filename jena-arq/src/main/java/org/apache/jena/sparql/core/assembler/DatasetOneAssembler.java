@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.core.assembler;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
@@ -42,9 +43,17 @@ import org.apache.jena.sparql.util.graph.GraphUtils;
  * @see DatasetAssembler {@code DatasetAssembler}, for a general dataset.
  * @see InMemDatasetAssembler {@code InMemDatasetAssembler}, for a fully transactional, in-memory dataset.
  */
-public class DatasetOneAssembler extends DatasetAssembler  {
+public class DatasetOneAssembler extends NamedDatasetAssembler  {
+
     public static Resource getType() {
         return DatasetAssemblerVocab.tDatasetOne;
+    }
+
+    public DatasetOneAssembler() {}
+
+    @Override
+    public Map<String, DatasetGraph> pool() {
+        return sharedDatasetPool;
     }
 
     @Override

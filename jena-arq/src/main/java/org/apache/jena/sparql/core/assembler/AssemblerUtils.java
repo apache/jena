@@ -65,15 +65,19 @@ public class AssemblerUtils
         registerDataset(tDatasetSink,     new DatasetNullAssembler(tDatasetSink));
         registerDataset(tMemoryDataset,   new InMemDatasetAssembler());
         registerDataset(tDatasetTxnMem,   new InMemDatasetAssembler());
+        registerDataset(tDatasetView,     new ViewDatasetAssembler());
 
         registerModel(tViewGraph,          new ViewGraphAssembler());
     }
 
     private static Model modelExtras = ModelFactory.createDefaultModel() ;
 
+    // Legacy. Supports assemblers using a general "rdf:type ja:dataset"
+    private static Resource datasetAssemblerType = DatasetAssemblerVocab.tDataset ;
+
     /** Register an assembler that creates a dataset */
     static public void registerDataset(Resource r, Assembler a) {
-        register(ConstAssembler.general(), r, a, DatasetAssembler.getType()) ;
+       register(ConstAssembler.general(), r, a, datasetAssemblerType) ;
     }
 
     /** Register an assembler that creates a dataset */

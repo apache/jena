@@ -36,6 +36,7 @@ import org.junit.runners.Suite.SuiteClasses;
   , TestStdSetup.class
   , TestConfigFile.class
   , TestFusekiServerBuild.class
+  , TestFusekiDatasetSharing.class
 
   , TestFileUpload.class
   , TestAuthQuery_JDK.class
@@ -52,7 +53,6 @@ import org.junit.runners.Suite.SuiteClasses;
   // Test ping.
   , TestMetrics.class
   , TestFusekiShaclValidation.class
-
 })
 public class TS_FusekiMain {}
 

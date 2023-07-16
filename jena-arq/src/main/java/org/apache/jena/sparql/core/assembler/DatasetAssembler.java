@@ -31,21 +31,39 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 public abstract class DatasetAssembler extends AssemblerBase implements Assembler {
-    public static Resource getType() {
+
+    /** This is the */
+    public static Resource getGeneralType() {
         return DatasetAssemblerVocab.tDataset ;
     }
 
     @Override
     public Dataset open(Assembler a, Resource root, Mode mode) {
-        DatasetGraph dsg = createDataset(a, root) ;
+        DatasetGraph dsg = createNamedDataset(a, root) ;
         return DatasetFactory.wrap(dsg);
     }
 
-    public abstract DatasetGraph createDataset(Assembler a, Resource root);
+    /**
+     * Indirection to allow subclasses to have a pool of created datasets
+     * (e.g. {@link NamedDatasetAssembler}).
+     * <p>
+     * Not used by TDB with a location because databases required
+     * to be shared system-wide by location. This includes in-memory
+     * named locations.
+     */
+    protected DatasetGraph createNamedDataset(Assembler a, Resource root) {
+        return createDataset(a, root);
+    }
+
+    /**
+     * Create a fresh dataset from the description.
+     */
+    protected abstract DatasetGraph createDataset(Assembler a, Resource root);
 
     /**
      * Helper for datasets that layer on top of other datasets.
-     * Assembler a DatasetGraph from description referred to by resource-property.
+     * The property is usually {@code ja:dataset}.
+     * Assemble a DatasetGraph from description referred to by resource-property.
      */
     protected DatasetGraph createBaseDataset(Resource dbAssem, Property pDataset) {
         Resource dataset = getResourceValue(dbAssem, pDataset) ;

@@ -65,7 +65,7 @@ public class TestAuthorized {
         String level = LogCtl.getLevel(Fuseki.configLog);
         try {
             LogCtl.set(Fuseki.configLog, "Error");
-            // "!" anbd anythign else causes a warning.
+            // "!" with anything else causes a warning.
             AuthPolicy auth = Auth.policyAllowSpecific("!", "user2");
             assertFalse(auth.isAllowed(null));
             assertFalse(auth.isAllowed("user1"));

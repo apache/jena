@@ -39,6 +39,10 @@ import org.apache.jena.tdb2.TDB2;
 
 public class DatasetAssemblerTDB2 extends DatasetAssembler
 {
+    // This is not a NamedDatasetAssembler
+    // Sharing is done by "same location" and must be system wide (not just assemblers).
+    // In-memory TDB2 dataset can use named memory locations e.g. "--mem--/NAME"
+
     static { JenaSystem.init(); }
 
     @Override
