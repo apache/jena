@@ -18,6 +18,10 @@
 
 package org.apache.jena.fuseki.main;
 
+import static org.apache.jena.fuseki.main.FusekiTestLib.expect400;
+import static org.apache.jena.fuseki.main.FusekiTestLib.expect404;
+import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery400;
+import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery404;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -25,7 +29,6 @@ import java.util.function.Consumer;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
@@ -42,11 +45,11 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateExecution;
-import org.apache.jena.web.HttpSC;
 import org.junit.Test;
 import org.slf4j.Logger;
 
@@ -208,9 +211,10 @@ public class TestFusekiServerBuild {
         server.start();
         int port = server.getPort();
         try {
-            query("http://localhost:"+port+"/dsrv1/q","ASK{}",x->{});
-            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/dsrv1/gsp?default");
-            assertNotNull(x1);
+            boolean b = queryASK("http://localhost:"+port+"/dsrv1/q","ASK{}");
+            assertTrue(b);
+
+            HttpOp.httpGetDiscard("http://localhost:"+port+"/dsrv1/gsp?default");
         } finally { server.stop(); }
     }
 
@@ -229,12 +233,11 @@ public class TestFusekiServerBuild {
         int port = server.getPort();
 
         try {
-            query("http://localhost:"+port+"/dsrv1/q","ASK{}",x->{});
-            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/dsrv1/gsp?default");
-            assertNotNull(x1);
-            // Static
-            String x2 = HttpOp.httpGetString("http://localhost:"+port+"/test.txt");
-            assertNotNull(x2);
+            boolean b = queryASK("http://localhost:"+port+"/dsrv1/q","ASK{}");
+            assertTrue(b);
+
+            HttpOp.httpGetDiscard("http://localhost:"+port+"/dsrv1/gsp?default");
+            HttpOp.httpGetDiscard("http://localhost:"+port+"/test.txt");
         } finally { server.stop(); }
     }
 
@@ -253,13 +256,8 @@ public class TestFusekiServerBuild {
         server.start();
         int port = server.getPort();
         try {
-            String x2 = HttpOp.httpGetString("http://localhost:"+port+"/dsrv1/x");
-            fail("httpGetString should not return");
-        } catch (HttpException ex) {
-            // Unregistered operation.
-            assertEquals(400, ex.getStatusCode());
-        }
-        finally { server.stop(); }
+            expect400(()-> HttpOp.httpGetDiscard("http://localhost:"+port+"/dsrv1/x"));
+        } finally { server.stop(); }
     }
 
     @Test public void fuseki_build_no_stats() {
@@ -272,18 +270,14 @@ public class TestFusekiServerBuild {
         int port = server.getPort();
         try {
             // No server services
-            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/$/ping");
-            assertNull(x1);
+            expect404(()-> HttpOp.httpGetDiscard("http://localhost:"+port+"/$/ping") );
 
-            String x2 = HttpOp.httpGetString("http://localhost:"+port+"/$/stats");
-            assertNull(x2);
+            expect404(()-> HttpOp.httpGetDiscard("http://localhost:"+port+"/$/stats") );
 
-            String x3 = HttpOp.httpGetString("http://localhost:"+port+"/$/metrics");
-            assertNull(x3);
+            expect404(()-> HttpOp.httpGetDiscard("http://localhost:"+port+"/$/metrics") );
 
-            HttpException ex = assertThrows(HttpException.class,
-                () -> HttpOp.httpPostStream("http://localhost:"+port+"/$/compact/ds", "application/json"));
-            assertEquals(404, ex.getStatusCode());
+            expect404(()->
+                   HttpOp.httpPostStream("http://localhost:"+port+"/$/compact/ds", "application/json").close() );
         } finally { server.stop(); }
     }
 
@@ -297,9 +291,9 @@ public class TestFusekiServerBuild {
         server.start();
         int port = server.getPort();
 
-        String x = HttpOp.httpGetString("http://localhost:"+port+"/$/ping");
-        assertNotNull(x);
-        server.stop();
+        try {
+            HttpOp.httpGetDiscard("http://localhost:"+port+"/$/ping");
+        } finally { server.stop(); }
     }
 
     @Test public void fuseki_build_stats() {
@@ -311,9 +305,9 @@ public class TestFusekiServerBuild {
             .build();
         server.start();
         int port = server.getPort();
-        String x = HttpOp.httpGetString("http://localhost:"+port+"/$/stats");
-        assertNotNull(x);
-        server.stop();
+        try {
+            HttpOp.httpGetDiscard("http://localhost:"+port+"/$/stats");
+        } finally { server.stop(); }
     }
 
     @Test public void fuseki_build_metrics() {
@@ -325,9 +319,9 @@ public class TestFusekiServerBuild {
             .build();
         server.start();
         int port = server.getPort();
-        String x = HttpOp.httpGetString("http://localhost:"+port+"/$/metrics");
-        assertNotNull(x);
-        server.stop();
+        try {
+            HttpOp.httpGetDiscard("http://localhost:"+port+"/$/metrics");
+        } finally { server.stop(); }
     }
 
     @Test public void fuseki_build_compact() throws IOException {
@@ -342,11 +336,8 @@ public class TestFusekiServerBuild {
             assertNotNull(x0);
             assertNotEquals(0, x0.readAllBytes().length);
 
-            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/$/tasks");
-            assertNotNull(x1);
-        } finally {
-            server.stop();
-        }
+            HttpOp.httpGetDiscard("http://localhost:"+port+"/$/tasks");
+        } finally { server.stop(); }
     }
 
     @Test public void fuseki_build_tasks() {
@@ -358,13 +349,12 @@ public class TestFusekiServerBuild {
             .build();
         server.start();
         int port = server.getPort();
-        String x = HttpOp.httpGetString("http://localhost:"+port+"/$/tasks");
-        assertNotNull(x);
-        server.stop();
+        try {
+            HttpOp.httpGetDiscard("http://localhost:"+port+"/$/tasks");
+        } finally { server.stop(); }
     }
 
-    // Context path.
-    @Test public void fuseki_build_08() {
+    @Test public void fuseki_build_cxtpath_01() {
         // Context path
         DatasetGraph dsg = dataset();
         FusekiServer server = FusekiServer.create()
@@ -375,47 +365,80 @@ public class TestFusekiServerBuild {
         server.start();
         int port = server.getPort();
         try {
-            String x1 = HttpOp.httpGetString("http://localhost:"+port+"/ds");
-            assertNull(x1);
-            String x2 = HttpOp.httpGetString("http://localhost:"+port+"/ABC/ds");
-            assertNotNull(x2);
+            expect404(()-> HttpOp.httpGetDiscard("http://localhost:"+port+"/ds")) ;
+            HttpOp.httpGetDiscard("http://localhost:"+port+"/ABC/ds");
         } finally { server.stop(); }
     }
 
-    @Test public void fuseki_build_09() {
+    @Test public void fuseki_build_cxtpath_02() {
+        DatasetGraph dsg = dataset();
+        DataService dataService = DataService.newBuilder(dsg)
+                                             .addEndpoint(Operation.GSP_R, "get")
+                                             .build();
+        FusekiServer server = FusekiServer.create()
+            .port(0)
+            // If the default is explicitly set.
+            .contextPath("/")
+            .add("/ds", dataService)
+            .build();
+        server.start();
+        int port = server.getPort();
+
+        try {
+            expect400(()-> HttpOp.httpGetDiscard("http://localhost:"+port+"/ds") );
+            expect400(()-> HttpOp.httpGetDiscard("http://localhost:"+port+"/ds/") );
+            // The only endpoint.
+            HttpOp.httpGetDiscard("http://localhost:"+port+"/ds/get?default");
+            // Again, but as a higher level request.
+            Graph g = GSP.service("http://localhost:"+port+"/ds/get").defaultGraph().GET();
+            assertNotNull(g);
+
+        } finally { server.stop(); }
+    }
+
+    @Test public void fuseki_build_cxtpath_03() {
         // Config file
         FusekiServer server = FusekiServer.create()
             .port(0)
-            .parseConfigFile(DIR+"config.ttl")
+            .parseConfigFile(DIR+"config-plain.ttl")
             .build();
         server.start();
         int port = server.getPort();
         try {
-            query("http://localhost:"+port+"/FuTest", "SELECT * {}", x->{});
+            expectQuery400(()->{
+                // Nothing on /FuTest
+                query("http://localhost:"+port+"/FuTest", "SELECT * {}", x->x.select());
+            });
+            query("http://localhost:"+port+"/FuTest/sparql", "SELECT * {}", x->x.select());
         } finally { server.stop(); }
     }
 
-    @Test public void fuseki_build_10() {
+    @Test public void fuseki_build_cxtpath_04() {
         // Context path and config file
         FusekiServer server = FusekiServer.create()
             .port(0)
             .contextPath("/ABC")
-            .parseConfigFile(DIR+"config.ttl")
+            .parseConfigFile(DIR+"config-plain.ttl")
             .build();
         server.start();
         int port = server.getPort();
         try {
-            try {
-                query("http://localhost:"+port+"/FuTest", "ASK{}", x->{});
-            } catch (HttpException ex) {
-                assertEquals(HttpSC.METHOD_NOT_ALLOWED_405, ex.getStatusCode());
-            }
-
-            query("http://localhost:"+port+"/ABC/FuTest","ASK{}",x->{});
+            expect404(()->{
+                // Low level!
+                String url = "http://localhost:"+port+"/FuTest/sparql?query=ASK%7B%7D";
+                HttpOp.httpPost(url);
+            });
+            expectQuery404(()->{
+                // No such endpoint. No context path given.
+                boolean b = queryASK("http://localhost:"+port+"/FuTest/sparql","ASK{}");
+                assertTrue(b);
+            });
+            boolean b = queryASK("http://localhost:"+port+"/ABC/FuTest/sparql","ASK{}");
+            assertTrue(b);
         } finally { server.stop(); }
     }
 
-    @Test public void fuseki_build_11() {
+    @Test public void fuseki_build_cxtpath_05() {
         // Config file with context path
         FusekiServer server = FusekiServer.create()
             .port(0)
@@ -424,19 +447,19 @@ public class TestFusekiServerBuild {
         server.start();
         int port = server.getPort();
         try {
-            try {
-                query("http://localhost:"+port+"/FuTest", "ASK{}", x->{});
-            } catch (HttpException ex) {
-                assertEquals(HttpSC.METHOD_NOT_ALLOWED_405, ex.getStatusCode());
-            }
-
-            query("http://localhost:"+port+"/ABC/FuTest","ASK{}",x->{});
+            // Context setting is /ABC
+            expectQuery404(()->{
+                queryASK("http://localhost:"+port+"/FuTest/sparql", "ASK{}");
+            });
+            expectQuery400(()->{
+                // Dataset exists - no operations -> Bad request
+                queryASK("http://localhost:"+port+"/ABC/FuTest", "ASK{}");
+            });
+            queryASK("http://localhost:"+port+"/ABC/FuTest/sparql","ASK{}");
         } finally { server.stop(); }
     }
 
-
     // Errors in the configuration file.
-
     @Test public void fuseki_configFile_01() {
         silent(()->{
             FusekiServer server = FusekiServer.create()
@@ -454,8 +477,8 @@ public class TestFusekiServerBuild {
 
             // IF a dataset, then no endpoints.
             server.getDataAccessPointRegistry().forEach((n,dap)->{
-                System.err.println(dap.getName());
-                System.err.println(dap.getDataService().getEndpoints());
+//                System.err.println(dap.getName());
+//                System.err.println(dap.getDataService().getEndpoints());
                 assertEquals(0, dap.getDataService().getEndpoints().size());
             });
 
@@ -475,6 +498,12 @@ public class TestFusekiServerBuild {
 
     /*package*/ static DatasetGraph dataset() {
         return DatasetGraphFactory.createTxnMem();
+    }
+
+    /*package*/ static boolean queryASK(String URL, String query) {
+        try (QueryExec qExec = QueryExecHTTP.newBuilder().endpoint(URL).queryString(query).build() ) {
+            return qExec.ask();
+        }
     }
 
     /*package*/ static void query(String URL, String query, Consumer<QueryExec> body) {

@@ -80,6 +80,27 @@ public class HttpOp {
         return httpGetString(HttpEnv.getDftHttpClient(), url, null);
     }
 
+    /**
+     * Perform an HTTP and return the body as a string. Throws {@link HttpException}
+     * on all non-success HTTP status codes including 404,
+     * unlike {@link #httpGetString(String)}.
+     */
+    public static String httpGetStringEx(String url) throws HttpException {
+        return httpGetString(HttpEnv.getDftHttpClient(), url, null, false);
+    }
+
+    /**
+     * Perform an HTTP and discard the body.
+     * Only useful to use GET as a ping-like operation on a URL
+     * Throws {@link HttpException} on all non-success HTTP status codes.
+     */
+    public static void httpGetDiscard(String url) throws HttpException {
+        HttpRequest httpRequest = newGetRequest(url, setAcceptHeader("*/*"));
+        HttpClient httpClient = HttpEnv.getDftHttpClient();
+        HttpResponse<InputStream> response = execute(httpClient, httpRequest);
+        HttpLib.handleResponseNoBody(response);
+    }
+
     /** Perform an HTTP and return the body as a string, Return null for a "404 Not Found". */
     public static String httpGetString(String url, String acceptHeader) {
         return httpGetString(HttpEnv.getDftHttpClient(), url, acceptHeader);
@@ -92,12 +113,17 @@ public class HttpOp {
 
     /** Perform an HTTP and return the body as a string. Return null for a "404 Not Found". */
     public static String httpGetString(HttpClient httpClient, String url, String acceptHeader) {
+        return httpGetString(httpClient, url, acceptHeader, true);
+    }
+
+    /** Perform an HTTP and return the body as a string. Return null for a "404 Not Found". */
+    private static String httpGetString(HttpClient httpClient, String url, String acceptHeader, boolean notFoundAsNull) {
         HttpRequest request = newGetRequest(url, setAcceptHeader(acceptHeader));
         HttpResponse<InputStream> response = execute(httpClient, request);
         try {
             return handleResponseRtnString(response);
         } catch (HttpException ex) {
-            if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
+            if ( notFoundAsNull && ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
                 return null;
             throw ex;
         }

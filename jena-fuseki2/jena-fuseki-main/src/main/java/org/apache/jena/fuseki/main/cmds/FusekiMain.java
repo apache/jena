@@ -452,8 +452,8 @@ public class FusekiMain extends CmdARQ {
             // Static files.
             String servletContextPath = getValue(argPathBase);
 
-            if ( servletContextPath.endsWith("/") )
-                throw new CmdException("Path base must not end with \"/\": "+argPathBase);
+            if ( ! servletContextPath.equals("/") && servletContextPath.endsWith("/") )
+                throw new CmdException("Path base must not end with \"/\": '"+servletContextPath+"'");
             serverConfig.servletContextPath = servletContextPath;
         }
 
