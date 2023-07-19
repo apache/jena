@@ -60,9 +60,10 @@ public class PatternMatchTDB1 {
         return execute(ntt, graph.getGraphName(), pattern, input, filter, execCxt);
     }
 
-    /** Non-reordering execution of a quad pattern, given an iterator of bindings as input.
-     *  GraphNode is Node.ANY for execution over the union of named graphs.
-     *  GraphNode is null for execution over the real default graph.
+    /**
+     * Non-reordering execution of a quad pattern, given an iterator of bindings as input.
+     * GraphNode is Node.ANY for execution over the union of named graphs.
+     * GraphNode is null for execution over the real default graph.
      */
     public static QueryIterator execute(DatasetGraphTDB ds, Node graphNode, BasicPattern pattern,
                                         QueryIterator input, Predicate<Tuple<NodeId>> filter,

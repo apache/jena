@@ -36,9 +36,14 @@ import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable;
 
 class StageMatchTuple {
 
-    /* Entry point */
+    /**
+     * Function to access the data storage.
+     * This code only matches patterns with
+     * concrete terms or wildcards, not wildcards within <<>> terms.
+     * Called from {@link SolverRx#matchQuadPattern}
+     */
     static Iterator<BindingNodeId> access(NodeTupleTable nodeTupleTable, Iterator<BindingNodeId> input, Tuple<Node> patternTuple,
-                                                 Predicate<Tuple<NodeId>> filter, boolean anyGraph, ExecutionContext execCxt) {
+                                          Predicate<Tuple<NodeId>> filter, boolean anyGraph, ExecutionContext execCxt) {
         return Iter.flatMap(input, bnid -> {
             return StageMatchTuple.access(nodeTupleTable, bnid, patternTuple, filter, anyGraph, execCxt);
         });

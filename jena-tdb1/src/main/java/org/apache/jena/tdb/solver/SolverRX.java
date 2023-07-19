@@ -53,18 +53,18 @@ public class SolverRX {
      */
     public static final boolean DATAPATH = true;
 
-    // Entry point from SolverLib.
+    /** Entry point from {@link PatternMatchTDB1} */
     /*package*/
     static Iterator<BindingNodeId> matchQuadPattern(Iterator<BindingNodeId> chain, Node graphNode, Triple tPattern,
                                                     NodeTupleTable nodeTupleTable, Tuple<Node> patternTuple,
                                                     boolean anyGraph, Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         if ( DATAPATH ) {
             if ( ! tripleHasEmbTripleWithVars(tPattern) )
-                // No RDF-star <<>> with variables.
+                // No RDF-star <<>> with variables which are wildcards at this point.
                 return StageMatchTuple.access(nodeTupleTable, chain, patternTuple, filter, anyGraph, execCxt);
         }
 
-        // RDF-star <<>> with variables.
+        // RDF-star <<>> with wildcards.
         // This path should work regardless.
 
         boolean isTriple = (patternTuple.len() == 3);
@@ -102,11 +102,10 @@ public class SolverRX {
         return convFromBinding(matched, nodeTable);
     }
 
-    static Iterator<Quad> accessData(Tuple<Node> patternTuple, NodeTupleTable nodeTupleTable,
+    private static Iterator<Quad> accessData(Tuple<Node> patternTuple, NodeTupleTable nodeTupleTable,
                                      boolean anyGraph, Predicate<Tuple<NodeId>> filter,
                                      ExecutionContext execCxt) {
         NodeTable nodeTable = nodeTupleTable.getNodeTable();
-        Function<Tuple<NodeId>, Quad> asQuad = asQuad(nodeTable, nodeTupleTable.getTupleLen(), anyGraph);
         Tuple<NodeId> patternTupleId = TupleLib.tupleNodeIds(nodeTable, patternTuple);
         if ( patternTupleId.contains(NodeId.NodeDoesNotExist) )
             // Can not match.
@@ -124,7 +123,7 @@ public class SolverRX {
             iterMatches = Iter.distinctAdjacent(iterMatches);
         }
         // -- DRY/StageMatchTuple
-        //Iterator<Quad> qIter = TupleLib.convertToQuads(nodeTable, iterMatches) ;
+        Function<Tuple<NodeId>, Quad> asQuad = asQuad(nodeTable, nodeTupleTable.getTupleLen(), anyGraph);
         Iterator<Quad> qIter = Iter.map(iterMatches, asQuad);
         return qIter;
     }
