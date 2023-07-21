@@ -24,23 +24,23 @@ import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.reasoner.BaseInfGraph ;
 import org.apache.jena.reasoner.ReasonerFactory ;
 
-/** 
+/**
  * A pure forward chaining implementation of the RDFS closure rules
  * based upon the basic forward rule interpreter. The normal mixed
- * forward/backward implementation is generally preferred but this has 
+ * forward/backward implementation is generally preferred but this has
  * two possible uses. First, it is a test and demonstration of the forward
- * chainer. Second, if you want all the RDFS entailments for an entire 
+ * chainer. Second, if you want all the RDFS entailments for an entire
  * dataset the forward chainer will be more efficient.
  */
 
-public class RDFSForwardRuleReasoner extends GenericRuleReasoner {    
+public class RDFSForwardRuleReasoner extends GenericRuleReasoner {
     /** The location of the OWL rule definitions on the class path */
     public static final String RULE_FILE = "etc/rdfs.rules";
 //    public static final String RULE_FILE = "etc/rdfs-noresource.rules";
-    
+
     /** The parsed rules */
     protected static List<Rule> ruleSet;
-    
+
     /**
      * Constructor
      */
@@ -49,12 +49,12 @@ public class RDFSForwardRuleReasoner extends GenericRuleReasoner {
 //        setMode(FORWARD_RETE);
         setMode(FORWARD);
     }
-    
+
     /**
      * Return the RDFS rule set, loading it in if necessary
      */
     public static List<Rule> loadRules() {
-        if (ruleSet == null) ruleSet = loadRules( RULE_FILE ); 
+        if (ruleSet == null) ruleSet = loadRules( RULE_FILE );
         return ruleSet;
     }
 
@@ -64,10 +64,6 @@ public class RDFSForwardRuleReasoner extends GenericRuleReasoner {
      */
     @Override
     public Capabilities getGraphCapabilities() {
-        if (capabilities == null) {
-            capabilities = new BaseInfGraph.InfFindSafeCapabilities();
-        }
-        return capabilities;
+        return BaseInfGraph.reasonerInfCapabilities;
     }
-        
 }

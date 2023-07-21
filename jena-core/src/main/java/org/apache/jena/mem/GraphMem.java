@@ -19,14 +19,18 @@
 package org.apache.jena.mem;
 
 import org.apache.jena.graph.* ;
+import org.apache.jena.graph.impl.AllCapabilities;
 import org.apache.jena.graph.impl.TripleStore ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 import java.util.stream.Stream;
 
-/** @deprecated This implementation of GraphMem will be replaced by a new implementation at Jena 4.6.0.
- *   Application should be using {@link GraphMemFactory#createDefaultGraph()} for a general purpose graph or {@link GraphMemFactory#createGraphMem()}
- *   to specific this style of implementation.
+/**
+ * @deprecated This implementation of GraphMem will be replaced by a new
+ *     implementation. Applications should be using
+ *     {@link GraphMemFactory#createDefaultGraph()} for a general purpose graph or
+ *     {@link GraphMemFactory#createGraphMem()} to specific this style of
+ *     implementation.
  */
 @Deprecated
 public class GraphMem extends GraphMemBase {
@@ -55,27 +59,31 @@ public class GraphMem extends GraphMemBase {
     { return store.size(); }
 
     /**
-         Answer an ExtendedIterator over all the triples in this graph that match the
-         triple-pattern <code>m</code>. Delegated to the store.
+     * Answer an ExtendedIterator over all the triples in this graph that match the
+     * triple-pattern <code>m</code>. Delegated to the store.
      */
-    @Override public ExtendedIterator<Triple> graphBaseFind( Triple m )
-    { return store.find( m ); }
+    @Override
+    public ExtendedIterator<Triple> graphBaseFind(Triple m) {
+        return store.find(m);
+    }
 
     /**
-         Answer true iff this graph contains <code>t</code>. If <code>t</code>
-         happens to be concrete, then we hand responsibility over to the store.
-         Otherwise we use the default implementation.
+     * Answer true iff this graph contains <code>t</code>. If <code>t</code> happens
+     * to be concrete, then we hand responsibility over to the store. Otherwise we
+     * use the default implementation.
      */
-    @Override public boolean graphBaseContains( Triple t )
-    { return t.isConcrete() ? store.contains( t ) : store.containsMatch( t ); }
+    @Override
+    public boolean graphBaseContains(Triple t) {
+        return t.isConcrete() ? store.contains(t) : store.containsMatch(t);
+    }
 
     /**
-        Clear this GraphMem, ie remove all its triples (delegated to the store).
+     * Clear this GraphMem, ie remove all its triples (delegated to the store).
      */
-    @Override public void clear()
-    {
+    @Override
+    public void clear() {
         clearStore();
-        getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;
+        getEventManager().notifyEvent(this, GraphEvents.removeAll);
     }
 
     @Override
@@ -84,11 +92,14 @@ public class GraphMem extends GraphMemBase {
     }
 
     /**
-    Clear this GraphMem, ie remove all its triples (delegated to the store).
+     * Clear this GraphMem, ie remove all its triples (delegated to the store).
      */
-    public void clearStore()
-    {
+    public void clearStore() {
         store.clear();
     }
 
+    @Override
+    public Capabilities getCapabilities() {
+        return AllCapabilities.updateAllowedWithValues;
+    }
 }

@@ -46,16 +46,6 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  */
 public class CollectionGraph extends GraphBase
 {
-    // override methods that need to be false off.
-    private Capabilities cgCapabilities = new AllCapabilities() {
-
-        @Override
-        public boolean handlesLiteralTyping() {
-            return false;
-        }
-
-    };
-
     static boolean tripleContained(Triple patternTriple, Triple dataTriple) {
         return equalNode(patternTriple.getSubject(), dataTriple.getSubject())
                && equalNode(patternTriple.getPredicate(), dataTriple.getPredicate())
@@ -123,6 +113,6 @@ public class CollectionGraph extends GraphBase
 
     @Override
     public Capabilities getCapabilities() {
-        return cgCapabilities;
+        return AllCapabilities.updateAllowed;
     }
 }

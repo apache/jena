@@ -27,10 +27,10 @@ import org.apache.jena.util.iterator.UniqueFilter ;
  * Implementation of InfGraph used by the TransitiveReasoner.
  * This is returned by the TransitiveReasoner when a data graph
  * (together with an optional schema) has been bound.
- * 
+ *
  * <p>The cached property and class graphs are calculated by the
  * reasoner when the schema is bound. If the data graph does not
- * include schema information then the caches generated at 
+ * include schema information then the caches generated at
  * schema binding stage are reused here. Otherwise the caches
  * are regenerated.</p>
  */
@@ -38,13 +38,13 @@ public class TransitiveInfGraph extends BaseInfGraph {
 
     /** The paire of subclass and subproperty lattices */
     protected TransitiveEngine transitiveEngine;
-    
+
     /** The graph registered as the schema, if any */
     protected Finder tbox = null;
-    
+
     /** The combined data and schema finder */
     protected Finder dataFind;
-    
+
     /**
      * Constructor. Called by the TransitiveReasoner when it
      * is bound to a data graph.
@@ -55,7 +55,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
     public TransitiveInfGraph(Graph data, TransitiveReasoner reasoner) {
         super(data, reasoner);
     }
-    
+
     /**
      * Perform any initial processing and caching. This call is optional. Most
      * engines either have negligable set up work or will perform an implicit
@@ -67,7 +67,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
     @Override
     public synchronized void prepare() {
         if (this.isPrepared()) return;
-        
+
         tbox = ((TransitiveReasoner)reasoner).getTbox();
         // Initially just point to the reasoner's precached information
         transitiveEngine = new TransitiveEngine(((TransitiveReasoner)reasoner).getSubClassCache().deepCopy(),
@@ -75,11 +75,11 @@ public class TransitiveInfGraph extends BaseInfGraph {
                     // The deepCopies reduce the value of precomputing the closure in the reasoner object
                     // but enables people to bind the same reasoner to multiple datasets.
                     // Perhaps need a faster deepcopy
-                                                 
+
         // But need to check if the data graph defines schema data as well
         dataFind = transitiveEngine.insert(tbox, fdata);
         transitiveEngine.setCaching(true, true);
-        
+
         this.setPreparedState(true);
     }
 
@@ -95,7 +95,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
             throw new ReasonerException("Transitive reasoner got into an illegal state");
         }
     }
-    
+
     /**
      * Extended find interface used in situations where the implementator
      * may or may not be able to answer the complete query. It will
@@ -113,8 +113,8 @@ public class TransitiveInfGraph extends BaseInfGraph {
         Finder cascade = transitiveEngine.getFinder(pattern, FinderUtil.cascade(tbox, continuation));
         return cascade.find(pattern).filterKeep( new UniqueFilter<Triple>());
     }
-   
-    /** 
+
+    /**
      * Returns an iterator over Triples.
      */
     @Override public ExtendedIterator<Triple> graphBaseFind(Node subject, Node property, Node object) {
@@ -130,7 +130,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
     @Override public ExtendedIterator<Triple> find(TriplePattern pattern) {
         return findWithContinuation(pattern, fdata);
     }
-        
+
     /**
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
@@ -142,9 +142,9 @@ public class TransitiveInfGraph extends BaseInfGraph {
         transitiveEngine.add(t);
     }
 
-    /** 
+    /**
      * Removes the triple t (if possible) from the set belonging to this graph.
-     */   
+     */
     @Override
     public synchronized void performDelete(Triple t) {
         fdata.getGraph().delete(t);
@@ -152,14 +152,4 @@ public class TransitiveInfGraph extends BaseInfGraph {
             transitiveEngine.delete(t);
         }
     }
-    /**
-    Answer the InfCapabilities of this InfGraph.
- */
-@Override
-public Capabilities getCapabilities()
-    {
-    if (capabilities == null) capabilities = new InfFindSafeCapabilities();
-    return capabilities;
-    }
-
 }
