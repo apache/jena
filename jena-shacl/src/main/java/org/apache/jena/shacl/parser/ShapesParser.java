@@ -86,7 +86,6 @@ public class ShapesParser {
         return declared;
     }
 
-
     /* The parsing process.
      * <p>
      * Applications should call functions in {@link Shapes} rather than call the parser directly.
@@ -105,8 +104,9 @@ public class ShapesParser {
                                   .filter(sh->sh.hasTarget())
                                   .collect(Collectors.toUnmodifiableList());
 
-        // Parse other shapes - i.e. addressable node and property shapes without
-        // target if they were not reached when parsing form the targets.
+        // Parse non-target shapes - i.e. addressable node and property shapes without
+        // target, with type of sh:NodeShape or sh:PropertyShape
+        // if they were not reached when parsing from the targets.
         // This skips declared+targets because the shapesMap is in common.
         Collection<Shape> declShapes = new ArrayList<>();
         declaredNodes.forEach(shapeNode -> {
@@ -115,6 +115,12 @@ public class ShapesParser {
                 declShapes.add(shape);
             }
         });
+
+        // Implicit shapes.
+        // Ones not declared with rdf:type sh:NodeShape or sh:PropertyShape
+        // and not reachable from a target.
+        // Placeholder for a possible feature.
+        Set<Shape> otherShapes = Set.of();
 
         // Check.
         // rootShapes and declShapes are disjoint.
@@ -135,8 +141,9 @@ public class ShapesParser {
         Pair<Node, List<Node>> pair = Imports.baseAndImports(shapesGraph);
         Node shapesBase = pair.getLeft();
         List<Node> imports = pair.getRight();
-
-        ParserResult x = new ParserResult(shapesBase, imports, shapesMap, targets, rootShapes, declShapes, sparqlConstraintComponents, targetExtensions);
+        ParserResult x = new ParserResult(shapesBase, imports, shapesMap, targets,
+                                          rootShapes, declShapes, otherShapes,
+                                          sparqlConstraintComponents, targetExtensions);
         return x;
     }
 
@@ -478,6 +485,7 @@ public class ShapesParser {
         public final Targets targets;
         public final Collection<Shape> rootShapes;
         public final Collection<Shape> declaredShapes;
+        public final Collection<Shape> otherShapes;
         public final ConstraintComponents sparqlConstraintComponents;
         public final TargetExtensions targetExtensions;
 
@@ -487,6 +495,7 @@ public class ShapesParser {
                      Targets targets,
                      Collection<Shape> rootShapes,
                      Collection<Shape> declaredShapes,
+                     Collection<Shape> otherShapes,
                      ConstraintComponents sparqlConstraintComponents,
                      TargetExtensions targetExtensions) {
             this.shapesBase = shapesBase;
@@ -495,6 +504,7 @@ public class ShapesParser {
             this.targets = targets;
             this.rootShapes = rootShapes;
             this.declaredShapes = declaredShapes;
+            this.otherShapes = otherShapes;
             this.sparqlConstraintComponents = sparqlConstraintComponents;
             this.targetExtensions = targetExtensions;
         }

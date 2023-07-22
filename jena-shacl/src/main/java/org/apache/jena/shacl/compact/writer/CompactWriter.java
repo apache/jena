@@ -49,7 +49,7 @@ public class CompactWriter {
 
         // Formatter PrefixMap - with the std prefixes if not overridden.
         PrefixMap pmapWithStd = SHACLC.withStandardPrefixes();
-        // Add to copy of standrard so it can override any standard settings.
+        // Add to copy of the prefixes standard so we can later override any standard settings.
         pmapWithStd.putAll(graphPrefixMap);
         NodeFormatter nodeFmt = new NodeFormatterTTL(null, pmapWithStd);
 
