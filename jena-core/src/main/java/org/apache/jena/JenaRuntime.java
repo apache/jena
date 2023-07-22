@@ -18,8 +18,6 @@
 
 package org.apache.jena;
 
-import java.util.* ;
-
 /**
  * Methods and constants that define features of the current the environment.
  * Primarily for other parts of the Jena framework.
@@ -27,34 +25,6 @@ import java.util.* ;
 
 public class JenaRuntime
 {
-    /** @deprecated To be removed */
-    @Deprecated(since="4.9.0")
-    public static String getMetadata(String key, String defaultValue) { return null; }
-
-    /** @deprecated To be removed */
-    @Deprecated(since="4.9.0")
-    public static final String featureNoSecurity = "http://jena.hpl.hp.com/2004/07/feature/noSecurity" ;
-
-    /** @deprecated To be removed */
-    @Deprecated(since="4.9.0")
-    public static final String featureNoCharset = "http://jena.hpl.hp.com/2004/07/feature/noCharset" ;
-
-    static Map<String, String> features = new HashMap<>() ;
-    static {
-            // Note getSystemProperty uses featureNoSecurity but works if it
-            // has not been initialized
-            if ( getSystemProperty(featureNoSecurity) != null )
-                setFeature(featureNoSecurity) ;
-
-            if ( getSystemProperty(featureNoCharset) != null )
-                setFeature(featureNoCharset) ;
-    }
-
-    /** @deprecated To be removed */
-    @Deprecated(since="4.9.0")
-    public static void setFeature(String featureName) { features.put(featureName, "true") ; }
-
-
     static final String lineSeparator = getSystemProperty("line.separator", "\n") ;
     public static String getLineSeparator() {
         return lineSeparator;
