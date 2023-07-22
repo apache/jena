@@ -18,32 +18,32 @@
 
 package org.apache.jena.rdf.model.impl;
 
-import java.io.* ;
-import java.net.URL ;
-import java.util.* ;
-import java.util.function.Supplier ;
+import java.io.*;
+import java.net.URL;
+import java.util.*;
+import java.util.function.Supplier;
 
-import org.apache.jena.datatypes.DatatypeFormatException ;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.datatypes.TypeMapper ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.datatypes.xsd.XSDDateTime ;
-import org.apache.jena.enhanced.BuiltinPersonalities ;
-import org.apache.jena.enhanced.EnhGraph ;
-import org.apache.jena.enhanced.Personality ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.* ;
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.util.CollectionFactory ;
+import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.TypeMapper;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.datatypes.xsd.XSDDateTime;
+import org.apache.jena.enhanced.BuiltinPersonalities;
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.Personality;
+import org.apache.jena.graph.*;
+import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.shared.*;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
+import org.apache.jena.sys.JenaSystem;
+import org.apache.jena.util.CollectionFactory;
 import org.apache.jena.util.iterator.ClosableIterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.FilterIterator;
 import org.apache.jena.util.iterator.Map1Iterator;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDF;
 
 /** Common methods for model implementations.
  *
@@ -52,28 +52,28 @@ import org.apache.jena.vocabulary.RDF ;
  *    model implementations can be derived.</P>
  */
 
-public class ModelCom extends EnhGraph
-implements Model, PrefixMapping, Lock
+public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
 {
     private static RDFReaderF readerFactory = new RDFReaderFImpl();
     private static RDFWriterF writerFactory = new RDFWriterFImpl();
-    private Lock modelLock = null ;
+    private Lock modelLock = null;
 
     static {
         // This forces RIOT (in ARQ) to initialize but after Jena readers/writers
         // have cleanly initialized from the calls of RDFReaderFImpl and RDFWriterFImpl
         // above.  RIOT initialization happens before model.read can be called.
-        JenaSystem.init() ;
+        JenaSystem.init();
     }
 
     /**
-    	make a model based on the specified graph
+     * make a model based on the specified graph
      */
-    public ModelCom( Graph base )
-    { this( base, BuiltinPersonalities.model ); }
+    public ModelCom(Graph base) {
+        this(base, BuiltinPersonalities.model);
+    }
 
-    public ModelCom( Graph base, Personality<RDFNode> personality ) {
-        super( base, personality );
+    public ModelCom(Graph base, Personality<RDFNode> personality) {
+        super(base, personality);
     }
 
     @Override
@@ -84,23 +84,21 @@ implements Model, PrefixMapping, Lock
     { return ModelFactory.createDefaultModel(); }
 
     @Override
-    public RDFNode asRDFNode( Node n )
-    {
+    public RDFNode asRDFNode( Node n ) {
         return n.isLiteral()
             ? (RDFNode) this.getNodeAs( n, Literal.class )
             : (RDFNode) this.getNodeAs( n, Resource.class );
     }
 
     @Override
-    public Resource wrapAsResource( Node n )
-    {
+    public Resource wrapAsResource( Node n ) {
         if (n.isLiteral())
             throw new UnsupportedOperationException( "literal cannot be converted to Resource" );
         return this.getNodeAs( n, Resource.class );
     }
 
     /**
-        the ModelReifier does everything to do with reification.
+     * the ModelReifier does everything to do with reification.
      */
     protected ModelReifier modelReifier = new ModelReifier( this );
 
@@ -143,30 +141,27 @@ implements Model, PrefixMapping, Lock
     }
 
     @Override
-    public Model add(Resource s, Property p, String o, boolean wellFormed)
-    {
-        add( s, p, literal( o, "", wellFormed ) );
+    public Model add(Resource s, Property p, String o, boolean wellFormed) {
+        add(s, p, literal(o, "", wellFormed));
         return this;
     }
 
-    public Model add( Resource s, Property p, String o, String lang,
-                      boolean wellFormed)  {
-        add( s, p, literal( o, lang, wellFormed ) );
+    public Model add(Resource s, Property p, String o, String lang, boolean wellFormed) {
+        add(s, p, literal(o, lang, wellFormed));
         return this;
     }
 
     @Override
-    public Model add(Resource s, Property p, String lex, RDFDatatype datatype)
-    {
-        add( s, p, literal( lex, datatype)) ;
+    public Model add(Resource s, Property p, String lex, RDFDatatype datatype) {
+        add(s, p, literal(lex, datatype));
         return this;
     }
 
-    private Literal literal( String s, String lang, boolean wellFormed ) {
+    private Literal literal(String s, String lang, boolean wellFormed) {
         LiteralLabel ll = LiteralLabelFactory.create(s, lang, wellFormed);
         @SuppressWarnings("deprecation")
         Node n = NodeFactory.createLiteral(ll);
-        return new LiteralImpl( n, this );
+        return new LiteralImpl(n, this);
     }
 
     private Literal literal( String lex, RDFDatatype datatype)
@@ -196,8 +191,8 @@ implements Model, PrefixMapping, Lock
 
     @Override
     public Model add(Model m) {
-        GraphUtil.addInto(getGraph(), m.getGraph()) ;
-        return this ;
+        GraphUtil.addInto(getGraph(), m.getGraph());
+        return this;
     }
 
     @Override
@@ -235,127 +230,112 @@ implements Model, PrefixMapping, Lock
     }
 
     @Override
-    public Model read( String url, String base, String lang )
-    {
-        try ( InputStream is = new URL( url ) .openStream() ) {
-            read( is, base, lang );
+    public Model read(String url, String base, String lang) {
+        try (InputStream is = new URL(url).openStream()) {
+            read(is, base, lang);
+        } catch (IOException e) {
+            throw new WrappedIOException(e);
         }
-        catch (IOException e) { throw new WrappedIOException( e ); }
         return this;
     }
 
     @Override
-    public Model read(Reader reader, String base, String lang)
-    {
-        readerFactory .getReader(lang) .read(this, reader, base);
+    public Model read(Reader reader, String base, String lang) {
+        readerFactory.getReader(lang).read(this, reader, base);
         return this;
     }
 
     @Override
-    public Model read(InputStream reader, String base, String lang)
-    {
-        readerFactory .getReader(lang) .read(this, reader, base);
+    public Model read(InputStream reader, String base, String lang) {
+        readerFactory.getReader(lang).read(this, reader, base);
         return this;
     }
 
     /**
-        Get the model's writer after priming it with the model's namespace
-        prefixes.
+     * Get the model's writer after priming it with the model's namespace prefixes.
      */
     @Override
-    public RDFWriterI getWriter()  {
+    public RDFWriterI getWriter() {
         return writerFactory.getWriter();
     }
 
     /**
-        Get the model's writer after priming it with the model's namespace
-        prefixes.
+     * Get the model's writer after priming it with the model's namespace prefixes.
      */
     @Override
-    public RDFWriterI getWriter(String lang)  {
+    public RDFWriterI getWriter(String lang) {
         return writerFactory.getWriter(lang);
     }
 
     @Override
-    public Model write(Writer writer)
-    {
-        getWriter() .write(this, writer, "");
+    public Model write(Writer writer) {
+        getWriter().write(this, writer, "");
         return this;
     }
 
     @Override
-    public Model write(Writer writer, String lang)
-    {
-        getWriter(lang) .write(this, writer, "");
+    public Model write(Writer writer, String lang) {
+        getWriter(lang).write(this, writer, "");
         return this;
     }
 
     @Override
-    public Model write(Writer writer, String lang, String base)
-    {
-        getWriter(lang) .write(this, writer, base);
+    public Model write(Writer writer, String lang, String base) {
+        getWriter(lang).write(this, writer, base);
         return this;
     }
 
     @Override
-    public Model write( OutputStream writer )
-    {
-        getWriter() .write(this, writer, "");
+    public Model write(OutputStream writer) {
+        getWriter().write(this, writer, "");
         return this;
     }
 
     @Override
-    public Model write(OutputStream writer, String lang)
-    {
-        getWriter(lang) .write(this, writer, "");
+    public Model write(OutputStream writer, String lang) {
+        getWriter(lang).write(this, writer, "");
         return this;
     }
 
     @Override
-    public Model write(OutputStream writer, String lang, String base)
-    {
-        getWriter(lang) .write(this, writer, base);
+    public Model write(OutputStream writer, String lang, String base) {
+        getWriter(lang).write(this, writer, base);
         return this;
     }
 
     @Override
-    public Model remove(Statement s)  {
+    public Model remove(Statement s) {
         graph.delete(s.asTriple());
         return this;
     }
 
     @Override
-    public Model remove( Resource s, Property p, RDFNode o ) {
-        graph.delete( Triple.create( s.asNode(), p.asNode(), o.asNode() ) );
-        return this;
-    }
-
-
-    @Override
-    public Model remove( StmtIterator iter )
-    {
-        GraphUtil.delete( getGraph(), asTriples( iter ) );
+    public Model remove(Resource s, Property p, RDFNode o) {
+        graph.delete(Triple.create(s.asNode(), p.asNode(), o.asNode()));
         return this;
     }
 
     @Override
-    public Model remove( Model m )
-    {
-        GraphUtil.deleteFrom( getGraph(), m.getGraph());
+    public Model remove(StmtIterator iter) {
+        GraphUtil.delete(getGraph(), asTriples(iter));
         return this;
     }
 
     @Override
-    public Model removeAll()
-    {
+    public Model remove(Model m) {
+        GraphUtil.deleteFrom(getGraph(), m.getGraph());
+        return this;
+    }
+
+    @Override
+    public Model removeAll() {
         getGraph().clear();
         return this;
     }
 
     @Override
-    public Model removeAll( Resource s, Property p, RDFNode o )
-    {
-        getGraph().remove( asNode( s ), asNode( p ), asNode( o ) );
+    public Model removeAll(Resource s, Property p, RDFNode o) {
+        getGraph().remove(asNode(s), asNode(p), asNode(o));
         return this;
     }
 
@@ -410,23 +390,23 @@ implements Model, PrefixMapping, Lock
     { try { return containsAll( iter ); } finally { iter.close(); } }
 
     @Override
-    public boolean containsAny( StmtIterator iter )
-    {
-        while (iter.hasNext()) if (contains(iter.nextStatement())) return true;
+    public boolean containsAny(StmtIterator iter) {
+        while (iter.hasNext())
+            if ( contains(iter.nextStatement()) )
+                return true;
         return false;
     }
 
     @Override
-    public boolean containsAll( StmtIterator iter )
-    {
-        while (iter.hasNext()) if (!contains(iter.nextStatement())) return false;
+    public boolean containsAll(StmtIterator iter) {
+        while (iter.hasNext())
+            if ( !contains(iter.nextStatement()) )
+                return false;
         return true;
     }
 
-    protected StmtIterator listStatements( Resource S, Property P, Node O )
-    {
-        return IteratorFactory.asStmtIterator
-            ( graph.find( asNode( S ), asNode( P ), O ), this );
+    protected StmtIterator listStatements(Resource S, Property P, Node O) {
+        return IteratorFactory.asStmtIterator(graph.find(asNode(S), asNode(P), O), this);
     }
 
     @Override
@@ -452,8 +432,7 @@ implements Model, PrefixMapping, Lock
         }
     }
 
-	private class StringFilteredStmtIterator extends FilterIterator<Statement>
-			implements StmtIterator {
+	private class StringFilteredStmtIterator extends FilterIterator<Statement> implements StmtIterator {
 		public StringFilteredStmtIterator(final String str, Iterator<Statement> it) {
 			super(s -> {
 				RDFNode o = s.getObject();
@@ -507,10 +486,6 @@ implements Model, PrefixMapping, Lock
     @Override
     public StmtIterator listLiteralStatements( Resource S, Property P, double  O )
     { return listStatements( S, P, createTypedLiteral( O ) ); }
-
-    /*
-         list resources with property [was: list subjects with property]
-     */
 
     @Override
     public ResIterator listResourcesWithProperty( Property p, boolean o )
@@ -572,7 +547,6 @@ implements Model, PrefixMapping, Lock
     @Deprecated public Resource createResource( String uri, ResourceF f )
     { return f.createResource( createResource( uri ) ); }
 
-
     /** create a type literal from a boolean value.
      *
      * <p> The value is converted to a string using its <CODE>toString</CODE>
@@ -593,7 +567,7 @@ implements Model, PrefixMapping, Lock
      * @return a new literal representing the value v
      */
     @Override
-    public Literal createTypedLiteral(int v)   {
+    public Literal createTypedLiteral(int v) {
         return createTypedLiteral(Integer.valueOf(v));
     }
 
@@ -604,7 +578,7 @@ implements Model, PrefixMapping, Lock
      * @return a new literal representing the value v
      */
     @Override
-    public Literal createTypedLiteral(long v)   {
+    public Literal createTypedLiteral(long v) {
         return createTypedLiteral(Long.valueOf(v));
     }
 
@@ -615,7 +589,7 @@ implements Model, PrefixMapping, Lock
      * @return a new literal representing the value v
      */
     @Override
-    public Literal createTypedLiteral(char v)  {
+    public Literal createTypedLiteral(char v) {
         return createTypedLiteral(Character.valueOf(v));
     }
 
@@ -626,7 +600,7 @@ implements Model, PrefixMapping, Lock
      * @return a new literal representing the value v
      */
     @Override
-    public Literal createTypedLiteral(float v)  {
+    public Literal createTypedLiteral(float v) {
         return createTypedLiteral(Float.valueOf(v));
     }
 
@@ -648,7 +622,7 @@ implements Model, PrefixMapping, Lock
      * @return a new literal representing the value v
      */
     @Override
-    public Literal createTypedLiteral(String v)  {
+    public Literal createTypedLiteral(String v) {
         LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(v);
         return new LiteralImpl(NodeFactory.createLiteral(v), this);
     }
@@ -676,8 +650,7 @@ implements Model, PrefixMapping, Lock
      * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
     @Override
-    public Literal createTypedLiteral(String lex, RDFDatatype dtype)
-        throws DatatypeFormatException {
+    public Literal createTypedLiteral(String lex, RDFDatatype dtype) throws DatatypeFormatException {
         return new LiteralImpl( NodeFactory.createLiteral( lex, dtype ), this);
     }
 
@@ -735,8 +708,7 @@ implements Model, PrefixMapping, Lock
      * @param value the literal value to encapsulate
      */
     @Override
-    public Literal createTypedLiteral( Object value )
-    {
+    public Literal createTypedLiteral(Object value) {
         // Catch special case of a Calendar which we want to act as if it were an XSDDateTime
         if (value instanceof Calendar)
             return createTypedLiteral( (Calendar)value );
@@ -834,15 +806,13 @@ implements Model, PrefixMapping, Lock
      * @return An RDF-encoded list of the elements of the iterator
      */
     @Override
-    public RDFList createList( Iterator<? extends RDFNode> members )
-    {
-        if (!members.hasNext())
+    public RDFList createList(Iterator<? extends RDFNode> members) {
+        if ( !members.hasNext() )
             return createList();
 
         Resource root = createResource().addProperty(RDF.first, members.next());
         Resource last = root;
-        while (members.hasNext())
-        {
+        while (members.hasNext()) {
             Resource rest = createResource().addProperty(RDF.first, members.next());
             last.addProperty(RDF.rest, rest);
             last = rest;
@@ -851,7 +821,6 @@ implements Model, PrefixMapping, Lock
 
         return root.as(RDFList.class);
     }
-
 
     /**
      * <p>Answer a new list containing the RDF nodes from the given array, in order</p>
@@ -872,10 +841,10 @@ implements Model, PrefixMapping, Lock
     { return IteratorFactory.asResource(makeURI(uri),this); }
 
     @Override
-    public Property getProperty( String uri )
-    {
-        if (uri == null) throw new InvalidPropertyURIException( null );
-        return IteratorFactory.asProperty( makeURI(uri), this );
+    public Property getProperty(String uri) {
+        if ( uri == null )
+            throw new InvalidPropertyURIException(null);
+        return IteratorFactory.asProperty(makeURI(uri), this);
     }
 
     @Override
@@ -925,17 +894,15 @@ implements Model, PrefixMapping, Lock
     public boolean isEmpty()
     { return graph.isEmpty(); }
 
-    private void updateNamespace( Set<String> set, Iterator<Node> it )
-    {
-        while (it.hasNext())
-        {
+    private void updateNamespace(Set<String> set, Iterator<Node> it) {
+        while (it.hasNext()) {
             Node node = it.next();
-            if (node.isURI())
-            {
+            if ( node.isURI() ) {
                 String uri = node.getURI();
-                String ns = uri.substring( 0, Util.splitNamespaceXML( uri ) );
-                // String ns = IteratorFactory.asResource( node, this ).getNameSpace();
-                set.add( ns );
+                String ns = uri.substring(0, Util.splitNamespaceXML(uri));
+                // String ns = IteratorFactory.asResource( node, this
+                // ).getNameSpace();
+                set.add(ns);
             }
         }
     }
@@ -943,19 +910,19 @@ implements Model, PrefixMapping, Lock
     private ExtendedIterator<Node> listPredicates()
     { return GraphUtil.listPredicates(graph, Node.ANY, Node.ANY ); }
 
-    private Iterator<Node> listTypes()
-    {
+    private Iterator<Node> listTypes() {
         Set<Node> types = CollectionFactory.createHashedSet();
-        ClosableIterator<Triple> it = graph.find( null, RDF.type.asNode(), null );
-        while (it.hasNext()) types.add( it.next().getObject() );
+        ClosableIterator<Triple> it = graph.find(null, RDF.type.asNode(), null);
+        while (it.hasNext())
+            types.add(it.next().getObject());
         return types.iterator();
     }
 
     @Override
-    public NsIterator listNameSpaces()  {
+    public NsIterator listNameSpaces() {
         Set<String> nameSpaces = CollectionFactory.createHashedSet();
-        updateNamespace( nameSpaces, listPredicates() );
-        updateNamespace( nameSpaces, listTypes() );
+        updateNamespace(nameSpaces, listPredicates());
+        updateNamespace(nameSpaces, listTypes());
         return new NsIteratorImpl(nameSpaces.iterator(), nameSpaces);
     }
 
@@ -967,51 +934,44 @@ implements Model, PrefixMapping, Lock
     { return getPrefixMapping().samePrefixMappingAs( other ); }
 
     @Override
-    public PrefixMapping lock()
-    {
+    public PrefixMapping lock() {
         getPrefixMapping().lock();
         return this;
     }
 
     @Override
-    public Model setNsPrefix( String prefix, String uri )
-    {
-        getPrefixMapping().setNsPrefix( prefix, uri );
+    public Model setNsPrefix(String prefix, String uri) {
+        getPrefixMapping().setNsPrefix(prefix, uri);
         return this;
     }
 
     @Override
-    public Model removeNsPrefix( String prefix )
-    {
-        getPrefixMapping().removeNsPrefix( prefix );
+    public Model removeNsPrefix(String prefix) {
+        getPrefixMapping().removeNsPrefix(prefix);
         return this;
     }
 
     @Override
-    public Model clearNsPrefixMap()
-    {
+    public Model clearNsPrefixMap() {
         getPrefixMapping().clearNsPrefixMap();
-        return this ;
-    }
-
-    @Override
-    public Model setNsPrefixes( PrefixMapping pm )
-    {
-        getPrefixMapping().setNsPrefixes( pm );
         return this;
     }
 
     @Override
-    public Model setNsPrefixes( Map<String, String> map )
-    {
-        getPrefixMapping().setNsPrefixes( map );
+    public Model setNsPrefixes(PrefixMapping pm) {
+        getPrefixMapping().setNsPrefixes(pm);
         return this;
     }
 
     @Override
-    public Model withDefaultMappings( PrefixMapping other )
-    {
-        getPrefixMapping().withDefaultMappings( other );
+    public Model setNsPrefixes(Map<String, String> map) {
+        getPrefixMapping().setNsPrefixes(map);
+        return this;
+    }
+
+    @Override
+    public Model withDefaultMappings(PrefixMapping other) {
+        getPrefixMapping().withDefaultMappings(other);
         return this;
     }
 
@@ -1045,35 +1005,29 @@ implements Model, PrefixMapping, Lock
 
     @Override
     public int numPrefixes()
-    { return getPrefixMapping().numPrefixes() ; }
+    { return getPrefixMapping().numPrefixes(); }
 
     /**
-        Service method to update the namespaces of  a Model given the
-        mappings from prefix names to sets of URIs.
-
-        If the prefix maps to multiple URIs, then we discard it completely.
-
-        @param m Model who's namespace is to be updated
-        @param ns the namespace map to add to the Model
+     * Service method to update the namespaces of a Model given the mappings from
+     * prefix names to sets of URIs. If the prefix maps to multiple URIs, then we
+     * discard it completely.
+     *
+     * @param m Model whose namespace is to be updated
+     * @param ns the namespace map to add to the Model
      */
-    public static void addNamespaces( Model m, Map<String, Set<String>> ns )
-    {
+    public static void addNamespaces(Model m, Map<String, Set<String>> ns) {
         PrefixMapping pm = m;
-        for ( Map.Entry<String, Set<String>> e : ns.entrySet() )
-        {
+        for ( Map.Entry<String, Set<String>> e : ns.entrySet() ) {
             String key = e.getKey();
             Set<String> values = e.getValue();
             Set<String> niceValues = CollectionFactory.createHashedSet();
-            for ( String uri : values )
-            {
-                if ( PrefixMappingImpl.isNiceURI( uri ) )
-                {
-                    niceValues.add( uri );
+            for ( String uri : values ) {
+                if ( PrefixMappingImpl.isNiceURI(uri) ) {
+                    niceValues.add(uri);
                 }
             }
-            if ( niceValues.size() == 1 )
-            {
-                pm.setNsPrefix( key, niceValues.iterator().next() );
+            if ( niceValues.size() == 1 ) {
+                pm.setNsPrefix(key, niceValues.iterator().next());
             }
         }
     }
@@ -1083,12 +1037,11 @@ implements Model, PrefixMapping, Lock
     { return IteratorFactory.asStmtIterator( GraphUtil.findAll( graph ), this); }
 
     /**
-        add a Statement to this Model by adding its SPO components.
+     * add a Statement to this Model by adding its SPO components.
      */
     @Override
-    public Model add( Statement s )
-    {
-        add( s.getSubject(), s.getPredicate(), s.getObject() );
+    public Model add(Statement s) {
+        add(s.getSubject(), s.getPredicate(), s.getObject());
         return this;
     }
 
@@ -1097,29 +1050,25 @@ implements Model, PrefixMapping, Lock
         triples and removing those from the underlying graph.
      */
     @Override
-    public Model add( Statement [] statements )
-    {
-        GraphUtil.add(getGraph(), StatementImpl.asTriples( statements ) );
+    public Model add(Statement[] statements) {
+        GraphUtil.add(getGraph(), StatementImpl.asTriples(statements));
         return this;
     }
 
     /**
-        Add all the statements to the model by converting the list to an array of
-        Statement and removing that.
+     * Add all the statements to the model by converting the list to an array of
+     * Statement and removing that.
      */
     @Override
-    public Model add( List<Statement> statements )
-    {
-        GraphUtil.add(getGraph(), asTriples( statements ) );
+    public Model add(List<Statement> statements) {
+        GraphUtil.add(getGraph(), asTriples(statements));
         return this;
     }
 
-    private List<Triple> asTriples( List<Statement> statements )
-    {
-        List<Triple> L = new ArrayList<>( statements.size() );
-        for ( Statement statement : statements )
-        {
-            L.add( statement.asTriple() );
+    private List<Triple> asTriples(List<Statement> statements) {
+        List<Triple> L = new ArrayList<>(statements.size());
+        for ( Statement statement : statements ) {
+            L.add(statement.asTriple());
         }
         return L;
     }
@@ -1128,24 +1077,22 @@ implements Model, PrefixMapping, Lock
     { return it.mapWith( s -> s.asTriple() ); }
 
     /**
-        remove all the Statements from the model by converting them to triples and
-        removing those triples from the underlying graph.
+     * remove all the Statements from the model by converting them to triples and
+     * removing those triples from the underlying graph.
      */
     @Override
-    public Model remove( Statement [] statements )
-    {
-        GraphUtil.delete( getGraph(), StatementImpl.asTriples( statements ) );
+    public Model remove(Statement[] statements) {
+        GraphUtil.delete(getGraph(), StatementImpl.asTriples(statements));
         return this;
     }
 
     /**
-        Remove all the Statements from the model by converting the List to a
-        List(Statement) and removing that.
+     * Remove all the Statements from the model by converting the List to a
+     * List(Statement) and removing that.
      */
     @Override
-    public Model remove( List<Statement> statements )
-    {
-        GraphUtil.delete( getGraph(), asTriples( statements ) );
+    public Model remove(List<Statement> statements) {
+        GraphUtil.delete(getGraph(), asTriples(statements));
         return this;
     }
 
@@ -1157,7 +1104,7 @@ implements Model, PrefixMapping, Lock
     }
 
     /**
-        @return an iterator which delivers all the ReifiedStatements in this model
+     * @return an iterator which delivers all the ReifiedStatements in this model
      */
     @Override
     public RSIterator listReifiedStatements()
@@ -1179,19 +1126,20 @@ implements Model, PrefixMapping, Lock
     { return modelReifier.isReified( s ); }
 
     /**
-        get any reification of the given statement in this model; make
-        one if necessary.
-
-        @param s for which a reification is sought
-        @return a ReifiedStatement that reifies _s_
+     * get any reification of the given statement in this model; make one if
+     * necessary.
+     *
+     * @param s for which a reification is sought
+     * @return a ReifiedStatement that reifies _s_
      */
     @Override
     public Resource getAnyReifiedStatement(Statement s)
     { return modelReifier.getAnyReifiedStatement( s ); }
 
     /**
-        remove any ReifiedStatements reifying the given statement
-        @param s the statement who's reifications are to be discarded
+     * remove any ReifiedStatements reifying the given statement
+     *
+     * @param s the statement who's reifications are to be discarded
      */
     @Override
     public void removeAllReifications( Statement s )
@@ -1202,7 +1150,7 @@ implements Model, PrefixMapping, Lock
     { modelReifier.removeReification( rs ); }
 
     /**
-        create a ReifiedStatement that encodes _s_ and belongs to this Model.
+     * create a ReifiedStatement that encodes _s_ and belongs to this Model.
      */
     @Override
     public ReifiedStatement createReifiedStatement( Statement s )
@@ -1260,14 +1208,13 @@ implements Model, PrefixMapping, Lock
     { return x == null ? Node.ANY : x.asNode(); }
 
     private NodeIterator listObjectsFor( RDFNode s, RDFNode p ) {
-        ClosableIterator<Node> xit = GraphUtil.listObjects(graph, asNode( s ), asNode( p ) ) ;
+        ClosableIterator<Node> xit = GraphUtil.listObjects(graph, asNode( s ), asNode( p ) );
         return IteratorFactory.asRDFNodeIterator( xit, this );
     }
 
-    private ResIterator listSubjectsFor( RDFNode p, RDFNode o )
-    {
-        ClosableIterator<Node> xit = GraphUtil.listSubjects( graph, asNode( p ), asNode( o ) );
-        return IteratorFactory.asResIterator( xit, this );
+    private ResIterator listSubjectsFor(RDFNode p, RDFNode o) {
+        ClosableIterator<Node> xit = GraphUtil.listSubjects(graph, asNode(p), asNode(o));
+        return IteratorFactory.asResIterator(xit, this);
     }
 
     @Override
@@ -1299,314 +1246,299 @@ implements Model, PrefixMapping, Lock
     { return listObjectsFor( s, p ); }
 
     @Override
-    public StmtIterator listStatements( final Selector selector )
-    {
+    public StmtIterator listStatements(final Selector selector) {
         StmtIterator sts = IteratorFactory.asStmtIterator( findTriplesFrom( selector ), this );
         return selector.isSimple()
-            ? sts
-            : new StmtIteratorImpl( sts .filterKeep ( selector ) )
-        ;
+                ? sts
+                    : new StmtIteratorImpl( sts .filterKeep ( selector ) )
+                    ;
     }
 
-     /**
-        Answer an [extended] iterator which returns the triples in this graph which
-        are selected by the (S, P, O) triple in the selector, ignoring any special
-        tests it may do.
+    /**
+     * Answer an [extended] iterator which returns the triples in this graph which
+     * are selected by the (S, P, O) triple in the selector, ignoring any special
+     * tests it may do.
+     *
+     * @param s a Selector used to supply subject, predicate, and object
+     * @return an extended iterator over the matching (S, P, O) triples
+     */
+    public ExtendedIterator<Triple> findTriplesFrom(Selector s) {
+        return graph.find
+                ( asNode( s.getSubject() ), asNode( s.getPredicate() ), asNode( s.getObject() ) );
+    }
 
-        @param s a Selector used to supply subject, predicate, and object
-        @return an extended iterator over the matching (S, P, O) triples
-      */
-     public ExtendedIterator<Triple> findTriplesFrom( Selector s )
-     {
-         return graph.find
-             ( asNode( s.getSubject() ), asNode( s.getPredicate() ), asNode( s.getObject() ) );
-     }
+    @Override
+    public boolean supportsTransactions()
+    { return getTransactionHandler().transactionsSupported(); }
 
-     @Override
-     public boolean supportsTransactions()
-     { return getTransactionHandler().transactionsSupported(); }
+    @Override
+    public Model begin()
+    { getTransactionHandler().begin(); return this; }
 
-     @Override
-     public Model begin()
-     { getTransactionHandler().begin(); return this; }
+    @Override
+    public Model abort()
+    { getTransactionHandler().abort(); return this; }
 
-     @Override
-     public Model abort()
-     { getTransactionHandler().abort(); return this; }
+    @Override
+    public Model commit()
+    { getTransactionHandler().commit(); return this; }
 
-     @Override
-     public Model commit()
-     { getTransactionHandler().commit(); return this; }
+    private TransactionHandler getTransactionHandler()
+    { return getGraph().getTransactionHandler(); }
 
-     private TransactionHandler getTransactionHandler()
-     { return getGraph().getTransactionHandler(); }
+    @Override
+    public void executeInTxn( Runnable action )
+    { getTransactionHandler().execute( action ); }
 
-     @Override
-     public void executeInTxn( Runnable action ) {
-         getTransactionHandler().execute( action );
-     }
+    /**
+     * Execute the supplier <code>action</code> within a transaction. If it completes normally,
+     * commit the transaction and return the result, otherwise abort the transaction.
+     */
+    @Override
+    public <T> T calculateInTxn( Supplier<T> action )
+    { return getTransactionHandler().calculate( action ); }
 
-     /**
-      * Execute the supplier <code>action</code> within a transaction. If it completes normally,
-      * commit the transaction and return the result, otherwise abort the transaction.
-      */
-     @Override
-     public <T> T calculateInTxn( Supplier<T> action ) {
-         return getTransactionHandler().calculate( action );
-     }
+    @Override
+    public boolean independent()
+    { return true; }
 
-     @Override
-     public boolean independent()
-     { return true; }
+    @Override
+    public Resource createResource()
+    { return IteratorFactory.asResource( NodeFactory.createBlankNode(),this ); }
 
-     @Override
-     public Resource createResource()
-     { return IteratorFactory.asResource( NodeFactory.createBlankNode(),this ); }
+    @Override
+    public Resource createResource( String uri )
+    { return getResource( uri ); }
 
-     @Override
-     public Resource createResource( String uri )
-     { return getResource( uri ); }
+    @Override
+    public Property createProperty( String uri )
+    { return getProperty( uri ); }
 
-     @Override
-     public Property createProperty( String uri )
-     { return getProperty( uri ); }
+    @Override
+    public Property createProperty(String nameSpace, String localName)
+    { return getProperty(nameSpace, localName); }
 
-     @Override
-     public Property createProperty(String nameSpace, String localName)
-     { return getProperty(nameSpace, localName); }
+    /**
+     * create a Statement from the given r, p, and o.
+     */
+    @Override
+    public Statement createStatement(Resource r, Property p, RDFNode o)
+    { return new StatementImpl( r, p, o, this ); }
 
-     /**
-        create a Statement from the given r, p, and o.
-      */
-      @Override
-      public Statement createStatement(Resource r, Property p, RDFNode o)
-      { return new StatementImpl( r, p, o, this ); }
+    @Override
+    public Bag createBag(String uri)
+    { return (Bag) getBag(uri).addProperty( RDF.type, RDF.Bag ); }
 
-      @Override
-      public Bag createBag(String uri)
-      { return (Bag) getBag(uri).addProperty( RDF.type, RDF.Bag ); }
+    @Override
+    public Alt createAlt( String uri )
+    { return (Alt) getAlt(uri).addProperty( RDF.type, RDF.Alt ); }
 
-      @Override
-      public Alt createAlt( String uri )
-      { return (Alt) getAlt(uri).addProperty( RDF.type, RDF.Alt ); }
+    @Override
+    public Seq createSeq(String uri)
+    { return (Seq) getSeq(uri).addProperty( RDF.type, RDF.Seq ); }
 
-      @Override
-      public Seq createSeq(String uri)
-      { return (Seq) getSeq(uri).addProperty( RDF.type, RDF.Seq ); }
+    /**
+     * Answer a Statement in this Model which encodes the given Triple.
+     *
+     * @param t a triple to wrap as a statement
+     * @return a statement wrapping the triple and in this model
+     */
+    @Override
+    public Statement asStatement( Triple t )
+    { return StatementImpl.toStatement( t, this ); }
 
-      /**
-        Answer a Statement in this Model which encodes the given Triple.
-        @param t a triple to wrap as a statement
-        @return a statement wrapping the triple and in this model
-       */
-      @Override
-      public Statement asStatement( Triple t )
-      { return StatementImpl.toStatement( t, this ); }
+    public Statement[] asStatements(Triple[] triples) {
+        Statement [] result = new Statement [triples.length];
+        for (int i = 0; i < triples.length; i += 1) result[i] = asStatement( triples[i] );
+        return result;
+    }
 
-      public Statement [] asStatements( Triple [] triples )
-      {
-          Statement [] result = new Statement [triples.length];
-          for (int i = 0; i < triples.length; i += 1) result[i] = asStatement( triples[i] );
-          return result;
-      }
+    public List<Statement> asStatements(List<Triple> triples) {
+        List<Statement> L = new ArrayList<>(triples.size());
+        for ( Triple triple : triples ) {
+            L.add(asStatement(triple));
+        }
+        return L;
+    }
 
-      public List<Statement> asStatements( List<Triple> triples )
-      {
-          List<Statement> L = new ArrayList<>( triples.size() );
-          for ( Triple triple : triples )
-          {
-              L.add( asStatement( triple ) );
-          }
-          return L;
-      }
+    public Model asModel( Graph g )
+    { return new ModelCom( g ); }
 
-      public Model asModel( Graph g )
-      { return new ModelCom( g ); }
+    public StmtIterator asStatements( final Iterator<Triple> it )
+    { return new StmtIteratorImpl( new Map1Iterator<>( t -> asStatement( t ), it ) ); }
 
-      public StmtIterator asStatements( final Iterator<Triple> it )
-      { return new StmtIteratorImpl( new Map1Iterator<>( t -> asStatement( t ), it ) ); }
+    public StmtIterator listBySubject( Container cont )
+    { return listStatements( cont, null, (RDFNode) null ); }
 
-      public StmtIterator listBySubject( Container cont )
-      { return listStatements( cont, null, (RDFNode) null ); }
+    @Override
+    public void close()
+    { graph.close(); }
 
-      @Override
-      public void close()
-      { graph.close(); }
+    @Override
+    public boolean isClosed()
+    { return graph.isClosed(); }
 
-      @Override
-      public boolean isClosed()
-      { return graph.isClosed(); }
+    @Override
+    public boolean supportsSetOperations()
+    {return true;}
 
-      @Override
-      public boolean supportsSetOperations()
-      {return true;}
+    @Override
+    public Model query( Selector selector )
+    { return createWorkModel() .add( listStatements( selector ) ); }
 
-      @Override
-      public Model query( Selector selector )
-      { return createWorkModel() .add( listStatements( selector ) ); }
+    @Override
+    public Model union( Model model )
+    { return createWorkModel() .add(this) .add( model ); }
 
-      @Override
-      public Model union( Model model )
-      { return createWorkModel() .add(this) .add( model ); }
+    /**
+     * Intersect this with another model. As an attempt at optimisation, we try and
+     * ensure we iterate over the smaller model first. Nowadays it's not clear that
+     * this is a good idea, since <code>size()</code> can be expensive on database
+     * and inference models.
+     *
+     * @see org.apache.jena.rdf.model.Model#intersection(org.apache.jena.rdf.model.Model)
+     */
+    @Override
+    public Model intersection( Model other )
+    { return this.size() < other.size() ? intersect( this, other ) : intersect( other, this ); }
 
-      /**
-        Intersect this with another model. As an attempt at optimisation, we try and ensure
-        we iterate over the smaller model first. Nowadays it's not clear that this is a good
-        idea, since <code>size()</code> can be expensive on database and inference
-        models.
+    /**
+     * Answer a Model that is the intersection of the two argument models. The
+     * first argument is the model iterated over, and the second argument is the
+     * one used to check for membership. [So the first one should be "small" and
+     * the second one "membership cheap".]
+     */
+    public static Model intersect(Model smaller, Model larger) {
+        Model result = createWorkModel();
+        StmtIterator it = smaller.listStatements();
+        try { return addCommon( result, it, larger ); }
+        finally { it.close(); }
+    }
 
-     	@see org.apache.jena.rdf.model.Model#intersection(org.apache.jena.rdf.model.Model)
-       */
-      @Override
-      public Model intersection( Model other )
-      { return this.size() < other.size() ? intersect( this, other ) : intersect( other, this ); }
+    /**
+     * Answer the argument result with all the statements from the statement
+     * iterator that are in the other model added to it.
+     *
+     * @param result the Model to add statements to and return
+     * @param it an iterator over the candidate statements
+     * @param other the model that must contain the statements to be added
+     * @return result, after the suitable statements have been added to it
+     */
+    protected static Model addCommon(Model result, StmtIterator it, Model other) {
+        while (it.hasNext()) {
+            Statement s = it.nextStatement();
+            if ( other.contains(s) )
+                result.add(s);
+        }
+        return result;
+    }
 
-      /**
-        Answer a Model that is the intersection of the two argument models. The first
-        argument is the model iterated over, and the second argument is the one used
-        to check for membership. [So the first one should be "small" and the second one
-        "membership cheap".]
-       */
-      public static Model intersect( Model smaller, Model larger )
-      {
-          Model result = createWorkModel();
-          StmtIterator it = smaller.listStatements();
-          try { return addCommon( result, it, larger ); }
-          finally { it.close(); }
-      }
+    @Override
+    public Model difference(Model model) {
+        Model resultModel = createWorkModel();
+        StmtIterator iter = null;
+        Statement stmt;
+        try {
+            iter = listStatements();
+            while (iter.hasNext()) {
+                stmt = iter.nextStatement();
+                if (! model.contains(stmt)) {
+                    resultModel.add(stmt);
+                }
+            }
+            return resultModel;
+        } finally {
+            if (null != iter) {
+                iter.close();
+            }
+        }
+    }
 
-      /**
-        Answer the argument result with all the statements from the statement iterator that
-        are in the other model added to it.
+    @Override
+    public String toString()
+    { return "<ModelCom  " + getGraph() + " | " + reifiedToString() + ">"; }
 
-     	@param result the Model to add statements to and return
-     	@param it an iterator over the candidate statements
-     	@param other the model that must contain the statements to be added
-     	@return result, after the suitable statements have been added to it
-       */
-      protected static Model addCommon( Model result, StmtIterator it, Model other )
-      {
-          while (it.hasNext())
-          {
-              Statement s = it.nextStatement();
-              if (other.contains( s )) result.add( s );
-          }
-          return result;
-      }
+    public String reifiedToString()
+    { return statementsToString( listStatements() ); }
 
-      @Override
-      public Model difference(Model model)  {
-          Model resultModel = createWorkModel();
-          StmtIterator iter = null;
-          Statement stmt;
-          try {
-              iter = listStatements();
-              while (iter.hasNext()) {
-                  stmt = iter.nextStatement();
-                  if (! model.contains(stmt)) {
-                      resultModel.add(stmt);
-                  }
-              }
-              return resultModel;
-          } finally {
-              if (null != iter) {
-                  iter.close();
-              }
-          }
-      }
+    protected String statementsToString(StmtIterator it) {
+        StringBuilder b = new StringBuilder();
+        while (it.hasNext())
+            b.append(" ").append(it.nextStatement());
+        return b.toString();
+    }
 
-      @Override
-      public String toString()
-      { return "<ModelCom  " + getGraph() + " | " + reifiedToString() + ">"; }
+    /**
+     * Answer whether or not these two graphs are isomorphic.
+     */
+    @Override
+    public boolean isIsomorphicWith(Model m) {
+        Graph L = this.getGraph();
+        Graph R = m.getGraph();
+        return L.isIsomorphicWith(R);
+    }
 
-      public String reifiedToString()
-      { return statementsToString( listStatements() ); }
+    public synchronized Lock getModelLock() {
+        if ( modelLock == null )
+            modelLock = new LockMRSW();
+        return modelLock;
+    }
 
-      protected String statementsToString( StmtIterator it )
-      {
-          StringBuilder b = new StringBuilder();
-          while (it.hasNext()) b.append( " " ).append( it.nextStatement() );
-          return b.toString();
-      }
+    @Override
+    public synchronized Lock getLock() {
+        return getModelLock();
+    }
 
-      /**
-            Answer whether or not these two graphs are isomorphic.
-       */
-      @Override
-      public boolean isIsomorphicWith( Model m )
-      {
-          Graph L = this.getGraph();
-          Graph R = m.getGraph();
-          return L.isIsomorphicWith( R );
-      }
+    @Override
+    public void enterCriticalSection(boolean requestReadLock) {
+        this.getModelLock().enterCriticalSection(requestReadLock);
+    }
 
-      public synchronized Lock getModelLock()
-      {
-          if ( modelLock == null )
-              modelLock = new LockMRSW() ;
-          return modelLock ;
-      }
+    @Override
+    public void leaveCriticalSection() {
+        this.getModelLock().leaveCriticalSection();
+    }
 
-      @Override
-      public synchronized Lock getLock()
-      {
-          return getModelLock() ;
-      }
+    /**
+     * Register the listener with this model by registering its GraphListener
+     * adaption with the underlying Graph.
+     *
+     * @param listener A ModelChangedListener to register for model events
+     * @return this model, for cascading
+     */
+    @Override
+    public Model register(ModelChangedListener listener) {
+        getGraph().getEventManager().register(adapt(listener));
+        return this;
+    }
 
+    /**
+     * Unregister the listener from this model by unregistering its GraphListener
+     * adaption from the underlying Graph.
+     *
+     * @param listener A ModelChangedListener to unregister from model events
+     * @return this model, for cascading
+     */
+    @Override
+    public Model unregister(ModelChangedListener listener) {
+        getGraph().getEventManager().unregister(adapt(listener));
+        return this;
+    }
 
-      @Override
-      public void enterCriticalSection(boolean requestReadLock)
-      {
-          this.getModelLock().enterCriticalSection(requestReadLock) ;
-      }
+    /**
+     * Answer a GraphListener that, when fed graph-level update events, fires the
+     * corresponding model-level event handlers in <code>L</code>.
+     *
+     * @see ModelListenerAdapter
+     * @param L a model listener to be wrapped as a graph listener
+     * @return a graph listener wrapping L
+     */
+    public GraphListener adapt( final ModelChangedListener L )
+    { return new ModelListenerAdapter( this, L ); }
 
-      @Override
-      public void leaveCriticalSection()
-      {
-          this.getModelLock().leaveCriticalSection() ;
-      }
-
-      /**
-        Register the listener with this model by registering its GraphListener
-        adaption with the underlying Graph.
-
-        @param listener A ModelChangedListener to register for model events
-        @return this model, for cascading
-       */
-      @Override
-      public Model register( ModelChangedListener listener )
-      {
-          getGraph().getEventManager().register( adapt( listener ) );
-          return this;
-      }
-
-      /**
-        Unregister the listener from this model by unregistering its GraphListener
-        adaption from the underlying Graph.
-        @param  listener A ModelChangedListener to unregister from model events
-        @return this model, for cascading
-       */
-      @Override
-      public Model unregister( ModelChangedListener listener )
-      {
-          getGraph().getEventManager().unregister( adapt( listener ) );
-          return this;
-      }
-
-      /**
-        Answer a GraphListener that, when fed graph-level update events,
-        fires the corresponding model-level event handlers in <code>L</code>.
-        @see ModelListenerAdapter
-        @param L a model listener to be wrapped as a graph listener
-        @return a graph listener wrapping L
-       */
-      public GraphListener adapt( final ModelChangedListener L )
-      { return new ModelListenerAdapter( this, L ); }
-
-      @Override
-      public Model notifyEvent( Object e )
-      {
-          getGraph().getEventManager().notifyEvent( getGraph(), e );
-          return this;
-      }
+    @Override
+    public Model notifyEvent(Object e) {
+        getGraph().getEventManager().notifyEvent(getGraph(), e);
+        return this;
+    }
 }
