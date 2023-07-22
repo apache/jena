@@ -20,7 +20,6 @@ package org.apache.jena.test;
 
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
-import org.apache.jena.JenaRuntime ;
 
 public class TestSystemSetup extends TestCase {
 
@@ -28,10 +27,9 @@ public class TestSystemSetup extends TestCase {
         return new TestSuite(TestSystemSetup.class, "System setup") ;
     }
 
+    // Check any settings that must have particular values in a release.
+
     public void testRDF11() {
-        // This should be "false" in Jena2.
-        // This should be "true" in Jena3, Jena4, ...
-        if ( ! JenaRuntime.isRDF11 )
-            fail("RDF 1.0 mode enabled in Jena test run") ;
+        // RDF 1.1 and later is now built-in.
     }
 }

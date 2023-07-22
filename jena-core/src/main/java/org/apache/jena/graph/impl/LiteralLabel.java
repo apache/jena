@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Locale ;
 import java.util.Objects ;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
@@ -240,7 +239,7 @@ final public class LiteralLabel {
         if ( lang != null && !lang.equals("") )
             b.append("@").append(lang) ;
         else if ( dtype != null ) {
-            if ( ! ( JenaRuntime.isRDF11 && dtype.equals(XSDDatatype.XSDstring) ) ) {
+            if ( ! dtype.equals(XSDDatatype.XSDstring) ) {
                 String x = (pmap != null)
                         ? PrefixMapping.Standard.shortForm(dtype.getURI())
                         : dtype.getURI();
@@ -251,14 +250,7 @@ final public class LiteralLabel {
 	}
 
 	private boolean simpleLiteral() {
-	    if ( JenaRuntime.isRDF11 )
-	        return dtype.equals(XSDDatatype.XSDstring);
-	    // RDF 1.0
-	    if ( lang != null && !lang.equals("") )
-	        return false;
-	    if ( dtype != null )
-	        return false;
-	    return true;
+	    return dtype.equals(XSDDatatype.XSDstring);
     }
 
     @Override
@@ -422,14 +414,8 @@ final public class LiteralLabel {
         if ( lit2 == null )
             throw new NullPointerException() ;
         // Strings.
-        if ( isStringValue(lit1) && isStringValue(lit2) ) {
-            // Complete compatibility mode.
-            if ( JenaParameters.enablePlainLiteralSameAsString )
-                return lit1.getLexicalForm().equals(lit2.getLexicalForm()) ;
-            else
-                return lit1.getLexicalForm().equals(lit2.getLexicalForm()) &&
-                    Objects.equals(lit1.getDatatype(), lit2.getDatatype()) ;
-        }
+        if ( isStringValue(lit1) && isStringValue(lit2) )
+            return lit1.getLexicalForm().equals(lit2.getLexicalForm()) ;
 
         if ( isStringValue(lit1) ) return false ;
         if ( isStringValue(lit2) ) return false ;
@@ -454,7 +440,7 @@ final public class LiteralLabel {
         return false ;
     }
 
-	/** Return true if the literal lable is a string value (RDF 1.0 and RDF 1.1) */
+	/** Return true if the literal label is a string value (RDF 1.0 and RDF 1.1) */
     private static boolean isStringValue(LiteralLabel lit) {
         if ( lit.getDatatype() == null )
             // RDF 1.0
@@ -464,7 +450,7 @@ final public class LiteralLabel {
         return false ;
     }
 
-    /** Return true if the literal label is a language string. (RDF 1.0 and RDF 1.1) */
+    /** Return true if the literal label is a language string. */
     public static boolean isLangString(LiteralLabel lit) {
         // Duplicated by Util.isLangString except for the consistency check.
         String lang = lit.language() ;
@@ -474,10 +460,8 @@ final public class LiteralLabel {
         if ( lang.equals("") )
             return false ;
         // This is an additional check.
-        if ( JenaRuntime.isRDF11 ) {
-            if ( ! Objects.equals(lit.getDatatype(), RDF.dtLangString) )
-                throw new JenaException("Literal with language string which is not rdf:langString: "+lit) ;
-        }
+        if ( ! Objects.equals(lit.getDatatype(), RDF.dtLangString) )
+            throw new JenaException("Literal with language string which is not rdf:langString: "+lit) ;
         return true ;
     }
 

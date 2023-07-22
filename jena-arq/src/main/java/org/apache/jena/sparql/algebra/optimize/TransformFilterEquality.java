@@ -20,10 +20,8 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import java.util.* ;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVars ;
@@ -37,7 +35,7 @@ import org.apache.jena.sparql.expr.* ;
 /**
  * A transform that aims to optimize queries where there is an equality
  * constraint on a variable to speed up evaluation e.g
- * 
+ *
  * <pre>
  * SELECT *
  * WHERE
@@ -46,9 +44,9 @@ import org.apache.jena.sparql.expr.* ;
  *   FILTER(?s = &lt;http://subject&gt;)
  * }
  * </pre>
- * 
+ *
  * Would transform to the following:
- * 
+ *
  * <pre>
  * SELECT *
  * WHERE
@@ -57,7 +55,7 @@ import org.apache.jena.sparql.expr.* ;
  *   BIND(&lt;http://subject&gt; AS ?s)
  * }
  * </pre>
- * 
+ *
  * <h3>Applicability</h3>
  * <p>
  * This optimizer is conservative in that it only makes the optimization where
@@ -78,7 +76,7 @@ public class TransformFilterEquality extends TransformCopy {
     // and better? Still need to be careful of double-nested OPTIONALS as
     // intermediates of a different value can block overall results so
     // don't mask immediately.
-    
+
     public TransformFilterEquality() { }
 
     @Override
@@ -190,38 +188,28 @@ public class TransformFilterEquality extends TransformCopy {
 
         if (var == null || constant == null)
             return null;
-        
+
         if ( constant.isIRI() || constant.isBlank() )
             return Pair.create(var, constant);
 
         // Literals.  Without knowing more, .equals is not the same as
-        // SPARQL "=" (or .sameValueAs).  
+        // SPARQL "=" (or .sameValueAs).
         // In RDF 1.1, it is true of xsd:strings.
 
-        if (e instanceof E_SameTerm) {
-            if ( ! JenaRuntime.isRDF11 ) {
-                // Corner case: sameTerm is false for string/plain literal,
-                // but true in the in-memory graph for graph matching.
-                // All becomes a non-issue in RDF 1.1
-                if (!ARQ.isStrictMode() && constant.isString())
-                    return null;
-            }
+        if (e instanceof E_SameTerm)
             return Pair.create(var, constant);
-        }
 
         // At this point, (e instanceof E_Equals)
-        
-        // 'constant' can be a folded expression - no node yet - so use asNode. 
-        Node n = constant.asNode() ; 
-        if ( JenaRuntime.isRDF11 ) {
-            // RDF 1.1 : simple literals are xsd:strings.  
-            if ( Util.isSimpleString(n) )
-                return Pair.create(var, constant);
-        } 
-        
+
+        // 'constant' can be a folded expression - no node yet - so use asNode.
+        Node n = constant.asNode() ;
+        // RDF 1.1 : simple literals are xsd:strings.
+        if ( Util.isSimpleString(n) )
+            return Pair.create(var, constant);
+
         // Otherwise, lexical forms are not 1-1 with values so not safe.
-        // e.g. +001 and 1 are both integer value but different terms. 
-        
+        // e.g. +001 and 1 are both integer value but different terms.
+
         return null ;
     }
 
@@ -239,7 +227,7 @@ public class TransformFilterEquality extends TransformCopy {
 
         if (op instanceof OpPath )
             return true;
-        
+
         if (op instanceof OpFilter) {
             OpFilter opf = (OpFilter) op;
             // Expressions are always safe transform by substitution.

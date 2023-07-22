@@ -21,7 +21,6 @@ package org.apache.jena.graph;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jena.JenaRuntime;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
@@ -144,7 +143,7 @@ public class NodeFactory {
      */
     public static Node createLiteral(String lex, RDFDatatype dtype) throws DatatypeFormatException {
         Objects.requireNonNull(lex, "null lexical form for literal");
-        if ( dtype == null && JenaRuntime.isRDF11 )
+        if ( dtype == null )
             dtype = XSDDatatype.XSDstring;
         return new Node_Literal(lex, dtype);
     }

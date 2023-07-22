@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,8 +21,6 @@ import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
-
-import org.apache.jena.JenaRuntime;
 
 public abstract class AbstractRegexpBasedTest {
     protected static final String SPACE = "\\s+";
@@ -76,7 +74,7 @@ public abstract class AbstractRegexpBasedTest {
      * RDF 1.1 : use untyped form.
      */
     protected final static String presentStringType() {
-        return JenaRuntime.isRDF11 ? "" : "\\^\\^\\<http://www.w3.org/2001/XMLSchema#string\\>";
+        return true/*RDF 1.1 and later*/ ? "" : "\\^\\^\\<http://www.w3.org/2001/XMLSchema#string\\>";
     }
 
     protected final static void assertNotContainsRegex(String expected, String lst) {

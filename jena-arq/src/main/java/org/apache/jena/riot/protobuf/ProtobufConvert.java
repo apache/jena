@@ -22,7 +22,6 @@ package org.apache.jena.riot.protobuf;
 import java.math.BigDecimal;
 import java.math.BigInteger ;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -329,10 +328,9 @@ public class ProtobufConvert
                 lang = null;
 
             // General encoding.
-            if ( JenaRuntime.isRDF11 ) {
-                if ( node.getLiteralDatatype().equals(XSDDatatype.XSDstring) ||
-                     node.getLiteralDatatype().equals(RDFLangString.rdfLangString) )
-                    dt = null ;
+            if ( node.getLiteralDatatype().equals(XSDDatatype.XSDstring) ||
+                    node.getLiteralDatatype().equals(RDFLangString.rdfLangString) ) {
+                dt = null ;
             }
 
             if ( dt == null && lang == null ) {

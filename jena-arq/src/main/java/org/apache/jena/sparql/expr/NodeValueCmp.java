@@ -27,7 +27,6 @@ import java.util.Objects;
 
 import javax.xml.datatype.Duration;
 
-import org.apache.jena.JenaRuntime;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -296,20 +295,20 @@ public class NodeValueCmp {
 
             case VSPACE_STRING: {
                 int x = XSDFuncOp.compareString(nv1, nv2) ;
-                if ( JenaRuntime.isRDF11 )
+                //if ( JenaRuntime.isRDF11 )
                     return x;
 
-                // Equality.
-                // RDF 1.0
-                // Split plain literals and xsd:strings for sorting purposes.
-                // Same by string value.
-                String dt1 = nv1.asNode().getLiteralDatatypeURI() ;
-                String dt2 = nv2.asNode().getLiteralDatatypeURI() ;
-                if ( dt1 == null && dt2 != null )
-                    return CMP_LESS;
-                if ( dt2 == null && dt1 != null )
-                    return CMP_GREATER;
-                return CMP_EQUAL;  // Both plain or both xsd:string.
+//                // Equality.
+//                // RDF 1.0 legacy note.
+//                // Split plain literals and xsd:strings for sorting purposes.
+//                // Same by string value.
+//                String dt1 = nv1.asNode().getLiteralDatatypeURI() ;
+//                String dt2 = nv2.asNode().getLiteralDatatypeURI() ;
+//                if ( dt1 == null && dt2 != null )
+//                    return CMP_LESS;
+//                if ( dt2 == null && dt1 != null )
+//                    return CMP_GREATER;
+//                return CMP_EQUAL;  // Both plain or both xsd:string.
             }
 
             case VSPACE_QUOTED_TRIPLE: {

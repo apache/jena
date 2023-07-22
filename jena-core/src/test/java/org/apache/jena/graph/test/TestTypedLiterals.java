@@ -28,7 +28,6 @@ import java.util.* ;
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.datatypes.BaseDatatype ;
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -168,11 +167,7 @@ public class TestTypedLiterals extends TestCase {
         Literal ll1 = m.createTypedLiteral("abc", RDFLangString.rdfLangString) ;
         assertEquals("", ll1.getLanguage()) ;
         Literal ll2 = m.createLiteral("xyz", "en") ;
-
-        if ( JenaRuntime.isRDF11 )
-            assertTrue(ll1.getDatatype() == ll2.getDatatype()) ;
-        else
-            assertTrue(ll1.getDatatype() != ll2.getDatatype()) ;
+        assertTrue(ll1.getDatatype() == ll2.getDatatype()) ;
     }
 
     /**
@@ -368,15 +363,8 @@ public class TestTypedLiterals extends TestCase {
         assertDiffer("Plain != int", lPlain, lInt);
         assertDiffer("Plain != int", lPlain2, lInt);
 
-        // The correct answer to this is currently up to us
-        if (JenaParameters.enablePlainLiteralSameAsString) {
-            assertSameValueAs("String != plain??", lString, lPlain);
-            assertSameValueAs("String != plain??", lString, lPlain2);
-        } else {
-            assertDiffer("String != plain??", lString, lPlain);
-            assertDiffer("String != plain??", lString, lPlain2);
-        }
-
+        assertSameValueAs("String != plain??", lString, lPlain);
+        assertSameValueAs("String != plain??", lString, lPlain2);
     }
 
     /**
@@ -1129,20 +1117,6 @@ public class TestTypedLiterals extends TestCase {
         }
         JenaParameters.enableEagerLiteralValidation = originalFlag;
         assertTrue("Early datatype format exception", foundException);
-
-        if ( ! JenaRuntime.isRDF11 ) {
-            // RDF 1.1 -  Simple Literals are identical terms to xsd:string hence same value always.
-            originalFlag = JenaParameters.enablePlainLiteralSameAsString;
-            Literal l1 = m.createLiteral("test string");
-            Literal l2 = m.createTypedLiteral("test string", XSDDatatype.XSDstring);
-            JenaParameters.enablePlainLiteralSameAsString = true;
-            boolean ok1 = l1.sameValueAs(l2);
-            JenaParameters.enablePlainLiteralSameAsString = false;
-            boolean ok2 = ! l1.sameValueAs(l2);
-            JenaParameters.enablePlainLiteralSameAsString = originalFlag;
-            assertTrue( ok1 );
-            assertTrue( ok2 );
-        }
     }
 
     /**

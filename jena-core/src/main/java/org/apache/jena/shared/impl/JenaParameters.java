@@ -46,20 +46,6 @@ public class JenaParameters {
      public static boolean enableEagerLiteralValidation = false;
 
      /**
-      * Set this flag to true to allow language-free, plain literals and xsd:strings
-      * containing the same character sequence to test as sameAs.
-      * <p>
-      * RDF plain literals and typed literals of type xsd:string are distinct, not
-      * least because plain literals may have a language tag which typed literals
-      * may not. However, in the absence of a language tag it can be convenient
-      * for applications if the java objects representing identical character
-      * strings in these two ways test as semantically "sameAs" each other.
-      * At the time of writing is unclear if such identification would be sanctioned
-      * by the RDF working group. </p>
-      */
-     public static boolean enablePlainLiteralSameAsString = true;
-
-     /**
       * Set this flag to true to allow unknown literal datatypes to be
       * accepted, if false then such literals will throw an exception when
       * first detected. Note that any datatypes unknown datatypes encountered
