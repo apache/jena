@@ -21,8 +21,9 @@ package org.apache.jena.riot.system;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
-import org.apache.jena.JenaRuntime;
 import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.datatypes.xsd.impl.RDFLangString;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.iri.IRI;
@@ -33,7 +34,6 @@ import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.SetupJenaIRI;
 import org.apache.jena.irix.SystemIRIx;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.util.SplitIRI;
 
 /**
@@ -212,48 +212,40 @@ public class Checker {
         return checkLiteral(lexicalForm, lang, null, errorHandler, line, col);
     }
 
-    public static boolean checkLiteral(String lexicalForm, String lang, RDFDatatype datatype, ErrorHandler errorHandler, long line,
-                                       long col) {
+    public static boolean checkLiteral(String lexicalForm, String lang, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
         boolean hasLang = ( lang != null && !lang.isEmpty() );
         boolean hasDatatype = datatype != null;
 
-        // NOTE: Language and Datatype
-        // For RDF 1.1, if a Literal has a language AND a datatype, the datatype must be "rdf:langString".
-        // Prior to RDF 1.1, a Literal can have a language OR a datatype but not both.
+        if ( !hasDatatype && !hasLang) {
+            // This will become an xsd:string or rdf:langString.
+            // No further checking needed.
+            return true;
+        }
 
         // If the Literal has a language...
         if ( hasLang ) {
-            // ...and it has a datatype...
-            if ( hasDatatype) {
-                // ...and Jena is using the RDF 1.1 standard...
-                if ( JenaRuntime.isRDF11 ) {
-                    // ...and the datatype is NOT "rdf:langString"...
-                    if ( ! datatype.getURI().equals( NodeConst.rdfLangString.getURI() ) ) {
-                        errorHandler(errorHandler).error("Literal has language but wrong datatype", line, col);
-                        return false;
-                    }
-                    // Otherwise, it's OK to have language AND well-formed "rdf:langString" datatype.
-                    // ...continue...
-                }
-                // Otherwise, when Jena is NOT using the RDF 1.1 standard...
-                else {
-                    errorHandler(errorHandler).error("Literal has datatype and language", line, col);
-                    return false;
-                }
-            }
-
             // Test language tag format -- not a perfect test...
             if ( !langPattern.matcher(lang).matches() ) {
                 errorHandler(errorHandler).warning("Language not valid: " + lang, line, col);
                 return false;
             }
+
+            // No datatype is acceptable - NodeFactory deal with that case.
+            if ( hasDatatype ) {
+                // Jena is using the RDF 1.1 or later standard...
+                if ( ! datatype.equals( RDFLangString.rdfLangString ) ) {
+                    errorHandler(errorHandler).error("Literal has language but wrong datatype", line, col);
+                    return false;
+                }
+            }
+            return true;
         }
+
         // If the Literal has a datatype (but no language)...
-        else if ( hasDatatype ) {
-            return validateByDatatype(lexicalForm, datatype, errorHandler, line, col);
-        }
-        // Otherwise, simple literals are always well-formed...
-        return true;
+        if ( datatype.equals( XSDDatatype.XSDstring) )
+            // Simple literals are always well-formed...
+            return true;
+        return validateByDatatype(lexicalForm, datatype, errorHandler, line, col);
     }
 
     // NOTE: Whitespace

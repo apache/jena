@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot.out;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -84,7 +83,7 @@ public abstract class NodeFormatterBase implements NodeFormatter
         } else if ( dt == null ) {
             // RDF 1.0, simple literal.
             formatLitString(w, lex) ;
-        } else if ( JenaRuntime.isRDF11 && dt.equals(XSDDatatype.XSDstring) ) {
+        } else if ( dt.equals(XSDDatatype.XSDstring) ) {
             // RDF 1.1, xsd:string - output as short string.
             formatLitString(w, lex) ;
         } else {

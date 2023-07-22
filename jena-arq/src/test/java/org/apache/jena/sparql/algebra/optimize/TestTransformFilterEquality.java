@@ -21,7 +21,6 @@ package org.apache.jena.sparql.algebra.optimize;
 import static org.apache.jena.sparql.algebra.optimize.TransformTests.check;
 import static org.apache.jena.sparql.algebra.optimize.TransformTests.testOp;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.Transform ;
@@ -42,31 +41,17 @@ public class TestTransformFilterEquality
     }
 
     @Test public void equality02() {
-        if ( JenaRuntime.isRDF11 ) {
-            // Safe on strings (RDF 1.1)
-            testOp("(filter (= ?x 'x') (bgp ( ?s ?p ?x)) )",
-                   t_equality,
-                  "(assign ((?x 'x')) (bgp ( ?s ?p 'x')) )") ;
-        } else {
-            // Not safe on strings (RDF 1.0)
-            testOp("(filter (= ?x 'x') (bgp ( ?s ?p ?x)) )",
-                   t_equality,
-                   (String[])null) ;
-        }
+        // Safe on strings (RDF 1.1)
+        testOp("(filter (= ?x 'x') (bgp ( ?s ?p ?x)) )",
+               t_equality,
+               "(assign ((?x 'x')) (bgp ( ?s ?p 'x')) )") ;
     }
 
     @Test public void equality02a() {
-        if ( JenaRuntime.isRDF11 ) {
-            // Safe on strings (RDF 1.1)
-            testOp("(filter (= ?x 'x'^^xsd:string) (bgp ( ?s ?p ?x)) )",
-                   t_equality,
-                  "(assign ((?x 'x')) (bgp ( ?s ?p 'x')) )") ;
-        } else {
-            // Not safe on strings (RDF 1.0)
-            testOp("(filter (= ?x 'x'^^xsd:string) (bgp ( ?s ?p ?x)) )",
-                   t_equality,
-                   (String[])null) ;
-        }
+        // Safe on strings (RDF 1.1)
+        testOp("(filter (= ?x 'x'^^xsd:string) (bgp ( ?s ?p ?x)) )",
+               t_equality,
+               "(assign ((?x 'x')) (bgp ( ?s ?p 'x')) )") ;
     }
 
     @Test public void equality03() {

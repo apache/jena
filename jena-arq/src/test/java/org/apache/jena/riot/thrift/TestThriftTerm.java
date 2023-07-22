@@ -20,7 +20,6 @@ package org.apache.jena.riot.thrift;
 
 import static org.junit.Assert.*;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.impl.Util ;
@@ -46,33 +45,33 @@ public class TestThriftTerm {
         prefixMap.add("",       "http://example/") ;
         prefixMap.add("ns",     "http://namespace/ns#") ;
     }
-    
+
     // Terms
     @Test public void term_uri_01() {
         testTerm("<http://hostname/>") ;
     }
 
-    @Test public void term_uri_02()  { 
+    @Test public void term_uri_02()  {
         RDF_Term rt = testTerm("<http://example/>") ;
         assertTrue(rt.isSetPrefixName()) ;
         assertEquals(rt.getPrefixName().prefix, "") ;
         assertEquals(rt.getPrefixName().localName,  "") ;
     }
-    
-    @Test public void term_uri_03()  { 
+
+    @Test public void term_uri_03()  {
         RDF_Term rt = testTerm("<http://namespace/ns#foobar>") ;
         assertTrue(rt.isSetPrefixName()) ;
         assertEquals(rt.getPrefixName().prefix, "ns") ;
         assertEquals(rt.getPrefixName().localName,  "foobar") ;
     }
 
-    @Test public void term_uri_04()  { 
+    @Test public void term_uri_04()  {
         RDF_Term rt = testTerm("rdf:type") ;
         assertTrue(rt.isSetPrefixName()) ;
         assertEquals(rt.getPrefixName().prefix, "rdf") ;
         assertEquals(rt.getPrefixName().localName,  "type") ;
     }
-    
+
     @Test public void term_literal_01() {
         RDF_Term rt = testTerm("'foo'") ;
         assertFalse(rt.getLiteral().isSetDatatype()) ;
@@ -85,7 +84,7 @@ public class TestThriftTerm {
         assertFalse(rt.getLiteral().isSetDatatype()) ;
         assertFalse(rt.getLiteral().isSetDtPrefix()) ;
         assertTrue(rt.getLiteral().isSetLangtag()) ;
-    }    
+    }
 
     @Test public void term_literal_03() {
         RDF_Term rt = testTerm("123") ;
@@ -113,13 +112,13 @@ public class TestThriftTerm {
     @Test public void term_var_01() {
         testTerm("?var") ;
     }
-    
+
     @Test public void term_bnode_01() {
         Node n = SSE.parseNode("_:blanknode") ;
         RDF_Term rt = testTerm(n) ;
         assertEquals(rt.getBnode().getLabel(), n.getBlankNodeLabel()) ;
     }
-    
+
     @Test public void term_bnode_02() {
         String label = "abcdefghijklmn" ;
         Node n = NodeFactory.createBlankNode("abcdefghijklmn") ;
@@ -127,84 +126,84 @@ public class TestThriftTerm {
         assertTrue(rt.isSetBnode()) ;
         assertEquals("abcdefghijklmn", rt.getBnode().getLabel()) ;
     }
-    
+
     @Test public void term_any_1() {
         RDF_Term rt = testTerm(Node.ANY) ;
         assertTrue(rt.isSetAny()) ;
     }
-    
+
     @Test public void term_value_01() {
-        RDF_Term rt = testTermValue("123") ; 
+        RDF_Term rt = testTermValue("123") ;
         assertTrue(rt.isSetValInteger()) ;
         assertEquals(123, rt.getValInteger()) ;
     }
 
     @Test public void term_value_02() {
-        RDF_Term rt = testTermValue("'123'^^xsd:integer") ; 
+        RDF_Term rt = testTermValue("'123'^^xsd:integer") ;
         assertTrue(rt.isSetValInteger()) ;
         assertEquals(123, rt.getValInteger()) ;
     }
 
     @Test public void term_value_03() {
-        RDF_Term rt = testTermValue("'123'^^xsd:long") ; 
+        RDF_Term rt = testTermValue("'123'^^xsd:long") ;
         assertTrue(rt.isSetValInteger()) ;
         assertEquals(123, rt.getValInteger()) ;
     }
-    
+
     @Test public void term_value_04() {
-        RDF_Term rt = testTermValue("'123'^^xsd:int") ; 
+        RDF_Term rt = testTermValue("'123'^^xsd:int") ;
         assertTrue(rt.isSetValInteger()) ;
         assertEquals(123, rt.getValInteger()) ;
     }
-    
+
     @Test public void term_value_05() {
-        RDF_Term rt = testTermValue("'123'^^xsd:short") ; 
+        RDF_Term rt = testTermValue("'123'^^xsd:short") ;
         assertTrue(rt.isSetValInteger()) ;
         assertEquals(123, rt.getValInteger()) ;
     }
-    
+
     @Test public void term_value_06() {
-        RDF_Term rt = testTermValue("'123'^^xsd:byte") ; 
+        RDF_Term rt = testTermValue("'123'^^xsd:byte") ;
         assertTrue(rt.isSetValInteger()) ;
         assertEquals(123, rt.getValInteger()) ;
     }
-    
+
     @Test public void term_value_10() {
-        RDF_Term rt = testTermValue("123.6") ; 
+        RDF_Term rt = testTermValue("123.6") ;
         assertTrue(rt.isSetValDecimal()) ;
         assertEquals(1236, rt.getValDecimal().getValue()) ;
         assertEquals(1, rt.getValDecimal().getScale()) ;
     }
 
     @Test public void term_value_11() {
-        RDF_Term rt = testTermValue("0.005") ; 
+        RDF_Term rt = testTermValue("0.005") ;
         assertTrue(rt.isSetValDecimal()) ;
         assertEquals(5, rt.getValDecimal().getValue()) ;
         assertEquals(3, rt.getValDecimal().getScale()) ;
     }
-    
+
     @Test public void term_value_12() {
-        RDF_Term rt = testTermValue("50.0") ; 
+        RDF_Term rt = testTermValue("50.0") ;
         assertTrue(rt.isSetValDecimal()) ;
         assertEquals(500, rt.getValDecimal().getValue()) ;
         assertEquals(1, rt.getValDecimal().getScale()) ;
     }
-    
+
     @Test public void term_value_13() {
-        RDF_Term rt = testTermValue("50.05") ; 
+        RDF_Term rt = testTermValue("50.05") ;
         assertTrue(rt.isSetValDecimal()) ;
         assertEquals(5005, rt.getValDecimal().getValue()) ;
         assertEquals(2, rt.getValDecimal().getScale()) ;
     }
 
     @Test public void term_value_20() {
-        RDF_Term rt = testTermValue("50e6") ; 
+        RDF_Term rt = testTermValue("50e6") ;
         assertTrue(rt.isSetValDouble()) ;
         assertEquals(50e6, rt.getValDouble(), 0.001) ;
     }
 
     @Test public void term_value_21() {
-        RDF_Term rt = testTermValue("50e-6") ; 
+        RDF_Term rt = testTermValue("50e-6") ;
         assertTrue(rt.isSetValDouble()) ;
         assertEquals(50e-6, rt.getValDouble(), 0.001e6) ;
     }
@@ -213,7 +212,7 @@ public class TestThriftTerm {
         RDF_Term rt = testTerm(SSE.parseNode(str), prefixMap, true) ;
         return rt ;
     }
-    
+
     private RDF_Term testTerm(String str) {
         RDF_Term rt = testTerm(SSE.parseNode(str), prefixMap, false) ;
         return rt ;
@@ -222,11 +221,11 @@ public class TestThriftTerm {
     private RDF_Term testTerm(Node node) {
         return testTerm(node, null, false) ;
     }
-    
+
     private RDF_Term testTerm(Node node, PrefixMap pmap, boolean asValue) {
         RDF_Term rt = ThriftConvert.convert(node, pmap, asValue) ;
         assertTrue(rt.isSet()) ;
-        
+
         if ( node == null) {
             assertTrue(rt.isSetUndefined());
         } else if ( node.isURI() ) {
@@ -239,7 +238,7 @@ public class TestThriftTerm {
                 assertTrue(rt.getPrefixName().isSetPrefix()) ;
                 assertTrue(rt.getPrefixName().isSetLocalName()) ;
             }
-        } else if ( rt.isSetValDecimal() || 
+        } else if ( rt.isSetValDecimal() ||
                     rt.isSetValDouble() ||
                     rt.isSetValInteger() )
         {
@@ -251,40 +250,21 @@ public class TestThriftTerm {
             RDF_Literal lit = rt.getLiteral() ;
             assertTrue(lit.isSetLex()) ;
             assertEquals(node.getLiteralLexicalForm(), lit.getLex()) ;
-            
+
             // RDF 1.1
-            if (JenaRuntime.isRDF11) {
-                if ( Util.isSimpleString(node) ) {
-                    assertFalse(lit.isSetDatatype()) ;
-                    assertFalse(lit.isSetDtPrefix()) ;
-                    assertFalse(lit.isSetLangtag()) ;
-                } else if ( Util.isLangString(node) ) {
-                    assertFalse(lit.isSetDatatype()) ;
-                    assertFalse(lit.isSetDtPrefix()) ;
-                    assertTrue(lit.isSetLangtag()) ;
-                }
-                else {
-                    // Regular typed literal.
-                    assertTrue(lit.isSetDatatype() || lit.isSetDtPrefix()) ;
-                    assertFalse(lit.isSetLangtag()) ;
-                }
-                    
-            } else {
-                // RDF 1.0
-                if ( node.getLiteralDatatype() == null ) {
-                    if ( Util.isLangString(node ) ) {
-                        assertFalse(lit.isSetDatatype()) ;
-                        assertFalse(lit.isSetDtPrefix()) ;
-                        assertTrue(lit.isSetLangtag()) ;
-                    } else {
-                        assertFalse(lit.isSetDatatype()) ;
-                        assertFalse(lit.isSetDtPrefix()) ;
-                        assertFalse(lit.isSetLangtag()) ;
-                    }                        
-                } else {
-                    assertTrue(lit.isSetDatatype() || lit.isSetDtPrefix()) ;
-                }
-                    
+            if ( Util.isSimpleString(node) ) {
+                assertFalse(lit.isSetDatatype()) ;
+                assertFalse(lit.isSetDtPrefix()) ;
+                assertFalse(lit.isSetLangtag()) ;
+            } else if ( Util.isLangString(node) ) {
+                assertFalse(lit.isSetDatatype()) ;
+                assertFalse(lit.isSetDtPrefix()) ;
+                assertTrue(lit.isSetLangtag()) ;
+            }
+            else {
+                // Regular typed literal.
+                assertTrue(lit.isSetDatatype() || lit.isSetDtPrefix()) ;
+                assertFalse(lit.isSetLangtag()) ;
             }
         } else if ( node.isBlank() ) {
             assertTrue(rt.isSetBnode()) ;
@@ -296,43 +276,43 @@ public class TestThriftTerm {
         } else if ( Node.ANY.equals(node) ) {
             assertTrue(rt.isSetAny()) ;
         } else
-            fail("Unknown node type") ; 
-        
+            fail("Unknown node type") ;
+
         // And reverse
         Node n2 = ThriftConvert.convert(rt,pmap) ;
         assertEquals(node, n2) ;
         return rt ;
     }
 
-    @Test public void rdfterm_01() { 
+    @Test public void rdfterm_01() {
             RDF_Term rt = TRDF.tANY ;
             Node n = ThriftConvert.convert(rt) ;
             assertEquals(Node.ANY, n) ;
        }
 
-    @Test public void rdfterm_02() { 
+    @Test public void rdfterm_02() {
         RDF_Term rt = TRDF.tUNDEF ;
         Node n = ThriftConvert.convert(rt) ;
         assertNull(n) ;
     }
-    
+
     @Test public void round_trip_01() {
         testTerm(null, null, false);
     }
-    
+
     @Test public void round_trip_02() {
         testTerm(Node.ANY, null, false);
     }
-    
+
     @Test public void round_trip_03() {
         testTerm(NodeFactory.createVariable("x"), null, false);
     }
-    
+
     // Round trip node->bytes->node.
     @Test public void round_trip_bytes_01() {
         testTermBytes(NodeFactory.createURI("http://example/"));
     }
-        
+
     @Test public void round_trip_bytes_02() {
         testTermBytes(NodeFactory.createLiteral("value"));
     }
