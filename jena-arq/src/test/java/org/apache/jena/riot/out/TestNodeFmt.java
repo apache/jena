@@ -21,7 +21,6 @@ package org.apache.jena.riot.out;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.io.StringWriterI ;
 import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.graph.Node ;
@@ -90,12 +89,9 @@ public class TestNodeFmt
 
     // RDF 1.1 sensitive.
     // xsd:strings output without ^^
-    @Test public void nodefmt_rdf11_01()
-    {
-        if ( JenaRuntime.isRDF11 )
-            test(nodeFormatterNTutf8, "'abc'^^xsd:string", "\"abc\"") ;
-        else
-            test(nodeFormatterNTutf8, "'abc'^^xsd:string", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#string>") ;
+    @Test
+    public void nodefmt_rdf11_01() {
+        test(nodeFormatterNTutf8, "'abc'^^xsd:string", "\"abc\"");
     }
 
     @Test public void nodefmt_rdf11_02() {

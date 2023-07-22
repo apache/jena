@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -323,43 +322,24 @@ public class TestProtobufTerm {
                 RDF_Literal lit = rt.getLiteral() ;
                 assertEquals(node.getLiteralLexicalForm(), lit.getLex()) ;
 
-                if (JenaRuntime.isRDF11) {
-                    // RDF 1.1
-                    if ( Util.isSimpleString(node) ) {
-                        assertTrue(lit.getSimple());
-                        // Protobug default is ""
-                        assertNullPB(lit.getDatatype()) ;
-                        assertEquals(RDF_PrefixName.getDefaultInstance(), lit.getDtPrefix());
-                        assertNullPB(lit.getLangtag()) ;
-                    } else if ( Util.isLangString(node) ) {
-                        assertFalse(lit.getSimple());
-                        assertNullPB(lit.getDatatype()) ;
-                        assertEquals(RDF_PrefixName.getDefaultInstance(), lit.getDtPrefix());
-                        assertNotSame("", lit.getLangtag()) ;
-                    }
-                    else {
-                        assertFalse(lit.getSimple());
-                        // Regular typed literal.
-                        assertTrue(lit.getDatatype() != null || lit.getDtPrefix() != null );
-                        assertNullPB(lit.getLangtag()) ;
-                    }
-                } else {
-                    // RDF 1.0
-                    if ( node.getLiteralDatatype() == null ) {
-                        if ( Util.isLangString(node ) ) {
-                            assertFalse(lit.getSimple());
-                            assertNullPB(lit.getDatatype()) ;
-                            assertNull(lit.getDtPrefix()) ;
-                            assertNotSame("", lit.getLangtag()) ;
-                        } else {
-                            assertTrue(lit.getSimple());
-                            assertNullPB(lit.getDatatype()) ;
-                            assertEquals(RDF_PrefixName.getDefaultInstance(), lit.getDtPrefix());
-                            assertNullPB(lit.getLangtag()) ;
-                        }
-                    } else {
-                        assertTrue(lit.getDatatype() != null || lit.getDtPrefix() != null );
-                    }
+                // RDF 1.1
+                if ( Util.isSimpleString(node) ) {
+                    assertTrue(lit.getSimple());
+                    // Protobuf default is ""
+                    assertNullPB(lit.getDatatype()) ;
+                    assertEquals(RDF_PrefixName.getDefaultInstance(), lit.getDtPrefix());
+                    assertNullPB(lit.getLangtag()) ;
+                } else if ( Util.isLangString(node) ) {
+                    assertFalse(lit.getSimple());
+                    assertNullPB(lit.getDatatype()) ;
+                    assertEquals(RDF_PrefixName.getDefaultInstance(), lit.getDtPrefix());
+                    assertNotSame("", lit.getLangtag()) ;
+                }
+                else {
+                    assertFalse(lit.getSimple());
+                    // Regular typed literal.
+                    assertTrue(lit.getDatatype() != null || lit.getDtPrefix() != null );
+                    assertNullPB(lit.getLangtag()) ;
                 }
                 break;
             }

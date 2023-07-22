@@ -21,7 +21,6 @@ import java.util.Objects ;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
@@ -215,9 +214,7 @@ public class Util extends Object {
         RDFDatatype dt = n.getLiteralDatatype() ;
         if ( dt == null )
             return !isLangString(n) ;
-        if ( JenaRuntime.isRDF11 )
-            return dt.equals(XSDDatatype.XSDstring) ;
-        return false ;
+        return dt.equals(XSDDatatype.XSDstring) ;
     }
 
     /**
@@ -240,12 +237,10 @@ public class Util extends Object {
      */
     public static boolean isSimpleString(Literal lit) {
         Objects.requireNonNull(lit) ;
-        String dtStr = lit.getDatatypeURI() ;
-        if (  dtStr == null )
+        RDFDatatype dt = lit.getDatatype();
+        if (  dt == null )
             return ! isLangString(lit) ;
-        if ( JenaRuntime.isRDF11 )
-            return dtStr.equals(XSDDatatype.XSDstring.getURI());
-        return false ;
+        return dt.equals(XSDDatatype.XSDstring);
     }
 
     /** Return true if the literal has a language tag. (RDF 1.0 and RDF 1.1) */

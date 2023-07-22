@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.function.Consumer;
 
-import org.apache.jena.JenaRuntime;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.impl.RDFLangString;
@@ -231,10 +230,9 @@ public class RDFChangesWriterBinary implements RDFChanges {
 
             // General encoding.
             RDF_Literal literal = new RDF_Literal(lex);
-            if ( JenaRuntime.isRDF11 ) {
-                if ( node.getLiteralDatatype().equals(XSDDatatype.XSDstring) ||
-                    node.getLiteralDatatype().equals(RDFLangString.rdfLangString) )
-                    dt = null;
+            if ( node.getLiteralDatatype().equals(XSDDatatype.XSDstring) ||
+                    node.getLiteralDatatype().equals(RDFLangString.rdfLangString) ) {
+                dt = null;
             }
 
             if ( dt != null ) {

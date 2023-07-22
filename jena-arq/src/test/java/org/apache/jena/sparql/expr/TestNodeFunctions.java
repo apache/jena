@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.*;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -59,10 +58,7 @@ public class TestNodeFunctions {
     @Test public void testSameTerm4() {
         Node n1 = NodeFactory.createLiteral("xyz") ;
         Node n2 = NodeFactory.createLiteral("xyz", XSDDatatype.XSDstring) ;
-        if ( JenaRuntime.isRDF11 )
-            assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
-        else
-            assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
+        assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
     @Test public void testSameTerm5() {
