@@ -23,7 +23,6 @@ import static org.junit.Assert.*;
 import java.math.BigDecimal ;
 import java.util.*;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -856,16 +855,12 @@ public class TestNodeValue
 
     @Test
     public void testNodeString3() {
-        NodeValue v = NodeValue.makeNode("string", XSDDatatype.XSDstring); // XSD
-                                                                           // String
-                                                                           // literal
+        NodeValue v = NodeValue.makeNode("string", XSDDatatype.XSDstring);
         assertTrue("Not a string: " + v, v.isString());
         assertTrue("Not a node: " + v, v.hasNode());
         String actualStr = v.asQuotedString();
-        String rightAnswer = JenaRuntime.isRDF11
-            // RDF 1.1 -- appearance is a without ^^
-            ? "\"string\"" : "\"string\"^^<" + XSDDatatype.XSDstring.getURI() + ">";
-
+        // RDF 1.1 -- appearance is a without ^^
+        String rightAnswer = "\"string\"";
         assertEquals("Print form mismatch", rightAnswer, actualStr);
     }
 

@@ -18,7 +18,6 @@
 
 package org.apache.jena.graph.impl;
 
-import org.apache.jena.JenaRuntime;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
@@ -27,22 +26,14 @@ import org.apache.jena.vocabulary.RDF;
 
 public class LiteralLabelFactory
 {
-    // This code works for RDF 1.0 and RDF 1.1
-    //
-    // In RDF 1.0, "abc" has no datatype and is a different term to "abc"^^xsd:string
-    // In RDF 1.0, "abc"@en has no datatype.
-    //
-    // In RDF 1.1, "abc" has no datatype xsd:string and is the same term as "abc"^^xsd:string
-    // In RDF 1.1, "abc"@en has datatype rdf:langString.
-
     private static final RDFDatatype dtSLangString = NodeFactory.getType(RDF.Nodes.langString.getURI());
 
     private static RDFDatatype fixDatatype(RDFDatatype dtype, String lang) {
         if ( dtype != null )
             return dtype;
-        if ( JenaRuntime.isRDF11 )
-            dtype = (lang == null || lang.equals("")) ? XSDDatatype.XSDstring : dtSLangString ;
-        return dtype;
+        if ( lang != null && !lang.equals("") )
+            return dtSLangString;
+        return XSDDatatype.XSDstring;
     }
 
     /** Create a string literal */

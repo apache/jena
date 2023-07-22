@@ -18,9 +18,8 @@
 
 package org.apache.jena.datatypes.xsd.impl;
 
-import org.apache.jena.datatypes.xsd.* ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.shared.impl.JenaParameters ;
 
 /**
  * Base implementation for all string datatypes derived from
@@ -30,17 +29,17 @@ import org.apache.jena.shared.impl.JenaParameters ;
 public class XSDBaseStringType extends XSDDatatype {
 
     /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
+     * Constructor.
+     * @param typeName the name of the XSD type to be instantiated, this is
      * used to lookup a type definition from the Xerces schema factory.
      */
     public XSDBaseStringType(String typeName) {
         super(typeName);
     }
-    
+
     /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
+     * Constructor.
+     * @param typeName the name of the XSD type to be instantiated, this is
      * used to lookup a type definition from the Xerces schema factory.
      * @param javaClass the java class for which this xsd type is to be
      * treated as the cannonical representation
@@ -50,20 +49,16 @@ public class XSDBaseStringType extends XSDDatatype {
     }
 
     /**
-     * Compares two instances of values of the given datatype. 
+     * Compares two instances of values of the given datatype.
      * This ignores lang tags and optionally allows plain literals to
      * equate to strings. The latter option is currently set by a static
      * global flag in LiteralLabel.
      */
     @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-        // value1 will have been used to dispatch here so we know value1 is an xsdstring or extension
-        if ((value2.getDatatype() == null && JenaParameters.enablePlainLiteralSameAsString) ||
-             (value2.getDatatype() instanceof XSDBaseStringType)) {
-                return value1.getValue().equals(value2.getValue());
-        } else {
-                return false;
-        }
+        // value1 will have been used to dispatch here so we know value1 is an xsd:string or extension
+        if ( value2.getDatatype() instanceof XSDBaseStringType)
+            return value1.getValue().equals(value2.getValue());
+        return false;
     }
-
  }

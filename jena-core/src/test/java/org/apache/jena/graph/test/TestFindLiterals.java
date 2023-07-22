@@ -21,7 +21,6 @@ package org.apache.jena.graph.test;
 import java.util.Set;
 
 import junit.framework.TestSuite;
-import org.apache.jena.JenaRuntime;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -61,7 +60,7 @@ public class TestFindLiterals extends GraphTestBase {
         runTest("a P 'simple'xsd:string", 1, "'simple'xsd:string", "'simple'xsd:string");
     }
 
-    int expected = JenaRuntime.isRDF11 ? 1 : 2;
+    private final int expected = 1; // 2 for RDF 1.0
     public void test05() {
         runTest("a P 'simple'; a P 'simple'xsd:string", expected, "'simple'", "'simple' 'simple'xsd:string");
     }

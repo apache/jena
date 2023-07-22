@@ -21,7 +21,6 @@ package org.apache.jena.graph.test;
 
 import junit.framework.TestSuite ;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -752,19 +751,13 @@ public class TestNode extends GraphTestBase
     private static void assertString(Node n) {
         RDFDatatype dt = n.getLiteralDatatype() ;
         assertEquals("", n.getLiteralLanguage() ) ;
-        if ( JenaRuntime.isRDF11 )
-            assertEquals(XSDDatatype.XSDstring, dt) ;
-        else
-            assertEquals(null, dt) ;
+        assertEquals(XSDDatatype.XSDstring, dt) ;
     }
 
     private static void assertLangString(Node n) {
         RDFDatatype dt = n.getLiteralDatatype() ;
         assertDiffer("", n.getLiteralLanguage() ) ;    // "" is not legal.
-        if ( JenaRuntime.isRDF11 )
-            assertEquals(RDF.dtLangString, dt) ;
-        else
-            assertEquals(null, dt) ;
+        assertEquals(RDF.dtLangString, dt) ;
     }
 
     /**

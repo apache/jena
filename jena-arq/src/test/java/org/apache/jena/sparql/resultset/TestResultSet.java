@@ -22,35 +22,35 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream ;
-import java.io.ByteArrayOutputStream ;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.*;
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.resultset.ResultSetLang;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.ResultSetStream ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
-import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.ResultSetStream;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import org.apache.jena.sparql.engine.iterator.QueryIterSingleton;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.sparql.util.ResultSetUtils ;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.sparql.util.ResultSetUtils;
 import org.apache.jena.sys.JenaSystem;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test ;
+import org.junit.Test;
 
 public class TestResultSet
 {
@@ -69,134 +69,135 @@ public class TestResultSet
     }
 
     // Test reading, writing and comparison
-    @Test public void test_RS_1()
-    {
-        ResultSetRewindable rs1 = new ResultSetMem() ;
-        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
-        ResultSetFormatter.outputAsXML(arr, rs1) ;
-        rs1.reset() ;
+    @Test
+    public void test_RS_1() {
+        ResultSetRewindable rs1 = new ResultSetMem();
+        ByteArrayOutputStream arr = new ByteArrayOutputStream();
+        ResultSetFormatter.outputAsXML(arr, rs1);
+        rs1.reset();
 
         String x = StrUtils.fromUTF8bytes(arr.toByteArray());
 
-        ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray()) ;
-        ResultSet rs2 = ResultSetFactory.fromXML(ins) ;
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+        ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray());
+        ResultSet rs2 = ResultSetFactory.fromXML(ins);
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
     }
 
-    @Test public void test_RS_1_str()
-    {
-        ResultSetRewindable rs1 = new ResultSetMem() ;
-        String x = ResultSetFormatter.asXMLString(rs1) ;
-        rs1.reset() ;
+    @Test
+    public void test_RS_1_str() {
+        ResultSetRewindable rs1 = new ResultSetMem();
+        String x = ResultSetFormatter.asXMLString(rs1);
+        rs1.reset();
         InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(x));
-        ResultSet rs2 = ResultSetFactory.fromXML(in) ;
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+        ResultSet rs2 = ResultSetFactory.fromXML(in);
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
     }
 
-    @Test public void test_RS_2()
-    {
-        ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
-        ResultSetFormatter.outputAsXML(arr, rs1) ;
-        rs1.reset() ;
-        ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray()) ;
-        ResultSet rs2 = ResultSetFactory.fromXML(ins) ;
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+    @Test
+    public void test_RS_2() {
+        ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        ByteArrayOutputStream arr = new ByteArrayOutputStream();
+        ResultSetFormatter.outputAsXML(arr, rs1);
+        rs1.reset();
+        ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray());
+        ResultSet rs2 = ResultSetFactory.fromXML(ins);
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
     }
 
-    @Test public void test_RS_2_str()
-    {
-        ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-        String x = ResultSetFormatter.asXMLString(rs1) ;
-        rs1.reset() ;
+    @Test
+    public void test_RS_2_str() {
+        ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        String x = ResultSetFormatter.asXMLString(rs1);
+        rs1.reset();
         InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(x));
-        ResultSet rs2 = ResultSetFactory.fromXML(in) ;
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+        ResultSet rs2 = ResultSetFactory.fromXML(in);
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
     }
 
     // RDF
 
-    @Test public void test_RS_3()
-    {
-        ResultSetRewindable rs1 = new ResultSetMem() ;
-        Model model = RDFOutput.encodeAsModel(rs1) ;
-        rs1.reset() ;
-        ResultSet rs2 = RDFInput.fromRDF(model) ;
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+    @Test
+    public void test_RS_3() {
+        ResultSetRewindable rs1 = new ResultSetMem();
+        Model model = RDFOutput.encodeAsModel(rs1);
+        rs1.reset();
+        ResultSet rs2 = RDFInput.fromRDF(model);
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
     }
 
-    @Test public void test_RS_4()
-    {
-        ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-        Model model = RDFOutput.encodeAsModel(rs1) ;
-        rs1.reset() ;
-        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(RDFInput.fromRDF(model)) ;
-        boolean b = ResultSetCompare.equalsByTerm(rs1, rs2) ;
-        if ( ! b )
-        {
-            rs1.reset() ;
-            rs2.reset() ;
-            ResultSetFormatter.out(rs1) ;
-            ResultSetFormatter.out(rs2) ;
+    @Test
+    public void test_RS_4() {
+        ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        Model model = RDFOutput.encodeAsModel(rs1);
+        rs1.reset();
+        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(RDFInput.fromRDF(model));
+        boolean b = ResultSetCompare.equalsByTerm(rs1, rs2);
+        if ( !b ) {
+            rs1.reset();
+            rs2.reset();
+            ResultSetFormatter.out(rs1);
+            ResultSetFormatter.out(rs2);
         }
 
-        assertTrue(b) ;
+        assertTrue(b);
     }
 
     // JSON
 
-    @Test public void test_RS_5()
-    {
-        ResultSetRewindable rs1 = new ResultSetMem() ;
-        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
-        ResultSetFormatter.outputAsJSON(arr, rs1) ;
-        rs1.reset() ;
-        ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray()) ;
-        ResultSet rs2 = ResultSetFactory.fromJSON(ins) ;
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+    @Test
+    public void test_RS_5() {
+        ResultSetRewindable rs1 = new ResultSetMem();
+        ByteArrayOutputStream arr = new ByteArrayOutputStream();
+        ResultSetFormatter.outputAsJSON(arr, rs1);
+        rs1.reset();
+        ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray());
+        ResultSet rs2 = ResultSetFactory.fromJSON(ins);
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
     }
 
-    @Test public void test_RS_6()
-    {
-        ResultSetRewindable rs1 = make2Rewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
-        ResultSetFormatter.outputAsJSON(arr, rs1) ;
-        rs1.reset() ;
-        ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray()) ;
-        ResultSet rs2 = ResultSetFactory.fromJSON(ins) ;    // Test using the DAWG examples
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+    @Test
+    public void test_RS_6() {
+        ResultSetRewindable rs1 = make2Rewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        ByteArrayOutputStream arr = new ByteArrayOutputStream();
+        ResultSetFormatter.outputAsJSON(arr, rs1);
+        rs1.reset();
+        ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray());
+        ResultSet rs2 = ResultSetFactory.fromJSON(ins);    // Test using the DAWG
+                                                           // examples
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
     }
 
     // Into some format.
     private static String DIR = "testing/ResultSet/";
 
-    @Test public void test_RS_7()
-    {
-        ResultSet rs = ResultSetFactory.load(DIR+"output.srx") ;
-        test_RS_fmt(rs, ResultsFormat.FMT_RS_XML, true) ;
+    @Test
+    public void test_RS_7() {
+        ResultSet rs = ResultSetFactory.load(DIR + "output.srx");
+        test_RS_fmt(rs, ResultsFormat.FMT_RS_XML, true);
     }
 
-    @Test public void test_RS_8()
-    {
-        ResultSet rs = ResultSetFactory.load(DIR+"output.srx") ;
-        test_RS_fmt(rs, ResultsFormat.FMT_RS_JSON, true) ;
+    @Test
+    public void test_RS_8() {
+        ResultSet rs = ResultSetFactory.load(DIR + "output.srx");
+        test_RS_fmt(rs, ResultsFormat.FMT_RS_JSON, true);
     }
 
-    @Test public void test_RS_9()
-    {
-        ResultSet rs = ResultSetFactory.load(DIR+"output.srx") ;
-        test_RS_fmt(rs, ResultsFormat.FMT_RDF_XML, false) ;
+    @Test
+    public void test_RS_9() {
+        ResultSet rs = ResultSetFactory.load(DIR + "output.srx");
+        test_RS_fmt(rs, ResultsFormat.FMT_RDF_XML, false);
     }
 
-    @Test public void test_RS_10()
-    {
-        ResultSet rs = ResultSetFactory.load(DIR+"output.srx") ;
-        for ( ; rs.hasNext(); rs.next()) { }
+    @Test
+    public void test_RS_10() {
+        ResultSet rs = ResultSetFactory.load(DIR + "output.srx");
+        for ( ; rs.hasNext() ; rs.next() ) {}
         // We should be able to call hasNext() as many times as we want!
         assertFalse(rs.hasNext());
     }
 
-    // Test reading "variations". Things that are accepted but not in the form Jena writes.
+    // Test reading "variations". Things that are accepted but not in the form Jena
+    // writes.
 
     // JENA-1563: xml:lang= and datatype=rdf:langString
     @Test
@@ -205,7 +206,7 @@ public class TestResultSet
     }
 
     // JENA-1563: xml:lang= and incompatible datatype
-    @Test(expected=ResultSetException.class)
+    @Test(expected = ResultSetException.class)
     public void rs_xmllang_datatype_2() {
         // Bad: datatype is not rdf:langString (it is xsd:string in the test data)
         ResultSetFactory.load(DIR + "rs-xmllang-datatype-2.srj");
@@ -217,121 +218,118 @@ public class TestResultSet
         ResultSet rs = ResultSetFactory.load(DIR + "rs-datatype-string.srj");
     }
 
-    @Test public void test_RS_union_1()
-    {
-    	ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-    	ResultSet rs2 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-    	ResultSet rs3 = make2("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-    	assertTrue(ResultSetCompare.equalsByTerm(rs3, ResultSetUtils.union(rs1, rs2))) ;
+    @Test
+    public void test_RS_union_1() {
+        ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        ResultSet rs2 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        ResultSet rs3 = make2("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        assertTrue(ResultSetCompare.equalsByTerm(rs3, ResultSetUtils.union(rs1, rs2)));
     }
 
     @Test(expected = ResultSetException.class)
-    public void test_RS_union_2()
-    {
-    	ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-    	ResultSet rs2 = make("y", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-    	ResultSetUtils.union(rs1, rs2) ;
+    public void test_RS_union_2() {
+        ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        ResultSet rs2 = make("y", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        ResultSetUtils.union(rs1, rs2);
     }
 
-    private void test_RS_fmt(ResultSet rs, ResultsFormat fmt, boolean ordered)
-    {
-        ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(rs) ;
-        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
-        ResultSetFormatter.output(arr, rs1, fmt) ;
-        byte bytes[] = arr.toByteArray() ;
-        rs1.reset() ;
-        ByteArrayInputStream ins = new ByteArrayInputStream(bytes) ;
-        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(ResultSetFactory.load(ins, fmt)) ;
+    private void test_RS_fmt(ResultSet rs, ResultsFormat fmt, boolean ordered) {
+        ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(rs);
+        ByteArrayOutputStream arr = new ByteArrayOutputStream();
+        ResultSetFormatter.output(arr, rs1, fmt);
+        byte bytes[] = arr.toByteArray();
+        rs1.reset();
+        ByteArrayInputStream ins = new ByteArrayInputStream(bytes);
+        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(ResultSetFactory.load(ins, fmt));
 
         // Ordered? Unordered?
-        boolean b = ResultSetCompare.equalsByTerm(rs1, rs2) ;
-        if ( ordered )
-        {
-            rs1.reset() ;
-            rs2.reset() ;
-            b = b & ResultSetCompare.equalsByTerm(rs1, rs2) ;
+        boolean b = ResultSetCompare.equalsByTerm(rs1, rs2);
+        if ( ordered ) {
+            rs1.reset();
+            rs2.reset();
+            b = b & ResultSetCompare.equalsByTerm(rs1, rs2);
         }
 
-        if ( !b )
-        {
-            System.out.println(new String(bytes)) ;
-            rs1.reset() ;
-            rs2.reset() ;
-            ResultSetFormatter.out(rs1) ;
-            ResultSetFormatter.out(rs2) ;
+        if ( !b ) {
+            System.out.println(new String(bytes));
+            rs1.reset();
+            rs2.reset();
+            ResultSetFormatter.out(rs1);
+            ResultSetFormatter.out(rs2);
         }
 
-        assertTrue(b) ;
+        assertTrue(b);
     }
+
     // Test comparison
-    @Test public void test_RS_cmp_1()
-    {
-        ResultSetRewindable rs1 = new ResultSetMem() ;
-        ResultSetRewindable rs2 = new ResultSetMem() ;
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
-        rs1.reset() ;
-        rs2.reset() ;
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+    @Test
+    public void test_RS_cmp_1() {
+        ResultSetRewindable rs1 = new ResultSetMem();
+        ResultSetRewindable rs2 = new ResultSetMem();
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        rs1.reset();
+        rs2.reset();
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
     }
 
-    @Test public void test_RS_cmp_2()
-    {
-        ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-        ResultSet rs2 = new ResultSetMem() ;
-        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+    @Test
+    public void test_RS_cmp_2() {
+        ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        ResultSet rs2 = new ResultSetMem();
+        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2));
 
     }
 
-    @Test public void test_RS_cmp_3()
-    {
-        ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-        ResultSet rs2 = new ResultSetMem() ;
-        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+    @Test
+    public void test_RS_cmp_3() {
+        ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        ResultSet rs2 = new ResultSetMem();
+        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2));
     }
 
-    @Test public void test_RS_cmp_4()
-    {
-        ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-        ResultSet rs2 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+    @Test
+    public void test_RS_cmp_4() {
+        ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        ResultSet rs2 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
     }
 
-    @Test public void test_RS_cmp_5()
-    {
+    @Test
+    public void test_RS_cmp_5() {
         // Same variable, different values
-        ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local:1")) ;
-        ResultSetRewindable rs2 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local:2")) ;
+        ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local:1"));
+        ResultSetRewindable rs2 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local:2"));
 
-        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
-        rs1.reset() ;
-        rs2.reset() ;
+        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2));
+        rs1.reset();
+        rs2.reset();
 
         assertTrue(rs1.hasNext());
         assertTrue(rs2.hasNext());
-        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2));
     }
 
-    @Test public void test_RS_cmp_6()
-    {
+    @Test
+    public void test_RS_cmp_6() {
         // Different variable, same values
-        ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-        ResultSetRewindable rs2 = makeRewindable("y", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
-        assertFalse(ResultSetCompare.equalsByTermAndOrder(rs1, rs2)) ;
-        rs1.reset() ;
-        rs2.reset() ;
+        ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        ResultSetRewindable rs2 = makeRewindable("y", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
+        assertFalse(ResultSetCompare.equalsByTermAndOrder(rs1, rs2));
+        rs1.reset();
+        rs2.reset();
         assertTrue(rs1.hasNext());
         assertTrue(rs2.hasNext());
-        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
+        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2));
     }
 
     // Value based
-    @Test public void test_RS_cmp_value_1()
-    {
-        ResultSetRewindable rs1 = makeRewindable("x", NodeFactoryExtra.parseNode("123")) ;
-        ResultSetRewindable rs2 = makeRewindable("x", NodeFactoryExtra.parseNode("0123")) ;
-        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
-        assertTrue(ResultSetCompare.equalsByValue(rs1, rs2)) ;
+    @Test
+    public void test_RS_cmp_value_1() {
+        ResultSetRewindable rs1 = makeRewindable("x", NodeFactoryExtra.parseNode("123"));
+        ResultSetRewindable rs2 = makeRewindable("x", NodeFactoryExtra.parseNode("0123"));
+        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultSetCompare.equalsByValue(rs1, rs2));
     }
 
     // Peeking
@@ -525,25 +523,25 @@ public class TestResultSet
         "   (row (?x _:b0) (?y _:b1))",
         "   (row (?x _:b2) (?y _:b3))",
         "   (row (?x _:b1) (?y _:b0))",
-        ")"} ;
+        ")"};
     private static String[] rs2$ = {
         "(resultset (?x ?y)",
         "   (row (?x _:c1) (?y _:c0))",
         "   (row (?x _:c3) (?y _:c2))",
         "   (row (?x _:c2) (?y _:c3))",
-        ")"} ;
+        ")"};
 
-    @Test public void test_RS_iso_1()       { isotest(rs1$, rs2$) ; }
+    @Test public void test_RS_iso_1()       { isotest(rs1$, rs2$); }
 
     private void isotest(String[] rs1$2, String[] rs2$2)
     {
-        ResultSetRewindable rs1 = make(StrUtils.strjoinNL(rs1$)) ;
-        ResultSetRewindable rs2 = make(StrUtils.strjoinNL(rs2$)) ;
-        assertTrue(ResultSetCompare.isomorphic(rs1, rs2)) ;
-        rs1.reset() ;
-        rs2.reset() ;
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
-        assertTrue(ResultSetCompare.equalsByValue(rs1, rs2)) ;
+        ResultSetRewindable rs1 = make(StrUtils.strjoinNL(rs1$));
+        ResultSetRewindable rs2 = make(StrUtils.strjoinNL(rs2$));
+        assertTrue(ResultSetCompare.isomorphic(rs1, rs2));
+        rs1.reset();
+        rs2.reset();
+        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultSetCompare.equalsByValue(rs1, rs2));
     }
 
     private static ResultSetRewindable make(String x) {
@@ -575,7 +573,7 @@ public class TestResultSet
     }
 
     private static void preserve_bnodes(Lang sparqlresultlang, Context cxt, boolean same) {
-        ResultSetRewindable rs1 = make(StrUtils.strjoinNL(rs1$)) ;
+        ResultSetRewindable rs1 = make(StrUtils.strjoinNL(rs1$));
         ByteArrayOutputStream x = new ByteArrayOutputStream();
 
         ResultsWriter.create().context(cxt).lang(sparqlresultlang).write(x, rs1);
@@ -597,64 +595,64 @@ public class TestResultSet
 
     private ResultSet make(String var, Node val)
     {
-        Binding b = BindingFactory.binding(Var.alloc(var), val) ;
-        List<String> vars = new ArrayList<>() ;
-        vars.add(var) ;
-        QueryIterator qIter = QueryIterSingleton.create(b, null) ;
-        ResultSet rs = ResultSetStream.create(vars, null, qIter) ;
-        return rs ;
+        Binding b = BindingFactory.binding(Var.alloc(var), val);
+        List<String> vars = new ArrayList<>();
+        vars.add(var);
+        QueryIterator qIter = QueryIterSingleton.create(b, null);
+        ResultSet rs = ResultSetStream.create(vars, null, qIter);
+        return rs;
     }
 
     private ResultSet make2(String var, Node val)
     {
-        Binding b1 = BindingFactory.binding(Var.alloc(var), val) ;
-        Binding b2 = BindingFactory.binding(Var.alloc(var), val) ;
+        Binding b1 = BindingFactory.binding(Var.alloc(var), val);
+        Binding b2 = BindingFactory.binding(Var.alloc(var), val);
 
-        List<String> vars = new ArrayList<>() ;
-        vars.add(var) ;
+        List<String> vars = new ArrayList<>();
+        vars.add(var);
 
-        List<Binding> solutions = new ArrayList<>() ;
-        solutions.add(b1) ;
-        solutions.add(b2) ;
+        List<Binding> solutions = new ArrayList<>();
+        solutions.add(b1);
+        solutions.add(b2);
 
-        QueryIterator qIter = QueryIterPlainWrapper.create(solutions.iterator(), null) ;
-        ResultSet rs = ResultSetStream.create(vars, null, qIter) ;
-        return rs ;
+        QueryIterator qIter = QueryIterPlainWrapper.create(solutions.iterator(), null);
+        ResultSet rs = ResultSetStream.create(vars, null, qIter);
+        return rs;
     }
 
 
     private ResultSetRewindable makeRewindable(String var, Node val)
     {
-        ResultSet rs = make(var, val) ;
-        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
-        return rsw ;
+        ResultSet rs = make(var, val);
+        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs);
+        return rsw;
     }
 
     private ResultSetRewindable make2Rewindable(String var, Node val)
     {
-        ResultSet rs = make2(var, val) ;
-        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
-        return rsw ;
+        ResultSet rs = make2(var, val);
+        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs);
+        return rsw;
     }
 
     private ResultSet make(String var1, Node val1, String var2, Node val2 )
     {
-        Binding b = BindingFactory.binding(Var.alloc(var1), val1, Var.alloc(var2), val2) ;
+        Binding b = BindingFactory.binding(Var.alloc(var1), val1, Var.alloc(var2), val2);
 
-        List<String> vars = new ArrayList<>() ;
-        vars.add(var1) ;
-        vars.add(var2) ;
+        List<String> vars = new ArrayList<>();
+        vars.add(var1);
+        vars.add(var2);
 
-        QueryIterator qIter = QueryIterSingleton.create(b, null) ;
-        ResultSet rs = ResultSetStream.create(vars, null, qIter) ;
-        return rs ;
+        QueryIterator qIter = QueryIterSingleton.create(b, null);
+        ResultSet rs = ResultSetStream.create(vars, null, qIter);
+        return rs;
     }
 
     private ResultSetRewindable makeRewindable(String var1, Node val1, String var2, Node val2 )
     {
-        ResultSet rs = make(var1, val1, var2, val2) ;
-        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
-        return rsw ;
+        ResultSet rs = make(var1, val1, var2, val2);
+        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs);
+        return rsw;
     }
 
     private ResultSetPeekable makePeekable(String var, Node val) {
