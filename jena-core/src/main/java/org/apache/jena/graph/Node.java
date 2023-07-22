@@ -30,22 +30,25 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sys.Serializer;
 
 /**
-    A Node has subtypes:
-    <ul>
-    <li>{@link Node_Blank}, {@link Node_URI}, {@link Node_Literal}, {@link Node_Triple} for RDF terms.</li>
-    <li> {@link Node_Variable}, {@link Node_ANY}, for variables and wildcard.
-         ARQs {@code Var} extends Node_Variable.</li>
-    <li> {@link Node_Ext}(ension), and {@link Node_Graph} outside RDF.</li>
-    </ul>
-    <p>
-    Nodes should be constructed by the {@code NodeFactory} methods.
-*/
+ * A Node has subtypes:
+ * <ul>
+ * <li>{@link Node_Blank}, {@link Node_URI}, {@link Node_Literal},
+ *     {@link Node_Triple} for RDF terms.
+ * </li>
+ * <li>{@link Node_Variable}, {@link Node_ANY}, for variables and wildcard.
+ *     ARQs {@code Var} extends Node_Variable.
+ * </li>
+ * <li>{@link Node_Ext}(ension), and {@link Node_Graph} outside RDF.</li>
+ * </ul>
+ * <p>
+ * Nodes should be constructed by the {@code NodeFactory} methods.
+ */
 
 public abstract class Node implements Serializable {
 
     /**
-        The canonical instance of Node_ANY. No other instances are required.
-    */
+     * The canonical instance of Node_ANY. No other instances are required.
+     */
     public static final Node ANY = Node_ANY.nodeANY;
 
     static final String RDFprefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
@@ -60,164 +63,163 @@ public abstract class Node implements Serializable {
     protected static final int hashBNode        = 25;
 
     /**
-        Visit a Node and dispatch on it to the appropriate method from the
-        NodeVisitor <code>v</code>.
-
-    	@param v the visitor to apply to the node
-    	@return the value returned by the applied method
+     * Visit a Node and dispatch on it to the appropriate method from the NodeVisitor
+     * <code>v</code>.
+     *
+     * @param v the visitor to apply to the node
+     * @return the value returned by the applied method
      */
-    public abstract Object visitWith( NodeVisitor v );
+    public abstract Object visitWith(NodeVisitor v);
 
     /**
-        Answer true iff this node is concrete, meaning a node that is data in an RDF Graph.
-    */
+     * Answer true iff this node is concrete, meaning a node that is data in an RDF
+     * Graph.
+     */
     public abstract boolean isConcrete();
 
     /**
-         Answer true iff this node is a literal node [subclasses override]
-    */
+     * Answer true iff this node is a literal node [subclasses override]
+     */
     public boolean isLiteral()
-        { return false; }
+    { return false; }
 
     /**
-        Answer true iff this node is a blank node [subclasses override]
-    */
+     * Answer true iff this node is a blank node [subclasses override]
+     */
     public boolean isBlank()
-        { return false; }
+    { return false; }
 
     /**
-         Answer true iff this node is a URI node [subclasses override]
-    */
+     * Answer true iff this node is a URI node [subclasses override]
+     */
     public boolean isURI()
-        { return false; }
+    { return false; }
 
-    /**
-        Answer true iff this node is a variable node - subclasses override
-    */
+        /**
+         * Answer true iff this node is a variable node - subclasses override
+         */
     public boolean isVariable()
-        { return false; }
+    { return false; }
 
     /**
-        Answer true iff this node is an "triple node" (RDF-star)
+     * Answer true iff this node is an "triple node" (RDF-star)
      */
     public boolean isNodeTriple()
-        { return false; }
+    { return false; }
 
     /**
-        Answer true iff this node is an "graph node" (N3 formula).
-        This is not related to named graphs.
+     * Answer true iff this node is an "graph node" (N3 formula). This is not related
+     * to named graphs.
      */
     public boolean isNodeGraph()
-        { return false; }
+    { return false; }
 
     /** Extension node. Typically used in data structures based on triples.*/
-    public boolean isExt() {
-        return false;
+    public boolean isExt()
+    { return false; }
+
+    /**
+     * Answer the label of this blank node or throw an UnsupportedOperationException
+     * if it's not blank.
+     */
+    public String getBlankNodeLabel()
+    { throw new UnsupportedOperationException( this + " is not a blank node" ); }
+
+    /**
+     * Answer the literal value of a literal node, or throw an
+     * UnsupportedOperationException if it's not a literal node
+     */
+    public LiteralLabel getLiteral()
+    { throw new UnsupportedOperationException( this + " is not a literal node" ); }
+
+    /**
+     * Answer the value of this node's literal value, if it is a literal; otherwise
+     * die horribly.
+     */
+    public Object getLiteralValue()
+    { throw new NotLiteral( this ); }
+
+    /**
+     * Answer the lexical form of this node's literal value, if it is a literal;
+     * otherwise die horribly.
+     */
+    public String getLiteralLexicalForm()
+    { throw new NotLiteral( this ); }
+
+    /**
+     * Answer the language of this node's literal value, if it is a literal;
+     * otherwise die horribly.
+     */
+    public String getLiteralLanguage()
+    { throw new NotLiteral( this ); }
+
+    /**
+     * Answer the data-type URI of this node's literal value, if it is a literal;
+     * otherwise die horribly.
+     */
+    public String getLiteralDatatypeURI()
+    { throw new NotLiteral( this ); }
+
+    /**
+     * Answer the RDF datatype object of this node's literal value, if it is a
+     * literal; otherwise die horribly.
+     */
+    public RDFDatatype getLiteralDatatype()
+    { throw new NotLiteral( this ); }
+
+    /**
+     * Exception thrown if a literal-access operation is attempted on a non-literal
+     * node.
+     */
+    public static class NotLiteral extends JenaException {
+        public NotLiteral(Node it) {
+            super(it + " is not a literal node");
+        }
     }
 
     /**
-        Answer the label of this blank node or throw an UnsupportedOperationException
-        if it's not blank.
-    */
-    public String getBlankNodeLabel()
-        { throw new UnsupportedOperationException( this + " is not a blank node" ); }
-
-    /**
-         Answer the literal value of a literal node, or throw an UnsupportedOperationException
-         if it's not a literal node
+     * Answer the object which is the index value for this Node. The default is this
+     * Node itself; overridden in Node_Literal for literal indexing purposes. Only
+     * concrete nodes should use this method.
      */
-    public LiteralLabel getLiteral()
-        { throw new UnsupportedOperationException( this + " is not a literal node" ); }
-
-    /**
-        Answer the value of this node's literal value, if it is a literal;
-        otherwise die horribly.
-    */
-    public Object getLiteralValue()
-        { throw new NotLiteral( this ); }
-
-    /**
-        Answer the lexical form of this node's literal value, if it is a literal;
-        otherwise die horribly.
-    */
-    public String getLiteralLexicalForm()
-        { throw new NotLiteral( this ); }
-
-    /**
-        Answer the language of this node's literal value, if it is a literal;
-        otherwise die horribly.
-    */
-    public String getLiteralLanguage()
-        { throw new NotLiteral( this ); }
-
-    /**
-        Answer the data-type URI of this node's literal value, if it is a
-        literal; otherwise die horribly.
-    */
-    public String getLiteralDatatypeURI()
-        { throw new NotLiteral( this ); }
-
-    /**
-        Answer the RDF datatype object of this node's literal value, if it is
-        a literal; otherwise die horribly.
-    */
-    public RDFDatatype getLiteralDatatype()
-        { throw new NotLiteral( this ); }
-
-    /**
-        Exception thrown if a literal-access operation is attempted on a
-        non-literal node.
-    */
-    public static class NotLiteral extends JenaException
-        {
-        public NotLiteral( Node it )
-            { super( it + " is not a literal node" ); }
-        }
-
-    /**
-        Answer the object which is the index value for this Node. The default
-        is this Node itself; overridden in Node_Literal for literal indexing
-        purposes. Only concrete nodes should use this method.
-    */
     public Object getIndexingValue()
-        { return this; }
+    { return this; }
 
     /** get the URI of this node if it has one, else die horribly */
     public String getURI()
-        { throw new UnsupportedOperationException( this + " is not a URI node" ); }
+    { throw new UnsupportedOperationException( this + " is not a URI node" ); }
 
     /** get the namespace part of this node if it's a URI node, else die horribly */
     public String getNameSpace()
-        { throw new UnsupportedOperationException( this + " is not a URI node" ); }
+    { throw new UnsupportedOperationException( this + " is not a URI node" ); }
 
     /** get the localname part of this node if it's a URI node, else die horribly */
     public String getLocalName()
-        { throw new UnsupportedOperationException( this + " is not a URI node" ); }
+    { throw new UnsupportedOperationException( this + " is not a URI node" ); }
 
     /** get a variable nodes name, otherwise die horribly */
     public String getName()
-        { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a variable node" ); }
+    { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a variable node" ); }
 
     /** Get the triple for a triple term (embedded triple), otherwise die horribly */
     public Triple getTriple()
-        { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a embedded triple node" ); }
+    { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a embedded triple node" ); }
 
     /** Get the graph for a graph term (N3 formula), otherwise die horribly */
     public Graph getGraph()
-        { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a graph-valued node" ); }
+    { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a graph-valued node" ); }
 
     /** answer true iff this node is a URI node with the given URI */
     public boolean hasURI( String uri )
-        { return false; }
+    { return false; }
 
     /** See {@link Node_Ext} for custom Nodes */
     /*package*/ Node( ) {}
 
     /**
-		Java rules for equals.
-
-		See also {#sameTermAs} and {#sameValueAs} Nodes only equal other Nodes that have equal labels.
-	*/
+     * Java rules for equals. See also {#sameTermAs} and {#sameValueAs} Nodes only equal
+     * other Nodes that have equal labels.
+     */
     @Override
     public abstract boolean equals(Object o);
 
@@ -259,7 +261,7 @@ public abstract class Node implements Serializable {
      * @return true iff this node accepts the other as a match
      */
     public boolean matches( Node other )
-        { return equals( other ); }
+    { return equals( other ); }
 
     // ---- Serializable
     // Must be "protected", not "private".
@@ -277,5 +279,4 @@ public abstract class Node implements Serializable {
         throw new IllegalStateException();
     }
     // ---- Serializable
-
 }
