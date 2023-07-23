@@ -25,15 +25,15 @@ import org.apache.jena.graph.NodeFactory ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
-/** Tests on values */ 
+/** Tests on values */
 public class TestDatatypeValues {
-    
+
     // Duration.
-    
+
     @Test public void duration_01() {
         durationCompareTest(0, "PT1M", "PT1M") ;
     }
-    
+
     @Test public void duration_02() {
         durationCompareTest(0, "PT1M", "P0YT1M0S") ;
     }
@@ -81,21 +81,21 @@ public class TestDatatypeValues {
     @Test public void duration_20() {
         durationCompareTest(0, "-P1D", "-PT86400S") ;
     }
-    
+
     private static void durationCompareTest(int expected, String lex1, String lex2) {
         durationCompareTest(expected, lex1, XSDDatatype.XSDduration, lex2, XSDDatatype.XSDduration);
     }
-    
+
     private static void durationCompareTest(int expected, String lex1, XSDDatatype dt1, String lex2, XSDDatatype dt2) {
         Node d1 = NodeFactory.createLiteral(lex1, null, XSDDatatype.XSDduration);
         Node d2 = NodeFactory.createLiteral(lex2, null, XSDDatatype.XSDduration);
         XSDDuration dur1 = (XSDDuration) d1.getLiteralValue();
         XSDDuration dur2 = (XSDDuration) d2.getLiteralValue();
         int cmp = dur1.compare(dur2) ;
-        
+
         Assert.assertEquals("Compare: "+lex1+" and "+lex2, expected, cmp) ;
         if ( cmp == 0 ) {
-            Assert.assertEquals("Not hash compatible: "+lex1+" and "+lex2, d1.hashCode(), d2.hashCode()) ;
+            Assert.assertEquals("Not hash compatible: "+lex1+" and "+lex2, d1.getLiteral().getValueHashCode(), d2.getLiteral().getValueHashCode()) ;
             Assert.assertTrue("Not equal: "+lex1+" and "+lex2, d1.sameValueAs(d2)) ;
         } else {
             Assert.assertFalse("Equal: "+lex1+" and "+lex2, d1.sameValueAs(d2)) ;
