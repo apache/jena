@@ -80,64 +80,70 @@ final public class LiteralLabel {
 	 */
 	private Throwable exception = null;
 
+    private final int hash;
+
 	//=======================================================================
 	// Constructors
 
-	/**
-	 * Build a typed literal label from its lexical form. The
-	 * lexical form will be parsed now and the value stored. If
-	 * the form is not legal this will throw an exception.
-	 *
-	 * @param lex the lexical form of the literal
-	 * @param lang the optional language tag, only relevant for plain literals
-	 * @param dtype the type of the literal, null for old style "plain" literals
-	 * @throws DatatypeFormatException if lex is not a legal form of dtype
-	 */
-	/*package*/ LiteralLabel(String lex, String lang, RDFDatatype dtype) {
-	    setLiteralLabel_1(lex, lang, dtype) ;
-	}
+    // -- LiteralLabel by RDF term.
+    // The value is not checked as being valid until it is asked for (getValue).
 
-	LiteralLabel(String lex, RDFDatatype dtype) {
-	    setLiteralLabel_1(lex, "", dtype) ;
-	}
+    /**
+     * Build a LiteralLabel with lexical form and datatype.
+     * The validity of the lexical form as a value is not checked.
+     *
+     * @param lex the lexical form of the literal
+     * @param dtype the type of the literal
+     */
+    LiteralLabel(String lex, RDFDatatype dtype) {
+        this(lex, "", dtype) ;
+    }
 
-	private void setLiteralLabel_1(String lex, String lang, RDFDatatype dtype) {
+    /**
+     * Build a LiteralLabel with lexical form, lang tag and datatype.
+     * The validity of the lexical form a a value is not checked.
+     *
+     * @param lex the lexical form of the literal
+     * @param lang the optional language tag, only relevant for rdf:rdfLangString
+     * @param dtype the type of the literal
+     */
+    /*package*/ LiteralLabel(String lex, String lang, RDFDatatype dtype) {
+        setByTerm(lex, lang, dtype);
+        hash = calcHashCode();
+    }
+
+	private void setByTerm(String lex, String lang, RDFDatatype dtype) {
         this.lexicalForm = lex;
-        this.dtype = dtype;
+        this.dtype = Objects.requireNonNull(dtype);
         this.lang = (lang == null ? "" : lang);
-        if (dtype == null) { // RDF 1.0 compatibility and legacy code.
-            value = lex;
-        } else {
-            setValue(lex);
-        }
+        setValue(lex);
         normalize();
     }
 
+    /**
+     * Build a typed literal label from its value form using
+     * whatever datatype is currently registered as the default
+     * representation for this java class.
+     * @param value the literal value to encapsulate
+     */
+    /*package*/ LiteralLabel( Object value ) {
+        this(value, LiteralValue.datatypeForValueAny(value));
+    }
+
 	/**
-	 * Build a typed literal label from its value form. If the value is a string we
-     * assume this is intended to be a lexical form after all.
+	 * Build a typed literal label from its value form.
+	 * If the value is a string, assume it is the intended lexical form to
+	 * align with (see {@link #LiteralLabel(String, RDFDatatype)}).
 	 *
 	 * @param value the value of the literal
-	 * @param lang the optional language tag, only relevant for plain literals
-	 * @param dtype the type of the literal, null for old style "plain" literals
+	 * @param dtype the type of the literal
 	 */
 	/*package*/ LiteralLabel(Object value, RDFDatatype dtype) throws DatatypeFormatException {
-	    setLiteralLabel_2(value, "", dtype) ;
+	    setByValue(value, "", dtype);
+        hash = calcHashCode();
 	}
 
-	/**
-	 * Build a typed literal label from its value form using
-	 * whatever datatype is currently registered as the default
-	 * representation for this java class. No language tag is supplied.
-	 * @param value the literal value to encapsulate
-	 */
-	/*package*/ LiteralLabel( Object value ) {
-		RDFDatatype dt = LiteralValue.datatypeForValueAny(value);
-		setLiteralLabel_2( value, "", dt );
-	}
-
-	private void setLiteralLabel_2(Object value, String language, RDFDatatype dtype) {
-        // Constructor extraction: Preparation for moving into Node_Literal.
+	private void setByValue(Object value, String language, RDFDatatype dtype) {
         this.dtype = dtype;
         this.lang = (language == null ? "" : language);
         if (value instanceof String) {
@@ -158,10 +164,12 @@ final public class LiteralLabel {
             // We are creating a literal from a java object, check the lexical form of the object is acceptable
             // Done here and uses this.dtype so it can use the normalized type
             wellformed = this.dtype.isValidValue( value );
-            if (JenaParameters.enableEagerLiteralValidation && !wellformed) {
-                throw new DatatypeFormatException(value.toString(),  dtype, "in literal creation");
-            }
         }
+        if (JenaParameters.enableEagerLiteralValidation && !wellformed)
+            throw new DatatypeFormatException(value.toString(),  dtype, "in literal creation");
+
+        if ( lexicalForm == null )
+            lexicalForm = (dtype == null ? value.toString() : dtype.unparse(value));
     }
 
 	/**
@@ -200,16 +208,16 @@ final public class LiteralLabel {
 	//=======================================================================
 	// Methods
 
-	/**
-        Answer true iff this is a well-formed XML literal.
-    */
+    /**
+     * Answer true iff this is a well-formed XML literal.
+     */
     public boolean isXML() {
 		return dtype == XMLLiteralType.theXMLLiteralType && this.wellformed;
 	}
 
-	/**
-     	Answer true iff this is a well-formed literal.
-    */
+    /**
+     * Answer true iff this is a well-formed literal.
+     */
     public boolean isWellFormed() {
 		return dtype != null && this.wellformed;
 	}
@@ -238,13 +246,11 @@ final public class LiteralLabel {
 
         if ( lang != null && !lang.equals("") )
             b.append("@").append(lang) ;
-        else if ( dtype != null ) {
-            if ( ! dtype.equals(XSDDatatype.XSDstring) ) {
-                String x = (pmap != null)
+        else if ( ! dtype.equals(XSDDatatype.XSDstring) ) {
+                String dtStr = (pmap != null)
                         ? PrefixMapping.Standard.shortForm(dtype.getURI())
                         : dtype.getURI();
-                b.append("^^").append(x);
-            }
+                b.append("^^").append(dtStr);
         }
         return b.toString() ;
 	}
@@ -259,12 +265,9 @@ final public class LiteralLabel {
 	}
 
     /**
-     * Answer the lexical form of this literal, constructing it on-the-fly (and
-     * remembering it) if necessary.
+     * Answer the lexical form of this literal.
      */
     public String getLexicalForm() {
-		if (lexicalForm == null)
-			lexicalForm = (dtype == null ? value.toString() : dtype.unparse(value));
 		return lexicalForm;
 	}
 
@@ -451,8 +454,8 @@ final public class LiteralLabel {
     }
 
     /** Return true if the literal label is a language string. */
-    public static boolean isLangString(LiteralLabel lit) {
-        // Duplicated by Util.isLangString except for the consistency check.
+    private static boolean isLangString(LiteralLabel lit) {
+        // Duplicate of Util.isLangString except for the additional consistency check.
         String lang = lit.language() ;
         if ( lang == null )
             return false ;
@@ -465,16 +468,16 @@ final public class LiteralLabel {
         return true ;
     }
 
-    private int hash = 0 ;
+    private int calcHashCode() {
+        return Objects.hash(lexicalForm, lang, dtype);
+    }
+
     /**
      * Answer the hashcode of this literal, derived from its value if it's
      * well-formed and otherwise its lexical form.
      */
 	@Override
     public int hashCode() {
-	    // Literal labels are immutable.
-	    if ( hash == 0 )
-	        hash = (dtype == null ? getDefaultHashcode() : dtype.getHashCode( this ));
 	    return hash ;
 	}
 
@@ -483,6 +486,7 @@ final public class LiteralLabel {
      * support hashCode() naturally: it is derived from its value if it is
      * well-formed and otherwise from its lexical form.
      */
-    public int getDefaultHashcode()
-    { return (wellformed ? value : getLexicalForm()).hashCode(); }
+    public int getValueHashCode() {
+        return (wellformed ? value : getLexicalForm()).hashCode();
+    }
 }

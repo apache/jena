@@ -354,13 +354,11 @@ public class TestConfigFile {
 
     private static int countDftGraph(RDFConnection conn) {
         try ( QueryExecution qExec = conn.query("SELECT (count(*) AS ?C) { ?s ?p ?o }") ) {
-            Object obj = qExec.execSelect().nextBinding().get(Var.alloc("C")).getIndexingValue();
+            Object obj = qExec.execSelect().nextBinding().get(Var.alloc("C")).getLiteralValue();
             int x = ((Number)obj).intValue();
             return x;
         }
     }
-
-
 
     private static void assertCxtValue(RDFConnection conn, String contextSymbol, String value) {
         String actual =
