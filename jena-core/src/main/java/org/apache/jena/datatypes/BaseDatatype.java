@@ -176,7 +176,7 @@ public class BaseDatatype implements RDFDatatype {
     */
     @Override
     public int getHashCode( LiteralLabel lit ) {
-        return lit.getDefaultHashcode();
+        return lit.getValueHashCode();
         }
 
     /**

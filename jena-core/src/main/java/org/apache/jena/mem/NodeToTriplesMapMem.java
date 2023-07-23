@@ -23,27 +23,26 @@ import java.util.function.Predicate;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.Triple.Field ;
-import org.apache.jena.shared.JenaException ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NullIterator ;
 
 public class NodeToTriplesMapMem extends NodeToTriplesMapBase
-    {    
+    {
     public NodeToTriplesMapMem( Field indexField, Field f2, Field f3 )
        { super( indexField, f2, f3 ); }
-    
+
     /**
         Add <code>t</code> to this NTM; the node <code>o</code> <i>must</i>
         be the index node of the triple. Answer <code>true</code> iff the triple
-        was not previously in the set, ie, it really truly has been added. 
+        was not previously in the set, ie, it really truly has been added.
     */
-    @Override public boolean add( Triple t ) 
+    @Override public boolean add( Triple t )
        {
        Object o = getIndexField( t );
 
        // Feb 2016 : no measurable difference.
        //TripleBunch s = bunchMap.getOrSet(o, (k)->new ArrayBunch()) ;
-       
+
        TripleBunch s = bunchMap.get( o );
        if (s == null) bunchMap.put( o, s = new ArrayBunch() );
        if (s.contains( t ))
@@ -53,17 +52,17 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
            if (s.size() == 9 && s instanceof ArrayBunch)
                bunchMap.put( o, s = new HashedTripleBunch( s ) );
            s.add( t );
-           size += 1; 
-           return true; 
-           } 
+           size += 1;
+           return true;
+           }
        }
-    
+
     /**
-        Remove <code>t</code> from this NTM. Answer <code>true</code> iff the 
-        triple was previously in the set, ie, it really truly has been removed. 
+        Remove <code>t</code> from this NTM. Answer <code>true</code> iff the
+        triple was previously in the set, ie, it really truly has been removed.
     */
     @Override public boolean remove( Triple t )
-       { 
+       {
        Object o = getIndexField( t );
        TripleBunch s = bunchMap.get( o );
        if (s == null || !s.contains( t ))
@@ -74,9 +73,9 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
            size -= 1;
            if (s.size() == 0) bunchMap.remove( o );
            return true;
-        } 
+        }
     }
-    
+
     /**
         Answer an iterator over all the triples in this NTM which have index node
         <code>o</code>.
@@ -93,35 +92,35 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
                 .and(f2.filterOn(pattern)).and(f3.filterOn(pattern));
         return iterateAll().filterKeep(filter);
         }
-    
+
     public class NotifyMe implements HashCommon.NotifyEmpty
         {
         protected final Object key;
-        
+
         public NotifyMe( Object key )
             { this.key = key; }
-        
-        // TODO fix the way this interacts (badly) with iteration and CMEs.
-        @Override
-        public void emptied()
-            { if (false) throw new JenaException( "BOOM" ); /* System.err.println( ">> OOPS" ); */ bunchMap.remove( key ); }
+
+            @Override
+            public void emptied() {
+                bunchMap.remove(key);
+            }
         }
-    
+
     /**
         Answer true iff this NTM contains the concrete triple <code>t</code>.
     */
     @Override public boolean contains( Triple t )
-       { 
+       {
        TripleBunch s = bunchMap.get( getIndexField( t ) );
        return s == null ? false :  s.contains( t );
-       }    
-    
+       }
+
     @Override public boolean containsBySameValueAs( Triple t )
-       { 
+       {
        TripleBunch s = bunchMap.get( getIndexField( t ) );
        return s == null ? false :  s.containsBySameValueAs( t );
        }
-    
+
     /**
         Answer an iterator over all the triples in this NTM which match
         <code>pattern</code>. The index field of this NTM is guaranteed
@@ -131,7 +130,6 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
        {
        Object indexValue = index.getIndexingValue();
        TripleBunch s = bunchMap.get( indexValue );
-//       System.err.println( ">> ntmf::iterator: " + (s == null ? (Object) "None" : s.getClass()) );
        if (s == null) return NullIterator.<Triple>instance();
            var filter = FieldFilter.filterOn(f2, n2, f3, n3);
            return filter.hasFilter()
@@ -141,7 +139,7 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
 
         protected TripleBunch get( Object index )
         { return bunchMap.get( index ); }
-    
+
     /**
      Answer an iterator over all the triples that are indexed by the item <code>y</code>.
         Note that <code>y</code> need not be a Node (because of indexing values).

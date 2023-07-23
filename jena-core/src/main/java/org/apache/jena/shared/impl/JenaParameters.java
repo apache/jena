@@ -67,7 +67,7 @@ public class JenaParameters {
      * Set this flag to true to switch on checking of surrounding whitespace
      * in non-string XSD numeric types. In the false (default) setting then
      * leading and trailing white space is silently trimmed when parsing an
-     * XSD numberic typed literal.
+     * XSD numeric typed literal.
      */
     public static boolean enableWhitespaceCheckingOfTypedLiterals = false;
 
