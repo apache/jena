@@ -84,6 +84,7 @@ public class Node_Literal extends Node
     { return true; }
 
     /**
+     * Indexing object for literals.
      * Literal nodes defer their indexing value to the component literal.
      *
      * @see org.apache.jena.graph.Node#getIndexingValue()

@@ -29,15 +29,14 @@ import org.apache.jena.datatypes.TypeMapper;
  * Code for literal values.
  * <p>
  * Up to Jena4, literal values were in LiteralLabel
- *
  */
 class LiteralValue {
 
     /**
      * Given a lexical form, and a datatype, return the represented value.
      * <p>
-     * If the lexical form is ill-formed (i.e it is not correct for the in the
-     * datatype such as {@code "tuesday"^^xsd:integer}, return null.
+     * If the lexical form is ill-formed (i.e. it is not correct for the
+     * datatype (example: {@code "tuesday"^^xsd:integer}) return null.
      */
     static Object calculateValue(String lexicalForm, RDFDatatype dtype) {
         Objects.requireNonNull(lexicalForm, "Lexical form");
