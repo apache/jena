@@ -375,19 +375,26 @@ public interface Statement extends FrontsTriple
     /**
         answer a ReifiedStatement object that embodies this Statement and
         is in the same Model (if any).
-    */
+     *   @deprecated To be removed
+     */
+    @Deprecated
+
     ReifiedStatement createReifiedStatement();
 
     /**
         answer a ReifiedStatement object that embodies this Statement, has
         the same Model, and has the given <code>uri</code>.
-    */
+     *   @deprecated To be removed
+     */
+    @Deprecated
     ReifiedStatement createReifiedStatement( String uri );
 
     /**
         answer an iterator which delivers all the reified statements in the model
         this Statement belongs to that match this Statement.
-    */
+     *   @deprecated To be removed
+     */
+    @Deprecated
     RSIterator listReifiedStatements();
 
     /**

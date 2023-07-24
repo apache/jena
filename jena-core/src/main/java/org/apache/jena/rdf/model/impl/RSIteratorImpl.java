@@ -23,6 +23,7 @@ import java.util.Iterator;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
+@SuppressWarnings("deprecation")
 public class RSIteratorImpl extends WrappedIterator<ReifiedStatement> implements RSIterator
     {
     public RSIteratorImpl( Iterator<ReifiedStatement> iterator )

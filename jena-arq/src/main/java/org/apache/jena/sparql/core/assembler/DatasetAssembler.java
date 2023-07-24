@@ -32,8 +32,12 @@ import org.apache.jena.sparql.core.DatasetGraph;
 
 public abstract class DatasetAssembler extends AssemblerBase implements Assembler {
 
-    /** This is the */
-    public static Resource getGeneralType() {
+    /** @deprecated Use {@link #getGeneralType} */
+    @Deprecated
+    public static Resource getType() { return getGeneralType(); }
+
+    /** This is the superclass of all datasets assemblers */
+       public static Resource getGeneralType() {
         return DatasetAssemblerVocab.tDataset ;
     }
 

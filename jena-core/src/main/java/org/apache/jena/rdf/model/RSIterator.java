@@ -21,9 +21,12 @@ package org.apache.jena.rdf.model;
 import org.apache.jena.util.iterator.* ;
 
 /**
-    An RSIterator is a ClosableIterator (qv) which delivers only ReifedStatement's
-    and which has a next-method with that return type.
-*/
+ * An RSIterator is a ClosableIterator (qv) which delivers only ReifedStatement's and
+ * which has a next-method with that return type.
+ *
+ * @deprecated To be removed
+ */
+@Deprecated
 
 public interface RSIterator extends ExtendedIterator<ReifiedStatement>
     {

@@ -25,6 +25,7 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.junit.Assert;
 
+@SuppressWarnings("deprecation")
 public class TestSelectorUse extends AbstractModelTestBase
 {
 

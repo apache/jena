@@ -25,11 +25,11 @@ import org.apache.jena.rdf.model.* ;
 /** An implementation of Statement.
  */
 public class StatementImpl extends StatementBase implements Statement {
-    
+
     protected Resource subject;
     protected Property predicate;
     protected RDFNode  object;
-    
+
     /** Creates new StatementImpl */
     public StatementImpl(Resource subject, Property predicate, RDFNode object,
 			ModelCom model)
@@ -39,17 +39,17 @@ public class StatementImpl extends StatementBase implements Statement {
 		this.predicate = predicate.inModel( model );
 		this.object = object.inModel( model );
 		}
-    
+
     protected static ModelCom empty = (ModelCom) ModelFactory.createDefaultModel();
-    
+
 	public StatementImpl(Resource subject, Property predicate, RDFNode object)
 		{
 		super( empty );
 		this.subject = subject.inModel( model );
 		this.predicate = predicate.inModel( model );
 		this.object = object.inModel( model );
-		}    
-    
+		}
+
     /**
 	 * create a Statement from the triple _t_ in the enhanced graph _eg_. The
 	 * Statement has subject, predicate, and object corresponding to those of
@@ -62,7 +62,7 @@ public class StatementImpl extends StatementBase implements Statement {
         RDFNode o = createObject( t.getObject(), eg );
         return new StatementImpl( s, p, o, eg );
         }
-    
+
     @Override
     public Resource getSubject()
 		{
@@ -86,84 +86,84 @@ public class StatementImpl extends StatementBase implements Statement {
 		{
 		return asResource().getRequiredProperty( p );
 		}
-    
+
     @Override
     public Resource getResource()
         { return mustBeResource( object ); }
-    
+
     @Override
     @Deprecated public Resource getResource( ResourceF f )
         { return f.createResource( getResource() ); }
-    
+
     @Override
     public Statement getProperty(Property p)  {
         return getResource().getRequiredProperty( p );
-    }    
-        
+    }
+
     /**
         get the object field of this statement, insisting that it be a Literal.
         If it isn't, throw LiteralRequiredException.
     */
     @Override
-    public Literal getLiteral()  {        
+    public Literal getLiteral()  {
         if (object instanceof Literal) {
             return (Literal) object;
-        } else {    
+        } else {
             throw new LiteralRequiredException( object );
         }
     }
-        
+
     @Override
     public Bag getBag()  {
         return object.as( Bag.class );
     }
-    
+
     @Override
     public Alt getAlt()  {
         return object.as( Alt.class );
     }
-    
+
     @Override
     public Seq getSeq()  {
         return object.as( Seq.class );
-    }    
-    
+    }
+
     @Override
     public RDFList getList() {
         return object.as( RDFList.class );
     }
-    
-    /** it turns out to be handy to return the new StatementImpl as the result */ 
+
+    /** it turns out to be handy to return the new StatementImpl as the result */
     @Override protected StatementImpl replace( RDFNode n )  {
     	StatementImpl s = new StatementImpl( subject, predicate, n, model );
     	model.remove( this ).add( s );
         return s;
     }
-        
+
     /**
         .equals() defers to .sameAs so we only get the complexity of one cast.
     */
     @Override public boolean equals(Object o)
         { return o instanceof Statement && sameAs( (Statement) o ); }
-        
+
     /**
         sameAs - is this statement equal to the statement o? We can't assume
         o is a StatementImpl
     */
     private final boolean sameAs( Statement o )
-        { 
-        return subject.equals( o.getSubject() ) 
+        {
+        return subject.equals( o.getSubject() )
             && predicate.equals( o.getPredicate() )
             && object.equals( o.getObject() );
         }
-    
+
     @Override public int hashCode() {
     	return asTriple().hashCode();
     }
-    
+
     public Resource asResource() {
     	return model.getAnyReifiedStatement(this);
-    }    
+    }
 
     @Override
     public Statement remove()
@@ -171,17 +171,17 @@ public class StatementImpl extends StatementBase implements Statement {
         model.remove( this );
         return this;
         }
-    
+
     @Override
     public void removeReification() {
     	model.removeAllReifications(this);
     }
-    
+
     @Override
     public Triple asTriple() {
     	return Triple.create( subject.asNode(), predicate.asNode(), object.asNode() );
     }
-    
+
     /**
         returns an array of triples corresponding to the array of statements; ie
         the i'th element of the result is the i'th element of the input as a triple.
@@ -189,32 +189,35 @@ public class StatementImpl extends StatementBase implements Statement {
         @return the corresponding array of triples
     */
     public static Triple [] asTriples( Statement [] statements )
-        {        
+        {
         Triple [] triples = new Triple[statements.length];
         for (int i = 0; i < statements.length; i += 1) triples[i] = statements[i].asTriple();
         return triples;
         }
-    
+
     @Override
     public boolean isReified()  {
         return model.isReified( this );
     }
-        
+
     /**
         create a ReifiedStatement corresponding to this Statement
     */
+    @SuppressWarnings("deprecation")
     @Override
     public ReifiedStatement createReifiedStatement()
         { return ReifiedStatementImpl.create( this ); }
-        
+
     /**
         create a ReifiedStatement corresponding to this Statement
         and with the given _uri_.
     */
+    @SuppressWarnings("deprecation")
     @Override
     public ReifiedStatement createReifiedStatement( String uri )
         { return ReifiedStatementImpl.create( (ModelCom) this.getModel(), uri, this ); }
-        
+
+    @SuppressWarnings("deprecation")
     @Override
     public RSIterator listReifiedStatements()
         { return model.listReifiedStatements( this ); }
@@ -226,5 +229,5 @@ public class StatementImpl extends StatementBase implements Statement {
         {
         return n.isLiteral() ? (RDFNode) new LiteralImpl( n, g ) : new ResourceImpl( n, g );
         }
-    
+
 }

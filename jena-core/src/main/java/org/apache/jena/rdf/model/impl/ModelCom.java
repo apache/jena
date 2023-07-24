@@ -21,6 +21,7 @@ package org.apache.jena.rdf.model.impl;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.apache.jena.datatypes.DatatypeFormatException;
@@ -1106,6 +1107,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     /**
      * @return an iterator which delivers all the ReifiedStatements in this model
      */
+    @SuppressWarnings("deprecation")
     @Override
     public RSIterator listReifiedStatements()
     { return modelReifier.listReifiedStatements(); }
@@ -1114,6 +1116,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
         @return an iterator each of whose elements is a ReifiedStatement in this
             model such that it's getStatement().equals( st )
      */
+    @SuppressWarnings("deprecation")
     @Override
     public RSIterator listReifiedStatements( Statement st )
     { return modelReifier.listReifiedStatements( st ); }
@@ -1145,6 +1148,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     public void removeAllReifications( Statement s )
     { modelReifier.removeAllReifications( s ); }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void removeReification( ReifiedStatement rs )
     { modelReifier.removeReification( rs ); }
@@ -1152,10 +1156,12 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     /**
      * create a ReifiedStatement that encodes _s_ and belongs to this Model.
      */
+    @SuppressWarnings("deprecation")
     @Override
     public ReifiedStatement createReifiedStatement( Statement s )
     { return modelReifier.createReifiedStatement( s ); }
 
+    @SuppressWarnings("deprecation")
     @Override
     public ReifiedStatement createReifiedStatement( String uri, Statement s )
     { return modelReifier.createReifiedStatement( uri, s ); }
@@ -1245,6 +1251,10 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     public NodeIterator listObjectsOfProperty(Resource s, Property p)
     { return listObjectsFor( s, p ); }
 
+    /**
+     * @deprecated Use {@link Predicate Predicate&lt;Statement&gt;} to filter.
+     */
+    @Deprecated
     @Override
     public StmtIterator listStatements(final Selector selector) {
         StmtIterator sts = IteratorFactory.asStmtIterator( findTriplesFrom( selector ), this );
@@ -1261,7 +1271,9 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
      *
      * @param s a Selector used to supply subject, predicate, and object
      * @return an extended iterator over the matching (S, P, O) triples
+     * @deprecated Use {@link Predicate Predicate&lt;Statement&gt;} to filter.
      */
+    @Deprecated
     public ExtendedIterator<Triple> findTriplesFrom(Selector s) {
         return graph.find
                 ( asNode( s.getSubject() ), asNode( s.getPredicate() ), asNode( s.getObject() ) );
@@ -1382,7 +1394,10 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     public boolean supportsSetOperations()
     {return true;}
 
-    @Override
+    /**
+     * @deprecated To be remnoved.
+     */
+   @Deprecated    @Override
     public Model query( Selector selector )
     { return createWorkModel() .add( listStatements( selector ) ); }
 

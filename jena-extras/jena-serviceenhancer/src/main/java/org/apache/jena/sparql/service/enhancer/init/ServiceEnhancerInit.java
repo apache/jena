@@ -197,7 +197,7 @@ public class ServiceEnhancerInit
 
     static void registerWith(AssemblerGroup g)
     {
-        AssemblerUtils.register(g, ServiceEnhancerVocab.DatasetServiceEnhancer, new DatasetAssemblerServiceEnhancer(), DatasetAssembler.getType());
+        AssemblerUtils.register(g, ServiceEnhancerVocab.DatasetServiceEnhancer, new DatasetAssemblerServiceEnhancer(), DatasetAssembler.getGeneralType());
 
         // Note: We can't install the plugin on graphs because they don't have a context
     }
