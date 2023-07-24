@@ -60,6 +60,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
+import org.apache.jena.sparql.core.assembler.NamedDatasetAssembler;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.FmtUtils;
 import org.apache.jena.sparql.util.graph.GraphUtils;
@@ -277,13 +278,15 @@ public class FusekiConfig {
      * starting from {@code server} which can have a {@code fuseki:services ( .... )}
      * but, if not found, all {@code rdf:type fuseki:services} are processed.
      */
-    public static List<DataAccessPoint> servicesAndDatasets(Resource server) {
+    private
+    /*public*/ static List<DataAccessPoint> servicesAndDatasets_notUsed(Resource server) {
         Objects.requireNonNull(server);
         return servicesAndDatasets$(server, server.getModel());
     }
 
     private static List<DataAccessPoint> servicesAndDatasets$(Resource server, Model model) {
         DatasetDescriptionMap dsDescMap = new DatasetDescriptionMap();
+        NamedDatasetAssembler.sharedDatasetPool.clear();
         // ---- Services
         // Server to services.
         ResultSet rs = BuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model, "s", server);
@@ -404,7 +407,6 @@ public class FusekiConfig {
         }
     }
 
-    /** Build a DatasetRef starting at Resource svc, having the services as described by the descriptions. */
     private static DataService.Builder buildDataService(Resource fusekiService, DatasetDescriptionMap dsDescMap) {
         Resource datasetDesc = (Resource)BuildLib.getOne(fusekiService, FusekiVocab.pDataset);
         Dataset ds = getDataset(datasetDesc, dsDescMap);
@@ -434,8 +436,8 @@ public class FusekiConfig {
         // Should not happen.
         endpoints1.forEach(dataService::addEndpoint);
 
-        // New (2019) style
-        // fuseki:endpoint [ fuseki:operation fuseki:query ; fuseki:name "" ; fuseki:allowedUsers (....) ] ;
+        // New (2019) style -- preferred
+        //   fuseki:endpoint [ fuseki:operation fuseki:query ; fuseki:name "" ; fuseki:allowedUsers (....) ] ;
         //   and more.
 
         accFusekiEndpoints(endpoints2, fusekiService, dsDescMap);
@@ -635,19 +637,23 @@ public class FusekiConfig {
 
     public static Dataset getDataset(Resource datasetDesc, DatasetDescriptionMap dsDescMap) {
         // check if this one already built
-        Dataset ds = dsDescMap.get(datasetDesc);
-        if (ds == null) {
-            // Check if the description is in the model.
-            if ( !datasetDesc.hasProperty(RDF.type) )
-                throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc));
+        // This is absolute and does not require a NamedDatasetAssembler and to have a ja:name.
+        // ja:name/NamedDatasetAssembler must be used if the service datasets need to
+        // wire up sharing of a graph of datasets (not TDB).
 
-            // Should have been done already. e.g. ActionDatasets.execPostContainer,
-            // Assemblerutils.readAssemblerFile < FusekiServer.parseConfigFile.
-            //AssemblerUtils.addRegistered(datasetDesc.getModel());
-            ds = (Dataset)Assembler.general.open(datasetDesc);
-        }
-        // Some kind of check that it is "the same" dataset.
-        // It can be different if two descriptions in different files have the same URI.
+        Dataset ds = dsDescMap.get(datasetDesc);
+        if ( ds != null )
+            return ds;
+
+        // Not seen before.
+        // Check if the description is in the model.
+        if ( !datasetDesc.hasProperty(RDF.type) )
+            throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc));
+
+        // Should have been done already. e.g. ActionDatasets.execPostContainer,
+        // AssemblerUtils.readAssemblerFile < FusekiServer.parseConfigFile.
+        //AssemblerUtils.addRegistered(datasetDesc.getModel());
+        ds = (Dataset)Assembler.general.open(datasetDesc);
         dsDescMap.register(datasetDesc, ds);
         return ds;
     }

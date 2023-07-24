@@ -34,7 +34,7 @@ import org.apache.jena.sparql.util.Context;
  * DatasetGraph wrapper controls entry and exit of transactions.
  * <ul>
  * <li>Exclusive access (no transactions active)
- * <li>Read only database - No possible writers (write and promotable transactions)
+ * <li>Read only database - No possible writers (write and promote-able transactions)
  * </ul>
  */
 

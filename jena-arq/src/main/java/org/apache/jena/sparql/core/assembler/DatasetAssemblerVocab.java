@@ -41,8 +41,11 @@ public class DatasetAssemblerVocab
     public static final Resource tDatasetZero        = ResourceFactory.createResource(NS+"RDFDatasetZero") ;
     public static final Resource tDatasetSink        = ResourceFactory.createResource(NS+"RDFDatasetSink") ;
     public static final Resource tViewGraph          = ResourceFactory.createResource(NS+"ViewGraph") ;
+    public static final Resource tDatasetView        = ResourceFactory.createResource(NS+"ViewDataset") ;
 
     public static final Property pDataset            = ResourceFactory.createProperty(NS, "dataset") ;
+    // Dataset name - using a name means that the same dataset is return when assembled for shared resources.
+    public static final Property pDatasetName        = ResourceFactory.createProperty(NS, "name") ;
 
     public static final Property pDefaultGraph       = ResourceFactory.createProperty(NS, "defaultGraph") ;
 

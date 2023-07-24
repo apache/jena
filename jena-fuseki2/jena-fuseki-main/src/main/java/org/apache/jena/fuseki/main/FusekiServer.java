@@ -54,8 +54,10 @@ import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
@@ -489,11 +491,12 @@ public class FusekiServer {
             return this;
         }
 
-        /** Context path to Fuseki.  If it's "/" then Fuseki URL look like
+        /**
+         * Context path to Fuseki.  If it's "/" then Fuseki URL look like
          * "http://host:port/dataset/query" else "http://host:port/path/dataset/query"
+         * The default is "/".
          */
         public Builder contextPath(String path) {
-            requireNonNull(path, "path");
             this.contextPath = path;
             return this;
         }
@@ -507,6 +510,8 @@ public class FusekiServer {
         /** Set the location (filing system directory) to serve static files from. */
         public Builder staticFileBase(String directory) {
             requireNonNull(directory, "directory");
+            if ( ! FileOps.exists(directory) )
+                Fuseki.configLog.warn("File area not found: "+directory);
             this.staticContentDir = directory;
             return this;
         }
@@ -818,6 +823,8 @@ public class FusekiServer {
             if ( server == null )
                 return;
 
+            if ( server.hasProperty(FusekiVocab.pServerContextPath) )
+                contextPath(argString(server, FusekiVocab.pServerContextPath, "/"));
             enablePing(argBoolean(server, FusekiVocab.pServerPing,  false));
             enableStats(argBoolean(server, FusekiVocab.pServerStats, false));
             enableMetrics(argBoolean(server, FusekiVocab.pServerMetrics, false));
@@ -866,6 +873,25 @@ public class FusekiServer {
                 throw new FusekiConfigException("Not a boolean for '"+p+"' : "+stmt.getObject());
             }
         }
+
+        private static String argString(Resource r, Property p, String dftValue) {
+            try { GraphUtils.atmostOneProperty(r, p); }
+            catch (NotUniqueException ex) {
+                throw new FusekiConfigException(ex.getMessage());
+            }
+            Statement stmt = r.getProperty(p);
+            if ( stmt == null )
+                return dftValue;
+            try {
+                Node n = stmt.getObject().asLiteral().asNode();
+                if ( ! G.isString(n) )
+                    throw new FusekiConfigException("Not a string for '"+p+"' : "+stmt.getObject());
+                return n.getLiteralLexicalForm();
+            } catch (JenaException ex) {
+                throw new FusekiConfigException("Not a string for '"+p+"' : "+stmt.getObject());
+            }
+        }
+
 
         /**
          * Choose the HTTP authentication scheme.

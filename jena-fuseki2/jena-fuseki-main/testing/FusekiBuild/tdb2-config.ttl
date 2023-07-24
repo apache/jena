@@ -1,3 +1,5 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
 PREFIX :        <#>
 PREFIX fuseki:  <http://jena.apache.org/fuseki#>
 PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -8,8 +10,8 @@ PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
 <#serviceInMemory> rdf:type fuseki:Service;
     rdfs:label "test";
     fuseki:name "FuTest";
-    fuseki:serviceQuery "query";
-    fuseki:serviceUpdate "update";
+    fuseki:endpoint [ fuseki:name "sparql" ; fuseki:operation fuseki:query ] ;
+    fuseki:endpoint [ fuseki:name "update" ; fuseki:operation fuseki:update ] ;
     fuseki:dataset <#dataset> ;
 .
 

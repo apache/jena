@@ -21,42 +21,33 @@ package org.apache.jena.sparql.core.assembler;
 import java.util.Map;
 
 import org.apache.jena.assembler.Assembler;
-import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphSink;
-import org.apache.jena.sparql.core.DatasetGraphZero;
+import org.apache.jena.sparql.core.DatasetGraphWrapper;
 
 /**
- * An assembler that creates datasets that do nothing, either a sink or a always empty one.
-
- * @see DatasetGraphSink
- * @see DatasetGraphZero
+ * An assembler that layers on top of another dataset given by {@code ja:dataset}.
+ * <p>
+ * It enables adding extra context settings.
+ * <p>
+ * It can be used as a super class, where the subclass overrides {@link #createBaseDataset}.
  */
+public class ViewDatasetAssembler extends NamedDatasetAssembler  {
 
-public class DatasetNullAssembler extends NamedDatasetAssembler {
+    public static Resource getType() { return DatasetAssemblerVocab.tDatasetView; }
 
-    private final Resource tDataset;
-
-    public DatasetNullAssembler(Resource tDataset) {
-        this.tDataset = tDataset;
-    }
-
-    @Override
-    public DatasetGraph createDataset(Assembler a, Resource root) {
-        DatasetGraph dsg;
-        if ( DatasetAssemblerVocab.tDatasetSink.equals(tDataset) )
-            dsg = DatasetGraphSink.create();
-        else if ( DatasetAssemblerVocab.tDatasetZero.equals(tDataset) )
-            dsg = DatasetGraphZero.create();
-        else
-            throw new InternalErrorException();
-        AssemblerUtils.mergeContext(root, dsg.getContext());
-        return dsg;
-    }
+    public ViewDatasetAssembler() {}
 
     @Override
     public Map<String, DatasetGraph> pool() {
         return sharedDatasetPool;
+    }
+
+    @Override
+    public DatasetGraph createDataset(Assembler a, Resource root) {
+        DatasetGraph sub = createBaseDataset(root, DatasetAssemblerVocab.pDataset);
+        DatasetGraph dsg = new DatasetGraphWrapper(sub);
+        AssemblerUtils.mergeContext(root, dsg.getContext());
+        return dsg;
     }
 }

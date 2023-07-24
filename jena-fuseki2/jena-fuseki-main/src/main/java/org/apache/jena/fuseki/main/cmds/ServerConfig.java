@@ -73,6 +73,7 @@ class ServerConfig {
     public boolean validators           = false;
     /** An informative label */
     public String datasetDescription    = null;
+    public String servletContextPath    = null;
     public String contentDirectory      = null;
 
     // Server authentication

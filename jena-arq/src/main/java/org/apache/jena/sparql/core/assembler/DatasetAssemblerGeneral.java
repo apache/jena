@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.core.assembler ;
 
 import java.util.List ;
+import java.util.Map;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.atlas.logging.Log ;
@@ -32,9 +33,17 @@ import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 
-public class DatasetAssemblerGeneral extends DatasetAssembler implements Assembler {
+public class DatasetAssemblerGeneral extends NamedDatasetAssembler {
+
     public static Resource getType() {
         return DatasetAssemblerVocab.tDataset ;
+    }
+
+    public DatasetAssemblerGeneral() {}
+
+    @Override
+    public Map<String, DatasetGraph> pool() {
+        return sharedDatasetPool;
     }
 
     @Override

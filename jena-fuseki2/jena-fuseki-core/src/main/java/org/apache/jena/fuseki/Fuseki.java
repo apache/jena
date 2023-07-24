@@ -70,7 +70,7 @@ public class Fuseki {
     static public final String        NAME              = "Apache Jena Fuseki";
 
     /** Version of this Fuseki instance */
-    static public final String        VERSION           = Version.versionForClass(Fuseki.class).orElse("<devlopment>");
+    static public final String        VERSION           = Version.versionForClass(Fuseki.class).orElse("<development>");
 
     /** Supporting Graph Store Protocol direct naming.
      * <p>
