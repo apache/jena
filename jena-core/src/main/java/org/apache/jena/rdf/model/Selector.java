@@ -25,11 +25,11 @@ import java.util.function.Predicate;
  * <p>Model includes list and query methods which will return all the
  * statements which are selected by a selector object.  This is the interface
  * of such selector objects.
- *
-*/
-
+ * @deprecated Use {@link Predicate Predicate&lt;Statement&gt;}
+ */
+@Deprecated
 public interface Selector extends Predicate<Statement> {
-    
+
     /**
         Answer true iff this Selector is completely characterised by its subject,
         predicate, and object fields. If so, the <code>test</code> predicate need
@@ -38,23 +38,23 @@ public interface Selector extends Predicate<Statement> {
         this licence).
     */
     boolean isSimple();
-      
+
     /**
         Answer the only subject Resource that this Selector will match, or null if it
         can match more that a single resource.
     */
     Resource getSubject();
-    
+
     /**
         Answer the only predicate Property that this Selector will match, or null
         if it can match more than a single property.
     */
     Property getPredicate();
-    
+
     /**
         Answer the only RDFNode object that this Selector will match, or null if
-        it can match more than a single node. 
+        it can match more than a single node.
     */
     RDFNode getObject();
-    
+
 }

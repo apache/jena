@@ -257,6 +257,7 @@ public class TestResources extends AbstractModelTestBase
 		// model.createSeq() );
 	}
 
+    @SuppressWarnings("deprecation")
     private void resourceTest( final Model model, final Resource r,
 			final int numProps )
 	{
