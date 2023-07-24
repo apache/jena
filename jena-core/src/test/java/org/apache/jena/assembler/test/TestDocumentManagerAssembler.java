@@ -44,15 +44,15 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
         assertRange( JA.FileManager, JA.fileManager );
         assertDomain( JA.DocumentManager, JA.policyPath );
         }
-    
-    public void testCreatesDocumentManager() 
-        { 
+
+    public void testCreatesDocumentManager()
+        {
         Resource root = resourceInModel( "x rdf:type ja:DocumentManager" );
         Assembler a = new DocumentManagerAssembler();
         Object x = a.open( root );
         assertInstanceOf( OntDocumentManager.class, x );
         }
-    
+
     public void testUsesFileManager()
         {
         Resource root = resourceInModel( "x rdf:type ja:DocumentManager; x ja:fileManager f" );
@@ -64,7 +64,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
         assertInstanceOf( OntDocumentManager.class, x );
         assertSame( fm, ((OntDocumentManager) x).getFileManager() );
         }
-    
+
     public void testSetsPolicyPath()
         {
         Resource root = resourceInModel( "x rdf:type ja:DocumentManager; x ja:policyPath 'somePath'" );
@@ -77,7 +77,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
                 return new OntDocumentManager( "" )
                     {
                     @Override
-                    public void setMetadataSearchPath( String path, boolean replace ) 
+                    public void setMetadataSearchPath( String path, boolean replace )
                         {
                         assertEquals( false, replace );
                         history.add( path );
@@ -87,8 +87,8 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
             };
         OntDocumentManager d = (OntDocumentManager) a.open( root );
         assertEquals( listOfOne( "somePath" ), history );
-        }    
-    
+        }
+
     public void testTrapsPolicyPathNotString()
         {
         testTrapsBadPolicyPath( "aResource" );
@@ -108,7 +108,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
             { assertEquals( resource( "x" ), e.getRoot() );
             assertEquals( rdfNode( root.getModel(), path ), e.getObject() ); }
         }
-    
+
     public void testSetsMetadata()
         { // we set policyPath to avoid Ont default models being thrown at us
         Resource root = resourceInModel( "x rdf:type ja:DocumentManager; x ja:policyPath ''; x P a; a Q b; y R z" );
@@ -120,9 +120,9 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
             protected OntDocumentManager createDocumentManager()
                 {
                 return new OntDocumentManager( "" )
-                    {                    
+                    {
                     @Override
-                    public void processMetadata( Model m ) 
+                    public void processMetadata( Model m )
                         {
                         assertIsoModels( expected, m );
                         history.add( "called" );
