@@ -51,7 +51,7 @@ public abstract class GraphBase implements GraphWithPerform
     protected boolean closed = false;
 
     /**
-         Initialise this graph as one with reification style Minimal.
+         Initialise this graph.
     */
     public GraphBase()  {}
 
@@ -127,22 +127,10 @@ public abstract class GraphBase implements GraphWithPerform
     public TransactionHandler getTransactionHandler()
         { return new SimpleTransactionHandler(); }
 
-    /**
-         Answer the capabilities of this graph; the default is an AllCapabilities object
-         (the same one each time, not that it matters - Capabilities should be
-         immutable).
-    */
     @Override
-    public Capabilities getCapabilities()
-        {
-        if (capabilities == null) capabilities = new AllCapabilities();
-        return capabilities;
-        }
-
-    /**
-         The allocated Capabilities object, or null if unallocated.
-    */
-    protected Capabilities capabilities = null;
+    public Capabilities getCapabilities() {
+        return AllCapabilities.updateAllowed;
+    }
 
     /**
         Answer the PrefixMapping object for this graph, the same one each time.

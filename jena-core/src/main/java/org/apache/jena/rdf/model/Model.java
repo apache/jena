@@ -250,7 +250,7 @@ public interface Model
        @param v the lexical form of the literal
        @param wellFormed true if the Literal is well formed XML, in the lexical space of rdf:XMLLiteral
        @return a new literal
-       
+
        @deprecated To be removed. Argument 'wellFormed' is ignored
      */
 	@Deprecated
@@ -1012,11 +1012,12 @@ public interface Model
 	 */
 	public void close();
 
-    /** Get the model lock for this model.
-     *  See also the convenience operations enterCriticalSection and leaveCriticalSection.
-     *
-     * @see Lock
-     * @return The ModelLock object associated with this model
+    /**
+     * Get the model lock for this model.
+     * <p>
+     * See also the  operations {@link #enterCriticalSection} and {@link #leaveCriticalSection}.
+     * <p>
+     * It is better to use transactions.
      */
     public Lock getLock() ;
 

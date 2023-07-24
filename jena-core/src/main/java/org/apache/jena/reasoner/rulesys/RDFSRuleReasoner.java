@@ -33,41 +33,41 @@ import org.apache.jena.vocabulary.ReasonerVocabulary ;
  * data scanning hook. Implements datatype range validation.
  */
 public class RDFSRuleReasoner extends GenericRuleReasoner {
-    
+
     /** Constant: used to indicate default RDFS processing level */
     public static final String DEFAULT_RULES = "default";
-    
+
     /** Constant: used to indicate full RDFS processing level */
     public static final String FULL_RULES = "full";
-    
+
     /** Constant: used to indicate minimal RDFS processing level */
     public static final String SIMPLE_RULES = "simple";
-    
+
     /** The location of the default RDFS rule definitions on the class path */
     protected static final String RULE_FILE = "etc/rdfs-fb-tgc-noresource.rules";
-    
+
     /** The location of the full RDFS rule definitions on the class path */
     protected static final String FULL_RULE_FILE = "etc/rdfs-fb-tgc.rules";
-    
+
     /** The location of the simple RDFS rule definitions on the class path */
     protected static final String SIMPLE_RULE_FILE = "etc/rdfs-fb-tgc-simple.rules";
-    
+
     /** The cached rule sets, indexed by processing level */
     protected static Map<String, List<Rule>> ruleSets = new HashMap<>();
-    
+
     /** The rule file names, indexed by processing level */
     protected static Map<String, String> ruleFiles;
-    
+
     /** The (stateless) preprocessor for container membership properties */
     protected static RulePreprocessHook cmpProcessor = new RDFSCMPPreprocessHook();
-    
+
     static {
         ruleFiles = new HashMap<>();
         ruleFiles.put(DEFAULT_RULES, RULE_FILE);
         ruleFiles.put(FULL_RULES, FULL_RULE_FILE);
         ruleFiles.put(SIMPLE_RULES, SIMPLE_RULE_FILE);
     }
-    
+
     /**
      * Constructor
      */
@@ -77,7 +77,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
         setTransitiveClosureCaching(true);
         //addPreprocessingHook(new RDFSCMPPreprocessHook());
     }
-    
+
     /**
      * Constructor
      * @param factory the parent reasoner factory which is consulted to answer capability questions
@@ -93,7 +93,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
             }
         }
     }
-   
+
     /**
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
@@ -102,7 +102,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
         super(schemaGraph.getRules(), factory);
         this.schemaGraph = schemaGraph;
     }
-    
+
     /**
      * Internal version of setParameter that does not directly raise an
      * exception on parameters it does not recognize.
@@ -131,12 +131,12 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
             return super.doSetParameter(parameter, value);
         }
     }
-    
+
     /**
      * Attach the reasoner to a set of RDF data to process.
      * The reasoner may already have been bound to specific rules or ontology
      * axioms (encoded in RDF) through earlier bindRuleset calls.
-     * 
+     *
      * @param data the RDF data to be processed, some reasoners may restrict
      * the range of RDF which is legal here (e.g. syntactic restrictions in OWL).
      * @return an inference graph through which the data+reasoner can be queried.
@@ -146,10 +146,10 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
     @Override
     public InfGraph bind(Graph data) throws ReasonerException {
         Graph schemaArg = schemaGraph == null ? getPreload() : schemaGraph;
-        InfGraph graph = null; 
+        InfGraph graph = null;
         List<Rule> ruleSet = ((FBRuleInfGraph)schemaArg).getRules();
         FBRuleInfGraph fbgraph = new RDFSRuleInfGraph(this, ruleSet, schemaArg);
-        graph = fbgraph; 
+        graph = fbgraph;
         if (enableTGCCaching) fbgraph.setUseTGCCache();
         fbgraph.setTraceOn(traceOn);
         if (preprocessorHooks!= null) {
@@ -162,7 +162,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
         graph.rebind(data);
         return graph;
     }
-    
+
     /**
      * Precompute the implications of a schema graph. The statements in the graph
      * will be combined with the data when the final InfGraph is created.
@@ -188,7 +188,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
         }
         return grr;
     }
-    
+
     /**
      * Return the RDFS rule set, loading it in if necessary.
      * @param level a string defining the processing level required
@@ -212,10 +212,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
      */
     @Override
     public Capabilities getGraphCapabilities() {
-        if (capabilities == null) {
-            capabilities = new BaseInfGraph.InfFindSafeCapabilities();
-        }
-        return capabilities;
+        return BaseInfGraph.reasonerInfCapabilities;
     }
-        
+
 }

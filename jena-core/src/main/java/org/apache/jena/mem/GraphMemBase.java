@@ -22,63 +22,58 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.GraphBase;
 
 /**
-     GraphMemBase - a common base class for GraphMem and SmallGraphMem.
-     Any GraphMemBase maintains a reference count, set to one when it is created,
-     and incremented by the method <code>openAgain()</code>. When the graph 
-     is closed, the count is decrememented, and when it reaches 0, the tables are 
-     trashed and GraphBase.close() called. Thus in normal use one close is enough,
-     but GraphMakers using GraphMems can arrange to re-use the same named 
-     graph.
-    
-*/
-public abstract class GraphMemBase extends GraphBase
-    {
+ * GraphMemBase - a common base class for GraphMem and SmallGraphMem.
+ * <p>
+ * Any GraphMemBase maintains a reference count, set to one when it is created, and
+ * incremented by the method <code>openAgain()</code>. When the graph is closed, the
+ * count is decremented, and when it reaches 0, the tables are trashed and
+ * GraphBase.close() called. Thus in normal use one close is enough, but GraphMakers
+ * using GraphMems can arrange to re-use the same named graph.
+ */
+public abstract class GraphMemBase extends GraphBase {
     /**
-         The number-of-times-opened count.
-    */
+     * The number-of-times-opened count.
+     */
     protected int count;
 
     /**
-         initialise a GraphMemBase with its count set to 1.
-    */
-    public GraphMemBase( )
-    {
+     * initialise a GraphMemBase with its count set to 1.
+     */
+    public GraphMemBase() {
         count = 1;
     }
-    /**
-         Note a re-opening of this graph by incrementing the count. Answer
-         this Graph.
-    */
-    public GraphMemBase openAgain()
-        { 
-        count++;
-        return this;
-        }
 
     /**
-         Sub-classes over-ride this method to release any resources they no
-         longer need once fully closed.
-    */
+     * Note a re-opening of this graph by incrementing the count. Answer this Graph.
+     */
+    public GraphMemBase openAgain() {
+        count++;
+        return this;
+    }
+
+    /**
+     * Sub-classes over-ride this method to release any resources they no longer need
+     * once fully closed.
+     */
     protected abstract void destroy();
 
     /**
-         Close this graph; if it is now fully closed, destroy its resources and run
-         the GraphBase close.
-    */
+     * Close this graph; if it is now fully closed, destroy its resources and run the
+     * GraphBase close.
+     */
     @Override
-    public void close()
-        {
-        if (--count == 0)
-            {
+    public void close() {
+        if ( --count == 0 ) {
             destroy();
             super.close();
-            }
         }
-    
-    /**
-        Answer true iff this triple can be compared for sameValueAs by .equals(),
-        ie, it is a concrete triple with a non-literal object.
-    */
-    protected final boolean isSafeForEquality( Triple t )
-        { return t.isConcrete() && !t.getObject().isLiteral(); }
     }
+
+    /**
+     * Answer true iff this triple can be compared for sameValueAs by .equals(), ie,
+     * it is a concrete triple with a non-literal object.
+     */
+    protected final boolean isSafeForEquality(Triple t) {
+        return t.isConcrete() && !t.getObject().isLiteral();
+    }
+}

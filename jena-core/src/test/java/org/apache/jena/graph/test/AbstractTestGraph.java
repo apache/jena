@@ -138,6 +138,11 @@ public abstract class AbstractTestGraph extends GraphTestBase
         if (getGraph().getCapabilities().handlesLiteralTyping())
         {
             Graph g1 = getGraphWith( "x P '1'xsd:integer" );
+
+            boolean b = g1.contains( triple( "x P '01'xsd:int" ) );
+            if ( !b )
+                System.err.println("No value match: "+g1.getClass().getSimpleName());
+
             assertTrue( g1.contains( triple( "x P '01'xsd:int" ) ) );
             //
             Graph g2 = getGraphWith( "x P '1'xsd:int" );

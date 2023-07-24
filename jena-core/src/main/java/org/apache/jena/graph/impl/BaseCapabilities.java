@@ -16,29 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.graph;
+package org.apache.jena.graph.impl;
+
+import org.apache.jena.graph.Capabilities;
 
 /**
-    A factory class for creating Graphs.
-   @deprecated Use {@link GraphMemFactory}
-*/
-
-@Deprecated
-public class Factory
-{
-    private Factory()
-    { super(); }
-
-    /**
-        Answer a memory-based Graph.
-     */
-    public static Graph createDefaultGraph()
-    { return GraphMemFactory.createGraphMem( ); }
-
-    public static Graph createGraphMem()
-    { return GraphMemFactory.createGraphMem( ); }
-
-    /** Immutable graph with no triples */
-    public static Graph empty() { return GraphMemFactory.empty() ; }
-
+ * Support the old style "subclass" way to choose capabilities.
+ * <p>
+ * The settings are the
+ * general default: allow update, size is accurate, and term value semantics.
+ */
+public class BaseCapabilities implements Capabilities {
+    @Override public boolean sizeAccurate()     { return true; }
+    @Override public boolean addAllowed()       { return true; }
+    @Override public boolean deleteAllowed()    { return true; }
+    @Override public boolean handlesLiteralTyping() { return false; }
 }

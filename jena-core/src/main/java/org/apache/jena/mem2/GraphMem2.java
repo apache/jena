@@ -21,6 +21,7 @@ package org.apache.jena.mem2;
 import org.apache.jena.graph.Capabilities;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.AllCapabilities;
 import org.apache.jena.graph.impl.GraphWithPerform;
 import org.apache.jena.mem.GraphMemBase;
 import org.apache.jena.mem2.store.TripleStore;
@@ -32,7 +33,7 @@ import java.util.stream.Stream;
  * A graph that stores triples in memory. This class is not thread-safe.
  * All triples are stored in a {@link TripleStore}.
  * <p>
- * Implementation mus always comply to term-equality semantics. The characteristics of the
+ * Implementation must always comply to term-equality semantics. The characteristics of the
  * implementations always have handlesLiteralTyping() == false.
  */
 public class GraphMem2 extends GraphMemBase implements GraphWithPerform {
@@ -143,27 +144,6 @@ public class GraphMem2 extends GraphMemBase implements GraphWithPerform {
 
     @Override
     public Capabilities getCapabilities() {
-        if (capabilities == null) capabilities = new Capabilities() {
-            @Override
-            public boolean sizeAccurate() {
-                return true;
-            }
-
-            @Override
-            public boolean addAllowed() {
-                return true;
-            }
-
-            @Override
-            public boolean deleteAllowed() {
-                return true;
-            }
-
-            @Override
-            public boolean handlesLiteralTyping() {
-                return false;
-            }
-        };
-        return capabilities;
+        return AllCapabilities.updateAllowed;
     }
 }

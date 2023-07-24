@@ -37,10 +37,10 @@ public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
 
     /** The location of the OWL rule definitions on the class path */
     protected static final String MINI_RULE_FILE = "etc/owl-fb-mini.rules";
-    
+
     /** The parsed rules */
     protected static List<Rule> miniRuleSet;
-    
+
     /**
      * Return the rule set, loading it in if necessary
      */
@@ -48,8 +48,8 @@ public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
         if (miniRuleSet == null) miniRuleSet = loadRules( MINI_RULE_FILE );
         return miniRuleSet;
     }
-    
-    
+
+
     /**
      * Constructor
      */
@@ -59,12 +59,12 @@ public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
         setMode(HYBRID);
 //        setTransitiveClosureCaching(true);
     }
-        
+
     /**
      * Attach the reasoner to a set of RDF data to process.
      * The reasoner may already have been bound to specific rules or ontology
      * axioms (encoded in RDF) through earlier bindRuleset calls.
-     * 
+     *
      * @param data the RDF data to be processed, some reasoners may restrict
      * the range of RDF which is legal here (e.g. syntactic restrictions in OWL).
      * @return an inference graph through which the data+reasoner can be queried.
@@ -84,10 +84,7 @@ public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
      */
     @Override
     public Capabilities getGraphCapabilities() {
-        if (capabilities == null) {
-            capabilities = new BaseInfGraph.InfFindSafeCapabilities();
-        }
-        return capabilities;
+        return BaseInfGraph.reasonerInfCapabilities;
     }
 
 }

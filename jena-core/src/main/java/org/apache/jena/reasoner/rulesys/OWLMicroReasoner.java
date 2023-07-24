@@ -71,10 +71,7 @@ public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
      */
     @Override
     public Capabilities getGraphCapabilities() {
-        if (capabilities == null) {
-            capabilities = new BaseInfGraph.InfFindSafeCapabilities();
-        }
-        return capabilities;
+        return BaseInfGraph.reasonerInfCapabilities;
     }
 
     /**

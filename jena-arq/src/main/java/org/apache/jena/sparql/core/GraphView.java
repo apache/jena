@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.*;
+import org.apache.jena.graph.impl.AllCapabilities;
 import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.system.Prefixes;
@@ -194,32 +195,9 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
         return new TransactionHandlerView(dsg);
     }
 
+    private Capabilities capabilities = null;
     @Override
     public Capabilities getCapabilities() {
-        if (capabilities == null)
-            capabilities = new GraphViewCapabilities();
-        return capabilities;
-    }
-
-    protected static class GraphViewCapabilities implements Capabilities {
-        @Override
-        public boolean sizeAccurate() {
-            return true;
-        }
-
-        @Override
-        public boolean addAllowed() {
-            return true;
-        }
-
-        @Override
-        public boolean deleteAllowed() {
-            return true;
-        }
-
-        @Override
-        public boolean handlesLiteralTyping() {
-            return false;
-        }
+        return AllCapabilities.updateAllowed;
     }
 }

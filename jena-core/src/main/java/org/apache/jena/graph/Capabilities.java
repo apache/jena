@@ -18,12 +18,9 @@
 
 package org.apache.jena.graph;
 
-import org.apache.jena.mem.GraphMem;
-
 /**
  * Interface for expressing capabilities.
  */
-@SuppressWarnings("deprecation")
 public interface Capabilities {
     /**
      * Answer true iff Graph::size() is accurate.
@@ -31,22 +28,20 @@ public interface Capabilities {
     boolean sizeAccurate();
 
     /**
-     * Answer true iff {@link Graph#add} can be used to add at least some triples to the
-     * graph.
+     * Answer true iff {@link Graph#add} can be used to add at least some triples to
+     * the graph.
      */
     boolean addAllowed();
 
     /**
-     * Answer true iff {@link Graph#delete} can be used to remove at least some triples
-     * from the graph.
+     * Answer true iff {@link Graph#delete} can be used to remove at least some
+     * triples from the graph.
      */
     boolean deleteAllowed();
 
     /**
      * Answer true iff this graph compares literals for equality by value in find()
-     * operations, rather just applying RDFTerm equality. Only applies to
-     * {@link GraphMem}. TDB models have this effect because of canonicalization for
-     * certain datatypes and ranges, SDB models don't.
+     * operations, rather than applying RDFTerm equality.
      */
     boolean handlesLiteralTyping();
 }
