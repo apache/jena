@@ -19,14 +19,16 @@
 package org.apache.jena.rdf.model;
 
 /**
-    A ReifiedStatement represents a Statement as a Resource.
-*/
-
+ * A ReifiedStatement represents a Statement as a Resource.
+ *
+ * @deprecated To be removed
+ */
+@Deprecated
 public interface ReifiedStatement extends Resource
-    {
+{
     /**
-        answer the Statement that this ReifiedStatement reifies. Any
-        Statement equal to the statement it was created with will do.
-    */
+     * answer the Statement that this ReifiedStatement reifies. Any Statement equal
+     * to the statement it was created with will do.
+     */
     Statement getStatement();
-    }
+}

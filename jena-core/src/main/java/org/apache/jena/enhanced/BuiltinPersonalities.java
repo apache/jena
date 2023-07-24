@@ -33,6 +33,7 @@ public class BuiltinPersonalities {
 
     static final private Personality<RDFNode> graph = new Personality<>();
 
+    @SuppressWarnings("deprecation")
     static final public Personality<RDFNode> model = graph.copy()
         .add( Resource.class, ResourceImpl.factory )
         .add( Property.class, PropertyImpl.factory )

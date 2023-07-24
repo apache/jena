@@ -379,8 +379,7 @@ public interface Model
 	 */
 	Model add(StmtIterator iter) ;
 
-	/** Add all the statements in another model to this model, including the
-     * reified statements.
+	/** Add all the statements in another model to this model.
 	 * @return this model
 	 * @param m The model whose statements are to be added.
 	 */
@@ -400,53 +399,51 @@ public interface Model
 	 */
 	public Model read(String url) ;
 
-	/** Add statements from a document.
-	 *  This method assumes the concrete syntax is RDF/XML.
-	 *  See {@link #read(InputStream, String, String)} for explicitly setting the language.
-	 *  <p>
-     *  See <a href="http://jena.apache.org/documentation/io/index.html">"Reading and Writing RDF in Apache Jena"</a>
-     *    for more information about concrete syntaxes.
-     *  </p>
-	 *
-	 * @param in the input stream
-
-     @param base the base uri to be used when converting relative
-         URI's to absolute URI's. (Resolving relative URIs and fragment IDs is done
-         by prepending the base URI to the relative URI/fragment.) If there are no
-         relative URIs in the source, this argument may safely be <code>null</code>.
-         If the base is the empty string, then relative URIs <i>will be retained in
-         the model</i>. This is typically unwise and will usually generate errors
-         when writing the model back out.
-
-	 * @return the current model
-	 */
+	/**
+     * Add statements from a document. This method assumes the concrete syntax is
+     * RDF/XML. See {@link #read(InputStream, String, String)} for explicitly setting
+     * the language.
+     * <p>
+     * See <a href="http://jena.apache.org/documentation/io/index.html">"Reading and
+     * Writing RDF in Apache Jena"</a> for more information about concrete syntaxes.
+     * </p>
+     *
+     * @param in the input stream
+     * @param base the base uri to be used when converting relative URI's to absolute
+     *     URI's. (Resolving relative URIs and fragment IDs is done by prepending the
+     *     base URI to the relative URI/fragment.) If there are no relative URIs in
+     *     the source, this argument may safely be <code>null</code>. If the base is
+     *     the empty string, then relative URIs <i>will be retained in the model</i>.
+     *     This is typically unwise and will usually generate errors when writing the
+     *     model back out.
+     * @return the current model
+     */
 	public Model read(InputStream in, String base) ;
 
-	/** Add RDF statements represented in language <code>lang</code> to the model.
-	 * <br />Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE",
-	 * "TURTLE" (or "TTL") and "N3".
-	 * <code>null</code> represents the default language, "RDF/XML".
-	 * "RDF/XML-ABBREV" is a synonym for "RDF/XML".
+	/**
+     * Add RDF statements represented in language <code>lang</code> to the model.
      * <br />
-	 *
-	 * @return this model
-
-	 @param base the base uri to be used when converting relative
-	     URI's to absolute URI's. (Resolving relative URIs and fragment IDs is done
-	     by prepending the base URI to the relative URI/fragment.) If there are no
-	     relative URIs in the source, this argument may safely be <code>null</code>.
-	     If the base is the empty string, then relative URIs <i>will be retained in
-	     the model</i>. This is typically unwise and will usually generate errors
-	     when writing the model back out.
-     *  <p>
-     *  See <a href="http://jena.apache.org/documentation/io/index.html">"Reading and Writing RDF in Apache Jena"</a>
-     *    for more information about concrete syntaxes.
-     *  </p>
-
-	 * @param lang the language of the serialization <code>null</code>
-	 * selects the default
-	 * @param in the source of the input serialization
-	 */
+     * Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE", "TURTLE"
+     * (or "TTL"). <code>null</code> represents the default language, "RDF/XML".
+     * "RDF/XML-ABBREV" is a synonym for "RDF/XML". <br />
+     *
+     * @return this model
+     * @param base the base uri to be used when converting relative URI's to absolute
+     *     URI's. (Resolving relative URIs and fragment IDs is done by prepending the
+     *     base URI to the relative URI/fragment.) If there are no relative URIs in
+     *     the source, this argument may safely be <code>null</code>. If the base is
+     *     the empty string, then relative URIs <i>will be retained in the model</i>.
+     *     This is typically unwise and will usually generate errors when writing the
+     *     model back out.
+     *     <p>
+     *     See <a href="http://jena.apache.org/documentation/io/index.html">"Reading
+     *     and Writing RDF in Apache Jena"</a> for more information about concrete
+     *     syntaxes.
+     *     </p>
+     * @param lang the language of the serialization <code>null</code> selects the
+     *     default
+     * @param in the source of the input serialization
+     */
 	public Model read(InputStream in, String base, String lang);
 
     /** Using this method is often a mistake.
@@ -483,10 +480,10 @@ public interface Model
      *  See <a href="http://jena.apache.org/documentation/io/index.html">"Reading and Writing RDF in Apache Jena"</a>
      *    for more information about concrete syntaxes.
      *  </p>
-
+     *
 	 * @param url a string representation of the url to read from
 	 * @param lang the language of the serialization
-
+	 *
 	 * @return this model
      */
 	public Model read(String url, String lang) ;
@@ -789,30 +786,38 @@ public interface Model
 
 	   @param s The statement tested.
 	   @return true iff a ReifiedStatement(s) has been created in this model
-	*/
+        @deprecated To be removed
+    */
+    @Deprecated
 	boolean isReified( Statement s );
 
 	/**
        Find or create a {@link ReifiedStatement} corresponding to a Statement.
         @param s Statement which may or may not already be reified
         @return a Resource [ReifiedStatement] that reifies the specified Statement.
-	*/
+        @deprecated To be removed
+    */
+    @Deprecated
 	Resource getAnyReifiedStatement( Statement s );
 
 	/**
         Remove all reifications (ie implicit reification quads) of _s_.
+        @deprecated To be removed
     */
+	@Deprecated
 	void removeAllReifications( Statement s );
 
     /**
         Remove a particular reificiation.
+        @deprecated To be removed
     */
+    @Deprecated
     void removeReification( ReifiedStatement rs );
 
     /** List all statements.
      *
      *  <p>Subsequent operations on those statements may modify this model.</p>
-
+     *
      * @return an iterator over all statements in the model.
      */
     StmtIterator listStatements() ;
@@ -823,9 +828,9 @@ public interface Model
 	 * of s returns true when called on s.</p>
 	 * @return an iterator over the matching statements
 	 * @param s A selector object.
-	 .
 	 */
-	StmtIterator listStatements(Selector s) ;
+    StmtIterator listStatements(Selector s) ;
+
     /** Find all the statements matching a pattern.
      * <p>Return an iterator over all the statements in a model
      *  that match a pattern.  The statements selected are those
@@ -847,24 +852,32 @@ public interface Model
         result.getModel() == this
     <br>
         result.getStatement() .equals ( s )
+        @deprecated To be removed
     */
+    @Deprecated
     ReifiedStatement createReifiedStatement( Statement s );
 
     /**
         answer a ReifiedStatement that encodes _s_, belongs to this Model,
         and is a Resource with that _uri_.
+        @deprecated To be removed
     */
+    @Deprecated
     ReifiedStatement createReifiedStatement( String uri, Statement s );
 
     /**
         answer an iterator delivering all the reified statements "in" this model
+        @deprecated To be removed
     */
+    @Deprecated
     RSIterator listReifiedStatements();
 
     /**
         answer an iterator delivering all the reified statements "in" this model
         that match the statement _st_.
+        @deprecated To be removed
     */
+    @Deprecated
     RSIterator listReifiedStatements( Statement st );
 
 	/** Create a new model containing the statements matching a query.
@@ -873,38 +886,37 @@ public interface Model
 	 * of s returns true when called on s.</p>
 	 * @return an iterator over the matching statements
 	 * @param s A selector object.
-	 .
-	 */
+     */
 	Model query(Selector s) ;
 
 	/**
-         Create a new, independant, model containing all the statements in this model
-         together with all of those in another given model. By <i>independant</i>
-         we mean that changes to the result model do not affect the operand
-         models, and <i>vice versa</i>.
-     <p>
-         The new model need not be of the same type as either this model or
-         the argument model: typically it will be a memory-based model, even
-         if this model is a database model.
-
-         @return A new model containing all the statements that are in either model
-         @param model The other model whose statements are to be included.
-	*/
+     * Create a new, independent, model containing all the statements in this model
+     * together with all of those in another given model. By <i>independent</i> we
+     * mean that changes to the result model do not affect the operand models, and
+     * <i>vice versa</i>.
+     * <p>
+     * The new model need not be of the same type as either this model or the
+     * argument model: typically it will be a memory-based model, even if this model
+     * is a database model.
+     *
+     * @return A new model containing all the statements that are in either model
+     * @param model The other model whose statements are to be included.
+     */
 	Model union(Model model) ;
 
 	/**
-         Create a new, independant, model containing all the statements which are in both
-         this model and another.  As models are sets of statements, a statement
-         contained in both models will only appear once in the resulting model.
-         The new model need not be of the same type as either this model or
-         the argument model: typically it will be a memory-based model.
-
-         @return A new model containing all the statements that are in both models.
-         @param model The other model.
-	*/
+     * Create a new, independent, model containing all the statements which are in
+     * both this model and another. As models are sets of statements, a statement
+     * contained in both models will only appear once in the resulting model. The new
+     * model need not be of the same type as either this model or the argument model:
+     * typically it will be a memory-based model.
+     *
+     * @return A new model containing all the statements that are in both models.
+     * @param model The other model.
+     */
 	Model intersection(Model model) ;
 
-	/** Create a new, independant, model containing all the statements in this model which
+	/** Create a new, independent, model containing all the statements in this model which
 	 * are not in another.
          The new model need not be of the same type as either this model or
          the argument model: typically it will be a memory-based model.
@@ -944,9 +956,9 @@ public interface Model
 	 */
 	Model abort() ;
 
-	/** Commit the current transaction.
+	/**
+	 * Commit the current transaction.
 	 * @return this model to enable cascading.
-
 	 */
 	Model commit() ;
 

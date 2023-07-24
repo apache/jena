@@ -27,50 +27,51 @@ import org.apache.jena.rdf.model.* ;
     A ReifiedStatementImpl encodes a Statement and behaves as a Resource.
 */
 
+@SuppressWarnings("deprecation")
 public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStatement
     {
     /** the Statement that this ReifiedStatement represents */
     protected Statement statement;
-    
+
     /**
         private constructor, relies (ugh) on super(uri, model) generating
-        bnode if uril == null. 
+        bnode if uril == null.
     */
 
-    private ReifiedStatementImpl( ModelCom m, String uri, Statement s ) 
+    private ReifiedStatementImpl( ModelCom m, String uri, Statement s )
         {
-        super( uri, m ); 
-        assertStatement( s ); 
+        super( uri, m );
+        assertStatement( s );
         }
-        
+
     protected ReifiedStatementImpl( EnhGraph m, Node n, Statement s )
         {
         super( n, m );
         assertStatement( s );
         }
-        
+
     private void assertStatement( Statement s )
         {
         statement = s;
         }
-        
-    /** 
+
+    /**
         answer [a .equals() version of] the Statement that this ReifiedStatement
         represents.
     */
     @Override
-    public Statement getStatement() 
+    public Statement getStatement()
         { return statement; }
-       
-    static final public Implementation reifiedStatementFactory = new Implementation() 
+
+    static final public Implementation reifiedStatementFactory = new Implementation()
         {
         /**
-            convert a _node_ into a ReifiedStatement in the enhanced graph 
+            convert a _node_ into a ReifiedStatement in the enhanced graph
             _eg_ by looking into this graph's reifier to find the binding for the
-            node; throw a DoesNotReify exception if there's no mapping. 
+            node; throw a DoesNotReify exception if there's no mapping.
         */
         @Override
-        public EnhNode wrap( Node n, EnhGraph eg ) 
+        public EnhNode wrap( Node n, EnhGraph eg )
             {
             Triple x = getTriple( eg, n );
             if (x == null) throw new DoesNotReifyException( n );
@@ -88,7 +89,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
         @Override
         public boolean canWrap( Node n, EnhGraph eg )
             { return getTriple( eg, n ) != null; }
-            
+
         /**
             Answer the triple associated with <code>n</code> by eg's graph's Reifier.
             @param eg the (enhanced) graph who's Reifier might hold the triple
@@ -98,45 +99,45 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
         private Triple getTriple( EnhGraph eg, Node n )
             { return ReifierStd.getTriple(eg.asGraph(), n ); }
         };
-        
+
 //    /**
 //        Answer our Reifier (ie our Model's Graph's Reifier).
 //    */
 //    protected Reifier getReifier()
 //        { return getModel().getGraph().getReifier(); }
-        
+
     @Override
     public boolean isValid()
         { return ReifierStd.getTriple(getModel().getGraph(), this.asNode() ) != null; }
-        
+
     /**
         tell the underlying graph's reifier that this ReifiedStatement's node
         represents any Statement with this statement's triple. (May throw an
         exception if the node is already reified to something different.)
-    */        
+    */
     private ReifiedStatementImpl installInReifier()
         {
         ReifierStd.reifyAs(getModel().getGraph(), this.asNode(), statement.asTriple() );
         return this;
         }
-      
+
     /**
         factory method. answer a ReifiedStatement which encodes the
         Statement _s_. The mapping is remembered.
-    */  
+    */
     public static ReifiedStatement create( Statement s )
         { return create( (ModelCom) s.getModel(), (String) null, s ); }
 
     /**
         factory method. answer a ReifiedStatement which encodes the
         Statement _s_ with uri _uri_. The mapping is remembered.
-    */        
+    */
     public static ReifiedStatementImpl create( ModelCom m, String uri, Statement s )
-        { return new ReifiedStatementImpl( m, uri, s ).installInReifier(); }        
-        
+        { return new ReifiedStatementImpl( m, uri, s ).installInReifier(); }
+
     public static ReifiedStatementImpl create( EnhGraph eg, Node n, Statement s )
         { return new ReifiedStatementImpl( eg, n, s ).installInReifier(); }
-    
+
     @Override
     public String toString()
         { return super.toString() + "=>" + statement; }
