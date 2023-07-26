@@ -619,7 +619,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         ElementUnion union = new ElementUnion();
         ElementPathBlock epb = new ElementPathBlock();
-        Triple t = Triple.create(one, two, v.asNode());
+        Triple t = Triple.create(one, two, v);
         epb.addTriple(t);
         union.addElement(epb);
         ElementPathBlock epb2 = new ElementPathBlock();

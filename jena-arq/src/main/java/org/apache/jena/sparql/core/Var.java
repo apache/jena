@@ -114,22 +114,19 @@ public class Var extends Node_Variable
 
     private Var(ExprVar v)           { this(v.getVarName()) ; }
 
-    // Not needed
-    public Node asNode() { return this ; }
-
-    public String getVarName() { return getName() ; }
+    public String getVarName()       { return getName() ; }
 
     static class NotAVariableException extends ARQInternalErrorException {
         NotAVariableException(String msg) { super(msg) ; }
     }
 
-//    @Override
-//    public final int hashCode() { return hashCodeValue ; }
+    @Override
+    public final int hashCode() { return hashCodeValue ; }
 
     @Override
     public final boolean equals(Object other) {
         if ( this == other ) return true ;
-        if ( ! ( other instanceof Node_Variable ) )
+        if ( ! ( other instanceof Var ) )
             return false ;
         return super.equals(other) ;
     }
