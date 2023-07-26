@@ -688,7 +688,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
         ElementUnion union = new ElementUnion();
         ElementPathBlock epb = new ElementPathBlock();
-        Triple t = Triple.create(one, two, v.asNode());
+        Triple t = Triple.create(one, two, v);
         epb.addTriple(t);
         union.addElement(epb);
         ElementPathBlock epb2 = new ElementPathBlock();
@@ -749,7 +749,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         Node n = handler.list("<one>", "?var", "'three'");
 
         Node one = NodeFactory.createURI("one");
-        Node two = Var.alloc("var").asNode();
+        Node two = Var.alloc("var");
         Node three = NodeFactory.createLiteral("three");
 
         ElementPathBlock epb = new ElementPathBlock();
