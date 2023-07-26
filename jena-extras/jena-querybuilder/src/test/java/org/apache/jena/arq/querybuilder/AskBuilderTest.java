@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@ public class AskBuilderTest extends AbstractRegexpBasedTest {
         String query = builder.buildString();
         /*
          * PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-         * 
+         *
          * ASK WHERE { ?s
          * <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> foaf:Person .
          * OPTIONAL { ?s foaf:name ?name .} } ORDER BY ?s
@@ -105,7 +105,7 @@ public class AskBuilderTest extends AbstractRegexpBasedTest {
         Query query = builder.build();
 
         Node one = NodeFactory.createURI("one");
-        Node two = Var.alloc("two").asNode();
+        Node two = Var.alloc("two");
         Node three = NodeFactory.createLiteral("three");
         Node foo = NodeFactory.createURI("foo");
         Node bar = NodeFactory.createURI("bar");
