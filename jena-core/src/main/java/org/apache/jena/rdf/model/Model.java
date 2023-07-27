@@ -595,7 +595,17 @@ public interface Model
      */
 	public Model write( OutputStream out, String lang, String base );
 
-	/** Removes a statement.
+	/** @deprecated Use RIOT via {@code org.apache.jena.riotRDFDataMgr} or call {@link Model#read}. */
+    @Override
+    @Deprecated
+    public RDFReaderI getReader(String lang);
+
+    /** @deprecated Use RIOT via {@code org.apache.jena.riotRDFDataMgr} or call {@link Model#write}. */
+    @Override
+    @Deprecated
+    public RDFWriterI getWriter(String lang);
+
+    /** Removes a statement.
 	 *
 	 * <p> The statement with the same subject, predicate and object as
 	 *     that supplied will be removed from the model.</p>

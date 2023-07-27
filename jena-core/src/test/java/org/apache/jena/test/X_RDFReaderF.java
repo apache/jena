@@ -27,6 +27,7 @@ import org.apache.jena.rdf.model.RDFReaderF;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NoReaderForLangException;
 
+/** Custom RDFReaderF for jena-core tests. */
 public class X_RDFReaderF extends Object implements RDFReaderF {
     public static final String DEFAULTLANG = "RDF/XML" ;
     private static Map<String, Class<? extends RDFReaderI>> custom = new LinkedHashMap<>();
