@@ -28,11 +28,6 @@ package org.apache.jena.rdf.model;
  * </ul>
  * All of these will use the newer RIOT parsers, not implementations of this interface.
  *
- * <p>This factory interface is slightly unusual, in that, as well as
- * creating and returning RDFReader's, it also provides methods
- * for creating a reader, invoking a read method on it and then
- * shuting it down.</p>
- *
  * <p>The factory will create an appropriate reader for the particular
  *   serialization language being read.  Predefined languages include:</p>
  * <ul>
@@ -41,25 +36,20 @@ package org.apache.jena.rdf.model;
  * <li>N-TRIPLE</li>
  * <li>N3</li>
  * </ul>
- *<p>System wide defaults for classes to use as readers for these languages
- *are defined.  These defaults may be overridden by setting a system property
- *with a name of the form org.apache.jena.readers.{@literal <lang>} to the class
- *name.</p>
- * <p><b>NOTE:</b> All settings are global in nature</p>
  */
 
 public interface RDFReaderF {
 
-/** return an RDFReader instance for the default serialization language.
- * @return an RDFReader instance for the default serialization language.
- */
+    /** return an RDFReader instance for the default serialization language.
+     * @return an RDFReader instance for the default serialization language.
+     */
     public RDFReaderI getReader() ;
 
-/** return an RDFReader instance for the specified serialization language.
- * @return the RDFWriter instance
- * @param lang the serialization language - <code>null</code> selects the
- *            default
+    /** return an RDFReader instance for the specified serialization language.
+     * @return the RDFWriter instance
+     * @param lang the serialization language - <code>null</code> selects the
+     *            default
 
- */
+     */
     public RDFReaderI getReader(String lang) ;
 }
