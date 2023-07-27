@@ -1186,34 +1186,6 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     public NodeIterator listObjectsOfProperty(Resource s, Property p)
     { return listObjectsFor( s, p ); }
 
-    /**
-     * @deprecated Use {@link Predicate Predicate&lt;Statement&gt;} to filter.
-     */
-    @Deprecated
-    @Override
-    public StmtIterator listStatements(final Selector selector) {
-        StmtIterator sts = IteratorFactory.asStmtIterator( findTriplesFrom( selector ), this );
-        return selector.isSimple()
-                ? sts
-                    : new StmtIteratorImpl( sts .filterKeep ( selector ) )
-                    ;
-    }
-
-    /**
-     * Answer an [extended] iterator which returns the triples in this graph which
-     * are selected by the (S, P, O) triple in the selector, ignoring any special
-     * tests it may do.
-     *
-     * @param s a Selector used to supply subject, predicate, and object
-     * @return an extended iterator over the matching (S, P, O) triples
-     * @deprecated Use {@link Predicate Predicate&lt;Statement&gt;} to filter.
-     */
-    @Deprecated
-    public ExtendedIterator<Triple> findTriplesFrom(Selector s) {
-        return graph.find
-                ( asNode( s.getSubject() ), asNode( s.getPredicate() ), asNode( s.getObject() ) );
-    }
-
     @Override
     public boolean supportsTransactions()
     { return getTransactionHandler().transactionsSupported(); }
@@ -1328,13 +1300,6 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     @Override
     public boolean supportsSetOperations()
     {return true;}
-
-    /**
-     * @deprecated To be remnoved.
-     */
-   @Deprecated    @Override
-    public Model query( Selector selector )
-    { return createWorkModel() .add( listStatements( selector ) ); }
 
     @Override
     public Model union( Model model )

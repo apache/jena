@@ -20,7 +20,6 @@ package org.apache.jena.rdf.model;
 
 import java.io.*;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.function.Supplier ;
 
 import org.apache.jena.datatypes.* ;
@@ -797,19 +796,7 @@ public interface Model
      */
     StmtIterator listStatements() ;
 
-	/** List the statements matching a selector.
-	 *
-	 * <p>A statement is considered to match if the <CODE>test</CODE> method
-	 * of s returns true when called on s.</p>
-	 * @return an iterator over the matching statements
-	 * @param s A selector object.
-	 *
-	 * @deprecated Use {@link Predicate Predicate&lt;Statement&gt;} to filter a {@link StmtIterator}.
-	 */
-    @Deprecated
-    StmtIterator listStatements(Selector s) ;
-
-    /** Find all the statements matching a pattern.
+	/** Find all the statements matching a pattern.
      * <p>Return an iterator over all the statements in a model
      *  that match a pattern.  The statements selected are those
      *  whose subject matches the <code>subject</code> argument,
@@ -858,21 +845,9 @@ public interface Model
     @Deprecated
     RSIterator listReifiedStatements( Statement st );
 
-	/** Create a new model containing the statements matching a query.
-	 *
-	 * <p>A statement is considered to match if the <CODE>test</CODE> method
-	 * of s returns true when called on s.</p>
-	 * @return an iterator over the matching statements
-	 * @param s A selector object.
-	 *
-     *   @deprecated To be removed
-     */
-    @Deprecated
-	Model query(Selector s) ;
-
 	/**
      * Create a new, independent, model containing all the statements in this model
-     * together with all of those in another given model. By <i>independant</i> we
+     * together with all of those in another given model. By <i>independent</i> we
      * mean that changes to the result model do not affect the operand models, and
      * <i>vice versa</i>.
      * <p>
@@ -897,7 +872,7 @@ public interface Model
      */
 	Model intersection(Model model) ;
 
-	/** Create a new, independant, model containing all the statements in this model which
+	/** Create a new, independent, model containing all the statements in this model which
 	 * are not in another.
          The new model need not be of the same type as either this model or
          the argument model: typically it will be a memory-based model.

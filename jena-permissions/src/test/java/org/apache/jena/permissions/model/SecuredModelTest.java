@@ -1304,28 +1304,6 @@ public class SecuredModelTest {
     }
 
     @Test
-    public void testQuery() throws Exception {
-        final Selector s = new SimpleSelector();
-        try {
-            Model model = securedModel.query(s);
-            if (securityEvaluator.evaluate(Action.Read)) {
-                Assert.assertTrue(model.isIsomorphicWith(baseModel));
-            } else {
-                Assert.assertTrue(model.isEmpty());
-            }
-
-            if (!shouldRead()) {
-                Assert.fail("Should have thrown ReadDeniedException Exception");
-            }
-        } catch (final ReadDeniedException e) {
-            if (shouldRead()) {
-                Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        }
-    }
-
-    @Test
     public void testRDFNodeInModel() {
         // test uri
         final RDFNode rdfNode = ResourceFactory.createResource("http://exmple.com/testInModel");
