@@ -96,11 +96,6 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
         return this.getNodeAs( n, Resource.class );
     }
 
-    /**
-     * the ModelReifier does everything to do with reification.
-     */
-    protected ModelReifier modelReifier = new ModelReifier( this );
-
     @Override
     public Model addLiteral( Resource s, Property p, boolean o )
     { return add(s, p, createTypedLiteral( o ) ); }
@@ -1034,72 +1029,9 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
 
     @Override
     public Model add( Resource s, Property p, RDFNode o )  {
-        modelReifier.noteIfReified( s, p, o );
         graph.add( Triple.create( s.asNode(), p.asNode(), o.asNode() ) );
         return this;
     }
-
-    /**
-     * @return an iterator which delivers all the ReifiedStatements in this model
-     */
-    @SuppressWarnings("deprecation")
-    @Override
-    public RSIterator listReifiedStatements()
-    { return modelReifier.listReifiedStatements(); }
-
-    /**
-        @return an iterator each of whose elements is a ReifiedStatement in this
-            model such that it's getStatement().equals( st )
-     */
-    @SuppressWarnings("deprecation")
-    @Override
-    public RSIterator listReifiedStatements( Statement st )
-    { return modelReifier.listReifiedStatements( st ); }
-
-    /**
-        @return true iff this model has a reification of _s_ in some Statement
-     */
-    @Override
-    public boolean isReified( Statement s )
-    { return modelReifier.isReified( s ); }
-
-    /**
-     * get any reification of the given statement in this model; make one if
-     * necessary.
-     *
-     * @param s for which a reification is sought
-     * @return a ReifiedStatement that reifies _s_
-     */
-    @Override
-    public Resource getAnyReifiedStatement(Statement s)
-    { return modelReifier.getAnyReifiedStatement( s ); }
-
-    /**
-     * remove any ReifiedStatements reifying the given statement
-     *
-     * @param s the statement who's reifications are to be discarded
-     */
-    @Override
-    public void removeAllReifications( Statement s )
-    { modelReifier.removeAllReifications( s ); }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void removeReification( ReifiedStatement rs )
-    { modelReifier.removeReification( rs ); }
-
-    /**
-     * create a ReifiedStatement that encodes _s_ and belongs to this Model.
-     */
-    @SuppressWarnings("deprecation")
-    @Override
-    public ReifiedStatement createReifiedStatement( Statement s )
-    { return modelReifier.createReifiedStatement( s ); }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public ReifiedStatement createReifiedStatement( String uri, Statement s )
-    { return modelReifier.createReifiedStatement( uri, s ); }
 
     @Override
     public boolean contains( Statement s )

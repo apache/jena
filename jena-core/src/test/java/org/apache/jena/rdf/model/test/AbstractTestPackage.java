@@ -66,9 +66,6 @@ public abstract class AbstractTestPackage extends TestSuite
 		addTest(TestModelPolymorphism.class, modelFactory);
 		addTest(TestStatements.class, modelFactory);
 		addTest(TestRDFNodes.class, modelFactory);
-
-		addTest(TestReifiedStatements.class, modelFactory);
-
 		addTest(TestIterators.class, modelFactory);
 
 		addTest(TestContains.class, modelFactory);

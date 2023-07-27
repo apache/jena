@@ -126,7 +126,6 @@ public class SecuredModelTest {
         __testAdd(() -> securedModel.add(s, p, "foo", "en"));
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testAddLiteral() throws Exception {
         __testAdd(() -> securedModel.addLiteral(s, p, true));
@@ -679,63 +678,6 @@ public class SecuredModelTest {
     }
 
     @Test
-    public void testGetAnyReifiedStmt_none() {
-        // first with create.
-        try {
-            Resource r = securedModel.getAnyReifiedStatement(baseModel.listStatements().next());
-            Assert.assertNotNull(r);
-            if (!securityEvaluator.evaluate(Action.Update)) {
-                Assert.fail("Should have thrown UpdateDeniedException Exception");
-            }
-            if (!securityEvaluator.evaluate(Action.Create)) {
-                Assert.fail("Should have thrown AddDeniedException Exception");
-            }
-        } catch (final UpdateDeniedException e) {
-            if (securityEvaluator.evaluate(Action.Update)) {
-                Assert.fail(String.format("Should not have thrown UpdateDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        } catch (final AddDeniedException e) {
-            if (securityEvaluator.evaluate(Action.Create)) {
-                Assert.fail(String.format("Should not have thrown AddDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        }
-    }
-
-    @Test
-    public void testGetAnyReifiedStmt_one() {
-        final Statement st = baseModel.listStatements().next();
-        ReifiedStatement s = baseModel.createReifiedStatement(st);
-        // there is a reified statement so only read is required.
-
-        try {
-            Resource r = securedModel.getAnyReifiedStatement(st);
-
-            if (securityEvaluator.evaluate(Action.Read)) {
-                Assert.assertEquals(s.getURI(), r.getURI());
-            }
-            if (!securityEvaluator.evaluate(Action.Update) && !securityEvaluator.evaluate(Action.Read)) {
-                Assert.fail("Should have thrown UpdateDeniedException Exception");
-            }
-            if (!securityEvaluator.evaluate(Action.Create) && !securityEvaluator.evaluate(Action.Read)) {
-                Assert.fail("Should have thrown AddDeniedException Exception");
-            }
-        } catch (final UpdateDeniedException e) {
-            if (securityEvaluator.evaluate(Action.Update)) {
-                Assert.fail(String.format("Should not have thrown UpdateDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        } catch (final AddDeniedException e) {
-            if (securityEvaluator.evaluate(Action.Create)) {
-                Assert.fail(String.format("Should not have thrown AddDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-
-        }
-    }
-
-    @Test
     public void testGetBag_Existing() {
         final Resource r = baseModel.createBag("http://example.com/securedModel/bag");
         Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
@@ -1205,42 +1147,6 @@ public class SecuredModelTest {
         }
     }
 
-    @Test
-    public void testIsReified() {
-        Statement stmt = baseModel.listStatements().next();
-        try {
-            boolean actual = securedModel.isReified(stmt);
-            assertFalse(actual);
-            if (!shouldRead()) {
-                Assert.fail("Should have thrown ReadDeniedException Exception");
-            }
-        } catch (final ReadDeniedException e) {
-            if (shouldRead()) {
-                Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        }
-
-        baseModel.createReifiedStatement(stmt);
-        try {
-            boolean actual = securedModel.isReified(stmt);
-            if (securityEvaluator.evaluate(Action.Read)) {
-                assertTrue(actual);
-            } else {
-                assertFalse(actual);
-            }
-            if (!shouldRead()) {
-                Assert.fail("Should have thrown ReadDeniedException Exception");
-            }
-        } catch (final ReadDeniedException e) {
-            if (shouldRead()) {
-                Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        }
-
-    }
-
     private void __testListLiteralStatements(Supplier<StmtIterator> supplier) {
         try {
             StmtIterator iter = supplier.get();
@@ -1540,26 +1446,6 @@ public class SecuredModelTest {
         baseModel.add(s, p, o);
         try {
             securedModel.removeAll(s, p, o);
-            if (!securityEvaluator.evaluate(DU)) {
-                Assert.fail("Should have thrown AccessDeniedException Exception");
-            }
-        } catch (final AccessDeniedException e) {
-            if (securityEvaluator.evaluate(DU)) {
-                Assert.fail(String.format("Should not have thrown AccessDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        }
-    }
-
-    @Test
-    public void testRemoveAllReifications() {
-        final Set<Action> DU = SecurityEvaluator.Util.asSet(new Action[] { Action.Delete, Action.Update });
-
-        final List<Statement> stmt = baseModel.listStatements().toList();
-        baseModel.createReifiedStatement(stmt.get(0));
-
-        try {
-            securedModel.removeAllReifications(stmt.get(0));
             if (!securityEvaluator.evaluate(DU)) {
                 Assert.fail("Should have thrown AccessDeniedException Exception");
             }

@@ -324,46 +324,7 @@ public interface Statement extends FrontsTriple
     public Statement remove() ;
 
     /**
-        Determine if this statement is the subject of any statements its associated
-        model.
-        @return true iff this statement is the subject of a statement in the model.
-    */
-    boolean isReified();
-
-    /**
-        answer a ReifiedStatement object that embodies this Statement and
-        is in the same Model (if any).
-     *   @deprecated To be removed
-     */
-    @Deprecated
-
-    ReifiedStatement createReifiedStatement();
-
-    /**
-        answer a ReifiedStatement object that embodies this Statement, has
-        the same Model, and has the given <code>uri</code>.
-     *   @deprecated To be removed
-     */
-    @Deprecated
-    ReifiedStatement createReifiedStatement( String uri );
-
-    /**
-        answer an iterator which delivers all the reified statements in the model
-        this Statement belongs to that match this Statement.
-     *   @deprecated To be removed
-     */
-    @Deprecated
-    RSIterator listReifiedStatements();
-
-    /**
         get the Model this Statement was created in.
     */
     Model getModel();
-
-    /**
-     * Finds all possible resources which are
-     * the reification of this statement, and for each
-     * removes all four triples of the reification quad.
-     */
-    void removeReification();
 }
