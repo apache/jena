@@ -38,7 +38,6 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.RSIterator;
 import org.apache.jena.rdf.model.ReifiedStatement;
-import org.apache.jena.rdf.model.ResourceF;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.shared.AddDeniedException;
@@ -551,20 +550,6 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
         checkRead();
         checkRead(holder.getBaseItem().asTriple());
         return SecuredResourceImpl.getInstance(getModel(), holder.getBaseItem().getResource());
-    }
-
-    /**
-     * @sec.graph Read
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    @Deprecated
-    public SecuredResource getResource(final ResourceF f) {
-        checkRead();
-        checkRead(holder.getBaseItem().asTriple());
-        return SecuredResourceImpl.getInstance(getModel(), holder.getBaseItem().getResource(f));
     }
 
     /**

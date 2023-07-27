@@ -135,11 +135,6 @@ public class SeqImpl extends ContainerImpl implements Seq {
     }
 
     @Override
-    @Deprecated public Resource getResource(int index, ResourceF f) {
-        return getRequiredProperty(RDF.li(index)).getResource(f);
-    }
-
-    @Override
     public Bag getBag(int index)  {
         checkIndex(index);
         return getRequiredProperty(RDF.li(index)).getBag();
