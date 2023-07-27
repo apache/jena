@@ -72,7 +72,6 @@ import org.apache.jena.rdf.model.RSIterator;
 import org.apache.jena.rdf.model.ReifiedStatement;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Selector;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.rdf.model.impl.NsIteratorImpl;
@@ -2534,24 +2533,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
     /**
      * @sec.graph Read
-     * @sec.triple Read on all triples returned
-     *
-     *             if {@link SecurityEvaluator#isHardReadError()} is true and the
-     *             user does not have read access then an empty iterator will be
-     *             returned.
-     *
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public SecuredStatementIterator listStatements(final Selector s)
-            throws ReadDeniedException, AuthenticationRequiredException {
-        return stmtIterator(() -> holder.getBaseItem().listStatements(s));
-    }
-
-    /**
-     * @sec.graph Read
      * @sec.triple Read at least one Triple( s, p, o ) for each resource returned
      *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
@@ -2677,23 +2658,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     @Override
     public String qnameFor(final String uri) throws ReadDeniedException, AuthenticationRequiredException {
         return checkSoftRead() ? holder.getBaseItem().qnameFor(uri) : null;
-    }
-
-    /**
-     * @sec.graph Read
-     *
-     *            if {@link SecurityEvaluator#isHardReadError()} is true and the
-     *            user does not have read access then an empty model will be
-     *            returned.
-     *
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public Model query(final Selector s) throws ReadDeniedException, AuthenticationRequiredException {
-        return checkSoftRead() ? holder.getBaseItem().query(new SecuredSelector(holder.getSecuredItem(), s))
-                : ModelFactory.createDefaultModel();
     }
 
     /**
