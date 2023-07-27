@@ -47,12 +47,6 @@ public class TestRDFWriterMap extends JenaTestBase
 		}
 
 		@Override
-		public RDFWriterI getWriter()
-		{
-			return getWriter("RDF/XML");
-		}
-
-		@Override
 		public RDFWriterI getWriter( final String lang )
 		{
 			final Class<RDFWriterI> result = map.get(lang);
@@ -113,7 +107,7 @@ public class TestRDFWriterMap extends JenaTestBase
 	{
 		final RDFWriterF x = new RDFWriterMap(true);
 		Assert.assertEquals(x.getWriter("RDF/XML").getClass(),
-		                    x.getWriter().getClass());
+		                    x.getWriter(null).getClass());
 	}
 
 	/*

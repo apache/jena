@@ -108,10 +108,10 @@ public class TestDateTime extends TestCase {
         event.addProperty(startTime, xsdlit0);
 
         StringWriter sw = new StringWriter();
-        m.write(sw);
+        m.write(sw, "RDF/XML");
         StringReader reader = new StringReader(sw.toString());
         Model m1 = ModelFactory.createDefaultModel();
-        m1.read(reader, null);
+        m1.read(reader, "RDF/XML");
 
         assertTrue( m.isIsomorphicWith(m1) );
 

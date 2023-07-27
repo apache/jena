@@ -33,7 +33,7 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
 
-/** Adapter from Jena2 original style adapter to RIOT reader. */
+/** Adapter from Jena2 original style to RIOT reader. */
 public class RDFReaderRIOT implements RDFReaderI {
     private final String      basename ;
     protected final Lang      hintlang ;
@@ -50,7 +50,7 @@ public class RDFReaderRIOT implements RDFReaderI {
 
     public RDFReaderRIOT(Lang hintlang) {
         this.hintlang = hintlang ;
-        this.basename =  (hintlang==null) 
+        this.basename = (hintlang==null)
             ? "org.apache.jena.riot.reader.generic"
             : "org.apache.jena.riot.reader." + hintlang.getLabel().toLowerCase(Locale.ROOT) ;
     }

@@ -2618,13 +2618,13 @@ public class OntModelImpl extends ModelCom implements OntModel
     // output operations - delegate to base model
 
     @Override
-    public Model write( Writer writer )                             { return getBaseModel().write( writer ); }
+    public Model write( Writer writer )                             { return getBaseModel().write( writer, "RDF/XML" ); }
     @Override
     public Model write( Writer writer, String lang )                { return getBaseModel().write( writer, lang ); }
     @Override
     public Model write( Writer writer, String lang, String base )   { return getBaseModel().write( writer, lang, base ); }
     @Override
-    public Model write( OutputStream out )                          { return getBaseModel().write( out ); }
+    public Model write( OutputStream out )                          { return getBaseModel().write( out , "RDF/XML"); }
     @Override
     public Model write( OutputStream out, String lang )             { return getBaseModel().write( out, lang ); }
     @Override

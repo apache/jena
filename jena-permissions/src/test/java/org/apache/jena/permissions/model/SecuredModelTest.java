@@ -17,19 +17,9 @@
  */
 package org.apache.jena.permissions.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.CharArrayWriter;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,34 +30,12 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.permissions.EqualityTester;
-import org.apache.jena.permissions.Factory;
-import org.apache.jena.permissions.MockSecurityEvaluator;
-import org.apache.jena.permissions.SecurityEvaluator;
+import org.apache.jena.permissions.*;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.graph.SecuredGraph;
 import org.apache.jena.permissions.graph.SecuredPrefixMappingTest;
-import org.apache.jena.rdf.model.Alt;
-import org.apache.jena.rdf.model.Bag;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ReifiedStatement;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Selector;
-import org.apache.jena.rdf.model.Seq;
-import org.apache.jena.rdf.model.SimpleSelector;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.shared.AccessDeniedException;
-import org.apache.jena.shared.AddDeniedException;
-import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.shared.PropertyNotFoundException;
-import org.apache.jena.shared.ReadDeniedException;
-import org.apache.jena.shared.UpdateDeniedException;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.shared.*;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
 import org.junit.Before;
@@ -1011,7 +979,7 @@ public class SecuredModelTest {
     @SuppressWarnings("deprecation")
     @Test
     public void testGetReader() {
-        securedModel.getReader();
+        securedModel.getReader(null);
         securedModel.getReader("TURTLE");
     }
 
@@ -1097,7 +1065,7 @@ public class SecuredModelTest {
     @SuppressWarnings("deprecation")
     @Test
     public void testGetWriter() {
-        securedModel.getWriter();
+        securedModel.getWriter(null);
         securedModel.getWriter("TURTLE");
     }
 
@@ -1787,7 +1755,7 @@ public class SecuredModelTest {
 
     @Test
     public void testWrite_writer() throws Exception {
-        __testWrite(() -> securedModel.write(new CharArrayWriter()));
+        __testWrite(() -> securedModel.write(new CharArrayWriter(), "RDF/XML"));
     }
 
     @Test

@@ -39,7 +39,7 @@ public class TestIO_JenaWriters {
     public void testWireIntoJena() {
         IO_Jena.wireIntoJena();
         RDFWriterF writerF = new RDFWriterFImpl();
-        assertEquals(RDFWriterRIOT.class, writerF.getWriter().getClass());
+        assertEquals(RDFWriterRIOT.class, writerF.getWriter(null).getClass());
         assertEquals(RDFWriterRIOT.class, writerF.getWriter("RDF/XML").getClass());
         assertEquals(RDFWriterRIOT.class, writerF.getWriter("RDF/XML-ABBREV").getClass());
         assertEquals(RDFWriterRIOT.class, writerF.getWriter("N-TRIPLE").getClass());
@@ -62,7 +62,7 @@ public class TestIO_JenaWriters {
         IO_Jena.resetJena();
         RDFWriterF writerF = new RDFWriterFImpl();
 
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter().getClass());
+        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter(null).getClass());
         assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("RDF/XML").getClass());
         assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("RDF/XML-ABBREV").getClass());
         assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N-TRIPLE").getClass());
