@@ -180,32 +180,6 @@ public class TestSimpleListStatements extends AbstractModelTestBase
 		Assert.assertEquals(1, i);
 	}
 
-	@SuppressWarnings("deprecation")
-    public void testListStatementsClever()
-	{
-
-		ModelHelper.modelAdd(model, "S P O; S P O2; S P2 O; S2 P O");
-		final Selector sel = new SimpleSelector(null, null, (RDFNode) null) {
-			@Override
-			public boolean isSimple()
-			{
-				return false;
-			}
-
-			@Override
-			public boolean test( final Statement st )
-			{
-				return (st.getSubject().toString().length()
-						+ st.getPredicate().toString().length() + st
-						.getObject().toString().length()) == 15; /*
-																 * eh:/S + eh:/P
-																 * + eh:/O
-																 */
-			}
-		};
-		checkReturns("S P O", model.listStatements(sel));
-	}
-
 	public void testListStatementsSPO()
 	{
 
