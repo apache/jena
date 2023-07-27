@@ -755,40 +755,7 @@ public interface Model
 	*/
 	boolean containsAll(Model model) ;
 
-	/**
-        Determine if this Statement has been reified in this Model.
-
-	   @param s The statement tested.
-	   @return true iff a ReifiedStatement(s) has been created in this model
-        @deprecated To be removed
-    */
-    @Deprecated
-	boolean isReified( Statement s );
-
-	/**
-       Find or create a {@link ReifiedStatement} corresponding to a Statement.
-        @param s Statement which may or may not already be reified
-        @return a Resource [ReifiedStatement] that reifies the specified Statement.
-        @deprecated To be removed
-    */
-    @Deprecated
-	Resource getAnyReifiedStatement( Statement s );
-
-	/**
-        Remove all reifications (ie implicit reification quads) of _s_.
-        @deprecated To be removed
-    */
-	@Deprecated
-	void removeAllReifications( Statement s );
-
-    /**
-        Remove a particular reificiation.
-        @deprecated To be removed
-    */
-    @Deprecated
-    void removeReification( ReifiedStatement rs );
-
-    /** List all statements.
+	/** List all statements.
      *
      *  <p>Subsequent operations on those statements may modify this model.</p>
      *
@@ -812,40 +779,6 @@ public interface Model
     StmtIterator listStatements( Resource s, Property p, RDFNode o );
 
     /**
-        Answer a ReifiedStatement that encodes _s_ and belongs to this Model.
-    <br>
-        result.getModel() == this
-    <br>
-        result.getStatement() .equals ( s )
-        @deprecated To be removed
-    */
-    @Deprecated
-    ReifiedStatement createReifiedStatement( Statement s );
-
-    /**
-        answer a ReifiedStatement that encodes _s_, belongs to this Model,
-        and is a Resource with that _uri_.
-        @deprecated To be removed
-    */
-    @Deprecated
-    ReifiedStatement createReifiedStatement( String uri, Statement s );
-
-    /**
-        answer an iterator delivering all the reified statements "in" this model
-        @deprecated To be removed
-    */
-    @Deprecated
-    RSIterator listReifiedStatements();
-
-    /**
-        answer an iterator delivering all the reified statements "in" this model
-        that match the statement _st_.
-        @deprecated To be removed
-    */
-    @Deprecated
-    RSIterator listReifiedStatements( Statement st );
-
-	/**
      * Create a new, independent, model containing all the statements in this model
      * together with all of those in another given model. By <i>independent</i> we
      * mean that changes to the result model do not affect the operand models, and

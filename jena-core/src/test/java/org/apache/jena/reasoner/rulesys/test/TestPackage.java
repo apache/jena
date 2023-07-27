@@ -44,11 +44,11 @@ public class TestPackage extends TestSuite {
     /** Creates new TestPackage */
     private TestPackage() {
         super("RuleSys");
-        
+
         addTestSuite( TestConfigVocabulary.class );
         addTestSuite( TestGenericRuleReasonerConfig.class );
         addTest( "TestBasics", TestBasics.suite() );
-        
+
         addTest( "TestComparatorBuiltins", TestComparatorBuiltins.suite() );
         addTest( new JUnit4TestAdapter(TestRuleUtil.class));
 
@@ -68,20 +68,8 @@ public class TestPackage extends TestSuite {
         addTest( "TestOWLMisc", TestOWLMisc.suite() );
         addTest( "FRuleEngineIFactoryTest", FRuleEngineIFactoryTest.suite() );
         addTest( "TestLPBRuleCloseBug", TestLPBRuleCloseBug.suite() );
-        
-        //addTest ("TestRuleLoader", TestRuleLoader.suite() );
 
-        try {
-            /* uncomment the following block when we switch to java 1.6 and update ConcurrentTest to do deadlock detection */
-//            // Check the JVM supports the management interfaces needed for
-//            // running the concurrency test
-//            ThreadMXBean tmx = ManagementFactory.getThreadMXBean();
-//            long[] ids = tmx.findDeadlockedThreads();
-            addTest( "ConcurrentyTest", ConcurrencyTest.suite() );
-        } catch (Throwable t) {
-            logger.warn("Skipping concurrency test, JVM doesn't seem to support fileDeadlockedThreads");
-        }
-        addTest( "TestInferenceReification", TestInferenceReification.suite() );
+        addTest( "ConcurrentyTest", ConcurrencyTest.suite() );
         addTest( "TestRestrictionsDontNeedTyping", TestRestrictionsDontNeedTyping.suite() );
 
         // No longer needed because the tests are now subsumed in OWLUnitTest
