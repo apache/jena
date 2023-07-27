@@ -74,7 +74,7 @@ public class TestPackage_xmloutput extends TestCase{
                 Model m = ModelFactory.createDefaultModel();
                 m.add(m.createResource(badURI), m.createProperty("eg:BC"), m.createResource("eg:CD"));
                 try {
-                    m.write(new StringWriter());
+                    m.write(new StringWriter(), "RDF/XML");
                     fail("should detect bad URI " + badURI);
                 } catch (IRIException e) {
                     assertTrue("message must contain failing URI", e.getMessage().indexOf(badURI) > 0);

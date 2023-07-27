@@ -75,7 +75,7 @@ public class PrettyWriterTest extends ModelTestBase {
 			    System.err.println("File: "+filename);
 			    System.err.println("Looking for /" + regex + "/ in "+contents);
 			    System.err.println("File: "+filename);
-                m2.write(System.err);
+                m2.write(System.err, "RDF/XML");
 			}
 
 			assertTrue(

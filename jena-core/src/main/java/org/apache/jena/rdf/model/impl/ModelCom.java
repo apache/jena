@@ -21,7 +21,6 @@ package org.apache.jena.rdf.model.impl;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.apache.jena.datatypes.DatatypeFormatException ;
@@ -168,30 +167,25 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     }
 
     @Override
-    public RDFReaderI getReader()  {
-        return readerFactory.getReader();
-    }
-
-    @Override
     public RDFReaderI getReader(String lang)  {
         return readerFactory.getReader(lang);
     }
 
     @Override
     public Model read(String url)  {
-        readerFactory .getReader() .read(this, url);
+        readerFactory .getReader(null) .read(this, url);
         return this;
     }
 
     @Override
     public Model read(Reader reader, String base)  {
-        readerFactory .getReader() .read(this, reader, base);
+        readerFactory .getReader(null) .read(this, reader, base);
         return this;
     }
 
     @Override
     public Model read(InputStream reader, String base)  {
-        readerFactory .getReader() .read(this, reader, base);
+        readerFactory .getReader(null) .read(this, reader, base);
         return this;
     }
 
@@ -227,21 +221,13 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
      * Get the model's writer after priming it with the model's namespace prefixes.
      */
     @Override
-    public RDFWriterI getWriter() {
-        return writerFactory.getWriter();
-    }
-
-    /**
-     * Get the model's writer after priming it with the model's namespace prefixes.
-     */
-    @Override
     public RDFWriterI getWriter(String lang) {
         return writerFactory.getWriter(lang);
     }
 
     @Override
     public Model write(Writer writer) {
-        getWriter().write(this, writer, "");
+        getWriter(null).write(this, writer, "");
         return this;
     }
 
@@ -259,7 +245,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
 
     @Override
     public Model write(OutputStream writer) {
-        getWriter().write(this, writer, "");
+        getWriter(null).write(this, writer, "");
         return this;
     }
 

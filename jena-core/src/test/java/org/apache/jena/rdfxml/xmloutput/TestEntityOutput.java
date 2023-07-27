@@ -139,9 +139,9 @@ public class TestEntityOutput extends ModelTestBase
         Property p = m.createProperty("http://example/p") ;
         m.add(r, p, "abc\r\nxyz") ;
         StringWriter w = new StringWriter();
-        m.write(w) ;
+        m.write(w, "RDF/XML") ;
         Model m2 = createMemModel();
-        m2.read(new StringReader(w.toString()), null) ;
+        m2.read(new StringReader(w.toString()), "RDF/XML") ;
         assertTrue(m.isIsomorphicWith(m2)) ;
     }
 

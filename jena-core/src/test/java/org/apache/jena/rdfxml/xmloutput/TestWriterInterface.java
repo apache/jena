@@ -54,7 +54,7 @@ public class TestWriterInterface extends ModelTestBase {
         Model m = modelWithStatements( "http://eh/spoo thingies something" );
         m.setNsPrefix( "eh", "http://eh/" );
         StringWriter sos = new StringWriter();
-        m.write( sos );
+        m.write( sos , "RDF/XML");
         assertTrue( sos.toString().contains( newline_XMLNS ) );
     }
 
@@ -62,7 +62,7 @@ public class TestWriterInterface extends ModelTestBase {
     public void testInterface() {
         Model m1 = createMemModel();
         // Not true when RIOT is used!
-        assertTrue( "Default writer should be Basic.",  m1.getWriter() instanceof RDFXML_Basic );
+        assertTrue( "Default writer should be Basic.",  m1.getWriter(null) instanceof RDFXML_Basic );
         assertTrue( "RDF/XML writer should be Basic.", m1.getWriter("RDF/XML") instanceof RDFXML_Basic );
         assertTrue("RDF/XML-ABBREV writer should be Abbreviated.",
                    m1.getWriter("RDF/XML-ABBREV") instanceof RDFXML_Abbrev);
