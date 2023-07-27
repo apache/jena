@@ -64,7 +64,6 @@ public abstract class AbstractTestPackage extends TestSuite
 		addTest(TestModelFactory.class);
 		addTest(TestSimpleListStatements.class, modelFactory);
 		addTest(TestModelPolymorphism.class, modelFactory);
-		addTest(TestSimpleSelector.class, modelFactory);
 		addTest(TestStatements.class, modelFactory);
 		addTest(TestRDFNodes.class, modelFactory);
 
@@ -107,7 +106,6 @@ public abstract class AbstractTestPackage extends TestSuite
 		addTest(TestContainers.class, modelFactory);
 		addTest(TestModel.class, modelFactory);
 		addTest(TestModelSetOperations.class, modelFactory);
-		addTest(TestSelectors.class, modelFactory);
 		addTest(TestModelEvents.class, modelFactory);
 		addTest(TestReaderEvents.class, modelFactory);
 		addTest(TestList.class, modelFactory);
@@ -117,7 +115,6 @@ public abstract class AbstractTestPackage extends TestSuite
 		addTest(TestListSubjectsEtc.class, modelFactory);
 		addTest(TestModelRead.class, modelFactory);
 		addTestSuite(TestPropertyImpl.class);
-		addTest(TestRemoveBug.class, modelFactory);
 		addTest(TestContainerConstructors.class, modelFactory);
 		addTest(TestAltMethods.class, modelFactory);
 		addTest(TestBagMethods.class, modelFactory);
@@ -135,7 +132,6 @@ public abstract class AbstractTestPackage extends TestSuite
 		addTest(TestReaders.class, modelFactory);
 		addTest(TestObjectOfProperties.class, modelFactory);
 		addTest(TestCopyInOutOfModel.class, modelFactory);
-		addTest(TestSelectorUse.class, modelFactory);
 		// These tests are probabilistic testing.
 		// See notes in the class.
 		//addTest(IsomorphicTests.class, modelFactory);

@@ -32,59 +32,46 @@ import org.junit.Assert;
 
 public class TestResources extends AbstractModelTestBase
 {
-	public TestResources( final TestingModelFactory modelFactory,
-			final String name )
-	{
-		super(modelFactory, name);
-	}
+    public TestResources(final TestingModelFactory modelFactory, final String name) {
+        super(modelFactory, name);
+    }
 
-	protected void checkNumericContent( final Container cont2, final int num )
-	{
-		final NodeIterator nit = cont2.iterator();
-		for (int i = 0; i < num; i += 1)
-		{
-			Assert.assertEquals(i, ((Literal) nit.nextNode()).getInt());
-		}
-		Assert.assertFalse(nit.hasNext());
-	}
+    protected void checkNumericContent(final Container cont2, final int num) {
+        final NodeIterator nit = cont2.iterator();
+        for ( int i = 0 ; i < num ; i += 1 ) {
+            Assert.assertEquals(i, ((Literal)nit.nextNode()).getInt());
+        }
+        Assert.assertFalse(nit.hasNext());
+    }
 
-	protected void retainOnlySpecified( final Container cont2, final int num,
-			final boolean[] retain )
-	{
-		final NodeIterator nit = cont2.iterator();
-		for (int i = 0; i < num; i++)
-		{
-			nit.nextNode();
-			if (retain[i] == false)
-			{
-				nit.remove();
-			}
-		}
-		Assert.assertFalse(nit.hasNext());
-	}
+    protected void retainOnlySpecified(final Container cont2, final int num, final boolean[] retain) {
+        final NodeIterator nit = cont2.iterator();
+        for ( int i = 0 ; i < num ; i++ ) {
+            nit.nextNode();
+            if ( retain[i] == false ) {
+                nit.remove();
+            }
+        }
+        Assert.assertFalse(nit.hasNext());
+    }
 
-	protected void seeWhatsThere( final Container cont2, final boolean[] found )
-	{
-		final NodeIterator nit = cont2.iterator();
-		while (nit.hasNext())
-		{
-			final int v = ((Literal) nit.nextNode()).getInt();
-			Assert.assertFalse(found[v]);
-			found[v] = true;
-		}
-	}
+    protected void seeWhatsThere(final Container cont2, final boolean[] found) {
+        final NodeIterator nit = cont2.iterator();
+        while (nit.hasNext()) {
+            final int v = ((Literal)nit.nextNode()).getInt();
+            Assert.assertFalse(found[v]);
+            found[v] = true;
+        }
+    }
 
-	protected Set<Object> setOf( final Object x )
-	{
-		final Set<Object> result = new HashSet<>();
-		result.add(x);
-		return result;
-	}
+    protected Set<Object> setOf(final Object x) {
+        final Set<Object> result = new HashSet<>();
+        result.add(x);
+        return result;
+    }
 
-	private void containerTest( final Model model, final Container cont1,
-			final Container cont2 )
-	{
-		final Literal tvLiteral = model.createLiteral("test 12 string 2");
+    private void containerTest(final Model model, final Container cont1, final Container cont2) {
+        final Literal tvLiteral = model.createLiteral("test 12 string 2");
 		// Resource tvResObj = model.createResource( new ResTestObjF() );
 		final Object tvLitObj = new LitTestObj(1234);
 		model.createBag();
@@ -121,148 +108,112 @@ public class TestResources extends AbstractModelTestBase
 		Assert.assertTrue(cont1.add(tvLitObj).contains(tvLitObj));
 		Assert.assertEquals(12, cont1.size());
 		//
-		final int num = 10;
-		for (int i = 0; i < num; i += 1)
-		{
-			cont2.add(i);
-		}
-		Assert.assertEquals(num, cont2.size());
-		checkNumericContent(cont2, num);
-		//
-		final boolean[] found = new boolean[num];
-		final boolean[] retain = { true, true, true, false, false, false,
-				false, false, true, true };
-		retainOnlySpecified(cont2, num, retain);
-		seeWhatsThere(cont2, found);
-		for (int i = 0; i < num; i += 1)
-		{
-			Assert.assertEquals(i + "th element of array", retain[i], found[i]);
-		}
-	}
+        final int num = 10;
+        for ( int i = 0 ; i < num ; i += 1 ) {
+            cont2.add(i);
+        }
+        Assert.assertEquals(num, cont2.size());
+        checkNumericContent(cont2, num);
+        //
+        final boolean[] found = new boolean[num];
+        final boolean[] retain = {true, true, true, false, false, false, false, false, true, true};
+        retainOnlySpecified(cont2, num, retain);
+        seeWhatsThere(cont2, found);
+        for ( int i = 0 ; i < num ; i += 1 ) {
+            Assert.assertEquals(i + "th element of array", retain[i], found[i]);
+        }
+    }
 
-	// public void testCreateAnonByFactory()
-	// {
-	// assertTrue( model.createResource( new ResTestObjF() ).isAnon() );
-	// }
+    public void testCreateAnonResource() {
+        final Resource r = model.createResource();
+        Assert.assertTrue(r.isAnon());
+        Assert.assertNull(r.getURI());
+        Assert.assertNull(r.getNameSpace());
+        Assert.assertNull(r.getLocalName());
+    }
 
-	// public void testCreateResourceByFactory()
-	// {
-	// String uri = "http://aldabaran.hpl.hp.com/foo";
-	// assertEquals( uri, model.createResource( uri, new ResTestObjF()
-	// ).getURI() );
-	// }
+    public void testCreateAnonResourceWithNull() {
+        final Resource r = model.createResource((String)null);
+        Assert.assertTrue(r.isAnon());
+        Assert.assertNull(r.getURI());
+        Assert.assertNull(r.getNameSpace());
+        Assert.assertNull(r.getLocalName());
+    }
 
-	public void testCreateAnonResource()
-	{
-		final Resource r = model.createResource();
-		Assert.assertTrue(r.isAnon());
-		Assert.assertNull(r.getURI());
-		Assert.assertNull(r.getNameSpace());
-		Assert.assertNull(r.getLocalName());
-	}
+    public void testCreateNamedResource() {
+        final String uri = "http://aldabaran.hpl.hp.com/foo";
+        Assert.assertEquals(uri, model.createResource(uri).getURI());
+    }
 
-	public void testCreateAnonResourceWithNull()
-	{
-		final Resource r = model.createResource((String) null);
-		Assert.assertTrue(r.isAnon());
-		Assert.assertNull(r.getURI());
-		Assert.assertNull(r.getNameSpace());
-		Assert.assertNull(r.getLocalName());
-	}
+    public void testCreateNullPropertyFails() {
+        try {
+            model.createProperty(null);
+            Assert.fail("should not create null property");
+        } catch (final InvalidPropertyURIException e) {
+            JenaTestBase.pass();
+        }
+    }
 
-	public void testCreateNamedResource()
-	{
-		final String uri = "http://aldabaran.hpl.hp.com/foo";
-		Assert.assertEquals(uri, model.createResource(uri).getURI());
-	}
+    public void testCreatePropertyOneArg() {
+        final Property p = model.createProperty("abc/def");
+        Assert.assertEquals("abc/", p.getNameSpace());
+        Assert.assertEquals("def", p.getLocalName());
+        Assert.assertEquals("abc/def", p.getURI());
+    }
 
-	public void testCreateNullPropertyFails()
-	{
-		try
-		{
-			model.createProperty(null);
-			Assert.fail("should not create null property");
-		}
-		catch (final InvalidPropertyURIException e)
-		{
-			JenaTestBase.pass();
-		}
-	}
+    public void testCreatePropertyStrangeURI() {
+        final String uri = RDF.getURI() + "_345";
+        final Property p = model.createProperty(uri);
+        Assert.assertEquals(RDF.getURI(), p.getNameSpace());
+        Assert.assertEquals("_345", p.getLocalName());
+        Assert.assertEquals(uri, p.getURI());
+    }
 
-	public void testCreatePropertyOneArg()
-	{
-		final Property p = model.createProperty("abc/def");
-		Assert.assertEquals("abc/", p.getNameSpace());
-		Assert.assertEquals("def", p.getLocalName());
-		Assert.assertEquals("abc/def", p.getURI());
-	}
+    public void testCreatePropertyStrangeURITwoArgs() {
+        final String local = "_345";
+        final Property p = model.createProperty(RDF.getURI(), local);
+        Assert.assertEquals(RDF.getURI(), p.getNameSpace());
+        Assert.assertEquals(local, p.getLocalName());
+        Assert.assertEquals(RDF.getURI() + local, p.getURI());
+    }
 
-	public void testCreatePropertyStrangeURI()
-	{
-		final String uri = RDF.getURI() + "_345";
-		final Property p = model.createProperty(uri);
-		Assert.assertEquals(RDF.getURI(), p.getNameSpace());
-		Assert.assertEquals("_345", p.getLocalName());
-		Assert.assertEquals(uri, p.getURI());
-	}
+    public void testCreatePropertyTwoArgs() {
+        final Property p = model.createProperty("abc/", "def");
+        Assert.assertEquals("abc/", p.getNameSpace());
+        Assert.assertEquals("def", p.getLocalName());
+        Assert.assertEquals("abc/def", p.getURI());
+    }
 
-	public void testCreatePropertyStrangeURITwoArgs()
-	{
-		final String local = "_345";
-		final Property p = model.createProperty(RDF.getURI(), local);
-		Assert.assertEquals(RDF.getURI(), p.getNameSpace());
-		Assert.assertEquals(local, p.getLocalName());
-		Assert.assertEquals(RDF.getURI() + local, p.getURI());
-	}
+    public void testCreateTypedAnonResource() {
+        final Resource r = model.createResource(RDF.Property);
+        Assert.assertTrue(r.isAnon());
+        Assert.assertTrue(model.contains(r, RDF.type, RDF.Property));
+    }
 
-	public void testCreatePropertyTwoArgs()
-	{
-		final Property p = model.createProperty("abc/", "def");
-		Assert.assertEquals("abc/", p.getNameSpace());
-		Assert.assertEquals("def", p.getLocalName());
-		Assert.assertEquals("abc/def", p.getURI());
-	}
+    public void testCreateTypedNamedresource() {
+        final String uri = "http://aldabaran.hpl.hp.com/foo";
+        final Resource r = model.createResource(uri, RDF.Property);
+        Assert.assertEquals(uri, r.getURI());
+        Assert.assertTrue(model.contains(r, RDF.type, RDF.Property));
+    }
 
-	public void testCreateTypedAnonResource()
-	{
-		final Resource r = model.createResource(RDF.Property);
-		Assert.assertTrue(r.isAnon());
-		Assert.assertTrue(model.contains(r, RDF.type, RDF.Property));
-	}
+    public void testEnhancedResources() {
+        final Resource r = model.createResource();
+        resourceTest(model, r, 0);
 
-	public void testCreateTypedNamedresource()
-	{
-		final String uri = "http://aldabaran.hpl.hp.com/foo";
-		final Resource r = model.createResource(uri, RDF.Property);
-		Assert.assertEquals(uri, r.getURI());
-		Assert.assertTrue(model.contains(r, RDF.type, RDF.Property));
-	}
+        resourceTest(model, model.createBag(), 1);
+        containerTest(model, model.createBag(), model.createBag());
 
-	public void testEnhancedResources()
-	{
-		final Resource r = model.createResource();
-		resourceTest(model, r, 0);
+        resourceTest(model, model.createAlt(), 1);
+        containerTest(model, model.createAlt(), model.createAlt());
 
-		resourceTest(model, model.createBag(), 1);
-		containerTest(model, model.createBag(), model.createBag());
+        resourceTest(model, model.createSeq(), 1);
+        containerTest(model, model.createSeq(), model.createSeq());
+    }
 
-		resourceTest(model, model.createAlt(), 1);
-		containerTest(model, model.createAlt(), model.createAlt());
-
-		resourceTest(model, model.createSeq(), 1);
-		containerTest(model, model.createSeq(), model.createSeq());
-		// testSeq( model, model.createSeq(), model.createSeq(),
-		// model.createSeq(),
-		// model.createSeq(), model.createSeq(), model.createSeq(),
-		// model.createSeq() );
-	}
-
-    @SuppressWarnings("deprecation")
-    private void resourceTest( final Model model, final Resource r,
-			final int numProps )
-	{
-		final Literal tvLiteral = model.createLiteral("test 12 string 2");
-		final Resource tvResource = model.createResource();
+    private void resourceTest(final Model model, final Resource r, final int numProps) {
+        final Literal tvLiteral = model.createLiteral("test 12 string 2");
+        final Resource tvResource = model.createResource();
 		final String lang = "fr";
 		//
 		Assert.assertTrue(r.addLiteral(RDF.value,
@@ -301,16 +252,13 @@ public class TestResources extends AbstractModelTestBase
 		Assert.assertTrue(r.getRequiredProperty(RDF.value).getSubject()
 				.equals(r));
 		//
-		final Property p = model.createProperty("foo/", "bar");
-		try
-		{
-			r.getRequiredProperty(p);
-			Assert.fail("should detect missing property");
-		}
-		catch (final PropertyNotFoundException e)
-		{
-			JenaTestBase.pass();
-		}
+        final Property p = model.createProperty("foo/", "bar");
+        try {
+            r.getRequiredProperty(p);
+            Assert.fail("should detect missing property");
+        } catch (final PropertyNotFoundException e) {
+            JenaTestBase.pass();
+        }
 		//
 		Assert.assertEquals(13,
 				GraphTestBase.iteratorToSet(r.listProperties(RDF.value)).size());
@@ -332,7 +280,6 @@ public class TestResources extends AbstractModelTestBase
 						Statement::getSubject)));
 		//
 		r.removeProperties();
-		Assert.assertEquals(0,
-				model.query(new SimpleSelector(r, null, (RDFNode) null)).size());
+		Assert.assertEquals(0, r.listProperties().toList().size());
 	}
 }
