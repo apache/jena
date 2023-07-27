@@ -33,7 +33,6 @@ public class BuiltinPersonalities {
 
     static final private Personality<RDFNode> graph = new Personality<>();
 
-    @SuppressWarnings("deprecation")
     static final public Personality<RDFNode> model = graph.copy()
         .add( Resource.class, ResourceImpl.factory )
         .add( Property.class, PropertyImpl.factory )
@@ -42,7 +41,6 @@ public class BuiltinPersonalities {
         .add( Alt.class, AltImpl.factory )
         .add( Bag.class, BagImpl.factory )
         .add( Seq.class, SeqImpl.factory )
-        .add( ReifiedStatement.class, ReifiedStatementImpl.reifiedStatementFactory )
         .add( RDFList.class, RDFListImpl.factory )
 
         // ontology additions

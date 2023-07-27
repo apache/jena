@@ -53,7 +53,6 @@ import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredProperty;
 import org.apache.jena.permissions.model.SecuredRDFList;
 import org.apache.jena.permissions.model.SecuredRDFNode;
-import org.apache.jena.permissions.model.SecuredReifiedStatement;
 import org.apache.jena.permissions.model.SecuredResource;
 import org.apache.jena.permissions.model.SecuredSeq;
 import org.apache.jena.permissions.model.SecuredStatement;
@@ -68,8 +67,6 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.RDFReaderF;
 import org.apache.jena.rdf.model.RDFReaderI;
 import org.apache.jena.rdf.model.RDFWriterI;
-import org.apache.jena.rdf.model.RSIterator;
-import org.apache.jena.rdf.model.ReifiedStatement;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
@@ -1287,46 +1284,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
                 holder.getBaseItem().createProperty(nameSpace, localName));
     }
 
-    /**
-     * @sec.graph Update
-     * @sec.triple Read s as a triple
-     * @sec.triple Create Triple( SecNode.Future, RDF.subject, t.getSubject() )
-     * @sec.triple Create Triple( SecNode.Future, RDF.subject, t.getPredicate() )
-     * @sec.triple create Triple( SecNode.Future, RDF.subject, t.getObject() )
-     * @throws UpdateDeniedException
-     * @throws AddDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public SecuredReifiedStatement createReifiedStatement(final Statement s)
-            throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
-        // checkCreateReified does Update check
-        checkCreateReified(null, s);
-        return SecuredReifiedStatementImpl.getInstance(holder.getSecuredItem(),
-                holder.getBaseItem().createReifiedStatement(s));
-    }
-
-    /**
-     * @sec.graph Update
-     * @sec.triple Read s as a triple
-     * @sec.triple create Triple( uri, RDF.subject, t.getSubject() )
-     * @sec.triple create Triple( uri, RDF.subject, t.getPredicate() )
-     * @sec.triple create Triple( uri, RDF.subject, t.getObject() )
-     * @throws UpdateDeniedException
-     * @throws AddDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public SecuredReifiedStatement createReifiedStatement(final String uri, final Statement s)
-            throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
-        // checkCreateReified does Update check
-        checkCreateReified(uri, s);
-        return SecuredReifiedStatementImpl.getInstance(holder.getSecuredItem(),
-                holder.getBaseItem().createReifiedStatement(uri, s));
-    }
-
     @Override
     public SecuredResource createResource() {
         return SecuredResourceImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createResource());
@@ -1609,51 +1566,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredAlt getAlt(final String uri) throws ReadDeniedException, AuthenticationRequiredException {
         checkReadOrUpdate(ResourceFactory.createResource(uri), RDF.type, RDF.Alt);
         return SecuredAltImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().getAlt(uri));
-    }
-
-    /**
-     * @sec.graph Read if statement exists
-     * @sec.graph Update if statement does not exist
-     * @sec.triple Read s as a triple
-     * @sec.triple Read Triple( result, RDF.subject, s.getSubject() ) if reification
-     *             existed
-     * @sec.triple Read Triple( result, RDF.predicate, s.getPredicate() ) if
-     *             reification existed
-     * @sec.triple Read Triple( result, RDF.object, s.getObject() ) if reification
-     *             existed
-     * @sec.triple Create Triple( result, RDF.subject, s.getSubject() ) if
-     *             reification did not exist.
-     * @sec.triple Create Triple( result, RDF.predicate, s.getPredicate() ) if
-     *             reification did not exist
-     * @sec.triple Create Triple( result, RDF.object, s.getObject() ) if reification
-     *             did not exist
-     *
-     * @throws ReadDeniedException
-     * @throws UpdateDeniedException
-     * @throws AddDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public SecuredReifiedStatement getAnyReifiedStatement(final Statement s)
-            throws ReadDeniedException, UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
-        // read if we are allowed to (ignore hardReadError flag)
-        if (canRead()) {
-            final RSIterator it = listReifiedStatements(s);
-            if (it.hasNext()) {
-                try {
-                    return SecuredReifiedStatementImpl.getInstance(holder.getSecuredItem(), it.nextRS());
-                } finally {
-                    it.close();
-                }
-            }
-        }
-        /*
-         * either we are not allowed to read or there are no reified statements so
-         * create them
-         */
-        return createReifiedStatement(s);
-
     }
 
     /**
@@ -2044,27 +1956,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
         return g.isEmpty();
     }
 
-    /**
-     *
-     * @sec.graph Read
-     * @sec.triple Read on s as triple
-     * @sec.triple Read on at least one set reified statements.
-     *
-     *             if {@link SecurityEvaluator#isHardReadError()} is true and the
-     *             user does not have read access then false will be returned.
-     *
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public boolean isReified(final Statement s) throws ReadDeniedException, AuthenticationRequiredException {
-        if (checkSoftRead() && checkRead(s)) {
-            return holder.getBaseItem().isReified(s);
-        }
-        return false;
-    }
-
     @Override
     public void leaveCriticalSection() {
         holder.getBaseItem().leaveCriticalSection();
@@ -2260,46 +2151,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredNodeIterator<RDFNode> listObjectsOfProperty(final Resource s, final Property p)
             throws ReadDeniedException, AuthenticationRequiredException {
         return nodeIterator(() -> holder.getBaseItem().listObjectsOfProperty(s, p), new ObjectFilter(p));
-    }
-
-    private SecuredRSIterator reifiedIterator(Supplier<ExtendedIterator<ReifiedStatement>> supplier) {
-        ExtendedIterator<ReifiedStatement> iter = checkSoftRead() ? supplier.get() : NiceIterator.emptyIterator();
-        return new SecuredRSIterator(holder.getSecuredItem(), iter);
-    }
-
-    /**
-     * @sec.graph Read
-     * @sec.triple Read on each Reified statement returned
-     *
-     *             if {@link SecurityEvaluator#isHardReadError()} is true and the
-     *             user does not have read access then an empty iterator will be
-     *             returned.
-     *
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public SecuredRSIterator listReifiedStatements() throws ReadDeniedException, AuthenticationRequiredException {
-        return reifiedIterator(() -> holder.getBaseItem().listReifiedStatements());
-    }
-
-    /**
-     * @sec.graph Read
-     * @sec.triple Read on each Reified statement returned
-     *
-     *             if {@link SecurityEvaluator#isHardReadError()} is true and the
-     *             user does not have read access then an empty iterator will be
-     *             returned.
-     *
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public SecuredRSIterator listReifiedStatements(final Statement st)
-            throws ReadDeniedException, AuthenticationRequiredException {
-        return reifiedIterator(() -> holder.getBaseItem().listReifiedStatements(st));
     }
 
     /**
@@ -2970,40 +2821,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
     /**
      * @sec.graph Update
-     * @sec.triple Delete on every reification statement for each statement in
-     *             statements.
-     * @throws UpdateDeniedException
-     * @throws DeleteDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public void removeAllReifications(final Statement s)
-            throws UpdateDeniedException, DeleteDeniedException, AuthenticationRequiredException {
-        checkUpdate();
-        if (canDelete(Triple.create(Node.ANY, RDF.subject.asNode(), wildCardNode(s.getSubject())))
-                && canDelete(Triple.create(Node.ANY, RDF.predicate.asNode(), wildCardNode(s.getPredicate())))
-                && canDelete(Triple.create(Node.ANY, RDF.object.asNode(), wildCardNode(s.getObject())))) {
-            holder.getBaseItem().removeAllReifications(s);
-        } else {
-            final RSIterator iter = holder.getBaseItem().listReifiedStatements(s);
-            try {
-                while (iter.hasNext()) {
-                    final ReifiedStatement rs = iter.next();
-                    checkDelete(Triple.create(rs.asNode(), RDF.subject.asNode(), wildCardNode(s.getSubject())));
-                    checkDelete(Triple.create(rs.asNode(), RDF.predicate.asNode(), wildCardNode(s.getPredicate())));
-                    checkDelete(Triple.create(rs.asNode(), RDF.object.asNode(), wildCardNode(s.getObject())));
-                }
-                holder.getBaseItem().removeAllReifications(s);
-            } finally {
-                iter.close();
-            }
-
-        }
-    }
-
-    /**
-     * @sec.graph Update
      * @throws UpdateDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -3027,31 +2844,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
         checkUpdate();
         holder.getBaseItem().clearNsPrefixMap();
         return holder.getSecuredItem();
-    }
-
-    /**
-     * @sec.graph Update
-     * @sec.triple Delete on every reification statement fore each statement in rs.
-     * @throws UpdateDeniedException
-     * @throws DeleteDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public void removeReification(final ReifiedStatement rs)
-            throws UpdateDeniedException, DeleteDeniedException, AuthenticationRequiredException {
-        checkUpdate();
-        if (!canDelete(Triple.ANY)) {
-            final StmtIterator stmtIter = rs.listProperties();
-            try {
-                while (stmtIter.hasNext()) {
-                    checkDelete(stmtIter.next());
-                }
-            } finally {
-                stmtIter.close();
-            }
-        }
-        holder.getBaseItem().removeReification(rs);
     }
 
     /**
