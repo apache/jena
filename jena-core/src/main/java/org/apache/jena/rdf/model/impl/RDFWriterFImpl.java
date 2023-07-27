@@ -50,12 +50,9 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
     public RDFWriterFImpl() {}
 
     @Override
-    public RDFWriterI getWriter() {
-        return getWriter(DEFAULTLANG);
-    }
-
-    @Override
     public RDFWriterI getWriter(String lang) {
+        if (lang==null || lang.equals(""))
+            lang = DEFAULTLANG ;
         // If RIOT ->
         if ( rewiredAlternative != null )
             return rewiredAlternative.getWriter(lang) ;
@@ -72,7 +69,7 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
         }
     }
 
-    static { 
+    static {
         reset();
     }
 

@@ -39,7 +39,7 @@ public class TestIO_JenaReaders {
         IO_Jena.wireIntoJena();
         RDFReaderF readerF = new RDFReaderFImpl();
 
-        assertEquals(RDFReaderRIOT.class, readerF.getReader().getClass());
+        assertEquals(RDFReaderRIOT.class, readerF.getReader(null).getClass());
         assertEquals(RDFReaderRIOT.class, readerF.getReader("RDF/XML").getClass());
         assertEquals(RDFReaderRIOT.class, readerF.getReader("RDF/XML-ABBREV").getClass());
         assertEquals(RDFReaderRIOT.class, readerF.getReader("N-TRIPLES").getClass());
@@ -60,7 +60,7 @@ public class TestIO_JenaReaders {
         IO_Jena.resetJena();
         RDFReaderF readerF = new RDFReaderFImpl();
 
-        assertNotEquals(RDFReaderRIOT.class, readerF.getReader().getClass());
+        assertNotEquals(RDFReaderRIOT.class, readerF.getReader(null).getClass());
         assertNotEquals(RDFReaderRIOT.class, readerF.getReader("RDF/XML").getClass());
         assertNotEquals(RDFReaderRIOT.class, readerF.getReader("RDF/XML-ABBREV").getClass());
         assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N-TRIPLES").getClass());

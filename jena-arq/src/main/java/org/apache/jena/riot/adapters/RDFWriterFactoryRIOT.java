@@ -26,11 +26,6 @@ public class RDFWriterFactoryRIOT implements RDFWriterF {
     public RDFWriterFactoryRIOT() {}
 
     @Override
-    public RDFWriterI getWriter() {
-        return getWriter(null);
-    }
-
-    @Override
     public RDFWriterI getWriter(String langname) {
         return new RDFWriterRIOT(langname);
     }

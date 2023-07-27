@@ -75,29 +75,8 @@ import org.apache.jena.shared.* ;
  * </pre>
  */
 public interface Model
-    extends ModelCon, ModelGraphInterface,
-        RDFReaderF, RDFWriterF, PrefixMapping, Lock
+    extends ModelCon, ModelGraphInterface, RDFReaderF, RDFWriterF, PrefixMapping, Lock
 {
-    /** @deprecated */
-    @Override
-    @Deprecated
-    public RDFReaderI getReader();
-
-    /** @deprecated */
-    @Override
-    @Deprecated
-    public RDFReaderI getReader(String lang);
-
-    /** @deprecated */
-    @Override
-    @Deprecated
-    public RDFWriterI getWriter();
-
-    /** @deprecated */
-    @Override
-    @Deprecated
-    public RDFWriterI getWriter(String lang);
-
     /**
      * size will return the number of statements in a concrete model,
      * for a virtualized model such as one created by an inference engine,
@@ -517,7 +496,9 @@ public interface Model
      *
      * @param writer A writer to which the XML will be written
      * @return this model
+     * @deprecated Prefer {@link #write(OutputStream, String)} and specify the language.
      */
+    @Deprecated
 	public Model write( Writer writer ) ;
 
     /**

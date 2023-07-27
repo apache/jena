@@ -117,7 +117,7 @@ public class TestNamespace extends AbstractModelTestBase
 		model.add(ModelHelper.statement(model,
 				"http://spoo.net/S ftp://net.fred.org/P http://spoo.net/O"));
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		model.write(bout);
+		model.write(bout, "RDF/XML");
 		ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
 		/* */
 		final Model m2 = ModelFactory.createDefaultModel();

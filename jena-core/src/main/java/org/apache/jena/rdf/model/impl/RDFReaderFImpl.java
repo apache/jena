@@ -43,11 +43,6 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     public RDFReaderFImpl() {}
 
     @Override
-    public RDFReaderI getReader()  {
-        return getReader(null);
-    }
-
-    @Override
     public RDFReaderI getReader(String lang) {
         // Jena model.read rule for defaulting.
         if (lang==null || lang.equals(""))
