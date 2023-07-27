@@ -167,7 +167,6 @@ public class SecuredModelTest {
         __testAdd(() -> securedModel.addLiteral(s, p, 2.0f));
         __testAdd(() -> securedModel.addLiteral(s, p, 5));
         __testAdd(() -> securedModel.addLiteral(s, p, 5L));
-        __testAdd(() -> securedModel.addLiteral(s, p, new ArrayList<String>()));
         __testAdd(() -> securedModel.addLiteral(s, p, baseModel.createLiteral("Literal")));
     }
 

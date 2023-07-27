@@ -71,7 +71,6 @@ import org.apache.jena.rdf.model.RDFWriterI;
 import org.apache.jena.rdf.model.RSIterator;
 import org.apache.jena.rdf.model.ReifiedStatement;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceF;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Selector;
 import org.apache.jena.rdf.model.Statement;
@@ -611,21 +610,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredModel addLiteral(final Resource s, final Property p, final long o)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         return add(s, p, ResourceFactory.createTypedLiteral(o));
-    }
-
-    /**
-     * @sec.graph Update
-     * @sec.triple Create triple(s,p,o)
-     * @throws UpdateDeniedException
-     * @throws AddDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    @Deprecated
-    public SecuredModel addLiteral(final Resource s, final Property p, final Object o)
-            throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
-        return add(s, p, asObject(o));
     }
 
     @Override
@@ -1373,12 +1357,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     }
 
     @Override
-    @Deprecated
-    public SecuredResource createResource(final ResourceF f) throws AuthenticationRequiredException {
-        return createResource(null, f);
-    }
-
-    @Override
     public SecuredResource createResource(final String uri) {
         return SecuredResourceImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createResource(uri));
 
@@ -1421,12 +1399,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
             throws AccessDeniedException, AuthenticationRequiredException {
         checkReadOrUpdate(ResourceFactory.createResource(uri), RDF.type, type);
         return SecuredResourceImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createResource(uri, type));
-    }
-
-    @Override
-    @Deprecated
-    public SecuredResource createResource(final String uri, final ResourceF f) {
-        return SecuredResourceImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createResource(uri, f));
     }
 
     /**
@@ -2001,12 +1973,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     @Override
     public SecuredResource getResource(final String uri) {
         return createResource(uri);
-    }
-
-    @Override
-    @Deprecated
-    public SecuredResource getResource(final String uri, final ResourceF f) {
-        return createResource(uri, f);
     }
 
     @Override
