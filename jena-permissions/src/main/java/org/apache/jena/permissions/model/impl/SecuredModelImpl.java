@@ -1891,11 +1891,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     }
 
     @Override
-    public RDFReaderI getReader() {
-        return holder.getBaseItem().getReader();
-    }
-
-    @Override
     public RDFReaderI getReader(final String lang) {
         return holder.getBaseItem().getReader(lang);
     }
@@ -1973,11 +1968,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     @Override
     public SecuredResource getResource(final String uri) {
         return createResource(uri);
-    }
-
-    @Override
-    public RDFWriterI getWriter() {
-        return holder.getBaseItem().getWriter();
     }
 
     @Override
@@ -2716,7 +2706,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredModel read(final InputStream in, final String base)
             throws UpdateDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        SecuredModelImpl.readerFactory.getReader().read(holder.getSecuredItem(), in, base);
+        SecuredModelImpl.readerFactory.getReader(null).read(holder.getSecuredItem(), in, base);
         return holder.getSecuredItem();
     }
 
@@ -2744,7 +2734,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredModel read(final Reader reader, final String base)
             throws ReadDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        SecuredModelImpl.readerFactory.getReader().read(holder.getSecuredItem(), reader, base);
+        SecuredModelImpl.readerFactory.getReader(null).read(holder.getSecuredItem(), reader, base);
         return holder.getSecuredItem();
     }
 
@@ -2771,7 +2761,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     @Override
     public SecuredModel read(final String url) throws ReadDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        SecuredModelImpl.readerFactory.getReader().read(holder.getSecuredItem(), url);
+        SecuredModelImpl.readerFactory.getReader(null).read(holder.getSecuredItem(), url);
         return holder.getSecuredItem();
     }
 
@@ -3314,7 +3304,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
             if (canRead(Triple.ANY)) {
                 holder.getBaseItem().write(out);
             } else {
-                getWriter().write(holder.getSecuredItem(), out, "");
+                getWriter(null).write(holder.getSecuredItem(), out, "");
             }
         }
         return holder.getSecuredItem();
@@ -3387,7 +3377,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
             if (canRead(Triple.ANY)) {
                 holder.getBaseItem().write(writer);
             } else {
-                getWriter().write(holder.getSecuredItem(), writer, "");
+                getWriter(null).write(holder.getSecuredItem(), writer, "");
             }
         }
         return holder.getSecuredItem();

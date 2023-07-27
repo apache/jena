@@ -24,7 +24,7 @@ package org.apache.jena.rdf.model;
  * Writing RDF is usually done via:
  * <ul>
  * <li>RDFDataMgr</li>
- * <li>RDFWriterr</li>
+ * <li>RDFWriter</li>
  * <li>Model.write</li>
  * </ul>
  * All of these will use the newer RIOT writers, not implementations of this interface.
@@ -32,14 +32,8 @@ package org.apache.jena.rdf.model;
 
 public interface RDFWriterF {
 
-    /** return an RDFWriter instance for the default serialization language.
-     * @return an RDFWriter instance for the default serialization language.
-     */
-    public RDFWriterI getWriter();
-
     /** an RDFWriter instance for the specified serialization language.
-     * @param lang the serialization language - <code>null</code> selects the
-     *             default
+     * @param lang the serialization language - <code>null</code> selects the default (RDF/XML)
      * @return the RDFWriter instance
      */
     public RDFWriterI getWriter(String lang);

@@ -44,11 +44,6 @@ public class X_RDFReaderF extends Object implements RDFReaderF {
     public X_RDFReaderF() {}
 
     @Override
-    public RDFReaderI getReader()  {
-        return getReader(null);
-    }
-
-    @Override
     public RDFReaderI getReader(String lang) {
         // Jena model.read rule for defaulting.
         if (lang==null || lang.equals(""))

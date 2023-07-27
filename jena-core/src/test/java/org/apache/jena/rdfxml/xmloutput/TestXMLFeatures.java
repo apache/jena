@@ -87,12 +87,12 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		m.add(ModelTestBase.statement(m, "a http://bingle.bongle/booty#PP b"));
 		m.add(ModelTestBase.statement(m, "c http://dingle.dongle/dooty#PP d"));
 		StringWriter sw = new StringWriter();
-		m.write(sw);
+		m.write(sw, "RDF/XML");
 		Model m2 = ModelFactory.createDefaultModel();
 		String written = sw.toString();
-		m2.read(new StringReader(written), "");
+		m2.read(new StringReader(written), "", "RDF/XML");
 		StringWriter sw2 = new StringWriter();
-		m2.write(sw2);
+		m2.write(sw2, "RDF/XML");
 		String s2 = sw2.toString();
 		int first = s2.indexOf("xmlns:j.0=");
 		int last = s2.lastIndexOf("xmlns:j.0=");

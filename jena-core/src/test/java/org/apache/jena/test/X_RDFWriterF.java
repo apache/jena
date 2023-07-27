@@ -21,10 +21,8 @@ package org.apache.jena.test;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.rdf.model.RDFWriterF;
 import org.apache.jena.rdf.model.RDFWriterI;
-import org.apache.jena.rdf.model.impl.RDFWriterFImpl;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NoWriterForLangException ;
 
@@ -33,33 +31,12 @@ import org.apache.jena.shared.NoWriterForLangException ;
 public class X_RDFWriterF extends Object implements RDFWriterF {
     public static final String DEFAULTLANG = "RDF/XML";
     private static Map<String, Class<? extends RDFWriterI>> custom = new LinkedHashMap<>();
-    private static RDFWriterF rewiredAlternative = null ;
-    /** Rewire to use an external RDFWriterF (typically, RIOT).
-     * Set to null to use old jena-core setup.
-     * @param other
-     */
-    public static void alternative(RDFWriterF other) {
-        rewiredAlternative = other ;
-    }
-
-    /** Return the the current "rewiredAlternative" which may be null, meaning {@code RDFWriterFImpl} is in use. */
-    public static RDFWriterF getCurrentRDFWriterF(RDFWriterF other) {
-        return rewiredAlternative;
-    }
 
     /** Creates new RDFReaderFImpl */
     public X_RDFWriterF() {}
 
     @Override
-    public RDFWriterI getWriter() {
-        return getWriter(DEFAULTLANG);
-    }
-
-    @Override
     public RDFWriterI getWriter(String lang) {
-        // If RIOT ->
-        if ( rewiredAlternative != null )
-            return rewiredAlternative.getWriter(lang) ;
         if (lang==null || lang.equals(""))
             lang = DEFAULTLANG ;
         Class<? extends RDFWriterI> c = custom.get(lang);
@@ -96,13 +73,5 @@ public class X_RDFWriterF extends Object implements RDFWriterF {
             return oldClass.getName();
         else
             return null;
-    }
-
-    private static String remove(String lang) {
-        if ( rewiredAlternative != null )
-            Log.error(RDFWriterFImpl.class, "Rewired RDFWriterFImpl2 - configuration changes have no effect on writing");
-        String oldClassName = currentEntry(lang);
-        custom.remove(lang);
-        return oldClassName;
     }
 }
