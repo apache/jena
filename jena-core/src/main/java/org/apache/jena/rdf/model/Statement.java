@@ -206,14 +206,6 @@ public interface Statement extends FrontsTriple
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Resource.</p>
-     * @return The object of the statement.
-     *
-     */
-    @Deprecated public Resource getResource(ResourceF f) ;
-
-    /** Return the object of the statement.
-     *
-     * <p>An exception will be thrown if the object is not a Resource.</p>
      *
      * @return The object of the statement interpreted as a value of
      * the specified type.

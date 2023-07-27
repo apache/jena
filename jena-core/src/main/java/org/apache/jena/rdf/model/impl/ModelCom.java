@@ -103,15 +103,6 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     protected ModelReifier modelReifier = new ModelReifier( this );
 
     @Override
-    @Deprecated public Resource getResource(String uri, ResourceF f)  {
-        try {
-            return f.createResource(getResource(uri));
-        } catch (Exception e) {
-            throw new JenaException(e);
-        }
-    }
-
-    @Override
     public Model addLiteral( Resource s, Property p, boolean o )
     { return add(s, p, createTypedLiteral( o ) ); }
 
@@ -155,10 +146,6 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     @Override
     public Model add( Resource s, Property p, String o, String l )
     { return add( s, p, literal(o, l) ); }
-
-    @Override
-    public Model addLiteral( Resource s, Property p, Object o )
-    { return add( s, p, asObject( o ) ); }
 
     @Override
     public Model addLiteral( Resource s, Property p, Literal o )
@@ -517,20 +504,12 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     { return getResource( uri ).addProperty( RDF.type, type ); }
 
     @Override
-    @Deprecated public Resource createResource( ResourceF f )
-    { return createResource( null, f ); }
-
-    @Override
     public Resource createResource( AnonId id )
     { return new ResourceImpl( id, this ); }
 
     @Override
     public Resource createResource( Statement statement )
     { return new ResourceImpl( statement, this ); }
-
-    @Override
-    @Deprecated public Resource createResource( String uri, ResourceF f )
-    { return f.createResource( createResource( uri ) ); }
 
     /** create a type literal from a boolean value.
      *

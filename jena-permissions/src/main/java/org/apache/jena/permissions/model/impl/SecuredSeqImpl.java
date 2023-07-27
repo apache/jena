@@ -35,7 +35,6 @@ import org.apache.jena.rdf.model.Bag;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceF;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Seq;
 import org.apache.jena.rdf.model.SeqIndexBoundsException;
@@ -55,7 +54,6 @@ import org.apache.jena.vocabulary.RDF;
  * http://www.w3.org/TR/2004/REC-rdf-mt-20040210/#Containers
  *
  */
-@SuppressWarnings("deprecation")
 public class SecuredSeqImpl extends SecuredContainerImpl implements SecuredSeq {
 
     /**
@@ -520,26 +518,6 @@ public class SecuredSeqImpl extends SecuredContainerImpl implements SecuredSeq {
         throw new SeqIndexBoundsException(index, 0);
     }
 
-    /**
-     * @sec.graph Read if {@link SecurityEvaluator#isHardReadError()} is true and
-     *            the user does not have read access then SeqIndexBoundsException is
-     *            thrown
-     * @sec.triple Read SecTriple( this, RDF.li(1), o )
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    @Deprecated
-    public SecuredResource getResource(final int index, final ResourceF f)
-            throws ReadDeniedException, AuthenticationRequiredException {
-        if (checkSoftRead()) {
-            final Resource retval = holder.getBaseItem().getResource(index, f);
-            checkRead(Triple.create(holder.getBaseItem().asNode(), RDF.li(index).asNode(), retval.asNode()));
-            return SecuredResourceImpl.getInstance(getModel(), retval);
-        }
-        throw new SeqIndexBoundsException(index, 0);
-    }
 
     /**
      * @sec.graph Read if {@link SecurityEvaluator#isHardReadError()} is true and
