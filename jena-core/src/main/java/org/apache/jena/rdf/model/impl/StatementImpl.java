@@ -76,7 +76,7 @@ public class StatementImpl extends StatementBase implements Statement {
 
     @Override
     public Statement getStatementProperty(Property p) {
-        return asResource().getRequiredProperty(p);
+        return getResource().getRequiredProperty(p);
     }
 
     @Override
@@ -151,19 +151,10 @@ public class StatementImpl extends StatementBase implements Statement {
         return asTriple().hashCode();
     }
 
-    public Resource asResource() {
-        return model.getAnyReifiedStatement(this);
-    }
-
     @Override
     public Statement remove() {
         model.remove(this);
         return this;
-    }
-
-    @Override
-    public void removeReification() {
-        model.removeAllReifications(this);
     }
 
     @Override
@@ -183,36 +174,6 @@ public class StatementImpl extends StatementBase implements Statement {
         for ( int i = 0 ; i < statements.length ; i += 1 )
             triples[i] = statements[i].asTriple();
         return triples;
-    }
-
-    @Override
-    public boolean isReified() {
-        return model.isReified(this);
-    }
-
-    /**
-     * create a ReifiedStatement corresponding to this Statement
-     */
-    @SuppressWarnings("deprecation")
-    @Override
-    public ReifiedStatement createReifiedStatement() {
-        return ReifiedStatementImpl.create(this);
-    }
-
-    /**
-     * create a ReifiedStatement corresponding to this Statement and with the given
-     * _uri_.
-     */
-    @SuppressWarnings("deprecation")
-    @Override
-    public ReifiedStatement createReifiedStatement(String uri) {
-        return ReifiedStatementImpl.create((ModelCom)this.getModel(), uri, this);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public RSIterator listReifiedStatements() {
-        return model.listReifiedStatements(this);
     }
 
     /**
