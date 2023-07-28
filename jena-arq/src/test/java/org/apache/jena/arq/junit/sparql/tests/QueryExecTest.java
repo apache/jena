@@ -54,10 +54,10 @@ import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.sparql.vocabulary.ResultSetGraphVocab;
-import org.apache.jena.sparql.vocabulary.TestManifest;
 import org.apache.jena.system.Txn;
 import org.apache.jena.util.FileUtils;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.TestManifest;
 
 public class QueryExecTest implements Runnable {
 

@@ -29,8 +29,8 @@ import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.sparql.vocabulary.TestManifest;
 import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.TestManifest;
 
 public class RiotTests
 {

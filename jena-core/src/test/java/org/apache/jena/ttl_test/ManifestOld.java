@@ -29,7 +29,6 @@ import org.apache.jena.util.junit.TestUtils;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.jena.vocabulary.TestManifest ;
-import org.apache.jena.vocabulary.TestManifestX ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,7 +127,6 @@ public class ManifestOld
     private void parseIncludes()
     {
         parseIncludes(TestManifest.include) ;
-        parseIncludes(TestManifestX.include) ;
     }
 
     private void parseIncludes(Property property)

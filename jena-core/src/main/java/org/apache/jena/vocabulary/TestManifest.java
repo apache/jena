@@ -52,6 +52,15 @@ public class TestManifest {
     /** Assumed base for the tests in the manifest */
     public static final Property assumedTestBase = m_model.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#assumedTestBase" );
 
+    /** <p>The given mf:result for a mf:ReducedCardinalityTest is the results as if the
+     *  REDUCED keyword were omitted. To pass a mf:ReducedCardinalityTest, an implementation
+     *  must produce a result set with each solution in the expected results appearing
+     *  at least once and no more than the number of times it appears in the expected
+     *  results. Of course, there must also be no results produced that are not in
+     *  the expected results.</p>
+     */
+    public static final Resource ReducedCardinalityTest = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#ReducedCardinalityTest" );
+
     /** <p>A type of test specifically for query evaluation testing. Query evaluation
      *  tests are required to have an associated input dataset, a query, and an expected
      *  output dataset.</p>

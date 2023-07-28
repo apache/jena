@@ -26,10 +26,10 @@ import java.util.function.Consumer;
 
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.sparql.vocabulary.TestManifest;
 import org.apache.jena.sparql.vocabulary.TestManifestX;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
+import org.apache.jena.vocabulary.TestManifest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

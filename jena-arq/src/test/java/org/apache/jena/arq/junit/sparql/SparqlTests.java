@@ -27,10 +27,10 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.Syntax;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.junit.QueryTestException;
-import org.apache.jena.sparql.vocabulary.TestManifest;
 import org.apache.jena.sparql.vocabulary.TestManifestUpdate_11;
 import org.apache.jena.sparql.vocabulary.TestManifestX;
 import org.apache.jena.sparql.vocabulary.TestManifest_11;
+import org.apache.jena.vocabulary.TestManifest;
 
 public class SparqlTests {
 
