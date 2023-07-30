@@ -69,7 +69,7 @@
     <ver.lucene>9.5.0</ver.lucene>
 
     <ver.jetty>10.0.15</ver.jetty>
-    <ver.shiro>1.11.0</ver.shiro>
+    <ver.shiro>1.12.0</ver.shiro>
 
     <ver.protobuf>3.23.3</ver.protobuf>
     <ver.libthrift>0.18.1</ver.libthrift>
