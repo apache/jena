@@ -20,24 +20,15 @@ package org.apache.jena.arq.junit;
 
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 
-public class SurpressedTest extends SkipTest
+/** Ignore a test */
+public class SkipTest implements Runnable
 {
-    public final boolean verbose;
     private ManifestEntry testEntry;
 
-    public SurpressedTest(ManifestEntry entry) {
-        super(entry);
-        this.verbose = false;
-    }
-
-    public SurpressedTest(ManifestEntry entry, boolean verbose) {
-        super(entry);
-        this.verbose = verbose;
+    public SkipTest(ManifestEntry entry) {
+        this.testEntry = entry;
     }
 
     @Override
-    public void run() {
-        if ( verbose )
-            System.out.println("** Surpressed: " + testEntry.getName());
-    }
+    public void run() {}
 }

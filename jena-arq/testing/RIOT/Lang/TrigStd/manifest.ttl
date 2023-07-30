@@ -16,6 +16,7 @@
 
 <>  rdf:type mf:Manifest ;
     mf:name "TriG tests" ;
+    mf:assumedTestBase <http://www.w3.org/2013/TriGTests/> ;
     mf:entries
     (
     # TriG specific tests

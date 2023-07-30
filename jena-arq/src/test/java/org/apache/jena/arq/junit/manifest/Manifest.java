@@ -26,10 +26,10 @@ import java.util.function.Consumer;
 
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.sparql.vocabulary.TestManifestX;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
-import org.apache.jena.vocabulary.TestManifest ;
-import org.apache.jena.vocabulary.TestManifestX ;
+import org.apache.jena.vocabulary.TestManifest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +41,8 @@ public class Manifest
     private static Logger log = LoggerFactory.getLogger(Manifest.class) ;
     private Model manifest ;
     private String manifestName ;
+    // Assumed base URI for the tests - this makes downloded manifest that assume theiroriginal location work.
+    private String manifestTestBase ;
     private String filename ;
     private List<String> includedFiles = new ArrayList<>() ;
     private List<ManifestEntry> entries = new ArrayList<>() ;
@@ -74,32 +76,37 @@ public class Manifest
 
     public String getName()     { return manifestName ; }
     public String getFileName() { return filename ; }
+    public String getTestBase() { return manifestTestBase; }
 
     public Iterator<String> includedManifests() { return includedFiles.iterator() ; }
 
     public List<ManifestEntry> entries() { return entries ; }
 
-    private void parseManifest()
-    {
+    private void parseManifest() {
         StmtIterator manifestStmts = manifest.listStatements(null, RDF.type, TestManifest.Manifest);
-        if ( !manifestStmts.hasNext() ) {
-            log.warn("No manifest in manifest file: "+filename) ;
-            return ;
-        }
+        try {
+            if ( !manifestStmts.hasNext() ) {
+                log.warn("No manifest in manifest file: " + filename);
+                return;
+            }
 
-        Statement manifestItemStmt = manifestStmts.nextStatement();
-        if ( manifestStmts.hasNext() ) {
-            log.warn("Multiple manifests in manifest file: "+filename) ;
-            return ;
-        }
+            Statement manifestItemStmt = manifestStmts.nextStatement();
+            if ( manifestStmts.hasNext() ) {
+                log.warn("Multiple manifests in manifest file: " + filename);
+                return;
+            }
 
-        manifestRes = manifestItemStmt.getSubject();
-        manifestName = getLiteral(manifestRes, RDFS.label) ;
-        if ( manifestName == null )
-            manifestName = getLiteral(manifestRes, RDFS.comment) ;
-        if ( manifestName == null )
-            manifestName = getLiteral(manifestRes, TestManifest.name) ;
-        manifestStmts.close();
+            manifestRes = manifestItemStmt.getSubject();
+            manifestName = getLiteral(manifestRes, RDFS.label);
+            if ( manifestName == null )
+                manifestName = getLiteral(manifestRes, RDFS.comment);
+            if ( manifestName == null )
+                manifestName = getLiteral(manifestRes, TestManifest.name);
+            manifestTestBase = getLiteralOrURI(manifestRes, TestManifest.assumedTestBase);
+        }
+        finally {
+            manifestStmts.close();
+        }
     }
 
     private void parseEntries() {
@@ -188,8 +195,7 @@ public class Manifest
         }
     }
 
-    public static Resource getResource(Resource r, Property p)
-    {
+    public static Resource getResource(Resource r, Property p) {
         if ( r == null )
             return null ;
         if ( ! r.hasProperty(p) )
@@ -198,8 +204,8 @@ public class Manifest
         RDFNode n = r.getProperty(p).getObject() ;
         if ( n instanceof Resource )
             return (Resource)n ;
-
-        throw new ExTestSetup("Manifest problem (not a Resource): "+n+" => "+p) ;
+        // Ignore. Tests need to check for correct required properties.
+        return null;
     }
 
     private static Collection<Resource> listResources(Resource r, Property p)

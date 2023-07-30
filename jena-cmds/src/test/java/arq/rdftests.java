@@ -57,10 +57,10 @@ import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.sparql.vocabulary.DOAP;
 import org.apache.jena.sparql.vocabulary.EARL;
 import org.apache.jena.sparql.vocabulary.FOAF;
-import org.apache.jena.sparql.vocabulary.TestManifest;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.DC;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.TestManifest;
 import org.apache.jena.vocabulary.XSD;
 
 /** A program to execute test suites by manifest.

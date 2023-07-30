@@ -19,27 +19,29 @@
 package org.apache.jena.arq.junit.riot ;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.jena.arq.junit.LibTestSetup;
+import org.apache.jena.arq.junit.SkipTest;
 import org.apache.jena.arq.junit.SurpressedTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.TestManifest;
 
 public class RiotTests
 {
     public static String assumedRootURIex = "http://example/base/" ;
 
     // Depends on origin of the tests.
+    public static String xassumedRootURITurtle = "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/";
+    public static String xassumedRootURITriG = "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-trig/";
 
-//    public static String assumedRootURITurtle = "http://w3c.github.io/rdf-tests/turtle/";
-//    public static String assumedRootURITriG = "http://w3c.github.io/rdf-tests/trig/";
-
-    public static String assumedRootURITurtle = "http://www.w3.org/2013/TurtleTests/" ;
-    public static String assumedRootURITriG = "http://www.w3.org/2013/TriGTests/" ;
+//    public static String assumedRootURITurtle = "http://www.w3.org/2013/TurtleTests/" ;
+//    public static String assumedRootURITriG = "http://www.w3.org/2013/TriGTests/" ;
 
     /** Create a RIOT language test - or return null for "unrecognized" */
     public static Runnable makeRIOTTest(ManifestEntry entry) {
@@ -68,9 +70,11 @@ public class RiotTests
 
             // == Syntax tests.
 
+            String assumedBase = entry.getManifest().getTestBase();
+
             // TTL
             if ( testType.equals(VocabLangRDF.TestPositiveSyntaxTTL) ) {
-                String base = rebase(input, assumedRootURITurtle);
+                String base = rebase(input, assumedBase);
                 return new RiotSyntaxTest(entry, base, RDFLanguages.TURTLE, true) ;
             }
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxTTL) )
@@ -78,7 +82,7 @@ public class RiotTests
 
             // TRIG
             if ( testType.equals(VocabLangRDF.TestPositiveSyntaxTriG) ) {
-                    String base = rebase(input, assumedRootURITriG);
+                    String base = rebase(input, assumedBase);
                     return new RiotSyntaxTest(entry, base, RDFLanguages.TRIG, true) ;
                 }
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxTriG) )
@@ -108,20 +112,20 @@ public class RiotTests
             // == Eval tests
 
             if ( testType.equals(VocabLangRDF.TestEvalTTL) ) {
-                String base = rebase(input, assumedRootURITurtle);
+                String base = rebase(input, assumedBase);
                 return new RiotEvalTest(entry, base, RDFLanguages.TURTLE, true);
             }
             if ( testType.equals(VocabLangRDF.TestNegativeEvalTTL) ) {
-                String base = rebase(input, assumedRootURITurtle) ;
+                String base = rebase(input, assumedBase) ;
                 return new RiotEvalTest(entry, base, RDFLanguages.TURTLE, false) ;
             }
 
             if ( testType.equals(VocabLangRDF.TestEvalTriG) ) {
-                String base = rebase(input, assumedRootURITriG) ;
+                String base = rebase(input, assumedBase) ;
                 return new RiotEvalTest(entry, base, RDFLanguages.TRIG, true) ;
             }
             if ( testType.equals(VocabLangRDF.TestNegativeEvalTriG) ) {
-                String base = rebase(input, assumedRootURITriG) ;
+                String base = rebase(input, assumedBase) ;
                 return new RiotEvalTest(entry, base, RDFLanguages.TRIG, false) ;
             }
 
@@ -143,6 +147,13 @@ public class RiotTests
 //                return new RiotEvalTest(entry, base, RDFLanguages.RDFJSON, false);
 //            }
 
+            // == Not supported : Entailment tests.
+
+            String NSX = TestManifest.NS;
+            if ( Objects.equals(testType.getURI(), NSX+"PositiveEntailmentTest") )
+                return new SkipTest(entry);
+            if ( Objects.equals(testType.getURI(), NSX+"NegativeEntailmentTest") )
+                return new SkipTest(entry);
             return null;
         } catch (Exception ex)
         {
