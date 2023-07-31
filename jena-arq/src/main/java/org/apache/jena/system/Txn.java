@@ -18,10 +18,10 @@
 
 package org.apache.jena.system;
 
-import java.util.function.Supplier ;
+import java.util.function.Supplier;
 
 import org.apache.jena.query.TxnType;
-import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.sparql.core.Transactional;
 
 /** Application utilities for executing code in transactions.
  * <p>
@@ -69,43 +69,43 @@ public class Txn {
 
     /** Execute application code in a transaction with the given {@link TxnType transaction type}. */
     public static <T extends Transactional> void exec(T txn, TxnType txnType, Runnable r) {
-        boolean b = txn.isInTransaction() ;
+        boolean b = txn.isInTransaction();
         if ( b )
             TxnOp.compatibleWithPromote(txnType, txn);
         else
-            txn.begin(txnType) ;
-        try { r.run() ; }
+            txn.begin(txnType);
+        try { r.run(); }
         catch (Throwable th) {
             onThrowable(th, txn);
-            throw th ;
+            throw th;
         }
         if ( !b ) {
             if ( txn.isInTransaction() )
                 // May have been explicit commit or abort.
-                txn.commit() ;
-            txn.end() ;
+                txn.commit();
+            txn.end();
         }
     }
 
     /** Execute and return a value in a transaction with the given {@link TxnType transaction type}. */
     public static <T extends Transactional, X> X calc(T txn, TxnType txnType, Supplier<X> r) {
-        boolean b = txn.isInTransaction() ;
+        boolean b = txn.isInTransaction();
         if ( b )
             TxnOp.compatibleWithPromote(txnType, txn);
         else
-            txn.begin(txnType) ;
+            txn.begin(txnType);
         X x;
-        try { x = r.get() ; }
+        try { x = r.get(); }
         catch (Throwable th) {
             onThrowable(th, txn);
-            throw th ;
+            throw th;
         }
 
         if ( !b ) {
             if ( txn.isInTransaction() )
                 // May have been explicit commit or abort.
-                txn.commit() ;
-            txn.end() ;
+                txn.commit();
+            txn.end();
         }
         return x;
     }
@@ -133,8 +133,8 @@ public class Txn {
     // Attempt some kind of cleanup.
     private static <T extends Transactional> void onThrowable(Throwable th, T txn) {
         try {
-            txn.abort() ;
-            txn.end() ;
+            txn.abort();
+            txn.end();
         } catch (Throwable th2) { th.addSuppressed(th2); }
     }
 }
