@@ -92,7 +92,7 @@
     <ver.httpclient>4.5.14</ver.httpclient>
     <ver.httpcore>4.4.16</ver.httpcore>
 
-    <ver.caffeine>3.1.6</ver.caffeine>
+    <ver.caffeine>3.1.7</ver.caffeine>
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
     <ver.guava>32.1.1-jre</ver.guava>
 
