@@ -92,9 +92,9 @@
     <ver.httpclient>4.5.14</ver.httpclient>
     <ver.httpcore>4.4.16</ver.httpcore>
 
-    <ver.caffeine>3.1.6</ver.caffeine>
+    <ver.caffeine>3.1.7</ver.caffeine>
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
-    <ver.guava>32.1.1-jre</ver.guava>
+    <ver.guava>32.1.2-jre</ver.guava>
 
     <ver.gson>2.10.1</ver.gson>
     <ver.commonsio>2.11.0</ver.commonsio>
@@ -395,6 +395,17 @@
          <groupId>com.google.guava</groupId>
          <artifactId>guava</artifactId>
          <version>${ver.guava}</version>
+         <exclusions>
+           <!-- These sometimes cause a convergence error with Caffeine -->
+           <exclusion>
+             <groupId>org.checkerframework</groupId>
+             <artifactId>checker-qual</artifactId>
+           </exclusion>
+           <exclusion>
+             <groupId>com.google.errorprone</groupId>
+             <artifactId>error_prone_annotations</artifactId>
+           </exclusion>
+         </exclusions>
        </dependency>
 
        <!-- supports persistent data structures -->
