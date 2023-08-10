@@ -20,7 +20,6 @@ package org.apache.jena.cdt;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFmtLib;
-import org.apache.jena.sparql.expr.NodeValue;
 
 public abstract class CDTKey
 {
@@ -47,12 +46,17 @@ public abstract class CDTKey
 		if ( other instanceof CDTKey ) {
 			final CDTKey otherKey = (CDTKey) other;
 
-			final NodeValue thisNV  = NodeValue.makeNode( asNode() );
-			final NodeValue otherNV = NodeValue.makeNode( otherKey.asNode() );
-			return NodeValue.sameAs(thisNV, otherNV);
+			final Node n1 = asNode();
+			final Node n2 = otherKey.asNode();
+			return n1.equals(n2);
 		}
 
 		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return asNode().hashCode();
 	}
 
 	@Override
