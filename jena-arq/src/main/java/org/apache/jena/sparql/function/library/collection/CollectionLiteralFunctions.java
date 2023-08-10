@@ -6,11 +6,13 @@ import org.apache.jena.sparql.function.FunctionRegistry;
 public class CollectionLiteralFunctions {
 	public static void register( final FunctionRegistry functionRegistry ) {
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "concat",  ConcatFct.class );
-		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "contains",  ContainsFct.class );
-		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "containsTerm",  ContainsTermFct.class );
+		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "contains",     ContainsFct.class );
+		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "containsKey",  ContainsKeyFct.class );
+		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "containsTerm", ContainsTermFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "get",     GetFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "head",    HeadFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "List",    ListFct.class );
+		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "remove",  RemoveFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "reverse", ReverseFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "size",    SizeFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "subseq",  SubSeqFct.class );
