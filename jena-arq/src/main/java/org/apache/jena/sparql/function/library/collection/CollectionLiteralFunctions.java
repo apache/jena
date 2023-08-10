@@ -11,6 +11,7 @@ public class CollectionLiteralFunctions {
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "containsTerm", ContainsTermFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "get",     GetFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "head",    HeadFct.class );
+		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "keys",    KeysFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "List",    ListFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "remove",  RemoveFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "reverse", ReverseFct.class );
