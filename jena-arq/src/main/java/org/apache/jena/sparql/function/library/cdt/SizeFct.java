@@ -1,4 +1,4 @@
-package org.apache.jena.sparql.function.library.collection;
+package org.apache.jena.sparql.function.library.cdt;
 
 import org.apache.jena.cdt.CompositeDatatypeList;
 import org.apache.jena.cdt.CompositeDatatypeMap;
