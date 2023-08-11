@@ -22,7 +22,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.sparql.expr.ExprEvalException;
 
-public abstract class CDTValue extends CDTKey
+public abstract class CDTValue
 {
 	/**
 	 * Returns true if this is a null value (in which
@@ -30,6 +30,46 @@ public abstract class CDTValue extends CDTKey
 	 */
 	public boolean isNull() {
 		return false;
+	}
+
+	/**
+	 * Returns true if this object is an RDF term (i.e., an IRI, a literal,
+	 * or a blank node). In that case, {@link #asNode()} can be used to get
+	 * a corresponding {@link Node} representation of this RDF term.
+	 */
+	public boolean isNode() {
+		return false;
+	}
+
+	/**
+	 * Returns this object as an RDF term (i.e., an IRI, a literal,
+	 * or a blank node), assuming it is one. If it is not, then an
+	 * {@link UnsupportedOperationException} is thrown.
+	 */
+	public Node asNode() {
+		throw new UnsupportedOperationException( this + " is not an RDF term" );
+	}
+
+	@Override
+	public String toString() {
+		if ( isNode() )
+			return asNode().toString();
+
+		if ( isNull() )
+			return "null";
+
+		throw new IllegalArgumentException( "not null and not a Node (" + this.getClass().getName() + ")" );
+	}
+
+	@Override
+	public int hashCode() {
+		if ( isNode() )
+			return asNode().hashCode();;
+
+		if ( isNull() )
+			return 1;
+
+		throw new IllegalArgumentException( "not null and not a Node (" + this.getClass().getName() + ")" );
 	}
 
 	@Override
@@ -61,11 +101,6 @@ public abstract class CDTValue extends CDTKey
 			throw new IllegalStateException( "unexpected type of CDTValue: " + this.getClass().getName() );
 		}
 
-		if ( other instanceof CDTKey && isNode() ) {
-			final CDTKey otherKey = (CDTKey) other;
-			return asNode().sameValueAs( otherKey.asNode() );
-		}
-
 		return false;
 	}
 
@@ -85,7 +120,6 @@ public abstract class CDTValue extends CDTKey
 		throw new IllegalStateException( "unexpected type of CDTValue: " + this.getClass().getName() );
 	}
 
-	@Override
 	public String asLexicalForm() {
 		if ( isNull() ) {
 			return "null";

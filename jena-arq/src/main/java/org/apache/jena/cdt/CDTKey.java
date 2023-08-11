@@ -24,15 +24,6 @@ import org.apache.jena.riot.out.NodeFmtLib;
 public abstract class CDTKey
 {
 	/**
-	 * Returns true if this object is an RDF term (i.e., an IRI, a literal,
-	 * or a blank node). In that case, {@link #asNode()} can be used to get
-	 * a corresponding {@link Node} representation of this RDF term.
-	 */
-	public boolean isNode() {
-		return false;
-	}
-
-	/**
 	 * Returns this object as an RDF term (i.e., an IRI, a literal,
 	 * or a blank node), assuming it is one. If it is not, then an
 	 * {@link UnsupportedOperationException} is thrown.
@@ -61,12 +52,7 @@ public abstract class CDTKey
 
 	@Override
 	public String toString() {
-		if ( isNode() ) {
-			return asNode().toString();
-		}
-		else {
-			return super.toString();
-		}
+		return asNode().toString();
 	}
 
 	/**
