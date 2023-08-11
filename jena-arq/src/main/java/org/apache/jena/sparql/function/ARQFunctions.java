@@ -19,7 +19,7 @@
 package org.apache.jena.sparql.function;
 
 import org.apache.jena.sparql.ARQConstants;
-import org.apache.jena.sparql.function.library.collection.CollectionLiteralFunctions;
+import org.apache.jena.sparql.function.library.collection.CDTLiteralFunctions;
 import org.apache.jena.sparql.function.library.triple.TripleTermFunctions;
 
 /** Load ARQ functions ().
@@ -34,6 +34,6 @@ public class ARQFunctions {
 
     public static void load(FunctionRegistry reg) {
         TripleTermFunctions.register(reg);
-        CollectionLiteralFunctions.register(reg);
+        CDTLiteralFunctions.register(reg);
     }
 }
