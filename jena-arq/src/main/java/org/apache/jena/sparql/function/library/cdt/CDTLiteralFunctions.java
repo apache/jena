@@ -1,4 +1,4 @@
-package org.apache.jena.sparql.function.library.collection;
+package org.apache.jena.sparql.function.library.cdt;
 
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.function.FunctionRegistry;

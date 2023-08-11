@@ -1,4 +1,4 @@
-package org.apache.jena.sparql.function.library.collection;
+package org.apache.jena.sparql.function.library.cdt;
 
 import java.util.List;
 import java.util.Map;
