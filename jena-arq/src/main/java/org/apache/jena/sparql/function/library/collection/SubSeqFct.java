@@ -5,11 +5,7 @@ import java.util.List;
 
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.cdt.CDTValue;
-import org.apache.jena.cdt.CompositeDatatypeList;
-import org.apache.jena.cdt.LiteralLabelForList;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprList;
@@ -20,7 +16,7 @@ public class SubSeqFct extends FunctionBase
 {
 	@Override
 	public void checkBuild( final String uri, final ExprList args ) {
-		if ( args.size() < 2 && args.size() > 3 )
+		if ( args.size() < 2 || args.size() > 3 )
 			throw new QueryBuildException("Function '"+Lib.className(this)+"' takes two or three arguments");
 	}
 
@@ -29,8 +25,7 @@ public class SubSeqFct extends FunctionBase
 		final NodeValue nv1 = args.get(0);
 		final Node n1 = nv1.asNode();
 
-		if ( ! CompositeDatatypeList.isListLiteral(n1) )
-			throw new ExprEvalException("Not a list literal: " + nv1);
+		CDTLiteralFunctionUtils.ensureListLiteral(n1);
 
 		final NodeValue nv2 = args.get(1);
 
@@ -55,10 +50,10 @@ public class SubSeqFct extends FunctionBase
 			if ( length < 0 )
 				throw new ExprEvalException("Illegal length value: " + nv3);
 
-			list = CompositeDatatypeList.getValue( n1.getLiteral() );
+			list = CDTLiteralFunctionUtils.getList(n1);
 		}
 		else {
-			list = CompositeDatatypeList.getValue( n1.getLiteral() );
+			list = CDTLiteralFunctionUtils.getList(n1);
 			length = list.size() - index + 1;
 		}
 
@@ -82,9 +77,7 @@ public class SubSeqFct extends FunctionBase
 			sublist = list.subList( index - 1, index - 1 + length );
 		}
 
-		final LiteralLabel lit = new LiteralLabelForList(sublist);
-		final Node n = NodeFactory.createLiteral(lit);
-		return NodeValue.makeNode(n);
+		return CDTLiteralFunctionUtils.createNodeValue(sublist);
 	}
 
 }

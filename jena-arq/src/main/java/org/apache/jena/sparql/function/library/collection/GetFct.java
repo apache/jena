@@ -9,7 +9,6 @@ import org.apache.jena.cdt.CDTValue;
 import org.apache.jena.cdt.CompositeDatatypeList;
 import org.apache.jena.cdt.CompositeDatatypeMap;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;
@@ -21,15 +20,15 @@ public class GetFct extends FunctionBase2
 		final Node n1 = nv1.asNode();
 
 		if ( CompositeDatatypeList.isListLiteral(n1) )
-			return getFromList( n1.getLiteral(), nv2 );
+			return getFromList(n1, nv2);
 
 		if ( CompositeDatatypeMap.isMapLiteral(n1) )
-			return getFromMap( n1.getLiteral(), nv2 );
+			return getFromMap(n1, nv2);
 
 		throw new ExprEvalException("Neither a list nor a map literal: " + nv1);
 	}
 
-	protected NodeValue getFromList( final LiteralLabel n1, final NodeValue nv2 ) {
+	protected NodeValue getFromList( final Node n1, final NodeValue nv2 ) {
 		if ( ! nv2.isInteger() )
 			throw new ExprEvalException("Not an integer literal: " + nv2);
 
@@ -38,7 +37,7 @@ public class GetFct extends FunctionBase2
 		if ( index < 1 )
 			throw new ExprEvalException("Out of bounds index value: " + nv2);
 
-		final List<CDTValue> list = CompositeDatatypeList.getValue(n1);
+		final List<CDTValue> list = CDTLiteralFunctionUtils.getList(n1);
 
 		if ( index > list.size() )
 			throw new ExprEvalException("Out of bounds index value: " + nv2);
@@ -55,12 +54,12 @@ public class GetFct extends FunctionBase2
 		}
 	}
 
-	protected NodeValue getFromMap( final LiteralLabel n1, final NodeValue nv2 ) {
+	protected NodeValue getFromMap( final Node n1, final NodeValue nv2 ) {
 		final Node n2 = nv2.asNode();
 		if ( ! n2.isURI() && ! n2.isLiteral() )
 			throw new ExprEvalException("Not a valid map key: " + nv2);
 
-		final Map<CDTKey,CDTValue> map = CompositeDatatypeMap.getValue(n1);
+		final Map<CDTKey,CDTValue> map = CDTLiteralFunctionUtils.getMap(n1);
 
 		if ( map.isEmpty() )
 			throw new ExprEvalException("empty map");

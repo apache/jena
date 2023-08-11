@@ -4,10 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.jena.cdt.CDTValue;
-import org.apache.jena.cdt.LiteralLabelForList;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.expr.NodeValue;
 
 public class ReverseFct extends FunctionBase1List
@@ -25,9 +21,7 @@ public class ReverseFct extends FunctionBase1List
 		}
 
 		final List<CDTValue> reverseList = Arrays.asList(reverseArray);
-		final LiteralLabel lit = new LiteralLabelForList(reverseList);
-		final Node n = NodeFactory.createLiteral(lit);
-		return NodeValue.makeNode(n);
+		return CDTLiteralFunctionUtils.createNodeValue(reverseList);
 	}
 
 }

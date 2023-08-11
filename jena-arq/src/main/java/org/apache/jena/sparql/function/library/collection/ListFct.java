@@ -5,10 +5,6 @@ import java.util.List;
 
 import org.apache.jena.cdt.CDTFactory;
 import org.apache.jena.cdt.CDTValue;
-import org.apache.jena.cdt.LiteralLabelForList;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprException;
@@ -40,9 +36,7 @@ public class ListFct extends FunctionBase
 			list.add(v);
 		}
 
-		final LiteralLabel lit = new LiteralLabelForList(list);
-		final Node n = NodeFactory.createLiteral(lit);
-		return NodeValue.makeNode(n);
+		return CDTLiteralFunctionUtils.createNodeValue(list);
 	}
 
 	@Override
