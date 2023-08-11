@@ -29,7 +29,6 @@ public class CDTFactory
 {
 	public static CDTKey createKey( final Node n ) {
 		return new CDTKey() {
-			@Override public boolean isNode() { return true; }
 			@Override public Node asNode() { return n; }
 		};
 	}
