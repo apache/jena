@@ -20,17 +20,20 @@ package org.apache.jena.riot.system;
 
 import java.io.OutputStream ;
 
+import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain;
+import org.apache.jena.sparql.core.Quad;
 
 /**
- * A StreamRDF which displays the items sent to the stream. It is primarily for
- * development purposes.
+ * A StreamRDF which displays the items sent to the stream.
+ * It is primarily for development purposes.
  * <p>
  * The output is not a legal syntax. Do not consider this
- * format to be stable. It is "N-Quads with abbreviations".
+ * format to be stable.
  * <p>
  * Use via
  * <pre>
@@ -44,17 +47,33 @@ public class PrintingStreamRDF extends WriterStreamRDFPlain
 
     public PrintingStreamRDF(OutputStream out) {
         super(IO.wrapUTF8(out));
+        // Always flush on each items.
+        // Too many points provide buffering or automatic newline
+        // handling  in different ways to get implicit consistent behaviour.
+        // This is a development helper.
+    }
+
+    public PrintingStreamRDF(AWriter out) {
+        super(out);
     }
 
     @Override
     protected NodeFormatter getFmt() { return pretty; }
 
+    // No prefix formatting.
+    private static void printDirectURI(AWriter out, String iriStr) {
+        out.print("<") ;
+        out.print(iriStr) ;
+        out.print(">") ;
+    }
+
     @Override
     public void base(String base) {
         out.print("BASE") ;
-        out.print("    ") ;
-        getFmt().formatURI(out, base);
+        out.print("  ") ;
+        printDirectURI(out, base);
         out.println();
+        flush();
         // Reset the formatter because of the new base URI.
         pretty = new NodeFormatterTTL(base, prefixMap);
     }
@@ -65,8 +84,25 @@ public class PrintingStreamRDF extends WriterStreamRDFPlain
         out.print("  ") ;
         out.print(prefix) ;
         out.print(":  ") ;
-        getFmt().formatURI(out, iri);
+        printDirectURI(out, iri);
         out.println();
         prefixMap.add(prefix, iri);
+        flush();
+    }
+
+    @Override
+    public void triple(Triple triple) {
+        super.triple(triple);
+        flush();
+    }
+
+    @Override
+    public void quad(Quad quad) {
+        super.quad(quad);
+        flush();
+    }
+
+    public void flush() {
+        IO.flush(out) ;
     }
 }
