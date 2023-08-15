@@ -240,12 +240,12 @@ public class rdfdiff extends java.lang.Object {
 
 		addToIdList(stmt, ids);
 
-		// See whether one of the blank nodes was already encountered
+		// See whether the blank nodes were already encountered
 		Model subGraph = null;
 		for (AnonId id : ids) {
 			if (subGraphs.containsKey(id)) {
 				subGraph = subGraphs.get(id);
-				break;
+				subGraph.add(stmt);
 			}
 		}
 
@@ -253,9 +253,9 @@ public class rdfdiff extends java.lang.Object {
 		if (subGraph == null) {
 //    		subGraph = Closure.closure(stmt);
 			subGraph = ModelFactory.createDefaultModel();
+			subGraph.add(stmt);
 		}
 
-		subGraph.add(stmt);
 
 		// (was already indexed on these when processing the earlier statements)
 		// Find any further IDs that occur in the sub-graph
