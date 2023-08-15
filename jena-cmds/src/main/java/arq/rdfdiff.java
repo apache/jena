@@ -18,8 +18,7 @@
 
 package arq;
 
-import static org.apache.jena.atlas.logging.LogCtl.setLogging;
-
+import java.io.FileInputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,10 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.io.FileInputStream;
 
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.sparql.util.Closure;
+import org.apache.jena.rdf.model.AnonId;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 
 /**
  * A program which read two RDF models and provides a basic triple level diff
@@ -58,248 +59,267 @@ import org.apache.jena.sparql.util.Closure;
  */
 public class rdfdiff extends java.lang.Object {
 
-    static {
-        setLogging();
-    }
+	/**
+	 * @param args the command line arguments
+	 */
+	public static void main(String... args) {
+		if (args.length < 2 || args.length > 6) {
+			usage();
+			System.exit(-1);
+		}
 
-    /**
-     * @param args
-     *            the command line arguments
-     */
-    public static void main(String... args) {
-        if (args.length < 2 || args.length > 6) {
-            usage();
-            System.exit(-1);
-        }
-
-        String in1 = args[0];
-        String in2 = args[1];
-        String lang1 = "RDF/XML";
-        if (args.length >= 3) {
-            lang1 = args[2];
-        }
-        String lang2 = "N-TRIPLE";
-        if (args.length >= 4) {
-            lang2 = args[3];
-        }
-        String base1 = null;
-        if (args.length >= 5) {
-            base1 = args[4];
-        }
-        String base2 = base1;
-        if (args.length >= 6) {
-            base2 = args[5];
-        }
+		String in1 = args[0];
+		String in2 = args[1];
+		String lang1 = "RDF/XML";
+		if (args.length >= 3) {
+			lang1 = args[2];
+		}
+		String lang2 = "N-TRIPLE";
+		if (args.length >= 4) {
+			lang2 = args[3];
+		}
+		String base1 = null;
+		if (args.length >= 5) {
+			base1 = args[4];
+		}
+		String base2 = base1;
+		if (args.length >= 6) {
+			base2 = args[5];
+		}
 
         //System.out.println(in1 + " " + in2 + " " + lang1 + " " + lang2 + " " + base1 + " " + base2);
         try {
             Model m1 = ModelFactory.createDefaultModel();
             Model m2 = ModelFactory.createDefaultModel();
 
-            read(m1, in1, lang1, base1);
-            read(m2, in2, lang2, base2);
+			read(m1, in1, lang1, base1);
+			read(m2, in2, lang2, base2);
 
-            if (m1.isIsomorphicWith(m2)) {
-                System.out.println("models are equal");
-                System.out.println();
-                System.exit(0);
-            } else {
-                System.out.println("models are unequal");
-                System.out.println();
+			if (m1.isIsomorphicWith(m2)) {
+				System.out.println("models are equal");
+				System.out.println();
+				System.exit(0);
+			} else {
+				System.out.println("models are unequal");
+				System.out.println();
 
-                if (m1.size() != m2.size()) {
-                    System.out.println(String.format("< %,d triples", m1.size()));
-                    System.out.println(String.format("> %,d triples", m2.size()));
-                }
+				if (m1.size() != m2.size()) {
+					System.out.println(String.format("source1: %,d triples", m1.size()));
+					System.out.println(String.format("source2: %,d triples", m2.size()));
+				}
 
-                // Calculate differences
-                Map<AnonId, Model> m1SubGraphs = new HashMap<>();
-                StmtIterator iter = m1.listStatements();
-                while (iter.hasNext()) {
-                    Statement stmt = iter.next();
-                    if (stmt.asTriple().isConcrete()) {
+				// Calculate differences
+				Map<AnonId, Model> m1SubGraphs = new HashMap<>();
+				StmtIterator iter = m1.listStatements();
+				while (iter.hasNext()) {
+					Statement stmt = iter.next();
+					// blank nodes are somehow seen as concrete
+					if (isConcrete(stmt)) {
+//                    if (stmt.asTriple().isConcrete()) {
                         if (!m2.contains(stmt)) {
-                            System.out.print("< ");
+                            System.out.print("not found in source2: ");
                             System.out.println(stmt.toString());
                         }
                     } else {
-                        // Handle blank nodes via sub-graphs
-                        addToSubGraph(stmt, m1SubGraphs);
+					// Handle blank nodes via sub-graphs
+					addToSubGraph(stmt, m1SubGraphs);
                     }
-                }
+				}
 
-                Map<AnonId, Model> m2SubGraphs = new HashMap<>();
-                iter = m2.listStatements();
-                while (iter.hasNext()) {
-                    Statement stmt = iter.next();
-                    if (stmt.asTriple().isConcrete()) {
+				Map<AnonId, Model> m2SubGraphs = new HashMap<>();
+				iter = m2.listStatements();
+				while (iter.hasNext()) {
+					Statement stmt = iter.next();
+					if (isConcrete(stmt)) {
+//                    if (stmt.asTriple().isConcrete()) {
                         if (!m1.contains(stmt)) {
-                            System.out.print("> ");
+                            System.out.print("not found in source1: ");
                             System.out.println(stmt.toString());
                         }
                     } else {
-                        // Handle blank nodes via sub-graphs
-                        addToSubGraph(stmt, m2SubGraphs);
+					// Handle blank nodes via sub-graphs
+					addToSubGraph(stmt, m2SubGraphs);
                     }
-                }
+				}
 
-                // Compute sub-graph differences
+				// Compute sub-graph differences
 
-                // Reduce to sets
-                Set<Model> m1SubGraphSet = new TreeSet<>(new ModelReferenceComparator());
-                m1SubGraphSet.addAll(m1SubGraphs.values());
-                Set<Model> m2SubGraphSet = new TreeSet<>(new ModelReferenceComparator());
-                m2SubGraphSet.addAll(m2SubGraphs.values());
+				// Reduce to sets
+				Set<Model> m1SubGraphSet = new TreeSet<>(new ModelReferenceComparator());
+				m1SubGraphSet.addAll(m1SubGraphs.values());
+				Set<Model> m2SubGraphSet = new TreeSet<>(new ModelReferenceComparator());
+				m2SubGraphSet.addAll(m2SubGraphs.values());
 
-                if (m1SubGraphSet.size() != m2SubGraphSet.size()) {
-                    System.out.println("< " + m1SubGraphs.size() + " sub-graphs");
-                    System.out.println("> " + m2SubGraphs.size() + " sub-graphs");
-                }
-                if (m1SubGraphSet.size() > 0) {
-                    diffSubGraphs(m1SubGraphSet, m2SubGraphSet, "< ");
-                }
-                if (m2SubGraphSet.size() > 0) {
-                    diffSubGraphs(m2SubGraphSet, m1SubGraphSet, "> ");
-                }
+//				System.out.println("==="); 
+//				m1SubGraphSet.stream().forEach(e -> {
+//					e.write(System.out, "TTL"); 
+//				});
+//				System.out.println("---"); 
+//				m2SubGraphSet.stream().forEach(e -> {
+//					e.write(System.out, "TTL"); 
+//				});
+//				System.out.println("==="); 
 
-                System.exit(1);
-            }
-        } catch (Exception e) {
-            System.err.println("Unhandled exception:");
-            System.err.println("    " + e.toString());
-            System.exit(-1);
-        }
-    }
+				if (m1SubGraphSet.size() != m2SubGraphSet.size()) {
+				}
+				if (m1SubGraphSet.size() > 0) {
+					System.out.println("\nsource1: " + m1SubGraphs.size() + " sub-graphs");
+					System.out.println("not found in source 2:");
+					diffSubGraphs(m1SubGraphSet, m2SubGraphSet, "");
+				}
+				if (m2SubGraphSet.size() > 0) {
+					System.out.println("\nsource2: " + m2SubGraphs.size() + " sub-graphs");
+					System.out.println("not found in source 1:");
+					diffSubGraphs(m2SubGraphSet, m1SubGraphSet, "");
+				}
 
-    private static void diffSubGraphs(Set<Model> m1SubGraphSet, Set<Model> m2SubGraphSet, String prefix) {
-        for (Model subGraph : m1SubGraphSet) {
-            // Find candidate matches
-            List<Model> candidates = new ArrayList<>();
-            for (Model subGraphCandidate : m2SubGraphSet) {
-                if (subGraph.size() == subGraphCandidate.size()) {
-                    candidates.add(subGraph);
-                }
-            }
+				System.exit(1);
+			}
+		} catch (Exception e) {
+			System.err.println("Unhandled exception:");
+			System.err.println("    " + e.toString());
+			System.exit(-1);
+		}
+	}
+	
+	private static boolean isConcrete(Statement stmt) {
+		return !(stmt.getSubject().isAnon() || stmt.getObject().isAnon());
+	}
 
-            if (candidates.size() == 0) {
-                // No match
-                printNonMatchingSubGraph(prefix, subGraph);
-            } else if (candidates.size() == 1) {
-                // Precisely 1 candidate
-                if (!subGraph.isIsomorphicWith(candidates.get(0))) {
-                    printNonMatchingSubGraph(prefix, subGraph);
-                } else {
-                    m2SubGraphSet.remove(candidates.get(0));
-                }
-            } else {
-                // Multiple candidates
-                boolean matched = false;
-                for (Model subGraphCandidate : candidates) {
-                    if (subGraph.isIsomorphicWith(subGraphCandidate)) {
-                        // Found a match
-                        matched = true;
-                        m2SubGraphSet.remove(subGraphCandidate);
-                        break;
-                    }
-                }
+	private static void diffSubGraphs(Set<Model> m1SubGraphSet, Set<Model> m2SubGraphSet, String prefix) {
+		for (Model subGraph : m1SubGraphSet) {
 
-                if (!matched) {
-                    // Didn't find a match
-                    printNonMatchingSubGraph(prefix, subGraph);
-                }
-            }
-        }
-    }
+			// Find candidate matches
+			List<Model> candidates = new ArrayList<>();
+			for (Model subGraphCandidate : m2SubGraphSet) {
+				if (subGraph.size() == subGraphCandidate.size()) {
+					candidates.add(subGraphCandidate);
+				}
+			}
 
-    private static void printNonMatchingSubGraph(String prefix, Model subGraph) {
-        StmtIterator sIter = subGraph.listStatements();
-        while (sIter.hasNext()) {
-            System.out.print(prefix);
-            System.out.println(sIter.next().toString());
-        }
-    }
+			if (candidates.size() == 0) {
+				// No match
+				printNonMatchingSubGraph(prefix, subGraph);
+			} else if (candidates.size() == 1) {
+				// Precisely 1 candidate
+				if (!subGraph.isIsomorphicWith(candidates.get(0))) {
+					printNonMatchingSubGraph(prefix, subGraph);
+				} else {
+					m2SubGraphSet.remove(candidates.get(0));
+				}
+			} else {
+				// Multiple candidates
+				boolean matched = false;
+				for (Model subGraphCandidate : candidates) {
+					if (subGraph.isIsomorphicWith(subGraphCandidate)) {
+						// Found a match
+						matched = true;
+						m2SubGraphSet.remove(subGraphCandidate);
+						break;
+					}
+				}
 
-    private static void addToSubGraph(Statement stmt, Map<AnonId, Model> subGraphs) {
-        Set<AnonId> ids = new HashSet<>();
+				if (!matched) {
+					// Didn't find a match
+					printNonMatchingSubGraph(prefix, subGraph);
+				}
+			}
+		}
+	}
 
-        addToIdList(stmt, ids);
+	private static void printNonMatchingSubGraph(String prefix, Model subGraph) {
+		StmtIterator sIter = subGraph.listStatements();
+		while (sIter.hasNext()) {
+			System.out.print(prefix);
+			System.out.println(sIter.next().toString());
+		}
+	}
 
-        // Here we take a copy of the IDs
-        Model subGraph = null;
-        for (AnonId id : ids) {
-            if (!subGraphs.containsKey(id)) {
-                subGraph = Closure.closure(stmt);
-                subGraph.add(stmt);
-                break;
-            }
-        }
+	private static void addToSubGraph(Statement stmt, Map<AnonId, Model> subGraphs) {
+		Set<AnonId> ids = new HashSet<>();
 
-        // May already have built the sub-graph that includes this statement
-        if (subGraph == null)
-            return;
+		addToIdList(stmt, ids);
 
-        // Find any further IDs that occur in the sub-graph
-        StmtIterator sIter = subGraph.listStatements();
-        while (sIter.hasNext()) {
-            addToIdList(sIter.next(), ids);
-        }
+		// See whether one of the blank nodes was already encountered
+		Model subGraph = null;
+		for (AnonId id : ids) {
+			if (subGraphs.containsKey(id)) {
+				subGraph = subGraphs.get(id);
+				break;
+			}
+		}
 
-        // Associate the sub-graph with all mentioned blank node IDs
-        for (AnonId id : ids) {
-            if (subGraphs.containsKey(id))
-                throw new IllegalStateException(String.format("ID %s occurs in multiple sub-graphs", id));
-            subGraphs.put(id, subGraph);
-        }
-    }
+		// If not, create a new subgraph for the statement
+		if (subGraph == null) {
+//    		subGraph = Closure.closure(stmt);
+			subGraph = ModelFactory.createDefaultModel();
+		}
 
-    private static void addToIdList(Statement stmt, Set<AnonId> ids) {
-        if (stmt.getSubject().isAnon()) {
-            ids.add(stmt.getSubject().getId());
-        }
-        if (stmt.getObject().isAnon()) {
-            ids.add(stmt.getObject().asResource().getId());
-        }
-    }
+		subGraph.add(stmt);
 
-    protected static void usage() {
-        System.err.println("usage:");
-        System.err.println("    java jena.rdfdiff source1 source2 [lang1 [lang2 [base1 [base2]]]]");
-        System.err.println();
-        System.err.println("    source1 and source2 can be URL's or filenames");
-        System.err.println("    lang1 and lang2 can take values:");
-        System.err.println("      RDF/XML");
-        System.err.println("      N-TRIPLE");
-        System.err.println("      TTL");
-        System.err.println("    lang1 defaults to RDF/XML, lang2 to N-TRIPLE");
-        System.err.println("    base1 and base2 are URIs");
-        System.err.println("    base1 defaults to null");
-        System.err.println("    base2 defaults to base1");
-        System.err.println("    If no base URIs are specified Jena determines the base URI based on the input source");
-        System.err.println();
-    }
+		// (was already indexed on these when processing the earlier statements)
+		// Find any further IDs that occur in the sub-graph
+//        StmtIterator sIter = subGraph.listStatements();
+//        while (sIter.hasNext()) {
+//            addToIdList(sIter.next(), ids);
+//        }
 
-    protected static void read(Model model, String in, String lang, String base) throws java.io.FileNotFoundException {
-        try {
-            URL url = new URL(in);
-            model.read(in, base, lang);
-        } catch (java.net.MalformedURLException e) {
-            model.read(new FileInputStream(in), base, lang);
-        }
-    }
+		// Associate the sub-graph with all of the statement's blank node IDs
+		for (AnonId id : ids) {
+//            if (subGraphs.containsKey(id))
+//                throw new IllegalStateException(String.format("ID %s occurs in multiple sub-graphs", id));
+			subGraphs.put(id, subGraph);
+		}
+	}
 
-    private static class ModelReferenceComparator implements Comparator<Model> {
+	private static void addToIdList(Statement stmt, Set<AnonId> ids) {
+		if (stmt.getSubject().isAnon()) {
+			ids.add(stmt.getSubject().getId());
+		}
+		if (stmt.getObject().isAnon()) {
+			ids.add(stmt.getObject().asResource().getId());
+		}
+	}
 
-        @Override
-        public int compare(Model o1, Model o2) {
-            if (o1 == o2)
-                return 0;
-            int h1 = System.identityHashCode(o1);
-            int h2 = System.identityHashCode(o2);
+	protected static void usage() {
+		System.err.println("usage:");
+		System.err.println("    java jena.rdfdiff source1 source2 [lang1 [lang2 [base1 [base2]]]]");
+		System.err.println();
+		System.err.println("    source1 and source2 can be URL's or filenames");
+		System.err.println("    lang1 and lang2 can take values:");
+		System.err.println("      RDF/XML");
+		System.err.println("      N-TRIPLE");
+		System.err.println("      TTL");
+		System.err.println("    lang1 defaults to RDF/XML, lang2 to N-TRIPLE");
+		System.err.println("    base1 and base2 are URIs");
+		System.err.println("    base1 defaults to null");
+		System.err.println("    base2 defaults to base1");
+		System.err.println("    If no base URIs are specified Jena determines the base URI based on the input source");
+		System.err.println();
+	}
 
-            if (h1 == h2)
-                return 0;
-            return h1 < h2 ? -1 : 1;
-        }
+	protected static void read(Model model, String in, String lang, String base) throws java.io.FileNotFoundException {
+		try {
+			URL url = new URL(in);
+			model.read(in, base, lang);
+		} catch (java.net.MalformedURLException e) {
+			model.read(new FileInputStream(in), base, lang);
+		}
+	}
 
-    }
+	private static class ModelReferenceComparator implements Comparator<Model> {
+
+		@Override
+		public int compare(Model o1, Model o2) {
+			if (o1 == o2)
+				return 0;
+			int h1 = System.identityHashCode(o1);
+			int h2 = System.identityHashCode(o2);
+
+			if (h1 == h2)
+				return 0;
+			return h1 < h2 ? -1 : 1;
+		}
+
+	}
 }

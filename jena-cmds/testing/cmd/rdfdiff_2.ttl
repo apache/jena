@@ -1,0 +1,30 @@
+# Processed by EYE v4.11.2 (2023-08-08)
+# eye ../../auxiliary-files/runtime.n3 ../cases/owl2rl/pizza.ttl tmp/n3query.n3 --query tmp/n3query.n3 --nope
+
+@prefix : <http://example.org/aux#>.
+@prefix e: <http://eulersharp.sourceforge.net/2003/03swap/log-rules#>.
+@prefix list: <http://www.w3.org/2000/10/swap/list#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sp: <http://spinrdf.org/sp#>.
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix ns1: <http://www.co-ode.org/ontologies/pizza/pizza.owl#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xml: <http://www.w3.org/XML/1998/namespace>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix terms: <http://purl.org/dc/terms/>.
+@prefix spin: <http://spinrdf.org/spin#>.
+@prefix ex: <http://example.org/spin#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix crypto: <http://www.w3.org/2000/10/swap/crypto#>.
+@prefix skolem: <http://eyereasoner.github.io/.well-known/genid/0fe20597-2e42-4325-8b43-57c4e81191c0#>.
+
+ns1:America a _:bn_112.
+ns1:England a _:bn_112.
+ns1:England a _:bn_112.
+_:bn_112 a ns1:Belgium .
+ns1:Belgium ns1:pizza ns1:BelgianPizza .
