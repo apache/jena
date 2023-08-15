@@ -18,11 +18,6 @@
 
 package arq;
 
-<<<<<<< Updated upstream
-import static org.apache.jena.atlas.logging.LogCtl.setLogging;
-=======
->>>>>>> Stashed changes
-
 import java.io.FileInputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -64,11 +59,6 @@ import org.apache.jena.rdf.model.StmtIterator;
  */
 public class rdfdiff extends java.lang.Object {
 
-<<<<<<< Updated upstream
-    static {
-        setLogging();
-    }
-=======
 	/**
 	 * @param args the command line arguments
 	 */
@@ -77,7 +67,6 @@ public class rdfdiff extends java.lang.Object {
 			usage();
 			System.exit(-1);
 		}
->>>>>>> Stashed changes
 
 		String in1 = args[0];
 		String in2 = args[1];
@@ -98,20 +87,13 @@ public class rdfdiff extends java.lang.Object {
 			base2 = args[5];
 		}
 
-//        System.out.println(in1 + " " + in2 + " " + lang1 + " " + lang2 + " " + base1 + " " + base2);
-		try {
-			Model m1 = ModelFactory.createDefaultModel();
-			Model m2 = ModelFactory.createDefaultModel();
-
-<<<<<<< Updated upstream
         //System.out.println(in1 + " " + in2 + " " + lang1 + " " + lang2 + " " + base1 + " " + base2);
         try {
             Model m1 = ModelFactory.createDefaultModel();
             Model m2 = ModelFactory.createDefaultModel();
-=======
+
 			read(m1, in1, lang1, base1);
 			read(m2, in2, lang2, base2);
->>>>>>> Stashed changes
 
 			if (m1.isIsomorphicWith(m2)) {
 				System.out.println("models are equal");
@@ -131,31 +113,33 @@ public class rdfdiff extends java.lang.Object {
 				StmtIterator iter = m1.listStatements();
 				while (iter.hasNext()) {
 					Statement stmt = iter.next();
-					// blank nodes are somehow seen as concrete (?)
+					// blank nodes are somehow seen as concrete
+					if (isConcrete(stmt)) {
 //                    if (stmt.asTriple().isConcrete()) {
-//                        if (!m2.contains(stmt)) {
-//                            System.out.print("< ");
-//                            System.out.println(stmt.toString());
-//                        }
-//                    } else {
+                        if (!m2.contains(stmt)) {
+                            System.out.print("not found in source2: ");
+                            System.out.println(stmt.toString());
+                        }
+                    } else {
 					// Handle blank nodes via sub-graphs
 					addToSubGraph(stmt, m1SubGraphs);
-//                    }
+                    }
 				}
 
 				Map<AnonId, Model> m2SubGraphs = new HashMap<>();
 				iter = m2.listStatements();
 				while (iter.hasNext()) {
 					Statement stmt = iter.next();
+					if (isConcrete(stmt)) {
 //                    if (stmt.asTriple().isConcrete()) {
-//                        if (!m1.contains(stmt)) {
-//                            System.out.print("> ");
-//                            System.out.println(stmt.toString());
-//                        }
-//                    } else {
+                        if (!m1.contains(stmt)) {
+                            System.out.print("not found in source1: ");
+                            System.out.println(stmt.toString());
+                        }
+                    } else {
 					// Handle blank nodes via sub-graphs
 					addToSubGraph(stmt, m2SubGraphs);
-//                    }
+                    }
 				}
 
 				// Compute sub-graph differences
@@ -196,6 +180,10 @@ public class rdfdiff extends java.lang.Object {
 			System.err.println("    " + e.toString());
 			System.exit(-1);
 		}
+	}
+	
+	private static boolean isConcrete(Statement stmt) {
+		return !(stmt.getSubject().isAnon() || stmt.getObject().isAnon());
 	}
 
 	private static void diffSubGraphs(Set<Model> m1SubGraphSet, Set<Model> m2SubGraphSet, String prefix) {
@@ -276,24 +264,6 @@ public class rdfdiff extends java.lang.Object {
 //            addToIdList(sIter.next(), ids);
 //        }
 
-<<<<<<< Updated upstream
-    protected static void usage() {
-        System.err.println("usage:");
-        System.err.println("    java jena.rdfdiff source1 source2 [lang1 [lang2 [base1 [base2]]]]");
-        System.err.println();
-        System.err.println("    source1 and source2 can be URL's or filenames");
-        System.err.println("    lang1 and lang2 can take values:");
-        System.err.println("      RDF/XML");
-        System.err.println("      N-TRIPLE");
-        System.err.println("      TTL");
-        System.err.println("    lang1 defaults to RDF/XML, lang2 to N-TRIPLE");
-        System.err.println("    base1 and base2 are URIs");
-        System.err.println("    base1 defaults to null");
-        System.err.println("    base2 defaults to base1");
-        System.err.println("    If no base URIs are specified Jena determines the base URI based on the input source");
-        System.err.println();
-    }
-=======
 		// Associate the sub-graph with all of the statement's blank node IDs
 		for (AnonId id : ids) {
 //            if (subGraphs.containsKey(id))
@@ -310,7 +280,6 @@ public class rdfdiff extends java.lang.Object {
 			ids.add(stmt.getObject().asResource().getId());
 		}
 	}
->>>>>>> Stashed changes
 
 	protected static void usage() {
 		System.err.println("usage:");

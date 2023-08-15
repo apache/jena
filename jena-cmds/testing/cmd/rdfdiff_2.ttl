@@ -25,51 +25,6 @@
 
 ns1:America a _:bn_112.
 ns1:England a _:bn_112.
-ns1:France a _:bn_112.
-ns1:Germany a _:bn_112.
-ns1:Italy a _:bn_112.
-ns1:America a ns1:Country.
-ns1:England a ns1:Country.
-ns1:France a ns1:Country.
-ns1:Germany a ns1:Country.
-ns1:Italy a ns1:Country.
-ns1:American rdfs:subClassOf ns1:Pizza.
-ns1:American rdfs:subClassOf ns1:Food.
-ns1:American rdfs:subClassOf _:bn_320.
-ns1:American rdfs:subClassOf _:bn_106.
-ns1:American rdfs:subClassOf _:bn_10.
-ns1:American rdfs:subClassOf _:bn_28.
-ns1:American rdfs:subClassOf _:bn_46.
-ns1:American rdfs:subClassOf _:bn_74.
-ns1:American rdfs:subClassOf _:bn_90.
-ns1:American rdfs:subClassOf _:bn_118.
-ns1:American rdfs:subClassOf _:bn_142.
-ns1:American rdfs:subClassOf _:bn_174.
-ns1:American rdfs:subClassOf _:bn_214.
-ns1:American rdfs:subClassOf _:bn_230.
-ns1:American rdfs:subClassOf _:bn_250.
-
-
-ns1:American rdfs:subClassOf _:bn_268.
-ns1:American rdfs:subClassOf _:bn_300.
-ns1:American rdfs:subClassOf _:bn_328.
-ns1:American rdfs:subClassOf _:bn_344.
-ns1:American rdfs:subClassOf _:bn_380.
-ns1:American rdfs:subClassOf _:bn_400.
-ns1:American rdfs:subClassOf _:bn_418.
-ns1:American rdfs:subClassOf _:bn_432.
-ns1:American rdfs:subClassOf _:bn_510.
-ns1:American rdfs:subClassOf _:bn_566.
-ns1:American rdfs:subClassOf _:bn_244.
-ns1:American rdfs:subClassOf _:bn_536.
-ns1:American rdfs:subClassOf _:bn_12.
-ns1:American rdfs:subClassOf _:bn_30.
-ns1:American rdfs:subClassOf _:bn_148.
-ns1:American rdfs:subClassOf _:bn_14.
-ns1:American rdfs:subClassOf _:bn_32.
-ns1:American rdfs:subClassOf _:bn_56.
-ns1:American rdfs:subClassOf _:bn_80.
-ns1:American rdfs:subClassOf _:bn_94.
-ns1:American rdfs:subClassOf _:bn_126.
-ns1:American rdfs:subClassOf _:bn_150.
-ns1:American rdfs:subClassOf _:bn_162.
+ns1:England a _:bn_112.
+_:bn_112 a ns1:Belgium .
+ns1:Belgium ns1:pizza ns1:BelgianPizza .
