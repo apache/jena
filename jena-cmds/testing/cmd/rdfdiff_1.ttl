@@ -24,7 +24,3 @@
 @prefix skolem: <http://eyereasoner.github.io/.well-known/genid/0fe20597-2e42-4325-8b43-57c4e81191c0#>.
 
 ns1:America a _:bn_112.
-ns1:England a _:bn_112.
-ns1:England a _:bn_112.
-_:bn_112 a ns1:Netherlands .
-ns1:Netherlands ns1:pizza ns1:DutchPizza .

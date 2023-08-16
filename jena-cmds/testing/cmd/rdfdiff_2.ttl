@@ -25,6 +25,3 @@
 
 ns1:America a _:bn_112.
 ns1:England a _:bn_112.
-ns1:England a _:bn_112.
-_:bn_112 a ns1:Belgium .
-ns1:Belgium ns1:pizza ns1:BelgianPizza .
