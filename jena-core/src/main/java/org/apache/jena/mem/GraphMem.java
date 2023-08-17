@@ -26,6 +26,8 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
 import java.util.stream.Stream;
 
 /**
+ * In-memory, non-thread-safe, non-transactional graph.
+ *
  * @deprecated This implementation of GraphMem will be replaced by a new
  *     implementation. Applications should be using
  *     {@link GraphMemFactory#createDefaultGraph()} for a general purpose graph or

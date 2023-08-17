@@ -33,7 +33,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
 
 /**
- * In-memory, transactional graph.
+ * In-memory, thread-safe, transactional graph.
  *
  * @implNote
  * The implementation uses the default graph of {@link DatasetGraphInMemory}.
