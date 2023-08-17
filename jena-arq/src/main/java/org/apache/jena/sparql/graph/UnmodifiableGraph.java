@@ -19,24 +19,15 @@
 package org.apache.jena.sparql.graph;
 
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.WrappedGraph ;
 
-public class UnmodifiableGraph extends WrappedGraph
+/**
+ * @deprecated Use {@link GraphReadOnly}
+ *
+ */
+@Deprecated
+public class UnmodifiableGraph extends GraphReadOnly
 {
-    public UnmodifiableGraph(Graph base)
-    {
-        super(base) ;
+    public UnmodifiableGraph(Graph base) {
+        super(base);
     }
-    
-    /** Return base graph that this class protects.  Caveat emptor. */
-    public Graph unwrap()   { return super.base ; }
-    
-    @Override
-    public void performAdd(Triple triple)
-    { throw new UnsupportedOperationException() ; }
-    
-    @Override
-    public void performDelete(Triple triple)
-    { throw new UnsupportedOperationException() ; }
 }
