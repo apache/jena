@@ -22,7 +22,6 @@ import static org.apache.jena.riot.RDFLanguages.NQUADS;
 import static org.apache.jena.riot.RDFLanguages.NTRIPLES;
 import static org.apache.jena.riot.RDFLanguages.RDFJSON;
 import static org.apache.jena.riot.RDFLanguages.sameLang;
-import static org.apache.jena.riot.writer.WriterConst.PREFIX_IRI;
 
 import java.io.OutputStream;
 import java.io.Writer;
@@ -296,7 +295,7 @@ public class RiotLib {
     private static void writeBaseNewStyle(IndentedWriter out, String base) {
         if (base != null) {
             out.print("BASE ");
-            out.pad(PREFIX_IRI);
+            out.pad(7);   // Align to possible prefixes. 7 is the length of "prefix "
             out.print("<");
             out.print(base);
             out.print(">");
@@ -307,7 +306,7 @@ public class RiotLib {
     private static void writeBaseOldStyle(IndentedWriter out, String base) {
         if (base != null) {
             out.print("@base ");
-            out.pad(PREFIX_IRI);
+            out.pad(8);   // Align to possible prefixes. 8 is the length of "@prefix "
             out.print("<");
             out.print(base);
             out.print(">");
@@ -348,11 +347,11 @@ public class RiotLib {
         writePrefix(out, prefix, uri, newStyle, 0);
     }
 
-    private static void writePrefix(IndentedWriter out, String prefix, String uri, boolean newStyle, int maxPrefixLenght) {
+    private static void writePrefix(IndentedWriter out, String prefix, String uri, boolean newStyle, int maxPrefixLength) {
         if (newStyle)
-            writePrefixNewStyle(out, prefix, uri, maxPrefixLenght);
+            writePrefixNewStyle(out, prefix, uri, maxPrefixLength);
         else
-            writePrefixOldStyle(out, prefix, uri, maxPrefixLenght);
+            writePrefixOldStyle(out, prefix, uri, maxPrefixLength);
     }
 
     /**
@@ -362,7 +361,7 @@ public class RiotLib {
         out.print("PREFIX ");
         out.print(prefix);
         out.print(": ");
-        out.pad(9 + intent); // 9 e.q. length of "PREFIX" plus ": "
+        out.pad(9 + intent); // 9 is length of "PREFIX : "
         out.print("<");
         out.print(uri);
         out.print(">");
@@ -376,7 +375,7 @@ public class RiotLib {
         out.print("@prefix ");
         out.print(prefix);
         out.print(": ");
-        out.pad(10 + intent); // 10 e.q. length of "@prefix" plus ": "
+        out.pad(10 + intent); // 10 is length of "@prefix : "
         out.print("<");
         out.print(uri);
         out.print(">");

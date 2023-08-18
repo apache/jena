@@ -38,8 +38,10 @@ import org.xml.sax.XMLReader;
  * Create XML input methods.
  * <p>
  * External DTD and entity processing is disabled to prevent
- * <a href="https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing">XXE Processing</a>
- * problems.
+ * <br/>
+ * <a href="https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing">XXE Processing Problems</a>
+ * <br/>
+ * <a href="https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html">XML External Entity Prevention Cheat Sheet</a>
  */
 public class JenaXMLInput {
 
@@ -72,6 +74,12 @@ public class JenaXMLInput {
      * Initialize an XMLInputFactory to jena settings.
      */
     public static void initXMLInputFactory(XMLInputFactory xf) {
+
+        String name = xf.getClass().getName();
+        boolean isWoodstox = name.startsWith("com.ctc.wstx.stax.");
+        boolean isJDK = name.contains("sun.xml.internal");
+        boolean isXerces = name.startsWith("org.apache.xerces");
+
         // This disables DTDs entirely for the factory.
         // All DTDs are silently ignored; takes precedence over ACCESS_EXTERNAL_DTD
     	setXMLInputFactoryProperty(xf, XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
@@ -79,8 +87,10 @@ public class JenaXMLInput {
         // disable external entities (silently ignore)
         setXMLInputFactoryProperty(xf, XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
 
+        // Not supported by Woodstox. IS_SUPPORTING_EXTERNAL_ENTITIES = false is enough.
         // Disable external DTDs (files and HTTP) - errors unless SUPPORT_DTD is false.
-        setXMLInputFactoryProperty(xf, XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        if ( ! isWoodstox )
+            setXMLInputFactoryProperty(xf, XMLConstants.ACCESS_EXTERNAL_DTD, "");
     }
 
     /**
