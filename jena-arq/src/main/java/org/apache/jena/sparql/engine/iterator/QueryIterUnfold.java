@@ -207,13 +207,7 @@ public class QueryIterUnfold extends QueryIterRepeatApply
             final CDTKey key     = elmt.getKey();
             final CDTValue value = elmt.getValue();
 
-            final Node keyNode;
-            if ( key.isNode() ) {
-                keyNode = key.asNode();
-            }
-            else {
-                throw new UnsupportedOperationException( "unexpected map key: " + key.getClass().getName() );
-            }
+            final Node keyNode = key.asNode();
 
             if ( value.isNull() || var2 == null ) {
                 return BindingFactory.binding( inputBinding, var1, keyNode );
