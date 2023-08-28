@@ -46,7 +46,7 @@ final public class CacheCaffeine<K,V> implements Cache<K, V>
         @SuppressWarnings("unchecked")
         Caffeine<K,V> builder = (Caffeine<K,V>)Caffeine.newBuilder()
             .maximumSize(size)
-            .initialCapacity(size/2)
+            .initialCapacity(size/4)
             // Eviction immediately using the caller thread.
             .executor(c->c.run());
 
