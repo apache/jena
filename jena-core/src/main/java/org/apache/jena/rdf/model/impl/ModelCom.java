@@ -485,10 +485,6 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     { return getResource( uri ).addProperty( RDF.type, type ); }
 
     @Override
-    public Resource createResource( AnonId id )
-    { return new ResourceImpl( id, this ); }
-
-    @Override
     public Resource createResource( Statement statement )
     { return new ResourceImpl( statement, this ); }
 
@@ -770,6 +766,10 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     @Override
     public Resource getResource( String uri )
     { return IteratorFactory.asResource(makeURI(uri),this); }
+
+    @Override
+    public Resource getResource( AnonId id )
+    { return new ResourceImpl( id, this ); }
 
     @Override
     public Property getProperty(String uri) {
@@ -1160,6 +1160,10 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     @Override
     public Resource createResource( String uri )
     { return getResource( uri ); }
+
+    @Override
+    public Resource createResource( AnonId anonId )
+    { return getResource( anonId ); }
 
     @Override
     public Property createProperty( String uri )
