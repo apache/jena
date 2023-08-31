@@ -127,14 +127,24 @@ public interface Model
 
 	/**
         Return a Resource instance with the given URI in this model. <i>This method
-        behaves identically to <code>createResource(String)</code></i> and exists as
-        legacy: createResource is now capable of, and allowed to, reuse existing objects.
+        behaves identically to <code>{@link #createResource(String)}</code></i>.
     <p>
         Subsequent operations on the returned object may modify this model.
 	   @return a resource instance
 	   @param uri the URI of the resource
     */
 	Resource getResource(String uri) ;
+
+    /**
+     * Return a Resource instance with the given URI in this model. <i>This method
+     * behaves identically to <code>{@link #createResource(AnonId)}</code></i>.
+     * <p>
+     * Subsequent operations on the returned object may modify this model.
+     *
+     * @return a resource instance
+     * @param id An anonymous bode Id.
+     */
+    Resource getResource(AnonId id);
 
 	/**
         Return a Property instance with the given URI in this model. <i>This method
