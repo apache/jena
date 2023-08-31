@@ -26,15 +26,17 @@ import java.util.Objects;
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.graph.Node;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.riot.out.NodeToLabel;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.rowset.RowSetWriter;
 import org.apache.jena.riot.rowset.RowSetWriterFactory;
+import org.apache.jena.riot.system.SyntaxLabels;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.sparql.util.NodeToLabelMap;
 
 public class RowSetWriterCSV implements RowSetWriter {
 
@@ -53,12 +55,12 @@ public class RowSetWriterCSV implements RowSetWriter {
 
     @Override
     public void write(OutputStream out, RowSet resultSet, Context context) {
-        output(IO.wrapUTF8(out), resultSet);
+        output(IO.wrapUTF8(out), resultSet, context);
     }
 
     @Override
     public void write(Writer out, RowSet resultSet, Context context) {
-        output(IO.wrap(out), resultSet);
+        output(IO.wrap(out), resultSet, context);
     }
 
     @Override
@@ -79,9 +81,12 @@ public class RowSetWriterCSV implements RowSetWriter {
         }
     }
 
-    private static void output(AWriter out, RowSet rowSet) {
+    private static void output(AWriter out, RowSet rowSet, Context context) {
         try {
-            NodeToLabelMap bnodes = new NodeToLabelMap();
+            boolean outputGraphBNodeLabels = (context != null) && context.isTrue(ARQ.outputGraphBNodeLabels);
+            NodeToLabel bnodes = outputGraphBNodeLabels
+                    ? SyntaxLabels.createNodeToLabelAsGiven()
+                    : SyntaxLabels.createNodeToLabel();
 
             String sep = null;
             List<Var> vars = rowSet.getResultVars();
@@ -116,15 +121,18 @@ public class RowSetWriterCSV implements RowSetWriter {
         } finally { out.flush(); }
     }
 
-    private static void output(AWriter w, Node n, NodeToLabelMap bnodes) {
+    private static void output(AWriter w, Node n, NodeToLabel bnodes) {
         // String str = FmtUtils.stringForNode(n) ;
         String str = "?";
         if ( n.isLiteral() )
             str = n.getLiteralLexicalForm();
         else if ( n.isURI() )
             str = n.getURI();
-        else if ( n.isBlank() )
-            str = bnodes.asString(n);
+        else if ( n.isBlank() ) {
+            str = bnodes.get(null, n);
+            // Comes with leading "_:"
+            str = str.substring(2);
+        }
 
         str = csvSafe(str);
         w.write(str);
