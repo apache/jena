@@ -106,7 +106,7 @@
     <ver.commons-compress>1.23.0</ver.commons-compress>
     <ver.commons-collections>4.4</ver.commons-collections>
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.11.2</ver.micrometer>
+    <ver.micrometer>1.11.3</ver.micrometer>
     <ver.roaringbitmap>0.9.47</ver.roaringbitmap>
 
     <!-- For testing, not shipped -->
