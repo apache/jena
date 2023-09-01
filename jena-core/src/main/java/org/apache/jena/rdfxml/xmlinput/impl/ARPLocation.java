@@ -49,6 +49,19 @@ public class ARPLocation implements Locator {
         "line " + endLine + " in '"
         + inputName + "'";
     }
+
+    public String locationStr() {
+        int line = getLineNumber();
+        int col = getColumnNumber();
+        if ( col == -1 && line == -1 )
+            return "[?, ?]";
+        if ( col == -1 && line != -1 )
+            return String.format("[line: %d]", line);
+        if ( col != -1 && line == -1 )
+            return String.format("[col: %d]", col);
+        return String.format("[line: %d, col: %d]", line, col);
+    }
+
     @Override
     public String getSystemId() {
         return inputName;
