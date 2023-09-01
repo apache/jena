@@ -134,8 +134,6 @@ public class DatabaseOps {
         if ( reorderTransform == null && warnAboutOptimizer )
             ARQ.getExecLogger().warn("No BGP optimizer");
 
-
-
         DatasetGraphTDB dsg = StoreConnection.connectCreate(storageLocation, params, reorderTransform).getDatasetGraphTDB();
         DatasetGraphSwitchable appDSG = new DatasetGraphSwitchable(path, containerLocation, dsg);
         return appDSG;
