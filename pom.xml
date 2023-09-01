@@ -112,7 +112,7 @@
     <!-- For testing, not shipped -->
     <ver.graalvm>23.0.1</ver.graalvm>
     <ver.jython>2.7.3</ver.jython>
-    <ver.org.openjdk.jmh>1.36</ver.org.openjdk.jmh>
+    <ver.org.openjdk.jmh>1.37</ver.org.openjdk.jmh>
 
     <!--- GeoSPARQL related -->
     <ver.jcommander>1.82</ver.jcommander>
