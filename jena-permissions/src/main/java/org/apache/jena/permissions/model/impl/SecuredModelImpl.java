@@ -96,7 +96,7 @@ import org.apache.jena.vocabulary.RDF;
 public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
     /**
-     * implements ModelChangedListener with premissions.
+     * implements ModelChangedListener with permissions.
      */
     private class SecuredModelChangedListener implements ModelChangedListener {
         private final ModelChangedListener wrapped;
@@ -1879,6 +1879,12 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     @Override
     public SecuredResource getResource(final String uri) {
         return createResource(uri);
+    }
+
+
+    @Override
+    public SecuredResource getResource(AnonId id) {
+        return createResource(id);
     }
 
     @Override
