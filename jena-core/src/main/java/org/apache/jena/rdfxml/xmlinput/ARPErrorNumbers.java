@@ -73,7 +73,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      * see LanguageTagCodes#LT_EXTRA
      */
 
-    public int IGN_PRIVATE_XMLLANG = 1;
+    //public int IGN_PRIVATE_XMLLANG = 1;
 
     /**
      Indicates that somewhere, other than in an XML Literal

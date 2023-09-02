@@ -112,11 +112,10 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
                                 "Unqualified property attributes are not allowed. Property treated as a relative URI.");
                     }
                     if (rdfns.equals(uri) && !QNameLexer.isKnownRDFProperty(lName)) {
-                        warning(
-                                        pred,
-                                        WARN_UNKNOWN_RDF_ATTRIBUTE,
-                                        atts.getQName(i)
-                                                + " is not a recognized RDF property or type.");
+                        warning(pred,
+                                WARN_UNKNOWN_RDF_ATTRIBUTE,
+                                atts.getQName(i)
+                                + " is not a recognized RDF property.");
                     }
                     ((HasSubjectFrameI) this).aPredAndObj(pred, new ARPString(
                             this, atts.getValue(i), x));

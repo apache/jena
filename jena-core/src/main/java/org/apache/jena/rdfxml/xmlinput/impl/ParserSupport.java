@@ -60,11 +60,13 @@ public class ParserSupport implements ARPErrorNumbers, Names {
 			if (prev != null) {
 				arp.warning(taintMe,
 					WARN_REDEFINITION_OF_ID,
-					"Redefinition of ID: " + str);
-				arp.warning(taintMe,
-					WARN_REDEFINITION_OF_ID,
-					prev,
-					"Previous definition of '" + str + "'.");
+					// RIOT format [line: 22, col: 31]
+					"Redefinition of ID: '" + str +"' defined at "+prev.locationStr());
+				// ARP used to produce two warnings.
+//				arp.warning(taintMe,
+//					WARN_REDEFINITION_OF_ID,
+//					prev,
+//					"Previous definition of '" + str + "'.");
 			} else {
 				idsUsedForBase.put(str, arp.location());
 				arp.idsUsedCount++;

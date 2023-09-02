@@ -22,7 +22,7 @@ import org.apache.jena.rdfxml.xmlinput.states.Frame ;
 import org.xml.sax.SAXParseException;
 
 public class ElementLexer extends QNameLexer  {
-    
+
     final private String uri;
     final private String localName;
     final private String qname;
@@ -39,18 +39,18 @@ public class ElementLexer extends QNameLexer  {
         goodMatch = (good&match) != 0;
         // Note: this.bad excludes good.
         badMatch = (this.bad&match) != 0;
-        
+
         if ((!(goodMatch||badMatch))&&(this.bad&E_RDF)==E_RDF) {
             if (rdfns.equals(uri)) {
                 if (isMemberProperty(localName)){
                     if (report_1)
-                    frame.warning(t,WARN_RDF_NN_AS_TYPE,
-                            qname + " is being used on a typed node.");
+                        frame.warning(t,WARN_RDF_NN_AS_TYPE,
+                                      qname + " is being used on a typed node.");
                 } else if (!isKnownNonMemberRDFProperty(localName)) {
-                frame.warning(t,WARN_UNKNOWN_RDF_ELEMENT,
-                        qname + " is not a recognized RDF property or type.");
-                
-            }
+                    frame.warning(t,WARN_UNKNOWN_RDF_ELEMENT,
+                                  qname + " is not a recognized RDF property or type.");
+
+                }
             }
         }
     }
@@ -64,7 +64,7 @@ public class ElementLexer extends QNameLexer  {
                 r==E_LI?ERR_LI_AS_TYPE:
                 ERR_BAD_RDF_ELEMENT,
                 getQName() + " is not allowed as an element tag here.");
-        
+
     }
     @Override
     void deprecatedAttribute(Taint me,int r) throws SAXParseException {
@@ -85,7 +85,7 @@ public class ElementLexer extends QNameLexer  {
     @Override
     void bagIDAttribute(Taint taintMe, int rslt) throws SAXParseException {
         error(taintMe,rslt);
-        
+
     }
 
 }

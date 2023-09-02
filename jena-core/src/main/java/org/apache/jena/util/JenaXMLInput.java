@@ -37,9 +37,13 @@ import org.xml.sax.XMLReader;
 /**
  * Create XML input methods.
  * <p>
- * External DTD and entity processing is disabled to prevent
- * <a href="https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing">XXE Processing</a>
- * problems.
+ * External DTDs and remote entity processing is disabled to prevent XXE attacks.
+ * <br/>
+ * <a href="https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing">XXE Processing Problems</a>
+ * <p>
+ * For advice in preventing these attacks, see
+ * <a href="https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html">XML External Entity Prevention Cheat Sheet</a>
+ * which has a <a href="https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#java">Java section</a>.
  */
 public class JenaXMLInput {
 
@@ -48,22 +52,37 @@ public class JenaXMLInput {
     private static SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 
     public static XMLReader createXMLReader() throws ParserConfigurationException, SAXException {
-            SAXParser saxParser = saxParserFactory.newSAXParser();
-            XMLReader xmlreader = saxParser.getXMLReader();
+        /*
+         * https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#xmlreader
+         * ----
+         * XMLReader
+         *
+         *    To protect a Java org.xml.sax.XMLReader from XXE, do this:
+         *
+         *    XMLReader reader = XMLReaderFactory.createXMLReader();
+         *    reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+         *    // This may not be strictly required as DTDs shouldn't be allowed at all, per previous line.
+         *    reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+         *    reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+         *    reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+         */
 
-            // XXE : disable all DTD processing.
-            // Effect: RiotException if a DTD is found.
-            // However, OWL WG test files, and others, have internal entity
-            // declarations in internal DTD subset ("the "[ ]"in a DOCTYPE).
-            // xmlreader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            // instead, silently ignore external DTDs.
+        SAXParser saxParser = saxParserFactory.newSAXParser();
+        XMLReader xmlreader = saxParser.getXMLReader();
 
-            // Always disable remote DTDs (silently ignore if DTDs are allowed at all)
-            xmlreader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            // and ignore external entities (silently ignore)
-            xmlreader.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            xmlreader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            return xmlreader;
+        // XXE : disable all DTD processing.
+        // Effect: RiotException if a DTD is found.
+        // However, OWL WG test files, and others, have internal entity
+        // declarations in internal DTD subset ("the "[ ]"in a DOCTYPE).
+        // xmlreader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        // instead, silently ignore external DTDs.
+
+        // Always disable remote DTDs (silently ignore if DTDs are allowed at all)
+        xmlreader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        // and ignore external entities (silently ignore)
+        xmlreader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        xmlreader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        return xmlreader;
     }
 
     // ---- StAX
@@ -72,15 +91,38 @@ public class JenaXMLInput {
      * Initialize an XMLInputFactory to jena settings.
      */
     public static void initXMLInputFactory(XMLInputFactory xf) {
+        /*
+         * https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html
+         * ---
+         *     // This disables DTDs entirely for that factory
+         *     xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+         *
+         * or if you can't completely disable DTDs:
+         *
+         *     // This causes XMLStreamException to be thrown if external DTDs are accessed.
+         *     xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+         *     // disable external entities
+         *     xmlInputFactory.setProperty("javax.xml.stream.isSupportingExternalEntities", false);
+         */
+
+        String name = xf.getClass().getName();
+        boolean isWoodstox = name.startsWith("com.ctc.wstx.stax.");
+        boolean isJDK = name.contains("sun.xml.internal");
+        boolean isXerces = name.startsWith("org.apache.xerces");
+
         // This disables DTDs entirely for the factory.
-        // All DTDs are silently ignored; takes precedence over ACCESS_EXTERNAL_DTD
+        // DTDs are silently ignored except for xmlEventReader.nextTag() which throws an exception on a "DTD" event.
+        // Code can peek and skip the DTD.
+        // This takes precedence over ACCESS_EXTERNAL_DTD
     	setXMLInputFactoryProperty(xf, XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
 
         // disable external entities (silently ignore)
         setXMLInputFactoryProperty(xf, XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
 
+        // Not supported by Woodstox. IS_SUPPORTING_EXTERNAL_ENTITIES = false is enough.
         // Disable external DTDs (files and HTTP) - errors unless SUPPORT_DTD is false.
-        setXMLInputFactoryProperty(xf, XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        if ( ! isWoodstox )
+            setXMLInputFactoryProperty(xf, XMLConstants.ACCESS_EXTERNAL_DTD, "");
     }
 
     /**
@@ -115,15 +157,21 @@ public class JenaXMLInput {
         return factory;
     }
 
-//    // For reference : jdom:
+    // https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#saxbuilder
+    // For reference : org.jdom2.input
 //    // ---- SAXBuilder
 //    public static SAXBuilder newSAXBuilder() throws ParserConfigurationException {
 //        SAXBuilder builder = new SAXBuilder();
-//        //builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
-//        builder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false;)
+//
+//        // Completely disable
+//        builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+//
+//        // Or disable external entities and entity expansion:
+//        builder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 //        builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
 //        builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 //        builder.setExpandEntities(false);
+//
 //        return builder;
 //    }
 }
