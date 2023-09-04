@@ -27,78 +27,74 @@ import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 
-final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler
-    {
+/**
+ * Interface between Jena and ARP.
+ * <p>
+ * When calling ARP natively, including the tests,
+ * RDFXMLReader and JenaHandler are used. When parsing via RIOT,
+ * ReaderRIOTRDFXML.HandlerSink is used to convert from AResource/ALiteral to Node.
+ */
+final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler {
     private final PrefixMapping prefixMapping;
 
     protected int here = 0;
 
-    private final Graph graph ;
+    private final Graph graph;
 
-    public JenaHandler( Model m, RDFErrorHandler e )
-        { this( m.getGraph(), e ); }
+    public JenaHandler(Model m, RDFErrorHandler e) {
+        this(m.getGraph(), e);
+    }
 
-    public JenaHandler( Graph g, Model m, RDFErrorHandler e )
-        { this( g, modelToPrefixMapping( m ), e ); }
-    
-    private JenaHandler( Graph graph, RDFErrorHandler e )
-        { this( graph, graph.getPrefixMapping(), e ); }
+    public JenaHandler(Graph g, Model m, RDFErrorHandler e) {
+        this(g, modelToPrefixMapping(m), e);
+    }
 
-    private JenaHandler( Graph graph, PrefixMapping prefixMapping, RDFErrorHandler errorHandler )
-        {
-        super( errorHandler );
-        this.graph = graph ;
-        this.prefixMapping = prefixMapping; 
-        }
-    
-    private static PrefixMapping modelToPrefixMapping( Model model )
-        {
-        return model == null 
-            ? PrefixMapping.Factory.create() 
-            : model.getGraph().getPrefixMapping()
-            ;
-        }
+    private JenaHandler(Graph graph, RDFErrorHandler e) {
+        this(graph, graph.getPrefixMapping(), e);
+    }
 
-    public void useWith( ARPHandlers h )
-        {
-        h.setStatementHandler( this );
-        h.setErrorHandler( this );
-        h.setNamespaceHandler( this );
-        }
+    private JenaHandler(Graph graph, PrefixMapping prefixMapping, RDFErrorHandler errorHandler) {
+        super(errorHandler);
+        this.graph = graph;
+        this.prefixMapping = prefixMapping;
+    }
+
+    private static PrefixMapping modelToPrefixMapping(Model model) {
+        return model == null ? PrefixMapping.Factory.create() : model.getGraph().getPrefixMapping();
+    }
+
+    public void useWith(ARPHandlers h) {
+        h.setStatementHandler(this);
+        h.setErrorHandler(this);
+        h.setNamespaceHandler(this);
+    }
 
     @Override
-    public void statement(AResource subj, AResource pred, AResource obj)
-    {
-        try
-        {
-            Triple t = RDFXMLReader.convert(subj, pred, obj) ;
-            graph.add(t) ;
-        } catch (JenaException e)
-        {
-            errorHandler.error(e) ;
+    public void statement(AResource subj, AResource pred, AResource obj) {
+        try {
+            Triple t = RDFXMLReader.convert(subj, pred, obj);
+            graph.add(t);
+        } catch (JenaException e) {
+            errorHandler.error(e);
         }
     }
 
     @Override
-    public void statement(AResource subj, AResource pred, ALiteral lit)
-    {
-        try
-        {
-            Triple t = RDFXMLReader.convert(subj, pred, lit) ;
-            graph.add(t) ;
-        } catch (JenaException e)
-        {
-            errorHandler.error(e) ;
+    public void statement(AResource subj, AResource pred, ALiteral lit) {
+        try {
+            Triple t = RDFXMLReader.convert(subj, pred, lit);
+            graph.add(t);
+        } catch (JenaException e) {
+            errorHandler.error(e);
         }
     }
 
     @Override
-    public void startPrefixMapping( String prefix, String uri )
-        {
-        if (PrefixMappingImpl.isNiceURI( uri )) prefixMapping.setNsPrefix( prefix, uri );
-        }
+    public void startPrefixMapping(String prefix, String uri) {
+        if ( PrefixMappingImpl.isNiceURI(uri) )
+            prefixMapping.setNsPrefix(prefix, uri);
+    }
 
     @Override
-    public void endPrefixMapping( String prefix )
-        {}
-    }
+    public void endPrefixMapping(String prefix) {}
+}

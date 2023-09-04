@@ -30,17 +30,13 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput.* ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.system.Checker;
-import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.sparql.util.Context;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
@@ -54,13 +50,16 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
     public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) -> {
         // Ignore the provided ParserProfile
         // ARP predates RIOT and does many things internally already.
-        return new ReaderRIOTRDFXML(parserProfile.getErrorHandler());
+        return new ReaderRIOTRDFXML(parserProfile);
     };
 
+    private final ParserProfile parserProfile;
     private final ErrorHandler errorHandler;
 
-    public ReaderRIOTRDFXML(ErrorHandler errorHandler) {
-        this.errorHandler = errorHandler;
+
+    public ReaderRIOTRDFXML(ParserProfile parserProfile) {
+        this.parserProfile = parserProfile;
+        this.errorHandler = parserProfile.getErrorHandler();
     }
 
     @Override
@@ -130,7 +129,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
         // One of input and reader is null.
         boolean legacySwitch = context.isTrue(RIOT.symRDFXML0);
         if ( legacySwitch ) {
-            ReaderRIOTRDFXML0 other = new ReaderRIOTRDFXML0(errorHandler);
+            ReaderRIOTRDFXML0 other = new ReaderRIOTRDFXML0(parserProfile.getErrorHandler());
             other.parse(input, reader, xmlBase, ct, sink, context);
             return;
         }
@@ -138,7 +137,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
         // Hacked out of ARP because of all the "private" methods
         // JenaReader has reset the options since new ARP() was called.
         sink.start() ;
-        HandlerSink rslt = new HandlerSink(sink, errorHandler) ;
+        HandlerSink rslt = new HandlerSink(sink, parserProfile) ;
 
         ARP arp = new ARP();
         arp.getHandlers().setStatementHandler(rslt) ;
@@ -196,13 +195,17 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
     }
 
     private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler {
-        private StreamRDF       output ;
-        private ErrorHandler    riotErrorHandler ;
+        private final StreamRDF       output ;
+        private final ParserProfile parserProfile;
+        private final ErrorHandler riotErrorHandler;
+        private final FactoryRDF   termFactory;
 
-        HandlerSink(StreamRDF output, ErrorHandler errHandler) {
-            super(new ErrorHandlerBridge(errHandler)) ;
+        HandlerSink(StreamRDF output, ParserProfile parserProfile) {
+            super(new ErrorHandlerBridge(parserProfile.getErrorHandler())) ;
             this.output = output ;
-            this.riotErrorHandler = errHandler ;
+            this.parserProfile = parserProfile;
+            this.riotErrorHandler = parserProfile.getErrorHandler();
+            this.termFactory = parserProfile.getFactorRDF();
         }
 
         @Override
@@ -213,18 +216,18 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
         public void statement(AResource subj, AResource pred, ALiteral lit)
         { output.triple(convert(subj, pred, lit)) ; }
 
-        // From JenaReader
-        private static Node convert(ALiteral lit) {
+        // Should be called by RDFXMLReader.
+        private Node convert(ALiteral lit) {
             String dtURI = lit.getDatatypeURI();
             if (dtURI == null)
-                return NodeFactory.createLiteral(lit.toString(), lit.getLang());
+                return parserProfile.createLangLiteral(lit.toString(), lit.getLang(), -1, -1);
 
             if (lit.isWellFormedXML()) {
-                return NodeFactory.createLiteral(lit.toString(), XMLLiteralType.theXMLLiteralType);
+                return parserProfile.createTypedLiteral(lit.toString(), XMLLiteralType.theXMLLiteralType, -1, -1);
             }
 
             RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
-            return NodeFactory.createLiteral(lit.toString(), dt);
+            return parserProfile.createTypedLiteral(lit.toString(), dt, -1, -1);
         }
 
         private Node convert(AResource r) {
@@ -242,13 +245,13 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
                         throw new RiotParseException(msg, -1, -1);
                     }
                 }
-                return NodeFactory.createURI(uriStr);
+                return termFactory.createURI(uriStr);
             }
 
             // String id = r.getAnonymousID();
             Node rr = (Node) r.getUserData();
             if (rr == null) {
-                rr = NodeFactory.createBlankNode();
+                rr = termFactory.createBlankNode();
                 r.setUserData(rr);
             }
             return rr;
@@ -259,9 +262,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
         }
 
         private Triple convert(AResource s, AResource p, ALiteral o) {
-            Node literal = convert(o) ;
-            Checker.checkLiteral(literal, riotErrorHandler, -1, -1);
-            return Triple.create(convert(s), convert(p), literal) ;
+            return Triple.create(convert(s), convert(p), convert(o)) ;
         }
 
         @Override
