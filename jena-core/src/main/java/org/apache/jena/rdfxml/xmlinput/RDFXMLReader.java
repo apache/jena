@@ -45,6 +45,10 @@ import org.xml.sax.SAXNotSupportedException;
 
 /**
  * Interface between Jena and ARP.
+ * <p>
+ * When calling ARP natively, including the tests,
+ * RDFXMLReader and JenaHandler are used. When parsing via RIOT,
+ * ReaderRIOTRDFXML.HandlerSink is used to convert from AResource/ALiteral to Node.
  */
 public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
 
