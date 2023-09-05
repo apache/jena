@@ -22,7 +22,6 @@ import static java.lang.String.format;
 import static org.apache.jena.fuseki.Fuseki.serverLog;
 
 import jakarta.servlet.ServletContext;
-
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.fuseki.Fuseki;
@@ -30,14 +29,18 @@ import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiCoreInfo;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
-import org.eclipse.jetty.security.*;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintMapping;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
+import org.eclipse.jetty.security.Constraint;
+import org.eclipse.jetty.security.DefaultIdentityService;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.IdentityService;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.util.security.Constraint;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.xml.XmlConfiguration;
 
 /** Standalone full server, not run as a WAR file.

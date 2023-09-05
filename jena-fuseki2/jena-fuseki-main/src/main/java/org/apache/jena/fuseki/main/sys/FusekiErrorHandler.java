@@ -26,11 +26,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.graph.Node;
 import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.handler.ErrorHandler;
+import org.eclipse.jetty.util.Callback;
 
 /**
  * Fuseki error handler (used with ServletAPI HttpServletResponse.sendError).
@@ -42,21 +44,44 @@ public class FusekiErrorHandler extends ErrorHandler
     // or a non-Fuseki error occurs.
     public FusekiErrorHandler() {}
 
+//    //@Override
+//    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        String method = request.getMethod();
+//
+//        if ( !method.equals(HttpMethod.GET.asString())
+//            && !method.equals(HttpMethod.POST.asString())
+//            && !method.equals(HttpMethod.HEAD.asString()) )
+//            return;
+//
+//        ServletOps.setNoCache(response);
+//        int code = response.getStatus();
+//        String message = (response instanceof Response) ? ((Response)response).getReason() : HttpSC.getMessage(code);
+//        if ( message == null )
+//            message = HttpSC.getMessage(code);
+//        String msg = format("Error %d: %s\n", code, message);
+//        ServletOps.writeMessagePlainTextError(response, msg);
+//    }
+
     @Override
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public boolean handle(Request request, Response response, Callback callback) {
         String method = request.getMethod();
 
         if ( !method.equals(HttpMethod.GET.asString())
             && !method.equals(HttpMethod.POST.asString())
             && !method.equals(HttpMethod.HEAD.asString()) )
-            return;
+            return false;
 
-        ServletOps.setNoCache(response);
+        // XXX Is this right?
+        if (! ( response instanceof HttpServletResponse ) )
+            return false;
+
+        HttpServletResponse httpResponse = (HttpServletResponse)response;
+        ServletOps.setNoCache(httpResponse);
         int code = response.getStatus();
-        String message = (response instanceof Response) ? ((Response)response).getReason() : HttpSC.getMessage(code);
-        if ( message == null )
-            message = HttpSC.getMessage(code);
+
+        String message = HttpSC.getMessage(code);
         String msg = format("Error %d: %s\n", code, message);
-        ServletOps.writeMessagePlainTextError(response, msg);
+        ServletOps.writeMessagePlainTextError(httpResponse, msg);
+        return true;
     }
 }

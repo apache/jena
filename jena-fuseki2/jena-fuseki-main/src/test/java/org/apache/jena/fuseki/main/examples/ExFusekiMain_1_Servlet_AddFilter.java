@@ -23,7 +23,6 @@ import java.security.Principal;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -32,12 +31,12 @@ import org.apache.jena.fuseki.servlets.FusekiFilter;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.eclipse.jetty.ee10.servlet.FilterHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHandler;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHandler;
 
 /**
  * Example of intercepting Fuseki dispatch.
