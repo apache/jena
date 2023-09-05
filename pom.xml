@@ -68,7 +68,11 @@
 
     <ver.lucene>9.7.0</ver.lucene>
 
+<<<<<<< HEAD
     <ver.jetty>12.0.3</ver.jetty>
+=======
+    <ver.jetty>12.0.0</ver.jetty>
+>>>>>>> 90939ba5ee (GH-2024: Jetty12 - Code conversion)
     <ver.shiro>1.12.0</ver.shiro>
 
     <ver.protobuf>3.24.3</ver.protobuf>
@@ -493,6 +497,14 @@
        <dependency>
          <groupId>org.eclipse.jetty</groupId>
          <artifactId>jetty-bom</artifactId>
+         <version>${ver.jetty}</version>
+         <scope>import</scope>
+         <type>pom</type>
+       </dependency>
+
+       <dependency>
+         <groupId>org.eclipse.jetty.ee10</groupId>
+         <artifactId>jetty-ee10-bom</artifactId>
          <version>${ver.jetty}</version>
          <scope>import</scope>
          <type>pom</type>

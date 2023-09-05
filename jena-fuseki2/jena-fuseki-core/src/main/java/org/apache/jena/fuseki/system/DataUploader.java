@@ -121,7 +121,6 @@ public class DataUploader {
         jettyMultipartAttributeName = x;
     }
 
-
     // Tomcat: In the WAR file: META-INF/context.xml
     // <Context allowCasualMultipartParsing="true">
     // </Context>
