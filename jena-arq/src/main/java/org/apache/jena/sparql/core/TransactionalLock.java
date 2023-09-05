@@ -33,17 +33,19 @@ import org.apache.jena.sparql.JenaTransactionException ;
  *  To use with implementation inheritance, for when you don't inherit:
  *  <pre>
  *      private final Transactional txn                     = TransactionalLock.createMRSW() ;
- *      private final Transactional txn()                   { return txn; }
+ *      protected Transactional txn()                       { return txn; }
  *      {@literal @}Override public void begin(TxnType txnType)        { txn().begin(txnType) ; }
  *      {@literal @}Override public void begin()                       { txn().begin(); }
  *      {@literal @}Override public void begin(TxnType txnType)        { txn().begin(txnType); }
  *      {@literal @}Override public boolean promote()                  { return txn().promote(); }
+ *      {@literal @}Override public boolean promote(Promote mode)      { return txn().promote(mode); }
  *      {@literal @}Override public void commit()                      { txn().commit(); }
  *      {@literal @}Override public void abort()                       { txn().abort(); }
  *      {@literal @}Override public boolean isInTransaction()          { return txn().isInTransaction(); }
  *      {@literal @}Override public void end()                         { txn().end(); }
  *      {@literal @}Override public ReadWrite transactionMode()        { return txn().transactionMode(); }
  *      {@literal @}Override public TxnType transactionType()          { return txn().transactionType(); }
+ *      // DatasetGraph interface
  *      {@literal @}Override public boolean supportsTransactions()     { return true; }
  *      {@literal @}Override public boolean supportsTransactionAbort() { return false; }
  *   </pre>
@@ -51,15 +53,18 @@ import org.apache.jena.sparql.JenaTransactionException ;
 public class TransactionalLock implements Transactional {
 /*
     private final Transactional txn                     = TransactionalLock.createMRSW() ;
-    private final Transactional txn()                   { return txn; }
+    protected Transactional txn()                       { return txn; }
     @Override public void begin()                       { txn().begin(); }
     @Override public void begin(TxnType txnType)        { txn().begin(txnType); }
+    @Override public boolean promote()                  { return txn().promote(); }
+    @Override public boolean promote(Promote mode)      { return txn().promote(mode); }
     @Override public void commit()                      { txn().commit(); }
     @Override public void abort()                       { txn().abort(); }
     @Override public boolean isInTransaction()          { return txn().isInTransaction(); }
     @Override public void end()                         { txn().end(); }
     @Override public ReadWrite transactionMode()        { return txn().transactionMode(); }
     @Override public TxnType transactionType()          { return txn().transactionType(); }
+    // DatasetGraph interface
     @Override public boolean supportsTransactions()     { return true; }
     @Override public boolean supportsTransactionAbort() { return false; }
  */
