@@ -23,10 +23,11 @@ import java.util.Objects;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.FusekiConfigException;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintMapping;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.*;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.security.authentication.DigestAuthenticator;
-import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.util.security.Password;
 
@@ -97,12 +98,15 @@ public class JettySecurityLib {
         Objects.requireNonNull(pathSpec);
 
         ConstraintMapping mapping = new ConstraintMapping();
-        Constraint constraint = new Constraint();
+        Constraint.Builder constraintBuilder = new Constraint.Builder();
         String[] roles = new String[]{role};
-        constraint.setRoles(roles);
-        constraint.setName(securityHandler.getAuthenticator().getAuthMethod());
-        constraint.setAuthenticate(true);
+        constraintBuilder.roles(roles);
+        constraintBuilder.name(securityHandler.getAuthenticator().getAuthMethod());
+        constraintBuilder.authenticate(true);
+        Constraint constraint = constraintBuilder.build();
         mapping.setConstraint(constraint);
+
+
         mapping.setPathSpec(pathSpec);
         securityHandler.addConstraintMapping(mapping);
     }
