@@ -24,7 +24,7 @@ import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.IRILib;
-import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.riot.system.StreamRDF;
@@ -33,7 +33,7 @@ import org.apache.jena.shared.NotFoundException;
 
 public class RiotSyntaxTest implements Runnable {
 
-    final private boolean       expectLegalSyntax;
+    final private boolean expectLegalSyntax;
     final private ManifestEntry testEntry;
     final private String testBase;
     final private Lang lang;
@@ -66,7 +66,8 @@ public class RiotSyntaxTest implements Runnable {
             base = filename;
 
         try {
-            ParseForTest.parse(stream, filename, base, lang, RiotTests.allowWarnings(testEntry));
+            boolean allowWarnings = RiotTests.allowWarnings(testEntry);
+            ParseForTest.parse(stream, filename, base, lang, allowWarnings);
             if (! expectLegalSyntax ) {
                 String s = IO.readWholeFileAsUTF8(fn);
                 System.err.println();
