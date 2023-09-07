@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.arq.junit.riot ;
+package org.apache.jena.arq.junit.riot;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -26,22 +26,20 @@ import org.apache.jena.arq.junit.LibTestSetup;
 import org.apache.jena.arq.junit.SkipTest;
 import org.apache.jena.arq.junit.SurpressedTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.TestManifest;
 
 public class RiotTests
 {
-    public static String assumedRootURIex = "http://example/base/" ;
+    public static String assumedRootURIex = "http://example/base/";
 
-    // Depends on origin of the tests.
-    public static String xassumedRootURITurtle = "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/";
-    public static String xassumedRootURITriG = "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-trig/";
-
-//    public static String assumedRootURITurtle = "http://www.w3.org/2013/TurtleTests/" ;
-//    public static String assumedRootURITriG = "http://www.w3.org/2013/TriGTests/" ;
+//    // Depends on origin of the tests.
+//    // Now done by entry.getManifest().getTestBase();
+//    public static String x_assumedRootURITurtle = "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/";
+//    public static String x_assumedRootURITriG = "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-trig/";
 
     /** Create a RIOT language test - or return null for "unrecognized" */
     public static Runnable makeRIOTTest(ManifestEntry entry) {
@@ -53,18 +51,17 @@ public class RiotTests
 
         String labelPrefix = "[RIOT]";
 
-        try
-        {
-            Resource testType = LibTestSetup.getResource(item, RDF.type) ;
+        try {
+            Resource testType = LibTestSetup.getResource(item, RDF.type);
             if ( testType == null )
-                throw new RiotException("Can't determine the test type") ;
+                throw new RiotException("Can't determine the test type");
 
             if ( labelPrefix != null )
-                testName = labelPrefix+testName ;
+                testName = labelPrefix+testName;
 
             // In Turtle tests, the action directly names the file to process.
-            Resource input = action ;
-            Resource output = result ;
+            Resource input = action;
+            Resource output = result;
 
             // Some tests assume a certain base URI.
 
@@ -75,30 +72,30 @@ public class RiotTests
             // TTL
             if ( testType.equals(VocabLangRDF.TestPositiveSyntaxTTL) ) {
                 String base = rebase(input, assumedBase);
-                return new RiotSyntaxTest(entry, base, RDFLanguages.TURTLE, true) ;
+                return new RiotSyntaxTest(entry, base, RDFLanguages.TURTLE, true);
             }
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxTTL) )
-                return new RiotSyntaxTest(entry, RDFLanguages.TURTLE, false) ;
+                return new RiotSyntaxTest(entry, RDFLanguages.TURTLE, false);
 
             // TRIG
             if ( testType.equals(VocabLangRDF.TestPositiveSyntaxTriG) ) {
                     String base = rebase(input, assumedBase);
-                    return new RiotSyntaxTest(entry, base, RDFLanguages.TRIG, true) ;
+                    return new RiotSyntaxTest(entry, base, RDFLanguages.TRIG, true);
                 }
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxTriG) )
-                return new RiotSyntaxTest(entry, RDFLanguages.TRIG, false) ;
+                return new RiotSyntaxTest(entry, RDFLanguages.TRIG, false);
 
             // NT
             if ( testType.equals(VocabLangRDF.TestPositiveSyntaxNT) )
-                return new RiotSyntaxTest(entry, RDFLanguages.NTRIPLES, true) ;
+                return new RiotSyntaxTest(entry, RDFLanguages.NTRIPLES, true);
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxNT) )
-                return new RiotSyntaxTest(entry, RDFLanguages.NTRIPLES, false) ;
+                return new RiotSyntaxTest(entry, RDFLanguages.NTRIPLES, false);
 
             // NQ
             if ( testType.equals(VocabLangRDF.TestPositiveSyntaxNQ) )
-                return new RiotSyntaxTest(entry, RDFLanguages.NQUADS, true) ;
+                return new RiotSyntaxTest(entry, RDFLanguages.NQUADS, true);
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxNQ) )
-                return new RiotSyntaxTest(entry, RDFLanguages.NQUADS, false) ;
+                return new RiotSyntaxTest(entry, RDFLanguages.NQUADS, false);
 
             // RDF/XML - W3C test suite
             // This suite has eval tests (positive and warning - they have "warn" in the filename) and negative syntax tests.
@@ -106,19 +103,19 @@ public class RiotTests
                 String fn = entry.getAction().getURI();
                 // Assumes the tests are stored in "rdf-xml" or "rdf11-xml"
                 String base = fn.replaceAll("^.*/rdf(\\d\\d)?-xml/", "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-xml/");
-                return new RiotEvalTest(entry, base, RDFLanguages.RDFXML, true) ;
+                return new RiotEvalTest(entry, base, RDFLanguages.RDFXML, true);
             }
             if ( testType.equals(VocabLangRDF.TestNegativeRDFXML) )
-                return new RiotSyntaxTest(entry, RDFLanguages.RDFXML, false) ;
+                return new RiotSyntaxTest(entry, RDFLanguages.RDFXML, false);
 
             // Other
             if ( testType.equals(VocabLangRDF.TestPositiveSyntaxRJ) )
-                return new RiotSyntaxTest(entry, RDFLanguages.RDFJSON, true) ;
+                return new RiotSyntaxTest(entry, RDFLanguages.RDFJSON, true);
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxRJ) )
-                return new RiotSyntaxTest(entry, RDFLanguages.RDFJSON, false) ;
+                return new RiotSyntaxTest(entry, RDFLanguages.RDFJSON, false);
 
             if ( testType.equals(VocabLangRDF.TestSurpressed ))
-                return new SurpressedTest(entry) ;
+                return new SurpressedTest(entry);
 
             // == Eval tests
 
@@ -127,34 +124,34 @@ public class RiotTests
                 return new RiotEvalTest(entry, base, RDFLanguages.TURTLE, true);
             }
             if ( testType.equals(VocabLangRDF.TestNegativeEvalTTL) ) {
-                String base = rebase(input, assumedBase) ;
-                return new RiotEvalTest(entry, base, RDFLanguages.TURTLE, false) ;
+                String base = rebase(input, assumedBase);
+                return new RiotEvalTest(entry, base, RDFLanguages.TURTLE, false);
             }
 
             if ( testType.equals(VocabLangRDF.TestEvalTriG) ) {
-                String base = rebase(input, assumedBase) ;
-                return new RiotEvalTest(entry, base, RDFLanguages.TRIG, true) ;
+                String base = rebase(input, assumedBase);
+                return new RiotEvalTest(entry, base, RDFLanguages.TRIG, true);
             }
             if ( testType.equals(VocabLangRDF.TestNegativeEvalTriG) ) {
-                String base = rebase(input, assumedBase) ;
-                return new RiotEvalTest(entry, base, RDFLanguages.TRIG, false) ;
+                String base = rebase(input, assumedBase);
+                return new RiotEvalTest(entry, base, RDFLanguages.TRIG, false);
             }
 
             if ( testType.equals(VocabLangRDF.TestEvalNT) ) {
-                String base = entry.getAction().getURI();//rebase(input, assumedRootURI) ;
-                return new RiotEvalTest(entry, base, RDFLanguages.NTRIPLES, true) ;
+                String base = entry.getAction().getURI();//rebase(input, assumedRootURI);
+                return new RiotEvalTest(entry, base, RDFLanguages.NTRIPLES, true);
             }
             if ( testType.equals(VocabLangRDF.TestNegativeEvalNT) ) {
-                String base = entry.getAction().getURI();//rebase(input, assumedRootURI) ;
-                return new RiotEvalTest(entry, base, RDFLanguages.NTRIPLES, false) ;
+                String base = entry.getAction().getURI();//rebase(input, assumedRootURI);
+                return new RiotEvalTest(entry, base, RDFLanguages.NTRIPLES, false);
             }
 
             if ( testType.equals(VocabLangRDF.TestEvalRJ) ) {
-                String base = rebase(input, assumedRootURIex) ;
+                String base = rebase(input, assumedRootURIex);
                 return new RiotEvalTest(entry, base, RDFLanguages.RDFJSON, true);
             }
 //            if ( testType.equals(VocabLangRDF.TestNegativeEvalRJ) ) {
-//                String base = rebase(input, assumedRootURIex) ;
+//                String base = rebase(input, assumedRootURIex);
 //                return new RiotEvalTest(entry, base, RDFLanguages.RDFJSON, false);
 //            }
 
@@ -168,17 +165,17 @@ public class RiotTests
             return null;
         } catch (Exception ex)
         {
-            ex.printStackTrace(System.err) ;
-            System.err.println("Failed to grok test : " + testName) ;
-            return null ;
+            ex.printStackTrace(System.err);
+            System.err.println("Failed to grok test : " + testName);
+            return null;
         }
     }
 
     private static String rebase(Resource input, String baseIRI) {
-        String x = input.getLocalName() ;
+        String x = input.getLocalName();
         // Yuk, yuk, yuk.
-        baseIRI = baseIRI+x ;
-        return baseIRI ;
+        baseIRI = baseIRI+x;
+        return baseIRI;
     }
 
     static Set<String> allowWarningSet = new HashSet<>();
@@ -191,12 +188,49 @@ public class RiotTests
     // Some tests have U+FFFD which, in Jena, generates a helpful warning.
     // Some tests have <http:g> which RIOT warns about but passes.
     /*package*/ static boolean allowWarnings(ManifestEntry testEntry) {
+
         String fragment = fragment(testEntry.getURI());
         if ( fragment == null )
             return false;
+
+        if ( VocabLangRDF.TestPositiveRDFXML.equals(testEntry.getTestType()) ) {
+            // Various warnings in eval tests.
+
+            if ( fragment.equals("#datatypes-test002") )
+                return true;
+
+            String name = testEntry.getName();
+
+            if ( name.equals("rdfms-empty-property-elements-test016") )
+                // Processing instruction warning.
+                return true;
+
+            if ( name.equals("rdfms-rdf-names-use-test-015") )
+                //rdf:_1 is being used on a typed node.
+                return true;
+
+            if ( name.startsWith("rdfms-rdf-names-use-warn-") )
+                // "is not a recognized RDF property or type."
+                // "is not a recognized RDF property."
+                return true;
+
+            if ( name.startsWith("unrecognised-xml-attributes-test00") )
+                // XML attribute: xml:foo is not known
+                return true;
+
+            return false;
+        }
+
+        // rdf-tests-cg/sparql11-query/syntax-query/
+        // rdf-tests-cg/ntriples/manifest.ttl
+        // rdf-tests-cg/nquads/manifest.ttl
+        // rdf-tests-cg/turtle/manifest.ttl
+        // rdf-tests-cg/trig/manifest.ttl
+        // jena-shex
         if ( fragment.endsWith("UTF8_boundaries") || fragment.endsWith("character_boundaries") )
             // Boundaries of the Unicode allowed character blocks.
             return true;
+        // rdf-tests Turtle and Trig
         if ( fragment.contains("IRI-resolution") )
             return true;
         return false;
@@ -205,9 +239,9 @@ public class RiotTests
     /*package*/ static String fragment(String uri) {
         if ( uri == null )
             return null;
-        int j = uri.lastIndexOf('#') ;
-        String frag = (j >= 0) ? uri.substring(j) : uri ;
-        return frag ;
+        int j = uri.lastIndexOf('#');
+        String frag = (j >= 0) ? uri.substring(j) : uri;
+        return frag;
     }
 
 }

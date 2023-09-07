@@ -18,19 +18,19 @@
 
 package org.apache.jena.arq.junit.riot;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
 
 public class VocabLangRDF
 {
-    public static String assumedBaseURI = "http://example/base/" ;
+    public static String assumedBaseURI = "http://example/base/";
 
     /** <p>The RDF model that holds the vocabulary terms</p> */
     private static Model m_model = ModelFactory.createDefaultModel();
 
     /** <p>The namespace of the vocabulary as a string</p> */
-    public static final String NS = "http://www.w3.org/ns/rdftest#" ;
+    public static final String NS = "http://www.w3.org/ns/rdftest#";
 
     /** <p>The namespace of the vocabulary as a string</p>
      *  @see #NS */
