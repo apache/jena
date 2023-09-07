@@ -61,7 +61,7 @@ public class ModLangOutput extends ModBase
                 x++;
 
             if ( x >= 2 )
-                throw new CmdException("Multiple output choices given: Use one of--stream, --output and --formatted");
+                throw new CmdException("Multiple output choices given: Use one of --stream, --output and --formatted/--pretty");
         }
 
         if ( cmdLine.contains(argPretty) ) {
