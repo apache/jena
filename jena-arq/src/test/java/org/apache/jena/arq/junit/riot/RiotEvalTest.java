@@ -99,15 +99,13 @@ public class RiotEvalTest implements Runnable {
             boolean b = IsoMatcher.isomorphic(graph, results);
 
             if ( !b ) {
-                // model.isIsomorphicWith(results) ;
-                // IsoMatcher.isomorphic(graph, results);
+                // graph.isIsomorphicWith(results) ;
                 System.out.println("---- Parsed");
                 RDFDataMgr.write(System.out, graph, Lang.TURTLE) ;
                 System.out.println("---- Expected");
                 RDFDataMgr.write(System.out, results, Lang.TURTLE) ;
                 System.out.println("--------");
             }
-
             assertTrue("Graphs not isomorphic", b) ;
         } catch (RiotException ex) {
             if ( expectLegalSyntax )
