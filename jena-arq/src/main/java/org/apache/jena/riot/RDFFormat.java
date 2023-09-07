@@ -216,6 +216,12 @@ public class RDFFormat {
      */
     public static final RDFFormat        RDFNULL        = new RDFFormat(Lang.RDFNULL) ;
 
+    /**
+     * Stream-only output format for development - flushes every line.
+     */
+    public static final RDFFormat        RDFRAW        = new RDFFormat(Lang.RDFRAW) ;
+
+
     private final Lang             lang ;
     private final RDFFormatVariant variant ;
 

@@ -103,6 +103,9 @@ public class Lang
     /** The "null" language */
     public static Lang RDFNULL ;
 
+    /** Output-only language for a StreamRDF (for development) */
+    public static Lang RDFRAW ;
+
     private final String label ;                    // Primary name
     private final ContentType contentType ;         // Primary content type.
     private final List<String> altLabels ;
