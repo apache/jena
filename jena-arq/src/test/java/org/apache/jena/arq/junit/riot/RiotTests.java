@@ -189,17 +189,13 @@ public class RiotTests
     // Some tests have <http:g> which RIOT warns about but passes.
     /*package*/ static boolean allowWarnings(ManifestEntry testEntry) {
 
-        String fragment = fragment(testEntry.getURI());
-        if ( fragment == null )
-            return false;
-
         if ( VocabLangRDF.TestPositiveRDFXML.equals(testEntry.getTestType()) ) {
             // Various warnings in eval tests.
 
-            if ( fragment.equals("#datatypes-test002") )
-                return true;
-
             String name = testEntry.getName();
+
+            if ( name.equals("datatypes-test002") )
+                return true;
 
             if ( name.equals("rdfms-empty-property-elements-test016") )
                 // Processing instruction warning.
@@ -220,6 +216,10 @@ public class RiotTests
 
             return false;
         }
+
+        String fragment = fragment(testEntry.getURI());
+        if ( fragment == null )
+            return false;
 
         // rdf-tests-cg/sparql11-query/syntax-query/
         // rdf-tests-cg/ntriples/manifest.ttl

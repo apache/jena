@@ -34,7 +34,7 @@ import org.apache.jena.rdf.model.RDFWriterI ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.rdfxml.xmlinput.RDFXMLReader;
+import org.apache.jena.rdfxml.xmlinput1.RDFXMLReader;
 import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter ;
 import org.apache.jena.rdfxml.xmloutput.impl.SimpleLogger ;
 import org.apache.jena.shared.InvalidPropertyURIException ;

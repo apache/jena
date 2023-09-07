@@ -66,7 +66,7 @@ public class X_RDFReaderF extends Object implements RDFReaderF {
     }
 
     private static void reset() {
-        Class<? extends RDFReaderI> rdfxmlReader = org.apache.jena.rdfxml.xmlinput.RDFXMLReader.class;
+        Class<? extends RDFReaderI> rdfxmlReader = org.apache.jena.rdfxml.xmlinput1.RDFXMLReader.class;
 
         // test use only
         Class<? extends RDFReaderI> ntReader = org.apache.jena.rdf.model.impl.NTripleReader.class;
