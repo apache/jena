@@ -45,7 +45,7 @@ public class TestPackage extends TestCase {
         addTest(ts,  "Model", org.apache.jena.rdf.model.test.TestPackage_model.suite());
         addTest(ts,  "StandardModels", org.apache.jena.rdf.model.test.TestStandardModels.suite() );
         // Currently, "ARP[IRIx]"
-        addTest(ts,  "XML Input", org.apache.jena.rdfxml.xmlinput.TestPackage_xmlinput1.suite());
+        addTest(ts,  "XML Input", org.apache.jena.rdfxml.xmlinput1.TestPackage_xmlinput1.suite());
         addTest(ts,  "XML Output", org.apache.jena.rdfxml.xmloutput.TestPackage_xmloutput.suite());
         addTest(ts,  "Util", org.apache.jena.util.TestPackage_util.suite());
         addTest(ts,  "Jena iterator", org.apache.jena.util.iterator.test.TestPackage_iter.suite() );

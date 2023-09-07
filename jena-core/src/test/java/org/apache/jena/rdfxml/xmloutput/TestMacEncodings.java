@@ -25,7 +25,7 @@ import java.io.*;
 import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.rdfxml.xmlinput.TestsARP;
+import org.apache.jena.rdfxml.xmlinput1.TestsARP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
