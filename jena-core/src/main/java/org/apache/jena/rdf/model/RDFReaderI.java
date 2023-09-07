@@ -87,7 +87,7 @@ public interface RDFReaderI {
  * <dt>N-TRIPLE</dt>
  * <dd>No properties.</dd>
  * <dt>RDF/XML</dt><dt>RDF/XML-ABBREV</dt>
- * <dd>See {@link org.apache.jena.rdfxml.xmlinput.RDFXMLReader#setProperty(String,Object)}
+ * <dd>See {@link org.apache.jena.rdfxml.xmlinput1.RDFXMLReader#setProperty(String,Object)}
  * </dl>
 	 * @param propName the name of the property
 	 * @param propValue the value of the property

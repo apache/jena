@@ -49,12 +49,12 @@ import org.xml.sax.SAXParseException ;
  * <p>
  * <b>LEGACY</b>
  * <p>
- * Uses xmlinput0 - uses the version of ARP from jena 4.7.0 before the conversion to IRIx.
+ * Uses xmlinput0 - uses the version of ARP from Jena 4.7.0 before the conversion to IRIx.
  *
  * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
  */
 @SuppressWarnings("deprecation")
-class ReaderRIOTRDFXML0 implements ReaderRIOT
+public class ReaderRIOTRDFXML0 implements ReaderRIOT
 {
     public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) ->
             // Ignore the provided ParserProfile
