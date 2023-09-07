@@ -100,6 +100,17 @@ public class RiotTests
             if ( testType.equals(VocabLangRDF.TestNegativeSyntaxNQ) )
                 return new RiotSyntaxTest(entry, RDFLanguages.NQUADS, false) ;
 
+            // RDF/XML - W3C test suite
+            // This suite has eval tests (positive and warning - they have "warn" in the filename) and negative syntax tests.
+            if ( testType.equals(VocabLangRDF.TestPositiveRDFXML) ) {
+                String fn = entry.getAction().getURI();
+                // Assumes the tests are stored in "rdf-xml" or "rdf11-xml"
+                String base = fn.replaceAll("^.*/rdf(\\d\\d)?-xml/", "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-xml/");
+                return new RiotEvalTest(entry, base, RDFLanguages.RDFXML, true) ;
+            }
+            if ( testType.equals(VocabLangRDF.TestNegativeRDFXML) )
+                return new RiotSyntaxTest(entry, RDFLanguages.RDFXML, false) ;
+
             // Other
             if ( testType.equals(VocabLangRDF.TestPositiveSyntaxRJ) )
                 return new RiotSyntaxTest(entry, RDFLanguages.RDFJSON, true) ;
@@ -180,16 +191,15 @@ public class RiotTests
     // Some tests have U+FFFD which, in Jena, generates a helpful warning.
     // Some tests have <http:g> which RIOT warns about but passes.
     /*package*/ static boolean allowWarnings(ManifestEntry testEntry) {
-      String fragment = fragment(testEntry.getURI());
-      if ( fragment == null )
-          return false;
-      if ( fragment.endsWith("UTF8_boundaries") || fragment.endsWith("character_boundaries") )
-          // Boundaries of the Unicode allowed character blocks.
-          return true;
-      if ( fragment.contains("IRI-resolution") )
-
-          return true;
-      return false;
+        String fragment = fragment(testEntry.getURI());
+        if ( fragment == null )
+            return false;
+        if ( fragment.endsWith("UTF8_boundaries") || fragment.endsWith("character_boundaries") )
+            // Boundaries of the Unicode allowed character blocks.
+            return true;
+        if ( fragment.contains("IRI-resolution") )
+            return true;
+        return false;
     }
 
     /*package*/ static String fragment(String uri) {
