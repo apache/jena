@@ -25,6 +25,7 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
+import org.apache.jena.riot.writer.WriterStreamRDFFlat;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain;
 import org.apache.jena.sparql.core.Quad;
 
@@ -35,6 +36,11 @@ import org.apache.jena.sparql.core.Quad;
  * The output is not a legal syntax. Do not consider this
  * format to be stable.
  * <p>
+ * It is not optimized for throughput and it flushes every line.
+ * Consider using {@link WriterStreamRDFFlat} for performance.
+ * <p>
+ *
+ *
  * Use via
  * <pre>
  * StreamRDFLib.print(System.out);

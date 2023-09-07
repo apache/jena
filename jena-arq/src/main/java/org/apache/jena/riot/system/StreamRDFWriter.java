@@ -109,6 +109,9 @@ public class StreamRDFWriter {
         }
     } ;
 
+    private static StreamRDFWriterFactory streamWriterFactoryRaw =
+            (OutputStream output, RDFFormat format, Context context)->new PrintingStreamRDF(output);
+
     private static WriterRegistry<StreamRDFWriterFactory> registry = new WriterRegistry<>() ;
 
     /** Register the default serialization for the language (replace any existing registration).
@@ -142,6 +145,7 @@ public class StreamRDFWriter {
         register(Lang.RDFTHRIFT,    RDFFormat.RDF_THRIFT) ;
         register(Lang.TRIX,         RDFFormat.TRIX) ;
         register(Lang.RDFNULL,      RDFFormat.RDFNULL) ;
+        register(Lang.RDFRAW,       RDFFormat.RDFRAW) ;
 
         register(RDFFormat.TURTLE_BLOCKS,   streamWriterFactoryBlocks) ;
         register(RDFFormat.TURTLE_FLAT,     streamWriterFactoryFlat) ;
@@ -164,6 +168,7 @@ public class StreamRDFWriter {
 
         register(RDFFormat.TRIX,            streamWriterFactoryTriX) ;
         register(RDFFormat.RDFNULL,         streamWriterFactoryNull) ;
+        register(RDFFormat.RDFRAW,          streamWriterFactoryRaw) ;
     }
 
     /** Get a StreamRDF destination that will output in syntax {@code Lang}

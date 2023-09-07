@@ -159,6 +159,13 @@ public class RDFLanguages
                                                      .addAltNames("NULL", "null")
                                                      .build();
 
+    /** Output-only language for a StreamRDF (for development) */
+    public static final Lang RDFRAW     = LangBuilder.create("rdf/raw", "rdf/raw")
+                                                     .addAltContentTypes("application/rdf+raw")
+                                                     .addAltNames("raw", "dev")
+                                                     .addFileExtensions("jena")
+                                                     .build();
+
     /** <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a> (2020-07-01) */
     public static final Lang SHACLC     = LangBuilder.create("SHACLC", "text/shaclc")
                                                      .addAltNames("shaclc")
@@ -204,6 +211,7 @@ public class RDFLanguages
         Lang.RDFTHRIFT  = RDFLanguages.RDFTHRIFT;
         Lang.TRIX       = RDFLanguages.TRIX;
         Lang.RDFNULL    = RDFLanguages.RDFNULL;
+        Lang.RDFRAW     = RDFLanguages.RDFRAW;
         Lang.SHACLC     = RDFLanguages.SHACLC;
 
         // Used for result sets, not RDF syntaxes.
@@ -233,6 +241,7 @@ public class RDFLanguages
         register(RDFTHRIFT);
         register(TRIX);
         register(RDFNULL);
+        register(RDFRAW);
         register(SHACLC);
     }
 
