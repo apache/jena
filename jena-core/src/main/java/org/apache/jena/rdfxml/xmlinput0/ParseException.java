@@ -25,7 +25,7 @@ import org.apache.jena.rdfxml.xmlinput0.impl.ARPLocation;
  * an XML related exception from Xerces because while both are
  * SAXParseException's, the latter are not {@link ParseException}'s.
  */
-public class ParseException extends org.apache.jena.rdfxml.xmlinput.ParseException {
+public class ParseException extends org.apache.jena.rdfxml.xmlinput1.ParseException {
 
     protected ParseException(int id, ARPLocation where, String msg) {
         super(id, where.inputName, where.endLine, where.endColumn, msg);
