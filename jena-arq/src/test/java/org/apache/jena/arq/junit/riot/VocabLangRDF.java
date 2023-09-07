@@ -79,6 +79,10 @@ public class VocabLangRDF
 
     public static final Resource TestNegativeEvalTriG       = m_model.createResource( NS+"TestTrigNegativeEval" );
 
+    public static final Resource TestPositiveRDFXML         = m_model.createResource( NS+"TestXMLEval" );
+
+    public static final Resource TestNegativeRDFXML         = m_model.createResource( NS+"TestXMLNegativeSyntax" );
+
     public static final Resource TestSurpressed             = m_model.createResource( NS+"Test" );
 }
 
