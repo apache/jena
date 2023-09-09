@@ -182,9 +182,9 @@ public class Chars
     // REPLACEMENT CHARACTER
     public static final char REPLACEMENT     = 0xFFFD ;
 
-    // Not a character
+    // "Not a character" - a Unicode noncharacter codepoint that is not legal in UTF-8.
     public static final char NotACharacter   = 0xFFFF ;
-    // Detect byte order by contrast (BOM reversed).
+    // Detect byte order by contrast (BOM reversed) - a Unicode noncharacter codepoint that is not legal in UTF-8.
     public static final char ReverseOrderBOM = 0xFFFE ;
 
     /** Undefined character (exact meaning depends on use) - not a Unicode codepoint */
