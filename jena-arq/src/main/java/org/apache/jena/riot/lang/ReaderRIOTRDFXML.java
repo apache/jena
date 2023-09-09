@@ -42,14 +42,13 @@ import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
 /** RDF/XML.
- *
+ * Default RDF/XML parser
  * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
  */
 public class ReaderRIOTRDFXML implements ReaderRIOT
 {
     public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) -> {
         // Ignore the provided ParserProfile
-        // ARP predates RIOT and does many things internally already.
         return new ReaderRIOTRDFXML(parserProfile);
     };
 

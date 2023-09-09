@@ -23,14 +23,12 @@ import java.util.Objects;
 import org.apache.jena.shared.PrefixMapping;
 
 /**
-    RDF blank nodes, ie nodes with identity but without URIs.
-*/
-
+ * RDF blank nodes. Blank nodes have identity but do not have a URIs or literal value.
+ */
 public class Node_Blank extends Node
 {
     private final String label;
 
-    //Node_Blank( String label ) { this.label = Objects.requireNonNull(label); }
     Node_Blank( String label ) {
         this.label = Objects.requireNonNull(label);
     }
