@@ -1,0 +1,32 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://local/" 
+    xmlns:ex="http://example/" 
+    xml:base="http://base/">
+
+  <!-- Comment 1 -->
+
+  <rdf:Description rdf:about="http://host/subject">
+    <!-- Comment 2 -->
+    <ex:property1>
+      <!-- Comment 3 -->
+      abc
+    </ex:property1>
+    <ex:property2>ABC<!-- Comment 4 -->XYZ</ex:property2>
+    <!-- Comment 5 -->
+    <ex:xmlliteral rdf:parseType="Literal">
+      <!-- Comment 6 -->
+      <ex:level1>
+        <!-- Comment 7 -->
+      </ex:level1>
+      <level1>text</level1>
+      <!-- Comment 8 -->
+    </ex:xmlliteral>
+
+  </rdf:Description>
+
+</rdf:RDF>
+<!-- Comment 99 -->
